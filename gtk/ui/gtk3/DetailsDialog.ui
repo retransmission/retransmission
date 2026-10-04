@@ -958,7 +958,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="download_limit_check">
-                            <property name="label" translatable="yes">Limit _download speed ({speed_units}):</property>
+                            <property name="label" translatable="yes">Limit _download speed:</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">False</property>
@@ -973,7 +973,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="upload_limit_check">
-                            <property name="label" translatable="yes">Limit _upload speed ({speed_units}):</property>
+                            <property name="label" translatable="yes">Limit _upload speed:</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">False</property>
@@ -1001,11 +1001,35 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="download_limit_spin">
+                          <object class="GtkBox" id="download_limit_value_layout">
                             <property name="visible">True</property>
-                            <property name="sensitive" bind-source="download_limit_check" bind-property="active" bind-flags="sync-create">False</property>
-                            <property name="can-focus">True</property>
+                            <property name="can-focus">False</property>
                             <property name="hexpand">True</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkSpinButton" id="download_limit_spin">
+                                <property name="visible">True</property>
+                                <property name="sensitive" bind-source="download_limit_check" bind-property="active" bind-flags="sync-create">False</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="download_limit_units_label">
+                                <property name="visible">True</property>
+                                <property name="sensitive" bind-source="download_limit_spin" bind-property="sensitive" bind-flags="sync-create">False</property>
+                                <property name="can-focus">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -1013,11 +1037,35 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="upload_limit_spin">
+                          <object class="GtkBox" id="upload_limit_value_layout">
                             <property name="visible">True</property>
-                            <property name="sensitive" bind-source="upload_limit_check" bind-property="active" bind-flags="sync-create">False</property>
-                            <property name="can-focus">True</property>
+                            <property name="can-focus">False</property>
                             <property name="hexpand">True</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkSpinButton" id="upload_limit_spin">
+                                <property name="visible">True</property>
+                                <property name="sensitive" bind-source="upload_limit_check" bind-property="active" bind-flags="sync-create">False</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="upload_limit_units_label">
+                                <property name="visible">True</property>
+                                <property name="sensitive" bind-source="upload_limit_spin" bind-property="sensitive" bind-flags="sync-create">False</property>
+                                <property name="can-focus">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -1155,6 +1203,18 @@
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
                                 <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="idle_limit_units_label">
+                                <property name="visible" bind-source="idle_limit_spin" bind-property="visible" bind-flags="sync-create">False</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">minutes</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">2</property>
                               </packing>
                             </child>
                           </object>

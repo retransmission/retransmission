@@ -504,10 +504,10 @@ void PrefsDialog::onQueueStalledMinutesChanged()
 {
     Utils::updateSpinBoxFormat(
         ui_.queueStalledMinutesSpin,
-        // Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
-        "{minutes_ago:L} minute ago",
-        "{minutes_ago:L} minutes ago",
-        "minutes_ago");
+        // Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
+        "{minutes:L} minute",
+        "{minutes:L} minutes",
+        "minutes");
 }
 
 void PrefsDialog::initDownloadingTab()

@@ -195,8 +195,8 @@ msgstr "Parar de semear na proporção:"
 msgid "Seed regardless of activity"
 msgstr "Semear independente da atividade"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Parar de semear se inativo por N minutos:"
+msgid "Stop seeding if idle for:"
+msgstr "Parar de semear se ocioso por:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1213,11 +1213,11 @@ msgstr "Velocidade"
 msgid "Honor global _limits"
 msgstr "Honrar _limites globais"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Limitar a velocidade de _download ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Limitar velocidade de download:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Limitar a velocidade de _upload ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Limitar velocidade de _upload:"
 
 msgid "Torrent _priority:"
 msgstr "_Prioridade do torrent:"
@@ -1230,6 +1230,9 @@ msgstr "P_roporção:"
 
 msgid "_Idle:"
 msgstr "Oc_ioso:"
+
+msgid "minutes"
+msgstr "minutos"
 
 msgid "Peer Connections"
 msgstr "Conexões de Pares"
@@ -1367,12 +1370,12 @@ msgid "Speed Limits"
 msgstr "Limites de Velocidade"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Upload ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Upload:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Download ({speed_units}):"
+msgid "_Download:"
+msgstr "_Download:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1383,12 +1386,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Ignora limites normais de velocidade manualmente ou nos horários programados"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "U_pload ({speed_units}):"
+msgid "U_pload:"
+msgstr "U_pload:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Do_wnload ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Do_wnload:"
 
 msgid "_Scheduled times:"
 msgstr "_programar horários:"
@@ -1423,8 +1426,10 @@ msgstr "Fila para Baixar"
 msgid "Ma_ximum active downloads:"
 msgstr "Má_ximo de downloads ativos:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Arquivos baixados compartilharão dados por _N minutos:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "A transferência é interrompida quando inativa por:"
 
 msgid "Incomplete"
 msgstr "Incompleto"
@@ -1455,8 +1460,8 @@ msgstr "Limites"
 msgid "Stop seeding at _ratio:"
 msgstr "Parar de semear na p_roporção:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Parar de semear se inativo por _N minutos:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Parar de semear se ocioso por:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Chamar scrip_t quando terminar de semear."
@@ -1710,7 +1715,6 @@ msgstr[0] "{hours_ago:L} hora atrás"
 msgstr[1] "{hours_ago:L} horas atrás"
 msgstr[2] "{hours_ago:L} horas atrás"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuto atrás"
@@ -1795,6 +1799,7 @@ msgstr[2] "{hours:L} horas"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuto"
@@ -2343,15 +2348,6 @@ msgstr "Abrir quando criado"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Cada rastreador será colocado em sua própria fileira"
 
-msgid "Limit _download speed:"
-msgstr "Limitar velocidade de download:"
-
-msgid "Limit _upload speed:"
-msgstr "Limitar velocidade de _upload:"
-
-msgid "minutes"
-msgstr "minutos"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2361,9 +2357,6 @@ msgstr "Estado dos arquivos selecionados"
 
 msgid "Remaining time"
 msgstr "Tempo restante"
-
-msgid "Stop seeding if idle for:"
-msgstr "Parar de semear se ocioso por:"
 
 msgid "Any"
 msgstr "Qualquer"
@@ -2699,11 +2692,6 @@ msgstr "Baixar com máximo de:"
 msgid "Seeding with maximum of:"
 msgstr "Semear com máximo de:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "A transferência é interrompida quando inativa por:"
-
 msgid "Play sound:"
 msgstr "Tocar som:"
 
@@ -2747,12 +2735,6 @@ msgstr "Nome do Grupo:"
 
 msgid "Color"
 msgstr "Cor"
-
-msgid "_Download:"
-msgstr "_Download:"
-
-msgid "_Upload:"
-msgstr "_Upload:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3679,24 +3661,11 @@ msgstr "Não suportado por sessões remotas"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Lista de bloqueio possui {count:L} regra</i>"
 
-msgid "U_pload:"
-msgstr "U_pload:"
-
-msgid "Do_wnload:"
-msgstr "Do_wnload:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Lê conteúdo da área de transferência do usuário em busca de torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Detecta novos torrents da área de transferência"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Download fica i_nativo se o compartilhamento parou:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Parar de semear se ocioso por:"
 
 msgid "Encryption"
 msgstr "criptografia"
@@ -3813,6 +3782,18 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Parar de semear se inativo por N minutos:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Arquivos baixados compartilharão dados por _N minutos:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Parar de semear se inativo por _N minutos:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Download fica i_nativo se o compartilhamento parou:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Criado por {creator} em {date}"

@@ -152,8 +152,8 @@ msgstr "達到分享率時停止做種："
 msgid "Seed regardless of activity"
 msgstr "無論是否有活動，持續做種"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "閒置 N 分鐘後停止做種："
+msgid "Stop seeding if idle for:"
+msgstr "閒置超過時間時停止做種："
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1148,11 +1148,11 @@ msgstr "速度"
 msgid "Honor global _limits"
 msgstr "優先使用全域限制 (_L)"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "限制下載速度 ({speed_units}) (_D)："
+msgid "Limit _download speed:"
+msgstr "限制下載速度 (_D)："
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "限制上傳速度 ({speed_units}) (_U)："
+msgid "Limit _upload speed:"
+msgstr "限制上傳速度 (_U)："
 
 msgid "Torrent _priority:"
 msgstr "Torrent 優先順序 (_P)："
@@ -1165,6 +1165,9 @@ msgstr "分享率 (_R)："
 
 msgid "_Idle:"
 msgstr "閒置 (_I)："
+
+msgid "minutes"
+msgstr "分鐘"
 
 msgid "Peer Connections"
 msgstr "已連線的節點"
@@ -1302,12 +1305,12 @@ msgid "Speed Limits"
 msgstr "速度限制"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "上傳 ({speed_units}) (_U)："
+msgid "_Upload:"
+msgstr "上傳 (_U)："
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "下載 ({speed_units}) (_D)："
+msgid "_Download:"
+msgstr "下載 (_D)："
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1318,12 +1321,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "手動或定時覆蓋正常速度限制"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "上傳 ({speed_units}) (_P)："
+msgid "U_pload:"
+msgstr "上傳 (_U)："
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "下載 ({speed_units}) (_W)："
+msgid "Do_wnload:"
+msgstr "下載 (_W)："
 
 msgid "_Scheduled times:"
 msgstr "預定時段 (_S)："
@@ -1358,8 +1361,10 @@ msgstr "下載排程"
 msgid "Ma_ximum active downloads:"
 msgstr "最大活躍下載數 (_X)："
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "過去 N 分鐘內的下載資料分享為啟用 (_N)："
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "閒置超過時間時判斷傳輸已停滯："
 
 msgid "Incomplete"
 msgstr "未完成"
@@ -1390,8 +1395,8 @@ msgstr "限制"
 msgid "Stop seeding at _ratio:"
 msgstr "達到分享率時停止做種 (_R)："
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "閒置 N 分鐘後停止做種 (_N)："
+msgid "Stop seedi_ng if idle for:"
+msgstr "閒置超過時間時停止做種 (_N)："
 
 msgid "Call scrip_t when done seeding:"
 msgstr "做種完成時呼叫腳本 (_T)："
@@ -1633,7 +1638,6 @@ msgid "{hours_ago:L} hour ago"
 msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} 小時前"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} 分鐘前"
@@ -1704,6 +1708,7 @@ msgstr[0] "{hours:L} 小時"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} 分鐘"
@@ -2236,15 +2241,6 @@ msgstr "建立完成時開啟"
 msgid "Each tracker will be placed into its own tier"
 msgstr "每個追蹤器將被分類到自己的層級中"
 
-msgid "Limit _download speed:"
-msgstr "限制下載速度 (_D)："
-
-msgid "Limit _upload speed:"
-msgstr "限制上傳速度 (_U)："
-
-msgid "minutes"
-msgstr "分鐘"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "KB/秒"
@@ -2254,9 +2250,6 @@ msgstr "已選取檔案的狀態"
 
 msgid "Remaining time"
 msgstr "剩餘時間"
-
-msgid "Stop seeding if idle for:"
-msgstr "閒置超過時間時停止做種："
 
 msgid "Any"
 msgstr "任何"
@@ -2594,11 +2587,6 @@ msgstr "最大下載速度："
 msgid "Seeding with maximum of:"
 msgstr "最大做種速度："
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "閒置超過時間時判斷傳輸已停滯："
-
 msgid "Play sound:"
 msgstr "播放音效："
 
@@ -2642,12 +2630,6 @@ msgstr "群組名稱："
 
 msgid "Color"
 msgstr "色彩"
-
-msgid "_Download:"
-msgstr "下載 (_D)："
-
-msgid "_Upload:"
-msgstr "上傳 (_U)："
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3530,24 +3512,11 @@ msgstr "不支援遠端連線"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>黑名單包含 {count:L} 個規則</i>"
 
-msgid "U_pload:"
-msgstr "上傳 (_U)："
-
-msgid "Do_wnload:"
-msgstr "下載 (_W)："
-
 msgid "Reads user clipboard content for torrents"
 msgstr "從使用者的剪貼簿讀取 torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "從剪貼簿偵測新的 torrents"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "當停止資料分享時暫停下載 (_N)："
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "閒置超過時間時停止做種 (_N)："
 
 msgid "Encryption"
 msgstr "加密"
@@ -3646,6 +3615,18 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "閒置 N 分鐘後停止做種："
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "過去 N 分鐘內的下載資料分享為啟用 (_N)："
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "閒置 N 分鐘後停止做種 (_N)："
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "當停止資料分享時暫停下載 (_N)："
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "由 {creator} 於 {date} 建立"

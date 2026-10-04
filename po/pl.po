@@ -169,8 +169,8 @@ msgstr "Zatrzymanie wysyłania po osiągnięciu udziału:"
 msgid "Seed regardless of activity"
 msgstr "Wysyłanie niezależnie od aktywności"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Zatrzymanie po braku aktywności (w minutach):"
+msgid "Stop seeding if idle for:"
+msgstr "Zatrzymanie wysyłania po braku aktywności przez:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1201,11 +1201,11 @@ msgstr "Prędkość"
 msgid "Honor global _limits"
 msgstr "_Globalne ograniczenia"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Ograniczenie prędkości p_obierania (w {speed_units}):"
+msgid "Limit _download speed:"
+msgstr "_Ograniczenie prędkości pobierania:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Ograniczenie prędkości _wysyłania (w {speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Ograniczenie prędkości _wysyłania:"
 
 msgid "Torrent _priority:"
 msgstr "_Priorytet torrenta:"
@@ -1218,6 +1218,9 @@ msgstr "_Udział:"
 
 msgid "_Idle:"
 msgstr "_Brak aktywności:"
+
+msgid "minutes"
+msgstr "min"
 
 msgid "Peer Connections"
 msgstr "Połączenia"
@@ -1355,12 +1358,12 @@ msgid "Speed Limits"
 msgstr "Ograniczenia"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Wysyłanie (w {speed_units}):"
+msgid "_Upload:"
+msgstr "_Wysyłanie:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Pobieranie (w {speed_units}):"
+msgid "_Download:"
+msgstr "_Pobieranie:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1371,12 +1374,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Zastępuje zwykłe ograniczenia prędkości ręcznie lub w zaplanowanym czasie"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Wy_syłanie (w {speed_units}):"
+msgid "U_pload:"
+msgstr "Wy_syłanie:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Po_bieranie (w {speed_units}):"
+msgid "Do_wnload:"
+msgstr "Po_bieranie:"
 
 msgid "_Scheduled times:"
 msgstr "Zaplanowany cza_s:"
@@ -1411,8 +1414,10 @@ msgstr "Kolejka pobierania"
 msgid "Ma_ximum active downloads:"
 msgstr "Ma_ksymalna liczba aktywnych pobierań:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "_Pobierania wysyłające dane w ciągu tych ostatnich minut są aktywne:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Przesyłanie jest zawieszone po nieaktywności przez:"
 
 msgid "Incomplete"
 msgstr "Nieukończone"
@@ -1443,8 +1448,8 @@ msgstr "Ograniczenia"
 msgid "Stop seeding at _ratio:"
 msgstr "Zatrzymanie po osiągnięciu _udziału:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Zatrzymanie po braku _aktywności (w minutach):"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Zatrzymanie po braku _aktywności przez:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Wywołanie _skryptu po ukończeniu wysyłania:"
@@ -1704,7 +1709,6 @@ msgstr[1] "{hours_ago:L} godziny temu"
 msgstr[2] "{hours_ago:L} godzin temu"
 msgstr[3] "{hours_ago:L} godzin temu"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuta temu"
@@ -1796,6 +1800,7 @@ msgstr[3] "{hours:L} godzin"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuta"
@@ -2358,15 +2363,6 @@ msgstr "Otwórz po utworzeniu"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Każdy serwer śledzący zostanie umieszczony na swoim własnym poziomie"
 
-msgid "Limit _download speed:"
-msgstr "_Ograniczenie prędkości pobierania:"
-
-msgid "Limit _upload speed:"
-msgstr "Ograniczenie prędkości _wysyłania:"
-
-msgid "minutes"
-msgstr "min"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2376,9 +2372,6 @@ msgstr "Stan zaznaczonych plików"
 
 msgid "Remaining time"
 msgstr "Pozostały czas"
-
-msgid "Stop seeding if idle for:"
-msgstr "Zatrzymanie wysyłania po braku aktywności przez:"
 
 msgid "Any"
 msgstr "Dowolne"
@@ -2716,11 +2709,6 @@ msgstr "Pobieranie maksymalnie:"
 msgid "Seeding with maximum of:"
 msgstr "Wysyłanie maksymalnie:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Przesyłanie jest zawieszone po nieaktywności przez:"
-
 msgid "Play sound:"
 msgstr "Odtworzenie dźwięku:"
 
@@ -2764,12 +2752,6 @@ msgstr "Nazwa grupy:"
 
 msgid "Color"
 msgstr "Kolor"
-
-msgid "_Download:"
-msgstr "_Pobieranie:"
-
-msgid "_Upload:"
-msgstr "_Wysyłanie:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3690,24 +3672,11 @@ msgstr "Nieobsługiwane w zdalnych sesjach"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Lista blokowania zawiera {count:L} regułę</i>"
 
-msgid "U_pload:"
-msgstr "Wy_syłanie:"
-
-msgid "Do_wnload:"
-msgstr "Po_bieranie:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Odczytuje zawartość schowka użytkownika w poszukiwaniu torrentów"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Wykrywanie nowych torrentów w schowku"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Pobieranie jest _nieaktywne, jeśli zatrzymano wysyłanie danych:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Zatrzymanie po braku _aktywności przez:"
 
 msgid "Encryption"
 msgstr "Szyfrowanie"
@@ -3833,6 +3802,18 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Zatrzymanie po braku aktywności (w minutach):"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "_Pobierania wysyłające dane w ciągu tych ostatnich minut są aktywne:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Zatrzymanie po braku _aktywności (w minutach):"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Pobieranie jest _nieaktywne, jeśli zatrzymano wysyłanie danych:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Utworzony dnia {date} przez: {creator}"

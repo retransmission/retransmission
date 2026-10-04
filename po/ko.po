@@ -145,8 +145,8 @@ msgstr "설정한 비율에서 배포 중지:"
 msgid "Seed regardless of activity"
 msgstr "상태와 상관없이 배포"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "N 분 대기 상태에 있으면 배포를 중지:"
+msgid "Stop seeding if idle for:"
+msgstr "비활성화 되면 시드 중지"
 
 msgid "Queued for verification"
 msgstr "검사를 위해 대기"
@@ -1045,11 +1045,11 @@ msgstr "속도"
 msgid "Honor global _limits"
 msgstr "전체 제한 존중(_L)"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "다운로드 속도 제한 ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "다운로드 속도 제한 (_D)"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "업로드 속도 제한 ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "업로드 속도 제한 (_U)"
 
 msgid "Torrent _priority:"
 msgstr "토렌트 우선 순위(_P):"
@@ -1062,6 +1062,9 @@ msgstr "비율(_R):"
 
 msgid "_Idle:"
 msgstr "대기(_I):"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "피어 연결"
@@ -1188,12 +1191,12 @@ msgid "Speed Limits"
 msgstr "속도 제한"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "업로드 (_U): "
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "다운로드 (_D): "
 
 msgid "Alternative Speed Limits"
 msgstr "대체 속도 제한"
@@ -1202,12 +1205,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "기본 속도 제한을 직접 선택하거나 예정된 시간 동안 제한합니다"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "업로드 (_P):"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "다운로드 (_W):"
 
 msgid "_Scheduled times:"
 msgstr "적용할 시간(_S):"
@@ -1242,8 +1245,8 @@ msgstr "다운로드 큐"
 msgid "Ma_ximum active downloads:"
 msgstr "최대 활성 다운로드 수 (_X): "
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "마지막 N분 동안 데이터를 공유하는 다운로드가 활성화됩니다(_N):"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "미완료"
@@ -1272,8 +1275,8 @@ msgstr "제한"
 msgid "Stop seeding at _ratio:"
 msgstr "설정한 비율에서 배포 중지(_R):"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "N 분 대기 상태에 있으면 배포를 중지(_N):"
+msgid "Stop seedi_ng if idle for:"
+msgstr "비활성화 되면 시드 중지 (_N)"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "시드가 완료되면 호출 스크립트(_T):"
@@ -1507,7 +1510,6 @@ msgid "{hours_ago:L} hour ago"
 msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1577,6 +1579,7 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} 시간"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} 분"
@@ -2080,9 +2083,6 @@ msgstr "트래커 알림 주소"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "비활성화 되면 시드 중지"
-
 msgid "Torrent Properties"
 msgstr "Torrent 속성"
 
@@ -2091,12 +2091,6 @@ msgstr "가용율:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "업로드 속도 제한 (_U)"
-
-msgid "Limit _download speed:"
-msgstr "다운로드 속도 제한 (_D)"
 
 msgid "Check Selected"
 msgstr "선택항목 체크"
@@ -2246,30 +2240,11 @@ msgstr "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
 msgid "Last updated: {date}"
 msgstr "블록리스트는 {count:L} 규칙을 포함하고 있습니다"
 
-msgid "_Upload:"
-msgstr "업로드 (_U): "
-
-msgid "_Download:"
-msgstr "다운로드 (_D): "
-
-msgid "U_pload:"
-msgstr "업로드 (_P):"
-
-msgid "Do_wnload:"
-msgstr "다운로드 (_W):"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "데이터 공유 중단시 다운로드 비활성화 (_n)"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "비활성화 되면 시드 중지 (_N)"
 
 msgid "Encryption"
 msgstr "암호화"
@@ -2378,6 +2353,18 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "N 분 대기 상태에 있으면 배포를 중지:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "마지막 N분 동안 데이터를 공유하는 다운로드가 활성화됩니다(_N):"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "N 분 대기 상태에 있으면 배포를 중지(_N):"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "데이터 공유 중단시 다운로드 비활성화 (_n)"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "{creator}이(가) {date}에 만듦"

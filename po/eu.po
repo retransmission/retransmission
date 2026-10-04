@@ -139,8 +139,8 @@ msgstr "Gelditu igortzen maila honetan:"
 msgid "Seed regardless of activity"
 msgstr "Igorri jarduera kontuan izan gabe"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Gelditu igortzen N minutuz geratuta badago:"
+msgid "Stop seeding if idle for:"
+msgstr "Gelditu igortzen geratuta badago:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1143,11 +1143,11 @@ msgstr "Abiadura"
 msgid "Honor global _limits"
 msgstr "Bete muga _orokorrak"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Mugatu _deskargaren abiadura ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "_Mugatu deskargaren abiadura:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Mugatu _igoera-abiadura ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "M_ugatu igoeraren abiadura:"
 
 msgid "Torrent _priority:"
 msgstr "_Torrent lehentasuna:"
@@ -1160,6 +1160,9 @@ msgstr "M_aila:"
 
 msgid "_Idle:"
 msgstr "_Geratuta:"
+
+msgid "minutes"
+msgstr "minutu"
 
 msgid "Peer Connections"
 msgstr "Kideen konexioak"
@@ -1297,12 +1300,12 @@ msgid "Speed Limits"
 msgstr "Abiadura-mugak"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Igo ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Igoera:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Deskarga ({speed_units}):"
+msgid "_Download:"
+msgstr "_Deskarga:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1313,12 +1316,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Gainidatzi abiadura-muga normalak eskuz edo programatutako orduetan"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "I_goera ({speed_units}):"
+msgid "U_pload:"
+msgstr "I_goera:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Des_karga ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "J_aitsiera:"
 
 msgid "_Scheduled times:"
 msgstr "_Programatutako orduak:"
@@ -1353,8 +1356,10 @@ msgstr "Deskargen ilara"
 msgid "Ma_ximum active downloads:"
 msgstr "Gehienezko _deskarga aktibo kopurua:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Datuak partekatzen egindako deskargak azken _N minutuetan aktibo segitzen dute:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Transferentzia trabatuta utziko da tarte honetaz inaktibo dagoenean:"
 
 msgid "Incomplete"
 msgstr "Osatu gabea"
@@ -1385,8 +1390,8 @@ msgstr "Mugak"
 msgid "Stop seeding at _ratio:"
 msgstr "Gelditu igortzen _maila honetan:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Gelditu igortzen _N minutuz geratuta badago:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Gelditu igortzen _geratuta badago:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Deitu scrip_t-a igortzea amaitzerakoan:"
@@ -1634,7 +1639,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "Orain dela {hours_ago:L} ordu"
 msgstr[1] "Orain dela {hours_ago:L} ordu"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "Orain dela {minutes_ago:L} minutu"
@@ -1712,6 +1716,7 @@ msgstr[1] "{hours:L} ordu"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minutu"
@@ -2252,15 +2257,6 @@ msgstr "Ireki sortzerakoan"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Aztarnari bakoitza bere maila propioan kokatuko da"
 
-msgid "Limit _download speed:"
-msgstr "_Mugatu deskargaren abiadura:"
-
-msgid "Limit _upload speed:"
-msgstr "M_ugatu igoeraren abiadura:"
-
-msgid "minutes"
-msgstr "minutu"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2270,9 +2266,6 @@ msgstr "Aukeratutako fitxategien egoera"
 
 msgid "Remaining time"
 msgstr "Falta den denbora"
-
-msgid "Stop seeding if idle for:"
-msgstr "Gelditu igortzen geratuta badago:"
 
 msgid "Any"
 msgstr "Edozein"
@@ -2610,11 +2603,6 @@ msgstr "Deskargatu hurrengo mugarekin:"
 msgid "Seeding with maximum of:"
 msgstr "Igortzen hurrengo mugarekin:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Transferentzia trabatuta utziko da tarte honetaz inaktibo dagoenean:"
-
 msgid "Play sound:"
 msgstr "Erreproduzitu soinua:"
 
@@ -2658,12 +2646,6 @@ msgstr "Taldearen Izena:"
 
 msgid "Color"
 msgstr "Kolorea"
-
-msgid "_Download:"
-msgstr "_Deskarga:"
-
-msgid "_Upload:"
-msgstr "_Igoera:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3578,24 +3560,11 @@ msgstr "Ez dago sostengaturik urruneko saioentzat"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
 
-msgid "U_pload:"
-msgstr "I_goera:"
-
-msgid "Do_wnload:"
-msgstr "J_aitsiera:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Erabiltzailearen arbelaren edukia irakurtzen du torrent-en bila"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Antzeman torrent berriak arbeletik"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Deskargatu _geratuta dago datu-partekatzea geratuta badago:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Gelditu igortzen _geratuta badago:"
 
 msgid "Encryption"
 msgstr "Zifratzea"
@@ -3703,6 +3672,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Gelditu igortzen N minutuz geratuta badago:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Datuak partekatzen egindako deskargak azken _N minutuetan aktibo segitzen dute:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Gelditu igortzen _N minutuz geratuta badago:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Deskargatu _geratuta dago datu-partekatzea geratuta badago:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Sortzailea {creator} data honetan: {date}"

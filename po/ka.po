@@ -126,8 +126,8 @@ msgstr "სიდირების შეჩერება შეფარდ�
 msgid "Seed regardless of activity"
 msgstr "სიდირება აქტიურობის მიუხედავად"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr ""
+msgid "Stop seeding if idle for:"
+msgstr "სიდირების შეჩერება უმოქმედობის:"
 
 msgid "Queued for verification"
 msgstr "რიგშია შემოწმებისთვის"
@@ -1039,11 +1039,11 @@ msgstr "სიჩქარე"
 msgid "Honor global _limits"
 msgstr "გლობალური _შეზღუდვების პატივისცემა"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "_ჩამოტვირთვის სიჩქარის შეზღუდვა:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "_ატვირთვის სიჩქარის შეზღუდვა:"
 
 msgid "Torrent _priority:"
 msgstr "ტორენტის _პრიორიტეტი:"
@@ -1056,6 +1056,12 @@ msgstr "შე_ფარდება"
 
 msgid "_Idle:"
 msgstr "_უმოქმედო:"
+
+#, fuzzy
+#| msgid "minute"
+#| msgid_plural "minutes"
+msgid "minutes"
+msgstr "წუთი"
 
 msgid "Peer Connections"
 msgstr "პირის კავშირები"
@@ -1180,12 +1186,12 @@ msgid "Speed Limits"
 msgstr "სიჩქარის ლიმიტები"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "_ატვირთვა:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "_ჩამოტვირთვა:"
 
 msgid "Alternative Speed Limits"
 msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
@@ -1194,12 +1200,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr ""
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "ა_ტვირთვა:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "ჩა_მოტვირთვა:"
 
 msgid "_Scheduled times:"
 msgstr "_რეგულარულ დროს:"
@@ -1234,7 +1240,7 @@ msgstr "ჩამოტვირთვის რიგი"
 msgid "Ma_ximum active downloads:"
 msgstr "მა_ქსიმალური აქტიური ჩამოტვირთვები:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
+msgid "Torrent is stalled when i_nactive for:"
 msgstr ""
 
 msgid "Incomplete"
@@ -1262,8 +1268,8 @@ msgstr "ლიმიტები"
 msgid "Stop seeding at _ratio:"
 msgstr "სიდირების შეჩერება შეფარდება_ზე:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr ""
+msgid "Stop seedi_ng if idle for:"
+msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1503,7 +1509,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1580,6 +1585,7 @@ msgstr[0] "{hours:L} საათი"
 msgstr[1] "{hours:L} საათი"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} წუთი"
@@ -2079,9 +2085,6 @@ msgstr ""
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "სიდირების შეჩერება უმოქმედობის:"
-
 msgid "Torrent Properties"
 msgstr "ტორენტის თვისებები"
 
@@ -2090,12 +2093,6 @@ msgstr "ხელმისაწვდომობა:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "_ატვირთვის სიჩქარის შეზღუდვა:"
-
-msgid "Limit _download speed:"
-msgstr "_ჩამოტვირთვის სიჩქარის შეზღუდვა:"
 
 msgid "Check Selected"
 msgstr "არჩეულის მონიშვნა"
@@ -2249,30 +2246,11 @@ msgstr "<i>შავი სია შეიცავს {count:L} წესს</
 msgid "Last updated: {date}"
 msgstr "შავი სია შეიცავს {count:L} წესს"
 
-msgid "_Upload:"
-msgstr "_ატვირთვა:"
-
-msgid "_Download:"
-msgstr "_ჩამოტვირთვა:"
-
-msgid "U_pload:"
-msgstr "ა_ტვირთვა:"
-
-msgid "Do_wnload:"
-msgstr "ჩა_მოტვირთვა:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "ჩამოტვირთვა უმოქ_მედოა თუ მონაცემთა გაზიარება შეჩერდა:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"
 
 msgid "Encryption"
 msgstr "დაშიფვრა"
@@ -2396,6 +2374,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "ჩამოტვირთვა უმოქ_მედოა თუ მონაცემთა გაზიარება შეჩერდა:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "ავტორი {creator} - {date}"

@@ -343,7 +343,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="queueStalledMinutesLabel">
             <property name="text">
-             <string extracomment="Please keep this phrase as short as possible, it's currently the longest and influences dialog width">Download is i_nactive if data sharing stopped:</string>
+             <string>Torrent is stalled when i_nactive for:</string>
             </property>
             <property name="buddy">
              <cstring>queueStalledMinutesSpin</cstring>

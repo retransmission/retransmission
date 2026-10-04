@@ -1209,10 +1209,10 @@ msgstr "Velocidat"
 msgid "Honor global _limits"
 msgstr ""
 
-msgid "Limit _download speed ({speed_units}):"
+msgid "Limit _download speed:"
 msgstr ""
 
-msgid "Limit _upload speed ({speed_units}):"
+msgid "Limit _upload speed:"
 msgstr ""
 
 msgid "Torrent _priority:"
@@ -1335,11 +1335,11 @@ msgid "Speed Limits"
 msgstr ""
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
+msgid "_Upload:"
 msgstr ""
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
+msgid "_Download:"
 msgstr ""
 
 msgid "Alternative Speed Limits"
@@ -1349,11 +1349,11 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr ""
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
+msgid "U_pload:"
 msgstr ""
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
+msgid "Do_wnload:"
 msgstr ""
 
 msgid "_Scheduled times:"

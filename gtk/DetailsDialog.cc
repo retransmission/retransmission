@@ -407,15 +407,14 @@ void DetailsDialog::Impl::refreshOptions(std::vector<tr_torrent*> const& torrent
     }
 }
 
-void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*builder*/)
+void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& builder)
 {
-    auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
+    auto const speed_units_kbyps_str = std::string{ Speed::units().display_name(Speed::Units::KByps) };
 
     honor_limits_check_tag_ = honor_limits_check_->signal_toggled().connect(
         [this]() { torrent_set_field(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
 
-    down_limited_check_->set_label(
-        fmt::format(fmt::runtime(down_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
+    gtr_get_widget<Gtk::Label>(builder, "download_limit_units_label")->set_label(speed_units_kbyps_str);
     down_limited_check_tag_ = down_limited_check_->signal_toggled().connect(
         [this]() { torrent_set_field(TR_KEY_download_limited, down_limited_check_->get_active()); });
 
@@ -423,8 +422,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
     down_limit_spin_tag_ = down_limit_spin_->signal_value_changed().connect(
         [this]() { torrent_set_field(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
 
-    up_limited_check_->set_label(
-        fmt::format(fmt::runtime(up_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
+    gtr_get_widget<Gtk::Label>(builder, "upload_limit_units_label")->set_label(speed_units_kbyps_str);
     up_limited_check_tag_ = up_limited_check_->signal_toggled().connect(
         [this]() { torrent_set_field(TR_KEY_upload_limited, up_limited_check_->get_active()); });
 
@@ -457,7 +455,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         {
             { _("Use global settings"), TR_IDLELIMIT_GLOBAL },
             { _("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED },
-            { _("Stop seeding if idle for N minutes:"), TR_IDLELIMIT_SINGLE },
+            { _("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE },
         });
     idle_combo_tag_ = idle_combo_->signal_changed().connect([this]() {
         torrent_set_field(TR_KEY_seed_idle_mode, gtr_combo_box_get_active_enum(*idle_combo_));

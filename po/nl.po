@@ -160,8 +160,8 @@ msgstr "Stoppen met seeden bij een verhouding van:"
 msgid "Seed regardless of activity"
 msgstr "Seeden ongeacht activiteit"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Stoppen met seeden indien langer dan N minuten inactief:"
+msgid "Stop seeding if idle for:"
+msgstr "Stop met seeden bij een inactiviteit van: "
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1168,11 +1168,11 @@ msgstr "Snelheid"
 msgid "Honor global _limits"
 msgstr "Algemene _limieten aanhouden"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Beperk _download snelheid ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "_Downloadsnelheid beperken:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Beperk _upload snelheid ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "_Uploadsnelheid beperken:"
 
 msgid "Torrent _priority:"
 msgstr "_Prioriteit van de torrent:"
@@ -1185,6 +1185,9 @@ msgstr "Ve_rhouding:"
 
 msgid "_Idle:"
 msgstr "_Inactief:"
+
+msgid "minutes"
+msgstr "minuten"
 
 msgid "Peer Connections"
 msgstr "Peerverbindingen"
@@ -1322,12 +1325,12 @@ msgid "Speed Limits"
 msgstr "Snelheidslimieten"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Upload ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Upload:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Download ({speed_units}):"
+msgid "_Download:"
+msgstr "_Download:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1338,12 +1341,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Normale snelheidslimieten handmatig of op geplande tijden negeren"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "U_pload ({speed_units}):"
+msgid "U_pload:"
+msgstr "U_pload:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Do_wnload ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Do_wnload:"
 
 msgid "_Scheduled times:"
 msgstr "Geplande tijd_stippen:"
@@ -1378,8 +1381,10 @@ msgstr "Downloadwachtrij"
 msgid "Ma_ximum active downloads:"
 msgstr "Maximum aantal actieve _downloads:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Downloads die gegevens delen in de laatste N minuten zijn _actief:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Transfer is passief bij geen activiteit van:"
 
 msgid "Incomplete"
 msgstr "Onvoltooid"
@@ -1410,8 +1415,8 @@ msgstr "Limieten"
 msgid "Stop seeding at _ratio:"
 msgstr "Stoppen met seeden bij een _verhouding van:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Stoppen met seeden indien langer dan _N minuten inactief:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Stop met seede_n bij inactiviteit van:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Roep scrip_t op wanneer seeding klaar is:"
@@ -1659,7 +1664,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} uur geleden"
 msgstr[1] "{hours_ago:L} uren geleden"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuut geleden"
@@ -1737,6 +1741,7 @@ msgstr[1] "{hours:L} uren"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuut"
@@ -2281,15 +2286,6 @@ msgstr "Open na maken"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Trackers worden elk in hun eigen tier geplaatst."
 
-msgid "Limit _download speed:"
-msgstr "_Downloadsnelheid beperken:"
-
-msgid "Limit _upload speed:"
-msgstr "_Uploadsnelheid beperken:"
-
-msgid "minutes"
-msgstr "minuten"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2299,9 +2295,6 @@ msgstr "Status van geselecteerde bestanden"
 
 msgid "Remaining time"
 msgstr "Resterende tijd"
-
-msgid "Stop seeding if idle for:"
-msgstr "Stop met seeden bij een inactiviteit van: "
 
 msgid "Any"
 msgstr "Een of meer"
@@ -2641,11 +2634,6 @@ msgstr "Download met maximum:"
 msgid "Seeding with maximum of:"
 msgstr "Seeden met maximum:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Transfer is passief bij geen activiteit van:"
-
 msgid "Play sound:"
 msgstr "Speel geluid:"
 
@@ -2689,12 +2677,6 @@ msgstr "Groepsnaam:"
 
 msgid "Color"
 msgstr "Kleur"
-
-msgid "_Download:"
-msgstr "_Download:"
-
-msgid "_Upload:"
-msgstr "_Upload:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3610,24 +3592,11 @@ msgstr "Niet ondersteund door sessies op afstand"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Zwarte lijst bevat {count:L} regel</i>"
 
-msgid "U_pload:"
-msgstr "U_pload:"
-
-msgid "Do_wnload:"
-msgstr "Do_wnload:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Leest klembordinhoud van de gebruiker op torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Detecteer nieuwe torrents vanuit het klembord"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Download is i_nactief als gegevensdeling zou stoppen:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Stop met seede_n bij inactiviteit van:"
 
 msgid "Encryption"
 msgstr "Versleuteling"
@@ -3735,6 +3704,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Stoppen met seeden indien langer dan N minuten inactief:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Downloads die gegevens delen in de laatste N minuten zijn _actief:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Stoppen met seeden indien langer dan _N minuten inactief:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Download is i_nactief als gegevensdeling zou stoppen:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Gemaakt door {creator} op {date}"

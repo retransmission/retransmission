@@ -140,8 +140,8 @@ msgstr "nebeskleisti esant santykiui:"
 msgid "Seed regardless of activity"
 msgstr "skleisti nepaisant aktyvumo"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "nebeskleisti jei neaktyvus N minučių:"
+msgid "Stop seeding if idle for:"
+msgstr "Nebeskleisti, jei pasyvus:"
 
 msgid "Queued for verification"
 msgstr "Eilėje patikrinimui"
@@ -1083,11 +1083,11 @@ msgstr "Greitis"
 msgid "Honor global _limits"
 msgstr "Paisyti _visuotinių apribojimų"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Riboti _atsiuntimo greitį ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Riboti _atsiuntimo greitį:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Riboti _išsiuntimo greitį ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Riboti i_šsiuntimo greitį:"
 
 msgid "Torrent _priority:"
 msgstr "Torento p_rioritetas:"
@@ -1100,6 +1100,9 @@ msgstr "_Santykis:"
 
 msgid "_Idle:"
 msgstr "_Pasyvumas:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Siuntėjų ryšiai"
@@ -1224,12 +1227,12 @@ msgid "Speed Limits"
 msgstr "Greičio ribojimai"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "I_šsiuntimas ({speed_units}):"
+msgid "_Upload:"
+msgstr "Išsi_untimo:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Atsiuntimas ({speed_units}):"
+msgid "_Download:"
+msgstr "_Atsiuntimo:"
 
 msgid "Alternative Speed Limits"
 msgstr "Alternatyvieji greičio ribojimai"
@@ -1238,12 +1241,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Taikomi vietoje įprastų greičio ribojimų rankiniu būdu arba numatytuoju laiku"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Iš_siuntimas ({speed_units}):"
+msgid "U_pload:"
+msgstr "Išsiunti_mo:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "A_tsiuntimas ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "A_tsiuntimo:"
 
 msgid "_Scheduled times:"
 msgstr "_Numatytasis laikas:"
@@ -1278,8 +1281,8 @@ msgstr "Atsiuntimų eilė"
 msgid "Ma_ximum active downloads:"
 msgstr "Dau_giausia aktyvių atsiuntimų:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _aktyviais:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Nebaigti"
@@ -1308,8 +1311,8 @@ msgstr "Apribojimai"
 msgid "Stop seeding at _ratio:"
 msgstr "Nebeskleisti esant _santykiui:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Nebeskleisti jei neaktyvus N _minučių:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Nebeskleisti jei _pasyvus:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Baigus skleisti torentą, vykdyti s_cenarijų:"
@@ -1562,7 +1565,6 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1653,6 +1655,7 @@ msgstr[2] "{hours:L} valandų"
 msgstr[3] "{hours:L} valandų"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minutė"
@@ -2182,9 +2185,6 @@ msgstr "Sekiklių skelbimo URL adresai"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "Nebeskleisti, jei pasyvus:"
-
 msgid "Torrent Properties"
 msgstr "Torento(-ų) savybės"
 
@@ -2193,12 +2193,6 @@ msgstr "Pasiekiamumas:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Riboti i_šsiuntimo greitį:"
-
-msgid "Limit _download speed:"
-msgstr "Riboti _atsiuntimo greitį:"
 
 msgid "Check Selected"
 msgstr "Pažymėti pasirinktus"
@@ -2354,30 +2348,11 @@ msgstr "<i>Blokavimo sąraše yra {count:L} taisyklė</i>"
 msgid "Last updated: {date}"
 msgstr "Blokavimo sąraše yra {count:L} taisyklė"
 
-msgid "_Upload:"
-msgstr "Išsi_untimo:"
-
-msgid "_Download:"
-msgstr "_Atsiuntimo:"
-
-msgid "U_pload:"
-msgstr "Išsiunti_mo:"
-
-msgid "Do_wnload:"
-msgstr "A_tsiuntimo:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Atsiuntimas yra _neaktyvus, jei dalinimasis duomenimis sustabdytas:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Nebeskleisti jei _pasyvus:"
 
 msgid "Encryption"
 msgstr "Šifravimas"
@@ -2518,6 +2493,18 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "nebeskleisti jei neaktyvus N minučių:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _aktyviais:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Nebeskleisti jei neaktyvus N _minučių:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Atsiuntimas yra _neaktyvus, jei dalinimasis duomenimis sustabdytas:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "sukurtas {date} naudojant „{creator}“"

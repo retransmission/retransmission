@@ -133,8 +133,8 @@ msgstr "Прекратить раздачу при рейтинге:"
 msgid "Seed regardless of activity"
 msgstr "Раздавать независимо от активности"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Прекратить раздачу при простое N минут:"
+msgid "Stop seeding if idle for:"
+msgstr "Прекратить раздачу при простое:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1164,11 +1164,11 @@ msgstr "Скорость"
 msgid "Honor global _limits"
 msgstr "Учитывать общие _ограничения"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Ограничение _скорости загрузки ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Ограничить скорость _загрузки:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Ограничение _скорости раздачи ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Ограничить скорость _отдачи:"
 
 msgid "Torrent _priority:"
 msgstr "Приоритет _торрента:"
@@ -1181,6 +1181,9 @@ msgstr "_Рейтинг:"
 
 msgid "_Idle:"
 msgstr "_Ожидание:"
+
+msgid "minutes"
+msgstr "мин."
 
 msgid "Peer Connections"
 msgstr "Соединения с участниками"
@@ -1318,12 +1321,12 @@ msgid "Speed Limits"
 msgstr "Ограничения скорости"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Отдача ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Отдача:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Загрузка ({speed_units}):"
+msgid "_Download:"
+msgstr "_Загрузка:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1334,12 +1337,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Замещение обычных ограничений скорости по расписанию или вручную"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "О_тдача ({speed_units}):"
+msgid "U_pload:"
+msgstr "Отдача:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "За_грузка ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Загрузка:"
 
 msgid "_Scheduled times:"
 msgstr "_По расписанию:"
@@ -1374,8 +1377,10 @@ msgstr "Очередь загрузки"
 msgid "Ma_ximum active downloads:"
 msgstr "Ма_ксимум активных загрузок:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Загружать данные о раздаче за последние N минут _активности:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "В конец при неактивности в течение"
 
 msgid "Incomplete"
 msgstr "Не завершено"
@@ -1406,8 +1411,8 @@ msgstr "Ограничения"
 msgid "Stop seeding at _ratio:"
 msgstr "Прекратить раздачу при _рейтинге:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Прекратить раздачу при простое _N минут:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Прекратить раздачу при _простое:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Выполнять сц_енарий по окончании раздачи:"
@@ -1667,7 +1672,6 @@ msgstr[1] "{hours_ago:L} часа назад"
 msgstr[2] "{hours_ago:L} часов назад"
 msgstr[3] "{hours_ago:L} часов назад"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} минуту назад"
@@ -1759,6 +1763,7 @@ msgstr[3] "{hours:L} часов"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} мин."
@@ -2321,15 +2326,6 @@ msgstr "Открыть после создания"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Трекеры будут объединены в списке общего уровня"
 
-msgid "Limit _download speed:"
-msgstr "Ограничить скорость _загрузки:"
-
-msgid "Limit _upload speed:"
-msgstr "Ограничить скорость _отдачи:"
-
-msgid "minutes"
-msgstr "мин."
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "КБ/с"
@@ -2339,9 +2335,6 @@ msgstr "Статус выбранных файлов"
 
 msgid "Remaining time"
 msgstr "Оставшееся время"
-
-msgid "Stop seeding if idle for:"
-msgstr "Прекратить раздачу при простое:"
 
 msgid "Any"
 msgstr "Любое"
@@ -2677,11 +2670,6 @@ msgstr "Скачивать одновременно не более"
 msgid "Seeding with maximum of:"
 msgstr "Раздавать одновременно не более"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "В конец при неактивности в течение"
-
 msgid "Play sound:"
 msgstr "Звуки:"
 
@@ -2727,12 +2715,6 @@ msgstr "Имя группы:"
 
 msgid "Color"
 msgstr "Цвет"
-
-msgid "_Download:"
-msgstr "_Загрузка:"
-
-msgid "_Upload:"
-msgstr "_Отдача:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3661,24 +3643,11 @@ msgstr "Не поддерживается удалёнными сеансами"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>«Чёрный список» содержит {count:L} правило</i>"
 
-msgid "U_pload:"
-msgstr "Отдача:"
-
-msgid "Do_wnload:"
-msgstr "Загрузка:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Считывает содержимое пользовательского буфера обмена на наличие торрентов"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Искать новые торренты в буфере обмена"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Загрузка неак_тивна, если передача прекращена:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Прекратить раздачу при _простое:"
 
 msgid "Encryption"
 msgstr "Шифрование"
@@ -3804,6 +3773,18 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Прекратить раздачу при простое N минут:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Загружать данные о раздаче за последние N минут _активности:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Прекратить раздачу при простое _N минут:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Загрузка неак_тивна, если передача прекращена:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Создано {creator} {date}"

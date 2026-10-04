@@ -140,12 +140,6 @@ public:
         return gtr_get_widget_derived<T>(builder_, name, std::forward<ArgTs>(args)...);
     }
 
-    template<typename T, typename... ArgTs>
-    static void localize_label(T& widget, ArgTs&&... args)
-    {
-        widget.set_label(fmt::format(fmt::runtime(widget.get_label().raw()), std::forward<ArgTs>(args)...));
-    }
-
 private:
     template<typename T>
     bool spun_cb_idle(Gtk::SpinButton const& spin, tr_quark const key)
@@ -834,23 +828,21 @@ public:
 SpeedPage::SpeedPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
     : PageBase(cast_item, builder, core)
 {
-    auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
+    auto const speed_units_kbyps_str = std::string{ Speed::units().display_name(Speed::Units::KByps) };
 
-    localize_label(
-        *init_check_button("upload_limit_check", TR_KEY_speed_limit_up_enabled),
-        fmt::arg("speed_units", speed_units_kbyps_str));
+    init_check_button("upload_limit_check", TR_KEY_speed_limit_up_enabled);
     init_spin_button<uint32_t>("upload_limit_spin", TR_KEY_speed_limit_up, 0, std::numeric_limits<uint32_t>::max(), 5);
+    get_widget<Gtk::Label>("upload_limit_units_label")->set_label(speed_units_kbyps_str);
 
-    localize_label(
-        *init_check_button("download_limit_check", TR_KEY_speed_limit_down_enabled),
-        fmt::arg("speed_units", speed_units_kbyps_str));
+    init_check_button("download_limit_check", TR_KEY_speed_limit_down_enabled);
     init_spin_button<uint32_t>("download_limit_spin", TR_KEY_speed_limit_down, 0, std::numeric_limits<uint32_t>::max(), 5);
+    get_widget<Gtk::Label>("download_limit_units_label")->set_label(speed_units_kbyps_str);
 
-    localize_label(*get_widget<Gtk::Label>("alt_upload_limit_label"), fmt::arg("speed_units", speed_units_kbyps_str));
     init_spin_button<uint32_t>("alt_upload_limit_spin", TR_KEY_alt_speed_up, 0, std::numeric_limits<uint32_t>::max(), 5);
+    get_widget<Gtk::Label>("alt_upload_limit_units_label")->set_label(speed_units_kbyps_str);
 
-    localize_label(*get_widget<Gtk::Label>("alt_download_limit_label"), fmt::arg("speed_units", speed_units_kbyps_str));
     init_spin_button<uint32_t>("alt_download_limit_spin", TR_KEY_alt_speed_down, 0, std::numeric_limits<uint32_t>::max(), 5);
+    get_widget<Gtk::Label>("alt_download_limit_units_label")->set_label(speed_units_kbyps_str);
 
     init_time_combo("alt_speed_start_time_combo", TR_KEY_alt_speed_time_begin);
     init_time_combo("alt_speed_end_time_combo", TR_KEY_alt_speed_time_end);

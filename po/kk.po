@@ -128,8 +128,8 @@ msgstr "Рейтинг мәні келесіге жеткенде, тарату�
 msgid "Seed regardless of activity"
 msgstr "Белсенділікті елемей, тарату"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "N мин белсенді емес болса, таратуды тоқтату:"
+msgid "Stop seeding if idle for:"
+msgstr "Белсенді емес болса, таратуды тоқтату:"
 
 msgid "Queued for verification"
 msgstr "Тексеруге кезекте тұр"
@@ -1045,11 +1045,11 @@ msgstr "Жылдамдығы"
 msgid "Honor global _limits"
 msgstr "Глобалды шектеу_лерді елемеу"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Қаб_ылдау жылдамдығын шектеу:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Тар_ату жылдамдығын шектеу:"
 
 msgid "Torrent _priority:"
 msgstr "Торрент п_риоритеті:"
@@ -1062,6 +1062,9 @@ msgstr "_Рейтингі:"
 
 msgid "_Idle:"
 msgstr "Кү_ту:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Тораптармен байланыстар"
@@ -1186,12 +1189,16 @@ msgid "Speed Limits"
 msgstr "Жылдамдықты шектеу"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+#, fuzzy
+#| msgid "Uploaded:"
+msgid "_Upload:"
+msgstr "Таратылған:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+#, fuzzy
+#| msgid "Download"
+msgid "_Download:"
+msgstr "Жүктеп алу"
 
 msgid "Alternative Speed Limits"
 msgstr "Жылдамдықты альтернативті шектеу"
@@ -1200,12 +1207,16 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Қалыпты жылдамдық шектеулерін қолмен не жоспарланған уақытта сөндіреді"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+#, fuzzy
+#| msgid "Uploaded:"
+msgid "U_pload:"
+msgstr "Таратылған:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+#, fuzzy
+#| msgid "Download"
+msgid "Do_wnload:"
+msgstr "Жүктеп алу"
 
 msgid "_Scheduled times:"
 msgstr "_Жоспарланған уақыты:"
@@ -1240,7 +1251,7 @@ msgstr "Жүктеп алу кезегі"
 msgid "Ma_ximum active downloads:"
 msgstr ""
 
-msgid "Downloads sharing data in the last _N minutes are active:"
+msgid "Torrent is stalled when i_nactive for:"
 msgstr ""
 
 msgid "Incomplete"
@@ -1268,8 +1279,8 @@ msgstr "Шектеулер"
 msgid "Stop seeding at _ratio:"
 msgstr "Рейтинг _мәні келесідей болғанда, таратуды тоқтату:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "N _мин белсенді емес болса, таратуды тоқтату:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Белсенді е_мес болса, таратуды тоқтату:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1512,7 +1523,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1589,6 +1599,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] ""
@@ -2094,9 +2105,6 @@ msgstr "Трекердің анонс URL-ы"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "Белсенді емес болса, таратуды тоқтату:"
-
 msgid "Torrent Properties"
 msgstr "Торрент қасиеттері"
 
@@ -2105,12 +2113,6 @@ msgstr "Қол жетерлігі:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Тар_ату жылдамдығын шектеу:"
-
-msgid "Limit _download speed:"
-msgstr "Қаб_ылдау жылдамдығын шектеу:"
 
 msgid "Check Selected"
 msgstr ""
@@ -2263,38 +2265,11 @@ msgstr ""
 msgid "Last updated: {date}"
 msgstr ""
 
-#, fuzzy
-#| msgid "Uploaded:"
-msgid "_Upload:"
-msgstr "Таратылған:"
-
-#, fuzzy
-#| msgid "Download"
-msgid "_Download:"
-msgstr "Жүктеп алу"
-
-#, fuzzy
-#| msgid "Uploaded:"
-msgid "U_pload:"
-msgstr "Таратылған:"
-
-#, fuzzy
-#| msgid "Download"
-msgid "Do_wnload:"
-msgstr "Жүктеп алу"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr ""
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Белсенді е_мес болса, таратуды тоқтату:"
 
 #, fuzzy
 #| msgid "_Encryption mode:"
@@ -2431,6 +2406,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "N мин белсенді емес болса, таратуды тоқтату:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "N _мин белсенді емес болса, таратуды тоқтату:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "{creator} жасаған, {date}"

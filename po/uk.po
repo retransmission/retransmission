@@ -158,8 +158,8 @@ msgstr "Припинити поширення при співвідношенн�
 msgid "Seed regardless of activity"
 msgstr "Поширювати незалежно від активності"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Припинити поширення, якщо не буде активності (у хвилинах):"
+msgid "Stop seeding if idle for:"
+msgstr "Припинити поширення, якщо не буде активності:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1190,11 +1190,11 @@ msgstr "Швидкість"
 msgid "Honor global _limits"
 msgstr "Зважати на за_гальні обмеження"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Обмежити швидкість _завантаження ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Обмежити _швидкість завантаження:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Обмежити швидкість _вивантаження ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Обмежити шв_идкість відвантаження:"
 
 msgid "Torrent _priority:"
 msgstr "Прі_оритетність торенту:"
@@ -1207,6 +1207,9 @@ msgstr "С_піввідношення:"
 
 msgid "_Idle:"
 msgstr "_Неактивність:"
+
+msgid "minutes"
+msgstr "хвилини"
 
 msgid "Peer Connections"
 msgstr "Під’єднання вузлів"
@@ -1344,12 +1347,12 @@ msgid "Speed Limits"
 msgstr "Обмеження швидкості"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Вивантаження ({speed_units}):"
+msgid "_Upload:"
+msgstr "Ві_двантаження:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Завантаження ({speed_units}):"
+msgid "_Download:"
+msgstr "З_авантаження:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1360,12 +1363,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Не дотримуватися обмежень швидкості при встановленні обмежень вручну або за розкладом"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "В_ивантаження ({speed_units}):"
+msgid "U_pload:"
+msgstr "Ві_двантаження:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "З_авантаження ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "З_авантаження:"
 
 msgid "_Scheduled times:"
 msgstr "З_гідно розкладу:"
@@ -1400,8 +1403,10 @@ msgstr "Черга завантажень"
 msgid "Ma_ximum active downloads:"
 msgstr "Ма_ксимальна кількість активних завантажень:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Завантаження з обміном даними за останні _N хвилин активні:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "В кінець у разі неактивності протягом"
 
 msgid "Incomplete"
 msgstr "Не завершено"
@@ -1432,8 +1437,8 @@ msgstr "Обмеження"
 msgid "Stop seeding at _ratio:"
 msgstr "Припинити поширення при співві_дношенні:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Припинити поширення, якщо не буде активності (у _хвилинах):"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Припинити поширення, якщо не буде активності:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Викликати scrip_t після завершення поширення:"
@@ -1693,7 +1698,6 @@ msgstr[1] "{hours_ago:L} години тому"
 msgstr[2] "{hours_ago:L} годин тому"
 msgstr[3] "{hours_ago:L} години тому"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} хвилину тому"
@@ -1785,6 +1789,7 @@ msgstr[3] "{hours:L} години"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} хвилина"
@@ -2345,15 +2350,6 @@ msgstr "Відкрити коли створеться"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Кожний відстежувач буде розміщено на своєму ярусі"
 
-msgid "Limit _download speed:"
-msgstr "Обмежити _швидкість завантаження:"
-
-msgid "Limit _upload speed:"
-msgstr "Обмежити шв_идкість відвантаження:"
-
-msgid "minutes"
-msgstr "хвилини"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "КБ/с"
@@ -2363,9 +2359,6 @@ msgstr "Стан вибраних файлів"
 
 msgid "Remaining time"
 msgstr "Залишилось часу"
-
-msgid "Stop seeding if idle for:"
-msgstr "Припинити поширення, якщо не буде активності:"
 
 msgid "Any"
 msgstr "Будь-що"
@@ -2701,11 +2694,6 @@ msgstr "Завантажувати одночасно не більше"
 msgid "Seeding with maximum of:"
 msgstr "Роздавати одночасно не більше"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "В кінець у разі неактивності протягом"
-
 msgid "Play sound:"
 msgstr "Програвати звук:"
 
@@ -2751,12 +2739,6 @@ msgstr "Назва групи:"
 
 msgid "Color"
 msgstr "Колір"
-
-msgid "_Download:"
-msgstr "З_авантаження:"
-
-msgid "_Upload:"
-msgstr "Ві_двантаження:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3685,24 +3667,11 @@ msgstr "Не підтримується віддаленою сесією"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>У списку блокування міститься {count:L} правило</i>"
 
-msgid "U_pload:"
-msgstr "Ві_двантаження:"
-
-msgid "Do_wnload:"
-msgstr "З_авантаження:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Читає вміст буфера обміну користувача для торрентів"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Виявити нові торренти з буфера обміну"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Завантаження неможливо, якщо обмін даними зупинено:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Припинити поширення, якщо не буде активності:"
 
 msgid "Encryption"
 msgstr "Шифрування"
@@ -3828,6 +3797,18 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Припинити поширення, якщо не буде активності (у хвилинах):"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Завантаження з обміном даними за останні _N хвилин активні:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Припинити поширення, якщо не буде активності (у _хвилинах):"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Завантаження неможливо, якщо обмін даними зупинено:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Створено автором {creator} у {date}"

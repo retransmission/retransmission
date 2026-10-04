@@ -138,8 +138,8 @@ msgstr "Berhenti membibit pada rasio:"
 msgid "Seed regardless of activity"
 msgstr "Membibit tak peduli aktivitas"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Berhenti membibit bila menganggur selama N menit:"
+msgid "Stop seeding if idle for:"
+msgstr "Berhenti membenih bila menganggur selama:"
 
 msgid "Queued for verification"
 msgstr "Diantrikan untuk verifikasi"
@@ -1041,11 +1041,11 @@ msgstr "Kecepatan"
 msgid "Honor global _limits"
 msgstr "Hormati batas g_lobal"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Batas _kecepatan unduh:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Batas _kecepatan unggah:"
 
 msgid "Torrent _priority:"
 msgstr "_Prioritas torrent:"
@@ -1058,6 +1058,9 @@ msgstr "_Rasio:"
 
 msgid "_Idle:"
 msgstr "Mengan_ggur:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Sambungan Rekan"
@@ -1184,12 +1187,12 @@ msgid "Speed Limits"
 msgstr "Batas Kecepatan"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "_Unggah:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "Un_duh:"
 
 msgid "Alternative Speed Limits"
 msgstr "Batas Kecepatan Alternatif"
@@ -1198,12 +1201,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Timpa batas kecepatan normal secara manual atau pada waktu terjadwal"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "U_nggah:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "Und_uh"
 
 msgid "_Scheduled times:"
 msgstr "Waktu _terjadwal:"
@@ -1238,8 +1241,8 @@ msgstr "Antrian Unduh"
 msgid "Ma_ximum active downloads:"
 msgstr "Ma_ksimum unduhan aktif:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Belum komplit"
@@ -1270,8 +1273,8 @@ msgstr "Batas"
 msgid "Stop seeding at _ratio:"
 msgstr "Berhenti membibit pada _rasio:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Berhenti membibit bila menganggur _N menit:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Berhenti membibit bila me_nganggur selama:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1505,7 +1508,6 @@ msgid "{hours_ago:L} hour ago"
 msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1575,6 +1577,7 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} jam"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} menit"
@@ -2064,9 +2067,6 @@ msgstr "Tambah URL pengumuman pelacak, satu per baris:"
 msgid "No new URLs found."
 msgstr "Tidak ditemukan URL baru."
 
-msgid "Stop seeding if idle for:"
-msgstr "Berhenti membenih bila menganggur selama:"
-
 msgid "Torrent Properties"
 msgstr "Properti Torrent"
 
@@ -2075,12 +2075,6 @@ msgstr "Ketersediaan:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Batas _kecepatan unggah:"
-
-msgid "Limit _download speed:"
-msgstr "Batas _kecepatan unduh:"
 
 msgid "Check Selected"
 msgstr "Periksa Yang Dipilih"
@@ -2232,30 +2226,11 @@ msgstr "<i>Daftar blokir memuat {count:L} aturan</i>"
 msgid "Last updated: {date}"
 msgstr "Daftar blokir memuat {count:L} aturan"
 
-msgid "_Upload:"
-msgstr "_Unggah:"
-
-msgid "_Download:"
-msgstr "Un_duh:"
-
-msgid "U_pload:"
-msgstr "U_nggah:"
-
-msgid "Do_wnload:"
-msgstr "Und_uh"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Membaca isi papan klip pengguna bagi torrent"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Deteksi torrent baru dari papan klip"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Unduh tidak _aktif jika berbagi data dihentikan:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Berhenti membibit bila me_nganggur selama:"
 
 msgid "Encryption"
 msgstr "Enkripsi"
@@ -2366,6 +2341,18 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Berhenti membibit bila menganggur selama N menit:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Berhenti membibit bila menganggur _N menit:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Unduh tidak _aktif jika berbagi data dihentikan:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Dibuat oleh {creator} pada {date}"

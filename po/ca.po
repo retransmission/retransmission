@@ -139,8 +139,8 @@ msgstr "Atura la compartició a la relació:"
 msgid "Seed regardless of activity"
 msgstr "Comparteix independentment de l'activitat"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Atura la compartició si està inactiu N minuts:"
+msgid "Stop seeding if idle for:"
+msgstr "Atura la compartició si està inactiu durant:"
 
 msgid "Queued for verification"
 msgstr "S'ha enviat a la cua per a la verificació"
@@ -1055,11 +1055,11 @@ msgstr "Velocitat"
 msgid "Honor global _limits"
 msgstr "Respecta els _límits globals"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Límit de la velocitat de baixa_da:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Límit de la velocitat de p_ujada:"
 
 msgid "Torrent _priority:"
 msgstr "_Prioritat del torrent:"
@@ -1072,6 +1072,9 @@ msgstr "_Relació:"
 
 msgid "_Idle:"
 msgstr "_Inactiu:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Connexions de clients"
@@ -1196,12 +1199,12 @@ msgid "Speed Limits"
 msgstr "Límits de velocitat"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "P_ujada:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "Baixa_da:"
 
 msgid "Alternative Speed Limits"
 msgstr "Límits de velocitat alternatius"
@@ -1210,12 +1213,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Sobreescriu els límits de velocitat normals manualment o a les hores programades"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "_Pujada:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "_Baixada:"
 
 msgid "_Scheduled times:"
 msgstr "_Hores programades:"
@@ -1250,8 +1253,8 @@ msgstr "Cua de baixades"
 msgid "Ma_ximum active downloads:"
 msgstr "Nombre mà_xim de baixades actives:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Baixades actives en els últims _N minuts que estan compartint dades:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Incomplet"
@@ -1278,8 +1281,8 @@ msgstr "Límits"
 msgid "Stop seeding at _ratio:"
 msgstr "Atura la compartició a la _relació:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Atura la compartició si està inactiu _N minuts:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Atura la compartició si està inactiu dura_nt:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1520,7 +1523,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1597,6 +1599,7 @@ msgstr[0] "{hours:L} hora"
 msgstr[1] "{hours:L} hores"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minut"
@@ -2110,9 +2113,6 @@ msgstr "URL d'anunci de rastrejadors"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "Atura la compartició si està inactiu durant:"
-
 msgid "Torrent Properties"
 msgstr "Propietats del torrent"
 
@@ -2121,12 +2121,6 @@ msgstr "Disponibilitat:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Límit de la velocitat de p_ujada:"
-
-msgid "Limit _download speed:"
-msgstr "Límit de la velocitat de baixa_da:"
 
 msgid "Check Selected"
 msgstr "Marca els seleccionats"
@@ -2280,30 +2274,11 @@ msgstr "<i>La llista de bloqueig conté {count:L} regla</i>"
 msgid "Last updated: {date}"
 msgstr "La llista de bloqueig conté {count:L} regla"
 
-msgid "_Upload:"
-msgstr "P_ujada:"
-
-msgid "_Download:"
-msgstr "Baixa_da:"
-
-msgid "U_pload:"
-msgstr "_Pujada:"
-
-msgid "Do_wnload:"
-msgstr "_Baixada:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr ""
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Atura la compartició si està inactiu dura_nt:"
 
 msgid "Encryption"
 msgstr "Xifratge"
@@ -2424,6 +2399,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Atura la compartició si està inactiu N minuts:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Baixades actives en els últims _N minuts que estan compartint dades:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Atura la compartició si està inactiu _N minuts:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Creat per {creator} el {date}"

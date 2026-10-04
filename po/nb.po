@@ -141,8 +141,8 @@ msgstr "Slutt å dele når delingsforholdet er:"
 msgid "Seed regardless of activity"
 msgstr "Del uavhengig av aktivitet"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Slutt å dele hvis inaktiv i (minutter):"
+msgid "Stop seeding if idle for:"
+msgstr "Stopp deling hvis inaktiv i:"
 
 msgid "Queued for verification"
 msgstr "Satt i kø for bekreftelse"
@@ -1054,11 +1054,11 @@ msgstr "Hastighet"
 msgid "Honor global _limits"
 msgstr "Følg globale _grenser"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Begrens _nedlastingshastighet:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Begrens _opplastningshastighet:"
 
 msgid "Torrent _priority:"
 msgstr "Torrent_prioritet:"
@@ -1071,6 +1071,9 @@ msgstr "_Delingsforhold:"
 
 msgid "_Idle:"
 msgstr "_Inaktiv:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Tilkoblinger til likemenn"
@@ -1195,12 +1198,12 @@ msgid "Speed Limits"
 msgstr "Hastighetsgrenser"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "_Last opp:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "_Last ned:"
 
 msgid "Alternative Speed Limits"
 msgstr "Alternative hastighetsgrenser"
@@ -1209,12 +1212,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Overstyr normale fartsgrenser manuelt eller i planlagte tidsrom"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "Last _opp:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "Last _ned:"
 
 msgid "_Scheduled times:"
 msgstr "Planlagte tids_rom:"
@@ -1249,8 +1252,8 @@ msgstr "Nedlastingskø"
 msgid "Ma_ximum active downloads:"
 msgstr "Ma_ksimalt antall aktive nedlastinger:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Nedlastinger som har delt data de siste _N minutter er aktive:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Uferdig"
@@ -1277,8 +1280,8 @@ msgstr "Grenser"
 msgid "Stop seeding at _ratio:"
 msgstr "Slutt å dele når _delingsforholdet er:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Slutt å dele hvis inaktiv i (_minutter):"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Stopp deli_ng hvis inaktiv i:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1518,7 +1521,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1595,6 +1597,7 @@ msgstr[0] "{hours:L} time"
 msgstr[1] "{hours:L} timer"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minutt"
@@ -2094,9 +2097,6 @@ msgstr "Stifinneres nettadresser for annonsering"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "Stopp deling hvis inaktiv i:"
-
 msgid "Torrent Properties"
 msgstr "Torrent Egenskaper"
 
@@ -2105,12 +2105,6 @@ msgstr "Tilgjengelighet:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Begrens _opplastningshastighet:"
-
-msgid "Limit _download speed:"
-msgstr "Begrens _nedlastingshastighet:"
 
 msgid "Check Selected"
 msgstr "Last ned valgte"
@@ -2264,30 +2258,11 @@ msgstr "<i>Blokklisten inneholder {count:L} regel</i>"
 msgid "Last updated: {date}"
 msgstr "Blokklisten inneholder {count:L} regel"
 
-msgid "_Upload:"
-msgstr "_Last opp:"
-
-msgid "_Download:"
-msgstr "_Last ned:"
-
-msgid "U_pload:"
-msgstr "Last _opp:"
-
-msgid "Do_wnload:"
-msgstr "Last _ned:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Nedlastingen er i_nnaktiv hvis datadeling er stoppet:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Stopp deli_ng hvis inaktiv i:"
 
 msgid "Encryption"
 msgstr "Kryptering"
@@ -2408,6 +2383,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Slutt å dele hvis inaktiv i (minutter):"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Nedlastinger som har delt data de siste _N minutter er aktive:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Slutt å dele hvis inaktiv i (_minutter):"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Nedlastingen er i_nnaktiv hvis datadeling er stoppet:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Opprettet av {creator} på {date}"

@@ -131,8 +131,8 @@ msgstr "Zaustavi dijeljenje pri omjeru:"
 msgid "Seed regardless of activity"
 msgstr "Dijeli bez obzira na aktivnost"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Zaustavi dijeljenje pri minuta neaktivnosti:"
+msgid "Stop seeding if idle for:"
+msgstr "Zaustavi dijeljenje pri neaktivnosti:"
 
 msgid "Queued for verification"
 msgstr "Čekanje na provjeru"
@@ -1059,11 +1059,11 @@ msgstr "Brzina"
 msgid "Honor global _limits"
 msgstr "Poštuj globalna _ograničenja"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Ograniči _brzinu preuzimanja:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Ograniči _brzinu slanja:"
 
 msgid "Torrent _priority:"
 msgstr "Prioritet _torrenta:"
@@ -1076,6 +1076,9 @@ msgstr "_Omjer:"
 
 msgid "_Idle:"
 msgstr "_Neaktivnost:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "Povezivanje točaka"
@@ -1200,12 +1203,12 @@ msgid "Speed Limits"
 msgstr "Ograničenja brzine"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "_Slanje:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "_Preuzimanje:"
 
 msgid "Alternative Speed Limits"
 msgstr "Alternativna ograničenja brzine"
@@ -1214,12 +1217,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Premosti normalno ograničenje brzine ručno ili u zakazano vrijeme"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "S_lanje:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "Pr_euzimanje:"
 
 msgid "_Scheduled times:"
 msgstr "_Zakazana vremena:"
@@ -1254,8 +1257,8 @@ msgstr "Red čekanja preuzimanja"
 msgid "Ma_ximum active downloads:"
 msgstr "Na_jviše aktivnih preuzimanja:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Preuzimanja dijeljenja podataka u zadnjih _N minuta je aktivno:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Nepotpuno"
@@ -1282,8 +1285,8 @@ msgstr "Ograničenja"
 msgid "Stop seeding at _ratio:"
 msgstr "Zaustavi dijeljenje pri _omjeru:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Zustavi dijeljenje kod _N minuta neaktivnosti:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Zaustavi dijelje_nje pri neaktivnosti:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1530,7 +1533,6 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1614,6 +1616,7 @@ msgstr[1] "{hours:L} sata"
 msgstr[2] "{hours:L} sati"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minute"
@@ -2125,9 +2128,6 @@ msgstr "Pratiteljevi URL-ovi najave"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "Zaustavi dijeljenje pri neaktivnosti:"
-
 msgid "Torrent Properties"
 msgstr "Svojstva torrenta"
 
@@ -2136,12 +2136,6 @@ msgstr "Dostupnost:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "Ograniči _brzinu slanja:"
-
-msgid "Limit _download speed:"
-msgstr "Ograniči _brzinu preuzimanja:"
 
 msgid "Check Selected"
 msgstr "Provjeri odabrano"
@@ -2297,30 +2291,11 @@ msgstr "Popis blokiranja sadrži {count:L} pravilo"
 msgid "Last updated: {date}"
 msgstr "Popis blokiranja sadrži {count:L} pravilo"
 
-msgid "_Upload:"
-msgstr "_Slanje:"
-
-msgid "_Download:"
-msgstr "_Preuzimanje:"
-
-msgid "U_pload:"
-msgstr "S_lanje:"
-
-msgid "Do_wnload:"
-msgstr "Pr_euzimanje:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Preuzimanje nije _aktivno ako se dijeljenje podataka zaustavi:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Zaustavi dijelje_nje pri neaktivnosti:"
 
 msgid "Encryption"
 msgstr "Šifriranje"
@@ -2451,6 +2426,18 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Zaustavi dijeljenje pri minuta neaktivnosti:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Preuzimanja dijeljenja podataka u zadnjih _N minuta je aktivno:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Zustavi dijeljenje kod _N minuta neaktivnosti:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Preuzimanje nije _aktivno ako se dijeljenje podataka zaustavi:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Napravio/la {creator} datuma {date}"

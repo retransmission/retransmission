@@ -132,8 +132,8 @@ msgstr "Hætta að deila þegar hlutfallið er:"
 msgid "Seed regardless of activity"
 msgstr "Deila óháð virkni"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Hætta að deila ef óvirkt í N mínútur:"
+msgid "Stop seeding if idle for:"
+msgstr "Hætta að deila ef óvirkt í:"
 
 msgid "Queued for verification"
 msgstr "Bíður eftir að vera endurskoðað"
@@ -1050,11 +1050,11 @@ msgstr "Hraði"
 msgid "Honor global _limits"
 msgstr "Virða _öll takmörk"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Takmarka niður_halshraða ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Takmarka niður_halshraða:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Takmarka innsendin_garhraða ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Takmarka innsendin_garhraða:"
 
 msgid "Torrent _priority:"
 msgstr "_Forgangur torrent-streymis:"
@@ -1067,6 +1067,12 @@ msgstr "_Deilihlutfall:"
 
 msgid "_Idle:"
 msgstr "_Aðgerðalaust:"
+
+#, fuzzy
+#| msgid "minute"
+#| msgid_plural "minutes"
+msgid "minutes"
+msgstr "mínúta"
 
 msgid "Peer Connections"
 msgstr "Tengingar við jafningja"
@@ -1193,12 +1199,12 @@ msgid "Speed Limits"
 msgstr "Hraðatakmörk"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Innsending ({speed_units}):"
+msgid "_Upload:"
+msgstr "Sen_t:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Niðurhal ({speed_units}):"
+msgid "_Download:"
+msgstr "_Sótt:"
 
 msgid "Alternative Speed Limits"
 msgstr "Önnur hraðatakmörk"
@@ -1207,12 +1213,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Hætta að nota venjuleg hraðatakmörk á ákveðnum tímum eða handvirkt"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Innsen_ding ({speed_units}):"
+msgid "U_pload:"
+msgstr "S_ent:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Niður_hal ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Só_tt:"
 
 msgid "_Scheduled times:"
 msgstr "Ákveðnir _tímar:"
@@ -1247,8 +1253,8 @@ msgstr "Niðurhalsbiðröð"
 msgid "Ma_ximum active downloads:"
 msgstr "_Hámarksfjöldi virkra niðurhala:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Óklárað"
@@ -1279,8 +1285,8 @@ msgstr "Takmörk"
 msgid "Stop seeding at _ratio:"
 msgstr "Hætta að deila þega_r deilihlutfallið nær:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Hætta að deila ef óvirkt í _N mínútur:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Hætta að _deila ef óvirkt í:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Kalla í skrif_tu þegar deilingu er lokið:"
@@ -1523,7 +1529,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "Fyrir {hours_ago:L} klukkustund síðan"
 msgstr[1] "Fyrir {hours_ago:L} klukkustundum síðan"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "Fyrir {minutes_ago:L} mínútu síðan"
@@ -1600,6 +1605,7 @@ msgstr[0] "{hours:L} klukkustund"
 msgstr[1] "{hours:L} klukkustundir"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} mínúta"
@@ -2113,9 +2119,6 @@ msgstr "Bæta við tilkynningaslóðum rekjara, ein á hverja línu:"
 msgid "No new URLs found."
 msgstr "Engar nýjar slóðir fundust."
 
-msgid "Stop seeding if idle for:"
-msgstr "Hætta að deila ef óvirkt í:"
-
 msgid "Torrent Properties"
 msgstr "Eiginleikar torrent-streymis"
 
@@ -2124,12 +2127,6 @@ msgstr "Aðgengileiki:"
 
 msgid "Labels:"
 msgstr "Merkingar:"
-
-msgid "Limit _upload speed:"
-msgstr "Takmarka innsendin_garhraða:"
-
-msgid "Limit _download speed:"
-msgstr "Takmarka niður_halshraða:"
 
 msgid "Check Selected"
 msgstr "Merkja valið"
@@ -2274,30 +2271,11 @@ msgstr "<i>Bannlisti inniheldur {count:L} reglu</i>"
 msgid "Last updated: {date}"
 msgstr "Bannlisti inniheldur {count:L} reglu"
 
-msgid "_Upload:"
-msgstr "Sen_t:"
-
-msgid "_Download:"
-msgstr "_Sótt:"
-
-msgid "U_pload:"
-msgstr "S_ent:"
-
-msgid "Do_wnload:"
-msgstr "Só_tt:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Les hvort klippispjald notanda inniheldur streymi"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Greinir ný streymi á klippispjaldi"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "_Niðurhal er óvirkt ef deiling gagna er stöðvuð:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Hætta að _deila ef óvirkt í:"
 
 msgid "Encryption"
 msgstr "Dulritun"
@@ -2417,6 +2395,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Hætta að deila ef óvirkt í N mínútur:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Hætta að deila ef óvirkt í _N mínútur:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "_Niðurhal er óvirkt ef deiling gagna er stöðvuð:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Búið til af {creator} þann {date}"

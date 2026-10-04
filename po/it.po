@@ -159,8 +159,8 @@ msgstr "Ferma la distribuzione al rapporto:"
 msgid "Seed regardless of activity"
 msgstr "Distribuisci senza tener conto dell'attività"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Ferma la distribuzione se inattivo per N minuti:"
+msgid "Stop seeding if idle for:"
+msgstr "Ferma il seeding se inattivo per:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1171,11 +1171,11 @@ msgstr "Velocità"
 msgid "Honor global _limits"
 msgstr "Rispettare i _limiti globali"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "_Limitare la velocità di ricezione ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Limita velocità di _download"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Li_mitare la velocità di invio ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Limita velocità di _upload"
 
 msgid "Torrent _priority:"
 msgstr "_Priorità del torrent:"
@@ -1188,6 +1188,9 @@ msgstr "_Rapporto:"
 
 msgid "_Idle:"
 msgstr "_Inattività:"
+
+msgid "minutes"
+msgstr "minuti"
 
 msgid "Peer Connections"
 msgstr "Connessioni ai nodi"
@@ -1323,12 +1326,12 @@ msgid "Speed Limits"
 msgstr "Limiti di velocità"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "_Upload:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "_Download:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1339,12 +1342,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Scavalca i normali limiti di velocità manualmente o a orari preimpostati"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "U_pload:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "Do_wnload:"
 
 msgid "_Scheduled times:"
 msgstr "Orari _pianificati:"
@@ -1379,8 +1382,10 @@ msgstr "Coda di ricezione"
 msgid "Ma_ximum active downloads:"
 msgstr "Numero _massimo di download attivi:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Scaricamenti in condivisione negli ultimi N minuti sono _attivi:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Trasferim. in stallo se inattivo per:"
 
 msgid "Incomplete"
 msgstr "Incompleto"
@@ -1409,8 +1414,8 @@ msgstr "Limiti"
 msgid "Stop seeding at _ratio:"
 msgstr "Fermare la distribuzione al _rapporto:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Fermare la distribuzione se inattivo per N _minuti:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Ferma il seedi_ng se inattivo per:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Eseguire scrip_t al termine della distribuzione:"
@@ -1665,7 +1670,6 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1750,6 +1754,7 @@ msgstr[2] "{hours:L} ore"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuto"
@@ -2298,15 +2303,6 @@ msgstr "Apri il file dopo averlo creato"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Ogni server traccia sarà posto nel proprio livello"
 
-msgid "Limit _download speed:"
-msgstr "Limita velocità di _download"
-
-msgid "Limit _upload speed:"
-msgstr "Limita velocità di _upload"
-
-msgid "minutes"
-msgstr "minuti"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2316,9 +2312,6 @@ msgstr "Stato dei file selezionati"
 
 msgid "Remaining time"
 msgstr "Tempo residuo"
-
-msgid "Stop seeding if idle for:"
-msgstr "Ferma il seeding se inattivo per:"
 
 msgid "Any"
 msgstr "Una qualsiasi"
@@ -2656,11 +2649,6 @@ msgstr "Ricezione contemporanea:"
 msgid "Seeding with maximum of:"
 msgstr "Distribuz. contemporanea:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Trasferim. in stallo se inattivo per:"
-
 msgid "Play sound:"
 msgstr "Avvisi sonori:"
 
@@ -2704,12 +2692,6 @@ msgstr "Nome gruppo:"
 
 msgid "Color"
 msgstr "Colore"
-
-msgid "_Download:"
-msgstr "_Download:"
-
-msgid "_Upload:"
-msgstr "_Upload:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3636,24 +3618,11 @@ msgstr "Non supportato dalle sessioni remote"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr ""
 
-msgid "U_pload:"
-msgstr "U_pload:"
-
-msgid "Do_wnload:"
-msgstr "Do_wnload:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Il download è i_nattivo se la condivisione è stata fermata:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Ferma il seedi_ng se inattivo per:"
 
 msgid "Encryption"
 msgstr "Crittografia"
@@ -3775,6 +3744,18 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Ferma la distribuzione se inattivo per N minuti:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Scaricamenti in condivisione negli ultimi N minuti sono _attivi:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Fermare la distribuzione se inattivo per N _minuti:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Il download è i_nattivo se la condivisione è stata fermata:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Creato da {creator} in data {date}"

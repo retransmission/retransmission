@@ -152,8 +152,8 @@ msgstr "Stop med at seede ved forhold:"
 msgid "Seed regardless of activity"
 msgstr "Seed uanset aktivitet"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Stop med at seede efter X minutters inaktivitet:"
+msgid "Stop seeding if idle for:"
+msgstr "Stop med at seede efter:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1160,11 +1160,11 @@ msgstr "Hastighed"
 msgid "Honor global _limits"
 msgstr "Overhold globale _grænser"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Begræns _downloadhastighed ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Begræns _downloadhastighed:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Begræns _uploadhastighed ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Begræns _uploadhastighed:"
 
 msgid "Torrent _priority:"
 msgstr "Torrent_prioritet:"
@@ -1177,6 +1177,9 @@ msgstr "_Forhold:"
 
 msgid "_Idle:"
 msgstr "_Inaktiv:"
+
+msgid "minutes"
+msgstr "minutter"
 
 msgid "Peer Connections"
 msgstr "Modpartsforbindelser"
@@ -1314,12 +1317,12 @@ msgid "Speed Limits"
 msgstr "Hastighedsgrænser"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Upload ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Upload:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Download ({speed_units}):"
+msgid "_Download:"
+msgstr "_Download:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1330,12 +1333,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Tilsidesæt normale hastighedsgrænser manuelt eller på planlagte tidspunkter"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "U_pload ({speed_units}):"
+msgid "U_pload:"
+msgstr "U_pload:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Do_wnload ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Do_wnload:"
 
 msgid "_Scheduled times:"
 msgstr "_Planlagte tidspunkter:"
@@ -1370,8 +1373,10 @@ msgstr "Downloadkø"
 msgid "Ma_ximum active downloads:"
 msgstr "_Højeste antal aktive downloads:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Downloads der deler data i de sidste _N minutter er aktive:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Hvis en overførsel er gået i stå i:"
 
 msgid "Incomplete"
 msgstr "Ufuldstændige"
@@ -1402,8 +1407,8 @@ msgstr "Begrænsninger"
 msgid "Stop seeding at _ratio:"
 msgstr "Stop med at seede ved _forhold:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Stop med at seede efter X minutters inaktivitet:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Stop med at _seede efter:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Kald _script når seeding er færdig:"
@@ -1651,7 +1656,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} time siden"
 msgstr[1] "{hours_ago:L} timer siden"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minut siden"
@@ -1729,6 +1733,7 @@ msgstr[1] "{hours:L} timer"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minut"
@@ -2273,15 +2278,6 @@ msgstr "Åbn efter oprettelse"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Hver tracker vil blive placeret i sin egen liste"
 
-msgid "Limit _download speed:"
-msgstr "Begræns _downloadhastighed:"
-
-msgid "Limit _upload speed:"
-msgstr "Begræns _uploadhastighed:"
-
-msgid "minutes"
-msgstr "minutter"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2291,9 +2287,6 @@ msgstr "Status for valgte filer"
 
 msgid "Remaining time"
 msgstr "Tilbageværende tid"
-
-msgid "Stop seeding if idle for:"
-msgstr "Stop med at seede efter:"
 
 msgid "Any"
 msgstr "Enhver"
@@ -2629,11 +2622,6 @@ msgstr "Når der hentes mere end:"
 msgid "Seeding with maximum of:"
 msgstr "Når der deles mere end:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Hvis en overførsel er gået i stå i:"
-
 msgid "Play sound:"
 msgstr "Afspil lyd:"
 
@@ -2677,12 +2665,6 @@ msgstr "Gruppe navn:"
 
 msgid "Color"
 msgstr ""
-
-msgid "_Download:"
-msgstr "_Download:"
-
-msgid "_Upload:"
-msgstr "_Upload:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3595,24 +3577,11 @@ msgstr "Ikke understøttet af fjernsessioner"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Blokeringslisten indeholder {count:L} regel</i>"
 
-msgid "U_pload:"
-msgstr "U_pload:"
-
-msgid "Do_wnload:"
-msgstr "Do_wnload:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Læser indholdet af brugerens udklipsholder for torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Registrer nye torrents fra udklipsholder"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Download er _inaktiv hvis deling af data stoppede:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Stop med at _seede efter:"
 
 msgid "Encryption"
 msgstr "Kryptering"
@@ -3720,6 +3689,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Stop med at seede efter X minutters inaktivitet:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Downloads der deler data i de sidste _N minutter er aktive:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Stop med at seede efter X minutters inaktivitet:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Download er _inaktiv hvis deling af data stoppede:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Oprettet af {creator} {date}"

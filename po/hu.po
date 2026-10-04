@@ -162,8 +162,8 @@ msgstr "Megosztás eddig az arányig:"
 msgid "Seed regardless of activity"
 msgstr "Megosztás aktivitástól függetlenül"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Megosztás befejezése, ha N percig inaktív:"
+msgid "Stop seeding if idle for:"
+msgstr "Megosztás befejezése, ha inaktív a torrent:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1170,11 +1170,11 @@ msgstr "Sebesség"
 msgid "Honor global _limits"
 msgstr "Á_ltalános korlátok betartása"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "_Letöltési sebesség korlátozása ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "_Letöltési sebességkorlát:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "_Feltöltési sebesség korlátozása ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "_Feltöltési sebességkorlát:"
 
 msgid "Torrent _priority:"
 msgstr "Torrent _prioritása:"
@@ -1187,6 +1187,9 @@ msgstr "_Arány:"
 
 msgid "_Idle:"
 msgstr "_Inaktív:"
+
+msgid "minutes"
+msgstr "perc"
 
 msgid "Peer Connections"
 msgstr "Partnerkapcsolatok"
@@ -1324,12 +1327,12 @@ msgid "Speed Limits"
 msgstr "Sebességkorlátok"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Feltöltés ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Feltöltés:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Letöltés ({speed_units}):"
+msgid "_Download:"
+msgstr "_Letöltés:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1340,12 +1343,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Általános sebességkorlátok figyelmen kívül hagyása kézileg, vagy az ütemezett időszakokban"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Fel_töltés ({speed_units}):"
+msgid "U_pload:"
+msgstr "F_eltöltés:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "L_etöltés ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Le_töltés:"
 
 msgid "_Scheduled times:"
 msgstr "Ü_temezett időszakok:"
@@ -1380,8 +1383,10 @@ msgstr "Letöltési sor"
 msgid "Ma_ximum active downloads:"
 msgstr "Aktív letöltések ma_ximális száma:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Átvitel beragadt ha inaktív ennyi ideig:"
 
 msgid "Incomplete"
 msgstr "Befejezetlen"
@@ -1412,8 +1417,8 @@ msgstr "Korlátok"
 msgid "Stop seeding at _ratio:"
 msgstr "Megosztás eddig az _arányig:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Megosztás befejezése, ha _N percig inaktív:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Megosztás _befejezése ha inaktív a torrent:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Parancsfájl meg_hívása, ha a megosztás kész:"
@@ -1661,7 +1666,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} órája"
 msgstr[1] "{hours_ago:L} órája"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} perce"
@@ -1739,6 +1743,7 @@ msgstr[1] "{hours:L} óra"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} perc"
@@ -2279,15 +2284,6 @@ msgstr "Létrehozás után nyissa meg"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Minden egyes tracker a saját szintjébe kerülni"
 
-msgid "Limit _download speed:"
-msgstr "_Letöltési sebességkorlát:"
-
-msgid "Limit _upload speed:"
-msgstr "_Feltöltési sebességkorlát:"
-
-msgid "minutes"
-msgstr "perc"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2297,9 +2293,6 @@ msgstr "Kiválasztott fájlok állapota"
 
 msgid "Remaining time"
 msgstr "Hátralévő idő"
-
-msgid "Stop seeding if idle for:"
-msgstr "Megosztás befejezése, ha inaktív a torrent:"
 
 msgid "Any"
 msgstr "Bármely"
@@ -2635,11 +2628,6 @@ msgstr "Letöltés maximum:"
 msgid "Seeding with maximum of:"
 msgstr "Megosztás maximum:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Átvitel beragadt ha inaktív ennyi ideig:"
-
 msgid "Play sound:"
 msgstr "Hang lejátszása:"
 
@@ -2683,12 +2671,6 @@ msgstr "Csoport név:"
 
 msgid "Color"
 msgstr "Szín"
-
-msgid "_Download:"
-msgstr "_Letöltés:"
-
-msgid "_Upload:"
-msgstr "_Feltöltés:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3594,24 +3576,11 @@ msgstr "Távoli munkamenet esetén nem támogatott"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
 
-msgid "U_pload:"
-msgstr "F_eltöltés:"
-
-msgid "Do_wnload:"
-msgstr "Le_töltés:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Kiolvassa a felhasználó vágólapjának tartalmát torrenteket keresve"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Új torrentek észlelése a vágólapon"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Letöltés i_naktív ha megosztás leállítva:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Megosztás _befejezése ha inaktív a torrent:"
 
 msgid "Encryption"
 msgstr "Titkosítás"
@@ -3719,6 +3688,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Megosztás befejezése, ha N percig inaktív:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Megosztás befejezése, ha _N percig inaktív:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Letöltés i_naktív ha megosztás leállítva:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Létrehozta: {creator}, ekkor: {date}"

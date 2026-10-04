@@ -908,7 +908,7 @@
                                             </textField>
                                             <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="639">
                                                 <rect key="frame" x="76" y="101" width="244" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Torrent is stalled when inactive for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1243">
+                                                <buttonCell key="cell" type="check" title="Torrent is stalled when i_nactive for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1243">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>

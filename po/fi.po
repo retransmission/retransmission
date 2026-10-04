@@ -147,8 +147,8 @@ msgstr "Lopeta jakaminen suhteen ollessa:"
 msgid "Seed regardless of activity"
 msgstr "Jaa välittämättä aktiivisuudesta"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
+msgid "Stop seeding if idle for:"
+msgstr "Pysäytä kylväminen jos joutilaana ajan:"
 
 msgid "Queued for verification"
 msgstr "Laitettiin jonoon tarkistusta varten"
@@ -1064,11 +1064,11 @@ msgstr "Nopeus"
 msgid "Honor global _limits"
 msgstr "Noudata yleisiä _rajoituksia"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Rajoita _latausnopeus ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Rajoita _latausnopeutta:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Rajoita l_ähetysnopeus ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Rajoita _lähetysnopeutta:"
 
 msgid "Torrent _priority:"
 msgstr "Torrentin _tärkeysjärjestys:"
@@ -1081,6 +1081,12 @@ msgstr "_Suhde:"
 
 msgid "_Idle:"
 msgstr "_Joutilaana:"
+
+#, fuzzy
+#| msgid "minute"
+#| msgid_plural "minutes"
+msgid "minutes"
+msgstr "minuutti"
 
 msgid "Peer Connections"
 msgstr "Vertaisyhteydet"
@@ -1207,12 +1213,12 @@ msgid "Speed Limits"
 msgstr "Nopeusrajoitukset"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Lähetys ({speed_units}):"
+msgid "_Upload:"
+msgstr "L_ähetys:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Lataus ({speed_units}):"
+msgid "_Download:"
+msgstr "_Lataus:"
 
 msgid "Alternative Speed Limits"
 msgstr "Vaihtoehtoiset nopeusrajoitukset"
@@ -1221,12 +1227,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Korvaa normaalit siirtorajoitukset käsin tai ajastettuina aikoina"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Lä_hetys ({speed_units}):"
+msgid "U_pload:"
+msgstr "Lä_hetys:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "La_taus ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "L_ataus:"
 
 msgid "_Scheduled times:"
 msgstr "_Määriteltyinä aikoina:"
@@ -1261,8 +1267,8 @@ msgstr "Latausjono"
 msgid "Ma_ximum active downloads:"
 msgstr "Aktiivisia latauksia enint_ään:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Viimeisen _N minuutin aikana tietoa jakaneet lataukset ovat aktiivisia:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr ""
 
 msgid "Incomplete"
 msgstr "Keskeneräinen"
@@ -1293,8 +1299,8 @@ msgstr "Rajoitukset"
 msgid "Stop seeding at _ratio:"
 msgstr "Lopeta jakaminen _suhteen ollessa:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Lopeta jakaminen jos jouten _N minuuttia:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Kutsu scrip_t, kun levitys on valmis:"
@@ -1537,7 +1543,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L}tuntia sitten"
 msgstr[1] "{hours_ago:L} tuntia sitten"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuuttia sitten"
@@ -1614,6 +1619,7 @@ msgstr[0] "{hours:L} tunti"
 msgstr[1] "{hours:L} tuntia"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuutti"
@@ -2129,9 +2135,6 @@ msgstr "Lisää jäljitin ilmoittamaan URL-osoitteet, yksi riviä kohti:"
 msgid "No new URLs found."
 msgstr "Uusia URL-osoitteita ei löytynyt."
 
-msgid "Stop seeding if idle for:"
-msgstr "Pysäytä kylväminen jos joutilaana ajan:"
-
 msgid "Torrent Properties"
 msgstr "Torrentin ominaisuudet"
 
@@ -2140,12 +2143,6 @@ msgstr "Saatavuus:"
 
 msgid "Labels:"
 msgstr "Nimi:"
-
-msgid "Limit _upload speed:"
-msgstr "Rajoita _lähetysnopeutta:"
-
-msgid "Limit _download speed:"
-msgstr "Rajoita _latausnopeutta:"
 
 msgid "Check Selected"
 msgstr "Merkkaa valitut"
@@ -2290,30 +2287,11 @@ msgstr "<i>Estolista sisältää {count:L} säännön</i>"
 msgid "Last updated: {date}"
 msgstr "Estolista sisältää {count:L} säännön"
 
-msgid "_Upload:"
-msgstr "L_ähetys:"
-
-msgid "_Download:"
-msgstr "_Lataus:"
-
-msgid "U_pload:"
-msgstr "Lä_hetys:"
-
-msgid "Do_wnload:"
-msgstr "L_ataus:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Lukee käyttäjän leikepöydän sisältöä uusien torrentien varalta"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Havaitse uudet torrentit leikepöydältä"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Lataus pysähtyy, jos tietoje_n jakaminen lopetettiin:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
 
 msgid "Encryption"
 msgstr "Salaus"
@@ -2433,6 +2411,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Viimeisen _N minuutin aikana tietoa jakaneet lataukset ovat aktiivisia:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Lopeta jakaminen jos jouten _N minuuttia:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Lataus pysähtyy, jos tietoje_n jakaminen lopetettiin:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Luonut {creator} {date}"

@@ -145,8 +145,8 @@ msgstr "إيقاف التوزيع عند نسبة:"
 msgid "Seed regardless of activity"
 msgstr "التوزيع بغض النظر عن النشاط"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "إيقاف التوزيع إذا أصبح خاملا لمدة من الدقائق قدرها:"
+msgid "Stop seeding if idle for:"
+msgstr "إيقاف الرفع عند الخمول لمدة:"
 
 msgid "Queued for verification"
 msgstr "في طابور التحقق"
@@ -1106,11 +1106,11 @@ msgstr "السرعة"
 msgid "Honor global _limits"
 msgstr "التقيّد بال_حدود العامة"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "حد سرعة التنزيل:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "حد سرعة الرفع:"
 
 msgid "Torrent _priority:"
 msgstr "أو_لوية التورنت:"
@@ -1123,6 +1123,9 @@ msgstr "ال_نسبة:"
 
 msgid "_Idle:"
 msgstr "ال_خمول:"
+
+msgid "minutes"
+msgstr ""
 
 msgid "Peer Connections"
 msgstr "اتصالات الأنداد"
@@ -1247,12 +1250,12 @@ msgid "Speed Limits"
 msgstr "حدود السرعة"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
+msgid "_Upload:"
+msgstr "الرفع:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
+msgid "_Download:"
+msgstr "التنزيل:"
 
 msgid "Alternative Speed Limits"
 msgstr "حدود السرعة البديلة"
@@ -1261,12 +1264,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "استبدل حدود السرعة الطبيعية يدويا أو في مواعيد محددة"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "الرفع:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "التنزيل:"
 
 msgid "_Scheduled times:"
 msgstr "_مواعيد محددة:"
@@ -1301,7 +1304,7 @@ msgstr "قائمة التنزيل"
 msgid "Ma_ximum active downloads:"
 msgstr "أقصى عدد للتحميلات النشطة"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
+msgid "Torrent is stalled when i_nactive for:"
 msgstr ""
 
 msgid "Incomplete"
@@ -1329,8 +1332,8 @@ msgstr "الحدود"
 msgid "Stop seeding at _ratio:"
 msgstr "إيقاف التوزيع عند ن_سبة:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "إيقاف التوزيع إذا أصبح خاملا لمدة من ال_دقائق قدرها:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "إيقاف الرفع عند الخمول لمدة:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1595,7 +1598,6 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1700,6 +1702,7 @@ msgstr[4] "{hours:L} ساعة"
 msgstr[5] "{hours:L} ساعة"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "0 دقيقة"
@@ -2251,9 +2254,6 @@ msgstr "روابط التبليغ للمتتبع"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Stop seeding if idle for:"
-msgstr "إيقاف الرفع عند الخمول لمدة:"
-
 msgid "Torrent Properties"
 msgstr "خصائص التورنت"
 
@@ -2262,12 +2262,6 @@ msgstr "المتوفر:"
 
 msgid "Labels:"
 msgstr ""
-
-msgid "Limit _upload speed:"
-msgstr "حد سرعة الرفع:"
-
-msgid "Limit _download speed:"
-msgstr "حد سرعة التنزيل:"
 
 msgid "Check Selected"
 msgstr "إختر العناصر المحددة"
@@ -2427,30 +2421,11 @@ msgstr "<i>قائمة الحظر لاتحتوي على قواعد</i>"
 msgid "Last updated: {date}"
 msgstr "قائمة الحظر لاتحتوي على قواعد"
 
-msgid "_Upload:"
-msgstr "الرفع:"
-
-msgid "_Download:"
-msgstr "التنزيل:"
-
-msgid "U_pload:"
-msgstr "الرفع:"
-
-msgid "Do_wnload:"
-msgstr "التنزيل:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "تعين التحميل كخامل إذا توقف النقل منذ:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "إيقاف الرفع عند الخمول لمدة:"
 
 msgid "Encryption"
 msgstr "التشفير"
@@ -2611,6 +2586,15 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "إيقاف التوزيع إذا أصبح خاملا لمدة من الدقائق قدرها:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "إيقاف التوزيع إذا أصبح خاملا لمدة من ال_دقائق قدرها:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "تعين التحميل كخامل إذا توقف النقل منذ:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "أنشى من طرف {creator} في {date}"

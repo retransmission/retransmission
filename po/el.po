@@ -162,8 +162,8 @@ msgstr "Παύση διαμοιρασμού στην αναλογία:"
 msgid "Seed regardless of activity"
 msgstr "Διαμοιρασμός ανεξάρτητα από την δραστηριότητα"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για N λεπτά:"
+msgid "Stop seeding if idle for:"
+msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1169,11 +1169,11 @@ msgstr "Ταχύτητα"
 msgid "Honor global _limits"
 msgstr "Τήρηση καθολικών _ορίων"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Περιορισμός ταχύτητας _κατεβάσματος ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "Περιορισμός _ταχύτητας λήψης"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Περιορισμός ταχύτητας _ανεβάσματος ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "Περιορισμός _ταχύτητας αποστολής"
 
 msgid "Torrent _priority:"
 msgstr "_Προτεραιότητα torrent"
@@ -1186,6 +1186,9 @@ msgstr "_Αναλογία:"
 
 msgid "_Idle:"
 msgstr "_Αδρανές:"
+
+msgid "minutes"
+msgstr "λεπτά"
 
 msgid "Peer Connections"
 msgstr "Συνδέσεις ομότιμων χρηστών"
@@ -1323,12 +1326,12 @@ msgid "Speed Limits"
 msgstr "Όρια ταχύτητας"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Ανέβασμα ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Αποστολή:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Κατέβασμα ({speed_units}):"
+msgid "_Download:"
+msgstr "_Λήψη:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1339,12 +1342,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Παράκαμψη συνηθισμένων ορίων ταχυτήτων χειροκίνητα ή σε προγραμματισμένες ώρες"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Α_νέβασμα ({speed_units}):"
+msgid "U_pload:"
+msgstr "Α_ποστολή:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Κα_τέβασμα ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "Λ_ήψη:"
 
 msgid "_Scheduled times:"
 msgstr "_Προγραμματισμένες ώρες:"
@@ -1379,8 +1382,10 @@ msgstr "Ουρά Λήψης"
 msgid "Ma_ximum active downloads:"
 msgstr "Μέ_γιστος αριθμός ενεργών λήψεων:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Μεταφορτώσεις που ανταλλάσσουν δεδομένα στα τελευταία N λεπτά είναι _ενεργές:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Η μεταφορά παύει όταν είναι αδρανής για:"
 
 msgid "Incomplete"
 msgstr "Μη ολοκληρωμένο"
@@ -1411,8 +1416,8 @@ msgstr "Όρια"
 msgid "Stop seeding at _ratio:"
 msgstr "Παύση διαμοιρασμού στην _αναλογία:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για _N λεπτά:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Εκτέλεση scrip_t όταν ολοκληρωθεί ο διαμοιρασμός:"
@@ -1660,7 +1665,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "πριν {hours_ago:L} ώρα"
 msgstr[1] "πριν {hours_ago:L} ώρες"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "πριν {minutes_ago:L} λεπτό"
@@ -1738,6 +1742,7 @@ msgstr[1] "{hours:L} ώρες"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} λεπτό"
@@ -2278,15 +2283,6 @@ msgstr "Άνοιγμα όταν δημιουργηθεί"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Κάθε ιχνηλάτης θα τοποθετηθεί στην κατηγορία του"
 
-msgid "Limit _download speed:"
-msgstr "Περιορισμός _ταχύτητας λήψης"
-
-msgid "Limit _upload speed:"
-msgstr "Περιορισμός _ταχύτητας αποστολής"
-
-msgid "minutes"
-msgstr "λεπτά"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2296,9 +2292,6 @@ msgstr "Κατάσταση επιλεγμένων αρχείων"
 
 msgid "Remaining time"
 msgstr "Εναπομένων χρόνος"
-
-msgid "Stop seeding if idle for:"
-msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 msgid "Any"
 msgstr "Οποιοδήποτε"
@@ -2636,11 +2629,6 @@ msgstr "Κατέβασμα με μέγιστο από:"
 msgid "Seeding with maximum of:"
 msgstr "Διαμοιρασμός με μέγιστο από:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Η μεταφορά παύει όταν είναι αδρανής για:"
-
 msgid "Play sound:"
 msgstr "Αναπαραγωγή ήχου:"
 
@@ -2684,12 +2672,6 @@ msgstr "Όνομα Ομάδας:"
 
 msgid "Color"
 msgstr "Χρώμα"
-
-msgid "_Download:"
-msgstr "_Λήψη:"
-
-msgid "_Upload:"
-msgstr "_Αποστολή:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3596,24 +3578,11 @@ msgstr "Δεν υποστηρίζεται από απομακρυσμένες σ
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
 
-msgid "U_pload:"
-msgstr "Α_ποστολή:"
-
-msgid "Do_wnload:"
-msgstr "Λ_ήψη:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Διαβάζει το περιεχόμενο του προχείρου του χρήστη για torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Εντοπίζει νέα torrents από το πρόχειρο"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Η λήψη είναι α_δρανής αν ο διαμοιρασμός των δεδομένων σταμάτησε:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 msgid "Encryption"
 msgstr "Κρυπτογράφηση"
@@ -3721,6 +3690,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για N λεπτά:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Μεταφορτώσεις που ανταλλάσσουν δεδομένα στα τελευταία N λεπτά είναι _ενεργές:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για _N λεπτά:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Η λήψη είναι α_δρανής αν ο διαμοιρασμός των δεδομένων σταμάτησε:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Δημιουργήθηκε από {creator} την {date}"

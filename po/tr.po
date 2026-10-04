@@ -134,8 +134,8 @@ msgstr "Şu oranda gönderimi durdur:"
 msgid "Seed regardless of activity"
 msgstr "Etkinlikten bağımsız gönderim"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Şu dakika boyunca boşsa gönderimi durdur:"
+msgid "Stop seeding if idle for:"
+msgstr "Eğer şu kadar boşlanırsa gönderimi durdur:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1141,11 +1141,11 @@ msgstr "Hız"
 msgid "Honor global _limits"
 msgstr "Genel _sınırlara uy"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "İ_ndirme hızını sınırla ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "_İndirme hızını sınırla:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "_Gönderme hızını sınırla ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "_Gönderim hızını sınırla:"
 
 msgid "Torrent _priority:"
 msgstr "Torrent _önceliği:"
@@ -1158,6 +1158,9 @@ msgstr "_Oran:"
 
 msgid "_Idle:"
 msgstr "_Boşta:"
+
+msgid "minutes"
+msgstr "dakika"
 
 msgid "Peer Connections"
 msgstr "Eş Bağlantıları"
@@ -1295,12 +1298,12 @@ msgid "Speed Limits"
 msgstr "Hız Sınırları"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Yükleme ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Yükleme:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_İndirme ({speed_units}):"
+msgid "_Download:"
+msgstr "_İndirme:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1311,12 +1314,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Normal hız sınırlarını elle veya belirlenmiş zamanlarda geçersiz kıl"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Y_ükleme ({speed_units}):"
+msgid "U_pload:"
+msgstr "_Yükleme:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "İ_ndirme ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "_İndirme:"
 
 msgid "_Scheduled times:"
 msgstr "_Planlanmış zaman:"
@@ -1351,8 +1354,10 @@ msgstr "İndirme Sırası"
 msgid "Ma_ximum active downloads:"
 msgstr "En _çok etkin indirme:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Paylaşılan son veriler _şu dakika içinde etkinse indir:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Şu kadar boşta kalırsa aktarımı beklet:"
 
 msgid "Incomplete"
 msgstr "Tamamlanmayan"
@@ -1383,8 +1388,8 @@ msgstr "Sınırlar"
 msgid "Stop seeding at _ratio:"
 msgstr "Şu _oranda gönderimi durdur:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "_Şu dakika boyunca boşsa gönderimi durdur:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Eğer boş beklerse _göndermeyi durdur:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Gönderim bittiğinde çağrılacak be_tik:"
@@ -1632,7 +1637,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} saat önce"
 msgstr[1] "{hours_ago:L} saat önce"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} dakika önce"
@@ -1710,6 +1714,7 @@ msgstr[1] "{hours:L} saat"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} dakika"
@@ -2252,15 +2257,6 @@ msgstr "Oluşturduktan sonra aç"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Her izleyici kendi sırasına göre konumlandırılacaktır"
 
-msgid "Limit _download speed:"
-msgstr "_İndirme hızını sınırla:"
-
-msgid "Limit _upload speed:"
-msgstr "_Gönderim hızını sınırla:"
-
-msgid "minutes"
-msgstr "dakika"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "KB/sn"
@@ -2270,9 +2266,6 @@ msgstr "Seçili dosyaların durumunu görüntüle"
 
 msgid "Remaining time"
 msgstr "Kalan süre"
-
-msgid "Stop seeding if idle for:"
-msgstr "Eğer şu kadar boşlanırsa gönderimi durdur:"
 
 msgid "Any"
 msgstr "Herhangi biri"
@@ -2608,11 +2601,6 @@ msgstr "En çok"
 msgid "Seeding with maximum of:"
 msgstr "En çok"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Şu kadar boşta kalırsa aktarımı beklet:"
-
 msgid "Play sound:"
 msgstr "Ses çal:"
 
@@ -2656,12 +2644,6 @@ msgstr "Öbek adı:"
 
 msgid "Color"
 msgstr "Renk"
-
-msgid "_Download:"
-msgstr "_İndirme:"
-
-msgid "_Upload:"
-msgstr "_Yükleme:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3566,24 +3548,11 @@ msgstr "Uzak oturumlarca desteklenmiyor"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Engel listesi {count:L} kural içeriyor</i>"
 
-msgid "U_pload:"
-msgstr "_Yükleme:"
-
-msgid "Do_wnload:"
-msgstr "_İndirme:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Torrent için kullanıcı panosu içeriğini oku"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Panodan yeni torrent algıla"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Veri paylaşımı durduğunda indirme işlemini durdur:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Eğer boş beklerse _göndermeyi durdur:"
 
 msgid "Encryption"
 msgstr "Şifreleme"
@@ -3691,6 +3660,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Şu dakika boyunca boşsa gönderimi durdur:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Paylaşılan son veriler _şu dakika içinde etkinse indir:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "_Şu dakika boyunca boşsa gönderimi durdur:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Veri paylaşımı durduğunda indirme işlemini durdur:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "{creator} tarafından {date} tarihinde yaratıldı"

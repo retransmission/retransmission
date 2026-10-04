@@ -131,8 +131,8 @@ msgstr "Parar de semear no rácio:"
 msgid "Seed regardless of activity"
 msgstr "Semear independentemente da atividade"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Parar de semear se inativo por N minutos:"
+msgid "Stop seeding if idle for:"
+msgstr "Parar de efetuar seed se inativo durante:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1145,11 +1145,11 @@ msgstr "Velocidade"
 msgid "Honor global _limits"
 msgstr "Respeitar _limites globais"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
+msgid "Limit _download speed:"
+msgstr "Velocidade limite de _descarga:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
+msgid "Limit _upload speed:"
+msgstr "Velocidade limite de _carregamento:"
 
 msgid "Torrent _priority:"
 msgstr "_Prioridade do torrent:"
@@ -1162,6 +1162,9 @@ msgstr "_Rácio:"
 
 msgid "_Idle:"
 msgstr "_Inativo:"
+
+msgid "minutes"
+msgstr "minutos"
 
 msgid "Peer Connections"
 msgstr "Ligações de Peers"
@@ -1297,12 +1300,12 @@ msgid "Speed Limits"
 msgstr "Limites de velocidade"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Enviar ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Carregamento"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Receber ({speed_units}):"
+msgid "_Download:"
+msgstr "_Transferência:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1313,12 +1316,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Ignorar limites de velocidade normal manualmente ou em horas programadas"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
+msgid "U_pload:"
+msgstr "_Carregamento:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
+msgid "Do_wnload:"
+msgstr "_Transferência"
 
 msgid "_Scheduled times:"
 msgstr "_Horas programadas:"
@@ -1353,8 +1356,10 @@ msgstr "Fila de Transferência"
 msgid "Ma_ximum active downloads:"
 msgstr "Transferências ativas _máximas:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Descarregamentos a partilharem dados nos últimos _X minutos estão ativos:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "A transferência estagnou se inactiva por:"
 
 msgid "Incomplete"
 msgstr "Incompleto"
@@ -1383,8 +1388,8 @@ msgstr "Limites"
 msgid "Stop seeding at _ratio:"
 msgstr "Parar de semear no _rácio:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Parar de semear se estiver inativo por _X minutos:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Parar de efetuar _seed se inativo durante:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Invocar o scrip_t quando terminar de semear:"
@@ -1635,7 +1640,6 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] ""
@@ -1720,6 +1724,7 @@ msgstr[2] "{hours:L} horas"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuto"
@@ -2262,15 +2267,6 @@ msgstr "Abrir depois de criado"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Cada tracker será colocado no seu próprio nível"
 
-msgid "Limit _download speed:"
-msgstr "Velocidade limite de _descarga:"
-
-msgid "Limit _upload speed:"
-msgstr "Velocidade limite de _carregamento:"
-
-msgid "minutes"
-msgstr "minutos"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr ""
@@ -2280,9 +2276,6 @@ msgstr "Estado dos ficheiros seleccionados"
 
 msgid "Remaining time"
 msgstr "Tempo restante"
-
-msgid "Stop seeding if idle for:"
-msgstr "Parar de efetuar seed se inativo durante:"
 
 msgid "Any"
 msgstr "Qualquer"
@@ -2622,11 +2615,6 @@ msgstr "Receber no máximo com:"
 msgid "Seeding with maximum of:"
 msgstr "Enviar no máximo com:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "A transferência estagnou se inactiva por:"
-
 msgid "Play sound:"
 msgstr "Sinal sonoro:"
 
@@ -2670,12 +2658,6 @@ msgstr "Nome do grupo:"
 
 msgid "Color"
 msgstr ""
-
-msgid "_Download:"
-msgstr "_Transferência:"
-
-msgid "_Upload:"
-msgstr "_Carregamento"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3619,24 +3601,11 @@ msgstr "Não suportado em sessões remotas"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Lista de bloqueio contém regra {count:L}</i>"
 
-msgid "U_pload:"
-msgstr "_Carregamento:"
-
-msgid "Do_wnload:"
-msgstr "_Transferência"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
 msgid "Detect new torrents from clipboard"
 msgstr ""
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "A transferência está _inativa se a partilha de dados parar:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Parar de efetuar _seed se inativo durante:"
 
 msgid "Encryption"
 msgstr "Encriptação"
@@ -3754,6 +3723,18 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Parar de semear se inativo por N minutos:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Descarregamentos a partilharem dados nos últimos _X minutos estão ativos:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Parar de semear se estiver inativo por _X minutos:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "A transferência está _inativa se a partilha de dados parar:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Criado por {creator} a {date}"

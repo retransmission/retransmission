@@ -148,8 +148,8 @@ msgstr "הפסקת זריעה ביחס:"
 msgid "Seed regardless of activity"
 msgstr "זריעה ללא התחשבות ברמת הפעילות"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "הפסקת זריעה במקרה של אי פעילות למשך N דקות:"
+msgid "Stop seeding if idle for:"
+msgstr "הפסקת זריעה בחוסר פעילות למשך:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1173,11 +1173,11 @@ msgstr "מהירות"
 msgid "Honor global _limits"
 msgstr "_כיבוד מגבלות כלליות"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "הגבלת מהירות ההו_רדה ({speed_units}):"
+msgid "Limit _download speed:"
+msgstr "ה_גבלת מהירות הורדה:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "הגבלת מהירות הה_עלאה ({speed_units}):"
+msgid "Limit _upload speed:"
+msgstr "ה_גבלת מהירות העלאה:"
 
 msgid "Torrent _priority:"
 msgstr "עדיפות ה_טורנט:"
@@ -1190,6 +1190,9 @@ msgstr "י_חס:"
 
 msgid "_Idle:"
 msgstr "חוסר _פעילות:"
+
+msgid "minutes"
+msgstr "דקות"
 
 msgid "Peer Connections"
 msgstr "חיבורי עמיתים"
@@ -1327,12 +1330,12 @@ msgid "Speed Limits"
 msgstr "מגבלות מהירות"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "ה_עלאה ({speed_units}):"
+msgid "_Upload:"
+msgstr "ה_עלאה:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "הו_רדה ({speed_units}):"
+msgid "_Download:"
+msgstr "הו_רדה:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1343,12 +1346,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "לדרוס את מגבלות המהירות התקניות באופן ידני או במועדים מתוזמנים"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "ה_עלאה ({speed_units}):"
+msgid "U_pload:"
+msgstr "הע_לאה:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "הו_רדה ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "הור_דה:"
 
 msgid "_Scheduled times:"
 msgstr "מועדים מתו_זמנים:"
@@ -1383,8 +1386,10 @@ msgstr "תור הורדה"
 msgid "Ma_ximum active downloads:"
 msgstr "כמות מ_רבית של הורדות פעילות:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "הורדות שחולקות נתונים ב־N הדקות ה_אחרונות הן פעילות:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "ההעברה תעוכב אם אינה פעילה למשך:"
 
 msgid "Incomplete"
 msgstr "לא שלם"
@@ -1415,8 +1420,8 @@ msgstr "מגבלות"
 msgid "Stop seeding at _ratio:"
 msgstr "הפסקת זריעה בי_חס:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "הפסקת זריעה אם לא פעיל למשך N _דקות:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "הפסקת זריעה בחוסר _פעילות למשך:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "לקרוא לסקריפט עם סיום ה_זריעה:"
@@ -1676,7 +1681,6 @@ msgstr[1] "לפני שעתיים"
 msgstr[2] "לפני {hours_ago:L} שעות"
 msgstr[3] "לפני {hours_ago:L} שעות"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "לפני דקה"
@@ -1765,6 +1769,7 @@ msgstr[2] "{hours:L} שעות"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "דקה"
@@ -2325,15 +2330,6 @@ msgstr "לפתוח בעת היצירה"
 msgid "Each tracker will be placed into its own tier"
 msgstr "כל עוקב יוצב בשכבה משלו"
 
-msgid "Limit _download speed:"
-msgstr "ה_גבלת מהירות הורדה:"
-
-msgid "Limit _upload speed:"
-msgstr "ה_גבלת מהירות העלאה:"
-
-msgid "minutes"
-msgstr "דקות"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "ק״ב/שנייה"
@@ -2343,9 +2339,6 @@ msgstr "מצב הקבצים הנבחרים"
 
 msgid "Remaining time"
 msgstr "זמן שנותר"
-
-msgid "Stop seeding if idle for:"
-msgstr "הפסקת זריעה בחוסר פעילות למשך:"
 
 msgid "Any"
 msgstr "כלשהו"
@@ -2681,11 +2674,6 @@ msgstr "הורדה עם מהירות מרבית של:"
 msgid "Seeding with maximum of:"
 msgstr "זריעה במהירות מרבית של:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "ההעברה תעוכב אם אינה פעילה למשך:"
-
 msgid "Play sound:"
 msgstr "לנגן צליל:"
 
@@ -2729,12 +2717,6 @@ msgstr "שם קבוצה:"
 
 msgid "Color"
 msgstr "צבע"
-
-msgid "_Download:"
-msgstr "הו_רדה:"
-
-msgid "_Upload:"
-msgstr "ה_עלאה:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3651,24 +3633,11 @@ msgstr "לא נתמך ממופעים המרוחקים"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
 
-msgid "U_pload:"
-msgstr "הע_לאה:"
-
-msgid "Do_wnload:"
-msgstr "הור_דה:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "קורא את לוח הגזירים של המשתמש לאיתור טורנטים"
 
 msgid "Detect new torrents from clipboard"
 msgstr "זיהוי טורנטים חדשים מלוח הגזירים"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "ההורדה _אינה פעילה אם שיתוף הנתונים נעצר למשך:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "הפסקת זריעה בחוסר _פעילות למשך:"
 
 msgid "Encryption"
 msgstr "הצפנה"
@@ -3791,6 +3760,18 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "הפסקת זריעה במקרה של אי פעילות למשך N דקות:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "הורדות שחולקות נתונים ב־N הדקות ה_אחרונות הן פעילות:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "הפסקת זריעה אם לא פעיל למשך N _דקות:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "ההורדה _אינה פעילה אם שיתוף הנתונים נעצר למשך:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "נוצר ע״י {creator} ב־{date}"

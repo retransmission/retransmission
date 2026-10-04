@@ -333,6 +333,20 @@ RENAMES = [
         'remove_prefix': '{downloaded_size} (+',
         'remove_suffix': ')',
     },
+    # The GTK client names the unit in a label after the spin button, as the Qt and Mac clients do.
+    *(
+        {'from': {'msgid': old}, 'to': {'msgid': new}, 'strip': [' ({speed_units})', '({speed_units})', '（{speed_units}）']}
+        for old, new in (
+            ('_Upload ({speed_units}):', '_Upload:'),
+            ('_Download ({speed_units}):', '_Download:'),
+            ('U_pload ({speed_units}):', 'U_pload:'),
+            ('Do_wnload ({speed_units}):', 'Do_wnload:'),
+            ('Limit _upload speed ({speed_units}):', 'Limit _upload speed:'),
+            ('Limit _download speed ({speed_units}):', 'Limit _download speed:'),
+        )
+    ),
+    # Every client uses the Mac client's text for the stalled-torrent setting, with a mnemonic.
+    {'from': {'msgid': 'Torrent is stalled when inactive for:'}, 'to': {'msgid': 'Torrent is stalled when i_nactive for:'}},
     # The row's label is the Mac client's "Failed DL:" again.
     {'from': {'msgid': 'Failed download:'}, 'to': {'msgid': 'Failed DL:'}},
 ]

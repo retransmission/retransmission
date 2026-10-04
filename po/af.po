@@ -134,8 +134,8 @@ msgstr "Hou op saai op ratio:"
 msgid "Seed regardless of activity"
 msgstr "Saai ongeag aktiwiteit"
 
-msgid "Stop seeding if idle for N minutes:"
-msgstr "Hou op saai as dit vir N minute luier:"
+msgid "Stop seeding if idle for:"
+msgstr "Hou op saai as dit luier vir:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -1138,11 +1138,11 @@ msgstr "Spoed"
 msgid "Honor global _limits"
 msgstr "Eer globale _beperkings"
 
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Beperk _aflaaispoed ({speed_units})"
+msgid "Limit _download speed:"
+msgstr "Beperk _aflaaispoed:"
 
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Beperk _oplaaispoed ({speed_units})"
+msgid "Limit _upload speed:"
+msgstr "Beperk _oplaaispoed:"
 
 msgid "Torrent _priority:"
 msgstr "Torrent_prioriteit:"
@@ -1155,6 +1155,9 @@ msgstr "_Ratio:"
 
 msgid "_Idle:"
 msgstr "_Luier:"
+
+msgid "minutes"
+msgstr "minute"
 
 msgid "Peer Connections"
 msgstr "Eweknieverbindings"
@@ -1292,12 +1295,12 @@ msgid "Speed Limits"
 msgstr "Spoedlimiete"
 
 #. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Oplaai ({speed_units}):"
+msgid "_Upload:"
+msgstr "_Oplaai:"
 
 #. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Aflaai ({speed_units}):"
+msgid "_Download:"
+msgstr "_Aflaai:"
 
 #. Translators: Dock item
 #. Translators: Status Bar -> speed tooltip
@@ -1308,12 +1311,12 @@ msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Oorheers normale spoedlimiete handmatig of op vasgestelde tye"
 
 #. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "O_plaai ({speed_units}):"
+msgid "U_pload:"
+msgstr "L_aai op:"
 
 #. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Af_laai ({speed_units}):"
+msgid "Do_wnload:"
+msgstr "La_ai af:"
 
 msgid "_Scheduled times:"
 msgstr "_Geskeduleerde tye:"
@@ -1348,8 +1351,10 @@ msgstr "Laai Wagry Af"
 msgid "Ma_ximum active downloads:"
 msgstr "Ma_ksimum aktiewe aflaaie:"
 
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Aflaaie wat data in die afgelope _N minute deel is aktief:"
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when i_nactive for:"
+msgstr "Oordrag is passief by geen aktiwiteit van:"
 
 msgid "Incomplete"
 msgstr "Onafgehandel"
@@ -1380,8 +1385,8 @@ msgstr "Limiete"
 msgid "Stop seeding at _ratio:"
 msgstr "Hou op saai op _ratio:"
 
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Hou op saai as dit vir _N minute luier:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Hou op sa_ai as dit luier vir:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Roep skrip_ wanneer klaar gesaai:"
@@ -1627,7 +1632,6 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L} uur gelede"
 msgstr[1] "{hours_ago:L} uur gelede"
 
-#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuut gelede"
@@ -1705,6 +1709,7 @@ msgstr[1] "{hours:L} uur"
 
 #. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#. Translators: Spin box format, "Torrent is stalled when inactive for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} minuut"
@@ -2247,15 +2252,6 @@ msgstr "Open wanneer geskep"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Elke spoorder sal in sy eie vlak geplaas word"
 
-msgid "Limit _download speed:"
-msgstr "Beperk _aflaaispoed:"
-
-msgid "Limit _upload speed:"
-msgstr "Beperk _oplaaispoed:"
-
-msgid "minutes"
-msgstr "minute"
-
 #. Translators: Transfer speed (kilobytes per second)
 msgid "KB/s"
 msgstr "KG/s"
@@ -2265,9 +2261,6 @@ msgstr "Status van gekose lêers"
 
 msgid "Remaining time"
 msgstr "Oorblywende tyd"
-
-msgid "Stop seeding if idle for:"
-msgstr "Hou op saai as dit luier vir:"
 
 msgid "Any"
 msgstr "Enige"
@@ -2605,11 +2598,6 @@ msgstr "Laai af met maksimum van:"
 msgid "Seeding with maximum of:"
 msgstr "Saai met maksimum van:"
 
-#, fuzzy
-#| msgid "Transfer is stalled when inactive for:"
-msgid "Torrent is stalled when inactive for:"
-msgstr "Oordrag is passief by geen aktiwiteit van:"
-
 msgid "Play sound:"
 msgstr "Speel geluid:"
 
@@ -2653,12 +2641,6 @@ msgstr "Groepnaam:"
 
 msgid "Color"
 msgstr "Kleur"
-
-msgid "_Download:"
-msgstr "_Aflaai:"
-
-msgid "_Upload:"
-msgstr "_Oplaai:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3565,24 +3547,11 @@ msgstr "Nie deur afstandsessies ondersteun nie"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Bloklys bevat {count:L} reël</i>"
 
-msgid "U_pload:"
-msgstr "L_aai op:"
-
-msgid "Do_wnload:"
-msgstr "La_ai af:"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Lees gebruikerknipbordinhoud vir torrents"
 
 msgid "Detect new torrents from clipboard"
 msgstr "Bespeur nuwe torrents vanaf knipbord"
-
-#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
-msgid "Download is i_nactive if data sharing stopped:"
-msgstr "Aflaai is o_anktief indien datadeling gestop is:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Hou op sa_ai as dit luier vir:"
 
 msgid "Encryption"
 msgstr "Enkripsie"
@@ -3690,6 +3659,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Stop seeding if idle for N minutes:"
+#~ msgstr "Hou op saai as dit vir N minute luier:"
+
+#~ msgid "Downloads sharing data in the last _N minutes are active:"
+#~ msgstr "Aflaaie wat data in die afgelope _N minute deel is aktief:"
+
+#~ msgid "Stop seeding if idle for _N minutes:"
+#~ msgstr "Hou op saai as dit vir _N minute luier:"
+
+#~ msgid "Download is i_nactive if data sharing stopped:"
+#~ msgstr "Aflaai is o_anktief indien datadeling gestop is:"
 
 #~ msgid "Created by {creator} on {date}"
 #~ msgstr "Geskep deur {creator} op {date}"
