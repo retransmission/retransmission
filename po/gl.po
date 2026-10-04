@@ -1381,7 +1381,6 @@ msgstr "_Nos días:"
 msgid "_to"
 msgstr "_a"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Engadindo"
 

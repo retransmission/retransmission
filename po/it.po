@@ -1379,7 +1379,6 @@ msgstr "Nei gi_orni:"
 msgid "_to"
 msgstr "all_e"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Aggiunta"
 
@@ -2864,9 +2863,6 @@ msgstr "Accetta colleg. magnetici:"
 #| msgid "Open Torrent Files"
 msgid "Open torrent files:"
 msgstr "Apri file torrent"
-
-msgid "Adding"
-msgstr "Aggiunta"
 
 msgid "Same as torrent file"
 msgstr "Stessa posizione del file torrent"

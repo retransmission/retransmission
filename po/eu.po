@@ -1351,7 +1351,6 @@ msgstr "E_gun hauetan:"
 msgid "_to"
 msgstr "_hona"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Gehitzen"
 
@@ -2810,9 +2809,6 @@ msgstr "Onartu magnet estekak:"
 #| msgid "Open Torrent Files"
 msgid "Open torrent files:"
 msgstr "Ireki Torrent Fitxategiak"
-
-msgid "Adding"
-msgstr "Gehitzen"
 
 msgid "Same as torrent file"
 msgstr "Torrent-fitxategiaren berdina"

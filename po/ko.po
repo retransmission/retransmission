@@ -1248,7 +1248,6 @@ msgstr "적용할 날(_O):"
 msgid "_to"
 msgstr "부터(_T)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "추가"
 

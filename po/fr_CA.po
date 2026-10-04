@@ -1404,7 +1404,6 @@ msgstr "_Quels _jours :"
 msgid "_to"
 msgstr "_à"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Ajout"
 

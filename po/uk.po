@@ -1402,7 +1402,6 @@ msgstr "_За днями:"
 msgid "_to"
 msgstr "_до"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Додавання"
 
@@ -2906,9 +2905,6 @@ msgstr "Приймати магнет-посилання:"
 
 msgid "Open torrent files:"
 msgstr "Відкрити торент-файли:"
-
-msgid "Adding"
-msgstr "Додавання"
 
 msgid "Same as torrent file"
 msgstr "Ту саму теку, де торент-файл"

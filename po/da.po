@@ -1368,7 +1368,6 @@ msgstr "_På følgende dage:"
 msgid "_to"
 msgstr "_til"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Tilføjelse"
 
@@ -2832,9 +2831,6 @@ msgstr "Magnetlinks:"
 
 msgid "Open torrent files:"
 msgstr "Åbn torrent-filer:"
-
-msgid "Adding"
-msgstr "Tilføjelse"
 
 msgid "Same as torrent file"
 msgstr "Samme som torrent-fil"

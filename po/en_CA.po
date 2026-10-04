@@ -1375,7 +1375,6 @@ msgstr "_On days:"
 msgid "_to"
 msgstr "_to"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Adding"
 

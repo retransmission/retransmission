@@ -226,7 +226,7 @@
        <item>
         <widget class="QGroupBox" name="addingSection">
          <property name="title">
-          <string comment="Gerund">Adding</string>
+          <string>Adding</string>
          </property>
          <layout class="QGridLayout" name="addingSectionLayout" columnstretch="0,1">
           <item row="0" column="0">

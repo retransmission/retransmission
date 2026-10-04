@@ -1405,7 +1405,6 @@ msgstr "_An diesen Tagen:"
 msgid "_to"
 msgstr "_bis"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Hinzufügen"
 
@@ -2866,9 +2865,6 @@ msgstr "magnet-Links öffnen:"
 
 msgid "Open torrent files:"
 msgstr "Torrentdatein öffnen:"
-
-msgid "Adding"
-msgstr "Hinzufügen"
 
 msgid "Same as torrent file"
 msgstr "Ordner der Torrent-Datei"

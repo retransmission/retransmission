@@ -1452,7 +1452,6 @@ msgstr "_V dňoch:"
 msgid "_to"
 msgstr "_do"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Pridávanie"
 

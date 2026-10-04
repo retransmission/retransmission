@@ -1368,7 +1368,6 @@ msgstr "بۇ كۈنلەردە(_O):"
 msgid "_to"
 msgstr ""
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "قوشۇش"
 

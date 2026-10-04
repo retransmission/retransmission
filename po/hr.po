@@ -1257,7 +1257,6 @@ msgstr "_Dana:"
 msgid "_to"
 msgstr "_prema"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Dodavanje"
 

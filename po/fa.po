@@ -1377,7 +1377,6 @@ msgstr "در روزهای:"
 msgid "_to"
 msgstr "به"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "افزودن"
 

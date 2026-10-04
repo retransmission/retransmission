@@ -1242,7 +1242,6 @@ msgstr "Кү_ндерде:"
 msgid "_to"
 msgstr ""
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Қосу"
 

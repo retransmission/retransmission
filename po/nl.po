@@ -1376,7 +1376,6 @@ msgstr "Op de d_agen:"
 msgid "_to"
 msgstr "_naar"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Toevoegen"
 
@@ -2848,9 +2847,6 @@ msgstr "Accepteer magnet links:"
 
 msgid "Open torrent files:"
 msgstr "Open torrent bestanden"
-
-msgid "Adding"
-msgstr "Toevoegen"
 
 msgid "Same as torrent file"
 msgstr "Hetzelfde als torrent bestand"

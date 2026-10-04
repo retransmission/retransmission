@@ -1243,7 +1243,6 @@ msgstr "इन दिनों पर (_O):"
 msgid "_to"
 msgstr "हेतु (_t)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "जोड़ना जारी"
 

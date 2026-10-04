@@ -1377,7 +1377,6 @@ msgstr "_Τις ημέρες:"
 msgid "_to"
 msgstr "_μέχρι"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Προσθήκη"
 
@@ -2837,9 +2836,6 @@ msgstr "Αποδοχή μαγνητικών συνδέσμων:"
 
 msgid "Open torrent files:"
 msgstr "Άνοιγμα αρχείων torrent:"
-
-msgid "Adding"
-msgstr "Προσθήκη"
 
 msgid "Same as torrent file"
 msgstr "Ίδιο με το αρχείο torrent"

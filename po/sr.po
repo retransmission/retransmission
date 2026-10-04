@@ -1417,7 +1417,6 @@ msgstr "_Данима:"
 msgid "_to"
 msgstr "_до"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Додавање"
 

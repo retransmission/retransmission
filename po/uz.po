@@ -1339,7 +1339,6 @@ msgstr "_Kunlarda:"
 msgid "_to"
 msgstr "_ga"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Qo‘shish"
 

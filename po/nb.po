@@ -1250,7 +1250,6 @@ msgstr "P_å dager:"
 msgid "_to"
 msgstr "_til"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Legger til"
 

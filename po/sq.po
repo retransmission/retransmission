@@ -1372,7 +1372,6 @@ msgstr "_Në ditët:"
 msgid "_to"
 msgstr "_tek"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Duke shtuar"
 

@@ -1453,7 +1453,6 @@ msgstr "_Па днях:"
 msgid "_to"
 msgstr "_да"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Даданне"
 

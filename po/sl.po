@@ -1279,7 +1279,6 @@ msgstr "_Ob dnevih:"
 msgid "_to"
 msgstr "_do"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Dodajanje"
 

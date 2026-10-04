@@ -1354,7 +1354,6 @@ msgstr "天數 (_O)："
 msgid "_to"
 msgstr "到 (_T)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "正在加入"
 
@@ -2793,9 +2792,6 @@ msgstr "接受磁力連結："
 
 msgid "Open torrent files:"
 msgstr "打開 torrent 檔案："
-
-msgid "Adding"
-msgstr "正在加入"
 
 msgid "Same as torrent file"
 msgstr "和 torrent 相同"

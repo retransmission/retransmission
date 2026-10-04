@@ -1378,7 +1378,6 @@ msgstr "Ezen _napokon:"
 msgid "_to"
 msgstr "–"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Hozzáadás"
 
@@ -2836,9 +2835,6 @@ msgstr "Magnet linkek elfogadása:"
 
 msgid "Open torrent files:"
 msgstr "Torrent fájlok megnyitása:"
-
-msgid "Adding"
-msgstr "Hozzáadás"
 
 msgid "Same as torrent file"
 msgstr "Ugyanaz mint a torrent fájl"

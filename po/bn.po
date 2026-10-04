@@ -1379,7 +1379,6 @@ msgstr "দিনে (_O):"
 msgid "_to"
 msgstr "থেকে (_t)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "যোগ করা হচ্ছে"
 

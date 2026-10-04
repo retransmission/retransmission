@@ -1385,7 +1385,6 @@ msgstr "_בימים:"
 msgid "_to"
 msgstr "_עד"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "בהליכי הוספה"
 
@@ -2886,9 +2885,6 @@ msgstr "קבלת קישורי מגנט:"
 
 msgid "Open torrent files:"
 msgstr "פתיחת קובצי טורנט:"
-
-msgid "Adding"
-msgstr "מתווסף"
 
 msgid "Same as torrent file"
 msgstr "כמו קובץ הטורנט"

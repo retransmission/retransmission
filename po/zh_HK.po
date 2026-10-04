@@ -1342,7 +1342,6 @@ msgstr "於(_O)："
 msgid "_to"
 msgstr "到(_T)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "加入中"
 

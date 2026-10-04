@@ -1287,7 +1287,6 @@ msgstr "Šiomis _dienomis:"
 msgid "_to"
 msgstr "i_ki"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Pridėjimas"
 

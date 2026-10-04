@@ -1456,7 +1456,6 @@ msgstr "_Ve dnech:"
 msgid "_to"
 msgstr "_až"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Přidává se"
 

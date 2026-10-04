@@ -1314,7 +1314,6 @@ msgstr "_في أيام:"
 msgid "_to"
 msgstr "إ_لى"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "الإضافة"
 

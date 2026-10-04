@@ -1237,7 +1237,6 @@ msgstr "_Pada hari:"
 msgid "_to"
 msgstr "_ke"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Menambahkan"
 

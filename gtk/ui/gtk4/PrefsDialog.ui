@@ -259,7 +259,7 @@
                       <object class="GtkFrame">
                         <child type="label">
                           <object class="GtkLabel" id="adding_section_label">
-                            <property name="label" translatable="yes" context="Gerund">Adding</property>
+                            <property name="label" translatable="yes">Adding</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>

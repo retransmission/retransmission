@@ -1349,7 +1349,6 @@ msgstr "_Şu günlerde:"
 msgid "_to"
 msgstr "_ile"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Ekleme"
 
@@ -2809,9 +2808,6 @@ msgstr "Mıknatıs bağlantılar için:"
 
 msgid "Open torrent files:"
 msgstr "Torrent dosyalarını aç:"
-
-msgid "Adding"
-msgstr "Ekle"
 
 msgid "Same as torrent file"
 msgstr "Torrent ile aynı yer"

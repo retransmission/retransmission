@@ -1371,7 +1371,6 @@ msgstr "_Als dies:"
 msgid "_to"
 msgstr "_a"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Addició"
 

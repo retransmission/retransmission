@@ -1432,7 +1432,6 @@ msgstr "În _zilele:"
 msgid "_to"
 msgstr "_până la"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Se adaugă"
 

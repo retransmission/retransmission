@@ -1413,7 +1413,6 @@ msgstr "W d_niach:"
 msgid "_to"
 msgstr "_do"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Dodawanie"
 
@@ -2921,9 +2920,6 @@ msgstr "Przyjmowanie odnośników magnet:"
 
 msgid "Open torrent files:"
 msgstr "Otwieranie plików torrent:"
-
-msgid "Adding"
-msgstr "Dodawanie"
 
 msgid "Same as torrent file"
 msgstr "Takie same, jak plik torrent"

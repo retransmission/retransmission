@@ -1346,7 +1346,6 @@ msgstr "_Op dae:"
 msgid "_to"
 msgstr "_na"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Voeg tans toe"
 
@@ -2808,9 +2807,6 @@ msgstr "Aanvaar magneetskakels:"
 
 msgid "Open torrent files:"
 msgstr "Open torrentlêers:"
-
-msgid "Adding"
-msgstr "Voeg tans toe"
 
 msgid "Same as torrent file"
 msgstr "Dieselfde as torrentlêer"

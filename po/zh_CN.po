@@ -1377,7 +1377,6 @@ msgstr "重复(_O)："
 msgid "_to"
 msgstr "至(_T)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "添加"
 
@@ -2813,9 +2812,6 @@ msgstr "接受磁力链接："
 
 msgid "Open torrent files:"
 msgstr "打开种子文件:"
-
-msgid "Adding"
-msgstr "正在添加"
 
 msgid "Same as torrent file"
 msgstr "与 Torrent 文件相同"

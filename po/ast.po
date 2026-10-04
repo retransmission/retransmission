@@ -1374,7 +1374,6 @@ msgstr "L_os díes:"
 msgid "_to"
 msgstr "_a"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Amestando"
 

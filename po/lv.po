@@ -1413,7 +1413,6 @@ msgstr "_Dienās:"
 msgid "_to"
 msgstr "_līdz"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Pievienošana"
 

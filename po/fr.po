@@ -1362,7 +1362,6 @@ msgstr "J_ours :"
 msgid "_to"
 msgstr "_à"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Ajout"
 
@@ -2850,9 +2849,6 @@ msgstr "Accepter les liens magnet :"
 
 msgid "Open torrent files:"
 msgstr "Ouvrir des fichiers torrents :"
-
-msgid "Adding"
-msgstr "Ajout"
 
 msgid "Same as torrent file"
 msgstr "Identique au fichier torrent"

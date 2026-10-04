@@ -1423,7 +1423,6 @@ msgstr "N_os dias:"
 msgid "_to"
 msgstr "_para"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Adicionando"
 
@@ -2901,9 +2900,6 @@ msgstr "Aceitar links magnéticos:"
 
 msgid "Open torrent files:"
 msgstr "Abrir arquivos torrent:"
-
-msgid "Adding"
-msgstr "Adicionando"
 
 msgid "Same as torrent file"
 msgstr "Mesmo que arquivo torrent"

@@ -45,6 +45,8 @@ RENAMES = [
             'To add a new primary URL, add it after a blank line.'
         },
     },
+    # "Adding" has one meaning, so it needs no context. The Mac client's Preferences tab uses the same text.
+    {'from': {'msgctxt': 'Gerund', 'msgid': 'Adding'}, 'to': {'msgid': 'Adding'}, 'prefer': 'from'},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

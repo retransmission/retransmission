@@ -1375,7 +1375,6 @@ msgstr ""
 msgid "_to"
 msgstr ""
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr ""
 

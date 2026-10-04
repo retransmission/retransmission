@@ -1371,7 +1371,6 @@ msgstr "_los jorns :"
 msgid "_to"
 msgstr "_cap a"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Apondon"
 

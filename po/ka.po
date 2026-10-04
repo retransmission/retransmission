@@ -1235,7 +1235,6 @@ msgstr "_დღეებში:"
 msgid "_to"
 msgstr "_სად"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "დამატება"
 

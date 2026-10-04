@@ -1329,7 +1329,6 @@ msgstr "曜日(_O)"
 msgid "_to"
 msgstr "から(_T)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "追加"
 
@@ -2766,9 +2765,6 @@ msgstr "マグネットリンクに対応:"
 
 msgid "Open torrent files:"
 msgstr "トレントファイルを開く:"
-
-msgid "Adding"
-msgstr "追加"
 
 msgid "Same as torrent file"
 msgstr "トレントファイルと同じ"

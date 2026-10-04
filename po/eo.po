@@ -1391,7 +1391,6 @@ msgstr "_La tagoj:"
 msgid "_to"
 msgstr "_al"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Aldonante"
 

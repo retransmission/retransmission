@@ -1375,7 +1375,6 @@ msgstr "ఈ దినాలలో(_O):"
 msgid "_to"
 msgstr "కు(_t)"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "జతచేస్తోంది"
 

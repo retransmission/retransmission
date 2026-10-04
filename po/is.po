@@ -1255,7 +1255,6 @@ msgstr "_Dagana:"
 msgid "_to"
 msgstr "_til"
 
-msgctxt "Gerund"
 msgid "Adding"
 msgstr "Bæti við"
 
