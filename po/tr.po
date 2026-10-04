@@ -2836,12 +2836,6 @@ msgstr "İletişim:"
 msgid "Port is open"
 msgstr "Kapı açık"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
-
-msgid "Automatically map port"
-msgstr "Kapıyı otomatik ata"
-
 msgid "System sleep:"
 msgstr "Sistem uykusu:"
 
@@ -4039,6 +4033,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Kapıyı otomatik ata"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} torrent üst verisi alındı"

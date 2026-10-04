@@ -2888,12 +2888,6 @@ msgstr "Protocollo peer:"
 msgid "Port is open"
 msgstr "La porta è aperta"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "L'attraversamento dei NAT impiega NAT-PMP o UPnP"
-
-msgid "Automatically map port"
-msgstr "Mappa automaticamente la porta"
-
 msgid "System sleep:"
 msgstr "Stop sistema:"
 
@@ -4138,6 +4132,12 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "L'attraversamento dei NAT impiega NAT-PMP o UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Mappa automaticamente la porta"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "recuperati {percent} metadati del torrent"

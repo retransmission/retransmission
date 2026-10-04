@@ -2863,12 +2863,6 @@ msgstr "Partner kommunikáció:"
 msgid "Port is open"
 msgstr "A port nyitva van"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
-
-msgid "Automatically map port"
-msgstr "Port átirányítása automatikusan"
-
 msgid "System sleep:"
 msgstr "Rendszer alvás:"
 
@@ -4067,6 +4061,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Port átirányítása automatikusan"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} torrent metaadat fogadva"

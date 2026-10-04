@@ -2830,12 +2830,6 @@ msgstr "Jämlikekommunikation:"
 msgid "Port is open"
 msgstr "Porten är öppen"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT-genompassering använder antingen NAT-PMP eller UPnP"
-
-msgid "Automatically map port"
-msgstr "Kartlägg portar automatiskt"
-
 msgid "System sleep:"
 msgstr "System viloläge:"
 
@@ -4040,6 +4034,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT-genompassering använder antingen NAT-PMP eller UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Kartlägg portar automatiskt"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} av torrentmetadata mottaget"

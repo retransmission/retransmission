@@ -2124,14 +2124,14 @@
             <point key="canvasLocation" x="114" y="1005.5"/>
         </customView>
         <customView id="66" userLabel="Network">
-            <rect key="frame" x="0.0" y="0.0" width="637" height="219"/>
+            <rect key="frame" x="0.0" y="0.0" width="637" height="199"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="CZ6-Q4-MLF">
-                    <rect key="frame" x="40" y="40" width="557" height="159"/>
+                    <rect key="frame" x="40" y="40" width="557" height="139"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1891">
-                            <rect key="frame" x="336" y="69" width="101" height="32"/>
+                            <rect key="frame" x="336" y="49" width="101" height="32"/>
                             <buttonCell key="cell" type="push" title="Randomize" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1892">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -2141,7 +2141,7 @@
                             </connections>
                         </button>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="660">
-                            <rect key="frame" x="18" y="143" width="132" height="16"/>
+                            <rect key="frame" x="18" y="123" width="132" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Peer communication:" usesSingleLineMode="YES" id="1253">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2149,7 +2149,7 @@
                             </textFieldCell>
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2081">
-                            <rect key="frame" x="18" y="104" width="132" height="16"/>
+                            <rect key="frame" x="18" y="84" width="132" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="_Port for incoming connections:" usesSingleLineMode="YES" id="2082">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2157,23 +2157,15 @@
                             </textFieldCell>
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                            <rect key="frame" x="228" y="104" width="77" height="16"/>
+                            <rect key="frame" x="228" y="84" width="77" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Port is open" usesSingleLineMode="YES" id="1250">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="336">
-                            <rect key="frame" x="172" y="36" width="235" height="14"/>
-                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="NAT traversal uses either NAT-PMP or UPnP" id="1248">
-                                <font key="font" metaFont="smallSystem"/>
-                                <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                            <rect key="frame" x="154" y="101" width="50" height="21"/>
+                            <rect key="frame" x="154" y="81" width="50" height="21"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="50" id="9n3-lq-hgh"/>
                             </constraints>
@@ -2194,7 +2186,7 @@
                             </connections>
                         </textField>
                         <button verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1889">
-                            <rect key="frame" x="152" y="77" width="185" height="18"/>
+                            <rect key="frame" x="152" y="57" width="185" height="18"/>
                             <buttonCell key="cell" type="check" title="Pick a _random port at startup" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1890">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -2205,8 +2197,8 @@
                             </connections>
                         </button>
                         <button verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="332">
-                            <rect key="frame" x="152" y="55" width="167" height="18"/>
-                            <buttonCell key="cell" type="check" title="Automatically map port" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1247">
+                            <rect key="frame" x="152" y="35" width="342" height="18"/>
+                            <buttonCell key="cell" type="check" title="Use UPnP or NAT-PMP port _forwarding from my router" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1247">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2216,7 +2208,7 @@
                             </connections>
                         </button>
                         <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="353">
-                            <rect key="frame" x="209" y="104" width="16" height="16"/>
+                            <rect key="frame" x="209" y="84" width="16" height="16"/>
                         </progressIndicator>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="664">
                             <rect key="frame" x="152" y="-1" width="347" height="18"/>
@@ -2237,7 +2229,7 @@
                             </textFieldCell>
                         </textField>
                         <button verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="2077">
-                            <rect key="frame" x="152" y="142" width="259" height="18"/>
+                            <rect key="frame" x="152" y="122" width="259" height="18"/>
                             <buttonCell key="cell" type="check" title="Enable µ_TP for peer connections" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2078">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -2248,7 +2240,7 @@
                             </connections>
                         </button>
                         <imageView translatesAutoresizingMaskIntoConstraints="NO" id="354">
-                            <rect key="frame" x="209" y="104" width="16" height="16"/>
+                            <rect key="frame" x="209" y="84" width="16" height="16"/>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="NSStatusPartiallyAvailable" id="1249"/>
                         </imageView>
                     </subviews>
@@ -2257,26 +2249,23 @@
                         <constraint firstAttribute="width" priority="750" constant="557" id="2Ug-Ph-wa4"/>
                         <constraint firstItem="665" firstAttribute="width" secondItem="660" secondAttribute="width" id="9Hd-Tm-4K7"/>
                         <constraint firstItem="353" firstAttribute="leading" secondItem="68" secondAttribute="trailing" constant="5" id="DFR-wP-UH7"/>
-                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="336" secondAttribute="trailing" constant="20" symbolic="YES" id="EqH-JF-Pvs"/>
                         <constraint firstItem="1889" firstAttribute="leading" secondItem="2077" secondAttribute="leading" id="Ero-dE-5SY"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="357" secondAttribute="trailing" constant="20" symbolic="YES" id="FtE-7d-frf"/>
                         <constraint firstItem="2077" firstAttribute="leading" secondItem="660" secondAttribute="trailing" constant="6" id="HMn-GA-Sra"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1891" secondAttribute="trailing" constant="20" symbolic="YES" id="KPE-O0-Roh"/>
                         <constraint firstAttribute="bottom" secondItem="664" secondAttribute="bottom" id="KSx-05-hEE"/>
                         <constraint firstItem="68" firstAttribute="top" secondItem="2077" secondAttribute="bottom" constant="21" id="L6f-61-wa6"/>
-                        <constraint firstItem="664" firstAttribute="top" secondItem="336" secondAttribute="bottom" constant="20" id="Laz-l8-h0f"/>
+                        <constraint firstItem="664" firstAttribute="top" secondItem="332" secondAttribute="bottom" constant="20" id="Laz-l8-h0f"/>
                         <constraint firstItem="332" firstAttribute="leading" secondItem="2077" secondAttribute="leading" id="NCj-3Q-kBP"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2077" secondAttribute="trailing" constant="20" symbolic="YES" id="NyE-Le-bf4"/>
                         <constraint firstItem="664" firstAttribute="centerY" secondItem="665" secondAttribute="centerY" id="T9K-Sv-zrD"/>
                         <constraint firstItem="660" firstAttribute="leading" secondItem="CZ6-Q4-MLF" secondAttribute="leading" constant="20" symbolic="YES" id="VwP-UJ-daQ"/>
-                        <constraint firstItem="336" firstAttribute="leading" secondItem="332" secondAttribute="leading" constant="20" id="XqX-B0-RKz"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="664" secondAttribute="trailing" constant="20" symbolic="YES" id="YoK-FL-NEy"/>
                         <constraint firstItem="68" firstAttribute="leading" secondItem="2077" secondAttribute="leading" id="ZUK-cC-Zof"/>
                         <constraint firstItem="357" firstAttribute="centerY" secondItem="2081" secondAttribute="centerY" id="aoG-Gy-P5k"/>
                         <constraint firstItem="664" firstAttribute="leading" secondItem="2077" secondAttribute="leading" id="d2P-tC-KwF"/>
                         <constraint firstItem="1891" firstAttribute="leading" secondItem="1889" secondAttribute="trailing" constant="6" id="d63-ZD-zhc"/>
                         <constraint firstItem="2081" firstAttribute="width" secondItem="660" secondAttribute="width" id="eQ1-4m-W6P"/>
-                        <constraint firstItem="336" firstAttribute="top" secondItem="332" secondAttribute="bottom" constant="6" id="euL-bi-l75"/>
                         <constraint firstItem="68" firstAttribute="centerY" secondItem="2081" secondAttribute="centerY" id="gSA-O3-MkQ"/>
                         <constraint firstItem="357" firstAttribute="leading" secondItem="353" secondAttribute="trailing" constant="5" id="jNu-gu-4Qf"/>
                         <constraint firstItem="332" firstAttribute="top" secondItem="1889" secondAttribute="bottom" constant="6" symbolic="YES" id="kCe-Oo-rh0"/>

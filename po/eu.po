@@ -2838,12 +2838,6 @@ msgstr "Kideen komunikazioa:"
 msgid "Port is open"
 msgstr "Ataka zabalik dago"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
-
-msgid "Automatically map port"
-msgstr "Lotu ataka automatikoki"
-
 msgid "System sleep:"
 msgstr "Sistemaren lokartzea:"
 
@@ -4051,6 +4045,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Lotu ataka automatikoki"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} torrent metadatu berreskuratuta"

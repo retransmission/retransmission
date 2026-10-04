@@ -2949,12 +2949,6 @@ msgstr "Red:"
 msgid "Port is open"
 msgstr "El puerto está abierto"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT traversal o NAT-PMP o UPnP"
-
-msgid "Automatically map port"
-msgstr "Mapear puerto automáticamente"
-
 msgid "System sleep:"
 msgstr "Modo reposo:"
 
@@ -4197,6 +4191,12 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT traversal o NAT-PMP o UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Mapear puerto automáticamente"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} de los metadatos del torrent recuperados"

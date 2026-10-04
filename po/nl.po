@@ -2869,12 +2869,6 @@ msgstr "Peer communicatie:"
 msgid "Port is open"
 msgstr "Poort is open"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT-traversal gebruikt NAT-PMP of UPnP"
-
-msgid "Automatically map port"
-msgstr "Automatische poorttoekenning"
-
 msgid "System sleep:"
 msgstr "Systeem:"
 
@@ -4089,6 +4083,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT-traversal gebruikt NAT-PMP of UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Automatische poorttoekenning"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} van torrentmetadata gevonden"

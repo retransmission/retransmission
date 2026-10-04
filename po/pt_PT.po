@@ -2849,12 +2849,6 @@ msgstr "Comunicação entre peers:"
 msgid "Port is open"
 msgstr "A porta está aberta"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT Traversal utiliza NAT-PMP ou UPnP"
-
-msgid "Automatically map port"
-msgstr "Mapear porta automaticamente"
-
 msgid "System sleep:"
 msgstr "Sistema em pausa:"
 
@@ -4117,6 +4111,12 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT Traversal utiliza NAT-PMP ou UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Mapear porta automaticamente"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} dos metadados do torrent recebidos"

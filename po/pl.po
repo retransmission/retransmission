@@ -2948,12 +2948,6 @@ msgstr "Komunikacja z partnerami:"
 msgid "Port is open"
 msgstr "Port jest otwarty"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "Przechodzenie NAT używa NAT-PMP lub UPnP"
-
-msgid "Automatically map port"
-msgstr "Automatyczne mapowanie portu"
-
 msgid "System sleep:"
 msgstr "Uśpienie komputera:"
 
@@ -4208,6 +4202,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "Przechodzenie NAT używa NAT-PMP lub UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Automatyczne mapowanie portu"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "Pobrano {percent} metadanych torrentów"
