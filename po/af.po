@@ -237,8 +237,8 @@ msgstr "{current_size} ({percent_done}% van {percent_available}% beskikbaar)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% of {percent_available}% beskikbaar; {unverified_size} onbevestig)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} weggegooi na mislukte kontrolesom)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} weggegooi na mislukte kontrolesom"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Ratio: {ratio})"
@@ -1099,6 +1099,9 @@ msgstr "Opgelaai:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Afgelaai:"
+
+msgid "Failed DL:"
+msgstr "Mislukte aflaai:"
 
 msgid "State:"
 msgstr "Toestand:"
@@ -2345,9 +2348,6 @@ msgstr "Enige spoorder"
 
 msgid "Transfer"
 msgstr "Dra oor"
-
-msgid "Failed DL:"
-msgstr "Mislukte aflaai:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

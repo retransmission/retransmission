@@ -253,8 +253,8 @@ msgstr "{current_size} ({percent_done}% מתוך {percent_available}% זמיני
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% מתוך {percent_available}% זמינים; {unverified_size} לא אומתו)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} הושלכו לאחר בדיקת סכום שנכשלה)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} הושלכו לאחר בדיקת סכום שנכשלה"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (יחס: {ratio})"
@@ -1134,6 +1134,9 @@ msgstr "הועלו:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "הורדו:"
+
+msgid "Failed DL:"
+msgstr "הורדה נכשלה:"
 
 msgid "State:"
 msgstr "מצב:"
@@ -2423,9 +2426,6 @@ msgstr "כל עוקב"
 
 msgid "Transfer"
 msgstr "העברה"
-
-msgid "Failed DL:"
-msgstr "הורדה נכשלה:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

@@ -237,8 +237,8 @@ msgstr "{current_size} ({percent_done} / %{percent_available} uygun)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (%{percent_done} / %{percent_available} uygun; {unverified_size} doğrulanmamış)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} başarısız sağlama sonrası çıkarıldı)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} başarısız sağlama sonrası çıkarıldı"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Oran: {ratio})"
@@ -1102,6 +1102,9 @@ msgstr "Yüklenen:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "İndirilen:"
+
+msgid "Failed DL:"
+msgstr "Hatalı ind.:"
 
 msgid "State:"
 msgstr "Durum:"
@@ -2350,9 +2353,6 @@ msgstr "İzleyici"
 
 msgid "Transfer"
 msgstr "Aktarım"
-
-msgid "Failed DL:"
-msgstr "Hatalı ind.:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

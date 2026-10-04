@@ -207,7 +207,7 @@ msgstr "{current_size} ({percent_done}% de {percent_available}% disponible)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
+msgid "{discarded_size} discarded after failed checksum"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"

@@ -265,8 +265,8 @@ msgstr "{current_size} ({percent_done}% з доступних {percent_available
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% з доступних {percent_available}%; {unverified_size} не верифіковано)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} відкинуто через неправильну контрольну суму)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} відкинуто через неправильну контрольну суму"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Співвідношення: {ratio})"
@@ -1151,6 +1151,9 @@ msgstr "Вивантажено:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Завантажено:"
+
+msgid "Failed DL:"
+msgstr "Невдалих завантажень:"
 
 msgid "State:"
 msgstr "Стан:"
@@ -2443,9 +2446,6 @@ msgstr "Будь-який відстежувач"
 
 msgid "Transfer"
 msgstr "Передача"
-
-msgid "Failed DL:"
-msgstr "Невдалих завантажень:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

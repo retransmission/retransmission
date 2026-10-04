@@ -38,6 +38,7 @@ import sys
 #   'rstrip':  characters to take off the end, e.g. '.。'
 #   'period':  True adds the period that the catalog's other sentences end with
 #   'remove_prefix': text that the translation must start with and that is taken off; a translation without it is dropped
+#   'remove_suffix': the same, for the translation's end
 RENAMES = [
     # The Qt client's New Torrent dialog takes the GTK client's tracker-list help.
     {
@@ -325,6 +326,13 @@ RENAMES = [
     {'from': {'msgid': 'Ratio'}, 'to': {'msgid': 'Rati_o'}, 'keep': True, 'override': True},
     {'from': {'msgid': 'Queue Order'}, 'to': {'msgid': '_Queue Order'}, 'prefer': 'from'},
     {'from': {'msgid': 'State'}, 'to': {'msgid': 'Stat_e'}, 'prefer': 'from'},
+    # Discarded data has a row of its own in every client, and the message that explains it loses the download total.
+    {
+        'from': {'msgid': '{downloaded_size} (+{discarded_size} discarded after failed checksum)'},
+        'to': {'msgid': '{discarded_size} discarded after failed checksum'},
+        'remove_prefix': '{downloaded_size} (+',
+        'remove_suffix': ')',
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
@@ -439,6 +447,12 @@ def moved_translation(text, rename, colon, period):
         if not text.startswith(prefix):
             return ''
         text = text[len(prefix):]
+
+    suffix = rename.get('remove_suffix')
+    if suffix:
+        if not text.endswith(suffix):
+            return ''
+        text = text[: -len(suffix)]
 
     for stripped in rename.get('strip', []):
         text = text.replace(stripped, '')

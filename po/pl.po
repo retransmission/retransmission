@@ -276,8 +276,8 @@ msgstr "{current_size} ({percent_done}% z {percent_available}% dostępnych)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% z {percent_available}% dostępnych, {unverified_size} niesprawdzone)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} odrzucone po nieudanej sumie kontrolnej)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} odrzucone po nieudanej sumie kontrolnej"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (udział: {ratio})"
@@ -1162,6 +1162,9 @@ msgstr "Wysłano:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Pobrano:"
+
+msgid "Failed DL:"
+msgstr "Nieudane pobieranie:"
 
 msgid "State:"
 msgstr "Stan:"
@@ -2456,9 +2459,6 @@ msgstr "Dowolny serwer śledzący"
 
 msgid "Transfer"
 msgstr "Przesyłanie"
-
-msgid "Failed DL:"
-msgstr "Nieudane pobieranie:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

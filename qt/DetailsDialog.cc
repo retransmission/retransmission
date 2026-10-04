@@ -596,7 +596,8 @@ void DetailsDialog::refreshUI()
 
     ui_.availabilityValueLabel->setText(string);
 
-    // myDownloadedLabel
+    // myDownloadedLabel, myFailedLabel
+    auto failed_string = none;
     if (torrents.empty()) {
         string = none;
     } else {
@@ -608,20 +609,16 @@ void DetailsDialog::refreshUI()
             f += t->failedEver();
         }
 
-        auto const dstr = Formatter::storageToString(d);
-        auto const fstr = Formatter::storageToString(f);
+        string = Formatter::storageToString(d);
 
-        if (f != 0) {
-            string = TR_FORMAT(
-                "{downloaded_size} (+{discarded_size} discarded after failed checksum)",
-                fmt::arg("downloaded_size", dstr),
-                fmt::arg("discarded_size", fstr));
-        } else {
-            string = dstr;
-        }
+        auto const fstr = Formatter::storageToString(f);
+        failed_string = f != 0 ?
+            TR_FORMAT("{discarded_size} discarded after failed checksum", fmt::arg("discarded_size", fstr)) :
+            fstr;
     }
 
     ui_.downloadedValueLabel->setText(string);
+    ui_.failedValueLabel->setText(failed_string);
 
     //  myUploadedLabel
     if (torrents.empty()) {

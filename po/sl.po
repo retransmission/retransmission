@@ -231,8 +231,8 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} zavrženih po spodletelem preverjanju nadzorne vsote)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} zavrženih po spodletelem preverjanju nadzorne vsote"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Razmerje: {ratio})"
@@ -1039,6 +1039,9 @@ msgstr "Poslano:"
 
 msgid "Downloaded:"
 msgstr "Prejeto:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Stanje:"

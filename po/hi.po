@@ -217,8 +217,8 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} चेकसम विफल होने के उपरांत हटाई गई)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} चेकसम विफल होने के उपरांत हटाई गई"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (अनुपात : {ratio})"
@@ -1009,6 +1009,9 @@ msgstr "अपलोड :"
 
 msgid "Downloaded:"
 msgstr "डाउनलोड :"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "स्थिति :"

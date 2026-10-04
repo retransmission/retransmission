@@ -232,7 +232,7 @@ msgstr "{current_size} ({percent_done}% iš {percent_available}% pasiekiama)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% iš {percent_available}% pasiekiama; {unverified_size} nepatikrinta)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
+msgid "{discarded_size} discarded after failed checksum"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -1049,6 +1049,9 @@ msgstr "Išsiųsta:"
 
 msgid "Downloaded:"
 msgstr "Atsiųsta:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Būsena:"

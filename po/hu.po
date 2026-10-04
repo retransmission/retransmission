@@ -265,8 +265,8 @@ msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el)
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el, {unverified_size} nem ellenőrzött)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} hibás ellenőrzőösszeg miatt elvetve"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (arány: {ratio})"
@@ -1131,6 +1131,9 @@ msgstr "Feltöltve:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Letöltve:"
+
+msgid "Failed DL:"
+msgstr "Sikertelen LE:"
 
 msgid "State:"
 msgstr "Állapot:"
@@ -2377,9 +2380,6 @@ msgstr "Bármilyen tracker"
 
 msgid "Transfer"
 msgstr "Átvitel"
-
-msgid "Failed DL:"
-msgstr "Sikertelen LE:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

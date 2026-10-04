@@ -194,7 +194,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
     self.fDownloadedTotalField.stringValue = [NSString stringForFileSize:downloadedTotal];
     self.fUploadedTotalField.stringValue = [NSString stringForFileSize:uploadedTotal];
-    self.fFailedHashField.stringValue = [NSString stringForFileSize:failedHash];
+    NSString* const failedString = [NSString stringForFileSize:failedHash];
+    self.fFailedHashField.stringValue = failedHash != 0 ?
+        TR_FORMAT("{discarded_size} discarded after failed checksum", TRArg("discarded_size", failedString)) :
+        failedString;
 
     self.fDateActivityField.objectValue = lastActivity;
 

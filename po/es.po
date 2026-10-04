@@ -316,8 +316,8 @@ msgstr "{current_size} ({percent_done}% de {percent_available}% disponibles)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% de {percent_available}% disponible; {unverified_size} sin verificar)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} descartados después de suma de comprobación fallida)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} descartados después de suma de comprobación fallida"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Proporción: {ratio})"
@@ -1192,6 +1192,9 @@ msgstr "Subido:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Descargado:"
+
+msgid "Failed DL:"
+msgstr "Fallos:"
 
 msgid "State:"
 msgstr "Estado:"
@@ -2461,9 +2464,6 @@ msgstr "Cualquier tracker"
 
 msgid "Transfer"
 msgstr "Tarea"
-
-msgid "Failed DL:"
-msgstr "Fallos:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

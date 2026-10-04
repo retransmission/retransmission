@@ -233,8 +233,8 @@ msgstr "{current_size} (завършено {percent_done}% от {percent_availab
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (завършено {percent_done}% от {percent_available}%; {unverified_size} непотвърдени)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} отказано след неуспешна проверка/checksum/)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} отказано след неуспешна проверка/checksum/"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Коефицент: {ratio})"

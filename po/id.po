@@ -224,8 +224,8 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} dibuang setelah checksum gagal)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} dibuang setelah checksum gagal"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Rasio: {ratio})"
@@ -1003,6 +1003,9 @@ msgstr "Terunggah:"
 
 msgid "Downloaded:"
 msgstr "Terunduh:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Keadaan:"

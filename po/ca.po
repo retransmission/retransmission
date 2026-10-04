@@ -227,7 +227,7 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
+msgid "{discarded_size} discarded after failed checksum"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -1021,6 +1021,9 @@ msgstr "Pujat:"
 
 msgid "Downloaded:"
 msgstr "Baixat:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Estat:"

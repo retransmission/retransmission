@@ -230,8 +230,8 @@ msgstr "{current_size} ({percent_done}% av {percent_available}% tillgängligt)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% av {percent_available}% tillgängligt; {unverified_size} overifierad)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} kasseras efter misslyckad kontrollsumma)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} kasseras efter misslyckad kontrollsumma"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Kvot: {ratio})"
@@ -1096,6 +1096,9 @@ msgstr "Skickat:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Mottagit:"
+
+msgid "Failed DL:"
+msgstr "Misslyckad hämtning:"
 
 msgid "State:"
 msgstr "Tillstånd:"
@@ -2344,9 +2347,6 @@ msgstr "Vilken spårare som helst"
 
 msgid "Transfer"
 msgstr "Överför"
-
-msgid "Failed DL:"
-msgstr "Misslyckad hämtning:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

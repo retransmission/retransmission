@@ -279,8 +279,8 @@ msgstr "{current_size}（{percent_done}% /{percent_available}% 可用）"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size}（{percent_done}% / {percent_available}% 可用；{unverified_size} 未校验）"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size}（+{discarded_size} 校验和失败后被丢弃）"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size}（分享率：{ratio}）"
@@ -1132,6 +1132,9 @@ msgstr "已上传："
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "已下载："
+
+msgid "Failed DL:"
+msgstr "下载失败："
 
 msgid "State:"
 msgstr "状态："
@@ -2357,9 +2360,6 @@ msgstr "任意 Tracker"
 
 msgid "Transfer"
 msgstr "传输"
-
-msgid "Failed DL:"
-msgstr "下载失败："
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

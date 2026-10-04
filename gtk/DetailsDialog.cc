@@ -173,6 +173,7 @@ private:
     Gtk::Label* state_lb_ = nullptr;
     Gtk::Label* have_lb_ = nullptr;
     Gtk::Label* dl_lb_ = nullptr;
+    Gtk::Label* failed_lb_ = nullptr;
     Gtk::Label* ul_lb_ = nullptr;
     Gtk::Label* error_lb_ = nullptr;
     Gtk::Label* date_started_lb_ = nullptr;
@@ -802,26 +803,31 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
     if (stats.empty()) {
         str = no_torrent;
     } else {
-        auto const downloaded_str = tr_strlsize(
-            std::accumulate(std::begin(stats), std::end(stats), uint64_t{ 0 }, [](auto sum, auto const& st) {
-                return sum + st.downloaded_ever;
-            }));
+        str = tr_strlsize(std::accumulate(std::begin(stats), std::end(stats), uint64_t{ 0 }, [](auto sum, auto const& st) {
+            return sum + st.downloaded_ever;
+        }));
+    }
 
+    dl_lb_->set_text(str);
+
+    // failed_lb
+    if (stats.empty()) {
+        str = no_torrent;
+    } else {
         auto const failed = std::accumulate(std::begin(stats), std::end(stats), uint64_t{ 0 }, [](auto sum, auto const& st) {
             return sum + st.corrupt_ever;
         });
 
         if (failed != 0) {
             str = fmt::format(
-                fmt::runtime(_("{downloaded_size} (+{discarded_size} discarded after failed checksum)")),
-                fmt::arg("downloaded_size", downloaded_str),
+                fmt::runtime(_("{discarded_size} discarded after failed checksum")),
                 fmt::arg("discarded_size", tr_strlsize(failed)));
         } else {
-            str = downloaded_str;
+            str = tr_strlsize(failed);
         }
     }
 
-    dl_lb_->set_text(str);
+    failed_lb_->set_text(str);
 
     /* ul_lb */
     if (stats.empty()) {
@@ -2019,6 +2025,7 @@ DetailsDialog::Impl::Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> cons
     , state_lb_(gtr_get_widget<Gtk::Label>(builder, "state_value_label"))
     , have_lb_(gtr_get_widget<Gtk::Label>(builder, "have_value_label"))
     , dl_lb_(gtr_get_widget<Gtk::Label>(builder, "downloaded_value_label"))
+    , failed_lb_(gtr_get_widget<Gtk::Label>(builder, "failed_value_label"))
     , ul_lb_(gtr_get_widget<Gtk::Label>(builder, "uploaded_value_label"))
     , error_lb_(gtr_get_widget<Gtk::Label>(builder, "error_value_label"))
     , date_started_lb_(gtr_get_widget<Gtk::Label>(builder, "running_time_value_label"))

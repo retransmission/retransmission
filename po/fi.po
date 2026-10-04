@@ -233,8 +233,8 @@ msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla; {unverified_size} vahvistamaton)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hylätty väärän tarkistussumman jälkeen)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} hylätty väärän tarkistussumman jälkeen"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Suhde: {ratio})"
@@ -1030,6 +1030,9 @@ msgstr "Lähetetty:"
 
 msgid "Downloaded:"
 msgstr "Ladattu:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Tila:"

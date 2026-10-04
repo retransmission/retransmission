@@ -265,8 +265,8 @@ msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσ
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα· {unverified_size} μη ελεγχθέντα)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Αναλογία: {ratio})"
@@ -1130,6 +1130,9 @@ msgstr "Απεσταλμένα:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Ληφθέντα:"
+
+msgid "Failed DL:"
+msgstr "Ανεπιτυχές DL:"
 
 msgid "State:"
 msgstr "Κατάσταση:"
@@ -2376,9 +2379,6 @@ msgstr "Οποιοσδήποτε Ιχνηλάτης"
 
 msgid "Transfer"
 msgstr "Μεταφορά"
-
-msgid "Failed DL:"
-msgstr "Ανεπιτυχές DL:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

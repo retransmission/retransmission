@@ -218,8 +218,8 @@ msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku; {unverified_size} ekki sannreynt)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} hent eftir að yfirferð gátsummu mistókst"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Deilihlutfall: {ratio})"
@@ -1016,6 +1016,9 @@ msgstr "Sent:"
 
 msgid "Downloaded:"
 msgstr "Sótt:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "Staða:"

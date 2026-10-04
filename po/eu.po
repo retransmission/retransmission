@@ -241,8 +241,8 @@ msgstr "{current_size} (%{percent_done} eskuragarri dagoen %{percent_available}(
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (%{percent_done}eskuragarri dagoen %{percent_available}(e)tik; {unverified_size} egiaztatu gabe)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} baztertuta checksum egiaztatzeak huts egin ondoren)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} baztertuta checksum egiaztatzeak huts egin ondoren"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Maila: {ratio})"
@@ -1104,6 +1104,9 @@ msgstr "Igota:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Deskargatuta:"
+
+msgid "Failed DL:"
+msgstr "Huts egindako deskarga:"
 
 msgid "State:"
 msgstr "Egoera:"
@@ -2350,9 +2353,6 @@ msgstr "Edozein Aztarnari"
 
 msgid "Transfer"
 msgstr "Transferentzia"
-
-msgid "Failed DL:"
-msgstr "Huts egindako deskarga:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

@@ -228,8 +228,8 @@ msgstr "{current_size} (이용 가능한 {percent_available}% 중 {percent_done}
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (이용 가능한 {percent_available}% 중 {percent_done}%; {unverified_size} 검증되지 않음)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} 체크섬 실패 후 폐기됨)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} 체크섬 실패 후 폐기됨"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (비율: {ratio})"
@@ -1011,6 +1011,9 @@ msgstr "업로드함:"
 
 msgid "Downloaded:"
 msgstr "다운로드함:"
+
+msgid "Failed DL:"
+msgstr ""
 
 msgid "State:"
 msgstr "상태:"

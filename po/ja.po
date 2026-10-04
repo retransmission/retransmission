@@ -230,8 +230,8 @@ msgstr "{current_size} ({percent_done}% / {percent_available}% 入手可能)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% 入手可能; {unverified_size} 未検証)"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} をチェックサム失敗により破棄)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} をチェックサム失敗により破棄"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (共有比: {ratio})"
@@ -1084,6 +1084,9 @@ msgstr "アップロード済み:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "ダウンロード済み:"
+
+msgid "Failed DL:"
+msgstr "DL失敗:"
 
 msgid "State:"
 msgstr "状態:"
@@ -2309,9 +2312,6 @@ msgstr "いずれかのトラッカー"
 
 msgid "Transfer"
 msgstr "転送"
-
-msgid "Failed DL:"
-msgstr "DL失敗:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"

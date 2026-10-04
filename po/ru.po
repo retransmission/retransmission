@@ -239,8 +239,8 @@ msgstr "{current_size} (доступно {percent_done} % из {percent_availabl
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (доступно {percent_done} % из {percent_available} %; не проверено {unverified_size})"
 
-msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} отклонено после неудачной проверки контрольной суммы)"
+msgid "{discarded_size} discarded after failed checksum"
+msgstr "{discarded_size} отклонено после неудачной проверки контрольной суммы"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Рейтинг: {ratio})"
@@ -1125,6 +1125,9 @@ msgstr "Отдано:"
 #. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Загружено:"
+
+msgid "Failed DL:"
+msgstr "Неудачно:"
 
 msgid "State:"
 msgstr "Состояние:"
@@ -2419,9 +2422,6 @@ msgstr "Любой трекер"
 
 msgid "Transfer"
 msgstr "Раздача"
-
-msgid "Failed DL:"
-msgstr "Неудачно:"
 
 #. Translators: inspector -> peer table -> header tool tip
 msgid "Available"
