@@ -1853,56 +1853,59 @@ static void offerToImportFromTransmission()
         }
 
         if ([self.fDefaults boolForKey:@"CheckRemoveDownloading"] ? downloading > 0 : active > 0) {
-            NSString *title, *message;
-
-            NSUInteger const selected = torrents.count;
-            if (selected == 1) {
-                NSString* torrentName = torrents[0].name;
-
-                if (deleteData) {
-                    title = TR_FORMAT(
-                        "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?",
-                        TRArg("torrent_name", torrentName));
-                } else {
-                    title = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
+            NSUInteger const count = torrents.count;
+            NSUInteger incomplete = 0, connected = 0;
+            for (Torrent* torrent in torrents) {
+                if (!torrent.allDownloaded) {
+                    ++incomplete;
                 }
+                if (torrent.totalPeersConnected > 0) {
+                    ++connected;
+                }
+            }
 
-                message = TR_TEXT("This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again.");
+            // Text that doesn't show the count picks its wording by count == 1,
+            // because a language's plural form for one can cover other counts, e.g. 21 in Russian.
+            NSString* title;
+            if (count == 1) {
+                title = deleteData ? TR_TEXT("Delete this torrent's downloaded files?") : TR_TEXT("Remove torrent?");
+            } else if (deleteData) {
+                title = TR_FORMAT_N(
+                    "Delete this {count:L} torrent's downloaded files?",
+                    "Delete these {count:L} torrents' downloaded files?",
+                    count,
+                    TRArg("count", count));
             } else {
-                if (deleteData) {
-                    title = TR_FORMAT_N(
-                        "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?",
-                        "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?",
-                        selected,
-                        TRArg("count", selected));
-                } else {
-                    title = TR_FORMAT_N(
-                        "Are you sure you want to remove {count:L} torrent from the torrent list?",
-                        "Are you sure you want to remove {count:L} torrents from the torrent list?",
-                        selected,
-                        TRArg("count", selected));
-                }
+                title = TR_FORMAT_N("Remove {count:L} torrent?", "Remove {count:L} torrents?", count, TRArg("count", count));
+            }
 
-                if (selected == active) {
-                    message = TR_FORMAT_N("There is {count:L} active torrent.", "There are {count:L} active torrents.", active, TRArg("count", active));
-                } else {
-                    message = TR_FORMAT_N(
-                        "There is {count:L} torrent ({active_count:L} active).",
-                        "There are {count:L} torrents ({active_count:L} active).",
-                        selected,
-                        TRArg("count", selected),
-                        TRArg("active_count", active));
+            NSString* message;
+            if (incomplete == 0 && connected == 0) {
+                message = count == 1 ? TR_TEXT("Once removed, you'll need the torrent file or magnet link to add it again.") :
+                                       TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.");
+            } else if (count == incomplete) {
+                message = count == 1 ? TR_TEXT("This torrent has not finished downloading.") :
+                                       TR_TEXT("These torrents have not finished downloading.");
+            } else if (count == connected) {
+                message = count == 1 ? TR_TEXT("This torrent is connected to peers.") : TR_TEXT("These torrents are connected to peers.");
+            } else {
+                NSMutableArray<NSString*>* const lines = [NSMutableArray array];
+                if (connected != 0) {
+                    [lines addObject:connected == 1 ? TR_TEXT("One of these torrents is connected to peers.") :
+                                                      TR_TEXT("Some of these torrents are connected to peers.")];
                 }
-                message = [message
-                    stringByAppendingFormat:@" %@", TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.")];
+                if (incomplete != 0) {
+                    [lines addObject:incomplete == 1 ? TR_TEXT("One of these torrents has not finished downloading.") :
+                                                       TR_TEXT("Some of these torrents have not finished downloading.")];
+                }
+                message = [lines componentsJoinedByString:@"\n"];
             }
 
             NSAlert* alert = [[NSAlert alloc] init];
             alert.alertStyle = NSAlertStyleInformational;
             alert.messageText = title;
             alert.informativeText = message;
-            // Translators: Removal confirm panel -> button
-            [alert addButtonWithTitle:TR_MNEMONIC("_Remove")];
+            [alert addButtonWithTitle:deleteData ? TR_MNEMONIC("_Delete") : TR_MNEMONIC("_Remove")];
             [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
 
             [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
@@ -2035,19 +2038,13 @@ static void offerToImportFromTransmission()
     }
 
     if ([self.fDefaults boolForKey:@"WarningRemoveCompleted"]) {
+        NSUInteger const count = torrents.count;
         NSString *message, *info;
-        if (torrents.count == 1) {
-            NSString* torrentName = torrents[0].name;
-            message = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
-
+        if (count == 1) {
+            message = TR_TEXT("Remove torrent?");
             info = TR_TEXT("Once removed, you'll need the torrent file or magnet link to add it again.");
         } else {
-            message = TR_FORMAT_N(
-                "Are you sure you want to remove {count:L} completed torrent from the torrent list?",
-                "Are you sure you want to remove {count:L} completed torrents from the torrent list?",
-                torrents.count,
-                TRArg("count", torrents.count));
-
+            message = TR_FORMAT_N("Remove {count:L} torrent?", "Remove {count:L} torrents?", count, TRArg("count", count));
             info = TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.");
         }
 

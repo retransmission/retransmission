@@ -446,7 +446,6 @@ msgid "_Delete"
 msgstr "_מחיקה"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#. Translators: Removal confirm panel -> button
 #. Translators: Remove completed confirm panel -> button
 #. Translators: Remove toolbar item -> label
 #. Translators: Remove trackers alert -> button
@@ -3046,68 +3045,6 @@ msgstr ""
 msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
 msgstr ""
 
-#, fuzzy
-#| msgid "Are you sure you want to remove this tracker?"
-msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
-msgstr "להסיר עוקב זה?"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
-msgstr "להסיר {count:L} עוקבים?"
-
-#, fuzzy
-#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
-msgstr "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובץ הטורנט או קישור המגנט."
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
-msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
-msgstr[0] "להסיר {count:L} עוקבים?"
-msgstr[1] "להסיר {count:L} עוקבים?"
-msgstr[2] "להסיר {count:L} עוקבים?"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
-msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
-msgstr[0] "להסיר {count:L} עוקבים?"
-msgstr[1] "להסיר {count:L} עוקבים?"
-msgstr[2] "להסיר {count:L} עוקבים?"
-
-#, fuzzy
-#| msgid "Remove {count:L} torrent?"
-#| msgid_plural "Remove {count:L} torrents?"
-msgid "There is {count:L} active torrent."
-msgid_plural "There are {count:L} active torrents."
-msgstr[0] "הסרת טורנט?"
-msgstr[1] "להסיר {count:L} טורנטים?"
-msgstr[2] "להסיר {count:L} טורנטים?"
-
-#, fuzzy
-#| msgid "Seeding to {active_count:L} peer"
-#| msgid_plural "Seeding to {active_count:L} peers"
-msgid "There is {count:L} torrent ({active_count:L} active)."
-msgid_plural "There are {count:L} torrents ({active_count:L} active)."
-msgstr[0] "זריעה לעמית אחד"
-msgstr[1] "זריעה ל־{active_count:L} עמיתים"
-msgstr[2] "זריעה ל־{active_count:L} עמיתים"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
-msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
-msgstr[0] "להסיר {count:L} עוקבים?"
-msgstr[1] "להסיר {count:L} עוקבים?"
-msgstr[2] "להסיר {count:L} עוקבים?"
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "בחירת תיקייה חדשה עבור \"{torrent_name}\"."
 
@@ -4063,6 +4000,68 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+#~ msgstr "להסיר {count:L} עוקבים?"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+#~ msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+#~ msgstr[0] "להסיר {count:L} עוקבים?"
+#~ msgstr[1] "להסיר {count:L} עוקבים?"
+#~ msgstr[2] "להסיר {count:L} עוקבים?"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove this tracker?"
+#~ msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+#~ msgstr "להסיר עוקב זה?"
+
+#, fuzzy
+#~| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#~| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+#~ msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+#~ msgstr "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובץ הטורנט או קישור המגנט."
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+#~ msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+#~ msgstr[0] "להסיר {count:L} עוקבים?"
+#~ msgstr[1] "להסיר {count:L} עוקבים?"
+#~ msgstr[2] "להסיר {count:L} עוקבים?"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+#~ msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+#~ msgstr[0] "להסיר {count:L} עוקבים?"
+#~ msgstr[1] "להסיר {count:L} עוקבים?"
+#~ msgstr[2] "להסיר {count:L} עוקבים?"
+
+#, fuzzy
+#~| msgid "Remove {count:L} torrent?"
+#~| msgid_plural "Remove {count:L} torrents?"
+#~ msgid "There is {count:L} active torrent."
+#~ msgid_plural "There are {count:L} active torrents."
+#~ msgstr[0] "הסרת טורנט?"
+#~ msgstr[1] "להסיר {count:L} טורנטים?"
+#~ msgstr[2] "להסיר {count:L} טורנטים?"
+
+#, fuzzy
+#~| msgid "Seeding to {active_count:L} peer"
+#~| msgid_plural "Seeding to {active_count:L} peers"
+#~ msgid "There is {count:L} torrent ({active_count:L} active)."
+#~ msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+#~ msgstr[0] "זריעה לעמית אחד"
+#~ msgstr[1] "זריעה ל־{active_count:L} עמיתים"
+#~ msgstr[2] "זריעה ל־{active_count:L} עמיתים"
 
 #~ msgid "Menu"
 #~ msgstr "תפריט"

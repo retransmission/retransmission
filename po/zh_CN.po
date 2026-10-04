@@ -458,7 +458,6 @@ msgid "_Delete"
 msgstr "删除(_D)"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#. Translators: Removal confirm panel -> button
 #. Translators: Remove completed confirm panel -> button
 #. Translators: Remove toolbar item -> label
 #. Translators: Remove trackers alert -> button
@@ -2972,58 +2971,6 @@ msgstr ""
 msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
 msgstr ""
 
-#, fuzzy
-#| msgid "Are you sure you want to remove this tracker?"
-msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
-msgstr "你确定要删除这个tracker？"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
-msgstr "您确定要移除 {count:L} 个 Tracker 吗？"
-
-#, fuzzy
-#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
-msgstr "一旦移除，继续传输将需要 Torrent 文件或磁力链接。"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
-msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
-msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
-msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
-msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
-
-#, fuzzy
-#| msgid "Remove {count:L} torrent?"
-#| msgid_plural "Remove {count:L} torrents?"
-msgid "There is {count:L} active torrent."
-msgid_plural "There are {count:L} active torrents."
-msgstr[0] "移除 {count:L} 个种子？"
-
-#, fuzzy
-#| msgid "Seeding to {active_count:L} peer"
-#| msgid_plural "Seeding to {active_count:L} peers"
-msgid "There is {count:L} torrent ({active_count:L} active)."
-msgid_plural "There are {count:L} torrents ({active_count:L} active)."
-msgstr[0] "正在做种给 {active_count:L} 个节点"
-
-#, fuzzy
-#| msgid "Are you sure you want to remove {count:L} tracker?"
-#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
-msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
-msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
-msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "为“{torrent_name}”选择新的文件夹。"
 
@@ -3922,6 +3869,58 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+#~ msgstr "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+#~ msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+#~ msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove this tracker?"
+#~ msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+#~ msgstr "你确定要删除这个tracker？"
+
+#, fuzzy
+#~| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#~| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+#~ msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+#~ msgstr "一旦移除，继续传输将需要 Torrent 文件或磁力链接。"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+#~ msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+#~ msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#~| msgid "Are you sure you want to remove {count:L} tracker?"
+#~| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+#~ msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+#~ msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+#~ msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#~| msgid "Remove {count:L} torrent?"
+#~| msgid_plural "Remove {count:L} torrents?"
+#~ msgid "There is {count:L} active torrent."
+#~ msgid_plural "There are {count:L} active torrents."
+#~ msgstr[0] "移除 {count:L} 个种子？"
+
+#, fuzzy
+#~| msgid "Seeding to {active_count:L} peer"
+#~| msgid_plural "Seeding to {active_count:L} peers"
+#~ msgid "There is {count:L} torrent ({active_count:L} active)."
+#~ msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+#~ msgstr[0] "正在做种给 {active_count:L} 个节点"
 
 #~ msgid "Menu"
 #~ msgstr "菜单"
