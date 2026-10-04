@@ -20,6 +20,7 @@
 
 #include "Formatter.h"
 #include "Session.h"
+#include "TrFormat.h"
 #include "VariantHelpers.h"
 
 using ::trqt::variant_helpers::dictFind;
@@ -95,7 +96,7 @@ void FreeSpaceLabel::onTimer()
 
             // update the label
             if (auto const bytes = dictFind<int64_t>(r.args.get(), TR_KEY_size_bytes); bytes && *bytes > 1) {
-                self->setText(tr("%1 free").arg(Formatter::storageToString(*bytes)));
+                self->setText(TR_FORMAT("{disk_space} free", fmt::arg("disk_space", Formatter::storageToString(*bytes))));
             } else {
                 self->setText(QString{});
             }

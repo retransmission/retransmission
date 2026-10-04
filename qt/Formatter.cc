@@ -10,6 +10,8 @@
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 
+#include "TrFormat.h"
+
 using namespace std::literals;
 using namespace tr::Values;
 
@@ -63,22 +65,22 @@ QString Formatter::timeToString(int seconds)
     seconds = std::max(seconds, 0);
 
     if (seconds < 60) {
-        return tr("%Ln second(s)", nullptr, seconds);
+        return TR_FORMAT_N("{seconds:L} second(s)", seconds, fmt::arg("seconds", seconds));
     }
 
     auto const minutes = seconds / 60;
 
     if (minutes < 60) {
-        return tr("%Ln minute(s)", nullptr, minutes);
+        return TR_FORMAT_N("{minutes:L} minute(s)", minutes, fmt::arg("minutes", minutes));
     }
 
     auto const hours = minutes / 60;
 
     if (hours < 24) {
-        return tr("%Ln hour(s)", nullptr, hours);
+        return TR_FORMAT_N("{hours:L} hour(s)", hours, fmt::arg("hours", hours));
     }
 
     auto const days = hours / 24;
 
-    return tr("%Ln day(s)", nullptr, days);
+    return TR_FORMAT_N("{days:L} day(s)", days, fmt::arg("days", days));
 }

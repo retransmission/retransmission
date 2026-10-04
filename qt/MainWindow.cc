@@ -51,6 +51,7 @@
 #include "TorrentDelegateMin.h"
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "TrFormat.h"
 #include "Utils.h"
 
 namespace
@@ -323,7 +324,8 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(tr("Limited at %1").arg(Speed{ current_value, Speed::Units::KByps }.toQstring()));
+            on_action = menu->addAction(
+                TR_FORMAT("Limited at {speed}", fmt::arg("speed", Speed{ current_value, Speed::Units::KByps }.toQstring())));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_limit, current_value](bool is_checked) {
@@ -363,7 +365,8 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(tr("Stop at Ratio (%1)").arg(Formatter::ratioToString(current_value)));
+            on_action = menu->addAction(
+                TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(current_value))));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_ratio, current_value](bool is_checked) {
@@ -694,7 +697,7 @@ void MainWindow::refreshTitle()
     if (auto const url = QUrl{ session_.getRemoteUrl() }; !url.isEmpty()) {
         //: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
         //: notice that leading space (before the dash) is included here
-        title += tr(" - %1:%2").arg(url.host()).arg(url.port());
+        title += TR_FORMAT(" - {host}:{port}", fmt::arg("host", url.host()), fmt::arg("port", url.port()));
     }
 
     setWindowTitle(title);
@@ -730,10 +733,11 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
     auto const& st = use_session_stats ? session_.getStats() : session_.getCumulativeStats();
     ui_.statsLabel->setText(
         mode == StatsMode::SessionTransfer || mode == StatsMode::TotalTransfer ?
-            tr("Down: %1, Up: %2")
-                .arg(Formatter::storageToString(st.downloadedBytes))
-                .arg(Formatter::storageToString(st.uploadedBytes)) :
-            tr("Ratio: %1").arg(Formatter::ratioToString(st.ratio)));
+            TR_FORMAT(
+                "Down: {downloaded_size}, Up: {uploaded_size}",
+                fmt::arg("downloaded_size", Formatter::storageToString(st.downloadedBytes)),
+                fmt::arg("uploaded_size", Formatter::storageToString(st.uploadedBytes))) :
+            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(st.ratio))));
 }
 
 void MainWindow::refreshTorrentViewHeader()
@@ -744,7 +748,11 @@ void MainWindow::refreshTorrentViewHeader()
     if (visible_count == total_count) {
         ui_.listView->setHeaderText(QString{});
     } else {
-        ui_.listView->setHeaderText(tr("Showing %L1 of %Ln torrent(s)", nullptr, total_count).arg(visible_count));
+        ui_.listView->setHeaderText(TR_FORMAT_N(
+            "Showing {visible_count:L} of {count:L} torrent(s)",
+            total_count,
+            fmt::arg("visible_count", visible_count),
+            fmt::arg("count", total_count)));
     }
 }
 
@@ -1081,7 +1089,8 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_speed_limit_down:
-        dlimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring()));
+        dlimit_on_action_->setText(
+            TR_FORMAT("Limited at {speed}", fmt::arg("speed", Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring())));
         break;
 
     case TR_KEY_speed_limit_up_enabled:
@@ -1089,7 +1098,8 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_speed_limit_up:
-        ulimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring()));
+        ulimit_on_action_->setText(
+            TR_FORMAT("Limited at {speed}", fmt::arg("speed", Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring())));
         break;
 
     case TR_KEY_seed_ratio_limited:
@@ -1097,7 +1107,8 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_seed_ratio_limit:
-        ratio_on_action_->setText(tr("Stop at Ratio (%1)").arg(Formatter::ratioToString(prefs_.get<double>(key))));
+        ratio_on_action_->setText(
+            TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(prefs_.get<double>(key)))));
         break;
 
     case TR_KEY_show_filterbar:
@@ -1159,11 +1170,17 @@ void MainWindow::refreshPref(tr_quark const key)
             b = prefs_.get<bool>(TR_KEY_alt_speed_enabled);
             alt_speed_action_->setChecked(b);
             ui_.altSpeedButton->setChecked(b);
-            auto const fmt = b ? tr("Click to disable Alternative Speed Limits\n (%1 down, %2 up)") :
-                                 tr("Click to enable Alternative Speed Limits\n (%1 down, %2 up)");
-            auto const d = Speed{ prefs_.get<int>(TR_KEY_alt_speed_down), Speed::Units::KByps };
-            auto const u = Speed{ prefs_.get<int>(TR_KEY_alt_speed_up), Speed::Units::KByps };
-            ui_.altSpeedButton->setToolTip(fmt.arg(d.toQstring()).arg(u.toQstring()));
+            auto const down = Speed{ prefs_.get<int>(TR_KEY_alt_speed_down), Speed::Units::KByps }.toQstring();
+            auto const up = Speed{ prefs_.get<int>(TR_KEY_alt_speed_up), Speed::Units::KByps }.toQstring();
+            ui_.altSpeedButton->setToolTip(
+                b ? TR_FORMAT(
+                        "Click to disable Alternative Speed Limits\n ({download_speed} down, {upload_speed} up)",
+                        fmt::arg("download_speed", down),
+                        fmt::arg("upload_speed", up)) :
+                    TR_FORMAT(
+                        "Click to enable Alternative Speed Limits\n ({download_speed} down, {upload_speed} up)",
+                        fmt::arg("download_speed", down),
+                        fmt::arg("upload_speed", up)));
             break;
         }
 
@@ -1197,7 +1214,7 @@ void MainWindow::openTorrent()
     d->setAttribute(Qt::WA_DeleteOnClose);
 
     if (auto* const l = qobject_cast<QGridLayout*>(d->layout()); l != nullptr) {
-        auto* b = new QCheckBox{ tr("Show &options dialog") };
+        auto* b = new QCheckBox{ tr("Show options dialog") };
         b->setChecked(prefs_.get<bool>(TR_KEY_show_options_window));
         b->setObjectName(show_options_checkbox_name_);
         l->addWidget(b, l->rowCount(), 0, 1, -1, Qt::AlignLeft);
@@ -1302,10 +1319,12 @@ void MainWindow::removeTorrents(bool const delete_files)
     auto const count = static_cast<int>(ids.size());
 
     if (!delete_files) {
-        primary_text = count == 1 ? tr("Remove torrent?") : tr("Remove %Ln torrent(s)?", nullptr, count);
+        primary_text = count == 1 ? tr("Remove torrent?") :
+                                    TR_FORMAT_N("Remove {count:L} torrent(s)?", count, fmt::arg("count", count));
     } else {
-        primary_text = count == 1 ? tr("Delete this torrent's downloaded files?") :
-                                    tr("Delete these %Ln torrent(s)' downloaded files?", nullptr, count);
+        primary_text = count == 1 ?
+            tr("Delete this torrent's downloaded files?") :
+            TR_FORMAT_N("Delete these {count:L} torrent(s)' downloaded files?", count, fmt::arg("count", count));
     }
 
     if (incomplete == 0 && connected == 0) {
@@ -1382,18 +1401,21 @@ void MainWindow::updateNetworkLabel()
     }
 
     QString tip;
-    QString const url = session_.getRemoteUrl().host();
+    QString const host = session_.getRemoteUrl().host();
 
     if (last_read_time_ == 0) {
-        tip = tr("%1 has not responded yet").arg(url);
+        tip = TR_FORMAT("{host} has not responded yet", fmt::arg("host", host));
     } else if (network_error_) {
         tip = tr(error_message_.toLatin1().constData());
     } else if (seconds_since_last_read < 30) {
-        tip = tr("%1 is responding").arg(url);
+        tip = TR_FORMAT("{host} is responding", fmt::arg("host", host));
     } else if (seconds_since_last_read < 120) {
-        tip = tr("%1 last responded %2 ago").arg(url).arg(Formatter::timeToString(static_cast<int>(seconds_since_last_read)));
+        tip = TR_FORMAT(
+            "{host} last responded {time_span} ago",
+            fmt::arg("host", host),
+            fmt::arg("time_span", Formatter::timeToString(static_cast<int>(seconds_since_last_read))));
     } else {
-        tip = tr("%1 is not responding").arg(url);
+        tip = TR_FORMAT("{host} is not responding", fmt::arg("host", host));
     }
 
     ui_.networkLabel->setPixmap(pixmap);

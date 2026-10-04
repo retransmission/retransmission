@@ -69,6 +69,7 @@ target_sources(${TR_NAME}-qt-lib
         Session.h
         SessionDialog.cc
         SessionDialog.h
+        Speed.cc
         Speed.h
         SqueezeLabel.cc
         SqueezeLabel.h
@@ -95,6 +96,8 @@ target_sources(${TR_NAME}-qt-lib
         TrackerModelFilter.cc
         TrackerModelFilter.h
         Transports.h
+        TrFormat.cc
+        TrFormat.h
         TrQtInit.cc
         TrQtInit.h
         Typedefs.h
@@ -173,9 +176,12 @@ else()
     set(ENABLED_LINGUAS)
 endif()
 
+# The client loads <name>_<locale>.qm, which is built from translations/<name>_<locale>.ts.
+set(TRANSLATIONS_NAME transmission)
+
 set(TS_FILES)
 foreach(LANG ${ENABLED_LINGUAS})
-    list(APPEND TS_FILES translations/transmission_${LANG}.ts)
+    list(APPEND TS_FILES translations/${TRANSLATIONS_NAME}_${LANG}.ts)
 endforeach()
 
 if(TS_FILES)
@@ -202,7 +208,8 @@ target_compile_definitions(${TR_NAME}-qt-lib
         $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>
         QT_NO_CAST_FROM_ASCII
     PRIVATE
-        "TRANSLATIONS_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${TR_NAME}/translations\"")
+        "TRANSLATIONS_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${TR_NAME}/translations\""
+        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\"")
 
 set_target_properties(
     ${TR_NAME}-qt-lib

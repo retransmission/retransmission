@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "IconCache.h"
 #include "Prefs.h"
+#include "TrFormat.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
 
@@ -320,13 +321,13 @@ QString Torrent::getError() const
 {
     switch (error_) {
     case tr_stat::Error::TrackerWarning:
-        return tr("Tracker gave a warning: %1").arg(error_string_);
+        return TR_FORMAT("Tracker gave a warning: {warning}", fmt::arg("warning", error_string_));
 
     case tr_stat::Error::TrackerError:
-        return tr("Tracker gave an error: %1").arg(error_string_);
+        return TR_FORMAT("Tracker gave an error: {error}", fmt::arg("error", error_string_));
 
     case tr_stat::Error::LocalError:
-        return tr("Error: %1").arg(error_string_);
+        return TR_FORMAT("Error: {error}", fmt::arg("error", error_string_));
 
     default:
         return {};

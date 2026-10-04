@@ -34,6 +34,7 @@
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
+#include "TrFormat.h"
 #include "Utils.h"
 
 using namespace tr;
@@ -318,8 +319,11 @@ void PrefsDialog::updatePortStatusLabel()
 
     ui_.peerPortStatusLabel->setText(
         port_test_status_[Session::PORT_TEST_IPV4] == port_test_status_[Session::PORT_TEST_IPV6] ?
-            tr("Status: <b>%1</b>").arg(status_ipv4) :
-            tr("Status: <b>%1</b> (IPv4), <b>%2</b> (IPv6)").arg(status_ipv4).arg(status_ipv6));
+            TR_FORMAT("Status: <b>{status}</b>", fmt::arg("status", status_ipv4)) :
+            TR_FORMAT(
+                "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)",
+                fmt::arg("status_ipv4", status_ipv4),
+                fmt::arg("status_ipv6", status_ipv6)));
 }
 
 void PrefsDialog::portTestSetEnabled()
@@ -412,8 +416,10 @@ void PrefsDialog::onUpdateBlocklistCancelled()
 
 void PrefsDialog::onBlocklistUpdated(int64_t n)
 {
-    blocklist_dialog_->setText(
-        tr("<b>Update succeeded!</b><p>Blocklist now has %Ln rule(s).</p>", nullptr, static_cast<int>(n)));
+    blocklist_dialog_->setText(TR_FORMAT_N(
+        "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule(s).</p>",
+        static_cast<int>(n),
+        fmt::arg("count", n)));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
 
@@ -433,11 +439,13 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
 
 void PrefsDialog::onUpdateBlocklistClicked()
 {
-    blocklist_dialog_ = new QMessageBox{ QMessageBox::Information,
-                                         QString{},
-                                         tr("<b>Update Blocklist</b><p>Getting new blocklist…</p>"),
-                                         QMessageBox::Close,
-                                         this };
+    blocklist_dialog_ = new QMessageBox{
+        QMessageBox::Information,
+        QString{},
+        QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Update Blocklist"), tr("Getting new blocklist…")),
+        QMessageBox::Close,
+        this
+    };
     connect(blocklist_dialog_, &QDialog::rejected, this, &PrefsDialog::onUpdateBlocklistCancelled);
     connect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
     connect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);
@@ -470,9 +478,8 @@ void PrefsDialog::initPrivacyTab()
 void PrefsDialog::onIdleLimitChanged()
 {
     //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "%1 minute(s)");
-    auto const placeholder = QStringLiteral("%1");
-    Utils::updateSpinBoxFormat(ui_.idleLimitSpin, "PrefsDialog", units_format, placeholder);
+    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes:L} minute(s)");
+    Utils::updateSpinBoxFormat(ui_.idleLimitSpin, "PrefsDialog", units_format, "minutes");
 }
 
 void PrefsDialog::initSeedingTab()
@@ -496,9 +503,8 @@ void PrefsDialog::initSeedingTab()
 void PrefsDialog::onQueueStalledMinutesChanged()
 {
     //: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "%1 minute(s) ago");
-    auto const placeholder = QStringLiteral("%1");
-    Utils::updateSpinBoxFormat(ui_.queueStalledMinutesSpin, "PrefsDialog", units_format, placeholder);
+    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes_ago:L} minute(s) ago");
+    Utils::updateSpinBoxFormat(ui_.queueStalledMinutesSpin, "PrefsDialog", units_format, "minutes_ago");
 }
 
 void PrefsDialog::initDownloadingTab()
@@ -646,14 +652,18 @@ void PrefsDialog::sessionUpdated()
 
 void PrefsDialog::updateBlocklistLabel()
 {
-    ui_.blocklistStatusLabel->setText(
-        tr("<i>Blocklist contains %Ln rule(s)</i>", nullptr, static_cast<int>(session_.blocklistSize())));
+    auto const rule_count = session_.blocklistSize();
+    ui_.blocklistStatusLabel->setText(TR_FORMAT_N(
+        "<i>Blocklist contains {count:L} rule(s)</i>",
+        static_cast<int>(rule_count),
+        fmt::arg("count", rule_count)));
 
     auto const updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date).time_since_epoch().count();
     ui_.blocklistDateLabel->setText(
-        updated_at == 0 ?
-            tr("<i>Blocklist has never been updated</i>") :
-            tr("<i>Blocklist last updated %1</i>").arg(QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate)));
+        updated_at == 0 ? tr("<i>Blocklist has never been updated</i>") :
+                          TR_FORMAT(
+                              "<i>Blocklist last updated {date}</i>",
+                              fmt::arg("date", QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate))));
 }
 
 void PrefsDialog::refreshPref(tr_quark key)

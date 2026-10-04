@@ -779,10 +779,10 @@ void MainWindow::Impl::updateSpeeds()
             up_speed += torrent->get_speed_up();
         }
 
-        dl_lb_->set_text(fmt::format(fmt::runtime(_("{download_speed} ▼")), fmt::arg("download_speed", dn_speed.to_string())));
+        dl_lb_->set_text(fmt::format(fmt::runtime(_("{download_speed} ▾")), fmt::arg("download_speed", dn_speed.to_string())));
         dl_lb_->set_visible(dn_count > 0);
 
-        ul_lb_->set_text(fmt::format(fmt::runtime(_("{upload_speed} ▲")), fmt::arg("upload_speed", up_speed.to_string())));
+        ul_lb_->set_text(fmt::format(fmt::runtime(_("{upload_speed} ▴")), fmt::arg("upload_speed", up_speed.to_string())));
         ul_lb_->set_visible(dn_count > 0 || up_count > 0);
     }
 }

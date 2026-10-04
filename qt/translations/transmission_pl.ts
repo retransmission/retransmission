@@ -14,6 +14,10 @@
         <translation>Copyright © Projekt Transmission</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © Projekt {appname}</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Szybki i&#xa0;łatwy w&#xa0;użyciu klient sieci BitTorrent</translation>
@@ -91,8 +95,8 @@
     </message>
     <message>
         <location line="+109"/>
-        <source>%1 (+%2 discarded after failed checksum)</source>
-        <translation>%1 (+%2 odrzucone po nieudanej sumie kontrolnej)</translation>
+        <source>{downloaded_size} (+{discarded_size} discarded after failed checksum)</source>
+        <translation>{downloaded_size} (+{discarded_size} odrzucone po nieudanej sumie kontrolnej)</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -101,25 +105,25 @@
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 ago</source>
-        <translation>%1 temu</translation>
+        <source>{time_span} ago</source>
+        <translation>{time_span} temu</translation>
     </message>
     <message numerus="yes">
         <location line="+63"/>
-        <source>%1 (%Ln pieces @ %2)</source>
+        <source>{total_size} ({piece_count:L} pieces @ {piece_size})</source>
         <translation>
-            <numerusform>%1 (%Ln część o&#xa0;%2)</numerusform>
-            <numerusform>%1 (%Ln części po %2)</numerusform>
-            <numerusform>%1 (%Ln części po %2)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} część o&#xa0;{piece_size})</numerusform>
+            <numerusform>{total_size} ({piece_count:L} części po {piece_size})</numerusform>
+            <numerusform>{total_size} ({piece_count:L} części po {piece_size})</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source>%1 (%Ln pieces)</source>
+        <source>{total_size} ({piece_count:L} pieces)</source>
         <translation>
-            <numerusform>%1 (%Ln część)</numerusform>
-            <numerusform>%1 (%Ln części)</numerusform>
-            <numerusform>%1 (%Ln części)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} część)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} części)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} części)</numerusform>
         </translation>
     </message>
     <message>
@@ -134,18 +138,18 @@
     </message>
     <message>
         <location line="+102"/>
-        <source>Created by %1</source>
-        <translation>Utworzony przez: %1</translation>
+        <source>Created by {creator}</source>
+        <translation>Utworzony przez: {creator}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created on %1</source>
-        <translation>Utworzony dnia %1</translation>
+        <source>Created on {date}</source>
+        <translation>Utworzony dnia {date}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created by %1 on %2</source>
-        <translation>Utworzony dnia %2 przez: %1</translation>
+        <source>Created by {creator} on {date}</source>
+        <translation>Utworzony dnia {date} przez: {creator}</translation>
     </message>
     <message>
         <location line="+207"/>
@@ -225,26 +229,26 @@
     </message>
     <message>
         <location line="-872"/>
-        <source>%1 (100%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data</extracomment>
-        <translation>%1 (100%)</translation>
+        <source>{current_size} (100%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data</extracomment>
+        <translation>{current_size} (100%)</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data, %2 is overall size of torrent data, %3 is percentage (%1/%2*100)</extracomment>
-        <translation>%1 z&#xa0;%2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data, {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100)</extracomment>
+        <translation>{current_size} z&#xa0;{complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%), %4 Unverified</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded data (both verified and unverified), %2 is overall size of torrent data, %3 is percentage (%1/%2*100), %4 is amount of downloaded but not yet verified data</extracomment>
-        <translation>%1 z&#xa0;%2 (%3%), %4 niesprawdzone</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded data (both verified and unverified), {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100), {unverified_size} is amount of downloaded but not yet verified data</extracomment>
+        <translation>{current_size} z&#xa0;{complete_size} ({percent_done}%), {unverified_size} niesprawdzone</translation>
     </message>
     <message>
         <location line="+70"/>
-        <source>%1 (Ratio: %2)</source>
-        <translation>%1 (udział: %2)</translation>
+        <source>{uploaded_size} (Ratio: {ratio})</source>
+        <translation>{uploaded_size} (udział: {ratio})</translation>
     </message>
     <message>
         <location line="+303"/>
@@ -254,12 +258,12 @@
     </message>
     <message numerus="yes">
         <location line="+358"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation>
-            <numerusform>%1 minuta</numerusform>
-            <numerusform>%1 minuty</numerusform>
-            <numerusform>%1 minut</numerusform>
+            <numerusform>{minutes:L} minuta</numerusform>
+            <numerusform>{minutes:L} minuty</numerusform>
+            <numerusform>{minutes:L} minut</numerusform>
         </translation>
     </message>
     <message>
@@ -538,6 +542,22 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maksymalna liczba partnerów:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} — modyfikacja serwerów śledzących</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Dodaj</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Edycja</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Usuń</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -683,6 +703,10 @@
         <source>Search…</source>
         <translation>Wyszukaj…</translation>
     </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>W&amp;yświetlanie:</translation>
+    </message>
 </context>
 <context>
     <name>Formatter</name>
@@ -701,38 +725,38 @@
     </message>
     <message numerus="yes">
         <location line="+30"/>
-        <source>%Ln day(s)</source>
+        <source>{days:L} day(s)</source>
         <translation>
-            <numerusform>%Ln dzień</numerusform>
-            <numerusform>%Ln dni</numerusform>
-            <numerusform>%Ln dni</numerusform>
+            <numerusform>{days:L} dzień</numerusform>
+            <numerusform>{days:L} dni</numerusform>
+            <numerusform>{days:L} dni</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-5"/>
-        <source>%Ln hour(s)</source>
+        <source>{hours:L} hour(s)</source>
         <translation>
-            <numerusform>%Ln godzina</numerusform>
-            <numerusform>%Ln godziny</numerusform>
-            <numerusform>%Ln godzin</numerusform>
+            <numerusform>{hours:L} godzina</numerusform>
+            <numerusform>{hours:L} godziny</numerusform>
+            <numerusform>{hours:L} godzin</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <translation>
-            <numerusform>%Ln minuta</numerusform>
-            <numerusform>%Ln minuty</numerusform>
-            <numerusform>%Ln minut</numerusform>
+            <numerusform>{minutes:L} minuta</numerusform>
+            <numerusform>{minutes:L} minuty</numerusform>
+            <numerusform>{minutes:L} minut</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln second(s)</source>
+        <source>{seconds:L} second(s)</source>
         <translation>
-            <numerusform>%Ln sekunda</numerusform>
-            <numerusform>%Ln sekundy</numerusform>
-            <numerusform>%Ln sekund</numerusform>
+            <numerusform>{seconds:L} sekunda</numerusform>
+            <numerusform>{seconds:L} sekundy</numerusform>
+            <numerusform>{seconds:L} sekund</numerusform>
         </translation>
     </message>
 </context>
@@ -745,8 +769,8 @@
     </message>
     <message>
         <location line="+29"/>
-        <source>%1 free</source>
-        <translation>Wolne: %1</translation>
+        <source>{disk_space} free</source>
+        <translation>Wolne: {disk_space}</translation>
     </message>
 </context>
 <context>
@@ -1160,8 +1184,8 @@
         <location line="+6"/>
         <location line="+812"/>
         <location line="+9"/>
-        <source>Limited at %1</source>
-        <translation>Ograniczenie do %1</translation>
+        <source>Limited at {speed}</source>
+        <translation>Ograniczenie do {speed}</translation>
     </message>
     <message>
         <location line="-766"/>
@@ -1181,14 +1205,14 @@
     <message>
         <location line="+6"/>
         <location line="+799"/>
-        <source>Stop at Ratio (%1)</source>
-        <translation>Zatrzymanie przy udziale (%1)</translation>
+        <source>Stop at Ratio ({ratio})</source>
+        <translation>Zatrzymanie przy udziale ({ratio})</translation>
     </message>
     <message>
         <location line="-448"/>
-        <source> - %1:%2</source>
+        <source> - {host}:{port}</source>
         <extracomment>Second (optional) part of main window title &quot;Transmission - host:port&quot; (added when connected to remote session) notice that leading space (before the dash) is included here</extracomment>
-        <translation> — %1:%2</translation>
+        <translation> — {host}:{port}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1198,14 +1222,14 @@
     <message>
         <location line="+26"/>
         <location line="+19"/>
-        <source>Ratio: %1</source>
-        <translation>Udział: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>Udział: {ratio}</translation>
     </message>
     <message>
         <location line="-14"/>
         <location line="+7"/>
-        <source>Down: %1, Up: %2</source>
-        <translation>Pobrano: %1, wysłano: %2</translation>
+        <source>Down: {downloaded_size}, Up: {uploaded_size}</source>
+        <translation>Pobrano: {downloaded_size}, wysłano: {uploaded_size}</translation>
     </message>
     <message>
         <location line="+480"/>
@@ -1258,29 +1282,29 @@
     </message>
     <message numerus="yes">
         <location line="-4"/>
-        <source>Remove %Ln torrent(s)?</source>
+        <source>Remove {count:L} torrent(s)?</source>
         <translation>
-            <numerusform>Usunąć %Ln torrent?</numerusform>
-            <numerusform>Usunąć %Ln torrenty?</numerusform>
-            <numerusform>Usunąć %Ln torrentów?</numerusform>
+            <numerusform>Usunąć {count:L} torrent?</numerusform>
+            <numerusform>Usunąć {count:L} torrenty?</numerusform>
+            <numerusform>Usunąć {count:L} torrentów?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-584"/>
-        <source>Showing %L1 of %Ln torrent(s)</source>
+        <source>Showing {visible_count:L} of {count:L} torrent(s)</source>
         <translation>
-            <numerusform>Wyświetlanie %L1 z&#xa0;%Ln torrenta</numerusform>
-            <numerusform>Wyświetlanie %L1 z&#xa0;%Ln torrentów</numerusform>
-            <numerusform>Wyświetlanie %L1 z&#xa0;%Ln torrentów</numerusform>
+            <numerusform>Wyświetlanie {visible_count:L} z&#xa0;{count:L} torrenta</numerusform>
+            <numerusform>Wyświetlanie {visible_count:L} z&#xa0;{count:L} torrentów</numerusform>
+            <numerusform>Wyświetlanie {visible_count:L} z&#xa0;{count:L} torrentów</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+589"/>
-        <source>Delete these %Ln torrent(s)&apos; downloaded files?</source>
+        <source>Delete these {count:L} torrent(s)&apos; downloaded files?</source>
         <translation>
-            <numerusform>Usunąć pobrane pliki %Ln torrenta?</numerusform>
-            <numerusform>Usunąć pobrane pliki %Ln torrentów?</numerusform>
-            <numerusform>Usunąć pobrane pliki %Ln torrentów?</numerusform>
+            <numerusform>Usunąć pobrane pliki {count:L} torrenta?</numerusform>
+            <numerusform>Usunąć pobrane pliki {count:L} torrentów?</numerusform>
+            <numerusform>Usunąć pobrane pliki {count:L} torrentów?</numerusform>
         </translation>
     </message>
     <message>
@@ -1335,23 +1359,27 @@
     </message>
     <message>
         <location line="+69"/>
-        <source>%1 has not responded yet</source>
-        <translation>%1 jeszcze nie odpowiedział</translation>
+        <source>{host} has not responded yet</source>
+        <translation>{host} jeszcze nie odpowiedział</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 is responding</source>
-        <translation>%1 odpowiada</translation>
+        <source>{host} is responding</source>
+        <translation>{host} odpowiada</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 last responded %2 ago</source>
-        <translation>%1 ostatnio odpowiedział %2 temu</translation>
+        <source>{host} last responded {time_span} ago</source>
+        <translation>{host} ostatnio odpowiedział {time_span} temu</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 is not responding</source>
-        <translation>%1 nie odpowiada</translation>
+        <source>{host} is not responding</source>
+        <translation>{host} nie odpowiada</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Okno opcji</translation>
     </message>
 </context>
 <context>
@@ -1368,26 +1396,26 @@
     </message>
     <message numerus="yes">
         <location line="+5"/>
-        <source>%Ln File(s)</source>
+        <source>{file_count:L} File(s)</source>
         <translation>
-            <numerusform>%Ln plik</numerusform>
-            <numerusform>%Ln pliki</numerusform>
-            <numerusform>%Ln plików</numerusform>
+            <numerusform>{file_count:L} plik</numerusform>
+            <numerusform>{file_count:L} pliki</numerusform>
+            <numerusform>{file_count:L} plików</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
-        <source>%Ln Piece(s)</source>
+        <source>{piece_count:L} Piece(s)</source>
         <translation>
-            <numerusform>%Ln część</numerusform>
-            <numerusform>%Ln części</numerusform>
-            <numerusform>%Ln części</numerusform>
+            <numerusform>{piece_count:L} część</numerusform>
+            <numerusform>{piece_count:L} części</numerusform>
+            <numerusform>{piece_count:L} części</numerusform>
         </translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>%1 in %2; %3 @ %4</source>
-        <translation>%1 w&#xa0;%2, %3 o&#xa0;%4</translation>
+        <source>{total_size} in {files}; {pieces} @ {piece_size}</source>
+        <translation>{total_size} w&#xa0;{files}, {pieces} o&#xa0;{piece_size}</translation>
     </message>
     <message>
         <location filename="../MakeDialog.ui" line="+6"/>
@@ -1656,22 +1684,22 @@ Kolejny podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+464"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation>
-            <numerusform>%1 minuta</numerusform>
-            <numerusform>%1 minuty</numerusform>
-            <numerusform>%1 minut</numerusform>
+            <numerusform>{minutes:L} minuta</numerusform>
+            <numerusform>{minutes:L} minuty</numerusform>
+            <numerusform>{minutes:L} minut</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
-        <source>%1 minute(s) ago</source>
+        <source>{minutes_ago:L} minute(s) ago</source>
         <extracomment>Spin box format, &quot;Download is inactive if data sharing stopped: [ 5 minutes ago ]&quot;</extracomment>
         <translation>
-            <numerusform>%1 minuta temu</numerusform>
-            <numerusform>%1 minuty temu</numerusform>
-            <numerusform>%1 minut temu</numerusform>
+            <numerusform>{minutes_ago:L} minuta temu</numerusform>
+            <numerusform>{minutes_ago:L} minuty temu</numerusform>
+            <numerusform>{minutes_ago:L} minut temu</numerusform>
         </translation>
     </message>
     <message>
@@ -1762,11 +1790,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains %Ln rule(s)&lt;/i&gt;</source>
+        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
         <translation>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera %Ln regułę&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera %Ln reguły&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera %Ln reguł&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} regułę&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguły&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguł&lt;/i&gt;</numerusform>
         </translation>
     </message>
     <message>
@@ -2037,27 +2065,35 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation>Stan: &lt;b&gt;%1&lt;/b&gt;</translation>
+        <source>Status: &lt;b&gt;{status}&lt;/b&gt;</source>
+        <translation>Stan: &lt;b&gt;{status}&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt; (IPv4), &lt;b&gt;%2&lt;/b&gt; (IPv6)</source>
-        <translation>Stan: &lt;b&gt;%1&lt;/b&gt; (IPv4), &lt;b&gt;%2&lt;/b&gt; (IPv6)</translation>
+        <source>Status: &lt;b&gt;{status_ipv4}&lt;/b&gt; (IPv4), &lt;b&gt;{status_ipv6}&lt;/b&gt; (IPv6)</source>
+        <translation>Stan: &lt;b&gt;{status_ipv4}&lt;/b&gt; (IPv4), &lt;b&gt;{status_ipv6}&lt;/b&gt; (IPv6)</translation>
     </message>
     <message numerus="yes">
         <location line="+96"/>
-        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has %Ln rule(s).&lt;/p&gt;</source>
+        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has {count:L} rule(s).&lt;/p&gt;</source>
         <translation>
-            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz %Ln regułę.&lt;/p&gt;</numerusform>
-            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz %Ln reguły.&lt;/p&gt;</numerusform>
-            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz %Ln reguł.&lt;/p&gt;</numerusform>
+            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz {count:L} regułę.&lt;/p&gt;</numerusform>
+            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz {count:L} reguły.&lt;/p&gt;</numerusform>
+            <numerusform>&lt;b&gt;Zaktualizowano.&lt;/b&gt;&lt;p&gt;Lista blokowania ma teraz {count:L} reguł.&lt;/p&gt;</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&lt;b&gt;Update Blocklist&lt;/b&gt;&lt;p&gt;Getting new blocklist…&lt;/p&gt;</source>
         <translation>&lt;b&gt;Aktualizacja listy blokowania&lt;/b&gt;&lt;p&gt;Pobieranie nowej listy blokowania…&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Getting new blocklist…</source>
+        <translation>Pobieranie nowej listy blokowania…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Aktualizacja listy blokowania</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2247,8 +2283,16 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;%1&quot; as &quot;%2&quot;: %3.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Nie można zmienić nazwy pliku „%1” na „%2”: %3.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Proszę poprawić błędy i spróbować ponownie.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Nie można zmienić nazwy pliku „{old_path}” na „{path}”: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Proszę poprawić błędy i spróbować ponownie.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Proszę poprawić błędy i spróbować ponownie.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Nie można zmienić nazwy pliku „{old_path}” na „{path}”: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>
@@ -2257,8 +2301,8 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+38"/>
-        <source>%1 (copy of %2)</source>
-        <translation>%1 (kopia %2)</translation>
+        <source>{torrent_name} (copy of {hash})</source>
+        <translation>{torrent_name} (kopia {hash})</translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
@@ -2271,11 +2315,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add %n duplicate torrent(s)</source>
+        <source>Unable to add {count} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Nie można dodać %n podwójnego torrenta</numerusform>
-            <numerusform>Nie można dodać %n podwójnych torrentów</numerusform>
-            <numerusform>Nie można dodać %n podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count} podwójnego torrenta</numerusform>
+            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
         </translation>
     </message>
 </context>
@@ -2337,8 +2381,8 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     <message>
         <location filename="../Speed.h" line="+40"/>
         <location line="+6"/>
-        <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <source>{speed} {arrow}</source>
+        <translation>{speed} {arrow}</translation>
     </message>
 </context>
 <context>
@@ -2384,11 +2428,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location filename="../StatsDialog.cc" line="+63"/>
-        <source>Started %Ln time(s)</source>
+        <source>Started {count:L} time(s)</source>
         <translation>
-            <numerusform>Rozpoczęto %Ln raz</numerusform>
-            <numerusform>Rozpoczęto %Ln razy</numerusform>
-            <numerusform>Rozpoczęto %Ln razy</numerusform>
+            <numerusform>Rozpoczęto {count:L} raz</numerusform>
+            <numerusform>Rozpoczęto {count:L} razy</numerusform>
+            <numerusform>Rozpoczęto {count:L} razy</numerusform>
         </translation>
     </message>
 </context>
@@ -2436,18 +2480,18 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+15"/>
-        <source>Tracker gave a warning: %1</source>
-        <translation>Serwer śledzący zwrócił ostrzeżenie: %1</translation>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>Serwer śledzący zwrócił ostrzeżenie: {warning}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tracker gave an error: %1</source>
-        <translation>Serwer śledzący zwrócił błąd: %1</translation>
+        <source>Tracker gave an error: {error}</source>
+        <translation>Serwer śledzący zwrócił błąd: {error}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Error: %1</source>
-        <translation>Błąd: %1</translation>
+        <source>Error: {error}</source>
+        <translation>Błąd: {error}</translation>
     </message>
 </context>
 <context>
@@ -2460,9 +2504,9 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is how much we&apos;ll have when done, %3 is a percentage of the two</extracomment>
-        <translation>%1 z&#xa0;%2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is how much we&apos;ll have when done, {percent_done} is a percentage of the two</extracomment>
+        <translation>{current_size} z&#xa0;{complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2472,9 +2516,9 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+16"/>
-        <source>%1 of %2 (%3%), uploaded %4 (Ratio: %5)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is the torrent&apos;s total size, %3 is a percentage of the two, %4 is how much we&apos;ve uploaded, %5 is our upload-to-download ratio</extracomment>
-        <translation>%1 z&#xa0;%2 (%3%), wysłano %4 (udział: %5)</translation>
+        <source>{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is the torrent&apos;s total size, {percent_complete} is a percentage of the two, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{current_size} z&#xa0;{complete_size} ({percent_complete}%), wysłano {uploaded_size} (udział: {ratio})</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2484,15 +2528,15 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>%1, uploaded %2 (Ratio: %3)</source>
-        <extracomment>First part of torrent progress string, %1 is the torrent&apos;s total size, %2 is how much we&apos;ve uploaded, %3 is our upload-to-download ratio</extracomment>
-        <translation>%1, wysłano %2 (udział: %3)</translation>
+        <source>{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {complete_size} is the torrent&apos;s total size, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{complete_size}, wysłano {uploaded_size} (udział: {ratio})</translation>
     </message>
     <message>
         <location line="+15"/>
-        <source> - %1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
-        <translation> — pozostało: %1</translation>
+        <source> - {time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
+        <translation> — pozostało: {time_span}</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2502,14 +2546,14 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+38"/>
-        <source>Ratio: %1</source>
-        <translation>Udział: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>Udział: {ratio}</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>%1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
-        <translation>pozostało: %1</translation>
+        <source>{time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
+        <translation>pozostało: {time_span}</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2519,21 +2563,21 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>
-        <source>Downloading from %Ln peer(s)</source>
+        <source>Downloading from {active_count:L} peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Pobieranie od %Ln partnera</numerusform>
-            <numerusform>Pobieranie od %Ln partnerów</numerusform>
-            <numerusform>Pobieranie od %Ln partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} partnera</numerusform>
+            <numerusform>Pobieranie od {active_count:L} partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} partnerów</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+22"/>
-        <source>Seeding to %Ln peer(s)</source>
+        <source>Seeding to {active_count:L} peer(s)</source>
         <translation>
-            <numerusform>Wysyłanie do %Ln partnera</numerusform>
-            <numerusform>Wysyłanie do %Ln partnerów</numerusform>
-            <numerusform>Wysyłanie do %Ln partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} partnera</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} partnerów</numerusform>
         </translation>
     </message>
     <message>
@@ -2543,71 +2587,71 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="-50"/>
-        <source>Downloading metadata from %Ln peer(s) (%1% done)</source>
+        <source>Downloading metadata from {active_count:L} peer(s) ({percent_done}% done)</source>
         <translation>
-            <numerusform>Pobieranie metadanych od %Ln partnera (ukończono %1%)</numerusform>
-            <numerusform>Pobieranie metadanych od %Ln partnerów (ukończono %1%)</numerusform>
-            <numerusform>Pobieranie metadanych od %Ln partnerów (ukończono %1%)</numerusform>
+            <numerusform>Pobieranie metadanych od {active_count:L} partnera (ukończono {percent_done}%)</numerusform>
+            <numerusform>Pobieranie metadanych od {active_count:L} partnerów (ukończono {percent_done}%)</numerusform>
+            <numerusform>Pobieranie metadanych od {active_count:L} partnerów (ukończono {percent_done}%)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from %1 of %Ln connected peer(s)</source>
+        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Pobieranie od %1 z&#xa0;%Ln połączonego partnera</numerusform>
-            <numerusform>Pobieranie od %1 z&#xa0;%Ln połączonych partnerów</numerusform>
-            <numerusform>Pobieranie od %1 z&#xa0;%Ln połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
+            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+8"/>
-        <source> and %Ln web seed(s)</source>
+        <source> and {webseed_count:L} web seed(s)</source>
         <extracomment>Second (optional) part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;, notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform> i&#xa0;%Ln wysyłającego w&#xa0;sieci</numerusform>
-            <numerusform> i&#xa0;%Ln wysyłających w&#xa0;sieci</numerusform>
-            <numerusform> i&#xa0;%Ln wysyłających w&#xa0;sieci</numerusform>
+            <numerusform> i&#xa0;{webseed_count:L} wysyłającego w&#xa0;sieci</numerusform>
+            <numerusform> i&#xa0;{webseed_count:L} wysyłających w&#xa0;sieci</numerusform>
+            <numerusform> i&#xa0;{webseed_count:L} wysyłających w&#xa0;sieci</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to %1 of %Ln connected peer(s)</source>
+        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
         <translation>
-            <numerusform>Wysyłanie do %1 z&#xa0;%Ln połączonego partnera</numerusform>
-            <numerusform>Wysyłanie do %1 z&#xa0;%Ln połączonych partnerów</numerusform>
-            <numerusform>Wysyłanie do %1 z&#xa0;%Ln połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
+            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message>
         <location line="-95"/>
-        <source>Verifying local data (%1% tested)</source>
-        <translation>Sprawdzanie pobranych danych (sprawdzono %1%)</translation>
+        <source>Verifying local data ({percent_done}% tested)</source>
+        <translation>Sprawdzanie pobranych danych (sprawdzono {percent_done}%)</translation>
     </message>
 </context>
 <context>
     <name>TrackerDelegate</name>
     <message numerus="yes">
         <location filename="../TrackerDelegate.cc" line="+220"/>
-        <source>Got a list of%1 %Ln peer(s)%2 %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
+        <source>Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
         <translation>
-            <numerusform>Otrzymano listę%1 %Ln partnera%2 %3 temu</numerusform>
-            <numerusform>Otrzymano listę%1 %Ln partnerów%2 %3 temu</numerusform>
-            <numerusform>Otrzymano listę%1 %Ln partnerów%2 %3 temu</numerusform>
+            <numerusform>Otrzymano listę{markup_begin} {peer_count:L} partnera{markup_end} {time_span} temu</numerusform>
+            <numerusform>Otrzymano listę{markup_begin} {peer_count:L} partnerów{markup_end} {time_span} temu</numerusform>
+            <numerusform>Otrzymano listę{markup_begin} {peer_count:L} partnerów{markup_end} {time_span} temu</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Peer list request %1timed out%2 %3 ago; will retry</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>Żądanie listy partnerów %1przekroczyło czas oczekiwania%2 %3 temu, zostanie ponowione</translation>
+        <source>Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>Żądanie listy partnerów {markup_begin}przekroczyło czas oczekiwania{markup_end} {time_span} temu, zostanie ponowione</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Got an error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>Otrzymano błąd %1„%2”%3 %4 temu</translation>
+        <source>Got an error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>Otrzymano błąd {markup_begin}„{error}”{markup_end} {time_span} temu</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2616,9 +2660,9 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Asking for more peers in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Wysyłanie zapytania o&#xa0;więcej partnerów za %1</translation>
+        <source>Asking for more peers in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Wysyłanie zapytania o&#xa0;więcej partnerów za {time_span}</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2627,53 +2671,53 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+73"/>
-        <source>Asking for peer counts now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Wysyłanie zapytania o&#xa0;liczbę partnerów… &lt;small&gt;%1&lt;/small&gt;</translation>
+        <source>Asking for peer counts now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Wysyłanie zapytania o&#xa0;liczbę partnerów… &lt;small&gt;{time_span}&lt;/small&gt;</translation>
     </message>
     <message numerus="yes">
         <location line="-37"/>
-        <source>Tracker had%1 %Ln seeder(s)%2</source>
-        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup</extracomment>
+        <source>Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}</source>
+        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup</extracomment>
         <translation>
-            <numerusform>Serwer śledzący miał%1 %Ln wysyłającego%2</numerusform>
-            <numerusform>Serwer śledzący miał%1 %Ln wysyłających%2</numerusform>
-            <numerusform>Serwer śledzący miał%1 %Ln wysyłających%2</numerusform>
+            <numerusform>Serwer śledzący miał{markup_begin} {seeder_count:L} wysyłającego{markup_end}</numerusform>
+            <numerusform>Serwer śledzący miał{markup_begin} {seeder_count:L} wysyłających{markup_end}</numerusform>
+            <numerusform>Serwer śledzący miał{markup_begin} {seeder_count:L} wysyłających{markup_end}</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source> and%1 %Ln leecher(s)%2 %3 ago</source>
-        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup, %3 is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
+        <source> and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago</source>
+        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform> i%1 %Ln niewysyłającego%2 %3 temu</numerusform>
-            <numerusform> i%1 %Ln niewysyłających%2 %3 temu</numerusform>
-            <numerusform> i%1 %Ln niewysyłających%2 %3 temu</numerusform>
+            <numerusform> i{markup_begin} {leecher_count:L} niewysyłającego{markup_end} {time_span} temu</numerusform>
+            <numerusform> i{markup_begin} {leecher_count:L} niewysyłających{markup_end} {time_span} temu</numerusform>
+            <numerusform> i{markup_begin} {leecher_count:L} niewysyłających{markup_end} {time_span} temu</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Tracker had %1no information%2 on peer counts %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>Serwer śledzący %1nie miał żadnych informacji%2 o&#xa0;liczbie partnerów %3 temu</translation>
+        <source>Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>Serwer śledzący {markup_begin}nie miał żadnych informacji{markup_end} o&#xa0;liczbie partnerów {time_span} temu</translation>
     </message>
     <message>
         <location line="-24"/>
-        <source>Got a scrape error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>Otrzymano błąd „scrape” %1„%2”%3 %4 temu</translation>
+        <source>Got a scrape error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>Otrzymano błąd „scrape” {markup_begin}„{error}”{markup_end} {time_span} temu</translation>
     </message>
     <message>
         <location line="-20"/>
-        <source>Asking for more peers now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Wysyłanie zapytania o&#xa0;więcej partnerów… &lt;small&gt;%1&lt;/small&gt;</translation>
+        <source>Asking for more peers now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Wysyłanie zapytania o&#xa0;więcej partnerów… &lt;small&gt;{time_span}&lt;/small&gt;</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>Asking for peer counts in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Wysyłanie zapytania o&#xa0;liczbę partnerów za %1</translation>
+        <source>Asking for peer counts in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Wysyłanie zapytania o&#xa0;liczbę partnerów za {time_span}</translation>
     </message>
     <message>
         <location line="+5"/>

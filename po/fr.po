@@ -403,7 +403,7 @@ msgstr[2] "Réception d’une liste de {markup_begin}{peer_count} pairs{markup_
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
 msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "La demande de liste de pairs {markup_begin}est arrivée au bout de son délai il y a {time_span}{markup_end} ; une nouvelle tentative est prévue"
+msgstr "La demande de liste de pairs {markup_begin}est arrivée au bout de son délai il y a {time_span_ago}{markup_end} ; une nouvelle tentative est prévue"
 
 #. {markup_begin} and {markup_end} should surround the error
 #: ../gtk/DetailsDialog.cc:1795
@@ -495,6 +495,10 @@ msgstr[2] "Propriétés – {torrent_count:L} torrents"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "Supprimer {count:L} torrent ?"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "Supprimer {count:L} torrent ?"
 msgstr[1] "Supprimer {count:L} de torrents ?"
@@ -502,8 +506,12 @@ msgstr[2] "Supprimer {count:L} torrents ?"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "Supprimer les fichiers téléchargés de ce torrent ?"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Supprimer les fichiers téléchargés de ce torrent ?"
+msgstr[0] "Supprimer les fichiers téléchargés de ce {count:L} torrent ?"
 msgstr[1] "Supprimer les fichiers téléchargés de ces {count:L} de torrents ?"
 msgstr[2] "Supprimer les fichiers téléchargés de ces {count:L} torrents ?"
 
@@ -516,31 +524,35 @@ msgstr[2] "Une fois supprimés, la reprise des torrents exigera les fichiers tor
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "Le téléchargement de ce torrent n’est pas terminé."
-msgstr[1] "Le téléchargement de ces torrents n’est pas terminé."
-msgstr[2] "Le téléchargement de ces torrents n’est pas terminé."
+msgstr "Le téléchargement de ce torrent n’est pas terminé."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "Le téléchargement de ces torrents n’est pas terminé."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "Ce torrent est connecté à des pairs."
-msgstr[1] "Ces torrents sont connectés à des pairs."
-msgstr[2] "Ces torrents sont connectés à des pairs."
+msgstr "Ce torrent est connecté à des pairs."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "Ces torrents sont connectés à des pairs."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "Un de ces torrents est connecté à des pairs."
-msgstr[1] "Plusieurs de ces torrents sont connectés à des pairs."
-msgstr[2] "Plusieurs de ces torrents sont connectés à des pairs."
+msgstr "Un de ces torrents est connecté à des pairs."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "Plusieurs de ces torrents sont connectés à des pairs."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "Le téléchargement d’un de ces torrents n’est pas terminé."
-msgstr[1] "Le téléchargement de certains de ces torrents n’est pas terminé."
-msgstr[2] "Le téléchargement de certains de ces torrents n’est pas terminé."
+msgstr "Le téléchargement d’un de ces torrents n’est pas terminé."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "Le téléchargement de certains de ces torrents n’est pas terminé."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
@@ -690,12 +702,12 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Aval : {downloaded_size} – Amont : {uploaded_size}"
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
-msgstr "{download_speed} ▼"
+msgid "{download_speed} ▾"
+msgstr "{download_speed} ▾"
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
-msgstr "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
+msgstr "{upload_speed} ▴"
 
 #: ../gtk/MakeDialog.cc:194
 msgid "Creating '{path}'"
@@ -940,8 +952,8 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "Ces statistiques ne sont qu’à titre indicatif. Les réinitialiser n’affecte pas les statistiques enregistrées par vos traceurs BitTorrent."
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
-msgstr "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
+msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: ../gtk/Torrent.cc:442
 #, no-c-format
@@ -973,8 +985,8 @@ msgid "Remaining time unknown"
 msgstr "Le temps restant est inconnu"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
-msgstr "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
+msgstr "{download_speed} ▾  {upload_speed} ▴"
 
 #: ../gtk/Torrent.cc:634
 msgid "Stalled"

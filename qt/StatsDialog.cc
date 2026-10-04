@@ -10,6 +10,7 @@
 #include "ColumnResizer.h"
 #include "Formatter.h"
 #include "Session.h"
+#include "TrFormat.h"
 
 namespace
 {
@@ -60,5 +61,6 @@ void StatsDialog::updateStats()
     ui_.totalRatioValueLabel->setText(Formatter::ratioToString(total.ratio));
     ui_.totalDurationValueLabel->setText(Formatter::timeToString(static_cast<int>(total.secondsActive)));
 
-    ui_.startCountLabel->setText(tr("Started %Ln time(s)", nullptr, static_cast<int>(total.sessionCount)));
+    ui_.startCountLabel->setText(
+        TR_FORMAT_N("Started {count:L} time(s)", static_cast<int>(total.sessionCount), fmt::arg("count", total.sessionCount)));
 }

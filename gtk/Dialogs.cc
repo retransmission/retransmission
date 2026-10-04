@@ -16,6 +16,7 @@
 #include <fmt/format.h>
 
 #include <memory>
+#include <string>
 #include <vector>
 
 /***
@@ -45,34 +46,33 @@ void gtr_confirm_remove(
         }
     }
 
-    auto const primary_text = fmt::format(
-        fmt::runtime(
-            !delete_files ? ngettext("Remove torrent?", "Remove {count:L} torrents?", count) :
-                            ngettext(
-                                "Delete this torrent's downloaded files?",
-                                "Delete these {count:L} torrents' downloaded files?",
-                                count)),
-        fmt::arg("count", count));
+    // Text without the count picks its wording by count == 1.
+    // ngettext() picks by a language's plural rules,
+    // and Russian's form for 1 also serves 21, 31, and so on.
+    auto const primary_text = count == 1 ?
+        std::string{ !delete_files ? _("Remove torrent?") : _("Delete this torrent's downloaded files?") } :
+        fmt::format(
+            fmt::runtime(
+                !delete_files ? ngettext("Remove {count:L} torrent?", "Remove {count:L} torrents?", count) :
+                                ngettext(
+                                    "Delete this {count:L} torrent's downloaded files?",
+                                    "Delete these {count:L} torrents' downloaded files?",
+                                    count)),
+            fmt::arg("count", count));
 
     Glib::ustring secondary_text;
     if (incomplete == 0 && connected == 0) {
-        secondary_text = ngettext(
-            "Once removed, you'll need the torrent file or magnet link to add it again.",
-            "Once removed, you'll need the torrent files or magnet links to add them again.",
-            count);
+        secondary_text = count == 1 ? _("Once removed, you'll need the torrent file or magnet link to add it again.") :
+                                      _("Once removed, you'll need the torrent files or magnet links to add them again.");
     } else if (count == incomplete) {
-        secondary_text = ngettext(
-            "This torrent has not finished downloading.",
-            "These torrents have not finished downloading.",
-            count);
+        secondary_text = count == 1 ? _("This torrent has not finished downloading.") :
+                                      _("These torrents have not finished downloading.");
     } else if (count == connected) {
-        secondary_text = ngettext("This torrent is connected to peers.", "These torrents are connected to peers.", count);
+        secondary_text = count == 1 ? _("This torrent is connected to peers.") : _("These torrents are connected to peers.");
     } else {
         if (connected != 0) {
-            secondary_text += ngettext(
-                "One of these torrents is connected to peers.",
-                "Some of these torrents are connected to peers.",
-                connected);
+            secondary_text += connected == 1 ? _("One of these torrents is connected to peers.") :
+                                               _("Some of these torrents are connected to peers.");
         }
 
         if (connected != 0 && incomplete != 0) {
@@ -80,10 +80,8 @@ void gtr_confirm_remove(
         }
 
         if (incomplete != 0) {
-            secondary_text += ngettext(
-                "One of these torrents has not finished downloading.",
-                "Some of these torrents have not finished downloading.",
-                incomplete);
+            secondary_text += incomplete == 1 ? _("One of these torrents has not finished downloading.") :
+                                                _("Some of these torrents have not finished downloading.");
         }
     }
 

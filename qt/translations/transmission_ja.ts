@@ -14,6 +14,10 @@
         <translation>Copyright © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>高速でお手軽な BitTorrent クライアント</translation>
@@ -89,8 +93,8 @@
     </message>
     <message>
         <location line="+109"/>
-        <source>%1 (+%2 discarded after failed checksum)</source>
-        <translation>%1 (+%2 はチェックサムの失敗により破棄されました)</translation>
+        <source>{downloaded_size} (+{discarded_size} discarded after failed checksum)</source>
+        <translation>{downloaded_size} (+{discarded_size} はチェックサムの失敗により破棄されました)</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -99,21 +103,21 @@
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 ago</source>
-        <translation>%1前</translation>
+        <source>{time_span} ago</source>
+        <translation>{time_span}前</translation>
     </message>
     <message numerus="yes">
         <location line="+63"/>
-        <source>%1 (%Ln pieces @ %2)</source>
+        <source>{total_size} ({piece_count:L} pieces @ {piece_size})</source>
         <translation>
-            <numerusform>%1 (%Ln ピース @ %2)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} ピース @ {piece_size})</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source>%1 (%Ln pieces)</source>
+        <source>{total_size} ({piece_count:L} pieces)</source>
         <translation>
-            <numerusform>%1 (%Ln ピース)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} ピース)</numerusform>
         </translation>
     </message>
     <message>
@@ -128,18 +132,18 @@
     </message>
     <message>
         <location line="+102"/>
-        <source>Created by %1</source>
-        <translation>作成 %1</translation>
+        <source>Created by {creator}</source>
+        <translation>作成 {creator}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created on %1</source>
-        <translation>作成日 %1</translation>
+        <source>Created on {date}</source>
+        <translation>作成日 {date}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created by %1 on %2</source>
-        <translation>作成 %1 / 作成日: %2</translation>
+        <source>Created by {creator} on {date}</source>
+        <translation>作成 {creator} / 作成日: {date}</translation>
     </message>
     <message>
         <location line="+207"/>
@@ -219,26 +223,26 @@
     </message>
     <message>
         <location line="-872"/>
-        <source>%1 (100%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data</extracomment>
-        <translation>%1 (100%)</translation>
+        <source>{current_size} (100%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data</extracomment>
+        <translation>{current_size} (100%)</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data, %2 is overall size of torrent data, %3 is percentage (%1/%2*100)</extracomment>
-        <translation>%1 / %2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data, {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100)</extracomment>
+        <translation>{current_size} / {complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%), %4 Unverified</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded data (both verified and unverified), %2 is overall size of torrent data, %3 is percentage (%1/%2*100), %4 is amount of downloaded but not yet verified data</extracomment>
-        <translation>%1 / %2 (%3%), %4 未検証</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded data (both verified and unverified), {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100), {unverified_size} is amount of downloaded but not yet verified data</extracomment>
+        <translation>{current_size} / {complete_size} ({percent_done}%), {unverified_size} 未検証</translation>
     </message>
     <message>
         <location line="+70"/>
-        <source>%1 (Ratio: %2)</source>
-        <translation>%1 (共有比: %2)</translation>
+        <source>{uploaded_size} (Ratio: {ratio})</source>
+        <translation>{uploaded_size} (共有比: {ratio})</translation>
     </message>
     <message>
         <location line="+303"/>
@@ -248,10 +252,10 @@
     </message>
     <message numerus="yes">
         <location line="+358"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation>
-            <numerusform>%1分</numerusform>
+            <numerusform>{minutes:L}分</numerusform>
         </translation>
     </message>
     <message>
@@ -530,6 +534,22 @@
         <source>&amp;Maximum peers:</source>
         <translation>最大ピア数(&amp;M):</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - トラッカー編集</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>追加(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>編集(&amp;E)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>削除(&amp;R)</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -675,6 +695,10 @@
         <source>Search…</source>
         <translation>検索…</translation>
     </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>表示(&amp;S):</translation>
+    </message>
 </context>
 <context>
     <name>Formatter</name>
@@ -693,30 +717,30 @@
     </message>
     <message numerus="yes">
         <location line="+30"/>
-        <source>%Ln day(s)</source>
+        <source>{days:L} day(s)</source>
         <translation>
-            <numerusform>%Ln日</numerusform>
+            <numerusform>{days:L}日</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-5"/>
-        <source>%Ln hour(s)</source>
+        <source>{hours:L} hour(s)</source>
         <translation>
-            <numerusform>%Ln時間</numerusform>
+            <numerusform>{hours:L}時間</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <translation>
-            <numerusform>%Ln 分</numerusform>
+            <numerusform>{minutes:L} 分</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln second(s)</source>
+        <source>{seconds:L} second(s)</source>
         <translation>
-            <numerusform>%Ln 秒</numerusform>
+            <numerusform>{seconds:L} 秒</numerusform>
         </translation>
     </message>
 </context>
@@ -729,8 +753,8 @@
     </message>
     <message>
         <location line="+29"/>
-        <source>%1 free</source>
-        <translation>%1 の空き</translation>
+        <source>{disk_space} free</source>
+        <translation>{disk_space} の空き</translation>
     </message>
 </context>
 <context>
@@ -1144,8 +1168,8 @@
         <location line="+6"/>
         <location line="+812"/>
         <location line="+9"/>
-        <source>Limited at %1</source>
-        <translation>%1 に制限</translation>
+        <source>Limited at {speed}</source>
+        <translation>{speed} に制限</translation>
     </message>
     <message>
         <location line="-766"/>
@@ -1165,14 +1189,14 @@
     <message>
         <location line="+6"/>
         <location line="+799"/>
-        <source>Stop at Ratio (%1)</source>
-        <translation>この共有比で停止 (%1)</translation>
+        <source>Stop at Ratio ({ratio})</source>
+        <translation>この共有比で停止 ({ratio})</translation>
     </message>
     <message>
         <location line="-448"/>
-        <source> - %1:%2</source>
+        <source> - {host}:{port}</source>
         <extracomment>Second (optional) part of main window title &quot;Transmission - host:port&quot; (added when connected to remote session) notice that leading space (before the dash) is included here</extracomment>
-        <translation> - %1:%2</translation>
+        <translation> - {host}:{port}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1182,14 +1206,14 @@
     <message>
         <location line="+26"/>
         <location line="+19"/>
-        <source>Ratio: %1</source>
-        <translation>共有比: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>共有比: {ratio}</translation>
     </message>
     <message>
         <location line="-14"/>
         <location line="+7"/>
-        <source>Down: %1, Up: %2</source>
-        <translation>下り: %1, 上り: %2</translation>
+        <source>Down: {downloaded_size}, Up: {uploaded_size}</source>
+        <translation>下り: {downloaded_size}, 上り: {uploaded_size}</translation>
     </message>
     <message>
         <location line="+480"/>
@@ -1242,23 +1266,23 @@
     </message>
     <message numerus="yes">
         <location line="-4"/>
-        <source>Remove %Ln torrent(s)?</source>
+        <source>Remove {count:L} torrent(s)?</source>
         <translation>
-            <numerusform>%Ln トレントを除去しますか？</numerusform>
+            <numerusform>{count:L} トレントを除去しますか？</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-584"/>
-        <source>Showing %L1 of %Ln torrent(s)</source>
+        <source>Showing {visible_count:L} of {count:L} torrent(s)</source>
         <translation>
-            <numerusform>%L1 / %Ln トレントを表示中</numerusform>
+            <numerusform>{visible_count:L} / {count:L} トレントを表示中</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+589"/>
-        <source>Delete these %Ln torrent(s)&apos; downloaded files?</source>
+        <source>Delete these {count:L} torrent(s)&apos; downloaded files?</source>
         <translation>
-            <numerusform>これら %Ln トレントのダウンロード済みファイルを削除しますか？</numerusform>
+            <numerusform>これら {count:L} トレントのダウンロード済みファイルを削除しますか？</numerusform>
         </translation>
     </message>
     <message>
@@ -1313,23 +1337,27 @@
     </message>
     <message>
         <location line="+69"/>
-        <source>%1 has not responded yet</source>
-        <translation>%1 はまだ応答なし</translation>
+        <source>{host} has not responded yet</source>
+        <translation>{host} はまだ応答なし</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 is responding</source>
-        <translation>%1 は応答中</translation>
+        <source>{host} is responding</source>
+        <translation>{host} は応答中</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 last responded %2 ago</source>
-        <translation>%1 最後の応答は %2 前</translation>
+        <source>{host} last responded {time_span} ago</source>
+        <translation>{host} 最後の応答は {time_span} 前</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 is not responding</source>
-        <translation>%1 は応答していない</translation>
+        <source>{host} is not responding</source>
+        <translation>{host} は応答していない</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>オプションダイアログを表示</translation>
     </message>
 </context>
 <context>
@@ -1346,22 +1374,22 @@
     </message>
     <message numerus="yes">
         <location line="+5"/>
-        <source>%Ln File(s)</source>
+        <source>{file_count:L} File(s)</source>
         <translation>
-            <numerusform>%Ln ファイル</numerusform>
+            <numerusform>{file_count:L} ファイル</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
-        <source>%Ln Piece(s)</source>
+        <source>{piece_count:L} Piece(s)</source>
         <translation>
-            <numerusform>%Ln ピース</numerusform>
+            <numerusform>{piece_count:L} ピース</numerusform>
         </translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>%1 in %2; %3 @ %4</source>
-        <translation>%1 の %2; %3 @ %4</translation>
+        <source>{total_size} in {files}; {pieces} @ {piece_size}</source>
+        <translation>{total_size} の {files}; {pieces} @ {piece_size}</translation>
     </message>
     <message>
         <location filename="../MakeDialog.ui" line="+6"/>
@@ -1630,18 +1658,18 @@ To add another primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+464"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation>
-            <numerusform>%1分</numerusform>
+            <numerusform>{minutes:L}分</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
-        <source>%1 minute(s) ago</source>
+        <source>{minutes_ago:L} minute(s) ago</source>
         <extracomment>Spin box format, &quot;Download is inactive if data sharing stopped: [ 5 minutes ago ]&quot;</extracomment>
         <translation>
-            <numerusform>%1分前</numerusform>
+            <numerusform>{minutes_ago:L}分前</numerusform>
         </translation>
     </message>
     <message>
@@ -1733,9 +1761,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains %Ln rule(s)&lt;/i&gt;</source>
+        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
         <translation>
-            <numerusform>&lt;i&gt;ブロックリスト内に %Ln 個の規則があります&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;ブロックリスト内に {count:L} 個の規則があります&lt;/i&gt;</numerusform>
         </translation>
     </message>
     <message>
@@ -2006,25 +2034,33 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+13"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation>状態: &lt;b&gt;%1&lt;/b&gt;</translation>
+        <source>Status: &lt;b&gt;{status}&lt;/b&gt;</source>
+        <translation>状態: &lt;b&gt;{status}&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt; (IPv4), &lt;b&gt;%2&lt;/b&gt; (IPv6)</source>
-        <translation>状態: &lt;b&gt;%1&lt;/b&gt; (IPv4), &lt;b&gt;%2&lt;/b&gt; (IPv6)</translation>
+        <source>Status: &lt;b&gt;{status_ipv4}&lt;/b&gt; (IPv4), &lt;b&gt;{status_ipv6}&lt;/b&gt; (IPv6)</source>
+        <translation>状態: &lt;b&gt;{status_ipv4}&lt;/b&gt; (IPv4), &lt;b&gt;{status_ipv6}&lt;/b&gt; (IPv6)</translation>
     </message>
     <message numerus="yes">
         <location line="+96"/>
-        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has %Ln rule(s).&lt;/p&gt;</source>
+        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has {count:L} rule(s).&lt;/p&gt;</source>
         <translation>
-            <numerusform>&lt;b&gt;更新成功!&lt;/b&gt;&lt;p&gt;ブロックリストに %Ln 個の規則があります。&lt;/p&gt;</numerusform>
+            <numerusform>&lt;b&gt;更新成功!&lt;/b&gt;&lt;p&gt;ブロックリストに {count:L} 個の規則があります。&lt;/p&gt;</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&lt;b&gt;Update Blocklist&lt;/b&gt;&lt;p&gt;Getting new blocklist…&lt;/p&gt;</source>
         <translation>&lt;b&gt;ブロックリストの更新&lt;/b&gt;&lt;p&gt;新しいブロックリストを取得…&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Getting new blocklist…</source>
+        <translation>新しいブロックリストを取得…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>ブロックリストの更新</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2214,8 +2250,16 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;%1&quot; as &quot;%2&quot;: %3.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;「%1」を「%2」に改名できません: %3。&lt;/b&gt;&lt;/p&gt;&lt;p&gt;エラーを修正し再度お試しください。&lt;/p&gt;</translation>
+        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;「{old_path}」を「{path}」に改名できません: {error}。&lt;/b&gt;&lt;/p&gt;&lt;p&gt;エラーを修正し再度お試しください。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>エラーを修正し再度お試しください。</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>「{old_path}」を「{path}」に改名できません: {error}。</translation>
     </message>
     <message>
         <location line="+565"/>
@@ -2224,8 +2268,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+38"/>
-        <source>%1 (copy of %2)</source>
-        <translation>%1 (%2 のコピー)</translation>
+        <source>{torrent_name} (copy of {hash})</source>
+        <translation>{torrent_name} ({hash} のコピー)</translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
@@ -2236,9 +2280,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add %n duplicate torrent(s)</source>
+        <source>Unable to add {count} duplicate torrent(s)</source>
         <translation>
-            <numerusform>%n個の重複したトレントを追加できません</numerusform>
+            <numerusform>{count}個の重複したトレントを追加できません</numerusform>
         </translation>
     </message>
 </context>
@@ -2300,8 +2344,8 @@ To add a new primary URL, add it after a blank line.</source>
     <message>
         <location filename="../Speed.h" line="+40"/>
         <location line="+6"/>
-        <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <source>{speed} {arrow}</source>
+        <translation>{speed} {arrow}</translation>
     </message>
 </context>
 <context>
@@ -2347,9 +2391,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../StatsDialog.cc" line="+63"/>
-        <source>Started %Ln time(s)</source>
+        <source>Started {count:L} time(s)</source>
         <translation>
-            <numerusform>%Ln 回起動</numerusform>
+            <numerusform>{count:L} 回起動</numerusform>
         </translation>
     </message>
 </context>
@@ -2397,18 +2441,18 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+15"/>
-        <source>Tracker gave a warning: %1</source>
-        <translation>トラッカーが警告しました: %1</translation>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>トラッカーが警告しました: {warning}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tracker gave an error: %1</source>
-        <translation>トラッカーのエラー: %1</translation>
+        <source>Tracker gave an error: {error}</source>
+        <translation>トラッカーのエラー: {error}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Error: %1</source>
-        <translation>エラー: %1</translation>
+        <source>Error: {error}</source>
+        <translation>エラー: {error}</translation>
     </message>
 </context>
 <context>
@@ -2421,9 +2465,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is how much we&apos;ll have when done, %3 is a percentage of the two</extracomment>
-        <translation>%1 / %2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is how much we&apos;ll have when done, {percent_done} is a percentage of the two</extracomment>
+        <translation>{current_size} / {complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2433,9 +2477,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+16"/>
-        <source>%1 of %2 (%3%), uploaded %4 (Ratio: %5)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is the torrent&apos;s total size, %3 is a percentage of the two, %4 is how much we&apos;ve uploaded, %5 is our upload-to-download ratio</extracomment>
-        <translation>%1 / %2 (%3%), アップ済み %4 (共有比: %5)</translation>
+        <source>{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is the torrent&apos;s total size, {percent_complete} is a percentage of the two, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio})</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2445,15 +2489,15 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>%1, uploaded %2 (Ratio: %3)</source>
-        <extracomment>First part of torrent progress string, %1 is the torrent&apos;s total size, %2 is how much we&apos;ve uploaded, %3 is our upload-to-download ratio</extracomment>
-        <translation>%1, アップ済み %2 (共有比: %3)</translation>
+        <source>{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {complete_size} is the torrent&apos;s total size, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{complete_size}, アップ済み {uploaded_size} (共有比: {ratio})</translation>
     </message>
     <message>
         <location line="+15"/>
-        <source> - %1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
-        <translation>- 残り %1</translation>
+        <source> - {time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
+        <translation>- 残り {time_span}</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2463,14 +2507,14 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+38"/>
-        <source>Ratio: %1</source>
-        <translation>共有比: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>共有比: {ratio}</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>%1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
-        <translation>%1残り</translation>
+        <source>{time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
+        <translation>{time_span}残り</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2480,17 +2524,17 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+40"/>
-        <source>Downloading from %Ln peer(s)</source>
+        <source>Downloading from {active_count:L} peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>ダウンロード中, %Ln ピア</numerusform>
+            <numerusform>ダウンロード中, {active_count:L} ピア</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+22"/>
-        <source>Seeding to %Ln peer(s)</source>
+        <source>Seeding to {active_count:L} peer(s)</source>
         <translation>
-            <numerusform>%Ln ピアにシード中</numerusform>
+            <numerusform>{active_count:L} ピアにシード中</numerusform>
         </translation>
     </message>
     <message>
@@ -2500,61 +2544,61 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="-50"/>
-        <source>Downloading metadata from %Ln peer(s) (%1% done)</source>
+        <source>Downloading metadata from {active_count:L} peer(s) ({percent_done}% done)</source>
         <translation>
-            <numerusform>%Ln ピアからメタ情報をダウンロード中 (%1% 完了)</numerusform>
+            <numerusform>{active_count:L} ピアからメタ情報をダウンロード中 ({percent_done}% 完了)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from %1 of %Ln connected peer(s)</source>
+        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>ダウンロード中, %Ln 中 %1 の接続ピア</numerusform>
+            <numerusform>ダウンロード中, {connected_count} 中 {active_count} の接続ピア</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+8"/>
-        <source> and %Ln web seed(s)</source>
+        <source> and {webseed_count:L} web seed(s)</source>
         <extracomment>Second (optional) part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;, notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform>と %Ln のウェブシードから</numerusform>
+            <numerusform>と {webseed_count:L} のウェブシードから</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to %1 of %Ln connected peer(s)</source>
+        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
         <translation>
-            <numerusform>%Ln 中 %1 の接続ピアにシード中</numerusform>
+            <numerusform>{connected_count} 中 {active_count} の接続ピアにシード中</numerusform>
         </translation>
     </message>
     <message>
         <location line="-95"/>
-        <source>Verifying local data (%1% tested)</source>
-        <translation>取得済みのデータを検証中 (%1% 済み)</translation>
+        <source>Verifying local data ({percent_done}% tested)</source>
+        <translation>取得済みのデータを検証中 ({percent_done}% 済み)</translation>
     </message>
 </context>
 <context>
     <name>TrackerDelegate</name>
     <message numerus="yes">
         <location filename="../TrackerDelegate.cc" line="+220"/>
-        <source>Got a list of%1 %Ln peer(s)%2 %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
+        <source>Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
         <translation>
-            <numerusform>%1 %Ln ピア%2の一覧を取得 %3 前</numerusform>
+            <numerusform>{markup_begin} {peer_count:L} ピア{markup_end}の一覧を取得 {time_span} 前</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Peer list request %1timed out%2 %3 ago; will retry</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>ピア一覧の要求が%1タイムアウト%2 %3 前; 再試行</translation>
+        <source>Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>ピア一覧の要求が{markup_begin}タイムアウト{markup_end} {time_span} 前; 再試行</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Got an error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>エラーを取得 %1&quot;%2&quot;%3 %4 前</translation>
+        <source>Got an error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>エラーを取得 {markup_begin}&quot;{error}&quot;{markup_end} {time_span} 前</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2563,9 +2607,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Asking for more peers in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>%1 後にピア探索を要求</translation>
+        <source>Asking for more peers in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>{time_span} 後にピア探索を要求</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2574,49 +2618,49 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+73"/>
-        <source>Asking for peer counts now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>ピア数を要求中… &lt;small&gt;%1&lt;/small&gt;</translation>
+        <source>Asking for peer counts now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>ピア数を要求中… &lt;small&gt;{time_span}&lt;/small&gt;</translation>
     </message>
     <message numerus="yes">
         <location line="-37"/>
-        <source>Tracker had%1 %Ln seeder(s)%2</source>
-        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup</extracomment>
+        <source>Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}</source>
+        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup</extracomment>
         <translation>
-            <numerusform>トラッカーに%1 %Ln のシーダー%2 </numerusform>
+            <numerusform>トラッカーに{markup_begin} {seeder_count:L} のシーダー{markup_end} </numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source> and%1 %Ln leecher(s)%2 %3 ago</source>
-        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup, %3 is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
+        <source> and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago</source>
+        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform>また %1 %Ln のリーチャー%2 %3 前</numerusform>
+            <numerusform>また {markup_begin} {leecher_count:L} のリーチャー{markup_end} {time_span} 前</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Tracker had %1no information%2 on peer counts %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>トラッカーにピア数の%1情報なし%2 %3 前</translation>
+        <source>Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>トラッカーにピア数の{markup_begin}情報なし{markup_end} {time_span} 前</translation>
     </message>
     <message>
         <location line="-24"/>
-        <source>Got a scrape error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>スクレイプのエラー %1&quot;%2&quot;%3 が %4 前に発生</translation>
+        <source>Got a scrape error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>スクレイプのエラー {markup_begin}&quot;{error}&quot;{markup_end} が {time_span} 前に発生</translation>
     </message>
     <message>
         <location line="-20"/>
-        <source>Asking for more peers now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>ピアの増加を要求… &lt;small&gt;%1&lt;/small&gt;</translation>
+        <source>Asking for more peers now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>ピアの増加を要求… &lt;small&gt;{time_span}&lt;/small&gt;</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>Asking for peer counts in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>ピア数を問い合わせ %1 後</translation>
+        <source>Asking for peer counts in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>ピア数を問い合わせ {time_span} 後</translation>
     </message>
     <message>
         <location line="+5"/>
