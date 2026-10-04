@@ -466,13 +466,15 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
             NSString* fileString = [messageStrings componentsJoinedByString:@"\n"];
 
-            if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
+            NSError* error = nil;
+            if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
                 NSAlert* alert = [[NSAlert alloc] init];
                 [alert addButtonWithTitle:TR_TEXT("OK")];
-                alert.messageText = TR_TEXT("Log Could Not Be Saved");
-                alert.informativeText = TR_FORMAT(
-                    "There was a problem creating the file \"{filename}\".",
-                    TRArg("filename", panel.URL.path.lastPathComponent));
+                alert.messageText = TR_FORMAT(
+                    "Couldn't save '{path}': {error} ({error_code})",
+                    TRArg("path", panel.URL.path),
+                    TRArg("error", error.localizedDescription),
+                    TRArg("error_code", error.code));
                 alert.alertStyle = NSAlertStyleWarning;
 
                 [alert runModal];

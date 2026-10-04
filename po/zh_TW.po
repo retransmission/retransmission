@@ -3351,12 +3351,6 @@ msgstr "私有 torrent"
 msgid "untitled"
 msgstr "未命名"
 
-msgid "Log Could Not Be Saved"
-msgstr "無法儲存日誌"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "建立檔案 \"{filename}\" 時發生問題。"
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3401,18 +3395,9 @@ msgstr "最後更新於： {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "全部不明"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} 次"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3427,9 +3412,6 @@ msgstr "全域上傳限制： {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "全域下載限制： {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "不能將資料夾移動到其本身之中。"
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "無法移動 \"{torrent_name}\"。"
@@ -3770,6 +3752,19 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "無法儲存日誌"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "建立檔案 \"{filename}\" 時發生問題。"
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} 次"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "不能將資料夾移動到其本身之中。"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

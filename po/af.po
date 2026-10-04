@@ -3381,12 +3381,6 @@ msgstr "Privaattorrent"
 msgid "untitled"
 msgstr "naamloos"
 
-msgid "Log Could Not Be Saved"
-msgstr "Logboek kon nie bewaar word nie"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Daar was ’n probleem met die skep van lêer “{filename}”."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3433,19 +3427,9 @@ msgstr "Laas bygewerk: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Totaal NVT"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} keer"
-msgstr[1] "{count:L} keer"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3460,9 +3444,6 @@ msgstr "Globale oplaailimiet: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "Globale aflaailimiet: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "’n Vouer kan nie na binne homself geskuif word nie."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "Die skuifoperasie van “{torrent_name}” kan nie uitgevoer word nie."
@@ -3818,6 +3799,20 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "Logboek kon nie bewaar word nie"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Daar was ’n probleem met die skep van lêer “{filename}”."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} keer"
+#~ msgstr[1] "{count:L} keer"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "’n Vouer kan nie na binne homself geskuif word nie."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

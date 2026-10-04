@@ -3465,12 +3465,6 @@ msgstr "טורנט פרטי"
 msgid "untitled"
 msgstr "ללא שם"
 
-msgid "Log Could Not Be Saved"
-msgstr "לא ניתן לשמור יומן"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "בעיה בעת יצירת הקובץ \"{filename}\"."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3519,20 +3513,9 @@ msgstr "עודכנו לאחרונה: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "סך הכול N/A"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "פעם אחת"
-msgstr[1] "{count:L} פעמים"
-msgstr[2] "{count:L} פעמים"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3547,9 +3530,6 @@ msgstr "מגבלת העלאה כללית: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "מגבלת הורדה כללית: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "לא ניתן להעביר תיקיה לתוך עצמה."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "לא ניתן לבצע העברה של \"{torrent_name}\"."
@@ -3924,6 +3904,21 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "לא ניתן לשמור יומן"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "בעיה בעת יצירת הקובץ \"{filename}\"."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "פעם אחת"
+#~ msgstr[1] "{count:L} פעמים"
+#~ msgstr[2] "{count:L} פעמים"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "לא ניתן להעביר תיקיה לתוך עצמה."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

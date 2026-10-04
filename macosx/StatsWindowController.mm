@@ -87,8 +87,8 @@ static tr_session* fLib = NULL;
     self.fRatioLabelField.stringValue = TR_TEXT("Ratio:");
     // Translators: Stats window -> label
     self.fTimeLabelField.stringValue = TR_TEXT("Running time:");
-    // Translators: Stats window -> label
-    self.fNumOpenedLabelField.stringValue = TR_TEXT("Program started:");
+    // The row says what it counts in its value, "Started 5 times", as the other clients do.
+    self.fNumOpenedLabelField.stringValue = @"";
 
     // Translators: Stats window -> reset button
     self.fResetButton.title = TR_MNEMONIC("_Reset");
@@ -186,9 +186,8 @@ static tr_session* fLib = NULL;
     self.fTimeAllField.stringValue = totalString([timeFormatter stringFromTimeInterval:statsAll.secondsActive]);
 
     self.fNumOpenedField.stringValue = TR_FORMAT_N(
-        // Translators: stats window -> times opened
-        "{count:L} time",
-        "{count:L} times",
+        "Started {count:L} time",
+        "Started {count:L} times",
         statsAll.sessionCount,
         TRArg("count", statsAll.sessionCount));
 }

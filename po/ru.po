@@ -3469,12 +3469,6 @@ msgstr "Закрытый торрент"
 msgid "untitled"
 msgstr "Новый"
 
-msgid "Log Could Not Be Saved"
-msgstr "Журнал не может быть сохранен"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Ошибка во время создания «{filename}»."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3525,21 +3519,9 @@ msgstr "Последнее обновление: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Нет данных"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} раз"
-msgstr[1] "{count:L} раз"
-msgstr[2] "{count:L} раз"
-msgstr[3] "{count:L} раз"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3554,9 +3536,6 @@ msgstr "Общее огранчение скорости раздачи: {limit}
 
 msgid "Global download limit: {limit}"
 msgstr "Общее ограничене скорости скачивания: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "Папка не может быть перемещена внутрь себя."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "Не могу переместить «{torrent_name}»."
@@ -3940,6 +3919,22 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "Журнал не может быть сохранен"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Ошибка во время создания «{filename}»."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} раз"
+#~ msgstr[1] "{count:L} раз"
+#~ msgstr[2] "{count:L} раз"
+#~ msgstr[3] "{count:L} раз"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "Папка не может быть перемещена внутрь себя."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

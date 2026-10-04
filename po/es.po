@@ -3506,12 +3506,6 @@ msgstr "Torrent privado"
 msgid "untitled"
 msgstr "sin título"
 
-msgid "Log Could Not Be Saved"
-msgstr "No se ha podido guardar el registro"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Hubo un problema creando el archivo \"{filename}\"."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3560,20 +3554,9 @@ msgstr "Actualizado por última vez: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Total N/D"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} vez"
-msgstr[1] "{count:L} veces"
-msgstr[2] "{count:L} veces"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3588,9 +3571,6 @@ msgstr "Límite global de subida: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "Límite global de descarga: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "No se puede mover una carpeta dentro de sí misma."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "La operación de mover \"{torrent_name}\" no se puede realizar."
@@ -3968,6 +3948,21 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "No se ha podido guardar el registro"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Hubo un problema creando el archivo \"{filename}\"."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} vez"
+#~ msgstr[1] "{count:L} veces"
+#~ msgstr[2] "{count:L} veces"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "No se puede mover una carpeta dentro de sí misma."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

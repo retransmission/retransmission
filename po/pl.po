@@ -3499,12 +3499,6 @@ msgstr "Prywatny torrent"
 msgid "untitled"
 msgstr "bez tytułu"
 
-msgid "Log Could Not Be Saved"
-msgstr "Nie można zapisać dziennika"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Wystąpił problem podczas tworzenia pliku „{filename}”."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3555,21 +3549,9 @@ msgstr "Ostatnia aktualizacja: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Całkowicie nie dotyczy"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} raz"
-msgstr[1] "{count:L} razy"
-msgstr[2] "{count:L} razy"
-msgstr[3] "{count:L} razy"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3584,9 +3566,6 @@ msgstr "Globalne ograniczenie wysyłania: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "Globalne ograniczenie pobierania: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "Katalog nie może zostać przeniesiony do siebie."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "Nie można cofnąć przeniesienia „{torrent_name}”."
@@ -3969,6 +3948,22 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "Nie można zapisać dziennika"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Wystąpił problem podczas tworzenia pliku „{filename}”."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} raz"
+#~ msgstr[1] "{count:L} razy"
+#~ msgstr[2] "{count:L} razy"
+#~ msgstr[3] "{count:L} razy"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "Katalog nie może zostać przeniesiony do siebie."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

@@ -2,6 +2,7 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <cerrno>
 #include <optional>
 #include <vector>
 
@@ -532,9 +533,14 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSUInteger const oldCount = oldComponents.count;
 
     if (oldCount < newComponents.count && [newComponents[oldCount] isEqualToString:self.name] && [folder hasPrefix:oldFolder]) {
+        // What libtransmission would report if the move were tried.
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = TR_TEXT("A folder cannot be moved to inside itself.");
-        alert.informativeText = TR_FORMAT("The move operation of \"{torrent_name}\" cannot be done.", TRArg("torrent_name", self.name));
+        alert.messageText = TR_FORMAT(
+            "Couldn't move '{old_path}' to '{path}': {error} ({error_code})",
+            TRArg("old_path", [oldFolder stringByAppendingPathComponent:self.name]),
+            TRArg("path", folder),
+            TRArg("error", tr_strv_to_utf8_nsstring(tr_strerror(EINVAL))),
+            TRArg("error_code", EINVAL));
         [alert addButtonWithTitle:TR_TEXT("OK")];
 
         [alert runModal];

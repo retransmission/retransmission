@@ -3412,12 +3412,6 @@ msgstr "Ιδιωτικό torrent"
 msgid "untitled"
 msgstr "άτιτλο"
 
-msgid "Log Could Not Be Saved"
-msgstr "Δεν ήταν δυνατή η αποθήκευση του αρχείου καταγραφής"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Υπήρξε ένα πρόβλημα κατά τη δημιουργία του αρχείου \"{filename}\"."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3464,19 +3458,9 @@ msgstr "Τελευταία ενημέρωση : {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Σύνολο N/A"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} φορά"
-msgstr[1] "{count:L} φορές"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3491,9 +3475,6 @@ msgstr "Καθολικό όριο αποστολής: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "Καθολικό όριο λήψης: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "Ένας φάκελος δεν μπορεί να μεταφερθεί στο εσωτερικό του."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "Η λειτουργία μετακίνησης του \"{torrent_name}\" δεν μπορεί να γίνει."
@@ -3849,6 +3830,20 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "Δεν ήταν δυνατή η αποθήκευση του αρχείου καταγραφής"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Υπήρξε ένα πρόβλημα κατά τη δημιουργία του αρχείου \"{filename}\"."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} φορά"
+#~ msgstr[1] "{count:L} φορές"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "Ένας φάκελος δεν μπορεί να μεταφερθεί στο εσωτερικό του."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

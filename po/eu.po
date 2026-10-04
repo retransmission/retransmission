@@ -3394,12 +3394,6 @@ msgstr "Torrent pribatua"
 msgid "untitled"
 msgstr "izenbururik gabe"
 
-msgid "Log Could Not Be Saved"
-msgstr "Ezin izan da Erregistroa gorde"
-
-msgid "There was a problem creating the file \"{filename}\"."
-msgstr "Arazo bat egon da \"{filename}\" fitxategia sortzerakoan."
-
 #. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Trace"
@@ -3446,19 +3440,9 @@ msgstr "Azkenengoz eguneratuta: {date}"
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
 
-#. Translators: Stats window -> label
-msgid "Program started:"
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Guztira E/A"
-
-#. Translators: stats window -> times opened
-msgid "{count:L} time"
-msgid_plural "{count:L} times"
-msgstr[0] "{count:L} denbora"
-msgstr[1] "{count:L} aldiz"
 
 #. Translators: Status Bar -> speed tooltip
 msgid "{speed:L} KB/s"
@@ -3473,9 +3457,6 @@ msgstr "Igoeren muga orokorra: {limit}"
 
 msgid "Global download limit: {limit}"
 msgstr "Deskargen muga orokorra: {limit}"
-
-msgid "A folder cannot be moved to inside itself."
-msgstr "Karpeta bat ezin da bere barrura mugitu."
 
 msgid "The move operation of \"{torrent_name}\" cannot be done."
 msgstr "Ezin izan da \"{torrent_name}\" mugitzeko eragiketa egin."
@@ -3831,6 +3812,20 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Log Could Not Be Saved"
+#~ msgstr "Ezin izan da Erregistroa gorde"
+
+#~ msgid "There was a problem creating the file \"{filename}\"."
+#~ msgstr "Arazo bat egon da \"{filename}\" fitxategia sortzerakoan."
+
+#~ msgid "{count:L} time"
+#~ msgid_plural "{count:L} times"
+#~ msgstr[0] "{count:L} denbora"
+#~ msgstr[1] "{count:L} aldiz"
+
+#~ msgid "A folder cannot be moved to inside itself."
+#~ msgstr "Karpeta bat ezin da bere barrura mugitu."
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"
