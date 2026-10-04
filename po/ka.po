@@ -827,8 +827,10 @@ msgstr "_ფაილი"
 msgid "Open _URL…"
 msgstr ""
 
-msgid "_New…"
-msgstr "_ახალი…"
+#, fuzzy
+#| msgid "_Torrent file:"
+msgid "_Create Torrent File…"
+msgstr "ტორენტის _ფაილი:"
 
 msgid "_Start All"
 msgstr "ყველას _დაწყება"
@@ -2423,6 +2425,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#~ msgid "_New…"
+#~ msgstr "_ახალი…"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

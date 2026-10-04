@@ -834,8 +834,10 @@ msgstr "फाइल (_F)"
 msgid "Open _URL…"
 msgstr "यूआरएल खोलें (_U)…"
 
-msgid "_New…"
-msgstr "नया (_N)…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "टोरेंट बनाना जारी…"
 
 msgid "_Start All"
 msgstr "सभी आरंभ करें (_S)"
@@ -2434,6 +2436,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "_New…"
+#~ msgstr "नया (_N)…"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

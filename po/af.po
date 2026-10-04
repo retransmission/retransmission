@@ -911,8 +911,8 @@ msgstr "_Argief"
 msgid "Open _URL…"
 msgstr "Open _URL…"
 
-msgid "_New…"
-msgstr "_Nuut…"
+msgid "_Create Torrent File…"
+msgstr "Skep torrentlêer…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2423,9 +2423,6 @@ msgstr "Toon alles"
 msgid "Quit Retransmission"
 msgstr "Sluit Retransmission Af"
 
-msgid "Create Torrent File…"
-msgstr "Skep torrentlêer…"
-
 msgid "_Open…"
 msgstr "_Open…"
 
@@ -3771,6 +3768,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "_New…"
+#~ msgstr "_Nuut…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Kies die nuwe vouer vir “{torrent_name}”."

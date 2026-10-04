@@ -865,8 +865,10 @@ msgstr "Datoteka"
 msgid "Open _URL…"
 msgstr "Odpri _URL …"
 
-msgid "_New…"
-msgstr "_Nov …"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Ustvarjanje torrenta …"
 
 msgid "_Start All"
 msgstr "_Začni vse"
@@ -2516,6 +2518,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "_New…"
+#~ msgstr "_Nov …"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

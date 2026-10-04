@@ -830,8 +830,10 @@ msgstr "_Файл"
 msgid "Open _URL…"
 msgstr "Сіл_темені ашу…"
 
-msgid "_New…"
-msgstr "Ж_аңа…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Торрент жасалуда…"
 
 msgid "_Start All"
 msgstr "_Барлығын жіберу"
@@ -2458,6 +2460,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "_New…"
+#~ msgstr "Ж_аңа…"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

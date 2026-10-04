@@ -216,7 +216,7 @@
                 <menuItem title="_File" id="83">
                     <menu key="submenu" title="_File" id="81">
                         <items>
-                            <menuItem title="Create Torrent File…" secondaryImage="doc.badge.plus" catalog="system" keyEquivalent="n" id="1921">
+                            <menuItem title="_Create Torrent File…" secondaryImage="doc.badge.plus" catalog="system" keyEquivalent="n" id="1921">
                                 <connections>
                                     <action selector="createFile:" target="206" id="1922"/>
                                 </connections>
@@ -806,7 +806,7 @@ CA
         </menu>
         <menu id="589" userLabel="ContextNoRowMenu">
             <items>
-                <menuItem title="Create Torrent File…" secondaryImage="doc.badge.plus" catalog="system" id="1923">
+                <menuItem title="_Create Torrent File…" secondaryImage="doc.badge.plus" catalog="system" id="1923">
                     <connections>
                         <action selector="createFile:" target="206" id="1924"/>
                     </connections>

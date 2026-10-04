@@ -920,8 +920,8 @@ msgstr "_Ficheiro"
 msgid "Open _URL…"
 msgstr "Abrir _URL…"
 
-msgid "_New…"
-msgstr "_Novo…"
+msgid "_Create Torrent File…"
+msgstr "Criar ficheiro torrent…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2438,9 +2438,6 @@ msgstr "Mostrar tudo"
 msgid "Quit Retransmission"
 msgstr "Sair do Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "Criar ficheiro torrent…"
-
 #, fuzzy
 #| msgid "_Open"
 msgid "_Open…"
@@ -3837,6 +3834,9 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "_New…"
+#~ msgstr "_Novo…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Seleccione a nova pasta para \"{torrent_name}\"."

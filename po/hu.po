@@ -943,8 +943,8 @@ msgstr "_Fájl"
 msgid "Open _URL…"
 msgstr "_Webcím megnyitása…"
 
-msgid "_New…"
-msgstr "Ú_j…"
+msgid "_Create Torrent File…"
+msgstr "Torrent fájl létrehozása..."
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2455,9 +2455,6 @@ msgstr "Mind mutatása"
 msgid "Quit Retransmission"
 msgstr "Retransmission bezárása"
 
-msgid "Create Torrent File…"
-msgstr "Torrent fájl létrehozása..."
-
 msgid "_Open…"
 msgstr "_Megnyitás…"
 
@@ -3800,6 +3797,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "_New…"
+#~ msgstr "Ú_j…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Új mappa választása \"{torrent_name}\" számára."

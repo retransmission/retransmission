@@ -855,8 +855,10 @@ msgstr "_Tiedosto"
 msgid "Open _URL…"
 msgstr "Avaa o_soite…"
 
-msgid "_New…"
-msgstr "_Uusi…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Luodaan torrentia…"
 
 msgid "_Start All"
 msgstr "_Käynnistä kaikki"
@@ -2468,6 +2470,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "_New…"
+#~ msgstr "_Uusi…"
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

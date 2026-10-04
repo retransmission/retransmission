@@ -918,8 +918,8 @@ msgstr "_Fitxategia"
 msgid "Open _URL…"
 msgstr "Ireki _URLa…"
 
-msgid "_New…"
-msgstr "_Berria…"
+msgid "_Create Torrent File…"
+msgstr "Sortu Torrent Fitxategia..."
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2428,9 +2428,6 @@ msgstr "Erakutsi Guztiak"
 msgid "Quit Retransmission"
 msgstr "Itxi Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "Sortu Torrent Fitxategia..."
-
 msgid "_Open…"
 msgstr "_Ireki"
 
@@ -3784,6 +3781,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "_New…"
+#~ msgstr "_Berria…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Aukeratu karpeta berria \"{torrent_name}\"(e)rako."

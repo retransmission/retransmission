@@ -329,7 +329,7 @@
   </action>
   <action name="action_New">
    <property name="text">
-    <string>_New…</string>
+    <string>_Create Torrent File…</string>
    </property>
    <property name="toolTip">
     <string>Create a new torrent</string>

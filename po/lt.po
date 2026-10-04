@@ -875,8 +875,10 @@ msgstr "_Failas"
 msgid "Open _URL…"
 msgstr "Atverti _URL…"
 
-msgid "_New…"
-msgstr "_Naujas…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Kuriamas torentas…"
 
 msgid "_Start All"
 msgstr "Pa_leisti visus"
@@ -2553,6 +2555,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "_New…"
+#~ msgstr "_Naujas…"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

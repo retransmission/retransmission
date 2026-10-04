@@ -914,8 +914,8 @@ msgstr "_Dosya"
 msgid "Open _URL…"
 msgstr "_URL Aç…"
 
-msgid "_New…"
-msgstr "_Yeni…"
+msgid "_Create Torrent File…"
+msgstr "Torrent Dosyası Oluştur…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2428,9 +2428,6 @@ msgstr "Tümünü Göster"
 msgid "Quit Retransmission"
 msgstr "Retransmission’dan Çık"
 
-msgid "Create Torrent File…"
-msgstr "Torrent Dosyası Oluştur…"
-
 msgid "_Open…"
 msgstr "_Aç…"
 
@@ -3772,6 +3769,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "_New…"
+#~ msgstr "_Yeni…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "“{torrent_name}” için yeni klasörü seçin."

@@ -837,8 +837,10 @@ msgstr "파일 (_F)"
 msgid "Open _URL…"
 msgstr "주소 열기(_U)…"
 
-msgid "_New…"
-msgstr "새 토렌트(_N)…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "토렌트를 만드는 중…"
 
 msgid "_Start All"
 msgstr "모두 시작(_S)"
@@ -2413,6 +2415,9 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "_New…"
+#~ msgstr "새 토렌트(_N)…"
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

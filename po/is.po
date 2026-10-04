@@ -841,8 +841,10 @@ msgstr "_Skrá"
 msgid "Open _URL…"
 msgstr "O_pna slóð…"
 
-msgid "_New…"
-msgstr "_Nýtt…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Bý til torrent-streymi…"
 
 msgid "_Start All"
 msgstr "Ræ_sa allt"
@@ -2452,6 +2454,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "_New…"
+#~ msgstr "_Nýtt…"
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

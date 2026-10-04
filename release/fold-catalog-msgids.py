@@ -304,6 +304,8 @@ RENAMES = [
         'to': {'msgid': '({piece_count:L} piece @ {piece_size})', 'msgid_plural': '({piece_count:L} pieces @ {piece_size})'},
         'fields': {'piece_count': 'piece_count:L'},
     },
+    # The command that makes a torrent file has the Mac client's name in every client.
+    {'from': {'msgid': 'Create Torrent File…'}, 'to': {'msgid': '_Create Torrent File…'}},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

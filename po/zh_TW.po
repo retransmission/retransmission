@@ -921,8 +921,8 @@ msgstr "檔案 (_F)"
 msgid "Open _URL…"
 msgstr "開啟 URL… (_U)"
 
-msgid "_New…"
-msgstr "新增… (_N)"
+msgid "_Create Torrent File…"
+msgstr "建立 Torrent 檔案…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2412,9 +2412,6 @@ msgstr "全部顯示"
 msgid "Quit Retransmission"
 msgstr "結束 Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "建立 Torrent 檔案…"
-
 msgid "_Open…"
 msgstr "開啟… (_O)"
 
@@ -3727,6 +3724,9 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "_New…"
+#~ msgstr "新增… (_N)"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "選擇 \"{torrent_name}\" 的新資料夾。"

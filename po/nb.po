@@ -843,8 +843,10 @@ msgstr "_Fil"
 msgid "Open _URL…"
 msgstr "Åpne n_ettadresse …"
 
-msgid "_New…"
-msgstr "_Ny …"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Lager torrent …"
 
 msgid "_Start All"
 msgstr "_Start alle"
@@ -2435,6 +2437,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "_New…"
+#~ msgstr "_Ny …"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

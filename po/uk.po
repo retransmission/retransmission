@@ -963,8 +963,8 @@ msgstr "_Файл"
 msgid "Open _URL…"
 msgstr "Відкрити _адресу…"
 
-msgid "_New…"
-msgstr "С_творити…"
+msgid "_Create Torrent File…"
+msgstr "Створити торент-файл..."
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2521,9 +2521,6 @@ msgstr "Показати всі"
 msgid "Quit Retransmission"
 msgstr "Завершити Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "Створити торент-файл..."
-
 msgid "_Open…"
 msgstr "_Відкрити…"
 
@@ -3909,6 +3906,9 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "_New…"
+#~ msgstr "С_творити…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Оберіть нову теку для \"{torrent_name}\"."

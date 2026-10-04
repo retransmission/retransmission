@@ -942,8 +942,8 @@ msgstr "_Αρχείο"
 msgid "Open _URL…"
 msgstr "Άνοιγμα _URL…"
 
-msgid "_New…"
-msgstr "_Νέο…"
+msgid "_Create Torrent File…"
+msgstr "Δημιουργία Αρχείου Torrent…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2454,9 +2454,6 @@ msgstr "Προβολή Όλων"
 msgid "Quit Retransmission"
 msgstr "Έξοδος από το Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "Δημιουργία Αρχείου Torrent…"
-
 msgid "_Open…"
 msgstr "_Άνοιγμα…"
 
@@ -3802,6 +3799,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "_New…"
+#~ msgstr "_Νέο…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Επιλογή του νέου καταλόγου για το \"{torrent_name}\"."

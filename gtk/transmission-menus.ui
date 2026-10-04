@@ -22,7 +22,7 @@
           <attribute name="action">win.new-torrent</attribute>
           <attribute name="icon">document-new</attribute>
           <attribute name="accel">&lt;control&gt;N</attribute>
-          <attribute name="label" translatable="yes">_New…</attribute>
+          <attribute name="label" translatable="yes">_Create Torrent File…</attribute>
         </item>
       </section>
       <section>

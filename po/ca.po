@@ -846,8 +846,10 @@ msgstr "_Fitxer"
 msgid "Open _URL…"
 msgstr "Obre l'_URL…"
 
-msgid "_New…"
-msgstr "_Nou…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "Creant el torrent…"
 
 msgid "_Start All"
 msgstr "_Inicia-ho tot"
@@ -2459,6 +2461,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "_New…"
+#~ msgstr "_Nou…"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

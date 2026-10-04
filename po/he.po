@@ -946,8 +946,8 @@ msgstr "_קובץ"
 msgid "Open _URL…"
 msgstr "פתיחה מ_כתובת…"
 
-msgid "_New…"
-msgstr "_חדש…"
+msgid "_Create Torrent File…"
+msgstr "יצירת קובץ טורנט…"
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2501,9 +2501,6 @@ msgstr "להציג הכול"
 msgid "Quit Retransmission"
 msgstr "יציאה מ־Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "יצירת קובץ טורנט…"
-
 msgid "_Open…"
 msgstr "_פתיחה…"
 
@@ -3872,6 +3869,9 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "_New…"
+#~ msgstr "_חדש…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "בחירת תיקייה חדשה עבור \"{torrent_name}\"."

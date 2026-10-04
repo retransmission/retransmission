@@ -898,8 +898,10 @@ msgstr "ملف"
 msgid "Open _URL…"
 msgstr "افتح _رابطا…"
 
-msgid "_New…"
-msgstr "_جديد…"
+#, fuzzy
+#| msgid "Creating torrent…"
+msgid "_Create Torrent File…"
+msgstr "يُنشئ التورنت…"
 
 msgid "_Start All"
 msgstr "اب_دأ الكل"
@@ -2646,6 +2648,9 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+#~ msgid "_New…"
+#~ msgstr "_جديد…"
 
 #~ msgid "Couldn't add duplicate torrent"
 #~ msgid_plural "Couldn't add duplicate torrents"

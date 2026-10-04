@@ -897,8 +897,8 @@ msgstr "ファイル(_F)"
 msgid "Open _URL…"
 msgstr "URLを開く(_U)…"
 
-msgid "_New…"
-msgstr "新規(_N)…"
+msgid "_Create Torrent File…"
+msgstr "トレントファイルの作成..."
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2387,9 +2387,6 @@ msgstr "すべて表示"
 msgid "Quit Retransmission"
 msgstr "Retransmission を終了"
 
-msgid "Create Torrent File…"
-msgstr "トレントファイルの作成..."
-
 msgid "_Open…"
 msgstr "開く(_O)"
 
@@ -3714,6 +3711,9 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "_New…"
+#~ msgstr "新規(_N)…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "「{torrent_name}」の新規フォルダを選択します。"

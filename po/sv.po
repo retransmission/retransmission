@@ -908,8 +908,8 @@ msgstr "_Arkiv"
 msgid "Open _URL…"
 msgstr "Öppna _URL…"
 
-msgid "_New…"
-msgstr "_Ny…"
+msgid "_Create Torrent File…"
+msgstr "Skapa torrentfil..."
 
 #. Translators: All toolbar item -> label
 #. Translators: Dock item
@@ -2422,9 +2422,6 @@ msgstr "Visa alla"
 msgid "Quit Retransmission"
 msgstr "Avsluta Retransmission"
 
-msgid "Create Torrent File…"
-msgstr "Skapa torrentfil..."
-
 msgid "_Open…"
 msgstr "_Öppna…"
 
@@ -3773,6 +3770,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "_New…"
+#~ msgstr "_Ny…"
 
 #~ msgid "Select the new folder for \"{torrent_name}\"."
 #~ msgstr "Välj den nya mappen för \"{torrent_name}\"."
