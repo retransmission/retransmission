@@ -100,11 +100,6 @@ msgstr "Трекерге жүктеп алу/тарату статистикас
 msgid "_Quit Now"
 msgstr "Қазір _шығу"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Зақымдалған торренттерді қосу мүмкін емес"
-msgstr[1] "Зақымдалған торренттерді қосу мүмкін емес"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
@@ -669,6 +664,9 @@ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't read '{path}'"
+msgstr ""
+
+msgid "The torrent could not be downloaded from {url}: {error}"
 msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
@@ -1491,10 +1489,13 @@ msgstr "Торрентті URL-ден ашу"
 msgid "_URL:"
 msgstr "_URL сілтеме:"
 
+msgid "Couldn't open torrent"
+msgstr ""
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't open torrent"
+msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
@@ -1513,9 +1514,6 @@ msgid "Unsupported URL: '{url}'"
 msgstr ""
 
 msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -1819,12 +1817,6 @@ msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -2491,6 +2483,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Зақымдалған торренттерді қосу мүмкін емес"
+#~ msgstr[1] "Зақымдалған торренттерді қосу мүмкін емес"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "Жалпы баптауларды қолдану"

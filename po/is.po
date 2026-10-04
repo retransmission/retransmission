@@ -101,11 +101,6 @@ msgstr "Sendi upplýsingar um upp- og niðurhal til rekjara…"
 msgid "_Quit Now"
 msgstr "_Hætta núna"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Gat ekki bætt við skemmdri torrent-skrá"
-msgstr[1] "Gat ekki bætt við skemmdum torrent-skrám"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
@@ -683,6 +678,9 @@ msgstr "Gat ekki vaktað '{path}': {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Gat ekki lesið '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1508,11 +1506,14 @@ msgstr "Opna torrent-streymi úr vefslóð"
 msgid "_URL:"
 msgstr "_Slóð:"
 
+msgid "Couldn't open torrent"
+msgstr "Gat ekki opnað torrent-skrána"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Gat ekki opnað torrent-skrána"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Gat ekki fært '{path}' í ruslið: {error} ({error_code})"
@@ -1535,9 +1536,6 @@ msgstr "Óstudd URL-slóð: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} veit ekki hvernig á að nota '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Þessi segultengill virðist eiga við eitthvað annað en BitTorrent"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1851,14 +1849,6 @@ msgstr "Gat ekki prófað gátt: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Gat ekki prófað gátt: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Gat ekki náð í torrent: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Gat ekki náð í torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Slóð Unix-sökkuls (socket) verður að vera færri en {count} stafir (að meðtöldu '{prefix}' forskeyti)"
@@ -2486,6 +2476,22 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Gat ekki bætt við skemmdri torrent-skrá"
+#~ msgstr[1] "Gat ekki bætt við skemmdum torrent-skrám"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Þessi segultengill virðist eiga við eitthvað annað en BitTorrent"
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Gat ekki náð í torrent: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Gat ekki náð í torrent: {error} ({error_code})"
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Tókst að uppfæra upprunalegt {protocol} vistfang í {ip}"

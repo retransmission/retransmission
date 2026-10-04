@@ -106,11 +106,6 @@ msgstr "Skickar totalvärden för sändning/hämtning till spårare…"
 msgid "_Quit Now"
 msgstr "A_vsluta nu"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Det gick inte att lägga till skadad torrent"
-msgstr[1] "Det gick inte att lägga till skadade torrenter"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Det gick inte att lägga till torrentdubblett"
@@ -746,6 +741,9 @@ msgstr "Det gick inte att se '{path}': {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Det gick inte att läsa '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Det gick inte att hämta torrenten från {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1619,11 +1617,14 @@ msgstr "Öppna torrent från URL"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr "Det gick inte att öppna torrent"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Torrentfilen '{path}' används redan av '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Det gick inte att öppna torrent"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" är inte en giltig torrentfil."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Det gick inte att flytta '{path}' till papperskorgen: {error} ({error_code})"
@@ -1646,9 +1647,6 @@ msgstr "URL som inte stöds: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} vet inte hur den ska använda '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Denna magnetlänk verkar vara avsedd för något annat än BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1964,14 +1962,6 @@ msgstr "Det gick inte att testa port: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Det gick inte att testa port: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-sockets sökväg måste vara färre än {count} tecken (inklusive '{prefix}'-prefixet)"
@@ -2913,29 +2903,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Det verkar som att filen \"{filename}\" från {url} inte är en giltig torrentfil."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrenthämtning misslyckades"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Det gick inte att hämta torrenten från {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" är inte en giltig torrentfil."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Torrentfilen kan inte öppnas eftersom den innehåller ogiltig data."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -3883,6 +3850,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Det gick inte att lägga till skadad torrent"
+#~ msgstr[1] "Det gick inte att lägga till skadade torrenter"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Denna magnetlänk verkar vara avsedd för något annat än BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Det verkar som att filen \"{filename}\" från {url} inte är en giltig torrentfil."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrenthämtning misslyckades"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Torrentfilen kan inte öppnas eftersom den innehåller ogiltig data."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Uppdaterade källans {protocol}-adress till {ip}"

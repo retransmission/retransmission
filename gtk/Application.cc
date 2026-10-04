@@ -271,7 +271,6 @@ private:
     Glib::RefPtr<Session> core_;
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_;
-    std::vector<std::string> error_list_;
     std::vector<std::string> duplicates_list_;
     std::map<std::string, std::unique_ptr<DetailsDialog>> details_;
 
@@ -950,7 +949,6 @@ bool Application::Impl::on_session_closed()
 
     icon_.reset();
 
-    error_list_.clear();
     duplicates_list_.clear();
 
     app_.release();
@@ -1056,12 +1054,6 @@ void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::v
 
 void Application::Impl::flush_torrent_errors()
 {
-    if (!error_list_.empty()) {
-        show_torrent_errors(
-            ngettext("Couldn't add corrupt torrent", "Couldn't add corrupt torrents", error_list_.size()),
-            error_list_);
-    }
-
     if (!duplicates_list_.empty()) {
         show_torrent_errors(
             ngettext("Couldn't add duplicate torrent", "Couldn't add duplicate torrents", duplicates_list_.size()),
@@ -1072,10 +1064,6 @@ void Application::Impl::flush_torrent_errors()
 void Application::Impl::on_core_error(Session::ErrorCode code, Glib::ustring const& msg)
 {
     switch (code) {
-    case Session::ERR_ADD_TORRENT_ERR:
-        error_list_.push_back(Glib::path_get_basename(msg.raw()));
-        break;
-
     case Session::ERR_ADD_TORRENT_DUP:
         duplicates_list_.push_back(msg);
         break;

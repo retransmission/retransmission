@@ -133,24 +133,30 @@ Glib::ustring tr_strlsize(guint64 n_bytes)
 
 void gtr_add_torrent_error_dialog(Gtk::Widget& child, tr_torrent* duplicate_torrent, std::string const& filename)
 {
+    Glib::ustring primary;
     Glib::ustring secondary;
 
     if (duplicate_torrent != nullptr) {
+        primary = _("Couldn't open torrent");
         secondary = fmt::format(
             fmt::runtime(_("The torrent file '{path}' is already in use by '{torrent_name}'.")),
             fmt::arg("path", filename),
             fmt::arg("torrent_name", tr_torrentName(duplicate_torrent)));
     } else {
-        secondary = fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", filename));
+        primary = fmt::format(
+            fmt::runtime(_("\"{source}\" is not a valid torrent file.")),
+            fmt::arg("source", Glib::path_get_basename(filename)));
     }
 
     auto w = std::make_shared<Gtk::MessageDialog>(
         gtr_widget_get_window(child),
-        _("Couldn't open torrent"),
+        primary,
         false,
         TR_GTK_MESSAGE_TYPE(ERROR),
         TR_GTK_BUTTONS_TYPE(CLOSE));
-    w->set_secondary_text(secondary);
+    if (!secondary.empty()) {
+        w->set_secondary_text(secondary);
+    }
     w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
     w->show();
 }
@@ -681,8 +687,6 @@ void gtr_window_raise([[maybe_unused]] Gtk::Window& window)
 
 void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
 {
-    Glib::ustring gstr;
-
     auto w = std::make_shared<Gtk::MessageDialog>(
         gtr_widget_get_window(parent),
         fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", url)),
@@ -690,18 +694,11 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
         TR_GTK_MESSAGE_TYPE(ERROR),
         TR_GTK_BUTTONS_TYPE(CLOSE),
         true /*modal*/);
-
-    gstr += fmt::format(
-        fmt::runtime(_("{appname} doesn't know how to use '{url}'")),
-        fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
-        fmt::arg("url", url));
-
-    if (tr_magnet_metainfo{}.parseMagnet(url.raw())) {
-        gstr += "\n \n";
-        gstr += _("This magnet link appears to be intended for something other than BitTorrent.");
-    }
-
-    w->set_secondary_text(gstr);
+    w->set_secondary_text(
+        fmt::format(
+            fmt::runtime(_("{appname} doesn't know how to use '{url}'")),
+            fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
+            fmt::arg("url", url)));
     w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
     w->show();
 }

@@ -106,10 +106,6 @@ msgstr "正在傳送上傳/下載總量到追蹤器…"
 msgid "_Quit Now"
 msgstr "立即結束 (_Q)"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "無法加入損毀的 torrents"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "無法加入重複的 torrents"
@@ -763,6 +759,9 @@ msgstr "無法監看 '{path}'：{error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "無法讀取 '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "無法從 {url} 下載 torrent：{error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1630,11 +1629,14 @@ msgstr "從網址開啟 torrent"
 msgid "_URL:"
 msgstr "URL (_U)："
 
+msgid "Couldn't open torrent"
+msgstr "無法開啟 torrent"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "該 torrent 檔案 '{path}' 已被 '{torrent_name}' 使用中。"
 
-msgid "Couldn't open torrent"
-msgstr "無法開啟 torrent"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" 是無效的 Torrent 檔案。"
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "無法移動 '{path}' 到垃圾桶：{error} ({error_code})"
@@ -1657,9 +1659,6 @@ msgstr "不支援的 URL：'{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} 不知道要如何使用 '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "該磁力連結可能使用了 BitTorrent 以外的其他協定。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1954,14 +1953,6 @@ msgstr "無法測試連接埠：{error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "無法測試連接埠：{error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "無法擷取 torrent：{error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "無法擷取 torrent：{error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix socket 路徑必須少於 {count} 個字元 (包含 '{prefix}' 前綴)"
@@ -2904,29 +2895,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "來自 {url} 的檔案「{filename}」可能不是 Torrent 檔案。"
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "無法下載 Torrent"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "無法從 {url} 下載 torrent：{error}。"
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" 是無效的 Torrent 檔案。"
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "無法開啟 torrent 檔案，因為其包含無效資料。"
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3830,6 +3798,30 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "無法加入損毀的 torrents"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "該磁力連結可能使用了 BitTorrent 以外的其他協定。"
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "無法擷取 torrent：{error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "無法擷取 torrent：{error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "來自 {url} 的檔案「{filename}」可能不是 Torrent 檔案。"
+
+#~ msgid "Torrent download failed"
+#~ msgstr "無法下載 Torrent"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "無法開啟 torrent 檔案，因為其包含無效資料。"
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "成功更新來源 {protocol} 位址為 {ip}"

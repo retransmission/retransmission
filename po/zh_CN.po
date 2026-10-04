@@ -112,10 +112,6 @@ msgstr "正在发送上传/下载统计到 Tracker…"
 msgid "_Quit Now"
 msgstr "立即退出(_Q)"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "无法添加已损坏的种子"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "无法添加重复的种子"
@@ -788,6 +784,9 @@ msgstr "无法监视“{path}”：{error}（{error_code}）"
 
 msgid "Couldn't read '{path}'"
 msgstr "无法读取“{path}”"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "无法从 {url}:{error}下载 Torrent 文件"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1653,11 +1652,14 @@ msgstr "从网址打开种子"
 msgid "_URL:"
 msgstr "网址(_U)："
 
+msgid "Couldn't open torrent"
+msgstr "无法打开种子"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "种子文件“{path}”已被“{torrent_name}”使用。"
 
-msgid "Couldn't open torrent"
-msgstr "无法打开种子"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "“{source}”不是有效的种子文件。"
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "无法移动“{path}”至回收站：{error}（{error_code}）"
@@ -1680,9 +1682,6 @@ msgstr "不支持的网址：“{url}”"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} 不清楚“{url}”的使用方式"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "此磁力链接似乎用于 BitTorrent 以外的其他协议。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1977,14 +1976,6 @@ msgstr "无法测试端口：{error}（{error_code}）"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "无法测试端口：{error}（{error_code}）"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "无法提取种子：{error}（{error_code}）"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "无法提取种子：{error}（{error_code}）"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix socket 路径必须少于 {count} 个字符（包括“{prefix}”前缀）"
@@ -2925,29 +2916,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "{url}处的文件{filename}不是种子文件。"
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrent 下载失败"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "无法从 {url}:{error}下载 Torrent 文件。"
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "“{filename}”不是有效的种子文件。"
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3860,6 +3828,30 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "无法添加已损坏的种子"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "此磁力链接似乎用于 BitTorrent 以外的其他协议。"
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "无法提取种子：{error}（{error_code}）"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "无法提取种子：{error}（{error_code}）"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "{url}处的文件{filename}不是种子文件。"
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrent 下载失败"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "成功更新源{protocol}地址到{ip}"

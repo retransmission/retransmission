@@ -104,10 +104,6 @@ msgstr "トラッカーにアップ/ダウンロード総量を送信中…"
 msgid "_Quit Now"
 msgstr "今すぐ終了(_Q)"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "破損したトレントは追加できません"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "重複したトレントは追加できません"
@@ -739,6 +735,9 @@ msgstr "以下を監視できません「{path}」: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "読み込めません「{path}」"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "トレントを {url} からダウンロードできません: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1605,11 +1604,14 @@ msgstr "URL からトレントを開く"
 msgid "_URL:"
 msgstr "URL(_U):"
 
+msgid "Couldn't open torrent"
+msgstr "トレントを開けません"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"
 
-msgid "Couldn't open torrent"
-msgstr "トレントを開けません"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "「{source}」は正しいトレントファイルではありません。"
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "以下をゴミ箱へ移動できません「{path}」: {error} ({error_code})"
@@ -1632,9 +1634,6 @@ msgstr "未対応のURL: {url}"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} は以下の使い方を知りません: {url}"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "このマグネットリンクは、BitTorrent 用ではないようです。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1929,14 +1928,6 @@ msgstr "ポートをテストできません: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "ポートをテストできません: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "トレントを取得できません: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "トレントを取得できません: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix のソケットのパスは {count} 文字以下の必要があります ({prefix} 接頭辞含む)"
@@ -2877,29 +2868,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "ファイル「{filename}」({url}) はトレントファイルではないようです。"
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "トレントのダウンロード失敗"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "トレントを {url} からダウンロードできません: {error}。"
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "「{filename}」は正しいトレントファイルではありません。"
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "トレントファイルが開けません。無効なデータが含まれます。"
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3817,6 +3785,30 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "破損したトレントは追加できません"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "このマグネットリンクは、BitTorrent 用ではないようです。"
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "トレントを取得できません: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "トレントを取得できません: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "ファイル「{filename}」({url}) はトレントファイルではないようです。"
+
+#~ msgid "Torrent download failed"
+#~ msgstr "トレントのダウンロード失敗"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "トレントファイルが開けません。無効なデータが含まれます。"
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "更新成功: 元の {protocol} アドレスを {ip} へ"

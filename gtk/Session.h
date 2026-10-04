@@ -41,7 +41,6 @@ public:
     Session& operator=(Session const&) = delete;
 
     enum ErrorCode : uint16_t {
-        ERR_ADD_TORRENT_ERR = 1,
         ERR_ADD_TORRENT_DUP = 2,
         ERR_NO_MORE_TORRENTS = 1000 /* finished adding a batch */
     };

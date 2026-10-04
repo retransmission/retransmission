@@ -108,11 +108,6 @@ msgstr "Feltöltési/letöltési összesítések elküldése a trackernek…"
 msgid "_Quit Now"
 msgstr "_Kilépés most"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "A sérült torrent hozzáadása sikertelen"
-msgstr[1] "Nem sikerült a sérült torrentek hozzáadása"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
@@ -781,6 +776,9 @@ msgstr "Nem sikerült a '{path}' figyelése: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Nem sikerült '{path}' olvasása"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "A torrent nem tölthető le innen :{url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1654,11 +1652,14 @@ msgstr "Torrent megnyitása webcímről"
 msgid "_URL:"
 msgstr "_Webcím:"
 
+msgid "Couldn't open torrent"
+msgstr "Nem sikerült megnyitni a torrentet"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."
 
-msgid "Couldn't open torrent"
-msgstr "Nem sikerült megnyitni a torrentet"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "'{source}' nem egy érvényes torrent fájl."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Nem sikerült '{path}' áthelyezése a kukába: {error} ({error_code})"
@@ -1681,9 +1682,6 @@ msgstr "Nem támogatott webcím: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "A {appname} nem tudja hogyan használja a '{url}' webcímet"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Úgy néz ki, hogy ez a magnet link nem BitTorrenthez készült."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1999,14 +1997,6 @@ msgstr "Nem sikerült a port tesztelése: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Nem sikerült a port tesztelése: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-foglalat útvonalának {count} karakternél rövidebbnek kell lennie (a '{prefix}' előtagot is beleértve)"
@@ -2948,29 +2938,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Úgy tűnik, hogy a {url} helyről származó \"{filename}\" fájl nem torrent fájl."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrent letöltése sikertelen"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "A torrent nem tölthető le innen :{url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "'{filename}' nem egy érvényes torrent fájl."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "A torrent fájl nem nyitható meg, mert érvénytelen adatokat tartalmaz."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3910,6 +3877,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "A sérült torrent hozzáadása sikertelen"
+#~ msgstr[1] "Nem sikerült a sérült torrentek hozzáadása"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Úgy néz ki, hogy ez a magnet link nem BitTorrenthez készült."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Úgy tűnik, hogy a {url} helyről származó \"{filename}\" fájl nem torrent fájl."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrent letöltése sikertelen"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "A torrent fájl nem nyitható meg, mert érvénytelen adatokat tartalmaz."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Sikeresen frissítette a forrás {protocol} címet {ip}-re"

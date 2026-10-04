@@ -739,10 +739,9 @@ void Session::Impl::add_file_async_callback(
     } catch (Glib::Error const& e) {
         gtr_message(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
-                fmt::arg("path", file->get_parse_name()),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", e.code())));
+                fmt::runtime(_("The torrent could not be downloaded from {url}: {error}")),
+                fmt::arg("url", file->get_parse_name()),
+                fmt::arg("error", e.what())));
     }
 
     // add_from_url() returned, and ended its batch, long before this download finished.

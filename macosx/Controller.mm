@@ -1249,16 +1249,11 @@ static void offerToImportFromTransmission()
     }
     completionHandler(NSURLSessionResponseCancel);
 
-    NSString* message = TR_FORMAT(
-        "It appears that the file \"{filename}\" from {url} is not a torrent file.",
-        TRArg("filename", suggestedName),
-        TRArg("url", dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding));
+    NSString* message = TR_FORMAT("\"{source}\" is not a valid torrent file.", TRArg("source", suggestedName));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:TR_TEXT("OK")];
-        // Translators: Download not a torrent -> title
-        alert.messageText = TR_TEXT("Torrent download failed");
-        alert.informativeText = message;
+        alert.messageText = message;
         [alert runModal];
     });
 }
@@ -1310,15 +1305,13 @@ static void offerToImportFromTransmission()
     }
 
     NSString* message = TR_FORMAT(
-        "The torrent could not be downloaded from {url}: {error}.",
+        "The torrent could not be downloaded from {url}: {error}",
         TRArg("url", task.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding),
         TRArg("error", error.localizedDescription));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:TR_TEXT("OK")];
-        // Translators: Torrent download error -> title
-        alert.messageText = TR_TEXT("Torrent download failed");
-        alert.informativeText = message;
+        alert.messageText = message;
         [alert runModal];
     });
 }
@@ -1576,8 +1569,7 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_FORMAT("\"{filename}\" is not a valid torrent file.", TRArg("filename", filename));
-    alert.informativeText = TR_TEXT("The torrent file cannot be opened because it contains invalid data.");
+    alert.messageText = TR_FORMAT("\"{source}\" is not a valid torrent file.", TRArg("source", filename));
 
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:TR_TEXT("OK")];
@@ -1595,10 +1587,7 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_TEXT("Adding magnetized torrent failed.");
-    alert.informativeText = TR_FORMAT(
-        "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added.",
-        TRArg("magnet_link", address));
+    alert.messageText = TR_FORMAT("{appname} doesn't know how to use '{url}'", TRAppNameArg(), TRArg("url", address));
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:TR_TEXT("OK")];
 

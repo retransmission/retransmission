@@ -105,11 +105,6 @@ msgstr "Stuur oplaai/aflaai-totale na spoorder…"
 msgid "_Quit Now"
 msgstr "_Sluit Nou Af"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Kon nie korrupte torrent toevoeg nie"
-msgstr[1] "Kon nie korrupte torrents toevoeg nie"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Kon nie duplikaat-torrent toevoeg nie"
@@ -749,6 +744,9 @@ msgstr "Kon nie ‘{path}’ kyk nie: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Kon nie ‘{path}’ lees nie"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Die torrentlêer kon nie van {url} afgelaai word nie: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1620,11 +1618,14 @@ msgstr "Open torrent vanaf URL"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr "Kon nie torrent open nie"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Die torrent-lêer ‘{path}’ word reeds deur ‘{torrent_name}’ gebruik."
 
-msgid "Couldn't open torrent"
-msgstr "Kon nie torrent open nie"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "“{source}” is nie ’n geldige torrentlêer nie."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Kon nie {path}’ na asblik skuif nie: {error} ({error_code})"
@@ -1647,9 +1648,6 @@ msgstr "Onondersteunde URL: ‘{url}’"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} weet nie hoe om ‘{url}’ te gebruik nie"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Hierdie magneetskakel blyk vir iets anders as BitTorrent bedoel te wees."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1965,14 +1963,6 @@ msgstr "Kon nie poort toets nie: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Kon nie poort toets nie: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Kon nie torrent ophaal nie: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Kon nie torrent ophaal nie: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-sokpad moet minder wees as {count} karakters (insluitend ‘{prefix}’ prefiks)"
@@ -2918,29 +2908,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Dit kom voor of die lêer “{filename}” van {url} nie ’n torrentlêer is nie."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrentaflaai het misluk"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Die torrentlêer kon nie van {url} afgelaai word nie: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "“{filename}” is nie ’n geldige torrentlêer nie."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Die torrentlêer kan nie geopen word nie omdat dit ongeldige data bevat."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3881,6 +3848,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Kon nie korrupte torrent toevoeg nie"
+#~ msgstr[1] "Kon nie korrupte torrents toevoeg nie"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Hierdie magneetskakel blyk vir iets anders as BitTorrent bedoel te wees."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Kon nie torrent ophaal nie: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Kon nie torrent ophaal nie: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Dit kom voor of die lêer “{filename}” van {url} nie ’n torrentlêer is nie."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrentaflaai het misluk"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Die torrentlêer kan nie geopen word nie omdat dit ongeldige data bevat."
 
 #~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
 #~ msgstr "Poortaanstuur deur ‘{url}’, diens ‘{type}’. (lokale adres: {address}:{port})"

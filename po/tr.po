@@ -111,11 +111,6 @@ msgstr "Gönderme/indirme toplamları izleyiciye gönderiliyor…"
 msgid "_Quit Now"
 msgstr "Şimdi _Çık"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Bozuk torrent eklenemedi"
-msgstr[1] "Bozuk torrentler eklenemedi"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Yinelenen torrent eklenemedi"
@@ -752,6 +747,9 @@ msgstr "'{path}' izlenemedi: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "'{path}' okunamadı"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Torrent {url} konumundan indirilemedi: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1625,11 +1623,14 @@ msgstr "URL'den torrent aç"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr "Torrent açılamadı"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "'{path}' torrent dosyası halihazırda '{torrent_name}' tarafından kullanılıyor."
 
-msgid "Couldn't open torrent"
-msgstr "Torrent açılamadı"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "“{source}” geçerli bir torrent dosyası değil."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "'{path}' çöpe taşınamadı: {error} ({error_code})"
@@ -1652,9 +1653,6 @@ msgstr "Desteklenmeyen URL: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} şunun nasıl kullanılacağını bilmiyor: '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Bu mıknatıs bağlantısı BitTorrent'ten başka bir şey içinmiş gibi görünüyor."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1970,14 +1968,6 @@ msgstr "Bağlantı noktası sınanamadı: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Bağlantı noktası sınanamadı: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Torrent alınamadı: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Torrent alınamadı: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix yuva yolu {count} karakterden ('{prefix}' ön eki ile) az olmalıdır"
@@ -2921,29 +2911,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Görünen o ki {url} konumundaki “{filename}” bir torrent dosyası değil."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrent yüklemesi başarısız"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Torrent {url} konumundan indirilemedi: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "“{filename}” geçerli bir torrent dosyası değil."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Bu torrent dosyası açılamaz çünkü geçersiz veri içeriyor."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3882,6 +3849,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Bozuk torrent eklenemedi"
+#~ msgstr[1] "Bozuk torrentler eklenemedi"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Bu mıknatıs bağlantısı BitTorrent'ten başka bir şey içinmiş gibi görünüyor."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Torrent alınamadı: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Torrent alınamadı: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Görünen o ki {url} konumundaki “{filename}” bir torrent dosyası değil."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrent yüklemesi başarısız"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Bu torrent dosyası açılamaz çünkü geçersiz veri içeriyor."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Kaynak {protocol} adresi başarıyla {ip} olarak güncellendi"

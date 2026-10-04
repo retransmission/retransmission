@@ -105,13 +105,6 @@ msgstr "נשלחים סיכומי הלאה/הורדה לעוקב…"
 msgid "_Quit Now"
 msgstr "ל_צאת עכשיו"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "לא ניתן להוסיף טורנט פגום"
-msgstr[1] "לא ניתן להוסיף טורנטים פגומים"
-msgstr[2] "לא ניתן להוסיף טורנטים פגומים"
-msgstr[3] "לא ניתן להוסיף טורנטים פגומים"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "לא ניתן להוסיף טורנט כפול"
@@ -779,6 +772,9 @@ msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "לא ניתן לקרוא את ‚{path}’"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "לא ניתן להורחד את הטורנט מ {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1661,11 +1657,14 @@ msgstr "פתיחת טורנט מכתובת"
 msgid "_URL:"
 msgstr "_כתובת:"
 
+msgid "Couldn't open torrent"
+msgstr "לא ניתן לפתוח את הטורנט"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."
 
-msgid "Couldn't open torrent"
-msgstr "לא ניתן לפתוח את הטורנט"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "„{source}” אינו קובץ טורנט תקני."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "לא ניתן להעביר את ‚{path}’ לאשפה: {error} ({error_code})"
@@ -1688,9 +1687,6 @@ msgstr "כתובת לא נתמכת: ‚{url}’"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} איך להשתמש ב־‚{url}’"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "קישור מגנט זה כנראה מיועד למשהו שאינו ביטורנט."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2043,14 +2039,6 @@ msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "אורך נתיב שקע היוניקס חייב להיות קצר מ־{count} תווים (לרבות הקידומת ‚{prefix}’)"
@@ -2997,29 +2985,6 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "נראה שקובץ \"{filename}\" מ {url}אינו קובץ טורנט."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "הורדת טורנט כשלה"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "לא ניתן להורחד את הטורנט מ {url}: {error}"
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "„{filename}” אינו קובץ טורנט תקני."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "לא ניתן לפתוח את קובץ הטורנט  מאחר והוא מכיל נתונים לא תקינים."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -3991,6 +3956,33 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "לא ניתן להוסיף טורנט פגום"
+#~ msgstr[1] "לא ניתן להוסיף טורנטים פגומים"
+#~ msgstr[2] "לא ניתן להוסיף טורנטים פגומים"
+#~ msgstr[3] "לא ניתן להוסיף טורנטים פגומים"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "קישור מגנט זה כנראה מיועד למשהו שאינו ביטורנט."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "נראה שקובץ \"{filename}\" מ {url}אינו קובץ טורנט."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "הורדת טורנט כשלה"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "לא ניתן לפתוח את קובץ הטורנט  מאחר והוא מכיל נתונים לא תקינים."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "כתובת המקור {protocol} עודכנה בהצלחה לכדי {ip}"

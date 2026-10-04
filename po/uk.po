@@ -113,13 +113,6 @@ msgstr "Надсилання даних щодо вивантаження/зав
 msgid "_Quit Now"
 msgstr "_Вийти негайно"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Не вдалося додати зіпсований торент"
-msgstr[1] "Не вдалося додати зіпсовані торенти"
-msgstr[2] "Не вдалося додати зіпсованих торентів"
-msgstr[3] "Не вдалося додати зіпсованих торентів"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Не вдалося додати дубляж торенту"
@@ -793,6 +786,9 @@ msgstr "Не вдалося відстежити «{path}»: {error} ({error_cod
 
 msgid "Couldn't read '{path}'"
 msgstr "Не вдалося зчитати «{path}»"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Не вдалося завантажити торрент із {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1678,11 +1674,14 @@ msgstr "Відкрити торент з адреси"
 msgid "_URL:"
 msgstr "_Адреса:"
 
+msgid "Couldn't open torrent"
+msgstr "Не вдалося відкрити торент"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Торент-файл «{path}» вже використовується торентом «{torrent_name}»."
 
-msgid "Couldn't open torrent"
-msgstr "Не вдалося відкрити торент"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" не є торрент-файлом."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Не вдалося перемістити '{path}' до смітника: {error} ({error_code})"
@@ -1705,9 +1704,6 @@ msgstr "URL не підтримується: «{url}»"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} не знає як користуватися «{url}»"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Здається, це магнітне посилання призначене для чогось іншого, ніж BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2065,14 +2061,6 @@ msgstr "Не вдалося перевірити порт: {error} ({error_code}
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Не вдалося перевірити порт: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Не вдалося отримати торент: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Не вдалося отримати торент: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Довжина шляху до Unix-сокета має бути менше {count} символів (включно з префіксом «{prefix}»)"
@@ -3020,29 +3008,6 @@ msgstr[2] ""
 msgstr[3] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Здається, що файл \"{filename}\" від {url} не є торрент-файлом."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Невдале завантаження торренту"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Не вдалося завантажити торрент із {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" не є торрент-файлом."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Торрент-файл не може бути відкритий через те, що він містить хибні дані."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -4033,6 +3998,33 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Не вдалося додати зіпсований торент"
+#~ msgstr[1] "Не вдалося додати зіпсовані торенти"
+#~ msgstr[2] "Не вдалося додати зіпсованих торентів"
+#~ msgstr[3] "Не вдалося додати зіпсованих торентів"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Здається, це магнітне посилання призначене для чогось іншого, ніж BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Не вдалося отримати торент: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Не вдалося отримати торент: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Здається, що файл \"{filename}\" від {url} не є торрент-файлом."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Невдале завантаження торренту"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Торрент-файл не може бути відкритий через те, що він містить хибні дані."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Успішно оновлено джерело{protocol}за адресою {ip}"

@@ -32,6 +32,7 @@
 
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/rpcimpl.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
@@ -693,13 +694,36 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
             },
             [add_me](RpcResponse const& r) {
                 auto const title = TR_TEXT("Error Adding Torrent");
-                auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(Utils::qstringFromUtf8(r.errmsg), add_me.readableName());
+                auto const source = add_me.readableName();
+                auto text = QString{};
+                auto text_format = Qt::PlainText;
+
+                if (r.code == JsonRpc::Error::FETCH_ERROR) {
+                    // The session's message names the URL and says why the download failed.
+                    text = Utils::qstringFromUtf8(r.errmsg);
+                } else if (r.code == JsonRpc::Error::CORRUPT_TORRENT || r.code == JsonRpc::Error::UNRECOGNIZED_INFO) {
+                    if (add_me.type == AddData::MAGNET) {
+                        text = TR_FORMAT(
+                            "{appname} doesn't know how to use '{url}'",
+                            fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
+                            fmt::arg("url", add_me.magnet));
+                    } else if (!source.isEmpty()) {
+                        text = TR_FORMAT("\"{source}\" is not a valid torrent file.", fmt::arg("source", source));
+                    }
+                }
+
+                if (text.isEmpty()) {
+                    // Any other error: the session's own words for it, and what was being added.
+                    text = QStringLiteral("<p><b>%1</b></p><p>%2</p>").arg(Utils::qstringFromUtf8(r.errmsg), source);
+                    text_format = Qt::RichText;
+                }
+
                 auto* d = new QMessageBox{ QMessageBox::Warning,
                                            title,
                                            text,
                                            QMessageBox::Close,
                                            QApplication::activeWindow() };
+                d->setTextFormat(text_format);
                 QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
                 d->show();
             })

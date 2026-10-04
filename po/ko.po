@@ -105,10 +105,6 @@ msgstr "총 업로드/다운로드 정보를 트래커로 보내고 있습니다
 msgid "_Quit Now"
 msgstr "지금 끝내기(_Q)"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "손상된 토렌트는 추가할 수 없습니다"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
@@ -681,6 +677,9 @@ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
 msgstr "'{path}' 경로를 읽을 수 없음: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
+msgstr ""
+
+msgid "The torrent could not be downloaded from {url}: {error}"
 msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
@@ -1496,10 +1495,13 @@ msgstr "주소로 토렌트 열기"
 msgid "_URL:"
 msgstr "주소(_U):"
 
+msgid "Couldn't open torrent"
+msgstr ""
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't open torrent"
+msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
@@ -1522,9 +1524,6 @@ msgid "Unsupported URL: '{url}'"
 msgstr ""
 
 msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -1815,14 +1814,6 @@ msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr "이벤트를 만들 수 없음: {error}({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't create event: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "이벤트를 만들 수 없음: {error}({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -2447,6 +2438,15 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "손상된 토렌트는 추가할 수 없습니다"
+
+#, fuzzy
+#~| msgid "Couldn't create event: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "이벤트를 만들 수 없음: {error}({error_code})"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "전역 설정 사용"

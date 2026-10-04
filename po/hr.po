@@ -100,12 +100,6 @@ msgstr "Slanje zbroja slanja/preuzimanja na pratitelj…"
 msgid "_Quit Now"
 msgstr "_Izađi odmah"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Nemoguće dodati oštećeni torrent"
-msgstr[1] "Nemoguće dodati oštećene torrente"
-msgstr[2] "Nemoguće dodati oštećene torrente"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Nemoguće dodati duplikat torrenta"
@@ -680,6 +674,9 @@ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't read '{path}'"
+msgstr ""
+
+msgid "The torrent could not be downloaded from {url}: {error}"
 msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
@@ -1504,10 +1501,13 @@ msgstr "Otvori torrent iz URL-a"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr ""
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't open torrent"
+msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
@@ -1526,9 +1526,6 @@ msgid "Unsupported URL: '{url}'"
 msgstr ""
 
 msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -1853,12 +1850,6 @@ msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -2515,6 +2506,12 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Nemoguće dodati oštećeni torrent"
+#~ msgstr[1] "Nemoguće dodati oštećene torrente"
+#~ msgstr[2] "Nemoguće dodati oštećene torrente"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "Koristi globalne postavke"

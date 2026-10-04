@@ -102,11 +102,6 @@ msgstr "Lähetetään seurantapalvelimelle lataus- ja lähetystilastot…"
 msgid "_Quit Now"
 msgstr "_Lopeta nyt"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Vioittunutta torrenttia ei voi lisätä"
-msgstr[1] "Vioittuneita torrentteja ei voi lisätä"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Samaa torrenttia ei voi lisätä toista kertaa"
@@ -697,6 +692,9 @@ msgstr "Ei voinut katsoa '{path}': {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Ei voitu lukea '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1522,11 +1520,14 @@ msgstr "Avaa torrent verkko-osoitteesta"
 msgid "_URL:"
 msgstr "_Verkko-osoite:"
 
+msgid "Couldn't open torrent"
+msgstr "Ei voitu avata torrentia"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Ei voitu avata torrentia"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Ei voitu siirtää '{path}' roskakoriin: {error} ({error_code})"
@@ -1549,9 +1550,6 @@ msgstr "Ei tuettu URL: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} ei osaa käyttää '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Tämä linkki näyttää olevan tarkoitettu jollekin muulle kuin BitTorrentille."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1865,14 +1863,6 @@ msgstr "Ei voitu testata porttia: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Ei voitu testata porttia: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-portin polun on oltava pienempi kuin {count} merkkiä (sisältäen '{prefix}' etuliite)"
@@ -2502,6 +2492,22 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Vioittunutta torrenttia ei voi lisätä"
+#~ msgstr[1] "Vioittuneita torrentteja ei voi lisätä"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Tämä linkki näyttää olevan tarkoitettu jollekin muulle kuin BitTorrentille."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Lähteen päivitys onnistui {protocol} osoitteeseen {ip}"

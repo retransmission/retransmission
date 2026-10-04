@@ -25,6 +25,7 @@ namespace tr::app
 
 struct RpcResponse {
     std::string errmsg;
+    int code = 0; // the error's JsonRpc::Error::Code, or 0 if the response has none
     std::shared_ptr<tr_variant> args;
     bool success = false;
     bool network_error = false; // true if no valid HTTP response

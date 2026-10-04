@@ -109,11 +109,6 @@ msgstr "Hoch-/Herunterladestatistik wird an den Tracker gesendet …"
 msgid "_Quit Now"
 msgstr "_Jetzt beenden"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Defekte Torrentdatei konnte nicht hinzugefügt werden"
-msgstr[1] "Defekte Torrentdateien konnten nicht hinzugefügt werden"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Doppelte Torrentdatei konnte nicht hinzugefügt werden"
@@ -810,6 +805,9 @@ msgstr "»{path}« konnte nicht überwacht werden: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "»{path}« konnte nicht gelesen werden"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Der Torrent konnte nicht von {url} empfangen werden: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1681,11 +1679,14 @@ msgstr "Torrent über Adresse öffnen"
 msgid "_URL:"
 msgstr "_Adresse:"
 
+msgid "Couldn't open torrent"
+msgstr "Torrent konnte nicht geöffnet werden"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Die Torrent-Datei »{path}« ist bereits in Verwendung von »{torrent_name}«."
 
-msgid "Couldn't open torrent"
-msgstr "Torrent konnte nicht geöffnet werden"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "„{source}“ ist keine wohlgeformte Torrent-Datei."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "»{path}« konnte nicht in den Papierkorb verschoben werden: {error} ({error_code})"
@@ -1708,9 +1709,6 @@ msgstr "Nicht unterstützte Adresse: »{url}«"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} weiß nicht, wie es »{url}« verwenden soll"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Dieser Magnetlink scheint für etwas anderes als BitTorrent bestimmt zu sein."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2026,14 +2024,6 @@ msgstr "Port konnte nicht getestet werden: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Port konnte nicht getestet werden: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix Socket-Pfad muss weniger als {count} Zeichen umfassen (einschließlich dem Präfix »{prefix}«)"
@@ -2979,29 +2969,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Die Datei „{filename}“ von {url} scheint keine Torrent-Datei zu sein."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Empfangen des Torrents fehlgeschlagen"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Der Torrent konnte nicht von {url} empfangen werden: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "„{filename}“ ist keine wohlgeformte Torrent-Datei."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Die Torrent-Datei kann nicht geöffnet werden, da sie ungültige Daten enthält."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3939,6 +3906,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Defekte Torrentdatei konnte nicht hinzugefügt werden"
+#~ msgstr[1] "Defekte Torrentdateien konnten nicht hinzugefügt werden"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Dieser Magnetlink scheint für etwas anderes als BitTorrent bestimmt zu sein."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Die Datei „{filename}“ von {url} scheint keine Torrent-Datei zu sein."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Empfangen des Torrents fehlgeschlagen"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Die Torrent-Datei kann nicht geöffnet werden, da sie ungültige Daten enthält."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Quelladresse ({protocol}) wurde erfolgreich zu {ip} aktualisiert"

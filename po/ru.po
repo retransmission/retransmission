@@ -109,13 +109,6 @@ msgstr "Отправляется сводка отдачи/загрузки на
 msgid "_Quit Now"
 msgstr "_Выйти сейчас"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Не удалось добавить повреждённый торрент"
-msgstr[1] "Не удалось добавить повреждённые торренты"
-msgstr[2] "Не удалось добавить повреждённые торренты"
-msgstr[3] "Не удалось добавить повреждённые торренты"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Не удалось добавить дублирующийся торрент"
@@ -767,6 +760,9 @@ msgstr "Не удалось посмотреть «{path}»: {error} ({error_cod
 
 msgid "Couldn't read '{path}'"
 msgstr "Не удалось прочитать «{path}»"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Торрент не может быть скачан из {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1652,11 +1648,14 @@ msgstr "Открыть торрент по ссылке"
 msgid "_URL:"
 msgstr "_Ссылка:"
 
+msgid "Couldn't open torrent"
+msgstr "Не удалось открыть торрент"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Торрент-файл «{path}» уже используется «{torrent_name}»."
 
-msgid "Couldn't open torrent"
-msgstr "Не удалось открыть торрент"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "«{source}» не является торрент-файлом."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Не удалось убрать «{path}» в корзину: {error} ({error_code})"
@@ -1679,9 +1678,6 @@ msgstr "Неподдерживаемый адрес: «{url}»"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} не знает, как использовать «{url}»"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Вероятно, эта магнит-ссылка предназначена не для BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2039,14 +2035,6 @@ msgstr "Не удалось проверить порт: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Не удалось проверить порт: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Не удалось получить торрент: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Не удалось получить торрент: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Путь к сокету Unix должен быть меньше {count} символов (включая префикс «{prefix}»)"
@@ -2996,29 +2984,6 @@ msgstr[2] ""
 msgstr[3] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Файл «{filename}» из {url} не является торрент-файлом."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Ошибка при скачивании торрента"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Торрент не может быть скачан из {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "«{filename}» не является торрент-файлом."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Торрент-файл не может быть открыт, так как содержит неверные данные."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -4009,6 +3974,33 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Не удалось добавить повреждённый торрент"
+#~ msgstr[1] "Не удалось добавить повреждённые торренты"
+#~ msgstr[2] "Не удалось добавить повреждённые торренты"
+#~ msgstr[3] "Не удалось добавить повреждённые торренты"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Вероятно, эта магнит-ссылка предназначена не для BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Не удалось получить торрент: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Не удалось получить торрент: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Файл «{filename}» из {url} не является торрент-файлом."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Ошибка при скачивании торрента"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Торрент-файл не может быть открыт, так как содержит неверные данные."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Успешно изменён адрес источника {protocol} на {ip}"

@@ -510,6 +510,7 @@ TEST_F(AppRpcClientSessionTest, execReportsAnUnknownMethodAsAnError)
     EXPECT_FALSE(response.success);
     EXPECT_FALSE(response.network_error);
     EXPECT_FALSE(std::empty(response.errmsg));
+    EXPECT_EQ(JsonRpc::Error::METHOD_NOT_FOUND, response.code);
 }
 
 } // namespace

@@ -106,12 +106,6 @@ msgstr "A enviar o total de enviado/descarregado ao rastreador…"
 msgid "_Quit Now"
 msgstr "_Sair Agora"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Não foi possível adicionar o torrent corrompido"
-msgstr[1] "Não foi possível adicionar torrents corrompidos"
-msgstr[2] "Não foi possível adicionar torrents corrompidos"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Não foi possível adicionar o torrent duplicado"
@@ -751,6 +745,9 @@ msgstr "Não foi possível invocar o script '{path}': {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr ""
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Não foi possível descarregar o ficheiro torrent a partir de {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1621,11 +1618,14 @@ msgstr "Abrir um torrent por URL"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr ""
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't open torrent"
-msgstr ""
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" não é um ficheiro torrent válido."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr ""
@@ -1647,9 +1647,6 @@ msgid "Unsupported URL: '{url}'"
 msgstr ""
 
 msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -1982,14 +1979,6 @@ msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr "Não foi possível invocar o script '{path}': {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Não foi possível invocar o script '{path}': {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -2933,29 +2922,6 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "O ficheiro \"{filename}\" de {url} não parece ser um ficheiro torrent."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "A recepção do torrent falhou"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Não foi possível descarregar o ficheiro torrent a partir de {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" não é um ficheiro torrent válido."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "O ficheiro torrent não pode ser aberto porque contém dados inválidos."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -3954,6 +3920,26 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Não foi possível adicionar o torrent corrompido"
+#~ msgstr[1] "Não foi possível adicionar torrents corrompidos"
+#~ msgstr[2] "Não foi possível adicionar torrents corrompidos"
+
+#, fuzzy
+#~| msgid "Couldn't call script '{path}': {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Não foi possível invocar o script '{path}': {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "O ficheiro \"{filename}\" de {url} não parece ser um ficheiro torrent."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "A recepção do torrent falhou"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "O ficheiro torrent não pode ser aberto porque contém dados inválidos."
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

@@ -114,12 +114,6 @@ msgstr "Enviando total de enviados/baixados ao rastreador…"
 msgid "_Quit Now"
 msgstr "_Sair agora"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Não foi possível adicionar torrent corrompido"
-msgstr[1] "Não foi possível adicionar torrents corrompidos"
-msgstr[2] "Não foi possível adicionar torrents corrompidos"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Não foi possível adicionar torrent duplicado"
@@ -821,6 +815,9 @@ msgstr "Não foi possível ler '{path}': {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Não foi possível ler '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "O torrent não pode ser baixado de {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1699,11 +1696,14 @@ msgstr "Abrir torrent de uma URL"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr "Não foi possível abrir o torrent"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "O arquivo torrent '{path}' já está em uso por '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Não foi possível abrir o torrent"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" não é um arquivo torrent válido."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Não foi possível mover '{path}' para o lixo: {error} ({error_code})"
@@ -1726,9 +1726,6 @@ msgstr "URL não suportada: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} não sabe como utilizar '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Este link magnético parece ser destinado a algo diferente do BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2063,14 +2060,6 @@ msgstr "Não foi possível testar a porta: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Não foi possível testar a porta: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Não foi possível resolver resposta: {error}({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr ""
@@ -3013,29 +3002,6 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Parece que o arquivo \"{filename}\" de {url} não é um arquivo de torrent."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "O download do torrent falhou"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "O torrent não pode ser baixado de {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" não é um arquivo torrent válido."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "O arquivo de torrent não pode ser aberto porque contém dados inválidos."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -4014,6 +3980,29 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Não foi possível adicionar torrent corrompido"
+#~ msgstr[1] "Não foi possível adicionar torrents corrompidos"
+#~ msgstr[2] "Não foi possível adicionar torrents corrompidos"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Este link magnético parece ser destinado a algo diferente do BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't parse scrape response: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Não foi possível resolver resposta: {error}({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Parece que o arquivo \"{filename}\" de {url} não é um arquivo de torrent."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "O download do torrent falhou"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "O arquivo de torrent não pode ser aberto porque contém dados inválidos."
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

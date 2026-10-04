@@ -108,12 +108,6 @@ msgstr "Envoi des totaux de téléversement et de téléchargement au traceur…
 msgid "_Quit Now"
 msgstr "_Fermer maintenant"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Impossible d’ajouter un torrent corrompu"
-msgstr[1] "Impossible d’ajouter des torrents corrompus"
-msgstr[2] "Impossible d’ajouter des torrents corrompus"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Impossible d’ajouter deux fois un torrent"
@@ -759,6 +753,9 @@ msgstr "Impossible de surveiller « {path} » : {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Impossible de lire « {path} »"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Le torrent n’a pu être téléchargé de {url} : {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1638,11 +1635,14 @@ msgstr "Ouvrir un torrent à partir d’une URL"
 msgid "_URL:"
 msgstr "_URL :"
 
+msgid "Couldn't open torrent"
+msgstr "Impossible d’ouvrir le torrent"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Le fichier torrent « {path} » est déjà utilisé par « {torrent_name} »."
 
-msgid "Couldn't open torrent"
-msgstr "Impossible d’ouvrir le torrent"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "« {source} » n’est pas un fichier torrent valide."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Impossible de déplacer « {path} » vers la corbeille : {error} ({error_code})"
@@ -1665,9 +1665,6 @@ msgstr "Adresse URL non prise en charge : « {url} »"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname} ne sait pas comment utiliser « {url} »"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Ce lien magnet semble destiné à autre chose que BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2004,14 +2001,6 @@ msgstr "Impossible de tester le port : {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Impossible de tester le port : {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Impossible récupérer le torrent : {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Impossible récupérer le torrent : {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Le chemin du connecteur Unix doit comporter moins de {count} caractères (y compris le préfixe « {prefix} »)."
@@ -2961,29 +2950,6 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Il semble que le ficher « {filename} » de {url} n’est pas un fichier torrent."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Échec de téléchargement du torrent"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Le torrent n’a pu être téléchargé de {url} : {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "« {filename} » n’est pas un fichier torrent valide."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Le fichier torrent ne peut être ouvert, car il comprend des données invalides."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -3953,6 +3919,32 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Impossible d’ajouter un torrent corrompu"
+#~ msgstr[1] "Impossible d’ajouter des torrents corrompus"
+#~ msgstr[2] "Impossible d’ajouter des torrents corrompus"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Ce lien magnet semble destiné à autre chose que BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Impossible récupérer le torrent : {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Impossible récupérer le torrent : {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Il semble que le ficher « {filename} » de {url} n’est pas un fichier torrent."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Échec de téléchargement du torrent"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Le fichier torrent ne peut être ouvert, car il comprend des données invalides."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "L’adresse source {protocol} à été mise à jour vers {ip}"

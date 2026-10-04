@@ -108,11 +108,6 @@ msgstr "Igoera/deskargen guztirakoak aztarnarira bidaltzen…"
 msgid "_Quit Now"
 msgstr "_Irten orain"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Ezin izan da torrent hondatua gehitu"
-msgstr[1] "Ezin izan dira hondatutako torrent-ak gehitu"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Ezin izan da torrent bikoiztua gehitu"
@@ -756,6 +751,9 @@ msgstr "Ezin izan da '{path}' ikusi: {error} ({error_code})"
 
 msgid "Couldn't read '{path}'"
 msgstr "Ezin izan da '{path}' irakurri"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Torrent-a ezin da {url}(e)tik deskagatu: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1627,11 +1625,14 @@ msgstr "Ireki torrent-a URL batetik"
 msgid "_URL:"
 msgstr "_URLa:"
 
+msgid "Couldn't open torrent"
+msgstr "Ezin da torrent-a ireki"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "'{path}' torrent-fitxategia dagoeneko honek erabilita dago: '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Ezin da torrent-a ireki"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" ezin da torrent artxibo mota hau erabili."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Ezin izan da '{path}' zakarrontzira mugitu: {error} ({error_code})"
@@ -1654,9 +1655,6 @@ msgstr "URL baliogabea: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "{appname}-ek ez daki '{url}' nola erabili"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Magnet esteka honek BitTorrent ez den zerbaiterako dela ematen du."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1972,14 +1970,6 @@ msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-eko socket bidea  {count} karaktere baino gutxiagokoa izan behar da ('{prefix}' aurrizkia barne)"
@@ -2921,29 +2911,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "{appname} will quit, because the two apps would work on the same downloads."
-msgstr ""
-
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Dirudienez {url} direktorioko \"{filename}\" fitxategia ez da torrent fitxategia."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Torrent-aren deskargak huts egin du"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Torrent-a ezin da {url}(e)tik deskagatu: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" ezin da torrent artxibo mota hau erabili."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Torrent fitxategia ezin izan da ireki datu baliogabeak dituelako."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
 msgstr ""
 
 msgid "A torrent for \"{torrent_name}\" already exists."
@@ -3894,6 +3861,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Ezin izan da torrent hondatua gehitu"
+#~ msgstr[1] "Ezin izan dira hondatutako torrent-ak gehitu"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Magnet esteka honek BitTorrent ez den zerbaiterako dela ematen du."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Dirudienez {url} direktorioko \"{filename}\" fitxategia ez da torrent fitxategia."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Torrent-aren deskargak huts egin du"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Torrent fitxategia ezin izan da ireki datu baliogabeak dituelako."
 
 #~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
 #~ msgstr "Ataka berbidalketa '{url}' bitartez, '{type}' zerbitzua. (helbide lokala: {address}:{port})"

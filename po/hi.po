@@ -100,11 +100,6 @@ msgstr "कुल अपलोड/डाउनलोड ट्रैकर क�
 msgid "_Quit Now"
 msgstr "अभी बंद करें (_Q)"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "विकृत टोरेंट जोड़ना विफल"
-msgstr[1] "विकृत टोरेंट जोड़ना विफल"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
@@ -670,6 +665,9 @@ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't read '{path}'"
+msgstr ""
+
+msgid "The torrent could not be downloaded from {url}: {error}"
 msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
@@ -1498,10 +1496,13 @@ msgstr "यूआरएल से टोरेंट खोलें"
 msgid "_URL:"
 msgstr "यूआरएल (_U):"
 
+msgid "Couldn't open torrent"
+msgstr ""
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't open torrent"
+msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
@@ -1521,9 +1522,6 @@ msgstr ""
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "प्रतीत होता है कि इस मैग्नेट लिंक का उद्देश्य बिट-टोरेंट से संबंधित नहीं है।"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1826,12 +1824,6 @@ msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -2466,6 +2458,14 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "विकृत टोरेंट जोड़ना विफल"
+#~ msgstr[1] "विकृत टोरेंट जोड़ना विफल"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "प्रतीत होता है कि इस मैग्नेट लिंक का उद्देश्य बिट-टोरेंट से संबंधित नहीं है।"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "सर्वत्र सेटिंग्स उपयोग करें"

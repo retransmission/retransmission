@@ -279,6 +279,10 @@ RpcResponse RpcClient::parse_response_data(tr_variant& response)
         }
 
         if (auto* const error_map = response_map->find_if<tr_variant::Map>(TR_KEY_error)) {
+            if (auto const code = error_map->value_if<int64_t>(TR_KEY_code); code) {
+                ret.code = static_cast<int>(*code);
+            }
+
             if (auto const errmsg = error_map->value_if<std::string_view>(TR_KEY_message); errmsg) {
                 ret.errmsg = std::string{ *errmsg };
             }

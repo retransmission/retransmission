@@ -108,11 +108,6 @@ msgstr "Αποστολή στατιστικών απεσταλμένων/ληφ�
 msgid "_Quit Now"
 msgstr "_Τερματισμός τώρα"
 
-msgid "Couldn't add corrupt torrent"
-msgid_plural "Couldn't add corrupt torrents"
-msgstr[0] "Αδύνατη η προσθήκη κατεστραμμένου torrent"
-msgstr[1] "Δεν ήταν δυνατή η προσθήκη κατεστραμμένων torrent"
-
 msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Αδύνατη η προσθήκη διπλότυπου torrent"
@@ -780,6 +775,9 @@ msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_
 
 msgid "Couldn't read '{path}'"
 msgstr "Αδυναμία ανάγνωσης '{path}'"
+
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Αδυναμία λήψης torrent από {url}: {error}"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -1653,11 +1651,14 @@ msgstr "Άνοιγμα torrent από URL"
 msgid "_URL:"
 msgstr "_URL:"
 
+msgid "Couldn't open torrent"
+msgstr "Αδυναμία ανοίγματος torrent"
+
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Το μονοπάτι του αρχείου torrent '{path}' χρησιμοποιείται ήδη από το '{torrent_name}'."
 
-msgid "Couldn't open torrent"
-msgstr "Αδυναμία ανοίγματος torrent"
+msgid "\"{source}\" is not a valid torrent file."
+msgstr "\"{source}\" δεν είναι ένα έγκυρο αρχείο torrent."
 
 msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr "Αδυναμία μετακίνησης '{path}' στον κάδο: {error} ({error_code})"
@@ -1680,9 +1681,6 @@ msgstr "Μη υποστηριζόμενο URL: '{url}'"
 
 msgid "{appname} doesn't know how to use '{url}'"
 msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Αυτός ο μαγνητικός σύνδεσμος μοιάζει να προορίζεται για κάτι διαφορετικό του BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -1998,14 +1996,6 @@ msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
 
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
-msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Το μονοπάτι της υποδοχής Unix πρέπει να αποτελείται από λιγότερο από {count} χαρακτήρες (συμπεριλαμβανομένου του προθέματος '{prefix}')"
@@ -2949,29 +2939,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
-msgstr "Φαίνεται ότι το αρχείο \"{filename}\" από {url} δεν είναι ένα αρχείο torrent."
-
-#. Translators: Download not a torrent -> title
-#. Translators: Torrent download error -> title
-msgid "Torrent download failed"
-msgstr "Αποτυχία λήψης torrent"
-
-msgid "The torrent could not be downloaded from {url}: {error}."
-msgstr "Αδυναμία λήψης torrent από {url}: {error}."
-
-msgid "\"{filename}\" is not a valid torrent file."
-msgstr "\"{filename}\" δεν είναι ένα έγκυρο αρχείο torrent."
-
-msgid "The torrent file cannot be opened because it contains invalid data."
-msgstr "Δεν μπορεί να ανοιχτεί το αρχείο επειδή περιέχει μη έγκυρα δεδομένα."
-
-msgid "Adding magnetized torrent failed."
-msgstr ""
-
-msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
-msgstr ""
-
 msgid "A torrent for \"{torrent_name}\" already exists."
 msgstr ""
 
@@ -3912,6 +3879,31 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Couldn't add corrupt torrent"
+#~ msgid_plural "Couldn't add corrupt torrents"
+#~ msgstr[0] "Αδύνατη η προσθήκη κατεστραμμένου torrent"
+#~ msgstr[1] "Δεν ήταν δυνατή η προσθήκη κατεστραμμένων torrent"
+
+#~ msgid "This magnet link appears to be intended for something other than BitTorrent."
+#~ msgstr "Αυτός ο μαγνητικός σύνδεσμος μοιάζει να προορίζεται για κάτι διαφορετικό του BitTorrent."
+
+#, fuzzy
+#~| msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+#~ msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
+
+#~ msgid "Couldn't fetch torrent: {error} ({error_code})"
+#~ msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
+
+#~ msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+#~ msgstr "Φαίνεται ότι το αρχείο \"{filename}\" από {url} δεν είναι ένα αρχείο torrent."
+
+#~ msgid "Torrent download failed"
+#~ msgstr "Αποτυχία λήψης torrent"
+
+#~ msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgstr "Δεν μπορεί να ανοιχτεί το αρχείο επειδή περιέχει μη έγκυρα δεδομένα."
 
 #~ msgid "Successfully updated source {protocol} address to {ip}"
 #~ msgstr "Επιτυχής ενημέρωση {protocol} διεύθυνσης πηγής σε {ip}"
