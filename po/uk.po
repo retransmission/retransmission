@@ -2469,12 +2469,6 @@ msgstr "Пройшло часу"
 msgid "Downloading:"
 msgstr "Завантажується:"
 
-msgid "Created on:"
-msgstr "Створено:"
-
-msgid "Creator:"
-msgstr "Створювач:"
-
 msgid "Was:"
 msgstr "Було:"
 
@@ -3878,6 +3872,12 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Created on:"
+#~ msgstr "Створено:"
+
+#~ msgid "Creator:"
+#~ msgstr "Створювач:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Роздаючі:"

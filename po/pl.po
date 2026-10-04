@@ -2482,12 +2482,6 @@ msgstr "Czas"
 msgid "Downloading:"
 msgstr "Pobieranie:"
 
-msgid "Created on:"
-msgstr "Utworzono:"
-
-msgid "Creator:"
-msgstr "Twórca:"
-
 msgid "Was:"
 msgstr "Był:"
 
@@ -3883,6 +3877,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Created on:"
+#~ msgstr "Utworzono:"
+
+#~ msgid "Creator:"
+#~ msgstr "Twórca:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Wysyłający:"

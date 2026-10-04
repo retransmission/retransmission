@@ -2376,12 +2376,6 @@ msgstr "Geçen Süre"
 msgid "Downloading:"
 msgstr "İndirilme:"
 
-msgid "Created on:"
-msgstr "Oluşturulma:"
-
-msgid "Creator:"
-msgstr "Oluşturan:"
-
 msgid "Was:"
 msgstr "Şu idi:"
 
@@ -3741,6 +3735,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Created on:"
+#~ msgstr "Oluşturulma:"
+
+#~ msgid "Creator:"
+#~ msgstr "Oluşturan:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Besleyenler:"

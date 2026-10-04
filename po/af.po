@@ -2371,12 +2371,6 @@ msgstr "Verloopte tyd"
 msgid "Downloading:"
 msgstr "Laai tans af:"
 
-msgid "Created on:"
-msgstr "Geskep op:"
-
-msgid "Creator:"
-msgstr "Skepper:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3740,6 +3734,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Created on:"
+#~ msgstr "Geskep op:"
+
+#~ msgid "Creator:"
+#~ msgstr "Skepper:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Saaiers:"

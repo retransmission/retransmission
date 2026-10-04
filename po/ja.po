@@ -2335,12 +2335,6 @@ msgstr "経過時間"
 msgid "Downloading:"
 msgstr "ダウンロード中:"
 
-msgid "Created on:"
-msgstr "作成日:"
-
-msgid "Creator:"
-msgstr "作成:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3683,6 +3677,12 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Created on:"
+#~ msgstr "作成日:"
+
+#~ msgid "Creator:"
+#~ msgstr "作成:"
 
 #~ msgid "Seeders:"
 #~ msgstr "シーダー:"

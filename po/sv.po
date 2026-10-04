@@ -2370,12 +2370,6 @@ msgstr "Förfluten tid"
 msgid "Downloading:"
 msgstr "Hämtar:"
 
-msgid "Created on:"
-msgstr "Skapad den:"
-
-msgid "Creator:"
-msgstr "Skapare:"
-
 msgid "Was:"
 msgstr "Var:"
 
@@ -3742,6 +3736,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Created on:"
+#~ msgstr "Skapad den:"
+
+#~ msgid "Creator:"
+#~ msgstr "Skapare:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Distributörer:"

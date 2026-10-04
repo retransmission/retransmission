@@ -2402,12 +2402,6 @@ msgstr "Παρελθών χρόνος"
 msgid "Downloading:"
 msgstr "Κατέβασμα:"
 
-msgid "Created on:"
-msgstr "Δημιουργήθηκε την:"
-
-msgid "Creator:"
-msgstr "Δημιουργός:"
-
 msgid "Was:"
 msgstr "Ήταν:"
 
@@ -3771,6 +3765,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Created on:"
+#~ msgstr "Δημιουργήθηκε την:"
+
+#~ msgid "Creator:"
+#~ msgstr "Δημιουργός:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Διαμοιραστές:"

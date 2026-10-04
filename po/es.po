@@ -2487,12 +2487,6 @@ msgstr "Tiempo transcurrido"
 msgid "Downloading:"
 msgstr "Descargando:"
 
-msgid "Created on:"
-msgstr "Creado:"
-
-msgid "Creator:"
-msgstr "Creador:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3880,6 +3874,12 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Created on:"
+#~ msgstr "Creado:"
+
+#~ msgid "Creator:"
+#~ msgstr "Creador:"
 
 #, fuzzy
 #~| msgid "seeder"

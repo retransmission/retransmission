@@ -2449,12 +2449,6 @@ msgstr "עבר זמן"
 msgid "Downloading:"
 msgstr "הורדה:"
 
-msgid "Created on:"
-msgstr "מועד יצירה:"
-
-msgid "Creator:"
-msgstr "יצירה:"
-
 msgid "Was:"
 msgstr "היה:"
 
@@ -3841,6 +3835,12 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Created on:"
+#~ msgstr "מועד יצירה:"
+
+#~ msgid "Creator:"
+#~ msgstr "יצירה:"
 
 #~ msgid "Seeders:"
 #~ msgstr "זורעים:"

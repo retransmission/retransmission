@@ -19,8 +19,7 @@
 @property(nonatomic) IBOutlet NSTextField* fDataLocationField;
 @property(nonatomic) IBOutlet NSTextField* fLastDataLocationField;
 @property(nonatomic) IBOutlet NSTextField* fLastDataLabel;
-@property(nonatomic) IBOutlet NSTextField* fCreatorField;
-@property(nonatomic) IBOutlet NSTextField* fDateCreatedField;
+@property(nonatomic) IBOutlet NSTextField* fOriginField;
 
 @property(nonatomic) IBOutlet NSTextView* fCommentView;
 
@@ -126,9 +125,21 @@
         NSString* commentString = torrent.comment;
         self.fCommentView.string = commentString;
 
-        NSString* creatorString = torrent.creator;
-        self.fCreatorField.stringValue = creatorString;
-        self.fDateCreatedField.objectValue = torrent.dateCreated;
+        // "Created by {creator} on {date}", as in the other clients. With neither, the field shows its "N/A" placeholder.
+        NSString* const creator = [torrent.creator stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+        NSDate* const date = torrent.dateCreated;
+        NSString* const dateString = date != nil ? [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterLongStyle
+                                                                                  timeStyle:NSDateFormatterShortStyle] :
+                                                   nil;
+        NSString* originString = @"";
+        if (creator.length > 0 && dateString != nil) {
+            originString = TR_FORMAT("Created by {creator} on {date}", TRArg("creator", creator), TRArg("date", dateString));
+        } else if (creator.length > 0) {
+            originString = TR_FORMAT("Created by {creator}", TRArg("creator", creator));
+        } else if (dateString != nil) {
+            originString = TR_FORMAT("Created on {date}", TRArg("date", dateString));
+        }
+        self.fOriginField.stringValue = originString;
     } else {
         self.fSizeField.stringValue = @"";
         self.fHashField.stringValue = @"";
@@ -136,8 +147,7 @@
         self.fSecureField.stringValue = @"";
         self.fCommentView.string = @"";
 
-        self.fCreatorField.stringValue = @"";
-        self.fDateCreatedField.stringValue = @"";
+        self.fOriginField.stringValue = @"";
 
         self.fDataLocationField.stringValue = @"";
         self.fDataLocationField.toolTip = nil;

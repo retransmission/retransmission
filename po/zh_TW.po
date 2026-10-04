@@ -2360,12 +2360,6 @@ msgstr "已經過時間"
 msgid "Downloading:"
 msgstr "正在下載："
 
-msgid "Created on:"
-msgstr "建立於："
-
-msgid "Creator:"
-msgstr "建立者："
-
 msgid "Was:"
 msgstr ""
 
@@ -3696,6 +3690,12 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Created on:"
+#~ msgstr "建立於："
+
+#~ msgid "Creator:"
+#~ msgstr "建立者："
 
 #~ msgid "Seeders:"
 #~ msgstr "做種者："

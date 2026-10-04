@@ -2445,12 +2445,6 @@ msgstr "Продолжительность"
 msgid "Downloading:"
 msgstr "Скачивания:"
 
-msgid "Created on:"
-msgstr "Дата:"
-
-msgid "Creator:"
-msgstr "Создано в:"
-
 msgid "Was:"
 msgstr "Был:"
 
@@ -3854,6 +3848,12 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Created on:"
+#~ msgstr "Дата:"
+
+#~ msgid "Creator:"
+#~ msgstr "Создано в:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Раздающих:"

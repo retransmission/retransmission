@@ -2403,12 +2403,6 @@ msgstr "Eltelt idő"
 msgid "Downloading:"
 msgstr "Letöltés:"
 
-msgid "Created on:"
-msgstr "Létrehozva ekkor:"
-
-msgid "Creator:"
-msgstr "Készítő:"
-
 msgid "Was:"
 msgstr "Ez volt:"
 
@@ -3769,6 +3763,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Created on:"
+#~ msgstr "Létrehozva ekkor:"
+
+#~ msgid "Creator:"
+#~ msgstr "Készítő:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Megosztók:"

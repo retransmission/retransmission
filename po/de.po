@@ -2432,12 +2432,6 @@ msgstr "Dauer"
 msgid "Downloading:"
 msgstr "Empfangen:"
 
-msgid "Created on:"
-msgstr "Erstellt am:"
-
-msgid "Creator:"
-msgstr "Erstellt mit:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3798,6 +3792,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Created on:"
+#~ msgstr "Erstellt am:"
+
+#~ msgid "Creator:"
+#~ msgstr "Erstellt mit:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Verteiler:"

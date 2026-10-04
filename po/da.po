@@ -2397,12 +2397,6 @@ msgstr "Forløbet tid"
 msgid "Downloading:"
 msgstr "Henter:"
 
-msgid "Created on:"
-msgstr "Oprettet:"
-
-msgid "Creator:"
-msgstr "Udgiver:"
-
 msgid "Was:"
 msgstr "Var:"
 
@@ -3770,6 +3764,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Created on:"
+#~ msgstr "Oprettet:"
+
+#~ msgid "Creator:"
+#~ msgstr "Udgiver:"
 
 #, fuzzy
 #~| msgid "seeder"

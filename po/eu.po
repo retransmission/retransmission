@@ -2376,12 +2376,6 @@ msgstr "Emandako denbora"
 msgid "Downloading:"
 msgstr "Deskargatzen:"
 
-msgid "Created on:"
-msgstr "Sortze-data:"
-
-msgid "Creator:"
-msgstr "Sortzailea:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3753,6 +3747,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Created on:"
+#~ msgstr "Sortze-data:"
+
+#~ msgid "Creator:"
+#~ msgstr "Sortzailea:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Igorleak:"
