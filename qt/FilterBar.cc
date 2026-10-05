@@ -109,10 +109,10 @@ void FilterBar::refreshTrackers()
     }
 
     // update the "All" row
-    auto const num_trackers = torrents_per_sitename.size();
+    auto const num_torrents = torrents_.rowCount();
     auto* item = tracker_model_->item(ROW_TOTALS);
-    item->setData(static_cast<int>(num_trackers), FilterBarComboBox::CountRole);
-    item->setData(getCountString(num_trackers), FilterBarComboBox::CountStringRole);
+    item->setData(num_torrents, FilterBarComboBox::CountRole);
+    item->setData(getCountString(static_cast<size_t>(num_torrents)), FilterBarComboBox::CountStringRole);
 
     auto update_tracker_item = [](QStandardItem* i, auto const& it) {
         auto const& [sitename, count] = *it;
