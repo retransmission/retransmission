@@ -70,6 +70,7 @@ private:
             tr_logAddError(
                 fmt::format(
                     "Couldn't watch '{path}': {error} ({error_code})",
+                    fmt::arg("path", dirname()),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
