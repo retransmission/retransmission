@@ -69,7 +69,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't watch '{path}': {error} ({error_code})")),
+                    "Couldn't watch '{path}': {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
@@ -82,7 +82,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't watch '{path}': {error} ({error_code})")),
+                    "Couldn't watch '{path}': {error} ({error_code})",
                     fmt::arg("path", dirname()),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -97,7 +97,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't watch '{path}': {error} ({error_code})")),
+                    "Couldn't watch '{path}': {error} ({error_code})",
                     fmt::arg("path", dirname()),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -110,7 +110,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't create event: {error} ({error_code})")),
+                    "Couldn't create event: {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
@@ -120,7 +120,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't add event: {error} ({error_code})")),
+                    "Couldn't add event: {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
@@ -140,7 +140,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't read event: {error} ({error_code})")),
+                    "Couldn't read event: {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;

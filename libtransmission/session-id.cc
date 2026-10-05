@@ -60,7 +60,7 @@ tr_sys_file_t create_lockfile(std::string_view session_id)
     if (error) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't create '{path}': {error} ({error_code})")),
+                "Couldn't create '{path}': {error} ({error_code})",
                 fmt::arg("path", lockfile_path),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
@@ -129,7 +129,7 @@ bool tr_session_id::is_local(std::string_view session_id)
     if (error) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't open session lock file '{path}': {error} ({error_code})")),
+                "Couldn't open session lock file '{path}': {error} ({error_code})",
                 fmt::arg("path", lockfile_path),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));

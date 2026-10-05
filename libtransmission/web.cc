@@ -178,29 +178,28 @@ public:
     {
         auto const curl_version_num = get_curl_version();
         if (curl_version_num < TR_CURL_MINIMUM_VERSION_NUM) {
-            tr_logAddWarn(_("Consider upgrading your curl installation."));
+            tr_logAddWarn("Consider upgrading your curl installation.");
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("The minimum supported version is {curl_version}, you might face unexpected behaviour.")),
+                    "The minimum supported version is {curl_version}, you might face unexpected behaviour.",
                     fmt::arg("curl_version", TR_CURL_MINIMUM_VERSION)));
         }
 
         if (curl_version_num == 0x080901) {
-            tr_logAddWarn(_("Consider upgrading your curl installation."));
+            tr_logAddWarn("Consider upgrading your curl installation.");
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("curl {curl_version} is prone to SIGPIPE crashes. {details_url}")),
+                    "curl {curl_version} is prone to SIGPIPE crashes. {details_url}",
                     fmt::arg("curl_version", "8.9.1"),
                     fmt::arg("details_url", "https://github.com/transmission/transmission/issues/7035")));
         }
 
         if (curl_version_num == 0x080B01) {
-            tr_logAddWarn(_("Consider upgrading your curl installation."));
+            tr_logAddWarn("Consider upgrading your curl installation.");
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(
-                        _("curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT "
-                          "crashes for the daemon systemd service. {details_url}")),
+                    "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT "
+                    "crashes for the daemon systemd service. {details_url}",
                     fmt::arg("curl_version", "8.11.1"),
                     fmt::arg("details_url", "https://curl.se/docs/CVE-2025-0665.html")));
         }
@@ -214,11 +213,9 @@ public:
         if (curl_ssl_verify) {
             auto const* bundle = std::empty(curl_ca_bundle) ? "none" : curl_ca_bundle.c_str();
             tr_logAddInfo(
-                fmt::format(
-                    fmt::runtime(_("Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}")),
-                    fmt::arg("bundle", bundle)));
-            tr_logAddInfo(_("NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"));
-            tr_logAddInfo(_("NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"));
+                fmt::format("Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}", fmt::arg("bundle", bundle)));
+            tr_logAddInfo("NB: this only works if you built against libcurl with openssl or gnutls, NOT nss");
+            tr_logAddInfo("NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors");
         }
 
         if (auto const& file = mediator.cookieFile(); file) {
@@ -370,7 +367,7 @@ public:
                 max != 0U && (response.body.size() > max || n_bytes > max - response.body.size())) {
                 tr_logAddWarn(
                     fmt::format(
-                        fmt::runtime(_("Aborting request: response body exceeded max size of {max_file_size} bytes")),
+                        "Aborting request: response body exceeded max size of {max_file_size} bytes",
                         fmt::arg("max_file_size", max)));
                 return false;
             }
@@ -547,8 +544,7 @@ public:
             if (code != NoResponseCode && code != PartialContentResponseCode) {
                 tr_logAddWarn(
                     fmt::format(
-                        fmt::runtime(
-                            _("Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}")),
+                        "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}",
                         fmt::arg("url", task->options().url),
                         fmt::arg("expected_code", PartialContentResponseCode),
                         fmt::arg("actual_code", code)));

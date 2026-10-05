@@ -127,7 +127,7 @@ private:
         auto const path = dirname();
         auto const wide_path = tr_win32_utf8_to_native(path);
         if (std::empty(wide_path)) {
-            tr_logAddError(fmt::format(fmt::runtime(_("Couldn't convert '{path}' to native path")), fmt::arg("path", path)));
+            tr_logAddError(fmt::format("Couldn't convert '{path}' to native path", fmt::arg("path", path)));
             return;
         }
 
@@ -140,7 +140,7 @@ private:
             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
             nullptr);
         if (fd_ == INVALID_HANDLE_VALUE) {
-            tr_logAddError(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", path)));
+            tr_logAddError(fmt::format("Couldn't read '{path}'", fmt::arg("path", path)));
             return;
         }
 
@@ -155,7 +155,7 @@ private:
                 nullptr,
                 &overlapped_,
                 nullptr))) {
-            tr_logAddError(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", path)));
+            tr_logAddError(fmt::format("Couldn't read '{path}'", fmt::arg("path", path)));
             return;
         }
 
@@ -163,7 +163,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't create pipe: {error} ({error_code})")),
+                    "Couldn't create pipe: {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
@@ -174,7 +174,7 @@ private:
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Couldn't create event: {error} ({error_code})")),
+                    "Couldn't create event: {error} ({error_code})",
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
             return;
@@ -187,7 +187,7 @@ private:
         // NOLINTNEXTLINE(performance-no-int-to-ptr)
         thread_ = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, Win32Watchdir::staticThreadFunc, this, 0, nullptr));
         if (thread_ == nullptr) {
-            tr_logAddError(_("Couldn't create thread"));
+            tr_logAddError("Couldn't create thread");
             return;
         }
     }
@@ -222,13 +222,13 @@ private:
                     nullptr,
                     &overlapped_,
                     nullptr))) {
-                tr_logAddError(_("Couldn't read directory changes"));
+                tr_logAddError("Couldn't read directory changes");
                 return 0;
             }
         }
 
         if (GetLastError() != ERROR_OPERATION_ABORTED) {
-            tr_logAddError(_("Couldn't wait for directory changes"));
+            tr_logAddError("Couldn't wait for directory changes");
         }
 
         return 0;
@@ -265,7 +265,7 @@ private:
             if (nread != header_size) {
                 tr_logAddError(
                     fmt::format(
-                        fmt::runtime(_("Couldn't read event: expected {expected_size}, got {actual_size}")),
+                        "Couldn't read event: expected {expected_size}, got {actual_size}",
                         fmt::arg("expected_size", header_size),
                         fmt::arg("actual_size", nread)));
                 break;
@@ -288,7 +288,7 @@ private:
             if (nread != nleft) {
                 tr_logAddError(
                     fmt::format(
-                        fmt::runtime(_("Couldn't read filename: expected {expected_size}, got {actual_size}")),
+                        "Couldn't read filename: expected {expected_size}, got {actual_size}",
                         fmt::arg("expected_size", nleft),
                         fmt::arg("actual_size", nread)));
                 break;

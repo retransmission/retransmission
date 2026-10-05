@@ -156,7 +156,7 @@ void read_bytes(
     if (error) {
         tr_logAddError(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", desc.files.path(file_index)),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())),
@@ -191,7 +191,7 @@ void write_bytes(
     if (error) {
         tr_logAddError(
             fmt::format(
-                fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
+                "Couldn't save '{path}': {error} ({error_code})",
                 fmt::arg("path", desc.files.path(file_index)),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())),

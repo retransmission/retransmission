@@ -173,7 +173,7 @@ public:
         } else if (scrape_sv.starts_with("udp://"sv)) {
             announcer_udp_.scrape(request, std::move(on_response));
         } else {
-            tr_logAddError(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", scrape_sv)));
+            tr_logAddError(fmt::format("Unsupported URL: '{url}'", fmt::arg("url", scrape_sv)));
         }
     }
 
@@ -187,7 +187,7 @@ public:
         } else if (announce_sv.starts_with("udp://"sv)) {
             announcer_udp_.announce(request, std::move(on_response));
         } else {
-            tr_logAddWarn(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", announce_sv)));
+            tr_logAddWarn(fmt::format("Unsupported URL: '{url}'", fmt::arg("url", announce_sv)));
         }
     }
 
@@ -827,20 +827,16 @@ void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e,
     if (isUnregistered(err)) {
         tr_logAddErrorTier(
             tier,
-            fmt::format(
-                fmt::runtime(_("Announce error: {error} ({url})")),
-                fmt::arg("error", err),
-                fmt::arg("url", announce_url)));
+            fmt::format("Announce error: {error} ({url})", fmt::arg("error", err), fmt::arg("url", announce_url)));
     } else {
         /* schedule a reannounce */
         interval = std::max(interval, current_tracker->getRetryInterval());
         tr_logAddWarnTier(
             tier,
             fmt::format(
-                fmt::runtime(tr_ngettext(
-                    "Announce error: {error} (Retrying in {count} second) ({url})",
-                    "Announce error: {error} (Retrying in {count} seconds) ({url})",
-                    interval)),
+                fmt::runtime(
+                    interval == 1 ? "Announce error: {error} (Retrying in {count} second) ({url})" :
+                                    "Announce error: {error} (Retrying in {count} seconds) ({url})"),
                 fmt::arg("error", err),
                 fmt::arg("count", interval),
                 fmt::arg("url", announce_url)));

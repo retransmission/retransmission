@@ -46,6 +46,8 @@ template<std::integral T>
 // The catalog keys such a message by its context and text, as gettext's msgctxt does.
 [[nodiscard]] char const* tr_pgettext(char const* context, char const* msgid);
 
+// Mark only text that a client shows, such as torrent errors and RPC error replies.
+// Log messages stay in English, because people search for them and paste them into bug reports.
 #define _(msgid) tr_gettext(msgid)
 
 // ---

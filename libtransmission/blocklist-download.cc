@@ -102,7 +102,7 @@ auto constexpr MaxBlocklistSize = 128U * 1024U * 1024U;
                 // truncated prefix isn't mistaken for a valid blocklist
                 tr_logAddWarn(
                     fmt::format(
-                        fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
+                        "Blocklist is larger than {limit} MiB; ignoring it",
                         fmt::arg("limit", MaxBlocklistSize / (1024U * 1024U))));
                 content.clear();
                 break;
@@ -276,13 +276,11 @@ void Updater::on_auto_update_timer()
     update([](tr_blocklist_update_result const& result) {
         if (result.status == tr_blocklist_update_status::Ok) {
             tr_logAddInfo(
-                fmt::format(
-                    fmt::runtime(_("Automatically updated blocklist, which now has {count} rules")),
-                    fmt::arg("count", result.n_rules)));
+                fmt::format("Automatically updated blocklist, which now has {count} rules", fmt::arg("count", result.n_rules)));
         } else if (!std::empty(result.error)) {
             tr_logAddWarn(std::string{ result.error });
         } else {
-            tr_logAddWarn(_("Couldn't update blocklist"));
+            tr_logAddWarn("Couldn't update blocklist");
         }
     });
 

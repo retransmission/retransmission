@@ -406,7 +406,7 @@ tr_session::BoundSocket::BoundSocket(
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("Listening to incoming peer connections on {hostport}")),
+            "Listening to incoming peer connections on {hostport}",
             fmt::arg("hostport", tr_socket_address::display_name(addr, port))));
     event_add(ev_.get(), nullptr);
 }
@@ -691,7 +691,7 @@ void tr_session::initImpl(init_data& data)
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("{appname} version {version} starting")),
+            "{appname} version {version} starting",
             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
             fmt::arg("version", LONG_VERSION_STRING)));
 
@@ -718,9 +718,7 @@ void tr_session::initImpl(init_data& data)
             });
     } catch (std::exception const& e) {
         tr_logAddError(
-            fmt::format(
-                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
-                fmt::arg("error", e.what())));
+            fmt::format("Couldn't start disk IO workers, continuing without them: {error}", fmt::arg("error", e.what())));
     }
 
     tr_utp_init(this);
@@ -1427,7 +1425,7 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("{appname} version {version} shutting down")),
+            "{appname} version {version} shutting down",
             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
             fmt::arg("version", LONG_VERSION_STRING)));
 
@@ -1495,7 +1493,7 @@ void session_load_torrents(tr_session* session, tr_torrent_builder* builder, std
     if (n_torrents != 0U) {
         tr_logAddInfo(
             fmt::format(
-                fmt::runtime(tr_ngettext("Loaded {count} torrent", "Loaded {count} torrents", n_torrents)),
+                fmt::runtime(n_torrents == 1U ? "Loaded {count} torrent" : "Loaded {count} torrents"),
                 fmt::arg("count", n_torrents)));
     }
 
@@ -2123,9 +2121,8 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     if (configDirLockStatus() == tr_config_dir_lock::Status::Unavailable) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(
-                    _("Couldn't claim '{path}'. If another session is using it, the two will "
-                      "overwrite each other's settings, resume files and stats.")),
+                "Couldn't claim '{path}'. If another session is using it, the two will "
+                "overwrite each other's settings, resume files and stats.",
                 fmt::arg("path", config_dir_)));
     }
 }
