@@ -54,7 +54,6 @@ namespace
 
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
 char const* const TrayIconName = TR_PROJ_APPNAME "-tray-icon";
-char const* const AppIconName = TR_PROJ_APPNAME;
 #endif
 
 #if defined(TR_SYS_TRAY_IMPL_APPINDICATOR)
@@ -142,7 +141,7 @@ Glib::ustring getIconName()
     // otherwise, use the fallback builtin icon.
 
     auto const icon = Gtk::IconTheme::get_default()->lookup_icon(TrayIconName, 48, Gtk::ICON_LOOKUP_USE_BUILTIN);
-    return icon && !icon.get_filename().empty() ? TrayIconName : AppIconName;
+    return icon && !icon.get_filename().empty() ? TrayIconName : TR_GTK_ICON_NAME;
 }
 
 #endif
