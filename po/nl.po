@@ -1813,14 +1813,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} seconde over"
 msgstr[1] "{seconds_left:L} seconden over"
 
-msgid "Announce error: {error} ({url})"
-msgstr "Aankondigingsfout: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Aankondigingsfout: {error} (Opnieuw proberen over {count} seconde) ({url})"
-msgstr[1] "Aankondigingsfout: {error} (Opnieuw proberen over {count} seconden) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "Kon geen verbinding met tracker maken"
 
@@ -1830,39 +1822,12 @@ msgstr "Tracker gaf geen antwoord"
 msgid "Success"
 msgstr "Geslaagd"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Kan aankondigingsantwoord niet parseren: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Kon scrapereactie niet parseren: {error} ({error_code})"
-
 #. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
 msgid "{ip_protocol} connection failed"
 msgstr "{ip_protocol} verbinding mislukt"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Kon niet nakijken '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "Zwarte lijst '{path}' heeft {count} regel"
-msgstr[1] "Zwarte lijst '{path}' heeft {count} regels"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "Kan regel niet parseren: '{line}'"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "Oude zwarte lijst-bestandsindeling herschrijven naar een nieuwe indeling"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
-msgstr ""
 
 #, fuzzy
 #| msgid "Couldn't fetch blocklist: {error} ({error_code})"
@@ -1872,18 +1837,6 @@ msgstr "Kan de zwarte lijst niet ophalen: {error} ({error_code})"
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "Kan de zwarte lijst niet ophalen: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} fout: {error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Kan '{path}' niet lezen: geen gewoon bestand"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1891,102 +1844,6 @@ msgstr "Kon '{path}' niet lezen"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Kon '{path}' niet verkrijgen: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Succesvol geüpdatete bron {protocol} naar adres {ip}"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr "Kan geen bronadres verkrijgen in een IP-protocol, geen netwerkverbindingen mogelijk"
-
-msgid "Your machine does not support {protocol}"
-msgstr "Uw machine ondersteunt  {protocol} niet"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Globaal {type} met succes geüpdate naar adres {ip} met gebruik van {url}"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Te veel van dit soort berichten! Ik zal dit bericht in deze sessie niet meer loggen."
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "Overslaan van '{path}': {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Kan poort niet binden {port} op {address}: {error} ({error_code}) -- Is er al een ander exemplaar van {appname} actief?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Kan poort niet binden {port} op {address}: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "Kan '{path}' niet openen: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "Kon '{path}' niet vooraf toewijzen: {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "Kon '{path}' niet afkorten: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Kon geen socket maken: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Kon het bronadres niet instellen {address} op {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Kan geen socket aansluiten {socket} naar {address}:{port}: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "Onbekende staat: {state}"
-
-msgid "Starting"
-msgstr "Aan het starten"
-
-msgid "Forwarded"
-msgstr "Doorgestuurd"
-
-msgid "Stopping"
-msgstr "Aan het stoppen"
-
-msgid "Not forwarded"
-msgstr "Niet doorgestuurd"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Privé poort {private_port} naar openbare poort {public_port}overgezet"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Status veranderd van '{old_state}' naar '{state}'"
-
-msgid "Found public address '{address}'"
-msgstr "Gevonden openbaar adres '{address}'"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "Poort {port} wordt niet meer doorgestuurd"
-
-msgid "Port {port} forwarded successfully"
-msgstr "Poort {port} succesvol doorgestuurd"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Gevonden internetgateway-apparaat '{url}'"
-
-msgid "Local Address is '{address}'"
-msgstr "Lokaal adres is '{address}'"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "Lokale poort {local_port} wordt niet doorgestuurd naar {advertised_port}"
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "Port forwarding stoppen via '{url}', service '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Port forwarding door '{url}', service '{type}'. (lokaal adres: {address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "Doorgestuurde lokale poort {local_port} naar {advertised_port}"
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Als uw router UPnP ondersteunt, zorg er dan voor dat UPnP is ingeschakeld!"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -2004,124 +1861,11 @@ msgstr "Kan torrent niet ophalen: {error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "Kan torrent niet ophalen: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Unix socket pad moet minder zijn dan {count} lettertekens (inclusief '{prefix}' prefix)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "Afgewezen verzoek van {host} (Mogelijke directory traversal-aanval)"
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "Afgewezen verzoek van {host} (Brute Force bescherming actief)"
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "Afgewezen verzoek van {host} (IP niet op de witte lijst)"
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr "Afgewezen verzoek van {host} (Mislukte authenticatie)"
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "Afgewezen verzoek van {host} (Host niet op de witte lijst)"
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "Onbekende URI van {host}: '{uri}'"
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Unix-sockets worden niet ondersteund in Windows. Gelieve  '{key}' te wijzigen in uw instellingen."
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "Kan de RPC-socketmodus niet instellen op {mode:#o}, herstellen naar 0755"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "Kon niet binden aan {address} na {count} poging, ik geef het op"
-msgstr[1] "Kon niet binden aan {address} na {count} pogingen, ik geef het op"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "Luisteren naar RPC- en webverzoeken op '{address}'"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "Niet meer luisteren naar RPC- en webaanvragen op '{address}'"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "'{entry}' toegevoegd naar de whitelist van hosts"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "De '{key}' instelling is '{value}' maar moet een IPv4- of IPv6-adres of een Unix-socketpad zijn. We gebruiken standaardwaarde '0.0.0.0'"
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "RPC- en webaanvragen verwerken op {address}"
-
-msgid "Whitelist enabled"
-msgstr "Witte lijst ingeschakeld"
-
-msgid "Password required"
-msgstr "Wachtwoord vereist"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "Het verwerken van RPC- en webverzoeken van '{path}'"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "Tijd om de schildpad-modus in te schakelen"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "Tijd om de schildpad-modus uit te schakelen"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Luisteren naar inkomende peer-verbindingen op {hostport}"
-
-msgid "{appname} version {version} starting"
-msgstr "{appname} versie {version} starten"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} versie {version} sluit af"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "{count} torrent geladen"
-msgstr[1] "{count} torrents geladen"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Kan sessievergrendelingsbestand niet openen '{path}': {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Kon metainfo van '{path}' niet gebruiken voor '{magnet}': {error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "Geen gegevens gevonden! Zorg ervoor dat uw schijven zijn aangesloten of gebruik \"Locatie instellen\". Om opnieuw te downloaden, gebruik je \"Lokale gegevens verifiëren\" en start daarna de torrent."
-
-msgid "Calling script '{path}'"
-msgstr "aanroepen van script '{path}'"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Kon script '{path}'niet aanroepen: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "Seed ratio bereikt; torrent pauzeren"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Seeding inactief limiet bereikt; torrent pauzeren"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Handmatig herstart -- seedverhouding wordt uitgeschakeld"
-
-msgid "Pausing torrent"
-msgstr "Torrent pauzeren"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "Kan niet alle torrent-bestanden verwijderen: {error} ({error_code})"
-
-msgid "Removing torrent"
-msgstr "Bezig met verwijderen van torrent"
 
 #, fuzzy
 #| msgid "Couldn't remove all torrent files: {error} ({error_code})"
@@ -2130,52 +1874,6 @@ msgstr "Kan niet alle torrent-bestanden verwijderen: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Torrent gepauzeerd omdat er geen gegevens zijn gevonden! Zorg ervoor dat uw schijven zijn aangesloten of gebruik \"Locatie instellen\" en gebruik vervolgens opnieuw \"Lokale gegevens verifiëren\". Start de torrent om opnieuw te downloaden."
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Kon '{old_path}' niet verplaatsen naar '{path}': {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "Tracker waarschuwing: '{warning}' ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "Torrent-bestand aan het verwijderen '{path}'"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "Kon '{old_path}' niet verplaatsen naar '{path}': {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Torrent-bestand gemigreerd van '{old_path}' naar '{path}'"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Kon  '{filename}' line: '{line}' niet parseren"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "Kon '{address}niet opzoeken:{port}': {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "Kan niet initialiseren {ip_protocol} LPD: {error} ({error_code})"
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Kan de IPv4-socket niet niet-blokkerend maken {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "Kan IPv4-socket {address}niet binden: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Kan de IPv6-socket niet niet-blokkerend maken {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "Kon IPv6-socket niet binden {address}: {error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "Onbekende socket familie"
 
 msgid "B"
 msgstr "B"
@@ -2225,62 +1923,6 @@ msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Kon JSON niet parseren op positie {position} '{text}': {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "Kon niet '{path}' bekijken: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Kon evenement niet lezen: verwachtte {expected_size}, kreeg {actual_size}"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Kan bestandsnaam niet lezen: verwachtte {expected_size}, kreeg {actual_size}"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Kon event niet lezen: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "Kan '{path}' niet converteren naar oorspronkelijke pad"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Kon geen pipe maken: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "Kan geen draadje maken"
-
-msgid "Couldn't read directory changes"
-msgstr "Kan map wijzigingen niet lezen"
-
-msgid "Couldn't wait for directory changes"
-msgstr "Kon niet wachten op map wijzigingen"
-
-msgid "Consider upgrading your curl installation."
-msgstr "Overweeg om uw curl installatie te upgraden."
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr "curl {curl_version} is gevoelig voor SIGPIPE-crashes. {details_url}"
-
-#, fuzzy
-#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr "curl {curl_version} is vatbaar voor een eventfd double close kwetsbaarheid die SIGABRT-crashes kan veroorzaken voor de transmission-daemon systemd-service. {details_url}"
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Zal tracker certs verifiëren met behulp van envvar CURL_CA_BUNDLE: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "NB: dit werkt alleen als je tegen libcurl bouwt met openssl of gnutls, NIET nss"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "NB: Ongeldige certificaten worden weergegeven als 'Kan geen verbinding maken met tracker' zoals bij veel andere fouten"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "Kon niet  '{url}' ophalen: verwachtte HTTP-antwoordcode {expected_code}, kreeg {actual_code}"
 
 #. Translators: About window -> license button
 msgid "License"
@@ -4492,6 +4134,337 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Announce error: {error} ({url})"
+#~ msgstr "Aankondigingsfout: {error} ({url})"
+
+#~ msgid "Announce error: {error} (Retrying in {count} second) ({url})"
+#~ msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
+#~ msgstr[0] "Aankondigingsfout: {error} (Opnieuw proberen over {count} seconde) ({url})"
+#~ msgstr[1] "Aankondigingsfout: {error} (Opnieuw proberen over {count} seconden) ({url})"
+
+#~ msgid "Couldn't parse announce response: {error} ({error_code})"
+#~ msgstr "Kan aankondigingsantwoord niet parseren: {error} ({error_code})"
+
+#~ msgid "Couldn't parse scrape response: {error} ({error_code})"
+#~ msgstr "Kon scrapereactie niet parseren: {error} ({error_code})"
+
+#~ msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#~ msgstr "Kon niet nakijken '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+
+#~ msgid "Blocklist '{path}' has {count} entry"
+#~ msgid_plural "Blocklist '{path}' has {count} entries"
+#~ msgstr[0] "Zwarte lijst '{path}' heeft {count} regel"
+#~ msgstr[1] "Zwarte lijst '{path}' heeft {count} regels"
+
+#, fuzzy
+#~| msgid "Couldn't parse line: '{line}'"
+#~ msgid "Couldn't parse line {line}: {base64}"
+#~ msgstr "Kan regel niet parseren: '{line}'"
+
+#, fuzzy
+#~| msgid "Rewriting old blocklist file format to new format"
+#~ msgid "Rewriting old blocklist file {path} to new format"
+#~ msgstr "Oude zwarte lijst-bestandsindeling herschrijven naar een nieuwe indeling"
+
+#~ msgid "{crypto_library} error: {error} ({error_code})"
+#~ msgstr "{crypto_library} fout: {error} ({error_code})"
+
+#~ msgid "Couldn't read '{path}': Not a regular file"
+#~ msgstr "Kan '{path}' niet lezen: geen gewoon bestand"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Succesvol geüpdatete bron {protocol} naar adres {ip}"
+
+#~ msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
+#~ msgstr "Kan geen bronadres verkrijgen in een IP-protocol, geen netwerkverbindingen mogelijk"
+
+#~ msgid "Your machine does not support {protocol}"
+#~ msgstr "Uw machine ondersteunt  {protocol} niet"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Globaal {type} met succes geüpdate naar adres {ip} met gebruik van {url}"
+
+#~ msgid "Too many messages like this! I won't log this message anymore this session."
+#~ msgstr "Te veel van dit soort berichten! Ik zal dit bericht in deze sessie niet meer loggen."
+
+#~ msgid "Skipping '{path}': {error} ({error_code})"
+#~ msgstr "Overslaan van '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+#~ msgstr "Kan poort niet binden {port} op {address}: {error} ({error_code}) -- Is er al een ander exemplaar van {appname} actief?"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
+#~ msgstr "Kan poort niet binden {port} op {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgstr "Kan '{path}' niet openen: {error} ({error_code})"
+
+#~ msgid "Couldn't preallocate '{path}': {error} ({error_code})"
+#~ msgstr "Kon '{path}' niet vooraf toewijzen: {error} ({error_code})"
+
+#~ msgid "Couldn't truncate '{path}': {error} ({error_code})"
+#~ msgstr "Kon '{path}' niet afkorten: {error} ({error_code})"
+
+#~ msgid "Couldn't create socket: {error} ({error_code})"
+#~ msgstr "Kon geen socket maken: {error} ({error_code})"
+
+#~ msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+#~ msgstr "Kon het bronadres niet instellen {address} op {socket}: {error} ({error_code})"
+
+#~ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+#~ msgstr "Kan geen socket aansluiten {socket} naar {address}:{port}: {error} ({error_code})"
+
+#~ msgid "Unknown state: {state}"
+#~ msgstr "Onbekende staat: {state}"
+
+#~ msgid "Starting"
+#~ msgstr "Aan het starten"
+
+#~ msgid "Forwarded"
+#~ msgstr "Doorgestuurd"
+
+#~ msgid "Stopping"
+#~ msgstr "Aan het stoppen"
+
+#~ msgid "Not forwarded"
+#~ msgstr "Niet doorgestuurd"
+
+#~ msgid "Mapped private port {private_port} to public port {public_port}"
+#~ msgstr "Privé poort {private_port} naar openbare poort {public_port}overgezet"
+
+#~ msgid "State changed from '{old_state}' to '{state}'"
+#~ msgstr "Status veranderd van '{old_state}' naar '{state}'"
+
+#~ msgid "Found public address '{address}'"
+#~ msgstr "Gevonden openbaar adres '{address}'"
+
+#~ msgid "Port {port} is no longer forwarded"
+#~ msgstr "Poort {port} wordt niet meer doorgestuurd"
+
+#~ msgid "Port {port} forwarded successfully"
+#~ msgstr "Poort {port} succesvol doorgestuurd"
+
+#~ msgid "Found Internet Gateway Device '{url}'"
+#~ msgstr "Gevonden internetgateway-apparaat '{url}'"
+
+#~ msgid "Local Address is '{address}'"
+#~ msgstr "Lokaal adres is '{address}'"
+
+#~ msgid "Local port {local_port} is not forwarded to {advertised_port}"
+#~ msgstr "Lokale poort {local_port} wordt niet doorgestuurd naar {advertised_port}"
+
+#~ msgid "Stopping port forwarding through '{url}', service '{type}'"
+#~ msgstr "Port forwarding stoppen via '{url}', service '{type}'"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Port forwarding door '{url}', service '{type}'. (lokaal adres: {address}:{port})"
+
+#~ msgid "Forwarded local port {local_port} to {advertised_port}"
+#~ msgstr "Doorgestuurde lokale poort {local_port} naar {advertised_port}"
+
+#~ msgid "If your router supports UPnP, please make sure UPnP is enabled!"
+#~ msgstr "Als uw router UPnP ondersteunt, zorg er dan voor dat UPnP is ingeschakeld!"
+
+#~ msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
+#~ msgstr "Unix socket pad moet minder zijn dan {count} lettertekens (inclusief '{prefix}' prefix)"
+
+#~ msgid "Rejected request from {host} (possible directory traversal attack)"
+#~ msgstr "Afgewezen verzoek van {host} (Mogelijke directory traversal-aanval)"
+
+#~ msgid "Rejected request from {host} (brute force protection active)"
+#~ msgstr "Afgewezen verzoek van {host} (Brute Force bescherming actief)"
+
+#~ msgid "Rejected request from {host} (IP not whitelisted)"
+#~ msgstr "Afgewezen verzoek van {host} (IP niet op de witte lijst)"
+
+#~ msgid "Rejected request from {host} (failed authentication)"
+#~ msgstr "Afgewezen verzoek van {host} (Mislukte authenticatie)"
+
+#~ msgid "Rejected request from {host} (Host not whitelisted)"
+#~ msgstr "Afgewezen verzoek van {host} (Host niet op de witte lijst)"
+
+#~ msgid "Unknown URI from {host}: '{uri}'"
+#~ msgstr "Onbekende URI van {host}: '{uri}'"
+
+#~ msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
+#~ msgstr "Unix-sockets worden niet ondersteund in Windows. Gelieve  '{key}' te wijzigen in uw instellingen."
+
+#~ msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
+#~ msgstr "Kan de RPC-socketmodus niet instellen op {mode:#o}, herstellen naar 0755"
+
+#~ msgid "Couldn't bind to {address} after {count} attempt, giving up"
+#~ msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
+#~ msgstr[0] "Kon niet binden aan {address} na {count} poging, ik geef het op"
+#~ msgstr[1] "Kon niet binden aan {address} na {count} pogingen, ik geef het op"
+
+#~ msgid "Listening for RPC and Web requests on '{address}'"
+#~ msgstr "Luisteren naar RPC- en webverzoeken op '{address}'"
+
+#~ msgid "Stopped listening for RPC and Web requests on '{address}'"
+#~ msgstr "Niet meer luisteren naar RPC- en webaanvragen op '{address}'"
+
+#~ msgid "Added '{entry}' to host whitelist"
+#~ msgstr "'{entry}' toegevoegd naar de whitelist van hosts"
+
+#~ msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
+#~ msgstr "De '{key}' instelling is '{value}' maar moet een IPv4- of IPv6-adres of een Unix-socketpad zijn. We gebruiken standaardwaarde '0.0.0.0'"
+
+#~ msgid "Serving RPC and Web requests on {address}"
+#~ msgstr "RPC- en webaanvragen verwerken op {address}"
+
+#~ msgid "Whitelist enabled"
+#~ msgstr "Witte lijst ingeschakeld"
+
+#~ msgid "Password required"
+#~ msgstr "Wachtwoord vereist"
+
+#~ msgid "Serving RPC and Web requests from '{path}'"
+#~ msgstr "Het verwerken van RPC- en webverzoeken van '{path}'"
+
+#, fuzzy
+#~| msgid "Time to turn on turtle mode"
+#~ msgid "Time to turn on alternative speed limits"
+#~ msgstr "Tijd om de schildpad-modus in te schakelen"
+
+#, fuzzy
+#~| msgid "Time to turn off turtle mode"
+#~ msgid "Time to turn off alternative speed limits"
+#~ msgstr "Tijd om de schildpad-modus uit te schakelen"
+
+#~ msgid "Listening to incoming peer connections on {hostport}"
+#~ msgstr "Luisteren naar inkomende peer-verbindingen op {hostport}"
+
+#~ msgid "{appname} version {version} starting"
+#~ msgstr "{appname} versie {version} starten"
+
+#~ msgid "{appname} version {version} shutting down"
+#~ msgstr "{appname} versie {version} sluit af"
+
+#~ msgid "Loaded {count} torrent"
+#~ msgid_plural "Loaded {count} torrents"
+#~ msgstr[0] "{count} torrent geladen"
+#~ msgstr[1] "{count} torrents geladen"
+
+#~ msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+#~ msgstr "Kan sessievergrendelingsbestand niet openen '{path}': {error} ({error_code})"
+
+#~ msgid "Calling script '{path}'"
+#~ msgstr "aanroepen van script '{path}'"
+
+#~ msgid "Couldn't call script '{path}': {error} ({error_code})"
+#~ msgstr "Kon script '{path}'niet aanroepen: {error} ({error_code})"
+
+#~ msgid "Seed ratio reached; pausing torrent"
+#~ msgstr "Seed ratio bereikt; torrent pauzeren"
+
+#~ msgid "Seeding idle limit reached; pausing torrent"
+#~ msgstr "Seeding inactief limiet bereikt; torrent pauzeren"
+
+#~ msgid "Restarted manually -- disabling its seed ratio"
+#~ msgstr "Handmatig herstart -- seedverhouding wordt uitgeschakeld"
+
+#~ msgid "Pausing torrent"
+#~ msgstr "Torrent pauzeren"
+
+#~ msgid "Couldn't remove all torrent files: {error} ({error_code})"
+#~ msgstr "Kan niet alle torrent-bestanden verwijderen: {error} ({error_code})"
+
+#~ msgid "Removing torrent"
+#~ msgstr "Bezig met verwijderen van torrent"
+
+#~ msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgstr "Kon '{old_path}' niet verplaatsen naar '{path}': {error} ({error_code})"
+
+#~ msgid "Tracker warning: '{warning}' ({url})"
+#~ msgstr "Tracker waarschuwing: '{warning}' ({url})"
+
+#, fuzzy
+#~| msgid "Removing torrent file '{path}'"
+#~ msgid "Moving '{source}' will overwrite '{path}'"
+#~ msgstr "Torrent-bestand aan het verwijderen '{path}'"
+
+#, fuzzy
+#~| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+#~ msgstr "Kon '{old_path}' niet verplaatsen naar '{path}': {error} ({error_code})"
+
+#~ msgid "Migrated torrent file from '{old_path}' to '{path}'"
+#~ msgstr "Torrent-bestand gemigreerd van '{old_path}' naar '{path}'"
+
+#~ msgid "Couldn't parse '{filename}' line: '{line}'"
+#~ msgstr "Kon  '{filename}' line: '{line}' niet parseren"
+
+#~ msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
+#~ msgstr "Kon '{address}niet opzoeken:{port}': {error} ({error_code})"
+
+#~ msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
+#~ msgstr "Kan niet initialiseren {ip_protocol} LPD: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Kan de IPv4-socket niet niet-blokkerend maken {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
+#~ msgstr "Kan IPv4-socket {address}niet binden: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Kan de IPv6-socket niet niet-blokkerend maken {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
+#~ msgstr "Kon IPv6-socket niet binden {address}: {error} ({error_code})"
+
+#~ msgid "Unknown socket family"
+#~ msgstr "Onbekende socket familie"
+
+#~ msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgstr "Kon niet '{path}' bekijken: {error} ({error_code})"
+
+#~ msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
+#~ msgstr "Kon evenement niet lezen: verwachtte {expected_size}, kreeg {actual_size}"
+
+#~ msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+#~ msgstr "Kan bestandsnaam niet lezen: verwachtte {expected_size}, kreeg {actual_size}"
+
+#~ msgid "Couldn't read event: {error} ({error_code})"
+#~ msgstr "Kon event niet lezen: {error} ({error_code})"
+
+#~ msgid "Couldn't convert '{path}' to native path"
+#~ msgstr "Kan '{path}' niet converteren naar oorspronkelijke pad"
+
+#~ msgid "Couldn't create pipe: {error} ({error_code})"
+#~ msgstr "Kon geen pipe maken: {error} ({error_code})"
+
+#~ msgid "Couldn't create thread"
+#~ msgstr "Kan geen draadje maken"
+
+#~ msgid "Couldn't read directory changes"
+#~ msgstr "Kan map wijzigingen niet lezen"
+
+#~ msgid "Couldn't wait for directory changes"
+#~ msgstr "Kon niet wachten op map wijzigingen"
+
+#~ msgid "Consider upgrading your curl installation."
+#~ msgstr "Overweeg om uw curl installatie te upgraden."
+
+#~ msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
+#~ msgstr "curl {curl_version} is gevoelig voor SIGPIPE-crashes. {details_url}"
+
+#, fuzzy
+#~| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#~ msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
+#~ msgstr "curl {curl_version} is vatbaar voor een eventfd double close kwetsbaarheid die SIGABRT-crashes kan veroorzaken voor de transmission-daemon systemd-service. {details_url}"
+
+#~ msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
+#~ msgstr "Zal tracker certs verifiëren met behulp van envvar CURL_CA_BUNDLE: {bundle}"
+
+#~ msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
+#~ msgstr "NB: dit werkt alleen als je tegen libcurl bouwt met openssl of gnutls, NIET nss"
+
+#~ msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
+#~ msgstr "NB: Ongeldige certificaten worden weergegeven als 'Kan geen verbinding maken met tracker' zoals bij veel andere fouten"
+
+#~ msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
+#~ msgstr "Kon niet  '{url}' ophalen: verwachtte HTTP-antwoordcode {expected_code}, kreeg {actual_code}"
 
 #~ msgid "_Show {count:L} of:"
 #~ msgstr "_Toon {count:L} van:"

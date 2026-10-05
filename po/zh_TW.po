@@ -1771,13 +1771,6 @@ msgid "{seconds_left:L} second left"
 msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "剩 {seconds_left:L} 秒"
 
-msgid "Announce error: {error} ({url})"
-msgstr "公告錯誤：{error}（{url}）"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "公告錯誤：{error}（{count} 秒後重試）（{url}）"
-
 msgid "Could not connect to tracker"
 msgstr "無法連線到追蹤器"
 
@@ -1787,38 +1780,12 @@ msgstr "追蹤器沒有回應"
 msgid "Success"
 msgstr "成功"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "無法解析傳回的宣告：{error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "無法解析傳回的擷取：{error} ({error_code})"
-
 #. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "未知的錯誤"
 
 msgid "{ip_protocol} connection failed"
 msgstr "{ip_protocol} 連線失敗"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "無法找到 '{address}:{port}' 在 {ip_protocol}: {error} ({error_code})"
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "黑名單 '{path}' 有 {count} 個項目"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "無法解析該行：'{line}'"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "將舊版黑名單重寫為新版的檔案格式"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
-msgstr ""
 
 #, fuzzy
 #| msgid "Couldn't fetch blocklist: {error} ({error_code})"
@@ -1828,18 +1795,6 @@ msgstr "無法擷取黑名單：{error} ({error_code})"
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "無法擷取黑名單：{error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} 錯誤：{error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "無法讀取 '{path}'：不是一般檔案。"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1847,102 +1802,6 @@ msgstr "無法讀取 '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "無法取得 '{path}'：{error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "成功更新來源 {protocol} 位址為 {ip}"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr "在所有 IP 協定中都無法存取來源位址，沒有可用的網路連線"
-
-msgid "Your machine does not support {protocol}"
-msgstr "您的裝置不支援 {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "成功使用 {url} 更新全域 {type} 位址為 {ip}"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "出現太多類似的訊息！將於本工作階段停止紀錄此類訊息。"
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "跳過 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "無法在 {address} 繫結 {port} 連接埠：{error} ({error_code}) -- 是否有另一個執行中的 {appname} 程式？"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "無法在 {address} 繫結連接埠 {port}：{error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "無法開啟 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "無法預先配置 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "無法截斷 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "無法建立 socket：{error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "無法在 {socket} 設定來源位址 {address}：{error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "無法將 socket {socket} 連線到 {address}:{port}：{error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "未知狀態：{state}"
-
-msgid "Starting"
-msgstr "正在啟動"
-
-msgid "Forwarded"
-msgstr "已轉送"
-
-msgid "Stopping"
-msgstr "停止中"
-
-msgid "Not forwarded"
-msgstr "沒有轉送"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "已將私有連接埠 {private_port} 對應到公開連接埠 {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "狀態從 '{old_state}' 變更為 '{state}'"
-
-msgid "Found public address '{address}'"
-msgstr "找到公開位址 '{address}'"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "不再轉送 {port} 連接埠"
-
-msgid "Port {port} forwarded successfully"
-msgstr "已成功轉送 {port} 連接埠"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "找到網際網路閘道裝置 '{url}'"
-
-msgid "Local Address is '{address}'"
-msgstr "本機位址為 '{address}'"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "本地埠 {local_port} 未轉傳至 {advertised_port}"
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "正在停止 '{url}' ，服務 '{type}' 的通訊埠轉送"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "正在從 '{url}'，服務 '{type}' 通訊埠轉送。(本機位址：{address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "轉傳的本地埠 {local_port} 至 {advertised_port}"
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "若您的路由器支援 UPnP，請確認 UPnP 已啟用！"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1960,122 +1819,11 @@ msgstr "無法擷取 torrent：{error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "無法擷取 torrent：{error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Unix socket 路徑必須少於 {count} 個字元 (包含 '{prefix}' 前綴)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "拒絕來自 {host}（可能的目錄遍歷攻擊）"
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "拒絕來自 {host}（已啟動強力防護）"
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "拒絕來自 {host}（IP未列入白名單）"
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr "拒絕來自 {host}（驗證失敗）"
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "拒絕來自 {host}（主機未列入白名單）"
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "未知 URI 來自 {host}: '{uri}'"
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Windows 系統不支援 Unix sockets。請在設定中變更 '{key}'。"
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "無法將 RPC socket 模式設定為 {mode:#o}，已使用預設值 0755"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "已重試 {count} 次繫結到 {address} 失敗，已停止重試"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "正在監聽 '{address}' 的 RPC 及網路請求"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "已停止監聽 '{address}' 的 RPC 及網路請求"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "已將 '{entry}' 加入主機白名單"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "'{key}' 目前設定為 '{value}'，但該值必須是 IPv4 或 IPv6 位址，或是 Unix socket 路徑。已使用預設值 '0.0.0.0'"
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "正在為 {address} 的 RPC 及網路請求提供服務"
-
-msgid "Whitelist enabled"
-msgstr "啟用白名單"
-
-msgid "Password required"
-msgstr "需要密碼"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "正在從 '{path}' 提供服務給 RPC 及網路請求"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "開啟龜速模式的時間"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "關閉龜速模式的時間"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "正在監聽通訊埠 {hostport} 傳入的節點連線"
-
-msgid "{appname} version {version} starting"
-msgstr "{appname} 版本 {version} 正在啟動"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} 版本 {version} 正在結束"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "已載入 {count} 個 torrents"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "無法開啟工作階段鎖定檔案 '{path}'：{error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "無法將 '{path}' 的後設資料使用於 '{magnet}'：{error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "找不到資料！請確保您的硬碟已連接或使用「設定位置」。若要重新下載，請使用「驗證本機資料」後開始下載 torrent。"
-
-msgid "Calling script '{path}'"
-msgstr "正在呼叫腳本 '{path}'"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "無法呼叫腳本 '{path}'：{error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "已達到做種分享率，正在暫停 torrent"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "已達到做種閒置時間，正在暫停 torrent"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "已手動重新啟動 -- 正在停用做種分享率限制"
-
-msgid "Pausing torrent"
-msgstr "正在暫停 torrent"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "無法移除所有 torrent 檔案：{error} ({error_code})"
-
-msgid "Removing torrent"
-msgstr "正在移除 torrent"
 
 #, fuzzy
 #| msgid "Couldn't remove all torrent files: {error} ({error_code})"
@@ -2084,52 +1832,6 @@ msgstr "無法移除所有 torrent 檔案：{error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "因為找不到資料，已暫停 torrent！請確保您的硬碟已連接或使用「設定位置」，然後再次使用「驗證本機資料」。若要重新下載，開始下載 torrent。"
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "追蹤器警告：'{warning}'（{url}）"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "正在移除 torrent 檔案 '{path}'"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "已將 torrent 檔案從 '{old_path}' 移轉到 '{path}'"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "無法解析 '{filename}' 中的行數：'{line}'"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "無法查詢 '{address}:{port}'：{error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "無法初始化 {ip_protocol} LPD: {error} ({error_code})"
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "無法使 IPv4 socket 不阻塞 {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "無法繫結 IPv4 socket {address}：{error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "無法使 IPv6 socket 不阻塞 {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "無法繫結 IPv6 socket {address}：{error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "未知的 socket 協定家族"
 
 msgid "B"
 msgstr "B"
@@ -2179,62 +1881,6 @@ msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "無法解析 JSON 中的行數 {position} '{text}'：{error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "無法監看 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "無法讀取事件：預期 {expected_size}，實際為 {actual_size}"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "無法讀取檔案名稱：預期 {expected_size}，實際為 {actual_size}"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "無法讀取事件：{error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "無法轉換 '{path}' 為原始路徑"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "無法建立管線：{error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "無法建立執行緒"
-
-msgid "Couldn't read directory changes"
-msgstr "無法讀取資料夾變更"
-
-msgid "Couldn't wait for directory changes"
-msgstr "無法等候資料夾變更"
-
-msgid "Consider upgrading your curl installation."
-msgstr "請考慮升級您的 curl 安裝。"
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr "curl {curl_version} 容易發生 SIGPIPE 崩潰。 {details_url}"
-
-#, fuzzy
-#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr "curl {curl_version} 容易產生 eventfd 雙重關閉漏洞，可能導致 transmission-daemon systemd 服務 SIGABRT 當機。 {details_url}"
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "使用環境變數 CURL_CA_BUNDLE 驗證追蹤器憑證：{bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "註：這僅適用於使用 openssl 或 gnutls 建立的 libcurl，而不是 nss"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "註：無效的憑證會和其他錯誤一樣顯示為「無法連線到追蹤器」。"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "無法取得'{url}'：預期的HTTP回應碼為 {expected_code}，實際獲得 {actual_code}"
 
 #. Translators: About window -> license button
 msgid "License"
@@ -4371,6 +4017,333 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Announce error: {error} ({url})"
+#~ msgstr "公告錯誤：{error}（{url}）"
+
+#~ msgid "Announce error: {error} (Retrying in {count} second) ({url})"
+#~ msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
+#~ msgstr[0] "公告錯誤：{error}（{count} 秒後重試）（{url}）"
+
+#~ msgid "Couldn't parse announce response: {error} ({error_code})"
+#~ msgstr "無法解析傳回的宣告：{error} ({error_code})"
+
+#~ msgid "Couldn't parse scrape response: {error} ({error_code})"
+#~ msgstr "無法解析傳回的擷取：{error} ({error_code})"
+
+#~ msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#~ msgstr "無法找到 '{address}:{port}' 在 {ip_protocol}: {error} ({error_code})"
+
+#~ msgid "Blocklist '{path}' has {count} entry"
+#~ msgid_plural "Blocklist '{path}' has {count} entries"
+#~ msgstr[0] "黑名單 '{path}' 有 {count} 個項目"
+
+#, fuzzy
+#~| msgid "Couldn't parse line: '{line}'"
+#~ msgid "Couldn't parse line {line}: {base64}"
+#~ msgstr "無法解析該行：'{line}'"
+
+#, fuzzy
+#~| msgid "Rewriting old blocklist file format to new format"
+#~ msgid "Rewriting old blocklist file {path} to new format"
+#~ msgstr "將舊版黑名單重寫為新版的檔案格式"
+
+#~ msgid "{crypto_library} error: {error} ({error_code})"
+#~ msgstr "{crypto_library} 錯誤：{error} ({error_code})"
+
+#~ msgid "Couldn't read '{path}': Not a regular file"
+#~ msgstr "無法讀取 '{path}'：不是一般檔案。"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "成功更新來源 {protocol} 位址為 {ip}"
+
+#~ msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
+#~ msgstr "在所有 IP 協定中都無法存取來源位址，沒有可用的網路連線"
+
+#~ msgid "Your machine does not support {protocol}"
+#~ msgstr "您的裝置不支援 {protocol}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "成功使用 {url} 更新全域 {type} 位址為 {ip}"
+
+#~ msgid "Too many messages like this! I won't log this message anymore this session."
+#~ msgstr "出現太多類似的訊息！將於本工作階段停止紀錄此類訊息。"
+
+#~ msgid "Skipping '{path}': {error} ({error_code})"
+#~ msgstr "跳過 '{path}'：{error} ({error_code})"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+#~ msgstr "無法在 {address} 繫結 {port} 連接埠：{error} ({error_code}) -- 是否有另一個執行中的 {appname} 程式？"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
+#~ msgstr "無法在 {address} 繫結連接埠 {port}：{error} ({error_code})"
+
+#~ msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgstr "無法開啟 '{path}'：{error} ({error_code})"
+
+#~ msgid "Couldn't preallocate '{path}': {error} ({error_code})"
+#~ msgstr "無法預先配置 '{path}'：{error} ({error_code})"
+
+#~ msgid "Couldn't truncate '{path}': {error} ({error_code})"
+#~ msgstr "無法截斷 '{path}'：{error} ({error_code})"
+
+#~ msgid "Couldn't create socket: {error} ({error_code})"
+#~ msgstr "無法建立 socket：{error} ({error_code})"
+
+#~ msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+#~ msgstr "無法在 {socket} 設定來源位址 {address}：{error} ({error_code})"
+
+#~ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+#~ msgstr "無法將 socket {socket} 連線到 {address}:{port}：{error} ({error_code})"
+
+#~ msgid "Unknown state: {state}"
+#~ msgstr "未知狀態：{state}"
+
+#~ msgid "Starting"
+#~ msgstr "正在啟動"
+
+#~ msgid "Forwarded"
+#~ msgstr "已轉送"
+
+#~ msgid "Stopping"
+#~ msgstr "停止中"
+
+#~ msgid "Not forwarded"
+#~ msgstr "沒有轉送"
+
+#~ msgid "Mapped private port {private_port} to public port {public_port}"
+#~ msgstr "已將私有連接埠 {private_port} 對應到公開連接埠 {public_port}"
+
+#~ msgid "State changed from '{old_state}' to '{state}'"
+#~ msgstr "狀態從 '{old_state}' 變更為 '{state}'"
+
+#~ msgid "Found public address '{address}'"
+#~ msgstr "找到公開位址 '{address}'"
+
+#~ msgid "Port {port} is no longer forwarded"
+#~ msgstr "不再轉送 {port} 連接埠"
+
+#~ msgid "Port {port} forwarded successfully"
+#~ msgstr "已成功轉送 {port} 連接埠"
+
+#~ msgid "Found Internet Gateway Device '{url}'"
+#~ msgstr "找到網際網路閘道裝置 '{url}'"
+
+#~ msgid "Local Address is '{address}'"
+#~ msgstr "本機位址為 '{address}'"
+
+#~ msgid "Local port {local_port} is not forwarded to {advertised_port}"
+#~ msgstr "本地埠 {local_port} 未轉傳至 {advertised_port}"
+
+#~ msgid "Stopping port forwarding through '{url}', service '{type}'"
+#~ msgstr "正在停止 '{url}' ，服務 '{type}' 的通訊埠轉送"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "正在從 '{url}'，服務 '{type}' 通訊埠轉送。(本機位址：{address}:{port})"
+
+#~ msgid "Forwarded local port {local_port} to {advertised_port}"
+#~ msgstr "轉傳的本地埠 {local_port} 至 {advertised_port}"
+
+#~ msgid "If your router supports UPnP, please make sure UPnP is enabled!"
+#~ msgstr "若您的路由器支援 UPnP，請確認 UPnP 已啟用！"
+
+#~ msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
+#~ msgstr "Unix socket 路徑必須少於 {count} 個字元 (包含 '{prefix}' 前綴)"
+
+#~ msgid "Rejected request from {host} (possible directory traversal attack)"
+#~ msgstr "拒絕來自 {host}（可能的目錄遍歷攻擊）"
+
+#~ msgid "Rejected request from {host} (brute force protection active)"
+#~ msgstr "拒絕來自 {host}（已啟動強力防護）"
+
+#~ msgid "Rejected request from {host} (IP not whitelisted)"
+#~ msgstr "拒絕來自 {host}（IP未列入白名單）"
+
+#~ msgid "Rejected request from {host} (failed authentication)"
+#~ msgstr "拒絕來自 {host}（驗證失敗）"
+
+#~ msgid "Rejected request from {host} (Host not whitelisted)"
+#~ msgstr "拒絕來自 {host}（主機未列入白名單）"
+
+#~ msgid "Unknown URI from {host}: '{uri}'"
+#~ msgstr "未知 URI 來自 {host}: '{uri}'"
+
+#~ msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
+#~ msgstr "Windows 系統不支援 Unix sockets。請在設定中變更 '{key}'。"
+
+#~ msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
+#~ msgstr "無法將 RPC socket 模式設定為 {mode:#o}，已使用預設值 0755"
+
+#~ msgid "Couldn't bind to {address} after {count} attempt, giving up"
+#~ msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
+#~ msgstr[0] "已重試 {count} 次繫結到 {address} 失敗，已停止重試"
+
+#~ msgid "Listening for RPC and Web requests on '{address}'"
+#~ msgstr "正在監聽 '{address}' 的 RPC 及網路請求"
+
+#~ msgid "Stopped listening for RPC and Web requests on '{address}'"
+#~ msgstr "已停止監聽 '{address}' 的 RPC 及網路請求"
+
+#~ msgid "Added '{entry}' to host whitelist"
+#~ msgstr "已將 '{entry}' 加入主機白名單"
+
+#~ msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
+#~ msgstr "'{key}' 目前設定為 '{value}'，但該值必須是 IPv4 或 IPv6 位址，或是 Unix socket 路徑。已使用預設值 '0.0.0.0'"
+
+#~ msgid "Serving RPC and Web requests on {address}"
+#~ msgstr "正在為 {address} 的 RPC 及網路請求提供服務"
+
+#~ msgid "Whitelist enabled"
+#~ msgstr "啟用白名單"
+
+#~ msgid "Password required"
+#~ msgstr "需要密碼"
+
+#~ msgid "Serving RPC and Web requests from '{path}'"
+#~ msgstr "正在從 '{path}' 提供服務給 RPC 及網路請求"
+
+#, fuzzy
+#~| msgid "Time to turn on turtle mode"
+#~ msgid "Time to turn on alternative speed limits"
+#~ msgstr "開啟龜速模式的時間"
+
+#, fuzzy
+#~| msgid "Time to turn off turtle mode"
+#~ msgid "Time to turn off alternative speed limits"
+#~ msgstr "關閉龜速模式的時間"
+
+#~ msgid "Listening to incoming peer connections on {hostport}"
+#~ msgstr "正在監聽通訊埠 {hostport} 傳入的節點連線"
+
+#~ msgid "{appname} version {version} starting"
+#~ msgstr "{appname} 版本 {version} 正在啟動"
+
+#~ msgid "{appname} version {version} shutting down"
+#~ msgstr "{appname} 版本 {version} 正在結束"
+
+#~ msgid "Loaded {count} torrent"
+#~ msgid_plural "Loaded {count} torrents"
+#~ msgstr[0] "已載入 {count} 個 torrents"
+
+#~ msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+#~ msgstr "無法開啟工作階段鎖定檔案 '{path}'：{error} ({error_code})"
+
+#~ msgid "Calling script '{path}'"
+#~ msgstr "正在呼叫腳本 '{path}'"
+
+#~ msgid "Couldn't call script '{path}': {error} ({error_code})"
+#~ msgstr "無法呼叫腳本 '{path}'：{error} ({error_code})"
+
+#~ msgid "Seed ratio reached; pausing torrent"
+#~ msgstr "已達到做種分享率，正在暫停 torrent"
+
+#~ msgid "Seeding idle limit reached; pausing torrent"
+#~ msgstr "已達到做種閒置時間，正在暫停 torrent"
+
+#~ msgid "Restarted manually -- disabling its seed ratio"
+#~ msgstr "已手動重新啟動 -- 正在停用做種分享率限制"
+
+#~ msgid "Pausing torrent"
+#~ msgstr "正在暫停 torrent"
+
+#~ msgid "Couldn't remove all torrent files: {error} ({error_code})"
+#~ msgstr "無法移除所有 torrent 檔案：{error} ({error_code})"
+
+#~ msgid "Removing torrent"
+#~ msgstr "正在移除 torrent"
+
+#~ msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
+
+#~ msgid "Tracker warning: '{warning}' ({url})"
+#~ msgstr "追蹤器警告：'{warning}'（{url}）"
+
+#, fuzzy
+#~| msgid "Removing torrent file '{path}'"
+#~ msgid "Moving '{source}' will overwrite '{path}'"
+#~ msgstr "正在移除 torrent 檔案 '{path}'"
+
+#, fuzzy
+#~| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+#~ msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
+
+#~ msgid "Migrated torrent file from '{old_path}' to '{path}'"
+#~ msgstr "已將 torrent 檔案從 '{old_path}' 移轉到 '{path}'"
+
+#~ msgid "Couldn't parse '{filename}' line: '{line}'"
+#~ msgstr "無法解析 '{filename}' 中的行數：'{line}'"
+
+#~ msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
+#~ msgstr "無法查詢 '{address}:{port}'：{error} ({error_code})"
+
+#~ msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
+#~ msgstr "無法初始化 {ip_protocol} LPD: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "無法使 IPv4 socket 不阻塞 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
+#~ msgstr "無法繫結 IPv4 socket {address}：{error} ({error_code})"
+
+#~ msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "無法使 IPv6 socket 不阻塞 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
+#~ msgstr "無法繫結 IPv6 socket {address}：{error} ({error_code})"
+
+#~ msgid "Unknown socket family"
+#~ msgstr "未知的 socket 協定家族"
+
+#~ msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgstr "無法監看 '{path}'：{error} ({error_code})"
+
+#~ msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
+#~ msgstr "無法讀取事件：預期 {expected_size}，實際為 {actual_size}"
+
+#~ msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+#~ msgstr "無法讀取檔案名稱：預期 {expected_size}，實際為 {actual_size}"
+
+#~ msgid "Couldn't read event: {error} ({error_code})"
+#~ msgstr "無法讀取事件：{error} ({error_code})"
+
+#~ msgid "Couldn't convert '{path}' to native path"
+#~ msgstr "無法轉換 '{path}' 為原始路徑"
+
+#~ msgid "Couldn't create pipe: {error} ({error_code})"
+#~ msgstr "無法建立管線：{error} ({error_code})"
+
+#~ msgid "Couldn't create thread"
+#~ msgstr "無法建立執行緒"
+
+#~ msgid "Couldn't read directory changes"
+#~ msgstr "無法讀取資料夾變更"
+
+#~ msgid "Couldn't wait for directory changes"
+#~ msgstr "無法等候資料夾變更"
+
+#~ msgid "Consider upgrading your curl installation."
+#~ msgstr "請考慮升級您的 curl 安裝。"
+
+#~ msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
+#~ msgstr "curl {curl_version} 容易發生 SIGPIPE 崩潰。 {details_url}"
+
+#, fuzzy
+#~| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#~ msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
+#~ msgstr "curl {curl_version} 容易產生 eventfd 雙重關閉漏洞，可能導致 transmission-daemon systemd 服務 SIGABRT 當機。 {details_url}"
+
+#~ msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
+#~ msgstr "使用環境變數 CURL_CA_BUNDLE 驗證追蹤器憑證：{bundle}"
+
+#~ msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
+#~ msgstr "註：這僅適用於使用 openssl 或 gnutls 建立的 libcurl，而不是 nss"
+
+#~ msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
+#~ msgstr "註：無效的憑證會和其他錯誤一樣顯示為「無法連線到追蹤器」。"
+
+#~ msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
+#~ msgstr "無法取得'{url}'：預期的HTTP回應碼為 {expected_code}，實際獲得 {actual_code}"
 
 #~ msgid "_Show {count:L} of:"
 #~ msgstr "顯示 {count:L} 個，總計：(_S)"
