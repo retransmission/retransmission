@@ -47,6 +47,25 @@ TEST_F(UtilsTest, translator)
     EXPECT_STREQ("{count} files", tr_ngettext("{count} file", "{count} files", 21));
 }
 
+TEST_F(UtilsTest, translatorWithContext)
+{
+    EXPECT_STREQ("Seeding", tr_pgettext("Verb", "Seeding"));
+
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* {
+            if (msgid == "Verb\x04Seeding"sv) {
+                return "Verteilen";
+            }
+            return msgid == "Seeding"sv ? "Verteilt" : msgid;
+        },
+        nullptr);
+    EXPECT_STREQ("Verteilen", tr_pgettext("Verb", "Seeding"));
+    EXPECT_STREQ("Verteilt", _("Seeding"));
+    EXPECT_STREQ("Seeding", tr_pgettext("Adjective", "Seeding"));
+
+    tr_set_translator(nullptr, nullptr);
+}
+
 TEST_F(UtilsTest, truncd)
 {
     EXPECT_EQ("100.00%"sv, fmt::format("{:.2f}%", 99.999));

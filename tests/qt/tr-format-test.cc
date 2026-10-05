@@ -6,70 +6,134 @@
 #include <cstdint>
 #include <utility>
 
+#include <QByteArray>
 #include <QCoreApplication>
 #include <QHash>
+#include <QList>
 #include <QLocale>
 #include <QString>
-#include <QStringList>
 #include <QTest>
-#include <QTranslator>
 
 #include <fmt/format.h>
+
+#include <libtransmission/utils.h>
 
 #include "TrFormat.h"
 
 namespace
 {
 
-// Serves canned translations, keyed by source text, in every context.
+// Canned translations, keyed by English text, or by context and English text as "context\x04text".
 // The first form is for n == 1 and the second for every other n.
-class FakeTranslator final : public QTranslator
+auto translations = QHash<QByteArray, QList<QByteArray>>{};
+
+[[nodiscard]] char const* fakeGettext(char const* const msgid) noexcept
 {
-public:
-    QHash<QString, QStringList> translations;
+    auto const iter = translations.constFind(msgid);
+    return iter != translations.cend() ? iter->front().constData() : msgid;
+}
 
-    [[nodiscard]] bool isEmpty() const override
-    {
-        return translations.isEmpty();
+[[nodiscard]] char const* fakeNgettext(char const* const msgid, char const* const msgid_plural, uint64_t const n) noexcept
+{
+    auto const iter = translations.constFind(msgid);
+    if (iter == translations.cend()) {
+        return n == 1U ? msgid : msgid_plural;
     }
 
-    [[nodiscard]] QString translate(
-        char const* /*context*/,
-        char const* source_text,
-        char const* /*disambiguation*/,
-        int const n) const override
-    {
-        auto const forms = translations.value(QString::fromUtf8(source_text));
-        return forms.value(n == 1 || forms.size() == 1 ? 0 : 1);
-    }
-};
+    return (n == 1U || iter->size() == 1 ? iter->front() : iter->back()).constData();
+}
 
 class TrFormatTest : public QObject
 {
     Q_OBJECT
 
-    FakeTranslator translator_;
-
-    void translate(QString const& source, QStringList forms)
+    static void translate(QByteArray const& source, QList<QByteArray> forms)
     {
-        translator_.translations[source] = std::move(forms);
+        translations[source] = std::move(forms);
     }
 
 private slots:
     void initTestCase()
     {
-        QCoreApplication::installTranslator(&translator_);
+        tr_set_translator(fakeGettext, fakeNgettext);
+    }
+
+    void cleanupTestCase()
+    {
+        tr_set_translator(nullptr, nullptr);
     }
 
     void cleanup()
     {
-        translator_.translations.clear();
+        translations.clear();
         QLocale::setDefault(QLocale::c());
+    }
+
+    void translates_text()
+    {
+        QCOMPARE(TR_TEXT("Paused"), QStringLiteral("Paused"));
+
+        translate("Paused", { "Pausiert" });
+        QCOMPARE(TR_TEXT("Paused"), QStringLiteral("Pausiert"));
+    }
+
+    void translates_text_in_context()
+    {
+        translate("Seeding", { "Verteilt" });
+        translate("Verb\x04Seeding", { "Verteilen" });
+
+        QCOMPARE(TR_TEXT_C("Verb", "Seeding"), QStringLiteral("Verteilen"));
+        QCOMPARE(TR_TEXT_C("Adjective", "Seeding"), QStringLiteral("Seeding"));
+        QCOMPARE(TR_TEXT("Seeding"), QStringLiteral("Verteilt"));
+    }
+
+    void converts_mnemonics_data()
+    {
+        QTest::addColumn<QByteArray>("text");
+        QTest::addColumn<QString>("expected");
+
+        QTest::newRow("mnemonic") << QByteArray{ "_File" } << QStringLiteral("&File");
+        QTest::newRow("mnemonic in a word") << QByteArray{ "Dese_lect All" } << QStringLiteral("Dese&lect All");
+        QTest::newRow("literal ampersand") << QByteArray{ "Peers & _Seeds" } << QStringLiteral("Peers && &Seeds");
+        QTest::newRow("literal underscore") << QByteArray{ "__init__ _Script" } << QStringLiteral("_init_ &Script");
+        QTest::newRow("no mnemonic") << QByteArray{ "Statistics" } << QStringLiteral("Statistics");
+        QTest::newRow("trailing underscore") << QByteArray{ "Name_" } << QStringLiteral("Name_");
+        QTest::newRow("parenthesized") << QByteArray{ "ファイル(_F)" } << QStringLiteral("ファイル(&F)");
+    }
+
+    void converts_mnemonics()
+    {
+        QFETCH(QByteArray, text);
+        QFETCH(QString, expected);
+
+        translate("_File", { text });
+        QCOMPARE(TR_MNEMONIC("_File"), expected);
+    }
+
+    void converts_english_mnemonics()
+    {
+        QCOMPARE(TR_MNEMONIC("Alternative Speed _Limits"), QStringLiteral("Alternative Speed &Limits"));
+    }
+
+    void translates_designer_text()
+    {
+        translate("Paused", { "Pausiert" });
+        translate("_Add", { "_Hinzufügen" });
+        translate("Verb\x04Seeding", { "Verteilen" });
+        translate("Peers & Seeds", { "Peers & Seeds" });
+
+        QCOMPARE(trqt::uiText("Paused", nullptr), QStringLiteral("Pausiert"));
+        QCOMPARE(trqt::uiText("_Add", nullptr), QStringLiteral("&Hinzufügen"));
+        QCOMPARE(trqt::uiText("_Edit", ""), QStringLiteral("&Edit"));
+        QCOMPARE(trqt::uiText("Seeding", "Verb"), QStringLiteral("Verteilen"));
+
+        // Text without a mnemonic keeps its "&", e.g. in a tooltip.
+        QCOMPARE(trqt::uiText("Peers & Seeds", nullptr), QStringLiteral("Peers & Seeds"));
     }
 
     void formats_translation()
     {
-        translate(QStringLiteral("Created by {creator} on {date}"), { QStringLiteral("Am {date} von {creator} erstellt") });
+        translate("Created by {creator} on {date}", { "Am {date} von {creator} erstellt" });
 
         auto const str = TR_FORMAT(
             "Created by {creator} on {date}",
@@ -90,29 +154,29 @@ private slots:
 
     void formats_escaped_braces()
     {
-        translate(QStringLiteral("{{{name}}} is {{set}}"), { QStringLiteral("{{{name}}} ist {{gesetzt}}") });
+        translate("{{{name}}} is {{set}}", { "{{{name}}} ist {{gesetzt}}" });
 
         QCOMPARE(TR_FORMAT("{{{name}}} is {{set}}", fmt::arg("name", "key")), QStringLiteral("{key} ist {gesetzt}"));
     }
 
     void falls_back_on_bad_translation_data()
     {
-        QTest::addColumn<QString>("translation");
+        QTest::addColumn<QByteArray>("translation");
 
-        QTest::newRow("unknown field") << QStringLiteral("Erstellt von {author}");
-        QTest::newRow("positional field") << QStringLiteral("Erstellt von {0}");
-        QTest::newRow("automatic field") << QStringLiteral("Erstellt von {}");
-        QTest::newRow("unmatched open brace") << QStringLiteral("Erstellt von {creator");
-        QTest::newRow("unmatched close brace") << QStringLiteral("Erstellt von creator}");
-        QTest::newRow("nested field") << QStringLiteral("Erstellt von {creator:{width}}");
-        QTest::newRow("localized string") << QStringLiteral("Erstellt von {creator:L}");
-        QTest::newRow("spec not in source") << QStringLiteral("Erstellt von {creator:>20}");
+        QTest::newRow("unknown field") << QByteArray{ "Erstellt von {author}" };
+        QTest::newRow("positional field") << QByteArray{ "Erstellt von {0}" };
+        QTest::newRow("automatic field") << QByteArray{ "Erstellt von {}" };
+        QTest::newRow("unmatched open brace") << QByteArray{ "Erstellt von {creator" };
+        QTest::newRow("unmatched close brace") << QByteArray{ "Erstellt von creator}" };
+        QTest::newRow("nested field") << QByteArray{ "Erstellt von {creator:{width}}" };
+        QTest::newRow("localized string") << QByteArray{ "Erstellt von {creator:L}" };
+        QTest::newRow("spec not in source") << QByteArray{ "Erstellt von {creator:>20}" };
     }
 
     void falls_back_on_bad_translation()
     {
-        QFETCH(QString, translation);
-        translate(QStringLiteral("Created by {creator}"), { translation });
+        QFETCH(QByteArray, translation);
+        translate("Created by {creator}", { translation });
 
         QCOMPARE(TR_FORMAT("Created by {creator}", fmt::arg("creator", "Mnemosaic")), QStringLiteral("Created by Mnemosaic"));
     }
@@ -120,7 +184,7 @@ private slots:
     void accepts_localized_number()
     {
         QLocale::setDefault(QLocale{ QLocale::German, QLocale::Germany });
-        translate(QStringLiteral("{count} torrents"), { QStringLiteral("{count:L} Torrents") });
+        translate("{count} torrents", { "{count:L} Torrents" });
 
         QCOMPARE(TR_FORMAT("{count} torrents", fmt::arg("count", 12345)), QStringLiteral("12.345 Torrents"));
     }
@@ -134,13 +198,36 @@ private slots:
     void picks_plural_form()
     {
         QLocale::setDefault(QLocale{ QLocale::German, QLocale::Germany });
-        translate(
-            QStringLiteral("{count:L} file(s)"),
-            { QStringLiteral("{count:L} Datei"), QStringLiteral("{count:L} Dateien") });
+        translate("{count:L} file", { "{count:L} Datei", "{count:L} Dateien" });
 
         for (auto const [count, expected] : { std::pair{ 1, "1 Datei" }, std::pair{ 1234, "1.234 Dateien" } }) {
-            QCOMPARE(TR_FORMAT_N("{count:L} file(s)", count, fmt::arg("count", count)), QString::fromUtf8(expected));
+            QCOMPARE(
+                TR_FORMAT_N("{count:L} file", "{count:L} files", count, fmt::arg("count", count)),
+                QString::fromUtf8(expected));
         }
+    }
+
+    void formats_english_plural_form()
+    {
+        QCOMPARE(
+            TR_FORMAT_N("Remove torrent?", "Remove {count:L} torrents?", 1, fmt::arg("count", 1)),
+            QStringLiteral("Remove torrent?"));
+        QCOMPARE(
+            TR_FORMAT_N("Remove torrent?", "Remove {count:L} torrents?", 1234, fmt::arg("count", 1234)),
+            QStringLiteral("Remove 1234 torrents?"));
+    }
+
+    // A language's form for one can cover other counts, so it can show the count that its English lacks.
+    void accepts_count_in_singular_form()
+    {
+        translate("Remove torrent?", { "Удалить {count:L} торрент?", "Удалить {count:L} торрентов?" });
+
+        QCOMPARE(
+            TR_FORMAT_N("Remove torrent?", "Remove {count:L} torrents?", 21, fmt::arg("count", 21)),
+            QStringLiteral("Удалить 21 торрентов?"));
+        QCOMPARE(
+            TR_FORMAT_N("Remove torrent?", "Remove {count:L} torrents?", 1, fmt::arg("count", 1)),
+            QStringLiteral("Удалить 1 торрент?"));
     }
 
     void formats_numbers_like_qlocale_data()
@@ -184,16 +271,14 @@ private slots:
         auto const* const source = "{minutes:L} minute(s) ago";
 
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {minutes} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {minutes} Minuten", source, "minutes"),
             std::pair(QStringLiteral("vor "), QStringLiteral(" Minuten")));
+        QCOMPARE(trqt::splitAtField("{{{minutes:L}}}", source, "minutes"), std::pair(QStringLiteral("{"), QStringLiteral("}")));
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("{{{minutes:L}}}"), source, "minutes"),
-            std::pair(QStringLiteral("{"), QStringLiteral("}")));
-        QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {count} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {count} Minuten", source, "minutes"),
             std::pair(QString{}, QStringLiteral(" minute(s) ago")));
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {minutes} {minutes} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {minutes} {minutes} Minuten", source, "minutes"),
             std::pair(QString{}, QStringLiteral(" minute(s) ago")));
     }
 };

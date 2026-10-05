@@ -9,7 +9,6 @@
 #include <chrono>
 #include <optional>
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
 #include <QtCore/QSignalBlocker>
 #include <QtCore/QTime>
@@ -73,9 +72,9 @@ void PrefsDialog::initAltSpeedDaysCombo(QComboBox* const w, tr_quark const key)
     static auto items = [] {
         auto ret = std::array<std::pair<QString, int>, 10U>{};
         auto idx = 0;
-        ret[idx++] = { tr("Every Day"), TR_SCHED_ALL };
-        ret[idx++] = { tr("Weekdays"), TR_SCHED_WEEKDAY };
-        ret[idx++] = { tr("Weekends"), TR_SCHED_WEEKEND };
+        ret[idx++] = { TR_TEXT("Every Day"), TR_SCHED_ALL };
+        ret[idx++] = { TR_TEXT("Weekdays"), TR_SCHED_WEEKDAY };
+        ret[idx++] = { TR_TEXT("Weekends"), TR_SCHED_WEEKEND };
 
         auto const locale = QLocale{};
         auto const qt_day_to_tr_day = std::map<int, int>{ {
@@ -103,9 +102,9 @@ void PrefsDialog::initAltSpeedDaysCombo(QComboBox* const w, tr_quark const key)
 void PrefsDialog::initEncryptionCombo(QComboBox* const w, tr_quark const key)
 {
     static auto const Items = std::to_array<std::pair<QString, tr_encryption_mode>>({
-        { tr("Allow encryption"), TR_CLEAR_PREFERRED },
-        { tr("Prefer encryption"), TR_ENCRYPTION_PREFERRED },
-        { tr("Require encryption"), TR_ENCRYPTION_REQUIRED },
+        { TR_TEXT("Allow encryption"), TR_CLEAR_PREFERRED },
+        { TR_TEXT("Prefer encryption"), TR_ENCRYPTION_PREFERRED },
+        { TR_TEXT("Require encryption"), TR_ENCRYPTION_REQUIRED },
     });
 
     initComboFromItems(Items, w, key);
@@ -299,15 +298,15 @@ QString PrefsDialog::getPortStatusText(PrefsDialog::PortTestStatus status) noexc
 {
     switch (status) {
     case PortTestStatus::Unknown:
-        return tr("unknown");
+        return TR_TEXT_C("Port test status", "unknown");
     case PortTestStatus::Checking:
-        return tr("checking…");
+        return TR_TEXT_C("Port test status", "checking…");
     case PortTestStatus::Open:
-        return tr("open");
+        return TR_TEXT_C("Port test status", "open");
     case PortTestStatus::Closed:
-        return tr("closed");
+        return TR_TEXT_C("Port test status", "closed");
     case PortTestStatus::Error:
-        return tr("error");
+        return TR_TEXT_C("Port test status", "error");
     default:
         return {};
     }
@@ -418,8 +417,9 @@ void PrefsDialog::onUpdateBlocklistCancelled()
 void PrefsDialog::onBlocklistUpdated(int64_t n)
 {
     blocklist_dialog_->setText(TR_FORMAT_N(
-        "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule(s).</p>",
-        static_cast<int>(n),
+        "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>",
+        "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>",
+        n,
         fmt::arg("count", n)));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
@@ -433,8 +433,8 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
     // SECURITY: `message` originates from the session -- a remote daemon can be hostile --
     // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
     // malicious daemon from injecting markup here. Don't drop it.
-    auto const detail = message.isEmpty() ? tr("Couldn't update blocklist") : message.toHtmlEscaped();
-    blocklist_dialog_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
+    auto const detail = message.isEmpty() ? TR_TEXT("Couldn't update blocklist") : message.toHtmlEscaped();
+    blocklist_dialog_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(TR_TEXT("Download of the blocklist failed."), detail));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
 
@@ -443,7 +443,7 @@ void PrefsDialog::onUpdateBlocklistClicked()
     blocklist_dialog_ = new QMessageBox{
         QMessageBox::Information,
         QString{},
-        QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Update Blocklist"), tr("Getting new blocklist…")),
+        QStringLiteral("<b>%1</b><p>%2</p>").arg(TR_TEXT("Update Blocklist"), TR_TEXT("Getting new blocklist…")),
         QMessageBox::Close,
         this
     };
@@ -478,14 +478,13 @@ void PrefsDialog::initPrivacyTab()
 
 void PrefsDialog::onIdleLimitChanged()
 {
-    //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes:L} minute(s)");
-    Utils::updateSpinBoxFormat(ui_.idleLimitSpin, "PrefsDialog", units_format, "minutes");
+    // Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+    Utils::updateSpinBoxFormat(ui_.idleLimitSpin, "{minutes:L} minute", "{minutes:L} minutes", "minutes");
 }
 
 void PrefsDialog::initSeedingTab()
 {
-    ui_.doneSeedingScriptButton->setTitle(tr("Select \"Torrent Done Seeding\" Script"));
+    ui_.doneSeedingScriptButton->setTitle(TR_TEXT("Select \"Torrent Done Seeding\" Script"));
 
     initWidget(ui_.ratioLimitCheck, TR_KEY_seed_ratio_limited);
     initWidget(ui_.ratioLimitSpin, TR_KEY_seed_ratio_limit);
@@ -503,9 +502,12 @@ void PrefsDialog::initSeedingTab()
 
 void PrefsDialog::onQueueStalledMinutesChanged()
 {
-    //: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes_ago:L} minute(s) ago");
-    Utils::updateSpinBoxFormat(ui_.queueStalledMinutesSpin, "PrefsDialog", units_format, "minutes_ago");
+    Utils::updateSpinBoxFormat(
+        ui_.queueStalledMinutesSpin,
+        // Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
+        "{minutes_ago:L} minute ago",
+        "{minutes_ago:L} minutes ago",
+        "minutes_ago");
 }
 
 void PrefsDialog::initDownloadingTab()
@@ -516,10 +518,10 @@ void PrefsDialog::initDownloadingTab()
     ui_.doneDownloadingScriptButton->setMode(PathButton::FileMode);
     ui_.doneSeedingScriptButton->setMode(PathButton::FileMode);
 
-    ui_.watchDirButton->setTitle(tr("Select Watch Directory"));
-    ui_.downloadDirButton->setTitle(tr("Select Destination Folder"));
-    ui_.incompleteDirButton->setTitle(tr("Select Incomplete Directory"));
-    ui_.doneDownloadingScriptButton->setTitle(tr("Select \"Torrent Done Downloading\" Script"));
+    ui_.watchDirButton->setTitle(TR_TEXT("Select Watch Directory"));
+    ui_.downloadDirButton->setTitle(TR_TEXT("Select Destination Folder"));
+    ui_.incompleteDirButton->setTitle(TR_TEXT("Select Incomplete Directory"));
+    ui_.doneDownloadingScriptButton->setTitle(TR_TEXT("Select \"Torrent Done Downloading\" Script"));
 
     ui_.watchDirStack->setMinimumWidth(200);
 
@@ -630,7 +632,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     // that don't work in remote sessions
     if (!is_embedded_) {
         for (QWidget* const w : unsupported_when_remote_) {
-            w->setToolTip(tr("Not supported by remote sessions"));
+            w->setToolTip(TR_TEXT("Not supported by remote sessions"));
             w->setEnabled(false);
         }
     }
@@ -656,13 +658,14 @@ void PrefsDialog::updateBlocklistLabel()
 {
     auto const rule_count = session_.blocklistSize();
     ui_.blocklistStatusLabel->setText(TR_FORMAT_N(
-        "<i>Blocklist contains {count:L} rule(s)</i>",
-        static_cast<int>(rule_count),
+        "<i>Blocklist contains {count:L} rule</i>",
+        "<i>Blocklist contains {count:L} rules</i>",
+        rule_count,
         fmt::arg("count", rule_count)));
 
     auto const updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date).time_since_epoch().count();
     ui_.blocklistDateLabel->setText(
-        updated_at == 0 ? tr("<i>Blocklist has never been updated</i>") :
+        updated_at == 0 ? TR_TEXT("<i>Blocklist has never been updated</i>") :
                           TR_FORMAT(
                               "<i>Blocklist last updated {date}</i>",
                               fmt::arg("date", QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate))));

@@ -17,6 +17,7 @@
 #include "FileTreeModel.h"
 #include "Formatter.h"
 #include "IconCache.h"
+#include "TrFormat.h"
 
 std::unordered_map<QString, int> const& FileTreeItem::getMyChildRows() const
 {
@@ -252,16 +253,16 @@ QString FileTreeItem::priorityString() const
 
     switch (i) {
     case Low:
-        return tr("Low");
+        return TR_TEXT("Low");
 
     case High:
-        return tr("High");
+        return TR_TEXT("High");
 
     case Normal:
-        return tr("Normal");
+        return TR_TEXT("Normal");
 
     default:
-        return tr("Mixed");
+        return TR_TEXT("Mixed");
     }
 }
 
