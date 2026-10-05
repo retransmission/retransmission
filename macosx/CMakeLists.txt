@@ -144,6 +144,8 @@ target_sources(${TR_NAME}-mac
         PredicateEditorRowTemplateAny.mm
         PrefsController.h
         PrefsController.mm
+        PrefsGeneralTabViewController.h
+        PrefsGeneralTabViewController.mm
         PrefsWindow.h
         PrefsWindow.mm
         PriorityPopUpButtonCell.h

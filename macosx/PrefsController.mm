@@ -18,6 +18,7 @@
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "Utils.h"
+#import "PrefsGeneralTabViewController.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
     DownloadPopupIndexFolder = 0,
@@ -51,6 +52,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) IBOutlet NSView* fGeneralView;
+@property(nonatomic) PrefsGeneralTabViewController* generalViewController;
 @property(nonatomic) IBOutlet NSView* fTransfersView;
 @property(nonatomic) IBOutlet NSView* fBandwidthView;
 @property(nonatomic) IBOutlet NSView* fPeersView;
@@ -106,7 +108,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic, readonly) NSMutableArray<NSString*>* fRPCWhitelistArray;
 @property(nonatomic) IBOutlet NSSegmentedControl* fRPCAddRemoveControl;
 @property(nonatomic, copy) NSString* fRPCPassword;
-@property(nonatomic, readonly) DefaultAppHelper* fDefaultAppHelper;
 
 @end
 
@@ -141,7 +142,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         _fRPCWhitelistArray = [NSMutableArray arrayWithArray:[self.fDefaults arrayForKey:@"RPCWhitelist"] ?: @[ @"127.0.0.1" ]];
         [self updateRPCWhitelist];
 
-        _fDefaultAppHelper = [[DefaultAppHelper alloc] init];
+        _generalViewController = [[PrefsGeneralTabViewController alloc] init];
     }
 
     return self;
@@ -177,8 +178,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [self.window center];
 
     [self setPrefView:nil];
-
-    [self updateDefaultsStates];
 
     //set special-handling of magnet link add window checkbox
     [self updateShowAddMagnetWindowField];
@@ -727,66 +726,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     return NO;
 }
 
-- (void)setBadge:(id)sender
-{
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:self];
-}
-
-- (IBAction)openNotificationSystemPrefs:(NSButton*)sender
-{
-    NSURL* prefPaneUrl = nil;
-    if (@available(macOS 13.0, *)) {
-        NSString* prefPaneName = @"x-apple.systempreferences:com.apple.Notifications-Settings.extension?id=";
-        prefPaneName = [prefPaneName stringByAppendingString:NSBundle.mainBundle.bundleIdentifier];
-        prefPaneUrl = [NSURL URLWithString:prefPaneName];
-    } else {
-        NSString* prefPaneName = @"x-apple.systempreferences:com.apple.preference.notifications?id=";
-        prefPaneName = [prefPaneName stringByAppendingString:NSBundle.mainBundle.bundleIdentifier];
-        prefPaneUrl = [NSURL URLWithString:prefPaneName];
-    }
-    [NSWorkspace.sharedWorkspace openURL:prefPaneUrl];
-}
-
-- (void)resetWarnings:(id)sender
-{
-    [self.fDefaults removeObjectForKey:@"WarningDuplicate"];
-    [self.fDefaults removeObjectForKey:@"WarningRemainingSpace"];
-    [self.fDefaults removeObjectForKey:@"WarningFolderDataSameName"];
-    [self.fDefaults removeObjectForKey:@"WarningResetStats"];
-    [self.fDefaults removeObjectForKey:@"WarningCreatorBlankAddress"];
-    [self.fDefaults removeObjectForKey:@"WarningCreatorPrivateBlankAddress"];
-    [self.fDefaults removeObjectForKey:@"WarningRemoveTrackers"];
-    [self.fDefaults removeObjectForKey:@"WarningInvalidOpen"];
-    [self.fDefaults removeObjectForKey:@"WarningRemoveCompleted"];
-    [self.fDefaults removeObjectForKey:@"WarningDonate"];
-    //[fDefaults removeObjectForKey: @"WarningLegal"];
-}
-
-- (IBAction)setDefaultForMagnets:(id)sender
-{
-    PrefsController* __weak weakSelf = self;
-    [self.fDefaultAppHelper setDefaultForMagnetURLs:^{
-        [weakSelf updateDefaultsStates];
-    }];
-}
-
-- (IBAction)setDefaultForTorrentFiles:(id)sender
-{
-    PrefsController* __weak weakSelf = self;
-    [self.fDefaultAppHelper setDefaultForTorrentFiles:^{
-        [weakSelf updateDefaultsStates];
-    }];
-}
-
-- (void)updateDefaultsStates
-{
-    BOOL const isDefaultForMagnetURLs = [self.fDefaultAppHelper isDefaultForMagnetURLs];
-    self.fSetDefaultForMagnetButton.enabled = !isDefaultForMagnetURLs;
-
-    BOOL const isDefaultForTorrentFiles = [self.fDefaultAppHelper isDefaultForTorrentFiles];
-    self.fSetDefaultForTorrentButton.enabled = !isDefaultForTorrentFiles;
-}
-
 - (void)setQueue:(id)sender
 {
     //let's just do both - easier that way
@@ -1002,11 +941,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
         [self.fImportFolderPopUp selectItemAtIndex:0];
     }];
-}
-
-- (void)setAutoSize:(id)sender
-{
-    [NSNotificationCenter.defaultCenter postNotificationName:@"AutoSizeSettingChange" object:self];
 }
 
 - (IBAction)setRPCEnabled:(id)sender
@@ -1418,7 +1352,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         view = self.fRemoteView;
     } else {
         identifier = ToolbarTabGeneral; //general view is the default selected
-        view = self.fGeneralView;
+        view = self.generalViewController.view;
     }
 
     self.window.toolbar.selectedItemIdentifier = identifier;
