@@ -7,6 +7,7 @@
 #import "FileOutlineController.h"
 #import "FileOutlineView.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 @interface InfoFileViewController ()
 
@@ -27,7 +28,8 @@
 - (instancetype)init
 {
     if ((self = [super initWithNibName:@"InfoFileView" bundle:nil])) {
-        self.title = NSLocalizedString(@"Files", "Inspector view -> title");
+        // Translators: Inspector view -> title
+        self.title = TR_TEXT("Files");
     }
 
     return self;
@@ -43,11 +45,14 @@
         self.view.frame = viewRect;
     }
 
-    [self.fFileFilterField.cell setPlaceholderString:NSLocalizedString(@"Filter", "inspector -> file filter")];
+    // Translators: inspector -> file filter
+    [self.fFileFilterField.cell setPlaceholderString:TR_TEXT("Filter")];
 
     //localize and place all and none buttons
-    self.fCheckAllButton.title = NSLocalizedString(@"All", "inspector -> check all");
-    self.fUncheckAllButton.title = NSLocalizedString(@"None", "inspector -> check all");
+    // Translators: inspector -> check all
+    self.fCheckAllButton.title = TR_TEXT("All");
+    // Translators: inspector -> check all
+    self.fUncheckAllButton.title = TR_TEXT("None");
 
     NSRect checkAllFrame = self.fCheckAllButton.frame;
     NSRect uncheckAllFrame = self.fUncheckAllButton.frame;

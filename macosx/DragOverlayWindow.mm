@@ -5,6 +5,7 @@
 #import "DragOverlayWindow.h"
 #import "DragOverlayView.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 #include <libtransmission/torrent-metainfo.h>
 
@@ -87,12 +88,7 @@
     //set strings and icon
     NSString* secondString = [NSString stringForFileSize:size];
     if (count > 1) {
-        NSString* fileString;
-        if (fileCount == 1) {
-            fileString = NSLocalizedString(@"1 file", "Drag overlay -> torrents");
-        } else {
-            fileString = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu files", "Drag overlay -> torrents"), fileCount];
-        }
+        NSString* fileString = [NSString stringForFileCount:fileCount];
         secondString = [NSString stringWithFormat:@"%@, %@", fileString, secondString];
     }
 
@@ -101,7 +97,8 @@
         icon = [NSWorkspace.sharedWorkspace
             iconForFileType:fileCount <= 1 ? name.pathExtension : NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
     } else {
-        name = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu Torrent Files", "Drag overlay -> torrents"), count];
+        // Translators: Drag overlay -> torrents
+        name = TR_FORMAT_N("{count:L} Torrent File", "{count:L} Torrent Files", count, TRArg("count", count));
         secondString = [secondString stringByAppendingString:@" total"];
         icon = [NSImage imageNamed:@"TransmissionDocument.icns"];
     }
@@ -113,15 +110,16 @@
 - (void)setFile:(NSString*)file
 {
     [self.contentView setOverlay:[NSImage imageNamed:@"CreateLarge"]
-                        mainLine:NSLocalizedString(@"Create Torrent File", "Drag overlay -> file")
+                        // Translators: Drag overlay -> file
+                        mainLine:TR_TEXT("Create Torrent File")
                          subLine:file];
     [self fadeIn];
 }
 
 - (void)setURL:(NSString*)url
 {
-    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:NSLocalizedString(@"Open URL", "Drag overlay -> url")
-                         subLine:url];
+    // Translators: Drag overlay -> url
+    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:TR_TEXT("Open URL") subLine:url];
     [self fadeIn];
 }
 

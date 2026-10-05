@@ -4,6 +4,7 @@
 
 #import "TrackerNode.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 @interface TrackerNode ()
 
@@ -107,14 +108,17 @@
     if (self.fStat.hasAnnounced) {
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastAnnounceTime]];
     } else {
-        dateString = NSLocalizedString(@"N/A", "Tracker last announce");
+        // Translators: Tracker last announce
+        dateString = TR_TEXT("N/A");
     }
 
     NSString* baseString;
     if (self.fStat.hasAnnounced && self.fStat.lastAnnounceTimedOut) {
-        baseString = [NSLocalizedString(@"Announce timed out", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
+        // Translators: Tracker last announce
+        baseString = [TR_TEXT("Announce timed out") stringByAppendingFormat:@": %@", dateString];
     } else if (self.fStat.hasAnnounced && !self.fStat.lastAnnounceSucceeded) {
-        baseString = NSLocalizedString(@"Announce error", "Tracker last announce");
+        // Translators: Tracker last announce
+        baseString = TR_TEXT("Announce error");
 
         NSString* errorString = @(self.fStat.lastAnnounceResult);
         if ([errorString isEqualToString:@""]) {
@@ -123,15 +127,12 @@
             baseString = [baseString stringByAppendingFormat:@": %@ - %@", errorString, dateString];
         }
     } else {
-        baseString = [NSLocalizedString(@"Last Announce", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
+        // Translators: Tracker last announce
+        baseString = [TR_TEXT("Last Announce") stringByAppendingFormat:@": %@", dateString];
         if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0) {
-            NSString* peerString;
-            if (self.fStat.lastAnnouncePeerCount == 1) {
-                peerString = NSLocalizedString(@"got 1 peer", "Tracker last announce");
-            } else {
-                peerString = [NSString localizedStringWithFormat:NSLocalizedString(@"got %zu peers", "Tracker last announce"),
-                                                                 (size_t)self.fStat.lastAnnouncePeerCount];
-            }
+            auto const peerCount = self.fStat.lastAnnouncePeerCount;
+            // Translators: Tracker last announce
+            NSString* peerString = TR_FORMAT_N("got {count:L} peer", "got {count:L} peers", peerCount, TRArg("count", peerCount));
             baseString = [baseString stringByAppendingFormat:@" (%@)", peerString];
         }
     }
@@ -143,7 +144,8 @@
 {
     switch (self.fStat.announceState) {
     case TR_TRACKER_ACTIVE:
-        return [NSLocalizedString(@"Announce in progress", "Tracker next announce") stringByAppendingEllipsis];
+        // Translators: Tracker next announce
+        return [TR_TEXT("Announce in progress") stringByAppendingEllipsis];
 
     case TR_TRACKER_WAITING:
         {
@@ -159,14 +161,15 @@
             });
 
             NSString* timeString = [formatter stringFromTimeInterval:nextAnnounceTimeLeft];
-            return [NSString stringWithFormat:NSLocalizedString(@"Next announce in %@", "Tracker next announce"), timeString];
+            return TR_FORMAT("Next announce in {time_span}", TRArg("time_span", timeString));
         }
     case TR_TRACKER_QUEUED:
-        return [NSLocalizedString(@"Queued to ask for more peers", "Tracker next announce") stringByAppendingEllipsis];
+        return [TR_TEXT("Queued to ask for more peers") stringByAppendingEllipsis];
 
     case TR_TRACKER_INACTIVE:
-        return self.fStat.isBackup ? NSLocalizedString(@"Tracker will be used as a backup", "Tracker next announce") :
-                                     NSLocalizedString(@"No updates scheduled", "Tracker next announce");
+        return self.fStat.isBackup ? TR_TEXT("Tracker will be used as a backup") :
+                                     // Translators: Tracker next announce
+                                     TR_TEXT("No updates scheduled");
 
     default:
         NSAssert1(NO, @"unknown announce state: %d", self.fStat.announceState);
@@ -180,14 +183,17 @@
     if (self.fStat.hasScraped) {
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastScrapeTime]];
     } else {
-        dateString = NSLocalizedString(@"N/A", "Tracker last scrape");
+        // Translators: Tracker last scrape
+        dateString = TR_TEXT("N/A");
     }
 
     NSString* baseString;
     if (self.fStat.hasScraped && self.fStat.lastScrapeTimedOut) {
-        baseString = [NSLocalizedString(@"Scrape timed out", "Tracker last scrape") stringByAppendingFormat:@": %@", dateString];
+        // Translators: Tracker last scrape
+        baseString = [TR_TEXT("Scrape timed out") stringByAppendingFormat:@": %@", dateString];
     } else if (self.fStat.hasScraped && !self.fStat.lastScrapeSucceeded) {
-        baseString = NSLocalizedString(@"Scrape error", "Tracker last scrape");
+        // Translators: Tracker last scrape
+        baseString = TR_TEXT("Scrape error");
 
         NSString* errorString = @(self.fStat.lastScrapeResult);
         if ([errorString isEqualToString:@""]) {
@@ -196,7 +202,8 @@
             baseString = [baseString stringByAppendingFormat:@": %@ - %@", errorString, dateString];
         }
     } else {
-        baseString = [NSLocalizedString(@"Last Scrape", "Tracker last scrape") stringByAppendingFormat:@": %@", dateString];
+        // Translators: Tracker last scrape
+        baseString = [TR_TEXT("Last Scrape") stringByAppendingFormat:@": %@", dateString];
     }
 
     return baseString;

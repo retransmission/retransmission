@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-03 11:48-0500\n"
+"POT-Creation-Date: 2026-10-04 11:10-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Iñigo Zendegi Urzelai, 2023\n"
 "Language-Team: Basque (https://app.transifex.com/transmissionbt/teams/33778/eu/)\n"
@@ -27,6 +27,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Translators: Groups -> Button
+#. Translators: Groups -> Menu
+#. Translators: inspector -> check all
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -152,45 +155,65 @@ msgstr "Igorri jarduera kontuan izan gabe"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Gelditu igortzen N minutuz geratuta badago:"
 
+#. Translators: Torrent -> status string
 msgid "Queued for verification"
 msgstr "Egiaztatzeko ilaratuta"
 
+#. Translators: Torrent -> status string
 msgid "Verifying local data"
 msgstr "Datu lokalak egiaztatzen"
 
+#. Translators: Torrent -> status string
 msgid "Queued for download"
 msgstr "Deskargatzeko ilaratuta"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Deskargatzen"
 
+#. Translators: Torrent -> status string
 msgid "Queued for seeding"
 msgstr "Igortzeko ilaratuta"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "Igortzen"
 
+#. Translators: Torrent -> status string
 #, fuzzy
 msgid "Seeding complete"
 msgstr "Osatu gabea"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Paused"
 msgstr "Pausatuta"
 
+#. Translators: Inspector -> Peers tab -> table row tooltip
+#. Translators: No Ratio
+#. Translators: Prefs -> blocklist -> message
+#. Translators: tracker peer stat
+#. Translators: Tracker last announce
+#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "E/E"
 
+#. Translators: files tab -> tooltip
 msgid "Mixed"
 msgstr "Nahasia"
 
+#. Translators: Inspector -> selected torrents
 msgid "No Torrents Selected"
 msgstr "Ez da torrent-ik hautatu"
 
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "Aztarnari honen pribatua -- DHT eta PEX desgaituta"
 
+#. Translators: Inspector -> private torrent
 msgid "Public torrent"
 msgstr "Torrent publikoa"
 
@@ -237,6 +260,7 @@ msgstr "{uploaded_size} (Maila: {ratio})"
 msgid "No errors"
 msgstr "Errorerik ez"
 
+#. Translators: Prefs -> blocklist -> message
 msgid "Never"
 msgstr "Inoiz ez"
 
@@ -252,6 +276,8 @@ msgstr "Kide honetatik deskargatzen"
 msgid "We would download from this peer if they would let us"
 msgstr "Kide honetatik deskargatuko genuke utziko baligu"
 
+#. Translators: inspector -> peer table -> header tool tip
+#. Translators: Inspector -> peer -> status
 msgid "Uploading to peer"
 msgstr "Kide batera igortzen"
 
@@ -265,6 +291,7 @@ msgstr "Kideak buxadura kendu digu, baina ez gaude interesatuta"
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Kide honi buxadura kendu diogu, baina ez daude interesatuta"
 
+#. Translators: inspector -> peer table -> header tool tip
 msgid "Encrypted connection"
 msgstr "Konexio zifratua"
 
@@ -283,6 +310,7 @@ msgstr "Kidea µTP bidez konektatuta dago"
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
 
+#. Translators: inspector -> peer table -> header
 msgid "Address"
 msgstr "Helbidea"
 
@@ -295,18 +323,24 @@ msgstr "Beherako esk"
 msgid "Up Reqs"
 msgstr "Gorako esk."
 
+#. Translators: inspector -> peer table -> header
+#. Translators: inspector -> web seed table -> header
 msgid "Down"
 msgstr "Behera"
 
+#. Translators: Torrent -> status image
+#. Translators: inspector -> peer table -> header
 msgid "Up"
 msgstr "Gora"
 
+#. Translators: inspector -> peer table -> header
 msgid "Client"
 msgstr "Bezeroa"
 
 msgid "Flags"
 msgstr "Banderak"
 
+#. Translators: inspector -> web seed table -> header
 msgid "Web Seeds"
 msgstr "Web igortzeak"
 
@@ -322,6 +356,8 @@ msgstr "Mesedez zuzendu akatsak eta saiatu berriro."
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Gehitu Aztarnaria"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Trackers"
 msgstr "Aztarnariak"
 
@@ -394,18 +430,23 @@ msgstr "_Ezabatu"
 msgid "_Remove"
 msgstr "_Kendu"
 
+#. Translators: File Outline -> Priority Menu
 msgid "High"
 msgstr "Altua"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Normal"
 msgstr "Normala"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Low"
 msgstr "Baxua"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "Ezin izan da '{old_path}' '{path}' gisa berrizendatu: {error} ({error_code})"
 
+#. Translators: Filter Bar -> filter menu
+#. Translators: Message window -> table column
 msgid "Name"
 msgstr "Izena"
 
@@ -415,15 +456,22 @@ msgstr "Tamaina"
 msgid "Progress"
 msgstr "Aurrerapena"
 
+#. Translators: files tab -> tooltip
+#. Translators: file table -> header tool tip
 msgid "Download"
 msgstr "Deskarga"
 
+#. Translators: file table -> header tool tip
+#. Translators: File Outline -> Menu
 msgid "Priority"
 msgstr "Lehentasuna"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: inspector -> check all
 msgid "All"
 msgstr "Dena"
 
+#. Translators: Filter Bar -> filter button
 msgid "Active"
 msgstr "Aktiboa"
 
@@ -431,6 +479,8 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "Egiaztatzen"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Errorea"
 
@@ -493,15 +543,19 @@ msgstr "Gelditu igortzen maila honetan"
 msgid "Stop at Ratio ({ratio})"
 msgstr "Gelditu Maila honetan ({ratio})"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Ratio"
 msgstr "Maila guztira"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Ratio"
 msgstr "Saioaren maila"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Transfer"
 msgstr "Transferentzia guztira"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Transfer"
 msgstr "Saioaren transferentzia"
 
@@ -536,18 +590,26 @@ msgctxt "Logging level"
 msgid "Critical"
 msgstr "Kritikoa"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Error"
 msgstr "Errorea"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Warning"
 msgstr "Oharra"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Information"
 msgstr "Informazioa"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Debug"
 msgstr "Arazketa"
@@ -558,9 +620,11 @@ msgstr "Gorde egunkaria"
 msgid "_Save"
 msgstr "_Gorde"
 
+#. Translators: Message window -> table column
 msgid "Message"
 msgstr "Mezua"
 
+#. Translators: Message window -> table column
 msgid "Time"
 msgstr "Ordua"
 
@@ -584,6 +648,7 @@ msgstr "Torrent-a osatu da"
 msgid "Start Now"
 msgstr "Hasi orain"
 
+#. Translators: notification title
 msgid "Torrent Added"
 msgstr "Torrent-a gehitu da"
 
@@ -603,7 +668,7 @@ msgid "Show options dialog"
 msgstr "Erakutsi aukeren mezua"
 
 msgid "Other…"
-msgstr ""
+msgstr "Beste bat..."
 
 msgid "Select File"
 msgstr "Hautatu Fitxategia"
@@ -637,6 +702,7 @@ msgstr[1] "Blokeo-zerrendak {count:L} sarrera ditu"
 msgid "Blocklist updated!"
 msgstr "Blokeo-zerrenda eguneratuta!"
 
+#. Translators: Blocklist -> message
 msgid "Couldn't update blocklist"
 msgstr "Ezin izan da blokeo-zerrenda eguneratu"
 
@@ -672,6 +738,7 @@ msgstr "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)"
 msgid "Moving '{torrent_name}'"
 msgstr "'{torrent_name}' mugitzen"
 
+#. Translators: Move error alert -> title
 msgid "Couldn't move torrent"
 msgstr "Ezin izan da torrent-a mugitu"
 
@@ -758,6 +825,7 @@ msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio}, Helburua: {seed_
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio})"
 
+#. Translators: Torrent -> eta string
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Geratzen den denbora ezezaguna"
@@ -765,6 +833,7 @@ msgstr "Geratzen den denbora ezezaguna"
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr "{download_speed} ▾  {upload_speed} ▴"
 
+#. Translators: Torrent -> status string
 msgid "Stalled"
 msgstr "Trabatuta"
 
@@ -997,6 +1066,7 @@ msgstr "Abiadura-muga alternatiboak"
 msgid "_Add"
 msgstr "_Gehitu"
 
+#. Translators: Filter Bar -> filter menu
 msgid "Tracker"
 msgstr "Aztarnaria"
 
@@ -1006,6 +1076,8 @@ msgstr "_Iragarpen URLa:"
 msgid "_Close"
 msgstr "_Itxi"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Activity"
 msgstr "Jarduera"
 
@@ -1015,15 +1087,18 @@ msgstr "Tamaina:"
 msgid "Have:"
 msgstr "Dauka:"
 
+#. Translators: Stats window -> label
 msgid "Uploaded:"
 msgstr "Igota:"
 
+#. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Deskargatuta:"
 
 msgid "State:"
 msgstr "Egoera:"
 
+#. Translators: Stats window -> label
 msgid "Running time:"
 msgstr "Abian daraman denbora:"
 
@@ -1057,12 +1132,17 @@ msgstr "Gehitze-data:"
 msgid "Comment:"
 msgstr "Iruzkina:"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Information"
 msgstr "Informazioa"
 
 msgid "Show _more details"
 msgstr "Erakutsi _xehetasun gehiago"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
+#. Translators: Preferences -> toolbar item title
 msgid "Peers"
 msgstr "Kideak"
 
@@ -1072,9 +1152,12 @@ msgstr "Erakutsi _babeskopiako aztarnariak"
 msgid "File listing not available for combined torrent properties"
 msgstr "Ezin dira fitxategiak zerrendatu torrent konbinatuen propietateetarako"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Files"
 msgstr "Fitxategiak"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Speed"
 msgstr "Abiadura"
 
@@ -1105,6 +1188,8 @@ msgstr "Kideen konexioak"
 msgid "_Maximum peers:"
 msgstr "_Gehienezko kide-kopurua:"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Options"
 msgstr "Aukerak"
 
@@ -1121,15 +1206,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Aztarnari publiko lehenetsiak Editatu > Hobespenak > Sarea atalean ere ikusi ditzakezu"
 
+#. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
 msgstr "Ireki torrent bat"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent cell -> button info
 msgid "Start torrent"
 msgstr "Abiarazi torrenta"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent Table -> tooltip
 msgid "Pause torrent"
 msgstr "Pausatu torrenta"
 
+#. Translators: Remove toolbar item -> tooltip
 msgid "Remove torrent"
 msgstr "Kendu torrenta"
 
@@ -1139,6 +1230,7 @@ msgstr "Torrentaren ezaugarriak"
 msgid "Torrent"
 msgstr "Torrent-a"
 
+#. Translators: Stats window -> title
 msgid "Statistics"
 msgstr "Estatistikak"
 
@@ -1182,12 +1274,14 @@ msgstr "Torrent _pribatua"
 msgid "Creating torrent…"
 msgstr "Torrent-a sortzen…"
 
+#. Translators: Message window -> title
 msgid "Message Log"
 msgstr "Mezuen egunkaria"
 
 msgid "Save _As"
 msgstr "Gorde _honela"
 
+#. Translators: Message window -> save button
 msgid "Clear"
 msgstr "Garbitu"
 
@@ -1231,6 +1325,8 @@ msgstr "_Igo ({speed_units}):"
 msgid "_Download ({speed_units}):"
 msgstr "_Deskarga ({speed_units}):"
 
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed Limits"
 msgstr "Abiadura-muga alternatiboak"
 
@@ -1413,6 +1509,7 @@ msgstr ""
 "Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
 "URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
 
+#. Translators: Preferences -> toolbar item title
 msgid "Network"
 msgstr "Sarea"
 
@@ -1469,6 +1566,7 @@ msgstr "Helbideak:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IP helbideetarako komodinak erabil daitezke, adibidez 192.168.*.*"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Remote"
 msgstr "Urrunekoa"
 
@@ -1493,6 +1591,7 @@ msgstr "Datu lokalak _jadanik han daude"
 msgid "Current Session"
 msgstr "Uneko saioa"
 
+#. Translators: Stats window -> label
 msgid "Ratio:"
 msgstr "Maila:"
 
@@ -1502,6 +1601,9 @@ msgstr "Iraupena:"
 msgid "Total"
 msgstr "Guztira"
 
+#. Translators: Open address toolbar item -> label
+#. Translators: Open address toolbar item -> palette label
+#. Translators: Drag overlay -> url
 msgid "Open URL"
 msgstr "Ireki URLa"
 
@@ -1597,6 +1699,7 @@ msgstr "{markup_begin}kide-zerrendaren eskaeraren denbora amaitu da {time_span_a
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Errorea jaso da '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
+#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Ez da eguneraketarik programatu"
 
@@ -1651,6 +1754,7 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} ordu"
 msgstr[1] "{hours:L} ordu"
 
+#. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
@@ -1705,6 +1809,7 @@ msgstr "Ezin izan da iragarpen erantzuna aztertu: {error} ({error_code})"
 msgid "Couldn't parse scrape response: {error} ({error_code})"
 msgstr "Ezin izan da zuriketa erantzuna aztertu: {error} ({error_code})"
 
+#. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "Errore ezezaguna"
 
@@ -2060,18 +2165,22 @@ msgstr "GiB"
 msgid "TiB"
 msgstr "TiB"
 
+#. Translators: Transfer speed (bytes per second)
 msgid "B/s"
 msgstr "B/s"
 
 msgid "kB/s"
 msgstr "kB/s"
 
+#. Translators: Transfer speed (megabytes per second)
 msgid "MB/s"
 msgstr "MB/s"
 
+#. Translators: Transfer speed (gigabytes per second)
 msgid "GB/s"
 msgstr "GB/s"
 
+#. Translators: Transfer speed (terabytes per second)
 msgid "TB/s"
 msgstr "TB/s"
 
@@ -2144,6 +2253,1824 @@ msgstr ""
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
 
+#. Translators: About window -> license button
+msgid "License"
+msgstr "Baimena"
+
+msgid "OK"
+msgstr "Ados"
+
+#. Translators: Open torrent -> prompt
+#. Translators: Move torrent -> prompt
+#. Translators: Create torrent -> location sheet -> button
+#. Translators: Create torrent -> select file
+#. Translators: Preferences -> Open panel prompt
+msgid "Select"
+msgstr "Aukeratu"
+
+msgid "Select the download folder for \"{torrent_name}\""
+msgstr "Hautatu \"{torrent_name}\"  honetarako deskarga karpeta"
+
+msgid "The destination directory and root data directory have the same name."
+msgstr "Helburuko direktorioa eta datuen jatorrizko direktorioak izen berdina dute."
+
+msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
+msgstr "Dagoeneko existitzen diren datuak erabiltzen saiatzen ari bazara, datuen jatorrizko direktorioa helburuko direktorioaren barruan egon behar da."
+
+msgid "Cancel"
+msgstr "Ezeztatu"
+
+#. Translators: Add torrent -> same name -> button
+msgid "Add"
+msgstr "Gehitu"
+
+#. Translators: Add torrent -> info
+#. Translators: Inspector -> Activity tab -> progress
+#. Translators: Torrent -> progress string
+msgid "{amount} selected"
+msgstr "{amount} aukeratuta"
+
+msgid "Start when added"
+msgstr "Hasi gehitzerakoan"
+
+msgid "Magnet Link"
+msgstr "Magnet Esteka:"
+
+#, fuzzy
+#| msgid "_Destination folder:"
+msgid "Destination folder:"
+msgstr "Helburuko karpeta:"
+
+msgid "Priority:"
+msgstr "Lehentasuna:"
+
+msgid "Group:"
+msgstr "Taldea:"
+
+msgid "Change…"
+msgstr "Aldatu..."
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Move torrent file to the Trash"
+msgstr "Mugitu torrent-fitxategia zakarrontzira"
+
+msgid "Verify Local Data"
+msgstr "Egiaztatu Datu Lokalak"
+
+#. Translators: Filter toolbar item -> label
+#. Translators: inspector -> file filter
+#. Translators: Message window -> filter field
+msgid "Filter"
+msgstr "Iragazkia"
+
+msgid "Trackers:"
+msgstr "Aztarnariak:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Private torrent"
+msgstr "Torrent pribatua"
+
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
+msgid "Create"
+msgstr "Sortu"
+
+msgid "Open when created"
+msgstr "Ireki sortzerakoan"
+
+msgid "Each tracker will be placed into its own tier"
+msgstr "Aztarnari bakoitza bere maila propioan kokatuko da"
+
+msgid "Source:"
+msgstr "Jatorria:"
+
+#, fuzzy
+#| msgid "_Torrent file:"
+msgid "Torrent file:"
+msgstr "Torrent-fitxategia:"
+
+#, fuzzy
+#| msgid "Limit _download speed:"
+msgid "Limit download speed:"
+msgstr "Mugatu deskargaren abiadura:"
+
+#, fuzzy
+#| msgid "Limit _upload speed:"
+msgid "Limit upload speed:"
+msgstr "Mugatu igoeraren abiadura:"
+
+msgid "minutes"
+msgstr "minutu"
+
+#. Translators: Transfer speed (kilobytes per second)
+msgid "KB/s"
+msgstr ""
+
+msgid "Status of selected files"
+msgstr "Aukeratutako fitxategien egoera"
+
+msgid "Remaining time"
+msgstr "Falta den denbora"
+
+msgid "Stop seeding if idle for:"
+msgstr "Gelditu igortzen geratuta badago:"
+
+msgid "Any"
+msgstr "Edozein"
+
+msgid "of the following are true"
+msgstr "hurrengoetatik egia dira"
+
+msgid "Comment"
+msgstr "Iruzkina"
+
+msgid "contains"
+msgstr "dauka"
+
+msgid "begins with"
+msgstr "honekin hasten da:"
+
+msgid "ends with"
+msgstr "honekin amaitzen da"
+
+msgid "is"
+msgstr "da"
+
+msgid "is not"
+msgstr "ez da"
+
+msgid "matches"
+msgstr "bat dator"
+
+msgid "Any File"
+msgstr "Edozein Fitxategi"
+
+msgid "Any Tracker"
+msgstr "Edozein Aztarnari"
+
+msgid "Transfer"
+msgstr "Transferentzia"
+
+msgid "Failed DL:"
+msgstr "Huts egindako deskarga:"
+
+#. Translators: inspector -> peer table -> header tool tip
+msgid "Available"
+msgstr "Erabilgarria"
+
+msgid "Progress:"
+msgstr "Aurrerapena:"
+
+msgid "Seeding:"
+msgstr "Igortzen:"
+
+msgid "Completed:"
+msgstr "Osatze-data:"
+
+msgid "Dates"
+msgstr "Datak"
+
+msgid "Time Elapsed"
+msgstr "Emandako denbora"
+
+msgid "Downloading:"
+msgstr "Deskargatzen:"
+
+msgid "Created On:"
+msgstr "Sortze-data:"
+
+msgid "Creator:"
+msgstr "Sortzailea:"
+
+msgid "Pieces:"
+msgstr "Zatiak:"
+
+msgid "Was:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Torrent priority:"
+msgstr "Torrent lehentasuna:"
+
+#, fuzzy
+#| msgid "Honor global _limits"
+msgid "Honor global limits"
+msgstr "Bete muga orokorrak"
+
+msgid "Use Global Settings"
+msgstr "Erabili Ezarpen Orokorrak"
+
+msgid "Stop When Inactive"
+msgstr "Geratu Inaktibo Dagoenean"
+
+#, fuzzy
+#| msgid "Remove from the transfer list when seeding completes"
+msgid "Remove from the torrent list when seeding completes"
+msgstr "Kendu transferentzien zerrendatik igortzeak amaitzen direnean"
+
+#, fuzzy
+#| msgid "_Maximum peers:"
+msgid "Maximum peers:"
+msgstr "Gehienezko kide-kopurua:"
+
+#, fuzzy
+#| msgid "_Idle:"
+msgid "Idle:"
+msgstr "Geratuta:"
+
+#. Translators: Preferences -> toolbar item title
+#, fuzzy
+#| msgid "Torrent"
+msgid "Torrents"
+msgstr "Torrent-a"
+
+msgid "About Retransmission"
+msgstr "Retransmission-i buruz"
+
+msgid "Check for Update…"
+msgstr "Egiaztatu Eguneratzeak..."
+
+#. Translators: Donation beg -> button
+msgid "Donate"
+msgstr "Donatu"
+
+msgid "Preferences…"
+msgstr "Hobespenak..."
+
+msgid "Services"
+msgstr "Zerbitzuak"
+
+msgid "Hide Retransmission"
+msgstr "Ezkutatu Retransmission"
+
+msgid "Hide Others"
+msgstr "Ezkutatu Besteak"
+
+msgid "Show All"
+msgstr "Erakutsi Guztiak"
+
+msgid "Quit Retransmission"
+msgstr "Itxi Retransmission"
+
+msgid "File"
+msgstr "Fitxategia"
+
+msgid "Create Torrent File…"
+msgstr "Sortu Torrent Fitxategia..."
+
+#, fuzzy
+#| msgid "_Open…"
+msgid "Open…"
+msgstr "Ireki"
+
+msgid "Open With Options Window…"
+msgstr "Ireki Aukeren Leihoarekin..."
+
+msgid "Open URL…"
+msgstr "Ireki URL-a…"
+
+msgid "Close Window"
+msgstr "Itxi Leihoa"
+
+#. Translators: QuickLook toolbar item -> label
+#. Translators: QuickLook toolbar item -> palette label
+#. Translators: QuickLook toolbar item -> tooltip
+#. Translators: View menu -> Quick Look
+msgid "Quick Look"
+msgstr "Begirada Azkarra"
+
+#, fuzzy
+#| msgid "Set _Location…"
+msgid "Set Location…"
+msgstr "Zehaztu Kokapena…"
+
+#. Translators: File Outline -> Menu
+msgid "Rename…"
+msgstr "Berrizendatu…"
+
+msgid "Save Torrent File As…"
+msgstr "Gorde Torrent-fitxategia Honela..."
+
+msgid "Share Torrent File"
+msgstr "Partekatu Torrent-fitxategia"
+
+msgid "Copy Magnet Link to Clipboard"
+msgstr "Kopiatu Magnet Esteka Arbelera"
+
+msgid "Edit"
+msgstr "Editatu"
+
+msgid "Undo"
+msgstr "Desegin"
+
+msgid "Redo"
+msgstr "Berregin"
+
+msgid "Cut"
+msgstr "Ebaki"
+
+msgid "Copy"
+msgstr "Kopiatu"
+
+msgid "Paste"
+msgstr "Itsatsi"
+
+msgid "Delete"
+msgstr "Ezabatu"
+
+msgid "Select All"
+msgstr "Aukeratu Guztiak"
+
+msgid "View"
+msgstr "Ikusi"
+
+msgid "Compact View"
+msgstr "Ikuspegi Trinkoa"
+
+msgid "Pieces Bar"
+msgstr "Zatien Barra"
+
+msgid "Availability"
+msgstr "Eskuragarritasuna"
+
+msgid "Use Groups"
+msgstr "Erabili Taldeak"
+
+#, fuzzy
+msgid "Sort Torrents By"
+msgstr "Abiarazi torrenta"
+
+msgid "Queue Order"
+msgstr "Ilaren ordena"
+
+msgid "Date Added"
+msgstr "Gehitze-data"
+
+msgid "ETA"
+msgstr ""
+
+msgid "State"
+msgstr "Egoera"
+
+msgid "Ascending"
+msgstr "Gorantz"
+
+msgid "Descending"
+msgstr "Beherantz"
+
+#. Translators: View menu -> Inspector
+msgid "Show Inspector"
+msgstr "Erakutsi Ikuskatzailea"
+
+#. Translators: View menu -> Status Bar
+msgid "Hide Status Bar"
+msgstr "Ezkutatu Egoera-barra"
+
+#. Translators: View menu -> Filter Bar
+msgid "Hide Filter Bar"
+msgstr "Ezkutatu Iragazki-barra"
+
+#. Translators: View menu -> Toolbar
+msgid "Hide Toolbar"
+msgstr "Ezkutatu Tresna-barra"
+
+msgid "Customize Toolbar…"
+msgstr "Pertsonalizatu Tresna-barra..."
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "Paused"
+msgid "Pause"
+msgstr "Pausatuta"
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "_Start"
+msgid "Start"
+msgstr "Abiarazi"
+
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
+msgid "Remove"
+msgstr "Kendu"
+
+#, fuzzy
+#| msgid "_Delete Files and Remove"
+msgid "Delete Files and Remove"
+msgstr "Ezabatu Fitxategiak eta Kendu"
+
+msgid "Remove All Completed From List"
+msgstr "Kendu Osatutako Guztiak Zerrendatik"
+
+#. Translators: File Outline -> Menu
+msgid "Show in Finder"
+msgstr "Erakutsi Finder-en"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+msgid "Pause All"
+msgstr "Pausatu Guztiak"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All"
+msgstr "Abiarazi Guztiak"
+
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All Queued Now"
+msgstr "Abiarazi Guztiak"
+
+#. Translators: Groups -> Button
+msgid "Group"
+msgstr "Taldea"
+
+#, fuzzy
+#| msgid "Ask Tracker for _More Peers"
+msgid "Ask Tracker for More Peers"
+msgstr "Eskatu Aztarnariari Kide Gehiago"
+
+msgid "Window"
+msgstr "Leihoa"
+
+msgid "Minimize"
+msgstr "Minimizatu"
+
+msgid "Zoom"
+msgstr "Zooma"
+
+msgid "Next Inspector Tab"
+msgstr "Hurrengo ikuskatzaile-fitxa"
+
+msgid "Previous Inspector Tab"
+msgstr "Aurreko ikuskatzaile-fitxa"
+
+msgid "Next Filter Button"
+msgstr "Hurrengo Iragazki Botoia"
+
+msgid "Previous Filter Button"
+msgstr "Aurreko Iragazki Botoia"
+
+msgid "Bring All to Front"
+msgstr "Ekarri Denak Aurreko Aldera"
+
+msgid "Help"
+msgstr "Laguntza"
+
+msgid "Retransmission Help"
+msgstr "Retransmission Laguntza"
+
+msgid "Retransmission Homepage"
+msgstr "Retransmission Hasiera-orria"
+
+msgid "Forums"
+msgstr "Foroak"
+
+msgid "Support & Development"
+msgstr "Laguntza eta Garapena"
+
+msgid "Menu"
+msgstr "Menua"
+
+msgid "Preferences"
+msgstr "Hobespenak"
+
+msgid "Check for update:"
+msgstr "Egiaztatu eguneraketen bila:"
+
+msgid "Include beta releases"
+msgstr "Gehitu beta kaleratzeak"
+
+msgid "Automatically check daily"
+msgstr "Egiaztatu automatikoki egunero"
+
+msgid "Reset all alerts:"
+msgstr "Berrabiarazi ohar guztiak:"
+
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
+msgid "Reset"
+msgstr "Berrabiarazi"
+
+msgid "Set Default Application"
+msgstr "Zehaztu Aplikazio Lehenetsia"
+
+msgid "Configure In System Preferences"
+msgstr "Konfiguratu Sistemaren Ezarpenetan"
+
+#, fuzzy
+#| msgid "Automatically size window to fit all transfers"
+msgid "Automatically size window to fit all torrents"
+msgstr "Aldatu automatikoki leihoaren tamaina transferentzia guztietara egokitzeko"
+
+msgid "Auto resize:"
+msgstr "Tamaina aldatu automatikoki:"
+
+#, fuzzy
+#| msgid "Only when transfers are downloading"
+msgid "Only when torrents are downloading"
+msgstr "Soilik transferentziak deskargatzen ari direnean"
+
+msgid "Total upload rate"
+msgstr "Igoera-ratioa guztira"
+
+msgid "Total download rate"
+msgstr "Deskarga-ratioa guztira"
+
+msgid "Badge Dock icon with:"
+msgstr "Badge Dock ikonoa honekin:"
+
+msgid "Notifications:"
+msgstr "Jakinarazpenak:"
+
+msgid "Prompt user for:"
+msgstr "Eskatu erabiltzaileari:"
+
+#, fuzzy
+#| msgid "Removal of active transfers"
+msgid "Removal of active torrents"
+msgstr "Aktibo dauden transferentziak kentzea"
+
+#, fuzzy
+#| msgid "Quit with active transfers"
+msgid "Quit with active torrents"
+msgstr "Amaitu aktiboak dauden transferentziak"
+
+msgid "Accept magnet links:"
+msgstr "Onartu magnet estekak:"
+
+#, fuzzy
+#| msgid "Open Torrent Files"
+msgid "Open torrent files:"
+msgstr "Ireki Torrent Fitxategiak"
+
+msgid "Adding"
+msgstr "Gehitzen"
+
+msgid "Same as torrent file"
+msgstr "Torrent-fitxategiaren berdina"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to location:"
+msgstr "Gorde hemen:"
+
+msgid "Settings:"
+msgstr "Ezarpenak:"
+
+#, fuzzy
+#| msgid "Append \"._part\" to incomplete files' names"
+msgid "Append \".part\" to incomplete files' names"
+msgstr "Gehitu \".part\" osorik ez dauden fitxategi-izenei"
+
+#, fuzzy
+#| msgid "Automatically add torrent files _from:"
+msgid "Automatically add torrent files from:"
+msgstr "Gehitu automatikoki torrent-fitxategiak hemendik:"
+
+msgid "Auto add:"
+msgstr "Gehitu automatikoki:"
+
+msgid "Keep incomplete files in:"
+msgstr "Gorde osatu gabeko fitxategiak hemen:"
+
+msgid "Display a window when opening a torrent file"
+msgstr "Erakutsi leiho bat torrent fitxategia irekitzerakoan"
+
+msgid "Display a window when opening a magnet link"
+msgstr "Erakutsi leiho bat magnet esteka bat irekitzean"
+
+#, fuzzy
+#| msgid "_Start added torrents"
+msgid "Start added torrents"
+msgstr "Hasi gehitutako torrentak"
+
+msgid "Only when adding manually"
+msgstr "Soilik eskuz gehitzerakoan"
+
+msgid "Add window:"
+msgstr "Gehitu leihoa:"
+
+msgid "Only when there are multiple files"
+msgstr "Soilik fitxategi anitz daudenean"
+
+msgid "Management"
+msgstr "Kudeaketa"
+
+msgid "Queues:"
+msgstr "Ilarak:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "active torrents"
+msgstr "Torrent pribatua"
+
+msgid "Limits:"
+msgstr "Mugak:"
+
+msgid "Ratio is amount uploaded to amount downloaded"
+msgstr "Maila igotako eta deskargatutako bolumenaren arteko erlazioa da"
+
+msgid "Download with maximum of:"
+msgstr "Deskargatu hurrengo mugarekin:"
+
+msgid "Seeding with maximum of:"
+msgstr "Igortzen hurrengo mugarekin:"
+
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when inactive for:"
+msgstr "Transferentzia trabatuta utziko da tarte honetaz inaktibo dagoenean:"
+
+msgid "Play sound:"
+msgstr "Erreproduzitu soinua:"
+
+msgid "When seeding completes:"
+msgstr "Igortzea osatzen denean:"
+
+msgid "When download completes:"
+msgstr "Deskarga amaitzen denean:"
+
+msgid "Call script:"
+msgstr "Deitu script-a:"
+
+#, fuzzy
+#| msgid "Applies to newly added transfers"
+msgid "Applies to newly added torrents"
+msgstr "Gehitu berriak diren transferentzietara aplikatzen da"
+
+#, fuzzy
+#| msgid "Transfers will be assigned to the first group where all criteria are met"
+msgid "Torrents will be assigned to the first group where all criteria are met"
+msgstr "Transferentziak irizpide guztiak betetzen dituen lehen taldera esleituko dira"
+
+msgid "Edit…"
+msgstr "Editatu..."
+
+#, fuzzy
+#| msgid "Assign group to new transfers based on criteria"
+msgid "Assign group to new torrents based on criteria"
+msgstr "Esleitu taldea transferentzia berriei irizpideetan oinarrituta"
+
+#, fuzzy
+#| msgid "The location will only be set when adding the transfer"
+msgid "The location will only be set when adding the torrent"
+msgstr "Kokapena transferentzia gehitzerakoan zehaztuko da soilik."
+
+msgid "Custom location:"
+msgstr "Kokapen pertsonalizatua:"
+
+msgid "Group Name:"
+msgstr "Taldearen Izena:"
+
+msgid "Color"
+msgstr "Kolorea"
+
+msgid "Monday"
+msgstr "Astelehena"
+
+msgid "Tuesday"
+msgstr "Asteartea"
+
+msgid "Wednesday"
+msgstr "Asteazkena"
+
+msgid "Thursday"
+msgstr "Osteguna"
+
+msgid "Friday"
+msgstr "Ostirala"
+
+msgid "Saturday"
+msgstr "Larunbata"
+
+msgid "Sunday"
+msgstr "Igandea"
+
+msgid "to"
+msgstr "hona:"
+
+#, fuzzy
+#| msgid "_Scheduled times:"
+msgid "Scheduled times:"
+msgstr "Programatutako orduak:"
+
+#, fuzzy
+#| msgid "_Download:"
+msgid "Download:"
+msgstr "Deskarga:"
+
+#, fuzzy
+#| msgid "_Upload:"
+msgid "Upload:"
+msgstr "Igoera:"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative speed limits:"
+msgstr "Abiadura-muga alternatiboak"
+
+#, fuzzy
+#| msgid "Speed Limits"
+msgid "Speed limits:"
+msgstr "Abiadura-mugak"
+
+#, fuzzy
+#| msgid "Peer Limits"
+msgid "Peer limits:"
+msgstr "Kideen mugak"
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use DHT to find more peers for public torrents"
+msgstr "Erabili DHT kide gehiago aurkitzeko"
+
+msgid "Blocklist:"
+msgstr "Blokeo-zerrenda:"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new torrents:"
+msgstr "Gehienezko kide-kopurua torrent bakoitzeko:"
+
+msgid "Last updated: N/A"
+msgstr "Azkenengoz eguneratuta: E/A"
+
+msgid "Encryption:"
+msgstr "Zifratzea:"
+
+msgid "Automatically update weekly"
+msgstr "Automatikoki eguneratu astero"
+
+#, fuzzy
+#| msgid "Maximum peers _overall:"
+msgid "Maximum peers overall:"
+msgstr "Gehienezko kide-kopurua guztira:"
+
+msgid "blocklist loaded/not loaded"
+msgstr "blokeo-zerrenda kargatuta/ez kargatuta"
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PEX to find more peers for public torrents"
+msgstr "Erabili PEX kide gehiago aurkitzeko"
+
+#. Translators: URL sheet label
+msgid "URL:"
+msgstr "URLa:"
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use Local Peer Discovery to find more peers for public torrents"
+msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
+
+msgid "Update"
+msgstr "Eguneratu"
+
+msgid "High connection limits might significantly impact system performance"
+msgstr "Konexio-muga altuek sistemaren errendimenduan eragin nabarmena izan dezakete"
+
+#, fuzzy
+#| msgid "Enable _blocklist:"
+msgid "Enable blocklist"
+msgstr "Gaitu blokeo-zerrenda:"
+
+msgid "Randomize"
+msgstr "Ausaz aukeratu"
+
+msgid "Peer communication:"
+msgstr "Kideen komunikazioa:"
+
+#, fuzzy
+#| msgid "_Port for incoming connections:"
+msgid "Port for incoming connections:"
+msgstr "Barrurako konexioentzako ataka:"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is open"
+msgstr "Ataka zabalik dago"
+
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a random port at startup"
+msgstr "Hautatu ausazko ataka bat Transmission abiarazten den bakoitzean"
+
+msgid "Automatically map port"
+msgstr "Lotu ataka automatikoki"
+
+#, fuzzy
+#| msgid "Prevent computer from sleeping with active transfers"
+msgid "Prevent computer from sleeping with active torrents"
+msgstr "Saihestu ordenagailua lokartzea transferentzia aktiboak daudenean"
+
+msgid "System sleep:"
+msgstr "Sistemaren lokartzea:"
+
+#, fuzzy
+#| msgid "Enable µ_TP for peer connections"
+msgid "Enable µTP for peer connections"
+msgstr "Gaitu µTP kideen konexioetarako"
+
+msgid "This enables the web interface and allows remote requests"
+msgstr "Aukera honek web interfazea gaitu eta urruneko eskaerak baimentzen ditu"
+
+#, fuzzy
+#| msgid "Only allow these IP a_ddresses:"
+msgid "Only allow these IP addresses:"
+msgstr "Ahalbidetu IP helbide hauek bakarrik:"
+
+#, fuzzy
+#| msgid "Use _authentication"
+msgid "Use authentication"
+msgstr "Erabili autentifikazioa"
+
+msgid "Display the web interface with Bonjour"
+msgstr "Erakutsi web interfazea Bonjour-ekin"
+
+#, fuzzy
+#| msgid "Allow _remote access"
+msgid "Allow remote access"
+msgstr "Ahalbidetu urruneko sarbidea"
+
+msgid "Username:"
+msgstr "Erabiltzaile-izena"
+
+msgid "Password:"
+msgstr "Pasahitza:"
+
+#, fuzzy
+#| msgid "HTTP _port:"
+msgid "HTTP port:"
+msgstr "HTTP ataka:"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "Open Web Client"
+msgstr "Ireki web bezeroa"
+
+#. Translators: Inspector -> Files tab -> file status string
+#. Translators: Status bar transfer count
+#. Translators: file size string
+msgid "{part} of {whole}"
+msgstr "{part} {whole}-etik"
+
+#. Translators: Blocklist -> message
+#, fuzzy
+#| msgid "Update Blocklist"
+msgid "Updating blocklist"
+msgstr "Eguneratu Blokeo-zerrenda"
+
+msgid "Download of the blocklist failed."
+msgstr "Blokeo-zerrendaren deskargak huts egin du."
+
+#. Translators: Legal alert -> button
+msgid "I Accept"
+msgstr "Onartzen dut"
+
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
+msgid "Quit"
+msgstr "Irten"
+
+#. Translators: Legal alert -> title
+msgid "Welcome to {appname}"
+msgstr "Ongi Etorri {appname}-era"
+
+msgid "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws."
+msgstr "{appname} fitxategiak partekatzeko programa bat da. Torrent bat exekutatzen duzunean, bere datuak eskuragarri jarriko dira igorriak izan daitezen. Zu eta soilik zu zara arduraduna zure lekuko legeak betetzeko erabaki zentzudunak egiteko."
+
+msgid "Remote access needs a new password."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on."
+msgstr ""
+
+#. Translators: Transmission import progress -> label
+msgid "Copying Transmission's transfers"
+msgstr ""
+
+msgid "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time."
+msgstr ""
+
+msgid "{appname} can copy your settings from Transmission, but not its transfers."
+msgstr ""
+
+msgid "Quit Transmission, then click Import."
+msgstr ""
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Import from Transmission?"
+msgstr "Retransmission"
+
+#. Translators: Transmission import alert -> button
+msgid "Import"
+msgstr ""
+
+#. Translators: Transmission import alert -> button
+msgid "Don't Import"
+msgstr ""
+
+msgid "Transmission's transfers couldn't be copied."
+msgstr ""
+
+msgid "{appname} is already running."
+msgstr "{appname} dagoeneko martxan dago."
+
+msgid "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit."
+msgstr "{appname}-eko instantzia bat dagoeneko martxan dago. Instantzia hau ezin da ireki beste instantzia hori itxi arte."
+
+msgid "Transmission is running."
+msgstr ""
+
+msgid "Quit Transmission before opening {appname}. The two apps would work on the same downloads."
+msgstr ""
+
+msgid "Shortcuts for changing global settings."
+msgstr "Ezarpen orokorretarako laster-markak."
+
+#, fuzzy
+#| msgid "Remove torrent and delete its files"
+msgid "Remove all torrents that have completed seeding."
+msgstr "Kendu torrenta eta ezabatu dagozkion fitxategiak"
+
+#. Translators: notification button
+msgid "Show"
+msgstr "Erakutzi"
+
+msgid "Support open-source indie software"
+msgstr "Eman sostengua iturburu irekiko software independentea"
+
+msgid "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation."
+msgstr ""
+
+msgid "Donate or not, there will be no difference to your torrenting experience."
+msgstr "Donatu ala ez, ez da ezberdintasunik egongo zure \"torrentatze\" esperientzian"
+
+#. Translators: Donation beg -> button
+msgid "Nope"
+msgstr "Ez"
+
+msgid "Don't bug me about this ever again."
+msgstr "Ez jakinarazi berriro horrelakoen inguruan."
+
+msgid "Are you sure you want to quit?"
+msgstr "Irten nahi duzula ziur zaude?"
+
+msgid "There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgstr ""
+
+msgid "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgid_plural "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{appname} will quit, because the two apps would work on the same downloads."
+msgstr ""
+
+msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+msgstr "Dirudienez {url} direktorioko \"{filename}\" fitxategia ez da torrent fitxategia."
+
+#. Translators: Download not a torrent -> title
+#. Translators: Torrent download error -> title
+msgid "Torrent download failed"
+msgstr "Torrent-aren deskargak huts egin du"
+
+msgid "The torrent could not be downloaded from {url}: {error}."
+msgstr "Torrent-a ezin da {url}(e)tik deskagatu: {error}."
+
+msgid "\"{filename}\" is not a valid torrent file."
+msgstr "\"{filename}\" ezin da torrent artxibo mota hau erabili."
+
+msgid "The torrent file cannot be opened because it contains invalid data."
+msgstr "Torrent fitxategia ezin izan da ireki datu baliogabeak dituelako."
+
+msgid "Adding magnetized torrent failed."
+msgstr ""
+
+msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
+msgstr ""
+
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
+
+#, fuzzy
+#| msgid "The torrent file cannot be opened because it contains invalid data."
+msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+msgstr "Torrent fitxategia ezin izan da ireki datu baliogabeak dituelako."
+
+msgid "Magnet link is a duplicate of an existing torrent."
+msgstr ""
+
+msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Are you sure you want to remove this tracker?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+msgstr "Ziur zaude aztarnari hau ezabatu duzula?"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+msgstr "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Kendu ondoren, transferentziarekin jarraitu nahi bada torrent fitxategia edo magnet esteka beharko da."
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+msgstr[0] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+msgstr[1] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+msgstr[0] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+msgstr[1] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "There is {count:L} active torrent."
+msgid_plural "There are {count:L} active torrents."
+msgstr[0] "Kendu {count:L} torrent?"
+msgstr[1] "Kendu {count:L} torrent?"
+
+#, fuzzy
+#| msgid "Seeding to {active_count:L} peer"
+#| msgid_plural "Seeding to {active_count:L} peers"
+msgid "There is {count:L} torrent ({active_count:L} active)."
+msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+msgstr[0] "{active_count:L} hartzailera emaritzen"
+msgstr[1] "{active_count:L} kidetara igortzen"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+msgstr[0] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+msgstr[1] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+
+msgid "Select the new folder for \"{torrent_name}\"."
+msgstr "Aukeratu karpeta berria \"{torrent_name}\"(e)rako."
+
+msgid "Select the new folder for {count:L} data file."
+msgid_plural "Select the new folder for {count:L} data files."
+msgstr[0] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
+msgstr[1] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
+
+msgid "Copy of \"{torrent_name}\" Cannot Be Created"
+msgstr "Ezin da \"{torrent_name}\"(r)en kopia sortu"
+
+msgid "The torrent file ({path}) cannot be found."
+msgstr "Ezin izan da ({path}) torrent fitxategia aurkitu."
+
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Deskarga osatu da"
+
+#. Translators: notification title
+msgid "Seeding Complete"
+msgstr "Igortzea Amaituta"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Enabled"
+msgstr "Abiadura-muga alternatiboak"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Disabled"
+msgstr "Abiadura-muga alternatiboak"
+
+msgid "Changed at a scheduled time"
+msgstr ""
+
+#. Translators: Create toolbar item -> palette label
+#. Translators: Create torrent -> select file
+#. Translators: Drag overlay -> file
+msgid "Create Torrent File"
+msgstr "Torrent artxibo mota sortu"
+
+msgid "Create a new torrent"
+msgstr "Sortu torrent berri bat"
+
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
+msgid "Open"
+msgstr "Ireki"
+
+#. Translators: Open toolbar item -> palette label
+msgid "Open Torrent Files"
+msgstr "Ireki Torrent Fitxategiak"
+
+#. Translators: Remove toolbar item -> palette label
+msgid "Remove Selected"
+msgstr "Kendu Aukeratutakoak"
+
+#. Translators: Inspector toolbar item -> label
+#. Translators: Inspector toolbar item -> palette label
+#. Translators: Inspector -> title
+msgid "Inspector"
+msgstr "Ikuskatzailea"
+
+msgid "Toggle the torrent inspector"
+msgstr "Erakutsi ala ezkutatu torrent-ikuskatzailea"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Pause all torrents"
+msgstr "Pausatu torrent guztiak"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Start all torrents"
+msgstr "Abiarazi torrent guztiak"
+
+#. Translators: All toolbar item -> label
+msgid "Apply All"
+msgstr "Denei ezarri"
+
+#, fuzzy
+#| msgid "Pause All"
+msgid "Pause / Start All"
+msgstr "Pausatu Guztiak"
+
+#. Translators: Selected toolbar item -> label
+msgid "Apply Selected"
+msgstr "Aukeratutakoei ezarri"
+
+msgid "Pause / Start Selected"
+msgstr ""
+
+#. Translators: Filter toolbar item -> palette label
+msgid "Toggle Filter"
+msgstr "Erakutsi/Ezkutatu Iragazkia"
+
+msgid "Toggle the filter bar"
+msgstr "Erakutsi/Ezkutatu Iragazki-barra"
+
+#. Translators: Share toolbar item -> label
+#. Translators: Share toolbar item -> palette label
+msgid "Share"
+msgstr "Elkarbanatu"
+
+#. Translators: Share toolbar item -> tooltip
+msgid "Share torrent file"
+msgstr "Partekatu torrent fitxategia"
+
+#. Translators: View menu -> Inspector
+msgid "Hide Inspector"
+msgstr "Ezkutatu Ikuskatzailea"
+
+#. Translators: View menu -> Status Bar
+msgid "Show Status Bar"
+msgstr "Erakutsi Egoera-barra"
+
+#. Translators: View menu -> Filter Bar
+msgid "Show Filter Bar"
+msgstr "Erakutsi Iragazki-barra"
+
+#. Translators: View menu -> Toolbar
+#, fuzzy
+#| msgid "_Toolbar"
+msgid "Show Toolbar"
+msgstr "Tresnabarra"
+
+#. Translators: View menu -> Quick Look
+msgid "Close Quick Look"
+msgstr "Itxi Begirada Azkarra"
+
+#. Translators: Dock item - Seeding
+msgid "{count:L} Seeding"
+msgstr "{count:L} Igortzen"
+
+#. Translators: Dock item - Downloading
+msgid "{count:L} Downloading"
+msgstr "{count:L} Deskargatzen"
+
+msgid "This folder contains no files."
+msgstr "Karpeta honek ez dauka fitxategirik."
+
+msgid "There must be at least one file in a folder to create a torrent file."
+msgstr "Torrent-fitxategia sortzeko karpetan gutxienez fitxategi bat egon behar da."
+
+msgid "The total file size is zero bytes."
+msgstr "Fitxategiaren tamaina zero byte dira."
+
+msgid "A torrent file cannot be created for files with no size."
+msgstr "Ezin da tamainarik gabeko fitxategientzako torrent fitxategia sortu."
+
+msgid "Select the name and location for the torrent file."
+msgstr "Hautatu izena eta kokapen bat torrent fitxategiarentzat"
+
+msgid "There are no tracker addresses."
+msgstr "Ez dago aztarnari-helbiderik."
+
+msgid "A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you."
+msgstr ""
+
+msgid "The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed."
+msgstr ""
+
+#. Translators: Create torrent -> info
+msgid "{count} piece, {size}"
+msgid_plural "{count} pieces, {size} each"
+msgstr[0] "{count} zati, {size}"
+msgstr[1] "{count} zati, {size} bakoitzak"
+
+msgid "Select a file or folder for the torrent file."
+msgstr "Hautatu fitxategi bat edo karpeta bat torrent fitxategiarentzat."
+
+msgid "The chosen torrent file location does not exist."
+msgstr "Aukeratutako torrent fitxategiaren kokapena ez da existitzen."
+
+msgid "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file."
+msgstr "\"{directory}\" ez da existitzen une honetan. Direktorio hau sortu ezazu edo aukeratu beste bat torrent fitxategia sortzeko."
+
+msgid "A torrent file with this name and directory cannot be created."
+msgstr "Ezin da sortu izen eta direktorio hau dituen torrent fitxategia."
+
+msgid "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file."
+msgstr "\"{filename}\" izena duen fitxategia dagoeneko existitzen da \"{directory}\" direktorioan. Aukeratu ezazu izen ala direktorio berri bat torrent fitxategia sortzeko."
+
+msgid "Creation of \"{filename}\" failed."
+msgstr "\"{filename}\"(r)en sorrerak huts egin du."
+
+#. Translators: Drag overlay -> torrents
+msgid "{count:L} Torrent File"
+msgid_plural "{count:L} Torrent Files"
+msgstr[0] "{count:L} Torrent Fitxategi"
+msgstr[1] "{count:L} Torrent Fitxategi"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download"
+msgid "Don't download"
+msgstr "Deskarga"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download speed"
+msgid "Download some"
+msgstr "Deskargaren abiadura"
+
+#. Translators: File Outline -> Menu
+msgid "Check Selected"
+msgstr "Aukeratu Hautatua"
+
+#. Translators: File Outline -> Menu
+msgid "Uncheck Selected"
+msgstr "Desaukeratu Hautatua"
+
+#. Translators: File Outline -> Menu
+msgid "Only Check Selected"
+msgstr "Aukeratu Hautatua Bakarrik"
+
+#. Translators: files tab -> tooltip
+msgid "Priority not available"
+msgstr ""
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "Low priority"
+msgstr "Lehentasuna"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "High priority"
+msgstr "Lehentasuna"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Normal priority"
+msgstr "Torrent lehentasuna:"
+
+msgid "Rename the file \"{filename}\":"
+msgstr "Aldatu \"{filename}\" fitxategiaren izena:"
+
+#. Translators: rename sheet button
+msgid "Rename"
+msgstr "Berrizendatu"
+
+#. Translators: Filter Bar -> group filter menu
+#. Translators: Groups -> Button
+msgid "All Groups"
+msgstr "Talde guztiak"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Download speed"
+msgstr "Deskargaren abiadura"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Upload speed"
+msgstr "Igoera-abiadura"
+
+#. Translators: Torrent table -> group row -> tooltip
+#. Translators: Torrent -> status image
+#. Translators: status bar -> status label
+msgid "Ratio"
+msgstr "Maila"
+
+#. Translators: Groups -> Name
+msgid "Red"
+msgstr "Gorria"
+
+#. Translators: Groups -> Name
+msgid "Orange"
+msgstr "Laranja"
+
+#. Translators: Groups -> Name
+msgid "Yellow"
+msgstr "Horia"
+
+#. Translators: Groups -> Name
+msgid "Green"
+msgstr "Berdea"
+
+#. Translators: Groups -> Name
+msgid "Blue"
+msgstr "Urdina"
+
+#. Translators: Groups -> Name
+msgid "Purple"
+msgstr "Morea"
+
+#. Translators: Groups -> Name
+msgid "Gray"
+msgstr "Grisa"
+
+#. Translators: Inspector -> Activity tab -> have
+msgid "{size} verified"
+msgstr "{size} baieztatuta"
+
+#. Translators: Info options -> global setting
+msgid "disabled"
+msgstr "Desgaituta"
+
+#. Translators: inspector -> peer table -> header tool tip
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from peer"
+msgstr "Kide honetatik deskargatzen"
+
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from web seed"
+msgstr "Kide honetatik deskargatzen"
+
+msgid "no peer info available"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Connected"
+msgid_plural "{count:L} Connected"
+msgstr[0] "{count:L} Konektatuta"
+msgstr[1] "{count:L} Konektatuta"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "DL from {count:L}"
+msgstr "Deskarga {count:L} (e)tik"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "UL to {count:L}"
+msgstr "Igoera {count:L} (e)ra"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrent Not Active"
+msgstr "Torrentaren ezaugarriak"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrents Completed"
+msgid "Torrents Not Active"
+msgstr "Osatutako Torrent-ak"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Unknown"
+msgid "Known:"
+msgstr "Ezezaguna"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} incoming"
+msgid "{count:L} Known:"
+msgstr "{count:L} sartzen"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} tracker"
+msgstr "{count:L} aztarnari"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} incoming"
+msgstr "{count:L} sartzen"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} cache"
+msgstr "{count:L} cachea"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} local discovery"
+msgstr "{count:L} aurkikuntza lokala"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} PEX"
+msgstr "{count:L} denbora"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} DHT"
+msgstr "{count:L} denbora"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} LTEP"
+msgstr "{count:L} denbora"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Progress: {percent}"
+msgstr "Aurrerapena: {percent}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Partial seed"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "encrypted"
+msgstr "zifratuta"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Protocol: {protocol}"
+msgstr "Protokoloa: {protocol}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+#, fuzzy
+#| msgid "Progress: {percent}"
+msgid "Port: {port}"
+msgstr "Aurrerapena: {percent}"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found through a tracker"
+msgstr "Kidea DHT bitartez aurkitu da"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found in the cache"
+msgstr "Kidea DHT bitartez aurkitu da"
+
+#, fuzzy
+#| msgid "Peer was found through Peer Exchange (PEX)"
+msgid "Peer was found through Local Peer Discovery (LPD)"
+msgstr "Kidea Kide-Trukaketa bidez (PEX) aurkitu zen"
+
+msgid "Peer was found through a libtorrent extension protocol handshake"
+msgstr ""
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Add a tracker"
+msgstr "Gehitu aztarnari bat"
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Remove selected trackers"
+msgstr "Kendu aukeratutako aztarnariak"
+
+#. Translators: Inspector -> tracker table
+#, fuzzy
+#| msgid "New Torrent"
+msgid "New Tier"
+msgstr "Torrent berria"
+
+#. Translators: Inspector -> tracker table
+msgid "Tier {tier}"
+msgstr "{tier} Maila"
+
+msgid "Are you sure you want to remove {count:L} tracker?"
+msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgstr[0] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+msgstr[1] "Ziur zaude {count:L} aztarnari kendu nahi dituzula?"
+
+msgid "Once removed, {appname} will no longer attempt to contact them. This cannot be undone."
+msgstr "Behin kenduta, {appname}-ek ez ditu berriz kontaktatuko. Ekintza honek ez du atzera bueltarik."
+
+msgid "Are you sure you want to remove this tracker?"
+msgstr "Ziur zaude aztarnari hau ezabatu duzula?"
+
+msgid "Once removed, {appname} will no longer attempt to contact it. This cannot be undone."
+msgstr "Behin kenduta, {appname}-ek ez du berriz kontaktatuko. Ekintza honek ez du atzera bueltarik."
+
+#. Translators: Inspector -> selected torrents
+msgid "{count:L} Torrent Selected"
+msgid_plural "{count:L} Torrents Selected"
+msgstr[0] "{count:L} Torrent Aukeratuta"
+msgstr[1] "{count:L} Torrent Aukeratuta"
+
+#. Translators: Inspector -> selected torrents
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "{count:L} magnetized torrent"
+msgid_plural "{count:L} magnetized torrents"
+msgstr[0] "Kendu {count:L} torrent?"
+msgstr[1] "Kendu {count:L} torrent?"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: stats total
+msgid "{amount} total"
+msgstr "{amount} guztira"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: Torrent -> progress string
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Magnetized torrent"
+msgstr "Torrent pribatua"
+
+#. Translators: Message window -> save button
+msgid "Save"
+msgstr "Gorde"
+
+#. Translators: Save log panel -> default file name
+msgid "untitled"
+msgstr "izenbururik gabe"
+
+msgid "Log Could Not Be Saved"
+msgstr "Ezin izan da Erregistroa gorde"
+
+msgid "There was a problem creating the file \"{filename}\"."
+msgstr "Arazo bat egon da \"{filename}\" fitxategia sortzerakoan."
+
+#. Translators: Message window -> level
+msgctxt "Logging level"
+msgid "Trace"
+msgstr "Jarraitu"
+
+msgid "{file_count:L} file"
+msgid_plural "{file_count:L} files"
+msgstr[0] "Fitxategi {file_count:L}"
+msgstr[1] "{file_count:L} fitxategiak"
+
+#, fuzzy
+#| msgid "{count:L} Torrent File"
+#| msgid_plural "{count:L} Torrent Files"
+msgid "{count:L} torrent"
+msgid_plural "{count:L} torrents"
+msgstr[0] "{count:L} Torrent Fitxategi"
+msgstr[1] "{count:L} Torrent Fitxategi"
+
+#. Translators: Preferences -> toolbar item title
+msgid "General"
+msgstr "Orokorra"
+
+#. Translators: Preferences -> toolbar item title
+msgid "Groups"
+msgstr "Taldeak"
+
+#. Translators: The width of the Mac client's Preferences window in points, as a number such as 700, for languages whose text needs more room than English. Leave this untranslated for the usual width.
+msgid "PrefWindowSize"
+msgstr "HobetsitakoLeihoTamaina"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is closed"
+msgstr "Ataka itxita dago"
+
+msgid "Port check site is down"
+msgstr "Ataka-egiaztatzeko gunea erorita dago"
+
+msgid "{count:L} IP address rule in list"
+msgid_plural "{count:L} IP address rules in list"
+msgstr[0] "{count:L} IP helbide-arau zerrendan"
+msgstr[1] "{count:L} IP helbide-arau zerrendan"
+
+msgid "A blocklist must first be downloaded"
+msgstr "Aurretik blokeo-zerrenda bat deskargatu behar da"
+
+#. Translators: Prefs -> blocklist -> message
+msgid "Last updated"
+msgstr "Azkenengoz eguneratuta"
+
+msgid "This option is not available if Save to location is set to Same as torrent file."
+msgstr ""
+
+#. Translators: Stats window -> label
+msgid "Program started:"
+msgstr ""
+
+msgid "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected."
+msgstr ""
+
+#. Translators: stats total
+msgid "Total N/A"
+msgstr "Guztira E/A"
+
+#. Translators: stats window -> times opened
+msgid "{count:L} time"
+msgid_plural "{count:L} times"
+msgstr[0] "{count:L} denbora"
+msgstr[1] "{count:L} aldiz"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "{speed:L} KB/s"
+msgstr ""
+
+#. Translators: Status Bar -> speed tooltip
+msgid "unlimited"
+msgstr "mugagabea"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global upload limit"
+msgstr "Igoeren muga orokorra"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global download limit"
+msgstr "Deskargen muga orokorra"
+
+msgid "A folder cannot be moved to inside itself."
+msgstr "Karpeta bat ezin da bere barrura mugitu."
+
+msgid "The move operation of \"{torrent_name}\" cannot be done."
+msgstr "Ezin izan da \"{torrent_name}\" mugitzeko eragiketa egin."
+
+msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
+msgstr "Diskoan ez dago \"{torrent_name}\" osorik deskargatzeko behar beste espazio."
+
+msgid "The torrent will be paused. Clear up space on {volume} or deselect files in the torrent inspector to continue."
+msgstr ""
+
+#. Translators: Torrent disk space alert -> button
+msgid "Download Anyway"
+msgstr "Edozein deskargatu"
+
+msgid "Do not check disk space again"
+msgstr "Ez egiaztatu berriro diskoko espazioa"
+
+msgid "{percent} of torrent metadata retrieved"
+msgstr "{percent} torrent metadatu berreskuratuta"
+
+#. Translators: Torrent -> progress string
+msgid "torrent metadata needed"
+msgstr "torrent metadatuak behar dira"
+
+msgid "uploaded {uploaded_size} (Ratio: {ratio})"
+msgstr " {uploaded_size} igota (Maila: {ratio})"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned error"
+msgstr "Aztarnariak errorea itzuli du"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned warning"
+msgstr "Aztarnariak oharra itzuli du"
+
+msgid "Downloading from {active_count:L} of {connected_count:L} peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
+msgstr[0] " {active_count:L} kide batetik deskargatzen"
+msgstr[1] "{active_count:L} {connected_count:L} kideetatik deskargatzen"
+
+#. Translators: Torrent -> status string
+msgid "web seed"
+msgstr "web igortzea"
+
+#. Translators: Torrent -> status string
+msgid "{count:L} web seed"
+msgid_plural "{count:L} web seeds"
+msgstr[0] "{count:L} web igortze"
+msgstr[1] "{count:L} web igortze"
+
+msgid "Seeding to {active_count:L} of {connected_count:L} peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
+msgstr[0] " {active_count:L} Igortzen kide batetara"
+msgstr[1] "{active_count:L} {connected_count:L} kideetara igortzen"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Down: {download_speed}, Up: {upload_speed}"
+msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
+
+#. Translators: Torrent -> status string
+#, fuzzy
+#| msgid "{upload_speed} ▴"
+msgid "Up: {upload_speed}"
+msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Ratio: {ratio}, Up: {upload_speed}"
+msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
+
+#. Translators: Torrent -> eta string
+msgid "inactive"
+msgstr "inaktiboa"
+
+#. Translators: Group table row
+msgid "No Group"
+msgstr "Talderik ez"
+
+msgid "Show the data file in Finder"
+msgstr "Erakutsi datu-fitxategia Finder-en"
+
+msgid "Bypass the queue and start now"
+msgstr "Ezikusi ilara eta hasi orain"
+
+msgid "Stop waiting to start"
+msgstr "Geratu abiarazteko itxarotea"
+
+#. Translators: Torrent Table -> tooltip
+#, fuzzy
+#| msgid "Share torrent file"
+msgid "Change torrent settings"
+msgstr "Partekatu torrent fitxategia"
+
+#. Translators: tracker peer stat
+msgid "Seeders"
+msgstr "Igorleak"
+
+#. Translators: tracker peer stat
+msgid "Leechers"
+msgstr "Izainak"
+
+#. Translators: tracker peer stat
+msgid "Downloaded"
+msgstr "Deskargatuta"
+
+#. Translators: Tracker last announce
+msgid "Announce timed out"
+msgstr "Iragarria huts egin du"
+
+#. Translators: Tracker last announce
+msgid "Announce error"
+msgstr "Errorea iragarri"
+
+#. Translators: Tracker last announce
+msgid "Last Announce"
+msgstr "Azken Abisua"
+
+#. Translators: Tracker last announce
+#, fuzzy
+#| msgid "{count:L} Seeding"
+msgid "got {count:L} peer"
+msgid_plural "got {count:L} peers"
+msgstr[0] "{count:L} Igortzen"
+msgstr[1] "{count:L} Igortzen"
+
+#. Translators: Tracker next announce
+msgid "Announce in progress"
+msgstr "Iragarritakoa prozesuan dago"
+
+msgid "Next announce in {time_span}"
+msgstr "Hurrengo abisua {time_span} barru"
+
+msgid "Tracker will be used as a backup"
+msgstr "Aztarnaria segurtasun-kopia gisa erabiliko da"
+
+#. Translators: Tracker last scrape
+msgid "Scrape timed out"
+msgstr "Zuriketaren denbora agortu da."
+
+#. Translators: Tracker last scrape
+msgid "Scrape error"
+msgstr "Zuriketa-errorea"
+
+#. Translators: Tracker last scrape
+msgid "Last Scrape"
+msgstr "Azken zuriketa"
+
 msgid "Server"
 msgstr "Zerbitzaria"
 
@@ -2194,12 +4121,6 @@ msgstr "Gehitu aztarnari iragarle URLak, bat errenkada bakoitzean:"
 msgid "No new URLs found."
 msgstr "Ez da URL berririk aurkitu."
 
-msgid "Use Global Settings"
-msgstr "Erabili Ezarpen Orokorrak"
-
-msgid "Stop seeding if idle for:"
-msgstr "Gelditu igortzen geratuta badago:"
-
 msgid "Torrent Properties"
 msgstr "Torrent-aren Ezaugarriak"
 
@@ -2214,21 +4135,6 @@ msgstr "M_ugatu igoeraren abiadura:"
 
 msgid "Limit _download speed:"
 msgstr "_Mugatu deskargaren abiadura:"
-
-msgid "Check Selected"
-msgstr "Aukeratu Hautatua"
-
-msgid "Uncheck Selected"
-msgstr "Desaukeratu Hautatua"
-
-msgid "Only Check Selected"
-msgstr "Aukeratu Hautatua Bakarrik"
-
-msgid "Open"
-msgstr "Ireki"
-
-msgid "Rename…"
-msgstr "Berrizendatu…"
 
 msgid "Search…"
 msgstr "Bilatu…"
@@ -2275,9 +4181,6 @@ msgstr "{host} ez du erantzuten"
 msgid "_Open…"
 msgstr "_Ireki"
 
-msgid "Create a new torrent"
-msgstr "Sortu torrent berri bat"
-
 msgid "Open the torrent's folder"
 msgstr "Ireki torrentaren agiritegia"
 
@@ -2289,9 +4192,6 @@ msgstr "Egiaztatu datu lokalak"
 
 msgid "Remove torrent and delete its files"
 msgstr "Kendu torrenta eta ezabatu dagozkion fitxategiak"
-
-msgid "Compact View"
-msgstr "Ikuspegi Trinkoa"
 
 msgid "_Main Window"
 msgstr "Leiho _Nagusia"
@@ -2305,9 +4205,6 @@ msgstr "_Aldatu Saioa…"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "Hautatu Saioa"
-
-msgid "Bypass the queue and start now"
-msgstr "Ezikusi ilara eta hasi orain"
 
 msgid "{file_count:L} File"
 msgid_plural "{file_count:L} Files"
@@ -2345,9 +4242,6 @@ msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Eguneraketa ondo egin da!</b><p>Blokeo-zerrendak orain {count:L} arau ditu.</p>"
 msgstr[1] "<b>Eguneraketa ondo egin da!</b><p>Blokeo-zerrendak orain {count:L} arau ditu.</p>"
-
-msgid "Download of the blocklist failed."
-msgstr ""
 
 msgid "Update Blocklist"
 msgstr "Eguneratu Blokeo-zerrenda"
@@ -2597,15 +4491,6 @@ msgstr[1] "segundo"
 
 #~ msgid "Allowing desktop hibernation"
 #~ msgstr "Mahaigainaren hibernatzea onartzen"
-
-#~ msgid "Open URL…"
-#~ msgstr "Ireki URL-a…"
-
-#~ msgid "Start all torrents"
-#~ msgstr "Abiarazi torrent guztiak"
-
-#~ msgid "Pause all torrents"
-#~ msgstr "Pausatu torrent guztiak"
 
 #~ msgid "Start torrent now"
 #~ msgstr "Abiarazi torrenta orain"

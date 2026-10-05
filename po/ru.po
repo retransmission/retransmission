@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-03 11:48-0500\n"
+"POT-Creation-Date: 2026-10-04 11:10-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Andrei Stepanov, 2025\n"
 "Language-Team: Russian (https://app.transifex.com/transmissionbt/teams/33778/ru/)\n"
@@ -28,6 +28,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
+#. Translators: Groups -> Button
+#. Translators: Groups -> Menu
+#. Translators: inspector -> check all
 msgid "None"
 msgstr "Нет"
 
@@ -150,45 +153,65 @@ msgstr "Раздавать независимо от активности"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Прекратить раздачу при простое N минут:"
 
+#. Translators: Torrent -> status string
 msgid "Queued for verification"
 msgstr "В очереди на проверку"
 
+#. Translators: Torrent -> status string
 msgid "Verifying local data"
 msgstr "Проверка локальных данных"
 
+#. Translators: Torrent -> status string
 msgid "Queued for download"
 msgstr "В очереди на загрузку"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Загружается"
 
+#. Translators: Torrent -> status string
 msgid "Queued for seeding"
 msgstr "В очереди на раздачу"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "Раздаётся"
 
+#. Translators: Torrent -> status string
 #, fuzzy
 msgid "Seeding complete"
 msgstr "Процесс загрузки"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Paused"
 msgstr "Приостановлен"
 
+#. Translators: Inspector -> Peers tab -> table row tooltip
+#. Translators: No Ratio
+#. Translators: Prefs -> blocklist -> message
+#. Translators: tracker peer stat
+#. Translators: Tracker last announce
+#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "Н/Д"
 
+#. Translators: files tab -> tooltip
 msgid "Mixed"
 msgstr "Смешанный"
 
+#. Translators: Inspector -> selected torrents
 msgid "No Torrents Selected"
 msgstr "Нет выделенных торрентов"
 
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "Только для этого трекера — DHT и PEX отключены"
 
+#. Translators: Inspector -> private torrent
 msgid "Public torrent"
 msgstr "Публичный торрент"
 
@@ -239,6 +262,7 @@ msgstr "{uploaded_size} (Рейтинг: {ratio})"
 msgid "No errors"
 msgstr "Ошибок нет"
 
+#. Translators: Prefs -> blocklist -> message
 msgid "Never"
 msgstr "Никогда"
 
@@ -254,6 +278,8 @@ msgstr "Загрузка от этого участника"
 msgid "We would download from this peer if they would let us"
 msgstr "Возможна загрузка данных от этого участника, если он позволит"
 
+#. Translators: inspector -> peer table -> header tool tip
+#. Translators: Inspector -> peer -> status
 msgid "Uploading to peer"
 msgstr "Отдаётся участнику"
 
@@ -268,6 +294,7 @@ msgstr "Участник согласен передавать данные, н�
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Передача участнику была разрешена, но он не заинтересован"
 
+#. Translators: inspector -> peer table -> header tool tip
 msgid "Encrypted connection"
 msgstr "Зашифрованное соединение"
 
@@ -286,6 +313,7 @@ msgstr "Участник подключён через µTP"
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
 
+#. Translators: inspector -> peer table -> header
 msgid "Address"
 msgstr "Адрес"
 
@@ -298,18 +326,24 @@ msgstr "Входящие запросы"
 msgid "Up Reqs"
 msgstr "Исходящие запросы"
 
+#. Translators: inspector -> peer table -> header
+#. Translators: inspector -> web seed table -> header
 msgid "Down"
 msgstr "Загрузка"
 
+#. Translators: Torrent -> status image
+#. Translators: inspector -> peer table -> header
 msgid "Up"
 msgstr "Отдача"
 
+#. Translators: inspector -> peer table -> header
 msgid "Client"
 msgstr "Клиент"
 
 msgid "Flags"
 msgstr "Флаги"
 
+#. Translators: inspector -> web seed table -> header
 msgid "Web Seeds"
 msgstr "Веб-раздачи"
 
@@ -325,6 +359,8 @@ msgstr "Исправьте ошибки и повторите попытку."
 msgid "{torrent_name} - Add Tracker"
 msgstr "Добавить трекеры {torrent_name}"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Trackers"
 msgstr "Трекеры"
 
@@ -403,18 +439,23 @@ msgstr "_Удалить"
 msgid "_Remove"
 msgstr "_Удалить"
 
+#. Translators: File Outline -> Priority Menu
 msgid "High"
 msgstr "Высокий"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Normal"
 msgstr "Обычный"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Low"
 msgstr "Низкий"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "Не удалось переименовать «{old_path}» в «{path}»: {error} ({error_code})"
 
+#. Translators: Filter Bar -> filter menu
+#. Translators: Message window -> table column
 msgid "Name"
 msgstr "Имя"
 
@@ -424,15 +465,22 @@ msgstr "Размер"
 msgid "Progress"
 msgstr "Прогресс"
 
+#. Translators: files tab -> tooltip
+#. Translators: file table -> header tool tip
 msgid "Download"
 msgstr "Загрузить"
 
+#. Translators: file table -> header tool tip
+#. Translators: File Outline -> Menu
 msgid "Priority"
 msgstr "Приоритет"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: inspector -> check all
 msgid "All"
 msgstr "Все"
 
+#. Translators: Filter Bar -> filter button
 msgid "Active"
 msgstr "Активен"
 
@@ -440,6 +488,8 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "Проверяется"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Ошибка"
 
@@ -502,15 +552,19 @@ msgstr "Прекратить раздачу при рейтинге"
 msgid "Stop at Ratio ({ratio})"
 msgstr "Остановить при рейтинге ({ratio})"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Ratio"
 msgstr "Общий рейтинг"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Ratio"
 msgstr "Рейтинг сеанса"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Transfer"
 msgstr "Всего передано"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Transfer"
 msgstr "Передано за сеанс"
 
@@ -545,18 +599,26 @@ msgctxt "Logging level"
 msgid "Critical"
 msgstr "Критический"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Error"
 msgstr "Ошибка"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Warning"
 msgstr "Предупреждение"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Information"
 msgstr "Информация"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Debug"
 msgstr "Отладочный"
@@ -567,9 +629,11 @@ msgstr "Сохранить журнал"
 msgid "_Save"
 msgstr "_Сохранить"
 
+#. Translators: Message window -> table column
 msgid "Message"
 msgstr "Сообщение"
 
+#. Translators: Message window -> table column
 msgid "Time"
 msgstr "Время"
 
@@ -593,6 +657,7 @@ msgstr "Торрент завершён"
 msgid "Start Now"
 msgstr "Запустить сейчас"
 
+#. Translators: notification title
 msgid "Torrent Added"
 msgstr "Торрент добавлен"
 
@@ -612,7 +677,7 @@ msgid "Show options dialog"
 msgstr "Показать окно настроек"
 
 msgid "Other…"
-msgstr ""
+msgstr "Выбрать…"
 
 msgid "Select File"
 msgstr "Выбор файла"
@@ -648,6 +713,7 @@ msgstr[3] "В чёрном списке {count:L} записей"
 msgid "Blocklist updated!"
 msgstr "Чёрный список обновлён!"
 
+#. Translators: Blocklist -> message
 msgid "Couldn't update blocklist"
 msgstr "Не удалось обновить чёрный список"
 
@@ -683,6 +749,7 @@ msgstr "Состояние: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (I
 msgid "Moving '{torrent_name}'"
 msgstr "Перемещение \"{torrent_name}\""
 
+#. Translators: Move error alert -> title
 msgid "Couldn't move torrent"
 msgstr "Не удалось переместить торрент"
 
@@ -771,6 +838,7 @@ msgstr "{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio}, 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio})"
 
+#. Translators: Torrent -> eta string
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Оставшееся время неизвестно"
@@ -778,6 +846,7 @@ msgstr "Оставшееся время неизвестно"
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr "{download_speed} ▾  {upload_speed} ▴"
 
+#. Translators: Torrent -> status string
 msgid "Stalled"
 msgstr "Простаивает"
 
@@ -1022,6 +1091,7 @@ msgstr "Особые ограничения скорости"
 msgid "_Add"
 msgstr "_Добавить"
 
+#. Translators: Filter Bar -> filter menu
 msgid "Tracker"
 msgstr "Трекер"
 
@@ -1031,6 +1101,8 @@ msgstr "_Адрес анонса:"
 msgid "_Close"
 msgstr "_Закрыть"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Activity"
 msgstr "Активность"
 
@@ -1040,15 +1112,18 @@ msgstr "Размер:"
 msgid "Have:"
 msgstr "В наличии:"
 
+#. Translators: Stats window -> label
 msgid "Uploaded:"
 msgstr "Отдано:"
 
+#. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "Загружено:"
 
 msgid "State:"
 msgstr "Состояние:"
 
+#. Translators: Stats window -> label
 msgid "Running time:"
 msgstr "Время работы:"
 
@@ -1082,12 +1157,17 @@ msgstr "Добавлен:"
 msgid "Comment:"
 msgstr "Комментарий:"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Information"
 msgstr "Информация"
 
 msgid "Show _more details"
 msgstr "Показать _больше сведений"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
+#. Translators: Preferences -> toolbar item title
 msgid "Peers"
 msgstr "Участники"
 
@@ -1097,9 +1177,12 @@ msgstr "Показать _резервные трекеры"
 msgid "File listing not available for combined torrent properties"
 msgstr "Список файлов недоступен одновременно для нескольких торрентов"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Files"
 msgstr "Файлы"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Speed"
 msgstr "Скорость"
 
@@ -1130,6 +1213,8 @@ msgstr "Соединения с участниками"
 msgid "_Maximum peers:"
 msgstr "_Максимум участников:"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Options"
 msgstr "Параметры"
 
@@ -1146,15 +1231,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Также смотрите Общедоступные трекеры по умолчанию в меню Правка > Настройки > Сеть"
 
+#. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
 msgstr "Открыть торрент"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent cell -> button info
 msgid "Start torrent"
 msgstr "Запустить торрент"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent Table -> tooltip
 msgid "Pause torrent"
 msgstr "Приостановить торрент"
 
+#. Translators: Remove toolbar item -> tooltip
 msgid "Remove torrent"
 msgstr "Убрать торрент"
 
@@ -1164,6 +1255,7 @@ msgstr "Свойства торрента"
 msgid "Torrent"
 msgstr "Торрент"
 
+#. Translators: Stats window -> title
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1207,12 +1299,14 @@ msgstr "_Закрытый торрент"
 msgid "Creating torrent…"
 msgstr "Создание торрента…"
 
+#. Translators: Message window -> title
 msgid "Message Log"
 msgstr "Журнал сообщений"
 
 msgid "Save _As"
 msgstr "Сохранить _как"
 
+#. Translators: Message window -> save button
 msgid "Clear"
 msgstr "Очистить"
 
@@ -1256,6 +1350,8 @@ msgstr "_Отдача ({speed_units}):"
 msgid "_Download ({speed_units}):"
 msgstr "_Загрузка ({speed_units}):"
 
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed Limits"
 msgstr "Особые ограничения скорости"
 
@@ -1438,6 +1534,7 @@ msgstr ""
 "Чтобы добавить резервный адрес, укажите его в следующей строке после основного адреса.\n"
 "Чтобы добавить новый основной адрес, укажите его после пустой строки."
 
+#. Translators: Preferences -> toolbar item title
 msgid "Network"
 msgstr "Сеть"
 
@@ -1494,6 +1591,7 @@ msgstr "Адреса:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IP-адреса могут быть введены в виде маски, например 192.168.*.*"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Remote"
 msgstr "Удалённое управление"
 
@@ -1518,6 +1616,7 @@ msgstr "_Локальные данные уже там"
 msgid "Current Session"
 msgstr "Текущий сеанс"
 
+#. Translators: Stats window -> label
 msgid "Ratio:"
 msgstr "Рейтинг:"
 
@@ -1527,6 +1626,9 @@ msgstr "Длительность:"
 msgid "Total"
 msgstr "Всего"
 
+#. Translators: Open address toolbar item -> label
+#. Translators: Open address toolbar item -> palette label
+#. Translators: Drag overlay -> url
 msgid "Open URL"
 msgstr "Открыть ссылку"
 
@@ -1640,6 +1742,7 @@ msgstr "Запрос списка участников {markup_begin}превы�
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Получена ошибка \"{markup_begin}{error}{markup_end}\" {time_span_ago}"
 
+#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Нет запланированных обновлений"
 
@@ -1702,6 +1805,7 @@ msgstr[1] "{hours:L} часа"
 msgstr[2] "{hours:L} часов"
 msgstr[3] "{hours:L} часов"
 
+#. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
@@ -1770,6 +1874,7 @@ msgstr "Не удалось разобрать ответ анонса: {error} 
 msgid "Couldn't parse scrape response: {error} ({error_code})"
 msgstr "Не удалось разобрать ответ запроса к трекеру: {error} ({error_code})"
 
+#. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
@@ -2131,18 +2236,22 @@ msgstr "ГиБ"
 msgid "TiB"
 msgstr "ТиБ"
 
+#. Translators: Transfer speed (bytes per second)
 msgid "B/s"
 msgstr "Б/с"
 
 msgid "kB/s"
 msgstr "КБ/с"
 
+#. Translators: Transfer speed (megabytes per second)
 msgid "MB/s"
 msgstr "МБ/с"
 
+#. Translators: Transfer speed (gigabytes per second)
 msgid "GB/s"
 msgstr "ГБ/с"
 
+#. Translators: Transfer speed (terabytes per second)
 msgid "TB/s"
 msgstr "ТБ/с"
 
@@ -2217,6 +2326,1857 @@ msgstr ""
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Не удалось получить «{url}»: ожидаемый код ответа HTTP {expected_code}, получен {actual_code}"
 
+#. Translators: About window -> license button
+msgid "License"
+msgstr "Лицензия"
+
+msgid "OK"
+msgstr ""
+
+#. Translators: Open torrent -> prompt
+#. Translators: Move torrent -> prompt
+#. Translators: Create torrent -> location sheet -> button
+#. Translators: Create torrent -> select file
+#. Translators: Preferences -> Open panel prompt
+msgid "Select"
+msgstr "Выбрать"
+
+msgid "Select the download folder for \"{torrent_name}\""
+msgstr "Выберите папку для скачивания «{torrent_name}»"
+
+msgid "The destination directory and root data directory have the same name."
+msgstr "Выбранная и корневая папки имеют одно и то же имя."
+
+msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
+msgstr "Если вы хотите использовать существующие данные, корневая папка должна быть внутри выбранной."
+
+msgid "Cancel"
+msgstr "Отменить"
+
+#. Translators: Add torrent -> same name -> button
+msgid "Add"
+msgstr "Добавить"
+
+#. Translators: Add torrent -> info
+#. Translators: Inspector -> Activity tab -> progress
+#. Translators: Torrent -> progress string
+msgid "{amount} selected"
+msgstr "{amount} выбрано"
+
+msgid "Start when added"
+msgstr "Запустить после добавления"
+
+msgid "Magnet Link"
+msgstr "Магнит-ссылка"
+
+#, fuzzy
+#| msgid "_Destination folder:"
+msgid "Destination folder:"
+msgstr "Папка назначения:"
+
+msgid "Priority:"
+msgstr "Приоритет:"
+
+msgid "Group:"
+msgstr "Группа:"
+
+msgid "Change…"
+msgstr "Изменить..."
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Move torrent file to the Trash"
+msgstr "Убрать торрент-файл в корзину"
+
+msgid "Verify Local Data"
+msgstr "Перепроверить существующие данные"
+
+#. Translators: Filter toolbar item -> label
+#. Translators: inspector -> file filter
+#. Translators: Message window -> filter field
+msgid "Filter"
+msgstr "Фильтр"
+
+msgid "Trackers:"
+msgstr "Трекер:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Private torrent"
+msgstr "Закрытый торрент"
+
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
+msgid "Create"
+msgstr "Создать"
+
+msgid "Open when created"
+msgstr "Открыть после создания"
+
+msgid "Each tracker will be placed into its own tier"
+msgstr "Трекеры будут объединены в списке общего уровня"
+
+msgid "Source:"
+msgstr "Источник:"
+
+#, fuzzy
+#| msgid "_Torrent file:"
+msgid "Torrent file:"
+msgstr "Торрент-файл:"
+
+#, fuzzy
+#| msgid "Limit _download speed:"
+msgid "Limit download speed:"
+msgstr "Ограничить скорость загрузки:"
+
+#, fuzzy
+#| msgid "Limit _upload speed:"
+msgid "Limit upload speed:"
+msgstr "Ограничить скорость отдачи:"
+
+msgid "minutes"
+msgstr "мин."
+
+#. Translators: Transfer speed (kilobytes per second)
+msgid "KB/s"
+msgstr "КБ/с"
+
+msgid "Status of selected files"
+msgstr "Статус выбранных файлов"
+
+msgid "Remaining time"
+msgstr "Оставшееся время"
+
+msgid "Stop seeding if idle for:"
+msgstr "Прекратить раздачу при простое:"
+
+msgid "Any"
+msgstr "Любое"
+
+msgid "of the following are true"
+msgstr "из следующих условий удовлетвор."
+
+msgid "Comment"
+msgstr "Комментарий"
+
+msgid "contains"
+msgstr "содержит"
+
+msgid "begins with"
+msgstr "начинается с"
+
+msgid "ends with"
+msgstr "заканчивается на"
+
+msgid "is"
+msgstr "="
+
+msgid "is not"
+msgstr "≠"
+
+msgid "matches"
+msgstr "совпадает с"
+
+msgid "Any File"
+msgstr "Любой файл"
+
+msgid "Any Tracker"
+msgstr "Любой трекер"
+
+msgid "Transfer"
+msgstr "Раздача"
+
+msgid "Failed DL:"
+msgstr "Неудачно:"
+
+#. Translators: inspector -> peer table -> header tool tip
+msgid "Available"
+msgstr "Доступен"
+
+msgid "Progress:"
+msgstr "Прогресс:"
+
+msgid "Seeding:"
+msgstr "Раздачи:"
+
+msgid "Completed:"
+msgstr "Завершено:"
+
+msgid "Dates"
+msgstr "Даты"
+
+msgid "Time Elapsed"
+msgstr "Продолжительность"
+
+msgid "Downloading:"
+msgstr "Скачивания:"
+
+msgid "Created On:"
+msgstr "Дата:"
+
+msgid "Creator:"
+msgstr "Создано в:"
+
+msgid "Pieces:"
+msgstr "Части:"
+
+msgid "Was:"
+msgstr "Был:"
+
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Torrent priority:"
+msgstr "Приоритет торрента:"
+
+#, fuzzy
+#| msgid "Honor global _limits"
+msgid "Honor global limits"
+msgstr "Учитывать общие ограничения"
+
+msgid "Use Global Settings"
+msgstr "Использовать общие настройки"
+
+msgid "Stop When Inactive"
+msgstr "Остановить после отсутствия активности в течение"
+
+#, fuzzy
+#| msgid "Remove from the transfer list when seeding completes"
+msgid "Remove from the torrent list when seeding completes"
+msgstr "Удалить из списка раздач после завершения раздачи"
+
+#, fuzzy
+#| msgid "_Maximum peers:"
+msgid "Maximum peers:"
+msgstr "Максимум участников:"
+
+#, fuzzy
+#| msgid "_Idle:"
+msgid "Idle:"
+msgstr "Ожидание:"
+
+#. Translators: Preferences -> toolbar item title
+#, fuzzy
+#| msgid "Torrent"
+msgid "Torrents"
+msgstr "Торрент"
+
+msgid "About Retransmission"
+msgstr "О Retransmission"
+
+msgid "Check for Update…"
+msgstr "Обновления..."
+
+#. Translators: Donation beg -> button
+msgid "Donate"
+msgstr "Сделать пожертвование"
+
+msgid "Preferences…"
+msgstr "Настройки..."
+
+msgid "Services"
+msgstr "Службы"
+
+msgid "Hide Retransmission"
+msgstr "Скрыть Retransmission"
+
+msgid "Hide Others"
+msgstr "Скрыть остальные"
+
+msgid "Show All"
+msgstr "Показать все"
+
+msgid "Quit Retransmission"
+msgstr "Выйти из Retransmission"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Create Torrent File…"
+msgstr "Создать торрент-файл..."
+
+#, fuzzy
+#| msgid "_Open…"
+msgid "Open…"
+msgstr "Открыть…"
+
+msgid "Open With Options Window…"
+msgstr "Открыть с дополнительными параметрами…"
+
+msgid "Open URL…"
+msgstr "Открыть URL…"
+
+msgid "Close Window"
+msgstr "Закрыть окно"
+
+#. Translators: QuickLook toolbar item -> label
+#. Translators: QuickLook toolbar item -> palette label
+#. Translators: QuickLook toolbar item -> tooltip
+#. Translators: View menu -> Quick Look
+msgid "Quick Look"
+msgstr "Быстрый просмотр"
+
+#, fuzzy
+#| msgid "Set _Location…"
+msgid "Set Location…"
+msgstr "Указать расположение…"
+
+#. Translators: File Outline -> Menu
+msgid "Rename…"
+msgstr "Переименовать…"
+
+msgid "Save Torrent File As…"
+msgstr "Сохранить торрент-файл как…"
+
+msgid "Share Torrent File"
+msgstr "Отправить торрент-файл"
+
+msgid "Copy Magnet Link to Clipboard"
+msgstr "Копировать магнит-ссылку в буфер"
+
+msgid "Edit"
+msgstr "Правка"
+
+msgid "Undo"
+msgstr "Отменить"
+
+msgid "Redo"
+msgstr "Повторить"
+
+msgid "Cut"
+msgstr "Вырезать"
+
+msgid "Copy"
+msgstr "Копировать"
+
+msgid "Paste"
+msgstr "Вставить"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Select All"
+msgstr "Выбрать все"
+
+msgid "View"
+msgstr "Вид"
+
+msgid "Compact View"
+msgstr "Компактный вид"
+
+msgid "Pieces Bar"
+msgstr "Части"
+
+msgid "Availability"
+msgstr "Доступность"
+
+msgid "Use Groups"
+msgstr "Использовать группы"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents By"
+msgstr "Запустить торрент"
+
+msgid "Queue Order"
+msgstr "Порядку в очереди"
+
+msgid "Date Added"
+msgstr "Дате добавления"
+
+msgid "ETA"
+msgstr "Расчётное время"
+
+msgid "State"
+msgstr "Состоянию"
+
+msgid "Ascending"
+msgstr "Возрастающей"
+
+msgid "Descending"
+msgstr "Убывающей"
+
+#. Translators: View menu -> Inspector
+msgid "Show Inspector"
+msgstr "Показать инспектор"
+
+#. Translators: View menu -> Status Bar
+msgid "Hide Status Bar"
+msgstr "Скрыть панель статуса"
+
+#. Translators: View menu -> Filter Bar
+msgid "Hide Filter Bar"
+msgstr "Скрыть фильтр"
+
+#. Translators: View menu -> Toolbar
+msgid "Hide Toolbar"
+msgstr "Скрыть панель инструментов"
+
+msgid "Customize Toolbar…"
+msgstr "Настроить панель инструментов..."
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "Paused"
+msgid "Pause"
+msgstr "Приостановлен"
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "_Start"
+msgid "Start"
+msgstr "Запустить"
+
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
+msgid "Remove"
+msgstr "Удалить"
+
+#, fuzzy
+#| msgid "_Delete Files and Remove"
+msgid "Delete Files and Remove"
+msgstr "Убрать торрент и удалить загруженные файлы"
+
+msgid "Remove All Completed From List"
+msgstr "Удалить все завершенные из списка"
+
+#. Translators: File Outline -> Menu
+msgid "Show in Finder"
+msgstr "Показать в Finder"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+msgid "Pause All"
+msgstr "Приостановить все"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All"
+msgstr "Запустить все"
+
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All Queued Now"
+msgstr "Запустить все"
+
+#. Translators: Groups -> Button
+msgid "Group"
+msgstr "Группы"
+
+#, fuzzy
+#| msgid "Ask Tracker for _More Peers"
+msgid "Ask Tracker for More Peers"
+msgstr "Позвать ещё участников с трекера"
+
+msgid "Window"
+msgstr "Окно"
+
+msgid "Minimize"
+msgstr "Убрать в Dock"
+
+msgid "Zoom"
+msgstr "Изменить масштаб"
+
+msgid "Next Inspector Tab"
+msgstr "Следующая вкладка инспектора"
+
+msgid "Previous Inspector Tab"
+msgstr "Предыдущая вкладка инспектора"
+
+msgid "Next Filter Button"
+msgstr "Следующая кнопка фильтра"
+
+msgid "Previous Filter Button"
+msgstr "Предыдущая кнопка фильтра"
+
+msgid "Bring All to Front"
+msgstr "Все окна - на передний план"
+
+msgid "Help"
+msgstr "Справка"
+
+msgid "Retransmission Help"
+msgstr "Справка Retransmission"
+
+msgid "Retransmission Homepage"
+msgstr "Домашняя страница Retransmission"
+
+msgid "Forums"
+msgstr "Форумы Retransmission"
+
+msgid "Support & Development"
+msgstr "Retransmission wiki и разработка"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Preferences"
+msgstr "Настройки"
+
+msgid "Check for update:"
+msgstr "Обновления программы:"
+
+msgid "Include beta releases"
+msgstr "Обновляться до бета-версий"
+
+msgid "Automatically check daily"
+msgstr "Проверять наличие обновлений каждый день"
+
+msgid "Reset all alerts:"
+msgstr "Сбросить предупреждения:"
+
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
+msgid "Reset"
+msgstr "Очистить"
+
+msgid "Set Default Application"
+msgstr "Сделать программой по умолчанию"
+
+msgid "Configure In System Preferences"
+msgstr "Параметры в Системных настройках"
+
+#, fuzzy
+#| msgid "Automatically size window to fit all transfers"
+msgid "Automatically size window to fit all torrents"
+msgstr "Автоматически подстраивать размер окна"
+
+msgid "Auto resize:"
+msgstr "Размер окна:"
+
+#, fuzzy
+#| msgid "Only when transfers are downloading"
+msgid "Only when torrents are downloading"
+msgstr "Только во время скачивания"
+
+msgid "Total upload rate"
+msgstr "Общую скорость раздачи"
+
+msgid "Total download rate"
+msgstr "Общую скорость скачивания"
+
+msgid "Badge Dock icon with:"
+msgstr "Показывать значок на док-панели:"
+
+msgid "Notifications:"
+msgstr "Оповещения:"
+
+msgid "Prompt user for:"
+msgstr "Предупреждать при:"
+
+#, fuzzy
+#| msgid "Removal of active transfers"
+msgid "Removal of active torrents"
+msgstr "Удалении активных закачек"
+
+#, fuzzy
+#| msgid "Quit with active transfers"
+msgid "Quit with active torrents"
+msgstr "Завершении программы во время раздачи"
+
+msgid "Accept magnet links:"
+msgstr "Принимать магнит-ссылки:"
+
+msgid "Open torrent files:"
+msgstr "Открыть торрент-файлы:"
+
+msgid "Adding"
+msgstr "Основные"
+
+msgid "Same as torrent file"
+msgstr "Ту же папку, где торрент-файл"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to location:"
+msgstr "Сохранять в папку:"
+
+msgid "Settings:"
+msgstr "Новые раздачи:"
+
+#, fuzzy
+#| msgid "Append \"._part\" to incomplete files' names"
+msgid "Append \".part\" to incomplete files' names"
+msgstr "Добавлять «.part» к именам незавершённых файлов"
+
+#, fuzzy
+#| msgid "Automatically add torrent files _from:"
+msgid "Automatically add torrent files from:"
+msgstr "Автоматически добавлять торрент-файлы из:"
+
+msgid "Auto add:"
+msgstr "Автоматизация:"
+
+msgid "Keep incomplete files in:"
+msgstr "Хранить недокачанные файлы в:"
+
+msgid "Display a window when opening a torrent file"
+msgstr "Показывать диалоговое окно при открытии торрент-файла"
+
+msgid "Display a window when opening a magnet link"
+msgstr "Показывать окно при открытии магнит-ссылки"
+
+#, fuzzy
+#| msgid "_Start added torrents"
+msgid "Start added torrents"
+msgstr "Запускать добавленные торренты"
+
+msgid "Only when adding manually"
+msgstr "Только если добавлены вручную"
+
+msgid "Add window:"
+msgstr "При добавлении:"
+
+msgid "Only when there are multiple files"
+msgstr "Только при наличии нескольких файлов"
+
+msgid "Management"
+msgstr "Управление"
+
+msgid "Queues:"
+msgstr "Очередь:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "active torrents"
+msgstr "Закрытый торрент"
+
+msgid "Limits:"
+msgstr "Ограничения:"
+
+msgid "Ratio is amount uploaded to amount downloaded"
+msgstr "Рейтинг — отношение розданного к скачанному"
+
+msgid "Download with maximum of:"
+msgstr "Скачивать одновременно не более"
+
+msgid "Seeding with maximum of:"
+msgstr "Раздавать одновременно не более"
+
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when inactive for:"
+msgstr "В конец при неактивности в течение"
+
+msgid "Play sound:"
+msgstr "Звуки:"
+
+msgid "When seeding completes:"
+msgstr "После остановки раздачи:"
+
+msgid "When download completes:"
+msgstr "По завершении скачивания:"
+
+msgid "Call script:"
+msgstr "Сценарий вызова:"
+
+#, fuzzy
+#| msgid "Applies to newly added transfers"
+msgid "Applies to newly added torrents"
+msgstr "Применяется к новым добавленным передачам"
+
+#, fuzzy
+#| msgid "Transfers will be assigned to the first group where all criteria are met"
+msgid "Torrents will be assigned to the first group where all criteria are met"
+msgstr ""
+"Раздачи будут добавлены в первую \n"
+"удовлетворяющую всем правилам группу"
+
+msgid "Edit…"
+msgstr "Правила…"
+
+#, fuzzy
+#| msgid "Assign group to new transfers based on criteria"
+msgid "Assign group to new torrents based on criteria"
+msgstr "Автоматически добавлять раздачи в группу"
+
+#, fuzzy
+#| msgid "The location will only be set when adding the transfer"
+msgid "The location will only be set when adding the torrent"
+msgstr "Будет выбрано при добавлении новых раздач"
+
+msgid "Custom location:"
+msgstr "Местоположение:"
+
+msgid "Group Name:"
+msgstr "Имя группы:"
+
+msgid "Color"
+msgstr "Цвет"
+
+msgid "Monday"
+msgstr "В понедельник"
+
+msgid "Tuesday"
+msgstr "Во вторник"
+
+msgid "Wednesday"
+msgstr "В среду"
+
+msgid "Thursday"
+msgstr "В четверг"
+
+msgid "Friday"
+msgstr "В пятницу"
+
+msgid "Saturday"
+msgstr "В субботу"
+
+msgid "Sunday"
+msgstr "В воскресенье"
+
+msgid "to"
+msgstr "до"
+
+#, fuzzy
+#| msgid "_Scheduled times:"
+msgid "Scheduled times:"
+msgstr "По расписанию:"
+
+#, fuzzy
+#| msgid "_Download:"
+msgid "Download:"
+msgstr "Загрузка:"
+
+#, fuzzy
+#| msgid "_Upload:"
+msgid "Upload:"
+msgstr "Отдача:"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative speed limits:"
+msgstr "Особые ограничения скорости"
+
+#, fuzzy
+#| msgid "Speed Limits"
+msgid "Speed limits:"
+msgstr "Ограничения скорости"
+
+#, fuzzy
+#| msgid "Peer Limits"
+msgid "Peer limits:"
+msgstr "Ограничения участников"
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use DHT to find more peers for public torrents"
+msgstr "Использовать DHT для обнаружения участников"
+
+msgid "Blocklist:"
+msgstr "Чёрный список:"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new torrents:"
+msgstr "Максимум участников на торрент:"
+
+msgid "Last updated: N/A"
+msgstr "Последнее обновление: нет данных"
+
+msgid "Encryption:"
+msgstr "Шифрование:"
+
+msgid "Automatically update weekly"
+msgstr "Обновлять список каждую неделю"
+
+#, fuzzy
+#| msgid "Maximum peers _overall:"
+msgid "Maximum peers overall:"
+msgstr "Общий максимум участников:"
+
+msgid "blocklist loaded/not loaded"
+msgstr "чёрный список загружен / не загружен"
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PEX to find more peers for public torrents"
+msgstr "Использовать PEX для обмена списками участников"
+
+#. Translators: URL sheet label
+msgid "URL:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use Local Peer Discovery to find more peers for public torrents"
+msgstr "Использовать локальное обнаружение участников"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "High connection limits might significantly impact system performance"
+msgstr "Некоторые роутеры будут «тормозить» если подключений очень много"
+
+#, fuzzy
+#| msgid "Enable _blocklist:"
+msgid "Enable blocklist"
+msgstr "Включить чёрный список:"
+
+msgid "Randomize"
+msgstr "Случайный порт"
+
+msgid "Peer communication:"
+msgstr "Связь:"
+
+#, fuzzy
+#| msgid "_Port for incoming connections:"
+msgid "Port for incoming connections:"
+msgstr "Порт для входящих подключений:"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is open"
+msgstr "Порт открыт"
+
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "Используя NAT-T с NAT-PMP или UPnP"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a random port at startup"
+msgstr "Устанавливать случайный порт при каждом запуске программы"
+
+msgid "Automatically map port"
+msgstr "Открывать порт автоматически"
+
+#, fuzzy
+#| msgid "Prevent computer from sleeping with active transfers"
+msgid "Prevent computer from sleeping with active torrents"
+msgstr "Отключить при наличии активных раздач"
+
+msgid "System sleep:"
+msgstr "Спящий режим:"
+
+#, fuzzy
+#| msgid "Enable µ_TP for peer connections"
+msgid "Enable µTP for peer connections"
+msgstr "Использовать µTP для связи с другими участниками"
+
+msgid "This enables the web interface and allows remote requests"
+msgstr "Управление программой будет доступно через веб-интерфейс"
+
+#, fuzzy
+#| msgid "Only allow these IP a_ddresses:"
+msgid "Only allow these IP addresses:"
+msgstr "Разрешить доступ только данным IP-адресам:"
+
+#, fuzzy
+#| msgid "Use _authentication"
+msgid "Use authentication"
+msgstr "Использовать аутентификацию"
+
+msgid "Display the web interface with Bonjour"
+msgstr "Анонсировать веб-интерфейс через Bonjour"
+
+#, fuzzy
+#| msgid "Allow _remote access"
+msgid "Allow remote access"
+msgstr "Разрешить удалённый доступ"
+
+msgid "Username:"
+msgstr "Логин:"
+
+msgid "Password:"
+msgstr "Пароль:"
+
+#, fuzzy
+#| msgid "HTTP _port:"
+msgid "HTTP port:"
+msgstr "Порт HTTP:"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "Open Web Client"
+msgstr "Открыть веб-клиент"
+
+#. Translators: Inspector -> Files tab -> file status string
+#. Translators: Status bar transfer count
+#. Translators: file size string
+msgid "{part} of {whole}"
+msgstr "{part} из {whole}"
+
+#. Translators: Blocklist -> message
+#, fuzzy
+#| msgid "Update Blocklist"
+msgid "Updating blocklist"
+msgstr "Обновить чёрный список"
+
+msgid "Download of the blocklist failed."
+msgstr "Не могу скачать черный список."
+
+#. Translators: Legal alert -> button
+msgid "I Accept"
+msgstr "Подтверждаю"
+
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
+msgid "Quit"
+msgstr "Завершить"
+
+#. Translators: Legal alert -> title
+msgid "Welcome to {appname}"
+msgstr "Добро пожаловать в {appname}"
+
+msgid "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws."
+msgstr "{appname} — программа для обмена файлами. Когда ты запускаешь раздачу, ее данные становятся доступны для скачивания другими. Естественно, ответственность по выбору данных для обмена лежит на тебе."
+
+msgid "Remote access needs a new password."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on."
+msgstr ""
+
+#. Translators: Transmission import progress -> label
+msgid "Copying Transmission's transfers"
+msgstr ""
+
+msgid "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time."
+msgstr ""
+
+msgid "{appname} can copy your settings from Transmission, but not its transfers."
+msgstr ""
+
+msgid "Quit Transmission, then click Import."
+msgstr ""
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Import from Transmission?"
+msgstr "Retransmission"
+
+#. Translators: Transmission import alert -> button
+msgid "Import"
+msgstr ""
+
+#. Translators: Transmission import alert -> button
+msgid "Don't Import"
+msgstr ""
+
+msgid "Transmission's transfers couldn't be copied."
+msgstr ""
+
+msgid "{appname} is already running."
+msgstr "{appname} уже запущен."
+
+msgid "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit."
+msgstr "{appname} уже запущена. Новая копия не может быть запущена, пока не будет завершена существующая."
+
+msgid "Transmission is running."
+msgstr ""
+
+msgid "Quit Transmission before opening {appname}. The two apps would work on the same downloads."
+msgstr ""
+
+msgid "Shortcuts for changing global settings."
+msgstr "Общие настройки раздач"
+
+#, fuzzy
+#| msgid "Remove torrent and delete its files"
+msgid "Remove all torrents that have completed seeding."
+msgstr "Удалить торрент и файлы"
+
+#. Translators: notification button
+msgid "Show"
+msgstr "Показать"
+
+msgid "Support open-source indie software"
+msgstr "Поддержите независимую программу с открытым исходным кодом"
+
+msgid "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation."
+msgstr "{appname} — полнофункциональный торрент-клиент. Много времени и сил ушло на разработку, написание кода и оптимизацию. Если вам нравится эта программа, можете показать свою любовь, сделав пожертвование."
+
+msgid "Donate or not, there will be no difference to your torrenting experience."
+msgstr "Retransmission продолжит работать вне зависимости от того, сделаете вы пожертвование или нет."
+
+#. Translators: Donation beg -> button
+msgid "Nope"
+msgstr "Нет"
+
+msgid "Don't bug me about this ever again."
+msgstr "Больше не спрашивать"
+
+msgid "Are you sure you want to quit?"
+msgstr "Вы действительно хотите завершить программу?"
+
+msgid "There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgstr ""
+
+msgid "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgid_plural "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "{appname} will quit, because the two apps would work on the same downloads."
+msgstr ""
+
+msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+msgstr "Файл «{filename}» из {url} не является торрент-файлом."
+
+#. Translators: Download not a torrent -> title
+#. Translators: Torrent download error -> title
+msgid "Torrent download failed"
+msgstr "Ошибка при скачивании торрента"
+
+msgid "The torrent could not be downloaded from {url}: {error}."
+msgstr "Торрент не может быть скачан из {url}: {error}."
+
+msgid "\"{filename}\" is not a valid torrent file."
+msgstr "«{filename}» не является торрент-файлом."
+
+msgid "The torrent file cannot be opened because it contains invalid data."
+msgstr "Торрент-файл не может быть открыт, так как содержит неверные данные."
+
+msgid "Adding magnetized torrent failed."
+msgstr ""
+
+msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
+msgstr ""
+
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
+
+#, fuzzy
+#| msgid "The torrent file cannot be opened because it contains invalid data."
+msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+msgstr "Торрент-файл не может быть открыт, так как содержит неверные данные."
+
+msgid "Magnet link is a duplicate of an existing torrent."
+msgstr ""
+
+msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Are you sure you want to remove this tracker?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+msgstr "Вы действительно хотите удалить этот трекер?"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+msgstr "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "После удаления, для возобновления передачи потребуется торрент-файл или магнит-ссылка."
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+msgstr[0] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[1] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[2] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[3] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+msgstr[0] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[1] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[2] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[3] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "There is {count:L} active torrent."
+msgid_plural "There are {count:L} active torrents."
+msgstr[0] "Удалить {count:L} торрент?"
+msgstr[1] "Удалить {count:L} торрента?"
+msgstr[2] "Удалить {count:L} торрентов?"
+msgstr[3] "Удалить {count:L} торрентов?"
+
+#, fuzzy
+#| msgid "Seeding to {active_count:L} peer"
+#| msgid_plural "Seeding to {active_count:L} peers"
+msgid "There is {count:L} torrent ({active_count:L} active)."
+msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+msgstr[0] "Раздаётся {active_count:L} участнику"
+msgstr[1] "Раздаётся {active_count:L} участникам"
+msgstr[2] "Раздаётся {active_count:L} участникам"
+msgstr[3] "Раздаётся {active_count:L} участникам"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+msgstr[0] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[1] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[2] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[3] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+
+msgid "Select the new folder for \"{torrent_name}\"."
+msgstr "Выберите новую папку для «{torrent_name}»."
+
+msgid "Select the new folder for {count:L} data file."
+msgid_plural "Select the new folder for {count:L} data files."
+msgstr[0] "Выберите новую папку для {count:L} файлов данных."
+msgstr[1] "Выберите новую папку для {count:L} файлов данных."
+msgstr[2] "Выберите новую папку для {count:L} файлов данных."
+msgstr[3] "Выберите новую папку для {count:L} файлов данных."
+
+msgid "Copy of \"{torrent_name}\" Cannot Be Created"
+msgstr "Копия «{torrent_name}» не может быть создана"
+
+msgid "The torrent file ({path}) cannot be found."
+msgstr "Торрент-файл ({path}) не найден."
+
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Скачивание завершено"
+
+#. Translators: notification title
+msgid "Seeding Complete"
+msgstr "Раздача завершена"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Enabled"
+msgstr "Особые ограничения скорости"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Disabled"
+msgstr "Особые ограничения скорости"
+
+msgid "Changed at a scheduled time"
+msgstr ""
+
+#. Translators: Create toolbar item -> palette label
+#. Translators: Create torrent -> select file
+#. Translators: Drag overlay -> file
+msgid "Create Torrent File"
+msgstr "Создать торрент-файл"
+
+msgid "Create a new torrent"
+msgstr "Создать новый торрент"
+
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
+msgid "Open"
+msgstr "Открыть"
+
+#. Translators: Open toolbar item -> palette label
+msgid "Open Torrent Files"
+msgstr "Открыть торрент-файл"
+
+#. Translators: Remove toolbar item -> palette label
+msgid "Remove Selected"
+msgstr "Удалить выбранные"
+
+#. Translators: Inspector toolbar item -> label
+#. Translators: Inspector toolbar item -> palette label
+#. Translators: Inspector -> title
+msgid "Inspector"
+msgstr "Инспектор"
+
+msgid "Toggle the torrent inspector"
+msgstr "Показать/скрыть Инспектор торрента"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Pause all torrents"
+msgstr "Приостановить все торренты"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Start all torrents"
+msgstr "Запустить все торренты"
+
+#. Translators: All toolbar item -> label
+msgid "Apply All"
+msgstr "Применить все"
+
+#, fuzzy
+#| msgid "Pause All"
+msgid "Pause / Start All"
+msgstr "Приостановить все"
+
+#. Translators: Selected toolbar item -> label
+msgid "Apply Selected"
+msgstr "Применить выбранные"
+
+msgid "Pause / Start Selected"
+msgstr ""
+
+#. Translators: Filter toolbar item -> palette label
+msgid "Toggle Filter"
+msgstr "Показать/скрыть фильтр"
+
+msgid "Toggle the filter bar"
+msgstr "Показать/скрыть панель фильтра"
+
+#. Translators: Share toolbar item -> label
+#. Translators: Share toolbar item -> palette label
+msgid "Share"
+msgstr "Отправить"
+
+#. Translators: Share toolbar item -> tooltip
+msgid "Share torrent file"
+msgstr "Отправить торрент-файл"
+
+#. Translators: View menu -> Inspector
+msgid "Hide Inspector"
+msgstr "Скрыть инспектор"
+
+#. Translators: View menu -> Status Bar
+msgid "Show Status Bar"
+msgstr "Показать панель статуса"
+
+#. Translators: View menu -> Filter Bar
+msgid "Show Filter Bar"
+msgstr "Показать фильтр"
+
+#. Translators: View menu -> Toolbar
+msgid "Show Toolbar"
+msgstr "Показать панель инструментов"
+
+#. Translators: View menu -> Quick Look
+msgid "Close Quick Look"
+msgstr "Закрыть Quick Look"
+
+#. Translators: Dock item - Seeding
+msgid "{count:L} Seeding"
+msgstr "{count:L} раздается"
+
+#. Translators: Dock item - Downloading
+msgid "{count:L} Downloading"
+msgstr "{count:L} скачивается"
+
+msgid "This folder contains no files."
+msgstr "Эта папка не содержит файлов."
+
+msgid "There must be at least one file in a folder to create a torrent file."
+msgstr "Для создания торрент-файла в папке должен быть хотя бы один файл."
+
+msgid "The total file size is zero bytes."
+msgstr "Общий размер файла 0 Б."
+
+msgid "A torrent file cannot be created for files with no size."
+msgstr "Торрент-файл не может быть создан для файлов нулевого размера."
+
+msgid "Select the name and location for the torrent file."
+msgstr "Выберите имя и местоположение для торрент-файла."
+
+msgid "There are no tracker addresses."
+msgstr "Нет адреса трекеров."
+
+msgid "A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you."
+msgstr ""
+
+msgid "The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed."
+msgstr ""
+
+#. Translators: Create torrent -> info
+msgid "{count} piece, {size}"
+msgid_plural "{count} pieces, {size} each"
+msgstr[0] "{count} часть, {size}"
+msgstr[1] "{count} частей, {size} каждая"
+msgstr[2] "{count} частей, {size} каждая"
+msgstr[3] "{count} частей, {size} каждая"
+
+msgid "Select a file or folder for the torrent file."
+msgstr "Выберите папку или файл для торрента."
+
+msgid "The chosen torrent file location does not exist."
+msgstr "Выбранная для торрент-файла папка отсутствует."
+
+msgid "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file."
+msgstr "Папка «{directory}» не существует. Создайте папку или выберете другую чтобы создать торрент-файл."
+
+msgid "A torrent file with this name and directory cannot be created."
+msgstr "Торрент-файл с этим именем не может быть создан в этой папке."
+
+msgid "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file."
+msgstr "Файл с именем «{filename}» уже есть в папке «{directory}». Выберите новое имя или местоположение чтобы создать торрент-файл."
+
+msgid "Creation of \"{filename}\" failed."
+msgstr "При создании «{filename}» произошла ошибка."
+
+#. Translators: Drag overlay -> torrents
+msgid "{count:L} Torrent File"
+msgid_plural "{count:L} Torrent Files"
+msgstr[0] "{count:L} торрент-файлов"
+msgstr[1] "{count:L} торрент-файлов"
+msgstr[2] "{count:L} торрент-файлов"
+msgstr[3] "{count:L} торрент-файлов"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download"
+msgid "Don't download"
+msgstr "Загрузить"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download speed"
+msgid "Download some"
+msgstr "Скорость скачивания"
+
+#. Translators: File Outline -> Menu
+msgid "Check Selected"
+msgstr "Отметить выбранное"
+
+#. Translators: File Outline -> Menu
+msgid "Uncheck Selected"
+msgstr "Снять отметку с выбранного"
+
+#. Translators: File Outline -> Menu
+msgid "Only Check Selected"
+msgstr "Отметить только выбранное"
+
+#. Translators: files tab -> tooltip
+msgid "Priority not available"
+msgstr ""
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "Low priority"
+msgstr "Приоритет"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "High priority"
+msgstr "Приоритет"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Normal priority"
+msgstr "Приоритет торрента:"
+
+msgid "Rename the file \"{filename}\":"
+msgstr "Переименовать файл «{filename}»:"
+
+#. Translators: rename sheet button
+msgid "Rename"
+msgstr "Переименовать"
+
+#. Translators: Filter Bar -> group filter menu
+#. Translators: Groups -> Button
+msgid "All Groups"
+msgstr "Все группы"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Download speed"
+msgstr "Скорость скачивания"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Upload speed"
+msgstr "Скорость раздачи"
+
+#. Translators: Torrent table -> group row -> tooltip
+#. Translators: Torrent -> status image
+#. Translators: status bar -> status label
+msgid "Ratio"
+msgstr "Рейтинг"
+
+#. Translators: Groups -> Name
+msgid "Red"
+msgstr "Красная"
+
+#. Translators: Groups -> Name
+msgid "Orange"
+msgstr "Оранжевая"
+
+#. Translators: Groups -> Name
+msgid "Yellow"
+msgstr "Желтая"
+
+#. Translators: Groups -> Name
+msgid "Green"
+msgstr "Зеленая"
+
+#. Translators: Groups -> Name
+msgid "Blue"
+msgstr "Синяя"
+
+#. Translators: Groups -> Name
+msgid "Purple"
+msgstr "Пурпурная"
+
+#. Translators: Groups -> Name
+msgid "Gray"
+msgstr "Серая"
+
+#. Translators: Inspector -> Activity tab -> have
+msgid "{size} verified"
+msgstr "{size} проверено"
+
+#. Translators: Info options -> global setting
+msgid "disabled"
+msgstr "отсутствуют"
+
+#. Translators: inspector -> peer table -> header tool tip
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from peer"
+msgstr "Загрузка от этого участника"
+
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from web seed"
+msgstr "Загрузка от этого участника"
+
+msgid "no peer info available"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Connected"
+msgid_plural "{count:L} Connected"
+msgstr[0] "{count:L} подключен"
+msgstr[1] "{count:L} подключено"
+msgstr[2] "{count:L} подключено"
+msgstr[3] "{count:L} подключено"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "DL from {count:L}"
+msgstr "скачиваю от {count:L}"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "UL to {count:L}"
+msgstr "раздаю к {count:L}"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrent Not Active"
+msgstr "Свойства торрента"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrents Completed"
+msgid "Torrents Not Active"
+msgstr "Торренты завершены"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "Known:"
+msgstr "Известно:"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Known:"
+msgstr "{count:L} известно:"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} tracker"
+msgstr "{count:L} от трекера"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} incoming"
+msgstr "{count:L} входящих"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} cache"
+msgstr "{count:L} в кеше"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} local discovery"
+msgstr "{count:L} местных польз."
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} PEX"
+msgstr "{count:L} раз"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} DHT"
+msgstr "{count:L} раз"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} LTEP"
+msgstr "{count:L} раз"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Progress: {percent}"
+msgstr "Прогресс: {percent}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Partial seed"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "encrypted"
+msgstr "зашифрованный"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Protocol: {protocol}"
+msgstr "Протокол: {protocol}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Port: {port}"
+msgstr "Порт: {port}"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found through a tracker"
+msgstr "Участник был найден через DHT"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found in the cache"
+msgstr "Участник был найден через DHT"
+
+#, fuzzy
+#| msgid "Peer was found through Peer Exchange (PEX)"
+msgid "Peer was found through Local Peer Discovery (LPD)"
+msgstr "Участник был найден с помощью обмена участниками (PEX)"
+
+msgid "Peer was found through a libtorrent extension protocol handshake"
+msgstr ""
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Add a tracker"
+msgstr "Добавить трекер"
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Remove selected trackers"
+msgstr "Удалить выбранные трекеры"
+
+#. Translators: Inspector -> tracker table
+msgid "New Tier"
+msgstr "Новый уровень"
+
+#. Translators: Inspector -> tracker table
+msgid "Tier {tier}"
+msgstr "{tier} уровень"
+
+msgid "Are you sure you want to remove {count:L} tracker?"
+msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgstr[0] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[1] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[2] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+msgstr[3] "Выделено трекеров: {count:L}. Вы действительно хотите удалить трекеры?"
+
+msgid "Once removed, {appname} will no longer attempt to contact them. This cannot be undone."
+msgstr "{appname} не будет пытаться подключиться к трекерам после того, как они будет удален. Это действие невозможно отменить."
+
+msgid "Are you sure you want to remove this tracker?"
+msgstr "Вы действительно хотите удалить этот трекер?"
+
+msgid "Once removed, {appname} will no longer attempt to contact it. This cannot be undone."
+msgstr "{appname} не будет пытаться подключиться к трекеру после того, как он будет удален. Это действие невозможно отменить."
+
+#. Translators: Inspector -> selected torrents
+msgid "{count:L} Torrent Selected"
+msgid_plural "{count:L} Torrents Selected"
+msgstr[0] "{count:L} торрентов выбрано"
+msgstr[1] "{count:L} торрентов выбрано"
+msgstr[2] "{count:L} торрентов выбрано"
+msgstr[3] "{count:L} торрентов выбрано"
+
+#. Translators: Inspector -> selected torrents
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "{count:L} magnetized torrent"
+msgid_plural "{count:L} magnetized torrents"
+msgstr[0] "Удалить {count:L} торрент?"
+msgstr[1] "Удалить {count:L} торрента?"
+msgstr[2] "Удалить {count:L} торрентов?"
+msgstr[3] "Удалить {count:L} торрентов?"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: stats total
+msgid "{amount} total"
+msgstr "{amount} всего"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: Torrent -> progress string
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Magnetized torrent"
+msgstr "Закрытый торрент"
+
+#. Translators: Message window -> save button
+msgid "Save"
+msgstr "Сохранить"
+
+#. Translators: Save log panel -> default file name
+msgid "untitled"
+msgstr "Новый"
+
+msgid "Log Could Not Be Saved"
+msgstr "Журнал не может быть сохранен"
+
+msgid "There was a problem creating the file \"{filename}\"."
+msgstr "Ошибка во время создания «{filename}»."
+
+#. Translators: Message window -> level
+msgctxt "Logging level"
+msgid "Trace"
+msgstr "Отслеживающий"
+
+msgid "{file_count:L} file"
+msgid_plural "{file_count:L} files"
+msgstr[0] "{file_count:L} файл"
+msgstr[1] "{file_count:L} файлов"
+msgstr[2] "{file_count:L} файлов"
+msgstr[3] "{file_count:L} файлов"
+
+#, fuzzy
+#| msgid "{count:L} Torrent File"
+#| msgid_plural "{count:L} Torrent Files"
+msgid "{count:L} torrent"
+msgid_plural "{count:L} torrents"
+msgstr[0] "{count:L} торрент-файлов"
+msgstr[1] "{count:L} торрент-файлов"
+msgstr[2] "{count:L} торрент-файлов"
+msgstr[3] "{count:L} торрент-файлов"
+
+#. Translators: Preferences -> toolbar item title
+msgid "General"
+msgstr "Основные"
+
+#. Translators: Preferences -> toolbar item title
+msgid "Groups"
+msgstr "Группы"
+
+#. Translators: The width of the Mac client's Preferences window in points, as a number such as 700, for languages whose text needs more room than English. Leave this untranslated for the usual width.
+msgid "PrefWindowSize"
+msgstr "640"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is closed"
+msgstr "Порт закрыт"
+
+msgid "Port check site is down"
+msgstr "Сайт проверки порта недоступен"
+
+msgid "{count:L} IP address rule in list"
+msgid_plural "{count:L} IP address rules in list"
+msgstr[0] "{count:L} IP-адресов в списке"
+msgstr[1] "{count:L} IP-адресов в списке"
+msgstr[2] "{count:L} IP-адресов в списке"
+msgstr[3] "{count:L} IP-адресов в списке"
+
+msgid "A blocklist must first be downloaded"
+msgstr "Необходимо скачать черный список"
+
+#. Translators: Prefs -> blocklist -> message
+msgid "Last updated"
+msgstr "Последнее обновление"
+
+msgid "This option is not available if Save to location is set to Same as torrent file."
+msgstr ""
+
+#. Translators: Stats window -> label
+msgid "Program started:"
+msgstr ""
+
+msgid "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected."
+msgstr ""
+
+#. Translators: stats total
+msgid "Total N/A"
+msgstr "Нет данных"
+
+#. Translators: stats window -> times opened
+msgid "{count:L} time"
+msgid_plural "{count:L} times"
+msgstr[0] "{count:L} раз"
+msgstr[1] "{count:L} раз"
+msgstr[2] "{count:L} раз"
+msgstr[3] "{count:L} раз"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "{speed:L} KB/s"
+msgstr "{speed:L} КБ/s"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "unlimited"
+msgstr "Неограниченно"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global upload limit"
+msgstr "Общее огранчение скорости раздачи"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global download limit"
+msgstr "Общее ограничене скорости скачивания"
+
+msgid "A folder cannot be moved to inside itself."
+msgstr "Папка не может быть перемещена внутрь себя."
+
+msgid "The move operation of \"{torrent_name}\" cannot be done."
+msgstr "Не могу переместить «{torrent_name}»."
+
+msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
+msgstr "Недостаточно места на диске для скачивания «{torrent_name}»."
+
+msgid "The torrent will be paused. Clear up space on {volume} or deselect files in the torrent inspector to continue."
+msgstr ""
+
+#. Translators: Torrent disk space alert -> button
+msgid "Download Anyway"
+msgstr "Скачать в любом случае"
+
+msgid "Do not check disk space again"
+msgstr "Не проверять еще раз"
+
+msgid "{percent} of torrent metadata retrieved"
+msgstr "{percent} метаданных торрента получено"
+
+#. Translators: Torrent -> progress string
+msgid "torrent metadata needed"
+msgstr "получение метаданных торрента"
+
+msgid "uploaded {uploaded_size} (Ratio: {ratio})"
+msgstr "роздано {uploaded_size} (рейтинг: {ratio})"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned error"
+msgstr "Трекер сообщил об ошибке"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned warning"
+msgstr "Трекер вынес предупреждение"
+
+msgid "Downloading from {active_count:L} of {connected_count:L} peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
+msgstr[0] "Скачиваю от {active_count:L} из {connected_count:L} пользователя"
+msgstr[1] "Скачиваю от {active_count:L} из {connected_count:L} пользователей"
+msgstr[2] "Скачиваю от {active_count:L} из {connected_count:L} пользователей"
+msgstr[3] "Скачиваю от {active_count:L} из {connected_count:L} пользователей"
+
+#. Translators: Torrent -> status string
+msgid "web seed"
+msgstr "сайт раздачи"
+
+#. Translators: Torrent -> status string
+msgid "{count:L} web seed"
+msgid_plural "{count:L} web seeds"
+msgstr[0] "{count:L} сайтов раздачи"
+msgstr[1] "{count:L} сайтов раздачи"
+msgstr[2] "{count:L} сайтов раздачи"
+msgstr[3] "{count:L} сайтов раздачи"
+
+msgid "Seeding to {active_count:L} of {connected_count:L} peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
+msgstr[0] "Раздаю к {active_count:L} из {connected_count:L} пользователя"
+msgstr[1] "Раздаю к {active_count:L} из {connected_count:L} пользователей"
+msgstr[2] "Раздаю к {active_count:L} из {connected_count:L} пользователей"
+msgstr[3] "Раздаю к {active_count:L} из {connected_count:L} пользователей"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Down: {download_speed}, Up: {upload_speed}"
+msgstr "Принято: {downloaded_size}, Отдано: {uploaded_size}"
+
+#. Translators: Torrent -> status string
+#, fuzzy
+#| msgid "{upload_speed} ▴"
+msgid "Up: {upload_speed}"
+msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Ratio: {ratio}, Up: {upload_speed}"
+msgstr "Принято: {downloaded_size}, Отдано: {uploaded_size}"
+
+#. Translators: Torrent -> eta string
+msgid "inactive"
+msgstr "неактивен"
+
+#. Translators: Group table row
+msgid "No Group"
+msgstr "✕"
+
+msgid "Show the data file in Finder"
+msgstr "Показать данные в Finder"
+
+msgid "Bypass the queue and start now"
+msgstr "Пропустить очередь и запустить сейчас"
+
+msgid "Stop waiting to start"
+msgstr "Не ожидать начала"
+
+#. Translators: Torrent Table -> tooltip
+#, fuzzy
+#| msgid "Share torrent file"
+msgid "Change torrent settings"
+msgstr "Отправить торрент-файл"
+
+#. Translators: tracker peer stat
+msgid "Seeders"
+msgstr "Раздающих"
+
+#. Translators: tracker peer stat
+msgid "Leechers"
+msgstr "Скачивающих"
+
+#. Translators: tracker peer stat
+msgid "Downloaded"
+msgstr "Скачали"
+
+#. Translators: Tracker last announce
+msgid "Announce timed out"
+msgstr "Превышено время ожидания анонса"
+
+#. Translators: Tracker last announce
+msgid "Announce error"
+msgstr "Ошибка анонса"
+
+#. Translators: Tracker last announce
+msgid "Last Announce"
+msgstr "Последний анонс"
+
+#. Translators: Tracker last announce
+#, fuzzy
+#| msgid "{count:L} Seeding"
+msgid "got {count:L} peer"
+msgid_plural "got {count:L} peers"
+msgstr[0] "{count:L} раздается"
+msgstr[1] "{count:L} раздается"
+msgstr[2] "{count:L} раздается"
+msgstr[3] "{count:L} раздается"
+
+#. Translators: Tracker next announce
+msgid "Announce in progress"
+msgstr "Анонс в прогрессе"
+
+msgid "Next announce in {time_span}"
+msgstr "Следующий анонс через {time_span}"
+
+msgid "Tracker will be used as a backup"
+msgstr "Резервный трекер"
+
+#. Translators: Tracker last scrape
+msgid "Scrape timed out"
+msgstr "Тайм-аут запроса"
+
+#. Translators: Tracker last scrape
+msgid "Scrape error"
+msgstr "Ошибка запроса"
+
+#. Translators: Tracker last scrape
+msgid "Last Scrape"
+msgstr "Последний запрос"
+
 msgid "Server"
 msgstr "Сервер"
 
@@ -2271,12 +4231,6 @@ msgstr "Добавить адреса анонсов трекера, один н
 msgid "No new URLs found."
 msgstr "Новые адреса не найдены."
 
-msgid "Use Global Settings"
-msgstr "Использовать общие настройки"
-
-msgid "Stop seeding if idle for:"
-msgstr "Прекратить раздачу при простое:"
-
 msgid "Torrent Properties"
 msgstr "Свойства торрента"
 
@@ -2291,21 +4245,6 @@ msgstr "Ограничить скорость _отдачи:"
 
 msgid "Limit _download speed:"
 msgstr "Ограничить скорость _загрузки:"
-
-msgid "Check Selected"
-msgstr "Отметить выбранное"
-
-msgid "Uncheck Selected"
-msgstr "Снять отметку с выбранного"
-
-msgid "Only Check Selected"
-msgstr "Отметить только выбранное"
-
-msgid "Open"
-msgstr "Открыть"
-
-msgid "Rename…"
-msgstr "Переименовать…"
 
 msgid "Search…"
 msgstr "Поиск…"
@@ -2354,9 +4293,6 @@ msgstr "{host} не отвечает"
 msgid "_Open…"
 msgstr "_Открыть…"
 
-msgid "Create a new torrent"
-msgstr "Создать новый торрент"
-
 msgid "Open the torrent's folder"
 msgstr "Открыть папку торрента"
 
@@ -2368,9 +4304,6 @@ msgstr "Проверить локальные данные"
 
 msgid "Remove torrent and delete its files"
 msgstr "Удалить торрент и файлы"
-
-msgid "Compact View"
-msgstr "Компактный вид"
 
 msgid "_Main Window"
 msgstr "_Главное окно"
@@ -2384,9 +4317,6 @@ msgstr "_Сменить сеанс…"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "Выбрать сеанс"
-
-msgid "Bypass the queue and start now"
-msgstr "Пропустить очередь и запустить сейчас"
 
 msgid "{file_count:L} File"
 msgid_plural "{file_count:L} Files"
@@ -2430,9 +4360,6 @@ msgstr[0] "<b>Обновление завершено!</b><p>В чёрном с�
 msgstr[1] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правила.</p>"
 msgstr[2] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правил.</p>"
 msgstr[3] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правил.</p>"
-
-msgid "Download of the blocklist failed."
-msgstr ""
 
 msgid "Update Blocklist"
 msgstr "Обновить чёрный список"
@@ -2708,15 +4635,6 @@ msgstr[3] "секунд"
 
 #~ msgid "Allowing desktop hibernation"
 #~ msgstr "Разрешение ухода в спящий режим"
-
-#~ msgid "Open URL…"
-#~ msgstr "Открыть URL…"
-
-#~ msgid "Start all torrents"
-#~ msgstr "Запустить все торренты"
-
-#~ msgid "Pause all torrents"
-#~ msgstr "Приостановить все торренты"
 
 #~ msgid "Start torrent now"
 #~ msgstr "Запустить торрент сейчас"

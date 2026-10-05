@@ -8,6 +8,7 @@
 #import "GroupsController.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSUInteger, PopupPriority) {
     PopupPriorityHigh = 0,
@@ -105,14 +106,14 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Open torrent -> prompt");
+    // Translators: Open torrent -> prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;
     panel.canCreateDirectories = YES;
 
-    panel.message = [NSString stringWithFormat:NSLocalizedString(@"Select the download folder for \"%@\"", "Add -> select destination folder"),
-                                               self.torrent.name];
+    panel.message = TR_FORMAT("Select the download folder for \"{torrent_name}\"", TRArg("torrent_name", self.torrent.name));
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -132,14 +133,13 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     if ([self.fDestination.lastPathComponent isEqualToString:self.torrent.name] &&
         [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = NSLocalizedString(@"The destination directory and root data directory have the same name.", "Add torrent -> same name -> title");
-        alert.informativeText = NSLocalizedString(
-            @"If you are attempting to use already existing data,"
-             " the root data directory should be inside the destination directory.",
-            "Add torrent -> same name -> message");
+        alert.messageText = TR_TEXT("The destination directory and root data directory have the same name.");
+        alert.informativeText = TR_TEXT(
+            "If you are attempting to use already existing data, the root data directory should be inside the destination directory.");
         alert.alertStyle = NSAlertStyleWarning;
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Add torrent -> same name -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Add", "Add torrent -> same name -> button")];
+        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        // Translators: Add torrent -> same name -> button
+        [alert addButtonWithTitle:TR_TEXT("Add")];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

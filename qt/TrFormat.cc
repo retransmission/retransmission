@@ -5,13 +5,11 @@
 
 #include "TrFormat.h"
 
-#include <algorithm>
 #include <cstring> // std::strchr()
 #include <optional>
 #include <set>
 #include <string>
 #include <type_traits>
-#include <vector>
 
 #include <QtCore/QByteArray>
 #include <QtCore/QDebug>
@@ -91,37 +89,7 @@ private:
     QLocale qlocale_;
 };
 
-using tr::app::l10n::Field;
 using tr::app::l10n::parse_fields;
-
-// Whether {fmt} can format `text` with these arguments without reporting an error.
-// Every field must name an argument,
-// and its spec must be empty, "L" for a number, or a spec that `source_fields` uses for that name.
-[[nodiscard]] bool fits(
-    std::string_view const text,
-    std::span<Field const> const source_fields,
-    std::span<detail::ArgInfo const> const arg_infos)
-{
-    auto const fields = parse_fields(text);
-    if (!fields) {
-        return false;
-    }
-
-    return std::ranges::all_of(*fields, [&](Field const& field) {
-        auto const arg = std::ranges::find_if(arg_infos, [&field](auto const& info) { return info.name == field.name; });
-        if (arg == std::end(arg_infos)) {
-            return false;
-        }
-
-        if (std::empty(field.spec) || (field.spec == "L" && arg->is_number)) {
-            return true;
-        }
-
-        return std::ranges::any_of(source_fields, [&field](Field const& source_field) {
-            return source_field.name == field.name && source_field.spec == field.spec;
-        });
-    });
-}
 
 // Turns the catalog's mnemonic markers into Qt's:
 // "&" becomes "&&", "_X" becomes "&X", and "__" becomes "_".
@@ -233,27 +201,6 @@ QString detail::textInContext(char const* const context, char const* const msgid
 QString detail::mnemonicText(char const* const msgid)
 {
     return toQtMnemonic(tr_gettext(msgid));
-}
-
-QString detail::formatTranslation(
-    char const* const translation,
-    char const* const source,
-    std::span<ArgInfo const> const arg_infos,
-    fmt::format_args const args)
-{
-    auto const source_fields = parse_fields(source).value_or(std::vector<Field>{});
-    auto const format = [&](std::string_view const text) {
-        return QString::fromStdString(fmt::vformat(fmtLocale(), text, args));
-    };
-
-    if (fits(translation, source_fields, arg_infos)) {
-        return format(translation);
-    }
-
-    warnBadTranslation(translation, source);
-
-    // A source that doesn't fit is a bug in the calling code. Show it unformatted.
-    return fits(source, source_fields, arg_infos) ? format(source) : QString::fromUtf8(source);
 }
 
 } // namespace trqt

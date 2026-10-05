@@ -1,5 +1,5 @@
 # Source files with translatable strings, for xgettext --files-from.
-# Run xgettext with GETTEXTDATADIRS=po, so that it reads Qt Designer files with the rules in po/its/,
+# Run xgettext with GETTEXTDATADIRS=po, so that it reads Qt Designer and Interface Builder files with the rules in po/its/,
 # and with these options:
 #   --from-code=UTF-8 --add-comments=Translators:
 #   -k_ -kN_ -kC_:1c,2 -kNC_:1c,2 -kngettext:1,2 -ktr_ngettext:1,2 -ktr_pgettext:1c,2
@@ -105,6 +105,50 @@ libtransmission/watchdir-inotify.cc
 libtransmission/watchdir-kqueue.cc
 libtransmission/watchdir-win32.cc
 libtransmission/web.cc
+macosx/AboutWindowController.mm
+macosx/AddMagnetWindowController.mm
+macosx/AddWindowController.mm
+macosx/Base.lproj/AddMagnetWindow.xib
+macosx/Base.lproj/AddWindow.xib
+macosx/Base.lproj/Creator.xib
+macosx/Base.lproj/GlobalOptionsPopover.xib
+macosx/Base.lproj/GroupRules.xib
+macosx/Base.lproj/InfoActivityView.xib
+macosx/Base.lproj/InfoGeneralView.xib
+macosx/Base.lproj/InfoOptionsView.xib
+macosx/Base.lproj/MainMenu.xib
+macosx/Base.lproj/PrefsWindow.xib
+macosx/BaseFileNameCellView.mm
+macosx/BlocklistDownloaderViewController.mm
+macosx/Controller.mm
+macosx/CreatorWindowController.mm
+macosx/DragOverlayWindow.mm
+macosx/FileCheckCellView.mm
+macosx/FileOutlineController.mm
+macosx/FilePriorityCellView.mm
+macosx/FileRenameSheetController.mm
+macosx/FilterBarController.mm
+macosx/FilterButton.mm
+macosx/GroupCell.mm
+macosx/GroupsController.mm
+macosx/GroupsPrefsController.mm
+macosx/InfoActivityViewController.mm
+macosx/InfoFileViewController.mm
+macosx/InfoGeneralViewController.mm
+macosx/InfoOptionsViewController.mm
+macosx/InfoPeersViewController.mm
+macosx/InfoTrackersViewController.mm
+macosx/InfoWindowController.mm
+macosx/MessageWindowController.mm
+macosx/NSStringAdditions.mm
+macosx/PrefsController.mm
+macosx/StatsWindowController.mm
+macosx/StatusBarController.mm
+macosx/Torrent.mm
+macosx/TorrentTableView.mm
+macosx/TrackerCell.mm
+macosx/TrackerNode.mm
+macosx/URLSheetWindowController.mm
 qt/AboutDialog.cc
 qt/AboutDialog.ui
 qt/Application.cc

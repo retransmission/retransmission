@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-03 11:48-0500\n"
+"POT-Creation-Date: 2026-10-04 11:10-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Phonebook3599, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/transmissionbt/teams/33778/zh_CN/)\n"
@@ -31,6 +31,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. Translators: Groups -> Button
+#. Translators: Groups -> Menu
+#. Translators: inspector -> check all
 msgid "None"
 msgstr "无"
 
@@ -189,46 +192,66 @@ msgstr "忽略活跃情况做种"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "空闲以下分钟数停止做种："
 
+#. Translators: Torrent -> status string
 msgid "Queued for verification"
 msgstr "等待验证"
 
+#. Translators: Torrent -> status string
 msgid "Verifying local data"
 msgstr "正在验证本地数据"
 
+#. Translators: Torrent -> status string
 msgid "Queued for download"
 msgstr "排队下载"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "正在下载"
 
+#. Translators: Torrent -> status string
 msgid "Queued for seeding"
 msgstr "排队做种"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "正在做种"
 
+#. Translators: Torrent -> status string
 #, fuzzy
 #| msgid "Incomplete"
 msgid "Seeding complete"
 msgstr "未完成"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Paused"
 msgstr "已暂停"
 
+#. Translators: Inspector -> Peers tab -> table row tooltip
+#. Translators: No Ratio
+#. Translators: Prefs -> blocklist -> message
+#. Translators: tracker peer stat
+#. Translators: Tracker last announce
+#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "N/A"
 
+#. Translators: files tab -> tooltip
 msgid "Mixed"
 msgstr "混合"
 
+#. Translators: Inspector -> selected torrents
 msgid "No Torrents Selected"
 msgstr "未选择种子"
 
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "当前 Tracker 的私有种子——已禁用 DHT 和 PEX"
 
+#. Translators: Inspector -> private torrent
 msgid "Public torrent"
 msgstr "公共种子"
 
@@ -273,6 +296,7 @@ msgstr "{uploaded_size}（分享率：{ratio}）"
 msgid "No errors"
 msgstr "无错误"
 
+#. Translators: Prefs -> blocklist -> message
 msgid "Never"
 msgstr "从未"
 
@@ -288,6 +312,8 @@ msgstr "正从此节点下载"
 msgid "We would download from this peer if they would let us"
 msgstr "若对方允许，将从此节点下载"
 
+#. Translators: inspector -> peer table -> header tool tip
+#. Translators: Inspector -> peer -> status
 msgid "Uploading to peer"
 msgstr "正上传至此节点"
 
@@ -301,6 +327,7 @@ msgstr "节点已对我们解锁，但我们不感兴趣"
 msgid "We unchoked this peer, but they're not interested"
 msgstr "我们已解锁此节点，但对方不感兴趣"
 
+#. Translators: inspector -> peer table -> header tool tip
 msgid "Encrypted connection"
 msgstr "加密连接"
 
@@ -319,6 +346,7 @@ msgstr "通过 µTP 连接的节点"
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
 
+#. Translators: inspector -> peer table -> header
 msgid "Address"
 msgstr "地址"
 
@@ -331,18 +359,24 @@ msgstr "下行请求"
 msgid "Up Reqs"
 msgstr "上行请求"
 
+#. Translators: inspector -> peer table -> header
+#. Translators: inspector -> web seed table -> header
 msgid "Down"
 msgstr "下载"
 
+#. Translators: Torrent -> status image
+#. Translators: inspector -> peer table -> header
 msgid "Up"
 msgstr "上传"
 
+#. Translators: inspector -> peer table -> header
 msgid "Client"
 msgstr "客户端"
 
 msgid "Flags"
 msgstr "标识"
 
+#. Translators: inspector -> web seed table -> header
 msgid "Web Seeds"
 msgstr "Web 种子"
 
@@ -358,6 +392,8 @@ msgstr "请修正问题后重试。"
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name}—添加 Tracker"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Trackers"
 msgstr "Tracker"
 
@@ -427,18 +463,23 @@ msgstr "删除(_D)"
 msgid "_Remove"
 msgstr "移除(_R)"
 
+#. Translators: File Outline -> Priority Menu
 msgid "High"
 msgstr "高"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Normal"
 msgstr "正常"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Low"
 msgstr "低"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "无法将“{old_path}”重命名为“{path}”：{error}（{error_code}）"
 
+#. Translators: Filter Bar -> filter menu
+#. Translators: Message window -> table column
 msgid "Name"
 msgstr "名称"
 
@@ -448,15 +489,22 @@ msgstr "大小"
 msgid "Progress"
 msgstr "进度"
 
+#. Translators: files tab -> tooltip
+#. Translators: file table -> header tool tip
 msgid "Download"
 msgstr "下载"
 
+#. Translators: file table -> header tool tip
+#. Translators: File Outline -> Menu
 msgid "Priority"
 msgstr "优先级"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: inspector -> check all
 msgid "All"
 msgstr "全部"
 
+#. Translators: Filter Bar -> filter button
 msgid "Active"
 msgstr "活跃"
 
@@ -464,6 +512,8 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "正在验证"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "错误"
 
@@ -526,15 +576,19 @@ msgstr "达到分享率后停止做种"
 msgid "Stop at Ratio ({ratio})"
 msgstr "达到分享率（{ratio}）后停止"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Ratio"
 msgstr "总分享率"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Ratio"
 msgstr "会话分享率"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Transfer"
 msgstr "总传输量"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Transfer"
 msgstr "会话传输量"
 
@@ -569,18 +623,26 @@ msgctxt "Logging level"
 msgid "Critical"
 msgstr "严重"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Error"
 msgstr "出错"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Warning"
 msgstr "警告"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Information"
 msgstr "信息"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Debug"
 msgstr "调试"
@@ -591,9 +653,11 @@ msgstr "保存日志"
 msgid "_Save"
 msgstr "保存(_S)"
 
+#. Translators: Message window -> table column
 msgid "Message"
 msgstr "消息"
 
+#. Translators: Message window -> table column
 msgid "Time"
 msgstr "时间"
 
@@ -617,6 +681,7 @@ msgstr "种子已完成"
 msgid "Start Now"
 msgstr "立即开始"
 
+#. Translators: notification title
 msgid "Torrent Added"
 msgstr "种子已添加"
 
@@ -636,7 +701,7 @@ msgid "Show options dialog"
 msgstr "显示选项对话框"
 
 msgid "Other…"
-msgstr ""
+msgstr "其他…"
 
 msgid "Select File"
 msgstr "选择文件"
@@ -669,6 +734,7 @@ msgstr[0] "屏蔽列表中有 {count:L} 个条目"
 msgid "Blocklist updated!"
 msgstr "屏蔽列表已更新！"
 
+#. Translators: Blocklist -> message
 msgid "Couldn't update blocklist"
 msgstr "无法更新屏蔽列表"
 
@@ -704,6 +770,7 @@ msgstr "状态: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)"
 msgid "Moving '{torrent_name}'"
 msgstr "正在移动“{torrent_name}”"
 
+#. Translators: Move error alert -> title
 msgid "Couldn't move torrent"
 msgstr "无法移动种子"
 
@@ -789,6 +856,7 @@ msgstr "{complete_size}，已上传 {uploaded_size}（分享率：{ratio}，目�
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}，已上传 {uploaded_size}（分享率：{ratio}）"
 
+#. Translators: Torrent -> eta string
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "剩余时间未知"
@@ -796,6 +864,7 @@ msgstr "剩余时间未知"
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr "{download_speed} ▾  {upload_speed} ▴"
 
+#. Translators: Torrent -> status string
 msgid "Stalled"
 msgstr "已停滞"
 
@@ -1023,6 +1092,7 @@ msgstr "备用速度限制"
 msgid "_Add"
 msgstr "添加(_A)"
 
+#. Translators: Filter Bar -> filter menu
 msgid "Tracker"
 msgstr "Tracker"
 
@@ -1032,6 +1102,8 @@ msgstr "宣告网址(_A)："
 msgid "_Close"
 msgstr "关闭(_C)"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Activity"
 msgstr "活动"
 
@@ -1041,15 +1113,18 @@ msgstr "大小："
 msgid "Have:"
 msgstr "已有："
 
+#. Translators: Stats window -> label
 msgid "Uploaded:"
 msgstr "已上传："
 
+#. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "已下载："
 
 msgid "State:"
 msgstr "状态："
 
+#. Translators: Stats window -> label
 msgid "Running time:"
 msgstr "运行时间："
 
@@ -1083,12 +1158,17 @@ msgstr "添加时间："
 msgid "Comment:"
 msgstr "备注："
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Information"
 msgstr "信息"
 
 msgid "Show _more details"
 msgstr "显示更多信息(_M)"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
+#. Translators: Preferences -> toolbar item title
 msgid "Peers"
 msgstr "节点"
 
@@ -1098,9 +1178,12 @@ msgstr "显示备用 Tracker(_B)"
 msgid "File listing not available for combined torrent properties"
 msgstr "文件列表不适用于组合种子文件属性"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Files"
 msgstr "文件"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Speed"
 msgstr "速度"
 
@@ -1131,6 +1214,8 @@ msgstr "节点连接"
 msgid "_Maximum peers:"
 msgstr "最大节点数(_M)："
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Options"
 msgstr "选项"
 
@@ -1147,15 +1232,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "另请参见 编辑>首选项>网络 中的默认公共 Tracker"
 
+#. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
 msgstr "打开种子"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent cell -> button info
 msgid "Start torrent"
 msgstr "开始种子"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent Table -> tooltip
 msgid "Pause torrent"
 msgstr "暂停种子"
 
+#. Translators: Remove toolbar item -> tooltip
 msgid "Remove torrent"
 msgstr "移除种子"
 
@@ -1165,6 +1256,7 @@ msgstr "种子属性"
 msgid "Torrent"
 msgstr "种子"
 
+#. Translators: Stats window -> title
 msgid "Statistics"
 msgstr "统计信息"
 
@@ -1208,12 +1300,14 @@ msgstr "私有种子(_P)"
 msgid "Creating torrent…"
 msgstr "正在创建种子…"
 
+#. Translators: Message window -> title
 msgid "Message Log"
 msgstr "消息日志"
 
 msgid "Save _As"
 msgstr "另存为(_A)"
 
+#. Translators: Message window -> save button
 msgid "Clear"
 msgstr "清除"
 
@@ -1257,6 +1351,8 @@ msgstr "上传（{speed_units}）(_U)："
 msgid "_Download ({speed_units}):"
 msgstr "下载（{speed_units}）(_D)："
 
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed Limits"
 msgstr "备用速度限制"
 
@@ -1439,6 +1535,7 @@ msgstr ""
 "要添加一个备用网址，请在主网址之后一行添加。\n"
 "要添加另一个主网址，请空一行之后添加。"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Network"
 msgstr "网络"
 
@@ -1495,6 +1592,7 @@ msgstr "地址："
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "可用通配符表示 IP 地址，例如 192.168.*.*"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Remote"
 msgstr "远程"
 
@@ -1519,6 +1617,7 @@ msgstr "本地数据已存在(_A)"
 msgid "Current Session"
 msgstr "当前会话"
 
+#. Translators: Stats window -> label
 msgid "Ratio:"
 msgstr "分享率："
 
@@ -1528,6 +1627,9 @@ msgstr "持续时间："
 msgid "Total"
 msgstr "总计"
 
+#. Translators: Open address toolbar item -> label
+#. Translators: Open address toolbar item -> palette label
+#. Translators: Drag overlay -> url
 msgid "Open URL"
 msgstr "打开网址"
 
@@ -1614,6 +1716,7 @@ msgstr "节点列表请求{markup_begin}超时 {time_span_ago}{markup_end}，将
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "{time_span_ago}遇到错误“{markup_begin}{error}{markup_end}”"
 
+#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "无计划更新"
 
@@ -1664,6 +1767,7 @@ msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} 小时"
 
+#. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
@@ -1711,6 +1815,7 @@ msgstr "无法解析宣告响应：{error}（{error_code}）"
 msgid "Couldn't parse scrape response: {error} ({error_code})"
 msgstr "无法解析抓取响应：{error}（{error_code}）"
 
+#. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "未知错误"
 
@@ -2063,18 +2168,22 @@ msgstr "GiB"
 msgid "TiB"
 msgstr "TiB"
 
+#. Translators: Transfer speed (bytes per second)
 msgid "B/s"
 msgstr "B/秒"
 
 msgid "kB/s"
 msgstr "kB/秒"
 
+#. Translators: Transfer speed (megabytes per second)
 msgid "MB/s"
 msgstr "MB/秒"
 
+#. Translators: Transfer speed (gigabytes per second)
 msgid "GB/s"
 msgstr "GB/秒"
 
+#. Translators: Transfer speed (terabytes per second)
 msgid "TB/s"
 msgstr "TB/秒"
 
@@ -2149,6 +2258,1791 @@ msgstr ""
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "无法获取“{url}”：预期 HTTP 响应代码为 {expected_code}，但收到 {actual_code}"
 
+#. Translators: About window -> license button
+msgid "License"
+msgstr "认证"
+
+msgid "OK"
+msgstr "好"
+
+#. Translators: Open torrent -> prompt
+#. Translators: Move torrent -> prompt
+#. Translators: Create torrent -> location sheet -> button
+#. Translators: Create torrent -> select file
+#. Translators: Preferences -> Open panel prompt
+msgid "Select"
+msgstr "选择"
+
+msgid "Select the download folder for \"{torrent_name}\""
+msgstr "选择“{torrent_name}”的下载文件夹"
+
+msgid "The destination directory and root data directory have the same name."
+msgstr "目标目录和根数据目录具有相同的名称。"
+
+msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
+msgstr "如果你企图使用已有数据，根数据目录应在目标目录之内。"
+
+msgid "Cancel"
+msgstr "取消"
+
+#. Translators: Add torrent -> same name -> button
+msgid "Add"
+msgstr "添加"
+
+#. Translators: Add torrent -> info
+#. Translators: Inspector -> Activity tab -> progress
+#. Translators: Torrent -> progress string
+msgid "{amount} selected"
+msgstr "{amount} 已选择"
+
+msgid "Start when added"
+msgstr "添加后立即开始"
+
+msgid "Magnet Link"
+msgstr "磁力链接"
+
+#, fuzzy
+#| msgid "_Destination folder:"
+msgid "Destination folder:"
+msgstr "目标文件夹："
+
+msgid "Priority:"
+msgstr "优先级："
+
+msgid "Group:"
+msgstr "群组："
+
+msgid "Change…"
+msgstr "修改…"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Move torrent file to the Trash"
+msgstr "移动种子文件至回收站"
+
+msgid "Verify Local Data"
+msgstr "校验本地数据"
+
+#. Translators: Filter toolbar item -> label
+#. Translators: inspector -> file filter
+#. Translators: Message window -> filter field
+msgid "Filter"
+msgstr "筛选栏"
+
+msgid "Trackers:"
+msgstr "Tracker："
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Private torrent"
+msgstr "私有种子"
+
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
+msgid "Create"
+msgstr "创建"
+
+msgid "Open when created"
+msgstr "创建完成时打开"
+
+msgid "Each tracker will be placed into its own tier"
+msgstr "每个 Tracker 将被放置在自己的等级中。"
+
+msgid "Source:"
+msgstr "来源："
+
+#, fuzzy
+#| msgid "_Torrent file:"
+msgid "Torrent file:"
+msgstr "种子文件："
+
+#, fuzzy
+#| msgid "Limit _download speed:"
+msgid "Limit download speed:"
+msgstr "下载限速："
+
+#, fuzzy
+#| msgid "Limit _upload speed:"
+msgid "Limit upload speed:"
+msgstr "上传限速："
+
+msgid "minutes"
+msgstr "分钟"
+
+#. Translators: Transfer speed (kilobytes per second)
+msgid "KB/s"
+msgstr "KB/秒"
+
+msgid "Status of selected files"
+msgstr "所选文件状态"
+
+msgid "Remaining time"
+msgstr "剩余时间"
+
+msgid "Stop seeding if idle for:"
+msgstr "停止做种闲置时间:"
+
+msgid "Any"
+msgstr "任意"
+
+msgid "of the following are true"
+msgstr "以下这些是真的"
+
+msgid "Comment"
+msgstr "备注"
+
+msgid "contains"
+msgstr "包含"
+
+msgid "begins with"
+msgstr "开始于"
+
+msgid "ends with"
+msgstr "结束于"
+
+msgid "is"
+msgstr "是"
+
+msgid "is not"
+msgstr "不是"
+
+msgid "matches"
+msgstr "匹配"
+
+msgid "Any File"
+msgstr "任意文件"
+
+msgid "Any Tracker"
+msgstr "任意 Tracker"
+
+msgid "Transfer"
+msgstr "传输"
+
+msgid "Failed DL:"
+msgstr "下载失败："
+
+#. Translators: inspector -> peer table -> header tool tip
+msgid "Available"
+msgstr "可用"
+
+msgid "Progress:"
+msgstr "进度："
+
+msgid "Seeding:"
+msgstr "正在做种："
+
+msgid "Completed:"
+msgstr "已完成："
+
+msgid "Dates"
+msgstr "日期"
+
+msgid "Time Elapsed"
+msgstr "已用时间"
+
+msgid "Downloading:"
+msgstr "正在下载："
+
+msgid "Created On:"
+msgstr "创建于："
+
+msgid "Creator:"
+msgstr "创建者："
+
+msgid "Pieces:"
+msgstr "分片："
+
+msgid "Was:"
+msgstr "曾是:"
+
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Torrent priority:"
+msgstr "种子优先级："
+
+#, fuzzy
+#| msgid "Honor global _limits"
+msgid "Honor global limits"
+msgstr "服从全局限制"
+
+msgid "Use Global Settings"
+msgstr "使用全局设置"
+
+msgid "Stop When Inactive"
+msgstr "闲置时停止做种"
+
+#, fuzzy
+#| msgid "Remove from the transfer list when seeding completes"
+msgid "Remove from the torrent list when seeding completes"
+msgstr "做种完成时从传输列表中移除"
+
+#, fuzzy
+#| msgid "_Maximum peers:"
+msgid "Maximum peers:"
+msgstr "最大节点数："
+
+#, fuzzy
+#| msgid "_Idle:"
+msgid "Idle:"
+msgstr "空闲："
+
+#. Translators: Preferences -> toolbar item title
+#, fuzzy
+#| msgid "Torrent"
+msgid "Torrents"
+msgstr "种子"
+
+msgid "About Retransmission"
+msgstr "关于 Retransmission"
+
+msgid "Check for Update…"
+msgstr "检查更新…"
+
+#. Translators: Donation beg -> button
+msgid "Donate"
+msgstr "捐赠"
+
+msgid "Preferences…"
+msgstr "偏好设置…"
+
+msgid "Services"
+msgstr "服务"
+
+msgid "Hide Retransmission"
+msgstr "隐藏 Retransmission"
+
+msgid "Hide Others"
+msgstr "隐藏其他"
+
+msgid "Show All"
+msgstr "全部显示"
+
+msgid "Quit Retransmission"
+msgstr "退出 Retransmission"
+
+msgid "File"
+msgstr "文件"
+
+msgid "Create Torrent File…"
+msgstr "创建 Torrent 文件…"
+
+#, fuzzy
+#| msgid "_Open…"
+msgid "Open…"
+msgstr "打开…"
+
+msgid "Open With Options Window…"
+msgstr "打开选项窗口…"
+
+msgid "Open URL…"
+msgstr "打开网址…"
+
+msgid "Close Window"
+msgstr "关闭窗口"
+
+#. Translators: QuickLook toolbar item -> label
+#. Translators: QuickLook toolbar item -> palette label
+#. Translators: QuickLook toolbar item -> tooltip
+#. Translators: View menu -> Quick Look
+msgid "Quick Look"
+msgstr "快速查看"
+
+#, fuzzy
+#| msgid "Set _Location…"
+msgid "Set Location…"
+msgstr "设置位置…"
+
+#. Translators: File Outline -> Menu
+msgid "Rename…"
+msgstr "重命名…"
+
+msgid "Save Torrent File As…"
+msgstr "另存为 Torrent 文件…"
+
+msgid "Share Torrent File"
+msgstr "分享 Torrent 文件"
+
+msgid "Copy Magnet Link to Clipboard"
+msgstr "复制磁力链接到剪贴板"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Undo"
+msgstr "撤销"
+
+msgid "Redo"
+msgstr "重做"
+
+msgid "Cut"
+msgstr "剪切"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Paste"
+msgstr "粘贴"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Select All"
+msgstr "选择全部"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Compact View"
+msgstr "紧凑视图"
+
+msgid "Pieces Bar"
+msgstr "分片栏"
+
+msgid "Availability"
+msgstr "可用性"
+
+msgid "Use Groups"
+msgstr "使用群组"
+
+#, fuzzy
+msgid "Sort Torrents By"
+msgstr "开始任务"
+
+msgid "Queue Order"
+msgstr "队列排序"
+
+msgid "Date Added"
+msgstr "添加时间"
+
+msgid "ETA"
+msgstr "剩余时间"
+
+msgid "State"
+msgstr "状态"
+
+msgid "Ascending"
+msgstr "升序"
+
+msgid "Descending"
+msgstr "降序"
+
+#. Translators: View menu -> Inspector
+msgid "Show Inspector"
+msgstr "显示嗅探器"
+
+#. Translators: View menu -> Status Bar
+msgid "Hide Status Bar"
+msgstr "隐藏状态栏"
+
+#. Translators: View menu -> Filter Bar
+msgid "Hide Filter Bar"
+msgstr "隐藏筛选栏"
+
+#. Translators: View menu -> Toolbar
+msgid "Hide Toolbar"
+msgstr "隐藏工具栏"
+
+msgid "Customize Toolbar…"
+msgstr "自定义工具栏…"
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "Paused"
+msgid "Pause"
+msgstr "已暂停"
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "_Start"
+msgid "Start"
+msgstr "开始"
+
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
+msgid "Remove"
+msgstr "删除"
+
+#, fuzzy
+#| msgid "_Delete Files and Remove"
+msgid "Delete Files and Remove"
+msgstr "移除并删除文件"
+
+msgid "Remove All Completed From List"
+msgstr "从列表中移除全部已完成项"
+
+#. Translators: File Outline -> Menu
+msgid "Show in Finder"
+msgstr "在 Finder 中显示"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+msgid "Pause All"
+msgstr "暂停全部"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All"
+msgstr "全部开始"
+
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All Queued Now"
+msgstr "全部开始"
+
+#. Translators: Groups -> Button
+msgid "Group"
+msgstr "群组"
+
+#, fuzzy
+#| msgid "Ask Tracker for _More Peers"
+msgid "Ask Tracker for More Peers"
+msgstr "向 Tracker 请求更多节点"
+
+msgid "Window"
+msgstr "窗口"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Zoom"
+msgstr "缩放"
+
+msgid "Next Inspector Tab"
+msgstr "下一个检查器选项卡"
+
+msgid "Previous Inspector Tab"
+msgstr "上一个检查器选项卡"
+
+msgid "Next Filter Button"
+msgstr "下一个筛选按钮"
+
+msgid "Previous Filter Button"
+msgstr "上一个筛选按钮"
+
+msgid "Bring All to Front"
+msgstr "全部置于顶层"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Retransmission Help"
+msgstr "Retransmission 帮助"
+
+msgid "Retransmission Homepage"
+msgstr "Retransmission 主页"
+
+msgid "Forums"
+msgstr "论坛"
+
+msgid "Support & Development"
+msgstr "支持和开发"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "Preferences"
+msgstr "偏好设置"
+
+msgid "Check for update:"
+msgstr "检查更新："
+
+msgid "Include beta releases"
+msgstr "包括 beta 版本发布"
+
+msgid "Automatically check daily"
+msgstr "每天自动检查"
+
+msgid "Reset all alerts:"
+msgstr "重置所有警告"
+
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
+msgid "Reset"
+msgstr "重设"
+
+msgid "Set Default Application"
+msgstr "设置默认应用程序"
+
+msgid "Configure In System Preferences"
+msgstr "配置系统偏好"
+
+#, fuzzy
+#| msgid "Automatically size window to fit all transfers"
+msgid "Automatically size window to fit all torrents"
+msgstr "自动调整窗口大小以适应全部传输"
+
+msgid "Auto resize:"
+msgstr "自动调整大小："
+
+#, fuzzy
+#| msgid "Only when transfers are downloading"
+msgid "Only when torrents are downloading"
+msgstr "仅在传输正在下载时"
+
+msgid "Total upload rate"
+msgstr "总上传速率"
+
+msgid "Total download rate"
+msgstr "总下载速率"
+
+msgid "Badge Dock icon with:"
+msgstr "在 Dock 图标上显示角标："
+
+msgid "Notifications:"
+msgstr "通知："
+
+msgid "Prompt user for:"
+msgstr "提示用户进行："
+
+#, fuzzy
+#| msgid "Removal of active transfers"
+msgid "Removal of active torrents"
+msgstr "移除正在传输的任务"
+
+#, fuzzy
+#| msgid "Quit with active transfers"
+msgid "Quit with active torrents"
+msgstr "退出时仍有正在传输的任务"
+
+msgid "Accept magnet links:"
+msgstr "接受磁力链接："
+
+msgid "Open torrent files:"
+msgstr "打开种子文件:"
+
+msgid "Adding"
+msgstr "正在添加"
+
+msgid "Same as torrent file"
+msgstr "与 Torrent 文件相同"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to location:"
+msgstr "保存到位置："
+
+msgid "Settings:"
+msgstr "设置："
+
+#, fuzzy
+#| msgid "Append \"._part\" to incomplete files' names"
+msgid "Append \".part\" to incomplete files' names"
+msgstr "在未完成的文件名附加“.part”扩展名"
+
+#, fuzzy
+#| msgid "Automatically add torrent files _from:"
+msgid "Automatically add torrent files from:"
+msgstr "从此处自动添加种子文件："
+
+msgid "Auto add:"
+msgstr "自动添加："
+
+msgid "Keep incomplete files in:"
+msgstr "将未完成的文件保存在以下位置："
+
+msgid "Display a window when opening a torrent file"
+msgstr "打开 Torrent 文件时显示窗口"
+
+msgid "Display a window when opening a magnet link"
+msgstr "打开磁力链接时显示窗口"
+
+#, fuzzy
+#| msgid "_Start added torrents"
+msgid "Start added torrents"
+msgstr "添加种子后开始"
+
+msgid "Only when adding manually"
+msgstr "仅在手动添加时"
+
+msgid "Add window:"
+msgstr "添加窗口："
+
+msgid "Only when there are multiple files"
+msgstr "仅当有多个文件时"
+
+msgid "Management"
+msgstr "管理"
+
+msgid "Queues:"
+msgstr "队列："
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "active torrents"
+msgstr "私有种子"
+
+msgid "Limits:"
+msgstr "限制："
+
+msgid "Ratio is amount uploaded to amount downloaded"
+msgstr "分享率是上传量与下载量的比值"
+
+msgid "Download with maximum of:"
+msgstr "下载最大速度限制为："
+
+msgid "Seeding with maximum of:"
+msgstr "做种最大速度限制为："
+
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when inactive for:"
+msgstr "传输在闲置时间达到以下时间时停滞："
+
+msgid "Play sound:"
+msgstr "播放声音："
+
+msgid "When seeding completes:"
+msgstr "做种完成时："
+
+msgid "When download completes:"
+msgstr "下载完成时："
+
+msgid "Call script:"
+msgstr "调用脚本："
+
+#, fuzzy
+#| msgid "Applies to newly added transfers"
+msgid "Applies to newly added torrents"
+msgstr "适用于新添加的传输"
+
+#, fuzzy
+#| msgid "Transfers will be assigned to the first group where all criteria are met"
+msgid "Torrents will be assigned to the first group where all criteria are met"
+msgstr "传输将分配到第一个符合所有标准的群组"
+
+msgid "Edit…"
+msgstr "编辑…"
+
+#, fuzzy
+#| msgid "Assign group to new transfers based on criteria"
+msgid "Assign group to new torrents based on criteria"
+msgstr "基于条件将新传输任务分配到群组"
+
+#, fuzzy
+#| msgid "The location will only be set when adding the transfer"
+msgid "The location will only be set when adding the torrent"
+msgstr "位置只有在添加传输时才会被设置"
+
+msgid "Custom location:"
+msgstr "自定义位置："
+
+msgid "Group Name:"
+msgstr "群组名称："
+
+msgid "Color"
+msgstr "颜色"
+
+msgid "Monday"
+msgstr "星期一"
+
+msgid "Tuesday"
+msgstr "星期二"
+
+msgid "Wednesday"
+msgstr "星期三"
+
+msgid "Thursday"
+msgstr "星期四"
+
+msgid "Friday"
+msgstr "星期五"
+
+msgid "Saturday"
+msgstr "星期六"
+
+msgid "Sunday"
+msgstr "星期日"
+
+msgid "to"
+msgstr "到"
+
+#, fuzzy
+#| msgid "_Scheduled times:"
+msgid "Scheduled times:"
+msgstr "计划时间："
+
+#, fuzzy
+#| msgid "_Download:"
+msgid "Download:"
+msgstr "下载："
+
+#, fuzzy
+#| msgid "_Upload:"
+msgid "Upload:"
+msgstr "上传："
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative speed limits:"
+msgstr "备用速度限制"
+
+#, fuzzy
+#| msgid "Speed Limits"
+msgid "Speed limits:"
+msgstr "速度限制"
+
+#, fuzzy
+#| msgid "Peer Limits"
+msgid "Peer limits:"
+msgstr "节点限制"
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use DHT to find more peers for public torrents"
+msgstr "使用 DHT 以寻找更多节点"
+
+msgid "Blocklist:"
+msgstr "屏蔽列表："
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new torrents:"
+msgstr "单个种子最大节点数："
+
+msgid "Last updated: N/A"
+msgstr "最后更新时间：N/A"
+
+msgid "Encryption:"
+msgstr "加密："
+
+msgid "Automatically update weekly"
+msgstr "每周自动更新"
+
+#, fuzzy
+#| msgid "Maximum peers _overall:"
+msgid "Maximum peers overall:"
+msgstr "全局最大节点数："
+
+msgid "blocklist loaded/not loaded"
+msgstr "屏蔽列表已加载/未加载"
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PEX to find more peers for public torrents"
+msgstr "使用 PEX 以寻找更多节点"
+
+#. Translators: URL sheet label
+msgid "URL:"
+msgstr "网址："
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use Local Peer Discovery to find more peers for public torrents"
+msgstr "使用本地节点发现（LPD）寻找更多节点"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "High connection limits might significantly impact system performance"
+msgstr "高连接限制可能会显著影响系统性能"
+
+#, fuzzy
+#| msgid "Enable _blocklist:"
+msgid "Enable blocklist"
+msgstr "启用屏蔽列表："
+
+msgid "Randomize"
+msgstr "随机"
+
+msgid "Peer communication:"
+msgstr "节点通信："
+
+#, fuzzy
+#| msgid "_Port for incoming connections:"
+msgid "Port for incoming connections:"
+msgstr "入站连接的端口："
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is open"
+msgstr "端口是打开的"
+
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a random port at startup"
+msgstr "在 Transmission 启动时随机选择端口"
+
+msgid "Automatically map port"
+msgstr "自动映射端口"
+
+#, fuzzy
+#| msgid "Prevent computer from sleeping with active transfers"
+msgid "Prevent computer from sleeping with active torrents"
+msgstr "有活动传输时防止计算机进入睡眠状态"
+
+msgid "System sleep:"
+msgstr "系统睡眠："
+
+#, fuzzy
+#| msgid "Enable µ_TP for peer connections"
+msgid "Enable µTP for peer connections"
+msgstr "为节点连接启用 µTP"
+
+msgid "This enables the web interface and allows remote requests"
+msgstr "这将启用 Web 界面并允许远程请求"
+
+#, fuzzy
+#| msgid "Only allow these IP a_ddresses:"
+msgid "Only allow these IP addresses:"
+msgstr "只允许这些 IP 地址："
+
+#, fuzzy
+#| msgid "Use _authentication"
+msgid "Use authentication"
+msgstr "使用身份验证"
+
+msgid "Display the web interface with Bonjour"
+msgstr "使用 Bonjour 显示 Web 界面"
+
+#, fuzzy
+#| msgid "Allow _remote access"
+msgid "Allow remote access"
+msgstr "允许远程访问"
+
+msgid "Username:"
+msgstr "用户名："
+
+msgid "Password:"
+msgstr "密码："
+
+#, fuzzy
+#| msgid "HTTP _port:"
+msgid "HTTP port:"
+msgstr "HTTP 端口："
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "Open Web Client"
+msgstr "打开 Web 客户端"
+
+#. Translators: Inspector -> Files tab -> file status string
+#. Translators: Status bar transfer count
+#. Translators: file size string
+msgid "{part} of {whole}"
+msgstr "{part} / {whole}"
+
+#. Translators: Blocklist -> message
+#, fuzzy
+#| msgid "Update Blocklist"
+msgid "Updating blocklist"
+msgstr "更新屏蔽列表"
+
+msgid "Download of the blocklist failed."
+msgstr "下载屏蔽列表失败"
+
+#. Translators: Legal alert -> button
+msgid "I Accept"
+msgstr "我同意"
+
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
+msgid "Quit"
+msgstr "退出"
+
+#. Translators: Legal alert -> title
+msgid "Welcome to {appname}"
+msgstr "欢迎来到{appname}"
+
+msgid "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws."
+msgstr "{appname} 是一个文件共享程序。当你运行一个 Torrent 时，其数据将通过上传的方式提供给其他人。你和你自己要对做出正确的判断和遵守当地的法律负全部责任。"
+
+msgid "Remote access needs a new password."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on."
+msgstr ""
+
+#. Translators: Transmission import progress -> label
+msgid "Copying Transmission's transfers"
+msgstr ""
+
+msgid "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time."
+msgstr ""
+
+msgid "{appname} can copy your settings from Transmission, but not its transfers."
+msgstr ""
+
+msgid "Quit Transmission, then click Import."
+msgstr ""
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Import from Transmission?"
+msgstr "Retransmission"
+
+#. Translators: Transmission import alert -> button
+msgid "Import"
+msgstr ""
+
+#. Translators: Transmission import alert -> button
+msgid "Don't Import"
+msgstr ""
+
+msgid "Transmission's transfers couldn't be copied."
+msgstr ""
+
+msgid "{appname} is already running."
+msgstr "{appname} 已经在运行。"
+
+msgid "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit."
+msgstr "{appname} 已经在运行了。在关闭该实例之前，无法打开此副本。"
+
+msgid "Transmission is running."
+msgstr ""
+
+msgid "Quit Transmission before opening {appname}. The two apps would work on the same downloads."
+msgstr ""
+
+msgid "Shortcuts for changing global settings."
+msgstr "更改全局设置的快捷方式。"
+
+#, fuzzy
+#| msgid "Remove torrent and delete its files"
+msgid "Remove all torrents that have completed seeding."
+msgstr "移除种子并删除文件"
+
+#. Translators: notification button
+msgid "Show"
+msgstr "显示"
+
+msgid "Support open-source indie software"
+msgstr "支持开源的独立软件"
+
+msgid "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation."
+msgstr "{appname} 是一个全功能的 Torrent 应用程序。在开发、编码和完善方面花费了大量的时间和精力。如果你喜欢使用它，请考虑用捐赠来表达你的爱。"
+
+msgid "Donate or not, there will be no difference to your torrenting experience."
+msgstr "捐赠与否不影响您的BT下载体验。"
+
+#. Translators: Donation beg -> button
+msgid "Nope"
+msgstr "算了"
+
+msgid "Don't bug me about this ever again."
+msgstr "不要再为此打扰我"
+
+msgid "Are you sure you want to quit?"
+msgstr "你确定要退出吗?"
+
+msgid "There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgstr ""
+
+msgid "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgid_plural "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch."
+msgstr[0] ""
+
+msgid "{appname} will quit, because the two apps would work on the same downloads."
+msgstr ""
+
+msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+msgstr "{url}处的文件{filename}不是种子文件。"
+
+#. Translators: Download not a torrent -> title
+#. Translators: Torrent download error -> title
+msgid "Torrent download failed"
+msgstr "Torrent 下载失败"
+
+msgid "The torrent could not be downloaded from {url}: {error}."
+msgstr "无法从 {url}:{error}下载 Torrent 文件。"
+
+msgid "\"{filename}\" is not a valid torrent file."
+msgstr "“{filename}”不是有效的种子文件。"
+
+msgid "The torrent file cannot be opened because it contains invalid data."
+msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
+
+msgid "Adding magnetized torrent failed."
+msgstr ""
+
+msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
+msgstr ""
+
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
+
+#, fuzzy
+#| msgid "The torrent file cannot be opened because it contains invalid data."
+msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
+
+msgid "Magnet link is a duplicate of an existing torrent."
+msgstr ""
+
+msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Are you sure you want to remove this tracker?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+msgstr "你确定要删除这个tracker？"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+msgstr "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "一旦移除，继续传输将需要 Torrent 文件或磁力链接。"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "There is {count:L} active torrent."
+msgid_plural "There are {count:L} active torrents."
+msgstr[0] "移除 {count:L} 个种子？"
+
+#, fuzzy
+#| msgid "Seeding to {active_count:L} peer"
+#| msgid_plural "Seeding to {active_count:L} peers"
+msgid "There is {count:L} torrent ({active_count:L} active)."
+msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+msgstr[0] "正在做种给 {active_count:L} 个节点"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+msgid "Select the new folder for \"{torrent_name}\"."
+msgstr "为“{torrent_name}”选择新的文件夹。"
+
+msgid "Select the new folder for {count:L} data file."
+msgid_plural "Select the new folder for {count:L} data files."
+msgstr[0] "为 {count:L} 个数据文件选择新的文件夹。"
+
+msgid "Copy of \"{torrent_name}\" Cannot Be Created"
+msgstr "“{torrent_name}”的副本无法创建"
+
+msgid "The torrent file ({path}) cannot be found."
+msgstr "Torrent 文件（{path}）找不到。"
+
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "下载完成"
+
+#. Translators: notification title
+msgid "Seeding Complete"
+msgstr "做种完成"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Enabled"
+msgstr "备用速度限制"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Disabled"
+msgstr "备用速度限制"
+
+msgid "Changed at a scheduled time"
+msgstr ""
+
+#. Translators: Create toolbar item -> palette label
+#. Translators: Create torrent -> select file
+#. Translators: Drag overlay -> file
+msgid "Create Torrent File"
+msgstr "创建种子文件"
+
+msgid "Create a new torrent"
+msgstr "创建一个新种子"
+
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
+msgid "Open"
+msgstr "打开"
+
+#. Translators: Open toolbar item -> palette label
+msgid "Open Torrent Files"
+msgstr "打开 Torrent 文件"
+
+#. Translators: Remove toolbar item -> palette label
+msgid "Remove Selected"
+msgstr "移除所选项目"
+
+#. Translators: Inspector toolbar item -> label
+#. Translators: Inspector toolbar item -> palette label
+#. Translators: Inspector -> title
+msgid "Inspector"
+msgstr "嗅探器"
+
+msgid "Toggle the torrent inspector"
+msgstr "种子嗅探器开关"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Pause all torrents"
+msgstr "暂停全部 Torrent"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Start all torrents"
+msgstr "开始全部 Torrent"
+
+#. Translators: All toolbar item -> label
+msgid "Apply All"
+msgstr "全部应用"
+
+#, fuzzy
+#| msgid "Pause All"
+msgid "Pause / Start All"
+msgstr "暂停全部"
+
+#. Translators: Selected toolbar item -> label
+msgid "Apply Selected"
+msgstr "应用已选"
+
+msgid "Pause / Start Selected"
+msgstr ""
+
+#. Translators: Filter toolbar item -> palette label
+msgid "Toggle Filter"
+msgstr "筛选开关"
+
+msgid "Toggle the filter bar"
+msgstr "筛选栏开关"
+
+#. Translators: Share toolbar item -> label
+#. Translators: Share toolbar item -> palette label
+msgid "Share"
+msgstr "分享"
+
+#. Translators: Share toolbar item -> tooltip
+msgid "Share torrent file"
+msgstr "分享 Torrent 文件"
+
+#. Translators: View menu -> Inspector
+msgid "Hide Inspector"
+msgstr "隐藏嗅探器"
+
+#. Translators: View menu -> Status Bar
+msgid "Show Status Bar"
+msgstr "显示状态栏"
+
+#. Translators: View menu -> Filter Bar
+msgid "Show Filter Bar"
+msgstr "显示筛选栏"
+
+#. Translators: View menu -> Toolbar
+msgid "Show Toolbar"
+msgstr "显示工具栏"
+
+#. Translators: View menu -> Quick Look
+msgid "Close Quick Look"
+msgstr "关闭快速查看"
+
+#. Translators: Dock item - Seeding
+msgid "{count:L} Seeding"
+msgstr "{count:L} 做种"
+
+#. Translators: Dock item - Downloading
+msgid "{count:L} Downloading"
+msgstr "{count:L} 正在下载"
+
+msgid "This folder contains no files."
+msgstr "此文件夹中没有文件。"
+
+msgid "There must be at least one file in a folder to create a torrent file."
+msgstr "文件夹内必须至少有一个文件才能创建 Torrent 文件。"
+
+msgid "The total file size is zero bytes."
+msgstr "总文件大小为零字节。"
+
+msgid "A torrent file cannot be created for files with no size."
+msgstr "不能为没有大小的文件创建种子文件。"
+
+msgid "Select the name and location for the torrent file."
+msgstr "选择 Torrent 文件的名称和位置。"
+
+msgid "There are no tracker addresses."
+msgstr "没有 Tracker 地址。"
+
+msgid "A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you."
+msgstr ""
+
+msgid "The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed."
+msgstr ""
+
+#. Translators: Create torrent -> info
+msgid "{count} piece, {size}"
+msgid_plural "{count} pieces, {size} each"
+msgstr[0] "{count} 个分片，每个 {size}"
+
+msgid "Select a file or folder for the torrent file."
+msgstr "选择一个文件或文件夹作为 Torrent 文件。"
+
+msgid "The chosen torrent file location does not exist."
+msgstr "所选的 Torrent 文件位置不存在。"
+
+msgid "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file."
+msgstr "目录“{directory}”当前不存在。创建此目录或选择其他目录来创建种子文件。"
+
+msgid "A torrent file with this name and directory cannot be created."
+msgstr "不能创建具有此名称和目录的种子文件。"
+
+msgid "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file."
+msgstr "目录“{directory}”中已经有名为“{filename}”的文件，请在其他文件名或目录下保存该种子文件。"
+
+msgid "Creation of \"{filename}\" failed."
+msgstr "创建“{filename}”失败"
+
+#. Translators: Drag overlay -> torrents
+msgid "{count:L} Torrent File"
+msgid_plural "{count:L} Torrent Files"
+msgstr[0] "{count:L} 个 Torrent 文件"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download"
+msgid "Don't download"
+msgstr "下载"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download speed"
+msgid "Download some"
+msgstr "下载速度"
+
+#. Translators: File Outline -> Menu
+msgid "Check Selected"
+msgstr "勾选"
+
+#. Translators: File Outline -> Menu
+msgid "Uncheck Selected"
+msgstr "取消勾选"
+
+#. Translators: File Outline -> Menu
+msgid "Only Check Selected"
+msgstr "仅勾选"
+
+#. Translators: files tab -> tooltip
+msgid "Priority not available"
+msgstr ""
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "Low priority"
+msgstr "优先级"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "High priority"
+msgstr "优先级"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Normal priority"
+msgstr "种子优先级："
+
+msgid "Rename the file \"{filename}\":"
+msgstr "重命名文件“{filename}”："
+
+#. Translators: rename sheet button
+msgid "Rename"
+msgstr "重命名"
+
+#. Translators: Filter Bar -> group filter menu
+#. Translators: Groups -> Button
+msgid "All Groups"
+msgstr "全部群组"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Download speed"
+msgstr "下载速度"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Upload speed"
+msgstr "上传速度"
+
+#. Translators: Torrent table -> group row -> tooltip
+#. Translators: Torrent -> status image
+#. Translators: status bar -> status label
+msgid "Ratio"
+msgstr "分享率"
+
+#. Translators: Groups -> Name
+msgid "Red"
+msgstr "红色"
+
+#. Translators: Groups -> Name
+msgid "Orange"
+msgstr "橙色"
+
+#. Translators: Groups -> Name
+msgid "Yellow"
+msgstr "黄色"
+
+#. Translators: Groups -> Name
+msgid "Green"
+msgstr "绿色"
+
+#. Translators: Groups -> Name
+msgid "Blue"
+msgstr "蓝色"
+
+#. Translators: Groups -> Name
+msgid "Purple"
+msgstr "紫色"
+
+#. Translators: Groups -> Name
+msgid "Gray"
+msgstr "灰色"
+
+#. Translators: Inspector -> Activity tab -> have
+msgid "{size} verified"
+msgstr "{size} 已验证"
+
+#. Translators: Info options -> global setting
+msgid "disabled"
+msgstr "已禁用"
+
+#. Translators: inspector -> peer table -> header tool tip
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from peer"
+msgstr "正从此节点下载"
+
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from web seed"
+msgstr "正从此节点下载"
+
+msgid "no peer info available"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Connected"
+msgid_plural "{count:L} Connected"
+msgstr[0] "{count:L} 已连接"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "DL from {count:L}"
+msgstr "从 {count:L} 下载"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "UL to {count:L}"
+msgstr "上传到 {count:L}"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrent Not Active"
+msgstr "种子属性"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrents Completed"
+msgid "Torrents Not Active"
+msgstr "种子已完成"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "Known:"
+msgstr "已知:"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Known:"
+msgstr "{count:L} 已知："
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} tracker"
+msgstr "{count:L} 个 Tracker"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} incoming"
+msgstr "{count:L} 传入"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} cache"
+msgstr "{count:L} 缓存"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} local discovery"
+msgstr "{count:L} 本地发现"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} PEX"
+msgstr "{count:L} 次"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} DHT"
+msgstr "{count:L} 次"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} LTEP"
+msgstr "{count:L} 次"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Progress: {percent}"
+msgstr "进度：{percent}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Partial seed"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "encrypted"
+msgstr "加密的"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Protocol: {protocol}"
+msgstr "协议：{protocol}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Port: {port}"
+msgstr "端口: {port}"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found through a tracker"
+msgstr "通过 DHT 找到的节点"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found in the cache"
+msgstr "通过 DHT 找到的节点"
+
+#, fuzzy
+#| msgid "Peer was found through Peer Exchange (PEX)"
+msgid "Peer was found through Local Peer Discovery (LPD)"
+msgstr "通过节点交换（PEX）找到的节点"
+
+msgid "Peer was found through a libtorrent extension protocol handshake"
+msgstr ""
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Add a tracker"
+msgstr "添加一个 Tracker"
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Remove selected trackers"
+msgstr "移除所选 Tracker"
+
+#. Translators: Inspector -> tracker table
+msgid "New Tier"
+msgstr "新等级"
+
+#. Translators: Inspector -> tracker table
+msgid "Tier {tier}"
+msgstr "等级 {tier}"
+
+msgid "Are you sure you want to remove {count:L} tracker?"
+msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgstr[0] "您确定要移除 {count:L} 个 Tracker 吗？"
+
+msgid "Once removed, {appname} will no longer attempt to contact them. This cannot be undone."
+msgstr "一旦被移除，{appname} 将不再尝试联系它们。此操作无法被撤销。"
+
+msgid "Are you sure you want to remove this tracker?"
+msgstr "你确定要删除这个tracker？"
+
+msgid "Once removed, {appname} will no longer attempt to contact it. This cannot be undone."
+msgstr "一旦被移除，{appname} 将不再尝试联系该文件。此操作无法被撤销。"
+
+#. Translators: Inspector -> selected torrents
+msgid "{count:L} Torrent Selected"
+msgid_plural "{count:L} Torrents Selected"
+msgstr[0] "已选择 {count:L} 个 Torrents"
+
+#. Translators: Inspector -> selected torrents
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "{count:L} magnetized torrent"
+msgid_plural "{count:L} magnetized torrents"
+msgstr[0] "移除 {count:L} 个种子？"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: stats total
+msgid "{amount} total"
+msgstr "共 {amount}"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: Torrent -> progress string
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Magnetized torrent"
+msgstr "私有种子"
+
+#. Translators: Message window -> save button
+msgid "Save"
+msgstr "保存"
+
+#. Translators: Save log panel -> default file name
+msgid "untitled"
+msgstr "未命名"
+
+msgid "Log Could Not Be Saved"
+msgstr "无法保存记录"
+
+msgid "There was a problem creating the file \"{filename}\"."
+msgstr "创建文件“{filename}”时出现问题。"
+
+#. Translators: Message window -> level
+msgctxt "Logging level"
+msgid "Trace"
+msgstr "跟踪"
+
+msgid "{file_count:L} file"
+msgid_plural "{file_count:L} files"
+msgstr[0] "{file_count:L} 文件"
+
+#, fuzzy
+#| msgid "{count:L} Torrent File"
+#| msgid_plural "{count:L} Torrent Files"
+msgid "{count:L} torrent"
+msgid_plural "{count:L} torrents"
+msgstr[0] "{count:L} 个 Torrent 文件"
+
+#. Translators: Preferences -> toolbar item title
+msgid "General"
+msgstr "一般"
+
+#. Translators: Preferences -> toolbar item title
+msgid "Groups"
+msgstr "群组"
+
+#. Translators: The width of the Mac client's Preferences window in points, as a number such as 700, for languages whose text needs more room than English. Leave this untranslated for the usual width.
+msgid "PrefWindowSize"
+msgstr "偏好设置窗口大小"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is closed"
+msgstr "端口是关闭的"
+
+msgid "Port check site is down"
+msgstr "端口检查网站不在线"
+
+msgid "{count:L} IP address rule in list"
+msgid_plural "{count:L} IP address rules in list"
+msgstr[0] "列表中有 {count:L} 条 IP 地址规则"
+
+msgid "A blocklist must first be downloaded"
+msgstr "必须先下载一个屏蔽列表"
+
+#. Translators: Prefs -> blocklist -> message
+msgid "Last updated"
+msgstr "最后更新"
+
+msgid "This option is not available if Save to location is set to Same as torrent file."
+msgstr ""
+
+#. Translators: Stats window -> label
+msgid "Program started:"
+msgstr ""
+
+msgid "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected."
+msgstr ""
+
+#. Translators: stats total
+msgid "Total N/A"
+msgstr "总计 N/A"
+
+#. Translators: stats window -> times opened
+msgid "{count:L} time"
+msgid_plural "{count:L} times"
+msgstr[0] "{count:L} 次"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "{speed:L} KB/s"
+msgstr "{speed:L} KB/秒"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "unlimited"
+msgstr "无限制"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global upload limit"
+msgstr "全局上传限制"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global download limit"
+msgstr "全局下载限制"
+
+msgid "A folder cannot be moved to inside itself."
+msgstr "不能将一个文件夹移动到其自身里面。"
+
+msgid "The move operation of \"{torrent_name}\" cannot be done."
+msgstr "无法执行“{torrent_name}”的移动操作。"
+
+msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
+msgstr "下载“{torrent_name}”所需的剩余磁盘空间不足。"
+
+msgid "The torrent will be paused. Clear up space on {volume} or deselect files in the torrent inspector to continue."
+msgstr ""
+
+#. Translators: Torrent disk space alert -> button
+msgid "Download Anyway"
+msgstr "仍然下载"
+
+msgid "Do not check disk space again"
+msgstr "不再检查磁盘空间"
+
+msgid "{percent} of torrent metadata retrieved"
+msgstr "已收到种子元数据的 {percent}"
+
+#. Translators: Torrent -> progress string
+msgid "torrent metadata needed"
+msgstr "需要 Torrent 元数据"
+
+msgid "uploaded {uploaded_size} (Ratio: {ratio})"
+msgstr "已上传 {uploaded_size}（分享率：{ratio}）"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned error"
+msgstr "Tracker 返回错误"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned warning"
+msgstr "Tracker 返回警告"
+
+msgid "Downloading from {active_count:L} of {connected_count:L} peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
+msgstr[0] "正在从 {connected_count:L} 个节点中的 {active_count:L} 个进行下载"
+
+#. Translators: Torrent -> status string
+msgid "web seed"
+msgstr "网络种子"
+
+#. Translators: Torrent -> status string
+msgid "{count:L} web seed"
+msgid_plural "{count:L} web seeds"
+msgstr[0] "{count:L} 个网络种子"
+
+msgid "Seeding to {active_count:L} of {connected_count:L} peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
+msgstr[0] "正在向 {connected_count:L} 个节点中的 {active_count:L} 个进行做种"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Down: {download_speed}, Up: {upload_speed}"
+msgstr "下载: {downloaded_size}, 上传: {uploaded_size}"
+
+#. Translators: Torrent -> status string
+#, fuzzy
+#| msgid "{upload_speed} ▴"
+msgid "Up: {upload_speed}"
+msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Ratio: {ratio}, Up: {upload_speed}"
+msgstr "下载: {downloaded_size}, 上传: {uploaded_size}"
+
+#. Translators: Torrent -> eta string
+msgid "inactive"
+msgstr "闲置"
+
+#. Translators: Group table row
+msgid "No Group"
+msgstr "没有群组"
+
+msgid "Show the data file in Finder"
+msgstr "在 Finder 中显示数据文件"
+
+msgid "Bypass the queue and start now"
+msgstr "绕开队列并立刻开始"
+
+msgid "Stop waiting to start"
+msgstr "停止等待开始"
+
+#. Translators: Torrent Table -> tooltip
+#, fuzzy
+#| msgid "Share torrent file"
+msgid "Change torrent settings"
+msgstr "分享 Torrent 文件"
+
+#. Translators: tracker peer stat
+msgid "Seeders"
+msgstr "做种用户"
+
+#. Translators: tracker peer stat
+msgid "Leechers"
+msgstr "吸血鬼"
+
+#. Translators: tracker peer stat
+msgid "Downloaded"
+msgstr "已下载"
+
+#. Translators: Tracker last announce
+msgid "Announce timed out"
+msgstr "宣告超时"
+
+#. Translators: Tracker last announce
+msgid "Announce error"
+msgstr "宣告错误"
+
+#. Translators: Tracker last announce
+msgid "Last Announce"
+msgstr "上次宣告"
+
+#. Translators: Tracker last announce
+#, fuzzy
+#| msgid "{count:L} Seeding"
+msgid "got {count:L} peer"
+msgid_plural "got {count:L} peers"
+msgstr[0] "{count:L} 做种"
+
+#. Translators: Tracker next announce
+msgid "Announce in progress"
+msgstr "正在宣告"
+
+msgid "Next announce in {time_span}"
+msgstr "下次宣告在 {time_span} 后"
+
+msgid "Tracker will be used as a backup"
+msgstr "Tracker 将被用作备份"
+
+#. Translators: Tracker last scrape
+msgid "Scrape timed out"
+msgstr "抓取超时"
+
+#. Translators: Tracker last scrape
+msgid "Scrape error"
+msgstr "抓取错误"
+
+#. Translators: Tracker last scrape
+msgid "Last Scrape"
+msgstr "上一抓取"
+
 msgid "Server"
 msgstr "服务器"
 
@@ -2197,12 +4091,6 @@ msgstr "添加 Tracker 宣告网址，每个一行："
 msgid "No new URLs found."
 msgstr "没有找到新的网址。"
 
-msgid "Use Global Settings"
-msgstr "使用全局设置"
-
-msgid "Stop seeding if idle for:"
-msgstr "停止做种闲置时间:"
-
 msgid "Torrent Properties"
 msgstr "种子属性"
 
@@ -2217,21 +4105,6 @@ msgstr "上传限速(_U)："
 
 msgid "Limit _download speed:"
 msgstr "下载限速(_D)："
-
-msgid "Check Selected"
-msgstr "勾选"
-
-msgid "Uncheck Selected"
-msgstr "取消勾选"
-
-msgid "Only Check Selected"
-msgstr "仅勾选"
-
-msgid "Open"
-msgstr "打开"
-
-msgid "Rename…"
-msgstr "重命名…"
 
 msgid "Search…"
 msgstr "搜索…"
@@ -2277,9 +4150,6 @@ msgstr "{host} 未响应"
 msgid "_Open…"
 msgstr "打开(_O)…"
 
-msgid "Create a new torrent"
-msgstr "创建一个新种子"
-
 msgid "Open the torrent's folder"
 msgstr "打开种子文件夹"
 
@@ -2291,9 +4161,6 @@ msgstr "验证本地数据"
 
 msgid "Remove torrent and delete its files"
 msgstr "移除种子并删除文件"
-
-msgid "Compact View"
-msgstr "紧凑视图"
 
 msgid "_Main Window"
 msgstr "主窗口(_M)"
@@ -2307,9 +4174,6 @@ msgstr "更改会话(_C)…"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "选择会话"
-
-msgid "Bypass the queue and start now"
-msgstr "绕开队列并立刻开始"
 
 msgid "{file_count:L} File"
 msgid_plural "{file_count:L} Files"
@@ -2343,9 +4207,6 @@ msgstr "选择文件夹"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>更新成功！</b><p>现在屏蔽列表拥有 {count:L} 条规则。</p>"
-
-msgid "Download of the blocklist failed."
-msgstr ""
 
 msgid "Update Blocklist"
 msgstr "更新屏蔽列表"
@@ -2582,15 +4443,6 @@ msgstr[0] "秒"
 
 #~ msgid "Allowing desktop hibernation"
 #~ msgstr "允许桌面休眠"
-
-#~ msgid "Open URL…"
-#~ msgstr "打开网址…"
-
-#~ msgid "Start all torrents"
-#~ msgstr "开始全部 Torrent"
-
-#~ msgid "Pause all torrents"
-#~ msgstr "暂停全部 Torrent"
 
 #~ msgid "Start torrent now"
 #~ msgstr "立即开始任务"

@@ -1023,7 +1023,7 @@ string(CONCAT TR_GETTEXT_HELP
     "  Windows on Arm: unpack the x64 tools from https://github.com/mlocati/gettext-iconv-windows/releases\n"
     "If gettext is installed where CMake doesn't look, add its bin directory with -DCMAKE_PROGRAM_PATH=<dir>.")
 
-if(ENABLE_NLS AND (ENABLE_GTK OR ENABLE_QT))
+if(ENABLE_NLS AND (ENABLE_GTK OR ENABLE_QT OR ENABLE_MAC))
     find_package(Gettext 0.19.7)
 
     if(NOT GETTEXT_FOUND)
@@ -1035,13 +1035,15 @@ if(ENABLE_NLS AND (ENABLE_GTK OR ENABLE_QT))
         endif()
 
         message(WARNING
-            "gettext's msgfmt was not found, so the Qt client will be in English.\n"
+            "gettext's msgfmt was not found, so the Qt and Mac clients will be in English.\n"
             "${TR_GETTEXT_HELP}\n"
             "To build without translations, configure with -DENABLE_NLS=OFF.")
     endif()
 endif()
 
-if(GETTEXT_FOUND)
+# po/ installs the catalogs where the GTK and Qt clients look for them.
+# The Mac client compiles its own into its bundle.
+if(GETTEXT_FOUND AND (ENABLE_GTK OR ENABLE_QT))
     add_subdirectory(po)
 endif()
 

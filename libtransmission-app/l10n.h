@@ -6,12 +6,14 @@
 #pragma once
 
 #include <cstddef> // size_t
-#include <cstdint> // uint64_t
+#include <cstdint> // int64_t, uint64_t
+#include <locale>
 #include <optional>
 #include <span>
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <variant>
 #include <vector>
 
 // Translations from compiled gettext catalogs (.mo files),
@@ -31,6 +33,18 @@ struct Field {
 // but translations have no use for them.
 [[nodiscard]] std::optional<std::vector<Field>> parse_fields(std::string_view text);
 
+// A named argument for format_translation(): text or a number.
+struct Arg {
+    char const* name;
+    std::variant<std::string, int64_t, uint64_t, double> value;
+};
+
+// Formats `translation` with {fmt} named arguments, taking "L" fields' number formatting from `locale`.
+// It is for code that can't call {fmt}'s templates, such as Objective-C and Swift.
+// {fmt} is built without exceptions and aborts on a format string that doesn't fit its arguments;
+// a catalog holds no such translation, because Catalog::parse() drops them.
+[[nodiscard]] std::string format_translation(std::locale const& locale, char const* translation, std::span<Arg const> args);
+
 // Loads `<dir>/<language>/LC_MESSAGES/<domain>.mo` for each candidate language,
 // from the first of `dirs` that has it,
 // and sets libtransmission's translator to look up each message
@@ -40,6 +54,11 @@ std::vector<std::string> use_catalogs(
     std::span<std::string const> dirs,
     std::string_view domain,
     std::span<std::string const> preferred_languages);
+
+// Like use_catalogs(), for a client that keeps its catalogs somewhere else,
+// such as the language folders of a macOS bundle.
+// Loads each file that is a catalog, most preferred first, and returns how many it loaded.
+size_t use_catalog_files(std::span<std::string const> filenames);
 
 // The parts of use_catalogs(), public for tests.
 // Clients call use_catalogs() instead.

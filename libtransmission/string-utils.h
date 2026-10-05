@@ -75,7 +75,6 @@ template <typename... Args> constexpr bool tr_strv_sep(std::string_view* sv, std
 @class NSString;
 [[nodiscard]] std::string tr_strv_to_utf8_string(NSString* str);
 [[nodiscard]] NSString* tr_strv_to_utf8_nsstring(std::string_view sv);
-[[nodiscard]] NSString* tr_strv_to_utf8_nsstring(std::string_view sv, NSString* key, NSString* comment);
 #endif
 #endif
 

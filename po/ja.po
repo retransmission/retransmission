@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-03 11:48-0500\n"
+"POT-Creation-Date: 2026-10-04 11:10-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2025\n"
 "Language-Team: Japanese (https://app.transifex.com/transmissionbt/teams/33778/ja/)\n"
@@ -23,6 +23,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. Translators: Groups -> Button
+#. Translators: Groups -> Menu
+#. Translators: inspector -> check all
 msgid "None"
 msgstr "なし"
 
@@ -140,46 +143,66 @@ msgstr "稼働にかかわらずシードする"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "N分のアイドル状態でシード停止:"
 
+#. Translators: Torrent -> status string
 msgid "Queued for verification"
 msgstr "検証の処理待ちに追加"
 
+#. Translators: Torrent -> status string
 msgid "Verifying local data"
 msgstr "取得済みのデータを検証中"
 
+#. Translators: Torrent -> status string
 msgid "Queued for download"
 msgstr "ダウンロードの処理待ちに追加"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "ダウンロード中"
 
+#. Translators: Torrent -> status string
 msgid "Queued for seeding"
 msgstr "シードの処理待ちに追加"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "シード中"
 
+#. Translators: Torrent -> status string
 #, fuzzy
 #| msgid "Incomplete"
 msgid "Seeding complete"
 msgstr "未完了"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Paused"
 msgstr "停止"
 
+#. Translators: Inspector -> Peers tab -> table row tooltip
+#. Translators: No Ratio
+#. Translators: Prefs -> blocklist -> message
+#. Translators: tracker peer stat
+#. Translators: Tracker last announce
+#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "なし"
 
+#. Translators: files tab -> tooltip
 msgid "Mixed"
 msgstr "混合"
 
+#. Translators: Inspector -> selected torrents
 msgid "No Torrents Selected"
 msgstr "トレントファイルの選択なし"
 
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "このトラッカーは非公開 -- DHT と PEX を無効化"
 
+#. Translators: Inspector -> private torrent
 msgid "Public torrent"
 msgstr "公開トレント"
 
@@ -224,6 +247,7 @@ msgstr "{uploaded_size} (共有比: {ratio})"
 msgid "No errors"
 msgstr "エラーなし"
 
+#. Translators: Prefs -> blocklist -> message
 msgid "Never"
 msgstr "一度もなし"
 
@@ -239,6 +263,8 @@ msgstr "このピアからダウンロード中"
 msgid "We would download from this peer if they would let us"
 msgstr "許可されればこのピアからダウンロード可能"
 
+#. Translators: inspector -> peer table -> header tool tip
+#. Translators: Inspector -> peer -> status
 msgid "Uploading to peer"
 msgstr "ピアにアップロード中"
 
@@ -252,6 +278,7 @@ msgstr "ピアはこちらのチョークを解除しましたが影響はあり
 msgid "We unchoked this peer, but they're not interested"
 msgstr "このピアのチョークを解除したが、ピアはへの影響はありません"
 
+#. Translators: inspector -> peer table -> header tool tip
 msgid "Encrypted connection"
 msgstr "暗号化接続"
 
@@ -270,6 +297,7 @@ msgstr "ピアと µTP で接続しました"
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
 
+#. Translators: inspector -> peer table -> header
 msgid "Address"
 msgstr "アドレス"
 
@@ -282,18 +310,24 @@ msgstr "ダウンロード要求"
 msgid "Up Reqs"
 msgstr "アップロード要求"
 
+#. Translators: inspector -> peer table -> header
+#. Translators: inspector -> web seed table -> header
 msgid "Down"
 msgstr "下り"
 
+#. Translators: Torrent -> status image
+#. Translators: inspector -> peer table -> header
 msgid "Up"
 msgstr "上り"
 
+#. Translators: inspector -> peer table -> header
 msgid "Client"
 msgstr "クライアント"
 
 msgid "Flags"
 msgstr "フラグ"
 
+#. Translators: inspector -> web seed table -> header
 msgid "Web Seeds"
 msgstr "ウェブシード"
 
@@ -309,6 +343,8 @@ msgstr "エラーを修正し再度お試しください。"
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - トラッカー追加"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Trackers"
 msgstr "トラッカー"
 
@@ -378,18 +414,23 @@ msgstr "削除(_D)"
 msgid "_Remove"
 msgstr "除去(_R)"
 
+#. Translators: File Outline -> Priority Menu
 msgid "High"
 msgstr "高"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Normal"
 msgstr "通常"
 
+#. Translators: File Outline -> Priority Menu
 msgid "Low"
 msgstr "低"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "改名できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
 
+#. Translators: Filter Bar -> filter menu
+#. Translators: Message window -> table column
 msgid "Name"
 msgstr "名前"
 
@@ -399,15 +440,22 @@ msgstr "サイズ"
 msgid "Progress"
 msgstr "進行"
 
+#. Translators: files tab -> tooltip
+#. Translators: file table -> header tool tip
 msgid "Download"
 msgstr "ダウンロード"
 
+#. Translators: file table -> header tool tip
+#. Translators: File Outline -> Menu
 msgid "Priority"
 msgstr "優先度"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: inspector -> check all
 msgid "All"
 msgstr "すべて"
 
+#. Translators: Filter Bar -> filter button
 msgid "Active"
 msgstr "稼働中"
 
@@ -415,6 +463,8 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "検証中"
 
+#. Translators: Filter Bar -> filter button
+#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "エラー"
 
@@ -477,15 +527,19 @@ msgstr "この共有比でシード停止"
 msgid "Stop at Ratio ({ratio})"
 msgstr "この共有比で停止 ({ratio})"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Ratio"
 msgstr "全体比率"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Ratio"
 msgstr "セッション比率"
 
+#. Translators: Status Bar -> status menu
 msgid "Total Transfer"
 msgstr "全体転送"
 
+#. Translators: Status Bar -> status menu
 msgid "Session Transfer"
 msgstr "セッション転送"
 
@@ -520,18 +574,26 @@ msgctxt "Logging level"
 msgid "Critical"
 msgstr "重大"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Error"
 msgstr "エラー"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Warning"
 msgstr "警告"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Information"
 msgstr "情報"
 
+#. Translators: Message window -> level string
+#. Translators: Message window -> level
 msgctxt "Logging level"
 msgid "Debug"
 msgstr "デバッグ"
@@ -542,9 +604,11 @@ msgstr "ログを保存"
 msgid "_Save"
 msgstr "保存(_S)"
 
+#. Translators: Message window -> table column
 msgid "Message"
 msgstr "メッセージ"
 
+#. Translators: Message window -> table column
 msgid "Time"
 msgstr "時間"
 
@@ -568,6 +632,7 @@ msgstr "トレントが完了"
 msgid "Start Now"
 msgstr "すぐ開始"
 
+#. Translators: notification title
 msgid "Torrent Added"
 msgstr "トレントが追加されました"
 
@@ -587,7 +652,7 @@ msgid "Show options dialog"
 msgstr "オプションダイアログを表示"
 
 msgid "Other…"
-msgstr ""
+msgstr "ほか..."
 
 msgid "Select File"
 msgstr "ファイルの選択"
@@ -620,6 +685,7 @@ msgstr[0] "ブロックリスト内に {count:L} 項目あります"
 msgid "Blocklist updated!"
 msgstr "ブロックリストを更新しました !"
 
+#. Translators: Blocklist -> message
 msgid "Couldn't update blocklist"
 msgstr "ブロックリストを更新できません"
 
@@ -655,6 +721,7 @@ msgstr "状態: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)"
 msgid "Moving '{torrent_name}'"
 msgstr "移動中「{torrent_name}」"
 
+#. Translators: Move error alert -> title
 msgid "Couldn't move torrent"
 msgstr "トレントを移動できません"
 
@@ -740,6 +807,7 @@ msgstr "{complete_size}, アップ済み{uploaded_size} (共有比: {ratio}, 目
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, アップ済み {uploaded_size} (共有比: {ratio})"
 
+#. Translators: Torrent -> eta string
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "残り時間不明"
@@ -747,6 +815,7 @@ msgstr "残り時間不明"
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr "{download_speed} ▾  {upload_speed} ▴"
 
+#. Translators: Torrent -> status string
 msgid "Stalled"
 msgstr "停滞"
 
@@ -975,6 +1044,7 @@ msgstr "第二の速度制限"
 msgid "_Add"
 msgstr "追加(_A)"
 
+#. Translators: Filter Bar -> filter menu
 msgid "Tracker"
 msgstr "トラッカー"
 
@@ -984,6 +1054,8 @@ msgstr "アナウンスURL(_A):"
 msgid "_Close"
 msgstr "閉じる(_C)"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Activity"
 msgstr "稼働状況"
 
@@ -993,15 +1065,18 @@ msgstr "サイズ:"
 msgid "Have:"
 msgstr "所有:"
 
+#. Translators: Stats window -> label
 msgid "Uploaded:"
 msgstr "アップロード済み:"
 
+#. Translators: Stats window -> label
 msgid "Downloaded:"
 msgstr "ダウンロード済み:"
 
 msgid "State:"
 msgstr "状態:"
 
+#. Translators: Stats window -> label
 msgid "Running time:"
 msgstr "実行時間:"
 
@@ -1035,12 +1110,17 @@ msgstr "追加日時:"
 msgid "Comment:"
 msgstr "コメント:"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Information"
 msgstr "情報"
 
 msgid "Show _more details"
 msgstr "詳細を表示(_M)"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
+#. Translators: Preferences -> toolbar item title
 msgid "Peers"
 msgstr "ピア"
 
@@ -1050,9 +1130,12 @@ msgstr "代替トラッカーを表示(_B)"
 msgid "File listing not available for combined torrent properties"
 msgstr "ファイル一覧は結合したトレントのプロパティでは使用できません"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Files"
 msgstr "ファイル"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Speed"
 msgstr "速度"
 
@@ -1083,6 +1166,8 @@ msgstr "ピアとの接続"
 msgid "_Maximum peers:"
 msgstr "最大ピア数(_M):"
 
+#. Translators: Inspector view -> title
+#. Translators: Inspector -> tab
 msgid "Options"
 msgstr "オプション"
 
@@ -1099,15 +1184,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "編集 > 設定 > ネットワークから、標準の公開トラッカーも参照"
 
+#. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
 msgstr "トレントを開く"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent cell -> button info
 msgid "Start torrent"
 msgstr "トレントを開始"
 
+#. Translators: Selected toolbar item -> tooltip
+#. Translators: Torrent Table -> tooltip
 msgid "Pause torrent"
 msgstr "トレントを停止"
 
+#. Translators: Remove toolbar item -> tooltip
 msgid "Remove torrent"
 msgstr "トレントを除去"
 
@@ -1117,6 +1208,7 @@ msgstr "トレントのプロパティ"
 msgid "Torrent"
 msgstr "トレント"
 
+#. Translators: Stats window -> title
 msgid "Statistics"
 msgstr "統計情報"
 
@@ -1160,12 +1252,14 @@ msgstr "非公開トレント(_P)"
 msgid "Creating torrent…"
 msgstr "トレントを作成中…"
 
+#. Translators: Message window -> title
 msgid "Message Log"
 msgstr "メッセージログ"
 
 msgid "Save _As"
 msgstr "名前を付けて保存(_A)"
 
+#. Translators: Message window -> save button
 msgid "Clear"
 msgstr "初期化"
 
@@ -1209,6 +1303,8 @@ msgstr "アップロード(_U) ({speed_units}):"
 msgid "_Download ({speed_units}):"
 msgstr "ダウンロード(_D) ({speed_units}):"
 
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed Limits"
 msgstr "第二の速度制限"
 
@@ -1391,6 +1487,7 @@ msgstr ""
 "代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
 "新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Network"
 msgstr "ネットワーク"
 
@@ -1447,6 +1544,7 @@ msgstr "アドレス:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IPアドレスにはワイルドカード(*)も使えます。例 192.168.*.*"
 
+#. Translators: Preferences -> toolbar item title
 msgid "Remote"
 msgstr "リモート"
 
@@ -1471,6 +1569,7 @@ msgstr "取得データが既にそこにある(_A)"
 msgid "Current Session"
 msgstr "現在のセッション"
 
+#. Translators: Stats window -> label
 msgid "Ratio:"
 msgstr "共有比:"
 
@@ -1480,6 +1579,9 @@ msgstr "時間:"
 msgid "Total"
 msgstr "合計"
 
+#. Translators: Open address toolbar item -> label
+#. Translators: Open address toolbar item -> palette label
+#. Translators: Drag overlay -> url
 msgid "Open URL"
 msgstr "URL を開く"
 
@@ -1566,6 +1668,7 @@ msgstr " ピア一覧の要求が{markup_begin}タイムアウト {time_span_ago
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "エラー取得「{markup_begin}{error}{markup_end}」{time_span_ago}"
 
+#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "更新の予定なし"
 
@@ -1616,6 +1719,7 @@ msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L}時間"
 
+#. Translators: Info options -> global setting
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
@@ -1663,6 +1767,7 @@ msgstr "アナウンスの応答を解析できません: {error} ({error_code})
 msgid "Couldn't parse scrape response: {error} ({error_code})"
 msgstr "スクレイプの応答を解析できません: {error} ({error_code})"
 
+#. Translators: Torrent -> error string unreadable
 msgid "Unknown error"
 msgstr "不明のエラー"
 
@@ -2015,18 +2120,22 @@ msgstr "GiB"
 msgid "TiB"
 msgstr "TiB"
 
+#. Translators: Transfer speed (bytes per second)
 msgid "B/s"
 msgstr "B/秒"
 
 msgid "kB/s"
 msgstr "kB/秒"
 
+#. Translators: Transfer speed (megabytes per second)
 msgid "MB/s"
 msgstr "MB/秒"
 
+#. Translators: Transfer speed (gigabytes per second)
 msgid "GB/s"
 msgstr "GB/秒"
 
+#. Translators: Transfer speed (terabytes per second)
 msgid "TB/s"
 msgstr "TB/秒"
 
@@ -2101,6 +2210,1796 @@ msgstr ""
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "以下から取得できません {url} : 期待する応答コード {expected_code}、実際は {actual_code}"
 
+#. Translators: About window -> license button
+msgid "License"
+msgstr "ライセンス"
+
+msgid "OK"
+msgstr ""
+
+#. Translators: Open torrent -> prompt
+#. Translators: Move torrent -> prompt
+#. Translators: Create torrent -> location sheet -> button
+#. Translators: Create torrent -> select file
+#. Translators: Preferences -> Open panel prompt
+msgid "Select"
+msgstr "選択"
+
+msgid "Select the download folder for \"{torrent_name}\""
+msgstr "「{torrent_name}」のダウンロードフォルダを選択"
+
+msgid "The destination directory and root data directory have the same name."
+msgstr "保存先のフォルダとルートのデータフォルダが同じ名前です。"
+
+msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
+msgstr "取得済みのデータを使用するなら、ルートのデータフォルダは保存先のフォルダの中にあるべきです。"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+#. Translators: Add torrent -> same name -> button
+msgid "Add"
+msgstr "追加"
+
+#. Translators: Add torrent -> info
+#. Translators: Inspector -> Activity tab -> progress
+#. Translators: Torrent -> progress string
+msgid "{amount} selected"
+msgstr "{amount} 選択"
+
+msgid "Start when added"
+msgstr "追加と共に開始"
+
+msgid "Magnet Link"
+msgstr "マグネットリンク"
+
+#, fuzzy
+#| msgid "_Destination folder:"
+msgid "Destination folder:"
+msgstr "保存先フォルダ:"
+
+msgid "Priority:"
+msgstr "優先度:"
+
+msgid "Group:"
+msgstr "グループ:"
+
+msgid "Change…"
+msgstr "変更..."
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Move torrent file to the Trash"
+msgstr ".torrent ファイルをごみ箱へ"
+
+msgid "Verify Local Data"
+msgstr "取得データを検証"
+
+#. Translators: Filter toolbar item -> label
+#. Translators: inspector -> file filter
+#. Translators: Message window -> filter field
+msgid "Filter"
+msgstr "絞り込み"
+
+msgid "Trackers:"
+msgstr "トラッカー:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Private torrent"
+msgstr "非公開トレント"
+
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
+msgid "Create"
+msgstr "作成"
+
+msgid "Open when created"
+msgstr "作成時に開く"
+
+msgid "Each tracker will be placed into its own tier"
+msgstr "各トラッカーはそれぞれのティアに配置されます"
+
+msgid "Source:"
+msgstr "入力元:"
+
+#, fuzzy
+#| msgid "_Torrent file:"
+msgid "Torrent file:"
+msgstr "トレントファイル:"
+
+#, fuzzy
+#| msgid "Limit _download speed:"
+msgid "Limit download speed:"
+msgstr "ダウンロード速度制限:"
+
+#, fuzzy
+#| msgid "Limit _upload speed:"
+msgid "Limit upload speed:"
+msgstr "アップロード速度制限:"
+
+msgid "minutes"
+msgstr "分"
+
+#. Translators: Transfer speed (kilobytes per second)
+msgid "KB/s"
+msgstr "KB/秒"
+
+msgid "Status of selected files"
+msgstr "選択したファイルの状態"
+
+msgid "Remaining time"
+msgstr "残り時間"
+
+msgid "Stop seeding if idle for:"
+msgstr "アイドル状態でシード停止:"
+
+msgid "Any"
+msgstr "いずれか"
+
+msgid "of the following are true"
+msgstr "に以下が該当する"
+
+msgid "Comment"
+msgstr "コメント"
+
+msgid "contains"
+msgstr "これを含む"
+
+msgid "begins with"
+msgstr "これで開始"
+
+msgid "ends with"
+msgstr "これで終了"
+
+msgid "is"
+msgstr "これと同じ"
+
+msgid "is not"
+msgstr "これではない"
+
+msgid "matches"
+msgstr "これに一致"
+
+msgid "Any File"
+msgstr "いずれかのファイル"
+
+msgid "Any Tracker"
+msgstr "いずれかのトラッカー"
+
+msgid "Transfer"
+msgstr "転送"
+
+msgid "Failed DL:"
+msgstr "DL失敗:"
+
+#. Translators: inspector -> peer table -> header tool tip
+msgid "Available"
+msgstr "入手可能"
+
+msgid "Progress:"
+msgstr "進行:"
+
+msgid "Seeding:"
+msgstr "シード中:"
+
+msgid "Completed:"
+msgstr "完了:"
+
+msgid "Dates"
+msgstr "日時"
+
+msgid "Time Elapsed"
+msgstr "経過時間"
+
+msgid "Downloading:"
+msgstr "ダウンロード中:"
+
+msgid "Created On:"
+msgstr "作成日:"
+
+msgid "Creator:"
+msgstr "作成:"
+
+msgid "Pieces:"
+msgstr "ピース:"
+
+msgid "Was:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Torrent priority:"
+msgstr "トレントの優先度:"
+
+#, fuzzy
+#| msgid "Honor global _limits"
+msgid "Honor global limits"
+msgstr "速度制限の全体設定に従う"
+
+msgid "Use Global Settings"
+msgstr "全体設定を使用"
+
+msgid "Stop When Inactive"
+msgstr "未稼働なら停止"
+
+#, fuzzy
+#| msgid "Remove from the transfer list when seeding completes"
+msgid "Remove from the torrent list when seeding completes"
+msgstr "シード完了時に転送一覧から除去"
+
+#, fuzzy
+#| msgid "_Maximum peers:"
+msgid "Maximum peers:"
+msgstr "最大ピア数:"
+
+#, fuzzy
+#| msgid "_Idle:"
+msgid "Idle:"
+msgstr "アイドル状態:"
+
+#. Translators: Preferences -> toolbar item title
+#, fuzzy
+#| msgid "Torrent"
+msgid "Torrents"
+msgstr "トレント"
+
+msgid "About Retransmission"
+msgstr "Retransmission について"
+
+msgid "Check for Update…"
+msgstr "更新確認..."
+
+#. Translators: Donation beg -> button
+msgid "Donate"
+msgstr "寄付"
+
+msgid "Preferences…"
+msgstr "設定..."
+
+msgid "Services"
+msgstr "サービス"
+
+msgid "Hide Retransmission"
+msgstr "Retransmission を非表示"
+
+msgid "Hide Others"
+msgstr "ほかを非表示"
+
+msgid "Show All"
+msgstr "すべて表示"
+
+msgid "Quit Retransmission"
+msgstr "Retransmission を終了"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "Create Torrent File…"
+msgstr "トレントファイルの作成..."
+
+#, fuzzy
+#| msgid "_Open…"
+msgid "Open…"
+msgstr "開く"
+
+msgid "Open With Options Window…"
+msgstr "オプションウィンドウで開く..."
+
+msgid "Open URL…"
+msgstr "URLを開く…"
+
+msgid "Close Window"
+msgstr "ウィンドウを閉じる"
+
+#. Translators: QuickLook toolbar item -> label
+#. Translators: QuickLook toolbar item -> palette label
+#. Translators: QuickLook toolbar item -> tooltip
+#. Translators: View menu -> Quick Look
+msgid "Quick Look"
+msgstr "クイックルック"
+
+#, fuzzy
+#| msgid "Set _Location…"
+msgid "Set Location…"
+msgstr "場所の設定"
+
+#. Translators: File Outline -> Menu
+msgid "Rename…"
+msgstr "改名…"
+
+msgid "Save Torrent File As…"
+msgstr "トレントファイルを保存..."
+
+msgid "Share Torrent File"
+msgstr "トレントファイルを共有"
+
+msgid "Copy Magnet Link to Clipboard"
+msgstr "クリップボードにマグネットリンクをコピー"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Undo"
+msgstr "元に戻す"
+
+msgid "Redo"
+msgstr "やり直し"
+
+msgid "Cut"
+msgstr "切り取り"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Paste"
+msgstr "貼り付け"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Select All"
+msgstr "すべて選択"
+
+msgid "View"
+msgstr "表示"
+
+msgid "Compact View"
+msgstr "コンパクト表示"
+
+msgid "Pieces Bar"
+msgstr "ピースのバー"
+
+msgid "Availability"
+msgstr "可用性"
+
+msgid "Use Groups"
+msgstr "グループ使用"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents By"
+msgstr "トレントを開始"
+
+msgid "Queue Order"
+msgstr "待ち行列の順"
+
+msgid "Date Added"
+msgstr "追加日時"
+
+msgid "ETA"
+msgstr "完了予想"
+
+msgid "State"
+msgstr "状態"
+
+msgid "Ascending"
+msgstr "昇順"
+
+msgid "Descending"
+msgstr "降順"
+
+#. Translators: View menu -> Inspector
+msgid "Show Inspector"
+msgstr "インスペクタを表示"
+
+#. Translators: View menu -> Status Bar
+msgid "Hide Status Bar"
+msgstr "ステータスバーを隠す"
+
+#. Translators: View menu -> Filter Bar
+msgid "Hide Filter Bar"
+msgstr "絞り込みバーを隠す"
+
+#. Translators: View menu -> Toolbar
+msgid "Hide Toolbar"
+msgstr "ツールバーを非表示"
+
+msgid "Customize Toolbar…"
+msgstr "ツールバーのカスタマイズ..."
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "Paused"
+msgid "Pause"
+msgstr "停止"
+
+#. Translators: Selected toolbar item -> label
+#, fuzzy
+#| msgid "_Start"
+msgid "Start"
+msgstr "開始"
+
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
+msgid "Remove"
+msgstr "除去"
+
+#, fuzzy
+#| msgid "_Delete Files and Remove"
+msgid "Delete Files and Remove"
+msgstr "除去とファイルの削除"
+
+msgid "Remove All Completed From List"
+msgstr "一覧からすべての完了済みを除去"
+
+#. Translators: File Outline -> Menu
+msgid "Show in Finder"
+msgstr "Finder で表示"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+msgid "Pause All"
+msgstr "すべて停止"
+
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All"
+msgstr "すべて開始"
+
+#, fuzzy
+#| msgid "_Start All"
+msgid "Start All Queued Now"
+msgstr "すべて開始"
+
+#. Translators: Groups -> Button
+msgid "Group"
+msgstr "グループ"
+
+#, fuzzy
+#| msgid "Ask Tracker for _More Peers"
+msgid "Ask Tracker for More Peers"
+msgstr "トラッカーにピア増加を要求"
+
+msgid "Window"
+msgstr "ウィンドウ"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Zoom"
+msgstr "拡大"
+
+msgid "Next Inspector Tab"
+msgstr "次のインスペクタータブ"
+
+msgid "Previous Inspector Tab"
+msgstr "前のインスペクタータブ"
+
+msgid "Next Filter Button"
+msgstr "次の絞り込みボタン"
+
+msgid "Previous Filter Button"
+msgstr "前の絞り込みボタン"
+
+msgid "Bring All to Front"
+msgstr "すべて前面に"
+
+msgid "Help"
+msgstr "ヘルプ"
+
+msgid "Retransmission Help"
+msgstr "Retransmission ヘルプ"
+
+msgid "Retransmission Homepage"
+msgstr "Retransmission ホームページ"
+
+msgid "Forums"
+msgstr "掲示板"
+
+msgid "Support & Development"
+msgstr "サポート・開発"
+
+msgid "Menu"
+msgstr "メニュー"
+
+msgid "Preferences"
+msgstr "設定"
+
+msgid "Check for update:"
+msgstr "更新確認:"
+
+msgid "Include beta releases"
+msgstr "ベータ版を含む"
+
+msgid "Automatically check daily"
+msgstr "毎日自動で確認"
+
+msgid "Reset all alerts:"
+msgstr "すべての通知を初期化"
+
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
+msgid "Reset"
+msgstr "初期化"
+
+msgid "Set Default Application"
+msgstr "標準アプリケーションを設定"
+
+msgid "Configure In System Preferences"
+msgstr "システムの設定から変更"
+
+#, fuzzy
+#| msgid "Automatically size window to fit all transfers"
+msgid "Automatically size window to fit all torrents"
+msgstr "自動ですべての転送項目をウィンドウ内に合わせる"
+
+msgid "Auto resize:"
+msgstr "自動リサイズ:"
+
+#, fuzzy
+#| msgid "Only when transfers are downloading"
+msgid "Only when torrents are downloading"
+msgstr "転送項目のダウンロード中のみ"
+
+msgid "Total upload rate"
+msgstr "総アップロード速度"
+
+msgid "Total download rate"
+msgstr "総ダウンロード速度"
+
+msgid "Badge Dock icon with:"
+msgstr "Dockアイコンのバッジに表示:"
+
+msgid "Notifications:"
+msgstr "通知:"
+
+msgid "Prompt user for:"
+msgstr "質問する:"
+
+#, fuzzy
+#| msgid "Removal of active transfers"
+msgid "Removal of active torrents"
+msgstr "転送項目の稼働時に削除を選択したら"
+
+#, fuzzy
+#| msgid "Quit with active transfers"
+msgid "Quit with active torrents"
+msgstr "転送項目の稼働時に終了を選択したら"
+
+msgid "Accept magnet links:"
+msgstr "マグネットリンクに対応:"
+
+msgid "Open torrent files:"
+msgstr "トレントファイルを開く:"
+
+msgid "Adding"
+msgstr "追加"
+
+msgid "Same as torrent file"
+msgstr "トレントファイルと同じ"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to location:"
+msgstr "保存先フォルダ:"
+
+msgid "Settings:"
+msgstr "設定:"
+
+#, fuzzy
+#| msgid "Append \"._part\" to incomplete files' names"
+msgid "Append \".part\" to incomplete files' names"
+msgstr "未完了のファイル名に .part を付加"
+
+#, fuzzy
+#| msgid "Automatically add torrent files _from:"
+msgid "Automatically add torrent files from:"
+msgstr "ここのトレントファイルを自動追加:"
+
+msgid "Auto add:"
+msgstr "自動的に追加:"
+
+msgid "Keep incomplete files in:"
+msgstr "未完了ファイルの保存先:"
+
+msgid "Display a window when opening a torrent file"
+msgstr "トレントファイルを開いたらウィンドウを表示"
+
+msgid "Display a window when opening a magnet link"
+msgstr "マグネットリンクを開いたらウィンドウを表示"
+
+#, fuzzy
+#| msgid "_Start added torrents"
+msgid "Start added torrents"
+msgstr "追加したトレントを開始"
+
+msgid "Only when adding manually"
+msgstr "手動で追加した場合のみ"
+
+msgid "Add window:"
+msgstr "ウィンドウ追加:"
+
+msgid "Only when there are multiple files"
+msgstr "複数ファイルがある場合のみ"
+
+msgid "Management"
+msgstr "管理"
+
+msgid "Queues:"
+msgstr "待ち行列:"
+
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "active torrents"
+msgstr "非公開トレント"
+
+msgid "Limits:"
+msgstr "上限:"
+
+msgid "Ratio is amount uploaded to amount downloaded"
+msgstr "比率はダウンロード量に対するアップロード量"
+
+msgid "Download with maximum of:"
+msgstr "ダウンロードの最大数:"
+
+msgid "Seeding with maximum of:"
+msgstr "シードの最大数:"
+
+#, fuzzy
+#| msgid "Transfer is stalled when inactive for:"
+msgid "Torrent is stalled when inactive for:"
+msgstr "未稼働状態が続けば転送を停滞にする:"
+
+msgid "Play sound:"
+msgstr "音の再生:"
+
+msgid "When seeding completes:"
+msgstr "シード完了時:"
+
+msgid "When download completes:"
+msgstr "ダウンロード完了時:"
+
+msgid "Call script:"
+msgstr "スクリプトを呼び出す:"
+
+#, fuzzy
+#| msgid "Applies to newly added transfers"
+msgid "Applies to newly added torrents"
+msgstr "新たに追加された転送項目にも適用"
+
+#, fuzzy
+#| msgid "Transfers will be assigned to the first group where all criteria are met"
+msgid "Torrents will be assigned to the first group where all criteria are met"
+msgstr "転送項目は、すべての条件を満たす最初のグループに割り当てられます"
+
+msgid "Edit…"
+msgstr "編集..."
+
+#, fuzzy
+#| msgid "Assign group to new transfers based on criteria"
+msgid "Assign group to new torrents based on criteria"
+msgstr "新たな転送項目を条件でグループに割り当て"
+
+#, fuzzy
+#| msgid "The location will only be set when adding the transfer"
+msgid "The location will only be set when adding the torrent"
+msgstr "保存場所は転送項目が追加された場合にのみ設定されます"
+
+msgid "Custom location:"
+msgstr "独自の保存場所:"
+
+msgid "Group Name:"
+msgstr "グループ名:"
+
+msgid "Color"
+msgstr "色"
+
+msgid "Monday"
+msgstr "月曜"
+
+msgid "Tuesday"
+msgstr "火曜"
+
+msgid "Wednesday"
+msgstr "水曜"
+
+msgid "Thursday"
+msgstr "木曜"
+
+msgid "Friday"
+msgstr "金曜"
+
+msgid "Saturday"
+msgstr "土曜"
+
+msgid "Sunday"
+msgstr "日曜"
+
+msgid "to"
+msgstr "から"
+
+#, fuzzy
+#| msgid "_Scheduled times:"
+msgid "Scheduled times:"
+msgstr "予定時刻:"
+
+#, fuzzy
+#| msgid "_Download:"
+msgid "Download:"
+msgstr "ダウンロード:"
+
+#, fuzzy
+#| msgid "_Upload:"
+msgid "Upload:"
+msgstr "アップロード:"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative speed limits:"
+msgstr "第二の速度制限"
+
+#, fuzzy
+#| msgid "Speed Limits"
+msgid "Speed limits:"
+msgstr "速度制限"
+
+#, fuzzy
+#| msgid "Peer Limits"
+msgid "Peer limits:"
+msgstr "ピア制限"
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use DHT to find more peers for public torrents"
+msgstr "DHT でより多くのピアを探す"
+
+msgid "Blocklist:"
+msgstr "ブロックリスト:"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new torrents:"
+msgstr "トレントごとの最大ピア数:"
+
+msgid "Last updated: N/A"
+msgstr "最終更新: なし"
+
+msgid "Encryption:"
+msgstr "暗号化:"
+
+msgid "Automatically update weekly"
+msgstr "毎週自動更新"
+
+#, fuzzy
+#| msgid "Maximum peers _overall:"
+msgid "Maximum peers overall:"
+msgstr "全体での最大ピア数:"
+
+msgid "blocklist loaded/not loaded"
+msgstr "ブロックリスト 読込済み/なし"
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PEX to find more peers for public torrents"
+msgstr "PEX でより多くのピアを探す"
+
+#. Translators: URL sheet label
+msgid "URL:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use Local Peer Discovery to find more peers for public torrents"
+msgstr "ローカルピア探索でより多くのピアを探す"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "High connection limits might significantly impact system performance"
+msgstr "過大な接続制限はシステムの性能に大きく影響を与えがちです"
+
+#, fuzzy
+#| msgid "Enable _blocklist:"
+msgid "Enable blocklist"
+msgstr "ブロックリストを使用:"
+
+msgid "Randomize"
+msgstr "ランダム化"
+
+msgid "Peer communication:"
+msgstr "ピア通信:"
+
+#, fuzzy
+#| msgid "_Port for incoming connections:"
+msgid "Port for incoming connections:"
+msgstr "応答接続用ポート:"
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is open"
+msgstr "ポートは開いています"
+
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a random port at startup"
+msgstr "Transmission の起動ごとにランダムにポートを変更"
+
+msgid "Automatically map port"
+msgstr "自動的にポートをマッピング"
+
+#, fuzzy
+#| msgid "Prevent computer from sleeping with active transfers"
+msgid "Prevent computer from sleeping with active torrents"
+msgstr "転送が稼働中ならコンピューターのスリープを防止"
+
+msgid "System sleep:"
+msgstr "システムのスリープ:"
+
+#, fuzzy
+#| msgid "Enable µ_TP for peer connections"
+msgid "Enable µTP for peer connections"
+msgstr "ピア接続に µTP を使用"
+
+msgid "This enables the web interface and allows remote requests"
+msgstr "ウェブインターフェースを有効にしリモートからの要求を許可します"
+
+#, fuzzy
+#| msgid "Only allow these IP a_ddresses:"
+msgid "Only allow these IP addresses:"
+msgstr "以下の IP アドレスのみ許可:"
+
+#, fuzzy
+#| msgid "Use _authentication"
+msgid "Use authentication"
+msgstr "認証を使用"
+
+msgid "Display the web interface with Bonjour"
+msgstr "Bonjour でウェブインターフェースを表示"
+
+#, fuzzy
+#| msgid "Allow _remote access"
+msgid "Allow remote access"
+msgstr "リモート接続を許可"
+
+msgid "Username:"
+msgstr "ユーザー名:"
+
+msgid "Password:"
+msgstr "パスワード:"
+
+#, fuzzy
+#| msgid "HTTP _port:"
+msgid "HTTP port:"
+msgstr "HTTPポート:"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "Open Web Client"
+msgstr "ブラウザで開く"
+
+#. Translators: Inspector -> Files tab -> file status string
+#. Translators: Status bar transfer count
+#. Translators: file size string
+msgid "{part} of {whole}"
+msgstr "{part} / {whole}"
+
+#. Translators: Blocklist -> message
+#, fuzzy
+#| msgid "Update Blocklist"
+msgid "Updating blocklist"
+msgstr "ブロックリストの更新"
+
+msgid "Download of the blocklist failed."
+msgstr "ブロックリストのダウンロードに失敗"
+
+#. Translators: Legal alert -> button
+msgid "I Accept"
+msgstr "同意"
+
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
+msgid "Quit"
+msgstr "終了"
+
+#. Translators: Legal alert -> title
+msgid "Welcome to {appname}"
+msgstr "{appname} のご利用を歓迎します"
+
+msgid "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws."
+msgstr "{appname} はファイル共有プログラムです。トレントを利用すると、アップロードを通じてそのデータを他者が入手できるようになります。適切に判断し現地の法律を遵守する責任は、あなた自身にあります。"
+
+msgid "Remote access needs a new password."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login."
+msgstr ""
+
+msgid "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on."
+msgstr ""
+
+#. Translators: Transmission import progress -> label
+msgid "Copying Transmission's transfers"
+msgstr ""
+
+msgid "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time."
+msgstr ""
+
+msgid "{appname} can copy your settings from Transmission, but not its transfers."
+msgstr ""
+
+msgid "Quit Transmission, then click Import."
+msgstr ""
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Import from Transmission?"
+msgstr "Retransmission"
+
+#. Translators: Transmission import alert -> button
+msgid "Import"
+msgstr ""
+
+#. Translators: Transmission import alert -> button
+msgid "Don't Import"
+msgstr ""
+
+msgid "Transmission's transfers couldn't be copied."
+msgstr ""
+
+msgid "{appname} is already running."
+msgstr "{appname} は既に実行中です。"
+
+msgid "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit."
+msgstr "既に {appname} のプログラムが実行中です。そのプログラムが終了するまでこのコピーは起動できません。"
+
+msgid "Transmission is running."
+msgstr ""
+
+msgid "Quit Transmission before opening {appname}. The two apps would work on the same downloads."
+msgstr ""
+
+msgid "Shortcuts for changing global settings."
+msgstr "全体設定の変更用のショートカットです。"
+
+#, fuzzy
+#| msgid "Remove torrent and delete its files"
+msgid "Remove all torrents that have completed seeding."
+msgstr "このトレントとそのファイルも削除"
+
+#. Translators: notification button
+msgid "Show"
+msgstr "表示"
+
+msgid "Support open-source indie software"
+msgstr "オープンソースの自主製作ソフトを支援"
+
+msgid "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation."
+msgstr "{appname} は完全機能を備えたトレント用アプリです。開発、コードの作成また改良に多くの労力が費やされています。気に入っていただけているなら寄付によっていいね！することもできます。"
+
+msgid "Donate or not, there will be no difference to your torrenting experience."
+msgstr "寄付をしなくてもトレント利用上の違いはありません。"
+
+#. Translators: Donation beg -> button
+msgid "Nope"
+msgstr "いいえ"
+
+msgid "Don't bug me about this ever again."
+msgstr "二度と邪魔しないで。"
+
+msgid "Are you sure you want to quit?"
+msgstr "終了しますか？"
+
+msgid "There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgstr ""
+
+msgid "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch."
+msgid_plural "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch."
+msgstr[0] ""
+
+msgid "{appname} will quit, because the two apps would work on the same downloads."
+msgstr ""
+
+msgid "It appears that the file \"{filename}\" from {url} is not a torrent file."
+msgstr "ファイル「{filename}」({url}) はトレントファイルではないようです。"
+
+#. Translators: Download not a torrent -> title
+#. Translators: Torrent download error -> title
+msgid "Torrent download failed"
+msgstr "トレントのダウンロード失敗"
+
+msgid "The torrent could not be downloaded from {url}: {error}."
+msgstr "トレントを {url} からダウンロードできません: {error}。"
+
+msgid "\"{filename}\" is not a valid torrent file."
+msgstr "「{filename}」は正しいトレントファイルではありません。"
+
+msgid "The torrent file cannot be opened because it contains invalid data."
+msgstr "トレントファイルが開けません。無効なデータが含まれます。"
+
+msgid "Adding magnetized torrent failed."
+msgstr ""
+
+msgid "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added."
+msgstr ""
+
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
+
+#, fuzzy
+#| msgid "The torrent file cannot be opened because it contains invalid data."
+msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+msgstr "トレントファイルが開けません。無効なデータが含まれます。"
+
+msgid "Magnet link is a duplicate of an existing torrent."
+msgstr ""
+
+msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Are you sure you want to remove this tracker?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?"
+msgstr "このトラッカーを削除しますか？"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove \"{torrent_name}\" from the torrent list?"
+msgstr "{count:L} トラッカーを除去しますか？"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "一度削除してから転送を続けるには、トレントファイルかマグネットリンクが必要になります。"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?"
+msgstr[0] "{count:L} トラッカーを除去しますか？"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} torrents from the torrent list?"
+msgstr[0] "{count:L} トラッカーを除去しますか？"
+
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "There is {count:L} active torrent."
+msgid_plural "There are {count:L} active torrents."
+msgstr[0] "{count:L} トレントを除去しますか？"
+
+#, fuzzy
+#| msgid "Seeding to {active_count:L} peer"
+#| msgid_plural "Seeding to {active_count:L} peers"
+msgid "There is {count:L} torrent ({active_count:L} active)."
+msgid_plural "There are {count:L} torrents ({active_count:L} active)."
+msgstr[0] "{active_count:L} ピアにシード中"
+
+#, fuzzy
+#| msgid "Are you sure you want to remove {count:L} tracker?"
+#| msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgid "Are you sure you want to remove {count:L} completed torrent from the torrent list?"
+msgid_plural "Are you sure you want to remove {count:L} completed torrents from the torrent list?"
+msgstr[0] "{count:L} トラッカーを除去しますか？"
+
+msgid "Select the new folder for \"{torrent_name}\"."
+msgstr "「{torrent_name}」の新規フォルダを選択します。"
+
+msgid "Select the new folder for {count:L} data file."
+msgid_plural "Select the new folder for {count:L} data files."
+msgstr[0] "{count:L} データファイル用の新しいフォルダを選択"
+
+msgid "Copy of \"{torrent_name}\" Cannot Be Created"
+msgstr "「{torrent_name}」のコピーを作成できません"
+
+msgid "The torrent file ({path}) cannot be found."
+msgstr "トレントファイル「{path}」が見つかりません。"
+
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "ダウンロード完了"
+
+#. Translators: notification title
+msgid "Seeding Complete"
+msgstr "シード完了"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Enabled"
+msgstr "第二の速度制限"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed Limits Disabled"
+msgstr "第二の速度制限"
+
+msgid "Changed at a scheduled time"
+msgstr ""
+
+#. Translators: Create toolbar item -> palette label
+#. Translators: Create torrent -> select file
+#. Translators: Drag overlay -> file
+msgid "Create Torrent File"
+msgstr "トレントファイルの作成"
+
+msgid "Create a new torrent"
+msgstr "新規トレントの作成"
+
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
+msgid "Open"
+msgstr "開く"
+
+#. Translators: Open toolbar item -> palette label
+msgid "Open Torrent Files"
+msgstr "トレントのファイルを開く"
+
+#. Translators: Remove toolbar item -> palette label
+msgid "Remove Selected"
+msgstr "選択を除去"
+
+#. Translators: Inspector toolbar item -> label
+#. Translators: Inspector toolbar item -> palette label
+#. Translators: Inspector -> title
+msgid "Inspector"
+msgstr "インスペクタ"
+
+msgid "Toggle the torrent inspector"
+msgstr "トレント・インスペクタを切り替え"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Pause all torrents"
+msgstr "すべてのトレントを停止"
+
+#. Translators: All toolbar item -> tooltip
+msgid "Start all torrents"
+msgstr "すべてのトレントを開始"
+
+#. Translators: All toolbar item -> label
+msgid "Apply All"
+msgstr "すべて適用"
+
+#, fuzzy
+#| msgid "Pause All"
+msgid "Pause / Start All"
+msgstr "すべて停止"
+
+#. Translators: Selected toolbar item -> label
+msgid "Apply Selected"
+msgstr "選択項目を適用"
+
+msgid "Pause / Start Selected"
+msgstr ""
+
+#. Translators: Filter toolbar item -> palette label
+msgid "Toggle Filter"
+msgstr "絞り込みを切り替え"
+
+msgid "Toggle the filter bar"
+msgstr "絞り込みバーを切り替え"
+
+#. Translators: Share toolbar item -> label
+#. Translators: Share toolbar item -> palette label
+msgid "Share"
+msgstr "共有"
+
+#. Translators: Share toolbar item -> tooltip
+msgid "Share torrent file"
+msgstr "トレントファイルを共有"
+
+#. Translators: View menu -> Inspector
+msgid "Hide Inspector"
+msgstr "インスペクタを隠す"
+
+#. Translators: View menu -> Status Bar
+msgid "Show Status Bar"
+msgstr "ステータスバーを表示"
+
+#. Translators: View menu -> Filter Bar
+msgid "Show Filter Bar"
+msgstr "絞り込みバーを表示"
+
+#. Translators: View menu -> Toolbar
+msgid "Show Toolbar"
+msgstr "ツールバーを表示"
+
+#. Translators: View menu -> Quick Look
+msgid "Close Quick Look"
+msgstr "クイックルックを閉じる"
+
+#. Translators: Dock item - Seeding
+msgid "{count:L} Seeding"
+msgstr "{count:L} シード中"
+
+#. Translators: Dock item - Downloading
+msgid "{count:L} Downloading"
+msgstr "{count:L} ダウンロード中"
+
+msgid "This folder contains no files."
+msgstr "フォルダ内にファイルがありません。"
+
+msgid "There must be at least one file in a folder to create a torrent file."
+msgstr "トレントファイルの作成には 1つ以上のファイル化フォルダが必要です。"
+
+msgid "The total file size is zero bytes."
+msgstr "ファイルの合計サイズが0バイトです。"
+
+msgid "A torrent file cannot be created for files with no size."
+msgstr "サイズのないファイルでトレントファイルは作成できません。"
+
+msgid "Select the name and location for the torrent file."
+msgstr "トレントファイルの名前と場所を選択"
+
+msgid "There are no tracker addresses."
+msgstr "トラッカーのアドレスがありません。"
+
+msgid "A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you."
+msgstr ""
+
+msgid "The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed."
+msgstr ""
+
+#. Translators: Create torrent -> info
+msgid "{count} piece, {size}"
+msgid_plural "{count} pieces, {size} each"
+msgstr[0] "{count} ピース, 各 {size}"
+
+msgid "Select a file or folder for the torrent file."
+msgstr "トレントファイル用のファイルかフォルダを選択。"
+
+msgid "The chosen torrent file location does not exist."
+msgstr "選択されたファイルの場所が存在しません。"
+
+msgid "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file."
+msgstr "フォルダ「{directory}」は存在しません。トレントファイルの作成には、このフォルダを作成するか別のフォルダを選択してください。"
+
+msgid "A torrent file with this name and directory cannot be created."
+msgstr "この名前とフォルダのトレントファイルは作成できません。"
+
+msgid "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file."
+msgstr "「{filename}」というファイル名は、既にフォルダ「{directory}」に存在します。トレントファイルの作成には新しい名前やフォルダを選択してください。"
+
+msgid "Creation of \"{filename}\" failed."
+msgstr "「{filename}」の作成に失敗しました。"
+
+#. Translators: Drag overlay -> torrents
+msgid "{count:L} Torrent File"
+msgid_plural "{count:L} Torrent Files"
+msgstr[0] "{count:L} トレントファイル"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download"
+msgid "Don't download"
+msgstr "ダウンロード"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Download speed"
+msgid "Download some"
+msgstr "ダウンロード速度"
+
+#. Translators: File Outline -> Menu
+msgid "Check Selected"
+msgstr "選択項目をチェック"
+
+#. Translators: File Outline -> Menu
+msgid "Uncheck Selected"
+msgstr "選択項目のチェックを外す"
+
+#. Translators: File Outline -> Menu
+msgid "Only Check Selected"
+msgstr "選択項目のみチェック"
+
+#. Translators: files tab -> tooltip
+msgid "Priority not available"
+msgstr ""
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "Low priority"
+msgstr "優先度"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Priority"
+msgid "High priority"
+msgstr "優先度"
+
+#. Translators: files tab -> tooltip
+#, fuzzy
+#| msgid "Torrent _priority:"
+msgid "Normal priority"
+msgstr "トレントの優先度:"
+
+msgid "Rename the file \"{filename}\":"
+msgstr "ファイル名「{filename}」の変更;"
+
+#. Translators: rename sheet button
+msgid "Rename"
+msgstr "名前の変更"
+
+#. Translators: Filter Bar -> group filter menu
+#. Translators: Groups -> Button
+msgid "All Groups"
+msgstr "すべてのグループ"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Download speed"
+msgstr "ダウンロード速度"
+
+#. Translators: Torrent table -> group row -> tooltip
+msgid "Upload speed"
+msgstr "アップロード速度"
+
+#. Translators: Torrent table -> group row -> tooltip
+#. Translators: Torrent -> status image
+#. Translators: status bar -> status label
+msgid "Ratio"
+msgstr "共有比"
+
+#. Translators: Groups -> Name
+msgid "Red"
+msgstr "レッド"
+
+#. Translators: Groups -> Name
+msgid "Orange"
+msgstr "オレンジ"
+
+#. Translators: Groups -> Name
+msgid "Yellow"
+msgstr "イエロー"
+
+#. Translators: Groups -> Name
+msgid "Green"
+msgstr "グリーン"
+
+#. Translators: Groups -> Name
+msgid "Blue"
+msgstr "ブルー"
+
+#. Translators: Groups -> Name
+msgid "Purple"
+msgstr "パープル"
+
+#. Translators: Groups -> Name
+msgid "Gray"
+msgstr "グレー"
+
+#. Translators: Inspector -> Activity tab -> have
+msgid "{size} verified"
+msgstr "{size} 検証済み"
+
+#. Translators: Info options -> global setting
+msgid "disabled"
+msgstr "無効"
+
+#. Translators: inspector -> peer table -> header tool tip
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from peer"
+msgstr "このピアからダウンロード中"
+
+#, fuzzy
+#| msgid "Downloading from this peer"
+msgid "Downloading from web seed"
+msgstr "このピアからダウンロード中"
+
+msgid "no peer info available"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} Connected"
+msgid_plural "{count:L} Connected"
+msgstr[0] "{count:L} 接続"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "DL from {count:L}"
+msgstr "{count:L} からDL"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "UL to {count:L}"
+msgstr "{count:L} へUL"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrent Not Active"
+msgstr "トレントのプロパティ"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Torrents Completed"
+msgid "Torrents Not Active"
+msgstr "トレント完了"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "Unknown"
+msgid "Known:"
+msgstr "不明"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} incoming"
+msgid "{count:L} Known:"
+msgstr "{count:L} 着信"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} tracker"
+msgstr "{count:L} トラッカー"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} incoming"
+msgstr "{count:L} 着信"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} cache"
+msgstr "{count:L} キャッシュ"
+
+#. Translators: Inspector -> Peers tab -> peers
+msgid "{count:L} local discovery"
+msgstr "{count:L} ローカル探索"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} PEX"
+msgstr "{count:L} 回"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} DHT"
+msgstr "{count:L} 回"
+
+#. Translators: Inspector -> Peers tab -> peers
+#, fuzzy
+#| msgid "{count:L} time"
+#| msgid_plural "{count:L} times"
+msgid "{count:L} LTEP"
+msgstr "{count:L} 回"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Progress: {percent}"
+msgstr "進行率: {percent}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Partial seed"
+msgstr ""
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "encrypted"
+msgstr "暗号化"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Protocol: {protocol}"
+msgstr "プロトコル: {protocol}"
+
+#. Translators: Inspector -> Peers tab -> table row tooltip
+msgid "Port: {port}"
+msgstr "ポート: {port}"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found through a tracker"
+msgstr "ピアを DHT 経由で発見"
+
+#, fuzzy
+#| msgid "Peer was found through DHT"
+msgid "Peer was found in the cache"
+msgstr "ピアを DHT 経由で発見"
+
+#, fuzzy
+#| msgid "Peer was found through Peer Exchange (PEX)"
+msgid "Peer was found through Local Peer Discovery (LPD)"
+msgstr "ピアをピア交換 (PEX) で発見"
+
+msgid "Peer was found through a libtorrent extension protocol handshake"
+msgstr ""
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Add a tracker"
+msgstr "トラッカーの追加"
+
+#. Translators: Inspector view -> tracker buttons
+msgid "Remove selected trackers"
+msgstr "選択したトラッカーを削除"
+
+#. Translators: Inspector -> tracker table
+msgid "New Tier"
+msgstr "新規ティア"
+
+#. Translators: Inspector -> tracker table
+msgid "Tier {tier}"
+msgstr "ティア {tier}"
+
+msgid "Are you sure you want to remove {count:L} tracker?"
+msgid_plural "Are you sure you want to remove {count:L} trackers?"
+msgstr[0] "{count:L} トラッカーを除去しますか？"
+
+msgid "Once removed, {appname} will no longer attempt to contact them. This cannot be undone."
+msgstr "一度削除すると、{appname} はそこへ通信しなくなります。これは元に戻せません。"
+
+msgid "Are you sure you want to remove this tracker?"
+msgstr "このトラッカーを削除しますか？"
+
+msgid "Once removed, {appname} will no longer attempt to contact it. This cannot be undone."
+msgstr "一度削除すると、{appname} はそこへ通信しなくなります。これは元に戻せません。"
+
+#. Translators: Inspector -> selected torrents
+msgid "{count:L} Torrent Selected"
+msgid_plural "{count:L} Torrents Selected"
+msgstr[0] "{count:L} トレントを選択"
+
+#. Translators: Inspector -> selected torrents
+#, fuzzy
+#| msgid "Remove {count:L} torrent?"
+#| msgid_plural "Remove {count:L} torrents?"
+msgid "{count:L} magnetized torrent"
+msgid_plural "{count:L} magnetized torrents"
+msgstr[0] "{count:L} トレントを除去しますか？"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: stats total
+msgid "{amount} total"
+msgstr "{amount} 計"
+
+#. Translators: Inspector -> selected torrents
+#. Translators: Torrent -> progress string
+#, fuzzy
+#| msgid "_Private torrent"
+msgid "Magnetized torrent"
+msgstr "非公開トレント"
+
+#. Translators: Message window -> save button
+msgid "Save"
+msgstr "保存"
+
+#. Translators: Save log panel -> default file name
+msgid "untitled"
+msgstr "無題"
+
+msgid "Log Could Not Be Saved"
+msgstr "ログを保存できません"
+
+msgid "There was a problem creating the file \"{filename}\"."
+msgstr "ファイル「{filename}」作成中に問題が発生しました。"
+
+#. Translators: Message window -> level
+msgctxt "Logging level"
+msgid "Trace"
+msgstr "トレース"
+
+msgid "{file_count:L} file"
+msgid_plural "{file_count:L} files"
+msgstr[0] "{file_count:L} ファイル"
+
+#, fuzzy
+#| msgid "{count:L} Torrent File"
+#| msgid_plural "{count:L} Torrent Files"
+msgid "{count:L} torrent"
+msgid_plural "{count:L} torrents"
+msgstr[0] "{count:L} トレントファイル"
+
+#. Translators: Preferences -> toolbar item title
+msgid "General"
+msgstr "一般"
+
+#. Translators: Preferences -> toolbar item title
+msgid "Groups"
+msgstr "グループ"
+
+#. Translators: The width of the Mac client's Preferences window in points, as a number such as 700, for languages whose text needs more room than English. Leave this untranslated for the usual width.
+msgid "PrefWindowSize"
+msgstr ""
+
+#. Translators: Preferences -> Network -> port status
+msgid "Port is closed"
+msgstr "ポートは閉じています"
+
+msgid "Port check site is down"
+msgstr "ポート確認サイトの反応なし"
+
+msgid "{count:L} IP address rule in list"
+msgid_plural "{count:L} IP address rules in list"
+msgstr[0] "リスト内に {count:L} 個のIP アドレスの規則"
+
+msgid "A blocklist must first be downloaded"
+msgstr "ブロックリストは最初にダウンロードしてください"
+
+#. Translators: Prefs -> blocklist -> message
+msgid "Last updated"
+msgstr "最終更新"
+
+msgid "This option is not available if Save to location is set to Same as torrent file."
+msgstr ""
+
+#. Translators: Stats window -> label
+msgid "Program started:"
+msgstr ""
+
+msgid "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected."
+msgstr ""
+
+#. Translators: stats total
+msgid "Total N/A"
+msgstr "合計なし"
+
+#. Translators: stats window -> times opened
+msgid "{count:L} time"
+msgid_plural "{count:L} times"
+msgstr[0] "{count:L} 回"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "{speed:L} KB/s"
+msgstr "{speed:L} KB/秒"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "unlimited"
+msgstr "無制限"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global upload limit"
+msgstr "全体アップロード制限"
+
+#. Translators: Status Bar -> speed tooltip
+msgid "Global download limit"
+msgstr "全体ダウンロード制限"
+
+msgid "A folder cannot be moved to inside itself."
+msgstr "フォルダ自身の中にフォルダを移動できません。"
+
+msgid "The move operation of \"{torrent_name}\" cannot be done."
+msgstr "「{torrent_name}」の移動は完了しませんでした。"
+
+msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
+msgstr "「{torrent_name}」を完全にダウンロードするためにディスク容量が十分ではありません。"
+
+msgid "The torrent will be paused. Clear up space on {volume} or deselect files in the torrent inspector to continue."
+msgstr ""
+
+#. Translators: Torrent disk space alert -> button
+msgid "Download Anyway"
+msgstr "とにかくダウンロード"
+
+msgid "Do not check disk space again"
+msgstr "ディスク容量を再度確認しない"
+
+msgid "{percent} of torrent metadata retrieved"
+msgstr "{percent}のトレントメタ情報を取得"
+
+#. Translators: Torrent -> progress string
+msgid "torrent metadata needed"
+msgstr "トレントメタ情報が必要"
+
+msgid "uploaded {uploaded_size} (Ratio: {ratio})"
+msgstr "アップロード {uploaded_size} (共有比: {ratio})"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned error"
+msgstr "トラッカーがエラーを返送"
+
+#. Translators: Torrent -> status string
+msgid "Tracker returned warning"
+msgstr "トラッカーが警告を返送"
+
+msgid "Downloading from {active_count:L} of {connected_count:L} peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
+msgstr[0] "{connected_count:L} ピアの {active_count:L} からダウンロード中"
+
+#. Translators: Torrent -> status string
+msgid "web seed"
+msgstr "ウェブシード"
+
+#. Translators: Torrent -> status string
+msgid "{count:L} web seed"
+msgid_plural "{count:L} web seeds"
+msgstr[0] "{count:L} ウェブシード"
+
+msgid "Seeding to {active_count:L} of {connected_count:L} peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
+msgstr[0] "{connected_count:L} ピアの {active_count:L} へシード中"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Down: {download_speed}, Up: {upload_speed}"
+msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
+
+#. Translators: Torrent -> status string
+#, fuzzy
+#| msgid "{upload_speed} ▴"
+msgid "Up: {upload_speed}"
+msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgid "Ratio: {ratio}, Up: {upload_speed}"
+msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
+
+#. Translators: Torrent -> eta string
+msgid "inactive"
+msgstr "未稼働"
+
+#. Translators: Group table row
+msgid "No Group"
+msgstr "グループなし"
+
+msgid "Show the data file in Finder"
+msgstr "データファイルを Finder で表示"
+
+msgid "Bypass the queue and start now"
+msgstr "順番待ちを飛ばしてすぐに開始"
+
+msgid "Stop waiting to start"
+msgstr "開始の待機を停止"
+
+#. Translators: Torrent Table -> tooltip
+#, fuzzy
+#| msgid "Share torrent file"
+msgid "Change torrent settings"
+msgstr "トレントファイルを共有"
+
+#. Translators: tracker peer stat
+msgid "Seeders"
+msgstr "シーダー"
+
+#. Translators: tracker peer stat
+msgid "Leechers"
+msgstr "リーチャー"
+
+#. Translators: tracker peer stat
+msgid "Downloaded"
+msgstr "ダウンロード"
+
+#. Translators: Tracker last announce
+msgid "Announce timed out"
+msgstr "アナウンスがタイムアウト"
+
+#. Translators: Tracker last announce
+msgid "Announce error"
+msgstr "アナウンスのエラー"
+
+#. Translators: Tracker last announce
+msgid "Last Announce"
+msgstr "最終アナウンス"
+
+#. Translators: Tracker last announce
+#, fuzzy
+#| msgid "{count:L} Seeding"
+msgid "got {count:L} peer"
+msgid_plural "got {count:L} peers"
+msgstr[0] "{count:L} シード中"
+
+#. Translators: Tracker next announce
+msgid "Announce in progress"
+msgstr "アナウンス進行中"
+
+msgid "Next announce in {time_span}"
+msgstr "{time_span} で次のアナウンス"
+
+msgid "Tracker will be used as a backup"
+msgstr "トラッカーはバックアップに使われます"
+
+#. Translators: Tracker last scrape
+msgid "Scrape timed out"
+msgstr "スクレイプがタイムアウト"
+
+#. Translators: Tracker last scrape
+msgid "Scrape error"
+msgstr "スクレイプのエラー"
+
+#. Translators: Tracker last scrape
+msgid "Last Scrape"
+msgstr "最終スクレイプ"
+
 msgid "Server"
 msgstr "サーバー"
 
@@ -2149,12 +4048,6 @@ msgstr "トラッカーのアナウンスURL, 1行ごと:"
 msgid "No new URLs found."
 msgstr "新規の URL はありませんでした。"
 
-msgid "Use Global Settings"
-msgstr "全体設定を使用"
-
-msgid "Stop seeding if idle for:"
-msgstr "アイドル状態でシード停止:"
-
 msgid "Torrent Properties"
 msgstr "トレントのプロパティ"
 
@@ -2169,21 +4062,6 @@ msgstr "アップロード速度制限 (_U):"
 
 msgid "Limit _download speed:"
 msgstr "ダウンロード速度制限 (_D):"
-
-msgid "Check Selected"
-msgstr "選択項目をチェック"
-
-msgid "Uncheck Selected"
-msgstr "選択項目のチェックを外す"
-
-msgid "Only Check Selected"
-msgstr "選択項目のみチェック"
-
-msgid "Open"
-msgstr "開く"
-
-msgid "Rename…"
-msgstr "改名…"
 
 msgid "Search…"
 msgstr "検索…"
@@ -2229,9 +4107,6 @@ msgstr "{host} は応答していない"
 msgid "_Open…"
 msgstr "開く(_O)"
 
-msgid "Create a new torrent"
-msgstr "新規トレントの作成"
-
 msgid "Open the torrent's folder"
 msgstr "トレントのフォルダを開く"
 
@@ -2243,9 +4118,6 @@ msgstr "取得データを検証"
 
 msgid "Remove torrent and delete its files"
 msgstr "このトレントとそのファイルも削除"
-
-msgid "Compact View"
-msgstr "コンパクト表示"
 
 msgid "_Main Window"
 msgstr "メインウィンドウ(_M)"
@@ -2259,9 +4131,6 @@ msgstr "セッションの変更(_C)"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "セッションの選択"
-
-msgid "Bypass the queue and start now"
-msgstr "順番待ちを飛ばしてすぐに開始"
 
 msgid "{file_count:L} File"
 msgid_plural "{file_count:L} Files"
@@ -2296,9 +4165,6 @@ msgstr "フォルダの選択"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>更新成功!</b><p>ブロックリストに {count:L} 個の規則があります。</p>"
-
-msgid "Download of the blocklist failed."
-msgstr ""
 
 msgid "Update Blocklist"
 msgstr "ブロックリストの更新"
@@ -2535,15 +4401,6 @@ msgstr[0] "秒"
 
 #~ msgid "Allowing desktop hibernation"
 #~ msgstr "デスクトップの休止状態を許可中"
-
-#~ msgid "Open URL…"
-#~ msgstr "URLを開く…"
-
-#~ msgid "Start all torrents"
-#~ msgstr "すべてのトレントを開始"
-
-#~ msgid "Pause all torrents"
-#~ msgstr "すべてのトレントを停止"
 
 #~ msgid "Start torrent now"
 #~ msgstr "トレントをすぐに開始する"

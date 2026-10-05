@@ -5,12 +5,9 @@
 
 #pragma once
 
-#include <array>
 #include <concepts>
 #include <locale>
-#include <span>
 #include <string_view>
-#include <type_traits>
 #include <utility>
 
 #include <fmt/format.h>
@@ -37,14 +34,15 @@
 
 // Translated text, formatted with {fmt} named arguments:
 // TR_FORMAT("Created by {creator}", fmt::arg("creator", creator))
-// A translation whose fields don't fit the arguments is ignored in favor of the English text,
-// because {fmt} is built without exceptions and aborts on a bad format string.
-#define TR_FORMAT(msgid, ...) ::trqt::detail::formatTranslation(tr_gettext(msgid), msgid, __VA_ARGS__)
+// {fmt} is built without exceptions and aborts on a format string that doesn't fit its arguments,
+// so the catalog reader drops any translation whose fields don't fit its English text.
+#define TR_FORMAT(msgid, ...) ::trqt::detail::formatTranslation(tr_gettext(msgid), __VA_ARGS__)
 
 // Like TR_FORMAT, in the plural form for `n`.
 // Text that doesn't show the count picks its wording with `count == 1` instead,
 // because a language's form for one can cover other counts, e.g. 21 in Russian.
-#define TR_FORMAT_N(msgid, msgid_plural, n, ...) ::trqt::detail::formatPlural(msgid, msgid_plural, n, __VA_ARGS__)
+#define TR_FORMAT_N(msgid, msgid_plural, n, ...) \
+    ::trqt::detail::formatTranslation(tr_ngettext(msgid, msgid_plural, n), __VA_ARGS__)
 
 template<>
 struct fmt::formatter<QString> : formatter<std::string_view> {
@@ -93,39 +91,12 @@ concept NamedArg = requires(T const& arg) {
     arg.value;
 };
 
-// {fmt}'s "L" spec suits numbers, but not bool or characters.
-template<typename T>
-inline constexpr bool IsNumber = std::is_floating_point_v<T> ||
-    (std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t> &&
-     !std::is_same_v<T, char8_t> && !std::is_same_v<T, char16_t> && !std::is_same_v<T, char32_t>);
-
-struct ArgInfo {
-    std::string_view name;
-    bool is_number = false;
-};
-
-[[nodiscard]] QString formatTranslation(
-    char const* translation,
-    char const* source,
-    std::span<ArgInfo const> arg_infos,
-    fmt::format_args args);
-
-// Formats `translation` with {fmt} named arguments,
-// or formats `source` if `translation` has a field that doesn't fit them.
+// Formats `translation` with {fmt} named arguments.
 // Named arguments are taken by value: {fmt} registers the names of non-const ones only.
 template<NamedArg... Args>
-[[nodiscard]] QString formatTranslation(char const* translation, char const* source, Args... args)
+[[nodiscard]] QString formatTranslation(char const* translation, Args... args)
 {
-    auto const arg_infos = std::array<ArgInfo, sizeof...(Args)>{
-        ArgInfo{ args.name, IsNumber<std::remove_cvref_t<decltype(args.value)>> }...
-    };
-    return formatTranslation(translation, source, arg_infos, fmt::vargs<Args...>{ { args... } });
-}
-
-template<std::integral T, NamedArg... Args>
-[[nodiscard]] QString formatPlural(char const* const msgid, char const* const msgid_plural, T const n, Args... args)
-{
-    return formatTranslation(tr_ngettext(msgid, msgid_plural, n), n == 1 ? msgid : msgid_plural, args...);
+    return QString::fromStdString(fmt::vformat(fmtLocale(), translation, fmt::vargs<Args...>{ { args... } }));
 }
 
 } // namespace detail

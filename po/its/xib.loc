@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Tells xgettext that a .xib file whose root is <document> is an Interface Builder file. -->
+<locatingRules>
+  <locatingRule name="InterfaceBuilder" pattern="*.xib">
+    <documentRule localName="document" target="xib.its"/>
+  </locatingRule>
+</locatingRules>

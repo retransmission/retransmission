@@ -95,10 +95,10 @@ jobs:
           get_changes dist       dist release
           get_changes docs       docs
           get_changes gtk        CMakeLists.txt cmake third-party libtransmission libtransmission-app gtk
-          get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission macosx
+          get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission libtransmission-app macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
-          get_changes translations po
+          get_changes translations po macosx/Base.lproj
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
@@ -148,6 +148,14 @@ jobs:
         uses: actions/checkout@v7
       - name: Check translations
         run: release/find-broken-translations.py
+      - name: Check that the xib strings cover the text that xgettext extracts
+        run: release/mac-xib-strings.py check po/its/xib.its macosx/Base.lproj/*.xib
+      - name: Check that the xib strings generate
+        run: |
+          for po in po/*.po; do
+            release/mac-xib-strings.py strings "$po" "$RUNNER_TEMP" macosx/Base.lproj/*.xib
+          done
+          test -s "$RUNNER_TEMP/MainMenu.strings"
 
   sanitizer-tests-linux:
     runs-on: ubuntu-latest
@@ -607,7 +615,7 @@ jobs:
       - name: Remove untrusted pre-tapped Homebrew taps
         run: brew tap | grep -qx 'aws/tap' && brew untap aws/tap || true
       - name: Get Dependencies
-        run: brew install --formulae xcbeautify
+        run: brew install --formulae gettext xcbeautify
       - name: Get Source
         uses: actions/checkout@v7
         with:

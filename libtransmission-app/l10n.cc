@@ -16,8 +16,10 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <variant>
 #include <vector>
 
+#include <fmt/args.h>
 #include <fmt/format.h>
 
 #include <libtransmission/file.h>
@@ -216,6 +218,17 @@ void use_translations(std::vector<detail::Catalog> catalogs)
         [](char const* const msgid, char const* const msgid_plural, uint64_t const n) noexcept {
             return current_translations.load()->ngettext(msgid, msgid_plural, n);
         });
+}
+
+// Returns the catalog in `filename`, or nullopt if the file is missing or isn't a catalog.
+[[nodiscard]] std::optional<detail::Catalog> load_catalog(std::string_view const filename)
+{
+    auto contents = std::vector<char>{};
+    if (!tr_sys_path_exists(filename) || !tr_file_read(filename, contents)) {
+        return {};
+    }
+
+    return detail::Catalog::parse(std::move(contents));
 }
 
 } // namespace
@@ -623,6 +636,20 @@ std::vector<std::string> language_candidates(std::span<std::string const> const 
 
 // ---
 
+std::string format_translation(std::locale const& locale, char const* const translation, std::span<Arg const> const args)
+{
+    auto store = fmt::dynamic_format_arg_store<fmt::format_context>{};
+    store.reserve(std::size(args), std::size(args));
+
+    for (auto const& arg : args) {
+        std::visit([&store, &arg](auto const& value) { store.push_back(fmt::arg(arg.name, value)); }, arg.value);
+    }
+
+    return fmt::vformat(locale, translation, store);
+}
+
+// ---
+
 std::vector<std::string> use_catalogs(
     std::span<std::string const> const dirs,
     std::string_view const domain,
@@ -634,12 +661,7 @@ std::vector<std::string> use_catalogs(
     for (auto const& language : detail::language_candidates(preferred_languages)) {
         for (auto const& dir : dirs) {
             auto const filename = tr_pathbuf{ dir, '/', language, "/LC_MESSAGES/"sv, domain, ".mo"sv };
-            auto contents = std::vector<char>{};
-            if (!tr_sys_path_exists(filename) || !tr_file_read(filename, contents)) {
-                continue;
-            }
-
-            if (auto catalog = detail::Catalog::parse(std::move(contents)); catalog) {
+            if (auto catalog = load_catalog(filename); catalog) {
                 catalogs.push_back(*std::move(catalog));
                 languages.push_back(language);
                 break;
@@ -649,6 +671,21 @@ std::vector<std::string> use_catalogs(
 
     use_translations(std::move(catalogs));
     return languages;
+}
+
+size_t use_catalog_files(std::span<std::string const> const filenames)
+{
+    auto catalogs = std::vector<detail::Catalog>{};
+
+    for (auto const& filename : filenames) {
+        if (auto catalog = load_catalog(filename); catalog) {
+            catalogs.push_back(*std::move(catalog));
+        }
+    }
+
+    auto const n_catalogs = std::size(catalogs);
+    use_translations(std::move(catalogs));
+    return n_catalogs;
 }
 
 } // namespace tr::app::l10n

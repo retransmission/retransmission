@@ -450,6 +450,7 @@
 		EDD735D62D83087400852628 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD735D52D83087400852628 /* UniformTypeIdentifiers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F0A1B2C32F1A2B3C00445566 /* session-settings.h in Headers */ = {isa = PBXBuildFile; fileRef = F0A1B2C42F1A2B3C00445566 /* session-settings.h */; };
 		F11545ACA7C4D7A464F703AB /* block-info.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A044CBD8C049AFCBD4DB411 /* block-info.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F6A2C0032FB0A00100A1B2C3 /* l10n.cc in Sources */ = {isa = PBXBuildFile; fileRef = F6A2C0012FB0A00100A1B2C3 /* l10n.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1053,6 +1054,8 @@
 		EDEB86BE2BDF9E9D00112233 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		EDEB86BF2BDF9E9D00112233 /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		F0A1B2C42F1A2B3C00445566 /* session-settings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "session-settings.h"; sourceTree = "<group>"; };
+		F6A2C0012FB0A00100A1B2C3 /* l10n.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = l10n.cc; sourceTree = "<group>"; };
+		F6A2C0022FB0A00100A1B2C3 /* l10n.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = l10n.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -1350,6 +1353,7 @@
 				080E96DDFE201D6D7F000001 /* Sources */,
 				0AD81ED4304EC83C00C22874 /* macosx */,
 				4D1838DC09DEC04A0047D688 /* libtransmission */,
+				F6A2C0052FB0A00100A1B2C3 /* libtransmission-app */,
 				4DDBB71F09E16BFE00284745 /* CLI */,
 				BEFC1C0B0C07754700B0BB3C /* daemon */,
 				C15E58AC219A37C600AB292F /* utils */,
@@ -1934,6 +1938,15 @@
 			path = "third-party/madler-crcany";
 			sourceTree = "<group>";
 		};
+		F6A2C0052FB0A00100A1B2C3 /* libtransmission-app */ = {
+			isa = PBXGroup;
+			children = (
+				F6A2C0012FB0A00100A1B2C3 /* l10n.cc */,
+				F6A2C0022FB0A00100A1B2C3 /* l10n.h */,
+			);
+			path = "libtransmission-app";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2212,6 +2225,7 @@
 			buildConfigurationList = 4DF0C596089918A300DD8943 /* Build configuration list for PBXNativeTarget "Transmission" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
+				F6A2C0042FB0A00100A1B2C3 /* Compile Catalogs */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				A24F191B0A3A792300C9C145 /* Copy Files to Frameworks */,
@@ -2694,6 +2708,21 @@
 			shellPath = /bin/sh;
 			shellScript = "sed 's|@LIBPSL_[A-Z_]*@|0|' < third-party/libpsl/include/libpsl.h.in > third-party/libpsl/include/libpsl.h\n\n# Generate files to be included\nPYTHON=$( command -v python3 ) || PYTHON=$( command -v python3.7 ) || PYTHON=$( command -v python2 )\n\"${PYTHON}\" \"third-party/libpsl/src/psl-make-dafsa\" --output-format=cxx+ \"third-party/libpsl/list/public_suffix_list.dat\" \"third-party/suffixes_dafsa.h\"\n";
 		};
+		F6A2C0042FB0A00100A1B2C3 /* Compile Catalogs */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Catalogs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh po/compile-mac-catalogs.sh \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2820,6 +2849,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6A2C0032FB0A00100A1B2C3 /* l10n.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3274,6 +3304,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",
@@ -3548,6 +3579,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",
@@ -3813,6 +3845,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",

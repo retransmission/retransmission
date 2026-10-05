@@ -56,17 +56,6 @@ TEST_F(UtilsTest, trStrvToUtf8NsstringInvalid)
     }
 }
 
-TEST_F(UtilsTest, trStrvToUtf8NsstringFallback)
-{
-    @autoreleasepool {
-        constexpr auto bad = "\xF4\x33\x81\x82"sv;
-        NSString* const key = @"tr.strv.to.utf8.fallback";
-        NSString* const comment = @"fallback string for tests";
-        NSString* str = tr_strv_to_utf8_nsstring(bad, key, comment);
-        EXPECT_TRUE([str isEqualToString:key]);
-    }
-}
-
 TEST_F(UtilsTest, trStrvToUtf8StringMixedInvalid)
 {
     constexpr auto input = "hello \xF0\x28\x8C\x28 world"sv;

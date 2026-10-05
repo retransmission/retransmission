@@ -8,6 +8,7 @@
 #import "NSStringAdditions.h"
 #import "PiecesView.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSUInteger, PiecesControlSegment) {
     PiecesControlSegmentProgress = 0,
@@ -56,7 +57,8 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 - (instancetype)init
 {
     if ((self = [super initWithNibName:@"InfoActivityView" bundle:nil])) {
-        self.title = NSLocalizedString(@"Activity", "Inspector view -> title");
+        // Translators: Inspector view -> title
+        self.title = TR_TEXT("Activity");
     }
 
     return self;
@@ -181,8 +183,8 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     if (have == 0) {
         self.fHaveField.stringValue = [NSString stringForFileSize:0];
     } else {
-        NSString* verifiedString = [NSString stringWithFormat:NSLocalizedString(@"%@ verified", "Inspector -> Activity tab -> have"),
-                                                              [NSString stringForFileSize:haveVerified]];
+        // Translators: Inspector -> Activity tab -> have
+        NSString* verifiedString = TR_FORMAT("{size} verified", TRArg("size", [NSString stringForFileSize:haveVerified]));
         if (have == haveVerified) {
             self.fHaveField.stringValue = verifiedString;
         } else {
@@ -203,9 +205,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         NSString* progressString = [NSString percentString:torrent.progress longDecimals:YES];
         if (torrent.folder) {
-            NSString* progressSelectedString = [NSString
-                stringWithFormat:NSLocalizedString(@"%@ selected", "Inspector -> Activity tab -> progress"),
-                                 [NSString percentString:torrent.progressDone longDecimals:YES]];
+            NSString* progressSelectedString = TR_FORMAT(
+                // Translators: Inspector -> Activity tab -> progress
+                "{amount} selected",
+                TRArg("amount", [NSString percentString:torrent.progressDone longDecimals:YES]));
             progressString = [progressString stringByAppendingFormat:@" (%@)", progressSelectedString];
         }
         self.fProgressField.stringValue = progressString;
