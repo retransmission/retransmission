@@ -225,6 +225,9 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(&model_, &TorrentModel::rowsRemoved, this, refresh_header_soon);
     connect(&filter_model_, &TorrentFilter::rowsInserted, this, refresh_header_soon);
     connect(&filter_model_, &TorrentFilter::rowsRemoved, this, refresh_header_soon);
+    // TorrentFilter refilters with invalidate(), which reports a layout change rather than inserted or removed rows.
+    connect(&filter_model_, &TorrentFilter::layoutChanged, this, refresh_header_soon);
+    connect(&filter_model_, &TorrentFilter::modelReset, this, refresh_header_soon);
     connect(ui_.listView, &TorrentView::headerDoubleClicked, filter_bar, &FilterBar::clear);
 
     static auto constexpr InitKeys = std::to_array<tr_quark>({
