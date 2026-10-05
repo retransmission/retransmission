@@ -4,10 +4,10 @@ GenericName=BitTorrent Client
 Comment=Download and share files over BitTorrent
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 Keywords=torrents;downloading;uploading;share;sharing;
-Exec=transmission-gtk %U
+Exec=@TR_GTK_EXECUTABLE_NAME@ %U
 Icon=transmission-gtk
 Terminal=false
-TryExec=transmission-gtk
+TryExec=@TR_GTK_EXECUTABLE_NAME@
 Type=Application
 StartupNotify=true
 # What a Wayland compositor matches windows against; CMake substitutes the same
@@ -20,8 +20,8 @@ Actions=Pause;Minimize;
 
 [Desktop Action Pause]
 Name=Start Transmission with All Torrents Paused
-Exec=transmission-gtk --paused
+Exec=@TR_GTK_EXECUTABLE_NAME@ --paused
 
 [Desktop Action Minimize]
 Name=Start Transmission Minimized
-Exec=transmission-gtk --minimized
+Exec=@TR_GTK_EXECUTABLE_NAME@ --minimized

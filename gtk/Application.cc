@@ -10,7 +10,6 @@
 #include "FilterBar.h"
 #include "GtkCompat.h"
 #include "HigWorkarea.h" // GUI_PAD, GUI_PAD_BIG
-#include "Macros.h"
 #include "MainWindow.h"
 #include "MakeDialog.h"
 #include "MessageLogWindow.h"
@@ -426,10 +425,19 @@ bool has_magnet_link_handler()
 
 void register_magnet_link_handler()
 {
+    // GIO ignores a handler whose command is not on the PATH.
+    // Registering one anyway would add another dead handler on every launch.
+    if (Glib::find_program_in_path(TR_GTK_EXECUTABLE_NAME).empty()) {
+        return;
+    }
+
     std::string const content_type = "x-scheme-handler/magnet";
 
     try {
-        auto const app = Gio::AppInfo::create_from_commandline(MY_NAME, MY_NAME, TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
+        auto const app = Gio::AppInfo::create_from_commandline(
+            TR_GTK_EXECUTABLE_NAME,
+            TR_PROJ_APPNAME_CAPITALIZED,
+            TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
         app->set_as_default_for_type(content_type);
     } catch (Gio::Error const& e) {
         gtr_warning(
