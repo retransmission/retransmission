@@ -470,12 +470,6 @@ msgstr "جاري التحقق"
 msgid "Error"
 msgstr "خطأ"
 
-msgid "_Show:"
-msgstr "_عرض:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} حر"
 
@@ -496,6 +490,15 @@ msgstr "[ملفات أو روابط تورنت]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "عرض {visible_count:L} من {count:L} تورنت"
+msgstr[1] "عرض {visible_count:L} من {count:L} تورنت"
+msgstr[2] "عرض {visible_count:L} من {count:L} تورنت"
+msgstr[3] "عرض {visible_count:L} من {count:L} ملفات تورنت"
+msgstr[4] "عرض {visible_count:L} من {count:L} ملف تورنت"
+msgstr[5] "عرض {visible_count:L} من {count:L} ملف تورنت"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1179,6 +1182,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "_عرض:"
 
 msgid "Open a torrent"
 msgstr "افتح تورنت"
@@ -2400,15 +2406,6 @@ msgstr "خطأ في الشبكة"
 
 msgid "Idle"
 msgstr "خامل"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "عرض {visible_count:L} من {count:L} تورنت"
-msgstr[1] "عرض {visible_count:L} من {count:L} تورنت"
-msgstr[2] "عرض {visible_count:L} من {count:L} تورنت"
-msgstr[3] "عرض {visible_count:L} من {count:L} ملفات تورنت"
-msgstr[4] "عرض {visible_count:L} من {count:L} ملف تورنت"
-msgstr[5] "عرض {visible_count:L} من {count:L} ملف تورنت"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "ملفات تورنت (*.torrent);;كل الملفات (*.*)"

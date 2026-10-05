@@ -429,12 +429,6 @@ msgstr "Memeriksa"
 msgid "Error"
 msgstr "Galat"
 
-msgid "_Show:"
-msgstr "_Tampilkan:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} bebas"
 
@@ -455,6 +449,10 @@ msgstr "[url atau berkas torrent]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Menampilkan {visible_count:L} dari {count:L} torrent"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1100,6 +1098,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Lihat juga Pelacak Publik Baku dalam Sunting > Preferensi > Jaringan"
+
+msgid "_Show:"
+msgstr "_Tampilkan:"
 
 msgid "Open a torrent"
 msgstr "Buka suatu torrent"
@@ -2183,10 +2184,6 @@ msgstr "Galat Jaringan"
 
 msgid "Idle"
 msgstr "Menganggur"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Menampilkan {visible_count:L} dari {count:L} torrent"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Berkas Torrent (*.torrent);;Semua Berkas (*.*)"

@@ -519,12 +519,6 @@ msgstr "Перевірка"
 msgid "Error"
 msgstr "Помилка"
 
-msgid "_Show:"
-msgstr "Пок_азувати:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Показати {count:L} з:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} доступно"
 
@@ -545,6 +539,13 @@ msgstr "[Файли торентів або посилання]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Виконайте '{program} --help', щоб побачити повний перелік доступних  параметрів командного рядка.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Відображен {visible_count:L} з {count:L} торентів"
+msgstr[1] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[2] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[3] "Відображені {visible_count:L} з {count:L} торентів"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1256,6 +1257,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Також перегляньте Загальнодоступні трекери за замовчуванням у меню Редагувати > Налаштування > Мережа"
+
+msgid "_Show:"
+msgstr "Пок_азувати:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4290,13 +4294,6 @@ msgstr "Помилка мережі"
 msgid "Idle"
 msgstr "Неактивний"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Відображен {visible_count:L} з {count:L} торентів"
-msgstr[1] "Відображені {visible_count:L} з {count:L} торентів"
-msgstr[2] "Відображені {visible_count:L} з {count:L} торентів"
-msgstr[3] "Відображені {visible_count:L} з {count:L} торентів"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Файли торентів (*.torrent);;Всі файли (*.*)"
 
@@ -4624,6 +4621,9 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Показати {count:L} з:"
 
 #~ msgid "Finished"
 #~ msgstr "Завершено"

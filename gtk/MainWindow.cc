@@ -135,6 +135,8 @@ private:
 
     void syncAltSpeedButton();
 
+    void update_filter_notice(guint visible_count);
+
     void onOptionsClicked();
     void alt_speed_toggled_cb();
     void onAltSpeedToggledIdle();
@@ -163,6 +165,7 @@ private:
     TorrentView* view_ = nullptr;
     Gtk::Widget* toolbar_ = nullptr;
     FilterBar* filter_;
+    Gtk::Label* filter_notice_ = nullptr;
     Gtk::Widget* status_ = nullptr;
     Gtk::Label* ul_lb_ = nullptr;
     Gtk::Label* dl_lb_ = nullptr;
@@ -360,6 +363,23 @@ void MainWindow::Impl::prefsChanged(tr_quark const key)
 MainWindow::Impl::~Impl()
 {
     pref_handler_id_.disconnect();
+}
+
+void MainWindow::Impl::update_filter_notice(guint const visible_count)
+{
+    auto const count = core_->get_model()->get_n_items();
+    filter_notice_->set_visible(visible_count != count);
+
+    if (visible_count != count) {
+        filter_notice_->set_text(
+            fmt::format(
+                fmt::runtime(ngettext(
+                    "Showing {visible_count:L} of {count:L} torrent",
+                    "Showing {visible_count:L} of {count:L} torrents",
+                    count)),
+                fmt::arg("visible_count", visible_count),
+                fmt::arg("count", count)));
+    }
 }
 
 void MainWindow::Impl::syncAltSpeedButton()
@@ -653,6 +673,7 @@ MainWindow::Impl::Impl(
     , view_(gtr_get_widget<TorrentView>(builder, "torrents_view"))
     , toolbar_(gtr_get_widget<Gtk::Widget>(builder, "toolbar"))
     , filter_(gtr_get_widget_derived<FilterBar>(builder, "filterbar", core_))
+    , filter_notice_(gtr_get_widget<Gtk::Label>(builder, "filter_notice_label"))
     , status_(gtr_get_widget<Gtk::Widget>(builder, "statusbar"))
     , ul_lb_(gtr_get_widget<Gtk::Label>(builder, "upload_speed_label"))
     , dl_lb_(gtr_get_widget<Gtk::Label>(builder, "download_speed_label"))
@@ -703,6 +724,7 @@ MainWindow::Impl::Impl(
     **/
 
     init_view(view_, filter_->get_filter_model());
+    filter_->signal_visible_count_changed().connect(sigc::mem_fun(*this, &Impl::update_filter_notice));
 
     {
         /* this is to determine the maximum width/height for the label */

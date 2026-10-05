@@ -481,12 +481,6 @@ msgstr "Verifieer tans"
 msgid "Error"
 msgstr "Fout"
 
-msgid "_Show:"
-msgstr "_Toon:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Toon {count:L} van:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} vry"
 
@@ -507,6 +501,11 @@ msgstr "[torrentlêers of URLs]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Toon {visible_count:L} van {count:L} torrent"
+msgstr[1] "Toon {visible_count:L} van {count:L} torrents"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1200,6 +1199,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Sien oop Verstek openbare spoorders in Wysig > Voorkeure > Netwerk"
+
+msgid "_Show:"
+msgstr "_Toon:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4146,11 +4148,6 @@ msgstr "Netwerkfout"
 msgid "Idle"
 msgstr "Luier"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Toon {visible_count:L} van {count:L} torrent"
-msgstr[1] "Toon {visible_count:L} van {count:L} torrents"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrentlêers (*.torrent);;Alle Lêers (*.*)"
 
@@ -4452,6 +4449,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Toon {count:L} van:"
 
 #~ msgid "Finished"
 #~ msgstr "Klaar"

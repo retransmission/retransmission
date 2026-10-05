@@ -428,12 +428,6 @@ msgstr "प्रमाणीकरण जारी"
 msgid "Error"
 msgstr "त्रुटि"
 
-msgid "_Show:"
-msgstr "दिखाएँ (_S):"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} अप्रयुक्त"
 
@@ -454,6 +448,11 @@ msgstr "[टोरेंट फाइलें या यूआरएल]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
+msgstr[1] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1110,6 +1109,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "संपादन > सेटिंग्स > नेटवर्क में डिफ़ॉल्ट सार्वजानिक ट्रैकर देखें"
+
+msgid "_Show:"
+msgstr "दिखाएँ (_S):"
 
 msgid "Open a torrent"
 msgstr "टोरेंट खोलें"
@@ -2221,11 +2223,6 @@ msgstr "नेटवर्क त्रुटि"
 
 msgid "Idle"
 msgstr "निष्क्रिय"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
-msgstr[1] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "टोरेंट फाइलें (*.torrent);;सभी फाइलें (*.*)"

@@ -499,12 +499,6 @@ msgstr "Bekræfter"
 msgid "Error"
 msgstr "Fejl"
 
-msgid "_Show:"
-msgstr "V_is:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Vis {count:L} af:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} ledig"
 
@@ -525,6 +519,11 @@ msgstr "[torrent-filer eller url'er]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Kør '{program} --help' for at se en fuld liste med tilgængelige kommandolinjetilvalg.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Viser {visible_count:L} af {count:L} torrent"
+msgstr[1] "Viser {visible_count:L} af {count:L} torrents"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1222,6 +1221,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Se også Offentlige trackere (standard) i Rediger > Præferencer > Netværk"
+
+msgid "_Show:"
+msgstr "V_is:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4181,11 +4183,6 @@ msgstr "Netværksfejl"
 msgid "Idle"
 msgstr "Inaktiv"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Viser {visible_count:L} af {count:L} torrent"
-msgstr[1] "Viser {visible_count:L} af {count:L} torrents"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent-filer (*.torrent);;Alle filer (*.*)"
 
@@ -4475,6 +4472,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Vis {count:L} af:"
 
 #~ msgid "Finished"
 #~ msgstr "Færdig"

@@ -510,12 +510,6 @@ msgstr "In verifica"
 msgid "Error"
 msgstr "Errore"
 
-msgid "_Show:"
-msgstr "Mo_stra:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} libero"
 
@@ -536,6 +530,12 @@ msgstr "[FILE_TORRENT… o URL…]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1235,6 +1235,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Vedere anche «Server traccia pubblici predefiniti» in Modifica > Preferenze > Rete"
+
+msgid "_Show:"
+msgstr "Mo_stra:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4231,12 +4234,6 @@ msgstr "Errore di rete"
 
 msgid "Idle"
 msgstr "Inattivo"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "File torrent (*.torrent);;Tutti i file (*.*)"

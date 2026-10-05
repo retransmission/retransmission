@@ -493,12 +493,6 @@ msgstr "Проверяется"
 msgid "Error"
 msgstr "Ошибка"
 
-msgid "_Show:"
-msgstr "_Показать:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Показать {count:L} из:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} свободно"
 
@@ -519,6 +513,13 @@ msgstr "[торрент-файлы или ссылки]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Выполните «{program} --help», чтобы увидеть список всех доступных параметров командной строки.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[1] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[2] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[3] "Отображается {visible_count:L} из {count:L} торрентов"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1230,6 +1231,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Также смотрите Общедоступные трекеры по умолчанию в меню Правка > Настройки > Сеть"
+
+msgid "_Show:"
+msgstr "_Показать:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4266,13 +4270,6 @@ msgstr "Ошибка сети"
 msgid "Idle"
 msgstr "Ожидание"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Отображается {visible_count:L} из {count:L} торрентов"
-msgstr[1] "Отображается {visible_count:L} из {count:L} торрентов"
-msgstr[2] "Отображается {visible_count:L} из {count:L} торрентов"
-msgstr[3] "Отображается {visible_count:L} из {count:L} торрентов"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Торрент-файлы (*.torrent);;Все файлы (*.*)"
 
@@ -4594,6 +4591,9 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Показать {count:L} из:"
 
 #~ msgid "Finished"
 #~ msgstr "Завершён"

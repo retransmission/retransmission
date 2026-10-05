@@ -509,12 +509,6 @@ msgstr "Ellenőrzés"
 msgid "Error"
 msgstr "Hiba"
 
-msgid "_Show:"
-msgstr "_Megjelenítés:"
-
-msgid "_Show {count:L} of:"
-msgstr "{count:L} meg_jelenítése ennyiből:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} szabad"
 
@@ -535,6 +529,11 @@ msgstr "[torrent fájlok vagy webcímek]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "A parancssori kapcsolók teljes listájáért futtassa a '{program} --help' parancsot.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} /{count:L} torrent mutatása"
+msgstr[1] "{visible_count:L} /{count:L} torrent mutatása"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1232,6 +1231,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Továbbá nézze meg az Alapértelmezett nyilvános trackereket a Szerkesztés > Beállítások > Hálózat alatt"
+
+msgid "_Show:"
+msgstr "_Megjelenítés:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -4173,11 +4175,6 @@ msgstr "Hálózati hiba"
 msgid "Idle"
 msgstr "Inaktív"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "{visible_count:L} /{count:L} torrent mutatása"
-msgstr[1] "{visible_count:L} /{count:L} torrent mutatása"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent fájlok (*.torrent);;Minden fájl (*.*)"
 
@@ -4473,6 +4470,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "{count:L} meg_jelenítése ennyiből:"
 
 #~ msgid "Finished"
 #~ msgstr "Elkészült"

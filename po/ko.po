@@ -436,12 +436,6 @@ msgstr "검증중"
 msgid "Error"
 msgstr "오류"
 
-msgid "_Show:"
-msgstr "표시(_S):"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} 남음"
 
@@ -462,6 +456,10 @@ msgstr "[토렌트 파일 또는 주소]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} / {count:L} Torrent 보이기"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1113,6 +1111,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "편집 > 환경설정 > 네트워크의 기본 공개 트래커도 참조"
+
+msgid "_Show:"
+msgstr "표시(_S):"
 
 msgid "Open a torrent"
 msgstr "토렌트 열기"
@@ -2212,10 +2213,6 @@ msgstr "네트워크 오류"
 
 msgid "Idle"
 msgstr "비활성"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "{visible_count:L} / {count:L} Torrent 보이기"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent 파일 (*.torrent);;전체 파일 (*.*)"

@@ -427,12 +427,6 @@ msgstr "Тексерілуде"
 msgid "Error"
 msgstr "Қате"
 
-msgid "_Show:"
-msgstr "Көр_сету:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr ""
 
@@ -453,6 +447,11 @@ msgstr "[торрент файлдары не сілтемелер]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1107,6 +1106,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "Көр_сету:"
 
 msgid "Open a torrent"
 msgstr "Торрентті ашу"
@@ -2224,11 +2226,6 @@ msgstr "Желі"
 
 msgid "Idle"
 msgstr "Іссіз"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr ""

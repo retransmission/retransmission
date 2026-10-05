@@ -423,12 +423,6 @@ msgstr "შემოწმება"
 msgid "Error"
 msgstr "შეცდომა"
 
-msgid "_Show:"
-msgstr "[_ჩვენება]"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} თავისუფალი"
 
@@ -449,6 +443,11 @@ msgstr ""
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
+msgstr[1] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1100,6 +1099,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "[_ჩვენება]"
 
 msgid "Open a torrent"
 msgstr "ტორენტის გახსნა"
@@ -2202,11 +2204,6 @@ msgstr "ქსელის შეცდომა"
 
 msgid "Idle"
 msgstr "უმოქმედო"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
-msgstr[1] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "ტორენტ ფაილები (*.torrent);;ყველა ფაილი (*.*)"
