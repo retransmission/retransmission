@@ -1463,17 +1463,20 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
     return [NSError errorWithDomain:NSOSStatusErrorDomain code:errorCode userInfo:NULL].description;
 }
 
+// The keychain item that holds the remote access password, plus the given attributes.
+[[nodiscard]] static NSDictionary* rpcKeychainQuery(NSDictionary* const attributes = @{})
+{
+    NSMutableDictionary* const query = [attributes mutableCopy];
+    query[(NSString*)kSecClass] = (NSString*)kSecClassGenericPassword;
+    query[(NSString*)kSecAttrAccount] = @(kRPCKeychainName);
+    query[(NSString*)kSecAttrService] = @(kRPCKeychainService);
+    return query;
+}
+
 - (void)updateRPCPassword
 {
     CFTypeRef data{};
-    OSStatus result = SecItemCopyMatching(
-        (CFDictionaryRef) @{
-            (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
-            (NSString*)kSecAttrAccount : @(kRPCKeychainName),
-            (NSString*)kSecAttrService : @(kRPCKeychainService),
-            (NSString*)kSecReturnData : @YES,
-        },
-        &data);
+    OSStatus result = SecItemCopyMatching((__bridge CFDictionaryRef)rpcKeychainQuery(@{ (NSString*)kSecReturnData : @YES }), &data);
     if (result == errSecItemNotFound) {
         return;
     }
@@ -1499,13 +1502,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
 
 - (void)setKeychainPassword:(char const*)password
 {
-    OSStatus result = SecItemCopyMatching(
-        (CFDictionaryRef) @{
-            (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
-            (NSString*)kSecAttrAccount : @(kRPCKeychainName),
-            (NSString*)kSecAttrService : @(kRPCKeychainService),
-        },
-        nil);
+    OSStatus result = SecItemCopyMatching((__bridge CFDictionaryRef)rpcKeychainQuery(), nil);
     if (result != noErr && result != errSecItemNotFound) {
         NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
         return;
@@ -1515,25 +1512,15 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
     if (result == noErr) {
         if (passwordLength > 0) // found and needed, so update it
         {
-            result = SecItemUpdate(
-                (CFDictionaryRef) @{
-                    (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
-                    (NSString*)kSecAttrAccount : @(kRPCKeychainName),
-                    (NSString*)kSecAttrService : @(kRPCKeychainService),
-                },
-                (CFDictionaryRef) @{
-                    (NSString*)kSecValueData : [NSData dataWithBytes:password length:passwordLength],
-                });
+            result = SecItemUpdate((__bridge CFDictionaryRef)rpcKeychainQuery(), (CFDictionaryRef) @{
+                (NSString*)kSecValueData : [NSData dataWithBytes:password length:passwordLength],
+            });
             if (result != noErr) {
                 NSLog(@"Problem updating Keychain item: %@", getOSStatusDescription(result));
             }
         } else // found and not needed, so remove it
         {
-            result = SecItemDelete((CFDictionaryRef) @{
-                (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
-                (NSString*)kSecAttrAccount : @(kRPCKeychainName),
-                (NSString*)kSecAttrService : @(kRPCKeychainService),
-            });
+            result = SecItemDelete((__bridge CFDictionaryRef)rpcKeychainQuery());
             if (result != noErr) {
                 NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
             }
@@ -1542,18 +1529,37 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
         if (passwordLength > 0) // not found and needed, so add it
         {
             result = SecItemAdd(
-                (CFDictionaryRef) @{
-                    (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
-                    (NSString*)kSecAttrAccount : @(kRPCKeychainName),
-                    (NSString*)kSecAttrService : @(kRPCKeychainService),
+                (__bridge CFDictionaryRef)rpcKeychainQuery(@{
                     (NSString*)kSecValueData : [NSData dataWithBytes:password length:passwordLength],
-                },
+                }),
                 nil);
             if (result != noErr) {
                 NSLog(@"Problem adding Keychain item: %@", getOSStatusDescription(result));
             }
         }
     }
+}
+
++ (BOOL)saveUnguessableRPCPassword
+{
+    // Deletes any saved item first, so the new password replaces it.
+    // macOS refuses to delete an item another app owns, which may also be unreadable here, and then nothing is saved.
+    OSStatus result = SecItemDelete((__bridge CFDictionaryRef)rpcKeychainQuery());
+    if (result != noErr && result != errSecItemNotFound) {
+        NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
+        return NO;
+    }
+
+    NSMutableData* const randomBytes = [NSMutableData dataWithLength:18];
+    arc4random_buf(randomBytes.mutableBytes, randomBytes.length);
+    NSData* const password = [[randomBytes base64EncodedStringWithOptions:0] dataUsingEncoding:NSUTF8StringEncoding];
+
+    result = SecItemAdd((__bridge CFDictionaryRef)rpcKeychainQuery(@{ (NSString*)kSecValueData : password }), nil);
+    if (result != noErr) {
+        NSLog(@"Problem adding Keychain item: %@", getOSStatusDescription(result));
+        return NO;
+    }
+    return YES;
 }
 
 - (void)updateRPCWhitelist
