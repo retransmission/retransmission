@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Sobre o Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Sobre o {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Todos os Direitos Reservados ® The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Todos os Direitos Reservados ® The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1844,8 +1844,8 @@ Para adicionar uma nova URL principal, adicione-o após uma linha em branco.</tr
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Exibir o ícone do Transmission na área de &amp;notificação</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Exibir o ícone do {appname} na área de &amp;notificação</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ Para adicionar uma nova URL principal, adicione-o após uma linha em branco.</tr
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Preferências do Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Preferências do {appname}</translation>
     </message>
     <message>
         <location line="+16"/>

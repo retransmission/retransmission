@@ -6,6 +6,7 @@ add_test(
     NAME GTK.desktop-file
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/gtk/${TR_NAME}-gtk.desktop
+        -Dapp_name=${TR_PROJ_APPNAME_CAPITALIZED}
         -Dicon_name=${TR_GTK_ICON_NAME}
         -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-gtk>
         -Dapp_id=${TR_GTK_APP_ID}

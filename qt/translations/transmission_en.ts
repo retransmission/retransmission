@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
+        <source>About {appname}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -753,7 +753,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
+        <source>Retransmission</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1810,7 +1810,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
+        <source>Show {appname} icon in the &amp;notification area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2084,7 +2084,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
+        <source>{appname} Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

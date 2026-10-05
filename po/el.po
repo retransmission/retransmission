@@ -104,8 +104,8 @@ msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Αδυναμία εκκίνησης βρόχου συμβάντων του daemon: {error} ({error_code})"
 
 #: ../gtk/Application.cc:402
-msgid "Couldn't register Transmission as a {content_type} handler: {error} ({error_code})"
-msgstr "Αδυναμία καταχώρησης του Transmission ως διαχειριστή {content_type}: {error} ({error_code})"
+msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+msgstr "Αδυναμία καταχώρησης του {appname} ως διαχειριστή {content_type}: {error} ({error_code})"
 
 #: ../gtk/Application.cc:560
 msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
@@ -140,8 +140,8 @@ msgid "A fast and easy BitTorrent client"
 msgstr "Ένα γρήγορο κι εύχρηστο πρόγραμμα για το πρωτόκολλο BitTorrent"
 
 #: ../gtk/Application.cc:1397
-msgid "Copyright © The Transmission Project"
-msgstr "Πνευματική ιδιοκτησία © The Transmission Project"
+msgid "Copyright © The {appname} Project"
+msgstr "Πνευματική ιδιοκτησία © The {appname} Project"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -1174,16 +1174,16 @@ msgstr "Μη υποστηριζόμενο URL: '{url}'"
 
 #. modal
 #: ../gtk/Utils.cc:871
-msgid "Transmission doesn't know how to use '{url}'"
-msgstr "Το Transmission δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
 
 #: ../gtk/Utils.cc:876
 msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr "Αυτός ο μαγνητικός σύνδεσμος μοιάζει να προορίζεται για κάτι διαφορετικό του BitTorrent."
 
 #: ../gtk/main.cc:63 ../gtk/transmission-gtk.desktop.in:2
-msgid "Transmission"
-msgstr "Transmission"
+msgid "Retransmission"
+msgstr "Retransmission"
 
 #. parse the command line
 #: ../gtk/main.cc:79
@@ -1280,12 +1280,12 @@ msgid "torrents;downloading;uploading;share;sharing;"
 msgstr "torrent;λήψη;αποστολή;μοίρασε;διαμοιρασμός;"
 
 #: ../gtk/transmission-gtk.desktop.in:20
-msgid "Start Transmission with All Torrents Paused"
-msgstr "Εκκίνηση του Transmission με Όλα τα Torrent σε Παύση"
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Εκκίνηση του Retransmission με Όλα τα Torrent σε Παύση"
 
 #: ../gtk/transmission-gtk.desktop.in:24
-msgid "Start Transmission Minimized"
-msgstr "Εκκίνηση του Transmission Ελαχιστοποιημένο"
+msgid "Start Retransmission Minimized"
+msgstr "Εκκίνηση του Retransmission Ελαχιστοποιημένο"
 
 #: ../gtk/transmission.ui:14 ../gtk/transmission.ui:459 ../gtk/ui/gtk3/MainWindow.ui:21 ../gtk/ui/gtk4/MainWindow.ui:16
 msgid "Open a torrent"
@@ -1488,8 +1488,8 @@ msgid "_About"
 msgstr "_Σχετικά"
 
 #: ../gtk/transmission.ui:451
-msgid "_Show Transmission"
-msgstr "_Εμφάνιση του Transmission"
+msgid "_Show {appname}"
+msgstr "_Εμφάνιση του {appname}"
 
 #: ../gtk/transmission.ui:486
 msgid "Enable Alternative Speed _Limits"
@@ -1772,8 +1772,8 @@ msgid "Mo_ve torrent file to the trash"
 msgstr "Με_τακίνηση αρχείου torrent στον κάδο"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:7 ../gtk/ui/gtk4/PrefsDialog.ui:5
-msgid "Transmission Preferences"
-msgstr "Προτιμήσεις του Transmission"
+msgid "{appname} Preferences"
+msgstr "Προτιμήσεις του {appname}"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:22 ../gtk/ui/gtk4/PrefsDialog.ui:1471
 msgid "_Help"
@@ -2016,8 +2016,8 @@ msgid "_Inhibit hibernation when torrents are active"
 msgstr "_Απαγόρευση αδρανοποίησης όταν υπάρχουν ενεργά torrents"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:1540 ../gtk/ui/gtk4/PrefsDialog.ui:1138
-msgid "Show Transmission icon in the _notification area"
-msgstr "Εμφάνιση του εικονιδίου του Transmission στην _περιοχή ειδοποιήσεων"
+msgid "Show {appname} icon in the _notification area"
+msgstr "Εμφάνιση του εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:1572 ../gtk/ui/gtk4/PrefsDialog.ui:1158
 msgid "Notification"
@@ -2233,8 +2233,8 @@ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_cod
 msgstr "Αδυναμία σύνδεσης υποδοχής {socket} σε {address}:{port}: {error} ({error_code})"
 
 #: ../libtransmission/net.cc:361
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of Transmission already running?"
-msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code}) -- Μήπως μία άλλη συνεδρία του Transmission τρέχει ήδη;"
+msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code}) -- Μήπως μία άλλη συνεδρία του {appname} τρέχει ήδη;"
 
 #: ../libtransmission/net.cc:362
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
@@ -2423,12 +2423,12 @@ msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Παρακολούθηση για εισερχόμενες συνδέσεις διαμοιραστών στην {hostport}"
 
 #: ../libtransmission/session.cc:748
-msgid "Transmission version {version} starting"
-msgstr "Εκκίνηση Transmission έκδοσης {version}"
+msgid "{appname} version {version} starting"
+msgstr "Εκκίνηση {appname} έκδοσης {version}"
 
 #: ../libtransmission/session.cc:1488
-msgid "Transmission version {version} shutting down"
-msgstr "Τερματισμός Transmission έκδοσης {version}"
+msgid "{appname} version {version} shutting down"
+msgstr "Τερματισμός {appname} έκδοσης {version}"
 
 #: ../libtransmission/session.cc:1570
 msgid "Loaded {count} torrent"

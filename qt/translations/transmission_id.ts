@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Tentang Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Tentang {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Hak Cipta © Proyek Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Hak Cipta © Proyek Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1825,8 +1825,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Tampilkan ikon Transmission di &amp;area notifikasi</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Tampilkan ikon {appname} di &amp;area notifikasi</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2098,8 +2098,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Preferensi Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Preferensi {appname}</translation>
     </message>
     <message>
         <location line="+16"/>

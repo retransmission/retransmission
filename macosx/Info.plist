@@ -22,17 +22,17 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>Transmission</string>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>TransmissionHelp</string>
 	<key>CFBundleHelpBookName</key>
-	<string>Transmission Help</string>
+	<string>Retransmission Help</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Transmission</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -64,7 +64,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2005–2026 The Transmission Project</string>
+	<string>Copyright © 2005–2026 The Retransmission Project</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

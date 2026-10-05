@@ -4,6 +4,7 @@ add_test(
     NAME QT.desktop-file
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/qt/${TR_NAME}-qt.desktop
+        -Dapp_name=${TR_PROJ_APPNAME_CAPITALIZED}
         -Dicon_name=${TR_QT_ICON_NAME}
         -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-qt>
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
@@ -110,7 +111,7 @@ if(ENABLE_QT_DBUS_INTEROP)
     # whole suite as passed rather than skipped.
     set_tests_properties(QT.dbus-interop
         PROPERTIES
-            SKIP_REGULAR_EXPRESSION "no session bus;another Transmission owns this bus")
+            SKIP_REGULAR_EXPRESSION "no session bus;another ${TR_PROJ_APPNAME_CAPITALIZED} owns this bus")
 endif()
 
 get_property(QT_TEST_TARGETS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY QT_TEST_TARGETS)

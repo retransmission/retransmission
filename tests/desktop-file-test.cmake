@@ -3,20 +3,21 @@
 # or any future license endorsed by Mnemosaic LLC.
 # License text can be found in the licenses/ folder.
 
-# Checks the promises a client's desktop entry makes to a desktop: the icon it shows,
+# Checks the promises a client's desktop entry makes to a desktop: the name and icon it shows,
 # the id a compositor matches a window against, the program it starts,
 # and what a click on a torrent hands over.
 # No test can ask the client about these, because they live in a file the desktop reads,
 # so a wrong value shows up only as a missing icon or launcher, or as a torrent that opens nothing.
 #
 # -Ddesktop_file=  the generated desktop entry
+# -Dapp_name=      the app's name, which the entry's Name must start with
 # -Dicon_name=     the name the client installs its icon under
 # -Dexe=           the program the build makes, which every Exec and TryExec must name
 # -Dapp_id=        the StartupWMClass the entry must carry; leave it out to skip that check
 # -Dvalidator=     desktop-file-validate, if found
 
 # An empty value would let an unsubstituted or missing key pass a check below.
-foreach(arg IN ITEMS icon_name exe)
+foreach(arg IN ITEMS app_name icon_name exe)
     if("${${arg}}" STREQUAL "")
         message(FATAL_ERROR "nothing to check against; the caller must pass -D${arg}=")
     endif()
@@ -33,6 +34,17 @@ endif()
 file(READ "${file}" contents)
 
 set(failures "")
+
+# The entry spells out the app's name for gettext to translate,
+# so a rename in macros.h has to reach this file too.
+if(NOT "\n${contents}" MATCHES "\nName=([^\n]*)")
+    string(APPEND failures "  no Name key\n")
+else()
+    string(FIND "${CMAKE_MATCH_1}" "${app_name}" pos)
+    if(NOT pos EQUAL 0)
+        string(APPEND failures "  Name is '${CMAKE_MATCH_1}', which doesn't start with '${app_name}'\n")
+    endif()
+endif()
 
 # A desktop finds the icon by this name in the installed icon themes.
 # desktop-file-validate accepts any value here, even an empty one.

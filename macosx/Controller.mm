@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -349,7 +349,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     if (self != [Controller self])
         return;
 
-    //make sure another Transmission.app isn't running already
+    //make sure another Retransmission.app isn't running already
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];

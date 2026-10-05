@@ -250,7 +250,7 @@ if(ENABLE_QT_COM_INTEROP)
 endif()
 
 tr_win32_app_info(${TR_NAME}-qt
-    "Transmission Qt Client"
+    "Qt Client"
     "${TR_NAME}-qt"
     "${TR_NAME}-qt.exe"
     "${SOURCE_ICONS_DIR}/${TR_NAME}.ico")

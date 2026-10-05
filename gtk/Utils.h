@@ -192,6 +192,9 @@ inline T gtr_str_strip(T const& text)
 
 std::string gtr_get_full_resource_path(std::string const& rel_path);
 
+// Fills in the {appname} field of an already-translated string, such as one from a .ui file.
+[[nodiscard]] Glib::ustring gtr_with_app_name(Glib::ustring const& text);
+
 /***
 ****
 ***/
