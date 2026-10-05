@@ -109,6 +109,15 @@ horizontal]]></property>
           </object>
         </child>
         <child>
+          <object class="GtkLabel" id="filter_notice_label">
+            <property name="visible">0</property>
+            <style>
+              <class name="tr-pad-small"/>
+              <class name="tr-small"/>
+            </style>
+          </object>
+        </child>
+        <child>
           <object class="GtkScrolledWindow" id="torrents_view_scroll">
             <property name="vexpand">1</property>
             <property name="focusable">1</property>
