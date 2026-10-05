@@ -21,6 +21,8 @@
  * @{
  */
 
+// Mark only text that a client shows, such as torrent errors and RPC error replies.
+// Log messages stay in English, because people search for them and paste them into bug reports.
 #ifdef ENABLE_GETTEXT
 #include <libintl.h>
 #define _ gettext

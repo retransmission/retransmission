@@ -281,7 +281,7 @@ bool to_sched_day(tr_variant const& src, tr_sched_day* tgt)
             return true;
 
         default:
-            tr_logAddWarn(fmt::format(fmt::runtime(_("Invalid tr_sched_days value {val}")), fmt::arg("val", *val)));
+            tr_logAddWarn(fmt::format("Invalid tr_sched_days value {val}", fmt::arg("val", *val)));
             break;
         }
     }

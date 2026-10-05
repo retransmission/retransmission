@@ -500,7 +500,7 @@ public:
         for (auto const& [id, gate] : gates_) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Still waiting for disk IO on torrent {id}: {running} running, {queued} queued")),
+                    "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued",
                     fmt::arg("id", id),
                     fmt::arg("running", gate.n_running),
                     fmt::arg("queued", std::size(gate.queue))));

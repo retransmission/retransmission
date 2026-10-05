@@ -99,7 +99,7 @@ void remove_junk(std::string_view const filename)
         if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't remove '{path}': {error} ({error_code})")),
+                    "Couldn't remove '{path}': {error} ({error_code})",
                     fmt::arg("path", filename),
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
@@ -220,7 +220,7 @@ bool tr_torrent_files::move(
         if (tr_sys_path_exists(path)) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Moving '{source}' will overwrite '{path}'")),
+                    "Moving '{source}' will overwrite '{path}'",
                     fmt::arg("source", old_path.sv()),
                     fmt::arg("path", path.sv())),
                 parent_name);
@@ -243,7 +243,7 @@ bool tr_torrent_files::move(
             if (path_error) {
                 tr_logAddWarn(
                     fmt::format(
-                        fmt::runtime(_("Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone")),
+                        "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone",
                         fmt::arg("path", directory),
                         fmt::arg("root", root),
                         fmt::arg("error", path_error.message()),
