@@ -1412,9 +1412,9 @@ void MainWindow::updateNetworkLabel()
         tip = TR_FORMAT("{host} is responding", fmt::arg("host", host));
     } else if (seconds_since_last_read < 120) {
         tip = TR_FORMAT(
-            "{host} last responded {time_span} ago",
+            "{host} last responded {time_span_ago}",
             fmt::arg("host", host),
-            fmt::arg("time_span", Formatter::timeToString(static_cast<int>(seconds_since_last_read))));
+            fmt::arg("time_span_ago", Formatter::relativeTimeToString(last_read_time_, now)));
     } else {
         tip = TR_FORMAT("{host} is not responding", fmt::arg("host", host));
     }

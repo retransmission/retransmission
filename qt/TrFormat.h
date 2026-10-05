@@ -48,6 +48,10 @@ namespace trqt
 // It formats numbers with QLocale{}, so they match QString::arg("%L1").
 [[nodiscard]] std::locale const& fmtLocale();
 
+// Adds fmtLocale()'s number formatting to the C++ global locale,
+// which {fmt} uses when it is passed no locale, as in libtransmission and libtransmission-app.
+void setGlobalFmtLocale();
+
 // Splits `translation` around its `name` field, e.g. into a spin box's prefix and suffix.
 // A translation without exactly that one field is ignored in favor of `source`.
 [[nodiscard]] std::pair<QString, QString> splitAtField(QString const& translation, char const* source, std::string_view name);
