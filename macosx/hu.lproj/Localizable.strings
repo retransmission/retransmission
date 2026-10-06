@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Magas prioritású";
 
-/* Legal alert -> button */
-"I Accept" = "Elfogadom";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Ha megpróbál meglévő adatokat használni, a gyökérkönyvtárnak a célkönyvtárban kell lennie.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Gyors nézet";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Kilépés";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Átvitelek nem aktívak";
 
-/* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "A Transmission egy fájlmegosztó program. Egy torrent futtatása során a hozzá tartozó adatok elérhetővé válnak más felhasználók számára is. Minden megosztott tartalomért kizárólag Ön tartozik felelősséggel.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "A %@ egy teljes funkcionalitású torrent alkalmazás. Sok időbe és erőfeszítésbe telt a fejlesztése. Ha örömmel használja, kérjük, megbecsüléseként járuljon hozzá a fejlesztéshez anyagi támogatással.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Webes partnerek";
-
-/* Legal alert -> title */
-"Welcome to Transmission" = "Üdvözli a Transmission";
 
 /* Groups -> Name */
 "Yellow" = "Sárga";

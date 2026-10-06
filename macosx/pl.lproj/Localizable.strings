@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Wysoki priorytet";
 
-/* Legal alert -> button */
-"I Accept" = "Zgadzam się";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Jeśli już pobrane dane mają zostać użyte, to główny katalog danych powinien znajdować się w katalogu docelowym.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Quick Look";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Zakończ";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Nieaktywne przesyłania";
 
-/* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission jest programem do udostępniania plików. Kiedy uruchamiany jest torrent, jego dane stają się dostępne dla innych. Wyłącznie użytkownik jest odpowiedzialny za właściwe zachowanie i przestrzeganie lokalnego prawa.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ to w pełni funkcjonalny program do obsługi torrentów. W jego rozwój, programowanie i ulepszanie włożono wiele czasu i wysiłku. Jeśli Ci się podoba, prosimy rozważyć wsparcie finansowe.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Wysyłający w sieci";
-
-/* Legal alert -> title */
-"Welcome to Transmission" = "Witaj w programie Transmission";
 
 /* Groups -> Name */
 "Yellow" = "Żółty";
