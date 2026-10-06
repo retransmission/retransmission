@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, AddType) { //
 @interface Controller
     : NSObject<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServiceDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSWindowDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, VDKQueueDelegate, SPUUpdaterDelegate>
 
-/// Quits if another copy is running, registers the default settings, and shows the first-launch notice and the import from Transmission.
+/// Quits if another copy is running, registers the default settings, and on the first launch offers the import from Transmission.
 /// Runs while the app finishes launching, before the main nib loads, because the nib's objects read the settings as they load.
 + (void)prepareForLaunch;
 

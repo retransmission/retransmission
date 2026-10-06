@@ -136,6 +136,9 @@ static NSTimeInterval const kDonateNagTime = 60 * 60 * 24 * 7;
 static NSString* const kTransmissionBundleIdentifier = @"org.m0k.transmission";
 static char const* const kTransmissionAppName = "Transmission";
 
+// Set once the first launch has offered the import from Transmission.
+static NSString* const kTransmissionImportOfferedKey = @"TransmissionImportOffered";
+
 static void initUnits()
 {
     using Config = tr::Values::Config;
@@ -393,34 +396,11 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                isEqualToString:transmissionWatchFolder.stringByExpandingTildeInPath.stringByStandardizingPath];
 }
 
-// Shows the first-launch notice, and quits unless the user accepts it.
-static void showLegalNotice()
-{
-    NSAlert* alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-    alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Welcome to %@", "Legal alert -> title"), @TR_PROJ_APPNAME_CAPITALIZED];
-    alert.informativeText = [NSString
-        stringWithFormat:NSLocalizedString(
-                             @"%@ is a file-sharing program."
-                              " When you run a torrent, its data will be made available to others by means of upload."
-                              " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-                             "Legal alert -> message"),
-                         @TR_PROJ_APPNAME_CAPITALIZED];
-    alert.alertStyle = NSAlertStyleInformational;
-
-    if ([alert runModal] == NSAlertSecondButtonReturn) {
-        exit(0);
-    }
-
-    [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningLegal"];
-}
-
-// Copies Transmission's preferences, except Sparkle's state and this app's own notices.
+// Copies Transmission's preferences, except Sparkle's state and this app's own donation request.
 static void importTransmissionDefaults(NSDictionary<NSString*, id>* const transmissionDefaults)
 {
-    // The legal notice and the donation request are this app's own to show.
-    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningLegal", @"WarningDonate", @"DonateAskDate" ]];
+    // The donation request is this app's own to show.
+    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate" ]];
 
     // Sparkle's state describes Transmission's own updates, but how to update is the user's choice.
     NSSet<NSString*>* const sparkleChoiceKeys = [NSSet setWithArray:@[
@@ -651,11 +631,11 @@ static void offerToImportFromTransmission()
         exit(0);
     }
 
-    // WarningLegal keeps its registered YES until the user accepts the first-launch notice.
-    // Both run before the main nib loads, so no transfer starts before the notice is accepted, and every object sees what was imported.
-    if ([defaults boolForKey:@"WarningLegal"]) {
-        showLegalNotice();
+    // Offered only on the first launch, before this app has settings or transfers of its own.
+    // It runs before the main nib loads, so every object sees what was imported.
+    if (![defaults boolForKey:kTransmissionImportOfferedKey]) {
         offerToImportFromTransmission();
+        [defaults setBool:YES forKey:kTransmissionImportOfferedKey];
     }
 }
 

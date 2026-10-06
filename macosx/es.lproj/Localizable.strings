@@ -1093,7 +1093,7 @@
 "Transfers Not Active" = "Tareas no activas";
 
 /* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ es un programa de compartir archivos. Cuando pones en marcha un torrent, su contenido se hará disponible a otros mediante subida. Tú y sólo tú eres completamente responsable de ejercer el juicio correcto y respetar tus leyes locales.";
+"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission es un programa de compartir archivos. Cuando pones en marcha un torrent, su contenido se hará disponible a otros mediante subida. Tú y sólo tú eres completamente responsable de ejercer el juicio correcto y respetar tus leyes locales.";
 
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ es un completo gestor de torrents. Si disfrutas usándolo, por favor, considera mostrar tu amor con una donación.";
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Semillas Web";
 
 /* Legal alert -> title */
-"Welcome to %@" = "Bienvenido a %@";
+"Welcome to Transmission" = "Bienvenido a Transmission";
 
 /* Groups -> Name */
 "Yellow" = "Amarillo";

@@ -1093,7 +1093,7 @@
 "Transfers Not Active" = "Oordragte Nie Aktief Nie";
 
 /* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ is ’n lêerdeelprogram. Wanneer u ’n torrent laat loop word die lêer se data beskikbaar aan ander d.m.v. oplaai. U is alleenlik ten volle verantwoordelik om behoorlike oordeel uit te oefen en aan u plaaslike wette te gehoorsaam.";
+"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission is ’n lêerdeelprogram. Wanneer u ’n torrent laat loop word die lêer se data beskikbaar aan ander d.m.v. oplaai. U is alleenlik ten volle verantwoordelik om behoorlike oordeel uit te oefen en aan u plaaslike wette te gehoorsaam.";
 
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is ’n volledige torrenttoepassing. Baie tyd en moeite is bestee aan die ontwikkeling, kodering en verfyning hiervan. Oorweeg dit asb. om u genot met ’n donasie te toon.";
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Websade";
 
 /* Legal alert -> title */
-"Welcome to %@" = "Welkom by %@";
+"Welcome to Transmission" = "Welkom by Transmission";
 
 /* Groups -> Name */
 "Yellow" = "Geel";

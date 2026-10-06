@@ -198,8 +198,6 @@
 	<true/>
 	<key>WarningInvalidOpen</key>
 	<true/>
-	<key>WarningLegal</key>
-	<true/>
 	<key>WarningRemainingSpace</key>
 	<true/>
 	<key>WarningRemoveCompleted</key>
