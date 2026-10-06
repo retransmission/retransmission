@@ -2,6 +2,7 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <libtransmission/macros.h>
 #include <libtransmission/version.h>
 #import "AboutWindowController.h"
 
@@ -52,7 +53,7 @@ static AboutWindowController* fAboutBoxInstance = nil;
     iconView.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:iconView];
 
-    NSTextField* titleField = [NSTextField labelWithString:@"Transmission"];
+    NSTextField* titleField = [NSTextField labelWithString:@TR_PROJ_APPNAME_CAPITALIZED];
     titleField.font = [NSFont systemFontOfSize:24 weight:NSFontWeightBold];
     titleField.selectable = YES;
     titleField.focusRingType = NSFocusRingTypeNone;

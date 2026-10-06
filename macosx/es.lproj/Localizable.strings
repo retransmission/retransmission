@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Una vez eliminadas, necesitará los archivos torrent o enlaces magnet para reanudar las tareas.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Una vez eliminado, Transmission no volverá a intentar contactar con él. Esto no se puede deshacer.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Una vez eliminado, %@ no volverá a intentar contactar con él. Esto no se puede deshacer.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Una vez eliminados, Transmission no volverá a intentar contactar con ellos. Esto no se puede deshacer.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Una vez eliminados, %@ no volverá a intentar contactar con ellos. Esto no se puede deshacer.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Comprobar sólo los seleccionados";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "No hay direcciones de tracker.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Ya hay una copia de Transmission ejecutándose. Esta copia no puede ser abierta hasta que la otra instancia se cierre.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Ya hay una copia de %@ ejecutándose. Esta copia no puede ser abierta hasta que la otra instancia se cierre.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Hay una tarea activa que se detendrá al salir. La tarea se reanudará automáticamente en el próximo arranque.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission es un programa de compartir archivos. Cuando pones en marcha un torrent, su contenido se hará disponible a otros mediante subida. Tú y sólo tú eres completamente responsable de ejercer el juicio correcto y respetar tus leyes locales.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission es un completo gestor de torrents. Si disfrutas usándolo, por favor, considera mostrar tu amor con una donación.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ es un completo gestor de torrents. Si disfrutas usándolo, por favor, considera mostrar tu amor con una donación.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission ya está abierto.";
+"%@ is already running." = "%@ ya está abierto.";
 
 /* inspector -> peer table -> header
    status bar -> status label

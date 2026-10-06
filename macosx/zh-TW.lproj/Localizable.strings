@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼續傳輸。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "若您將其移除，Transmission 將停止與該節點的連線。此操作無法還原。";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "若您將其移除，%@ 將停止與該節點的連線。此操作無法還原。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "若您將其移除，Transmission 將停止與這些節點的連線。此操作無法還原。";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "若您將其移除，%@ 將停止與這些節點的連線。此操作無法還原。";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "僅勾選已選取項目";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "沒有追蹤器位址。";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "已有另一個執行中的 Transmission 程式。在該執行個體結束前，無法開啟本程式。";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "已有另一個執行中的 %@ 程式。在該執行個體結束前，無法開啟本程式。";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "結束時已暫停一個活躍中的傳輸。將於下次啟動時自動繼續該傳輸。";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission 是一個檔案分享程式。當您執行 torrent 時，其資料將以上傳的方式提供給其他人。您必須負責做出正確判斷，並遵循當地法律。";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission 是一套全方位 Torrent 應用程式。我們投入大量的時間進行開發、編碼與最佳化。如果您喜歡此應用程式，請考慮捐助我們來表達您的喜愛。";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ 是一套全方位 Torrent 應用程式。我們投入大量的時間進行開發、編碼與最佳化。如果您喜歡此應用程式，請考慮捐助我們來表達您的喜愛。";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission 已在執行中。";
+"%@ is already running." = "%@ 已在執行中。";
 
 /* inspector -> peer table -> header
    status bar -> status label

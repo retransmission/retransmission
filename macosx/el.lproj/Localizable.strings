@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Μετά την αφαίρεση των torrent, για να είναι δυνατή η επανεκκίνησή τους, θα απαιτηθούν τα αρχεία torrent ή οι σύνδεσμοι μαγνήτη.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Μετά την αφαίρεση, το Transmission δεν θα προσπαθήσει πλέον να επικοινωνήσει μαζί του. Αυτό δεν μπορεί να αναιρεθεί.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Μετά την αφαίρεση, το %@ δεν θα προσπαθήσει πλέον να επικοινωνήσει μαζί του. Αυτό δεν μπορεί να αναιρεθεί.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Μετά την αφαίρεση, το Transmission δεν θα προσπαθήσει πλέον να επικοινωνήσει μαζί τους. Αυτό δεν μπορεί να αναιρεθεί.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Μετά την αφαίρεση, το %@ δεν θα προσπαθήσει πλέον να επικοινωνήσει μαζί τους. Αυτό δεν μπορεί να αναιρεθεί.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Μόνο έλεγχος Επιλεγμένων";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Δεν υπάρχουν διευθύνσεις ιχνηλατών.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Εκτελείται ήδη ένα αντίγραφο του Transmission. Αυτό το αντίγραφο δεν μπορεί να ανοίξει μέχρις ότου τερματιστεί η άλλη διεργασία.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Εκτελείται ήδη ένα αντίγραφο του %@. Αυτό το αντίγραφο δεν μπορεί να ανοίξει μέχρις ότου τερματιστεί η άλλη διεργασία.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Υπάρχει μια ενεργή μεταφορά που θα τεθεί σε παύση κατά την έξοδο. Η μεταφορά θα συνεχιστεί αυτόματα στην επόμενη έναρξη.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Το Transmission είναι ένα πρόγραμμα κοινής χρήσης αρχείων. Όταν εκτελείτε ένα torrent, τα δεδομένα του θα διατίθενται σε άλλους μέσω μεταφόρτωσης. Εσείς και μόνο εσείς είστε πλήρως υπεύθυνοι για την άσκηση ορθής κρίσης και την τήρηση των τοπικών σας νόμων.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Το Transmission είναι μια πλήρης εφαρμογή torrent. Έχει δαπανηθεί πολύς χρόνος και προσπάθεια για την ανάπτυξη, την κωδικοποίηση και τη βελτίωση. Εάν απολαμβάνετε την χρήση του, σκεφτείτε να δείξετε την αγάπη σας με μια δωρεά.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Το %@ είναι μια πλήρης εφαρμογή torrent. Έχει δαπανηθεί πολύς χρόνος και προσπάθεια για την ανάπτυξη, την κωδικοποίηση και τη βελτίωση. Εάν απολαμβάνετε την χρήση του, σκεφτείτε να δείξετε την αγάπη σας με μια δωρεά.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Το Transmission είναι ήδη ανοιχτό. ";
+"%@ is already running." = "Το %@ είναι ήδη ανοιχτό. ";
 
 /* inspector -> peer table -> header
    status bar -> status label

@@ -202,7 +202,7 @@
 "Apply Selected" = "Auswahl";
 
 /* Confirm Quit panel -> title */
-"Are you sure you want to quit?" = "Transmission beenden?";
+"Are you sure you want to quit?" = "Retransmission beenden?";
 
 /* Remove completed confirm panel -> title */
 "Are you sure you want to remove %lu completed transfers from the transfer list?" = "Möchten Sie wirklich %lu vollständig verteilte Übertragungen aus der Liste entfernen?";
@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Nach dem Entfernen werden erneut die Torrent-Dateien oder die magnet-Links benötigt, um die Übertragungen fortzusetzen.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Nach dem Entfernen wird Transmission nicht mehr versuchen diesen Tracker zu erreichen. Dieser Schritt kann nicht widerrufen werden.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Nach dem Entfernen wird %@ nicht mehr versuchen diesen Tracker zu erreichen. Dieser Schritt kann nicht widerrufen werden.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Nach dem Entfernen wird Transmission nicht mehr versuchen, diese Tracker zu erreichen. Dieser Schritt kann nicht wiederrufen werden.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Nach dem Entfernen wird %@ nicht mehr versuchen, diese Tracker zu erreichen. Dieser Schritt kann nicht wiederrufen werden.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Nur ausgewählte Dateien empfangen";
@@ -989,7 +989,7 @@
 "There are %1$lu transfers (%2$lu active)." = "Es gibt %1$lu Übertragungen, von denen %2$lu aktiv sind.";
 
 /* Confirm Quit panel -> message */
-"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "Es gibt %lu aktive Übertragungen, die beim Beenden angehalten werden. Sie werden beim nächsten Start von Transmission automatisch fortgesetzt.";
+"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "Es gibt %lu aktive Übertragungen, die beim Beenden angehalten werden. Sie werden beim nächsten Start von Retransmission automatisch fortgesetzt.";
 
 /* Removal confirm panel -> message part 1 */
 "There are %lu active transfers." = "Es gibt %lu aktive Übertragungen.";
@@ -998,10 +998,10 @@
 "There are no tracker addresses." = "Keine Tracker-Adressen vorhanden.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Es ist bereits eine weitere Kopie von Transmission geöffnet. Diese Kopie kann erst gestartet werden, nachdem die andere beendet wurde.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Es ist bereits eine weitere Kopie von %@ geöffnet. Diese Kopie kann erst gestartet werden, nachdem die andere beendet wurde.";
 
 /* Confirm Quit panel -> message */
-"There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Es gibt eine aktive Übertragung, die beim Beenden angehalten wird. Sie wird beim nächsten Start von Transmission automatisch fortgesetzt.";
+"There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Es gibt eine aktive Übertragung, die beim Beenden angehalten wird. Sie wird beim nächsten Start von Retransmission automatisch fortgesetzt.";
 
 /* Create torrent -> no files -> warning */
 "There must be at least one file in a folder to create a torrent file." = "Die Auswahl muß mindestens eine Datei enthalten, um eine Torrent-Datei erstellen zu können.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission ist ein File-Sharing Programm. Es stellt die Daten aktiver Torrents zum Verteilen an andere Teilnehmer zur Verfügung. Die Verantwortung zur angemessenen Nutzung im Einklang mit den lokalen Gesetzen liegt bei Ihnen.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission ist ein leistungsstarkes Programm zum Nutzen von BitTorrent Netzwerken. Eine Menge Zeit und Arbeit sind in das Entwickeln, Programmieren und Gestalten des Programms geflossen. Falls das Programm für Sie nützlich ist, freuen wir uns über eine Spende.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ ist ein leistungsstarkes Programm zum Nutzen von BitTorrent Netzwerken. Eine Menge Zeit und Arbeit sind in das Entwickeln, Programmieren und Gestalten des Programms geflossen. Falls das Programm für Sie nützlich ist, freuen wir uns über eine Spende.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission ist bereits geöffnet.";
+"%@ is already running." = "%@ ist bereits geöffnet.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1120,7 +1120,7 @@
 "unreadable error" = "nicht lesbare Fehlermeldung";
 
 /* Save log panel -> default file name */
-"untitled" = "Transmission Meldungen";
+"untitled" = "Retransmission Meldungen";
 
 /* Torrent table -> group row -> tooltip */
 "Upload speed" = "Sendegeschwindigkeit";

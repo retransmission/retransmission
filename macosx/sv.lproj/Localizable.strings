@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "När de har tagits bort kommer torrentfilerna eller magnetlänkarna att krävas för att fortsätta överföringarna.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "När den har tagits bort kommer Transmission inte längre att försöka kontakta den. Detta kan inte ångras.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "När den har tagits bort kommer %@ inte längre att försöka kontakta den. Detta kan inte ångras.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "När de har tagits bort kommer Transmission inte längre att försöka kontakta dem. Detta kan inte ångras.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "När de har tagits bort kommer %@ inte längre att försöka kontakta dem. Detta kan inte ångras.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Kontrollera endast markerade";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Det finns inga spåraradresser.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Ett exemplar av Transmission körs redan. Detta exemplar kan inte öppnas förrän den instansen avslutas.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Ett exemplar av %@ körs redan. Detta exemplar kan inte öppnas förrän den instansen avslutas.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Det finns en aktiv överföring som kommer att pausas vid stängning. Överföringen kommer automatiskt att återupptas vid nästa start.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission är ett fildelningsprogram. När du kör en torrent kommer dess data att göras tillgängliga för andra genom sändning. Du och endast du är fullt ansvarig för att utöva korrekt omdöme och följa dina lokala lagar.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission är en fullfjädrad torrentapplikation. Mycket tid och ansträngning har lagts ner på utveckling, kodning och förfining. Om du gillar att använda den, överväg att visa din kärlek med en donation.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ är en fullfjädrad torrentapplikation. Mycket tid och ansträngning har lagts ner på utveckling, kodning och förfining. Om du gillar att använda den, överväg att visa din kärlek med en donation.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission körs redan.";
+"%@ is already running." = "%@ körs redan.";
 
 /* inspector -> peer table -> header
    status bar -> status label

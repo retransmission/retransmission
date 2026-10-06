@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Kaldırıldıktan sonra aktarımları sürdürmek torrent dosyası veya mıknatıs bağı gerektirir.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Kaldırıldıktan sonra Transmission izleyiciye bağlanmayacak. Bu geri alınamaz.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Kaldırıldıktan sonra %@ izleyiciye bağlanmayacak. Bu geri alınamaz.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Kaldırıldıktan sonra Transmission izleyicilere bağlanmayacak. Bu geri alınamaz.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Kaldırıldıktan sonra %@ izleyicilere bağlanmayacak. Bu geri alınamaz.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Yalnızca Seçiliyi Denetle";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "İzleyici adresi yok.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Transmission’ın bir kopyası halihazırda açık. Var olan oturum kapatılmadan bu kopyayı açamazsınız.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "%@’ın bir kopyası halihazırda açık. Var olan oturum kapatılmadan bu kopyayı açamazsınız.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Uygulamadan çıkarken duraklatılacak bir etkin aktarım var. Uygulamayı yeniden açtığınızda aktarım kendiliğinden sürecektir.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission bir dosya paylaşım uygulamasıdır. Bir torrenti çalıştırdığınizda torrent verisi diğer herkese açık olacaktır. Bunun yerel kanunlarla olan uyumundan yalnız ve yalnız siz sorumlusunuz.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission tam donanımlı bir torrent uygulamasıdır. Geliştirme, kodlama ve ince ayarlarına çok fazla emek ve zaman harcadık. Eğer kullanmaktan memnunsanız, memnuniyetinizi ufak bir bağış ile gösterebilirsiniz.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ tam donanımlı bir torrent uygulamasıdır. Geliştirme, kodlama ve ince ayarlarına çok fazla emek ve zaman harcadık. Eğer kullanmaktan memnunsanız, memnuniyetinizi ufak bir bağış ile gösterebilirsiniz.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission zaten çalışıyor.";
+"%@ is already running." = "%@ zaten çalışıyor.";
 
 /* inspector -> peer table -> header
    status bar -> status label

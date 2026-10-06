@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Sodra dit verwyder word sal die torrentlêers of magneetskakels vir voortsetting nodig wees.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Sodra dit verwyder is sal Transmission nie meer poog om dit te kontak nie. Dit kan nie ontdaan word nie.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Sodra dit verwyder is sal %@ nie meer poog om dit te kontak nie. Dit kan nie ontdaan word nie.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Sodra dit verwyder is sal Transmission nie meer poog om dit te kontak nie. Dit kan nie ontdaan word nie.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Sodra dit verwyder is sal %@ nie meer poog om dit te kontak nie. Dit kan nie ontdaan word nie.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Gaan Slegs Gekose Na";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Daar is geen spoorderadresse nie.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "’n Kopie van Transmission loop reeds. Hierdie kopie kan nie open tot die ander een afgesluit is nie.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "’n Kopie van %@ loop reeds. Hierdie kopie kan nie open tot die ander een afgesluit is nie.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Daar is ’n aktiewe oordrag wat laat wag sal word tydens afsluit. Die oordrag sal outomaties voortgesit word tydens die volgende lansering.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission is ’n lêerdeelprogram. Wanneer u ’n torrent laat loop word die lêer se data beskikbaar aan ander d.m.v. oplaai. U is alleenlik ten volle verantwoordelik om behoorlike oordeel uit te oefen en aan u plaaslike wette te gehoorsaam.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission is ’n volledige torrenttoepassing. Baie tyd en moeite is bestee aan die ontwikkeling, kodering en verfyning hiervan. Oorweeg dit asb. om u genot met ’n donasie te toon.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is ’n volledige torrenttoepassing. Baie tyd en moeite is bestee aan die ontwikkeling, kodering en verfyning hiervan. Oorweeg dit asb. om u genot met ’n donasie te toon.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission loop reeds.";
+"%@ is already running." = "%@ loop reeds.";
 
 /* inspector -> peer table -> header
    status bar -> status label

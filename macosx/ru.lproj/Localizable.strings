@@ -344,7 +344,7 @@
 "Donate" = "Сделать пожертвование";
 
 /* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Transmission продолжит работать вне зависимости от того, сделаете вы пожертвование или нет.";
+"Donate or not, there will be no difference to your torrenting experience." = "Retransmission продолжит работать вне зависимости от того, сделаете вы пожертвование или нет.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "После удаления продолжение раздач потребует наличия торрент-файла или magnet-ссылок.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Transmission не будет пытаться подключиться к трекеру после того, как он будет удален. Это действие невозможно отменить.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "%@ не будет пытаться подключиться к трекеру после того, как он будет удален. Это действие невозможно отменить.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Transmission не будет пытаться подключиться к трекерам после того, как они будет удален. Это действие невозможно отменить.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "%@ не будет пытаться подключиться к трекерам после того, как они будет удален. Это действие невозможно отменить.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Отметить только выбранные";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Нет адреса трекеров.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Transmission уже запущена. Новая копия не может быть запущена, пока не будет завершена существующая.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "%@ уже запущена. Новая копия не может быть запущена, пока не будет завершена существующая.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Активная раздача будет приостановлена. При следующем запуске она будет автоматически возобновлена.";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission — программа для обмена файлами. Когда ты запускаешь раздачу, ее данные становятся доступны для скачивания другими. Естественно, ответственность по выбору данных для обмена лежит на тебе.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission — полнофункциональный торрент-клиент. Много времени и сил ушло на разработку, написание кода и оптимизацию. Если вам нравится эта программа, можете показать свою любовь, сделав пожертвование.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ — полнофункциональный торрент-клиент. Много времени и сил ушло на разработку, написание кода и оптимизацию. Если вам нравится эта программа, можете показать свою любовь, сделав пожертвование.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission уже запущен.";
+"%@ is already running." = "%@ уже запущен.";
 
 /* inspector -> peer table -> header
    status bar -> status label

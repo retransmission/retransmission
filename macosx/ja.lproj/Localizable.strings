@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "一度削除すると、その転送を続行するにはトレントファイルかマグネットリンクが必要になります。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "一度削除すると、Transmission はそこへ通信しなくなります。これは元に戻せません。";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "一度削除すると、%@ はそこへ通信しなくなります。これは元に戻せません。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "一度削除すると、Transmission はそこへ通信しなくなります。これは元に戻せません。";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "一度削除すると、%@ はそこへ通信しなくなります。これは元に戻せません。";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "選択項目のみチェック";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "トラッカーのアドレスがありません。";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "既に Transmission のプログラムが実行中です。そのプログラムが終了するまでこのコピーは起動できません。";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "既に %@ のプログラムが実行中です。そのプログラムが終了するまでこのコピーは起動できません。";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "終了時に停止された稼働中の転送があります。この転送は次回の起動時に自動的に再開されます。";
@@ -1096,10 +1096,10 @@
 "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission はファイル共有プログラムです。トレントを利用すると、アップロードを通じてそのデータを他者が入手できるようになります。適切に判断し現地の法律を遵守する責任は、あなた自身にあります。";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission は完全機能を備えたトレント用アプリです。開発、コードの作成また改良に多くの労力が費やされています。気に入っていただけているなら寄付によっていいね！することもできます。";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ は完全機能を備えたトレント用アプリです。開発、コードの作成また改良に多くの労力が費やされています。気に入っていただけているなら寄付によっていいね！することもできます。";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission は既に実行中です。";
+"%@ is already running." = "%@ は既に実行中です。";
 
 /* inspector -> peer table -> header
    status bar -> status label
