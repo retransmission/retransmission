@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Priorità alta";
 
-/* Legal alert -> button */
-"I Accept" = "Accetto";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Se stai cercando di utilizzare dati già esistenti, la cartella radice dei dati dovrebbe essere dentro la cartella di destinazione.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Visualizzazione rapida";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Esci";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Trasferimenti non in corso";
 
-/* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission è un programma di file-sharing. I contenuti dei torrent saranno messi a disposizione di altri utenti attraverso l'invio di dati. L'esercizio di un giudizio appropriato ed il rispetto delle leggi in vigore è di vostra esclusiva responsabilità.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ è una applicazione torrent ricca di funzionalità. Sviluppare, codificare e migliorare il programma ha richiesto molto tempo e molto impegno. Se ti piace usare questo software, per favore considera di mostrare il tuo gradimento tramite una donazione.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Seeder web";
-
-/* Legal alert -> title */
-"Welcome to Transmission" = "Benvenuto in Transmission";
 
 /* Groups -> Name */
 "Yellow" = "Giallo";
