@@ -4,61 +4,61 @@
 	branch = post-0.28-retransmission
 [submodule "third-party/libevent"]
 	path = third-party/libevent
-	url = https://github.com/transmissiontorrent/libevent.git
+	url = https://github.com/retransmission/libevent.git
 	branch = post-2.1.13-transmission
 [submodule "third-party/libnatpmp"]
 	path = third-party/libnatpmp
-	url = https://github.com/transmissiontorrent/libnatpmp.git
+	url = https://github.com/retransmission/libnatpmp.git
 [submodule "third-party/libutp"]
 	path = third-party/libutp
-	url = https://github.com/transmissiontorrent/libutp.git
+	url = https://github.com/retransmission/libutp.git
 	branch = post-3.4-transmission
 [submodule "third-party/miniupnp"]
 	path = third-party/miniupnp
 	# synced with https://github.com/miniupnp/miniupnp.git
-	url = https://github.com/transmissiontorrent/miniupnp.git
+	url = https://github.com/retransmission/miniupnp.git
 [submodule "third-party/googletest"]
 	path = third-party/googletest
 	url = https://github.com/google/googletest.git
 [submodule "third-party/libpsl"]
 	path = third-party/libpsl
-	url = https://github.com/transmissiontorrent/libpsl.git
+	url = https://github.com/retransmission/libpsl.git
 	branch = post-3.0.0-transmission
 [submodule "third-party/fmt"]
 	path = third-party/fmt
 	# synced with https://github.com/fmtlib/fmt.git
-	url = https://github.com/transmissiontorrent/fmt.git
+	url = https://github.com/retransmission/fmt.git
 [submodule "third-party/fast_float"]
 	path = third-party/fast_float
 	# synced with https://github.com/fastfloat/fast_float.git
-	url = https://github.com/transmissiontorrent/fast_float.git
+	url = https://github.com/retransmission/fast_float.git
 [submodule "third-party/wide-integer"]
 	path = third-party/wide-integer
 	# synced with https://github.com/ckormanyos/wide-integer.git
-	url = https://github.com/transmissiontorrent/wide-integer.git
+	url = https://github.com/retransmission/wide-integer.git
 [submodule "third-party/small"]
 	path = third-party/small
 	# synced with https://github.com/alandefreitas/small.git
-	url = https://github.com/transmissiontorrent/small.git
+	url = https://github.com/retransmission/small.git
 [submodule "third-party/rapidjson"]
 	path = third-party/rapidjson
 	# synced with https://github.com/Tencent/rapidjson.git
-	url = https://github.com/transmissiontorrent/rapidjson.git
+	url = https://github.com/retransmission/rapidjson.git
 	fetchRecurseSubmodules = false
 [submodule "third-party/rpavlik-cmake-modules"]
 	path = third-party/rpavlik-cmake-modules
 	# synced with https://github.com/rpavlik/cmake-modules.git
-	url = https://github.com/transmissiontorrent/rpavlik-cmake-modules.git
+	url = https://github.com/retransmission/rpavlik-cmake-modules.git
 [submodule "third-party/sigslot"]
 	path = third-party/sigslot
-	url = https://github.com/transmissiontorrent/sigslot
+	url = https://github.com/retransmission/sigslot
 [submodule "third-party/simdutf"]
 	path = third-party/simdutf
 	# synced with https://github.com/simdutf/simdutf.git
-	url = https://github.com/transmissiontorrent/simdutf.git
+	url = https://github.com/retransmission/simdutf.git
 [submodule "third-party/libarchive"]
 	path = third-party/libarchive
-	url = https://github.com/transmissiontorrent/libarchive.git
+	url = https://github.com/retransmission/libarchive.git
 [submodule "third-party/libwoke"]
 	path = third-party/libwoke
-	url = https://github.com/transmissiontorrent/libwoke.git
+	url = https://github.com/retransmission/libwoke.git
