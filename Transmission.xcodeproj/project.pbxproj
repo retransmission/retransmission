@@ -88,6 +88,7 @@
 		A220EC5B118C8A060022B4BE /* tr-lpd.cc in Sources */ = {isa = PBXBuildFile; fileRef = A220EC59118C8A060022B4BE /* tr-lpd.cc */; };
 		A220EC5C118C8A060022B4BE /* tr-lpd.h in Headers */ = {isa = PBXBuildFile; fileRef = A220EC5A118C8A060022B4BE /* tr-lpd.h */; };
 		A221DCC8104B3660008A642D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A221DCC7104B3660008A642D /* Quartz.framework */; };
+		A221DCCA104B3660008A642D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A221DCC9104B3660008A642D /* SystemConfiguration.framework */; };
 		A226FDAC0D0CDF20005A7F71 /* libnatpmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7A118D0D0B2EB800B5701F /* libnatpmp.a */; };
 		A22B00B2116A9E9F003315FC /* connecthostport.h in Headers */ = {isa = PBXBuildFile; fileRef = A22B00AF116A9E90003315FC /* connecthostport.h */; };
 		A22B00B3116A9EA4003315FC /* connecthostport.c in Sources */ = {isa = PBXBuildFile; fileRef = A22B00AE116A9E90003315FC /* connecthostport.c */; };
@@ -704,6 +705,7 @@
 		A220EC59118C8A060022B4BE /* tr-lpd.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "tr-lpd.cc"; sourceTree = "<group>"; };
 		A220EC5A118C8A060022B4BE /* tr-lpd.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "tr-lpd.h"; sourceTree = "<group>"; };
 		A221DCC7104B3660008A642D /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		A221DCC9104B3660008A642D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A22B00AE116A9E90003315FC /* connecthostport.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = connecthostport.c; sourceTree = "<group>"; };
 		A22B00AF116A9E90003315FC /* connecthostport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = connecthostport.h; sourceTree = "<group>"; };
 		A22CFCA60FC24ED80009BD3E /* tr-dht.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "tr-dht.cc"; sourceTree = "<group>"; };
@@ -1155,6 +1157,7 @@
 				55869926257074EC00F77A43 /* libcurl.tbd in Frameworks */,
 				A2E669790F5B8E5A00B4251A /* Security.framework in Frameworks */,
 				A221DCC8104B3660008A642D /* Quartz.framework in Frameworks */,
+				A221DCCA104B3660008A642D /* SystemConfiguration.framework in Frameworks */,
 				C88771B62803EEB5005C7523 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1379,6 +1382,7 @@
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				A2E669780F5B8E5A00B4251A /* Security.framework */,
 				A221DCC7104B3660008A642D /* Quartz.framework */,
+				A221DCC9104B3660008A642D /* SystemConfiguration.framework */,
 				C0FFEE000000000000000016 /* IOKit.framework */,
 			);
 			name = Frameworks;

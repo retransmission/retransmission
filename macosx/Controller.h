@@ -47,6 +47,9 @@ typedef NS_ENUM(NSUInteger, AddType) { //
 
 @property(nonatomic, readonly) tr_session* sessionHandle;
 
+- (void)updateActiveVPNBindInterfacePreference;
+- (NSDictionary<NSString*, id>*)activeVPNBindInterfaceStatus;
+
 - (void)resumeTorrents:(NSArray<Torrent*>*)torrents;
 
 - (void)resumeTorrentsNoWait:(NSArray<Torrent*>*)torrents;
