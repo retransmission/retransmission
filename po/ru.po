@@ -2170,14 +2170,6 @@ msgstr "Открыть торрент по ссылке"
 msgid "_URL"
 msgstr "_Ссылка"
 
-#: ../libtransmission/announcer-http.cc:453
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Не удалось разобрать ответ анонса: {error} ({error_code})"
-
-#: ../libtransmission/announcer-http.cc:673
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Не удалось разобрать ответ запроса к трекеру: {error} ({error_code})"
-
 #: ../libtransmission/announcer-udp.cc:147 ../libtransmission/announcer-udp.cc:308
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
@@ -2185,22 +2177,6 @@ msgstr "Неизвестная ошибка"
 #: ../libtransmission/announcer-udp.cc:423
 msgid "{ip_protocol} connection failed"
 msgstr "Сбой подключения по {ip_protocol}"
-
-#: ../libtransmission/announcer-udp.cc:542
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Не удалось найти '{address}:{port}' в {ip_protocol}: {error} ({error_code})"
-
-#: ../libtransmission/announcer.cc:898
-msgid "Announce error: {error} ({url})"
-msgstr "Ошибка анонса: {error} ({url})"
-
-#: ../libtransmission/announcer.cc:910
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Ошибка анонса: {error} (повторная попытка через {count} секунду) ({url})"
-msgstr[1] "Ошибка анонса: {error} (повторная попытка через {count} секунды) ({url})"
-msgstr[2] "Ошибка анонса: {error} (повторная попытка через {count} секунд) ({url})"
-msgstr[3] "АнонсОшибка анонса: {error} (повторная попытка через {count} секунд) ({url})"
 
 #: ../libtransmission/announcer.cc:1046 ../libtransmission/announcer.cc:1368
 msgid "Could not connect to tracker"
@@ -2214,14 +2190,6 @@ msgstr "Трекер не отвечает"
 msgid "Success"
 msgstr "Успешно"
 
-#: ../libtransmission/blocklist.cc:85 ../libtransmission/blocklist.cc:412
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "В чёрном списке «{path}» {count} запись"
-msgstr[1] "В чёрном списке «{path}» {count} записи"
-msgstr[2] "В чёрном списке «{path}» {count} записей"
-msgstr[3] "В чёрном списке «{path}» {count} записей"
-
 #. don't try to display the actual lines - it causes issues
 #: ../libtransmission/blocklist.cc:264
 msgid "Couldn't parse line: '{line}'"
@@ -2231,213 +2199,9 @@ msgstr "Не удалось разобрать строку: «{line}»"
 msgid "Rewriting old blocklist file format to new format"
 msgstr "Перезапись старого формата файла списка блокировок в новый формат"
 
-#: ../libtransmission/crypto-utils-ccrypto.cc:73 ../libtransmission/crypto-utils-mbedtls.cc:45 ../libtransmission/crypto-utils-openssl.cc:64 ../libtransmission/crypto-utils-wolfssl.cc:48
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "Ошибка {crypto_library}: {error} ({error_code})"
-
 #: ../libtransmission/inout.cc:118
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Не удалось получить «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/ip-cache.cc:291
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Успешно изменён адрес источника {protocol} на {ip}"
-
-#: ../libtransmission/ip-cache.cc:305
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr "Не удалось получить адрес источника ни по одному IP-протоколу, сетевые подключения невозможны"
-
-#: ../libtransmission/ip-cache.cc:313
-msgid "Your machine does not support {protocol}"
-msgstr "Ваша машина не поддерживает {protocol}"
-
-#: ../libtransmission/ip-cache.cc:340
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Успешно изменён общий адрес {type} на {ip} через {url}"
-
-#: ../libtransmission/log.cc:292
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Слишком много таких сообщений! Это сообщение больше не будет регистрироваться в этом сеансе."
-
-#: ../libtransmission/makemeta.cc:81 ../libtransmission/watchdir.cc:53
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "Пропускается «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:203
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Не удалось создать сокет: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:280
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Не удалось установить адрес источника {address} на {socket}: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:300
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Не удалось подключить сокет {socket} к {address}:{port}: {error}({error_code})"
-
-#: ../libtransmission/net.cc:361
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Не удалось привязать порт {port} на {address}: {error} ({error_code}) — Возможно другой экземпляр {appname} уже запущен?"
-
-#: ../libtransmission/net.cc:362
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Не удалось привязать порт {port} на {address}: {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:194
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "Не удалось открыть «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:223
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "Не удалось предраспределить «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:243
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "Не удалось сократить «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/peer-io.cc:676
-msgid "Unknown state: {state}"
-msgstr "Неизвестное состояние: {state}"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:92
-msgid "Found public address '{address}'"
-msgstr "Найден публичный адрес «{address}»"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:130
-msgid "Port {port} is no longer forwarded"
-msgstr "Порт {port} больше не перенаправляется"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:179
-msgid "Port {port} forwarded successfully"
-msgstr "Порт {port} успешно перенаправлен"
-
-#: ../libtransmission/port-forwarding-upnp.cc:274
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Обнаружено устройство интернет-доступа «{url}»"
-
-#: ../libtransmission/port-forwarding-upnp.cc:276
-msgid "Local Address is '{address}'"
-msgstr "Локальный адрес: \"{address}\""
-
-#: ../libtransmission/port-forwarding-upnp.cc:302
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "Локальный порт {local_port} не перенаправлен на {advertised_port}"
-
-#: ../libtransmission/port-forwarding-upnp.cc:315
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "Останавливается проброс порта через «{url}», служба «{type}»"
-
-#: ../libtransmission/port-forwarding-upnp.cc:349
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Проброс порта через «{url}», служба «{type}». (локальный адрес: {address}:{port})"
-
-#: ../libtransmission/port-forwarding-upnp.cc:359
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "Локальный порт {local_port} перенаправлен на {advertised_port}"
-
-#: ../libtransmission/port-forwarding-upnp.cc:367
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Если ваш роутер поддерживает UPnP, убедитесь, что UPnP включён!"
-
-#: ../libtransmission/port-forwarding.cc:163
-msgid "Starting"
-msgstr "Запускается"
-
-#: ../libtransmission/port-forwarding.cc:166
-msgid "Forwarded"
-msgstr "Перенаправляется"
-
-#: ../libtransmission/port-forwarding.cc:169
-msgid "Stopping"
-msgstr "Останавливается"
-
-#: ../libtransmission/port-forwarding.cc:172
-msgid "Not forwarded"
-msgstr "Не перенаправляется"
-
-#: ../libtransmission/port-forwarding.cc:202
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Сопоставлен приватный порт {private_port} с публичным портом {public_port}"
-
-#: ../libtransmission/port-forwarding.cc:219
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Состояние изменено с «{old_state}» на «{state}»"
-
-#: ../libtransmission/rpc-server.cc:105
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Путь к сокету Unix должен быть меньше {count} символов (включая префикс «{prefix}»)"
-
-#: ../libtransmission/rpc-server.cc:348
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "Отклоненный запрос от {host} (вероятна атака обхода каталога)"
-
-#: ../libtransmission/rpc-server.cc:536
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "Отклоненный запрос от {host} (активна защита от брутфорса)"
-
-#: ../libtransmission/rpc-server.cc:545
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "Отклоненный запрос от {host} (IP не входит в белый список)"
-
-#: ../libtransmission/rpc-server.cc:569
-msgid "Rejected request from {host} (failed authentication)"
-msgstr "Отклоненный запрос от {host} (ошибка аутентификации)"
-
-#: ../libtransmission/rpc-server.cc:611
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "Отклоненный запрос от {host} (хост не входит в белый список)"
-
-#: ../libtransmission/rpc-server.cc:649
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "Неизвестный URI от {host}: «{uri}»"
-
-#: ../libtransmission/rpc-server.cc:669
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Сокеты Unix не поддерживаются в Windows. Пожалуйста, измените «{key}» в ваших настройках."
-
-#: ../libtransmission/rpc-server.cc:697
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "Не удалось установить режим сокета RPC на {mode:#o}, по умолчанию 0755"
-
-#: ../libtransmission/rpc-server.cc:814
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "Не удалось привязать {address} после {count} попытки, привязка отменена"
-msgstr[1] "Не удалось привязать {address} после {count} попыток, привязка отменена"
-msgstr[2] "Не удалось привязать {address} после {count} попыток, привязка отменена"
-msgstr[3] "Не удалось привязать {address} после {count} попыток, привязка отменена"
-
-#: ../libtransmission/rpc-server.cc:827
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "Прослушивание RPC и веб-запросов на «{address}»"
-
-#: ../libtransmission/rpc-server.cc:857
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "Прекращено прослушивание RPC и веб-запросов на «{address}»"
-
-#: ../libtransmission/rpc-server.cc:881
-msgid "Added '{entry}' to host whitelist"
-msgstr "«{entry}» добавлен в список хостов белого списка"
-
-#: ../libtransmission/rpc-server.cc:1003
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "Параметр «{key}» равен «{value}», но должен быть адресом IPv4 или IPv6 или путём к сокету Unix. Используется значения по умолчанию «0.0.0.0»"
-
-#: ../libtransmission/rpc-server.cc:1016
-msgid "Serving RPC and Web requests on {address}"
-msgstr "Обслуживаются RPC и веб-запросы на {address}"
-
-#: ../libtransmission/rpc-server.cc:1021
-msgid "Whitelist enabled"
-msgstr "Список разрешённых задействован"
-
-#: ../libtransmission/rpc-server.cc:1026
-msgid "Password required"
-msgstr "Требуется пароль"
-
-#: ../libtransmission/rpc-server.cc:1033
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "Обслуживаются RPC и веб-запросы от «{path}»"
 
 #: ../libtransmission/rpcimpl.cc:1496
 msgid "Couldn't test port: {error} ({error_code})"
@@ -2459,34 +2223,6 @@ msgstr "Время отключения режима черепахи"
 msgid "Time to turn on turtle mode"
 msgstr "Время включения режима черепахи"
 
-#: ../libtransmission/session-id.cc:152
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Не удалось открыть файл блокировки сеанса «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/session.cc:423
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Прослушиваются входящие соединения участников на {hostport}"
-
-#: ../libtransmission/session.cc:748
-msgid "{appname} version {version} starting"
-msgstr "{appname} версии {version} запускается"
-
-#: ../libtransmission/session.cc:1488
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} версии {version} завершает работу"
-
-#: ../libtransmission/session.cc:1570
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "Загружен {count} торрент"
-msgstr[1] "Загружено {count} торрента"
-msgstr[2] "Загружено {count} торрентов"
-msgstr[3] "Загружено {count} торрентов"
-
-#: ../libtransmission/torrent-metainfo.cc:705
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Торрент-файл перенесён из «{old_path}» в «{path}»"
-
 #: ../libtransmission/torrent.cc:139
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Не удалось использовать метаинформацию из «{path}» для «{magnet}»: {error} ({error_code})"
@@ -2495,161 +2231,21 @@ msgstr "Не удалось использовать метаинформаци�
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "Нет данных! Убедитесь, что ваши диски подключены или используйте \"Указать расположение\". Чтобы загрузить повторно, используйте \"Проверить локальные данные\" и запустите торрент после этого."
 
-#: ../libtransmission/torrent.cc:405
-msgid "Calling script '{path}'"
-msgstr "Вызывается сценарий «{path}»"
-
-#: ../libtransmission/torrent.cc:413
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Не удалось вызвать сценарий «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/torrent.cc:447
-msgid "Seed ratio reached; pausing torrent"
-msgstr "Рейтинг раздачи достигнут; приостановка торрента"
-
-#: ../libtransmission/torrent.cc:454
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Простой раздачи достигнут; приостановка торрента"
-
-#: ../libtransmission/torrent.cc:615
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Перезагружено вручную — отключение рейтинга раздачи"
-
-#: ../libtransmission/torrent.cc:671
-msgid "Pausing torrent"
-msgstr "Приостановка торрента"
-
-#: ../libtransmission/torrent.cc:725
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "Не удалось удалить все торрент-файлы: {error} ({error_code})"
-
-#: ../libtransmission/torrent.cc:791
-msgid "Removing torrent"
-msgstr "Удаление торрента"
-
-#: ../libtransmission/torrent.cc:1110 ../libtransmission/torrent.cc:1618
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Не удалось переместить «{old_path}» в «{path}»: {error} ({error_code})"
-
 #: ../libtransmission/torrent.cc:1560
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Приостановлен торрент, так как данные не были найдены! Убедитесь, что ваши диски подключены или используйте \"Указать расположение\", затем снова используйте \"Проверить локальные данные\". Чтобы загрузить повторно, запустите торрент."
-
-#: ../libtransmission/torrent.cc:2066
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "Предупреждение трекера: «{warning}» ({url})"
-
-#: ../libtransmission/tr-dht.cc:554
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Не удалось разобрать строку в «{filename}»: «{line}»"
-
-#: ../libtransmission/tr-dht.cc:579
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "Не удалось найти \"{address}:{port}\": {error} ({error_code})"
-
-#: ../libtransmission/tr-lpd.cc:271 ../libtransmission/tr-lpd.cc:285
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "Не удалось инициализировать локальное обнаружение участников для{ip_protocol}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:186
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Не удалось установить неблокирующий режим сокета IPv4 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:198
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "Не удалось привязать сокет IPv4 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:233
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Не удалось установить неблокирующий режим сокета IPv6 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:245
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "Не удалось привязать сокет IPv6 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:265
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-#: ../libtransmission/tr-utp.cc:98
-msgid "Unknown socket family"
-msgstr "Неизвестное семейство адресов сокетов"
-
-#: ../libtransmission/utils.cc:150
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Не удалось прочесть «{path}»: Не является обычным файлом"
 
 #: ../libtransmission/variant-json.cc:257
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Не удалось разобрать JSON в позиции {position} «{text}»: {error} ({error_code})"
 
-#: ../libtransmission/watchdir-inotify.cc:87 ../libtransmission/watchdir-inotify.cc:100 ../libtransmission/watchdir-inotify.cc:113 ../libtransmission/watchdir-kqueue.cc:76 ../libtransmission/watchdir-kqueue.cc:90 ../libtransmission/watchdir-kqueue.cc:106
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
-
-#: ../libtransmission/watchdir-inotify.cc:146 ../libtransmission/watchdir-kqueue.cc:152 ../libtransmission/watchdir-win32.cc:297
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Не удалось прочесть событие: {error} ({error_code})"
-
-#: ../libtransmission/watchdir-inotify.cc:156 ../libtransmission/watchdir-win32.cc:307
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Не удалось прочесть событие: ожидалось {expected_size}, получено {actual_size}"
-
 #: ../libtransmission/watchdir-inotify.cc:174 ../libtransmission/watchdir-win32.cc:333
 msgid "Couldn't read filename: {error} ({error_code})"
 msgstr "Не удалось прочесть имя файла: {error} ({error_code})"
 
-#: ../libtransmission/watchdir-inotify.cc:184 ../libtransmission/watchdir-win32.cc:343
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Не удалось прочесть имя файла: ожидалось {expected_size}, получено {actual_size}"
-
-#: ../libtransmission/watchdir-win32.cc:146
-msgid "Couldn't convert '{path}' to native path"
-msgstr "Не удалось преобразовать «{path}» в родной путь"
-
-#: ../libtransmission/watchdir-win32.cc:185
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Не удалось создать конвейер: {error} ({error_code})"
-
-#: ../libtransmission/watchdir-win32.cc:211
-msgid "Couldn't create thread"
-msgstr "Не удалось создать поток"
-
-#: ../libtransmission/watchdir-win32.cc:249
-msgid "Couldn't read directory changes"
-msgstr "Не удалось прочесть изменения каталога"
-
-#: ../libtransmission/watchdir-win32.cc:256
-msgid "Couldn't wait for directory changes"
-msgstr "Не удалось дождаться изменений каталога"
-
-#: ../libtransmission/web.cc:170 ../libtransmission/web.cc:180
-msgid "Consider upgrading your curl installation."
-msgstr "Рассмотрите обновление вашей установки curl."
-
-#: ../libtransmission/web.cc:173
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr "Curl {curl_version}  подвержен сбоям SIGPIPE. {details_url}"
-
 #: ../libtransmission/web.cc:184
 msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
 msgstr "Curl {curl_version} подвержен уязвимости двойного закрытия eventfd, которая может привести к сбоям SIGABRT для службы transmission-daemon systemd. {details_url}"
-
-#: ../libtransmission/web.cc:202
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Будет производить проверку сертификатов трекера с помощью переменной окружения CURL_CA_BUNDLE: {bundle}"
-
-#: ../libtransmission/web.cc:204
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "NB: это работает только тогда, если если вы собрали, используя libcurl с помощью openssl или gnutls, а НЕ nss"
-
-#: ../libtransmission/web.cc:205
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "NB: Недействительные сертификаты будут отображаться как «Не удалось подключиться к трекеру», как и многие другие ошибки"
-
-#: ../libtransmission/web.cc:514
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "Не удалось получить «{url}»: ожидаемый код ответа HTTP {expected_code}, получен {actual_code}"
 
 #: ../utils/create.cc:241
 msgid "{file_count:L} file, {total_size}\n"
@@ -2707,3 +2303,307 @@ msgstr[3] "дней"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Transmission — программа для обмена файлами. Когда ваш торрент активен, его данные становятся доступными другим пользователям. Содержимое, которым вы делитесь, находится полностью под вашей ответственностью."
+
+#~ msgid "Couldn't parse announce response: {error} ({error_code})"
+#~ msgstr "Не удалось разобрать ответ анонса: {error} ({error_code})"
+
+#~ msgid "Couldn't parse scrape response: {error} ({error_code})"
+#~ msgstr "Не удалось разобрать ответ запроса к трекеру: {error} ({error_code})"
+
+#~ msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#~ msgstr "Не удалось найти '{address}:{port}' в {ip_protocol}: {error} ({error_code})"
+
+#~ msgid "Announce error: {error} ({url})"
+#~ msgstr "Ошибка анонса: {error} ({url})"
+
+#~ msgid "Announce error: {error} (Retrying in {count} second) ({url})"
+#~ msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
+#~ msgstr[0] "Ошибка анонса: {error} (повторная попытка через {count} секунду) ({url})"
+#~ msgstr[1] "Ошибка анонса: {error} (повторная попытка через {count} секунды) ({url})"
+#~ msgstr[2] "Ошибка анонса: {error} (повторная попытка через {count} секунд) ({url})"
+#~ msgstr[3] "АнонсОшибка анонса: {error} (повторная попытка через {count} секунд) ({url})"
+
+#~ msgid "Blocklist '{path}' has {count} entry"
+#~ msgid_plural "Blocklist '{path}' has {count} entries"
+#~ msgstr[0] "В чёрном списке «{path}» {count} запись"
+#~ msgstr[1] "В чёрном списке «{path}» {count} записи"
+#~ msgstr[2] "В чёрном списке «{path}» {count} записей"
+#~ msgstr[3] "В чёрном списке «{path}» {count} записей"
+
+#~ msgid "{crypto_library} error: {error} ({error_code})"
+#~ msgstr "Ошибка {crypto_library}: {error} ({error_code})"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Успешно изменён адрес источника {protocol} на {ip}"
+
+#~ msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
+#~ msgstr "Не удалось получить адрес источника ни по одному IP-протоколу, сетевые подключения невозможны"
+
+#~ msgid "Your machine does not support {protocol}"
+#~ msgstr "Ваша машина не поддерживает {protocol}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Успешно изменён общий адрес {type} на {ip} через {url}"
+
+#~ msgid "Too many messages like this! I won't log this message anymore this session."
+#~ msgstr "Слишком много таких сообщений! Это сообщение больше не будет регистрироваться в этом сеансе."
+
+#~ msgid "Skipping '{path}': {error} ({error_code})"
+#~ msgstr "Пропускается «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't create socket: {error} ({error_code})"
+#~ msgstr "Не удалось создать сокет: {error} ({error_code})"
+
+#~ msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+#~ msgstr "Не удалось установить адрес источника {address} на {socket}: {error} ({error_code})"
+
+#~ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+#~ msgstr "Не удалось подключить сокет {socket} к {address}:{port}: {error}({error_code})"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+#~ msgstr "Не удалось привязать порт {port} на {address}: {error} ({error_code}) — Возможно другой экземпляр {appname} уже запущен?"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
+#~ msgstr "Не удалось привязать порт {port} на {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось открыть «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't preallocate '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось предраспределить «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't truncate '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось сократить «{path}»: {error} ({error_code})"
+
+#~ msgid "Unknown state: {state}"
+#~ msgstr "Неизвестное состояние: {state}"
+
+#~ msgid "Found public address '{address}'"
+#~ msgstr "Найден публичный адрес «{address}»"
+
+#~ msgid "Port {port} is no longer forwarded"
+#~ msgstr "Порт {port} больше не перенаправляется"
+
+#~ msgid "Port {port} forwarded successfully"
+#~ msgstr "Порт {port} успешно перенаправлен"
+
+#~ msgid "Found Internet Gateway Device '{url}'"
+#~ msgstr "Обнаружено устройство интернет-доступа «{url}»"
+
+#~ msgid "Local Address is '{address}'"
+#~ msgstr "Локальный адрес: \"{address}\""
+
+#~ msgid "Local port {local_port} is not forwarded to {advertised_port}"
+#~ msgstr "Локальный порт {local_port} не перенаправлен на {advertised_port}"
+
+#~ msgid "Stopping port forwarding through '{url}', service '{type}'"
+#~ msgstr "Останавливается проброс порта через «{url}», служба «{type}»"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Проброс порта через «{url}», служба «{type}». (локальный адрес: {address}:{port})"
+
+#~ msgid "Forwarded local port {local_port} to {advertised_port}"
+#~ msgstr "Локальный порт {local_port} перенаправлен на {advertised_port}"
+
+#~ msgid "If your router supports UPnP, please make sure UPnP is enabled!"
+#~ msgstr "Если ваш роутер поддерживает UPnP, убедитесь, что UPnP включён!"
+
+#~ msgid "Starting"
+#~ msgstr "Запускается"
+
+#~ msgid "Forwarded"
+#~ msgstr "Перенаправляется"
+
+#~ msgid "Stopping"
+#~ msgstr "Останавливается"
+
+#~ msgid "Not forwarded"
+#~ msgstr "Не перенаправляется"
+
+#~ msgid "Mapped private port {private_port} to public port {public_port}"
+#~ msgstr "Сопоставлен приватный порт {private_port} с публичным портом {public_port}"
+
+#~ msgid "State changed from '{old_state}' to '{state}'"
+#~ msgstr "Состояние изменено с «{old_state}» на «{state}»"
+
+#~ msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
+#~ msgstr "Путь к сокету Unix должен быть меньше {count} символов (включая префикс «{prefix}»)"
+
+#~ msgid "Rejected request from {host} (possible directory traversal attack)"
+#~ msgstr "Отклоненный запрос от {host} (вероятна атака обхода каталога)"
+
+#~ msgid "Rejected request from {host} (brute force protection active)"
+#~ msgstr "Отклоненный запрос от {host} (активна защита от брутфорса)"
+
+#~ msgid "Rejected request from {host} (IP not whitelisted)"
+#~ msgstr "Отклоненный запрос от {host} (IP не входит в белый список)"
+
+#~ msgid "Rejected request from {host} (failed authentication)"
+#~ msgstr "Отклоненный запрос от {host} (ошибка аутентификации)"
+
+#~ msgid "Rejected request from {host} (Host not whitelisted)"
+#~ msgstr "Отклоненный запрос от {host} (хост не входит в белый список)"
+
+#~ msgid "Unknown URI from {host}: '{uri}'"
+#~ msgstr "Неизвестный URI от {host}: «{uri}»"
+
+#~ msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
+#~ msgstr "Сокеты Unix не поддерживаются в Windows. Пожалуйста, измените «{key}» в ваших настройках."
+
+#~ msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
+#~ msgstr "Не удалось установить режим сокета RPC на {mode:#o}, по умолчанию 0755"
+
+#~ msgid "Couldn't bind to {address} after {count} attempt, giving up"
+#~ msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
+#~ msgstr[0] "Не удалось привязать {address} после {count} попытки, привязка отменена"
+#~ msgstr[1] "Не удалось привязать {address} после {count} попыток, привязка отменена"
+#~ msgstr[2] "Не удалось привязать {address} после {count} попыток, привязка отменена"
+#~ msgstr[3] "Не удалось привязать {address} после {count} попыток, привязка отменена"
+
+#~ msgid "Listening for RPC and Web requests on '{address}'"
+#~ msgstr "Прослушивание RPC и веб-запросов на «{address}»"
+
+#~ msgid "Stopped listening for RPC and Web requests on '{address}'"
+#~ msgstr "Прекращено прослушивание RPC и веб-запросов на «{address}»"
+
+#~ msgid "Added '{entry}' to host whitelist"
+#~ msgstr "«{entry}» добавлен в список хостов белого списка"
+
+#~ msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
+#~ msgstr "Параметр «{key}» равен «{value}», но должен быть адресом IPv4 или IPv6 или путём к сокету Unix. Используется значения по умолчанию «0.0.0.0»"
+
+#~ msgid "Serving RPC and Web requests on {address}"
+#~ msgstr "Обслуживаются RPC и веб-запросы на {address}"
+
+#~ msgid "Whitelist enabled"
+#~ msgstr "Список разрешённых задействован"
+
+#~ msgid "Password required"
+#~ msgstr "Требуется пароль"
+
+#~ msgid "Serving RPC and Web requests from '{path}'"
+#~ msgstr "Обслуживаются RPC и веб-запросы от «{path}»"
+
+#~ msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось открыть файл блокировки сеанса «{path}»: {error} ({error_code})"
+
+#~ msgid "Listening to incoming peer connections on {hostport}"
+#~ msgstr "Прослушиваются входящие соединения участников на {hostport}"
+
+#~ msgid "{appname} version {version} starting"
+#~ msgstr "{appname} версии {version} запускается"
+
+#~ msgid "{appname} version {version} shutting down"
+#~ msgstr "{appname} версии {version} завершает работу"
+
+#~ msgid "Loaded {count} torrent"
+#~ msgid_plural "Loaded {count} torrents"
+#~ msgstr[0] "Загружен {count} торрент"
+#~ msgstr[1] "Загружено {count} торрента"
+#~ msgstr[2] "Загружено {count} торрентов"
+#~ msgstr[3] "Загружено {count} торрентов"
+
+#~ msgid "Migrated torrent file from '{old_path}' to '{path}'"
+#~ msgstr "Торрент-файл перенесён из «{old_path}» в «{path}»"
+
+#~ msgid "Calling script '{path}'"
+#~ msgstr "Вызывается сценарий «{path}»"
+
+#~ msgid "Couldn't call script '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось вызвать сценарий «{path}»: {error} ({error_code})"
+
+#~ msgid "Seed ratio reached; pausing torrent"
+#~ msgstr "Рейтинг раздачи достигнут; приостановка торрента"
+
+#~ msgid "Seeding idle limit reached; pausing torrent"
+#~ msgstr "Простой раздачи достигнут; приостановка торрента"
+
+#~ msgid "Restarted manually -- disabling its seed ratio"
+#~ msgstr "Перезагружено вручную — отключение рейтинга раздачи"
+
+#~ msgid "Pausing torrent"
+#~ msgstr "Приостановка торрента"
+
+#~ msgid "Couldn't remove all torrent files: {error} ({error_code})"
+#~ msgstr "Не удалось удалить все торрент-файлы: {error} ({error_code})"
+
+#~ msgid "Removing torrent"
+#~ msgstr "Удаление торрента"
+
+#~ msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось переместить «{old_path}» в «{path}»: {error} ({error_code})"
+
+#~ msgid "Tracker warning: '{warning}' ({url})"
+#~ msgstr "Предупреждение трекера: «{warning}» ({url})"
+
+#~ msgid "Couldn't parse '{filename}' line: '{line}'"
+#~ msgstr "Не удалось разобрать строку в «{filename}»: «{line}»"
+
+#~ msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
+#~ msgstr "Не удалось найти \"{address}:{port}\": {error} ({error_code})"
+
+#~ msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
+#~ msgstr "Не удалось инициализировать локальное обнаружение участников для{ip_protocol}: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Не удалось установить неблокирующий режим сокета IPv4 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
+#~ msgstr "Не удалось привязать сокет IPv4 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Не удалось установить неблокирующий режим сокета IPv6 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
+#~ msgstr "Не удалось привязать сокет IPv6 {address}: {error} ({error_code})"
+
+#~ msgid "Unknown socket family"
+#~ msgstr "Неизвестное семейство адресов сокетов"
+
+#~ msgid "Couldn't read '{path}': Not a regular file"
+#~ msgstr "Не удалось прочесть «{path}»: Не является обычным файлом"
+
+#~ msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't read event: {error} ({error_code})"
+#~ msgstr "Не удалось прочесть событие: {error} ({error_code})"
+
+#~ msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
+#~ msgstr "Не удалось прочесть событие: ожидалось {expected_size}, получено {actual_size}"
+
+#~ msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+#~ msgstr "Не удалось прочесть имя файла: ожидалось {expected_size}, получено {actual_size}"
+
+#~ msgid "Couldn't convert '{path}' to native path"
+#~ msgstr "Не удалось преобразовать «{path}» в родной путь"
+
+#~ msgid "Couldn't create pipe: {error} ({error_code})"
+#~ msgstr "Не удалось создать конвейер: {error} ({error_code})"
+
+#~ msgid "Couldn't create thread"
+#~ msgstr "Не удалось создать поток"
+
+#~ msgid "Couldn't read directory changes"
+#~ msgstr "Не удалось прочесть изменения каталога"
+
+#~ msgid "Couldn't wait for directory changes"
+#~ msgstr "Не удалось дождаться изменений каталога"
+
+#~ msgid "Consider upgrading your curl installation."
+#~ msgstr "Рассмотрите обновление вашей установки curl."
+
+#~ msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
+#~ msgstr "Curl {curl_version}  подвержен сбоям SIGPIPE. {details_url}"
+
+#~ msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
+#~ msgstr "Будет производить проверку сертификатов трекера с помощью переменной окружения CURL_CA_BUNDLE: {bundle}"
+
+#~ msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
+#~ msgstr "NB: это работает только тогда, если если вы собрали, используя libcurl с помощью openssl или gnutls, а НЕ nss"
+
+#~ msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
+#~ msgstr "NB: Недействительные сертификаты будут отображаться как «Не удалось подключиться к трекеру», как и многие другие ошибки"
+
+#~ msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
+#~ msgstr "Не удалось получить «{url}»: ожидаемый код ответа HTTP {expected_code}, получен {actual_code}"

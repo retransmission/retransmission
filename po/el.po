@@ -2131,14 +2131,6 @@ msgstr "Άνοιγμα torrent από URL"
 msgid "_URL"
 msgstr "_URL"
 
-#: ../libtransmission/announcer-http.cc:453
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Αδυναμία προσπέλασης απόκρισης ανακοίνωσης: {error} ({error_code})"
-
-#: ../libtransmission/announcer-http.cc:673
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Αδυναμία προσπέλασης απόκρισης απόξεσης: {error} ({error_code})"
-
 #: ../libtransmission/announcer-udp.cc:147 ../libtransmission/announcer-udp.cc:308
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
@@ -2146,20 +2138,6 @@ msgstr "Άγνωστο σφάλμα"
 #: ../libtransmission/announcer-udp.cc:423
 msgid "{ip_protocol} connection failed"
 msgstr "αποτυχία σύνδεσης {ip_protocol}"
-
-#: ../libtransmission/announcer-udp.cc:542
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Αδυναμία ανεύρεσης  '{address}:{port}' σε {ip_protocol}: {error} ({error_code})"
-
-#: ../libtransmission/announcer.cc:898
-msgid "Announce error: {error} ({url})"
-msgstr "Αναγγελία σφάλματος: {error} ({url})"
-
-#: ../libtransmission/announcer.cc:910
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Αναγγελία σφάλματος: {error} (Νέα προσπάθεια σε {count} δευτερόλεπτο) ({url})"
-msgstr[1] "Αναγγελία σφάλματος: {error} (Νέα προσπάθεια σε {count} δευτερόλεπτα) ({url})"
 
 #: ../libtransmission/announcer.cc:1046 ../libtransmission/announcer.cc:1368
 msgid "Could not connect to tracker"
@@ -2173,12 +2151,6 @@ msgstr "Ο ιχνηλάτης δεν αποκρίθηκε."
 msgid "Success"
 msgstr "Επιτυχία"
 
-#: ../libtransmission/blocklist.cc:85 ../libtransmission/blocklist.cc:412
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "Η λίστα φραγής '{path}' έχει {count} καταχώρηση"
-msgstr[1] "Η λίστα φραγής '{path}' έχει {count} καταχωρήσεις"
-
 #. don't try to display the actual lines - it causes issues
 #: ../libtransmission/blocklist.cc:264
 msgid "Couldn't parse line: '{line}'"
@@ -2188,211 +2160,9 @@ msgstr "Αδυναμία προσπέλασης γραμμής: '{line}'"
 msgid "Rewriting old blocklist file format to new format"
 msgstr "Επανεγγραφή παλιού τύπου αρχείου λίστας φραγής σε νέο τύπο"
 
-#: ../libtransmission/crypto-utils-ccrypto.cc:73 ../libtransmission/crypto-utils-mbedtls.cc:45 ../libtransmission/crypto-utils-openssl.cc:64 ../libtransmission/crypto-utils-wolfssl.cc:48
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} σφάλμα: {error} ({error_code})"
-
 #: ../libtransmission/inout.cc:118
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Αδυναμία απόκτησης '{path}': {error} ({error_code})"
-
-#: ../libtransmission/ip-cache.cc:291
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Επιτυχής ενημέρωση {protocol} διεύθυνσης πηγής σε {ip}"
-
-#: ../libtransmission/ip-cache.cc:305
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr ""
-
-#: ../libtransmission/ip-cache.cc:313
-msgid "Your machine does not support {protocol}"
-msgstr "Το σύστημά σας δεν υποστηρίζει το {protocol}"
-
-#: ../libtransmission/ip-cache.cc:340
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Επιτυχής ενημέρωση καθολικής διεύθυνσης {type} σε {ip} με χρήση του {url}"
-
-#: ../libtransmission/log.cc:292
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Πολλά παρόμοια μηνύματα! Παύση καταχώρησης αυτού του μηνύματος σε αυτή τη συνεδρία."
-
-#: ../libtransmission/makemeta.cc:81 ../libtransmission/watchdir.cc:53
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "Παράβλεψη '{path}': {error} ({error_code})"
-
-#: ../libtransmission/net.cc:203
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Αδυναμία δημιουργίας υποδοχής: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:280
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Αδυναμία καθορισμού διεύθυνσης πηγής {address} σε {socket}: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:300
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Αδυναμία σύνδεσης υποδοχής {socket} σε {address}:{port}: {error} ({error_code})"
-
-#: ../libtransmission/net.cc:361
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code}) -- Μήπως μία άλλη συνεδρία του {appname} τρέχει ήδη;"
-
-#: ../libtransmission/net.cc:362
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:194
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "Αδυναμία ανοίγματος '{path}': {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:223
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "Αδυναμία δέσμευσης '{path}': {error} ({error_code})"
-
-#: ../libtransmission/open-files.cc:243
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "Αδυναμία περικοπής '{path}': {error} ({error_code})"
-
-#: ../libtransmission/peer-io.cc:676
-msgid "Unknown state: {state}"
-msgstr "Άγνωστη κατάσταση: {state}"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:92
-msgid "Found public address '{address}'"
-msgstr "Βρέθηκε η δημόσια διεύθυνση '{address}'"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:130
-msgid "Port {port} is no longer forwarded"
-msgstr "Η θύρα {port} δεν προωθείται πιά"
-
-#: ../libtransmission/port-forwarding-natpmp.cc:179
-msgid "Port {port} forwarded successfully"
-msgstr "Η θύρα {port} προωθήθηκε επιτυχώς"
-
-#: ../libtransmission/port-forwarding-upnp.cc:274
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Βρέθηκε Internet Gateway Device '{url}'"
-
-#: ../libtransmission/port-forwarding-upnp.cc:276
-msgid "Local Address is '{address}'"
-msgstr "Η τοπική διεύθυνση είναι '{address}'"
-
-#: ../libtransmission/port-forwarding-upnp.cc:302
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "Η τοπική θύρα {local_port} δεν προωθείται στην {advertised_port}"
-
-#: ../libtransmission/port-forwarding-upnp.cc:315
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "Διακοπή προώθησης θυρών δια μέσου του '{url}', υπηρεσία '{type}'"
-
-#: ../libtransmission/port-forwarding-upnp.cc:349
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Προώθηση θυρών δια μέσου του '{url}', υπηρεσία '{type}'. (τοπική διεύθυνση: {address}:{port})"
-
-#: ../libtransmission/port-forwarding-upnp.cc:359
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "Η τοπική θύρα {local_port} προωθείται στην {advertised_port}"
-
-#: ../libtransmission/port-forwarding-upnp.cc:367
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Αν ο δρομολογητής σας υποστηρίζει UPnP, παρακαλώ βεβαιωθείτε ότι το UPnP είναι ενεργοποιημένο!"
-
-#: ../libtransmission/port-forwarding.cc:163
-msgid "Starting"
-msgstr "Εκκίνηση"
-
-#: ../libtransmission/port-forwarding.cc:166
-msgid "Forwarded"
-msgstr "Προωθημένη"
-
-#: ../libtransmission/port-forwarding.cc:169
-msgid "Stopping"
-msgstr "Διακόπτεται"
-
-#: ../libtransmission/port-forwarding.cc:172
-msgid "Not forwarded"
-msgstr "Δεν έγινε προώθηση"
-
-#: ../libtransmission/port-forwarding.cc:202
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Απεικόνιση ιδιωτικής θύρας {private_port} στη δημόσια θύρα {public_port}"
-
-#: ../libtransmission/port-forwarding.cc:219
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Η κατάσταση άλλαξε από '{old_state}' σε '{state}'"
-
-#: ../libtransmission/rpc-server.cc:105
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Το μονοπάτι της υποδοχής Unix πρέπει να αποτελείται από λιγότερο από {count} χαρακτήρες (συμπεριλαμβανομένου του προθέματος '{prefix}')"
-
-#: ../libtransmission/rpc-server.cc:348
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "Απόρριψη αιτήματος από {host} (πιθανή επίθεση προσπέλασης καταλόγου αρχείων)"
-
-#: ../libtransmission/rpc-server.cc:536
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "Απόρριψη αιτήματος από {host} (η προστασία έναντι επιθέσεων brute force είναι ενεργή)"
-
-#: ../libtransmission/rpc-server.cc:545
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "Απόρριψη αιτήματος από {host} (η IP δεν είναι στη λίστα των επιτρεπομένων)"
-
-#: ../libtransmission/rpc-server.cc:569
-msgid "Rejected request from {host} (failed authentication)"
-msgstr "Απόρριψη αιτήματος από {host} (αποτυχημένη πιστοποίηση)"
-
-#: ../libtransmission/rpc-server.cc:611
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "Απόρριψη αιτήματος από {host} (ο οικοδεσπότης δεν είναι στη λίστα των επιτρεπομένων)"
-
-#: ../libtransmission/rpc-server.cc:649
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "Άγνωστο URI από {host}: '{uri}'"
-
-#: ../libtransmission/rpc-server.cc:669
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Οι υποδοχές Unix δεν υποστηρίζονται στα Windows. Παρακαλώ αλλάξτε το '{key}' στις ρυθμίσεις."
-
-#: ../libtransmission/rpc-server.cc:697
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "Αδυναμία καθορισμού λειτουργίας υποδοχής RPC σε {mode:#o}, χρήση προκαθορισμένου 0755"
-
-#: ../libtransmission/rpc-server.cc:814
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "Αδυναμία δέσμευσης στη {address} έπειτα από {count} προσπάθεια, παραίτηση"
-msgstr[1] "Αδυναμία δέσμευσης στη {address} έπειτα από {count} προσπάθειες, παραίτηση"
-
-#: ../libtransmission/rpc-server.cc:827
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "Παρακολούθηση για RPC και αιτήματα Web στην '{address}'"
-
-#: ../libtransmission/rpc-server.cc:857
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "Διακοπή παρακολούθηση για RPC και αιτήματα Web στην '{address}'"
-
-#: ../libtransmission/rpc-server.cc:881
-msgid "Added '{entry}' to host whitelist"
-msgstr "Προστέθηκε '{entry}' στην λίστα επιτρεπόμενων του οικοδεσπότη"
-
-#: ../libtransmission/rpc-server.cc:1003
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "Η ρύθμιση '{key}' έχει τιμή '{value}' αλλά πρέπει να είναι μία IPv4 ή IPv6 διεύθυνση ή ένα μονοπάτι υποδοχής Unix. Χρήση προκαθορισμένης τιμής '0.0.0.0'"
-
-#: ../libtransmission/rpc-server.cc:1016
-msgid "Serving RPC and Web requests on {address}"
-msgstr "Εξυπηρέτηση RPC και Web αιτημάτων στην {address}"
-
-#: ../libtransmission/rpc-server.cc:1021
-msgid "Whitelist enabled"
-msgstr "Ενεργοποιήθηκε η λίστα επιτρεπόμενων"
-
-#: ../libtransmission/rpc-server.cc:1026
-msgid "Password required"
-msgstr "Απαιτείται κωδικός"
-
-#: ../libtransmission/rpc-server.cc:1033
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "Εξυπηρέτηση RPC και Web αιτημάτων από την {path}"
 
 #: ../libtransmission/rpcimpl.cc:1496
 msgid "Couldn't test port: {error} ({error_code})"
@@ -2414,32 +2184,6 @@ msgstr "Ώρα για απενεργοποίηση της λειτουργίας
 msgid "Time to turn on turtle mode"
 msgstr "Ώρα για ενεργοποίηση της λειτουργίας χελώνας"
 
-#: ../libtransmission/session-id.cc:152
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Αδυναμία ανοίγματος αρχείου κλειδιού συνεδρίας '{path}': {error} ({error_code})"
-
-#: ../libtransmission/session.cc:423
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Παρακολούθηση για εισερχόμενες συνδέσεις διαμοιραστών στην {hostport}"
-
-#: ../libtransmission/session.cc:748
-msgid "{appname} version {version} starting"
-msgstr "Εκκίνηση {appname} έκδοσης {version}"
-
-#: ../libtransmission/session.cc:1488
-msgid "{appname} version {version} shutting down"
-msgstr "Τερματισμός {appname} έκδοσης {version}"
-
-#: ../libtransmission/session.cc:1570
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "Φορτώθηκε {count} torrent"
-msgstr[1] "Φορτώθηκαν {count} torrents"
-
-#: ../libtransmission/torrent-metainfo.cc:705
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Μετακίνηση αρχείου torrent από '{old_path}' στο '{path}'"
-
 #: ../libtransmission/torrent.cc:139
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Αδυναμία χρήσης μεταδεδομένων από '{path}' για '{magnet}': {error} ({error_code})"
@@ -2448,161 +2192,21 @@ msgstr "Αδυναμία χρήσης μεταδεδομένων από '{path}'
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "Δε βρέθηκαν δεδομένα! Βεβαιωθείτε ότι οι δίσκοι σας είναι συνδεδεμένοι ή χρησιμοποιήστε «Καθορισμός Τοποθεσίας». Για επανακατέβασμα, χρησιμοποιήστε «Επαλήθευση Τοπικών Δεδομένων» και εκκινήστε έπειτα το torrent."
 
-#: ../libtransmission/torrent.cc:405
-msgid "Calling script '{path}'"
-msgstr "Εκτέλεση script '{path}'"
-
-#: ../libtransmission/torrent.cc:413
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Αδυναμία εκτέλεσης script '{path}': {error} ({error_code})"
-
-#: ../libtransmission/torrent.cc:447
-msgid "Seed ratio reached; pausing torrent"
-msgstr "Στόχος αναλογίας διαμοιρασμού επετεύχθη· παύση torrent"
-
-#: ../libtransmission/torrent.cc:454
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Όριο αδράνειας διαμοιρασμού· παύση torrent"
-
-#: ../libtransmission/torrent.cc:615
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Επανεκκινήθηκε χειροκίνητα -- απενεργοποίηση της αναλογίας διαμοιρασμού του"
-
-#: ../libtransmission/torrent.cc:671
-msgid "Pausing torrent"
-msgstr "Παύση torrent"
-
-#: ../libtransmission/torrent.cc:725
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "Αδυναμία αφαίρεσης όλων των αρχείων torrent: {error} ({error_code})"
-
-#: ../libtransmission/torrent.cc:791
-msgid "Removing torrent"
-msgstr "Γίνεται αφαίρεση του torrent"
-
-#: ../libtransmission/torrent.cc:1110 ../libtransmission/torrent.cc:1618
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Αδυναμία μετακίνησης '{old_path}' σε '{path}': {error} ({error_code})"
-
 #: ../libtransmission/torrent.cc:1560
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Παύση torrent καθώς δε βρέθηκαν δεδομένα! Βεβαιωθείτε ότι οι δίσκοι σας είναι συνδεδεμένοι ή χρησιμοποιήστε «Καθορισμός Τοποθεσίας». Για επανακατέβασμα, εκκινήστε το torrent."
-
-#: ../libtransmission/torrent.cc:2066
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "Προειδοποίηση ιχνηλάτη: '{warning}' ({url})"
-
-#: ../libtransmission/tr-dht.cc:554
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Αδυναμία προσπέλασης '{filename}' γραμμή: '{line}'"
-
-#: ../libtransmission/tr-dht.cc:579
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "Αδυναμία ανεύρεσης '{address}:{port}': {error} ({error_code})"
-
-#: ../libtransmission/tr-lpd.cc:271 ../libtransmission/tr-lpd.cc:285
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "Αδυναμία αρχικοποίησης {ip_protocol} LPD: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:186
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Αδυναμία απόφραξης υποδοχής IPv4 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:198
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "Αδυναμία δέσμευσης υποδοχής IPv4 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:233
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Αδυναμία απόφραξης υποδοχής IPv6 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:245
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "Αδυναμία δέσμευσης υποδοχής IPv6 {address}: {error} ({error_code})"
-
-#: ../libtransmission/tr-udp.cc:265
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-#: ../libtransmission/tr-utp.cc:98
-msgid "Unknown socket family"
-msgstr "Άγνωστη οικογένεια υποδοχών"
-
-#: ../libtransmission/utils.cc:150
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Αδυναμία ανάγνωσης '{path}': ιδιότυπο αρχείο"
 
 #: ../libtransmission/variant-json.cc:257
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Αδυναμία προσπέλασης JSON στη θέση {position} '{text}': {error} ({error_code})"
 
-#: ../libtransmission/watchdir-inotify.cc:87 ../libtransmission/watchdir-inotify.cc:100 ../libtransmission/watchdir-inotify.cc:113 ../libtransmission/watchdir-kqueue.cc:76 ../libtransmission/watchdir-kqueue.cc:90 ../libtransmission/watchdir-kqueue.cc:106
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
-
-#: ../libtransmission/watchdir-inotify.cc:146 ../libtransmission/watchdir-kqueue.cc:152 ../libtransmission/watchdir-win32.cc:297
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Αδυναμία ανάγνωσης γεγονότος: {error} ({error_code})"
-
-#: ../libtransmission/watchdir-inotify.cc:156 ../libtransmission/watchdir-win32.cc:307
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Αδυναμία ανάγνωσης γεγονότος: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
-
 #: ../libtransmission/watchdir-inotify.cc:174 ../libtransmission/watchdir-win32.cc:333
 msgid "Couldn't read filename: {error} ({error_code})"
 msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: {error} ({error_code})"
 
-#: ../libtransmission/watchdir-inotify.cc:184 ../libtransmission/watchdir-win32.cc:343
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
-
-#: ../libtransmission/watchdir-win32.cc:146
-msgid "Couldn't convert '{path}' to native path"
-msgstr "Αδυναμία μετατροπής '{path}' σε ντόπιο μονοπάτι"
-
-#: ../libtransmission/watchdir-win32.cc:185
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Αδυναμία δημιουργίας αγωγού: {error} ({error_code})"
-
-#: ../libtransmission/watchdir-win32.cc:211
-msgid "Couldn't create thread"
-msgstr "Αδυναμία δημιουργίας νήματος"
-
-#: ../libtransmission/watchdir-win32.cc:249
-msgid "Couldn't read directory changes"
-msgstr "Αδυναμία ανάγνωσης αλλαγών καταλόγου αρχείων"
-
-#: ../libtransmission/watchdir-win32.cc:256
-msgid "Couldn't wait for directory changes"
-msgstr "Αδυναμία αναμονής αλλαγών καταλόγου αρχείων"
-
-#: ../libtransmission/web.cc:170 ../libtransmission/web.cc:180
-msgid "Consider upgrading your curl installation."
-msgstr ""
-
-#: ../libtransmission/web.cc:173
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr ""
-
 #: ../libtransmission/web.cc:184
 msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
 msgstr ""
-
-#: ../libtransmission/web.cc:202
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Θα γίνει επαλήθευση πιστοποιητικών ιχνηλάτη με χρήση της μεταβλητής περιβάλλοντος CURL_CA_BUNDLE: {bundle}"
-
-#: ../libtransmission/web.cc:204
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "NB: αυτό λειτουργεί μόνο αν χτιστεί έναντι του libcurl με openssl ή gnutls, ΟΧΙ nss"
-
-#: ../libtransmission/web.cc:205
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "NB: Άκυρα πιστοποιητικά φαίνονται ως «Αδυναμία σύνδεσης με ιχνηλάτη» όπως πολλά άλλα σφάλματα"
-
-#: ../libtransmission/web.cc:514
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "Αδυναμία απόκτησης '{url}': αναμονή για κώδικα απόκρισης HTTP {expected_code}, λήφθηκε {actual_code}"
 
 #: ../utils/create.cc:241
 msgid "{file_count:L} file, {total_size}\n"
@@ -2648,3 +2252,290 @@ msgstr[1] "μέρες"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Το Transmission είναι ένα πρόγραμμα διαμοιρασμού αρχείων. Όταν εκκινείτε ένα torrent, τα δεδομένα του θα γίνουν διαθέσιμα σε άλλους μέσω ανεβάσματος. Για όποιο περιεχόμενο μοιράζεστε φέρετε αποκλειστική ευθύνη."
+
+#~ msgid "Couldn't parse announce response: {error} ({error_code})"
+#~ msgstr "Αδυναμία προσπέλασης απόκρισης ανακοίνωσης: {error} ({error_code})"
+
+#~ msgid "Couldn't parse scrape response: {error} ({error_code})"
+#~ msgstr "Αδυναμία προσπέλασης απόκρισης απόξεσης: {error} ({error_code})"
+
+#~ msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#~ msgstr "Αδυναμία ανεύρεσης  '{address}:{port}' σε {ip_protocol}: {error} ({error_code})"
+
+#~ msgid "Announce error: {error} ({url})"
+#~ msgstr "Αναγγελία σφάλματος: {error} ({url})"
+
+#~ msgid "Announce error: {error} (Retrying in {count} second) ({url})"
+#~ msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
+#~ msgstr[0] "Αναγγελία σφάλματος: {error} (Νέα προσπάθεια σε {count} δευτερόλεπτο) ({url})"
+#~ msgstr[1] "Αναγγελία σφάλματος: {error} (Νέα προσπάθεια σε {count} δευτερόλεπτα) ({url})"
+
+#~ msgid "Blocklist '{path}' has {count} entry"
+#~ msgid_plural "Blocklist '{path}' has {count} entries"
+#~ msgstr[0] "Η λίστα φραγής '{path}' έχει {count} καταχώρηση"
+#~ msgstr[1] "Η λίστα φραγής '{path}' έχει {count} καταχωρήσεις"
+
+#~ msgid "{crypto_library} error: {error} ({error_code})"
+#~ msgstr "{crypto_library} σφάλμα: {error} ({error_code})"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Επιτυχής ενημέρωση {protocol} διεύθυνσης πηγής σε {ip}"
+
+#~ msgid "Your machine does not support {protocol}"
+#~ msgstr "Το σύστημά σας δεν υποστηρίζει το {protocol}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Επιτυχής ενημέρωση καθολικής διεύθυνσης {type} σε {ip} με χρήση του {url}"
+
+#~ msgid "Too many messages like this! I won't log this message anymore this session."
+#~ msgstr "Πολλά παρόμοια μηνύματα! Παύση καταχώρησης αυτού του μηνύματος σε αυτή τη συνεδρία."
+
+#~ msgid "Skipping '{path}': {error} ({error_code})"
+#~ msgstr "Παράβλεψη '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't create socket: {error} ({error_code})"
+#~ msgstr "Αδυναμία δημιουργίας υποδοχής: {error} ({error_code})"
+
+#~ msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+#~ msgstr "Αδυναμία καθορισμού διεύθυνσης πηγής {address} σε {socket}: {error} ({error_code})"
+
+#~ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+#~ msgstr "Αδυναμία σύνδεσης υποδοχής {socket} σε {address}:{port}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+#~ msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code}) -- Μήπως μία άλλη συνεδρία του {appname} τρέχει ήδη;"
+
+#~ msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
+#~ msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία ανοίγματος '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't preallocate '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία δέσμευσης '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't truncate '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία περικοπής '{path}': {error} ({error_code})"
+
+#~ msgid "Unknown state: {state}"
+#~ msgstr "Άγνωστη κατάσταση: {state}"
+
+#~ msgid "Found public address '{address}'"
+#~ msgstr "Βρέθηκε η δημόσια διεύθυνση '{address}'"
+
+#~ msgid "Port {port} is no longer forwarded"
+#~ msgstr "Η θύρα {port} δεν προωθείται πιά"
+
+#~ msgid "Port {port} forwarded successfully"
+#~ msgstr "Η θύρα {port} προωθήθηκε επιτυχώς"
+
+#~ msgid "Found Internet Gateway Device '{url}'"
+#~ msgstr "Βρέθηκε Internet Gateway Device '{url}'"
+
+#~ msgid "Local Address is '{address}'"
+#~ msgstr "Η τοπική διεύθυνση είναι '{address}'"
+
+#~ msgid "Local port {local_port} is not forwarded to {advertised_port}"
+#~ msgstr "Η τοπική θύρα {local_port} δεν προωθείται στην {advertised_port}"
+
+#~ msgid "Stopping port forwarding through '{url}', service '{type}'"
+#~ msgstr "Διακοπή προώθησης θυρών δια μέσου του '{url}', υπηρεσία '{type}'"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Προώθηση θυρών δια μέσου του '{url}', υπηρεσία '{type}'. (τοπική διεύθυνση: {address}:{port})"
+
+#~ msgid "Forwarded local port {local_port} to {advertised_port}"
+#~ msgstr "Η τοπική θύρα {local_port} προωθείται στην {advertised_port}"
+
+#~ msgid "If your router supports UPnP, please make sure UPnP is enabled!"
+#~ msgstr "Αν ο δρομολογητής σας υποστηρίζει UPnP, παρακαλώ βεβαιωθείτε ότι το UPnP είναι ενεργοποιημένο!"
+
+#~ msgid "Starting"
+#~ msgstr "Εκκίνηση"
+
+#~ msgid "Forwarded"
+#~ msgstr "Προωθημένη"
+
+#~ msgid "Stopping"
+#~ msgstr "Διακόπτεται"
+
+#~ msgid "Not forwarded"
+#~ msgstr "Δεν έγινε προώθηση"
+
+#~ msgid "Mapped private port {private_port} to public port {public_port}"
+#~ msgstr "Απεικόνιση ιδιωτικής θύρας {private_port} στη δημόσια θύρα {public_port}"
+
+#~ msgid "State changed from '{old_state}' to '{state}'"
+#~ msgstr "Η κατάσταση άλλαξε από '{old_state}' σε '{state}'"
+
+#~ msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
+#~ msgstr "Το μονοπάτι της υποδοχής Unix πρέπει να αποτελείται από λιγότερο από {count} χαρακτήρες (συμπεριλαμβανομένου του προθέματος '{prefix}')"
+
+#~ msgid "Rejected request from {host} (possible directory traversal attack)"
+#~ msgstr "Απόρριψη αιτήματος από {host} (πιθανή επίθεση προσπέλασης καταλόγου αρχείων)"
+
+#~ msgid "Rejected request from {host} (brute force protection active)"
+#~ msgstr "Απόρριψη αιτήματος από {host} (η προστασία έναντι επιθέσεων brute force είναι ενεργή)"
+
+#~ msgid "Rejected request from {host} (IP not whitelisted)"
+#~ msgstr "Απόρριψη αιτήματος από {host} (η IP δεν είναι στη λίστα των επιτρεπομένων)"
+
+#~ msgid "Rejected request from {host} (failed authentication)"
+#~ msgstr "Απόρριψη αιτήματος από {host} (αποτυχημένη πιστοποίηση)"
+
+#~ msgid "Rejected request from {host} (Host not whitelisted)"
+#~ msgstr "Απόρριψη αιτήματος από {host} (ο οικοδεσπότης δεν είναι στη λίστα των επιτρεπομένων)"
+
+#~ msgid "Unknown URI from {host}: '{uri}'"
+#~ msgstr "Άγνωστο URI από {host}: '{uri}'"
+
+#~ msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
+#~ msgstr "Οι υποδοχές Unix δεν υποστηρίζονται στα Windows. Παρακαλώ αλλάξτε το '{key}' στις ρυθμίσεις."
+
+#~ msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
+#~ msgstr "Αδυναμία καθορισμού λειτουργίας υποδοχής RPC σε {mode:#o}, χρήση προκαθορισμένου 0755"
+
+#~ msgid "Couldn't bind to {address} after {count} attempt, giving up"
+#~ msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
+#~ msgstr[0] "Αδυναμία δέσμευσης στη {address} έπειτα από {count} προσπάθεια, παραίτηση"
+#~ msgstr[1] "Αδυναμία δέσμευσης στη {address} έπειτα από {count} προσπάθειες, παραίτηση"
+
+#~ msgid "Listening for RPC and Web requests on '{address}'"
+#~ msgstr "Παρακολούθηση για RPC και αιτήματα Web στην '{address}'"
+
+#~ msgid "Stopped listening for RPC and Web requests on '{address}'"
+#~ msgstr "Διακοπή παρακολούθηση για RPC και αιτήματα Web στην '{address}'"
+
+#~ msgid "Added '{entry}' to host whitelist"
+#~ msgstr "Προστέθηκε '{entry}' στην λίστα επιτρεπόμενων του οικοδεσπότη"
+
+#~ msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
+#~ msgstr "Η ρύθμιση '{key}' έχει τιμή '{value}' αλλά πρέπει να είναι μία IPv4 ή IPv6 διεύθυνση ή ένα μονοπάτι υποδοχής Unix. Χρήση προκαθορισμένης τιμής '0.0.0.0'"
+
+#~ msgid "Serving RPC and Web requests on {address}"
+#~ msgstr "Εξυπηρέτηση RPC και Web αιτημάτων στην {address}"
+
+#~ msgid "Whitelist enabled"
+#~ msgstr "Ενεργοποιήθηκε η λίστα επιτρεπόμενων"
+
+#~ msgid "Password required"
+#~ msgstr "Απαιτείται κωδικός"
+
+#~ msgid "Serving RPC and Web requests from '{path}'"
+#~ msgstr "Εξυπηρέτηση RPC και Web αιτημάτων από την {path}"
+
+#~ msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία ανοίγματος αρχείου κλειδιού συνεδρίας '{path}': {error} ({error_code})"
+
+#~ msgid "Listening to incoming peer connections on {hostport}"
+#~ msgstr "Παρακολούθηση για εισερχόμενες συνδέσεις διαμοιραστών στην {hostport}"
+
+#~ msgid "{appname} version {version} starting"
+#~ msgstr "Εκκίνηση {appname} έκδοσης {version}"
+
+#~ msgid "{appname} version {version} shutting down"
+#~ msgstr "Τερματισμός {appname} έκδοσης {version}"
+
+#~ msgid "Loaded {count} torrent"
+#~ msgid_plural "Loaded {count} torrents"
+#~ msgstr[0] "Φορτώθηκε {count} torrent"
+#~ msgstr[1] "Φορτώθηκαν {count} torrents"
+
+#~ msgid "Migrated torrent file from '{old_path}' to '{path}'"
+#~ msgstr "Μετακίνηση αρχείου torrent από '{old_path}' στο '{path}'"
+
+#~ msgid "Calling script '{path}'"
+#~ msgstr "Εκτέλεση script '{path}'"
+
+#~ msgid "Couldn't call script '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία εκτέλεσης script '{path}': {error} ({error_code})"
+
+#~ msgid "Seed ratio reached; pausing torrent"
+#~ msgstr "Στόχος αναλογίας διαμοιρασμού επετεύχθη· παύση torrent"
+
+#~ msgid "Seeding idle limit reached; pausing torrent"
+#~ msgstr "Όριο αδράνειας διαμοιρασμού· παύση torrent"
+
+#~ msgid "Restarted manually -- disabling its seed ratio"
+#~ msgstr "Επανεκκινήθηκε χειροκίνητα -- απενεργοποίηση της αναλογίας διαμοιρασμού του"
+
+#~ msgid "Pausing torrent"
+#~ msgstr "Παύση torrent"
+
+#~ msgid "Couldn't remove all torrent files: {error} ({error_code})"
+#~ msgstr "Αδυναμία αφαίρεσης όλων των αρχείων torrent: {error} ({error_code})"
+
+#~ msgid "Removing torrent"
+#~ msgstr "Γίνεται αφαίρεση του torrent"
+
+#~ msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία μετακίνησης '{old_path}' σε '{path}': {error} ({error_code})"
+
+#~ msgid "Tracker warning: '{warning}' ({url})"
+#~ msgstr "Προειδοποίηση ιχνηλάτη: '{warning}' ({url})"
+
+#~ msgid "Couldn't parse '{filename}' line: '{line}'"
+#~ msgstr "Αδυναμία προσπέλασης '{filename}' γραμμή: '{line}'"
+
+#~ msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
+#~ msgstr "Αδυναμία ανεύρεσης '{address}:{port}': {error} ({error_code})"
+
+#~ msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
+#~ msgstr "Αδυναμία αρχικοποίησης {ip_protocol} LPD: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Αδυναμία απόφραξης υποδοχής IPv4 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
+#~ msgstr "Αδυναμία δέσμευσης υποδοχής IPv4 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
+#~ msgstr "Αδυναμία απόφραξης υποδοχής IPv6 {address}: {error} ({error_code})"
+
+#~ msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
+#~ msgstr "Αδυναμία δέσμευσης υποδοχής IPv6 {address}: {error} ({error_code})"
+
+#~ msgid "Unknown socket family"
+#~ msgstr "Άγνωστη οικογένεια υποδοχών"
+
+#~ msgid "Couldn't read '{path}': Not a regular file"
+#~ msgstr "Αδυναμία ανάγνωσης '{path}': ιδιότυπο αρχείο"
+
+#~ msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't read event: {error} ({error_code})"
+#~ msgstr "Αδυναμία ανάγνωσης γεγονότος: {error} ({error_code})"
+
+#~ msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
+#~ msgstr "Αδυναμία ανάγνωσης γεγονότος: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
+
+#~ msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+#~ msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
+
+#~ msgid "Couldn't convert '{path}' to native path"
+#~ msgstr "Αδυναμία μετατροπής '{path}' σε ντόπιο μονοπάτι"
+
+#~ msgid "Couldn't create pipe: {error} ({error_code})"
+#~ msgstr "Αδυναμία δημιουργίας αγωγού: {error} ({error_code})"
+
+#~ msgid "Couldn't create thread"
+#~ msgstr "Αδυναμία δημιουργίας νήματος"
+
+#~ msgid "Couldn't read directory changes"
+#~ msgstr "Αδυναμία ανάγνωσης αλλαγών καταλόγου αρχείων"
+
+#~ msgid "Couldn't wait for directory changes"
+#~ msgstr "Αδυναμία αναμονής αλλαγών καταλόγου αρχείων"
+
+#~ msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
+#~ msgstr "Θα γίνει επαλήθευση πιστοποιητικών ιχνηλάτη με χρήση της μεταβλητής περιβάλλοντος CURL_CA_BUNDLE: {bundle}"
+
+#~ msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
+#~ msgstr "NB: αυτό λειτουργεί μόνο αν χτιστεί έναντι του libcurl με openssl ή gnutls, ΟΧΙ nss"
+
+#~ msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
+#~ msgstr "NB: Άκυρα πιστοποιητικά φαίνονται ως «Αδυναμία σύνδεσης με ιχνηλάτη» όπως πολλά άλλα σφάλματα"
+
+#~ msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
+#~ msgstr "Αδυναμία απόκτησης '{url}': αναμονή για κώδικα απόκρισης HTTP {expected_code}, λήφθηκε {actual_code}"
