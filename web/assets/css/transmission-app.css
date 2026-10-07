@@ -790,13 +790,6 @@ a {
   border-radius: 6px;
   display: flex;
   margin: 10px 0;
-
-  button {
-    appearance: none;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    color: var(--color-fg-primary);
-  }
 }
 
 .tabs-pages {
@@ -816,8 +809,15 @@ a {
 }
 
 .tabs-button {
+  appearance: none;
   background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--color-fg-primary);
   font-size: 14px;
+  height: 30px;
+  margin: 0;
+  min-width: 40px;
   padding: 3px 8px;
 
   &:active,
@@ -861,15 +861,6 @@ a {
   mask-size: 14px;
   vertical-align: middle;
   width: 1rem;
-}
-
-#inspector,
-#prefs-dialog {
-  .tabs-button {
-    height: 30px;
-    margin: 0;
-    min-width: 40px;
-  }
 }
 
 #inspector-file-list {
