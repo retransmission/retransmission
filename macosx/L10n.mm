@@ -13,7 +13,6 @@
 #include <fmt/format.h>
 
 #include <libtransmission/macros.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
 
 #include <libtransmission-app/l10n.h>
@@ -103,9 +102,4 @@ void TRSetUpLocalization()
 
         tr::app::l10n::use_catalog_files(filenames);
     }
-}
-
-NSString* TRTextInContext(char const* const context, char const* const msgid)
-{
-    return tr_strv_to_utf8_nsstring(tr_pgettext(context, msgid));
 }

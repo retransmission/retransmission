@@ -20,13 +20,14 @@
 // because a language's form for one can cover other counts, e.g. 21 in Russian.
 
 // Translated text whose English needs a context to tell its meanings apart:
-// TR_TEXT_C("Verb", "Seeding")
-#define TR_TEXT_C(context, msgid) TRTextInContext(context, msgid)
+//   TR_TEXT_C("Verb", "Seeding")
+// It takes string literals, which xgettext extracts.
+// The Contexts table keys each translation by its context and English joined with U+0004, as a compiled catalog does;
+// where the table has no translation, the lookup returns the English.
+#define TR_TEXT_C(context, text) \
+    NSLocalizedStringWithDefaultValue(@context "\x04" text, @"Contexts", NSBundle.mainBundle, @text, nil)
 
 // Loads the catalogs of the languages that AppKit picked for the app, which translate libtransmission's messages,
 // and has {fmt}'s "L" fields format numbers for the user's region.
 // Call this before anything shows text.
 void TRSetUpLocalization();
-
-// What TR_TEXT_C calls. Code calls the macro, which xgettext extracts.
-[[nodiscard]] NSString* TRTextInContext(char const* context, char const* msgid);

@@ -162,9 +162,11 @@ jobs:
           for po in po/*.po; do
             release/mac-xib-strings.py strings "$po" "$RUNNER_TEMP" macosx/Base.lproj/*.xib
             release/mac-xib-strings.py localizable "$po" "$RUNNER_TEMP"
+            release/mac-xib-strings.py contexts "$po" "$RUNNER_TEMP"
           done
           test -s "$RUNNER_TEMP/MainMenu.strings"
           test -s "$RUNNER_TEMP/Localizable.strings"
+          test -s "$RUNNER_TEMP/Contexts.strings"
       - name: Check that the Mac Formats tables generate with every translation
         run: |
           release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json - "$RUNNER_TEMP"

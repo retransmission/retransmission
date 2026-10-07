@@ -3,6 +3,7 @@
 # Compiles each language's catalog into the Mac app's bundle,
 # along with the .strings files that AppKit translates the xibs with,
 # the Localizable.strings that NSLocalizedString() looks up plain text in,
+# the Contexts.strings that TR_TEXT_C() looks up text with a context in,
 # and the Formats tables that the app looks up formatted text in.
 # Both builds of the app run this once the bundle exists:
 #   compile-mac-catalogs.sh <the bundle's Resources folder>
@@ -44,6 +45,7 @@ for LPROJ in macosx/*.lproj; do
     "$MSGFMT" --output-file="$RESOURCES/$LANGUAGE.lproj/retransmission.mo" "$PO"
     "$PYTHON3" release/mac-xib-strings.py strings "$PO" "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
     "$PYTHON3" release/mac-xib-strings.py localizable "$PO" "$RESOURCES/$LANGUAGE.lproj"
+    "$PYTHON3" release/mac-xib-strings.py contexts "$PO" "$RESOURCES/$LANGUAGE.lproj"
     "$PYTHON3" release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json "$PO" "$RESOURCES/$LANGUAGE.lproj"
   elif [ "$LANGUAGE" = en ] || [ -d "$RESOURCES/$LANGUAGE.lproj" ]; then
     # English, or a language that the bundle has a folder for but no catalog: the English Formats tables.

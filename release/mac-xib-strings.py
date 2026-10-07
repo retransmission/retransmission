@@ -8,6 +8,8 @@ A xib's .strings file maps each element's ID to its text instead;
 xgettext extracts a xib's English text into the catalog with the rules in po/its/xib.its.
 Localizable.strings maps English text to its translation, as the catalog does,
 for the plain text that the code looks up with NSLocalizedString().
+Contexts.strings does the same for text with a context, keyed by the context and the English joined with U+0004,
+and the Formats tables for formatted text, keyed by its English in Cocoa's format syntax.
 
   mac-xib-strings.py strings <po> <folder> <xib>...
       Writes each xib's .strings file for the .po file's language into the folder.
@@ -19,6 +21,11 @@ for the plain text that the code looks up with NSLocalizedString().
   mac-xib-strings.py localizable <po> <folder>
       Writes the .po file's Localizable.strings into the folder:
       the translation of each message that has no context, no plural and no {fmt} field.
+
+  mac-xib-strings.py contexts <po> <folder>
+      Writes the .po file's Contexts.strings into the folder:
+      the translation of each message that has a context, no plural and no {fmt} field,
+      keyed by the context and the English joined with U+0004, as TR_TEXT_C() looks it up.
 
   mac-xib-strings.py formats <declarations> <categories> <po> <folder>
       Writes Formats.strings and Formats.stringsdict into the folder,
@@ -89,7 +96,10 @@ PO_FIELD = re.compile(r'(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?) (".*")')
 
 
 def quote(text):
-    return '"' + text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t') + '"'
+    """Returns text as a quoted string of a .strings file, with any other control character, such as
+    the U+0004 that joins a context to its text, as a \\U escape, which Cocoa's reader decodes."""
+    text = text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t')
+    return '"' + re.sub(r'[\x00-\x1f\x7f]', lambda match: f'\\U{ord(match[0]):04X}', text) + '"'
 
 
 def unquote(quoted):
@@ -198,6 +208,20 @@ def write_localizable(po_path, folder):
         if not is_format_string(text)
     ]
     (pathlib.Path(folder) / 'Localizable.strings').write_text(''.join(lines), encoding='utf-8')
+
+
+# What joins a message's context to its English text in a Contexts.strings key, as in a compiled catalog.
+CONTEXT_SEPARATOR = '\x04'
+
+
+def write_contexts(po_path, folder):
+    lines = [
+        f'{quote(fields["msgctxt"] + CONTEXT_SEPARATOR + fields["msgid"])} = {quote(fields["msgstr"])};\n'
+        for fields in po_messages(po_path)
+        if 'msgctxt' in fields and 'msgid_plural' not in fields and fields['msgstr']
+        and not is_format_string(fields['msgid'])
+    ]
+    (pathlib.Path(folder) / 'Contexts.strings').write_text(''.join(lines), encoding='utf-8')
 
 
 # Enough of C's tokens to find calls and their string literals.
@@ -641,6 +665,8 @@ def main(argv):
             sys.exit(0 if check(argv[2], argv[3:]) else 1)
         elif len(argv) == 4 and argv[1] == 'localizable':
             write_localizable(argv[2], argv[3])
+        elif len(argv) == 4 and argv[1] == 'contexts':
+            write_contexts(argv[2], argv[3])
         elif len(argv) == 6 and argv[1] == 'formats':
             write_formats(argv[2], argv[3], argv[4], argv[5])
         elif len(argv) >= 4 and argv[1] == 'check-localizable':
