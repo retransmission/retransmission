@@ -14,8 +14,8 @@ Building the project on Mac requires the source to be retrieved from GitHub. Pre
 git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
 ```
 
-The app's translations are compiled with gettext's `msgfmt` and with Python 3, which Xcode provides.
-Without them the app builds, but only in English.
+The build needs Python 3, which Xcode provides.
+The app's translations are compiled with gettext's `msgfmt`. Without it the app builds, but only in English.
 ```bash
 brew install gettext
 ```

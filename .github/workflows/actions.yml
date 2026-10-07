@@ -165,6 +165,18 @@ jobs:
           done
           test -s "$RUNNER_TEMP/MainMenu.strings"
           test -s "$RUNNER_TEMP/Localizable.strings"
+      - name: Check that the Mac Formats tables generate with every translation
+        run: |
+          release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json - "$RUNNER_TEMP"
+          for lproj in macosx/*.lproj; do
+            po="po/$(basename "$lproj" .lproj | tr - _).po"
+            if [ -f "$po" ]; then
+              release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json "$po" "$RUNNER_TEMP" 2>&1 \
+                | tee -a "$RUNNER_TEMP/formats-warnings"
+            fi
+          done
+          test ! -s "$RUNNER_TEMP/formats-warnings"
+          test -s "$RUNNER_TEMP/Formats.stringsdict"
       - name: Check that the template has the Mac code's NSLocalizedString keys
         run: |
           sudo apt-get update

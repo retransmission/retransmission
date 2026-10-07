@@ -119,6 +119,7 @@ target_sources(${TR_NAME}-mac
         InfoWindowController.mm
         L10n.h
         L10n.mm
+        L10nDeclarations.h
         main.mm
         MessageWindowController.h
         MessageWindowController.mm
@@ -335,22 +336,17 @@ set(LINGUAS
     zh-TW
     )
 
-# The app's translations are compiled from po/, which takes gettext's msgfmt and Python.
-# Without them the app is built in English alone:
+# The app's text tables are written by po/compile-mac-catalogs.sh, which takes Python:
+# English has tables too, from which a plural's count picks its singular or its plural.
+# The translations are compiled from po/ with gettext's msgfmt. Without msgfmt the app is built in English alone:
 # AppKit runs the app in any language that has a folder in the bundle, whatever the folder holds.
-set(BUILD_CATALOGS OFF)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(CATALOG_MSGFMT "")
 if(ENABLE_NLS AND GETTEXT_FOUND)
-    find_package(Python3 COMPONENTS Interpreter)
-    if(Python3_FOUND)
-        set(BUILD_CATALOGS ON)
-    else()
-        message(WARNING
-            "Python 3 was not found, so the Mac client will be in English.\n"
-            "To fix this, install Python 3, which Xcode's command line tools provide, and reconfigure.")
-    endif()
+    set(CATALOG_MSGFMT "${GETTEXT_MSGFMT_EXECUTABLE}")
 endif()
 
-if(BUILD_CATALOGS)
+if(CATALOG_MSGFMT)
     set(ENABLED_LINGUAS ${LINGUAS})
 else()
     set(ENABLED_LINGUAS en)
@@ -416,30 +412,31 @@ target_link_libraries(${TR_NAME}-mac
 
 # Each language's catalog and .strings files go into its .lproj folder once the bundle is linked.
 # The Xcode project's app target runs the same script.
-# The app is relinked when a translation or a xib changes, so that the script runs again.
-if(BUILD_CATALOGS)
-    set(CATALOG_SCRIPT "${PROJECT_SOURCE_DIR}/po/compile-mac-catalogs.sh")
-    file(GLOB PO_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/po/*.po")
-    set(BASE_XIB_PATHS ${BASE_XIB_FILES})
-    list(TRANSFORM BASE_XIB_PATHS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
-    set_property(
-        TARGET ${TR_NAME}-mac
-        APPEND
-        PROPERTY LINK_DEPENDS
-            ${PO_FILES}
-            ${BASE_XIB_PATHS}
-            ${CATALOG_SCRIPT}
-            "${PROJECT_SOURCE_DIR}/release/mac-xib-strings.py")
-    add_custom_command(
-        TARGET ${TR_NAME}-mac
-        POST_BUILD
-        COMMAND
-            ${CMAKE_COMMAND} -E env
-                "MSGFMT=${GETTEXT_MSGFMT_EXECUTABLE}"
-                "PYTHON3=${Python3_EXECUTABLE}"
-            sh ${CATALOG_SCRIPT} $<TARGET_BUNDLE_CONTENT_DIR:${TR_NAME}-mac>/Resources
-        VERBATIM)
-endif()
+# The app is relinked when a translation, a xib or a declaration of formatted text changes,
+# so that the script runs again.
+set(CATALOG_SCRIPT "${PROJECT_SOURCE_DIR}/po/compile-mac-catalogs.sh")
+file(GLOB PO_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/po/*.po")
+set(BASE_XIB_PATHS ${BASE_XIB_FILES})
+list(TRANSFORM BASE_XIB_PATHS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
+set_property(
+    TARGET ${TR_NAME}-mac
+    APPEND
+    PROPERTY LINK_DEPENDS
+        ${PO_FILES}
+        ${BASE_XIB_PATHS}
+        ${CATALOG_SCRIPT}
+        "${CMAKE_CURRENT_SOURCE_DIR}/L10nDeclarations.h"
+        "${PROJECT_SOURCE_DIR}/po/mac-plurals.json"
+        "${PROJECT_SOURCE_DIR}/release/mac-xib-strings.py")
+add_custom_command(
+    TARGET ${TR_NAME}-mac
+    POST_BUILD
+    COMMAND
+        ${CMAKE_COMMAND} -E env
+            "MSGFMT=${CATALOG_MSGFMT}"
+            "PYTHON3=${Python3_EXECUTABLE}"
+        sh ${CATALOG_SCRIPT} $<TARGET_BUNDLE_CONTENT_DIR:${TR_NAME}-mac>/Resources
+    VERBATIM)
 
 if(NOT CMAKE_GENERATOR STREQUAL Xcode)
     add_custom_command(
