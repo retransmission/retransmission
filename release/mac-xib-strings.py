@@ -16,6 +16,7 @@ xgettext extracts a xib's English text into the catalog with the rules in po/its
 
 The entries are the ones that `ibtool --generate-strings-file` writes;
 this reads them out of the xib's XML so that it can run where ibtool cannot.
+A .po file that this cannot read fails with an error, rather than leaving text in English.
 """
 
 import pathlib
@@ -53,40 +54,66 @@ def xib_strings(xib_path):
     return [(key, text) for key, text in found if text]
 
 
+ESCAPES = {'n': '\n', 't': '\t', '"': '"', '\\': '\\'}
+
+PO_FIELD = re.compile(r'(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?) (".*")')
+
+
 def quote(text):
     return '"' + text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t') + '"'
 
 
 def unquote(quoted):
-    escapes = {'n': '\n', 't': '\t'}
-    return re.sub(r'\\(.)', lambda match: escapes.get(match.group(1), match.group(1)), quoted[1:-1])
+    """Returns the text of a quoted string, such as a line of a .po file,
+    if it uses only the escapes that quote() writes. Raises ValueError otherwise."""
+    match = re.fullmatch(r'"((?:[^"\\]|\\.)*)"', quoted)
+    if not match:
+        raise ValueError(f'cannot read {quoted}')
+
+    def unescape(escape):
+        if escape[1] not in ESCAPES:
+            raise ValueError(f'cannot read the escape {escape[0]} in {quoted}')
+        return ESCAPES[escape[1]]
+
+    return re.sub(r'\\(.)', unescape, match[1])
+
+
+def po_messages(po_path):
+    """Yields each message of a .po or .pot file as its fields, e.g. {'msgid': 'Open', 'msgstr': 'Öffnen'};
+    a plural message's translations are 'msgstr[0]', 'msgstr[1]' and so on.
+    Leaves out fuzzy and obsolete messages, as msgfmt does.
+    Raises ValueError on a line that it cannot read."""
+    fields, field, fuzzy = {}, None, False
+    lines = pathlib.Path(po_path).read_text(encoding='utf-8').splitlines()
+    for number, line in enumerate(lines + [''], start=1):
+        try:
+            if not line:
+                if fields and ('msgid' not in fields or not any(name.startswith('msgstr') for name in fields)):
+                    raise ValueError('the message before this line has no msgid or msgstr')
+                if fields and not fuzzy:
+                    yield fields
+                fields, field, fuzzy = {}, None, False
+            elif line.startswith('#'):
+                # A comment, or a line of an obsolete message.
+                fuzzy = fuzzy or (line.startswith('#,') and 'fuzzy' in line)
+            elif (match := PO_FIELD.fullmatch(line)) and match[1] not in fields:
+                field = match[1]
+                fields[field] = unquote(match[2])
+            elif line.startswith('"') and field:
+                fields[field] += unquote(line)
+            else:
+                raise ValueError(f'cannot read {line!r}')
+        except ValueError as error:
+            raise ValueError(f'{po_path}:{number}: {error}') from None
 
 
 def po_translations(po_path):
-    """Returns {English text: translation} for a .po file's messages that have no context or plural.
-    Leaves out fuzzy and obsolete messages, as msgfmt does."""
-    translations = {}
-    for block in pathlib.Path(po_path).read_text(encoding='utf-8').split('\n\n'):
-        lines = block.splitlines()
-        if any(line.startswith('#,') and 'fuzzy' in line for line in lines):
-            continue
-
-        fields = {}
-        name = None
-        for line in lines:
-            match = re.match(r'(msgctxt|msgid_plural|msgid|msgstr)\s+(".*")$', line)
-            if match:
-                name = match.group(1)
-                fields[name] = unquote(match.group(2))
-            elif line.startswith('"') and name:
-                fields[name] += unquote(line)
-            elif not line.startswith('#'):
-                name = None
-
-        if fields.get('msgid') and fields.get('msgstr') and 'msgctxt' not in fields and 'msgid_plural' not in fields:
-            translations[fields['msgid']] = fields['msgstr']
-
-    return translations
+    """Returns {English text: translation} for a .po file's translated messages that have no context or plural."""
+    return {
+        fields['msgid']: fields['msgstr']
+        for fields in po_messages(po_path)
+        if fields['msgid'] and fields.get('msgstr') and 'msgctxt' not in fields and 'msgid_plural' not in fields
+    }
 
 
 def write_strings(po_path, folder, xib_paths):
@@ -128,12 +155,15 @@ def check(its_path, xib_paths):
 
 
 def main(argv):
-    if len(argv) >= 5 and argv[1] == 'strings':
-        write_strings(argv[2], argv[3], argv[4:])
-    elif len(argv) >= 4 and argv[1] == 'check':
-        sys.exit(0 if check(argv[2], argv[3:]) else 1)
-    else:
-        sys.exit(__doc__)
+    try:
+        if len(argv) >= 5 and argv[1] == 'strings':
+            write_strings(argv[2], argv[3], argv[4:])
+        elif len(argv) >= 4 and argv[1] == 'check':
+            sys.exit(0 if check(argv[2], argv[3:]) else 1)
+        else:
+            sys.exit(__doc__)
+    except ValueError as error:
+        sys.exit(f'error: {error}')
 
 
 if __name__ == '__main__':
