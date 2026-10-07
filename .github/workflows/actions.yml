@@ -179,7 +179,7 @@ jobs:
           done
           test ! -s "$RUNNER_TEMP/formats-warnings"
           test -s "$RUNNER_TEMP/Formats.stringsdict"
-      - name: Check that the template has the Mac code's NSLocalizedString keys
+      - name: Check the Mac code's lookups against the template and the declarations of formatted text
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gettext
@@ -1081,6 +1081,9 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=OFF
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
+      - name: Check the Mac client's formatted text against its arguments
+        if: ${{ needs.what-to-make.outputs.make-mac == 'true' }}
+        run: cmake --build obj --config RelWithDebInfo --target transmission-mac-format-check
       - name: Test
         if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
         env:

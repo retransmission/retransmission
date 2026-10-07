@@ -19,6 +19,14 @@
 // Text that doesn't show the count picks its wording with `count == 1` instead,
 // because a language's form for one can cover other counts, e.g. 21 in Russian.
 
+// Compiled with TR_CHECK_FORMATS, each Formats lookup is its key, the English,
+// so that the compiler's format checks (-Wformat) see each call's arguments against its specifiers.
+// Such a build's text is all English; the transmission-mac-format-check CMake target is one.
+#ifdef TR_CHECK_FORMATS
+#undef NSLocalizedStringFromTable
+#define NSLocalizedStringFromTable(key, table, comment) (key)
+#endif
+
 // Translated text whose English needs a context to tell its meanings apart:
 //   TR_TEXT_C("Verb", "Seeding")
 // It takes string literals, which xgettext extracts.

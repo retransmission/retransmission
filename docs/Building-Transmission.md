@@ -36,6 +36,12 @@ cmake --build build -t transmission-mac
 open ./build/macosx/Retransmission.app
 ```
 
+The compiler can't check a formatted string's arguments through the app's lookup of its translation.
+To check them against each string's English, as CI does:
+```bash
+cmake --build build -t transmission-mac-format-check
+```
+
 ### Building the GTK app with CMake ###
 Install GTK and build the app:
 ```bash

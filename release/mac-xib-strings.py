@@ -37,10 +37,15 @@ and the Formats tables for formatted text, keyed by its English in Cocoa's forma
       so that its count still picks the singular or the plural.
 
   mac-xib-strings.py check-localizable <pot> <source>...
-      Fails unless each key that the sources pass to NSLocalizedString() is a string literal
-      that the template has as a message with no context, no plural and no {fmt} field.
-      Any other key would stay in English.
-      Also fails on a call to TR_TEXT(), the Qt client's lookup of plain text.
+      Fails on a lookup in the sources whose text would stay in English or come out wrong:
+      - an NSLocalizedString() whose key isn't a string literal
+        that the template has as a message with no context, no plural and no {fmt} field;
+      - a Formats lookup, [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"key", @"Formats", nil), ...],
+        whose key isn't a string literal that a declaration in the sources has,
+        or that passes another number of arguments than the key has specifiers;
+      - a TR_TEXT_C() whose context or text isn't a string literal;
+      - a lookup that xgettext doesn't extract, or that is the Qt client's, such as TR_TEXT().
+      Also fails on a declaration that nothing looks up.
 
   mac-xib-strings.py check-plurals <categories> <po>...
       Fails unless each .po file's Plural-Forms gives every whole number the form
@@ -237,15 +242,68 @@ SOURCE_TOKEN = re.compile(
 
 
 def source_tokens(source_path):
-    """Returns [(line number, kind, text)] for the tokens of a C, C++ or Objective-C file, without comments or space.
+    """Returns [(line number, kind, text)] for the tokens of a C, C++ or Objective-C file,
+    without comments, space or preprocessor directives, such as the definition of a macro that wraps a lookup.
     A kind is a group name of SOURCE_TOKEN."""
+    lines = pathlib.Path(source_path).read_text(encoding='utf-8').split('\n')
+    continued = False
+    for index, line in enumerate(lines):
+        if continued or line.lstrip().startswith('#'):
+            continued = line.endswith('\\')
+            lines[index] = ''
+
     tokens = []
     number = 1
-    for match in SOURCE_TOKEN.finditer(pathlib.Path(source_path).read_text(encoding='utf-8')):
+    for match in SOURCE_TOKEN.finditer('\n'.join(lines)):
         if match.lastgroup not in ('comment', 'space'):
             tokens.append((number, match.lastgroup, match[0]))
         number += match[0].count('\n')
     return tokens
+
+
+def call_arguments(tokens, index):
+    """Returns (arguments, end) for the call whose "(" is tokens[index]:
+    the tokens of each argument, split at the call's own commas, and the index after its ")".
+    Raises ValueError if the call doesn't close."""
+    arguments, depth = [[]], 0
+    for end in range(index + 1, len(tokens)):
+        kind, text = tokens[end][1], tokens[end][2]
+        if kind == 'other' and text in '([{':
+            depth += 1
+        elif kind == 'other' and text in ')]}':
+            if depth == 0:
+                if text != ')':
+                    break
+                return arguments, end + 1
+            depth -= 1
+        elif kind == 'other' and text == ',' and depth == 0:
+            arguments.append([])
+            continue
+        arguments[-1].append(tokens[end])
+    raise ValueError('the call has no closing parenthesis')
+
+
+def message_argument_count(tokens, index):
+    """Returns how many arguments follow tokens[index] in the message that it is part of, up to the message's "]",
+    or None if the message doesn't close there."""
+    count, depth = 0, 0
+    for kind, text in ((token[1], token[2]) for token in tokens[index:]):
+        if kind == 'other' and text in '([{':
+            depth += 1
+        elif kind == 'other' and text in ')]}':
+            if depth == 0:
+                return count if text == ']' else None
+            depth -= 1
+        elif kind == 'other' and text == ',' and depth == 0:
+            count += 1
+    return None
+
+
+def single_literal(argument, objc):
+    """Returns the text of an argument that is a single string literal, @"..." if objc else "...", or None."""
+    if len(argument) != 1 or argument[0][1] != 'string' or argument[0][2].startswith('@') != objc:
+        return None
+    return unquote(argument[0][2][1:] if objc else argument[0][2])
 
 
 def key_problem(tokens, plain, with_context, plural):
@@ -271,6 +329,41 @@ def key_problem(tokens, plain, with_context, plural):
     return f'the template has no {key!r}; xgettext reads only the files in po/POTFILES.in'
 
 
+def formats_lookup_problem(tokens, index, declarations, used):
+    """Returns why the Formats lookup whose name is tokens[index] would show wrong text, or None if it wouldn't.
+    `declarations` maps each declared key to its declarations; this adds the lookup's key to `used`."""
+    if [token[2] for token in tokens[index - 4:index]] != ['[', 'NSString', 'localizedStringWithFormat', ':']:
+        return 'NSLocalizedStringFromTable() is not the format of [NSString localizedStringWithFormat:...]'
+    arguments, end = call_arguments(tokens, index + 1)
+    if len(arguments) != 3:
+        return 'NSLocalizedStringFromTable() takes a key, a table and a comment'
+    if single_literal(arguments[1], objc=True) != 'Formats':
+        return 'the table is not @"Formats", where the build writes formatted text'
+    key = single_literal(arguments[0], objc=True)
+    if key is None:
+        return 'the key is not a single @"..." string literal'
+    if key not in declarations:
+        return f"no declaration has the key {key!r}; a declaration's key is its English in Cocoa's format syntax"
+    used.add(key)
+    passed, specifiers = message_argument_count(tokens, end), len(declarations[key][0][2].fields)
+    if passed is None:
+        return 'the message that formats the text has no closing "]"'
+    if passed != specifiers:
+        return f'{key!r} formats {specifiers} argument{"s" * (specifiers != 1)}, but the call passes {passed}'
+    return None
+
+
+# The Qt client's lookups, and what the Mac client does instead.
+QT_LOOKUPS = {
+    'TR_TEXT': 'looks up plain text with NSLocalizedString()',
+    'TR_FORMAT': 'formats text with the Formats table',
+    'TR_FORMAT_N': 'formats text with the Formats table',
+}
+
+# Lookups whose text xgettext doesn't extract.
+UNEXTRACTED_LOOKUPS = ('NSLocalizedStringFromTableInBundle', 'NSLocalizedStringWithDefaultValue')
+
+
 def check_localizable(pot_path, source_paths):
     plain, with_context, plural = set(), set(), set()
     for fields in po_messages(pot_path):
@@ -281,26 +374,54 @@ def check_localizable(pot_path, source_paths):
         else:
             plain.add(fields['msgid'])
 
-    ok = True
+    # Each declared key's [(file, line, Declaration)].
+    declarations = {}
+    sources = {}
     for source_path in source_paths:
         tokens = source_tokens(source_path)
+        if any(text in DECLARATION_KEYWORDS for _number, kind, text in tokens if kind == 'name'):
+            for line, declaration in read_declarations(source_path):
+                declarations.setdefault(declaration.key, []).append((source_path, line, declaration))
+        else:
+            sources[source_path] = tokens
+
+    ok = True
+    used = set()
+    for source_path, tokens in sources.items():
         for index, (number, kind, text) in enumerate(tokens[:-1]):
             if kind != 'name' or tokens[index + 1][2] != '(':
                 continue
 
-            if text == 'TR_TEXT':
-                problem = "TR_TEXT() is the Qt client's; the Mac client looks up plain text with NSLocalizedString()"
-            elif text == 'NSLocalizedString':
-                try:
+            try:
+                if text in QT_LOOKUPS:
+                    problem = f"{text}() is the Qt client's; the Mac client {QT_LOOKUPS[text]}"
+                elif text in UNEXTRACTED_LOOKUPS:
+                    problem = f'xgettext extracts no text from {text}(), so its text has no translations'
+                elif text == 'NSLocalizedString':
                     problem = key_problem(tokens[index + 2:index + 4], plain, with_context, plural)
-                except ValueError as error:
-                    problem = str(error)
-            else:
-                continue
+                elif text == 'NSLocalizedStringFromTable':
+                    problem = formats_lookup_problem(tokens, index, declarations, used)
+                elif text == 'TR_TEXT_C':
+                    arguments, _end = call_arguments(tokens, index + 1)
+                    if len(arguments) != 2 or None in (single_literal(argument, objc=False) for argument in arguments):
+                        problem = 'TR_TEXT_C() takes a context and English text, each a "..." string literal'
+                    else:
+                        problem = None
+                else:
+                    continue
+            except ValueError as error:
+                problem = str(error)
 
             if problem:
                 ok = False
                 print(f'{source_path}:{number}: {problem}', file=sys.stderr)
+
+    unused = sorted((source_path, line, key)
+                    for key in declarations.keys() - used
+                    for source_path, line, _declaration in declarations[key])
+    for source_path, line, key in unused:
+        ok = False
+        print(f'{source_path}:{line}: nothing looks up {key!r}', file=sys.stderr)
 
     return ok
 

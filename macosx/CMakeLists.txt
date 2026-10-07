@@ -410,6 +410,26 @@ target_link_libraries(${TR_NAME}-mac
         "-weak_framework UniformTypeIdentifiers"
         "-weak_framework UserNotifications")
 
+# Compiles the app's sources with each formatted string's lookup replaced by its English (see L10n.h),
+# so that the compiler checks the string's arguments against its specifiers.
+# Nothing depends on it; CI builds it with: cmake --build <build folder> --target transmission-mac-format-check
+get_target_property(FORMAT_CHECK_SOURCES ${TR_NAME}-mac SOURCES)
+list(FILTER FORMAT_CHECK_SOURCES INCLUDE REGEX "[.]mm$")
+get_target_property(FORMAT_CHECK_LIBRARIES ${TR_NAME}-mac LINK_LIBRARIES)
+# The app finds Sparkle's headers through the framework that it links; an object library links nothing.
+get_filename_component(SPARKLE_FRAMEWORK_DIR "${SPARKLE_FRAMEWORK}" DIRECTORY)
+add_library(${TR_NAME}-mac-format-check OBJECT EXCLUDE_FROM_ALL ${FORMAT_CHECK_SOURCES})
+target_compile_definitions(${TR_NAME}-mac-format-check
+    PRIVATE
+        TR_CHECK_FORMATS)
+target_compile_options(${TR_NAME}-mac-format-check
+    PRIVATE
+        -Werror=format
+        "-F${SPARKLE_FRAMEWORK_DIR}")
+target_link_libraries(${TR_NAME}-mac-format-check
+    PRIVATE
+        ${FORMAT_CHECK_LIBRARIES})
+
 # Each language's catalog and .strings files go into its .lproj folder once the bundle is linked.
 # The Xcode project's app target runs the same script.
 # The app is relinked when a translation, a xib or a declaration of formatted text changes,
