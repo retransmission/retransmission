@@ -163,26 +163,31 @@ jobs:
             folder="$RUNNER_TEMP/strings/$(basename "$po" .po)"
             mkdir -p "$folder"
             release/mac-xib-strings.py strings "$po" "$folder" macosx/Base.lproj/*.xib
-            release/mac-xib-strings.py localizable "$po" "$folder"
+            release/mac-xib-strings.py localizable "$po" "$folder" macosx/*.h macosx/*.mm
             release/mac-xib-strings.py contexts "$po" "$folder"
           done
           grep -q ' = ' "$RUNNER_TEMP/strings/de/MainMenu.strings"
           grep -q ' = ' "$RUNNER_TEMP/strings/de/Localizable.strings"
           grep -q ' = ' "$RUNNER_TEMP/strings/de/Contexts.strings"
-      - name: Check that the Mac Formats tables generate with every translation
+      - name: Check that the Mac languages' tables generate with every translation
         run: |
           mkdir -p "$RUNNER_TEMP/strings/en"
+          release/mac-xib-strings.py strings - "$RUNNER_TEMP/strings/en" macosx/Base.lproj/*.xib
+          release/mac-xib-strings.py localizable - "$RUNNER_TEMP/strings/en" macosx/*.h macosx/*.mm
           release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json - "$RUNNER_TEMP/strings/en"
           for lproj in macosx/*.lproj; do
             po="po/$(basename "$lproj" .lproj | tr - _).po"
             if [ -f "$po" ]; then
               folder="$RUNNER_TEMP/strings/$(basename "$po" .po)"
               mkdir -p "$folder"
-              release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json "$po" "$folder" 2>&1 \
-                | tee -a "$RUNNER_TEMP/formats-warnings"
+              {
+                release/mac-xib-strings.py strings "$po" "$folder" macosx/Base.lproj/*.xib
+                release/mac-xib-strings.py localizable "$po" "$folder" macosx/*.h macosx/*.mm
+                release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json "$po" "$folder"
+              } 2>&1 | tee -a "$RUNNER_TEMP/warnings"
             fi
           done
-          test ! -s "$RUNNER_TEMP/formats-warnings"
+          test ! -s "$RUNNER_TEMP/warnings"
           grep -q NSStringLocalizedFormatKey "$RUNNER_TEMP/strings/en/Formats.stringsdict"
       - name: Check that no Mac .strings file is empty, which Cocoa can't read
         run: |

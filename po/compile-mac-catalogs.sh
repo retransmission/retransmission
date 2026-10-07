@@ -11,8 +11,9 @@
 # MSGFMT and PYTHON3 name the tools to use; without them the script looks for msgfmt and python3.
 # An empty MSGFMT builds the app in English.
 #
-# Python is required, msgfmt is not: English has Formats tables too,
-# because a plural's count picks its singular or its plural from Formats.stringsdict.
+# Python is required, msgfmt is not: English has tables too.
+# A plural's count picks its singular or its plural from Formats.stringsdict,
+# and the xibs' tables and Localizable.strings show text that marks a mnemonic without its markers.
 
 set -e
 
@@ -44,13 +45,15 @@ for LPROJ in macosx/*.lproj; do
     # The app looks for a catalog named after the gettext domain, which is the app's name.
     "$MSGFMT" --output-file="$RESOURCES/$LANGUAGE.lproj/retransmission.mo" "$PO"
     "$PYTHON3" release/mac-xib-strings.py strings "$PO" "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
-    "$PYTHON3" release/mac-xib-strings.py localizable "$PO" "$RESOURCES/$LANGUAGE.lproj"
+    "$PYTHON3" release/mac-xib-strings.py localizable "$PO" "$RESOURCES/$LANGUAGE.lproj" macosx/*.h macosx/*.mm
     "$PYTHON3" release/mac-xib-strings.py contexts "$PO" "$RESOURCES/$LANGUAGE.lproj"
     "$PYTHON3" release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json "$PO" "$RESOURCES/$LANGUAGE.lproj"
   elif [ "$LANGUAGE" = en ] || [ -d "$RESOURCES/$LANGUAGE.lproj" ]; then
-    # English, or a language that the bundle has a folder for but no catalog: the English Formats tables.
+    # English, or a language that the bundle has a folder for but no catalog: the English tables.
     # No folder is made for such a language, since AppKit would run the app in it.
     mkdir -p "$RESOURCES/$LANGUAGE.lproj"
+    "$PYTHON3" release/mac-xib-strings.py strings - "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
+    "$PYTHON3" release/mac-xib-strings.py localizable - "$RESOURCES/$LANGUAGE.lproj" macosx/*.h macosx/*.mm
     "$PYTHON3" release/mac-xib-strings.py formats macosx/L10nDeclarations.h po/mac-plurals.json - "$RESOURCES/$LANGUAGE.lproj"
   fi
 done

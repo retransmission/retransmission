@@ -336,8 +336,9 @@ set(LINGUAS
     zh-TW
     )
 
-# The app's text tables are written by po/compile-mac-catalogs.sh, which takes Python:
-# English has tables too, from which a plural's count picks its singular or its plural.
+# The app's text tables are written by po/compile-mac-catalogs.sh, which takes Python.
+# English has tables too: a plural's count picks its singular or its plural from one,
+# and others show text that marks a mnemonic without its markers.
 # The translations are compiled from po/ with gettext's msgfmt. Without msgfmt the app is built in English alone:
 # AppKit runs the app in any language that has a folder in the bundle, whatever the folder holds.
 find_package(Python3 REQUIRED COMPONENTS Interpreter)

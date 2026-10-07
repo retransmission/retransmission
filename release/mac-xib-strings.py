@@ -11,16 +11,28 @@ for the plain text that the code looks up with NSLocalizedString().
 Contexts.strings does the same for text with a context, keyed by the context and the English joined with U+0004,
 and the Formats tables for formatted text, keyed by its English in Cocoa's format syntax.
 
+Plain text that the GTK and Qt clients show with a keyboard mnemonic marks it, as in "_Pause",
+and the Mac's xibs and code look up the same marked text, so that the clients share its translation.
+The Mac has no mnemonics, so the xib and Localizable tables show such text without its markers,
+in English too: every language's tables have an entry for each marked text that a xib or the code has.
+A literal underscore in the xibs' and the code's text is "__".
+A translation also loses a parenthesized mnemonic, such as the "(_F)" in "ファイル(_F)".
+One whose markers can't be stripped cleanly, such as a "_" that marks nothing, gives way to the English, with a warning.
+
   mac-xib-strings.py strings <po> <folder> <xib>...
       Writes each xib's .strings file for the .po file's language into the folder.
+      With "-" for the .po file, the tables are English: they show the xibs' marked text without its markers.
 
   mac-xib-strings.py check <its> <xib>...
       Fails unless the ITS rules select the same text in each xib as this script writes entries for.
       Text that only one of them finds would stay in English.
 
-  mac-xib-strings.py localizable <po> <folder>
+  mac-xib-strings.py localizable <po> <folder> <source>...
       Writes the .po file's Localizable.strings into the folder:
-      the translation of each message that has no context, no plural and no {fmt} field.
+      the translation of each message that has no context, no plural and no {fmt} field,
+      and the English of each marked key that the sources look up with NSLocalizedString()
+      but the .po file doesn't translate.
+      With "-" for the .po file, the table is English: it shows the sources' marked keys without their markers.
 
   mac-xib-strings.py contexts <po> <folder>
       Writes the .po file's Contexts.strings into the folder:
@@ -160,12 +172,67 @@ def po_messages(po_path):
 
 
 def po_translations(po_path):
-    """Returns {English text: translation} for a .po file's translated messages that have no context or plural."""
+    """Returns {English text: fields} for a .po file's translated messages that have no context or plural,
+    or {} for "-", which stands for English."""
+    if po_path == '-':
+        return {}
     return {
-        fields['msgid']: fields['msgstr']
+        fields['msgid']: fields
         for fields in po_messages(po_path)
         if fields['msgid'] and fields.get('msgstr') and 'msgctxt' not in fields and 'msgid_plural' not in fields
     }
+
+
+# The parts of plain text that a client without mnemonics changes:
+# a parenthesized mnemonic, which Chinese, Japanese and Korean translations put after their text,
+# with any space before it; "__", a literal underscore; and "_" with the character that it marks.
+MNEMONIC_PART = re.compile(r'(?P<parenthesized>\s*[(（]_(?P<letter>[^)）_]?)[)）])|__|_(?P<marked>.?)', re.DOTALL)
+
+
+def strip_mnemonics(text):
+    """Returns plain text as the Mac shows it, without the mnemonic markers that the GTK and Qt clients read:
+    "_File" becomes "File", "__" becomes "_", and a parenthesized mnemonic goes away,
+    with ASCII or full-width parentheses: "ファイル(_F)" becomes "ファイル".
+    Raises ValueError on markers that can't be stripped cleanly; its message names what the text has,
+    such as 'a "_" that marks nothing'."""
+
+    def replace(match):
+        if match['parenthesized'] is not None:
+            if not match['letter'].isalnum():
+                raise ValueError(f'a parenthesized mnemonic, {match[0].strip()!r}, that marks no letter or digit')
+            return ''
+        if match[0] == '__':
+            return '_'
+        if not match['marked']:
+            raise ValueError('a "_" that marks nothing')
+        if match['marked'].isspace():
+            raise ValueError('a "_" that marks a space')
+        return match['marked']
+
+    stripped = MNEMONIC_PART.sub(replace, text)
+    if text and not stripped:
+        raise ValueError('nothing but mnemonic markers')
+    return stripped
+
+
+def mac_text(english, fields, po_path):
+    """Returns the entry that the Mac's tables give plain English text in a .po file's language,
+    or None for no entry, where the Mac shows the English as it is.
+    `fields` are the text's translated message in the .po file, or None.
+    Text with an underscore always has an entry, since the Mac shows it without its markers:
+    the translation without them, or else the English without them.
+    A translation whose markers can't be stripped cleanly gives way to the English, with a warning.
+    Raises ValueError on English whose markers can't be stripped cleanly."""
+    translation = fields['msgstr'] if fields else None
+    if '_' not in english:
+        return translation
+    if translation:
+        try:
+            return strip_mnemonics(translation)
+        except ValueError as error:
+            print(f'warning: {po_path}:{fields["line"]}: {translation!r} has {error}, '
+                  f'so the Mac shows {strip_mnemonics(english)!r} in English', file=sys.stderr)
+    return strip_mnemonics(english)
 
 
 def write_strings(po_path, folder, xib_paths):
@@ -173,9 +240,12 @@ def write_strings(po_path, folder, xib_paths):
     for xib_path in xib_paths:
         lines = []
         for key, text in xib_strings(xib_path):
-            translation = translations.get(text)
-            if translation:
-                lines.append(f'{quote(key)} = {quote(translation)};\n')
+            try:
+                shown = mac_text(text, translations.get(text), po_path)
+            except ValueError as error:
+                raise ValueError(f'{xib_path}: {key}: {text!r} has {error}') from None
+            if shown:
+                lines.append(f'{quote(key)} = {quote(shown)};\n')
 
         write_strings_file(pathlib.Path(folder) / (pathlib.Path(xib_path).stem + '.strings'), lines)
 
@@ -211,12 +281,29 @@ def is_format_string(text):
     return '{' in text or '}' in text
 
 
-def write_localizable(po_path, folder):
-    lines = [
-        f'{quote(text)} = {quote(translation)};\n'
-        for text, translation in po_translations(po_path).items()
-        if not is_format_string(text)
-    ]
+def write_localizable(po_path, folder, source_paths):
+    translations = po_translations(po_path)
+    keys = lookup_keys(source_paths)
+    lines = []
+    # The catalog's messages, then the keys that it doesn't translate.
+    for text in dict.fromkeys([*translations, *keys]):
+        if is_format_string(text):
+            continue
+        fields = translations.get(text)
+        if text in keys:
+            try:
+                shown = mac_text(text, fields, po_path)
+            except ValueError as error:
+                path, line = keys[text]
+                raise ValueError(f'{path}:{line}: {text!r} has {error}') from None
+        else:
+            # Text that the code doesn't look up, such as the other clients', needs neither English nor a warning.
+            try:
+                shown = strip_mnemonics(fields['msgstr']) if '_' in text else fields['msgstr']
+            except ValueError:
+                continue
+        if shown:
+            lines.append(f'{quote(text)} = {quote(shown)};\n')
     write_strings_file(pathlib.Path(folder) / 'Localizable.strings', lines)
 
 
@@ -332,6 +419,20 @@ def key_problem(tokens, plain, with_context, plural):
     if key in with_context:
         return f'the template has {key!r} only with a context'
     return f'the template has no {key!r}; xgettext reads only the files in po/POTFILES.in'
+
+
+def lookup_keys(source_paths):
+    """Returns {key: (source path, line number)} for the key of each NSLocalizedString() in the sources
+    that is a single @"..." string literal."""
+    keys = {}
+    for source_path in source_paths:
+        tokens = source_tokens(source_path)
+        for index, (number, kind, text) in enumerate(tokens[:-3]):
+            if kind == 'name' and text == 'NSLocalizedString' and tokens[index + 1][2] == '(':
+                key, after = tokens[index + 2], tokens[index + 3]
+                if key[1] == 'string' and key[2].startswith('@') and after[2] == ',':
+                    keys.setdefault(unquote(key[2][1:]), (source_path, number))
+    return keys
 
 
 def formats_lookup_problem(tokens, index, declarations, used):
@@ -789,8 +890,8 @@ def main(argv):
             write_strings(argv[2], argv[3], argv[4:])
         elif len(argv) >= 4 and argv[1] == 'check':
             sys.exit(0 if check(argv[2], argv[3:]) else 1)
-        elif len(argv) == 4 and argv[1] == 'localizable':
-            write_localizable(argv[2], argv[3])
+        elif len(argv) >= 5 and argv[1] == 'localizable':
+            write_localizable(argv[2], argv[3], argv[4:])
         elif len(argv) == 4 and argv[1] == 'contexts':
             write_contexts(argv[2], argv[3])
         elif len(argv) == 6 and argv[1] == 'formats':
