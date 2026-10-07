@@ -1,0 +1,104 @@
+{
+    "about": [
+        "The plural categories of each Mac language, which Cocoa takes from CLDR: the CLDR rule that puts a number in each category,",
+        "and the plural form of po/<language>.po that the Mac's .stringsdict files hold for the category.",
+        "'other' takes every number that no rule takes; where whole numbers never reach it, it holds the catalog's form for fractions.",
+        "The rules are CLDR 48's, pt_BR's from its pt locale and zh_CN's and zh_TW's from zh.",
+        "release/mac-xib-strings.py check-plurals checks each form against the catalog's Plural-Forms."
+    ],
+    "languages": {
+        "af": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "da": {
+            "one": { "rule": "n = 1 or t != 0 and i = 0,1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "de": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "el": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "es": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "many": { "rule": "e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "eu": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "fr": {
+            "one": { "rule": "i = 0,1", "form": 0 },
+            "many": { "rule": "e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "he": {
+            "one": { "rule": "i = 1 and v = 0 or i = 0 and v != 0", "form": 0 },
+            "two": { "rule": "i = 2 and v = 0", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "hu": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "it": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "many": { "rule": "e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "ja": {
+            "other": { "form": 0 }
+        },
+        "nl": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "pl": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "few": { "rule": "v = 0 and i % 10 = 2..4 and i % 100 != 12..14", "form": 1 },
+            "many": { "rule": "v = 0 and i != 1 and i % 10 = 0..1 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 12..14", "form": 2 },
+            "other": { "form": 3 }
+        },
+        "pt_BR": {
+            "one": { "rule": "i = 0..1", "form": 0 },
+            "many": { "rule": "e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "pt_PT": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "many": { "rule": "e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5", "form": 1 },
+            "other": { "form": 2 }
+        },
+        "ru": {
+            "one": { "rule": "v = 0 and i % 10 = 1 and i % 100 != 11", "form": 0 },
+            "few": { "rule": "v = 0 and i % 10 = 2..4 and i % 100 != 12..14", "form": 1 },
+            "many": { "rule": "v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14", "form": 2 },
+            "other": { "form": 3 }
+        },
+        "sv": {
+            "one": { "rule": "i = 1 and v = 0", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "tr": {
+            "one": { "rule": "n = 1", "form": 0 },
+            "other": { "form": 1 }
+        },
+        "uk": {
+            "one": { "rule": "v = 0 and i % 10 = 1 and i % 100 != 11", "form": 0 },
+            "few": { "rule": "v = 0 and i % 10 = 2..4 and i % 100 != 12..14", "form": 1 },
+            "many": { "rule": "v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14", "form": 2 },
+            "other": { "form": 3 }
+        },
+        "zh_CN": {
+            "other": { "form": 0 }
+        },
+        "zh_TW": {
+            "other": { "form": 0 }
+        }
+    }
+}

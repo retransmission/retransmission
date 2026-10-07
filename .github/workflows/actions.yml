@@ -148,6 +148,13 @@ jobs:
         uses: actions/checkout@v7
       - name: Check translations
         run: release/find-broken-translations.py
+      - name: Check that the Mac languages' plural forms fit their CLDR categories
+        run: |
+          for lproj in macosx/*.lproj; do
+            po="po/$(basename "$lproj" .lproj | tr - _).po"
+            if [ -f "$po" ]; then set -- "$@" "$po"; fi
+          done
+          release/mac-xib-strings.py check-plurals po/mac-plurals.json "$@"
       - name: Check that the xib strings cover the text that xgettext extracts
         run: release/mac-xib-strings.py check po/its/xib.its macosx/Base.lproj/*.xib
       - name: Check that the Mac .strings files generate

@@ -26,11 +26,18 @@ for the plain text that the code looks up with NSLocalizedString().
       Any other key would stay in English.
       Also fails on a call to TR_TEXT(), the Qt client's lookup of plain text.
 
+  mac-xib-strings.py check-plurals <categories> <po>...
+      Fails unless each .po file's Plural-Forms gives every whole number the form
+      that the categories file, po/mac-plurals.json, gives the number's CLDR plural category.
+      Cocoa picks a .stringsdict plural by that category.
+
 The xib entries are the ones that `ibtool --generate-strings-file` writes;
 this reads them out of the xib's XML so that it can run where ibtool cannot.
 A .po file that this cannot read fails with an error, rather than leaving text in English.
 """
 
+import gettext
+import json
 import pathlib
 import re
 import sys
@@ -262,6 +269,118 @@ def check_localizable(pot_path, source_paths):
     return ok
 
 
+# Cocoa's plural categories, in the order that CLDR lists their rules in.
+PLURAL_CATEGORIES = ('zero', 'one', 'two', 'few', 'many', 'other')
+
+# The whole numbers that check-plurals tries: every remainder that the rules divide by, up to 10000,
+# and multiples of a million, which some languages put in "many".
+WHOLE_NUMBERS = (*range(10001), 10**6, 10**6 + 1, 2 * 10**6, 10**9, 2**32, 2**64 - 1)
+
+CLDR_RELATION = re.compile(r'([nivwftce])(?: % (\d+))? (!?=) (\d+(?:\.\.\d+)?(?:,\d+(?:\.\.\d+)?)*)')
+
+
+def cldr_rule_holds(rule, number):
+    """Whether a CLDR plural rule, such as "v = 0 and i % 10 = 1", holds for a whole number.
+    A whole number's operands n and i are the number; v, w, f, t, c and e are 0.
+    Raises ValueError on a rule that this cannot read."""
+    operands = dict.fromkeys('vwftce', 0) | {'n': number, 'i': number}
+
+    def holds(relation):
+        match = CLDR_RELATION.fullmatch(relation)
+        if not match:
+            raise ValueError(f'cannot read the CLDR rule {rule!r}')
+        value = operands[match[1]] % int(match[2]) if match[2] else operands[match[1]]
+        ranges = [[int(end) for end in item.split('..')] for item in match[4].split(',')]
+        return any(bounds[0] <= value <= bounds[-1] for bounds in ranges) == (match[3] == '=')
+
+    return any(all(holds(relation) for relation in condition.split(' and ')) for condition in rule.split(' or '))
+
+
+def read_plural_categories(path):
+    """Returns {language: {category: (rule, form)}} from a file like po/mac-plurals.json,
+    with each language's categories in CLDR's order. "other" has no rule.
+    Raises ValueError on data that doesn't fit."""
+    try:
+        languages = json.loads(pathlib.Path(path).read_text(encoding='utf-8'))['languages']
+    except (KeyError, TypeError, json.JSONDecodeError) as error:
+        raise ValueError(f'{path}: cannot read the plural categories: {error!r}') from None
+
+    result = {}
+    for language, categories in languages.items():
+        if 'other' not in categories:
+            raise ValueError(f'{path}: {language} has no "other" category, which every .stringsdict plural needs')
+        result[language] = {}
+        for category in PLURAL_CATEGORIES:
+            entry = categories.get(category)
+            if entry is None:
+                continue
+            rule, form = entry.get('rule'), entry.get('form')
+            if category == 'other' and rule is not None:
+                raise ValueError(f'{path}: {language} "other" takes the numbers that no rule takes, so it has no rule')
+            if category != 'other' and not isinstance(rule, str):
+                raise ValueError(f'{path}: {language} "{category}" has no rule')
+            if not isinstance(form, int) or form < 0:
+                raise ValueError(f'{path}: {language} "{category}" has no form')
+            result[language][category] = (rule, form)
+        if unknown := sorted(categories.keys() - set(PLURAL_CATEGORIES)):
+            raise ValueError(f'{path}: {language} has categories that Cocoa lacks: {", ".join(unknown)}')
+    return result
+
+
+def plural_category(categories, number):
+    """Returns the CLDR category of a whole number, given a language's categories from read_plural_categories()."""
+    for category, (rule, _form) in categories.items():
+        if rule is not None and cldr_rule_holds(rule, number):
+            return category
+    return 'other'
+
+
+def po_plural_forms(po_path):
+    """Returns (line number, form count, formula) for a .po file's Plural-Forms header,
+    where the formula is a function from a count to its form.
+    Raises ValueError if the file has no such header."""
+    lines = pathlib.Path(po_path).read_text(encoding='utf-8').splitlines()
+    for number, line in enumerate(lines, start=1):
+        if match := re.search(r'Plural-Forms: *nplurals *= *(\d+) *; *plural *= *([^;\\]+)', line):
+            try:
+                return number, int(match[1]), gettext.c2py(match[2].strip())
+            except ValueError as error:
+                raise ValueError(f'{po_path}:{number}: cannot read the plural formula: {error}') from None
+    raise ValueError(f'{po_path}: no Plural-Forms header')
+
+
+def plural_forms_problem(categories_path, categories, form_count, formula):
+    """Returns how a catalog's Plural-Forms disagrees with its language's categories, or None if they agree."""
+    for category, (_rule, form) in categories.items():
+        if form >= form_count:
+            return f'{categories_path} gives "{category}" form {form}, but the catalog has {form_count} forms'
+
+    for number in WHOLE_NUMBERS:
+        category = plural_category(categories, number)
+        form = formula(number)
+        if form != categories[category][1]:
+            return (f'Plural-Forms gives {number} form {form}, '
+                    f'but CLDR puts it in "{category}", which {categories_path} gives form {categories[category][1]}')
+    return None
+
+
+def check_plurals(categories_path, po_paths):
+    languages = read_plural_categories(categories_path)
+    ok = True
+    for po_path in po_paths:
+        number, form_count, formula = po_plural_forms(po_path)
+        language = pathlib.Path(po_path).stem
+        if language not in languages:
+            problem = f'{categories_path} has no plural categories for {language}'
+        else:
+            problem = plural_forms_problem(categories_path, languages[language], form_count, formula)
+        if problem:
+            ok = False
+            print(f'{po_path}:{number}: {problem}', file=sys.stderr)
+
+    return ok
+
+
 def main(argv):
     try:
         if len(argv) >= 5 and argv[1] == 'strings':
@@ -272,6 +391,8 @@ def main(argv):
             write_localizable(argv[2], argv[3])
         elif len(argv) >= 4 and argv[1] == 'check-localizable':
             sys.exit(0 if check_localizable(argv[2], argv[3:]) else 1)
+        elif len(argv) >= 4 and argv[1] == 'check-plurals':
+            sys.exit(0 if check_plurals(argv[2], argv[3:]) else 1)
         else:
             sys.exit(__doc__)
     except ValueError as error:
