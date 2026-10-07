@@ -90,7 +90,7 @@ static tr_session* fLib = NULL;
     self.fNumOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", nil);
 
     // Translators: Stats window -> reset button
-    self.fResetButton.title = NSLocalizedString(@"Reset", nil);
+    self.fResetButton.title = NSLocalizedString(@"_Reset", nil);
 }
 
 - (void)windowWillClose:(id)sender
@@ -126,8 +126,8 @@ static tr_session* fLib = NULL;
                                   @TR_PROJ_APPNAME_CAPITALIZED];
     alert.alertStyle = NSAlertStyleWarning;
     // Translators: Stats reset -> button
-    [alert addButtonWithTitle:NSLocalizedString(@"Reset", nil)];
-    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"_Reset", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

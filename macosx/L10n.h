@@ -12,6 +12,9 @@
 //
 // Plain text:
 //   NSLocalizedString(@"Seeding Complete", nil)
+// Plain text that the GTK and Qt clients mark a mnemonic in, by the same marked English;
+// the tables show it without its markers, and a literal underscore is "__":
+//   NSLocalizedString(@"Allow _remote access", nil)
 // Formatted text, whose English L10nDeclarations.h declares in the catalog's syntax:
 //   [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Created by %@", @"Formats", nil), creator]
 // A plural, looked up by its plural English:

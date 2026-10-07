@@ -139,9 +139,9 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
             @"If you are attempting to use already existing data, the root data directory should be inside the destination directory.",
             nil);
         alert.alertStyle = NSAlertStyleWarning;
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
         // Translators: Add torrent -> same name -> button
-        [alert addButtonWithTitle:NSLocalizedString(@"Add", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Add", nil)];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

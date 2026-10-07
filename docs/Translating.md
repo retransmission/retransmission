@@ -25,6 +25,7 @@ To start a language that has no catalog yet, open an issue and a maintainer will
   the macOS client can't skip one.
 - **`_` marks a keyboard mnemonic** in the GTK and Qt clients: `_Open` underlines the O.
   Keep one in your translation, on a letter that nothing else in the same menu or dialog uses.
+  The macOS client shows the text without it, and without a parenthesized one such as `(_O)`.
 - **Plural entries** have one `msgstr[n]` per plural form of your language.
   The catalog's `Plural-Forms` header says how many there are and which counts each one covers.
 - **`#. Translators:` comments** say where a piece of text appears or what it means.
@@ -57,6 +58,13 @@ The build writes each language's tables from its catalog with `po/compile-mac-ca
 
 - **Plain text:** `NSLocalizedString(@"Seeding Complete", nil)`, with a string literal.
   xgettext ignores the comment argument, so pass `nil`.
+- **Text that the GTK or Qt client marks a mnemonic in:** the same marked English,
+  `NSLocalizedString(@"Allow _remote access", nil)` or a xib title of `Allow _remote access`,
+  so that the clients share one translation.
+  The build's tables show the text without its markers, in English too. A literal underscore is `__`.
+  macOS's standard menus and items keep the Mac's own text and translations, since Apple names them in its own words:
+  the main menu's File, Edit, View, Window and Help menus, the items that send AppKit's standard actions,
+  such as Select All, and the Settings item.
 - **Text with a context**, for English that has more than one meaning: `TR_TEXT_C("Verb", "Seeding")`.
 - **Formatted text:** declare the English once, in the catalog's `{fmt}` syntax, in `macosx/L10nDeclarations.h`,
   ```c

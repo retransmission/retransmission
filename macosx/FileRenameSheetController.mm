@@ -89,7 +89,7 @@ typedef void (^CompletionBlock)(BOOL);
 
     // Translators: rename sheet button
     self.renameButton.title = NSLocalizedString(@"Rename", nil);
-    self.cancelButton.title = NSLocalizedString(@"Cancel", nil);
+    self.cancelButton.title = NSLocalizedString(@"_Cancel", nil);
 
     [self.renameButton sizeToFit];
     [self.cancelButton sizeToFit];

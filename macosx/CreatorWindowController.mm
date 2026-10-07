@@ -277,8 +277,8 @@ static NSMutableSet* creatorWindowControllerSet;
 
         alert.informativeText = infoString;
         // Translators: Create torrent -> blank address -> button
-        [alert addButtonWithTitle:NSLocalizedString(@"Create", nil)];
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"C_reate", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

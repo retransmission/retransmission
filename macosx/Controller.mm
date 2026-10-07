@@ -406,7 +406,7 @@ static void showLegalNotice()
     // Translators: Legal alert -> button
     [alert addButtonWithTitle:NSLocalizedString(@"I Accept", nil)];
     // Translators: Legal alert -> button
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"_Quit", nil)];
     alert.messageText = [NSString
         localizedStringWithFormat:NSLocalizedStringFromTable(@"Welcome to %@", @"Formats", nil), @TR_PROJ_APPNAME_CAPITALIZED];
     alert.informativeText = [NSString
@@ -1057,7 +1057,7 @@ static void offerToImportFromTransmission()
             alert.alertStyle = NSAlertStyleInformational;
 
             // Translators: Donation beg -> button
-            [alert addButtonWithTitle:[NSLocalizedString(@"Donate", nil) stringByAppendingEllipsis]];
+            [alert addButtonWithTitle:[NSLocalizedString(@"_Donate", nil) stringByAppendingEllipsis]];
             // Translators: Donation beg -> button
             NSButton* noDonateButton = [alert addButtonWithTitle:NSLocalizedString(@"Nope", nil)];
             noDonateButton.keyEquivalent = @"\e"; //escape key
@@ -1144,8 +1144,8 @@ static void offerToImportFromTransmission()
                                                 nil),
                                             active];
     // Translators: Confirm Quit panel -> button
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
-    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"_Quit", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
@@ -1214,7 +1214,7 @@ static void offerToImportFromTransmission()
     if (self.fQuitForTransmission) {
         NSAlert* const alert = [[NSAlert alloc] init];
         // Translators: Transmission launched alert -> button
-        [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Quit", nil)];
         alert.messageText = NSLocalizedString(@"Transmission is running.", nil);
         alert.informativeText = [NSString
             localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ will quit, because the two apps would work on the same downloads.", @"Formats", nil),
@@ -1938,8 +1938,8 @@ static void offerToImportFromTransmission()
             alert.messageText = title;
             alert.informativeText = message;
             // Translators: Removal confirm panel -> button
-            [alert addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
-            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+            [alert addButtonWithTitle:NSLocalizedString(@"_Remove", nil)];
+            [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
 
             [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
                 if (returnCode == NSAlertFirstButtonReturn) {
@@ -2094,8 +2094,8 @@ static void offerToImportFromTransmission()
         alert.informativeText = info;
         alert.alertStyle = NSAlertStyleWarning;
         // Translators: Remove completed confirm panel -> button
-        [alert addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Remove", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"_Cancel", nil)];
         alert.showsSuppressionButton = YES;
 
         NSInteger const returnCode = [alert runModal];
@@ -3941,7 +3941,7 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         // Translators: Create toolbar item -> label
-        item.label = NSLocalizedString(@"Create", nil);
+        item.label = NSLocalizedString(@"C_reate", nil);
         // Translators: Create toolbar item -> palette label
         item.paletteLabel = NSLocalizedString(@"Create Torrent File", nil);
         item.toolTip = NSLocalizedString(@"Create a new torrent", nil);
@@ -3984,7 +3984,7 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         // Translators: Remove toolbar item -> label
-        item.label = NSLocalizedString(@"Remove", nil);
+        item.label = NSLocalizedString(@"_Remove", nil);
         // Translators: Remove toolbar item -> palette label
         item.paletteLabel = NSLocalizedString(@"Remove Selected", nil);
         // Translators: Remove toolbar item -> tooltip
@@ -4048,9 +4048,9 @@ static void offerToImportFromTransmission()
 
         [groupItem createMenu:@[
             // Translators: All toolbar item -> label
-            NSLocalizedString(@"Pause All", nil),
+            NSLocalizedString(@"_Pause All", nil),
             // Translators: All toolbar item -> label
-            NSLocalizedString(@"Start All", nil)
+            NSLocalizedString(@"_Start All", nil)
         ]];
 
         return groupItem;
@@ -4093,9 +4093,9 @@ static void offerToImportFromTransmission()
 
         [groupItem createMenu:@[
             // Translators: Selected toolbar item -> label
-            NSLocalizedString(@"Pause", nil),
+            NSLocalizedString(@"_Pause", nil),
             // Translators: Selected toolbar item -> label
-            NSLocalizedString(@"Start", nil)
+            NSLocalizedString(@"_Start", nil)
         ]];
 
         return groupItem;
@@ -4710,9 +4710,9 @@ static void offerToImportFromTransmission()
     }
 
     // Translators: Dock item
-    [menu addItemWithTitle:NSLocalizedString(@"Pause All", nil) action:@selector(stopAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"_Pause All", nil) action:@selector(stopAllTorrents:) keyEquivalent:@""];
     // Translators: Dock item
-    [menu addItemWithTitle:NSLocalizedString(@"Start All", nil) action:@selector(resumeAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"_Start All", nil) action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
     // Translators: Dock item
     [menu addItemWithTitle:NSLocalizedString(@"Alternative Speed Limits", nil) action:@selector(toggleSpeedLimit:)

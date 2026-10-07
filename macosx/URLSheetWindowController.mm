@@ -29,7 +29,7 @@
     self.fLabelField.stringValue = NSLocalizedString(@"URL:", nil);
     // Translators: URL sheet button
     self.fOpenButton.title = NSLocalizedString(@"Open", nil);
-    self.fCancelButton.title = NSLocalizedString(@"Cancel", nil);
+    self.fCancelButton.title = NSLocalizedString(@"_Cancel", nil);
 
     [self.fOpenButton sizeToFit];
     [self.fCancelButton sizeToFit];

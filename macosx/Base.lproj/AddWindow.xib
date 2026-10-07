@@ -67,14 +67,14 @@
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="17">
                         <rect key="frame" x="20" y="20" width="130" height="16"/>
-                        <buttonCell key="cell" type="check" title="Start when added" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="18">
+                        <buttonCell key="cell" type="check" title="_Start when added" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="18">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                         <rect key="frame" x="459" y="16" width="66" height="24"/>
-                        <buttonCell key="cell" type="push" title="Add" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="20">
+                        <buttonCell key="cell" type="push" title="_Add" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="20">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
@@ -87,7 +87,7 @@ DQ
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="21">
                         <rect key="frame" x="381" y="16" width="66" height="24"/>
-                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="22">
+                        <buttonCell key="cell" type="push" title="_Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="22">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
@@ -184,7 +184,7 @@ Gw
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="58">
                         <rect key="frame" x="20" y="42" width="123" height="16"/>
-                        <buttonCell key="cell" type="check" title="Move torrent file to the Trash" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="59">
+                        <buttonCell key="cell" type="check" title="Mo_ve torrent file to the Trash" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="59">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -239,7 +239,7 @@ Gw
                                 </progressIndicator>
                                 <textField focusRingType="none" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="84">
                                     <rect key="frame" x="345" y="12" width="52" height="16"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Priority:" id="91">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="_Priority:" id="91">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -247,7 +247,7 @@ Gw
                                 </textField>
                                 <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="65">
                                     <rect key="frame" x="12" y="36" width="127" height="24"/>
-                                    <buttonCell key="cell" type="push" title="Verify Local Data" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="66">
+                                    <buttonCell key="cell" type="push" title="_Verify Local Data" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="66">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -267,7 +267,7 @@ Gw
                                 </button>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                                     <rect key="frame" x="10" y="68" width="84" height="16"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Destination folder:" id="15">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="_Destination folder:" id="15">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

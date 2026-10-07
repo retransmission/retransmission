@@ -188,6 +188,8 @@ jobs:
             fi
           done
           test ! -s "$RUNNER_TEMP/warnings"
+          grep -q ' = ' "$RUNNER_TEMP/strings/en/MainMenu.strings"
+          grep -q ' = ' "$RUNNER_TEMP/strings/en/Localizable.strings"
           grep -q NSStringLocalizedFormatKey "$RUNNER_TEMP/strings/en/Formats.stringsdict"
       - name: Check that no Mac .strings file is empty, which Cocoa can't read
         run: |
