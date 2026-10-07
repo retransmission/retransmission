@@ -280,10 +280,10 @@ msgstr[0] "{total_size} σε {file_count:L} αρχείο"
 msgstr[1] "{total_size} σε {file_count:L} αρχεία"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} κομμάτι BitTorrent @ {piece_size})"
-msgstr[1] "({piece_count} κομμάτια BitTorrent @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} κομμάτι BitTorrent @ {piece_size})"
+msgstr[1] "({piece_count:L} κομμάτια BitTorrent @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -420,10 +420,10 @@ msgid "Web Seeds"
 msgstr "Διαμοιραστές δικτύου"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστή{markup_end} {time_span_ago}"
-msgstr[1] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστών{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Λήφθηκε λίστα {markup_begin}{peer_count:L} διαμοιραστή{markup_end} {time_span_ago}"
+msgstr[1] "Λήφθηκε λίστα {markup_begin}{peer_count:L} διαμοιραστών{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -453,8 +453,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Ζητήθηκαν περισσότεροι διαμοιραστές {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Ο ιχνηλάτης είχε {markup_begin}{seeder_count} {seeder_or_seeders} και {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Ο ιχνηλάτης είχε {markup_begin}{seeder_count:L} {seeder_or_seeders} και {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1023,34 +1023,34 @@ msgstr "Τοπικό σφάλμα: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Λήψη μεταδεδομένων από {active_count} συνδεδεμένο διαμοιραστή (ολοκληρωμένη κατά {percent_done}%)"
-msgstr[1] "Λήψη μεταδεδομένων από {active_count} συνδεδεμένους διαμοιραστές (ολοκληρωμένη κατά {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Λήψη μεταδεδομένων από {active_count:L} συνδεδεμένο διαμοιραστή (ολοκληρωμένη κατά {percent_done}%)"
+msgstr[1] "Λήψη μεταδεδομένων από {active_count:L} συνδεδεμένους διαμοιραστές (ολοκληρωμένη κατά {percent_done}%)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή και διαμοιραστή δικτύου"
-msgstr[1] "Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές και διαμοιραστές δικτύου"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένο διαμοιραστή και διαμοιραστή δικτύου"
+msgstr[1] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένους διαμοιραστές και διαμοιραστές δικτύου"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Λήψη από {active_count} διαμοιραστή δικτύου"
-msgstr[1] "Λήψη από {active_count} διαμοιραστές δικτύου"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Λήψη από {active_count:L} διαμοιραστή δικτύου"
+msgstr[1] "Λήψη από {active_count:L} διαμοιραστές δικτύου"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένους διαμοιραστές"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένους διαμοιραστές"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

@@ -245,10 +245,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} pèça BitTorrent @ {piece_size})"
-msgstr[1] "({piece_count} pèças BitTorrent @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} pèça BitTorrent @ {piece_size})"
+msgstr[1] "({piece_count:L} pèças BitTorrent @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -385,8 +385,8 @@ msgid "Web Seeds"
 msgstr "Web Seeds"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -418,7 +418,7 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Demandat mai de pars {markup_begin} {time_span_ago} {markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 msgstr ""
 
 #: ../gtk/DetailsDialog.cc:1858
@@ -984,32 +984,32 @@ msgstr ""
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Telecargament de las metadonadas de {active_count} par connectat ({percent_done} % terminat)"
-msgstr[1] "Telecargament de las metadonadas de {active_count} pars connectats ({percent_done} % terminat)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Telecargament de las metadonadas de {active_count:L} par connectat ({percent_done} % terminat)"
+msgstr[1] "Telecargament de las metadonadas de {active_count:L} pars connectats ({percent_done} % terminat)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Telecargament de {active_count} par e webseed connectats de {connected_count}"
-msgstr[1] "Telecargament de {active_count} pars e webseeds connectats de {connected_count}"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Telecargament de {active_count:L} par e webseed connectats de {connected_count:L}"
+msgstr[1] "Telecargament de {active_count:L} pars e webseeds connectats de {connected_count:L}"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Telecargament de {active_count} webseed"
-msgstr[1] "Telecargament de {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Telecargament de {active_count:L} webseed"
+msgstr[1] "Telecargament de {active_count:L} webseeds"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Telecargament de {active_count} de {connected_count} par connectat"
-msgstr[1] "Telecargament de {active_count} de {connected_count} pars connectats"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Telecargament de {active_count:L} de {connected_count:L} par connectat"
+msgstr[1] "Telecargament de {active_count:L} de {connected_count:L} pars connectats"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 

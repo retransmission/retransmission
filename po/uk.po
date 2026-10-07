@@ -282,12 +282,12 @@ msgstr[2] "{total_size} у {file_count:L} файлах"
 msgstr[3] "{total_size} у {file_count:L} файлах"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent частина розміром {piece_size})"
-msgstr[1] "({piece_count} BitTorrent частини розміром {piece_size})"
-msgstr[2] "({piece_count} BitTorrent частин розміром {piece_size})"
-msgstr[3] "({piece_count} BitTorrent частини розміром {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent частина розміром {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent частини розміром {piece_size})"
+msgstr[2] "({piece_count:L} BitTorrent частин розміром {piece_size})"
+msgstr[3] "({piece_count:L} BitTorrent частини розміром {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -424,12 +424,12 @@ msgid "Web Seeds"
 msgstr "Веб-сиди"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Отримано список з {markup_begin}{peer_count} вузла{markup_end} {time_span_ago}"
-msgstr[1] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[2] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[3] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Отримано список з {markup_begin}{peer_count:L} вузла{markup_end} {time_span_ago}"
+msgstr[1] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
+msgstr[2] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
+msgstr[3] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -459,8 +459,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Запитано додаткові вузли {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Трекер мав {markup_begin}{seeder_count} {seeder_or_seeders} і {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Трекер мав {markup_begin}{seeder_count:L} {seeder_or_seeders} і {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1045,44 +1045,44 @@ msgstr "Локальна помилка: «{error}»"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Завантаження метаданих від {active_count} підʼєднаного вузла (завершено {percent_done}%)"
-msgstr[1] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
-msgstr[2] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
-msgstr[3] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Завантаження метаданих від {active_count:L} підʼєднаного вузла (завершено {percent_done}%)"
+msgstr[1] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
+msgstr[2] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
+msgstr[3] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Завантаження від {active_count} з {connected_count} підʼєднаного вузла або веб-сідера"
-msgstr[1] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
-msgstr[2] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
-msgstr[3] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаного вузла або веб-сідера"
+msgstr[1] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
+msgstr[2] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
+msgstr[3] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Завантаження від {active_count} веб-сіда"
-msgstr[1] "Завантаження від {active_count} веб-сідів"
-msgstr[2] "Завантаження від {active_count} веб-сідів"
-msgstr[3] "Завантаження від {active_count} веб-сідів"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Завантаження від {active_count:L} веб-сіда"
+msgstr[1] "Завантаження від {active_count:L} веб-сідів"
+msgstr[2] "Завантаження від {active_count:L} веб-сідів"
+msgstr[3] "Завантаження від {active_count:L} веб-сідів"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Завантаження від {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаного вузла"
+msgstr[1] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[2] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[3] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Поширення до {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Поширення до {active_count:L} з {connected_count:L} підʼєднаного вузла"
+msgstr[1] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[2] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[3] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

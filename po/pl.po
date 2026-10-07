@@ -293,12 +293,12 @@ msgstr[2] "{total_size} w {file_count:L} plikach"
 msgstr[3] "{total_size} w {file_count:L} plikach"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} część BitTorrent o {piece_size})"
-msgstr[1] "({piece_count} części BitTorrent po {piece_size})"
-msgstr[2] "({piece_count} części BitTorrent po {piece_size})"
-msgstr[3] "({piece_count} części BitTorrent po {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} część BitTorrent o {piece_size})"
+msgstr[1] "({piece_count:L} części BitTorrent po {piece_size})"
+msgstr[2] "({piece_count:L} części BitTorrent po {piece_size})"
+msgstr[3] "({piece_count:L} części BitTorrent po {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -435,12 +435,12 @@ msgid "Web Seeds"
 msgstr "Wysyłający w sieci"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Otrzymano listę {markup_begin}{peer_count} partnera{markup_end} {time_span_ago}"
-msgstr[1] "Otrzymano listę {markup_begin}{peer_count} partnerów{markup_end} {time_span_ago}"
-msgstr[2] "Otrzymano listę {markup_begin}{peer_count} partnerów{markup_end} {time_span_ago}"
-msgstr[3] "Otrzymano listę {markup_begin}{peer_count} partnerów{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Otrzymano listę {markup_begin}{peer_count:L} partnera{markup_end} {time_span_ago}"
+msgstr[1] "Otrzymano listę {markup_begin}{peer_count:L} partnerów{markup_end} {time_span_ago}"
+msgstr[2] "Otrzymano listę {markup_begin}{peer_count:L} partnerów{markup_end} {time_span_ago}"
+msgstr[3] "Otrzymano listę {markup_begin}{peer_count:L} partnerów{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -470,8 +470,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Wysłano zapytanie o więcej partnerów {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Serwer śledzący miał {markup_begin}{seeder_count} {seeder_or_seeders} i {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Serwer śledzący miał {markup_begin}{seeder_count:L} {seeder_or_seeders} i {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1056,44 +1056,44 @@ msgstr "Błąd lokalny: „{error}”"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Pobieranie metadanych od {active_count} połączonego partnera (ukończono {percent_done}%)"
-msgstr[1] "Pobieranie metadanych od {active_count} połączonych partnerów (ukończono {percent_done}%)"
-msgstr[2] "Pobieranie metadanych od {active_count} połączonych partnerów (ukończono {percent_done}%)"
-msgstr[3] "Pobieranie metadanych od {active_count} połączonych partnerów (ukończono {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Pobieranie metadanych od {active_count:L} połączonego partnera (ukończono {percent_done}%)"
+msgstr[1] "Pobieranie metadanych od {active_count:L} połączonych partnerów (ukończono {percent_done}%)"
+msgstr[2] "Pobieranie metadanych od {active_count:L} połączonych partnerów (ukończono {percent_done}%)"
+msgstr[3] "Pobieranie metadanych od {active_count:L} połączonych partnerów (ukończono {percent_done}%)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Pobieranie od {active_count} z {connected_count} połączonego partnera i wysyłającego w sieci"
-msgstr[1] "Pobieranie od {active_count} z {connected_count} połączonych partnerów i wysyłających w sieci"
-msgstr[2] "Pobieranie od {active_count} z {connected_count} połączonych partnerów i wysyłających w sieci"
-msgstr[3] "Pobieranie od {active_count} z {connected_count} połączonych partnerów i wysyłających w sieci"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Pobieranie od {active_count:L} z {connected_count:L} połączonego partnera i wysyłającego w sieci"
+msgstr[1] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów i wysyłających w sieci"
+msgstr[2] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów i wysyłających w sieci"
+msgstr[3] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów i wysyłających w sieci"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Pobieranie od {active_count} wysyłającego w sieci"
-msgstr[1] "Pobieranie od {active_count} wysyłających w sieci"
-msgstr[2] "Pobieranie od {active_count} wysyłających w sieci"
-msgstr[3] "Pobieranie od {active_count} wysyłających w sieci"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Pobieranie od {active_count:L} wysyłającego w sieci"
+msgstr[1] "Pobieranie od {active_count:L} wysyłających w sieci"
+msgstr[2] "Pobieranie od {active_count:L} wysyłających w sieci"
+msgstr[3] "Pobieranie od {active_count:L} wysyłających w sieci"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Pobieranie od {active_count} z {connected_count} połączonego partnera"
-msgstr[1] "Pobieranie od {active_count} z {connected_count} połączonych partnerów"
-msgstr[2] "Pobieranie od {active_count} z {connected_count} połączonych partnerów"
-msgstr[3] "Pobieranie od {active_count} z {connected_count} połączonych partnerów"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Pobieranie od {active_count:L} z {connected_count:L} połączonego partnera"
+msgstr[1] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów"
+msgstr[2] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów"
+msgstr[3] "Pobieranie od {active_count:L} z {connected_count:L} połączonych partnerów"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Wysyłanie do {active_count} z {connected_count} połączonego partnera"
-msgstr[1] "Wysyłanie do {active_count} z {connected_count} połączonych partnerów"
-msgstr[2] "Wysyłanie do {active_count} z {connected_count} połączonych partnerów"
-msgstr[3] "Wysyłanie do {active_count} z {connected_count} połączonych partnerów"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Wysyłanie do {active_count:L} z {connected_count:L} połączonego partnera"
+msgstr[1] "Wysyłanie do {active_count:L} z {connected_count:L} połączonych partnerów"
+msgstr[2] "Wysyłanie do {active_count:L} z {connected_count:L} połączonych partnerów"
+msgstr[3] "Wysyłanie do {active_count:L} z {connected_count:L} połączonych partnerów"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

@@ -731,8 +731,8 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
                 str += ' ';
                 str += fmt::format(
                     fmt::runtime(ngettext(
-                        "({piece_count} BitTorrent piece @ {piece_size})",
-                        "({piece_count} BitTorrent pieces @ {piece_size})",
+                        "({piece_count:L} BitTorrent piece @ {piece_size})",
+                        "({piece_count:L} BitTorrent pieces @ {piece_size})",
                         piece_count)),
                     fmt::arg("piece_count", piece_count),
                     fmt::arg("piece_size", Memory{ piece_size, Memory::Units::Bytes }.to_string()));
@@ -1453,8 +1453,8 @@ void appendAnnounceInfo(tr_tracker_view const& tracker, time_t const now, Gtk::T
             gstr << fmt::format(
                 // {markup_begin} and {markup_end} should surround the peer text
                 fmt::runtime(ngettext(
-                    "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}",
-                    "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}",
+                    "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}",
+                    "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}",
                     tracker.lastAnnouncePeerCount)),
                 fmt::arg("markup_begin", SuccessMarkupBegin),
                 fmt::arg("peer_count", tracker.lastAnnouncePeerCount),
@@ -1528,7 +1528,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
             gstr << fmt::format(
                 // {markup_begin} and {markup_end} should surround the seeder/leecher text
                 fmt::runtime(_(
-                    "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}")),
+                    "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}")),
                 fmt::arg("seeder_count", tracker.seederCount),
                 fmt::arg("seeder_or_seeders", ngettext("seeder", "seeders", tracker.seederCount)),
                 fmt::arg("leecher_count", tracker.leecherCount),

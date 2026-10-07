@@ -2315,11 +2315,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Nie można dodać {count} podwójnego torrenta</numerusform>
-            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
-            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnego torrenta</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnych torrentów</numerusform>
         </translation>
     </message>
 </context>
@@ -2596,12 +2596,12 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonego partnera</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2616,11 +2616,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonego partnera</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message>

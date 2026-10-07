@@ -278,10 +278,10 @@ msgstr[0] "{total_size} in {file_count:L} bestand"
 msgstr[1] "{total_size} in {file_count:L} bestanden"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent stukje @ {piece_size})"
-msgstr[1] "({piece_count} BitTorrent fragmenten @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent stukje @ {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent fragmenten @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -418,10 +418,10 @@ msgid "Web Seeds"
 msgstr "Webseeds"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Kreeg een lijst van {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgstr[1] "Kreeg een lijst van {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Kreeg een lijst van {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgstr[1] "Kreeg een lijst van {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -451,8 +451,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Meer peers gevraagd {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} en {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} en {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1021,34 +1021,34 @@ msgstr "Lokale fout: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metadata downloaden van {active_count} verbonden peers ({percent_done}% gedaan)"
-msgstr[1] "Metadata downloaden van {active_count} verbonden peers ({percent_done}% gedaan)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
+msgstr[1] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Downloaden vanaf {active_count} van {connected_count} verbonden peer en webseed"
-msgstr[1] "Downloaden vanaf {active_count} van {connected_count} verbonden peers en webseeds"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peer en webseed"
+msgstr[1] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peers en webseeds"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Downloaden vanaf {active_count} webseed"
-msgstr[1] "Downloaden vanaf {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Downloaden vanaf {active_count:L} webseed"
+msgstr[1] "Downloaden vanaf {active_count:L} webseeds"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Downloaden vanaf {active_count} van {connected_count} verbonden peer"
-msgstr[1] "Downloaden vanaf {active_count} van {connected_count} verbonden peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peer"
+msgstr[1] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peers"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Seeden naar {active_count} van {connected_count} verbonden peer"
-msgstr[1] "Seeden naar {active_count} van {connected_count} verbonden peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Seeden naar {active_count:L} van {connected_count:L} verbonden peer"
+msgstr[1] "Seeden naar {active_count:L} van {connected_count:L} verbonden peers"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

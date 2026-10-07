@@ -280,10 +280,10 @@ msgstr[0] "{total_size} {file_count:L} fájlban"
 msgstr[1] "{total_size} {file_count:L} fájlban"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent-szelet @ {piece_size})"
-msgstr[1] "({piece_count} BitTorrent-szelet @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent-szelet @ {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent-szelet @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -420,10 +420,10 @@ msgid "Web Seeds"
 msgstr "Webes megosztók"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
-msgstr[1] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "{markup_begin}{peer_count:L} partner{markup_end} fogadva {time_span_ago}"
+msgstr[1] "{markup_begin}{peer_count:L} partner{markup_end} fogadva {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -453,8 +453,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "További partnerek kérve {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "A tracker {time_span_ago} ennyi felhasználóról tudott: {markup_begin}{seeder_count} {seeder_or_seeders} és {leecher_count} {leecher_or_leechers}{markup_end}."
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "A tracker {time_span_ago} ennyi felhasználóról tudott: {markup_begin}{seeder_count:L} {seeder_or_seeders} és {leecher_count:L} {leecher_or_leechers}{markup_end}."
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1023,34 +1023,34 @@ msgstr "Helyi hiba: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metaadatok letöltése {active_count} kapcsolódó partnertől ({percent_done}% kész)"
-msgstr[1] "Metaadatok letöltése {active_count} kapcsolódó partnertől ({percent_done}% kész)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
+msgstr[1] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől és webes megosztótól"
-msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől és webes megosztótól"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől és webes megosztótól"
+msgstr[1] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől és webes megosztótól"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Letöltés {active_count} webes megosztótól"
-msgstr[1] "Letöltés {active_count} webes megosztótól"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Letöltés {active_count:L} webes megosztótól"
+msgstr[1] "Letöltés {active_count:L} webes megosztótól"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
-msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől"
+msgstr[1] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
-msgstr[1] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Megosztás {active_count:L} / {connected_count:L} kapcsolódó partnernek"
+msgstr[1] "Megosztás {active_count:L} / {connected_count:L} kapcsolódó partnernek"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

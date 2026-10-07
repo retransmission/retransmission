@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} doppelte Torrentdatei konnten nicht hinzugefügt werden</numerusform>
-            <numerusform>{count} doppelte Torrentdateien konnten nicht hinzugefügt werden</numerusform>
+            <numerusform>{count:L} doppelte Torrentdatei konnten nicht hinzugefügt werden</numerusform>
+            <numerusform>{count:L} doppelte Torrentdateien konnten nicht hinzugefügt werden</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Lade von {active_count} von {connected_count} verbundenem Peer herunter</numerusform>
-            <numerusform>Lade von {active_count} von {connected_count} verbundenen Peers herunter</numerusform>
+            <numerusform>Lade von {active_count:L} von {connected_count:L} verbundenem Peer herunter</numerusform>
+            <numerusform>Lade von {active_count:L} von {connected_count:L} verbundenen Peers herunter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Verteile an {active_count} von {connected_count} verbundenem Peer</numerusform>
-            <numerusform>Verteile an {active_count} von {connected_count} verbundenen Peers</numerusform>
+            <numerusform>Verteile an {active_count:L} von {connected_count:L} verbundenem Peer</numerusform>
+            <numerusform>Verteile an {active_count:L} von {connected_count:L} verbundenen Peers</numerusform>
         </translation>
     </message>
     <message>

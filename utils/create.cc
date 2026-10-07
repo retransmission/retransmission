@@ -252,7 +252,7 @@ int tr_main(int argc, char* argv[])
         auto const [current, total] = builder.checksum_status();
 
         if (!last || current != *last) {
-            fmt::print("\rPiece {:d}/{:d} ...", current, total);
+            fmt::print("\rPiece {:Ld}/{:Ld} ...", current, total);
             fflush(stdout);
             last = current;
         }

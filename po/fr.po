@@ -253,11 +253,11 @@ msgstr[1] "{total_size} dans {file_count:L} fichiers"
 msgstr[2] "{total_size} répartis entre {file_count:L} fichiers"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} morceau BitTorrent @ {piece_size})"
-msgstr[1] "({piece_count} de morceaux BitTorrent @ {piece_size})"
-msgstr[2] "({piece_count} morceaux BitTorrent @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} morceau BitTorrent @ {piece_size})"
+msgstr[1] "({piece_count:L} de morceaux BitTorrent @ {piece_size})"
+msgstr[2] "({piece_count:L} morceaux BitTorrent @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -394,11 +394,11 @@ msgid "Web Seeds"
 msgstr "semences Web"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Réception d’une liste de {markup_begin}{peer_count} pair{markup_end} {time_span_ago}"
-msgstr[1] "Réception une liste de {markup_begin}{peer_count} de pairs{markup_end} {time_span_ago}"
-msgstr[2] "Réception d’une liste de {markup_begin}{peer_count} pairs{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Réception d’une liste de {markup_begin}{peer_count:L} pair{markup_end} {time_span_ago}"
+msgstr[1] "Réception une liste de {markup_begin}{peer_count:L} de pairs{markup_end} {time_span_ago}"
+msgstr[2] "Réception d’une liste de {markup_begin}{peer_count:L} pairs{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -428,8 +428,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Demande d’autres pairs {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Le traceur avait {markup_begin}{seeder_count} {seeder_or_seeders} et {leecher_count} {leecher_or_leechers}{markup_end} il y a {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Le traceur avait {markup_begin}{seeder_count:L} {seeder_or_seeders} et {leecher_count:L} {leecher_or_leechers}{markup_end} il y a {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1006,39 +1006,39 @@ msgstr "Erreur locale : « {error} »"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Téléchargement des métadonnées en provenance de {active_count} pair connecté ({percent_done} % terminés)"
-msgstr[1] "Téléchargement des métadonnées en provenance de {active_count} pairs connectés ({percent_done} % terminés)"
-msgstr[2] "Téléchargement des métadonnées en provenance de {active_count} pairs connectés ({percent_done} % terminés)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Téléchargement des métadonnées en provenance de {active_count:L} pair connecté ({percent_done} % terminés)"
+msgstr[1] "Téléchargement des métadonnées en provenance de {active_count:L} pairs connectés ({percent_done} % terminés)"
+msgstr[2] "Téléchargement des métadonnées en provenance de {active_count:L} pairs connectés ({percent_done} % terminés)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Téléchargement de {active_count} sur {connected_count} semence Web et pair connectés"
-msgstr[1] "Téléchargement de {active_count} sur {connected_count} de semences Web et pairs connectés"
-msgstr[2] "Téléchargement de {active_count} sur {connected_count} semences Web et pairs connectés"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Téléchargement de {active_count:L} sur {connected_count:L} semence Web et pair connectés"
+msgstr[1] "Téléchargement de {active_count:L} sur {connected_count:L} de semences Web et pairs connectés"
+msgstr[2] "Téléchargement de {active_count:L} sur {connected_count:L} semences Web et pairs connectés"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Téléchargement en provenance de {active_count} semence Web"
-msgstr[1] "Téléchargement en provenance de {active_count} semences Web"
-msgstr[2] "Téléchargement en provenance de {active_count} semences Web"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Téléchargement en provenance de {active_count:L} semence Web"
+msgstr[1] "Téléchargement en provenance de {active_count:L} semences Web"
+msgstr[2] "Téléchargement en provenance de {active_count:L} semences Web"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Téléchargement en provenance de {active_count} de {connected_count} pair connecté"
-msgstr[1] "Téléchargement en provenance de {active_count} de {connected_count} pairs connectés"
-msgstr[2] "Téléchargement en provenance de {active_count} de {connected_count} pairs connectés"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Téléchargement en provenance de {active_count:L} de {connected_count:L} pair connecté"
+msgstr[1] "Téléchargement en provenance de {active_count:L} de {connected_count:L} pairs connectés"
+msgstr[2] "Téléchargement en provenance de {active_count:L} de {connected_count:L} pairs connectés"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Propagation vers {active_count} sur {connected_count} pair connecté"
-msgstr[1] "Propagation vers {active_count} sur {connected_count} de pairs connectés"
-msgstr[2] "Propagation vers {active_count} sur {connected_count} pairs connectés"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Propagation vers {active_count:L} sur {connected_count:L} pair connecté"
+msgstr[1] "Propagation vers {active_count:L} sur {connected_count:L} de pairs connectés"
+msgstr[2] "Propagation vers {active_count:L} sur {connected_count:L} pairs connectés"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>No se puede añadir {count} torrent duplicado</numerusform>
-            <numerusform>No se pueden añadir {count} torrents duplicados</numerusform>
+            <numerusform>No se puede añadir {count:L} torrent duplicado</numerusform>
+            <numerusform>No se pueden añadir {count:L} torrents duplicados</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Descargando desde {active_count} de {connected_count} par conectado</numerusform>
-            <numerusform>Descargando desde {active_count} de {connected_count} pares conectados</numerusform>
+            <numerusform>Descargando desde {active_count:L} de {connected_count:L} par conectado</numerusform>
+            <numerusform>Descargando desde {active_count:L} de {connected_count:L} pares conectados</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Compartiendo a {active_count} de {connected_count} par conectado</numerusform>
-            <numerusform>Compartiendo a {active_count} de {connected_count} pares conectados</numerusform>
+            <numerusform>Compartiendo a {active_count:L} de {connected_count:L} par conectado</numerusform>
+            <numerusform>Compartiendo a {active_count:L} de {connected_count:L} pares conectados</numerusform>
         </translation>
     </message>
     <message>

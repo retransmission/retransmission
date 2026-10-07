@@ -2297,10 +2297,10 @@ Pour ajouter une nouvelle URL primaire, placez-la après une ligne vide.</transl
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Impossible d’ajouter {count}&#xa0;torrent dupliqué</numerusform>
-            <numerusform>Impossible d’ajouter {count} de torrents dupliqués</numerusform>
+            <numerusform>Impossible d’ajouter {count:L}&#xa0;torrent dupliqué</numerusform>
+            <numerusform>Impossible d’ajouter {count:L} de torrents dupliqués</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ Pour ajouter une nouvelle URL primaire, placez-la après une ligne vide.</transl
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Téléchargement à partir d’{active_count} sur {connected_count} pair connecté</numerusform>
-            <numerusform>Téléchargement à partir {active_count} sur {connected_count} pairs connectés</numerusform>
+            <numerusform>Téléchargement à partir d’{active_count:L} sur {connected_count:L} pair connecté</numerusform>
+            <numerusform>Téléchargement à partir {active_count:L} sur {connected_count:L} pairs connectés</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ Pour ajouter une nouvelle URL primaire, placez-la après une ligne vide.</transl
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Propagation vers {active_count} sur {connected_count} pair connecté</numerusform>
-            <numerusform>Propagation vers {active_count} sur {connected_count} pairs connectés</numerusform>
+            <numerusform>Propagation vers {active_count:L} sur {connected_count:L} pair connecté</numerusform>
+            <numerusform>Propagation vers {active_count:L} sur {connected_count:L} pairs connectés</numerusform>
         </translation>
     </message>
     <message>

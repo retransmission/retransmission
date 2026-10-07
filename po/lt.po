@@ -267,12 +267,12 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} „BitTorrent“ dalis po {piece_size})"
-msgstr[1] "({piece_count} „BitTorrent“ dalys po {piece_size})"
-msgstr[2] "({piece_count} „BitTorrent“ dalių po {piece_size})"
-msgstr[3] "({piece_count} „BitTorrent“ dalių po {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} „BitTorrent“ dalis po {piece_size})"
+msgstr[1] "({piece_count:L} „BitTorrent“ dalys po {piece_size})"
+msgstr[2] "({piece_count:L} „BitTorrent“ dalių po {piece_size})"
+msgstr[3] "({piece_count:L} „BitTorrent“ dalių po {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -409,8 +409,8 @@ msgid "Web Seeds"
 msgstr "Saityno skleidėjai"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -444,7 +444,7 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Paprašyta daugiau siuntėjų {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 msgstr ""
 
 #: ../gtk/DetailsDialog.cc:1858
@@ -1030,44 +1030,44 @@ msgstr "Vietinė klaida: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusio siuntėjo ir saityno skleidėjo"
-msgstr[1] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų ir saityno skleidėjų"
-msgstr[2] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų ir saityno skleidėjų"
-msgstr[3] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų ir saityno skleidėjų"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusio siuntėjo ir saityno skleidėjo"
+msgstr[1] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų ir saityno skleidėjų"
+msgstr[2] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų ir saityno skleidėjų"
+msgstr[3] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų ir saityno skleidėjų"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Atsiunčiama iš {active_count} saityno skleidėjo"
-msgstr[1] "Atsiunčiama iš {active_count} saityno skleidėjų"
-msgstr[2] "Atsiunčiama iš {active_count} saityno skleidėjų"
-msgstr[3] "Atsiunčiama iš {active_count} saityno skleidėjų"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Atsiunčiama iš {active_count:L} saityno skleidėjo"
+msgstr[1] "Atsiunčiama iš {active_count:L} saityno skleidėjų"
+msgstr[2] "Atsiunčiama iš {active_count:L} saityno skleidėjų"
+msgstr[3] "Atsiunčiama iš {active_count:L} saityno skleidėjų"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusio siuntėjo"
-msgstr[1] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų"
-msgstr[2] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų"
-msgstr[3] "Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusio siuntėjo"
+msgstr[1] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
+msgstr[2] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
+msgstr[3] "Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Skleidžiama {active_count} iš {connected_count} prisijungusio siuntėjo"
-msgstr[1] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
-msgstr[2] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
-msgstr[3] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Skleidžiama {active_count:L} iš {connected_count:L} prisijungusio siuntėjo"
+msgstr[1] "Skleidžiama {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
+msgstr[2] "Skleidžiama {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
+msgstr[3] "Skleidžiama {active_count:L} iš {connected_count:L} prisijungusių siuntėjų"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

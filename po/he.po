@@ -271,12 +271,12 @@ msgstr[2] "{total_size} ב־{file_count:L} קבצים"
 msgstr[3] "{total_size} ב־{file_count:L} קבצים"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "(חלק ביטורנט {piece_count} @ {piece_size})"
-msgstr[1] "({piece_count} חלקי ביטורנט @ {piece_size})"
-msgstr[2] "({piece_count} חלקי ביטורנט @ {piece_size})"
-msgstr[3] "({piece_count} חלקי ביטורנט @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "(חלק ביטורנט {piece_count:L} @ {piece_size})"
+msgstr[1] "({piece_count:L} חלקי ביטורנט @ {piece_size})"
+msgstr[2] "({piece_count:L} חלקי ביטורנט @ {piece_size})"
+msgstr[3] "({piece_count:L} חלקי ביטורנט @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -413,12 +413,12 @@ msgid "Web Seeds"
 msgstr "זורעי רשת"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 msgstr[0] "התקבלה רשימה של {markup_begin}עמית{markup_end} {time_span_ago}"
-msgstr[1] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
-msgstr[2] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
-msgstr[3] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
+msgstr[1] "התקבלה רשימה של {markup_begin}{peer_count:L} עמיתים{markup_end} {time_span_ago}"
+msgstr[2] "התקבלה רשימה של {markup_begin}{peer_count:L} עמיתים{markup_end} {time_span_ago}"
+msgstr[3] "התקבלה רשימה של {markup_begin}{peer_count:L} עמיתים{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -448,8 +448,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "הוגשה בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "לעוקב היו {markup_begin}{seeder_count} {seeder_or_seeders} ו־{leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "לעוקב היו {markup_begin}{seeder_count:L} {seeder_or_seeders} ו־{leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1032,44 +1032,44 @@ msgstr "שגיאה מקומית: ‚{error}’"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] "מתבצעת הורדת נתוני על מעמית מחובר ({percent_done}% הושלמו)"
-msgstr[1] "מתבצעת הורדת נתוני על מ־{active_count} עמיתים מחוברים ({percent_done}% הושלמו)"
-msgstr[2] "מתבצעת הורדת נתוני על מ־{active_count} עמיתים מחוברים ({percent_done}% הושלמו)"
-msgstr[3] "מתבצעת הורדת נתוני על מ־{active_count} עמיתים מחוברים ({percent_done}% הושלמו)"
+msgstr[1] "מתבצעת הורדת נתוני על מ־{active_count:L} עמיתים מחוברים ({percent_done}% הושלמו)"
+msgstr[2] "מתבצעת הורדת נתוני על מ־{active_count:L} עמיתים מחוברים ({percent_done}% הושלמו)"
+msgstr[3] "מתבצעת הורדת נתוני על מ־{active_count:L} עמיתים מחוברים ({percent_done}% הושלמו)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמית מחובר וזורע יעודי"
-msgstr[1] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים וזורעים יעודיים"
-msgstr[2] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים וזורעים יעודיים"
-msgstr[3] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים וזורעים יעודיים"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} עמית מחובר וזורע יעודי"
+msgstr[1] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} עמיתים מחוברים וזורעים יעודיים"
+msgstr[2] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} עמיתים מחוברים וזורעים יעודיים"
+msgstr[3] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} עמיתים מחוברים וזורעים יעודיים"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
 msgstr[0] "מתבצעת הורדה מזורע יעודי"
-msgstr[1] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
-msgstr[2] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
-msgstr[3] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
+msgstr[1] "מתבצעת הורדה מ־{active_count:L} זורעים יעודיים"
+msgstr[2] "מתבצעת הורדה מ־{active_count:L} זורעים יעודיים"
+msgstr[3] "מתבצעת הורדה מ־{active_count:L} זורעים יעודיים"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] "מתבצעת הורדה מהעמית המחובר"
-msgstr[1] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
-msgstr[2] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
-msgstr[3] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
+msgstr[1] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} העמיתים המחוברים"
+msgstr[2] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} העמיתים המחוברים"
+msgstr[3] "מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} העמיתים המחוברים"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "מתבצעת זריעה אל {active_count} מתוך עמית מחובר"
-msgstr[1] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[2] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[3] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "מתבצעת זריעה אל {active_count:L} מתוך עמית מחובר"
+msgstr[1] "מתבצעת זריעה אל {active_count:L} מתוך {connected_count:L} עמיתים מחוברים"
+msgstr[2] "מתבצעת זריעה אל {active_count:L} מתוך {connected_count:L} עמיתים מחוברים"
+msgstr[3] "מתבצעת זריעה אל {active_count:L} מתוך {connected_count:L} עמיתים מחוברים"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"
