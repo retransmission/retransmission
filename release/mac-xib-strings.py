@@ -122,6 +122,12 @@ def unquote(quoted):
     return re.sub(r'\\(.)', unescape, match[1])
 
 
+def write_strings_file(path, lines):
+    """Writes a .strings file from its "key" = "value"; lines.
+    Cocoa can't read a zero-length .strings file, so one with no entries holds a comment."""
+    pathlib.Path(path).write_text(''.join(lines) or '/* No entries */\n', encoding='utf-8')
+
+
 def po_messages(po_path):
     """Yields each message of a .po or .pot file as its fields, e.g. {'msgid': 'Open', 'msgstr': 'Öffnen'};
     a plural message's translations are 'msgstr[0]', 'msgstr[1]' and so on,
@@ -171,8 +177,7 @@ def write_strings(po_path, folder, xib_paths):
             if translation:
                 lines.append(f'{quote(key)} = {quote(translation)};\n')
 
-        strings_path = pathlib.Path(folder) / (pathlib.Path(xib_path).stem + '.strings')
-        strings_path.write_text(''.join(lines), encoding='utf-8')
+        write_strings_file(pathlib.Path(folder) / (pathlib.Path(xib_path).stem + '.strings'), lines)
 
 
 def its_texts(its_path, xib_path):
@@ -212,7 +217,7 @@ def write_localizable(po_path, folder):
         for text, translation in po_translations(po_path).items()
         if not is_format_string(text)
     ]
-    (pathlib.Path(folder) / 'Localizable.strings').write_text(''.join(lines), encoding='utf-8')
+    write_strings_file(pathlib.Path(folder) / 'Localizable.strings', lines)
 
 
 # What joins a message's context to its English text in a Contexts.strings key, as in a compiled catalog.
@@ -226,7 +231,7 @@ def write_contexts(po_path, folder):
         if 'msgctxt' in fields and 'msgid_plural' not in fields and fields['msgstr']
         and not is_format_string(fields['msgid'])
     ]
-    (pathlib.Path(folder) / 'Contexts.strings').write_text(''.join(lines), encoding='utf-8')
+    write_strings_file(pathlib.Path(folder) / 'Contexts.strings', lines)
 
 
 # Enough of C's tokens to find calls and their string literals.
@@ -773,7 +778,7 @@ def write_formats(declarations_path, categories_path, po_path, folder):
 
     folder = pathlib.Path(folder)
     lines = [f'{quote(key)} = {quote(text)};\n' for key, (text, _line, _declaration) in strings.items() if text]
-    (folder / 'Formats.strings').write_text(''.join(lines), encoding='utf-8')
+    write_strings_file(folder / 'Formats.strings', lines)
     with open(folder / 'Formats.stringsdict', 'wb') as stringsdict:
         plistlib.dump({key: entry for key, (entry, _line, _declaration) in plurals.items()}, stringsdict)
 
