@@ -457,8 +457,8 @@ static NSMutableSet* creatorWindowControllerSet;
 
     self.fPiecesField.stringValue = TR_FORMAT_N(
         // Translators: Create torrent -> info
-        "{count} piece, {size}",
-        "{count} pieces, {size} each",
+        "{count:L} piece, {size}",
+        "{count:L} pieces, {size} each",
         piece_count,
         TRArg("count", piece_count),
         TRArg("size", [NSString stringForFileSize:piece_size]));

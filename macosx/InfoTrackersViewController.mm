@@ -139,7 +139,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
             // Translators: Inspector -> tracker table
             NSLocalizedString(@"New Tier", nil) :
             // Translators: Inspector -> tracker table
-            TR_FORMAT("Tier {tier}", TRArg("tier", tier));
+            TR_FORMAT("Tier {tier:d}", TRArg("tier", tier));
 
         if (self.fTorrents.count > 1) {
             tierString = [tierString stringByAppendingFormat:@" - %@", item[@"Name"]];

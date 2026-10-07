@@ -3221,12 +3221,12 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} часть, {size}"
-msgstr[1] "{count} частей, {size} каждая"
-msgstr[2] "{count} частей, {size} каждая"
-msgstr[3] "{count} частей, {size} каждая"
+msgid "{count:L} piece, {size}"
+msgid_plural "{count:L} pieces, {size} each"
+msgstr[0] "{count:L} часть, {size}"
+msgstr[1] "{count:L} частей, {size} каждая"
+msgstr[2] "{count:L} частей, {size} каждая"
+msgstr[3] "{count:L} частей, {size} каждая"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Выберите папку или файл для торрента."
@@ -3500,8 +3500,8 @@ msgid "New Tier"
 msgstr "Новый уровень"
 
 #. Translators: Inspector -> tracker table
-msgid "Tier {tier}"
-msgstr "{tier} уровень"
+msgid "Tier {tier:d}"
+msgstr "{tier:d} уровень"
 
 msgid "Are you sure you want to remove {count:L} tracker?"
 msgid_plural "Are you sure you want to remove {count:L} trackers?"

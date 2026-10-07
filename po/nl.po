@@ -3177,10 +3177,10 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} fragment, {size}"
-msgstr[1] "{count} fragmenten, {size} elk"
+msgid "{count:L} piece, {size}"
+msgid_plural "{count:L} pieces, {size} each"
+msgstr[0] "{count:L} fragment, {size}"
+msgstr[1] "{count:L} fragmenten, {size} elk"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Selecteer een bestand of map voor het torrentbestand."
@@ -3460,7 +3460,7 @@ msgid "New Tier"
 msgstr "Nieuwe tier"
 
 #. Translators: Inspector -> tracker table
-msgid "Tier {tier}"
+msgid "Tier {tier:d}"
 msgstr ""
 
 msgid "Are you sure you want to remove {count:L} tracker?"
