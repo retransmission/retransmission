@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-"""Writes the .strings files that AppKit translates the Mac client's xib files with.
+"""Writes the .strings files that translate the Mac client.
 
-A .strings file maps each element's ID to its text,
-while the catalog that the clients share maps English text to its translation.
+The catalog that the clients share maps English text to its translation.
+A xib's .strings file maps each element's ID to its text instead;
 xgettext extracts a xib's English text into the catalog with the rules in po/its/xib.its.
+Localizable.strings maps English text to its translation, as the catalog does,
+for the plain text that the code looks up with NSLocalizedString().
 
   mac-xib-strings.py strings <po> <folder> <xib>...
       Writes each xib's .strings file for the .po file's language into the folder.
@@ -14,7 +16,11 @@ xgettext extracts a xib's English text into the catalog with the rules in po/its
       Fails unless the ITS rules select the same text in each xib as this script writes entries for.
       Text that only one of them finds would stay in English.
 
-The entries are the ones that `ibtool --generate-strings-file` writes;
+  mac-xib-strings.py localizable <po> <folder>
+      Writes the .po file's Localizable.strings into the folder:
+      the translation of each message that has no context, no plural and no {fmt} field.
+
+The xib entries are the ones that `ibtool --generate-strings-file` writes;
 this reads them out of the xib's XML so that it can run where ibtool cannot.
 A .po file that this cannot read fails with an error, rather than leaving text in English.
 """
@@ -154,12 +160,29 @@ def check(its_path, xib_paths):
     return ok
 
 
+def is_format_string(text):
+    """Whether text is a {fmt} format string, which the code looks up with TR_FORMAT rather than NSLocalizedString().
+    Every message whose English text has a brace is one."""
+    return '{' in text or '}' in text
+
+
+def write_localizable(po_path, folder):
+    lines = [
+        f'{quote(text)} = {quote(translation)};\n'
+        for text, translation in po_translations(po_path).items()
+        if not is_format_string(text)
+    ]
+    (pathlib.Path(folder) / 'Localizable.strings').write_text(''.join(lines), encoding='utf-8')
+
+
 def main(argv):
     try:
         if len(argv) >= 5 and argv[1] == 'strings':
             write_strings(argv[2], argv[3], argv[4:])
         elif len(argv) >= 4 and argv[1] == 'check':
             sys.exit(0 if check(argv[2], argv[3:]) else 1)
+        elif len(argv) == 4 and argv[1] == 'localizable':
+            write_localizable(argv[2], argv[3])
         else:
             sys.exit(__doc__)
     except ValueError as error:

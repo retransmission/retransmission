@@ -150,12 +150,14 @@ jobs:
         run: release/find-broken-translations.py
       - name: Check that the xib strings cover the text that xgettext extracts
         run: release/mac-xib-strings.py check po/its/xib.its macosx/Base.lproj/*.xib
-      - name: Check that the xib strings generate
+      - name: Check that the Mac .strings files generate
         run: |
           for po in po/*.po; do
             release/mac-xib-strings.py strings "$po" "$RUNNER_TEMP" macosx/Base.lproj/*.xib
+            release/mac-xib-strings.py localizable "$po" "$RUNNER_TEMP"
           done
           test -s "$RUNNER_TEMP/MainMenu.strings"
+          test -s "$RUNNER_TEMP/Localizable.strings"
 
   sanitizer-tests-linux:
     runs-on: ubuntu-latest

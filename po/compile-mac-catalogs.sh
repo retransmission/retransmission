@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Compiles each language's catalog into the Mac app's bundle,
-# along with the .strings files that AppKit translates the xibs with.
+# along with the .strings files that AppKit translates the xibs with
+# and the Localizable.strings that NSLocalizedString() looks up plain text in.
 # Both builds of the app run this once the bundle exists:
 #   compile-mac-catalogs.sh <the bundle's Resources folder>
 # AppKit picks the app's language from the <language>.lproj folders that these go into.
@@ -35,5 +36,6 @@ for LPROJ in macosx/*.lproj; do
     # The app looks for a catalog named after the gettext domain, which is the app's name.
     "$MSGFMT" --output-file="$RESOURCES/$LANGUAGE.lproj/retransmission.mo" "$PO"
     "$PYTHON3" release/mac-xib-strings.py strings "$PO" "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
+    "$PYTHON3" release/mac-xib-strings.py localizable "$PO" "$RESOURCES/$LANGUAGE.lproj"
   fi
 done

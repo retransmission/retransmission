@@ -414,7 +414,7 @@ target_link_libraries(${TR_NAME}-mac
         "-weak_framework UniformTypeIdentifiers"
         "-weak_framework UserNotifications")
 
-# Each language's catalog and xib .strings files go into its .lproj folder once the bundle is linked.
+# Each language's catalog and .strings files go into its .lproj folder once the bundle is linked.
 # The Xcode project's app target runs the same script.
 # The app is relinked when a translation or a xib changes, so that the script runs again.
 if(BUILD_CATALOGS)
