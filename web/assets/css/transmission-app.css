@@ -1286,18 +1286,23 @@ a {
       grid-template-areas:
         'check  text'
         'turtle parentheses';
-    }
 
-    :nth-child(1) {
-      grid-area: check;
+      > :nth-child(1) {
+        grid-area: check;
 
-      &:not(:checked) ~ #alt-speed-image {
-        filter: var(--filter-turtle-off);
+        &:not(:checked) ~ #alt-speed-image {
+          filter: var(--filter-turtle-off);
+        }
       }
-    }
 
-    :nth-child(2) {
-      grid-area: text;
+      > :nth-child(2) {
+        grid-area: text;
+      }
+
+      > :nth-child(4) {
+        font-size: small;
+        grid-area: parentheses;
+      }
     }
 
     #alt-speed-image {
@@ -1305,11 +1310,6 @@ a {
       filter: var(--filter-turtle-on);
       grid-area: turtle;
       height: 18px;
-    }
-
-    :nth-child(4) {
-      font-size: small;
-      grid-area: parentheses;
     }
   }
 }
