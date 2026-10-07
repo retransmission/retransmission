@@ -6,7 +6,6 @@
 #import "NSImageAdditions.h"
 #import "NSMutableArrayAdditions.h"
 #import "TRGroup.h"
-#import "L10n.h"
 
 static CGFloat const kIconWidth = 16.0;
 static CGFloat const kBorderWidth = 1.25;
@@ -100,19 +99,19 @@ static CGFloat const kIconWidthSmall = 12.0;
         if (_fGroups == nil) {
             NSArray* defaultGroups = @[
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:0 name:TR_TEXT("Red") color:NSColor.systemRedColor],
+                [[TRGroup alloc] initWithIndex:0 name:NSLocalizedString(@"Red", nil) color:NSColor.systemRedColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:1 name:TR_TEXT("Orange") color:NSColor.systemOrangeColor],
+                [[TRGroup alloc] initWithIndex:1 name:NSLocalizedString(@"Orange", nil) color:NSColor.systemOrangeColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:2 name:TR_TEXT("Yellow") color:NSColor.systemYellowColor],
+                [[TRGroup alloc] initWithIndex:2 name:NSLocalizedString(@"Yellow", nil) color:NSColor.systemYellowColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:3 name:TR_TEXT("Green") color:NSColor.systemGreenColor],
+                [[TRGroup alloc] initWithIndex:3 name:NSLocalizedString(@"Green", nil) color:NSColor.systemGreenColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:4 name:TR_TEXT("Blue") color:NSColor.systemBlueColor],
+                [[TRGroup alloc] initWithIndex:4 name:NSLocalizedString(@"Blue", nil) color:NSColor.systemBlueColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:5 name:TR_TEXT("Purple") color:NSColor.systemPurpleColor],
+                [[TRGroup alloc] initWithIndex:5 name:NSLocalizedString(@"Purple", nil) color:NSColor.systemPurpleColor],
                 // Translators: Groups -> Name
-                [[TRGroup alloc] initWithIndex:6 name:TR_TEXT("Gray") color:NSColor.systemGrayColor],
+                [[TRGroup alloc] initWithIndex:6 name:NSLocalizedString(@"Gray", nil) color:NSColor.systemGrayColor],
             ];
             _fGroups = [defaultGroups mutableCopy];
 
@@ -374,7 +373,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 
     // Add the default placeholder item "None" (-1)
     // Translators: Groups -> Menu
-    addItemWithTitleTagIcon(TR_TEXT("None"), -1, [self imageForGroupNone]);
+    addItemWithTitleTagIcon(NSLocalizedString(@"None", nil), -1, [self imageForGroupNone]);
 
     for (TRGroup* group in self.fGroups) {
         addItemWithTitleTagIcon(group.name, group.groupIndex, [self imageForGroup:group]);

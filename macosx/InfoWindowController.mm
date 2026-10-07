@@ -73,7 +73,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 {
     [super awakeFromNib];
     // Translators: Inspector -> selected torrents
-    self.fNoneSelectedField.stringValue = TR_TEXT("No Torrents Selected");
+    self.fNoneSelectedField.stringValue = NSLocalizedString(@"No Torrents Selected", nil);
 
     //window location and size
     NSPanel* window = (NSPanel*)self.window;
@@ -109,32 +109,32 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Information"),
+        NSLocalizedString(@"Information", nil),
         TabTagGeneral);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"square.grid.3x3.fill.square" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Activity"),
+        NSLocalizedString(@"Activity", nil),
         TabTagActivity);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"antenna.radiowaves.left.and.right" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Trackers"),
+        NSLocalizedString(@"Trackers", nil),
         TabTagTrackers);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"person.2" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Peers"),
+        NSLocalizedString(@"Peers", nil),
         TabTagPeers);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"doc.on.doc" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Files"),
+        NSLocalizedString(@"Files", nil),
         TabTagFile);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"gearshape" accessibilityDescription:nil],
         // Translators: Inspector -> tab
-        TR_TEXT("Options"),
+        NSLocalizedString(@"Options", nil),
         TabTagOptions);
 
     //set selected tab
@@ -324,7 +324,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     window.title = [NSString
         // Translators: Inspector -> title
-        stringWithFormat:@"%@ — %@", self.fViewController.title, TR_TEXT("Inspector")];
+        stringWithFormat:@"%@ — %@", self.fViewController.title, NSLocalizedString(@"Inspector", nil)];
 
     NSView* view = self.fViewController.view;
 
@@ -561,7 +561,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
             self.fBasicInfoField.toolTip = [formatter stringFromByteCount:torrent.size];
         } else {
             // Translators: Inspector -> selected torrents
-            self.fBasicInfoField.stringValue = TR_TEXT("Magnetized torrent");
+            self.fBasicInfoField.stringValue = NSLocalizedString(@"Magnetized torrent", nil);
             self.fBasicInfoField.toolTip = nil;
         }
         self.fBasicInfoField.hidden = NO;

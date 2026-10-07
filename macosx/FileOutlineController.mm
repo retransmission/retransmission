@@ -12,7 +12,6 @@
 #import "FileRenameSheetController.h"
 #import "NSMutableArrayAdditions.h"
 #import "NSStringAdditions.h"
-#import "L10n.h"
 
 static CGFloat const kRowSmallHeight = 18.0;
 
@@ -46,9 +45,9 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //set table header tool tips
     // Translators: file table -> header tool tip
-    [self.fOutline tableColumnWithIdentifier:@"Check"].headerToolTip = TR_TEXT("Download");
+    [self.fOutline tableColumnWithIdentifier:@"Check"].headerToolTip = NSLocalizedString(@"Download", nil);
     // Translators: file table -> header tool tip
-    [self.fOutline tableColumnWithIdentifier:@"Priority"].headerToolTip = TR_TEXT("Priority");
+    [self.fOutline tableColumnWithIdentifier:@"Priority"].headerToolTip = NSLocalizedString(@"Priority", nil);
 
     self.fOutline.menu = self.menu;
 
@@ -518,7 +517,8 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //check and uncheck
     // Translators: File Outline -> Menu
-    NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Check Selected") action:@selector(setCheck:) keyEquivalent:@""];
+    NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Check Selected", nil) action:@selector(setCheck:)
+                                           keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"checkmark.circle" accessibilityDescription:nil];
     }
@@ -527,7 +527,8 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     [menu addItem:item];
 
     // Translators: File Outline -> Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Uncheck Selected") action:@selector(setCheck:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Uncheck Selected", nil) action:@selector(setCheck:)
+                               keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"circle" accessibilityDescription:nil];
     }
@@ -537,7 +538,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //only check selected
     // Translators: File Outline -> Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Only Check Selected") action:@selector(setOnlySelectedCheck:)
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Only Check Selected", nil) action:@selector(setOnlySelectedCheck:)
                                keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"checkmark.circle.dotted" accessibilityDescription:nil];
@@ -549,7 +550,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //priority
     // Translators: File Outline -> Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Priority") action:NULL keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Priority", nil) action:NULL keyEquivalent:@""];
     NSMenu* priorityMenu = [[NSMenu alloc] initWithTitle:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"chevron.up.chevron.down" accessibilityDescription:nil];
@@ -558,21 +559,21 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     [menu addItem:item];
 
     // Translators: File Outline -> Priority Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("High") action:@selector(setPriority:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"High", nil) action:@selector(setPriority:) keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagHigh;
     item.image = [NSImage imageNamed:@"PriorityHighTemplate"];
     [priorityMenu addItem:item];
 
     // Translators: File Outline -> Priority Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Normal") action:@selector(setPriority:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Normal", nil) action:@selector(setPriority:) keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagNormal;
     item.image = [NSImage imageNamed:@"PriorityNormalTemplate"];
     [priorityMenu addItem:item];
 
     // Translators: File Outline -> Priority Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Low") action:@selector(setPriority:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Low", nil) action:@selector(setPriority:) keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagLow;
     item.image = [NSImage imageNamed:@"PriorityLowTemplate"];
@@ -582,7 +583,8 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //reveal in finder
     // Translators: File Outline -> Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Show in Finder") action:@selector(revealFile:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Show in Finder", nil) action:@selector(revealFile:)
+                               keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"finder" accessibilityDescription:nil];
     }
@@ -593,7 +595,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
     //rename
     // Translators: File Outline -> Menu
-    item = [[NSMenuItem alloc] initWithTitle:TR_TEXT("Rename…") action:@selector(renameSelected:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Rename…", nil) action:@selector(renameSelected:) keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"pencil" accessibilityDescription:nil];
     }

@@ -8,7 +8,6 @@
 #import "GroupsController.h"
 #import "ExpandedPathToPathTransformer.h"
 #import "ExpandedPathToIconTransformer.h"
-#import "L10n.h"
 
 static NSString* const kGroupTableViewDataType = @"GroupTableViewDataType";
 
@@ -196,7 +195,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
     // Translators: Preferences -> Open panel prompt
-    panel.prompt = TR_TEXT("Select");
+    panel.prompt = NSLocalizedString(@"Select", nil);
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;

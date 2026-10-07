@@ -108,11 +108,6 @@ void TRSetUpLocalization()
     }
 }
 
-NSString* TRText(char const* const msgid)
-{
-    return tr_strv_to_utf8_nsstring(tr_gettext(msgid));
-}
-
 NSString* TRTextInContext(char const* const context, char const* const msgid)
 {
     return tr_strv_to_utf8_nsstring(tr_pgettext(context, msgid));

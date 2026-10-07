@@ -54,17 +54,17 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [super awakeFromNib];
     //localizations
     // Translators: Filter Bar -> filter button
-    self.fNoFilterButton.title = TR_TEXT("All");
+    self.fNoFilterButton.title = NSLocalizedString(@"All", nil);
     // Translators: Filter Bar -> filter button
-    self.fActiveFilterButton.title = TR_TEXT("Active");
+    self.fActiveFilterButton.title = NSLocalizedString(@"Active", nil);
     // Translators: Filter Bar -> filter button
     self.fDownloadFilterButton.title = TR_TEXT_C("Verb", "Downloading");
     // Translators: Filter Bar -> filter button
     self.fSeedFilterButton.title = TR_TEXT_C("Verb", "Seeding");
     // Translators: Filter Bar -> filter button
-    self.fPauseFilterButton.title = TR_TEXT("Paused");
+    self.fPauseFilterButton.title = NSLocalizedString(@"Paused", nil);
     // Translators: Filter Bar -> filter button
-    self.fErrorFilterButton.title = TR_TEXT("Error");
+    self.fErrorFilterButton.title = NSLocalizedString(@"Error", nil);
 
     self.fNoFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fActiveFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
@@ -74,12 +74,12 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     self.fErrorFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
 
     // Translators: Filter Bar -> filter menu
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagName].title = TR_TEXT("Name");
+    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagName].title = NSLocalizedString(@"Name", nil);
     // Translators: Filter Bar -> filter menu
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagTracker].title = TR_TEXT("Tracker");
+    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagTracker].title = NSLocalizedString(@"Tracker", nil);
 
     // Translators: Filter Bar -> group filter menu
-    [self.fGroupsButton.menu itemWithTag:kGroupFilterAllTag].title = TR_TEXT("All Groups");
+    [self.fGroupsButton.menu itemWithTag:kGroupFilterAllTag].title = NSLocalizedString(@"All Groups", nil);
 
     //set current filter
     NSString* filterType = [NSUserDefaults.standardUserDefaults stringForKey:@"Filter"];
@@ -357,14 +357,14 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     if (groupIndex == kGroupFilterAllTag) {
         icon = [NSImage imageNamed:@"PinTemplate"];
         // Translators: Groups -> Button
-        toolTip = TR_TEXT("All Groups");
+        toolTip = NSLocalizedString(@"All Groups", nil);
     } else {
         icon = [GroupsController.groups imageForIndex:groupIndex];
         NSString* groupName = groupIndex != -1 ? [GroupsController.groups nameForIndex:groupIndex] :
                                                  // Translators: Groups -> Button
-                                                 TR_TEXT("None");
+                                                 NSLocalizedString(@"None", nil);
         // Translators: Groups -> Button
-        toolTip = [TR_TEXT("Group") stringByAppendingFormat:@": %@", groupName];
+        toolTip = [NSLocalizedString(@"Group", nil) stringByAppendingFormat:@": %@", groupName];
     }
 
     [self.fGroupsButton.menu itemAtIndex:0].image = icon;

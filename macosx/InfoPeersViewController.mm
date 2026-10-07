@@ -40,7 +40,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 {
     if ((self = [super initWithNibName:@"InfoPeersView" bundle:nil])) {
         // Translators: Inspector view -> title
-        self.title = TR_TEXT("Peers");
+        self.title = NSLocalizedString(@"Peers", nil);
     }
 
     return self;
@@ -58,32 +58,32 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
     //set table header text
     // Translators: inspector -> peer table -> header
-    [self.fPeerTable tableColumnWithIdentifier:@"IP"].headerCell.stringValue = TR_TEXT("Address");
+    [self.fPeerTable tableColumnWithIdentifier:@"IP"].headerCell.stringValue = NSLocalizedString(@"Address", nil);
     // Translators: inspector -> peer table -> header
-    [self.fPeerTable tableColumnWithIdentifier:@"Client"].headerCell.stringValue = TR_TEXT("Client");
+    [self.fPeerTable tableColumnWithIdentifier:@"Client"].headerCell.stringValue = NSLocalizedString(@"Client", nil);
     // Translators: inspector -> peer table -> header
-    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = TR_TEXT("Down");
+    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = NSLocalizedString(@"Down", nil);
     // Translators: inspector -> peer table -> header
-    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerCell.stringValue = TR_TEXT("Up");
+    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerCell.stringValue = NSLocalizedString(@"Up", nil);
 
     // Translators: inspector -> web seed table -> header
-    [self.fWebSeedTable tableColumnWithIdentifier:@"Address"].headerCell.stringValue = TR_TEXT("Web Seeds");
+    [self.fWebSeedTable tableColumnWithIdentifier:@"Address"].headerCell.stringValue = NSLocalizedString(@"Web Seeds", nil);
     // Translators: inspector -> web seed table -> header
-    [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = TR_TEXT("Down");
+    [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = NSLocalizedString(@"Down", nil);
 
     //set table header tool tips
     // Translators: inspector -> peer table -> header tool tip
-    [self.fPeerTable tableColumnWithIdentifier:@"Encryption"].headerToolTip = TR_TEXT("Encrypted connection");
+    [self.fPeerTable tableColumnWithIdentifier:@"Encryption"].headerToolTip = NSLocalizedString(@"Encrypted connection", nil);
     // Translators: inspector -> peer table -> header tool tip
-    [self.fPeerTable tableColumnWithIdentifier:@"Progress"].headerToolTip = TR_TEXT("Available");
+    [self.fPeerTable tableColumnWithIdentifier:@"Progress"].headerToolTip = NSLocalizedString(@"Available", nil);
     // Translators: inspector -> peer table -> header tool tip
-    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerToolTip = TR_TEXT("Downloading from peer");
+    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(@"Downloading from peer", nil);
     // Translators: inspector -> peer table -> header tool tip
-    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerToolTip = TR_TEXT("Uploading to peer");
+    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerToolTip = NSLocalizedString(@"Uploading to peer", nil);
 
-    [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerToolTip = TR_TEXT("Downloading from web seed");
+    [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(@"Downloading from web seed", nil);
 
-    self.fConnectedPeersField.placeholderString = TR_TEXT("no peer info available");
+    self.fConnectedPeersField.placeholderString = NSLocalizedString(@"no peer info available", nil);
 
     //prepare for animating peer table and web seed table
     self.fViewTopMargin = self.fWebSeedTableTopConstraint.constant;
@@ -233,10 +233,10 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         NSString* notActiveString;
         if (self.fTorrents.count == 1) {
             // Translators: Inspector -> Peers tab -> peers
-            notActiveString = TR_TEXT("Torrent Not Active");
+            notActiveString = NSLocalizedString(@"Torrent Not Active", nil);
         } else {
             // Translators: Inspector -> Peers tab -> peers
-            notActiveString = TR_TEXT("Torrents Not Active");
+            notActiveString = NSLocalizedString(@"Torrents Not Active", nil);
         }
 
         self.fConnectedPeersField.stringValue = notActiveString;
@@ -245,7 +245,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     NSString* knownText = [self connectedTextFrom:knownTracker:knownIncoming:knownCache:knownLpd:knownPex:knownDht:knownLtep];
     if (totalKnown <= 1) {
         // Translators: Inspector -> Peers tab -> peers
-        self.fConnectedPeersField.toolTip = [TR_TEXT("Known:") stringByAppendingFormat:@" %@", totalKnown > 0 ? knownText : @"0"];
+        self.fConnectedPeersField.toolTip = [NSLocalizedString(@"Known:", nil)
+            stringByAppendingFormat:@" %@", totalKnown > 0 ? knownText : @"0"];
     } else {
         // Translators: Inspector -> Peers tab -> peers
         self.fConnectedPeersField.toolTip = [TR_FORMAT("{count:L} Known:", TRArg("count", totalKnown))
@@ -406,7 +407,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         if (progress < 1.0 && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
                 // Translators: Inspector -> Peers tab -> table row tooltip
-                stringByAppendingFormat:@" (%@)", TR_TEXT("Partial seed")];
+                stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial seed", nil)];
         }
         [components addObject:progressString];
 
@@ -414,7 +415,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         if ([peer[@"Encryption"] boolValue]) {
             protocolString = [protocolString
                 // Translators: Inspector -> Peers tab -> table row tooltip
-                stringByAppendingFormat:@" (%@)", TR_TEXT("encrypted")];
+                stringByAppendingFormat:@" (%@)", NSLocalizedString(@"encrypted", nil)];
         }
         // Translators: Inspector -> Peers tab -> table row tooltip
         [components addObject:TR_FORMAT("Protocol: {protocol}", TRArg("protocol", protocolString))];
@@ -425,7 +426,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
             portString = [NSString stringWithFormat:@"%ld", port];
         } else {
             // Translators: Inspector -> Peers tab -> table row tooltip
-            portString = TR_TEXT("N/A");
+            portString = NSLocalizedString(@"N/A", nil);
         }
         // Translators: Inspector -> Peers tab -> table row tooltip
         [components addObject:TR_FORMAT("Port: {port}", TRArg("port", portString))];
@@ -433,25 +434,25 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         NSInteger const peerFrom = [peer[@"From"] integerValue];
         switch (peerFrom) {
         case TR_PEER_FROM_TRACKER:
-            [components addObject:TR_TEXT("Peer was found through a tracker")];
+            [components addObject:NSLocalizedString(@"Peer was found through a tracker", nil)];
             break;
         case TR_PEER_FROM_INCOMING:
-            [components addObject:TR_TEXT("Peer is an incoming connection")];
+            [components addObject:NSLocalizedString(@"Peer is an incoming connection", nil)];
             break;
         case TR_PEER_FROM_RESUME:
-            [components addObject:TR_TEXT("Peer was found in the cache")];
+            [components addObject:NSLocalizedString(@"Peer was found in the cache", nil)];
             break;
         case TR_PEER_FROM_LPD:
-            [components addObject:TR_TEXT("Peer was found through Local Peer Discovery (LPD)")];
+            [components addObject:NSLocalizedString(@"Peer was found through Local Peer Discovery (LPD)", nil)];
             break;
         case TR_PEER_FROM_PEX:
-            [components addObject:TR_TEXT("Peer was found through Peer Exchange (PEX)")];
+            [components addObject:NSLocalizedString(@"Peer was found through Peer Exchange (PEX)", nil)];
             break;
         case TR_PEER_FROM_DHT:
-            [components addObject:TR_TEXT("Peer was found through DHT")];
+            [components addObject:NSLocalizedString(@"Peer was found through DHT", nil)];
             break;
         case TR_PEER_FROM_LTEP:
-            [components addObject:TR_TEXT("Peer was found through a libtorrent extension protocol handshake")];
+            [components addObject:NSLocalizedString(@"Peer was found through a libtorrent extension protocol handshake", nil)];
             break;
         default:
             NSAssert1(NO, @"Peer from unknown source: %ld", peerFrom);
@@ -462,23 +463,23 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         NSString* flags = peer[@"Flags"];
 
         if ([flags rangeOfString:@"D"].location != NSNotFound) {
-            [statusArray addObject:TR_TEXT("Downloading from this peer")];
+            [statusArray addObject:NSLocalizedString(@"Downloading from this peer", nil)];
         }
         if ([flags rangeOfString:@"d"].location != NSNotFound) {
-            [statusArray addObject:TR_TEXT("We would download from this peer if they would let us")];
+            [statusArray addObject:NSLocalizedString(@"We would download from this peer if they would let us", nil)];
         }
         if ([flags rangeOfString:@"U"].location != NSNotFound) {
             // Translators: Inspector -> peer -> status
-            [statusArray addObject:TR_TEXT("Uploading to peer")];
+            [statusArray addObject:NSLocalizedString(@"Uploading to peer", nil)];
         }
         if ([flags rangeOfString:@"u"].location != NSNotFound) {
-            [statusArray addObject:TR_TEXT("This peer would download from us if we would let them")];
+            [statusArray addObject:NSLocalizedString(@"This peer would download from us if we would let them", nil)];
         }
         if ([flags rangeOfString:@"K"].location != NSNotFound) {
-            [statusArray addObject:TR_TEXT("Peer has unchoked us, but we're not interested")];
+            [statusArray addObject:NSLocalizedString(@"Peer has unchoked us, but we're not interested", nil)];
         }
         if ([flags rangeOfString:@"?"].location != NSNotFound) {
-            [statusArray addObject:TR_TEXT("We unchoked this peer, but they're not interested")];
+            [statusArray addObject:NSLocalizedString(@"We unchoked this peer, but they're not interested", nil)];
         }
 
         if (statusArray.count > 0) {

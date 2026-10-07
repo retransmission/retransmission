@@ -109,16 +109,16 @@
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastAnnounceTime]];
     } else {
         // Translators: Tracker last announce
-        dateString = TR_TEXT("N/A");
+        dateString = NSLocalizedString(@"N/A", nil);
     }
 
     NSString* baseString;
     if (self.fStat.hasAnnounced && self.fStat.lastAnnounceTimedOut) {
         // Translators: Tracker last announce
-        baseString = [TR_TEXT("Announce timed out") stringByAppendingFormat:@": %@", dateString];
+        baseString = [NSLocalizedString(@"Announce timed out", nil) stringByAppendingFormat:@": %@", dateString];
     } else if (self.fStat.hasAnnounced && !self.fStat.lastAnnounceSucceeded) {
         // Translators: Tracker last announce
-        baseString = TR_TEXT("Announce error");
+        baseString = NSLocalizedString(@"Announce error", nil);
 
         NSString* errorString = @(self.fStat.lastAnnounceResult);
         if ([errorString isEqualToString:@""]) {
@@ -128,7 +128,7 @@
         }
     } else {
         // Translators: Tracker last announce
-        baseString = [TR_TEXT("Last Announce") stringByAppendingFormat:@": %@", dateString];
+        baseString = [NSLocalizedString(@"Last Announce", nil) stringByAppendingFormat:@": %@", dateString];
         if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0) {
             auto const peerCount = self.fStat.lastAnnouncePeerCount;
             // Translators: Tracker last announce
@@ -145,7 +145,7 @@
     switch (self.fStat.announceState) {
     case TR_TRACKER_ACTIVE:
         // Translators: Tracker next announce
-        return [TR_TEXT("Announce in progress") stringByAppendingEllipsis];
+        return [NSLocalizedString(@"Announce in progress", nil) stringByAppendingEllipsis];
 
     case TR_TRACKER_WAITING:
         {
@@ -164,12 +164,12 @@
             return TR_FORMAT("Next announce in {time_span}", TRArg("time_span", timeString));
         }
     case TR_TRACKER_QUEUED:
-        return [TR_TEXT("Queued to ask for more peers") stringByAppendingEllipsis];
+        return [NSLocalizedString(@"Queued to ask for more peers", nil) stringByAppendingEllipsis];
 
     case TR_TRACKER_INACTIVE:
-        return self.fStat.isBackup ? TR_TEXT("Tracker will be used as a backup") :
+        return self.fStat.isBackup ? NSLocalizedString(@"Tracker will be used as a backup", nil) :
                                      // Translators: Tracker next announce
-                                     TR_TEXT("No updates scheduled");
+                                     NSLocalizedString(@"No updates scheduled", nil);
 
     default:
         NSAssert1(NO, @"unknown announce state: %d", self.fStat.announceState);
@@ -184,16 +184,16 @@
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastScrapeTime]];
     } else {
         // Translators: Tracker last scrape
-        dateString = TR_TEXT("N/A");
+        dateString = NSLocalizedString(@"N/A", nil);
     }
 
     NSString* baseString;
     if (self.fStat.hasScraped && self.fStat.lastScrapeTimedOut) {
         // Translators: Tracker last scrape
-        baseString = [TR_TEXT("Scrape timed out") stringByAppendingFormat:@": %@", dateString];
+        baseString = [NSLocalizedString(@"Scrape timed out", nil) stringByAppendingFormat:@": %@", dateString];
     } else if (self.fStat.hasScraped && !self.fStat.lastScrapeSucceeded) {
         // Translators: Tracker last scrape
-        baseString = TR_TEXT("Scrape error");
+        baseString = NSLocalizedString(@"Scrape error", nil);
 
         NSString* errorString = @(self.fStat.lastScrapeResult);
         if ([errorString isEqualToString:@""]) {
@@ -203,7 +203,7 @@
         }
     } else {
         // Translators: Tracker last scrape
-        baseString = [TR_TEXT("Last Scrape") stringByAppendingFormat:@": %@", dateString];
+        baseString = [NSLocalizedString(@"Last Scrape", nil) stringByAppendingFormat:@": %@", dateString];
     }
 
     return baseString;

@@ -74,11 +74,11 @@
 + (NSString*)stringForSpeed:(CGFloat)speed
 {
     // Translators: Transfer speed (kilobytes per second)
-    return [self stringForSpeed:speed kb:TR_TEXT("KB/s")
+    return [self stringForSpeed:speed kb:NSLocalizedString(@"KB/s", nil)
                              // Translators: Transfer speed (megabytes per second)
-                             mb:TR_TEXT("MB/s")
+                             mb:NSLocalizedString(@"MB/s", nil)
                              // Translators: Transfer speed (gigabytes per second)
-                             gb:TR_TEXT("GB/s")];
+                             gb:NSLocalizedString(@"GB/s", nil)];
 }
 
 + (NSString*)stringForSpeedAbbrev:(CGFloat)speed
@@ -97,7 +97,7 @@
 
     if (static_cast<int>(ratio) == TR_RATIO_NA) {
         // Translators: No Ratio
-        return TR_TEXT("N/A");
+        return NSLocalizedString(@"N/A", nil);
     }
 
     if (static_cast<int>(ratio) == TR_RATIO_INF) {

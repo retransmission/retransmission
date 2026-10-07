@@ -73,25 +73,25 @@ static tr_session* fLib = NULL;
     self.window.restorationClass = [self class];
 
     // Translators: Stats window -> title
-    self.window.title = TR_TEXT("Statistics");
+    self.window.title = NSLocalizedString(@"Statistics", nil);
 
     //disable fullscreen support
     self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
 
     //set label text
     // Translators: Stats window -> label
-    self.fUploadedLabelField.stringValue = TR_TEXT("Uploaded:");
+    self.fUploadedLabelField.stringValue = NSLocalizedString(@"Uploaded:", nil);
     // Translators: Stats window -> label
-    self.fDownloadedLabelField.stringValue = TR_TEXT("Downloaded:");
+    self.fDownloadedLabelField.stringValue = NSLocalizedString(@"Downloaded:", nil);
     // Translators: Stats window -> label
-    self.fRatioLabelField.stringValue = TR_TEXT("Ratio:");
+    self.fRatioLabelField.stringValue = NSLocalizedString(@"Ratio:", nil);
     // Translators: Stats window -> label
-    self.fTimeLabelField.stringValue = TR_TEXT("Running time:");
+    self.fTimeLabelField.stringValue = NSLocalizedString(@"Running time:", nil);
     // Translators: Stats window -> label
-    self.fNumOpenedLabelField.stringValue = TR_TEXT("Program started:");
+    self.fNumOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", nil);
 
     // Translators: Stats window -> reset button
-    self.fResetButton.title = TR_TEXT("Reset");
+    self.fResetButton.title = NSLocalizedString(@"Reset", nil);
 }
 
 - (void)windowWillClose:(id)sender
@@ -118,14 +118,14 @@ static tr_session* fLib = NULL;
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_TEXT("Reset your statistics?");
+    alert.messageText = NSLocalizedString(@"Reset your statistics?", nil);
     alert.informativeText = TR_FORMAT(
         "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected.",
         TRAppNameArg());
     alert.alertStyle = NSAlertStyleWarning;
     // Translators: Stats reset -> button
-    [alert addButtonWithTitle:TR_TEXT("Reset")];
-    [alert addButtonWithTitle:TR_TEXT("Cancel")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Reset", nil)];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
@@ -169,7 +169,7 @@ static tr_session* fLib = NULL;
     NSString* totalRatioString = static_cast<int>(statsAll.ratio) != TR_RATIO_NA ?
         totalString([NSString stringForRatio:statsAll.ratio]) :
         // Translators: stats total
-        TR_TEXT("Total N/A");
+        NSLocalizedString(@"Total N/A", nil);
     self.fRatioAllField.stringValue = totalRatioString;
 
     static NSDateComponentsFormatter* timeFormatter;

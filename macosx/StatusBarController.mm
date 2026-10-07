@@ -58,13 +58,13 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     [super awakeFromNib];
     //localize menu items
     // Translators: Status Bar -> status menu
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalRatio].title = TR_TEXT("Total Ratio");
+    [self.fStatusButton.menu itemWithTag:StatusTagTotalRatio].title = NSLocalizedString(@"Total Ratio", nil);
     // Translators: Status Bar -> status menu
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionRatio].title = TR_TEXT("Session Ratio");
+    [self.fStatusButton.menu itemWithTag:StatusTagSessionRatio].title = NSLocalizedString(@"Session Ratio", nil);
     // Translators: Status Bar -> status menu
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalTransfer].title = TR_TEXT("Total Transfer");
+    [self.fStatusButton.menu itemWithTag:StatusTagTotalTransfer].title = NSLocalizedString(@"Total Transfer", nil);
     // Translators: Status Bar -> status menu
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionTransfer].title = TR_TEXT("Session Transfer");
+    [self.fStatusButton.menu itemWithTag:StatusTagSessionTransfer].title = NSLocalizedString(@"Session Transfer", nil);
 
     self.fStatusButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fTotalDLField.cell.backgroundStyle = NSBackgroundStyleRaised;
@@ -99,7 +99,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
         // Translators: status bar -> status label
-        statusString = [TR_TEXT("Ratio") stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
+        statusString = [NSLocalizedString(@"Ratio", nil) stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
     } else //StatusTransferTypeTotal or StatusTransferTypeSession
     {
         total = [statusLabel isEqualToString:StatusTransferTypeTotal];
@@ -151,12 +151,12 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         return TR_FORMAT("{speed:L} KB/s", TRArg("speed", [defaults integerForKey:limitKey]));
     };
     // Translators: Status Bar -> speed tooltip
-    NSString* const unlimited = TR_TEXT("unlimited");
+    NSString* const unlimited = NSLocalizedString(@"unlimited", nil);
 
     NSString *uploadText, *downloadText;
     if ([defaults boolForKey:@"SpeedLimit"]) {
         // Translators: Status Bar -> speed tooltip
-        NSString* const altSpeedLimits = TR_TEXT("Alternative Speed Limits");
+        NSString* const altSpeedLimits = NSLocalizedString(@"Alternative Speed Limits", nil);
         uploadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitUploadLimit"), altSpeedLimits];
         downloadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitDownloadLimit"), altSpeedLimits];
     } else {
@@ -165,9 +165,9 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     }
 
     // Translators: Status Bar -> speed tooltip
-    uploadText = [TR_TEXT("Global upload limit") stringByAppendingFormat:@": %@", uploadText];
+    uploadText = [NSLocalizedString(@"Global upload limit", nil) stringByAppendingFormat:@": %@", uploadText];
     // Translators: Status Bar -> speed tooltip
-    downloadText = [TR_TEXT("Global download limit") stringByAppendingFormat:@": %@", downloadText];
+    downloadText = [NSLocalizedString(@"Global download limit", nil) stringByAppendingFormat:@": %@", downloadText];
 
     self.fTotalULField.toolTip = uploadText;
     self.fTotalDLField.toolTip = downloadText;

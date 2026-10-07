@@ -20,7 +20,6 @@
 #import "TorrentCellActionButton.h"
 #import "TorrentCellControlButton.h"
 #import "TorrentCellRevealButton.h"
-#import "L10n.h"
 
 CGFloat const kGroupSeparatorHeight = 18.0;
 
@@ -288,7 +287,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
         NSString* groupName = groupIndex != -1 ? [GroupsController.groups nameForIndex:groupIndex] :
                                                  // Translators: Group table row
-                                                 TR_TEXT("No Group");
+                                                 NSLocalizedString(@"No Group", nil);
         [groupCell updateTitle:groupName];
 
         auto aggregatedData = group.aggregatedData;
@@ -548,24 +547,24 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
     NSString* statusString;
     if ([view isKindOfClass:[TorrentCellRevealButton class]]) {
-        statusString = TR_TEXT("Show the data file in Finder");
+        statusString = NSLocalizedString(@"Show the data file in Finder", nil);
     } else if ([view isKindOfClass:[TorrentCellControlButton class]]) {
         if (torrent.active)
             // Translators: Torrent Table -> tooltip
-            statusString = TR_TEXT("Pause torrent");
+            statusString = NSLocalizedString(@"Pause torrent", nil);
         else {
             if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
-                statusString = TR_TEXT("Bypass the queue and start now");
+                statusString = NSLocalizedString(@"Bypass the queue and start now", nil);
             } else if (torrent.waitingToStart) {
-                statusString = TR_TEXT("Stop waiting to start");
+                statusString = NSLocalizedString(@"Stop waiting to start", nil);
             } else {
                 // Translators: Torrent cell -> button info
-                statusString = TR_TEXT("Start torrent");
+                statusString = NSLocalizedString(@"Start torrent", nil);
             }
         }
     } else if ([view isKindOfClass:[TorrentCellActionButton class]]) {
         // Translators: Torrent Table -> tooltip
-        statusString = TR_TEXT("Change torrent settings");
+        statusString = NSLocalizedString(@"Change torrent settings", nil);
     }
 
     auto previousHoveredTorrent = self.hoveringData.hoveredTorrent;

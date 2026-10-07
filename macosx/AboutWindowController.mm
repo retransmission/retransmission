@@ -5,7 +5,6 @@
 #include <libtransmission/version.h>
 
 #import "AboutWindowController.h"
-#import "L10n.h"
 
 @interface AboutWindowController ()
 
@@ -50,7 +49,7 @@ static AboutWindowController* fAboutBoxInstance = nil;
     CGFloat const oldButtonWidth = NSWidth(self.fLicenseButton.frame);
 
     // Translators: About window -> license button
-    self.fLicenseButton.title = TR_TEXT("License");
+    self.fLicenseButton.title = NSLocalizedString(@"License", nil);
     [self.fLicenseButton sizeToFit];
 
     NSRect buttonFrame = self.fLicenseButton.frame;
@@ -75,7 +74,7 @@ static AboutWindowController* fAboutBoxInstance = nil;
                                                   usedEncoding:nil
                                                          error:NULL];
     self.fLicenseView.string = licenseText;
-    self.fLicenseCloseButton.title = TR_TEXT("OK");
+    self.fLicenseCloseButton.title = NSLocalizedString(@"OK", nil);
 
     [self.window beginSheet:self.fLicenseSheet completionHandler:nil];
 }

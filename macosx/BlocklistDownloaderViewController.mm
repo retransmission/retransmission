@@ -8,7 +8,6 @@
 #import "Controller.h"
 #import "PrefsController.h"
 #import "NSStringAdditions.h"
-#import "L10n.h"
 
 @interface BlocklistDownloaderViewController ()
 
@@ -35,7 +34,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    self.fButton.title = TR_TEXT("Cancel");
+    self.fButton.title = NSLocalizedString(@"Cancel", nil);
 
     CGFloat const oldWidth = NSWidth(self.fButton.frame);
     [self.fButton sizeToFit];
@@ -57,7 +56,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 - (void)setStatusStarting
 {
     // Translators: Blocklist -> message
-    self.fTextField.stringValue = [TR_TEXT("Updating blocklist") stringByAppendingEllipsis];
+    self.fTextField.stringValue = [NSLocalizedString(@"Updating blocklist", nil) stringByAppendingEllipsis];
     self.fProgressBar.indeterminate = YES;
 }
 
@@ -73,8 +72,8 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
     [self.fPrefsController.window endSheet:self.fStatusWindow];
 
     NSAlert* alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:TR_TEXT("OK")];
-    alert.messageText = TR_TEXT("Download of the blocklist failed.");
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+    alert.messageText = NSLocalizedString(@"Download of the blocklist failed.", nil);
     alert.alertStyle = NSAlertStyleWarning;
 
     alert.informativeText = error;
@@ -126,7 +125,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
                 break;
             default:
                 // Translators: Blocklist -> message
-                [strongSelf setFailed:error ?: TR_TEXT("Couldn't update blocklist")];
+                [strongSelf setFailed:error ?: NSLocalizedString(@"Couldn't update blocklist", nil)];
                 break;
             }
         });

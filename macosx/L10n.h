@@ -14,12 +14,14 @@
 
 #include <libtransmission-app/l10n.h>
 
-// The app's strings come from the gettext catalog that it shares with the other clients,
-// through the translator that TRSetUpLocalization() installs.
-// xgettext extracts the text in these macros, with the keywords in po/POTFILES.in.
-
-// Translated text: TR_TEXT("Seeding complete")
-#define TR_TEXT(msgid) TRText(msgid)
+// The app's text comes from the gettext catalog that it shares with the other clients.
+// Plain text goes through NSLocalizedString(@"Seeding Complete", nil),
+// which reads the Localizable.strings that the build writes from each language's catalog.
+// Text with a context, {fmt} fields or plural forms goes through the macros below,
+// which read the catalogs that TRSetUpLocalization() loads.
+// xgettext extracts the text of both, with the keywords in po/POTFILES.in,
+// along with a "// Translators:" comment directly above the line where the text starts.
+// It ignores NSLocalizedString()'s comment argument, so the code passes nil.
 
 // Translated text whose English needs a context to tell its meanings apart:
 // TR_TEXT_C("Verb", "Seeding")
@@ -70,8 +72,6 @@ template <std::floating_point T> [[nodiscard]] tr::app::l10n::Arg TRArg(char con
 void TRSetUpLocalization();
 
 // What the macros above call. Code calls the macros, which xgettext extracts.
-
-[[nodiscard]] NSString* TRText(char const* msgid);
 
 [[nodiscard]] NSString* TRTextInContext(char const* context, char const* msgid);
 

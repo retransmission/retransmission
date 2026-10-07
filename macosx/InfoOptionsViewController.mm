@@ -68,7 +68,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     if ((self = [super initWithNibName:@"InfoOptionsView" bundle:nil])) {
         // Translators: Inspector view -> title
-        self.title = TR_TEXT("Options");
+        self.title = NSLocalizedString(@"Options", nil);
     }
 
     return self;
@@ -658,7 +658,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     NSString* global = [NSUserDefaults.standardUserDefaults boolForKey:@"RatioCheck"] ?
         [NSString stringForRatio:[NSUserDefaults.standardUserDefaults floatForKey:@"RatioLimit"]] :
         // Translators: Info options -> global setting
-        TR_TEXT("disabled");
+        NSLocalizedString(@"disabled", nil);
     self.fRatioLimitGlobalLabel.stringValue = global;
 
     //idle field
@@ -669,7 +669,7 @@ static CGFloat const kStackViewSpacing = 8.0;
         globalIdle = TR_FORMAT_N("{minutes:L} minute", "{minutes:L} minutes", globalMin, TRArg("minutes", globalMin));
     } else {
         // Translators: Info options -> global setting
-        globalIdle = TR_TEXT("disabled");
+        globalIdle = NSLocalizedString(@"disabled", nil);
     }
     self.fIdleLimitGlobalLabel.stringValue = globalIdle;
 }

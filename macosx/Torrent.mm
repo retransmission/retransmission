@@ -532,9 +532,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     if (oldCount < newComponents.count && [newComponents[oldCount] isEqualToString:self.name] && [folder hasPrefix:oldFolder]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = TR_TEXT("A folder cannot be moved to inside itself.");
+        alert.messageText = NSLocalizedString(@"A folder cannot be moved to inside itself.", nil);
         alert.informativeText = TR_FORMAT("The move operation of \"{torrent_name}\" cannot be done.", TRArg("torrent_name", self.name));
-        [alert addButtonWithTitle:TR_TEXT("OK")];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
 
         [alert runModal];
 
@@ -554,9 +554,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     } else {
         NSAlert* alert = [[NSAlert alloc] init];
         // Translators: Move error alert -> title
-        alert.messageText = TR_TEXT("Couldn't move torrent");
+        alert.messageText = NSLocalizedString(@"Couldn't move torrent", nil);
         alert.informativeText = TR_FORMAT("The move operation of \"{torrent_name}\" cannot be done.", TRArg("torrent_name", self.name));
-        [alert addButtonWithTitle:TR_TEXT("OK")];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
 
         [alert runModal];
     }
@@ -591,12 +591,12 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             alert.informativeText = TR_FORMAT(
                 "The torrent will be paused. Clear up space on {volume} or deselect files in the torrent inspector to continue.",
                 TRArg("volume", volumeName));
-            [alert addButtonWithTitle:TR_TEXT("OK")];
+            [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
             // Translators: Torrent disk space alert -> button
-            [alert addButtonWithTitle:TR_TEXT("Download Anyway")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Download Anyway", nil)];
 
             alert.showsSuppressionButton = YES;
-            alert.suppressionButton.title = TR_TEXT("Do not check disk space again");
+            alert.suppressionButton.title = NSLocalizedString(@"Do not check disk space again", nil);
 
             NSInteger const result = [alert runModal];
             if (alert.suppressionButton.state == NSControlStateValueOn) {
@@ -957,7 +957,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSString* error = tr_strv_to_utf8_nsstring(self.fStat.error_string);
     if (!error || [error isEqualToString:@""]) {
         // Translators: Torrent -> error string unreadable
-        error = [NSString stringWithFormat:@"(%@)", TR_TEXT("Unknown error")];
+        error = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"Unknown error", nil)];
     }
 
     return error;
@@ -1032,10 +1032,10 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                 "{percent} of torrent metadata retrieved",
                 TRArg("percent", [NSString percentString:self.fStat.metadata_percent_complete longDecimals:YES])) :
             // Translators: Torrent -> progress string
-            TR_TEXT("torrent metadata needed");
+            NSLocalizedString(@"torrent metadata needed", nil);
 
         // Translators: Torrent -> progress string
-        return [NSString stringWithFormat:@"%@ — %@", TR_TEXT("Magnetized torrent"), progressString];
+        return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", nil), progressString];
     }
 
     NSString* string;
@@ -1090,15 +1090,15 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         switch (self.fStat.error) {
         case tr_stat::Error::LocalError:
             // Translators: Torrent -> status string
-            string = TR_TEXT("Error");
+            string = NSLocalizedString(@"Error", nil);
             break;
         case tr_stat::Error::TrackerError:
             // Translators: Torrent -> status string
-            string = TR_TEXT("Tracker returned error");
+            string = NSLocalizedString(@"Tracker returned error", nil);
             break;
         case tr_stat::Error::TrackerWarning:
             // Translators: Torrent -> status string
-            string = TR_TEXT("Tracker returned warning");
+            string = NSLocalizedString(@"Tracker returned warning", nil);
             break;
         default:
             NSAssert(NO, @"unknown error state");
@@ -1113,32 +1113,32 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         case TR_STATUS_STOPPED:
             if (self.finishedSeeding) {
                 // Translators: Torrent -> status string
-                string = TR_TEXT("Seeding complete");
+                string = NSLocalizedString(@"Seeding complete", nil);
             } else {
                 // Translators: Torrent -> status string
-                string = TR_TEXT("Paused");
+                string = NSLocalizedString(@"Paused", nil);
             }
             break;
 
         case TR_STATUS_DOWNLOAD_WAIT:
             // Translators: Torrent -> status string
-            string = [TR_TEXT("Queued for download") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for download", nil) stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_SEED_WAIT:
             // Translators: Torrent -> status string
-            string = [TR_TEXT("Queued for seeding") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for seeding", nil) stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_CHECK_WAIT:
             // Translators: Torrent -> status string
-            string = [TR_TEXT("Queued for verification") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for verification", nil) stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_CHECK:
             string = [NSString stringWithFormat:@"%@ (%@)",
                                                 // Translators: Torrent -> status string
-                                                TR_TEXT("Verifying local data"),
+                                                NSLocalizedString(@"Verifying local data", nil),
                                                 [NSString percentString:self.checkingProgress longDecimals:YES]];
             break;
 
@@ -1153,7 +1153,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             if (NSUInteger const webSeedCount = self.fStat.webseeds_sending_to_us; webSeedCount > 0) {
                 NSString* const webSeedString = webSeedCount == 1 ?
                     // Translators: Torrent -> status string
-                    TR_TEXT("web seed") :
+                    NSLocalizedString(@"web seed", nil) :
                     // Translators: Torrent -> status string
                     TR_FORMAT_N("{count:L} web seed", "{count:L} web seeds", webSeedCount, TRArg("count", webSeedCount));
 
@@ -1173,7 +1173,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
         if (self.stalled) {
             // Translators: Torrent -> status string
-            string = [TR_TEXT("Stalled") stringByAppendingFormat:@", %@", string];
+            string = [NSLocalizedString(@"Stalled", nil) stringByAppendingFormat:@", %@", string];
         }
     }
 
@@ -1204,32 +1204,32 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     case TR_STATUS_STOPPED:
         if (self.finishedSeeding) {
             // Translators: Torrent -> status string
-            string = TR_TEXT("Seeding complete");
+            string = NSLocalizedString(@"Seeding complete", nil);
         } else {
             // Translators: Torrent -> status string
-            string = TR_TEXT("Paused");
+            string = NSLocalizedString(@"Paused", nil);
         }
         break;
 
     case TR_STATUS_DOWNLOAD_WAIT:
         // Translators: Torrent -> status string
-        string = [TR_TEXT("Queued for download") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for download", nil) stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_SEED_WAIT:
         // Translators: Torrent -> status string
-        string = [TR_TEXT("Queued for seeding") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for seeding", nil) stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_CHECK_WAIT:
         // Translators: Torrent -> status string
-        string = [TR_TEXT("Queued for verification") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for verification", nil) stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_CHECK:
         string = [NSString stringWithFormat:@"%@ (%@)",
                                             // Translators: Torrent -> status string
-                                            TR_TEXT("Verifying local data"),
+                                            NSLocalizedString(@"Verifying local data", nil),
                                             [NSString percentString:self.checkingProgress longDecimals:YES]];
         break;
 
@@ -1267,18 +1267,18 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     case TR_STATUS_SEED_WAIT:
         {
             // Translators: Torrent -> status string
-            NSString* string = TR_TEXT("Paused");
+            NSString* string = NSLocalizedString(@"Paused", nil);
 
             NSString* extra = nil;
             if (self.waitingToStart) {
                 extra = self.fStat.activity == TR_STATUS_DOWNLOAD_WAIT ?
                     // Translators: Torrent -> status string
-                    TR_TEXT("Queued for download") :
+                    NSLocalizedString(@"Queued for download", nil) :
                     // Translators: Torrent -> status string
-                    TR_TEXT("Queued for seeding");
+                    NSLocalizedString(@"Queued for seeding", nil);
             } else if (self.finishedSeeding) {
                 // Translators: Torrent -> status string
-                extra = TR_TEXT("Seeding complete");
+                extra = NSLocalizedString(@"Seeding complete", nil);
             }
 
             return extra ? [string stringByAppendingFormat:@" (%@)", extra] : string;
@@ -1286,12 +1286,12 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     case TR_STATUS_CHECK_WAIT:
         // Translators: Torrent -> status string
-        return [TR_TEXT("Queued for verification") stringByAppendingEllipsis];
+        return [NSLocalizedString(@"Queued for verification", nil) stringByAppendingEllipsis];
 
     case TR_STATUS_CHECK:
         return [NSString stringWithFormat:@"%@ (%@)",
                                           // Translators: Torrent -> status string
-                                          TR_TEXT("Verifying local data"),
+                                          NSLocalizedString(@"Verifying local data", nil),
                                           [NSString percentString:self.checkingProgress longDecimals:YES]];
 
     case TR_STATUS_DOWNLOAD:
@@ -2048,7 +2048,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     // Foundation undocumented behavior: values above INT32_MAX (68 years) are interpreted as negative values by `stringFromTimeInterval` (#3451)
     if (eta < 0 || eta > INT32_MAX || (fromIdle && eta >= kETAIdleDisplaySec)) {
         // Translators: Torrent -> eta string
-        return TR_TEXT("Remaining time unknown");
+        return NSLocalizedString(@"Remaining time unknown", nil);
     }
 
     static NSDateComponentsFormatter* formatter;
@@ -2066,7 +2066,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     if (fromIdle) {
         // Translators: Torrent -> eta string
-        idleString = [idleString stringByAppendingFormat:@" (%@)", TR_TEXT("inactive")];
+        idleString = [idleString stringByAppendingFormat:@" (%@)", NSLocalizedString(@"inactive", nil)];
     }
 
     return idleString;

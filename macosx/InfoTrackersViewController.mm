@@ -38,7 +38,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 {
     if ((self = [super initWithNibName:@"InfoTrackersView" bundle:nil])) {
         // Translators: Inspector view -> title
-        self.title = TR_TEXT("Trackers");
+        self.title = NSLocalizedString(@"Trackers", nil);
 
         _fTrackerCell = [[TrackerCell alloc] init];
     }
@@ -50,9 +50,10 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 {
     [super awakeFromNib];
     // Translators: Inspector view -> tracker buttons
-    [self.fTrackerAddRemoveControl.cell setToolTip:TR_TEXT("Add a tracker") forSegment:TrackerSegmentTagAdd];
+    [self.fTrackerAddRemoveControl.cell setToolTip:NSLocalizedString(@"Add a tracker", nil) forSegment:TrackerSegmentTagAdd];
     // Translators: Inspector view -> tracker buttons
-    [self.fTrackerAddRemoveControl.cell setToolTip:TR_TEXT("Remove selected trackers") forSegment:TrackerSegmentTagRemove];
+    [self.fTrackerAddRemoveControl.cell setToolTip:NSLocalizedString(@"Remove selected trackers", nil)
+                                        forSegment:TrackerSegmentTagRemove];
 
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightTracker"];
     if (height != 0.0) {
@@ -136,7 +137,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         NSInteger const tier = [item[@"Tier"] integerValue];
         NSString* tierString = tier == -1 ?
             // Translators: Inspector -> tracker table
-            TR_TEXT("New Tier") :
+            NSLocalizedString(@"New Tier", nil) :
             // Translators: Inspector -> tracker table
             TR_FORMAT("Tier {tier}", TRArg("tier", tier));
 
@@ -360,13 +361,13 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
                 "Once removed, {appname} will no longer attempt to contact them. This cannot be undone.",
                 TRAppNameArg());
         } else {
-            alert.messageText = TR_TEXT("Are you sure you want to remove this tracker?");
+            alert.messageText = NSLocalizedString(@"Are you sure you want to remove this tracker?", nil);
             alert.informativeText = TR_FORMAT("Once removed, {appname} will no longer attempt to contact it. This cannot be undone.", TRAppNameArg());
         }
 
         // Translators: Remove trackers alert -> button
-        [alert addButtonWithTitle:TR_TEXT("Remove")];
-        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
         alert.showsSuppressionButton = YES;
 

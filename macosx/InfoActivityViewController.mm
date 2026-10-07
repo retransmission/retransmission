@@ -58,7 +58,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 {
     if ((self = [super initWithNibName:@"InfoActivityView" bundle:nil])) {
         // Translators: Inspector view -> title
-        self.title = TR_TEXT("Activity");
+        self.title = NSLocalizedString(@"Activity", nil);
     }
 
     return self;

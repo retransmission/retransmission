@@ -5,7 +5,6 @@
 #import "FileCheckCellView.h"
 #import "FileListNode.h"
 #import "Torrent.h"
-#import "L10n.h"
 
 @interface FileCheckCellView ()
 @property(nonatomic, weak) NSButton* checkButton;
@@ -69,15 +68,15 @@
     switch (self.checkButton.state) {
     case NSControlStateValueOff:
         // Translators: files tab -> tooltip
-        tooltip = TR_TEXT("Don't download");
+        tooltip = NSLocalizedString(@"Don't download", nil);
         break;
     case NSControlStateValueOn:
         // Translators: files tab -> tooltip
-        tooltip = TR_TEXT("Download");
+        tooltip = NSLocalizedString(@"Download", nil);
         break;
     case NSControlStateValueMixed:
         // Translators: files tab -> tooltip
-        tooltip = TR_TEXT("Download some");
+        tooltip = NSLocalizedString(@"Download some", nil);
         break;
     }
     self.checkButton.toolTip = tooltip;

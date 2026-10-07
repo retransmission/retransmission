@@ -8,7 +8,6 @@
 
 #import "TrackerCell.h"
 #import "TrackerNode.h"
-#import "L10n.h"
 
 static CGFloat const kPaddingHorizontal = 3.0;
 static CGFloat const kPaddingStatusHorizontal = 3.0;
@@ -111,20 +110,20 @@ static NSMutableSet* fTrackerIconLoading;
 
     //count label strings
     // Translators: tracker peer stat
-    NSString* seederLabelBaseString = [TR_TEXT("Seeders") stringByAppendingFormat:@": "];
+    NSString* seederLabelBaseString = [NSLocalizedString(@"Seeders", nil) stringByAppendingFormat:@": "];
     NSAttributedString* seederLabelString = [self attributedStatusWithString:seederLabelBaseString];
     NSRect const seederLabelRect = [self rectForCountLabelWithString:seederLabelString withRightRect:seederRect inBounds:cellFrame];
     [seederLabelString drawInRect:seederLabelRect];
 
     // Translators: tracker peer stat
-    NSString* leecherLabelBaseString = [TR_TEXT("Leechers") stringByAppendingFormat:@": "];
+    NSString* leecherLabelBaseString = [NSLocalizedString(@"Leechers", nil) stringByAppendingFormat:@": "];
     NSAttributedString* leecherLabelString = [self attributedStatusWithString:leecherLabelBaseString];
     NSRect const leecherLabelRect = [self rectForCountLabelWithString:leecherLabelString withRightRect:leecherRect
                                                              inBounds:cellFrame];
     [leecherLabelString drawInRect:leecherLabelRect];
 
     // Translators: tracker peer stat
-    NSString* downloadedLabelBaseString = [TR_TEXT("Downloaded") stringByAppendingFormat:@": "];
+    NSString* downloadedLabelBaseString = [NSLocalizedString(@"Downloaded", nil) stringByAppendingFormat:@": "];
     NSAttributedString* downloadedLabelString = [self attributedStatusWithString:downloadedLabelBaseString];
     NSRect const downloadedLabelRect = [self rectForCountLabelWithString:downloadedLabelString withRightRect:downloadedRect
                                                                 inBounds:cellFrame];
@@ -292,7 +291,7 @@ static NSMutableSet* fTrackerIconLoading;
 {
     NSString* countString = count != -1 ? [NSString localizedStringWithFormat:@"%ld", count] :
                                           // Translators: tracker peer stat
-                                          TR_TEXT("N/A");
+                                          NSLocalizedString(@"N/A", nil);
     return [[NSAttributedString alloc] initWithString:countString attributes:self.fStatusAttributes];
 }
 

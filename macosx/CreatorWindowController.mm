@@ -95,9 +95,9 @@ static NSMutableSet* creatorWindowControllerSet;
 
         if (_fBuilder->file_count() == 0U) {
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:TR_TEXT("OK")];
-            alert.messageText = TR_TEXT("This folder contains no files.");
-            alert.informativeText = TR_TEXT("There must be at least one file in a folder to create a torrent file.");
+            [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+            alert.messageText = NSLocalizedString(@"This folder contains no files.", nil);
+            alert.informativeText = NSLocalizedString(@"There must be at least one file in a folder to create a torrent file.", nil);
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -106,9 +106,9 @@ static NSMutableSet* creatorWindowControllerSet;
         }
         if (_fBuilder->total_size() == 0U) {
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:TR_TEXT("OK")];
-            alert.messageText = TR_TEXT("The total file size is zero bytes.");
-            alert.informativeText = TR_TEXT("A torrent file cannot be created for files with no size.");
+            [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+            alert.messageText = NSLocalizedString(@"The total file size is zero bytes.", nil);
+            alert.informativeText = NSLocalizedString(@"A torrent file cannot be created for files with no size.", nil);
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -237,8 +237,8 @@ static NSMutableSet* creatorWindowControllerSet;
     NSSavePanel* panel = [NSSavePanel savePanel];
 
     // Translators: Create torrent -> location sheet -> button
-    panel.prompt = TR_TEXT("Select");
-    panel.message = TR_TEXT("Select the name and location for the torrent file.");
+    panel.prompt = NSLocalizedString(@"Select", nil);
+    panel.message = NSLocalizedString(@"Select the name and location for the torrent file.", nil);
 
     panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
     panel.canSelectHiddenExtension = YES;
@@ -265,16 +265,20 @@ static NSMutableSet* creatorWindowControllerSet;
     if (self.fTrackers.count == 0 &&
         [self.fDefaults boolForKey:isPrivate ? @"WarningCreatorPrivateBlankAddress" : @"WarningCreatorBlankAddress"]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = TR_TEXT("There are no tracker addresses.");
+        alert.messageText = NSLocalizedString(@"There are no tracker addresses.", nil);
 
         NSString* infoString = isPrivate ?
-            TR_TEXT("A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you.") :
-            TR_TEXT("The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed.");
+            NSLocalizedString(
+                @"A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you.",
+                nil) :
+            NSLocalizedString(
+                @"The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed.",
+                nil);
 
         alert.informativeText = infoString;
         // Translators: Create torrent -> blank address -> button
-        [alert addButtonWithTitle:TR_TEXT("Create")];
-        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Create", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
@@ -472,15 +476,15 @@ static NSMutableSet* creatorWindowControllerSet;
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
     // Translators: Create torrent -> select file
-    panel.title = TR_TEXT("Create Torrent File");
+    panel.title = NSLocalizedString(@"Create Torrent File", nil);
     // Translators: Create torrent -> select file
-    panel.prompt = TR_TEXT("Select");
+    panel.prompt = NSLocalizedString(@"Select", nil);
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
     panel.canCreateDirectories = NO;
 
-    panel.message = TR_TEXT("Select a file or folder for the torrent file.");
+    panel.message = NSLocalizedString(@"Select a file or folder for the torrent file.", nil);
 
     BOOL success = [panel runModal] == NSModalResponseOK;
     return success ? panel.URLs[0] : nil;
@@ -491,8 +495,8 @@ static NSMutableSet* creatorWindowControllerSet;
     //check if the location currently exists
     if (![self.fLocation.URLByDeletingLastPathComponent checkResourceIsReachableAndReturnError:NULL]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:TR_TEXT("OK")];
-        alert.messageText = TR_TEXT("The chosen torrent file location does not exist.");
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+        alert.messageText = NSLocalizedString(@"The chosen torrent file location does not exist.", nil);
         alert.informativeText = TR_FORMAT(
             "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file.",
             TRArg("directory", self.fLocation.URLByDeletingLastPathComponent.path));
@@ -508,8 +512,8 @@ static NSMutableSet* creatorWindowControllerSet;
         NSInteger count = pathComponents.count;
 
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:TR_TEXT("OK")];
-        alert.messageText = TR_TEXT("A torrent file with this name and directory cannot be created.");
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+        alert.messageText = NSLocalizedString(@"A torrent file with this name and directory cannot be created.", nil);
         alert.informativeText = TR_FORMAT(
             "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file.",
             TRArg("filename", pathComponents[count - 1]),
@@ -601,7 +605,7 @@ static NSMutableSet* creatorWindowControllerSet;
 
     if (error) {
         auto* const alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:TR_TEXT("OK")];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
         alert.messageText = TR_FORMAT("Creation of \"{filename}\" failed.", TRArg("filename", self.fLocation.lastPathComponent));
         alert.alertStyle = NSAlertStyleWarning;
 

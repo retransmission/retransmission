@@ -111,7 +111,7 @@
 {
     [self.contentView setOverlay:[NSImage imageNamed:@"CreateLarge"]
                         // Translators: Drag overlay -> file
-                        mainLine:TR_TEXT("Create Torrent File")
+                        mainLine:NSLocalizedString(@"Create Torrent File", nil)
                          subLine:file];
     [self fadeIn];
 }
@@ -119,7 +119,7 @@
 - (void)setURL:(NSString*)url
 {
     // Translators: Drag overlay -> url
-    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:TR_TEXT("Open URL") subLine:url];
+    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:NSLocalizedString(@"Open URL", nil) subLine:url];
     [self fadeIn];
 }
 

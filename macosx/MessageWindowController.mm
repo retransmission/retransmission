@@ -71,7 +71,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [window setContentBorderThickness:NSMinY(self.fMessageTable.enclosingScrollView.frame) forEdge:NSMinYEdge];
 
     // Translators: Message window -> title
-    self.window.title = TR_TEXT("Message Log");
+    self.window.title = NSLocalizedString(@"Message Log", nil);
 
     //disable fullscreen support
     window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
@@ -95,15 +95,15 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
     //set table column text
     // Translators: Message window -> table column
-    [self.fMessageTable tableColumnWithIdentifier:@"Date"].headerCell.title = TR_TEXT("Time");
+    [self.fMessageTable tableColumnWithIdentifier:@"Date"].headerCell.title = NSLocalizedString(@"Time", nil);
     // Translators: Message window -> table column
-    [self.fMessageTable tableColumnWithIdentifier:@"Name"].headerCell.title = TR_TEXT("Name");
+    [self.fMessageTable tableColumnWithIdentifier:@"Name"].headerCell.title = NSLocalizedString(@"Name", nil);
     // Translators: Message window -> table column
-    [self.fMessageTable tableColumnWithIdentifier:@"Message"].headerCell.title = TR_TEXT("Message");
+    [self.fMessageTable tableColumnWithIdentifier:@"Message"].headerCell.title = NSLocalizedString(@"Message", nil);
 
     //set and size buttons
     // Translators: Message window -> save button
-    self.fSaveButton.title = [TR_TEXT("Save") stringByAppendingEllipsis];
+    self.fSaveButton.title = [NSLocalizedString(@"Save", nil) stringByAppendingEllipsis];
     [self.fSaveButton sizeToFit];
 
     NSRect saveButtonFrame = self.fSaveButton.frame;
@@ -114,7 +114,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     CGFloat const oldClearButtonWidth = self.fClearButton.frame.size.width;
 
     // Translators: Message window -> save button
-    self.fClearButton.title = TR_TEXT("Clear");
+    self.fClearButton.title = NSLocalizedString(@"Clear", nil);
     [self.fClearButton sizeToFit];
 
     NSRect clearButtonFrame = self.fClearButton.frame;
@@ -123,7 +123,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     self.fClearButton.frame = clearButtonFrame;
 
     // Translators: Message window -> filter field
-    [self.fFilterField.cell setPlaceholderString:TR_TEXT("Filter")];
+    [self.fFilterField.cell setPlaceholderString:NSLocalizedString(@"Filter", nil)];
     NSRect filterButtonFrame = self.fFilterField.frame;
     filterButtonFrame.origin.x -= NSWidth(clearButtonFrame) - oldClearButtonWidth;
     self.fFilterField.frame = filterButtonFrame;
@@ -449,7 +449,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     panel.canSelectHiddenExtension = YES;
 
     // Translators: Save log panel -> default file name
-    panel.nameFieldStringValue = TR_TEXT("untitled");
+    panel.nameFieldStringValue = NSLocalizedString(@"untitled", nil);
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -468,8 +468,8 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
             if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
                 NSAlert* alert = [[NSAlert alloc] init];
-                [alert addButtonWithTitle:TR_TEXT("OK")];
-                alert.messageText = TR_TEXT("Log Could Not Be Saved");
+                [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+                alert.messageText = NSLocalizedString(@"Log Could Not Be Saved", nil);
                 alert.informativeText = TR_FORMAT(
                     "There was a problem creating the file \"{filename}\".",
                     TRArg("filename", panel.URL.path.lastPathComponent));

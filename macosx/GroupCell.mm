@@ -4,7 +4,6 @@
 
 #import "GroupCell.h"
 #import "NSStringAdditions.h"
-#import "L10n.h"
 
 // Layout
 // Leading Stack
@@ -75,24 +74,24 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
     auto downloadIconView = [[NSImageView alloc] init];
     downloadIconView.image = [NSImage imageNamed:@"DownArrowGroupTemplate"];
     // Translators: Torrent table -> group row -> tooltip
-    downloadIconView.toolTip = TR_TEXT("Download speed");
+    downloadIconView.toolTip = NSLocalizedString(@"Download speed", nil);
     downloadField.toolTip = downloadIconView.toolTip;
 
     auto uploadIconView = [[NSImageView alloc] init];
     uploadIconView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
     // Translators: Torrent table -> group row -> tooltip
-    uploadIconView.toolTip = TR_TEXT("Upload speed");
+    uploadIconView.toolTip = NSLocalizedString(@"Upload speed", nil);
     uploadField.toolTip = uploadIconView.toolTip;
     // Translators: Torrent -> status image
-    uploadIconView.image.accessibilityDescription = TR_TEXT("Up");
+    uploadIconView.image.accessibilityDescription = NSLocalizedString(@"Up", nil);
 
     auto ratioIconView = [[NSImageView alloc] init];
     ratioIconView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];
     // Translators: Torrent table -> group row -> tooltip
-    ratioIconView.toolTip = TR_TEXT("Ratio");
+    ratioIconView.toolTip = NSLocalizedString(@"Ratio", nil);
     ratioField.toolTip = ratioIconView.toolTip;
     // Translators: Torrent -> status image
-    ratioIconView.image.accessibilityDescription = TR_TEXT("Ratio");
+    ratioIconView.image.accessibilityDescription = NSLocalizedString(@"Ratio", nil);
 
     for (NSImageView* view in @[ downloadIconView, uploadIconView, ratioIconView ]) {
         view.imageScaling = NSImageScaleProportionallyDown;

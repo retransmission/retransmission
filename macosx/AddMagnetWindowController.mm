@@ -107,7 +107,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
     // Translators: Open torrent -> prompt
-    panel.prompt = TR_TEXT("Select");
+    panel.prompt = NSLocalizedString(@"Select", nil);
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;
@@ -133,13 +133,14 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     if ([self.fDestination.lastPathComponent isEqualToString:self.torrent.name] &&
         [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = TR_TEXT("The destination directory and root data directory have the same name.");
-        alert.informativeText = TR_TEXT(
-            "If you are attempting to use already existing data, the root data directory should be inside the destination directory.");
+        alert.messageText = NSLocalizedString(@"The destination directory and root data directory have the same name.", nil);
+        alert.informativeText = NSLocalizedString(
+            @"If you are attempting to use already existing data, the root data directory should be inside the destination directory.",
+            nil);
         alert.alertStyle = NSAlertStyleWarning;
-        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
         // Translators: Add torrent -> same name -> button
-        [alert addButtonWithTitle:TR_TEXT("Add")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Add", nil)];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

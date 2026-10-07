@@ -4,7 +4,6 @@
 
 #import "URLSheetWindowController.h"
 #import "Controller.h"
-#import "L10n.h"
 
 @interface URLSheetWindowController ()<NSControlTextEditingDelegate>
 
@@ -27,10 +26,10 @@
 {
     [super awakeFromNib];
     // Translators: URL sheet label
-    self.fLabelField.stringValue = TR_TEXT("URL:");
+    self.fLabelField.stringValue = NSLocalizedString(@"URL:", nil);
     // Translators: URL sheet button
-    self.fOpenButton.title = TR_TEXT("Open");
-    self.fCancelButton.title = TR_TEXT("Cancel");
+    self.fOpenButton.title = NSLocalizedString(@"Open", nil);
+    self.fCancelButton.title = NSLocalizedString(@"Cancel", nil);
 
     [self.fOpenButton sizeToFit];
     [self.fCancelButton sizeToFit];
