@@ -12,8 +12,11 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
+
+#include <libtransmission-app/l10n.h>
 
 namespace
 {
@@ -70,17 +73,11 @@ class LocalizedNumberFacet final : public fmt::format_facet<std::locale>
     }
 };
 
-[[nodiscard]] NSString* formatTranslation(char const* const translation, std::initializer_list<tr::app::l10n::Arg> const args)
-{
-    // The global locale has the facet that TRSetUpLocalization() installed.
-    return tr_strv_to_utf8_nsstring(tr::app::l10n::format_translation(std::locale{}, translation, { std::data(args), std::size(args) }));
-}
-
 } // namespace
 
 void TRSetUpLocalization()
 {
-    // libtransmission and libtransmission-app pass {fmt} no locale, so it uses the global one, as TR_FORMAT does.
+    // libtransmission and libtransmission-app pass {fmt} no locale, so it uses the global one.
     // An app launched from Finder or the Dock gets no LANG, so the environment's locale alone would group no digits.
     // std::locale owns its facets and deletes them along with its last copy.
     tr_locale_set_global("");
@@ -111,14 +108,4 @@ void TRSetUpLocalization()
 NSString* TRTextInContext(char const* const context, char const* const msgid)
 {
     return tr_strv_to_utf8_nsstring(tr_pgettext(context, msgid));
-}
-
-NSString* TRFormat(char const* const msgid, std::initializer_list<tr::app::l10n::Arg> const args)
-{
-    return formatTranslation(tr_gettext(msgid), args);
-}
-
-NSString* TRFormatPlural(char const* const msgid, char const* const msgid_plural, uint64_t const n, std::initializer_list<tr::app::l10n::Arg> const args)
-{
-    return formatTranslation(tr_ngettext(msgid, msgid_plural, n), args);
 }

@@ -470,9 +470,9 @@ static NSUInteger const kMaxQueueLength = 10000U;
                 NSAlert* alert = [[NSAlert alloc] init];
                 [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
                 alert.messageText = NSLocalizedString(@"Log Could Not Be Saved", nil);
-                alert.informativeText = TR_FORMAT(
-                    "There was a problem creating the file \"{filename}\".",
-                    TRArg("filename", panel.URL.path.lastPathComponent));
+                alert.informativeText = [NSString
+                    localizedStringWithFormat:NSLocalizedStringFromTable(@"There was a problem creating the file \"%@\".", @"Formats", nil),
+                                              panel.URL.path.lastPathComponent];
                 alert.alertStyle = NSAlertStyleWarning;
 
                 [alert runModal];

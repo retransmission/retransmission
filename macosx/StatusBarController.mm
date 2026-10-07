@@ -106,10 +106,9 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
-        statusString = TR_FORMAT(
-            "Down: {downloaded_size}, Up: {uploaded_size}",
-            TRArg("downloaded_size", [NSString stringForFileSize:stats.downloadedBytes]),
-            TRArg("uploaded_size", [NSString stringForFileSize:stats.uploadedBytes]));
+        statusString = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Down: %@, Up: %@", @"Formats", nil),
+                                                           [NSString stringForFileSize:stats.downloadedBytes],
+                                                           [NSString stringForFileSize:stats.uploadedBytes]];
     }
 
     if (![self.fStatusButton.title isEqualToString:statusString]) {
@@ -147,8 +146,8 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 {
     NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
     NSString* (^limitText)(NSString*) = ^(NSString* limitKey) {
-        // Translators: Status Bar -> speed tooltip
-        return TR_FORMAT("{speed:L} KB/s", TRArg("speed", [defaults integerForKey:limitKey]));
+        return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu KB/s", @"Formats", nil),
+                                                   static_cast<NSUInteger>([defaults integerForKey:limitKey])];
     };
     // Translators: Status Bar -> speed tooltip
     NSString* const unlimited = NSLocalizedString(@"unlimited", nil);

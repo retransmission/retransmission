@@ -34,8 +34,7 @@ static NSTimeInterval const kUpdateSeconds = 1.0;
 
 static NSString* totalString(NSString* const amount)
 {
-    // Translators: stats total
-    return TR_FORMAT("{amount} total", TRArg("amount", amount));
+    return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ total", @"Formats", nil), amount];
 }
 
 @implementation StatsWindowController
@@ -119,9 +118,12 @@ static tr_session* fLib = NULL;
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = NSLocalizedString(@"Reset your statistics?", nil);
-    alert.informativeText = TR_FORMAT(
-        "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected.",
-        TRAppNameArg());
+    alert.informativeText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(
+                                      @"This will clear the global statistics displayed by %@. Individual torrent statistics will not be affected.",
+                                      @"Formats",
+                                      nil),
+                                  @TR_PROJ_APPNAME_CAPITALIZED];
     alert.alertStyle = NSAlertStyleWarning;
     // Translators: Stats reset -> button
     [alert addButtonWithTitle:NSLocalizedString(@"Reset", nil)];
@@ -185,12 +187,8 @@ static tr_session* fLib = NULL;
     self.fTimeField.stringValue = [timeFormatter stringFromTimeInterval:statsSession.secondsActive];
     self.fTimeAllField.stringValue = totalString([timeFormatter stringFromTimeInterval:statsAll.secondsActive]);
 
-    self.fNumOpenedField.stringValue = TR_FORMAT_N(
-        // Translators: stats window -> times opened
-        "{count:L} time",
-        "{count:L} times",
-        statsAll.sessionCount,
-        TRArg("count", statsAll.sessionCount));
+    self.fNumOpenedField.stringValue = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu times", @"Formats", nil),
+                                                                           static_cast<NSUInteger>(statsAll.sessionCount)];
 }
 
 - (void)performResetStats

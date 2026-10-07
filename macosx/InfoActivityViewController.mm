@@ -183,8 +183,8 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     if (have == 0) {
         self.fHaveField.stringValue = [NSString stringForFileSize:0];
     } else {
-        // Translators: Inspector -> Activity tab -> have
-        NSString* verifiedString = TR_FORMAT("{size} verified", TRArg("size", [NSString stringForFileSize:haveVerified]));
+        NSString* verifiedString = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ verified", @"Formats", nil),
+                                                                       [NSString stringForFileSize:haveVerified]];
         if (have == haveVerified) {
             self.fHaveField.stringValue = verifiedString;
         } else {
@@ -205,10 +205,9 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         NSString* progressString = [NSString percentString:torrent.progress longDecimals:YES];
         if (torrent.folder) {
-            NSString* progressSelectedString = TR_FORMAT(
-                // Translators: Inspector -> Activity tab -> progress
-                "{amount} selected",
-                TRArg("amount", [NSString percentString:torrent.progressDone longDecimals:YES]));
+            NSString* progressSelectedString = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ selected", @"Formats", nil),
+                                          [NSString percentString:torrent.progressDone longDecimals:YES]];
             progressString = [progressString stringByAppendingFormat:@" (%@)", progressSelectedString];
         }
         self.fProgressField.stringValue = progressString;

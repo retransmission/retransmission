@@ -4,77 +4,29 @@
 
 #import <Foundation/Foundation.h>
 
-#include <concepts>
-#include <cstdint>
-#include <initializer_list>
-#include <string>
-#include <type_traits>
-
-#include <libtransmission/macros.h>
-
-#include <libtransmission-app/l10n.h>
-
-// The app's text comes from the gettext catalog that it shares with the other clients.
-// Plain text goes through NSLocalizedString(@"Seeding Complete", nil),
-// which reads the Localizable.strings that the build writes from each language's catalog.
-// Text with a context, {fmt} fields or plural forms goes through the macros below,
-// which read the catalogs that TRSetUpLocalization() loads.
-// xgettext extracts the text of both, with the keywords in po/POTFILES.in,
+// The app's text comes from the gettext catalog that it shares with the other clients,
+// through the tables that po/compile-mac-catalogs.sh writes from each language's catalog.
+// xgettext extracts the English text with the keywords in po/POTFILES.in,
 // along with a "// Translators:" comment directly above the line where the text starts.
-// It ignores NSLocalizedString()'s comment argument, so the code passes nil.
+// It ignores the comment argument of NSLocalizedString() and its siblings, so the code passes nil.
+//
+// Plain text:
+//   NSLocalizedString(@"Seeding Complete", nil)
+// Formatted text, whose English L10nDeclarations.h declares in the catalog's syntax:
+//   [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Created by %@", @"Formats", nil), creator]
+// A plural, looked up by its plural English:
+//   [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu files", @"Formats", nil), count]
+// Text that doesn't show the count picks its wording with `count == 1` instead,
+// because a language's form for one can cover other counts, e.g. 21 in Russian.
 
 // Translated text whose English needs a context to tell its meanings apart:
 // TR_TEXT_C("Verb", "Seeding")
 #define TR_TEXT_C(context, msgid) TRTextInContext(context, msgid)
 
-// Translated text, formatted with {fmt} named arguments:
-// TR_FORMAT("Created by {creator}", TRArg("creator", creator))
-// {fmt} is built without exceptions and aborts on a format string that doesn't fit its arguments,
-// so the catalog reader drops any translation whose fields don't fit its English text.
-#define TR_FORMAT(msgid, ...) TRFormat(msgid, { __VA_ARGS__ })
-
-// Like TR_FORMAT, in the plural form for `n`.
-// Text that doesn't show the count picks its wording with `count == 1` instead,
-// because a language's form for one can cover other counts, e.g. 21 in Russian.
-#define TR_FORMAT_N(msgid, msgid_plural, n, ...) TRFormatPlural(msgid, msgid_plural, static_cast<uint64_t>(n), { __VA_ARGS__ })
-
-// A named argument of TR_FORMAT or TR_FORMAT_N: text or a number.
-// A field can localize a number with {fmt}'s "L" spec, as in "{count:L}".
-// nil formats as no text.
-[[nodiscard]] inline tr::app::l10n::Arg TRArg(char const* const name, NSString* const value)
-{
-    return { name, std::string{ value.UTF8String ?: "" } };
-}
-
-template <std::integral T> [[nodiscard]] tr::app::l10n::Arg TRArg(char const* const name, T const value)
-{
-    if constexpr (std::is_signed_v<T>) {
-        return { name, static_cast<int64_t>(value) };
-    } else {
-        return { name, static_cast<uint64_t>(value) };
-    }
-}
-
-template <std::floating_point T> [[nodiscard]] tr::app::l10n::Arg TRArg(char const* const name, T const value)
-{
-    return { name, static_cast<double>(value) };
-}
-
-// The app's name, for text with an "{appname}" field.
-[[nodiscard]] inline tr::app::l10n::Arg TRAppNameArg()
-{
-    return { "appname", std::string{ TR_PROJ_APPNAME_CAPITALIZED } };
-}
-
-// Loads the catalogs of the languages that AppKit picked for the app,
+// Loads the catalogs of the languages that AppKit picked for the app, which translate libtransmission's messages,
 // and has {fmt}'s "L" fields format numbers for the user's region.
 // Call this before anything shows text.
 void TRSetUpLocalization();
 
-// What the macros above call. Code calls the macros, which xgettext extracts.
-
+// What TR_TEXT_C calls. Code calls the macro, which xgettext extracts.
 [[nodiscard]] NSString* TRTextInContext(char const* context, char const* msgid);
-
-[[nodiscard]] NSString* TRFormat(char const* msgid, std::initializer_list<tr::app::l10n::Arg> args);
-
-[[nodiscard]] NSString* TRFormatPlural(char const* msgid, char const* msgid_plural, uint64_t n, std::initializer_list<tr::app::l10n::Arg> args);

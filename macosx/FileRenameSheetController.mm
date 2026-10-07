@@ -72,7 +72,8 @@ typedef void (^CompletionBlock)(BOOL);
     [super windowDidLoad];
 
     self.originalName = self.node.name ?: self.torrent.name;
-    NSString* label = TR_FORMAT("Rename the file \"{filename}\":", TRArg("filename", self.originalName));
+    NSString* label = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"Rename the file \"%@\":", @"Formats", nil), self.originalName];
     self.labelField.stringValue = label;
 
     self.inputField.stringValue = self.originalName;

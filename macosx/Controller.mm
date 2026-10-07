@@ -407,11 +407,14 @@ static void showLegalNotice()
     [alert addButtonWithTitle:NSLocalizedString(@"I Accept", nil)];
     // Translators: Legal alert -> button
     [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
-    // Translators: Legal alert -> title
-    alert.messageText = TR_FORMAT("Welcome to {appname}", TRAppNameArg());
-    alert.informativeText = TR_FORMAT(
-        "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-        TRAppNameArg());
+    alert.messageText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"Welcome to %@", @"Formats", nil), @TR_PROJ_APPNAME_CAPITALIZED];
+    alert.informativeText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(
+                                      @"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
+                                      @"Formats",
+                                      nil),
+                                  @TR_PROJ_APPNAME_CAPITALIZED];
     alert.alertStyle = NSAlertStyleInformational;
 
     if ([alert runModal] == NSAlertSecondButtonReturn) {
@@ -464,12 +467,16 @@ static void replaceImportedRPCPassword()
     [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
     alert.messageText = NSLocalizedString(@"Remote access needs a new password.", nil);
     alert.informativeText = saved ?
-        TR_FORMAT(
-            "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login.",
-            TRAppNameArg()) :
-        TR_FORMAT(
-            "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on.",
-            TRAppNameArg());
+        [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                @"%@ can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login.",
+                                                @"Formats",
+                                                nil),
+                                            @TR_PROJ_APPNAME_CAPITALIZED] :
+        [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                @"%@ can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on.",
+                                                @"Formats",
+                                                nil),
+                                            @TR_PROJ_APPNAME_CAPITALIZED];
     [alert runModal];
 }
 
@@ -564,10 +571,13 @@ static void offerToImportFromTransmission()
     // Asks again while Transmission runs, because Transmission saves its settings and transfers as it quits.
     for (;;) {
         NSString* message = canCopyTransfers ?
-            TR_FORMAT(
-                "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time.",
-                TRAppNameArg()) :
-            TR_FORMAT("{appname} can copy your settings from Transmission, but not its transfers.", TRAppNameArg());
+            [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                    @"%@ can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time.",
+                                                    @"Formats",
+                                                    nil),
+                                                @TR_PROJ_APPNAME_CAPITALIZED] :
+            [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ can copy your settings from Transmission, but not its transfers.", @"Formats", nil),
+                                                @TR_PROJ_APPNAME_CAPITALIZED];
         if (isTransmissionRunning()) {
             message = [NSString stringWithFormat:@"%@\n\n%@", message, NSLocalizedString(@"Quit Transmission, then click Import.", nil)];
         }
@@ -617,10 +627,14 @@ static void offerToImportFromTransmission()
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
-        alert.messageText = TR_FORMAT("{appname} is already running.", TRAppNameArg());
-        alert.informativeText = TR_FORMAT(
-            "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit.",
-            TRAppNameArg());
+        alert.messageText = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ is already running.", @"Formats", nil),
+                                                                @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.informativeText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(
+                                          @"There is already a copy of %@ running. This copy cannot be opened until that instance is quit.",
+                                          @"Formats",
+                                          nil),
+                                      @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -638,9 +652,12 @@ static void offerToImportFromTransmission()
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
         alert.messageText = NSLocalizedString(@"Transmission is running.", nil);
-        alert.informativeText = TR_FORMAT(
-            "Quit Transmission before opening {appname}. The two apps would work on the same downloads.",
-            TRAppNameArg());
+        alert.informativeText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(
+                                          @"Quit Transmission before opening %@. The two apps would work on the same downloads.",
+                                          @"Formats",
+                                          nil),
+                                      @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -1029,9 +1046,11 @@ static void offerToImportFromTransmission()
 
             NSString* donateMessage = [NSString
                 stringWithFormat:@"%@\n\n%@",
-                                 TR_FORMAT(
-                                     "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.",
-                                     TRAppNameArg()),
+                                 [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                                         @"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.",
+                                                                         @"Formats",
+                                                                         nil),
+                                                                     @TR_PROJ_APPNAME_CAPITALIZED],
                                  NSLocalizedString(@"Donate or not, there will be no difference to your torrenting experience.", nil)];
 
             alert.informativeText = donateMessage;
@@ -1119,11 +1138,11 @@ static void offerToImportFromTransmission()
     alert.messageText = NSLocalizedString(@"Are you sure you want to quit?", nil);
     alert.informativeText = active == 1 ?
         NSLocalizedString(@"There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch.", nil) :
-        TR_FORMAT_N(
-            "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch.",
-            "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch.",
-            active,
-            TRArg("count", active));
+        [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                @"There are %lu active torrents that will be paused on quit. The torrents will start again automatically on the next launch.",
+                                                @"Formats",
+                                                nil),
+                                            active];
     // Translators: Confirm Quit panel -> button
     [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
@@ -1197,7 +1216,9 @@ static void offerToImportFromTransmission()
         // Translators: Transmission launched alert -> button
         [alert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
         alert.messageText = NSLocalizedString(@"Transmission is running.", nil);
-        alert.informativeText = TR_FORMAT("{appname} will quit, because the two apps would work on the same downloads.", TRAppNameArg());
+        alert.informativeText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ will quit, because the two apps would work on the same downloads.", @"Formats", nil),
+                                      @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleCritical;
 
         // Transmission just opened and is the active app, so the alert stays behind it until the user comes here.
@@ -1250,10 +1271,10 @@ static void offerToImportFromTransmission()
     }
     completionHandler(NSURLSessionResponseCancel);
 
-    NSString* message = TR_FORMAT(
-        "It appears that the file \"{filename}\" from {url} is not a torrent file.",
-        TRArg("filename", suggestedName),
-        TRArg("url", dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding));
+    NSString* message = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"It appears that the file \"%@\" from %@ is not a torrent file.", @"Formats", nil),
+                                  suggestedName,
+                                  dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
@@ -1310,10 +1331,10 @@ static void offerToImportFromTransmission()
         return;
     }
 
-    NSString* message = TR_FORMAT(
-        "The torrent could not be downloaded from {url}: {error}.",
-        TRArg("url", task.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding),
-        TRArg("error", error.localizedDescription));
+    NSString* message = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"The torrent could not be downloaded from %@: %@.", @"Formats", nil),
+                                  task.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding,
+                                  error.localizedDescription];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
@@ -1577,7 +1598,8 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_FORMAT("\"{filename}\" is not a valid torrent file.", TRArg("filename", filename));
+    alert.messageText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"\"%@\" is not a valid torrent file.", @"Formats", nil), filename];
     alert.informativeText = NSLocalizedString(@"The torrent file cannot be opened because it contains invalid data.", nil);
 
     alert.alertStyle = NSAlertStyleWarning;
@@ -1597,9 +1619,12 @@ static void offerToImportFromTransmission()
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = NSLocalizedString(@"Adding magnetized torrent failed.", nil);
-    alert.informativeText = TR_FORMAT(
-        "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added.",
-        TRArg("magnet_link", address));
+    alert.informativeText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(
+                                      @"There was an error when adding the magnet link \"%@\". The torrent will not be added.",
+                                      @"Formats",
+                                      nil),
+                                  address];
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
 
@@ -1616,7 +1641,8 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
+    alert.messageText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(@"A torrent for \"%@\" already exists.", @"Formats", nil), name];
     alert.informativeText = NSLocalizedString(@"The torrent cannot be added because it is a duplicate of an already existing torrent.", nil);
 
     alert.alertStyle = NSAlertStyleWarning;
@@ -1637,13 +1663,17 @@ static void offerToImportFromTransmission()
 
     NSAlert* alert = [[NSAlert alloc] init];
     if (name) {
-        alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
+        alert.messageText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(@"A torrent for \"%@\" already exists.", @"Formats", nil), name];
     } else {
         alert.messageText = NSLocalizedString(@"Magnet link is a duplicate of an existing torrent.", nil);
     }
-    alert.informativeText = TR_FORMAT(
-        "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent.",
-        TRArg("magnet_link", address));
+    alert.informativeText = [NSString
+        localizedStringWithFormat:NSLocalizedStringFromTable(
+                                      @"The magnet link \"%@\" cannot be added because it is a duplicate of an already existing torrent.",
+                                      @"Formats",
+                                      nil),
+                                  address];
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
     alert.showsSuppressionButton = YES;
@@ -1861,38 +1891,43 @@ static void offerToImportFromTransmission()
                 NSString* torrentName = torrents[0].name;
 
                 if (deleteData) {
-                    title = TR_FORMAT(
-                        "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?",
-                        TRArg("torrent_name", torrentName));
+                    title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                                    @"Are you sure you want to remove \"%@\" from the torrent list and trash the data file?",
+                                                                    @"Formats",
+                                                                    nil),
+                                                                torrentName];
                 } else {
-                    title = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
+                    title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                                    @"Are you sure you want to remove \"%@\" from the torrent list?",
+                                                                    @"Formats",
+                                                                    nil),
+                                                                torrentName];
                 }
 
                 message = NSLocalizedString(@"This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again.", nil);
             } else {
                 if (deleteData) {
-                    title = TR_FORMAT_N(
-                        "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?",
-                        "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?",
-                        selected,
-                        TRArg("count", selected));
+                    title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                                    @"Are you sure you want to remove %lu torrents from the torrent list and trash the data files?",
+                                                                    @"Formats",
+                                                                    nil),
+                                                                selected];
                 } else {
-                    title = TR_FORMAT_N(
-                        "Are you sure you want to remove {count:L} torrent from the torrent list?",
-                        "Are you sure you want to remove {count:L} torrents from the torrent list?",
-                        selected,
-                        TRArg("count", selected));
+                    title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                                    @"Are you sure you want to remove %lu torrents from the torrent list?",
+                                                                    @"Formats",
+                                                                    nil),
+                                                                selected];
                 }
 
                 if (selected == active) {
-                    message = TR_FORMAT_N("There is {count:L} active torrent.", "There are {count:L} active torrents.", active, TRArg("count", active));
+                    message = [NSString
+                        localizedStringWithFormat:NSLocalizedStringFromTable(@"There are %lu active torrents.", @"Formats", nil), active];
                 } else {
-                    message = TR_FORMAT_N(
-                        "There is {count:L} torrent ({active_count:L} active).",
-                        "There are {count:L} torrents ({active_count:L} active).",
-                        selected,
-                        TRArg("count", selected),
-                        TRArg("active_count", active));
+                    message = [NSString
+                        localizedStringWithFormat:NSLocalizedStringFromTable(@"There are %lu torrents (%lu active).", @"Formats", nil),
+                                                  selected,
+                                                  active];
                 }
                 message = [message
                     stringByAppendingFormat:@" %@", NSLocalizedString(@"Once removed, you'll need the torrent files or magnet links to add them again.", nil)];
@@ -2039,15 +2074,17 @@ static void offerToImportFromTransmission()
         NSString *message, *info;
         if (torrents.count == 1) {
             NSString* torrentName = torrents[0].name;
-            message = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
+            message = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"Are you sure you want to remove \"%@\" from the torrent list?", @"Formats", nil),
+                                          torrentName];
 
             info = NSLocalizedString(@"Once removed, you'll need the torrent file or magnet link to add it again.", nil);
         } else {
-            message = TR_FORMAT_N(
-                "Are you sure you want to remove {count:L} completed torrent from the torrent list?",
-                "Are you sure you want to remove {count:L} completed torrents from the torrent list?",
-                torrents.count,
-                TRArg("count", torrents.count));
+            message = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(
+                                                              @"Are you sure you want to remove %lu completed torrents from the torrent list?",
+                                                              @"Formats",
+                                                              nil),
+                                                          torrents.count];
 
             info = NSLocalizedString(@"Once removed, you'll need the torrent files or magnet links to add them again.", nil);
         }
@@ -2091,13 +2128,11 @@ static void offerToImportFromTransmission()
 
     NSUInteger count = torrents.count;
     if (count == 1) {
-        panel.message = TR_FORMAT("Select the new folder for \"{torrent_name}\".", TRArg("torrent_name", torrents[0].name));
+        panel.message = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Select the new folder for \"%@\".", @"Formats", nil),
+                                                            torrents[0].name];
     } else {
-        panel.message = TR_FORMAT_N(
-            "Select the new folder for {count:L} data file.",
-            "Select the new folder for {count:L} data files.",
-            count,
-            TRArg("count", count));
+        panel.message = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(@"Select the new folder for %lu data files.", @"Formats", nil), count];
     }
 
     [panel beginSheetModalForWindow:self.fWindow completionHandler:^(NSInteger result) {
@@ -2144,8 +2179,12 @@ static void offerToImportFromTransmission()
         if (!torrent.magnet) {
             NSAlert* alert = [[NSAlert alloc] init];
             [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
-            alert.messageText = TR_FORMAT("Copy of \"{torrent_name}\" Cannot Be Created", TRArg("torrent_name", torrent.name));
-            alert.informativeText = TR_FORMAT("The torrent file ({path}) cannot be found.", TRArg("path", torrent.torrentLocation));
+            alert.messageText = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"Copy of \"%@\" Cannot Be Created", @"Formats", nil),
+                                          torrent.name];
+            alert.informativeText = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"The torrent file (%@) cannot be found.", @"Formats", nil),
+                                          torrent.torrentLocation];
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -2356,11 +2395,9 @@ static void offerToImportFromTransmission()
             count -= self.fDisplayedTorrents.count;
         }
 
-        totalTorrentsString = TR_FORMAT(
-            // Translators: Status bar transfer count
-            "{part} of {whole}",
-            TRArg("part", [NSString localizedStringWithFormat:@"%lu", count]),
-            TRArg("whole", totalTorrentsString));
+        totalTorrentsString = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ of %@", @"Formats", nil),
+                                                                  [NSString localizedStringWithFormat:@"%lu", count],
+                                                                  totalTorrentsString];
     }
 
     self.fTotalTorrentsField.stringValue = totalTorrentsString;
@@ -4659,14 +4696,12 @@ static void offerToImportFromTransmission()
     NSMenu* menu = [[NSMenu alloc] init];
 
     if (seeding > 0) {
-        // Translators: Dock item - Seeding
-        NSString* title = TR_FORMAT("{count:L} Seeding", TRArg("count", seeding));
+        NSString* title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Seeding", @"Formats", nil), seeding];
         [menu addItemWithTitle:title action:nil keyEquivalent:@""];
     }
 
     if (downloading > 0) {
-        // Translators: Dock item - Downloading
-        NSString* title = TR_FORMAT("{count:L} Downloading", TRArg("count", downloading));
+        NSString* title = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Downloading", @"Formats", nil), downloading];
         [menu addItemWithTitle:title action:nil keyEquivalent:@""];
     }
 

@@ -123,8 +123,9 @@ static NSCache<UTType*, NSImage*>* iconCache;
     CGFloat const progress = [torrent fileProgress:node];
     NSString* percentString = [NSString percentString:progress longDecimals:YES];
 
-    // Translators: Inspector -> Files tab -> file status string
-    NSString* status = TR_FORMAT("{part} of {whole}", TRArg("part", percentString), TRArg("whole", [NSString stringForFileSize:node.size]));
+    NSString* status = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ of %@", @"Formats", nil),
+                                                           percentString,
+                                                           [NSString stringForFileSize:node.size]];
     self.statusField.stringValue = status;
 
     // Update colors based on background style and check state

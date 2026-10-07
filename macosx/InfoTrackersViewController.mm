@@ -138,8 +138,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         NSString* tierString = tier == -1 ?
             // Translators: Inspector -> tracker table
             NSLocalizedString(@"New Tier", nil) :
-            // Translators: Inspector -> tracker table
-            TR_FORMAT("Tier {tier:d}", TRArg("tier", tier));
+            [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Tier %ld", @"Formats", nil), tier];
 
         if (self.fTorrents.count > 1) {
             tierString = [tierString stringByAppendingFormat:@" - %@", item[@"Name"]];
@@ -352,17 +351,23 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         NSAlert* alert = [[NSAlert alloc] init];
 
         if (removeTrackerCount > 1) {
-            alert.messageText = TR_FORMAT_N(
-                "Are you sure you want to remove {count:L} tracker?",
-                "Are you sure you want to remove {count:L} trackers?",
-                removeTrackerCount,
-                TRArg("count", removeTrackerCount));
-            alert.informativeText = TR_FORMAT(
-                "Once removed, {appname} will no longer attempt to contact them. This cannot be undone.",
-                TRAppNameArg());
+            alert.messageText = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"Are you sure you want to remove %lu trackers?", @"Formats", nil),
+                                          removeTrackerCount];
+            alert.informativeText = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(
+                                              @"Once removed, %@ will no longer attempt to contact them. This cannot be undone.",
+                                              @"Formats",
+                                              nil),
+                                          @TR_PROJ_APPNAME_CAPITALIZED];
         } else {
             alert.messageText = NSLocalizedString(@"Are you sure you want to remove this tracker?", nil);
-            alert.informativeText = TR_FORMAT("Once removed, {appname} will no longer attempt to contact it. This cannot be undone.", TRAppNameArg());
+            alert.informativeText = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(
+                                              @"Once removed, %@ will no longer attempt to contact it. This cannot be undone.",
+                                              @"Formats",
+                                              nil),
+                                          @TR_PROJ_APPNAME_CAPITALIZED];
         }
 
         // Translators: Remove trackers alert -> button

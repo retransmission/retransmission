@@ -455,13 +455,9 @@ static NSMutableSet* creatorWindowControllerSet;
     auto const piece_size = self.fBuilder->piece_size();
     auto const piece_count = self.fBuilder->piece_count();
 
-    self.fPiecesField.stringValue = TR_FORMAT_N(
-        // Translators: Create torrent -> info
-        "{count:L} piece, {size}",
-        "{count:L} pieces, {size} each",
-        piece_count,
-        TRArg("count", piece_count),
-        TRArg("size", [NSString stringForFileSize:piece_size]));
+    self.fPiecesField.stringValue = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu pieces, %@ each", @"Formats", nil),
+                                                                        static_cast<NSUInteger>(piece_count),
+                                                                        [NSString stringForFileSize:piece_size]];
 }
 
 - (void)updateLocationField
@@ -497,9 +493,12 @@ static NSMutableSet* creatorWindowControllerSet;
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
         alert.messageText = NSLocalizedString(@"The chosen torrent file location does not exist.", nil);
-        alert.informativeText = TR_FORMAT(
-            "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file.",
-            TRArg("directory", self.fLocation.URLByDeletingLastPathComponent.path));
+        alert.informativeText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(
+                                          @"The directory \"%@\" does not currently exist. Create this directory or choose a different one to create the torrent file.",
+                                          @"Formats",
+                                          nil),
+                                      self.fLocation.URLByDeletingLastPathComponent.path];
         alert.alertStyle = NSAlertStyleWarning;
 
         [alert beginSheetModalForWindow:self.window completionHandler:nil];
@@ -514,10 +513,13 @@ static NSMutableSet* creatorWindowControllerSet;
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
         alert.messageText = NSLocalizedString(@"A torrent file with this name and directory cannot be created.", nil);
-        alert.informativeText = TR_FORMAT(
-            "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file.",
-            TRArg("filename", pathComponents[count - 1]),
-            TRArg("directory", pathComponents[count - 2]));
+        alert.informativeText = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(
+                                          @"A file with the name \"%@\" already exists in the directory \"%@\". Choose a new name or directory to create the torrent file.",
+                                          @"Formats",
+                                          nil),
+                                      pathComponents[count - 1],
+                                      pathComponents[count - 2]];
         alert.alertStyle = NSAlertStyleWarning;
 
         [alert beginSheetModalForWindow:self.window completionHandler:nil];
@@ -606,7 +608,8 @@ static NSMutableSet* creatorWindowControllerSet;
     if (error) {
         auto* const alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
-        alert.messageText = TR_FORMAT("Creation of \"{filename}\" failed.", TRArg("filename", self.fLocation.lastPathComponent));
+        alert.messageText = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Creation of \"%@\" failed.", @"Formats", nil),
+                                                                self.fLocation.lastPathComponent];
         alert.alertStyle = NSAlertStyleWarning;
 
         alert.informativeText = [NSString

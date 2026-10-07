@@ -113,7 +113,8 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     panel.canChooseDirectories = YES;
     panel.canCreateDirectories = YES;
 
-    panel.message = TR_FORMAT("Select the download folder for \"{torrent_name}\"", TRArg("torrent_name", self.torrent.name));
+    panel.message = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Select the download folder for \"%@\"", @"Formats", nil),
+                                                        self.torrent.name];
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {

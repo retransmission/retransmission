@@ -131,8 +131,8 @@
         baseString = [NSLocalizedString(@"Last Announce", nil) stringByAppendingFormat:@": %@", dateString];
         if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0) {
             auto const peerCount = self.fStat.lastAnnouncePeerCount;
-            // Translators: Tracker last announce
-            NSString* peerString = TR_FORMAT_N("got {count:L} peer", "got {count:L} peers", peerCount, TRArg("count", peerCount));
+            NSString* peerString = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"got %lu peers", @"Formats", nil), peerCount];
             baseString = [baseString stringByAppendingFormat:@" (%@)", peerString];
         }
     }
@@ -161,7 +161,7 @@
             });
 
             NSString* timeString = [formatter stringFromTimeInterval:nextAnnounceTimeLeft];
-            return TR_FORMAT("Next announce in {time_span}", TRArg("time_span", timeString));
+            return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Next announce in %@", @"Formats", nil), timeString];
         }
     case TR_TRACKER_QUEUED:
         return [NSLocalizedString(@"Queued to ask for more peers", nil) stringByAppendingEllipsis];

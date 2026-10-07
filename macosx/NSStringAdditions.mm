@@ -39,12 +39,12 @@
 // https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/APFS_Guide/VolumeFormatComparison/VolumeFormatComparison.html
 + (NSString*)stringForFileCount:(NSUInteger)count
 {
-    return TR_FORMAT_N("{file_count:L} file", "{file_count:L} files", count, TRArg("file_count", count));
+    return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu files", @"Formats", nil), count];
 }
 
 + (NSString*)stringForTorrentCount:(NSUInteger)count
 {
-    return TR_FORMAT_N("{count:L} torrent", "{count:L} torrents", count, TRArg("count", count));
+    return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu torrents", @"Formats", nil), count];
 }
 
 + (NSString*)stringForFilePartialSize:(uint64_t)partialSize fullSize:(uint64_t)fullSize
@@ -67,8 +67,7 @@
     fileSizeFormatter.includesUnit = !partialUnitsSame;
     NSString* partialSizeString = [fileSizeFormatter stringFromByteCount:partialSize];
 
-    // Translators: file size string
-    return TR_FORMAT("{part} of {whole}", TRArg("part", partialSizeString), TRArg("whole", fullSizeString));
+    return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ of %@", @"Formats", nil), partialSizeString, fullSizeString];
 }
 
 + (NSString*)stringForSpeed:(CGFloat)speed

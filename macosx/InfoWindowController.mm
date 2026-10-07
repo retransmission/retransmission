@@ -484,8 +484,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         if (numberSelected > 0) {
             self.fImageView.image = [NSImage imageNamed:NSImageNameMultipleDocuments];
 
-            // Translators: Inspector -> selected torrents
-            self.fNameField.stringValue = TR_FORMAT_N("{count:L} Torrent Selected", "{count:L} Torrents Selected", numberSelected, TRArg("count", numberSelected));
+            self.fNameField.stringValue = [NSString
+                localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Torrents Selected", @"Formats", nil), numberSelected];
             self.fNameField.hidden = NO;
 
             uint64_t size = 0;
@@ -504,8 +504,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
                 [fileStrings addObject:fileString];
             }
             if (magnetCount > 0) {
-                // Translators: Inspector -> selected torrents
-                NSString* magnetString = TR_FORMAT_N("{count:L} magnetized torrent", "{count:L} magnetized torrents", magnetCount, TRArg("count", magnetCount));
+                NSString* magnetString = [NSString
+                    localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu magnetized torrents", @"Formats", nil), magnetCount];
                 [fileStrings addObject:magnetString];
             }
 
@@ -515,8 +515,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
                 self.fBasicInfoField.stringValue = [NSString
                     stringWithFormat:@"%@, %@",
                                      fileString,
-                                     // Translators: Inspector -> selected torrents
-                                     TR_FORMAT("{amount} total", TRArg("amount", [NSString stringForFileSize:size]))];
+                                     [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%@ total", @"Formats", nil),
+                                                                         [NSString stringForFileSize:size]]];
 
                 NSByteCountFormatter* formatter = [[NSByteCountFormatter alloc] init];
                 formatter.allowedUnits = NSByteCountFormatterUseBytes;

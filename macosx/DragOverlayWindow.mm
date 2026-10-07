@@ -97,8 +97,7 @@
         icon = [NSWorkspace.sharedWorkspace
             iconForFileType:fileCount <= 1 ? name.pathExtension : NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
     } else {
-        // Translators: Drag overlay -> torrents
-        name = TR_FORMAT_N("{count:L} Torrent File", "{count:L} Torrent Files", count, TRArg("count", count));
+        name = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Torrent Files", @"Formats", nil), count];
         secondString = [secondString stringByAppendingString:@" total"];
         icon = [NSImage imageNamed:@"TransmissionDocument.icns"];
     }

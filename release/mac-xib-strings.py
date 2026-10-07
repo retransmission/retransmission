@@ -186,7 +186,7 @@ def check(its_path, xib_paths):
 
 
 def is_format_string(text):
-    """Whether text is a {fmt} format string, which the code looks up with TR_FORMAT rather than NSLocalizedString().
+    """Whether text is a {fmt} format string, which the code looks up in the Formats table, not with NSLocalizedString().
     Every message whose English text has a brace is one."""
     return '{' in text or '}' in text
 
@@ -237,7 +237,7 @@ def key_problem(tokens, plain, with_context, plural):
 
     key = unquote(tokens[0][2][1:])
     if is_format_string(key):
-        return f'{key!r} is a {{fmt}} format string, which TR_FORMAT looks up'
+        return f'{key!r} is a {{fmt}} format string, which the code looks up in the Formats table'
     if key in plain:
         return None
     if key in plural:

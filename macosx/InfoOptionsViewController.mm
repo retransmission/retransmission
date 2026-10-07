@@ -665,8 +665,8 @@ static CGFloat const kStackViewSpacing = 8.0;
     NSString* globalIdle;
     if ([NSUserDefaults.standardUserDefaults boolForKey:@"IdleLimitCheck"]) {
         NSInteger const globalMin = [NSUserDefaults.standardUserDefaults integerForKey:@"IdleLimitMinutes"];
-        // Translators: Info options -> global setting
-        globalIdle = TR_FORMAT_N("{minutes:L} minute", "{minutes:L} minutes", globalMin, TRArg("minutes", globalMin));
+        globalIdle = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu minutes", @"Formats", nil),
+                                                         static_cast<NSUInteger>(globalMin)];
     } else {
         // Translators: Info options -> global setting
         globalIdle = NSLocalizedString(@"disabled", nil);

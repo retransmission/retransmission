@@ -205,20 +205,17 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     [self.fWebSeedTable reloadData];
 
     if (anyActive) {
-        // Translators: Inspector -> Peers tab -> peers
-        NSString* connectedText = TR_FORMAT_N("{count:L} Connected", "{count:L} Connected", connected, TRArg("count", connected));
+        NSString* connectedText = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Connected", @"Formats", nil), connected];
 
         if (connected > 0) {
             NSMutableArray* upDownComponents = [NSMutableArray arrayWithCapacity:2];
             if (toUs > 0) {
                 [upDownComponents
-                    // Translators: Inspector -> Peers tab -> peers
-                    addObject:TR_FORMAT("DL from {count:L}", TRArg("count", toUs))];
+                    addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"DL from %lu", @"Formats", nil), toUs]];
             }
             if (fromUs > 0) {
                 [upDownComponents
-                    // Translators: Inspector -> Peers tab -> peers
-                    addObject:TR_FORMAT("UL to {count:L}", TRArg("count", fromUs))];
+                    addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"UL to %lu", @"Formats", nil), fromUs]];
             }
             if (upDownComponents.count > 0) {
                 connectedText = [connectedText stringByAppendingFormat:@": %@", [upDownComponents componentsJoinedByString:@", "]];
@@ -248,8 +245,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         self.fConnectedPeersField.toolTip = [NSLocalizedString(@"Known:", nil)
             stringByAppendingFormat:@" %@", totalKnown > 0 ? knownText : @"0"];
     } else {
-        // Translators: Inspector -> Peers tab -> peers
-        self.fConnectedPeersField.toolTip = [TR_FORMAT("{count:L} Known:", TRArg("count", totalKnown))
+        self.fConnectedPeersField.toolTip = [[NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu Known:", @"Formats", nil), totalKnown]
             stringByAppendingFormat:@" %@", knownText];
     }
 }
@@ -264,35 +261,26 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 {
     NSMutableArray* fromComponents = [NSMutableArray arrayWithCapacity:7];
     if (tracker > 0) {
-        [fromComponents
-            // Translators: Inspector -> Peers tab -> peers
-            addObject:TR_FORMAT("{count:L} tracker", TRArg("count", tracker))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu tracker", @"Formats", nil), tracker]];
     }
     if (incoming > 0) {
-        [fromComponents
-            // Translators: Inspector -> Peers tab -> peers
-            addObject:TR_FORMAT("{count:L} incoming", TRArg("count", incoming))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu incoming", @"Formats", nil), incoming]];
     }
     if (cache > 0) {
-        // Translators: Inspector -> Peers tab -> peers
-        [fromComponents addObject:TR_FORMAT("{count:L} cache", TRArg("count", cache))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu cache", @"Formats", nil), cache]];
     }
     if (lpd > 0) {
         [fromComponents
-            // Translators: Inspector -> Peers tab -> peers
-            addObject:TR_FORMAT("{count:L} local discovery", TRArg("count", lpd))];
+            addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu local discovery", @"Formats", nil), lpd]];
     }
     if (pex > 0) {
-        // Translators: Inspector -> Peers tab -> peers
-        [fromComponents addObject:TR_FORMAT("{count:L} PEX", TRArg("count", pex))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu PEX", @"Formats", nil), pex]];
     }
     if (dht > 0) {
-        // Translators: Inspector -> Peers tab -> peers
-        [fromComponents addObject:TR_FORMAT("{count:L} DHT", TRArg("count", dht))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu DHT", @"Formats", nil), dht]];
     }
     if (ltep > 0) {
-        // Translators: Inspector -> Peers tab -> peers
-        [fromComponents addObject:TR_FORMAT("{count:L} LTEP", TRArg("count", ltep))];
+        [fromComponents addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu LTEP", @"Formats", nil), ltep]];
     }
 
     return [fromComponents componentsJoinedByString:@", "];
@@ -402,8 +390,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         }
 
         CGFloat const progress = [peer[@"Progress"] floatValue];
-        // Translators: Inspector -> Peers tab -> table row tooltip
-        NSString* progressString = TR_FORMAT("Progress: {percent}", TRArg("percent", [NSString percentString:progress longDecimals:NO]));
+        NSString* progressString = [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Progress: %@", @"Formats", nil),
+                                                                       [NSString percentString:progress longDecimals:NO]];
         if (progress < 1.0 && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
                 // Translators: Inspector -> Peers tab -> table row tooltip
@@ -417,8 +405,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
                 // Translators: Inspector -> Peers tab -> table row tooltip
                 stringByAppendingFormat:@" (%@)", NSLocalizedString(@"encrypted", nil)];
         }
-        // Translators: Inspector -> Peers tab -> table row tooltip
-        [components addObject:TR_FORMAT("Protocol: {protocol}", TRArg("protocol", protocolString))];
+        [components addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Protocol: %@", @"Formats", nil), protocolString]];
 
         NSString* portString;
         NSInteger port;
@@ -428,8 +415,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
             // Translators: Inspector -> Peers tab -> table row tooltip
             portString = NSLocalizedString(@"N/A", nil);
         }
-        // Translators: Inspector -> Peers tab -> table row tooltip
-        [components addObject:TR_FORMAT("Port: {port}", TRArg("port", portString))];
+        [components addObject:[NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"Port: %@", @"Formats", nil), portString]];
 
         NSInteger const peerFrom = [peer[@"From"] integerValue];
         switch (peerFrom) {

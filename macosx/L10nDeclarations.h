@@ -3,8 +3,8 @@
 // License text can be found in the licenses/ folder.
 
 // The English of every formatted string that the app looks up, in the catalog's {fmt} syntax.
-// Nothing compiles this file;
-// po/compile-mac-catalogs.sh writes each language's Formats.strings and Formats.stringsdict from it.
+// Nothing compiles this file. xgettext extracts its text into the catalog,
+// and po/compile-mac-catalogs.sh writes each language's Formats.strings and Formats.stringsdict from it.
 //
 // The code looks up text by its key, the English in Cocoa's format syntax,
 // and a plural by its plural English:
@@ -18,6 +18,8 @@
 //   {name:d}  %ld  an NSInteger
 // A literal % is %%. With NUMBERED_KEY, the key numbers its specifiers, as in %1$@.
 // A plural's count is its {count} field, or else its last {name:L} field.
+//
+// xgettext takes a comment for translators from the line above the one where the text starts.
 
 TR_DECLARE("Select the download folder for \"{torrent_name}\"");
 

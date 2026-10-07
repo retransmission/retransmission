@@ -539,11 +539,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     if (exists) {
         auto const ruleCount = tr_blocklistGetRuleCount(self.fHandle);
-        self.fBlocklistMessageField.stringValue = TR_FORMAT_N(
-            "{count:L} IP address rule in list",
-            "{count:L} IP address rules in list",
-            ruleCount,
-            TRArg("count", ruleCount));
+        self.fBlocklistMessageField.stringValue = [NSString
+            localizedStringWithFormat:NSLocalizedStringFromTable(@"%lu IP address rules in list", @"Formats", nil), ruleCount];
     } else {
         self.fBlocklistMessageField.stringValue = NSLocalizedString(@"A blocklist must first be downloaded", nil);
     }
