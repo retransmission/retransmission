@@ -7,6 +7,9 @@
   --statusbar-height: 30px;
   --toolbar-height: 50px;
 
+  /* 2px = the toolbar and statusbar bottom borders */
+  --header-height: calc(var(--toolbar-height) + var(--statusbar-height) + 2px);
+
   /* colors related to torrent status */
   --black: #000;
   --blue-100: #51b3f7;
@@ -98,7 +101,6 @@
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-seed-1: var(--green-100);
     --color-progressbar-seed-2: var(--green-400);
-    --color-progressbar-seed-paused: var(--grey-500);
     --contrast-bg: var(--black);
     --contrast-fg: var(--white);
     --legacy-bg-selected: var(--default-accent-color-strong);
@@ -124,7 +126,6 @@
     --color-progressbar-paused: var(--grey-200);
     --color-progressbar-seed-1: var(--green-500);
     --color-progressbar-seed-2: var(--green-300);
-    --color-progressbar-seed-paused: var(--grey-200);
     --contrast-bg: var(--white);
     --contrast-fg: var(--black);
     --legacy-bg-selected: var(--default-accent-color);
@@ -153,7 +154,6 @@
   --color-progressbar-paused: var(--grey-500);
   --color-progressbar-seed-1: var(--black);
   --color-progressbar-seed-2: var(--white);
-  --color-progressbar-seed-paused: var(--grey-500);
   --color-toolbar-background: var(--contrast-bg);
   --legacy-bg-selected: var(--default-accent-color-strong);
   --legacy-fg-selected: var(--black);
@@ -241,6 +241,7 @@ a {
 .tabs-container {
   box-shadow: var(--popup-shadow);
   position: absolute;
+  z-index: var(--z-index-popup);
 }
 
 /* TOOLBAR */
@@ -584,25 +585,17 @@ a {
       color: var(--black);
     }
 
-    &.seed {
-      &.paused::before {
-        background: var(--color-progressbar-seed-paused);
-        color: var(--color-progressbar-fg-1);
-        text-shadow: var(--progress-bar-shadow-1);
+    &.seed:not(.paused) {
+      &::before {
+        background: var(--color-progressbar-seed-1);
+        color: var(--color-progressbar-fg-2);
+        text-shadow: var(--progress-bar-shadow-2);
       }
 
-      &:not(.paused) {
-        &::before {
-          background: var(--color-progressbar-seed-1);
-          color: var(--color-progressbar-fg-2);
-          text-shadow: var(--progress-bar-shadow-2);
-        }
-
-        &::after {
-          background: var(--color-progressbar-seed-2);
-          color: var(--color-progressbar-fg-3);
-          text-shadow: var(--progress-bar-shadow-3);
-        }
+      &::after {
+        background: var(--color-progressbar-seed-2);
+        color: var(--color-progressbar-fg-3);
+        text-shadow: var(--progress-bar-shadow-3);
       }
     }
 
@@ -691,6 +684,7 @@ a {
 
   #alt-times-div,
   #autostart-div,
+  #default-trackers,
   #port-forwarding,
   #randomize-port,
   #suffix-div,
@@ -698,7 +692,8 @@ a {
   #use-lpd-div,
   #use-pex-div,
   #utp-enabled,
-  .alt-speed-label {
+  .alt-speed-label,
+  .default-trackers-label {
     grid-column: span 2;
   }
 
@@ -735,11 +730,6 @@ a {
     }
   }
 
-  #default-trackers,
-  .default-trackers-label {
-    grid-column: 1 / 3;
-  }
-
   .alt-speed-label {
     font-size: smaller;
 
@@ -756,10 +746,7 @@ a {
   display: flex;
   flex-direction: column;
   right: 0;
-
-  /* 2px = the toolbar and statusbar bottom borders */
-  top: calc(var(--toolbar-height) + var(--statusbar-height) + 2px);
-  z-index: var(--z-index-popup);
+  top: var(--header-height);
 
   @media (width < 600px) {
     top: 0;
@@ -1151,7 +1138,6 @@ a {
   border-radius: 5px;
   color: var(--color-fg-on-popup);
   padding: 10px 5px;
-  z-index: var(--z-index-popup);
   user-select: none;
 
   .arrow {
@@ -1173,26 +1159,22 @@ a {
       transform: translate(7px, -18px);
       z-index: calc(var(--z-index-popup) + 1);
       border-radius: 5px;
-      animation: shadow 200ms ease-in normal forwards;
+      animation: shadow 200ms ease-in forwards;
 
       .open {
         background-color: var(--color-bg-primary);
         border-radius: 5px;
         color: var(--color-fg-on-popup);
         padding: 5px;
-        right: 0;
+        position: relative;
         white-space: nowrap;
 
         &.left {
-          position: relative;
-          display: block;
-          animation: left 200ms linear 1;
+          animation: left 200ms linear;
         }
 
         &.right {
-          position: relative;
-          display: block;
-          animation: right 200ms linear 1;
+          animation: right 200ms linear;
         }
       }
     }
@@ -1238,7 +1220,6 @@ a {
   right: 0;
   margin: 6px;
   top: var(--toolbar-height);
-  z-index: var(--z-index-popup);
 
   fieldset {
     border: 0;
@@ -1353,11 +1334,10 @@ a {
 
 .dialog-container {
   max-width: 500px;
-  top: 102px;
+  top: calc(var(--header-height) + 20px);
   width: calc(100vw - 20px);
   color: var(--color-fg-primary);
   padding: 0;
-  z-index: var(--z-index-popup);
   border: 0;
   border-radius: 8px;
 }
