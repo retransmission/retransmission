@@ -651,25 +651,30 @@ a {
   }
 }
 
+/* a grid of labels and values, shared with the inspector's info page */
+#prefs-dialog .tabs-page,
+.inspector-info-page {
+  margin: 20px;
+
+  &:not(.hidden) {
+    display: grid;
+  }
+
+  .section-label {
+    font-weight: bold;
+    grid-column: span 2;
+    padding-bottom: 5px;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+}
+
 #prefs-dialog {
   .tabs-page {
     gap: 5px 8px;
     grid-template-columns: 1fr 1fr;
-    margin: 20px;
-
-    &:not(.hidden) {
-      display: grid;
-    }
-
-    .section-label {
-      font-weight: bold;
-      grid-column: span 2;
-      padding-bottom: 5px;
-
-      &:not(:first-of-type) {
-        margin-top: 20px;
-      }
-    }
   }
 
   .alt-speed-section-label::before {
@@ -804,6 +809,10 @@ a {
   @media (width >= 600px) {
     padding: 0 20px 20px;
   }
+
+  span {
+    overflow-wrap: anywhere;
+  }
 }
 
 .tabs-button {
@@ -823,33 +832,15 @@ a {
 
 .inspector-info-page {
   font-size: 14px;
-
-  /* TODO: this is (mostly) copied from prefs-dialog. */
-
-  /* can it be folded into a single set of rules? */
-
   gap: 8px;
   grid-template-columns: auto 1fr;
-  margin: 20px;
   padding: 12px;
-
-  &:not(.hidden) {
-    display: grid;
-  }
 
   .section-label {
     font-size: 16px;
-    font-weight: bold;
-    grid-column: span 2;
-    padding-bottom: 5px;
-
-    &:not(:first-of-type) {
-      margin-top: 20px;
-    }
   }
 
   :not(.section-label) {
-    /* this section is not copied */
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
@@ -1491,8 +1482,6 @@ a {
 
 /* STATISTICS DIALOG */
 
-.tabs-pages,
-.inspector-info-page,
 .statistics-dialog {
   .content {
     gap: 6px 16px;
@@ -1514,10 +1503,6 @@ a {
   legend {
     font-weight: bolder;
     margin-bottom: 4px;
-  }
-
-  span {
-    overflow-wrap: anywhere;
   }
 }
 
