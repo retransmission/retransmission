@@ -60,19 +60,22 @@
   --popup-shadow:
     0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 6%);
-  --progress-bar-shadow: 1px 1px #000;
+  --progress-bar-shadow: 1px 1px var(--black);
   --progress: 100%;
   --color-bg-even: var(--default-tinted);
   --color-bg-tabs: var(--default-tinted);
+  --color-fg-disabled: var(--grey);
   --color-fg-error: var(--red-500);
   --color-fg-port-closed: var(--red-500);
-  --color-fg-port-open: var(--green-100);
-  --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-fg-2: var(--lavender-100);
+  --color-progressbar-fg-3: var(--lavender-100);
   --color-progressbar-magnet: var(--yellow-300);
-  --color-progressbar-paused: var(--grey-200);
   --color-progressbar-queued: var(--blue-400);
   --color-progressbar-verify: var(--yellow-300);
   --color-toolbar-background: var(--default-tinted);
+  --legacy-fg-selected: var(--grey-700);
+  --progress-bar-shadow-2: var(--progress-bar-shadow);
+  --progress-bar-shadow-3: var(--progress-bar-shadow);
 
   color-scheme: light dark;
 
@@ -81,58 +84,25 @@
     --color-bg-odd: var(--black);
     --color-bg-popup: var(--black);
     --color-bg-primary: var(--black);
-    --color-bg-selected: var(--default-accent-color-strong);
     --color-bg-warn: var(--pink-500);
     --color-border-default: var(--default-border-dark);
     --color-border-stark: var(--dark-mode-white);
     --color-border-starkest: var(--grey-500);
-    --color-fg-disabled: var(--grey);
     --color-fg-on-popup: var(--nice-grey);
+    --color-fg-port-open: var(--green-100);
     --color-fg-primary: var(--dark-mode-white);
     --color-fg-secondary: var(--nice-grey);
-    --color-fg-selected: var(--grey-700);
     --color-fg-warn: var(--dark-mode-black);
     --color-progressbar-fg-1: var(--lavender-100);
-    --color-progressbar-fg-2: var(--lavender-100);
-    --color-progressbar-fg-3: var(--lavender-100);
+    --color-progressbar-leech: var(--blue-200);
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-seed-1: var(--green-100);
     --color-progressbar-seed-2: var(--green-400);
     --color-progressbar-seed-paused: var(--grey-500);
+    --contrast-bg: var(--black);
+    --contrast-fg: var(--white);
+    --legacy-bg-selected: var(--default-accent-color-strong);
     --progress-bar-shadow-1: var(--progress-bar-shadow);
-    --progress-bar-shadow-2: var(--progress-bar-shadow);
-    --progress-bar-shadow-3: var(--progress-bar-shadow);
-
-    .contrast-more {
-      --color-bg-even: var(--black);
-      --color-bg-hover: var(--grey-40);
-      --color-bg-tabs: var(--black);
-      --color-bg-warn: var(--pink-500);
-      --color-border-default: var(--white);
-      --color-border-stark: var(--white);
-      --color-border-starkest: var(--white);
-      --color-fg-disabled: var(--white);
-      --color-fg-error: var(--red-500);
-      --color-fg-on-popup: var(--white);
-      --color-fg-port-closed: var(--red-500);
-      --color-fg-port-open: var(--green-100);
-      --color-fg-primary: var(--white);
-      --color-fg-secondary: var(--white);
-      --color-fg-selected: var(--black);
-      --color-fg-warn: var(--black);
-      --color-progressbar-fg-1: var(--white);
-      --color-progressbar-fg-2: var(--white);
-      --color-progressbar-fg-3: var(--black);
-      --color-progressbar-magnet: var(--yellow-300);
-      --color-progressbar-paused: var(--grey-500);
-      --color-progressbar-queued: var(--blue-400);
-      --color-progressbar-seed-1: var(--black);
-      --color-progressbar-seed-2: var(--white);
-      --color-progressbar-seed-paused: var(--grey-500);
-      --color-progressbar-verify: var(--yellow-300);
-      --color-toolbar-background: var(--black);
-      --progress-bar-shadow-3: 0;
-    }
   }
 
   @media (prefers-color-scheme: light) {
@@ -140,94 +110,78 @@
     --color-bg-odd: var(--white);
     --color-bg-popup: var(--white);
     --color-bg-primary: var(--white);
-    --color-bg-selected: var(--default-accent-color);
     --color-bg-warn: #e4606d5b;
     --color-border-default: var(--default-border-light);
     --color-border-stark: var(--grey-500);
     --color-border-starkest: #d0d7de;
-    --color-fg-disabled: var(--grey);
-    --color-fg-error: var(--red-500);
     --color-fg-on-popup: var(--grey-900);
-    --color-fg-port-closed: var(--red-500);
     --color-fg-port-open: var(--green-400);
     --color-fg-primary: var(--grey-700);
     --color-fg-secondary: var(--grey-500);
-    --color-fg-selected: var(--grey-700);
     --color-fg-warn: #cf212e;
     --color-progressbar-fg-1: #303030;
-    --color-progressbar-fg-2: var(--lavender-100);
-    --color-progressbar-fg-3: var(--lavender-100);
     --color-progressbar-leech: var(--blue-100);
-    --color-progressbar-magnet: var(--yellow-300);
     --color-progressbar-paused: var(--grey-200);
-    --color-progressbar-queued: var(--blue-400);
     --color-progressbar-seed-1: var(--green-500);
     --color-progressbar-seed-2: var(--green-300);
     --color-progressbar-seed-paused: var(--grey-200);
-    --color-progressbar-verify: var(--yellow-300);
-    --progress-bar-shadow-1: 0;
-    --progress-bar-shadow-2: var(--progress-bar-shadow);
-    --progress-bar-shadow-3: var(--progress-bar-shadow);
-
-    .contrast-more {
-      --color-bg-even: var(--white);
-      --color-bg-hover: var(--grey-40);
-      --color-bg-selected: var(--default-accent-color-strong);
-      --color-bg-tabs: var(--white);
-      --color-bg-warn: var(--pink-500);
-      --color-border-default: var(--black);
-      --color-border-stark: var(--black);
-      --color-border-starkest: var(--black);
-      --color-fg-disabled: var(--black);
-      --color-fg-error: var(--red-500);
-      --color-fg-on-popup: var(--black);
-      --color-fg-port-closed: var(--red-500);
-      --color-fg-port-open: var(--green-400);
-      --color-fg-primary: var(--black);
-      --color-fg-secondary: var(--black);
-      --color-fg-selected: var(--black);
-      --color-fg-warn: var(--white);
-      --color-progressbar-fg-1: var(--white);
-      --color-progressbar-fg-2: var(--white);
-      --color-progressbar-fg-3: var(--black);
-      --color-progressbar-leech: var(--blue-200);
-      --color-progressbar-magnet: var(--yellow-300);
-      --color-progressbar-paused: var(--grey-500);
-      --color-progressbar-queued: var(--blue-400);
-      --color-progressbar-seed-1: var(--black);
-      --color-progressbar-seed-2: var(--white);
-      --color-progressbar-seed-paused: var(--grey-500);
-      --color-progressbar-verify: var(--yellow-300);
-      --color-toolbar-background: var(--white);
-      --progress-bar-shadow-1: var(--progress-bar-shadow);
-      --progress-bar-shadow-3: 0;
-    }
+    --contrast-bg: var(--white);
+    --contrast-fg: var(--black);
+    --legacy-bg-selected: var(--default-accent-color);
+    --progress-bar-shadow-1: none;
   }
+}
+
+/* high contrast draws --contrast-fg on --contrast-bg */
+.contrast-more {
+  --color-bg-even: var(--contrast-bg);
+  --color-bg-hover: var(--grey-40);
+  --color-bg-tabs: var(--contrast-bg);
+  --color-bg-warn: var(--pink-500);
+  --color-border-default: var(--contrast-fg);
+  --color-border-stark: var(--contrast-fg);
+  --color-border-starkest: var(--contrast-fg);
+  --color-fg-disabled: var(--contrast-fg);
+  --color-fg-on-popup: var(--contrast-fg);
+  --color-fg-primary: var(--contrast-fg);
+  --color-fg-secondary: var(--contrast-fg);
+  --color-fg-warn: var(--contrast-bg);
+  --color-progressbar-fg-1: var(--white);
+  --color-progressbar-fg-2: var(--white);
+  --color-progressbar-fg-3: var(--black);
+  --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-paused: var(--grey-500);
+  --color-progressbar-seed-1: var(--black);
+  --color-progressbar-seed-2: var(--white);
+  --color-progressbar-seed-paused: var(--grey-500);
+  --color-toolbar-background: var(--contrast-bg);
+  --legacy-bg-selected: var(--default-accent-color-strong);
+  --legacy-fg-selected: var(--black);
+  --progress-bar-shadow-1: var(--progress-bar-shadow);
+  --progress-bar-shadow-3: none;
 }
 
 /* If browser can support using 'system color' keywords (i.e. way to inherit browser colors), use these variables instead */
 @supports (background-color: Canvas) {
-  :root {
-    .contrast-less {
-      --color-bg-odd: Canvas;
-      --color-bg-primary: Canvas;
-      --color-bg-popup: Canvas;
-    }
+  .contrast-less {
+    --color-bg-odd: Canvas;
+    --color-bg-primary: Canvas;
+    --color-bg-popup: Canvas;
   }
 }
 
-@supports (background-color: Highlight) {
-  :root {
-    body:not(.highlight-legacy) {
-      --color-bg-selected: Highlight;
-      --color-fg-selected: HighlightText;
-    }
-  }
-}
+/* selection colors follow the Appearance dialog's highlight setting */
+body {
+  --color-bg-selected: Highlight;
+  --color-fg-selected: HighlightText;
 
-@supports (background-color: AccentColor) {
-  :root {
-    body:not(.highlight-legacy, .highlight-system) {
+  &.highlight-legacy {
+    --color-bg-selected: var(--legacy-bg-selected);
+    --color-fg-selected: var(--legacy-fg-selected);
+  }
+
+  @supports (background-color: AccentColor) {
+    &:not(.highlight-legacy, .highlight-system) {
       --color-bg-selected: AccentColor;
       --color-fg-selected: var(--nice-grey);
     }
