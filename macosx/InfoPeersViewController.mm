@@ -6,9 +6,9 @@
 
 #import "InfoPeersViewController.h"
 #import "NSStringAdditions.h"
-#import "PeerProgressIndicatorCell.h"
 #import "Torrent.h"
 #import "NSImageAdditions.h"
+#import "PeersViews.h"
 
 static NSString* const kAnimationIdKey = @"animationId";
 static NSString* const kWebSeedAnimationId = @"webSeed";
@@ -307,50 +307,95 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     }
 }
 
-- (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)column row:(NSInteger)row
+- (PeerTextView*)textViewForTableView:(NSTableView*)tableView column:(NSTableColumn*)column text:(NSString*)text
+{
+    PeerTextView* view = [tableView makeViewWithIdentifier:column.identifier owner:self];
+    if (view == nil) {
+        view = [[PeerTextView alloc] init];
+        view.identifier = column.identifier;
+    }
+    [view updateText:text];
+    return view;
+}
+
+- (NSView*)tableView:(NSTableView*)tableView viewForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
 {
     if (tableView == self.fWebSeedTable) {
-        NSString* ident = column.identifier;
+        NSString* columnIdentifier = tableColumn.identifier;
         NSDictionary* webSeed = self.fWebSeeds[row];
 
-        if ([ident isEqualToString:@"DL From"]) {
-            NSNumber* rate;
-            return (rate = webSeed[@"DL From Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        } else {
-            return webSeed[@"Address"];
+        if ([columnIdentifier isEqualToString:@"DL From"]) {
+            NSNumber* rate = webSeed[@"DL From Rate"];
+            NSString* text = rate ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
+            return [self textViewForTableView:tableView column:tableColumn text:text];
         }
+
+        if ([columnIdentifier isEqualToString:@"Address"]) {
+            NSString* text = webSeed[@"Address"];
+            return [self textViewForTableView:tableView column:tableColumn text:text];
+        }
+
+        return nil;
     } else {
-        NSString* ident = column.identifier;
+        NSString* columnIdentifier = tableColumn.identifier;
         NSDictionary* peer = self.fPeers[row];
 
-        if ([ident isEqualToString:@"Encryption"]) {
-            return [peer[@"Encryption"] boolValue] ? [NSImage imageWithSystemSymbolName:@"lock.fill" accessibilityDescription:nil] : nil;
-        } else if ([ident isEqualToString:@"Client"]) {
-            return peer[@"Client"];
-        } else if ([ident isEqualToString:@"Progress"]) {
-            return peer[@"Progress"];
-        } else if ([ident isEqualToString:@"UL To"]) {
-            NSNumber* rate;
-            return (rate = peer[@"UL To Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        } else if ([ident isEqualToString:@"DL From"]) {
-            NSNumber* rate;
-            return (rate = peer[@"DL From Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        } else {
-            return peer[@"IP"];
+        if ([columnIdentifier isEqualToString:@"Progress"]) {
+            __auto_type cell = (PeerProgressIndicatorView*)[tableView makeViewWithIdentifier:@"ProgressCell" owner:self];
+            if (cell == nil) {
+                cell = [[PeerProgressIndicatorView alloc] init];
+                cell.identifier = @"ProgressCell";
+            }
+            __auto_type progress = [peer[@"Progress"] floatValue];
+            __auto_type isSeed = [peer[@"Seed"] boolValue];
+            [cell updateProgress:progress isSeed:isSeed
+                        showText:[NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]];
+            return cell;
         }
+
+        if ([columnIdentifier isEqualToString:@"Encryption"]) {
+            __auto_type cell = (PeerEncryptionView*)[tableView makeViewWithIdentifier:@"EncryptionCell" owner:self];
+            if (cell == nil) {
+                cell = [[PeerEncryptionView alloc] init];
+                cell.identifier = @"EncryptionCell";
+            }
+            [cell updateEncrypted:[peer[@"Encryption"] boolValue]];
+            return cell;
+        }
+
+        if ([columnIdentifier isEqualToString:@"Client"]) {
+            NSString* text = peer[@"Client"];
+            return [self textViewForTableView:tableView column:tableColumn text:text];
+        }
+
+        if ([columnIdentifier isEqualToString:@"UL To"]) {
+            NSNumber* rate = peer[@"UL To Rate"];
+            NSString* text = rate ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
+            PeerTextView* cell = [self textViewForTableView:tableView column:tableColumn text:text];
+            cell.textField.alignment = NSTextAlignmentRight;
+            return cell;
+        }
+
+        if ([columnIdentifier isEqualToString:@"DL From"]) {
+            NSNumber* rate = peer[@"DL From Rate"];
+            NSString* text = rate ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
+            PeerTextView* cell = [self textViewForTableView:tableView column:tableColumn text:text];
+            cell.textField.alignment = NSTextAlignmentRight;
+            return cell;
+        }
+
+        if ([columnIdentifier isEqualToString:@"IP"]) {
+            NSString* text = peer[@"IP"];
+            return [self textViewForTableView:tableView column:tableColumn text:text];
+        }
+
+        return nil;
     }
 }
 
-- (void)tableView:(NSTableView*)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
+- (void)tableView:(NSTableView*)tableView didAddRowView:(NSTableRowView*)rowView forRow:(NSInteger)row
 {
-    if (tableView == self.fPeerTable) {
-        NSString* ident = tableColumn.identifier;
-
-        if ([ident isEqualToString:@"Progress"]) {
-            NSDictionary* peer = self.fPeers[row];
-            ((PeerProgressIndicatorCell*)cell).seed = [peer[@"Seed"] boolValue];
-        }
-    }
+    rowView.toolTip = [self tooltipForTableView:tableView row:row];
 }
 
 - (void)tableView:(NSTableView*)tableView didClickTableColumn:(NSTableColumn*)tableColumn
@@ -373,12 +418,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     return tableView != self.fPeerTable;
 }
 
-- (NSString*)tableView:(NSTableView*)tableView
-        toolTipForCell:(NSCell*)cell
-                  rect:(NSRectPointer)rect
-           tableColumn:(NSTableColumn*)column
-                   row:(NSInteger)row
-         mouseLocation:(NSPoint)mouseLocation
+- (NSString*)tooltipForTableView:(NSTableView*)tableView row:(NSInteger)row
 {
     if (tableView == self.fPeerTable) {
         BOOL const multiple = self.fTorrents.count > 1;
