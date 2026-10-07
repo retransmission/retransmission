@@ -264,25 +264,9 @@ a {
     user-select: none;
     min-width: var(--toolbar-height);
 
-    svg {
-      stroke: var(--color-fg-primary);
-
-      g path {
-        fill: var(--color-fg-primary);
-      }
-    }
-
     &:disabled {
       color: var(--color-fg-disabled);
       cursor: default;
-
-      svg {
-        stroke: var(--color-fg-disabled);
-
-        g path {
-          fill: var(--color-fg-disabled);
-        }
-      }
     }
   }
 
@@ -422,7 +406,7 @@ a {
 
     .icon {
       /* color the background svg fill */
-      background-color: var(--color-fg-primary);
+      background-color: currentcolor;
       grid-area: icon;
       mask-image: var(--mime-icon-url);
       mask-repeat: no-repeat;
@@ -565,19 +549,11 @@ a {
       &:not(.selected) .torrent-progress-bar {
         color: var(--color-fg-primary);
       }
-
-      .icon {
-        background-color: var(--color-fg-disabled);
-      }
     }
 
     &.selected {
       background-color: var(--color-bg-selected);
       color: var(--color-fg-selected);
-
-      .icon {
-        background-color: var(--color-fg-selected);
-      }
     }
   }
 
