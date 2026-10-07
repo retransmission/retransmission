@@ -20,6 +20,12 @@ for the plain text that the code looks up with NSLocalizedString().
       Writes the .po file's Localizable.strings into the folder:
       the translation of each message that has no context, no plural and no {fmt} field.
 
+  mac-xib-strings.py check-localizable <pot> <source>...
+      Fails unless each key that the sources pass to NSLocalizedString() is a string literal
+      that the template has as a message with no context, no plural and no {fmt} field.
+      Any other key would stay in English.
+      Also fails on a call to TR_TEXT(), the Qt client's lookup of plain text.
+
 The xib entries are the ones that `ibtool --generate-strings-file` writes;
 this reads them out of the xib's XML so that it can run where ibtool cannot.
 A .po file that this cannot read fails with an error, rather than leaving text in English.
@@ -175,6 +181,87 @@ def write_localizable(po_path, folder):
     (pathlib.Path(folder) / 'Localizable.strings').write_text(''.join(lines), encoding='utf-8')
 
 
+# Enough of C's tokens to find calls and their string literals.
+# Comments and character literals are tokens too, so that a quote in one starts no string.
+SOURCE_TOKEN = re.compile(
+    r'''(?P<comment>//[^\n]*|/\*.*?\*/)
+      | (?P<string>@?"(?:[^"\\\n]|\\.)*")
+      | (?P<char>'(?:[^'\\\n]|\\.)*')
+      | (?P<name>[A-Za-z_]\w*)
+      | (?P<space>\s+)
+      | (?P<other>.)''',
+    re.VERBOSE | re.DOTALL)
+
+
+def source_tokens(source_path):
+    """Returns [(line number, kind, text)] for the tokens of a C, C++ or Objective-C file, without comments or space.
+    A kind is a group name of SOURCE_TOKEN."""
+    tokens = []
+    number = 1
+    for match in SOURCE_TOKEN.finditer(pathlib.Path(source_path).read_text(encoding='utf-8')):
+        if match.lastgroup not in ('comment', 'space'):
+            tokens.append((number, match.lastgroup, match[0]))
+        number += match[0].count('\n')
+    return tokens
+
+
+def key_problem(tokens, plain, with_context, plural):
+    """Returns why the key of an NSLocalizedString() call would stay in English, or None if it wouldn't.
+    `tokens` are the call's first two tokens after its "(".
+    The sets hold the template's msgids: without context or plural, with a context, and with a plural."""
+    if len(tokens) < 2 or tokens[0][1] != 'string' or not tokens[0][2].startswith('@'):
+        return 'the key is not an @"..." string literal'
+    if tokens[1][1] == 'string':
+        return 'the key is split across string literals'
+    if tokens[1][2] != ',':
+        return 'the key is not a single string literal'
+
+    key = unquote(tokens[0][2][1:])
+    if is_format_string(key):
+        return f'{key!r} is a {{fmt}} format string, which TR_FORMAT looks up'
+    if key in plain:
+        return None
+    if key in plural:
+        return f'the template has {key!r} only as a plural message'
+    if key in with_context:
+        return f'the template has {key!r} only with a context'
+    return f'the template has no {key!r}; xgettext reads only the files in po/POTFILES.in'
+
+
+def check_localizable(pot_path, source_paths):
+    plain, with_context, plural = set(), set(), set()
+    for fields in po_messages(pot_path):
+        if 'msgid_plural' in fields:
+            plural.add(fields['msgid'])
+        elif 'msgctxt' in fields:
+            with_context.add(fields['msgid'])
+        else:
+            plain.add(fields['msgid'])
+
+    ok = True
+    for source_path in source_paths:
+        tokens = source_tokens(source_path)
+        for index, (number, kind, text) in enumerate(tokens[:-1]):
+            if kind != 'name' or tokens[index + 1][2] != '(':
+                continue
+
+            if text == 'TR_TEXT':
+                problem = "TR_TEXT() is the Qt client's; the Mac client looks up plain text with NSLocalizedString()"
+            elif text == 'NSLocalizedString':
+                try:
+                    problem = key_problem(tokens[index + 2:index + 4], plain, with_context, plural)
+                except ValueError as error:
+                    problem = str(error)
+            else:
+                continue
+
+            if problem:
+                ok = False
+                print(f'{source_path}:{number}: {problem}', file=sys.stderr)
+
+    return ok
+
+
 def main(argv):
     try:
         if len(argv) >= 5 and argv[1] == 'strings':
@@ -183,6 +270,8 @@ def main(argv):
             sys.exit(0 if check(argv[2], argv[3:]) else 1)
         elif len(argv) == 4 and argv[1] == 'localizable':
             write_localizable(argv[2], argv[3])
+        elif len(argv) >= 4 and argv[1] == 'check-localizable':
+            sys.exit(0 if check_localizable(argv[2], argv[3:]) else 1)
         else:
             sys.exit(__doc__)
     except ValueError as error:

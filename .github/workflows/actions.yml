@@ -98,7 +98,7 @@ jobs:
           get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission libtransmission-app macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
-          get_changes translations po macosx/Base.lproj
+          get_changes translations po cli daemon gtk libtransmission libtransmission-app macosx qt utils
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
@@ -158,6 +158,14 @@ jobs:
           done
           test -s "$RUNNER_TEMP/MainMenu.strings"
           test -s "$RUNNER_TEMP/Localizable.strings"
+      - name: Check that the template has the Mac code's NSLocalizedString keys
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gettext
+          GETTEXTDATADIRS=po xgettext --files-from=po/POTFILES.in --output="$RUNNER_TEMP/template.pot" \
+            $(sed -n 's/^#   \(-.*\)/\1/p' po/POTFILES.in)
+          release/mac-xib-strings.py check-localizable "$RUNNER_TEMP/template.pot" \
+            $(git ls-files 'macosx/*.h' 'macosx/*.m' 'macosx/*.mm' ':!macosx/QuickLookExtension')
 
   sanitizer-tests-linux:
     runs-on: ubuntu-latest
