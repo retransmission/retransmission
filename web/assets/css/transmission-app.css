@@ -211,14 +211,9 @@ h6 {
   margin: 8px 0;
 }
 
-img {
-  border: 0;
-}
-
 a {
   color: var(--color-fg-primary);
   outline: 0;
-  text-decoration: underline;
 }
 
 .flexible-space {
@@ -234,11 +229,6 @@ a {
   flex-direction: column;
   height: 100%;
   position: relative;
-
-  > * {
-    margin: 0;
-    padding: 0;
-  }
 }
 
 #mainwin-workarea {
@@ -261,13 +251,10 @@ a {
   border-bottom: 1px solid var(--color-border-default);
   display: flex;
   height: var(--toolbar-height);
-  margin: 0;
   width: 100%;
 
   button {
     background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;
     border: 0;
     border-radius: 5px;
     color: var(--color-fg-primary);
@@ -306,14 +293,9 @@ a {
   }
 }
 
-#toolbar-overflow {
-  margin-right: 4px;
-
-  svg {
-    fill: var(--color-fg-primary);
-    height: 36px;
-    width: 36px;
-  }
+#toolbar-overflow svg {
+  height: 36px;
+  width: 36px;
 }
 
 /* FILTERBAR */
@@ -413,11 +395,7 @@ a {
 
 #torrent-container {
   flex-grow: 1;
-  left: 0;
-  margin: 0;
   overflow: auto;
-  padding: 0;
-  right: 0;
 }
 
 #torrent-list {
@@ -425,7 +403,6 @@ a {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  text-align: left;
   width: 100%;
   user-select: none;
   outline: none;
@@ -455,8 +432,7 @@ a {
         mask-position:
           top left,
           bottom right;
-        mask-repeat: no-repeat, no-repeat;
-        mask-size: 16px, 16px;
+        mask-size: 16px;
       }
 
       &[data-icon-mime-type='audio'] {
@@ -501,7 +477,6 @@ a {
 
     .torrent-labels {
       font-size: 12px;
-      font-weight: normal;
       grid-area: labels;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -518,6 +493,10 @@ a {
 
     .torrent-peer-details {
       grid-area: peers;
+
+      &.error {
+        color: var(--color-fg-error);
+      }
     }
 
     .torrent-progress-bar {
@@ -531,10 +510,6 @@ a {
     .torrent-peer-details,
     .torrent-progress-details {
       font-size: small;
-
-      &.error {
-        color: var(--color-fg-error);
-      }
     }
 
     &.compact {
@@ -800,7 +775,6 @@ a {
 /* TABS */
 
 .tabs-container {
-  align-items: stretch;
   background: var(--color-bg-primary);
   bottom: 0;
   display: flex;
@@ -850,7 +824,6 @@ a {
 }
 
 .tabs-pages {
-  box-sizing: border-box;
   overflow: hidden auto;
 
   @media (width < 600px) {
@@ -946,8 +919,8 @@ a {
     display: grid;
     column-gap: 5px;
     grid-template-areas:
-      'check   name  priority'
-      'blank1  info  blank2';
+      'check name priority'
+      '.     info .';
     grid-template-columns: 20px 1fr 65px;
     margin-bottom: 4px;
     padding: 5px;
@@ -1002,7 +975,6 @@ a {
 }
 
 #inspector-tiers-list {
-  color: var(--color-fg-primary);
   margin: 0 10px;
   padding: 0;
 
@@ -1022,7 +994,6 @@ a {
   }
 
   .tier-list-torrent {
-    color: var(--color-fg-primary);
     font-weight: bolder;
     overflow-x: hidden;
     padding-top: 12px;
@@ -1036,12 +1007,6 @@ a {
     font-weight: bolder;
     grid-column: span 2;
     padding-bottom: 4px;
-  }
-
-  .tier-announce,
-  .tier-scrape,
-  .tier-state {
-    text-align: left;
   }
 
   .tier-downloads,
@@ -1073,8 +1038,6 @@ a {
   td {
     border: var(--table-border);
     color: var(--color-fg-secondary);
-
-    /* padding: 5px 10px; */
   }
 
   .torrent-row td {
@@ -1284,7 +1247,6 @@ a {
 
   .context-menuitem {
     font-size: 13px;
-    list-style: none;
     padding: 5px 15px;
 
     &:hover:not(:disabled),
@@ -1327,26 +1289,11 @@ a {
 
   fieldset {
     border: 0;
-    display: block;
     margin: 8px 0;
-
-    ul {
-      margin: 0;
-      padding-left: 0;
-
-      li {
-        list-style-type: none;
-      }
-
-      a {
-        cursor: pointer;
-      }
-    }
   }
 
   .table-row {
     align-items: center;
-    border-radius: 6px;
     display: flex;
     padding: 3px 0;
   }
@@ -1375,7 +1322,6 @@ a {
     display: block;
     padding: 4px 0;
     text-align: left;
-    text-decoration: none;
     width: 150px;
   }
 
@@ -1440,7 +1386,6 @@ a {
   display: flex;
   grid-area: buttons;
   margin: 10px 0 0;
-  text-align: center;
 
   button {
     appearance: none;
@@ -1450,7 +1395,6 @@ a {
     color: var(--color-fg-primary);
     margin-left: 8px;
     padding: 8px;
-    text-decoration: none;
   }
 }
 
@@ -1459,7 +1403,6 @@ a {
   top: 102px;
   width: calc(100vw - 20px);
   color: var(--color-fg-primary);
-  display: block;
   padding: 0;
   z-index: var(--z-index-popup);
   border: 0;
@@ -1477,7 +1420,7 @@ a {
 .dialog-logo {
   /* the icon ships next to the bundled css; esbuild marks it external
      so the 8 KB svg isn't duplicated here as a data: URI */
-  background: transparent url('./images/favicon.svg') top left no-repeat;
+  background: url('./images/favicon.svg') no-repeat;
   background-size: contain;
   grid-area: icon;
   height: var(--logo-size);
@@ -1620,14 +1563,6 @@ a {
 }
 
 /* CLUSTERIZE */
-
-.clusterize-extra-row {
-  /* biome-ignore lint/complexity/noImportantStyles: overrides clusterize.js inline styles */
-  margin-top: 0 !important;
-
-  /* biome-ignore lint/complexity/noImportantStyles: overrides clusterize.js inline styles */
-  margin-bottom: 0 !important;
-}
 
 .clusterize-extra-row.clusterize-keep-parity {
   display: none;
