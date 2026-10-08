@@ -646,8 +646,10 @@ a {
   }
 }
 
-/* a grid of labels and values, shared with the inspector's info page */
-#prefs-dialog .tabs-page,
+/* a grid of labels and values, shared with the inspector's info page.
+   Nested rules take the highest specificity in this list,
+   so :where() keeps the ID from raising the inspector's rules. */
+:where(#prefs-dialog) .tabs-page,
 .inspector-info-page {
   margin: 20px;
 
