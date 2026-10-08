@@ -198,14 +198,14 @@ jobs:
             echo "$empty"
             exit 1
           fi
-      - name: Check the Mac code's lookups against the template and the declarations of formatted text
+      - name: Check the Mac code's lookups and xib text against the template and the declarations of formatted text
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gettext
           GETTEXTDATADIRS=po xgettext --files-from=po/POTFILES.in --output="$RUNNER_TEMP/template.pot" \
             $(sed -n 's/^#   \(-.*\)/\1/p' po/POTFILES.in)
           release/mac-xib-strings.py check-localizable "$RUNNER_TEMP/template.pot" \
-            $(git ls-files 'macosx/*.h' 'macosx/*.m' 'macosx/*.mm' ':!macosx/QuickLookExtension')
+            $(git ls-files 'macosx/*.h' 'macosx/*.m' 'macosx/*.mm' ':!macosx/QuickLookExtension') macosx/Base.lproj/*.xib
 
   sanitizer-tests-linux:
     runs-on: ubuntu-latest

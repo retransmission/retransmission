@@ -94,6 +94,10 @@ which the build allows only while every language translates them alike.
 `TR_DECLARE("…", NUMBERED_KEY)` gives a declaration a key with numbered specifiers, such as `%1$@`, instead.
 
 CI checks every lookup against the template and the declarations.
+It fails on plain text that only the macOS client has while the GTK or Qt client marks a mnemonic in the same text,
+and on marked text that no other client has.
+It tells macOS's standard menus and items, which keep their plain text, by the xib's menus and the actions that items send,
+and fails on one that marks a mnemonic.
 It also builds the app with each formatted lookup replaced by its English,
 so that the compiler checks the arguments; on a Mac: `cmake --build build -t transmission-mac-format-check`.
 

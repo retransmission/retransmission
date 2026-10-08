@@ -48,7 +48,7 @@ One whose markers can't be stripped cleanly, such as a "_" that marks nothing, g
       and a plural's .stringsdict entry is in English where the .po file has no translation,
       so that its count still picks the singular or the plural.
 
-  mac-xib-strings.py check-localizable <pot> <source>...
+  mac-xib-strings.py check-localizable <pot> <source or xib>...
       Fails on a lookup in the sources whose text would stay in English or come out wrong:
       - an NSLocalizedString() whose key isn't a string literal
         that the template has as a message with no context, no plural and no {fmt} field;
@@ -58,6 +58,15 @@ One whose markers can't be stripped cleanly, such as a "_" that marks nothing, g
       - a TR_TEXT_C() whose context or text isn't a string literal;
       - a lookup that xgettext doesn't extract, or that is the Qt client's, such as TR_TEXT().
       Also fails on a declaration that nothing looks up.
+      An NSLocalizedString() key or a xib's text also fails
+      - if it marks a mnemonic, but no other client has the same text: the Mac shows no mnemonics,
+        so its text has markers only to share another client's message;
+      - if it marks none, only the Mac has it, and another client has it with a marker:
+        the Mac shares that message by looking up the marked text.
+      The template's source locations tell the Mac's messages from the other clients'.
+      A xib's standard menus and items keep the Mac's own text instead, since macOS names them in Apple's words,
+      and fail if they have an underscore: an item that sends one of AppKit's standard actions, such as copy:,
+      a menu of the main menu that holds such an item or that AppKit knows, such as Window, and the Settings item.
 
   mac-xib-strings.py check-plurals <categories> <po>...
       Fails unless each .po file's Plural-Forms gives every whole number the form
@@ -107,6 +116,54 @@ def xib_strings(xib_path):
     return [(key, text) for key, text in found if text]
 
 
+# The actions of AppKit's standard menu items.
+STANDARD_ACTIONS = {
+    'orderFrontStandardAboutPanel:', 'hide:', 'hideOtherApplications:', 'unhideAllApplications:', 'terminate:',
+    'performClose:', 'undo:', 'redo:', 'cut:', 'copy:', 'paste:', 'delete:', 'selectAll:',
+    'performMiniaturize:', 'performZoom:', 'arrangeInFront:',
+    'toggleToolbarShown:', 'runToolbarCustomizationPalette:', 'toggleFullScreen:', 'showHelp:',
+}
+
+# The menus that a xib's systemMenu attribute names for AppKit, other than the main menu.
+STANDARD_SYSTEM_MENUS = {'apple', 'services', 'font', 'window', 'help'}
+
+
+def standard_menu_keys(xib_path):
+    """Returns the keys of a xib's menu text that macOS names in Apple's own words, as in xib_strings():
+    - an item that sends one of AppKit's standard actions, such as copy: or terminate:;
+    - a menu that its systemMenu attribute names, such as Window or Services, and the item that opens it;
+    - a menu of the main menu that holds such an item, such as File (performClose:) or Edit (copy:),
+      and the item that opens it;
+    - the application menu's Settings item, whose key equivalent is ⌘,.
+    Apple's localizations of these often differ from the other clients' translations of the same English."""
+
+    def action(item):
+        connection = item.find('connections/action')
+        return connection.get('selector') if connection is not None else None
+
+    def is_standard_menu(menu):
+        return menu.get('systemMenu') in STANDARD_SYSTEM_MENUS or any(
+            action(item) in STANDARD_ACTIONS for item in menu.iter('menuItem'))
+
+    root = ET.parse(xib_path).getroot()
+    keys = set()
+    for item in root.iter('menuItem'):
+        submenu = item.find('menu')
+        if action(item) in STANDARD_ACTIONS:
+            keys.add(f'{item.get("id")}.title')
+        if submenu is not None and submenu.get('systemMenu') in STANDARD_SYSTEM_MENUS:
+            keys |= {f'{item.get("id")}.title', f'{submenu.get("id")}.title'}
+    for main_menu in (menu for menu in root.iter('menu') if menu.get('systemMenu') == 'main'):
+        for item in main_menu.findall('items/menuItem'):
+            submenu = item.find('menu')
+            if submenu is not None and is_standard_menu(submenu):
+                keys |= {f'{item.get("id")}.title', f'{submenu.get("id")}.title'}
+            if submenu is not None and submenu.get('systemMenu') == 'apple':
+                keys |= {f'{settings.get("id")}.title' for settings in submenu.findall('items/menuItem')
+                         if settings.get('keyEquivalent') == ',' and not settings.get('keyEquivalentModifierMask')}
+    return keys
+
+
 ESCAPES = {'n': '\n', 't': '\t', '"': '"', '\\': '\\'}
 
 PO_FIELD = re.compile(r'(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?) (".*")')
@@ -143,10 +200,11 @@ def write_strings_file(path, lines):
 def po_messages(po_path):
     """Yields each message of a .po or .pot file as its fields, e.g. {'msgid': 'Open', 'msgstr': 'Öffnen'};
     a plural message's translations are 'msgstr[0]', 'msgstr[1]' and so on,
-    and 'line' is the number of the message's first line that isn't a comment.
+    'line' is the number of the message's first line that isn't a comment,
+    and 'references' lists the source locations of its "#:" comments, such as 'gtk/Dialogs.cc:100'.
     Leaves out fuzzy and obsolete messages, as msgfmt does.
     Raises ValueError on a line that it cannot read."""
-    fields, field, fuzzy = {}, None, False
+    fields, field, fuzzy, references = {}, None, False, []
     lines = pathlib.Path(po_path).read_text(encoding='utf-8').splitlines()
     for number, line in enumerate(lines + [''], start=1):
         try:
@@ -154,11 +212,14 @@ def po_messages(po_path):
                 if fields and ('msgid' not in fields or not any(name.startswith('msgstr') for name in fields)):
                     raise ValueError('the message before this line has no msgid or msgstr')
                 if fields and not fuzzy:
+                    fields['references'] = references
                     yield fields
-                fields, field, fuzzy = {}, None, False
+                fields, field, fuzzy, references = {}, None, False, []
             elif line.startswith('#'):
                 # A comment, or a line of an obsolete message.
                 fuzzy = fuzzy or (line.startswith('#,') and 'fuzzy' in line)
+                if line.startswith('#:'):
+                    references += line[2:].split()
             elif (match := PO_FIELD.fullmatch(line)) and match[1] not in fields:
                 field = match[1]
                 fields.setdefault('line', number)
@@ -213,6 +274,11 @@ def strip_mnemonics(text):
     if text and not stripped:
         raise ValueError('nothing but mnemonic markers')
     return stripped
+
+
+def has_markers(text):
+    """Whether plain text marks a mnemonic: has a "_" that isn't part of a "__"."""
+    return '_' in text.replace('__', '')
 
 
 def mac_text(english, fields, po_path):
@@ -435,6 +501,26 @@ def lookup_keys(source_paths):
     return keys
 
 
+def mnemonic_problem(text, shared, marked):
+    """Returns why plain text that the Mac looks up has the wrong mnemonic markers, or None if it hasn't.
+    `shared` holds the template's plain msgids that a client other than the Mac has,
+    and `marked` maps the text of each of those that marks a mnemonic, without its markers, to its msgids."""
+    try:
+        shown = strip_mnemonics(text)
+    except ValueError as error:
+        return f'{text!r} has {error}'
+    twins = ' or '.join(repr(twin) for twin in marked.get(shown, []) if twin != text)
+    if has_markers(text):
+        if text in shared:
+            return None
+        return (f'{text!r} marks a mnemonic, but no other client has that text, and the Mac shows no mnemonics'
+                + (f'; the other clients have {twins}' if twins else ''))
+    if text in shared or not twins:
+        return None
+    return (f'{text!r} is {twins} without the mnemonic marker that the other clients give it; '
+            'use the marked text, which the Mac shows without its marker')
+
+
 def formats_lookup_problem(tokens, index, declarations, used):
     """Returns why the Formats lookup whose name is tokens[index] would show wrong text, or None if it wouldn't.
     `declarations` maps each declared key to its declarations; this adds the lookup's key to `used`."""
@@ -472,6 +558,8 @@ UNEXTRACTED_LOOKUPS = ('NSLocalizedStringFromTableInBundle', 'NSLocalizedStringW
 
 def check_localizable(pot_path, source_paths):
     plain, with_context, plural = set(), set(), set()
+    # The plain msgids that a client other than the Mac has, and the text of each marked one without its markers.
+    shared, marked = set(), {}
     for fields in po_messages(pot_path):
         if 'msgid_plural' in fields:
             plural.add(fields['msgid'])
@@ -479,11 +567,33 @@ def check_localizable(pot_path, source_paths):
             with_context.add(fields['msgid'])
         else:
             plain.add(fields['msgid'])
+            if any(not reference.startswith('macosx/') for reference in fields['references']):
+                shared.add(fields['msgid'])
+                try:
+                    if has_markers(fields['msgid']):
+                        marked.setdefault(strip_mnemonics(fields['msgid']), []).append(fields['msgid'])
+                except ValueError:
+                    pass  # Text that the Mac couldn't show without its markers, so it can't share it.
 
+    ok = True
     # Each declared key's [(file, line, Declaration)].
     declarations = {}
     sources = {}
     for source_path in source_paths:
+        if pathlib.Path(source_path).suffix == '.xib':
+            standard = standard_menu_keys(source_path)
+            for key, text in xib_strings(source_path):
+                if key not in standard:
+                    problem = mnemonic_problem(text, shared, marked)
+                elif '_' in text:
+                    problem = (f"{text!r} is a standard menu or item, which macOS names in Apple's own words, "
+                               "so it keeps the Mac's text, without mnemonic markers")
+                else:
+                    continue
+                if problem:
+                    ok = False
+                    print(f'{source_path}: {key}: {problem}', file=sys.stderr)
+            continue
         tokens = source_tokens(source_path)
         if any(text in DECLARATION_KEYWORDS for _number, kind, text in tokens if kind == 'name'):
             for line, declaration in read_declarations(source_path):
@@ -491,7 +601,6 @@ def check_localizable(pot_path, source_paths):
         else:
             sources[source_path] = tokens
 
-    ok = True
     used = set()
     for source_path, tokens in sources.items():
         for index, (number, kind, text) in enumerate(tokens[:-1]):
@@ -505,6 +614,8 @@ def check_localizable(pot_path, source_paths):
                     problem = f'xgettext extracts no text from {text}(), so its text has no translations'
                 elif text == 'NSLocalizedString':
                     problem = key_problem(tokens[index + 2:index + 4], plain, with_context, plural)
+                    if problem is None:
+                        problem = mnemonic_problem(unquote(tokens[index + 2][2][1:]), shared, marked)
                 elif text == 'NSLocalizedStringFromTable':
                     problem = formats_lookup_problem(tokens, index, declarations, used)
                 elif text == 'TR_TEXT_C':
