@@ -559,6 +559,12 @@ msgstr "_Erakutsi {count:L} hauetatik:"
 msgid "{disk_space} free"
 msgstr "{disk_space} libre"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Erakusten {visible_count:L} -> {count:L} torrent"
+msgstr[1] " {visible_count:L} erakusten guztirako {count:L} torrent-etik"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"
