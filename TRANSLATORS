@@ -1,0 +1,2509 @@
+Retransmission Translators
+
+Everyone who has helped translate Retransmission or Transmission,
+grouped by language. Initial version Collated in October 2026
+from Transifex, the history of the po files, and older credits in
+AUTHORS and macosx/Credits.rtf.
+
+To add or fix a name, edit this file. Mark a language's lead with
+"(lead)", or a lead for one client with "(GTK lead)", "(Qt lead)",
+or "(macOS lead)".
+
+Afrikaans (af)
+  Adriaan Joubert
+  Arthur Rilke
+  bayonet
+  Fredre Hattingh
+  Gideon Wentink
+  Ivan Sabljak
+  JC Brand
+  Maranda Ezell
+  Pieter Schalk Schoeman
+  Pieter Schoeman
+  sonbesie
+
+Albanian (sq)
+  Flakerim Ismani
+  heroid
+  truri
+  Vilson Gjeci
+
+Arabic (ar)
+  Adel Benzarti
+  Ahmad Gharbeia أحمد غربية
+  Ahmed Mohammed
+  Ahmed.Essam
+  AhmedQatar
+  alaa13212
+  Alamoudi
+  Amir Elsayed
+  Andrew Starr-Bochicchio
+  Aym3nJ
+  Aymen J
+  Benjamin Geer
+  blackhorse07
+  digitalorder
+  hitham
+  hvjjhvhjbhbjpupvi9
+  Ibrahim Saed
+  intel
+  iramosu
+  Kaïs Bejaoui
+  Khaled Hosny
+  KingLucius
+  Krzysztof Klimonda
+  MohamedSifDZ
+  Mohammad Alhobayyeb
+  Mohammed Adnène Trojette
+  Mohammed Mehdi Zaddem
+  osama
+  r00t020
+  safaalfulaij
+  Sneetsher
+  someone
+  xDev
+  zeyad_ksa
+  Zrouga Mohamed
+  صفا الفليج
+  صقر بن عبدالله
+  عبدالله شلي (Abdellah Chelli)
+  محمد إبراهيم الحبيِّب
+
+Aragonese (an)
+  Daniel Martinez
+
+Armenian (hy)
+  Artashes
+  Avag Sayan
+  David Davtyan
+  Hamlet
+  SamVardanyan
+  Serj Safarian
+
+Asturian (ast)
+  Astur
+  costales
+  enolp
+  Iñigo Varela
+  ivarela
+  Marcos
+  Xandru Martino
+  Xoan Sampaiño
+  Xuacu
+  Xuacu Saturio
+
+Azerbaijani (az)
+  Emin Mastizada
+  Orkhan Guliyev
+  Rashid Aliyev
+  thepoladov13
+  vusal.maestro
+
+Basque (eu)
+  Alexander Gabilondo
+  alexgabilondo
+  Ander Martínez
+  Asier Sarasua Garmendia
+  Asier_Iturralde_Sarasola
+  Azpidatziak
+  BlouBlou
+  druisan
+  ElNota
+  Gorka Azkarate Zubiaur
+  gorkaazk
+  Ibai Oihanguren
+  Ibai Oihanguren Sala
+  Iñaki Calvo
+  Iñigo Zendegi Urzelai
+  izendegi
+  Josu Lazkano
+  josulo99
+  Krzysztof Klimonda
+  matxin
+  Mikel Alzibar
+  Misterio
+  nehyx
+  Oier Mees
+  OrE
+  overmind
+  punkrockgirl
+  Sendoa Sojo
+  Sojo
+  X.Aramendi
+  Xabier Aramendi
+  Xabier Martin
+
+Belarusian (be)
+  Alexander Vlasov
+  alv44
+  belarusaed
+  Define
+  InSomnia
+  Iryna Nikanchuk
+  Jaǔhien Harłukovič
+  Kliazovich
+  Maksim Tamkovič
+  Maksim Tomkowicz
+  Mikhail_SaTuRn
+  Mikola Tsekhan
+  nevack
+  Robert Ancell
+  Sergei Chernooki
+  Siamion Šachalevič
+  Soltan Dzmitry
+  tervel
+  Valanćin Susla
+  zmicer
+  Zmicer Krasiuk
+  Zmicer Turok
+  Źmicier Turok
+  Андрэй Маліноўскі
+
+Belarusian (Latin) (be@latin)
+  Ihar Hrachyshka
+
+Bengali (bn)
+  Aniruddha Adhikary
+  Arif Uddin
+  bijoy_rebel
+  Ishak Herock
+  Jamal Uddin
+  Kaustav Das Modak
+  Mahay Alam Khan
+  Newton Baidya
+  Robin Mehdee
+  Zenat Rahnuma
+
+Bosnian (bs)
+  C3r4
+  Eldina Turajlić
+  Kenan Dervišević
+  Kenan Rizvic
+  Krzysztof Klimonda
+  Lilium Bosniacum
+  Miro Glavić
+  Nedim Muminović
+  Nenad Čubić
+  Samir Ribić
+  Semir Hodzic
+  Semsudin Abdic
+
+Breton (br)
+  Denis
+  Gwenn M
+  Ronan Le Déroff
+
+Bulgarian (bg)
+  Ala Bala
+  Atanas Kovachki
+  Avel Pavlov
+  avioli
+  Blagovest Petrov
+  bozhkov
+  byv09
+  ColorWP.com
+  cybercop
+  dvanaise
+  Emil Pavlov
+  fich16
+  Gangov
+  gee
+  George Christopher
+  Ken VanDine
+  Kiril Kirilov
+  Krasimir Chonov
+  Lachezar Dobrev
+  Lubomir Marinov
+  martinpv
+  masti4kata
+  Miro Hadzhiev (Хаджиев)
+  Miroslav Dragoev
+  Miroslav E. Hadzhiev (Хаджиев)
+  Miroslav Hadzhiev (Хаджиев)
+  Pavlin Grucov
+  Peter Petrov - Sh3p1
+  Sabry
+  salif
+  simple_s
+  Siyan Panayotov
+  spacy01
+  ubone
+  vlood
+  Yuksel Saliev
+  Любомир Маринов
+
+Burmese (my)
+  Anand Raj
+
+Catalan (ca)
+  Adolfo Jayme Barrientos
+  Aldo Mann
+  Alfredo Hernández
+  amontero
+  Àngel Ollé
+  Briç
+  BritishSteel
+  Carlos Sánchez López
+  David Pinilla
+  David Planella
+  DPini
+  Enric Marti Gonzalez
+  Jamie Strandboge
+  Javi Rodríguez
+  jmontane
+  Joan Duran
+  Joan Montané
+  joang
+  jordimash
+  Noah_
+  ntoroc
+  Pau Moreno
+  Pere Orga
+  Robert Antoni Buj i Gelonch
+  Sergi Mateo
+  stonkol
+
+Catalan (Valencian) (ca@valencia)
+  amontero
+  David Planella
+  Joan Duran
+  Sergio
+  sergioalmela
+  ZJaume
+
+Cebuano (ceb)
+  James Lloyd Atwil
+
+Central Atlas Tamazight (tzm)
+  zenata1
+
+Central Kurdish (ckb)
+  Ara Bextiyar
+  Ara Qadir
+  rasti
+
+Chinese (Hong Kong) (zh_HK)
+  Eddie Fung
+  Johnny Tong
+  Roy Chan
+  ShingZhanho
+  Tom K. C. Chiu
+  tomoe_musashi
+  Vincent C.Y. TSUI
+  Walter Cheuk
+
+Chinese (Simplified) (zh_CN)
+  Tianhao He (macOS lead)
+  aimicheng
+  AlexaraWu
+  Alexey Kotlyarov
+  Andrew Starr-Bochicchio
+  AngelFalse
+  Aron
+  Aron Xu
+  BaelishZ
+  bobwxc
+  camino122
+  Carlos Gong
+  chattan
+  Chen Tao
+  Clay Cheng
+  claybiockiller
+  cloudfish
+  cthbleachbit
+  cuiweicui
+  Cye3s
+  Dingzhong Chen
+  Doveccl
+  Eleanor Chen
+  ennisi
+  Feng Chao
+  Fenghua Wang
+  fghzxm
+  fujianwzh
+  GrayWaLL
+  haiti
+  HanSean
+  happywood1023
+  Heling Yao
+  Hello World!
+  Hunt Xu
+  HuntXu
+  ichaochao
+  John Lin
+  Jonathan Lumb
+  Kakurady Drakenar
+  Koterpillar
+  lazzzy
+  leitao
+  liaodahao
+  libsu
+  liepro
+  LIN
+  Lin Xue
+  Linxloo
+  lumo
+  luojie-dune
+  makifans
+  mokacof
+  netroby.com
+  nicoholu
+  panda_hub102
+  Peng Huang
+  Phonebook3599
+  Pluwen Chen
+  poesty
+  Rafom
+  rainofchaos
+  ronggang
+  severus1988
+  skybird23333
+  SoyaDokio
+  ssfjhh
+  SuTrans
+  Tao Wei
+  Tiger Soldier
+  Tramsifex
+  Tunghsiao Liu
+  urain39
+  watchout
+  weiyh
+  weiyh2006
+  Wenbin Lv
+  wolonggl
+  xavierror
+  Xhacker Liu
+  Xiaojun Deng
+  YFdyh000
+  Yinghua Wang
+  yuane
+  zeng zhen
+  Zeta-GSY
+  Zetao Zhang
+  zhangda
+  zhangmiao
+  zhifeng hu
+  依云
+  冯超
+  天浩 柴
+  玉堂白鹤
+  王英华
+  王証源
+  英华
+
+Chinese (Traditional) (zh_TW)
+  abc0922001
+  Andrew Liu
+  Andrew Starr-Bochicchio
+  brli7848
+  Cheng-Chia Tseng
+  Eason Lai
+  Elmaz Yu
+  en64106410
+  Gavin Chan
+  Jack Lin
+  Kakurady Drakenar
+  Krzysztof Klimonda
+  Medical-Wei
+  Meng Pang Wang 王孟邦
+  mike0
+  Ming-Ting Yao Wei
+  missmomo0911
+  MP Wang
+  Neil Lin
+  Orange
+  pan93412
+  Pin-hsien Li
+  Rick Chen
+  Rick W. Chen
+  Robert Ancell
+  Roy Chan
+  s102337938
+  stonkol
+  style4670
+  taijuin lee
+  teabox
+  tomoe_musashi
+  tonywcm
+  Tse-Hsien Chiang
+  Walter Cheuk
+  Yao Wei
+  zerng07
+  王証源
+  蔡查理
+
+Croatian (hr)
+  antisa
+  damir
+  Denis Štogl
+  freedomrun
+  gogo
+  Krzysztof Klimonda
+  Miroslav Matejaš
+  nafterburner
+  Saša Mofardin - Mofa
+  Saša Teković
+
+Czech (cs)
+  adam.havelka
+  Adrian Guniš
+  Arwin
+  Brozisko2011
+  Darek Cidlinský
+  DemonCZ
+  DJSweder
+  Fargotroniac
+  Horanus
+  IAmNotImportant
+  Jakub Žáček
+  Jezevec
+  Jiří Jindra
+  jirihuf
+  jnezbeda
+  Kamil Páral
+  Kattnienika
+  khagaroth
+  Konki
+  Kuvaly
+  Kuvaly [LCT]
+  Mafiosso
+  Martin Brož
+  Martin Šiška
+  Matěj Božik
+  MekliCZ
+  Michal Kundrát
+  n3pi
+  Pavel Rehak
+  pavreh
+  perteus
+  Peter Mráz
+  ptkopysk10
+  Roman Horník
+  schunka
+  sipral
+  syntax
+  Valerie Engel
+  Vojtěch Trefný
+  Zdenekhb
+
+Danish (da)
+  Daniel Østergaard Nielsen (macOS lead)
+  a0peter
+  AJenbo
+  Alan Mortensen
+  Aputsiaq Niels Janussen
+  Aputsiaĸ Niels Janussen
+  Ask Hjorth Larsen
+  Benni
+  carson
+  Coeur
+  fusk
+  Hansen
+  Hew McLachlan
+  Jan Bastholm Jensen
+  Jannich Brendle
+  Jens E. Jensen
+  Joe Hansen
+  Kaj Printz Madsen
+  khadaffi
+  Lim Karsen
+  Louis
+  Mads Konradsen
+  MadsDyrmannLarsen
+  Mark Jensen
+  Michael Bæk
+  Michael Christensen
+  Morten Justesen
+  nanker
+  Nicky
+  Peter Skov
+  Philip Munksgaard
+  SanchoPanza
+  scootergrisen
+  Soren Hauberg
+  Søren Vind
+  ThainEshKelch
+  theoras
+  Tobias Østergaard-Jørgensen
+  What2Write
+
+Dutch (nl)
+  Maarten Van Coile (macOS lead)
+  Albert Pool
+  Andrew Starr-Bochicchio
+  Arien Lam
+  Arnout Lok
+  Balaam's Miracle
+  BartG95
+  Benno Schulenberg
+  Coeur
+  Dennis Holierhoek
+  Dingoe
+  Dirk van Donkelaar
+  dvandonkelaar
+  dvdmeer
+  friendly demon
+  Gideon van Melle
+  Hannie Dumoleyn
+  ico
+  Jack_pudding
+  Jamie Strandboge
+  Jan Geboers
+  Jan Klopper
+  jjkorpershoek96
+  kkaltuu
+  korst
+  Krzysztof Klimonda
+  Megameneer
+  Nathan Follens
+  Nemo
+  neschmeijer
+  Pjotr
+  Pjotr12345
+  pljmn
+  Rachid
+  Redmar
+  rob
+  Robert Ancell
+  Sander Wiering
+  Taygeto
+  Tim
+  Tim van de Kamp
+  Toorgedm
+  Tralalalala
+  Ward De Ridder
+  Wouter Bolsterlee
+  Wouter Bolsterlee (uws)
+  Yentl
+  zwaardmeester
+
+English (Australia) (en_AU)
+  Alfredo Hernández
+  Hew McLachlan
+  Jared Norris
+  Joel Addison
+  Joel Pickett
+  Ken Sharp
+
+English (Canada) (en_CA)
+  Alfredo Hernández
+  Chris Coulson
+  Dan Klassen
+  Edoardo Maria Elidoro
+  issyl0
+  Itai Molenaar
+  Ken Sharp
+  Travis Friesen
+  Zack Blair
+
+English (United Kingdom) (en_GB)
+  Alfredo Hernández
+  Andi Chandler
+  Anthony Harrington
+  Anthony Harrington 😁
+  ascenseur
+  Bruce Cowan
+  Christopher Griffiths
+  Christopher Swift
+  Edward Chidgey
+  Gabriel Ruiz
+  giorgiogandolfo06
+  igabbriel.moura
+  Krzysztof Klimonda
+  Matthew Gall
+  Pete4
+  Philip Withnall
+  Robert Readman
+  SantosPalma
+  Stefan Pynappels
+  Steve Holmes
+
+Esperanto (eo)
+  Andrew Starr-Bochicchio
+  Anthony
+  Axel Rousseau
+  Brian Croom
+  Carmen Bianca Bakker
+  carmenbianca
+  Chris Coulson
+  Emmanuel Gil Peyrot
+  Iris Ilexiris
+  kitzOgen
+  Kristjan
+  Kristjan SCHMIDT
+  Krzysztof Klimonda
+  Leif Arne Storset
+  Leo Arias
+  Lucas
+  Lucas Larson
+  Michael Moroni
+  Patrick (Petriko) Oudejans
+  professorsloth
+  Robin van der Vliet
+  Shane D
+  Stéphane Fillod
+  Stephen Brown
+  Thomas Heinis
+  William Theaker
+
+Estonian (et)
+  Andrew Starr-Bochicchio
+  Camron
+  Eraser
+  Ivar Smolin
+  Jalakas
+  Kristjan Vool
+  lyyser
+  Magnus Kokk
+  mahfiaz
+  Märt Põder
+  oras
+  owt
+  Priit Uring
+  Raul Tammesalu
+  Taavi S.
+  Taavi Suisalu
+  tabbernuk
+
+Faroese (fo)
+  Gunleif Joensen
+  Jógvan Olsen
+  Jonhard Sørensen
+  krvi
+  Krzysztof Klimonda
+  Magnus Olsen
+
+Filipino (fil)
+  Dax Solomon Umaming
+  Krzysztof Klimonda
+  Michael Flores
+  Reli Ann Faye Rogado
+  Ron Philip Gutierrez
+
+Finnish (fi)
+  areee
+  artnay
+  Birunthan Mohanathas
+  Christian Hellberg
+  Elias Julkunen
+  Erektium
+  Heidi Mattila
+  Heikki Kulhia
+  Heikki Mäntysaari
+  Heikki Mattila
+  hurraa
+  Ilari Oras
+  Jaakko Huhtala
+  Jiri Grönroos
+  Juhana Uuttu
+  Jussi Aalto
+  Kasvain
+  Kimmo Kujansuu
+  Oi_Suomi_On
+  olavinto
+  oras
+  Otto Koskelah
+  papukaija
+  Pekka Niemi
+  Priit Uring
+  Rami Selin
+  Saku Laukkanen
+  subterfugium
+  T Kortehisto
+  Tehdastehdas
+  Tiigon
+  Timo Jyrinki
+  Tomi I.
+  Tommi Saira
+  tommi svanbäck
+  Tuomas Aavikko
+  Tuomas Heino
+  viljaminojonen
+  Ville Pilvio
+  vkark
+
+French (fr)
+  Etienne Samson (macOS lead)
+  <<g33ky>>
+  [MA]Pascal
+  Adrien Blanc
+  Alain-OIivier Breysse
+  Alan Schneider
+  Alban CLERGEOT
+  Alexandre
+  Alexandre C
+  Alexandre Franke
+  Alexandre Pliarchopoulos
+  alienworkshop
+  Allezxandre
+  AlphaDelta
+  Anne017
+  anonymousguest
+  Anthony Guéchoum
+  Anthony Noël
+  AO
+  Arnaud Bonatti
+  Arnaud Dessein
+  Arzach
+  Aurélien COUDERC
+  BeN
+  Benjamin Masse
+  Bennyto
+  billux13
+  BobMauchin
+  Bruno Patri
+  Bruno Veilleux
+  ButterflyOfFire
+  Cédric Luthi
+  charles
+  Charles Monzat
+  Chris Coulson
+  Claude Gagné
+  Clément DREHER
+  cluthi
+  Cyril GRAGEON
+  Cyrille Pontvieux
+  Daddy98
+  Damien Haïkal
+  damien-haikal
+  DarkRedman
+  Debesse Morgan
+  demonipuch
+  Denis Jasselette
+  Deuchnord
+  elgeneralmidi
+  Emilien Klein
+  Emmanuel Sunyer
+  Eric
+  Festor Wailon Dacoba
+  Florent Wachtel
+  Francis Careau
+  François Magimel
+  Fred
+  Gabriel U.
+  gianny911
+  gisele perreault
+  Glyca
+  gostron
+  Guillaume Lemaître
+  Guillaume Mazoyer
+  Guillaume Mazoyer (Respawner)
+  gwendi70
+  HanaO00
+  Hélion du Mas des Bourboux
+  Hew McLachlan
+  hey_popey
+  ianux
+  Isabell Long
+  iznobe
+  jac3n
+  Jean de la Mouche
+  Jean-François Fortin Tam
+  Jean-Marc
+  Jean-Philippe LECHÊNE
+  jijijaco
+  Jochen Schäfer
+  Johan Serre
+  Jonathan Ernst
+  jordan
+  Kaïs Bejaoui
+  Karen Baxter
+  Kevin
+  Krzysztof Klimonda
+  lann
+  Leonni Bercord
+  Letheed
+  Letheme
+  lisapple
+  Loïc Guégant
+  Loic Treyvaud
+  londumas
+  loquehumaine
+  LordPhoenix
+  lp.descamps
+  Maijin
+  Marting
+  Matthieu Martin
+  MBuBuntu
+  Milan Bouchet-Valat
+  millette
+  moimael
+  Morgan Miller
+  Mzombira
+  NaSH
+  Nicolas Delvaux
+  Niki
+  Nom_utilisateur
+  Nomis
+  ooliver27
+  parislanuit
+  Pascal Lemazurier
+  pdalfarr
+  Penegal
+  Philippe Janocha
+  Philippe.DP
+  Pierre David
+  Pierre Hanselmann
+  Pierre Rudloff
+  Pierre Slamich
+  Pierre-Henri Quelen
+  Ptitphysik
+  Quentin Pagès
+  Rafik Ouerchefani
+  RedGuff
+  Rémy Loubet
+  Robert Ancell
+  Robert-André Mauchin
+  Romain
+  Romain Fontaine
+  royto
+  Sami Bosch
+  SamiBoukortt
+  sexyprout
+  SharkEzz
+  Simon
+  Simon Déziel
+  slurbe
+  Splash
+  sprt
+  Stéphane Loeuillet
+  Superboa
+  Sylvain Lasnier
+  Sylvie Gallet
+  the.flamming.moe
+  TheCaméléon
+  Thibault Dupuis
+  Thibault Lemaitre
+  Thomas
+  Thomas Grim
+  Thomas P
+  tiennou
+  tijuak
+  tomestla
+  TuniX12
+  UBIK
+  Ubuntu-FR-1
+  Ubuntu-QC-1
+  Ulrich Etile
+  ulysg
+  viktor
+  Vincent Batoufflet
+  Vincent C.
+  Vincent Coiffier
+  Vincent Garibal
+  wes974
+  yahoe.001
+  yasserkad
+
+French (Canada) (fr_CA)
+  Bruno Veilleux
+  hacketiwack
+  kantium
+  PhilAllmighty
+  TheLazyFox
+  Ubuntu-FR-1
+  Ubuntu-QC-1
+
+Galician (gl)
+  Antón Méixome
+  Emiliano Goday Caneda
+  Festor Wailon Dacoba
+  Fran Diéguez
+  Gal_Escriban
+  Henrique Ferreiro
+  Jon A. Amil
+  Jon Amil
+  Kevin
+  Manuel Xosé Lemos
+  Marcos Lans
+  Marcos X.
+  Miguel Anxo Bouzada
+  miguelbf
+  Palidiyo
+  plainstadt
+  Reggaera
+  Xosé
+
+Georgian (ka)
+  al_x
+  Aleksandre Apkhaidze
+  arabuli
+  Beqa Arabuli
+  David Machakhelidze
+  NorwayFun
+  Temuri Doghonadze
+  Vladimer Sichinava
+
+German (de)
+  Sven-S. Porst (macOS lead)
+  Aeneas Jaißle
+  Alex D
+  Alexander Wunschik
+  Alexej Disterhoft
+  antares1
+  arist0telez
+  Bernd Arnold
+  bewiedgh
+  Caboose4190
+  Christian
+  Christian Bürckert
+  Christian Kirbach
+  Coeur
+  Daniel Dorau
+  Daniel Schury
+  Daniel Winzen
+  Data
+  Dennis Austmann
+  Dennis Baudys
+  Dieter Smorra
+  dominik langer
+  Dominique Hilse
+  F. Krenn
+  Felix Arndt
+  Fligor
+  fooooo
+  frederyk
+  friederike
+  Georg Engelmann
+  Ghenrik
+  greenscandic
+  Gregor S.
+  Gregor Santner
+  hacketiwack
+  Helmi
+  Hendrik Knackstedt
+  hexa-
+  Jack_pudding
+  Jakob Kramer
+  Janis Fehrmann
+  Janis96
+  jmetrius
+  Jochen Schäfer
+  Jochen Skulj
+  Karsten W. Rohrbach
+  Keruskerfuerst
+  kevin
+  koelnberger
+  kolja.strauss
+  Kraven
+  LaszloEr
+  lazyboy007
+  Leonard Michlmayr
+  Linus Hoppe
+  lpcnc
+  luca pöllmann
+  Lukas Bögelein
+  M. Bonath
+  Martin Lettner
+  Maximilian R.
+  Maximilian Reininghaus
+  Merlin Schumacher
+  Michael Färber
+  Michael Kuhn
+  Moritz Bruder
+  MY2muadADSjyAdj
+  Narg0s
+  nazgul
+  not your
+  oliverengel
+  Ontje Helmich
+  Patrick Eigensatz
+  Patrick Kolesa
+  Paul Seyfert
+  Perdix
+  Peter-Alexander
+  Phil
+  Philipp Körner
+  Philipp Rustemeier
+  Phillip Meister
+  plainstadt
+  Radioactiveman
+  Raffael Menke
+  RavuAlHemio
+  rm
+  S. Dorscht
+  Salesome
+  Sami Bosch
+  Schattenreve
+  sfan5
+  sojusnik
+  Stefan Horning
+  Sven Lilienthal
+  Tbond
+  themanwhosold
+  Thomas Lange
+  Thorben Westerhuys
+  timkrenz
+  TMuel
+  Tobias Bannert
+  ulysg
+  vinz
+  Vinzenz Vietzke
+  Wieland Hoffmann
+  yanuzz
+
+Greek (el)
+  agerom
+  Alexandros
+  alexstam123
+  Christos Spyroglou
+  Damaskinos Nikos
+  Dim. Tsim.
+  Dimitrios - Georgios Kontopoulos
+  Dimitris Athanasopoulos
+  Dimitris Tsimpidis
+  dimitris45
+  Epirotes
+  Galatsanos Panagiotis
+  George Christofis
+  George Kontis
+  Giorgos Mousa
+  gmou3
+  greeklug
+  j0hn
+  j0hn aka c7p
+  Jennie Petoumenou
+  John Kapnogiannis
+  John Xygonakis
+  jpegxguy
+  Kainourgiakis Giorgos
+  Kostas Milonas
+  Marios Zindilis
+  Michalis Ntovas
+  Michalis Zisis
+  msrowley
+  NickTh
+  Nikos Charonitakis
+  nikosCharonitakis
+  pigimon
+  savvadam
+  Savvas Adamtziloglou
+  Savvoritias
+  Simos Xenitellis
+  Spiros Georgaras
+  Stefanos Nikolaou
+  stematlin
+  sterios prosiniklis
+  Thanos Lefteris
+  Thermaikos
+  Thomas Dislis
+  tsakaligr
+  tsampikos92
+  tzem
+  Νιάνιος Ρωμανός
+
+Hebrew (he)
+  Avi Markovitz
+  avim
+  avimar
+  el.il
+  Elad Alfassa
+  Eyal Levin
+  Gabriel Shier
+  hatul
+  Ilan
+  Koala
+  Liel Fridman
+  lielf
+  Mark Krapivner
+  nadavvadan
+  Omer I.S.
+  Omri Strumza
+  SB
+  serfus
+  Shachar Or
+  Shahar Or
+  Shlomil
+  Tomer
+  wrewre
+  Yaron
+  Yaron Shahrabani
+  Yossi Gil
+  מארק קרפיבנר
+  עומר א״ש
+
+Hindi (hi)
+  Abhinav Modi
+  Anupam Jain
+  Manish Kumar
+  Panwar108
+  paridhavi
+  Robert Ancell
+  udal singh
+  Vibhav Pant
+
+Hungarian (hu)
+  Ács Zoltán
+  bajzabela
+  Baranyai Márk
+  Béla Bajza
+  Bence Lukács
+  blaselinux
+  classichouse
+  CruelAngel
+  Crystal
+  DCWM
+  Dr. Gráf
+  Fejes Jozsef
+  Ferenc Karsany
+  Freeman07
+  G. U.
+  Gabor Kelemen
+  Gergely J.
+  Gergely Janossy
+  Gergely Ujlaki
+  gergo86
+  gyeben
+  hauriel.norbert
+  herpderp
+  hr_confhoteldev_hu
+  ifj. Kálmán Tarnay
+  Incze GASPAR
+  Kalman Kemenczy
+  Kárász Gábor
+  Kéménczy Kálmán
+  kevin_vh
+  Krasznecz Zoltán
+  Kristóf Korcsog
+  mac209
+  marton
+  Márton Fazekas
+  martonmiklos
+  mc.transifex
+  Meskó Balázs
+  Messó
+  Muszela Balázs
+  Nagy.Zsolt
+  Papp Bence
+  Pittmann Tamás
+  Ricco
+  Richard Somlói
+  Robert Roth
+  summoner001
+  Tarnay Kálmán
+  Tbond
+  Token
+  Tomas Poczos
+  TÖRÖK Attila
+  Tschizzey
+  Úr Balázs
+  zeppike
+  Zoltán Krasznecz
+  zsoltpeterbasak
+  Γριφεγ
+
+Icelandic (is)
+  Axel
+  Baldur
+  Björn Þór Björnsson
+  Elísabet Einarsdóttir
+  Freyr Gunnar Ólafsson
+  Gísli Freyr Brynjarsson
+  Gling Gling
+  Hlini Melsteð
+  kristjanmagnus
+  Rúnar Freyr Þorsteinsson
+  Samúel Jón Gunnarsson
+  Sveinn í Felli
+  Trendyne
+  Trendyne Horse
+  Tryggvi Björgvinsson
+
+Indonesian (id)
+  alphin
+  Andika Triwidada
+  Cahya Himawan
+  D. Adhiyaksa
+  Eko Yudhi
+  ekoyudhip
+  Fajran Iman Rusadi
+  Fattah Rizki H L
+  Jamie Strandboge
+  jemmy surya
+  Prihantoosa
+  Rahman Yusri Aftian
+  rendi7936
+  Rio Suryotejo
+  rotyyu
+  Sentrist Starleaf
+  tri m s
+  Wayan Sudiarnata
+
+Interlingua (ia)
+  Emilio Sepulveda
+  karm
+
+Interlingue (ie)
+  Caarmi
+
+Irish (ga)
+  Seanan
+
+Italian (it)
+  Marco Cavazzuti (macOS lead)
+  _Giak
+  Alberto Sciotti
+  Alessandro Ranaldi
+  Alessandro Zattoni
+  Antonio Piccinno
+  bibbsbigno
+  Boxemus
+  Calorì Alessandro
+  Carlo Bottai
+  chrispale
+  Coeur
+  crondaemon
+  Damiano Di Carlo
+  Davide Larenza
+  Diego Verga
+  domenico
+  edc1512
+  Fabio Marconi
+  Fabrizio Papa
+  Federico "Zio Vec" Vecchio
+  Federico "Zio Vecna ♫" Vecchio
+  Federico Ravasio
+  Festor Wailon Dacoba
+  Filippo Magni
+  Fire
+  flux
+  Francesco Baldini
+  ftaurino
+  gdevitis
+  Giacomo Mirabassi
+  Gianluca Ciccarelli
+  giorgiogandolfo06
+  Giovanni Mottola
+  Giovanni Schettino
+  giuseppep
+  Gnafu
+  Gusions
+  Guybrush88
+  Joe Mauri
+  Kevin
+  koenigseggCCGT
+  linuxenos
+  Luca Ferretti
+  Luca Wehrstedt
+  M@urizio
+  magnuspub
+  Marco Usai
+  Mario Cianciolo
+  Matteo Sechi
+  Matteo Settenvini
+  maurizio.lattuada
+  Milo Casagrande
+  nick2k3
+  Nicola S.
+  Riccardo Maffei
+  Salvatore Udda
+  shadow
+  TheJoe
+
+Japanese (ja)
+  afujihara
+  ahfuji
+  Akira Tanaka
+  BRUNORJ87
+  Chris Coulson
+  Daiki Takeda
+  Dereck Wonnacott
+  epii
+  Fumihito YOSHIDA
+  Hidehiko Tsushima
+  Hiroshi Tagawa
+  ISHII Hironaga
+  José Lou Chang
+  Jun Kobayashi
+  Kenichi Ito
+  Kentaro Kazuhama
+  Koichi Akabe
+  Krzysztof Klimonda
+  LEoREo2247
+  Linux Lover
+  maboroshin
+  Makoto Kato
+  marudosurdo
+  Masato HASHIMOTO
+  Masatoshi Haraoka
+  Mitsuya Shibata
+  MMP 0
+  N.Nakata
+  nnakata
+  Nyantaro
+  OKANO Takayoshi
+  Ryunosuke Tanaka
+  Shota Mihara
+  Shushi Kurose
+  sunatomo
+  TakeshiIto
+  Toshiharu Kudoh
+  Tosiki Iga
+  vbk
+  windymelt
+  Y.Nishiwaki
+  Yuji Kaneko
+
+Kazakh (kk)
+  Andrew Starr-Bochicchio
+  arruah
+  Baurzhan Muftakhidinov
+  baurzhan.m
+  Dr Gregory House
+  HZ
+  jmb_kz
+  Krzysztof Klimonda
+  Robert Ancell
+  sotrud_nik
+  taem
+  tolebi
+
+Korean (ko)
+  Andrew Starr-Bochicchio
+  AndyH0ng
+  Apparatus_Zero
+  authen
+  Bong-Jin Lee
+  BraINstinct0
+  Bundo
+  dongbum9
+  Ernesto2k
+  EveryThing
+  Exsecrabilus
+  Gang Sung-jin
+  gyunssangsub
+  Hugo Blackwood
+  Jaewoo Chung
+  Jinmo Kim
+  Kim Boram
+  Lock Ring
+  Mild_Coffee
+  Min-Soo Kim
+  MinSoo Kim
+  Namhyung Kim
+  Nessun Kim
+  Para
+  qaguy
+  Seonghun Lim
+  Shin Hungjae
+  smallsnail
+  Sungjin Gang
+  Sungjin Kang
+  sungyup
+  sungyup nham
+  Thedis
+  Tony Kim
+  VenusGirl❤
+  Woosuk Park
+  박우석
+
+Kurdish (ku)
+  Erdal Ronahi
+  mrxwest
+  simurg56
+
+Kyrgyz (ky)
+  ballpen
+  blacktext
+  SimpleLeon
+  Sultan Imanhodjaev
+  xee2eim7
+
+Latvian (lv)
+  ARMANDS
+  HX_unbanned
+  Ken VanDine
+  Kristaps
+  Krzysztof Klimonda
+  martinmant
+  Mārtiņš Bruņenieks
+  Mārtiņš Gailītis
+  Raivis Dejus
+  Rihards Pfeifle
+  rprieditis
+  Rūdolfs Mazurs
+  Tranzistors
+  vestel
+
+Limburgian (li)
+  Chris Coulson
+  Guus
+  korst
+  Omega-xis
+  snoepjesniek
+
+Lithuanian (lt)
+  Adomas Bosanova
+  Adomas Jackevičius
+  Adomas Jackevičius Bosanova
+  Algimantas Margevičius
+  Aurimas Fišeras
+  Evaldas Granickas
+  evaldasgr
+  Gintautas Miliauskas
+  Ignas J.
+  Izumi
+  Julius Vitkauskas
+  Mantas Kriaučiūnas
+  Mantas Tumas
+  Moo
+  netikras
+  Ovidijus
+  Rimas Kudelis
+  rytoj
+  Sigitas Kalinas
+  Viktoras Jakovlevas
+  Vitalijus Valantiejus
+  Vytautas
+  zolookas
+  Žygimantas Beručka
+
+Lojban (jbo)
+  Sebastian Fröjd
+
+Low German (nds)
+  jmetrius
+
+Macedonian (mk)
+  Arangel Angov
+  Blagoj
+  Dimce Grozdanoski
+  Mihail Binev
+  simonkoco
+  vgfeit
+  Александар Андевски
+  Арангел Ангов
+  Митко Крстев
+
+Malay (ms)
+  abuyop
+  babylon2233
+  Ibrahim Elias
+  melayubuntu
+  Muhammad Zul 'Izzi M.Z
+
+Malayalam (ml)
+  Amal Bose
+  anoopmsivadas
+  DrG
+  Rino Tom Thomas
+  Saji Nediyanchath
+  Saji.N
+  sajinsj
+  sk
+  Vineeth Kartha
+  William Doyle
+  പ്രതീഷ് പ്രകാശ്
+
+Maltese (mt)
+  David
+
+Manx (gv)
+  Edmund Potts
+  Reuben Potts
+
+Marathi (mr)
+  linuxnewbie
+  Pratik Shinde
+  Rohan Deshmukh
+  Vaibhav S Dalvi
+  सुजित जाधव
+
+Northern Sami (se)
+  Christopher Forster
+
+Norwegian Bokmål (nb)
+  Åka Sikrom
+  Alex
+  Allan Nordhøy
+  Anders Oftedal
+  Andreas Nore
+  Andreas Noteng
+  bjaanes
+  Bjørn Harald Vikhagen
+  Daniel Landsverk
+  forteller
+  Geir Hauge
+  haarek
+  Halvor Lyche Strandvoll
+  hansa.peterson32
+  kingu
+  Kjetil Birkeland Moe
+  kybNTnu
+  Lars Magnus Herland
+  lavabeta
+  Magnus Christensen
+  Mikal Krogstad
+  simenheg
+  Thomas Amland
+  Thomas Gravdal
+  Tommy Mikkelsen
+  Vegar
+  VS
+
+Norwegian Nynorsk (nn)
+  Åka Sikrom
+  Andreas N.
+  Andreas Noteng
+  Jon Stødle
+  JoNNeMaNN
+  Kjetil Birkeland Moe
+  Moonchild
+  Vidar Lillebo
+  Vidar Lillebø
+  Weir N.
+
+Occitan (oc)
+  Cédric VALMARY (Tot en òc)
+  Cedric31
+  Quentin PAGÈS
+  Yannig MARCHEGAY (Kokoyaya)
+
+Persian (fa)
+  alamati
+  Artin
+  Danial Behzadi
+  ElnazMiraee
+  haghighi_ahmad
+  Irene_E_A
+  Kurumi Tokisaki
+  Mehrdad Vatanparvar
+  Mohammad Reza Boozary
+
+Polish (pl)
+  Artur96
+  Bartosz Kaszubowski
+  FluidExtractor
+  hence
+  Hubert "Schlussarz" Ślósarski
+  Inox
+  jacek64
+  Jakub Kamecki
+  jakub.januszkiewicz
+  Kamil Markiewicz
+  karlo4xs
+  Konrad
+  konradmb
+  Krzysztof Janowski
+  Krzysztof Klimonda
+  Krzysztof Tataradziński
+  Lukasz Pochron
+  Maciej Helt
+  Marek
+  Marek Adamski
+  Mateusz Marecki
+  Michał Pławsiuk
+  Michał Pławsiuk (razit.pl)
+  mrerexx
+  odra27
+  P.W.
+  Piotr Drąg
+  Piotr Lipski
+  Piotr Makowski (Aviary.pl)
+  Piotr Puldzian Płucienniczak
+  Piotr Smolen
+  Piotr Sokół
+  Piotr Strębski
+  Piotr Wicijowski
+  Piotr Zaryk
+  Piotr Zaryk (Aviary.pl)
+  Piotr Łukomiak
+  Rafał Barański
+  raven
+  roffik
+  rorio
+  Saifer
+  skrzat
+  Szymon Sieciński
+  tatar111
+  tEster
+  Tomasz Dominikowski
+  Tomasz Krause
+  TSr
+  Vilk
+  Wacław Jacek
+  Wiatrak
+  wojtusm
+  Łukasz Jernaś
+  Łukasz Przybylok
+  Łukasz Stasica
+  Łukasz Wyszyński
+
+Portuguese (pt)
+  Almufadado
+  BlaCoiso
+  Carl Roberson
+  Carlos Manuel
+  caxango
+  Coeur
+  Dark_Webster
+  Diogo Lavareda
+  diogolf
+  eSkiSo
+  Fábio Domingos
+  Filipe Gomes
+  Filipe Roque
+  Gonçalo Matos
+  gpmachado
+  Guilherme Fernandes
+  Henrique Martins
+  Hugo Carvalho
+  hugok
+  ilusi0n
+  Ivo Xavier
+  IvoGuerreiro
+  Jcarvalho
+  João Neves
+  João Santos
+  Jose Almeida
+  korsairtuga
+  Krzysztof Klimonda
+  Luis Medinas
+  Luís Neto
+  Migas
+  nitrofurano
+  Pedro Barreira
+  Pedro Flores
+  Pedro Machado Santa
+  Pedro Saraiva
+  PresuntoRJ
+  Raphael Higino
+  Renato Martins
+  RenatoFrederick
+  Robert Ancell
+  Rui
+  Sérgio Marques
+  StringYM
+  Thiago Barbato
+  Tiago
+  Tiago Carrondo
+  Tiago Silva
+  tiagoboldt
+  Tony Manco
+  tota
+
+Portuguese (Brazil) (pt_BR)
+  Guilherme Fernandes (macOS lead)
+  Adriano Martins
+  Adriano Steffler
+  Adrianogba
+  Alex
+  Alex W.
+  Alex Wender
+  Alexandre Erwin Ittner
+  Alexandre Sapata Carbonell
+  Allan Lopes
+  Allan Lopes Peretti
+  amalvarenga
+  André Gondim
+  Aníbal Deboni Neto
+  Antonio Fernandes C. Neto
+  Arthur Rodrigues
+  Augusta Carla Klug
+  bielperes
+  BigNaturals
+  Brenno Emanuel
+  Brenno Martins
+  Bruno J. Militão Medeiros
+  BRUNORJ87
+  Carl Roberson
+  Carlos Henrique De Freitas Ferreira
+  Celio Alves
+  Celio Ricardo Quaio Goetten
+  Charles do Nascimento Liesenfeld
+  Charles Junior Rech
+  DamascenoRafael
+  Daniel Ribeiro
+  danielrmt
+  Derek Willian Stavis
+  Diogo Lima
+  Djavan Fagundes
+  Eduardo Lamblet
+  Emilio Demeterco
+  emiliodeme
+  Enrico Nicoletto
+  Eugênio F
+  Fabio M. P. Bugnon
+  Fabio M. Panico
+  Fabio Malagoli Panico
+  flashisdead
+  Flávio Pontes
+  fnogcps
+  Fred Ulisses Maranhão
+  Fúlvio
+  Fúlvio Alves
+  Gabriel P Machado
+  gabriell nascimento
+  Garrido
+  Gerson "fserve" Barreiros
+  Gersonzao
+  gpmachado
+  Guilherme Gonçalves
+  Gustavo Brandão
+  Gustavo Costa
+  Gustavo Henrique Klug
+  gutierri
+  Heder Dorneles
+  Heder Dorneles Soares
+  Hei Tor
+  heit0r
+  Heitor Rocha
+  Helder
+  Henrique P. Machado
+  Hutley
+  igabbriel.moura
+  Irio Irineu
+  Irio Musskopf
+  Isaque Alves
+  Ivan Brasil Fuzzer
+  jonasricardo
+  Jorge Antonio Dias Romero
+  jose
+  josevictor
+  jrom
+  juninhoojl
+  Krzysztof Klimonda
+  l.lessa
+  lcgds
+  LeoColman
+  Leonardo Colman Lopes
+  LordDan
+  Luan7805
+  LUIS PEDRO NUNES LESSA
+  Luiz Rodrigo
+  luquita39
+  lxwndr
+  m.carneir0
+  Marcio
+  Meirinho
+  Miguel Lima
+  millemiglia
+  Neliton Pereira Jr.
+  nickmarinho
+  Olívio Farias
+  Paulo de Lima Cavalcanti
+  Rafael Neri
+  Rafael Nossal
+  Raphael Higino
+  rccavalcanti
+  Renato Krupa
+  RenatoFrederick
+  Ricardo Moro
+  Robert Ancell
+  Rodrigo Henrique
+  Rodrigo Piñero
+  Rogério Theodoro de Brito
+  Rui
+  SantosPalma
+  TheRozitaKnight
+  Thiago Negri
+  Tiago Hillebrandt
+  Ugo
+  Ugo Rox
+  vandersdg
+  vitor895
+  w4llace
+  Waldir Leoncio
+  wsalmeida
+  wtuemura
+
+Portuguese (Portugal) (pt_PT)
+  Sérgio Miranda (macOS lead)
+  arturmlfreitas
+  caxango
+  Gonçalo Matos
+  headblaster
+  Hugo Carvalho
+  hugok
+  jpcanoso
+  Rui
+  SantosPalma
+  String YM
+  StringYM
+
+Punjabi (pa)
+  Swaraj Pal
+
+Romanian (ro)
+  Adi
+  Adi Roiban
+  Adrian Harabulă
+  Adrian Nita
+  Alex Eftimie
+  Alexandru Guduleasa
+  Anca Emanuel
+  bbw
+  Bogdan Bădic-Spătariu
+  CD
+  Cris G
+  Daniel Șerbănescu
+  danutzdobrescu
+  Denis Toader
+  ervin.popescu
+  George Dumitrescu
+  George Enea
+  George Silviu Enea
+  Harabulă Adrian
+  Iain Apreotesei
+  Ionuț Jula
+  Jorel
+  Lucian Adrian Grijincu
+  Manuel R. Ciosici
+  Marian Vasile
+  marianvasile
+  MBogdan
+  mihutz98
+  Mircea Suciu
+  Nichita Uțiu
+  ocean2706
+  ocsi1970
+  Paul Moldovan
+  Radu Rădeanu
+  rEbyTer
+  sfDuhNinja
+  sidro
+  truckercat
+  Vitali
+  Vlad Paul Paval
+
+Russian (ru)
+  Alexander Bykov (macOS lead)
+  Anton Sotkov (macOS lead)
+  .silent
+  A_l_exa_n_d_r
+  Abaza
+  Alex Nikolaenko
+  Alex Semyonov
+  Alexander Chumanov
+  Alexander Semyonov
+  Alexei Klimenko
+  Alexey Ivanov
+  Alexey Kotlyarov
+  Alexey Ladygin
+  Alexey Torkhov
+  alv44
+  Andrei Dziahel
+  Andrei Stepanov
+  Andrey Olykainen
+  Andrey Sitnik
+  Anton Lashkov
+  Anton Shestakov
+  Anton Sudak
+  ap0stol
+  ArchXUser
+  Arseny
+  Arseny Solokha
+  Artem Karimov
+  Artem Popov
+  Artem Vorotnikov
+  ArtemZ
+  asfdfdfd
+  AsstZD
+  asvl
+  Athirn
+  Bashtannik Andrew S.
+  Capone
+  Cat_Soup
+  CetF5an9e701e2VotVM
+  Coeur
+  cuss
+  Dayman
+  DIX2005
+  DooMka
+  Dr Gregory House
+  Egor Bushmelyov
+  egor panfilov
+  Eugene Marshal
+  Eugene Sysmanov
+  Evgeniy Devyatkin
+  Evgeny
+  Fatroll
+  Fedor Katilov
+  Fedor13
+  Feel_again
+  Fortress
+  Foster "Forst" Snowhill
+  Grigorev Mihail
+  hlm hlmfn
+  Holy Cheater
+  Ignat Loskutov
+  Igor Bootwin
+  Igor Butvin
+  Igor Zubarev
+  Ilya B
+  Ilya Barygin
+  Ilya Chirkov
+  Ivan
+  Ivan Kliouchenkov
+  JIesnik
+  jmb_kz
+  jrhrhlm
+  Julia
+  KEIII
+  Kirill Holodilin
+  Koptev Oleg
+  Koterpillar
+  Krzysztof Klimonda
+  Leinariys
+  Litvinov Sergey Sergeevich
+  Longmen
+  loskutov
+  luvme.nn
+  Max Riveiro
+  Max Schukin
+  MaxBogach
+  Maxim Petrov
+  Maxim Prokopyev
+  Maxim S.
+  meating
+  mmarkk
+  nevack
+  nickkon
+  Nickolay V. Shmyrev
+  Nikita Putko
+  nitrodox
+  NoIndex
+  Nosferatu
+  Novikov Andrey
+  Oleg Chashko
+  Oleg Koptev
+  oleg.vs220
+  pasadenec
+  Pavel Dmitriev
+  Pavel Kurashov
+  Pavel Shevchuk
+  Pavels Sevcuks
+  payrox
+  Petrprogs
+  pfg21
+  Phenomen
+  PNG
+  Pobedrya Denis
+  Roman A. aka BasicXP
+  Rustam Vafin
+  rw4lll
+  Sergei Medvedev
+  Sergei Sedov
+  Sergey "Shnatsel" Davidoff
+  Sergey Alyoshin
+  Sergey Davidoff
+  Sergey Sedov
+  Shu
+  soncreux
+  Spector
+  spleenjack
+  Stalwart
+  Stas Solovey
+  Stas Solovey (stmc)
+  stmc
+  ttg
+  ujin
+  Vadim Rutkovsky
+  vantu5z
+  Victor
+  Victor N.
+  ViktorOnlin
+  Viсtor
+  Vladimir
+  Vladimir Yatulchik
+  Vladimir.Serykh
+  VSx86
+  Vyacheslav Sharmanov
+  Yevgeny Sysmanov
+  ymyasoedov
+  ZwS
+  Алексей Ладыгин
+  Андрей
+  Андрей Калинин
+  Артём Воротников
+  Артём Котлубай
+  Артём Попов
+  Валерий Дмиртиевич Степанов
+  Виктор
+  Виктор Б
+  Денис Победря
+  Коренберг Марк
+  Пидарасенька
+  Темак
+
+Serbian (sr)
+  Krzysztof Klimonda
+  Marko Aleksić
+  Milan
+  Milan Pužić
+  Miloš Popović
+  momcilo
+  Rancher
+  Saša Pavić
+  Svetozar Žikić
+  Vladimir Lazic
+  voja15
+  Марко М. Костић (Marko M. Kostić)
+  Мирослав Николић
+  Никола Павловић
+  Николић Мирослав
+  Ђорђе Васиљевић
+
+Shan (shn)
+  Rockworld
+
+Sinhala (si)
+  Mohamed Rizmi
+  Thambaru Wijesekara
+  පසිඳු කාවින්ද
+
+Slovak (sk)
+  6205
+  Apple.Kernel
+  ati3
+  Dušan Kazik
+  Eduard Hummel
+  elbarto
+  helix84
+  Julius Dielik
+  Krzysztof Klimonda
+  Ladislav "t€rist" Galadik
+  Martin Šturcel
+  Matej Krajčovič
+  Milan Slovák
+  milboy
+  Mirek
+  Miroslav Biňas
+  Pavol Klačanský
+  pavolzetor
+  Peter Júnoš
+  Peter Mráz
+  prescott
+  Roman Horník
+  Tomas Hasko
+
+Slovenian (sl)
+  Andraz Bajt
+  Andrej Mernik
+  Andrej Znidarsic
+  asladic
+  atomicmind
+  bertronika
+  Damir Jerovšek
+  Dejan Dežman
+  Dejweed
+  Dražen Matešić
+  Jan Jamšek
+  Klemen Košir
+  Kljunas2
+  Krzysztof Klimonda
+  lf
+  Martin McDowell
+  Matej Urbančič
+  Miha Bezjak
+  Mitja
+  mrt
+  musli
+  Nejc Bertoncelj
+  Olaf Olason
+  R33D3M33R
+  saso
+  Štefan Baebler
+
+Spanish (es)
+  Jorge Carrasco (macOS lead)
+  51114u9
+  abasfe
+  Abc
+  Abel O'Rian
+  Adolfo Jayme Barrientos
+  Adolfo Jayme-Barrientos
+  Aiguanachein
+  Alain Bustamante
+  Aldo Mann
+  AlexMorphine
+  Alfonso Moratalla
+  Alfredo Hernández
+  Alfredo Monclus
+  alfrix
+  Alvaro.Godoy
+  amontero
+  Andres Quintero Arias
+  Antonio Maldonado
+  arturmlfreitas
+  Bajalotodo
+  balboag
+  Beto
+  Boris Da Silva Perez
+  Boris Pérez
+  Busindre
+  capitantrueno
+  Carlos Zúñiga
+  castillofrancodamian
+  Chaoxic
+  Coeur
+  Cristian AB
+  Daniel Artamendi
+  Dante Díaz
+  Darío Ortega
+  Diego Collado
+  DiegoJ
+  DruiD
+  eldes
+  Emilio
+  Erick Aguilar Bravo
+  Eugenio M. Vigo
+  evaristo arroyo
+  Federico Bond
+  Fernando Muñoz
+  Festor Wailon Dacoba
+  fosk
+  fran
+  Francisco José Rey
+  Francisco Vila
+  FreeFri
+  g.chavira
+  Gabriel
+  Gabriel Ruiz
+  GPL-advocate
+  Guillermo González Díez
+  Héctor Cortés
+  Helmy Giacoman || Eos87
+  Humberto Oliveros Magaña
+  J Álvaro Fernández
+  J. Cappelletto
+  jaimeMF
+  Jamie Strandboge
+  Javier Aravena Claramunt
+  Javier García Díaz
+  Javier Garrido Galdón
+  jedelwey
+  Jochen Schäfer
+  Jordi Diaz
+  Jorge Carrasco Perez
+  jorge cob
+  Jorge González
+  Jorge_C
+  José Humberto Oliveros Magaña
+  Joseph
+  Juan Alfredo Salas Santillana
+  Juan Eduardo Riva
+  Juan Sebastián Marulanda
+  Julián Alarcón
+  Julvenzor
+  Kevin
+  Kislev
+  kitzOgen
+  Leo Arias
+  Lucas Capalbo Lavezzo
+  Luis (CL)
+  Luis Landero
+  Manuel Alejandro Jiménez Quintero
+  manuloprui
+  Marcos Escalier
+  Martín V.
+  matbonucci
+  maty1206
+  Miguel A. Alvarado V.
+  Miguel Alvarado
+  Miguel Anxo Bouzada
+  Miguel Herrero
+  miguelbf
+  Monkey
+  nemecis1000
+  Nicolás M. Zahlut
+  Nicolás Rigalli
+  Noah_
+  Paco Molinero
+  pico.dev
+  picodotdev
+  pinty
+  plainstadt
+  Ramón Calderón
+  Raúl Pedroche
+  rb07
+  Reggaera
+  Ricardo A. Hermosilla Carrillo
+  Ricardo Pérez López
+  Roberto C. R. M.
+  Rodhos
+  Rodrigo Lledó
+  Rodrigo Testa
+  Santiago Riega
+  Santiago Ward
+  sebikul
+  sergioalmela
+  Shaun Mallette
+  shortname
+  simonbcn
+  smaug
+  stonkol
+  systurbed
+  Takmadeus
+  Vicente Carro
+  Vicente Carro Fernandez
+  VPablo
+  Xoan Sampaiño
+  yoguis
+
+Swahili (sw)
+  meshack007
+  Mustafa I.Majira
+
+Swedish (sv)
+  Anders Nilsson
+  Anders Pamdal
+  AndrewJ
+  Angelkiller
+  Christian Widell
+  Daniel
+  Daniel Nylander
+  David Bengtsson
+  Erik Piehl Sylvén
+  fabbylicious
+  Gandoon
+  Gustaf Johansson
+  haaninjo
+  Joakim Lundvall
+  Jonatan Nyberg
+  Josef Andersson
+  jstfaking
+  Karl Jonatan Nyberg
+  Krzysztof Klimonda
+  Leopold Augustsson
+  Martin Josefsson
+  Michael Dundee
+  Mikael Olofsson
+  morpa
+  nilssonanders
+  Oscar Carlsson
+  pbobbenb
+  Per Söderkvist
+  phaa
+  Sebastian
+  Simba
+  Simon
+  Simon Carlsson
+  Simon Östergren
+  soccypowa
+  Teodor Jönsson
+  Umeaboy
+  Viktor Ljungström
+
+Tagalog (tl)
+  James Randall G. Quizon
+  Reli Ann Faye Rogado
+
+Tamil (ta)
+  Aswn
+  Jeyaranjan Yogaraj
+  Keerthy
+
+Tamil (Sri Lanka) (ta_LK)
+  Jeyaranjan Yogaraj
+  Keerthy
+
+Telugu (te)
+  Arun Mummidi(అరుణ్ ముమ్మిడి)
+  Chaduvari
+  Gōpāla Kr̥ṣṇa Kōḍūri
+  Praveen Illa
+  rajesh.v5
+  కోడూరి గోపాలకృష్ణ
+  ప్రవీణ్
+  వీవెన్
+  వీవెన్ (Veeven)
+
+Thai (th)
+  achn.syps
+  Chakrit
+  Isriya Paireepairit
+  Krit Marukawisutthigul
+  Krzysztof Klimonda
+  Manop Pornpeanvichanon(มานพ พรเพียรวิชานนท์)
+  Pummarin Chomkoa
+  Rockworld
+  SiraNokyoongtong
+  Supasate Choochaisri
+  Teedev
+  Thanakrit Chomphuming
+  Tharawut Paripaiboon
+  TitiwutTriradsinghakul
+  tony_chompoo
+
+Turkish (tr)
+  Emir SARI (macOS lead)
+  3dxsolid
+  58zarali
+  abc Def
+  abcmen
+  Ali ARISOY
+  alp eren özalp
+  Attila C. YILMAZLAR
+  aylincan
+  aytuncw
+  bitigchi
+  BouRock
+  Bugra Gokalp Okcu
+  Can Bülbül
+  Can Duruk
+  Can Kaya
+  Caner GÜRAL
+  charles
+  Chris Coulson
+  Cihan Ersoy
+  Coeur
+  duruk
+  Emin Tufan
+  Emin Tufan Çetin
+  Emre Ayca
+  Engin BAHADIR
+  Erdy
+  ertankan
+  EsatYuce
+  etc
+  Fatih Bostancı
+  Fatih Dayioglu
+  Fatih Emre
+  fnldstntn
+  ggokcay
+  Gökhan KILINÇ
+  Hakan Altindas
+  Halil Kasap
+  Hasan Tayyar BEŞİK
+  Hasan Yılmaz
+  Hew McLachlan
+  Holy Penguin
+  Irfan Durmus
+  Irmak Bıçakçıgil
+  ironic
+  Jamie Strandboge
+  jordan
+  Kadir Yucel
+  Koray Kalmaz
+  Krzysztof Klimonda
+  mbz
+  Mehmet Altan Pire
+  Mehmet BEKGÖZ
+  Meric Kutyar Gul
+  Mert Bozkurt
+  Muhammed YÜRÜRDURMAZ
+  Muhammet Kara
+  Mustafa Yılmaz
+  nordstern
+  Ömer Akın
+  Ongun Kanat
+  Osman Tosun
+  Ozancan Karataş
+  Özgür BASKIN
+  Pheadrus
+  Ramazan AYYILDIZ
+  rayyildiz
+  sabri ünal
+  Şâkir Aşçı
+  Selim Sercan Suerkan
+  Selim Suerkan
+  Serdar Sağlam
+  Such
+  U. Ozan Basar
+  ubuntuki
+  uobasar
+  Volkan Gezer
+  webdr
+  wj
+  x x
+  Yalçın Can
+  Yiğit Ateş
+  Yigit Güneli
+  Yusuf ÜLKÜ
+
+Ukrainian (uk)
+  4glitch
+  agolubchyk
+  Ailandar
+  Alexander Renn
+  Alexandr Shapoval
+  atany
+  Athirn
+  banza
+  Bogdan B Serdenko
+  brabadu
+  Classic
+  coirius
+  Denis
+  Fedir_Volkov
+  fx_a
+  GBV
+  Gordon Freeman
+  itsmezif
+  kolybasov
+  Krzysztof Klimonda
+  mikhalek
+  nagait
+  ND Sedun
+  Oleksii Lysenko
+  Olexander Movchan
+  olexn
+  pasadenec
+  Petro Bilyi
+  Roman M. Tuz
+  Saenko
+  sergetsyba
+  Sergiy Matrunchyk
+  Serhey Kusyumoff (Сергій Кусюмов)
+  Sirius961
+  SkyManPHP
+  svv
+  Taras Martyniuk
+  TarasPanchenko
+  translatemyname
+  vadim.muhtarov
+  Valdemar1982
+  Vasiliy Meshko
+  Vitaliy Hmelevsky
+  Vitaliy Khmelivsky
+  Vitaliy Shyshko
+  Vlad Anisimov
+  Yevhenii Shatalov
+  Yuri Chornoivan
+  zubr139
+  Виталий Саенко
+  Виталик Саенко
+  Микола Ткач
+  Сергій Матрунчик
+  Сергій Матрунчик (SkyMan)
+
+Urdu (ur)
+  Shoaib Mirza
+  waqar144
+
+Uyghur (ug)
+  Gheyret T.Kenji
+  Sahran
+  Shatur.uigur
+
+Uzbek (uz)
+  Akmal Xushvaqov
+  Sardorbek Pulatov
+  Sardorbek Pulatov (pROCKrammer)
+  ualmasov
+
+Vietnamese (vi)
+  blackrises
+  Huynh Trong Nghia
+  kelvin nam
+  khanh_coltech
+  kinnamss
+  Lê Trường An
+  lusiads
+  Ngô Chin
+  Ngô Trung
+  Ngoc Van-Hong Vo
+  Nguyen Anh Minh
+  Nguyễn Hào Khôi
+  Nguyen Kim Kha
+  Nguyễn Việt Hưng
+  Phan Trọng Khanh
+  Tran Anh Tuan
+  Trung Ngô
+  Võ Văn Hồng Ngọc
+  Vu Do Quynh
+  x5254725
+
+Welsh (cy)
+  Christopher Griffiths
