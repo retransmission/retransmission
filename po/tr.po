@@ -423,6 +423,10 @@ msgid "_Delete"
 msgstr "_Sil"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Kaldır"
 
@@ -612,6 +616,7 @@ msgstr "Ayıkla"
 msgid "Save Log"
 msgstr "Günlüğü Kaydet"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Kaydet"
 
@@ -759,6 +764,8 @@ msgstr[1] "{count:L} kez başladı"
 msgid "Reset your statistics?"
 msgstr "İstatistikleriniz sıfırlansın mı?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Sıfırla"
 
@@ -916,12 +923,19 @@ msgstr "_URL Aç…"
 msgid "_New…"
 msgstr "_Yeni…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "Tümünü _Başlat"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "Tümünü _Duraklat"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_Çık"
 
@@ -946,6 +960,7 @@ msgstr "_Özellikler"
 msgid "Open Fold_er"
 msgstr "_Klasörü Aç"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Başlat"
 
@@ -972,6 +987,7 @@ msgstr "_Aşağı Taşı"
 msgid "Move to _Bottom"
 msgstr "_En Alta Taşı"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Duraklat"
 
@@ -1041,6 +1057,7 @@ msgstr "İleti _Günlüğü"
 msgid "_Statistics"
 msgstr "_İstatistikler"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Bağış Yap"
 
@@ -1060,6 +1077,7 @@ msgstr "Torrenti başlat"
 msgid "Alternative Speed _Limits"
 msgstr "Alternatif Hız Sınırları"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Ekle"
 
@@ -1237,6 +1255,8 @@ msgstr "İstatistikler"
 msgid "New Torrent"
 msgstr "Yeni Torrent"
 
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
@@ -1921,32 +1941,14 @@ msgstr "Hedef dizin ve kök veri dizini aynı ada sahip."
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Eğer var olan veriyi kullanmaya çalışıyorsanız kök veri dizini hedef dizin içerisinde bulunmalıdır."
 
-msgid "Cancel"
-msgstr "Vazgeç"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Ekle"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} seçili"
 
-msgid "Start when added"
-msgstr "Eklendiğinde indirmeyi başlat"
-
 msgid "Magnet Link"
 msgstr "Mıknatıs Bağlantı"
-
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Hedef klasör:"
-
-msgid "Priority:"
-msgstr "Öncelik:"
 
 msgid "Group:"
 msgstr "Öbek:"
@@ -1954,56 +1956,17 @@ msgstr "Öbek:"
 msgid "Change…"
 msgstr "Değiştir…"
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Torrent dosyasını çöpe taşı"
-
-msgid "Verify Local Data"
-msgstr "Yerel Veriyi Doğrula"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Süzgeç"
 
-msgid "Trackers:"
-msgstr "İzleyiciler:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Özel torrent"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Oluştur"
-
 msgid "Open when created"
 msgstr "Oluşturduktan sonra aç"
 
 msgid "Each tracker will be placed into its own tier"
 msgstr "Her izleyici kendi sırasına göre konumlandırılacaktır"
-
-msgid "Source:"
-msgstr "Kaynak:"
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Torrent dosyası:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "İndirme hızını sınırla:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Gönderim hızını sınırla:"
 
 msgid "minutes"
 msgstr "dakika"
@@ -2094,16 +2057,6 @@ msgstr "Parçalar:"
 msgid "Was:"
 msgstr "Şu idi:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Torrent önceliği:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Genel sınırlara uy"
-
 msgid "Use Global Settings"
 msgstr "Genel Ayarları Kullan"
 
@@ -2114,16 +2067,6 @@ msgstr "Boştayken Durdur"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Besleme bittiğinde aktarım dizelgesinden kaldır"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "En çok eş:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Boşta:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2136,10 +2079,6 @@ msgstr "Retransmission Hakkında"
 
 msgid "Check for Update…"
 msgstr "Güncellemeleri Denetle…"
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Bağış Yap"
 
 msgid "Preferences…"
 msgstr "Ayarlar…"
@@ -2165,16 +2104,8 @@ msgstr "Dosya"
 msgid "Create Torrent File…"
 msgstr "Torrent Dosyası Oluştur…"
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Aç…"
-
 msgid "Open With Options Window…"
 msgstr "Seçenekler Penceresi ile Aç…"
-
-msgid "Open URL…"
-msgstr "URL Aç…"
 
 msgid "Close Window"
 msgstr "Pencereyi Kapat"
@@ -2186,11 +2117,6 @@ msgstr "Pencereyi Kapat"
 msgid "Quick Look"
 msgstr "Göz At"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Konumu Ayarla…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Yeniden Adlandır…"
@@ -2200,9 +2126,6 @@ msgstr "Torrent Dosyasını Farklı Kaydet…"
 
 msgid "Share Torrent File"
 msgstr "Torrent Dosyasını Paylaş"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Mıknatıs Bağlantıyı Panoya Kopyala"
 
 msgid "Edit"
 msgstr "Düzen"
@@ -2243,11 +2166,6 @@ msgstr "Uygunluk"
 msgid "Use Groups"
 msgstr "Öbekleri Kullan"
 
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "Torrenti başlat"
-
 msgid "Queue Order"
 msgstr "Sıraya Göre"
 
@@ -2285,48 +2203,12 @@ msgstr "Araç Çubuğunu Gizle"
 msgid "Customize Toolbar…"
 msgstr "Araç Çubuğunu Özelleştir…"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Duraklatıldı"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Başlat"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Kaldır"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Dosyaları Sil ve Kaldır"
-
 msgid "Remove All Completed From List"
 msgstr "Tüm Bitenleri Dizelgeden Kaldır"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Finder’da Göster"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Hepsini Duraklat"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Tümünü Başlat"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2336,11 +2218,6 @@ msgstr "Tümünü Başlat"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Öbek"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "İzleyiciye Daha Çok Eş Sor"
 
 msgid "Window"
 msgstr "Pencere"
@@ -2384,9 +2261,6 @@ msgstr "Destek ve Geliştirme"
 msgid "Menu"
 msgstr "Menü"
 
-msgid "Preferences"
-msgstr "Ayarlar"
-
 msgid "Check for update:"
 msgstr "Güncellemeleri denetle:"
 
@@ -2398,11 +2272,6 @@ msgstr "Günlük denetle"
 
 msgid "Reset all alerts:"
 msgstr "Tüm ikazları sıfırla:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Sıfırla"
 
 msgid "Set Default Application"
 msgstr "Saptanmış Uygulamayı Belirle"
@@ -2460,40 +2329,17 @@ msgstr "Ekle"
 msgid "Same as torrent file"
 msgstr "Torrent ile aynı yer"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Şu Konuma Kaydet:"
-
 msgid "Settings:"
 msgstr "Ayarlar:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Tamamlanmayan dosya adlarının sonuna \".part\" ekle"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Şuradan torrent dosyalarını kendiliğinden ekle:"
-
 msgid "Auto add:"
 msgstr "Otomatik ekle:"
-
-msgid "Keep incomplete files in:"
-msgstr "Bitmemişleri şurada tut:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Bir torrent dosyası açarken pencere görüntüle"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Mıknatıs bağlantıları açarken pencere görüntüle"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Eklenen torrentleri başlat"
 
 msgid "Only when adding manually"
 msgstr "Yalnızca elle eklerken"
@@ -2597,24 +2443,6 @@ msgstr "Cumartesi"
 msgid "Sunday"
 msgstr "Pazar"
 
-msgid "to"
-msgstr "arası"
-
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Planlanmış zaman:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "İndirme:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Yükleme:"
-
 #, fuzzy
 #| msgid "Alternative Speed Limits"
 msgid "Alternative speed limits:"
@@ -2630,18 +2458,8 @@ msgstr "Hız Sınırları"
 msgid "Peer limits:"
 msgstr "Eş Sınırları"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Daha çok eş bulmak için DHT kullan"
-
 msgid "Blocklist:"
 msgstr "Kara dizelge:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Torrent başına azami eş sayısı:"
 
 msgid "Last updated: N/A"
 msgstr "Son güncelleme: Bilinmiyor"
@@ -2649,33 +2467,12 @@ msgstr "Son güncelleme: Bilinmiyor"
 msgid "Encryption:"
 msgstr "Şifreleme:"
 
-msgid "Automatically update weekly"
-msgstr "Haftalık olarak güncelle"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Genel azami eş sayısı:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "kara dizelge yüklü/yüklü değil"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Daha çok eş bulmak için PEX kullan"
 
 #. Translators: URL sheet label
 msgid "URL:"
 msgstr ""
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Daha çok eş bulmak için Yerel Eş Keşfini kullan"
-
-msgid "Update"
-msgstr "Güncelle"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Yüksek bağlantı sınırları, sistem başarımını önemli ölçüde etkiler"
@@ -2691,11 +2488,6 @@ msgstr "Dağıt"
 msgid "Peer communication:"
 msgstr "İletişim:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Gelen bağlantılar için bağlantı noktası:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "Kapı açık"
@@ -2703,63 +2495,17 @@ msgstr "Kapı açık"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Transmission her başlatıldığında rastgele bağlantı noktası seç"
-
 msgid "Automatically map port"
 msgstr "Kapıyı otomatik ata"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Etkin aktarım varsa bilgisayarı uyanık tut"
 
 msgid "System sleep:"
 msgstr "Sistem uykusu:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Eş bağlantıları için µTP'yi etkinleştir"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Web arabirimini etkinleştirir ve uzaktan isteklere izin verir"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Yalnızca şu IP adreslerine bağlanma izni ver:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Yetkilendirme kullan"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Web arabirimini Bonjour ile görüntüle"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Uzaktan erişime izin ver"
-
-msgid "Username:"
-msgstr "Kullanıcı adı: "
-
-msgid "Password:"
-msgstr "Parola:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "HTTP bağlantı noktası:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Web istemcisini aç"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -2779,12 +2525,6 @@ msgstr "Kara dizelge indirilemedi."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Kabul Ediyorum"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Çık"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3454,10 +3194,6 @@ msgstr "{amount} toplam"
 #| msgid "_Private torrent"
 msgid "Magnetized torrent"
 msgstr "Özel torrent"
-
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Kaydet"
 
 #. Translators: Save log panel -> default file name
 msgid "untitled"
@@ -4504,3 +4240,267 @@ msgstr[1] "saniye"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Transmission, dosya paylaşım programıdır. Bir torrent çalıştırdığınızda, veriler karşıya yükleme yoluyla herkesin erişimine açılacaktır. Her türlü içerik paylaşımı sizin sorumluluğunuzdadır."
+
+#~ msgid "Cancel"
+#~ msgstr "Vazgeç"
+
+#~ msgid "Add"
+#~ msgstr "Ekle"
+
+#~ msgid "Start when added"
+#~ msgstr "Eklendiğinde indirmeyi başlat"
+
+#, fuzzy
+#~| msgid "_Destination folder:"
+#~ msgid "Destination folder:"
+#~ msgstr "Hedef klasör:"
+
+#~ msgid "Priority:"
+#~ msgstr "Öncelik:"
+
+#, fuzzy
+#~| msgid "Mo_ve torrent file to the trash"
+#~ msgid "Move torrent file to the Trash"
+#~ msgstr "Torrent dosyasını çöpe taşı"
+
+#~ msgid "Verify Local Data"
+#~ msgstr "Yerel Veriyi Doğrula"
+
+#~ msgid "Trackers:"
+#~ msgstr "İzleyiciler:"
+
+#, fuzzy
+#~| msgid "_Private torrent"
+#~ msgid "Private torrent"
+#~ msgstr "Özel torrent"
+
+#~ msgid "Create"
+#~ msgstr "Oluştur"
+
+#~ msgid "Source:"
+#~ msgstr "Kaynak:"
+
+#, fuzzy
+#~| msgid "_Torrent file:"
+#~ msgid "Torrent file:"
+#~ msgstr "Torrent dosyası:"
+
+#, fuzzy
+#~| msgid "Limit _download speed:"
+#~ msgid "Limit download speed:"
+#~ msgstr "İndirme hızını sınırla:"
+
+#, fuzzy
+#~| msgid "Limit _upload speed:"
+#~ msgid "Limit upload speed:"
+#~ msgstr "Gönderim hızını sınırla:"
+
+#, fuzzy
+#~| msgid "Torrent _priority:"
+#~ msgid "Torrent priority:"
+#~ msgstr "Torrent önceliği:"
+
+#, fuzzy
+#~| msgid "Honor global _limits"
+#~ msgid "Honor global limits"
+#~ msgstr "Genel sınırlara uy"
+
+#, fuzzy
+#~| msgid "_Maximum peers:"
+#~ msgid "Maximum peers:"
+#~ msgstr "En çok eş:"
+
+#, fuzzy
+#~| msgid "_Idle:"
+#~ msgid "Idle:"
+#~ msgstr "Boşta:"
+
+#~ msgid "Donate"
+#~ msgstr "Bağış Yap"
+
+#, fuzzy
+#~| msgid "_Open…"
+#~ msgid "Open…"
+#~ msgstr "Aç…"
+
+#~ msgid "Open URL…"
+#~ msgstr "URL Aç…"
+
+#, fuzzy
+#~| msgid "Set _Location…"
+#~ msgid "Set Location…"
+#~ msgstr "Konumu Ayarla…"
+
+#~ msgid "Copy Magnet Link to Clipboard"
+#~ msgstr "Mıknatıs Bağlantıyı Panoya Kopyala"
+
+#, fuzzy
+#~| msgid "Start torrent"
+#~ msgid "Sort Torrents By"
+#~ msgstr "Torrenti başlat"
+
+#, fuzzy
+#~| msgid "Paused"
+#~ msgid "Pause"
+#~ msgstr "Duraklatıldı"
+
+#, fuzzy
+#~| msgid "_Start"
+#~ msgid "Start"
+#~ msgstr "Başlat"
+
+#~ msgid "Remove"
+#~ msgstr "Kaldır"
+
+#, fuzzy
+#~| msgid "_Delete Files and Remove"
+#~ msgid "Delete Files and Remove"
+#~ msgstr "Dosyaları Sil ve Kaldır"
+
+#~ msgid "Pause All"
+#~ msgstr "Hepsini Duraklat"
+
+#, fuzzy
+#~| msgid "_Start All"
+#~ msgid "Start All"
+#~ msgstr "Tümünü Başlat"
+
+#, fuzzy
+#~| msgid "Ask Tracker for _More Peers"
+#~ msgid "Ask Tracker for More Peers"
+#~ msgstr "İzleyiciye Daha Çok Eş Sor"
+
+#~ msgid "Preferences"
+#~ msgstr "Ayarlar"
+
+#~ msgid "Reset"
+#~ msgstr "Sıfırla"
+
+#, fuzzy
+#~| msgid "Save to _Location:"
+#~ msgid "Save to location:"
+#~ msgstr "Şu Konuma Kaydet:"
+
+#, fuzzy
+#~| msgid "Append \"._part\" to incomplete files' names"
+#~ msgid "Append \".part\" to incomplete files' names"
+#~ msgstr "Tamamlanmayan dosya adlarının sonuna \".part\" ekle"
+
+#, fuzzy
+#~| msgid "Automatically add torrent files _from:"
+#~ msgid "Automatically add torrent files from:"
+#~ msgstr "Şuradan torrent dosyalarını kendiliğinden ekle:"
+
+#~ msgid "Keep incomplete files in:"
+#~ msgstr "Bitmemişleri şurada tut:"
+
+#, fuzzy
+#~| msgid "_Start added torrents"
+#~ msgid "Start added torrents"
+#~ msgstr "Eklenen torrentleri başlat"
+
+#~ msgid "to"
+#~ msgstr "arası"
+
+#, fuzzy
+#~| msgid "_Scheduled times:"
+#~ msgid "Scheduled times:"
+#~ msgstr "Planlanmış zaman:"
+
+#, fuzzy
+#~| msgid "_Download:"
+#~ msgid "Download:"
+#~ msgstr "İndirme:"
+
+#, fuzzy
+#~| msgid "_Upload:"
+#~ msgid "Upload:"
+#~ msgstr "Yükleme:"
+
+#, fuzzy
+#~| msgid "Use _DHT to find more peers"
+#~ msgid "Use DHT to find more peers for public torrents"
+#~ msgstr "Daha çok eş bulmak için DHT kullan"
+
+#, fuzzy
+#~| msgid "Maximum peers per _torrent:"
+#~ msgid "Maximum peers for new torrents:"
+#~ msgstr "Torrent başına azami eş sayısı:"
+
+#~ msgid "Automatically update weekly"
+#~ msgstr "Haftalık olarak güncelle"
+
+#, fuzzy
+#~| msgid "Maximum peers _overall:"
+#~ msgid "Maximum peers overall:"
+#~ msgstr "Genel azami eş sayısı:"
+
+#, fuzzy
+#~| msgid "Use PE_X to find more peers"
+#~ msgid "Use PEX to find more peers for public torrents"
+#~ msgstr "Daha çok eş bulmak için PEX kullan"
+
+#, fuzzy
+#~| msgid "Use _Local Peer Discovery to find more peers"
+#~ msgid "Use Local Peer Discovery to find more peers for public torrents"
+#~ msgstr "Daha çok eş bulmak için Yerel Eş Keşfini kullan"
+
+#~ msgid "Update"
+#~ msgstr "Güncelle"
+
+#, fuzzy
+#~| msgid "_Port for incoming connections:"
+#~ msgid "Port for incoming connections:"
+#~ msgstr "Gelen bağlantılar için bağlantı noktası:"
+
+#, fuzzy
+#~| msgid "Pick a _random port every time Transmission is started"
+#~ msgid "Pick a random port at startup"
+#~ msgstr "Transmission her başlatıldığında rastgele bağlantı noktası seç"
+
+#, fuzzy
+#~| msgid "Prevent computer from sleeping with active transfers"
+#~ msgid "Prevent computer from sleeping with active torrents"
+#~ msgstr "Etkin aktarım varsa bilgisayarı uyanık tut"
+
+#, fuzzy
+#~| msgid "Enable µ_TP for peer connections"
+#~ msgid "Enable µTP for peer connections"
+#~ msgstr "Eş bağlantıları için µTP'yi etkinleştir"
+
+#, fuzzy
+#~| msgid "Only allow these IP a_ddresses:"
+#~ msgid "Only allow these IP addresses:"
+#~ msgstr "Yalnızca şu IP adreslerine bağlanma izni ver:"
+
+#, fuzzy
+#~| msgid "Use _authentication"
+#~ msgid "Use authentication"
+#~ msgstr "Yetkilendirme kullan"
+
+#, fuzzy
+#~| msgid "Allow _remote access"
+#~ msgid "Allow remote access"
+#~ msgstr "Uzaktan erişime izin ver"
+
+#~ msgid "Username:"
+#~ msgstr "Kullanıcı adı: "
+
+#~ msgid "Password:"
+#~ msgstr "Parola:"
+
+#, fuzzy
+#~| msgid "HTTP _port:"
+#~ msgid "HTTP port:"
+#~ msgstr "HTTP bağlantı noktası:"
+
+#, fuzzy
+#~| msgid "_Open web client"
+#~ msgid "Open Web Client"
+#~ msgstr "Web istemcisini aç"
+
+#~ msgid "Quit"
+#~ msgstr "Çık"
+
+#~ msgid "Save"
+#~ msgstr "Kaydet"

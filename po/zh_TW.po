@@ -435,6 +435,10 @@ msgid "_Delete"
 msgstr "刪除 (_D)"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "移除 (_R)"
 
@@ -623,6 +627,7 @@ msgstr "偵錯"
 msgid "Save Log"
 msgstr "儲存日誌"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "儲存 (_S)"
 
@@ -768,6 +773,8 @@ msgstr[0] "已啟動 {count:L} 次"
 msgid "Reset your statistics?"
 msgstr "要重設您的統計資料嗎？"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "重設 (_R)"
 
@@ -920,12 +927,19 @@ msgstr "開啟 URL… (_U)"
 msgid "_New…"
 msgstr "新增… (_N)"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "全部開始 (_S)"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "全部暫停 (_P)"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "結束 (_Q)"
 
@@ -950,6 +964,7 @@ msgstr "內容 (_P)"
 msgid "Open Fold_er"
 msgstr "開啟資料夾 (_E)"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "開始 (_S)"
 
@@ -976,6 +991,7 @@ msgstr "下移 (_D)"
 msgid "Move to _Bottom"
 msgstr "移動到底部 (_B)"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "暫停 (_P)"
 
@@ -1045,6 +1061,7 @@ msgstr "訊息日誌 (_L)"
 msgid "_Statistics"
 msgstr "統計資料 (_S)"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "捐助 (_D)"
 
@@ -1064,6 +1081,7 @@ msgstr "開始執行 torrent"
 msgid "Alternative Speed _Limits"
 msgstr "替代速度限制"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "加入 (_A)"
 
@@ -1241,6 +1259,8 @@ msgstr "統計資料"
 msgid "New Torrent"
 msgstr "新增 Torrent"
 
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
@@ -1906,32 +1926,14 @@ msgstr "目標資料夾與資料根目錄名稱相同。"
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "若您想使用已存在的資料，應該將資料根目錄放在目標資料夾中。"
 
-msgid "Cancel"
-msgstr "取消"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "加入"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "已選取 {amount} 個"
 
-msgid "Start when added"
-msgstr "加入時開始"
-
 msgid "Magnet Link"
 msgstr "磁力連結"
-
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "目標資料夾："
-
-msgid "Priority:"
-msgstr "優先順序："
 
 msgid "Group:"
 msgstr "群組："
@@ -1939,56 +1941,17 @@ msgstr "群組："
 msgid "Change…"
 msgstr "變更…"
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "移動 torrent 檔案到垃圾桶"
-
-msgid "Verify Local Data"
-msgstr "驗證本機資料"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "篩選器"
 
-msgid "Trackers:"
-msgstr "追蹤器："
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "私有 torrent"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "建立"
-
 msgid "Open when created"
 msgstr "建立完成時開啟"
 
 msgid "Each tracker will be placed into its own tier"
 msgstr "每個追蹤器將被分類到自己的層級中"
-
-msgid "Source:"
-msgstr "來源："
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Torrent 檔案："
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "限制下載速度："
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "限制上傳速度："
 
 msgid "minutes"
 msgstr "分鐘"
@@ -2079,16 +2042,6 @@ msgstr "區塊："
 msgid "Was:"
 msgstr ""
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Torrent 優先順序："
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "優先使用全域限制"
-
 msgid "Use Global Settings"
 msgstr "使用全域設定"
 
@@ -2099,16 +2052,6 @@ msgstr "當閒置時停止"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "做種完成時，從傳輸清單中移除"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "最大連線節點數量："
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "閒置："
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2121,10 +2064,6 @@ msgstr "關於 Retransmission"
 
 msgid "Check for Update…"
 msgstr "檢查更新…"
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "贊助"
 
 msgid "Preferences…"
 msgstr "偏好設定…"
@@ -2150,16 +2089,8 @@ msgstr "檔案"
 msgid "Create Torrent File…"
 msgstr "建立 Torrent 檔案…"
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "開啟…"
-
 msgid "Open With Options Window…"
 msgstr "以選項視窗開啟…"
-
-msgid "Open URL…"
-msgstr "開啟網址…"
 
 msgid "Close Window"
 msgstr "關閉視窗"
@@ -2173,11 +2104,6 @@ msgstr "關閉視窗"
 msgid "Quick Look"
 msgstr "關閉 Quick Look"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "設定位置…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "重新命名…"
@@ -2187,9 +2113,6 @@ msgstr "另存 Torrent 檔案為…"
 
 msgid "Share Torrent File"
 msgstr "分享 Torrent 檔案"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "複製磁力連結到剪貼簿"
 
 msgid "Edit"
 msgstr "編輯"
@@ -2230,11 +2153,6 @@ msgstr "可用性"
 msgid "Use Groups"
 msgstr "使用群組"
 
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "開始執行 torrent"
-
 msgid "Queue Order"
 msgstr "排程順序"
 
@@ -2272,48 +2190,12 @@ msgstr "隱藏工具列"
 msgid "Customize Toolbar…"
 msgstr "自訂工具列…"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "已暫停"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "開始"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "移除"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "刪除檔案並移除"
-
 msgid "Remove All Completed From List"
 msgstr "從清單移除所有已完成的傳輸"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "在 Finder 中顯示"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "全部暫停"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "全部開始"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2323,11 +2205,6 @@ msgstr "全部開始"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "群組"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "向追蹤器請求更多節點"
 
 msgid "Window"
 msgstr "視窗"
@@ -2371,9 +2248,6 @@ msgstr "支援與開發"
 msgid "Menu"
 msgstr "功能表"
 
-msgid "Preferences"
-msgstr "偏好設定"
-
 msgid "Check for update:"
 msgstr "檢查更新："
 
@@ -2385,11 +2259,6 @@ msgstr "每天自動更新"
 
 msgid "Reset all alerts:"
 msgstr "重設所有警示："
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "重設"
 
 msgid "Set Default Application"
 msgstr "設定預設應用程式"
@@ -2447,40 +2316,17 @@ msgstr "正在加入"
 msgid "Same as torrent file"
 msgstr "和 torrent 相同"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "儲存到位置："
-
 msgid "Settings:"
 msgstr "設定："
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "為尚未完成的檔案加上 \".part\" 副檔名"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "自動從以下位置加入 torrent 檔案："
-
 msgid "Auto add:"
 msgstr "自動加入："
-
-msgid "Keep incomplete files in:"
-msgstr "保存尚未完成的檔案於："
 
 msgid "Display a window when opening a torrent file"
 msgstr "開啟 torrent 檔案時顯示視窗"
 
 msgid "Display a window when opening a magnet link"
 msgstr "開啟磁力連結時顯示視窗"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "開始已加入的 torrents"
 
 msgid "Only when adding manually"
 msgstr "僅於手動加入時"
@@ -2584,24 +2430,6 @@ msgstr "週六"
 msgid "Sunday"
 msgstr "週日"
 
-msgid "to"
-msgstr "到"
-
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "預定時段："
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "下載："
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "上傳："
-
 #, fuzzy
 #| msgid "Alternative Speed Limits"
 msgid "Alternative speed limits:"
@@ -2617,18 +2445,8 @@ msgstr "速度限制"
 msgid "Peer limits:"
 msgstr "節點限制"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "使用 DHT 以尋找更多節點"
-
 msgid "Blocklist:"
 msgstr "黑名單："
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "每個 torrent 的最大連線節點數量："
 
 msgid "Last updated: N/A"
 msgstr "最後更新於：N/A"
@@ -2636,33 +2454,12 @@ msgstr "最後更新於：N/A"
 msgid "Encryption:"
 msgstr "加密："
 
-msgid "Automatically update weekly"
-msgstr "每週自動更新"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "總計最大連線節點數量："
-
 msgid "blocklist loaded/not loaded"
 msgstr "黑名單已載入 / 未載入"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "使用 PEX 以尋找更多節點"
 
 #. Translators: URL sheet label
 msgid "URL:"
 msgstr "URL："
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "使用本機節點探索以尋找更多節點"
-
-msgid "Update"
-msgstr "更新"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "高連線數量可能會顯著影響系統效能"
@@ -2678,11 +2475,6 @@ msgstr "隨機"
 msgid "Peer communication:"
 msgstr "節點通訊："
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "傳入的連接埠："
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "連接埠已開啟"
@@ -2690,63 +2482,17 @@ msgstr "連接埠已開啟"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "每次 Transmission 啟動時挑選一個隨機的連接埠"
-
 msgid "Automatically map port"
 msgstr "自動對應連接埠"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "在傳輸檔案期間防止電腦進入睡眠模式"
 
 msgid "System sleep:"
 msgstr "系統睡眠："
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "為節點連線啟用 µTP"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "這會啟用網頁介面，並允許遠端請求"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "僅允許以下 IP 位址："
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "使用驗證"
-
 msgid "Display the web interface with Bonjour"
 msgstr "顯示具備 Bonjour 的網頁介面"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "允許遠端存取"
-
-msgid "Username:"
-msgstr "使用者名稱："
-
-msgid "Password:"
-msgstr "密碼："
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "HTTP 連接埠："
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "開啟網頁用戶端"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -2766,12 +2512,6 @@ msgstr "無法下載黑名單。"
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "我同意"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "結束"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3419,10 +3159,6 @@ msgstr "{amount} 全部"
 #| msgid "_Private torrent"
 msgid "Magnetized torrent"
 msgstr "私有 torrent"
-
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "儲存"
 
 #. Translators: Save log panel -> default file name
 msgid "untitled"
@@ -4442,3 +4178,267 @@ msgstr[0] "秒"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Transmission 是一個檔案分享程式。當您執行 torrent 時，其資料將以上傳的方式提供給其他人。您必須為自己分享的內容負起所有責任。"
+
+#~ msgid "Cancel"
+#~ msgstr "取消"
+
+#~ msgid "Add"
+#~ msgstr "加入"
+
+#~ msgid "Start when added"
+#~ msgstr "加入時開始"
+
+#, fuzzy
+#~| msgid "_Destination folder:"
+#~ msgid "Destination folder:"
+#~ msgstr "目標資料夾："
+
+#~ msgid "Priority:"
+#~ msgstr "優先順序："
+
+#, fuzzy
+#~| msgid "Mo_ve torrent file to the trash"
+#~ msgid "Move torrent file to the Trash"
+#~ msgstr "移動 torrent 檔案到垃圾桶"
+
+#~ msgid "Verify Local Data"
+#~ msgstr "驗證本機資料"
+
+#~ msgid "Trackers:"
+#~ msgstr "追蹤器："
+
+#, fuzzy
+#~| msgid "_Private torrent"
+#~ msgid "Private torrent"
+#~ msgstr "私有 torrent"
+
+#~ msgid "Create"
+#~ msgstr "建立"
+
+#~ msgid "Source:"
+#~ msgstr "來源："
+
+#, fuzzy
+#~| msgid "_Torrent file:"
+#~ msgid "Torrent file:"
+#~ msgstr "Torrent 檔案："
+
+#, fuzzy
+#~| msgid "Limit _download speed:"
+#~ msgid "Limit download speed:"
+#~ msgstr "限制下載速度："
+
+#, fuzzy
+#~| msgid "Limit _upload speed:"
+#~ msgid "Limit upload speed:"
+#~ msgstr "限制上傳速度："
+
+#, fuzzy
+#~| msgid "Torrent _priority:"
+#~ msgid "Torrent priority:"
+#~ msgstr "Torrent 優先順序："
+
+#, fuzzy
+#~| msgid "Honor global _limits"
+#~ msgid "Honor global limits"
+#~ msgstr "優先使用全域限制"
+
+#, fuzzy
+#~| msgid "_Maximum peers:"
+#~ msgid "Maximum peers:"
+#~ msgstr "最大連線節點數量："
+
+#, fuzzy
+#~| msgid "_Idle:"
+#~ msgid "Idle:"
+#~ msgstr "閒置："
+
+#~ msgid "Donate"
+#~ msgstr "贊助"
+
+#, fuzzy
+#~| msgid "_Open…"
+#~ msgid "Open…"
+#~ msgstr "開啟…"
+
+#~ msgid "Open URL…"
+#~ msgstr "開啟網址…"
+
+#, fuzzy
+#~| msgid "Set _Location…"
+#~ msgid "Set Location…"
+#~ msgstr "設定位置…"
+
+#~ msgid "Copy Magnet Link to Clipboard"
+#~ msgstr "複製磁力連結到剪貼簿"
+
+#, fuzzy
+#~| msgid "Start torrent"
+#~ msgid "Sort Torrents By"
+#~ msgstr "開始執行 torrent"
+
+#, fuzzy
+#~| msgid "Paused"
+#~ msgid "Pause"
+#~ msgstr "已暫停"
+
+#, fuzzy
+#~| msgid "_Start"
+#~ msgid "Start"
+#~ msgstr "開始"
+
+#~ msgid "Remove"
+#~ msgstr "移除"
+
+#, fuzzy
+#~| msgid "_Delete Files and Remove"
+#~ msgid "Delete Files and Remove"
+#~ msgstr "刪除檔案並移除"
+
+#~ msgid "Pause All"
+#~ msgstr "全部暫停"
+
+#, fuzzy
+#~| msgid "_Start All"
+#~ msgid "Start All"
+#~ msgstr "全部開始"
+
+#, fuzzy
+#~| msgid "Ask Tracker for _More Peers"
+#~ msgid "Ask Tracker for More Peers"
+#~ msgstr "向追蹤器請求更多節點"
+
+#~ msgid "Preferences"
+#~ msgstr "偏好設定"
+
+#~ msgid "Reset"
+#~ msgstr "重設"
+
+#, fuzzy
+#~| msgid "Save to _Location:"
+#~ msgid "Save to location:"
+#~ msgstr "儲存到位置："
+
+#, fuzzy
+#~| msgid "Append \"._part\" to incomplete files' names"
+#~ msgid "Append \".part\" to incomplete files' names"
+#~ msgstr "為尚未完成的檔案加上 \".part\" 副檔名"
+
+#, fuzzy
+#~| msgid "Automatically add torrent files _from:"
+#~ msgid "Automatically add torrent files from:"
+#~ msgstr "自動從以下位置加入 torrent 檔案："
+
+#~ msgid "Keep incomplete files in:"
+#~ msgstr "保存尚未完成的檔案於："
+
+#, fuzzy
+#~| msgid "_Start added torrents"
+#~ msgid "Start added torrents"
+#~ msgstr "開始已加入的 torrents"
+
+#~ msgid "to"
+#~ msgstr "到"
+
+#, fuzzy
+#~| msgid "_Scheduled times:"
+#~ msgid "Scheduled times:"
+#~ msgstr "預定時段："
+
+#, fuzzy
+#~| msgid "_Download:"
+#~ msgid "Download:"
+#~ msgstr "下載："
+
+#, fuzzy
+#~| msgid "_Upload:"
+#~ msgid "Upload:"
+#~ msgstr "上傳："
+
+#, fuzzy
+#~| msgid "Use _DHT to find more peers"
+#~ msgid "Use DHT to find more peers for public torrents"
+#~ msgstr "使用 DHT 以尋找更多節點"
+
+#, fuzzy
+#~| msgid "Maximum peers per _torrent:"
+#~ msgid "Maximum peers for new torrents:"
+#~ msgstr "每個 torrent 的最大連線節點數量："
+
+#~ msgid "Automatically update weekly"
+#~ msgstr "每週自動更新"
+
+#, fuzzy
+#~| msgid "Maximum peers _overall:"
+#~ msgid "Maximum peers overall:"
+#~ msgstr "總計最大連線節點數量："
+
+#, fuzzy
+#~| msgid "Use PE_X to find more peers"
+#~ msgid "Use PEX to find more peers for public torrents"
+#~ msgstr "使用 PEX 以尋找更多節點"
+
+#, fuzzy
+#~| msgid "Use _Local Peer Discovery to find more peers"
+#~ msgid "Use Local Peer Discovery to find more peers for public torrents"
+#~ msgstr "使用本機節點探索以尋找更多節點"
+
+#~ msgid "Update"
+#~ msgstr "更新"
+
+#, fuzzy
+#~| msgid "_Port for incoming connections:"
+#~ msgid "Port for incoming connections:"
+#~ msgstr "傳入的連接埠："
+
+#, fuzzy
+#~| msgid "Pick a _random port every time Transmission is started"
+#~ msgid "Pick a random port at startup"
+#~ msgstr "每次 Transmission 啟動時挑選一個隨機的連接埠"
+
+#, fuzzy
+#~| msgid "Prevent computer from sleeping with active transfers"
+#~ msgid "Prevent computer from sleeping with active torrents"
+#~ msgstr "在傳輸檔案期間防止電腦進入睡眠模式"
+
+#, fuzzy
+#~| msgid "Enable µ_TP for peer connections"
+#~ msgid "Enable µTP for peer connections"
+#~ msgstr "為節點連線啟用 µTP"
+
+#, fuzzy
+#~| msgid "Only allow these IP a_ddresses:"
+#~ msgid "Only allow these IP addresses:"
+#~ msgstr "僅允許以下 IP 位址："
+
+#, fuzzy
+#~| msgid "Use _authentication"
+#~ msgid "Use authentication"
+#~ msgstr "使用驗證"
+
+#, fuzzy
+#~| msgid "Allow _remote access"
+#~ msgid "Allow remote access"
+#~ msgstr "允許遠端存取"
+
+#~ msgid "Username:"
+#~ msgstr "使用者名稱："
+
+#~ msgid "Password:"
+#~ msgstr "密碼："
+
+#, fuzzy
+#~| msgid "HTTP _port:"
+#~ msgid "HTTP port:"
+#~ msgstr "HTTP 連接埠："
+
+#, fuzzy
+#~| msgid "_Open web client"
+#~ msgid "Open Web Client"
+#~ msgstr "開啟網頁用戶端"
+
+#~ msgid "Quit"
+#~ msgstr "結束"
+
+#~ msgid "Save"
+#~ msgstr "儲存"

@@ -442,6 +442,10 @@ msgid "_Delete"
 msgstr "_Slet"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Fjern"
 
@@ -631,6 +635,7 @@ msgstr "Fejlfinding"
 msgid "Save Log"
 msgstr "Gem log"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Gem"
 
@@ -778,6 +783,8 @@ msgstr[1] "Startet {count:L} gange"
 msgid "Reset your statistics?"
 msgstr "Nulstil din statistik?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Nulstil"
 
@@ -935,12 +942,19 @@ msgstr "Åbn _URL …"
 msgid "_New…"
 msgstr "_Ny …"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "_Start alle"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "Sæt alle på _pause"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_Afslut"
 
@@ -965,6 +979,7 @@ msgstr "_Egenskaber"
 msgid "Open Fold_er"
 msgstr "Åbn _mappe"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "S_tart"
 
@@ -991,6 +1006,7 @@ msgstr "Flyt ne_d"
 msgid "Move to _Bottom"
 msgstr "Flyt n_ederst"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Pause"
 
@@ -1060,6 +1076,7 @@ msgstr "Meddelelses_log"
 msgid "_Statistics"
 msgstr "_Statistik"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Donér"
 
@@ -1079,6 +1096,7 @@ msgstr "Start torrent"
 msgid "Alternative Speed _Limits"
 msgstr "Alternative hastighedsbegrænsninger"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Tilføj"
 
@@ -1256,6 +1274,8 @@ msgstr "Statistik"
 msgid "New Torrent"
 msgstr "Ny torrent"
 
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
@@ -1940,46 +1960,20 @@ msgstr "Placering og rod data mappen har samme navn."
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Hvis du forsøger at bruge allerede eksisterende data, skal rod data mappen være i destinationsmappen."
 
-msgid "Cancel"
-msgstr "Annuller"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Tilføj"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} valgt"
 
-msgid "Start when added"
-msgstr "Start efter tilføjelse"
-
 msgid "Magnet Link"
 msgstr "Magnetlink"
-
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Destinationsmappe:"
-
-msgid "Priority:"
-msgstr "Prioritet:"
 
 msgid "Group:"
 msgstr "Gruppe:"
 
 msgid "Change…"
 msgstr "Skift …"
-
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Flyt torrent-fil til papirkurven"
-
-msgid "Verify Local Data"
-msgstr "Bekræft lokale data"
 
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
@@ -1989,42 +1983,11 @@ msgstr "Bekræft lokale data"
 msgid "Filter"
 msgstr "Filterlinje"
 
-msgid "Trackers:"
-msgstr "Trackere:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Privat torrent"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Opret"
-
 msgid "Open when created"
 msgstr "Åbn efter oprettelse"
 
 msgid "Each tracker will be placed into its own tier"
 msgstr "Hver tracker vil blive placeret i sin egen liste"
-
-msgid "Source:"
-msgstr "Kilde:"
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Torrentfil:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "Begræns downloadhastighed:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Begræns uploadhastighed:"
 
 msgid "minutes"
 msgstr "minutter"
@@ -2115,16 +2078,6 @@ msgstr "Stykker:"
 msgid "Was:"
 msgstr "Var:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Torrentprioritet:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Overhold globale grænser"
-
 msgid "Use Global Settings"
 msgstr "Brug globale indstillinger"
 
@@ -2135,16 +2088,6 @@ msgstr "Stop ved inaktivitet i"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Fjern når seeding er fuldendt"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Højeste antal modparter:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Inaktiv:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2157,10 +2100,6 @@ msgstr "Om Retransmission"
 
 msgid "Check for Update…"
 msgstr "Søg efter opdateringer …"
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Donér"
 
 msgid "Preferences…"
 msgstr "Indstillinger …"
@@ -2186,16 +2125,8 @@ msgstr "Arkiv"
 msgid "Create Torrent File…"
 msgstr "Opret torrent-fil …"
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Åbn …"
-
 msgid "Open With Options Window…"
 msgstr "Åbn og vis indstillinger …"
-
-msgid "Open URL…"
-msgstr "Åbn URL …"
 
 msgid "Close Window"
 msgstr "Luk vindue"
@@ -2207,11 +2138,6 @@ msgstr "Luk vindue"
 msgid "Quick Look"
 msgstr "Vis"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Angiv placering …"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Omdøb …"
@@ -2221,9 +2147,6 @@ msgstr "Arkiver torrent-fil som …"
 
 msgid "Share Torrent File"
 msgstr "Del torrent-fil"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Kopier magnetlink til udklipsholder"
 
 msgid "Edit"
 msgstr "Rediger"
@@ -2264,11 +2187,6 @@ msgstr "Vis tilgængelighed"
 msgid "Use Groups"
 msgstr "Brug grupper"
 
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "Start torrent"
-
 msgid "Queue Order"
 msgstr "Kø"
 
@@ -2306,48 +2224,12 @@ msgstr "Skjul værktøjslinje"
 msgid "Customize Toolbar…"
 msgstr "Indstil værktøjslinje …"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "På pause"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Start"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Fjern"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Slet filer og fjern"
-
 msgid "Remove All Completed From List"
 msgstr "Fjern alle fuldførte overførsler"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Vis i Finder"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Pause alle"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Start alle"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2357,11 +2239,6 @@ msgstr "Start alle"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Gruppe"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Spørg om flere modparter fra tracker"
 
 msgid "Window"
 msgstr "Vindue"
@@ -2405,11 +2282,6 @@ msgstr "Support og udvikling"
 msgid "Menu"
 msgstr ""
 
-#, fuzzy
-#| msgid "_Preferences"
-msgid "Preferences"
-msgstr "Præferencer"
-
 msgid "Check for update:"
 msgstr "Opdateringer:"
 
@@ -2421,11 +2293,6 @@ msgstr "Søg automatisk efter opdateringer dagligt"
 
 msgid "Reset all alerts:"
 msgstr "Nulstil alle advarsler"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Nulstil"
 
 msgid "Set Default Application"
 msgstr "Indstil som standardprogram"
@@ -2483,40 +2350,17 @@ msgstr "Tilføjelse"
 msgid "Same as torrent file"
 msgstr "Samme som torrent-fil"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Gem på denne placering:"
-
 msgid "Settings:"
 msgstr "Indstillinger:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Tilføj \".part\" til ufuldstændige filers navne"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Tilføj automatisk torrent-filer fra:"
-
 msgid "Auto add:"
 msgstr "Auto tilføj:"
-
-msgid "Keep incomplete files in:"
-msgstr "Opbevar ufulstændige filer i:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Vis et vindue når en torrent-fil åbnes"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Når der åbnes et magnetlink"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Start tilføjede torrents"
 
 msgid "Only when adding manually"
 msgstr "Kun hvis der tilføjes manuelt"
@@ -2620,24 +2464,6 @@ msgstr "Lørdag"
 msgid "Sunday"
 msgstr "Søndag"
 
-msgid "to"
-msgstr "til"
-
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Planlagte tidspunkter:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Download:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Upload:"
-
 #, fuzzy
 #| msgid "Alternative Speed Limits"
 msgid "Alternative speed limits:"
@@ -2653,18 +2479,8 @@ msgstr "Hastighedsgrænser"
 msgid "Peer limits:"
 msgstr "Modpartsbegrænsninger"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Brug DHT til at finde flere modparter"
-
 msgid "Blocklist:"
 msgstr "Blokering:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Maksimalt antal modparter pr. torrent:"
 
 msgid "Last updated: N/A"
 msgstr "Sidst opdateret: N/A"
@@ -2672,35 +2488,14 @@ msgstr "Sidst opdateret: N/A"
 msgid "Encryption:"
 msgstr "Kryptering:"
 
-msgid "Automatically update weekly"
-msgstr "Opdater automatisk ugentligt"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Maksimalt antal modparter i alt:"
-
 #, fuzzy
 #| msgid "A blocklist must first be downloaded"
 msgid "blocklist loaded/not loaded"
 msgstr "En blokeringsliste skal først hentes"
 
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Brug PEX til at finde flere modparter"
-
 #. Translators: URL sheet label
 msgid "URL:"
 msgstr ""
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Brug lokal modpartsopdagelse til at finde flere modparter"
-
-msgid "Update"
-msgstr "Opdater"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Høje forbindelsesbegrænsninger kan have indflydelse på systemydeevnen"
@@ -2716,11 +2511,6 @@ msgstr "Vælg tilfældig"
 msgid "Peer communication:"
 msgstr "Kommunikation:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Port til indgående forbindelser:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "Port åben"
@@ -2728,63 +2518,17 @@ msgstr "Port åben"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Vælg en tilfældig port hver gang Transmission startes"
-
 msgid "Automatically map port"
 msgstr "Tildel port automatisk"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Forhindre computer i at gå i dvale når der hentes"
 
 msgid "System sleep:"
 msgstr "Vågeblus:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Aktivér µTP for modpartsforbindelser"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Denne indstilling aktiverer et web interface og tillader fjernanmodninger"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Tillad kun disse IP-adresser:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Brug godkendelse"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Vis web interface med Bonjour"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Tillad fjernadgang"
-
-msgid "Username:"
-msgstr "Brugernavn:"
-
-msgid "Password:"
-msgstr "Adgangskode:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "HTTP-port:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Åbn webklient"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -2804,12 +2548,6 @@ msgstr "Blokeringsliste kunne ikke hentes."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Accepter"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Slut"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3487,10 +3225,6 @@ msgstr "{amount} samlet"
 #| msgid "_Private torrent"
 msgid "Magnetized torrent"
 msgstr "Privat torrent"
-
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Arkiver"
 
 #. Translators: Save log panel -> default file name
 msgid "untitled"
@@ -4540,3 +4274,269 @@ msgstr[1] "sekunder"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Transmission er et fildelingsprogram. Når du kører en torrent, vil dens data blive gjort tilgængelig for andre ved hjælp af upload. Alt hvad du deler sker på dit eget ansvar."
+
+#~ msgid "Cancel"
+#~ msgstr "Annuller"
+
+#~ msgid "Add"
+#~ msgstr "Tilføj"
+
+#~ msgid "Start when added"
+#~ msgstr "Start efter tilføjelse"
+
+#, fuzzy
+#~| msgid "_Destination folder:"
+#~ msgid "Destination folder:"
+#~ msgstr "Destinationsmappe:"
+
+#~ msgid "Priority:"
+#~ msgstr "Prioritet:"
+
+#, fuzzy
+#~| msgid "Mo_ve torrent file to the trash"
+#~ msgid "Move torrent file to the Trash"
+#~ msgstr "Flyt torrent-fil til papirkurven"
+
+#~ msgid "Verify Local Data"
+#~ msgstr "Bekræft lokale data"
+
+#~ msgid "Trackers:"
+#~ msgstr "Trackere:"
+
+#, fuzzy
+#~| msgid "_Private torrent"
+#~ msgid "Private torrent"
+#~ msgstr "Privat torrent"
+
+#~ msgid "Create"
+#~ msgstr "Opret"
+
+#~ msgid "Source:"
+#~ msgstr "Kilde:"
+
+#, fuzzy
+#~| msgid "_Torrent file:"
+#~ msgid "Torrent file:"
+#~ msgstr "Torrentfil:"
+
+#, fuzzy
+#~| msgid "Limit _download speed:"
+#~ msgid "Limit download speed:"
+#~ msgstr "Begræns downloadhastighed:"
+
+#, fuzzy
+#~| msgid "Limit _upload speed:"
+#~ msgid "Limit upload speed:"
+#~ msgstr "Begræns uploadhastighed:"
+
+#, fuzzy
+#~| msgid "Torrent _priority:"
+#~ msgid "Torrent priority:"
+#~ msgstr "Torrentprioritet:"
+
+#, fuzzy
+#~| msgid "Honor global _limits"
+#~ msgid "Honor global limits"
+#~ msgstr "Overhold globale grænser"
+
+#, fuzzy
+#~| msgid "_Maximum peers:"
+#~ msgid "Maximum peers:"
+#~ msgstr "Højeste antal modparter:"
+
+#, fuzzy
+#~| msgid "_Idle:"
+#~ msgid "Idle:"
+#~ msgstr "Inaktiv:"
+
+#~ msgid "Donate"
+#~ msgstr "Donér"
+
+#, fuzzy
+#~| msgid "_Open…"
+#~ msgid "Open…"
+#~ msgstr "Åbn …"
+
+#~ msgid "Open URL…"
+#~ msgstr "Åbn URL …"
+
+#, fuzzy
+#~| msgid "Set _Location…"
+#~ msgid "Set Location…"
+#~ msgstr "Angiv placering …"
+
+#~ msgid "Copy Magnet Link to Clipboard"
+#~ msgstr "Kopier magnetlink til udklipsholder"
+
+#, fuzzy
+#~| msgid "Start torrent"
+#~ msgid "Sort Torrents By"
+#~ msgstr "Start torrent"
+
+#, fuzzy
+#~| msgid "Paused"
+#~ msgid "Pause"
+#~ msgstr "På pause"
+
+#, fuzzy
+#~| msgid "_Start"
+#~ msgid "Start"
+#~ msgstr "Start"
+
+#~ msgid "Remove"
+#~ msgstr "Fjern"
+
+#, fuzzy
+#~| msgid "_Delete Files and Remove"
+#~ msgid "Delete Files and Remove"
+#~ msgstr "Slet filer og fjern"
+
+#~ msgid "Pause All"
+#~ msgstr "Pause alle"
+
+#, fuzzy
+#~| msgid "_Start All"
+#~ msgid "Start All"
+#~ msgstr "Start alle"
+
+#, fuzzy
+#~| msgid "Ask Tracker for _More Peers"
+#~ msgid "Ask Tracker for More Peers"
+#~ msgstr "Spørg om flere modparter fra tracker"
+
+#, fuzzy
+#~| msgid "_Preferences"
+#~ msgid "Preferences"
+#~ msgstr "Præferencer"
+
+#~ msgid "Reset"
+#~ msgstr "Nulstil"
+
+#, fuzzy
+#~| msgid "Save to _Location:"
+#~ msgid "Save to location:"
+#~ msgstr "Gem på denne placering:"
+
+#, fuzzy
+#~| msgid "Append \"._part\" to incomplete files' names"
+#~ msgid "Append \".part\" to incomplete files' names"
+#~ msgstr "Tilføj \".part\" til ufuldstændige filers navne"
+
+#, fuzzy
+#~| msgid "Automatically add torrent files _from:"
+#~ msgid "Automatically add torrent files from:"
+#~ msgstr "Tilføj automatisk torrent-filer fra:"
+
+#~ msgid "Keep incomplete files in:"
+#~ msgstr "Opbevar ufulstændige filer i:"
+
+#, fuzzy
+#~| msgid "_Start added torrents"
+#~ msgid "Start added torrents"
+#~ msgstr "Start tilføjede torrents"
+
+#~ msgid "to"
+#~ msgstr "til"
+
+#, fuzzy
+#~| msgid "_Scheduled times:"
+#~ msgid "Scheduled times:"
+#~ msgstr "Planlagte tidspunkter:"
+
+#, fuzzy
+#~| msgid "_Download:"
+#~ msgid "Download:"
+#~ msgstr "Download:"
+
+#, fuzzy
+#~| msgid "_Upload:"
+#~ msgid "Upload:"
+#~ msgstr "Upload:"
+
+#, fuzzy
+#~| msgid "Use _DHT to find more peers"
+#~ msgid "Use DHT to find more peers for public torrents"
+#~ msgstr "Brug DHT til at finde flere modparter"
+
+#, fuzzy
+#~| msgid "Maximum peers per _torrent:"
+#~ msgid "Maximum peers for new torrents:"
+#~ msgstr "Maksimalt antal modparter pr. torrent:"
+
+#~ msgid "Automatically update weekly"
+#~ msgstr "Opdater automatisk ugentligt"
+
+#, fuzzy
+#~| msgid "Maximum peers _overall:"
+#~ msgid "Maximum peers overall:"
+#~ msgstr "Maksimalt antal modparter i alt:"
+
+#, fuzzy
+#~| msgid "Use PE_X to find more peers"
+#~ msgid "Use PEX to find more peers for public torrents"
+#~ msgstr "Brug PEX til at finde flere modparter"
+
+#, fuzzy
+#~| msgid "Use _Local Peer Discovery to find more peers"
+#~ msgid "Use Local Peer Discovery to find more peers for public torrents"
+#~ msgstr "Brug lokal modpartsopdagelse til at finde flere modparter"
+
+#~ msgid "Update"
+#~ msgstr "Opdater"
+
+#, fuzzy
+#~| msgid "_Port for incoming connections:"
+#~ msgid "Port for incoming connections:"
+#~ msgstr "Port til indgående forbindelser:"
+
+#, fuzzy
+#~| msgid "Pick a _random port every time Transmission is started"
+#~ msgid "Pick a random port at startup"
+#~ msgstr "Vælg en tilfældig port hver gang Transmission startes"
+
+#, fuzzy
+#~| msgid "Prevent computer from sleeping with active transfers"
+#~ msgid "Prevent computer from sleeping with active torrents"
+#~ msgstr "Forhindre computer i at gå i dvale når der hentes"
+
+#, fuzzy
+#~| msgid "Enable µ_TP for peer connections"
+#~ msgid "Enable µTP for peer connections"
+#~ msgstr "Aktivér µTP for modpartsforbindelser"
+
+#, fuzzy
+#~| msgid "Only allow these IP a_ddresses:"
+#~ msgid "Only allow these IP addresses:"
+#~ msgstr "Tillad kun disse IP-adresser:"
+
+#, fuzzy
+#~| msgid "Use _authentication"
+#~ msgid "Use authentication"
+#~ msgstr "Brug godkendelse"
+
+#, fuzzy
+#~| msgid "Allow _remote access"
+#~ msgid "Allow remote access"
+#~ msgstr "Tillad fjernadgang"
+
+#~ msgid "Username:"
+#~ msgstr "Brugernavn:"
+
+#~ msgid "Password:"
+#~ msgstr "Adgangskode:"
+
+#, fuzzy
+#~| msgid "HTTP _port:"
+#~ msgid "HTTP port:"
+#~ msgstr "HTTP-port:"
+
+#, fuzzy
+#~| msgid "_Open web client"
+#~ msgid "Open Web Client"
+#~ msgstr "Åbn webklient"
+
+#~ msgid "Quit"
+#~ msgstr "Slut"
+
+#~ msgid "Save"
+#~ msgstr "Arkiver"

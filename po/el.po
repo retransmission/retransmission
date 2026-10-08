@@ -451,6 +451,10 @@ msgid "_Delete"
 msgstr "_Διαγραφή"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Αφαίρεση"
 
@@ -640,6 +644,7 @@ msgstr "Εντοπισμός σφαλμάτων"
 msgid "Save Log"
 msgstr "Αποθήκευση καταγραφής"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Αποθήκευση"
 
@@ -787,6 +792,8 @@ msgstr[1] "Ξεκίνησε {count:L} φορές"
 msgid "Reset your statistics?"
 msgstr "Μηδενισμός των στατιστικών σας;"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Μηδενισμός"
 
@@ -944,12 +951,19 @@ msgstr "Άνοιγμα _URL…"
 msgid "_New…"
 msgstr "_Νέο…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "_Εκκίνηση όλων"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "_Παύση όλων"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "Έ_ξοδος"
 
@@ -974,6 +988,7 @@ msgstr "_Ιδιότητες"
 msgid "Open Fold_er"
 msgstr "Άνοιγμα Φακέ_λου"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Εκκίνηση"
 
@@ -1000,6 +1015,7 @@ msgstr "Μετακίνηση _κάτω"
 msgid "Move to _Bottom"
 msgstr "Μετακίνηση στο _τέλος"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "Παύ_ση"
 
@@ -1069,6 +1085,7 @@ msgstr "Κ_αταγραφή μηνυμάτων"
 msgid "_Statistics"
 msgstr "_Στατιστικά"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Δωρεά"
 
@@ -1088,6 +1105,7 @@ msgstr "Εκκίνηση torrent"
 msgid "Alternative Speed _Limits"
 msgstr "Εναλλακτικά Όρια Ταχύτητας"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Προσθήκη"
 
@@ -1265,6 +1283,8 @@ msgstr "Στατιστικά"
 msgid "New Torrent"
 msgstr "Νέο Torrent"
 
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
@@ -1949,32 +1969,14 @@ msgstr "Ο κατάλογος προορισμού και ο κατάλογος 
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Αν προσπαθείτε να χρησιμοποιήσετε ήδη υπάρχοντα δεδομένα, ο ριζικός κατάλογος δεδομένων θα πρέπει να βρίσκεται μέσα στον κατάλογο προορισμού."
 
-msgid "Cancel"
-msgstr "Ακύρωση"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Προσθήκη"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} επιλεγμένα"
 
-msgid "Start when added"
-msgstr "Εκκίνηση όταν προστεθεί"
-
 msgid "Magnet Link"
 msgstr "Μαγνητικός Σύνδεσμος"
-
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Φάκελος προορισμού:"
-
-msgid "Priority:"
-msgstr "Προτεραιότητα:"
 
 msgid "Group:"
 msgstr "Ομάδα:"
@@ -1982,56 +1984,17 @@ msgstr "Ομάδα:"
 msgid "Change…"
 msgstr "Αλλαγή…"
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Μετακίνηση αρχείου torrent στον κάδο"
-
-msgid "Verify Local Data"
-msgstr "Επαλήθευση Τοπικών Δεδομένων"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Φίλτρο"
 
-msgid "Trackers:"
-msgstr "Ιχνηλάτες:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Ιδιωτικό torrent"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Δημιουργήστε"
-
 msgid "Open when created"
 msgstr "Άνοιγμα όταν δημιουργηθεί"
 
 msgid "Each tracker will be placed into its own tier"
 msgstr "Κάθε ιχνηλάτης θα τοποθετηθεί στην κατηγορία του"
-
-msgid "Source:"
-msgstr "Πηγή:"
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Αρχείο torrent:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "Περιορισμός ταχύτητας λήψης"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Περιορισμός ταχύτητας αποστολής"
 
 msgid "minutes"
 msgstr "λεπτά"
@@ -2122,16 +2085,6 @@ msgstr "Κομμάτια:"
 msgid "Was:"
 msgstr "Ήταν:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Προτεραιότητα torrent"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Τήρηση καθολικών ορίων"
-
 msgid "Use Global Settings"
 msgstr "Χρήση καθολικών ρυθμίσεων"
 
@@ -2142,16 +2095,6 @@ msgstr "Διακοπή σε Αδράνεια"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Αφαίρεση από τη λίστα μεταφοράς όταν ο διαμοιρασμός ολοκληρωθεί"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Μέγιστος αριθμός ομότιμων χρηστών:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Αδρανές:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2164,10 +2107,6 @@ msgstr "Περί του Retransmission"
 
 msgid "Check for Update…"
 msgstr "Έλεγχος για Ενημέρωση…"
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Δωρίστε"
 
 msgid "Preferences…"
 msgstr "Προτιμήσεις…"
@@ -2193,16 +2132,8 @@ msgstr "Αρχείο"
 msgid "Create Torrent File…"
 msgstr "Δημιουργία Αρχείου Torrent…"
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Άνοιγμα…"
-
 msgid "Open With Options Window…"
 msgstr "Άνοιγμα με Παράθυρο Επιλογών…"
-
-msgid "Open URL…"
-msgstr "Άνοιγμα URL…"
 
 msgid "Close Window"
 msgstr "Κλείσιμο Παραθύρου"
@@ -2216,11 +2147,6 @@ msgstr "Κλείσιμο Παραθύρου"
 msgid "Quick Look"
 msgstr "Κλείσιμο Quick Look"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Καθορισμός τοποθεσίας…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Μετονομασία…"
@@ -2230,9 +2156,6 @@ msgstr "Αποθήκευση Αρχείου Torrent Ως…"
 
 msgid "Share Torrent File"
 msgstr "Διαμοιρασμός Αρχείου Torrent"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Αντιγραφή Μαγνητικού Συνδέσμου στο Πρόχειρο"
 
 msgid "Edit"
 msgstr "Επεξεργασία"
@@ -2273,11 +2196,6 @@ msgstr "Διαθεσιμότητα"
 msgid "Use Groups"
 msgstr "Χρήση Ομάδων"
 
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "Εκκίνηση torrent"
-
 msgid "Queue Order"
 msgstr "Σειρά Ουράς"
 
@@ -2315,48 +2233,12 @@ msgstr "Απόκρυψη Μπάρας εργαλείων"
 msgid "Customize Toolbar…"
 msgstr "Επεξεργασία Εργαλειοθήκης…"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Σε παύση"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Εκκίνηση"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Αφαίρεση"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Διαγραφή αρχείων και αφαίρεση από την λίστα"
-
 msgid "Remove All Completed From List"
 msgstr "Αφαίρεση Όλων των Ολοκληρωμένων από τη Λίστα"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Εμφάνιση στο Finder"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Παύση Όλων"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Εκκίνηση όλων"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2366,11 +2248,6 @@ msgstr "Εκκίνηση όλων"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Ομάδα"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Αίτηση στον ιχνηλάτη για επιπλέον ομότιμους χρήστες"
 
 msgid "Window"
 msgstr "Παράθυρο"
@@ -2414,9 +2291,6 @@ msgstr "Υποστήριξη και Ανάπτυξη"
 msgid "Menu"
 msgstr "Μενού"
 
-msgid "Preferences"
-msgstr "Προτιμήσεις"
-
 msgid "Check for update:"
 msgstr "Έλεγχος για ενημέρωση:"
 
@@ -2428,11 +2302,6 @@ msgstr "Αυτόματος έλεγχος καθημερινά"
 
 msgid "Reset all alerts:"
 msgstr "Επαναφορά όλων των ειδοποιήσεων:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Επαναφορά"
 
 msgid "Set Default Application"
 msgstr "Καθορισμός Προκαθορισμένης Εφαρμογής"
@@ -2490,40 +2359,17 @@ msgstr "Προσθήκη"
 msgid "Same as torrent file"
 msgstr "Ίδιο με το αρχείο torrent"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Αποθήκευση στην τοποθεσία:"
-
 msgid "Settings:"
 msgstr "Ρυθμίσεις:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Προσθήκη της λέξης \".part\" στα ονόματα των μη ολοκληρωμένων αρχείων"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Αυτόματη προσθήκη αρχείων torrent από:"
-
 msgid "Auto add:"
 msgstr "Αυτόματη προσθήκη:"
-
-msgid "Keep incomplete files in:"
-msgstr "Διατήρηση μη ολοκληρωμένων αρχείων σε:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Εμφάνιση παραθύρου κατά το άνοιγμα ενός αρχείου torrent"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Εμφάνιση παραθύρου κατά το άνοιγμα ενός μαγνητικού συνδέσμου"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Εκκίνηση προστιθέμενων torrent"
 
 msgid "Only when adding manually"
 msgstr "Μόνο σε μη αυτόματη προσθήκη"
@@ -2627,24 +2473,6 @@ msgstr "Σάββατο"
 msgid "Sunday"
 msgstr "Κυριακή"
 
-msgid "to"
-msgstr "σε"
-
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Προγραμματισμένες ώρες:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Λήψη:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Αποστολή:"
-
 #, fuzzy
 #| msgid "Alternative Speed Limits"
 msgid "Alternative speed limits:"
@@ -2660,18 +2488,8 @@ msgstr "Όρια ταχύτητας"
 msgid "Peer limits:"
 msgstr "Όριο ομότιμων χρηστών"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Χρήση του DHT για εύρεση επιπλέον ομότιμων χρηστών"
-
 msgid "Blocklist:"
 msgstr "Λίστα φραγής:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Μέγιστος αριθμός ομότιμων χρηστών ανά torrent:"
 
 msgid "Last updated: N/A"
 msgstr "Τελευταία ενημέρωση: N/A"
@@ -2679,33 +2497,12 @@ msgstr "Τελευταία ενημέρωση: N/A"
 msgid "Encryption:"
 msgstr "Κρυπτογράφηση:"
 
-msgid "Automatically update weekly"
-msgstr "Αυτόματη ενημέρωση εβδομαδιαίως"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Μέγιστος αριθμός ομότιμων χρηστών συνολικά:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "η λίστα φραγής φορτώθηκε/δεν φορτώθηκε"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Χρήση του PEX για εύρεση επιπλέον ομότιμων χρηστών"
 
 #. Translators: URL sheet label
 msgid "URL:"
 msgstr ""
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Χρήση Ανακάλυψης Τοπικών Διαμοιραστών για την εύρεση περισσότερων διαμοιραστών"
-
-msgid "Update"
-msgstr "Ενημέρωση"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Τα υψηλά όρια συνδέσεων μπορεί να επηρεάσουν σημαντικά την επίδοση του συστήματος"
@@ -2721,11 +2518,6 @@ msgstr "Τυχαιοποίηση"
 msgid "Peer communication:"
 msgstr "Επικοινωνία διαμοιραστών:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Θύρα για εισερχόμενες συνδέσεις:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "Η θύρα είναι ανοιχτή"
@@ -2733,63 +2525,17 @@ msgstr "Η θύρα είναι ανοιχτή"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Χρήση μιας τυχαίας θύρας κάθε φορά που εκκινείται το Transmission"
-
 msgid "Automatically map port"
 msgstr "Αυτόματη απεικόνιση θύρας:"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Αποτροπή αδρανοποίησης υπολογιστή με ενεργές μεταφορές"
 
 msgid "System sleep:"
 msgstr "Αδρανοποίηση συστήματος:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Ενεργοποίηση µTP για συνδέσεις διαμοιραστών"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Αυτό ενεργοποιεί τη διεπαφή ιστού και επιτρέπει αιτήματα εξ αποστάσεως"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Επίτρεψε μόνο σε αυτές τις διευθύνσεις IP:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Χρήση πιστοποίησης"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Εμφάνιση της διεπαφής ιστού με το Bonjour"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Να επιτρέπεται ο απομακρυσμένος έλεγχος"
-
-msgid "Username:"
-msgstr "Όνομα χρήστη:"
-
-msgid "Password:"
-msgstr "Κωδικός:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "Θύρα HTTP:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Άνοιγμα πελάτη ιστού"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -2809,12 +2555,6 @@ msgstr "Η λήψη της λίστας αποκλεισμού απέτυχε."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Δέχομαι"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Έξοδος"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3486,10 +3226,6 @@ msgstr "{amount} συνολικά"
 #| msgid "_Private torrent"
 msgid "Magnetized torrent"
 msgstr "Ιδιωτικό torrent"
-
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Αποθήκευση"
 
 #. Translators: Save log panel -> default file name
 msgid "untitled"
@@ -4525,3 +4261,267 @@ msgstr[1] "δευτερόλεπτα"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Το Transmission είναι ένα πρόγραμμα διαμοιρασμού αρχείων. Όταν εκκινείτε ένα torrent, τα δεδομένα του θα γίνουν διαθέσιμα σε άλλους μέσω ανεβάσματος. Για όποιο περιεχόμενο μοιράζεστε φέρετε αποκλειστική ευθύνη."
+
+#~ msgid "Cancel"
+#~ msgstr "Ακύρωση"
+
+#~ msgid "Add"
+#~ msgstr "Προσθήκη"
+
+#~ msgid "Start when added"
+#~ msgstr "Εκκίνηση όταν προστεθεί"
+
+#, fuzzy
+#~| msgid "_Destination folder:"
+#~ msgid "Destination folder:"
+#~ msgstr "Φάκελος προορισμού:"
+
+#~ msgid "Priority:"
+#~ msgstr "Προτεραιότητα:"
+
+#, fuzzy
+#~| msgid "Mo_ve torrent file to the trash"
+#~ msgid "Move torrent file to the Trash"
+#~ msgstr "Μετακίνηση αρχείου torrent στον κάδο"
+
+#~ msgid "Verify Local Data"
+#~ msgstr "Επαλήθευση Τοπικών Δεδομένων"
+
+#~ msgid "Trackers:"
+#~ msgstr "Ιχνηλάτες:"
+
+#, fuzzy
+#~| msgid "_Private torrent"
+#~ msgid "Private torrent"
+#~ msgstr "Ιδιωτικό torrent"
+
+#~ msgid "Create"
+#~ msgstr "Δημιουργήστε"
+
+#~ msgid "Source:"
+#~ msgstr "Πηγή:"
+
+#, fuzzy
+#~| msgid "_Torrent file:"
+#~ msgid "Torrent file:"
+#~ msgstr "Αρχείο torrent:"
+
+#, fuzzy
+#~| msgid "Limit _download speed:"
+#~ msgid "Limit download speed:"
+#~ msgstr "Περιορισμός ταχύτητας λήψης"
+
+#, fuzzy
+#~| msgid "Limit _upload speed:"
+#~ msgid "Limit upload speed:"
+#~ msgstr "Περιορισμός ταχύτητας αποστολής"
+
+#, fuzzy
+#~| msgid "Torrent _priority:"
+#~ msgid "Torrent priority:"
+#~ msgstr "Προτεραιότητα torrent"
+
+#, fuzzy
+#~| msgid "Honor global _limits"
+#~ msgid "Honor global limits"
+#~ msgstr "Τήρηση καθολικών ορίων"
+
+#, fuzzy
+#~| msgid "_Maximum peers:"
+#~ msgid "Maximum peers:"
+#~ msgstr "Μέγιστος αριθμός ομότιμων χρηστών:"
+
+#, fuzzy
+#~| msgid "_Idle:"
+#~ msgid "Idle:"
+#~ msgstr "Αδρανές:"
+
+#~ msgid "Donate"
+#~ msgstr "Δωρίστε"
+
+#, fuzzy
+#~| msgid "_Open…"
+#~ msgid "Open…"
+#~ msgstr "Άνοιγμα…"
+
+#~ msgid "Open URL…"
+#~ msgstr "Άνοιγμα URL…"
+
+#, fuzzy
+#~| msgid "Set _Location…"
+#~ msgid "Set Location…"
+#~ msgstr "Καθορισμός τοποθεσίας…"
+
+#~ msgid "Copy Magnet Link to Clipboard"
+#~ msgstr "Αντιγραφή Μαγνητικού Συνδέσμου στο Πρόχειρο"
+
+#, fuzzy
+#~| msgid "Start torrent"
+#~ msgid "Sort Torrents By"
+#~ msgstr "Εκκίνηση torrent"
+
+#, fuzzy
+#~| msgid "Paused"
+#~ msgid "Pause"
+#~ msgstr "Σε παύση"
+
+#, fuzzy
+#~| msgid "_Start"
+#~ msgid "Start"
+#~ msgstr "Εκκίνηση"
+
+#~ msgid "Remove"
+#~ msgstr "Αφαίρεση"
+
+#, fuzzy
+#~| msgid "_Delete Files and Remove"
+#~ msgid "Delete Files and Remove"
+#~ msgstr "Διαγραφή αρχείων και αφαίρεση από την λίστα"
+
+#~ msgid "Pause All"
+#~ msgstr "Παύση Όλων"
+
+#, fuzzy
+#~| msgid "_Start All"
+#~ msgid "Start All"
+#~ msgstr "Εκκίνηση όλων"
+
+#, fuzzy
+#~| msgid "Ask Tracker for _More Peers"
+#~ msgid "Ask Tracker for More Peers"
+#~ msgstr "Αίτηση στον ιχνηλάτη για επιπλέον ομότιμους χρήστες"
+
+#~ msgid "Preferences"
+#~ msgstr "Προτιμήσεις"
+
+#~ msgid "Reset"
+#~ msgstr "Επαναφορά"
+
+#, fuzzy
+#~| msgid "Save to _Location:"
+#~ msgid "Save to location:"
+#~ msgstr "Αποθήκευση στην τοποθεσία:"
+
+#, fuzzy
+#~| msgid "Append \"._part\" to incomplete files' names"
+#~ msgid "Append \".part\" to incomplete files' names"
+#~ msgstr "Προσθήκη της λέξης \".part\" στα ονόματα των μη ολοκληρωμένων αρχείων"
+
+#, fuzzy
+#~| msgid "Automatically add torrent files _from:"
+#~ msgid "Automatically add torrent files from:"
+#~ msgstr "Αυτόματη προσθήκη αρχείων torrent από:"
+
+#~ msgid "Keep incomplete files in:"
+#~ msgstr "Διατήρηση μη ολοκληρωμένων αρχείων σε:"
+
+#, fuzzy
+#~| msgid "_Start added torrents"
+#~ msgid "Start added torrents"
+#~ msgstr "Εκκίνηση προστιθέμενων torrent"
+
+#~ msgid "to"
+#~ msgstr "σε"
+
+#, fuzzy
+#~| msgid "_Scheduled times:"
+#~ msgid "Scheduled times:"
+#~ msgstr "Προγραμματισμένες ώρες:"
+
+#, fuzzy
+#~| msgid "_Download:"
+#~ msgid "Download:"
+#~ msgstr "Λήψη:"
+
+#, fuzzy
+#~| msgid "_Upload:"
+#~ msgid "Upload:"
+#~ msgstr "Αποστολή:"
+
+#, fuzzy
+#~| msgid "Use _DHT to find more peers"
+#~ msgid "Use DHT to find more peers for public torrents"
+#~ msgstr "Χρήση του DHT για εύρεση επιπλέον ομότιμων χρηστών"
+
+#, fuzzy
+#~| msgid "Maximum peers per _torrent:"
+#~ msgid "Maximum peers for new torrents:"
+#~ msgstr "Μέγιστος αριθμός ομότιμων χρηστών ανά torrent:"
+
+#~ msgid "Automatically update weekly"
+#~ msgstr "Αυτόματη ενημέρωση εβδομαδιαίως"
+
+#, fuzzy
+#~| msgid "Maximum peers _overall:"
+#~ msgid "Maximum peers overall:"
+#~ msgstr "Μέγιστος αριθμός ομότιμων χρηστών συνολικά:"
+
+#, fuzzy
+#~| msgid "Use PE_X to find more peers"
+#~ msgid "Use PEX to find more peers for public torrents"
+#~ msgstr "Χρήση του PEX για εύρεση επιπλέον ομότιμων χρηστών"
+
+#, fuzzy
+#~| msgid "Use _Local Peer Discovery to find more peers"
+#~ msgid "Use Local Peer Discovery to find more peers for public torrents"
+#~ msgstr "Χρήση Ανακάλυψης Τοπικών Διαμοιραστών για την εύρεση περισσότερων διαμοιραστών"
+
+#~ msgid "Update"
+#~ msgstr "Ενημέρωση"
+
+#, fuzzy
+#~| msgid "_Port for incoming connections:"
+#~ msgid "Port for incoming connections:"
+#~ msgstr "Θύρα για εισερχόμενες συνδέσεις:"
+
+#, fuzzy
+#~| msgid "Pick a _random port every time Transmission is started"
+#~ msgid "Pick a random port at startup"
+#~ msgstr "Χρήση μιας τυχαίας θύρας κάθε φορά που εκκινείται το Transmission"
+
+#, fuzzy
+#~| msgid "Prevent computer from sleeping with active transfers"
+#~ msgid "Prevent computer from sleeping with active torrents"
+#~ msgstr "Αποτροπή αδρανοποίησης υπολογιστή με ενεργές μεταφορές"
+
+#, fuzzy
+#~| msgid "Enable µ_TP for peer connections"
+#~ msgid "Enable µTP for peer connections"
+#~ msgstr "Ενεργοποίηση µTP για συνδέσεις διαμοιραστών"
+
+#, fuzzy
+#~| msgid "Only allow these IP a_ddresses:"
+#~ msgid "Only allow these IP addresses:"
+#~ msgstr "Επίτρεψε μόνο σε αυτές τις διευθύνσεις IP:"
+
+#, fuzzy
+#~| msgid "Use _authentication"
+#~ msgid "Use authentication"
+#~ msgstr "Χρήση πιστοποίησης"
+
+#, fuzzy
+#~| msgid "Allow _remote access"
+#~ msgid "Allow remote access"
+#~ msgstr "Να επιτρέπεται ο απομακρυσμένος έλεγχος"
+
+#~ msgid "Username:"
+#~ msgstr "Όνομα χρήστη:"
+
+#~ msgid "Password:"
+#~ msgstr "Κωδικός:"
+
+#, fuzzy
+#~| msgid "HTTP _port:"
+#~ msgid "HTTP port:"
+#~ msgstr "Θύρα HTTP:"
+
+#, fuzzy
+#~| msgid "_Open web client"
+#~ msgid "Open Web Client"
+#~ msgstr "Άνοιγμα πελάτη ιστού"
+
+#~ msgid "Quit"
+#~ msgstr "Έξοδος"
+
+#~ msgid "Save"
+#~ msgstr "Αποθήκευση"

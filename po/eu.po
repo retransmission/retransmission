@@ -427,6 +427,10 @@ msgid "_Delete"
 msgstr "_Ezabatu"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Kendu"
 
@@ -616,6 +620,7 @@ msgstr "Arazketa"
 msgid "Save Log"
 msgstr "Gorde egunkaria"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Gorde"
 
@@ -763,6 +768,8 @@ msgstr[1] "Hasita {count:L} aldiz"
 msgid "Reset your statistics?"
 msgstr "Zure estatistiak berrezarri?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Berrezarri"
 
@@ -920,12 +927,19 @@ msgstr "Ireki _URLa…"
 msgid "_New…"
 msgstr "_Berria…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "_Abiarazi Guztiak"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "_Pausatu Guztiak"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_Utzi"
 
@@ -950,6 +964,7 @@ msgstr "_Ezaugarriak"
 msgid "Open Fold_er"
 msgstr "Ireki karpe_ta"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Abiarazi"
 
@@ -976,6 +991,7 @@ msgstr "Mugitu B_ehera"
 msgid "Move to _Bottom"
 msgstr "Mugitu _Beheraino"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Pausatu"
 
@@ -1045,6 +1061,7 @@ msgstr "Mezuen _egunkaria"
 msgid "_Statistics"
 msgstr "_Estatistikak"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Dirulaguntza"
 
@@ -1062,6 +1079,7 @@ msgstr "Abiarazi torrenta"
 msgid "Alternative Speed _Limits"
 msgstr "Abiadura-muga alternatiboak"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Gehitu"
 
@@ -1239,6 +1257,8 @@ msgstr "Estatistikak"
 msgid "New Torrent"
 msgstr "Torrent berria"
 
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
@@ -1923,32 +1943,14 @@ msgstr "Helburuko direktorioa eta datuen jatorrizko direktorioak izen berdina du
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Dagoeneko existitzen diren datuak erabiltzen saiatzen ari bazara, datuen jatorrizko direktorioa helburuko direktorioaren barruan egon behar da."
 
-msgid "Cancel"
-msgstr "Ezeztatu"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Gehitu"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} aukeratuta"
 
-msgid "Start when added"
-msgstr "Hasi gehitzerakoan"
-
 msgid "Magnet Link"
 msgstr "Magnet Esteka:"
-
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Helburuko karpeta:"
-
-msgid "Priority:"
-msgstr "Lehentasuna:"
 
 msgid "Group:"
 msgstr "Taldea:"
@@ -1956,56 +1958,17 @@ msgstr "Taldea:"
 msgid "Change…"
 msgstr "Aldatu..."
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Mugitu torrent-fitxategia zakarrontzira"
-
-msgid "Verify Local Data"
-msgstr "Egiaztatu Datu Lokalak"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Iragazkia"
 
-msgid "Trackers:"
-msgstr "Aztarnariak:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Torrent pribatua"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Sortu"
-
 msgid "Open when created"
 msgstr "Ireki sortzerakoan"
 
 msgid "Each tracker will be placed into its own tier"
 msgstr "Aztarnari bakoitza bere maila propioan kokatuko da"
-
-msgid "Source:"
-msgstr "Jatorria:"
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Torrent-fitxategia:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "Mugatu deskargaren abiadura:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Mugatu igoeraren abiadura:"
 
 msgid "minutes"
 msgstr "minutu"
@@ -2096,16 +2059,6 @@ msgstr "Zatiak:"
 msgid "Was:"
 msgstr ""
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Torrent lehentasuna:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Bete muga orokorrak"
-
 msgid "Use Global Settings"
 msgstr "Erabili Ezarpen Orokorrak"
 
@@ -2116,16 +2069,6 @@ msgstr "Geratu Inaktibo Dagoenean"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Kendu transferentzien zerrendatik igortzeak amaitzen direnean"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Gehienezko kide-kopurua:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Geratuta:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2138,10 +2081,6 @@ msgstr "Retransmission-i buruz"
 
 msgid "Check for Update…"
 msgstr "Egiaztatu Eguneratzeak..."
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Donatu"
 
 msgid "Preferences…"
 msgstr "Hobespenak..."
@@ -2167,16 +2106,8 @@ msgstr "Fitxategia"
 msgid "Create Torrent File…"
 msgstr "Sortu Torrent Fitxategia..."
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Ireki"
-
 msgid "Open With Options Window…"
 msgstr "Ireki Aukeren Leihoarekin..."
-
-msgid "Open URL…"
-msgstr "Ireki URL-a…"
 
 msgid "Close Window"
 msgstr "Itxi Leihoa"
@@ -2188,11 +2119,6 @@ msgstr "Itxi Leihoa"
 msgid "Quick Look"
 msgstr "Begirada Azkarra"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Zehaztu Kokapena…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Berrizendatu…"
@@ -2202,9 +2128,6 @@ msgstr "Gorde Torrent-fitxategia Honela..."
 
 msgid "Share Torrent File"
 msgstr "Partekatu Torrent-fitxategia"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Kopiatu Magnet Esteka Arbelera"
 
 msgid "Edit"
 msgstr "Editatu"
@@ -2245,10 +2168,6 @@ msgstr "Eskuragarritasuna"
 msgid "Use Groups"
 msgstr "Erabili Taldeak"
 
-#, fuzzy
-msgid "Sort Torrents By"
-msgstr "Abiarazi torrenta"
-
 msgid "Queue Order"
 msgstr "Ilaren ordena"
 
@@ -2286,48 +2205,12 @@ msgstr "Ezkutatu Tresna-barra"
 msgid "Customize Toolbar…"
 msgstr "Pertsonalizatu Tresna-barra..."
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Pausatuta"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Abiarazi"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Kendu"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Ezabatu Fitxategiak eta Kendu"
-
 msgid "Remove All Completed From List"
 msgstr "Kendu Osatutako Guztiak Zerrendatik"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Erakutsi Finder-en"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Pausatu Guztiak"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Abiarazi Guztiak"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2337,11 +2220,6 @@ msgstr "Abiarazi Guztiak"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Taldea"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Eskatu Aztarnariari Kide Gehiago"
 
 msgid "Window"
 msgstr "Leihoa"
@@ -2385,9 +2263,6 @@ msgstr "Laguntza eta Garapena"
 msgid "Menu"
 msgstr "Menua"
 
-msgid "Preferences"
-msgstr "Hobespenak"
-
 msgid "Check for update:"
 msgstr "Egiaztatu eguneraketen bila:"
 
@@ -2399,11 +2274,6 @@ msgstr "Egiaztatu automatikoki egunero"
 
 msgid "Reset all alerts:"
 msgstr "Berrabiarazi ohar guztiak:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Berrabiarazi"
 
 msgid "Set Default Application"
 msgstr "Zehaztu Aplikazio Lehenetsia"
@@ -2463,40 +2333,17 @@ msgstr "Gehitzen"
 msgid "Same as torrent file"
 msgstr "Torrent-fitxategiaren berdina"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Gorde hemen:"
-
 msgid "Settings:"
 msgstr "Ezarpenak:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Gehitu \".part\" osorik ez dauden fitxategi-izenei"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Gehitu automatikoki torrent-fitxategiak hemendik:"
-
 msgid "Auto add:"
 msgstr "Gehitu automatikoki:"
-
-msgid "Keep incomplete files in:"
-msgstr "Gorde osatu gabeko fitxategiak hemen:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Erakutsi leiho bat torrent fitxategia irekitzerakoan"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Erakutsi leiho bat magnet esteka bat irekitzean"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Hasi gehitutako torrentak"
 
 msgid "Only when adding manually"
 msgstr "Soilik eskuz gehitzerakoan"
@@ -2600,24 +2447,6 @@ msgstr "Larunbata"
 msgid "Sunday"
 msgstr "Igandea"
 
-msgid "to"
-msgstr "hona:"
-
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Programatutako orduak:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Deskarga:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Igoera:"
-
 #, fuzzy
 #| msgid "Alternative Speed Limits"
 msgid "Alternative speed limits:"
@@ -2633,18 +2462,8 @@ msgstr "Abiadura-mugak"
 msgid "Peer limits:"
 msgstr "Kideen mugak"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Erabili DHT kide gehiago aurkitzeko"
-
 msgid "Blocklist:"
 msgstr "Blokeo-zerrenda:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Gehienezko kide-kopurua torrent bakoitzeko:"
 
 msgid "Last updated: N/A"
 msgstr "Azkenengoz eguneratuta: E/A"
@@ -2652,33 +2471,12 @@ msgstr "Azkenengoz eguneratuta: E/A"
 msgid "Encryption:"
 msgstr "Zifratzea:"
 
-msgid "Automatically update weekly"
-msgstr "Automatikoki eguneratu astero"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Gehienezko kide-kopurua guztira:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "blokeo-zerrenda kargatuta/ez kargatuta"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Erabili PEX kide gehiago aurkitzeko"
 
 #. Translators: URL sheet label
 msgid "URL:"
 msgstr "URLa:"
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
-
-msgid "Update"
-msgstr "Eguneratu"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Konexio-muga altuek sistemaren errendimenduan eragin nabarmena izan dezakete"
@@ -2694,11 +2492,6 @@ msgstr "Ausaz aukeratu"
 msgid "Peer communication:"
 msgstr "Kideen komunikazioa:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Barrurako konexioentzako ataka:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "Ataka zabalik dago"
@@ -2706,63 +2499,17 @@ msgstr "Ataka zabalik dago"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Hautatu ausazko ataka bat Transmission abiarazten den bakoitzean"
-
 msgid "Automatically map port"
 msgstr "Lotu ataka automatikoki"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Saihestu ordenagailua lokartzea transferentzia aktiboak daudenean"
 
 msgid "System sleep:"
 msgstr "Sistemaren lokartzea:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Gaitu µTP kideen konexioetarako"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Aukera honek web interfazea gaitu eta urruneko eskaerak baimentzen ditu"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Ahalbidetu IP helbide hauek bakarrik:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Erabili autentifikazioa"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Erakutsi web interfazea Bonjour-ekin"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Ahalbidetu urruneko sarbidea"
-
-msgid "Username:"
-msgstr "Erabiltzaile-izena"
-
-msgid "Password:"
-msgstr "Pasahitza:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "HTTP ataka:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Ireki web bezeroa"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -2782,12 +2529,6 @@ msgstr "Blokeo-zerrendaren deskargak huts egin du."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Onartzen dut"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Irten"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3467,10 +3208,6 @@ msgstr "{amount} guztira"
 #| msgid "_Private torrent"
 msgid "Magnetized torrent"
 msgstr "Torrent pribatua"
-
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Gorde"
 
 #. Translators: Save log panel -> default file name
 msgid "untitled"
@@ -4444,3 +4181,266 @@ msgstr[1] "segundo"
 
 #~ msgid "Transmission is a file sharing program. When you run a torrent, its data will be made available to others by means of upload. Any content you share is your sole responsibility."
 #~ msgstr "Transmission fitxategiak partekatzeko aplikazioa da. Torrent bat abiarazten duzunean, torrenteko datuak beste erabaltzaileen eskura geratuko dira. Partekatzen dituzun edukien arduraduna zu zeu zara."
+
+#~ msgid "Cancel"
+#~ msgstr "Ezeztatu"
+
+#~ msgid "Add"
+#~ msgstr "Gehitu"
+
+#~ msgid "Start when added"
+#~ msgstr "Hasi gehitzerakoan"
+
+#, fuzzy
+#~| msgid "_Destination folder:"
+#~ msgid "Destination folder:"
+#~ msgstr "Helburuko karpeta:"
+
+#~ msgid "Priority:"
+#~ msgstr "Lehentasuna:"
+
+#, fuzzy
+#~| msgid "Mo_ve torrent file to the trash"
+#~ msgid "Move torrent file to the Trash"
+#~ msgstr "Mugitu torrent-fitxategia zakarrontzira"
+
+#~ msgid "Verify Local Data"
+#~ msgstr "Egiaztatu Datu Lokalak"
+
+#~ msgid "Trackers:"
+#~ msgstr "Aztarnariak:"
+
+#, fuzzy
+#~| msgid "_Private torrent"
+#~ msgid "Private torrent"
+#~ msgstr "Torrent pribatua"
+
+#~ msgid "Create"
+#~ msgstr "Sortu"
+
+#~ msgid "Source:"
+#~ msgstr "Jatorria:"
+
+#, fuzzy
+#~| msgid "_Torrent file:"
+#~ msgid "Torrent file:"
+#~ msgstr "Torrent-fitxategia:"
+
+#, fuzzy
+#~| msgid "Limit _download speed:"
+#~ msgid "Limit download speed:"
+#~ msgstr "Mugatu deskargaren abiadura:"
+
+#, fuzzy
+#~| msgid "Limit _upload speed:"
+#~ msgid "Limit upload speed:"
+#~ msgstr "Mugatu igoeraren abiadura:"
+
+#, fuzzy
+#~| msgid "Torrent _priority:"
+#~ msgid "Torrent priority:"
+#~ msgstr "Torrent lehentasuna:"
+
+#, fuzzy
+#~| msgid "Honor global _limits"
+#~ msgid "Honor global limits"
+#~ msgstr "Bete muga orokorrak"
+
+#, fuzzy
+#~| msgid "_Maximum peers:"
+#~ msgid "Maximum peers:"
+#~ msgstr "Gehienezko kide-kopurua:"
+
+#, fuzzy
+#~| msgid "_Idle:"
+#~ msgid "Idle:"
+#~ msgstr "Geratuta:"
+
+#~ msgid "Donate"
+#~ msgstr "Donatu"
+
+#, fuzzy
+#~| msgid "_Open…"
+#~ msgid "Open…"
+#~ msgstr "Ireki"
+
+#~ msgid "Open URL…"
+#~ msgstr "Ireki URL-a…"
+
+#, fuzzy
+#~| msgid "Set _Location…"
+#~ msgid "Set Location…"
+#~ msgstr "Zehaztu Kokapena…"
+
+#~ msgid "Copy Magnet Link to Clipboard"
+#~ msgstr "Kopiatu Magnet Esteka Arbelera"
+
+#, fuzzy
+#~ msgid "Sort Torrents By"
+#~ msgstr "Abiarazi torrenta"
+
+#, fuzzy
+#~| msgid "Paused"
+#~ msgid "Pause"
+#~ msgstr "Pausatuta"
+
+#, fuzzy
+#~| msgid "_Start"
+#~ msgid "Start"
+#~ msgstr "Abiarazi"
+
+#~ msgid "Remove"
+#~ msgstr "Kendu"
+
+#, fuzzy
+#~| msgid "_Delete Files and Remove"
+#~ msgid "Delete Files and Remove"
+#~ msgstr "Ezabatu Fitxategiak eta Kendu"
+
+#~ msgid "Pause All"
+#~ msgstr "Pausatu Guztiak"
+
+#, fuzzy
+#~| msgid "_Start All"
+#~ msgid "Start All"
+#~ msgstr "Abiarazi Guztiak"
+
+#, fuzzy
+#~| msgid "Ask Tracker for _More Peers"
+#~ msgid "Ask Tracker for More Peers"
+#~ msgstr "Eskatu Aztarnariari Kide Gehiago"
+
+#~ msgid "Preferences"
+#~ msgstr "Hobespenak"
+
+#~ msgid "Reset"
+#~ msgstr "Berrabiarazi"
+
+#, fuzzy
+#~| msgid "Save to _Location:"
+#~ msgid "Save to location:"
+#~ msgstr "Gorde hemen:"
+
+#, fuzzy
+#~| msgid "Append \"._part\" to incomplete files' names"
+#~ msgid "Append \".part\" to incomplete files' names"
+#~ msgstr "Gehitu \".part\" osorik ez dauden fitxategi-izenei"
+
+#, fuzzy
+#~| msgid "Automatically add torrent files _from:"
+#~ msgid "Automatically add torrent files from:"
+#~ msgstr "Gehitu automatikoki torrent-fitxategiak hemendik:"
+
+#~ msgid "Keep incomplete files in:"
+#~ msgstr "Gorde osatu gabeko fitxategiak hemen:"
+
+#, fuzzy
+#~| msgid "_Start added torrents"
+#~ msgid "Start added torrents"
+#~ msgstr "Hasi gehitutako torrentak"
+
+#~ msgid "to"
+#~ msgstr "hona:"
+
+#, fuzzy
+#~| msgid "_Scheduled times:"
+#~ msgid "Scheduled times:"
+#~ msgstr "Programatutako orduak:"
+
+#, fuzzy
+#~| msgid "_Download:"
+#~ msgid "Download:"
+#~ msgstr "Deskarga:"
+
+#, fuzzy
+#~| msgid "_Upload:"
+#~ msgid "Upload:"
+#~ msgstr "Igoera:"
+
+#, fuzzy
+#~| msgid "Use _DHT to find more peers"
+#~ msgid "Use DHT to find more peers for public torrents"
+#~ msgstr "Erabili DHT kide gehiago aurkitzeko"
+
+#, fuzzy
+#~| msgid "Maximum peers per _torrent:"
+#~ msgid "Maximum peers for new torrents:"
+#~ msgstr "Gehienezko kide-kopurua torrent bakoitzeko:"
+
+#~ msgid "Automatically update weekly"
+#~ msgstr "Automatikoki eguneratu astero"
+
+#, fuzzy
+#~| msgid "Maximum peers _overall:"
+#~ msgid "Maximum peers overall:"
+#~ msgstr "Gehienezko kide-kopurua guztira:"
+
+#, fuzzy
+#~| msgid "Use PE_X to find more peers"
+#~ msgid "Use PEX to find more peers for public torrents"
+#~ msgstr "Erabili PEX kide gehiago aurkitzeko"
+
+#, fuzzy
+#~| msgid "Use _Local Peer Discovery to find more peers"
+#~ msgid "Use Local Peer Discovery to find more peers for public torrents"
+#~ msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
+
+#~ msgid "Update"
+#~ msgstr "Eguneratu"
+
+#, fuzzy
+#~| msgid "_Port for incoming connections:"
+#~ msgid "Port for incoming connections:"
+#~ msgstr "Barrurako konexioentzako ataka:"
+
+#, fuzzy
+#~| msgid "Pick a _random port every time Transmission is started"
+#~ msgid "Pick a random port at startup"
+#~ msgstr "Hautatu ausazko ataka bat Transmission abiarazten den bakoitzean"
+
+#, fuzzy
+#~| msgid "Prevent computer from sleeping with active transfers"
+#~ msgid "Prevent computer from sleeping with active torrents"
+#~ msgstr "Saihestu ordenagailua lokartzea transferentzia aktiboak daudenean"
+
+#, fuzzy
+#~| msgid "Enable µ_TP for peer connections"
+#~ msgid "Enable µTP for peer connections"
+#~ msgstr "Gaitu µTP kideen konexioetarako"
+
+#, fuzzy
+#~| msgid "Only allow these IP a_ddresses:"
+#~ msgid "Only allow these IP addresses:"
+#~ msgstr "Ahalbidetu IP helbide hauek bakarrik:"
+
+#, fuzzy
+#~| msgid "Use _authentication"
+#~ msgid "Use authentication"
+#~ msgstr "Erabili autentifikazioa"
+
+#, fuzzy
+#~| msgid "Allow _remote access"
+#~ msgid "Allow remote access"
+#~ msgstr "Ahalbidetu urruneko sarbidea"
+
+#~ msgid "Username:"
+#~ msgstr "Erabiltzaile-izena"
+
+#~ msgid "Password:"
+#~ msgstr "Pasahitza:"
+
+#, fuzzy
+#~| msgid "HTTP _port:"
+#~ msgid "HTTP port:"
+#~ msgstr "HTTP ataka:"
+
+#, fuzzy
+#~| msgid "_Open web client"
+#~ msgid "Open Web Client"
+#~ msgstr "Ireki web bezeroa"
+
+#~ msgid "Quit"
+#~ msgstr "Irten"
+
+#~ msgid "Save"
+#~ msgstr "Gorde"
