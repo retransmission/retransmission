@@ -440,7 +440,7 @@ void register_magnet_link_handler()
     } catch (Gio::Error const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't register {appname} as a {content_type} handler: {error} ({error_code})")),
+                "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})",
                 fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                 fmt::arg("content_type", content_type),
                 fmt::arg("error", e.what()),
@@ -570,7 +570,7 @@ namespace
 
 gboolean signal_handler(gpointer user_data)
 {
-    gtr_message(_("Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."));
+    gtr_message("Got termination signal, trying to shut down cleanly. Do it again if it gets stuck.");
     gtr_actions_handler("quit", user_data);
     return G_SOURCE_REMOVE;
 }

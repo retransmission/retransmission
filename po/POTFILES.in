@@ -1,7 +1,6 @@
 # Source files with translatable strings, for xgettext --files-from.
 # Pass these keywords: -k_ -kN_ -kC_:1c,2 -kNC_:1c,2 -kngettext:1,2 -ktr_ngettext:1,2
 cli/cli.cc
-daemon/daemon.cc
 gtk/Application.cc
 gtk/DetailsDialog.cc
 gtk/Dialogs.cc
