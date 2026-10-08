@@ -205,7 +205,6 @@ set(XIB_FILES
 
 set(RESOURCES
     Defaults.plist
-    Credits.rtf
     ../COPYING
     Images/TransmissionDocument.icns)
 source_group(Resources

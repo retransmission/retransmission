@@ -22,9 +22,6 @@ public:
     AboutDialog& operator=(AboutDialog&&) = delete;
     AboutDialog& operator=(AboutDialog const&) = delete;
 
-private slots:
-    void showCredits();
-
 private:
     Ui::AboutDialog ui_{};
 };

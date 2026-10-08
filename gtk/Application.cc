@@ -1371,14 +1371,10 @@ bool Application::Impl::update_model_loop()
 void Application::Impl::show_about_dialog()
 {
     auto const uri = Glib::ustring(TR_PROJ_URL_HOMEPAGE);
-    auto const authors = std::vector<Glib::ustring>({
-        "Charles Kerr (Backend; GTK+)",
-        "Mitchell Livingston (Backend; macOS)",
-        "Mike Gelfand",
-    });
 
     auto d = std::make_shared<Gtk::AboutDialog>();
-    d->set_authors(authors);
+    // GTK renders a URL in the authors list as a link
+    d->set_authors({ TR_PROJ_URL_CREDITS });
     d->set_comments(_("A fast and easy BitTorrent client"));
     d->set_copyright(
         fmt::format(fmt::runtime(_("Copyright © The {appname} Project")), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED)));
