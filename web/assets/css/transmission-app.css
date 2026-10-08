@@ -64,7 +64,11 @@
     0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 6%);
   --progress-bar-shadow: 1px 1px var(--black);
+  --progress-bar-shadow-2: var(--progress-bar-shadow);
+  --progress-bar-shadow-3: var(--progress-bar-shadow);
   --progress: 100%;
+
+  /* colors both themes share */
   --color-bg-even: var(--default-tinted);
   --color-bg-tabs: var(--default-tinted);
   --color-fg-disabled: var(--grey);
@@ -77,8 +81,6 @@
   --color-progressbar-verify: var(--yellow-300);
   --color-toolbar-background: var(--default-tinted);
   --legacy-fg-selected: var(--grey-700);
-  --progress-bar-shadow-2: var(--progress-bar-shadow);
-  --progress-bar-shadow-3: var(--progress-bar-shadow);
 
   color-scheme: light dark;
 
