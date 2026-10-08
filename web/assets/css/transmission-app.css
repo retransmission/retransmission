@@ -1287,32 +1287,22 @@ a {
     .alt-speed {
       display: grid;
       gap: 4px;
-      grid-template-areas:
-        'check  text'
-        'turtle parentheses';
 
-      > :nth-child(1) {
-        grid-area: check;
+      /* children fill the cells in order: checkbox, text / turtle, limits */
+      grid-template-columns: repeat(2, auto);
 
-        &:not(:checked) ~ #alt-speed-image {
-          filter: var(--filter-turtle-off);
-        }
+      > input:not(:checked) ~ #alt-speed-image {
+        filter: var(--filter-turtle-off);
       }
 
-      > :nth-child(2) {
-        grid-area: text;
-      }
-
-      > :nth-child(4) {
+      > #alt-speed-image + label {
         font-size: small;
-        grid-area: parentheses;
       }
     }
 
     #alt-speed-image {
       background: var(--image-turtle) no-repeat;
       filter: var(--filter-turtle-on);
-      grid-area: turtle;
       height: 18px;
     }
   }
