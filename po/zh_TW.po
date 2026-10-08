@@ -561,6 +561,11 @@ msgstr "顯示 {count:L} 個，總計：(_S)"
 msgid "{disk_space} free"
 msgstr "{disk_space} 可用"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "正在顯示 {visible_count:L} 中的 {count:L} 個 torrents"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"
