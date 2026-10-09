@@ -22,7 +22,7 @@ auto constexpr CreditsResponse = 1;
 
 } // namespace
 
-AboutDialog::AboutDialog(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Gtk::Window& parent)
+AboutDialog::AboutDialog(BaseObjectType* const cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Gtk::Window& parent)
     : Gtk::Dialog{ cast_item }
 {
     set_transient_for(parent);
@@ -54,5 +54,5 @@ AboutDialog::AboutDialog(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> c
 std::unique_ptr<AboutDialog> AboutDialog::create(Gtk::Window& parent)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("AboutDialog.ui"));
-    return std::unique_ptr<AboutDialog>(gtr_get_widget_derived<AboutDialog>(builder, "AboutDialog", parent));
+    return std::unique_ptr<AboutDialog>{ gtr_get_widget_derived<AboutDialog>(builder, "AboutDialog", parent) };
 }

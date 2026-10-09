@@ -1348,7 +1348,7 @@ bool Application::Impl::update_model_loop()
 
 void Application::Impl::show_about_dialog()
 {
-    auto d = std::shared_ptr<AboutDialog>(AboutDialog::create(*wind_));
+    auto d = std::shared_ptr<AboutDialog>{ AboutDialog::create(*wind_) };
     gtr_window_on_close(*d, [d]() mutable { d.reset(); });
     d->show();
 }
