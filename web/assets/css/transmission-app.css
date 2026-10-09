@@ -32,7 +32,6 @@
   --grey-500: #828282;
   --grey-700: #404040;
   --grey-900: #191919;
-  --lavender-100: #edefff;
   --nice-grey: #f8f8f8;
   --pink-500: #cf6679;
   --red-500: #d73a49;
@@ -63,9 +62,6 @@
   --popup-shadow:
     0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 6%);
-  --progress-bar-shadow: 1px 1px var(--black);
-  --progress-bar-shadow-2: var(--progress-bar-shadow);
-  --progress-bar-shadow-3: var(--progress-bar-shadow);
   --progress: 100%;
 
   /* colors both themes share */
@@ -74,8 +70,6 @@
   --color-fg-disabled: var(--grey);
   --color-fg-error: var(--red-500);
   --color-fg-port-closed: var(--red-500);
-  --color-progressbar-fg-2: var(--lavender-100);
-  --color-progressbar-fg-3: var(--lavender-100);
   --color-progressbar-magnet: var(--yellow-300);
   --color-progressbar-queued: var(--blue-400);
   --color-progressbar-verify: var(--yellow-300);
@@ -98,7 +92,6 @@
     --color-fg-primary: var(--dark-mode-white);
     --color-fg-secondary: var(--nice-grey);
     --color-fg-warn: var(--dark-mode-black);
-    --color-progressbar-fg-1: var(--lavender-100);
     --color-progressbar-leech: var(--blue-200);
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-seed-1: var(--green-100);
@@ -106,7 +99,6 @@
     --contrast-bg: var(--black);
     --contrast-fg: var(--white);
     --legacy-bg-selected: var(--default-accent-color-strong);
-    --progress-bar-shadow-1: var(--progress-bar-shadow);
   }
 
   @media (prefers-color-scheme: light) {
@@ -123,7 +115,6 @@
     --color-fg-primary: var(--grey-700);
     --color-fg-secondary: var(--grey-500);
     --color-fg-warn: #cf212e;
-    --color-progressbar-fg-1: #303030;
     --color-progressbar-leech: var(--blue-100);
     --color-progressbar-paused: var(--grey-200);
     --color-progressbar-seed-1: var(--green-500);
@@ -131,7 +122,6 @@
     --contrast-bg: var(--white);
     --contrast-fg: var(--black);
     --legacy-bg-selected: var(--default-accent-color);
-    --progress-bar-shadow-1: none;
   }
 }
 
@@ -149,9 +139,6 @@
   --color-fg-primary: var(--contrast-fg);
   --color-fg-secondary: var(--contrast-fg);
   --color-fg-warn: var(--contrast-bg);
-  --color-progressbar-fg-1: var(--white);
-  --color-progressbar-fg-2: var(--white);
-  --color-progressbar-fg-3: var(--black);
   --color-progressbar-leech: var(--blue-200);
   --color-progressbar-paused: var(--grey-500);
   --color-progressbar-seed-1: var(--black);
@@ -159,8 +146,6 @@
   --color-toolbar-background: var(--contrast-bg);
   --legacy-bg-selected: var(--default-accent-color-strong);
   --legacy-fg-selected: var(--black);
-  --progress-bar-shadow-1: var(--progress-bar-shadow);
-  --progress-bar-shadow-3: none;
 }
 
 /* If browser can support using 'system color' keywords (i.e. way to inherit browser colors), use these variables instead */
@@ -573,43 +558,40 @@ a {
     &.leech {
       &.queued::before {
         background: var(--color-progressbar-queued);
+        color: contrast-color(var(--color-progressbar-queued));
       }
 
       &::before {
         background: var(--color-progressbar-leech);
-        color: var(--color-progressbar-fg-2);
-        text-shadow: var(--progress-bar-shadow-2);
+        color: contrast-color(var(--color-progressbar-leech));
       }
     }
 
     &.magnet::before {
       background: var(--color-progressbar-magnet);
-      color: var(--black);
+      color: contrast-color(var(--color-progressbar-magnet));
     }
 
     &.seed:not(.paused) {
       &::before {
         background: var(--color-progressbar-seed-1);
-        color: var(--color-progressbar-fg-2);
-        text-shadow: var(--progress-bar-shadow-2);
+        color: contrast-color(var(--color-progressbar-seed-1));
       }
 
       &::after {
         background: var(--color-progressbar-seed-2);
-        color: var(--color-progressbar-fg-3);
-        text-shadow: var(--progress-bar-shadow-3);
+        color: contrast-color(var(--color-progressbar-seed-2));
       }
     }
 
     &.verify::before {
       background: var(--color-progressbar-verify);
-      color: var(--black);
+      color: contrast-color(var(--color-progressbar-verify));
     }
 
     &.paused::before {
       background: var(--color-progressbar-paused);
-      color: var(--color-progressbar-fg-1);
-      text-shadow: var(--progress-bar-shadow-1);
+      color: contrast-color(var(--color-progressbar-paused));
     }
 
     &::before,

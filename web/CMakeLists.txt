@@ -96,7 +96,7 @@ add_custom_command(
         --minify
         --outfile=public_html/transmission-app.js
         --sourcemap
-        --target=chrome104,firefox115,safari16.4
+        --target=chrome147,firefox146,safari26
         src/main.js
     DEPENDS
         ${WEB_SOURCES}
