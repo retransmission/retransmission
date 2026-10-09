@@ -6,6 +6,41 @@
 #include <libtransmission/version.h>
 #import "AboutWindowController.h"
 
+// Looks like a link but is a button, so keyboard navigation can reach and press it.
+// A link inside an NSTextField takes no keyboard focus.
+@interface AboutLinkButton : NSButton
+@property(nonatomic, copy) NSURL* url;
+@end
+
+@implementation AboutLinkButton
+
++ (instancetype)buttonWithURLString:(NSString*)urlString
+{
+    AboutLinkButton* button = [[self alloc] init];
+    button.url = [NSURL URLWithString:urlString];
+    button.bordered = NO;
+    button.attributedTitle = [[NSAttributedString alloc] initWithString:urlString attributes:@{
+        NSForegroundColorAttributeName : NSColor.linkColor,
+        NSFontAttributeName : [NSFont systemFontOfSize:[NSFont systemFontSize]]
+    }];
+    button.target = button;
+    button.action = @selector(openLink:);
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    return button;
+}
+
+- (void)openLink:(id)sender
+{
+    [NSWorkspace.sharedWorkspace openURL:self.url];
+}
+
+- (void)resetCursorRects
+{
+    [self addCursorRect:self.bounds cursor:NSCursor.pointingHandCursor];
+}
+
+@end
+
 @interface AboutWindowController ()<NSWindowDelegate>
 @property(nonatomic) NSTextField* fVersionField;
 @property(nonatomic) NSTextField* fCopyrightField;
@@ -68,17 +103,11 @@ static AboutWindowController* fAboutBoxInstance = nil;
     self.fVersionField.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:self.fVersionField];
 
-    NSAttributedString* creditsLink = [[NSAttributedString alloc] initWithString:@TR_PROJ_URL_CREDITS attributes:@{
-        NSLinkAttributeName : [NSURL URLWithString:@TR_PROJ_URL_CREDITS],
-        NSFontAttributeName : [NSFont systemFontOfSize:[NSFont systemFontSize]]
-    }];
-    NSTextField* creditsField = [NSTextField labelWithAttributedString:creditsLink];
-    // NSTextField renders and follows links only with both of these set
-    creditsField.selectable = YES;
-    creditsField.allowsEditingTextAttributes = YES;
-    creditsField.focusRingType = NSFocusRingTypeNone;
-    creditsField.translatesAutoresizingMaskIntoConstraints = NO;
-    [contentView addSubview:creditsField];
+    NSButton* homepageButton = [AboutLinkButton buttonWithURLString:@TR_PROJ_URL_HOMEPAGE];
+    [contentView addSubview:homepageButton];
+
+    NSButton* creditsButton = [AboutLinkButton buttonWithURLString:@TR_PROJ_URL_CREDITS];
+    [contentView addSubview:creditsButton];
 
     self.fCopyrightField = [NSTextField labelWithString:@""];
     self.fCopyrightField.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
@@ -100,12 +129,16 @@ static AboutWindowController* fAboutBoxInstance = nil;
         [self.fVersionField.topAnchor constraintEqualToAnchor:titleField.bottomAnchor constant:8],
         [self.fVersionField.centerXAnchor constraintEqualToAnchor:titleField.centerXAnchor],
 
-        [creditsField.topAnchor constraintGreaterThanOrEqualToAnchor:self.fVersionField.bottomAnchor constant:12],
-        [creditsField.topAnchor constraintGreaterThanOrEqualToAnchor:iconView.bottomAnchor constant:8],
-        [creditsField.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
-        [creditsField.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
+        [homepageButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.fVersionField.bottomAnchor constant:12],
+        [homepageButton.topAnchor constraintGreaterThanOrEqualToAnchor:iconView.bottomAnchor constant:8],
+        [homepageButton.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [homepageButton.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
 
-        [self.fCopyrightField.topAnchor constraintEqualToAnchor:creditsField.bottomAnchor constant:20],
+        [creditsButton.topAnchor constraintEqualToAnchor:homepageButton.bottomAnchor constant:4],
+        [creditsButton.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [creditsButton.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
+
+        [self.fCopyrightField.topAnchor constraintEqualToAnchor:creditsButton.bottomAnchor constant:20],
         [self.fCopyrightField.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
         [self.fCopyrightField.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
         [self.fCopyrightField.bottomAnchor constraintEqualToAnchor:contentView.bottomAnchor constant:-20]
