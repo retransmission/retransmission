@@ -24,6 +24,13 @@ Transmission Emeritus
   Kendall Hopkins
   Kevin Glowacz
 
+Third-Party Libraries
+  Nick Mathewson and Niels Provos (libevent)
+  Greg Hazel of BitTorrent Inc. (libutp)
+  Thomas Bernard (MiniUPnP and libnatpmp)
+  Andy Matuschak (Sparkle)
+  Bryan D K Jones (VDKQueue)
+
 Starting with ReTransmission 4.0.0, contributors are credited in each
 release's notes so that repeat contributions receive repeat shout-outs.
 Please see news/ for these credits!
