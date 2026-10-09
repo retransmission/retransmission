@@ -1,0 +1,5 @@
+// Run update-version-h.sh to generate this file.
+#include "Version.Release.xcconfig"
+
+MARKETING_VERSION = $(APP_MARKETING_VERSION)
+CURRENT_PROJECT_VERSION = $(APP_CURRENT_PROJECT_VERSION)

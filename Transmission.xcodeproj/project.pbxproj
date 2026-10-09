@@ -1064,6 +1064,8 @@
 			membershipExceptions = (
 				"/Localized: QuickLookExtension/Localizable.strings",
 				CMakeLists.txt,
+				Configs/Project/Project.Debug.xcconfig,
+				Configs/Project/Project.Release.xcconfig,
 				Info.plist,
 				Info.plist.in,
 				QuickLookExtension/CMakeLists.txt,
@@ -3364,6 +3366,8 @@
 		};
 		0053D3DA0C86774200545606 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 0AD81ED4304EC83C00C22874 /* macosx */;
+			baseConfigurationReferenceRelativePath = Configs/Project/Project.Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -3420,9 +3424,6 @@
 				IBC_NOTICES = NO;
 				IBC_WARNINGS = YES;
 				INFOPLIST_FILE = macosx/Info.plist;
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
-				INFOPLIST_PREFIX_HEADER = libtransmission/version.h;
-				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -3577,6 +3578,8 @@
 		};
 		4DF0C59D089918A300DD8943 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 0AD81ED4304EC83C00C22874 /* macosx */;
+			baseConfigurationReferenceRelativePath = Configs/Project/Project.Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -3632,9 +3635,6 @@
 				IBC_NOTICES = NO;
 				IBC_WARNINGS = YES;
 				INFOPLIST_FILE = macosx/Info.plist;
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
-				INFOPLIST_PREFIX_HEADER = libtransmission/version.h;
-				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = (
 					"$(inherited)",
@@ -3734,6 +3734,8 @@
 		};
 		A250CFEB0CDA19680068B4B6 /* Release - Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 0AD81ED4304EC83C00C22874 /* macosx */;
+			baseConfigurationReferenceRelativePath = Configs/Project/Project.Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -3790,9 +3792,6 @@
 				IBC_NOTICES = NO;
 				IBC_WARNINGS = YES;
 				INFOPLIST_FILE = macosx/Info.plist;
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
-				INFOPLIST_PREFIX_HEADER = libtransmission/version.h;
-				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (

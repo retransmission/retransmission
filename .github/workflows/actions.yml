@@ -613,6 +613,11 @@ jobs:
         with:
           path: src
           submodules: recursive
+      - name: Update Version.Release.xcconfig
+        run: |
+          cd src
+          chmod +x ./update-version-h.sh
+          ./update-version-h.sh --xcode
       - name: Build
         run: set -o pipefail && xcodebuild -project src/Transmission.xcodeproj -scheme Transmission -configuration 'Release - Debug' -derivedDataPath pfx ONLY_ACTIVE_ARCH=NO build | xcbeautify --renderer github-actions
       - uses: actions/upload-artifact@v7
