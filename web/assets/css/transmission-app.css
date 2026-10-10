@@ -71,8 +71,11 @@
   --color-fg-error: var(--red-500);
   --color-fg-port-closed: var(--red-500);
   --color-progressbar-magnet: var(--yellow-300);
+  --color-progressbar-magnet-fg: var(--black);
   --color-progressbar-queued: var(--blue-400);
+  --color-progressbar-queued-fg: var(--white);
   --color-progressbar-verify: var(--yellow-300);
+  --color-progressbar-verify-fg: var(--black);
   --color-toolbar-background: var(--default-tinted);
   --legacy-fg-selected: var(--grey-700);
 
@@ -93,9 +96,13 @@
     --color-fg-secondary: var(--nice-grey);
     --color-fg-warn: var(--dark-mode-black);
     --color-progressbar-leech: var(--blue-200);
+    --color-progressbar-leech-fg: var(--white);
     --color-progressbar-paused: var(--grey-500);
+    --color-progressbar-paused-fg: var(--black);
     --color-progressbar-seed-1: var(--green-100);
+    --color-progressbar-seed-1-fg: var(--black);
     --color-progressbar-seed-2: var(--green-400);
+    --color-progressbar-seed-2-fg: var(--black);
     --contrast-bg: var(--black);
     --contrast-fg: var(--white);
     --legacy-bg-selected: var(--default-accent-color-strong);
@@ -116,9 +123,13 @@
     --color-fg-secondary: var(--grey-500);
     --color-fg-warn: #cf212e;
     --color-progressbar-leech: var(--blue-100);
+    --color-progressbar-leech-fg: var(--black);
     --color-progressbar-paused: var(--grey-200);
+    --color-progressbar-paused-fg: var(--black);
     --color-progressbar-seed-1: var(--green-500);
+    --color-progressbar-seed-1-fg: var(--black);
     --color-progressbar-seed-2: var(--green-300);
+    --color-progressbar-seed-2-fg: var(--black);
     --contrast-bg: var(--white);
     --contrast-fg: var(--black);
     --legacy-bg-selected: var(--default-accent-color);
@@ -140,9 +151,12 @@
   --color-fg-secondary: var(--contrast-fg);
   --color-fg-warn: var(--contrast-bg);
   --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-leech-fg: var(--white);
   --color-progressbar-paused: var(--grey-500);
   --color-progressbar-seed-1: var(--black);
+  --color-progressbar-seed-1-fg: var(--white);
   --color-progressbar-seed-2: var(--white);
+  --color-progressbar-seed-2-fg: var(--black);
   --color-toolbar-background: var(--contrast-bg);
   --legacy-bg-selected: var(--default-accent-color-strong);
   --legacy-fg-selected: var(--black);
@@ -558,40 +572,74 @@ a {
     &.leech {
       &.queued::before {
         background: var(--color-progressbar-queued);
-        color: contrast-color(var(--color-progressbar-queued));
+        color: var(--color-progressbar-queued-fg);
       }
 
       &::before {
         background: var(--color-progressbar-leech);
-        color: contrast-color(var(--color-progressbar-leech));
+        color: var(--color-progressbar-leech-fg);
       }
     }
 
     &.magnet::before {
       background: var(--color-progressbar-magnet);
-      color: contrast-color(var(--color-progressbar-magnet));
+      color: var(--color-progressbar-magnet-fg);
     }
 
     &.seed:not(.paused) {
       &::before {
         background: var(--color-progressbar-seed-1);
-        color: contrast-color(var(--color-progressbar-seed-1));
+        color: var(--color-progressbar-seed-1-fg);
       }
 
       &::after {
         background: var(--color-progressbar-seed-2);
-        color: contrast-color(var(--color-progressbar-seed-2));
+        color: var(--color-progressbar-seed-2-fg);
       }
     }
 
     &.verify::before {
       background: var(--color-progressbar-verify);
-      color: contrast-color(var(--color-progressbar-verify));
+      color: var(--color-progressbar-verify-fg);
     }
 
     &.paused::before {
       background: var(--color-progressbar-paused);
-      color: contrast-color(var(--color-progressbar-paused));
+      color: var(--color-progressbar-paused-fg);
+    }
+
+    @supports (color: contrast-color(white)) {
+      &.leech {
+        &.queued::before {
+          color: contrast-color(var(--color-progressbar-queued));
+        }
+
+        &::before {
+          color: contrast-color(var(--color-progressbar-leech));
+        }
+      }
+
+      &.magnet::before {
+        color: contrast-color(var(--color-progressbar-magnet));
+      }
+
+      &.seed:not(.paused) {
+        &::before {
+          color: contrast-color(var(--color-progressbar-seed-1));
+        }
+
+        &::after {
+          color: contrast-color(var(--color-progressbar-seed-2));
+        }
+      }
+
+      &.verify::before {
+        color: contrast-color(var(--color-progressbar-verify));
+      }
+
+      &.paused::before {
+        color: contrast-color(var(--color-progressbar-paused));
+      }
     }
 
     &::before,

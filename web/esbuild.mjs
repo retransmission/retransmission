@@ -15,10 +15,10 @@ const ctx = await esbuild.context({
   minify: true,
   outfile: './public_html/transmission-app.js',
   sourcemap: true,
-  // native CSS contrast-color() requires these browser versions;
-  // esbuild does not provide a fallback for the function.
+  // the oldest browsers the bundle needs to run in. esbuild transpiles
+  // newer JS syntax and flattens native CSS nesting to fit these targets.
   // keep in sync with the esbuild commands in README.md and CMakeLists.txt.
-  target: ['chrome147', 'firefox146', 'safari26'],
+  target: ['chrome104', 'firefox115', 'safari16.4'],
 });
 
 if (process.env.DEV) {
