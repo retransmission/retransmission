@@ -30,6 +30,19 @@ cmake --build build -t transmission-mac
 open ./build/macosx/Retransmission.app
 ```
 
+### Building CLI Tools and Daemons on macOS ###
+Use CMake to build command-line utilities:
+
+```bash
+# Build daemon and utils (enabled by default in CMake)
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build -t transmission-daemon transmission-remote transmission-create transmission-edit transmission-show
+
+# To build the legacy transmission-cli, ensure it's enabled:
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_CLI=ON
+cmake --build build -t transmission-cli
+```
+
 ### Building the GTK app with CMake ###
 Install GTK and build the app:
 ```bash
@@ -151,7 +164,7 @@ $ sudo cmake --install .
 
 ## On Windows ##
 
-### Prerequisites
+### Prerequisites ###
 You need the following installed:
 
 * [Visual Studio 2019 or greater](https://visualstudio.microsoft.com/downloads/) (the Community Edition is sufficient)
@@ -163,7 +176,7 @@ You need the following installed:
 * [Python](https://python.org/downloads)
 
 
-### Install dependencies through vcpkg
+### Install dependencies through vcpkg ###
 
 Vcpkg will install x86 libraries by default. To install x64 add the `--triplet=x64-windows` flag at the end of the commands below.
 
@@ -177,14 +190,14 @@ Additional dependencies for the Qt client:
 vcpkg install qtactiveqt qtsvg qttools
 ```
 
-### Get Retransmission source
+### Get Retransmission source ###
 ```bat
 git clone https://github.com/retransmission/retransmission
 cd transmission
 git submodule update --init --recursive
 ```
 
-### Configure CMake and build the project
+### Configure CMake and build the project ###
 
 To configure which components are built use the flags below.
 Each option can be set to `ON`/`OFF`/`AUTO`, values shown below are the defaults.
