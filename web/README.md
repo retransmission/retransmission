@@ -2,9 +2,6 @@
 
 A web interface is built into all Transmission flavors, enabling them to be controlled remotely.
 
-The web client requires Chrome 147+, Firefox 146+, or Safari 26+ for native
-CSS `contrast-color()` support.
-
 ## Notes for Packagers
 
 Transmission releases include a prebuilt webapp bundle in
@@ -27,7 +24,7 @@ $ esbuild \
   --minify \
   --outfile=public_html/transmission-app.js \
   --sourcemap \
-  --target=chrome147,firefox146,safari26 \
+  --target=chrome104,firefox115,safari16.4 \
   src/main.js
 ```
 
