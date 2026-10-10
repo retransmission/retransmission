@@ -1134,8 +1134,8 @@ private:
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
     friend void tr_torrentFreeInSessionThread(tr_torrent* tor);
-    friend void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
-    friend void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
+    friend void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool delete_flag);
+    friend void tr_torrentRemove(tr_torrent* tor, bool delete_flag);
     friend void tr_torrentStart(tr_torrent* tor);
     friend void tr_torrentStartNow(tr_torrent* tor);
     friend void tr_torrentStop(tr_torrent* tor);

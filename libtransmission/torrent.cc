@@ -721,11 +721,7 @@ void tr_torrent::stop_now()
     set_is_queued(false);
 }
 
-// By-value: arguments are moved into the session-thread work item.
-void tr_torrentRemoveInSessionThread(
-    tr_torrent* tor,
-    bool const delete_flag,
-    tr_torrent_remove_func remove_func) // NOLINT(performance-unnecessary-value-param)
+void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool const delete_flag)
 {
     auto const lock = tor->unique_lock();
 
@@ -748,7 +744,7 @@ void tr_torrentRemoveInSessionThread(
     if (delete_flag && tor->has_metainfo()) {
         tor->session->local_data.remove(
             tor->id(),
-            std::move(remove_func),
+            tor->session->remove_func,
             [session = tor->session, free_torrent](tr_torrent_id_t const tor_id, tr_error const& error) {
                 if (auto const* const torrent = session->torrents().get(tor_id); torrent != nullptr && error) {
                     tr_logAddWarnTor(
@@ -780,7 +776,7 @@ void tr_torrentStop(tr_torrent* tor)
     run_in_session_thread_by_id(*tor, &tr_torrent::stop_now);
 }
 
-void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func)
+void tr_torrentRemove(tr_torrent* tor, bool delete_flag)
 {
     using namespace start_stop_helpers;
 
@@ -788,8 +784,8 @@ void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func 
 
     tor->is_deleting_ = true;
 
-    run_in_session_thread_by_id(*tor, [delete_flag, remove_func = std::move(remove_func)](tr_torrent* const torrent) mutable {
-        tr_torrentRemoveInSessionThread(torrent, delete_flag, std::move(remove_func));
+    run_in_session_thread_by_id(*tor, [delete_flag](tr_torrent* const torrent) {
+        tr_torrentRemoveInSessionThread(torrent, delete_flag);
     });
 }
 

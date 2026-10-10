@@ -625,7 +625,7 @@ void Application::Impl::on_startup()
     }
 
     /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all());
+    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all(), gtr_file_trash_or_remove);
 
     if (tr_sessionConfigDirIsContended(session)) {
         config_dir_contended_ = true;

@@ -77,8 +77,6 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **recent_relocate_paths:** String[] (default = [`download_dir`]) Same as `recent_download_paths`, but for the dialogs that move a torrent's local data to a new location.
  * **rename_partial_files:** Boolean (default = true) Postfix partially downloaded files with ".part".
  * **start_added_torrents:** Boolean (default = true) Start torrents as soon as they are added.
- * **trash_can_enabled:** Boolean (default = true) Whether to move the torrents to the system's trashcan or unlink them right away upon deletion from Retransmission.
-   _Note: transmission-gtk only._
  * **trash_original_torrent_files:** Boolean (default = false) Delete torrents added from the watch directory.
  * **umask:** String (default = "022") Sets Retransmission's file mode creation mask. See [the umask(2) manpage](https://man7.org/linux/man-pages/man2/umask.2.html) for more information.
  * **watch_dir:** String

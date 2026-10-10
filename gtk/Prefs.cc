@@ -76,7 +76,6 @@ std::string gl_confdir;
     map.try_emplace(TR_KEY_torrent_added_notification_enabled, true);
     map.try_emplace(TR_KEY_torrent_complete_notification_enabled, true);
     map.try_emplace(TR_KEY_torrent_complete_sound_enabled, true);
-    map.try_emplace(TR_KEY_trash_can_enabled, true);
     map.try_emplace(TR_KEY_watch_dir, dir);
     map.try_emplace(TR_KEY_watch_dir_enabled, false);
     return map;

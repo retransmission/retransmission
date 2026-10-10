@@ -89,6 +89,10 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  * @param config_dir where Transmission will look for resume files, blocklists, etc.
  * @param message_queueing_enabled if false, messages will be dumped to stderr
  * @param settings libtransmission settings
+ * @param remove_func how `tr_torrentRemove()` deletes a torrent's local data,
+ *                    e.g. by moving it to a recycle bin. Empty means `tr_sys_path_remove()`.
+ *                    It is called on the session thread, and the filename view
+ *                    is only valid for the duration of the call.
  * @see `tr_sessionGetDefaultSettings()`
  * @see `tr_sessionLoadSettings()`
  * @see `tr_getDefaultConfigDir()`
@@ -96,7 +100,8 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
 [[nodiscard]] tr_session* tr_sessionInit(
     std::string_view config_dir,
     bool message_queueing_enabled,
-    tr::Settings const& settings);
+    tr::Settings const& settings,
+    tr_torrent_remove_func remove_func = {});
 
 /** @brief Update a session's settings from a benc dictionary
            like to the one used in `tr_sessionInit()` */
@@ -568,14 +573,10 @@ void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
 
 /**
  * @brief Removes our torrent and .resume files for this torrent
- * @param remove_func A function that deletes a file.
- *                    The default is `tr_sys_path_remove()`
- *                    Clients can use this arg to pass in platform-specific code e.g.
- *                    to move to a recycle bin instead of deleting.
- *                    The callback is invoked in the session thread and the filename view
- *                    is only valid for the duration of the call.
+ * @param delete_flag also delete the torrent's local data, with the remove func
+ *                    given to `tr_sessionInit()`
  */
-void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func = {});
+void tr_torrentRemove(tr_torrent* tor, bool delete_flag);
 
 /** @brief Start a torrent */
 void tr_torrentStart(tr_torrent* torrent);

@@ -13,9 +13,12 @@
 #endif
 
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
+#include <iterator>
+#include <string_view>
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/error.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-builder.h>
@@ -588,6 +591,25 @@ static void offerToImportFromTransmission()
     replaceImportedRPCPassword();
 }
 
+static bool trashDataFile(std::string_view const filename, tr_error* error)
+{
+    if (std::empty(filename)) {
+        return false;
+    }
+
+    @autoreleasepool {
+        NSError* localError;
+        if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
+            if (error != nullptr) {
+                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
+            }
+            return false;
+        }
+    }
+
+    return true;
+}
+
 @implementation Controller
 
 + (void)prepareForLaunch
@@ -676,7 +698,7 @@ static void offerToImportFromTransmission()
         initUnits();
 
         auto const default_config_dir = tr::platform::get_default_config_dir(TR_PROJ_APPNAME_CAPITALIZED);
-        _fLib = tr_sessionInit(default_config_dir, YES, settings);
+        _fLib = tr_sessionInit(default_config_dir, YES, settings, trashDataFile);
         _fConfigDirectory = @(default_config_dir.c_str());
 
         tr_sessionSetIdleLimitHitCallback(_fLib, [controller = self](tr_torrent_id_t const tor_id) {

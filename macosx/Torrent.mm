@@ -71,25 +71,6 @@ static bool canChangeDownloadCheck(tr_file_view const& file)
     return file.have < file.length;
 }
 
-static bool trashDataFile(std::string_view const filename, tr_error* error)
-{
-    if (std::empty(filename)) {
-        return false;
-    }
-
-    @autoreleasepool {
-        NSError* localError;
-        if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
-            if (error != nullptr) {
-                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
-            }
-            return false;
-        }
-    }
-
-    return true;
-}
-
 static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextInfo)
 {
     return [contextInfo](tr_torrent_id_t const /*tor_id*/, std::string_view const oldpath, std::string_view const newname, tr_error const& error) {
@@ -200,7 +181,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     //allow the file to be indexed by Time Machine
     [self setTimeMachineExclude:NO];
 
-    tr_torrentRemove(self.fHandle, trashFiles, trashDataFile);
+    tr_torrentRemove(self.fHandle, trashFiles);
     _fHandle = nullptr;
 }
 
