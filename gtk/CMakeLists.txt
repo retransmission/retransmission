@@ -200,7 +200,12 @@ target_include_directories(${TR_NAME}-gtk-lib
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_BINARY_DIR})
 
+# The client calls gettext, and so does GtkBuilder for the .ui files.
+find_package(Intl)
+
 target_include_directories(${TR_NAME}-gtk-lib SYSTEM
+    PUBLIC
+        ${Intl_INCLUDE_DIRS}
     PRIVATE
         $<$<BOOL:${WITH_APPINDICATOR}>:${APPINDICATOR_INCLUDE_DIRS}>)
 
@@ -211,6 +216,7 @@ target_link_libraries(${TR_NAME}-gtk-lib
         woke::woke
         transmission::gtk_impl
         transmission::fmt-header-only
+        ${Intl_LIBRARIES}
         $<$<BOOL:${WITH_APPINDICATOR}>:${APPINDICATOR_LIBRARIES}>)
 
 target_link_libraries(${TR_NAME}-gtk

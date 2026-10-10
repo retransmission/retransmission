@@ -16,9 +16,13 @@ target_sources(${LIBNAME}
         dbus-peer-record.h
         display-modes.h
         favicon-cache.h
+        formatters.cc
+        formatters.h
         interop-names.h
         interop.cc
         interop.h
+        l10n.cc
+        l10n.h
         prefs.cc
         prefs.h
         rpc-client.cc

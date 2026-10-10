@@ -6,7 +6,9 @@ target_sources(libtransmission-app-test
 	PRIVATE
 		converter-tests.cc
 		dbus-peer-record-test.cc
+		formatters-test.cc
 		interop-test.cc
+		l10n-test.cc
 		prefs-test.cc
 		rpc-client-test.cc
 		rpc-queue-test.cc
