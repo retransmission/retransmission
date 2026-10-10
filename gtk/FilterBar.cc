@@ -89,6 +89,8 @@ private:
     void update_filter_tracker();
     void update_filter_text();
 
+    void select_saved_tracker();
+
     bool show_mode_filter_model_update();
 
     bool tracker_filter_model_update();
@@ -537,13 +539,36 @@ void FilterBar::Impl::update_filter_show_mode()
 
 void FilterBar::Impl::update_filter_tracker()
 {
-    /* set the active tracker type & host from the tracker combobox */
+    // set the filter's tracker from the combobox selection and persist it
     if (auto const iter = tracker_->get_active(); iter) {
-        filter_->set_tracker(
-            static_cast<TrackerType>(iter->get_value(tracker_filter_cols.type)),
-            iter->get_value(tracker_filter_cols.sitename));
+        auto const sitename = iter->get_value(tracker_filter_cols.sitename);
+        filter_->set_tracker(static_cast<TrackerType>(iter->get_value(tracker_filter_cols.type)), sitename);
+        gtr_pref_set(TR_KEY_filter_trackers, sitename);
     } else {
         filter_->set_tracker(TrackerType::ALL, {});
+        gtr_pref_set(TR_KEY_filter_trackers, Glib::ustring{});
+    }
+}
+
+void FilterBar::Impl::select_saved_tracker()
+{
+    auto const saved_sitename = gtr_pref_get<Glib::ustring>(TR_KEY_filter_trackers);
+    if (saved_sitename.empty()) {
+        return;
+    }
+
+    for (auto const& row : tracker_model_->children()) {
+        if (row.get_value(tracker_filter_cols.sitename) == saved_sitename) {
+            tracker_->set_active(TR_GTK_TREE_MODEL_CHILD_ITER(row));
+            return;
+        }
+    }
+
+    // An empty tracker list might mean the torrents haven't loaded yet,
+    // so clear the saved tracker only after other trackers are listed without it.
+    // The first two rows are "All" and the separator.
+    if (tracker_model_->children().size() > 2U) {
+        gtr_pref_set(TR_KEY_filter_trackers, Glib::ustring{});
     }
 }
 
@@ -595,6 +620,7 @@ void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
 
     if (changes.test(tracker_flags)) {
         tracker_filter_model_update();
+        select_saved_tracker(); // the saved tracker may have just been listed
     }
 
     filter_->update(changes);
@@ -709,6 +735,8 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
             break;
         }
     }
+
+    select_saved_tracker();
 }
 
 FilterBar::Impl::~Impl()
