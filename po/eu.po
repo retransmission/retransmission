@@ -257,10 +257,10 @@ msgstr[0] "{total_size} {file_count:L} fitxategian"
 msgstr[1] "{total_size} {file_count:L} fitxategitan"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent zati @ {piece_size})"
-msgstr[1] "({piece_count} BitTorrent zati @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent zati @ {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent zati @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -397,10 +397,10 @@ msgid "Web Seeds"
 msgstr "Web igortzeak"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
-msgstr[1] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] " {markup_begin}(e)ko zerrenda dago {peer_count:L} kiderekin{markup_end} {time_span_ago}"
+msgstr[1] " {markup_begin}(e)ko zerrenda dago {peer_count:L} kiderekin{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -430,8 +430,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Kide gehiago eskatu dira {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Aztarnariak zeukan {markup_begin}{seeder_count} {seeder_or_seeders} eta {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Aztarnariak zeukan {markup_begin}{seeder_count:L} {seeder_or_seeders} eta {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1000,34 +1000,34 @@ msgstr "Errore lokala: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metadatuak deskargatzen  {active_count} konektatutako hartzaileatik  (%{percent_done}eginda)"
-msgstr[1] "Metadatuak deskargatzen {active_count} konektatu kidetatik (%{percent_done} eginda)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metadatuak deskargatzen  {active_count:L} konektatutako hartzaileatik  (%{percent_done}eginda)"
+msgstr[1] "Metadatuak deskargatzen {active_count:L} konektatu kidetatik (%{percent_done} eginda)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaile eta web-igorleatik"
-msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kide eta web-igorleetatik"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako hartzaile eta web-igorleatik"
+msgstr[1] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako kide eta web-igorleetatik"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Deskargatzen {active_count} web-igorleatik"
-msgstr[1] "Deskargatzen {active_count} web-igorleetatik"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Deskargatzen {active_count:L} web-igorleatik"
+msgstr[1] "Deskargatzen {active_count:L} web-igorleetatik"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik"
-msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kideetatik"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako hartzaileatik"
+msgstr[1] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako kideetatik"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] " {active_count} / {connected_count} konektatutako hartzailera igortzen"
-msgstr[1] " {active_count} / {connected_count} konektatutako kidetara igortzen"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] " {active_count:L} / {connected_count:L} konektatutako hartzailera igortzen"
+msgstr[1] " {active_count:L} / {connected_count:L} konektatutako kidetara igortzen"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

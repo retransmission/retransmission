@@ -2279,9 +2279,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} yinelenen torrent eklenemiyor</numerusform>
+            <numerusform>{count:L} yinelenen torrent eklenemiyor</numerusform>
         </translation>
     </message>
 </context>
@@ -2550,10 +2550,10 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>{connected_count} bağlı eşin {active_count} tanesinden indiriliyor</numerusform>
+            <numerusform>{connected_count:L} bağlı eşin {active_count:L} tanesinden indiriliyor</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2566,9 +2566,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>{connected_count} bağlı eşten {active_count} tanesine gönderiliyor</numerusform>
+            <numerusform>{connected_count:L} bağlı eşten {active_count:L} tanesine gönderiliyor</numerusform>
         </translation>
     </message>
     <message>

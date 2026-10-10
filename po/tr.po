@@ -252,10 +252,10 @@ msgstr[0] "{file_count:L} dosyada {total_size}"
 msgstr[1] "{file_count:L} dosyada {total_size}"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_size} boyutlu {piece_count} BitTorrent parçası)"
-msgstr[1] "({piece_size} boyutlu {piece_count} BitTorrent parçası)"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_size} boyutlu {piece_count:L} BitTorrent parçası)"
+msgstr[1] "({piece_size} boyutlu {piece_count:L} BitTorrent parçası)"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -392,10 +392,10 @@ msgid "Web Seeds"
 msgstr "Web Gönderimleri"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "{time_span_ago} {markup_begin}{peer_count} eşin{markup_end} listesi alındı"
-msgstr[1] "{time_span_ago} {markup_begin}{peer_count} eşin{markup_end} listesi alındı"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "{time_span_ago} {markup_begin}{peer_count:L} eşin{markup_end} listesi alındı"
+msgstr[1] "{time_span_ago} {markup_begin}{peer_count:L} eşin{markup_end} listesi alındı"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -425,8 +425,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "{markup_begin}{time_span_ago}{markup_end} önce daha çok eş soruldu"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "İzleyicide {time_span_ago} {markup_begin}{seeder_count} {seeder_or_seeders} ve {leecher_count} {leecher_or_leechers}{markup_end} vardı"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "İzleyicide {time_span_ago} {markup_begin}{seeder_count:L} {seeder_or_seeders} ve {leecher_count:L} {leecher_or_leechers}{markup_end} vardı"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -995,34 +995,34 @@ msgstr "Yerel hata: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "{active_count} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
-msgstr[1] "{active_count} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "{active_count:L} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
+msgstr[1] "{active_count:L} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "{active_count} / {connected_count} bağlı eşten ve web besleyicisinden indiriliyor"
-msgstr[1] "{active_count} / {connected_count} bağlı eşten ve web besleyicisinden indiriliyor"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "{active_count:L} / {connected_count:L} bağlı eşten ve web besleyicisinden indiriliyor"
+msgstr[1] "{active_count:L} / {connected_count:L} bağlı eşten ve web besleyicisinden indiriliyor"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "{active_count} web besleyicisinden indiriliyor"
-msgstr[1] "{active_count} web besleyicisinden indiriliyor"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "{active_count:L} web besleyicisinden indiriliyor"
+msgstr[1] "{active_count:L} web besleyicisinden indiriliyor"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "{active_count} / {connected_count} bağlı eşten indiriliyor"
-msgstr[1] "{active_count} / {connected_count} bağlı eşten indiriliyor"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "{active_count:L} / {connected_count:L} bağlı eşten indiriliyor"
+msgstr[1] "{active_count:L} / {connected_count:L} bağlı eşten indiriliyor"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
-msgstr[1] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "{active_count:L} / {connected_count:L} bağlı eşe gönderiliyor"
+msgstr[1] "{active_count:L} / {connected_count:L} bağlı eşe gönderiliyor"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

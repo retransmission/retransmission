@@ -2315,11 +2315,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Невозможно добавить {count} повторяющийся торрент</numerusform>
-            <numerusform>Невозможно добавить {count} повторяющихся торрента</numerusform>
-            <numerusform>Невозможно добавить {count} повторяющихся торрентов</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющийся торрент</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющихся торрента</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющихся торрентов</numerusform>
         </translation>
     </message>
 </context>
@@ -2596,12 +2596,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Приём от {active_count} из {connected_count} подключённого участника</numerusform>
-            <numerusform>Приём от {active_count} из {connected_count} подключённых участников</numerusform>
-            <numerusform>Приём от {active_count} из {connected_count} подключённых участников</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённого участника</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённых участников</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённых участников</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2616,11 +2616,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённого участника</numerusform>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённых участников</numerusform>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённых участников</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённого участника</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённых участников</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённых участников</numerusform>
         </translation>
     </message>
     <message>

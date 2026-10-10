@@ -2282,7 +2282,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2558,11 +2558,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी</numerusform>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2576,10 +2576,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी</numerusform>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी</numerusform>
         </translation>
     </message>
     <message>

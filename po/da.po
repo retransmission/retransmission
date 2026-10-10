@@ -270,10 +270,10 @@ msgstr[0] "{total_size} i {file_count:L} fil"
 msgstr[1] "{total_size} i {file_count:L} filer"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent-stykke @ {piece_size})"
-msgstr[1] "({piece_count} BitTorrent-stykker @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent-stykke @ {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent-stykker @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -410,10 +410,10 @@ msgid "Web Seeds"
 msgstr "Webseeds"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Fik en liste med {markup_begin}{peer_count} modpart{markup_end} {time_span_ago}"
-msgstr[1] "Fik en liste med {markup_begin}{peer_count} modparter{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Fik en liste med {markup_begin}{peer_count:L} modpart{markup_end} {time_span_ago}"
+msgstr[1] "Fik en liste med {markup_begin}{peer_count:L} modparter{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -443,8 +443,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Spørger om flere modparter {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Tracker havde{markup_begin}{seeder_count} {seeder_or_seeders} og {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Tracker havde{markup_begin}{seeder_count:L} {seeder_or_seeders} og {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1013,34 +1013,34 @@ msgstr "Lokal-fejl: '{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Downloader metadata fra {active_count} tilsluttede modpart ({percent_done}% færdig)"
-msgstr[1] "Downloader metadata fra {active_count} tilsluttede modparter ({percent_done}% færdig)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Downloader metadata fra {active_count:L} tilsluttede modpart ({percent_done}% færdig)"
+msgstr[1] "Downloader metadata fra {active_count:L} tilsluttede modparter ({percent_done}% færdig)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Downloader fra {active_count} af {connected_count} tilsluttede modpart og webseed"
-msgstr[1] "Downloader fra {active_count} af {connected_count} tilsluttede modparter og webseeds"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Downloader fra {active_count:L} af {connected_count:L} tilsluttede modpart og webseed"
+msgstr[1] "Downloader fra {active_count:L} af {connected_count:L} tilsluttede modparter og webseeds"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Downloader fra {active_count} webseed"
-msgstr[1] "Downloader fra {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Downloader fra {active_count:L} webseed"
+msgstr[1] "Downloader fra {active_count:L} webseeds"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Downloader fra {active_count} af {connected_count} tilsluttede modpart"
-msgstr[1] "Downloader fra {active_count} af {connected_count} tilsluttede modparter"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Downloader fra {active_count:L} af {connected_count:L} tilsluttede modpart"
+msgstr[1] "Downloader fra {active_count:L} af {connected_count:L} tilsluttede modparter"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Seeder til {active_count} af {connected_count} tilsluttede modpart"
-msgstr[1] "Seeder til {active_count} af {connected_count} tilsluttede modparter"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Seeder til {active_count:L} af {connected_count:L} tilsluttede modpart"
+msgstr[1] "Seeder til {active_count:L} af {connected_count:L} tilsluttede modparter"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

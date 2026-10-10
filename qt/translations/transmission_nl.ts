@@ -2297,10 +2297,10 @@ Om een nieuwe primaire URL toe te voegen, voeg je deze toe na een lege regel.</t
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Kan {count} dubbele torrent niet toevoegen</numerusform>
-            <numerusform>Kon {count} gedupliceerde torrents niet toevoegen</numerusform>
+            <numerusform>Kan {count:L} dubbele torrent niet toevoegen</numerusform>
+            <numerusform>Kon {count:L} gedupliceerde torrents niet toevoegen</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ Om een nieuwe primaire URL toe te voegen, voeg je deze toe na een lege regel.</t
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Downloaden van {active_count} van de {connected_count} verbonden peer</numerusform>
-            <numerusform>Downloaden van {active_count} van de {connected_count} verbonden peers</numerusform>
+            <numerusform>Downloaden van {active_count:L} van de {connected_count:L} verbonden peer</numerusform>
+            <numerusform>Downloaden van {active_count:L} van de {connected_count:L} verbonden peers</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ Om een nieuwe primaire URL toe te voegen, voeg je deze toe na een lege regel.</t
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Seeden naar {active_count} van {connected_count} verbonden peer</numerusform>
-            <numerusform>Seeden naar {active_count} van {connected_count} verbonden peers</numerusform>
+            <numerusform>Seeden naar {active_count:L} van {connected_count:L} verbonden peer</numerusform>
+            <numerusform>Seeden naar {active_count:L} van {connected_count:L} verbonden peers</numerusform>
         </translation>
     </message>
     <message>

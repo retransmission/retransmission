@@ -257,12 +257,12 @@ msgstr[2] "{total_size} в {file_count:L} файлах"
 msgstr[3] "{total_size} в {file_count:L} файлах"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} часть BitTorrent @ {piece_size})"
-msgstr[1] "({piece_count} части BitTorrent @ {piece_size})"
-msgstr[2] "({piece_count} частей BitTorrent @ {piece_size})"
-msgstr[3] "({piece_count} частей BitTorrent @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} часть BitTorrent @ {piece_size})"
+msgstr[1] "({piece_count:L} части BitTorrent @ {piece_size})"
+msgstr[2] "({piece_count:L} частей BitTorrent @ {piece_size})"
+msgstr[3] "({piece_count:L} частей BitTorrent @ {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -399,12 +399,12 @@ msgid "Web Seeds"
 msgstr "Веб-раздачи"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Получен список из {markup_begin}{peer_count} участника{markup_end} {time_span_ago}"
-msgstr[1] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
-msgstr[2] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
-msgstr[3] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Получен список из {markup_begin}{peer_count:L} участника{markup_end} {time_span_ago}"
+msgstr[1] "Получен список из {markup_begin}{peer_count:L} участников{markup_end} {time_span_ago}"
+msgstr[2] "Получен список из {markup_begin}{peer_count:L} участников{markup_end} {time_span_ago}"
+msgstr[3] "Получен список из {markup_begin}{peer_count:L} участников{markup_end} {time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -434,8 +434,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Запрошено большее число участников {markup_begin}{time_span_ago}{markup_end}"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Трекер содержит {markup_begin}{seeder_count} {seeder_or_seeders} и {leecher_count}{leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Трекер содержит {markup_begin}{seeder_count:L} {seeder_or_seeders} и {leecher_count:L}{leecher_or_leechers}{markup_end} {time_span_ago}"
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1020,44 +1020,44 @@ msgstr "Локальная ошибка: \"{error}\""
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Загружаются метаданные с {active_count} подключённого участника ({percent_done}% выполнено)"
-msgstr[1] "Загружаются метаданные с {active_count} подключённых участников ({percent_done}% выполнено)"
-msgstr[2] "Загружаются метаданные с {active_count} подключённых участников ({percent_done}% выполнено)"
-msgstr[3] "Загружаются метаданные с {active_count} подключённых участников ({percent_done}% выполнено)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Загружаются метаданные с {active_count:L} подключённого участника ({percent_done}% выполнено)"
+msgstr[1] "Загружаются метаданные с {active_count:L} подключённых участников ({percent_done}% выполнено)"
+msgstr[2] "Загружаются метаданные с {active_count:L} подключённых участников ({percent_done}% выполнено)"
+msgstr[3] "Загружаются метаданные с {active_count:L} подключённых участников ({percent_done}% выполнено)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Загружается с {active_count} из {connected_count} подключённых участника и веб-сида"
-msgstr[1] "Загружается с {active_count} из {connected_count} подключённых участников и веб-сидов"
-msgstr[2] "Загружается с {active_count} из {connected_count} подключённых участников и веб-сидов"
-msgstr[3] "Загружается с {active_count} из {connected_count} подключённых участников и веб-сидов"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Загружается с {active_count:L} из {connected_count:L} подключённых участника и веб-сида"
+msgstr[1] "Загружается с {active_count:L} из {connected_count:L} подключённых участников и веб-сидов"
+msgstr[2] "Загружается с {active_count:L} из {connected_count:L} подключённых участников и веб-сидов"
+msgstr[3] "Загружается с {active_count:L} из {connected_count:L} подключённых участников и веб-сидов"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Загружается с {active_count} веб-сида"
-msgstr[1] "Загружается с {active_count} веб-сидов"
-msgstr[2] "Загружается с {active_count} веб-сидов"
-msgstr[3] "Загружается с {active_count} веб-сидов"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Загружается с {active_count:L} веб-сида"
+msgstr[1] "Загружается с {active_count:L} веб-сидов"
+msgstr[2] "Загружается с {active_count:L} веб-сидов"
+msgstr[3] "Загружается с {active_count:L} веб-сидов"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Загружается с {active_count} из {connected_count} подключённого участника"
-msgstr[1] "Загружается с {active_count} из {connected_count} подключённых участников"
-msgstr[2] "Загружается с {active_count} из {connected_count} подключённых участников"
-msgstr[3] "Загружается с {active_count} из {connected_count} подключённых участников"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Загружается с {active_count:L} из {connected_count:L} подключённого участника"
+msgstr[1] "Загружается с {active_count:L} из {connected_count:L} подключённых участников"
+msgstr[2] "Загружается с {active_count:L} из {connected_count:L} подключённых участников"
+msgstr[3] "Загружается с {active_count:L} из {connected_count:L} подключённых участников"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Раздаётся {active_count} из {connected_count} подключённого участника"
-msgstr[1] "Раздаётся {active_count} из {connected_count} подключённых участников"
-msgstr[2] "Раздаётся {active_count} из {connected_count} подключённых участников"
-msgstr[3] "Раздаётся {active_count} из {connected_count} подключённых участников"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Раздаётся {active_count:L} из {connected_count:L} подключённого участника"
+msgstr[1] "Раздаётся {active_count:L} из {connected_count:L} подключённых участников"
+msgstr[2] "Раздаётся {active_count:L} из {connected_count:L} подключённых участников"
+msgstr[3] "Раздаётся {active_count:L} из {connected_count:L} подключённых участников"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

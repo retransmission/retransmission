@@ -267,9 +267,9 @@ msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] "總計 {file_count:L} 個檔案，大小為 {total_size}"
 
 #: ../gtk/DetailsDialog.cc:851 ../gtk/MakeDialog.cc:401
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "(總計 {piece_count} 個 BitTorrent 區塊，區塊大小為 {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "(總計 {piece_count:L} 個 BitTorrent 區塊，區塊大小為 {piece_size})"
 
 #: ../gtk/DetailsDialog.cc:895
 msgid "{current_size} ({percent_done}%)"
@@ -406,9 +406,9 @@ msgid "Web Seeds"
 msgstr "網路種子"
 
 #: ../gtk/DetailsDialog.cc:1774
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "已於 {time_span_ago} 之前取得{markup_begin}{peer_count} 個節點{markup_end}的清單"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "已於 {time_span_ago} 之前取得{markup_begin}{peer_count:L} 個節點{markup_end}的清單"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 #: ../gtk/DetailsDialog.cc:1786
@@ -438,8 +438,8 @@ msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "已於 {markup_begin}{time_span_ago}{markup_end} 之前請求更多節點"
 
 #: ../gtk/DetailsDialog.cc:1856
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "該追蹤器在 {time_span_ago} 前有 {markup_begin}{seeder_count} 個 {seeder_or_seeders} 及 {leecher_count} 個 {leecher_or_leechers}{markup_end} "
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "該追蹤器在 {time_span_ago} 前有 {markup_begin}{seeder_count:L} 個 {seeder_or_seeders} 及 {leecher_count:L} 個 {leecher_or_leechers}{markup_end} "
 
 #: ../gtk/DetailsDialog.cc:1858
 msgid "seeder"
@@ -1000,29 +1000,29 @@ msgstr "本機錯誤：'{error}'"
 
 #: ../gtk/Torrent.cc:675
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "正在從 {active_count} 個已連線的節點下載後設資料 (已完成 {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "正在從 {active_count:L} 個已連線的節點下載後設資料 (已完成 {percent_done}%)"
 
 #: ../gtk/Torrent.cc:686
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "正在從 {connected_count} 中的 {active_count} 個已連線的節點及網路種子下載"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "正在從 {connected_count:L} 中的 {active_count:L} 個已連線的節點及網路種子下載"
 
 #: ../gtk/Torrent.cc:697
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "正在從 {active_count} 個網路種子下載"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "正在從 {active_count:L} 個網路種子下載"
 
 #: ../gtk/Torrent.cc:705
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "正在從 {connected_count} 中的 {active_count} 個已連線的節點下載"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "正在從 {connected_count:L} 中的 {active_count:L} 個已連線的節點下載"
 
 #: ../gtk/Torrent.cc:714
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "正在為{connected_count} 中的 {active_count} 個已連線的節點做種"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "正在為{connected_count:L} 中的 {active_count:L} 個已連線的節點做種"
 
 #: ../gtk/Utils.cc:135
 msgid "{days_from_now:L} day from now"

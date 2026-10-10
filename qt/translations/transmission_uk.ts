@@ -2312,11 +2312,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Не вдається додати {count} дубльований торент</numerusform>
-            <numerusform>Не вдається додати {count} дубльованих торенти</numerusform>
-            <numerusform>Не вдається додати {count} дубльований(х) торент(ів)</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльований торент</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльованих торенти</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльований(х) торент(ів)</numerusform>
         </translation>
     </message>
 </context>
@@ -2593,12 +2593,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключеного вузла</numerusform>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключених вузлів</numerusform>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключених вузлів</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключеного вузла</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2613,11 +2613,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Поширення до {active_count} з {connected_count} підключеного вузла</numerusform>
-            <numerusform>Поширення до {active_count} з {connected_count} підключених вузлів</numerusform>
-            <numerusform>Поширення до {active_count} з {connected_count} підключених вузлів</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключеного вузла</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
         </translation>
     </message>
     <message>

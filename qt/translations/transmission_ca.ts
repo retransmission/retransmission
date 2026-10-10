@@ -2278,7 +2278,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2554,11 +2554,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>S&apos;està baixant de {active_count} de {connected_count} client connectat</numerusform>
-            <numerusform>S&apos;està baixant de {active_count} de {connected_count} clients connectats</numerusform>
+            <numerusform>S&apos;està baixant de {active_count:L} de {connected_count:L} client connectat</numerusform>
+            <numerusform>S&apos;està baixant de {active_count:L} de {connected_count:L} clients connectats</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2572,10 +2572,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>S&apos;està compartint amb {active_count} de {connected_count} client connectat</numerusform>
-            <numerusform>S&apos;està compartint amb {active_count} de {connected_count} clients connectats</numerusform>
+            <numerusform>S&apos;està compartint amb {active_count:L} de {connected_count:L} client connectat</numerusform>
+            <numerusform>S&apos;està compartint amb {active_count:L} de {connected_count:L} clients connectats</numerusform>
         </translation>
     </message>
     <message>
