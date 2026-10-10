@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkDialog" id="AboutDialog">
+    <property name="title" translatable="yes">About {appname}</property>
+    <property name="modal">1</property>
+    <property name="resizable">0</property>
+    <property name="focus-widget">close_button</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="dialog_layout">
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <property name="css-classes">tr-dialog-content</property>
+        <child>
+          <object class="GtkImage" id="icon_image">
+            <property name="pixel-size">48</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="title_label">
+            <property name="margin-top">8</property>
+            <property name="margin-bottom">8</property>
+            <property name="margin-start">8</property>
+            <property name="margin-end">8</property>
+            <property name="selectable">1</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="1.44"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description_label">
+            <property name="label" translatable="yes">A fast and easy BitTorrent client</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="copyright_label">
+            <property name="label" translatable="yes">Copyright © The {appname} Project</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="homepage_label"/>
+        </child>
+      </object>
+    </child>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="dialog_buttons">
+        <property name="css-classes">tr-button-box</property>
+        <property name="halign">center</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton" id="credits_button">
+            <property name="label" translatable="yes">C_redits</property>
+            <property name="focusable">1</property>
+            <property name="receives-default">1</property>
+            <property name="use-underline">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="close_button">
+            <property name="label" translatable="yes">_Close</property>
+            <property name="focusable">1</property>
+            <property name="receives-default">1</property>
+            <property name="use-underline">1</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="1">credits_button</action-widget>
+      <action-widget response="close">close_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>

@@ -23,6 +23,7 @@ gtk/Torrent.cc
 gtk/retransmission-gtk.desktop.in
 gtk/retransmission-gtk.metainfo.xml.in
 gtk/transmission-menus.ui
+gtk/ui/gtk3/AboutDialog.ui
 gtk/ui/gtk3/AddTrackerDialog.ui
 gtk/ui/gtk3/DetailsDialog.ui
 gtk/ui/gtk3/EditTrackersDialog.ui
@@ -36,6 +37,7 @@ gtk/ui/gtk3/PrefsDialog.ui
 gtk/ui/gtk3/RelocateDialog.ui
 gtk/ui/gtk3/StatsDialog.ui
 gtk/ui/gtk3/TorrentUrlChooserDialog.ui
+gtk/ui/gtk4/AboutDialog.ui
 gtk/ui/gtk4/AddTrackerDialog.ui
 gtk/ui/gtk4/DetailsDialog.ui
 gtk/ui/gtk4/EditTrackersDialog.ui
