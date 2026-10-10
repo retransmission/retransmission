@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Alta Prioridade";
 
-/* Legal alert -> button */
-"I Accept" = "Eu Aceito";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Se você estiver tentando usar dados já existentes, o diretório de dados raiz deve estar dentro do diretório de destino.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Visualização Rápida";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Sair";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Transferências Não Ativas";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "O %@ é um programa de compartilhamento de arquivos. Ao ativar um torrent, você vai estar disponibilizando-o para os demais usuários da rede. Você é o responsável legal pelo conteúdo que compartilhar; respeite as leis locais.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "O %@ é um aplicativo completo para torrent. Saiba que muito tempo e esforço foram investidos no desenvolvimento, codificação e refinamento. Se você gosta de usá-lo, considere fazer uma doação.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Sementes da Web";
-
-/* Legal alert -> title */
-"Welcome to %@" = "Bem-vindo ao %@";
 
 /* Groups -> Name */
 "Yellow" = "Amarelo";

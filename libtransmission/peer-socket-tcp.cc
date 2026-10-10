@@ -35,7 +35,7 @@ tr_socket_t create_socket(int const domain)
         if (sockerrno != EAFNOSUPPORT) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't create socket: {error} ({error_code})")),
+                    "Couldn't create socket: {error} ({error_code})",
                     fmt::arg("error", tr_net_strerror(sockerrno)),
                     fmt::arg("error_code", sockerrno)));
         }
@@ -100,7 +100,7 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
     if (bind(s, reinterpret_cast<sockaddr const*>(&source_sock), sourcelen) == -1) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't set source address {address} on {socket}: {error} ({error_code})")),
+                "Couldn't set source address {address} on {socket}: {error} ({error_code})",
                 fmt::arg("address", source_addr.display_name()),
                 fmt::arg("socket", s),
                 fmt::arg("error", tr_net_strerror(sockerrno)),
@@ -118,7 +118,7 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
             (tmperrno != ECONNREFUSED && tmperrno != ENETUNREACH && tmperrno != EHOSTUNREACH) || addr.is_ipv4()) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})")),
+                    "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})",
                     fmt::arg("socket", s),
                     fmt::arg("address", addr.display_name()),
                     fmt::arg("port", port.host()),

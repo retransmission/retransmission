@@ -132,8 +132,8 @@ target_sources(${TR_NAME}-mac
         NSMutableArrayAdditions.mm
         NSStringAdditions.h
         NSStringAdditions.mm
-        PeerProgressIndicatorCell.h
-        PeerProgressIndicatorCell.mm
+        PeersViews.h
+        PeersViews.mm
         PiecesView.h
         PiecesView.mm
         PortChecker.h
@@ -191,7 +191,6 @@ target_sources(${TR_NAME}-mac
         Utils.mm)
 
 set(XIB_FILES
-    AboutWindow.xib
     BlocklistStatusWindow.xib
     FileRenameSheetController.xib
     FilterBar.xib

@@ -759,7 +759,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [self.fDefaults removeObjectForKey:@"WarningInvalidOpen"];
     [self.fDefaults removeObjectForKey:@"WarningRemoveCompleted"];
     [self.fDefaults removeObjectForKey:@"WarningDonate"];
-    //[fDefaults removeObjectForKey: @"WarningLegal"];
 }
 
 - (IBAction)setDefaultForMagnets:(id)sender

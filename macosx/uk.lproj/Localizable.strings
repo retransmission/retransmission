@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Високий Пріоритет";
 
-/* Legal alert -> button */
-"I Accept" = "Приймаю";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Якщо ви намагаєтесь використовувати вже наявні дані, тека кореневих даних повинна знаходитись всередині теки призначення.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Швидкий Перегляд";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Вихід";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Роздачі неактивні";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ - це програма для обміну файлами. Під час запуску торрента його дані стануть доступними для інших шляхом завантаження. Ви та лише ви несете повну відповідальність перед судом та дотриманням місцевих законів.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ - це повнофункціональний торрент-додаток. Багато часу і сил пішло на розробку, кодування та вдосконалення. Якщо вам подобається користуватися ним, будь ласка, подумайте про те, щоб приявити свою любов через пожертву.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Сайти Роздачі";
-
-/* Legal alert -> title */
-"Welcome to %@" = "Ласкаво просимо до %@";
 
 /* Groups -> Name */
 "Yellow" = "Жовтий";

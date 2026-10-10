@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Yüksek Öncelik";
 
-/* Legal alert -> button */
-"I Accept" = "Kabul Ediyorum";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Eğer var olan veriyi kullanmaya çalışıyorsanız kök veri dizini hedef dizin içerisinde bulunmalıdır.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Göz At";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Çık";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Etkin Olmayan Aktarımlar";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ bir dosya paylaşım uygulamasıdır. Bir torrenti çalıştırdığınizda torrent verisi diğer herkese açık olacaktır. Bunun yerel kanunlarla olan uyumundan yalnız ve yalnız siz sorumlusunuz.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ tam donanımlı bir torrent uygulamasıdır. Geliştirme, kodlama ve ince ayarlarına çok fazla emek ve zaman harcadık. Eğer kullanmaktan memnunsanız, memnuniyetinizi ufak bir bağış ile gösterebilirsiniz.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Web Beslemeleri";
-
-/* Legal alert -> title */
-"Welcome to %@" = "%@’a hoş geldiniz";
 
 /* Groups -> Name */
 "Yellow" = "Sarı";

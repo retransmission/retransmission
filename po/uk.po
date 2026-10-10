@@ -1771,16 +1771,6 @@ msgstr[1] "Залишилося {seconds_left:L} секунди"
 msgstr[2] "Залишилося {seconds_left:L} секунд"
 msgstr[3] "Залишилося{seconds_left:L} секунди"
 
-msgid "Announce error: {error} ({url})"
-msgstr "Помилка оголошення: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Помилка оголошення: {error} (Повторна спроба через {count} секунду) ({url})"
-msgstr[1] "Помилка оголошення: {error} (Повторна спроба через {count} секунди) ({url})"
-msgstr[2] "Помилка оголошення: {error} (Повторна спроба через {count} секунд) ({url})"
-msgstr[3] "Помилка оголошення: {error} (Повторна спроба через {count} секунд) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "Неможливо приєднатися до трекера"
 
@@ -1790,39 +1780,10 @@ msgstr "Трекер не відповідає"
 msgid "Success"
 msgstr "Вдачно"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Не вдалося розпізнати відповідь оголошення: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Не вдалося розпізнати відповідь scrape: {error} ({error_code})"
-
 msgid "Unknown error"
 msgstr "Невідома помилка"
 
 msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "Список блокування «{path}» має {count} запис"
-msgstr[1] "Список блокування «{path}» має {count} записи"
-msgstr[2] "Список блокування «{path}» має {count} записів"
-msgstr[3] "Список блокування «{path}» має {count} записи"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "Не вдалося розпізнати рядок: «{line}»"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "Перезапис старого формату файлу списку блокувань у новий формат"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
 msgstr ""
 
 #, fuzzy
@@ -1833,18 +1794,6 @@ msgstr "Не вдалося отримати список блокування: 
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "Не вдалося отримати список блокування: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "Помилка {crypto_library}: {error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Не вдалося зчитати «{path}»: Не є регулярним файлом"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1852,102 +1801,6 @@ msgstr "Не вдалося зчитати «{path}»"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Не вдалося отримати «{path}»: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Успішно оновлено джерело{protocol}за адресою {ip}"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr ""
-
-msgid "Your machine does not support {protocol}"
-msgstr "Ваш пристрій не підтримує {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Успішно оновлено глобальну  {type} за адресою {ip} за допомогою{url}"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Забагато таких повідомлень! Це повідомлення більше не показуватиметься впродовж цієї сесії."
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "Пропуск «{path}»: {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Не вдалося привʼязати порт {port} на {address}: {error} ({error_code}) — Чи не запущено вже іншу копію {appname}?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Не вдалося привʼязати порт {port} на {address}: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "Не вдалося відкрити «{path}»: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "Не вдалося зарезервувати «{path}»: {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "Не вдалося обрізати «{path}»: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Не вдалося створити сокет: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Не вдалося встановити адресу джерела {address} на {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Не вдалося підʼєднати сокет {socket} до {address}:{port}: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "Невідомий стан: {state}"
-
-msgid "Starting"
-msgstr "Запуск"
-
-msgid "Forwarded"
-msgstr "Переспрямовано"
-
-msgid "Stopping"
-msgstr "Зупинка"
-
-msgid "Not forwarded"
-msgstr "Не переспрямовано"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Переадресовано приватний порт {private_port} до публічного порту {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Стан змінено з «{old_state}» до «{state}»"
-
-msgid "Found public address '{address}'"
-msgstr "Знайдено публічну адресу «{address}»"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "Порт {port} вже не переадресовується"
-
-msgid "Port {port} forwarded successfully"
-msgstr "Порт {port} успішно переадресовано"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Знайдено інтернет маршрутизатор «{url}»"
-
-msgid "Local Address is '{address}'"
-msgstr "Локальна Адреса «{address}»"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr ""
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "Припинення переадресування портів через «{url}», служба «{type}»"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Переадресація порту за допомогою «{url}», служба «{type}». (локальна адреса: {address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr ""
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Якщо ваш маршрутизатор підтримує UPnP, будь ласка, переконайтеся, що UPnP увімкнено!"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1965,128 +1818,11 @@ msgstr "Не вдалося отримати торент: {error} ({error_code}
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "Не вдалося отримати торент: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Довжина шляху до Unix-сокета має бути менше {count} символів (включно з префіксом «{prefix}»)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr ""
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr ""
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr ""
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr ""
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr ""
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "Невідомий URI від {host}: '{uri}'"
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Unix-сокети не підтримуються у Windows. Будь ласка, змініть «{key}» у ваших налаштуваннях."
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "Не вдалося встановити режим доступу до RPC сокета {mode:#o}, встановлення 0755 за замовчуванням"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "Не вдалося привʼязати до {address} після {count} спроби, спроби облишено"
-msgstr[1] "Не вдалося привʼязати до {address} після {count} спроб, спроби облишено"
-msgstr[2] "Не вдалося привʼязати до {address} після {count} спроб, спроби облишено"
-msgstr[3] "Не вдалося привʼязати до {address} після {count} спроби, спроби облишено"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "Прослуховування RPC та Web запитів на «{address}»"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "Зупинено прослуховування RPC та Веб запитів на «{address}»"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "Додано «{entry}» до білого списку"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "Значення «{key}» встановлено до «{value}», але має бути IPv4 або IPv6 адресою або шляхом до Unix-сокета. Використовується значення за замовчанням «0.0.0.0»"
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "Обслуговування RPC та Web запитів на {address}"
-
-msgid "Whitelist enabled"
-msgstr "Білий список увімкнено"
-
-msgid "Password required"
-msgstr "Потрібен пароль"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "Обслуговування RPC та Web запитів із «{path}»"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "Час увімкнення «черепашого» режиму"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "Час вимкнення «черепашого» режиму"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Прослуховуються вхідні з'єднання вузлів на {hostport}"
-
-msgid "{appname} version {version} starting"
-msgstr "{appname} версії {version} запускається"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} версії {version} завершує роботу"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "Завантажено {count} торент"
-msgstr[1] "Завантажено {count} торенти"
-msgstr[2] "Завантажено {count} торентів"
-msgstr[3] "Завантажено {count} торента"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Не вдалося відкрити lock-файл сесії «{path}»: {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Не вдалося використати метаінформацію від  '{path}' для '{magnet}': {error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr " Дані не знайдено! Переконайтеся, що ваші диски підключено, або скористайтеся «Встановити розташування». Щоб завантажити повторно, скористайтеся \"Перевірити локальні дані\" і запустіть торрент після цього."
-
-msgid "Calling script '{path}'"
-msgstr "Запуск сценарію «{path}»"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Не вдалося запустити сценарій «{path}»: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "Досягнуто співвідношення роздачі; призупинення торента"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Досягнуто ліміту роздачі простою; призупинення торента"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Перезапущено вручну — співвідношення вимкнено"
-
-msgid "Pausing torrent"
-msgstr "Призупинення торента"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr ""
-
-msgid "Removing torrent"
-msgstr "Вилучення торенту"
 
 #, fuzzy
 #| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
@@ -2095,52 +1831,6 @@ msgstr "Не вдалося пересунути «{old_path}» до «{path}»:
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr " Торрент призупинено, оскільки не знайдено жодних даних!Переконайтеся, що ваші диски підключено, або скористайтеся «Встановити місцезнаходження», а потім знову скористайтеся «Перевірити локальні дані». Щоб завантажити повторно, запустіть торрент."
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Не вдалося пересунути «{old_path}» до «{path}»: {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr " Попередження відстеження: '{warning}' ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "Видалення torrent-файлу «{path}»"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "Не вдалося пересунути «{old_path}» до «{path}»: {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Торент-файл перенесено з '{old_path}' до '{path}'"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Не вдалося розпізнати  '{filename}' рядок: '{line}'"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "Не вдалося знайти «{address}:{port}»: {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Не вдалося зробити IPv4 сокет неблокуючим  {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "Не вдалося привʼязати сокет IPv4 {address}: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "Не вдалося зробити IPv6 сокет неблокуючим  {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "Не вдалося привʼязати сокет IPv6 {address}: {error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "Невідоме сімейство сокетів"
 
 msgid "B"
 msgstr "Б"
@@ -2186,60 +1876,6 @@ msgstr "ТБ"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Не вдалося розпізнати JSON на позиції {position} «{text}»: {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "Не вдалося відстежити «{path}»: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Не вдалося зчитати подію: очікувалося {expected_size}, отримано {actual_size}"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Не вдалося зчитати імʼя файлу: очікувалося {expected_size}, отримано {actual_size}"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Не вдалося зчитати подію: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "Не вдалося перетворити «{path}» на нативний шлях"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Не вдалося створити конвеєр: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "Не вдалося створити потік виконання"
-
-msgid "Couldn't read directory changes"
-msgstr "Не вдалося зчитати зміни до теки"
-
-msgid "Couldn't wait for directory changes"
-msgstr "Не вдалося стежити за змінами до теки"
-
-msgid "Consider upgrading your curl installation."
-msgstr ""
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr ""
-
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr ""
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Перевірить сертифікати трекера за допомогою змінної CURL_CA_BUNDLE: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "Примітка: це працює, лише якщо ви зібрали на основі libcurl за допомогою openssl або gnutls, НЕ nss"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "Примітка: Недійсні сертифікати відображатимуться як «Не вдалося підключитися до трекера», як і багато інших помилок"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "Не вдалося отримати '{url}': очікуваний код відповіді HTTP {expected_code}, отримано {actual_code}"
 
 msgid "Server"
 msgstr "Сервер"
@@ -2690,13 +2326,6 @@ msgstr[0] "день"
 msgstr[1] "дні"
 msgstr[2] "днів"
 msgstr[3] "дня"
-
-msgid "seconds"
-msgid_plural "seconds"
-msgstr[0] "секунда"
-msgstr[1] "секунди"
-msgstr[2] "секунд"
-msgstr[3] "секунди"
 
 #~ msgid "Finished"
 #~ msgstr "Завершено"

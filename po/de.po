@@ -1736,14 +1736,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} Sekunde verbleibend"
 msgstr[1] "{seconds_left:L} Sekunden verbleibend"
 
-msgid "Announce error: {error} ({url})"
-msgstr "Fehler bei Ankündigung: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Fehler bei Ankündigung: {error} (Erneuter Versuch in {count} Sekunde) ({url})"
-msgstr[1] "Fehler bei Ankündigung: {error} (Erneuter Versuch in {count} Sekunden) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "Konnte nicht zu Tracker verbinden"
 
@@ -1753,37 +1745,10 @@ msgstr "Tracker antwortete nicht"
 msgid "Success"
 msgstr "Erfolgreich"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Ankündigungsantwort konnte nicht geparst werden: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Scrape-Antwort konnte nicht geparst werden: {error} ({error_code})"
-
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
 msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "Sperrliste »{path}« hat {count} Eintrag"
-msgstr[1] "Sperrliste »{path}« hat {count} Einträge"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "Zeile »{line}« konnte nicht geparst werden"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "Schreibe alte Sperrliste in ein neues Format um"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
 msgstr ""
 
 #, fuzzy
@@ -1794,18 +1759,6 @@ msgstr "Sperrliste konnte nicht abgerufen werden: {error} ({error_code})"
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "Sperrliste konnte nicht abgerufen werden: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} Fehler: {error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "»{path}« konnte nicht gelesen werden: Keine reguläre Datei"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1813,102 +1766,6 @@ msgstr "»{path}« konnte nicht gelesen werden"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "»{path}« konnte nicht ermittelt werden: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Quelladresse ({protocol}) wurde erfolgreich zu {ip} aktualisiert"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr ""
-
-msgid "Your machine does not support {protocol}"
-msgstr "Ihr Gerät unterstützt nicht {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Globale {type} Adresse wurde erfolgreich zu {ip} mit {url} aktualisiert"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Zu viele Nachrichten dieser Art! Ich werde diese Meldung in dieser Sitzung nicht mehr protokollieren."
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "Überspringe »{path}«: {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Port {port} konnte nicht an {address} gebunden werden: {error} ({error_code}) -- Läuft bereits eine weitere {appname} Instanz?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Port {port} konnte nicht an {address} gebunden werden: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "»{path}« konnte nicht geöffnet werden: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "»{path}« konnte nicht vorbelegt werden: {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "»{path}« konnte nicht verkürzt werden: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Socket konnte nicht erstellt werden: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Quelladresse {address} konnte für {socket} nicht gesetzt werden: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Verbindung des Sockets {socket} auf {address}:{port} konnte nicht aufgebaut werden: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "Unbekannter Status: {state}"
-
-msgid "Starting"
-msgstr "Wird gestartet"
-
-msgid "Forwarded"
-msgstr "Weitergeleitet"
-
-msgid "Stopping"
-msgstr "Wird angehalten"
-
-msgid "Not forwarded"
-msgstr "Nicht weitergeleitet"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Privater Port {private_port} dem öffentlichen Port {public_port} zugeordnet"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Status geändert von »{old_state}« zu »{state}«"
-
-msgid "Found public address '{address}'"
-msgstr "Öffentliche Adresse »{address}« gefunden"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "Port {port} wird nicht mehr weitergeleitet"
-
-msgid "Port {port} forwarded successfully"
-msgstr "Port {port} erfolgreich weitergeleitet"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Internet-Gateway-Gerät »{url}« gefunden"
-
-msgid "Local Address is '{address}'"
-msgstr "Lokale Adresse ist »{address}«"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr ""
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "Stoppe Port-Weiterleitung mit »{url}«, Service »{type}«"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Port-Weiterleitung mit »{url}«, Service »{type}« (lokale Adresse: {address}:{port})."
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr ""
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Falls Ihr Router UPnP unterstützt, achten Sie bitte darauf, dass UPnP aktiviert ist!"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1926,124 +1783,11 @@ msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "Torrent konnte nicht abgerufen werden: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Unix Socket-Pfad muss weniger als {count} Zeichen umfassen (einschließlich dem Präfix »{prefix}«)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr ""
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr ""
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr ""
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr ""
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr ""
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr ""
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Unix Sockets werden unter Windows nicht unterstützt. Bitte ändern Sie »{key}« in den Einstellungen."
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "RPC Socket-Modus konnte nicht auf {mode:#o} gesetzt werden, verwende als Standard 0755"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "Konnte nach {count} Versuch keine Bindung an {address} herstellen, gebe auf"
-msgstr[1] "Konnte nach {count} Versuchen keine Bindung an {address} herstellen, gebe auf"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "Lausche nach RPC- und Web-Anfragen auf »{address}«"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "Lauschen nach RPC- und Web-Anfragen auf »{address}« wurde gestoppt"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "»{entry}« zur Host-Whitelist hinzugefügt"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "Die Einstellung für »{key}« ist »{value}«, muss aber eine IPv4/IPv6-Adresse oder ein Unix Socket-Pfad sein. Verwende als Standwardwert '0.0.0.0'"
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "RPC- und Web-Anfragen werden auf {address} bedient"
-
-msgid "Whitelist enabled"
-msgstr "Whitelist aktiviert"
-
-msgid "Password required"
-msgstr "Passwort erforderlich"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "RPC- und Web-Anfragen werden über »{path}« bedient"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "Zeit, um den Schildkröten-Modus zu aktivieren"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "Zeit, um den Schildkröten-Modus zu deaktivieren"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Lausche auf eingehende Verbindungen von Gegenstellen auf {hostport}"
-
-msgid "{appname} version {version} starting"
-msgstr "{appname} Version {version} wird gestartet"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} Version {version} wird beendet"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "{count} Torrent geladen"
-msgstr[1] "{count} Torrents geladen"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Sperrdatei »{path}« für die Sitzung konnte nicht geöffnet werden: {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Konnte Metainformationen aus »{path}« für »{magnet}« nicht verwenden: {error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "Keine Daten gefunden! Stellen Sie sicher, dass Ihre Laufwerke angeschlossen sind oder benutzen Sie \"Ort festlegen\". Zum erneuten Herunterladen nutzen Sie \"Lokale Daten überprüfen\" und starten Sie danach den Torrent."
-
-msgid "Calling script '{path}'"
-msgstr "Rufe Skript »{path}« auf"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Konnte Skript »{path}« nicht aufrufen: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "Verteilungsverhältnis erreicht, pausiere Torrent"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Inaktvitätslimit für Verteilung erreicht, pausiere Torrent"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Manuell neu gestartet -- Verteilungsverhältnis wird deaktiviert"
-
-msgid "Pausing torrent"
-msgstr "Torrent wird angehalten"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr ""
-
-msgid "Removing torrent"
-msgstr "Torrent wird entfernt"
 
 #, fuzzy
 #| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
@@ -2052,52 +1796,6 @@ msgstr "»{old_path}« konnte nicht nach »{path}« verschoben werden: {error} (
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Torrent pausiert, weil keine Daten gefunden wurden! Stellen Sie sicher, dass Ihre Laufwerke angeschlossen sind oder benutzen Sie \"Ort festlegen\" und dann noch mal \"Lokale Daten überprüfen\". Zum erneuten Herunterladen starten Sie den Torrent."
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "»{old_path}« konnte nicht nach »{path}« verschoben werden: {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "Tracker Warnung: »{warning}« ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "Die Torrent-Datei »{path}« wird entfernt"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "»{old_path}« konnte nicht nach »{path}« verschoben werden: {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Torrent-Datei wurde migriert von »{old_path}« nach »{path}«"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Zeile in »{filename}« konnte nicht geparst werden: »{line}«"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "»{address}:{port}« konnte nicht nachgeschlagen werden: {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "IPv4-Socket {address} konnte nicht gebunden werden: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "IPv6-Socket {address} konnte nicht gebunden werden: {error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "Unbekannte Socket-Familie"
 
 msgid "B"
 msgstr "B"
@@ -2143,60 +1841,6 @@ msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "JSON konnte an Position {position} »{text}« nicht geparst werden: {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "»{path}« konnte nicht überwacht werden: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Ereignis konnte nicht gelesen werden: {expected_size} erwartet, {actual_size} erhalten"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Dateiname konnte nicht gelesen werden: {expected_size} erwartet, {actual_size} erhalten"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Ereignis konnte nicht gelesen werden: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "»{path}« konnte nicht in nativen Pfad umgewandelt werden"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Pipe konnte nicht erstellt werden: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "Thread konnte nicht erstellt werden"
-
-msgid "Couldn't read directory changes"
-msgstr "Verzeichnisänderungen konnten nicht gelesen werden"
-
-msgid "Couldn't wait for directory changes"
-msgstr "Auf Verzeichnisänderungen konnte nicht gewartet werden"
-
-msgid "Consider upgrading your curl installation."
-msgstr ""
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr ""
-
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr ""
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Tracker-Zertifikate werden mit envvar CURL_CA_BUNDLE überprüft: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "Wichtig: Dies funktioniert nur, wenn Sie gegen libcurl mit openssl oder gnutls gebaut haben, NICHT mit nss"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "Wichtig: Ungültige Zertifikate werden mit der Meldung »Konnte nicht mit Tracker verbinden« angezeigt, wie viele andere Fehler auch"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "»{url}« konnte nicht abgerufen werden: Erwarteter HTTP Antwortcode {expected_code}, erhalten {actual_code}"
 
 msgid "Server"
 msgstr "Server"
@@ -2611,11 +2255,6 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "Tag"
 msgstr[1] "Tage"
-
-msgid "seconds"
-msgid_plural "seconds"
-msgstr[0] "Sekunde"
-msgstr[1] "Sekunden"
 
 #~ msgid "Finished"
 #~ msgstr "Abgeschlossen"

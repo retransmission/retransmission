@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Hög prioritet";
 
-/* Legal alert -> button */
-"I Accept" = "Jag godkänner";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Om du försöker använda redan befintliga data, ska rotdatamappen vara inuti destinationsmappen.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Överblick";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Avsluta";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Överföringar inte aktiva";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ är ett fildelningsprogram. När du kör en torrent kommer dess data att göras tillgängliga för andra genom sändning. Du och endast du är fullt ansvarig för att utöva korrekt omdöme och följa dina lokala lagar.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ är en fullfjädrad torrentapplikation. Mycket tid och ansträngning har lagts ner på utveckling, kodning och förfining. Om du gillar att använda den, överväg att visa din kärlek med en donation.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Webbdistributioner";
-
-/* Legal alert -> title */
-"Welcome to %@" = "Välkommen till %@";
 
 /* Groups -> Name */
 "Yellow" = "Gul";

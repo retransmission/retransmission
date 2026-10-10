@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "優先度高";
 
-/* Legal alert -> button */
-"I Accept" = "同意";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "取得済みのデータを使用するなら、ルートのデータフォルダは保存先のフォルダの中にあるべきです。";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "クイックルック";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "終了";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "転送未稼働";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ はファイル共有プログラムです。トレントを利用すると、アップロードを通じてそのデータを他者が入手できるようになります。適切に判断し現地の法律を遵守する責任は、あなた自身にあります。";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ は完全機能を備えたトレント用アプリです。開発、コードの作成また改良に多くの労力が費やされています。気に入っていただけているなら寄付によっていいね！することもできます。";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "ウェブシード";
-
-/* Legal alert -> title */
-"Welcome to %@" = "%@ のご利用を歓迎します";
 
 /* Groups -> Name */
 "Yellow" = "イエロー";

@@ -1641,13 +1641,6 @@ msgid "{seconds_left:L} second left"
 msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L}秒残り"
 
-msgid "Announce error: {error} ({url})"
-msgstr "アナウンスのエラー: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "アナウンスのエラー: {error} (再試行まで{count}秒) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "トラッカーに接続できません"
 
@@ -1657,37 +1650,11 @@ msgstr "トラッカーが応答しません"
 msgid "Success"
 msgstr "成功"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "アナウンスの応答を解析できません: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "スクレイプの応答を解析できません: {error} ({error_code})"
-
 msgid "Unknown error"
 msgstr "不明のエラー"
 
 msgid "{ip_protocol} connection failed"
 msgstr "{ip_protocol} 接続失敗"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "参照できません '{address}:{port}'  /{ip_protocol}: {error} ({error_code})"
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "ブロックリスト「{path}」には {count} 項目あります"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "この行を解析できません: 「{line}」"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "古いブロックリストのファイル形式を新しいものへ書き換え中"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
-msgstr ""
 
 #, fuzzy
 #| msgid "Couldn't fetch blocklist: {error} ({error_code})"
@@ -1697,18 +1664,6 @@ msgstr "ブロックリストを取得できません: {error} ({error_code})"
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "ブロックリストを取得できません: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} エラー: {error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "以下を読み込めません「{path}」: 通常のファイルではありません"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1716,102 +1671,6 @@ msgstr "読み込めません「{path}」"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "取得できません「{path}」: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "更新成功: 元の {protocol} アドレスを {ip} へ"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr ""
-
-msgid "Your machine does not support {protocol}"
-msgstr " この端末は{protocol}に未対応"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "更新成功: グローバル {type} アドレスを {ip} の {url}を利用したものへ"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "以下のようなメッセージがたくさん ! このセッションではこのメッセージは記録しません。"
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "省略「{path}」: {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "{address}上のポート{port}をバインドできません : {error} ({error_code}) -- 別の {appname} のコピーが既に実行されていませんか ?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "{port} {address}上のポート{port}をバインドできません: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "開けません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "事前割り当てできません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "切り詰めできません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "ソケットを作成できません: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "入力元のアドレス {address} : {socket} を設定できません: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr " ソケット{socket} を {address}:{port}へ接続できません: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "不明の状態: {state}"
-
-msgid "Starting"
-msgstr "開始"
-
-msgid "Forwarded"
-msgstr "転送済み"
-
-msgid "Stopping"
-msgstr "停止"
-
-msgid "Not forwarded"
-msgstr "未転送"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "プライベートポート {private_port} をパブリックポート {public_port}にマッピングしました"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "状態が変化「{old_state}」から「{state}」へ"
-
-msgid "Found public address '{address}'"
-msgstr "パブリックアドレスを発見「{address}」"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "ポート{port} は転送されなくなりました"
-
-msgid "Port {port} forwarded successfully"
-msgstr "ポート {port} は正常に転送されました"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "インターネットゲートウェイの端末が見つかりました「{url}」"
-
-msgid "Local Address is '{address}'"
-msgstr "内部アドレスは「{address}」"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "ローカルのポート{local_port} は {advertised_port}に転送されません"
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "以下によるポート転送を停止中「{url}」「サービス {type}」"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "以下によるポート転送中「{url}」「サービス {type}」。(内部アドレス: {address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "ローカルのポート {local_port} を {advertised_port}に転送しました"
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "お使いのルーターがUPnPに対応するなら、有効化されているか確認してください !"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1829,122 +1688,11 @@ msgstr "トレントを取得できません: {error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "トレントを取得できません: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Unix のソケットのパスは {count} 文字以下の必要があります ({prefix} 接頭辞含む)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "{host}からの要求が拒否されました (ディレクトリトラバーサル攻撃の可能性)"
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "{host} からの要求が拒否されました (ブルートフォース保護が有効)"
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "{host} からの要求が拒否されました (ホワイトリスト未登録のIP)"
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr " {host} からの要求が拒否されました (認証失敗)"
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "{host} からの要求が拒否されました (ホワイトリスト未登録のホスト)"
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "以下からの不明なURI {host}: '{uri}'"
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Unix のソケットは Windows には対応していません。設定から「{key}」を変更してください。"
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "RPC のソケットモードを {mode:#o}に設定できません。初期値は0755"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "{address} に{count}回バインドできなかったので断念します"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "以下で RPC とウェブリクエストを待ち受け中「{address}」"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "以下の RPC とウェブリクエストの待ち受けを停止「{address}」"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "「{entry}」をホストのホワイトリストに追加しました"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "「{key}」の設定は「{value}」ですが、IPv4 や IPv6 のアドレスまたは、Unix のソケットのパスにする必要があります。初期値 0.0.0.0 を使用"
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "以下のRPCとウェブリクエストを処理 {address}"
-
-msgid "Whitelist enabled"
-msgstr "ホワイトリスト有効化"
-
-msgid "Password required"
-msgstr "パスワードを要求"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "以下からのRPCとウェブリクエストを処理「{path}」"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "亀モード開始の時間"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "亀モード解除の時間"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "以下で接続してくるピア接続を待ち受け{hostport}"
-
-msgid "{appname} version {version} starting"
-msgstr "{appname} バージョン{version} 開始"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "{appname} バージョン {version} シャットダウン"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "{count} トレントを読み込みました"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "セッションのロックファイルを開けません「{path}」: {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "「{path}」からのメタ情報が使用できません。 「{magnet}」用のものです: {error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "データなし。ドライブの接続を確認したり「場所の設定」をお使いください。再ダウンロードには「取得データの検証」の後、トレントを開始します。"
-
-msgid "Calling script '{path}'"
-msgstr "スクリプト実行「{path}」"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "スクリプトを実行できません「{path}」: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "シード比に達しました; トレントを停止"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "シードアイドルの制限に達しました。トレントを停止"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "手動で再起動 -- シード比を無効化"
-
-msgid "Pausing torrent"
-msgstr "トレントの停止"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "すべてのトレントファイルを除去できませんでした: {error} ({error_code})"
-
-msgid "Removing torrent"
-msgstr "トレントの削除"
 
 #, fuzzy
 #| msgid "Couldn't remove all torrent files: {error} ({error_code})"
@@ -1953,52 +1701,6 @@ msgstr "すべてのトレントファイルを除去できませんでした: {
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "データがないためトレントを停止しました。ドライブの接続を確認したり「場所の設定」の後、「取得データの検証」を行います。再ダウンロードするにはトレントを開始します。"
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "移動できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "トラッカーの警告: '{warning}' ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "トレントファイルを削除「{path}」"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "移動できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "トレントファイルを移行「{old_path}」から「{path}」へ"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "解析負荷「{filename}」の{line}行"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "以下を検索できませんでした「{address}:{port}」: {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "{ip_protocol} LPD を初期化できませんでした: {error} ({error_code})"
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "IPv4ソケットを非ブロック化できませんでした {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "IPv4 ソケットをバインドできません {address}: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "IPv6ソケットを非ブロック化できませんでした {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "IPv6 ソケットをバインドできません {address}: {error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "不明なソケットファミリー"
 
 msgid "B"
 msgstr "B"
@@ -2044,62 +1746,6 @@ msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "JSON の以下の位置と内容を解析できません {position}「{text}」: {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "以下を監視できません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "イベントを読み取れません: 期待値{expected_size}, 実測値 {actual_size}"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "ファイル名を読み取れません: 期待値 {expected_size}, 実測値 {actual_size}"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "イベントを読み取れません: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "「{path}」をネイティブのパスに変換できません"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "パイプを作成できません: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "スレッドを作成できません"
-
-msgid "Couldn't read directory changes"
-msgstr "ディレクトリの変更を読み取りできません"
-
-msgid "Couldn't wait for directory changes"
-msgstr "ディレクトリの変更を待機できません"
-
-msgid "Consider upgrading your curl installation."
-msgstr "curl のアップグレードを考慮してください。"
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr "curl {curl_version} は SIGPIPE クラッシュを起こしやすいです。{details_url}"
-
-#, fuzzy
-#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr "curl {curl_version} には、eventfd にて二重にクローズする脆弱性があり、 transmission-daemon systemd サービスに SIGABRT クラッシュを引き起こすことがあります。{details_url}"
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "envvar CURL_CA_BUNDLE を使いトラッカーを検証: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "注: nssではなく、openssl か gnutls のある libcurl に対してビルドした場合のみ動作します"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "注: 無効な証明書では、多くのほかのエラーのように「トラッカーに接続できません」となります"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "以下から取得できません {url} : 期待する応答コード {expected_code}、実際は {actual_code}"
 
 msgid "Server"
 msgstr "サーバー"
@@ -2490,10 +2136,6 @@ msgstr[0] "秒"
 msgid "day"
 msgid_plural "days"
 msgstr[0] "日"
-
-msgid "seconds"
-msgid_plural "seconds"
-msgstr[0] "秒"
 
 #~ msgid "Finished"
 #~ msgstr "完了"

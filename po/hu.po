@@ -1709,14 +1709,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} másodperc van hátra"
 msgstr[1] "{seconds_left:L} másodperc van hátra"
 
-msgid "Announce error: {error} ({url})"
-msgstr "Bejelentési hiba: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "Bejelentési hiba: {error} (Újrapróbálkozás {count} másodperc múlva) ({url})"
-msgstr[1] "Bejelentési hiba: {error} (Újrapróbálkozás {count} másodperc múlva) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "Nem sikerült kapcsolódni a trackerhez"
 
@@ -1726,38 +1718,11 @@ msgstr "A tracker nem válaszolt"
 msgid "Success"
 msgstr "Sikeres"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Nem sikerült feldolgozni a bejelentés válaszát: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Nem sikerült feldolgozni a scrape választ: {error} ({error_code})"
-
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
 msgid "{ip_protocol} connection failed"
 msgstr "{ip_protocol} kapcsolat sikertelen"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Nem sikerült lekérni a „{address}:{port}” {ip_protocol} protokollon: {error} ({error_code})"
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "A(z) „{path}” tiltólista {count} elemet tartalmaz"
-msgstr[1] "A(z) '{path}' tiltólista {count} elemet tartalmaz"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "Nem sikerült a sor feldolgozása: '{line}'"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "Régi tiltólista fájl formátum átírása az új formátumra"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
-msgstr ""
 
 #, fuzzy
 #| msgid "Couldn't fetch blocklist: {error} ({error_code})"
@@ -1767,18 +1732,6 @@ msgstr "Nem sikerült a tiltólista lekérése: {error} ({error_code})"
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "Nem sikerült a tiltólista lekérése: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "{crypto_library} hiba: {error} ({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Nem sikerült '{path}' olvasása: Nem egy hagyományos fájl"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1786,102 +1739,6 @@ msgstr "Nem sikerült '{path}' olvasása"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Nem sikerült '{path}' lekérése: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Sikeresen frissítette a forrás {protocol} címet {ip}-re"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr "Egyetlen IP protokollon sem sikerült lekérni a forráscímet, a hálózati kapcsolat nem lehetséges"
-
-msgid "Your machine does not support {protocol}"
-msgstr "Az ön gépe nem támogatja a következőt: {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Sikeresen frissítette a globális {type} címet {ip}-re a {url} használatával"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "Túl sok ilyen üzenet! Ebben a munkamenetben többet nem lesz naplózva."
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "'{path}' kihagyása: {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "Nem sikerült a {port} lefoglalása a {address} címen: {error} ({error_code}) -- Már fut a {appname} egy másik példánya?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "Nem sikerült a {port} lefoglalása a {address} címen: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' megnyitása: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' előre lefoglalása: {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' feldarabolása: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Nem sikerült a socket létrehozása: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Nem sikerült a {address} forráscím beállítása a következő socketen: {socket}. Hiba: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Nem sikerült a {socket} socket hozzákapcsolása a {address}:{port} címhez: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "Ismeretlen állapot: {state}"
-
-msgid "Starting"
-msgstr "Indítás"
-
-msgid "Forwarded"
-msgstr "Továbbítva"
-
-msgid "Stopping"
-msgstr "Leállítás"
-
-msgid "Not forwarded"
-msgstr "Nincs továbbítva"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "{private_port} számú privát port hozzárendelve a {public_port} számú nyilvános porthoz"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "'{old_state}' állapot erre változott: '{state}'"
-
-msgid "Found public address '{address}'"
-msgstr "Talált nyilvános cím: '{address}'"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "{port} számú port már nincs továbbítva"
-
-msgid "Port {port} forwarded successfully"
-msgstr "{port} számú port továbbítása sikeres"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "Internetes átjáróeszköz megtalálva: '{url}' "
-
-msgid "Local Address is '{address}'"
-msgstr "A helyi cím: '{address}'"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "A helyi port ({local_port}) nincs ide továbbítva: {advertised_port}"
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "'{url}' címen keresztüli porttovábbítás leállítása, szolgáltatás: '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Porttovábbítás '{url}' címen keresztül, szolgáltatás: '{type}'. (helyi cím: {address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "Helyi port ({local_port}) továbbítva ide: {advertised_port}"
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "Ha a routere támogatja az UPnP-t, akkor győződjön meg róla, hogy engedélyezve van-e."
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1899,124 +1756,11 @@ msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "Unix-foglalat útvonalának {count} karakternél rövidebbnek kell lennie (a '{prefix}' előtagot is beleértve)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr ""
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr ""
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr ""
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr ""
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr ""
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr ""
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "Unix-foglalatok nem támogatottak Windowson. Módosítsa a '{key}' értékét a beállításokban."
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "Nem sikerült az RPC-socket módját erre állítani: {mode:#o}, visszaállás 0755-re"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "{count} próbálkozás után nem sikerült a kötés a(z) {address} címen, feladás"
-msgstr[1] "{count} próbálkozás után sem sikerült a {address} cím lefoglalása, feladás"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "RPC és webes kérések figyelése a következő címen: '{address}'"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "RPC és webes kérések figyelése leállítva a következő címen: '{address}' "
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "'{entry}'  hozzáadva a kiszolgáló fehérlistájára"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "A '{key}' beállítása '{value}'. Viszont ennek IPv4 vagy IPv6-címnek, vagy egy Unix-socket útvonalának kell lennie. Az alapértelmezés használata: '0.0.0.0'."
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "RPC és webes kérések kiszolgálása a következő címen: '{address}'"
-
-msgid "Whitelist enabled"
-msgstr "Fehérlista engedélyezve"
-
-msgid "Password required"
-msgstr "Jelszó szükséges"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "RPC és webes kérések kiszolgálása a következő útvonalon: '{path}'"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "Ideje bekapcsolni a teknős módot"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "Ideje kikapcsolni a teknős módot"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "Bejövő kapcsolatok figyelése a {hostport} porton"
-
-msgid "{appname} version {version} starting"
-msgstr "A {appname} {version} indul"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "A {appname} {version} leáll"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "{count} torrent betöltve"
-msgstr[1] "{count} torrent betöltve"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' munkamenetzárolási-fájl megnyitása: {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Nem lehetett használni a metainfót innen: '{path}' ami a következőhöz tartozik: '{magnet}'. Hiba: {error}({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "Nem található adat! Győződjön meg róla, hogy a meghajtói csatlakoztatva vannak, vagy használja a \"Hely megadása\" lehetőséget. Az újbóli letöltéshez használja a \"Helyi adatok ellenőrzése\" opciót, és indítsa el a torrentet utána."
-
-msgid "Calling script '{path}'"
-msgstr "Parancsfájl meghívása: '{path}'"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "Parancsfájl '{path}' meghívása nem sikerült: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "A megosztási arány elérve; a torrent szüneteltetése"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "Az inaktivitási korlát elérve; a torrent szüneteltetése"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Kézzel újraindítva – a megosztási arány kikapcsolása"
-
-msgid "Pausing torrent"
-msgstr "Torrent szüneteltetése"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr ""
-
-msgid "Removing torrent"
-msgstr "Torrent eltávolítása"
 
 #, fuzzy
 #| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
@@ -2025,52 +1769,6 @@ msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Torrent szüneteltetésre került, mert nem található adat! Győződjön meg róla, hogy a meghajtói csatlakoztatva vannak, aztán használja a \"Hely megadása\" lehetőséget. Végül az újbóli letöltéshez használja a \"Helyi adatok ellenőrzése\" opciót, és indítsa el a torrentet utána."
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "Tracker figyelmeztetés: '{warning}' ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "'{path}' torrent fájl eltávolítása"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Torrent fájl átköltöztetve innen: '{old_path}', ide: '{path}'"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "Nem sikerült '{filename}' sorának feldolgozása. Sor: '{line}'"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "Nem sikerült lekérni a '{address}:{port}' címet: {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "IPv4-socket lefoglalása nem sikerült {address}: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "IPv6-socket lefoglalása nem sikerült {address}: {error} ({error_code})"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "Ismeretlen socket család"
 
 msgid "B"
 msgstr "B"
@@ -2116,60 +1814,6 @@ msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Nem sikerült a JSON feldolgozása a {position} pozícióban: '{text}': {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' figyelése: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "Nem sikerült az esemény olvasása: {expected_size} volt várva, de {actual_size} érkezett"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "Nem sikerült a fájlnév olvasása: {expected_size} volt várva, de {actual_size} érkezett"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Nem sikerült az esemény olvasása: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "Nem sikerült a '{path}' útvonalat natív elérési úttá alakítani"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "Nem sikerült a pipe létrehozása: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "Nem sikerült a szál létrehozása"
-
-msgid "Couldn't read directory changes"
-msgstr "Nem sikerült a könyvtár változásainak olvasása"
-
-msgid "Couldn't wait for directory changes"
-msgstr "Nem sikerült a könyvtár változásait megvárni"
-
-msgid "Consider upgrading your curl installation."
-msgstr ""
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr ""
-
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr ""
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "Tracker tanúsítványainak ellenőrzése a CURL_CA_BUNDLE környezeti változó használatával: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "NB: ez csak akkor működik, ha a libcurl openssl-lel vagy gnutls-sel lett lefordítva, NEM nss-sel"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "NB: az érvénytelen tanúsítványok (más hibákhoz hasonlóan) 'Nem sikerült kapcsolódni a trackerhez' üzenetként fognak megjelenni"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "Nem sikerült letölteni '{url}': várt HTTP válasz kód {expected_code}, kapott kód {actual_code}"
 
 msgid "Server"
 msgstr "Kiszolgáló"
@@ -2584,11 +2228,6 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "nap"
 msgstr[1] "nap"
-
-msgid "seconds"
-msgid_plural "seconds"
-msgstr[0] "másodperc"
-msgstr[1] "másodperc"
 
 #~ msgid "Finished"
 #~ msgstr "Elkészült"

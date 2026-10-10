@@ -482,9 +482,6 @@
 /* files tab -> tooltip */
 "High Priority" = "Υψηλή προτεραιότητα ";
 
-/* Legal alert -> button */
-"I Accept" = "Δέχομαι";
-
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "Αν προσπαθείτε να χρησιμοποιήσετε ήδη υπάρχοντα δεδομένα, ο ριζικός κατάλογος δεδομένων θα πρέπει να βρίσκεται μέσα στον κατάλογο προορισμού.";
 
@@ -757,8 +754,7 @@
    View menu -> Quick Look */
 "Quick Look" = "Quick Look";
 
-/* Confirm Quit panel -> button
-   Legal alert -> button */
+/* Confirm Quit panel -> button */
 "Quit" = "Έξοδος";
 
 /* Stats window -> label
@@ -1092,9 +1088,6 @@
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Μεταφορές μη ενεργές";
 
-/* Legal alert -> message */
-"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Το %@ είναι ένα πρόγραμμα κοινής χρήσης αρχείων. Όταν εκτελείτε ένα torrent, τα δεδομένα του θα διατίθενται σε άλλους μέσω μεταφόρτωσης. Εσείς και μόνο εσείς είστε πλήρως υπεύθυνοι για την άσκηση ορθής κρίσης και την τήρηση των τοπικών σας νόμων.";
-
 /* Donation beg -> message */
 "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Το %@ είναι μια πλήρης εφαρμογή torrent. Έχει δαπανηθεί πολύς χρόνος και προσπάθεια για την ανάπτυξη, την κωδικοποίηση και τη βελτίωση. Εάν απολαμβάνετε την χρήση του, σκεφτείτε να δείξετε την αγάπη σας με μια δωρεά.";
 
@@ -1155,9 +1148,6 @@
 
 /* inspector -> web seed table -> header */
 "Web Seeds" = "Διαμοιραστές δικτύου";
-
-/* Legal alert -> title */
-"Welcome to %@" = "Καλώς ήρθατε στο %@";
 
 /* Groups -> Name */
 "Yellow" = "Κίτρινο";

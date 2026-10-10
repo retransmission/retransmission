@@ -1749,16 +1749,6 @@ msgstr[1] "נותרו {seconds_left:L} שניות"
 msgstr[2] "נותרו {seconds_left:L} שניות"
 msgstr[3] "נותרו {seconds_left:L} שניות"
 
-msgid "Announce error: {error} ({url})"
-msgstr "שגיאת הכרזה: {error} ({url})"
-
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] "שגיאת הכרזה: {error} (ניסיון נוסף בעוד שנייה) ({url})"
-msgstr[1] "שגיאת הכרזה: {error} (ניסיון נוסף בעוד שתי שניות) ({url})"
-msgstr[2] "שגיאת הכרזה: {error} (ניסיון נוסף בעוד {count} שניות) ({url})"
-msgstr[3] "שגיאת הכרזה: {error} (ניסיון נוסף בעוד {count} שניות) ({url})"
-
 msgid "Could not connect to tracker"
 msgstr "לא ניתן להתחבר לעוקב"
 
@@ -1768,40 +1758,11 @@ msgstr "העוקב לא הגיב"
 msgid "Success"
 msgstr "הצלחה"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "לא ניתן לפענח את תגובת ההכרזה: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "לא ניתן לפענח את תגובת הקרצוף: {error} ({error_code})"
-
 msgid "Unknown error"
 msgstr "שגיאה לא ידועה"
 
 msgid "{ip_protocol} connection failed"
 msgstr "חיבור {ip_protocol} נכשל"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "לא ניתן לאתר את ‚{address}:{port}’ תחת {ip_protocol}: {error} ({error_code})"
-
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] "ברשימת החסימה ‚{path}’ יש רשומה אחת"
-msgstr[1] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
-msgstr[2] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
-msgstr[3] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
-
-#, fuzzy
-#| msgid "Couldn't parse line: '{line}'"
-msgid "Couldn't parse line {line}: {base64}"
-msgstr "לא ניתן לפענח את השורה: ‚{line}’"
-
-#, fuzzy
-#| msgid "Rewriting old blocklist file format to new format"
-msgid "Rewriting old blocklist file {path} to new format"
-msgstr "תצורת קובץ רשימת החסימה הישן משוכתבת לתצורה החדשה"
-
-msgid "Blocklist is larger than {limit} MiB; ignoring it"
-msgstr ""
 
 #, fuzzy
 #| msgid "Couldn't fetch blocklist: {error} ({error_code})"
@@ -1811,18 +1772,6 @@ msgstr "לא ניתן למשוך את רשימת החסימה: {error} ({error_c
 msgid "Couldn't fetch blocklist: {error} ({error_code})"
 msgstr "לא ניתן למשוך את רשימת החסימה: {error} ({error_code})"
 
-msgid "Automatically updated blocklist, which now has {count} rules"
-msgstr ""
-
-msgid "Invalid tr_sched_days value {val}"
-msgstr ""
-
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr "שגיאת {crypto_library}‏: {error} ‏({error_code})"
-
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "לא ניתן לקרוא את ‚{path}’: זה לא קובץ רגיל"
-
 #, fuzzy
 #| msgid "Couldn't read '{path}'"
 msgid "Couldn't get '{path}': "
@@ -1830,102 +1779,6 @@ msgstr "לא ניתן לקרוא את ‚{path}’"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "לא ניתן למשוך את ‚{path}’: {error} ({error_code})"
-
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "כתובת המקור {protocol} עודכנה בהצלחה לכדי {ip}"
-
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr "לא ניתן לקבל את כתובת המקור באף פרוטוקול IP, אין חיבורי רשת אפשריים"
-
-msgid "Your machine does not support {protocol}"
-msgstr "המכונה שלך לא תומכת ב־{protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "הכתובת הגלובלית {type} עודכנה בהצלחה ל־{ip} באמצעות {url}"
-
-msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
-msgstr ""
-
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr "יותר מדי הודעות כאלו! לא יתעודו יותר הודעות כאלו בהפעלה הזאת."
-
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr "מתבצע דילוג על ‚{path}’: {error} ({error_code})"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr "לא ניתן להתאגד לפתחה {port} על {address}: {error} ({error_code}) -- האם יש עותק פעיל נוסף של {appname}?"
-
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr "לא ניתן לאגד את הפתחה {port} ב־{address}: {error} ({error_code})"
-
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr "לא ניתן לפתוח את ‚{path}’: {error} ({error_code})"
-
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr "לא ניתן להקצות מראש את ‚{path}’:‏ {error} ({error_code})"
-
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr "לא ניתן לקצץ את ‚{path}’:‏ {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "לא ניתן ליצור שקע: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "לא ניתן להגדיר כתובת מקור {address} על {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "לחא ניתן לחבר את השקע {socket} אל {address}:{port}: {error} ({error_code})"
-
-msgid "Unknown state: {state}"
-msgstr "מצב לא ידוע: {state}"
-
-msgid "Starting"
-msgstr "מתחיל"
-
-msgid "Forwarded"
-msgstr "מועבר"
-
-msgid "Stopping"
-msgstr "בהליכי עצירה"
-
-msgid "Not forwarded"
-msgstr "לא מועבר"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "הפתחה הפרטית {private_port} מופתה לפתחה הציבורית {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "התרחש שינוי מהמצב ‚{old_state}’ למצב ‚{state}’"
-
-msgid "Found public address '{address}'"
-msgstr "נמצאה כתובת ציבורית ‚{address}’"
-
-msgid "Port {port} is no longer forwarded"
-msgstr "הפתחה {port} לא מועברת עוד"
-
-msgid "Port {port} forwarded successfully"
-msgstr "הפתחה {port} מועברת בהצלחה"
-
-msgid "Found Internet Gateway Device '{url}'"
-msgstr "נמצא מכשיר שער לאינטרנט ‚{url}’"
-
-msgid "Local Address is '{address}'"
-msgstr "הכתובת המקומית היא ‚{address}’"
-
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr "הפתחה המקומית {local_port} לא מועברת אל {advertised_port}"
-
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr "העברת הפתחות דרך „{url}”, השירות „{type}” נעצרת"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "העברת פתחות דרך „{url}”, השירות „{type}”. (כתובת מקומית: {address}:{port})"
-
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr "הפתחה המקומית {local_port} מועברת אל {advertised_port}"
-
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr "אם הנתב שלך תומך ב־UPnP, נא לוודא ש־UPnP מופעל!"
 
 #, fuzzy
 #| msgid "Couldn't test port: {error} ({error_code})"
@@ -1943,128 +1796,11 @@ msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
 msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
 
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr "אורך נתיב שקע היוניקס חייב להיות קצר מ־{count} תווים (לרבות הקידומת ‚{prefix}’)"
-
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr "נדחתה בקשה מצד {host} (תקיפה מחוץ לתיקיות המורשות)"
-
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr "נדחתה בקשה מצד {host} (הגנה מפני גישה בכוח פעילה)"
-
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr "נדחתה בקשה מצד {host} (IP לא ברשימת ההיתר)"
-
-msgid "Rejected request from {host} (failed authentication)"
-msgstr "נדחתה בקשה מצד {host} (אימות נכשל)"
-
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr "נדחתה בקשה מצד {host} (שם מארח לא ברשימת ההיתר)"
-
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr "כתובת מלאה לא ידועה מצד {host}: ‚{uri}’"
-
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr "ב־Windows אין תמיכה בשקעי יוניקס. נא להחליף את ‚{key}’ בהגדרות שלך."
-
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr "לא ניתן להגדיר את מצב שקע ה־RPC ל־{mode:#o}, נסוג ל־0755"
-
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] "לא ניתן להתאגד אל {address} אחרי ניסיון אחד, לא ממשיכים"
-msgstr[1] "לא ניתן להתאגד אל {address} אחרי {count} ניסיונות, לא ממשיכים"
-msgstr[2] "לא ניתן להתאגד אל {address} אחרי {count} ניסיונות, לא ממשיכים"
-msgstr[3] "לא ניתן להתאגד אל {address} אחרי {count} ניסיונות, לא ממשיכים"
-
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr "האזנה ל־RPC ובקשות דפדפניות דרך ‚{address}’"
-
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr "נעצרת האזנה ל־RPC ובקשות דפדפניות דרך ‚{address}’"
-
-msgid "Added '{entry}' to host whitelist"
-msgstr "‚{entry}’ נוסף לרשימת ההיתר של המארחים"
-
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr "ההגדרה ‚{key}’ היא ‚{value}’ אך היא חייבת להיות כתובת IPv4 או IPv6 או נתיב לשקע יוניקס. ערך ברירת המחדל ‚0.0.0.0’ יככב במקום."
-
-msgid "Serving RPC and Web requests on {address}"
-msgstr "בקשות RPC ודפדפן מוגשות דרך {address}"
-
-msgid "Whitelist enabled"
-msgstr "הופעלה רשימת היתר"
-
-msgid "Password required"
-msgstr "נדרשת סיסמה"
-
-msgid "Serving RPC and Web requests from '{path}'"
-msgstr "בקשות RPC ודפדפן מוגשות מתוך ‚{path}’"
-
-#, fuzzy
-#| msgid "Time to turn on turtle mode"
-msgid "Time to turn on alternative speed limits"
-msgstr "הזמן להפעלת מצב צב"
-
-#, fuzzy
-#| msgid "Time to turn off turtle mode"
-msgid "Time to turn off alternative speed limits"
-msgstr "הזמן לגיבוי מצב צב"
-
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr "בהאזנה לחיבורי עמיתים נכנסים דרך {hostport}"
-
-msgid "{appname} version {version} starting"
-msgstr "גרסה {version} של ‏{appname} מופעלת"
-
-msgid "Couldn't start disk IO workers, continuing without them: {error}"
-msgstr ""
-
-msgid "{appname} version {version} shutting down"
-msgstr "גרסה {version} של ‏{appname} נכבית"
-
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] "נטען טורנט"
-msgstr[1] "נטענו {count} טורנטים"
-msgstr[2] "נטענו {count} טורנטים"
-msgstr[3] "נטענו {count} טורנטים"
-
-msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "לא ניתן לפתוח את קובץ נעילת ההפעלה ‚{path}’: {error} ({error_code})"
-
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "לא ניתן להשתמש בנתוני העל מתוך ‚{path}’ עבור ‚{magnet}’: {error} ({error_code})"
 
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr "לא נמצאו נתונים! נא לוודא שהכוננים שלך מחוברים או להשתמש ב„הגדרות מקום”. כדי להוריד מחדש יש להשתמש ב„אימות נתונים מקומיים” ולאחר מכן להפעיל את הטורנט."
-
-msgid "Calling script '{path}'"
-msgstr "הסקריפט ‚{path}’ נקרא"
-
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr "לא ניתן לקרוא לסקריפט ‚{path}’: {error} ({error_code})"
-
-msgid "Seed ratio reached; pausing torrent"
-msgstr "יחס הזריעה הושג, הטורנט מושהה"
-
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr "מגבלת זמן ההמתנה לזריעה הושגה, הטורנט מושהה"
-
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "הופעל מחדש ידנית -- יחס הזריעה שלו יושבת"
-
-msgid "Pausing torrent"
-msgstr "טורנט מושהה"
-
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr "לא ניתן להסיר את כל קובצי הטורנט: {error} ({error_code})"
-
-msgid "Removing torrent"
-msgstr "הטורנט נמחק כעת"
 
 #, fuzzy
 #| msgid "Couldn't remove all torrent files: {error} ({error_code})"
@@ -2073,52 +1809,6 @@ msgstr "לא ניתן להסיר את כל קובצי הטורנט: {error} ({er
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "הטורנטים מושהים כי לא נמצא נתונים! נא לוודא שהכוננים שלך מחוברים או להשתמש ב„הגדרות מקום”, לאחר מכן להשתמש ב„אימות נתונים מקומיים” שוב. כדי להוריד מחדש, יש להפעיל את הטורנט."
-
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "לא ניתן להעביר את ‚{old_path}’ אל ‚{path}’: {error} ({error_code})"
-
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr "אזהרת עוקב: ‚{warning}’ ({url})"
-
-#, fuzzy
-#| msgid "Removing torrent file '{path}'"
-msgid "Moving '{source}' will overwrite '{path}'"
-msgstr "קובץ הטורנט ‚{path}’ הוסר"
-
-#, fuzzy
-#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
-msgstr "לא ניתן להעביר את ‚{old_path}’ אל ‚{path}’: {error} ({error_code})"
-
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "קובץ הטורנט הועבר מ־‚{old_path}’ ל־‚{path}’"
-
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr "לא ניתן לפענח את ‚{filename}’ בשורה: ‚{line}’"
-
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr "לא ניתן לאתר את ‚‎{address}:{port}‎’: {error} ({error_code})"
-
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr "לא ניתן לאתחל את {ip_protocol} LPD: {error} ({error_code})"
-
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr "לא ניתן להפוך שקע IPv4 לבלתי חוסם {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr "לא ניתן להתאגד לשקע IPv4 {address}: {error} ({error_code})"
-
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr "לא ניתן להפוך שקע IPv6 לבלתי חוסם {address}: {error} ({error_code})"
-
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr "לא ניתן לקשור שקע IPv6 {address}: {error}{error_code}"
-
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-msgid "Unknown socket family"
-msgstr "משפחת שקעים לא ידועה"
 
 msgid "B"
 msgstr "ב׳"
@@ -2164,62 +1854,6 @@ msgstr "ט״ב"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "לא ניתן לפענח את ה־JSON במיקום {position} ‚{text}’: {error} ({error_code})"
-
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
-
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr "לא ניתן לקרוא אירוע: אמור היה להיות {expected_size}, התקבל {actual_size}"
-
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr "לא ניתן לקרוא את שם הקובץ: אמור היה להיות {expected_size}, התקבל {actual_size}"
-
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "לא ניתן לקרוא אירוע: {error} ({error_code})"
-
-msgid "Couldn't convert '{path}' to native path"
-msgstr "לא ניתן להמיר את ‚{path}’ לנתיב טבעי"
-
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr "לא ניתן ליצור צינור: {error} ({error_code})"
-
-msgid "Couldn't create thread"
-msgstr "לא ניתן ליצור תהליך"
-
-msgid "Couldn't read directory changes"
-msgstr "לא ניתן לקרוא את השינויים לתיקייה"
-
-msgid "Couldn't wait for directory changes"
-msgstr "לא ניתן להמתין לשינויים בתיקייה"
-
-msgid "Consider upgrading your curl installation."
-msgstr "כדאי לעדכן את ה־curl שלך."
-
-msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
-msgstr ""
-
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr "curl {curl_version} חשוף לקריסות SIGPIPE.‏ {details_url}"
-
-#, fuzzy
-#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
-msgstr "curl {curl_version} חשוף לחולשת סגירת eventfd כפולה שעלולה לגרום לקריסותSIGABRT לשירות ה־systemd בשם transmission-daemon.‏ {details_url}"
-
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr "העוקב יאומת באמצעות משתנה הסביבה CURL_CA_BUNDLE: {bundle}"
-
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr "נ״ב: עובד רק אם בנית כנגד libcurl עם openssl או gnutls, לא nss"
-
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr "נ״ב: אישורים שגויים מופיעים בתור ‚לא ניתן להתחבר לעוקב’ כמו מגוון שגיאות אחרות"
-
-msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
-msgstr ""
-
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
-msgstr "לא ניתן למשוך את ‚{url}’: קוד ה־HTTP הצפוי הוא {expected_code}, התקבל {actual_code}"
 
 msgid "Server"
 msgstr "שרת"
@@ -2651,13 +2285,6 @@ msgstr[0] "יום"
 msgstr[1] "יומיים"
 msgstr[2] "ימים"
 msgstr[3] "ימים"
-
-msgid "seconds"
-msgid_plural "seconds"
-msgstr[0] "שנייה"
-msgstr[1] "שניות"
-msgstr[2] "שניות"
-msgstr[3] "שניות"
 
 #~ msgid "Finished"
 #~ msgstr "הסתיימו"
