@@ -179,10 +179,12 @@ target_sources(${TR_NAME}-mac
         TorrentGroup.mm
         TorrentTableView.h
         TorrentTableView.mm
-        TrackerCell.h
-        TrackerCell.mm
+        TrackerIconLoader.h
+        TrackerIconLoader.mm
         TrackerNode.h
         TrackerNode.mm
+        TrackersViews.h
+        TrackersViews.mm
         TRGroup.h
         TRGroup.mm
         URLSheetWindowController.h

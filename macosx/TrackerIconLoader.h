@@ -4,6 +4,9 @@
 
 #import <AppKit/AppKit.h>
 
-@interface TrackerCell : NSActionCell
+@interface TrackerIconLoader : NSObject
+
++ (instancetype)sharedInstance;
+- (void)fetchIconForAddress:(NSString*)addressString completion:(void (^)(NSImage* image))completion;
 
 @end
