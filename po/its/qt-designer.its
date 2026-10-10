@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- Which text in a Qt Designer file xgettext extracts:
+     every <string> that isn't marked notr="true",
+     with its comment attribute as the context
+     and its extracomment attribute as a note for translators. -->
+<its:rules xmlns:its="http://www.w3.org/2005/11/its"
+           xmlns:gt="https://www.gnu.org/s/gettext/ns/its/extensions/1.0"
+           version="2.0">
+  <its:translateRule selector="/ui" translate="no"/>
+  <its:translateRule selector="/ui//string[not(@notr = 'true')]" translate="yes"/>
+  <gt:contextRule selector="/ui//string[@comment]" contextPointer="@comment"/>
+  <its:locNoteRule selector="/ui//string[@extracomment]" locNotePointer="@extracomment" locNoteType="description"/>
+  <its:preserveSpaceRule selector="/ui" space="preserve"/>
+</its:rules>

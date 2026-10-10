@@ -8,13 +8,10 @@
 #include <cstdint> // int64_t
 #include <ctime> // time_t
 
-#include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
 
 class Formatter
 {
-    Q_DECLARE_TR_FUNCTIONS(Formatter)
-
 public:
     Formatter() = delete;
 

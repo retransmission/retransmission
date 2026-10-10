@@ -26,6 +26,7 @@
 #include "Prefs.h"
 #include "Session.h"
 #include "Torrent.h"
+#include "TrFormat.h"
 #include "Utils.h"
 
 /***
@@ -40,7 +41,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
 {
     ui_.setupUi(this);
 
-    setWindowTitle(tr("Torrent Options"));
+    setWindowTitle(TR_TEXT("Torrent Options"));
 
     edit_timer_.setInterval(2000);
     edit_timer_.setSingleShot(true);
@@ -49,8 +50,8 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     if (add_.type == AddData::FILENAME) {
         ui_.sourceStack->setCurrentWidget(ui_.sourceButton);
         ui_.sourceButton->setMode(PathButton::FileMode);
-        ui_.sourceButton->setTitle(tr("Open a Torrent"));
-        ui_.sourceButton->setNameFilter(tr("Torrent Files (*.torrent);;All Files (*.*)"));
+        ui_.sourceButton->setTitle(TR_TEXT("Open a Torrent"));
+        ui_.sourceButton->setNameFilter(TR_TEXT("Torrent Files (*.torrent);;All Files (*.*)"));
         ui_.sourceButton->setPath(add_.filename);
         connect(ui_.sourceButton, &PathButton::pathChanged, this, &OptionsDialog::onSourceChanged);
     } else {
@@ -74,7 +75,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     auto const recent_download_paths = prefs.get<QStringList>(TR_KEY_recent_download_paths);
 
     ui_.destinationButton->setMode(PathButton::DirectoryMode);
-    ui_.destinationButton->setTitle(tr("Select Destination Folder"));
+    ui_.destinationButton->setTitle(TR_TEXT("Select Destination Folder"));
     ui_.destinationButton->setPath(download_dir);
     ui_.destinationButton->setRecentPaths(recent_download_paths);
 
@@ -91,9 +92,9 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     connect(ui_.destinationCombo, qOverload<int>(&QComboBox::activated), this, &OptionsDialog::onDestinationChanged);
 
     ui_.filesView->setEditable(false);
-    ui_.priorityCombo->addItem(tr("High"), TR_PRI_HIGH);
-    ui_.priorityCombo->addItem(tr("Normal"), TR_PRI_NORMAL);
-    ui_.priorityCombo->addItem(tr("Low"), TR_PRI_LOW);
+    ui_.priorityCombo->addItem(TR_TEXT("High"), TR_PRI_HIGH);
+    ui_.priorityCombo->addItem(TR_TEXT("Normal"), TR_PRI_NORMAL);
+    ui_.priorityCombo->addItem(TR_TEXT("Low"), TR_PRI_LOW);
     ui_.priorityCombo->setCurrentIndex(1); // Normal
 
     ui_.startCheck->setChecked(prefs.get<bool>(TR_KEY_start_added_torrents));

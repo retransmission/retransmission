@@ -465,9 +465,9 @@ void DetailsDialog::refreshUI()
     bool const single = ids_.size() == 1;
     auto const blank = QString{};
     auto const fm = fontMetrics();
-    auto const none = tr("None");
-    auto const mixed = tr("Mixed");
-    auto const unknown = tr("Unknown");
+    auto const none = TR_TEXT("None");
+    auto const mixed = TR_TEXT("Mixed");
+    auto const unknown = TR_TEXT("Unknown");
     auto const now = time(nullptr);
 
     // build a list of torrents
@@ -513,9 +513,9 @@ void DetailsDialog::refreshUI()
         if (is_mixed) {
             string = mixed;
         } else if (all_finished) {
-            string = tr("Seeding complete");
+            string = TR_TEXT("Seeding complete");
         } else if (all_paused) {
-            string = tr("Paused");
+            string = TR_TEXT("Paused");
         } else {
             string = torrents[0]->activityString();
         }
@@ -553,26 +553,26 @@ void DetailsDialog::refreshUI()
         auto const size_when_done_str = Formatter::storageToString(size_when_done);
 
         if (have_unverified == 0U && left_until_done == 0U) {
-            //: Text following the "Have:" label in torrent properties dialog;
-            //: {current_size} is amount of downloaded and verified data
+            // Translators: Text following the "Have:" label in torrent properties dialog;
+            // {current_size} is amount of downloaded and verified data
             string = TR_FORMAT("{current_size} (100%)", fmt::arg("current_size", Formatter::storageToString(have_verified)));
         } else if (have_unverified == 0U) {
-            //: Text following the "Have:" label in torrent properties dialog;
-            //: {current_size} is amount of downloaded and verified data,
-            //: {complete_size} is overall size of torrent data,
-            //: {percent_done} is percentage ({current_size}/{complete_size}*100)
             string = TR_FORMAT(
+                // Translators: Text following the "Have:" label in torrent properties dialog;
+                // {current_size} is amount of downloaded and verified data,
+                // {complete_size} is overall size of torrent data,
+                // {percent_done} is percentage ({current_size}/{complete_size}*100)
                 "{current_size} of {complete_size} ({percent_done}%)",
                 fmt::arg("current_size", Formatter::storageToString(have_verified)),
                 fmt::arg("complete_size", size_when_done_str),
                 fmt::arg("percent_done", pct));
         } else {
-            //: Text following the "Have:" label in torrent properties dialog;
-            //: {current_size} is amount of downloaded data (both verified and unverified),
-            //: {complete_size} is overall size of torrent data,
-            //: {percent_done} is percentage ({current_size}/{complete_size}*100),
-            //: {unverified_size} is amount of downloaded but not yet verified data
             string = TR_FORMAT(
+                // Translators: Text following the "Have:" label in torrent properties dialog;
+                // {current_size} is amount of downloaded data (both verified and unverified),
+                // {complete_size} is overall size of torrent data,
+                // {percent_done} is percentage ({current_size}/{complete_size}*100),
+                // {unverified_size} is amount of downloaded but not yet verified data
                 "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified",
                 fmt::arg("current_size", Formatter::storageToString(have_verified + have_unverified)),
                 fmt::arg("complete_size", size_when_done_str),
@@ -686,7 +686,7 @@ void DetailsDialog::refreshUI()
 
         if (string.isEmpty()) {
             if (baseline < 0) {
-                string = tr("Unknown");
+                string = unknown;
             } else {
                 string = Formatter::timeToString(baseline);
             }
@@ -710,7 +710,7 @@ void DetailsDialog::refreshUI()
         if (latest == 0) {
             string = none;
         } else if (seconds < 5) {
-            string = tr("Active now");
+            string = TR_TEXT("Active now");
         } else {
             string = Formatter::relativeTimeToString(latest, now);
         }
@@ -762,6 +762,7 @@ void DetailsDialog::refreshUI()
             string = none;
         } else if (piece_size > 0) {
             string = TR_FORMAT_N(
+                "{total_size} ({piece_count:L} piece @ {piece_size})",
                 "{total_size} ({piece_count:L} pieces @ {piece_size})",
                 pieces,
                 fmt::arg("total_size", Formatter::storageToString(size)),
@@ -769,6 +770,7 @@ void DetailsDialog::refreshUI()
                 fmt::arg("piece_size", Formatter::memoryToString(piece_size)));
         } else {
             string = TR_FORMAT_N(
+                "{total_size} ({piece_count:L} piece)",
                 "{total_size} ({piece_count:L} pieces)",
                 pieces,
                 fmt::arg("total_size", Formatter::storageToString(size)),
@@ -794,7 +796,7 @@ void DetailsDialog::refreshUI()
 
     if (!torrents.empty()) {
         bool const b = torrents[0]->isPrivate();
-        string = b ? tr("Private to this tracker -- DHT and PEX disabled") : tr("Public torrent");
+        string = b ? TR_TEXT("Private to this tracker -- DHT and PEX disabled") : TR_TEXT("Public torrent");
 
         for (Torrent const* const t : torrents) {
             if (b != t->isPrivate()) {
@@ -875,7 +877,7 @@ void DetailsDialog::refreshUI()
         if (mixed_creator || mixed_date) {
             string = mixed;
         } else if (empty_creator && empty_date) {
-            string = tr("N/A");
+            string = TR_TEXT("N/A");
         } else if (empty_date && !empty_creator) {
             string = TR_FORMAT("Created by {creator}", fmt::arg("creator", creator));
         } else if (empty_creator && !empty_date) {
@@ -918,7 +920,7 @@ void DetailsDialog::refreshUI()
         bool const empty_date = date <= 0;
 
         if (empty_date) {
-            string = tr("N/A");
+            string = TR_TEXT("N/A");
         } else if (mixed_date) {
             string = mixed;
         } else {
@@ -1064,7 +1066,7 @@ void DetailsDialog::refreshUI()
                 item->setTextAlignment(COL_DOWN_REQS, Qt::AlignRight | Qt::AlignVCenter);
                 item->setTextAlignment(COL_PERCENT, Qt::AlignRight | Qt::AlignVCenter);
                 item->setIcon(COL_LOCK, peer.is_encrypted ? icon_encrypted_ : icon_unencrypted_);
-                item->setToolTip(COL_LOCK, peer.is_encrypted ? tr("Encrypted connection") : QString{});
+                item->setToolTip(COL_LOCK, peer.is_encrypted ? TR_TEXT("Encrypted connection") : QString{});
                 item->setText(COL_ADDRESS, peer.address);
                 item->setText(COL_CLIENT, peer.client_name);
                 new_items << item;
@@ -1081,55 +1083,55 @@ void DetailsDialog::refreshUI()
 
                 switch (ch.unicode()) {
                 case 'O':
-                    txt = tr("Optimistic unchoke");
+                    txt = TR_TEXT("Optimistic unchoke");
                     break;
 
                 case 'D':
-                    txt = tr("Downloading from this peer");
+                    txt = TR_TEXT("Downloading from this peer");
                     break;
 
                 case 'd':
-                    txt = tr("We would download from this peer if they would let us");
+                    txt = TR_TEXT("We would download from this peer if they would let us");
                     break;
 
                 case 'U':
-                    txt = tr("Uploading to peer");
+                    txt = TR_TEXT("Uploading to peer");
                     break;
 
                 case 'u':
-                    txt = tr("This peer would download from us if we would let them");
+                    txt = TR_TEXT("This peer would download from us if we would let them");
                     break;
 
                 case 'K':
-                    txt = tr("Peer has unchoked us, but we're not interested");
+                    txt = TR_TEXT("Peer has unchoked us, but we're not interested");
                     break;
 
                 case '?':
-                    txt = tr("We unchoked this peer, but they're not interested");
+                    txt = TR_TEXT("We unchoked this peer, but they're not interested");
                     break;
 
                 case 'E':
-                    txt = tr("Encrypted connection");
+                    txt = TR_TEXT("Encrypted connection");
                     break;
 
                 case 'H':
-                    txt = tr("Peer was found through DHT");
+                    txt = TR_TEXT("Peer was found through DHT");
                     break;
 
                 case 'X':
-                    txt = tr("Peer was found through Peer Exchange (PEX)");
+                    txt = TR_TEXT("Peer was found through Peer Exchange (PEX)");
                     break;
 
                 case 'I':
-                    txt = tr("Peer is an incoming connection");
+                    txt = TR_TEXT("Peer is an incoming connection");
                     break;
 
                 case 'T':
-                    txt = tr("Peer is connected over µTP");
+                    txt = TR_TEXT("Peer is connected over µTP");
                     break;
 
                 case 'h':
-                    txt = tr("Peer supports holepunch (BEP 55)");
+                    txt = TR_TEXT("Peer supports holepunch (BEP 55)");
                     break;
 
                 default:
@@ -1257,9 +1259,8 @@ void DetailsDialog::onIdleModeChanged(int index)
 
 void DetailsDialog::onIdleLimitChanged()
 {
-    //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("DetailsDialog", "{minutes:L} minute(s)");
-    Utils::updateSpinBoxFormat(ui_.idleSpin, "DetailsDialog", units_format, "minutes");
+    // Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+    Utils::updateSpinBoxFormat(ui_.idleSpin, "{minutes:L} minute", "{minutes:L} minutes", "minutes");
 }
 
 void DetailsDialog::onRatioModeChanged(int index)
@@ -1287,8 +1288,8 @@ void DetailsDialog::onAddTrackerClicked()
     bool ok = false;
     auto const text_qstr = QInputDialog::getMultiLineText(
         this,
-        tr("Add URL(s)"),
-        tr("Add tracker announce URLs, one per line:"),
+        TR_TEXT("Add URL(s)"),
+        TR_TEXT("Add tracker announce URLs, one per line:"),
         {},
         &ok);
     if (!ok) {
@@ -1319,7 +1320,7 @@ void DetailsDialog::onAddTrackerClicked()
     }
 
     if (std::empty(ids_to_urls)) {
-        QMessageBox::warning(this, tr("Error"), tr("No new URLs found."));
+        QMessageBox::warning(this, TR_TEXT("Error"), TR_TEXT("No new URLs found."));
     } else {
         for (auto const& [ids, urls] : ids_to_urls) {
             auto urls_list = QList<QString>{};
@@ -1390,17 +1391,17 @@ void DetailsDialog::initOptionsTab()
     ui_.idleSpin->setProperty(PrefKey, TR_KEY_seed_idle_limit);
     ui_.peerLimitSpin->setProperty(PrefKey, TR_KEY_peer_limit);
 
-    ui_.bandwidthPriorityCombo->addItem(tr("High"), TR_PRI_HIGH);
-    ui_.bandwidthPriorityCombo->addItem(tr("Normal"), TR_PRI_NORMAL);
-    ui_.bandwidthPriorityCombo->addItem(tr("Low"), TR_PRI_LOW);
+    ui_.bandwidthPriorityCombo->addItem(TR_TEXT("High"), TR_PRI_HIGH);
+    ui_.bandwidthPriorityCombo->addItem(TR_TEXT("Normal"), TR_PRI_NORMAL);
+    ui_.bandwidthPriorityCombo->addItem(TR_TEXT("Low"), TR_PRI_LOW);
 
-    ui_.ratioCombo->addItem(tr("Use Global Settings"), TR_RATIOLIMIT_GLOBAL);
-    ui_.ratioCombo->addItem(tr("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED);
-    ui_.ratioCombo->addItem(tr("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE);
+    ui_.ratioCombo->addItem(TR_TEXT("Use Global Settings"), TR_RATIOLIMIT_GLOBAL);
+    ui_.ratioCombo->addItem(TR_TEXT("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED);
+    ui_.ratioCombo->addItem(TR_TEXT("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE);
 
-    ui_.idleCombo->addItem(tr("Use Global Settings"), TR_IDLELIMIT_GLOBAL);
-    ui_.idleCombo->addItem(tr("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED);
-    ui_.idleCombo->addItem(tr("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE);
+    ui_.idleCombo->addItem(TR_TEXT("Use Global Settings"), TR_IDLELIMIT_GLOBAL);
+    ui_.idleCombo->addItem(TR_TEXT("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED);
+    ui_.idleCombo->addItem(TR_TEXT("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE);
 
     auto* cr = new ColumnResizer{ this };
     cr->addLayout(ui_.speedSectionLayout);
@@ -1473,7 +1474,15 @@ void DetailsDialog::initPeersTab()
     auto const speed_width_str = Speed{ 1024U, Speed::Units::MByps }.toQstring();
 
     ui_.peersView->setHeaderLabels(
-        { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Flags"), tr("Address"), tr("Client") });
+        { QString{},
+          TR_TEXT("Up"),
+          TR_TEXT("Up Reqs"),
+          TR_TEXT("Down"),
+          TR_TEXT("Dn Reqs"),
+          TR_TEXT("%"),
+          TR_TEXT("Flags"),
+          TR_TEXT("Address"),
+          TR_TEXT("Client") });
     ui_.peersView->sortByColumn(COL_ADDRESS, Qt::AscendingOrder);
 
     ui_.peersView->setColumnWidth(COL_LOCK, 20);

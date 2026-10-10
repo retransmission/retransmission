@@ -168,18 +168,18 @@ QString TorrentDelegate::progressString(Torrent const& tor)
 
     if (is_magnet) // magnet link with no metadata
     {
-        //: First part of torrent progress string,
-        //: {percent_done} is the percentage of torrent metadata downloaded
         str = TR_FORMAT(
+            // Translators: First part of torrent progress string,
+            // {percent_done} is the percentage of torrent metadata downloaded
             "Magnetized torrent - retrieving metadata ({percent_done}%)",
             fmt::arg("percent_done", Formatter::percentToString(tor.metadataPercentDone() * 100.0)));
     } else if (!is_done) // downloading
     {
-        //: First part of torrent progress string,
-        //: {current_size} is how much we've got,
-        //: {complete_size} is how much we'll have when done,
-        //: {percent_done} is a percentage of the two
         str = TR_FORMAT(
+            // Translators: First part of torrent progress string,
+            // {current_size} is how much we've got,
+            // {complete_size} is how much we'll have when done,
+            // {percent_done} is a percentage of the two
             "{current_size} of {complete_size} ({percent_done}%)",
             fmt::arg("current_size", Formatter::storageToString(have_total)),
             fmt::arg("complete_size", Formatter::storageToString(tor.sizeWhenDone())),
@@ -187,14 +187,14 @@ QString TorrentDelegate::progressString(Torrent const& tor)
     } else if (!is_seed) // partial seed
     {
         if (seed_ratio_limit) {
-            //: First part of torrent progress string,
-            //: {current_size} is how much we've got,
-            //: {complete_size} is the torrent's total size,
-            //: {percent_complete} is a percentage of the two,
-            //: {uploaded_size} is how much we've uploaded,
-            //: {ratio} is our upload-to-download ratio,
-            //: {seed_ratio} is the ratio we want to reach before we stop uploading
             str = TR_FORMAT(
+                // Translators: First part of torrent progress string,
+                // {current_size} is how much we've got,
+                // {complete_size} is the torrent's total size,
+                // {percent_complete} is a percentage of the two,
+                // {uploaded_size} is how much we've uploaded,
+                // {ratio} is our upload-to-download ratio,
+                // {seed_ratio} is the ratio we want to reach before we stop uploading
                 "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})",
                 fmt::arg("current_size", Formatter::storageToString(have_total)),
                 fmt::arg("complete_size", Formatter::storageToString(tor.totalSize())),
@@ -203,13 +203,13 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 fmt::arg("ratio", Formatter::ratioToString(tor.ratio())),
                 fmt::arg("seed_ratio", Formatter::ratioToString(*seed_ratio_limit)));
         } else {
-            //: First part of torrent progress string,
-            //: {current_size} is how much we've got,
-            //: {complete_size} is the torrent's total size,
-            //: {percent_complete} is a percentage of the two,
-            //: {uploaded_size} is how much we've uploaded,
-            //: {ratio} is our upload-to-download ratio
             str = TR_FORMAT(
+                // Translators: First part of torrent progress string,
+                // {current_size} is how much we've got,
+                // {complete_size} is the torrent's total size,
+                // {percent_complete} is a percentage of the two,
+                // {uploaded_size} is how much we've uploaded,
+                // {ratio} is our upload-to-download ratio
                 "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})",
                 fmt::arg("current_size", Formatter::storageToString(have_total)),
                 fmt::arg("complete_size", Formatter::storageToString(tor.totalSize())),
@@ -220,12 +220,12 @@ QString TorrentDelegate::progressString(Torrent const& tor)
     } else // seeding
     {
         if (seed_ratio_limit) {
-            //: First part of torrent progress string,
-            //: {complete_size} is the torrent's total size,
-            //: {uploaded_size} is how much we've uploaded,
-            //: {ratio} is our upload-to-download ratio,
-            //: {seed_ratio} is the ratio we want to reach before we stop uploading
             str = TR_FORMAT(
+                // Translators: First part of torrent progress string,
+                // {complete_size} is the torrent's total size,
+                // {uploaded_size} is how much we've uploaded,
+                // {ratio} is our upload-to-download ratio,
+                // {seed_ratio} is the ratio we want to reach before we stop uploading
                 "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})",
                 fmt::arg("complete_size", Formatter::storageToString(have_total)),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
@@ -233,11 +233,11 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 fmt::arg("seed_ratio", Formatter::ratioToString(*seed_ratio_limit)));
         } else // seeding w/o a ratio
         {
-            //: First part of torrent progress string,
-            //: {complete_size} is the torrent's total size,
-            //: {uploaded_size} is how much we've uploaded,
-            //: {ratio} is our upload-to-download ratio
             str = TR_FORMAT(
+                // Translators: First part of torrent progress string,
+                // {complete_size} is the torrent's total size,
+                // {uploaded_size} is how much we've uploaded,
+                // {ratio} is our upload-to-download ratio
                 "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})",
                 fmt::arg("complete_size", Formatter::storageToString(have_total)),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
@@ -250,8 +250,8 @@ QString TorrentDelegate::progressString(Torrent const& tor)
         if (tor.hasETA()) {
             str += QStringLiteral(" - ") + Formatter::timeLeftToString(tor.getETA());
         } else {
-            //: Second (optional) part of torrent progress string
-            str += QStringLiteral(" - ") + tr("Remaining time unknown");
+            // Translators: Second (optional) part of torrent progress string
+            str += QStringLiteral(" - ") + TR_TEXT("Remaining time unknown");
         }
     }
 
@@ -303,8 +303,8 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
         if (tor.hasETA()) {
             str += Formatter::timeLeftToString(tor.getETA());
         } else {
-            //: Second (optional) part of torrent progress string
-            str += tr("Remaining time unknown");
+            // Translators: Second (optional) part of torrent progress string
+            str += TR_TEXT("Remaining time unknown");
         }
     }
 
@@ -330,32 +330,37 @@ QString TorrentDelegate::statusString(Torrent const& tor)
         case TR_STATUS_DOWNLOAD:
             if (!tor.hasMetadata()) {
                 str = TR_FORMAT_N(
-                    "Downloading metadata from {active_count:L} peer(s) ({percent_done}% done)",
+                    // xgettext:no-c-format
+                    "Downloading metadata from {active_count:L} peer ({percent_done}% done)",
+                    "Downloading metadata from {active_count:L} peers ({percent_done}% done)",
                     tor.peersWeAreDownloadingFrom(),
                     fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
                     fmt::arg("percent_done", Formatter::percentToString(100.0 * tor.metadataPercentDone())));
             } else {
-                // One string would translate better, but tr() picks a plural form by one count only.
+                // One string would translate better, but a plural form follows only one count.
                 if (tor.connectedPeersAndWebseeds() == 0) {
-                    //: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
                     str = TR_FORMAT_N(
-                        "Downloading from {active_count:L} peer(s)",
+                        // Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
+                        "Downloading from {active_count:L} peer",
+                        "Downloading from {active_count:L} peers",
                         tor.peersWeAreDownloadingFrom(),
                         fmt::arg("active_count", tor.peersWeAreDownloadingFrom()));
                 } else {
-                    //: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
                     str = TR_FORMAT_N(
-                        "Downloading from {active_count} of {connected_count} connected peer(s)",
+                        // Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
+                        "Downloading from {active_count} of {connected_count} connected peer",
+                        "Downloading from {active_count} of {connected_count} connected peers",
                         tor.connectedPeersAndWebseeds(),
                         fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
                         fmt::arg("connected_count", tor.connectedPeersAndWebseeds()));
                 }
 
                 if (tor.webseedsWeAreDownloadingFrom()) {
-                    //: Second (optional) part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)",
-                    //: notice that leading space (before "and") is included here
                     str += TR_FORMAT_N(
-                        " and {webseed_count:L} web seed(s)",
+                        // Translators: Second (optional) part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)",
+                        // notice that leading space (before "and") is included here
+                        " and {webseed_count:L} web seed",
+                        " and {webseed_count:L} web seeds",
                         tor.webseedsWeAreDownloadingFrom(),
                         fmt::arg("webseed_count", tor.webseedsWeAreDownloadingFrom()));
                 }
@@ -366,12 +371,14 @@ QString TorrentDelegate::statusString(Torrent const& tor)
         case TR_STATUS_SEED:
             if (tor.connectedPeers() == 0) {
                 str = TR_FORMAT_N(
-                    "Seeding to {active_count:L} peer(s)",
+                    "Seeding to {active_count:L} peer",
+                    "Seeding to {active_count:L} peers",
                     tor.peersWeAreUploadingTo(),
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()));
             } else {
                 str = TR_FORMAT_N(
-                    "Seeding to {active_count} of {connected_count} connected peer(s)",
+                    "Seeding to {active_count} of {connected_count} connected peer",
+                    "Seeding to {active_count} of {connected_count} connected peers",
                     tor.connectedPeers(),
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()),
                     fmt::arg("connected_count", tor.connectedPeers()));
@@ -385,7 +392,7 @@ QString TorrentDelegate::statusString(Torrent const& tor)
         QString const s = shortTransferString(tor);
 
         if (!s.isEmpty()) {
-            str += tr(" - ") + s;
+            str += TR_TEXT(" - ") + s;
         }
     }
 

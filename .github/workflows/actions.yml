@@ -98,7 +98,7 @@ jobs:
           get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
-          get_changes translations po qt
+          get_changes translations po
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
@@ -745,7 +745,7 @@ jobs:
         run: apk add --upgrade gtkmm4-dev
       - name: Get Dependencies (Qt6)
         if: ${{ needs.what-to-make.outputs.make-qt == 'true' }}
-        run: apk add --upgrade qt6-qtbase-dev qt6-qttools-dev qt6-qtsvg-dev xcb-util-cursor
+        run: apk add --upgrade qt6-qtbase-dev qt6-qtsvg-dev xcb-util-cursor
       - name: Get Source
         uses: actions/checkout@v7
         with:
@@ -843,6 +843,23 @@ jobs:
           # IPO's /GL objects carry IL, so this cell's build is ~2.5x the others
           max-size: ${{ matrix.ipo == 'ON' && '1G' || '400M' }}
           key-suffix: ${{ matrix.arch }}-${{ matrix.runner }}-ipo-${{ matrix.ipo }}
+      # The Qt client's strings come from the catalogs that msgfmt builds.
+      # This is the build that Chocolatey's gettext package installs.
+      # Its installer fails on Arm64 runners, but its portable x64 tools run there under emulation.
+      - name: Get gettext
+        if: ${{ needs.what-to-make.outputs.make-dist == 'true' || needs.what-to-make.outputs.make-qt == 'true' }}
+        run: |
+          $Zip = 'gettext1.0-iconv1.19-static-64.zip'
+          $Url = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v1.0-v1.19/${Zip}"
+          $Sha256 = '2b999bc37b56fa052ff98578e9cb188152009f634e3a66aa8ff263a016e9c466'
+          $Archive = Join-Path $Env:RUNNER_TEMP $Zip
+          Invoke-WebRequest -Uri $Url -OutFile $Archive
+          if ((Get-FileHash -Algorithm SHA256 $Archive).Hash -ne $Sha256) {
+              throw "${Zip} doesn't match its SHA-256"
+          }
+          $Dir = Join-Path $Env:RUNNER_TEMP gettext
+          Expand-Archive -Path $Archive -DestinationPath $Dir
+          (Get-ChildItem -Path $Dir -Recurse -Filter msgfmt.exe | Select-Object -First 1).DirectoryName | Out-File $Env:GITHUB_PATH -Append
       - name: Configure
         run: |
           $CmakeArgs = @(

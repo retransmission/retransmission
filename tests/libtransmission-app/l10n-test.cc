@@ -292,7 +292,7 @@ TEST_F(L10nTest, useCatalogs)
             ASSERT_TRUE(tr_file_save(fmt::format("{:s}/domain.mo", path), make_mo(messages)));
         };
 
-    write_mo("a"sv, "pt_BR"sv, { { "Paused"sv, "Pausado (pt_BR)"sv } });
+    write_mo("a"sv, "pt_BR"sv, { { "Paused"sv, "Pausado (pt_BR)"sv }, { "Verb\x04Seeding"sv, "Semeando"sv } });
     write_mo("b"sv, "pt_BR"sv, { { "Paused"sv, "Pausado (b)"sv } });
     write_mo(
         "b"sv,
@@ -308,6 +308,7 @@ TEST_F(L10nTest, useCatalogs)
     EXPECT_STREQ("A verificar", _("Verifying"));
     EXPECT_STREQ("Seeding", _("Seeding"));
     EXPECT_STREQ("{count} files", tr_ngettext("{count} file", "{count} files", 2));
+    EXPECT_STREQ("Semeando", tr_pgettext("Verb", "Seeding"));
     EXPECT_EQ("10 kB/s (pt)", (tr::Values::Speed{ 10, tr::Values::Speed::Units::KByps }.to_string()));
 
     // Without a catalog, everything is English.
