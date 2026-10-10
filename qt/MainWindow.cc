@@ -1272,6 +1272,12 @@ void MainWindow::addTorrents(QStringList const& filenames)
         if (auto const* const b = file_dialog->findChild<QCheckBox const*>(show_options_checkbox_name_); b != nullptr) {
             show_options = b->isChecked();
         }
+
+        // Remember this folder the next time we use this dialog.
+        // Read it from the selection: with the XDG portal, directory() returns the starting folder.
+        if (!filenames.isEmpty()) {
+            prefs_.set(TR_KEY_open_dialog_dir, QFileInfo{ filenames.front() }.absolutePath());
+        }
     }
 
     for (QString const& filename : filenames) {
