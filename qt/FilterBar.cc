@@ -115,10 +115,9 @@ void FilterBar::refreshTrackers()
 
     auto update_tracker_item = [](QStandardItem* i, auto const& it) {
         auto const& [sitename, count] = *it;
-        auto const display_name = displayName(sitename);
 
-        i->setData(display_name, Qt::DisplayRole);
-        i->setData(display_name, TRACKER_ROLE);
+        i->setData(displayName(sitename), Qt::DisplayRole);
+        i->setData(sitename, TRACKER_ROLE);
         i->setData(getCountString(static_cast<size_t>(count)), FilterBarComboBox::CountStringRole);
         i->setData(trApp->find_favicon(sitename), Qt::DecorationRole);
         i->setData(static_cast<int>(count), FilterBarComboBox::CountRole);
@@ -263,10 +262,12 @@ void FilterBar::refreshPref(tr_quark key)
 
     case TR_KEY_filter_trackers:
         {
-            auto const display_name = prefs_.get<QString>(key);
+            auto const sitename = prefs_.get<QString>(key);
+            auto const start = tracker_model_->index(0, 0);
+            auto const indices = tracker_model_->match(start, TRACKER_ROLE, sitename, 1, Qt::MatchExactly);
 
-            if (auto rows = tracker_model_->findItems(display_name); !rows.isEmpty()) {
-                tracker_combo_->setCurrentIndex(rows.front()->row());
+            if (!indices.isEmpty()) {
+                tracker_combo_->setCurrentIndex(indices.first().row());
             } else // hm, we don't seem to have this tracker anymore...
             {
                 bool const is_bootstrapping = tracker_model_->rowCount() <= 2;
@@ -307,8 +308,8 @@ void FilterBar::onTextChanged(QString const& str)
 void FilterBar::onTrackerIndexChanged(int i)
 {
     if (!is_bootstrapping_) {
-        auto const display_name = tracker_combo_->itemData(i, TRACKER_ROLE).toString();
-        prefs_.set(TR_KEY_filter_trackers, display_name);
+        auto const sitename = tracker_combo_->itemData(i, TRACKER_ROLE).toString();
+        prefs_.set(TR_KEY_filter_trackers, sitename);
     }
 }
 
