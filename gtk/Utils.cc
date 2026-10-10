@@ -5,7 +5,6 @@
 
 #include "Utils.h"
 
-#include "Prefs.h"
 #include "Session.h"
 
 #include <libtransmission-app/interop.h>
@@ -504,18 +503,16 @@ bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
     auto const file = Gio::File::create_for_path(std::string{ filename });
     bool trashed = false;
 
-    if (gtr_pref_flag_get(TR_KEY_trash_can_enabled)) {
-        try {
-            trashed = file->trash();
-        } catch (Glib::Error const& e) {
-            error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    "Couldn't move '{path}' to trash: {error} ({error_code})",
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
-        }
+    try {
+        trashed = file->trash();
+    } catch (Glib::Error const& e) {
+        error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
+        gtr_message(
+            fmt::format(
+                "Couldn't move '{path}' to trash: {error} ({error_code})",
+                fmt::arg("path", filename),
+                fmt::arg("error", error->message()),
+                fmt::arg("error_code", error->code())));
     }
 
     bool result = true;

@@ -140,6 +140,11 @@ void AddData::disposeSourceFile() const
 
     switch (*disposal_) {
     case FilenameDisposal::Delete:
+        if (file.moveToTrash()) {
+            break;
+        }
+
+        // Windows won't delete a read-only file
         file.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
         file.remove();
         break;

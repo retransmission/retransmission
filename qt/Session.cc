@@ -13,6 +13,7 @@
 #include <string_view>
 #include <utility>
 
+#include <fmt/format.h>
 #include <small/vector.hpp>
 
 #include <QtCore/QByteArray>
@@ -30,6 +31,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStyle>
 
+#include <libtransmission/file.h>
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
@@ -51,6 +53,28 @@ using namespace std::literals;
 
 using tr::app::RpcQueue;
 using ::trqt::variant_helpers::dictFind;
+
+namespace
+{
+
+// The session's remove func: the trash can first, outright deletion when it refuses.
+// Called on the session thread, so it touches only the file.
+bool trash_or_remove(std::string_view const filename, tr_error* const error)
+{
+    auto file = QFile{ Utils::qstringFromUtf8(filename) };
+    if (file.moveToTrash()) {
+        return true;
+    }
+
+    tr_logAddWarn(
+        fmt::format(
+            "Couldn't move '{:s}' to the trash can, deleting it instead: {:s}",
+            filename,
+            file.errorString().toStdString()));
+    return tr_sys_path_remove(filename, error);
+}
+
+} // namespace
 
 /***
 ****
@@ -191,7 +215,7 @@ void Session::start()
     } else {
         auto config_dir = config_dir_.toStdString();
         auto const settings = tr_sessionLoadSettings(config_dir);
-        session_ = tr_sessionInit(config_dir, true, settings);
+        session_ = tr_sessionInit(config_dir, true, settings, trash_or_remove);
         set_embedded_session(session_);
         updateType();
 

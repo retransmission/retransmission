@@ -508,7 +508,11 @@ struct tr_session::init_data {
     std::condition_variable_any done_cv;
 };
 
-tr_session* tr_sessionInit(std::string_view const config_dir, bool message_queueing_enabled, tr::Settings const& app_settings)
+tr_session* tr_sessionInit(
+    std::string_view const config_dir,
+    bool message_queueing_enabled,
+    tr::Settings const& app_settings,
+    tr_torrent_remove_func remove_func)
 {
     using namespace bandwidth_group_helpers;
 
@@ -523,7 +527,7 @@ tr_session* tr_sessionInit(std::string_view const config_dir, bool message_queue
     }
 
     // initialize the bare skeleton of the session object
-    auto* const session = new tr_session{ config_dir, tr::Settings{} };
+    auto* const session = new tr_session{ config_dir, tr::Settings{}, std::move(remove_func) };
     bandwidthGroupRead(session, config_dir);
 
     // run initImpl() in the libtransmission thread
@@ -2089,7 +2093,7 @@ auto makeConfigDirLock(std::string_view const config_dir)
 }
 } // namespace
 
-tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings)
+tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings, tr_torrent_remove_func func)
     : config_dir_{ config_dir }
     , config_dir_lock_{ makeConfigDirLock(config_dir) }
     , resume_dir_{ makeResumeDir(config_dir) }
@@ -2099,6 +2103,7 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     , timer_maker_{ std::make_unique<tr::EvTimerMaker>(event_base()) }
     , settings_{ settings }
     , session_id_{ tr_time }
+    , remove_func{ std::move(func) }
     , peer_mgr_{ tr_peerMgrNew(this), &tr_peerMgrFree }
     , rpc_server_{ std::make_unique<tr_rpc_server>(this, tr_rpc_server::Settings{ settings }) }
     , now_timer_{ timer_maker_->create([this]() { on_now_timer(); }) }

@@ -6,14 +6,19 @@
 #include <array>
 #include <cstddef>
 #include <future>
+#include <iterator>
 #include <optional>
 #include <ranges>
+#include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/error.h>
 #include <libtransmission/error-types.h>
+#include <libtransmission/file.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/types.h>
@@ -179,4 +184,78 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     // The work that reports back reports an error.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
     EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
+}
+
+// --- tr_sessionInit()'s remove func
+
+namespace
+{
+
+class TorrentRemoveTest : public TorrentTest
+{
+protected:
+    // Paths the session's remove func was asked to remove. Removals run on
+    // the session thread; read this only after waiting for the torrent to
+    // be gone, since that wait runs through the same thread.
+    std::vector<std::string> removed_;
+
+    void SetUp() override
+    {
+        session_remove_func_ = [this](std::string_view const filename, tr_error* const error) {
+            removed_.emplace_back(filename);
+            return tr_sys_path_remove(filename, error);
+        };
+        TorrentTest::SetUp();
+    }
+
+    // adds a complete zero torrent and returns it with its data folder, which must exist
+    [[nodiscard]] std::pair<tr_torrent*, tr_pathbuf> addCompleteTorrent()
+    {
+        auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+        auto dir = tr_pathbuf{ tr_torrentGetCurrentDir(tor), '/', tr_torrentName(tor) };
+        EXPECT_TRUE(tr_sys_path_exists(dir));
+        return { tor, std::move(dir) };
+    }
+
+    [[nodiscard]] bool waitUntilRemoved(tr_torrent_id_t const id)
+    {
+        return waitForInSessionThread([this, id]() { return tr_torrentFindFromId(session_, id) == nullptr; }, 10'000);
+    }
+};
+
+} // namespace
+
+TEST_F(TorrentRemoveTest, deletesLocalDataWithTheSessionRemoveFunc)
+{
+    auto const [tor, dir] = addCompleteTorrent();
+    auto const id = tr_torrentId(tor);
+    tr_torrentRemove(tor, true);
+    ASSERT_TRUE(waitUntilRemoved(id));
+
+    EXPECT_FALSE(std::empty(removed_));
+    EXPECT_FALSE(tr_sys_path_exists(dir));
+}
+
+TEST_F(TorrentRemoveTest, leavesLocalDataAloneWhenNotDeleting)
+{
+    auto const [tor, dir] = addCompleteTorrent();
+    auto const id = tr_torrentId(tor);
+    tr_torrentRemove(tor, false);
+    ASSERT_TRUE(waitUntilRemoved(id));
+
+    EXPECT_TRUE(std::empty(removed_));
+    EXPECT_TRUE(tr_sys_path_exists(dir));
+}
+
+TEST_F(TorrentTest, deletesLocalDataOutrightWithoutASessionRemoveFunc)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const dir = tr_pathbuf{ tr_torrentGetCurrentDir(tor), '/', tr_torrentName(tor) };
+    ASSERT_TRUE(tr_sys_path_exists(dir));
+    auto const id = tr_torrentId(tor);
+
+    tr_torrentRemove(tor, true);
+    ASSERT_TRUE(waitForInSessionThread([this, id]() { return tr_torrentFindFromId(session_, id) == nullptr; }, 10'000));
+
+    EXPECT_FALSE(tr_sys_path_exists(dir));
 }
