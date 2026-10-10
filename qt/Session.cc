@@ -191,7 +191,7 @@ void Session::start()
     } else {
         auto config_dir = config_dir_.toStdString();
         auto const settings = tr_sessionLoadSettings(config_dir);
-        session_ = tr_sessionInit(config_dir, true, settings);
+        session_ = tr_sessionInit(config_dir, true, settings, Utils::trashOrRemove);
         set_embedded_session(session_);
         updateType();
 

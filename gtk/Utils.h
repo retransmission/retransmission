@@ -172,7 +172,7 @@ void setup_item_view_button_event_handling(
     std::function<bool(double, double)> const& release_callback);
 #endif
 
-/* move a file to the trashcan if GIO is available; otherwise, delete it */
+/* move a file or folder to the trash can, or delete it when the trash can refuses */
 bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error = nullptr);
 
 void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry);

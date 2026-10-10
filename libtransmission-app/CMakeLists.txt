@@ -28,7 +28,9 @@ target_sources(${LIBNAME}
         session.h
         startup-coordinator.cc
         startup-coordinator.h
-        torrent-icon.h)
+        torrent-icon.h
+        trash.cc
+        trash.h)
 
 target_include_directories(${LIBNAME}
     PUBLIC

@@ -5,10 +5,10 @@
 
 #include "Utils.h"
 
-#include "Prefs.h"
 #include "Session.h"
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/trash.h>
 
 #include <libtransmission/error.h>
 #include <libtransmission/macros.h>
@@ -492,49 +492,18 @@ void setup_item_view_button_event_handling(
 
 #endif
 
-bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
+bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* const error)
 {
     g_return_val_if_fail(!filename.empty(), false);
 
-    auto local_error = tr_error{};
-    if (error == nullptr) {
-        error = &local_error;
-    }
-
-    auto const file = Gio::File::create_for_path(std::string{ filename });
-    bool trashed = false;
-
-    if (gtr_pref_flag_get(TR_KEY_trash_can_enabled)) {
+    return tr::app::trash_or_remove(filename, error, [](std::string_view const path, std::string& why) {
         try {
-            trashed = file->trash();
+            return Gio::File::create_for_path(std::string{ path })->trash();
         } catch (Glib::Error const& e) {
-            error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    "Couldn't move '{path}' to trash: {error} ({error_code})",
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
+            why = TR_GLIB_EXCEPTION_WHAT(e);
+            return false;
         }
-    }
-
-    bool result = true;
-    if (!trashed) {
-        try {
-            file->remove();
-        } catch (Glib::Error const& e) {
-            error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    "Couldn't remove '{path}': {error} ({error_code})",
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
-            result = false;
-        }
-    }
-
-    return result;
+    });
 }
 
 namespace

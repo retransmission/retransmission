@@ -78,7 +78,7 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     tr_torrentSetQueuePosition(nullptr, 0);
     ++expected_log_size;
 
-    tr_torrentRemove(nullptr, false, {});
+    tr_torrentRemove(nullptr, false);
     ++expected_log_size;
 
     tr_torrentSetLocation(nullptr, "", false, nullptr);
