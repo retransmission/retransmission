@@ -657,19 +657,6 @@ static void offerToImportFromTransmission()
     if ((self = [super init])) {
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
-        //checks for old version speeds of -1
-        if ([_fDefaults integerForKey:@"UploadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"UploadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckUpload"];
-        }
-        if ([_fDefaults integerForKey:@"DownloadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"DownloadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckDownload"];
-        }
-
-        //upgrading from versions < 2.40: clear recent items
-        [NSDocumentController.sharedDocumentController clearRecentDocuments:nil];
-
         auto settings = getSettingsFromNSUserDefaults(_fDefaults);
         settings.merge(tr_sessionGetDefaultSettings());
 
@@ -858,12 +845,6 @@ static void offerToImportFromTransmission()
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
     NSString* historyFile = [self.fConfigDirectory stringByAppendingPathComponent:kTransferPlist];
     NSArray* history = [NSArray arrayWithContentsOfFile:historyFile];
-    if (!history) {
-        //old version saved transfer info in prefs file
-        if ((history = [self.fDefaults arrayForKey:@"History"])) {
-            [self.fDefaults removeObjectForKey:@"History"];
-        }
-    }
 
     if (history) {
         // theoretical max without doing a lot of work
