@@ -208,8 +208,8 @@ bool TorrentFilter::filterAcceptsRow(int source_row, QModelIndex const& source_p
     }
 
     if (accepts) {
-        auto const display_name = prefs_.get<QString>(TR_KEY_filter_trackers);
-        accepts = display_name.isEmpty() || tor.includesTracker(display_name.toLower());
+        auto const sitename = prefs_.get<QString>(TR_KEY_filter_trackers);
+        accepts = sitename.isEmpty() || tor.includesTracker(sitename);
     }
 
     if (accepts) {
