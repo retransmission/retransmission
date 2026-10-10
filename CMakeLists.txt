@@ -810,6 +810,11 @@ if(MSVC)
         list(APPEND C_WARNING_FLAGS ${FLAG})
         list(APPEND CXX_WARNING_FLAGS ${FLAG})
     endforeach()
+
+    # Silence C4373: it only warns that MSVC 2008 and earlier
+    # did not treat a function as an override when a by-value param added const.
+    # Project style puts const on by-value params in definitions.
+    list(APPEND CXX_WARNING_FLAGS /wd4373)
 else()
     set(WARNING_CANDIDATES
         -W

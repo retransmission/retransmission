@@ -2128,14 +2128,6 @@ msgstr "Atvērt torentu no URL"
 msgid "_URL"
 msgstr "_URL"
 
-#: ../libtransmission/announcer-http.cc:453
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/announcer-http.cc:673
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr ""
-
 #: ../libtransmission/announcer-udp.cc:147 ../libtransmission/announcer-udp.cc:308
 msgid "Unknown error"
 msgstr ""
@@ -2143,21 +2135,6 @@ msgstr ""
 #: ../libtransmission/announcer-udp.cc:423
 msgid "{ip_protocol} connection failed"
 msgstr ""
-
-#: ../libtransmission/announcer-udp.cc:542
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/announcer.cc:898
-msgid "Announce error: {error} ({url})"
-msgstr ""
-
-#: ../libtransmission/announcer.cc:910
-msgid "Announce error: {error} (Retrying in {count} second) ({url})"
-msgid_plural "Announce error: {error} (Retrying in {count} seconds) ({url})"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 #: ../libtransmission/announcer.cc:1046 ../libtransmission/announcer.cc:1368
 msgid "Could not connect to tracker"
@@ -2171,13 +2148,6 @@ msgstr ""
 msgid "Success"
 msgstr ""
 
-#: ../libtransmission/blocklist.cc:85 ../libtransmission/blocklist.cc:412
-msgid "Blocklist '{path}' has {count} entry"
-msgid_plural "Blocklist '{path}' has {count} entries"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
 #. don't try to display the actual lines - it causes issues
 #: ../libtransmission/blocklist.cc:264
 msgid "Couldn't parse line: '{line}'"
@@ -2187,211 +2157,8 @@ msgstr ""
 msgid "Rewriting old blocklist file format to new format"
 msgstr ""
 
-#: ../libtransmission/crypto-utils-ccrypto.cc:73 ../libtransmission/crypto-utils-mbedtls.cc:45 ../libtransmission/crypto-utils-openssl.cc:64 ../libtransmission/crypto-utils-wolfssl.cc:48
-msgid "{crypto_library} error: {error} ({error_code})"
-msgstr ""
-
 #: ../libtransmission/inout.cc:118
 msgid "Couldn't get '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/ip-cache.cc:291
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr ""
-
-#: ../libtransmission/ip-cache.cc:305
-msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
-msgstr ""
-
-#: ../libtransmission/ip-cache.cc:313
-msgid "Your machine does not support {protocol}"
-msgstr ""
-
-#: ../libtransmission/ip-cache.cc:340
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr ""
-
-#: ../libtransmission/log.cc:292
-msgid "Too many messages like this! I won't log this message anymore this session."
-msgstr ""
-
-#: ../libtransmission/makemeta.cc:81 ../libtransmission/watchdir.cc:53
-msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/net.cc:203
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/net.cc:280
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/net.cc:300
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/net.cc:361
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
-msgstr ""
-
-#: ../libtransmission/net.cc:362
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/open-files.cc:194
-msgid "Couldn't open '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/open-files.cc:223
-msgid "Couldn't preallocate '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/open-files.cc:243
-msgid "Couldn't truncate '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/peer-io.cc:676
-msgid "Unknown state: {state}"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-natpmp.cc:92
-msgid "Found public address '{address}'"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-natpmp.cc:130
-msgid "Port {port} is no longer forwarded"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-natpmp.cc:179
-msgid "Port {port} forwarded successfully"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:274
-msgid "Found Internet Gateway Device '{url}'"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:276
-msgid "Local Address is '{address}'"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:302
-msgid "Local port {local_port} is not forwarded to {advertised_port}"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:315
-msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:349
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:359
-msgid "Forwarded local port {local_port} to {advertised_port}"
-msgstr ""
-
-#: ../libtransmission/port-forwarding-upnp.cc:367
-msgid "If your router supports UPnP, please make sure UPnP is enabled!"
-msgstr ""
-
-#: ../libtransmission/port-forwarding.cc:163
-msgid "Starting"
-msgstr "Sāk"
-
-#: ../libtransmission/port-forwarding.cc:166
-msgid "Forwarded"
-msgstr "Pārsūtīts"
-
-#: ../libtransmission/port-forwarding.cc:169
-msgid "Stopping"
-msgstr "Beidz"
-
-#: ../libtransmission/port-forwarding.cc:172
-msgid "Not forwarded"
-msgstr "Nav pārsūtīts"
-
-#: ../libtransmission/port-forwarding.cc:202
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr ""
-
-#: ../libtransmission/port-forwarding.cc:219
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:105
-msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:348
-msgid "Rejected request from {host} (possible directory traversal attack)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:536
-msgid "Rejected request from {host} (brute force protection active)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:545
-msgid "Rejected request from {host} (IP not whitelisted)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:569
-msgid "Rejected request from {host} (failed authentication)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:611
-msgid "Rejected request from {host} (Host not whitelisted)"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:649
-msgid "Unknown URI from {host}: '{uri}'"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:669
-msgid "Unix sockets are unsupported on Windows. Please change '{key}' in your settings."
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:697
-msgid "Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:814
-msgid "Couldn't bind to {address} after {count} attempt, giving up"
-msgid_plural "Couldn't bind to {address} after {count} attempts, giving up"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: ../libtransmission/rpc-server.cc:827
-msgid "Listening for RPC and Web requests on '{address}'"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:857
-msgid "Stopped listening for RPC and Web requests on '{address}'"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:881
-msgid "Added '{entry}' to host whitelist"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:1003
-msgid "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:1016
-msgid "Serving RPC and Web requests on {address}"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:1021
-msgid "Whitelist enabled"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:1026
-msgid "Password required"
-msgstr ""
-
-#: ../libtransmission/rpc-server.cc:1033
-msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
 #: ../libtransmission/rpcimpl.cc:1496
@@ -2414,33 +2181,6 @@ msgstr ""
 msgid "Time to turn on turtle mode"
 msgstr ""
 
-#: ../libtransmission/session-id.cc:152
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/session.cc:423
-msgid "Listening to incoming peer connections on {hostport}"
-msgstr ""
-
-#: ../libtransmission/session.cc:748
-msgid "{appname} version {version} starting"
-msgstr ""
-
-#: ../libtransmission/session.cc:1488
-msgid "{appname} version {version} shutting down"
-msgstr ""
-
-#: ../libtransmission/session.cc:1570
-msgid "Loaded {count} torrent"
-msgid_plural "Loaded {count} torrents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: ../libtransmission/torrent-metainfo.cc:705
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr ""
-
 #: ../libtransmission/torrent.cc:139
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr ""
@@ -2449,160 +2189,20 @@ msgstr ""
 msgid "No data found! Ensure your drives are connected or use \"Set Location\". To re-download, use \"Verify Local Data\" and start the torrent afterwards."
 msgstr ""
 
-#: ../libtransmission/torrent.cc:405
-msgid "Calling script '{path}'"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:413
-msgid "Couldn't call script '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:447
-msgid "Seed ratio reached; pausing torrent"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:454
-msgid "Seeding idle limit reached; pausing torrent"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:615
-msgid "Restarted manually -- disabling its seed ratio"
-msgstr "Pārstartēts manuāli — atstata došanas samēru"
-
-#: ../libtransmission/torrent.cc:671
-msgid "Pausing torrent"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:725
-msgid "Couldn't remove all torrent files: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/torrent.cc:791
-msgid "Removing torrent"
-msgstr "Izņem torentu"
-
-#: ../libtransmission/torrent.cc:1110 ../libtransmission/torrent.cc:1618
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr ""
-
 #: ../libtransmission/torrent.cc:1560
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
-msgstr ""
-
-#: ../libtransmission/torrent.cc:2066
-msgid "Tracker warning: '{warning}' ({url})"
-msgstr ""
-
-#: ../libtransmission/tr-dht.cc:554
-msgid "Couldn't parse '{filename}' line: '{line}'"
-msgstr ""
-
-#: ../libtransmission/tr-dht.cc:579
-msgid "Couldn't look up '{address}:{port}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-lpd.cc:271 ../libtransmission/tr-lpd.cc:285
-msgid "Couldn't initialize {ip_protocol} LPD: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-udp.cc:186
-msgid "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-udp.cc:198
-msgid "Couldn't bind IPv4 socket {address}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-udp.cc:233
-msgid "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-udp.cc:245
-msgid "Couldn't bind IPv6 socket {address}: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/tr-udp.cc:265
-msgid "Couldn't create any UDP sockets."
-msgstr ""
-
-#: ../libtransmission/tr-utp.cc:98
-msgid "Unknown socket family"
-msgstr ""
-
-#: ../libtransmission/utils.cc:150
-msgid "Couldn't read '{path}': Not a regular file"
 msgstr ""
 
 #: ../libtransmission/variant-json.cc:257
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
 
-#: ../libtransmission/watchdir-inotify.cc:87 ../libtransmission/watchdir-inotify.cc:100 ../libtransmission/watchdir-inotify.cc:113 ../libtransmission/watchdir-kqueue.cc:76 ../libtransmission/watchdir-kqueue.cc:90 ../libtransmission/watchdir-kqueue.cc:106
-msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/watchdir-inotify.cc:146 ../libtransmission/watchdir-kqueue.cc:152 ../libtransmission/watchdir-win32.cc:297
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/watchdir-inotify.cc:156 ../libtransmission/watchdir-win32.cc:307
-msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
-msgstr ""
-
 #: ../libtransmission/watchdir-inotify.cc:174 ../libtransmission/watchdir-win32.cc:333
 msgid "Couldn't read filename: {error} ({error_code})"
 msgstr ""
 
-#: ../libtransmission/watchdir-inotify.cc:184 ../libtransmission/watchdir-win32.cc:343
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
-msgstr ""
-
-#: ../libtransmission/watchdir-win32.cc:146
-msgid "Couldn't convert '{path}' to native path"
-msgstr ""
-
-#: ../libtransmission/watchdir-win32.cc:185
-msgid "Couldn't create pipe: {error} ({error_code})"
-msgstr ""
-
-#: ../libtransmission/watchdir-win32.cc:211
-msgid "Couldn't create thread"
-msgstr ""
-
-#: ../libtransmission/watchdir-win32.cc:249
-msgid "Couldn't read directory changes"
-msgstr ""
-
-#: ../libtransmission/watchdir-win32.cc:256
-msgid "Couldn't wait for directory changes"
-msgstr ""
-
-#: ../libtransmission/web.cc:170 ../libtransmission/web.cc:180
-msgid "Consider upgrading your curl installation."
-msgstr ""
-
-#: ../libtransmission/web.cc:173
-msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
-msgstr ""
-
 #: ../libtransmission/web.cc:184
 msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
-msgstr ""
-
-#: ../libtransmission/web.cc:202
-msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
-msgstr ""
-
-#: ../libtransmission/web.cc:204
-msgid "NB: this only works if you built against libcurl with openssl or gnutls, NOT nss"
-msgstr ""
-
-#: ../libtransmission/web.cc:205
-msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
-msgstr ""
-
-#: ../libtransmission/web.cc:514
-msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
 
 #: ../utils/create.cc:241
@@ -2646,3 +2246,21 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Starting"
+#~ msgstr "Sāk"
+
+#~ msgid "Forwarded"
+#~ msgstr "Pārsūtīts"
+
+#~ msgid "Stopping"
+#~ msgstr "Beidz"
+
+#~ msgid "Not forwarded"
+#~ msgstr "Nav pārsūtīts"
+
+#~ msgid "Restarted manually -- disabling its seed ratio"
+#~ msgstr "Pārstartēts manuāli — atstata došanas samēru"
+
+#~ msgid "Removing torrent"
+#~ msgstr "Izņem torentu"

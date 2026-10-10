@@ -99,7 +99,7 @@ public:
         if (std::size(src) >= TrUnixAddrStrLen) {
             tr_logAddError(
                 fmt::format(
-                    fmt::runtime(_("Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)")),
+                    "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)",
                     fmt::arg("count", TrUnixAddrStrLen - 1),
                     fmt::arg("prefix", TrUnixSocketPrefix)));
             return false;
@@ -342,7 +342,7 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
             evhttp_connection_get_peer(con, &remote_host, &remote_port);
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Rejected request from {host} (possible directory traversal attack)")),
+                    "Rejected request from {host} (possible directory traversal attack)",
                     fmt::arg("host", remote_host)));
         }
         send_simple_response(req, HTTP_NOTFOUND);
@@ -509,16 +509,13 @@ void handle_request(struct evhttp_request* req, void* arg)
 
     if (server->is_anti_brute_force_enabled() && server->login_attempts_ >= server->settings().anti_brute_force_limit) {
         tr_logAddWarn(
-            fmt::format(
-                fmt::runtime(_("Rejected request from {host} (brute force protection active)")),
-                fmt::arg("host", remote_host)));
+            fmt::format("Rejected request from {host} (brute force protection active)", fmt::arg("host", remote_host)));
         send_simple_response(req, HttpErrorForbidden);
         return;
     }
 
     if (!is_address_allowed(server, remote_host)) {
-        tr_logAddWarn(
-            fmt::format(fmt::runtime(_("Rejected request from {host} (IP not whitelisted)")), fmt::arg("host", remote_host)));
+        tr_logAddWarn(fmt::format("Rejected request from {host} (IP not whitelisted)", fmt::arg("host", remote_host)));
         send_simple_response(req, HttpErrorForbidden);
         return;
     }
@@ -530,10 +527,7 @@ void handle_request(struct evhttp_request* req, void* arg)
     }
 
     if (!is_authorized(server, evhttp_find_header(input_headers, "Authorization"))) {
-        tr_logAddWarn(
-            fmt::format(
-                fmt::runtime(_("Rejected request from {host} (failed authentication)")),
-                fmt::arg("host", remote_host)));
+        tr_logAddWarn(fmt::format("Rejected request from {host} (failed authentication)", fmt::arg("host", remote_host)));
         evhttp_add_header(output_headers, "WWW-Authenticate", "Basic realm=\"" MY_REALM "\"");
         if (server->is_anti_brute_force_enabled()) {
             ++server->login_attempts_;
@@ -571,17 +565,12 @@ void handle_request(struct evhttp_request* req, void* arg)
             "<p>This requirement has been added to help prevent "
             "<a href=\"https://en.wikipedia.org/wiki/DNS_rebinding\">DNS Rebinding</a> "
             "attacks.</p>";
-        tr_logAddWarn(
-            fmt::format(fmt::runtime(_("Rejected request from {host} (Host not whitelisted)")), fmt::arg("host", remote_host)));
+        tr_logAddWarn(fmt::format("Rejected request from {host} (Host not whitelisted)", fmt::arg("host", remote_host)));
         send_simple_response(req, 421, Body);
     } else if (
         !uri.starts_with(rpc_base_path.sv()) ||
         (uri.size() != rpc_base_path.size() && uri.substr(rpc_base_path.size()) != "/"sv)) {
-        tr_logAddWarn(
-            fmt::format(
-                fmt::runtime(_("Unknown URI from {host}: '{uri}'")),
-                fmt::arg("host", remote_host),
-                fmt::arg("uri", uri)));
+        tr_logAddWarn(fmt::format("Unknown URI from {host}: '{uri}'", fmt::arg("host", remote_host), fmt::arg("uri", uri)));
         // NOLINTNEXTLINE(bugprone-suspicious-stringview-data-usage)
         send_simple_response(req, HTTP_NOTFOUND, uri.data());
     }
@@ -626,7 +615,7 @@ bool bindUnixSocket(
 #ifdef _WIN32
     tr_logAddError(
         fmt::format(
-            fmt::runtime(_("Unix sockets are unsupported on Windows. Please change '{key}' in your settings.")),
+            "Unix sockets are unsupported on Windows. Please change '{key}' in your settings.",
             fmt::arg("key", tr_quark_get_string_view(TR_KEY_rpc_bind_address))));
     return false;
 #else
@@ -651,9 +640,7 @@ bool bindUnixSocket(
 
     if (chmod(addr.sun_path, socket_mode) != 0) {
         tr_logAddWarn(
-            fmt::format(
-                fmt::runtime(_("Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755")),
-                fmt::arg("mode", socket_mode)));
+            fmt::format("Couldn't set RPC socket mode to {mode:#o}, defaulting to 0755", fmt::arg("mode", socket_mode)));
     }
 
     return evhttp_bind_listener(httpd, lev) != nullptr;
@@ -759,10 +746,7 @@ void start_server(tr_rpc_server* server)
 
         tr_logAddError(
             fmt::format(
-                fmt::runtime(tr_ngettext(
-                    "Couldn't bind to {address} after {count} attempt, giving up",
-                    "Couldn't bind to {address} after {count} attempts, giving up",
-                    ServerStartRetryCount)),
+                "Couldn't bind to {address}, giving up (retry limit {count} reached)",
                 fmt::arg("address", addr_port_str),
                 fmt::arg("count", ServerStartRetryCount)));
     } else {
@@ -776,10 +760,7 @@ void start_server(tr_rpc_server* server)
 
         server->httpd.reset(httpd);
 
-        tr_logAddInfo(
-            fmt::format(
-                fmt::runtime(_("Listening for RPC and Web requests on '{address}'")),
-                fmt::arg("address", addr_port_str)));
+        tr_logAddInfo(fmt::format("Listening for RPC and Web requests on '{address}'", fmt::arg("address", addr_port_str)));
     }
 
     rpc_server_start_retry_cancel(server);
@@ -806,7 +787,7 @@ void stop_server(tr_rpc_server* server)
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("Stopped listening for RPC and Web requests on '{address}'")),
+            "Stopped listening for RPC and Web requests on '{address}'",
             fmt::arg("address", server->bind_address_->to_string(server->port()))));
 }
 
@@ -827,7 +808,7 @@ auto parse_whitelist(std::string_view whitelist)
         item = tr_strv_strip(item);
         if (!std::empty(item)) {
             list.emplace_back(item);
-            tr_logAddInfo(fmt::format(fmt::runtime(_("Added '{entry}' to host whitelist")), fmt::arg("entry", item)));
+            tr_logAddInfo(fmt::format("Added '{entry}' to host whitelist", fmt::arg("entry", item)));
         }
     }
 
@@ -950,8 +931,7 @@ void tr_rpc_server::load(Settings&& settings)
         // NOTE: bind_address_ is default initialized to INADDR_ANY
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_(
-                    "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'")),
+                "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'",
                 fmt::arg("key", tr_quark_get_string_view(TR_KEY_rpc_bind_address)),
                 fmt::arg("value", settings_.bind_address_str)));
     }
@@ -963,15 +943,15 @@ void tr_rpc_server::load(Settings&& settings)
     if (this->is_enabled()) {
         auto const& base_path = url();
         auto const rpc_uri = bind_address_->to_string(port()) + base_path;
-        tr_logAddInfo(fmt::format(fmt::runtime(_("Serving RPC and Web requests on {address}")), fmt::arg("address", rpc_uri)));
+        tr_logAddInfo(fmt::format("Serving RPC and Web requests on {address}", fmt::arg("address", rpc_uri)));
         session->run_in_session_thread(start_server, this);
 
         if (this->is_whitelist_enabled()) {
-            tr_logAddInfo(_("Whitelist enabled"));
+            tr_logAddInfo("Whitelist enabled");
         }
 
         if (this->is_password_enabled()) {
-            tr_logAddInfo(_("Password required"));
+            tr_logAddInfo("Password required");
         } else if (!this->is_whitelist_enabled()) {
             tr_logAddWarn(
                 "The RPC server has no password and its IP whitelist is disabled. "
@@ -984,8 +964,7 @@ void tr_rpc_server::load(Settings&& settings)
     }
 
     if (!std::empty(web_client_dir_)) {
-        tr_logAddInfo(
-            fmt::format(fmt::runtime(_("Serving RPC and Web requests from '{path}'")), fmt::arg("path", web_client_dir_)));
+        tr_logAddInfo(fmt::format("Serving RPC and Web requests from '{path}'", fmt::arg("path", web_client_dir_)));
     }
 }
 

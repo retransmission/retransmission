@@ -438,14 +438,14 @@ void torrentCallScript(tr_torrent const* tor, std::string const& script)
         { "TR_TORRENT_TRACKERS"sv, trackers_str },
     };
 
-    tr_logAddInfoTor(tor, fmt::format(fmt::runtime(_("Calling script '{path}'")), fmt::arg("path", script)));
+    tr_logAddInfoTor(tor, fmt::format("Calling script '{path}'", fmt::arg("path", script)));
 
     auto error = tr_error{};
     if (!tr_spawn_async(std::data(cmd), env, TR_IF_WIN32("\\", "/"), &error)) {
         tr_logAddWarnTor(
             tor,
             fmt::format(
-                fmt::runtime(_("Couldn't call script '{path}': {error} ({error_code})")),
+                "Couldn't call script '{path}': {error} ({error_code})",
                 fmt::arg("path", script),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
@@ -476,13 +476,13 @@ void tr_torrent::stop_if_seed_limit_reached()
 
     /* if we're seeding and reach our seed ratio limit, stop the torrent */
     if (tr_torrentIsSeedRatioDone(this)) {
-        tr_logAddInfoTor(this, _("Seed ratio reached; pausing torrent"));
+        tr_logAddInfoTor(this, "Seed ratio reached; pausing torrent");
         stop_soon();
         session->onRatioLimitHit(id());
     }
     /* if we're seeding and reach our inactivity limit, stop the torrent */
     else if (auto const secs_left = idle_seconds_left(tr_time()); secs_left && *secs_left <= time_t{}) {
-        tr_logAddInfoTor(this, _("Seeding idle limit reached; pausing torrent"));
+        tr_logAddInfoTor(this, "Seeding idle limit reached; pausing torrent");
 
         stop_soon();
         finished_seeding_by_idle_ = true;
@@ -640,7 +640,7 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
 
     /* allow finished torrents to be resumed */
     if (tr_torrentIsSeedRatioDone(this)) {
-        tr_logAddInfoTor(this, _("Restarted manually -- disabling its seed ratio"));
+        tr_logAddInfoTor(this, "Restarted manually -- disabling its seed ratio");
         set_seed_ratio_mode(TR_RATIOLIMIT_UNLIMITED);
     }
 
@@ -703,7 +703,7 @@ void tr_torrent::stop_now()
     mark_changed();
 
     if (!session->isClosing()) {
-        tr_logAddInfoTor(this, _("Pausing torrent"));
+        tr_logAddInfoTor(this, "Pausing torrent");
     }
 
     session->verify_remove(this);
@@ -754,7 +754,7 @@ void tr_torrentRemoveInSessionThread(
                     tr_logAddWarnTor(
                         torrent,
                         fmt::format(
-                            fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
+                            "Couldn't remove all torrent files: {error} ({error_code})",
                             fmt::arg("error", error.message()),
                             fmt::arg("error_code", error.code())));
                 }
@@ -801,7 +801,7 @@ void tr_torrentFreeInSessionThread(tr_torrent* tor)
     TR_ASSERT(tor->session->am_in_session_thread());
 
     if (!tor->session->isClosing()) {
-        tr_logAddInfoTor(tor, _("Removing torrent"));
+        tr_logAddInfoTor(tor, "Removing torrent");
     }
 
     tor->set_dirty(!tor->is_deleting_);
@@ -1713,7 +1713,7 @@ void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_
         tr_logAddErrorTor(
             this,
             fmt::format(
-                fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
+                "Couldn't move '{old_path}' to '{path}': {error} ({error_code})",
                 fmt::arg("old_path", oldpath),
                 fmt::arg("path", newpath),
                 fmt::arg("error", error.message()),
@@ -2180,7 +2180,7 @@ void tr_torrent::on_tracker_response(tr_tracker_event const* event)
         tr_logAddWarnTor(
             this,
             fmt::format(
-                fmt::runtime(_("Tracker warning: '{warning}' ({url})")),
+                "Tracker warning: '{warning}' ({url})",
                 fmt::arg("warning", event->text),
                 fmt::arg("url", tr_urlTrackerLogName(event->announce_url.sv()))));
         error_.set_tracker_warning(event->announce_url, event->text);

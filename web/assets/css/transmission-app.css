@@ -7,6 +7,9 @@
   --statusbar-height: 30px;
   --toolbar-height: 50px;
 
+  /* 2px = the toolbar and statusbar bottom borders */
+  --header-height: calc(var(--toolbar-height) + var(--statusbar-height) + 2px);
+
   /* colors related to torrent status */
   --black: #000;
   --blue-100: #51b3f7;
@@ -60,19 +63,24 @@
   --popup-shadow:
     0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 6%);
-  --progress-bar-shadow: 1px 1px #000;
+  --progress-bar-shadow: 1px 1px var(--black);
+  --progress-bar-shadow-2: var(--progress-bar-shadow);
+  --progress-bar-shadow-3: var(--progress-bar-shadow);
   --progress: 100%;
+
+  /* colors both themes share */
   --color-bg-even: var(--default-tinted);
   --color-bg-tabs: var(--default-tinted);
+  --color-fg-disabled: var(--grey);
   --color-fg-error: var(--red-500);
   --color-fg-port-closed: var(--red-500);
-  --color-fg-port-open: var(--green-100);
-  --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-fg-2: var(--lavender-100);
+  --color-progressbar-fg-3: var(--lavender-100);
   --color-progressbar-magnet: var(--yellow-300);
-  --color-progressbar-paused: var(--grey-200);
   --color-progressbar-queued: var(--blue-400);
   --color-progressbar-verify: var(--yellow-300);
   --color-toolbar-background: var(--default-tinted);
+  --legacy-fg-selected: var(--grey-700);
 
   color-scheme: light dark;
 
@@ -81,58 +89,24 @@
     --color-bg-odd: var(--black);
     --color-bg-popup: var(--black);
     --color-bg-primary: var(--black);
-    --color-bg-selected: var(--default-accent-color-strong);
     --color-bg-warn: var(--pink-500);
     --color-border-default: var(--default-border-dark);
     --color-border-stark: var(--dark-mode-white);
     --color-border-starkest: var(--grey-500);
-    --color-fg-disabled: var(--grey);
     --color-fg-on-popup: var(--nice-grey);
+    --color-fg-port-open: var(--green-100);
     --color-fg-primary: var(--dark-mode-white);
     --color-fg-secondary: var(--nice-grey);
-    --color-fg-selected: var(--grey-700);
     --color-fg-warn: var(--dark-mode-black);
     --color-progressbar-fg-1: var(--lavender-100);
-    --color-progressbar-fg-2: var(--lavender-100);
-    --color-progressbar-fg-3: var(--lavender-100);
+    --color-progressbar-leech: var(--blue-200);
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-seed-1: var(--green-100);
     --color-progressbar-seed-2: var(--green-400);
-    --color-progressbar-seed-paused: var(--grey-500);
+    --contrast-bg: var(--black);
+    --contrast-fg: var(--white);
+    --legacy-bg-selected: var(--default-accent-color-strong);
     --progress-bar-shadow-1: var(--progress-bar-shadow);
-    --progress-bar-shadow-2: var(--progress-bar-shadow);
-    --progress-bar-shadow-3: var(--progress-bar-shadow);
-
-    .contrast-more {
-      --color-bg-even: var(--black);
-      --color-bg-hover: var(--grey-40);
-      --color-bg-tabs: var(--black);
-      --color-bg-warn: var(--pink-500);
-      --color-border-default: var(--white);
-      --color-border-stark: var(--white);
-      --color-border-starkest: var(--white);
-      --color-fg-disabled: var(--white);
-      --color-fg-error: var(--red-500);
-      --color-fg-on-popup: var(--white);
-      --color-fg-port-closed: var(--red-500);
-      --color-fg-port-open: var(--green-100);
-      --color-fg-primary: var(--white);
-      --color-fg-secondary: var(--white);
-      --color-fg-selected: var(--black);
-      --color-fg-warn: var(--black);
-      --color-progressbar-fg-1: var(--white);
-      --color-progressbar-fg-2: var(--white);
-      --color-progressbar-fg-3: var(--black);
-      --color-progressbar-magnet: var(--yellow-300);
-      --color-progressbar-paused: var(--grey-500);
-      --color-progressbar-queued: var(--blue-400);
-      --color-progressbar-seed-1: var(--black);
-      --color-progressbar-seed-2: var(--white);
-      --color-progressbar-seed-paused: var(--grey-500);
-      --color-progressbar-verify: var(--yellow-300);
-      --color-toolbar-background: var(--black);
-      --progress-bar-shadow-3: 0;
-    }
   }
 
   @media (prefers-color-scheme: light) {
@@ -140,94 +114,76 @@
     --color-bg-odd: var(--white);
     --color-bg-popup: var(--white);
     --color-bg-primary: var(--white);
-    --color-bg-selected: var(--default-accent-color);
     --color-bg-warn: #e4606d5b;
     --color-border-default: var(--default-border-light);
     --color-border-stark: var(--grey-500);
     --color-border-starkest: #d0d7de;
-    --color-fg-disabled: var(--grey);
-    --color-fg-error: var(--red-500);
     --color-fg-on-popup: var(--grey-900);
-    --color-fg-port-closed: var(--red-500);
     --color-fg-port-open: var(--green-400);
     --color-fg-primary: var(--grey-700);
     --color-fg-secondary: var(--grey-500);
-    --color-fg-selected: var(--grey-700);
     --color-fg-warn: #cf212e;
     --color-progressbar-fg-1: #303030;
-    --color-progressbar-fg-2: var(--lavender-100);
-    --color-progressbar-fg-3: var(--lavender-100);
     --color-progressbar-leech: var(--blue-100);
-    --color-progressbar-magnet: var(--yellow-300);
     --color-progressbar-paused: var(--grey-200);
-    --color-progressbar-queued: var(--blue-400);
     --color-progressbar-seed-1: var(--green-500);
     --color-progressbar-seed-2: var(--green-300);
-    --color-progressbar-seed-paused: var(--grey-200);
-    --color-progressbar-verify: var(--yellow-300);
-    --progress-bar-shadow-1: 0;
-    --progress-bar-shadow-2: var(--progress-bar-shadow);
-    --progress-bar-shadow-3: var(--progress-bar-shadow);
-
-    .contrast-more {
-      --color-bg-even: var(--white);
-      --color-bg-hover: var(--grey-40);
-      --color-bg-selected: var(--default-accent-color-strong);
-      --color-bg-tabs: var(--white);
-      --color-bg-warn: var(--pink-500);
-      --color-border-default: var(--black);
-      --color-border-stark: var(--black);
-      --color-border-starkest: var(--black);
-      --color-fg-disabled: var(--black);
-      --color-fg-error: var(--red-500);
-      --color-fg-on-popup: var(--black);
-      --color-fg-port-closed: var(--red-500);
-      --color-fg-port-open: var(--green-400);
-      --color-fg-primary: var(--black);
-      --color-fg-secondary: var(--black);
-      --color-fg-selected: var(--black);
-      --color-fg-warn: var(--white);
-      --color-progressbar-fg-1: var(--white);
-      --color-progressbar-fg-2: var(--white);
-      --color-progressbar-fg-3: var(--black);
-      --color-progressbar-leech: var(--blue-200);
-      --color-progressbar-magnet: var(--yellow-300);
-      --color-progressbar-paused: var(--grey-500);
-      --color-progressbar-queued: var(--blue-400);
-      --color-progressbar-seed-1: var(--black);
-      --color-progressbar-seed-2: var(--white);
-      --color-progressbar-seed-paused: var(--grey-500);
-      --color-progressbar-verify: var(--yellow-300);
-      --color-toolbar-background: var(--white);
-      --progress-bar-shadow-1: var(--progress-bar-shadow);
-      --progress-bar-shadow-3: 0;
-    }
+    --contrast-bg: var(--white);
+    --contrast-fg: var(--black);
+    --legacy-bg-selected: var(--default-accent-color);
+    --progress-bar-shadow-1: none;
   }
+}
+
+/* high contrast draws --contrast-fg on --contrast-bg */
+.contrast-more {
+  --color-bg-even: var(--contrast-bg);
+  --color-bg-hover: var(--grey-40);
+  --color-bg-tabs: var(--contrast-bg);
+  --color-bg-warn: var(--pink-500);
+  --color-border-default: var(--contrast-fg);
+  --color-border-stark: var(--contrast-fg);
+  --color-border-starkest: var(--contrast-fg);
+  --color-fg-disabled: var(--contrast-fg);
+  --color-fg-on-popup: var(--contrast-fg);
+  --color-fg-primary: var(--contrast-fg);
+  --color-fg-secondary: var(--contrast-fg);
+  --color-fg-warn: var(--contrast-bg);
+  --color-progressbar-fg-1: var(--white);
+  --color-progressbar-fg-2: var(--white);
+  --color-progressbar-fg-3: var(--black);
+  --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-paused: var(--grey-500);
+  --color-progressbar-seed-1: var(--black);
+  --color-progressbar-seed-2: var(--white);
+  --color-toolbar-background: var(--contrast-bg);
+  --legacy-bg-selected: var(--default-accent-color-strong);
+  --legacy-fg-selected: var(--black);
+  --progress-bar-shadow-1: var(--progress-bar-shadow);
+  --progress-bar-shadow-3: none;
 }
 
 /* If browser can support using 'system color' keywords (i.e. way to inherit browser colors), use these variables instead */
 @supports (background-color: Canvas) {
-  :root {
-    .contrast-less {
-      --color-bg-odd: Canvas;
-      --color-bg-primary: Canvas;
-      --color-bg-popup: Canvas;
-    }
+  .contrast-less {
+    --color-bg-odd: Canvas;
+    --color-bg-primary: Canvas;
+    --color-bg-popup: Canvas;
   }
 }
 
-@supports (background-color: Highlight) {
-  :root {
-    body:not(.highlight-legacy) {
-      --color-bg-selected: Highlight;
-      --color-fg-selected: HighlightText;
-    }
-  }
-}
+/* selection colors follow the Appearance dialog's highlight setting */
+body {
+  --color-bg-selected: Highlight;
+  --color-fg-selected: HighlightText;
 
-@supports (background-color: AccentColor) {
-  :root {
-    body:not(.highlight-legacy, .highlight-system) {
+  &.highlight-legacy {
+    --color-bg-selected: var(--legacy-bg-selected);
+    --color-fg-selected: var(--legacy-fg-selected);
+  }
+
+  @supports (background-color: AccentColor) {
+    &:not(.highlight-legacy, .highlight-system) {
       --color-bg-selected: AccentColor;
       --color-fg-selected: var(--nice-grey);
     }
@@ -257,14 +213,9 @@ h6 {
   margin: 8px 0;
 }
 
-img {
-  border: 0;
-}
-
 a {
   color: var(--color-fg-primary);
   outline: 0;
-  text-decoration: underline;
 }
 
 .flexible-space {
@@ -280,11 +231,6 @@ a {
   flex-direction: column;
   height: 100%;
   position: relative;
-
-  > * {
-    margin: 0;
-    padding: 0;
-  }
 }
 
 #mainwin-workarea {
@@ -297,6 +243,7 @@ a {
 .tabs-container {
   box-shadow: var(--popup-shadow);
   position: absolute;
+  z-index: var(--z-index-popup);
 }
 
 /* TOOLBAR */
@@ -307,13 +254,10 @@ a {
   border-bottom: 1px solid var(--color-border-default);
   display: flex;
   height: var(--toolbar-height);
-  margin: 0;
   width: 100%;
 
   button {
     background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;
     border: 0;
     border-radius: 5px;
     color: var(--color-fg-primary);
@@ -323,25 +267,9 @@ a {
     user-select: none;
     min-width: var(--toolbar-height);
 
-    svg {
-      stroke: var(--color-fg-primary);
-
-      g path {
-        fill: var(--color-fg-primary);
-      }
-    }
-
     &:disabled {
       color: var(--color-fg-disabled);
       cursor: default;
-
-      svg {
-        stroke: var(--color-fg-disabled);
-
-        g path {
-          fill: var(--color-fg-disabled);
-        }
-      }
     }
   }
 
@@ -352,14 +280,9 @@ a {
   }
 }
 
-#toolbar-overflow {
-  margin-right: 4px;
-
-  svg {
-    fill: var(--color-fg-primary);
-    height: 36px;
-    width: 36px;
-  }
+#toolbar-overflow svg {
+  height: 36px;
+  width: 36px;
 }
 
 /* FILTERBAR */
@@ -459,11 +382,7 @@ a {
 
 #torrent-container {
   flex-grow: 1;
-  left: 0;
-  margin: 0;
   overflow: auto;
-  padding: 0;
-  right: 0;
 }
 
 #torrent-list {
@@ -471,7 +390,6 @@ a {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  text-align: left;
   width: 100%;
   user-select: none;
   outline: none;
@@ -491,18 +409,19 @@ a {
 
     .icon {
       /* color the background svg fill */
-      background-color: var(--color-fg-primary);
+      background-color: currentcolor;
       grid-area: icon;
+      height: var(--icon-size);
       mask-image: var(--mime-icon-url);
       mask-repeat: no-repeat;
+      width: var(--icon-size);
 
       &[data-icon-multifile='true'] {
         mask-image: var(--mime-icon-url), var(--folder-image-url);
         mask-position:
           top left,
           bottom right;
-        mask-repeat: no-repeat, no-repeat;
-        mask-size: 16px, 16px;
+        mask-size: 16px;
       }
 
       &[data-icon-mime-type='audio'] {
@@ -539,15 +458,10 @@ a {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
-      &:not(.compact) {
-        font-weight: bold;
-      }
     }
 
     .torrent-labels {
       font-size: 12px;
-      font-weight: normal;
       grid-area: labels;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -564,6 +478,10 @@ a {
 
     .torrent-peer-details {
       grid-area: peers;
+
+      &.error {
+        color: var(--color-fg-error);
+      }
     }
 
     .torrent-progress-bar {
@@ -577,10 +495,6 @@ a {
     .torrent-peer-details,
     .torrent-progress-details {
       font-size: small;
-
-      &.error {
-        color: var(--color-fg-error);
-      }
     }
 
     &.compact {
@@ -590,9 +504,7 @@ a {
       grid-template-columns: calc(var(--icon-size) + 10px) auto 1fr auto auto;
 
       .icon {
-        height: var(--icon-size);
         mask-size: var(--icon-size);
-        width: var(--icon-size);
 
         &[data-icon-multifile='true'] {
           mask-image: var(--folder-image-url);
@@ -601,6 +513,10 @@ a {
 
       .torrent-peer-details {
         white-space: nowrap;
+      }
+
+      .torrent-progress-bar {
+        min-width: 100px;
       }
 
       > * {
@@ -620,9 +536,12 @@ a {
       grid-template-columns: var(--icon-size) auto 1fr;
       padding: 6px 12px;
 
-      .icon {
-        height: var(--icon-size);
-        width: var(--icon-size);
+      .torrent-name {
+        font-weight: bold;
+      }
+
+      .torrent-progress-bar {
+        margin: 2px 0;
       }
 
       > * {
@@ -636,19 +555,11 @@ a {
       &:not(.selected) .torrent-progress-bar {
         color: var(--color-fg-primary);
       }
-
-      .icon {
-        background-color: var(--color-fg-disabled);
-      }
     }
 
     &.selected {
       background-color: var(--color-bg-selected);
       color: var(--color-fg-selected);
-
-      .icon {
-        background-color: var(--color-fg-selected);
-      }
     }
   }
 
@@ -658,14 +569,6 @@ a {
     border: 1px solid var(--color-border-starkest);
     border-radius: 3px;
     height: 18px;
-
-    &:not(.compact) {
-      margin: 2px 0;
-    }
-
-    &.compact {
-      min-width: 100px;
-    }
 
     &.leech {
       &.queued::before {
@@ -684,25 +587,17 @@ a {
       color: var(--black);
     }
 
-    &.seed {
-      &.paused::before {
-        background: var(--color-progressbar-seed-paused);
-        color: var(--color-progressbar-fg-1);
-        text-shadow: var(--progress-bar-shadow-1);
+    &.seed:not(.paused) {
+      &::before {
+        background: var(--color-progressbar-seed-1);
+        color: var(--color-progressbar-fg-2);
+        text-shadow: var(--progress-bar-shadow-2);
       }
 
-      &:not(.paused) {
-        &::before {
-          background: var(--color-progressbar-seed-1);
-          color: var(--color-progressbar-fg-2);
-          text-shadow: var(--progress-bar-shadow-2);
-        }
-
-        &::after {
-          background: var(--color-progressbar-seed-2);
-          color: var(--color-progressbar-fg-3);
-          text-shadow: var(--progress-bar-shadow-3);
-        }
+      &::after {
+        background: var(--color-progressbar-seed-2);
+        color: var(--color-progressbar-fg-3);
+        text-shadow: var(--progress-bar-shadow-3);
       }
     }
 
@@ -751,25 +646,32 @@ a {
   }
 }
 
+/* a grid of labels and values, shared with the inspector's info page.
+   Nested rules take the highest specificity in this list,
+   so :where() keeps the ID from raising the inspector's rules. */
+:where(#prefs-dialog) .tabs-page,
+.inspector-info-page {
+  margin: 20px;
+
+  &:not(.hidden) {
+    display: grid;
+  }
+
+  .section-label {
+    font-weight: bold;
+    grid-column: span 2;
+    padding-bottom: 5px;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+}
+
 #prefs-dialog {
   .tabs-page {
     gap: 5px 8px;
     grid-template-columns: 1fr 1fr;
-    margin: 20px;
-
-    &:not(.hidden) {
-      display: grid;
-    }
-
-    .section-label {
-      font-weight: bold;
-      grid-column: span 2;
-      padding-bottom: 5px;
-
-      &:not(:first-of-type) {
-        margin-top: 20px;
-      }
-    }
   }
 
   .alt-speed-section-label::before {
@@ -786,6 +688,7 @@ a {
 
   #alt-times-div,
   #autostart-div,
+  #default-trackers,
   #port-forwarding,
   #randomize-port,
   #suffix-div,
@@ -793,7 +696,8 @@ a {
   #use-lpd-div,
   #use-pex-div,
   #utp-enabled,
-  .alt-speed-label {
+  .alt-speed-label,
+  .default-trackers-label {
     grid-column: span 2;
   }
 
@@ -830,11 +734,6 @@ a {
     }
   }
 
-  #default-trackers,
-  .default-trackers-label {
-    grid-column: 1 / 3;
-  }
-
   .alt-speed-label {
     font-size: smaller;
 
@@ -846,16 +745,12 @@ a {
 /* TABS */
 
 .tabs-container {
-  align-items: stretch;
   background: var(--color-bg-primary);
   bottom: 0;
   display: flex;
   flex-direction: column;
   right: 0;
-
-  /* 2px = the toolbar and statusbar bottom borders */
-  top: calc(var(--toolbar-height) + var(--statusbar-height) + 2px);
-  z-index: var(--z-index-popup);
+  top: var(--header-height);
 
   @media (width < 600px) {
     top: 0;
@@ -886,17 +781,9 @@ a {
   border-radius: 6px;
   display: flex;
   margin: 10px 0;
-
-  button {
-    appearance: none;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    color: var(--color-fg-primary);
-  }
 }
 
 .tabs-pages {
-  box-sizing: border-box;
   overflow: hidden auto;
 
   @media (width < 600px) {
@@ -906,11 +793,22 @@ a {
   @media (width >= 600px) {
     padding: 0 20px 20px;
   }
+
+  span {
+    overflow-wrap: anywhere;
+  }
 }
 
 .tabs-button {
+  appearance: none;
   background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--color-fg-primary);
   font-size: 14px;
+  height: 30px;
+  margin: 0;
+  min-width: 40px;
   padding: 3px 8px;
 
   &:active,
@@ -925,33 +823,15 @@ a {
 
 .inspector-info-page {
   font-size: 14px;
-
-  /* TODO: this is (mostly) copied from prefs-dialog. */
-
-  /* can it be folded into a single set of rules? */
-
   gap: 8px;
   grid-template-columns: auto 1fr;
-  margin: 20px;
   padding: 12px;
-
-  &:not(.hidden) {
-    display: grid;
-  }
 
   .section-label {
     font-size: 16px;
-    font-weight: bold;
-    grid-column: span 2;
-    padding-bottom: 5px;
-
-    &:not(:first-of-type) {
-      margin-top: 20px;
-    }
   }
 
   :not(.section-label) {
-    /* this section is not copied */
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
@@ -974,15 +854,6 @@ a {
   width: 1rem;
 }
 
-#inspector,
-#prefs-dialog {
-  .tabs-button {
-    height: 30px;
-    margin: 0;
-    min-width: 40px;
-  }
-}
-
 #inspector-file-list {
   margin: 0;
   padding: 0;
@@ -992,8 +863,8 @@ a {
     display: grid;
     column-gap: 5px;
     grid-template-areas:
-      'check   name  priority'
-      'blank1  info  blank2';
+      'check name priority'
+      '.     info .';
     grid-template-columns: 20px 1fr 65px;
     margin-bottom: 4px;
     padding: 5px;
@@ -1048,7 +919,6 @@ a {
 }
 
 #inspector-tiers-list {
-  color: var(--color-fg-primary);
   margin: 0 10px;
   padding: 0;
 
@@ -1068,7 +938,6 @@ a {
   }
 
   .tier-list-torrent {
-    color: var(--color-fg-primary);
     font-weight: bolder;
     overflow-x: hidden;
     padding-top: 12px;
@@ -1082,12 +951,6 @@ a {
     font-weight: bolder;
     grid-column: span 2;
     padding-bottom: 4px;
-  }
-
-  .tier-announce,
-  .tier-scrape,
-  .tier-state {
-    text-align: left;
   }
 
   .tier-downloads,
@@ -1119,8 +982,6 @@ a {
   td {
     border: var(--table-border);
     color: var(--color-fg-secondary);
-
-    /* padding: 5px 10px; */
   }
 
   .torrent-row td {
@@ -1281,7 +1142,6 @@ a {
   border-radius: 5px;
   color: var(--color-fg-on-popup);
   padding: 10px 5px;
-  z-index: var(--z-index-popup);
   user-select: none;
 
   .arrow {
@@ -1303,26 +1163,22 @@ a {
       transform: translate(7px, -18px);
       z-index: calc(var(--z-index-popup) + 1);
       border-radius: 5px;
-      animation: shadow 200ms ease-in normal forwards;
+      animation: shadow 200ms ease-in forwards;
 
       .open {
         background-color: var(--color-bg-primary);
         border-radius: 5px;
         color: var(--color-fg-on-popup);
         padding: 5px;
-        right: 0;
+        position: relative;
         white-space: nowrap;
 
         &.left {
-          position: relative;
-          display: block;
-          animation: left 200ms linear 1;
+          animation: left 200ms linear;
         }
 
         &.right {
-          position: relative;
-          display: block;
-          animation: right 200ms linear 1;
+          animation: right 200ms linear;
         }
       }
     }
@@ -1330,7 +1186,6 @@ a {
 
   .context-menuitem {
     font-size: 13px;
-    list-style: none;
     padding: 5px 15px;
 
     &:hover:not(:disabled),
@@ -1369,30 +1224,14 @@ a {
   right: 0;
   margin: 6px;
   top: var(--toolbar-height);
-  z-index: var(--z-index-popup);
 
   fieldset {
     border: 0;
-    display: block;
     margin: 8px 0;
-
-    ul {
-      margin: 0;
-      padding-left: 0;
-
-      li {
-        list-style-type: none;
-      }
-
-      a {
-        cursor: pointer;
-      }
-    }
   }
 
   .table-row {
     align-items: center;
-    border-radius: 6px;
     display: flex;
     padding: 3px 0;
   }
@@ -1421,7 +1260,6 @@ a {
     display: block;
     padding: 4px 0;
     text-align: left;
-    text-decoration: none;
     width: 150px;
   }
 
@@ -1449,33 +1287,23 @@ a {
     .alt-speed {
       display: grid;
       gap: 4px;
-      grid-template-areas:
-        'check  text'
-        'turtle parentheses';
-    }
 
-    :nth-child(1) {
-      grid-area: check;
+      /* children fill the cells in order: checkbox, text / turtle, limits */
+      grid-template-columns: repeat(2, auto);
 
-      &:not(:checked) ~ #alt-speed-image {
+      > input:not(:checked) ~ #alt-speed-image {
         filter: var(--filter-turtle-off);
       }
-    }
 
-    :nth-child(2) {
-      grid-area: text;
+      > #alt-speed-image + label {
+        font-size: small;
+      }
     }
 
     #alt-speed-image {
       background: var(--image-turtle) no-repeat;
       filter: var(--filter-turtle-on);
-      grid-area: turtle;
       height: 18px;
-    }
-
-    :nth-child(4) {
-      font-size: small;
-      grid-area: parentheses;
     }
   }
 }
@@ -1486,7 +1314,6 @@ a {
   display: flex;
   grid-area: buttons;
   margin: 10px 0 0;
-  text-align: center;
 
   button {
     appearance: none;
@@ -1496,18 +1323,15 @@ a {
     color: var(--color-fg-primary);
     margin-left: 8px;
     padding: 8px;
-    text-decoration: none;
   }
 }
 
 .dialog-container {
   max-width: 500px;
-  top: 102px;
+  top: calc(var(--header-height) + 20px);
   width: calc(100vw - 20px);
   color: var(--color-fg-primary);
-  display: block;
   padding: 0;
-  z-index: var(--z-index-popup);
   border: 0;
   border-radius: 8px;
 }
@@ -1523,7 +1347,7 @@ a {
 .dialog-logo {
   /* the icon ships next to the bundled css; esbuild marks it external
      so the 8 KB svg isn't duplicated here as a data: URI */
-  background: transparent url('./images/favicon.svg') top left no-repeat;
+  background: url('./images/favicon.svg') no-repeat;
   background-size: contain;
   grid-area: icon;
   height: var(--logo-size);
@@ -1623,8 +1447,6 @@ a {
 
 /* STATISTICS DIALOG */
 
-.tabs-pages,
-.inspector-info-page,
 .statistics-dialog {
   .content {
     gap: 6px 16px;
@@ -1647,10 +1469,6 @@ a {
     font-weight: bolder;
     margin-bottom: 4px;
   }
-
-  span {
-    overflow-wrap: anywhere;
-  }
 }
 
 /* UPLOAD DIALOG */
@@ -1666,14 +1484,6 @@ a {
 }
 
 /* CLUSTERIZE */
-
-.clusterize-extra-row {
-  /* biome-ignore lint/complexity/noImportantStyles: overrides clusterize.js inline styles */
-  margin-top: 0 !important;
-
-  /* biome-ignore lint/complexity/noImportantStyles: overrides clusterize.js inline styles */
-  margin-bottom: 0 !important;
-}
 
 .clusterize-extra-row.clusterize-keep-parity {
   display: none;

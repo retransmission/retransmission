@@ -40,7 +40,7 @@ void log_wolfssl_error(int error_code, char const* file, int line)
             line,
             TR_LOG_ERROR,
             fmt::format(
-                fmt::runtime(_("{crypto_library} error: {error} ({error_code})")),
+                "{crypto_library} error: {error} ({error_code})",
                 fmt::arg("crypto_library", "WolfSSL"),
                 fmt::arg("error", wc_GetErrorString(error_code)),
                 fmt::arg("error_code", error_code)));

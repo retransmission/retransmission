@@ -330,7 +330,6 @@ export class TorrentRendererCompact {
 
     // progressbar
     TorrentRendererHelper.renderProgressbar(controller, torrent, progressbar);
-    progressbar.classList.add('compact');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -340,10 +339,10 @@ export class TorrentRendererCompact {
 
     const elements = [
       ['icon', 'icon'],
-      ['name', 'torrent-name compact'],
-      ['labels', 'torrent-labels compact'],
-      ['peer_details', 'torrent-peer-details compact'],
-      ['progressbar', 'torrent-progress-bar compact'],
+      ['name', 'torrent-name'],
+      ['labels', 'torrent-labels'],
+      ['peer_details', 'torrent-peer-details'],
+      ['progressbar', 'torrent-progress-bar'],
     ];
 
     for (const [name, className] of elements) {

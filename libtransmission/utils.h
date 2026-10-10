@@ -42,6 +42,8 @@ template<std::integral T>
     return tr_ngettext(msgid, msgid_plural, static_cast<uint64_t>(n));
 }
 
+// Mark only text that a client shows, such as torrent errors and RPC error replies.
+// Log messages stay in English, because people search for them and paste them into bug reports.
 #define _(msgid) tr_gettext(msgid)
 
 // ---
