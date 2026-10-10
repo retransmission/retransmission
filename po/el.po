@@ -582,6 +582,12 @@ msgstr "Ε_μφάνιση {count:L} από:"
 msgid "{disk_space} free"
 msgstr "{disk_space} ελεύθερα"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Εμφάνιση {visible_count:L} από {count:L} torrent"
+msgstr[1] "Εμφάνιση {visible_count:L} από {count:L} torrent"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"
