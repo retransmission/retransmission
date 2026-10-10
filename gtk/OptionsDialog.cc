@@ -299,11 +299,12 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
         auto const files = IF_GTKMM4(get_files2, get_files)();
         g_assert(!files.empty());
 
-        /* remember this folder the next time we use this dialog */
-        if (auto const folder = IF_GTKMM4(get_current_folder, get_current_folder_file)(); folder != nullptr) {
-            gtr_pref_string_set(TR_KEY_open_dialog_dir, folder->get_path());
-        } else if (auto const parent = files.front()->get_parent(); parent != nullptr) {
-            gtr_pref_string_set(TR_KEY_open_dialog_dir, parent->get_path());
+        // Remember this folder the next time we use this dialog.
+        // Read it from the selection: with the XDG portal, get_current_folder() returns the starting folder.
+        if (auto const parent = files.front()->get_parent(); parent != nullptr) {
+            if (auto const path = parent->get_path(); !path.empty()) {
+                gtr_pref_string_set(TR_KEY_open_dialog_dir, path);
+            }
         }
 
         core->add_files(files, do_start, do_prompt, do_notify);
