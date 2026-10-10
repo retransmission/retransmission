@@ -165,7 +165,7 @@ public:
             tr_logAddErrorSock(this, "Impossible state UTP_STATE_DESTROYING");
             break;
         default:
-            tr_logAddErrorSock(this, fmt::format(fmt::runtime(_("Unknown state: {state}")), fmt::arg("state", state)));
+            tr_logAddErrorSock(this, fmt::format("Unknown state: {state}", fmt::arg("state", state)));
             break;
         }
     }

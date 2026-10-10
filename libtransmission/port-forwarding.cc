@@ -150,16 +150,16 @@ private:
     {
         switch (state) {
         case TR_PORT_MAPPING:
-            return _("Starting");
+            return "Starting";
 
         case TR_PORT_MAPPED:
-            return _("Forwarded");
+            return "Forwarded";
 
         case TR_PORT_UNMAPPING:
-            return _("Stopping");
+            return "Stopping";
 
         case TR_PORT_UNMAPPED:
-            return _("Not forwarded");
+            return "Not forwarded";
 
         default:
             return "???";
@@ -186,7 +186,7 @@ private:
             mediator_.on_port_forwarded(result.advertised_port);
             tr_logAddInfo(
                 fmt::format(
-                    fmt::runtime(_("Mapped private port {private_port} to public port {public_port}")),
+                    "Mapped private port {private_port} to public port {public_port}",
                     fmt::arg("private_port", result.local_port.host()),
                     fmt::arg("public_port", result.advertised_port.host())));
         }
@@ -202,7 +202,7 @@ private:
         if (auto const new_state = state(); new_state != old_state) {
             tr_logAddInfo(
                 fmt::format(
-                    fmt::runtime(_("State changed from '{old_state}' to '{state}'")),
+                    "State changed from '{old_state}' to '{state}'",
                     fmt::arg("old_state", getNatStateStr(old_state)),
                     fmt::arg("state", getNatStateStr(new_state))));
         }

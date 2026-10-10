@@ -266,7 +266,7 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
     // log the messages
     logAddImpl(filename, line, level, std::move(msg), name);
     if (last_one) {
-        char const* final_msg = _("Too many messages like this! I won't log this message anymore this session.");
+        char const* final_msg = "Too many messages like this! I won't log this message anymore this session.";
         logAddImpl(filename, line, level, final_msg, name);
     }
 
