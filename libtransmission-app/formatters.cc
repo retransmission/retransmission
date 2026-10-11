@@ -132,8 +132,8 @@ void append_announce_status(
                 fmt::format(
                     // {markup_begin} and {markup_end} should surround the peer text
                     fmt::runtime(tr_ngettext(
-                        "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}",
-                        "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}",
+                        "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}",
+                        "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}",
                         tracker.lastAnnouncePeerCount)),
                     fmt::arg("markup_begin", markup.success_begin),
                     fmt::arg("peer_count", tracker.lastAnnouncePeerCount),
@@ -221,7 +221,7 @@ void append_scrape_status(
                 fmt::format(
                     // {markup_begin} and {markup_end} should surround the seeder/leecher text
                     fmt::runtime(_(
-                        "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}")),
+                        "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}")),
                     fmt::arg("seeder_count", tracker.seederCount),
                     fmt::arg("seeder_or_seeders", tr_ngettext("seeder", "seeders", tracker.seederCount)),
                     fmt::arg("leecher_count", tracker.leecherCount),

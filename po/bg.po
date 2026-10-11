@@ -31,62 +31,11 @@ msgstr "Няма"
 msgid "Inf"
 msgstr "Информация"
 
-msgid "Couldn't read '{path}': {error} ({error_code})"
-msgstr "Неуспешно прочитане на '{path}': {error} ({error_code})"
-
 msgid "Couldn't add torrent file '{path}'"
 msgstr "Неуспешно добавяне на торент файлове '{path}'"
 
-msgid "Removing torrent file '{path}'"
-msgstr "Премахване на торент файл '{path}'"
-
-msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgstr "Неуспешно премахване на '{path}':{error} ({error_code})"
-
-msgid "Couldn't parse log level '{level}'"
-msgstr "Нивото '{level}' на лог файла не можа да бъде анализирано"
-
-msgid "Deferring reload until session is fully started."
-msgstr "Отлагане на презареждането, докато сесията е изцяло стартирана."
-
-msgid "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})"
-msgstr ""
-
-msgid "Reloading settings from '{path}'"
-msgstr "Презареждане на настройки от '{path}'"
-
-msgid "Couldn't initialize daemon: {error} ({error_code})"
-msgstr "Неуспешно инициализиране на фонов процес: {error} ({error_code})"
-
-msgid "Loading settings from '{path}'"
-msgstr "Зареждане на настройки от '{path}'"
-
-msgid "Saved pidfile '{path}'"
-msgstr "PID файлът е запазен в '{path}'"
-
 msgid "Couldn't save '{path}': {error} ({error_code})"
 msgstr "Неуспешно запазване на '{path}': {error} ({error_code})"
-
-msgid "Requiring authentication"
-msgstr "Изисква удостоверение"
-
-msgid "Watching '{path}' for new torrent files"
-msgstr "Наблюдаване не '{path}' за нови торент файлове"
-
-msgid "Couldn't create event: {error} ({error_code})"
-msgstr "Неуспешно създаване на събитие: {error} ({error_code})"
-
-msgid "Couldn't add event: {error} ({error_code})"
-msgstr "Неуспешно добавяне на събитие: {error} ({error_code})"
-
-msgid "Couldn't launch daemon event loop: {error} ({error_code})"
-msgstr "Неуспешно стартиране на цикъл на събития на фонов процес: {error} ({error_code})"
-
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Неуспешно регистриране на {appname} като управител на {content_type}: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Получен е сигнал за терминиране, прави се опит за чисто изключване. Опитайте отново, ако блокира."
 
 msgid "Closing Connections…"
 msgstr "Прекъсване на връзки..."
@@ -218,10 +167,10 @@ msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] "{total_size} в {file_count:L} файл"
 msgstr[1] "{total_size} в {file_count:L} файл"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent парче с размер {piece_size})"
-msgstr[1] "({piece_count} BitTorrent парчета с размер {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent парче с размер {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent парчета с размер {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -324,10 +273,10 @@ msgstr "Флагове"
 msgid "Web Seeds"
 msgstr "Уеб участници"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Получен е лист с {markup_begin}{peer_count} участник{markup_end} преди {time_span_ago}"
-msgstr[1] "Получен е лист с {markup_begin}{peer_count} участници{markup_end} преди{time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Получен е лист с {markup_begin}{peer_count:L} участник{markup_end} преди {time_span_ago}"
+msgstr[1] "Получен е лист с {markup_begin}{peer_count:L} участници{markup_end} преди{time_span_ago}"
 
 #. {markup_begin} and {markup_end} should surround the time_span
 msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
@@ -350,8 +299,8 @@ msgstr "Заявката за допълнителни участници е п�
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Попита за още участници преди {markup_begin}{time_span_ago}{markup_end}"
 
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "тракера имаше {markup_begin}{seeder_count}{seeder_or_seeders} и {leecher_count}{leecher_or_leechers}{markup_end} преди {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "тракера имаше {markup_begin}{seeder_count:L}{seeder_or_seeders} и {leecher_count:L}{leecher_or_leechers}{markup_end} преди {time_span_ago}"
 
 msgid "seeder"
 msgid_plural "seeders"
@@ -557,12 +506,6 @@ msgctxt "all-time totals"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Свалени: {downloaded_size}, качени: {uploaded_size}"
 
-msgid "{download_speed} ▾"
-msgstr "{download_speed} ▾"
-
-msgid "{upload_speed} ▴"
-msgstr "{upload_speed} ▴"
-
 msgid "Creating '{path}'"
 msgstr "Създаване на '{path}'"
 
@@ -609,9 +552,6 @@ msgstr "Съобщение"
 
 msgid "Time"
 msgstr "Време"
-
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Неуспешно създаване на прокси за '{bus}': {error} ({error_code})"
 
 msgid "Open File"
 msgstr "Отвори файла"
@@ -716,9 +656,6 @@ msgstr "Торентът не може да бъде преместен"
 msgid "This may take a moment…"
 msgstr "Това може да отнеме известно време…"
 
-msgid "Couldn't read '{path}'"
-msgstr "Неуспешно прочитане на '{path}'"
-
 #. logging
 msgid "Inhibiting desktop hibernation"
 msgstr "Изключи прехода към спящ режим"
@@ -729,9 +666,6 @@ msgstr "Неуспешно изключване на прехода към сп�
 #. logging
 msgid "Allowing desktop hibernation"
 msgstr "Разрешаване на преминавато в спящ режим"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -746,9 +680,6 @@ msgstr "_Нулиране"
 
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Тези статистики са само за ваша информация. Рестартирането им не променя статистиките, записани от вашите BitTorrent тракери."
-
-msgid "{upload_speed} ▴ {download_speed} ▾"
-msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
@@ -772,9 +703,6 @@ msgstr "{complete_size}, качени {uploaded_size} (Коефицент: {rati
 msgid "Remaining time unknown"
 msgstr "Оставащото време е неизвестно"
 
-msgid "{download_speed} ▾  {upload_speed} ▴"
-msgstr "{download_speed} ▾ {upload_speed} ▴"
-
 msgid "Stalled"
 msgstr "В застой"
 
@@ -788,28 +716,28 @@ msgid "Local error: '{error}'"
 msgstr "Локална грешка:{error}"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Сваляне на метаданни от {active_count} свързан участник ({percent_done}% готови)"
-msgstr[1] "Сваляне на метаданни от {active_count} свързани участника ({percent_done}% готови)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Сваляне на метаданни от {active_count:L} свързан участник ({percent_done}% готови)"
+msgstr[1] "Сваляне на метаданни от {active_count:L} свързани участника ({percent_done}% готови)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -900,12 +828,6 @@ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
 msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
 msgstr ""
 
 msgid "Unsupported URL: '{url}'"

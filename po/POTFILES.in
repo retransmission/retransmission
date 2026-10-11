@@ -9,7 +9,6 @@
 # They keep source locations, which the template has, out of the catalogs, and leave lines unwrapped:
 #   msgmerge --update --no-location --no-wrap --previous po/<language>.po <template>
 cli/cli.cc
-daemon/daemon.cc
 gtk/Application.cc
 gtk/DetailsDialog.cc
 gtk/Dialogs.cc
@@ -32,6 +31,7 @@ gtk/Torrent.cc
 gtk/retransmission-gtk.desktop.in
 gtk/retransmission-gtk.metainfo.xml.in
 gtk/transmission-menus.ui
+gtk/ui/gtk3/AboutDialog.ui
 gtk/ui/gtk3/AddTrackerDialog.ui
 gtk/ui/gtk3/DetailsDialog.ui
 gtk/ui/gtk3/EditTrackersDialog.ui
@@ -45,6 +45,7 @@ gtk/ui/gtk3/PrefsDialog.ui
 gtk/ui/gtk3/RelocateDialog.ui
 gtk/ui/gtk3/StatsDialog.ui
 gtk/ui/gtk3/TorrentUrlChooserDialog.ui
+gtk/ui/gtk4/AboutDialog.ui
 gtk/ui/gtk4/AddTrackerDialog.ui
 gtk/ui/gtk4/DetailsDialog.ui
 gtk/ui/gtk4/EditTrackersDialog.ui
@@ -131,7 +132,6 @@ qt/RelocateDialog.cc
 qt/RelocateDialog.ui
 qt/Session.cc
 qt/SessionDialog.ui
-qt/Speed.cc
 qt/StatsDialog.cc
 qt/StatsDialog.ui
 qt/Torrent.cc

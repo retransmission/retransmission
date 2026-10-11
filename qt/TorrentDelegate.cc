@@ -348,8 +348,8 @@ QString TorrentDelegate::statusString(Torrent const& tor)
                 } else {
                     str = TR_FORMAT_N(
                         // Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-                        "Downloading from {active_count} of {connected_count} connected peer",
-                        "Downloading from {active_count} of {connected_count} connected peers",
+                        "Downloading from {active_count:L} of {connected_count:L} connected peer",
+                        "Downloading from {active_count:L} of {connected_count:L} connected peers",
                         tor.connectedPeersAndWebseeds(),
                         fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
                         fmt::arg("connected_count", tor.connectedPeersAndWebseeds()));
@@ -377,8 +377,8 @@ QString TorrentDelegate::statusString(Torrent const& tor)
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()));
             } else {
                 str = TR_FORMAT_N(
-                    "Seeding to {active_count} of {connected_count} connected peer",
-                    "Seeding to {active_count} of {connected_count} connected peers",
+                    "Seeding to {active_count:L} of {connected_count:L} connected peer",
+                    "Seeding to {active_count:L} of {connected_count:L} connected peers",
                     tor.connectedPeers(),
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()),
                     fmt::arg("connected_count", tor.connectedPeers()));

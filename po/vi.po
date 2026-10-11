@@ -28,62 +28,11 @@ msgstr "Không có"
 msgid "Inf"
 msgstr ""
 
-msgid "Couldn't read '{path}': {error} ({error_code})"
-msgstr "Không thể đọc '{path}': {error} ({error_code})"
-
 msgid "Couldn't add torrent file '{path}'"
 msgstr "Không thể thêm file torrent '{path}'"
 
-msgid "Removing torrent file '{path}'"
-msgstr "Đang xóa file torrent '{path}'"
-
-msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgstr "Không thể xóa '{path}': {error} ({error_code})"
-
-msgid "Couldn't parse log level '{level}'"
-msgstr "Không thể phân tích log cấp '{level}'"
-
-msgid "Deferring reload until session is fully started."
-msgstr "Đang hoãn việc tải lại cho đến khi phiên được khởi động hoàn tất."
-
-msgid "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})"
-msgstr ""
-
-msgid "Reloading settings from '{path}'"
-msgstr "Đang tải lại cài đặt từ '{path}'"
-
-msgid "Couldn't initialize daemon: {error} ({error_code})"
-msgstr "Không thể khởi tạo trình nền: {error} ({error_code})"
-
-msgid "Loading settings from '{path}'"
-msgstr "Đang tải cài đặt từ '{path}'"
-
-msgid "Saved pidfile '{path}'"
-msgstr "Đã lưu pidfile '{path}'"
-
 msgid "Couldn't save '{path}': {error} ({error_code})"
 msgstr "Không thể lưu '{path}': {error} ({error_code})"
-
-msgid "Requiring authentication"
-msgstr "Yêu cầu xác thực"
-
-msgid "Watching '{path}' for new torrent files"
-msgstr "Theo dõi '{path}' để tìm file torrent mới"
-
-msgid "Couldn't create event: {error} ({error_code})"
-msgstr "Không thể tạo event: {error} ({error_code})"
-
-msgid "Couldn't add event: {error} ({error_code})"
-msgstr "Không thể thêm event: {error} ({error_code})"
-
-msgid "Couldn't launch daemon event loop: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr ""
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr ""
 
 msgid "Closing Connections…"
 msgstr ""
@@ -199,8 +148,8 @@ msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] "{total_size} trong {file_count:L} tập tin"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
 msgstr[0] ""
 
 msgid "{current_size} ({percent_done}%)"
@@ -304,8 +253,8 @@ msgstr "Cờ"
 msgid "Web Seeds"
 msgstr ""
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 
 #. {markup_begin} and {markup_end} should surround the time_span
@@ -329,7 +278,7 @@ msgstr "Đã xếp hàng để xin thêm peers"
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
 
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 msgstr ""
 
 msgid "seeder"
@@ -526,12 +475,6 @@ msgctxt "all-time totals"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr ""
 
-msgid "{download_speed} ▾"
-msgstr ""
-
-msgid "{upload_speed} ▴"
-msgstr ""
-
 msgid "Creating '{path}'"
 msgstr ""
 
@@ -578,9 +521,6 @@ msgstr "Thông điệp"
 
 msgid "Time"
 msgstr "Thời gian"
-
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr ""
 
 msgid "Open File"
 msgstr "Mở Tập tin"
@@ -684,9 +624,6 @@ msgstr "Không di chuyển được torrent"
 msgid "This may take a moment…"
 msgstr "Vui lòng chờ trong giây lát..."
 
-msgid "Couldn't read '{path}'"
-msgstr "Không thể đọc '{path}"
-
 #. logging
 msgid "Inhibiting desktop hibernation"
 msgstr ""
@@ -697,9 +634,6 @@ msgstr ""
 #. logging
 msgid "Allowing desktop hibernation"
 msgstr "Cho phép máy tính ngủ đông"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -713,9 +647,6 @@ msgstr "Đặt _lại"
 
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Những con số thống kê này chỉ mang tính thông báo. Nếu bạn có thiết lập lại thì cũng không ảnh hưởng tới bản thống kê được lưu bởi các tracker Bittorrent của bạn."
-
-msgid "{upload_speed} ▴ {download_speed} ▾"
-msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
@@ -739,9 +670,6 @@ msgstr ""
 msgid "Remaining time unknown"
 msgstr "Không xác định được thời gian còn lại"
 
-msgid "{download_speed} ▾  {upload_speed} ▴"
-msgstr ""
-
 msgid "Stalled"
 msgstr ""
 
@@ -755,24 +683,24 @@ msgid "Local error: '{error}'"
 msgstr ""
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] ""
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
 msgstr[0] ""
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
 msgstr[0] ""
 
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 
 msgid "{days_from_now:L} day from now"
@@ -846,12 +774,6 @@ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
 msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
 msgstr ""
 
 msgid "Unsupported URL: '{url}'"

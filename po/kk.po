@@ -31,64 +31,10 @@ msgstr ""
 msgid "Another process is already using '{path}'."
 msgstr ""
 
-msgid "Couldn't read '{path}': {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't add torrent file '{path}'"
 msgstr ""
 
-msgid "Removing torrent file '{path}'"
-msgstr ""
-
-msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't parse log level '{level}'"
-msgstr ""
-
-msgid "Deferring reload until session is fully started."
-msgstr ""
-
-msgid "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})"
-msgstr ""
-
-msgid "Reloading settings from '{path}'"
-msgstr ""
-
-msgid "Couldn't initialize daemon: {error} ({error_code})"
-msgstr ""
-
-msgid "Waiting for another process to release '{path}'"
-msgstr ""
-
-msgid "Loading settings from '{path}'"
-msgstr ""
-
-msgid "Saved pidfile '{path}'"
-msgstr ""
-
 msgid "Couldn't save '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Requiring authentication"
-msgstr ""
-
-msgid "Watching '{path}' for new torrent files"
-msgstr ""
-
-msgid "Couldn't create event: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't add event: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't launch daemon event loop: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr ""
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
 msgstr ""
 
 msgid "Closing Connections…"
@@ -115,19 +61,6 @@ msgstr "Жылдам мен қарапайым BitTorrent клиенті"
 
 msgid "Copyright © The {appname} Project"
 msgstr ""
-
-#. Translators: translate "translator-credits" as your name
-#. to have it appear in the credits in the "About"
-#. dialog
-msgid "translator-credits"
-msgstr ""
-"Launchpad Contributions:\n"
-"  Andrew Starr-Bochicchio https://launchpad.net/~andrewsomething\n"
-"  Baurzhan Muftakhidinov https://launchpad.net/~baurthefirst\n"
-"  Krzysztof Klimonda https://launchpad.net/~kklimonda\n"
-"  Robert Ancell https://launchpad.net/~robert-ancell\n"
-"  arruah https://launchpad.net/~arruah\n"
-"  jmb_kz https://launchpad.net/~jmb-kz"
 
 msgid "Use global settings"
 msgstr "Жалпы баптауларды қолдану"
@@ -204,8 +137,8 @@ msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -500,12 +433,6 @@ msgstr "Қабылданған: {downloaded_size}, Таратылған: {upload
 msgid "Ratio: {ratio}"
 msgstr "Рейтингі: {ratio}"
 
-msgid "{download_speed} ▾"
-msgstr ""
-
-msgid "{upload_speed} ▴"
-msgstr ""
-
 msgid "Creating '{path}'"
 msgstr ""
 
@@ -552,12 +479,6 @@ msgstr "Хабарлама"
 
 msgid "Time"
 msgstr "Уақыты"
-
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr ""
 
 msgid "Open File"
 msgstr "Файлды ашу"
@@ -665,15 +586,6 @@ msgstr "Торренті жылжыту мүмкін емес"
 msgid "This may take a moment…"
 msgstr "Бұл біраз уақытты алуы мүмкін…"
 
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't read '{path}'"
-msgstr ""
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
-
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
 msgstr[0] ""
@@ -690,9 +602,6 @@ msgstr "Бұл статистика тек сізге мәлімет беру а
 
 msgid "_Show {appname}"
 msgstr "{appname}-ды _көрсету"
-
-msgid "{upload_speed} ▴ {download_speed} ▾"
-msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
@@ -747,9 +656,6 @@ msgstr "{complete_size}, {uploaded_size} таратылған (Рейтингі:
 msgid "Remaining time unknown"
 msgstr "Қалған уақыты белгісіз"
 
-msgid "{download_speed} ▾  {upload_speed} ▴"
-msgstr ""
-
 msgid "Stalled"
 msgstr "Тоқтап қалды"
 
@@ -765,29 +671,29 @@ msgid "Local error: '{error}'"
 msgstr ""
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
 msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1498,18 +1404,6 @@ msgstr ""
 msgid "Couldn't open torrent"
 msgstr ""
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
@@ -1563,8 +1457,8 @@ msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1594,7 +1488,7 @@ msgstr ""
 msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
 msgstr "Қате алынды {markup_begin}\"{error}\"{markup_end} {time_span} бұрын"
 
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 msgstr ""
 
 msgid "seeder"
@@ -1759,9 +1653,6 @@ msgid "Server"
 msgstr ""
 
 msgid "C_redits"
-msgstr ""
-
-msgid "Credits"
 msgstr ""
 
 #, fuzzy
@@ -2095,8 +1986,8 @@ msgstr "Публикалық торрент"
 #, fuzzy
 #| msgid "Couldn't add duplicate torrent"
 #| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
+msgid "Unable to add {count:L} duplicate torrent"
+msgid_plural "Unable to add {count:L} duplicate torrents"
 msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
 msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
 

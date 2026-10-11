@@ -41,65 +41,11 @@ msgstr "∞"
 msgid "Another process is already using '{path}'."
 msgstr ""
 
-msgid "Couldn't read '{path}': {error} ({error_code})"
-msgstr "Не вдалося прочитати «{path}»: {error} ({error_code})"
-
 msgid "Couldn't add torrent file '{path}'"
 msgstr "Не вдалося додати torrent-файл «{path}»"
 
-msgid "Removing torrent file '{path}'"
-msgstr "Видалення torrent-файлу «{path}»"
-
-msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgstr "Не вдалося видалити «{path}»: {error} ({error_code})"
-
-msgid "Couldn't parse log level '{level}'"
-msgstr "Не вдалося розпізнати рівень журналювання «{level}»"
-
-msgid "Deferring reload until session is fully started."
-msgstr "Відкладення перезапуску до повного старту сесії."
-
-msgid "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})"
-msgstr ""
-
-msgid "Reloading settings from '{path}'"
-msgstr "Перезавантаження налаштувань з «{path}»"
-
-msgid "Couldn't initialize daemon: {error} ({error_code})"
-msgstr "Не вдалося ініціалізувати демон {error} ({error_code})"
-
-msgid "Waiting for another process to release '{path}'"
-msgstr ""
-
-msgid "Loading settings from '{path}'"
-msgstr "Завантаження налаштувань з «{path}»"
-
-msgid "Saved pidfile '{path}'"
-msgstr "Збережено pid-файл «{path}»"
-
 msgid "Couldn't save '{path}': {error} ({error_code})"
 msgstr "Не вдалося зберегти «{path}»: {error} ({error_code})"
-
-msgid "Requiring authentication"
-msgstr "Необхідна автентифікація"
-
-msgid "Watching '{path}' for new torrent files"
-msgstr "Спостереження за новими торент-файлами в «{path}»"
-
-msgid "Couldn't create event: {error} ({error_code})"
-msgstr "Не вдалося створити подію: {error} ({error_code})"
-
-msgid "Couldn't add event: {error} ({error_code})"
-msgstr "Не вдалося додати подію: {error} ({error_code})"
-
-msgid "Couldn't launch daemon event loop: {error} ({error_code})"
-msgstr "Не вдалося запустити цикл подій демона: {error} ({error_code})"
-
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Не вдалося зареєструвати {appname} як обробник {content_type}: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Отримано сигнал завершення, спроба завершити роботу коректно. Повторіть це, якщо виникне помилка."
 
 msgid "Closing Connections…"
 msgstr "Закриття Зʼєднань…"
@@ -129,36 +75,6 @@ msgstr "Швидкий і простий BitTorrent клієнт"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Авторське право © The {appname} Project"
-
-#. Translators: translate "translator-credits" as your name
-#. to have it appear in the credits in the "About"
-#. dialog
-msgid "translator-credits"
-msgstr ""
-"Launchpad Contributions:\n"
-"  Ailandar https://launchpad.net/~ailandar\n"
-"  Alexander Renn https://launchpad.net/~alexander-renn\n"
-"  Alexandr Shapoval https://launchpad.net/~rain534\n"
-"  Bogdan B Serdenko https://launchpad.net/~sebo23-gmail\n"
-"  Krzysztof Klimonda https://launchpad.net/~kklimonda\n"
-"  ND Sedun https://launchpad.net/~nd-sedun\n"
-"  Roman M. Tuz https://launchpad.net/~tuzr\n"
-"  Sergiy Matrunchyk https://launchpad.net/~sergiy.matrunchyk\n"
-"  Serhey Kusyumoff (Сергій Кусюмов) https://launchpad.net/~sergemine\n"
-"  Taras Martyniuk https://launchpad.net/~tarabopm\n"
-"  Valdemar1982 https://launchpad.net/~zvolodymyr\n"
-"  Vasiliy Meshko https://launchpad.net/~vasiliymeshko\n"
-"  Vitaliy Shyshko https://launchpad.net/~vitaliy-shyshko\n"
-"  Yuri Chornoivan https://launchpad.net/~yurchor-gmail\n"
-"  atany https://launchpad.net/~ye-gorshkov\n"
-"  banza https://launchpad.net/~banza\n"
-"  brabadu https://launchpad.net/~boryslavlarin\n"
-"  coirius https://launchpad.net/~coirius\n"
-"  kolybasov https://launchpad.net/~kolybasov\n"
-"  mikhalek https://launchpad.net/~mikhalek\n"
-"  nagait https://launchpad.net/~nomua\n"
-"  svv https://launchpad.net/~skrypnychuk\n"
-"  Микола Ткач https://launchpad.net/~stuartlittle1970"
 
 msgid "Use global settings"
 msgstr "Використовувати загальні параметри"
@@ -237,12 +153,12 @@ msgstr[1] "{total_size} у {file_count:L} файлах"
 msgstr[2] "{total_size} у {file_count:L} файлах"
 msgstr[3] "{total_size} у {file_count:L} файлах"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} BitTorrent частина розміром {piece_size})"
-msgstr[1] "({piece_count} BitTorrent частини розміром {piece_size})"
-msgstr[2] "({piece_count} BitTorrent частин розміром {piece_size})"
-msgstr[3] "({piece_count} BitTorrent частини розміром {piece_size})"
+msgid "({piece_count:L} BitTorrent piece @ {piece_size})"
+msgid_plural "({piece_count:L} BitTorrent pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} BitTorrent частина розміром {piece_size})"
+msgstr[1] "({piece_count:L} BitTorrent частини розміром {piece_size})"
+msgstr[2] "({piece_count:L} BitTorrent частин розміром {piece_size})"
+msgstr[3] "({piece_count:L} BitTorrent частини розміром {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -546,12 +462,6 @@ msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
 msgid "Ratio: {ratio}"
 msgstr "Співвідношення: {ratio}"
 
-msgid "{download_speed} ▾"
-msgstr "{download_speed} ▾"
-
-msgid "{upload_speed} ▴"
-msgstr "{upload_speed} ▴"
-
 msgid "Creating '{path}'"
 msgstr "Створення «{path}»"
 
@@ -598,14 +508,6 @@ msgstr "Повідомлення"
 
 msgid "Time"
 msgstr "Час"
-
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Не вдалося створити проксі для '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Не вдалося зберегти «{path}»: {error} ({error_code})"
 
 msgid "Open File"
 msgstr "Відкрити файл"
@@ -715,17 +617,6 @@ msgstr "Не вдалося пересунути торент"
 msgid "This may take a moment…"
 msgstr "Ця дія може бути тривалою…"
 
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Не вдалося відстежити «{path}»: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Не вдалося зчитати «{path}»"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
-
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
 msgstr[0] "Запущено {count:L} раз"
@@ -744,9 +635,6 @@ msgstr "Ці статистичні дані наведено лише з дов
 
 msgid "_Show {appname}"
 msgstr "_Показати вікно {appname}"
-
-msgid "{upload_speed} ▴ {download_speed} ▾"
-msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
@@ -801,9 +689,6 @@ msgstr "{complete_size}, вивантажено {uploaded_size} (Співвід�
 msgid "Remaining time unknown"
 msgstr "Час, що залишився, невідомий"
 
-msgid "{download_speed} ▾  {upload_speed} ▴"
-msgstr "{download_speed} ▾  {upload_speed} ▴"
-
 msgid "Stalled"
 msgstr "Павза зв'язку"
 
@@ -819,41 +704,41 @@ msgid "Local error: '{error}'"
 msgstr "Локальна помилка: «{error}»"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Завантаження метаданих від {active_count} підʼєднаного вузла (завершено {percent_done}%)"
-msgstr[1] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
-msgstr[2] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
-msgstr[3] "Завантаження метаданих від {active_count} підʼєднаних вузлів (завершено {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Завантаження метаданих від {active_count:L} підʼєднаного вузла (завершено {percent_done}%)"
+msgstr[1] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
+msgstr[2] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
+msgstr[3] "Завантаження метаданих від {active_count:L} підʼєднаних вузлів (завершено {percent_done}%)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
-msgstr[0] "Завантаження від {active_count} з {connected_count} підʼєднаного вузла або веб-сідера"
-msgstr[1] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
-msgstr[2] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
-msgstr[3] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів та веб-сідерів"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds"
+msgstr[0] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаного вузла або веб-сідера"
+msgstr[1] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
+msgstr[2] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
+msgstr[3] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів та веб-сідерів"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
-msgstr[0] "Завантаження від {active_count} веб-сіда"
-msgstr[1] "Завантаження від {active_count} веб-сідів"
-msgstr[2] "Завантаження від {active_count} веб-сідів"
-msgstr[3] "Завантаження від {active_count} веб-сідів"
+msgid "Downloading from {active_count:L} webseed"
+msgid_plural "Downloading from {active_count:L} webseeds"
+msgstr[0] "Завантаження від {active_count:L} веб-сіда"
+msgstr[1] "Завантаження від {active_count:L} веб-сідів"
+msgstr[2] "Завантаження від {active_count:L} веб-сідів"
+msgstr[3] "Завантаження від {active_count:L} веб-сідів"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Завантаження від {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаного вузла"
+msgstr[1] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[2] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[3] "Завантаження від {active_count:L} з {connected_count:L} підʼєднаних вузлів"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Поширення до {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Поширення до {active_count:L} з {connected_count:L} підʼєднаного вузла"
+msgstr[1] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[2] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
+msgstr[3] "Поширення до {active_count:L} з {connected_count:L} підʼєднаних вузлів"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -1568,22 +1453,6 @@ msgstr "Торент-файл «{path}» вже використовується
 msgid "Couldn't open torrent"
 msgstr "Не вдалося відкрити торент"
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Не вдалося перемістити '{path}' до смітника: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Не вдалося створити проксі для '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Не вдалося відкрити «{path}»: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Не вдалося відкрити '{url}'"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "URL не підтримується: «{url}»"
 
@@ -1653,12 +1522,12 @@ msgstr[1] "{seconds_ago:L} секунди тому"
 msgstr[2] "{seconds_ago:L} секунд тому"
 msgstr[3] "{seconds_ago:L} секунди тому"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Отримано список з {markup_begin}{peer_count} вузла{markup_end} {time_span_ago}"
-msgstr[1] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[2] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[3] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
+msgid "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}"
+msgstr[0] "Отримано список з {markup_begin}{peer_count:L} вузла{markup_end} {time_span_ago}"
+msgstr[1] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
+msgstr[2] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
+msgstr[3] "Отримано список з {markup_begin}{peer_count:L} вузлів{markup_end} {time_span_ago}"
 
 msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
 msgstr "Запит списку вузлів {markup_begin}вичерпав час {time_span_ago}{markup_end}; буде надіслано повторно"
@@ -1686,8 +1555,8 @@ msgstr "Виникла помилка запиту до трекера '{markup_
 msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
 msgstr "Трекер {markup_begin}не мав інформації{markup_end} щодо кількості вузлів {time_span} тому"
 
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Трекер мав {markup_begin}{seeder_count} {seeder_or_seeders} і {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgid "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Трекер мав {markup_begin}{seeder_count:L} {seeder_or_seeders} і {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}"
 
 msgid "seeder"
 msgid_plural "seeders"
@@ -1882,9 +1751,6 @@ msgstr "Сервер"
 
 msgid "C_redits"
 msgstr "А_втори"
-
-msgid "Credits"
-msgstr "Автори"
 
 msgid "About {appname}"
 msgstr "Про {appname}"
@@ -2188,12 +2054,12 @@ msgstr "Дубльований торент"
 msgid "Duplicate Torrents"
 msgstr "Дубльовані торенти"
 
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Не вдається додати {count} дубльований торент"
-msgstr[1] "Не вдається додати {count} дубльованих торенти"
-msgstr[2] "Не вдається додати {count} дубльований(х) торент(ів)"
-msgstr[3] "Не вдається додати {count} дубльований(х) торент(ів)"
+msgid "Unable to add {count:L} duplicate torrent"
+msgid_plural "Unable to add {count:L} duplicate torrents"
+msgstr[0] "Не вдається додати {count:L} дубльований торент"
+msgstr[1] "Не вдається додати {count:L} дубльованих торенти"
+msgstr[2] "Не вдається додати {count:L} дубльований(х) торент(ів)"
+msgstr[3] "Не вдається додати {count:L} дубльований(х) торент(ів)"
 
 msgid "Change Session"
 msgstr "Змінити сеанс"

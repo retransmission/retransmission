@@ -6,8 +6,42 @@
 #include <libtransmission/version.h>
 #import "AboutWindowController.h"
 
+// Looks like a link but is a button, so keyboard navigation can reach and press it.
+// A link inside an NSTextField takes no keyboard focus.
+@interface AboutLinkButton : NSButton
+@property(nonatomic, copy) NSURL* url;
+@end
+
+@implementation AboutLinkButton
+
++ (instancetype)buttonWithURLString:(NSString*)urlString
+{
+    AboutLinkButton* button = [[self alloc] init];
+    button.url = [NSURL URLWithString:urlString];
+    button.bordered = NO;
+    button.attributedTitle = [[NSAttributedString alloc] initWithString:urlString attributes:@{
+        NSForegroundColorAttributeName : NSColor.linkColor,
+        NSFontAttributeName : [NSFont systemFontOfSize:[NSFont systemFontSize]]
+    }];
+    button.target = button;
+    button.action = @selector(openLink:);
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    return button;
+}
+
+- (void)openLink:(id)sender
+{
+    [NSWorkspace.sharedWorkspace openURL:self.url];
+}
+
+- (void)resetCursorRects
+{
+    [self addCursorRect:self.bounds cursor:NSCursor.pointingHandCursor];
+}
+
+@end
+
 @interface AboutWindowController ()<NSWindowDelegate>
-@property(nonatomic) NSTextView* fTextView;
 @property(nonatomic) NSTextField* fVersionField;
 @property(nonatomic) NSTextField* fCopyrightField;
 @end
@@ -29,14 +63,15 @@ static AboutWindowController* fAboutBoxInstance = nil;
     if (self) {
         [self setupMainWindow];
         [self configureContent];
+        [self.window setContentSize:self.window.contentView.fittingSize];
+        [self.window center];
     }
     return self;
 }
 
 - (void)setupMainWindow
 {
-    NSPanel* panel = [[NSPanel alloc] initWithContentRect:NSMakeRect(0, 0, 538, 337)
-                                                styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+    NSPanel* panel = [[NSPanel alloc] initWithContentRect:NSZeroRect styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
                                                   backing:NSBackingStoreBuffered
                                                     defer:NO];
     panel.restorable = NO;
@@ -68,20 +103,11 @@ static AboutWindowController* fAboutBoxInstance = nil;
     self.fVersionField.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:self.fVersionField];
 
-    NSScrollView* creditsScrollView = [NSTextView scrollableTextView];
-    creditsScrollView.hasHorizontalScroller = NO;
-    creditsScrollView.hasVerticalScroller = YES;
-    creditsScrollView.drawsBackground = NO;
-    creditsScrollView.borderType = NSBezelBorder;
-    creditsScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSButton* homepageButton = [AboutLinkButton buttonWithURLString:@TR_PROJ_URL_HOMEPAGE];
+    [contentView addSubview:homepageButton];
 
-    self.fTextView = creditsScrollView.documentView;
-    self.fTextView.editable = NO;
-    self.fTextView.selectable = YES;
-    self.fTextView.textColor = [NSColor textColor];
-    self.fTextView.backgroundColor = [NSColor textBackgroundColor];
-
-    [contentView addSubview:creditsScrollView];
+    NSButton* creditsButton = [AboutLinkButton buttonWithURLString:@TR_PROJ_URL_CREDITS];
+    [contentView addSubview:creditsButton];
 
     self.fCopyrightField = [NSTextField labelWithString:@""];
     self.fCopyrightField.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
@@ -94,27 +120,29 @@ static AboutWindowController* fAboutBoxInstance = nil;
         [iconView.widthAnchor constraintEqualToConstant:64],
         [iconView.heightAnchor constraintEqualToConstant:64],
         [iconView.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:12],
+        [iconView.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
 
         [titleField.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:20],
         [titleField.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
-        [titleField.leadingAnchor constraintEqualToAnchor:iconView.trailingAnchor constant:2],
+        [titleField.leadingAnchor constraintEqualToAnchor:iconView.trailingAnchor constant:8],
 
         [self.fVersionField.topAnchor constraintEqualToAnchor:titleField.bottomAnchor constant:8],
         [self.fVersionField.centerXAnchor constraintEqualToAnchor:titleField.centerXAnchor],
 
-        [creditsScrollView.topAnchor constraintGreaterThanOrEqualToAnchor:self.fVersionField.bottomAnchor constant:12],
-        [creditsScrollView.topAnchor constraintGreaterThanOrEqualToAnchor:iconView.bottomAnchor constant:8],
-        [creditsScrollView.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:-1],
-        [creditsScrollView.trailingAnchor constraintEqualToAnchor:contentView.trailingAnchor constant:1],
-        [creditsScrollView.heightAnchor constraintEqualToConstant:190],
+        [homepageButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.fVersionField.bottomAnchor constant:12],
+        [homepageButton.topAnchor constraintGreaterThanOrEqualToAnchor:iconView.bottomAnchor constant:8],
+        [homepageButton.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [homepageButton.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
 
-        [self.fCopyrightField.topAnchor constraintEqualToAnchor:creditsScrollView.bottomAnchor constant:20],
-        [self.fCopyrightField.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:20],
-        [self.fCopyrightField.trailingAnchor constraintLessThanOrEqualToAnchor:contentView.trailingAnchor constant:-20],
+        [creditsButton.topAnchor constraintEqualToAnchor:homepageButton.bottomAnchor constant:4],
+        [creditsButton.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [creditsButton.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
+
+        [self.fCopyrightField.topAnchor constraintEqualToAnchor:creditsButton.bottomAnchor constant:20],
+        [self.fCopyrightField.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [self.fCopyrightField.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
         [self.fCopyrightField.bottomAnchor constraintEqualToAnchor:contentView.bottomAnchor constant:-20]
     ]];
-
-    [panel center];
 
     self.window = panel;
 }
@@ -124,15 +152,6 @@ static AboutWindowController* fAboutBoxInstance = nil;
     self.fVersionField.stringValue = @(LONG_VERSION_STRING);
     self.fCopyrightField.stringValue = [NSBundle.mainBundle localizedStringForKey:@"NSHumanReadableCopyright" value:nil
                                                                             table:@"InfoPlist"];
-
-    NSAttributedString* credits = [[NSAttributedString alloc]
-               initWithURL:[NSBundle.mainBundle URLForResource:@"Credits" withExtension:@"rtf"]
-                   options:@{ NSDocumentTypeDocumentAttribute : NSRTFTextDocumentType }
-        documentAttributes:nil
-                     error:nil];
-    if (credits) {
-        [self.fTextView.textStorage setAttributedString:credits];
-    }
 }
 
 - (void)windowWillClose:(NSNotification*)notification

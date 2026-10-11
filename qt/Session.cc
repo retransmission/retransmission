@@ -740,8 +740,8 @@ void Session::onDuplicatesTimer()
         auto const title = count == 1 ? TR_TEXT("Duplicate Torrent") : TR_TEXT("Duplicate Torrents");
         auto const detail = lines.join(QStringLiteral("\n"));
         auto const detail_text = TR_FORMAT_N(
-            "Unable to add {count} duplicate torrent",
-            "Unable to add {count} duplicate torrents",
+            "Unable to add {count:L} duplicate torrent",
+            "Unable to add {count:L} duplicate torrents",
             count,
             fmt::arg("count", count));
         auto const use_detail = lines.size() > 1;

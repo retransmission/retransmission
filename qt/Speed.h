@@ -33,8 +33,15 @@ public:
         return QString::fromStdString(to_string());
     }
 
-    [[nodiscard]] QString toUploadQstring() const;
-    [[nodiscard]] QString toDownloadQstring() const;
+    [[nodiscard]] QString toUploadQstring() const
+    {
+        return toQstring() + QStringLiteral(" ▴");
+    }
+
+    [[nodiscard]] QString toDownloadQstring() const
+    {
+        return toQstring() + QStringLiteral(" ▾");
+    }
 
     [[nodiscard]] static auto displayName(Speed::Units const units)
     {
