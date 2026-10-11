@@ -2297,10 +2297,10 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Det går inte att lägga till {count} torrentdubblett</numerusform>
-            <numerusform>Det går inte att lägga till {count} torrentdubbletter</numerusform>
+            <numerusform>Det går inte att lägga till {count:L} torrentdubblett</numerusform>
+            <numerusform>Det går inte att lägga till {count:L} torrentdubbletter</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Hämtar från {active_count} av {connected_count} ansluten jämlike</numerusform>
-            <numerusform>Hämtar från {active_count} av {connected_count} anslutna jämlikar</numerusform>
+            <numerusform>Hämtar från {active_count:L} av {connected_count:L} ansluten jämlike</numerusform>
+            <numerusform>Hämtar från {active_count:L} av {connected_count:L} anslutna jämlikar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Distribuerar till {active_count} av {connected_count} ansluten jämlike</numerusform>
-            <numerusform>Distribuerar till {active_count} av {connected_count} anslutna jämlikar</numerusform>
+            <numerusform>Distribuerar till {active_count:L} av {connected_count:L} ansluten jämlike</numerusform>
+            <numerusform>Distribuerar till {active_count:L} av {connected_count:L} anslutna jämlikar</numerusform>
         </translation>
     </message>
     <message>

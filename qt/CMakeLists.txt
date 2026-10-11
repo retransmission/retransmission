@@ -69,7 +69,6 @@ target_sources(${TR_NAME}-qt-lib
         Session.h
         SessionDialog.cc
         SessionDialog.h
-        Speed.cc
         Speed.h
         SqueezeLabel.cc
         SqueezeLabel.h

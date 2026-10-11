@@ -6,6 +6,8 @@ add_library(${TR_NAME}-gtk-lib STATIC)
 
 target_sources(${TR_NAME}-gtk-lib
     PRIVATE
+        AboutDialog.cc
+        AboutDialog.h
         Actions.cc
         Actions.h
         Application.cc
@@ -83,6 +85,7 @@ tr_allow_compile_if(
 
 target_sources(${TR_NAME}-gtk-lib
     PRIVATE
+        ui/gtk3/AboutDialog.ui
         ui/gtk3/AddTrackerDialog.ui
         ui/gtk3/DetailsDialog.ui
         ui/gtk3/EditTrackersDialog.ui
@@ -102,6 +105,7 @@ source_group(Ui/GTK3
 
 target_sources(${TR_NAME}-gtk-lib
     PRIVATE
+        ui/gtk4/AboutDialog.ui
         ui/gtk4/AddTrackerDialog.ui
         ui/gtk4/DetailsDialog.ui
         ui/gtk4/EditTrackersDialog.ui

@@ -2247,10 +2247,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Unable to add {count} duplicate torrent</numerusform>
-            <numerusform>Unable to add {count} duplicate torrents</numerusform>
+            <numerusform>Unable to add {count:L} duplicate torrent</numerusform>
+            <numerusform>Unable to add {count:L} duplicate torrents</numerusform>
         </translation>
     </message>
 </context>
@@ -2523,11 +2523,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Downloading from {active_count} of {connected_count} connected peer</numerusform>
-            <numerusform>Downloading from {active_count} of {connected_count} connected peers</numerusform>
+            <numerusform>Downloading from {active_count:L} of {connected_count:L} connected peer</numerusform>
+            <numerusform>Downloading from {active_count:L} of {connected_count:L} connected peers</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2541,10 +2541,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Seeding to {active_count} of {connected_count} connected peer</numerusform>
-            <numerusform>Seeding to {active_count} of {connected_count} connected peers</numerusform>
+            <numerusform>Seeding to {active_count:L} of {connected_count:L} connected peer</numerusform>
+            <numerusform>Seeding to {active_count:L} of {connected_count:L} connected peers</numerusform>
         </translation>
     </message>
     <message>

@@ -2279,9 +2279,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>無法加入 {count} 個重複的 torrents</numerusform>
+            <numerusform>無法加入 {count:L} 個重複的 torrents</numerusform>
         </translation>
     </message>
 </context>
@@ -2550,10 +2550,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>正在從 {connected_count} 中的 {active_count} 個已連線的節點下載</numerusform>
+            <numerusform>正在從 {connected_count:L} 中的 {active_count:L} 個已連線的節點下載</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2566,9 +2566,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>正在為 {connected_count} 中的 {active_count} 個已連線的節點做種</numerusform>
+            <numerusform>正在為 {connected_count:L} 中的 {active_count:L} 個已連線的節點做種</numerusform>
         </translation>
     </message>
     <message>

@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Kan nie {count} duplikaat-torrent toevoeg nie</numerusform>
-            <numerusform>Kan nie {count} duplikaat-torrents toevoeg nie</numerusform>
+            <numerusform>Kan nie {count:L} duplikaat-torrent toevoeg nie</numerusform>
+            <numerusform>Kan nie {count:L} duplikaat-torrents toevoeg nie</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Laai tans van {active_count} uit {connected_count} verbonde eweknie af</numerusform>
-            <numerusform>Laai tans van {active_count} uit {connected_count} verbonde eweknieë af</numerusform>
+            <numerusform>Laai tans van {active_count:L} uit {connected_count:L} verbonde eweknie af</numerusform>
+            <numerusform>Laai tans van {active_count:L} uit {connected_count:L} verbonde eweknieë af</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Saai na {active_count} van {connected_count} verbonde eweknie</numerusform>
-            <numerusform>Saai na {active_count} van {connected_count} verbonde eweknieë</numerusform>
+            <numerusform>Saai na {active_count:L} van {connected_count:L} verbonde eweknie</numerusform>
+            <numerusform>Saai na {active_count:L} van {connected_count:L} verbonde eweknieë</numerusform>
         </translation>
     </message>
     <message>

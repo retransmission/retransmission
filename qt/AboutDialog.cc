@@ -5,10 +5,12 @@
 
 #include "AboutDialog.h"
 
+#include <QtCore/QUrl>
+
+#include <QtGui/QDesktopServices>
 #include <QtGui/QIcon>
 
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 
 #include <libtransmission/macros.h>
@@ -43,18 +45,7 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
     }
 
     QPushButton const* b = ui_.dialogButtons->addButton(tr("C&redits"), QDialogButtonBox::ActionRole);
-    connect(b, &QAbstractButton::clicked, this, &AboutDialog::showCredits);
+    connect(b, &QAbstractButton::clicked, this, [] { QDesktopServices::openUrl(QUrl{ QStringLiteral(TR_PROJ_URL_CREDITS) }); });
 
     ui_.dialogButtons->button(QDialogButtonBox::Close)->setDefault(true);
-}
-
-void AboutDialog::showCredits()
-{
-    QMessageBox::about(
-        this,
-        tr("Credits"),
-        QString::fromUtf8(
-            "Charles Kerr (Backend; Daemon; GTK+; Qt)\n"
-            "Mitchell Livingston (macOS)\n"
-            "Mike Gelfand\n"));
 }

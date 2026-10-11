@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Gat ekki bætt við {count} tvíteknu torrent-streymi</numerusform>
-            <numerusform>Gat ekki bætt við {count} tvíteknum torrent-streymum</numerusform>
+            <numerusform>Gat ekki bætt við {count:L} tvíteknu torrent-streymi</numerusform>
+            <numerusform>Gat ekki bætt við {count:L} tvíteknum torrent-streymum</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Sæki frá {active_count} af {connected_count} tengdum jafningjum</numerusform>
-            <numerusform>Sæki frá {active_count} af {connected_count} tengdum jafningjum</numerusform>
+            <numerusform>Sæki frá {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
+            <numerusform>Sæki frá {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Deili til {active_count} af {connected_count} tengdum jafningjum</numerusform>
-            <numerusform>Deili til {active_count} af {connected_count} tengdum jafningjum</numerusform>
+            <numerusform>Deili til {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
+            <numerusform>Deili til {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
         </translation>
     </message>
     <message>

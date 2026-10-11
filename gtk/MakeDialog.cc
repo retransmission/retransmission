@@ -379,8 +379,8 @@ void MakeDialog::Impl::updatePiecesLabel()
         gstr += ' ';
         gstr += fmt::format(
             fmt::runtime(ngettext(
-                "({piece_count} BitTorrent piece @ {piece_size})",
-                "({piece_count} BitTorrent pieces @ {piece_size})",
+                "({piece_count:L} BitTorrent piece @ {piece_size})",
+                "({piece_count:L} BitTorrent pieces @ {piece_size})",
                 builder_->piece_count())),
             fmt::arg("piece_count", builder_->piece_count()),
             fmt::arg("piece_size", Memory{ builder_->piece_size(), Memory::Units::Bytes }.to_string()));

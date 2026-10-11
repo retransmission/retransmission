@@ -733,8 +733,8 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
                 str += ' ';
                 str += fmt::format(
                     fmt::runtime(ngettext(
-                        "({piece_count} BitTorrent piece @ {piece_size})",
-                        "({piece_count} BitTorrent pieces @ {piece_size})",
+                        "({piece_count:L} BitTorrent piece @ {piece_size})",
+                        "({piece_count:L} BitTorrent pieces @ {piece_size})",
                         piece_count)),
                     fmt::arg("piece_count", piece_count),
                     fmt::arg("piece_size", Memory{ piece_size, Memory::Units::Bytes }.to_string()));

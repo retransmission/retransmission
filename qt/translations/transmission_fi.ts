@@ -2297,10 +2297,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} torrentin kaksoiskappaletta ei voitu lisätä</numerusform>
-            <numerusform>{count} torrentien kaksoiskappaletta ei voitu lisätä</numerusform>
+            <numerusform>{count:L} torrentin kaksoiskappaletta ei voitu lisätä</numerusform>
+            <numerusform>{count:L} torrentien kaksoiskappaletta ei voitu lisätä</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Ladataan {active_count} /{connected_count} yhdistetyltä vertaiselta</numerusform>
-            <numerusform>Ladataan {active_count}/{connected_count} yhdistetyltä vertaiselta</numerusform>
+            <numerusform>Ladataan {active_count:L} /{connected_count:L} yhdistetyltä vertaiselta</numerusform>
+            <numerusform>Ladataan {active_count:L}/{connected_count:L} yhdistetyltä vertaiselta</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Lähteet {active_count} / {connected_count} yhdistetyt vertaiskoneet</numerusform>
-            <numerusform>Seeding to {active_count} of {connected_count} connected peers</numerusform>
+            <numerusform>Lähteet {active_count:L} / {connected_count:L} yhdistetyt vertaiskoneet</numerusform>
+            <numerusform>Seeding to {active_count:L} of {connected_count:L} connected peers</numerusform>
         </translation>
     </message>
     <message>

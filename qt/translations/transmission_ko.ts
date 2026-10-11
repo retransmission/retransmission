@@ -2260,7 +2260,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
@@ -2531,10 +2531,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>{active_count}을 {connected_count} 연결된 피어로부터 다운로드 중</numerusform>
+            <numerusform>{active_count:L}을 {connected_count:L} 연결된 피어로부터 다운로드 중</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2547,9 +2547,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>{connected_count} 연결된 피어들에게 {active_count} 시드 중</numerusform>
+            <numerusform>{connected_count:L} 연결된 피어들에게 {active_count:L} 시드 중</numerusform>
         </translation>
     </message>
     <message>

@@ -2297,10 +2297,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Kunne ikke tilføje {count} torrentdublet</numerusform>
-            <numerusform>Kunne ikke tilføje {count} torrentdubletter</numerusform>
+            <numerusform>Kunne ikke tilføje {count:L} torrentdublet</numerusform>
+            <numerusform>Kunne ikke tilføje {count:L} torrentdubletter</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Downloader fra {active_count} af {connected_count} forbundet modpart</numerusform>
-            <numerusform>Downloader fra {active_count} af {connected_count} forbundne modparter</numerusform>
+            <numerusform>Downloader fra {active_count:L} af {connected_count:L} forbundet modpart</numerusform>
+            <numerusform>Downloader fra {active_count:L} af {connected_count:L} forbundne modparter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Seeder til {active_count} af {connected_count} forbundet modpart</numerusform>
-            <numerusform>Seeder til {active_count} af {connected_count} forbundne modparter</numerusform>
+            <numerusform>Seeder til {active_count:L} af {connected_count:L} forbundet modpart</numerusform>
+            <numerusform>Seeder til {active_count:L} af {connected_count:L} forbundne modparter</numerusform>
         </translation>
     </message>
     <message>

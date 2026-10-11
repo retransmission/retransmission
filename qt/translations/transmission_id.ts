@@ -2268,7 +2268,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
@@ -2539,10 +2539,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Mengunduh dari {active_count} dari {connected_count} rekan yang tersambung</numerusform>
+            <numerusform>Mengunduh dari {active_count:L} dari {connected_count:L} rekan yang tersambung</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2555,9 +2555,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Mengirim ke {active_count} dari {connected_count} rekan tersambung</numerusform>
+            <numerusform>Mengirim ke {active_count:L} dari {connected_count:L} rekan tersambung</numerusform>
         </translation>
     </message>
     <message>

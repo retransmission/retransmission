@@ -739,7 +739,7 @@ void Session::onDuplicatesTimer()
         auto const count = static_cast<int>(lines.size());
         auto const title = tr("Duplicate Torrent(s)", "", count);
         auto const detail = lines.join(QStringLiteral("\n"));
-        auto const detail_text = TR_FORMAT_N("Unable to add {count} duplicate torrent(s)", count, fmt::arg("count", count));
+        auto const detail_text = TR_FORMAT_N("Unable to add {count:L} duplicate torrent(s)", count, fmt::arg("count", count));
         auto const use_detail = lines.size() > 1;
         auto const text = use_detail ? detail_text : detail;
 

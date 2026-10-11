@@ -2329,12 +2329,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
             <numerusform>Ni mogoče dodati podvojenega torrenta</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
         </translation>
     </message>
 </context>
@@ -2615,13 +2615,13 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanega soležnika</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanega soležnika</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2637,12 +2637,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Sejem {active_count} od {connected_count} povezanega soležnika</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanega soležnika</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
         </translation>
     </message>
     <message>
