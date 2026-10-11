@@ -65,7 +65,7 @@ void writeQuietSettings(QString const& config_dir)
     static constexpr auto Json = std::string_view{ R"({"dht-enabled":false,"lpd-enabled":false,"pex-enabled":false,)"
                                                    R"("port-forwarding-enabled":false,"utp-enabled":false})" };
 
-    auto file = QFile{ QDir{ config_dir }.filePath(QStringLiteral("settings.json")) };
+    auto file = QFile{ QString::fromStdString(tr_sessionGetSettingsFilename(config_dir.toStdString())) };
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         file.write(std::data(Json), static_cast<qint64>(std::size(Json)));
     }

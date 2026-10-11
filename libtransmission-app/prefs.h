@@ -6,7 +6,6 @@
 #pragma once
 
 #include <cassert>
-#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -42,7 +41,6 @@ struct AppPrefs {
     using Field = tr::serializer::Field<MemberPtr>;
 
     // sorted in descending-alignment order to minimize struct padding.
-    std::chrono::sys_seconds blocklist_date_;
     std::string dir_watch_ = tr::platform::get_download_dir();
     std::string filter_text_;
     std::string filter_trackers_;
@@ -85,7 +83,6 @@ struct AppPrefs {
     bool toolbar_ = true;
 
     static constexpr auto Fields = std::make_tuple(
-        Field<&AppPrefs::blocklist_date_>{ TR_KEY_blocklist_date },
         Field<&AppPrefs::compact_view_>{ TR_KEY_compact_view },
         Field<&AppPrefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
         Field<&AppPrefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },

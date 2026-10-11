@@ -49,6 +49,7 @@
 #include <array>
 #include <cstring> // strstr
 #include <functional>
+#include <initializer_list>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -97,6 +98,10 @@ public:
 
     void send_rpc_request(tr_quark method, tr_variant&& params, std::function<void(tr_variant&)>&& on_response);
 
+    // Ask session_get for just `keys`.
+    // `on_result` gets the reply's result map, or nullptr if the reply has none.
+    void send_session_get(std::initializer_list<tr_quark> keys, std::function<void(tr_variant::Map const*)>&& on_result);
+
     void commit_prefs_change(tr_quark key);
 
     auto& signal_add_error()
@@ -107,6 +112,11 @@ public:
     auto& signal_add_prompt()
     {
         return signal_add_prompt_;
+    }
+
+    auto& signal_blocklist_info()
+    {
+        return signal_blocklist_info_;
     }
 
     auto& signal_blocklist_updated()
@@ -178,6 +188,7 @@ private:
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
     sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
+    sigc::signal<void(size_t, time_t)> signal_blocklist_info_;
     sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
@@ -1028,6 +1039,25 @@ void Session::Impl::send_rpc_request(tr_quark const method, tr_variant&& params,
     tr_rpc_request_exec(session_, std::move(req), std::move(callback));
 }
 
+void Session::Impl::send_session_get(
+    std::initializer_list<tr_quark> const keys,
+    std::function<void(tr_variant::Map const*)>&& on_result)
+{
+    auto fields = tr_variant::Vector{};
+    fields.reserve(std::size(keys));
+    for (auto const key : keys) {
+        fields.emplace_back(tr_variant::unmanaged_string(key));
+    }
+
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+
+    send_rpc_request(TR_KEY_session_get, std::move(params), [on_result = std::move(on_result)](tr_variant& response) {
+        auto const* const resmap = response.get_if<tr_variant::Map>();
+        on_result(resmap != nullptr ? resmap->find_if<tr_variant::Map>(TR_KEY_result) : nullptr);
+    });
+}
+
 /***
 ****  Sending a test-port request via RPC
 ***/
@@ -1097,12 +1127,25 @@ void Session::blocklist_update()
                 }
             }
 
-            if (n_rules.has_value()) {
-                gtr_pref_int_set(TR_KEY_blocklist_date, tr_time());
-            }
-
             impl_->signal_blocklist_updated().emit(n_rules >= 0);
         });
+}
+
+void Session::refresh_blocklist_info()
+{
+    // session_get reads the blocklist under the session lock,
+    // which tr_blocklistGetRuleCount() does not take.
+    impl_->send_session_get({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }, [this](tr_variant::Map const* const result) {
+        if (result == nullptr) {
+            return;
+        }
+
+        auto const rule_count = result->value_if<int64_t>(TR_KEY_blocklist_size);
+        auto const updated_at = result->value_if<int64_t>(TR_KEY_blocklist_date);
+        if (rule_count && updated_at) {
+            impl_->signal_blocklist_info().emit(static_cast<size_t>(*rule_count), static_cast<time_t>(*updated_at));
+        }
+    });
 }
 
 // ---
@@ -1124,22 +1167,12 @@ std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
     auto dirs = std::vector<Glib::ustring>{};
     auto done = false;
 
-    // ask the session for just this one field
-    auto fields = tr_variant::Vector{};
-    fields.emplace_back(tr_variant::unmanaged_string(tr_quark_get_string_view(key)));
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
-
-    impl_->send_rpc_request(TR_KEY_session_get, std::move(params), [&dirs, &done, key](tr_variant& response) {
-        if (auto const* resmap = response.get_if<tr_variant::Map>()) {
-            if (auto const* result = resmap->find_if<tr_variant::Map>(TR_KEY_result)) {
-                if (auto const* recent = result->find_if<tr_variant::Vector>(key)) {
-                    dirs.reserve(std::size(*recent));
-                    for (auto const& dir : *recent) {
-                        if (auto const sv = dir.value_if<std::string_view>()) {
-                            dirs.emplace_back(Traits::from_utf8(*sv));
-                        }
-                    }
+    impl_->send_session_get({ key }, [&dirs, &done, key](tr_variant::Map const* const result) {
+        if (auto const* const recent = result != nullptr ? result->find_if<tr_variant::Vector>(key) : nullptr) {
+            dirs.reserve(std::size(*recent));
+            for (auto const& dir : *recent) {
+                if (auto const sv = dir.value_if<std::string_view>()) {
+                    dirs.emplace_back(Traits::from_utf8(*sv));
                 }
             }
         }
@@ -1250,6 +1283,11 @@ sigc::signal<void(Session::ErrorCode, Glib::ustring const&)>& Session::signal_ad
 sigc::signal<void(tr_torrent_builder*)>& Session::signal_add_prompt()
 {
     return impl_->signal_add_prompt();
+}
+
+sigc::signal<void(size_t, time_t)>& Session::signal_blocklist_info()
+{
+    return impl_->signal_blocklist_info();
 }
 
 sigc::signal<void(bool)>& Session::signal_blocklist_updated()

@@ -735,6 +735,21 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="blocklist_date_label">
+                                <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="style" value="italic"/>
+                                </attributes>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">3</property>
+                                  <property name="column-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkEntry" id="blocklist_url_entry">
                                 <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
                                 <property name="width-request">300</property>
@@ -754,7 +769,6 @@
                                   <object class="GtkLabel" id="blocklist_stats_label">
                                     <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
                                     <property name="hexpand">1</property>
-                                    <property name="label">...</property>
                                     <property name="xalign">0</property>
                                     <attributes>
                                       <attribute name="style" value="italic"/>

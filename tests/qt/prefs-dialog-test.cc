@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QDir>
 #include <QElapsedTimer>
+#include <QLabel>
 #include <QSignalSpy>
 #include <QString>
 #include <QTest>
@@ -47,8 +48,7 @@ void writeQuietSettings(QString const& config_dir)
     settings.insert_or_assign(TR_KEY_port_forwarding_enabled, false);
     settings.insert_or_assign(TR_KEY_utp_enabled, false);
 
-    auto const filename = QDir{ config_dir }.filePath(QStringLiteral("settings.json")).toStdString();
-    tr::settings::save(filename, settings);
+    tr::settings::save(tr_sessionGetSettingsFilename(config_dir.toStdString()), settings);
 }
 
 // Pump the Qt event loop until `pred` is true or we time out. Returning control
@@ -185,6 +185,77 @@ private slots:
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().at(0).value<tr_quark>(), Key);
         QCOMPARE(prefs.get<bool>(Key), !was_checked);
+    }
+
+    // Each blocklist label stays hidden until the session reports its value.
+    // stop() hides them again, because the next session hasn't reported yet.
+    void blocklist_labels_show_only_reported_info()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QVERIFY(drainFreeSpace(dialog));
+
+        auto const* const status_label = dialog.findChild<QLabel*>(QStringLiteral("blocklistStatusLabel"));
+        auto const* const date_label = dialog.findChild<QLabel*>(QStringLiteral("blocklistDateLabel"));
+        QVERIFY(status_label != nullptr);
+        QVERIFY(date_label != nullptr);
+        if (status_label == nullptr || date_label == nullptr) {
+            return;
+        }
+
+        // isHidden(), not isVisible(): the dialog itself is never shown.
+        QVERIFY(status_label->isHidden());
+        QVERIFY(date_label->isHidden());
+
+        session.refreshSessionInfo();
+        QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
+        QVERIFY(!date_label->isHidden());
+
+        session.stop();
+        QVERIFY(status_label->isHidden());
+        QVERIFY(date_label->isHidden());
+    }
+
+    // Showing the dialog fetches the blocklist info,
+    // because the session also updates the blocklist on its own schedule.
+    void showing_fetches_blocklist_info()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QVERIFY(drainFreeSpace(dialog));
+
+        auto const* const status_label = dialog.findChild<QLabel*>(QStringLiteral("blocklistStatusLabel"));
+        QVERIFY(status_label != nullptr);
+        if (status_label == nullptr) {
+            return;
+        }
+
+        QVERIFY(status_label->isHidden());
+
+        // Waiting for the label also drains the request's RpcQueue, which would otherwise leak under LSan.
+        dialog.show();
+        QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
+        dialog.hide();
     }
 };
 } // namespace

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <optional>
 
@@ -61,11 +62,24 @@ public:
         return session_type_.value_or(Type::Remote) != Type::Remote;
     }
 
-    // Copy the session's settings, e.g. a `session_get` response, into Prefs
-    // without echoing them back to the session. Also refreshes the RPC
-    // server settings, which for security reasons are only readable from
-    // an embedded session.
+    // Copy the session's settings, e.g. a `session_get` response, into Prefs without echoing them back to the session.
+    // Also refreshes the blocklist info that `settings` reports.
+    // Also refreshes the RPC server settings when the session is embedded.
+    // For security reasons, an embedded session is the only place to read them.
     void import_session_settings(tr_variant::Map const& settings);
+
+    // The blocklist's rule count, or nullopt until the session reports it.
+    [[nodiscard]] constexpr std::optional<int64_t> blocklist_size() const noexcept
+    {
+        return blocklist_size_;
+    }
+
+    // When the session's blocklist was last updated, or the epoch if never.
+    // nullopt until the session reports it, which daemons older than 4.2 never do.
+    [[nodiscard]] constexpr std::optional<std::chrono::sys_seconds> blocklist_date() const noexcept
+    {
+        return blocklist_date_;
+    }
 
     // The embedded session's settings, e.g. for `Prefs::save()`;
     // nullopt when there is no embedded session.
@@ -86,6 +100,13 @@ protected:
         embedded_session_ = session;
     }
 
+    // Forget the previous session's blocklist info, e.g. after disconnecting from it.
+    constexpr void clear_session_info() noexcept
+    {
+        blocklist_size_.reset();
+        blocklist_date_.reset();
+    }
+
 private:
     void update_sleep_inhibit();
     void update_nap_inhibit();
@@ -96,6 +117,8 @@ private:
     tr_session* embedded_session_ = nullptr;
     woke::SleepInhibitor sleep_inhibitor_;
     woke::NapInhibitor nap_inhibitor_;
+    std::optional<std::chrono::sys_seconds> blocklist_date_;
+    std::optional<int64_t> blocklist_size_;
     std::optional<Type> session_type_;
     bool busy_ = false;
     bool importing_settings_ = false;

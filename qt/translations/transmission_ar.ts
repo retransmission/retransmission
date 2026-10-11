@@ -1832,14 +1832,14 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;قائمة الحظر لاتحتوي على قواعد&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على قاعدة واحدة&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على قاعدتين اثنتين&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قواعد&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قاعدة&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قاعدة&lt;/i&gt;</numerusform>
+            <numerusform>قائمة الحظر لاتحتوي على قواعد</numerusform>
+            <numerusform>قائمة الحظر تحتوي على قاعدة واحدة</numerusform>
+            <numerusform>قائمة الحظر تحتوي على قاعدتين اثنتين</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قواعد</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قاعدة</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قاعدة</numerusform>
         </translation>
     </message>
     <message>

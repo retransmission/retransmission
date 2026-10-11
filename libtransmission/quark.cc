@@ -73,17 +73,17 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bind_address_ipv4"sv, // daemon, tr_session::Settings
     "bind_address_ipv6"sv, // daemon, tr_session::Settings
     "bitfield"sv, // .resume
-    "blocklist-date"sv, // gtk app, qt app
+    "blocklist-date"sv, // legacy settings.json
     "blocklist-enabled"sv, // daemon, gtk app, rpc, tr_session::Settings
     "blocklist-size"sv, // rpc
     "blocklist-update"sv, // rpc
-    "blocklist-updates-enabled"sv, // gtk app, qt app
+    "blocklist-updates-enabled"sv, // gtk app, qt app, tr_session::Settings
     "blocklist-url"sv, // rpc, tr_session::Settings
-    "blocklist_date"sv, // gtk app, qt app
+    "blocklist_date"sv, // rpc
     "blocklist_enabled"sv, // daemon, gtk app, rpc, tr_session::Settings
     "blocklist_size"sv, // rpc
     "blocklist_update"sv, // rpc
-    "blocklist_updates_enabled"sv, // gtk app, qt app
+    "blocklist_updates_enabled"sv, // gtk app, qt app, rpc, tr_session::Settings
     "blocklist_url"sv, // rpc, tr_session::Settings
     "blocks"sv, // .resume
     "busy"sv, // rpc

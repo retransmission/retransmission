@@ -13,6 +13,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QSignalBlocker>
 #include <QtCore/QTime>
+#include <QtCore/QTimer>
 
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
@@ -38,6 +39,11 @@
 #include "Utils.h"
 
 using namespace tr;
+
+namespace
+{
+auto constexpr BlocklistInfoRefreshInterval = std::chrono::seconds{ 15 };
+} // namespace
 
 // ---
 
@@ -613,6 +619,12 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     initRemoteTab();
 
     connect(&session_, &Session::sessionUpdated, this, &PrefsDialog::sessionUpdated);
+    // stop() clears the blocklist info, which the next session reports anew.
+    connect(&session_, &Session::stopped, this, &PrefsDialog::updateBlocklistLabel);
+    // The session also updates the blocklist on its own schedule.
+    // setVisible() runs this timer while the dialog is shown.
+    blocklist_info_timer_.setInterval(BlocklistInfoRefreshInterval);
+    connect(&blocklist_info_timer_, &QTimer::timeout, &session_, &Session::refreshBlocklistInfo);
 
     static std::array<tr_quark, 10> constexpr InitKeys = {
         TR_KEY_alt_speed_enabled, TR_KEY_alt_speed_time_enabled,
@@ -638,6 +650,18 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     adjustSize();
 }
 
+void PrefsDialog::setVisible(bool const visible)
+{
+    blocklist_info_timer_.stop();
+
+    if (visible) {
+        session_.refreshBlocklistInfo();
+        blocklist_info_timer_.start();
+    }
+
+    BaseDialog::setVisible(visible);
+}
+
 // ---
 
 void PrefsDialog::sessionUpdated()
@@ -654,18 +678,26 @@ void PrefsDialog::sessionUpdated()
 
 void PrefsDialog::updateBlocklistLabel()
 {
-    auto const rule_count = session_.blocklistSize();
-    ui_.blocklistStatusLabel->setText(TR_FORMAT_N(
-        "<i>Blocklist contains {count:L} rule(s)</i>",
-        static_cast<int>(rule_count),
-        fmt::arg("count", rule_count)));
+    // Each label stays hidden until the session reports its value.
+    // PrefsDialog.ui italicizes both labels and sets them to plain text,
+    // so their msgids carry no markup and other clients can share them.
+    auto const rule_count = session_.blocklist_size();
+    ui_.blocklistStatusLabel->setVisible(rule_count.has_value());
+    if (rule_count) {
+        ui_.blocklistStatusLabel->setText(
+            TR_FORMAT_N("Blocklist contains {count:L} rule(s)", static_cast<int>(*rule_count), fmt::arg("count", *rule_count)));
+    }
 
-    auto const updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date).time_since_epoch().count();
-    ui_.blocklistDateLabel->setText(
-        updated_at == 0 ? tr("<i>Blocklist has never been updated</i>") :
-                          TR_FORMAT(
-                              "<i>Blocklist last updated {date}</i>",
-                              fmt::arg("date", QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate))));
+    auto const updated_at = session_.blocklist_date();
+    ui_.blocklistDateLabel->setVisible(updated_at.has_value());
+    if (updated_at) {
+        auto const secs = updated_at->time_since_epoch().count();
+        auto const date_text = secs == 0 ? tr("Blocklist has never been updated") :
+                                           TR_FORMAT(
+                                               "Blocklist last updated {date}",
+                                               fmt::arg("date", QDateTime::fromSecsSinceEpoch(secs).toString(Qt::TextDate)));
+        ui_.blocklistDateLabel->setText(date_text);
+    }
 }
 
 void PrefsDialog::refreshPref(tr_quark key)

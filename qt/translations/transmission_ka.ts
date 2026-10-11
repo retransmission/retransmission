@@ -1768,10 +1768,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;შავი სია შეიცავს {count:L} წესს&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;შავი სია შეიცავს {count:L} წესს&lt;/i&gt;</numerusform>
+            <numerusform>შავი სია შეიცავს {count:L} წესს</numerusform>
+            <numerusform>შავი სია შეიცავს {count:L} წესს</numerusform>
         </translation>
     </message>
     <message>

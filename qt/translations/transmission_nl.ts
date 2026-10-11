@@ -1775,10 +1775,10 @@ Om een nieuwe primaire URL toe te voegen, voeg je deze toe na een lege regel.</t
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Zwarte lijst bevat {count:L} regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Zwarte lijst bevat {count:L} regels&lt;/i&gt;</numerusform>
+            <numerusform>Zwarte lijst bevat {count:L} regel</numerusform>
+            <numerusform>Zwarte lijst bevat {count:L} regels</numerusform>
         </translation>
     </message>
     <message>

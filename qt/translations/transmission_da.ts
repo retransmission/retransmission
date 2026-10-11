@@ -1775,10 +1775,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokeringslisten indeholder {count:L} regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokeringslisten indeholder {count:L} regler&lt;/i&gt;</numerusform>
+            <numerusform>Blokeringslisten indeholder {count:L} regel</numerusform>
+            <numerusform>Blokeringslisten indeholder {count:L} regler</numerusform>
         </translation>
     </message>
     <message>

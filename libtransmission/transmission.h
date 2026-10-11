@@ -68,6 +68,9 @@ namespace tr::platform
 // Get `session`'s current settings
 [[nodiscard]] tr::Settings tr_sessionGetSettings(tr_session const* session);
 
+// The settings file in `config_dir`, which tr_sessionLoadSettings() reads and tr_sessionSaveSettings() writes.
+[[nodiscard]] std::string tr_sessionGetSettingsFilename(std::string_view config_dir);
+
 // Load settings from disk.
 // Fills in any missing settings with `app_defaults`,
 // then with defaults from `tr_sessionGetDefaultSettings()`.

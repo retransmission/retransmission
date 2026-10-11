@@ -7,7 +7,7 @@
 
 #include <array>
 #include <cstddef> // size_t
-#include <cstdint> // int64_t
+#include <cstdint> // uint64_t
 #include <map>
 #include <optional>
 #include <span>
@@ -74,14 +74,8 @@ public:
         return session_version_;
     }
 
-    [[nodiscard]] constexpr auto blocklistSize() const noexcept
-    {
-        return blocklist_size_;
-    }
-
     enum PortTestIpProtocol : uint8_t { PORT_TEST_IPV4, PORT_TEST_IPV6, NUM_PORT_TEST_IP_PROTOCOL };
 
-    void setBlocklistSize(int64_t i);
     void updateBlocklist();
     void portTest(PortTestIpProtocol ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
@@ -123,12 +117,16 @@ public slots:
     void queueMoveDown(torrent_ids_t const& torrentIds = {});
     void queueMoveTop(torrent_ids_t const& torrentIds = {});
     void queueMoveUp(torrent_ids_t const& torrentIds = {});
+    void refreshBlocklistInfo();
     void refreshSessionInfo();
     void refreshSessionStats();
     void removeTorrents(torrent_ids_t const& torrent_ids, bool delete_files = false);
 
 signals:
     void sourceChanged();
+
+    // stop() disconnected from the session and forgot its info.
+    void stopped();
 
     // The session found its config dir held by another and started nothing.
     // Emitted from every path that reaches start(), so a handler need not know which one ran.
@@ -202,7 +200,6 @@ private:
     QString const config_dir_;
     Prefs& prefs_;
 
-    int64_t blocklist_size_ = -1;
     std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
     tr_session* session_ = {};
     tr_session_stats stats_ = EmptyStats;

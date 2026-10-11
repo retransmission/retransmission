@@ -11,6 +11,8 @@
 #include <optional>
 #include <utility>
 
+#include <QtCore/QTimer>
+
 #include "BaseDialog.h"
 #include "Prefs.h"
 #include "Session.h"
@@ -30,6 +32,9 @@ public:
     PrefsDialog& operator=(PrefsDialog const&) = delete;
     PrefsDialog(PrefsDialog&&) = delete;
     PrefsDialog(PrefsDialog const&) = delete;
+
+    // QWidget
+    void setVisible(bool visible) override;
 
 private slots:
     void refreshPref(tr_quark key);
@@ -104,4 +109,6 @@ private:
     QWidgetList unsupported_when_remote_;
 
     QMessageBox* blocklist_dialog_ = {};
+
+    QTimer blocklist_info_timer_;
 };

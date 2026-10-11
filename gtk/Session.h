@@ -26,6 +26,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <memory>
 #include <optional>
 #include <string>
@@ -154,12 +155,17 @@ public:
 
     void blocklist_update();
 
+    // Ask the session for its blocklist's rule count and last update time;
+    // signal_blocklist_info() delivers them.
+    void refresh_blocklist_info();
+
     void exec(tr_quark method, tr_variant&& params);
 
     void open_folder(tr_torrent_id_t torrent_id) const;
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
     sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
+    sigc::signal<void(size_t, time_t)>& signal_blocklist_info();
     sigc::signal<void(bool)>& signal_blocklist_updated();
     sigc::signal<void(bool)>& signal_busy();
     sigc::signal<void(tr_quark)>& signal_prefs_changed();

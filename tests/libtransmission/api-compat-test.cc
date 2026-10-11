@@ -583,6 +583,16 @@ constexpr std::string_view CurrentSeedRatioSettingsJson = R"json({
     "seed_ratio_limited": false
 })json";
 
+// Transmission 4.1.3's GTK client saved blocklist-date.
+// No current client saves it, so the settings fixtures leave it out.
+constexpr std::string_view LegacyBlocklistDateSettingsJson = R"json({
+    "blocklist-date": 0
+})json";
+
+constexpr std::string_view CurrentBlocklistDateSettingsJson = R"json({
+    "blocklist_date": 0
+})json";
+
 constexpr std::string_view LegacyPreferClearJson = R"json({
     "encryption": 0
 })json";
@@ -1126,6 +1136,10 @@ TEST_F(ApiCompatTest, canConvertJsonDataFiles)
         { "settings tr5 -> tr4", CurrentSettingsJson, Style::Tr4, LegacySettingsJson },
         { "settings tr4 -> tr5", LegacySettingsJson, Style::Tr5, CurrentSettingsJson },
         { "settings tr4 -> tr4", LegacySettingsJson, Style::Tr4, LegacySettingsJson },
+        { "blocklist date tr5 -> tr5", CurrentBlocklistDateSettingsJson, Style::Tr5, CurrentBlocklistDateSettingsJson },
+        { "blocklist date tr5 -> tr4", CurrentBlocklistDateSettingsJson, Style::Tr4, LegacyBlocklistDateSettingsJson },
+        { "blocklist date tr4 -> tr5", LegacyBlocklistDateSettingsJson, Style::Tr5, CurrentBlocklistDateSettingsJson },
+        { "blocklist date tr4 -> tr4", LegacyBlocklistDateSettingsJson, Style::Tr4, LegacyBlocklistDateSettingsJson },
         { "prefer clear tr5 -> tr5", CurrentPreferClearJson, Style::Tr5, CurrentPreferClearJson },
         { "prefer clear tr5 -> tr4", CurrentPreferClearJson, Style::Tr4, LegacyPreferClearJson },
         { "prefer clear tr4 -> tr5", LegacyPreferClearJson, Style::Tr5, CurrentPreferClearJson },

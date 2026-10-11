@@ -1772,10 +1772,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokeo-zerrendak ditu {count:L} arau&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokeo-zerrendak {count:L} arau ditu&lt;/i&gt;</numerusform>
+            <numerusform>Blokeo-zerrendak ditu {count:L} arau</numerusform>
+            <numerusform>Blokeo-zerrendak {count:L} arau ditu</numerusform>
         </translation>
     </message>
     <message>

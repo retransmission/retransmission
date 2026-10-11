@@ -1757,9 +1757,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Daftar blokir memuat {count:L} aturan&lt;/i&gt;</numerusform>
+            <numerusform>Daftar blokir memuat {count:L} aturan</numerusform>
         </translation>
     </message>
     <message>

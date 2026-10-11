@@ -32,6 +32,7 @@
 #include <gtkmm/widget.h>
 
 #include <glibmm/date.h>
+#include <glibmm/datetime.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/timer.h>
@@ -44,6 +45,8 @@
 #include <fmt/format.h>
 
 #include <array>
+#include <cstddef> // size_t
+#include <ctime> // time_t
 #include <limits>
 #include <map>
 #include <memory>
@@ -516,7 +519,7 @@ DesktopPage::DesktopPage(
 
 class PrivacyPage : public PageBase
 {
-    static auto const BlocklistUpdateResultDisplayTimeoutInSeconds = 3U;
+    static auto constexpr BlocklistUpdateResultDisplayTimeoutInSeconds = 3U;
 
 public:
     PrivacyPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
@@ -527,6 +530,8 @@ public:
     ~PrivacyPage() override;
 
 private:
+    bool refreshBlocklistInfo();
+    void onBlocklistInfo(size_t rule_count, time_t updated_at);
     void updateBlocklistText();
     void onBlocklistUpdated(bool success);
     void onBlocklistUpdate();
@@ -537,24 +542,59 @@ private:
 
     Gtk::Button* updateBlocklistButton_ = nullptr;
     Gtk::Label* label_ = nullptr;
+    Gtk::Label* date_label_ = nullptr;
     Gtk::CheckButton* check_ = nullptr;
+
+    size_t rule_count_ = 0;
+    // True while label_ shows a manual update's progress or result instead of the rule count.
+    bool showing_update_status_ = false;
 
     sigc::connection updateBlocklistTag_;
     sigc::connection blocklist_update_result_tag_;
+    sigc::connection blocklist_info_tag_;
+    sigc::connection blocklist_info_timer_tag_;
 };
+
+// Returns false once the session has closed, which stops the refresh timer.
+bool PrivacyPage::refreshBlocklistInfo()
+{
+    if (core_->get_session() == nullptr) {
+        return false;
+    }
+
+    core_->refresh_blocklist_info();
+    return true;
+}
+
+void PrivacyPage::onBlocklistInfo(size_t const rule_count, time_t const updated_at)
+{
+    rule_count_ = rule_count;
+    if (!showing_update_status_) {
+        updateBlocklistText();
+    }
+
+    gtr_label_set_text(
+        *date_label_,
+        updated_at == 0 ? _("Blocklist has never been updated") :
+                          fmt::format(
+                              fmt::runtime(_("Blocklist last updated {date}")),
+                              fmt::arg("date", Glib::DateTime::create_now_local(updated_at).format("%c"))));
+}
 
 void PrivacyPage::updateBlocklistText()
 {
-    auto const n = tr_blocklistGetRuleCount(core_->get_session());
-    auto const msg = fmt::format(
-        fmt::runtime(ngettext("Blocklist has {count:L} entry", "Blocklist has {count:L} entries", n)),
-        fmt::arg("count", n));
-    label_->set_text(msg);
+    gtr_label_set_text(
+        *label_,
+        fmt::format(
+            fmt::runtime(ngettext("Blocklist has {count:L} entry", "Blocklist has {count:L} entries", rule_count_)),
+            fmt::arg("count", rule_count_)));
 }
 
 /* prefs dialog is being destroyed, so stop listening to blocklist updates */
 PrivacyPage::~PrivacyPage()
 {
+    blocklist_info_timer_tag_.disconnect();
+    blocklist_info_tag_.disconnect();
     blocklist_update_result_tag_.disconnect();
     updateBlocklistTag_.disconnect();
 }
@@ -563,10 +603,16 @@ PrivacyPage::~PrivacyPage()
 void PrivacyPage::onBlocklistUpdated(bool success)
 {
     updateBlocklistButton_->set_sensitive(true);
+    showing_update_status_ = true;
     label_->set_text(success ? _("Blocklist updated!") : _("Couldn't update blocklist"));
+    refreshBlocklistInfo();
 
     blocklist_update_result_tag_ = Glib::signal_timeout().connect_seconds(
-        sigc::bind_return(sigc::mem_fun(*this, &PrivacyPage::updateBlocklistText), false),
+        [this]() {
+            showing_update_status_ = false;
+            updateBlocklistText();
+            return false;
+        },
         BlocklistUpdateResultDisplayTimeoutInSeconds);
 }
 
@@ -575,6 +621,7 @@ void PrivacyPage::onBlocklistUpdate()
 {
     updateBlocklistButton_->set_sensitive(false);
 
+    showing_update_status_ = true;
     label_->set_text(_("Getting new blocklist…"));
     blocklist_update_result_tag_.disconnect();
 
@@ -595,13 +642,19 @@ PrivacyPage::PrivacyPage(
     , core_(core)
     , updateBlocklistButton_(get_widget<Gtk::Button>("update_blocklist_button"))
     , label_(get_widget<Gtk::Label>("blocklist_stats_label"))
+    , date_label_(get_widget<Gtk::Label>("blocklist_date_label"))
     , check_(init_check_button("blocklist_check", TR_KEY_blocklist_enabled))
 {
     init_encryption_combo("encryption_mode_combo", TR_KEY_encryption);
 
     auto* const blocklist_url_entry = init_entry("blocklist_url_entry", TR_KEY_blocklist_url);
 
-    updateBlocklistText();
+    blocklist_info_tag_ = core_->signal_blocklist_info().connect(sigc::mem_fun(*this, &PrivacyPage::onBlocklistInfo));
+    refreshBlocklistInfo();
+    // The session also updates the blocklist on its own schedule.
+    blocklist_info_timer_tag_ = Glib::signal_timeout().connect_seconds(
+        sigc::mem_fun(*this, &PrivacyPage::refreshBlocklistInfo),
+        SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     updateBlocklistButton_->signal_clicked().connect([this]() { onBlocklistUpdate(); });
     updateBlocklistButton_->set_sensitive(check_->get_active());
     blocklist_url_entry->signal_changed().connect(

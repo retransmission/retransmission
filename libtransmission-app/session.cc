@@ -111,6 +111,14 @@ void Session::import_session_settings(tr_variant::Map const& settings)
         }
     }
 
+    if (auto const size = settings.value_if<int64_t>(TR_KEY_blocklist_size)) {
+        blocklist_size_ = size;
+    }
+
+    if (auto const date = settings.value_if<int64_t>(TR_KEY_blocklist_date)) {
+        blocklist_date_ = std::chrono::sys_seconds{ std::chrono::seconds{ *date } };
+    }
+
     // For security reasons, the RPC server's own settings aren't in
     // `session_get` responses; read them directly when the session is embedded.
     if (auto* const embedded = embedded_session_; embedded != nullptr) {
