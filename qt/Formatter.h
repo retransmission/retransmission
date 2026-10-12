@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint> // int64_t
+#include <ctime> // time_t
 
 #include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
@@ -22,5 +23,7 @@ public:
     [[nodiscard]] static QString ratioToString(double ratio);
     [[nodiscard]] static QString storageToString(int64_t bytes);
     [[nodiscard]] static QString storageToString(uint64_t bytes);
-    [[nodiscard]] static QString timeToString(int seconds);
+    [[nodiscard]] static QString timeToString(time_t seconds);
+    [[nodiscard]] static QString timeLeftToString(time_t seconds);
+    [[nodiscard]] static QString relativeTimeToString(time_t then, time_t now);
 };

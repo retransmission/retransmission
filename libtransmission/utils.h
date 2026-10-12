@@ -21,16 +21,32 @@
  * @{
  */
 
+// --- translation
+
+// Translates libtransmission's strings, and those of any code that uses _() and tr_ngettext().
+// Each returns a translation that lives as long as the program, or its English argument.
+using tr_gettext_func = char const* (*)(char const* msgid) noexcept;
+using tr_ngettext_func = char const* (*)(char const* msgid, char const* msgid_plural, uint64_t n) noexcept;
+
+// Sets the functions that _() and tr_ngettext() call; until then, strings stay in English.
+// Passing nullptr goes back to English.
+void tr_set_translator(tr_gettext_func gettext_func, tr_ngettext_func ngettext_func) noexcept;
+
+[[nodiscard]] char const* tr_gettext(char const* msgid) noexcept;
+
+[[nodiscard]] char const* tr_ngettext(char const* msgid, char const* msgid_plural, uint64_t n) noexcept;
+
+template<std::integral T>
+[[nodiscard]] char const* tr_ngettext(char const* msgid, char const* msgid_plural, T n) noexcept
+{
+    return tr_ngettext(msgid, msgid_plural, static_cast<uint64_t>(n));
+}
+
 // Mark only text that a client shows, such as torrent errors and RPC error replies.
 // Log messages stay in English, because people search for them and paste them into bug reports.
-#ifdef ENABLE_GETTEXT
-#include <libintl.h>
-#define _ gettext
-#define tr_ngettext ngettext
-#else
-#define _(a) (a)
-#define tr_ngettext(singular, plural, count) ((count) == 1 ? (singular) : (plural))
-#endif
+#define _(msgid) tr_gettext(msgid)
+
+// ---
 
 std::optional<std::locale> tr_locale_set_global(char const* locale_name) noexcept;
 

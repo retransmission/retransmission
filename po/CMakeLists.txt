@@ -1,5 +1,10 @@
+# The languages with more than 90% of their strings translated.
+# A catalog shows each untranslated string in English,
+# so one much below that mixes the two languages on every screen.
 set(LINGUAS
     da
+    de
+    el
     es
     eu
     fi
