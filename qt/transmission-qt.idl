@@ -3,7 +3,7 @@ import "ocidl.idl";
 [
 	uuid(1E405FC2-1A3A-468B-8BD6-BFBB58770390),
 	version(1.0),
-	helpstring("Transmission Qt Client Type Library 1.0")
+	helpstring("Retransmission Qt Client Type Library 1.0")
 ]
 library TransmissionLib
 {
@@ -25,7 +25,7 @@ library TransmissionLib
 	[
 		aggregatable,
 		appobject,
-		helpstring("Transmission Qt Client Class"),
+		helpstring("Retransmission Qt Client Class"),
 		uuid(0E2C952C-0597-491F-BA26-249D7E6FAB49)
 	]
 	coclass QtClient
