@@ -97,7 +97,7 @@ Qt6 client:
 $ sudo apt install qt6-svg-dev qt6-tools-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 #### Debian 12 / Bookworm ####
 On Debian, you can build transmission with a few dependencies on top of a base installation.
@@ -128,7 +128,7 @@ Qt6 client:
 $ sudo apt install qt6-svg-dev qt6-tools-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 #### Ubuntu ####
 On Ubuntu, you can install the required development tools for GTK with this command:
@@ -137,7 +137,7 @@ On Ubuntu, you can install the required development tools for GTK with this comm
 $ sudo apt-get install build-essential automake autoconf libtool pkg-config intltool libcurl4-openssl-dev libglib2.0-dev libevent-dev libminiupnpc-dev libgtk-3-dev libappindicator3-dev libssl-dev zlib1g-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 ### Building Retransmission from Git (first time) ###
 ```bash
