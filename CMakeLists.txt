@@ -977,6 +977,15 @@ set(TR_PROJ_APPNAME_RDNS ${TR_PROJ_DOMAIN_TLD}.${TR_PROJ_DOMAIN_SLD}.${TR_PROJ_A
 set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
 set(TR_DATA_INSTALL_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/${TR_PROJ_APPNAME})
 
+# The app's installed docs, unless the user chose a dir.
+# GNUInstallDirs names its default after the CMake project instead of the app,
+# and leaves the cache entry empty while that default applies.
+if("$CACHE{CMAKE_INSTALL_DOCDIR}" STREQUAL "")
+    set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${TR_PROJ_APPNAME})
+    set(CMAKE_INSTALL_FULL_DOCDIR ${CMAKE_INSTALL_FULL_DATAROOTDIR}/doc/${TR_PROJ_APPNAME})
+endif()
+set_property(CACHE CMAKE_INSTALL_DOCDIR PROPERTY HELPSTRING "Documentation root (DATAROOTDIR/doc/${TR_PROJ_APPNAME})")
+
 # The gettext domain, which names each language's installed catalog.
 set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
 
