@@ -1,10 +1,10 @@
-# Transmission Web Client
+# Retransmission Web Client
 
-A web interface is built into all Transmission flavors, enabling them to be controlled remotely.
+A web interface is built into all Retransmission flavors, enabling them to be controlled remotely.
 
 ## Notes for Packagers
 
-Transmission releases include a prebuilt webapp bundle in
+Retransmission releases include a prebuilt webapp bundle in
 `web/public_html/`, so most packages don't need to build it themselves.
 
 If your distro's policies require building the bundle from source, the
@@ -14,7 +14,7 @@ is required: the webapp has no external runtime dependencies — the few
 third-party modules it uses are vendored in `src/vendor/`.
 
 ```sh
-$ cd transmission/web/
+$ cd retransmission/web/
 $ esbuild \
   --bundle \
   --external:*/favicon.svg \
@@ -52,14 +52,14 @@ $ npm run dev
 `npm run dev` stays running in the background and rebuilds
 `public_html/transmission-app.{js,css}` whenever you change and save a
 source file. It does not run a web server: to see your changes, point a
-running Transmission at your freshly built assets and open its web UI at
+running Retransmission at your freshly built assets and open its web UI at
 [localhost:9091](http://localhost:9091/):
 
 ```sh
 $ TRANSMISSION_WEB_HOME="$PWD/public_html" transmission-daemon
 ```
 
-Transmission serves these files with long-expiry cache headers, so do a
+Retransmission serves these files with long-expiry cache headers, so do a
 hard refresh (e.g. Ctrl+Shift+R) in the browser to pick up a rebuild.
 
 ## Notes for Testers
