@@ -95,8 +95,8 @@
     --color-fg-primary: var(--dark-mode-white);
     --color-fg-secondary: var(--nice-grey);
     --color-fg-warn: var(--dark-mode-black);
-    --color-progressbar-leech: var(--blue-200);
-    --color-progressbar-leech-fg: var(--white);
+    --color-progressbar-leech: var(--blue-100);
+    --color-progressbar-leech-fg: var(--black);
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-paused-fg: var(--black);
     --color-progressbar-seed-1: var(--green-100);
@@ -150,9 +150,10 @@
   --color-fg-primary: var(--contrast-fg);
   --color-fg-secondary: var(--contrast-fg);
   --color-fg-warn: var(--contrast-bg);
-  --color-progressbar-leech: var(--blue-200);
+  --color-progressbar-leech: var(--blue-400);
   --color-progressbar-leech-fg: var(--white);
-  --color-progressbar-paused: var(--grey-500);
+  --color-progressbar-paused: var(--grey-200);
+  --color-progressbar-paused-fg: var(--black);
   --color-progressbar-seed-1: var(--black);
   --color-progressbar-seed-1-fg: var(--white);
   --color-progressbar-seed-2: var(--white);
