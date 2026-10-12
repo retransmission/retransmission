@@ -189,11 +189,11 @@
    </property>
    <widget class="QMenu" name="menuTorrent">
     <property name="title">
-     <string>&amp;Torrent</string>
+     <string>_Torrent</string>
     </property>
     <widget class="QMenu" name="menuQueue">
      <property name="title">
-      <string>&amp;Queue</string>
+      <string>_Queue</string>
      </property>
      <addaction name="action_QueueMoveTop"/>
      <addaction name="action_QueueMoveUp"/>
@@ -219,7 +219,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>&amp;Edit</string>
+     <string>_Edit</string>
     </property>
     <addaction name="action_SelectAll"/>
     <addaction name="action_DeselectAll"/>
@@ -230,7 +230,7 @@
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
-     <string>&amp;Help</string>
+     <string>_Help</string>
     </property>
     <addaction name="action_Statistics"/>
     <addaction name="separator"/>
@@ -241,7 +241,7 @@
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
-     <string>&amp;View</string>
+     <string>_View</string>
     </property>
     <addaction name="action_CompactView"/>
     <addaction name="separator"/>
@@ -263,7 +263,7 @@
    </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>&amp;File</string>
+     <string>_File</string>
     </property>
     <addaction name="action_OpenFile"/>
     <addaction name="action_AddURL"/>
@@ -315,7 +315,7 @@
   </widget>
   <action name="action_OpenFile">
    <property name="text">
-    <string>&amp;Open…</string>
+    <string>_Open…</string>
    </property>
    <property name="iconText">
     <string>Open</string>
@@ -329,7 +329,7 @@
   </action>
   <action name="action_New">
    <property name="text">
-    <string>&amp;New…</string>
+    <string>_New…</string>
    </property>
    <property name="toolTip">
     <string>Create a new torrent</string>
@@ -340,7 +340,7 @@
   </action>
   <action name="action_Properties">
    <property name="text">
-    <string>&amp;Properties</string>
+    <string>_Properties</string>
    </property>
    <property name="toolTip">
     <string>Torrent properties</string>
@@ -351,7 +351,7 @@
   </action>
   <action name="action_OpenFolder">
    <property name="text">
-    <string>Open Fold&amp;er</string>
+    <string>Open Fold_er</string>
    </property>
    <property name="toolTip">
     <string>Open the torrent's folder</string>
@@ -362,7 +362,7 @@
   </action>
   <action name="action_Start">
    <property name="text">
-    <string>&amp;Start</string>
+    <string>_Start</string>
    </property>
    <property name="toolTip">
     <string>Start torrent</string>
@@ -376,7 +376,7 @@
   </action>
   <action name="action_Announce">
    <property name="text">
-    <string>Ask Tracker for &amp;More Peers</string>
+    <string>Ask Tracker for _More Peers</string>
    </property>
    <property name="toolTip">
     <string>Ask tracker for more peers</string>
@@ -384,7 +384,7 @@
   </action>
   <action name="action_Pause">
    <property name="text">
-    <string>&amp;Pause</string>
+    <string>_Pause</string>
    </property>
    <property name="toolTip">
     <string>Pause torrent</string>
@@ -398,7 +398,7 @@
   </action>
   <action name="action_Verify">
    <property name="text">
-    <string>&amp;Verify Local Data</string>
+    <string>_Verify Local Data</string>
    </property>
    <property name="toolTip">
     <string>Verify local data</string>
@@ -409,7 +409,7 @@
   </action>
   <action name="action_Remove">
    <property name="text">
-    <string>&amp;Remove</string>
+    <string>_Remove</string>
    </property>
    <property name="toolTip">
     <string>Remove torrent</string>
@@ -423,7 +423,7 @@
   </action>
   <action name="action_Delete">
    <property name="text">
-    <string>&amp;Delete Files and Remove</string>
+    <string>_Delete Files and Remove</string>
    </property>
    <property name="toolTip">
     <string>Remove torrent and delete its files</string>
@@ -434,17 +434,17 @@
   </action>
   <action name="action_StartAll">
    <property name="text">
-    <string>&amp;Start All</string>
+    <string>_Start All</string>
    </property>
   </action>
   <action name="action_PauseAll">
    <property name="text">
-    <string>&amp;Pause All</string>
+    <string>_Pause All</string>
    </property>
   </action>
   <action name="action_Quit">
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>_Quit</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Q</string>
@@ -455,7 +455,7 @@
   </action>
   <action name="action_SelectAll">
    <property name="text">
-    <string>Select &amp;All</string>
+    <string>Select _All</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+A</string>
@@ -463,7 +463,7 @@
   </action>
   <action name="action_DeselectAll">
    <property name="text">
-    <string>Dese&amp;lect All</string>
+    <string>Dese_lect All</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+A</string>
@@ -471,7 +471,7 @@
   </action>
   <action name="action_Preferences">
    <property name="text">
-    <string>&amp;Preferences</string>
+    <string>_Preferences</string>
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
@@ -482,7 +482,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Compact View</string>
+    <string>_Compact View</string>
    </property>
    <property name="iconText">
     <string>Compact View</string>
@@ -499,7 +499,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Toolbar</string>
+    <string>_Toolbar</string>
    </property>
   </action>
   <action name="action_Filterbar">
@@ -507,7 +507,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Filterbar</string>
+    <string>_Filterbar</string>
    </property>
   </action>
   <action name="action_Statusbar">
@@ -515,7 +515,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Statusbar</string>
+    <string>_Statusbar</string>
    </property>
   </action>
   <action name="action_SortByActivity">
@@ -523,7 +523,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by &amp;Activity</string>
+    <string>Sort by _Activity</string>
    </property>
   </action>
   <action name="action_SortByAge">
@@ -531,7 +531,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by A&amp;ge</string>
+    <string>Sort by A_ge</string>
    </property>
   </action>
   <action name="action_SortByETA">
@@ -539,7 +539,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Time &amp;Left</string>
+    <string>Sort by Time _Left</string>
    </property>
   </action>
   <action name="action_SortByName">
@@ -547,7 +547,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by &amp;Name</string>
+    <string>Sort by _Name</string>
    </property>
   </action>
   <action name="action_SortByProgress">
@@ -555,7 +555,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by &amp;Progress</string>
+    <string>Sort by _Progress</string>
    </property>
   </action>
   <action name="action_SortByRatio">
@@ -563,7 +563,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Rati&amp;o</string>
+    <string>Sort by Rati_o</string>
    </property>
   </action>
   <action name="action_SortBySize">
@@ -571,7 +571,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Si&amp;ze</string>
+    <string>Sort by Si_ze</string>
    </property>
   </action>
   <action name="action_SortByState">
@@ -579,7 +579,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Stat&amp;e</string>
+    <string>Sort by Stat_e</string>
    </property>
   </action>
   <action name="action_Statistics">
@@ -587,12 +587,12 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>&amp;Statistics</string>
+    <string>_Statistics</string>
    </property>
   </action>
   <action name="action_Contents">
    <property name="text">
-    <string>&amp;Contents</string>
+    <string>_Contents</string>
    </property>
    <property name="shortcut">
     <string notr="true">F1</string>
@@ -600,7 +600,7 @@
   </action>
   <action name="action_About">
    <property name="text">
-    <string>&amp;About</string>
+    <string>_About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -611,7 +611,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Re&amp;verse Sort Order</string>
+    <string>Re_verse Sort Order</string>
    </property>
   </action>
   <action name="action_TotalRatio">
@@ -651,7 +651,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Main Window</string>
+    <string>_Main Window</string>
    </property>
   </action>
   <action name="action_TrayIcon">
@@ -659,12 +659,12 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Tray &amp;Icon</string>
+    <string>Tray _Icon</string>
    </property>
   </action>
   <action name="action_SessionDialog">
    <property name="text">
-    <string>&amp;Change Session…</string>
+    <string>_Change Session…</string>
    </property>
    <property name="toolTip">
     <string extracomment="Start a local session or connect to a running session">Choose Session</string>
@@ -672,17 +672,17 @@
   </action>
   <action name="action_SetLocation">
    <property name="text">
-    <string>Set &amp;Location…</string>
+    <string>Set _Location…</string>
    </property>
   </action>
   <action name="action_CopyMagnetToClipboard">
    <property name="text">
-    <string>&amp;Copy Magnet Link to Clipboard</string>
+    <string>_Copy Magnet Link to Clipboard</string>
    </property>
   </action>
   <action name="action_AddURL">
    <property name="text">
-    <string>Open &amp;URL…</string>
+    <string>Open _URL…</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+U</string>
@@ -690,12 +690,12 @@
   </action>
   <action name="action_Donate">
    <property name="text">
-    <string>&amp;Donate</string>
+    <string>_Donate</string>
    </property>
   </action>
   <action name="action_StartNow">
    <property name="text">
-    <string>Start &amp;Now</string>
+    <string>Start _Now</string>
    </property>
    <property name="toolTip">
     <string>Bypass the queue and start now</string>
@@ -709,12 +709,12 @@
   </action>
   <action name="action_QueueMoveTop">
    <property name="text">
-    <string>Move to &amp;Top</string>
+    <string>Move to _Top</string>
    </property>
   </action>
   <action name="action_QueueMoveUp">
    <property name="text">
-    <string>Move &amp;Up</string>
+    <string>Move _Up</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Up</string>
@@ -722,7 +722,7 @@
   </action>
   <action name="action_QueueMoveDown">
    <property name="text">
-    <string>Move &amp;Down</string>
+    <string>Move _Down</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Down</string>
@@ -730,7 +730,7 @@
   </action>
   <action name="action_QueueMoveBottom">
    <property name="text">
-    <string>Move to &amp;Bottom</string>
+    <string>Move to _Bottom</string>
    </property>
   </action>
   <action name="action_SortByQueue">
@@ -738,7 +738,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by &amp;Queue</string>
+    <string>Sort by _Queue</string>
    </property>
   </action>
  </widget>

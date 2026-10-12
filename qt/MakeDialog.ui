@@ -26,7 +26,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="destinationLabel">
         <property name="text">
-         <string>Sa&amp;ve to:</string>
+         <string>Sa_ve to:</string>
         </property>
         <property name="buddy">
          <cstring>destinationButton</cstring>
@@ -39,7 +39,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="sourceFolderRadio">
         <property name="text">
-         <string>Source f&amp;older:</string>
+         <string>Source f_older:</string>
         </property>
        </widget>
       </item>
@@ -53,7 +53,7 @@
       <item row="2" column="0">
        <widget class="QRadioButton" name="sourceFileRadio">
         <property name="text">
-         <string>Source &amp;file:</string>
+         <string>Source _file:</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -73,7 +73,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="pieceSizeLabel">
         <property name="text">
-         <string>Piece si&amp;ze:</string>
+         <string>Piece si_ze:</string>
         </property>
         <property name="buddy">
          <cstring>pieceSizeSlider</cstring>
@@ -108,7 +108,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="trackersLabel">
         <property name="text">
-         <string>&amp;Trackers:</string>
+         <string>_Trackers:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -139,7 +139,7 @@ To add another primary URL, add it after a blank line.</string>
       <item row="2" column="0">
        <widget class="QCheckBox" name="commentCheck">
         <property name="text">
-         <string>Co&amp;mment:</string>
+         <string>Co_mment:</string>
         </property>
        </widget>
       </item>
@@ -153,7 +153,7 @@ To add another primary URL, add it after a blank line.</string>
       <item row="3" column="0">
        <widget class="QCheckBox" name="sourceCheck">
         <property name="text">
-         <string>&amp;Source:</string>
+         <string>_Source:</string>
         </property>
        </widget>
       </item>
@@ -167,7 +167,7 @@ To add another primary URL, add it after a blank line.</string>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="privateCheck">
         <property name="text">
-         <string>&amp;Private torrent</string>
+         <string>_Private torrent</string>
         </property>
        </widget>
       </item>

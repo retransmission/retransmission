@@ -17,19 +17,34 @@
 
 #include <QtCore/QString>
 
-// Translates `source` with the calling class's tr(),
-// then formats it with {fmt} named arguments:
-// TR_FORMAT("Created by {creator}", fmt::arg("creator", creator))
-//
-// A translation whose fields don't fit the arguments is ignored in favor of `source`,
-// because {fmt} is built without exceptions and aborts on a bad format string.
-//
-// lupdate extracts these strings only when run with
-// -tr-function-alias QT_TR_NOOP+=TR_FORMAT,QT_TR_N_NOOP+=TR_FORMAT_N
-#define TR_FORMAT(source, ...) ::trqt::formatTranslation(tr(source), source, __VA_ARGS__)
+#include <libtransmission/utils.h> // tr_gettext(), tr_ngettext()
 
-// Like TR_FORMAT, with the plural form picked by `n`.
-#define TR_FORMAT_N(source, n, ...) ::trqt::formatTranslation(tr(source, nullptr, n), source, __VA_ARGS__)
+// Qt's strings come from the shared gettext catalog,
+// through the translator that tr::app::l10n::use_catalogs() installs.
+// xgettext extracts the text in these macros, with the keywords in po/POTFILES.in.
+
+// Translated text: TR_TEXT("Seeding complete")
+#define TR_TEXT(msgid) ::trqt::detail::text(msgid)
+
+// Translated text whose English needs a context to tell its meanings apart:
+// TR_TEXT_C("Verb", "Seeding")
+#define TR_TEXT_C(context, msgid) ::trqt::detail::textInContext(context, msgid)
+
+// Translated text for a widget that reads "&" as a mnemonic marker, such as a menu item, button or buddy label,
+// whether or not the English marks a mnemonic: TR_MNEMONIC("_File") returns "&File", and a translation's "&" stays literal.
+// The catalog marks a mnemonic with "_" and writes a literal underscore as "__", as GTK does.
+#define TR_MNEMONIC(msgid) ::trqt::detail::mnemonicText(msgid)
+
+// Translated text, formatted with {fmt} named arguments:
+// TR_FORMAT("Created by {creator}", fmt::arg("creator", creator))
+// A translation whose fields don't fit the arguments is ignored in favor of the English text,
+// because {fmt} is built without exceptions and aborts on a bad format string.
+#define TR_FORMAT(msgid, ...) ::trqt::detail::formatTranslation(tr_gettext(msgid), msgid, __VA_ARGS__)
+
+// Like TR_FORMAT, in the plural form for `n`.
+// Text that doesn't show the count picks its wording with `count == 1` instead,
+// because a language's form for one can cover other counts, e.g. 21 in Russian.
+#define TR_FORMAT_N(msgid, msgid_plural, n, ...) ::trqt::detail::formatPlural(msgid, msgid_plural, n, __VA_ARGS__)
 
 template<>
 struct fmt::formatter<QString> : formatter<std::string_view> {
@@ -54,10 +69,23 @@ void setGlobalFmtLocale();
 
 // Splits `translation` around its `name` field, e.g. into a spin box's prefix and suffix.
 // A translation without exactly that one field is ignored in favor of `source`.
-[[nodiscard]] std::pair<QString, QString> splitAtField(QString const& translation, char const* source, std::string_view name);
+[[nodiscard]] std::pair<QString, QString> splitAtField(char const* translation, char const* source, std::string_view name);
 
-namespace format_detail
+// Translates text from a Qt Designer file. uic calls this, as its --tr option asks.
+// Designer files mark mnemonics with "_", as TR_MNEMONIC does, and use "_" for nothing else,
+// so text with a "_" is for a widget that underlines a mnemonic.
+// A Designer disambiguation reaches this as the text's context.
+[[nodiscard]] QString uiText(char const* msgid, char const* context);
+
+// What the macros above call. Code calls the macros, which xgettext extracts.
+namespace detail
 {
+
+[[nodiscard]] QString text(char const* msgid);
+
+[[nodiscard]] QString textInContext(char const* context, char const* msgid);
+
+[[nodiscard]] QString mnemonicText(char const* msgid);
 
 template<typename T>
 concept NamedArg = requires(T const& arg) {
@@ -77,23 +105,29 @@ struct ArgInfo {
 };
 
 [[nodiscard]] QString formatTranslation(
-    QString const& translation,
+    char const* translation,
     char const* source,
     std::span<ArgInfo const> arg_infos,
     fmt::format_args args);
 
-} // namespace format_detail
-
 // Formats `translation` with {fmt} named arguments,
 // or formats `source` if `translation` has a field that doesn't fit them.
 // Named arguments are taken by value: {fmt} registers the names of non-const ones only.
-template<format_detail::NamedArg... Args>
-[[nodiscard]] QString formatTranslation(QString const& translation, char const* source, Args... args)
+template<NamedArg... Args>
+[[nodiscard]] QString formatTranslation(char const* translation, char const* source, Args... args)
 {
-    auto const arg_infos = std::array<format_detail::ArgInfo, sizeof...(Args)>{
-        format_detail::ArgInfo{ args.name, format_detail::IsNumber<std::remove_cvref_t<decltype(args.value)>> }...
+    auto const arg_infos = std::array<ArgInfo, sizeof...(Args)>{
+        ArgInfo{ args.name, IsNumber<std::remove_cvref_t<decltype(args.value)>> }...
     };
-    return format_detail::formatTranslation(translation, source, arg_infos, fmt::vargs<Args...>{ { args... } });
+    return formatTranslation(translation, source, arg_infos, fmt::vargs<Args...>{ { args... } });
 }
+
+template<std::integral T, NamedArg... Args>
+[[nodiscard]] QString formatPlural(char const* const msgid, char const* const msgid_plural, T const n, Args... args)
+{
+    return formatTranslation(tr_ngettext(msgid, msgid_plural, n), n == 1 ? msgid : msgid_plural, args...);
+}
+
+} // namespace detail
 
 } // namespace trqt

@@ -156,7 +156,6 @@ private:
     QTimer intern_timer_;
     time_t last_full_update_time_ = {};
     QTranslator qt_translator_;
-    QTranslator app_translator_;
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
 

@@ -10,6 +10,8 @@
 
 #include <libtransmission-app/formatters.h>
 
+#include "TrFormat.h"
+
 using namespace std::literals;
 using namespace tr::Values;
 
@@ -22,11 +24,11 @@ QString Formatter::percentToString(double const x)
 QString Formatter::memoryToString(int64_t const bytes)
 {
     if (bytes < 0) {
-        return tr("Unknown");
+        return TR_TEXT("Unknown");
     }
 
     if (bytes == 0) {
-        return tr("None");
+        return TR_TEXT("None");
     }
 
     return QString::fromStdString(Memory{ bytes, Memory::Units::Bytes }.to_string());
@@ -35,7 +37,7 @@ QString Formatter::memoryToString(int64_t const bytes)
 QString Formatter::storageToString(uint64_t const bytes)
 {
     if (bytes == 0) {
-        return tr("None");
+        return TR_TEXT("None");
     }
 
     return QString::fromStdString(Storage{ bytes, Storage::Units::Bytes }.to_string());
@@ -44,7 +46,7 @@ QString Formatter::storageToString(uint64_t const bytes)
 QString Formatter::storageToString(int64_t const bytes)
 {
     if (bytes < 0) {
-        return tr("Unknown");
+        return TR_TEXT("Unknown");
     }
 
     return storageToString(static_cast<uint64_t>(bytes));
@@ -53,7 +55,7 @@ QString Formatter::storageToString(int64_t const bytes)
 QString Formatter::ratioToString(double ratio)
 {
     static auto constexpr Infinity = "\xE2\x88\x9E"sv;
-    static auto const None = tr("None").toStdString();
+    static auto const None = TR_TEXT("None").toStdString();
 
     return QString::fromStdString(tr_strratio(ratio, None, Infinity));
 }

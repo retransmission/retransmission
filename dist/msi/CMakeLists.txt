@@ -1,5 +1,23 @@
 include(UtilityFunctions.cmake)
 
+# The MSI ships the catalogs that the Qt client reads its strings from.
+# Without them, packaging stops and says how to get them.
+if(NOT ENABLE_NLS)
+    set(TR_NO_CATALOGS_HELP "This build was configured with -DENABLE_NLS=OFF. Configure with -DENABLE_NLS=ON.")
+elseif(NOT GETTEXT_FOUND)
+    set(TR_NO_CATALOGS_HELP "gettext's msgfmt was not found.\n${TR_GETTEXT_HELP}")
+endif()
+
+if(DEFINED TR_NO_CATALOGS_HELP)
+    file(CONFIGURE
+        OUTPUT no-catalogs.cmake
+        CONTENT "message(FATAL_ERROR [==[The MSI needs the translation catalogs, which this build doesn't make.\n@TR_NO_CATALOGS_HELP@]==])\n"
+        @ONLY)
+    add_custom_target(pack-msi
+        COMMAND ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_BINARY_DIR}/no-catalogs.cmake")
+    return()
+endif()
+
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
     set(ARCH arm64)
     set(TR_OPENSSL_ARCH "-arm64")
@@ -64,13 +82,13 @@ file(
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 set(WEBSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/public_html")
-set(TRQMSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/translations")
+set(TRLOCALESRCDIR "${CMAKE_INSTALL_FULL_LOCALEDIR}")
 set(QTQMSRCDIR "${TR_QT_DIR}/translations")
 
 configure_file(TransmissionConfig.wxi.in TransmissionConfig.wxi)
 
 wix_heat(WebUi.wxs "${WEBSRCDIR}" WebUiComponents WEBINSTALLDIR var.WebSrcDir)
-wix_heat(QtClientTranslations.wxs "${TRQMSRCDIR}" QtClientTranslationsComponents QMINSTALLDIR var.TrQmSrcDir)
+wix_heat(QtClientCatalogs.wxs "${TRLOCALESRCDIR}" QtClientCatalogsComponents LOCALEINSTALLDIR var.TrLocaleSrcDir)
 wix_heat(QtTranslations.wxs "${QTQMSRCDIR}" QtTranslationsComponents QMINSTALLDIR var.QtQmSrcDir
     XSL_TRANSFORM QtTranslations.xsl)
 
@@ -83,7 +101,7 @@ wix_candle(WIX_OBJS
         components/QtClient.wxs
         Transmission.wxs
         "${CMAKE_CURRENT_BINARY_DIR}/WebUi.wxs"
-        "${CMAKE_CURRENT_BINARY_DIR}/QtClientTranslations.wxs"
+        "${CMAKE_CURRENT_BINARY_DIR}/QtClientCatalogs.wxs"
         "${CMAKE_CURRENT_BINARY_DIR}/QtTranslations.wxs"
     EXTENSIONS
         WixUIExtension
@@ -96,7 +114,7 @@ wix_candle(WIX_OBJS
         "QtMinorVer=${Qt_VERSION_MINOR}"
         "LicenseFile=${CMAKE_CURRENT_SOURCE_DIR}/GPLv2.rtf"
         "WebSrcDir=${WEBSRCDIR}"
-        "TrQmSrcDir=${TRQMSRCDIR}"
+        "TrLocaleSrcDir=${TRLOCALESRCDIR}"
         "QtQmSrcDir=${QTQMSRCDIR}"
         "MsvcCrtMsmFile=${TR_MSVC_CRT_MSM_FILE}"
         "OpenSslCryptoName=${TR_OPENSSL_CRYPTO_NAME}"

@@ -186,7 +186,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(action_group, &QActionGroup::triggered, this, &MainWindow::onSortModeChanged);
 
     // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-    alt_speed_action_ = new QAction{ tr("Alternative Speed &Limits"), this };
+    alt_speed_action_ = new QAction{ TR_MNEMONIC("Alternative Speed _Limits"), this };
     alt_speed_action_->setIcon(ui_.altSpeedButton->icon());
     alt_speed_action_->setCheckable(true);
     connect(alt_speed_action_, &QAction::triggered, this, &MainWindow::toggleSpeedMode);
@@ -316,7 +316,7 @@ QMenu* MainWindow::createOptionsMenu()
             // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
             auto* action_group = new QActionGroup{ this };
 
-            off_action = menu->addAction(tr("Unlimited"));
+            off_action = menu->addAction(TR_MNEMONIC("Unlimited"));
             off_action->setCheckable(true);
             action_group->addAction(off_action);
             connect(off_action, &QAction::triggered, this, [set_enabled](bool is_checked) {
@@ -357,7 +357,7 @@ QMenu* MainWindow::createOptionsMenu()
 
             auto* action_group = new QActionGroup{ this };
 
-            off_action = menu->addAction(tr("Seed Forever"));
+            off_action = menu->addAction(TR_MNEMONIC("Seed Forever"));
             off_action->setCheckable(true);
             action_group->addAction(off_action);
             connect(off_action, &QAction::triggered, this, [set_enabled](bool is_checked) {
@@ -387,13 +387,13 @@ QMenu* MainWindow::createOptionsMenu()
     auto* menu = new QMenu{ this };
 
     init_speed_sub_menu(
-        menu->addMenu(tr("Limit Download Speed")),
+        menu->addMenu(TR_MNEMONIC("Limit Download Speed")),
         dlimit_off_action_,
         dlimit_on_action_,
         TR_KEY_speed_limit_down,
         TR_KEY_speed_limit_down_enabled);
     init_speed_sub_menu(
-        menu->addMenu(tr("Limit Upload Speed")),
+        menu->addMenu(TR_MNEMONIC("Limit Upload Speed")),
         ulimit_off_action_,
         ulimit_on_action_,
         TR_KEY_speed_limit_up,
@@ -402,7 +402,7 @@ QMenu* MainWindow::createOptionsMenu()
     menu->addSeparator();
 
     init_seed_ratio_sub_menu(
-        menu->addMenu(tr("Stop Seeding at Ratio")),
+        menu->addMenu(TR_MNEMONIC("Stop Seeding at Ratio")),
         ratio_off_action_,
         ratio_on_action_,
         TR_KEY_seed_ratio_limit,
@@ -696,8 +696,8 @@ void MainWindow::refreshTitle()
     QString title(QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED));
 
     if (auto const url = QUrl{ session_.getRemoteUrl() }; !url.isEmpty()) {
-        //: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
-        //: notice that leading space (before the dash) is included here
+        // Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+        // notice that leading space (before the dash) is included here
         title += TR_FORMAT(" - {host}:{port}", fmt::arg("host", url.host()), fmt::arg("port", url.port()));
     }
 
@@ -709,9 +709,9 @@ void MainWindow::refreshTrayIcon(TransferStats const& stats)
     QString tip;
 
     if (network_error_) {
-        tip = tr("Network Error");
+        tip = TR_TEXT("Network Error");
     } else if (stats.peers_sending == 0 && stats.peers_receiving == 0) {
-        tip = tr("Idle");
+        tip = TR_TEXT("Idle");
     } else if (stats.peers_sending != 0) {
         tip = stats.speed_down.toDownloadQstring() + QStringLiteral("   ") + stats.speed_up.toUploadQstring();
     } else if (stats.peers_receiving != 0) {
@@ -750,7 +750,8 @@ void MainWindow::refreshTorrentViewHeader()
         ui_.listView->setHeaderText(QString{});
     } else {
         ui_.listView->setHeaderText(TR_FORMAT_N(
-            "Showing {visible_count:L} of {count:L} torrent(s)",
+            "Showing {visible_count:L} of {count:L} torrent",
+            "Showing {visible_count:L} of {count:L} torrents",
             total_count,
             fmt::arg("visible_count", visible_count),
             fmt::arg("count", total_count)));
@@ -1208,14 +1209,14 @@ void MainWindow::newTorrent()
 void MainWindow::openTorrent()
 {
     auto* const d = new QFileDialog{ this,
-                                     tr("Open a Torrent"),
+                                     TR_TEXT("Open a Torrent"),
                                      prefs_.get<QString>(TR_KEY_open_dialog_dir),
-                                     tr("Torrent Files (*.torrent);;All Files (*.*)") };
+                                     TR_TEXT("Torrent Files (*.torrent);;All Files (*.*)") };
     d->setFileMode(QFileDialog::ExistingFiles);
     d->setAttribute(Qt::WA_DeleteOnClose);
 
     if (auto* const l = qobject_cast<QGridLayout*>(d->layout()); l != nullptr) {
-        auto* b = new QCheckBox{ tr("Show options dialog") };
+        auto* b = new QCheckBox{ TR_MNEMONIC("Show options dialog") };
         b->setChecked(prefs_.get<bool>(TR_KEY_show_options_window));
         b->setObjectName(show_options_checkbox_name_);
         l->addWidget(b, l->rowCount(), 0, 1, -1, Qt::AlignLeft);
@@ -1320,26 +1321,31 @@ void MainWindow::removeTorrents(bool const delete_files)
     auto const count = static_cast<int>(ids.size());
 
     if (!delete_files) {
-        primary_text = count == 1 ? tr("Remove torrent?") :
-                                    TR_FORMAT_N("Remove {count:L} torrent(s)?", count, fmt::arg("count", count));
-    } else {
         primary_text = count == 1 ?
-            tr("Delete this torrent's downloaded files?") :
-            TR_FORMAT_N("Delete these {count:L} torrent(s)' downloaded files?", count, fmt::arg("count", count));
+            TR_TEXT("Remove torrent?") :
+            TR_FORMAT_N("Remove {count:L} torrent?", "Remove {count:L} torrents?", count, fmt::arg("count", count));
+    } else {
+        primary_text = count == 1 ? TR_TEXT("Delete this torrent's downloaded files?") :
+                                    TR_FORMAT_N(
+                                        "Delete this {count:L} torrent's downloaded files?",
+                                        "Delete these {count:L} torrents' downloaded files?",
+                                        count,
+                                        fmt::arg("count", count));
     }
 
     if (incomplete == 0 && connected == 0) {
-        secondary_text = count == 1 ? tr("Once removed, you'll need the torrent file or magnet link to add it again.") :
-                                      tr("Once removed, you'll need the torrent files or magnet links to add them again.");
+        secondary_text = count == 1 ? TR_TEXT("Once removed, you'll need the torrent file or magnet link to add it again.") :
+                                      TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.");
     } else if (count == incomplete) {
-        secondary_text = count == 1 ? tr("This torrent has not finished downloading.") :
-                                      tr("These torrents have not finished downloading.");
+        secondary_text = count == 1 ? TR_TEXT("This torrent has not finished downloading.") :
+                                      TR_TEXT("These torrents have not finished downloading.");
     } else if (count == connected) {
-        secondary_text = count == 1 ? tr("This torrent is connected to peers.") : tr("These torrents are connected to peers.");
+        secondary_text = count == 1 ? TR_TEXT("This torrent is connected to peers.") :
+                                      TR_TEXT("These torrents are connected to peers.");
     } else {
         if (connected != 0) {
-            secondary_text = connected == 1 ? tr("One of these torrents is connected to peers.") :
-                                              tr("Some of these torrents are connected to peers.");
+            secondary_text = connected == 1 ? TR_TEXT("One of these torrents is connected to peers.") :
+                                              TR_TEXT("Some of these torrents are connected to peers.");
         }
 
         if (connected != 0 && incomplete != 0) {
@@ -1347,8 +1353,8 @@ void MainWindow::removeTorrents(bool const delete_files)
         }
 
         if (incomplete != 0) {
-            secondary_text += incomplete == 1 ? tr("One of these torrents has not finished downloading.") :
-                                                tr("Some of these torrents have not finished downloading.");
+            secondary_text += incomplete == 1 ? TR_TEXT("One of these torrents has not finished downloading.") :
+                                                TR_TEXT("Some of these torrents have not finished downloading.");
         }
     }
 
@@ -1407,7 +1413,7 @@ void MainWindow::updateNetworkLabel()
     if (last_read_time_ == 0) {
         tip = TR_FORMAT("{host} has not responded yet", fmt::arg("host", host));
     } else if (network_error_) {
-        tip = tr(error_message_.toLatin1().constData());
+        tip = error_message_;
     } else if (seconds_since_last_read < 30) {
         tip = TR_FORMAT("{host} is responding", fmt::arg("host", host));
     } else if (seconds_since_last_read < 120) {

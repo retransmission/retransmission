@@ -20,6 +20,7 @@
 
 #include "FileTreeItem.h"
 #include "QtCompat.h"
+#include "TrFormat.h"
 
 namespace
 {
@@ -191,19 +192,19 @@ QVariant FileTreeModel::headerData(int column, Qt::Orientation orientation, int 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (column) {
         case COL_NAME:
-            return tr("Name");
+            return TR_TEXT("Name");
 
         case COL_SIZE:
-            return tr("Size");
+            return TR_TEXT("Size");
 
         case COL_PROGRESS:
-            return tr("Progress");
+            return TR_TEXT("Progress");
 
         case COL_WANTED:
-            return tr("Download");
+            return TR_TEXT("Download");
 
         case COL_PRIORITY:
-            return tr("Priority");
+            return TR_TEXT("Priority");
 
         default:
             break;

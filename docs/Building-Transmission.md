@@ -90,11 +90,11 @@ $ sudo apt install gettext libgtkmm-4.0-dev
 ```
 Qt5 client:
 ```bash
-$ sudo apt install libqt5svg5-dev qttools5-dev
+$ sudo apt install gettext libqt5svg5-dev
 ```
 Qt6 client:
 ```bash
-$ sudo apt install qt6-svg-dev qt6-tools-dev
+$ sudo apt install gettext qt6-svg-dev
 ```
 
 Then you can begin [building.](#building-transmission-from-git-first-time)
@@ -121,11 +121,11 @@ $ sudo apt install gettext libgtkmm-3.0-dev
 
 Qt5 client:
 ```bash
-$ sudo apt install libqt5svg5-dev qttools5-dev
+$ sudo apt install gettext libqt5svg5-dev
 ```
 Qt6 client:
 ```bash
-$ sudo apt install qt6-svg-dev qt6-tools-dev
+$ sudo apt install gettext qt6-svg-dev
 ```
 
 Then you can begin [building.](#building-transmission-from-git-first-time)
@@ -187,8 +187,11 @@ vcpkg install curl zlib openssl
 
 Additional dependencies for the Qt client:
 ```bat
-vcpkg install qtactiveqt qtsvg qttools
+vcpkg install qtactiveqt qtsvg
+choco install gettext
 ```
+On Windows on Arm, Chocolatey's gettext installer fails.
+Unpack the x64 tools from [gettext-iconv-windows](https://github.com/mlocati/gettext-iconv-windows/releases) instead, and add the folder that holds `msgfmt.exe` to `PATH`.
 
 ### Get Retransmission source ###
 ```bat

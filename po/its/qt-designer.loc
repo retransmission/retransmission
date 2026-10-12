@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Tells xgettext that a .ui file whose root is <ui> is a Qt Designer file. -->
+<locatingRules>
+  <locatingRule name="QtDesigner" pattern="*.ui">
+    <documentRule localName="ui" target="qt-designer.its"/>
+  </locatingRule>
+</locatingRules>

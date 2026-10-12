@@ -54,7 +54,6 @@ jobs:
             ninja-build \
             pkg-config \
             qt6-svg-dev \
-            qt6-tools-dev \
             zlib1g-dev
 
     - name: Configure Project

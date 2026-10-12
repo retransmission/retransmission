@@ -51,6 +51,8 @@ public:
         }
     }
 
-    // Sets the spin box's prefix and suffix to the translated `format`'s text around its `field`.
-    static void updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, std::string_view field);
+    // Sets the spin box's prefix and suffix to the text around `field`
+    // in the translated format's plural form for the spin box's value.
+    // xgettext extracts `msgid` and `msgid_plural` from calls to this function.
+    static void updateSpinBoxFormat(QSpinBox* spinBox, char const* msgid, char const* msgid_plural, std::string_view field);
 };

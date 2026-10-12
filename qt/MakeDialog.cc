@@ -287,21 +287,23 @@ void MakeDialog::updatePiecesLabel()
     QString text;
 
     if (!builder_) {
-        text = QStringLiteral("<i>%1</i>").arg(tr("No source selected"));
+        text = QStringLiteral("<i>%1</i>").arg(TR_TEXT("No source selected"));
         ui_.pieceSizeSlider->setEnabled(false);
     } else {
         auto const file_count = builder_->file_count();
         auto const piece_count = builder_->piece_count();
         auto const files = TR_FORMAT_N(
-            "{file_count:L} File(s)",
-            static_cast<int>(file_count),
+            "{file_count:L} File",
+            "{file_count:L} Files",
+            file_count,
             fmt::arg("file_count", file_count));
         auto const pieces = TR_FORMAT_N(
-            "{piece_count:L} Piece(s)",
-            static_cast<int>(piece_count),
+            "{piece_count:L} Piece",
+            "{piece_count:L} Pieces",
+            piece_count,
             fmt::arg("piece_count", piece_count));
-        //: {files} is "{file_count} File(s)" and {pieces} is "{piece_count} Piece(s)"
         text = TR_FORMAT(
+            // Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
             "{total_size} in {files}; {pieces} @ {piece_size}",
             fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
             fmt::arg("files", files),

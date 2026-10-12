@@ -18,6 +18,7 @@
 #include "Session.h"
 #include "Torrent.h"
 #include "TorrentModel.h"
+#include "TrFormat.h"
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 bool RelocateDialog::move_flag = true;
@@ -66,7 +67,7 @@ RelocateDialog::RelocateDialog(
     if (session_.isLocalFilesystem()) {
         ui_.newLocationStack->setCurrentWidget(ui_.newLocationButton);
         ui_.newLocationButton->setMode(PathButton::DirectoryMode);
-        ui_.newLocationButton->setTitle(tr("Select Location"));
+        ui_.newLocationButton->setTitle(TR_TEXT("Select Location"));
         ui_.newLocationButton->setPath(path);
         ui_.newLocationButton->setRecentPaths(prefs.get<QStringList>(TR_KEY_recent_relocate_paths));
     } else {

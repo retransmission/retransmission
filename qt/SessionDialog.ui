@@ -26,21 +26,21 @@
       <item row="0" column="0" colspan="2">
        <widget class="QRadioButton" name="localSessionRadio">
         <property name="text">
-         <string>Start &amp;Local Session</string>
+         <string>Start _Local Session</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QRadioButton" name="remoteSessionRadio">
         <property name="text">
-         <string>Connect to &amp;Remote Session</string>
+         <string>Connect to _Remote Session</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="hostLabel">
         <property name="text">
-         <string>&amp;Host:</string>
+         <string>_Host:</string>
         </property>
         <property name="buddy">
          <cstring>hostEdit</cstring>
@@ -53,7 +53,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="portLabel">
         <property name="text">
-         <string>&amp;Port:</string>
+         <string>_Port:</string>
         </property>
         <property name="buddy">
          <cstring>portSpin</cstring>
@@ -73,14 +73,14 @@
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="authCheck">
         <property name="text">
-         <string>&amp;Authentication required</string>
+         <string>_Authentication required</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="usernameLabel">
         <property name="text">
-         <string>&amp;Username:</string>
+         <string>_Username:</string>
         </property>
         <property name="buddy">
          <cstring>usernameEdit</cstring>
@@ -93,7 +93,7 @@
       <item row="6" column="0">
        <widget class="QLabel" name="passwordLabel">
         <property name="text">
-         <string>Pass&amp;word:</string>
+         <string>Pass_word:</string>
         </property>
         <property name="buddy">
          <cstring>passwordEdit</cstring>
@@ -110,7 +110,7 @@
       <item row="7" column="0">
        <widget class="QLabel" name="rpcLabel">
         <property name="text">
-         <string>Remote root pa&amp;th:</string>
+         <string>Remote root pa_th:</string>
         </property>
         <property name="buddy">
          <cstring>rpcEdit</cstring>

@@ -10,7 +10,6 @@
 #include <utility>
 #include <vector>
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
@@ -19,8 +18,6 @@
 
 class FileTreeItem
 {
-    Q_DECLARE_TR_FUNCTIONS(FileTreeItem)
-
 public:
     static int constexpr Low = 1 << 0;
     static int constexpr Normal = 1 << 1;

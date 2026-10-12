@@ -18,7 +18,6 @@
 #include <vector>
 
 #include <QtCore/QMetaType>
-#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
@@ -183,13 +182,11 @@ public:
     }
 };
 
-class Torrent : public QObject
+class Torrent
 {
-    Q_OBJECT
-
 public:
     Torrent(Prefs const& prefs, int id);
-    ~Torrent() override = default;
+    ~Torrent() = default;
     Torrent(Torrent&&) = delete;
     Torrent(Torrent const&) = delete;
     Torrent& operator=(Torrent&&) = delete;

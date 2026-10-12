@@ -597,7 +597,7 @@
        <item>
         <widget class="QCheckBox" name="showExtraPeerDetailsCheck">
          <property name="text">
-          <string>Show &amp;more details</string>
+          <string>Show _more details</string>
          </property>
         </widget>
        </item>
@@ -627,21 +627,21 @@
        <item row="0" column="1">
         <widget class="QPushButton" name="addTrackerButton">
          <property name="text">
-          <string>&amp;Add</string>
+          <string>_Add</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="editTrackersButton">
          <property name="text">
-          <string>&amp;Edit</string>
+          <string>_Edit</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
         <widget class="QPushButton" name="removeTrackerButton">
          <property name="text">
-          <string>&amp;Remove</string>
+          <string>_Remove</string>
          </property>
         </widget>
        </item>
@@ -661,14 +661,14 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="showTrackerScrapesCheck">
          <property name="text">
-          <string>Show &amp;more details</string>
+          <string>Show _more details</string>
          </property>
         </widget>
        </item>
        <item row="5" column="0">
         <widget class="QCheckBox" name="showBackupTrackersCheck">
          <property name="text">
-          <string>Show &amp;backup trackers</string>
+          <string>Show _backup trackers</string>
          </property>
         </widget>
        </item>
@@ -720,14 +720,14 @@
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="sessionLimitCheck">
             <property name="text">
-             <string>Honor global &amp;limits</string>
+             <string>Honor global _limits</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="singleUpCheck">
             <property name="text">
-             <string>Limit &amp;upload speed:</string>
+             <string>Limit _upload speed:</string>
             </property>
            </widget>
           </item>
@@ -747,7 +747,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="singleDownCheck">
             <property name="text">
-             <string>Limit &amp;download speed:</string>
+             <string>Limit _download speed:</string>
             </property>
            </widget>
           </item>
@@ -767,7 +767,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="bandwidthPriorityLabel">
             <property name="text">
-             <string>Torrent &amp;priority:</string>
+             <string>Torrent _priority:</string>
             </property>
             <property name="buddy">
              <cstring>bandwidthPriorityCombo</cstring>
@@ -789,7 +789,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="ratioLabel">
             <property name="text">
-             <string>&amp;Ratio:</string>
+             <string>_Ratio:</string>
             </property>
             <property name="buddy">
              <cstring>ratioCombo</cstring>
@@ -816,7 +816,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="idleLabel">
             <property name="text">
-             <string>&amp;Idle:</string>
+             <string>_Idle:</string>
             </property>
             <property name="buddy">
              <cstring>idleCombo</cstring>
@@ -858,7 +858,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="peerLimitLabel">
             <property name="text">
-             <string>&amp;Maximum peers:</string>
+             <string>_Maximum peers:</string>
             </property>
             <property name="buddy">
              <cstring>peerLimitSpin</cstring>

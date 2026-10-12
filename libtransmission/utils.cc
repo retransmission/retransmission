@@ -42,6 +42,7 @@
 
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
+#include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
@@ -77,6 +78,17 @@ char const* tr_ngettext(char const* const msgid, char const* const msgid_plural,
     }
 
     return n == 1U ? msgid : msgid_plural;
+}
+
+// A catalog keys a message with a context as the context, '\x04', and the English text.
+// A translator returns its argument when it has no translation,
+// so returning the key means that the catalog lacks the message.
+char const* tr_pgettext(char const* const context, char const* const msgid)
+{
+    // Views look up these keys on every repaint, so the key lives on the stack.
+    auto const key = tr_strbuf<char, 256U>{ context, '\x04', msgid };
+    auto const* const translation = tr_gettext(key.c_str());
+    return translation == key.c_str() ? msgid : translation;
 }
 
 // ---
