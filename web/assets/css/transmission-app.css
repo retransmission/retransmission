@@ -609,6 +609,7 @@ a {
       color: var(--color-progressbar-paused-fg);
     }
 
+    /* TODO: Apply the rules in this block unconditionally once we raise browser targets to at least 'chrome147,firefox146,safari26' */
     @supports (color: contrast-color(white)) {
       &.leech {
         &.queued::before {
