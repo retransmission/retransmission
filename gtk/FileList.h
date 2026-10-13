@@ -37,5 +37,5 @@ public:
 
 private:
     class Impl;
-    std::unique_ptr<Impl> const impl_;
+    std::shared_ptr<Impl> const impl_;
 };
