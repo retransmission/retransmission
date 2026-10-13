@@ -7,6 +7,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef> // std::byte, size_t
+#include <limits>
 #include <optional>
 #include <set>
 #include <string_view>
@@ -16,10 +17,16 @@
 
 #include <libtransmission/announcer-common.h>
 #include <libtransmission/net.h>
+#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
+#include <libtransmission/utils.h> // tr_time()
 
+#include "loopback-tracker.h"
 #include "test-fixtures.h"
 
 using AnnouncerTest = ::tr::test::TransmissionTest;
+using ManualAnnounceTest = ::tr::test::LoopbackTrackerTest;
+using ::tr::test::waitFor;
 
 using namespace std::literals;
 
@@ -411,4 +418,109 @@ TEST_F(AnnouncerTest, tryingOrderEmpty)
     order.promote_current();
     order.set_current(std::nullopt);
     EXPECT_EQ(std::nullopt, order.current());
+}
+
+// --- MANUAL ANNOUNCE
+
+TEST_F(ManualAnnounceTest, waitsForMinInterval)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    auto const before = trackerView(tor, "/a");
+    EXPECT_EQ(before.lastAnnounceTime + 1800, before.minAnnounceTime);
+    EXPECT_EQ(before.lastAnnounceTime + 3600, before.nextAnnounceTime);
+
+    tr_torrentManualUpdate(tor);
+
+    auto const after = trackerView(tor, "/a");
+    EXPECT_EQ(TR_TRACKER_WAITING, after.announceState);
+    EXPECT_EQ(after.minAnnounceTime, after.nextAnnounceTime);
+    EXPECT_EQ(1U, tracker_.announceCount("/a"));
+}
+
+TEST_F(ManualAnnounceTest, ignoreMinIntervalAnnouncesNow)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    tr_torrentManualUpdate(tor, {}, tr_reannounce_flags::IgnoreMinInterval);
+
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/a") == 2U; }, 5s));
+}
+
+TEST_F(ManualAnnounceTest, onlyTiersInTheirMinIntervalWait)
+{
+    tracker_.setReply("/ready", 3600, 1);
+    tracker_.setReply("/cooling", 3600, 1800);
+    auto* const tor = startTorrent({ "/ready", "/cooling" });
+
+    auto const ready_at = trackerView(tor, "/ready").minAnnounceTime;
+    EXPECT_TRUE(waitForInSessionThread([ready_at]() { return tr_time() >= ready_at; }, 5000));
+
+    tr_torrentManualUpdate(tor);
+
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/ready") == 2U; }, 5s));
+    auto const cooling = trackerView(tor, "/cooling");
+    EXPECT_EQ(cooling.minAnnounceTime, cooling.nextAnnounceTime);
+    EXPECT_EQ(1U, tracker_.announceCount("/cooling"));
+}
+
+TEST_F(ManualAnnounceTest, neverDelaysAScheduledAnnounce)
+{
+    // A failed announce retries sooner than the default min interval ends
+    tracker_.setFailure("/a", "try again");
+    auto* const tor = startTorrent({ "/a" });
+
+    auto const before = trackerView(tor, "/a");
+    EXPECT_LT(before.nextAnnounceTime, before.minAnnounceTime);
+
+    tr_torrentManualUpdate(tor);
+
+    EXPECT_EQ(before.nextAnnounceTime, trackerView(tor, "/a").nextAnnounceTime);
+}
+
+TEST_F(ManualAnnounceTest, trackerIdsSelectTheirTiers)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    tracker_.setReply("/b", 3600, 1800);
+    auto* const tor = startTorrent({ "/a", "/b" });
+
+    // ids that aren't this torrent's trackers select nothing
+    auto const unknown_ids = std::array{ std::numeric_limits<tr_tracker_id_t>::max() };
+    tr_torrentManualUpdate(tor, unknown_ids);
+
+    auto const a_before = trackerView(tor, "/a");
+    auto const b_before = trackerView(tor, "/b");
+    EXPECT_EQ(a_before.lastAnnounceTime + 3600, a_before.nextAnnounceTime);
+    EXPECT_EQ(b_before.lastAnnounceTime + 3600, b_before.nextAnnounceTime);
+
+    auto const b_ids = std::array{ b_before.id };
+    tr_torrentManualUpdate(tor, b_ids);
+
+    auto const a_after = trackerView(tor, "/a");
+    auto const b_after = trackerView(tor, "/b");
+    EXPECT_EQ(a_before.nextAnnounceTime, a_after.nextAnnounceTime);
+    EXPECT_EQ(b_after.minAnnounceTime, b_after.nextAnnounceTime);
+}
+
+TEST_F(ManualAnnounceTest, waitsForTheResponseToAnInFlightAnnounce)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    tracker_.holdReplies();
+    auto* const tor = addTorrent({ "/a" });
+    tr_torrentStart(tor);
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/a") == 1U; }, 5s));
+
+    tr_torrentManualUpdate(tor);
+    EXPECT_EQ(TR_TRACKER_ACTIVE, trackerView(tor, "/a").announceState);
+
+    tracker_.releaseReplies();
+    EXPECT_TRUE(waitFor([this, tor]() { return trackerView(tor, "/a").hasAnnounced; }, 5s));
+
+    // the manual announce waits out the min interval that the response set
+    auto const view = trackerView(tor, "/a");
+    EXPECT_EQ(view.lastAnnounceTime + 1800, view.minAnnounceTime);
+    EXPECT_EQ(view.minAnnounceTime, view.nextAnnounceTime);
+    EXPECT_EQ(1U, tracker_.announceCount("/a"));
 }

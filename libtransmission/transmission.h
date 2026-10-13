@@ -816,18 +816,34 @@ void tr_sessionSetIdleLimitHitCallback(tr_session* session, tr_session_idle_limi
  * MANUAL ANNOUNCE
  *
  * Trackers usually set an announce interval of 15 or 30 minutes.
- * Users can send one-time announce requests that override this
- * interval by calling `tr_torrentManualUpdate()`.
- *
- * The wait interval for `tr_torrentManualUpdate()` is much smaller.
- * You can test whether or not a manual update is possible
- * (for example, to desensitize the button) by calling
- * `tr_torrentCanManualUpdate()`.
+ * `tr_torrentManualUpdate()` asks for peers sooner than that.
+ * Trackers may also set a min interval, the shortest time they allow between announces.
+ * Each tier keeps its tracker's min interval as a cooldown that starts at the latest announce response.
+ * `tr_tracker_view::minAnnounceTime` is when that cooldown ends.
  */
 
-void tr_torrentManualUpdate(tr_torrent* torrent);
+/**
+ * Announce to the torrent's trackers before their announce interval is up.
+ *
+ * A tier still in its cooldown announces when the cooldown ends.
+ * A tier already scheduled to announce sooner keeps that time.
+ * A tier announcing right now waits for the response, then schedules the manual announce.
+ * `tr_reannounce_flags::IgnoreMinInterval` skips the cooldown and announces now.
+ *
+ * Each tier announces only to its current tracker.
+ * @param tracker_ids the trackers whose tiers to announce to, or empty for every tier.
+ *                    Ids that aren't this torrent's trackers are ignored.
+ */
+void tr_torrentManualUpdate(
+    tr_torrent* torrent,
+    std::span<tr_tracker_id_t const> tracker_ids = {},
+    tr_reannounce_flags flags = {});
 
-bool tr_torrentCanManualUpdate(tr_torrent const* torrent);
+/**
+ * @return true if `tr_torrentManualUpdate()` would announce,
+ *         i.e. the torrent is running and has at least one tracker.
+ */
+[[nodiscard]] bool tr_torrentCanManualUpdate(tr_torrent const* torrent);
 
 [[nodiscard]] std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* torrent);
 

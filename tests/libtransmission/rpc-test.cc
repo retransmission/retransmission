@@ -13,6 +13,8 @@
 #include <string_view>
 #include <vector>
 
+#include <fmt/format.h>
+
 #include <gtest/gtest.h>
 
 #include <libtransmission/quark.h>
@@ -21,6 +23,7 @@
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
 
+#include "loopback-tracker.h"
 #include "test-fixtures.h"
 
 struct tr_session;
@@ -946,5 +949,127 @@ TEST_F(RpcTest, DISABLED_wellFormedLegacyFreeSpace)
     EXPECT_EQ(Expected, actual);
 }
 } // namespace free_space_test
+
+// ---
+
+class RpcReannounceTest : public LoopbackTrackerTest
+{
+protected:
+    struct TrackerStats {
+        int64_t id = {};
+        int64_t last_announce_time = {};
+        int64_t min_announce_time = {};
+        int64_t next_announce_time = {};
+    };
+
+    // Sends torrent_reannounce for `tor` with extra params, e.g. `,"ignore_min_interval":true`
+    void reannounce(tr_torrent const* const tor, std::string_view const extra_params)
+    {
+        auto const response = rpc(
+            fmt::format(
+                R"({{"jsonrpc":"2.0","method":"torrent_reannounce","params":{{"ids":[{:d}]{:s}}},"id":1}})",
+                tor->id(),
+                extra_params));
+
+        auto const* const response_map = response.get_if<tr_variant::Map>();
+        ASSERT_NE(response_map, nullptr);
+        EXPECT_NE(response_map->find_if<tr_variant::Map>(TR_KEY_result), nullptr);
+    }
+
+    // Gets the tracker_stats entry of the tier that announces to `path`
+    [[nodiscard]] TrackerStats trackerStats(tr_torrent const* const tor, std::string_view const path)
+    {
+        auto const response = rpc(
+            fmt::format(
+                R"({{"jsonrpc":"2.0","method":"torrent_get","params":{{"ids":[{:d}],"fields":["tracker_stats"]}},"id":1}})",
+                tor->id()));
+
+        auto const* const response_map = response.get_if<tr_variant::Map>();
+        auto const* const result = response_map != nullptr ? response_map->find_if<tr_variant::Map>(TR_KEY_result) : nullptr;
+        auto const* const torrents = result != nullptr ? result->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
+        auto const* const torrent = torrents != nullptr && std::size(*torrents) == 1U ?
+            (*torrents)[0].get_if<tr_variant::Map>() :
+            nullptr;
+        auto const* const stats_vec = torrent != nullptr ? torrent->find_if<tr_variant::Vector>(TR_KEY_tracker_stats) : nullptr;
+        if (stats_vec == nullptr) {
+            ADD_FAILURE() << "no tracker_stats in the torrent_get response";
+            return {};
+        }
+
+        auto const url = tracker_.url(path);
+        for (auto const& stats_var : *stats_vec) {
+            auto const* const stats = stats_var.get_if<tr_variant::Map>();
+            if (stats != nullptr && stats->value_if<std::string_view>(TR_KEY_announce) == url) {
+                return {
+                    .id = stats->value_if<int64_t>(TR_KEY_id).value_or(-1),
+                    .last_announce_time = stats->value_if<int64_t>(TR_KEY_last_announce_time).value_or(-1),
+                    .min_announce_time = stats->value_if<int64_t>(TR_KEY_min_announce_time).value_or(-1),
+                    .next_announce_time = stats->value_if<int64_t>(TR_KEY_next_announce_time).value_or(-1),
+                };
+            }
+        }
+
+        ADD_FAILURE() << "no tracker_stats for " << url;
+        return {};
+    }
+
+private:
+    // Runs the request on the session thread, after any work already queued there
+    [[nodiscard]] tr_variant rpc(std::string const& request)
+    {
+        return blockingRunInSessionThread([this, &request]() {
+            auto response = tr_variant{};
+            tr_rpc_request_exec(session_, std::string_view{ request }, [&response](tr_variant&& resp) {
+                response = std::move(resp);
+            });
+            return response;
+        });
+    }
+};
+
+TEST_F(RpcReannounceTest, waitsForMinInterval)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    auto const before = trackerStats(tor, "/a");
+    EXPECT_EQ(before.last_announce_time + 1800, before.min_announce_time);
+    EXPECT_EQ(before.last_announce_time + 3600, before.next_announce_time);
+
+    reannounce(tor, ""sv);
+
+    auto const after = trackerStats(tor, "/a");
+    EXPECT_EQ(after.min_announce_time, after.next_announce_time);
+    EXPECT_EQ(1U, tracker_.announceCount("/a"));
+}
+
+TEST_F(RpcReannounceTest, ignoreMinInterval)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    reannounce(tor, R"(,"ignore_min_interval":true)"sv);
+
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/a") == 2U; }, 5s));
+}
+
+TEST_F(RpcReannounceTest, trackerIds)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    tracker_.setReply("/b", 3600, 1800);
+    auto* const tor = startTorrent({ "/a", "/b" });
+    auto const a_before = trackerStats(tor, "/a");
+    auto const b_before = trackerStats(tor, "/b");
+
+    // no tracker matches, so nothing announces
+    reannounce(tor, R"(,"ignore_min_interval":true,"tracker_ids":["b"])"sv);
+    EXPECT_EQ(a_before.next_announce_time, trackerStats(tor, "/a").next_announce_time);
+    EXPECT_EQ(b_before.next_announce_time, trackerStats(tor, "/b").next_announce_time);
+
+    reannounce(tor, fmt::format(R"(,"ignore_min_interval":true,"tracker_ids":[{:d}])", b_before.id));
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/b") == 2U; }, 5s));
+    EXPECT_EQ(a_before.next_announce_time, trackerStats(tor, "/a").next_announce_time);
+    EXPECT_EQ(1U, tracker_.announceCount("/a"));
+}
 
 } // namespace tr::test

@@ -389,9 +389,28 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
     tr_variant::Map const& args_in,
     tr_variant::Map& /*args_out*/)
 {
+    auto const flags = args_in.value_if<bool>(TR_KEY_ignore_min_interval).value_or(false) ?
+        tr_reannounce_flags::IgnoreMinInterval :
+        tr_reannounce_flags::None;
+
+    auto tracker_ids = std::vector<tr_tracker_id_t>{};
+    if (auto const* const ids_vec = args_in.find_if<tr_variant::Vector>(TR_KEY_tracker_ids); ids_vec != nullptr) {
+        for (auto const& id_var : *ids_vec) {
+            if (auto const val = id_var.value_if<int64_t>()) {
+                tracker_ids.emplace_back(static_cast<tr_tracker_id_t>(*val));
+            }
+        }
+
+        // None of the ids is usable, so no tracker matches.
+        // tr_torrentManualUpdate() treats an empty list as every tracker, so return here.
+        if (std::empty(tracker_ids)) {
+            return { JsonRpc::Error::SUCCESS, std::string{} };
+        }
+    }
+
     for (auto* tor : getTorrents(session, args_in)) {
-        if (tr_torrentCanManualUpdate(tor)) {
-            tr_torrentManualUpdate(tor);
+        if (tor->is_running()) {
+            tr_torrentManualUpdate(tor, tracker_ids, flags);
             session->rpcNotify(TR_RPC_TORRENT_CHANGED, tor->id());
         }
     }
@@ -547,7 +566,7 @@ namespace make_torrent_field_helpers
     vec.reserve(n_trackers);
     for (size_t idx = 0U; idx != n_trackers; ++idx) {
         auto const tracker = tr_torrentTracker(&tor, idx);
-        auto stats_map = tr_variant::Map{ 28U };
+        auto stats_map = tr_variant::Map{ 29U };
         stats_map.try_emplace(TR_KEY_announce, tracker.announce.sv());
         stats_map.try_emplace(TR_KEY_announce_state, tracker.announceState);
         stats_map.try_emplace(TR_KEY_download_count, tracker.downloadCount);
@@ -569,6 +588,7 @@ namespace make_torrent_field_helpers
         stats_map.try_emplace(TR_KEY_last_scrape_time, tracker.lastScrapeTime);
         stats_map.try_emplace(TR_KEY_last_scrape_timed_out, tracker.lastScrapeTimedOut);
         stats_map.try_emplace(TR_KEY_leecher_count, tracker.leecherCount);
+        stats_map.try_emplace(TR_KEY_min_announce_time, tracker.minAnnounceTime);
         stats_map.try_emplace(TR_KEY_next_announce_time, tracker.nextAnnounceTime);
         stats_map.try_emplace(TR_KEY_next_scrape_time, tracker.nextScrapeTime);
         stats_map.try_emplace(TR_KEY_scrape, tracker.scrape.sv());

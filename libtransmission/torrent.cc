@@ -12,6 +12,7 @@
 #include <map>
 #include <sstream>
 #include <ranges>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -1285,33 +1286,26 @@ void tr_torrentChangeMyPort(tr_torrent* tor)
 
 // ---
 
-namespace
+void tr_torrentManualUpdate(
+    tr_torrent* const tor,
+    std::span<tr_tracker_id_t const> const tracker_ids,
+    tr_reannounce_flags const flags)
 {
-namespace manual_update_helpers
-{
-void torrentManualUpdateImpl(tr_torrent* const tor)
-{
-    TR_ASSERT(tr_isTorrent(tor));
-
-    if (tor->is_running()) {
-        tr_announcerManualAnnounce(tor);
-    }
-}
-} // namespace manual_update_helpers
-} // namespace
-
-void tr_torrentManualUpdate(tr_torrent* tor)
-{
-    using namespace manual_update_helpers;
-
     tr_return_if_fail(tr_isTorrent(tor));
 
-    run_in_session_thread_by_id(*tor, torrentManualUpdateImpl);
+    run_in_session_thread_by_id(
+        *tor,
+        [ids = std::vector<tr_tracker_id_t>{ std::begin(tracker_ids), std::end(tracker_ids) },
+         flags](tr_torrent* const torrent) {
+            if (torrent->is_running()) {
+                tr_announcerManualAnnounce(torrent, ids, flags);
+            }
+        });
 }
 
 bool tr_torrentCanManualUpdate(tr_torrent const* tor)
 {
-    return tr_isTorrent(tor) && tor->is_running() && tr_announcerCanManualAnnounce(tor);
+    return tr_isTorrent(tor) && tor->is_running() && tr_announcerTrackerCount(tor) > 0U;
 }
 
 // ---

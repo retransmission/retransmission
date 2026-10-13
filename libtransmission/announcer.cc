@@ -17,6 +17,7 @@
 #include <optional>
 #include <ranges>
 #include <set>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -422,11 +423,6 @@ struct tr_tier {
             fmt::format("{:s} at ?", tor->name());
     }
 
-    [[nodiscard]] bool canManualAnnounce() const
-    {
-        return this->manualAnnounceAllowedAt <= tr_time();
-    }
-
     void scheduleNextScrape()
     {
         scheduleNextScrape(this->scrapeIntervalSec);
@@ -469,6 +465,10 @@ struct tr_tier {
     size_t const id = next_key++;
 
     int announce_event_priority = 0;
+
+    // A manual announce requested while an announce was in flight.
+    // onAnnounceDone() schedules it once the response has set the next cooldown.
+    std::optional<tr_reannounce_flags> pending_manual_announce;
 
     time_t scrapeIntervalSec = DefaultScrapeIntervalSec;
     time_t announceIntervalSec = DefaultAnnounceIntervalSec;
@@ -559,11 +559,6 @@ struct tr_torrent_announcer {
         }
 
         return nullptr;
-    }
-
-    [[nodiscard]] bool canManualAnnounce() const
-    {
-        return std::ranges::any_of(tiers, [](auto const& tier) { return tier.canManualAnnounce(); });
     }
 
     [[nodiscard]] bool findTracker(
@@ -690,14 +685,6 @@ tr_torrent_announcer* tr_announcer_impl::addTorrent(tr_torrent* tor, tr_tracker_
 }
 
 // ---
-
-bool tr_announcerCanManualAnnounce(tr_torrent const* tor)
-{
-    TR_ASSERT(tr_isTorrent(tor));
-    TR_ASSERT(tor->torrent_announcer != nullptr);
-
-    return tor->is_running() && tor->torrent_announcer->canManualAnnounce();
-}
 
 time_t tr_announcerNextManualAnnounce(tr_torrent const* tor)
 {
@@ -867,6 +854,33 @@ void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e,
         .info_hash = tor->info_hash(),
         .log_name = tier->buildLogName(),
     };
+}
+
+[[nodiscard]] constexpr bool ignores_min_interval(tr_reannounce_flags const flags) noexcept
+{
+    return (static_cast<unsigned>(flags) & static_cast<unsigned>(tr_reannounce_flags::IgnoreMinInterval)) != 0U;
+}
+
+void tier_manual_announce(tr_tier* const tier, time_t const now, tr_reannounce_flags const flags)
+{
+    // The in-flight announce's response sets the cooldown to honor.
+    // Of two requests made meanwhile, the one that ignores the cooldown wins.
+    if (tier->isAnnouncing) {
+        if (!tier->pending_manual_announce || ignores_min_interval(flags)) {
+            tier->pending_manual_announce = flags;
+        }
+        return;
+    }
+
+    auto const announce_at = ignores_min_interval(flags) ? now : std::max(now, tier->manualAnnounceAllowedAt);
+
+    // Any scheduled announce serves as the manual one if it goes out by announce_at.
+    // Only "stopped" asks for no peers, and a running torrent's queue never ends with it.
+    if (auto const is_scheduled = !std::empty(tier->announce_events) && tier->announceAt != 0; is_scheduled) {
+        tier->announceAt = std::min(tier->announceAt, announce_at);
+    } else {
+        tier_announce_event_push(tier, TR_ANNOUNCE_EVENT_NONE, announce_at);
+    }
 }
 
 [[nodiscard]] tr_tier* getTier(tr_announcer_impl* announcer, tr_sha1_digest_t const& info_hash, size_t tier_id)
@@ -1059,6 +1073,10 @@ void tr_announcer_impl::onAnnounceDone(
             tier_announce_event_push(tier, TR_ANNOUNCE_EVENT_NONE, now + i);
         }
     }
+
+    if (auto const flags = std::exchange(tier->pending_manual_announce, std::nullopt); flags && tier->tor->is_running()) {
+        tier_manual_announce(tier, now, *flags);
+    }
 }
 
 void tr_announcer_impl::startTorrent(tr_torrent* tor)
@@ -1066,9 +1084,23 @@ void tr_announcer_impl::startTorrent(tr_torrent* tor)
     torrentAddAnnounce(tor, TR_ANNOUNCE_EVENT_STARTED, tr_time());
 }
 
-void tr_announcerManualAnnounce(tr_torrent* tor)
+void tr_announcerManualAnnounce(
+    tr_torrent* const tor,
+    std::span<tr_tracker_id_t const> const tracker_ids,
+    tr_reannounce_flags const flags)
 {
-    torrentAddAnnounce(tor, TR_ANNOUNCE_EVENT_NONE, tr_time());
+    using namespace announce_helpers;
+
+    auto const is_target = [tracker_ids](tr_tracker const& tracker) {
+        return std::ranges::find(tracker_ids, tracker.id) != std::ranges::end(tracker_ids);
+    };
+
+    auto const now = tr_time();
+    for (auto& tier : tor->torrent_announcer->tiers) {
+        if (std::empty(tracker_ids) || std::ranges::any_of(tier.trackers, is_target)) {
+            tier_manual_announce(&tier, now, flags);
+        }
+    }
 }
 
 void tr_announcer_impl::stopTorrent(tr_torrent* tor)
@@ -1527,6 +1559,7 @@ namespace tracker_view_helpers
         }
 
         view.lastAnnounceStartTime = tier.lastAnnounceStartTime;
+        view.minAnnounceTime = tier.manualAnnounceAllowedAt;
 
         view.hasAnnounced = tier.lastAnnounceTime != 0;
         if (view.hasAnnounced) {

@@ -201,6 +201,14 @@ enum tr_completeness : uint8_t {
 
 enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
 
+// Options for `tr_torrentManualUpdate()`
+enum class tr_reannounce_flags : uint8_t {
+    None = 0,
+
+    // Announce now, even if the tracker's min interval hasn't passed yet
+    IgnoreMinInterval = 1U << 0U,
+};
+
 enum class tr_direction : uint8_t {
     ClientToPeer = 0,
     Up = 0,
@@ -656,6 +664,7 @@ struct tr_tracker_view {
     time_t lastAnnounceStartTime = {}; // if hasAnnounced, when the latest announce request was sent
     time_t lastAnnounceTime = {}; // if hasAnnounced, when the latest announce reply was received
     time_t nextAnnounceTime = {}; // if announceState == TR_TRACKER_WAITING, time of next announce
+    time_t minAnnounceTime = {}; // if !isBackup, manual announces wait until this time unless they ignore the min interval
 
     time_t lastScrapeStartTime = {}; // if hasScraped, when the latest scrape request was sent
     time_t lastScrapeTime = {}; // if hasScraped, when the latest scrape reply was received

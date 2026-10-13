@@ -249,6 +249,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "idle_seeding_limit"sv, // rpc, tr_session::Settings
     "idle_seeding_limit_enabled"sv, // rpc, tr_session::Settings
     "ids"sv, // rpc
+    "ignore_min_interval"sv, // rpc
     "incomplete"sv, // BEP0048; BT protocol
     "incomplete-dir"sv, // .resume, daemon, gtk app, rpc, tr_session::Settings
     "incomplete-dir-enabled"sv, // daemon, rpc, tr_session::Settings
@@ -345,6 +346,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "metadata_size"sv, // BEP0009; BT protocol
     "metainfo"sv, // rpc
     "method"sv, // json-rpc
+    "min_announce_time"sv, // rpc
     "move"sv, // rpc
     "msg_type"sv, // BT protocol
     "mtimes"sv, // .resume
@@ -690,6 +692,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "trackerReplace"sv, // rpc
     "trackerStats"sv, // rpc
     "tracker_add"sv, // rpc
+    "tracker_ids"sv, // rpc
     "tracker_list"sv, // rpc
     "tracker_remove"sv, // rpc
     "tracker_replace"sv, // rpc

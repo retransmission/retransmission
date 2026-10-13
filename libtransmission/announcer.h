@@ -15,6 +15,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -26,6 +27,7 @@
 
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/shared-string.h"
+#include "libtransmission/types.h"
 
 struct tr_address;
 class tr_announcer_udp;
@@ -83,9 +85,7 @@ public:
 
 void tr_announcerChangeMyPort(tr_torrent* tor);
 
-bool tr_announcerCanManualAnnounce(tr_torrent const* tor);
-
-void tr_announcerManualAnnounce(tr_torrent* tor);
+void tr_announcerManualAnnounce(tr_torrent* tor, std::span<tr_tracker_id_t const> tracker_ids, tr_reannounce_flags flags);
 
 void tr_announcerTorrentCompleted(tr_torrent* tor);
 

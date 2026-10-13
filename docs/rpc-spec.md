@@ -143,7 +143,7 @@ username and password (respectively), separated by a colon.
 | `torrent_start_now`  | tr_torrentStartNow       | start torrent disregarding queue position
 | `torrent_stop`       | tr_torrentStop           | stop torrent
 | `torrent_verify`     | tr_torrentVerify         | verify torrent
-| `torrent_reannounce` | tr_torrentManualUpdate   | re-announce to trackers now
+| `torrent_reannounce` | tr_torrentManualUpdate   | ask trackers for more peers
 
 Request parameters: `ids`, which specifies which torrents to use.
 All torrents are used if the `ids` parameter is omitted.
@@ -156,6 +156,17 @@ All torrents are used if the `ids` parameter is omitted.
 
 Note that integer torrent ids are not stable across Transmission daemon
 restarts. Use torrent hashes if you need stable ids.
+
+`torrent_reannounce` also takes these optional request parameters:
+
+| Key | Value Type | Value Description
+|:--|:--|:--
+| `ignore_min_interval` | boolean | announce now, even to trackers whose min interval hasn't passed. Default: false
+| `tracker_ids`         | array   | announce only to the tiers of these trackers, given as ids from `trackers[].id`. Ids that aren't a torrent's trackers are ignored. Default: every tier
+
+Each tier announces only to its current tracker.
+Without `ignore_min_interval`, a tier still in its tracker's min interval announces when the interval ends.
+`tracker_stats[].min_announce_time` is that time.
 
 Response parameters: none
 
@@ -435,6 +446,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 | `last_scrape_time`         | number     | tr_tracker_view
 | `last_scrape_timed_out`    | boolean    | tr_tracker_view
 | `leecher_count`            | number     | tr_tracker_view
+| `min_announce_time`        | number     | tr_tracker_view
 | `next_announce_time`       | number     | tr_tracker_view
 | `next_scrape_time`         | number     | tr_tracker_view
 | `scrape`                   | string     | tr_tracker_view
@@ -1162,3 +1174,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_set` | new arg `blocklist_updates_enabled`
 | `session_stats` | :warning: **DEPRECATED** `active_torrent_count`. Use `unpaused_torrent_count` instead; it will be removed in Transmission 5.0.0.
 | `session_get` | :warning: **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.
+| `torrent_get` | new arg `tracker_stats.min_announce_time`
+| `torrent_reannounce` | new arg `ignore_min_interval`
+| `torrent_reannounce` | new arg `tracker_ids`
+| `torrent_reannounce` | a tier still in its tracker's min interval now announces when the interval ends. Previously the request was dropped while every tier was in its min interval, and otherwise sent to every tier at once.
