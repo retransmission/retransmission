@@ -37,6 +37,8 @@
 
 #include <fmt/format.h>
 
+#include <small/map.hpp>
+
 #if defined(_WIN32) && !defined(WITH_OPENSSL)
 #error Windows builds require the OpenSSL crypto backend (WITH_CRYPTO=openssl): \
     tracker TLS certs are verified against the Windows system certificate store, \
@@ -252,20 +254,32 @@ public:
             deadline_ns_ = to_ns(mediator.now() + deadline);
         }
         queued_tasks_cv_.notify_one();
-        curl_multi_wakeup(multi_.get());
+        {
+            auto const lock = std::unique_lock{ multi_pool_mutex_ };
+            for (auto const& multi : multi_pool_) {
+                curl_multi_wakeup(multi.get());
+            }
+        }
     }
 
     void fetch(FetchOptions&& options)
     {
-        auto const lock = std::unique_lock{ tasks_mutex_ };
+        {
+            auto const lock = std::unique_lock{ tasks_mutex_ };
 
-        if (deadline_exists()) { // no new tasks once shutdown has begun
-            return;
+            if (deadline_exists()) { // no new tasks once shutdown has begun
+                return;
+            }
+
+            queued_tasks_.emplace_back(*this, std::move(options));
         }
-
-        queued_tasks_.emplace_back(*this, std::move(options));
         queued_tasks_cv_.notify_one();
-        curl_multi_wakeup(multi_.get());
+        {
+            auto const lock = std::unique_lock{ multi_pool_mutex_ };
+            for (auto const& multi : multi_pool_) {
+                curl_multi_wakeup(multi.get());
+            }
+        }
     }
 
     [[nodiscard]] bool is_idle() const noexcept
@@ -305,6 +319,10 @@ public:
         // NOLINTNEXTLINE(bugprone-exception-escape)
         ~Task()
         {
+            if (multi_ != nullptr) {
+                curl_multi_remove_handle(multi_, easy_);
+            }
+
             easy_dispose(easy_);
 
             if (req_header_slist_ != nullptr) {
@@ -315,6 +333,12 @@ public:
         [[nodiscard]] constexpr auto* easy() const
         {
             return easy_;
+        }
+
+        void set_multi(CURLM* const multi) noexcept
+        {
+            curl_multi_add_handle(multi, easy());
+            multi_ = multi;
         }
 
         // Read-only view of the fetch options. initEasy() and the curl
@@ -423,6 +447,7 @@ public:
         tr_web::FetchOptions options_;
 
         CURL* easy_;
+        CURLM* multi_ = nullptr;
 
         curl_slist* req_header_slist_ = nullptr;
     };
@@ -803,19 +828,37 @@ error_out:
         remove_task(task);
     }
 
+    void network_changed() noexcept
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        network_changed_ = true;
+    }
+
+    void push_multi()
+    {
+        auto const lock = std::unique_lock{ multi_pool_mutex_ };
+        auto const multi = multi_pool_.emplace_back(curl_helpers::multi_unique_ptr{ curl_multi_init() }).get();
+        (void)curl_multi_setopt(multi, CURLMOPT_MAXCONNECTS, MaxCachedConnections);
+        (void)curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
+        (void)curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
+    }
+
+    [[nodiscard]] CURLM* current_multi() const noexcept
+    {
+        TR_ASSERT(!std::empty(multi_pool_));
+        return multi_pool_.back().get();
+    }
+
     // the thread started by Impl.curl_thread runs this function
     void curlThreadFunc()
     {
-        auto const& multi = multi_;
-        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
-        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
+        push_multi();
 
+        auto prev_n_running = small::map<CURLM*, int, 2U>{};
         for (;;) {
             if (deadline_reached()) {
                 while (!std::empty(running_tasks_)) {
                     auto& task = running_tasks_.front();
-                    curl_multi_remove_handle(multi.get(), task.easy());
                     timeout_task(task);
                 }
             }
@@ -833,11 +876,21 @@ error_out:
                     break;
                 }
 
+                if (network_changed_) {
+#if LIBCURL_VERSION_NUM >= 0x081000 /* 8.16.0 */
+                    if (curl_multi_setopt(current_multi(), CURLMOPT_NETWORK_CHANGED, CURLMNWC_CLEAR_CONNS) != CURLM_OK)
+#endif
+                    {
+                        push_multi();
+                    }
+                    network_changed_ = false;
+                }
+
                 // add queued tasks
                 if (!std::empty(queued_tasks_)) {
                     for (auto& task : queued_tasks_) {
                         initEasy(task);
-                        curl_multi_add_handle(multi.get(), task.easy());
+                        task.set_multi(current_multi());
                     }
 
                     running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
@@ -848,7 +901,21 @@ error_out:
 
             // start newly added or unpaused tasks
             auto n_running = int{};
-            curl_multi_perform(multi.get(), &n_running);
+            for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
+                curl_multi_perform(it->get(), &n_running);
+
+                // Cleanup old multi handles that finished. If both the previous and current n_running are zero,
+                // then this multi handle has no more tasks, and all CURLMSG_DONE messages has been processed in
+                // the previous loop, so we can safely remove it.
+                if (prev_n_running[it->get()] == 0 && n_running == 0 && it != std::prev(multi_pool_.end())) {
+                    prev_n_running.erase(it->get());
+                    auto const lock = std::unique_lock{ multi_pool_mutex_ };
+                    it = multi_pool_.erase(it);
+                } else {
+                    prev_n_running[it->get()] = n_running;
+                    ++it;
+                }
+            }
 
             // Wake up once per second, or when the next task is due to unpause, whichever is sooner.
             static constexpr int DefaultTimeout = 1000;
@@ -857,38 +924,48 @@ error_out:
                 DefaultTimeout;
 
             // Wait for activity on the curl sockets, or for the timeout to expire.
-            auto numfds = int{};
-            curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds);
+            //
+            // N.B. Technically this does potentially double/triple/... the timeout,
+            // but we don't care as it rarely happens, and when it does, it's only
+            // for a short while.
+            for (auto const& multi : multi_pool_) {
+                auto numfds = int{};
+                if (curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds) == CURLM_OK && numfds > 0) {
+                    break;
+                }
+            }
 
-            // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
-            // https://curl.se/mail/lib-2018-03/0119.html
-            curl_multi_perform(multi.get(), &n_running);
+            for (auto const& multi : multi_pool_) {
+                // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
+                // https://curl.se/mail/lib-2018-03/0119.html
+                curl_multi_perform(multi.get(), &n_running);
+                prev_n_running[multi.get()] = n_running;
 
-            // process any tasks that just finished
-            CURLMsg* msg = nullptr;
-            auto unused = int{};
-            while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr) {
-                if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
-                    Task* task = nullptr;
-                    curl_easy_getinfo(e, CURLINFO_PRIVATE, &task);
+                // process any tasks that just finished
+                CURLMsg* msg = nullptr;
+                auto unused = int{};
+                while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr) {
+                    if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
+                        Task* task = nullptr;
+                        curl_easy_getinfo(e, CURLINFO_PRIVATE, &task);
 
-                    if (msg->data.result != CURLE_OK) {
-                        task->response.errmsg = fmt::format(
-                            "curl error: {} ({})",
-                            curl_easy_strerror(msg->data.result),
-                            static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                        if (msg->data.result != CURLE_OK) {
+                            task->response.errmsg = fmt::format(
+                                "curl error: {} ({})",
+                                curl_easy_strerror(msg->data.result),
+                                static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                        }
+
+                        auto req_bytes_sent = long{};
+                        char* primary_ip = nullptr;
+                        curl_easy_getinfo(e, CURLINFO_REQUEST_SIZE, &req_bytes_sent);
+                        curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &task->response.status);
+                        curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);
+                        task->response.did_connect = task->response.status > 0 || req_bytes_sent > 0;
+                        task->response.did_timeout = msg->data.result == CURLE_OPERATION_TIMEDOUT;
+                        task->response.primary_ip = primary_ip;
+                        remove_task(*task);
                     }
-
-                    auto req_bytes_sent = long{};
-                    char* primary_ip = nullptr;
-                    curl_easy_getinfo(e, CURLINFO_REQUEST_SIZE, &req_bytes_sent);
-                    curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &task->response.status);
-                    curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);
-                    task->response.did_connect = task->response.status > 0 || req_bytes_sent > 0;
-                    task->response.did_timeout = msg->data.result == CURLE_OPERATION_TIMEDOUT;
-                    task->response.primary_ip = primary_ip;
-                    curl_multi_remove_handle(multi.get(), e);
-                    remove_task(*task);
                 }
             }
         }
@@ -898,7 +975,14 @@ error_out:
 
     std::map<std::string /*host*/, std::stack<curl_helpers::easy_unique_ptr>, std::less<>> easy_pool_;
 
-    curl_helpers::multi_unique_ptr const multi_{ curl_multi_init() };
+    // TODO(curl 8.16.0): Remove all the multi_pool_ BS once we require curl 8.16.0 or above
+    std::vector<curl_helpers::multi_unique_ptr> multi_pool_;
+    bool network_changed_ = false;
+
+    // Only the curl thread modifies multi_pool_, all other threads read it. We only need
+    // to lock exclusively for writes in the curl thread and reads from any other thread,
+    // but we don't need any locks for reads in the curl thread.
+    mutable std::mutex multi_pool_mutex_;
 
     std::mutex tasks_mutex_;
     std::condition_variable queued_tasks_cv_;
@@ -915,11 +999,13 @@ error_out:
         // Do *not* share HSTS cache
         // https://github.com/transmission/transmission/issues/5199
 
+        // Do *not* share connection cache. We don't want different multi handles to share connections,
+        // so that we can clear old connections when the network changes.
+
         auto* const sh = shared();
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
     }
 
@@ -957,6 +1043,11 @@ void tr_web::fetch(FetchOptions&& options)
 void tr_web::startShutdown(std::chrono::milliseconds deadline)
 {
     impl_->startShutdown(deadline);
+}
+
+void tr_web::network_changed() noexcept
+{
+    impl_->network_changed();
 }
 
 bool tr_web::is_idle() const noexcept
