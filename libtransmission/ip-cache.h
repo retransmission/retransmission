@@ -46,11 +46,15 @@ public:
     struct Mediator {
         virtual ~Mediator() = default;
 
-        virtual void fetch(tr_web::FetchOptions&& /* options */)
+        virtual void fetch(tr_web::FetchOptions&& /*options*/)
         {
         }
 
-        [[nodiscard]] virtual std::string_view settings_bind_addr(tr_address_type /* type */)
+        virtual void source_addr_changed(tr_address_type /*type*/)
+        {
+        }
+
+        [[nodiscard]] virtual std::string_view settings_bind_addr(tr_address_type /*type*/)
         {
             return {};
         }
