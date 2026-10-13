@@ -13,7 +13,7 @@
 //
 // The client loads its settings once per process, on first use, from
 // whichever directory `gtr_pref_init()` named at that moment; later
-// tests in the same executable keep that map and only redirect saves.
+// tests in the same executable keep those prefs and only redirect saves.
 class GtkTest : public SandboxedTest
 {
 protected:

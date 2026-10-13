@@ -502,14 +502,14 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
 
             // determine which settings changed
             auto changed_keys = small::set<tr_quark>{};
-            auto& vals = gtr_pref_get_all();
+            auto& prefs = gtr_prefs();
             auto const serde = tr_variant_serde::benc();
 
-            for (auto& [key, newval] : tr_sessionGetSettings(session)) {
-                if (auto iter = vals.find(key);
-                    iter == vals.end() || serde.to_string(iter->second) != serde.to_string(newval)) {
+            for (auto const& [key, newval] : tr_sessionGetSettings(session)) {
+                // prefs only holds the session settings that tr::app::SessionPrefs registers
+                if (tr::app::prefs_is_core(key) && serde.to_string(prefs.get<tr_variant>(key)) != serde.to_string(newval)) {
                     changed_keys.emplace(key);
-                    vals.insert_or_assign(key, std::move(newval));
+                    prefs.set(key, newval);
                 }
             }
 
@@ -601,7 +601,7 @@ void Application::Impl::on_startup()
     }
 
     /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all(), gtr_file_trash_or_remove);
+    session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), gtr_file_trash_or_remove);
 
     if (tr_sessionConfigDirIsContended(session)) {
         config_dir_contended_ = true;

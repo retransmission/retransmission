@@ -5,6 +5,7 @@
 #pragma once
 
 #include <libtransmission-app/converters.h>
+#include <libtransmission-app/prefs.h>
 
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
@@ -48,14 +49,14 @@ TR_DECLARE_CONVERTER(Glib::ustring)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnull-dereference"
 
-[[nodiscard]] tr::Settings& gtr_pref_get_all();
+[[nodiscard]] tr::app::Prefs& gtr_prefs();
 
 [[nodiscard]] bool gtr_pref_has_key(tr_quark key);
 
 template<typename T>
 [[nodiscard]] std::optional<T> gtr_pref_lookup(tr_quark const key)
 {
-    return tr::serializer::to_value<T>(gtr_pref_get_all(), key);
+    return tr::serializer::to_value<T>(gtr_prefs().get<tr_variant>(key));
 }
 
 template<typename T> // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
@@ -71,7 +72,7 @@ template<typename T> // NOLINTNEXTLINE(bugprone-invalid-enum-default-initializat
 template<typename T>
 void gtr_pref_set(tr_quark const key, T const& val)
 {
-    gtr_pref_get_all().insert_or_assign(key, tr::serializer::to_variant(val));
+    gtr_prefs().set(key, val);
 }
 
 void gtr_pref_init(std::string_view config_dir);
@@ -79,13 +80,13 @@ void gtr_pref_init(std::string_view config_dir);
 template<std::integral T>
 T gtr_pref_int_get(tr_quark const key)
 {
-    return gtr_pref_get_all().value_if<T>(key).value_or(T{});
+    return gtr_prefs().get<T>(key);
 }
 
 template<std::integral T>
 void gtr_pref_int_set(tr_quark key, T value)
 {
-    gtr_pref_get_all().insert_or_assign(key, value);
+    gtr_prefs().set(key, value);
 }
 
 double gtr_pref_double_get(tr_quark key);
