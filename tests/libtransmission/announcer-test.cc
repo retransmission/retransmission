@@ -26,6 +26,7 @@
 
 using AnnouncerTest = ::tr::test::TransmissionTest;
 using ManualAnnounceTest = ::tr::test::LoopbackTrackerTest;
+using TrackerListChangeTest = ::tr::test::LoopbackTrackerTest;
 using ::tr::test::waitFor;
 
 using namespace std::literals;
@@ -523,4 +524,52 @@ TEST_F(ManualAnnounceTest, waitsForTheResponseToAnInFlightAnnounce)
     EXPECT_EQ(view.lastAnnounceTime + 1800, view.minAnnounceTime);
     EXPECT_EQ(view.minAnnounceTime, view.nextAnnounceTime);
     EXPECT_EQ(1U, tracker_.announceCount("/a"));
+}
+
+// --- TRACKER LIST CHANGES
+
+TEST_F(TrackerListChangeTest, keptTierKeepsItsSchedule)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+    auto const before = trackerView(tor, "/a");
+
+    setTrackerList(tor, { "/a", "/b" });
+
+    auto const after = trackerView(tor, "/a");
+    EXPECT_EQ(TR_TRACKER_WAITING, after.announceState);
+    EXPECT_EQ(before.nextAnnounceTime, after.nextAnnounceTime);
+    EXPECT_EQ(before.minAnnounceTime, after.minAnnounceTime);
+    EXPECT_EQ(before.lastAnnounceTime, after.lastAnnounceTime);
+    EXPECT_EQ(before.lastAnnounceSucceeded, after.lastAnnounceSucceeded);
+    EXPECT_EQ(before.nextScrapeTime, after.nextScrapeTime);
+}
+
+TEST_F(TrackerListChangeTest, keptTierGetsItsInFlightResponse)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    tracker_.holdReplies();
+    auto* const tor = addTorrent({ "/a" });
+    tr_torrentStart(tor);
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/a") == 1U; }, 5s));
+
+    setTrackerList(tor, { "/a", "/b" });
+    EXPECT_EQ(TR_TRACKER_ACTIVE, trackerView(tor, "/a").announceState);
+
+    tracker_.releaseReplies();
+    EXPECT_TRUE(waitFor([this, tor]() { return trackerView(tor, "/a").hasAnnounced; }, 5s));
+
+    auto const view = trackerView(tor, "/a");
+    EXPECT_EQ(view.lastAnnounceTime + 1800, view.minAnnounceTime);
+    EXPECT_EQ(view.lastAnnounceTime + 3600, view.nextAnnounceTime);
+}
+
+TEST_F(TrackerListChangeTest, addedTierAnnounces)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    setTrackerList(tor, { "/a", "/b" });
+
+    EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/b") == 1U; }, 5s));
 }

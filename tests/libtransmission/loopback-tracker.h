@@ -150,15 +150,21 @@ protected:
     // Adds a paused torrent with one tier per path
     [[nodiscard]] tr_torrent* addTorrent(std::initializer_list<std::string_view> const paths)
     {
+        auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+        setTrackerList(tor, paths);
+        return tor;
+    }
+
+    // Replaces the torrent's trackers with one tier per path
+    void setTrackerList(tr_torrent* const tor, std::initializer_list<std::string_view> const paths)
+    {
         auto tracker_list = std::string{};
         for (auto const path : paths) {
             tracker_list += tracker_.url(path);
             tracker_list += "\n\n";
         }
 
-        auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
-        EXPECT_TRUE(tr_torrentSetTrackerList(tor, tracker_list));
-        return tor;
+        EXPECT_TRUE(blockingRunInSessionThread([tor, &tracker_list]() { return tr_torrentSetTrackerList(tor, tracker_list); }));
     }
 
     // Adds and starts a torrent with one tier per path,

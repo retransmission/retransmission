@@ -1632,48 +1632,50 @@ void tr_announcer_impl::resetTorrent(tr_torrent* tor)
 {
     using namespace announce_helpers;
 
-    // make a new tr_announcer_tier
     auto* const older = tor->torrent_announcer;
-    tor->torrent_announcer = new tr_torrent_announcer{ this, tor };
-    auto* const newer = tor->torrent_announcer;
+    auto* const newer = new tr_torrent_announcer{ this, tor };
+    tor->torrent_announcer = newer;
 
-    // copy the tracker counts into the new replacementa
-    if (older != nullptr) {
-        for (auto& new_tier : newer->tiers) {
-            for (auto& new_tracker : new_tier.trackers) {
-                tr_tier const* old_tier = nullptr;
-                tr_tracker const* old_tracker = nullptr;
-                if (older->findTracker(new_tracker.announce_url, &old_tier, &old_tracker)) {
-                    new_tracker.set_seeder_count(old_tracker->seeder_count());
-                    new_tracker.set_leecher_count(old_tracker->leecher_count());
-                    new_tracker.set_download_count(old_tracker->download_count());
-                    new_tracker.set_downloader_count(old_tracker->downloader_count());
-
-                    new_tier.announce_events = old_tier->announce_events;
-                    new_tier.announce_event_priority = old_tier->announce_event_priority;
-
-                    auto const* const old_current = old_tier->currentTracker();
-                    new_tier.trying_order_.set_current(
-                        old_current == nullptr ? std::nullopt : new_tier.indexOf(old_current->announce_url));
-                }
-            }
-        }
-    }
-
-    // kickstart any tiers that didn't get started:
-    // 1. ensure every tier has a current tracker
-    // 2. if we weren't already talking to the current tracker, then say hello
     auto const is_running = tor->is_running();
     auto const now = tr_time();
-    for (auto& tier : newer->tiers) {
-        if (tier.currentTracker() == nullptr) {
-            tier.useNextTracker();
+    auto tiers = std::vector<tr_tier>{};
+    tiers.reserve(std::size(newer->tiers));
+    for (auto& new_tier : newer->tiers) {
+        // the old tier whose current tracker is in this tier
+        tr_tier const* old_session = nullptr;
 
-            if (is_running) {
-                tier_announce_event_push(&tier, TR_ANNOUNCE_EVENT_STARTED, now);
+        for (auto& new_tracker : new_tier.trackers) {
+            tr_tier const* old_tier = nullptr;
+            tr_tracker const* old_tracker = nullptr;
+            if (older == nullptr || !older->findTracker(new_tracker.announce_url, &old_tier, &old_tracker)) {
+                continue;
+            }
+
+            new_tracker.set_seeder_count(old_tracker->seeder_count());
+            new_tracker.set_leecher_count(old_tracker->leecher_count());
+            new_tracker.set_download_count(old_tracker->download_count());
+            new_tracker.set_downloader_count(old_tracker->downloader_count());
+            new_tracker.tracker_id = old_tracker->tracker_id;
+            new_tracker.consecutive_failures = old_tracker->consecutive_failures;
+
+            if (old_session == nullptr && old_tracker == old_tier->currentTracker()) {
+                old_session = old_tier;
             }
         }
+
+        if (old_session != nullptr) {
+            // We're still talking to the old tier's current tracker, so the old tier carries on with the new trackers.
+            // Keeping its id lets the response to an announce it has in flight find this tier.
+            auto& tier = tiers.emplace_back(*old_session);
+            tier.trackers = std::move(new_tier.trackers);
+            tier.trying_order_ = std::move(new_tier.trying_order_);
+            tier.trying_order_.set_current(tier.indexOf(old_session->currentTracker()->announce_url));
+        } else if (auto& tier = tiers.emplace_back(std::move(new_tier)); is_running) {
+            // We weren't talking to any of this tier's trackers, so say hello.
+            tier_announce_event_push(&tier, TR_ANNOUNCE_EVENT_STARTED, now);
+        }
     }
+    newer->tiers = std::move(tiers);
 
     delete older;
 }
