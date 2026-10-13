@@ -9,7 +9,9 @@
 #include <cstdint> // int64_t
 #include <future>
 #include <iterator> // std::inserter
+#include <optional>
 #include <set>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -18,6 +20,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/rpcimpl.h>
+#include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
 
@@ -745,6 +748,65 @@ TEST_F(RpcTest, torrentGetIsFolder)
     auto const is_folder = first_torrent->value_if<bool>(TR_KEY_is_folder);
     ASSERT_TRUE(is_folder);
     EXPECT_TRUE(*is_folder);
+
+    // cleanup
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentGetCurrentDir)
+{
+    tr_sessionSetIncompleteDirEnabled(session_, true);
+    auto const download_dir = tr_sessionGetDownloadDir(session_);
+    auto const incomplete_dir = tr_sessionGetIncompleteDir(session_);
+    ASSERT_NE(download_dir, incomplete_dir);
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    auto const get_current_dir = [this]() -> std::optional<std::string> {
+        // spelled as a client sends it, so that the test pins the key's name
+        static auto constexpr Request =
+            R"json({"id":12345,"jsonrpc":"2.0","method":"torrent_get","params":{"fields":["current_dir"]}})json"sv;
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, Request, [&response](tr_variant&& resp) { response = std::move(resp); });
+
+        auto const* const response_map = response.get_if<tr_variant::Map>();
+        if (response_map == nullptr) {
+            return {};
+        }
+        auto const* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+        if (result == nullptr) {
+            return {};
+        }
+        auto const* const torrents = result->find_if<tr_variant::Vector>(TR_KEY_torrents);
+        if (torrents == nullptr || std::size(*torrents) != 1U) {
+            return {};
+        }
+        auto const* const torrent = torrents->front().get_if<tr_variant::Map>();
+        if (torrent == nullptr) {
+            return {};
+        }
+        auto const current_dir = torrent->value_if<std::string_view>(TR_KEY_current_dir);
+        if (!current_dir) {
+            return {};
+        }
+        return std::string{ *current_dir };
+    };
+
+    // no file is on disk yet, so the incomplete dir is current
+    EXPECT_EQ(incomplete_dir, get_current_dir());
+
+    // a file found in the download dir makes it current, though the torrent is unfinished
+    createFileWithContents(tr_pathbuf{ download_dir, '/', tr_torrentFile(tor, 0).name }, "partial"sv);
+    auto const set_location = [tor, &download_dir]() {
+        auto state = -1;
+        tr_torrentSetLocation(tor, download_dir, false, &state);
+        return state;
+    };
+    ASSERT_EQ(TR_LOC_DONE, blockingRunInSessionThread(set_location));
+    ASSERT_FALSE(tor->is_done());
+    EXPECT_EQ(download_dir, get_current_dir());
 
     // cleanup
     tr_torrentRemove(tor, false);
