@@ -66,7 +66,7 @@ cmake --build build -t transmission-qt
 ### Prerequisites ###
 
 #### Debian 13 / Trixie ####
-On Debian, you can build transmission with a few dependencies on top of a base installation.
+On Debian, you can build Retransmission with a few dependencies on top of a base installation.
 
 For building transmission-daemon you will need basic dependencies:
 ```bash
@@ -77,7 +77,7 @@ These packages are not mandatory for a working binary. Retransmission brings its
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libsystemd-dev
 ```
 
-You likely want to install transmission as a native GUI application.
+You likely want to install Retransmission as a native GUI application.
 There are two options, GTK and Qt.
 
 GTK 3 client:
@@ -100,7 +100,7 @@ $ sudo apt install qt6-svg-dev qt6-tools-dev
 Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 #### Debian 12 / Bookworm ####
-On Debian, you can build transmission with a few dependencies on top of a base installation.
+On Debian, you can build Retransmission with a few dependencies on top of a base installation.
 
 For building transmission-daemon you will need basic dependencies:
 ```bash
@@ -111,7 +111,7 @@ These packages are not mandatory for a working binary. Retransmission brings its
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libpsl-dev libsystemd-dev
 ```
 
-You likely want to install transmission as a native GUI application.
+You likely want to install Retransmission as a native GUI application.
 There are two options, GTK and Qt.
 
 GTK 3 client:
@@ -193,7 +193,7 @@ vcpkg install qtactiveqt qtsvg qttools
 ### Get Retransmission source ###
 ```bat
 git clone https://github.com/retransmission/retransmission
-cd transmission
+cd retransmission
 git submodule update --init --recursive
 ```
 
@@ -201,7 +201,7 @@ git submodule update --init --recursive
 
 To configure which components are built use the flags below.
 Each option can be set to `ON`/`OFF`/`AUTO`, values shown below are the defaults.
-* `-DENABLE_DAEMON=ON` - build transmission daemon
+* `-DENABLE_DAEMON=ON` - build the Retransmission daemon
 * `-DENABLE_QT=AUTO` - build the Qt client
 * `-DENABLE_UTILS=ON` - build transmission-remote, transmission-create, transmission-edit and transmission-show cli tools
 * `-DENABLE_CLI=OFF` - build the cli client
