@@ -772,7 +772,6 @@ void MainWindow::refreshActionSensitivity()
     auto selected_and_paused = int{};
     auto selected_and_queued = int{};
     auto selected_with_metadata = int{};
-    auto const now = time(nullptr);
     for (auto const& row : selection_model->selectedRows()) {
         auto const* const tor = model->data(row, TorrentModel::TorrentRole).value<Torrent const*>();
         if (tor == nullptr) {
@@ -793,7 +792,7 @@ void MainWindow::refreshActionSensitivity()
             ++selected_with_metadata;
         }
 
-        if (tor->canManualAnnounceAt(now)) {
+        if (tor->canManualAnnounce()) {
             ++selected_and_can_announce;
         }
     }

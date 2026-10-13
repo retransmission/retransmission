@@ -383,11 +383,6 @@ public:
         return date_created_;
     }
 
-    [[nodiscard]] constexpr auto manualAnnounceTime() const noexcept
-    {
-        return manual_announce_time_;
-    }
-
     [[nodiscard]] constexpr auto peersWeAreDownloadingFrom() const noexcept
     {
         return peers_sending_to_us_;
@@ -567,9 +562,9 @@ public:
         return isWaitingToDownload() || isWaitingToSeed();
     }
 
-    [[nodiscard]] auto constexpr canManualAnnounceAt(time_t t) const noexcept
+    [[nodiscard]] auto constexpr canManualAnnounce() const noexcept
     {
-        return isReadyToTransfer() && (manualAnnounceTime() <= t);
+        return isReadyToTransfer() && !std::empty(trackerStats());
     }
 
     QIcon getMimeTypeIcon() const;
@@ -603,7 +598,6 @@ public:
         IS_PRIVATE,
         LABELS,
         LEFT_UNTIL_DONE,
-        MANUAL_ANNOUNCE_TIME,
         METADATA_PERCENT_COMPLETE,
         NAME,
         PEERS,
@@ -659,7 +653,6 @@ private:
     time_t added_date_ = {};
     time_t date_created_ = {};
     time_t edit_date_ = {};
-    time_t manual_announce_time_ = {};
     time_t start_date_ = {};
 
     int bandwidth_priority_ = {};
