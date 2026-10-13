@@ -1635,6 +1635,9 @@ void tr_announcer_impl::resetTorrent(tr_torrent* tor)
     auto* const older = tor->torrent_announcer;
     auto* const newer = new tr_torrent_announcer{ this, tor };
     tor->torrent_announcer = newer;
+    if (older != nullptr) {
+        newer->callback = std::move(older->callback);
+    }
 
     auto const is_running = tor->is_running();
     auto const now = tr_time();

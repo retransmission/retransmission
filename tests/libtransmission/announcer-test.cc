@@ -573,3 +573,15 @@ TEST_F(TrackerListChangeTest, addedTierAnnounces)
 
     EXPECT_TRUE(waitFor([this]() { return tracker_.announceCount("/b") == 1U; }, 5s));
 }
+
+TEST_F(TrackerListChangeTest, trackerResponsesStillReachTheTorrent)
+{
+    tracker_.setReply("/a", 3600, 1800);
+    auto* const tor = startTorrent({ "/a" });
+
+    tracker_.setFailure("/a", "go away");
+    setTrackerList(tor, { "/a" });
+    tr_torrentManualUpdate(tor, {}, tr_reannounce_flags::IgnoreMinInterval);
+
+    EXPECT_TRUE(waitFor([tor]() { return tr_torrentStat(tor).error == tr_stat::Error::TrackerError; }, 5s));
+}
