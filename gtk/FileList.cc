@@ -13,6 +13,7 @@
 #include "Utils.h"
 
 #include <libtransmission/file-utils.h>
+#include <libtransmission/file.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
 
@@ -23,6 +24,7 @@
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
+#include <gtkmm/treerowreference.h>
 #include <gtkmm/treeselection.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
@@ -38,15 +40,16 @@
 #include <fmt/format.h>
 
 #include <algorithm>
+#include <array>
 #include <memory>
 #include <optional>
-#include <queue>
 #include <ranges>
 #include <stack>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 using namespace std::literals;
 
@@ -95,7 +98,7 @@ FileModelColumns const file_cols;
 
 } // namespace
 
-class FileList::Impl
+class FileList::Impl : public std::enable_shared_from_this<FileList::Impl>
 {
 public:
     Impl(
@@ -114,8 +117,25 @@ public:
     void reset_torrent();
 
 private:
+    struct SortState {
+        int column;
+        Gtk::SortType order;
+    };
+
+    struct RenameData {
+        Gtk::TreeRowReference row;
+        tr_torrent_id_t torrent_id;
+        Glib::ustring path_string;
+        Glib::ustring newname;
+        std::optional<int> error = {};
+    };
+
     void clearData();
     void refresh();
+    void suspend_sorting();
+    void on_editing_started(Gtk::CellEditable* editable, Glib::ustring const& path_string);
+    void on_editing_finished();
+    bool on_editing_finished_idle();
 
     bool getAndSelectEventPath(double view_x, double view_y, Gtk::TreeViewColumn*& col, Gtk::TreeModel::Path& path);
 
@@ -127,8 +147,8 @@ private:
     bool onViewPathToggled(Gtk::TreeViewColumn* col, Gtk::TreeModel::Path const& path);
     void onRowActivated(Gtk::TreeModel::Path const& path, Gtk::TreeViewColumn* col);
     void cell_edited_callback(Glib::ustring const& path_string, Glib::ustring const& newname);
-    void on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error);
-    void on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, int error);
+    void on_rename_done_idle(uint64_t rename_id, int error);
+    void apply_rename_done(RenameData const& rename);
 
 private:
     FileList& widget_;
@@ -139,7 +159,12 @@ private:
     Glib::RefPtr<Gtk::TreeStore> store_;
     tr_torrent_id_t torrent_id_ = {};
     sigc::connection timeout_tag_;
-    std::queue<sigc::connection> rename_done_tags_;
+    std::array<sigc::connection, 3> editing_tags_;
+    sigc::connection editing_finished_tag_;
+    std::optional<Gtk::TreeRowReference> editing_row_;
+    std::optional<SortState> suspended_sort_;
+    uint64_t next_rename_id_ = 0;
+    std::unordered_map<uint64_t, RenameData> pending_renames_;
 };
 
 void FileList::Impl::clearData()
@@ -147,13 +172,16 @@ void FileList::Impl::clearData()
     torrent_id_ = -1;
 
     timeout_tag_.disconnect();
+    editing_finished_tag_.disconnect();
+    editing_row_.reset();
+    suspended_sort_.reset();
+    pending_renames_.clear();
 }
 
 FileList::Impl::~Impl()
 {
-    while (!rename_done_tags_.empty()) {
-        rename_done_tags_.front().disconnect();
-        rename_done_tags_.pop();
+    for (auto& tag : editing_tags_) {
+        tag.disconnect();
     }
 
     clearData();
@@ -166,10 +194,19 @@ FileList::Impl::~Impl()
 namespace
 {
 
+struct FileStats {
+    int enabled;
+    uint64_t have;
+    int priority;
+    uint64_t size;
+};
+
 struct RefreshData {
     int sort_column_id;
     bool resort_needed;
     tr_torrent* tor;
+    Gtk::TreeModel::iterator editing_iter;
+    std::optional<FileStats> editing_stats = {};
 };
 
 bool refreshFilesForeach(
@@ -208,10 +245,12 @@ bool refreshFilesForeach(
          * get the `sub' info by walking the immediate children */
 
         for (auto const& child : iter->children()) {
-            auto const child_size = child[file_cols.size];
-            auto const child_have = child[file_cols.have];
-            auto const child_priority = child[file_cols.priority];
-            auto const child_enabled = child[file_cols.enabled];
+            bool const is_editing = refresh_data.editing_stats &&
+                TR_GTK_TREE_MODEL_CHILD_ITER(child) == refresh_data.editing_iter;
+            auto const child_size = is_editing ? refresh_data.editing_stats->size : child[file_cols.size];
+            auto const child_have = is_editing ? refresh_data.editing_stats->have : child[file_cols.have];
+            auto const child_priority = is_editing ? refresh_data.editing_stats->priority : child[file_cols.priority];
+            auto const child_enabled = is_editing ? refresh_data.editing_stats->enabled : child[file_cols.enabled];
 
             if (child_enabled != static_cast<int>(false) && (child_enabled != NOT_SET)) {
                 new_size += child_size;
@@ -236,6 +275,17 @@ bool refreshFilesForeach(
     }
 
     new_progress = std::clamp(new_progress, 0, 100);
+
+    if (refresh_data.editing_iter && iter == refresh_data.editing_iter) {
+        // GTK cancels editing on any change to this row; ancestors still need its current statistics.
+        refresh_data.editing_stats = FileStats{
+            .enabled = new_enabled,
+            .have = new_have,
+            .priority = new_priority,
+            .size = new_size,
+        };
+        return false;
+    }
 
     if (new_priority != old_priority || new_enabled != old_enabled) {
         /* Changing a value in the sort column can trigger a resort
@@ -307,11 +357,23 @@ void FileList::Impl::refresh()
     if (tr_torrent* tor = core_->find_torrent(torrent_id_); tor == nullptr) {
         widget_.clear();
     } else {
+        if (editing_row_) {
+            suspend_sorting();
+        }
+
         Gtk::SortType order = TR_GTK_SORT_TYPE(ASCENDING);
         int sort_column_id = 0;
         store_->get_sort_column_id(sort_column_id, order);
 
-        RefreshData refresh_data{ .sort_column_id = sort_column_id, .resort_needed = false, .tor = tor };
+        auto const editing_iter = editing_row_ && editing_row_->is_valid() && editing_row_->get_model() == store_ ?
+            store_->get_iter(editing_row_->get_path()) :
+            Gtk::TreeModel::iterator{};
+        RefreshData refresh_data{
+            .sort_column_id = sort_column_id,
+            .resort_needed = false,
+            .tor = tor,
+            .editing_iter = editing_iter,
+        };
         gtr_tree_model_foreach_postorder(store_, [this, &refresh_data](Gtk::TreeModel::iterator const& iter) {
             return refreshFilesForeach(store_, iter, refresh_data);
         });
@@ -320,6 +382,61 @@ void FileList::Impl::refresh()
             store_->set_sort_column(sort_column_id, order);
         }
     }
+}
+
+void FileList::Impl::suspend_sorting()
+{
+    auto column = int{};
+    auto order = TR_GTK_SORT_TYPE(ASCENDING);
+    store_->get_sort_column_id(column, order);
+    if (!suspended_sort_ || column != GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID) {
+        suspended_sort_ = SortState{ column, order };
+    }
+    store_->set_sort_column(GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, order);
+}
+
+void FileList::Impl::on_editing_started(Gtk::CellEditable* /*editable*/, Glib::ustring const& path_string)
+{
+    editing_finished_tag_.disconnect();
+    editing_row_.emplace(store_, Gtk::TreeModel::Path{ path_string });
+    suspend_sorting();
+}
+
+void FileList::Impl::on_editing_finished()
+{
+    if (editing_row_ && !editing_finished_tag_.connected()) {
+        // GTK must remove the editor before model updates or sorting can resume.
+        editing_finished_tag_ = Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_editing_finished_idle));
+    }
+}
+
+bool FileList::Impl::on_editing_finished_idle()
+{
+    editing_finished_tag_.disconnect();
+    if (!editing_row_) {
+        return false;
+    }
+
+    auto const store = store_;
+    editing_row_.reset();
+    suspend_sorting();
+
+    auto completed = std::vector<std::pair<uint64_t, int>>{};
+    for (auto const& [id, rename] : pending_renames_) {
+        if (rename.error) {
+            completed.emplace_back(id, *rename.error);
+        }
+    }
+    for (auto const& [id, error] : completed) {
+        on_rename_done_idle(id, error);
+    }
+
+    refresh();
+    if (store_ == store && !editing_row_ && suspended_sort_) {
+        auto const sort = *std::exchange(suspended_sort_, std::nullopt);
+        store_->set_sort_column(sort.column, sort.order);
+    }
+    return false;
 }
 
 /***
@@ -752,19 +869,36 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
     return handled;
 }
 
-void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
+void FileList::Impl::on_rename_done_idle(uint64_t rename_id, int error)
 {
-    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error]() {
-        rename_done_tags_.pop();
-        on_rename_done_idle(path_string, newname, error);
-        return false;
-    }));
+    auto const iter = pending_renames_.find(rename_id);
+    if (iter == std::end(pending_renames_)) {
+        return;
+    }
+
+    auto& rename = iter->second;
+    rename.error = error;
+    if (editing_row_ &&
+        (error != 0 ||
+         (editing_row_->is_valid() && rename.row.is_valid() && editing_row_->get_model() == rename.row.get_model() &&
+          editing_row_->get_path() == rename.row.get_path()))) {
+        return;
+    }
+
+    auto const result = std::move(rename);
+    pending_renames_.erase(iter);
+    apply_rename_done(result);
 }
 
-void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
+void FileList::Impl::apply_rename_done(RenameData const& rename)
 {
+    auto const error = rename.error.value();
+    auto const& newname = rename.newname;
     if (error == 0) {
-        if (auto const iter = store_->get_iter(path_string); iter) {
+        if (rename.torrent_id != torrent_id_ || rename.row.get_model() != store_ || !rename.row.is_valid()) {
+            return;
+        }
+        if (auto const iter = store_->get_iter(rename.row.get_path()); iter) {
             bool const isLeaf = iter->children().empty();
             auto const mime_type = isLeaf ? tr_get_mime_type_for_filename(newname.raw()) : DirectoryMimeType;
             auto const icon = gtr_get_mime_type_icon(mime_type);
@@ -773,7 +907,7 @@ void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib:
             (*iter)[file_cols.icon] = icon;
 
             if (!iter->parent()) {
-                core_->torrent_changed(torrent_id_);
+                core_->torrent_changed(rename.torrent_id);
             }
         }
     } else {
@@ -781,7 +915,7 @@ void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib:
             gtr_widget_get_window(widget_),
             fmt::format(
                 fmt::runtime(_("Couldn't rename '{old_path}' as '{path}': {error} ({error_code})")),
-                fmt::arg("old_path", path_string),
+                fmt::arg("old_path", rename.path_string),
                 fmt::arg("path", newname),
                 fmt::arg("error", tr_strerror(error)),
                 fmt::arg("error_code", error)),
@@ -797,6 +931,7 @@ void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib:
 
 void FileList::Impl::cell_edited_callback(Glib::ustring const& path_string, Glib::ustring const& newname)
 {
+    on_editing_finished();
     tr_torrent* const tor = core_->find_torrent(torrent_id_);
 
     if (tor == nullptr) {
@@ -808,30 +943,45 @@ void FileList::Impl::cell_edited_callback(Glib::ustring const& path_string, Glib
         return;
     }
 
-    /* build oldpath */
-    Glib::ustring oldpath;
+    auto const rename_id = ++next_rename_id_;
+    pending_renames_.try_emplace(
+        rename_id,
+        RenameData{
+            .row = Gtk::TreeRowReference{ store_, store_->get_path(iter) },
+            .torrent_id = torrent_id_,
+            .path_string = path_string,
+            .newname = newname,
+        });
 
-    for (;;) {
-        oldpath.insert(0, iter->get_value(file_cols.label));
-
-        iter = iter->parent();
-        if (!iter) {
-            break;
-        }
-
-        oldpath.insert(0, 1, G_DIR_SEPARATOR);
+    // Edited-row labels can lag behind renames; use the torrent's current path.
+    auto file_iter = iter;
+    auto parent_count = 0U;
+    while (!file_iter->children().empty()) {
+        file_iter = file_iter->children().begin();
+        ++parent_count;
+    }
+    auto oldpath = std::string{ tr_torrentFile(tor, file_iter->get_value(file_cols.index)).name };
+    for (auto i = 0U; i < parent_count; ++i) {
+        oldpath = tr_sys_path_dirname(oldpath);
     }
 
     /* do the renaming */
     tr_torrentRenamePath(
         tor,
-        oldpath.raw(),
+        oldpath,
         newname.raw(),
-        [this, path_string, newname](
+        [self = weak_from_this(), rename_id](
             tr_torrent_id_t const /*tor_id*/,
             std::string_view const /*oldpath*/,
             std::string_view const /*newname*/,
-            tr_error const& error) { on_rename_done(path_string, newname, error ? error.code() : 0); });
+            tr_error const& error) {
+            Glib::signal_idle().connect([self, rename_id, error_code = error ? error.code() : 0]() {
+                if (auto const impl = self.lock(); impl) {
+                    impl->on_rename_done_idle(rename_id, error_code);
+                }
+                return false;
+            });
+        });
 }
 
 FileList::FileList(
@@ -841,7 +991,7 @@ FileList::FileList(
     Glib::RefPtr<Session> const& core,
     tr_torrent_id_t torrent_id)
     : Gtk::ScrolledWindow(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, view_name, core, torrent_id))
+    , impl_(std::make_shared<Impl>(*this, builder, view_name, core, torrent_id))
 {
 }
 
@@ -891,7 +1041,11 @@ FileList::Impl::Impl(
         text_rend->property_editable() = true;
         text_rend->property_ellipsize() = TR_PANGO_ELLIPSIZE_MODE(END);
         text_rend->property_scale() = FileAndSizeScale;
-        text_rend->signal_edited().connect(sigc::mem_fun(*this, &Impl::cell_edited_callback));
+        editing_tags_ = {
+            text_rend->signal_editing_started().connect(sigc::mem_fun(*this, &Impl::on_editing_started)),
+            text_rend->signal_editing_canceled().connect(sigc::mem_fun(*this, &Impl::on_editing_finished)),
+            text_rend->signal_edited().connect(sigc::mem_fun(*this, &Impl::cell_edited_callback)),
+        };
         col->pack_start(*text_rend, true);
         col->set_spacing(GUI_PAD_SMALL);
         col->add_attribute(text_rend->property_text(), file_cols.label);

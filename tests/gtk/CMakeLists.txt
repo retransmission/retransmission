@@ -48,3 +48,14 @@ tr_target_glib_resources(gtk-test-resources
     ${PROJECT_SOURCE_DIR}/gtk/transmission.gresource.xml)
 
 add_trgtk_test(serializer-test.cc)
+
+add_trgtk_test(file-list-test.cc)
+target_link_libraries(gtk-test-file-list
+    PRIVATE
+        dht::dht
+        libevent::core
+        libevent::extra)
+target_compile_definitions(gtk-test-file-list
+    PRIVATE
+        LIBTRANSMISSION_TEST_ASSETS_DIR="${PROJECT_SOURCE_DIR}/tests/libtransmission/assets"
+        __TRANSMISSION__)

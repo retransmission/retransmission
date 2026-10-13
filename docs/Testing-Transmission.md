@@ -1,3 +1,16 @@
+## GTK filename editing tests ##
+
+Configure a build with `ENABLE_GTK=ON` and `ENABLE_TESTS=ON`, then run:
+
+```sh
+cmake --build cmake-build-debug --target gtk-test-file-list
+ctest --test-dir cmake-build-debug -R 'GTK\..*FileList' --output-on-failure
+```
+
+These tests need a GTK display and are skipped when none is available. For a
+headless environment with Xvfb installed, prefix the `ctest` command with
+`xvfb-run -a`. A skipped test does not verify editor focus or continuity.
+
 ## How to find a CI build in a pull request ##
 
 At the bottom of a pull request, you'll find a list of checks (or expand them with "View details" if the PR was already merged).
