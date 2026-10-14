@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cstdint> // int64_t
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -18,10 +19,12 @@
 #include <QRegularExpression>
 #include <QSignalSpy>
 #include <QTest>
+#include <QTimer>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
 
+#include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
 #include "qt-test-fixtures.h"
@@ -328,6 +331,93 @@ private slots:
         QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
         QCOMPARE(failed.count(), 1);
         QVERIFY(updated.isEmpty());
+    }
+
+    // The next three tests restart the session before returning to the event loop.
+    // The reply to the request sent before the restart then arrives after stop(),
+    // so RpcClient drops it as a network error.
+
+    // The port test still ends, or portTestPending() would stay true for good.
+    void restart_ends_a_pending_port_test()
+    {
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        setRemotePrefs(prefs, server);
+
+        auto tested = 0;
+        auto status = std::optional<bool>{ true };
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        // A lambda, not QSignalSpy, which needs portTested()'s argument types registered as metatypes.
+        QObject::connect(
+            &session,
+            &Session::portTested,
+            [&tested, &status](std::optional<bool> const result, tr_address_type /*ip_protocol*/) {
+                ++tested;
+                status = result;
+            });
+
+        session.portTest(TR_AF_INET);
+        QVERIFY(session.portTestPending(TR_AF_INET));
+        session.restart();
+
+        QVERIFY(waitUntil([&tested]() { return tested > 0; }));
+        QCOMPARE(tested, 1);
+        QVERIFY(!status.has_value());
+        QVERIFY(!session.portTestPending(TR_AF_INET));
+    }
+
+    // The blocklist update still reports a result, or its progress dialog would never resolve.
+    void restart_fails_a_pending_blocklist_update()
+    {
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        setRemotePrefs(prefs, server);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
+        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
+        session.updateBlocklist();
+        session.restart();
+
+        QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
+        QCOMPARE(failed.count(), 1);
+        QVERIFY(updated.isEmpty());
+    }
+
+    // FreeSpaceLabel still schedules its next request, or it would stop updating.
+    void restart_keeps_free_space_polling()
+    {
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        setRemotePrefs(prefs, server);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto label = FreeSpaceLabel{};
+        auto const* const timer = label.findChild<QTimer*>();
+        QVERIFY(timer != nullptr);
+        if (timer == nullptr) {
+            return;
+        }
+
+        // Setting the path sends a free_space request and stops the timer until it's answered.
+        label.setSession(session);
+        label.setPath(sandboxDir());
+        QVERIFY(!timer->isActive());
+        session.restart();
+
+        QVERIFY(waitUntil([timer]() { return timer->isActive(); }));
     }
 };
 } // namespace
