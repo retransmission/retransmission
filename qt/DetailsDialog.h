@@ -14,6 +14,7 @@
 
 #include "BaseDialog.h"
 #include "Session.h"
+#include "Torrent.h"
 #include "Typedefs.h"
 #include "ui_DetailsDialog.h"
 
@@ -22,7 +23,6 @@ class QTreeWidgetItem;
 
 class Prefs;
 class Session;
-class Torrent;
 class TorrentModel;
 class TrackerDelegate;
 class TrackerModel;

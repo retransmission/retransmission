@@ -34,6 +34,7 @@
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
+#include "Speed.h"
 #include "TrFormat.h"
 #include "Utils.h"
 

@@ -29,7 +29,6 @@
 
 #include "Prefs.h"
 #include "RpcClient.h"
-#include "Torrent.h"
 #include "Typedefs.h"
 
 class AddData;
