@@ -137,18 +137,18 @@ std::optional<tr::Settings> Session::embedded_settings() const
 
 void Session::set_session_type(std::optional<Type> const type)
 {
-    // should_inhibit_sleep() ignores busyness once we're non-local,
-    // so a non-local session's remembered busyness is meaningless --
-    // drop it here so a later switch back to a local session
-    // starts from a clean slate.
-    if (type.value_or(Type::Remote) == Type::Remote) {
-        busy_ = false;
-    }
-
     if (session_type_ != type) {
         session_type_ = type;
         update_sleep_inhibit();
         update_nap_inhibit();
+    }
+
+    // should_inhibit_sleep() ignores busyness once we're non-local,
+    // so a non-local session's remembered busyness is meaningless --
+    // drop it here so a later switch back to a local session
+    // starts from a clean slate.
+    if (!is_local_filesystem()) {
+        busy_ = false;
     }
 }
 
