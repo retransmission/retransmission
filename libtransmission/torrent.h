@@ -87,6 +87,7 @@ struct tr_torrent {
         void load_date_done(time_t when) noexcept;
         void load_download_dir(std::string_view dir) noexcept;
         void load_incomplete_dir(std::string_view dir) noexcept;
+        void load_pending_move_dir(std::string_view dir) noexcept;
         void load_seconds_downloading_before_current_start(time_t when) noexcept;
         void load_seconds_seeding_before_current_start(time_t when) noexcept;
         void load_start_when_stable(bool val) noexcept;
@@ -493,6 +494,11 @@ struct tr_torrent {
         return incomplete_dir_;
     }
 
+    [[nodiscard]] constexpr auto const& pending_move_dir() const noexcept
+    {
+        return pending_move_dir_;
+    }
+
     /// METAINFO
 
     [[nodiscard]] constexpr auto const& metainfo() const noexcept
@@ -534,7 +540,7 @@ struct tr_torrent {
     }
 
     // The views refer to the torrent's directories, not to the returned container.
-    [[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths() const;
+    [[nodiscard]] small::max_size_vector<std::string_view, 3> search_paths() const;
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
 
@@ -1399,6 +1405,11 @@ private:
     // Once done, move the files from the incomplete dir to the download dir.
     void leave_incomplete_dir();
 
+    // Finish a move that a crash or kill interrupted.
+    void finish_interrupted_move();
+
+    void set_pending_move_dir(std::string_view dir);
+
     void start_in_session_thread();
 
     void stop_now();
@@ -1460,8 +1471,13 @@ private:
     // An empty value indicates the 'incomplete_dir' feature is unused.
     tr::shared_string incomplete_dir_;
 
+    // Where a move is taking the files, from when it starts until it lands.
+    // A crash or kill mid-move leaves it set in the resume file,
+    // so startup still finds the moved files and finishes the move.
+    tr::shared_string pending_move_dir_;
+
     // Where the files are now.
-    // Will equal either download_dir or incomplete_dir
+    // Will equal download_dir, incomplete_dir, or after an interrupted move, pending_move_dir
     tr::shared_string current_dir_;
 
     tr_sha1_digest_t obfuscated_hash_ = {};

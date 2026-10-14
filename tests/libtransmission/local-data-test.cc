@@ -540,6 +540,7 @@ protected:
                                    .name = "test",
                                    .download_dir = sandboxDir(),
                                    .incomplete_dir = {},
+                                   .pending_move_dir = {},
                                    .current_dir = sandboxDir(),
                                    .preallocation = tr_file_preallocation::None,
                                    .partial_file_naming = false });

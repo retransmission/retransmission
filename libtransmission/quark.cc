@@ -398,6 +398,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "peers_from"sv, // rpc
     "peers_getting_from_us"sv, // rpc
     "peers_sending_to_us"sv, // rpc
+    "pending_move_dir"sv, // .resume
     "percentComplete"sv, // rpc
     "percentDone"sv, // rpc
     "percent_complete"sv, // rpc

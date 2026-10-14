@@ -1003,6 +1003,17 @@ void tr_torrent::init(tr_torrent_builder const& builder)
     // Reuse the resume scan, including a miss, rather than searching the same paths again.
     refresh_current_dir(resume_helper.first_found_dir_);
 
+    // A saved destination means a crash or kill interrupted a move.
+    // Finish it once loading is done, since a move can block the session thread.
+    if (!std::empty(pending_move_dir())) {
+        session->queue_session_thread([session = this->session, tor_id = id()]() {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                auto const lock = tor->unique_lock();
+                tor->finish_interrupted_move();
+            }
+        });
+    }
+
     if ((loaded & tr_resume::Speedlimit) == 0) {
         use_speed_limit(tr_direction::Up, false);
         set_speed_limit(tr_direction::Up, session->speed_limit(tr_direction::Up));
@@ -1136,6 +1147,11 @@ void tr_torrent::set_location_in_session_thread(
                     move_from_old_path,
                     setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
         auto* const tor = session->torrents().get(tor_id);
+        if (tor != nullptr) {
+            // The move is over, whether it worked or not.
+            tor->set_pending_move_dir({});
+        }
+
         if (tor != nullptr && error) {
             tor->error().set_local_error(
                 fmt::format(
@@ -1177,16 +1193,39 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
+    // Save the destination before the first file moves.
+    // After a crash or kill mid-move, startup finds the moved files there.
+    // `path` sits behind a shared_ptr because clang-analyzer reports a false leak otherwise.
+    // It loses track of a std::function moved into a capture.
+    auto shared_path = std::make_shared<tr::LocalData::MoveParent>(std::move(path));
+    auto target = [session = this->session, tor_id = id(), path = std::move(shared_path)]() {
+        auto dir = (*path)();
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && !std::empty(dir)) {
+            tor->set_pending_move_dir(dir);
+            tor->save_resume_file();
+        }
+        return dir;
+    };
+
     // Cancel a pending verify first. Cancelling re-hashes pieces, and
     // those hashes must run before the files close and move.
     session->verify_remove(this);
     session->local_data.close_torrent(id());
-    session->local_data.move(id(), std::move(path), std::move(on_done));
+    session->local_data.move(id(), std::move(target), std::move(on_done));
 }
 
-small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
+void tr_torrent::set_pending_move_dir(std::string_view const dir)
 {
-    return tr::search_paths(download_dir().sv(), incomplete_dir().sv());
+    if (pending_move_dir_.sv() != dir) {
+        pending_move_dir_ = dir;
+        invalidate_storage_descriptor();
+        set_dirty();
+    }
+}
+
+small::max_size_vector<std::string_view, 3> tr_torrent::search_paths() const
+{
+    return tr::search_paths(download_dir().sv(), incomplete_dir().sv(), pending_move_dir().sv());
 }
 
 void tr_torrent::set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state)
@@ -1238,6 +1277,7 @@ std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() co
                                    .name = std::string{ std::string_view{ name() } },
                                    .download_dir = std::string{ download_dir().sv() },
                                    .incomplete_dir = std::string{ incomplete_dir().sv() },
+                                   .pending_move_dir = std::string{ pending_move_dir().sv() },
                                    .current_dir = std::string{ current_dir().sv() },
                                    .preallocation = session->preallocationMode(),
                                    .partial_file_naming = session->isIncompleteFileNamingEnabled() });
@@ -1870,6 +1910,11 @@ void tr_torrent::leave_incomplete_dir()
         return;
     }
 
+    // Save the destination now rather than when the move starts.
+    // The move may wait behind disk IO, and a kill in that wait must not lose it.
+    set_pending_move_dir(download_dir().sv());
+    save_resume_file();
+
     // Decide when the move starts, once the set-locations queued before
     // it have landed. Skip it if one of them took the files elsewhere.
     auto parent = [session = this->session, tor_id = id()]() -> std::string {
@@ -1884,6 +1929,16 @@ void tr_torrent::leave_incomplete_dir()
         return in_incomplete ? std::string{ tor->download_dir().sv() } : std::string{};
     };
     set_location_in_session_thread(std::move(parent), true, nullptr);
+}
+
+void tr_torrent::finish_interrupted_move()
+{
+    // Decide when the move starts. A set-location queued before it may have settled the files.
+    auto target = [session = this->session, tor_id = id()]() {
+        auto const* const tor = session->torrents().get(tor_id);
+        return tor != nullptr ? std::string{ tor->pending_move_dir().sv() } : std::string{};
+    };
+    set_location_in_session_thread(std::move(target), true, nullptr);
 }
 
 void tr_torrent::recheck_completeness()
@@ -2519,7 +2574,7 @@ void tr_torrent::refresh_current_dir(std::optional<tr::shared_string> const& fir
     }
 
     TR_ASSERT(!std::empty(dir));
-    TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
+    TR_ASSERT(dir == download_dir() || dir == incomplete_dir() || dir == pending_move_dir());
 
     current_dir_ = dir;
     invalidate_storage_descriptor();
@@ -2885,6 +2940,12 @@ void tr_torrent::ResumeHelper::load_incomplete_dir(std::string_view const dir) n
         tor_.current_dir_ = tor_.incomplete_dir_;
     }
 
+    tor_.invalidate_storage_descriptor();
+}
+
+void tr_torrent::ResumeHelper::load_pending_move_dir(std::string_view const dir) noexcept
+{
+    tor_.pending_move_dir_ = dir;
     tor_.invalidate_storage_descriptor();
 }
 

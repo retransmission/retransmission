@@ -678,6 +678,10 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
         IncompleteDir,
         nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir)),
         [&helper](std::string_view const val) { helper.load_incomplete_dir(val); });
+    load_field(
+        DownloadDir,
+        nonempty(map.value_if<std::string_view>(TR_KEY_pending_move_dir)),
+        [&helper](std::string_view const val) { helper.load_pending_move_dir(val); });
     load_field(Downloaded, map.value_if<uint64_t>(TR_KEY_downloaded), [tor](uint64_t const val) {
         tor->bytes_downloaded_.set_prev(val);
     });
@@ -782,6 +786,10 @@ void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)
 
     if (!std::empty(tor->incomplete_dir())) {
         map.try_emplace(TR_KEY_incomplete_dir, tr_variant::unmanaged_string(tor->incomplete_dir().sv()));
+    }
+
+    if (!std::empty(tor->pending_move_dir())) {
+        map.try_emplace(TR_KEY_pending_move_dir, tr_variant::unmanaged_string(tor->pending_move_dir().sv()));
     }
 
     map.try_emplace(TR_KEY_downloaded, tor->bytes_downloaded_.ever());

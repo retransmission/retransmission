@@ -23,6 +23,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/session.h>
 #include <libtransmission/shared-string.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
@@ -336,6 +337,97 @@ TEST_P(IncompleteDirTest, completionMovesFilesOutsideCurrentDir)
     tr_torrentRemove(tor, true);
 }
 
+TEST_P(IncompleteDirTest, loadFinishesAnInterruptedCompletionMove)
+{
+    std::string const download_dir = tr_sessionGetDownloadDir(session_);
+    std::string const incomplete_dir = tr_sessionGetIncompleteDir(session_);
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    ASSERT_TRUE(tor->is_done());
+    auto const hash = tor->info_hash();
+    auto const resume_file = tor->resume_file();
+    auto names = std::vector<std::string>{};
+    for (tr_file_index_t i = 0; i < tor->file_count(); ++i) {
+        names.emplace_back(tr_torrentFile(tor, i).name);
+    }
+
+    // Close the torrent as a shutdown would, keeping its .torrent and .resume files.
+    blockingRunInSessionThread([tor]() {
+        tor->save_resume_file();
+        tr_torrentFreeInSessionThread(tor);
+    });
+
+    // A kill before the move out of the incomplete dir leaves the files there,
+    // and the resume file names the destination.
+    // Renaming keeps the files' mtimes, so the resume file still vouches for them.
+    auto serde = tr_variant_serde::benc();
+    auto resume = serde.parse_file(resume_file);
+    ASSERT_TRUE(resume);
+    auto* const map = resume->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    map->insert_or_assign(TR_KEY_pending_move_dir, download_dir);
+    ASSERT_TRUE(serde.to_file(*resume, resume_file));
+    for (auto const& name : names) {
+        auto const moved = tr_pathbuf{ incomplete_dir, '/', name };
+        ASSERT_TRUE(tr_sys_dir_create(tr_sys_path_dirname(moved), TR_SYS_DIR_CREATE_PARENTS, 0700));
+        ASSERT_TRUE(tr_sys_path_rename(tr_pathbuf{ download_dir, '/', name }, moved));
+    }
+
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+    auto* const loaded = blockingRunInSessionThread([this, hash]() { return session_->torrents().get(hash); });
+    ASSERT_NE(nullptr, loaded);
+
+    EXPECT_TRUE(
+        waitForInSessionThread([loaded, &download_dir]() { return loaded->current_dir().sv() == download_dir; }, MaxWaitMsec));
+    for (auto const& name : names) {
+        EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ download_dir, '/', name }));
+        EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ incomplete_dir, '/', name }));
+    }
+    tr_torrentRemove(loaded, true);
+}
+
+TEST_P(IncompleteDirTest, loadMovesNothingWithoutASavedDestination)
+{
+    std::string const download_dir = tr_sessionGetDownloadDir(session_);
+    std::string const incomplete_dir = tr_sessionGetIncompleteDir(session_);
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    ASSERT_TRUE(tor->is_done());
+    auto const hash = tor->info_hash();
+    auto names = std::vector<std::string>{};
+    for (tr_file_index_t i = 0; i < tor->file_count(); ++i) {
+        names.emplace_back(tr_torrentFile(tor, i).name);
+    }
+
+    // Close the torrent as a shutdown would, keeping its .torrent and .resume files.
+    blockingRunInSessionThread([tor]() {
+        tor->save_resume_file();
+        tr_torrentFreeInSessionThread(tor);
+    });
+
+    // The done torrent's own files are gone, and another torrent's same-named file sits in the incomplete dir.
+    for (auto const& name : names) {
+        ASSERT_TRUE(tr_sys_path_remove(tr_pathbuf{ download_dir, '/', name }));
+    }
+    auto const foreign = tr_pathbuf{ incomplete_dir, '/', names.front() };
+    createFileWithContents(foreign, "another torrent's data"sv);
+
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+    auto* const loaded = blockingRunInSessionThread([this, hash]() { return session_->torrents().get(hash); });
+    ASSERT_NE(nullptr, loaded);
+
+    // Anything queued at load has run once this returns.
+    blockingRunInSessionThread([loaded, &incomplete_dir]() {
+        EXPECT_EQ(incomplete_dir, loaded->incomplete_dir().sv());
+        EXPECT_TRUE(std::empty(loaded->pending_move_dir()));
+    });
+    EXPECT_TRUE(tr_sys_path_exists(foreign));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download_dir, '/', names.front() }));
+    tr_torrentRemove(loaded, false);
+}
+
 INSTANTIATE_TEST_SUITE_P(
     IncompleteDir,
     IncompleteDirTest,
@@ -352,6 +444,110 @@ INSTANTIATE_TEST_SUITE_P(
 ***/
 
 using MoveTest = SessionTest;
+
+TEST_F(MoveTest, loadFinishesAnInterruptedSetLocation)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+    auto const resume_file = tor->resume_file();
+    auto const hash = tor->info_hash();
+    auto names = std::vector<std::string>{};
+    for (tr_file_index_t i = 0; i < tor->file_count(); ++i) {
+        names.emplace_back(tr_torrentFile(tor, i).name);
+    }
+
+    // Close the torrent as a shutdown would, keeping its .torrent and .resume files.
+    blockingRunInSessionThread([tor]() {
+        tor->save_resume_file();
+        tr_torrentFreeInSessionThread(tor);
+    });
+
+    // A kill mid-move leaves the destination in the resume file,
+    // and every file but the first already there.
+    auto serde = tr_variant_serde::benc();
+    auto resume = serde.parse_file(resume_file);
+    ASSERT_TRUE(resume);
+    auto* const map = resume->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    map->insert_or_assign(TR_KEY_pending_move_dir, target_dir.sv());
+    ASSERT_TRUE(serde.to_file(*resume, resume_file));
+    for (size_t i = 1; i < std::size(names); ++i) {
+        auto const moved = tr_pathbuf{ target_dir, '/', names[i] };
+        ASSERT_TRUE(tr_sys_dir_create(tr_sys_path_dirname(moved), TR_SYS_DIR_CREATE_PARENTS, 0700));
+        ASSERT_TRUE(tr_sys_path_rename(tr_pathbuf{ download_dir, '/', names[i] }, moved));
+    }
+
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+    auto* const loaded = blockingRunInSessionThread([this, hash]() { return session_->torrents().get(hash); });
+    ASSERT_NE(nullptr, loaded);
+
+    auto const moved = [loaded, &target_dir]() {
+        return loaded->download_dir().sv() == target_dir.sv() && std::empty(loaded->pending_move_dir());
+    };
+    EXPECT_TRUE(waitForInSessionThread(moved, MaxWaitMsec));
+    for (auto const& name : names) {
+        EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ target_dir, '/', name }));
+        EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download_dir, '/', name }));
+    }
+    tr_torrentRemove(loaded, true);
+}
+
+TEST_F(MoveTest, setLocationSavesItsDestinationBeforeMoving)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+    auto const resume_file = tor->resume_file();
+    auto const read_resume = [&resume_file]() {
+        auto serde = tr_variant_serde::benc();
+        auto resume = serde.parse_file(resume_file);
+        auto* const map = resume ? resume->get_if<tr_variant::Map>() : nullptr;
+        EXPECT_NE(nullptr, map);
+        return map != nullptr ? std::move(*map) : tr_variant::Map{};
+    };
+
+    auto const state = blockingRunInSessionThread([tor, &target_dir]() {
+        auto state = -1;
+        tr_torrentSetLocation(tor, target_dir, true, &state);
+        return state;
+    });
+    ASSERT_EQ(TR_LOC_DONE, state);
+
+    // The only save since the move began names both the old dir and the destination.
+    auto resume = read_resume();
+    EXPECT_EQ(download_dir, resume.value_if<std::string_view>(TR_KEY_destination));
+    EXPECT_EQ(target_dir.sv(), resume.value_if<std::string_view>(TR_KEY_pending_move_dir));
+
+    // The move has landed, so the next save leaves the destination out.
+    blockingRunInSessionThread([tor]() { tor->save_resume_file(); });
+    resume = read_resume();
+    EXPECT_EQ(target_dir.sv(), resume.value_if<std::string_view>(TR_KEY_destination));
+    EXPECT_FALSE(resume.contains(TR_KEY_pending_move_dir));
+    tr_torrentRemove(tor, true);
+}
+
+TEST_F(MoveTest, failedMoveClearsItsSavedDestination)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    // Nothing can replace a non-empty directory, so moving the first file fails.
+    createFileWithContents(tr_pathbuf{ target_dir, '/', tr_torrentFile(tor, 0).name, "/keep"sv }, "keep"sv);
+
+    auto const state = blockingRunInSessionThread([tor, &target_dir]() {
+        auto state = -1;
+        tr_torrentSetLocation(tor, target_dir, true, &state);
+        return state;
+    });
+    EXPECT_EQ(TR_LOC_ERROR, state);
+    blockingRunInSessionThread([tor]() { EXPECT_TRUE(std::empty(tor->pending_move_dir())); });
+    tr_torrentRemove(tor, true);
+}
 
 TEST_F(MoveTest, setLocation)
 {

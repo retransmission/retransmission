@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <optional>
 #include <string_view>
 
@@ -15,18 +16,17 @@
 namespace tr
 {
 
-small::max_size_vector<std::string_view, 2> search_paths(
+small::max_size_vector<std::string_view, 3> search_paths(
     std::string_view const download_dir,
-    std::string_view const incomplete_dir)
+    std::string_view const incomplete_dir,
+    std::string_view const pending_move_dir)
 {
-    auto paths = small::max_size_vector<std::string_view, 2>{};
+    auto paths = small::max_size_vector<std::string_view, 3>{};
 
-    if (!std::empty(download_dir)) {
-        paths.push_back(download_dir);
-    }
-
-    if (!std::empty(incomplete_dir) && incomplete_dir != download_dir) {
-        paths.push_back(incomplete_dir);
+    for (auto const dir : { download_dir, incomplete_dir, pending_move_dir }) {
+        if (!std::empty(dir) && std::ranges::find(paths, dir) == std::ranges::end(paths)) {
+            paths.push_back(dir);
+        }
     }
 
     return paths;
@@ -34,7 +34,7 @@ small::max_size_vector<std::string_view, 2> search_paths(
 
 std::optional<tr_torrent_files::FoundFile> StorageDescriptor::find(tr_file_index_t const file_index) const
 {
-    return files.find(file_index, search_paths(download_dir, incomplete_dir));
+    return files.find(file_index, search_paths(download_dir, incomplete_dir, pending_move_dir));
 }
 
 } // namespace tr

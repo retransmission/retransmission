@@ -24,12 +24,14 @@
 namespace tr
 {
 
-// Where a torrent's files may live, in search order: the download dir,
-// then the incomplete dir. A dir that is unset or repeats the first is skipped.
+// Where a torrent's files may live, in search order:
+// the download dir, the incomplete dir, then the dir an unfinished move is taking them to.
+// A dir that is unset or repeats an earlier one is skipped.
 // The views refer to the arguments, not to the returned container.
-[[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths(
+[[nodiscard]] small::max_size_vector<std::string_view, 3> search_paths(
     std::string_view download_dir,
-    std::string_view incomplete_dir);
+    std::string_view incomplete_dir,
+    std::string_view pending_move_dir);
 
 /**
  * An immutable snapshot of everything disk IO needs to know about one
@@ -55,8 +57,9 @@ struct StorageDescriptor {
 
     std::string download_dir;
     std::string incomplete_dir;
+    std::string pending_move_dir;
 
-    // Where new files are created. One of the two dirs above.
+    // Where new files are created. One of the dirs above.
     std::string current_dir;
 
     tr_file_preallocation preallocation = tr_file_preallocation::None;
@@ -64,8 +67,8 @@ struct StorageDescriptor {
     // Whether new files get tr_torrent_files::PartialFileSuffix.
     bool partial_file_naming = false;
 
-    // Where the file lives on disk. Looks under download_dir first and
-    // incomplete_dir second, with and without the partial-file suffix.
+    // Where the file lives on disk.
+    // Looks under each dir in search_paths() order, with and without the partial-file suffix.
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find(tr_file_index_t file_index) const;
 };
 
