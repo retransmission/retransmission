@@ -8,6 +8,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/peer-socket.h"
 #include "libtransmission/session.h"
+#include "libtransmission/tr-assert.h"
 
 tr_peer_socket::tr_peer_socket(tr_socket_address const& socket_address)
     : socket_address_{ socket_address }
