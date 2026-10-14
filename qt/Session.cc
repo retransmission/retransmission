@@ -39,6 +39,8 @@
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 
+#include <libtransmission-app/rpc-queue.h>
+
 #include "AddData.h"
 #include "Prefs.h"
 #include "SessionDialog.h"
