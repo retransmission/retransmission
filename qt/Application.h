@@ -15,7 +15,6 @@
 #include <QtCore/QPointer>
 #include <QtCore/QTimer>
 #include <QtCore/QTranslator>
-#include <QtCore/QWeakPointer>
 
 #include <QtGui/QPixmap>
 
