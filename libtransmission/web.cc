@@ -486,11 +486,11 @@ public:
     // if set: do not accept new tasks
     // if set and deadline reached: kill all remaining tasks
     using Clock = std::chrono::steady_clock;
-    static auto constexpr NoDeadline = int64_t{ 0 };
+    static auto constexpr NoDeadline = std::chrono::nanoseconds::rep{ 0 };
 
-    std::atomic<int64_t> deadline_ns_ = {}; // NOLINT(readability-redundant-member-init)
+    std::atomic<std::chrono::nanoseconds::rep> deadline_ns_ = {}; // NOLINT(readability-redundant-member-init)
 
-    [[nodiscard]] static int64_t to_ns(Clock::time_point tp)
+    [[nodiscard]] static std::chrono::nanoseconds::rep to_ns(Clock::time_point tp)
     {
         return std::chrono::duration_cast<std::chrono::nanoseconds>(tp.time_since_epoch()).count();
     }
@@ -626,10 +626,8 @@ public:
         // per-request override falls back to the env-var-driven default
         auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
         if (!ssl_verify) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, curl_ca_bundle.c_str());
         } else {
@@ -641,14 +639,10 @@ public:
         if (!curl_proxy_ssl_verify) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, NULL);
             (void)curl_easy_setopt(e, CURLOPT_CAPATH, NULL);
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_CAINFO, curl_ca_bundle.c_str());
-#endif
         }
 
         if (auto const& ua = user_agent; !std::empty(ua)) {
@@ -791,13 +785,9 @@ public:
     void curlThreadFunc()
     {
         auto const multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
-#if LIBCURL_VERSION_NUM >= 0x071003 /* 7.16.3 */
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x071E00 /* 7.30.0 */
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
-#endif
         auto const start_time = mediator.now();
 
         auto repeats = unsigned{};
@@ -918,15 +908,9 @@ public:
         auto* const sh = shared();
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-#if LIBCURL_VERSION_NUM >= 0x071700 /* 7.23.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073900 /* 7.57.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073D00 /* 7.61.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
-#endif
     }
 
     std::map<CURL*, uint64_t /*tr_time_msec()*/> paused_easy_handles;
