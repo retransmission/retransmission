@@ -12,6 +12,7 @@
 
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QProcess>
+#include <QtCore/QRegularExpression>
 
 #include <QtGui/QIcon>
 
