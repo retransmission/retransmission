@@ -179,21 +179,41 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     return true;
 }
 
-bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* error)
+namespace
 {
-    // The temporary name has a fixed length, so it fits wherever `newpath` does.
-    // Its random part keeps concurrent copies into one dir apart.
-    auto const tmp = tr_pathbuf{
-        tr_sys_path_dirname(newpath),
-        '/',
-        TrFileCopyPrefix,
-        fmt::format("{:016x}", tr_rand_obj<uint64_t>()),
-    };
+bool flush_file(std::string_view const path, tr_error* const error)
+{
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE, 0, error);
+    if (fd == TR_BAD_SYS_FILE) {
+        return false;
+    }
 
-    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+    auto const flushed = tr_sys_file_flush(fd, error);
+    tr_sys_file_close(fd);
+    return flushed;
+}
+} // namespace
+
+bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
+{
+    auto const tmp = tr::detail::file_copy_temp_path(newpath);
+
+    // A killed copy may have left it behind.
+    tr_sys_path_remove(tmp);
+
+    // Without the flush, a power cut after the rename could leave `newpath` naming a partial file.
+    if (tr_sys_path_copy(oldpath, tmp, error) && flush_file(tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
         return true;
     }
 
     tr_sys_path_remove(tmp);
     return false;
+}
+
+tr_pathbuf tr::detail::file_copy_temp_path(std::string_view const newpath)
+{
+    // Naming it after `newpath` lets a retry replace what a killed copy left behind.
+    // Hashing the name keeps its length fixed, so it fits wherever `newpath` does.
+    auto const hash = tr_sha1_string{ tr_sha1::digest(tr_sys_path_basename(newpath)) };
+    return tr_pathbuf{ tr_sys_path_dirname(newpath), '/', TrFileCopyPrefix, hash.sv() };
 }

@@ -373,6 +373,20 @@ bool tr_sys_file_write_at(
     tr_error* error = nullptr);
 
 /**
+ * @brief Portability wrapper for `fsync()`.
+ *
+ * On macOS it uses `F_FULLFSYNC` where the filesystem supports it,
+ * since `fsync()` there leaves the data in the drive's cache.
+ *
+ * @param[in]  handle Valid file descriptor.
+ * @param[out] error  Pointer to error object. Optional, pass `nullptr` if you
+ *                    are not interested in error details.
+ *
+ * @return `True` on success, `false` otherwise (with `error` set accordingly).
+ */
+[[nodiscard]] bool tr_sys_file_flush(tr_sys_file_t handle, tr_error* error = nullptr);
+
+/**
  * @brief Portability wrapper for `ftruncate()`.
  *
  * @param[in]  handle Valid file descriptor.

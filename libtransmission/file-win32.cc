@@ -634,6 +634,19 @@ bool tr_sys_file_write_at(
     return ret;
 }
 
+bool tr_sys_file_flush(tr_sys_file_t const handle, tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+
+    bool const ret = to_bool(FlushFileBuffers(handle));
+
+    if (!ret) {
+        set_system_error(error, GetLastError());
+    }
+
+    return ret;
+}
+
 bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);

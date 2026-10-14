@@ -123,6 +123,20 @@ TEST_F(CopyTest, atomicCopyFitsANameAtTheLengthLimit)
     EXPECT_TRUE(filesAreIdentical(source, target));
 }
 
+TEST_F(CopyTest, atomicCopyReplacesWhatAKilledCopyLeft)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, "new contents"sv);
+    createFileWithContents(tr::detail::file_copy_temp_path(target), "partial"sv);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_TRUE(filesAreIdentical(source, target));
+    EXPECT_FALSE(hasTemporaryCopy(sandboxDir()));
+}
+
 TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
 {
     auto const source = tr_pathbuf{ sandboxDir(), "/missing.bin"sv };

@@ -576,6 +576,26 @@ bool tr_sys_file_write_at(
     return ret;
 }
 
+bool tr_sys_file_flush(tr_sys_file_t const handle, tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+
+#ifdef F_FULLFSYNC
+    // Not every filesystem supports F_FULLFSYNC, so fall back to fsync() there.
+    if (fcntl(handle, F_FULLFSYNC) != -1) {
+        return true;
+    }
+#endif
+
+    auto const ret = fsync(handle) != -1;
+
+    if (error != nullptr && !ret) {
+        error->set_from_errno(errno);
+    }
+
+    return ret;
+}
+
 bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
