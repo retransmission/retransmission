@@ -588,6 +588,13 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* const parent)
     adjustSize();
 }
 
+PrefsDialog::~PrefsDialog()
+{
+    // Hide here, not in ~QDialog: hiding takes focus from the dialog,
+    // which runs focus-out handlers that save prefs through this class's members.
+    hide();
+}
+
 void PrefsDialog::setVisible(bool const visible)
 {
     blocklist_info_timer_.stop();

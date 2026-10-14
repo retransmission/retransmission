@@ -26,7 +26,7 @@ class PrefsDialog : public BaseDialog
 
 public:
     PrefsDialog(Session& session, Prefs& prefs, QWidget* parent = nullptr);
-    ~PrefsDialog() override = default;
+    ~PrefsDialog() override;
     PrefsDialog& operator=(PrefsDialog&&) = delete;
     PrefsDialog& operator=(PrefsDialog const&) = delete;
     PrefsDialog(PrefsDialog&&) = delete;
