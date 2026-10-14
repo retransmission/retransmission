@@ -1338,8 +1338,10 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     save_timer_.reset();
     queue_timer_.reset();
     now_timer_.reset();
-    rpc_server_.reset();
+    // before rpc_server_: ~Updater answers pending blocklist_update requests,
+    // and answering one from an HTTP client writes to an evhttp request that rpc_server_ owns.
     blocklist_updater_.reset();
+    rpc_server_.reset();
     dht_.reset();
     lpd_.reset();
 

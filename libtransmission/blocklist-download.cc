@@ -213,9 +213,14 @@ Updater::Updater(Mediator& mediator)
 
 Updater::~Updater()
 {
-    // If our fetch is still in flight, make its completion callback a no-op
+    // Answer whoever still waits on an in-flight fetch, e.g. an RPC client's blocklist_update.
+    // The fetch's own completion then finds no waiters and does nothing.
+    closing_ = true;
     if (auto pending = latest_.lock()) {
-        pending->waiters.clear();
+        auto result = tr_blocklist_update_result{};
+        result.status = tr_blocklist_update_status::DownloadError;
+        result.error = _("Couldn't update blocklist: the session is closing");
+        deliver(*pending, result);
     }
 }
 
@@ -273,7 +278,13 @@ void Updater::arm_timer()
 
 void Updater::on_auto_update_timer()
 {
-    update([](tr_blocklist_update_result const& result) {
+    // Capturing `this` is safe: ~Updater answers every waiter it leaves behind.
+    update([this](tr_blocklist_update_result const& result) {
+        // A session that is closing needs no warning that its update stopped.
+        if (closing_) {
+            return;
+        }
+
         if (result.status == tr_blocklist_update_status::Ok) {
             tr_logAddInfo(
                 fmt::format("Automatically updated blocklist, which now has {count} rules", fmt::arg("count", result.n_rules)));

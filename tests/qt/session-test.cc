@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cstdint> // int64_t
 #include <string>
+#include <string_view>
 
 #include <QApplication>
 #include <QDir>
@@ -294,6 +295,39 @@ private slots:
         QCOMPARE(stopped.count(), 1);
         QVERIFY(!session.blocklist_size().has_value());
         QVERIFY(!session.blocklist_date().has_value());
+    }
+
+    // Restarting an embedded session mid-update closes it.
+    // Closing must answer the pending update, or its progress dialog would never resolve.
+    void restart_fails_a_pending_embedded_blocklist_update()
+    {
+        // Nothing listens on port 1, so the download fails without leaving this machine.
+        // That failure reaches the session thread only after the close that restart() queues.
+        auto settings = tr::Settings{};
+        settings.insert_or_assign(TR_KEY_blocklist_url, std::string_view{ "http://127.0.0.1:1/blocklist" });
+        settings.insert_or_assign(TR_KEY_dht_enabled, false);
+        settings.insert_or_assign(TR_KEY_lpd_enabled, false);
+        settings.insert_or_assign(TR_KEY_pex_enabled, false);
+        settings.insert_or_assign(TR_KEY_port_forwarding_enabled, false);
+        settings.insert_or_assign(TR_KEY_utp_enabled, false);
+        tr::settings::save(tr_sessionGetSettingsFilename(sandboxDir().toStdString()), settings);
+
+        auto prefs = Prefs{};
+        prefs.set(TR_KEY_remote_session_enabled, false);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+        QVERIFY(session.is_embedded());
+
+        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
+        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
+        session.updateBlocklist();
+        session.restart();
+
+        QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
+        QCOMPARE(failed.count(), 1);
+        QVERIFY(updated.isEmpty());
     }
 };
 } // namespace
