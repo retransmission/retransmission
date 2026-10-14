@@ -29,7 +29,7 @@ Q_DECLARE_METATYPE(tr_quark)
 namespace
 {
 // Point prefs at an in-process session. Such a session reports
-// isLocalFilesystem(), which is what makes the dialog show the path button.
+// is_local_filesystem(), which is what makes the dialog show the path button.
 void setLocalPrefs(Prefs& prefs, QString const& dl_dir)
 {
     prefs.set(TR_KEY_remote_session_enabled, false);
@@ -110,7 +110,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocalFilesystem());
+        QVERIFY(session.is_local_filesystem());
 
         auto dialog = PrefsDialog{ session, prefs };
         QVERIFY(drainFreeSpace(dialog));
@@ -151,7 +151,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocalFilesystem());
+        QVERIFY(session.is_local_filesystem());
 
         auto dialog = PrefsDialog{ session, prefs };
         QVERIFY(drainFreeSpace(dialog));

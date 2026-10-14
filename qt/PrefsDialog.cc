@@ -599,7 +599,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     , session_{ session }
     , prefs_{ prefs }
     , is_embedded_{ session.is_embedded() }
-    , is_local_fs_{ session_.isLocalFilesystem() }
+    , is_local_fs_{ session_.is_local_filesystem() }
 {
     ui_.setupUi(this);
     setWindowTitle(Utils::withAppName(windowTitle()));
@@ -642,7 +642,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
 
 void PrefsDialog::sessionUpdated()
 {
-    if (bool const is_local_fs = session_.isLocalFilesystem(); is_local_fs_ != is_local_fs) {
+    if (auto const is_local_fs = session_.is_local_filesystem(); is_local_fs_ != is_local_fs) {
         is_local_fs_ = is_local_fs;
         updateDownloadingWidgetsLocality();
         updateSeedingWidgetsLocality();

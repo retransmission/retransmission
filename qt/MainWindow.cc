@@ -816,7 +816,7 @@ void MainWindow::refreshActionSensitivity()
     ui_.action_DeselectAll->setEnabled(have_selection);
     ui_.action_SetLocation->setEnabled(have_selection);
 
-    ui_.action_OpenFolder->setEnabled(one_selection && have_selection_with_metadata && session_.isLocalFilesystem());
+    ui_.action_OpenFolder->setEnabled(one_selection && have_selection_with_metadata && session_.is_local_filesystem());
     ui_.action_CopyMagnetToClipboard->setEnabled(one_selection);
 
     ui_.action_SelectAll->setEnabled(selected < row_count);

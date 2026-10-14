@@ -88,12 +88,6 @@ public:
 
     [[nodiscard]] bool portTestPending(PortTestIpProtocol ip_protocol) const noexcept;
 
-    // returns true iff the session is embedded or known to be on this system
-    [[nodiscard]] constexpr bool isLocalFilesystem() const noexcept
-    {
-        return type().value_or(Type::Remote) != Type::Remote;
-    }
-
     void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 

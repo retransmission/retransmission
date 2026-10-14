@@ -55,9 +55,15 @@ public:
     }
 
     // keep this process un-throttled: only when it hosts the session itself
-    [[nodiscard]] bool should_inhibit_nap() const noexcept
+    [[nodiscard]] constexpr bool should_inhibit_nap() const noexcept
     {
         return is_embedded();
+    }
+
+    // returns true iff the session runs on this machine
+    [[nodiscard]] constexpr bool is_local_filesystem() const noexcept
+    {
+        return session_type_.value_or(Type::Remote) != Type::Remote;
     }
 
     // Copy the session's settings, e.g. a `session_get` response, into Prefs
@@ -89,11 +95,6 @@ private:
     void update_sleep_inhibit();
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
-
-    [[nodiscard]] bool is_local_filesystem() const noexcept
-    {
-        return session_type_.value_or(Type::Remote) != Type::Remote;
-    }
 
     Prefs& prefs_;
     RpcClient& rpc_;
