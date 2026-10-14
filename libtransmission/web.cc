@@ -790,7 +790,6 @@ public:
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
         auto const start_time = mediator.now();
 
-        auto repeats = unsigned{};
         for (;;) {
             if (deadline_reached()) {
                 while (!std::empty(running_tasks_)) {
@@ -833,21 +832,9 @@ public:
             static auto constexpr StartupSecs = std::chrono::seconds{ 15 };
             auto const timeout_ms = mediator.now() - start_time < StartupSecs ? 50 : 1000;
 
-            // Adapted from https://curl.se/libcurl/c/curl_multi_wait.html docs.
-            // 'numfds' being zero means either a timeout or no file descriptors to
-            // wait for. Try timeout on first occurrence, then assume no file
-            // descriptors and no file descriptors to wait for means wait for 100
-            // milliseconds.
+            // Wait for activity on the curl sockets, or for the timeout to expire.
             auto numfds = int{};
-            curl_multi_wait(multi.get(), nullptr, 0, timeout_ms, &numfds);
-            if (numfds == 0) {
-                ++repeats;
-                if (repeats > 1U) {
-                    std::this_thread::sleep_for(100ms);
-                }
-            } else {
-                repeats = 0;
-            }
+            curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds);
 
             // nonblocking update of the tasks
             auto n_running = int{};
