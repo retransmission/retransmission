@@ -1147,8 +1147,10 @@ void tr_torrent::set_location_in_session_thread(
                     move_from_old_path,
                     setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
         auto* const tor = session->torrents().get(tor_id);
-        if (tor != nullptr) {
-            // The move is over, whether it worked or not.
+        if (tor != nullptr && move_from_old_path && (std::empty(path) || tor->pending_move_dir().sv() == path)) {
+            // The move is over, whether it worked or not, so forget the destination it saved.
+            // A skipped completion move saved one when it was queued.
+            // A destination that differs belongs to a move queued after this one.
             tor->set_pending_move_dir({});
         }
 

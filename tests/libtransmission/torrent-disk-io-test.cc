@@ -425,9 +425,13 @@ protected:
 
     // Completes `tor` from this thread by skipping the file that holds
     // its missing piece. A paused write holds back the disk barriers
-    // until then. `before` runs on the session thread first. Returns the
-    // torrent's current dir as the completeness callback saw it.
-    [[nodiscard]] std::string completeBehindAWrite(tr_torrent* const tor, std::function<void()> const& before = {})
+    // until then. `before` runs on the session thread first, and `held`
+    // runs on this thread while the barriers wait. Returns the torrent's
+    // current dir as the completeness callback saw it.
+    [[nodiscard]] std::string completeBehindAWrite(
+        tr_torrent* const tor,
+        std::function<void()> const& before = {},
+        std::function<void()> const& held = {})
     {
         auto dir = std::string{};
         auto called = std::atomic<bool>{ false };
@@ -449,6 +453,9 @@ protected:
 
         // the callback waits for the move out, which waits for the write
         blockingRunInSessionThread([&called]() { EXPECT_FALSE(called); });
+        if (held) {
+            held();
+        }
         session_->local_data.set_workers_paused(false);
         EXPECT_TRUE(waitFor([&called]() { return called.load(); }, MaxWaitMsec));
         tr_sessionSetCompletenessCallback(session_, nullptr);
@@ -1292,6 +1299,27 @@ TEST_F(IncompleteDirWorkersTest, doneCallbackWaitsForTheMoveOut)
 
     EXPECT_EQ(download_dir, completeBehindAWrite(tor));
     expectFilesIn(tor, download_dir);
+}
+
+TEST_F(IncompleteDirWorkersTest, completionSavesItsDestinationBeforeMoving)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+    auto const resume_file = tor->resume_file();
+
+    // A kill while the move waits behind disk IO must not lose it.
+    auto const held = [this, tor, &download_dir, &resume_file]() {
+        EXPECT_TRUE(waitForInSessionThread([tor]() { return !std::empty(tor->pending_move_dir()); }, MaxWaitMsec));
+        auto resume = tr_variant_serde::benc().parse_file(resume_file);
+        ASSERT_TRUE(resume);
+        auto const* const map = resume->get_if<tr_variant::Map>();
+        ASSERT_NE(nullptr, map);
+        EXPECT_EQ(download_dir, map->value_if<std::string_view>(TR_KEY_pending_move_dir));
+    };
+
+    EXPECT_EQ(download_dir, completeBehindAWrite(tor, {}, held));
+    expectFilesIn(tor, download_dir);
+    blockingRunInSessionThread([tor]() { EXPECT_TRUE(std::empty(tor->pending_move_dir())); });
 }
 
 TEST_F(IncompleteDirWorkersTest, setLocationQueuedBeforeCompletionPicksTheDir)
