@@ -118,7 +118,7 @@ void PrefsDialog::initWidget(QPlainTextEdit* const w, tr_quark const key)
             set(key, w->toPlainText());
         }
     };
-    connect(qApp, &QApplication::focusChanged, std::move(on_focus_changed));
+    connect(qApp, &QApplication::focusChanged, w, std::move(on_focus_changed));
 }
 
 void PrefsDialog::initWidget(FreeSpaceLabel* const w, tr_quark const key)
