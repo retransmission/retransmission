@@ -9,6 +9,7 @@
 #include <utility>
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QString>
 
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLineEdit>

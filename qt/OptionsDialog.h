@@ -9,7 +9,6 @@
 #include <vector>
 
 #include <QtCore/QDir>
-#include <QtCore/QString>
 #include <QtCore/QTimer>
 
 #include <libtransmission/torrent-metainfo.h>
