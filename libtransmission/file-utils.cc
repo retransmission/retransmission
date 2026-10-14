@@ -179,34 +179,19 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     return true;
 }
 
-namespace
-{
-bool flush_file(std::string_view const path, tr_error* const error)
-{
-    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE, 0, error);
-    if (fd == TR_BAD_SYS_FILE) {
-        return false;
-    }
-
-    auto const flushed = tr_sys_file_flush(fd, error);
-    tr_sys_file_close(fd);
-    return flushed;
-}
-} // namespace
-
 bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
 {
     auto const tmp = tr::detail::file_copy_temp_path(newpath);
 
-    // A killed copy may have left it behind.
-    tr_sys_path_remove(tmp);
+    // A killed copy may have left it behind, possibly read-only like its source.
+    tr_sys_path_force_remove(tmp);
 
     // Without the flush, a power cut after the rename could leave `newpath` naming a partial file.
-    if (tr_sys_path_copy(oldpath, tmp, error) && flush_file(tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_flush(tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
         return true;
     }
 
-    tr_sys_path_remove(tmp);
+    tr_sys_path_force_remove(tmp);
     return false;
 }
 

@@ -941,6 +941,38 @@ TEST_F(FileTest, pathRemove)
     tr_sys_path_remove(path2);
 }
 
+TEST_F(FileTest, pathForceRemoveRemovesAReadOnlyFile)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    createFileWithContents(path, "test");
+    setReadOnly(path, true);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_sys_path_force_remove(path, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_FALSE(tr_sys_path_exists(path));
+
+    if (tr_sys_path_exists(path)) {
+        setReadOnly(path, false);
+    }
+}
+
+TEST_F(FileTest, pathFlushWorksOnAReadOnlyFile)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    createFileWithContents(path, "test");
+    setReadOnly(path, true);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_sys_path_flush(path, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_TRUE(isReadOnly(path));
+
+    setReadOnly(path, false);
+}
+
 TEST_F(FileTest, pathNativeSeparators)
 {
     EXPECT_EQ(nullptr, tr_sys_path_native_separators(nullptr));

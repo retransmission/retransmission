@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <cstdlib> // getenv()
 #include <cstring> // strlen()
+#include <filesystem>
 #include <future>
 #include <iostream>
 #include <memory>
@@ -16,6 +17,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -290,6 +292,29 @@ protected:
         createFileWithContents(path, payload, strlen(static_cast<char const*>(payload)));
     }
 
+    // Makes a file read-only, or writable again: its write bits on POSIX, its read-only attribute on Windows.
+    // The sandbox can't remove a read-only file on Windows, so a test makes its files writable before it ends.
+    static void setReadOnly(std::string_view const path, bool const read_only)
+    {
+        using std::filesystem::perm_options;
+
+        auto ec = std::error_code{};
+        std::filesystem::permissions(
+            toFilesystemPath(path),
+            AllWrite,
+            read_only ? perm_options::remove : perm_options::add,
+            ec);
+        EXPECT_FALSE(ec) << path << ": " << ec.message();
+    }
+
+    [[nodiscard]] static bool isReadOnly(std::string_view const path)
+    {
+        auto ec = std::error_code{};
+        auto const status = std::filesystem::status(toFilesystemPath(path), ec);
+        EXPECT_FALSE(ec) << path << ": " << ec.message();
+        return (status.permissions() & AllWrite) == std::filesystem::perms::none;
+    }
+
     bool verbose_ = false;
 
     static void sync()
@@ -300,6 +325,14 @@ protected:
     }
 
 private:
+    static auto constexpr AllWrite = std::filesystem::perms::owner_write | std::filesystem::perms::group_write |
+        std::filesystem::perms::others_write;
+
+    [[nodiscard]] static std::filesystem::path toFilesystemPath(std::string_view const utf8_path)
+    {
+        return std::u8string{ std::begin(utf8_path), std::end(utf8_path) };
+    }
+
     Sandbox sandbox_;
 };
 

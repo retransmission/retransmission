@@ -233,6 +233,34 @@ bool tr_sys_path_rename(std::string_view src_path, std::string_view dst_path, tr
 bool tr_sys_path_remove(std::string_view path, tr_error* error = nullptr);
 
 /**
+ * @brief Like tr_sys_path_remove(), but also removes a read-only file.
+ *
+ * POSIX `remove()` already ignores a file's own permissions.
+ * Windows refuses to delete a file with the read-only attribute, so this clears the attribute first.
+ *
+ * @param[in]  path  Path to file or directory.
+ * @param[out] error Pointer to error object. Optional, pass `nullptr` if you
+ *                   are not interested in error details.
+ *
+ * @return `True` on success, `false` otherwise (with `error` set accordingly).
+ */
+bool tr_sys_path_force_remove(std::string_view path, tr_error* error = nullptr);
+
+/**
+ * @brief Flushes the file at `path` to disk, as tr_sys_file_flush() does for an open file.
+ *
+ * Works on a read-only file too.
+ * Windows needs write access to flush, so there the read-only attribute is lifted for the flush and then restored.
+ *
+ * @param[in]  path  Path to file.
+ * @param[out] error Pointer to error object. Optional, pass `nullptr` if you
+ *                   are not interested in error details.
+ *
+ * @return `True` on success, `false` otherwise (with `error` set accordingly).
+ */
+[[nodiscard]] bool tr_sys_path_flush(std::string_view path, tr_error* error = nullptr);
+
+/**
  * @brief Transform path separators to native ones, in-place.
  *
  * @param[in,out] path Path to transform.

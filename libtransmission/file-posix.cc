@@ -369,6 +369,24 @@ bool tr_sys_path_remove(std::string_view const path, tr_error* error)
     return ret;
 }
 
+bool tr_sys_path_force_remove(std::string_view const path, tr_error* const error)
+{
+    return tr_sys_path_remove(path, error);
+}
+
+bool tr_sys_path_flush(std::string_view const path, tr_error* const error)
+{
+    // Flushing needs only read access, which a read-only file still grants.
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ, 0, error);
+    if (fd == TR_BAD_SYS_FILE) {
+        return false;
+    }
+
+    auto const flushed = tr_sys_file_flush(fd, error);
+    tr_sys_file_close(fd);
+    return flushed;
+}
+
 char* tr_sys_path_native_separators(char* path)
 {
     return path;

@@ -427,6 +427,53 @@ bool tr_sys_path_remove(std::string_view const path, tr_error* error)
     return ret;
 }
 
+bool tr_sys_path_force_remove(std::string_view const path, tr_error* const error)
+{
+    if (auto const wide_path = path_to_native_path(path); !std::empty(wide_path)) {
+        if (auto const attributes = GetFileAttributesW(wide_path.c_str());
+            attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_READONLY) != 0) {
+            SetFileAttributesW(wide_path.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
+        }
+    }
+
+    return tr_sys_path_remove(path, error);
+}
+
+bool tr_sys_path_flush(std::string_view const path, tr_error* const error)
+{
+    auto const wide_path = path_to_native_path(path);
+    if (std::empty(wide_path)) {
+        set_system_error(error, ERROR_INVALID_PARAMETER);
+        return false;
+    }
+
+    auto const attributes = GetFileAttributesW(wide_path.c_str());
+    if (attributes == INVALID_FILE_ATTRIBUTES) {
+        set_system_error(error, GetLastError());
+        return false;
+    }
+
+    // FlushFileBuffers() needs write access, which the read-only attribute denies.
+    auto const read_only = (attributes & FILE_ATTRIBUTE_READONLY) != 0;
+    if (read_only && !to_bool(SetFileAttributesW(wide_path.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY))) {
+        set_system_error(error, GetLastError());
+        return false;
+    }
+
+    auto ok = false;
+    if (auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE, 0, error); fd != TR_BAD_SYS_FILE) {
+        ok = tr_sys_file_flush(fd, error);
+        tr_sys_file_close(fd);
+    }
+
+    if (read_only && !to_bool(SetFileAttributesW(wide_path.c_str(), attributes)) && ok) {
+        set_system_error(error, GetLastError());
+        ok = false;
+    }
+
+    return ok;
+}
+
 char* tr_sys_path_native_separators(char* path)
 {
     if (path == nullptr) {

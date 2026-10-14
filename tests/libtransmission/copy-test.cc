@@ -127,14 +127,36 @@ TEST_F(CopyTest, atomicCopyReplacesWhatAKilledCopyLeft)
 {
     auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
     auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    auto const leftover = tr::detail::file_copy_temp_path(target);
     createFileWithContents(source, "new contents"sv);
-    createFileWithContents(tr::detail::file_copy_temp_path(target), "partial"sv);
+    // Some platforms copy a read-only source's state, so the leftover may be read-only.
+    createFileWithContents(leftover, "partial"sv);
+    setReadOnly(leftover, true);
 
     auto error = tr_error{};
     EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
     EXPECT_FALSE(error) << error;
     EXPECT_TRUE(filesAreIdentical(source, target));
     EXPECT_FALSE(hasTemporaryCopy(sandboxDir()));
+}
+
+TEST_F(CopyTest, atomicCopyOfAReadOnlySource)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, "contents"sv);
+    setReadOnly(source, true);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_TRUE(filesAreIdentical(source, target));
+    EXPECT_FALSE(hasTemporaryCopy(sandboxDir()));
+
+    setReadOnly(source, false);
+    if (tr_sys_path_exists(target)) {
+        setReadOnly(target, false);
+    }
 }
 
 TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
