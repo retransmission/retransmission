@@ -7,9 +7,9 @@
 
 #include <array>
 #include <functional>
+#include <initializer_list>
 #include <map>
 #include <optional>
-#include <utility>
 
 #include <QtCore/QTimer>
 
@@ -18,7 +18,6 @@
 #include "Session.h"
 #include "ui_PrefsDialog.h"
 
-class QMessageBox;
 class QString;
 
 class PrefsDialog : public BaseDialog
@@ -36,20 +35,6 @@ public:
     // QWidget
     void setVisible(bool visible) override;
 
-private slots:
-    void refreshPref(tr_quark key);
-    void sessionUpdated();
-    void onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol);
-    void onPortTest();
-    void onIdleLimitChanged();
-    void onQueueStalledMinutesChanged();
-
-    void onUpdateBlocklistClicked();
-    void onUpdateBlocklistCancelled();
-    void onBlocklistDialogDestroyed(QObject* o);
-    void onBlocklistUpdated(int64_t n);
-    void onBlocklistUpdateFailed(QString const& message);
-
 private:
     enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
 
@@ -60,19 +45,27 @@ private:
         refreshPref(key);
     }
 
+    void refreshPref(tr_quark key);
+    void sessionUpdated();
+
+    void onPortTest();
+    void onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol);
     void portTestSetEnabled();
-    void updateBlocklistLabel();
-    void updateDownloadingWidgetsLocality();
     void updatePortStatusLabel();
-    void updateSeedingWidgetsLocality();
-    void updateDesktopWidgetsLocality();
-    static QString getPortStatusText(PortTestStatus status) noexcept;
+    [[nodiscard]] static QString getPortStatusText(PortTestStatus status);
 
-    template<typename T, size_t N>
-    void initComboFromItems(std::array<std::pair<QString, T>, N> const& items, QComboBox* w, tr_quark key);
+    void onUpdateBlocklistClicked();
+    void updateBlocklistLabel();
+    void updateLocality();
 
-    void initAltSpeedDaysCombo(QComboBox* w, tr_quark key);
-    void initEncryptionCombo(QComboBox* w, tr_quark key);
+    template<typename T, typename W, typename Setter>
+    void addUpdater(W* w, tr_quark key, Setter setter);
+    template<typename T, typename W, typename Setter, typename Signal>
+    void bind(W* w, tr_quark key, Setter setter, Signal signal);
+    void bindEnabled(QWidgetList const& widgets, std::initializer_list<tr_quark> keys);
+
+    template<typename T>
+    void initCombo(QComboBox* w, tr_quark key);
     void initWidget(FreeSpaceLabel* w, tr_quark key);
     void initWidget(PathButton* w, tr_quark key);
     void initWidget(QCheckBox* w, tr_quark key);
@@ -95,20 +88,10 @@ private:
 
     Ui::PrefsDialog ui_ = {};
 
-    bool const is_embedded_;
     bool is_local_fs_ = {};
     std::array<PortTestStatus, Session::NUM_PORT_TEST_IP_PROTOCOL> port_test_status_ = {};
 
     std::multimap<tr_quark, std::function<void()>> updaters_;
-
-    QWidgetList web_widgets_;
-    QWidgetList web_auth_widgets_;
-    QWidgetList web_whitelist_widgets_;
-    QWidgetList sched_widgets_;
-    QWidgetList block_widgets_;
-    QWidgetList unsupported_when_remote_;
-
-    QMessageBox* blocklist_dialog_ = {};
 
     QTimer blocklist_info_timer_;
 };
