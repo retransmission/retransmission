@@ -68,6 +68,7 @@ void RpcClient::start(std::string url, std::optional<std::string> username, std:
 
 void RpcClient::stop()
 {
+    ++generation_;
     session_ = nullptr;
     session_id_.clear();
     url_.clear();
@@ -83,6 +84,22 @@ tr_web& RpcClient::web()
     }
 
     return *web_;
+}
+
+bool RpcClient::drop_if_stale(uint64_t const generation, ResponseFunc const& on_done) const
+{
+    if (generation == generation_) {
+        return false;
+    }
+
+    if (on_done) {
+        auto result = RpcResponse{};
+        result.network_error = true;
+        result.errmsg = "the RPC client stopped before the reply arrived";
+        on_done(std::move(result));
+    }
+
+    return true;
 }
 
 void RpcClient::exec(tr_quark const method, tr_variant::Map args, ResponseFunc on_done)
@@ -116,20 +133,27 @@ void RpcClient::send_embedded_request(tr_variant&& req, ResponseFunc on_done)
         fmt::print("{:s}:{:d} sending req:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(req));
     }
 
-    tr_rpc_request_exec(session_, std::move(req), [this, on_done = std::move(on_done)](tr_variant&& response) mutable {
-        api_compat::convert_incoming_data(response);
+    tr_rpc_request_exec(
+        session_,
+        std::move(req),
+        [this, generation = generation_, on_done = std::move(on_done)](tr_variant&& response) mutable {
+            api_compat::convert_incoming_data(response);
 
-        // this callback runs on the libtransmission thread; do the parse
-        // here and hop the result over to the UI thread.
-        auto shared = std::make_shared<tr_variant>(std::move(response));
-        run_on_ui_thread_([shared, on_done = std::move(on_done)]() mutable {
-            auto result = parse_response_data(*shared);
-            result.http_status = 200;
-            if (on_done) {
-                on_done(std::move(result));
-            }
+            // this callback runs on the libtransmission thread; do the parse
+            // here and hop the result over to the UI thread.
+            auto shared = std::make_shared<tr_variant>(std::move(response));
+            run_on_ui_thread_([this, generation, shared, on_done = std::move(on_done)]() mutable {
+                if (drop_if_stale(generation, on_done)) {
+                    return;
+                }
+
+                auto result = parse_response_data(*shared);
+                result.http_status = 200;
+                if (on_done) {
+                    on_done(std::move(result));
+                }
+            });
         });
-    });
 }
 
 void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
@@ -138,7 +162,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
 
     auto options = tr_web::FetchOptions{
         url_,
-        [this, body, on_done = std::move(on_done)](tr_web::FetchResponse const& response) mutable {
+        [this, body, generation = generation_, on_done = std::move(on_done)](tr_web::FetchResponse const& response) mutable {
             // this runs on tr_web's worker thread. Parse here (per design), then
             // hop all shared-state handling and the callback to the UI thread.
             auto const status = response.status;
@@ -164,6 +188,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
             }
 
             run_on_ui_thread_([this,
+                               generation,
                                body = std::move(body),
                                on_done = std::move(on_done),
                                errmsg = response.errmsg,
@@ -173,6 +198,12 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                                did_connect,
                                status,
                                parsed]() mutable {
+                // A reply from before stop() belongs to the previous server,
+                // so it must not set this server's session id or RPC style.
+                if (drop_if_stale(generation, on_done)) {
+                    return;
+                }
+
                 auto result = RpcResponse{};
                 result.http_status = status;
 

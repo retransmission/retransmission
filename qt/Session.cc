@@ -85,6 +85,14 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
             },
             response_func)
         .add(response_func)
+        // A network error, e.g. a reply dropped by RpcClient::stop(),
+        // ends the queue without calling response_func.
+        .finally([this, ip_protocol]() {
+            if (port_test_pending_[ip_protocol]) {
+                port_test_pending_[ip_protocol] = false;
+                emit portTested(std::nullopt, ip_protocol);
+            }
+        })
         .run();
 }
 
@@ -595,7 +603,17 @@ void Session::updateBlocklist()
 {
     RpcQueue::create()
         .add(
-            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
+            [this](RpcClient::ResponseFunc done) {
+                exec(TR_KEY_blocklist_update, nullptr, [this, done = std::move(done)](RpcResponse response) {
+                    // A network error, e.g. a reply dropped by RpcClient::stop(),
+                    // ends the queue without calling the error handler below.
+                    if (response.network_error) {
+                        emit blocklistUpdateFailed(QString::fromStdString(response.errmsg));
+                    }
+
+                    done(std::move(response));
+                });
+            },
             // A JSON-RPC error aborts the queue before the step below, so report the
             // failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })

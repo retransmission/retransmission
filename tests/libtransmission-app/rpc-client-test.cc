@@ -264,13 +264,19 @@ private:
     std::deque<std::function<void()>> queue_;
 };
 
-[[nodiscard]] RpcResponse exec_and_wait(RpcClient& client, UiLoop& loop, tr_quark const method)
+[[nodiscard]] std::future<RpcResponse> exec_async(RpcClient& client, tr_quark const method)
 {
     auto promise = std::make_shared<std::promise<RpcResponse>>();
     auto fut = promise->get_future();
     client.exec(method, static_cast<tr_variant*>(nullptr), [promise](RpcResponse response) {
         promise->set_value(std::move(response));
     });
+    return fut;
+}
+
+[[nodiscard]] RpcResponse exec_and_wait(RpcClient& client, UiLoop& loop, tr_quark const method)
+{
+    auto fut = exec_async(client, method);
     return loop.pump_until_ready(fut);
 }
 
@@ -414,6 +420,63 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     EXPECT_EQ(response.errmsg, network_response_message);
 }
 
+// A reply to a request sent before stop() reaches its caller only as a network error.
+TEST_F(AppRpcClientTest, stopDropsRepliesToEarlierRequests)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/false };
+    auto loop = UiLoop{};
+    auto client = RpcClient{ loop.marshaler() };
+    client.start(url(server));
+
+    auto network_responses = 0;
+    auto const tag = client.network_response.connect_scoped(
+        [&network_responses](bool /*is_network_error*/, std::string_view /*message*/) { ++network_responses; });
+
+    auto fut = exec_async(client, TR_KEY_session_get);
+    client.stop();
+    client.start(url(server));
+
+    // The server answered with the 409 handshake, which the client must not resend.
+    auto const stale = loop.pump_until_ready(fut);
+    EXPECT_TRUE(stale.network_error);
+    EXPECT_FALSE(stale.success);
+    EXPECT_EQ(0, network_responses);
+    EXPECT_EQ(1U, std::size(server.request_bodies()));
+
+    // The stale 409 didn't hand its session id to the restarted client,
+    // so the next request repeats the handshake.
+    auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
+    EXPECT_TRUE(response.success) << response.errmsg;
+    EXPECT_EQ(3U, std::size(server.request_bodies()));
+}
+
+// A reply to a request sent before stop() doesn't set the restarted client's RPC style.
+TEST_F(AppRpcClientTest, stopDropsTheRpcStyleOfEarlierReplies)
+{
+    api_compat::set_default_style(api_compat::Style::Tr4);
+
+    auto tr5_server = MockRpcServer{ /*advertise_tr5=*/true };
+    auto tr4_server = MockRpcServer{ /*advertise_tr5=*/false };
+    auto loop = UiLoop{};
+    auto client = RpcClient{ loop.marshaler() };
+    client.start(url(tr5_server));
+
+    // The Tr5 server answers with a 409 that advertises its RPC version.
+    auto fut = exec_async(client, TR_KEY_session_get);
+    client.stop();
+    client.start(url(tr4_server));
+    EXPECT_TRUE(loop.pump_until_ready(fut).network_error);
+
+    auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
+    EXPECT_TRUE(response.success) << response.errmsg;
+    auto const bodies = tr4_server.request_bodies();
+    ASSERT_FALSE(std::empty(bodies));
+    for (auto const& body : bodies) {
+        EXPECT_NE(std::string::npos, body.find(R"("method":"session-get")")) << body;
+        EXPECT_EQ(std::string::npos, body.find("jsonrpc")) << body;
+    }
+}
+
 TEST_F(AppRpcClientTest, signalsAuthRequiredOn401)
 {
     auto server = MockRpcServer{ /*advertise_tr5=*/false, /*require_auth=*/true };
@@ -497,6 +560,22 @@ TEST_F(AppRpcClientSessionTest, execParsesSuccessResponse)
     auto const* const args = response.args->get_if<tr_variant::Map>();
     ASSERT_NE(nullptr, args);
     EXPECT_TRUE(args->contains(TR_KEY_version));
+}
+
+TEST_F(AppRpcClientSessionTest, stopDropsRepliesToEarlierRequests)
+{
+    auto loop = UiLoop{};
+    auto client = RpcClient{ loop.marshaler() };
+    client.start(session_);
+
+    auto fut = exec_async(client, TR_KEY_session_get);
+    client.stop();
+    client.start(session_);
+
+    auto const response = loop.pump_until_ready(fut);
+    EXPECT_TRUE(response.network_error);
+    EXPECT_FALSE(response.success);
+    EXPECT_EQ(nullptr, response.args);
 }
 
 TEST_F(AppRpcClientSessionTest, execReportsAnUnknownMethodAsAnError)
