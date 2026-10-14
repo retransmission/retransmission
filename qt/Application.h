@@ -12,6 +12,7 @@
 #include <string_view>
 #include <unordered_set>
 
+#include <QtCore/QHashFunctions> // std::hash<QString>
 #include <QtCore/QPointer>
 #include <QtCore/QTimer>
 #include <QtCore/QTranslator>
@@ -28,7 +29,6 @@
 #include "AddData.h"
 #include "Prefs.h"
 #include "Typedefs.h"
-#include "Utils.h" // std::hash<QString>
 
 namespace tr::interop
 {

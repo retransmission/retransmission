@@ -11,11 +11,11 @@
 #include <vector>
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QHashFunctions> // std::hash<QString>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
 #include "Typedefs.h"
-#include "Utils.h" // for std::hash<QString>
 
 class FileTreeItem
 {
