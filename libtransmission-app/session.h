@@ -40,11 +40,6 @@ public:
     Session& operator=(Session const&) = delete;
     virtual ~Session() = default;
 
-    [[nodiscard]] constexpr std::optional<Type> type() const noexcept
-    {
-        return session_type_;
-    }
-
     // keep the machine awake: a local-filesystem session with active transfers
     [[nodiscard]] bool should_inhibit_sleep() const;
 
