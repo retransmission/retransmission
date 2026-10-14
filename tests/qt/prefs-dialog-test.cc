@@ -3,6 +3,9 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
+#include <utility>
+
 #include <QApplication>
 #include <QCheckBox>
 #include <QDir>
@@ -256,6 +259,47 @@ private slots:
         dialog.show();
         QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
         dialog.hide();
+    }
+
+    // A widget that a checkbox enables must follow that checkbox's pref, both
+    // when the dialog opens and when the user toggles the box.
+    void checkbox_dependents_follow_their_pref()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+        prefs.set(TR_KEY_speed_limit_up_enabled, false);
+        prefs.set(TR_KEY_watch_dir_enabled, false);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QVERIFY(drainFreeSpace(dialog));
+
+        auto constexpr Pairs = std::array{
+            std::pair{ "uploadSpeedLimitCheck", "uploadSpeedLimitSpin" },
+            std::pair{ "watchDirCheck", "watchDirStack" },
+        };
+        for (auto const& [check_name, dependent_name] : Pairs) {
+            auto* const check = dialog.findChild<QCheckBox*>(QString::fromUtf8(check_name));
+            auto* const dependent = dialog.findChild<QWidget*>(QString::fromUtf8(dependent_name));
+            QVERIFY(check != nullptr);
+            QVERIFY(dependent != nullptr);
+            if (check == nullptr || dependent == nullptr) {
+                return;
+            }
+
+            QVERIFY(!check->isChecked());
+            QVERIFY(!dependent->isEnabled());
+
+            check->click();
+            QVERIFY(dependent->isEnabled());
+        }
     }
 };
 } // namespace

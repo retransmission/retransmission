@@ -233,6 +233,8 @@ void PrefsDialog::initSpeedTab()
     initWidget(ui_.altSpeedLimitScheduleCheck, TR_KEY_alt_speed_time_enabled);
     initWidget(ui_.altSpeedLimitStartTimeEdit, TR_KEY_alt_speed_time_begin);
     initWidget(ui_.altSpeedLimitEndTimeEdit, TR_KEY_alt_speed_time_end);
+    bindEnabled({ ui_.uploadSpeedLimitSpin }, { TR_KEY_speed_limit_up_enabled });
+    bindEnabled({ ui_.downloadSpeedLimitSpin }, { TR_KEY_speed_limit_down_enabled });
 
     auto* const days_combo = ui_.altSpeedLimitDaysCombo;
     days_combo->addItem(tr("Every Day"), TR_SCHED_ALL);
@@ -466,6 +468,9 @@ void PrefsDialog::initSeedingTab()
     initWidget(ui_.doneSeedingScriptCheck, TR_KEY_script_torrent_done_seeding_enabled);
     initWidget(ui_.doneSeedingScriptButton, TR_KEY_script_torrent_done_seeding_filename);
     initWidget(ui_.doneSeedingScriptEdit, TR_KEY_script_torrent_done_seeding_filename);
+    bindEnabled({ ui_.ratioLimitSpin }, { TR_KEY_seed_ratio_limited });
+    bindEnabled({ ui_.idleLimitSpin }, { TR_KEY_idle_seeding_limit_enabled });
+    bindEnabled({ ui_.doneSeedingScriptStack }, { TR_KEY_script_torrent_done_seeding_enabled });
 
     auto const update_idle_limit_format = [this]() {
         //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
@@ -512,6 +517,9 @@ void PrefsDialog::initDownloadingTab()
     initWidget(ui_.doneDownloadingScriptButton, TR_KEY_script_torrent_done_filename);
     initWidget(ui_.doneDownloadingScriptEdit, TR_KEY_script_torrent_done_filename);
     initWidget(ui_.downloadDoneVerifyCheck, TR_KEY_torrent_complete_verify_enabled);
+    bindEnabled({ ui_.watchDirStack }, { TR_KEY_watch_dir_enabled });
+    bindEnabled({ ui_.incompleteDirStack }, { TR_KEY_incomplete_dir_enabled });
+    bindEnabled({ ui_.doneDownloadingScriptStack }, { TR_KEY_script_torrent_done_enabled });
 
     auto* cr = new ColumnResizer{ this };
     cr->addLayout(ui_.addingSectionLayout);
