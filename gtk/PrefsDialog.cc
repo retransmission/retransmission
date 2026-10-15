@@ -501,11 +501,15 @@ DesktopPage::DesktopPage(
 {
     init_check_button("inhibit_hibernation_check", TR_KEY_inhibit_desktop_hibernation);
 
+    // Starting minimized means starting as a tray icon alone, so the
+    // start-minimized control is only offered where a tray icon can exist.
     if (SystemTrayIcon::is_available()) {
         auto* const check = init_check_button("show_systray_icon_check", TR_KEY_show_notification_area_icon);
         check->set_label(gtr_with_app_name(check->get_label()));
+        init_check_button("start_minimized_check", TR_KEY_start_minimized);
     } else {
         get_widget<Gtk::CheckButton>("show_systray_icon_check")->hide();
+        get_widget<Gtk::CheckButton>("start_minimized_check")->hide();
     }
 
     init_check_button("notify_on_torrent_add_check", TR_KEY_torrent_added_notification_enabled);
