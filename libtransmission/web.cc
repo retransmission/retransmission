@@ -561,7 +561,7 @@ public:
             // then pause the torrent for a tick. curl will deliver `data`
             // again when the transfer is unpaused.
             if (task->impl.mediator.clamp(*tag, bytes_used) < bytes_used) {
-                task->impl.paused_easy_handles.emplace(task->easy(), tr_time_msec());
+                task->impl.paused_easy_handles.emplace(task->easy(), tr_time_msec() + BandwidthPauseMsec);
                 return CURL_WRITEFUNC_PAUSE;
             }
         }
@@ -739,25 +739,30 @@ public:
         }
     }
 
-    void resumePausedTasks()
+    auto paused_tasks_upkeep()
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
         auto& paused = paused_easy_handles;
         if (std::empty(paused)) {
-            return;
+            return std::numeric_limits<uint64_t>::max();
         }
 
         auto const now = tr_time_msec();
 
+        // Unpause any tasks where the timeout has expired
         for (auto it = std::begin(paused); it != std::end(paused);) {
-            if (it->second + BandwidthPauseMsec < now) {
-                curl_easy_pause(it->first, CURLPAUSE_CONT);
+            auto const [easy, resume_at] = *it;
+            if (resume_at < now) {
+                curl_easy_pause(easy, CURLPAUSE_CONT);
                 it = paused.erase(it);
             } else {
                 ++it;
             }
         }
+
+        // Return the number of milliseconds until the next paused task should be unpaused
+        return std::ranges::min(paused | std::views::values) - now;
     }
 
     void remove_task(Task const& task)
@@ -823,14 +828,17 @@ public:
                 }
             }
 
-            resumePausedTasks();
+            auto const next_unpause_ms = paused_tasks_upkeep();
 
             // During steady state, wake up once per second.
             // But during startup, wake up 10x more often. This is so tests
             // that should take a few msec don't block for a full second
             // while tr_session waits for this thread to finish.
+            // If the next task to unpause is sooner than that, wake up sooner.
             static auto constexpr StartupSecs = std::chrono::seconds{ 15 };
-            auto const timeout_ms = mediator.now() - start_time < StartupSecs ? 50 : 1000;
+            auto const timeout_ms = std::min(
+                mediator.now() - start_time < StartupSecs ? 50 : 1000,
+                static_cast<int>(next_unpause_ms));
 
             // Wait for activity on the curl sockets, or for the timeout to expire.
             auto numfds = int{};
