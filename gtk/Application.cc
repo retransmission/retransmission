@@ -720,10 +720,6 @@ void Application::Impl::on_core_busy(bool busy)
 
 void Application::Impl::app_setup()
 {
-    if (start_iconified_) {
-        gtr_pref_flag_set(TR_KEY_show_notification_area_icon, true);
-    }
-
     gtr_actions_set_core(core_);
 
     /* set up core handlers */
@@ -748,12 +744,12 @@ void Application::Impl::app_setup()
         MAIN_WINDOW_REFRESH_INTERVAL_SECONDS);
     update_model_once();
 
-    /* either show the window or iconify it */
-    if (!start_iconified_) {
+    // Hide the window only behind an icon that can bring it back.
+    if (start_iconified_ && icon_ != nullptr) {
+        hideMainWindow();
+    } else {
         wind_->show();
         gtr_action_set_toggled("toggle-main-window", true);
-    } else {
-        hideMainWindow();
     }
 }
 
