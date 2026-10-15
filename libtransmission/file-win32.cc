@@ -542,6 +542,31 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
     return true;
 }
 
+namespace
+{
+// DeleteFileW() refuses a read-only file, which POSIX remove() would delete.
+[[nodiscard]] bool delete_file(wchar_t const* const path, DWORD const attributes) noexcept
+{
+    if (to_bool(DeleteFileW(path))) {
+        return true;
+    }
+
+    if (GetLastError() != ERROR_ACCESS_DENIED || (attributes & FILE_ATTRIBUTE_READONLY) == 0 ||
+        !to_bool(SetFileAttributesW(path, attributes & ~FILE_ATTRIBUTE_READONLY))) {
+        return false;
+    }
+
+    if (to_bool(DeleteFileW(path))) {
+        return true;
+    }
+
+    auto const delete_error = GetLastError();
+    SetFileAttributesW(path, attributes);
+    SetLastError(delete_error);
+    return false;
+}
+} // namespace
+
 bool tr_sys_path_remove(std::string_view const path, tr_error* error)
 {
     bool ret = false;
@@ -553,7 +578,7 @@ bool tr_sys_path_remove(std::string_view const path, tr_error* error)
             if ((attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
                 ret = to_bool(RemoveDirectoryW(wide_path.c_str()));
             } else {
-                ret = to_bool(DeleteFileW(wide_path.c_str()));
+                ret = delete_file(wide_path.c_str(), attributes);
             }
         }
     }
