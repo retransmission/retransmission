@@ -6,6 +6,7 @@
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -30,6 +31,61 @@ namespace
 {
 class TorrentFilesTest : public ::tr::test::SandboxedTest
 {
+protected:
+    void expectFailedMoveKeepsSources(std::string_view const target) const
+    {
+        auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+        auto const roots = std::array<std::string_view, 1>{ download.sv() };
+        auto files = tr_torrent_files{};
+        files.add("name/a", 1);
+        files.add("name/b", 1);
+        createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+        createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+        // Nothing can replace a non-empty dir, so moving the second file fails.
+        createFileWithContents(tr_pathbuf{ target, "/name/b/keep"sv }, "keep"sv);
+
+        auto error = tr_error{};
+        EXPECT_FALSE(files.move(roots, target, "name", &error));
+        EXPECT_TRUE(error);
+        expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+        expectContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+        EXPECT_EQ(
+            std::vector<std::string>{ "b" },
+            tr_sys_dir_get_files(tr_pathbuf{ target, "/name"sv }, tr_basename_accept_all));
+    }
+};
+
+// A move only copies its files when they cross a filesystem boundary.
+// Skipped where /dev/shm is missing or shares a filesystem with the sandbox.
+class TorrentFilesCrossFilesystemTest : public TorrentFilesTest
+{
+protected:
+    void SetUp() override
+    {
+        TorrentFilesTest::SetUp();
+
+        if (!tr_sys_path_exists("/dev/shm"sv)) {
+            GTEST_SKIP() << "no /dev/shm";
+        }
+
+        other_filesystem_.emplace("/dev/shm");
+
+        auto const from = tr_pathbuf{ sandboxDir(), "/probe"sv };
+        auto const to = tr_pathbuf{ other_filesystem_->path(), "/probe"sv };
+        createFileWithContents(from, "probe"sv);
+        if (tr_file_rename_or_copy(from, to) != tr_file_moved::Copied) {
+            GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
+        }
+    }
+
+    [[nodiscard]] std::string otherFilesystemDir() const
+    {
+        return other_filesystem_->path();
+    }
+
+private:
+    std::optional<::tr::test::Sandbox> other_filesystem_;
 };
 } // namespace
 
@@ -109,6 +165,35 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/nested"sv }));
     expectContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     expectContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
+}
+
+TEST_F(TorrentFilesTest, failedMovePutsBackWhatMoved)
+{
+    expectFailedMoveKeepsSources(tr_pathbuf{ sandboxDir(), "/target"sv });
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, moveRemovesCopiedSources)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ otherFilesystemDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/b", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(files.move(roots, target, "name", &error));
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    expectContents(tr_pathbuf{ target, "/name/b"sv }, "b"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, failedMoveKeepsCopiedSources)
+{
+    expectFailedMoveKeepsSources(tr_pathbuf{ otherFilesystemDir(), "/target"sv });
 }
 
 TEST_F(TorrentFilesTest, removePreservesRootsWithoutMatchingFiles)
