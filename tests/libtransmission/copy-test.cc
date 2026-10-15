@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdint> // uint64_t
 #include <cstring>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -50,6 +51,23 @@ protected:
         tr_sys_path_remove(path2);
     }
 
+    void expectAtomicCopy(std::string_view const source, std::string_view const target) const
+    {
+        auto error = tr_error{};
+        EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
+        EXPECT_FALSE(error) << error;
+        EXPECT_TRUE(filesAreIdentical(source, target));
+        EXPECT_FALSE(hasTemporaryCopy());
+    }
+
+    [[nodiscard]] bool hasTemporaryCopy() const
+    {
+        auto const is_temporary_copy = [](std::string_view const name) {
+            return name.starts_with(TrFileCopyPrefix);
+        };
+        return !std::empty(tr_sys_dir_get_files(sandboxDir(), is_temporary_copy));
+    }
+
 private:
     [[nodiscard]] static uint64_t fillBufferFromFd(tr_sys_file_t fd, uint64_t bytes_remaining, char* buf, size_t buf_len)
     {
@@ -87,6 +105,62 @@ TEST_F(CopyTest, copy)
     auto const random_file_length = 1024 * 1024 * 10;
 
     testImpl(filename1, filename2, random_file_length);
+}
+
+TEST_F(CopyTest, atomicCopyReplacesTheTarget)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, "new contents"sv);
+    createFileWithContents(target, "old contents"sv);
+
+    expectAtomicCopy(source, target);
+}
+
+TEST_F(CopyTest, atomicCopyFitsANameAtTheLengthLimit)
+{
+    // Most filesystems cap a name at 255 bytes.
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), '/', std::string(255U, 'x') };
+    createFileWithContents(source, "contents"sv);
+
+    expectAtomicCopy(source, target);
+}
+
+TEST_F(CopyTest, atomicCopyReplacesWhatAKilledCopyLeft)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    auto const leftover = tr::detail::file_copy_temp_path(target);
+    createFileWithContents(source, "new contents"sv);
+    // Some platforms copy a read-only source's state, so the leftover may be read-only.
+    createFileWithContents(leftover, "partial"sv);
+    makeReadOnly(leftover);
+
+    expectAtomicCopy(source, target);
+}
+
+TEST_F(CopyTest, atomicCopyOfAReadOnlySource)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, "contents"sv);
+    makeReadOnly(source);
+
+    expectAtomicCopy(source, target);
+}
+
+TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/missing.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(target, "old contents"sv);
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_TRUE(error);
+    expectContents(target, "old contents"sv);
+    EXPECT_FALSE(hasTemporaryCopy());
 }
 
 } // namespace tr::test

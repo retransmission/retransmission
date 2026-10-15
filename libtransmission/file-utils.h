@@ -9,6 +9,8 @@
 #include <string_view>
 #include <vector>
 
+#include "libtransmission/tr-strbuf.h"
+
 struct tr_error;
 
 /**
@@ -20,10 +22,21 @@ bool tr_file_read(std::string_view filename, std::vector<char>& contents, tr_err
 
 /**
  * Tries to move a file by renaming, and [optionally] if that fails, by copying.
+ * A copy goes through tr_file_copy_atomic(), so `newpath` never holds a partial file.
  *
  * Creates the destination directory if it doesn't exist.
  */
 [[nodiscard]] bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow_copy, tr_error* error = nullptr);
+
+/**
+ * Copies a file to a temporary name in `newpath`'s dir, then renames it into place.
+ * `newpath` keeps its old state until the copy is whole, even if the process is killed mid-copy.
+ */
+[[nodiscard]] bool tr_file_copy_atomic(std::string_view oldpath, std::string_view newpath, tr_error* error = nullptr);
+
+// Every tr_file_copy_atomic() temporary name starts with this,
+// so cleanup can recognize one that an interrupted copy left behind.
+inline constexpr auto TrFileCopyPrefix = std::string_view{ ".tr-copy-" };
 
 bool tr_file_save(std::string_view filename, std::string_view contents, tr_error* error = nullptr);
 
@@ -32,3 +45,10 @@ constexpr auto tr_file_save(std::string_view filename, ContiguousRange const& x,
 {
     return tr_file_save(filename, std::string_view{ std::data(x), std::size(x) }, error);
 }
+
+namespace tr::detail
+{
+// Where tr_file_copy_atomic() stages its copy of `newpath`.
+// Public for tests; everything else calls tr_file_copy_atomic().
+[[nodiscard]] tr_pathbuf file_copy_temp_path(std::string_view newpath);
+} // namespace tr::detail

@@ -15,6 +15,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -160,7 +161,7 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     }
 
     /* Otherwise, copy the file. */
-    if (!tr_sys_path_copy(oldpath, newpath, error)) {
+    if (!tr_file_copy_atomic(oldpath, newpath, error)) {
         error->prefix_message("Unable to copy: ");
         return false;
     }
@@ -175,4 +176,27 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     }
 
     return true;
+}
+
+bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
+{
+    auto const tmp = tr::detail::file_copy_temp_path(newpath);
+
+    // A killed copy may have left it behind.
+    tr_sys_path_remove(tmp);
+
+    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+        return true;
+    }
+
+    tr_sys_path_remove(tmp);
+    return false;
+}
+
+tr_pathbuf tr::detail::file_copy_temp_path(std::string_view const newpath)
+{
+    // Naming it after `newpath` lets a retry replace what a killed copy left behind.
+    // Hashing the name keeps its length fixed, so it fits wherever `newpath` does.
+    auto const hash = tr_sha1_string{ tr_sha1::digest(tr_sys_path_basename(newpath)) };
+    return tr_pathbuf{ tr_sys_path_dirname(newpath), '/', TrFileCopyPrefix, hash.sv() };
 }
