@@ -669,9 +669,9 @@ void Application::Impl::on_activate()
     activation_count_++;
 
     /* GApplication emits an 'activate' signal when bootstrapping the primary.
-     * Ordinarily we handle that by presenting the main window, but if the user
-     * started Transmission minimized, ignore that initial signal... */
-    if (start_iconified_ && activation_count_ == 1) {
+     * Ordinarily we handle that by presenting the main window, but if app_setup()
+     * hid the window in the notification area, ignore that initial signal... */
+    if (is_iconified_ && activation_count_ == 1) {
         return;
     }
 
@@ -753,8 +753,7 @@ void Application::Impl::app_setup()
         wind_->show();
         gtr_action_set_toggled("toggle-main-window", true);
     } else {
-        gtr_window_set_skip_taskbar_hint(*wind_, icon_ != nullptr);
-        gtr_action_set_toggled("toggle-main-window", false);
+        hideMainWindow();
     }
 }
 
