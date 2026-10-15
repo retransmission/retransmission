@@ -211,7 +211,6 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(&tray_icon_, &QSystemTrayIcon::activated, this, &MainWindow::trayActivated);
 
     toggleWindows(!minimized);
-    ui_.action_TrayIcon->setChecked(minimized || prefs.get<bool>(TR_KEY_show_notification_area_icon));
 
     initStatusBar();
     auto* filter_bar = new FilterBar{ prefs_, model_, filter_model_ };
@@ -1135,7 +1134,6 @@ void MainWindow::refreshPref(tr_quark const key)
 
     case TR_KEY_show_notification_area_icon:
         b = prefs_.get<bool>(key);
-        ui_.action_TrayIcon->setChecked(b);
         tray_icon_.setVisible(b);
         QApplication::setQuitOnLastWindowClosed(!b);
         refreshSoon(RefreshTrayIcon);
