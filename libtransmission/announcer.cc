@@ -976,7 +976,7 @@ void tr_announcer_impl::onAnnounceDone(
     } else if (!response.did_connect) {
         on_announce_error(tier, _("Could not connect to tracker"), event);
     } else if (response.did_timeout) {
-        on_announce_error(tier, _("Tracker did not respond"), event);
+        on_announce_error(tier, _("Tracker announce timed out"), event);
     } else {
         auto const is_stopped = event == TR_ANNOUNCE_EVENT_STOPPED;
         auto scrape_fields = uint8_t{};
@@ -1246,7 +1246,7 @@ void tr_announcer_impl::onScrapeDone(tr_scrape_response const& response)
         if (!response.did_connect) {
             on_scrape_error(session, tier, _("Could not connect to tracker"));
         } else if (response.did_timeout) {
-            on_scrape_error(session, tier, _("Tracker did not respond"));
+            on_scrape_error(session, tier, _("Tracker scrape timed out"));
         } else if (!std::empty(response.errmsg)) {
             on_scrape_error(session, tier, response.errmsg);
         } else {

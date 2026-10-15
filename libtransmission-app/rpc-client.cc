@@ -218,7 +218,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                 } else if (status == 0) {
                     result.network_error = true;
                     if (did_timeout) {
-                        result.errmsg = "connection timed out";
+                        result.errmsg = "request timed out";
                     } else if (!did_connect) {
                         result.errmsg = "couldn't connect to the server";
                     } else {
