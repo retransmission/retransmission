@@ -222,6 +222,8 @@ bool tr_sys_path_rename(std::string_view src_path, std::string_view dst_path, tr
 /**
  * @brief Portability wrapper for `remove()`.
  *
+ * Like POSIX `remove()`, it removes a read-only file too.
+ *
  * @param[in]  path  Path to file or directory.
  * @param[out] error Pointer to error object. Optional, pass `nullptr` if you
  *                   are not interested in error details.
