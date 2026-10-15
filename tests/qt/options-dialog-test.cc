@@ -51,7 +51,7 @@ void setRemotePrefs(Prefs& prefs, std::uint16_t const port)
 }
 
 // Point prefs at an in-process session. Such a session reports
-// isLocalFilesystem(), which is what makes the dialog show the path button.
+// is_local_filesystem(), which is what makes the dialog show the path button.
 void setLocalPrefs(Prefs& prefs, QString const& dl_dir)
 {
     prefs.set(TR_KEY_remote_session_enabled, false);
@@ -65,7 +65,7 @@ void writeQuietSettings(QString const& config_dir)
     static constexpr auto Json = std::string_view{ R"({"dht-enabled":false,"lpd-enabled":false,"pex-enabled":false,)"
                                                    R"("port-forwarding-enabled":false,"utp-enabled":false})" };
 
-    auto file = QFile{ QDir{ config_dir }.filePath(QStringLiteral("settings.json")) };
+    auto file = QFile{ QString::fromStdString(tr_sessionGetSettingsFilename(config_dir.toStdString())) };
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         file.write(std::data(Json), static_cast<qint64>(std::size(Json)));
     }
@@ -135,7 +135,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(!session.isLocalFilesystem());
+        QVERIFY(!session.is_local_filesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
@@ -173,7 +173,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(!session.isLocalFilesystem());
+        QVERIFY(!session.is_local_filesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
@@ -202,7 +202,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocalFilesystem());
+        QVERIFY(session.is_local_filesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
@@ -244,7 +244,7 @@ private slots:
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocalFilesystem());
+        QVERIFY(session.is_local_filesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));

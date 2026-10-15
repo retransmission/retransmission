@@ -2,8 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#import <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
 
-@interface TrackerCell : NSActionCell
-
+@interface NSURL (NSURLAdditions)
+@property(nonatomic, readonly) BOOL isTorrentFile;
 @end

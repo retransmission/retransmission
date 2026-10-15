@@ -111,6 +111,14 @@ void Session::import_session_settings(tr_variant::Map const& settings)
         }
     }
 
+    if (auto const size = settings.value_if<int64_t>(TR_KEY_blocklist_size)) {
+        blocklist_size_ = size;
+    }
+
+    if (auto const date = settings.value_if<int64_t>(TR_KEY_blocklist_date)) {
+        blocklist_date_ = std::chrono::sys_seconds{ std::chrono::seconds{ *date } };
+    }
+
     // For security reasons, the RPC server's own settings aren't in
     // `session_get` responses; read them directly when the session is embedded.
     if (auto* const embedded = embedded_session_; embedded != nullptr) {
@@ -137,18 +145,18 @@ std::optional<tr::Settings> Session::embedded_settings() const
 
 void Session::set_session_type(std::optional<Type> const type)
 {
-    // should_inhibit_sleep() ignores busyness once we're non-local,
-    // so a non-local session's remembered busyness is meaningless --
-    // drop it here so a later switch back to a local session
-    // starts from a clean slate.
-    if (type.value_or(Type::Remote) == Type::Remote) {
-        busy_ = false;
-    }
-
     if (session_type_ != type) {
         session_type_ = type;
         update_sleep_inhibit();
         update_nap_inhibit();
+    }
+
+    // should_inhibit_sleep() ignores busyness once we're non-local,
+    // so a non-local session's remembered busyness is meaningless --
+    // drop it here so a later switch back to a local session
+    // starts from a clean slate.
+    if (!is_local_filesystem()) {
+        busy_ = false;
     }
 }
 

@@ -5,6 +5,7 @@
 
 #include "TorrentCellRenderer.h"
 
+#include "GtkCompat.h"
 #include "HigWorkarea.h" // GUI_PAD, GUI_PAD_SMALL
 #include "Percents.h"
 #include "Torrent.h"

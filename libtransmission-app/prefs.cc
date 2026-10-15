@@ -3,7 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <string>
 #include <string_view>
 #include <optional>
 
@@ -22,22 +21,10 @@ namespace tr::app
 namespace
 {
 
-[[nodiscard]] std::string get_settings_filename(std::string_view const& config_dir)
+// settings.json, with gaps filled from the app's defaults and then libtransmission's.
+[[nodiscard]] auto get_fallback_settings(std::string_view const config_dir)
 {
-    return fmt::format("{:s}/settings.json", config_dir);
-}
-
-[[nodiscard]] auto get_fallback_settings(std::string_view const settings_filename)
-{
-    // get pre-existing settings from the settings config file
-    auto fallbacks = tr::settings::load(settings_filename);
-
-    // fill in any missing values with the app's defaults,
-    // then with libtransmission's defaults (eg missing/incomplete config file)
-    fallbacks.merge(tr::serializer::save(AppPrefs{}, SessionPrefs{}));
-    fallbacks.merge(tr_sessionGetDefaultSettings());
-
-    return fallbacks;
+    return tr_sessionLoadSettings(config_dir, tr::serializer::save(AppPrefs{}, SessionPrefs{}));
 }
 
 void remove_transient_keys(tr::Settings& settings)
@@ -60,14 +47,12 @@ Prefs::Prefs(tr::Settings const& settings)
 }
 
 Prefs::Prefs(std::string_view const config_dir)
-    : Prefs{ get_fallback_settings(get_settings_filename(config_dir)) }
+    : Prefs{ get_fallback_settings(config_dir) }
 {
 }
 
 void Prefs::save(std::string_view const config_dir, std::optional<tr::Settings> const& local_session_settings) const
 {
-    auto const settings_filename = get_settings_filename(config_dir);
-
     // save the app settings.
     auto settings = tr::serializer::save(app_prefs_);
 
@@ -78,11 +63,11 @@ void Prefs::save(std::string_view const config_dir, std::optional<tr::Settings> 
 
     // ensure we have all the settings we need.
     // eg if we're connected to a remote session, `settings` doesn't have session settings yet.
-    settings.merge(get_fallback_settings(settings_filename));
+    settings.merge(get_fallback_settings(config_dir));
 
     remove_transient_keys(settings);
 
-    tr::settings::save(settings_filename, settings);
+    tr::settings::save(tr_sessionGetSettingsFilename(config_dir), settings);
 }
 
 void Prefs::set(tr_quark const key, tr_variant const& var)

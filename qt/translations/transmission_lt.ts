@@ -1779,11 +1779,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklė&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklės&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklių&lt;/i&gt;</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklė</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklės</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklių</numerusform>
         </translation>
     </message>
     <message>

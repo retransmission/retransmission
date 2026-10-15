@@ -3,14 +3,13 @@
 // License text can be found in the licenses/ folder.
 
 #import "URLSheetWindowController.h"
-#import "Controller.h"
 
-@interface URLSheetWindowController ()<NSControlTextEditingDelegate>
+@interface URLSheetWindowController ()<NSTextFieldDelegate>
 
-@property(nonatomic) IBOutlet NSTextField* fLabelField;
-@property(nonatomic) IBOutlet NSTextField* fTextField;
-@property(nonatomic) IBOutlet NSButton* fOpenButton;
-@property(nonatomic) IBOutlet NSButton* fCancelButton;
+@property(nonatomic, strong) NSTextField* fLabelField;
+@property(nonatomic, strong) NSTextField* fTextField;
+@property(nonatomic, strong) NSButton* fOpenButton;
+@property(nonatomic, strong) NSButton* fCancelButton;
 
 @end
 
@@ -18,45 +17,83 @@
 
 - (instancetype)init
 {
-    self = [self initWithWindowNibName:@"URLSheetWindow"];
+    self = [super initWithWindow:nil];
+    if (self) {
+        [self setupWindowAndLayout];
+    }
     return self;
 }
 
-- (void)awakeFromNib
+- (void)setupWindowAndLayout
 {
-    [super awakeFromNib];
-    self.fLabelField.stringValue = NSLocalizedString(@"URL:", "URL sheet label");
-    self.fOpenButton.title = NSLocalizedString(@"Open", "URL sheet button");
-    self.fCancelButton.title = NSLocalizedString(@"Cancel", "URL sheet button");
+    NSRect windowFrame = NSMakeRect(0, 0, 400, 177);
+    NSWindowStyleMask styleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable;
 
-    [self.fOpenButton sizeToFit];
-    [self.fCancelButton sizeToFit];
+    NSWindow* window = [[NSWindow alloc] initWithContentRect:windowFrame styleMask:styleMask backing:NSBackingStoreBuffered
+                                                       defer:NO];
+    window.title = @"Window";
+    window.allowsToolTipsWhenApplicationIsInactive = NO;
+    window.releasedWhenClosed = NO;
+    window.minSize = NSMakeSize(400, 177);
+    window.frameAutosaveName = @"URLSheetWindow";
+    self.window = window;
 
-    //size the two buttons the same
-    NSRect openFrame = self.fOpenButton.frame;
-    openFrame.size.width += 10.0;
-    NSRect cancelFrame = self.fCancelButton.frame;
-    cancelFrame.size.width += 10.0;
+    NSView* contentView = window.contentView;
 
-    if (NSWidth(openFrame) > NSWidth(cancelFrame)) {
-        cancelFrame.size.width = NSWidth(openFrame);
-    } else {
-        openFrame.size.width = NSWidth(cancelFrame);
-    }
+    self.fLabelField = [NSTextField labelWithString:NSLocalizedString(@"URL:", "URL sheet label")];
+    self.fLabelField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fLabelField.cell.lineBreakMode = NSLineBreakByTruncatingTail;
+    [contentView addSubview:self.fLabelField];
 
-    openFrame.origin.x = NSWidth(self.window.frame) - NSWidth(openFrame) - 20.0 + 6.0; //I don't know why the extra 6.0 is needed
-    self.fOpenButton.frame = openFrame;
+    self.fTextField = [[NSTextField alloc] init];
+    self.fTextField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fTextField.lineBreakMode = NSLineBreakByCharWrapping;
+    self.fTextField.delegate = self;
+    [self.fTextField setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationVertical];
+    [contentView addSubview:self.fTextField];
 
-    cancelFrame.origin.x = NSMinX(openFrame) - NSWidth(cancelFrame);
-    self.fCancelButton.frame = cancelFrame;
+    self.fCancelButton = [NSButton buttonWithTitle:NSLocalizedString(@"Cancel", "URL sheet button") target:self
+                                            action:@selector(openURLCancelEndSheet:)];
+    self.fCancelButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fCancelButton.bezelStyle = NSBezelStyleRounded;
+    self.fCancelButton.keyEquivalent = @"\e"; // Escape
+    [contentView addSubview:self.fCancelButton];
+
+    self.fOpenButton = [NSButton buttonWithTitle:NSLocalizedString(@"Open", "URL sheet button") target:self
+                                          action:@selector(openURLEndSheet:)];
+    self.fOpenButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fOpenButton.bezelStyle = NSBezelStyleRounded;
+    self.fOpenButton.enabled = NO;
+    self.fOpenButton.keyEquivalent = @"\r"; // Enter
+    [contentView addSubview:self.fOpenButton];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fLabelField.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:20],
+        [self.fLabelField.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:20],
+        [self.fLabelField.trailingAnchor constraintEqualToAnchor:contentView.trailingAnchor constant:-20],
+
+        [self.fTextField.topAnchor constraintEqualToAnchor:self.fLabelField.bottomAnchor constant:10],
+        [self.fTextField.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:20],
+        [self.fTextField.trailingAnchor constraintEqualToAnchor:contentView.trailingAnchor constant:-20],
+        [self.fTextField.bottomAnchor constraintEqualToAnchor:self.fOpenButton.topAnchor constant:-20],
+
+        [self.fOpenButton.trailingAnchor constraintEqualToAnchor:contentView.trailingAnchor constant:-20],
+        [self.fOpenButton.bottomAnchor constraintEqualToAnchor:contentView.bottomAnchor constant:-20],
+        [self.fOpenButton.widthAnchor constraintGreaterThanOrEqualToConstant:82],
+
+        [self.fCancelButton.trailingAnchor constraintEqualToAnchor:self.fOpenButton.leadingAnchor constant:-12],
+        [self.fCancelButton.bottomAnchor constraintEqualToAnchor:contentView.bottomAnchor constant:-20],
+
+        [self.fCancelButton.widthAnchor constraintEqualToAnchor:self.fOpenButton.widthAnchor]
+    ]];
 }
 
-- (IBAction)openURLEndSheet:(id)sender
+- (void)openURLEndSheet:(id)sender
 {
     [NSApp endSheet:self.window returnCode:1];
 }
 
-- (IBAction)openURLCancelEndSheet:(id)sender
+- (void)openURLCancelEndSheet:(id)sender
 {
     [NSApp endSheet:self.window returnCode:0];
 }

@@ -600,6 +600,14 @@ msgstr "_Показати {count:L} з:"
 msgid "{disk_space} free"
 msgstr "{disk_space} доступно"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Відображен {visible_count:L} з {count:L} торентів"
+msgstr[1] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[2] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[3] "Відображені {visible_count:L} з {count:L} торентів"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"

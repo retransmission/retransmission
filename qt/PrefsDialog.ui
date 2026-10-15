@@ -596,8 +596,16 @@
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="blocklistStatusLabel">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
             <property name="text">
-             <string notr="true">...</string>
+             <string notr="true"/>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
             </property>
            </widget>
           </item>
@@ -620,8 +628,16 @@
           </item>
           <item row="3" column="0" colspan="3">
            <widget class="QLabel" name="blocklistDateLabel">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
             <property name="text">
              <string notr="true"/>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
             </property>
            </widget>
           </item>

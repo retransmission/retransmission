@@ -18,6 +18,8 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
+#include <libtransmission-app/rpc-queue.h>
+
 #include "Formatter.h"
 #include "Session.h"
 #include "TrFormat.h"

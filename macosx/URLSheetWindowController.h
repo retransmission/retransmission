@@ -8,6 +8,4 @@
 
 @property(nonatomic, readonly) NSString* urlString;
 
-- (instancetype)init;
-
 @end

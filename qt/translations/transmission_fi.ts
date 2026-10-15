@@ -1775,10 +1775,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Estolista sisältää {count:L} säännön&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Estolista sisältää {count:L} sääntöä&lt;/i&gt;</numerusform>
+            <numerusform>Estolista sisältää {count:L} säännön</numerusform>
+            <numerusform>Estolista sisältää {count:L} sääntöä</numerusform>
         </translation>
     </message>
     <message>

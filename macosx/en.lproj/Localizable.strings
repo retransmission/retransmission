@@ -415,6 +415,9 @@
 /* inspector -> peer table -> header tool tip */
 "Encrypted Connection" = "Encrypted Connection";
 
+/* Inspector -> tracker table */
+"Enter tracker announce URL…" = "Enter tracker announce URL…";
+
 /* Filter Bar -> filter button
    Message window -> level
    Message window -> level string

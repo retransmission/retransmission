@@ -582,6 +582,12 @@ msgstr "{count:L} meg_jelenítése ennyiből:"
 msgid "{disk_space} free"
 msgstr "{disk_space} szabad"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} /{count:L} torrent mutatása"
+msgstr[1] "{visible_count:L} /{count:L} torrent mutatása"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"

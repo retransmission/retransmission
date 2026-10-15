@@ -53,7 +53,7 @@ RelocateDialog::RelocateDialog(
         if (path.isEmpty()) {
             path = tor->getPath();
         } else if (path != tor->getPath()) {
-            if (session_.isLocalFilesystem()) {
+            if (session_.is_local_filesystem()) {
                 path = QDir::homePath();
             } else {
                 path = QDir::rootPath();
@@ -63,7 +63,7 @@ RelocateDialog::RelocateDialog(
         }
     }
 
-    if (session_.isLocalFilesystem()) {
+    if (session_.is_local_filesystem()) {
         ui_.newLocationStack->setCurrentWidget(ui_.newLocationButton);
         ui_.newLocationButton->setMode(PathButton::DirectoryMode);
         ui_.newLocationButton->setTitle(tr("Select Location"));

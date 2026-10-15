@@ -406,7 +406,6 @@ auto constexpr SessionKeys = std::to_array<ApiKey>({
       .legacy = TR_KEY_torrent_complete_notification_enabled_kebab_APICOMPAT },
     { .current = TR_KEY_torrent_complete_sound_command, .legacy = TR_KEY_torrent_complete_sound_command_kebab_APICOMPAT },
     { .current = TR_KEY_torrent_complete_sound_enabled, .legacy = TR_KEY_torrent_complete_sound_enabled_kebab_APICOMPAT },
-    { .current = TR_KEY_trash_can_enabled, .legacy = TR_KEY_trash_can_enabled_kebab_APICOMPAT },
     { .current = TR_KEY_trash_original_torrent_files, .legacy = TR_KEY_trash_original_torrent_files_kebab_APICOMPAT },
     { .current = TR_KEY_upload_slots_per_torrent, .legacy = TR_KEY_upload_slots_per_torrent_kebab_APICOMPAT },
     { .current = TR_KEY_uploaded_bytes, .legacy = TR_KEY_uploaded_bytes_kebab_APICOMPAT },

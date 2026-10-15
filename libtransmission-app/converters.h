@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <chrono>
-
 #include "libtransmission/converters.h"
 
 #include "libtransmission-app/display-modes.h"
@@ -14,7 +12,6 @@
 namespace tr::serializer
 {
 
-TR_DECLARE_CONVERTER(std::chrono::sys_seconds)
 TR_DECLARE_CONVERTER(tr::app::ShowMode)
 TR_DECLARE_CONVERTER(tr::app::SortMode)
 TR_DECLARE_CONVERTER(tr::app::StatsMode)

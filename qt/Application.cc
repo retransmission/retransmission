@@ -11,8 +11,10 @@
 #include <utility>
 #include <vector>
 
+#include <QtCore/QFileInfo>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QProcess>
+#include <QtCore/QRegularExpression>
 
 #include <QtGui/QIcon>
 
@@ -31,6 +33,7 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/transmission.h> // tr_sessionGetSettingsFilename
 
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/l10n.h>
@@ -142,7 +145,7 @@ Application::Application(
     }
 
     // is this the first time we've run transmission?
-    bool const first_time = !dir.exists(QStringLiteral("settings.json"));
+    bool const first_time = !QFileInfo::exists(Utils::qstringFromUtf8(tr_sessionGetSettingsFilename(config_dir.toStdString())));
 
 #if QT_CONFIG(accessibility)
     QAccessible::installFactory(&accessibleFactory);

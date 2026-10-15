@@ -9,6 +9,7 @@
 #include <utility>
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QString>
 
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLineEdit>
@@ -36,7 +37,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     : BaseDialog{ parent }
     , add_{ std::move(addme) }
     , session_{ session }
-    , is_local_fs_{ session_.isLocalFilesystem() }
+    , is_local_fs_{ session_.is_local_filesystem() }
 {
     ui_.setupUi(this);
 
@@ -195,7 +196,7 @@ void OptionsDialog::updateWidgetsLocality()
 
 void OptionsDialog::onSessionUpdated()
 {
-    bool const is_local_fs = session_.isLocalFilesystem();
+    auto const is_local_fs = session_.is_local_filesystem();
 
     if (is_local_fs_ != is_local_fs) {
         is_local_fs_ = is_local_fs;

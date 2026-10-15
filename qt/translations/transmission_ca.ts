@@ -1764,10 +1764,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;La llista de bloqueig conté {count:L} regla&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;La llista de bloqueigs conté {count:L} regles&lt;/i&gt;</numerusform>
+            <numerusform>La llista de bloqueig conté {count:L} regla</numerusform>
+            <numerusform>La llista de bloqueigs conté {count:L} regles</numerusform>
         </translation>
     </message>
     <message>

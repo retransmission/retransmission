@@ -72,10 +72,10 @@ target_sources(${TR_NAME}-mac
         ExpandedPathToIconTransformer.mm
         ExpandedPathToPathTransformer.h
         ExpandedPathToPathTransformer.mm
-        FileListNode.h
-        FileListNode.mm
         FileCheckCellView.h
         FileCheckCellView.mm
+        FileListNode.h
+        FileListNode.mm
         FileOutlineController.h
         FileOutlineController.mm
         FileOutlineView.h
@@ -132,6 +132,8 @@ target_sources(${TR_NAME}-mac
         NSMutableArrayAdditions.mm
         NSStringAdditions.h
         NSStringAdditions.mm
+        NSURLAdditions.h
+        NSURLAdditions.mm
         PeersViews.h
         PeersViews.mm
         PiecesView.h
@@ -179,29 +181,30 @@ target_sources(${TR_NAME}-mac
         TorrentGroup.mm
         TorrentTableView.h
         TorrentTableView.mm
-        TrackerCell.h
-        TrackerCell.mm
+        TrackerIconLoader.h
+        TrackerIconLoader.mm
         TrackerNode.h
         TrackerNode.mm
+        TrackersViews.h
+        TrackersViews.mm
         TRGroup.h
         TRGroup.mm
         URLSheetWindowController.h
         URLSheetWindowController.mm
         Utils.h
-        Utils.mm)
+        Utils.mm
+        UTTypeAdditions.h
+        UTTypeAdditions.mm)
 
 set(XIB_FILES
     BlocklistStatusWindow.xib
-    FileRenameSheetController.xib
     FilterBar.xib
     InfoFileView.xib
     InfoPeersView.xib
     InfoTrackersView.xib
     InfoWindow.xib
     MessageWindow.xib
-    StatsWindow.xib
-    StatusBar.xib
-    URLSheetWindow.xib)
+    StatusBar.xib)
 
 set(RESOURCES
     Defaults.plist

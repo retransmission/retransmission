@@ -587,6 +587,13 @@ msgstr "לה_ציג {count:L} מתוך:"
 msgid "{disk_space} free"
 msgstr "{disk_space} פנויים"
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "מוצג {visible_count:L} מתוך טורנט אחד"
+msgstr[1] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
+msgstr[2] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"

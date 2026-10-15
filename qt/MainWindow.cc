@@ -225,6 +225,9 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(&model_, &TorrentModel::rowsRemoved, this, refresh_header_soon);
     connect(&filter_model_, &TorrentFilter::rowsInserted, this, refresh_header_soon);
     connect(&filter_model_, &TorrentFilter::rowsRemoved, this, refresh_header_soon);
+    // TorrentFilter refilters with invalidate(), which reports a layout change rather than inserted or removed rows.
+    connect(&filter_model_, &TorrentFilter::layoutChanged, this, refresh_header_soon);
+    connect(&filter_model_, &TorrentFilter::modelReset, this, refresh_header_soon);
     connect(ui_.listView, &TorrentView::headerDoubleClicked, filter_bar, &FilterBar::clear);
 
     static auto constexpr InitKeys = std::to_array<tr_quark>({
@@ -813,7 +816,7 @@ void MainWindow::refreshActionSensitivity()
     ui_.action_DeselectAll->setEnabled(have_selection);
     ui_.action_SetLocation->setEnabled(have_selection);
 
-    ui_.action_OpenFolder->setEnabled(one_selection && have_selection_with_metadata && session_.isLocalFilesystem());
+    ui_.action_OpenFolder->setEnabled(one_selection && have_selection_with_metadata && session_.is_local_filesystem());
     ui_.action_CopyMagnetToClipboard->setEnabled(one_selection);
 
     ui_.action_SelectAll->setEnabled(selected < row_count);
@@ -1271,6 +1274,12 @@ void MainWindow::addTorrents(QStringList const& filenames)
     if (auto const* const file_dialog = qobject_cast<QFileDialog const*>(sender()); file_dialog != nullptr) {
         if (auto const* const b = file_dialog->findChild<QCheckBox const*>(show_options_checkbox_name_); b != nullptr) {
             show_options = b->isChecked();
+        }
+
+        // Remember this folder the next time we use this dialog.
+        // Read it from the selection: with the XDG portal, directory() returns the starting folder.
+        if (!filenames.isEmpty()) {
+            prefs_.set(TR_KEY_open_dialog_dir, QFileInfo{ filenames.front() }.absolutePath());
         }
     }
 

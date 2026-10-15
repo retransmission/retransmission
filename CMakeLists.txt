@@ -92,7 +92,6 @@ option(ENABLE_WERROR "Treat warnings as errors" OFF)
 option(ENABLE_NLS "Enable native language support" ON)
 tr_auto_option(ENABLE_IPO "Enable interprocedural optimization" AUTO)
 option(INSTALL_DOC "Build/install documentation" ON)
-option(INSTALL_LIB "Install the library" OFF)
 tr_auto_option(USE_SYSTEM_DEFAULT "Default value for USE_SYSTEM_* options" AUTO)
 tr_auto_option(RUN_CLANG_TIDY "Run clang-tidy on the code" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_ARCHIVE "Use system libarchive library" ${USE_SYSTEM_DEFAULT})
@@ -119,6 +118,32 @@ tr_auto_option(WITH_SYSTEMD "Add support for systemd startup notification (on sy
 mark_as_advanced(USE_SYSTEM_DEFAULT)
 
 set(TR_NAME ${PROJECT_NAME})
+
+# The app's names, read from libtransmission/macros.h.
+# The code looks up installed data under TR_PROJ_APPNAME, e.g. <datadir>/retransmission/public_html.
+foreach(NAME IN ITEMS TR_PROJ_APPNAME TR_PROJ_APPNAME_CAPITALIZED TR_PROJ_DOMAIN_TLD TR_PROJ_DOMAIN_SLD)
+    tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h ${NAME} ${NAME})
+endforeach()
+
+# The reverse-DNS app ID, built as macros.h builds TR_PROJ_APPNAME_RDNS.
+# The macOS bundle ID and the GTK app ID both use it.
+set(TR_PROJ_APPNAME_RDNS ${TR_PROJ_DOMAIN_TLD}.${TR_PROJ_DOMAIN_SLD}.${TR_PROJ_APPNAME})
+
+# The app's installed data, such as the web client and the Qt client's translations.
+set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
+set(TR_DATA_INSTALL_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/${TR_PROJ_APPNAME})
+
+# The app's installed docs, unless the user chose a dir.
+# GNUInstallDirs names its default after the CMake project instead of the app,
+# and leaves the cache entry empty while that default applies.
+if("$CACHE{CMAKE_INSTALL_DOCDIR}" STREQUAL "")
+    set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${TR_PROJ_APPNAME})
+    set(CMAKE_INSTALL_FULL_DOCDIR ${CMAKE_INSTALL_FULL_DATAROOTDIR}/doc/${TR_PROJ_APPNAME})
+endif()
+set_property(CACHE CMAKE_INSTALL_DOCDIR PROPERTY HELPSTRING "Documentation root (DATAROOTDIR/doc/${TR_PROJ_APPNAME})")
+
+# The gettext domain, which names each language's installed catalog.
+set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
 
 # major.minor.patch[-[beta.N.]dev]+commit_hash
 # dev builds come between releases, e.g. autobuilds from CI
@@ -963,23 +988,6 @@ if(RUN_CLANG_TIDY)
         set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY}" --allow-no-checks)
     endif()
 endif()
-
-# The app's names, read from libtransmission/macros.h.
-# The code looks up installed data under TR_PROJ_APPNAME, e.g. <datadir>/retransmission/public_html.
-foreach(NAME IN ITEMS TR_PROJ_APPNAME TR_PROJ_APPNAME_CAPITALIZED TR_PROJ_DOMAIN_TLD TR_PROJ_DOMAIN_SLD)
-    tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h ${NAME} ${NAME})
-endforeach()
-
-# The reverse-DNS app ID, built as macros.h builds TR_PROJ_APPNAME_RDNS.
-# The macOS bundle ID and the GTK app ID both use it.
-set(TR_PROJ_APPNAME_RDNS ${TR_PROJ_DOMAIN_TLD}.${TR_PROJ_DOMAIN_SLD}.${TR_PROJ_APPNAME})
-
-# The app's installed data, such as the web client and the Qt client's translations.
-set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
-set(TR_DATA_INSTALL_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/${TR_PROJ_APPNAME})
-
-# The gettext domain, which names each language's installed catalog.
-set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
 
 # Names the clients' desktop entries carry, set here so that tests/ can check the entries against them.
 # The GTK client and its desktop entry share the app id.

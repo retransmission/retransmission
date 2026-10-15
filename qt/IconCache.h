@@ -12,14 +12,13 @@
 #include <optional>
 #include <unordered_map>
 
+#include <QtCore/QHashFunctions> // std::hash<QString>
 #include <QtCore/QString>
 
 #include <QtGui/QIcon>
 
 #include <QtWidgets/QFileIconProvider>
 #include <QtWidgets/QStyle>
-
-#include "Utils.h" // std::hash<QString>()
 
 #if defined(_WIN32)
 class QFileInfo;

@@ -1760,9 +1760,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Engel listesi {count:L} kural içeriyor&lt;/i&gt;</numerusform>
+            <numerusform>Engel listesi {count:L} kural içeriyor</numerusform>
         </translation>
     </message>
     <message>

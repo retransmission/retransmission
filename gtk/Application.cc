@@ -78,7 +78,6 @@
 #include <algorithm>
 #include <csignal>
 #include <cstdlib> // exit()
-#include <ctime>
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
@@ -603,7 +602,7 @@ void Application::Impl::on_startup()
     }
 
     /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all());
+    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all(), gtr_file_trash_or_remove);
 
     if (tr_sessionConfigDirIsContended(session)) {
         config_dir_contended_ = true;
@@ -646,17 +645,6 @@ void Application::Impl::on_startup()
         Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
         return TR_RPC_NOREMOVE;
     });
-
-    /* check & see if it's time to update the blocklist */
-    if (gtr_pref_flag_get(TR_KEY_blocklist_enabled) && gtr_pref_flag_get(TR_KEY_blocklist_updates_enabled)) {
-        auto const last_time = gtr_pref_int_get<time_t>(TR_KEY_blocklist_date);
-        int const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
-        time_t const now = time(nullptr);
-
-        if (last_time + SECONDS_IN_A_WEEK < now) {
-            core_->blocklist_update();
-        }
-    }
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
@@ -1129,6 +1117,10 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
 
     case TR_KEY_blocklist_url:
         tr_blocklistSetURL(tr, gtr_pref_string_get(key));
+        break;
+
+    case TR_KEY_blocklist_updates_enabled:
+        tr_blocklistSetUpdatesEnabled(tr, gtr_pref_flag_get(key));
         break;
 
     case TR_KEY_show_notification_area_icon:

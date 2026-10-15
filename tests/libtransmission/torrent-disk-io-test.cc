@@ -937,7 +937,7 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
                 EXPECT_TRUE(hash);
                 hash_completed = true;
             });
-        tr_torrentRemove(tor, GetParam(), {});
+        tr_torrentRemove(tor, GetParam());
         EXPECT_EQ(tor, session_->torrents().get(id));
         EXPECT_FALSE(tor->is_running());
         EXPECT_FALSE(tor->on_block_received(1U));

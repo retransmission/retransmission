@@ -1801,12 +1801,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravilo&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravili&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravila&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravil&lt;/i&gt;</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravilo</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravili</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravila</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravil</numerusform>
         </translation>
     </message>
     <message>

@@ -140,8 +140,7 @@ void AddData::disposeSourceFile() const
 
     switch (*disposal_) {
     case FilenameDisposal::Delete:
-        file.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
-        file.remove();
+        Utils::trashOrRemove(filename.toStdString());
         break;
 
     case FilenameDisposal::Rename:

@@ -1790,11 +1790,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} regułę&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguły&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguł&lt;/i&gt;</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} regułę</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} reguły</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} reguł</numerusform>
         </translation>
     </message>
     <message>

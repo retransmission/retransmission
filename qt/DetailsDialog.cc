@@ -1517,7 +1517,7 @@ void DetailsDialog::onPathEdited(QString const& old_path, QString const& new_nam
 
 void DetailsDialog::onOpenRequested(QString const& path) const
 {
-    if (!session_.isLocalFilesystem()) {
+    if (!session_.is_local_filesystem()) {
         return;
     }
 

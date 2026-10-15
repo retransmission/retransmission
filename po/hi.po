@@ -552,6 +552,12 @@ msgstr ""
 msgid "{disk_space} free"
 msgstr ""
 
+#: ../gtk/MainWindow.cc:377
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
+msgstr[1] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
+
 #: ../gtk/MainWindow.cc:385
 msgid ""
 "Click to disable Alternative Speed Limits\n"
