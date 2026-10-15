@@ -136,7 +136,12 @@ class Sandbox
 {
 public:
     Sandbox()
-        : parent_dir_{ getDefaultParentDir() }
+        : Sandbox{ getDefaultParentDir() }
+    {
+    }
+
+    explicit Sandbox(std::string parent_dir)
+        : parent_dir_{ std::move(parent_dir) }
         , sandbox_dir_{ createSandbox(parent_dir_, TR_PROJ_APPNAME "-test-XXXXXX") }
     {
     }

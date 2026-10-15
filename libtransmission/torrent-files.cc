@@ -219,6 +219,24 @@ bool tr_torrent_files::move(
         return false;
     }
 
+    // Copied sources stay until every file is in place.
+    // A kill mid-copy then leaves each copied file's source where the resume file says it is.
+    auto moved = std::vector<std::pair<FoundFile, tr_file_moved>>{};
+    moved.reserve(std::size(moves));
+
+    // Puts back what already moved, so a failed move leaves the old dirs whole.
+    // It's best effort, since the move has already failed.
+    auto const undo = [&moved, &parent] {
+        for (auto const& [found, how] : moved) {
+            auto const path = found.filename_under<tr_pathbuf>(parent);
+            if (how == tr_file_moved::Renamed) {
+                tr_sys_path_rename(path, found.filename<tr_pathbuf>());
+            } else {
+                tr_sys_path_remove(path);
+            }
+        }
+    };
+
     for (auto const& [i, found] : moves) {
         auto const old_path = found.filename<tr_pathbuf>();
         auto const path = found.filename_under<tr_pathbuf>(parent);
@@ -231,9 +249,29 @@ bool tr_torrent_files::move(
                 parent_name);
         }
         tr_logAddTrace(fmt::format("Moving file #{:d} from '{:s}' to '{:s}'", i, old_path.sv(), path.sv()), parent_name);
-        if (!tr_file_move(old_path, path, true, error)) {
+        auto const how = tr_file_rename_or_copy(old_path, path, error);
+        if (!how) {
             error->prefix_message(fmt::format("'{:s}': ", old_path.sv()));
+            undo();
             return false;
+        }
+        moved.emplace_back(found, *how);
+    }
+
+    for (auto const& [found, how] : moved) {
+        if (how != tr_file_moved::Copied) {
+            continue;
+        }
+
+        auto const old_path = found.filename<tr_pathbuf>();
+        if (auto log_error = tr_error{}; !tr_sys_path_remove(old_path, &log_error)) {
+            tr_logAddError(
+                fmt::format(
+                    "Couldn't remove '{path}': {error} ({error_code})",
+                    fmt::arg("path", old_path.sv()),
+                    fmt::arg("error", log_error.message()),
+                    fmt::arg("error_code", log_error.code())),
+                parent_name);
         }
     }
 
@@ -354,7 +392,7 @@ void tr_torrent_files::remove(
             // if moving a file fails, give up and let the error propagate
             auto const from = found->filename<tr_pathbuf>();
             auto const to = found->filename_under<tr_pathbuf>(tmpdir);
-            if (!tr_file_move(from, to, false, error)) {
+            if (!tr_file_move(from, to, error)) {
                 return;
             }
         }

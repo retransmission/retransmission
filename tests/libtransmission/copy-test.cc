@@ -150,6 +150,19 @@ TEST_F(CopyTest, atomicCopyOfAReadOnlySource)
     expectAtomicCopy(source, target);
 }
 
+TEST_F(CopyTest, renameOrCopyRenamesWithinAFilesystem)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/dir/target.bin"sv };
+    createFileWithContents(source, "contents"sv);
+
+    auto error = tr_error{};
+    EXPECT_EQ(tr_file_moved::Renamed, tr_file_rename_or_copy(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_FALSE(tr_sys_path_exists(source));
+    expectContents(target, "contents"sv);
+}
+
 TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
 {
     auto const source = tr_pathbuf{ sandboxDir(), "/missing.bin"sv };
