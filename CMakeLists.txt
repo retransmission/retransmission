@@ -878,6 +878,7 @@ else()
         -Wstring-conversion
         -Wsuggest-destructor-override
         -Wsuggest-override
+        -Wundef
         -Wuninitialized
         -Wunreachable-code
         -Wunused
