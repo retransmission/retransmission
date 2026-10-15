@@ -959,11 +959,7 @@ void tr_announcer_impl::onAnnounceDone(
         session->set_global_address(*response.external_ip);
     }
 
-    if (!response.did_connect) {
-        on_announce_error(tier, _("Could not connect to tracker"), event);
-    } else if (response.did_timeout) {
-        on_announce_error(tier, _("Tracker did not respond"), event);
-    } else if (!std::empty(response.errmsg)) {
+    if (!std::empty(response.errmsg)) {
         /* If the torrent's only tracker returned an error, publish it.
            Don't bother publishing if there are other trackers -- it's
            all too common for people to load up dozens of dead trackers
@@ -977,6 +973,10 @@ void tr_announcer_impl::onAnnounceDone(
             response.errmsg,
             event,
             response.interval > time_t{} ? response.interval : response.min_interval);
+    } else if (!response.did_connect) {
+        on_announce_error(tier, _("Could not connect to tracker"), event);
+    } else if (response.did_timeout) {
+        on_announce_error(tier, _("Tracker did not respond"), event);
     } else {
         auto const is_stopped = event == TR_ANNOUNCE_EVENT_STOPPED;
         auto scrape_fields = uint8_t{};
