@@ -30,13 +30,6 @@ namespace
 {
 class TorrentFilesTest : public ::tr::test::SandboxedTest
 {
-protected:
-    static void expectContents(std::string_view path, std::string_view expected)
-    {
-        auto contents = std::vector<char>{};
-        ASSERT_TRUE(tr_file_read(path, contents));
-        EXPECT_EQ(expected, (std::string_view{ contents.data(), contents.size() }));
-    }
 };
 } // namespace
 
@@ -104,6 +97,9 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     createFileWithContents(tr_pathbuf{ download, "/name/nested/data"sv }, "second"sv);
     // The nested tree becomes empty; notes.txt keeps its parent alive.
     createFileWithContents(tr_pathbuf{ download, "/name/nested/.DS_Store"sv }, "junk"sv);
+    createFileWithContents(
+        tr::detail::file_copy_temp_path(tr_pathbuf{ download, "/name/nested/data"sv }),
+        "interrupted copy"sv);
     createFileWithContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     createFileWithContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
     ASSERT_TRUE(files.move(roots, target, "name"));

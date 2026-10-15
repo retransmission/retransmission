@@ -84,6 +84,11 @@ void depth_first_walk(
     }
 #endif
 
+    // a copy that a crash interrupted mid-move
+    if (base.starts_with(TrFileCopyPrefix)) {
+        return true;
+    }
+
     auto constexpr Files = std::to_array<std::string_view>({
         ".DS_Store"sv,
         "Thumbs.db"sv,

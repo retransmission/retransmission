@@ -34,6 +34,7 @@
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/env.h> // tr_env_key_exists()
 #include <libtransmission/error.h>
+#include <libtransmission/file-utils.h> // tr_file_read()
 #include <libtransmission/file.h> // tr_sys_file_*()
 #include <libtransmission/local-data.h>
 #include <libtransmission/macros.h>
@@ -305,6 +306,13 @@ protected:
     static void createFileWithContents(std::string_view path, void const* payload)
     {
         createFileWithContents(path, payload, strlen(static_cast<char const*>(payload)));
+    }
+
+    static void expectContents(std::string_view const path, std::string_view const expected)
+    {
+        auto contents = std::vector<char>{};
+        ASSERT_TRUE(tr_file_read(path, contents));
+        EXPECT_EQ(expected, (std::string_view{ contents.data(), contents.size() }));
     }
 
     bool verbose_ = false;
