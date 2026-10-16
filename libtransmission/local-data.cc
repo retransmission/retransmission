@@ -798,7 +798,11 @@ private:
     static void unregister_running_hash(Gate& gate, tr_byte_span_t const span)
     {
         auto& hashes = gate.running_hashes;
-        auto const it = std::ranges::find(hashes, span);
+        // find_if rather than find: when clang parses MSVC's STL, std::find over
+        // this trivially comparable 16-byte struct is routed to the STL's
+        // vectorized find, which only handles 1-, 2-, 4- and 8-byte elements
+        // and fails to compile.
+        auto const it = std::ranges::find_if(hashes, [span](tr_byte_span_t const& hash) { return hash == span; });
         TR_ASSERT(it != std::end(hashes));
         hashes.erase(it);
     }
