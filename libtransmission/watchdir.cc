@@ -16,7 +16,6 @@
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
 #include "libtransmission/tr-strbuf.h"
-#include "libtransmission/utils.h" // for _()
 #include "libtransmission/watchdir-base.h"
 
 using namespace std::literals;

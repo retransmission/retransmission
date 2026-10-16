@@ -41,7 +41,6 @@
 #include "libtransmission/torrents.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
-#include "libtransmission/utils.h" // _()
 
 namespace tr
 {
