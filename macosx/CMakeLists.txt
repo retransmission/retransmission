@@ -345,7 +345,6 @@ set(BASE_XIB_FILES
     Creator.xib
     GroupRules.xib
     InfoActivityView.xib
-    InfoGeneralView.xib
     InfoOptionsView.xib
     MainMenu.xib
     PrefsWindow.xib)
@@ -354,6 +353,7 @@ list(TRANSFORM BASE_XIB_FILES
 
 set(LANG_STRINGS_FILES
     GlobalOptionsPopover.strings
+    InfoGeneralView.strings
     InfoPlist.strings
     Localizable.strings)
 
