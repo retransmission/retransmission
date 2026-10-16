@@ -40,7 +40,7 @@
 #include "libtransmission/torrent.h"
 #include "libtransmission/torrents.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 
 namespace tr
 {

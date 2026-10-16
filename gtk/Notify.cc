@@ -12,6 +12,7 @@
 #include "Utils.h"
 
 #include <libtransmission/macros.h>
+#include <libtransmission/transmission.h>
 
 #include <giomm/asyncresult.h>
 #include <giomm/dbusproxy.h>

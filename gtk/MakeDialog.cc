@@ -14,7 +14,7 @@
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
 #include <libtransmission/torrent-builder.h>
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/values.h>
 
 #include <gtkmm/adjustment.h>

@@ -8,7 +8,7 @@
 #include "Flags.h"
 #include "IconCache.h"
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/values.h>
 
 #include <gtkmm/treemodelcolumn.h>
@@ -22,6 +22,8 @@
 #include <memory>
 
 class Percents;
+
+struct tr_torrent;
 
 class Torrent
     : public Glib::ExtraClassInit

@@ -10,8 +10,6 @@
 
 #include <small/vector.hpp>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/constants.h>
 #include <libtransmission/net.h>
 #include <libtransmission/open-files.h>
@@ -19,6 +17,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/session.h>
 #include <libtransmission/session-settings.h>
+#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include "test-fixtures.h"
