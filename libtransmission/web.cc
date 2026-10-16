@@ -61,6 +61,7 @@
 #endif
 #include "libtransmission/env.h"
 #include "libtransmission/log.h"
+#include "libtransmission/net.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
@@ -354,20 +355,12 @@ public:
             }
         }
 
-        [[nodiscard]] auto bind_address() const
+        [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
         {
-            switch (options_.ip_proto) {
-            case FetchOptions::IPProtocol::V4:
-                return impl.mediator.bind_address_V4();
-            case FetchOptions::IPProtocol::V6:
-                return impl.mediator.bind_address_V6();
-            default:
-                auto ip = impl.mediator.bind_address_V4();
-                if (!ip) {
-                    ip = impl.mediator.bind_address_V6();
-                }
-                return ip;
+            if (auto const addr = impl.mediator.bind_address(af)) {
+                return tr_address::from_string(*addr);
             }
+            return {};
         }
 
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
@@ -594,29 +587,55 @@ public:
         return bytes;
     }
 
-    static int onSocketCreated(void* vtask, curl_socket_t fd, curlsocktype /*purpose*/)
+    static curl_socket_t open_socket(void* const vtask, curlsocktype /*purpose*/, curl_sockaddr* const address)
     {
-        auto const* const task = static_cast<Task const*>(vtask);
+        auto const task = static_cast<Task const*>(vtask);
         TR_ASSERT(std::this_thread::get_id() == task->impl.curl_thread->get_id());
+
+        auto const sock = ::socket(address->family, address->socktype, address->protocol);
+        if (!is_valid_socket(sock)) {
+            return CURL_SOCKET_BAD;
+        }
+
+        if (address->family == AF_INET || address->family == AF_INET6) {
+#ifdef IP_BIND_ADDRESS_NO_PORT
+            static constexpr int One = 1;
+            (void)::setsockopt(sock, SOL_IP, IP_BIND_ADDRESS_NO_PORT, reinterpret_cast<char const*>(&One), sizeof(One));
+#endif
+
+            if (auto const bind_addr = task->bind_address(address->family)) {
+                auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(*bind_addr, tr_port{});
+                if (::bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) != 0) {
+                    goto error_out;
+                }
+            }
+        }
 
         // Ignore the sockopt() return values -- these are suggestions
         // rather than hard requirements & it's OK for them to fail
-
         if (auto const& buf = task->options().sndbuf; buf) {
-            (void)setsockopt(fd, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
+            (void)::setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
         if (auto const& buf = task->options().rcvbuf; buf) {
-            (void)setsockopt(fd, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
+            (void)::setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
 
-        // return nonzero if this function encountered an error
-        return 0;
+        return sock;
+
+error_out:
+        tr_net_close_socket(sock);
+        return CURL_SOCKET_BAD;
     }
 
     void initEasy(Task& task)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
         auto* const e = task.easy();
+
+        // N.B. DO NOT set these options, they should be handled manually in CURLOPT_OPENSOCKETFUNCTION:
+        // - CURLOPT_INTERFACE
+        // - CURLOPT_LOCALPORT
+        // - CURLOPT_LOCALPORTRANGE
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
@@ -630,8 +649,8 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_NOSIGNAL, 1L);
         (void)curl_easy_setopt(e, CURLOPT_PRIVATE, &task);
         (void)curl_easy_setopt(e, CURLOPT_IPRESOLVE, task.ipProtocol());
-        (void)curl_easy_setopt(e, CURLOPT_SOCKOPTFUNCTION, onSocketCreated);
-        (void)curl_easy_setopt(e, CURLOPT_SOCKOPTDATA, &task);
+        (void)curl_easy_setopt(e, CURLOPT_OPENSOCKETDATA, &task);
+        (void)curl_easy_setopt(e, CURLOPT_OPENSOCKETFUNCTION, open_socket);
 
         // per-request override falls back to the env-var-driven default
         auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
@@ -667,10 +686,6 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_VERBOSE, task.options().verbose.value_or(curl_verbose) ? 1L : 0L);
         (void)curl_easy_setopt(e, CURLOPT_WRITEDATA, &task);
         (void)curl_easy_setopt(e, CURLOPT_WRITEFUNCTION, &tr_web::Impl::onDataReceived);
-
-        if (auto const addrstr = task.bind_address(); addrstr) {
-            (void)curl_easy_setopt(e, CURLOPT_INTERFACE, addrstr->c_str());
-        }
 
         if (auto const& cookies = task.options().cookies; cookies) {
             (void)curl_easy_setopt(e, CURLOPT_COOKIE, cookies->c_str());
