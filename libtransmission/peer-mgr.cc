@@ -930,7 +930,7 @@ private:
 
             // if there is an existing connection to this peer, keep the better one
             if (info_that->is_connected() && on_got_port_duplicate_connection(msgs, info_that)) {
-                goto EXIT; // NOLINT cppcoreguidelines-avoid-goto
+                goto EXIT;
             }
 
             // merge the peer info objects
