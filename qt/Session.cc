@@ -57,7 +57,7 @@ using ::trqt::variant_helpers::dictFind;
 ****
 ***/
 
-void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
+void Session::portTest(tr_address_type const ip_protocol)
 {
     static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
 
@@ -88,9 +88,9 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
         .run();
 }
 
-bool Session::portTestPending(Session::PortTestIpProtocol const ip_protocol) const noexcept
+bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
 {
-    return ip_protocol < NUM_PORT_TEST_IP_PROTOCOL && port_test_pending_[ip_protocol];
+    return ip_protocol < NUM_TR_AF_INET_TYPES && port_test_pending_[ip_protocol];
 }
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)

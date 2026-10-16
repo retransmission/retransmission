@@ -322,11 +322,11 @@ QString PrefsDialog::getPortStatusText(PrefsDialog::PortTestStatus status) noexc
 
 void PrefsDialog::updatePortStatusLabel()
 {
-    auto const status_ipv4 = getPortStatusText(port_test_status_[Session::PORT_TEST_IPV4]);
-    auto const status_ipv6 = getPortStatusText(port_test_status_[Session::PORT_TEST_IPV6]);
+    auto const status_ipv4 = getPortStatusText(port_test_status_[TR_AF_INET]);
+    auto const status_ipv6 = getPortStatusText(port_test_status_[TR_AF_INET6]);
 
     ui_.peerPortStatusLabel->setText(
-        port_test_status_[Session::PORT_TEST_IPV4] == port_test_status_[Session::PORT_TEST_IPV6] ?
+        port_test_status_[TR_AF_INET] == port_test_status_[TR_AF_INET6] ?
             TR_FORMAT("Status: <b>{status}</b>", fmt::arg("status", status_ipv4)) :
             TR_FORMAT(
                 "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)",
@@ -339,13 +339,12 @@ void PrefsDialog::portTestSetEnabled()
     // Depend on the RPC call status instead of the UI status, so that the widgets
     // won't be enabled even if the port peer port changed while we have port_test
     // RPC call(s) in-flight.
-    auto const sensitive = !session_.portTestPending(Session::PORT_TEST_IPV4) &&
-        !session_.portTestPending(Session::PORT_TEST_IPV6);
+    auto const sensitive = !session_.portTestPending(TR_AF_INET) && !session_.portTestPending(TR_AF_INET6);
     ui_.testPeerPortButton->setEnabled(sensitive);
     ui_.peerPortSpin->setEnabled(sensitive);
 }
 
-void PrefsDialog::onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol)
+void PrefsDialog::onPortTested(std::optional<bool> const result, tr_address_type const ip_protocol)
 {
     constexpr auto StatusFromResult = [](std::optional<bool> const res) {
         if (!res) {
@@ -369,12 +368,12 @@ void PrefsDialog::onPortTested(std::optional<bool> result, Session::PortTestIpPr
 
 void PrefsDialog::onPortTest()
 {
-    port_test_status_[Session::PORT_TEST_IPV4] = PortTestStatus::Checking;
-    port_test_status_[Session::PORT_TEST_IPV6] = PortTestStatus::Checking;
+    port_test_status_[TR_AF_INET] = PortTestStatus::Checking;
+    port_test_status_[TR_AF_INET6] = PortTestStatus::Checking;
     updatePortStatusLabel();
 
-    session_.portTest(Session::PORT_TEST_IPV4);
-    session_.portTest(Session::PORT_TEST_IPV6);
+    session_.portTest(TR_AF_INET);
+    session_.portTest(TR_AF_INET6);
 
     portTestSetEnabled();
 }
@@ -750,8 +749,8 @@ void PrefsDialog::refreshPref(tr_quark key)
         }
 
     case TR_KEY_peer_port:
-        port_test_status_[Session::PORT_TEST_IPV4] = PortTestStatus::Unknown;
-        port_test_status_[Session::PORT_TEST_IPV6] = PortTestStatus::Unknown;
+        port_test_status_[TR_AF_INET] = PortTestStatus::Unknown;
+        port_test_status_[TR_AF_INET6] = PortTestStatus::Unknown;
         updatePortStatusLabel();
         portTestSetEnabled();
         break;

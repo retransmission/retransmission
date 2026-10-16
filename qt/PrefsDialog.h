@@ -13,6 +13,8 @@
 
 #include <QtCore/QTimer>
 
+#include <libtransmission/types.h>
+
 #include "BaseDialog.h"
 #include "Prefs.h"
 #include "Session.h"
@@ -39,7 +41,7 @@ public:
 private slots:
     void refreshPref(tr_quark key);
     void sessionUpdated();
-    void onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol);
+    void onPortTested(std::optional<bool> result, tr_address_type ip_protocol);
     void onPortTest();
     void onIdleLimitChanged();
     void onQueueStalledMinutesChanged();
@@ -97,7 +99,7 @@ private:
 
     bool const is_embedded_;
     bool is_local_fs_ = {};
-    std::array<PortTestStatus, Session::NUM_PORT_TEST_IP_PROTOCOL> port_test_status_ = {};
+    std::array<PortTestStatus, NUM_TR_AF_INET_TYPES> port_test_status_ = {};
 
     std::multimap<tr_quark, std::function<void()>> updaters_;
 
