@@ -191,14 +191,8 @@ public:
             return std::nullopt;
         }
 
-        // Return IPv4 user public address string, or nullopt to not use one
-        [[nodiscard]] virtual std::optional<std::string> bind_address_V4() const
-        {
-            return std::nullopt;
-        }
-
-        // Return IPv6 user public address string, or nullopt to not use one
-        [[nodiscard]] virtual std::optional<std::string> bind_address_V6() const
+        // Return bind address string, or nullopt to not use one
+        [[nodiscard]] virtual std::optional<std::string> bind_address(int /*af*/) const
         {
             return std::nullopt;
         }

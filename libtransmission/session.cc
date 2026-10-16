@@ -303,22 +303,13 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address_V4() const
+std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
 {
-    if (auto const addr = session_->bind_address(TR_AF_INET); !addr.is_any()) {
+    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
         return addr.display_name();
     }
 
-    return std::nullopt;
-}
-
-std::optional<std::string> tr_session::WebMediator::bind_address_V6() const
-{
-    if (auto const addr = session_->bind_address(TR_AF_INET6); !addr.is_any()) {
-        return addr.display_name();
-    }
-
-    return std::nullopt;
+    return {};
 }
 
 size_t tr_session::WebMediator::clamp(int torrent_id, size_t byte_count) const
