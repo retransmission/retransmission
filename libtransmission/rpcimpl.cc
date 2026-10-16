@@ -1456,15 +1456,15 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
             break;
 
         case tr_blocklist_update_status::DownloadError:
-            tr_rpc_idle_done(idle_data, Error::FETCH_ERROR, result.error);
+            tr_rpc_idle_done(idle_data, Error::FETCH_ERROR, result.message);
             break;
 
         case tr_blocklist_update_status::SaveError:
-            tr_rpc_idle_done(idle_data, Error::SYSTEM_ERROR, result.error);
+            tr_rpc_idle_done(idle_data, Error::SYSTEM_ERROR, result.message);
             break;
 
         case tr_blocklist_update_status::InvalidData:
-            tr_rpc_idle_done(idle_data, Error::INVALID_BLOCKLIST_DATA, result.error);
+            tr_rpc_idle_done(idle_data, Error::INVALID_BLOCKLIST_DATA, result.message);
             break;
         }
     });

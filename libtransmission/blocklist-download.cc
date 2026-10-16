@@ -162,7 +162,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 
     if (response.errmsg) {
         result.status = tr_blocklist_update_status::DownloadError;
-        result.error = fmt::format(
+        result.message = fmt::format(
             fmt::runtime(_("Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})")),
             fmt::arg("errmsg", *response.errmsg),
             fmt::arg("error", tr_webGetResponseStr(response.status)),
@@ -174,7 +174,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     if (response.status != 200) {
         // we failed to download the blocklist...
         result.status = tr_blocklist_update_status::DownloadError;
-        result.error = fmt::format(
+        result.message = fmt::format(
             fmt::runtime(_("Couldn't fetch blocklist: {error} ({error_code})")),
             fmt::arg("error", tr_webGetResponseStr(response.status)),
             fmt::arg("error_code", response.status));
@@ -195,7 +195,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     } else if (!std::empty(error)) {
         // couldn't write the downloaded content to disk
         result.status = tr_blocklist_update_status::SaveError;
-        result.error = std::move(error);
+        result.message = std::move(error);
     } else {
         // the content held no parseable rules; leave the existing list in place
         result.status = tr_blocklist_update_status::InvalidData;
@@ -217,9 +217,13 @@ Updater::~Updater()
     // The fetch's own completion then finds no waiters and does nothing.
     closing_ = true;
     if (auto pending = latest_.lock()) {
-        auto result = tr_blocklist_update_result{};
-        result.status = tr_blocklist_update_status::DownloadError;
-        result.error = _("Couldn't update blocklist: the session is closing");
+        // A status without a message: composing one allocates, and a
+        // destructor has no way to report allocation failure.
+        auto const result = tr_blocklist_update_result{
+            .status = tr_blocklist_update_status::DownloadError,
+            .n_rules = 0U,
+            .message = {},
+        };
         deliver(*pending, result);
     }
 }
@@ -288,8 +292,8 @@ void Updater::on_auto_update_timer()
         if (result.status == tr_blocklist_update_status::Ok) {
             tr_logAddInfo(
                 fmt::format("Automatically updated blocklist, which now has {count} rules", fmt::arg("count", result.n_rules)));
-        } else if (!std::empty(result.error)) {
-            tr_logAddWarn(std::string{ result.error });
+        } else if (!std::empty(result.message)) {
+            tr_logAddWarn(std::string{ result.message });
         } else {
             tr_logAddWarn("Couldn't update blocklist");
         }

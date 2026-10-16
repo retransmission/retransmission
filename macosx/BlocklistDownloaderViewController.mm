@@ -56,7 +56,7 @@
 - (void)didFinishDownload:(tr_blocklist_update_result const&)result
 {
     tr_blocklist_update_status const status = result.status;
-    NSString* const error = result.error.empty() ? nil : @(result.error.c_str());
+    NSString* const error = result.message.empty() ? nil : @(result.message.c_str());
 
     [self.fProgressBar stopAnimation:nil];
 
