@@ -280,7 +280,7 @@ public:
             , options_{ std::move(options_in) }
         {
             auto const parsed = tr_urlParse(options_.url);
-            easy_ = parsed ? impl.get_easy(parsed->host) : nullptr;
+            easy_ = parsed ? impl.get_easy(parsed->host) : curl_easy_init();
 
             response.request_url = options_.url;
             response.user_data = options_.done_func_user_data;
