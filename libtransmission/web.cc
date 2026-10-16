@@ -752,8 +752,11 @@ public:
         for (auto it = std::begin(paused); it != std::end(paused);) {
             auto const [easy, resume_at] = *it;
             if (resume_at < now) {
-                curl_easy_pause(easy, CURLPAUSE_CONT);
+                // N.B. The paused handles map iterator *MUST* be erased before calling `curl_easy_pause`,
+                // because `curl_easy_pause` may call the write callback synchronously, which might
+                // try to insert this easy handle back into the paused handles map.
                 it = paused.erase(it);
+                curl_easy_pause(easy, CURLPAUSE_CONT);
             } else {
                 ++it;
             }
