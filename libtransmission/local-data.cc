@@ -315,6 +315,9 @@ private:
         }
     }
 
+    // MSVC's debug iterators are not trivially copyable, which trips this
+    // check only on Windows.
+    // NOLINTNEXTLINE(performance-unnecessary-value-param)
     Entries::iterator erase(Entries::iterator const it)
     {
         bytes_ -= it->second.bytes;
@@ -1011,6 +1014,8 @@ private:
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
+            // clang-tidy 20 wrongly asks block-scope thread_locals for internal linkage.
+            // NOLINTNEXTLINE(misc-use-internal-linkage)
             thread_local auto buf = std::vector<uint8_t>{};
             buf.resize(n_bytes);
             for (auto const& op : run) {

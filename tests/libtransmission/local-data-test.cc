@@ -555,6 +555,8 @@ protected:
         if (write_budget) {
             local_data->set_write_budget(*write_budget);
         }
+        // Analyzer false positive: the descriptor moved into the lambda is still owned.
+        // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
         local_data->start_workers(n_workers, open_files_, marshal(), [desc = std::move(desc)](tr_torrent_id_t const id) {
             return id == TorId ? desc : nullptr;
         });

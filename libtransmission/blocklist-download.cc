@@ -211,6 +211,10 @@ Updater::Updater(Mediator& mediator)
 {
 }
 
+// MSVC's STL throws bad_array_new_length inline on every allocation path, so
+// only clang-tidy on Windows sees a possible throw here. Allocation failure is
+// the only exception that can reach this destructor.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 Updater::~Updater()
 {
     // Answer whoever still waits on an in-flight fetch, e.g. an RPC client's blocklist_update.
