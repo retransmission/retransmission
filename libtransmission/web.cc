@@ -38,6 +38,7 @@
 #include <fmt/format.h>
 
 #include <small/map.hpp>
+#include <small/vector.hpp>
 
 #if defined(_WIN32) && !defined(WITH_OPENSSL)
 #error Windows builds require the OpenSSL crypto backend (WITH_CRYPTO=openssl): \
@@ -991,7 +992,7 @@ error_out:
     std::map<std::string /*host*/, std::stack<curl_helpers::easy_unique_ptr>, std::less<>> easy_pool_;
 
     // TODO(curl 8.16.0): Remove all the multi_pool_ BS once we require curl 8.16.0 or above
-    std::vector<curl_helpers::multi_unique_ptr> multi_pool_;
+    small::vector<curl_helpers::multi_unique_ptr, 2U> multi_pool_;
     bool network_changed_ = false;
 
     // Only the curl thread modifies multi_pool_, all other threads read it. We only need
