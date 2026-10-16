@@ -8,9 +8,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <initializer_list>
+#include <iterator>
 #include <limits>
 #include <memory>
-#include <ranges>
 #include <utility> // for std::swap()
 #include <vector>
 

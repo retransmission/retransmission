@@ -9,7 +9,6 @@
 #include <array>
 #include <cassert>
 #include <memory>
-#include <ranges>
 #include <utility>
 
 #include <QtCore/QMimeData>

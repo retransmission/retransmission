@@ -11,10 +11,10 @@
 #include <cstring> // memcpy()
 #include <ctime>
 #include <future>
+#include <iterator>
 #include <list>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>
