@@ -741,15 +741,11 @@ public:
         }
     }
 
-    auto paused_tasks_upkeep()
+    std::optional<uint64_t> paused_tasks_upkeep()
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
         auto& paused = paused_easy_handles;
-        if (std::empty(paused)) {
-            return std::numeric_limits<uint64_t>::max();
-        }
-
         auto const now = tr_time_msec();
 
         // Unpause any tasks where the timeout has expired
@@ -761,6 +757,10 @@ public:
             } else {
                 ++it;
             }
+        }
+
+        if (std::empty(paused)) {
+            return {};
         }
 
         // Return the number of milliseconds until the next paused task should be unpaused
@@ -832,7 +832,10 @@ public:
             auto const next_unpause_ms = paused_tasks_upkeep();
 
             // Wake up once per second, or when the next task is due to unpause, whichever is sooner.
-            auto const timeout_ms = std::min(1000, static_cast<int>(next_unpause_ms));
+            static constexpr int DefaultTimeout = 1000;
+            auto const timeout_ms = next_unpause_ms && std::cmp_less(*next_unpause_ms, DefaultTimeout) ?
+                static_cast<int>(*next_unpause_ms) :
+                DefaultTimeout;
 
             // Wait for activity on the curl sockets, or for the timeout to expire.
             auto numfds = int{};
