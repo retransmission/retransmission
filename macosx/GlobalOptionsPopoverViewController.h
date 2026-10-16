@@ -4,7 +4,7 @@
 
 #import <AppKit/AppKit.h>
 
-#include <libtransmission/transmission.h>
+struct tr_session;
 
 @interface GlobalOptionsPopoverViewController : NSViewController
 

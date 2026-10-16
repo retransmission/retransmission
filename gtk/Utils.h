@@ -7,7 +7,6 @@
 
 #include "GtkCompat.h"
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/values.h>
 
 #include <gtkmm/builder.h>
@@ -39,6 +38,9 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+
+struct tr_error;
+struct tr_torrent;
 
 /***
 ****

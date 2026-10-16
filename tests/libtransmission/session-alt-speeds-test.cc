@@ -7,8 +7,8 @@
 #include <ctime>
 #include <vector>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/session-alt-speeds.h>
+#include <libtransmission/types.h>
 
 #include "test-fixtures.h"
 

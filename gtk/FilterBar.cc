@@ -15,6 +15,8 @@
 
 #include <libtransmission-app/display-modes.h>
 
+#include <libtransmission/transmission.h>
+
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrenderertext.h>

@@ -8,7 +8,6 @@
 
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include <glibmm/miscutils.h>
@@ -17,6 +16,8 @@
 #include <optional>
 #include <string>
 #include <string_view>
+
+struct tr_session;
 
 namespace tr::app
 {

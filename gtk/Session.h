@@ -11,7 +11,6 @@
 #include <libtransmission-app/favicon-cache.h>
 
 #include <libtransmission/converters.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
@@ -32,6 +31,10 @@
 #include <optional>
 #include <unordered_set>
 #include <vector>
+
+struct tr_session;
+struct tr_torrent;
+struct tr_torrent_builder;
 
 class Session : public Glib::Object
 {
