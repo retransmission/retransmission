@@ -1,0 +1,77 @@
+/* Class = "NSWindow"; title = "Retransmission"; ObjectID = "21"; */
+"21.title" = "Retransmission";
+
+/* Class = "NSMenu"; title = "Menu"; ObjectID = "456"; */
+"456.title" = "Menu";
+
+/* Class = "NSMenuItem"; title = "Pause"; ObjectID = "457"; */
+"457.title" = "Pause";
+
+/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "459"; */
+"459.title" = "Show Inspector";
+
+/* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "516"; */
+"516.title" = "Show in Finder";
+
+/* Class = "NSMenu"; title = "Menu"; ObjectID = "589"; */
+"589.title" = "Menu";
+
+/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "598"; */
+"598.title" = "Show Inspector";
+
+/* Class = "NSMenuItem"; title = "Open…"; ObjectID = "611"; */
+"611.title" = "Open…";
+
+/* Class = "NSMenuItem"; title = "Start"; ObjectID = "1028"; */
+"1028.title" = "Start";
+
+/* Class = "NSMenuItem"; title = "Remove"; ObjectID = "1550"; */
+"1550.title" = "Remove";
+
+/* Class = "NSMenuItem"; title = "Delete Files and Remove"; ObjectID = "1551"; */
+"1551.title" = "Delete Files and Remove";
+
+/* Class = "NSMenuItem"; title = "Start Now"; ObjectID = "1808"; */
+"1808.title" = "Start Now";
+
+/* Class = "NSMenuItem"; title = "Open URL…"; ObjectID = "1858"; */
+"1858.title" = "Open URL…";
+
+/* Class = "NSMenuItem"; title = "Create Torrent File…"; ObjectID = "1923"; */
+"1923.title" = "Create Torrent File…";
+
+/* Class = "NSMenuItem"; title = "Ask Tracker for More Peers"; ObjectID = "2122"; */
+"2122.title" = "Ask Tracker for More Peers";
+
+/* Class = "NSMenuItem"; title = "Group"; ObjectID = "2849"; */
+"2849.title" = "Group";
+
+/* Class = "NSMenu"; title = "Group"; ObjectID = "2850"; */
+"2850.title" = "Group";
+
+/* Class = "NSTextFieldCell"; title = "Torrents"; ObjectID = "3049"; */
+"3049.title" = "Torrents";
+
+/* Class = "NSTableColumn"; headerCell.title = "Torrent"; ObjectID = "3093"; */
+"3093.headerCell.title" = "Torrent";
+
+/* Class = "NSMenuItem"; title = "Save Torrent File As…"; ObjectID = "3207"; */
+"3207.title" = "Save Torrent File As…";
+
+/* Class = "NSMenuItem"; title = "Set Location…"; ObjectID = "3209"; */
+"3209.title" = "Set Location…";
+
+/* Class = "NSMenuItem"; title = "Copy Magnet Link to Clipboard"; ObjectID = "3218"; */
+"3218.title" = "Copy Magnet Link to Clipboard";
+
+/* Class = "NSMenuItem"; title = "Verify Local Data"; ObjectID = "3221"; */
+"3221.title" = "Verify Local Data";
+
+/* Class = "NSMenuItem"; title = "Rename…"; ObjectID = "3445"; */
+"3445.title" = "Rename…";
+
+/* Class = "NSMenuItem"; title = "Share Torrent File"; ObjectID = "8t6-wh-5UW"; */
+"8t6-wh-5UW.title" = "Share Torrent File";
+
+/* Class = "NSMenu"; title = "Share Torrent File"; ObjectID = "lvU-Va-GzM"; */
+"lvU-Va-GzM.title" = "Share Torrent File";
