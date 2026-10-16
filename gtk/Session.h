@@ -12,6 +12,7 @@
 
 #include <libtransmission/converters.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include <gdkmm/pixbuf.h>
@@ -44,12 +45,6 @@ public:
         ERR_ADD_TORRENT_ERR = 1,
         ERR_ADD_TORRENT_DUP = 2,
         ERR_NO_MORE_TORRENTS = 1000 /* finished adding a batch */
-    };
-
-    enum PortTestIpProtocol : uint8_t {
-        PORT_TEST_IPV4,
-        PORT_TEST_IPV6,
-        NUM_PORT_TEST_IP_PROTOCOL // Must always be the last value
     };
 
     using Model = IF_GTKMM4(Gio::ListModel, Gtk::TreeModel);
@@ -145,8 +140,8 @@ public:
 
     // ---
 
-    void port_test(PortTestIpProtocol ip_protocol);
-    bool port_test_pending(PortTestIpProtocol ip_protocol) const noexcept;
+    void port_test(tr_address_type ip_protocol);
+    bool port_test_pending(tr_address_type ip_protocol) const noexcept;
 
     // Recently-used directories, fetched from the session via a blocking RPC.
     [[nodiscard]] std::vector<Glib::ustring> get_recent_download_paths() const;
@@ -168,7 +163,7 @@ public:
     sigc::signal<void(bool)>& signal_blocklist_updated();
     sigc::signal<void(bool)>& signal_busy();
     sigc::signal<void(tr_quark)>& signal_prefs_changed();
-    sigc::signal<void(std::optional<bool>, PortTestIpProtocol)>& signal_port_tested();
+    sigc::signal<void(std::optional<bool>, tr_address_type)>& signal_port_tested();
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>& signal_torrents_changed();
 
 protected:

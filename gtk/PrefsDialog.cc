@@ -14,6 +14,7 @@
 #include "Utils.h"
 
 #include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/web-utils.h>
 
 #include <gtkmm/adjustment.h>
@@ -47,6 +48,7 @@
 #include <array>
 #include <cstddef> // size_t
 #include <ctime> // time_t
+#include <functional>
 #include <limits>
 #include <map>
 #include <memory>
@@ -937,7 +939,7 @@ private:
     void portTestSetSensitive();
     void updatePortStatusText();
     void onCorePrefsChanged(tr_quark key);
-    void onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol);
+    void onPortTested(std::optional<bool> result, tr_address_type ip_protocol);
     void onPortTest();
 
     static std::string_view getPortStatusText(PortTestStatus status) noexcept;
@@ -952,14 +954,14 @@ private:
     sigc::connection portTag_;
     sigc::connection prefsTag_;
 
-    std::array<PortTestStatus, Session::NUM_PORT_TEST_IP_PROTOCOL> portTestStatus_ = {};
+    std::array<PortTestStatus, NUM_TR_AF_INET_TYPES> portTestStatus_ = {};
 };
 
 void NetworkPage::onCorePrefsChanged(tr_quark const key)
 {
     if (key == TR_KEY_peer_port) {
-        portTestStatus_[Session::PORT_TEST_IPV4] = PORT_TEST_UNKNOWN;
-        portTestStatus_[Session::PORT_TEST_IPV6] = PORT_TEST_UNKNOWN;
+        portTestStatus_[TR_AF_INET] = PORT_TEST_UNKNOWN;
+        portTestStatus_[TR_AF_INET6] = PORT_TEST_UNKNOWN;
         updatePortStatusText();
         portTestSetSensitive();
     }
@@ -991,11 +993,11 @@ std::string_view NetworkPage::getPortStatusText(PortTestStatus const status) noe
 
 void NetworkPage::updatePortStatusText()
 {
-    auto const status_ipv4 = getPortStatusText(portTestStatus_[Session::PORT_TEST_IPV4]);
-    auto const status_ipv6 = getPortStatusText(portTestStatus_[Session::PORT_TEST_IPV6]);
+    auto const status_ipv4 = getPortStatusText(portTestStatus_[TR_AF_INET]);
+    auto const status_ipv6 = getPortStatusText(portTestStatus_[TR_AF_INET6]);
 
     portLabel_->set_markup(
-        portTestStatus_[Session::PORT_TEST_IPV4] == portTestStatus_[Session::PORT_TEST_IPV6] ?
+        portTestStatus_[TR_AF_INET] == portTestStatus_[TR_AF_INET6] ?
             fmt::format(fmt::runtime(_("Status: <b>{status}</b>")), fmt::arg("status", status_ipv4)) :
             fmt::format(
                 fmt::runtime(_("Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)")),
@@ -1008,13 +1010,12 @@ void NetworkPage::portTestSetSensitive()
     // Depend on the RPC call status instead of the UI status, so that the widgets
     // won't be enabled even if the port peer port changed while we have port_test
     // RPC call(s) in-flight.
-    auto const sensitive = !core_->port_test_pending(Session::PORT_TEST_IPV4) &&
-        !core_->port_test_pending(Session::PORT_TEST_IPV6);
+    auto const sensitive = !core_->port_test_pending(TR_AF_INET) && !core_->port_test_pending(TR_AF_INET6);
     portButton_->set_sensitive(sensitive);
     portSpin_->set_sensitive(sensitive);
 }
 
-void NetworkPage::onPortTested(std::optional<bool> const result, Session::PortTestIpProtocol const ip_protocol)
+void NetworkPage::onPortTested(std::optional<bool> const result, tr_address_type const ip_protocol)
 {
     auto constexpr ResultToStatus = [](std::optional<bool> const res) {
         if (!res) {
@@ -1038,17 +1039,16 @@ void NetworkPage::onPortTested(std::optional<bool> const result, Session::PortTe
 
 void NetworkPage::onPortTest()
 {
-    portTestStatus_[Session::PORT_TEST_IPV4] = PORT_TEST_CHECKING;
-    portTestStatus_[Session::PORT_TEST_IPV6] = PORT_TEST_CHECKING;
+    portTestStatus_[TR_AF_INET] = PORT_TEST_CHECKING;
+    portTestStatus_[TR_AF_INET6] = PORT_TEST_CHECKING;
     updatePortStatusText();
 
     if (!portTag_.connected()) {
-        portTag_ = core_->signal_port_tested().connect(
-            [this](std::optional<bool> status, Session::PortTestIpProtocol ip_protocol) { onPortTested(status, ip_protocol); });
+        portTag_ = core_->signal_port_tested().connect(std::bind_front(&NetworkPage::onPortTested, this));
     }
 
-    core_->port_test(Session::PORT_TEST_IPV4);
-    core_->port_test(Session::PORT_TEST_IPV6);
+    core_->port_test(TR_AF_INET);
+    core_->port_test(TR_AF_INET6);
 
     portTestSetSensitive();
 }

@@ -82,8 +82,8 @@ public:
 
     size_t get_unpaused_torrent_count() const;
 
-    bool get_port_test_pending(PortTestIpProtocol ip_protocol);
-    void set_port_test_pending(bool pending, PortTestIpProtocol ip_protocol);
+    bool get_port_test_pending(tr_address_type ip_protocol);
+    void set_port_test_pending(bool pending, tr_address_type ip_protocol);
 
     void update();
     void update_torrent(tr_torrent_id_t id);
@@ -192,7 +192,7 @@ private:
     sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
-    sigc::signal<void(std::optional<bool>, PortTestIpProtocol)> signal_port_tested_;
+    sigc::signal<void(std::optional<bool>, tr_address_type)> signal_port_tested_;
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
 
     Glib::RefPtr<Gio::FileMonitor> monitor_;
@@ -202,7 +202,7 @@ private:
     sigc::connection monitor_idle_tag_;
 
     bool adding_from_watch_dir_ = false;
-    std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
 
     woke::SleepInhibitor sleep_inhibitor_;
     gint busy_count_ = 0;
@@ -1062,7 +1062,7 @@ void Session::Impl::send_session_get(
 ****  Sending a test-port request via RPC
 ***/
 
-void Session::port_test(PortTestIpProtocol const ip_protocol)
+void Session::port_test(tr_address_type const ip_protocol)
 {
     static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
 
@@ -1092,19 +1092,19 @@ void Session::port_test(PortTestIpProtocol const ip_protocol)
     });
 }
 
-bool Session::port_test_pending(Session::PortTestIpProtocol ip_protocol) const noexcept
+bool Session::port_test_pending(tr_address_type const ip_protocol) const noexcept
 {
     return impl_->get_port_test_pending(ip_protocol);
 }
 
-bool Session::Impl::get_port_test_pending(Session::PortTestIpProtocol ip_protocol)
+bool Session::Impl::get_port_test_pending(tr_address_type const ip_protocol)
 {
-    return ip_protocol < NUM_PORT_TEST_IP_PROTOCOL && port_test_pending_[ip_protocol];
+    return ip_protocol < NUM_TR_AF_INET_TYPES && port_test_pending_[ip_protocol];
 }
 
-void Session::Impl::set_port_test_pending(bool pending, Session::PortTestIpProtocol ip_protocol)
+void Session::Impl::set_port_test_pending(bool const pending, tr_address_type const ip_protocol)
 {
-    if (ip_protocol < NUM_PORT_TEST_IP_PROTOCOL) {
+    if (ip_protocol < NUM_TR_AF_INET_TYPES) {
         port_test_pending_[ip_protocol] = pending;
     }
 }
@@ -1305,7 +1305,7 @@ sigc::signal<void(tr_quark)>& Session::signal_prefs_changed()
     return impl_->signal_prefs_changed();
 }
 
-sigc::signal<void(std::optional<bool>, Session::PortTestIpProtocol)>& Session::signal_port_tested()
+sigc::signal<void(std::optional<bool>, tr_address_type)>& Session::signal_port_tested()
 {
     return impl_->signal_port_tested();
 }

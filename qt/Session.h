@@ -196,7 +196,7 @@ private:
     QString const config_dir_;
     Prefs& prefs_;
 
-    std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
     tr_session_stats stats_ = EmptyStats;
     tr_session_stats cumulative_stats_ = EmptyStats;
