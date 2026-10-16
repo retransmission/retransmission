@@ -36,7 +36,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h"
 
 using namespace std::literals;
 

@@ -31,7 +31,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h" // tr_pathbuf
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h" // for _()
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 

@@ -11,7 +11,6 @@
 #include "Torrent.h"
 
 #include <libtransmission/types.h>
-#include <libtransmission/utils.h> /* tr_truncd() */
 
 #include <gdkmm/rectangle.h>
 #include <gdkmm/rgba.h>
