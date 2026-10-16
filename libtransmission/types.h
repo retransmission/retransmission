@@ -127,6 +127,12 @@ private:
     uint16_t hport_ = 0;
 };
 
+enum tr_address_type : uint8_t {
+    TR_AF_INET = 0,
+    TR_AF_INET6,
+    NUM_TR_AF_INET_TYPES,
+};
+
 // A serializer-friendly wrapper around the DiffServ int value
 class tr_diffserv_t
 {
