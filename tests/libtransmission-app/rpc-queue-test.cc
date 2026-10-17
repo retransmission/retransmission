@@ -114,6 +114,25 @@ TEST(AppRpcQueueTest, errorHandlerMayTakeNoArguments)
     EXPECT_TRUE(handled);
 }
 
+// A network error is a failed step like any other: it runs the step's error handler and stops the chain.
+TEST(AppRpcQueueTest, networkErrorRunsTheErrorHandler)
+{
+    auto events = std::vector<std::string>{};
+
+    RpcQueue::create()
+        .add(
+            [&events](RpcClient::ResponseFunc done) {
+                events.emplace_back("first");
+                done(error_response("lost", /*network_error=*/true));
+            },
+            [&events](RpcResponse const& response) { events.emplace_back("handler:" + response.errmsg); })
+        .add([&events]() { events.emplace_back("second"); })
+        .finally([&events]() { events.emplace_back("finally"); })
+        .run();
+
+    EXPECT_EQ((std::vector<std::string>{ "first", "handler:lost", "finally" }), events);
+}
+
 TEST(AppRpcQueueTest, finallyRunsOnAnEmptyQueue)
 {
     auto ran = false;
