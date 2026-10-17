@@ -246,7 +246,7 @@ private:
     std::unique_ptr<MainWindow> wind_;
     Glib::RefPtr<Session> core_;
     std::unique_ptr<MessageLogWindow> msgwin_;
-    std::unique_ptr<PrefsDialog> prefs_;
+    std::unique_ptr<PrefsDialog> prefs_dialog_;
     std::vector<std::string> error_list_;
     std::vector<std::string> duplicates_list_;
     std::map<std::string, std::unique_ptr<DetailsDialog>> details_;
@@ -903,7 +903,7 @@ bool Application::Impl::on_session_closed()
 {
     details_.clear();
 
-    prefs_.reset();
+    prefs_dialog_.reset();
     wind_.reset();
 
     core_.reset();
@@ -1477,12 +1477,12 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
     } else if (action_name == "deselect-all") {
         wind_->unselect_all();
     } else if (action_name == "edit-preferences") {
-        if (prefs_ == nullptr) {
-            prefs_ = PrefsDialog::create(*wind_, core_);
-            gtr_window_on_close(*prefs_, [this]() { prefs_.reset(); });
+        if (prefs_dialog_ == nullptr) {
+            prefs_dialog_ = PrefsDialog::create(*wind_, core_);
+            gtr_window_on_close(*prefs_dialog_, [this]() { prefs_dialog_.reset(); });
         }
 
-        gtr_window_present(prefs_);
+        gtr_window_present(prefs_dialog_);
     } else if (action_name == "toggle-message-log") {
         if (msgwin_ == nullptr) {
             msgwin_ = MessageLogWindow::create(*wind_, core_);
