@@ -834,6 +834,10 @@ public:
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
+            // start newly added or unpaused tasks
+            auto n_running = int{};
+            curl_multi_perform(multi.get(), &n_running);
+
             // Wake up once per second, or when the next task is due to unpause, whichever is sooner.
             static constexpr int DefaultTimeout = 1000;
             auto const timeout_ms = next_unpause_ms && std::cmp_less(*next_unpause_ms, DefaultTimeout) ?
@@ -844,8 +848,8 @@ public:
             auto numfds = int{};
             curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds);
 
-            // nonblocking update of the tasks
-            auto n_running = int{};
+            // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
+            // https://curl.se/mail/lib-2018-03/0119.html
             curl_multi_perform(multi.get(), &n_running);
 
             // process any tasks that just finished
