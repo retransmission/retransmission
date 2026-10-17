@@ -48,7 +48,6 @@
 #include <array>
 #include <cstddef> // size_t
 #include <ctime> // time_t
-#include <functional>
 #include <limits>
 #include <map>
 #include <memory>
@@ -1044,7 +1043,7 @@ void NetworkPage::onPortTest()
     updatePortStatusText();
 
     if (!portTag_.connected()) {
-        portTag_ = core_->signal_port_tested().connect(std::bind_front(&NetworkPage::onPortTested, this));
+        portTag_ = core_->signal_port_tested().connect(sigc::mem_fun(*this, &NetworkPage::onPortTested));
     }
 
     core_->port_test(TR_AF_INET);
