@@ -267,9 +267,15 @@ public:
         curl_multi_wakeup(multi_.get());
     }
 
-    [[nodiscard]] bool is_idle() const noexcept
+    [[nodiscard]] bool is_idle_unlocked() const noexcept
     {
         return std::empty(queued_tasks_) && std::empty(running_tasks_);
+    }
+
+    [[nodiscard]] bool is_idle() const noexcept
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        return is_idle_unlocked();
     }
 
     class Task
@@ -813,11 +819,11 @@ public:
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
                 auto const stop_waiting = [this]() {
-                    return !is_idle() || deadline_exists();
+                    return !is_idle_unlocked() || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
 
-                if (deadline_exists() && is_idle()) {
+                if (deadline_exists() && is_idle_unlocked()) {
                     break;
                 }
 
@@ -884,7 +890,7 @@ public:
 
     curl_helpers::multi_unique_ptr const multi_{ curl_multi_init() };
 
-    std::mutex tasks_mutex_;
+    mutable std::mutex tasks_mutex_;
     std::condition_variable queued_tasks_cv_;
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
