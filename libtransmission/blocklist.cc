@@ -9,8 +9,8 @@
 #include <cstdint>
 #include <fstream>
 #include <ios>
+#include <iterator>
 #include <optional>
-#include <ranges>
 #include <string> // std::getline()
 #include <string_view>
 #include <utility> // for std::move, std::pair

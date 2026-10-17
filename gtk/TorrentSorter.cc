@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include <array>
-#include <ranges>
+#include <iterator>
 #include <utility>
 
 using namespace std::string_view_literals;

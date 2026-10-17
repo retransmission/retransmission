@@ -16,6 +16,7 @@
 
 #include <libtransmission/converters.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 #include <libtransmission/web-utils.h>
@@ -62,7 +63,6 @@
 #include <limits>
 #include <memory>
 #include <numeric>
-#include <ranges>
 #include <span>
 #include <sstream>
 #include <string>

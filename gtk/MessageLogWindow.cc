@@ -42,8 +42,8 @@
 #include <array>
 #include <chrono>
 #include <fstream>
+#include <iterator>
 #include <memory>
-#include <ranges>
 #include <utility>
 
 namespace

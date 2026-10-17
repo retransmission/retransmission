@@ -9,9 +9,9 @@
 #include <ctime>
 #include <fstream>
 #include <ios>
+#include <iterator>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>

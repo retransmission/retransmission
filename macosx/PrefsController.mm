@@ -6,6 +6,7 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/transmission.h>
 
 #import "VDKQueue.h"
 
