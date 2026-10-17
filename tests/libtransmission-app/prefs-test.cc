@@ -245,14 +245,14 @@ TEST_F(PrefsTest, setNotifiesOnChangeOnly)
     auto prefs = TestPrefs{};
     auto const original = prefs.get<bool>(Key);
 
-    // a real change fires exactly one notification for the key
-    prefs.set(Key, !original);
+    // a real change reports itself and fires exactly one notification for the key
+    EXPECT_TRUE(prefs.set(Key, !original));
     ASSERT_EQ(std::size(prefs.changed_keys()), 1U);
     EXPECT_EQ(prefs.changed_keys().front(), static_cast<tr_quark>(Key));
 
-    // setting the same value again does not notify
+    // setting the same value again reports no change and does not notify
     prefs.clear_changed();
-    prefs.set(Key, !original);
+    EXPECT_FALSE(prefs.set(Key, !original));
     EXPECT_TRUE(std::empty(prefs.changed_keys()));
 }
 
@@ -261,7 +261,7 @@ TEST_F(PrefsTest, setFromVariantAppliesValueAndNotifies)
     static auto constexpr Key = TR_KEY_main_window_height;
 
     auto prefs = TestPrefs{};
-    prefs.set(Key, tr_variant{ int64_t{ 321 } });
+    EXPECT_TRUE(prefs.set(Key, tr_variant{ int64_t{ 321 } }));
 
     EXPECT_EQ(prefs.get<int>(Key), 321);
     ASSERT_EQ(std::size(prefs.changed_keys()), 1U);
@@ -276,7 +276,7 @@ TEST_F(PrefsTest, setFromVariantIgnoresWrongType)
     auto const original = prefs.get<int>(Key);
 
     // a string is not convertible to the int field: no change, no notification
-    prefs.set(Key, tr_variant{ "not-an-int"sv });
+    EXPECT_FALSE(prefs.set(Key, tr_variant{ "not-an-int"sv }));
 
     EXPECT_EQ(prefs.get<int>(Key), original);
     EXPECT_TRUE(std::empty(prefs.changed_keys()));
