@@ -110,15 +110,6 @@ void gtr_pref_flag_set(tr_quark const key, bool const value)
     gtr_pref_set<bool>(key, value);
 }
 
-std::vector<std::string> gtr_pref_strv_get(tr_quark const key)
-{
-    if (auto val = gtr_pref_lookup<std::vector<std::string>>(key)) {
-        return std::move(*val);
-    }
-
-    return {};
-}
-
 std::string gtr_pref_string_get(tr_quark const key)
 {
     return gtr_pref_lookup<std::string>(key).value_or(std::string{});
