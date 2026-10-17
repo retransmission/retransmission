@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -151,6 +153,19 @@ TEST_F(PrefsTest, getSetRoundTripsUint16AsInt)
     auto prefs = TestPrefs{};
     expect_get_set_roundtrip(prefs, Key, 45, 90);
     EXPECT_EQ(prefs.get<tr_variant>(Key).value_if<int64_t>(), 90);
+}
+
+// The GTK client's spin buttons read and write `uint16_t` values in `size_t` prefs.
+// Its session handlers read the same prefs as `size_t`.
+TEST_F(PrefsTest, setUint16ReadsBackAsSizeT)
+{
+    static auto constexpr Key = TR_KEY_peer_limit_global;
+
+    auto prefs = TestPrefs{};
+    prefs.set(Key, uint16_t{ 45U });
+
+    EXPECT_EQ(prefs.get<uint16_t>(Key), 45U);
+    EXPECT_EQ(prefs.get<size_t>(Key), 45U);
 }
 
 TEST_F(PrefsTest, getSetRoundTripsDouble)

@@ -63,7 +63,7 @@ class FilterBar::Impl
     using FilterModel = IF_GTKMM4(Gtk::FilterListModel, Gtk::TreeModelFilter);
 
 public:
-    Impl(FilterBar& widget, Glib::RefPtr<Session> const& core);
+    Impl(FilterBar& widget, Glib::RefPtr<Session> const& core, Prefs& prefs);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -122,6 +122,7 @@ private:
 private:
     FilterBar& widget_;
     Glib::RefPtr<Session> const core_;
+    Prefs& prefs_;
 
     Glib::RefPtr<Gtk::ListStore> const show_mode_model_;
     Glib::RefPtr<Gtk::TreeStore> const tracker_model_;
@@ -539,7 +540,7 @@ void FilterBar::Impl::update_filter_show_mode()
     auto const iter = show_mode_->get_active();
     auto const mode = iter ? iter->get_value(show_mode_filter_cols.show_mode) : DefaultShowMode;
     filter_->set_mode(mode);
-    gtr_pref_set(TR_KEY_show_mode, mode);
+    prefs_.set(TR_KEY_show_mode, mode);
 }
 
 void FilterBar::Impl::update_filter_tracker()
@@ -548,16 +549,16 @@ void FilterBar::Impl::update_filter_tracker()
     if (auto const iter = tracker_->get_active(); iter) {
         auto const sitename = iter->get_value(tracker_filter_cols.sitename);
         filter_->set_tracker(static_cast<TrackerType>(iter->get_value(tracker_filter_cols.type)), sitename);
-        gtr_pref_set(TR_KEY_filter_trackers, sitename);
+        prefs_.set(TR_KEY_filter_trackers, sitename);
     } else {
         filter_->set_tracker(TrackerType::ALL, {});
-        gtr_pref_set(TR_KEY_filter_trackers, Glib::ustring{});
+        prefs_.set(TR_KEY_filter_trackers, Glib::ustring{});
     }
 }
 
 void FilterBar::Impl::select_saved_tracker()
 {
-    auto const saved_sitename = gtr_pref_get<Glib::ustring>(TR_KEY_filter_trackers);
+    auto const saved_sitename = prefs_.get<Glib::ustring>(TR_KEY_filter_trackers);
     if (saved_sitename.empty()) {
         return;
     }
@@ -573,7 +574,7 @@ void FilterBar::Impl::select_saved_tracker()
     // so clear the saved tracker only after other trackers are listed without it.
     // The first two rows are "All" and the separator.
     if (tracker_model_->children().size() > 2U) {
-        gtr_pref_set(TR_KEY_filter_trackers, Glib::ustring{});
+        prefs_.set(TR_KEY_filter_trackers, Glib::ustring{});
     }
 }
 
@@ -666,18 +667,20 @@ FilterBar::FilterBar()
 FilterBar::FilterBar(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& /*builder*/,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    Prefs& prefs)
     : Glib::ObjectBase(typeid(FilterBar))
     , Gtk::Box(cast_item)
-    , impl_(std::make_unique<Impl>(*this, core))
+    , impl_(std::make_unique<Impl>(*this, core, prefs))
 {
 }
 
 FilterBar::~FilterBar() = default;
 
-FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
+FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core, Prefs& prefs)
     : widget_(widget)
     , core_(core)
+    , prefs_(prefs)
     , show_mode_model_(show_mode_filter_model_new())
     , tracker_model_(tracker_filter_model_new())
     , show_mode_(get_template_child<Gtk::ComboBox>("show_mode_combo"))
@@ -710,7 +713,7 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
     entry_->signal_changed().connect(sigc::mem_fun(*this, &Impl::update_filter_text));
 
     // restore the show-mode filter from the saved preference
-    auto const saved_mode = gtr_pref_get<ShowMode>(TR_KEY_show_mode, DefaultShowMode);
+    auto const saved_mode = prefs_.get<ShowMode>(TR_KEY_show_mode);
     for (auto const& row : show_mode_model_->children()) {
         if (row.get_value(show_mode_filter_cols.show_mode) == saved_mode) {
             show_mode_->set_active(TR_GTK_TREE_MODEL_CHILD_ITER(row));

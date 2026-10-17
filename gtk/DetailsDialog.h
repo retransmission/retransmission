@@ -16,6 +16,11 @@
 #include <memory>
 #include <vector>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
 class DetailsDialog : public Gtk::Dialog
@@ -25,14 +30,15 @@ public:
         BaseObjectType* cast_item,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
     DetailsDialog(DetailsDialog&&) = delete;
     DetailsDialog(DetailsDialog const&) = delete;
     DetailsDialog& operator=(DetailsDialog&&) = delete;
     DetailsDialog& operator=(DetailsDialog const&) = delete;
     ~DetailsDialog() override;
 
-    static std::unique_ptr<DetailsDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    static std::unique_ptr<DetailsDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core, tr::app::Prefs& prefs);
 
     void set_torrents(std::vector<tr_torrent_id_t> const& torrent_ids);
     void refresh();

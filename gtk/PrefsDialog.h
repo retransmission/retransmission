@@ -13,6 +13,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
 class PrefsDialog : public Gtk::Dialog
@@ -22,14 +27,18 @@ public:
         BaseObjectType* cast_item,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     PrefsDialog(PrefsDialog&&) = delete;
     PrefsDialog(PrefsDialog const&) = delete;
     PrefsDialog& operator=(PrefsDialog&&) = delete;
     PrefsDialog& operator=(PrefsDialog const&) = delete;
     ~PrefsDialog() override;
 
-    static std::unique_ptr<PrefsDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    static std::unique_ptr<PrefsDialog> create(
+        Gtk::Window& parent,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
 
 private:
     class Impl;

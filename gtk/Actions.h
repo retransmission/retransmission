@@ -18,9 +18,17 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
-Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder> const& builder, gpointer callback_user_data);
+Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    tr::app::Prefs const& prefs,
+    gpointer callback_user_data);
 void gtr_actions_set_core(Glib::RefPtr<Session> const& core);
 void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data);
 

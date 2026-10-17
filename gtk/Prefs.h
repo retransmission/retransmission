@@ -4,21 +4,15 @@
 
 #pragma once
 
-#include <libtransmission-app/converters.h>
 #include <libtransmission-app/prefs.h>
 
 #include <libtransmission/converters.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
 
 #include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
-#include <optional>
 #include <string>
 #include <string_view>
-
-struct tr_session;
 
 namespace tr::app
 {
@@ -44,60 +38,3 @@ namespace tr::serializer
 {
 TR_DECLARE_CONVERTER(Glib::ustring)
 } // namespace tr::serializer
-
-// FIXME(ckerr) remove annoying pragma
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnull-dereference"
-
-[[nodiscard]] tr::app::Prefs& gtr_prefs();
-
-[[nodiscard]] bool gtr_pref_has_key(tr_quark key);
-
-template<typename T>
-[[nodiscard]] std::optional<T> gtr_pref_lookup(tr_quark const key)
-{
-    return tr::serializer::to_value<T>(gtr_prefs().get<tr_variant>(key));
-}
-
-template<typename T> // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
-[[nodiscard]] T gtr_pref_get(tr_quark const key, T default_value = {})
-{
-    if (auto val = gtr_pref_lookup<T>(key)) {
-        return std::move(*val);
-    }
-
-    return default_value;
-}
-
-template<typename T>
-void gtr_pref_set(tr_quark const key, T const& val)
-{
-    gtr_prefs().set(key, val);
-}
-
-void gtr_pref_init(std::string_view config_dir);
-
-template<std::integral T>
-T gtr_pref_int_get(tr_quark const key)
-{
-    return gtr_prefs().get<T>(key);
-}
-
-template<std::integral T>
-void gtr_pref_int_set(tr_quark key, T value)
-{
-    gtr_prefs().set(key, value);
-}
-
-double gtr_pref_double_get(tr_quark key);
-void gtr_pref_double_set(tr_quark key, double value);
-
-bool gtr_pref_flag_get(tr_quark key);
-void gtr_pref_flag_set(tr_quark key, bool value);
-
-std::string gtr_pref_string_get(tr_quark key);
-void gtr_pref_string_set(tr_quark key, std::string_view value);
-
-void gtr_pref_save(tr_session* /*session*/);
-
-#pragma GCC diagnostic pop // ignore -Wnull-dereference

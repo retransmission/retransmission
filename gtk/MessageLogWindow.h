@@ -12,6 +12,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
 class MessageLogWindow : public Gtk::Window
@@ -21,14 +26,18 @@ public:
         BaseObjectType* cast_item,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     MessageLogWindow(MessageLogWindow&&) = delete;
     MessageLogWindow(MessageLogWindow const&) = delete;
     MessageLogWindow& operator=(MessageLogWindow&&) = delete;
     MessageLogWindow& operator=(MessageLogWindow const&) = delete;
     ~MessageLogWindow() override;
 
-    static std::unique_ptr<MessageLogWindow> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    static std::unique_ptr<MessageLogWindow> create(
+        Gtk::Window& parent,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
 
 private:
     class Impl;

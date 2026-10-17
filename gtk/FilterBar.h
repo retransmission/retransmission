@@ -20,6 +20,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
 class FilterBarExtraInit : public Glib::ExtraClassInit
@@ -41,7 +46,11 @@ public:
 
 public:
     FilterBar();
-    FilterBar(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    FilterBar(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
     FilterBar(FilterBar&&) = delete;
     FilterBar(FilterBar const&) = delete;
     FilterBar& operator=(FilterBar&&) = delete;

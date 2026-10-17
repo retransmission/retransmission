@@ -123,7 +123,10 @@ void gtr_actions_set_core(Glib::RefPtr<Session> const& core)
     myCore = core.get();
 }
 
-Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder> const& builder, gpointer callback_user_data)
+Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    tr::app::Prefs const& prefs,
+    gpointer callback_user_data)
 {
     myBuilder = builder.get();
 
@@ -131,7 +134,7 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
 
     {
         auto const action_name = Glib::ustring{ "sort-torrents" };
-        auto const current_val = gtr_pref_string_get(TR_KEY_sort_mode);
+        auto const current_val = prefs.get<std::string>(TR_KEY_sort_mode);
         auto const action = Gio::SimpleAction::create_radio_string(action_name, current_val);
         action->signal_activate().connect([a = action.get()](auto const& value) { sort_changed_cb(*a, value, nullptr); });
         action_group->add_action(action);
@@ -149,7 +152,7 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
 
     for (auto const& [action_name_view, prefs_name_quark] : PrefToggleEntries) {
         auto const action_name = Glib::ustring{ std::string{ action_name_view } };
-        auto const action = Gio::SimpleAction::create_bool(action_name, gtr_pref_flag_get(prefs_name_quark));
+        auto const action = Gio::SimpleAction::create_bool(action_name, prefs.get<bool>(prefs_name_quark));
         action->signal_activate().connect([a = action.get(), prefs_name_quark](auto const& /*value*/) {
             toggle_pref_cb(*a, GINT_TO_POINTER(prefs_name_quark));
         });

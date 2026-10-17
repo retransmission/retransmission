@@ -14,6 +14,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 class Torrent;
 
@@ -25,7 +30,8 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Application& app,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
     MainWindow(MainWindow&&) = delete;
     MainWindow(MainWindow const&) = delete;
     MainWindow& operator=(MainWindow&&) = delete;
@@ -35,7 +41,8 @@ public:
     static std::unique_ptr<MainWindow> create(
         Gtk::Application& app,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
 
     void for_each_selected_torrent(std::function<void(Glib::RefPtr<Torrent> const&)> const& callback) const;
     bool for_each_selected_torrent_until(std::function<bool(Glib::RefPtr<Torrent> const&)> const& callback) const;

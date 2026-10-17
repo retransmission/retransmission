@@ -170,9 +170,9 @@ void notify_callback(Glib::RefPtr<Gio::AsyncResult>& res, TrNotification const& 
 
 } // namespace
 
-void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_id_t tor_id)
+void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr::app::Prefs const& prefs, tr_torrent_id_t const tor_id)
 {
-    if (!gtr_pref_flag_get(TR_KEY_torrent_complete_notification_enabled)) {
+    if (!prefs.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
         return;
     }
 
@@ -196,7 +196,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
     std::map<Glib::ustring, Glib::VariantBase> hints;
     hints.try_emplace("category", StringVariantType::create("transfer.complete"));
 
-    if (gtr_pref_flag_get(TR_KEY_torrent_complete_sound_enabled)) {
+    if (prefs.get<bool>(TR_KEY_torrent_complete_sound_enabled)) {
         hints.try_emplace("sound-name", StringVariantType::create("complete-download"));
     } else {
         hints.try_emplace("suppress-sound", Glib::Variant<bool>::create(true));
@@ -216,11 +216,11 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
             -1));
 }
 
-void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr_torrent_id_t tor_id)
+void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr::app::Prefs const& prefs, tr_torrent_id_t const tor_id)
 {
     g_return_if_fail(proxy != nullptr);
 
-    if (!gtr_pref_flag_get(TR_KEY_torrent_added_notification_enabled)) {
+    if (!prefs.get<bool>(TR_KEY_torrent_added_notification_enabled)) {
         return;
     }
 
