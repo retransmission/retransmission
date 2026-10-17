@@ -141,7 +141,7 @@ public:
     // ---
 
     void port_test(tr_address_type ip_protocol);
-    bool port_test_pending(tr_address_type ip_protocol) const noexcept;
+    [[nodiscard]] bool port_test_pending(tr_address_type ip_protocol) const noexcept;
 
     // Recently-used directories, fetched from the session via a blocking RPC.
     [[nodiscard]] std::vector<Glib::ustring> get_recent_download_paths() const;

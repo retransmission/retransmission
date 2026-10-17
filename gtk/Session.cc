@@ -82,7 +82,7 @@ public:
 
     size_t get_unpaused_torrent_count() const;
 
-    bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
+    [[nodiscard]] bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
     void set_port_test_pending(bool pending, tr_address_type ip_protocol);
 
     void update();
