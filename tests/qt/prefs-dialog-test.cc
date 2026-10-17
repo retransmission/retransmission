@@ -3,6 +3,10 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
+#include <memory>
+#include <utility>
+
 #include <QApplication>
 #include <QCheckBox>
 #include <QDir>
@@ -10,7 +14,9 @@
 #include <QLabel>
 #include <QSignalSpy>
 #include <QString>
+#include <QTabWidget>
 #include <QTest>
+#include <QTimeEdit>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/quark.h>
@@ -256,6 +262,89 @@ private slots:
         dialog.show();
         QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
         dialog.hide();
+    }
+
+    // A widget that a checkbox enables must follow that checkbox's pref, both
+    // when the dialog opens and when the user toggles the box.
+    void checkbox_dependents_follow_their_pref()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+        prefs.set(TR_KEY_speed_limit_up_enabled, false);
+        prefs.set(TR_KEY_watch_dir_enabled, false);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QVERIFY(drainFreeSpace(dialog));
+
+        auto constexpr Pairs = std::array{
+            std::pair{ "uploadSpeedLimitCheck", "uploadSpeedLimitSpin" },
+            std::pair{ "watchDirCheck", "watchDirStack" },
+        };
+        for (auto const& [check_name, dependent_name] : Pairs) {
+            auto* const check = dialog.findChild<QCheckBox*>(QString::fromUtf8(check_name));
+            auto* const dependent = dialog.findChild<QWidget*>(QString::fromUtf8(dependent_name));
+            QVERIFY(check != nullptr);
+            QVERIFY(dependent != nullptr);
+            if (check == nullptr || dependent == nullptr) {
+                return;
+            }
+
+            QVERIFY(!check->isChecked());
+            QVERIFY(!dependent->isEnabled());
+
+            check->click();
+            QVERIFY(dependent->isEnabled());
+        }
+    }
+
+    // Deleting the dialog while it has focus, as ~MainWindow does on a Qt5 quit,
+    // takes focus from it during teardown. The focus-out handlers that save
+    // prefs must run while the dialog's members are still alive.
+    void deleting_focused_dialog_is_safe()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+        prefs.set(TR_KEY_alt_speed_time_enabled, true);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto dialog = std::make_unique<PrefsDialog>(session, prefs);
+        QVERIFY(drainFreeSpace(*dialog));
+        dialog->show();
+        dialog->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(dialog.get()));
+
+        // a time edit saves its pref whenever it loses focus
+        auto* const time_edit = dialog->findChild<QTimeEdit*>(QStringLiteral("altSpeedLimitStartTimeEdit"));
+        QVERIFY(time_edit != nullptr);
+        if (time_edit == nullptr) {
+            return;
+        }
+        auto* const tabs = dialog->findChild<QTabWidget*>(QStringLiteral("tabs"));
+        QVERIFY(tabs != nullptr);
+        for (int i = 0; tabs != nullptr && i < tabs->count(); ++i) {
+            if (tabs->widget(i)->isAncestorOf(time_edit)) {
+                tabs->setCurrentIndex(i);
+            }
+        }
+        time_edit->setFocus();
+        QTRY_VERIFY(time_edit->hasFocus());
+
+        dialog.reset();
     }
 };
 } // namespace
