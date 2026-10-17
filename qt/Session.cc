@@ -90,7 +90,7 @@ void Session::portTest(tr_address_type const ip_protocol)
 
 bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
 {
-    return ip_protocol < NUM_TR_AF_INET_TYPES && port_test_pending_[ip_protocol];
+    return port_test_pending_[ip_protocol];
 }
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)

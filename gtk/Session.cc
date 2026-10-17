@@ -82,7 +82,7 @@ public:
 
     size_t get_unpaused_torrent_count() const;
 
-    bool get_port_test_pending(tr_address_type ip_protocol);
+    bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
     void set_port_test_pending(bool pending, tr_address_type ip_protocol);
 
     void update();
@@ -1097,16 +1097,14 @@ bool Session::port_test_pending(tr_address_type const ip_protocol) const noexcep
     return impl_->get_port_test_pending(ip_protocol);
 }
 
-bool Session::Impl::get_port_test_pending(tr_address_type const ip_protocol)
+bool Session::Impl::get_port_test_pending(tr_address_type const ip_protocol) const noexcept
 {
-    return ip_protocol < NUM_TR_AF_INET_TYPES && port_test_pending_[ip_protocol];
+    return port_test_pending_[ip_protocol];
 }
 
 void Session::Impl::set_port_test_pending(bool const pending, tr_address_type const ip_protocol)
 {
-    if (ip_protocol < NUM_TR_AF_INET_TYPES) {
-        port_test_pending_[ip_protocol] = pending;
-    }
+    port_test_pending_[ip_protocol] = pending;
 }
 
 /***
