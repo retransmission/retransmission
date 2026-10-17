@@ -202,8 +202,7 @@ set(XIB_FILES
     InfoPeersView.xib
     InfoTrackersView.xib
     InfoWindow.xib
-    MessageWindow.xib
-    StatusBar.xib)
+    MessageWindow.xib)
 
 set(RESOURCES
     Defaults.plist
