@@ -8,7 +8,6 @@
 
 #include <libtransmission/converters.h>
 
-#include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
 #include <string>
@@ -19,17 +18,11 @@ namespace tr::app
 template<typename StringType>
 struct PrefsStringTraits;
 
-// Toolkit customization point used by tr::app::Prefs<Glib::ustring>.
 template<>
 struct PrefsStringTraits<Glib::ustring> {
     [[nodiscard]] static Glib::ustring from_utf8(std::string_view const str)
     {
         return Glib::ustring{ std::string{ str } };
-    }
-
-    [[nodiscard]] static Glib::ustring home_dir()
-    {
-        return Glib::get_home_dir();
     }
 };
 } // namespace tr::app
