@@ -262,8 +262,8 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                 auto const title = tr("Error Renaming Path");
                 auto const summary = TR_FORMAT(
                     R"(Unable to rename "{old_path}" as "{path}": {error}.)",
-                    fmt::arg("old_path", dictFind<QString>(r.args.get(), TR_KEY_path).value_or(oldpath)),
-                    fmt::arg("path", dictFind<QString>(r.args.get(), TR_KEY_name).value_or(newname)),
+                    fmt::arg("old_path", oldpath),
+                    fmt::arg("path", newname),
                     fmt::arg("error", r.errmsg));
                 auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
                                       .arg(summary, tr("Please correct the errors and try again."));
