@@ -19,7 +19,7 @@ IncludeCategories:
     Priority: 9
   - Regex: '^<sigc\+\+([-./]|config)'
     Priority: 10
-  - Regex: '^<(fmt|small|woke)/'
+  - Regex: '^<(fmt|sigslot|small|woke)/'
     Priority: 11
   - Regex: '^<[a-z_]+>'
     Priority: 12

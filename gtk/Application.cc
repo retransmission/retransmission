@@ -61,7 +61,6 @@
 #include <glibmm/value.h>
 #include <glibmm/vectorutils.h>
 
-#include <small/set.hpp>
 #include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -500,27 +499,13 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
         break;
 
     case TR_RPC_SESSION_CHANGED:
-        {
-            auto const* const session = core_->get_session();
-
-            // determine which settings changed
-            auto changed_keys = small::set<tr_quark>{};
-            auto const serde = tr_variant_serde::benc();
-
-            for (auto const& [key, newval] : tr_sessionGetSettings(session)) {
-                // prefs only holds the session settings that tr::app::SessionPrefs registers
-                if (tr::app::prefs_is_core(key) && serde.to_string(prefs_.get<tr_variant>(key)) != serde.to_string(newval)) {
-                    changed_keys.emplace(key);
-                    prefs_.set(key, newval);
-                }
+        for (auto const& [key, value] : tr_sessionGetSettings(core_->get_session())) {
+            // prefs only holds the session settings that tr::app::SessionPrefs registers
+            if (tr::app::prefs_is_core(key)) {
+                prefs_.set(key, value);
             }
-
-            // emit change notifications
-            for (auto const& changed_key : changed_keys) {
-                core_->signal_prefs_changed().emit(changed_key);
-            }
-            break;
         }
+        break;
 
     case TR_RPC_TORRENT_CHANGED:
     case TR_RPC_TORRENT_MOVED:

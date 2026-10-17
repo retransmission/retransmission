@@ -10,7 +10,7 @@
 
 #include <libtransmission-app/favicon-cache.h>
 
-#include <libtransmission/converters.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
@@ -132,11 +132,7 @@ public:
     template<typename T>
     void set_pref(tr_quark const key, T const& val)
     {
-        auto const old_val = tr::serializer::to_value<T>(prefs_.get<tr_variant>(key));
-
-        if (!old_val || tr::serializer::detail::values_differ(*old_val, val)) {
-            prefs_.set(key, val);
-            signal_prefs_changed().emit(key);
+        if (prefs_.set(key, val)) {
             prefs_.save(tr_sessionGetConfigDir(get_session()), tr_sessionGetSettings(get_session()));
         }
     }

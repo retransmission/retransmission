@@ -35,6 +35,7 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/stringutils.h>
 
+#include <sigslot/signal.hpp>
 #include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -193,6 +194,8 @@ private:
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
     sigc::signal<void(std::optional<bool>, tr_address_type)> signal_port_tested_;
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
+
+    sigslot::scoped_connection prefs_changed_tag_;
 
     Glib::RefPtr<Gio::FileMonitor> monitor_;
     sigc::connection monitor_tag_;
@@ -523,6 +526,7 @@ Session::Impl::Impl(Session& core, tr_session* session)
     on_pref_changed(TR_KEY_peer_limit_global);
     on_pref_changed(TR_KEY_inhibit_desktop_hibernation);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
+    prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
 
     tr_sessionSetMetadataCallback(session, [this](tr_torrent_id_t const tor_id) { on_torrent_metadata_changed(tor_id); });
 
