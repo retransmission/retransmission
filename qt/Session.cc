@@ -265,8 +265,11 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                     fmt::arg("old_path", oldpath),
                     fmt::arg("path", newname),
                     fmt::arg("error", r.errmsg));
-                auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(summary, tr("Please correct the errors and try again."));
+                // The user can't fix a network error by editing the path.
+                auto const advice = r.network_error ?
+                    QString{} :
+                    QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
+                auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
                 auto* d = new QMessageBox{ QMessageBox::Information,
                                            title,
                                            text,
