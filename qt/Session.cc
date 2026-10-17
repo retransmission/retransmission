@@ -72,9 +72,8 @@ void Session::portTest(tr_address_type const ip_protocol)
     auto const response_func = [this, ip_protocol](RpcResponse const& r) {
         port_test_pending_[ip_protocol] = false;
 
-        // If for whatever reason the status optional is empty here,
-        // then something must have gone wrong with the port test,
-        // so the UI should show the "error" state
+        // The status optional can be empty here, e.g. on network errors,
+        // and the UI should show the "error" state
         emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
     };
 
@@ -596,8 +595,8 @@ void Session::updateBlocklist()
     RpcQueue::create()
         .add(
             [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
-            // A JSON-RPC error aborts the queue before the step below, so report the
-            // failure here or the progress dialog is left with no result.
+            // A JSON-RPC or network error aborts the queue before the step below, so
+            // report the failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
             // session_get reports the new size and date with the rest of the session info
