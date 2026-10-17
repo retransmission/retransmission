@@ -28,10 +28,11 @@ until the last build finished.
 
 ### Incremental analysis (ctcache)
 
-clang-tidy results are keyed by toolkit and configuration hash and saved
-on every run, pull requests included: PR-side reuse is the point, and fork
-PRs' read-only tokens could not supersede anyway, so the janitor collapses
-each family to its newest snapshot instead.
+clang-tidy results are keyed by toolkit, toolchain fingerprint and
+configuration hash, and saved on every run, pull requests included:
+PR-side reuse is the point, and fork PRs' read-only tokens could not
+supersede anyway, so the janitor collapses each family to its newest
+snapshot instead.
 
 ### Content-addressed dependencies
 
