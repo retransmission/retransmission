@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cmath> // sqrt()
+#include <cstdint>
 #include <cstring>
 #include <sstream>
 #include <string>
@@ -24,6 +25,27 @@
 
 using UtilsTest = ::tr::test::TransmissionTest;
 using namespace std::literals;
+
+TEST_F(UtilsTest, translator)
+{
+    EXPECT_STREQ("Hello", _("Hello"));
+    EXPECT_STREQ("{count} file", tr_ngettext("{count} file", "{count} files", 1));
+    EXPECT_STREQ("{count} files", tr_ngettext("{count} file", "{count} files", 21));
+
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* { return msgid == "Hello"sv ? "Hallo" : msgid; },
+        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
+            return msgid == "{count} file"sv && n % 10U == 1U ? "{count} файл" : msgid_plural;
+        });
+    EXPECT_STREQ("Hallo", _("Hello"));
+    EXPECT_STREQ("Goodbye", _("Goodbye"));
+    EXPECT_STREQ("{count} файл", tr_ngettext("{count} file", "{count} files", 21));
+    EXPECT_STREQ("{count} файл", tr_ngettext("{count} file", "{count} files", int64_t{ 21 }));
+
+    tr_set_translator(nullptr, nullptr);
+    EXPECT_STREQ("Hello", _("Hello"));
+    EXPECT_STREQ("{count} files", tr_ngettext("{count} file", "{count} files", 21));
+}
 
 TEST_F(UtilsTest, truncd)
 {

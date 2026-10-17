@@ -712,7 +712,7 @@ void DetailsDialog::refreshUI()
         } else if (seconds < 5) {
             string = tr("Active now");
         } else {
-            string = TR_FORMAT("{time_span} ago", fmt::arg("time_span", Formatter::timeToString(seconds)));
+            string = Formatter::relativeTimeToString(latest, now);
         }
     }
 
