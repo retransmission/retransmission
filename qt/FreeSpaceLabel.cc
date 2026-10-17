@@ -80,15 +80,13 @@ void FreeSpaceLabel::onTimer()
                 session_->exec(TR_KEY_free_space, std::move(params), std::move(done));
             },
             [self = QPointer<FreeSpaceLabel>{ this }]() {
-                // the request failed, so clear the stale "Calculating…" placeholder
-                // and retry on the next timer tick.
+                // the request failed, so clear the stale "Calculating…" placeholder.
                 if (self == nullptr) {
                     return;
                 }
 
                 self->setText(QString{});
                 self->setToolTip(QString{});
-                self->timer_.start();
             })
         .add([self = QPointer<FreeSpaceLabel>{ this }](RpcResponse const& r) {
             // the label may have been destroyed while the request was in flight
@@ -106,8 +104,13 @@ void FreeSpaceLabel::onTimer()
             // update the tooltip
             auto const path = dictFind<QString>(r.args.get(), TR_KEY_path);
             self->setToolTip(QDir::toNativeSeparators(path.value_or(QString{})));
-
-            self->timer_.start();
+        })
+        // Poll again after every outcome, including a network error,
+        // which ends the queue without calling either handler above.
+        .finally([self = QPointer<FreeSpaceLabel>{ this }]() {
+            if (self != nullptr) {
+                self->timer_.start();
+            }
         })
         .run();
 }
