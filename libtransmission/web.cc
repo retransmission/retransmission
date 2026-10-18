@@ -272,7 +272,7 @@ public:
         return std::empty(queued_tasks_) && std::empty(running_tasks_);
     }
 
-    [[nodiscard]] bool is_idle() const noexcept
+    [[nodiscard]] bool is_idle() const
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
         return is_idle_unlocked();
@@ -949,7 +949,7 @@ void tr_web::startShutdown(std::chrono::milliseconds deadline)
     impl_->startShutdown(deadline);
 }
 
-bool tr_web::is_idle() const noexcept
+bool tr_web::is_idle() const
 {
     return impl_->is_idle();
 }
