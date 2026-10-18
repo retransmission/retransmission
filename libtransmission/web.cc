@@ -267,15 +267,17 @@ public:
         curl_multi_wakeup(multi_.get());
     }
 
-    [[nodiscard]] bool is_idle_unlocked() const noexcept
+    // Callers pass their lock to prove they hold tasks_mutex_.
+    [[nodiscard]] bool is_idle([[maybe_unused]] std::unique_lock<std::mutex> const& lock) const noexcept
     {
+        TR_ASSERT(lock.owns_lock() && lock.mutex() == &tasks_mutex_);
         return std::empty(queued_tasks_) && std::empty(running_tasks_);
     }
 
     [[nodiscard]] bool is_idle() const
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
-        return is_idle_unlocked();
+        return is_idle(lock);
     }
 
     class Task
@@ -822,12 +824,12 @@ public:
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
-                auto const stop_waiting = [this]() {
-                    return !is_idle_unlocked() || deadline_exists();
+                auto const stop_waiting = [this, &lock]() {
+                    return !is_idle(lock) || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
 
-                if (deadline_exists() && is_idle_unlocked()) {
+                if (deadline_exists() && is_idle(lock)) {
                     break;
                 }
 
