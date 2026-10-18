@@ -17,7 +17,7 @@
 - (void)updateInfo;
 - (void)updateOptions;
 
-@property(nonatomic) IBOutlet NSView* fPriorityView;
+@property(nonatomic, readonly) NSView* fPriorityView;
 @property(nonatomic) CGFloat oldHeight;
 
 @end
