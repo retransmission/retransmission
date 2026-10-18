@@ -776,8 +776,13 @@ public:
         return std::ranges::min(paused | std::views::values) - now;
     }
 
-    void remove_task(Task const& task)
+    void remove_task(Task& task)
     {
+        // Run the callback before taking tasks_mutex_.
+        // The default Mediator::run() invokes it on this thread.
+        // Without this, a callback that calls fetch() or is_idle() would deadlock.
+        task.done();
+
         auto const lock = std::unique_lock{ tasks_mutex_ };
 
         auto const iter = std::ranges::find(running_tasks_, task);
@@ -786,7 +791,6 @@ public:
             return;
         }
 
-        iter->done();
         running_tasks_.erase(iter);
     }
 
