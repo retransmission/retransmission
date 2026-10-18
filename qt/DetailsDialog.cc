@@ -138,23 +138,14 @@ int measureViewItem(QTreeWidget const* view, int column, QString const& text)
 // The value that `getter` yields for every one of `torrents`,
 // or nullopt when they disagree or there are no torrents.
 template<typename Getter>
-[[nodiscard]] auto uniformValue(QList<Torrent const*> const& torrents, Getter const getter)
+[[nodiscard]] std::optional<std::decay_t<std::invoke_result_t<Getter, Torrent const*>>> uniformValue(
+    QList<Torrent const*> const& torrents,
+    Getter const getter)
 {
-    using Value = std::decay_t<std::invoke_result_t<Getter, Torrent const&>>;
-    auto ret = std::optional<Value>{};
-
-    if (!torrents.empty()) {
-        Value const& first = std::invoke(getter, *torrents.front());
-        auto const same_as_first = [&](Torrent const* const tor) {
-            return std::invoke(getter, *tor) == first;
-        };
-
-        if (std::ranges::all_of(torrents, same_as_first)) {
-            ret = first;
-        }
+    if (!torrents.empty() && std::ranges::adjacent_find(torrents, std::ranges::not_equal_to{}, getter) == torrents.end()) {
+        return std::invoke(getter, torrents.front());
     }
-
-    return ret;
+    return {};
 }
 
 // Updates a widget from the model unless the user is editing it, and
