@@ -67,6 +67,20 @@ bool wait_for(std::function<bool()> const& condition)
         5s);
 }
 
+bool wait_for_refresh_tick()
+{
+    auto elapsed = false;
+    auto timeout = Glib::signal_timeout().connect(
+        [&elapsed]() {
+            elapsed = true;
+            return false;
+        },
+        2100);
+    auto const finished = wait_for([&elapsed]() { return elapsed; });
+    timeout.disconnect();
+    return finished;
+}
+
 class FileListTest : public tr::test::SessionTest
 {
 protected:
@@ -296,7 +310,7 @@ protected:
     unsigned int reordered_ = 0;
 };
 
-TEST_F(FileListTest, keepsUntouchedEditWhileOtherRowsRefresh)
+TEST_F(FileListTest, pausesEveryRowUntilAnUntouchedEditEnds)
 {
     ASSERT_TRUE(start_edit("active.bin"));
     auto* const entry = entry_;
@@ -304,7 +318,7 @@ TEST_F(FileListTest, keepsUntouchedEditWhileOtherRowsRefresh)
 
     add_data({ { 0, TrBlockSize }, { 1, 2 * TrBlockSize }, { 2, TrBlockSize } });
     ASSERT_EQ(0, static_cast<int>(100 * tr_torrentFile(tor_, 0).progress));
-    ASSERT_TRUE(wait_for([this]() { return row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * TrBlockSize; }));
+    ASSERT_TRUE(wait_for_refresh_tick());
 
     ASSERT_TRUE(text_->property_editing());
     ASSERT_EQ(entry, entry_);
@@ -312,16 +326,22 @@ TEST_F(FileListTest, keepsUntouchedEditWhileOtherRowsRefresh)
     EXPECT_EQ(name, entry_->get_text());
     EXPECT_EQ(0U, canceled_);
     EXPECT_EQ(0U, row_value<uint64_t>(find_row("active.bin"), HaveColumn));
-    EXPECT_EQ(4 * TrBlockSize, row_value<uint64_t>(find_row("root"), HaveColumn));
-    EXPECT_EQ(TrBlockSize, row_value<uint64_t>(find_row("nested"), HaveColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("sibling.bin"), HaveColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("root"), HaveColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("nested"), HaveColumn));
 
     cancel_edit();
     EXPECT_EQ(1U, canceled_);
     EXPECT_EQ(0U, edited_);
-    EXPECT_EQ(TrBlockSize, row_value<uint64_t>(find_row("active.bin"), HaveColumn));
+    ASSERT_TRUE(wait_for([this]() {
+        return row_value<uint64_t>(find_row("active.bin"), HaveColumn) == TrBlockSize &&
+            row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * TrBlockSize &&
+            row_value<uint64_t>(find_row("root"), HaveColumn) == 4 * TrBlockSize &&
+            row_value<uint64_t>(find_row("nested"), HaveColumn) == TrBlockSize;
+    }));
 }
 
-TEST_F(FileListTest, keepsDirectoryDraftAndCurrentAncestorTotals)
+TEST_F(FileListTest, pausesDirectoryAndAncestorUpdatesUntilEditingEnds)
 {
     ASSERT_TRUE(start_edit("nested"));
     entry_->set_text("directory-draft");
@@ -333,7 +353,7 @@ TEST_F(FileListTest, keepsDirectoryDraftAndCurrentAncestorTotals)
     ASSERT_TRUE(entry_->get_selection_bounds(selection_begin, selection_end));
 
     add_data({ { 1, 1024 * 1024 }, { 2, 2 * 1024 * 1024 } });
-    ASSERT_TRUE(wait_for([this]() { return row_value<uint64_t>(find_row("other.bin"), HaveColumn) == 2 * 1024 * 1024; }));
+    ASSERT_TRUE(wait_for_refresh_tick());
 
     ASSERT_TRUE(text_->property_editing());
     ASSERT_EQ(entry, entry_);
@@ -346,11 +366,15 @@ TEST_F(FileListTest, keepsDirectoryDraftAndCurrentAncestorTotals)
     EXPECT_EQ(selection_begin, begin);
     EXPECT_EQ(selection_end, end);
     EXPECT_EQ(0U, canceled_);
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("other.bin"), HaveColumn));
     EXPECT_EQ(0U, row_value<uint64_t>(find_row("nested"), HaveColumn));
-    EXPECT_EQ(3 * 1024 * 1024, row_value<uint64_t>(find_row("root"), HaveColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("root"), HaveColumn));
 
     commit_edit();
-    ASSERT_TRUE(wait_for([this]() { return bool{ find_row("directory-draft") }; }));
+    ASSERT_TRUE(wait_for([this]() {
+        return bool{ find_row("directory-draft") } &&
+            row_value<uint64_t>(find_row("directory-draft"), HaveColumn) == 2 * 1024 * 1024;
+    }));
     EXPECT_EQ(1U, edited_);
     EXPECT_EQ(0U, canceled_);
     EXPECT_EQ(2 * 1024 * 1024, row_value<uint64_t>(find_row("directory-draft"), HaveColumn));
@@ -363,7 +387,7 @@ class FileListSortingTest
 {
 };
 
-TEST_P(FileListSortingTest, keepsEditAndLiveRowsWithoutAutomaticReordering)
+TEST_P(FileListSortingTest, pausesSortedRowsUntilEditingEnds)
 {
     auto const model = view_->get_model();
     auto const store = gtr_ptr_dynamic_cast<Gtk::TreeStore>(model);
@@ -378,11 +402,7 @@ TEST_P(FileListSortingTest, keepsEditAndLiveRowsWithoutAutomaticReordering)
     auto const unwanted = std::array<tr_file_index_t, 1>{ 2 };
     tr_torrentSetFilePriorities(tor_, high, TR_PRI_HIGH);
     tr_torrentSetFileDLs(tor_, unwanted, false);
-    ASSERT_TRUE(wait_for([this]() {
-        return row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * 1024 * 1024 &&
-            row_value<int>(find_row("sibling.bin"), PriorityColumn) == TR_PRI_HIGH &&
-            row_value<int>(find_row("other.bin"), WantedColumn) == 0;
-    }));
+    ASSERT_TRUE(wait_for_refresh_tick());
 
     ASSERT_TRUE(text_->property_editing());
     EXPECT_TRUE(editor_has_focus());
@@ -390,8 +410,11 @@ TEST_P(FileListSortingTest, keepsEditAndLiveRowsWithoutAutomaticReordering)
     EXPECT_EQ(0U, reordered_);
     EXPECT_EQ(path, model->get_path(find_row("active.bin")));
     EXPECT_EQ(0U, row_value<uint64_t>(find_row("active.bin"), HaveColumn));
-    EXPECT_EQ(3 * 1024 * 1024, row_value<uint64_t>(find_row("root"), HaveColumn));
-    EXPECT_EQ(0U, row_value<uint64_t>(find_row("nested"), SizeColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("sibling.bin"), HaveColumn));
+    EXPECT_EQ(TR_PRI_NORMAL, row_value<int>(find_row("sibling.bin"), PriorityColumn));
+    EXPECT_EQ(1, row_value<int>(find_row("other.bin"), WantedColumn));
+    EXPECT_EQ(0U, row_value<uint64_t>(find_row("root"), HaveColumn));
+    EXPECT_EQ(FileSize, row_value<uint64_t>(find_row("nested"), SizeColumn));
 
     cancel_edit();
     int column = 0;
@@ -399,7 +422,13 @@ TEST_P(FileListSortingTest, keepsEditAndLiveRowsWithoutAutomaticReordering)
     ASSERT_TRUE(store->get_sort_column_id(column, order));
     EXPECT_EQ(GetParam(), column);
     EXPECT_EQ(TR_GTK_SORT_TYPE(ASCENDING), order);
-    EXPECT_EQ(1024 * 1024, row_value<uint64_t>(find_row("active.bin"), HaveColumn));
+    ASSERT_TRUE(wait_for([this]() {
+        return row_value<uint64_t>(find_row("active.bin"), HaveColumn) == 1024 * 1024 &&
+            row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * 1024 * 1024 &&
+            row_value<int>(find_row("sibling.bin"), PriorityColumn) == TR_PRI_HIGH &&
+            row_value<int>(find_row("other.bin"), WantedColumn) == 0 &&
+            row_value<uint64_t>(find_row("nested"), SizeColumn) == 0;
+    }));
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -424,15 +453,20 @@ TEST_F(FileListTest, retainsAnExplicitSortChoiceWhenEditingEnds)
 
 TEST_F(FileListTest, renamesTheCorrectRowAfterRestoringProgressSorting)
 {
+    add_data({ { 0, 1024 * 1024 }, { 1, 2 * 1024 * 1024 } });
+    ASSERT_TRUE(wait_for([this]() { return row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * 1024 * 1024; }));
+
     auto const model = view_->get_model();
     auto const store = gtr_ptr_dynamic_cast<Gtk::TreeStore>(model);
     store->set_sort_column(ProgressColumn, TR_GTK_SORT_TYPE(ASCENDING));
     ASSERT_TRUE(start_edit("active.bin"));
     auto const row = find_row("active.bin");
     auto const path = model->get_path(row);
-    add_data({ { 0, 4 * 1024 * 1024 }, { 1, 2 * 1024 * 1024 } });
-    ASSERT_TRUE(wait_for([this]() { return row_value<uint64_t>(find_row("sibling.bin"), HaveColumn) == 2 * 1024 * 1024; }));
+    add_data({ { 0, 8 * 1024 * 1024 }, { 1, 2 * 1024 * 1024 } });
+    ASSERT_TRUE(wait_for_refresh_tick());
     ASSERT_TRUE(text_->property_editing());
+    EXPECT_EQ(path, model->get_path(row));
+    EXPECT_EQ(1024 * 1024, row_value<uint64_t>(find_row("active.bin"), HaveColumn));
 
     entry_->set_text("zulu.bin");
     commit_edit();

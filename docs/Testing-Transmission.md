@@ -7,6 +7,9 @@ cmake --build cmake-build-debug --target gtk-test-file-list
 ctest --test-dir cmake-build-debug -R 'GTK\..*FileList' --output-on-failure
 ```
 
+File-list statistics and automatic sorting pause while a filename is being edited
+and refresh when the edit ends.
+
 These tests need a GTK display and are skipped when none is available. For a
 headless environment with Xvfb installed, prefix the `ctest` command with
 `xvfb-run -a`. A skipped test does not verify editor focus or continuity.
