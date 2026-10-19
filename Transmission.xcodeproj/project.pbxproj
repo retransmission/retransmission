@@ -270,6 +270,8 @@
 		ADD1A00000000000000000F4 /* filter_fork_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F3 /* filter_fork_posix.c */; };
 		ADD1A00000000000000000F6 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F5 /* xxhash.c */; };
 		ADD1A00000000000000000F8 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F7 /* libarchive.a */; };
+		ADD1A0000000000000000104 /* archive_crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A0000000000000000103 /* archive_crc32.c */; };
+		ADD1A0000000000000000106 /* archive_umask.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A0000000000000000105 /* archive_umask.c */; };
 		ADD1A0000000000000000200 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C88771A92803EE42005C7523 /* libz.tbd */; };
 		B10CDDA0000000000000BB01 /* blocklist-download.h in Headers */ = {isa = PBXBuildFile; fileRef = B10CDDA0000000000000BB02 /* blocklist-download.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		B10CDDA0000000000000CC01 /* blocklist-download.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10CDDA0000000000000CC02 /* blocklist-download.cc */; };
@@ -815,6 +817,8 @@
 		ADD1A00000000000000000F3 /* filter_fork_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = filter_fork_posix.c; sourceTree = "<group>"; };
 		ADD1A00000000000000000F5 /* xxhash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xxhash.c; sourceTree = "<group>"; };
 		ADD1A00000000000000000F7 /* libarchive.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libarchive.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		ADD1A0000000000000000103 /* archive_crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archive_crc32.c; sourceTree = "<group>"; };
+		ADD1A0000000000000000105 /* archive_umask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archive_umask.c; sourceTree = "<group>"; };
 		B10CDDA0000000000000BB02 /* blocklist-download.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "blocklist-download.h"; sourceTree = "<group>"; };
 		B10CDDA0000000000000CC02 /* blocklist-download.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "blocklist-download.cc"; sourceTree = "<group>"; };
 		BE1183480CE160960002D0F3 /* libminiupnp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libminiupnp.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1480,6 +1484,7 @@
 				ADD1A0000000000000000005 /* archive_blake2sp_ref.c */,
 				ADD1A0000000000000000007 /* archive_check_magic.c */,
 				ADD1A0000000000000000009 /* archive_cmdline.c */,
+				ADD1A0000000000000000103 /* archive_crc32.c */,
 				ADD1A000000000000000000B /* archive_cryptor.c */,
 				ADD1A000000000000000000D /* archive_digest.c */,
 				ADD1A000000000000000000F /* archive_entry.c */,
@@ -1549,6 +1554,7 @@
 				ADD1A000000000000000008F /* archive_string.c */,
 				ADD1A0000000000000000091 /* archive_string_sprintf.c */,
 				ADD1A0000000000000000093 /* archive_time.c */,
+				ADD1A0000000000000000105 /* archive_umask.c */,
 				ADD1A0000000000000000095 /* archive_util.c */,
 				ADD1A0000000000000000097 /* archive_version_details.c */,
 				ADD1A0000000000000000099 /* archive_virtual.c */,
@@ -2533,6 +2539,7 @@
 				ADD1A0000000000000000006 /* archive_blake2sp_ref.c in Sources */,
 				ADD1A0000000000000000008 /* archive_check_magic.c in Sources */,
 				ADD1A000000000000000000A /* archive_cmdline.c in Sources */,
+				ADD1A0000000000000000104 /* archive_crc32.c in Sources */,
 				ADD1A000000000000000000C /* archive_cryptor.c in Sources */,
 				ADD1A000000000000000000E /* archive_digest.c in Sources */,
 				ADD1A0000000000000000010 /* archive_entry.c in Sources */,
@@ -2602,6 +2609,7 @@
 				ADD1A0000000000000000090 /* archive_string.c in Sources */,
 				ADD1A0000000000000000092 /* archive_string_sprintf.c in Sources */,
 				ADD1A0000000000000000094 /* archive_time.c in Sources */,
+				ADD1A0000000000000000106 /* archive_umask.c in Sources */,
 				ADD1A0000000000000000096 /* archive_util.c in Sources */,
 				ADD1A0000000000000000098 /* archive_version_details.c in Sources */,
 				ADD1A000000000000000009A /* archive_virtual.c in Sources */,
