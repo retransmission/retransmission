@@ -71,16 +71,6 @@ IndentGotoLabels: false
 QualifierAlignment: Right
 SortUsingDeclarations: LexicographicNumeric
 SpaceAfterTemplateKeyword: false
-
-# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283.
-BreakAfterOpenBracketFunction: true
-BreakAfterOpenBracketIf: true
-BreakAfterOpenBracketLoop: true
-BreakAfterOpenBracketSwitch: true
-BreakBeforeCloseBracketFunction: false
-BreakBeforeCloseBracketIf: false
-BreakBeforeCloseBracketLoop: false
-BreakBeforeCloseBracketSwitch: false
 ---
 Language: ObjC
 
@@ -89,26 +79,4 @@ ObjCBreakBeforeNestedBlockParam: false
 ObjCSpaceBeforeProtocolList: false
 PenaltyExcessCharacter: 1
 QualifierAlignment: Right
-
-# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283
-BreakAfterOpenBracketFunction: true
-BreakAfterOpenBracketIf: true
-BreakAfterOpenBracketLoop: true
-BreakAfterOpenBracketSwitch: true
-BreakBeforeCloseBracketFunction: false
-BreakBeforeCloseBracketIf: false
-BreakBeforeCloseBracketLoop: false
-BreakBeforeCloseBracketSwitch: false
----
-# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283
-Language: C
-
-BreakAfterOpenBracketFunction: true
-BreakAfterOpenBracketIf: true
-BreakAfterOpenBracketLoop: true
-BreakAfterOpenBracketSwitch: true
-BreakBeforeCloseBracketFunction: false
-BreakBeforeCloseBracketIf: false
-BreakBeforeCloseBracketLoop: false
-BreakBeforeCloseBracketSwitch: false
 ...
