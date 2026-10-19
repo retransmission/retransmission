@@ -636,6 +636,8 @@ public:
         // per-request override falls back to the env-var-driven default
         auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
         if (!ssl_verify) {
+            (void)curl_easy_setopt(e, CURLOPT_CAINFO, nullptr);
+            (void)curl_easy_setopt(e, CURLOPT_CAPATH, nullptr);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYPEER, 0L);
         } else if (!std::empty(curl_ca_bundle)) {
@@ -647,8 +649,6 @@ public:
         }
 
         if (!curl_proxy_ssl_verify) {
-            (void)curl_easy_setopt(e, CURLOPT_CAINFO, NULL);
-            (void)curl_easy_setopt(e, CURLOPT_CAPATH, NULL);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYPEER, 0L);
         } else if (!std::empty(curl_ca_bundle)) {
