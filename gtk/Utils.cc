@@ -34,6 +34,7 @@
 
 #include <glibmm/convert.h>
 #include <glibmm/error.h>
+#include <glibmm/exceptionhandler.h>
 #include <glibmm/i18n.h>
 #include <glibmm/quark.h>
 #include <glibmm/spawn.h>
@@ -90,6 +91,32 @@ void gtr_error(std::string const& message)
 {
     // NOLINTNEXTLINE(*-vararg)
     g_error("%s", message.c_str());
+}
+
+void gtr_run_on_ui_thread(std::function<void()> func)
+{
+    // g_idle_add_full() is thread-safe, and the one copy of `func` moves to the heap here
+    // and dies on the GTK thread. Glib::SignalIdle::connect_once() would copy it per
+    // slot, and the copies would die on the calling thread.
+    using Func = std::function<void()>;
+
+    g_idle_add_full(
+        G_PRIORITY_DEFAULT_IDLE,
+        [](gpointer data) -> gboolean {
+            // GLib's dispatcher is C code, so an exception must stop here;
+            // hand it to glibmm's handler, as its own idle callbacks do.
+            try {
+                (*static_cast<Func*>(data))();
+            } catch (...) {
+                Glib::exception_handlers_invoke();
+            }
+
+            return G_SOURCE_REMOVE;
+        },
+        // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+        new Func{ std::move(func) },
+        // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+        [](gpointer data) { delete static_cast<Func*>(data); });
 }
 
 /***
