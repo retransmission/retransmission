@@ -11,7 +11,8 @@ target_sources(libtransmission-app-test
 		rpc-client-test.cc
 		rpc-queue-test.cc
 		session-test.cc
-		test-fixtures.h)
+		test-fixtures.h
+		trash-test.cc)
 
 set_property(
 	TARGET libtransmission-app-test

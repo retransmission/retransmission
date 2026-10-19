@@ -29,7 +29,11 @@ public:
     // NOLINTNEXTLINE(performance-enum-size)
     enum Role { TrackerRole = Qt::UserRole };
 
-    TrackerModel() = default;
+    explicit TrackerModel(QObject* parent = nullptr)
+        : QAbstractListModel{ parent }
+    {
+    }
+
     ~TrackerModel() override = default;
     TrackerModel(TrackerModel&&) = delete;
     TrackerModel(TrackerModel const&) = delete;

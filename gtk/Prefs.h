@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -17,7 +17,6 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <vector>
 
 namespace tr::app
 {
@@ -93,8 +92,6 @@ void gtr_pref_double_set(tr_quark key, double value);
 
 bool gtr_pref_flag_get(tr_quark key);
 void gtr_pref_flag_set(tr_quark key, bool value);
-
-std::vector<std::string> gtr_pref_strv_get(tr_quark key);
 
 std::string gtr_pref_string_get(tr_quark key);
 void gtr_pref_string_set(tr_quark key, std::string_view value);

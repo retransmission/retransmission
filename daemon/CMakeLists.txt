@@ -38,7 +38,7 @@ target_link_libraries(${TR_NAME}-daemon
         $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
 
 tr_win32_app_info(${TR_NAME}-daemon
-    "Transmission Daemon"
+    "Daemon"
     "${TR_NAME}-daemon"
     "${TR_NAME}-daemon.exe")
 

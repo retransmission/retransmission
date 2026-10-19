@@ -12,7 +12,7 @@ foreach(P create edit remote show)
             libevent::core)
 
     tr_win32_app_info(${TR_NAME}-${P}
-        "Transmission Utility ('${P}')"
+        "Utility ('${P}')"
         "${TR_NAME}-${P}"
         "${TR_NAME}-${P}.exe")
 

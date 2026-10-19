@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the 3-Clause BSD (SPDX: BSD-3-Clause),
 // GPLv2 (SPDX: GPL-2.0-only), GPLv3 (SPDX: GPL-3.0-only),
 // or any future license endorsed by Mnemosaic LLC.
@@ -68,6 +68,9 @@ namespace tr::platform
 // Get `session`'s current settings
 [[nodiscard]] tr::Settings tr_sessionGetSettings(tr_session const* session);
 
+// The settings file in `config_dir`, which tr_sessionLoadSettings() reads and tr_sessionSaveSettings() writes.
+[[nodiscard]] std::string tr_sessionGetSettingsFilename(std::string_view config_dir);
+
 // Load settings from disk.
 // Fills in any missing settings with `app_defaults`,
 // then with defaults from `tr_sessionGetDefaultSettings()`.
@@ -89,6 +92,11 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  * @param config_dir where Transmission will look for resume files, blocklists, etc.
  * @param message_queueing_enabled if false, messages will be dumped to stderr
  * @param settings libtransmission settings
+ * @param remove_func how `tr_torrentRemove()` deletes a torrent's local data,
+ *                    e.g. by moving it to a recycle bin.
+ *                    Empty means `tr_sys_path_remove()`.
+ *                    It is called on the session thread,
+ *                    and the filename view is only valid for the duration of the call.
  * @see `tr_sessionGetDefaultSettings()`
  * @see `tr_sessionLoadSettings()`
  * @see `tr_getDefaultConfigDir()`
@@ -96,7 +104,8 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
 [[nodiscard]] tr_session* tr_sessionInit(
     std::string_view config_dir,
     bool message_queueing_enabled,
-    tr::Settings const& settings);
+    tr::Settings const& settings,
+    tr_torrent_remove_func remove_func = {});
 
 /** @brief Update a session's settings from a benc dictionary
            like to the one used in `tr_sessionInit()` */
@@ -532,6 +541,7 @@ void tr_blocklistSetURL(tr_session* session, std::string_view url);
  * the update that installs a list: if a newer tr_blocklistUpdate() takes over
  * before this one completes, `on_done` waits for that one instead. It is not
  * invoked at all if tr_blocklistUpdateCancel() is called first.
+ * If the session closes first, `on_done` gets a DownloadError.
  */
 void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done);
 
@@ -578,14 +588,10 @@ void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
 
 /**
  * @brief Removes our torrent and .resume files for this torrent
- * @param remove_func A function that deletes a file.
- *                    The default is `tr_sys_path_remove()`
- *                    Clients can use this arg to pass in platform-specific code e.g.
- *                    to move to a recycle bin instead of deleting.
- *                    The callback is invoked in the session thread and the filename view
- *                    is only valid for the duration of the call.
+ * @param delete_flag also delete the torrent's local data,
+ *                    using the remove func given to `tr_sessionInit()`
  */
-void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func = {});
+void tr_torrentRemove(tr_torrent* tor, bool delete_flag);
 
 /** @brief Start a torrent */
 void tr_torrentStart(tr_torrent* torrent);

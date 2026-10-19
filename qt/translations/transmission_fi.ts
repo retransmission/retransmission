@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Tietoa Transmissionista</translation>
+        <source>About {appname}</source>
+        <translation>Tietoa {appname}ista</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © Transmission-projekti</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © Retransmission-projekti</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1775,10 +1775,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Estolista sisältää {count:L} säännön&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Estolista sisältää {count:L} sääntöä&lt;/i&gt;</numerusform>
+            <numerusform>Estolista sisältää {count:L} säännön</numerusform>
+            <numerusform>Estolista sisältää {count:L} sääntöä</numerusform>
         </translation>
     </message>
     <message>
@@ -1844,8 +1844,8 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Näytä Transmissionin kuvake &amp;ilmoitusalueella</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Näytä {appname}in kuvake &amp;ilmoitusalueella</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmissionin asetukset</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname}in asetukset</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2297,10 +2297,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} torrentin kaksoiskappaletta ei voitu lisätä</numerusform>
-            <numerusform>{count} torrentien kaksoiskappaletta ei voitu lisätä</numerusform>
+            <numerusform>{count:L} torrentin kaksoiskappaletta ei voitu lisätä</numerusform>
+            <numerusform>{count:L} torrentien kaksoiskappaletta ei voitu lisätä</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Ladataan {active_count} /{connected_count} yhdistetyltä vertaiselta</numerusform>
-            <numerusform>Ladataan {active_count}/{connected_count} yhdistetyltä vertaiselta</numerusform>
+            <numerusform>Ladataan {active_count:L} /{connected_count:L} yhdistetyltä vertaiselta</numerusform>
+            <numerusform>Ladataan {active_count:L}/{connected_count:L} yhdistetyltä vertaiselta</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Lähteet {active_count} / {connected_count} yhdistetyt vertaiskoneet</numerusform>
-            <numerusform>Seeding to {active_count} of {connected_count} connected peers</numerusform>
+            <numerusform>Lähteet {active_count:L} / {connected_count:L} yhdistetyt vertaiskoneet</numerusform>
+            <numerusform>Seeding to {active_count:L} of {connected_count:L} connected peers</numerusform>
         </translation>
     </message>
     <message>

@@ -1,6 +1,6 @@
 ## Peer-ID
 
-Transmission's peer-ids follow Azureus' style with code `TR`. Peer-id prefix is `-TR????-`, where `????` are four bytes encoding the client's version. Client version encoding changed over the client's history.
+Retransmission's peer-ids follow Azureus' style with code `TR`. Peer-id prefix is `-TR????-`, where `????` are four bytes encoding the client's version. Client version encoding changed over the client's history.
 
 ### Current scheme
 

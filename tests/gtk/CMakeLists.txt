@@ -1,5 +1,3 @@
-find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
-
 # Gettext builds the desktop file as part of the client, so `all-tests` must build it.
 add_dependencies(all-tests ${TR_NAME}-gtk)
 
@@ -8,9 +6,19 @@ add_test(
     NAME GTK.desktop-file
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/gtk/${TR_NAME}-gtk.desktop
+        -Dapp_name=${TR_PROJ_APPNAME_CAPITALIZED}
+        -Dicon_name=${TR_GTK_ICON_NAME}
+        -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-gtk>
         -Dapp_id=${TR_GTK_APP_ID}
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
-        -P ${CMAKE_CURRENT_SOURCE_DIR}/desktop-file-test.cmake)
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/../desktop-file-test.cmake)
+
+# The domain attribute lives in the .ui sources, which no client test reads.
+add_test(
+    NAME GTK.ui-translation-domain
+    COMMAND ${CMAKE_COMMAND}
+        -Dui_dir=${PROJECT_SOURCE_DIR}/gtk
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/ui-translation-domain-test.cmake)
 
 # ---
 
@@ -34,5 +42,9 @@ function(add_trgtk_test source)
     tr_setup_gtest_target(${target} "GTK.")
     add_dependencies(all-tests ${target})
 endfunction()
+
+add_trgtk_test(resources-test.cc)
+tr_target_glib_resources(gtk-test-resources
+    ${PROJECT_SOURCE_DIR}/gtk/transmission.gresource.xml)
 
 add_trgtk_test(serializer-test.cc)

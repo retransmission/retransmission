@@ -24,22 +24,14 @@ endif()
 # nothing calls, which looks exactly like a mock that failed to start.
 set(INTEROP_NAMES_H ${CMAKE_SOURCE_DIR}/libtransmission-app/interop-names.h)
 
-function(tr_read_interop_string line_regex what out_var)
-    file(STRINGS ${INTEROP_NAMES_H} matched REGEX "${line_regex}")
-    if(NOT matched MATCHES "\"([^\"]+)\"")
-        message(FATAL_ERROR "couldn't read ${what} from ${INTEROP_NAMES_H}")
-    endif()
-    set(${out_var} ${CMAKE_MATCH_1} PARENT_SCOPE)
-endfunction()
-
 function(tr_read_interop_name macro_name out_var)
-    tr_read_interop_string("^#define +${macro_name} +\"" ${macro_name} value)
+    tr_read_header_define(${INTEROP_NAMES_H} ${macro_name} value)
     set(${out_var} ${value} PARENT_SCOPE)
 endfunction()
 
 # The value of an `inline constexpr std::string_view Foo = "bar";` in interop-names.h.
 function(tr_read_interop_constant name out_var)
-    tr_read_interop_string("${name} = \"" ${name} value)
+    tr_read_header_string(${INTEROP_NAMES_H} "${name} = \"" value)
     set(${out_var} ${value} PARENT_SCOPE)
 endfunction()
 

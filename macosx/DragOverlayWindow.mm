@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -7,6 +7,8 @@
 #import "NSStringAdditions.h"
 
 #include <libtransmission/torrent-metainfo.h>
+#import "UTTypeAdditions.h"
+#import "NSURLAdditions.h"
 
 @interface DragOverlayWindow ()
 
@@ -58,8 +60,8 @@
     NSUInteger fileCount = 0;
 
     for (NSString* file in files) {
-        if ([[NSWorkspace.sharedWorkspace typeOfFile:file error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-            [file.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+        auto fileURL = [NSURL fileURLWithPath:file];
+        if (fileURL.isTorrentFile) {
             auto metainfo = tr_torrent_metainfo{};
             if (metainfo.parse_torrent_file(file.UTF8String)) {
                 ++count;
@@ -98,8 +100,8 @@
 
     NSImage* icon;
     if (count == 1) {
-        icon = [NSWorkspace.sharedWorkspace
-            iconForFileType:fileCount <= 1 ? name.pathExtension : NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+        auto fileType = [UTType contentTypeForFilenameExtension:name.pathExtension isFolder:fileCount > 1];
+        icon = [NSWorkspace.sharedWorkspace iconForContentType:fileType];
     } else {
         name = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu Torrent Files", "Drag overlay -> torrents"), count];
         secondString = [secondString stringByAppendingString:@" total"];

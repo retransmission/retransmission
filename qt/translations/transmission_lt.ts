@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Apie „Transmission“</translation>
+        <source>About {appname}</source>
+        <translation>Apie „{appname}“</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1779,11 +1779,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklė&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklės&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokavimo sąraše yra {count:L} taisyklių&lt;/i&gt;</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklė</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklės</numerusform>
+            <numerusform>Blokavimo sąraše yra {count:L} taisyklių</numerusform>
         </translation>
     </message>
     <message>
@@ -1849,8 +1849,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Rodyti „Transmission“ piktogramą pranešimų &amp;srityje</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Rodyti „{appname}“ piktogramą pranešimų &amp;srityje</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2124,8 +2124,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>„Transmission“ nuostatos</translation>
+        <source>{appname} Preferences</source>
+        <translation>„{appname}“ nuostatos</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2296,7 +2296,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2577,12 +2577,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Atsiunčiama iš {active_count} iš {connected_count} prisijungusio siuntėjo</numerusform>
-            <numerusform>Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų</numerusform>
-            <numerusform>Atsiunčiama iš {active_count} iš {connected_count} prisijungusių siuntėjų</numerusform>
+            <numerusform>Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusio siuntėjo</numerusform>
+            <numerusform>Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų</numerusform>
+            <numerusform>Atsiunčiama iš {active_count:L} iš {connected_count:L} prisijungusių siuntėjų</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2597,11 +2597,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Skleidžiama {active_count} iš {connected_count} prisijungusio siuntėjo</numerusform>
-            <numerusform>Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų</numerusform>
-            <numerusform>Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų</numerusform>
+            <numerusform>Skleidžiama {active_count:L} iš {connected_count:L} prisijungusio siuntėjo</numerusform>
+            <numerusform>Skleidžiama {active_count:L} iš {connected_count:L} prisijungusių siuntėjų</numerusform>
+            <numerusform>Skleidžiama {active_count:L} iš {connected_count:L} prisijungusių siuntėjų</numerusform>
         </translation>
     </message>
     <message>

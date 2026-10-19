@@ -102,7 +102,7 @@ auto constexpr MaxBlocklistSize = 128U * 1024U * 1024U;
                 // truncated prefix isn't mistaken for a valid blocklist
                 tr_logAddWarn(
                     fmt::format(
-                        fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
+                        "Blocklist is larger than {limit} MiB; ignoring it",
                         fmt::arg("limit", MaxBlocklistSize / (1024U * 1024U))));
                 content.clear();
                 break;
@@ -162,7 +162,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 
     if (response.errmsg) {
         result.status = tr_blocklist_update_status::DownloadError;
-        result.error = fmt::format(
+        result.message = fmt::format(
             fmt::runtime(_("Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})")),
             fmt::arg("errmsg", *response.errmsg),
             fmt::arg("error", tr_webGetResponseStr(response.status)),
@@ -174,7 +174,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     if (response.status != 200) {
         // we failed to download the blocklist...
         result.status = tr_blocklist_update_status::DownloadError;
-        result.error = fmt::format(
+        result.message = fmt::format(
             fmt::runtime(_("Couldn't fetch blocklist: {error} ({error_code})")),
             fmt::arg("error", tr_webGetResponseStr(response.status)),
             fmt::arg("error_code", response.status));
@@ -195,7 +195,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     } else if (!std::empty(error)) {
         // couldn't write the downloaded content to disk
         result.status = tr_blocklist_update_status::SaveError;
-        result.error = std::move(error);
+        result.message = std::move(error);
     } else {
         // the content held no parseable rules; leave the existing list in place
         result.status = tr_blocklist_update_status::InvalidData;
@@ -213,9 +213,18 @@ Updater::Updater(Mediator& mediator)
 
 Updater::~Updater()
 {
-    // If our fetch is still in flight, make its completion callback a no-op
+    // Answer whoever still waits on an in-flight fetch, e.g. an RPC client's blocklist_update.
+    // The fetch's own completion then finds no waiters and does nothing.
+    closing_ = true;
     if (auto pending = latest_.lock()) {
-        pending->waiters.clear();
+        // A status without a message: composing one allocates, and a
+        // destructor has no way to report allocation failure.
+        auto const result = tr_blocklist_update_result{
+            .status = tr_blocklist_update_status::DownloadError,
+            .n_rules = 0U,
+            .message = {},
+        };
+        deliver(*pending, result);
     }
 }
 
@@ -273,16 +282,20 @@ void Updater::arm_timer()
 
 void Updater::on_auto_update_timer()
 {
-    update([](tr_blocklist_update_result const& result) {
+    // Capturing `this` is safe: ~Updater answers every waiter it leaves behind.
+    update([this](tr_blocklist_update_result const& result) {
+        // A session that is closing needs no warning that its update stopped.
+        if (closing_) {
+            return;
+        }
+
         if (result.status == tr_blocklist_update_status::Ok) {
             tr_logAddInfo(
-                fmt::format(
-                    fmt::runtime(_("Automatically updated blocklist, which now has {count} rules")),
-                    fmt::arg("count", result.n_rules)));
-        } else if (!std::empty(result.error)) {
-            tr_logAddWarn(std::string{ result.error });
+                fmt::format("Automatically updated blocklist, which now has {count} rules", fmt::arg("count", result.n_rules)));
+        } else if (!std::empty(result.message)) {
+            tr_logAddWarn(std::string{ result.message });
         } else {
-            tr_logAddWarn(_("Couldn't update blocklist"));
+            tr_logAddWarn("Couldn't update blocklist");
         }
     });
 

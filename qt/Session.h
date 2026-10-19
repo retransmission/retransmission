@@ -7,7 +7,7 @@
 
 #include <array>
 #include <cstddef> // size_t
-#include <cstdint> // int64_t
+#include <cstdint> // uint64_t
 #include <map>
 #include <optional>
 #include <span>
@@ -25,12 +25,10 @@
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
-#include <libtransmission-app/rpc-queue.h>
 #include <libtransmission-app/session.h>
 
 #include "Prefs.h"
 #include "RpcClient.h"
-#include "Torrent.h"
 #include "Typedefs.h"
 
 class AddData;
@@ -74,25 +72,11 @@ public:
         return session_version_;
     }
 
-    [[nodiscard]] constexpr auto blocklistSize() const noexcept
-    {
-        return blocklist_size_;
-    }
-
-    enum PortTestIpProtocol : uint8_t { PORT_TEST_IPV4, PORT_TEST_IPV6, NUM_PORT_TEST_IP_PROTOCOL };
-
-    void setBlocklistSize(int64_t i);
     void updateBlocklist();
-    void portTest(PortTestIpProtocol ip_protocol);
+    void portTest(tr_address_type ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    [[nodiscard]] bool portTestPending(PortTestIpProtocol ip_protocol) const noexcept;
-
-    // returns true iff the session is embedded or known to be on this system
-    [[nodiscard]] constexpr bool isLocalFilesystem() const noexcept
-    {
-        return type().value_or(Type::Remote) != Type::Remote;
-    }
+    [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
 
     void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
@@ -129,6 +113,7 @@ public slots:
     void queueMoveDown(torrent_ids_t const& torrentIds = {});
     void queueMoveTop(torrent_ids_t const& torrentIds = {});
     void queueMoveUp(torrent_ids_t const& torrentIds = {});
+    void refreshBlocklistInfo();
     void refreshSessionInfo();
     void refreshSessionStats();
     void removeTorrents(torrent_ids_t const& torrent_ids, bool delete_files = false);
@@ -136,11 +121,14 @@ public slots:
 signals:
     void sourceChanged();
 
+    // stop() disconnected from the session and forgot its info.
+    void stopped();
+
     // The session found its config dir held by another and started nothing.
     // Emitted from every path that reaches start(), so a handler need not know which one ran.
     void configDirContended();
 
-    void portTested(std::optional<bool> status, PortTestIpProtocol ip_protocol);
+    void portTested(std::optional<bool> status, tr_address_type ip_protocol);
     void statsUpdated();
     void sessionUpdated();
     void blocklistUpdated(qint64);
@@ -208,8 +196,7 @@ private:
     QString const config_dir_;
     Prefs& prefs_;
 
-    int64_t blocklist_size_ = -1;
-    std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
     tr_session_stats stats_ = EmptyStats;
     tr_session_stats cumulative_stats_ = EmptyStats;

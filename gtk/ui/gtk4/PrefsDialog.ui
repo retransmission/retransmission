@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interface domain="transmission-gtk">
+<interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="PrefsDialog">
-    <property name="title" translatable="yes">Transmission Preferences</property>
+    <property name="title" translatable="yes">{appname} Preferences</property>
     <property name="modal">0</property>
     <child internal-child="content_area">
       <object class="GtkBox" id="dialog_layout">
@@ -735,6 +735,21 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="blocklist_date_label">
+                                <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="style" value="italic"/>
+                                </attributes>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">3</property>
+                                  <property name="column-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkEntry" id="blocklist_url_entry">
                                 <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
                                 <property name="width-request">300</property>
@@ -754,7 +769,6 @@
                                   <object class="GtkLabel" id="blocklist_stats_label">
                                     <property name="sensitive" bind-source="blocklist_check" bind-property="active" bind-flags="sync-create">0</property>
                                     <property name="hexpand">1</property>
-                                    <property name="label">...</property>
                                     <property name="xalign">0</property>
                                     <attributes>
                                       <attribute name="style" value="italic"/>
@@ -1148,7 +1162,7 @@ To add a new primary URL, add it after a blank line.]]></property>
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="show_systray_icon_check">
-                                <property name="label" translatable="yes">Show Transmission icon in the _notification area</property>
+                                <property name="label" translatable="yes">Show {appname} icon in the _notification area</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">1</property>
@@ -1156,6 +1170,20 @@ To add a new primary URL, add it after a blank line.]]></property>
                                 <layout>
                                   <property name="column">0</property>
                                   <property name="row">1</property>
+                                  <property name="column-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="start_minimized_check">
+                                <property name="label" translatable="yes">Start _minimized in notification area</property>
+                                <property name="focusable">1</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">1</property>
+                                <property name="use-underline">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">2</property>
                                   <property name="column-span">2</property>
                                 </layout>
                               </object>

@@ -16,6 +16,8 @@
 #include <glibmm/extraclassinit.h>
 #include <glibmm/refptr.h>
 
+#include <sigc++/signal.h>
+
 #include <memory>
 
 class Session;
@@ -47,6 +49,10 @@ public:
     ~FilterBar() override;
 
     Glib::RefPtr<Model> get_filter_model() const;
+
+    // Emitted with the number of torrents that pass the filter,
+    // when that number or the number of torrents may have changed.
+    sigc::signal<void(guint)>& signal_visible_count_changed();
 
 private:
     class Impl;

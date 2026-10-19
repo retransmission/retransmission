@@ -433,12 +433,8 @@
   </menu>
 
   <menu id="icon-popup">
-    <section>
-      <item>
-        <attribute name="action">win.toggle-main-window</attribute>
-        <attribute name="label" translatable="yes">_Show Transmission</attribute>
-      </item>
-    </section>
+    <!-- SystemTrayIcon.cc fills this in, because its item's label names the app. -->
+    <section id="icon-popup-show-section"/>
     <section>
       <item>
         <attribute name="action">win.open-torrent</attribute>

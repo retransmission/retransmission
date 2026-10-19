@@ -48,6 +48,7 @@
 #include "libtransmission/platform.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
 
 using namespace std::literals;

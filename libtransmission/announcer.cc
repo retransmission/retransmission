@@ -173,7 +173,7 @@ public:
         } else if (scrape_sv.starts_with("udp://"sv)) {
             announcer_udp_.scrape(request, std::move(on_response));
         } else {
-            tr_logAddError(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", scrape_sv)));
+            tr_logAddError(fmt::format("Unsupported URL: '{url}'", fmt::arg("url", scrape_sv)));
         }
     }
 
@@ -187,7 +187,7 @@ public:
         } else if (announce_sv.starts_with("udp://"sv)) {
             announcer_udp_.announce(request, std::move(on_response));
         } else {
-            tr_logAddWarn(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", announce_sv)));
+            tr_logAddWarn(fmt::format("Unsupported URL: '{url}'", fmt::arg("url", announce_sv)));
         }
     }
 
@@ -827,20 +827,14 @@ void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e,
     if (isUnregistered(err)) {
         tr_logAddErrorTier(
             tier,
-            fmt::format(
-                fmt::runtime(_("Announce error: {error} ({url})")),
-                fmt::arg("error", err),
-                fmt::arg("url", announce_url)));
+            fmt::format("Announce error: {error} ({url})", fmt::arg("error", err), fmt::arg("url", announce_url)));
     } else {
         /* schedule a reannounce */
         interval = std::max(interval, current_tracker->getRetryInterval());
         tr_logAddWarnTier(
             tier,
             fmt::format(
-                fmt::runtime(tr_ngettext(
-                    "Announce error: {error} (Retrying in {count} second) ({url})",
-                    "Announce error: {error} (Retrying in {count} seconds) ({url})",
-                    interval)),
+                "Announce error: {error} (retrying in {count}s) ({url})",
                 fmt::arg("error", err),
                 fmt::arg("count", interval),
                 fmt::arg("url", announce_url)));
@@ -965,11 +959,7 @@ void tr_announcer_impl::onAnnounceDone(
         session->set_global_address(*response.external_ip);
     }
 
-    if (!response.did_connect) {
-        on_announce_error(tier, _("Could not connect to tracker"), event);
-    } else if (response.did_timeout) {
-        on_announce_error(tier, _("Tracker did not respond"), event);
-    } else if (!std::empty(response.errmsg)) {
+    if (!std::empty(response.errmsg)) {
         /* If the torrent's only tracker returned an error, publish it.
            Don't bother publishing if there are other trackers -- it's
            all too common for people to load up dozens of dead trackers
@@ -983,6 +973,10 @@ void tr_announcer_impl::onAnnounceDone(
             response.errmsg,
             event,
             response.interval > time_t{} ? response.interval : response.min_interval);
+    } else if (!response.did_connect) {
+        on_announce_error(tier, _("Could not connect to tracker"), event);
+    } else if (response.did_timeout) {
+        on_announce_error(tier, _("Tracker announce timed out"), event);
     } else {
         auto const is_stopped = event == TR_ANNOUNCE_EVENT_STOPPED;
         auto scrape_fields = uint8_t{};
@@ -1252,7 +1246,7 @@ void tr_announcer_impl::onScrapeDone(tr_scrape_response const& response)
         if (!response.did_connect) {
             on_scrape_error(session, tier, _("Could not connect to tracker"));
         } else if (response.did_timeout) {
-            on_scrape_error(session, tier, _("Tracker did not respond"));
+            on_scrape_error(session, tier, _("Tracker scrape timed out"));
         } else if (!std::empty(response.errmsg)) {
             on_scrape_error(session, tier, response.errmsg);
         } else {

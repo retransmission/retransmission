@@ -18,12 +18,10 @@
 
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
-#include <glibmm/spawn.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
 
 #include <fmt/format.h>
-#include <fmt/ranges.h>
 
 #include <map>
 #include <utility>
@@ -122,7 +120,7 @@ void dbus_proxy_ready_callback(Glib::RefPtr<Gio::AsyncResult>& res)
     } catch (Glib::Error const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't create proxy for '{bus}': {error} ({error_code})")),
+                "Couldn't create proxy for '{bus}': {error} ({error_code})",
                 fmt::arg("bus", NotificationsDbusName),
                 fmt::arg("error", TR_GLIB_EXCEPTION_WHAT(e)),
                 fmt::arg("error_code", e.code())));
@@ -173,21 +171,6 @@ void notify_callback(Glib::RefPtr<Gio::AsyncResult>& res, TrNotification const& 
 
 void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_id_t tor_id)
 {
-    if (gtr_pref_flag_get(TR_KEY_torrent_complete_sound_enabled)) {
-        auto const argv = gtr_pref_strv_get(TR_KEY_torrent_complete_sound_command);
-
-        try {
-            Glib::spawn_async({}, argv, TR_GLIB_SPAWN_FLAGS(SEARCH_PATH));
-        } catch (Glib::SpawnError const& e) {
-            gtr_warning(
-                fmt::format(
-                    fmt::runtime(_("Couldn't spawn async process \"'{command}'\": {error} ({error_code})")),
-                    fmt::arg("command", fmt::join(argv, "' '")),
-                    fmt::arg("error", e.what()),
-                    fmt::arg("error_code", static_cast<int>(e.code()))));
-        }
-    }
-
     if (!gtr_pref_flag_get(TR_KEY_torrent_complete_notification_enabled)) {
         return;
     }
@@ -212,13 +195,19 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
     std::map<Glib::ustring, Glib::VariantBase> hints;
     hints.try_emplace("category", StringVariantType::create("transfer.complete"));
 
+    if (gtr_pref_flag_get(TR_KEY_torrent_complete_sound_enabled)) {
+        hints.try_emplace("sound-name", StringVariantType::create("complete-download"));
+    } else {
+        hints.try_emplace("suppress-sound", Glib::Variant<bool>::create(true));
+    }
+
     proxy->call(
         "Notify",
         [n](auto& res) { notify_callback(res, n); },
         gtr_variant_tuple(
             Glib::ustring(TR_PROJ_APPNAME_CAPITALIZED), // app_name
             0U, // replaces_id
-            Glib::ustring(TR_PROJ_APPNAME), // app_icon
+            Glib::ustring(TR_GTK_ICON_NAME), // app_icon
             Glib::ustring(_("Torrent Complete")), // summary
             Glib::ustring{ tr_torrentName(tor) }, // body
             actions,
@@ -250,7 +239,7 @@ void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr_torrent_id_t
         gtr_variant_tuple(
             Glib::ustring(TR_PROJ_APPNAME_CAPITALIZED), // app_name
             0U, // replaces
-            Glib::ustring(TR_PROJ_APPNAME), // icon_name
+            Glib::ustring(TR_GTK_ICON_NAME), // icon_name
             Glib::ustring(_("Torrent Added")), //  summary
             Glib::ustring{ tr_torrentName(tor) }, // body
             actions,

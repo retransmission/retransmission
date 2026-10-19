@@ -5,6 +5,7 @@
 
 #include "Utils.h"
 
+#include <string>
 #include <string_view>
 
 #include <QtCore/QCoreApplication>
@@ -27,6 +28,10 @@
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStyle>
+
+#include <libtransmission/macros.h>
+
+#include <libtransmission-app/trash.h>
 
 #include "QtCompat.h"
 #include "TrFormat.h"
@@ -67,6 +72,28 @@ QIcon Utils::getIconFromIndex(QModelIndex const& index)
 QString Utils::qstringFromUtf8(std::string_view const str)
 {
     return QString::fromUtf8(str.data(), static_cast<QtrSizeArgType>(str.size()));
+}
+
+bool Utils::trashOrRemove(std::string_view const filename, tr_error* const error)
+{
+    return tr::app::trash_or_remove(filename, error, [](std::string_view const path, std::string& why) {
+        auto file = QFile{ qstringFromUtf8(path) };
+        if (file.moveToTrash()) {
+            return true;
+        }
+
+        why = file.errorString().toStdString();
+#ifdef _WIN32
+        // Deleting comes next, and Windows won't delete a read-only file
+        file.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
+#endif
+        return false;
+    });
+}
+
+QString Utils::withAppName(QString text)
+{
+    return text.replace(QStringLiteral("{appname}"), QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED));
 }
 
 QString Utils::removeTrailingDirSeparator(QString const& path)

@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "GtkCompat.h"
-
 #include <gtkmm/cellrenderer.h>
 
 #include <glibmm/propertyproxy.h>

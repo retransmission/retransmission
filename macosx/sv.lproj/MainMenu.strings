@@ -1,15 +1,15 @@
 
-/* Class = "NSWindow"; title = "Transmission"; ObjectID = "21"; */
-"21.title" = "Transmission";
+/* Class = "NSWindow"; title = "Retransmission"; ObjectID = "21"; */
+"21.title" = "Retransmission";
 
-/* Class = "NSMenuItem"; title = "Transmission"; ObjectID = "56"; */
-"56.title" = "Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission"; ObjectID = "56"; */
+"56.title" = "Retransmission";
 
-/* Class = "NSMenu"; title = "Transmission"; ObjectID = "57"; */
-"57.title" = "Transmission";
+/* Class = "NSMenu"; title = "Retransmission"; ObjectID = "57"; */
+"57.title" = "Retransmission";
 
-/* Class = "NSMenuItem"; title = "About Transmission"; ObjectID = "58"; */
-"58.title" = "Om Transmission";
+/* Class = "NSMenuItem"; title = "About Retransmission"; ObjectID = "58"; */
+"58.title" = "Om Retransmission";
 
 /* Class = "NSMenuItem"; title = "Open Torrent File…"; ObjectID = "72"; */
 "72.title" = "Öppna torrentfil…";
@@ -38,11 +38,11 @@
 /* Class = "NSMenuItem"; title = "Services"; ObjectID = "131"; */
 "131.title" = "Tjänster";
 
-/* Class = "NSMenuItem"; title = "Hide Transmission"; ObjectID = "134"; */
-"134.title" = "Dölj Transmission";
+/* Class = "NSMenuItem"; title = "Hide Retransmission"; ObjectID = "134"; */
+"134.title" = "Dölj Retransmission";
 
-/* Class = "NSMenuItem"; title = "Quit Transmission"; ObjectID = "136"; */
-"136.title" = "Avsluta Transmission";
+/* Class = "NSMenuItem"; title = "Quit Retransmission"; ObjectID = "136"; */
+"136.title" = "Avsluta Retransmission";
 
 /* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "145"; */
 "145.title" = "Dölj andra";
@@ -152,11 +152,11 @@
 /* Class = "NSMenuItem"; title = "Remove and Trash Data File"; ObjectID = "1551"; */
 "1551.title" = "Ta bort och kasta datafil";
 
-/* Class = "NSMenuItem"; title = "Transmission Homepage"; ObjectID = "1558"; */
-"1558.title" = "Transmissions webbplats";
+/* Class = "NSMenuItem"; title = "Retransmission Homepage"; ObjectID = "1558"; */
+"1558.title" = "Retransmissions webbplats";
 
-/* Class = "NSMenuItem"; title = "Transmission Help"; ObjectID = "1561"; */
-"1561.title" = "Hjälp för Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission Help"; ObjectID = "1561"; */
+"1561.title" = "Hjälp för Retransmission";
 
 /* Class = "NSMenuItem"; title = "Speed Limit"; ObjectID = "1566"; */
 "1566.title" = "Hastighetsgräns";
@@ -194,8 +194,8 @@
 /* Class = "NSMenuItem"; title = "Previous Inspector Tab"; ObjectID = "1694"; */
 "1694.title" = "Föregående inspekterarflik";
 
-/* Class = "NSMenuItem"; title = "Transmission"; ObjectID = "1696"; */
-"1696.title" = "Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission"; ObjectID = "1696"; */
+"1696.title" = "Retransmission";
 
 /* Class = "NSMenuItem"; title = "Delete"; ObjectID = "1766"; */
 "1766.title" = "Ta bort";

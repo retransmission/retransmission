@@ -1,6 +1,6 @@
 # Headless Usage
 
-Transmission can be run in headless mode as a daemon. The daemon, `transmission-daemon`, runs in the background. It communicates with the world via the usual TCP and UDP bittorrent ports, as well as through TCP port 9091. It's on this last port that the daemon accepts commands from `transmission-remote`. These commands are called Remote Procedure Calls, or RPCs. There are RPCs for all of the interactions between a user and a bittorrent client, including adding and removing torrents, displaying global stats, checking torrent download progress, and shutting down the daemon. Each command completes in a finite amount of time and prints the result to stdout.
+Retransmission can be run in headless mode as a daemon. The daemon, `transmission-daemon`, runs in the background. It communicates with the world via the usual TCP and UDP bittorrent ports, as well as through TCP port 9091. It's on this last port that the daemon accepts commands from `transmission-remote`. These commands are called Remote Procedure Calls, or RPCs. There are RPCs for all of the interactions between a user and a bittorrent client, including adding and removing torrents, displaying global stats, checking torrent download progress, and shutting down the daemon. Each command completes in a finite amount of time and prints the result to stdout.
 
 ## Setup
 
@@ -73,7 +73,7 @@ Once the daemon is configured to your liking, start it back up.
 > transmission-daemon --logfile ~/.local/log/transmission.log
 > 
 ```
-Headless Transmission is now configured.
+Headless Retransmission is now configured.
 
 ## Usage
 To add a torrent:

@@ -33,6 +33,7 @@
 #define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
 
 #define TR_PROJ_URL_HOMEPAGE "https://" TR_PROJ_DOMAIN_APEX
+#define TR_PROJ_URL_CREDITS TR_PROJ_URL_HOMEPAGE "/credits/"
 #define TR_PROJ_URL_DONATE TR_PROJ_URL_HOMEPAGE "/donate"
 #define TR_PROJ_URL_HELP TR_PROJ_URL_HOMEPAGE "/help"
 #define TR_PROJ_URL_GIT "https://github.com/retransmission/retransmission"

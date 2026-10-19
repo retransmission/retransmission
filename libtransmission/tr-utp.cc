@@ -71,7 +71,7 @@ void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
     if (auto addrport = tr_socket_address::from_sockaddr(reinterpret_cast<struct sockaddr*>(&from_storage)); addrport) {
         session->addIncoming(tr_peer_socket_utp::create(*addrport, utp_sock, session->timerMaker()));
     } else {
-        tr_logAddWarn(_("Unknown socket family"));
+        tr_logAddWarn("Unknown socket family");
         utp_close(utp_sock);
     }
 }

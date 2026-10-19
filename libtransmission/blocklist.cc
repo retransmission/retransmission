@@ -62,7 +62,7 @@ void save(std::string_view filename, address_range_t const* ranges, size_t n_ran
     if (!out.is_open()) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", filename),
                 fmt::arg("error", tr_strerror(errno)),
                 fmt::arg("error_code", errno)));
@@ -73,15 +73,14 @@ void save(std::string_view filename, address_range_t const* ranges, size_t n_ran
         !out.write(reinterpret_cast<char const*>(ranges), static_cast<std::streamsize>(n_ranges * sizeof(*ranges)))) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
+                "Couldn't save '{path}': {error} ({error_code})",
                 fmt::arg("path", filename),
                 fmt::arg("error", tr_strerror(errno)),
                 fmt::arg("error_code", errno)));
     } else {
         tr_logAddInfo(
             fmt::format(
-                fmt::runtime(
-                    tr_ngettext("Blocklist '{path}' has {count} entry", "Blocklist '{path}' has {count} entries", n_ranges)),
+                "Blocklist '{path}' size: {count}",
                 fmt::arg("path", tr_sys_path_basename(filename)),
                 fmt::arg("count", n_ranges)));
     }
@@ -215,7 +214,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     if (!in.is_open()) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", filename),
                 fmt::arg("error", tr_strerror(errno)),
                 fmt::arg("error_code", errno)));
@@ -246,10 +245,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
         } else {
             auto const base64 = tr_base64_encode(line);
             tr_logAddWarn(
-                fmt::format(
-                    fmt::runtime(_("Couldn't parse line {line}: {base64}")),
-                    fmt::arg("line", line_number),
-                    fmt::arg("base64", base64)));
+                fmt::format("Couldn't parse line {line}: {base64}", fmt::arg("line", line_number), fmt::arg("base64", base64)));
         }
     }
     in.close();
@@ -318,7 +314,7 @@ void Blocklists::Blocklist::ensureLoaded() const
     if (error) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", bin_file_),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
@@ -332,7 +328,7 @@ void Blocklists::Blocklist::ensureLoaded() const
     if (!in) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", bin_file_),
                 fmt::arg("error", tr_strerror(errno)),
                 fmt::arg("error_code", errno)));
@@ -367,7 +363,7 @@ void Blocklists::Blocklist::ensureLoaded() const
             // was modified.
             tr_logAddInfo(
                 fmt::format(
-                    fmt::runtime(_("Rewriting old blocklist file {path} to new format")),
+                    "Rewriting old blocklist file {path} to new format",
                     fmt::arg("path", tr_sys_path_basename(bin_file_))));
             save(bin_file_, std::data(*rules_), std::size(*rules_));
         }
@@ -382,10 +378,7 @@ void Blocklists::Blocklist::ensureLoaded() const
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(tr_ngettext(
-                "Blocklist '{path}' has {count} entry",
-                "Blocklist '{path}' has {count} entries",
-                std::size(*rules_))),
+            "Blocklist '{path}' size: {count}",
             fmt::arg("path", tr_sys_path_basename(bin_file_)),
             fmt::arg("count", std::size(*rules_))));
 }
@@ -452,7 +445,7 @@ std::optional<Blocklists::Blocklist> Blocklists::Blocklist::saveNew(
     if (error) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
+                "Couldn't save '{path}': {error} ({error_code})",
                 fmt::arg("path", src_file),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));

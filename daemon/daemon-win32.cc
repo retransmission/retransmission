@@ -12,6 +12,7 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
 #include "daemon.h"
@@ -25,7 +26,7 @@
 
 namespace
 {
-LPCWSTR constexpr service_name = L"TransmissionDaemon";
+LPCWSTR constexpr service_name = L"" TR_PROJ_APPNAME_CAPITALIZED "Daemon";
 
 // If we can get rid of this global variable...
 static tr_daemon* daemon;

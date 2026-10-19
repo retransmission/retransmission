@@ -806,7 +806,7 @@ std::optional<tr_socket_address> tr_announcer_udp::Mediator::dns_lookup(
         logwarn(
             log_name,
             fmt::format(
-                fmt::runtime(_("Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})")),
+                "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})",
                 fmt::arg("address", name),
                 fmt::arg("port", service),
                 fmt::arg("ip_protocol", tr_ip_protocol_to_sv(ip_protocol)),

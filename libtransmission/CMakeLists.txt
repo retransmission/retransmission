@@ -245,7 +245,7 @@ target_compile_definitions(${TR_NAME}
         __TRANSMISSION__
         WIDE_INTEGER_DISABLE_FLOAT_INTEROP
         WIDE_INTEGER_DISABLE_IOSTREAM
-        PACKAGE_DATA_DIR="${CMAKE_INSTALL_FULL_DATAROOTDIR}"
+        PACKAGE_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}"
         $<$<BOOL:${WITH_INOTIFY}>:WITH_INOTIFY>
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>
@@ -312,42 +312,3 @@ target_link_libraries(${TR_NAME}
         transmission::small
         libevent::core
         libevent::extra)
-
-if(INSTALL_LIB)
-    install(
-        TARGETS ${TR_NAME}
-        DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    install(
-        FILES
-            announce-list.h
-            block-info.h
-            constants.h
-            digest.h
-            error-types.h
-            error.h
-            file.h
-            log.h
-            macros.h
-            makemeta.h
-            quark.h
-            rpcimpl.h
-            session-id.h
-            shared-string.h
-            timer-ev.h
-            timer.h
-            torrent-files.h
-            tr-assert.h
-            tr-buffer.h
-            tr-getopt.h
-            tr-strbuf.h
-            transmission.h
-            types.h
-            utils.h
-            values.h
-            variant.h
-            watchdir.h
-            web-utils.h
-            web.h
-            ${CMAKE_CURRENT_BINARY_DIR}/version.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TR_NAME})
-endif()

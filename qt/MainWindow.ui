@@ -10,9 +10,6 @@
     <height>427</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Transmission</string>
-  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
@@ -655,14 +652,6 @@
    </property>
    <property name="text">
     <string>&amp;Main Window</string>
-   </property>
-  </action>
-  <action name="action_TrayIcon">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Tray &amp;Icon</string>
    </property>
   </action>
   <action name="action_SessionDialog">

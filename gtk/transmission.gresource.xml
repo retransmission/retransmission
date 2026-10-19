@@ -6,7 +6,9 @@
     <file alias="icons/scalable/actions/options-symbolic.svg">../icons/options-symbolic.svg</file>
     <file alias="icons/scalable/actions/ratio-symbolic.svg">../icons/ratio-symbolic.svg</file>
     <file alias="icons/scalable/actions/turtle-symbolic.svg">../icons/turtle-silhouette.svg</file>
-    <file alias="icons/scalable/apps/retransmission.svg" compressed="true" preprocess="xml-stripblanks">../icons/hicolor_apps_scalable_transmission.svg</file>
+    <!-- The client finds this copy by name, so the alias is named after TR_GTK_ICON_NAME.
+         Only the client's own windows see it. Notifications and the AppIndicator tray need the installed icon. -->
+    <file alias="icons/scalable/apps/retransmission-gtk.svg" compressed="true" preprocess="xml-stripblanks">../icons/hicolor_apps_scalable_transmission.svg</file>
     <file compressed="true">transmission-ui.css</file>
     <file compressed="true" preprocess="xml-stripblanks">transmission-menus.ui</file>
   </gresource>

@@ -68,7 +68,6 @@ export class ShortcutsDialog extends EventTarget {
       tr.append(td);
     }
 
-    elements.heading.textContent = 'Transmission';
     elements.dismiss.textContent = 'Close';
 
     elements.heading.textContent = 'Keyboard shortcuts';

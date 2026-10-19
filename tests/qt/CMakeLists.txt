@@ -1,6 +1,17 @@
-# A Qt built without testlib can still build the client, so its absence skips these
-# rather than failing the configure. A missing dbus-run-session or
-# desktop-file-validate skips the tests that need one the same way.
+# The desktop entry is data a desktop reads, so no client test can reach it.
+# The check needs no Qt testlib, so it comes ahead of the search for one.
+add_test(
+    NAME QT.desktop-file
+    COMMAND ${CMAKE_COMMAND}
+        -Ddesktop_file=${CMAKE_BINARY_DIR}/qt/${TR_NAME}-qt.desktop
+        -Dapp_name=${TR_PROJ_APPNAME_CAPITALIZED}
+        -Dicon_name=${TR_QT_ICON_NAME}
+        -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-qt>
+        -Dvalidator=${DESKTOP_FILE_VALIDATE}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/../desktop-file-test.cmake)
+
+# A Qt built without testlib can still build the client,
+# so its absence skips the client tests rather than failing the configure.
 find_package(Qt${Qt_VERSION_MAJOR}Test ${QT_MINIMUM} QUIET)
 if(NOT Qt${Qt_VERSION_MAJOR}Test_FOUND)
     message(STATUS "Qt${Qt_VERSION_MAJOR}Test not found - skipping the Qt client tests")
@@ -100,7 +111,7 @@ if(ENABLE_QT_DBUS_INTEROP)
     # whole suite as passed rather than skipped.
     set_tests_properties(QT.dbus-interop
         PROPERTIES
-            SKIP_REGULAR_EXPRESSION "no session bus;another Transmission owns this bus")
+            SKIP_REGULAR_EXPRESSION "no session bus;another ${TR_PROJ_APPNAME_CAPITALIZED} owns this bus")
 endif()
 
 get_property(QT_TEST_TARGETS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY QT_TEST_TARGETS)

@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Про Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Про {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Авторське право © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Авторське право © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -785,8 +785,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1787,11 +1787,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;У списку блокування міститься {count:L} правило&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;У списку блокування міститься {count:L} правила&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;У списку блокування міститься {count:L} правил&lt;/i&gt;</numerusform>
+            <numerusform>У списку блокування міститься {count:L} правило</numerusform>
+            <numerusform>У списку блокування міститься {count:L} правила</numerusform>
+            <numerusform>У списку блокування міститься {count:L} правил</numerusform>
         </translation>
     </message>
     <message>
@@ -1857,8 +1857,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Показувати &amp;значок Transmission в зоні сповіщення</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Показувати &amp;значок {appname} в зоні сповіщення</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2140,8 +2140,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Налаштування Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Налаштування {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2312,11 +2312,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Не вдається додати {count} дубльований торент</numerusform>
-            <numerusform>Не вдається додати {count} дубльованих торенти</numerusform>
-            <numerusform>Не вдається додати {count} дубльований(х) торент(ів)</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльований торент</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльованих торенти</numerusform>
+            <numerusform>Не вдається додати {count:L} дубльований(х) торент(ів)</numerusform>
         </translation>
     </message>
 </context>
@@ -2593,12 +2593,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключеного вузла</numerusform>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключених вузлів</numerusform>
-            <numerusform>Завантаження від {active_count} з {connected_count} підключених вузлів</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключеного вузла</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
+            <numerusform>Завантаження від {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2613,11 +2613,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Поширення до {active_count} з {connected_count} підключеного вузла</numerusform>
-            <numerusform>Поширення до {active_count} з {connected_count} підключених вузлів</numerusform>
-            <numerusform>Поширення до {active_count} з {connected_count} підключених вузлів</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключеного вузла</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
+            <numerusform>Поширення до {active_count:L} з {connected_count:L} підключених вузлів</numerusform>
         </translation>
     </message>
     <message>

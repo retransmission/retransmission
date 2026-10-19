@@ -1,5 +1,5 @@
 [Unit]
-Description=Transmission BitTorrent Daemon
+Description=@TR_PROJ_APPNAME_CAPITALIZED@ BitTorrent Daemon
 Wants=network-online.target
 After=network-online.target
 Documentation=man:@TR_NAME@-daemon(1)

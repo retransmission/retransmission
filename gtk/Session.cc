@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // This file is licensed under the MIT (SPDX: MIT) license,
 // A copy of this license can be found in licenses/ .
 
@@ -49,6 +49,7 @@
 #include <array>
 #include <cstring> // strstr
 #include <functional>
+#include <initializer_list>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -81,8 +82,8 @@ public:
 
     size_t get_unpaused_torrent_count() const;
 
-    bool get_port_test_pending(PortTestIpProtocol ip_protocol);
-    void set_port_test_pending(bool pending, PortTestIpProtocol ip_protocol);
+    [[nodiscard]] bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
+    void set_port_test_pending(bool pending, tr_address_type ip_protocol);
 
     void update();
     void update_torrent(tr_torrent_id_t id);
@@ -97,6 +98,10 @@ public:
 
     void send_rpc_request(tr_quark method, tr_variant&& params, std::function<void(tr_variant&)>&& on_response);
 
+    // Ask session_get for just `keys`.
+    // `on_result` gets the reply's result map, or nullptr if the reply has none.
+    void send_session_get(std::initializer_list<tr_quark> keys, std::function<void(tr_variant::Map const*)>&& on_result);
+
     void commit_prefs_change(tr_quark key);
 
     auto& signal_add_error()
@@ -107,6 +112,11 @@ public:
     auto& signal_add_prompt()
     {
         return signal_add_prompt_;
+    }
+
+    auto& signal_blocklist_info()
+    {
+        return signal_blocklist_info_;
     }
 
     auto& signal_blocklist_updated()
@@ -178,10 +188,11 @@ private:
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
     sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
+    sigc::signal<void(size_t, time_t)> signal_blocklist_info_;
     sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
-    sigc::signal<void(std::optional<bool>, PortTestIpProtocol)> signal_port_tested_;
+    sigc::signal<void(std::optional<bool>, tr_address_type)> signal_port_tested_;
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
 
     Glib::RefPtr<Gio::FileMonitor> monitor_;
@@ -191,7 +202,7 @@ private:
     sigc::connection monitor_idle_tag_;
 
     bool adding_from_watch_dir_ = false;
-    std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
 
     woke::SleepInhibitor sleep_inhibitor_;
     gint busy_count_ = 0;
@@ -310,7 +321,7 @@ void rename_torrent(Glib::RefPtr<Gio::File> const& file)
     } catch (Glib::Error const& e) {
         gtr_message(
             fmt::format(
-                fmt::runtime(_("Couldn't rename '{old_path}' as '{path}': {error} ({error_code})")),
+                "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})",
                 fmt::arg("old_path", old_name),
                 fmt::arg("path", new_name),
                 fmt::arg("error", e.what()),
@@ -403,7 +414,7 @@ void Session::Impl::watchdir_scan()
     } catch (Glib::FileError const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't open watchdir '{dirname}': {error} ({error_code})")),
+                "Couldn't open watchdir '{dirname}': {error} ({error_code})",
                 fmt::arg("dirname", dirname),
                 fmt::arg("error", e.what()),
                 fmt::arg("error_code", static_cast<int>(e.code()))));
@@ -732,14 +743,14 @@ void Session::Impl::add_file_async_callback(
         char* contents = nullptr;
 
         if (!file->load_contents_finish(result, contents, length)) {
-            gtr_message(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", file->get_parse_name())));
+            gtr_message(fmt::format("Couldn't read '{path}'", fmt::arg("path", file->get_parse_name())));
         } else if (builder->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
             add_builder(std::move(builder), do_prompt, do_notify);
         }
     } catch (Glib::Error const& e) {
         gtr_message(
             fmt::format(
-                fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
+                "Couldn't read '{path}': {error} ({error_code})",
                 fmt::arg("path", file->get_parse_name()),
                 fmt::arg("error", e.what()),
                 fmt::arg("error_code", e.code())));
@@ -798,10 +809,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
             add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt, do_notify);
         });
     } else {
-        std::cerr << fmt::format(
-                         fmt::runtime(_("Couldn't add torrent file '{path}'")),
-                         fmt::arg("path", file->get_parse_name()))
-                  << '\n';
+        std::cerr << fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", file->get_parse_name())) << '\n';
     }
 
     return handled;
@@ -864,7 +872,7 @@ void Session::Impl::remove_torrent(tr_torrent_id_t const id, bool const delete_f
     if (auto const& [torrent, position] = find_torrent_by_id(id); torrent) {
         get_raw_model()->remove(position);
 
-        tr_torrentRemove(&torrent->get_underlying(), delete_files, gtr_file_trash_or_remove);
+        tr_torrentRemove(&torrent->get_underlying(), delete_files);
     }
 }
 
@@ -980,7 +988,7 @@ bool core_read_rpc_response_idle(tr_variant& response)
             if (auto const nh = pendingRequests.extract(*id)) {
                 nh.mapped()(response);
             } else {
-                gtr_warning(fmt::format(fmt::runtime(_("Couldn't find pending RPC request for id {id}")), fmt::arg("id", *id)));
+                gtr_warning(fmt::format("Couldn't find pending RPC request for id {id}", fmt::arg("id", *id)));
             }
         }
     }
@@ -1031,11 +1039,30 @@ void Session::Impl::send_rpc_request(tr_quark const method, tr_variant&& params,
     tr_rpc_request_exec(session_, std::move(req), std::move(callback));
 }
 
+void Session::Impl::send_session_get(
+    std::initializer_list<tr_quark> const keys,
+    std::function<void(tr_variant::Map const*)>&& on_result)
+{
+    auto fields = tr_variant::Vector{};
+    fields.reserve(std::size(keys));
+    for (auto const key : keys) {
+        fields.emplace_back(tr_variant::unmanaged_string(key));
+    }
+
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+
+    send_rpc_request(TR_KEY_session_get, std::move(params), [on_result = std::move(on_result)](tr_variant& response) {
+        auto const* const resmap = response.get_if<tr_variant::Map>();
+        on_result(resmap != nullptr ? resmap->find_if<tr_variant::Map>(TR_KEY_result) : nullptr);
+    });
+}
+
 /***
 ****  Sending a test-port request via RPC
 ***/
 
-void Session::port_test(PortTestIpProtocol const ip_protocol)
+void Session::port_test(tr_address_type const ip_protocol)
 {
     static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
 
@@ -1065,21 +1092,19 @@ void Session::port_test(PortTestIpProtocol const ip_protocol)
     });
 }
 
-bool Session::port_test_pending(Session::PortTestIpProtocol ip_protocol) const noexcept
+bool Session::port_test_pending(tr_address_type const ip_protocol) const noexcept
 {
     return impl_->get_port_test_pending(ip_protocol);
 }
 
-bool Session::Impl::get_port_test_pending(Session::PortTestIpProtocol ip_protocol)
+bool Session::Impl::get_port_test_pending(tr_address_type const ip_protocol) const noexcept
 {
-    return ip_protocol < NUM_PORT_TEST_IP_PROTOCOL && port_test_pending_[ip_protocol];
+    return port_test_pending_[ip_protocol];
 }
 
-void Session::Impl::set_port_test_pending(bool pending, Session::PortTestIpProtocol ip_protocol)
+void Session::Impl::set_port_test_pending(bool const pending, tr_address_type const ip_protocol)
 {
-    if (ip_protocol < NUM_PORT_TEST_IP_PROTOCOL) {
-        port_test_pending_[ip_protocol] = pending;
-    }
+    port_test_pending_[ip_protocol] = pending;
 }
 
 /***
@@ -1100,12 +1125,25 @@ void Session::blocklist_update()
                 }
             }
 
-            if (n_rules.has_value()) {
-                gtr_pref_int_set(TR_KEY_blocklist_date, tr_time());
-            }
-
             impl_->signal_blocklist_updated().emit(n_rules >= 0);
         });
+}
+
+void Session::refresh_blocklist_info()
+{
+    // session_get reads the blocklist under the session lock,
+    // which tr_blocklistGetRuleCount() does not take.
+    impl_->send_session_get({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }, [this](tr_variant::Map const* const result) {
+        if (result == nullptr) {
+            return;
+        }
+
+        auto const rule_count = result->value_if<int64_t>(TR_KEY_blocklist_size);
+        auto const updated_at = result->value_if<int64_t>(TR_KEY_blocklist_date);
+        if (rule_count && updated_at) {
+            impl_->signal_blocklist_info().emit(static_cast<size_t>(*rule_count), static_cast<time_t>(*updated_at));
+        }
+    });
 }
 
 // ---
@@ -1127,22 +1165,12 @@ std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
     auto dirs = std::vector<Glib::ustring>{};
     auto done = false;
 
-    // ask the session for just this one field
-    auto fields = tr_variant::Vector{};
-    fields.emplace_back(tr_variant::unmanaged_string(tr_quark_get_string_view(key)));
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
-
-    impl_->send_rpc_request(TR_KEY_session_get, std::move(params), [&dirs, &done, key](tr_variant& response) {
-        if (auto const* resmap = response.get_if<tr_variant::Map>()) {
-            if (auto const* result = resmap->find_if<tr_variant::Map>(TR_KEY_result)) {
-                if (auto const* recent = result->find_if<tr_variant::Vector>(key)) {
-                    dirs.reserve(std::size(*recent));
-                    for (auto const& dir : *recent) {
-                        if (auto const sv = dir.value_if<std::string_view>()) {
-                            dirs.emplace_back(Traits::from_utf8(*sv));
-                        }
-                    }
+    impl_->send_session_get({ key }, [&dirs, &done, key](tr_variant::Map const* const result) {
+        if (auto const* const recent = result != nullptr ? result->find_if<tr_variant::Vector>(key) : nullptr) {
+            dirs.reserve(std::size(*recent));
+            for (auto const& dir : *recent) {
+                if (auto const sv = dir.value_if<std::string_view>()) {
+                    dirs.emplace_back(Traits::from_utf8(*sv));
                 }
             }
         }
@@ -1255,6 +1283,11 @@ sigc::signal<void(tr_torrent_builder*)>& Session::signal_add_prompt()
     return impl_->signal_add_prompt();
 }
 
+sigc::signal<void(size_t, time_t)>& Session::signal_blocklist_info()
+{
+    return impl_->signal_blocklist_info();
+}
+
 sigc::signal<void(bool)>& Session::signal_blocklist_updated()
 {
     return impl_->signal_blocklist_updated();
@@ -1270,7 +1303,7 @@ sigc::signal<void(tr_quark)>& Session::signal_prefs_changed()
     return impl_->signal_prefs_changed();
 }
 
-sigc::signal<void(std::optional<bool>, Session::PortTestIpProtocol)>& Session::signal_port_tested()
+sigc::signal<void(std::optional<bool>, tr_address_type)>& Session::signal_port_tested()
 {
     return impl_->signal_port_tested();
 }

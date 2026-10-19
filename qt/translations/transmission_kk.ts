@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
+        <source>About {appname}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1762,7 +1762,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -1831,8 +1831,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Transmission таңбашас&amp;ын трейде көрсету</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>{appname} таңбашас&amp;ын трейде көрсету</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2105,8 +2105,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission баптаулары</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname} баптаулары</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2268,7 +2268,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2544,7 +2544,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -2562,7 +2562,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>

@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>על Transmission</translation>
+        <source>About {appname}</source>
+        <translation>על {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>כל הזכויות שמורות © מיזם Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>כל הזכויות שמורות © מיזם Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>‏Transmission</translation>
+        <source>Retransmission</source>
+        <translation>‏Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1775,10 +1775,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;רשימת החסימה מכילה כלל אחד&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;רשימת החסימה מכילה {count:L} כללים&lt;/i&gt;</numerusform>
+            <numerusform>רשימת החסימה מכילה כלל אחד</numerusform>
+            <numerusform>רשימת החסימה מכילה {count:L} כללים</numerusform>
         </translation>
     </message>
     <message>
@@ -1844,8 +1844,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>הצגת סמל ‏Transmission באזור ההו&amp;דעות</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>הצגת סמל ‏{appname} באזור ההו&amp;דעות</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>העדפות ‏Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>העדפות ‏{appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2297,10 +2297,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
             <numerusform>לא ניתן להוסיף טורנט כפול</numerusform>
-            <numerusform>לא ניתן להוסיף {count} טורנטים כפולים</numerusform>
+            <numerusform>לא ניתן להוסיף {count:L} טורנטים כפולים</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>מתבצעת הורדה מ־{active_count} מתוך עמית מחובר {connected_count}</numerusform>
-            <numerusform>מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים</numerusform>
+            <numerusform>מתבצעת הורדה מ־{active_count:L} מתוך עמית מחובר {connected_count:L}</numerusform>
+            <numerusform>מתבצעת הורדה מ־{active_count:L} מתוך {connected_count:L} עמיתים מחוברים</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>מתבצעת זריעה ל־עמית מחובר {active_count} מתוך {connected_count}</numerusform>
-            <numerusform>מתבצעת זריעה ל־{active_count} מתוך {connected_count} עמיתים מחוברים</numerusform>
+            <numerusform>מתבצעת זריעה ל־עמית מחובר {active_count:L} מתוך {connected_count:L}</numerusform>
+            <numerusform>מתבצעת זריעה ל־{active_count:L} מתוך {connected_count:L} עמיתים מחוברים</numerusform>
         </translation>
     </message>
     <message>

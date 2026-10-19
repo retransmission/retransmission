@@ -117,20 +117,26 @@ export class Appearance extends EventTarget {
     };
 
     add_radio(
-      'highlight-color',
+      Prefs.HighlightColor,
       'Accent color from system',
       null,
       'AccentColor',
       listener,
     );
     add_radio(
-      'highlight-color',
+      Prefs.HighlightColor,
       'Highlight color from system',
       'highlight-system',
       'Highlight',
       listener,
     );
-    add_radio('highlight-color', 'Legacy', 'highlight-legacy', null, listener);
+    add_radio(
+      Prefs.HighlightColor,
+      'Legacy',
+      'highlight-legacy',
+      null,
+      listener,
+    );
 
     elements.confirm.remove();
     delete elements.confirm;

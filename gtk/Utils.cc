@@ -5,10 +5,10 @@
 
 #include "Utils.h"
 
-#include "Prefs.h"
 #include "Session.h"
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/trash.h>
 
 #include <libtransmission/error.h>
 #include <libtransmission/macros.h>
@@ -492,49 +492,18 @@ void setup_item_view_button_event_handling(
 
 #endif
 
-bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
+bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* const error)
 {
     g_return_val_if_fail(!filename.empty(), false);
 
-    auto local_error = tr_error{};
-    if (error == nullptr) {
-        error = &local_error;
-    }
-
-    auto const file = Gio::File::create_for_path(std::string{ filename });
-    bool trashed = false;
-
-    if (gtr_pref_flag_get(TR_KEY_trash_can_enabled)) {
+    return tr::app::trash_or_remove(filename, error, [](std::string_view const path, std::string& why) {
         try {
-            trashed = file->trash();
+            return Gio::File::create_for_path(std::string{ path })->trash();
         } catch (Glib::Error const& e) {
-            error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    fmt::runtime(_("Couldn't move '{path}' to trash: {error} ({error_code})")),
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
+            why = TR_GLIB_EXCEPTION_WHAT(e);
+            return false;
         }
-    }
-
-    bool result = true;
-    if (!trashed) {
-        try {
-            file->remove();
-        } catch (Glib::Error const& e) {
-            error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    fmt::runtime(_("Couldn't remove '{path}': {error} ({error_code})")),
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
-            result = false;
-        }
-    }
-
-    return result;
+    });
 }
 
 namespace
@@ -603,7 +572,7 @@ void gtr_open_uri(std::string_view const uri)
     } catch (Glib::Error const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't launch default application for URI '{uri}': {error} ({error_code})")),
+                "Couldn't launch default application for URI '{uri}': {error} ({error_code})",
                 fmt::arg("uri", uri),
                 fmt::arg("error", e.what()),
                 fmt::arg("error_code", e.code())));
@@ -615,13 +584,13 @@ void gtr_open_uri(std::string_view const uri)
     } catch (Glib::SpawnError const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})")),
+                "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})",
                 fmt::arg("uri", uri),
                 fmt::arg("error", e.what()),
                 fmt::arg("error_code", static_cast<int>(e.code()))));
     }
 
-    gtr_message(fmt::format(fmt::runtime(_("Couldn't open '{url}'")), fmt::arg("url", uri)));
+    gtr_message(fmt::format("Couldn't open '{url}'", fmt::arg("url", uri)));
 }
 
 // ---
@@ -913,4 +882,9 @@ void gtr_label_set_text(Gtk::Label& lb, Glib::ustring const& text)
 std::string gtr_get_full_resource_path(std::string const& rel_path)
 {
     return fmt::format("/{:s}/{:s}/{:s}/{:s}", TR_PROJ_DOMAIN_TLD, TR_PROJ_DOMAIN_SLD, TR_PROJ_APPNAME, rel_path);
+}
+
+Glib::ustring gtr_with_app_name(Glib::ustring const& text)
+{
+    return fmt::format(fmt::runtime(text.raw()), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED));
 }

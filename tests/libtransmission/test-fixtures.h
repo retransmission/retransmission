@@ -328,10 +328,13 @@ private:
 
         applyQuietDefaults(settings);
 
-        return tr_sessionInit(sandboxDir(), !verbose_, settings);
+        return tr_sessionInit(sandboxDir(), !verbose_, settings, session_remove_func_);
     }
 
 protected:
+    // what tr_sessionInit() gets as its remove func; a subclass sets it before SessionTest::SetUp() runs
+    tr_torrent_remove_func session_remove_func_;
+
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
     [[nodiscard]] tr_peerMgr* peerManager() const noexcept

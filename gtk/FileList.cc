@@ -270,7 +270,7 @@ bool refreshFilesForeach(
 
     if (new_progress != old_progress) {
         (*iter)[file_cols.prog] = new_progress;
-        (*iter)[file_cols.prog_str] = fmt::format("{:d}%", new_progress);
+        (*iter)[file_cols.prog_str] = fmt::format("{:Ld}%", new_progress);
     }
 
     return false; /* keep walking */

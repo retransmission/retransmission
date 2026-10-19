@@ -4,17 +4,17 @@
   <?include TransmissionConfig.wxi ?>
 
   <?if $(sys.BUILDARCH) != x86 ?>
-    <?define ProductName = "Transmission $(var.TrVersionFull) ($(sys.BUILDARCH))" ?>
+    <?define ProductName = "$(var.TrAppName) $(var.TrVersionFull) ($(sys.BUILDARCH))" ?>
     <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
     <?define PlatformSystemFolder = "System64Folder" ?>
   <?else ?>
-    <?define ProductName = "Transmission $(var.TrVersionFull)" ?>
+    <?define ProductName = "$(var.TrAppName) $(var.TrVersionFull)" ?>
     <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
     <?define PlatformSystemFolder = "SystemFolder" ?>
   <?endif ?>
 
-  <Product Name="$(var.ProductName)" Id="*" UpgradeCode="1FB3C295-9BD4-4248-8C8B-B85CD11FE7C4" Language="1033" Codepage="1252" Version="$(var.TrVersionMsi)" Manufacturer="Transmission Project">
-    <Package Id="*" Keywords="Installer" Description="Transmission $(var.TrVersion) Installer" Comments="A Fast, Easy, and Free BitTorrent Client" Manufacturer="Transmission Project" InstallerVersion="500" InstallScope="perMachine" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+  <Product Name="$(var.ProductName)" Id="*" UpgradeCode="1FB3C295-9BD4-4248-8C8B-B85CD11FE7C4" Language="1033" Codepage="1252" Version="$(var.TrVersionMsi)" Manufacturer="The $(var.TrAppName) Project">
+    <Package Id="*" Keywords="Installer" Description="$(var.TrAppName) $(var.TrVersion) Installer" Comments="A Fast, Easy, and Free BitTorrent Client" Manufacturer="The $(var.TrAppName) Project" InstallerVersion="500" InstallScope="perMachine" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
     <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." AllowSameVersionUpgrades="yes" />
 
     <?if $(var.QtMajorVer) = 5 ?>
@@ -61,11 +61,11 @@
     </Condition>
 
     <Media Id="1" Cabinet="main.cab" EmbedCab="yes" DiskPrompt="CD-ROM #1" />
-    <Property Id="DiskPrompt" Value="Transmission $(var.TrVersion) Installation [1]" />
+    <Property Id="DiskPrompt" Value="$(var.TrAppName) $(var.TrVersion) Installation [1]" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
-        <Directory Id="INSTALLDIR" Name="Transmission">
+        <Directory Id="INSTALLDIR" Name="$(var.TrAppName)">
           <Directory Id="WEBINSTALLDIR" Name="public_html" />
         </Directory>
       </Directory>
@@ -73,7 +73,7 @@
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
 
-    <Feature Id="CompleteInstall" Title="Transmission" Level="1" AllowAdvertise="no" Display="expand" ConfigurableDirectory="INSTALLDIR">
+    <Feature Id="CompleteInstall" Title="$(var.TrAppName)" Level="1" AllowAdvertise="no" Display="expand" ConfigurableDirectory="INSTALLDIR">
       <Feature Id="CommonLibs" Level="1" AllowAdvertise="no" Display="hidden">
         <ComponentGroupRef Id="CommonLibsComponents" />
       </Feature>

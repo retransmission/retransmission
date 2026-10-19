@@ -74,17 +74,17 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bind_address_ipv6"sv, // daemon, tr_session::Settings
     "bind_interface"sv, // daemon, rpc, tr_session::Settings
     "bitfield"sv, // .resume
-    "blocklist-date"sv, // gtk app, qt app
+    "blocklist-date"sv, // legacy settings.json
     "blocklist-enabled"sv, // daemon, gtk app, rpc, tr_session::Settings
     "blocklist-size"sv, // rpc
     "blocklist-update"sv, // rpc
-    "blocklist-updates-enabled"sv, // gtk app, qt app
+    "blocklist-updates-enabled"sv, // gtk app, qt app, tr_session::Settings
     "blocklist-url"sv, // rpc, tr_session::Settings
-    "blocklist_date"sv, // gtk app, qt app
+    "blocklist_date"sv, // rpc
     "blocklist_enabled"sv, // daemon, gtk app, rpc, tr_session::Settings
     "blocklist_size"sv, // rpc
     "blocklist_update"sv, // rpc
-    "blocklist_updates_enabled"sv, // gtk app, qt app
+    "blocklist_updates_enabled"sv, // gtk app, qt app, rpc, tr_session::Settings
     "blocklist_url"sv, // rpc, tr_session::Settings
     "blocks"sv, // .resume
     "busy"sv, // rpc
@@ -128,10 +128,10 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "desiredAvailable"sv, // rpc
     "desired_available"sv, // rpc
     "destination"sv, // .resume
-    "details-window-height"sv, // gtk app
-    "details-window-width"sv, // gtk app
-    "details_window_height"sv, // gtk app
-    "details_window_width"sv, // gtk app
+    "details-window-height"sv, // gtk app, qt app
+    "details-window-width"sv, // gtk app, qt app
+    "details_window_height"sv, // gtk app, qt app
+    "details_window_width"sv, // gtk app, qt app
     "dht-enabled"sv, // daemon, rpc, tr_session::Settings
     "dht_enabled"sv, // daemon, rpc, tr_session::Settings
     "disk_io_workers"sv, // tr_session::Settings
@@ -319,12 +319,12 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "magnetLink"sv, // rpc
     "magnet_link"sv, // rpc
     "main-window-height"sv, // gtk app, qt app
-    "main-window-is-maximized"sv, // gtk app
+    "main-window-is-maximized"sv, // gtk app, qt app
     "main-window-width"sv, // gtk app, qt app
     "main-window-x"sv, // gtk app, qt app
     "main-window-y"sv, // gtk app, qt app
     "main_window_height"sv, // gtk app, qt app
-    "main_window_is_maximized"sv, // gtk app
+    "main_window_is_maximized"sv, // gtk app, qt app
     "main_window_width"sv, // gtk app, qt app
     "main_window_x"sv, // gtk app, qt app
     "main_window_y"sv, // gtk app, qt app
@@ -580,7 +580,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "session_set"sv, // rpc
     "session_stats"sv, // rpc
     "show-backup-trackers"sv, // gtk app, qt app
-    "show-extra-peer-details"sv, // gtk app
+    "show-extra-peer-details"sv, // gtk app, qt app
     "show-filterbar"sv, // gtk app, qt app
     "show-notification-area-icon"sv, // gtk app, qt app
     "show-options-window"sv, // gtk app, qt app
@@ -588,7 +588,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "show-toolbar"sv, // gtk app, qt app
     "show-tracker-scrapes"sv, // gtk app, qt app
     "show_backup_trackers"sv, // gtk app, qt app
-    "show_extra_peer_details"sv, // gtk app
+    "show_extra_peer_details"sv, // gtk app, qt app
     "show_filterbar"sv, // gtk app, qt app
     "show_mode"sv, // gtk app, qt app
     "show_notification_area_icon"sv, // gtk app, qt app
@@ -627,11 +627,11 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "speed_limit_up_enabled"sv, // rpc, tr_session::Settings
     "speed_units"sv, // rpc
     "start-added-torrents"sv, // gtk app, rpc, tr_session::Settings
-    "start-minimized"sv, // qt app
+    "start-minimized"sv, // gtk app, qt app
     "startDate"sv, // rpc
     "start_added_torrents"sv, // gtk app, rpc, tr_session::Settings
     "start_date"sv, // rpc
-    "start_minimized"sv, // qt app
+    "start_minimized"sv, // gtk app, qt app
     "start_paused"sv, // daemon
     "status"sv, // rpc
     "statusbar-stats"sv, // gtk app, qt app
@@ -646,7 +646,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "torrent-added-notification-enabled"sv, // gtk app, qt app
     "torrent-added-verify-mode"sv, // tr_session::Settings
     "torrent-complete-notification-enabled"sv, // gtk app, qt app
-    "torrent-complete-sound-command"sv, // gtk app, qt app
     "torrent-complete-sound-enabled"sv, // gtk app, qt app
     "torrent-duplicate"sv, // rpc
     "torrent-get"sv, // rpc
@@ -666,7 +665,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "torrent_added_notification_enabled"sv, // gtk app, qt app
     "torrent_added_verify_mode"sv, // tr_session::Settings
     "torrent_complete_notification_enabled"sv, // gtk app, qt app
-    "torrent_complete_sound_command"sv, // gtk app, qt app
     "torrent_complete_sound_enabled"sv, // gtk app, qt app
     "torrent_complete_verify_enabled"sv, // tr_session::Settings
     "torrent_count"sv, // rpc
@@ -696,9 +694,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "tracker_replace"sv, // rpc
     "tracker_stats"sv, // rpc
     "trackers"sv, // rpc
-    "trash-can-enabled"sv, // gtk app
     "trash-original-torrent-files"sv, // gtk app, rpc, tr_session::Settings
-    "trash_can_enabled"sv, // gtk app
     "trash_original_torrent_files"sv, // gtk app, rpc, tr_session::Settings
     "umask"sv, // tr_session::Settings
     "units"sv, // rpc

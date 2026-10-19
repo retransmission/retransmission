@@ -1,7 +1,6 @@
 # Source files with translatable strings, for xgettext --files-from.
 # Pass these keywords: -k_ -kN_ -kC_:1c,2 -kNC_:1c,2 -kngettext:1,2 -ktr_ngettext:1,2
 cli/cli.cc
-daemon/daemon.cc
 gtk/Application.cc
 gtk/DetailsDialog.cc
 gtk/Dialogs.cc
@@ -21,9 +20,10 @@ gtk/Session.cc
 gtk/StatsDialog.cc
 gtk/SystemTrayIcon.cc
 gtk/Torrent.cc
-gtk/transmission-gtk.desktop.in
-gtk/transmission-gtk.metainfo.xml.in
+gtk/retransmission-gtk.desktop.in
+gtk/retransmission-gtk.metainfo.xml.in
 gtk/transmission-menus.ui
+gtk/ui/gtk3/AboutDialog.ui
 gtk/ui/gtk3/AddTrackerDialog.ui
 gtk/ui/gtk3/DetailsDialog.ui
 gtk/ui/gtk3/EditTrackersDialog.ui
@@ -37,6 +37,7 @@ gtk/ui/gtk3/PrefsDialog.ui
 gtk/ui/gtk3/RelocateDialog.ui
 gtk/ui/gtk3/StatsDialog.ui
 gtk/ui/gtk3/TorrentUrlChooserDialog.ui
+gtk/ui/gtk4/AboutDialog.ui
 gtk/ui/gtk4/AddTrackerDialog.ui
 gtk/ui/gtk4/DetailsDialog.ui
 gtk/ui/gtk4/EditTrackersDialog.ui

@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -15,9 +15,12 @@
 #endif
 
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
+#include <iterator>
+#include <string_view>
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/error.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-builder.h>
@@ -62,6 +65,8 @@
 #import "ExpandedPathToIconTransformer.h"
 #import "PowerManager.h"
 #import "Utils.h"
+#import "UTTypeAdditions.h"
+#import "NSURLAdditions.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -146,6 +151,13 @@ static NSString* const kGithubURL = @TR_PROJ_URL_GIT;
 static NSString* const kDonateURL = @TR_PROJ_URL_DONATE;
 
 static NSTimeInterval const kDonateNagTime = 60 * 60 * 24 * 7;
+
+// Upstream Transmission's bundle ID, and the app name it passes to get_default_config_dir().
+static NSString* const kTransmissionBundleIdentifier = @"org.m0k.transmission";
+static char const* const kTransmissionAppName = "Transmission";
+
+// Set once the first launch has offered the import from Transmission.
+static NSString* const kTransmissionImportOfferedKey = @"TransmissionImportOffered";
 
 static void initUnits()
 {
@@ -336,6 +348,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) QLPreviewPanel* fPreviewPanel;
 @property(nonatomic) BOOL fQuitting;
 @property(nonatomic) BOOL fQuitRequested;
+@property(nonatomic) BOOL fQuitForTransmission;
 @property(nonatomic, readonly) BOOL fPauseOnLaunch;
 
 @property(nonatomic) Badger* fBadger;
@@ -366,14 +379,268 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @end
 
+[[nodiscard]] static NSURL* configFolderURL(std::string_view const appname)
+{
+    return [NSURL fileURLWithPath:@(tr::platform::get_default_config_dir(appname).c_str()) isDirectory:YES];
+}
+
+[[nodiscard]] static BOOL isTransmissionRunning()
+{
+    return [NSRunningApplication runningApplicationsWithBundleIdentifier:kTransmissionBundleIdentifier].count > 0;
+}
+
+// The 16-character info hash prefixes of the transfers in a config folder, read from their file names in its Torrents folder.
+// A file is named "<info hash>.torrent" or ".magnet", or "<name>.<info hash prefix>.torrent" until libtransmission renames it.
+[[nodiscard]] static NSSet<NSString*>* transferHashPrefixes(NSURL* const configFolder)
+{
+    NSString* const torrentsFolder = [configFolder URLByAppendingPathComponent:@"Torrents" isDirectory:YES].path;
+    NSMutableSet<NSString*>* const prefixes = [NSMutableSet set];
+    for (NSString* filename in [NSFileManager.defaultManager contentsOfDirectoryAtPath:torrentsFolder error:nil]) {
+        NSString* const stem = filename.stringByDeletingPathExtension;
+        if (stem.pathExtension.length == 16) {
+            [prefixes addObject:stem.pathExtension];
+        } else if (stem.length == 40) {
+            [prefixes addObject:[stem substringToIndex:16]];
+        }
+    }
+    return prefixes;
+}
+
+// Whether this app and Transmission would work on the same downloads if both ran:
+// they hold the same transfer, or both add the torrent files that appear in one watch folder.
+[[nodiscard]] static BOOL sharesDownloadsWithTransmission()
+{
+    if ([transferHashPrefixes(configFolderURL(TR_PROJ_APPNAME_CAPITALIZED))
+            intersectsSet:transferHashPrefixes(configFolderURL(kTransmissionAppName))]) {
+        return YES;
+    }
+
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    NSDictionary<NSString*, id>* const transmissionDefaults = [defaults persistentDomainForName:kTransmissionBundleIdentifier];
+    NSString* const watchFolder = [defaults stringForKey:@"AutoImportDirectory"];
+    NSString* const transmissionWatchFolder = transmissionDefaults[@"AutoImportDirectory"];
+    return [defaults boolForKey:@"AutoImport"] && [transmissionDefaults[@"AutoImport"] boolValue] && watchFolder != nil &&
+        transmissionWatchFolder != nil &&
+        [watchFolder.stringByExpandingTildeInPath.stringByStandardizingPath
+               isEqualToString:transmissionWatchFolder.stringByExpandingTildeInPath.stringByStandardizingPath];
+}
+
+// Copies Transmission's preferences, except Sparkle's state and this app's own donation request.
+static void importTransmissionDefaults(NSDictionary<NSString*, id>* const transmissionDefaults)
+{
+    // The donation request is this app's own to show.
+    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate" ]];
+
+    // Sparkle's state describes Transmission's own updates, but how to update is the user's choice.
+    NSSet<NSString*>* const sparkleChoiceKeys = [NSSet setWithArray:@[
+        @"SUEnableAutomaticChecks",
+        @"SUAutomaticallyUpdate",
+        @"SUScheduledCheckInterval",
+        @"SUSendProfileInfo"
+    ]];
+
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    for (NSString* key in transmissionDefaults) {
+        BOOL const isSparkleState = [key hasPrefix:@"SU"] && ![sparkleChoiceKeys containsObject:key];
+        if (!isSparkleState && ![skippedKeys containsObject:key]) {
+            [defaults setObject:transmissionDefaults[key] forKey:key];
+        }
+    }
+}
+
+// Gives imported remote access an unguessable password, which refuses every login until the user sets a new one.
+// Transmission's password is in its keychain item, which macOS lets only Transmission read without asking.
+// Remote access that is off gets no password, so the Remote preferences show an empty one when the user turns it on.
+static void replaceImportedRPCPassword()
+{
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    if (![defaults boolForKey:@"RPC"] || ![defaults boolForKey:@"RPCAuthorize"]) {
+        return;
+    }
+
+    BOOL const saved = [PrefsController saveUnguessableRPCPassword];
+    if (!saved) {
+        // Remote access with no saved password would accept an empty one.
+        [defaults setBool:NO forKey:@"RPC"];
+    }
+
+    NSAlert* const alert = [[NSAlert alloc] init];
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission import remote access alert -> button")];
+    alert.messageText = NSLocalizedString(@"Remote access needs a new password.", "Transmission import remote access alert -> title");
+    alert.informativeText = saved ?
+        [NSString stringWithFormat:NSLocalizedString(
+                                       @"%@ can't copy Transmission's remote access password. "
+                                        "Until you set a new one in the Remote preferences, remote access refuses every login.",
+                                       "Transmission import remote access alert -> message"),
+                                   @TR_PROJ_APPNAME_CAPITALIZED] :
+        [NSString stringWithFormat:NSLocalizedString(
+                                       @"%@ can't copy Transmission's remote access password or save a new one, so remote access is off. "
+                                        "Set a password in the Remote preferences, then turn remote access back on.",
+                                       "Transmission import remote access alert -> message"),
+                                   @TR_PROJ_APPNAME_CAPITALIZED];
+    [alert runModal];
+}
+
+// Copies Transmission's support folder to this app's config folder.
+// Returns NO and sets error if the copy fails, leaving no config folder.
+[[nodiscard]] static BOOL copyTransmissionFolder(NSURL* const transmissionFolder, NSURL* const configFolder, NSError** const error)
+{
+    // Builds the copy aside and moves it into place, so an interrupted copy never looks complete.
+    NSFileManager* const fileManager = NSFileManager.defaultManager;
+    NSURL* const scratchFolder = [fileManager URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask
+                                            appropriateForURL:configFolder.URLByDeletingLastPathComponent
+                                                       create:YES
+                                                        error:error];
+    if (scratchFolder == nil) {
+        return NO;
+    }
+
+    // copyItemAtURL: copies a symbolic link rather than its target, which would leave both apps sharing one folder.
+    // The copy keeps the source's name until it moves, so a copy error names Transmission's folder.
+    NSURL* const copy = [scratchFolder URLByAppendingPathComponent:transmissionFolder.lastPathComponent isDirectory:YES];
+    BOOL const copied = [fileManager copyItemAtURL:transmissionFolder.URLByResolvingSymlinksInPath toURL:copy error:error] &&
+        [fileManager moveItemAtURL:copy toURL:configFolder error:error];
+    [fileManager removeItemAtURL:scratchFolder error:nil];
+    return copied;
+}
+
+// Copies on another thread behind a progress window, so the app keeps responding during a long copy.
+[[nodiscard]] static BOOL copyTransmissionFolderShowingProgress(NSURL* const transmissionFolder, NSURL* const configFolder, NSError** const error)
+{
+    NSProgressIndicator* const spinner = [[NSProgressIndicator alloc] init];
+    spinner.style = NSProgressIndicatorStyleSpinning;
+    [spinner startAnimation:nil];
+    NSTextField* const label = [NSTextField labelWithString:[NSLocalizedString(@"Copying Transmission's transfers", "Transmission import progress -> label")
+                                                                stringByAppendingEllipsis]];
+    NSStackView* const stack = [NSStackView stackViewWithViews:@[ spinner, label ]];
+    stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20);
+
+    NSWindow* const window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSWindowStyleMaskTitled
+                                                           backing:NSBackingStoreBuffered
+                                                             defer:NO];
+    window.releasedWhenClosed = NO;
+    window.title = @TR_PROJ_APPNAME_CAPITALIZED;
+    window.contentView = stack;
+    [window setContentSize:stack.fittingSize];
+    [window center];
+
+    __block BOOL finished = NO;
+    __block BOOL copied = NO;
+    __block NSError* copyError = nil;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        NSError* threadError = nil;
+        BOOL const result = copyTransmissionFolder(transmissionFolder, configFolder, &threadError);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            copied = result;
+            copyError = threadError;
+            finished = YES;
+        });
+    });
+
+    // The run loop drains the main queue, which delivers the result, while the session handles the window's events.
+    NSModalSession const session = [NSApp beginModalSessionForWindow:window];
+    while (!finished) {
+        [NSApp runModalSession:session];
+        [NSRunLoop.currentRunLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+    }
+    [NSApp endModalSession:session];
+    [window orderOut:nil];
+
+    if (error != nullptr) {
+        *error = copyError;
+    }
+    return copied;
+}
+
+// Offers to copy Transmission's settings and transfers, which this app can't see: its bundle ID and support folder differ.
+// Transmission's own settings and folder are never changed.
+static void offerToImportFromTransmission()
+{
+    // Both folders come from one lookup, so when TRANSMISSION_HOME names a folder for both apps, nothing is copied.
+    NSURL* const transmissionFolder = configFolderURL(kTransmissionAppName);
+    NSURL* const configFolder = configFolderURL(TR_PROJ_APPNAME_CAPITALIZED);
+
+    // An existing config folder holds this app's own transfers, so it is never replaced.
+    BOOL const canCopyTransfers = [transmissionFolder checkResourceIsReachableAndReturnError:nil] &&
+        ![configFolder checkResourceIsReachableAndReturnError:nil];
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    if (!canCopyTransfers && [defaults persistentDomainForName:kTransmissionBundleIdentifier].count == 0) {
+        return;
+    }
+
+    // Asks again while Transmission runs, because Transmission saves its settings and transfers as it quits.
+    for (;;) {
+        NSString* message = canCopyTransfers ?
+            [NSString stringWithFormat:NSLocalizedString(
+                                           @"%@ can copy your settings and transfers from Transmission. "
+                                            "The two apps will share your downloaded files, so run only one at a time.",
+                                           "Transmission import alert -> message"),
+                                       @TR_PROJ_APPNAME_CAPITALIZED] :
+            [NSString stringWithFormat:NSLocalizedString(@"%@ can copy your settings from Transmission, but not its transfers.", "Transmission import alert -> message"),
+                                       @TR_PROJ_APPNAME_CAPITALIZED];
+        if (isTransmissionRunning()) {
+            message = [NSString
+                stringWithFormat:@"%@\n\n%@", message, NSLocalizedString(@"Quit Transmission, then click Import.", "Transmission import alert -> message")];
+        }
+
+        NSAlert* const alert = [[NSAlert alloc] init];
+        alert.messageText = NSLocalizedString(@"Import from Transmission?", "Transmission import alert -> title");
+        alert.informativeText = message;
+        [alert addButtonWithTitle:NSLocalizedString(@"Import", "Transmission import alert -> button")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Don't Import", "Transmission import alert -> button")].keyEquivalent = @"\e";
+
+        if ([alert runModal] != NSAlertFirstButtonReturn) {
+            return;
+        }
+        if (!isTransmissionRunning()) {
+            break;
+        }
+    }
+
+    if (canCopyTransfers) {
+        NSError* error = nil;
+        if (copyTransmissionFolderShowingProgress(transmissionFolder, configFolder, &error)) {
+            // Delays the first donation request a week, because the copied stats.json makes this launch count as a later one.
+            [defaults setObject:[NSDate date] forKey:@"DonateAskDate"];
+        } else {
+            NSAlert* const errorAlert = [[NSAlert alloc] init];
+            [errorAlert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission import error alert -> button")];
+            errorAlert.messageText = NSLocalizedString(@"Transmission's transfers couldn't be copied.", "Transmission import error alert -> title");
+            errorAlert.informativeText = error.localizedDescription;
+            errorAlert.alertStyle = NSAlertStyleWarning;
+            [errorAlert runModal];
+        }
+    }
+
+    // Read only now, so the import includes what Transmission saved when it quit.
+    importTransmissionDefaults([defaults persistentDomainForName:kTransmissionBundleIdentifier]);
+    replaceImportedRPCPassword();
+}
+
+static bool trashDataFile(std::string_view const filename, tr_error* const error)
+{
+    if (std::empty(filename)) {
+        return false;
+    }
+
+    @autoreleasepool {
+        NSError* localError;
+        if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
+            if (error != nullptr) {
+                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
+            }
+            return false;
+        }
+    }
+
+    return true;
+}
+
 @implementation Controller
 
-+ (void)initialize
++ (void)prepareForLaunch
 {
-    if (self != [Controller self])
-        return;
-
-    //make sure another Transmission.app isn't running already
+    //make sure another Retransmission.app isn't running already
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
@@ -393,8 +660,37 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         exit(0);
     }
 
-    [NSUserDefaults.standardUserDefaults
-        registerDefaults:[NSDictionary dictionaryWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"Defaults" ofType:@"plist"]]];
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    [defaults registerDefaults:[NSDictionary dictionaryWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"Defaults"
+                                                                                                        ofType:@"plist"]]];
+
+    // Two apps working on the same downloads would each change files the other is using.
+    if (isTransmissionRunning() && sharesDownloadsWithTransmission()) {
+        NSAlert* alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission running alert -> button")];
+        alert.messageText = NSLocalizedString(@"Transmission is running.", "Transmission running alert -> title");
+        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                               @"Quit Transmission before opening %@. The two apps would work on the same downloads.",
+                                                               "Transmission running alert -> message"),
+                                                           @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.alertStyle = NSAlertStyleCritical;
+
+        [alert runModal];
+        exit(0);
+    }
+
+    // Offered only on the first launch, before this app has settings or transfers of its own.
+    // It runs before the main nib loads, so every object sees what was imported.
+    if (![defaults boolForKey:kTransmissionImportOfferedKey]) {
+        offerToImportFromTransmission();
+        [defaults setBool:YES forKey:kTransmissionImportOfferedKey];
+    }
+}
+
++ (void)initialize
+{
+    if (self != [Controller self])
+        return;
 
     //set custom value transformers
     ExpandedPathToPathTransformer* pathTransformer = [[ExpandedPathToPathTransformer alloc] init];
@@ -408,19 +704,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 {
     if ((self = [super init])) {
         _fDefaults = NSUserDefaults.standardUserDefaults;
-
-        //checks for old version speeds of -1
-        if ([_fDefaults integerForKey:@"UploadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"UploadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckUpload"];
-        }
-        if ([_fDefaults integerForKey:@"DownloadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"DownloadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckDownload"];
-        }
-
-        //upgrading from versions < 2.40: clear recent items
-        [NSDocumentController.sharedDocumentController clearRecentDocuments:nil];
 
         auto settings = getSettingsFromNSUserDefaults(_fDefaults);
         settings.merge(tr_sessionGetDefaultSettings());
@@ -446,7 +729,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         initUnits();
 
         auto const default_config_dir = tr::platform::get_default_config_dir(TR_PROJ_APPNAME_CAPITALIZED);
-        _fLib = tr_sessionInit(default_config_dir, YES, settings);
+        _fLib = tr_sessionInit(default_config_dir, YES, settings, trashDataFile);
         _fConfigDirectory = @(default_config_dir.c_str());
 
         tr_sessionSetIdleLimitHitCallback(_fLib, [controller = self](tr_torrent_id_t const tor_id) {
@@ -754,12 +1037,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
     NSString* historyFile = [self.fConfigDirectory stringByAppendingPathComponent:kTransferPlist];
     NSArray* history = [NSArray arrayWithContentsOfFile:historyFile];
-    if (!history) {
-        //old version saved transfer info in prefs file
-        if ((history = [self.fDefaults arrayForKey:@"History"])) {
-            [self.fDefaults removeObjectForKey:@"History"];
-        }
-    }
 
     if (history) {
         // theoretical max without doing a lot of work
@@ -868,32 +1145,18 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
 {
-    //cover our asses
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"WarningLegal"]) {
-        NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Welcome to %@", "Legal alert -> title"), @TR_PROJ_APPNAME_CAPITALIZED];
-        alert.informativeText = [NSString
-            stringWithFormat:NSLocalizedString(
-                                 @"%@ is a file-sharing program."
-                                  " When you run a torrent, its data will be made available to others by means of upload."
-                                  " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-                                 "Legal alert -> message"),
-                             @TR_PROJ_APPNAME_CAPITALIZED];
-        alert.alertStyle = NSAlertStyleInformational;
-
-        if ([alert runModal] == NSAlertSecondButtonReturn) {
-            exit(0);
-        }
-
-        [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningLegal"];
-    }
-
     NSApp.servicesProvider = self;
 
     [PowerManager.shared setDelegate:self];
     [PowerManager.shared start];
+
+    // A Transmission that opens now, or opened while this app was launching, would work on the same downloads.
+    [NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(workspaceDidLaunchApplication:)
+                                                           name:NSWorkspaceDidLaunchApplicationNotification
+                                                         object:nil];
+    if (isTransmissionRunning()) {
+        [self quitIfSharingDownloadsWithTransmission];
+    }
 
     //if we were opened from a user notification, do the corresponding action
     UNNotificationResponse* launchNotification = notification.userInfo[NSApplicationLaunchUserNotificationKey];
@@ -958,6 +1221,26 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
             }
         }
     }
+}
+
+- (void)workspaceDidLaunchApplication:(NSNotification*)notification
+{
+    NSRunningApplication* const app = notification.userInfo[NSWorkspaceApplicationKey];
+    if ([app.bundleIdentifier isEqualToString:kTransmissionBundleIdentifier]) {
+        [self quitIfSharingDownloadsWithTransmission];
+    }
+}
+
+- (void)quitIfSharingDownloadsWithTransmission
+{
+    if (!sharesDownloadsWithTransmission()) {
+        return;
+    }
+
+    // Quits at once and explains once the session is closed, so no transfer runs beside Transmission while the alert waits.
+    self.fQuitForTransmission = YES;
+    self.fQuitRequested = YES;
+    [NSApp terminate:self];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication*)app hasVisibleWindows:(BOOL)visibleWindows
@@ -1036,6 +1319,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     //stop timers and notification checking
     [NSNotificationCenter.defaultCenter removeObserver:self];
     [self stopActiveVPNBindInterfaceMonitor];
+    [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self];
 
     [self.fTimer invalidate];
 
@@ -1071,6 +1355,20 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     //complete cleanup: this can take many seconds
     tr_sessionClose(self.fLib);
+
+    if (self.fQuitForTransmission) {
+        NSAlert* const alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Transmission launched alert -> button")];
+        alert.messageText = NSLocalizedString(@"Transmission is running.", "Transmission launched alert -> title");
+        alert.informativeText = [NSString
+            stringWithFormat:NSLocalizedString(@"%@ will quit, because the two apps would work on the same downloads.", "Transmission launched alert -> message"),
+                             @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.alertStyle = NSAlertStyleCritical;
+
+        // Transmission just opened and is the active app, so the alert stays behind it until the user comes here.
+        [NSApp requestUserAttention:NSCriticalRequest];
+        [alert runModal];
+    }
 }
 
 - (void)application:(NSApplication*)application openURLs:(NSArray<NSURL*>*)urls
@@ -1110,23 +1408,36 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     didReceiveResponse:(nonnull NSURLResponse*)response
      completionHandler:(nonnull void (^)(NSURLSessionResponseDisposition))completionHandler
 {
-    NSString* suggestedName = response.suggestedFilename;
-    if ([suggestedName.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+    NSString* suggestedFilename = response.suggestedFilename;
+
+    if ([suggestedFilename.pathExtension.lowercaseString isEqualToString:@"torrent"]) {
         completionHandler(NSURLSessionResponseBecomeDownload);
         return;
     }
+
     completionHandler(NSURLSessionResponseCancel);
 
     NSString* message = [NSString
         stringWithFormat:NSLocalizedString(@"It appears that the file \"%@\" from %@ is not a torrent file.", "Download not a torrent -> message"),
-                         suggestedName,
+                         suggestedFilename,
                          dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", "Download not a torrent -> button")];
         alert.messageText = NSLocalizedString(@"Torrent download failed", "Download not a torrent -> title");
         alert.informativeText = message;
-        [alert runModal];
+
+        NSWindow* mainWindow = NSApp.mainWindow ?: NSApp.keyWindow;
+        if (mainWindow) {
+            [alert beginSheetModalForWindow:mainWindow completionHandler:nil];
+        } else {
+            if (@available(macOS 14.0, *)) {
+                [NSApp activate];
+            } else {
+                [NSApp activateIgnoringOtherApps:YES];
+            }
+            [alert runModal];
+        }
     });
 }
 
@@ -1418,7 +1729,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = NO;
 
-    panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
+    // Also accept the type LaunchServices prefers for .torrent, which may belong to another app.
+    panel.allowedContentTypes = @[ UTType.torrent, [UTType typeWithFilenameExtension:@"torrent"] ?: UTType.torrent ];
 
     [panel beginSheetModalForWindow:self.fWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -2001,7 +2313,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     if (!torrent.magnet && [NSFileManager.defaultManager fileExistsAtPath:torrent.torrentLocation]) {
         NSSavePanel* panel = [NSSavePanel savePanel];
-        panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
+        panel.allowedContentTypes = @[ UTType.torrent ];
         panel.extensionHidden = NO;
 
         panel.nameFieldStringValue = torrent.name;
@@ -3253,8 +3565,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         NSString* fullFile = [path stringByAppendingPathComponent:file];
 
-        if (!([[NSWorkspace.sharedWorkspace typeOfFile:fullFile error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-              [fullFile.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame)) {
+        if (![NSURL fileURLWithPath:fullFile].isTorrentFile) {
             continue;
         }
 
@@ -3491,8 +3802,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         NSArray<NSURL*>* files = [pasteboard readObjectsForClasses:@[ NSURL.class ]
                                                            options:@{ NSPasteboardURLReadingFileURLsOnlyKey : @YES }];
         for (NSURL* fileToParse in files) {
-            if ([[NSWorkspace.sharedWorkspace typeOfFile:fileToParse.path error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-                [fileToParse.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+            if (fileToParse.isTorrentFile) {
                 torrent = YES;
                 auto metainfo = tr_torrent_metainfo{};
                 if (metainfo.parse_torrent_file(fileToParse.path.UTF8String)) {
@@ -3553,8 +3863,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                                                            options:@{ NSPasteboardURLReadingFileURLsOnlyKey : @YES }];
         NSMutableArray<NSString*>* filesToOpen = [NSMutableArray arrayWithCapacity:files.count];
         for (NSURL* file in files) {
-            if ([[NSWorkspace.sharedWorkspace typeOfFile:file.path error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-                [file.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+            if (file.isTorrentFile) {
                 torrent = YES;
                 auto metainfo = tr_torrent_metainfo{};
                 if (metainfo.parse_torrent_file(file.path.UTF8String)) {

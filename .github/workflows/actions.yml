@@ -594,10 +594,7 @@ jobs:
   macos-xcodebuild-universal-git-26:
     runs-on: macos-26
     needs: [ what-to-make ]
-    if: ${{ needs.what-to-make.outputs.make-cli == 'true' ||
-            needs.what-to-make.outputs.make-daemon == 'true' ||
-            needs.what-to-make.outputs.make-mac == 'true' ||
-            needs.what-to-make.outputs.make-utils == 'true' }}
+    if: ${{ needs.what-to-make.outputs.make-mac == 'true' }}
     steps:
       - name: Show Configuration
         run: |
@@ -614,11 +611,11 @@ jobs:
           path: src
           submodules: recursive
       - name: Build
-        run: set -o pipefail && xcodebuild -project src/Transmission.xcodeproj -scheme Transmission -configuration 'Release - Debug' -derivedDataPath pfx ONLY_ACTIVE_ARCH=NO build | xcbeautify --renderer github-actions
+        run: set -o pipefail && xcodebuild -project src/Transmission.xcodeproj -scheme Transmission -configuration 'Release+Asserts' -derivedDataPath pfx ONLY_ACTIVE_ARCH=NO build | xcbeautify --renderer github-actions
       - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
-          path: pfx/Build/Products/**/Transmission.app*
+          path: pfx/Build/Products/**/Retransmission.app*
 
   macos-cmake-intel-git-15:
     needs: [what-to-make]

@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>حول Transmission</translation>
+        <source>About {appname}</source>
+        <translation>حول {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>جميع الحقوق محفوظة © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>جميع الحقوق محفوظة © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -809,8 +809,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1832,14 +1832,14 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;قائمة الحظر لاتحتوي على قواعد&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على قاعدة واحدة&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على قاعدتين اثنتين&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قواعد&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قاعدة&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;قائمة الحظر تحتوي على {count:L} قاعدة&lt;/i&gt;</numerusform>
+            <numerusform>قائمة الحظر لاتحتوي على قواعد</numerusform>
+            <numerusform>قائمة الحظر تحتوي على قاعدة واحدة</numerusform>
+            <numerusform>قائمة الحظر تحتوي على قاعدتين اثنتين</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قواعد</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قاعدة</numerusform>
+            <numerusform>قائمة الحظر تحتوي على {count:L} قاعدة</numerusform>
         </translation>
     </message>
     <message>
@@ -1905,8 +1905,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>عرض أيقونة ترانزميشن في منطقة التنبيهات</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>عرض أيقونة {appname} في منطقة التنبيهات</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2183,8 +2183,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>تفضيلات Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>تفضيلات {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2358,7 +2358,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2654,15 +2654,15 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>التحميل من {active_count} من أصل {connected_count} ند متصلين</numerusform>
-            <numerusform>التحميل من {active_count} من أصل ند واحد متصل</numerusform>
-            <numerusform>التحميل من {active_count} من أصل ندين متصلين</numerusform>
-            <numerusform>التحميل من {active_count} من أصل {connected_count} أنداد متصلين</numerusform>
-            <numerusform>التحميل من {active_count} من أصل {connected_count} ندا متصلين</numerusform>
-            <numerusform>التحميل من {active_count} من أصل {connected_count} ند متصلين</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل {connected_count:L} ند متصلين</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل ند واحد متصل</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل ندين متصلين</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل {connected_count:L} أنداد متصلين</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل {connected_count:L} ندا متصلين</numerusform>
+            <numerusform>التحميل من {active_count:L} من أصل {connected_count:L} ند متصلين</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2680,14 +2680,14 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>الرفع لـ{active_count} من أصل {connected_count} ند متصلين</numerusform>
-            <numerusform>الرفع لـ{active_count} من أصل ند واحد متصل</numerusform>
-            <numerusform>الرفع لـ{active_count} من أصل ندين متصلين</numerusform>
-            <numerusform>الرفع لـ{active_count} من أصل {connected_count} أنداد متصلين</numerusform>
-            <numerusform>الرفع لـ{active_count} من أصل {connected_count} ندا متصلين</numerusform>
-            <numerusform>الرفع لـ{active_count} من أصل {connected_count} ند متصلين</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل {connected_count:L} ند متصلين</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل ند واحد متصل</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل ندين متصلين</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل {connected_count:L} أنداد متصلين</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل {connected_count:L} ندا متصلين</numerusform>
+            <numerusform>الرفع لـ{active_count:L} من أصل {connected_count:L} ند متصلين</numerusform>
         </translation>
     </message>
     <message>

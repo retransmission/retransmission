@@ -19,12 +19,21 @@ class QModelIndex;
 class QRect;
 class QSpinBox;
 
+struct tr_error;
+
 class Utils
 {
 public:
     static QIcon getIconFromIndex(QModelIndex const& index);
 
     [[nodiscard]] static QString qstringFromUtf8(std::string_view str);
+
+    // Moves a file or folder to the trash can, or deletes it when the trash can refuses.
+    // Any thread may call it.
+    static bool trashOrRemove(std::string_view filename, tr_error* error = nullptr);
+
+    // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
+    [[nodiscard]] static QString withAppName(QString text);
 
     static QString removeTrailingDirSeparator(QString const& path);
 

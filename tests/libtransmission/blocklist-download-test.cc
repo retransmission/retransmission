@@ -25,6 +25,7 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/blocklist-download.h>
+#include <libtransmission/log.h>
 #include <libtransmission/timer.h>
 #include <libtransmission/web.h>
 
@@ -382,7 +383,7 @@ TEST(BlocklistUpdater, installsDecompressedContent)
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::Ok, result->status);
     EXPECT_EQ(2U, result->n_rules);
-    EXPECT_TRUE(std::empty(result->error));
+    EXPECT_TRUE(std::empty(result->message));
 }
 
 TEST(BlocklistUpdater, reportsDownloadError)
@@ -396,7 +397,7 @@ TEST(BlocklistUpdater, reportsDownloadError)
 
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result->status);
-    EXPECT_FALSE(std::empty(result->error));
+    EXPECT_FALSE(std::empty(result->message));
     EXPECT_EQ(0, mediator.install_count_); // never tried to install
 }
 
@@ -444,7 +445,7 @@ TEST(BlocklistUpdater, reportsSaveError)
 
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::SaveError, result->status);
-    EXPECT_EQ(mediator.install_error_, result->error);
+    EXPECT_EQ(mediator.install_error_, result->message);
 }
 
 TEST(BlocklistUpdater, cancelSuppressesCallback)
@@ -527,7 +528,30 @@ TEST(BlocklistUpdater, cancelThenUpdateKeepsCallbackSuppressed)
     EXPECT_EQ(0, first_calls);
 }
 
-TEST(BlocklistUpdater, destructionSuppressesInFlight)
+TEST(BlocklistUpdater, destructionAnswersInFlight)
+{
+    auto mediator = MockMediator{};
+
+    auto calls = 0;
+    auto result = std::optional<tr_blocklist_update_result>{};
+    {
+        auto updater = tr::blocklist::Updater{ mediator };
+        updater.update([&calls, &result](tr_blocklist_update_result const& r) {
+            ++calls;
+            result = r;
+        });
+    } // ~Updater answers the in-flight request
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::DownloadError, result->status);
+
+    // the response that arrives afterward neither answers again nor installs anything
+    mediator.respond(200, std::string{ Rules });
+    EXPECT_EQ(1, calls);
+    EXPECT_EQ(0, mediator.install_count_);
+}
+
+TEST(BlocklistUpdater, destructionAfterCancelStaysSilent)
 {
     auto mediator = MockMediator{};
 
@@ -535,7 +559,8 @@ TEST(BlocklistUpdater, destructionSuppressesInFlight)
     {
         auto updater = tr::blocklist::Updater{ mediator };
         updater.update([&fired](tr_blocklist_update_result const&) { fired = true; });
-    } // ~Updater marks the in-flight request cancelled
+        updater.cancel();
+    }
 
     mediator.respond(200, std::string{ Rules });
     EXPECT_FALSE(fired);
@@ -604,6 +629,28 @@ TEST(BlocklistUpdater, autoUpdateTimerFetchesAndReArms)
     EXPECT_EQ(1, mediator.install_count_);
 }
 
+// The error that ~Updater answers an in-flight auto-update with is no reason to warn.
+TEST(BlocklistUpdater, destructionDuringAutoUpdateLogsNothing)
+{
+    auto const old_level = tr_logGetLevel();
+    tr_logClearQueue();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+
+    auto mediator = MockMediator{};
+    {
+        auto updater = tr::blocklist::Updater{ mediator };
+        updater.update_timer();
+        mediator.timer()->fire();
+        EXPECT_EQ(1, mediator.fetch_count_);
+    } // ~Updater answers the auto-update, whose fetch is still in flight
+
+    EXPECT_TRUE(std::empty(tr_logGetQueue()));
+
+    tr_logSetQueueEnabled(false);
+    tr_logSetLevel(old_level);
+}
+
 // ---
 // Integration smoke tests: the real tr_session BlocklistMediator end to end
 // (real fetch, real decompress, real tmpfile save, real rule parsing) over a
@@ -641,7 +688,7 @@ TEST_F(BlocklistDownloadTest, installsPlainText)
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
     EXPECT_EQ(2U, result.n_rules);
-    EXPECT_TRUE(std::empty(result.error));
+    EXPECT_TRUE(std::empty(result.message));
     EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_));
 }
 
@@ -663,7 +710,7 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result.status);
     EXPECT_EQ(0U, result.n_rules);
-    EXPECT_FALSE(std::empty(result.error));
+    EXPECT_FALSE(std::empty(result.message));
 }
 
 TEST_F(BlocklistDownloadTest, emptyDownloadInstallsEmptyList)

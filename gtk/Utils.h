@@ -172,7 +172,7 @@ void setup_item_view_button_event_handling(
     std::function<bool(double, double)> const& release_callback);
 #endif
 
-/* move a file to the trashcan if GIO is available; otherwise, delete it */
+/* move a file or folder to the trash can, or delete it when the trash can refuses */
 bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error = nullptr);
 
 void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry);
@@ -191,6 +191,9 @@ inline T gtr_str_strip(T const& text)
 }
 
 std::string gtr_get_full_resource_path(std::string const& rel_path);
+
+// Fills in the {appname} field of an already-translated string, such as one from a .ui file.
+[[nodiscard]] Glib::ustring gtr_with_app_name(Glib::ustring const& text);
 
 /***
 ****

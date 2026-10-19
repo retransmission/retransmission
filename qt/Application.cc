@@ -8,10 +8,10 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
-#include <vector>
 
+#include <QtCore/QFileInfo>
 #include <QtCore/QLibraryInfo>
-#include <QtCore/QProcess>
+#include <QtCore/QRegularExpression>
 
 #include <QtGui/QIcon>
 
@@ -30,6 +30,7 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/transmission.h> // tr_sessionGetSettingsFilename
 #include <libtransmission/values.h>
 
 #include <libtransmission-app/interop.h>
@@ -102,13 +103,7 @@ void initUnits()
 
 [[nodiscard]] auto makeWindowIcon()
 {
-    // first, try to load it from the system theme
-    if (auto icon = QIcon::fromTheme(QStringLiteral(TR_PROJ_APPNAME)); !icon.isNull()) {
-        return icon;
-    }
-
-    // if that fails, use our own as the fallback
-    return QIcon{ QStringLiteral(":/icons/" TR_PROJ_APPNAME ".svg") };
+    return QIcon::fromTheme(QStringLiteral(TR_QT_ICON_NAME), QIcon{ QStringLiteral(":/icons/app-icon.svg") });
 }
 
 #if QT_CONFIG(accessibility)
@@ -172,7 +167,7 @@ Application::Application(
     }
 
     // is this the first time we've run transmission?
-    bool const first_time = !dir.exists(QStringLiteral("settings.json"));
+    bool const first_time = !QFileInfo::exists(Utils::qstringFromUtf8(tr_sessionGetSettingsFilename(config_dir.toStdString())));
 
 #if QT_CONFIG(accessibility)
     QAccessible::installFactory(&accessibleFactory);
@@ -327,24 +322,29 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
 
 void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
 {
-    if (prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
-        auto const title = tr("Torrent(s) Completed", nullptr, static_cast<int>(std::size(torrent_ids)));
-        auto const body = getNames(torrent_ids).join(QStringLiteral("\n"));
-        notifyApp(title, body);
+    auto const sound = prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled);
+
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+    if (sound) {
+        beep();
+    }
+#endif
+
+    if (!prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
+        return;
     }
 
-    if (prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled)) {
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
-        beep();
-#else
-        auto const args = prefs_.get<std::vector<QString>>(TR_KEY_torrent_complete_sound_command);
-        if (!args.empty()) {
-            auto const& command = args.front();
-            auto const arguments = QStringList(std::next(std::begin(args)), std::end(args));
-            QProcess::execute(command, arguments);
-        }
-#endif
+    auto const title = tr("Torrent(s) Completed", nullptr, static_cast<int>(std::size(torrent_ids)));
+    auto const body = getNames(torrent_ids).join(QStringLiteral("\n"));
+
+    auto hints = QVariantMap{};
+    if (sound) {
+        hints.insert(QStringLiteral("sound-name"), QStringLiteral("complete-download"));
+    } else {
+        hints.insert(QStringLiteral("suppress-sound"), true);
     }
+
+    notifyApp(title, body, {}, std::move(hints));
 }
 
 void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
@@ -478,7 +478,7 @@ void Application::raise() const
     alert(window_.get());
 }
 
-bool Application::notifyApp(QString const& title, QString const& body, QStringList const& actions) const
+bool Application::notifyApp(QString const& title, QString const& body, QStringList const& actions, QVariantMap hints) const
 {
 #ifdef QT_DBUS_LIB
     if (auto bus = QDBusConnection::sessionBus(); bus.isConnected()) {
@@ -490,14 +490,12 @@ bool Application::notifyApp(QString const& title, QString const& body, QStringLi
         QVariantList args;
         args.append(QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED)); // app_name
         args.append(0U); // replaces_id
-        args.append(QStringLiteral(TR_PROJ_APPNAME)); // icon
+        args.append(QStringLiteral(TR_QT_ICON_NAME)); // icon
         args.append(title); // summary
         args.append(body); // body
         args.append(actions);
-        args.append(
-            QVariantMap{ {
-                std::make_pair(QStringLiteral("category"), QVariant{ QStringLiteral("transfer.complete") }),
-            } }); // hints
+        hints.insert(QStringLiteral("category"), QStringLiteral("transfer.complete"));
+        args.append(hints);
         args.append(static_cast<int32_t>(-1)); // use the default timeout period
         m.setArguments(args);
         QDBusReply<quint32> const reply_msg = bus.call(m);

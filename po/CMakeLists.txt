@@ -17,8 +17,6 @@ set(LINGUAS
     zh_CN
     zh_TW)
 
-set(GETTEXT_PACKAGE ${TR_NAME}-gtk)
-
 if(ENABLE_NLS)
     set(ENABLED_LINGUAS ${LINGUAS})
 else()
@@ -28,7 +26,7 @@ endif()
 set(MO_FILES)
 foreach(LANG ${ENABLED_LINGUAS})
     set(msgfmt_INPUT_FILE ${LANG}.po)
-    set(msgfmt_OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${GETTEXT_PACKAGE}-${LANG}.mo)
+    set(msgfmt_OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${TR_GETTEXT_DOMAIN}-${LANG}.mo)
 
     add_custom_command(
         OUTPUT ${msgfmt_OUTPUT_FILE}
@@ -41,11 +39,11 @@ foreach(LANG ${ENABLED_LINGUAS})
     install(
         FILES ${msgfmt_OUTPUT_FILE}
         DESTINATION ${CMAKE_INSTALL_LOCALEDIR}/${LANG}/LC_MESSAGES/
-        RENAME ${GETTEXT_PACKAGE}.mo)
+        RENAME ${TR_GETTEXT_DOMAIN}.mo)
 endforeach()
 
 if(MO_FILES)
-    add_custom_target(${GETTEXT_PACKAGE}-po
+    add_custom_target(${TR_GETTEXT_DOMAIN}-po
         ALL
         DEPENDS ${MO_FILES})
 endif()

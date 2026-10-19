@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Info zu Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Info zu {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © Das Transmission Projekt</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © Das Retransmission Projekt</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1772,10 +1772,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Sperrliste enthält {count:L} Regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Sperrliste enthält {count:L} Regeln&lt;/i&gt;</numerusform>
+            <numerusform>Sperrliste enthält {count:L} Regel</numerusform>
+            <numerusform>Sperrliste enthält {count:L} Regeln</numerusform>
         </translation>
     </message>
     <message>
@@ -1841,8 +1841,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Zeige das Transmission-Symbol im Be&amp;nachrichtigungsfeld</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Zeige das {appname}-Symbol im Be&amp;nachrichtigungsfeld</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2123,8 +2123,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission-Einstellungen</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname}-Einstellungen</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} doppelte Torrentdatei konnten nicht hinzugefügt werden</numerusform>
-            <numerusform>{count} doppelte Torrentdateien konnten nicht hinzugefügt werden</numerusform>
+            <numerusform>{count:L} doppelte Torrentdatei konnten nicht hinzugefügt werden</numerusform>
+            <numerusform>{count:L} doppelte Torrentdateien konnten nicht hinzugefügt werden</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Lade von {active_count} von {connected_count} verbundenem Peer herunter</numerusform>
-            <numerusform>Lade von {active_count} von {connected_count} verbundenen Peers herunter</numerusform>
+            <numerusform>Lade von {active_count:L} von {connected_count:L} verbundenem Peer herunter</numerusform>
+            <numerusform>Lade von {active_count:L} von {connected_count:L} verbundenen Peers herunter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Verteile an {active_count} von {connected_count} verbundenem Peer</numerusform>
-            <numerusform>Verteile an {active_count} von {connected_count} verbundenen Peers</numerusform>
+            <numerusform>Verteile an {active_count:L} von {connected_count:L} verbundenem Peer</numerusform>
+            <numerusform>Verteile an {active_count:L} von {connected_count:L} verbundenen Peers</numerusform>
         </translation>
     </message>
     <message>

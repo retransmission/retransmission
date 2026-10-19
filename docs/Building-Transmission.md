@@ -11,14 +11,14 @@ The actual software prerequisites for building the app are based on GitHub Actio
 
 Building the project on Mac requires the source to be retrieved from GitHub. Pre-packaged source code will not compile.
 ```bash
-git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
+git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
 ```
 
 If building from source is too daunting for you, check out the [nightly builds](https://build.retransmission.org/).
 (Note: These are untested snapshots. Use them with care.)
 
 ### Building the native app with Xcode ###
-Transmission has an Xcode project file for building in Xcode.
+Retransmission has an Xcode project file for building in Xcode.
 - Open Transmission.xcodeproj
 - Run the Transmission scheme
 
@@ -27,7 +27,20 @@ Build the app:
 ```bash
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build -t transmission-mac
-open ./build/macosx/Transmission.app
+open ./build/macosx/Retransmission.app
+```
+
+### Building CLI Tools and Daemons on macOS ###
+Use CMake to build command-line utilities:
+
+```bash
+# Build daemon and utils (enabled by default in CMake)
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build -t transmission-daemon transmission-remote transmission-create transmission-edit transmission-show
+
+# To build the legacy transmission-cli, ensure it's enabled:
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_CLI=ON
+cmake --build build -t transmission-cli
 ```
 
 ### Building the GTK app with CMake ###
@@ -53,18 +66,18 @@ cmake --build build -t transmission-qt
 ### Prerequisites ###
 
 #### Debian 13 / Trixie ####
-On Debian, you can build transmission with a few dependencies on top of a base installation.
+On Debian, you can build Retransmission with a few dependencies on top of a base installation.
 
 For building transmission-daemon you will need basic dependencies:
 ```bash
 $ sudo apt install build-essential cmake git libcurl4-openssl-dev zlib1g-dev
 ```
-These packages are not mandatory for a working binary. Transmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
+These packages are not mandatory for a working binary. Retransmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
 ```bash
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libsystemd-dev
 ```
 
-You likely want to install transmission as a native GUI application.
+You likely want to install Retransmission as a native GUI application.
 There are two options, GTK and Qt.
 
 GTK 3 client:
@@ -84,21 +97,21 @@ Qt6 client:
 $ sudo apt install qt6-svg-dev qt6-tools-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 #### Debian 12 / Bookworm ####
-On Debian, you can build transmission with a few dependencies on top of a base installation.
+On Debian, you can build Retransmission with a few dependencies on top of a base installation.
 
 For building transmission-daemon you will need basic dependencies:
 ```bash
 $ sudo apt install build-essential cmake git libcurl4-openssl-dev libssl-dev zlib1g-dev
 ```
-These packages are not mandatory for a working binary. Transmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
+These packages are not mandatory for a working binary. Retransmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
 ```bash
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libpsl-dev libsystemd-dev
 ```
 
-You likely want to install transmission as a native GUI application.
+You likely want to install Retransmission as a native GUI application.
 There are two options, GTK and Qt.
 
 GTK 3 client:
@@ -115,7 +128,7 @@ Qt6 client:
 $ sudo apt install qt6-svg-dev qt6-tools-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
 #### Ubuntu ####
 On Ubuntu, you can install the required development tools for GTK with this command:
@@ -124,12 +137,12 @@ On Ubuntu, you can install the required development tools for GTK with this comm
 $ sudo apt-get install build-essential automake autoconf libtool pkg-config intltool libcurl4-openssl-dev libglib2.0-dev libevent-dev libminiupnpc-dev libgtk-3-dev libappindicator3-dev libssl-dev zlib1g-dev
 ```
 
-Then you can begin [building.](#building-transmission-from-git-first-time)
+Then you can begin [building.](#building-retransmission-from-git-first-time)
 
-### Building Transmission from Git (first time) ###
+### Building Retransmission from Git (first time) ###
 ```bash
-$ git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
-$ cd Transmission
+$ git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
+$ cd Retransmission
 # Use -DCMAKE_BUILD_TYPE=RelWithDebInfo to build optimized binary with debug information. (preferred)
 # Use -DCMAKE_BUILD_TYPE=Release to build full optimized binary.
 $ cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -138,9 +151,9 @@ $ cmake --build .
 $ sudo cmake --install .
 ```
 
-### Building Transmission from Git (updating) ###
+### Building Retransmission from Git (updating) ###
 ```bash
-$ cd Transmission/build
+$ cd Retransmission/build
 $ cmake --build . -t clean
 $ git submodule foreach --recursive git clean -xfd
 $ git pull --rebase --prune
@@ -151,7 +164,7 @@ $ sudo cmake --install .
 
 ## On Windows ##
 
-### Prerequisites
+### Prerequisites ###
 You need the following installed:
 
 * [Visual Studio 2019 or greater](https://visualstudio.microsoft.com/downloads/) (the Community Edition is sufficient)
@@ -163,7 +176,7 @@ You need the following installed:
 * [Python](https://python.org/downloads)
 
 
-### Install dependencies through vcpkg
+### Install dependencies through vcpkg ###
 
 Vcpkg will install x86 libraries by default. To install x64 add the `--triplet=x64-windows` flag at the end of the commands below.
 
@@ -177,18 +190,18 @@ Additional dependencies for the Qt client:
 vcpkg install qtactiveqt qtsvg qttools
 ```
 
-### Get Transmission source
+### Get Retransmission source ###
 ```bat
 git clone https://github.com/retransmission/retransmission
-cd transmission
+cd retransmission
 git submodule update --init --recursive
 ```
 
-### Configure CMake and build the project
+### Configure CMake and build the project ###
 
 To configure which components are built use the flags below.
 Each option can be set to `ON`/`OFF`/`AUTO`, values shown below are the defaults.
-* `-DENABLE_DAEMON=ON` - build transmission daemon
+* `-DENABLE_DAEMON=ON` - build the Retransmission daemon
 * `-DENABLE_QT=AUTO` - build the Qt client
 * `-DENABLE_UTILS=ON` - build transmission-remote, transmission-create, transmission-edit and transmission-show cli tools
 * `-DENABLE_CLI=OFF` - build the cli client

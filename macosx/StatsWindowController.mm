@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -10,23 +10,17 @@
 
 static NSTimeInterval const kUpdateSeconds = 1.0;
 
-@interface StatsWindowController ()<NSWindowRestoration>
+@interface StatsWindowController ()<NSWindowRestoration, NSWindowDelegate>
 
-@property(nonatomic) IBOutlet NSTextField* fUploadedField;
-@property(nonatomic) IBOutlet NSTextField* fUploadedAllField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadedField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadedAllField;
-@property(nonatomic) IBOutlet NSTextField* fRatioField;
-@property(nonatomic) IBOutlet NSTextField* fRatioAllField;
-@property(nonatomic) IBOutlet NSTextField* fTimeField;
-@property(nonatomic) IBOutlet NSTextField* fTimeAllField;
-@property(nonatomic) IBOutlet NSTextField* fNumOpenedField;
-@property(nonatomic) IBOutlet NSTextField* fUploadedLabelField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadedLabelField;
-@property(nonatomic) IBOutlet NSTextField* fRatioLabelField;
-@property(nonatomic) IBOutlet NSTextField* fTimeLabelField;
-@property(nonatomic) IBOutlet NSTextField* fNumOpenedLabelField;
-@property(nonatomic) IBOutlet NSButton* fResetButton;
+@property(nonatomic) NSTextField* fUploadedField;
+@property(nonatomic) NSTextField* fUploadedAllField;
+@property(nonatomic) NSTextField* fDownloadedField;
+@property(nonatomic) NSTextField* fDownloadedAllField;
+@property(nonatomic) NSTextField* fRatioField;
+@property(nonatomic) NSTextField* fRatioAllField;
+@property(nonatomic) NSTextField* fTimeField;
+@property(nonatomic) NSTextField* fTimeAllField;
+@property(nonatomic) NSTextField* fNumOpenedField;
 @property(nonatomic) NSTimer* fTimer;
 
 @end
@@ -39,21 +33,119 @@ static tr_session* fLib = NULL;
 + (StatsWindowController*)statsWindow
 {
     if (!fStatsWindowInstance) {
-        if ((fStatsWindowInstance = [[self alloc] init])) {
-            fLib = ((Controller*)NSApp.delegate).sessionHandle;
-        }
+        fStatsWindowInstance = [[self alloc] init];
     }
     return fStatsWindowInstance;
 }
 
 - (instancetype)init
 {
-    return [super initWithWindowNibName:@"StatsWindow"];
+    fLib = ((Controller*)NSApp.delegate).sessionHandle;
+    NSPanel* panel = [[NSPanel alloc] initWithContentRect:NSMakeRect(0, 0, 330, 240)
+                                                styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:YES];
+    panel.identifier = @"StatsWindow";
+    [panel center];
+    panel.title = NSLocalizedString(@"Statistics", "Stats window -> title");
+    panel.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
+    panel.hidesOnDeactivate = NO;
+    panel.tabbingMode = NSWindowTabbingModeDisallowed;
+
+    self = [super initWithWindow:panel];
+    if (self) {
+        panel.delegate = self;
+        [self setupUI];
+    }
+    return self;
 }
 
-- (void)awakeFromNib
+- (NSTextField*)createLabelWithAlignment:(NSTextAlignment)alignment
 {
-    [super awakeFromNib];
+    NSTextField* field = [NSTextField labelWithString:@""];
+    field.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    field.textColor = [NSColor controlTextColor];
+    field.alignment = alignment;
+    field.lineBreakMode = NSLineBreakByTruncatingTail;
+
+    // label in left column
+    BOOL isLabel = alignment == NSTextAlignmentRight;
+    auto priority = isLabel ? NSLayoutPriorityRequired : NSLayoutPriorityDefaultLow;
+
+    [field setContentCompressionResistancePriority:priority forOrientation:NSLayoutConstraintOrientationHorizontal];
+    return field;
+}
+
+- (void)setupUI
+{
+    auto uploadedLabelField = [self createLabelWithAlignment:NSTextAlignmentRight];
+    uploadedLabelField.stringValue = NSLocalizedString(@"Uploaded:", "Stats window -> label");
+
+    auto downloadedLabelField = [self createLabelWithAlignment:NSTextAlignmentRight];
+    downloadedLabelField.stringValue = NSLocalizedString(@"Downloaded:", "Stats window -> label");
+
+    auto ratioLabelField = [self createLabelWithAlignment:NSTextAlignmentRight];
+    ratioLabelField.stringValue = NSLocalizedString(@"Ratio:", "Stats window -> label");
+
+    auto timeLabelField = [self createLabelWithAlignment:NSTextAlignmentRight];
+    timeLabelField.stringValue = NSLocalizedString(@"Running time:", "Stats window -> label");
+
+    auto numOpenedLabelField = [self createLabelWithAlignment:NSTextAlignmentRight];
+    numOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", "Stats window -> label");
+
+    self.fUploadedField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fUploadedAllField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fDownloadedField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fDownloadedAllField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fRatioField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fRatioAllField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fTimeField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fTimeAllField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+    self.fNumOpenedField = [self createLabelWithAlignment:NSTextAlignmentLeft];
+
+    auto resetButton = [NSButton buttonWithTitle:NSLocalizedString(@"Reset", "Stats window -> reset button") target:self
+                                          action:@selector(resetStats:)];
+    resetButton.controlSize = NSControlSizeSmall;
+    resetButton.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    resetButton.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSArray* rows = @[
+        @[ uploadedLabelField, self.fUploadedField ],
+        @[ NSGridCell.emptyContentView, self.fUploadedAllField ],
+        @[ downloadedLabelField, self.fDownloadedField ],
+        @[ NSGridCell.emptyContentView, self.fDownloadedAllField ],
+        @[ ratioLabelField, self.fRatioField ],
+        @[ NSGridCell.emptyContentView, self.fRatioAllField ],
+        @[ timeLabelField, self.fTimeField ],
+        @[ NSGridCell.emptyContentView, self.fTimeAllField ],
+        @[ numOpenedLabelField, self.fNumOpenedField ]
+    ];
+
+    NSGridView* gridView = [NSGridView gridViewWithViews:rows];
+    gridView.translatesAutoresizingMaskIntoConstraints = NO;
+    gridView.rowSpacing = 4.0;
+    gridView.columnSpacing = 8.0;
+
+    [gridView columnAtIndex:0].xPlacement = NSGridCellPlacementTrailing;
+    [gridView columnAtIndex:1].xPlacement = NSGridCellPlacementLeading;
+    gridView.rowAlignment = NSGridRowAlignmentLastBaseline;
+
+    NSView* contentView = self.window.contentView;
+    [contentView addSubview:gridView];
+    [contentView addSubview:resetButton];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [gridView.centerXAnchor constraintEqualToAnchor:contentView.centerXAnchor],
+        [gridView.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:20],
+
+        [gridView.leadingAnchor constraintGreaterThanOrEqualToAnchor:contentView.leadingAnchor constant:20],
+        [contentView.trailingAnchor constraintGreaterThanOrEqualToAnchor:gridView.trailingAnchor constant:20],
+
+        [resetButton.topAnchor constraintEqualToAnchor:gridView.bottomAnchor constant:8],
+        [contentView.trailingAnchor constraintEqualToAnchor:resetButton.trailingAnchor constant:20],
+        [contentView.bottomAnchor constraintEqualToAnchor:resetButton.bottomAnchor constant:16]
+    ]];
+
     [self updateStats];
 
     __weak __auto_type weakSelf = self;
@@ -64,23 +156,9 @@ static tr_session* fLib = NULL;
     [NSRunLoop.currentRunLoop addTimer:self.fTimer forMode:NSEventTrackingRunLoopMode];
 
     self.window.restorationClass = [self class];
-
-    self.window.title = NSLocalizedString(@"Statistics", "Stats window -> title");
-
-    //disable fullscreen support
-    self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
-
-    //set label text
-    self.fUploadedLabelField.stringValue = NSLocalizedString(@"Uploaded:", "Stats window -> label");
-    self.fDownloadedLabelField.stringValue = NSLocalizedString(@"Downloaded:", "Stats window -> label");
-    self.fRatioLabelField.stringValue = NSLocalizedString(@"Ratio:", "Stats window -> label");
-    self.fTimeLabelField.stringValue = NSLocalizedString(@"Running time:", "Stats window -> label");
-    self.fNumOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", "Stats window -> label");
-
-    self.fResetButton.title = NSLocalizedString(@"Reset", "Stats window -> reset button");
 }
 
-- (void)windowWillClose:(id)sender
+- (void)windowWillClose:(NSNotification*)notification
 {
     [self.fTimer invalidate];
     self.fTimer = nil;
@@ -96,7 +174,12 @@ static tr_session* fLib = NULL;
     completionHandler(StatsWindowController.statsWindow.window, nil);
 }
 
-- (IBAction)resetStats:(id)sender
+- (NSString*)windowFrameAutosaveName
+{
+    return @"StatsWindow";
+}
+
+- (void)resetStats:(id)sender
 {
     if (![NSUserDefaults.standardUserDefaults boolForKey:@"WarningResetStats"]) {
         [self performResetStats];
@@ -124,11 +207,6 @@ static tr_session* fLib = NULL;
             [self performResetStats];
         }
     }];
-}
-
-- (NSString*)windowFrameAutosaveName
-{
-    return @"StatsWindow";
 }
 
 #pragma mark - Private

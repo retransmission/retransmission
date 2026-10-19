@@ -1,10 +1,10 @@
 # 1. General help #
-New to Transmission?
-  * Try the help in Transmission's "Help" menu.
+New to Retransmission?
+  * Try the help in Retransmission's "Help" menu.
   * simplehelp.net has an introduction for [Transmission on Macs](https://www.simplehelp.net/2008/07/17/how-to-use-transmission-as-your-bittorrent-client-os-x/).
   * Jun Azua has an introduction for [Transmission GUI on Linux](https://www.junauza.com/2009/01/how-to-use-bittorrent-in-linux.html).
-  * Running Transmission [without a GUI](./Headless-Usage.md)
-  * Using Transmission [from a web browser](./Web-Interface.md)
+  * Running Retransmission [without a GUI](./Headless-Usage.md)
+  * Using Retransmission [from a web browser](./Web-Interface.md)
 
 Want to learn more?
   * Visit our [forums](https://forum.retransmission.org/)
@@ -25,11 +25,11 @@ Much of this documentation is out-of-date or could be improved. Pull requests ar
  * [Configuration files](./Configuration-Files.md)
  * [Editing configuration files](./Editing-Configuration-Files.md)
  * [Environment variables](Environment-Variables.md)
- * [Extending Transmission using scripts](./Scripts.md)
+ * [Extending Retransmission using scripts](./Scripts.md)
  * [Blocklists](./Blocklists.md)
- * [How to build Transmission](Building-Transmission.md)
+ * [How to build Retransmission](Building-Transmission.md)
  * [RPC protocol specification](rpc-spec.md)
- * [Transmission's Peer ID and User-Agent headers](Peer-ID-and-User-Agent.md)
+ * [Retransmission's Peer ID and User-Agent headers](Peer-ID-and-User-Agent.md)
  * [Peer status text explained](Peer-Status-Text.md)
  * [Securing Transmission's RPC interface with an open-source reverse proxy (External Link)](https://www.pomerium.com/docs/guides/transmission)
 
@@ -39,8 +39,8 @@ Much of this documentation is out-of-date or could be improved. Pull requests ar
   * If you _do_ see an existing ticket, please add a comment there. The more users are interested in a ticket, the higher its priority.
 
 # 4. For contributors #
-Transmission is a volunteer project and welcomes help.
-Please contact us if you are interested in supporting Transmission in any of the following ways:
+Retransmission is a volunteer project and welcomes help.
+Please contact us if you are interested in supporting Retransmission in any of the following ways:
 
   * Code contribution
   * Testing

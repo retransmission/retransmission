@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
+        <source>About {appname}</source>
         <translation>O programu</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Avtorske pravice © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Avtorske pravice © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -793,8 +793,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1801,12 +1801,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravilo&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravili&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravila&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Seznam blokad vsebuje {count:L} pravil&lt;/i&gt;</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravilo</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravili</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravila</numerusform>
+            <numerusform>Seznam blokad vsebuje {count:L} pravil</numerusform>
         </translation>
     </message>
     <message>
@@ -1872,8 +1872,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Pokaži ikono Transmission v območju za obvestila</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Pokaži ikono {appname} v območju za obvestila</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2156,8 +2156,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Nastavitve Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Nastavitve {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2329,12 +2329,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
             <numerusform>Ni mogoče dodati podvojenega torrenta</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
-            <numerusform>Ni mogoče dodati {count} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
+            <numerusform>Ni mogoče dodati {count:L} podvojenih torrentov</numerusform>
         </translation>
     </message>
 </context>
@@ -2615,13 +2615,13 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanega soležnika</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Prenašam od {active_count} od {connected_count} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanega soležnika</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Prenašam od {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2637,12 +2637,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Sejem {active_count} od {connected_count} povezanega soležnika</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
-            <numerusform>Sejem {active_count} od {connected_count} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanega soležnika</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
+            <numerusform>Sejem {active_count:L} od {connected_count:L} povezanih soležnikov</numerusform>
         </translation>
     </message>
     <message>

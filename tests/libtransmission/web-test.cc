@@ -396,9 +396,9 @@ TEST_F(WebTest, timeoutIsReported)
 
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(0, response.status);
-    EXPECT_TRUE(response.did_timeout);
     ASSERT_TRUE(response.errmsg);
-    EXPECT_NE(std::string::npos, response.errmsg->find("curl error: "));
+    EXPECT_TRUE(response.did_timeout) << *response.errmsg;
+    EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
 TEST_F(WebTest, blockedInterfaceIsRefused)

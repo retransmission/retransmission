@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -275,8 +275,8 @@ tr_socket_t tr_netBindTCPImpl(
                 fmt::format(
                     fmt::runtime(
                         err == EADDRINUSE ?
-                            _("Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?") :
-                            _("Couldn't bind port {port} on {address}: {error} ({error_code})")),
+                            "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?" :
+                            "Couldn't bind port {port} on {address}: {error} ({error_code})"),
                     fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                     fmt::arg("address", addr.display_name()),
                     fmt::arg("port", port.host()),

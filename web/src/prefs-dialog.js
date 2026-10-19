@@ -246,7 +246,7 @@ export class PrefsDialog extends EventTarget {
       navigator.registerProtocolHandler(
         'magnet',
         handlerUrl.toString(),
-        'Transmission Web',
+        'Retransmission Web',
       );
       localStorage.setItem('protocol-handler-registered', 'true');
       PrefsDialog._updateProtocolHandlerButton(button);

@@ -28,13 +28,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName",      "Transmission Project"
-            VALUE "FileDescription",  "${TR_FILE_DESCRIPTION}"
+            VALUE "CompanyName",      "The ${TR_PROJ_APPNAME_CAPITALIZED} Project"
+            VALUE "FileDescription",  "${TR_PROJ_APPNAME_CAPITALIZED} ${TR_FILE_DESCRIPTION}"
             VALUE "FileVersion",      LONG_VERSION_STRING
             VALUE "InternalName",     "${TR_INTERNAL_NAME}"
-            VALUE "LegalCopyright",   "2005-2026 Transmission Project"
+            VALUE "LegalCopyright",   "2005-2026 The Retransmission Project"
             VALUE "OriginalFilename", "${TR_ORIGINAL_FILENAME}"
-            VALUE "ProductName",      "Transmission"
+            VALUE "ProductName",      "${TR_PROJ_APPNAME_CAPITALIZED}"
             VALUE "ProductVersion",   LONG_VERSION_STRING
         END
     END

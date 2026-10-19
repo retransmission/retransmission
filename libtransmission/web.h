@@ -169,7 +169,7 @@ public:
     // are left alone so that they can finish.
     void startShutdown(std::chrono::milliseconds /*deadline*/);
 
-    [[nodiscard]] bool is_idle() const noexcept;
+    [[nodiscard]] bool is_idle() const;
 
     // If you want to give running tasks a chance to finish,
     // call startShutdown() before destroying the tr_web object.

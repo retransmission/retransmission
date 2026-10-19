@@ -3,14 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <chrono>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <tuple>
 #include <vector>
-
-#include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
@@ -72,15 +69,6 @@ void expect_get_set_roundtrip(TestPrefs& prefs, tr_quark const key, T const& a, 
     EXPECT_EQ(prefs.template get<T>(key), b);
 }
 
-// Comparing `std::chrono::sys_seconds` with `EXPECT_EQ` makes GoogleTest format
-// the value via `std::format` on failure, which instantiates `std::to_chars` for
-// floating point. That symbol is unavailable on macOS deployment targets < 13.3,
-// so compare the underlying integer counts instead.
-void expect_sys_seconds_eq(std::chrono::sys_seconds actual, std::chrono::sys_seconds expected)
-{
-    EXPECT_EQ(actual.time_since_epoch().count(), expected.time_since_epoch().count());
-}
-
 } // namespace
 
 // ---- in-memory tests (no filesystem needed) --------------------------------
@@ -110,7 +98,6 @@ TEST_F(PrefsTest, defaultConstructorUsesDefaults)
     EXPECT_EQ(prefs.get<ShowMode>(TR_KEY_show_mode), tr::app::DefaultShowMode);
     EXPECT_EQ(prefs.get<SortMode>(TR_KEY_sort_mode), tr::app::DefaultSortMode);
     EXPECT_EQ(prefs.get<StatsMode>(TR_KEY_statusbar_stats), tr::app::DefaultStatsMode);
-    expect_sys_seconds_eq(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), std::chrono::sys_seconds{});
     EXPECT_TRUE(prefs.get<bool>(TR_KEY_show_statusbar));
     EXPECT_FALSE(prefs.get<bool>(TR_KEY_sort_reversed));
     EXPECT_EQ(prefs.get<int>(TR_KEY_main_window_height), 500);
@@ -183,7 +170,7 @@ TEST_F(PrefsTest, getSetRoundTripsStringList)
     auto prefs = TestPrefs{};
     expect_get_set_roundtrip(
         prefs,
-        TR_KEY_torrent_complete_sound_command,
+        TR_KEY_recent_download_paths,
         std::vector<std::string>{ "one", "two", "three" },
         std::vector<std::string>{ "alpha", "beta" });
 }
@@ -210,19 +197,6 @@ TEST_F(PrefsTest, getSetRoundTripsEncryptionMode)
 {
     auto prefs = TestPrefs{};
     expect_get_set_roundtrip(prefs, TR_KEY_encryption, TR_ENCRYPTION_REQUIRED, TR_ENCRYPTION_PREFERRED);
-}
-
-TEST_F(PrefsTest, getSetRoundTripsDate)
-{
-    auto prefs = TestPrefs{};
-    auto const a = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000000 } };
-    auto const b = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000123 } };
-
-    prefs.set(TR_KEY_blocklist_date, a);
-    expect_sys_seconds_eq(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), a);
-
-    prefs.set(TR_KEY_blocklist_date, b);
-    expect_sys_seconds_eq(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), b);
 }
 
 TEST_F(PrefsTest, getFailsLoudlyForUnregisteredKey)
@@ -324,7 +298,7 @@ class PrefsFileTest : public SandboxedTest
 protected:
     [[nodiscard]] std::string settings_filename() const
     {
-        return fmt::format("{:s}/settings.json", sandbox_dir());
+        return tr_sessionGetSettingsFilename(sandbox_dir());
     }
 
     void write_settings_file(tr::Settings const& settings) const
@@ -502,12 +476,9 @@ TEST_F(PrefsFileTest, saveWithoutExistingFileFillsSessionDefaults)
 
 TEST_F(PrefsFileTest, saveRoundTripsThroughConfigDirConstructor)
 {
-    auto const blocklist_date = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000000 } };
-
     auto prefs = TestPrefs{};
     prefs.set(TR_KEY_main_window_height, 1234); // app-owned
     prefs.set(TR_KEY_sort_mode, SortMode::SortByQueue); // app-owned
-    prefs.set(TR_KEY_blocklist_date, blocklist_date); // app-owned
     prefs.set(TR_KEY_filter_text, "volatile"s); // transient app-owned
 
     auto local = std::optional<tr::Settings>{ std::in_place };
@@ -519,7 +490,6 @@ TEST_F(PrefsFileTest, saveRoundTripsThroughConfigDirConstructor)
     auto const reloaded = TestPrefs{ sandbox_dir() };
     EXPECT_EQ(reloaded.get<int>(TR_KEY_main_window_height), 1234);
     EXPECT_EQ(reloaded.get<SortMode>(TR_KEY_sort_mode), SortMode::SortByQueue);
-    expect_sys_seconds_eq(reloaded.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), blocklist_date);
     EXPECT_EQ(reloaded.get<std::string>(TR_KEY_download_dir), "/round/trip/dl");
     EXPECT_EQ(reloaded.get<int>(TR_KEY_speed_limit_down), 321);
     EXPECT_EQ(reloaded.get<std::string>(TR_KEY_filter_text), std::string{}); // not persisted

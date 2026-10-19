@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Om Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Om {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Ophavsret © Transmission-projektet</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Ophavsret © Retransmission-projektet</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1775,10 +1775,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokeringslisten indeholder {count:L} regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokeringslisten indeholder {count:L} regler&lt;/i&gt;</numerusform>
+            <numerusform>Blokeringslisten indeholder {count:L} regel</numerusform>
+            <numerusform>Blokeringslisten indeholder {count:L} regler</numerusform>
         </translation>
     </message>
     <message>
@@ -1844,8 +1844,8 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Vis Transmission-ikon i &amp;underretningsområdet</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Vis {appname}-ikon i &amp;underretningsområdet</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Præferencer for Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Præferencer for {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2297,10 +2297,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Kunne ikke tilføje {count} torrentdublet</numerusform>
-            <numerusform>Kunne ikke tilføje {count} torrentdubletter</numerusform>
+            <numerusform>Kunne ikke tilføje {count:L} torrentdublet</numerusform>
+            <numerusform>Kunne ikke tilføje {count:L} torrentdubletter</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Downloader fra {active_count} af {connected_count} forbundet modpart</numerusform>
-            <numerusform>Downloader fra {active_count} af {connected_count} forbundne modparter</numerusform>
+            <numerusform>Downloader fra {active_count:L} af {connected_count:L} forbundet modpart</numerusform>
+            <numerusform>Downloader fra {active_count:L} af {connected_count:L} forbundne modparter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Seeder til {active_count} af {connected_count} forbundet modpart</numerusform>
-            <numerusform>Seeder til {active_count} af {connected_count} forbundne modparter</numerusform>
+            <numerusform>Seeder til {active_count:L} af {connected_count:L} forbundet modpart</numerusform>
+            <numerusform>Seeder til {active_count:L} af {connected_count:L} forbundne modparter</numerusform>
         </translation>
     </message>
     <message>

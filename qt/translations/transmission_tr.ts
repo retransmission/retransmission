@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Transmission Hakkında</translation>
+        <source>About {appname}</source>
+        <translation>{appname} Hakkında</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Telif Hakkı © Transmission Projesi</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Telif Hakkı © Retransmission Projesi</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1760,9 +1760,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Engel listesi {count:L} kural içeriyor&lt;/i&gt;</numerusform>
+            <numerusform>Engel listesi {count:L} kural içeriyor</numerusform>
         </translation>
     </message>
     <message>
@@ -1828,8 +1828,8 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Transmission simgesini &amp;bildirim alanında göster</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>{appname} simgesini &amp;bildirim alanında göster</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2109,8 +2109,8 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission Tercihleri</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname} Tercihleri</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2279,9 +2279,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>{count} yinelenen torrent eklenemiyor</numerusform>
+            <numerusform>{count:L} yinelenen torrent eklenemiyor</numerusform>
         </translation>
     </message>
 </context>
@@ -2550,10 +2550,10 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>{connected_count} bağlı eşin {active_count} tanesinden indiriliyor</numerusform>
+            <numerusform>{connected_count:L} bağlı eşin {active_count:L} tanesinden indiriliyor</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2566,9 +2566,9 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>{connected_count} bağlı eşten {active_count} tanesine gönderiliyor</numerusform>
+            <numerusform>{connected_count:L} bağlı eşten {active_count:L} tanesine gönderiliyor</numerusform>
         </translation>
     </message>
     <message>

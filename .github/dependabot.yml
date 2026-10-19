@@ -11,3 +11,15 @@ updates:
       github-actions:
         patterns:
           - "*"
+  - package-ecosystem: "npm"
+    directory: "web/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "notes:none"
+      - "scope:web"
+      - "type:chore"
+    groups:
+      webui:
+        patterns:
+          - "*"

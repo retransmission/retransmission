@@ -577,14 +577,11 @@ void Torrent::Impl::class_init(void* cls, void* /*user_data*/)
 Glib::ustring Torrent::Impl::get_short_transfer_text() const
 {
     if (cache_.has_metadata && cache_.active_peers_down > 0) {
-        return fmt::format(
-            fmt::runtime(_("{download_speed} ▾  {upload_speed} ▴")),
-            fmt::arg("upload_speed", cache_.speed_up.to_string()),
-            fmt::arg("download_speed", cache_.speed_down.to_string()));
+        return fmt::format("{} ▾  {} ▴", cache_.speed_down.to_string(), cache_.speed_up.to_string());
     }
 
     if (cache_.has_metadata && cache_.active_peers_up > 0) {
-        return fmt::format(fmt::runtime(_("{upload_speed} ▴")), fmt::arg("upload_speed", cache_.speed_up.to_string()));
+        return fmt::format("{} ▴", cache_.speed_up.to_string());
     }
 
     if (cache_.stalled) {
@@ -626,8 +623,8 @@ Glib::ustring Torrent::Impl::get_activity_text() const
             return fmt::format(
                 fmt::runtime(ngettext(
                     // xgettext:no-c-format
-                    "Downloading metadata from {active_count} connected peer ({percent_done}% done)",
-                    "Downloading metadata from {active_count} connected peers ({percent_done}% done)",
+                    "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)",
+                    "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)",
                     cache_.peers_connected)),
                 fmt::arg("active_count", cache_.peers_connected),
                 fmt::arg("percent_done", cache_.metadata_percent_complete.to_string()));
@@ -636,8 +633,8 @@ Glib::ustring Torrent::Impl::get_activity_text() const
         if (cache_.peers_sending_to_us != 0 && cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
-                    "Downloading from {active_count} of {connected_count} connected peer and webseed",
-                    "Downloading from {active_count} of {connected_count} connected peers and webseeds",
+                    "Downloading from {active_count:L} of {connected_count:L} connected peer and webseed",
+                    "Downloading from {active_count:L} of {connected_count:L} connected peers and webseeds",
                     cache_.peers_connected + cache_.webseeds_sending_to_us)),
                 fmt::arg("active_count", cache_.peers_sending_to_us + cache_.webseeds_sending_to_us),
                 fmt::arg("connected_count", cache_.peers_connected + cache_.webseeds_sending_to_us));
@@ -646,16 +643,16 @@ Glib::ustring Torrent::Impl::get_activity_text() const
         if (cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
-                    "Downloading from {active_count} webseed",
-                    "Downloading from {active_count} webseeds",
+                    "Downloading from {active_count:L} webseed",
+                    "Downloading from {active_count:L} webseeds",
                     cache_.webseeds_sending_to_us)),
                 fmt::arg("active_count", cache_.webseeds_sending_to_us));
         }
 
         return fmt::format(
             fmt::runtime(ngettext(
-                "Downloading from {active_count} of {connected_count} connected peer",
-                "Downloading from {active_count} of {connected_count} connected peers",
+                "Downloading from {active_count:L} of {connected_count:L} connected peer",
+                "Downloading from {active_count:L} of {connected_count:L} connected peers",
                 cache_.peers_connected)),
             fmt::arg("active_count", cache_.peers_sending_to_us),
             fmt::arg("connected_count", cache_.peers_connected));
@@ -663,8 +660,8 @@ Glib::ustring Torrent::Impl::get_activity_text() const
     case TR_STATUS_SEED:
         return fmt::format(
             fmt::runtime(ngettext(
-                "Seeding to {active_count} of {connected_count} connected peer",
-                "Seeding to {active_count} of {connected_count} connected peers",
+                "Seeding to {active_count:L} of {connected_count:L} connected peer",
+                "Seeding to {active_count:L} of {connected_count:L} connected peers",
                 cache_.peers_connected)),
             fmt::arg("active_count", cache_.peers_getting_from_us),
             fmt::arg("connected_count", cache_.peers_connected));

@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Σχετικά με το Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Σχετικά με το {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Με την επιφύλαξη παντός δικαιώματος © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Με την επιφύλαξη παντός δικαιώματος © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1775,10 +1775,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Η λίστα αποκλεισμού περιέχει {count:L} κανόνα&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Η λίστα αποκλεισμού περιέχει {count:L} κανόνες&lt;/i&gt;</numerusform>
+            <numerusform>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</numerusform>
+            <numerusform>Η λίστα αποκλεισμού περιέχει {count:L} κανόνες</numerusform>
         </translation>
     </message>
     <message>
@@ -1844,8 +1844,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Εμφάνιση εικονιδίου του Transmission στην &amp;περιοχή ειδοποιήσεων</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Εμφάνιση εικονιδίου του {appname} στην &amp;περιοχή ειδοποιήσεων</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Προτιμήσεις του Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Προτιμήσεις του {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2297,10 +2297,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Αδυναμία προσθήκης {count} διπλότυπου torrent</numerusform>
-            <numerusform>Αδυναμία προσθήκης {count} διπλότυπων torrents</numerusform>
+            <numerusform>Αδυναμία προσθήκης {count:L} διπλότυπου torrent</numerusform>
+            <numerusform>Αδυναμία προσθήκης {count:L} διπλότυπων torrents</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Λήψη από {active_count} από {connected_count} συνδεδεμένο χρήστη</numerusform>
-            <numerusform>Λήψη από {active_count} από {connected_count} συνδεδεμένους χρήστες</numerusform>
+            <numerusform>Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένο χρήστη</numerusform>
+            <numerusform>Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένους χρήστες</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο ομότιμο χρήστη</numerusform>
-            <numerusform>Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους χρήστες</numerusform>
+            <numerusform>Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένο ομότιμο χρήστη</numerusform>
+            <numerusform>Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένους χρήστες</numerusform>
         </translation>
     </message>
     <message>

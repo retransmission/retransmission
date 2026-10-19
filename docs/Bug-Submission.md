@@ -1,5 +1,5 @@
 # Submitting a bug report #
-If you are having trouble with Transmission then the things you should do in order are:
+If you are having trouble with Retransmission then the things you should do in order are:
  1. Make sure you are running the current release
  1. Search the documentation
  1. For a bug, ideally we would like you to check if it still exists in the [nightly build](https://build.retransmission.org/).
@@ -13,8 +13,8 @@ If you are having trouble with Transmission then the things you should do in ord
    The more users are interested in a ticket, the higher its priority will be.
 
 ## Information required in a bug report ##
- * State the version of Transmission you are using (e.g. Linux/GTK+ 1.80).
-   If you are using a GUI version of Transmission, you can find its version in the `About` dialog in the Help menu.
+ * State the version of Retransmission you are using (e.g. Linux/GTK+ 1.80).
+   If you are using a GUI version of Retransmission, you can find its version in the `About` dialog in the Help menu.
    **Do not** say _the latest version_ it's ambiguous.
  * State what operating system and version (e.g. macOS 12.3.1, Ubuntu 22.04, ...)
  * Describe the symptoms in a short yet precise manner.
@@ -47,8 +47,8 @@ If you have problems on the macOS version then please do these extra steps:
   * Make sure your system is updated to the latest version of your operating system.
   * If you are running a nightly build, set the language to English. The localization will sometimes crash the nightly builds until they are updated (right before an official release).
   * macOS collects two pieces of crash information that can help us fix the crash:
-     1. In Console.app, look under LOG FILES > ~/Library/Logs/ > CrashReporter > for Transmission. If you find one, include it in your forum post.
-     2. In Console.app, select LOG DATABASE QUERIES > Console Messages, and search for Transmission. If you find a message that mentions an assertion failure, include it in your forum post.
+     1. In Console.app, look under LOG FILES > ~/Library/Logs/ > CrashReporter > for Retransmission. If you find one, include it in your forum post.
+     2. In Console.app, select LOG DATABASE QUERIES > Console Messages, and search for Retransmission. If you find a message that mentions an assertion failure, include it in your forum post.
 
 If the two pieces of information above are too large for your forum post, paste them [here](https://pastebin.com/), choose a paste expiration of one month and click the "Create New Paste" button. Then include the pastebin's URL in your forum post.
 

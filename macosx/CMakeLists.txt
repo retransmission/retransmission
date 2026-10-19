@@ -6,7 +6,7 @@ endif()
 find_program(ACTOOL_EXECUTABLE actool REQUIRED)
 find_program(CODESIGN_EXECUTABLE codesign REQUIRED)
 
-set(MAC_BUNDLE_NAME Transmission)
+set(MAC_BUNDLE_NAME ${TR_PROJ_APPNAME_CAPITALIZED})
 
 add_compile_options(
     $<$<COMPILE_LANGUAGE:C>:-fmodules>
@@ -72,10 +72,10 @@ target_sources(${TR_NAME}-mac
         ExpandedPathToIconTransformer.mm
         ExpandedPathToPathTransformer.h
         ExpandedPathToPathTransformer.mm
-        FileListNode.h
-        FileListNode.mm
         FileCheckCellView.h
         FileCheckCellView.mm
+        FileListNode.h
+        FileListNode.mm
         FileOutlineController.h
         FileOutlineController.mm
         FileOutlineView.h
@@ -132,8 +132,10 @@ target_sources(${TR_NAME}-mac
         NSMutableArrayAdditions.mm
         NSStringAdditions.h
         NSStringAdditions.mm
-        PeerProgressIndicatorCell.h
-        PeerProgressIndicatorCell.mm
+        NSURLAdditions.h
+        NSURLAdditions.mm
+        PeersViews.h
+        PeersViews.mm
         PiecesView.h
         PiecesView.mm
         PortChecker.h
@@ -179,34 +181,32 @@ target_sources(${TR_NAME}-mac
         TorrentGroup.mm
         TorrentTableView.h
         TorrentTableView.mm
-        TrackerCell.h
-        TrackerCell.mm
+        TrackerIconLoader.h
+        TrackerIconLoader.mm
         TrackerNode.h
         TrackerNode.mm
+        TrackersViews.h
+        TrackersViews.mm
         TRGroup.h
         TRGroup.mm
         URLSheetWindowController.h
         URLSheetWindowController.mm
         Utils.h
-        Utils.mm)
+        Utils.mm
+        UTTypeAdditions.h
+        UTTypeAdditions.mm)
 
 set(XIB_FILES
-    AboutWindow.xib
-    BlocklistStatusWindow.xib
-    FileRenameSheetController.xib
     FilterBar.xib
     InfoFileView.xib
     InfoPeersView.xib
     InfoTrackersView.xib
     InfoWindow.xib
     MessageWindow.xib
-    StatsWindow.xib
-    StatusBar.xib
-    URLSheetWindow.xib)
+    StatusBar.xib)
 
 set(RESOURCES
     Defaults.plist
-    Credits.rtf
     ../COPYING
     Images/TransmissionDocument.icns)
 source_group(Resources
@@ -343,7 +343,6 @@ set(BASE_XIB_FILES
     AddMagnetWindow.xib
     AddWindow.xib
     Creator.xib
-    GlobalOptionsPopover.xib
     GroupRules.xib
     InfoActivityView.xib
     InfoGeneralView.xib
@@ -354,6 +353,7 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings)
 
@@ -423,7 +423,6 @@ set_target_properties(
     ${TR_NAME}-mac
     PROPERTIES
         INSTALL_RPATH "@executable_path;@executable_path/../Frameworks"
-        MACOSX_BUNDLE_GUI_IDENTIFIER "org.m0k.transmission"
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
         OUTPUT_NAME ${MAC_BUNDLE_NAME})
 

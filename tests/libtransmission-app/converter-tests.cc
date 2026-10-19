@@ -4,9 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <chrono>
-#include <ctime>
-#include <regex>
 #include <string_view>
 
 #include <gtest/gtest.h>
@@ -26,22 +23,6 @@ using tr::serializer::to_variant;
 
 namespace
 {
-constexpr std::chrono::sys_seconds make_sys_seconds(int year, unsigned month, unsigned day, int hour, int minute, int second)
-{
-    return std::chrono::sys_days{
-        std::chrono::year_month_day{ std::chrono::year{ year }, std::chrono::month{ month }, std::chrono::day{ day } }
-    } + std::chrono::hours{ hour } +
-        std::chrono::minutes{ minute } + std::chrono::seconds{ second };
-}
-
-void expect_sys_seconds_eq(std::optional<std::chrono::sys_seconds> const& actual, std::chrono::sys_seconds expected)
-{
-    EXPECT_TRUE(actual.has_value());
-    if (actual.has_value()) {
-        EXPECT_EQ(actual->time_since_epoch().count(), expected.time_since_epoch().count());
-    }
-}
-
 template<typename T, size_t N>
 void testModeRoundtrip(std::array<std::pair<std::string_view, T>, N> const& items)
 {
@@ -105,38 +86,4 @@ TEST_F(ConverterTest, statsModeStringsRoundtrip)
     static_assert(Items.size() == tr::app::StatsModeCount);
 
     testModeRoundtrip(Items);
-}
-
-TEST_F(ConverterTest, sysSecondsRoundtrip)
-{
-    using namespace std::chrono;
-    using namespace tr::serializer;
-
-    auto constexpr Expected = make_sys_seconds(2024, 2, 3, 4, 5, 6);
-    auto const var = to_variant(Expected);
-    EXPECT_TRUE(var.holds_alternative<std::string_view>());
-    auto const serialized = var.value_if<std::string_view>().value_or(""sv);
-    static auto const re = std::regex(R"(^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{4})$)");
-    EXPECT_TRUE(std::regex_match(std::string{ serialized }, re));
-
-    auto actual = to_value<std::chrono::sys_seconds>(tr_variant{ serialized });
-    expect_sys_seconds_eq(actual, Expected);
-
-    actual = to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-03T04:05:06Z"sv });
-    expect_sys_seconds_eq(actual, Expected);
-
-    actual = to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-03T04:05:06+00:00"sv });
-    expect_sys_seconds_eq(actual, Expected);
-
-    actual = to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-03T04:05:06+02:30"sv });
-    expect_sys_seconds_eq(actual, Expected - (hours{ 2 } + minutes{ 30 }));
-
-    EXPECT_FALSE(to_value<std::chrono::sys_seconds>(tr_variant{ "2023-02-29T00:00:00Z"sv }).has_value());
-    EXPECT_FALSE(to_value<std::chrono::sys_seconds>(tr_variant{ "2024-04-31T00:00:00Z"sv }).has_value());
-    EXPECT_TRUE(to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-29T00:00:00Z"sv }).has_value());
-
-    auto constexpr Epoch = int64_t{ 1700000000 };
-    auto const epoch_seconds = time_point_cast<seconds>(system_clock::from_time_t(static_cast<time_t>(Epoch)));
-    actual = to_value<std::chrono::sys_seconds>(tr_variant{ Epoch });
-    expect_sys_seconds_eq(actual, epoch_seconds);
 }

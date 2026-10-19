@@ -30,6 +30,9 @@ using namespace tr::app;
 
 // Run RpcClient continuations inline. These tests poll for observable
 // side effects, so they don't need a UI-thread event loop.
+// Embedded replies then run on the session thread, which UiThreadFunc forbids.
+// No test here calls stop(), and Session sends its requests without a reply callback,
+// so those replies touch no state that the test thread writes.
 [[nodiscard]] RpcClient::UiThreadFunc inline_marshaler()
 {
     return [](std::function<void()> fn) {
@@ -41,6 +44,7 @@ using namespace tr::app;
 class TestSession : public Session
 {
 public:
+    using Session::clear_session_info;
     using Session::Session;
     using Session::set_busy;
     using Session::set_embedded_session;
@@ -170,6 +174,34 @@ TEST(AppSessionTest, importingSettingsIgnoresAppPrefs)
 
     EXPECT_EQ(old_statusbar, prefs.get<bool>(TR_KEY_show_statusbar));
     EXPECT_EQ(123U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+}
+
+// A session_get response reports the blocklist info;
+// a response without it keeps the info from before.
+TEST(AppSessionTest, importingSettingsReadsBlocklistInfo)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+    EXPECT_FALSE(session.blocklist_size().has_value());
+    EXPECT_FALSE(session.blocklist_date().has_value());
+
+    auto settings = tr_variant::Map{ 2U };
+    settings.insert_or_assign(TR_KEY_blocklist_size, 42);
+    settings.insert_or_assign(TR_KEY_blocklist_date, 1700000000);
+    session.import_session_settings(settings);
+    session.import_session_settings(tr_variant::Map{});
+
+    EXPECT_EQ(session.blocklist_size(), 42);
+    // Compare the counts, not the sys_seconds.
+    // Printing a sys_seconds on failure needs std::to_chars for floating point, which old macOS lacks.
+    auto const date = session.blocklist_date();
+    ASSERT_TRUE(date.has_value());
+    EXPECT_EQ(date->time_since_epoch().count(), 1700000000);
+
+    session.clear_session_info();
+    EXPECT_FALSE(session.blocklist_size().has_value());
+    EXPECT_FALSE(session.blocklist_date().has_value());
 }
 
 // Sync tests against a real embedded session.

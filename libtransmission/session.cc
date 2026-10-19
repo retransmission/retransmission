@@ -73,11 +73,6 @@ static_assert(tr::serializer::has_unique_keys<tr::SessionSettings, tr::SessionAl
 
 namespace
 {
-[[nodiscard]] auto get_settings_filename(std::string_view const config_dir)
-{
-    return fmt::format("{:s}/settings.json"sv, config_dir);
-}
-
 namespace bandwidth_group_helpers
 {
 [[nodiscard]] auto get_bandwidth_filename(std::string_view const config_dir)
@@ -418,7 +413,7 @@ tr_session::BoundSocket::BoundSocket(
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("Listening to incoming peer connections on {hostport}")),
+            "Listening to incoming peer connections on {hostport}",
             fmt::arg("hostport", tr_socket_address::display_name(addr, port))));
     event_add(ev_.get(), nullptr);
 }
@@ -491,9 +486,14 @@ tr::Settings tr_sessionGetSettings(tr_session const* session)
     return settings;
 }
 
+std::string tr_sessionGetSettingsFilename(std::string_view const config_dir)
+{
+    return fmt::format("{:s}/settings.json"sv, config_dir);
+}
+
 tr::Settings tr_sessionLoadSettings(std::string_view const config_dir, tr::Settings const& app_defaults)
 {
-    auto settings = tr::settings::load(get_settings_filename(config_dir)); // file vals
+    auto settings = tr::settings::load(tr_sessionGetSettingsFilename(config_dir)); // file vals
     settings.merge(app_defaults); // fallbacks from app defaults
     settings.merge(tr_sessionGetDefaultSettings()); // fallbacks from defaults
     return settings;
@@ -505,7 +505,7 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view const config_d
         return;
     }
 
-    auto const filename = get_settings_filename(config_dir);
+    auto const filename = tr_sessionGetSettingsFilename(config_dir);
     auto settings = tr_sessionGetSettings(session); // live vals
     settings.merge(app_settings); // user-provided vals
     settings.merge(tr::settings::load(filename)); // fallbacks from pre-existing file
@@ -530,7 +530,11 @@ struct tr_session::init_data {
     std::condition_variable_any done_cv;
 };
 
-tr_session* tr_sessionInit(std::string_view const config_dir, bool message_queueing_enabled, tr::Settings const& app_settings)
+tr_session* tr_sessionInit(
+    std::string_view const config_dir,
+    bool const message_queueing_enabled,
+    tr::Settings const& app_settings,
+    tr_torrent_remove_func remove_func)
 {
     using namespace bandwidth_group_helpers;
 
@@ -545,7 +549,7 @@ tr_session* tr_sessionInit(std::string_view const config_dir, bool message_queue
     }
 
     // initialize the bare skeleton of the session object
-    auto* const session = new tr_session{ config_dir, tr::Settings{} };
+    auto* const session = new tr_session{ config_dir, tr::Settings{}, std::move(remove_func) };
     bandwidthGroupRead(session, config_dir);
 
     // run initImpl() in the libtransmission thread
@@ -575,9 +579,7 @@ void tr_session::on_now_timer()
         tr_net_interface_index(name) != bound_interface_index_) {
         auto const lock = unique_lock();
         tr_logAddInfo(
-            fmt::format(
-                fmt::runtime(_("Network interface '{interface}' changed; rebinding its sockets")),
-                fmt::arg("interface", name)));
+            fmt::format("Network interface '{interface}' changed; rebinding its sockets", fmt::arg("interface", name)));
         apply_network_bindings(false, true, false, false, settings_);
     }
 
@@ -726,7 +728,7 @@ void tr_session::initImpl(init_data& data)
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("{appname} version {version} starting")),
+            "{appname} version {version} starting",
             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
             fmt::arg("version", LONG_VERSION_STRING)));
 
@@ -753,9 +755,7 @@ void tr_session::initImpl(init_data& data)
             });
     } catch (std::exception const& e) {
         tr_logAddError(
-            fmt::format(
-                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
-                fmt::arg("error", e.what())));
+            fmt::format("Couldn't start disk IO workers, continuing without them: {error}", fmt::arg("error", e.what())));
     }
 
     tr_utp_init(this);
@@ -811,7 +811,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     // the binding policy is logged once here; the sockets it refuses stay quiet
     if (force || interface_changed) {
         if (tr_net_interface_is_blocked(new_settings.bind_interface)) {
-            tr_logAddInfo(_("Network interface binding is 'blocked': refusing all peer, tracker, and discovery traffic"));
+            tr_logAddInfo("Network interface binding is 'blocked': refusing all peer, tracker, and discovery traffic");
         }
 #ifndef __APPLE__
         else if (!tr_net_interface_is_default(new_settings.bind_interface)) {
@@ -1444,8 +1444,10 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     save_timer_.reset();
     queue_timer_.reset();
     now_timer_.reset();
-    rpc_server_.reset();
+    // before rpc_server_: ~Updater answers pending blocklist_update requests,
+    // and answering one from an HTTP client writes to an evhttp request that rpc_server_ owns.
     blocklist_updater_.reset();
+    rpc_server_.reset();
     dht_.reset();
     lpd_.reset();
 
@@ -1535,7 +1537,7 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
 
     tr_logAddInfo(
         fmt::format(
-            fmt::runtime(_("{appname} version {version} shutting down")),
+            "{appname} version {version} shutting down",
             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
             fmt::arg("version", LONG_VERSION_STRING)));
 
@@ -1601,10 +1603,7 @@ void session_load_torrents(tr_session* session, tr_torrent_builder* builder, std
     }
 
     if (n_torrents != 0U) {
-        tr_logAddInfo(
-            fmt::format(
-                fmt::runtime(tr_ngettext("Loaded {count} torrent", "Loaded {count} torrents", n_torrents)),
-                fmt::arg("count", n_torrents)));
+        tr_logAddInfo(fmt::format("Torrents loaded: {count}", fmt::arg("count", n_torrents)));
     }
 
     session->setTorrentsLoadedTime();
@@ -2221,7 +2220,7 @@ auto makeConfigDirLock(std::string_view const config_dir)
 }
 } // namespace
 
-tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings)
+tr_session::tr_session(std::string_view const config_dir, tr::Settings const& settings, tr_torrent_remove_func func)
     : config_dir_{ config_dir }
     , config_dir_lock_{ makeConfigDirLock(config_dir) }
     , resume_dir_{ makeResumeDir(config_dir) }
@@ -2231,6 +2230,7 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     , timer_maker_{ std::make_unique<tr::EvTimerMaker>(event_base()) }
     , settings_{ settings }
     , session_id_{ tr_time }
+    , remove_func{ std::move(func) }
     , peer_mgr_{ tr_peerMgrNew(this), &tr_peerMgrFree }
     , rpc_server_{ std::make_unique<tr_rpc_server>(this, tr_rpc_server::Settings{ settings }) }
     , now_timer_{ timer_maker_->create([this]() { on_now_timer(); }) }
@@ -2250,9 +2250,8 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     if (configDirLockStatus() == tr_config_dir_lock::Status::Unavailable) {
         tr_logAddWarn(
             fmt::format(
-                fmt::runtime(
-                    _("Couldn't claim '{path}'. If another session is using it, the two will "
-                      "overwrite each other's settings, resume files and stats.")),
+                "Couldn't claim '{path}'. If another session is using it, the two will "
+                "overwrite each other's settings, resume files and stats.",
                 fmt::arg("path", config_dir_)));
     }
 }

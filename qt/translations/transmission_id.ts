@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Tentang Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Tentang {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Hak Cipta © Proyek Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Hak Cipta © Proyek Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1757,9 +1757,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Daftar blokir memuat {count:L} aturan&lt;/i&gt;</numerusform>
+            <numerusform>Daftar blokir memuat {count:L} aturan</numerusform>
         </translation>
     </message>
     <message>
@@ -1825,8 +1825,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Tampilkan ikon Transmission di &amp;area notifikasi</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Tampilkan ikon {appname} di &amp;area notifikasi</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2098,8 +2098,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Preferensi Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Preferensi {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2268,7 +2268,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
@@ -2539,10 +2539,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Mengunduh dari {active_count} dari {connected_count} rekan yang tersambung</numerusform>
+            <numerusform>Mengunduh dari {active_count:L} dari {connected_count:L} rekan yang tersambung</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2555,9 +2555,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Mengirim ke {active_count} dari {connected_count} rekan tersambung</numerusform>
+            <numerusform>Mengirim ke {active_count:L} dari {connected_count:L} rekan tersambung</numerusform>
         </translation>
     </message>
     <message>

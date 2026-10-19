@@ -21,7 +21,6 @@
 
 #include <small/vector.hpp>
 
-#include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_htonll(), tr_ntohll()
 

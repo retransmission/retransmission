@@ -12,11 +12,11 @@
 #include <string_view>
 #include <unordered_set>
 
+#include <QtCore/QHashFunctions> // std::hash<QString>
 #include <QtCore/QPointer>
-#include <QtCore/QRegularExpression>
 #include <QtCore/QTimer>
 #include <QtCore/QTranslator>
-#include <QtCore/QWeakPointer>
+#include <QtCore/QVariant>
 
 #include <QtGui/QPixmap>
 
@@ -30,7 +30,6 @@
 #include "AddData.h"
 #include "Prefs.h"
 #include "Typedefs.h"
-#include "Utils.h" // std::hash<QString>
 
 namespace tr::interop
 {
@@ -67,7 +66,7 @@ public:
     ~Application() override;
 
     void raise() const;
-    bool notifyApp(QString const& title, QString const& body, QStringList const& actions = {}) const;
+    bool notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
 
     // True when this launch found the config dir held by another session.
     // We give way rather than write over the files that session owns.

@@ -4,19 +4,19 @@
 For this to be possible, it is required to be accessible from the Internet. However, this is not always as straightforward as it may seem. Because of the nature of the Internet and security reasons, routers create a local network that makes your computer invisible to the Internet. This technology is called [NAT](https://en.wikipedia.org/wiki/Network_address_translation).
 
 ## Open your local firewall
-To allow other peers to communicate with your Transmission instance, you have to forward a port through your firewall.
+To allow other peers to communicate with your Retransmission instance, you have to forward a port through your firewall.
 
 ### On macOS
-Upon opening Transmission for the first time, a macOS dialog box should appear asking if you will allow Transmission to receive incoming connections. Click Accept.
+Upon opening Retransmission for the first time, a macOS dialog box should appear asking if you will allow Retransmission to receive incoming connections. Click Accept.
 
-If this does not happen, you can add Transmission to Leopard's firewall manually:
+If this does not happen, you can add Retransmission to Leopard's firewall manually:
  1. Open System Prefs >> Security >> Firewall. Make sure "Set access for specific services and applications" is selected.
- 1. Click the "+" button and select Transmission from you applications folder.
+ 1. Click the "+" button and select Retransmission from you applications folder.
  1. Make sure the pull down menu is set to "Allow incoming connections".
 
 ### On Unix
  * For instructions on how to use it, open a Terminal and open the man page of your firewall. (e.g. 'man ufw, man firewalld')
- * You need to ensure that Transmission's port (displayed in preferences) is forwarded in the firewall.
+ * You need to ensure that Retransmission's port (displayed in preferences) is forwarded in the firewall.
 
 ### Windows
  1. Navigate to the control panel.
@@ -25,7 +25,7 @@ If this does not happen, you can add Transmission to Leopard's firewall manually
  1. On the left panel click "Inbound Rules".
  1. Once you have the Inbound Rules list showing you want to click on "New Rule" under the "Actions" panel on the right.
  1. This will bring up a new window titled "New Inbound Rule Wizard". Whilst there are a couple ways to go about things from here, here we will only cover opening just the port alone for TCP/UDP. With that being said, check the button next to "Port" and click "Next".
- 1. In "Protocols and Ports" select either TCP (for BT protocol) or UDP (for μTP) for which one you want to open (to open both you must now choose one and go back later and created another rule to select the other). Underneath that you choose what port to open. 51413 is the default but you can set it to any port you like as long as it correlates with the port you have set in Transmission. Once you have your port click on "Next".
+ 1. In "Protocols and Ports" select either TCP (for BT protocol) or UDP (for μTP) for which one you want to open (to open both you must now choose one and go back later and created another rule to select the other). Underneath that you choose what port to open. 51413 is the default but you can set it to any port you like as long as it correlates with the port you have set in Retransmission. Once you have your port click on "Next".
  1. Here in "Actions" you choose to either "Allow the connection", "Allow the connection if it is secure" (only allow packets using [IPsec](https://en.wikipedia.org/wiki/IPsec)), choose based on personal preference here then click "Next".
  1. Choose the profile according to the type of network you are connected to and hit "Next".
  1. The last thing is to give the rule a name. It can be whatever just make sure it's something you can read and remember exactly what it's for.
@@ -36,13 +36,13 @@ If this does not happen, you can add Transmission to Leopard's firewall manually
 To allow other peers to connect to you, you will need to forward a port from the router to your computer.
 
 ### NAT-PMP / UPnP
-By default Transmission will try to forward this port for you, using [UPnP]([https://en.wikipedia.org/wiki/UPnP) or [NAT-PMP](https://en.wikipedia.org/wiki/NAT-PMP).
+By default Retransmission will try to forward this port for you, using [UPnP]([https://en.wikipedia.org/wiki/UPnP) or [NAT-PMP](https://en.wikipedia.org/wiki/NAT-PMP).
 
 Most routers manufactured since 2001 have either the UPnP or NAT-PMP feature.
 
- * Open Transmission.
+ * Open Retransmission.
  * Go to Preferences >> Network >> Ports, and check 'Forward port from router'.
- * If Transmission reports that the 'Port is open' then you have successfully port forwarded!
+ * If Retransmission reports that the 'Port is open' then you have successfully port forwarded!
 
 ### Forward manually through a router
  1. Find out what your IP address is.
@@ -50,7 +50,7 @@ Most routers manufactured since 2001 have either the UPnP or NAT-PMP feature.
   * *On Unix*- In Ubuntu, right-click the Network Manager applet in the menu bar, and select 'Connection Information'. The address is probably something like 192.168.1.2, or 10.0.1.2.
    * If you don't have Network Manager, open a Terminal and type 'ifconfig'. It will list information for each of your network devices. Find the one you are using, and use the number after 'inet addr:'.
    * Using the command "ip a" will achieve the same results in a different format.
- 2. Open Transmission, go to preferences, and enter a number for the port. It is recommended you pick a random number between 49152 and 65535. The default is 51413. Then quit Transmission.
+ 2. Open Retransmission, go to preferences, and enter a number for the port. It is recommended you pick a random number between 49152 and 65535. The default is 51413. Then quit Retransmission.
  3. Go into your router configuration screen. Normally this is done via your web browser using the address 192.168.0.1 etc.
  4. Find the port forwarding (sometimes called port mapping) screen. While the page will be different for each router generally you will enter something similar to the following:
  5. For 'Application' type 'Trans'.
@@ -67,8 +67,8 @@ For more comprehensive instructions specific to your router, visit [portforward.
 
 #### Verify
  1. Go to [CanYouSeeMe.org](https://www.canyouseeme.org/).
- 1. Enter the port Transmission uses.
- 1. If Transmission reports that the 'Port is open' then you have successfully forwarded the port.
+ 1. Enter the port Retransmission uses.
+ 1. If Retransmission reports that the 'Port is open' then you have successfully forwarded the port.
 
 #### Common problems
 Go to the [Why is my port closed?](Why-is-my-port-closed.md) page.

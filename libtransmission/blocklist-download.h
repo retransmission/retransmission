@@ -72,6 +72,7 @@ public:
     // session thread, with the outcome of the update that installs a list: if a
     // newer update() takes over first, `on_done` waits for that one instead. It
     // is not invoked at all if cancel() is called first.
+    // If the Updater is destroyed first, `on_done` gets a DownloadError.
     void update(tr_blocklist_update_func on_done);
 
     // Abandon the most recent in-flight update: its `on_done` will not fire.
@@ -90,6 +91,7 @@ private:
     Mediator& mediator_;
     std::unique_ptr<tr::Timer> timer_;
     std::weak_ptr<Pending> latest_;
+    bool closing_ = false; // set by ~Updater
 };
 
 } // namespace tr::blocklist

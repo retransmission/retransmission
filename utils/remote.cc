@@ -173,7 +173,7 @@ struct RemoteConfig {
         tmpstr = sstr;
     }
 
-    auto const totstr = fmt::format("{:d} {:s}", total_seconds, tr_ngettext("seconds", "seconds", total_seconds));
+    auto const totstr = fmt::format("{:d} {:s}", total_seconds, tr_ngettext("second", "seconds", total_seconds));
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 

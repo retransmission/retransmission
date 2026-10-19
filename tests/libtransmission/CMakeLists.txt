@@ -89,9 +89,15 @@ set_property(
     TARGET libtransmission-test
     PROPERTY FOLDER "tests")
 
+# Where the build installs the web client, relative to the data dir.
+# The platform test lays out a data dir the same way and expects the lookup to find it.
+get_filename_component(WEB_CLIENT_DIR_NAME ${TR_WEB_ASSETS} NAME)
+file(RELATIVE_PATH WEB_CLIENT_INSTALL_SUBDIR ${CMAKE_INSTALL_FULL_DATADIR} ${TR_DATA_INSTALL_FULL_DIR}/${WEB_CLIENT_DIR_NAME})
+
 target_compile_definitions(libtransmission-test
     PRIVATE
         -DLIBTRANSMISSION_TEST_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
+        LIBTRANSMISSION_TEST_WEB_CLIENT_INSTALL_SUBDIR="${WEB_CLIENT_INSTALL_SUBDIR}"
         __TRANSMISSION__)
 
 target_compile_options(libtransmission-test

@@ -49,7 +49,6 @@
 #include "libtransmission/macros.h"
 #include "libtransmission/net.h" // for tr_port, tr_tos_t
 #include "libtransmission/open-files.h"
-#include "libtransmission/platform.h"
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/rpc-server.h"
@@ -442,7 +441,7 @@ private:
 public:
     using Settings = tr::SessionSettings;
 
-    explicit tr_session(std::string_view config_dir, tr::Settings const& settings);
+    explicit tr_session(std::string_view config_dir, tr::Settings const& settings, tr_torrent_remove_func func);
 
     [[nodiscard]] std::string_view sessionId() const
     {
@@ -1334,7 +1333,8 @@ private:
     friend tr_session* tr_sessionInit(
         std::string_view config_dir,
         bool message_queueing_enabled,
-        tr::Settings const& app_settings);
+        tr::Settings const& app_settings,
+        tr_torrent_remove_func remove_func);
     friend uint16_t tr_sessionGetPeerPort(tr_session const* session);
     friend uint16_t tr_sessionGetRPCPort(tr_session const* session);
     friend uint16_t tr_sessionSetPeerPortRandom(tr_session* session);
@@ -1530,6 +1530,10 @@ private:
 public:
     // depends-on: open_files_, torrents_
     tr::LocalData local_data{ torrents_, open_files_ };
+
+    // How `tr_torrentRemove()` deletes local data; empty means `tr_sys_path_remove()`.
+    // Set at init and never changed, so any thread may read it.
+    tr_torrent_remove_func const remove_func;
 
 private:
     // depends-on: settings_, session_thread_, timer_maker_, web_

@@ -1,4 +1,4 @@
-name: Transmission issue report
+name: Retransmission issue report
 description: Issues are used to track todos, bugs, feature requests, and more.
 body:
   - type: textarea
@@ -13,7 +13,7 @@ body:
   - type: dropdown
     id: client
     attributes:
-      label: Which application of Transmission?
+      label: Which application of Retransmission?
       options:
         - macOS app
         - GTK+ app on Linux, BSD, etc.
@@ -25,5 +25,5 @@ body:
   - type: input
     id: version
     attributes:
-      label: Which version of Transmission?
-      description: Find it in "About Transmission" or specify which nightly build or specific commit.
+      label: Which version of Retransmission?
+      description: Find it in "About Retransmission" or specify which nightly build or specific commit.

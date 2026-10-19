@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Om Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Om {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1775,10 +1775,10 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blocklistan innehåller {count:L} regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blockeringslistan innehåller {count:L} regler&lt;/i&gt;</numerusform>
+            <numerusform>Blocklistan innehåller {count:L} regel</numerusform>
+            <numerusform>Blockeringslistan innehåller {count:L} regler</numerusform>
         </translation>
     </message>
     <message>
@@ -1844,8 +1844,8 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Visa Transmission-ikon i &amp;aviseringsfältet</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Visa {appname}-ikon i &amp;aviseringsfältet</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Inställningar för Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Inställningar för {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2297,10 +2297,10 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Det går inte att lägga till {count} torrentdubblett</numerusform>
-            <numerusform>Det går inte att lägga till {count} torrentdubbletter</numerusform>
+            <numerusform>Det går inte att lägga till {count:L} torrentdubblett</numerusform>
+            <numerusform>Det går inte att lägga till {count:L} torrentdubbletter</numerusform>
         </translation>
     </message>
 </context>
@@ -2573,11 +2573,11 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Hämtar från {active_count} av {connected_count} ansluten jämlike</numerusform>
-            <numerusform>Hämtar från {active_count} av {connected_count} anslutna jämlikar</numerusform>
+            <numerusform>Hämtar från {active_count:L} av {connected_count:L} ansluten jämlike</numerusform>
+            <numerusform>Hämtar från {active_count:L} av {connected_count:L} anslutna jämlikar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2591,10 +2591,10 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Distribuerar till {active_count} av {connected_count} ansluten jämlike</numerusform>
-            <numerusform>Distribuerar till {active_count} av {connected_count} anslutna jämlikar</numerusform>
+            <numerusform>Distribuerar till {active_count:L} av {connected_count:L} ansluten jämlike</numerusform>
+            <numerusform>Distribuerar till {active_count:L} av {connected_count:L} anslutna jämlikar</numerusform>
         </translation>
     </message>
     <message>

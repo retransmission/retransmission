@@ -315,7 +315,7 @@ private:
         }
     }
 
-    Entries::iterator erase(Entries::iterator const it)
+    Entries::iterator erase(Entries::iterator const& it)
     {
         bytes_ -= it->second.bytes;
         lru_.erase(it->second.lru);
@@ -500,7 +500,7 @@ public:
         for (auto const& [id, gate] : gates_) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Still waiting for disk IO on torrent {id}: {running} running, {queued} queued")),
+                    "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued",
                     fmt::arg("id", id),
                     fmt::arg("running", gate.n_running),
                     fmt::arg("queued", std::size(gate.queue))));
@@ -798,7 +798,8 @@ private:
     static void unregister_running_hash(Gate& gate, tr_byte_span_t const span)
     {
         auto& hashes = gate.running_hashes;
-        auto const it = std::ranges::find(hashes, span);
+        // find_if rather than find to avoid STL vectorized find bug in MSVC
+        auto const it = std::ranges::find_if(hashes, [span](tr_byte_span_t const& hash) { return hash == span; });
         TR_ASSERT(it != std::end(hashes));
         hashes.erase(it);
     }
@@ -911,6 +912,8 @@ private:
 
     void worker_main()
     {
+        auto scratch = std::vector<uint8_t>{};
+
         for (;;) {
             auto test = std::optional<PendingTest>{};
             auto run = std::vector<PendingWrite>{};
@@ -936,7 +939,7 @@ private:
             if (test) {
                 exec_test(std::move(*test));
             } else if (!std::empty(run)) {
-                exec_write_run(std::move(run));
+                exec_write_run(std::move(run), scratch);
             } else {
                 return;
             }
@@ -996,7 +999,7 @@ private:
         workers_.clear();
     }
 
-    void exec_write_run(std::vector<PendingWrite> run)
+    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch)
     {
         TR_ASSERT(!std::empty(run));
 
@@ -1007,13 +1010,12 @@ private:
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
-            thread_local auto buf = std::vector<uint8_t>{};
-            buf.resize(n_bytes);
+            scratch.resize(n_bytes);
             for (auto const& op : run) {
-                std::copy_n(std::data(*op.data), op.span.size(), std::data(buf) + (op.span.begin - begin));
+                std::copy_n(std::data(*op.data), op.span.size(), std::data(scratch) + (op.span.begin - begin));
             }
 
-            writeme = buf;
+            writeme = scratch;
         }
 
         auto const err = tr_ioWrite(desc, open_files_, begin, writeme);

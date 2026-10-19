@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Um Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Um {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Höfundarréttur © Transmission-verkefnið</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Höfundarréttur © Retransmission-verkefnið</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1772,10 +1772,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Bannlisti inniheldur {count:L} reglu&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Bannlisti inniheldur {count:L} reglur&lt;/i&gt;</numerusform>
+            <numerusform>Bannlisti inniheldur {count:L} reglu</numerusform>
+            <numerusform>Bannlisti inniheldur {count:L} reglur</numerusform>
         </translation>
     </message>
     <message>
@@ -1841,8 +1841,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Birta Tra&amp;nsmission-tákn í tilkynningasvæðinu</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Birta {appname}-tákn í tilky&amp;nningasvæðinu</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2123,8 +2123,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Kjörstillingar Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Kjörstillingar {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2294,10 +2294,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Gat ekki bætt við {count} tvíteknu torrent-streymi</numerusform>
-            <numerusform>Gat ekki bætt við {count} tvíteknum torrent-streymum</numerusform>
+            <numerusform>Gat ekki bætt við {count:L} tvíteknu torrent-streymi</numerusform>
+            <numerusform>Gat ekki bætt við {count:L} tvíteknum torrent-streymum</numerusform>
         </translation>
     </message>
 </context>
@@ -2570,11 +2570,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Sæki frá {active_count} af {connected_count} tengdum jafningjum</numerusform>
-            <numerusform>Sæki frá {active_count} af {connected_count} tengdum jafningjum</numerusform>
+            <numerusform>Sæki frá {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
+            <numerusform>Sæki frá {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2588,10 +2588,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Deili til {active_count} af {connected_count} tengdum jafningjum</numerusform>
-            <numerusform>Deili til {active_count} af {connected_count} tengdum jafningjum</numerusform>
+            <numerusform>Deili til {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
+            <numerusform>Deili til {active_count:L} af {connected_count:L} tengdum jafningjum</numerusform>
         </translation>
     </message>
     <message>

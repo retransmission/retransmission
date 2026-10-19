@@ -69,7 +69,6 @@ target_sources(${TR_NAME}-qt-lib
         Session.h
         SessionDialog.cc
         SessionDialog.h
-        Speed.cc
         Speed.h
         SqueezeLabel.cc
         SqueezeLabel.h
@@ -208,8 +207,9 @@ target_compile_definitions(${TR_NAME}-qt-lib
         $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>
         QT_NO_CAST_FROM_ASCII
     PRIVATE
-        "TRANSLATIONS_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${TR_NAME}/translations\""
-        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\"")
+        "TRANSLATIONS_DIR=\"${TR_DATA_INSTALL_FULL_DIR}/translations\""
+        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\""
+        "TR_QT_ICON_NAME=\"${TR_QT_ICON_NAME}\"")
 
 set_target_properties(
     ${TR_NAME}-qt-lib
@@ -249,7 +249,7 @@ if(ENABLE_QT_COM_INTEROP)
 endif()
 
 tr_win32_app_info(${TR_NAME}-qt
-    "Transmission Qt Client"
+    "Qt Client"
     "${TR_NAME}-qt"
     "${TR_NAME}-qt.exe"
     "${SOURCE_ICONS_DIR}/${TR_NAME}.ico")
@@ -258,21 +258,7 @@ install(
     TARGETS ${TR_NAME}-qt
     DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-set(PUBLIC_ICONS
-    hicolor_apps_scalable_transmission.svg
-    hicolor_apps_scalable_transmission-devel.svg
-    hicolor_apps_symbolic_transmission-symbolic.svg)
-
-set(ICON_NAME_REGEX "^([^_]+)_([^_]+)_([^_]+)_(.+)$")
-foreach(ICON ${PUBLIC_ICONS})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\1/\\3/\\2" ICON_DIR ${ICON})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\4" ICON_NAME ${ICON})
-    string(REGEX REPLACE "^transmission" "transmission-qt" ICON_NAME ${ICON_NAME})
-    install(
-        FILES ${SOURCE_ICONS_DIR}/${ICON}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/${ICON_DIR}/
-        RENAME ${ICON_NAME})
-endforeach()
+tr_install_app_icons(${TR_QT_ICON_NAME})
 
 if(INSTALL_DOC)
     install(
@@ -280,14 +266,19 @@ if(INSTALL_DOC)
         DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 endif()
 
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/retransmission-qt.desktop.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop"
+    @ONLY)
+
 install(
-    FILES transmission-qt.desktop
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 if(ENABLE_NLS)
     install(
         FILES ${QM_FILES}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/${TR_NAME}/translations)
+        DESTINATION ${TR_DATA_INSTALL_DIR}/translations)
 endif()
 
 if(WIN32)

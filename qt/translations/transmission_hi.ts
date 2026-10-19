@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>ट्रांसमिशन के बारे में</translation>
+        <source>About {appname}</source>
+        <translation>{appname} के बारे में</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>कॉपीराइट (c) ट्रांसमिशन परियोजना</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-10"/>
@@ -773,8 +773,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>ट्रांसमिशन</translation>
+        <source>Retransmission</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1768,10 +1768,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;अवरुद्ध सूची में {count:L} नियम है।&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;अवरुद्ध सूची में {count:L} नियम हैं।&lt;/i&gt;</numerusform>
+            <numerusform>अवरुद्ध सूची में {count:L} नियम है।</numerusform>
+            <numerusform>अवरुद्ध सूची में {count:L} नियम हैं।</numerusform>
         </translation>
     </message>
     <message>
@@ -1837,8 +1837,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>अधिसूचना क्षेत्र में ट्रांसमिशन आइकन दिखाएँ (&amp;n)</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>अधिसूचना क्षेत्र में {appname} आइकन दिखाएँ (&amp;n)</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2111,8 +2111,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>ट्रांसमिशन सेटिंग्स</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname} सेटिंग्स</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2282,7 +2282,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2558,11 +2558,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी</numerusform>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2576,10 +2576,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी</numerusform>
-            <numerusform>कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी</numerusform>
+            <numerusform>कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी</numerusform>
         </translation>
     </message>
     <message>

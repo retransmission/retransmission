@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>О Transmission</translation>
+        <source>About {appname}</source>
+        <translation>О {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Авторское право © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Авторское право © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -785,8 +785,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1790,11 +1790,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;«Чёрный список» содержит {count:L} правило&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;«Чёрный список» содержит {count:L} правила&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;«Чёрный список» содержит {count:L} правил&lt;/i&gt;</numerusform>
+            <numerusform>«Чёрный список» содержит {count:L} правило</numerusform>
+            <numerusform>«Чёрный список» содержит {count:L} правила</numerusform>
+            <numerusform>«Чёрный список» содержит {count:L} правил</numerusform>
         </translation>
     </message>
     <message>
@@ -1860,8 +1860,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Показыва&amp;ть значок Transmission в области уведомлений</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Показыва&amp;ть значок {appname} в области уведомлений</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2143,8 +2143,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Настройки Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Настройки {appname}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2315,11 +2315,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Невозможно добавить {count} повторяющийся торрент</numerusform>
-            <numerusform>Невозможно добавить {count} повторяющихся торрента</numerusform>
-            <numerusform>Невозможно добавить {count} повторяющихся торрентов</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющийся торрент</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющихся торрента</numerusform>
+            <numerusform>Невозможно добавить {count:L} повторяющихся торрентов</numerusform>
         </translation>
     </message>
 </context>
@@ -2596,12 +2596,12 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Приём от {active_count} из {connected_count} подключённого участника</numerusform>
-            <numerusform>Приём от {active_count} из {connected_count} подключённых участников</numerusform>
-            <numerusform>Приём от {active_count} из {connected_count} подключённых участников</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённого участника</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённых участников</numerusform>
+            <numerusform>Приём от {active_count:L} из {connected_count:L} подключённых участников</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2616,11 +2616,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённого участника</numerusform>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённых участников</numerusform>
-            <numerusform>Раздаётся {active_count} из {connected_count} подключённых участников</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённого участника</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённых участников</numerusform>
+            <numerusform>Раздаётся {active_count:L} из {connected_count:L} подключённых участников</numerusform>
         </translation>
     </message>
     <message>

@@ -6,7 +6,6 @@
 #pragma once
 
 #include <cassert>
-#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -42,7 +41,6 @@ struct AppPrefs {
     using Field = tr::serializer::Field<MemberPtr>;
 
     // sorted in descending-alignment order to minimize struct padding.
-    std::chrono::sys_seconds blocklist_date_;
     std::string dir_watch_ = tr::platform::get_download_dir();
     std::string filter_text_;
     std::string filter_trackers_;
@@ -51,7 +49,6 @@ struct AppPrefs {
     std::string session_remote_password_;
     std::string session_remote_url_base_path_ = TR_PROJ_WEB_SERVER_BASE_PATH;
     std::string session_remote_username_;
-    std::vector<std::string> complete_sound_command_;
     int details_window_height_ = 500;
     int details_window_width_ = 700;
     int main_window_height_ = 500;
@@ -85,9 +82,7 @@ struct AppPrefs {
     bool toolbar_ = true;
 
     static constexpr auto Fields = std::make_tuple(
-        Field<&AppPrefs::blocklist_date_>{ TR_KEY_blocklist_date },
         Field<&AppPrefs::compact_view_>{ TR_KEY_compact_view },
-        Field<&AppPrefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
         Field<&AppPrefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
         Field<&AppPrefs::details_window_height_>{ TR_KEY_details_window_height },
         Field<&AppPrefs::details_window_width_>{ TR_KEY_details_window_width },
@@ -163,16 +158,11 @@ struct SessionPrefs {
     size_t peer_limit_global_ = {};
     size_t peer_limit_torrent_ = {};
     size_t queue_stalled_minutes_ = {};
-    size_t upload_slots_per_torrent_ = {};
     size_t uspeed_ = {};
-    tr_diffserv_t socket_diffserv_;
     tr_port peer_port_;
-    tr_port peer_port_random_high_;
-    tr_port peer_port_random_low_;
     tr_port rpc_port_;
     uint16_t idle_limit_ = {};
     tr_encryption_mode encryption_ = {};
-    tr_file_preallocation preallocation_ = {};
     tr_log_level msglevel_ = {};
     tr_sched_day alt_speed_limit_time_day_ = TR_SCHED_ALL;
     bool alt_speed_limit_enabled_ = {};
@@ -180,7 +170,6 @@ struct SessionPrefs {
     bool blocklist_enabled_ = {};
     bool blocklist_updates_enabled_ = {};
     bool dht_enabled_ = {};
-    bool download_queue_enabled_ = {};
     bool dspeed_enabled_ = {};
     bool idle_limit_enabled_ = {};
     bool incomplete_dir_enabled_ = {};
@@ -215,7 +204,6 @@ struct SessionPrefs {
         Field<&SessionPrefs::default_trackers_>{ TR_KEY_default_trackers },
         Field<&SessionPrefs::dht_enabled_>{ TR_KEY_dht_enabled },
         Field<&SessionPrefs::download_dir_>{ TR_KEY_download_dir },
-        Field<&SessionPrefs::download_queue_enabled_>{ TR_KEY_download_queue_enabled },
         Field<&SessionPrefs::download_queue_size_>{ TR_KEY_download_queue_size },
         Field<&SessionPrefs::dspeed_>{ TR_KEY_speed_limit_down },
         Field<&SessionPrefs::dspeed_enabled_>{ TR_KEY_speed_limit_down_enabled },
@@ -229,12 +217,9 @@ struct SessionPrefs {
         Field<&SessionPrefs::peer_limit_global_>{ TR_KEY_peer_limit_global },
         Field<&SessionPrefs::peer_limit_torrent_>{ TR_KEY_peer_limit_per_torrent },
         Field<&SessionPrefs::peer_port_>{ TR_KEY_peer_port },
-        Field<&SessionPrefs::peer_port_random_high_>{ TR_KEY_peer_port_random_high },
-        Field<&SessionPrefs::peer_port_random_low_>{ TR_KEY_peer_port_random_low },
         Field<&SessionPrefs::peer_port_random_on_start_>{ TR_KEY_peer_port_random_on_start },
         Field<&SessionPrefs::pex_enabled_>{ TR_KEY_pex_enabled },
         Field<&SessionPrefs::port_forwarding_>{ TR_KEY_port_forwarding_enabled },
-        Field<&SessionPrefs::preallocation_>{ TR_KEY_preallocation },
         Field<&SessionPrefs::queue_stalled_minutes_>{ TR_KEY_queue_stalled_minutes },
         Field<&SessionPrefs::ratio_>{ TR_KEY_seed_ratio_limit },
         Field<&SessionPrefs::ratio_enabled_>{ TR_KEY_seed_ratio_limited },
@@ -252,11 +237,9 @@ struct SessionPrefs {
         Field<&SessionPrefs::script_torrent_done_filename_>{ TR_KEY_script_torrent_done_filename },
         Field<&SessionPrefs::script_torrent_done_seeding_enabled_>{ TR_KEY_script_torrent_done_seeding_enabled },
         Field<&SessionPrefs::script_torrent_done_seeding_filename_>{ TR_KEY_script_torrent_done_seeding_filename },
-        Field<&SessionPrefs::socket_diffserv_>{ TR_KEY_peer_socket_diffserv },
         Field<&SessionPrefs::start_>{ TR_KEY_start_added_torrents },
         Field<&SessionPrefs::torrent_complete_verify_enabled_>{ TR_KEY_torrent_complete_verify_enabled },
         Field<&SessionPrefs::trash_original_>{ TR_KEY_trash_original_torrent_files },
-        Field<&SessionPrefs::upload_slots_per_torrent_>{ TR_KEY_upload_slots_per_torrent },
         Field<&SessionPrefs::uspeed_>{ TR_KEY_speed_limit_up },
         Field<&SessionPrefs::uspeed_enabled_>{ TR_KEY_speed_limit_up_enabled },
         Field<&SessionPrefs::utp_enabled_>{ TR_KEY_utp_enabled });

@@ -16,7 +16,6 @@
 
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/log.h"
-#include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
@@ -37,7 +36,7 @@ void log_mbedtls_error(int error_code, char const* file, int line)
             line,
             TR_LOG_ERROR,
             fmt::format(
-                fmt::runtime(_("{crypto_library} error: {error} ({error_code})")),
+                "{crypto_library} error: {error} ({error_code})",
                 fmt::arg("crypto_library", "MbedTLS"),
                 fmt::arg("error", error_message),
                 fmt::arg("error_code", error_code)));

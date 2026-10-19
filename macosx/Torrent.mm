@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -20,6 +20,7 @@
 #import "NSStringAdditions.h"
 #import "TrackerNode.h"
 #import "Utils.h"
+#import "UTTypeAdditions.h"
 
 using tr::Values::Speed;
 
@@ -69,25 +70,6 @@ static dispatch_queue_t timeMachineExcludeQueue;
 static bool canChangeDownloadCheck(tr_file_view const& file)
 {
     return file.have < file.length;
-}
-
-static bool trashDataFile(std::string_view const filename, tr_error* error)
-{
-    if (std::empty(filename)) {
-        return false;
-    }
-
-    @autoreleasepool {
-        NSError* localError;
-        if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
-            if (error != nullptr) {
-                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
-            }
-            return false;
-        }
-    }
-
-    return true;
 }
 
 static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextInfo)
@@ -200,7 +182,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     //allow the file to be indexed by Time Machine
     [self setTimeMachineExclude:NO];
 
-    tr_torrentRemove(self.fHandle, trashFiles, trashDataFile);
+    tr_torrentRemove(self.fHandle, trashFiles);
     _fHandle = nullptr;
 }
 
@@ -618,8 +600,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
 
     if (!self.fIcon) {
-        self.fIcon = self.folder ? [NSImage imageNamed:NSImageNameFolder] :
-                                   [NSWorkspace.sharedWorkspace iconForFileType:self.name.pathExtension];
+        auto contentType = [UTType contentTypeForFilenameExtension:self.name.pathExtension isFolder:self.folder];
+        self.fIcon = [NSWorkspace.sharedWorkspace iconForContentType:contentType];
     }
     return self.fIcon;
 }

@@ -1,26 +1,13 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
 #import "DefaultAppHelper.h"
 
 #import <AppKit/AppKit.h>
-#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+#import "UTTypeAdditions.h"
 
 static NSString* const kMagnetURLScheme = @"magnet";
-static NSString* const kTorrentFileType = @"org.bittorrent.torrent";
-
-UTType* GetTorrentFileType(void)
-{
-    static UTType* result = nil;
-
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        result = [UTType exportedTypeWithIdentifier:kTorrentFileType conformingToType:UTTypeData];
-    });
-
-    return result;
-}
 
 @interface DefaultAppHelper ()
 
@@ -40,7 +27,7 @@ UTType* GetTorrentFileType(void)
 
 - (BOOL)isDefaultForTorrentFiles
 {
-    UTType* fileType = GetTorrentFileType();
+    auto fileType = UTType.torrent;
     NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationToOpenContentType:fileType];
     if (!appUrl) {
         return NO;
@@ -57,7 +44,7 @@ UTType* GetTorrentFileType(void)
 
 - (void)setDefaultForTorrentFiles:(void (^_Nullable)())completionHandler
 {
-    UTType* fileType = GetTorrentFileType();
+    auto fileType = UTType.torrent;
     NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
     [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenContentType:fileType completionHandler:^(NSError* error) {
         if (error) {

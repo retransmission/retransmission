@@ -110,13 +110,7 @@ private:
 
     void step_finished(RpcResponse result)
     {
-        // we can't handle network errors: abort the queue and pass the error upward.
-        if (result.network_error) {
-            finish();
-            return;
-        }
-
-        // call the user error handler for ordinary (non-network) errors.
+        // call the user error handler.
         if (!result.success && next_error_handler_) {
             next_error_handler_(result);
         }

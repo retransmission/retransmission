@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <cstdint> // uint64_t
 #include <functional>
 #include <memory>
 #include <optional>
@@ -44,6 +45,9 @@ public:
     // Marshals a function onto the UI thread. Toolkits inject their own:
     // Qt -> QMetaObject::invokeMethod(..., Qt::QueuedConnection),
     // GTK -> Glib::signal_idle().connect_once(...).
+    // It must run `fn` on the thread that calls exec() and stop(),
+    // because `fn` uses the client's state without locking.
+    // It must drop `fn` once the client is destroyed.
     using UiThreadFunc = std::function<void(std::function<void()>)>;
 
     explicit RpcClient(UiThreadFunc run_on_ui_thread);
@@ -63,6 +67,8 @@ public:
     void stop();
 
     // Issue a request. `on_done` runs on the UI thread when it completes.
+    // A reply to a request sent before the last stop() reaches `on_done` only as a network error,
+    // without firing signals or changing client state.
     void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done);
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
 
@@ -78,6 +84,9 @@ private:
 
     [[nodiscard]] tr_web& web();
 
+    // If `generation` predates the last stop(), answers `on_done` with a network error and returns true.
+    [[nodiscard]] bool drop_if_stale(uint64_t generation, ResponseFunc const& on_done) const;
+
     [[nodiscard]] static RpcResponse parse_response_data(tr_variant& response);
 
     tr::api_compat::Style network_style_ = tr::api_compat::default_style();
@@ -86,6 +95,7 @@ private:
     std::string url_;
     std::optional<std::string> username_;
     std::optional<std::string> password_;
+    uint64_t generation_ = {}; // incremented by stop()
     bool const verbose_;
 
     UiThreadFunc run_on_ui_thread_;

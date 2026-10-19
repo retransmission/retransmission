@@ -1,16 +1,16 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
 #include "Application.h"
 
+#include "AboutDialog.h"
 #include "Actions.h"
 #include "DetailsDialog.h"
 #include "Dialogs.h"
 #include "FilterBar.h"
 #include "GtkCompat.h"
 #include "HigWorkarea.h" // GUI_PAD, GUI_PAD_BIG
-#include "Macros.h"
 #include "MainWindow.h"
 #include "MakeDialog.h"
 #include "MessageLogWindow.h"
@@ -40,7 +40,6 @@
 #include <libtransmission/version.h>
 
 #include <gdkmm/display.h>
-#include <gtkmm/aboutdialog.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/cssprovider.h>
@@ -79,7 +78,6 @@
 #include <algorithm>
 #include <csignal>
 #include <cstdlib> // exit()
-#include <ctime>
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
@@ -104,30 +102,6 @@ using FileListHandler = Glib::SListHandler<Glib::RefPtr<Gio::File>>;
 
 using StringValue = Glib::Value<Glib::ustring>;
 #endif
-
-#define SHOW_LICENSE
-
-namespace
-{
-
-char const* const AppIconName = TR_PROJ_APPNAME;
-
-char const* const LICENSE =
-    "Copyright 2005-2026. All code is copyrighted by the respective authors.\n"
-    "\n"
-    "This app can be redistributed and/or modified under the terms of the "
-    "GNU GPL, versions 2 or 3, or by any future license endorsed by Mnemosaic LLC."
-    "\n"
-    "In addition, linking to and/or using OpenSSL is allowed.\n"
-    "\n"
-    "This program is distributed in the hope that it will be useful, "
-    "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-    "\n"
-    "Some of the project's source files have more permissive licenses. "
-    "Those files may, of course, be used on their own under their own terms.\n";
-
-} // namespace
 
 class Application::Impl
 {
@@ -426,15 +400,24 @@ bool has_magnet_link_handler()
 
 void register_magnet_link_handler()
 {
+    // GIO ignores a handler whose command is not on the PATH.
+    // Registering one anyway would add another dead handler on every launch.
+    if (Glib::find_program_in_path(TR_GTK_EXECUTABLE_NAME).empty()) {
+        return;
+    }
+
     std::string const content_type = "x-scheme-handler/magnet";
 
     try {
-        auto const app = Gio::AppInfo::create_from_commandline(MY_NAME, MY_NAME, TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
+        auto const app = Gio::AppInfo::create_from_commandline(
+            TR_GTK_EXECUTABLE_NAME,
+            TR_PROJ_APPNAME_CAPITALIZED,
+            TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
         app->set_as_default_for_type(content_type);
     } catch (Gio::Error const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't register {appname} as a {content_type} handler: {error} ({error_code})")),
+                "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})",
                 fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                 fmt::arg("content_type", content_type),
                 fmt::arg("error", e.what()),
@@ -564,7 +547,7 @@ namespace
 
 gboolean signal_handler(gpointer user_data)
 {
-    gtr_message(_("Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."));
+    gtr_message("Got termination signal, trying to shut down cleanly. Do it again if it gets stuck.");
     gtr_actions_handler("quit", user_data);
     return G_SOURCE_REMOVE;
 }
@@ -589,7 +572,7 @@ void Application::Impl::on_startup()
 {
     IF_GTKMM4(Gtk::IconTheme::get_for_display(Gdk::Display::get_default()), Gtk::IconTheme::get_default())
         ->add_resource_path(gtr_get_full_resource_path("icons"s));
-    Gtk::Window::set_default_icon_name(std::string{ AppIconName });
+    Gtk::Window::set_default_icon_name(std::string{ TR_GTK_ICON_NAME });
 
     /* Add style provider to the window. */
     auto css_provider = Gtk::CssProvider::create();
@@ -619,7 +602,7 @@ void Application::Impl::on_startup()
     }
 
     /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all());
+    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all(), gtr_file_trash_or_remove);
 
     if (tr_sessionConfigDirIsContended(session)) {
         config_dir_contended_ = true;
@@ -663,17 +646,6 @@ void Application::Impl::on_startup()
         return TR_RPC_NOREMOVE;
     });
 
-    /* check & see if it's time to update the blocklist */
-    if (gtr_pref_flag_get(TR_KEY_blocklist_enabled) && gtr_pref_flag_get(TR_KEY_blocklist_updates_enabled)) {
-        auto const last_time = gtr_pref_int_get<time_t>(TR_KEY_blocklist_date);
-        int const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
-        time_t const now = time(nullptr);
-
-        if (last_time + SECONDS_IN_A_WEEK < now) {
-            core_->blocklist_update();
-        }
-    }
-
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
 
@@ -697,9 +669,9 @@ void Application::Impl::on_activate()
     activation_count_++;
 
     /* GApplication emits an 'activate' signal when bootstrapping the primary.
-     * Ordinarily we handle that by presenting the main window, but if the user
-     * started Transmission minimized, ignore that initial signal... */
-    if (start_iconified_ && activation_count_ == 1) {
+     * Ordinarily we handle that by presenting the main window, but if app_setup()
+     * hid the window in the notification area, ignore that initial signal... */
+    if (is_iconified_ && activation_count_ == 1) {
         return;
     }
 
@@ -748,10 +720,6 @@ void Application::Impl::on_core_busy(bool busy)
 
 void Application::Impl::app_setup()
 {
-    if (start_iconified_) {
-        gtr_pref_flag_set(TR_KEY_show_notification_area_icon, true);
-    }
-
     gtr_actions_set_core(core_);
 
     /* set up core handlers */
@@ -776,13 +744,12 @@ void Application::Impl::app_setup()
         MAIN_WINDOW_REFRESH_INTERVAL_SECONDS);
     update_model_once();
 
-    /* either show the window or iconify it */
-    if (!start_iconified_) {
+    // Hide the window only behind an icon that can bring it back.
+    if (start_iconified_ && icon_ != nullptr) {
+        hideMainWindow();
+    } else {
         wind_->show();
         gtr_action_set_toggled("toggle-main-window", true);
-    } else {
-        gtr_window_set_skip_taskbar_hint(*wind_, icon_ != nullptr);
-        gtr_action_set_toggled("toggle-main-window", false);
     }
 }
 
@@ -1147,6 +1114,10 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
         tr_blocklistSetURL(tr, gtr_pref_string_get(key));
         break;
 
+    case TR_KEY_blocklist_updates_enabled:
+        tr_blocklistSetUpdatesEnabled(tr, gtr_pref_flag_get(key));
+        break;
+
     case TR_KEY_show_notification_area_icon:
         if (bool const show = gtr_pref_get<bool>(key); show && icon_ == nullptr) {
             icon_ = SystemTrayIcon::create(*wind_, core_);
@@ -1364,37 +1335,8 @@ bool Application::Impl::update_model_loop()
 
 void Application::Impl::show_about_dialog()
 {
-    auto const uri = Glib::ustring(TR_PROJ_URL_HOMEPAGE);
-    auto const authors = std::vector<Glib::ustring>({
-        "Charles Kerr (Backend; GTK+)",
-        "Mitchell Livingston (Backend; macOS)",
-        "Mike Gelfand",
-    });
-
-    auto d = std::make_shared<Gtk::AboutDialog>();
-    d->set_authors(authors);
-    d->set_comments(_("A fast and easy BitTorrent client"));
-    d->set_copyright(
-        fmt::format(fmt::runtime(_("Copyright © The {appname} Project")), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED)));
-    d->set_logo_icon_name(std::string{ AppIconName });
-    d->set_name(Glib::get_application_name());
-    /* Translators: translate "translator-credits" as your name
-       to have it appear in the credits in the "About"
-       dialog */
-    d->set_translator_credits(_("translator-credits"));
-    d->set_version(LONG_VERSION_STRING);
-    d->set_website(uri);
-    d->set_website_label(uri);
-#ifdef SHOW_LICENSE
-    d->set_license(LICENSE);
-    d->set_wrap_license(true);
-#endif
-    d->set_transient_for(*wind_);
-    d->set_modal(true);
+    auto d = std::shared_ptr<AboutDialog>{ AboutDialog::create(*wind_) };
     gtr_window_on_close(*d, [d]() mutable { d.reset(); });
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-    d->signal_response().connect_notify([&dref = *d](int /*response*/) { dref.close(); });
-#endif
     d->show();
 }
 

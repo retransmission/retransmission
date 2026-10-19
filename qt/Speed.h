@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
 
 #include <libtransmission/values.h>
@@ -14,8 +13,6 @@
 
 class Speed : public tr::Values::Speed
 {
-    Q_DECLARE_TR_FUNCTIONS(Speed)
-
 public:
     Speed() = default;
 
@@ -36,8 +33,15 @@ public:
         return QString::fromStdString(to_string());
     }
 
-    [[nodiscard]] QString toUploadQstring() const;
-    [[nodiscard]] QString toDownloadQstring() const;
+    [[nodiscard]] QString toUploadQstring() const
+    {
+        return toQstring() + QStringLiteral(" ▴");
+    }
+
+    [[nodiscard]] QString toDownloadQstring() const
+    {
+        return toQstring() + QStringLiteral(" ▾");
+    }
 
     [[nodiscard]] static auto displayName(Speed::Units const units)
     {

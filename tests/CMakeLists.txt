@@ -8,6 +8,9 @@ set_property(
     TARGET all-tests
     PROPERTY FOLDER "tests")
 
+# The clients' desktop-file tests also run desktop-file-validate, when it's installed.
+find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
+
 add_subdirectory(libtransmission)
 add_subdirectory(libtransmission-app)
 if(ENABLE_GTK)

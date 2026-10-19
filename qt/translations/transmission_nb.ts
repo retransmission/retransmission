@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Om Overføring</translation>
+        <source>About {appname}</source>
+        <translation>Om {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Overføring</translation>
+        <source>Retransmission</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1764,10 +1764,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokklisten inneholder {count:L} regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokklisten inneholder {count:L} regler&lt;/i&gt;</numerusform>
+            <numerusform>Blokklisten inneholder {count:L} regel</numerusform>
+            <numerusform>Blokklisten inneholder {count:L} regler</numerusform>
         </translation>
     </message>
     <message>
@@ -1833,8 +1833,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Vis Transmission-ikon i &amp;merknadsområde</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Vis {appname}-ikon i &amp;merknadsområde</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2107,8 +2107,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission-innstillinger</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname}-innstillinger</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2278,7 +2278,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2554,11 +2554,11 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Laster ned fra {active_count} av {connected_count} tilkoblet likemann</numerusform>
-            <numerusform>Laster ned fra {active_count} av {connected_count} tilkoblede likemenn</numerusform>
+            <numerusform>Laster ned fra {active_count:L} av {connected_count:L} tilkoblet likemann</numerusform>
+            <numerusform>Laster ned fra {active_count:L} av {connected_count:L} tilkoblede likemenn</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2572,10 +2572,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Deler til {active_count} av {connected_count} tilkoblet likemann</numerusform>
-            <numerusform>Deler til {active_count} av {connected_count} tilkoblede likemenn</numerusform>
+            <numerusform>Deler til {active_count:L} av {connected_count:L} tilkoblet likemann</numerusform>
+            <numerusform>Deler til {active_count:L} av {connected_count:L} tilkoblede likemenn</numerusform>
         </translation>
     </message>
     <message>

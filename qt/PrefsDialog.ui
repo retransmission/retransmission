@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Transmission Preferences</string>
+   <string>{appname} Preferences</string>
   </property>
   <layout class="QVBoxLayout" name="dialogLayout">
    <item>
@@ -596,8 +596,16 @@
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="blocklistStatusLabel">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
             <property name="text">
-             <string notr="true">...</string>
+             <string notr="true"/>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
             </property>
            </widget>
           </item>
@@ -620,8 +628,16 @@
           </item>
           <item row="3" column="0" colspan="3">
            <widget class="QLabel" name="blocklistDateLabel">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
             <property name="text">
              <string notr="true"/>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
             </property>
            </widget>
           </item>
@@ -869,7 +885,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item>
            <widget class="QCheckBox" name="showTrayIconCheck">
             <property name="text">
-             <string>Show Transmission icon in the &amp;notification area</string>
+             <string>Show {appname} icon in the &amp;notification area</string>
             </property>
            </widget>
           </item>
@@ -1102,134 +1118,6 @@ To add a new primary URL, add it after a blank line.</string>
    <signal>rejected()</signal>
    <receiver>PrefsDialog</receiver>
    <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>uploadSpeedLimitCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>uploadSpeedLimitSpin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>downloadSpeedLimitCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>downloadSpeedLimitSpin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ratioLimitCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ratioLimitSpin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>idleLimitCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>idleLimitSpin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>watchDirCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>watchDirStack</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>incompleteDirCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>incompleteDirStack</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>doneDownloadingScriptCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>doneDownloadingScriptStack</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>doneSeedingScriptCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>doneSeedingScriptStack</receiver>
-   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

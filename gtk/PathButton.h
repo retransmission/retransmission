@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "GtkCompat.h"
-
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/filefilter.h>

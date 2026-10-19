@@ -1,11 +1,11 @@
-# Transmission scripts
+# Retransmission scripts
 ## Introduction
-Thanks to the powerful [RPC](./rpc-spec.md), `transmission-remote` can talk to any client that has the RPC enabled. This means that a script written using `transmission-remote` or [RPC](./rpc-spec.md) can, without rewrite, communicate with all the Transmission clients: Mac, Linux, Windows, and headless.
+Thanks to the powerful [RPC](./rpc-spec.md), `transmission-remote` can talk to any client that has the RPC enabled. This means that a script written using `transmission-remote` or [RPC](./rpc-spec.md) can, without rewrite, communicate with all the Retransmission clients: Mac, Linux, Windows, and headless.
 
 macOS users may wonder whether there will be AppleScript scripts, the answer is ''no''. Although AppleScript is a nice technology, it's a pain to implement. However, macOS is a Unix after all, so any script you find here will also work on macOS. Even from within AppleScript, you can run these scripts by typing: `do shell script "path/to/script"`.
 
 ## How-To
-If you are interested at writing scripts for Transmission, have a look at the following pages:
+If you are interested at writing scripts for Retransmission, have a look at the following pages:
  * [Configuration Files](Configuration-Files.md)
  * [Editing Configuration Files](Editing-Configuration-Files.md)
  * [Environment Variables](Environment-Variables.md)
@@ -17,9 +17,9 @@ For those who need more information how to use the scripts, have a look at the f
 ## Scripts
 
 ### On torrent completion
-Transmission can be set to invoke a script when downloads complete. The environment variables supported are:
+Retransmission can be set to invoke a script when downloads complete. The environment variables supported are:
 
- * `TR_APP_VERSION` - Transmission's short version string, e.g. `4.0.0`
+ * `TR_APP_VERSION` - Retransmission's short version string, e.g. `4.0.0`
  * `TR_TIME_LOCALTIME`
  * `TR_TORRENT_BYTES_DOWNLOADED` - Number of bytes that were downloaded for this torrent
  * `TR_TORRENT_DIR` - Location of the downloaded data

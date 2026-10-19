@@ -1,12 +1,12 @@
 # Web Interface
 
-A web interface is built into all Transmission flavors, enabling them to be controlled remotely.
+A web interface is built into all Retransmission flavors, enabling them to be controlled remotely.
 
 ## Enabling the web interface
 
 ### 1. For Windows
 
-Open Transmission Qt. Go to Edit menu
+Open Retransmission Qt. Go to Edit menu
 
 ![image](resources/QT-Enable-Web-Win-1.png)
 
@@ -14,7 +14,7 @@ Click "Preferences". Then go to tab "Remote"
 
 ![image](resources/QT-Enable-Web-Win-2.png)
 
-Click on "Allow remote access" checkbox. If password protection is required, click on "Use authentication" checkbox, set username and password. If "Only allow these IP addresses" is checked, Transmission will only allow the specified list of addresses to access the web interface.
+Click on "Allow remote access" checkbox. If password protection is required, click on "Use authentication" checkbox, set username and password. If "Only allow these IP addresses" is checked, Retransmission will only allow the specified list of addresses to access the web interface.
 
 ![image](resources/QT-Enable-Web-Win-3.png)
 
@@ -22,7 +22,7 @@ Click "Close" button. Done!
 
 ### 2. For Linux
 
-Open Transmission. Go to Edit menu and click "Preferences".
+Open Retransmission. Go to Edit menu and click "Preferences".
 
 ![Screenshot_2022-07-20_23-47-00](resources/QT-Enable-Web-Lnx-1.png)
 
@@ -30,7 +30,7 @@ Then go to tab "Remote".
 
 ![Screenshot_2022-07-20_23-49-18](resources/QT-Enable-Web-Lnx-2.png)
 
-Click on "Allow remote access" checkbox. If password protection is required, click on "Use authentication" checkbox, set username and password. If "Only allow these IP addresses" is checked, Transmission will only allow the specified list of addresses to access the web interface.
+Click on "Allow remote access" checkbox. If password protection is required, click on "Use authentication" checkbox, set username and password. If "Only allow these IP addresses" is checked, Retransmission will only allow the specified list of addresses to access the web interface.
 
 ![image](resources/QT-Enable-Web-Lnx-3.png)
 
@@ -38,19 +38,19 @@ Click "Close" button. Done!
 
 ### 3. For macOS
 
-Open Transmission. Go to Transmission in the menu bar and click "Settings".
+Open Retransmission. Go to Retransmission in the menu bar and click "Settings".
 
-![Selecting Settings in Transmission menu bar item](resources/mac-enable-web-1.png)
+![Selecting Settings in Retransmission menu bar item](resources/mac-enable-web-1.png)
 
 Click on "Remote" tab.
 
-![Selecting the Remote tab in Transmission Settings window](resources/mac-enable-web-2.png)
+![Selecting the Remote tab in Retransmission Settings window](resources/mac-enable-web-2.png)
 
 ## Accessing the web interface
 
 Once enabled, open a web browser and direct it to http://ip_address_of_machine_running_transmission:9091/
-If the web browser and the Transmission daemon are on the machine you can use http://127.0.0.1:9091/
-9091 is the default remote control port specified in [Transmission configuration](Editing-Configuration-Files.md) or in preferences of [Windows](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#1-for-windows), [Linux](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#2-for-linux) or [macOS](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#2-for-macos) client.
+If the web browser and the Retransmission daemon are on the machine you can use http://127.0.0.1:9091/
+9091 is the default remote control port specified in [Retransmission configuration](Editing-Configuration-Files.md) or in preferences of [Windows](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#1-for-windows), [Linux](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#2-for-linux) or [macOS](https://github.com/retransmission/retransmission/blob/main/docs/Web-Interface.md#2-for-macos) client.
 
 ## Web Interface Overview
 
@@ -63,7 +63,7 @@ If the web browser and the Transmission daemon are on the machine you can use ht
 | 1                 | Torrent name                |
 | 2                 | Torrent management panel    |
 | 3                 | Info about selected torrent |
-| 4                 | Transmission control panel  |
+| 4                 | Retransmission control panel  |
 
 ### 2. Torrent management panel
 
@@ -90,7 +90,7 @@ If the web browser and the Transmission daemon are on the machine you can use ht
 | 3                 | Enter the path where the file will be downloaded |
 | 4                 | Autostart torrent download after adding          |
 | 5                 | Cancel adding                                    |
-| 6                 | Add selected torrent to Transmission             |
+| 6                 | Add selected torrent to Retransmission             |
 
 ### 3. Display filters panel
 
@@ -126,10 +126,10 @@ If the web browser and the Transmission daemon are on the machine you can use ht
 | Number On Picture | Description                                                                                                                                        |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1                 | Name of torrent                                                                                                                                    |
-| 2                 | In current case: Transmission has 3.65 GB of file data from the total volume of downloaded files, which is 100%                                    |
+| 2                 | In current case: Retransmission has 3.65 GB of file data from the total volume of downloaded files, which is 100%                                    |
 | 3                 | In current case: the file is available (written to disk) at 100%                                                                                   |
 | 4                 | In current case: other peers have downloaded 111.2MB from you                                                                                      |
-| 5                 | In current case: in total, Transmission downloaded 3.68 GB (in this case 2.35MB were corrupted, so Transmission had to re-download another 2.35MB) |
+| 5                 | In current case: in total, Retransmission downloaded 3.68 GB (in this case 2.35MB were corrupted, so Retransmission had to re-download another 2.35MB) |
 | 6                 | The current state of the torrent                                                                                                                   |
 | 7                 | In current case: 4 days have passed since the torrent download was started                                                                         |
 | 8                 | The remaining time until the torrent is fully downloaded                                                                                           |
@@ -163,7 +163,7 @@ If the web browser and the Transmission daemon are on the machine you can use ht
 | Number On Picture | Description                                                                       |
 | ----------------- | --------------------------------------------------------------------------------- |
 | 1                 | URL of tracker                                                                    |
-| 2                 | Date and time of the last Transmission announcement about yourself on the tracker |
+| 2                 | Date and time of the last Retransmission announcement about yourself on the tracker |
 | 3                 | Time until the next announcement about yourself                                   |
 | 4                 | The time of the last receive of the list of tracker members                       |
 | 5                 | The number of seeders - those who distribute the file                             |

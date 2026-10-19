@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
+        <source>About {appname}</source>
         <translation>O&#xa0;programie</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © Projekt Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © Projekt Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -785,8 +785,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1790,11 +1790,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} regułę&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguły&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Lista blokowania zawiera {count:L} reguł&lt;/i&gt;</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} regułę</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} reguły</numerusform>
+            <numerusform>Lista blokowania zawiera {count:L} reguł</numerusform>
         </translation>
     </message>
     <message>
@@ -1860,7 +1860,7 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
+        <source>Show {appname} icon in the &amp;notification area</source>
         <translation>Ikona programu w&#xa0;obszarze p&amp;owiadamiania</translation>
     </message>
     <message>
@@ -2143,7 +2143,7 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
+        <source>{appname} Preferences</source>
         <translation>Preferencje</translation>
     </message>
     <message>
@@ -2315,11 +2315,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>Nie można dodać {count} podwójnego torrenta</numerusform>
-            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
-            <numerusform>Nie można dodać {count} podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnego torrenta</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnych torrentów</numerusform>
+            <numerusform>Nie można dodać {count:L} podwójnych torrentów</numerusform>
         </translation>
     </message>
 </context>
@@ -2596,12 +2596,12 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
-            <numerusform>Pobieranie od {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonego partnera</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
+            <numerusform>Pobieranie od {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2616,11 +2616,11 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonego partnera</numerusform>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
-            <numerusform>Wysyłanie do {active_count} z&#xa0;{connected_count} połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonego partnera</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
+            <numerusform>Wysyłanie do {active_count:L} z&#xa0;{connected_count:L} połączonych partnerów</numerusform>
         </translation>
     </message>
     <message>

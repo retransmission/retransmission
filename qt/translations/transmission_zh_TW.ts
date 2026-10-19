@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>關於 Transmission</translation>
+        <source>About {appname}</source>
+        <translation>關於 {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © The Transmission Project</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © The Retransmission Project</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1760,9 +1760,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
+        <source>Blocklist contains {count:L} rule(s)</source>
         <translation>
-            <numerusform>&lt;i&gt;黑名單包含 {count:L} 個規則&lt;/i&gt;</numerusform>
+            <numerusform>黑名單包含 {count:L} 個規則</numerusform>
         </translation>
     </message>
     <message>
@@ -1828,8 +1828,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>在通知區域顯示 Transmission 圖示 (&amp;N)</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>在通知區域顯示 {appname} 圖示 (&amp;N)</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2109,8 +2109,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission 偏好設定</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname} 偏好設定</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2279,9 +2279,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add {count} duplicate torrent(s)</source>
+        <source>Unable to add {count:L} duplicate torrent(s)</source>
         <translation>
-            <numerusform>無法加入 {count} 個重複的 torrents</numerusform>
+            <numerusform>無法加入 {count:L} 個重複的 torrents</numerusform>
         </translation>
     </message>
 </context>
@@ -2550,10 +2550,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
+        <source>Downloading from {active_count:L} of {connected_count:L} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>正在從 {connected_count} 中的 {active_count} 個已連線的節點下載</numerusform>
+            <numerusform>正在從 {connected_count:L} 中的 {active_count:L} 個已連線的節點下載</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2566,9 +2566,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
+        <source>Seeding to {active_count:L} of {connected_count:L} connected peer(s)</source>
         <translation>
-            <numerusform>正在為 {connected_count} 中的 {active_count} 個已連線的節點做種</numerusform>
+            <numerusform>正在為 {connected_count:L} 中的 {active_count:L} 個已連線的節點做種</numerusform>
         </translation>
     </message>
     <message>

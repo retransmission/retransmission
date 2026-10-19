@@ -1,4 +1,4 @@
-// This file Copyright © Transmission authors and contributors.
+// This file Copyright © Retransmission authors and contributors.
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
@@ -27,6 +27,10 @@ typedef NS_ENUM(NSUInteger, AddType) { //
 
 @interface Controller
     : NSObject<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServiceDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSWindowDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, VDKQueueDelegate, SPUUpdaterDelegate>
+
+/// Quits if another copy is running, registers the default settings, and on the first launch offers the import from Transmission.
+/// Runs while the app finishes launching, before the main nib loads, because the nib's objects read the settings as they load.
++ (void)prepareForLaunch;
 
 - (void)openFiles:(NSArray<NSString*>*)filenames addType:(AddType)type forcePath:(NSString*)path;
 

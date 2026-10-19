@@ -161,7 +161,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             auto const error_code = errno;
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})")),
+                    "Couldn't make IPv4 socket non-blocking {address}: {error} ({error_code})",
                     fmt::arg("address", tr_socket_address::display_name(addr, udp_port_)),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -171,7 +171,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             auto const error_code = errno;
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't bind IPv4 socket {address}: {error} ({error_code})")),
+                    "Couldn't bind IPv4 socket {address}: {error} ({error_code})",
                     fmt::arg("address", tr_socket_address::display_name(addr, udp_port_)),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -208,7 +208,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             auto const error_code = errno;
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})")),
+                    "Couldn't make IPv6 socket non-blocking {address}: {error} ({error_code})",
                     fmt::arg("address", tr_socket_address::display_name(addr, udp_port_)),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -218,7 +218,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             auto const error_code = errno;
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_("Couldn't bind IPv6 socket {address}: {error} ({error_code})")),
+                    "Couldn't bind IPv6 socket {address}: {error} ({error_code})",
                     fmt::arg("address", tr_socket_address::display_name(addr, udp_port_)),
                     fmt::arg("error", tr_strerror(error_code)),
                     fmt::arg("error_code", error_code)));
@@ -241,7 +241,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
     }
 
     if (!is_valid_socket(udp4_socket_) && !is_valid_socket(udp6_socket_)) {
-        tr_logAddError(_("Couldn't create any UDP sockets."));
+        tr_logAddError("Couldn't create any UDP sockets.");
     }
 }
 

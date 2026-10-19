@@ -54,7 +54,6 @@ namespace
 
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
 char const* const TrayIconName = TR_PROJ_APPNAME "-tray-icon";
-char const* const AppIconName = TR_PROJ_APPNAME;
 #endif
 
 #if defined(TR_SYS_TRAY_IMPL_APPINDICATOR)
@@ -142,7 +141,7 @@ Glib::ustring getIconName()
     // otherwise, use the fallback builtin icon.
 
     auto const icon = Gtk::IconTheme::get_default()->lookup_icon(TrayIconName, 48, Gtk::ICON_LOOKUP_USE_BUILTIN);
-    return icon && !icon.get_filename().empty() ? TrayIconName : AppIconName;
+    return icon && !icon.get_filename().empty() ? TrayIconName : TR_GTK_ICON_NAME;
 }
 
 #endif
@@ -182,6 +181,12 @@ SystemTrayIcon::Impl::Impl([[maybe_unused]] Gtk::Window& main_window, Glib::RefP
 {
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
     auto const icon_name = getIconName();
+
+    // This item names the app, so it gets its label here, where the name can be filled in.
+    auto const show_section = gtr_action_get_object<Gio::Menu>("icon-popup-show-section");
+    show_section->remove_all();
+    show_section->append(gtr_with_app_name(_("_Show {appname}")), "win.toggle-main-window");
+
     menu_ = Gtk::make_managed<Gtk::Menu>(gtr_action_get_object<Gio::Menu>("icon-popup"));
     menu_->attach_to_widget(main_window);
 #endif
@@ -202,11 +207,7 @@ std::string SystemTrayIcon::Impl::make_tooltip_text() const
 {
     auto const* const session = core_->get_session();
     return fmt::format(
-        fmt::runtime(_("{upload_speed} ▴ {download_speed} ▾")),
-        fmt::arg(
-            "upload_speed",
-            Speed{ tr_sessionGetRawSpeed_KBps(session, tr_direction::Up), Speed::Units::KByps }.to_string()),
-        fmt::arg(
-            "download_speed",
-            Speed{ tr_sessionGetRawSpeed_KBps(session, tr_direction::Down), Speed::Units::KByps }.to_string()));
+        "{} ▴ {} ▾",
+        Speed{ tr_sessionGetRawSpeed_KBps(session, tr_direction::Up), Speed::Units::KByps }.to_string(),
+        Speed{ tr_sessionGetRawSpeed_KBps(session, tr_direction::Down), Speed::Units::KByps }.to_string());
 }

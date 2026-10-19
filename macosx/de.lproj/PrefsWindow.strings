@@ -255,7 +255,7 @@
 "1557.title" = "Benutzername:";
 
 /* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "Hierdurch kann Transmission mit einem Web-Browser bedient werden.";
+"1645.title" = "Hierdurch kann Retransmission mit einem Web-Browser bedient werden.";
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "Im Web-Browser öffnen";
@@ -345,7 +345,7 @@
 "1931.title" = "magnet-Links öffnen:";
 
 /* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "1933"; */
-"1933.title" = "Transmission als Standardprogramm nutzen";
+"1933.title" = "Retransmission als Standardprogramm nutzen";
 
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "„.part“ an Dateinamen unvollständer Übertragungen anhängen";
@@ -396,7 +396,7 @@
 "A9E-F4-a3c.title" = "Torrentdatein öffnen:";
 
 /* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "pgY-W3-HdI"; */
-"pgY-W3-HdI.title" = "Transmission als Standardprogramm nutzen";
+"pgY-W3-HdI.title" = "Retransmission als Standardprogramm nutzen";
 
 /* Class = "NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
 /* "wM8-cD-WAB.title" = ""; */
