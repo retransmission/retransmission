@@ -50,3 +50,5 @@ tr_target_glib_resources(gtk-test-resources
 add_trgtk_test(serializer-test.cc)
 
 add_trgtk_test(rpc-client-test.cc)
+
+add_trgtk_test(session-test.cc)

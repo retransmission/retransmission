@@ -48,7 +48,9 @@
 #include <unordered_map>
 #include <utility> // std::exchange()
 
-using namespace tr::app;
+using tr::app::DefaultShowMode;
+using tr::app::Prefs;
+using tr::app::ShowMode;
 
 namespace
 {

@@ -34,7 +34,6 @@
 #include <glibmm/stringutils.h>
 
 #include <sigslot/signal.hpp>
-#include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/sortlistmodel.h>
@@ -56,7 +55,11 @@
 #include <utility>
 
 using namespace std::literals;
-using namespace tr::app;
+using tr::app::FaviconCache;
+using tr::app::Prefs;
+using tr::app::RpcClient;
+using tr::app::RpcResponse;
+using tr::app::SortMode;
 
 class Session::Impl
 {
@@ -160,8 +163,6 @@ private:
 
     [[nodiscard]] Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
 
-    void update_sleep_inhibitor();
-
     void watchdir_update();
     void watchdir_scan();
     void watchdir_monitor_file(Glib::RefPtr<Gio::File> const& file);
@@ -181,7 +182,7 @@ private:
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
     sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
-    sigc::signal<void(size_t, time_t)> signal_blocklist_info_;
+    sigc::signal<void()> signal_blocklist_info_;
     sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
@@ -199,7 +200,6 @@ private:
     bool adding_from_watch_dir_ = false;
     std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
 
-    woke::SleepInhibitor sleep_inhibitor_;
     gint busy_count_ = 0;
     Glib::RefPtr<Gio::ListStore<Torrent>> raw_model_;
     Glib::RefPtr<SortListModel<Torrent>> sorted_model_;
@@ -464,18 +464,6 @@ void Session::Impl::on_pref_changed(tr_quark const key)
         sorter_->set_reversed(core_.prefs_.get<bool>(TR_KEY_sort_reversed));
         break;
 
-    case TR_KEY_peer_limit_global:
-        tr_sessionSetPeerLimit(session_, core_.prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_peer_limit_per_torrent:
-        tr_sessionSetPeerLimitPerTorrent(session_, core_.prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_inhibit_desktop_hibernation:
-        update_sleep_inhibitor();
-        break;
-
     case TR_KEY_watch_dir:
     case TR_KEY_watch_dir_enabled:
         watchdir_update();
@@ -498,9 +486,13 @@ Glib::RefPtr<Session> Session::create(tr_session* const session, Prefs& prefs, R
 
 Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
     : Glib::ObjectBase(typeid(Session))
+    , tr::app::Session(prefs, rpc)
     , prefs_(prefs)
+    , config_dir_(tr_sessionGetConfigDir(session))
     , impl_(std::make_unique<Impl>(*this, session, rpc))
 {
+    set_embedded_session(session);
+    set_session_type(Type::Embedded);
 }
 
 Session::~Session() = default;
@@ -521,8 +513,6 @@ Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
     on_pref_changed(TR_KEY_sort_mode);
     on_pref_changed(TR_KEY_sort_reversed);
     on_pref_changed(TR_KEY_watch_dir_enabled);
-    on_pref_changed(TR_KEY_peer_limit_global);
-    on_pref_changed(TR_KEY_inhibit_desktop_hibernation);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
     prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
 
@@ -533,6 +523,12 @@ Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
         [this](tr_torrent_id_t const tor_id, tr_completeness const completeness, bool const was_running) {
             on_torrent_completeness_changed(tor_id, completeness, was_running);
         });
+
+    // The scheduler turns alt speeds on and off without a settings-changed notice,
+    // so read the new value back here. Runs on the session thread.
+    tr_sessionSetAltSpeedFunc(session, [this](bool const /*is_enabled*/, bool const /*by_user*/) {
+        gtr_run_on_ui_thread([core = get_core_ptr()]() { core->import_embedded_settings(); });
+    });
 }
 
 Session::Impl::~Impl()
@@ -542,7 +538,15 @@ Session::Impl::~Impl()
 
 tr_session* Session::close()
 {
-    return impl_->close();
+    auto* const session = impl_->close();
+
+    if (session != nullptr) {
+        save_prefs();
+        set_embedded_session(nullptr);
+        set_session_type({});
+    }
+
+    return session;
 }
 
 tr_session* Session::Impl::close()
@@ -552,10 +556,21 @@ tr_session* Session::Impl::close()
     if (session != nullptr) {
         session_ = nullptr;
         rpc_.stop();
-        core_.prefs_.save(tr_sessionGetConfigDir(session), tr_sessionGetSettings(session));
     }
 
     return session;
+}
+
+void Session::import_embedded_settings()
+{
+    if (auto const settings = embedded_settings(); settings) {
+        import_session_settings(*settings);
+    }
+}
+
+void Session::save_prefs() const
+{
+    prefs_.save(config_dir_, embedded_settings());
 }
 
 /***
@@ -651,8 +666,9 @@ void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_no
 Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* builder)
 {
     // let the gtk client handle the removal, since libT
-    // doesn't have any concept of the glib trash API
-    auto const do_trash = tr_sessionGetDeleteSource(session_);
+    // doesn't have any concept of the glib trash API.
+    // Prefs, not tr_session: the client's copy of the setting, which exists for every kind of session.
+    auto const do_trash = core_.prefs_.get<bool>(TR_KEY_trash_original_torrent_files);
     tr_torrent* const tor = tr_torrentNew(builder, nullptr);
 
     if (tor != nullptr && do_trash) {
@@ -910,6 +926,11 @@ void Session::clear()
 
 void Session::update()
 {
+    // Feeds the sleep inhibitor until the session's stats are polled over RPC.
+    if (auto* const session = get_session(); session != nullptr) {
+        set_busy(tr_sessionIsBusy(session));
+    }
+
     impl_->update();
 }
 
@@ -934,8 +955,6 @@ void Session::Impl::update()
         }
     }
 
-    update_sleep_inhibitor();
-
     if (changes.any()) {
         signal_torrents_changed_.emit(torrent_ids, changes);
     }
@@ -947,19 +966,6 @@ void Session::Impl::update_torrent(tr_torrent_id_t const id)
         if (auto const changes = torrent->update(); changes.any()) {
             signal_torrents_changed_.emit({ id }, changes);
         }
-    }
-}
-
-/**
-***  Sleep inhibition
-**/
-
-void Session::Impl::update_sleep_inhibitor()
-{
-    if (core_.prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation) && tr_sessionIsBusy(session_)) {
-        sleep_inhibitor_.inhibit(TR_PROJ_APPNAME_CAPITALIZED, "Torrents are active");
-    } else {
-        sleep_inhibitor_.uninhibit();
     }
 }
 
@@ -1067,15 +1073,9 @@ void Session::refresh_blocklist_info()
         TR_KEY_session_get,
         make_session_get_params({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }),
         [this](RpcResponse const& response) {
-            auto const* const result = get_result_map(response);
-            if (result == nullptr) {
-                return;
-            }
-
-            auto const rule_count = result->value_if<int64_t>(TR_KEY_blocklist_size);
-            auto const updated_at = result->value_if<int64_t>(TR_KEY_blocklist_date);
-            if (rule_count && updated_at) {
-                impl_->signal_blocklist_info().emit(static_cast<size_t>(*rule_count), static_cast<time_t>(*updated_at));
+            if (auto const* const result = get_result_map(response); result != nullptr) {
+                import_session_settings(*result);
+                impl_->signal_blocklist_info().emit();
             }
         });
 }
@@ -1094,7 +1094,7 @@ std::vector<Glib::ustring> Session::get_recent_relocate_paths() const
 
 std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
 {
-    using Traits = PrefsStringTraits<Glib::ustring>;
+    using Traits = tr::app::PrefsStringTraits<Glib::ustring>;
 
     auto dirs = std::vector<Glib::ustring>{};
 
@@ -1219,7 +1219,7 @@ sigc::signal<void(tr_torrent_builder*)>& Session::signal_add_prompt()
     return impl_->signal_add_prompt();
 }
 
-sigc::signal<void(size_t, time_t)>& Session::signal_blocklist_info()
+sigc::signal<void()>& Session::signal_blocklist_info()
 {
     return impl_->signal_blocklist_info();
 }

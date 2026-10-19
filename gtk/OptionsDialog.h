@@ -77,6 +77,7 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs,
         std::unique_ptr<tr_torrent_builder> torrent_builder);
     OptionsDialog(OptionsDialog&&) = delete;
     OptionsDialog(OptionsDialog const&) = delete;
@@ -87,6 +88,7 @@ public:
     [[nodiscard]] static std::unique_ptr<OptionsDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs,
         std::unique_ptr<tr_torrent_builder> torrent_builder);
 
 private:

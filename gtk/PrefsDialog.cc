@@ -46,8 +46,8 @@
 #include <fmt/format.h>
 
 #include <array>
+#include <chrono>
 #include <cstddef> // size_t
-#include <ctime> // time_t
 #include <limits>
 #include <map>
 #include <memory>
@@ -425,8 +425,8 @@ private:
 void DownloadingPage::on_core_prefs_changed(tr_quark const key)
 {
     if (key == TR_KEY_download_dir) {
-        std::string const download_dir = tr_sessionGetDownloadDir(core_->get_session());
-        freespace_label_->set_dir(download_dir);
+        // Prefs, not tr_session: the client's copy of the setting, which exists for every kind of session.
+        freespace_label_->set_dir(prefs().get<std::string>(TR_KEY_download_dir));
     }
 }
 
@@ -574,7 +574,7 @@ public:
 
 private:
     bool refreshBlocklistInfo();
-    void onBlocklistInfo(size_t rule_count, time_t updated_at);
+    void onBlocklistInfo();
     void updateBlocklistText();
     void onBlocklistUpdated(bool success);
     void onBlocklistUpdate();
@@ -609,13 +609,14 @@ bool PrivacyPage::refreshBlocklistInfo()
     return true;
 }
 
-void PrivacyPage::onBlocklistInfo(size_t const rule_count, time_t const updated_at)
+void PrivacyPage::onBlocklistInfo()
 {
-    rule_count_ = rule_count;
+    rule_count_ = static_cast<size_t>(core_->blocklist_size().value_or(0));
     if (!showing_update_status_) {
         updateBlocklistText();
     }
 
+    auto const updated_at = core_->blocklist_date().value_or(std::chrono::sys_seconds{}).time_since_epoch().count();
     gtr_label_set_text(
         *date_label_,
         updated_at == 0 ? _("Blocklist has never been updated") :
