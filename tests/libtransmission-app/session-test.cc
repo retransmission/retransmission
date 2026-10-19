@@ -307,6 +307,36 @@ TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
     EXPECT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == 111U; }));
 }
 
+// With a random port on start, the session's settings map still holds the configured port;
+// the bound one is only available from the session itself. The map's port must not
+// land in Prefs on the way, or every import would announce two port changes.
+TEST_F(AppSessionSyncTest, importingSettingsReadsTheBoundPeerPortWhenEmbedded)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+    session.set_embedded_session(session_);
+
+    auto const bound_port = uint16_t{ 51999 };
+    tr_sessionSetPeerPort(session_, bound_port);
+    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetPeerPort(session_) == bound_port; }));
+
+    auto port_changes = 0;
+    auto const tag = prefs.observe_changes([&port_changes](tr_quark const key) {
+        if (key == TR_KEY_peer_port) {
+            ++port_changes;
+        }
+    });
+
+    auto settings = tr_variant::Map{ 1U };
+    settings.insert_or_assign(TR_KEY_peer_port, 12345);
+    session.import_session_settings(settings);
+    EXPECT_EQ(bound_port, prefs.get<uint16_t>(TR_KEY_peer_port));
+    EXPECT_EQ(1, port_changes);
+}
+
 TEST_F(AppSessionSyncTest, embeddedSettingsRequireAnEmbeddedSession)
 {
     auto rpc = RpcClient{ inline_marshaler() };

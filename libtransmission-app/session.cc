@@ -111,7 +111,16 @@ void Session::import_session_settings(tr_variant::Map const& settings)
 {
     importing_settings_ = true;
 
+    auto* const embedded = embedded_session_;
+
     for (auto const& [key, value] : settings) {
+        // An embedded session's port comes from the session itself, below:
+        // tr_sessionGetSettings() carries the configured port, and session_get
+        // the advertised one, which port forwarding can remap.
+        if (key == TR_KEY_peer_port && embedded != nullptr) {
+            continue;
+        }
+
         if (prefs_is_core(key)) {
             prefs_.set(key, value);
         }
@@ -127,7 +136,10 @@ void Session::import_session_settings(tr_variant::Map const& settings)
 
     // For security reasons, the RPC server's own settings aren't in
     // `session_get` responses; read them directly when the session is embedded.
-    if (auto* const embedded = embedded_session_; embedded != nullptr) {
+    if (embedded != nullptr) {
+        // the port the session listens on, which neither settings source above reports
+        prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(embedded));
+
         prefs_.set(TR_KEY_rpc_authentication_required, tr_sessionIsRPCPasswordEnabled(embedded));
         prefs_.set(TR_KEY_rpc_enabled, tr_sessionIsRPCEnabled(embedded));
         prefs_.set(TR_KEY_rpc_password, tr_sessionGetRPCPassword(embedded));
