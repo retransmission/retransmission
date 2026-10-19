@@ -403,28 +403,16 @@ TEST_F(WebTest, timeoutIsReported)
 
 TEST_F(WebTest, blockedInterfaceIsRefused)
 {
-    // a per-request "blocked" binding completes the fetch as a failed
-    // connection without a request ever reaching the server
+    // a "blocked" binding completes the fetch as a failed connection
+    // without a request ever reaching the server
+    mediator_.bind_interface_ = "blocked";
     auto user_data = int{};
-    auto opts = options("/"sv, &user_data);
-    opts.bind_interface = "blocked";
 
-    auto const response = fetch(std::move(opts));
+    auto const response = fetch(options("/"sv, &user_data));
     EXPECT_EQ(0, response.status);
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
     EXPECT_EQ(&user_data, response.user_data);
-    EXPECT_TRUE(std::empty(server_.lastRequest().method));
-}
-
-TEST_F(WebTest, blockedSessionInterfaceIsRefused)
-{
-    // the session-level binding is refused the same way when the request has no override
-    mediator_.bind_interface_ = "blocked";
-
-    auto const response = fetch(options());
-    EXPECT_EQ(0, response.status);
-    EXPECT_FALSE(response.did_connect);
     EXPECT_TRUE(std::empty(server_.lastRequest().method));
 }
 

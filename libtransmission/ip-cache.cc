@@ -82,7 +82,8 @@ namespace global_source_ip_helpers
     auto const [dst_ss, dst_sslen] = tr_socket_address::to_sockaddr(dst_addr, dst_port);
     auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(bind_addr, {});
     if (auto const sock = socket(dst_ss.ss_family, SOCK_DGRAM, 0); is_valid_socket(sock)) {
-        if (tr_netSetSocketInterface(sock, dst_addr.type, bind_interface) || bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0) {
+        if (tr_netSetSocketInterface(sock, dst_addr.type, bind_interface) &&
+            bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0) {
             if (connect(sock, reinterpret_cast<sockaddr const*>(&dst_ss), dst_sslen) == 0) {
                 auto src_ss = sockaddr_storage{};
                 auto src_sslen = socklen_t{ sizeof(src_ss) };
@@ -250,9 +251,6 @@ void tr_ip_cache::update_global_addr(tr_address_type const type)
     options.ip_proto = IPProtocolMap[type];
     options.sndbuf = 4096;
     options.rcvbuf = 4096;
-    if (auto const bind_interface = mediator_.settings_bind_interface(); !tr_net_interface_is_default(bind_interface)) {
-        options.bind_interface = std::string{ bind_interface };
-    }
     mediator_.fetch(std::move(options));
 }
 

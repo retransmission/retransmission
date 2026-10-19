@@ -1068,8 +1068,6 @@ TEST_F(NetTest, bindInterfaceIsDefault)
     static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
         { ""sv, true },
         { "  "sv, true },
-        { "default"sv, true },
-        { " default "sv, true },
         { "utun4"sv, false },
         { " utun4 "sv, false },
         { "blocked"sv, false },
@@ -1086,7 +1084,6 @@ TEST_F(NetTest, bindInterfaceIsBlocked)
         { "blocked"sv, true },
         { " blocked "sv, true },
         { ""sv, false },
-        { "default"sv, false },
         { "utun4"sv, false },
     });
 
@@ -1100,7 +1097,6 @@ TEST_F(NetTest, effectiveBindInterface)
     static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
         { ""sv, ""sv },
         { "  "sv, ""sv },
-        { "default"sv, ""sv },
         { " utun4 "sv, "utun4"sv },
         { "blocked"sv, "blocked"sv },
     });
@@ -1114,7 +1110,6 @@ TEST_F(NetTest, curlInterfaceString)
 {
     EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
     EXPECT_FALSE(tr_netCurlInterfaceString("  "sv));
-    EXPECT_FALSE(tr_netCurlInterfaceString("default"sv));
 
     auto const bound = tr_netCurlInterfaceString(" utun4 "sv);
     ASSERT_TRUE(bound);
@@ -1127,7 +1122,6 @@ TEST_F(NetTest, curlInterfaceString)
 TEST_F(NetTest, interfaceIndex)
 {
     EXPECT_EQ(0U, tr_net_interface_index(""sv));
-    EXPECT_EQ(0U, tr_net_interface_index("default"sv));
     EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
     EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
 
@@ -1136,27 +1130,4 @@ TEST_F(NetTest, interfaceIndex)
 #elif defined(__linux__)
     EXPECT_NE(0U, tr_net_interface_index(" lo "sv));
 #endif
-}
-
-TEST_F(NetTest, interfaceAddress)
-{
-    EXPECT_FALSE(tr_net_interface_address(""sv, TR_AF_INET));
-    EXPECT_FALSE(tr_net_interface_address("default"sv, TR_AF_INET));
-    EXPECT_FALSE(tr_net_interface_address("blocked"sv, TR_AF_INET));
-    EXPECT_FALSE(tr_net_interface_address("tr-no-such-interface"sv, TR_AF_INET));
-
-#if defined(__APPLE__)
-    auto constexpr Loopback = " lo0 "sv;
-#elif defined(__linux__)
-    auto constexpr Loopback = " lo "sv;
-#else
-    auto constexpr Loopback = ""sv;
-#endif
-
-    if constexpr (!std::empty(Loopback)) {
-        auto const addr = tr_net_interface_address(Loopback, TR_AF_INET);
-        ASSERT_TRUE(addr);
-        EXPECT_EQ(TR_AF_INET, addr->type);
-        EXPECT_EQ("127.0.0.1"sv, addr->display_name());
-    }
 }

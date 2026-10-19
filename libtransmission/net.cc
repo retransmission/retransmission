@@ -110,8 +110,7 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 
 bool tr_net_interface_is_default(std::string_view const bind_interface)
 {
-    auto const name = tr_strv_strip(bind_interface);
-    return std::empty(name) || name == TrBindInterfaceDefault;
+    return std::empty(tr_strv_strip(bind_interface));
 }
 
 bool tr_net_interface_is_blocked(std::string_view const bind_interface)
@@ -121,8 +120,7 @@ bool tr_net_interface_is_blocked(std::string_view const bind_interface)
 
 std::string_view tr_net_effective_bind_interface(std::string_view const bind_interface)
 {
-    auto const name = tr_strv_strip(bind_interface);
-    return tr_net_interface_is_default(name) ? std::string_view{} : name;
+    return tr_strv_strip(bind_interface);
 }
 
 unsigned tr_net_interface_index(std::string_view const bind_interface)
@@ -133,42 +131,6 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     }
 
     return if_nametoindex(std::string{ name }.c_str());
-}
-
-std::optional<tr_address> tr_net_interface_address(
-    std::string_view const bind_interface,
-    [[maybe_unused]] tr_address_type const type)
-{
-    auto const name = tr_net_effective_bind_interface(bind_interface);
-    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
-        return {};
-    }
-
-#ifdef _WIN32
-    // interface binding is unsupported on Windows: tr_netSetSocketInterface
-    // fails closed there, so no caller gets as far as needing an address
-    return {};
-#else
-    struct ifaddrs* ifa = nullptr;
-    if (getifaddrs(&ifa) != 0) {
-        auto const err = errno;
-        tr_logAddDebug(fmt::format("Failed to retrieve interface list: {} ({})", err, tr_strerror(err)));
-        return {};
-    }
-    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
-
-    for (; ifa != nullptr; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr == nullptr || (ifa->ifa_flags & IFF_UP) == 0U || name != ifa->ifa_name) {
-            continue;
-        }
-
-        if (auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr); if_addr && if_addr->address().type == type) {
-            return if_addr->address();
-        }
-    }
-
-    return {};
-#endif
 }
 
 bool tr_netSetSocketInterface(

@@ -514,7 +514,7 @@ private:
 
 struct tr_session;
 
-// true for the values that mean "normal OS routing": empty or TrBindInterfaceDefault
+// true for the values that mean "normal OS routing": empty or whitespace
 [[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
 
 // true for TrBindInterfaceBlocked, the value that refuses every socket
@@ -524,13 +524,8 @@ struct tr_session;
 [[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
 
 // the OS index of the named interface, or 0 when `bind_interface` is
-// default, blocked, or names an interface that doesn't exist
+// empty, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
-
-// an address of the named interface in the given family, or nullopt when
-// `bind_interface` is default or blocked, or the interface is down,
-// unknown, or has no address in that family
-[[nodiscard]] std::optional<tr_address> tr_net_interface_address(std::string_view bind_interface, tr_address_type type);
 
 [[nodiscard]] bool tr_netSetSocketInterface(
     tr_socket_t sock,

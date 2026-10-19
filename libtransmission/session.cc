@@ -329,8 +329,8 @@ std::optional<std::string> tr_session::WebMediator::bind_address_V6() const
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
 {
-    // runs on the curl thread, so it may not read settings_ directly
-    if (auto bind_interface = session_->bind_interface_snapshot(); !tr_net_interface_is_default(bind_interface)) {
+    // runs on the curl thread, so it reads the binding under its mutex
+    if (auto bind_interface = session_->bind_interface_thread_safe(); !tr_net_interface_is_default(bind_interface)) {
         return bind_interface;
     }
 
@@ -447,8 +447,9 @@ tr_address tr_session::bind_address(tr_address_type type) const noexcept
             return *addr;
         }
 
-        // when bound to an interface, let that binding choose the source address
-        if (!tr_net_interface_is_default(settings_.bind_interface)) {
+        // when bound to an interface, let that binding choose the source address.
+        // The curl thread calls this too, so read the binding under its mutex.
+        if (!tr_net_interface_is_default(bind_interface_thread_safe())) {
             return tr_address::any(TR_AF_INET6);
         }
 
@@ -779,17 +780,15 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 {
     auto const lock = unique_lock();
 
-    std::swap(settings_, settings_in);
+    // Other threads see the new binding before anything below acts on it,
+    // so work cancelled by apply_network_bindings() cannot be replaced by
+    // work that still reads the old value.
+    {
+        auto const bind_interface_lock = std::scoped_lock{ bind_interface_mutex_ };
+        std::swap(settings_, settings_in);
+    }
     auto const& new_settings = settings_;
     auto const& old_settings = settings_in;
-
-    // Publish the binding for other threads before anything below acts on
-    // it, so that work cancelled by apply_network_bindings() cannot be
-    // replaced by work that still reads the old value.
-    {
-        auto const snapshot_lock = std::scoped_lock{ bind_interface_mutex_ };
-        bind_interface_snapshot_ = new_settings.bind_interface;
-    }
 
     // the rest of the func is session_ responding to settings changes
 
@@ -950,8 +949,13 @@ void tr_session::apply_network_bindings(
         dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
     }
 
+    // Restarting drops every peer and handshake the torrent has and announces
+    // "stopped" then "started", so trackers learn the new route.
     if (interface_changed) {
-        tr_peerMgrCloseConnections(peer_mgr_.get());
+        tr_peerMgrCloseIncomingHandshakes(peer_mgr_.get());
+        for (auto* const tor : torrents()) {
+            tor->restart();
+        }
     }
 }
 
@@ -1723,7 +1727,7 @@ std::string tr_sessionGetBindInterface(tr_session const* session)
     TR_ASSERT(session != nullptr);
 
     // callable from any thread, e.g. a GUI's main thread
-    return session != nullptr ? session->bind_interface_snapshot() : std::string{};
+    return session != nullptr ? session->bind_interface_thread_safe() : std::string{};
 }
 
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface)

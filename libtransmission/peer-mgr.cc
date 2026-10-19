@@ -1037,8 +1037,6 @@ public:
         rechoke_timer_->start_repeating(RechokePeriod);
     }
 
-    void close_connections();
-
     tr_peerMgr(tr_peerMgr&&) = delete;
     tr_peerMgr(tr_peerMgr const&) = delete;
     tr_peerMgr& operator=(tr_peerMgr&&) = delete;
@@ -2242,21 +2240,6 @@ void close_peer(std::shared_ptr<tr_peerMsgs> const& peer)
     peer->swarm->remove_peer(peer);
 }
 
-void close_torrent_connections(tr_torrent const* const tor)
-{
-    if (tor == nullptr || tor->swarm == nullptr) {
-        return;
-    }
-
-    auto peers = tor->swarm->peers;
-    std::ranges::for_each(peers, close_peer);
-
-    // outgoing handshakes still in flight were opened on the old interface
-    for (auto& [sockaddr, peer_info] : tor->swarm->connectable_pool) {
-        peer_info->destroy_handshake();
-    }
-}
-
 constexpr struct {
     [[nodiscard]] static int compare(std::shared_ptr<tr_peerMsgs> const& a, std::shared_ptr<tr_peerMsgs> const& b) // <=>
     {
@@ -2352,25 +2335,11 @@ void enforceSessionPeerLimit(size_t global_peer_limit, tr_torrents& torrents)
 } // namespace disconnect_helpers
 } // namespace
 
-void tr_peerMgr::close_connections()
-{
-    using namespace disconnect_helpers;
-
-    auto const lock = unique_lock();
-    outbound_candidates_.clear();
-
-    // handshakes still in flight were accepted or opened on the old sockets too
-    incoming_handshakes.clear();
-
-    for (auto* const tor : torrents_) {
-        close_torrent_connections(tor);
-    }
-}
-
-void tr_peerMgrCloseConnections(tr_peerMgr* manager)
+void tr_peerMgrCloseIncomingHandshakes(tr_peerMgr* manager)
 {
     if (manager != nullptr) {
-        manager->close_connections();
+        auto const lock = manager->unique_lock();
+        manager->incoming_handshakes.clear();
     }
 }
 

@@ -133,12 +133,11 @@ private:
             // if we're mapped, everything is fine... check back at `renew_time`
             // to renew the port forwarding if it's expired
             do_port_check_ = true;
-            if (auto const now = tr_time(); natpmp_ != nullptr && natpmp_->renewTime() > now) {
+            if (auto const now = tr_time(); natpmp_ && natpmp_->renewTime() > now) {
                 timer_->start_single_shot(std::chrono::seconds{ natpmp_->renewTime() - now });
-            } else if (natpmp_ != nullptr) { // ???
+            } else // ???
+            {
                 timer_->start_single_shot(1min);
-            } else {
-                timer_->start_single_shot(30min);
             }
             break;
 

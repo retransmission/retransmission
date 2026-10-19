@@ -306,6 +306,11 @@ private:
             return session_.settings_.bind_interface;
         }
 
+        [[nodiscard]] std::optional<tr_address> source_address(tr_address_type type) const override
+        {
+            return session_.source_address(type);
+        }
+
         [[nodiscard]] tr_port port() const override
         {
             return session_.advertisedPeerPort();
@@ -698,18 +703,18 @@ public:
 
     // peer networking
 
-    // session thread only; other threads use bind_interface_snapshot()
+    // session thread only; other threads use bind_interface_thread_safe()
     [[nodiscard]] constexpr auto const& bind_interface() const noexcept
     {
         return settings().bind_interface;
     }
 
-    // A copy of the bind_interface setting that any thread may read.
-    // setSettings() refreshes it under bind_interface_mutex_.
-    [[nodiscard]] std::string bind_interface_snapshot() const
+    // Any thread may call this: setSettings() replaces settings_ under
+    // bind_interface_mutex_.
+    [[nodiscard]] std::string bind_interface_thread_safe() const
     {
         auto const lock = std::scoped_lock{ bind_interface_mutex_ };
-        return bind_interface_snapshot_;
+        return settings_.bind_interface;
     }
 
     [[nodiscard]] constexpr auto const& peerCongestionAlgorithm() const noexcept
@@ -1456,14 +1461,15 @@ private:
 
     mutable std::recursive_mutex session_mutex_;
 
-    // Guards bind_interface_snapshot_ only. It is always the innermost
-    // lock: the curl thread takes it while holding tr_web's task mutex,
-    // and the session thread takes it while holding session_mutex_.
+    // Held while setSettings() replaces settings_, so that other threads can
+    // read settings_.bind_interface through bind_interface_thread_safe(). It
+    // is always the innermost lock: the curl thread takes it while holding
+    // tr_web's task mutex, and the session thread takes it while holding
+    // session_mutex_.
     mutable std::mutex bind_interface_mutex_;
-    std::string bind_interface_snapshot_;
 
     // The OS index the bound sockets were given for settings_.bind_interface,
-    // or 0 when the setting is default/blocked or the interface was absent.
+    // or 0 when the setting is empty/blocked or the interface was absent.
     // on_now_timer() rebinds when the live index no longer matches.
     unsigned bound_interface_index_ = 0U;
 

@@ -92,9 +92,6 @@ struct tr_upnp {
 
     ~tr_upnp()
     {
-        TR_ASSERT(!isMapped);
-        TR_ASSERT(state == UpnpState::Idle || state == UpnpState::WillDiscover || state == UpnpState::Discovering);
-
         FreeUPNPUrls(&urls);
     }
 
@@ -309,20 +306,20 @@ tr_upnp* tr_upnpInit()
 
 void tr_upnpClose(tr_upnp* handle)
 {
+    if (handle != nullptr) {
+        TR_ASSERT(!handle->isMapped);
+        TR_ASSERT(
+            handle->state == UpnpState::Idle || handle->state == UpnpState::WillDiscover ||
+            handle->state == UpnpState::Discovering);
+    }
+
     delete handle;
 }
 
 void tr_upnpDiscard(tr_upnp* handle)
 {
-    if (handle == nullptr) {
-        return;
-    }
-
-    // A discovery thread may still be running; dropping its future just
-    // discards the gateway it finds, which was reached over the old route.
-    handle->discover_future.reset();
-    handle->isMapped = false;
-    handle->state = UpnpState::WillDiscover;
+    // A discovery thread may still be running. It owns the shared state
+    // behind discover_future, so deleting the handle doesn't wait for it.
     delete handle;
 }
 

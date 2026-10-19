@@ -152,9 +152,6 @@ public:
         // Set to 0 to disable the limit.
         size_t max_file_size = TrWebDefaultMaxBodyBytes;
 
-        // If set, overrides the session interface binding for this request.
-        std::optional<std::string> bind_interface;
-
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
     };
 

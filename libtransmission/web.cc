@@ -270,7 +270,7 @@ public:
             // ordered against cancel_all(): a request that saw the policy
             // before a change was queued before the cancel and is dropped
             // by it; one that sees "blocked" is refused right here.
-            if (!is_blocked(options, mediator.bind_interface())) {
+            if (!is_blocked(mediator.bind_interface())) {
                 queued_tasks_.emplace_back(*this, std::move(options), binding_generation_);
                 queued_tasks_cv_.notify_one();
                 return;
@@ -291,22 +291,13 @@ public:
 
     void cancel_all()
     {
-        {
-            auto const lock = std::unique_lock{ tasks_mutex_ };
-            ++binding_generation_;
-        }
-        queued_tasks_cv_.notify_one();
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        ++binding_generation_;
     }
 
-    // Whether the request's effective binding policy is "blocked":
-    // its own override if it has one, else `session_binding`,
-    // a value read from the mediator's bind_interface().
-    [[nodiscard]] static bool is_blocked(FetchOptions const& options, std::optional<std::string> const& session_binding)
+    // `session_binding` is a value read from the mediator's bind_interface()
+    [[nodiscard]] static bool is_blocked(std::optional<std::string> const& session_binding)
     {
-        if (options.bind_interface) {
-            return tr_net_interface_is_blocked(*options.bind_interface);
-        }
-
         return session_binding && tr_net_interface_is_blocked(*session_binding);
     }
 
@@ -403,10 +394,6 @@ public:
         // to the bind addresses.
         [[nodiscard]] auto curl_interface(std::optional<std::string> const& session_binding) const
         {
-            if (options_.bind_interface) {
-                return tr_netCurlInterfaceString(*options_.bind_interface);
-            }
-
             if (session_binding) {
                 if (auto const curl_interface = tr_netCurlInterfaceString(*session_binding); curl_interface) {
                     return curl_interface;
@@ -676,7 +663,7 @@ public:
     void initEasy(Task& task, std::optional<std::string> const& session_binding)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
-        TR_ASSERT(!is_blocked(task.options(), session_binding));
+        TR_ASSERT(!is_blocked(session_binding));
         auto* const e = task.easy();
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
@@ -859,7 +846,7 @@ public:
     }
 
     // Complete, as failed connections, the tasks that cancel_all() has
-    // invalidated and the queued ones whose binding policy is now "blocked".
+    // invalidated, and every queued one while the binding is "blocked".
     // Runs on the curl thread with tasks_mutex_ held, so the tasks are
     // destroyed under the same lock that remove_task() destroys them under.
     void cancel_invalidated_tasks(CURLM* multi, std::optional<std::string> const& session_binding)
@@ -870,7 +857,7 @@ public:
 
         for (auto iter = std::begin(queued_tasks_); iter != std::end(queued_tasks_);) {
             auto const next = std::next(iter);
-            if (iter->generation() != binding_generation_ || is_blocked(iter->options(), session_binding)) {
+            if (iter->generation() != binding_generation_ || is_blocked(session_binding)) {
                 cancelled.splice(std::end(cancelled), queued_tasks_, iter);
             }
             iter = next;

@@ -202,6 +202,37 @@ TEST_F(IPCacheTest, globalSourceIPv6)
     EXPECT_TRUE(addr->is_ipv6());
 }
 
+TEST_F(IPCacheTest, blockedBindingHasNoSourceAddress)
+{
+    struct LocalMockMediator final : public MockMediator {
+        [[nodiscard]] std::string_view settings_bind_addr(tr_address_type /* type */) override
+        {
+            return "0.0.0.0"sv;
+        }
+
+        [[nodiscard]] std::string_view settings_bind_interface() override
+        {
+            return bind_interface_;
+        }
+
+        std::string_view bind_interface_;
+    };
+    auto mediator = LocalMockMediator{};
+    ip_cache_ = tr_ip_cache::create(mediator);
+
+    // the unbound probe must work, or the blocked one proves nothing
+    ip_cache_->update_source_addr(TR_AF_INET);
+    if (!ip_cache_->source_addr(TR_AF_INET)) {
+        GTEST_SKIP() << "no IPv4 source address on this machine";
+    }
+
+    // a refused interface binding must not fall back to the default route
+    mediator.bind_interface_ = "blocked"sv;
+    ip_cache_->invalidate(TR_AF_INET);
+    ip_cache_->update_source_addr(TR_AF_INET);
+    EXPECT_FALSE(ip_cache_->source_addr(TR_AF_INET));
+}
+
 TEST_F(IPCacheTest, onResponseIPQuery)
 {
     static auto constexpr AddrStr = std::array{
