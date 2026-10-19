@@ -265,7 +265,7 @@ OptionsDialog::Impl::Impl(
 
     auto* destination_chooser = gtr_get_widget_derived<PathButton>(builder, "destination_button");
     destination_chooser->set_filename(downloadDir_);
-    destination_chooser->set_recent_paths(core_->get_recent_download_paths());
+    core_->fetch_recent_paths(TR_KEY_recent_download_paths, sigc::mem_fun(*destination_chooser, &PathButton::set_recent_paths));
 
     destination_chooser->signal_selection_changed().connect(
         [this, destination_chooser]() { downloadDirChanged(destination_chooser); });

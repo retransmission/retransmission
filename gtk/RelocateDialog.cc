@@ -10,6 +10,7 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission/quark.h>
 #include <libtransmission/transmission.h>
 
 #include <gtkmm/checkbutton.h>
@@ -32,7 +33,7 @@ std::string targetLocation;
 
 }
 
-class RelocateDialog::Impl
+class RelocateDialog::Impl : public sigc::trackable
 {
 public:
     Impl(
@@ -47,6 +48,7 @@ public:
     ~Impl();
 
 private:
+    void on_recent_paths(std::vector<Glib::ustring> const& paths);
     void onResponse(int response);
     bool onTimer();
 
@@ -194,9 +196,13 @@ RelocateDialog::Impl::Impl(
     dialog_.set_default_response(TR_GTK_RESPONSE_TYPE(CANCEL));
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::onResponse));
 
-    auto const recent_paths = core_->get_recent_relocate_paths();
-    chooser_->set_recent_paths(recent_paths);
-    if (!recent_paths.empty()) {
-        chooser_->set_filename(recent_paths.front().raw());
+    core_->fetch_recent_paths(TR_KEY_recent_relocate_paths, sigc::mem_fun(*this, &Impl::on_recent_paths));
+}
+
+void RelocateDialog::Impl::on_recent_paths(std::vector<Glib::ustring> const& paths)
+{
+    chooser_->set_recent_paths(paths);
+    if (!paths.empty()) {
+        chooser_->set_filename(paths.front().raw());
     }
 }

@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 
 #include <libtransmission-app/prefs.h>
@@ -136,4 +137,28 @@ TEST_F(GtkSessionTest, importEmbeddedSettingsReadsTheSession)
 
     core_->import_embedded_settings();
     EXPECT_EQ(session_limit, prefs_->get<size_t>(TR_KEY_peer_limit_global));
+}
+
+// Recent paths arrive on the main loop, and a torrent's download dir is among them.
+TEST_F(GtkSessionTest, fetchesRecentPathsOnTheMainLoop)
+{
+    auto const download_dir = sandbox_dir() + "/dl";
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_TRUE(builder.set_metainfo_from_file(LIBTRANSMISSION_TEST_ASSETS_DIR "/debian-11.2.0-amd64-DVD-1.iso.torrent"));
+    builder.set_download_dir(download_dir);
+    builder.set_paused(true);
+    ASSERT_NE(nullptr, tr_torrentNew(&builder, nullptr));
+
+    auto paths = std::vector<Glib::ustring>{};
+    auto replies = 0;
+    core_->fetch_recent_paths(TR_KEY_recent_download_paths, [&paths, &replies](std::vector<Glib::ustring> const& value) {
+        paths = value;
+        ++replies;
+    });
+    EXPECT_EQ(0, replies); // not before the loop runs
+
+    ASSERT_TRUE(wait_for([&replies]() { return replies > 0; }));
+    EXPECT_EQ(1, replies);
+    ASSERT_FALSE(paths.empty());
+    EXPECT_EQ(download_dir, paths.front().raw());
 }

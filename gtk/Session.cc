@@ -5,7 +5,6 @@
 #include "Session.h"
 
 #include "Notify.h"
-#include "Prefs.h"
 #include "PrefsDialog.h"
 #include "SortListModel.hh"
 #include "Torrent.h"
@@ -1082,53 +1081,11 @@ void Session::refresh_blocklist_info()
 
 // ---
 
-std::vector<Glib::ustring> Session::get_recent_download_paths() const
+void Session::fetch_recent_paths(tr_quark const key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths)
 {
-    return get_recent_dirs(TR_KEY_recent_download_paths);
-}
-
-std::vector<Glib::ustring> Session::get_recent_relocate_paths() const
-{
-    return get_recent_dirs(TR_KEY_recent_relocate_paths);
-}
-
-std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
-{
-    using Traits = tr::app::PrefsStringTraits<Glib::ustring>;
-
-    auto dirs = std::vector<Glib::ustring>{};
-
-    // A request sent after close() is dropped and never answered,
-    // and an unanswered request would never end the wait below.
-    if (impl_->get_session() == nullptr) {
-        return dirs;
-    }
-
-    auto done = false;
-
-    impl_->rpc().exec(TR_KEY_session_get, make_session_get_params({ key }), [&dirs, &done, key](RpcResponse const& response) {
-        if (auto const* const result = get_result_map(response); result != nullptr) {
-            if (auto const* const recent = result->find_if<tr_variant::Vector>(key); recent != nullptr) {
-                dirs.reserve(std::size(*recent));
-                for (auto const& dir : *recent) {
-                    if (auto const sv = dir.value_if<std::string_view>()) {
-                        dirs.emplace_back(Traits::from_utf8(*sv));
-                    }
-                }
-            }
-        }
-
-        done = true;
+    tr::app::Session::fetch_recent_paths(key, [on_paths = std::move(on_paths)](std::vector<std::string> const& paths) {
+        on_paths(std::vector<Glib::ustring>{ std::begin(paths), std::end(paths) });
     });
-
-    // the reply is delivered on the main loop's idle queue,
-    // so pump the main context until it has run
-    auto const context = Glib::MainContext::get_default();
-    while (!done) {
-        context->iteration(true);
-    }
-
-    return dirs;
 }
 
 /***

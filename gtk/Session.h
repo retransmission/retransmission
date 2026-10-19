@@ -154,9 +154,11 @@ public:
     void port_test(tr_address_type ip_protocol);
     [[nodiscard]] bool port_test_pending(tr_address_type ip_protocol) const noexcept;
 
-    // Recently-used directories, fetched from the session via a blocking RPC.
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_download_paths() const;
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_relocate_paths() const;
+    // Asks the session for its recently-used paths, `TR_KEY_recent_download_paths` or
+    // `TR_KEY_recent_relocate_paths`, and hands them to `on_paths` on the GTK thread.
+    // A slot bound to a widget or other sigc::trackable is skipped once that object is gone.
+    // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
+    void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
 
     void blocklist_update();
 
@@ -183,8 +185,6 @@ protected:
     Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
 private:
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_dirs(tr_quark key) const;
-
     tr::app::Prefs& prefs_;
     std::string const config_dir_;
 
