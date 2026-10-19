@@ -5,6 +5,12 @@
 
 #include "libtransmission-app/session.h"
 
+#include <functional>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "libtransmission/converters.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
@@ -132,6 +138,26 @@ void Session::import_session_settings(tr_variant::Map const& settings)
     }
 
     importing_settings_ = false;
+}
+
+void Session::fetch_recent_paths(tr_quark const key, std::function<void(std::vector<std::string> const&)> on_paths)
+{
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_variant::unmanaged_string(key));
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+
+    rpc_.exec(TR_KEY_session_get, std::move(params), [key, on_paths = std::move(on_paths)](RpcResponse const& response) {
+        auto paths = std::vector<std::string>{};
+
+        if (auto const* const result = response.args ? response.args->get_if<tr_variant::Map>() : nullptr; result != nullptr) {
+            if (auto const iter = result->find(key); iter != std::end(*result)) {
+                paths = tr::serializer::to_value<std::vector<std::string>>(iter->second).value_or(std::vector<std::string>{});
+            }
+        }
+
+        on_paths(paths);
+    });
 }
 
 std::optional<tr::Settings> Session::embedded_settings() const

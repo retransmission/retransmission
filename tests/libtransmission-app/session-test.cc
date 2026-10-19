@@ -3,16 +3,19 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <functional>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <gtest/gtest.h>
 
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
@@ -340,6 +343,35 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsRpcServerSettingsWhenEmbedded)
     session.import_session_settings(tr_variant::Map{});
     EXPECT_EQ("alice", prefs.get<std::string>(TR_KEY_rpc_username));
     EXPECT_EQ(rpc_port, prefs.get<uint16_t>(TR_KEY_rpc_port));
+}
+
+// The recently-used paths come from the session on request,
+// since adding a torrent changes them without a settings-changed notice.
+TEST_F(AppSessionSyncTest, fetchesRecentPathsFromTheSession)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    auto const download_dir = sandbox_dir() + "/dl";
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_TRUE(builder.set_metainfo_from_file(LIBTRANSMISSION_TEST_ASSETS_DIR "/debian-11.2.0-amd64-DVD-1.iso.torrent"));
+    builder.set_download_dir(download_dir);
+    builder.set_paused(true);
+    ASSERT_NE(nullptr, tr_torrentNew(&builder, nullptr));
+
+    auto paths = std::vector<std::string>{};
+    auto replied = std::atomic<bool>{ false };
+    session.fetch_recent_paths(TR_KEY_recent_download_paths, [&paths, &replied](std::vector<std::string> const& value) {
+        paths = value;
+        replied = true;
+    });
+
+    ASSERT_TRUE(wait_for([&replied]() { return replied.load(); }));
+    ASSERT_FALSE(std::empty(paths));
+    EXPECT_EQ(download_dir, paths.front());
 }
 
 } // namespace
