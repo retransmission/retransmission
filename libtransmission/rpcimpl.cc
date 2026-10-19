@@ -1569,7 +1569,7 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
     delete data;
 }
 
-bool isCurlURL(std::string_view url)
+[[nodiscard]] bool isCurlURL(std::string_view url)
 {
     auto constexpr Schemes = std::to_array<std::string_view>({ "http"sv, "https"sv, "ftp"sv, "sftp"sv });
     auto const parsed = tr_urlParse(url);

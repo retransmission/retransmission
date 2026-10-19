@@ -111,7 +111,7 @@ static_assert(Opts[std::size(Opts) - 2].val != 0);
 
 namespace
 {
-char const* getUsage()
+[[nodiscard]] char const* getUsage()
 {
     return "Usage:\n"
            "  " MY_NAME " [options...] [[--] torrent files...] [--- Qt options...]";

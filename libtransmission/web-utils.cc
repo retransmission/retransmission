@@ -176,7 +176,7 @@ char const* tr_webGetResponseStr(long code)
 namespace
 {
 
-constexpr std::optional<uint16_t> getPortForScheme(std::string_view scheme)
+[[nodiscard]] constexpr std::optional<uint16_t> getPortForScheme(std::string_view scheme)
 {
     auto constexpr KnownSchemes = std::to_array<std::pair<std::string_view, uint16_t>>({
         { "ftp"sv, 21U },
@@ -195,7 +195,7 @@ constexpr std::optional<uint16_t> getPortForScheme(std::string_view scheme)
     return {};
 }
 
-constexpr bool urlCharsAreValid(std::string_view url)
+[[nodiscard]] constexpr bool urlCharsAreValid(std::string_view url)
 {
     // rfc2396
     auto constexpr ValidChars = std::string_view{
@@ -211,13 +211,13 @@ constexpr bool urlCharsAreValid(std::string_view url)
     return !std::empty(url) && std::ranges::all_of(url, [&ValidChars](auto ch) { return tr_strv_contains(ValidChars, ch); });
 }
 
-bool tr_isValidTrackerScheme(std::string_view scheme)
+[[nodiscard]] bool tr_isValidTrackerScheme(std::string_view scheme)
 {
     auto constexpr Schemes = std::to_array<std::string_view>({ "http"sv, "https"sv, "udp"sv });
     return std::ranges::find(Schemes, scheme) != std::ranges::end(Schemes);
 }
 
-bool isAsciiNonUpperCase(std::string_view host)
+[[nodiscard]] bool isAsciiNonUpperCase(std::string_view host)
 {
     return std::ranges::all_of(host, [](unsigned char ch) { return (ch < 128) && (std::isupper(ch) == 0); });
 }
@@ -225,7 +225,7 @@ bool isAsciiNonUpperCase(std::string_view host)
 // www.example.com -> example
 // www.example.co.uk -> example
 // 127.0.0.1 -> 127.0.0.1
-std::string_view getSiteName(std::string_view host)
+[[nodiscard]] std::string_view getSiteName(std::string_view host)
 {
     // is it empty?
     if (std::empty(host)) {
@@ -272,7 +272,7 @@ std::string_view getSiteName(std::string_view host)
 // Not part of the RFC3986 standard, but included for convenience
 // when using the result with API that does not accept IPv6 address
 // strings that are wrapped in square brackets (e.g. inet_pton())
-std::string_view getHostWoBrackets(std::string_view host)
+[[nodiscard]] std::string_view getHostWoBrackets(std::string_view host)
 {
     if (host.starts_with('[')) {
         host.remove_prefix(1);

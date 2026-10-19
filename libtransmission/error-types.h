@@ -37,7 +37,7 @@ using tr_error_code_t = int;
 
 #endif /* _WIN32 */
 
-constexpr bool tr_error_is_enoent(tr_error_code_t code) noexcept
+[[nodiscard]] constexpr bool tr_error_is_enoent(tr_error_code_t code) noexcept
 {
 #ifdef _WIN32
     return code == ERROR_FILE_NOT_FOUND || code == ERROR_PATH_NOT_FOUND;
@@ -46,7 +46,7 @@ constexpr bool tr_error_is_enoent(tr_error_code_t code) noexcept
 #endif
 }
 
-constexpr bool tr_error_is_enospc(tr_error_code_t code) noexcept
+[[nodiscard]] constexpr bool tr_error_is_enospc(tr_error_code_t code) noexcept
 {
 #ifdef _WIN32
     return code == ERROR_DISK_FULL;

@@ -32,7 +32,7 @@ auto constexpr SomeHash = tr_sha1_digest_t{
 };
 
 template<size_t N>
-std::string toString(std::array<std::byte, N> const& array)
+[[nodiscard]] std::string toString(std::array<std::byte, N> const& array)
 {
     auto ostr = std::ostringstream{};
     ostr << '[';

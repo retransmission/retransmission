@@ -127,7 +127,7 @@ enum // peer columns
     N_COLUMNS
 };
 
-int measureViewItem(QTreeWidget const* view, int column, QString const& text)
+[[nodiscard]] int measureViewItem(QTreeWidget const* view, int column, QString const& text)
 {
     auto const item_width = Utils::measureViewItem(view, text);
     auto const header_width = Utils::measureHeaderItem(view->header(), view->headerItem()->text(column));

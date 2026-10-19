@@ -43,7 +43,7 @@ auto constexpr ShowKeys = to_lookup<ShowMode>({
 });
 static_assert(ShowKeys.size() == ShowModeCount);
 
-bool to_show_mode(tr_variant const& src, ShowMode* tgt)
+[[nodiscard]] bool to_show_mode(tr_variant const& src, ShowMode* tgt)
 {
     static constexpr auto& Keys = ShowKeys;
 
@@ -59,7 +59,7 @@ bool to_show_mode(tr_variant const& src, ShowMode* tgt)
     return false;
 }
 
-tr_variant from_show_mode(ShowMode const& src)
+[[nodiscard]] tr_variant from_show_mode(ShowMode const& src)
 {
     static constexpr auto& Keys = ShowKeys;
 
@@ -88,7 +88,7 @@ auto constexpr SortKeys = to_lookup<SortMode>({
 });
 static_assert(SortKeys.size() == SortModeCount);
 
-bool to_sort_mode(tr_variant const& src, SortMode* tgt)
+[[nodiscard]] bool to_sort_mode(tr_variant const& src, SortMode* tgt)
 {
     static constexpr auto& Keys = SortKeys;
 
@@ -104,7 +104,7 @@ bool to_sort_mode(tr_variant const& src, SortMode* tgt)
     return false;
 }
 
-tr_variant from_sort_mode(SortMode const& src)
+[[nodiscard]] tr_variant from_sort_mode(SortMode const& src)
 {
     static constexpr auto& Keys = SortKeys;
 
@@ -127,7 +127,7 @@ auto constexpr StatsKeys = to_lookup<StatsMode>({
 });
 static_assert(StatsKeys.size() == StatsModeCount);
 
-bool to_stats_mode(tr_variant const& src, StatsMode* tgt)
+[[nodiscard]] bool to_stats_mode(tr_variant const& src, StatsMode* tgt)
 {
     static constexpr auto& Keys = StatsKeys;
 
@@ -143,7 +143,7 @@ bool to_stats_mode(tr_variant const& src, StatsMode* tgt)
     return false;
 }
 
-tr_variant from_stats_mode(StatsMode const& src)
+[[nodiscard]] tr_variant from_stats_mode(StatsMode const& src)
 {
     static constexpr auto& Keys = StatsKeys;
 

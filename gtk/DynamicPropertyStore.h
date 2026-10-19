@@ -49,7 +49,7 @@ public:
     static inline auto const PropertyCount = static_cast<PropertyIdType>(PropertyType::N_PROPS);
 
 public:
-    static DynamicPropertyStore& get() noexcept
+    [[nodiscard]] static DynamicPropertyStore& get() noexcept
     {
         static auto instance = DynamicPropertyStore();
         return instance;

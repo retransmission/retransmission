@@ -56,7 +56,7 @@ protected:
 
     static auto constexpr ArbitraryTimestamp1 = time_t{ 666 };
 
-    static auto midnightSundayMorning()
+    [[nodiscard]] static auto midnightSundayMorning()
     {
         // new year's, Sun Jan 1 2023
         auto tmdate = tm{};

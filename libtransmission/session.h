@@ -67,7 +67,7 @@
 #include "libtransmission/verify.h"
 #include "libtransmission/web.h"
 
-tr_peer_id_t tr_peerIdInit();
+[[nodiscard]] tr_peer_id_t tr_peerIdInit();
 
 class tr_peer_socket;
 struct tr_pex;
@@ -968,7 +968,7 @@ public:
         return var;
     }
 
-    bool deserialize_encryption_mode(tr_variant const& var) noexcept
+    [[nodiscard]] bool deserialize_encryption_mode(tr_variant const& var) noexcept
     {
         return tr::serializer::to_value(var, &settings_.encryption_mode);
     }
@@ -1037,7 +1037,7 @@ public:
         return var;
     }
 
-    bool load_preferred_transports(tr_variant const& var) noexcept
+    [[nodiscard]] bool load_preferred_transports(tr_variant const& var) noexcept
     {
         if (!tr::serializer::to_value(var, &settings_.preferred_transports)) {
             return false;

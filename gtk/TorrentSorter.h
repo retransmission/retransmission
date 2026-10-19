@@ -27,7 +27,7 @@ public:
 
     void update(Torrent::ChangeFlags changes);
 
-    static Glib::RefPtr<TorrentSorter> create();
+    [[nodiscard]] static Glib::RefPtr<TorrentSorter> create();
 
 private:
     TorrentSorter();

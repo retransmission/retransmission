@@ -106,7 +106,7 @@ struct tr_sys_path_capacity {
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_path_copy(std::string_view src_path, std::string_view dst_path, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_path_copy(std::string_view src_path, std::string_view dst_path, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `stat()`.
@@ -320,7 +320,7 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_file_read_at(
+[[nodiscard]] bool tr_sys_file_read_at(
     tr_sys_file_t handle,
     void* buffer,
     uint64_t size,
@@ -364,7 +364,7 @@ bool tr_sys_file_write(
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_file_write_at(
+[[nodiscard]] bool tr_sys_file_write_at(
     tr_sys_file_t handle,
     void const* buffer,
     uint64_t size,
@@ -382,7 +382,7 @@ bool tr_sys_file_write_at(
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error = nullptr);
 
 /**
  * @brief Preallocate file to specified size in full or sparse mode.
@@ -395,7 +395,7 @@ bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error =
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `flock()`.
@@ -410,7 +410,7 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error = nullptr);
 
 /** @brief Return whether a failed nonblocking lock was held by another process. */
 [[nodiscard]] bool tr_sys_file_lock_error_is_contended(tr_error const& error) noexcept;

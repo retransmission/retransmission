@@ -144,7 +144,9 @@ struct tr_announce_response {
      * https://www.bittorrent.org/beps/bep_0024.html */
     std::optional<tr_address> external_ip;
 
-    static constexpr auto compare_failed(tr_announce_response const& lhs, tr_announce_response const& rhs) noexcept
+    [[nodiscard]] static constexpr auto compare_failed(
+        tr_announce_response const& lhs,
+        tr_announce_response const& rhs) noexcept
     {
         if (auto const val = static_cast<int>(lhs.did_connect) <=> static_cast<int>(rhs.did_connect); val != 0) {
             return val;

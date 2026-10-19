@@ -207,7 +207,7 @@ private:
 
     void onIntComboChanged(Gtk::ComboBox& combo_box, tr_quark key);
 
-    static auto get_weekday_string(Glib::Date::Weekday weekday);
+    [[nodiscard]] static auto get_weekday_string(Glib::Date::Weekday weekday);
 
 private:
     Glib::RefPtr<Gtk::Builder> const builder_;
@@ -750,7 +750,7 @@ private:
 
     void onLaunchClutchCB() const;
 
-    static Glib::RefPtr<Gtk::ListStore> whitelist_tree_model_new(std::string const& whitelist);
+    [[nodiscard]] static Glib::RefPtr<Gtk::ListStore> whitelist_tree_model_new(std::string const& whitelist);
 
 private:
     Glib::RefPtr<Session> core_;
@@ -1004,7 +1004,7 @@ private:
     void onPortTested(std::optional<bool> result, tr_address_type ip_protocol);
     void onPortTest();
 
-    static std::string_view getPortStatusText(PortTestStatus status) noexcept;
+    [[nodiscard]] static std::string_view getPortStatusText(PortTestStatus status) noexcept;
 
 private:
     Glib::RefPtr<Session> core_;

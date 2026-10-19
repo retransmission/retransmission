@@ -29,7 +29,7 @@ public:
     StatsDialog& operator=(StatsDialog const&) = delete;
     ~StatsDialog() override;
 
-    static std::unique_ptr<StatsDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    [[nodiscard]] static std::unique_ptr<StatsDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
 
 private:
     class Impl;

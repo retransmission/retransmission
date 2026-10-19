@@ -212,7 +212,7 @@ namespace
 using std::chrono::system_clock;
 
 /* similar to asctime, but is utf8-clean */
-Glib::ustring gtr_asctime(system_clock::time_point t)
+[[nodiscard]] Glib::ustring gtr_asctime(system_clock::time_point t)
 {
     return Glib::DateTime::create_now_local(system_clock::to_time_t(t)).format("%a %b %e %T %Y"); /* ctime equiv */
 }

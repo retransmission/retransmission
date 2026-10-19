@@ -39,7 +39,9 @@ public:
 #endif
 
     template<typename ModelT>
-    static Glib::RefPtr<SortListModel<ItemT>> create(Glib::RefPtr<ModelT> const& model, Glib::RefPtr<SorterType> const& sorter);
+    [[nodiscard]] static Glib::RefPtr<SortListModel<ItemT>> create(
+        Glib::RefPtr<ModelT> const& model,
+        Glib::RefPtr<SorterType> const& sorter);
 
 private:
 #if !GTKMM_CHECK_VERSION(4, 0, 0)

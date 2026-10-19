@@ -210,7 +210,7 @@ public:
         return name_;
     }
 
-    bool hasName() const
+    [[nodiscard]] bool hasName() const
     {
         return !name_.isEmpty();
     }
@@ -230,7 +230,7 @@ public:
         return download_dir_;
     }
 
-    QString getError() const;
+    [[nodiscard]] QString getError() const;
 
     [[nodiscard]] constexpr auto const& trackerList() const noexcept
     {
@@ -277,7 +277,7 @@ public:
         return is_private_;
     }
 
-    std::optional<double> getSeedRatioLimit() const;
+    [[nodiscard]] std::optional<double> getSeedRatioLimit() const;
 
     [[nodiscard]] constexpr auto haveUnverified() const noexcept
     {
@@ -349,9 +349,9 @@ public:
         return failed_ever_;
     }
 
-    std::partial_ordering compareSeedProgress(Torrent const& that) const;
-    std::partial_ordering compareRatio(Torrent const& that) const;
-    std::strong_ordering compareETA(Torrent const& that) const;
+    [[nodiscard]] std::partial_ordering compareSeedProgress(Torrent const& that) const;
+    [[nodiscard]] std::partial_ordering compareRatio(Torrent const& that) const;
+    [[nodiscard]] std::strong_ordering compareETA(Torrent const& that) const;
 
     [[nodiscard]] constexpr auto getETA() const noexcept
     {
@@ -428,7 +428,7 @@ public:
         return recheck_progress_;
     }
 
-    bool includesTracker(QString const& sitename) const;
+    [[nodiscard]] bool includesTracker(QString const& sitename) const;
 
     [[nodiscard]] constexpr auto const& labels() const noexcept
     {
@@ -510,7 +510,7 @@ public:
         return queue_position_;
     }
 
-    QString activityString() const;
+    [[nodiscard]] QString activityString() const;
 
     [[nodiscard]] auto constexpr getActivity() const noexcept
     {
@@ -572,7 +572,7 @@ public:
         return isReadyToTransfer() && (manualAnnounceTime() <= t);
     }
 
-    QIcon getMimeTypeIcon() const;
+    [[nodiscard]] QIcon getMimeTypeIcon() const;
 
     enum Field : uint8_t {
         ACTIVITY_DATE,

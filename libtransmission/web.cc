@@ -798,7 +798,7 @@ public:
         }
     }
 
-    std::optional<uint64_t> paused_tasks_upkeep()
+    [[nodiscard]] std::optional<uint64_t> paused_tasks_upkeep()
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
@@ -1013,7 +1013,7 @@ public:
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
 
-    CURLSH* shared()
+    [[nodiscard]] CURLSH* shared()
     {
         return curlsh_.get();
     }

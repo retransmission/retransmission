@@ -12,7 +12,7 @@
 namespace
 {
 
-int itemColumnSpan(QGridLayout const* layout, QLayoutItem const* item)
+[[nodiscard]] int itemColumnSpan(QGridLayout const* layout, QLayoutItem const* item)
 {
     for (int i = 0, count = layout->count(); i < count; ++i) {
         if (layout->itemAt(i) != item) {

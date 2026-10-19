@@ -47,7 +47,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     return buf_append(buf, buflen, args...);
 }
 
-constexpr std::string_view base62str(uint8_t chr)
+[[nodiscard]] constexpr std::string_view base62str(uint8_t chr)
 {
     // clang-format off: 90 characters per column
     auto constexpr Strings = std::array<std::string_view, 256>{
@@ -83,13 +83,13 @@ constexpr std::string_view base62str(uint8_t chr)
     return Strings[chr];
 }
 
-int strint(char const* pch, int span, int base = 10)
+[[nodiscard]] int strint(char const* pch, int span, int base = 10)
 {
     auto sv = std::string_view{ pch, static_cast<size_t>(span) };
     return tr_num_parse<int>(sv, nullptr, base).value_or(0);
 }
 
-constexpr std::string_view utSuffix(uint8_t ch)
+[[nodiscard]] constexpr std::string_view utSuffix(uint8_t ch)
 {
     switch (ch) {
     case 'b':
@@ -122,7 +122,7 @@ void two_major_two_minor_formatter(char* buf, size_t buflen, std::string_view na
 // characters denoting version are limited to the following characters:
 // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-
 // For example: 'S58B-----'... for Shadow's 5.8.11
-std::optional<int> get_shad0w_int(char ch)
+[[nodiscard]] std::optional<int> get_shad0w_int(char ch)
 {
     auto constexpr Str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-"sv;
 
@@ -133,7 +133,7 @@ std::optional<int> get_shad0w_int(char ch)
     return {};
 }
 
-bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
+[[nodiscard]] bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
 {
     auto const* const buf_in = buf;
 
@@ -195,7 +195,7 @@ bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
     return true;
 }
 
-bool decodeBitCometClient(char* buf, size_t buflen, std::string_view peer_id)
+[[nodiscard]] bool decodeBitCometClient(char* buf, size_t buflen, std::string_view peer_id)
 {
     // BitComet produces peer ids that consists of four ASCII characters exbc,
     // followed by two bytes x and y, followed by random characters. The version
@@ -594,7 +594,7 @@ auto constexpr Clients = std::to_array<Client>({
     { .begins_with = "Q", .name = "Queen Bee", .formatter = mainline_formatter },
 });
 
-constexpr auto compare_client_prefix(std::string_view const lhs, std::string_view const rhs) noexcept
+[[nodiscard]] constexpr auto compare_client_prefix(std::string_view const lhs, std::string_view const rhs) noexcept
 {
     if (lhs.size() != rhs.size()) {
         return lhs.size() > rhs.size();

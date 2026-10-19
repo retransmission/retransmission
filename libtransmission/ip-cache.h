@@ -67,7 +67,7 @@ public:
         [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
     };
 
-    static std::shared_ptr<tr_ip_cache> create(Mediator& mediator);
+    [[nodiscard]] static std::shared_ptr<tr_ip_cache> create(Mediator& mediator);
 
     tr_ip_cache() = delete;
     ~tr_ip_cache();

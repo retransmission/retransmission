@@ -35,13 +35,13 @@ public:
     FilterBase& operator=(FilterBase const&) = delete;
     ~FilterBase() override = default;
 
-    virtual bool match(T const& item) const = 0;
+    [[nodiscard]] virtual bool match(T const& item) const = 0;
 
-    virtual bool matches_all() const;
-    virtual bool matches_none() const;
+    [[nodiscard]] virtual bool matches_all() const;
+    [[nodiscard]] virtual bool matches_none() const;
 
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
-    sigc::signal<void(Change)>& signal_changed();
+    [[nodiscard]] sigc::signal<void(Change)>& signal_changed();
 #endif
 
 protected:

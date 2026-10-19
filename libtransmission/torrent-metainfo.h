@@ -32,7 +32,10 @@ public:
     // If you're looping through several files, passing in a non-nullptr
     // `contents` can reduce the number of memory allocations needed to
     // load multiple files.
-    bool parse_torrent_file(std::string_view benc_filename, std::vector<char>* contents = nullptr, tr_error* error = nullptr);
+    [[nodiscard]] bool parse_torrent_file(
+        std::string_view benc_filename,
+        std::vector<char>* contents = nullptr,
+        tr_error* error = nullptr);
 
     // Writes announce_list() into `benc_filename`, this torrent's .torrent file.
     // Also updates info_dict_offset(), since the announce keys precede the info dict.
@@ -198,8 +201,8 @@ public:
 
 private:
     friend struct MetainfoHandler;
-    static bool parse_impl(tr_torrent_metainfo& setme, std::string_view benc, tr_error* error);
-    static std::string fix_webseed_url(tr_torrent_metainfo const& tm, std::string_view url);
+    [[nodiscard]] static bool parse_impl(tr_torrent_metainfo& setme, std::string_view benc, tr_error* error);
+    [[nodiscard]] static std::string fix_webseed_url(tr_torrent_metainfo const& tm, std::string_view url);
 
     enum class BasenameFormat : uint8_t { Hash, NameAndPartialHash };
 

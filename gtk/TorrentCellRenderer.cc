@@ -69,8 +69,8 @@ public:
     Impl& operator=(Impl const&) = delete;
     ~Impl();
 
-    Gtk::Requisition get_size_compact(Gtk::Widget& widget) const;
-    Gtk::Requisition get_size_full(Gtk::Widget& widget) const;
+    [[nodiscard]] Gtk::Requisition get_size_compact(Gtk::Widget& widget) const;
+    [[nodiscard]] Gtk::Requisition get_size_full(Gtk::Widget& widget) const;
 
     void render_compact(
         Cairo::RefPtr<Cairo::Context> const& context,
@@ -83,17 +83,17 @@ public:
         Gdk::Rectangle const& background_area,
         Gtk::CellRendererState flags);
 
-    auto& property_torrent()
+    [[nodiscard]] auto& property_torrent()
     {
         return property_torrent_;
     }
 
-    auto& property_bar_height()
+    [[nodiscard]] auto& property_bar_height()
     {
         return property_bar_height_;
     }
 
-    auto& property_compact()
+    [[nodiscard]] auto& property_compact()
     {
         return property_compact_;
     }
@@ -253,7 +253,7 @@ void set_error_color(
     }
 }
 
-std::optional<Gdk::RGBA> get_progress_bar_color(Torrent const& torrent, Gtk::Widget const& widget)
+[[nodiscard]] std::optional<Gdk::RGBA> get_progress_bar_color(Torrent const& torrent, Gtk::Widget const& widget)
 {
     static auto const down_color_name = Glib::ustring{ "tr_transfer_down_color" };
     static auto const up_color_name = Glib::ustring{ "tr_transfer_up_color" };
@@ -277,7 +277,9 @@ std::optional<Gdk::RGBA> get_progress_bar_color(Torrent const& torrent, Gtk::Wid
     return widget.get_style_context()->lookup_color(*color_name, color) ? std::make_optional(color) : std::nullopt;
 }
 
-Cairo::RefPtr<Cairo::Surface> get_mask_surface(Cairo::RefPtr<Cairo::Surface> const& surface, Gdk::Rectangle const& area)
+[[nodiscard]] Cairo::RefPtr<Cairo::Surface> get_mask_surface(
+    Cairo::RefPtr<Cairo::Surface> const& surface,
+    Gdk::Rectangle const& area)
 {
     auto const mask_surface = Cairo::Surface::create(surface, Cairo::CONTENT_ALPHA, area.get_width(), area.get_height());
     auto const mask_context = Cairo::Context::create(mask_surface);

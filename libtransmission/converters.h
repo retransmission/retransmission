@@ -106,19 +106,19 @@ template<typename T>
 inline constexpr bool is_optional_v<std::optional<T>> = true;
 
 template<typename C>
-tr_variant from_range(C const& src);
+[[nodiscard]] tr_variant from_range(C const& src);
 
 template<typename C>
-bool to_range(tr_variant const& src, C* ptgt);
+[[nodiscard]] bool to_range(tr_variant const& src, C* ptgt);
 
 template<typename C>
-bool to_array(tr_variant const& src, C* ptgt);
+[[nodiscard]] bool to_array(tr_variant const& src, C* ptgt);
 
 template<typename T>
-tr_variant from_optional(std::optional<T> const& src);
+[[nodiscard]] tr_variant from_optional(std::optional<T> const& src);
 
 template<typename T>
-bool to_optional(tr_variant const& src, std::optional<T>* ptgt);
+[[nodiscard]] bool to_optional(tr_variant const& src, std::optional<T>* ptgt);
 
 // Call reserve() if available, otherwise no-op
 template<typename C>
@@ -170,8 +170,8 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
         "give the type its own class, like tr_mode_t"); \
     template<> \
     struct Converter<type> { \
-        static tr_variant to_variant(type const& src); \
-        static bool to_value(tr_variant const& src, type* tgt); \
+        [[nodiscard]] static tr_variant to_variant(type const& src); \
+        [[nodiscard]] static bool to_value(tr_variant const& src, type* tgt); \
     };
 // NOLINTEND(bugprone-macro-parentheses)
 
@@ -230,7 +230,7 @@ template<typename T>
 // (push-back ranges, insert ranges, std::array, std::optional).
 // Returns `true` on success and writes the decoded value to `*ptgt`.
 template<typename T>
-bool to_value(tr_variant const& src, T* const ptgt)
+[[nodiscard]] bool to_value(tr_variant const& src, T* const ptgt)
 {
     bool ok = false;
 
@@ -311,12 +311,12 @@ template<typename T>
         !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> && !std::is_same_v<T, char16_t> &&
         !std::is_same_v<T, char32_t>)
 struct Converter<T> {
-    static tr_variant to_variant(T const& src)
+    [[nodiscard]] static tr_variant to_variant(T const& src)
     {
         return src;
     }
 
-    static bool to_value(tr_variant const& src, T* const tgt)
+    [[nodiscard]] static bool to_value(tr_variant const& src, T* const tgt)
     {
         if (auto const val = src.value_if<T>()) {
             *tgt = *val;

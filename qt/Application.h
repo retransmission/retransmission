@@ -72,7 +72,7 @@ public:
     // We give way rather than write over the files that session owns.
     [[nodiscard]] bool configDirIsContended() const noexcept;
 
-    QString intern(QString const& in);
+    [[nodiscard]] QString intern(QString const& in);
 
     [[nodiscard]] std::optional<tr::Settings> embedded_session_settings() const;
 
@@ -137,7 +137,7 @@ private:
     };
 
     void loadTranslations();
-    QStringList getNames(torrent_ids_t const& ids) const;
+    [[nodiscard]] QStringList getNames(torrent_ids_t const& ids) const;
     void notifyTorrentAdded(Torrent const* tor) const;
 
     std::unordered_set<QString> interned_strings_;

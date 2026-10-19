@@ -50,43 +50,43 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
         stack_.push_back(top);
     }
 
-    bool Null()
+    [[nodiscard]] bool Null()
     {
         *get_leaf() = nullptr;
         return true;
     }
 
-    bool Bool(bool const val)
+    [[nodiscard]] bool Bool(bool const val)
     {
         *get_leaf() = val;
         return true;
     }
 
-    bool Int(int const val)
+    [[nodiscard]] bool Int(int const val)
     {
         *get_leaf() = val;
         return true;
     }
 
-    bool Uint(unsigned const val)
+    [[nodiscard]] bool Uint(unsigned const val)
     {
         *get_leaf() = val;
         return true;
     }
 
-    bool Int64(int64_t const val)
+    [[nodiscard]] bool Int64(int64_t const val)
     {
         *get_leaf() = val;
         return true;
     }
 
-    bool Uint64(uint64_t const val)
+    [[nodiscard]] bool Uint64(uint64_t const val)
     {
         *get_leaf() = val;
         return true;
     }
 
-    bool Double(double const val)
+    [[nodiscard]] bool Double(double const val)
     {
         *get_leaf() = val;
         return true;
@@ -95,13 +95,13 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
     // `str` points into RapidJSON's scratch buffer, which is reused for
     // the next string, so the variant must own a copy even when
     // tr_variant_serde::inplace() was requested.
-    bool String(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
+    [[nodiscard]] bool String(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
     {
         *get_leaf() = std::string_view{ str, len };
         return true;
     }
 
-    bool StartObject()
+    [[nodiscard]] bool StartObject()
     {
         if (auto* node = push_stack()) {
             *node = tr_variant::make_map(prealloc_guess());
@@ -111,19 +111,19 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
         return false;
     }
 
-    bool Key(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
+    [[nodiscard]] bool Key(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
     {
         key_ = tr_quark_new({ str, len });
         return true;
     }
 
-    bool EndObject(rapidjson::SizeType const len)
+    [[nodiscard]] bool EndObject(rapidjson::SizeType const len)
     {
         pop_stack(len);
         return true;
     }
 
-    bool StartArray()
+    [[nodiscard]] bool StartArray()
     {
         if (auto* node = push_stack()) {
             *node = tr_variant::make_vector(prealloc_guess());
@@ -133,7 +133,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
         return false;
     }
 
-    bool EndArray(rapidjson::SizeType const len)
+    [[nodiscard]] bool EndArray(rapidjson::SizeType const len)
     {
         pop_stack(len);
         return true;
@@ -145,7 +145,7 @@ private:
         return prealloc_guess_[std::size(stack_)];
     }
 
-    tr_variant* push_stack()
+    [[nodiscard]] tr_variant* push_stack()
     {
         return std::size(stack_) < MaxDepth ? stack_.emplace_back(get_leaf()) : nullptr;
     }

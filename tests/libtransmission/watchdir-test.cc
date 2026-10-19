@@ -73,7 +73,7 @@ protected:
         SandboxedTest::TearDown();
     }
 
-    auto createWatchDir(std::string_view path, Watchdir::Callback callback)
+    [[nodiscard]] auto createWatchDir(std::string_view path, Watchdir::Callback callback)
     {
         auto const force_generic = GetParam() == WatchMode::GENERIC;
         auto watchdir = force_generic ?

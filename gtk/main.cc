@@ -45,7 +45,10 @@ namespace
 auto const* const AppConfigDirName = TR_PROJ_SHARED_CONFIG_DIRNAME;
 auto const* const AppName = MY_NAME;
 
-Glib::OptionEntry create_option_entry(Glib::ustring const& long_name, gchar short_name, Glib::ustring const& description)
+[[nodiscard]] Glib::OptionEntry create_option_entry(
+    Glib::ustring const& long_name,
+    gchar short_name,
+    Glib::ustring const& description)
 {
     Glib::OptionEntry entry;
     entry.set_long_name(long_name);

@@ -839,7 +839,9 @@ void Session::launchWebInterface() const
 namespace
 {
 
-std::optional<Session::Type> computeType(tr_session const* const session, std::optional<std::string> const& session_id)
+[[nodiscard]] std::optional<Session::Type> computeType(
+    tr_session const* const session,
+    std::optional<std::string> const& session_id)
 {
     if (session != nullptr) {
         return Session::Type::Embedded;

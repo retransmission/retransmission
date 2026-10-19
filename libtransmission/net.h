@@ -512,7 +512,7 @@ private:
 
 struct tr_session;
 
-tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs);
+[[nodiscard]] tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs);
 
 [[nodiscard]] std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(
     tr_session* session,

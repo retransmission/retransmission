@@ -66,7 +66,7 @@ using ipp_t = std::underlying_type_t<tr_address_type>;
 
 constexpr auto TauConnectionTtlSecs = time_t{ 45 };
 
-auto tau_transaction_new()
+[[nodiscard]] auto tau_transaction_new()
 {
     return tr_rand_obj<tau_transaction_t>();
 }
@@ -569,7 +569,7 @@ private:
     }
 
     template<typename T>
-    bool maybe_send_request(T const& req, time_t now)
+    [[nodiscard]] bool maybe_send_request(T const& req, time_t now)
     {
         for (uint8_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp) {
             auto const ipp_enum = static_cast<tr_address_type>(ipp);
@@ -730,7 +730,7 @@ public:
 private:
     // Finds the tau_tracker struct that corresponds to this url.
     // If it doesn't exist yet, create one.
-    tau_tracker* get_tracker_from_url(tr::shared_string const& announce_url)
+    [[nodiscard]] tau_tracker* get_tracker_from_url(tr::shared_string const& announce_url)
     {
         // build a lookup key for this tracker
         auto const parsed = tr_urlParseTracker(announce_url.sv());

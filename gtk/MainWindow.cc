@@ -109,7 +109,7 @@ public:
 
     void prefsChanged(tr_quark key);
 
-    auto& signal_selection_changed()
+    [[nodiscard]] auto& signal_selection_changed()
     {
         return signal_selection_changed_;
     }
@@ -117,11 +117,13 @@ public:
 private:
     void init_view(TorrentView* view, Glib::RefPtr<FilterBar::Model> const& model);
 
-    Glib::RefPtr<Gio::MenuModel> createOptionsMenu();
-    Glib::RefPtr<Gio::MenuModel> createSpeedMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions, tr_direction dir);
-    Glib::RefPtr<Gio::MenuModel> createRatioMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions);
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createOptionsMenu();
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createSpeedMenu(
+        Glib::RefPtr<Gio::SimpleActionGroup> const& actions,
+        tr_direction dir);
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createRatioMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions);
 
-    Glib::RefPtr<Gio::MenuModel> createStatsMenu();
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createStatsMenu();
 
     void on_popup_menu(double event_x, double event_y);
 

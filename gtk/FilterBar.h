@@ -57,11 +57,11 @@ public:
     FilterBar& operator=(FilterBar const&) = delete;
     ~FilterBar() override;
 
-    Glib::RefPtr<Model> get_filter_model() const;
+    [[nodiscard]] Glib::RefPtr<Model> get_filter_model() const;
 
     // Emitted with the number of torrents that pass the filter,
     // when that number or the number of torrents may have changed.
-    sigc::signal<void(guint)>& signal_visible_count_changed();
+    [[nodiscard]] sigc::signal<void(guint)>& signal_visible_count_changed();
 
 private:
     class Impl;

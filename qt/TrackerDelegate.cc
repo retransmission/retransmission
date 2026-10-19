@@ -164,7 +164,7 @@ void TrackerDelegate::setShowMore(bool b)
 
 namespace
 {
-QString timeToRoundedString(int seconds)
+[[nodiscard]] QString timeToRoundedString(int seconds)
 {
     if (seconds > 60) {
         seconds -= seconds % 60;

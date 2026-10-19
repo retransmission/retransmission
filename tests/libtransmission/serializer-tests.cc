@@ -53,7 +53,7 @@ struct Rect {
 template<>
 struct tr::serializer::Converter<Rect> {
     // NOLINTNEXTLINE(readability-identifier-naming)
-    static tr_variant to_variant(Rect const& r)
+    [[nodiscard]] static tr_variant to_variant(Rect const& r)
     {
         auto v = tr_variant::Vector{};
         v.reserve(4U);
@@ -65,7 +65,7 @@ struct tr::serializer::Converter<Rect> {
     }
 
     // NOLINTNEXTLINE(readability-identifier-naming)
-    static bool to_value(tr_variant const& src, Rect* tgt)
+    [[nodiscard]] static bool to_value(tr_variant const& src, Rect* tgt)
     {
         auto const* const v = src.get_if<tr_variant::Vector>();
         if (v == nullptr || std::size(*v) != 4U) {

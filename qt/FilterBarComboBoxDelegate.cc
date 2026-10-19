@@ -18,7 +18,7 @@
 namespace
 {
 
-int getHSpacing(QWidget const* w)
+[[nodiscard]] int getHSpacing(QWidget const* w)
 {
     return qMax(3, w->style()->pixelMetric(QStyle::PM_LayoutHorizontalSpacing, nullptr, w));
 }

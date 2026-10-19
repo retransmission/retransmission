@@ -51,7 +51,7 @@ static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace
 {
-int parseCommandLine(app_options& opts, int argc, char const* const* argv)
+[[nodiscard]] int parseCommandLine(app_options& opts, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;
@@ -97,7 +97,7 @@ int parseCommandLine(app_options& opts, int argc, char const* const* argv)
     return 0;
 }
 
-bool removeURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool removeURL(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -182,7 +182,7 @@ bool removeURL(tr_variant& metainfo, std::string_view url)
     return ret;
 }
 
-bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
+[[nodiscard]] bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -238,7 +238,7 @@ bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view 
     return false;
 }
 
-bool addURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool addURL(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -283,7 +283,7 @@ bool addURL(tr_variant& metainfo, std::string_view url)
     return changed;
 }
 
-bool setSource(tr_variant& metainfo, std::string_view source_value)
+[[nodiscard]] bool setSource(tr_variant& metainfo, std::string_view source_value)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {

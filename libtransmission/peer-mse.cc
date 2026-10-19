@@ -36,7 +36,8 @@ using private_key_t = math::wide_integer::uintwide_t<
     tr_message_stream_encryption::DH::PrivateKeySize * std::numeric_limits<unsigned char>::digits>;
 
 template<typename UIntWide>
-auto import_bits(std::array<std::byte, UIntWide::my_width2 / std::numeric_limits<uint8_t>::digits> const& bigend_bin)
+[[nodiscard]] auto import_bits(
+    std::array<std::byte, UIntWide::my_width2 / std::numeric_limits<uint8_t>::digits> const& bigend_bin)
 {
     auto ret = UIntWide{};
     static_assert(sizeof(UIntWide) == sizeof(bigend_bin));
@@ -50,7 +51,7 @@ auto import_bits(std::array<std::byte, UIntWide::my_width2 / std::numeric_limits
 }
 
 template<typename UIntWide>
-auto export_bits(UIntWide i)
+[[nodiscard]] auto export_bits(UIntWide i)
 {
     auto ret = std::array<std::byte, UIntWide::my_width2 / std::numeric_limits<uint8_t>::digits>{};
 

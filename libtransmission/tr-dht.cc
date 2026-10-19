@@ -359,7 +359,7 @@ private:
         return std::chrono::seconds{ call_again_in_n_secs };
     }
 
-    static auto remove_bad_pex(std::vector<tr_pex>&& pex)
+    [[nodiscard]] static auto remove_bad_pex(std::vector<tr_pex>&& pex)
     {
         static constexpr auto IsBadPex = [](tr_pex const& candidate) {
             // paper over a bug in some DHT implementation that gives port 1.

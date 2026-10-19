@@ -146,7 +146,7 @@ private:
         restartTimer();
     }
 
-    static constexpr char const* getNatStateStr(int state)
+    [[nodiscard]] static constexpr char const* getNatStateStr(int state)
     {
         switch (state) {
         case TR_PORT_MAPPING:

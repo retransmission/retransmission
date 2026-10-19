@@ -34,7 +34,7 @@ public:
     MessageLogWindow& operator=(MessageLogWindow const&) = delete;
     ~MessageLogWindow() override;
 
-    static std::unique_ptr<MessageLogWindow> create(
+    [[nodiscard]] static std::unique_ptr<MessageLogWindow> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
         tr::app::Prefs const& prefs);

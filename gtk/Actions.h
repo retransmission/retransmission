@@ -25,7 +25,7 @@ class Prefs;
 
 class Session;
 
-Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(
+[[nodiscard]] Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(
     Glib::RefPtr<Gtk::Builder> const& builder,
     tr::app::Prefs const& prefs,
     gpointer callback_user_data);
@@ -35,14 +35,14 @@ void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data);
 void gtr_action_activate(Glib::ustring const& action_name);
 void gtr_action_set_sensitive(Glib::ustring const& action_name, bool is_sensitive);
 void gtr_action_set_toggled(Glib::ustring const& action_name, bool is_toggled);
-Glib::RefPtr<Glib::Object> gtr_action_get_object(Glib::ustring const& name);
+[[nodiscard]] Glib::RefPtr<Glib::Object> gtr_action_get_object(Glib::ustring const& name);
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-Glib::RefPtr<Gio::ListModel> gtr_shortcuts_get_from_menu(Glib::RefPtr<Gio::MenuModel> const& menu);
+[[nodiscard]] Glib::RefPtr<Gio::ListModel> gtr_shortcuts_get_from_menu(Glib::RefPtr<Gio::MenuModel> const& menu);
 #endif
 
 template<typename T>
-inline Glib::RefPtr<T> gtr_action_get_object(Glib::ustring const& name)
+[[nodiscard]] inline Glib::RefPtr<T> gtr_action_get_object(Glib::ustring const& name)
 {
     return gtr_ptr_static_cast<T>(gtr_action_get_object(name));
 }

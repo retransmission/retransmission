@@ -179,7 +179,7 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(
 namespace
 {
 
-Glib::RefPtr<Gio::SimpleAction> get_action(Glib::ustring const& name)
+[[nodiscard]] Glib::RefPtr<Gio::SimpleAction> get_action(Glib::ustring const& name)
 {
     return key_to_action.at(name);
 }

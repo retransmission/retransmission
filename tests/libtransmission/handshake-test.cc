@@ -158,7 +158,7 @@ public:
         .is_running = true,
     };
 
-    auto createIncomingIo(tr_session* session)
+    [[nodiscard]] auto createIncomingIo(tr_session* session)
     {
         auto sockpair = std::to_array<evutil_socket_t>({ -1, -1 });
         EXPECT_EQ(0, evutil_socketpair(LOCAL_SOCKETPAIR_AF, SOCK_STREAM, 0, std::data(sockpair))) << tr_strerror(errno);
@@ -173,7 +173,7 @@ public:
         };
     }
 
-    auto createOutgoingIo(tr_session* session, tr_sha1_digest_t const& info_hash)
+    [[nodiscard]] auto createOutgoingIo(tr_session* session, tr_sha1_digest_t const& info_hash)
     {
         auto sockpair = std::to_array<evutil_socket_t>({ -1, -1 });
         EXPECT_EQ(0, evutil_socketpair(LOCAL_SOCKETPAIR_AF, SOCK_STREAM, 0, std::data(sockpair))) << tr_strerror(errno);
@@ -189,7 +189,7 @@ public:
         return std::pair{ std::move(peer_io), sockpair[1] };
     }
 
-    static constexpr auto makePeerId(std::string_view sv)
+    [[nodiscard]] static constexpr auto makePeerId(std::string_view sv)
     {
         auto peer_id = tr_peer_id_t{};
         for (size_t i = 0, n = std::size(sv); i < n; ++i) {
@@ -198,7 +198,7 @@ public:
         return peer_id;
     }
 
-    static auto makeRandomPeerId()
+    [[nodiscard]] static auto makeRandomPeerId()
     {
         auto peer_id = tr_rand_obj<tr_peer_id_t>();
         static auto constexpr PeerIdPrefix = "-UW110Q-"sv;
@@ -206,7 +206,7 @@ public:
         return peer_id;
     }
 
-    static auto startHandshake(
+    [[nodiscard]] static auto startHandshake(
         std::optional<tr_handshake::Result>& result,
         tr_handshake::Mediator* mediator,
         std::shared_ptr<tr_peerIo> const& peer_io,

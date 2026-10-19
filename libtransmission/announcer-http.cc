@@ -93,7 +93,7 @@ struct http_announce_data {
     std::string log_name;
 };
 
-bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
+[[nodiscard]] bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
 {
     auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
     auto const& log_name = static_cast<http_announce_data const*>(vdata)->log_name;

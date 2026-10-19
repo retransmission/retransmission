@@ -45,7 +45,7 @@ public:
         return disposal_;
     }
 
-    static std::optional<AddData> create(QString const& str)
+    [[nodiscard]] static std::optional<AddData> create(QString const& str)
     {
         if (auto ret = AddData{ str }; ret.type != NONE) {
             return ret;

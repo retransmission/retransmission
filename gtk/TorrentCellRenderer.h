@@ -23,10 +23,10 @@ public:
     TorrentCellRenderer& operator=(TorrentCellRenderer const&) = delete;
     ~TorrentCellRenderer() override;
 
-    Glib::PropertyProxy<Torrent*> property_torrent();
+    [[nodiscard]] Glib::PropertyProxy<Torrent*> property_torrent();
 
-    Glib::PropertyProxy<int> property_bar_height();
-    Glib::PropertyProxy<bool> property_compact();
+    [[nodiscard]] Glib::PropertyProxy<int> property_bar_height();
+    [[nodiscard]] Glib::PropertyProxy<bool> property_compact();
 
 protected:
     void get_preferred_width_vfunc(Gtk::Widget& widget, int& minimum_width, int& natural_width) const override;

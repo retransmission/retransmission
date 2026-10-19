@@ -33,21 +33,21 @@ public:
     void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const override;
 
 protected:
-    QSize margin(QStyle const& style) const;
+    [[nodiscard]] QSize margin(QStyle const& style) const;
     void setProgressBarPercentDone(QStyleOptionViewItem const& option, Torrent const& tor) const;
-    QIcon warningEmblem() const
+    [[nodiscard]] QIcon warningEmblem() const
     {
         return warning_emblem_;
     }
 
     // Our own overridables
-    virtual QSize sizeHint(QStyleOptionViewItem const& option, Torrent const& tor) const;
+    [[nodiscard]] virtual QSize sizeHint(QStyleOptionViewItem const& option, Torrent const& tor) const;
     virtual void drawTorrent(QPainter* painter, QStyleOptionViewItem const& option, Torrent const& tor) const;
 
-    static QString statusString(Torrent const& tor);
-    static QString progressString(Torrent const& tor);
-    static QString shortStatusString(Torrent const& tor);
-    static QString shortTransferString(Torrent const& tor);
+    [[nodiscard]] static QString statusString(Torrent const& tor);
+    [[nodiscard]] static QString progressString(Torrent const& tor);
+    [[nodiscard]] static QString shortStatusString(Torrent const& tor);
+    [[nodiscard]] static QString shortTransferString(Torrent const& tor);
 
     static inline QColor const BlueBack{ "lightgrey" };
     static inline QColor const BlueBrush{ "steelblue" };

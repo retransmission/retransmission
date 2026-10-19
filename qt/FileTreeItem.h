@@ -40,9 +40,9 @@ public:
     ~FileTreeItem();
 
     void appendChild(FileTreeItem* child);
-    FileTreeItem* child(QString const& filename);
+    [[nodiscard]] FileTreeItem* child(QString const& filename);
 
-    FileTreeItem* child(int row)
+    [[nodiscard]] FileTreeItem* child(int row)
     {
         return children_.at(row);
     }
@@ -62,14 +62,14 @@ public:
         return parent_;
     }
 
-    int row() const;
+    [[nodiscard]] int row() const;
 
     [[nodiscard]] constexpr auto const& name() const noexcept
     {
         return name_;
     }
 
-    QVariant data(int column, int role) const;
+    [[nodiscard]] QVariant data(int column, int role) const;
     std::pair<int, int> update(QString const& name, bool want, int priority, uint64_t have, bool update_fields);
     void setSubtreeWanted(bool wanted, file_indices_t& setme_changed_ids);
     void setSubtreePriority(int priority, file_indices_t& setme_changed_ids);
@@ -89,17 +89,17 @@ public:
         return have_size_ == totalSize();
     }
 
-    QString path() const;
-    int priority() const;
-    int isSubtreeWanted() const;
+    [[nodiscard]] QString path() const;
+    [[nodiscard]] int priority() const;
+    [[nodiscard]] int isSubtreeWanted() const;
 
 private:
-    QString priorityString() const;
-    QString sizeString() const;
-    std::pair<uint64_t, uint64_t> get_subtree_wanted_size() const;
-    double progress() const;
-    uint64_t size() const;
-    std::unordered_map<QString, int> const& getMyChildRows() const;
+    [[nodiscard]] QString priorityString() const;
+    [[nodiscard]] QString sizeString() const;
+    [[nodiscard]] std::pair<uint64_t, uint64_t> get_subtree_wanted_size() const;
+    [[nodiscard]] double progress() const;
+    [[nodiscard]] uint64_t size() const;
+    [[nodiscard]] std::unordered_map<QString, int> const& getMyChildRows() const;
 
     FileTreeItem* parent_ = {};
     mutable std::unordered_map<QString, int> child_rows_;

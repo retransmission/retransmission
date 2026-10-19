@@ -35,7 +35,7 @@ namespace ssha1_impl
 auto constexpr DigestStringSize = tr_sha1_string::Strlen;
 auto constexpr SaltedPrefix = "{"sv;
 
-std::string tr_salt(std::string_view plaintext, std::string_view salt)
+[[nodiscard]] std::string tr_salt(std::string_view plaintext, std::string_view salt)
 {
     static_assert(DigestStringSize == 40);
 
