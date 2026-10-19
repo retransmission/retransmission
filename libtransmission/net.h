@@ -70,8 +70,6 @@ using tr_socket_t = int;
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // tr_hash_combine()
 
-enum tr_address_type : uint8_t { TR_AF_INET = 0, TR_AF_INET6, NUM_TR_AF_INET_TYPES };
-
 [[nodiscard]] std::string_view tr_ip_protocol_to_sv(tr_address_type type);
 [[nodiscard]] int tr_ip_protocol_to_af(tr_address_type type);
 [[nodiscard]] tr_address_type tr_af_to_ip_protocol(int af);

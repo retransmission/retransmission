@@ -312,6 +312,8 @@ protected:
     {
         auto buffer = std::array<uint8_t, 4096>{};
         for (;;) {
+            // Analyzer false positive: it carries std::future::wait_for's internal lock past its scope.
+            // NOLINTNEXTLINE(clang-analyzer-unix.BlockInCriticalSection)
             auto const count = recv(peer.remote, reinterpret_cast<char*>(buffer.data()), buffer.size(), 0);
             if (count <= 0) {
                 break;

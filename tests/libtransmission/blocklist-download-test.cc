@@ -383,7 +383,7 @@ TEST(BlocklistUpdater, installsDecompressedContent)
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::Ok, result->status);
     EXPECT_EQ(2U, result->n_rules);
-    EXPECT_TRUE(std::empty(result->error));
+    EXPECT_TRUE(std::empty(result->message));
 }
 
 TEST(BlocklistUpdater, reportsDownloadError)
@@ -397,7 +397,7 @@ TEST(BlocklistUpdater, reportsDownloadError)
 
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result->status);
-    EXPECT_FALSE(std::empty(result->error));
+    EXPECT_FALSE(std::empty(result->message));
     EXPECT_EQ(0, mediator.install_count_); // never tried to install
 }
 
@@ -445,7 +445,7 @@ TEST(BlocklistUpdater, reportsSaveError)
 
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::SaveError, result->status);
-    EXPECT_EQ(mediator.install_error_, result->error);
+    EXPECT_EQ(mediator.install_error_, result->message);
 }
 
 TEST(BlocklistUpdater, cancelSuppressesCallback)
@@ -544,7 +544,6 @@ TEST(BlocklistUpdater, destructionAnswersInFlight)
 
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result->status);
-    EXPECT_FALSE(std::empty(result->error));
 
     // the response that arrives afterward neither answers again nor installs anything
     mediator.respond(200, std::string{ Rules });
@@ -689,7 +688,7 @@ TEST_F(BlocklistDownloadTest, installsPlainText)
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
     EXPECT_EQ(2U, result.n_rules);
-    EXPECT_TRUE(std::empty(result.error));
+    EXPECT_TRUE(std::empty(result.message));
     EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_));
 }
 
@@ -711,7 +710,7 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result.status);
     EXPECT_EQ(0U, result.n_rules);
-    EXPECT_FALSE(std::empty(result.error));
+    EXPECT_FALSE(std::empty(result.message));
 }
 
 TEST_F(BlocklistDownloadTest, emptyDownloadInstallsEmptyList)

@@ -5,9 +5,12 @@
 #import <Foundation/Foundation.h>
 #import <Quartz/Quartz.h>
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 
 @class FileListNode;
+
+struct tr_session;
+struct tr_torrent;
 
 typedef NS_ENUM(NSUInteger, TorrentDeterminationType) { TorrentDeterminationAutomatic = 0, TorrentDeterminationUserSpecified };
 

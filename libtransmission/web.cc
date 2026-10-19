@@ -251,6 +251,7 @@ public:
             deadline_ns_ = to_ns(mediator.now() + deadline);
         }
         queued_tasks_cv_.notify_one();
+        curl_multi_wakeup(multi_.get());
     }
 
     void fetch(FetchOptions&& options)
@@ -263,11 +264,20 @@ public:
 
         queued_tasks_.emplace_back(*this, std::move(options));
         queued_tasks_cv_.notify_one();
+        curl_multi_wakeup(multi_.get());
     }
 
-    [[nodiscard]] bool is_idle() const noexcept
+    // Callers pass their lock to prove they hold tasks_mutex_.
+    [[nodiscard]] bool is_idle([[maybe_unused]] std::unique_lock<std::mutex> const& lock) const noexcept
     {
+        TR_ASSERT(lock.owns_lock() && lock.mutex() == &tasks_mutex_);
         return std::empty(queued_tasks_) && std::empty(running_tasks_);
+    }
+
+    [[nodiscard]] bool is_idle() const
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        return is_idle(lock);
     }
 
     class Task
@@ -278,7 +288,7 @@ public:
             , options_{ std::move(options_in) }
         {
             auto const parsed = tr_urlParse(options_.url);
-            easy_ = parsed ? impl.get_easy(parsed->host) : nullptr;
+            easy_ = parsed ? impl.get_easy(parsed->host) : curl_easy_init();
 
             response.request_url = options_.url;
             response.user_data = options_.done_func_user_data;
@@ -486,11 +496,11 @@ public:
     // if set: do not accept new tasks
     // if set and deadline reached: kill all remaining tasks
     using Clock = std::chrono::steady_clock;
-    static auto constexpr NoDeadline = int64_t{ 0 };
+    static auto constexpr NoDeadline = std::chrono::nanoseconds::rep{ 0 };
 
-    std::atomic<int64_t> deadline_ns_ = {}; // NOLINT(readability-redundant-member-init)
+    std::atomic<std::chrono::nanoseconds::rep> deadline_ns_ = {}; // NOLINT(readability-redundant-member-init)
 
-    [[nodiscard]] static int64_t to_ns(Clock::time_point tp)
+    [[nodiscard]] static std::chrono::nanoseconds::rep to_ns(Clock::time_point tp)
     {
         return std::chrono::duration_cast<std::chrono::nanoseconds>(tp.time_since_epoch()).count();
     }
@@ -561,7 +571,7 @@ public:
             // then pause the torrent for a tick. curl will deliver `data`
             // again when the transfer is unpaused.
             if (task->impl.mediator.clamp(*tag, bytes_used) < bytes_used) {
-                task->impl.paused_easy_handles.emplace(task->easy(), tr_time_msec());
+                task->impl.paused_easy_handles.emplace(task->easy(), tr_time_msec() + BandwidthPauseMsec);
                 return CURL_WRITEFUNC_PAUSE;
             }
         }
@@ -626,10 +636,10 @@ public:
         // per-request override falls back to the env-var-driven default
         auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
         if (!ssl_verify) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
+            (void)curl_easy_setopt(e, CURLOPT_CAINFO, nullptr);
+            (void)curl_easy_setopt(e, CURLOPT_CAPATH, nullptr);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, curl_ca_bundle.c_str());
         } else {
@@ -639,16 +649,10 @@ public:
         }
 
         if (!curl_proxy_ssl_verify) {
-            (void)curl_easy_setopt(e, CURLOPT_CAINFO, NULL);
-            (void)curl_easy_setopt(e, CURLOPT_CAPATH, NULL);
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_CAINFO, curl_ca_bundle.c_str());
-#endif
         }
 
         if (auto const& ua = user_agent; !std::empty(ua)) {
@@ -745,29 +749,42 @@ public:
         }
     }
 
-    void resumePausedTasks()
+    std::optional<uint64_t> paused_tasks_upkeep()
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
         auto& paused = paused_easy_handles;
-        if (std::empty(paused)) {
-            return;
-        }
-
         auto const now = tr_time_msec();
 
+        // Unpause any tasks where the timeout has expired
         for (auto it = std::begin(paused); it != std::end(paused);) {
-            if (it->second + BandwidthPauseMsec < now) {
-                curl_easy_pause(it->first, CURLPAUSE_CONT);
+            auto const [easy, resume_at] = *it;
+            if (resume_at < now) {
+                // N.B. The paused handles map iterator *MUST* be erased before calling `curl_easy_pause`,
+                // because `curl_easy_pause` may call the write callback synchronously, which might
+                // try to insert this easy handle back into the paused handles map.
                 it = paused.erase(it);
+                curl_easy_pause(easy, CURLPAUSE_CONT);
             } else {
                 ++it;
             }
         }
+
+        if (std::empty(paused)) {
+            return {};
+        }
+
+        // Return the number of milliseconds until the next paused task should be unpaused
+        return std::ranges::min(paused | std::views::values) - now;
     }
 
-    void remove_task(Task const& task)
+    void remove_task(Task& task)
     {
+        // Run the callback before taking tasks_mutex_.
+        // The default Mediator::run() invokes it on this thread.
+        // Without this, a callback that calls fetch() or is_idle() would deadlock.
+        task.done();
+
         auto const lock = std::unique_lock{ tasks_mutex_ };
 
         auto const iter = std::ranges::find(running_tasks_, task);
@@ -776,7 +793,6 @@ public:
             return;
         }
 
-        iter->done();
         running_tasks_.erase(iter);
     }
 
@@ -790,17 +806,11 @@ public:
     // the thread started by Impl.curl_thread runs this function
     void curlThreadFunc()
     {
-        auto const multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
-#if LIBCURL_VERSION_NUM >= 0x071003 /* 7.16.3 */
+        auto const& multi = multi_;
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x071E00 /* 7.30.0 */
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
-#endif
-        auto const start_time = mediator.now();
 
-        auto repeats = unsigned{};
         for (;;) {
             if (deadline_reached()) {
                 while (!std::empty(running_tasks_)) {
@@ -814,12 +824,12 @@ public:
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
-                auto const stop_waiting = [this]() {
-                    return !is_idle() || deadline_exists();
+                auto const stop_waiting = [this, &lock]() {
+                    return !is_idle(lock) || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
 
-                if (deadline_exists() && is_idle()) {
+                if (deadline_exists() && is_idle(lock)) {
                     break;
                 }
 
@@ -834,33 +844,24 @@ public:
                 }
             }
 
-            resumePausedTasks();
+            auto const next_unpause_ms = paused_tasks_upkeep();
 
-            // During steady state, wake up once per second.
-            // But during startup, wake up 10x more often. This is so tests
-            // that should take a few msec don't block for a full second
-            // while tr_session waits for this thread to finish.
-            static auto constexpr StartupSecs = std::chrono::seconds{ 15 };
-            auto const timeout_ms = mediator.now() - start_time < StartupSecs ? 50 : 1000;
-
-            // Adapted from https://curl.se/libcurl/c/curl_multi_wait.html docs.
-            // 'numfds' being zero means either a timeout or no file descriptors to
-            // wait for. Try timeout on first occurrence, then assume no file
-            // descriptors and no file descriptors to wait for means wait for 100
-            // milliseconds.
-            auto numfds = int{};
-            curl_multi_wait(multi.get(), nullptr, 0, timeout_ms, &numfds);
-            if (numfds == 0) {
-                ++repeats;
-                if (repeats > 1U) {
-                    std::this_thread::sleep_for(100ms);
-                }
-            } else {
-                repeats = 0;
-            }
-
-            // nonblocking update of the tasks
+            // start newly added or unpaused tasks
             auto n_running = int{};
+            curl_multi_perform(multi.get(), &n_running);
+
+            // Wake up once per second, or when the next task is due to unpause, whichever is sooner.
+            static constexpr int DefaultTimeout = 1000;
+            auto const timeout_ms = next_unpause_ms && std::cmp_less(*next_unpause_ms, DefaultTimeout) ?
+                static_cast<int>(*next_unpause_ms) :
+                DefaultTimeout;
+
+            // Wait for activity on the curl sockets, or for the timeout to expire.
+            auto numfds = int{};
+            curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds);
+
+            // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
+            // https://curl.se/mail/lib-2018-03/0119.html
             curl_multi_perform(multi.get(), &n_running);
 
             // process any tasks that just finished
@@ -879,15 +880,12 @@ public:
                     }
 
                     auto req_bytes_sent = long{};
-                    auto total_time = double{};
                     char* primary_ip = nullptr;
                     curl_easy_getinfo(e, CURLINFO_REQUEST_SIZE, &req_bytes_sent);
-                    curl_easy_getinfo(e, CURLINFO_TOTAL_TIME, &total_time);
                     curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &task->response.status);
                     curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);
                     task->response.did_connect = task->response.status > 0 || req_bytes_sent > 0;
-                    task->response.did_timeout = task->response.status == 0 &&
-                        std::chrono::duration<double>(total_time) >= task->options().timeout_secs;
+                    task->response.did_timeout = msg->data.result == CURLE_OPERATION_TIMEDOUT;
                     task->response.primary_ip = primary_ip;
                     curl_multi_remove_handle(multi.get(), e);
                     remove_task(*task);
@@ -900,7 +898,9 @@ public:
 
     std::map<std::string /*host*/, std::stack<curl_helpers::easy_unique_ptr>, std::less<>> easy_pool_;
 
-    std::mutex tasks_mutex_;
+    curl_helpers::multi_unique_ptr const multi_{ curl_multi_init() };
+
+    mutable std::mutex tasks_mutex_;
     std::condition_variable queued_tasks_cv_;
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
@@ -918,15 +918,9 @@ public:
         auto* const sh = shared();
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-#if LIBCURL_VERSION_NUM >= 0x071700 /* 7.23.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073900 /* 7.57.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073D00 /* 7.61.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
-#endif
     }
 
     std::map<CURL*, uint64_t /*tr_time_msec()*/> paused_easy_handles;
@@ -965,7 +959,7 @@ void tr_web::startShutdown(std::chrono::milliseconds deadline)
     impl_->startShutdown(deadline);
 }
 
-bool tr_web::is_idle() const noexcept
+bool tr_web::is_idle() const
 {
     return impl_->is_idle();
 }

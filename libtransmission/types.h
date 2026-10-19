@@ -127,6 +127,12 @@ private:
     uint16_t hport_ = 0;
 };
 
+enum tr_address_type : uint8_t {
+    TR_AF_INET = 0,
+    TR_AF_INET6,
+    NUM_TR_AF_INET_TYPES,
+};
+
 // A serializer-friendly wrapper around the DiffServ int value
 class tr_diffserv_t
 {
@@ -696,7 +702,9 @@ struct tr_webseed_view {
 struct tr_blocklist_update_result {
     tr_blocklist_update_status status = tr_blocklist_update_status::Ok;
     size_t n_rules = 0U; // how many rules were installed; only meaningful when status == Ok
-    std::string error; // human-readable detail; empty on success
+    // Human-readable detail for display only. May be empty for any status,
+    // including failures, so branch on `status`, not on this.
+    std::string message;
 };
 
 using tr_altSpeedFunc = std::function<void(bool active, bool user_driven)>;

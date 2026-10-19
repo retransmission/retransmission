@@ -12,8 +12,10 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 
 #include <gtkmm/cellrendererpixbuf.h>
@@ -41,7 +43,6 @@
 #include <memory>
 #include <optional>
 #include <queue>
-#include <ranges>
 #include <stack>
 #include <string>
 #include <string_view>

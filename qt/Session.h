@@ -72,13 +72,11 @@ public:
         return session_version_;
     }
 
-    enum PortTestIpProtocol : uint8_t { PORT_TEST_IPV4, PORT_TEST_IPV6, NUM_PORT_TEST_IP_PROTOCOL };
-
     void updateBlocklist();
-    void portTest(PortTestIpProtocol ip_protocol);
+    void portTest(tr_address_type ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    [[nodiscard]] bool portTestPending(PortTestIpProtocol ip_protocol) const noexcept;
+    [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
 
     void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
@@ -130,7 +128,7 @@ signals:
     // Emitted from every path that reaches start(), so a handler need not know which one ran.
     void configDirContended();
 
-    void portTested(std::optional<bool> status, PortTestIpProtocol ip_protocol);
+    void portTested(std::optional<bool> status, tr_address_type ip_protocol);
     void statsUpdated();
     void sessionUpdated();
     void blocklistUpdated(qint64);
@@ -198,7 +196,7 @@ private:
     QString const config_dir_;
     Prefs& prefs_;
 
-    std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
     tr_session_stats stats_ = EmptyStats;
     tr_session_stats cumulative_stats_ = EmptyStats;

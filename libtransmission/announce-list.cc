@@ -4,7 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
-#include <ranges>
+#include <iterator>
 #include <string>
 #include <string_view>
 #include <utility>

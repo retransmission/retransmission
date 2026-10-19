@@ -170,7 +170,7 @@ TEST_F(PrefsTest, getSetRoundTripsStringList)
     auto prefs = TestPrefs{};
     expect_get_set_roundtrip(
         prefs,
-        TR_KEY_torrent_complete_sound_command,
+        TR_KEY_recent_download_paths,
         std::vector<std::string>{ "one", "two", "three" },
         std::vector<std::string>{ "alpha", "beta" });
 }

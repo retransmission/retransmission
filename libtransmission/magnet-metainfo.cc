@@ -7,8 +7,8 @@
 #include <array>
 #include <cstdint> // uint8_t
 #include <cstring>
+#include <iterator>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 

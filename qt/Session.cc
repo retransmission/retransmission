@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <ranges>
 #include <string_view>
 #include <utility>
 
@@ -57,7 +56,7 @@ using ::trqt::variant_helpers::dictFind;
 ****
 ***/
 
-void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
+void Session::portTest(tr_address_type const ip_protocol)
 {
     static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
 
@@ -72,9 +71,8 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
     auto const response_func = [this, ip_protocol](RpcResponse const& r) {
         port_test_pending_[ip_protocol] = false;
 
-        // If for whatever reason the status optional is empty here,
-        // then something must have gone wrong with the port test,
-        // so the UI should show the "error" state
+        // The status optional can be empty here, e.g. on network errors,
+        // and the UI should show the "error" state
         emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
     };
 
@@ -88,9 +86,9 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
         .run();
 }
 
-bool Session::portTestPending(Session::PortTestIpProtocol const ip_protocol) const noexcept
+bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
 {
-    return ip_protocol < NUM_PORT_TEST_IP_PROTOCOL && port_test_pending_[ip_protocol];
+    return port_test_pending_[ip_protocol];
 }
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)
@@ -259,15 +257,18 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
         .add(
             [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
                 RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
-            [](RpcResponse const& r) {
+            [oldpath, newname](RpcResponse const& r) {
                 auto const title = tr("Error Renaming Path");
                 auto const summary = TR_FORMAT(
                     R"(Unable to rename "{old_path}" as "{path}": {error}.)",
-                    fmt::arg("old_path", dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)"))),
-                    fmt::arg("path", dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)"))),
+                    fmt::arg("old_path", oldpath),
+                    fmt::arg("path", newname),
                     fmt::arg("error", r.errmsg));
-                auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(summary, tr("Please correct the errors and try again."));
+                // The user can't fix a network error by editing the path.
+                auto const advice = r.network_error ?
+                    QString{} :
+                    QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
+                auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
                 auto* d = new QMessageBox{ QMessageBox::Information,
                                            title,
                                            text,
@@ -596,8 +597,8 @@ void Session::updateBlocklist()
     RpcQueue::create()
         .add(
             [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
-            // A JSON-RPC error aborts the queue before the step below, so report the
-            // failure here or the progress dialog is left with no result.
+            // A JSON-RPC or network error aborts the queue before the step below, so
+            // report the failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
             // session_get reports the new size and date with the rest of the session info

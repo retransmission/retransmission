@@ -8,7 +8,6 @@
 
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include <glibmm/miscutils.h>
@@ -17,7 +16,8 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <vector>
+
+struct tr_session;
 
 namespace tr::app
 {
@@ -93,8 +93,6 @@ void gtr_pref_double_set(tr_quark key, double value);
 
 bool gtr_pref_flag_get(tr_quark key);
 void gtr_pref_flag_set(tr_quark key, bool value);
-
-std::vector<std::string> gtr_pref_strv_get(tr_quark key);
 
 std::string gtr_pref_string_get(tr_quark key);
 void gtr_pref_string_set(tr_quark key, std::string_view value);

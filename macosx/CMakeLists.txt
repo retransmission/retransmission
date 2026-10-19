@@ -197,7 +197,6 @@ target_sources(${TR_NAME}-mac
         UTTypeAdditions.mm)
 
 set(XIB_FILES
-    BlocklistStatusWindow.xib
     FilterBar.xib
     InfoFileView.xib
     InfoPeersView.xib
@@ -344,7 +343,6 @@ set(BASE_XIB_FILES
     AddMagnetWindow.xib
     AddWindow.xib
     Creator.xib
-    GlobalOptionsPopover.xib
     GroupRules.xib
     InfoActivityView.xib
     InfoGeneralView.xib
@@ -355,6 +353,7 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings)
 

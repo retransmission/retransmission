@@ -3,12 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <future>
 #include <iterator>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>

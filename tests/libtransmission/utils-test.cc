@@ -17,8 +17,7 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
+#include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 
 #include "test-fixtures.h"

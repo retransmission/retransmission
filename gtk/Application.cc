@@ -82,7 +82,6 @@
 #include <map>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -669,9 +668,9 @@ void Application::Impl::on_activate()
     activation_count_++;
 
     /* GApplication emits an 'activate' signal when bootstrapping the primary.
-     * Ordinarily we handle that by presenting the main window, but if the user
-     * started Transmission minimized, ignore that initial signal... */
-    if (start_iconified_ && activation_count_ == 1) {
+     * Ordinarily we handle that by presenting the main window, but if app_setup()
+     * hid the window in the notification area, ignore that initial signal... */
+    if (is_iconified_ && activation_count_ == 1) {
         return;
     }
 
@@ -720,10 +719,6 @@ void Application::Impl::on_core_busy(bool busy)
 
 void Application::Impl::app_setup()
 {
-    if (start_iconified_) {
-        gtr_pref_flag_set(TR_KEY_show_notification_area_icon, true);
-    }
-
     gtr_actions_set_core(core_);
 
     /* set up core handlers */
@@ -748,13 +743,12 @@ void Application::Impl::app_setup()
         MAIN_WINDOW_REFRESH_INTERVAL_SECONDS);
     update_model_once();
 
-    /* either show the window or iconify it */
-    if (!start_iconified_) {
+    // Hide the window only behind an icon that can bring it back.
+    if (start_iconified_ && icon_ != nullptr) {
+        hideMainWindow();
+    } else {
         wind_->show();
         gtr_action_set_toggled("toggle-main-window", true);
-    } else {
-        gtr_window_set_skip_taskbar_hint(*wind_, icon_ != nullptr);
-        gtr_action_set_toggled("toggle-main-window", false);
     }
 }
 

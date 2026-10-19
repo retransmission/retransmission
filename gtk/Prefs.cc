@@ -4,8 +4,6 @@
 
 #include "Prefs.h"
 
-#include "GtkCompat.h"
-
 #include <libtransmission-app/display-modes.h>
 
 #include <libtransmission/converters.h>
@@ -26,26 +24,13 @@ namespace
 {
 std::string gl_confdir;
 
-[[nodiscard]] std::string get_default_download_dir()
-{
-    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DOWNLOAD)); !std::empty(dir)) {
-        return dir;
-    }
-
-    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DESKTOP)); !std::empty(dir)) {
-        return dir;
-    }
-
-    return tr::platform::get_download_dir();
-}
-
 /**
  * This is where we initialize the preferences file with the default values.
  * If you add a new preferences key, you /must/ add a default value here.
  */
 [[nodiscard]] auto get_default_app_settings()
 {
-    auto const dir = get_default_download_dir();
+    auto const dir = tr::platform::get_download_dir();
 
     auto map = tr::Settings{ 32U };
     map.try_emplace(TR_KEY_blocklist_updates_enabled, true);
@@ -57,7 +42,7 @@ std::string gl_confdir;
     map.try_emplace(TR_KEY_inhibit_desktop_hibernation, true);
     map.try_emplace(TR_KEY_main_window_height, 500);
     map.try_emplace(TR_KEY_main_window_is_maximized, false);
-    map.try_emplace(TR_KEY_main_window_width, 300);
+    map.try_emplace(TR_KEY_main_window_width, 600);
     map.try_emplace(TR_KEY_main_window_x, 50);
     map.try_emplace(TR_KEY_main_window_y, 50);
     map.try_emplace(TR_KEY_open_dialog_dir, Glib::get_home_dir());
@@ -123,15 +108,6 @@ bool gtr_pref_flag_get(tr_quark const key)
 void gtr_pref_flag_set(tr_quark const key, bool const value)
 {
     gtr_pref_set<bool>(key, value);
-}
-
-std::vector<std::string> gtr_pref_strv_get(tr_quark const key)
-{
-    if (auto val = gtr_pref_lookup<std::vector<std::string>>(key)) {
-        return std::move(*val);
-    }
-
-    return {};
 }
 
 std::string gtr_pref_string_get(tr_quark const key)

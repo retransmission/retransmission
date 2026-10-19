@@ -49,7 +49,6 @@ struct AppPrefs {
     std::string session_remote_password_;
     std::string session_remote_url_base_path_ = TR_PROJ_WEB_SERVER_BASE_PATH;
     std::string session_remote_username_;
-    std::vector<std::string> complete_sound_command_;
     int details_window_height_ = 500;
     int details_window_width_ = 700;
     int main_window_height_ = 500;
@@ -84,7 +83,6 @@ struct AppPrefs {
 
     static constexpr auto Fields = std::make_tuple(
         Field<&AppPrefs::compact_view_>{ TR_KEY_compact_view },
-        Field<&AppPrefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
         Field<&AppPrefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
         Field<&AppPrefs::details_window_height_>{ TR_KEY_details_window_height },
         Field<&AppPrefs::details_window_width_>{ TR_KEY_details_window_width },

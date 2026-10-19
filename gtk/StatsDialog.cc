@@ -12,6 +12,8 @@
 
 #include <libtransmission-app/formatters.h>
 
+#include <libtransmission/transmission.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 

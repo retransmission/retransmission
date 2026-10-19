@@ -654,14 +654,6 @@
     <string>&amp;Main Window</string>
    </property>
   </action>
-  <action name="action_TrayIcon">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Tray &amp;Icon</string>
-   </property>
-  </action>
   <action name="action_SessionDialog">
    <property name="text">
     <string>&amp;Change Session…</string>

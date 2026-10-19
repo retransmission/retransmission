@@ -2,17 +2,18 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
-@class PrefsController;
+NS_ASSUME_NONNULL_BEGIN
+
+struct tr_session;
 
 @interface BlocklistDownloaderViewController : NSObject
 
-+ (void)downloadWithPrefsController:(PrefsController*)prefsController;
+- (instancetype)initWithSessionHandle:(struct tr_session*)sessionHandle;
 
-- (void)setStatusStarting;
-
-- (void)setFinished;
-- (void)setFailed:(NSString*)error;
+- (void)showAsSheetModalForWindow:(NSWindow*)parentWindow completionHandler:(void (^)(NSString* _Nullable error))handler;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -6,7 +6,6 @@
 #pragma once
 
 #include <map>
-#include <memory>
 #include <unordered_set>
 
 #include <QtCore/QString>
@@ -19,10 +18,8 @@
 #include "ui_DetailsDialog.h"
 
 class QResizeEvent;
-class QTreeWidgetItem;
 
 class Prefs;
-class Session;
 class TorrentModel;
 class TrackerDelegate;
 class TrackerModel;
@@ -53,13 +50,16 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private:
+    class PeerItem;
+
     void initPeersTab();
     void initTrackerTab();
     void initInfoTab();
     void initFilesTab() const;
     void initOptionsTab();
 
-    void setEnabled(bool enabled);
+    // Keeps a checkbox and a boolean pref in sync
+    void bindPrefCheckBox(QAbstractButton* check, tr_quark key);
 
 private slots:
     void refreshModel();
@@ -78,12 +78,7 @@ private slots:
     void onAddTrackerClicked();
     void onEditTrackersClicked();
     void onRemoveTrackerClicked();
-    void onShowTrackerScrapesToggled(bool val);
-    void onShowBackupTrackersToggled(bool val);
     void onTrackerListEdited(QString const& tracker_list);
-
-    // Peers tab
-    void onShowExtraPeerDetailsToggled(bool val);
 
     // Files tab
     void onFilePriorityChanged(file_indices_t const& file_indices, int priority);
@@ -92,13 +87,6 @@ private slots:
     void onOpenRequested(QString const& path) const;
 
     // Options tab
-    void onBandwidthPriorityChanged(int index);
-    void onHonorsSessionLimitsToggled(bool val);
-    void onDownloadLimitedToggled(bool val);
-    void onSpinBoxEditingFinished();
-    void onUploadLimitedToggled(bool val);
-    void onRatioModeChanged(int index);
-    void onIdleModeChanged(int index);
     void onIdleLimitChanged();
 
 private:
@@ -112,16 +100,11 @@ private:
         return std::empty(pending_changes_tags_);
     }
     std::unordered_set<Session::Tag> pending_changes_tags_;
-    QMetaObject::Connection pending_changes_connection_;
 
     template<typename T>
     void torrentSet(torrent_ids_t const& ids, tr_quark key, T const& val)
     {
-        auto const tag = session_.torrentSet(ids, key, val);
-        pending_changes_tags_.insert(tag);
-        if (!pending_changes_connection_) {
-            pending_changes_connection_ = connect(&session_, &Session::sessionCalled, this, &DetailsDialog::onSessionCalled);
-        }
+        pending_changes_tags_.insert(session_.torrentSet(ids, key, val));
     }
 
     template<typename T>
@@ -142,14 +125,13 @@ private:
     bool labels_need_refresh_ = true;
     QString labels_baseline_;
 
-    std::shared_ptr<TrackerModel> tracker_model_;
-    std::shared_ptr<TrackerModelFilter> tracker_filter_;
-    std::shared_ptr<TrackerDelegate> tracker_delegate_;
+    TrackerModel* tracker_model_ = {};
+    TrackerModelFilter* tracker_filter_ = {};
+    TrackerDelegate* tracker_delegate_ = {};
 
-    std::map<QString, QTreeWidgetItem*> peers_;
+    std::map<QString, PeerItem*> peers_;
 
     QIcon const icon_encrypted_ = QIcon{ QStringLiteral(":/icons/encrypted.svg") };
-    QIcon const icon_unencrypted_;
 
     static int prev_tab_index;
 };

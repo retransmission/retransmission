@@ -7,7 +7,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <ranges>
+#include <iterator>
 #include <utility>
 
 #include <small/set.hpp>

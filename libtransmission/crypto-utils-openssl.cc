@@ -23,7 +23,6 @@
 #include "libtransmission/log.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h"
 
 #if !defined(WITH_OPENSSL)
 #error OPENSSL module

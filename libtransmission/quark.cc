@@ -645,7 +645,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "torrent-added-notification-enabled"sv, // gtk app, qt app
     "torrent-added-verify-mode"sv, // tr_session::Settings
     "torrent-complete-notification-enabled"sv, // gtk app, qt app
-    "torrent-complete-sound-command"sv, // gtk app, qt app
     "torrent-complete-sound-enabled"sv, // gtk app, qt app
     "torrent-duplicate"sv, // rpc
     "torrent-get"sv, // rpc
@@ -665,7 +664,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "torrent_added_notification_enabled"sv, // gtk app, qt app
     "torrent_added_verify_mode"sv, // tr_session::Settings
     "torrent_complete_notification_enabled"sv, // gtk app, qt app
-    "torrent_complete_sound_command"sv, // gtk app, qt app
     "torrent_complete_sound_enabled"sv, // gtk app, qt app
     "torrent_complete_verify_enabled"sv, // tr_session::Settings
     "torrent_count"sv, // rpc
