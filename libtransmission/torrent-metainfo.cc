@@ -576,6 +576,11 @@ bool tr_torrent_metainfo::parse_benc(std::string_view benc, tr_error* error)
 
     auto const ok = tr::benc::parse(benc, stack, handler, nullptr, error);
 
+    // a handler that rejects the input doesn't always say why
+    if (!ok && !*error) {
+        error->set(EINVAL, "invalid metainfo");
+    }
+
     if (*error) {
         tr_logAddError(fmt::format("{} ({})", error->message(), error->code()));
     }

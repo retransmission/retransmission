@@ -37,7 +37,7 @@ public:
     // Writes announce_list() into `benc_filename`, this torrent's .torrent file.
     // Also updates info_dict_offset(), since the announce keys precede the info dict.
     // On failure, the file is left unchanged.
-    bool save_announce_list(std::string_view benc_filename, tr_error* error = nullptr);
+    [[nodiscard]] bool save_announce_list(std::string_view benc_filename, tr_error* error = nullptr);
 
     // FILES
 
