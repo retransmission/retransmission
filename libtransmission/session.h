@@ -1430,14 +1430,14 @@ private:
 
     /// other fields
 
-    // depends-on: session_thread_, settings_.bind_address_ipv4, local_peer_port_, global_ip_cache (via tr_session::bind_address())
+    // depends-on: session_thread_, settings_.bind_address_ipv4, local_peer_port_, ip_cache_ (via tr_session::bind_address())
     std::optional<BoundSocket> bound_ipv4_;
 
-    // depends-on: session_thread_, settings_.bind_address_ipv6, local_peer_port_, global_ip_cache (via tr_session::bind_address())
+    // depends-on: session_thread_, settings_.bind_address_ipv6, local_peer_port_, ip_cache_ (via tr_session::bind_address())
     std::optional<BoundSocket> bound_ipv6_;
 
 public:
-    // depends-on: settings_, announcer_udp_, global_ip_cache_
+    // depends-on: settings_, announcer_udp_, ip_cache_
     // FIXME(ckerr): circular dependency udp_core -> announcer_udp -> announcer_udp_mediator -> udp_core
     std::unique_ptr<tr_udp_core> udp_core_;
 
