@@ -37,7 +37,6 @@
 
 #include <fmt/format.h>
 
-#include <small/map.hpp>
 #include <small/vector.hpp>
 
 #if defined(_WIN32) && !defined(WITH_OPENSSL)
@@ -119,6 +118,11 @@ struct EasyDeleter {
 };
 
 using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
+
+struct MultiPoolNode {
+    multi_unique_ptr multi;
+    int prev_n_running = {};
+};
 
 } // namespace curl_helpers
 
@@ -257,7 +261,7 @@ public:
         queued_tasks_cv_.notify_one();
         {
             auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& multi : multi_pool_) {
+            for (auto const& [multi, prev_n_running] : multi_pool_) {
                 curl_multi_wakeup(multi.get());
             }
         }
@@ -277,7 +281,7 @@ public:
         queued_tasks_cv_.notify_one();
         {
             auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& multi : multi_pool_) {
+            for (auto const& [multi, prev_n_running] : multi_pool_) {
                 curl_multi_wakeup(multi.get());
             }
         }
@@ -857,7 +861,7 @@ public:
     void push_multi()
     {
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        auto const multi = multi_pool_.emplace_back(curl_helpers::multi_unique_ptr{ curl_multi_init() }).get();
+        auto const multi = multi_pool_.emplace_back(curl_helpers::multi_unique_ptr{ curl_multi_init() }).multi.get();
         (void)curl_multi_setopt(multi, CURLMOPT_MAXCONNECTS, MaxCachedConnections);
         (void)curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
         (void)curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
@@ -866,7 +870,7 @@ public:
     [[nodiscard]] CURLM* current_multi() const noexcept
     {
         TR_ASSERT(!std::empty(multi_pool_));
-        return multi_pool_.back().get();
+        return multi_pool_.back().multi.get();
     }
 
     // the thread started by Impl.curl_thread runs this function
@@ -874,7 +878,6 @@ public:
     {
         push_multi();
 
-        auto prev_n_running = small::map<CURLM*, int, 2U>{};
         for (;;) {
             if (deadline_reached()) {
                 while (!std::empty(running_tasks_)) {
@@ -922,17 +925,16 @@ public:
             // start newly added or unpaused tasks
             auto n_running = int{};
             for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
-                curl_multi_perform(it->get(), &n_running);
+                curl_multi_perform(it->multi.get(), &n_running);
 
                 // Cleanup old multi handles that finished. If both the previous and current n_running are zero,
                 // then this multi handle has no more tasks, and all CURLMSG_DONE messages has been processed in
                 // the previous loop, so we can safely remove it.
-                if (prev_n_running[it->get()] == 0 && n_running == 0 && it != std::prev(multi_pool_.end())) {
-                    prev_n_running.erase(it->get());
+                if (it->prev_n_running == 0 && n_running == 0 && it != std::prev(multi_pool_.end())) {
                     auto const lock = std::unique_lock{ multi_pool_mutex_ };
                     it = multi_pool_.erase(it);
                 } else {
-                    prev_n_running[it->get()] = n_running;
+                    it->prev_n_running = n_running;
                     ++it;
                 }
             }
@@ -950,18 +952,18 @@ public:
             // absorbs the wait. An old handle that wakes during the wait is serviced
             // on the next iteration.
             auto numfds = int{};
-            for (auto const& multi : multi_pool_ | std::views::take(multi_pool_.size() - 1)) {
+            for (auto const& [multi, prev_n_running] : multi_pool_ | std::views::take(multi_pool_.size() - 1)) {
                 if (curl_multi_poll(multi.get(), nullptr, 0, 0, &numfds) == CURLM_OK && numfds > 0) {
                     break;
                 }
             }
             curl_multi_poll(current_multi(), nullptr, 0, numfds > 0 ? 0 : timeout_ms, &numfds);
 
-            for (auto const& multi : multi_pool_) {
+            for (auto& [multi, prev_n_running] : multi_pool_) {
                 // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
                 // https://curl.se/mail/lib-2018-03/0119.html
                 curl_multi_perform(multi.get(), &n_running);
-                prev_n_running[multi.get()] = n_running;
+                prev_n_running = n_running;
 
                 // process any tasks that just finished
                 CURLMsg* msg = nullptr;
@@ -998,7 +1000,7 @@ public:
     std::map<std::string /*host*/, std::stack<curl_helpers::easy_unique_ptr>, std::less<>> easy_pool_;
 
     // TODO(curl 8.16.0): Remove all the multi_pool_ BS once we require curl 8.16.0 or above
-    small::vector<curl_helpers::multi_unique_ptr, 2U> multi_pool_;
+    small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
     bool network_changed_ = false;
 
     // Only the curl thread modifies multi_pool_, all other threads read it. We only need
