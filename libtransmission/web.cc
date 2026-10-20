@@ -662,10 +662,10 @@ public:
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
         auto* const e = task.easy();
 
-        // N.B. DO NOT set these options, they should be handled manually in CURLOPT_OPENSOCKETFUNCTION:
-        // - CURLOPT_INTERFACE
-        // - CURLOPT_LOCALPORT
-        // - CURLOPT_LOCALPORTRANGE
+        // N.B. DO NOT set CURLOPT_INTERFACE, CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE.
+        // curl applies them to every socket it opens regardless of the address family it
+        // resolved, so an IPv4 bind address would also be forced onto IPv6 sockets.
+        // open_socket() binds each socket according to its resolved family instead.
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
