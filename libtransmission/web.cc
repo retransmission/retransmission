@@ -624,15 +624,23 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
+            if (auto const bind_addr = task->bind_address(address->family)) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
-            static constexpr int One = 1;
-            (void)::setsockopt(sock, SOL_IP, IP_BIND_ADDRESS_NO_PORT, reinterpret_cast<char const*>(&One), sizeof(One));
+                static constexpr int One = 1;
+                (void)::setsockopt(sock, SOL_IP, IP_BIND_ADDRESS_NO_PORT, reinterpret_cast<char const*>(&One), sizeof(One));
 #endif
 
-            if (auto const bind_addr = task->bind_address(address->family)) {
                 auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(*bind_addr, tr_port{});
                 if (::bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) != 0) {
-                    goto error_out;
+                    auto const err = sockerrno;
+                    tr_logAddWarn(
+                        fmt::format(
+                            "Couldn't bind to {address}: {error} ({error_code})",
+                            fmt::arg("address", bind_addr->display_name()),
+                            fmt::arg("error", tr_net_strerror(err)),
+                            fmt::arg("error_code", err)));
+                    tr_net_close_socket(sock);
+                    return CURL_SOCKET_BAD;
                 }
             }
         }
@@ -647,10 +655,6 @@ public:
         }
 
         return sock;
-
-error_out:
-        tr_net_close_socket(sock);
-        return CURL_SOCKET_BAD;
     }
 
     void initEasy(Task& task)
