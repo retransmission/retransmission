@@ -20,11 +20,14 @@
 #include <small/set.hpp>
 #include <small/vector.hpp>
 
+#include "libtransmission/crypto-utils.h" // tr_sha1_from_string()
+#include "libtransmission/digest.h" // tr_sha1_digest_t, tr_sha1_string
 #include "libtransmission/log.h" // for tr_log_level
 #include "libtransmission/macros.h"
 #include "libtransmission/peer-mgr.h" // tr_pex
 #include "libtransmission/converters.h"
 #include "libtransmission/session-settings.h" // Converter<small::max_size_vector<...>>
+#include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/utils.h" // for tr_strv_strip(), tr_strlower()
 #include "libtransmission/variant.h"
@@ -546,6 +549,80 @@ auto constexpr VerifyModeKeys = to_lookup<tr_verify_added_mode>({
     return pex;
 }
 
+// ---
+
+// An integer-backed enum whose values are contiguous in [Min..Max].
+template<typename Enum, Enum Min, Enum Max>
+[[nodiscard]] bool to_enum(tr_variant const& src, Enum* tgt)
+{
+    if (auto const val = src.value_if<int64_t>();
+        val && *val >= static_cast<int64_t>(Min) && *val <= static_cast<int64_t>(Max)) {
+        *tgt = static_cast<Enum>(*val);
+        return true;
+    }
+
+    return false;
+}
+
+template<typename Enum>
+[[nodiscard]] tr_variant from_enum(Enum const& src)
+{
+    return static_cast<int64_t>(src);
+}
+
+// ---
+
+[[nodiscard]] bool to_sha1_digest(tr_variant const& src, tr_sha1_digest_t* tgt)
+{
+    if (auto const val = src.value_if<std::string_view>()) {
+        if (auto const digest = tr_sha1_from_string(*val)) {
+            *tgt = *digest;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+[[nodiscard]] tr_variant from_sha1_digest(tr_sha1_digest_t const& src)
+{
+    return tr_sha1_string{ src }.sv();
+}
+
+// ---
+
+[[nodiscard]] bool to_shared_string(tr_variant const& src, tr::shared_string* tgt)
+{
+    if (auto const val = src.value_if<std::string_view>()) {
+        *tgt = *val;
+        return true;
+    }
+
+    return false;
+}
+
+[[nodiscard]] tr_variant from_shared_string(tr::shared_string const& src)
+{
+    return src.sv();
+}
+
+// ---
+
+[[nodiscard]] bool to_ratio(tr_variant const& src, tr::Values::Ratio* tgt)
+{
+    if (auto const val = src.value_if<double>()) {
+        *tgt = tr::Values::Ratio::from_double(*val);
+        return true;
+    }
+
+    return false;
+}
+
+[[nodiscard]] tr_variant from_ratio(tr::Values::Ratio const& src)
+{
+    return src.quotient().value_or(src.is_infinite() ? TR_RATIO_INF : TR_RATIO_NA);
+}
+
 } // unnamed namespace
 
 // ---
@@ -570,14 +647,23 @@ TR_DEFINE_CONVERTER(bool, to_bool, from_bool)
 TR_DEFINE_CONVERTER(double, to_double, from_double)
 TR_DEFINE_CONVERTER(std::string, to_string, from_string)
 TR_DEFINE_CONVERTER(std::chrono::milliseconds, to_msec, from_msec)
+TR_DEFINE_CONVERTER(tr::shared_string, to_shared_string, from_shared_string)
+TR_DEFINE_CONVERTER(tr::Values::Ratio, to_ratio, from_ratio)
 TR_DEFINE_CONVERTER(tr_diffserv_t, to_diffserv_t, from_diffserv_t)
 TR_DEFINE_CONVERTER(tr_encryption_mode, to_encryption_mode, from_encryption_mode)
 TR_DEFINE_CONVERTER(tr_file_preallocation, to_preallocation_mode, from_preallocation_mode)
+TR_DEFINE_CONVERTER(tr_idlelimit, (to_enum<tr_idlelimit, TR_IDLELIMIT_GLOBAL, TR_IDLELIMIT_UNLIMITED>), from_enum)
 TR_DEFINE_CONVERTER(tr_log_level, to_log_level, from_log_level)
 TR_DEFINE_CONVERTER(tr_mode_t, to_mode_t, from_mode_t)
 TR_DEFINE_CONVERTER(tr_pex, to_pex, from_pex)
 TR_DEFINE_CONVERTER(tr_port, to_port, from_port)
+TR_DEFINE_CONVERTER(tr_priority_t, (to_enum<tr_priority_t, TR_PRI_LOW, TR_PRI_HIGH>), from_enum)
+TR_DEFINE_CONVERTER(tr_ratiolimit, (to_enum<tr_ratiolimit, TR_RATIOLIMIT_GLOBAL, TR_RATIOLIMIT_UNLIMITED>), from_enum)
 TR_DEFINE_CONVERTER(tr_sched_day, to_sched_day, from_sched_day)
+TR_DEFINE_CONVERTER(tr_sha1_digest_t, to_sha1_digest, from_sha1_digest)
+TR_DEFINE_CONVERTER(tr_stat::Error, (to_enum<tr_stat::Error, tr_stat::Error::Ok, tr_stat::Error::LocalError>), from_enum)
+TR_DEFINE_CONVERTER(tr_torrent_activity, (to_enum<tr_torrent_activity, TR_STATUS_STOPPED, TR_STATUS_SEED>), from_enum)
+TR_DEFINE_CONVERTER(tr_tracker_state, (to_enum<tr_tracker_state, TR_TRACKER_INACTIVE, TR_TRACKER_ACTIVE>), from_enum)
 TR_DEFINE_CONVERTER(tr_verify_added_mode, to_verify_added_mode, from_verify_added_mode)
 
 // `small::max_size_vector<tr_preferred_transport, ...>` Converter is declared

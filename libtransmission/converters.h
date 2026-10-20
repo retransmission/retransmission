@@ -20,6 +20,7 @@
 #include <typeinfo>
 #include <utility>
 
+#include "libtransmission/digest.h" // tr_sha1_digest_t
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
@@ -145,7 +146,8 @@ void reserve_if_possible(C& /*c*/, ...) // NOLINT(cert-dcl50-cpp, modernize-avoi
  * `to_value()` on an unsupported type will fail to compile.
  *
  * Specializations for libtransmission's built-in types are declared in this
- * header (see below); specializations for app/UI types are in other folders.
+ * header (see below). Other folders declare them for their own types, and for
+ * built-in types whose wire format varies by key, such as `tr::Values::Speed`.
  */
 template<typename T>
 struct Converter;
@@ -332,14 +334,23 @@ TR_DECLARE_CONVERTER(double)
 TR_DECLARE_CONVERTER(std::chrono::milliseconds)
 TR_DECLARE_CONVERTER(std::string)
 
+TR_DECLARE_CONVERTER(tr::shared_string)
+TR_DECLARE_CONVERTER(tr::Values::Ratio) // a number, or TR_RATIO_NA or TR_RATIO_INF
 TR_DECLARE_CONVERTER(tr_diffserv_t)
 TR_DECLARE_CONVERTER(tr_encryption_mode)
 TR_DECLARE_CONVERTER(tr_file_preallocation)
+TR_DECLARE_CONVERTER(tr_idlelimit)
 TR_DECLARE_CONVERTER(tr_log_level)
 TR_DECLARE_CONVERTER(tr_mode_t)
 TR_DECLARE_CONVERTER(tr_pex)
 TR_DECLARE_CONVERTER(tr_port)
+TR_DECLARE_CONVERTER(tr_priority_t)
+TR_DECLARE_CONVERTER(tr_ratiolimit)
 TR_DECLARE_CONVERTER(tr_sched_day)
+TR_DECLARE_CONVERTER(tr_sha1_digest_t) // a hex string
+TR_DECLARE_CONVERTER(tr_stat::Error)
+TR_DECLARE_CONVERTER(tr_torrent_activity)
+TR_DECLARE_CONVERTER(tr_tracker_state)
 TR_DECLARE_CONVERTER(tr_verify_added_mode)
 
 // ---
