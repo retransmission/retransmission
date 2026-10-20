@@ -13,6 +13,7 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include <small/vector.hpp>
 // small defines a has_attribute() macro but never uses it.
@@ -44,6 +45,49 @@ namespace tr::serializer
  */
 template<auto MemberPtr, typename Key = tr_quark>
 struct Field;
+
+namespace detail
+{
+
+// NOLINTBEGIN(readability-identifier-naming)
+// use std-style naming for these traits
+
+template<typename T>
+inline constexpr bool is_field_v = false;
+
+template<auto MemberPtr, typename Key>
+inline constexpr bool is_field_v<Field<MemberPtr, Key>> = true;
+
+template<typename Tuple, std::size_t... I>
+consteval bool is_fields_tuple(std::index_sequence<I...> /*indices*/)
+{
+    return (is_field_v<std::tuple_element_t<I, Tuple>> && ...);
+}
+
+template<typename Tuple>
+inline constexpr bool is_fields_tuple_v = is_fields_tuple<Tuple>(std::make_index_sequence<std::tuple_size_v<Tuple>>{});
+
+// NOLINTEND(readability-identifier-naming)
+
+} // namespace detail
+
+template<typename T>
+concept Serializable = requires {
+    { std::tuple_size_v<std::remove_cvref_t<decltype(T::Fields)>> } -> std::convertible_to<std::size_t>;
+} && detail::is_fields_tuple_v<std::remove_cvref_t<decltype(T::Fields)>>;
+
+/**
+ * Load a list of Serializables in place. Entries past the list's new length
+ * are dropped; the rest keep every field their map doesn't carry, so two keys
+ * can feed one list, e.g. `torrent_get`'s `files` and `file_stats`.
+ * Anything but a list is ignored.
+ *
+ * Declared ahead of `Field` so that `Field::load()` sees it; defined below `load()`.
+ *
+ * @return `true` iff the length or any field changed
+ */
+template<Serializable S>
+bool set(std::vector<S>& tgt, tr_variant const& src);
 
 template<typename Owner, typename T, T Owner::* MemberPtr, typename Key>
 struct Field<MemberPtr, Key> {
@@ -79,26 +123,6 @@ struct Field<MemberPtr, Key> {
 namespace detail
 {
 
-// NOLINTBEGIN(readability-identifier-naming)
-// use std-style naming for these traits
-
-template<typename T>
-inline constexpr bool is_field_v = false;
-
-template<auto MemberPtr, typename Key>
-inline constexpr bool is_field_v<Field<MemberPtr, Key>> = true;
-
-template<typename Tuple, std::size_t... I>
-consteval bool is_fields_tuple(std::index_sequence<I...> /*indices*/)
-{
-    return (is_field_v<std::tuple_element_t<I, Tuple>> && ...);
-}
-
-template<typename Tuple>
-inline constexpr bool is_fields_tuple_v = is_fields_tuple<Tuple>(std::make_index_sequence<std::tuple_size_v<Tuple>>{});
-
-// NOLINTEND(readability-identifier-naming)
-
 template<typename S, typename T, tr_quark Key, std::size_t... I>
 consteval std::size_t field_index(std::index_sequence<I...> /*indices*/)
 {
@@ -114,11 +138,6 @@ consteval std::size_t field_index(std::index_sequence<I...> /*indices*/)
 }
 
 } // namespace detail
-
-template<typename T>
-concept Serializable = requires {
-    { std::tuple_size_v<std::remove_cvref_t<decltype(T::Fields)>> } -> std::convertible_to<std::size_t>;
-} && detail::is_fields_tuple_v<std::remove_cvref_t<decltype(T::Fields)>>;
 
 /**
  * Compile-time check that no serialization key is shared between the
@@ -422,6 +441,29 @@ auto load(tr_variant const& src, S& tgt, Ss&... tgts)
     return std::apply(
         [&src](auto&&... args) { return load(src, args...); },
         std::tuple_cat(std::forward_as_tuple(tgt, S::Fields), std::forward_as_tuple(tgts, Ss::Fields)...));
+}
+
+template<Serializable S>
+bool set(std::vector<S>& tgt, tr_variant const& src)
+{
+    auto const* const vec = src.get_if<tr_variant::Vector>();
+    if (vec == nullptr) {
+        return false;
+    }
+
+    auto changed = false;
+
+    auto const n = std::size(*vec);
+    if (std::size(tgt) != n) {
+        tgt.resize(n);
+        changed = true;
+    }
+
+    for (std::size_t i = 0; i < n; ++i) {
+        changed = !std::empty(load((*vec)[i], tgt[i])) || changed;
+    }
+
+    return changed;
 }
 
 /**
