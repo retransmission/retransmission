@@ -799,7 +799,8 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         addr_changed = true;
     }
 
-    if (addr_changed) {
+    if (new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
+        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
         web_->network_changed();
     }
 
