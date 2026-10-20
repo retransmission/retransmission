@@ -941,15 +941,17 @@ error_out:
 
             // Wait for activity on the curl sockets, or for the timeout to expire.
             //
-            // N.B. Technically this does potentially double/triple/... the timeout,
-            // but we don't care as it rarely happens, and when it does, it's only
-            // for a short while.
-            for (auto const& multi : multi_pool_) {
-                auto numfds = int{};
-                if (curl_multi_poll(multi.get(), nullptr, 0, timeout_ms, &numfds) == CURLM_OK && numfds > 0) {
+            // curl_multi_poll() watches a single multi handle. The old handles are
+            // only draining, so they get a non-blocking poll and the current handle
+            // absorbs the wait. An old handle that wakes during the wait is serviced
+            // on the next iteration.
+            auto numfds = int{};
+            for (auto const& multi : multi_pool_ | std::views::take(multi_pool_.size() - 1)) {
+                if (curl_multi_poll(multi.get(), nullptr, 0, 0, &numfds) == CURLM_OK && numfds > 0) {
                     break;
                 }
             }
+            curl_multi_poll(current_multi(), nullptr, 0, numfds > 0 ? 0 : timeout_ms, &numfds);
 
             for (auto const& multi : multi_pool_) {
                 // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
