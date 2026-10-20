@@ -190,8 +190,8 @@ T tr_rand_int(T const upper_bound)
 {
     using dist_type = std::uniform_int_distribution<T>;
 
-    thread_local auto rng = tr_urbg<T>{};
-    thread_local auto dist = dist_type{};
+    static thread_local auto rng = tr_urbg<T>{};
+    static thread_local auto dist = dist_type{};
     return dist(rng, typename dist_type::param_type(0, upper_bound - 1));
 }
 
