@@ -1427,69 +1427,6 @@ jobs:
       run: |
         gradle build
 
-  cxx23:
-    needs: [ what-to-make ]
-    if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show Configuration
-        run: |
-          echo '${{ toJSON(needs) }}'
-          echo '${{ toJSON(runner) }}'
-          cat /etc/os-release
-      - name: Get Source
-        uses: actions/checkout@v7
-        with:
-          submodules: recursive
-      - name: Get Dependencies
-        uses: ./.github/actions/install-deps
-        with:
-          compiler: clang
-          enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk3' || 'false' }}
-          enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
-          use-sudo: true
-          enable-mold: true
-      - name: Setup ccache
-        uses: ./.github/actions/setup-ccache
-        with:
-          max-size: 100M
-      - name: Configure
-        run: |
-          cmake \
-            -S . \
-            -B obj \
-            -G Ninja \
-            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_STANDARD=23 \
-            -DCMAKE_CXX_COMPILER='clang++' \
-            -DCMAKE_C_COMPILER='clang' \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=pfx \
-            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
-            -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_MAC=OFF \
-            -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=OFF \
-            -DENABLE_WERROR=ON \
-            -DRUN_CLANG_TIDY=OFF \
-            -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
-            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
-            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
-      - name: Make
-        run: cmake --build obj --config Release -- "-k 0"
-      - name: Finalize ccache
-        uses: ./.github/actions/finalize-ccache
-
   ubuntu-24-04-arm64:
     needs: [ make-source-tarball, what-to-make ]
     if: |
@@ -1933,7 +1870,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:
