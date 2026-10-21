@@ -42,6 +42,8 @@ jobs:
       contains(fromJSON(vars.AI_REVIEW_USERS || '[]'), github.event.sender.login)
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      resolve-ids: ${{ steps.queued.outputs.ids }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -67,7 +69,7 @@ jobs:
           #!/bin/sh
           # pr-review-threads list <pr>               unresolved review threads, one JSON object per line
           # pr-review-threads reply <pr> <comment>    reply in a thread; the reply text comes from stdin
-          # pr-review-threads resolve <thread>        mark a thread resolved
+          # pr-review-threads resolve <thread>        queue a thread to be marked resolved
           set -eu
           usage() { echo 'usage: pr-review-threads list <pr> | reply <pr> <comment-id> | resolve <thread-id>' >&2; exit 2; }
           case "${1-}" in
@@ -93,11 +95,12 @@ jobs:
               gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$2/comments/$3/replies" -f body="$(cat)" --jq '{id, html_url}'
               ;;
             resolve)
-              case "${2-}" in ''|*[!A-Za-z0-9_=-]*) usage ;; esac
-              gh api graphql -F id="$2" -f query='
-                mutation($id: ID!) {
-                  resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
-                }' --jq '.data.resolveReviewThread.thread'
+              # Resolving needs a permission this job does not hold, so the id
+              # is queued for the resolve-threads job that runs afterwards.
+              case "${2-}" in PRRT_*) ;; *) usage ;; esac
+              case "${2-}" in *[!A-Za-z0-9_=-]*) usage ;; esac
+              echo "$2" >> "$(dirname "$0")/resolve-ids"
+              echo "queued: $2 will be marked resolved once this review finishes"
               ;;
             *) usage ;;
           esac
@@ -145,6 +148,14 @@ jobs:
             --effort xhigh
             --allowedTools "Skill,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
 
+      - name: Hand the queued thread ids to the resolve job
+        id: queued
+        run: |
+          f="$RUNNER_TEMP/ai-review/resolve-ids"
+          if [ -s "$f" ]; then
+            echo "ids=$(tr '\n' ' ' < "$f")" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Remove the label
         uses: actions/github-script@v9
         with:
@@ -161,3 +172,26 @@ jobs:
               // 404 just means the label was already gone; anything else is real.
               if (error.status !== 404) throw error;
             }
+
+  # Marking a review thread resolved needs `contents: write`, GitHub's rule
+  # rather than ours. This job is the only one that holds it: no checkout, no
+  # PR content, no Claude, just the mutation for each id the review queued.
+  resolve-threads:
+    needs: review
+    if: needs.review.outputs.resolve-ids != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          IDS: ${{ needs.review.outputs.resolve-ids }}
+        run: |
+          for id in $IDS; do
+            case "$id" in PRRT_*) ;; *) echo "::warning::Skipping unexpected thread id $id"; continue ;; esac
+            gh api graphql -F id="$id" -f query='
+              mutation($id: ID!) {
+                resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
+              }' --jq '.data.resolveReviewThread.thread.isResolved' | sed "s/^/$id resolved=/"
+          done
