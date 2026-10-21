@@ -12,6 +12,8 @@
 
 + (NSButton*)pushButton:(NSString*)title target:(id)target action:(SEL)action;
 
++ (NSPopUpButton*)popUpButton;
+
 + (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max;
 
 /// Views modifiers
