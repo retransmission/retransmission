@@ -38,3 +38,6 @@ CMakeUserPresets.json
 
 # Cache
 .cache
+
+# Xcode version xcconfig
+/macosx/Configs/Project/Version.Release.xcconfig
