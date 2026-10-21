@@ -11,8 +11,9 @@ name: AI review on request
 # variable, a JSON array of GitHub logins kept under Settings > Secrets and
 # variables > Actions. The list mirrors the org's `contributors` and
 # `maintainers` teams by hand: a workflow's default token cannot read team
-# membership, so update the variable when those teams change. The action
-# adds a check of its own, refusing actors without write access.
+# membership, so update the variable when those teams change. The same list
+# is handed to the action, which otherwise refuses actors without write
+# access; the contributors team has triage, which can label but not write.
 
 on:
   # `pull_request_target` (rather than `pull_request`) so the job has the
@@ -113,6 +114,10 @@ jobs:
           # token exchange rejects `pull_request_target` runs
           # (anthropics/claude-code-action#713).
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The whitelist again, as the comma-separated form the action wants.
+          # Naming non-write users also makes the action scrub secrets from
+          # Claude's subprocesses and sandbox them, which costs nothing here.
+          allowed_non_write_users: ${{ join(fromJSON(vars.AI_REVIEW_USERS || '[]'), ',') }}
           # Lists Claude's tool calls on the run's summary page, which is the
           # only record of whether the earlier-rounds steps happened.
           display_report: 'true'
