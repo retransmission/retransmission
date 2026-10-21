@@ -26,11 +26,7 @@ tr_tracker_trying_order::tr_tracker_trying_order(size_t const tracker_count)
 
 std::optional<size_t> tr_tracker_trying_order::current() const
 {
-    if (pos_) {
-        return order_[*pos_];
-    }
-
-    return {};
+    return pos_.transform([this](auto const pos) { return order_[pos]; });
 }
 
 std::optional<size_t> tr_tracker_trying_order::advance()

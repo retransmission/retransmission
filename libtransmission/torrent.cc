@@ -1679,11 +1679,7 @@ tr_torrent_metainfo const& tr_torrent::VerifyMediator::metainfo() const
 
 std::optional<std::string> tr_torrent::VerifyMediator::find_file(tr_file_index_t const file_index) const
 {
-    if (auto const found = tor_->find_file(file_index); found) {
-        return found->filename();
-    }
-
-    return {};
+    return tor_->find_file(file_index).transform(&tr_torrent_files::FoundFile::filename<std::string>);
 }
 
 void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_file) const

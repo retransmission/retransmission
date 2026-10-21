@@ -2052,7 +2052,6 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
     map.try_emplace(
         TR_KEY_download_dir_free_space,
         [](tr_session const& src) -> tr_variant {
-            // TODO(C++23): use std::optional::transform() instead
             if (auto const space = tr_sys_path_get_capacity(src.downloadDir())) {
                 return space->available;
             }

@@ -384,12 +384,9 @@ public:
             }
         }
 
-        [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
+        [[nodiscard]] auto bind_address(int const af) const
         {
-            if (auto const addr = impl.mediator.bind_address(af)) {
-                return tr_address::from_string(*addr);
-            }
-            return {};
+            return impl.mediator.bind_address(af).and_then(&tr_address::from_string);
         }
 
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
