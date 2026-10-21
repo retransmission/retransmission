@@ -64,10 +64,11 @@ jobs:
           echo "$RUNNER_TEMP/ai-review" >> "$GITHUB_PATH"
           cat > "$RUNNER_TEMP/ai-review/pr-review-threads" <<'EOF'
           #!/bin/sh
-          # pr-review-threads list <pr>          unresolved review threads, one JSON object per line
-          # pr-review-threads resolve <thread>   mark a thread resolved
+          # pr-review-threads list <pr>               unresolved review threads, one JSON object per line
+          # pr-review-threads reply <pr> <comment>    reply in a thread; the reply text comes from stdin
+          # pr-review-threads resolve <thread>        mark a thread resolved
           set -eu
-          usage() { echo 'usage: pr-review-threads list <pr> | resolve <thread-id>' >&2; exit 2; }
+          usage() { echo 'usage: pr-review-threads list <pr> | reply <pr> <comment-id> | resolve <thread-id>' >&2; exit 2; }
           case "${1-}" in
             list)
               case "${2-}" in ''|*[!0-9]*) usage ;; esac
@@ -78,12 +79,17 @@ jobs:
                       reviewThreads(first: 100) {
                         nodes {
                           id isResolved isOutdated path line
-                          comments(first: 50) { nodes { author { login } body } }
+                          comments(first: 50) { nodes { databaseId author { login } body } }
                         }
                       }
                     }
                   }
                 }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not)'
+              ;;
+            reply)
+              case "${2-}" in ''|*[!0-9]*) usage ;; esac
+              case "${3-}" in ''|*[!0-9]*) usage ;; esac
+              gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$2/comments/$3/replies" -f body="$(cat)" --jq '{id, html_url}'
               ;;
             resolve)
               case "${2-}" in ''|*[!A-Za-z0-9_=-]*) usage ;; esac
@@ -107,6 +113,9 @@ jobs:
           # token exchange rejects `pull_request_target` runs
           # (anthropics/claude-code-action#713).
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Lists Claude's tool calls on the run's summary page, which is the
+          # only record of whether the earlier-rounds steps happened.
+          display_report: 'true'
           # Claude Code's bundled review skill. Its level sets how many
           # findings it reports; `--comment` posts each one as an inline PR
           # comment.
@@ -118,7 +127,7 @@ jobs:
             --model claude-opus-5-5
             --effort xhigh
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
-            --append-system-prompt "Earlier rounds of this same automated review may already have left inline comments on the pull request, posted as github-actions. Before posting anything, run pr-review-threads list <pr number> to see the unresolved review threads. For each thread the app opened: if the current code no longer has the problem, resolve it with pr-review-threads resolve <thread id>; if the problem remains, leave the thread as it is and do not post the finding again. Never resolve a thread a person opened. Post only findings that no open thread already covers. Finish with one gh pr comment, opening with a line that says this is the automated Claude review requested with the needs ai review label, that says what this round resolved, left open, and added, so a request always leaves a visible result."
+            --append-system-prompt "Earlier review rounds, by people and by this automated review (posted as github-actions), may already have left inline comments on the pull request. Before posting anything, run pr-review-threads list <pr number> to see the unresolved review threads. A finding that an open thread already covers, whoever opened it, must not get a new comment; if you have something new to add, reply in that thread with pr-review-threads reply <pr number> <comment id>, giving the reply text on standard input. For threads this review opened itself: if the current code no longer has the problem, resolve the thread with pr-review-threads resolve <thread id>. Never resolve a thread a person opened. Finish with one gh pr comment, opening with a line that says this is the automated Claude review requested with the needs ai review label, that says what this round resolved, left open, and added, so a request always leaves a visible result."
 
       - name: Remove the label
         uses: actions/github-script@v9
