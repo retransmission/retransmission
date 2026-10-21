@@ -20,8 +20,11 @@ inputs:
     description: Directory containing compile_commands.json
     default: obj
   clang-tidy-binary:
-    description: clang-tidy executable
+    description: clang-tidy executable or launcher
     default: clang-tidy
+  clang-tidy-args:
+    description: Optional whitespace-separated launcher arguments
+    default: ''
   extra-arg:
     description: Optional single -extra-arg value appended to every invocation
     default: ''
@@ -43,13 +46,19 @@ runs:
     - name: Fingerprint the toolchain
       if: ${{ inputs.msvc-env != 'true' }}
       shell: bash
+      env:
+        CLANG_TIDY_ARGS: ${{ inputs.clang-tidy-args }}
       run: |
         # the binaries' content, not just the version string: same-version
         # rebuilds (apt.llvm.org's release branches) would otherwise share a
         # key. Debian's clang-tidy is a thin front-end over libclang-cpp and
         # libLLVM, so those count too when the binary loads them.
+        clang_tidy_args=()
+        if [[ -n "$CLANG_TIDY_ARGS" ]]; then
+          read -r -a clang_tidy_args <<< "$CLANG_TIDY_ARGS"
+        fi
         binary="$(command -v '${{ inputs.clang-tidy-binary }}')"
-        version="$("$binary" --version)"
+        version="$("$binary" "${clang_tidy_args[@]}" --version)"
         mapfile -t libs < <(ldd "$binary" 2>/dev/null | awk '/libLLVM|libclang/ && /=> \// { print $3 }')
         content="$(sha256sum "$binary" "${libs[@]}" | cut -d' ' -f1)"
         printf '%s\n' "$binary" "${libs[@]}" "$version"
@@ -63,7 +72,7 @@ runs:
         # VCToolsVersion at execution time; a %VCToolsVersion% on this line would
         # be expanded by cmd before vcvarsall defines it. The markers are glued
         # to their `&&` because cmd would otherwise echo a trailing space.
-        $Lines = @(@(cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH && echo __PATHS__&& where ${{ inputs.clang-tidy-binary }} && echo __FACTS__&& ${{ inputs.clang-tidy-binary }} --version && set VCToolsVersion") | ForEach-Object { $_.TrimEnd() })
+        $Lines = @(@(cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH && echo __PATHS__&& where ${{ inputs.clang-tidy-binary }} && echo __FACTS__&& ${{ inputs.clang-tidy-binary }} ${{ inputs.clang-tidy-args }} --version && set VCToolsVersion") | ForEach-Object { $_.TrimEnd() })
         if ($LASTEXITCODE -ne 0) { $Lines | Write-Host; throw "could not query the toolchain (exit $LASTEXITCODE)" }
         $Paths = [Array]::IndexOf($Lines, '__PATHS__')
         $Facts = [Array]::IndexOf($Lines, '__FACTS__')
@@ -95,6 +104,7 @@ runs:
           echo "TIDY_REGEX=${{ inputs.regex }}"
           echo "BUILD_PATH=${{ inputs.build-path }}"
           echo "CLANG_TIDY=${{ inputs.clang-tidy-binary }}"
+          echo "CLANG_TIDY_ARGS=${{ inputs.clang-tidy-args }}"
           echo "TIDY_EXTRA_ARG=${{ inputs.extra-arg }}"
         } >> "$GITHUB_ENV"
     - name: Restore ctcache
