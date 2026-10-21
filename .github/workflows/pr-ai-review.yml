@@ -28,9 +28,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  # The action authenticates as the Claude GitHub App through OIDC, and the
-  # review comments appear under that app's name.
-  id-token: write
 
 # A new request supersedes a review still in progress on the same PR.
 concurrency:
@@ -105,6 +102,11 @@ jobs:
           # A long-lived token from `claude setup-token`; runs are billed to
           # that account's Claude subscription rather than to an API key.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The job's own token, so comments come from github-actions[bot].
+          # The action would otherwise post as the Claude GitHub App, but its
+          # token exchange rejects `pull_request_target` runs
+          # (anthropics/claude-code-action#713).
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           # Claude Code's bundled review skill. Its level sets how many
           # findings it reports; `--comment` posts each one as an inline PR
           # comment.
@@ -116,7 +118,7 @@ jobs:
             --model claude-opus-5-5
             --effort xhigh
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
-            --append-system-prompt "Earlier rounds of this same automated review may already have left inline comments on the pull request, posted by the Claude GitHub App (author login claude). Before posting anything, run pr-review-threads list <pr number> to see the unresolved review threads. For each thread the app opened: if the current code no longer has the problem, resolve it with pr-review-threads resolve <thread id>; if the problem remains, leave the thread as it is and do not post the finding again. Never resolve a thread a person opened. Post only findings that no open thread already covers. Finish with one gh pr comment that says what this round resolved, left open, and added, so a request always leaves a visible result."
+            --append-system-prompt "Earlier rounds of this same automated review may already have left inline comments on the pull request, posted as github-actions. Before posting anything, run pr-review-threads list <pr number> to see the unresolved review threads. For each thread the app opened: if the current code no longer has the problem, resolve it with pr-review-threads resolve <thread id>; if the problem remains, leave the thread as it is and do not post the finding again. Never resolve a thread a person opened. Post only findings that no open thread already covers. Finish with one gh pr comment, opening with a line that says this is the automated Claude review requested with the needs ai review label, that says what this round resolved, left open, and added, so a request always leaves a visible result."
 
       - name: Remove the label
         uses: actions/github-script@v9
