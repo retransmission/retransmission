@@ -1063,6 +1063,7 @@ namespace make_torrent_field_helpers
     if (std::empty(files_vec)) // if empty set, apply to all
     {
         files.resize(n_files);
+        // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
         std::iota(std::begin(files), std::end(files), 0);
     } else {
         for (auto const& file_var : files_vec) {
