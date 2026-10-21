@@ -52,6 +52,10 @@ jobs:
           # `git blame`.
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          # actions/checkout refuses fork code under `pull_request_target`
+          # without this opt-in. The safeguards described at the top of the
+          # file are what make it acceptable here.
+          allow-unsafe-pr-checkout: true
 
       # Review threads are reachable only through GraphQL, and `gh api graphql`
       # would let the review run any query or mutation. This helper exposes
