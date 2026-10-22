@@ -801,7 +801,7 @@ void tier_announce_event_push(tr_tier* tier, tr_announce_event e, time_t announc
 
     auto constexpr Keys = std::array{ "unregistered torrent"sv, "torrent not registered"sv };
 
-    return std::ranges::any_of(Keys, [&lower](auto const& key) { return tr_strv_contains(lower, key); });
+    return std::ranges::any_of(Keys, [&lower](auto const& key) { return lower.contains(key); });
 }
 
 void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e, time_t interval = {})
@@ -1135,7 +1135,7 @@ namespace on_scrape_done_helpers
         "Request-URI Too Long",
     });
 
-    return std::ranges::any_of(too_long_errors, [&errmsg](auto const& substr) { return tr_strv_contains(errmsg, substr); });
+    return std::ranges::any_of(too_long_errors, [&errmsg](auto const& substr) { return errmsg.contains(substr); });
 }
 
 void on_scrape_error(tr_session const* /*session*/, tr_tier* tier, std::string_view errmsg)

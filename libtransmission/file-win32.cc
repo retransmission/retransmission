@@ -46,7 +46,7 @@ auto constexpr Slashes = R"(\/)"sv;
 
 constexpr bool is_slash(char c)
 {
-    return tr_strv_contains(Slashes, c);
+    return Slashes.contains(c);
 }
 
 constexpr bool is_unc_path(std::string_view path)

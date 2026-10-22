@@ -2236,7 +2236,7 @@ std::string_view tr_torrent::primary_mime_type() const
 bool tr_torrent::is_folder() const
 {
     auto const n_files = file_count();
-    return n_files > 1U || (n_files == 1U && tr_strv_contains(file_subpath(0), '/'));
+    return n_files > 1U || (n_files == 1U && file_subpath(0).contains('/'));
 }
 
 // ---
@@ -2524,12 +2524,12 @@ namespace rename_helpers
 {
 [[nodiscard]] bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
-    if (std::empty(oldpath) || std::empty(newname) || newname == "."sv || newname == ".."sv || tr_strv_contains(newname, '/')) {
+    if (std::empty(oldpath) || std::empty(newname) || newname == "."sv || newname == ".."sv || newname.contains('/')) {
         return false;
     }
 
-    auto const newpath = tr_strv_contains(oldpath, '/') ? tr_pathbuf{ tr_sys_path_dirname(oldpath), '/', newname } :
-                                                          tr_pathbuf{ newname };
+    auto const newpath = oldpath.contains('/') ? tr_pathbuf{ tr_sys_path_dirname(oldpath), '/', newname } :
+                                                 tr_pathbuf{ newname };
 
     if (newpath == oldpath) {
         return true;
@@ -2607,7 +2607,7 @@ void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::str
     auto const subpath = std::string_view{ tor->file_subpath(file_index) };
     auto const oldpath_len = std::size(oldpath);
 
-    if (!tr_strv_contains(oldpath, '/')) {
+    if (!oldpath.contains('/')) {
         if (oldpath_len >= std::size(subpath)) {
             name = newname;
         } else {
@@ -2658,7 +2658,7 @@ void tr_torrent::rename_path_in_session_thread(
             }
 
             /* update tr_info.name if user changed the toplevel */
-            if (std::size(file_indices) == file_count() && !tr_strv_contains(oldpath, '/')) {
+            if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
                 set_name(newname);
             }
 

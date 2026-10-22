@@ -25,7 +25,6 @@
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/types.h>
@@ -267,7 +266,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
 
         // build the full scrape URL
         auto scrape_url = std::string{ tracker.scrape.sv() };
-        scrape_url += tr_strv_contains(scrape_url, '?') ? '&' : '?';
+        scrape_url += scrape_url.contains('?') ? '&' : '?';
         scrape_url += "info_hash="sv;
         tr_urlPercentEncode(scrape_url, hash);
         fmt::print("{:s} ... ", scrape_url);

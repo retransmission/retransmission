@@ -1029,7 +1029,7 @@ namespace make_torrent_field_helpers
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot be empty"s };
             }
 
-            if (tr_strv_contains(label, ',')) {
+            if (label.contains(',')) {
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 

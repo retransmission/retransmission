@@ -20,7 +20,6 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/makemeta.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
@@ -176,7 +175,7 @@ TEST_F(MakemetaTest, anonymizeFalse)
     auto builder = tr_metainfo_builder{ filename };
     builder.set_anonymize(false);
     auto const metainfo = testBuilder(builder);
-    EXPECT_TRUE(tr_strv_contains(metainfo.creator().sv(), TR_PROJ_APPNAME_CAPITALIZED)) << metainfo.creator().sv();
+    EXPECT_TRUE(metainfo.creator().sv().contains(TR_PROJ_APPNAME_CAPITALIZED)) << metainfo.creator().sv();
     auto const now = time(nullptr);
     EXPECT_LE(metainfo.date_created(), now);
     EXPECT_LE(now - 60, metainfo.date_created());

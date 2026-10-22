@@ -227,7 +227,7 @@ void send_simple_response(struct evhttp_request* req, int code, char const* text
 
     char const* encoding = evhttp_find_header(input_headers, "Accept-Encoding");
 
-    if (bool const do_compress = encoding != nullptr && tr_strv_contains(encoding, "gzip"sv); !do_compress) {
+    if (bool const do_compress = encoding != nullptr && std::string_view{ encoding }.contains("gzip"sv); !do_compress) {
         evbuffer_add(out, std::data(content), std::size(content));
     } else {
         auto strm = z_stream{};
@@ -331,7 +331,7 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
         subpath = DefaultPage;
     }
 
-    if (tr_strv_contains(subpath, ".."sv)) {
+    if (subpath.contains(".."sv)) {
         if (auto* const con = evhttp_request_get_connection(req); con != nullptr) {
 #if LIBEVENT_VERSION_NUMBER >= 0x02020001
             char const* remote_host = nullptr;
