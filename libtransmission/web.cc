@@ -22,7 +22,6 @@
 #include <stack>
 #include <string>
 #include <thread>
-#include <type_traits>
 #include <utility>
 
 #ifdef _WIN32
@@ -990,7 +989,7 @@ public:
                             task->response.errmsg = fmt::format(
                                 "curl error: {} ({})",
                                 curl_easy_strerror(msg->data.result),
-                                static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                                std::to_underlying(msg->data.result));
                         }
 
                         auto req_bytes_sent = long{};
