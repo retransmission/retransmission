@@ -485,6 +485,17 @@ public:
         return in_range;
     }
 
+    // https://curl.se/docs/CVE-2026-92392.html
+    [[nodiscard]] static bool check_curl_cve_2026_92392() noexcept
+    {
+        static auto const version = get_curl_version();
+        static bool const in_range = 0x080c00 /* 8.12.0 */ <= version && version <= 0x081600 /* 8.22.0 */ &&
+            (version < 0x080e03 /* 8.14.3 */ || version >= 0x080f00 /* 8.15.0 */) &&
+            (version < 0x081002 /* 8.16.2 */ || version >= 0x081100 /* 8.17.0 */) &&
+            (version < 0x081402 /* 8.20.2 */ || version >= 0x081500 /* 8.21.0 */);
+        return in_range;
+    }
+
     // https://github.com/curl/curl/issues/14899
     [[nodiscard]] static bool check_curl_gh14899() noexcept
     {
@@ -503,7 +514,8 @@ public:
     bool const curl_verbose = tr_env_key_exists("TR_CURL_VERBOSE");
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
     bool const curl_proxy_ssl_verify = !tr_env_key_exists("TR_CURL_PROXY_SSL_NO_VERIFY");
-    bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312(); // both related to curl http2 bugs
+    bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312() ||
+        check_curl_cve_2026_92392(); // all related to curl http2 bugs
     bool const curl_dont_limit_range_requests = check_curl_gh14899();
 
     Mediator& mediator;
