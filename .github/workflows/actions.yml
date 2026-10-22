@@ -417,14 +417,14 @@ jobs:
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: gtk3
             enable-gtk: gtk3
             enable-qt: false
             enable-tests: false
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
             regex: 'gtk/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: gtk4
             enable-gtk: gtk4
             enable-qt: false
@@ -438,14 +438,14 @@ jobs:
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: qt6
             enable-gtk: false
             enable-qt: qt6
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
     steps:
       - name: Show Configuration
         run: |
