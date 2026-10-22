@@ -817,8 +817,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         else if (!tr_net_interface_is_default(new_settings.bind_interface)) {
             tr_logAddWarn(
                 fmt::format(
-                    fmt::runtime(_(
-                        "Binding to network interface '{interface}' is not supported on this platform; all its sockets will fail")),
+                    "Binding to network interface '{interface}' is not supported on this platform; all its sockets will fail",
                     fmt::arg("interface", new_settings.bind_interface)));
         }
 #endif
