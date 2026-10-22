@@ -17,7 +17,6 @@
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/log.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h"
 
 #if !defined(WITH_MBEDTLS)
 #error mbedtls module

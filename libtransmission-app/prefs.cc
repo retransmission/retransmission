@@ -70,13 +70,16 @@ void Prefs::save(std::string_view const config_dir, std::optional<tr::Settings> 
     tr::settings::save(tr_sessionGetSettingsFilename(config_dir), settings);
 }
 
-void Prefs::set(tr_quark const key, tr_variant const& var)
+bool Prefs::set(tr_quark const key, tr_variant const& var)
 {
     warn_if_unregistered(key);
 
-    if (tr::serializer::set_from_variant(key, var, app_prefs_, session_prefs_)) {
+    auto const changed = tr::serializer::set_from_variant(key, var, app_prefs_, session_prefs_);
+    if (changed) {
         changed_(key);
     }
+
+    return changed;
 }
 
 void Prefs::warn_if_unregistered(tr_quark const key)

@@ -6,7 +6,6 @@
 #include "Torrent.h"
 
 #include <algorithm>
-#include <ranges>
 #include <set>
 #include <span>
 

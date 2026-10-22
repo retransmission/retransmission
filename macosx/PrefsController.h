@@ -5,7 +5,7 @@
 #import "PortChecker.h"
 #import <AppKit/AppKit.h>
 
-#include <libtransmission/transmission.h>
+struct tr_session;
 
 @interface PrefsController : NSWindowController<NSToolbarDelegate, PortCheckerDelegate>
 

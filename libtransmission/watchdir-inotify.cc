@@ -26,7 +26,6 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
-#include "libtransmission/utils.h"
 #include "libtransmission/watchdir.h"
 #include "libtransmission/watchdir-base.h"
 

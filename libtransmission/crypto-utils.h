@@ -10,7 +10,6 @@
 #include <cstdint>
 #include <limits>
 #include <optional>
-#include <random> // for std::uniform_int_distribution<T>
 #include <span>
 #include <string>
 #include <string_view>
@@ -239,16 +238,11 @@ private:
 
 /**
  * @brief Returns a random number in the range of [0...upper_bound).
+ *
+ * Defined in crypto-utils.cc.
  */
 template<class T>
-[[nodiscard]] T tr_rand_int(T upper_bound)
-{
-    static_assert(!std::is_signed<T>());
-    using dist_type = std::uniform_int_distribution<T>;
-
-    thread_local auto rng = tr_urbg<T>{};
-    thread_local auto dist = dist_type{};
-    return dist(rng, typename dist_type::param_type(0, upper_bound - 1));
-}
+    requires(!std::numeric_limits<T>::is_signed)
+[[nodiscard]] T tr_rand_int(T upper_bound);
 
 /** @} */

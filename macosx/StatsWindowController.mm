@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #include "libtransmission/macros.h"
+#include "libtransmission/transmission.h"
 
 #import "StatsWindowController.h"
 #import "Controller.h"

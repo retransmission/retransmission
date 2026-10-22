@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -153,6 +155,19 @@ TEST_F(PrefsTest, getSetRoundTripsUint16AsInt)
     EXPECT_EQ(prefs.get<tr_variant>(Key).value_if<int64_t>(), 90);
 }
 
+// The GTK client's spin buttons read and write `uint16_t` values in `size_t` prefs.
+// Its session handlers read the same prefs as `size_t`.
+TEST_F(PrefsTest, setUint16ReadsBackAsSizeT)
+{
+    static auto constexpr Key = TR_KEY_peer_limit_global;
+
+    auto prefs = TestPrefs{};
+    prefs.set(Key, uint16_t{ 45U });
+
+    EXPECT_EQ(prefs.get<uint16_t>(Key), 45U);
+    EXPECT_EQ(prefs.get<size_t>(Key), 45U);
+}
+
 TEST_F(PrefsTest, getSetRoundTripsDouble)
 {
     auto prefs = TestPrefs{};
@@ -230,14 +245,14 @@ TEST_F(PrefsTest, setNotifiesOnChangeOnly)
     auto prefs = TestPrefs{};
     auto const original = prefs.get<bool>(Key);
 
-    // a real change fires exactly one notification for the key
-    prefs.set(Key, !original);
+    // a real change reports itself and fires exactly one notification for the key
+    EXPECT_TRUE(prefs.set(Key, !original));
     ASSERT_EQ(std::size(prefs.changed_keys()), 1U);
     EXPECT_EQ(prefs.changed_keys().front(), static_cast<tr_quark>(Key));
 
-    // setting the same value again does not notify
+    // setting the same value again reports no change and does not notify
     prefs.clear_changed();
-    prefs.set(Key, !original);
+    EXPECT_FALSE(prefs.set(Key, !original));
     EXPECT_TRUE(std::empty(prefs.changed_keys()));
 }
 
@@ -246,7 +261,7 @@ TEST_F(PrefsTest, setFromVariantAppliesValueAndNotifies)
     static auto constexpr Key = TR_KEY_main_window_height;
 
     auto prefs = TestPrefs{};
-    prefs.set(Key, tr_variant{ int64_t{ 321 } });
+    EXPECT_TRUE(prefs.set(Key, tr_variant{ int64_t{ 321 } }));
 
     EXPECT_EQ(prefs.get<int>(Key), 321);
     ASSERT_EQ(std::size(prefs.changed_keys()), 1U);
@@ -261,7 +276,7 @@ TEST_F(PrefsTest, setFromVariantIgnoresWrongType)
     auto const original = prefs.get<int>(Key);
 
     // a string is not convertible to the int field: no change, no notification
-    prefs.set(Key, tr_variant{ "not-an-int"sv });
+    EXPECT_FALSE(prefs.set(Key, tr_variant{ "not-an-int"sv }));
 
     EXPECT_EQ(prefs.get<int>(Key), original);
     EXPECT_TRUE(std::empty(prefs.changed_keys()));

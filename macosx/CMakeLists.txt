@@ -146,6 +146,8 @@ target_sources(${TR_NAME}-mac
         PredicateEditorRowTemplateAny.mm
         PrefsController.h
         PrefsController.mm
+        PrefsGeneralTabViewController.h
+        PrefsGeneralTabViewController.mm
         PrefsWindow.h
         PrefsWindow.mm
         PriorityPopUpButtonCell.h
@@ -355,7 +357,8 @@ list(TRANSFORM BASE_XIB_FILES
 set(LANG_STRINGS_FILES
     GlobalOptionsPopover.strings
     InfoPlist.strings
-    Localizable.strings)
+    Localizable.strings
+    PreferencesGeneralTab.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)

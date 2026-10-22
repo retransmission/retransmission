@@ -21,7 +21,6 @@
 #include "libtransmission/open-files.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h" // _()
 
 namespace
 {

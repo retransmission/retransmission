@@ -15,6 +15,9 @@
 #include <utility>
 
 #include <small/vector.hpp>
+// small defines a has_attribute() macro but never uses it.
+// The macro breaks any later has_attribute() declaration, such as Gio::FileInfo's.
+#undef has_attribute
 
 #include "libtransmission/converters.h"
 #include "libtransmission/quark.h"

@@ -10,6 +10,8 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission/transmission.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 

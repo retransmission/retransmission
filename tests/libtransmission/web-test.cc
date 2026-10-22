@@ -52,10 +52,15 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 
 // tr_web needs a Mediator; this one overrides only what tests set:
 // the user-agent so a test can confirm the header reaches the server,
-// and the session-level bind interface.
+// and the session-level bind address and bind interface.
 class TestMediator final : public tr_web::Mediator
 {
 public:
+    [[nodiscard]] std::optional<std::string> bind_address(int /*af*/) const override
+    {
+        return bind_address_;
+    }
+
     [[nodiscard]] std::optional<std::string_view> userAgent() const override
     {
         if (user_agent_) {
@@ -72,6 +77,7 @@ public:
         return bind_interface_;
     }
 
+    std::optional<std::string> bind_address_;
     std::optional<std::string> user_agent_;
     std::optional<std::string> bind_interface_;
 
@@ -83,6 +89,12 @@ public:
 class WebTest : public ::tr::test::SandboxedTest
 {
 protected:
+    // Run a fetch asynchronously and return a future for the response.
+    std::future<tr_web::FetchResponse> fetchAsync(tr_web::FetchOptions options)
+    {
+        return fetchAsync(*web_, std::move(options));
+    }
+
     // Run a fetch synchronously and return the response. done_func is invoked
     // from tr_web's own thread, so hand the result back through a promise.
     tr_web::FetchResponse fetch(tr_web::FetchOptions options)
@@ -90,7 +102,7 @@ protected:
         return fetch(*web_, std::move(options));
     }
 
-    static tr_web::FetchResponse fetch(tr_web& web, tr_web::FetchOptions options)
+    static std::future<tr_web::FetchResponse> fetchAsync(tr_web& web, tr_web::FetchOptions options)
     {
         auto promise = std::make_shared<std::promise<tr_web::FetchResponse>>();
         auto future = promise->get_future();
@@ -100,6 +112,12 @@ protected:
 
         web.fetch(std::move(options));
 
+        return future;
+    }
+
+    static tr_web::FetchResponse fetch(tr_web& web, tr_web::FetchOptions options)
+    {
+        auto future = fetchAsync(web, std::move(options));
         if (future.wait_for(15s) != std::future_status::ready) {
             EXPECT_TRUE(false) << "fetch did not complete";
             return {};
@@ -325,6 +343,54 @@ TEST_F(WebTest, userAgentFromMediatorIsSent)
     EXPECT_EQ("TestAgent/1.0"sv, server_.lastRequest().headers.at("user-agent"));
 }
 
+TEST_F(WebTest, networkChangedLetsInFlightFetchesComplete)
+{
+    static auto constexpr Body = "body"sv;
+
+    auto first_request_started = std::promise<void>{};
+    auto first_request_started_future = first_request_started.get_future();
+    auto request_count = 0;
+    server_.setHandler([&](evhttp_request* req) {
+        if (request_count++ == 0) {
+            first_request_started.set_value();
+            // Keep the first transfer in flight while the second fetch is queued.
+            std::this_thread::sleep_for(1s);
+        }
+        LoopbackServer::reply(req, HTTP_OK, "OK", Body);
+    });
+
+    auto first_fetch = fetchAsync(options("/slow"sv));
+    ASSERT_EQ(std::future_status::ready, first_request_started_future.wait_for(15s));
+
+    web_->network_changed();
+    auto const second_response = fetch(options("/second"sv));
+    auto const first_response = first_fetch.get();
+
+    EXPECT_EQ(200, first_response.status);
+    EXPECT_FALSE(first_response.errmsg);
+    EXPECT_EQ(Body, first_response.body);
+    EXPECT_EQ(200, second_response.status);
+    EXPECT_FALSE(second_response.errmsg);
+    EXPECT_EQ(Body, second_response.body);
+}
+
+TEST_F(WebTest, connectionsNotReusedAfterNetworkChange)
+{
+    mediator_.bind_address_ = "127.0.0.1";
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status);
+    EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
+
+    mediator_.bind_address_ = "192.0.2.1";
+    web_->network_changed();
+
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
+    ASSERT_TRUE(failure.errmsg);
+    EXPECT_NE(std::string::npos, failure.errmsg->find("curl error: "));
+}
+
 TEST_F(WebTest, onDataReceivedReportsByteCount)
 {
     static auto constexpr Body = "0123456789abcdef"sv;
@@ -399,6 +465,17 @@ TEST_F(WebTest, timeoutIsReported)
     ASSERT_TRUE(response.errmsg);
     EXPECT_TRUE(response.did_timeout) << *response.errmsg;
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
+}
+
+TEST_F(WebTest, interfaceBindingOverridesBindAddress)
+{
+    // binding to 192.0.2.1 fails, so only the interface can carry the fetch
+    mediator_.bind_address_ = "192.0.2.1";
+    mediator_.bind_interface_ = "lo0";
+
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
+    EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 }
 
 TEST_F(WebTest, blockedInterfaceIsRefused)

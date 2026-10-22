@@ -8,8 +8,6 @@
 #include <optional>
 #include <utility>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
 #include <libtransmission/string-utils.h>

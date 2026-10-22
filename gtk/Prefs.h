@@ -4,17 +4,12 @@
 
 #pragma once
 
-#include <libtransmission-app/converters.h>
+#include <libtransmission-app/prefs.h>
 
 #include <libtransmission/converters.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/transmission.h>
-#include <libtransmission/variant.h>
 
-#include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
-#include <optional>
 #include <string>
 #include <string_view>
 
@@ -23,17 +18,11 @@ namespace tr::app
 template<typename StringType>
 struct PrefsStringTraits;
 
-// Toolkit customization point used by tr::app::Prefs<Glib::ustring>.
 template<>
 struct PrefsStringTraits<Glib::ustring> {
     [[nodiscard]] static Glib::ustring from_utf8(std::string_view const str)
     {
         return Glib::ustring{ std::string{ str } };
-    }
-
-    [[nodiscard]] static Glib::ustring home_dir()
-    {
-        return Glib::get_home_dir();
     }
 };
 } // namespace tr::app
@@ -42,60 +31,3 @@ namespace tr::serializer
 {
 TR_DECLARE_CONVERTER(Glib::ustring)
 } // namespace tr::serializer
-
-// FIXME(ckerr) remove annoying pragma
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnull-dereference"
-
-[[nodiscard]] tr::Settings& gtr_pref_get_all();
-
-[[nodiscard]] bool gtr_pref_has_key(tr_quark key);
-
-template<typename T>
-[[nodiscard]] std::optional<T> gtr_pref_lookup(tr_quark const key)
-{
-    return tr::serializer::to_value<T>(gtr_pref_get_all(), key);
-}
-
-template<typename T> // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
-[[nodiscard]] T gtr_pref_get(tr_quark const key, T default_value = {})
-{
-    if (auto val = gtr_pref_lookup<T>(key)) {
-        return std::move(*val);
-    }
-
-    return default_value;
-}
-
-template<typename T>
-void gtr_pref_set(tr_quark const key, T const& val)
-{
-    gtr_pref_get_all().insert_or_assign(key, tr::serializer::to_variant(val));
-}
-
-void gtr_pref_init(std::string_view config_dir);
-
-template<std::integral T>
-T gtr_pref_int_get(tr_quark const key)
-{
-    return gtr_pref_get_all().value_if<T>(key).value_or(T{});
-}
-
-template<std::integral T>
-void gtr_pref_int_set(tr_quark key, T value)
-{
-    gtr_pref_get_all().insert_or_assign(key, value);
-}
-
-double gtr_pref_double_get(tr_quark key);
-void gtr_pref_double_set(tr_quark key, double value);
-
-bool gtr_pref_flag_get(tr_quark key);
-void gtr_pref_flag_set(tr_quark key, bool value);
-
-std::string gtr_pref_string_get(tr_quark key);
-void gtr_pref_string_set(tr_quark key, std::string_view value);
-
-void gtr_pref_save(tr_session* /*session*/);
-
-#pragma GCC diagnostic pop // ignore -Wnull-dereference

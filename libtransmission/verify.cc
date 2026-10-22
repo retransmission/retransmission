@@ -8,9 +8,9 @@
 #include <chrono>
 #include <cstddef> // std::byte
 #include <cstdint> // uint64_t, uint32_t
+#include <iterator>
 #include <memory>
 #include <mutex>
-#include <ranges>
 #include <thread>
 #include <utility> // for std::move()
 #include <vector>

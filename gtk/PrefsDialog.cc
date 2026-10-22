@@ -66,7 +66,11 @@ using namespace tr::Values;
 class PrefsDialog::Impl
 {
 public:
-    Impl(PrefsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    Impl(
+        PrefsDialog& dialog,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -102,7 +106,11 @@ namespace
 class PageBase : public Gtk::Box
 {
 public:
-    PageBase(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    PageBase(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     PageBase(PageBase&&) = delete;
     PageBase(PageBase const&) = delete;
     PageBase& operator=(PageBase&&) = delete;
@@ -123,13 +131,18 @@ public:
         auto* button = get_widget<Gtk::SpinButton>(name);
         button->set_adjustment(
             Gtk::Adjustment::create(
-                static_cast<double>(gtr_pref_get<T>(key)),
+                static_cast<double>(prefs_.get<T>(key)),
                 static_cast<double>(low),
                 static_cast<double>(high),
                 static_cast<double>(step)));
         button->set_digits(std::is_floating_point_v<T> ? 2 : 0);
         button->signal_value_changed().connect([this, button, key]() { spun_cb<T>(*button, key); });
         return button;
+    }
+
+    [[nodiscard]] tr::app::Prefs const& prefs() const noexcept
+    {
+        return prefs_;
     }
 
     template<typename T>
@@ -199,14 +212,20 @@ private:
 private:
     Glib::RefPtr<Gtk::Builder> const builder_;
     Glib::RefPtr<Session> const core_;
+    tr::app::Prefs const& prefs_;
 
     std::map<tr_quark, std::pair<std::unique_ptr<Glib::Timer>, sigc::connection>> spin_timers_;
 };
 
-PageBase::PageBase(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
+PageBase::PageBase(
+    BaseObjectType* cast_item,
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
     : Gtk::Box(cast_item)
     , builder_(builder)
     , core_(core)
+    , prefs_(prefs)
 {
 }
 
@@ -220,7 +239,7 @@ PageBase::~PageBase()
 Gtk::CheckButton* PageBase::init_check_button(Glib::ustring const& name, tr_quark const key)
 {
     auto* button = get_widget<Gtk::CheckButton>(name);
-    button->set_active(gtr_pref_flag_get(key));
+    button->set_active(prefs_.get<bool>(key));
     button->signal_toggled().connect([this, button, key]() { core_->set_pref(key, button->get_active()); });
     return button;
 }
@@ -234,7 +253,7 @@ Gtk::Entry* PageBase::init_entry(Glib::ustring const& name, tr_quark const key)
 {
     auto* const entry = get_widget<Gtk::Entry>(name);
 
-    if (auto const value = gtr_pref_string_get(key); !value.empty()) {
+    if (auto const value = prefs_.get<std::string>(key); !value.empty()) {
         entry->set_text(value);
     }
 
@@ -247,7 +266,7 @@ Gtk::TextView* PageBase::init_text_view(Glib::ustring const& name, tr_quark cons
     auto* const view = get_widget<Gtk::TextView>(name);
 
     auto buffer = view->get_buffer();
-    buffer->set_text(gtr_pref_string_get(key));
+    buffer->set_text(prefs_.get<std::string>(key));
 
     auto const save_buffer = [this, buffer, key]() {
         core_->set_pref(key, buffer->get_text());
@@ -274,7 +293,7 @@ PathButton* PageBase::init_chooser_button(Glib::ustring const& name, tr_quark co
 {
     auto* const button = get_widget_derived<PathButton>(name);
 
-    if (auto const path = gtr_pref_string_get(key); !path.empty()) {
+    if (auto const path = prefs_.get<std::string>(key); !path.empty()) {
         button->set_filename(path);
     }
 
@@ -297,7 +316,7 @@ Gtk::ComboBox* PageBase::init_encryption_combo(Glib::ustring const& name, tr_qua
             { _("Prefer encryption"), TR_ENCRYPTION_PREFERRED },
             { _("Require encryption"), TR_ENCRYPTION_REQUIRED },
         });
-    auto const mode = gtr_pref_get<tr_encryption_mode>(key, TR_ENCRYPTION_PREFERRED);
+    auto const mode = prefs_.get<tr_encryption_mode>(key);
     gtr_combo_box_set_active_enum(*combo, static_cast<int>(mode));
     combo->signal_changed().connect([this, combo, key]() { onIntComboChanged(*combo, key); });
     return combo;
@@ -335,7 +354,7 @@ Gtk::ComboBox* PageBase::init_time_combo(Glib::ustring const& name, tr_quark con
     auto* r = Gtk::make_managed<Gtk::CellRendererText>();
     combo->pack_start(*r, true);
     combo->add_attribute(r->property_text(), time_cols.title);
-    combo->set_active(gtr_pref_int_get<int>(key) / 15);
+    combo->set_active(prefs_.get<int>(key) / 15);
     combo->signal_changed().connect([this, combo, key]() {
         if (auto const iter = combo->get_active(); iter) {
             core_->set_pref(key, iter->get_value(time_cols.offset));
@@ -369,7 +388,7 @@ Gtk::ComboBox* PageBase::init_week_combo(Glib::ustring const& name, tr_quark con
             { get_weekday_string(Glib::Date::Weekday::SATURDAY), TR_SCHED_SAT },
             { get_weekday_string(Glib::Date::Weekday::SUNDAY), TR_SCHED_SUN },
         });
-    gtr_combo_box_set_active_enum(*combo, gtr_pref_int_get<int>(key));
+    gtr_combo_box_set_active_enum(*combo, prefs_.get<int>(key));
     combo->signal_changed().connect([this, combo, key]() { onIntComboChanged(*combo, key); });
     return combo;
 }
@@ -381,7 +400,11 @@ Gtk::ComboBox* PageBase::init_week_combo(Glib::ustring const& name, tr_quark con
 class DownloadingPage : public PageBase
 {
 public:
-    DownloadingPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    DownloadingPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     DownloadingPage(DownloadingPage&&) = delete;
     DownloadingPage(DownloadingPage const&) = delete;
     DownloadingPage& operator=(DownloadingPage&&) = delete;
@@ -415,8 +438,9 @@ DownloadingPage::~DownloadingPage()
 DownloadingPage::DownloadingPage(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
     , core_(core)
     , freespace_label_(get_widget_derived<FreeSpaceLabel>("download_dir_stats_label", core))
 {
@@ -457,7 +481,11 @@ DownloadingPage::DownloadingPage(
 class SeedingPage : public PageBase
 {
 public:
-    SeedingPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    SeedingPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     SeedingPage(SeedingPage&&) = delete;
     SeedingPage(SeedingPage const&) = delete;
     SeedingPage& operator=(SeedingPage&&) = delete;
@@ -468,8 +496,9 @@ public:
 SeedingPage::SeedingPage(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
 {
     init_check_button("stop_seeding_ratio_check", TR_KEY_seed_ratio_limited);
     init_spin_button<double>("stop_seeding_ratio_spin", TR_KEY_seed_ratio_limit, 0, 1000, 0.05);
@@ -486,7 +515,11 @@ SeedingPage::SeedingPage(
 class DesktopPage : public PageBase
 {
 public:
-    DesktopPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    DesktopPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     DesktopPage(DesktopPage&&) = delete;
     DesktopPage(DesktopPage const&) = delete;
     DesktopPage& operator=(DesktopPage&&) = delete;
@@ -497,8 +530,9 @@ public:
 DesktopPage::DesktopPage(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
 {
     init_check_button("inhibit_hibernation_check", TR_KEY_inhibit_desktop_hibernation);
 
@@ -527,7 +561,11 @@ class PrivacyPage : public PageBase
     static auto constexpr BlocklistUpdateResultDisplayTimeoutInSeconds = 3U;
 
 public:
-    PrivacyPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    PrivacyPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     PrivacyPage(PrivacyPage&&) = delete;
     PrivacyPage(PrivacyPage const&) = delete;
     PrivacyPage& operator=(PrivacyPage&&) = delete;
@@ -642,8 +680,9 @@ void PrivacyPage::on_blocklist_url_changed(Gtk::Editable* e)
 PrivacyPage::PrivacyPage(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
     , core_(core)
     , updateBlocklistButton_(get_widget<Gtk::Button>("update_blocklist_button"))
     , label_(get_widget<Gtk::Label>("blocklist_stats_label"))
@@ -691,7 +730,11 @@ class RemotePage : public PageBase
     static WhitelistModelColumns const whitelist_cols;
 
 public:
-    RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    RemotePage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     RemotePage(RemotePage&&) = delete;
     RemotePage(RemotePage const&) = delete;
     RemotePage& operator=(RemotePage&&) = delete;
@@ -705,7 +748,7 @@ private:
     void onRemoveWhitelistClicked();
     void refreshRPCSensitivity();
 
-    static void onLaunchClutchCB();
+    void onLaunchClutchCB() const;
 
     static Glib::RefPtr<Gtk::ListStore> whitelist_tree_model_new(std::string const& whitelist);
 
@@ -810,13 +853,17 @@ void RemotePage::refreshRPCSensitivity()
     remove_button_->set_sensitive(rpc_active && whitelist_active && have_addr && n_rules > 1);
 }
 
-void RemotePage::onLaunchClutchCB()
+void RemotePage::onLaunchClutchCB() const
 {
-    gtr_open_uri(fmt::format("http://localhost:{}/", gtr_pref_int_get<uint16_t>(TR_KEY_rpc_port)));
+    gtr_open_uri(fmt::format("http://localhost:{}/", prefs().get<uint16_t>(TR_KEY_rpc_port)));
 }
 
-RemotePage::RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+RemotePage::RemotePage(
+    BaseObjectType* cast_item,
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
     , core_(core)
     , view_(get_widget<Gtk::TreeView>("rpc_whitelist_view"))
     , remove_button_(get_widget<Gtk::Button>("remove_from_rpc_whistlist_button"))
@@ -826,7 +873,7 @@ RemotePage::RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> con
 {
     rpc_tb_->signal_toggled().connect([this]() { refreshRPCSensitivity(); });
     auto* const open_button = get_widget<Gtk::Button>("open_web_client_button");
-    open_button->signal_clicked().connect(&RemotePage::onLaunchClutchCB);
+    open_button->signal_clicked().connect([this]() { onLaunchClutchCB(); });
 
     init_spin_button<uint16_t>("rpc_port_spin", TR_KEY_rpc_port, 0, std::numeric_limits<uint16_t>::max(), 1);
 
@@ -843,7 +890,7 @@ RemotePage::RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> con
     whitelist_tb_->signal_toggled().connect([this]() { refreshRPCSensitivity(); });
 
     {
-        store_ = whitelist_tree_model_new(gtr_pref_string_get(TR_KEY_rpc_whitelist));
+        store_ = whitelist_tree_model_new(prefs.get<std::string>(TR_KEY_rpc_whitelist));
 
         view_->set_model(store_);
         setup_item_view_button_event_handling(*view_, {}, [this](double view_x, double view_y) {
@@ -881,7 +928,11 @@ RemotePage::RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> con
 class SpeedPage : public PageBase
 {
 public:
-    SpeedPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    SpeedPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     SpeedPage(SpeedPage&&) = delete;
     SpeedPage(SpeedPage const&) = delete;
     SpeedPage& operator=(SpeedPage&&) = delete;
@@ -889,8 +940,12 @@ public:
     ~SpeedPage() override = default;
 };
 
-SpeedPage::SpeedPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+SpeedPage::SpeedPage(
+    BaseObjectType* cast_item,
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
 {
     auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
 
@@ -923,7 +978,11 @@ SpeedPage::SpeedPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const
 class NetworkPage : public PageBase
 {
 public:
-    NetworkPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    NetworkPage(
+        BaseObjectType* cast_item,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     NetworkPage(NetworkPage&&) = delete;
     NetworkPage(NetworkPage const&) = delete;
     NetworkPage& operator=(NetworkPage&&) = delete;
@@ -1059,8 +1118,9 @@ void NetworkPage::onPortTest()
 NetworkPage::NetworkPage(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
-    : PageBase(cast_item, builder, core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
+    : PageBase(cast_item, builder, core, prefs)
     , core_(core)
     , portLabel_(get_widget<Gtk::Label>("listening_port_status_label"))
     , portButton_(get_widget<Gtk::Button>("test_listening_port_button"))
@@ -1099,19 +1159,23 @@ NetworkPage::NetworkPage(
 *****
 ****/
 
-std::unique_ptr<PrefsDialog> PrefsDialog::create(Gtk::Window& parent, Glib::RefPtr<Session> const& core)
+std::unique_ptr<PrefsDialog> PrefsDialog::create(
+    Gtk::Window& parent,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("PrefsDialog.ui"));
-    return std::unique_ptr<PrefsDialog>(gtr_get_widget_derived<PrefsDialog>(builder, "PrefsDialog", parent, core));
+    return std::unique_ptr<PrefsDialog>(gtr_get_widget_derived<PrefsDialog>(builder, "PrefsDialog", parent, core, prefs));
 }
 
 PrefsDialog::PrefsDialog(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
     : Gtk::Dialog(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core))
+    , impl_(std::make_unique<Impl>(*this, builder, core, prefs))
 {
     set_title(gtr_with_app_name(get_title()));
     set_transient_for(parent);
@@ -1119,17 +1183,21 @@ PrefsDialog::PrefsDialog(
 
 PrefsDialog::~PrefsDialog() = default;
 
-PrefsDialog::Impl::Impl(PrefsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
+PrefsDialog::Impl::Impl(
+    PrefsDialog& dialog,
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
     : dialog_(dialog)
     , core_(core)
 {
-    gtr_get_widget_derived<SpeedPage>(builder, "speed_page_layout", core_);
-    gtr_get_widget_derived<DownloadingPage>(builder, "downloading_page_layout", core_);
-    gtr_get_widget_derived<SeedingPage>(builder, "seeding_page_layout", core_);
-    gtr_get_widget_derived<PrivacyPage>(builder, "privacy_page_layout", core_);
-    gtr_get_widget_derived<NetworkPage>(builder, "network_page_layout", core_);
-    gtr_get_widget_derived<DesktopPage>(builder, "desktop_page_layout", core_);
-    gtr_get_widget_derived<RemotePage>(builder, "remote_page_layout", core_);
+    gtr_get_widget_derived<SpeedPage>(builder, "speed_page_layout", core_, prefs);
+    gtr_get_widget_derived<DownloadingPage>(builder, "downloading_page_layout", core_, prefs);
+    gtr_get_widget_derived<SeedingPage>(builder, "seeding_page_layout", core_, prefs);
+    gtr_get_widget_derived<PrivacyPage>(builder, "privacy_page_layout", core_, prefs);
+    gtr_get_widget_derived<NetworkPage>(builder, "network_page_layout", core_, prefs);
+    gtr_get_widget_derived<DesktopPage>(builder, "desktop_page_layout", core_, prefs);
+    gtr_get_widget_derived<RemotePage>(builder, "remote_page_layout", core_, prefs);
 
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::response_cb));
 }

@@ -4,7 +4,9 @@ description: >
   caching results with ctcache (matus-chochlik/ctcache) so translation units
   unchanged since a previous run are skipped. Findings fail the step. Unlike a
   diff-based check this analyses whole TUs, catching warnings introduced by
-  removed code or by changes in included headers.
+  removed code. A TU is re-analysed when its own bytes, its clang-tidy
+  configuration or the toolchain change; a header-only change does not
+  re-analyse the TUs that include it.
 inputs:
   regex:
     description: >
@@ -25,8 +27,9 @@ inputs:
     default: ''
   msvc-env:
     description: >
-      Run inside the MSVC environment (vcvarsall) so ctcache can preprocess with
-      cl.exe. Requires VCVARSALL/VC_ARCH in the environment (setup-vs-env-win32).
+      Run inside the MSVC environment (vcvarsall), which supplies clang-tidy's
+      MSVC include paths and decides which clang-tidy PATH resolves to. Requires
+      VCVARSALL/VC_ARCH in the environment (setup-vs-env-win32).
     default: 'false'
   ctcache-ref:
     description: git ref (tag/branch/sha) of matus-chochlik/ctcache to clone
@@ -37,11 +40,50 @@ runs:
     - name: Get ctcache
       shell: bash
       run: git clone --depth 1 --branch '${{ inputs.ctcache-ref }}' https://github.com/matus-chochlik/ctcache '${{ runner.temp }}/ctcache-tool'
+    - name: Fingerprint the toolchain
+      if: ${{ inputs.msvc-env != 'true' }}
+      shell: bash
+      run: |
+        # the binaries' content, not just the version string: same-version
+        # rebuilds (apt.llvm.org's release branches) would otherwise share a
+        # key. Debian's clang-tidy is a thin front-end over libclang-cpp and
+        # libLLVM, so those count too when the binary loads them.
+        binary="$(command -v '${{ inputs.clang-tidy-binary }}')"
+        version="$("$binary" --version)"
+        mapfile -t libs < <(ldd "$binary" 2>/dev/null | awk '/libLLVM|libclang/ && /=> \// { print $3 }')
+        content="$(sha256sum "$binary" "${libs[@]}" | cut -d' ' -f1)"
+        printf '%s\n' "$binary" "${libs[@]}" "$version"
+        echo "TIDY_TOOLCHAIN=$(printf '%s\n%s' "$content" "$version" | sha256sum | cut -c1-12)" >> "$GITHUB_ENV"
+    - name: Fingerprint the toolchain (MSVC)
+      if: ${{ inputs.msvc-env == 'true' }}
+      shell: pwsh
+      run: |
+        # PATH inside vcvarsall decides which clang-tidy runs, so resolve and
+        # hash it there, and fold in the MSVC toolset (STL) version. `set` prints
+        # VCToolsVersion at execution time; a %VCToolsVersion% on this line would
+        # be expanded by cmd before vcvarsall defines it. The markers are glued
+        # to their `&&` because cmd would otherwise echo a trailing space.
+        $Lines = @(@(cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH && echo __PATHS__&& where ${{ inputs.clang-tidy-binary }} && echo __FACTS__&& ${{ inputs.clang-tidy-binary }} --version && set VCToolsVersion") | ForEach-Object { $_.TrimEnd() })
+        if ($LASTEXITCODE -ne 0) { $Lines | Write-Host; throw "could not query the toolchain (exit $LASTEXITCODE)" }
+        $Paths = [Array]::IndexOf($Lines, '__PATHS__')
+        $Facts = [Array]::IndexOf($Lines, '__FACTS__')
+        if ($Paths -lt 0 -or $Facts -le $Paths + 1 -or $Facts -ge $Lines.Count - 1) { $Lines | Write-Host; throw 'unexpected toolchain output' }
+        $Binary = $Lines[$Paths + 1] # the first `where` hit is what PATH resolves, for run.sh too
+        $Versions = $Lines[($Facts + 1)..($Lines.Count - 1)]
+        Write-Host $Binary
+        $Versions | Write-Host
+        # the binary's path stays out: relocating LLVM must not retire the cache
+        $Content = (Get-FileHash -Algorithm SHA256 -LiteralPath $Binary).Hash
+        $Bytes = [Text.Encoding]::UTF8.GetBytes((@($Content) + $Versions) -join "`n")
+        $Hash = (Get-FileHash -Algorithm SHA256 -InputStream ([IO.MemoryStream]::new($Bytes))).Hash.Substring(0, 12).ToLower()
+        "TIDY_TOOLCHAIN=$Hash" | Out-File $Env:GITHUB_ENV -Append
     - name: Set up the ctcache environment
       shell: bash
       env:
+        # the toolchain fingerprint retires every entry when clang-tidy or the
+        # MSVC toolset changes, since ctcache's own digest covers neither;
         # the negation keeps vendored projects' .clang-tidy files out of the key
-        STORE_KEY: ctcache-${{ inputs.cache-key }}-${{ hashFiles('**/.clang-tidy', '!third-party/**') }}
+        STORE_KEY: ctcache-${{ inputs.cache-key }}-${{ env.TIDY_TOOLCHAIN }}-${{ hashFiles('**/.clang-tidy', '!third-party/**') }}
       run: |
         {
           echo "CTCACHE_LOCAL=1"
@@ -75,8 +117,8 @@ runs:
       if: ${{ inputs.msvc-env == 'true' }}
       shell: pwsh
       run: |
-        # ctcache preprocesses each TU with the compile-DB compiler (cl.exe) to
-        # compute its hash, and cl.exe -E needs the MSVC environment.
+        # the same vcvarsall environment as the fingerprint step, so PATH
+        # resolves the clang-tidy it hashed
         cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && bash .github/actions/clang-tidy-cached/run.sh"
     - name: Show ctcache stats
       if: ${{ always() }}

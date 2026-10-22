@@ -6,7 +6,6 @@
 #include "TrackerModel.h"
 
 #include <algorithm> // std::sort()
-#include <ranges>
 
 #include <QtCore/QUrl>
 

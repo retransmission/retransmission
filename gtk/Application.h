@@ -15,6 +15,11 @@
 #include <string>
 #include <vector>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 namespace tr::interop
 {
 class StartupCoordinator;
@@ -25,6 +30,7 @@ class Application : public Gtk::Application
 public:
     Application(
         std::string const& config_dir,
+        tr::app::Prefs& prefs,
         bool start_paused,
         bool start_iconified,
         std::unique_ptr<tr::interop::StartupCoordinator> startup_coordinator);

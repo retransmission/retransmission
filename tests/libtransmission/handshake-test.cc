@@ -25,8 +25,6 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/crypto-utils.h> // tr_sha1, tr_sha1_from_string, tr_base...
 #include <libtransmission/handshake.h>
 #include <libtransmission/net.h>
@@ -38,6 +36,7 @@
 #include <libtransmission/timer.h>
 #include <libtransmission/tr-assert.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/types.h>
 
 #include "test-fixtures.h"
 

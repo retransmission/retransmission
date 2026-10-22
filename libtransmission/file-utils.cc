@@ -19,7 +19,6 @@
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
 #include "libtransmission/tr-strbuf.h"
-#include "libtransmission/utils.h"
 
 using namespace std::literals;
 

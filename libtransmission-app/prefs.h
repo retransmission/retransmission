@@ -262,17 +262,21 @@ public:
     Prefs& operator=(Prefs const&) = delete;
     virtual ~Prefs() = default;
 
-    void set(tr_quark key, tr_variant const& var);
+    // Returns true iff the value changed.
+    bool set(tr_quark key, tr_variant const& var);
     void set(tr_quark /*key*/, char const* /*value*/) = delete;
 
     template<typename T>
-    void set(tr_quark const key, T const& val)
+    bool set(tr_quark const key, T const& val)
     {
         warn_if_unregistered(key);
 
-        if (tr::serializer::set(key, val, app_prefs_, session_prefs_)) {
+        auto const changed = tr::serializer::set(key, val, app_prefs_, session_prefs_);
+        if (changed) {
             changed_(key);
         }
+
+        return changed;
     }
 
     template<typename T>

@@ -273,8 +273,7 @@ private:
         }
 
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
-        [[nodiscard]] std::optional<std::string> bind_address_V4() const override;
-        [[nodiscard]] std::optional<std::string> bind_address_V6() const override;
+        [[nodiscard]] std::optional<std::string> bind_address(int af) const override;
         [[nodiscard]] std::optional<std::string> bind_interface() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
@@ -346,6 +345,13 @@ private:
         void fetch(tr_web::FetchOptions&& options) override
         {
             session_.fetch(std::move(options));
+        }
+
+        void source_addr_changed(tr_address_type const /*type*/) override
+        {
+            if (auto const& web = session_.web_; web) {
+                web->network_changed();
+            }
         }
 
         [[nodiscard]] std::string_view settings_bind_addr(tr_address_type type) override
@@ -1490,14 +1496,14 @@ private:
 
     /// other fields
 
-    // depends-on: session_thread_, settings_.bind_address_ipv4, local_peer_port_, global_ip_cache (via tr_session::bind_address())
+    // depends-on: session_thread_, settings_.bind_address_ipv4, local_peer_port_, ip_cache_ (via tr_session::bind_address())
     std::optional<BoundSocket> bound_ipv4_;
 
-    // depends-on: session_thread_, settings_.bind_address_ipv6, local_peer_port_, global_ip_cache (via tr_session::bind_address())
+    // depends-on: session_thread_, settings_.bind_address_ipv6, local_peer_port_, ip_cache_ (via tr_session::bind_address())
     std::optional<BoundSocket> bound_ipv6_;
 
 public:
-    // depends-on: settings_, announcer_udp_, global_ip_cache_
+    // depends-on: settings_, announcer_udp_, ip_cache_
     // FIXME(ckerr): circular dependency udp_core -> announcer_udp -> announcer_udp_mediator -> udp_core
     std::unique_ptr<tr_udp_core> udp_core_;
 

@@ -169,6 +169,8 @@ public:
     // are left alone so that they can finish.
     void startShutdown(std::chrono::milliseconds /*deadline*/);
 
+    void network_changed();
+
     [[nodiscard]] bool is_idle() const;
 
     // If you want to give running tasks a chance to finish,
@@ -198,14 +200,8 @@ public:
             return std::nullopt;
         }
 
-        // Return IPv4 user public address string, or nullopt to not use one
-        [[nodiscard]] virtual std::optional<std::string> bind_address_V4() const
-        {
-            return std::nullopt;
-        }
-
-        // Return IPv6 user public address string, or nullopt to not use one
-        [[nodiscard]] virtual std::optional<std::string> bind_address_V6() const
+        // Return bind address string, or nullopt to not use one
+        [[nodiscard]] virtual std::optional<std::string> bind_address(int /*af*/) const
         {
             return std::nullopt;
         }

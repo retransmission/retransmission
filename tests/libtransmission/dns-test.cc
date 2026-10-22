@@ -8,8 +8,6 @@
 
 #include <event2/event.h>
 
-#include <libtransmission/transmission.h>
-
 #include "dns-ev.h"
 #include "dns.h"
 #include "trevent.h" // for tr_evthread_init();

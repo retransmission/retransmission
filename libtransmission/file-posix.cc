@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
-#include <climits> /* PATH_MAX */
+#include <climits> // SSIZE_MAX
 #include <cstdint> /* SIZE_MAX */
 #include <cstdio> // remove, rename
 #include <cstdlib> // mkdtemp, mkstemp, realpath
@@ -63,10 +63,6 @@
 #endif
 #ifndef O_CLOEXEC
 #define O_CLOEXEC 0
-#endif
-
-#ifndef PATH_MAX
-#define PATH_MAX 4096
 #endif
 
 using namespace std::literals;

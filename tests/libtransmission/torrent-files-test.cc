@@ -13,13 +13,12 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/torrent-metainfo.h>
+#include <libtransmission/types.h>
 #include "libtransmission/macros.h"
 #include <libtransmission/tr-strbuf.h>
 

@@ -749,11 +749,11 @@ void tr_torrentSetFileDLs(tr_torrent* tor, std::span<tr_file_index_t const> file
 void tr_torrentSetDownloadDir(tr_torrent* torrent, std::string_view path);
 
 /**
- * Returns the torrent's root directory.
+ * Returns the directory that the torrent's file names are relative to.
  *
- * This will usually be the downloadDir. However if the torrent
- * has an incompleteDir enabled and hasn't finished downloading
- * yet, that will be returned instead.
+ * Without an incomplete dir, this is the download dir.
+ * Otherwise it is whichever of the two held the first file found on disk
+ * when libtransmission last looked, or the incomplete dir if none was found.
  */
 [[nodiscard]] std::string tr_torrentGetCurrentDir(tr_torrent const* tor);
 

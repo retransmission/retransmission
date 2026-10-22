@@ -34,8 +34,6 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/crypto-utils.h> // tr_rand_obj
 #include <libtransmission/file.h>
 #include <libtransmission/net.h>
@@ -46,6 +44,7 @@
 #include <libtransmission/tr-dht.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 

@@ -10,7 +10,6 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <ranges>
 #include <string_view>
 #include <utility> // std::move
 
@@ -27,7 +26,6 @@
 #include "libtransmission/log.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/utils.h"
 #include "libtransmission/web-utils.h"
 #include "libtransmission/web.h"
 
@@ -391,18 +389,34 @@ void tr_ip_cache::unset_global_addr(tr_address_type type)
 
 void tr_ip_cache::set_source_addr(tr_address const& addr_new)
 {
-    auto const lock = std::scoped_lock{ source_addr_mutex_[addr_new.type] };
-    if (auto& addr = source_addr_[addr_new.type]; addr != addr_new) {
-        addr = addr_new;
-        tr_logAddInfo(fmt::format("Cached {} source address {}", tr_ip_protocol_to_sv(addr->type), addr->display_name()));
+    bool changed = false;
+    {
+        auto const lock = std::scoped_lock{ source_addr_mutex_[addr_new.type] };
+        if (auto& addr = source_addr_[addr_new.type]; addr != addr_new) {
+            addr = addr_new;
+            tr_logAddInfo(fmt::format("Cached {} source address {}", tr_ip_protocol_to_sv(addr->type), addr->display_name()));
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        mediator_.source_addr_changed(addr_new.type);
     }
 }
 
-void tr_ip_cache::unset_addr(tr_address_type type)
+void tr_ip_cache::unset_addr(tr_address_type const type)
 {
-    auto const lock = std::scoped_lock{ source_addr_mutex_[type] };
-    source_addr_[type].reset();
+    bool had_source_addr = {};
+    {
+        auto const lock = std::scoped_lock{ source_addr_mutex_[type] };
+        had_source_addr = source_addr_[type].has_value();
+        source_addr_[type].reset();
+    }
     tr_logAddTrace(fmt::format("Unset {} source address cache", tr_ip_protocol_to_sv(type)));
+
+    if (had_source_addr) {
+        mediator_.source_addr_changed(type);
+    }
 
     // No public internet connectivity means no global IP address
     unset_global_addr(type);

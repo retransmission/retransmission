@@ -42,8 +42,8 @@
 #include <array>
 #include <chrono>
 #include <fstream>
+#include <iterator>
 #include <memory>
-#include <ranges>
 #include <utility>
 
 namespace
@@ -72,7 +72,11 @@ MessageLogColumnsModel const message_log_cols;
 class MessageLogWindow::Impl
 {
 public:
-    Impl(MessageLogWindow& window, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    Impl(
+        MessageLogWindow& window,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -91,7 +95,7 @@ private:
 
     void scroll_to_bottom();
     void level_combo_changed_cb(Gtk::ComboBox* combo_box);
-    static void level_combo_init(Gtk::ComboBox* level_combo);
+    static void level_combo_init(Gtk::ComboBox* level_combo, tr_log_level pref_level);
 
     [[nodiscard]] bool is_pinned_to_new() const;
     [[nodiscard]] bool isRowVisible(Gtk::TreeModel::const_iterator const& iter) const;
@@ -172,9 +176,8 @@ void MessageLogWindow::Impl::scroll_to_bottom()
 ****/
 
 // static
-void MessageLogWindow::Impl::level_combo_init(Gtk::ComboBox* level_combo)
+void MessageLogWindow::Impl::level_combo_init(Gtk::ComboBox* const level_combo, tr_log_level const pref_level)
 {
-    auto const pref_level = gtr_pref_lookup<tr_log_level>(TR_KEY_message_level);
     auto const default_level = TR_LOG_INFO;
 
     auto has_pref_level = false;
@@ -186,7 +189,7 @@ void MessageLogWindow::Impl::level_combo_init(Gtk::ComboBox* level_combo)
     }
 
     gtr_combo_box_set_enum(*level_combo, items);
-    gtr_combo_box_set_active_enum(*level_combo, has_pref_level ? *pref_level : default_level);
+    gtr_combo_box_set_active_enum(*level_combo, has_pref_level ? pref_level : default_level);
 }
 
 void MessageLogWindow::Impl::level_combo_changed_cb(Gtk::ComboBox* combo_box)
@@ -437,20 +440,24 @@ bool MessageLogWindow::Impl::onRefresh()
 ***  Public Functions
 **/
 
-std::unique_ptr<MessageLogWindow> MessageLogWindow::create(Gtk::Window& parent, Glib::RefPtr<Session> const& core)
+std::unique_ptr<MessageLogWindow> MessageLogWindow::create(
+    Gtk::Window& parent,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("MessageLogWindow.ui"));
     return std::unique_ptr<MessageLogWindow>(
-        gtr_get_widget_derived<MessageLogWindow>(builder, "MessageLogWindow", parent, core));
+        gtr_get_widget_derived<MessageLogWindow>(builder, "MessageLogWindow", parent, core, prefs));
 }
 
 MessageLogWindow::MessageLogWindow(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
     : Gtk::Window(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core))
+    , impl_(std::make_unique<Impl>(*this, builder, core, prefs))
 {
     set_transient_for(parent);
 }
@@ -460,14 +467,15 @@ MessageLogWindow::~MessageLogWindow() = default;
 MessageLogWindow::Impl::Impl(
     MessageLogWindow& window,
     Glib::RefPtr<Gtk::Builder> const& builder,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs)
     : window_(window)
     , core_(core)
     , view_(gtr_get_widget<Gtk::TreeView>(builder, "messages_view"))
     , store_(Gtk::ListStore::create(message_log_cols))
     , filter_(Gtk::TreeModelFilter::create(store_))
     , sort_(Gtk::TreeModelSort::create(filter_))
-    , maxLevel_{ gtr_pref_get<tr_log_level>(TR_KEY_message_level) }
+    , maxLevel_{ prefs.get<tr_log_level>(TR_KEY_message_level) }
     , refresh_tag_(
           Glib::signal_timeout().connect_seconds(
               sigc::mem_fun(*this, &Impl::onRefresh),
@@ -492,7 +500,7 @@ MessageLogWindow::Impl::Impl(
     action_group->add_action(pause_action);
 
     auto* const level_combo = gtr_get_widget<Gtk::ComboBox>(builder, "level_combo");
-    level_combo_init(level_combo);
+    level_combo_init(level_combo, maxLevel_);
     level_combo->signal_changed().connect([this, level_combo]() { level_combo_changed_cb(level_combo); });
 
     window_.insert_action_group("win", action_group);

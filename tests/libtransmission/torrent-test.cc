@@ -3,12 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <future>
 #include <iterator>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -18,6 +18,7 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/error-types.h>
+#include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
@@ -224,6 +225,19 @@ TEST_F(TorrentTest, restartLeavesPendingStop)
     });
     EXPECT_TRUE(is_stopping);
     EXPECT_TRUE(tr::test::waitFor([tor]() { return !tor->is_running(); }, 5s));
+}
+
+TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    // the trackers can't be saved into a .torrent file that has no info dict
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_file_save(tor->torrent_file(), "d7:comment3:fooe", &error)) << error;
+    EXPECT_FALSE(tor->set_announce_list("https://a.example.com/announce"));
+    EXPECT_TRUE(tor->error().is_local_error());
+    EXPECT_NE(std::string::npos, tor->error().errmsg().find("missing 'info' dict"));
 }
 
 // --- tr_sessionInit()'s remove func

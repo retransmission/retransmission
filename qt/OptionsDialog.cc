@@ -18,7 +18,7 @@
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include "AddData.h"

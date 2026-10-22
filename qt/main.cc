@@ -13,6 +13,7 @@
 
 #include "libtransmission/macros.h"
 #include "libtransmission/tr-getopt.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/utils.h" // tr_main
 #include "libtransmission/version.h"
 

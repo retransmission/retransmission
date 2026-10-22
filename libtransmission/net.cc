@@ -38,7 +38,6 @@
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h"
 
 using namespace std::literals;
 

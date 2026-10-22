@@ -7,7 +7,7 @@
 
 #import <Sparkle/SPUUpdaterDelegate.h>
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 
 #import "VDKQueue.h"
 
@@ -16,6 +16,8 @@
 @class MessageWindowController;
 @class PrefsController;
 @class Torrent;
+
+struct tr_session;
 
 typedef NS_ENUM(NSUInteger, AddType) { //
     AddTypeManual,

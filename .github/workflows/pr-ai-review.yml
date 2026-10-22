@@ -1,0 +1,163 @@
+name: AI review on request
+
+# Posts a Claude code review of a pull request when a maintainer applies the
+# `needs ai review` label, then removes the label; applying it again requests
+# another round. Later rounds take the earlier ones into account: threads the
+# review opened are resolved once their finding is fixed, and findings that an
+# open thread already covers are not posted twice.
+#
+# Who may request one is gated twice: only collaborators can apply labels at
+# all, and the applier must also appear in the AI_REVIEW_USERS repository
+# variable, a JSON array of GitHub logins kept under Settings > Secrets and
+# variables > Actions. The list mirrors the org's `contributors` and
+# `maintainers` teams by hand: a workflow's default token cannot read team
+# membership, so update the variable when those teams change. The same list
+# is handed to the action, which otherwise refuses actors without write
+# access; the contributors team has triage, which can label but not write.
+
+on:
+  # `pull_request_target` (rather than `pull_request`) so the job has the
+  # repository's secrets even when the PR comes from a fork. The job therefore
+  # reads PR-supplied files while holding the Claude token, which is why only
+  # trusted maintainers can request a review. Nothing from the PR is executed:
+  # the action restores CLAUDE.md and .claude/ from the base branch before
+  # Claude starts, and Claude's shell access is limited to the commands listed
+  # below.
+  pull_request_target:
+    types: [labeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+# A new request supersedes a review still in progress on the same PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: >-
+      github.event.label.name == 'needs ai review' &&
+      contains(fromJSON(vars.AI_REVIEW_USERS || '[]'), github.event.sender.login)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The commit that carried the label, so the review reads the files
+          # it comments on. Full history lets it consult `git log` and
+          # `git blame`.
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          # actions/checkout refuses fork code under `pull_request_target`
+          # without this opt-in. The safeguards described at the top of the
+          # file are what make it acceptable here.
+          allow-unsafe-pr-checkout: true
+
+      # Review threads are reachable only through GraphQL, and `gh api graphql`
+      # would let the review run any query or mutation. This helper exposes
+      # the two calls it needs instead. It lives outside the checkout so the
+      # PR cannot alter it.
+      - name: Install the review-thread helper
+        run: |
+          mkdir -p "$RUNNER_TEMP/ai-review"
+          echo "$RUNNER_TEMP/ai-review" >> "$GITHUB_PATH"
+          cat > "$RUNNER_TEMP/ai-review/pr-review-threads" <<'EOF'
+          #!/bin/sh
+          # pr-review-threads list <pr>               unresolved review threads, one JSON object per line
+          # pr-review-threads reply <pr> <comment>    reply in a thread; the reply text comes from stdin
+          # pr-review-threads resolve <thread>        mark a thread resolved
+          set -eu
+          usage() { echo 'usage: pr-review-threads list <pr> | reply <pr> <comment-id> | resolve <thread-id>' >&2; exit 2; }
+          case "${1-}" in
+            list)
+              case "${2-}" in ''|*[!0-9]*) usage ;; esac
+              gh api graphql -F pr="$2" -F owner="${GITHUB_REPOSITORY%/*}" -F repo="${GITHUB_REPOSITORY#*/}" -f query='
+                query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      reviewThreads(first: 100) {
+                        nodes {
+                          id isResolved isOutdated path line
+                          comments(first: 50) { nodes { databaseId author { login } body } }
+                        }
+                      }
+                    }
+                  }
+                }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not)'
+              ;;
+            reply)
+              case "${2-}" in ''|*[!0-9]*) usage ;; esac
+              case "${3-}" in ''|*[!0-9]*) usage ;; esac
+              gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$2/comments/$3/replies" -f body="$(cat)" --jq '{id, html_url}'
+              ;;
+            resolve)
+              case "${2-}" in ''|*[!A-Za-z0-9_=-]*) usage ;; esac
+              gh api graphql -F id="$2" -f query='
+                mutation($id: ID!) {
+                  resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
+                }' --jq '.data.resolveReviewThread.thread'
+              ;;
+            *) usage ;;
+          esac
+          EOF
+          chmod +x "$RUNNER_TEMP/ai-review/pr-review-threads"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          # A long-lived token from `claude setup-token`; runs are billed to
+          # that account's Claude subscription rather than to an API key.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The job's own token, so comments come from github-actions[bot].
+          # The action would otherwise post as the Claude GitHub App, but its
+          # token exchange rejects `pull_request_target` runs
+          # (anthropics/claude-code-action#713).
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The whitelist again, as the comma-separated form the action wants.
+          # Naming non-write users also makes the action scrub secrets from
+          # Claude's subprocesses and sandbox them, which costs nothing here.
+          allowed_non_write_users: ${{ join(fromJSON(vars.AI_REVIEW_USERS || '[]'), ',') }}
+          # Lists Claude's tool calls on the run's summary page, which is the
+          # only record of whether the earlier-rounds steps happened.
+          display_report: 'true'
+          # The prompt drives the round itself and runs Claude Code's bundled
+          # review skill for the findings. Starting the prompt with
+          # `/code-review` instead would hand the whole run to that skill,
+          # which follows only its own procedure: it posts every finding as
+          # an inline comment and never sees the steps below.
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} of this repository as the automated Claude review that a maintainer requested with the "needs ai review" label. Work in four steps.
+
+            1. Run `pr-review-threads list ${{ github.event.pull_request.number }}`. It prints the unresolved review threads, one JSON object per line, with each comment's author login and id. Threads whose first comment is by `github-actions` are this review's own earlier rounds; the others were opened by people.
+
+            2. Invoke the `code-review` skill with the arguments `xhigh ${{ github.event.pull_request.number }}` and wait for its findings. Do not pass `--comment`; step 3 posts the findings.
+
+            3. Post the findings. A finding that an open thread already covers, whoever opened it, gets no new comment; if you have something new to add there, reply in that thread with `pr-review-threads reply ${{ github.event.pull_request.number }} <comment id>`, giving the reply text on standard input. Skip findings about the PR description, release notes, labels, or commit message wording; maintainers handle those. Post each remaining finding as an inline comment with `mcp__github_inline_comment__create_inline_comment` and `confirmed: true`, including a suggestion block only when it fixes the issue entirely. Then resolve each thread this review opened in an earlier round whose problem the current code no longer has, with `pr-review-threads resolve <thread id>`. Never resolve a thread a person opened.
+
+            4. Post one comment with `gh pr comment ${{ github.event.pull_request.number }}`. Open with a line saying this is the automated Claude review requested with the "needs ai review" label, then say what this round resolved, left open, and added.
+          # `--effort` sets the model's reasoning depth; the skill's `xhigh`
+          # argument above sets how many findings it reports. The
+          # inline-comment MCP server starts only when `--allowedTools` names
+          # it.
+          claude_args: |
+            --model claude-opus-5-5
+            --effort xhigh
+            --allowedTools "Skill,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
+
+      - name: Remove the label
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: context.payload.pull_request.number,
+                name: context.payload.label.name,
+              });
+            } catch (error) {
+              // 404 just means the label was already gone; anything else is real.
+              if (error.status !== 404) throw error;
+            }

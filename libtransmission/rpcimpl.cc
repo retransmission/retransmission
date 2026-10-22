@@ -11,7 +11,6 @@
 #include <iterator>
 #include <memory>
 #include <numeric>
-#include <ranges>
 #include <set>
 #include <string>
 #include <string_view>
@@ -663,6 +662,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_comment:
     case TR_KEY_corrupt_ever:
     case TR_KEY_creator:
+    case TR_KEY_current_dir:
     case TR_KEY_date_created:
     case TR_KEY_desired_available:
     case TR_KEY_done_date:
@@ -767,6 +767,8 @@ namespace make_torrent_field_helpers
         return st.corrupt_ever;
     case TR_KEY_creator:
         return tor.creator().sv();
+    case TR_KEY_current_dir:
+        return tor.current_dir().sv();
     case TR_KEY_date_created:
         return tor.date_created();
     case TR_KEY_desired_available:
@@ -1133,7 +1135,10 @@ namespace make_torrent_field_helpers
         return { Error::SET_ANNOUNCE_LIST, std::string{} };
     }
 
-    tor->set_announce_list(std::move(ann));
+    if (!tor->set_announce_list(std::move(ann))) {
+        return { Error::SYSTEM_ERROR, tor->error().errmsg() };
+    }
+
     return { Error::SUCCESS, std::string{} };
 }
 
@@ -1158,7 +1163,10 @@ namespace make_torrent_field_helpers
         return { Error::SET_ANNOUNCE_LIST, std::string{} };
     }
 
-    tor->set_announce_list(std::move(ann));
+    if (!tor->set_announce_list(std::move(ann))) {
+        return { Error::SYSTEM_ERROR, tor->error().errmsg() };
+    }
+
     return { Error::SUCCESS, std::string{} };
 }
 
@@ -1180,7 +1188,10 @@ namespace make_torrent_field_helpers
         return { Error::SET_ANNOUNCE_LIST, std::string{} };
     }
 
-    tor->set_announce_list(std::move(ann));
+    if (!tor->set_announce_list(std::move(ann))) {
+        return { Error::SYSTEM_ERROR, tor->error().errmsg() };
+    }
+
     return { Error::SUCCESS, std::string{} };
 }
 

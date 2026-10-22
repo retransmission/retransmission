@@ -115,6 +115,22 @@ jobs:
           cat /etc/os-release
       - name: Get Source
         uses: actions/checkout@v7
+      - name: Get Dependencies
+        run: |
+          set -ex
+
+          curl -fsSL 'https://apt.llvm.org/llvm-snapshot.gpg.key' | sudo gpg --dearmor -o /etc/apt/keyrings/llvm-apt.gpg
+
+          sudo tee /etc/apt/sources.list.d/llvm-apt.sources << 'EOF' > /dev/null
+          Types: deb
+          URIs: https://apt.llvm.org/resolute/
+          Suites: llvm-toolchain-resolute-23
+          Components: main
+          Signed-By: /etc/apt/keyrings/llvm-apt.gpg
+          EOF
+
+          sudo apt-get update
+          sudo apt-get install -y clang-format-23
       - name: Check for style diffs
         id: check-for-diffs
         working-directory: .

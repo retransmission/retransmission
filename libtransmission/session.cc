@@ -15,7 +15,6 @@
 #include <limits> // std::numeric_limits
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -304,22 +303,13 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address_V4() const
+std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
 {
-    if (auto const addr = session_->bind_address(TR_AF_INET); !addr.is_any()) {
+    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
         return addr.display_name();
     }
 
-    return std::nullopt;
-}
-
-std::optional<std::string> tr_session::WebMediator::bind_address_V6() const
-{
-    if (auto const addr = session_->bind_address(TR_AF_INET6); !addr.is_any()) {
-        return addr.display_name();
-    }
-
-    return std::nullopt;
+    return {};
 }
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
@@ -912,6 +902,13 @@ void tr_session::apply_network_bindings(
         bound_ipv4_.reset();
         bound_ipv6_.reset();
         addr_changed = true;
+    }
+
+    // cancel_all() leaves curl's connection cache alone, and a connection
+    // pinned to the old interface must not serve requests on the new route
+    if (interface_changed || new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
+        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
+        web_->network_changed();
     }
 
     bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);

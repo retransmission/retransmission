@@ -3,9 +3,11 @@
 # Run clang-tidy over every compile_commands.json entry whose path matches
 # TIDY_REGEX, routing each invocation through ctcache
 # (https://github.com/matus-chochlik/ctcache). ctcache short-circuits any
-# translation unit whose preprocessed source + .clang-tidy config + clang-tidy
-# version are unchanged since a previous (cached) run, so a warm cache skips the
-# expensive analysis. Exits non-zero if any TU reports findings.
+# translation unit whose own bytes, .clang-tidy config and clang-tidy arguments
+# are unchanged since a previous (cached) run, so a warm cache skips the
+# expensive analysis; headers are not part of that digest, and the toolchain
+# enters through the cache key instead (see action.yml). Exits non-zero if any
+# TU reports findings.
 #
 # All configuration is passed via the environment (not argv) so the caller can
 # invoke this cleanly through a pwsh -> cmd(vcvarsall) -> bash chain on Windows

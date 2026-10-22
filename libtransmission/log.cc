@@ -33,7 +33,6 @@
 #include "libtransmission/macros.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/utils.h"
 
 using namespace std::literals;
 

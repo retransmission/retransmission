@@ -8,6 +8,8 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission/transmission.h>
+
 #include <gtkmm/messagedialog.h>
 
 #include <glibmm/i18n.h>

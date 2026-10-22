@@ -61,7 +61,6 @@
 #include <glibmm/value.h>
 #include <glibmm/vectorutils.h>
 
-#include <small/set.hpp>
 #include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -82,7 +81,6 @@
 #include <map>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -109,11 +107,13 @@ public:
     Impl(
         Application& app,
         std::string config_dir,
+        tr::app::Prefs& prefs,
         bool const start_paused,
         bool const start_iconified,
         std::unique_ptr<tr::interop::StartupCoordinator> startup_coordinator)
         : app_{ app }
         , config_dir_{ std::move(config_dir) }
+        , prefs_{ prefs }
         , start_paused_{ start_paused }
         , start_iconified_{ start_iconified }
         , startup_coordinator_{ std::move(startup_coordinator) }
@@ -229,6 +229,7 @@ private:
     Application& app_;
 
     std::string const config_dir_;
+    tr::app::Prefs& prefs_;
     bool const start_paused_;
     bool const start_iconified_;
     bool is_iconified_ = false;
@@ -247,7 +248,7 @@ private:
     std::unique_ptr<MainWindow> wind_;
     Glib::RefPtr<Session> core_;
     std::unique_ptr<MessageLogWindow> msgwin_;
-    std::unique_ptr<PrefsDialog> prefs_;
+    std::unique_ptr<PrefsDialog> prefs_dialog_;
     std::vector<std::string> error_list_;
     std::vector<std::string> duplicates_list_;
     std::map<std::string, std::unique_ptr<DetailsDialog>> details_;
@@ -302,7 +303,7 @@ void Application::Impl::show_details_dialog_for_selected_torrents()
     auto dialog_it = details_.find(key);
 
     if (dialog_it == details_.end()) {
-        auto dialog = DetailsDialog::create(*wind_, core_);
+        auto dialog = DetailsDialog::create(*wind_, core_, prefs_);
         dialog->set_torrents(ids);
         gtr_window_on_close(*dialog, [this, key]() { details_.erase(key); });
         dialog_it = details_.try_emplace(key, std::move(dialog)).first;
@@ -443,15 +444,15 @@ void Application::Impl::on_main_window_size_allocated()
     bool const is_maximized = gdk_window != nullptr && (gdk_window->get_state() & Gdk::WINDOW_STATE_MAXIMIZED) != 0;
 #endif
 
-    gtr_pref_flag_set(TR_KEY_main_window_is_maximized, is_maximized);
+    prefs_.set(TR_KEY_main_window_is_maximized, is_maximized);
 
     if (!is_maximized) {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
         int x = 0;
         int y = 0;
         wind_->get_position(x, y);
-        gtr_pref_int_set(TR_KEY_main_window_x, x);
-        gtr_pref_int_set(TR_KEY_main_window_y, y);
+        prefs_.set(TR_KEY_main_window_x, x);
+        prefs_.set(TR_KEY_main_window_y, y);
 #endif
 
         int w = 0;
@@ -461,8 +462,8 @@ void Application::Impl::on_main_window_size_allocated()
 #else
         wind_->get_size(w, h);
 #endif
-        gtr_pref_int_set(TR_KEY_main_window_width, w);
-        gtr_pref_int_set(TR_KEY_main_window_height, h);
+        prefs_.set(TR_KEY_main_window_width, w);
+        prefs_.set(TR_KEY_main_window_height, h);
     }
 }
 
@@ -498,28 +499,13 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
         break;
 
     case TR_RPC_SESSION_CHANGED:
-        {
-            auto const* const session = core_->get_session();
-
-            // determine which settings changed
-            auto changed_keys = small::set<tr_quark>{};
-            auto& vals = gtr_pref_get_all();
-            auto const serde = tr_variant_serde::benc();
-
-            for (auto& [key, newval] : tr_sessionGetSettings(session)) {
-                if (auto iter = vals.find(key);
-                    iter == vals.end() || serde.to_string(iter->second) != serde.to_string(newval)) {
-                    changed_keys.emplace(key);
-                    vals.insert_or_assign(key, std::move(newval));
-                }
+        for (auto const& [key, value] : tr_sessionGetSettings(core_->get_session())) {
+            // prefs only holds the session settings that tr::app::SessionPrefs registers
+            if (tr::app::prefs_is_core(key)) {
+                prefs_.set(key, value);
             }
-
-            // emit change notifications
-            for (auto const& changed_key : changed_keys) {
-                core_->signal_prefs_changed().emit(changed_key);
-            }
-            break;
         }
+        break;
 
     case TR_RPC_TORRENT_CHANGED:
     case TR_RPC_TORRENT_MOVED:
@@ -593,16 +579,16 @@ void Application::Impl::on_startup()
 #endif
 
     /* ensure the directories are created */
-    if (auto const str = gtr_pref_string_get(TR_KEY_download_dir); !str.empty()) {
+    if (auto const str = prefs_.get<std::string>(TR_KEY_download_dir); !str.empty()) {
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
-    if (auto const str = gtr_pref_string_get(TR_KEY_incomplete_dir); !str.empty()) {
+    if (auto const str = prefs_.get<std::string>(TR_KEY_incomplete_dir); !str.empty()) {
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
     /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, gtr_pref_get_all(), gtr_file_trash_or_remove);
+    session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), gtr_file_trash_or_remove);
 
     if (tr_sessionConfigDirIsContended(session)) {
         config_dir_contended_ = true;
@@ -611,19 +597,19 @@ void Application::Impl::on_startup()
         return;
     }
 
-    gtr_pref_flag_set(TR_KEY_alt_speed_enabled, tr_sessionUsesAltSpeed(session));
-    gtr_pref_int_set(TR_KEY_peer_port, tr_sessionGetPeerPort(session));
-    core_ = Session::create(session);
+    prefs_.set(TR_KEY_alt_speed_enabled, tr_sessionUsesAltSpeed(session));
+    prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(session));
+    core_ = Session::create(session, prefs_);
 
     /* init the ui manager */
     ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-menus.ui"));
-    auto const actions = gtr_actions_init(ui_builder_, this);
+    auto const actions = gtr_actions_init(ui_builder_, prefs_, this);
 
     auto const main_menu = gtr_action_get_object<Gio::Menu>("main-window-menu");
     app_.set_menubar(main_menu);
 
     /* create main window now to be a parent to any error dialogs */
-    wind_ = MainWindow::create(app_, actions, core_);
+    wind_ = MainWindow::create(app_, actions, core_, prefs_);
     wind_->set_show_menubar(true);
 #if GTKMM_CHECK_VERSION(4, 0, 0)
     wind_->property_maximized().signal_changed().connect(sigc::mem_fun(*this, &Impl::on_main_window_size_allocated));
@@ -680,8 +666,8 @@ void Application::Impl::on_activate()
 
 void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& files)
 {
-    bool const do_start = gtr_pref_flag_get(TR_KEY_start_added_torrents) && !start_paused_;
-    bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
+    bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents) && !start_paused_;
+    bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
     bool const do_notify = true;
 
     core_->add_files(files, do_start, do_prompt, do_notify);
@@ -698,11 +684,12 @@ void Application::on_open(std::vector<Glib::RefPtr<Gio::File>> const& files, Gli
 
 Application::Application(
     std::string const& config_dir,
+    tr::app::Prefs& prefs,
     bool const start_paused,
     bool const start_iconified,
     std::unique_ptr<tr::interop::StartupCoordinator> startup_coordinator)
     : Gtk::Application{ TR_GTK_APP_ID, TR_GIO_APPLICATION_FLAGS(HANDLES_OPEN) | TR_GIO_APPLICATION_FLAGS(NON_UNIQUE) }
-    , impl_{ std::make_unique<Impl>(*this, config_dir, start_paused, start_iconified, std::move(startup_coordinator)) }
+    , impl_{ std::make_unique<Impl>(*this, config_dir, prefs, start_paused, start_iconified, std::move(startup_coordinator)) }
 {
 }
 
@@ -756,10 +743,10 @@ void Application::Impl::app_setup()
 void Application::Impl::placeWindowFromPrefs()
 {
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    wind_->set_default_size(gtr_pref_int_get<int>(TR_KEY_main_window_width), gtr_pref_int_get<int>(TR_KEY_main_window_height));
+    wind_->set_default_size(prefs_.get<int>(TR_KEY_main_window_width), prefs_.get<int>(TR_KEY_main_window_height));
 #else
-    wind_->resize(gtr_pref_int_get<int>(TR_KEY_main_window_width), gtr_pref_int_get<int>(TR_KEY_main_window_height));
-    wind_->move(gtr_pref_int_get<int>(TR_KEY_main_window_x), gtr_pref_int_get<int>(TR_KEY_main_window_y));
+    wind_->resize(prefs_.get<int>(TR_KEY_main_window_width), prefs_.get<int>(TR_KEY_main_window_height));
+    wind_->move(prefs_.get<int>(TR_KEY_main_window_x), prefs_.get<int>(TR_KEY_main_window_y));
 #endif
 }
 
@@ -904,7 +891,7 @@ bool Application::Impl::on_session_closed()
 {
     details_.clear();
 
-    prefs_.reset();
+    prefs_dialog_.reset();
     wind_.reset();
 
     core_.reset();
@@ -1081,45 +1068,43 @@ void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
 
 void Application::Impl::on_prefs_changed(tr_quark const key)
 {
-    g_return_if_fail(gtr_pref_has_key(key));
-
     auto* tr = core_->get_session();
 
     switch (key) {
     case TR_KEY_encryption:
-        tr_sessionSetEncryption(tr, gtr_pref_get<tr_encryption_mode>(key));
+        tr_sessionSetEncryption(tr, prefs_.get<tr_encryption_mode>(key));
         break;
 
     case TR_KEY_default_trackers:
-        tr_sessionSetDefaultTrackers(tr, gtr_pref_string_get(key));
+        tr_sessionSetDefaultTrackers(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_download_dir:
-        tr_sessionSetDownloadDir(tr, gtr_pref_string_get(key));
+        tr_sessionSetDownloadDir(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_message_level:
-        tr_logSetLevel(gtr_pref_get<tr_log_level>(key));
+        tr_logSetLevel(prefs_.get<tr_log_level>(key));
         break;
 
     case TR_KEY_peer_port:
-        tr_sessionSetPeerPort(tr, gtr_pref_int_get<uint16_t>(key));
+        tr_sessionSetPeerPort(tr, prefs_.get<uint16_t>(key));
         break;
 
     case TR_KEY_blocklist_enabled:
-        tr_blocklistSetEnabled(tr, gtr_pref_flag_get(key));
+        tr_blocklistSetEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_blocklist_url:
-        tr_blocklistSetURL(tr, gtr_pref_string_get(key));
+        tr_blocklistSetURL(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_blocklist_updates_enabled:
-        tr_blocklistSetUpdatesEnabled(tr, gtr_pref_flag_get(key));
+        tr_blocklistSetUpdatesEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_show_notification_area_icon:
-        if (bool const show = gtr_pref_get<bool>(key); show && icon_ == nullptr) {
+        if (bool const show = prefs_.get<bool>(key); show && icon_ == nullptr) {
             icon_ = SystemTrayIcon::create(*wind_, core_);
         } else if (!show && icon_ != nullptr) {
             icon_.reset();
@@ -1127,167 +1112,167 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
         break;
 
     case TR_KEY_speed_limit_down_enabled:
-        tr_sessionLimitSpeed(tr, tr_direction::Down, gtr_pref_flag_get(key));
+        tr_sessionLimitSpeed(tr, tr_direction::Down, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_speed_limit_down:
-        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Down, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Down, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_speed_limit_up_enabled:
-        tr_sessionLimitSpeed(tr, tr_direction::Up, gtr_pref_flag_get(key));
+        tr_sessionLimitSpeed(tr, tr_direction::Up, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_speed_limit_up:
-        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Up, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Up, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_seed_ratio_limited:
-        tr_sessionSetRatioLimited(tr, gtr_pref_flag_get(key));
+        tr_sessionSetRatioLimited(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_seed_ratio_limit:
-        tr_sessionSetRatioLimit(tr, gtr_pref_double_get(key));
+        tr_sessionSetRatioLimit(tr, prefs_.get<double>(key));
         break;
 
     case TR_KEY_idle_seeding_limit:
-        tr_sessionSetIdleLimit(tr, gtr_pref_int_get<uint16_t>(key));
+        tr_sessionSetIdleLimit(tr, prefs_.get<uint16_t>(key));
         break;
 
     case TR_KEY_idle_seeding_limit_enabled:
-        tr_sessionSetIdleLimited(tr, gtr_pref_flag_get(key));
+        tr_sessionSetIdleLimited(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_port_forwarding_enabled:
-        tr_sessionSetPortForwardingEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetPortForwardingEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_pex_enabled:
-        tr_sessionSetPexEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetPexEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_rename_partial_files:
-        tr_sessionSetIncompleteFileNamingEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetIncompleteFileNamingEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_download_queue_size:
-        tr_sessionSetQueueSize(tr, tr_direction::Down, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetQueueSize(tr, tr_direction::Down, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_queue_stalled_minutes:
-        tr_sessionSetQueueStalledMinutes(tr, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetQueueStalledMinutes(tr, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_dht_enabled:
-        tr_sessionSetDHTEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetDHTEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_utp_enabled:
-        tr_sessionSetUTPEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetUTPEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_lpd_enabled:
-        tr_sessionSetLPDEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetLPDEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_rpc_port:
-        tr_sessionSetRPCPort(tr, gtr_pref_int_get<uint16_t>(key));
+        tr_sessionSetRPCPort(tr, prefs_.get<uint16_t>(key));
         break;
 
     case TR_KEY_rpc_enabled:
-        tr_sessionSetRPCEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetRPCEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_rpc_whitelist:
-        tr_sessionSetRPCWhitelist(tr, gtr_pref_string_get(key));
+        tr_sessionSetRPCWhitelist(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_rpc_whitelist_enabled:
-        tr_sessionSetRPCWhitelistEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetRPCWhitelistEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_rpc_username:
-        tr_sessionSetRPCUsername(tr, gtr_pref_string_get(key));
+        tr_sessionSetRPCUsername(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_rpc_password:
-        tr_sessionSetRPCPassword(tr, gtr_pref_string_get(key));
+        tr_sessionSetRPCPassword(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_rpc_authentication_required:
-        tr_sessionSetRPCPasswordEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetRPCPasswordEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_alt_speed_up:
-        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Up, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Up, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_alt_speed_down:
-        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Down, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Down, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_alt_speed_enabled:
         {
-            bool const b = gtr_pref_flag_get(key);
+            bool const b = prefs_.get<bool>(key);
             tr_sessionUseAltSpeed(tr, b);
             gtr_action_set_toggled("alt-speed-enabled", b);
             break;
         }
 
     case TR_KEY_alt_speed_time_begin:
-        tr_sessionSetAltSpeedBegin(tr, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetAltSpeedBegin(tr, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_alt_speed_time_end:
-        tr_sessionSetAltSpeedEnd(tr, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetAltSpeedEnd(tr, prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_alt_speed_time_enabled:
-        tr_sessionUseAltSpeedTime(tr, gtr_pref_flag_get(key));
+        tr_sessionUseAltSpeedTime(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_alt_speed_time_day:
-        tr_sessionSetAltSpeedDay(tr, gtr_pref_get<tr_sched_day>(key));
+        tr_sessionSetAltSpeedDay(tr, prefs_.get<tr_sched_day>(key));
         break;
 
     case TR_KEY_peer_port_random_on_start:
-        tr_sessionSetPeerPortRandomOnStart(tr, gtr_pref_flag_get(key));
+        tr_sessionSetPeerPortRandomOnStart(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_incomplete_dir:
-        tr_sessionSetIncompleteDir(tr, gtr_pref_string_get(key));
+        tr_sessionSetIncompleteDir(tr, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_incomplete_dir_enabled:
-        tr_sessionSetIncompleteDirEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetIncompleteDirEnabled(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_script_torrent_done_enabled:
-        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE, gtr_pref_flag_get(key));
+        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_script_torrent_done_filename:
-        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE, gtr_pref_string_get(key));
+        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_script_torrent_done_seeding_enabled:
-        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, gtr_pref_flag_get(key));
+        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_script_torrent_done_seeding_filename:
-        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, gtr_pref_string_get(key));
+        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, prefs_.get<std::string>(key));
         break;
 
     case TR_KEY_start_added_torrents:
-        tr_sessionSetPaused(tr, !gtr_pref_flag_get(key));
+        tr_sessionSetPaused(tr, !prefs_.get<bool>(key));
         break;
 
     case TR_KEY_trash_original_torrent_files:
-        tr_sessionSetDeleteSource(tr, gtr_pref_flag_get(key));
+        tr_sessionSetDeleteSource(tr, prefs_.get<bool>(key));
         break;
 
     case TR_KEY_torrent_complete_verify_enabled:
-        tr_sessionSetCompleteVerifyEnabled(tr, gtr_pref_flag_get(key));
+        tr_sessionSetCompleteVerifyEnabled(tr, prefs_.get<bool>(key));
         break;
 
     default:
@@ -1433,7 +1418,7 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
         gtr_window_on_close(*w, [w]() mutable { w.reset(); });
         w->show();
     } else if (action_name == "open-torrent") {
-        auto w = std::shared_ptr<TorrentFileChooserDialog>(TorrentFileChooserDialog::create(*wind_, core_));
+        auto w = std::shared_ptr<TorrentFileChooserDialog>(TorrentFileChooserDialog::create(*wind_, core_, prefs_));
         w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
         w->show();
     } else if (action_name == "show-stats") {
@@ -1478,15 +1463,15 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
     } else if (action_name == "deselect-all") {
         wind_->unselect_all();
     } else if (action_name == "edit-preferences") {
-        if (prefs_ == nullptr) {
-            prefs_ = PrefsDialog::create(*wind_, core_);
-            gtr_window_on_close(*prefs_, [this]() { prefs_.reset(); });
+        if (prefs_dialog_ == nullptr) {
+            prefs_dialog_ = PrefsDialog::create(*wind_, core_, prefs_);
+            gtr_window_on_close(*prefs_dialog_, [this]() { prefs_dialog_.reset(); });
         }
 
-        gtr_window_present(prefs_);
+        gtr_window_present(prefs_dialog_);
     } else if (action_name == "toggle-message-log") {
         if (msgwin_ == nullptr) {
-            msgwin_ = MessageLogWindow::create(*wind_, core_);
+            msgwin_ = MessageLogWindow::create(*wind_, core_, prefs_);
             gtr_window_on_close(*msgwin_, [this]() {
                 gtr_action_set_toggled("toggle-message-log", false);
                 msgwin_.reset();

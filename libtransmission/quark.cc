@@ -117,6 +117,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "cumulative-stats"sv, // rpc
     "cumulative_stats"sv, // rpc
     "current-stats"sv, // rpc
+    "current_dir"sv, // rpc
     "current_stats"sv, // rpc
     "data"sv, // json-rpc, rpc
     "dateCreated"sv, // rpc

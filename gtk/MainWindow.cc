@@ -95,7 +95,8 @@ public:
         MainWindow& window,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        Prefs& prefs);
     ~Impl();
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
@@ -144,6 +145,7 @@ private:
 private:
     MainWindow& window_;
     Glib::RefPtr<Session> const core_;
+    Prefs& prefs_;
 
     sigc::signal<void()> signal_selection_changed_;
 
@@ -279,7 +281,7 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
     selection_->signal_selection_changed().connect(
         [this](guint /*position*/, guint /*n_items*/) { signal_selection_changed_.emit(); });
 
-    view->set_factory(gtr_pref_flag_get(TR_KEY_compact_view) ? item_factory_compact_ : item_factory_full_);
+    view->set_factory(prefs_.get<bool>(TR_KEY_compact_view) ? item_factory_compact_ : item_factory_full_);
     view->set_model(selection_);
 #else
     static auto const& torrent_cols = Torrent::get_columns();
@@ -320,9 +322,9 @@ void MainWindow::Impl::prefsChanged(tr_quark const key)
     switch (key) {
     case TR_KEY_compact_view:
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-        view_->set_factory(gtr_pref_flag_get(key) ? item_factory_compact_ : item_factory_full_);
+        view_->set_factory(prefs_.get<bool>(key) ? item_factory_compact_ : item_factory_full_);
 #else
-        renderer_->property_compact() = gtr_pref_flag_get(key);
+        renderer_->property_compact() = prefs_.get<bool>(key);
         /* since the cell size has changed, we need gtktreeview to revalidate
          * its fixed-height mode values. Unfortunately there's not an API call
          * for that, but this seems to work */
@@ -334,15 +336,15 @@ void MainWindow::Impl::prefsChanged(tr_quark const key)
         break;
 
     case TR_KEY_show_statusbar:
-        status_->set_visible(gtr_pref_flag_get(key));
+        status_->set_visible(prefs_.get<bool>(key));
         break;
 
     case TR_KEY_show_filterbar:
-        filter_->set_visible(gtr_pref_flag_get(key));
+        filter_->set_visible(prefs_.get<bool>(key));
         break;
 
     case TR_KEY_show_toolbar:
-        toolbar_->set_visible(gtr_pref_flag_get(key));
+        toolbar_->set_visible(prefs_.get<bool>(key));
         break;
 
     case TR_KEY_statusbar_stats:
@@ -384,17 +386,15 @@ void MainWindow::Impl::update_filter_notice(guint const visible_count)
 
 void MainWindow::Impl::syncAltSpeedButton()
 {
-    bool const b = gtr_pref_flag_get(TR_KEY_alt_speed_enabled);
+    bool const b = prefs_.get<bool>(TR_KEY_alt_speed_enabled);
     alt_speed_button_->set_active(b);
     alt_speed_button_->set_tooltip_text(
         fmt::format(
             fmt::runtime(
                 b ? _("Click to disable Alternative Speed Limits\n ({download_speed} down, {upload_speed} up)") :
                     _("Click to enable Alternative Speed Limits\n ({download_speed} down, {upload_speed} up)")),
-            fmt::arg(
-                "download_speed",
-                Speed{ gtr_pref_int_get<size_t>(TR_KEY_alt_speed_down), Speed::Units::KByps }.to_string()),
-            fmt::arg("upload_speed", Speed{ gtr_pref_int_get<size_t>(TR_KEY_alt_speed_up), Speed::Units::KByps }.to_string())));
+            fmt::arg("download_speed", Speed{ prefs_.get<size_t>(TR_KEY_alt_speed_down), Speed::Units::KByps }.to_string()),
+            fmt::arg("upload_speed", Speed{ prefs_.get<size_t>(TR_KEY_alt_speed_up), Speed::Units::KByps }.to_string())));
 }
 
 void MainWindow::Impl::alt_speed_toggled_cb()
@@ -561,7 +561,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createOptionsMenu()
 
 void MainWindow::Impl::onOptionsClicked()
 {
-    static auto const update_menu = [](OptionMenuInfo& info, Glib::ustring const& new_on_label, tr_quark on_off_key) {
+    auto const update_menu = [this](OptionMenuInfo& info, Glib::ustring const& new_on_label, tr_quark on_off_key) {
         if (auto on_label = Glib::VariantBase::cast_dynamic<VariantString>(info.on_item->get_attribute_value("label")).get();
             on_label != new_on_label) {
             info.on_item->set_label(new_on_label);
@@ -572,24 +572,24 @@ void MainWindow::Impl::onOptionsClicked()
             info.section->append_item(info.on_item);
         }
 
-        info.action->change_state(gtr_pref_flag_get(on_off_key) ? 1 : 0);
+        info.action->change_state(prefs_.get<bool>(on_off_key) ? 1 : 0);
     };
 
     update_menu(
         speed_menu_info_[static_cast<uint8_t>(tr_direction::Down)],
-        Speed{ gtr_pref_int_get<size_t>(TR_KEY_speed_limit_down), Speed::Units::KByps }.to_string(),
+        Speed{ prefs_.get<size_t>(TR_KEY_speed_limit_down), Speed::Units::KByps }.to_string(),
         TR_KEY_speed_limit_down_enabled);
 
     update_menu(
         speed_menu_info_[static_cast<uint8_t>(tr_direction::Up)],
-        Speed{ gtr_pref_int_get<size_t>(TR_KEY_speed_limit_up), Speed::Units::KByps }.to_string(),
+        Speed{ prefs_.get<size_t>(TR_KEY_speed_limit_up), Speed::Units::KByps }.to_string(),
         TR_KEY_speed_limit_up_enabled);
 
     update_menu(
         ratio_menu_info_,
         fmt::format(
             fmt::runtime(_("Stop at Ratio ({ratio})")),
-            fmt::arg("ratio", tr_strlratio(gtr_pref_double_get(TR_KEY_seed_ratio_limit)))),
+            fmt::arg("ratio", tr_strlratio(prefs_.get<double>(TR_KEY_seed_ratio_limit)))),
         TR_KEY_seed_ratio_limited);
 }
 
@@ -605,7 +605,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createStatsMenu()
     // build the action group
     static auto constexpr Key = TR_KEY_statusbar_stats;
     auto const action_name = "stats-mode"s;
-    auto const current_value = gtr_pref_get<StatsMode>(Key, DefaultStatsMode);
+    auto const current_value = prefs_.get<StatsMode>(Key);
     auto actions = Gio::SimpleActionGroup::create();
     actions->add_action_radio_integer(
         action_name,
@@ -642,10 +642,11 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createStatsMenu()
 std::unique_ptr<MainWindow> MainWindow::create(
     Gtk::Application& app,
     Glib::RefPtr<Gio::ActionGroup> const& actions,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    Prefs& prefs)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("MainWindow.ui"));
-    return std::unique_ptr<MainWindow>(gtr_get_widget_derived<MainWindow>(builder, "MainWindow", app, actions, core));
+    return std::unique_ptr<MainWindow>(gtr_get_widget_derived<MainWindow>(builder, "MainWindow", app, actions, core, prefs));
 }
 
 MainWindow::MainWindow(
@@ -653,9 +654,10 @@ MainWindow::MainWindow(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Application& app,
     Glib::RefPtr<Gio::ActionGroup> const& actions,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    Prefs& prefs)
     : Gtk::ApplicationWindow(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, actions, core))
+    , impl_(std::make_unique<Impl>(*this, builder, actions, core, prefs))
 {
     app.add_window(*this);
 }
@@ -666,13 +668,15 @@ MainWindow::Impl::Impl(
     MainWindow& window,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Gio::ActionGroup> const& actions,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    Prefs& prefs)
     : window_(window)
     , core_(core)
+    , prefs_(prefs)
     , scroll_(gtr_get_widget<Gtk::ScrolledWindow>(builder, "torrents_view_scroll"))
     , view_(gtr_get_widget<TorrentView>(builder, "torrents_view"))
     , toolbar_(gtr_get_widget<Gtk::Widget>(builder, "toolbar"))
-    , filter_(gtr_get_widget_derived<FilterBar>(builder, "filterbar", core_))
+    , filter_(gtr_get_widget_derived<FilterBar>(builder, "filterbar", core_, prefs_))
     , filter_notice_(gtr_get_widget<Gtk::Label>(builder, "filter_notice_label"))
     , status_(gtr_get_widget<Gtk::Widget>(builder, "statusbar"))
     , ul_lb_(gtr_get_widget<Gtk::Label>(builder, "upload_speed_label"))
@@ -683,12 +687,12 @@ MainWindow::Impl::Impl(
 {
     /* make the window */
     window.set_title(Glib::get_application_name());
-    window.set_default_size(gtr_pref_int_get<int>(TR_KEY_main_window_width), gtr_pref_int_get<int>(TR_KEY_main_window_height));
+    window.set_default_size(prefs_.get<int>(TR_KEY_main_window_width), prefs_.get<int>(TR_KEY_main_window_height));
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
-    window.move(gtr_pref_int_get<int>(TR_KEY_main_window_x), gtr_pref_int_get<int>(TR_KEY_main_window_y));
+    window.move(prefs_.get<int>(TR_KEY_main_window_x), prefs_.get<int>(TR_KEY_main_window_y));
 #endif
 
-    if (gtr_pref_flag_get(TR_KEY_main_window_is_maximized)) {
+    if (prefs_.get<bool>(TR_KEY_main_window_is_maximized)) {
         window.maximize();
     }
 
@@ -769,7 +773,7 @@ namespace
 void MainWindow::Impl::updateStats()
 {
     static_assert(StatsModeCount == 4U, "StatsMode changed: update this code");
-    auto const mode = gtr_pref_get<StatsMode>(TR_KEY_statusbar_stats, DefaultStatsMode);
+    auto const mode = prefs_.get<StatsMode>(TR_KEY_statusbar_stats);
     auto const use_session_stats = mode == StatsMode::SessionRatio || mode == StatsMode::SessionTransfer;
     auto const* const ses = core_->get_session();
     auto const stats = use_session_stats ? tr_sessionGetStats(ses) : tr_sessionGetCumulativeStats(ses);

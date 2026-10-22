@@ -183,3 +183,18 @@ void tr_rand_buffer(std::span<std::byte> const buffer)
         tr_rand_buffer_std(buffer);
     }
 }
+
+template<class T>
+    requires(!std::numeric_limits<T>::is_signed)
+T tr_rand_int(T const upper_bound)
+{
+    using dist_type = std::uniform_int_distribution<T>;
+
+    static thread_local auto rng = tr_urbg<T>{};
+    static thread_local auto dist = dist_type{};
+    return dist(rng, typename dist_type::param_type(0, upper_bound - 1));
+}
+
+template unsigned int tr_rand_int(unsigned int);
+template unsigned long tr_rand_int(unsigned long);
+template unsigned long long tr_rand_int(unsigned long long);

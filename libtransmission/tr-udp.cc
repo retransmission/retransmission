@@ -25,7 +25,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/tr-utp.h"
-#include "libtransmission/utils.h"
 
 namespace
 {

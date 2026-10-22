@@ -14,7 +14,6 @@
 #include <QtWidgets/QPushButton>
 
 #include <libtransmission/macros.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
 
 #include "Session.h"

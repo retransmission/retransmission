@@ -3,11 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cctype>
 #include <cstring>
 #include <iterator>
-#include <ranges>
+#include <ranges> // std::ranges::rbegin, std::ranges::rend (libc++ before 22 omits them from <iterator>)
 #include <string>
 #include <string_view>
 #include <utility> // std::cmp_equal

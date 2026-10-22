@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <deque>
 #include <initializer_list>
-#include <ranges>
+#include <iterator>
 #include <string_view>
 #include <vector>
 

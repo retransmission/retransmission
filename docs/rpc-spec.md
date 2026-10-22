@@ -244,6 +244,7 @@ The 'source' column here corresponds to the data structure there.
 | `comment` | string | tr_torrent_view
 | `corrupt_ever`| number | tr_stat
 | `creator`| string | tr_torrent_view
+| `current_dir` | string | tr_torrentGetCurrentDir()
 | `date_created`| number| tr_torrent_view
 | `desired_available`| number| tr_stat
 | `done_date`| number | tr_stat
@@ -1143,6 +1144,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 
 | Method | Description
 |:---|:---
+| `torrent_get` | new arg `current_dir`
 | `torrent_get` | new arg `is_folder`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
 | `torrent_get` | new arg `peers.active_reqs_to_peer`

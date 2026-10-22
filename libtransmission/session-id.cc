@@ -21,7 +21,6 @@
 #include "libtransmission/platform.h"
 #include "libtransmission/session-id.h"
 #include "libtransmission/tr-strbuf.h" // for tr_pathbuf
-#include "libtransmission/utils.h" // for _()
 
 using namespace std::literals;
 

@@ -12,11 +12,11 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
+#include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/types.h>
 
 #include "test-fixtures.h"
 

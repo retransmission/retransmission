@@ -10,7 +10,6 @@
 
 #include <libtransmission-app/favicon-cache.h>
 
-#include <libtransmission/converters.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
@@ -33,6 +32,10 @@
 #include <unordered_set>
 #include <vector>
 
+struct tr_session;
+struct tr_torrent;
+struct tr_torrent_builder;
+
 class Session : public Glib::Object
 {
 public:
@@ -52,7 +55,7 @@ public:
 public:
     ~Session() override;
 
-    static Glib::RefPtr<Session> create(tr_session* session);
+    static Glib::RefPtr<Session> create(tr_session* session, tr::app::Prefs& prefs);
 
     tr_session* close();
 
@@ -129,12 +132,8 @@ public:
     template<typename T>
     void set_pref(tr_quark const key, T const& val)
     {
-        auto const old_val = gtr_pref_lookup<T>(key);
-
-        if (!old_val || tr::serializer::detail::values_differ(*old_val, val)) {
-            gtr_pref_set<T>(key, val);
-            signal_prefs_changed().emit(key);
-            gtr_pref_save(get_session());
+        if (prefs_.set(key, val)) {
+            prefs_.save(tr_sessionGetConfigDir(get_session()), tr_sessionGetSettings(get_session()));
         }
     }
 
@@ -167,10 +166,12 @@ public:
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>& signal_torrents_changed();
 
 protected:
-    explicit Session(tr_session* session);
+    Session(tr_session* session, tr::app::Prefs& prefs);
 
 private:
     [[nodiscard]] std::vector<Glib::ustring> get_recent_dirs(tr_quark key) const;
+
+    tr::app::Prefs& prefs_;
 
     class Impl;
     std::unique_ptr<Impl> const impl_;
