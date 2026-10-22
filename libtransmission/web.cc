@@ -292,6 +292,7 @@ public:
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
         ++binding_generation_;
+        curl_multi_wakeup(multi_.get());
     }
 
     // `session_binding` is a value read from the mediator's bind_interface()

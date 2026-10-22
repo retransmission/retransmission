@@ -458,8 +458,8 @@ TEST_F(WebTest, cancelAllCompletesRunningFetch)
 
     web_->cancel_all();
 
-    // the curl thread notices within its wait interval, at most a second
-    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    // the cancel wakes the curl thread rather than waiting out its 1s poll
+    ASSERT_EQ(std::future_status::ready, future.wait_for(500ms));
     auto const response = future.get();
     EXPECT_EQ(0, response.status);
     EXPECT_FALSE(response.did_connect);
