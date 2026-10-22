@@ -530,14 +530,15 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 {
     NSString* bindInterfaceMode = TRBindInterfacePopUpModeValue(self.fBindInterfacePopUp);
     [self.fDefaults setObject:bindInterfaceMode forKey:@"BindInterfaceMode"];
+    // forget the VPN an earlier choice resolved to, so this one binds to the VPN active now
+    [self.fDefaults setObject:@"" forKey:TRBindInterfaceServiceNameDefaultsKey];
+    [self.fDefaults setObject:@"" forKey:TRBindInterfaceProviderIdentifierDefaultsKey];
 
     if ([bindInterfaceMode isEqualToString:TRBindInterfaceModeActiveVPN]) {
         [((Controller*)NSApp.delegate) updateActiveVPNBindInterfacePreference];
     } else {
         NSString* bindInterface = TRBindInterfacePopUpValue(self.fBindInterfacePopUp);
         [self.fDefaults setObject:bindInterface forKey:@"BindInterface"];
-        [self.fDefaults setObject:@"" forKey:TRBindInterfaceServiceNameDefaultsKey];
-        [self.fDefaults setObject:@"" forKey:TRBindInterfaceProviderIdentifierDefaultsKey];
         tr_sessionSetBindInterface(self.fHandle, bindInterface.UTF8String);
     }
 

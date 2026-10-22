@@ -469,13 +469,21 @@ TEST_F(WebTest, timeoutIsReported)
 
 TEST_F(WebTest, interfaceBindingOverridesBindAddress)
 {
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
     // binding to 192.0.2.1 fails, so only the interface can carry the fetch
     mediator_.bind_address_ = "192.0.2.1";
+#ifdef __linux__
+    mediator_.bind_interface_ = "lo";
+#else
     mediator_.bind_interface_ = "lo0";
+#endif
 
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
+#endif
 }
 
 TEST_F(WebTest, blockedInterfaceIsRefused)
@@ -542,6 +550,28 @@ TEST_F(WebTest, cancelAllCompletesRunningFetch)
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
     EXPECT_EQ(&user_data, response.user_data);
+}
+
+TEST_F(WebTest, cancelledFetchCallbackCanReenterWeb)
+{
+    // TestMediator runs callbacks inline on tr_web's thread, so a callback
+    // that calls back into tr_web deadlocks if it runs under tr_web's lock
+    server_.setHandler([](evhttp_request* /*req*/) {});
+
+    // a deadlocked tr_web hangs this test's teardown, so a failure shows as a hang
+    auto promise = std::make_shared<std::promise<void>>();
+    auto future = promise->get_future();
+    auto opts = options();
+    opts.done_func = [this, promise](tr_web::FetchResponse const& /*response*/) {
+        (void)web_->is_idle();
+        promise->set_value();
+    };
+    web_->fetch(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+
+    web_->cancel_all();
+
+    EXPECT_EQ(std::future_status::ready, future.wait_for(5s));
 }
 
 TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)

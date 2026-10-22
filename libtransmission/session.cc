@@ -930,7 +930,8 @@ void tr_session::apply_network_bindings(
     // Sends out announce messages with advertisedPeerPort(), so this
     // section needs to happen here after the peer port settings changes
     if (auto const& val = new_settings.lpd_enabled; force || interface_changed || val != old_settings.lpd_enabled) {
-        if (val) {
+        // a "blocked" binding would refuse LPD's sockets, so don't try
+        if (val && !tr_net_interface_is_blocked(new_settings.bind_interface)) {
             lpd_ = tr_lpd::create(lpd_mediator_, event_base());
         } else {
             lpd_.reset();

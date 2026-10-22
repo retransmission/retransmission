@@ -322,7 +322,7 @@ public:
     [[nodiscard]] bool is_idle([[maybe_unused]] std::unique_lock<std::mutex> const& lock) const noexcept
     {
         TR_ASSERT(lock.owns_lock() && lock.mutex() == &tasks_mutex_);
-        return std::empty(queued_tasks_) && std::empty(running_tasks_);
+        return std::empty(queued_tasks_) && std::empty(running_tasks_) && std::empty(cancelled_tasks_);
     }
 
     [[nodiscard]] bool is_idle() const
@@ -920,21 +920,18 @@ public:
         remove_task(task);
     }
 
-    // Complete, as failed connections, the tasks that cancel_all() has
-    // invalidated, and every queued one while the binding is "blocked".
-    // Runs on the curl thread with tasks_mutex_ held, so the tasks are
-    // destroyed under the same lock that remove_task() destroys them under,
-    // and each one's destructor detaches it from its multi handle.
+    // Move to cancelled_tasks_ the tasks that cancel_all() has invalidated,
+    // and every queued one while the binding is "blocked". Runs on the curl
+    // thread with tasks_mutex_ held; complete_cancelled_tasks() finishes
+    // them after the caller releases it.
     void cancel_invalidated_tasks(std::optional<std::string> const& session_binding)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
-        auto cancelled = std::list<Task>{};
-
         for (auto iter = std::begin(queued_tasks_); iter != std::end(queued_tasks_);) {
             auto const next = std::next(iter);
             if (iter->generation() != binding_generation_ || is_blocked(session_binding)) {
-                cancelled.splice(std::end(cancelled), queued_tasks_, iter);
+                cancelled_tasks_.splice(std::end(cancelled_tasks_), queued_tasks_, iter);
             }
             iter = next;
         }
@@ -942,18 +939,34 @@ public:
         for (auto iter = std::begin(running_tasks_); iter != std::end(running_tasks_);) {
             auto const next = std::next(iter);
             if (iter->generation() != binding_generation_) {
-                cancelled.splice(std::end(cancelled), running_tasks_, iter);
+                cancelled_tasks_.splice(std::end(cancelled_tasks_), running_tasks_, iter);
             }
             iter = next;
         }
+    }
 
-        for (auto& task : cancelled) {
+    // Complete cancelled_tasks_ as failed connections. Like remove_task(),
+    // this runs the callbacks without tasks_mutex_ and then destroys the
+    // tasks under it, since each destructor returns its easy handle to
+    // easy_pool_, which fetch() draws from.
+    void complete_cancelled_tasks()
+    {
+        TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+
+        if (std::empty(cancelled_tasks_)) {
+            return;
+        }
+
+        for (auto& task : cancelled_tasks_) {
             tr_logAddTrace(fmt::format("Cancelled fetch of '{}'", task.options().url));
             task.response.status = 0;
             task.response.did_connect = false;
             task.response.did_timeout = false;
             task.done();
         }
+
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        cancelled_tasks_.clear();
     }
 
     void network_changed()
@@ -1030,6 +1043,8 @@ public:
                     running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
                 }
             }
+
+            complete_cancelled_tasks();
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
@@ -1123,6 +1138,12 @@ public:
     std::condition_variable queued_tasks_cv_;
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
+
+    // Cancelled tasks whose callbacks have yet to run. They count against
+    // is_idle() until then, as a task in running_tasks_ does until
+    // remove_task() has run its callback. Guarded by tasks_mutex_; only the
+    // curl thread modifies it, so that thread may read it without the lock.
+    std::list<Task> cancelled_tasks_;
 
     // Bumped by cancel_all(); tasks stamped with an older value are
     // cancelled by the curl thread. Guarded by tasks_mutex_.

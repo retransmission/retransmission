@@ -239,7 +239,9 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
         }
     }
 
-    if (!is_valid_socket(udp4_socket_) && !is_valid_socket(udp6_socket_)) {
+    // a "blocked" binding refuses both sockets by design, and the session logs that policy once
+    if (!is_valid_socket(udp4_socket_) && !is_valid_socket(udp6_socket_) &&
+        !tr_net_interface_is_blocked(session_.bind_interface())) {
         tr_logAddError("Couldn't create any UDP sockets.");
     }
 }

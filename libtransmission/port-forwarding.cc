@@ -188,7 +188,7 @@ private:
     void natPulse(bool do_check)
     {
         auto const is_enabled = is_enabled_ && !is_shutting_down_;
-        auto const bind_interface = mediator_.bind_interface();
+        auto const bind_interface = tr_net_effective_bind_interface(mediator_.bind_interface());
         auto const is_interface_bound = !tr_net_interface_is_default(bind_interface);
 
         // NAT-PMP has no per-interface control, so it can't run while bound to an interface.
