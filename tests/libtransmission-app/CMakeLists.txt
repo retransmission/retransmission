@@ -20,9 +20,11 @@ set_property(
 
 # These tests reach libtransmission internals: the heavier sandbox fixture from
 # tests/libtransmission/, and headers such as net.h that guard on this macro.
+# Spelled without "..": Windows opens paths under the \\?\ prefix, which
+# leaves ".." unnormalized and fails the open with ERROR_INVALID_NAME.
 target_compile_definitions(libtransmission-app-test
 	PRIVATE
-		-DLIBTRANSMISSION_TEST_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../libtransmission/assets"
+		-DLIBTRANSMISSION_TEST_ASSETS_DIR="${PROJECT_SOURCE_DIR}/tests/libtransmission/assets"
 		__TRANSMISSION__)
 
 target_link_libraries(libtransmission-app-test
