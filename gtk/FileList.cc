@@ -544,7 +544,7 @@ void FileList::Impl::set_torrent(tr_torrent_id_t torrent_id)
 
         refresh();
         timeout_tag_ = Glib::signal_timeout().connect_seconds(
-            [this]() { return refresh(), true; },
+            [this] { return refresh(), true; },
             SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     }
 
@@ -755,7 +755,7 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
 
 void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
 {
-    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error]() {
+    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error] {
         rename_done_tags_.pop();
         on_rename_done_idle(path_string, newname, error);
         return false;

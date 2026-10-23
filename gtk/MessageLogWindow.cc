@@ -501,7 +501,7 @@ MessageLogWindow::Impl::Impl(
 
     auto* const level_combo = gtr_get_widget<Gtk::ComboBox>(builder, "level_combo");
     level_combo_init(level_combo, maxLevel_);
-    level_combo->signal_changed().connect([this, level_combo]() { level_combo_changed_cb(level_combo); });
+    level_combo->signal_changed().connect([this, level_combo] { level_combo_changed_cb(level_combo); });
 
     window_.insert_action_group("win", action_group);
 

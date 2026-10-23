@@ -353,7 +353,7 @@ protected:
             return nullptr;
         }
 
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified]() {
+        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
             return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
         };
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
@@ -461,7 +461,7 @@ protected:
         auto verified_lock = std::unique_lock(verified_mutex_);
 
         auto const n_previously_verified = std::size(verified_);
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified]() {
+        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
             return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
         };
         tr_torrentVerify(tor);
@@ -476,7 +476,7 @@ protected:
 
         auto task = std::make_shared<std::packaged_task<Result()>>(std::forward<Func>(func));
         auto future = task->get_future();
-        session_->run_in_session_thread([task]() { (*task)(); });
+        session_->run_in_session_thread([task] { (*task)(); });
         auto const status = future.wait_for(msec);
         EXPECT_EQ(status, std::future_status::ready);
         if (status != std::future_status::ready) {
@@ -495,7 +495,7 @@ protected:
     // which owns the torrent state that tests wait on.
     [[nodiscard]] bool waitForInSessionThread(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
     {
-        return waitFor([this, &test]() { return blockingRunInSessionThread(test); }, msec);
+        return waitFor([this, &test] { return blockingRunInSessionThread(test); }, msec);
     }
 
     tr_session* session_ = nullptr;

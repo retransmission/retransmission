@@ -620,7 +620,7 @@ void FilterBar::Impl::update_filter_models_idle(Torrent::ChangeFlags changes)
     pending_filter_models_changes_ |= changes;
 
     if (!update_filter_models_tag_.connected()) {
-        update_filter_models_tag_ = Glib::signal_idle().connect([this]() {
+        update_filter_models_tag_ = Glib::signal_idle().connect([this] {
             update_filter_models(std::exchange(pending_filter_models_changes_, {}));
 
             // Changes reported while update_filter_models() ran need another pass.

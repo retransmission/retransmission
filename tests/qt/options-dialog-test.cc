@@ -100,7 +100,7 @@ template<typename Predicate>
     }
 
     auto const placeholder = label->text();
-    return waitUntil([label, placeholder]() { return label->text() != placeholder; });
+    return waitUntil([label, placeholder] { return label->text() != placeholder; });
 }
 
 class OptionsDialogTest

@@ -413,29 +413,29 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
     auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
 
     honor_limits_check_tag_ = honor_limits_check_->signal_toggled().connect(
-        [this]() { torrent_set_field(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
+        [this] { torrent_set_field(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
 
     down_limited_check_->set_label(
         fmt::format(fmt::runtime(down_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     down_limited_check_tag_ = down_limited_check_->signal_toggled().connect(
-        [this]() { torrent_set_field(TR_KEY_download_limited, down_limited_check_->get_active()); });
+        [this] { torrent_set_field(TR_KEY_download_limited, down_limited_check_->get_active()); });
 
     down_limit_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     down_limit_spin_tag_ = down_limit_spin_->signal_value_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
+        [this] { torrent_set_field(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
 
     up_limited_check_->set_label(
         fmt::format(fmt::runtime(up_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     up_limited_check_tag_ = up_limited_check_->signal_toggled().connect(
-        [this]() { torrent_set_field(TR_KEY_upload_limited, up_limited_check_->get_active()); });
+        [this] { torrent_set_field(TR_KEY_upload_limited, up_limited_check_->get_active()); });
 
     up_limit_sping_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     up_limit_spin_tag_ = up_limit_sping_->signal_value_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_upload_limit, up_limit_sping_->get_value_as_int()); });
+        [this] { torrent_set_field(TR_KEY_upload_limit, up_limit_sping_->get_value_as_int()); });
 
     gtr_priority_combo_init(*bandwidth_combo_);
     bandwidth_combo_tag_ = bandwidth_combo_->signal_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_bandwidth_priority, gtr_combo_box_get_active_enum(*bandwidth_combo_)); });
+        [this] { torrent_set_field(TR_KEY_bandwidth_priority, gtr_combo_box_get_active_enum(*bandwidth_combo_)); });
 
     gtr_combo_box_set_enum(
         *ratio_combo_,
@@ -444,14 +444,14 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
             { _("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED },
             { _("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE },
         });
-    ratio_combo_tag_ = ratio_combo_->signal_changed().connect([this]() {
+    ratio_combo_tag_ = ratio_combo_->signal_changed().connect([this] {
         torrent_set_field(TR_KEY_seed_ratio_mode, gtr_combo_box_get_active_enum(*ratio_combo_));
         refresh();
     });
     ratio_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, 1000, .05));
     ratio_spin_->set_width_chars(7);
     ratio_spin_tag_ = ratio_spin_->signal_value_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_seed_ratio_limit, ratio_spin_->get_value()); });
+        [this] { torrent_set_field(TR_KEY_seed_ratio_limit, ratio_spin_->get_value()); });
 
     gtr_combo_box_set_enum(
         *idle_combo_,
@@ -460,17 +460,17 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
             { _("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED },
             { _("Stop seeding if idle for N minutes:"), TR_IDLELIMIT_SINGLE },
         });
-    idle_combo_tag_ = idle_combo_->signal_changed().connect([this]() {
+    idle_combo_tag_ = idle_combo_->signal_changed().connect([this] {
         torrent_set_field(TR_KEY_seed_idle_mode, gtr_combo_box_get_active_enum(*idle_combo_));
         refresh();
     });
     idle_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 40320, 5));
     idle_spin_tag_ = idle_spin_->signal_value_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_seed_idle_limit, idle_spin_->get_value_as_int()); });
+        [this] { torrent_set_field(TR_KEY_seed_idle_limit, idle_spin_->get_value_as_int()); });
 
     max_peers_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 3000, 5));
     max_peers_spin_tag_ = max_peers_spin_->signal_value_changed().connect(
-        [this]() { torrent_set_field(TR_KEY_peer_limit, max_peers_spin_->get_value_as_int()); });
+        [this] { torrent_set_field(TR_KEY_peer_limit, max_peers_spin_->get_value_as_int()); });
 }
 
 /****
@@ -1894,7 +1894,7 @@ void DetailsDialog::Impl::on_edit_trackers()
 {
     if (auto const* const tor = tracker_list_get_current_torrent(); tor != nullptr) {
         auto d = std::shared_ptr<EditTrackersDialog>(EditTrackersDialog::create(dialog_, core_, tor));
-        gtr_window_on_close(*d, [d]() mutable { d.reset(); });
+        gtr_window_on_close(*d, [d] mutable { d.reset(); });
         d->show();
     }
 }
@@ -2010,7 +2010,7 @@ void DetailsDialog::Impl::on_tracker_list_add_button_clicked()
 {
     if (auto const* const tor = tracker_list_get_current_torrent(); tor != nullptr) {
         auto d = std::shared_ptr<AddTrackerDialog>(AddTrackerDialog::create(dialog_, core_, tor));
-        gtr_window_on_close(*d, [d]() mutable { d.reset(); });
+        gtr_window_on_close(*d, [d] mutable { d.reset(); });
         d->show();
     }
 }
@@ -2212,7 +2212,7 @@ DetailsDialog::Impl::Impl(
     options_page_init(builder);
 
     periodic_refresh_tag_ = Glib::signal_timeout().connect_seconds(
-        [this]() { return refresh(), true; },
+        [this] { return refresh(), true; },
         SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
 
     auto* const n = gtr_get_widget<Gtk::Notebook>(builder, "dialog_pages");

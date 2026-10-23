@@ -41,7 +41,7 @@ protected:
     void torrentRemoveAndWait(tr_torrent* tor, size_t expected_torrent_count)
     {
         tr_torrentRemove(tor, false);
-        auto const test = [this, expected_torrent_count]() {
+        auto const test = [this, expected_torrent_count] {
             return std::size(session_->torrents()) == expected_torrent_count;
         };
         EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -123,7 +123,7 @@ protected:
                 std::string_view const /*oldpath*/,
                 std::string_view const /*newname*/,
                 tr_error const& rename_error) noexcept { error = rename_error ? rename_error.code() : 0; });
-        auto test = [&error]() {
+        auto test = [&error] {
             return error != -1;
         };
         EXPECT_TRUE(waitFor(test, MaxWaitMsec));

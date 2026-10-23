@@ -257,14 +257,14 @@ OptionsDialog::Impl::Impl(
 
     auto* source_chooser = gtr_get_widget_derived<PathButton>(builder, "source_button");
     addTorrentFilters(source_chooser);
-    source_chooser->signal_selection_changed().connect([this, source_chooser]() { sourceChanged(source_chooser); });
+    source_chooser->signal_selection_changed().connect([this, source_chooser] { sourceChanged(source_chooser); });
 
     auto* destination_chooser = gtr_get_widget_derived<PathButton>(builder, "destination_button");
     destination_chooser->set_filename(downloadDir_);
     destination_chooser->set_recent_paths(core_->get_recent_download_paths());
 
     destination_chooser->signal_selection_changed().connect(
-        [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
+        [this, destination_chooser] { downloadDirChanged(destination_chooser); });
 
     auto const paused = torrent_builder_->paused();
     if (!paused) {
