@@ -1,5 +1,15 @@
 # CLAUDE.md
 
+## Project facts
+
+- The C++ standard, the minimum macOS, and the minimum Qt are set in
+  `CMakeLists.txt`: `CMAKE_CXX_STANDARD`, `MACOS_SUPPORT_MINIMUM`, `QT_MINIMUM`.
+  GTK 3 and 4 are both supported.
+- The Mac app is Objective-C++. Build prerequisites for every platform are in
+  `docs/Building-Transmission.md`.
+- Replacing a XIB with code does not mean replicating every XIB setting. Where
+  the minimum macOS already defaults to the XIB's behavior, leave the default.
+
 ## Write from the reader's state
 
 Everything you write here outlives the context that produced it, and the

@@ -26,6 +26,7 @@
 #include "Utils.h"
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/rpc-client.h>
 #include <libtransmission-app/startup-coordinator.h>
 
 #include <libtransmission/api-compat.h>
@@ -246,6 +247,9 @@ private:
     sigc::connection refresh_actions_tag_;
     std::unique_ptr<SystemTrayIcon> icon_;
     std::unique_ptr<MainWindow> wind_;
+
+    // Declared before core_, which holds a reference to it.
+    tr::app::RpcClient rpc_{ &gtr_run_on_ui_thread };
     Glib::RefPtr<Session> core_;
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
@@ -599,7 +603,7 @@ void Application::Impl::on_startup()
 
     prefs_.set(TR_KEY_alt_speed_enabled, tr_sessionUsesAltSpeed(session));
     prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(session));
-    core_ = Session::create(session, prefs_);
+    core_ = Session::create(session, prefs_, rpc_);
 
     /* init the ui manager */
     ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-menus.ui"));

@@ -42,6 +42,8 @@ jobs:
       contains(fromJSON(vars.AI_REVIEW_USERS || '[]'), github.event.sender.login)
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      resolve-ids: ${{ steps.queued.outputs.ids }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -67,7 +69,7 @@ jobs:
           #!/bin/sh
           # pr-review-threads list <pr>               unresolved review threads, one JSON object per line
           # pr-review-threads reply <pr> <comment>    reply in a thread; the reply text comes from stdin
-          # pr-review-threads resolve <thread>        mark a thread resolved
+          # pr-review-threads resolve <thread>        queue a thread to be marked resolved
           set -eu
           usage() { echo 'usage: pr-review-threads list <pr> | reply <pr> <comment-id> | resolve <thread-id>' >&2; exit 2; }
           case "${1-}" in
@@ -93,11 +95,12 @@ jobs:
               gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$2/comments/$3/replies" -f body="$(cat)" --jq '{id, html_url}'
               ;;
             resolve)
-              case "${2-}" in ''|*[!A-Za-z0-9_=-]*) usage ;; esac
-              gh api graphql -F id="$2" -f query='
-                mutation($id: ID!) {
-                  resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
-                }' --jq '.data.resolveReviewThread.thread'
+              # Resolving needs a permission this job does not hold, so the id
+              # is queued for the resolve-threads job that runs afterwards.
+              case "${2-}" in PRRT_*) ;; *) usage ;; esac
+              case "${2-}" in *[!A-Za-z0-9_=-]*) usage ;; esac
+              echo "$2" >> "$(dirname "$0")/resolve-ids"
+              echo "queued: $2 will be marked resolved once this review finishes"
               ;;
             *) usage ;;
           esac
@@ -129,21 +132,32 @@ jobs:
           prompt: |
             Review pull request #${{ github.event.pull_request.number }} of this repository as the automated Claude review that a maintainer requested with the "needs ai review" label. Work in four steps.
 
-            1. Run `pr-review-threads list ${{ github.event.pull_request.number }}`. It prints the unresolved review threads, one JSON object per line, with each comment's author login and id. Threads whose first comment is by `github-actions` are this review's own earlier rounds; the others were opened by people.
+            1. Run `pr-review-threads list ${{ github.event.pull_request.number }}`. It prints the unresolved review threads, one JSON object per line, with each comment's author login and id. Threads whose first comment is by `github-actions` are this review's own earlier rounds; the others were opened by people. `gh pr view ${{ github.event.pull_request.number }}` tells you who the author is, and `gh pr view ${{ github.event.pull_request.number }} --comments` shows the summaries earlier rounds posted.
 
-            2. Invoke the `code-review` skill with the arguments `xhigh ${{ github.event.pull_request.number }}` and wait for its findings. Do not pass `--comment`; step 3 posts the findings.
+            2. Invoke the `code-review` skill with the arguments `high ${{ github.event.pull_request.number }}` and wait for its findings. Do not pass `--comment`; step 3 posts the findings.
 
-            3. Post the findings. A finding that an open thread already covers, whoever opened it, gets no new comment; if you have something new to add there, reply in that thread with `pr-review-threads reply ${{ github.event.pull_request.number }} <comment id>`, giving the reply text on standard input. Skip findings about the PR description, release notes, labels, or commit message wording; maintainers handle those. Post each remaining finding as an inline comment with `mcp__github_inline_comment__create_inline_comment` and `confirmed: true`, including a suggestion block only when it fixes the issue entirely. Then resolve each thread this review opened in an earlier round whose problem the current code no longer has, with `pr-review-threads resolve <thread id>`. Never resolve a thread a person opened.
+            3. Decide what to post. Keep a finding only if this PR introduces the problem or makes it worse; a problem that already existed in code the PR merely touches or moves is a follow-up idea, not a finding. Skip findings about the PR description, release notes, labels, or commit message wording; maintainers handle those. In a round after the first, raise a new finding only in code that changed since the previous round, unless it is a bug. A finding that an open thread already covers, whoever opened it, gets no new comment; if you have something new to add there, reply in that thread with `pr-review-threads reply ${{ github.event.pull_request.number }} <comment id>`, giving the reply text on standard input. Post each remaining finding as an inline comment with `mcp__github_inline_comment__create_inline_comment` and `confirmed: true`. Prefer a committable suggestion block whenever one fixes the issue entirely; otherwise describe the fix. Write comment text as short, direct, actionable sentences about the code, never about what the author or readers know. Before posting a suggestion, check what else it entails: search the PR's files for the symbols it touches, the comments that mention them, and the lines it leaves redundant, and put those edits in the same suggestion, so applying it does not earn a new finding next round. A suggestion must not change behavior unless it fixes a bug the PR introduced or made worse, and it must stay within what the PR sets out to do; a larger change the PR makes possible is a follow-up idea. A later round never raises a consequence of a change this review suggested as a new finding; it replies in that thread instead.
 
-            4. Post one comment with `gh pr comment ${{ github.event.pull_request.number }}`. Open with a line saying this is the automated Claude review requested with the "needs ai review" label, then say what this round resolved, left open, and added.
-          # `--effort` sets the model's reasoning depth; the skill's `xhigh`
-          # argument above sets how many findings it reports. The
-          # inline-comment MCP server starts only when `--allowedTools` names
-          # it.
+            Then settle this review's own earlier threads with `pr-review-threads resolve <thread id>`: queue a thread when the current code no longer has the problem, and also when the latest reply from the PR author or from one of the maintainers and contributors (${{ join(fromJSON(vars.AI_REVIEW_USERS || '[]'), ', ') }}) declines it as out of scope, deferred, or disagreed with. That is their call, and a maintainer can reopen the thread. Never resolve a thread a person opened.
+
+            4. Post one short comment with `gh pr comment ${{ github.event.pull_request.number }}`: a first line saying this is the automated Claude review requested with the "needs ai review" label; one line of counts (threads fixed, declined by the author, still open, new); then the new findings, one line each. The threads fixed or closed this round go, one line each with a link to the thread, inside a collapsed `<details>` block whose `<summary>` gives their count. Follow-up ideas from step 3 that no earlier summary on this PR already lists go, one line each, inside a second collapsed `<details>` block titled "Follow-up ideas, not for this PR". Do not describe open findings again; their threads already do.
+          # `--effort` sets the model's reasoning depth. The skill's level
+          # above is separate: `high` hunts bugs and verifies each candidate
+          # with a fresh agent; `xhigh` would add cleanup hunts (reuse,
+          # naming, conventions) on top. The inline-comment MCP server starts
+          # only when `--allowedTools` names it.
           claude_args: |
             --model claude-opus-5-5
             --effort xhigh
             --allowedTools "Skill,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
+
+      - name: Hand the queued thread ids to the resolve job
+        id: queued
+        run: |
+          f="$RUNNER_TEMP/ai-review/resolve-ids"
+          if [ -s "$f" ]; then
+            echo "ids=$(tr '\n' ' ' < "$f")" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Remove the label
         uses: actions/github-script@v9
@@ -161,3 +175,26 @@ jobs:
               // 404 just means the label was already gone; anything else is real.
               if (error.status !== 404) throw error;
             }
+
+  # Marking a review thread resolved needs `contents: write`, GitHub's rule
+  # rather than ours. This job is the only one that holds it: no checkout, no
+  # PR content, no Claude, just the mutation for each id the review queued.
+  resolve-threads:
+    needs: review
+    if: needs.review.outputs.resolve-ids != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          IDS: ${{ needs.review.outputs.resolve-ids }}
+        run: |
+          for id in $IDS; do
+            case "$id" in PRRT_*) ;; *) echo "::warning::Skipping unexpected thread id $id"; continue ;; esac
+            gh api graphql -F id="$id" -f query='
+              mutation($id: ID!) {
+                resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
+              }' --jq '.data.resolveReviewThread.thread.isResolved' | sed "s/^/$id resolved=/"
+          done

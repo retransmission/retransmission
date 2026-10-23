@@ -50,6 +50,12 @@ void gtr_message(std::string const& message);
 void gtr_warning(std::string const& message);
 void gtr_error(std::string const& message);
 
+// Runs `func` on the GTK thread, from the main loop's idle queue.
+// Safe to call from any thread, e.g. from a libtransmission callback.
+// `func` runs after its caller has moved on, or never if the loop stops first,
+// so it must keep alive whatever it dereferences.
+void gtr_run_on_ui_thread(std::function<void()> func);
+
 /***
 ****
 ***/
