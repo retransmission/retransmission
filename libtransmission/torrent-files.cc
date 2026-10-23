@@ -420,12 +420,13 @@ namespace
     // Shortcut to avoid extra work below.
     // All the paths below involve filenames that begin with one of these chars
     static auto constexpr ReservedFilesBeginWithOneOf = "ACLNP"sv;
-    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(in.front()))) == std::string_view::npos) {
+    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(static_cast<unsigned char>(in.front())))) ==
+        std::string_view::npos) {
         return false;
     }
 
     auto in_upper = tr_pathbuf{ in };
-    std::ranges::for_each(in_upper, [](auto& ch) { ch = static_cast<char>(toupper(ch)); });
+    std::ranges::for_each(in_upper, [](auto& ch) { ch = static_cast<char>(toupper(static_cast<unsigned char>(ch))); });
     auto const in_upper_sv = in_upper.sv();
 
     static auto constexpr ReservedNames = std::to_array<std::string_view>({
