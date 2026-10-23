@@ -96,11 +96,19 @@ jobs:
               ;;
             resolve)
               # Resolving needs a permission this job does not hold, so the id
-              # is queued for the resolve-threads job that runs afterwards.
+              # is queued for the finish-round job. The review's subprocess
+              # sandbox leaves little writable besides the checkout, so the
+              # queue goes to the first of these that accepts it.
               case "${2-}" in PRRT_*) ;; *) usage ;; esac
               case "${2-}" in *[!A-Za-z0-9_=-]*) usage ;; esac
-              echo "$2" >> "$(dirname "$0")/resolve-ids"
-              echo "queued: $2 will be marked resolved once this review finishes"
+              for q in "${GITHUB_WORKSPACE:-$PWD}/ai-review-resolve-ids" "$HOME/ai-review-resolve-ids" "$(dirname "$0")/resolve-ids"; do
+                if { echo "$2" >> "$q"; } 2>/dev/null; then
+                  echo "queued: $2 will be marked resolved once this review finishes"
+                  exit 0
+                fi
+              done
+              echo "could not queue $2: no writable location" >&2
+              exit 1
               ;;
             *) usage ;;
           esac
@@ -140,7 +148,7 @@ jobs:
 
             Then settle this review's own earlier threads with `pr-review-threads resolve <thread id>`: queue a thread when the current code no longer has the problem, and also when the latest reply from the PR author or from one of the maintainers and contributors (${{ join(fromJSON(vars.AI_REVIEW_USERS || '[]'), ', ') }}) declines it as out of scope, deferred, or disagreed with. That is their call, and a maintainer can reopen the thread. Never resolve a thread a person opened.
 
-            4. Post one short comment with `gh pr comment ${{ github.event.pull_request.number }}`: a first line saying this is the automated Claude review requested with the "needs ai review" label; one line of counts (threads fixed, declined by the author, still open, new); then the new findings, one line each. The threads fixed or closed this round go, one line each with a link to the thread, inside a collapsed `<details>` block whose `<summary>` gives their count. Follow-up ideas from step 3 that no earlier summary on this PR already lists go, one line each, inside a second collapsed `<details>` block titled "Follow-up ideas, not for this PR". Do not describe open findings again; their threads already do.
+            4. Post one short comment with `gh pr comment ${{ github.event.pull_request.number }}`. Its first line must be exactly `<!-- ai-review-summary -->`, which a later job uses to hide this summary once a newer one exists. Then: a line saying this is the automated Claude review requested with the "needs ai review" label; one line of counts (fixed, declined, unresolved, new); an "Unresolved" list, left visible, with one line per thread still open after this round, each linking to the thread, the ones this round opened marked new; the threads fixed or closed this round, one line each with a link, inside a collapsed `<details>` block whose `<summary>` gives their count; and the follow-up ideas from step 3 that no earlier summary already lists, inside a second collapsed `<details>` block titled "Follow-up ideas, not for this PR". Keep every item to one line; the threads hold the detail.
           # `--effort` sets the model's reasoning depth. The skill's level
           # above is separate: `high` hunts bugs and verifies each candidate
           # with a fresh agent; `xhigh` would add cleanup hunts (reuse,
@@ -151,13 +159,11 @@ jobs:
             --effort xhigh
             --allowedTools "Skill,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(pr-review-threads:*)"
 
-      - name: Hand the queued thread ids to the resolve job
+      - name: Hand the queued thread ids to the finish-round job
         id: queued
         run: |
-          f="$RUNNER_TEMP/ai-review/resolve-ids"
-          if [ -s "$f" ]; then
-            echo "ids=$(tr '\n' ' ' < "$f")" >> "$GITHUB_OUTPUT"
-          fi
+          ids=$(cat "$GITHUB_WORKSPACE/ai-review-resolve-ids" "$HOME/ai-review-resolve-ids" "$RUNNER_TEMP/ai-review/resolve-ids" 2>/dev/null | sort -u | tr '\n' ' ')
+          echo "ids=$ids" >> "$GITHUB_OUTPUT"
 
       - name: Remove the label
         uses: actions/github-script@v9
@@ -178,17 +184,21 @@ jobs:
 
   # Marking a review thread resolved needs `contents: write`, GitHub's rule
   # rather than ours. This job is the only one that holds it: no checkout, no
-  # PR content, no Claude, just the mutation for each id the review queued.
-  resolve-threads:
+  # PR content, no Claude. It resolves the threads the review queued and
+  # hides the summaries of earlier rounds as outdated.
+  finish-round:
     needs: review
-    if: needs.review.outputs.resolve-ids != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number }}
     steps:
-      - env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Resolve the threads the review queued
+        if: needs.review.outputs.resolve-ids != ''
+        env:
           IDS: ${{ needs.review.outputs.resolve-ids }}
         run: |
           for id in $IDS; do
@@ -197,4 +207,18 @@ jobs:
               mutation($id: ID!) {
                 resolveReviewThread(input: {threadId: $id}) { thread { isResolved } }
               }' --jq '.data.resolveReviewThread.thread.isResolved' | sed "s/^/$id resolved=/"
+          done
+
+      - name: Hide the summaries of earlier rounds
+        run: |
+          # Every summary but the newest, matched by the marker line the
+          # review puts first.
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- ai-review-summary -->")))] | .[:-1][] | .node_id' |
+          while read -r id; do
+            gh api graphql -F id="$id" -f query='
+              mutation($id: ID!) {
+                minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) { minimizedComment { isMinimized } }
+              }' --jq '.data.minimizeComment.minimizedComment.isMinimized' | sed "s/^/$id hidden=/" ||
+              echo "::warning::Could not hide earlier summary $id"
           done
