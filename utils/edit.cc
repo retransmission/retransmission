@@ -67,6 +67,9 @@ int parseCommandLine(app_options& opts, int argc, char const* const* argv)
             break;
 
         case 'r':
+            if (*optarg == '\0') {
+                return 1;
+            }
             opts.replace[0] = optarg;
             c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg);
 
@@ -318,6 +321,7 @@ int tr_main(int argc, char* argv[])
 
     auto options = app_options{};
     if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
+        tr_getopt_usage(MyName, Usage, std::data(Options));
         return EXIT_FAILURE;
     }
 
