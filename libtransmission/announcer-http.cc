@@ -214,7 +214,8 @@ void onAnnounceDone(tr_web::FetchResponse const& web_response)
     }
 
     if (!std::empty(req.tracker_id)) {
-        fmt::format_to(out, "&trackerid={}", req.tracker_id);
+        url += "&trackerid="sv;
+        tr_urlPercentEncode(url, req.tracker_id);
     }
 
     if (auto ipv4_addr = session->global_address(TR_AF_INET); ipv4_addr) {
