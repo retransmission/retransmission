@@ -542,7 +542,6 @@ tr_session* Session::close()
     if (session != nullptr) {
         save_prefs();
         set_embedded_session(nullptr);
-        set_session_type({});
     }
 
     return session;

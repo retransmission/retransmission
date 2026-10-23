@@ -96,15 +96,17 @@ protected:
 
 } // namespace
 
-TEST_F(GtkSessionTest, isEmbeddedUntilClosed)
+// close() returns the session for the caller to tr_sessionClose(), which can take seconds,
+// so the nap inhibitor outlives it: the session stays embedded until the Session is destroyed.
+TEST_F(GtkSessionTest, staysEmbeddedAfterClose)
 {
     EXPECT_TRUE(core_->is_embedded());
     EXPECT_TRUE(core_->should_inhibit_nap());
 
     EXPECT_EQ(session_, core_->close());
     EXPECT_EQ(nullptr, core_->get_session());
-    EXPECT_FALSE(core_->is_embedded());
-    EXPECT_FALSE(core_->should_inhibit_nap());
+    EXPECT_TRUE(core_->is_embedded());
+    EXPECT_TRUE(core_->should_inhibit_nap());
 }
 
 // A session pref set through the client reaches the embedded session over RPC.
