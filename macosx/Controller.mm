@@ -65,6 +65,7 @@
 #import "Utils.h"
 #import "UTTypeAdditions.h"
 #import "NSURLAdditions.h"
+#import "MenuProvider.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -981,6 +982,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [PowerManager.shared setDelegate:self];
     [PowerManager.shared start];
+
+    auto menuProvider = [[MenuProvider alloc] init];
+    auto menu = [menuProvider buildMainMenu:_fUpdaterController];
+    [NSApp setMainMenu:menu];
 
     // A Transmission that opens now, or opened while this app was launching, would work on the same downloads.
     [NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(workspaceDidLaunchApplication:)

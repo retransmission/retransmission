@@ -118,6 +118,8 @@ target_sources(${TR_NAME}-mac
         InfoWindowController.h
         InfoWindowController.mm
         main.mm
+        MenuProvider.h
+        MenuProvider.mm
         MessageWindowController.h
         MessageWindowController.mm
         NSApplicationAdditions.h
@@ -355,6 +357,7 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    AppMenu.strings
     GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings
