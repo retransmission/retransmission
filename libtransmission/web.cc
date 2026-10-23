@@ -259,12 +259,7 @@ public:
             deadline_ns_ = to_ns(mediator.now() + deadline);
         }
         queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& [multi, prev_n_running] : multi_pool_) {
-                curl_multi_wakeup(multi.get());
-            }
-        }
+        wakeup_multis();
     }
 
     void fetch(FetchOptions&& options)
@@ -276,22 +271,58 @@ public:
                 return;
             }
 
-            queued_tasks_.emplace_back(*this, std::move(options));
-        }
-        queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& [multi, prev_n_running] : multi_pool_) {
-                curl_multi_wakeup(multi.get());
+            // The binding policy is read under tasks_mutex_ so that it is
+            // ordered against cancel_all(): a request that saw the policy
+            // before a change was queued before the cancel and is dropped
+            // by it; one that sees "blocked" is refused right here.
+            if (!is_blocked(mediator.bind_interface())) {
+                queued_tasks_.emplace_back(*this, std::move(options), binding_generation_);
+                queued_tasks_cv_.notify_one();
+                wakeup_multis();
+                return;
             }
         }
+
+        // A deliberate "bind to nothing" setting is refused before curl sees
+        // the request. The callback runs outside tasks_mutex_ because the
+        // mediator may invoke it inline, and a callback that fetches again
+        // would deadlock on the mutex.
+        tr_logAddTrace(fmt::format("Refusing fetch of '{}': interface binding is 'blocked'", options.url));
+        if (options.done_func) {
+            auto response = FetchResponse{};
+            response.user_data = options.done_func_user_data;
+            mediator.run(std::move(options.done_func), std::move(response));
+        }
+    }
+
+    void cancel_all()
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        ++binding_generation_;
+        wakeup_multis();
+    }
+
+    // Callable with tasks_mutex_ held: the curl thread also takes
+    // multi_pool_mutex_ after tasks_mutex_, never the other way round.
+    void wakeup_multis() const
+    {
+        auto const lock = std::unique_lock{ multi_pool_mutex_ };
+        for (auto const& [multi, prev_n_running] : multi_pool_) {
+            curl_multi_wakeup(multi.get());
+        }
+    }
+
+    // `session_binding` is a value read from the mediator's bind_interface()
+    [[nodiscard]] static bool is_blocked(std::optional<std::string> const& session_binding)
+    {
+        return session_binding && tr_net_interface_is_blocked(*session_binding);
     }
 
     // Callers pass their lock to prove they hold tasks_mutex_.
     [[nodiscard]] bool is_idle([[maybe_unused]] std::unique_lock<std::mutex> const& lock) const noexcept
     {
         TR_ASSERT(lock.owns_lock() && lock.mutex() == &tasks_mutex_);
-        return std::empty(queued_tasks_) && std::empty(running_tasks_);
+        return std::empty(queued_tasks_) && std::empty(running_tasks_) && std::empty(cancelled_tasks_);
     }
 
     [[nodiscard]] bool is_idle() const
@@ -303,9 +334,10 @@ public:
     class Task
     {
     public:
-        Task(tr_web::Impl& impl_in, tr_web::FetchOptions&& options_in)
+        Task(tr_web::Impl& impl_in, tr_web::FetchOptions&& options_in, uint64_t const generation_in)
             : impl{ impl_in }
             , options_{ std::move(options_in) }
+            , generation_{ generation_in }
         {
             auto const parsed = tr_urlParse(options_.url);
             easy_ = parsed ? impl.get_easy(parsed->host) : curl_easy_init();
@@ -361,6 +393,13 @@ public:
             return options_;
         }
 
+        // The value of Impl::binding_generation_ when this task was queued.
+        // A task whose generation is behind the current one was cancelled.
+        [[nodiscard]] constexpr auto generation() const noexcept
+        {
+            return generation_;
+        }
+
         // Build the curl_slist of request headers (owned by this Task) and
         // return it, or nullptr if there are none to send.
         [[nodiscard]] curl_slist* make_request_headers()
@@ -384,8 +423,21 @@ public:
             }
         }
 
+        // Set by initEasy() when it hands curl an interface to bind to
+        void set_interface_bound() noexcept
+        {
+            interface_bound_ = true;
+        }
+
+        // An interface binding takes precedence over the bind addresses:
+        // curl binds the socket to the interface after open_socket()
+        // creates it, and a socket open_socket() had bound to an address
+        // could not be bound again.
         [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
         {
+            if (interface_bound_) {
+                return {};
+            }
             if (auto const addr = impl.mediator.bind_address(af)) {
                 return tr_address::from_string(*addr);
             }
@@ -458,6 +510,10 @@ public:
         }
 
         tr_web::FetchOptions options_;
+
+        uint64_t generation_;
+
+        bool interface_bound_ = false;
 
         CURL* easy_;
         CURLM* multi_ = nullptr;
@@ -673,15 +729,27 @@ public:
         return sock;
     }
 
-    void initEasy(Task& task)
+    void initEasy(Task& task, std::optional<std::string> const& session_binding)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+        TR_ASSERT(!is_blocked(session_binding));
         auto* const e = task.easy();
 
-        // N.B. DO NOT set CURLOPT_INTERFACE, CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE.
-        // curl applies them to every socket it opens regardless of the address family it
-        // resolved, so an IPv4 bind address would also be forced onto IPv6 sockets.
-        // open_socket() binds each socket according to its resolved family instead.
+        // N.B. DO NOT set CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE, nor an address in
+        // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
+        // address family it resolved, so an IPv4 bind address would also be forced onto
+        // IPv6 sockets. open_socket() binds each socket according to its resolved family
+        // instead. An interface name ("if!eth0") suits both families, so it goes to curl.
+        //
+        // `session_binding` must be the value cancel_invalidated_tasks() checked this
+        // task against. A fresh read of the mediator could be "blocked", which has no
+        // interface string and would fall through to the bind addresses.
+        if (session_binding) {
+            if (auto const curl_interface = tr_netCurlInterfaceString(*session_binding); curl_interface) {
+                (void)curl_easy_setopt(e, CURLOPT_INTERFACE, curl_interface->c_str());
+                task.set_interface_bound();
+            }
+        }
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
@@ -868,6 +936,55 @@ public:
         remove_task(task);
     }
 
+    // Move to cancelled_tasks_ the tasks that cancel_all() has invalidated,
+    // and every queued one while the binding is "blocked". Runs on the curl
+    // thread with tasks_mutex_ held; complete_cancelled_tasks() finishes
+    // them after the caller releases it.
+    void cancel_invalidated_tasks(std::optional<std::string> const& session_binding)
+    {
+        TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+
+        for (auto iter = std::begin(queued_tasks_); iter != std::end(queued_tasks_);) {
+            auto const next = std::next(iter);
+            if (iter->generation() != binding_generation_ || is_blocked(session_binding)) {
+                cancelled_tasks_.splice(std::end(cancelled_tasks_), queued_tasks_, iter);
+            }
+            iter = next;
+        }
+
+        for (auto iter = std::begin(running_tasks_); iter != std::end(running_tasks_);) {
+            auto const next = std::next(iter);
+            if (iter->generation() != binding_generation_) {
+                cancelled_tasks_.splice(std::end(cancelled_tasks_), running_tasks_, iter);
+            }
+            iter = next;
+        }
+    }
+
+    // Complete cancelled_tasks_ as failed connections. Like remove_task(),
+    // this runs the callbacks without tasks_mutex_ and then destroys the
+    // tasks under it, since each destructor returns its easy handle to
+    // easy_pool_, which fetch() draws from.
+    void complete_cancelled_tasks()
+    {
+        TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+
+        if (std::empty(cancelled_tasks_)) {
+            return;
+        }
+
+        for (auto& task : cancelled_tasks_) {
+            tr_logAddTrace(fmt::format("Cancelled fetch of '{}'", task.options().url));
+            task.response.status = 0;
+            task.response.did_connect = false;
+            task.response.did_timeout = false;
+            task.done();
+        }
+
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        cancelled_tasks_.clear();
+    }
+
     void network_changed()
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
@@ -915,6 +1032,13 @@ public:
                     break;
                 }
 
+                // One read per pass: the mediator's answer can change at any
+                // moment, and a task must be bound by the same value that
+                // the "blocked" check let it through on.
+                auto const session_binding = mediator.bind_interface();
+
+                cancel_invalidated_tasks(session_binding);
+
                 if (network_changed_) {
 #if LIBCURL_VERSION_NUM >= 0x081000 /* 8.16.0 */
                     if (curl_multi_setopt(current_multi(), CURLMOPT_NETWORK_CHANGED, CURLMNWC_CLEAR_CONNS) != CURLM_OK)
@@ -928,13 +1052,15 @@ public:
                 // add queued tasks
                 if (!std::empty(queued_tasks_)) {
                     for (auto& task : queued_tasks_) {
-                        initEasy(task);
+                        initEasy(task, session_binding);
                         task.set_multi(current_multi());
                     }
 
                     running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
                 }
             }
+
+            complete_cancelled_tasks();
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
@@ -1029,6 +1155,16 @@ public:
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
 
+    // Cancelled tasks whose callbacks have yet to run. They count against
+    // is_idle() until then, as a task in running_tasks_ does until
+    // remove_task() has run its callback. Guarded by tasks_mutex_; only the
+    // curl thread modifies it, so that thread may read it without the lock.
+    std::list<Task> cancelled_tasks_;
+
+    // Bumped by cancel_all(); tasks stamped with an older value are
+    // cancelled by the curl thread. Guarded by tasks_mutex_.
+    uint64_t binding_generation_ = 0U;
+
     [[nodiscard]] CURLSH* shared()
     {
         return curlsh_.get();
@@ -1078,6 +1214,11 @@ std::unique_ptr<tr_web> tr_web::create(Mediator& mediator)
 void tr_web::fetch(FetchOptions&& options)
 {
     impl_->fetch(std::move(options));
+}
+
+void tr_web::cancel_all()
+{
+    impl_->cancel_all();
 }
 
 void tr_web::startShutdown(std::chrono::milliseconds deadline)

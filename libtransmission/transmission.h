@@ -313,6 +313,16 @@ void tr_sessionSetUTPEnabled(tr_session* session, bool is_enabled);
 [[nodiscard]] bool tr_sessionIsLPDEnabled(tr_session const* session);
 void tr_sessionSetLPDEnabled(tr_session* session, bool is_enabled);
 
+// `bind_interface` is empty for normal OS routing, the reserved value below
+// to refuse every socket, or else an interface name.
+// TR_BIND_INTERFACE_BLOCKED_STR is a macro so Objective-C can spell it as
+// `@TR_BIND_INTERFACE_BLOCKED_STR`.
+#define TR_BIND_INTERFACE_BLOCKED_STR "blocked"
+inline constexpr std::string_view TrBindInterfaceBlocked = TR_BIND_INTERFACE_BLOCKED_STR;
+
+[[nodiscard]] std::string tr_sessionGetBindInterface(tr_session const* session);
+void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
+
 [[nodiscard]] tr_encryption_mode tr_sessionGetEncryption(tr_session const* session);
 void tr_sessionSetEncryption(tr_session* session, tr_encryption_mode mode);
 

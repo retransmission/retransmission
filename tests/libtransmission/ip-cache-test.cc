@@ -9,9 +9,11 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <libtransmission/ip-cache.h>
 #include <libtransmission/net.h>
@@ -200,6 +202,37 @@ TEST_F(IPCacheTest, globalSourceIPv6)
     EXPECT_TRUE(addr->is_ipv6());
 }
 
+TEST_F(IPCacheTest, blockedBindingHasNoSourceAddress)
+{
+    struct LocalMockMediator final : public MockMediator {
+        [[nodiscard]] std::string_view settings_bind_addr(tr_address_type /* type */) override
+        {
+            return "0.0.0.0"sv;
+        }
+
+        [[nodiscard]] std::string_view settings_bind_interface() override
+        {
+            return bind_interface_;
+        }
+
+        std::string_view bind_interface_;
+    };
+    auto mediator = LocalMockMediator{};
+    ip_cache_ = tr_ip_cache::create(mediator);
+
+    // the unbound probe must work, or the blocked one proves nothing
+    ip_cache_->update_source_addr(TR_AF_INET);
+    if (!ip_cache_->source_addr(TR_AF_INET)) {
+        GTEST_SKIP() << "no IPv4 source address on this machine";
+    }
+
+    // a refused interface binding must not fall back to the default route
+    mediator.bind_interface_ = "blocked"sv;
+    ip_cache_->invalidate(TR_AF_INET);
+    ip_cache_->update_source_addr(TR_AF_INET);
+    EXPECT_FALSE(ip_cache_->source_addr(TR_AF_INET));
+}
+
 TEST_F(IPCacheTest, onResponseIPQuery)
 {
     static auto constexpr AddrStr = std::array{
@@ -268,4 +301,62 @@ TEST_F(IPCacheTest, onResponseIPQuery)
             }
         }
     }
+}
+
+TEST_F(IPCacheTest, invalidateForgetsAddressesAndIgnoresStaleResponse)
+{
+    // fetch() parks the callback so the test decides when each probe answers
+    struct LocalMockMediator final : public MockMediator {
+        void fetch(tr_web::FetchOptions&& options) override // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        {
+            pending.emplace_back(std::move(options.done_func));
+        }
+
+        [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type /*type*/) noexcept override
+        {
+            return ip_endpoints;
+        }
+
+        std::vector<tr_web::FetchDoneFunc> pending;
+        std::vector<std::string> ip_endpoints = { "https://ip.example.invalid/" };
+    };
+
+    auto const respond = [](tr_web::FetchDoneFunc const& done, std::string_view body) {
+        auto const response = tr_web::FetchResponse{
+            .request_url = {},
+            .errmsg = {},
+            .status = 200,
+            .headers = {},
+            .body = std::string{ body },
+            .primary_ip = std::string{},
+            .did_connect = true,
+            .did_timeout = false,
+            .user_data = nullptr,
+        };
+        done(response);
+    };
+
+    auto mediator = LocalMockMediator{};
+    ip_cache_ = tr_ip_cache::create(mediator);
+
+    // cache an address, then start a probe that stays in flight
+    EXPECT_TRUE(ip_cache_->set_global_addr(*tr_address::from_string("8.8.8.8"sv)));
+    ip_cache_->update_global_addr(TR_AF_INET);
+    ASSERT_EQ(1U, std::size(mediator.pending));
+    EXPECT_TRUE(ip_cache_->global_addr(TR_AF_INET));
+
+    // a binding change forgets the cached address and abandons the probe
+    ip_cache_->invalidate(TR_AF_INET);
+    EXPECT_FALSE(ip_cache_->global_addr(TR_AF_INET));
+
+    // the abandoned probe's reply must not refill the cache
+    respond(mediator.pending[0], "1.1.1.1"sv);
+    EXPECT_FALSE(ip_cache_->global_addr(TR_AF_INET));
+
+    // a new probe can start right away, and its reply is cached
+    ip_cache_->update_global_addr(TR_AF_INET);
+    ASSERT_EQ(2U, std::size(mediator.pending));
+    respond(mediator.pending[1], "1.1.1.1"sv);
+    ASSERT_TRUE(ip_cache_->global_addr(TR_AF_INET));
+    EXPECT_EQ("1.1.1.1"sv, ip_cache_->global_addr(TR_AF_INET)->display_name());
 }
