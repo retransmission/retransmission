@@ -60,7 +60,7 @@ void update_cache_value(T& value, U new_value, T epsilon, Torrent::ChangeFlags& 
 // A digest of the torrent's announce URLs, in order, for spotting changes
 // to the tracker list. Only ever compared against another value from this
 // same process, so std::hash's lack of cross-process stability is fine.
-size_t build_torrent_trackers_hash(tr_torrent const& torrent)
+[[nodiscard]] size_t build_torrent_trackers_hash(tr_torrent const& torrent)
 {
     static auto constexpr Hasher = std::hash<tr::shared_string>{};
 
@@ -73,7 +73,7 @@ size_t build_torrent_trackers_hash(tr_torrent const& torrent)
     return hash;
 }
 
-std::string_view get_activity_direction(tr_torrent_activity activity)
+[[nodiscard]] std::string_view get_activity_direction(tr_torrent_activity activity)
 {
     switch (activity) {
     case TR_STATUS_DOWNLOAD:
@@ -171,12 +171,12 @@ public:
 public:
     Impl(Torrent& torrent, tr_torrent* raw_torrent);
 
-    tr_torrent* get_raw_torrent()
+    [[nodiscard]] tr_torrent* get_raw_torrent()
     {
         return raw_torrent_;
     }
 
-    Cache& get_cache()
+    [[nodiscard]] Cache& get_cache()
     {
         return cache_;
     }

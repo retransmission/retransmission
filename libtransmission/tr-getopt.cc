@@ -94,7 +94,7 @@ void maxWidth(struct tr_option const* o, size_t& long_width, size_t& short_width
     }
 }
 
-tr_option const* findOption(tr_option const* opts, char const* str, char const** setme_arg)
+[[nodiscard]] tr_option const* findOption(tr_option const* opts, char const* str, char const** setme_arg)
 {
     size_t matchlen = 0;
     char const* arg = nullptr;

@@ -27,13 +27,13 @@ namespace
 {
 using CompareFunc = int (*)(Torrent const&, Torrent const&);
 
-constexpr bool is_valid_eta(time_t value)
+[[nodiscard]] constexpr bool is_valid_eta(time_t value)
 {
     return value != TR_ETA_NOT_AVAIL && value != TR_ETA_UNKNOWN;
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-constexpr int compare_eta(time_t lhs, time_t rhs)
+[[nodiscard]] constexpr int compare_eta(time_t lhs, time_t rhs)
 {
     bool const lhs_valid = is_valid_eta(lhs);
     bool const rhs_valid = is_valid_eta(rhs);
@@ -54,7 +54,7 @@ constexpr int compare_eta(time_t lhs, time_t rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-constexpr int compare_ratio(double lhs, double rhs)
+[[nodiscard]] constexpr int compare_ratio(double lhs, double rhs)
 {
     if (static_cast<int>(lhs) == TR_RATIO_INF && static_cast<int>(rhs) == TR_RATIO_INF) {
         return 0;
@@ -72,19 +72,19 @@ constexpr int compare_ratio(double lhs, double rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_name(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_name(Torrent const& lhs, Torrent const& rhs)
 {
     return tr_compare_3way(lhs.get_name_collated(), rhs.get_name_collated());
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_queue(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_queue(Torrent const& lhs, Torrent const& rhs)
 {
     return tr_compare_3way(lhs.get_queue_position(), rhs.get_queue_position());
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_ratio(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_ratio(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto result = -compare_ratio(lhs.get_ratio(), rhs.get_ratio()); result != 0) {
         return result;
@@ -94,7 +94,7 @@ int compare_by_ratio(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_activity(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_activity(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = -tr_compare_3way(lhs.get_speed_up() + lhs.get_speed_down(), rhs.get_speed_up() + rhs.get_speed_down());
         val != 0) {
@@ -109,7 +109,7 @@ int compare_by_activity(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_age(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_age(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = -tr_compare_3way(lhs.get_added_date(), rhs.get_added_date()); val != 0) {
         return val;
@@ -119,7 +119,7 @@ int compare_by_age(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_size(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_size(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = -tr_compare_3way(lhs.get_total_size(), rhs.get_total_size()); val != 0) {
         return val;
@@ -129,7 +129,7 @@ int compare_by_size(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_progress(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_progress(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = -tr_compare_3way(lhs.get_percent_complete(), rhs.get_percent_complete()); val != 0) {
         return val;
@@ -143,13 +143,13 @@ int compare_by_progress(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_id(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_id(Torrent const& lhs, Torrent const& rhs)
 {
     return -tr_compare_3way(lhs.get_id(), rhs.get_id());
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_eta(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_eta(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = compare_eta(lhs.get_eta(), rhs.get_eta()); val != 0) {
         return val;
@@ -159,7 +159,7 @@ int compare_by_eta(Torrent const& lhs, Torrent const& rhs)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-int compare_by_state(Torrent const& lhs, Torrent const& rhs)
+[[nodiscard]] int compare_by_state(Torrent const& lhs, Torrent const& rhs)
 {
     if (auto val = -tr_compare_3way(lhs.get_activity(), rhs.get_activity()); val != 0) {
         return val;

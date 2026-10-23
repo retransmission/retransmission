@@ -23,7 +23,7 @@ bool tr_file_read(std::string_view filename, std::vector<char>& contents, tr_err
  *
  * Creates the destination directory if it doesn't exist.
  */
-bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow_copy, tr_error* error = nullptr);
+[[nodiscard]] bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow_copy, tr_error* error = nullptr);
 
 bool tr_file_save(std::string_view filename, std::string_view contents, tr_error* error = nullptr);
 

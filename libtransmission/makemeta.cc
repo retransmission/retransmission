@@ -107,7 +107,7 @@ void walkTree(std::string_view const top, std::string_view const subpath, std::s
 
 } // namespace find_files_helpers
 
-tr_torrent_files findFiles(std::string_view const top, std::string_view const subpath)
+[[nodiscard]] tr_torrent_files findFiles(std::string_view const top, std::string_view const subpath)
 {
     using namespace find_files_helpers;
 

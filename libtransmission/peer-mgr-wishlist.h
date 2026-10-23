@@ -311,7 +311,7 @@ private:
         return std::ranges::find_if(candidates_, [block](auto const& c) { return c.block_belongs(block); });
     }
 
-    tr_piece_index_t get_salt(tr_piece_index_t piece);
+    [[nodiscard]] tr_piece_index_t get_salt(tr_piece_index_t piece);
 
     // ---
 

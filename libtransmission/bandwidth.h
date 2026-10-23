@@ -239,7 +239,7 @@ private:
         bool honor_parent_limits_ = true;
     };
 
-    static Speed get_speed(RateControl& r, unsigned int interval_msec, uint64_t now);
+    [[nodiscard]] static Speed get_speed(RateControl& r, unsigned int interval_msec, uint64_t now);
 
     [[nodiscard]] constexpr auto* parent() noexcept
     {
@@ -266,7 +266,7 @@ private:
 
 /* @} */
 
-constexpr auto tr_isPriority(tr_priority_t p) noexcept
+[[nodiscard]] constexpr auto tr_isPriority(tr_priority_t p) noexcept
 {
     return p == TR_PRI_LOW || p == TR_PRI_NORMAL || p == TR_PRI_HIGH;
 }

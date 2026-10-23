@@ -164,7 +164,7 @@ auto constexpr SecondsPerMinute = time_t{ 60 };
 auto constexpr SecondsPerHour = time_t{ 3600 };
 auto constexpr SecondsPerDay = time_t{ 86400 };
 
-std::string tr_format_future_time(time_t seconds)
+[[nodiscard]] std::string tr_format_future_time(time_t seconds)
 {
     if (auto const days_from_now = seconds / SecondsPerDay; days_from_now > 0) {
         return fmt::format(
@@ -195,7 +195,7 @@ std::string tr_format_future_time(time_t seconds)
     return _("now");
 }
 
-std::string tr_format_past_time(time_t seconds)
+[[nodiscard]] std::string tr_format_past_time(time_t seconds)
 {
     if (auto const days_ago = seconds / SecondsPerDay; days_ago > 0) {
         return fmt::format(
@@ -343,7 +343,7 @@ namespace
 {
 
 // NOTE: Estimated position (`get_position_from_allocation` vfunc is private)
-std::optional<guint> get_position_from_allocation(Gtk::ListView& view, double view_x, double view_y)
+[[nodiscard]] std::optional<guint> get_position_from_allocation(Gtk::ListView& view, double view_x, double view_y)
 {
     auto* child = view.pick(view_x, view_y);
     while (child != nullptr && child->get_css_name() != "row") {
@@ -417,7 +417,7 @@ namespace
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 
-std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& view, int view_x, int view_y)
+[[nodiscard]] std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& view, int view_x, int view_y)
 {
     int event_x = 0;
     int event_y = 0;
@@ -425,7 +425,7 @@ std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& vie
     return { event_x, event_y };
 }
 
-std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::ListView const& /*view*/, int view_x, int view_y)
+[[nodiscard]] std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::ListView const& /*view*/, int view_x, int view_y)
 {
     return { view_x, view_y };
 }

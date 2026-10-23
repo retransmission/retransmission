@@ -29,7 +29,7 @@ class QModelIndex;
 class IconCache
 {
 public:
-    static IconCache& get();
+    [[nodiscard]] static IconCache& get();
 
     [[nodiscard]] constexpr auto const& folderIcon() const noexcept
     {
@@ -46,8 +46,8 @@ public:
         return magnet_icon_;
     }
 
-    QIcon guessMimeIcon(QString const& filename, QIcon fallback = {}) const;
-    QIcon getMimeTypeIcon(QString const& mime_type, bool is_folder) const;
+    [[nodiscard]] QIcon guessMimeIcon(QString const& filename, QIcon fallback = {}) const;
+    [[nodiscard]] QIcon getMimeTypeIcon(QString const& mime_type, bool is_folder) const;
 
 protected:
     IconCache() = default;
@@ -68,12 +68,12 @@ private:
     // A null icon is a cached miss: the theme has no icon for that suffix.
     mutable std::unordered_map<QString, QIcon> ext_to_icon_;
 
-    QIcon getMimeIcon(QString const& filename) const;
+    [[nodiscard]] QIcon getMimeIcon(QString const& filename) const;
 #endif
 
-    QIcon getThemeIcon(QString const& name, std::optional<QStyle::StandardPixmap> const& fallback = {}) const;
+    [[nodiscard]] QIcon getThemeIcon(QString const& name, std::optional<QStyle::StandardPixmap> const& fallback = {}) const;
 
-    QIcon getThemeIcon(
+    [[nodiscard]] QIcon getThemeIcon(
         QString const& name,
         QString const& fallbackName,
         std::optional<QStyle::StandardPixmap> const& fallbackPixmap) const;

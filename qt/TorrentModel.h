@@ -36,14 +36,14 @@ public:
     ~TorrentModel() override;
     void clear();
 
-    bool hasTorrent(TorrentHash const& hash) const;
+    [[nodiscard]] bool hasTorrent(TorrentHash const& hash) const;
 
-    Torrent* getTorrentFromId(int id);
-    Torrent const* getTorrentFromId(int id) const;
+    [[nodiscard]] Torrent* getTorrentFromId(int id);
+    [[nodiscard]] Torrent const* getTorrentFromId(int id) const;
 
     using torrents_t = std::vector<Torrent*>;
 
-    torrents_t const& torrents() const
+    [[nodiscard]] torrents_t const& torrents() const
     {
         return torrents_;
     }
@@ -68,9 +68,9 @@ private:
     void rowsRemove(torrents_t const& torrents);
     void rowsEmitChanged(torrent_ids_t const& ids);
 
-    std::optional<int> getRow(int id) const;
+    [[nodiscard]] std::optional<int> getRow(int id) const;
     using span_t = std::pair<int, int>;
-    std::vector<span_t> getSpans(torrent_ids_t const& ids) const;
+    [[nodiscard]] std::vector<span_t> getSpans(torrent_ids_t const& ids) const;
 
     Prefs const& prefs_;
     torrent_ids_t already_added_;

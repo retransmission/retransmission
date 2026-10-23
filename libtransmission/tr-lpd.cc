@@ -53,7 +53,7 @@ using ipp_t = std::underlying_type_t<tr_address_type>;
 
 // opaque value, allowing the sending client to filter out its
 // own announces if it receives them via multicast loopback
-auto makeCookie()
+[[nodiscard]] auto makeCookie()
 {
     static auto constexpr Pool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"sv;
 
@@ -87,7 +87,7 @@ static_assert(std::size(McastSockAddr) == NUM_TR_AF_INET_TYPES);
  * multiple infohashes the packet length should not exceed 1400
  * bytes to avoid MTU/fragmentation problems.
  */
-std::string makeAnnounceMsg(
+[[nodiscard]] std::string makeAnnounceMsg(
     tr_address_type ip_protocol,
     std::string_view cookie,
     tr_port port,
@@ -124,7 +124,7 @@ struct ParsedAnnounce {
     std::string_view cookie;
 };
 
-std::optional<ParsedAnnounce> parseAnnounceMsg(std::string_view announce)
+[[nodiscard]] std::optional<ParsedAnnounce> parseAnnounceMsg(std::string_view announce)
 {
     static auto constexpr CrLf = "\r\n"sv;
 
@@ -227,7 +227,7 @@ public:
     }
 
 private:
-    bool init(struct event_base* event_base)
+    [[nodiscard]] bool init(struct event_base* event_base)
     {
         ipp_t n_success = NUM_TR_AF_INET_TYPES;
         if (!initImpl<TR_AF_INET>(event_base)) {
@@ -266,7 +266,7 @@ private:
      * and event-based message handling.
      */
     template<tr_address_type ip_protocol>
-    bool initImpl(struct event_base* event_base)
+    [[nodiscard]] bool initImpl(struct event_base* event_base)
     {
         auto const opt_on = 1;
         auto& sock = mcast_sockets_[ip_protocol];
@@ -582,7 +582,7 @@ private:
      * matter). A listening client on the same network might react by adding us to his
      * peer pool for torrent t.
      */
-    bool sendAnnounce(tr_address_type ip_protocol, std::vector<std::string_view> const& info_hash_strings)
+    [[nodiscard]] bool sendAnnounce(tr_address_type ip_protocol, std::vector<std::string_view> const& info_hash_strings)
     {
         TR_ASSERT(tr_address::is_valid(ip_protocol));
         if (!tr_address::is_valid(ip_protocol)) {

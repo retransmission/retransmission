@@ -35,7 +35,7 @@ public:
     PrefsDialog& operator=(PrefsDialog const&) = delete;
     ~PrefsDialog() override;
 
-    static std::unique_ptr<PrefsDialog> create(
+    [[nodiscard]] static std::unique_ptr<PrefsDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
         tr::app::Prefs const& prefs);

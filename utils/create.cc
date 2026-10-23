@@ -75,7 +75,7 @@ struct app_options {
     bool show_version = false;
 };
 
-int parseCommandLine(app_options& options, int argc, char const* const* argv)
+[[nodiscard]] int parseCommandLine(app_options& options, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;

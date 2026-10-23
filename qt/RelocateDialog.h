@@ -35,7 +35,7 @@ private slots:
     void onMoveToggled(bool b) const;
 
 private:
-    QString newLocation() const;
+    [[nodiscard]] QString newLocation() const;
 
     Session& session_;
     torrent_ids_t const ids_;

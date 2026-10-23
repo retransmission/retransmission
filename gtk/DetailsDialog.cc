@@ -136,10 +136,10 @@ private:
     void refreshPeerList(std::vector<tr_torrent*> const& torrents);
     void refreshWebseedList(std::vector<tr_torrent*> const& torrents);
 
-    tr_torrent_id_t tracker_list_get_current_torrent_id() const;
-    tr_torrent* tracker_list_get_current_torrent() const;
+    [[nodiscard]] tr_torrent_id_t tracker_list_get_current_torrent_id() const;
+    [[nodiscard]] tr_torrent* tracker_list_get_current_torrent() const;
 
-    std::vector<tr_torrent*> getTorrents() const;
+    [[nodiscard]] std::vector<tr_torrent*> getTorrents() const;
 
 private:
     DetailsDialog& dialog_;
@@ -482,7 +482,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
 namespace
 {
 
-Glib::ustring activityString(int activity, bool finished)
+[[nodiscard]] Glib::ustring activityString(int activity, bool finished)
 {
     switch (activity) {
     case TR_STATUS_CHECK_WAIT:
@@ -1812,7 +1812,7 @@ public:
     EditTrackersDialog& operator=(EditTrackersDialog const&) = delete;
     ~EditTrackersDialog() override = default;
 
-    static std::unique_ptr<EditTrackersDialog> create(
+    [[nodiscard]] static std::unique_ptr<EditTrackersDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);
@@ -1927,7 +1927,7 @@ public:
     AddTrackerDialog& operator=(AddTrackerDialog const&) = delete;
     ~AddTrackerDialog() override = default;
 
-    static std::unique_ptr<AddTrackerDialog> create(
+    [[nodiscard]] static std::unique_ptr<AddTrackerDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);

@@ -35,7 +35,7 @@ public:
         return 0 < size && size <= MaxMetadataSize;
     }
 
-    bool set_metadata_piece(int64_t piece, void const* data, size_t len);
+    [[nodiscard]] bool set_metadata_piece(int64_t piece, void const* data, size_t len);
 
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 

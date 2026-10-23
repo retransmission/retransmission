@@ -169,7 +169,7 @@ struct CommandResult {
 // Run a command and return its exit code and stdout.
 // gtest points this process's stdout at a temp file, and the child inherits it.
 // Reading that file after the child exits doesn't depend on when a popen() pipe reports EOF.
-CommandResult run(std::string const& command)
+[[nodiscard]] CommandResult run(std::string const& command)
 {
     testing::internal::CaptureStdout();
 #ifdef _WIN32

@@ -131,7 +131,7 @@ public:
         return type_ == TR_RPC_INET_ADDR;
     }
 
-    bool from_string(std::string_view src)
+    [[nodiscard]] bool from_string(std::string_view src)
     {
         if (auto address = tr_address::from_string(src); address.has_value()) {
             type_ = TR_RPC_INET_ADDR;
@@ -384,7 +384,7 @@ void handle_rpc(struct evhttp_request* req, tr_session* session)
     send_simple_response(req, HTTP_BADMETHOD);
 }
 
-bool is_address_allowed(tr_rpc_server const* server, char const* address)
+[[nodiscard]] bool is_address_allowed(tr_rpc_server const* server, char const* address)
 {
     if (!server->is_whitelist_enabled()) {
         return true;
@@ -404,7 +404,7 @@ bool is_address_allowed(tr_rpc_server const* server, char const* address)
     return std::ranges::any_of(src, [addr](auto const& s) { return tr_wildmat(addr, s); });
 }
 
-bool isIPAddressWithOptionalPort(char const* host)
+[[nodiscard]] bool isIPAddressWithOptionalPort(char const* host)
 {
     auto address = sockaddr_storage{};
     int address_len = sizeof(address);
@@ -413,7 +413,7 @@ bool isIPAddressWithOptionalPort(char const* host)
     return evutil_parse_sockaddr_port(host, reinterpret_cast<sockaddr*>(&address), &address_len) != -1;
 }
 
-bool isHostnameAllowed(tr_rpc_server const* server, evhttp_request* const req)
+[[nodiscard]] bool isHostnameAllowed(tr_rpc_server const* server, evhttp_request* const req)
 {
     /* If password auth is enabled, any hostname is permitted. */
     if (server->is_password_enabled()) {
@@ -449,14 +449,14 @@ bool isHostnameAllowed(tr_rpc_server const* server, evhttp_request* const req)
     return std::ranges::any_of(src, [&hostname](auto const& str) { return tr_wildmat(hostname, str); });
 }
 
-bool test_session_id(tr_rpc_server const* server, evhttp_request* const req)
+[[nodiscard]] bool test_session_id(tr_rpc_server const* server, evhttp_request* const req)
 {
     auto const* const input_headers = evhttp_request_get_input_headers(req);
     char const* const session_id = evhttp_find_header(input_headers, std::data(TrRpcSessionIdHeader));
     return session_id != nullptr && server->session->sessionId() == session_id;
 }
 
-bool is_authorized(tr_rpc_server const* server, char const* auth_header)
+[[nodiscard]] bool is_authorized(tr_rpc_server const* server, char const* auth_header)
 {
     if (!server->is_password_enabled()) {
         return true;
@@ -606,7 +606,7 @@ auto constexpr ServerStartRetryCount = 10;
 auto constexpr ServerStartRetryDelayIncrement = 5s;
 auto constexpr ServerStartRetryMaxDelay = 60s;
 
-bool bindUnixSocket(
+[[nodiscard]] bool bindUnixSocket(
     [[maybe_unused]] struct event_base* base,
     [[maybe_unused]] struct evhttp* httpd,
     [[maybe_unused]] char const* path,
@@ -667,7 +667,7 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
     server->start_retry_counter = 0;
 }
 
-int tr_evhttp_bind_socket(struct evhttp* httpd, char const* address, ev_uint16_t port)
+[[nodiscard]] int tr_evhttp_bind_socket(struct evhttp* httpd, char const* address, ev_uint16_t port)
 {
 #ifdef _WIN32
     struct addrinfo* result = nullptr;
@@ -799,7 +799,7 @@ void restart_server(tr_rpc_server* const server)
     }
 }
 
-auto parse_whitelist(std::string_view whitelist)
+[[nodiscard]] auto parse_whitelist(std::string_view whitelist)
 {
     auto list = std::vector<std::string>{};
 

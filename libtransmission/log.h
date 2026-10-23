@@ -17,7 +17,7 @@
 
 // ---
 
-std::optional<tr_log_level> tr_logGetLevelFromKey(std::string_view key);
+[[nodiscard]] std::optional<tr_log_level> tr_logGetLevelFromKey(std::string_view key);
 
 struct tr_log_message {
     tr_log_level level = TR_LOG_INFO;
@@ -79,4 +79,4 @@ void tr_logAddMessage(
 
 // ---
 
-std::string_view tr_logGetTimeStr(std::chrono::system_clock::time_point now, char* buf, size_t buflen);
+[[nodiscard]] std::string_view tr_logGetTimeStr(std::chrono::system_clock::time_point now, char* buf, size_t buflen);

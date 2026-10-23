@@ -33,7 +33,7 @@ public:
     RelocateDialog& operator=(RelocateDialog const&) = delete;
     ~RelocateDialog() override;
 
-    static std::unique_ptr<RelocateDialog> create(
+    [[nodiscard]] static std::unique_ptr<RelocateDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
         std::vector<tr_torrent_id_t> const& torrent_ids);

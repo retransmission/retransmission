@@ -83,7 +83,7 @@ struct app_opts {
     bool show_bytesize = false;
 };
 
-int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
+[[nodiscard]] int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;

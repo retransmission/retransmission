@@ -52,7 +52,7 @@ public:
         uint64_t have,
         bool update_fields);
 
-    bool openFile(QModelIndex const& index);
+    [[nodiscard]] bool openFile(QModelIndex const& index);
 
     void twiddleWanted(QModelIndexList const& indices);
     void twiddlePriority(QModelIndexList const& indices);
@@ -80,7 +80,7 @@ signals:
 
 private:
     void clearSubtree(QModelIndex const& top);
-    QModelIndex indexOf(FileTreeItem* item, int column) const;
+    [[nodiscard]] QModelIndex indexOf(FileTreeItem* item, int column) const;
     void emitParentsChanged(
         QModelIndex const& index,
         int first_column,

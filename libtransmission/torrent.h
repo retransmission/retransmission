@@ -1538,7 +1538,7 @@ private:
 
 // ---
 
-constexpr bool tr_isTorrent(tr_torrent const* tor) noexcept
+[[nodiscard]] constexpr bool tr_isTorrent(tr_torrent const* tor) noexcept
 {
     return tor != nullptr && tor->session != nullptr;
 }

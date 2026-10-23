@@ -80,7 +80,7 @@ public:
     MakeProgressDialog& operator=(MakeProgressDialog const&) = delete;
     ~MakeProgressDialog() override;
 
-    static std::unique_ptr<MakeProgressDialog> create(
+    [[nodiscard]] static std::unique_ptr<MakeProgressDialog> create(
         std::string_view target,
         tr_metainfo_builder& metainfo_builder,
         std::future<tr_metainfo_builder::Checksums> future,

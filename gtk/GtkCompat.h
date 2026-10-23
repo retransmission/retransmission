@@ -138,7 +138,7 @@ inline T& operator*(RefPtr<T> const& ptr)
 }
 
 template<typename T>
-inline RefPtr<T> make_refptr_for_instance(T* object)
+[[nodiscard]] inline RefPtr<T> make_refptr_for_instance(T* object)
 {
     return RefPtr<T>(object);
 }

@@ -73,7 +73,7 @@ auto win32_get_known_folder(REFKNOWNFOLDERID folder_id)
 }
 #endif
 
-std::string xdgConfigHome()
+[[nodiscard]] std::string xdgConfigHome()
 {
     if (auto dir = tr_env_get_string("XDG_CONFIG_HOME"sv); !std::empty(dir)) {
         return dir;
@@ -82,7 +82,7 @@ std::string xdgConfigHome()
     return fmt::format("{:s}/.config"sv, tr::platform::get_home_dir());
 }
 
-std::string getXdgEntryFromUserDirs(std::string_view key)
+[[nodiscard]] std::string getXdgEntryFromUserDirs(std::string_view key)
 {
     auto content = std::vector<char>{};
     if (auto const filename = fmt::format("{:s}/{:s}"sv, xdgConfigHome(), "user-dirs.dirs"sv);

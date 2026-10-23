@@ -32,10 +32,10 @@ public:
 #endif /* signalfd API */
     }
 
-    bool spawn(bool foreground, int* exit_code, tr_error& error);
-    bool init(int argc, char const* const argv[], bool* foreground, int* ret);
+    [[nodiscard]] bool spawn(bool foreground, int* exit_code, tr_error& error);
+    [[nodiscard]] bool init(int argc, char const* const argv[], bool* foreground, int* ret);
     void handle_error(tr_error const&) const;
-    int start(bool foreground);
+    [[nodiscard]] int start(bool foreground);
     void periodic_update();
     void reconfigure();
     void stop();
@@ -52,9 +52,9 @@ private:
     struct event_base* ev_base_ = nullptr;
     FILE* log_stream_ = nullptr;
 
-    bool parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code);
+    [[nodiscard]] bool parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code);
     bool reopen_log_file(char const* filename);
-    bool setup_signals(struct event*& sig_ev);
+    [[nodiscard]] bool setup_signals(struct event*& sig_ev);
     void cleanup_signals(struct event* sig_ev) const;
     void report_status();
 };

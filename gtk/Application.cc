@@ -276,7 +276,7 @@ void gtr_window_present(T const& window)
 ****
 ***/
 
-std::string get_details_dialog_key(std::vector<tr_torrent_id_t> const& id_list)
+[[nodiscard]] std::string get_details_dialog_key(std::vector<tr_torrent_id_t> const& id_list)
 {
     auto tmp = id_list;
     std::ranges::sort(tmp);
@@ -398,7 +398,7 @@ void Application::Impl::refresh_actions_soon()
 namespace
 {
 
-bool has_magnet_link_handler()
+[[nodiscard]] bool has_magnet_link_handler()
 {
     return bool{ Gio::AppInfo::get_default_for_uri_scheme("magnet") };
 }

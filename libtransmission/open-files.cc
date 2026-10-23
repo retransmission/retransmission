@@ -30,7 +30,7 @@ namespace
     return fd != TR_BAD_SYS_FILE;
 }
 
-bool preallocate_file_sparse(
+[[nodiscard]] bool preallocate_file_sparse(
     tr_open_files::Preallocate const& preallocate,
     tr_sys_file_t const fd,
     uint64_t const length,
@@ -69,7 +69,7 @@ bool preallocate_file_sparse(
     return false;
 }
 
-bool preallocate_file_full(
+[[nodiscard]] bool preallocate_file_full(
     tr_open_files::Preallocate const& preallocate,
     tr_sys_file_t const fd,
     uint64_t length,

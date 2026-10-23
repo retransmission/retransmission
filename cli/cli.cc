@@ -176,7 +176,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
 
 // ---
 
-int parseCommandLine(tr_variant::Map& map, int argc, char const** argv)
+[[nodiscard]] int parseCommandLine(tr_variant::Map& map, int argc, char const** argv)
 {
     int c;
     char const* my_optarg;

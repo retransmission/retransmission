@@ -63,7 +63,7 @@ void log_openssl_error(char const* file, int line)
 
 #define log_error() log_openssl_error(__FILE__, __LINE__)
 
-bool check_openssl_result(int result, int expected_result, bool expected_equal, char const* file, int line)
+[[nodiscard]] bool check_openssl_result(int result, int expected_result, bool expected_equal, char const* file, int line)
 {
     bool const ret = (result == expected_result) == expected_equal;
 
@@ -84,7 +84,7 @@ void digest_add_bytes(EVP_MD_CTX* ctx, void const* data, size_t data_length)
 }
 
 template<typename DigestType>
-DigestType digest_finish(EVP_MD_CTX* ctx)
+[[nodiscard]] DigestType digest_finish(EVP_MD_CTX* ctx)
 {
     unsigned int hash_length = 0;
     auto digest = DigestType{};

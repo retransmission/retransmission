@@ -68,15 +68,15 @@ public:
     Impl(Impl const&) = delete;
     ~Impl();
 
-    tr_session* close();
+    [[nodiscard]] tr_session* close();
 
-    Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
-    Glib::RefPtr<SortListModel<Torrent>> get_model();
-    tr_session* get_session() const;
+    [[nodiscard]] Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
+    [[nodiscard]] Glib::RefPtr<SortListModel<Torrent>> get_model();
+    [[nodiscard]] tr_session* get_session() const;
 
-    std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
+    [[nodiscard]] std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
 
-    size_t get_unpaused_torrent_count() const;
+    [[nodiscard]] size_t get_unpaused_torrent_count() const;
 
     [[nodiscard]] bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
     void set_port_test_pending(bool pending, tr_address_type ip_protocol);
@@ -88,7 +88,7 @@ public:
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
     void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt, bool do_notify);
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
-    bool add_from_url(Glib::ustring const& url);
+    [[nodiscard]] bool add_from_url(Glib::ustring const& url);
 
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
 
@@ -97,42 +97,42 @@ public:
         return rpc_;
     }
 
-    auto& signal_add_error()
+    [[nodiscard]] auto& signal_add_error()
     {
         return signal_add_error_;
     }
 
-    auto& signal_add_prompt()
+    [[nodiscard]] auto& signal_add_prompt()
     {
         return signal_add_prompt_;
     }
 
-    auto& signal_blocklist_info()
+    [[nodiscard]] auto& signal_blocklist_info()
     {
         return signal_blocklist_info_;
     }
 
-    auto& signal_blocklist_updated()
+    [[nodiscard]] auto& signal_blocklist_updated()
     {
         return signal_blocklist_updated_;
     }
 
-    auto& signal_busy()
+    [[nodiscard]] auto& signal_busy()
     {
         return signal_busy_;
     }
 
-    auto& signal_prefs_changed()
+    [[nodiscard]] auto& signal_prefs_changed()
     {
         return signal_prefs_changed_;
     }
 
-    auto& signal_port_tested()
+    [[nodiscard]] auto& signal_port_tested()
     {
         return signal_port_tested_;
     }
 
-    auto& signal_torrents_changed()
+    [[nodiscard]] auto& signal_torrents_changed()
     {
         return signal_torrents_changed_;
     }
@@ -143,9 +143,9 @@ public:
     }
 
 private:
-    Glib::RefPtr<Session> get_core_ptr() const;
+    [[nodiscard]] Glib::RefPtr<Session> get_core_ptr() const;
 
-    bool is_busy() const;
+    [[nodiscard]] bool is_busy() const;
     void add_to_busy(int addMe);
     void inc_busy();
     void dec_busy();
@@ -158,7 +158,7 @@ private:
         bool do_prompt,
         bool do_notify);
 
-    Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
+    [[nodiscard]] Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
 
     void update_sleep_inhibitor();
 
@@ -289,7 +289,7 @@ void Session::Impl::dec_busy()
 namespace
 {
 
-time_t get_file_mtime(Glib::RefPtr<Gio::File> const& file)
+[[nodiscard]] time_t get_file_mtime(Glib::RefPtr<Gio::File> const& file)
 {
     try {
         return static_cast<time_t>(

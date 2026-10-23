@@ -29,7 +29,7 @@ public:
     MakeDialog& operator=(MakeDialog const&) = delete;
     ~MakeDialog() override;
 
-    static std::unique_ptr<MakeDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    [[nodiscard]] static std::unique_ptr<MakeDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
 
 private:
     class Impl;

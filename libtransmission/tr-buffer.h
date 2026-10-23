@@ -131,7 +131,7 @@ class BufferWriter
 
 public:
     virtual ~BufferWriter() = default;
-    virtual std::pair<value_type*, size_t> reserve_space(size_t n_bytes) = 0;
+    [[nodiscard]] virtual std::pair<value_type*, size_t> reserve_space(size_t n_bytes) = 0;
     virtual void commit_space(size_t n_bytes) = 0;
 
     void add(void const* span_begin, size_t span_len)

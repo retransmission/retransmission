@@ -19,7 +19,7 @@
 namespace
 {
 
-QString getNameFromMetainfo(QByteArray const& benc)
+[[nodiscard]] QString getNameFromMetainfo(QByteArray const& benc)
 {
     if (auto metainfo = tr_torrent_metainfo{}; metainfo.parse_benc({ benc.constData(), static_cast<size_t>(benc.size()) })) {
         return QString::fromStdString(metainfo.name());
@@ -28,7 +28,7 @@ QString getNameFromMetainfo(QByteArray const& benc)
     return {};
 }
 
-QString getNameFromMagnet(QString const& magnet)
+[[nodiscard]] QString getNameFromMagnet(QString const& magnet)
 {
     auto tmp = tr_magnet_metainfo{};
 

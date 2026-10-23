@@ -536,7 +536,7 @@ struct tr_torrent_announcer {
         }
     }
 
-    tr_tier* getTier(size_t tier_id)
+    [[nodiscard]] tr_tier* getTier(size_t tier_id)
     {
         for (auto& tier : tiers) {
             if (tier.id == tier_id) {
@@ -547,7 +547,7 @@ struct tr_torrent_announcer {
         return nullptr;
     }
 
-    tr_tier* getTierFromScrape(tr::shared_string const& scrape_url)
+    [[nodiscard]] tr_tier* getTierFromScrape(tr::shared_string const& scrape_url)
     {
         for (auto& tier : tiers) {
             auto const* const tracker = tier.currentTracker();
@@ -787,7 +787,7 @@ void tier_announce_event_push(tr_tier* tier, tr_announce_event e, time_t announc
     tr_logAddTraceTier(tier, fmt::format("announcing in {} seconds", difftime(announce_at, tr_time())));
 }
 
-auto tier_announce_event_pull(tr_tier* tier)
+[[nodiscard]] auto tier_announce_event_pull(tr_tier* tier)
 {
     auto const e = tier->announce_events.front();
     tier->announce_events.pop_front();
@@ -795,7 +795,7 @@ auto tier_announce_event_pull(tr_tier* tier)
     return e;
 }
 
-bool isUnregistered(std::string_view errmsg)
+[[nodiscard]] bool isUnregistered(std::string_view errmsg)
 {
     auto const lower = tr_strlower(errmsg);
 
@@ -1340,7 +1340,7 @@ void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tier
 
 namespace upkeep_helpers
 {
-int compareAnnounceTiers(tr_tier const* a, tr_tier const* b)
+[[nodiscard]] int compareAnnounceTiers(tr_tier const* a, tr_tier const* b)
 {
     /* prefer higher-priority events */
     if (auto const val = tr_compare_3way(a->announce_event_priority, b->announce_event_priority); val != 0) {

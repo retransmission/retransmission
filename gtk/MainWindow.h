@@ -38,7 +38,7 @@ public:
     MainWindow& operator=(MainWindow const&) = delete;
     ~MainWindow() override;
 
-    static std::unique_ptr<MainWindow> create(
+    [[nodiscard]] static std::unique_ptr<MainWindow> create(
         Gtk::Application& app,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
         Glib::RefPtr<Session> const& core,
@@ -53,7 +53,7 @@ public:
     void set_busy(bool isBusy);
     void refresh();
 
-    sigc::signal<void()>& signal_selection_changed();
+    [[nodiscard]] sigc::signal<void()>& signal_selection_changed();
 
 private:
     class Impl;

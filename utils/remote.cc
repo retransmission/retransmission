@@ -409,7 +409,7 @@ struct number_range {
  * This should be a single number (ex. "6") or a range (ex. "6-9").
  * Anything else is an error and will return failure.
  */
-bool parseNumberSection(std::string_view str, number_range& range)
+[[nodiscard]] bool parseNumberSection(std::string_view str, number_range& range)
 {
     auto constexpr Delimiter = "-"sv;
 
@@ -441,7 +441,7 @@ bool parseNumberSection(std::string_view str, number_range& range)
 
 // Returns a vector of ints for an string like like "1-4" or "1-4,6,9,14-51",
 // For example, "5-8" returns { 5, 6, 7, 8 }.
-std::vector<int> tr_num_parse_range(std::string_view str)
+[[nodiscard]] std::vector<int> tr_num_parse_range(std::string_view str)
 {
     using namespace tr_num_parse_range_detail;
 
@@ -968,7 +968,7 @@ auto constexpr BandwidthPriorityNames = std::to_array<std::string_view>({
 static_assert(!BandwidthPriorityNames[std::size(BandwidthPriorityNames) - 1].empty());
 
 template<size_t N>
-std::string_view format_date(std::array<char, N>& buf, time_t now)
+[[nodiscard]] std::string_view format_date(std::array<char, N>& buf, time_t now)
 {
     auto begin = std::data(buf);
     auto end = fmt::format_to_n(begin, N, "{:%a %b %d %T %Y}", *std::localtime(&now)).out;
@@ -2036,7 +2036,7 @@ void print_blocklist_size(tr_variant::Map const& result)
     }
 }
 
-int process_response(char const* rpcurl, std::string_view const response, RemoteConfig& config)
+[[nodiscard]] int process_response(char const* rpcurl, std::string_view const response, RemoteConfig& config)
 {
     if (config.json) {
         fmt::print("{:s}\n", response);
@@ -2325,7 +2325,7 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
     return *args;
 }
 
-int process_args(char const* rpcurl, int argc, char const* const* argv, RemoteConfig& config)
+[[nodiscard]] int process_args(char const* rpcurl, int argc, char const* const* argv, RemoteConfig& config)
 {
     auto status = int{ EXIT_SUCCESS };
     char const* optarg;
@@ -3187,7 +3187,7 @@ int process_args(char const* rpcurl, int argc, char const* const* argv, RemoteCo
     return status;
 }
 
-bool parse_port_string(std::string_view sv, uint16_t& port)
+[[nodiscard]] bool parse_port_string(std::string_view sv, uint16_t& port)
 {
     auto remainder = std::string_view{};
     auto parsed = tr_num_parse<uint16_t>(sv, &remainder);

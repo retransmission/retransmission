@@ -51,7 +51,7 @@ protected:
     }
 
 private:
-    static uint64_t fillBufferFromFd(tr_sys_file_t fd, uint64_t bytes_remaining, char* buf, size_t buf_len)
+    [[nodiscard]] static uint64_t fillBufferFromFd(tr_sys_file_t fd, uint64_t bytes_remaining, char* buf, size_t buf_len)
     {
         memset(buf, 0, buf_len);
 
@@ -71,7 +71,7 @@ private:
         return bytes_remaining;
     }
 
-    static bool filesAreIdentical(std::string_view filename1, std::string_view filename2)
+    [[nodiscard]] static bool filesAreIdentical(std::string_view filename1, std::string_view filename2)
     {
         auto contents1 = std::vector<char>{};
         auto contents2 = std::vector<char>{};

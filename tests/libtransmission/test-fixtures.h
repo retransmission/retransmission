@@ -109,7 +109,7 @@ inline bool waitFor(
 
 // Fails a preallocation the way a full disk (`disk_full`) or a
 // filesystem without preallocation (`!disk_full`) would.
-inline bool failPreallocation(tr_error* const error, bool const disk_full)
+[[nodiscard]] inline bool failPreallocation(tr_error* const error, bool const disk_full)
 {
 #ifdef _WIN32
     error->set(disk_full ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
@@ -152,7 +152,7 @@ public:
         return sandbox_dir_;
     }
 
-    static std::string createSandbox(std::string const& parent_dir, std::string const& tmpl)
+    [[nodiscard]] static std::string createSandbox(std::string const& parent_dir, std::string const& tmpl)
     {
         auto path = fmt::format("{:s}/{:s}"sv, tr_sys_path_resolve(parent_dir), tmpl);
         tr_sys_dir_create_temp(std::data(path));
@@ -161,7 +161,7 @@ public:
     }
 
 protected:
-    static std::string getDefaultParentDir()
+    [[nodiscard]] static std::string getDefaultParentDir()
     {
         if (auto* const path = getenv("TMPDIR"); path != nullptr) {
             return path;
@@ -308,7 +308,7 @@ class SessionTest : public SandboxedTest
 private:
     std::optional<tr::Settings> settings_;
 
-    tr_session* sessionInit(tr::Settings& settings)
+    [[nodiscard]] tr_session* sessionInit(tr::Settings& settings)
     {
         // download dir
         auto key = TR_KEY_download_dir;
@@ -470,7 +470,7 @@ protected:
 
     // Runs `func` on the session thread and waits for it to finish and returns the result.
     template<typename Func>
-    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds const msec = 5s)
+    [[nodiscard]] auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds const msec = 5s)
     {
         using Result = decltype(func());
 
@@ -486,7 +486,7 @@ protected:
     }
 
     template<typename Func>
-    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds::rep const msec)
+    [[nodiscard]] auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds::rep const msec)
     {
         return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
     }
@@ -500,7 +500,7 @@ protected:
 
     tr_session* session_ = nullptr;
 
-    tr::Settings& settings()
+    [[nodiscard]] tr::Settings& settings()
     {
         if (!settings_) {
             settings_.emplace(10U);

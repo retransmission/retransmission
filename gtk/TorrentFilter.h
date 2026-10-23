@@ -30,9 +30,9 @@ public:
     void set_tracker(Tracker type, Glib::ustring const& host);
     void set_text(Glib::ustring const& text);
 
-    bool match_mode(Torrent const& torrent) const;
-    bool match_text(Torrent const& torrent) const;
-    bool match_tracker(Torrent const& torrent) const;
+    [[nodiscard]] bool match_mode(Torrent const& torrent) const;
+    [[nodiscard]] bool match_text(Torrent const& torrent) const;
+    [[nodiscard]] bool match_tracker(Torrent const& torrent) const;
 
     // FilterBase<Torrent>
     bool match(Torrent const& torrent) const override;
@@ -40,11 +40,11 @@ public:
 
     void update(Torrent::ChangeFlags changes);
 
-    static Glib::RefPtr<TorrentFilter> create();
+    [[nodiscard]] static Glib::RefPtr<TorrentFilter> create();
 
-    static bool match_mode(Torrent const& torrent, ShowMode mode);
-    static bool match_tracker(Torrent const& torrent, Tracker type, Glib::ustring const& host);
-    static bool match_text(Torrent const& torrent, Glib::ustring const& text);
+    [[nodiscard]] static bool match_mode(Torrent const& torrent, ShowMode mode);
+    [[nodiscard]] static bool match_tracker(Torrent const& torrent, Tracker type, Glib::ustring const& host);
+    [[nodiscard]] static bool match_text(Torrent const& torrent, Glib::ustring const& text);
 
 private:
     TorrentFilter();

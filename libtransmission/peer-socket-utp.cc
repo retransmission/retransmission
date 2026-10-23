@@ -50,7 +50,7 @@ void get_bufsize(tr_socket_t const fd, int const optname, int& ret)
     }
 }
 
-int default_udp_bufsize(int const optname)
+[[nodiscard]] int default_udp_bufsize(int const optname)
 {
     int ret = -1;
 

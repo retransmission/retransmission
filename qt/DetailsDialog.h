@@ -95,7 +95,7 @@ private:
        until we know the server has processed the request. This keeps
        the UI from appearing to undo the change if we receive a refresh
        that was already in-flight _before_ the property was edited. */
-    bool canEdit() const
+    [[nodiscard]] bool canEdit() const
     {
         return std::empty(pending_changes_tags_);
     }

@@ -533,7 +533,11 @@ struct tr_session;
 
 [[nodiscard]] std::optional<std::string> tr_netCurlInterfaceString(std::string_view bind_interface);
 
-tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs, std::string_view bind_interface = {});
+[[nodiscard]] tr_socket_t tr_netBindTCP(
+    tr_address const& addr,
+    tr_port port,
+    bool suppress_msgs,
+  std::string_view bind_interface = {});
 
 [[nodiscard]] std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(
     tr_session* session,

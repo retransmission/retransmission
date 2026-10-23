@@ -82,51 +82,51 @@ public:
     using Speed = tr::Values::Speed;
     using Storage = tr::Values::Storage;
 
-    int get_active_peer_count() const;
-    int get_active_peers_down() const;
-    int get_active_peers_up() const;
-    bool get_active() const;
-    tr_torrent_activity get_activity() const;
-    time_t get_added_date() const;
-    tr_stat::Error get_error_code() const;
-    Glib::ustring const& get_error_message() const;
-    time_t get_eta() const;
-    bool get_finished() const;
-    tr_torrent_id_t get_id() const;
-    Glib::ustring const& get_name_collated() const;
-    Glib::ustring get_name() const;
-    Percents get_percent_complete() const;
-    Percents get_percent_done() const;
-    float get_percent_done_fraction() const;
-    tr_priority_t get_priority() const;
-    size_t get_queue_position() const;
-    float get_ratio() const;
-    Percents get_recheck_progress() const;
-    Percents get_seed_ratio_percent_done() const;
-    Speed get_speed_down() const;
-    Speed get_speed_up() const;
-    tr_torrent& get_underlying() const;
-    Storage get_total_size() const;
-    size_t get_trackers() const;
+    [[nodiscard]] int get_active_peer_count() const;
+    [[nodiscard]] int get_active_peers_down() const;
+    [[nodiscard]] int get_active_peers_up() const;
+    [[nodiscard]] bool get_active() const;
+    [[nodiscard]] tr_torrent_activity get_activity() const;
+    [[nodiscard]] time_t get_added_date() const;
+    [[nodiscard]] tr_stat::Error get_error_code() const;
+    [[nodiscard]] Glib::ustring const& get_error_message() const;
+    [[nodiscard]] time_t get_eta() const;
+    [[nodiscard]] bool get_finished() const;
+    [[nodiscard]] tr_torrent_id_t get_id() const;
+    [[nodiscard]] Glib::ustring const& get_name_collated() const;
+    [[nodiscard]] Glib::ustring get_name() const;
+    [[nodiscard]] Percents get_percent_complete() const;
+    [[nodiscard]] Percents get_percent_done() const;
+    [[nodiscard]] float get_percent_done_fraction() const;
+    [[nodiscard]] tr_priority_t get_priority() const;
+    [[nodiscard]] size_t get_queue_position() const;
+    [[nodiscard]] float get_ratio() const;
+    [[nodiscard]] Percents get_recheck_progress() const;
+    [[nodiscard]] Percents get_seed_ratio_percent_done() const;
+    [[nodiscard]] Speed get_speed_down() const;
+    [[nodiscard]] Speed get_speed_up() const;
+    [[nodiscard]] tr_torrent& get_underlying() const;
+    [[nodiscard]] Storage get_total_size() const;
+    [[nodiscard]] size_t get_trackers() const;
 
-    Glib::RefPtr<TorrentIconType> get_icon() const;
-    Glib::ustring get_short_status_text() const;
-    Glib::ustring get_long_progress_text() const;
-    Glib::ustring get_long_status_text() const;
-    bool get_sensitive() const;
-    std::vector<Glib::ustring> get_css_classes() const;
+    [[nodiscard]] Glib::RefPtr<TorrentIconType> get_icon() const;
+    [[nodiscard]] Glib::ustring get_short_status_text() const;
+    [[nodiscard]] Glib::ustring get_long_progress_text() const;
+    [[nodiscard]] Glib::ustring get_long_status_text() const;
+    [[nodiscard]] bool get_sensitive() const;
+    [[nodiscard]] std::vector<Glib::ustring> get_css_classes() const;
 
     [[nodiscard]] ChangeFlags update();
 
-    static Glib::RefPtr<Torrent> create(tr_torrent* torrent);
+    [[nodiscard]] static Glib::RefPtr<Torrent> create(tr_torrent* torrent);
 
-    static Columns const& get_columns();
+    [[nodiscard]] static Columns const& get_columns();
 
-    static int get_item_id(Glib::RefPtr<Glib::ObjectBase const> const& item);
+    [[nodiscard]] static int get_item_id(Glib::RefPtr<Glib::ObjectBase const> const& item);
     static void get_item_value(Glib::RefPtr<Glib::ObjectBase const> const& item, int column, Glib::ValueBase& value);
 
-    static int compare_by_id(Glib::RefPtr<Torrent const> const& lhs, Glib::RefPtr<Torrent const> const& rhs);
-    static bool less_by_id(Glib::RefPtr<Torrent const> const& lhs, Glib::RefPtr<Torrent const> const& rhs);
+    [[nodiscard]] static int compare_by_id(Glib::RefPtr<Torrent const> const& lhs, Glib::RefPtr<Torrent const> const& rhs);
+    [[nodiscard]] static bool less_by_id(Glib::RefPtr<Torrent const> const& lhs, Glib::RefPtr<Torrent const> const& rhs);
 
 private:
     Torrent();

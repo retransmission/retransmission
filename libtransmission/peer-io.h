@@ -56,7 +56,7 @@ public:
     tr_peerIo& operator=(tr_peerIo const&) = delete;
     tr_peerIo& operator=(tr_peerIo&&) = delete;
 
-    static std::shared_ptr<tr_peerIo> new_outgoing(
+    [[nodiscard]] static std::shared_ptr<tr_peerIo> new_outgoing(
         tr_session* session,
         tr_bandwidth* parent,
         tr_socket_address const& socket_address,
@@ -64,14 +64,14 @@ public:
         bool client_is_seed,
         bool utp);
 
-    static std::shared_ptr<tr_peerIo> new_outgoing_utp(
+    [[nodiscard]] static std::shared_ptr<tr_peerIo> new_outgoing_utp(
         tr_session* session,
         tr_bandwidth* parent,
         tr_socket_address const& socket_address,
         tr_sha1_digest_t const& info_hash,
         bool client_is_seed);
 
-    static std::shared_ptr<tr_peerIo> new_incoming(
+    [[nodiscard]] static std::shared_ptr<tr_peerIo> new_incoming(
         tr_session* session,
         tr_bandwidth* parent,
         std::shared_ptr<tr_peer_socket> socket);
@@ -347,7 +347,7 @@ private:
     size_t try_read(size_t max);
     size_t try_write(size_t max);
 
-    static std::shared_ptr<tr_peerIo> create(
+    [[nodiscard]] static std::shared_ptr<tr_peerIo> create(
         tr_session* session,
         std::shared_ptr<tr_peer_socket> socket,
         tr_bandwidth* parent,

@@ -289,7 +289,7 @@ struct tr_swarm_stats {
     std::array<uint16_t, TR_PEER_FROM_N_TYPES> known_peer_from_count;
 };
 
-tr_swarm_stats tr_swarmGetStats(tr_swarm const* swarm);
+[[nodiscard]] tr_swarm_stats tr_swarmGetStats(tr_swarm const* swarm);
 
 // ---
 

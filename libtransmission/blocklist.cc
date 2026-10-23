@@ -93,7 +93,7 @@ namespace ParseHelpers
 // P2P plaintext format: "comment:x.x.x.x-y.y.y.y" / "comment:x:x:x:x:x:x:x:x-x:x:x:x:x:x:x:x"
 // https://web.archive.org/web/20100328075307/http://wiki.phoenixlabs.org/wiki/P2P_Format
 // https://en.wikipedia.org/wiki/PeerGuardian#P2P_plaintext_format
-std::optional<address_range_t> parsePeerGuardianLine(std::string_view line)
+[[nodiscard]] std::optional<address_range_t> parsePeerGuardianLine(std::string_view line)
 {
     // remove leading "comment:"
     auto pos = line.find(':');
@@ -129,7 +129,7 @@ std::optional<address_range_t> parsePeerGuardianLine(std::string_view line)
 
 // DAT / eMule format: "000.000.000.000 - 000.255.255.255 , 000 , invalid ip"
 // https://sourceforge.net/p/peerguardian/wiki/dev-blocklist-format-dat/
-std::optional<address_range_t> parseEmuleLine(std::string_view line)
+[[nodiscard]] std::optional<address_range_t> parseEmuleLine(std::string_view line)
 {
     static auto constexpr Delim1 = std::string_view{ " - " };
     static auto constexpr Delim2 = std::string_view{ " , " };
@@ -165,7 +165,7 @@ std::optional<address_range_t> parseEmuleLine(std::string_view line)
 // CIDR notation: "0.0.0.0/8", "::/64"
 // https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation
 // Example: `10.5.6.7/8` will block the range [10.0.0.0 .. 10.255.255.255]
-std::optional<address_range_t> parseCidrLine(std::string_view line)
+[[nodiscard]] std::optional<address_range_t> parseCidrLine(std::string_view line)
 {
     auto addrpair = address_range_t{};
 
@@ -194,7 +194,7 @@ std::optional<address_range_t> parseCidrLine(std::string_view line)
     return addrpair;
 }
 
-std::optional<address_range_t> parseLine(std::string_view line)
+[[nodiscard]] std::optional<address_range_t> parseLine(std::string_view line)
 {
     for (auto const& line_parser : { parsePeerGuardianLine, parseEmuleLine, parseCidrLine }) {
         if (auto range = line_parser(line); range) {
@@ -206,7 +206,7 @@ std::optional<address_range_t> parseLine(std::string_view line)
 }
 } // namespace ParseHelpers
 
-std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
+[[nodiscard]] std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
 {
     using namespace ParseHelpers;
 
@@ -289,7 +289,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     return ranges;
 }
 
-auto getFilenamesInDir(std::string_view folder)
+[[nodiscard]] auto getFilenamesInDir(std::string_view folder)
 {
     auto const prefix = std::string{ folder } + '/';
     auto files = tr_sys_dir_get_files(folder);

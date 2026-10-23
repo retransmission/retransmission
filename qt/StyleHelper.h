@@ -15,7 +15,7 @@ class QStyleOptionProgressBar;
 class StyleHelper
 {
 public:
-    static QIcon::Mode getIconMode(QStyle::State const& state);
+    [[nodiscard]] static QIcon::Mode getIconMode(QStyle::State const& state);
 
     static void drawProgressBar(QPainter& painter, QStyleOptionProgressBar const& option);
 };
