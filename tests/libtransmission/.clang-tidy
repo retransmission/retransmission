@@ -15,6 +15,7 @@ Checks:
   - -cppcoreguidelines-avoid-const-or-ref-data-members
   - -cppcoreguidelines-avoid-magic-numbers
   - -cppcoreguidelines-avoid-non-const-global-variables
+  - -cppcoreguidelines-explicit-constructor # alias of `misc-explicit-constructor`
   - -cppcoreguidelines-macro-usage
   - -cppcoreguidelines-narrowing-conversions
   - -cppcoreguidelines-non-private-member-variables-in-classes

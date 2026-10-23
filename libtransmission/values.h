@@ -66,7 +66,7 @@ struct Config {
 
     template<typename UnitsEnum>
     struct Units : UnitsBase {
-        template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor)
+        template<typename... Names> // NOLINTNEXTLINE(misc-explicit-constructor)
         Units(Base base, Names... names)
         {
             static_assert(sizeof...(Names) == UnitCount);

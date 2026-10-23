@@ -17,7 +17,7 @@ public:
 
     constexpr Flags() noexcept = default;
 
-    // NOLINTNEXTLINE(hicpp-explicit-conversions)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     constexpr Flags(FlagType const flag) noexcept
         : value_{ bit(flag) }
     {

@@ -210,7 +210,7 @@ public:
     tr_variant& operator=(tr_variant const&) = delete;
 
     template<typename Val>
-    tr_variant(Val&& value) // NOLINT(bugprone-forwarding-reference-overload, google-explicit-constructor)
+    tr_variant(Val&& value) // NOLINT(bugprone-forwarding-reference-overload, misc-explicit-constructor)
     {
         *this = std::forward<Val>(value);
     }
