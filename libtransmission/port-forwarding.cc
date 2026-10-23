@@ -33,6 +33,9 @@ public:
     {
     }
 
+    // stopForwarding() can throw on OOM, but a destructor must not propagate;
+    // terminating is the correct behavior here.
+    // NOLINTNEXTLINE(bugprone-exception-escape)
     ~tr_port_forwarding_impl() override
     {
         is_shutting_down_ = true;
