@@ -514,8 +514,8 @@ public:
     bool const curl_verbose = tr_env_key_exists("TR_CURL_VERBOSE");
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
     bool const curl_proxy_ssl_verify = !tr_env_key_exists("TR_CURL_PROXY_SSL_NO_VERIFY");
-    bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312() ||
-        check_curl_cve_2026_92392(); // all related to curl http2 bugs
+    bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312(); // both related to curl http2 bugs
+    bool const curl_avoid_http2_uploads = check_curl_cve_2026_92392(); // curl http2 bug that only affects uploads
     bool const curl_dont_limit_range_requests = check_curl_gh14899();
 
     Mediator& mediator;
@@ -747,6 +747,10 @@ public:
             // curl copies the body binary-safely rather than via strlen().
             (void)curl_easy_setopt(e, CURLOPT_POSTFIELDSIZE, static_cast<long>(std::size(*body)));
             (void)curl_easy_setopt(e, CURLOPT_COPYPOSTFIELDS, std::data(*body));
+
+            if (curl_avoid_http2_uploads) {
+                (void)curl_easy_setopt(e, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            }
         }
 
         if (auto* const headers = task.make_request_headers()) {
