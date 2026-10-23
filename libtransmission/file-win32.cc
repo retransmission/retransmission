@@ -57,11 +57,11 @@ constexpr bool is_unc_path(std::string_view path)
 bool is_valid_path(std::string_view path)
 {
     if (is_unc_path(path)) {
-        if (path[2] != '\0' && isalnum(path[2]) == 0) {
+        if (path[2] != '\0' && isalnum(static_cast<unsigned char>(path[2])) == 0) {
             return false;
         }
     } else if (auto const pos = path.find(':'); pos != std::string_view::npos) {
-        if (pos != 1 || isalpha(path[0]) == 0) {
+        if (pos != 1 || isalpha(static_cast<unsigned char>(path[0])) == 0) {
             return false;
         }
 
@@ -255,7 +255,7 @@ namespace
 {
 [[nodiscard]] bool isWindowsDeviceRoot(char ch) noexcept
 {
-    return isalpha(static_cast<int>(ch)) != 0;
+    return isalpha(static_cast<unsigned char>(ch)) != 0;
 }
 
 [[nodiscard]] constexpr bool isPathSeparator(char ch) noexcept

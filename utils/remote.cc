@@ -683,7 +683,7 @@ void add_id_arg(tr_variant::Map& params, std::string_view id_str, std::string_vi
         bool is_num = true;
 
         for (auto const& ch : id_str) {
-            is_num = is_num && isdigit(ch);
+            is_num = is_num && isdigit(static_cast<unsigned char>(ch));
         }
 
         if (is_num || is_list) {
