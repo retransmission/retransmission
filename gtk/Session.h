@@ -9,6 +9,7 @@
 #include "Torrent.h"
 
 #include <libtransmission-app/favicon-cache.h>
+#include <libtransmission-app/rpc-client.h>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -55,7 +56,7 @@ public:
 public:
     ~Session() override;
 
-    [[nodiscard]] static Glib::RefPtr<Session> create(tr_session* session, tr::app::Prefs& prefs);
+    [[nodiscard]] static Glib::RefPtr<Session> create(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
     [[nodiscard]] tr_session* close();
 
@@ -152,7 +153,8 @@ public:
     // signal_blocklist_info() delivers them.
     void refresh_blocklist_info();
 
-    void exec(tr_quark method, tr_variant&& params);
+    // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
+    void exec(tr_quark method, tr_variant::Map params = {}, tr::app::RpcClient::ResponseFunc on_done = {});
 
     void open_folder(tr_torrent_id_t torrent_id) const;
 
@@ -167,7 +169,7 @@ public:
     signal_torrents_changed();
 
 protected:
-    Session(tr_session* session, tr::app::Prefs& prefs);
+    Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
 private:
     [[nodiscard]] std::vector<Glib::ustring> get_recent_dirs(tr_quark key) const;
