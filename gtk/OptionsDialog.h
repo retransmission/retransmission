@@ -15,6 +15,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 
 struct tr_torrent_builder;
@@ -33,7 +38,9 @@ public:
     TorrentUrlChooserDialog& operator=(TorrentUrlChooserDialog const&) = delete;
     ~TorrentUrlChooserDialog() override = default;
 
-    static std::unique_ptr<TorrentUrlChooserDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    [[nodiscard]] static std::unique_ptr<TorrentUrlChooserDialog> create(
+        Gtk::Window& parent,
+        Glib::RefPtr<Session> const& core);
 
 private:
     void onOpenURLResponse(int response, Gtk::Entry const& entry, Glib::RefPtr<Session> const& core);
@@ -48,13 +55,18 @@ public:
     TorrentFileChooserDialog& operator=(TorrentFileChooserDialog const&) = delete;
     ~TorrentFileChooserDialog() override = default;
 
-    static std::unique_ptr<TorrentFileChooserDialog> create(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    [[nodiscard]] static std::unique_ptr<TorrentFileChooserDialog> create(
+        Gtk::Window& parent,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
 
 protected:
-    TorrentFileChooserDialog(Gtk::Window& parent, Glib::RefPtr<Session> const& core);
+    TorrentFileChooserDialog(Gtk::Window& parent, Glib::RefPtr<Session> const& core, tr::app::Prefs& prefs);
 
 private:
     void onOpenDialogResponse(int response, Glib::RefPtr<Session> const& core);
+
+    tr::app::Prefs& prefs_;
 };
 
 class OptionsDialog : public Gtk::Dialog
@@ -72,7 +84,7 @@ public:
     OptionsDialog& operator=(OptionsDialog const&) = delete;
     ~OptionsDialog() override;
 
-    static std::unique_ptr<OptionsDialog> create(
+    [[nodiscard]] static std::unique_ptr<OptionsDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
         std::unique_ptr<tr_torrent_builder> torrent_builder);

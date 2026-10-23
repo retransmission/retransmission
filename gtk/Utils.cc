@@ -34,6 +34,7 @@
 
 #include <glibmm/convert.h>
 #include <glibmm/error.h>
+#include <glibmm/exceptionhandler.h>
 #include <glibmm/i18n.h>
 #include <glibmm/quark.h>
 #include <glibmm/spawn.h>
@@ -90,6 +91,32 @@ void gtr_error(std::string const& message)
 {
     // NOLINTNEXTLINE(*-vararg)
     g_error("%s", message.c_str());
+}
+
+void gtr_run_on_ui_thread(std::function<void()> func)
+{
+    // g_idle_add_full() is thread-safe, and the one copy of `func` moves to the heap here
+    // and dies on the GTK thread. Glib::SignalIdle::connect_once() would copy it per
+    // slot, and the copies would die on the calling thread.
+    using Func = std::function<void()>;
+
+    g_idle_add_full(
+        G_PRIORITY_DEFAULT_IDLE,
+        [](gpointer data) -> gboolean {
+            // GLib's dispatcher is C code, so an exception must stop here;
+            // hand it to glibmm's handler, as its own idle callbacks do.
+            try {
+                (*static_cast<Func*>(data))();
+            } catch (...) {
+                Glib::exception_handlers_invoke();
+            }
+
+            return G_SOURCE_REMOVE;
+        },
+        // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+        new Func{ std::move(func) },
+        // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+        [](gpointer data) { delete static_cast<Func*>(data); });
 }
 
 /***
@@ -189,7 +216,7 @@ namespace
 {
 
 // NOTE: Estimated position (`get_position_from_allocation` vfunc is private)
-std::optional<guint> get_position_from_allocation(Gtk::ListView& view, double view_x, double view_y)
+[[nodiscard]] std::optional<guint> get_position_from_allocation(Gtk::ListView& view, double view_x, double view_y)
 {
     auto* child = view.pick(view_x, view_y);
     while (child != nullptr && child->get_css_name() != "row") {
@@ -263,7 +290,7 @@ namespace
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 
-std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& view, int view_x, int view_y)
+[[nodiscard]] std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& view, int view_x, int view_y)
 {
     int event_x = 0;
     int event_y = 0;
@@ -271,7 +298,7 @@ std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::TreeView const& vie
     return { event_x, event_y };
 }
 
-std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::ListView const& /*view*/, int view_x, int view_y)
+[[nodiscard]] std::pair<int, int> convert_widget_to_bin_window_coords(Gtk::ListView const& /*view*/, int view_x, int view_y)
 {
     return { view_x, view_y };
 }

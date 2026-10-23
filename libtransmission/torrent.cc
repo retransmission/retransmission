@@ -200,7 +200,7 @@ bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* m
 
 namespace
 {
-bool did_files_disappear(tr_torrent* tor, std::optional<bool> has_any_local_data = {})
+[[nodiscard]] bool did_files_disappear(tr_torrent* tor, std::optional<bool> has_any_local_data = {})
 {
     auto const has = has_any_local_data ? *has_any_local_data : tor->has_any_local_data();
     return tor->has_total() > 0 && !has;
@@ -222,7 +222,7 @@ bool set_local_error_if_files_disappeared(tr_torrent* tor, std::optional<bool> h
 
 /* returns true if the seed ratio applies --
  * it applies if the torrent's a seed AND it has a seed ratio set */
-bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, uint64_t* setme_goal)
+[[nodiscard]] bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, uint64_t* setme_goal)
 {
     bool seed_ratio_applies = false;
 
@@ -247,7 +247,7 @@ bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, ui
     return seed_ratio_applies;
 }
 
-bool tr_torrentIsSeedRatioDone(tr_torrent const* tor)
+[[nodiscard]] bool tr_torrentIsSeedRatioDone(tr_torrent const* tor)
 {
     auto bytes_left = uint64_t{};
     return tr_torrentGetSeedRatioBytes(tor, &bytes_left, nullptr) && bytes_left == 0;
@@ -563,7 +563,7 @@ namespace
 {
 namespace start_stop_helpers
 {
-bool torrentShouldQueue(tr_torrent const* const tor)
+[[nodiscard]] bool torrentShouldQueue(tr_torrent const* const tor)
 {
     tr_direction const dir = tor->queue_direction();
 
@@ -2110,24 +2110,23 @@ bool tr_torrent::set_announce_list(tr_announce_list announce_list)
 {
     auto const lock = unique_lock();
 
-    auto& tgt = metainfo_.announce_list();
-
-    tgt = std::move(announce_list);
+    metainfo_.announce_list() = std::move(announce_list);
 
     // save the changes
     auto save_error = tr_error{};
     auto filename = std::string{};
+    auto saved = false;
     if (has_metainfo()) {
         filename = torrent_file();
-        tgt.save(filename, &save_error);
+        saved = metainfo_.save_announce_list(filename, &save_error);
     } else {
         filename = magnet_file();
-        tr_file_save(filename, magnet(), &save_error);
+        saved = tr_file_save(filename, magnet(), &save_error);
     }
 
     on_announce_list_changed();
 
-    if (save_error.has_value()) {
+    if (!saved) {
         error().set_local_error(
             fmt::format(
                 fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
@@ -2527,7 +2526,7 @@ namespace
 {
 namespace rename_helpers
 {
-bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
+[[nodiscard]] bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
     if (std::empty(oldpath) || std::empty(newname) || newname == "."sv || newname == ".."sv || tr_strv_contains(newname, '/')) {
         return false;
@@ -2553,7 +2552,7 @@ bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::st
     return true;
 }
 
-auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
+[[nodiscard]] auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
 {
     auto indices = std::vector<tr_file_index_t>{};
     auto const oldpath_as_dir = tr_pathbuf{ oldpath, '/' };
@@ -2569,7 +2568,7 @@ auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
     return indices;
 }
 
-auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
+[[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
     tr_error_code_t err = 0;
 

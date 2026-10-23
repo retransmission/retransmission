@@ -35,7 +35,7 @@ namespace ssha1_impl
 auto constexpr DigestStringSize = tr_sha1_string::Strlen;
 auto constexpr SaltedPrefix = "{"sv;
 
-std::string tr_salt(std::string_view plaintext, std::string_view salt)
+[[nodiscard]] std::string tr_salt(std::string_view plaintext, std::string_view salt)
 {
     static_assert(DigestStringSize == 40);
 
@@ -190,8 +190,8 @@ T tr_rand_int(T const upper_bound)
 {
     using dist_type = std::uniform_int_distribution<T>;
 
-    thread_local auto rng = tr_urbg<T>{};
-    thread_local auto dist = dist_type{};
+    static thread_local auto rng = tr_urbg<T>{};
+    static thread_local auto dist = dist_type{};
     return dist(rng, typename dist_type::param_type(0, upper_bound - 1));
 }
 

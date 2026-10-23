@@ -73,7 +73,7 @@ void depth_first_walk(
     func(path);
 }
 
-bool is_junk_file(std::string_view filename)
+[[nodiscard]] bool is_junk_file(std::string_view filename)
 {
     auto const base = tr_sys_path_basename(filename);
 

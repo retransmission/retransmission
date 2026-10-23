@@ -92,12 +92,12 @@ public:
     bool found_returns_ = true;
 };
 
-auto makeRandomHash()
+[[nodiscard]] auto makeRandomHash()
 {
     return tr_sha1::digest(tr_rand_obj<std::array<char, 256>>());
 }
 
-auto makeRandomHashString()
+[[nodiscard]] auto makeRandomHashString()
 {
     return tr_strupper(tr_sha1_string{ makeRandomHash() });
 }

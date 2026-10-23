@@ -19,11 +19,11 @@
 class tr_port;
 struct tr_upnp;
 
-tr_upnp* tr_upnpInit();
+[[nodiscard]] tr_upnp* tr_upnpInit();
 
 void tr_upnpClose(tr_upnp* handle);
 
-tr_port_forwarding_state tr_upnpPulse(
+[[nodiscard]] tr_port_forwarding_state tr_upnpPulse(
     tr_upnp* handle,
     tr_port advertised_port,
     tr_port local_port,

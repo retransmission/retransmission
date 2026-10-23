@@ -41,7 +41,7 @@
 namespace
 {
 
-bool isSlashChar(QChar const& c)
+[[nodiscard]] bool isSlashChar(QChar const& c)
 {
     return c == QLatin1Char('/') || c == QLatin1Char('\\');
 }

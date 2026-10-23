@@ -10,7 +10,7 @@
 namespace tr::test
 {
 // A settings.json holding every key that libtransmission, libtransmission-app, the GTK app, and the daemon save.
-// No test notices a missing GTK or daemon key.
+// No test notices a missing daemon key.
 // LegacySettingsJson uses the key names that Transmission 4.1.3 wrote, or the current name for a key added since.
 // ApiCompatTest checks api-compat.cc against the 4.1.3 names, so never copy them from api-compat.cc.
 

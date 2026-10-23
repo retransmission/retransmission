@@ -9,8 +9,9 @@
 #include "Torrent.h"
 
 #include <libtransmission-app/favicon-cache.h>
+#include <libtransmission-app/rpc-client.h>
 
-#include <libtransmission/converters.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
@@ -55,27 +56,27 @@ public:
 public:
     ~Session() override;
 
-    static Glib::RefPtr<Session> create(tr_session* session);
+    [[nodiscard]] static Glib::RefPtr<Session> create(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
-    tr_session* close();
+    [[nodiscard]] tr_session* close();
 
-    Glib::RefPtr<Gio::ListModel> get_model() const;
-    Glib::RefPtr<Model> get_sorted_model() const;
+    [[nodiscard]] Glib::RefPtr<Gio::ListModel> get_model() const;
+    [[nodiscard]] Glib::RefPtr<Model> get_sorted_model() const;
 
     void clear();
 
-    tr_session* get_session() const;
+    [[nodiscard]] tr_session* get_session() const;
 
-    size_t get_unpaused_torrent_count() const;
+    [[nodiscard]] size_t get_unpaused_torrent_count() const;
 
-    size_t get_torrent_count() const;
+    [[nodiscard]] size_t get_torrent_count() const;
 
-    tr_torrent* find_torrent(tr_torrent_id_t id) const;
+    [[nodiscard]] tr_torrent* find_torrent(tr_torrent_id_t id) const;
 
     // TODO(c++20) std::span
     [[nodiscard]] std::vector<tr_torrent*> find_torrents(std::vector<tr_torrent_id_t> const& ids) const;
 
-    tr::app::FaviconCache<Glib::RefPtr<Gdk::Pixbuf>>& favicon_cache() const;
+    [[nodiscard]] tr::app::FaviconCache<Glib::RefPtr<Gdk::Pixbuf>>& favicon_cache() const;
 
     /******
     *******
@@ -132,12 +133,8 @@ public:
     template<typename T>
     void set_pref(tr_quark const key, T const& val)
     {
-        auto const old_val = gtr_pref_lookup<T>(key);
-
-        if (!old_val || tr::serializer::detail::values_differ(*old_val, val)) {
-            gtr_pref_set<T>(key, val);
-            signal_prefs_changed().emit(key);
-            gtr_pref_save(get_session());
+        if (prefs_.set(key, val)) {
+            prefs_.save(tr_sessionGetConfigDir(get_session()), tr_sessionGetSettings(get_session()));
         }
     }
 
@@ -156,24 +153,28 @@ public:
     // signal_blocklist_info() delivers them.
     void refresh_blocklist_info();
 
-    void exec(tr_quark method, tr_variant&& params);
+    // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
+    void exec(tr_quark method, tr_variant::Map params = {}, tr::app::RpcClient::ResponseFunc on_done = {});
 
     void open_folder(tr_torrent_id_t torrent_id) const;
 
-    sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
-    sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
-    sigc::signal<void(size_t, time_t)>& signal_blocklist_info();
-    sigc::signal<void(bool)>& signal_blocklist_updated();
-    sigc::signal<void(bool)>& signal_busy();
-    sigc::signal<void(tr_quark)>& signal_prefs_changed();
-    sigc::signal<void(std::optional<bool>, tr_address_type)>& signal_port_tested();
-    sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>& signal_torrents_changed();
+    [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
+    [[nodiscard]] sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
+    [[nodiscard]] sigc::signal<void(size_t, time_t)>& signal_blocklist_info();
+    [[nodiscard]] sigc::signal<void(bool)>& signal_blocklist_updated();
+    [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
+    [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
+    [[nodiscard]] sigc::signal<void(std::optional<bool>, tr_address_type)>& signal_port_tested();
+    [[nodiscard]] sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>&
+    signal_torrents_changed();
 
 protected:
-    explicit Session(tr_session* session);
+    Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
 private:
     [[nodiscard]] std::vector<Glib::ustring> get_recent_dirs(tr_quark key) const;
+
+    tr::app::Prefs& prefs_;
 
     class Impl;
     std::unique_ptr<Impl> const impl_;

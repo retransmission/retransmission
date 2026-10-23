@@ -11,7 +11,7 @@ namespace
 {
 
 template<typename T>
-int iter_get_stamp(T const& iter)
+[[nodiscard]] int iter_get_stamp(T const& iter)
 {
     return iter.gobj()->stamp;
 }
@@ -23,7 +23,7 @@ void iter_set_stamp(T& iter, int value)
 }
 
 template<typename T>
-int iter_get_item_id(T const& iter)
+[[nodiscard]] int iter_get_item_id(T const& iter)
 {
     return GPOINTER_TO_INT(iter.gobj()->user_data);
 }

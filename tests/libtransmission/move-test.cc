@@ -76,7 +76,7 @@ protected:
 
     static auto constexpr MaxWaitMsec = 3000;
 
-    auto setLocation(tr_torrent* tor, std::string_view path, bool move = true)
+    [[nodiscard]] auto setLocation(tr_torrent* tor, std::string_view path, bool move = true)
     {
         return blockingRunInSessionThread([tor, path = std::string{ path }, move]() {
             auto state = -1;

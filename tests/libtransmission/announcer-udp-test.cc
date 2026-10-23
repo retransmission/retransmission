@@ -359,7 +359,7 @@ protected:
     }
 
     // emulate the upkeep timer that tr_announcer runs in production
-    static auto createUpkeepTimer(MockMediator& mediator, std::unique_ptr<tr_announcer_udp>& announcer)
+    [[nodiscard]] static auto createUpkeepTimer(MockMediator& mediator, std::unique_ptr<tr_announcer_udp>& announcer)
     {
         auto timer_maker = tr::EvTimerMaker{ mediator.eventBase() };
         auto timer = timer_maker.create();

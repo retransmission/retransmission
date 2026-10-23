@@ -86,7 +86,9 @@ class TorrentIcon
     , public Gdk::Paintable
 {
 public:
-    static Glib::RefPtr<TorrentIcon> create(Glib::RefPtr<Gio::Icon> mime_icon, Glib::RefPtr<Gio::Icon> folder_icon)
+    [[nodiscard]] static Glib::RefPtr<TorrentIcon> create(
+        Glib::RefPtr<Gio::Icon> mime_icon,
+        Glib::RefPtr<Gio::Icon> folder_icon)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
         return Glib::make_refptr_for_instance(new TorrentIcon(std::move(mime_icon), std::move(folder_icon)));
@@ -131,7 +133,7 @@ private:
     Glib::RefPtr<Gio::Icon> folder_icon_;
 };
 
-Glib::RefPtr<TorrentIconType> make_torrent_icon(Glib::RefPtr<Gio::Icon> mime_icon, bool is_folder)
+[[nodiscard]] Glib::RefPtr<TorrentIconType> make_torrent_icon(Glib::RefPtr<Gio::Icon> mime_icon, bool is_folder)
 {
     if (mime_icon == nullptr) {
         return {};
@@ -142,7 +144,7 @@ Glib::RefPtr<TorrentIconType> make_torrent_icon(Glib::RefPtr<Gio::Icon> mime_ico
 
 #else
 
-Glib::RefPtr<TorrentIconType> make_torrent_icon(Glib::RefPtr<Gio::Icon> mime_icon, bool is_folder)
+[[nodiscard]] Glib::RefPtr<TorrentIconType> make_torrent_icon(Glib::RefPtr<Gio::Icon> mime_icon, bool is_folder)
 {
     if (mime_icon == nullptr || !is_folder) {
         return mime_icon;

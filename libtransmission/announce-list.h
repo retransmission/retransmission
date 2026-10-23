@@ -17,7 +17,6 @@
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
 
-struct tr_error;
 struct tr_url_parsed_t;
 
 class tr_announce_list
@@ -107,8 +106,6 @@ public:
     bool parse(std::string_view text);
     [[nodiscard]] std::string to_string() const;
 
-    bool save(std::string_view torrent_file, tr_error* error = nullptr) const;
-
     [[nodiscard]] static std::optional<std::string> announce_to_scrape(std::string_view announce);
 
 private:
@@ -117,9 +114,9 @@ private:
     [[nodiscard]] tr_tracker_tier_t get_tier(tr_tracker_tier_t tier, tr_url_parsed_t const& announce) const;
 
     [[nodiscard]] bool can_add(tr_url_parsed_t const& announce) const noexcept;
-    static tr_tracker_id_t next_unique_id() noexcept;
-    trackers_t::iterator find(std::string_view announce);
-    trackers_t::iterator find(tr_tracker_id_t id);
+    [[nodiscard]] static tr_tracker_id_t next_unique_id() noexcept;
+    [[nodiscard]] trackers_t::iterator find(std::string_view announce);
+    [[nodiscard]] trackers_t::iterator find(tr_tracker_id_t id);
 
     trackers_t trackers_;
 };

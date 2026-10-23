@@ -48,3 +48,5 @@ tr_target_glib_resources(gtk-test-resources
     ${PROJECT_SOURCE_DIR}/gtk/transmission.gresource.xml)
 
 add_trgtk_test(serializer-test.cc)
+
+add_trgtk_test(rpc-client-test.cc)

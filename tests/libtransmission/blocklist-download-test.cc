@@ -663,7 +663,7 @@ protected:
     // Point the session's blocklist URL at the loopback server, kick off an
     // update, and wait for it to finish. tr_blocklistUpdate() invokes its
     // callback on the session thread, so hand the result back via a promise.
-    tr_blocklist_update_result runUpdate(std::string_view path = "/blocklist"sv)
+    [[nodiscard]] tr_blocklist_update_result runUpdate(std::string_view path = "/blocklist"sv)
     {
         tr_blocklistSetURL(session_, server_.url(path));
 

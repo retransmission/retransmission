@@ -292,7 +292,7 @@ OptionsDialog::Impl::Impl(
 void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<Session> const& core)
 {
     if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-        bool const do_start = gtr_pref_flag_get(TR_KEY_start_added_torrents);
+        bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents);
         bool const do_prompt = get_choice(std::string(ShowOptionsDialogChoice)) == "true";
         bool const do_notify = false;
 
@@ -303,7 +303,7 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
         // Read it from the selection: with the XDG portal, get_current_folder() returns the starting folder.
         if (auto const parent = files.front()->get_parent(); parent != nullptr) {
             if (auto const path = parent->get_path(); !path.empty()) {
-                gtr_pref_string_set(TR_KEY_open_dialog_dir, path);
+                prefs_.set(TR_KEY_open_dialog_dir, path);
             }
         }
 
@@ -313,13 +313,18 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
 
 std::unique_ptr<TorrentFileChooserDialog> TorrentFileChooserDialog::create(
     Gtk::Window& parent,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs& prefs)
 {
-    return std::unique_ptr<TorrentFileChooserDialog>(new TorrentFileChooserDialog(parent, core));
+    return std::unique_ptr<TorrentFileChooserDialog>(new TorrentFileChooserDialog(parent, core, prefs));
 }
 
-TorrentFileChooserDialog::TorrentFileChooserDialog(Gtk::Window& parent, Glib::RefPtr<Session> const& core)
+TorrentFileChooserDialog::TorrentFileChooserDialog(
+    Gtk::Window& parent,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs& prefs)
     : Gtk::FileChooserNative(_("Open a Torrent"), parent, TR_GTK_FILE_CHOOSER_ACTION(OPEN), _("_Open"), _("_Cancel"))
+    , prefs_(prefs)
 {
     set_modal(true);
 
@@ -327,12 +332,12 @@ TorrentFileChooserDialog::TorrentFileChooserDialog(Gtk::Window& parent, Glib::Re
     addTorrentFilters(this);
     signal_response().connect([this, core](int response) { onOpenDialogResponse(response, core); });
 
-    if (auto const folder = gtr_pref_string_get(TR_KEY_open_dialog_dir); !folder.empty()) {
+    if (auto const folder = prefs_.get<std::string>(TR_KEY_open_dialog_dir); !folder.empty()) {
         IF_GTKMM4(set_current_folder, set_current_folder_file)(Gio::File::create_for_path(folder));
     }
 
     add_choice(std::string(ShowOptionsDialogChoice), _("Show options dialog"));
-    set_choice(std::string(ShowOptionsDialogChoice), gtr_pref_flag_get(TR_KEY_show_options_window) ? "true" : "false");
+    set_choice(std::string(ShowOptionsDialogChoice), prefs_.get<bool>(TR_KEY_show_options_window) ? "true" : "false");
 }
 
 /***

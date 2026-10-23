@@ -69,7 +69,7 @@ public:
     [[nodiscard]] static std::unique_ptr<tr_announcer> create(tr_session* session, tr_announcer_udp& announcer_udp);
     virtual ~tr_announcer() = default;
 
-    virtual tr_torrent_announcer* addTorrent(tr_torrent*, tr_tracker_callback callback) = 0;
+    [[nodiscard]] virtual tr_torrent_announcer* addTorrent(tr_torrent*, tr_tracker_callback callback) = 0;
     virtual void startTorrent(tr_torrent* tor) = 0;
     virtual void stopTorrent(tr_torrent* tor) = 0;
     virtual void resetTorrent(tr_torrent* tor) = 0;
@@ -83,7 +83,7 @@ public:
 
 void tr_announcerChangeMyPort(tr_torrent* tor);
 
-bool tr_announcerCanManualAnnounce(tr_torrent const* tor);
+[[nodiscard]] bool tr_announcerCanManualAnnounce(tr_torrent const* tor);
 
 void tr_announcerManualAnnounce(tr_torrent* tor);
 
@@ -93,11 +93,11 @@ enum : uint8_t { TR_ANN_UP, TR_ANN_DOWN, TR_ANN_CORRUPT };
 
 void tr_announcerAddBytes(tr_torrent* tor, int type, uint32_t n_bytes);
 
-time_t tr_announcerNextManualAnnounce(tr_torrent const* tor);
+[[nodiscard]] time_t tr_announcerNextManualAnnounce(tr_torrent const* tor);
 
-tr_tracker_view tr_announcerTracker(tr_torrent const* torrent, size_t nth);
+[[nodiscard]] tr_tracker_view tr_announcerTracker(tr_torrent const* torrent, size_t nth);
 
-size_t tr_announcerTrackerCount(tr_torrent const* tor);
+[[nodiscard]] size_t tr_announcerTrackerCount(tr_torrent const* tor);
 
 // --- ANNOUNCE
 
@@ -150,7 +150,11 @@ public:
 
     // @brief process an incoming udp message if it's a tracker response.
     // @return true if msg was a tracker response; false otherwise
-    virtual bool handle_message(uint8_t const* msg, size_t msglen, struct sockaddr const* from, socklen_t fromlen) = 0;
+    [[nodiscard]] virtual bool handle_message(
+        uint8_t const* msg,
+        size_t msglen,
+        struct sockaddr const* from,
+        socklen_t fromlen) = 0;
 
     [[nodiscard]] virtual bool is_idle() const noexcept = 0;
 };

@@ -70,7 +70,7 @@ protected:
         sync();
     }
 
-    tr_torrent* createTorrentFromBase64Metainfo(tr_torrent_builder& builder, char const* benc_base64)
+    [[nodiscard]] tr_torrent* createTorrentFromBase64Metainfo(tr_torrent_builder& builder, char const* benc_base64)
     {
         auto const benc = tr_base64_decode(benc_base64);
         EXPECT_LT(0U, std::size(benc));
@@ -108,7 +108,10 @@ protected:
         EXPECT_EQ(0, stats.have_valid);
     }
 
-    static int torrentRenameAndWait(tr_torrent* tor, std::string_view const oldpath, std::string_view const newname)
+    [[nodiscard]] static int torrentRenameAndWait(
+        tr_torrent* tor,
+        std::string_view const oldpath,
+        std::string_view const newname)
     {
         int error = -1;
         tr_torrentRenamePath(

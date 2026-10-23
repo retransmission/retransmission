@@ -1,4 +1,3 @@
-
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Voorkeure";
 
@@ -19,48 +18,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "542"; */
 "542.title" = "Ander…";
-
-/* Class = "NSButtonCell"; title = "Quit with active transfers"; ObjectID = "1201"; */
-"1201.title" = "Sluit af met aktiewe oordragte";
-
-/* Class = "NSButtonCell"; title = "Removal of active transfers"; ObjectID = "1202"; */
-"1202.title" = "Verwydering van aktiewe oordragte";
-
-/* Class = "NSTextFieldCell"; title = "Prompt user for:"; ObjectID = "1203"; */
-"1203.title" = "Por gebruiker vir:";
-
-/* Class = "NSTextFieldCell"; title = "Badge Dock icon with:"; ObjectID = "1204"; */
-"1204.title" = "Gee dokikoon kenteken:";
-
-/* Class = "NSButtonCell"; title = "Total download rate"; ObjectID = "1205"; */
-"1205.title" = "Totale aflaaisnelheid";
-
-/* Class = "NSButtonCell"; title = "Total upload rate"; ObjectID = "1206"; */
-"1206.title" = "Totale oplaaisnelheid";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1207"; */
-"1207.title" = "Slegs wanneer oordragte aflaai";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1208"; */
-"1208.title" = "Slegs wanneer oordragte aflaai";
-
-/* Class = "NSTextFieldCell"; title = "Auto resize:"; ObjectID = "1209"; */
-"1209.title" = "Venstergrootte:";
-
-/* Class = "NSButtonCell"; title = "Automatically size window to fit all transfers"; ObjectID = "1210"; */
-"1210.title" = "Pas outomaties by die aantal oordragte aan";
-
-/* Class = "NSButtonCell"; title = "Reset"; ObjectID = "1211"; */
-"1211.title" = "Herstel";
-
-/* Class = "NSTextFieldCell"; title = "Reset all alerts:"; ObjectID = "1212"; */
-"1212.title" = "Herstel alle waarskuwings";
-
-/* Class = "NSButtonCell"; title = "Automatically check daily"; ObjectID = "1213"; */
-"1213.title" = "Kyk daagliks vir nuwe weergawes";
-
-/* Class = "NSTextFieldCell"; title = "Check for update:"; ObjectID = "1214"; */
-"1214.title" = "Soek na bywerking:";
 
 /* Class = "NSTextFieldCell"; title = "Default location:"; ObjectID = "1216"; */
 "1216.title" = "Verstekligging:";
@@ -305,9 +262,6 @@
 /* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
 "1892.title" = "Maak ewekansig";
 
-/* Class = "NSButtonCell"; title = "Include beta releases"; ObjectID = "1896"; */
-"1896.title" = "Sluit betavrystellings in";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Elke dag";
 
@@ -340,12 +294,6 @@
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "Gebruik verspreidehutstabel (DHT) vir openbare torrents";
-
-/* Class = "NSTextFieldCell"; title = "Accept magnet links:"; ObjectID = "1931"; */
-"1931.title" = "Aanvaar magneetskakels:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "1933"; */
-"1933.title" = "Maak verstektoepassing";
 
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "Voeg .part agteraan onvoltooide lêers toe";
@@ -380,23 +328,11 @@
 /* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
 "2082.title" = "Eweknieluisterpoort:";
 
-/* Class = "NSTextFieldCell"; title = "Notifications:"; ObjectID = "2087"; */
-"2087.title" = "Kennisgewings:";
-
-/* Class = "NSButtonCell"; title = "Configure In System Preferences"; ObjectID = "2114"; */
-"2114.title" = "Stel Op In Stelselvoorkeure";
-
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Verwyder uit die oordraglys wanneer klaar gesaai is";
 
 /* Class = "NSTextFieldCell"; title = "Applies to newly added transfers"; ObjectID = "2123"; */
 "2123.title" = "Toegepas op nuut toegevoegde oordragte";
 
-/* Class = "NSTextFieldCell"; title = "Open torrent files:"; ObjectID = "A9E-F4-a3c"; */
-"A9E-F4-a3c.title" = "Open torrentlêers:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "pgY-W3-HdI"; */
-"pgY-W3-HdI.title" = "Maak verstektoepassing";
-
-/* Class = "NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
-/* "wM8-cD-WAB.title" = ""; */
+"NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
+/* "wM8-cD-WAB.title" = "";

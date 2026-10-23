@@ -302,22 +302,13 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address_V4() const
+std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
 {
-    if (auto const addr = session_->bind_address(TR_AF_INET); !addr.is_any()) {
+    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
         return addr.display_name();
     }
 
-    return std::nullopt;
-}
-
-std::optional<std::string> tr_session::WebMediator::bind_address_V6() const
-{
-    if (auto const addr = session_->bind_address(TR_AF_INET6); !addr.is_any()) {
-        return addr.display_name();
-    }
-
-    return std::nullopt;
+    return {};
 }
 
 size_t tr_session::WebMediator::clamp(int torrent_id, size_t byte_count) const
@@ -562,7 +553,10 @@ namespace
 {
 namespace queue_helpers
 {
-std::vector<tr_torrent*> get_next_queued_torrents(tr_torrents const& torrents, tr_direction dir, size_t num_wanted)
+[[nodiscard]] std::vector<tr_torrent*> get_next_queued_torrents(
+    tr_torrents const& torrents,
+    tr_direction dir,
+    size_t num_wanted)
 {
     auto candidates = torrents.get_matching([dir](auto const* const tor) { return tor->is_queued(dir); });
 
@@ -806,6 +800,11 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         bound_ipv4_.reset();
         bound_ipv6_.reset();
         addr_changed = true;
+    }
+
+    if (new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
+        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
+        web_->network_changed();
     }
 
     if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
@@ -1449,7 +1448,7 @@ namespace
 {
 namespace load_torrents_helpers
 {
-auto get_remaining_files(std::string_view folder, std::vector<std::string>& queue_order)
+[[nodiscard]] auto get_remaining_files(std::string_view folder, std::vector<std::string>& queue_order)
 {
     auto files = tr_sys_dir_get_files(folder);
     auto ret = std::vector<std::string>{};
@@ -2062,7 +2061,7 @@ auto constexpr SaveInterval = 360s;
     return dir;
 }
 
-auto makeResumeDir(std::string_view config_dir)
+[[nodiscard]] auto makeResumeDir(std::string_view config_dir)
 {
 #if defined(__APPLE__) || defined(_WIN32)
     return makeSubdir(config_dir, "Resume"sv);
@@ -2071,7 +2070,7 @@ auto makeResumeDir(std::string_view config_dir)
 #endif
 }
 
-auto makeTorrentDir(std::string_view config_dir)
+[[nodiscard]] auto makeTorrentDir(std::string_view config_dir)
 {
 #if defined(__APPLE__) || defined(_WIN32)
     return makeSubdir(config_dir, "Torrents"sv);
@@ -2080,12 +2079,12 @@ auto makeTorrentDir(std::string_view config_dir)
 #endif
 }
 
-auto makeBlocklistDir(std::string_view config_dir)
+[[nodiscard]] auto makeBlocklistDir(std::string_view config_dir)
 {
     return makeSubdir(config_dir, "blocklists"sv);
 }
 
-auto makeConfigDirLock(std::string_view const config_dir)
+[[nodiscard]] auto makeConfigDirLock(std::string_view const config_dir)
 {
     // A dir has to exist before it can be locked,
     // so create it here rather than wait for the first write.

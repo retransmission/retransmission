@@ -437,7 +437,7 @@ protected:
 
     // Run marshaled functions until `pred()` holds. False on timeout.
     template<typename Pred>
-    bool pumpUntil(Pred const& pred)
+    [[nodiscard]] bool pumpUntil(Pred const& pred)
     {
         auto const deadline = std::chrono::steady_clock::now() + std::chrono::seconds{ 5 };
 

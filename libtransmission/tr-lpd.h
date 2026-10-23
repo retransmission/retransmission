@@ -55,5 +55,5 @@ public:
     };
 
     virtual ~tr_lpd() = default;
-    static std::unique_ptr<tr_lpd> create(Mediator& mediator, event_base* event_base);
+    [[nodiscard]] static std::unique_ptr<tr_lpd> create(Mediator& mediator, event_base* event_base);
 };

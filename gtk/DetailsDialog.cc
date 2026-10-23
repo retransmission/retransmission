@@ -86,7 +86,11 @@ using namespace tr::Values;
 class DetailsDialog::Impl
 {
 public:
-    Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core);
+    Impl(
+        DetailsDialog& dialog,
+        Glib::RefPtr<Gtk::Builder> const& builder,
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -134,14 +138,15 @@ private:
     void refreshPeerList(std::vector<tr_torrent*> const& torrents);
     void refreshWebseedList(std::vector<tr_torrent*> const& torrents);
 
-    tr_torrent_id_t tracker_list_get_current_torrent_id() const;
-    tr_torrent* tracker_list_get_current_torrent() const;
+    [[nodiscard]] tr_torrent_id_t tracker_list_get_current_torrent_id() const;
+    [[nodiscard]] tr_torrent* tracker_list_get_current_torrent() const;
 
-    std::vector<tr_torrent*> getTorrents() const;
+    [[nodiscard]] std::vector<tr_torrent*> getTorrents() const;
 
 private:
     DetailsDialog& dialog_;
     Glib::RefPtr<Session> const core_;
+    tr::app::Prefs& prefs_;
 
     Gtk::CheckButton* honor_limits_check_ = nullptr;
     Gtk::CheckButton* up_limited_check_ = nullptr;
@@ -479,7 +484,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
 namespace
 {
 
-Glib::ustring activityString(int activity, bool finished)
+[[nodiscard]] Glib::ustring activityString(int activity, bool finished)
 {
     switch (activity) {
     case TR_STATUS_CHECK_WAIT:
@@ -1269,11 +1274,11 @@ bool DetailsDialog::Impl::onPeerViewQueryTooltip(int x, int y, bool keyboard_tip
 namespace
 {
 
-void setPeerViewColumns(Gtk::TreeView* peer_view)
+void setPeerViewColumns(Gtk::TreeView* const peer_view, tr::app::Prefs const& prefs)
 {
     std::vector<Gtk::TreeModelColumnBase const*> view_columns;
     Gtk::TreeViewColumn* c = nullptr;
-    bool const more = gtr_pref_flag_get(TR_KEY_show_extra_peer_details);
+    bool const more = prefs.get<bool>(TR_KEY_show_extra_peer_details);
 
     view_columns.push_back(&peer_cols.encryption_stock_id);
     view_columns.push_back(&peer_cols.upload_rate_string);
@@ -1373,7 +1378,7 @@ void DetailsDialog::Impl::onMorePeerInfoToggled()
     tr_quark const key = TR_KEY_show_extra_peer_details;
     bool const value = more_peer_details_check_->get_active();
     core_->set_pref(key, value);
-    setPeerViewColumns(peer_view_);
+    setPeerViewColumns(peer_view_, prefs_);
 }
 
 void DetailsDialog::Impl::peer_page_init(Glib::RefPtr<Gtk::Builder> const& builder)
@@ -1418,9 +1423,9 @@ void DetailsDialog::Impl::peer_page_init(Glib::RefPtr<Gtk::Builder> const& build
         return on_item_view_button_released(*peer_view_, view_x, view_y);
     });
 
-    setPeerViewColumns(peer_view_);
+    setPeerViewColumns(peer_view_, prefs_);
 
-    more_peer_details_check_->set_active(gtr_pref_flag_get(TR_KEY_show_extra_peer_details));
+    more_peer_details_check_->set_active(prefs_.get<bool>(TR_KEY_show_extra_peer_details));
     more_peer_details_check_->signal_toggled().connect(sigc::mem_fun(*this, &Impl::onMorePeerInfoToggled));
 }
 
@@ -1669,7 +1674,7 @@ public:
     EditTrackersDialog& operator=(EditTrackersDialog const&) = delete;
     ~EditTrackersDialog() override = default;
 
-    static std::unique_ptr<EditTrackersDialog> create(
+    [[nodiscard]] static std::unique_ptr<EditTrackersDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);
@@ -1784,7 +1789,7 @@ public:
     AddTrackerDialog& operator=(AddTrackerDialog const&) = delete;
     ~AddTrackerDialog() override = default;
 
-    static std::unique_ptr<AddTrackerDialog> create(
+    [[nodiscard]] static std::unique_ptr<AddTrackerDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);
@@ -1937,10 +1942,10 @@ void DetailsDialog::Impl::tracker_page_init(Glib::RefPtr<Gtk::Builder> const& /*
     edit_trackers_button_->signal_clicked().connect(sigc::mem_fun(*this, &Impl::on_edit_trackers));
     remove_tracker_button_->signal_clicked().connect(sigc::mem_fun(*this, &Impl::on_tracker_list_remove_button_clicked));
 
-    scrape_check_->set_active(gtr_pref_flag_get(TR_KEY_show_tracker_scrapes));
+    scrape_check_->set_active(prefs_.get<bool>(TR_KEY_show_tracker_scrapes));
     scrape_check_->signal_toggled().connect(sigc::mem_fun(*this, &Impl::onScrapeToggled));
 
-    all_check_->set_active(gtr_pref_flag_get(TR_KEY_show_backup_trackers));
+    all_check_->set_active(prefs_.get<bool>(TR_KEY_show_backup_trackers));
     all_check_->signal_toggled().connect(sigc::mem_fun(*this, &Impl::onBackupToggled));
 }
 
@@ -1972,8 +1977,8 @@ void DetailsDialog::Impl::on_details_window_size_allocated()
 #else
     dialog_.get_size(w, h);
 #endif
-    gtr_pref_int_set(TR_KEY_details_window_width, w);
-    gtr_pref_int_set(TR_KEY_details_window_height, h);
+    prefs_.set(TR_KEY_details_window_width, w);
+    prefs_.set(TR_KEY_details_window_height, h);
 }
 
 DetailsDialog::Impl::~Impl()
@@ -1981,28 +1986,37 @@ DetailsDialog::Impl::~Impl()
     periodic_refresh_tag_.disconnect();
 }
 
-std::unique_ptr<DetailsDialog> DetailsDialog::create(Gtk::Window& parent, Glib::RefPtr<Session> const& core)
+std::unique_ptr<DetailsDialog> DetailsDialog::create(
+    Gtk::Window& parent,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs& prefs)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("DetailsDialog.ui"));
-    return std::unique_ptr<DetailsDialog>(gtr_get_widget_derived<DetailsDialog>(builder, "DetailsDialog", parent, core));
+    return std::unique_ptr<DetailsDialog>(gtr_get_widget_derived<DetailsDialog>(builder, "DetailsDialog", parent, core, prefs));
 }
 
 DetailsDialog::DetailsDialog(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
-    Glib::RefPtr<Session> const& core)
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs& prefs)
     : Gtk::Dialog(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core))
+    , impl_(std::make_unique<Impl>(*this, builder, core, prefs))
 {
     set_transient_for(parent);
 }
 
 DetailsDialog::~DetailsDialog() = default;
 
-DetailsDialog::Impl::Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
+DetailsDialog::Impl::Impl(
+    DetailsDialog& dialog,
+    Glib::RefPtr<Gtk::Builder> const& builder,
+    Glib::RefPtr<Session> const& core,
+    tr::app::Prefs& prefs)
     : dialog_(dialog)
     , core_(core)
+    , prefs_(prefs)
     , honor_limits_check_(gtr_get_widget<Gtk::CheckButton>(builder, "honor_limits_check"))
     , up_limited_check_(gtr_get_widget<Gtk::CheckButton>(builder, "upload_limit_check"))
     , up_limit_sping_(gtr_get_widget<Gtk::SpinButton>(builder, "upload_limit_spin"))
@@ -2041,8 +2055,8 @@ DetailsDialog::Impl::Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> cons
     , file_label_(gtr_get_widget<Gtk::Label>(builder, "files_label"))
 {
     /* return saved window size */
-    auto const width = gtr_pref_int_get<int>(TR_KEY_details_window_width);
-    auto const height = gtr_pref_int_get<int>(TR_KEY_details_window_height);
+    auto const width = prefs_.get<int>(TR_KEY_details_window_width);
+    auto const height = prefs_.get<int>(TR_KEY_details_window_height);
 #if GTKMM_CHECK_VERSION(4, 0, 0)
     dialog_.set_default_size(width, height);
     dialog_.property_default_width().signal_changed().connect(sigc::mem_fun(*this, &Impl::on_details_window_size_allocated));

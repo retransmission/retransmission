@@ -53,9 +53,9 @@ find_cfiles() {
        ! \( $(get_find_path_args $(trim_comments .clang-format-ignore)) \) "$@"
 }
 
-# We're targeting clang-format version 22 and other versions give slightly
-# different results, so prefer `clang-format-22` if it's installed.
-clang_format_version=22
+# We're targeting clang-format version 23 and other versions give slightly
+# different results, so prefer `clang-format-23` if it's installed.
+clang_format_version=23
 clang_format_exe_names=(
   "clang-format-${clang_format_version}"
   'clang-format'

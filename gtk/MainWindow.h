@@ -14,6 +14,11 @@
 
 #include <memory>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
 class Session;
 class Torrent;
 
@@ -25,17 +30,19 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Application& app,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
     MainWindow(MainWindow&&) = delete;
     MainWindow(MainWindow const&) = delete;
     MainWindow& operator=(MainWindow&&) = delete;
     MainWindow& operator=(MainWindow const&) = delete;
     ~MainWindow() override;
 
-    static std::unique_ptr<MainWindow> create(
+    [[nodiscard]] static std::unique_ptr<MainWindow> create(
         Gtk::Application& app,
         Glib::RefPtr<Gio::ActionGroup> const& actions,
-        Glib::RefPtr<Session> const& core);
+        Glib::RefPtr<Session> const& core,
+        tr::app::Prefs& prefs);
 
     void for_each_selected_torrent(std::function<void(Glib::RefPtr<Torrent> const&)> const& callback) const;
     bool for_each_selected_torrent_until(std::function<bool(Glib::RefPtr<Torrent> const&)> const& callback) const;
@@ -46,7 +53,7 @@ public:
     void set_busy(bool isBusy);
     void refresh();
 
-    sigc::signal<void()>& signal_selection_changed();
+    [[nodiscard]] sigc::signal<void()>& signal_selection_changed();
 
 private:
     class Impl;

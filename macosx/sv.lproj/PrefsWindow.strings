@@ -1,4 +1,3 @@
-
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Inställningar";
 
@@ -19,48 +18,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "542"; */
 "542.title" = "Andra…";
-
-/* Class = "NSButtonCell"; title = "Quit with active transfers"; ObjectID = "1201"; */
-"1201.title" = "Avsluta med aktiva överföringar";
-
-/* Class = "NSButtonCell"; title = "Removal of active transfers"; ObjectID = "1202"; */
-"1202.title" = "Borttagning av aktiva överföringar";
-
-/* Class = "NSTextFieldCell"; title = "Prompt user for:"; ObjectID = "1203"; */
-"1203.title" = "Fråga användaren om:";
-
-/* Class = "NSTextFieldCell"; title = "Badge Dock icon with:"; ObjectID = "1204"; */
-"1204.title" = "Märk dockaikon med:";
-
-/* Class = "NSButtonCell"; title = "Total download rate"; ObjectID = "1205"; */
-"1205.title" = "Total hämtningshastighet";
-
-/* Class = "NSButtonCell"; title = "Total upload rate"; ObjectID = "1206"; */
-"1206.title" = "Total sändningshastighet";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1207"; */
-"1207.title" = "Endast när överföringar hämtas";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1208"; */
-"1208.title" = "Endast när överföringar hämtas";
-
-/* Class = "NSTextFieldCell"; title = "Auto resize:"; ObjectID = "1209"; */
-"1209.title" = "Ändra storlek automatiskt:";
-
-/* Class = "NSButtonCell"; title = "Automatically size window to fit all transfers"; ObjectID = "1210"; */
-"1210.title" = "Automatiskt storlek på fönstret för att passa alla överföringar";
-
-/* Class = "NSButtonCell"; title = "Reset"; ObjectID = "1211"; */
-"1211.title" = "Återställ";
-
-/* Class = "NSTextFieldCell"; title = "Reset all alerts:"; ObjectID = "1212"; */
-"1212.title" = "Återställ alla varningar:";
-
-/* Class = "NSButtonCell"; title = "Automatically check daily"; ObjectID = "1213"; */
-"1213.title" = "Kontrollera automatiskt dagligen";
-
-/* Class = "NSTextFieldCell"; title = "Check for update:"; ObjectID = "1214"; */
-"1214.title" = "Sök efter uppdatering:";
 
 /* Class = "NSTextFieldCell"; title = "Default location:"; ObjectID = "1216"; */
 "1216.title" = "Standardplats:";
@@ -305,9 +262,6 @@
 /* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
 "1892.title" = "Slumpmässig";
 
-/* Class = "NSButtonCell"; title = "Include beta releases"; ObjectID = "1896"; */
-"1896.title" = "Inkludera betaversioner";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Varje dag";
 
@@ -340,12 +294,6 @@
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "Använd distribuerad hashtabell (DHT) för publika torrenter";
-
-/* Class = "NSTextFieldCell"; title = "Accept magnet links:"; ObjectID = "1931"; */
-"1931.title" = "Acceptera magnetlänkar:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "1933"; */
-"1933.title" = "Ställ in standardapplikation";
 
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "Lägg till .part till ofullständiga filer";
@@ -380,23 +328,11 @@
 /* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
 "2082.title" = "Lyssningsport för jämlike:";
 
-/* Class = "NSTextFieldCell"; title = "Notifications:"; ObjectID = "2087"; */
-"2087.title" = "Aviseringar:";
-
-/* Class = "NSButtonCell"; title = "Configure In System Preferences"; ObjectID = "2114"; */
-"2114.title" = "Ställ in i systeminställningar";
-
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Ta bort från överföringslistan när distributionen är klar";
 
 /* Class = "NSTextFieldCell"; title = "Applies to newly added transfers"; ObjectID = "2123"; */
 "2123.title" = "Tillämpas på nyligen tillagda överföringar";
 
-/* Class = "NSTextFieldCell"; title = "Open torrent files:"; ObjectID = "A9E-F4-a3c"; */
-"A9E-F4-a3c.title" = "Öppna torrentfiler:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "pgY-W3-HdI"; */
-"pgY-W3-HdI.title" = "Ställ in standardapplikation";
-
-/* Class = "NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
-/* "wM8-cD-WAB.title" = ""; */
+"NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
+/* "wM8-cD-WAB.title" = "";

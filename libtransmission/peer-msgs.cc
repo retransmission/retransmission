@@ -690,12 +690,12 @@ private:
 
     void send_ut_pex();
 
-    bool client_got_block(std::unique_ptr<tr::LocalData::BlockData> block_data, tr_block_index_t block);
-    ReadResult read_piece_data(MessageReader& payload);
+    [[nodiscard]] bool client_got_block(std::unique_ptr<tr::LocalData::BlockData> block_data, tr_block_index_t block);
+    [[nodiscard]] ReadResult read_piece_data(MessageReader& payload);
 
     // Precondition: `payload` is a complete message body whose length
     // can_read_impl() has already accepted for `id`.
-    ReadResult process_peer_message(uint8_t id, MessageReader& payload);
+    [[nodiscard]] ReadResult process_peer_message(uint8_t id, MessageReader& payload);
 
     // ---
 
@@ -755,7 +755,7 @@ private:
 
     // ---
 
-    ReadResult can_read_impl(tr_peerIo* io);
+    [[nodiscard]] ReadResult can_read_impl(tr_peerIo* io);
 
     static void did_write(tr_peerIo* /*io*/, size_t bytes_written, bool was_piece_data, void* vmsgs);
     static ReadState can_read(tr_peerIo* io, void* vmsgs, size_t* piece);

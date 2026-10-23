@@ -135,7 +135,7 @@ namespace
 
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
 
-Glib::ustring getIconName()
+[[nodiscard]] Glib::ustring getIconName()
 {
     // if the tray's icon is a 48x48 file, use it.
     // otherwise, use the fallback builtin icon.

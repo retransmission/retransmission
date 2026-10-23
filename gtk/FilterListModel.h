@@ -37,13 +37,13 @@ public:
     FilterListModel& operator=(FilterListModel const&) = delete;
     FilterListModel& operator=(FilterListModel&&) = delete;
 
-    guint get_n_items() const;
+    [[nodiscard]] guint get_n_items() const;
 
-    sigc::signal<void(guint, guint, guint)>& signal_items_changed();
+    [[nodiscard]] sigc::signal<void(guint, guint, guint)>& signal_items_changed();
 #endif
 
     template<typename ModelT>
-    static Glib::RefPtr<FilterListModel<ItemT>> create(
+    [[nodiscard]] static Glib::RefPtr<FilterListModel<ItemT>> create(
         Glib::RefPtr<ModelT> const& model,
         Glib::RefPtr<FilterType> const& filter);
 

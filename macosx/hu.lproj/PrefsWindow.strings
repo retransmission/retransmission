@@ -1,4 +1,3 @@
-
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Beállítások";
 
@@ -19,48 +18,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "542"; */
 "542.title" = "Egyéb...";
-
-/* Class = "NSButtonCell"; title = "Quit with active transfers"; ObjectID = "1201"; */
-"1201.title" = "Kilépés aktív átvitelek esetén";
-
-/* Class = "NSButtonCell"; title = "Removal of active transfers"; ObjectID = "1202"; */
-"1202.title" = "Aktív átvitelek eltávolításakor";
-
-/* Class = "NSTextFieldCell"; title = "Prompt user for:"; ObjectID = "1203"; */
-"1203.title" = "Felhasználó megkérdezése:";
-
-/* Class = "NSTextFieldCell"; title = "Badge Dock icon with:"; ObjectID = "1204"; */
-"1204.title" = "Dock ikon felcímkézése:";
-
-/* Class = "NSButtonCell"; title = "Total download rate"; ObjectID = "1205"; */
-"1205.title" = "Teljes letöltési sebesség";
-
-/* Class = "NSButtonCell"; title = "Total upload rate"; ObjectID = "1206"; */
-"1206.title" = "Teljes feltöltési sebesség";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1207"; */
-"1207.title" = "Csak akkor ha van aktív letöltés";
-
-/* Class = "NSButtonCell"; title = "Only when transfers are downloading"; ObjectID = "1208"; */
-"1208.title" = "Csak akkor ha van aktív letöltés";
-
-/* Class = "NSTextFieldCell"; title = "Auto resize:"; ObjectID = "1209"; */
-"1209.title" = "Auto átméretezés:";
-
-/* Class = "NSButtonCell"; title = "Automatically size window to fit all transfers"; ObjectID = "1210"; */
-"1210.title" = "Automatikusan méretezze úgy az ablakot, hogy az összes átvitel beleférjen";
-
-/* Class = "NSButtonCell"; title = "Reset"; ObjectID = "1211"; */
-"1211.title" = "Visszaállítás";
-
-/* Class = "NSTextFieldCell"; title = "Reset all alerts:"; ObjectID = "1212"; */
-"1212.title" = "Összes figyelmeztetés nullázása:";
-
-/* Class = "NSButtonCell"; title = "Automatically check daily"; ObjectID = "1213"; */
-"1213.title" = "Ellenőrzés naponta automatikusan";
-
-/* Class = "NSTextFieldCell"; title = "Check for update:"; ObjectID = "1214"; */
-"1214.title" = "Frissítések keresése:";
 
 /* Class = "NSTextFieldCell"; title = "Default location:"; ObjectID = "1216"; */
 "1216.title" = "Alapértelmezett hely:";
@@ -305,9 +262,6 @@
 /* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
 "1892.title" = "Véletlenszerű";
 
-/* Class = "NSButtonCell"; title = "Include beta releases"; ObjectID = "1896"; */
-"1896.title" = "Béta kiadásokat is keressen";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Minden nap";
 
@@ -340,12 +294,6 @@
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "Megosztott Hash-tábla (DHT) használata publikus torrenteknél";
-
-/* Class = "NSTextFieldCell"; title = "Accept magnet links:"; ObjectID = "1931"; */
-"1931.title" = "Magnet linkek elfogadása:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "1933"; */
-"1933.title" = "Alapértelmezett alkalmazás beállítása";
 
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = ".part hozzáfűzése a befejezetlen fáljokhoz";
@@ -380,23 +328,11 @@
 /* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
 "2082.title" = "Átvitelhez használt port:";
 
-/* Class = "NSTextFieldCell"; title = "Notifications:"; ObjectID = "2087"; */
-"2087.title" = "Értesítések:";
-
-/* Class = "NSButtonCell"; title = "Configure In System Preferences"; ObjectID = "2114"; */
-"2114.title" = "Konfigurálás Rendszerbeállításokban";
-
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Távolítsa el az átviteli listából ha a seedelés befejeződött";
 
 /* Class = "NSTextFieldCell"; title = "Applies to newly added transfers"; ObjectID = "2123"; */
 "2123.title" = "Újonnan hozzáadott átvitelekre vonatkozik";
 
-/* Class = "NSTextFieldCell"; title = "Open torrent files:"; ObjectID = "A9E-F4-a3c"; */
-"A9E-F4-a3c.title" = "Torrent fájlok megnyitása:";
-
-/* Class = "NSButtonCell"; title = "Set Default Application"; ObjectID = "pgY-W3-HdI"; */
-"pgY-W3-HdI.title" = "Alapértelmezett alkalmazás beállítása";
-
-/* Class = "NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
-/* "wM8-cD-WAB.title" = ""; */
+"NSButtonCell"; title = "Verify data when download completes"; ObjectID = "wM8-cD-WAB"; */
+/* "wM8-cD-WAB.title" = "";

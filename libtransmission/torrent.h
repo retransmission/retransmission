@@ -568,9 +568,9 @@ struct tr_torrent {
         return metainfo_.announce_list();
     }
 
-    bool set_announce_list(tr_announce_list announce_list);
+    [[nodiscard]] bool set_announce_list(tr_announce_list announce_list);
 
-    bool set_announce_list(std::string_view announce_list_str);
+    [[nodiscard]] bool set_announce_list(std::string_view announce_list_str);
 
     /// METAINFO - WEBSEEDS
 
@@ -1534,7 +1534,7 @@ private:
 
 // ---
 
-constexpr bool tr_isTorrent(tr_torrent const* tor) noexcept
+[[nodiscard]] constexpr bool tr_isTorrent(tr_torrent const* tor) noexcept
 {
     return tor != nullptr && tor->session != nullptr;
 }

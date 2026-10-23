@@ -19,7 +19,7 @@ IncludeCategories:
     Priority: 9
   - Regex: '^<sigc\+\+([-./]|config)'
     Priority: 10
-  - Regex: '^<(fmt|small|woke)/'
+  - Regex: '^<(fmt|sigslot|small|woke)/'
     Priority: 11
   - Regex: '^<[a-z_]+>'
     Priority: 12
@@ -46,13 +46,4 @@ IncludeCategories:
 SortIncludes:
   Enabled: true
   IgnoreCase: true
-
-# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283
-BreakAfterOpenBracketFunction: true
-BreakAfterOpenBracketIf: true
-BreakAfterOpenBracketLoop: true
-BreakAfterOpenBracketSwitch: true
-BreakBeforeCloseBracketFunction: false
-BreakBeforeCloseBracketIf: false
-BreakBeforeCloseBracketLoop: false
-BreakBeforeCloseBracketSwitch: false
+...

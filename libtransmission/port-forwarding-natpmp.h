@@ -47,7 +47,7 @@ public:
         tr_port advertised_port;
     };
 
-    PulseResult pulse(tr_port local_port, bool is_enabled);
+    [[nodiscard]] PulseResult pulse(tr_port local_port, bool is_enabled);
 
 private:
     enum class State : uint8_t { Idle, Err, Discover, RecvPub, SendMap, RecvMap, SendUnmap, RecvUnmap };

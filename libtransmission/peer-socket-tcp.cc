@@ -28,7 +28,7 @@
 
 namespace
 {
-tr_socket_t create_socket(int const domain)
+[[nodiscard]] tr_socket_t create_socket(int const domain)
 {
     auto const sockfd = socket(domain, SOCK_STREAM, 0);
     if (!is_valid_socket(sockfd)) {
@@ -68,7 +68,10 @@ tr_socket_t create_socket(int const domain)
     return sockfd;
 }
 
-tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const& socket_address, bool const client_is_seed)
+[[nodiscard]] tr_socket_t open_peer_socket(
+    tr_session const& session,
+    tr_socket_address const& socket_address,
+    bool const client_is_seed)
 {
     auto const& [addr, port] = socket_address;
 

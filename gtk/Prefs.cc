@@ -4,128 +4,13 @@
 
 #include "Prefs.h"
 
-#include <libtransmission-app/display-modes.h>
-
 #include <libtransmission/converters.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
-#include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
 #include <string>
 #include <string_view>
-
-using namespace std::literals;
-using namespace tr::app;
-using tr::serializer::to_variant;
-
-namespace
-{
-std::string gl_confdir;
-
-/**
- * This is where we initialize the preferences file with the default values.
- * If you add a new preferences key, you /must/ add a default value here.
- */
-[[nodiscard]] auto get_default_app_settings()
-{
-    auto const dir = tr::platform::get_download_dir();
-
-    auto map = tr::Settings{ 32U };
-    map.try_emplace(TR_KEY_blocklist_updates_enabled, true);
-    map.try_emplace(TR_KEY_compact_view, false);
-    map.try_emplace(TR_KEY_details_window_height, 500);
-    map.try_emplace(TR_KEY_details_window_width, 700);
-    map.try_emplace(TR_KEY_download_dir, dir);
-    map.try_emplace(TR_KEY_filter_trackers, std::string{});
-    map.try_emplace(TR_KEY_inhibit_desktop_hibernation, true);
-    map.try_emplace(TR_KEY_main_window_height, 500);
-    map.try_emplace(TR_KEY_main_window_is_maximized, false);
-    map.try_emplace(TR_KEY_main_window_width, 600);
-    map.try_emplace(TR_KEY_main_window_x, 50);
-    map.try_emplace(TR_KEY_main_window_y, 50);
-    map.try_emplace(TR_KEY_open_dialog_dir, Glib::get_home_dir());
-    map.try_emplace(TR_KEY_show_backup_trackers, false);
-    map.try_emplace(TR_KEY_show_extra_peer_details, false);
-    map.try_emplace(TR_KEY_show_filterbar, true);
-    map.try_emplace(TR_KEY_show_mode, to_variant(DefaultShowMode));
-    map.try_emplace(TR_KEY_show_notification_area_icon, false);
-    map.try_emplace(TR_KEY_show_options_window, true);
-    map.try_emplace(TR_KEY_show_statusbar, true);
-    map.try_emplace(TR_KEY_show_toolbar, true);
-    map.try_emplace(TR_KEY_show_tracker_scrapes, false);
-    map.try_emplace(TR_KEY_sort_mode, to_variant(DefaultSortMode));
-    map.try_emplace(TR_KEY_sort_reversed, false);
-    map.try_emplace(TR_KEY_start_minimized, false);
-    map.try_emplace(TR_KEY_statusbar_stats, to_variant(DefaultStatsMode));
-    map.try_emplace(TR_KEY_torrent_added_notification_enabled, true);
-    map.try_emplace(TR_KEY_torrent_complete_notification_enabled, true);
-    map.try_emplace(TR_KEY_torrent_complete_sound_enabled, true);
-    map.try_emplace(TR_KEY_watch_dir, dir);
-    map.try_emplace(TR_KEY_watch_dir_enabled, false);
-    return map;
-}
-
-[[nodiscard]] auto load_settings(std::string_view const config_dir)
-{
-    return tr_sessionLoadSettings(config_dir, get_default_app_settings());
-}
-
-} // namespace
-
-void gtr_pref_init(std::string_view config_dir)
-{
-    gl_confdir = config_dir;
-}
-
-tr::Settings& gtr_pref_get_all()
-{
-    static auto settings = load_settings(gl_confdir);
-    return settings;
-}
-
-bool gtr_pref_has_key(tr_quark const key)
-{
-    return gtr_pref_get_all().contains(key);
-}
-
-double gtr_pref_double_get(tr_quark const key)
-{
-    return gtr_pref_lookup<double>(key).value_or(0.0);
-}
-
-void gtr_pref_double_set(tr_quark const key, double const value)
-{
-    gtr_pref_set<double>(key, value);
-}
-
-bool gtr_pref_flag_get(tr_quark const key)
-{
-    return gtr_pref_lookup<bool>(key).value_or(false);
-}
-
-void gtr_pref_flag_set(tr_quark const key, bool const value)
-{
-    gtr_pref_set<bool>(key, value);
-}
-
-std::string gtr_pref_string_get(tr_quark const key)
-{
-    return gtr_pref_lookup<std::string>(key).value_or(std::string{});
-}
-
-void gtr_pref_string_set(tr_quark const key, std::string_view const value)
-{
-    gtr_pref_set<std::string>(key, std::string{ value });
-}
-
-void gtr_pref_save(tr_session* session)
-{
-    tr_sessionSaveSettings(session, gl_confdir, gtr_pref_get_all());
-}
-
-// ---
 
 namespace tr::serializer
 {

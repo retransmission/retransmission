@@ -62,7 +62,7 @@ bool change(TrackerStat& setme, tr_variant const* value)
 
 namespace
 {
-bool toQString(tr_variant const& src, QString* tgt)
+[[nodiscard]] bool toQString(tr_variant const& src, QString* tgt)
 {
     if (auto const val = src.value_if<std::string_view>()) {
         *tgt = Utils::qstringFromUtf8(*val);
@@ -72,14 +72,14 @@ bool toQString(tr_variant const& src, QString* tgt)
     return false;
 }
 
-tr_variant fromQString(QString const& val)
+[[nodiscard]] tr_variant fromQString(QString const& val)
 {
     return val.toStdString();
 }
 
 // ---
 
-bool toSpeed(tr_variant const& src, Speed* tgt)
+[[nodiscard]] bool toSpeed(tr_variant const& src, Speed* tgt)
 {
     if (auto const val = ser::to_value<int64_t>(src)) {
         *tgt = Speed{ *val, Speed::Units::Byps };
@@ -89,14 +89,14 @@ bool toSpeed(tr_variant const& src, Speed* tgt)
     return false;
 }
 
-tr_variant fromSpeed(Speed const& src)
+[[nodiscard]] tr_variant fromSpeed(Speed const& src)
 {
     return ser::to_variant(static_cast<int64_t>(src.base_quantity()));
 }
 
 // ---
 
-bool toTorrentHash(tr_variant const& src, TorrentHash* tgt)
+[[nodiscard]] bool toTorrentHash(tr_variant const& src, TorrentHash* tgt)
 {
     if (auto const val = src.value_if<std::string_view>()) {
         *tgt = TorrentHash{ *val };
@@ -106,7 +106,7 @@ bool toTorrentHash(tr_variant const& src, TorrentHash* tgt)
     return false;
 }
 
-tr_variant fromTorrentHash(TorrentHash const& src)
+[[nodiscard]] tr_variant fromTorrentHash(TorrentHash const& src)
 {
     return ser::to_variant(src.toString());
 }

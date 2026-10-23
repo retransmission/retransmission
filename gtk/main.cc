@@ -47,7 +47,10 @@ namespace
 auto const* const AppConfigDirName = TR_PROJ_SHARED_CONFIG_DIRNAME;
 auto const* const AppName = MY_NAME;
 
-Glib::OptionEntry create_option_entry(Glib::ustring const& long_name, gchar short_name, Glib::ustring const& description)
+[[nodiscard]] Glib::OptionEntry create_option_entry(
+    Glib::ustring const& long_name,
+    gchar short_name,
+    Glib::ustring const& description)
 {
     Glib::OptionEntry entry;
     entry.set_long_name(long_name);
@@ -150,8 +153,6 @@ int main(int argc, char** argv)
     // so that `-g dir`, `-g dir/` and a symlink to it all name one instance.
     config_dir = tr::interop::canonical_config_dir_created(config_dir);
 
-    gtr_pref_init(config_dir);
-
     // Try to hand this launch to an instance already running on this config dir before starting ourselves.
     // GApplication would forward the arguments if this were a unique application,
     // but its bus name reaches only clients built on this toolkit.
@@ -185,10 +186,12 @@ int main(int argc, char** argv)
     /* init notifications */
     gtr_notify_init();
 
-    start_iconified |= gtr_pref_flag_get(TR_KEY_start_minimized);
+    auto prefs = tr::app::Prefs{ config_dir };
+
+    start_iconified |= prefs.get<bool>(TR_KEY_start_minimized);
 
     /* init the application for the specified config dir */
-    auto app = Application{ config_dir, start_paused, start_iconified, std::move(startup_coordinator) };
+    auto app = Application{ config_dir, prefs, start_paused, start_iconified, std::move(startup_coordinator) };
     auto const result = app.run(argc, argv);
 
     if (app.configDirIsContended()) {

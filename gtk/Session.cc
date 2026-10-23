@@ -13,9 +13,7 @@
 #include "Utils.h"
 
 #include <libtransmission/converters.h>
-#include <libtransmission/env.h>
 #include <libtransmission/macros.h>
-#include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/transmission.h>
@@ -35,6 +33,7 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/stringutils.h>
 
+#include <sigslot/signal.hpp>
 #include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -48,10 +47,8 @@
 #include <algorithm>
 #include <array>
 #include <cstring> // strstr
-#include <functional>
 #include <initializer_list>
 #include <iostream>
-#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -64,22 +61,22 @@ using namespace tr::app;
 class Session::Impl
 {
 public:
-    Impl(Session& core, tr_session* session);
+    Impl(Session& core, tr_session* session, RpcClient& rpc);
     Impl& operator=(Impl&&) = delete;
     Impl& operator=(Impl const&) = delete;
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     ~Impl();
 
-    tr_session* close();
+    [[nodiscard]] tr_session* close();
 
-    Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
-    Glib::RefPtr<SortListModel<Torrent>> get_model();
-    tr_session* get_session() const;
+    [[nodiscard]] Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
+    [[nodiscard]] Glib::RefPtr<SortListModel<Torrent>> get_model();
+    [[nodiscard]] tr_session* get_session() const;
 
-    std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
+    [[nodiscard]] std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
 
-    size_t get_unpaused_torrent_count() const;
+    [[nodiscard]] size_t get_unpaused_torrent_count() const;
 
     [[nodiscard]] bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
     void set_port_test_pending(bool pending, tr_address_type ip_protocol);
@@ -91,54 +88,51 @@ public:
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
     void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt, bool do_notify);
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
-    bool add_from_url(Glib::ustring const& url);
+    [[nodiscard]] bool add_from_url(Glib::ustring const& url);
 
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
 
-    void send_rpc_request(tr_quark method, tr_variant&& params, std::function<void(tr_variant&)>&& on_response);
+    [[nodiscard]] constexpr auto& rpc() noexcept
+    {
+        return rpc_;
+    }
 
-    // Ask session_get for just `keys`.
-    // `on_result` gets the reply's result map, or nullptr if the reply has none.
-    void send_session_get(std::initializer_list<tr_quark> keys, std::function<void(tr_variant::Map const*)>&& on_result);
-
-    void commit_prefs_change(tr_quark key);
-
-    auto& signal_add_error()
+    [[nodiscard]] auto& signal_add_error()
     {
         return signal_add_error_;
     }
 
-    auto& signal_add_prompt()
+    [[nodiscard]] auto& signal_add_prompt()
     {
         return signal_add_prompt_;
     }
 
-    auto& signal_blocklist_info()
+    [[nodiscard]] auto& signal_blocklist_info()
     {
         return signal_blocklist_info_;
     }
 
-    auto& signal_blocklist_updated()
+    [[nodiscard]] auto& signal_blocklist_updated()
     {
         return signal_blocklist_updated_;
     }
 
-    auto& signal_busy()
+    [[nodiscard]] auto& signal_busy()
     {
         return signal_busy_;
     }
 
-    auto& signal_prefs_changed()
+    [[nodiscard]] auto& signal_prefs_changed()
     {
         return signal_prefs_changed_;
     }
 
-    auto& signal_port_tested()
+    [[nodiscard]] auto& signal_port_tested()
     {
         return signal_port_tested_;
     }
 
-    auto& signal_torrents_changed()
+    [[nodiscard]] auto& signal_torrents_changed()
     {
         return signal_torrents_changed_;
     }
@@ -149,9 +143,9 @@ public:
     }
 
 private:
-    Glib::RefPtr<Session> get_core_ptr() const;
+    [[nodiscard]] Glib::RefPtr<Session> get_core_ptr() const;
 
-    bool is_busy() const;
+    [[nodiscard]] bool is_busy() const;
     void add_to_busy(int addMe);
     void inc_busy();
     void dec_busy();
@@ -164,7 +158,7 @@ private:
         bool do_prompt,
         bool do_notify);
 
-    Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
+    [[nodiscard]] Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
 
     void update_sleep_inhibitor();
 
@@ -194,6 +188,8 @@ private:
     sigc::signal<void(std::optional<bool>, tr_address_type)> signal_port_tested_;
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
 
+    sigslot::scoped_connection prefs_changed_tag_;
+
     Glib::RefPtr<Gio::FileMonitor> monitor_;
     sigc::connection monitor_tag_;
     Glib::RefPtr<Gio::File> monitor_dir_;
@@ -209,6 +205,7 @@ private:
     Glib::RefPtr<SortListModel<Torrent>> sorted_model_;
     Glib::RefPtr<TorrentSorter> sorter_ = TorrentSorter::create();
     tr_session* session_ = nullptr;
+    RpcClient& rpc_;
 
     FaviconCache<Glib::RefPtr<Gdk::Pixbuf>> favicon_cache_;
 };
@@ -292,7 +289,7 @@ void Session::Impl::dec_busy()
 namespace
 {
 
-time_t get_file_mtime(Glib::RefPtr<Gio::File> const& file)
+[[nodiscard]] time_t get_file_mtime(Glib::RefPtr<Gio::File> const& file)
 {
     try {
         return static_cast<time_t>(
@@ -349,8 +346,8 @@ bool Session::Impl::watchdir_idle()
 
     /* add the files that have stopped changing */
     if (!unchanging.empty()) {
-        bool const do_start = gtr_pref_flag_get(TR_KEY_start_added_torrents);
-        bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
+        bool const do_start = core_.prefs_.get<bool>(TR_KEY_start_added_torrents);
+        bool const do_prompt = core_.prefs_.get<bool>(TR_KEY_show_options_window);
 
         adding_from_watch_dir_ = true;
         add_files(unchanging, do_start, do_prompt, true);
@@ -404,7 +401,7 @@ void Session::Impl::on_file_changed_in_watchdir(
 /* walk through the pre-existing files in the watchdir */
 void Session::Impl::watchdir_scan()
 {
-    auto const dirname = gtr_pref_string_get(TR_KEY_watch_dir);
+    auto const dirname = core_.prefs_.get<std::string>(TR_KEY_watch_dir);
 
     try {
         for (auto const& name : Glib::Dir(dirname)) {
@@ -422,8 +419,8 @@ void Session::Impl::watchdir_scan()
 
 void Session::Impl::watchdir_update()
 {
-    bool const is_enabled = gtr_pref_flag_get(TR_KEY_watch_dir_enabled);
-    auto const dir = Gio::File::create_for_path(gtr_pref_string_get(TR_KEY_watch_dir));
+    bool const is_enabled = core_.prefs_.get<bool>(TR_KEY_watch_dir_enabled);
+    auto const dir = Gio::File::create_for_path(core_.prefs_.get<std::string>(TR_KEY_watch_dir));
 
     if (monitor_ != nullptr && (!is_enabled || !dir->equal(monitor_dir_))) {
         monitor_tag_.disconnect();
@@ -458,23 +455,21 @@ void Session::Impl::watchdir_update()
 
 void Session::Impl::on_pref_changed(tr_quark const key)
 {
-    g_return_if_fail(gtr_pref_has_key(key));
-
     switch (key) {
     case TR_KEY_sort_mode:
-        sorter_->set_mode(gtr_pref_get<SortMode>(TR_KEY_sort_mode));
+        sorter_->set_mode(core_.prefs_.get<SortMode>(TR_KEY_sort_mode));
         break;
 
     case TR_KEY_sort_reversed:
-        sorter_->set_reversed(gtr_pref_flag_get(TR_KEY_sort_reversed));
+        sorter_->set_reversed(core_.prefs_.get<bool>(TR_KEY_sort_reversed));
         break;
 
     case TR_KEY_peer_limit_global:
-        tr_sessionSetPeerLimit(session_, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetPeerLimit(session_, core_.prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_peer_limit_per_torrent:
-        tr_sessionSetPeerLimitPerTorrent(session_, gtr_pref_int_get<size_t>(key));
+        tr_sessionSetPeerLimitPerTorrent(session_, core_.prefs_.get<size_t>(key));
         break;
 
     case TR_KEY_inhibit_desktop_hibernation:
@@ -495,24 +490,29 @@ void Session::Impl::on_pref_changed(tr_quark const key)
 ***
 **/
 
-Glib::RefPtr<Session> Session::create(tr_session* session)
+Glib::RefPtr<Session> Session::create(tr_session* const session, Prefs& prefs, RpcClient& rpc)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    return Glib::make_refptr_for_instance(new Session(session));
+    return Glib::make_refptr_for_instance(new Session(session, prefs, rpc));
 }
 
-Session::Session(tr_session* session)
+Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
     : Glib::ObjectBase(typeid(Session))
-    , impl_(std::make_unique<Impl>(*this, session))
+    , prefs_(prefs)
+    , impl_(std::make_unique<Impl>(*this, session, rpc))
 {
 }
 
 Session::~Session() = default;
 
-Session::Impl::Impl(Session& core, tr_session* session)
+Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
     : core_{ core }
     , session_{ session }
+    , rpc_{ rpc }
 {
+    // Before anything can send: exec() drops requests made before start().
+    rpc_.start(session);
+
     raw_model_ = Gio::ListStore<Torrent>::create();
     signal_torrents_changed_.connect(sigc::hide<0>(sigc::mem_fun(*sorter_, &TorrentSorter::update)));
     sorted_model_ = SortListModel<Torrent>::create(gtr_ptr_static_cast<Gio::ListModel>(raw_model_), sorter_);
@@ -524,6 +524,7 @@ Session::Impl::Impl(Session& core, tr_session* session)
     on_pref_changed(TR_KEY_peer_limit_global);
     on_pref_changed(TR_KEY_inhibit_desktop_hibernation);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
+    prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
 
     tr_sessionSetMetadataCallback(session, [this](tr_torrent_id_t const tor_id) { on_torrent_metadata_changed(tor_id); });
 
@@ -550,7 +551,8 @@ tr_session* Session::Impl::close()
 
     if (session != nullptr) {
         session_ = nullptr;
-        gtr_pref_save(session);
+        rpc_.stop();
+        core_.prefs_.save(tr_sessionGetConfigDir(session), tr_sessionGetSettings(session));
     }
 
     return session;
@@ -569,8 +571,8 @@ void Session::Impl::on_torrent_completeness_changed(
 {
     if (auto* const tor = tr_torrentFindFromId(session_, tor_id);
         was_running && completeness != TR_LEECH && tor != nullptr && tr_torrentStat(tor).size_when_done != 0U) {
-        Glib::signal_idle().connect([core = get_core_ptr(), tor_id]() {
-            gtr_notify_torrent_completed(core, tor_id);
+        Glib::signal_idle().connect([core = get_core_ptr(), &prefs = core_.prefs_, tor_id]() {
+            gtr_notify_torrent_completed(core, prefs, tor_id);
             return false;
         });
     }
@@ -641,7 +643,7 @@ void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_no
         raw_model_->insert_sorted(torrent, &Torrent::compare_by_id);
 
         if (do_notify) {
-            gtr_notify_torrent_added(get_core_ptr(), torrent->get_id());
+            gtr_notify_torrent_added(get_core_ptr(), core_.prefs_, torrent->get_id());
         }
     }
 }
@@ -697,18 +699,18 @@ void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, boo
 namespace
 {
 
-void core_apply_defaults(tr_torrent_builder* builder)
+void core_apply_defaults(tr_torrent_builder* const builder, Prefs const& prefs)
 {
     if (!builder->paused()) {
-        builder->set_paused(!gtr_pref_flag_get(TR_KEY_start_added_torrents));
+        builder->set_paused(!prefs.get<bool>(TR_KEY_start_added_torrents));
     }
 
     if (!builder->peer_limit()) {
-        builder->set_peer_limit(gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
+        builder->set_peer_limit(prefs.get<size_t>(TR_KEY_peer_limit_per_torrent));
     }
 
     if (std::empty(builder->download_dir())) {
-        builder->set_download_dir(gtr_pref_string_get(TR_KEY_download_dir));
+        builder->set_download_dir(prefs.get<std::string>(TR_KEY_download_dir));
     }
 }
 
@@ -717,8 +719,8 @@ void core_apply_defaults(tr_torrent_builder* builder)
 void Session::add_builder(std::unique_ptr<tr_torrent_builder> builder)
 {
     bool const do_notify = false;
-    bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
-    core_apply_defaults(builder.get());
+    bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
+    core_apply_defaults(builder.get(), prefs_);
     impl_->add_builder(std::move(builder), do_prompt, do_notify);
 
     // This is a batch of one, so end it here.
@@ -781,7 +783,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
 
     bool handled = false;
     auto builder = std::make_unique<tr_torrent_builder>(session);
-    core_apply_defaults(builder.get());
+    core_apply_defaults(builder.get(), core_.prefs_);
     builder->set_paused(!do_start);
 
     bool loaded = false;
@@ -821,8 +823,8 @@ bool Session::add_from_url(Glib::ustring const& url)
 
 bool Session::Impl::add_from_url(Glib::ustring const& url)
 {
-    auto const do_start = gtr_pref_flag_get(TR_KEY_start_added_torrents);
-    auto const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
+    auto const do_start = core_.prefs_.get<bool>(TR_KEY_start_added_torrents);
+    auto const do_prompt = core_.prefs_.get<bool>(TR_KEY_show_options_window);
     auto const do_notify = false;
 
     auto const handled = add(url, do_start, do_prompt, do_notify);
@@ -954,7 +956,7 @@ void Session::Impl::update_torrent(tr_torrent_id_t const id)
 
 void Session::Impl::update_sleep_inhibitor()
 {
-    if (gtr_pref_flag_get(TR_KEY_inhibit_desktop_hibernation) && tr_sessionIsBusy(session_)) {
+    if (core_.prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation) && tr_sessionIsBusy(session_)) {
         sleep_inhibitor_.inhibit(TR_PROJ_APPNAME_CAPITALIZED, "Torrents are active");
     } else {
         sleep_inhibitor_.uninhibit();
@@ -970,77 +972,13 @@ void Session::Impl::update_sleep_inhibitor()
 namespace
 {
 
-int64_t nextId = 1;
-
-bool const verbose_ = tr_env_key_exists("TR_RPC_VERBOSE");
-
-std::map<int64_t, std::function<void(tr_variant&)>> pendingRequests;
-
-bool core_read_rpc_response_idle(tr_variant& response)
+[[nodiscard]] tr_variant::Map const* get_result_map(RpcResponse const& response) noexcept
 {
-    if (verbose_) {
-        fmt::print("{:s}:{:d} got response:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(response));
-    }
-
-    if (auto const* resmap = response.get_if<tr_variant::Map>()) {
-        if (auto const id = resmap->value_if<int64_t>(TR_KEY_id)) {
-            if (auto const nh = pendingRequests.extract(*id)) {
-                nh.mapped()(response);
-            } else {
-                gtr_warning(fmt::format("Couldn't find pending RPC request for id {id}", fmt::arg("id", *id)));
-            }
-        }
-    }
-
-    return false;
+    return response.args ? response.args->get_if<tr_variant::Map>() : nullptr;
 }
 
-void core_read_rpc_response(tr_variant&& response)
-{
-    auto owned_response = std::make_shared<tr_variant>(std::move(response));
-    Glib::signal_idle().connect([owned_response]() mutable { return core_read_rpc_response_idle(*owned_response); });
-}
-
-} // namespace
-
-void Session::Impl::send_rpc_request(tr_quark const method, tr_variant&& params, std::function<void(tr_variant&)>&& on_response)
-{
-    if (session_ == nullptr) {
-        gtr_error("GTK+ client doesn't support connections to remote servers yet.");
-        return;
-    }
-
-    // build the jsonrpc request
-    auto reqmap = tr_variant::Map{ 4U };
-    reqmap.try_emplace(TR_KEY_jsonrpc, tr_variant::unmanaged_string(JsonRpc::Version));
-    reqmap.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
-
-    // add params if there are any
-    if (params.has_value()) {
-        reqmap.try_emplace(TR_KEY_params, std::move(params));
-    }
-
-    // add id if we want a response
-    auto callback = std::function<void(tr_variant&&)>{};
-    if (on_response) {
-        auto const id = nextId++;
-        pendingRequests.try_emplace(id, std::move(on_response));
-        reqmap.try_emplace(TR_KEY_id, id);
-        callback = core_read_rpc_response;
-    }
-
-    auto req = tr_variant{ std::move(reqmap) };
-
-    if (verbose_) {
-        fmt::print("{:s}:{:d} sending req:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(req));
-    }
-
-    tr_rpc_request_exec(session_, std::move(req), std::move(callback));
-}
-
-void Session::Impl::send_session_get(
-    std::initializer_list<tr_quark> const keys,
-    std::function<void(tr_variant::Map const*)>&& on_result)
+// params for a `session_get` that asks only for `keys`
+[[nodiscard]] tr_variant::Map make_session_get_params(std::initializer_list<tr_quark> const keys)
 {
     auto fields = tr_variant::Vector{};
     fields.reserve(std::size(keys));
@@ -1050,11 +988,14 @@ void Session::Impl::send_session_get(
 
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_fields, std::move(fields));
+    return params;
+}
 
-    send_rpc_request(TR_KEY_session_get, std::move(params), [on_result = std::move(on_result)](tr_variant& response) {
-        auto const* const resmap = response.get_if<tr_variant::Map>();
-        on_result(resmap != nullptr ? resmap->find_if<tr_variant::Map>(TR_KEY_result) : nullptr);
-    });
+} // namespace
+
+void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
+{
+    impl_->rpc().exec(method, std::move(params), std::move(on_done));
 }
 
 /***
@@ -1073,20 +1014,15 @@ void Session::port_test(tr_address_type const ip_protocol)
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_ip_protocol, tr_variant::unmanaged_string(IpStr[ip_protocol]));
 
-    impl_->send_rpc_request(TR_KEY_port_test, std::move(params), [this, ip_protocol](tr_variant& response) {
+    exec(TR_KEY_port_test, std::move(params), [this, ip_protocol](RpcResponse const& response) {
         impl_->set_port_test_pending(false, ip_protocol);
 
-        auto is_open = std::optional<bool>();
-
-        if (auto const* resmap = response.get_if<tr_variant::Map>()) {
-            if (auto const* result = resmap->find_if<tr_variant::Map>(TR_KEY_result)) {
-                is_open = result->value_if<bool>(TR_KEY_port_is_open);
-            }
+        // An empty status, e.g. after an error reply, shows as the "error" state in the UI
+        auto is_open = std::optional<bool>{};
+        if (auto const* const result = get_result_map(response); result != nullptr) {
+            is_open = result->value_if<bool>(TR_KEY_port_is_open);
         }
 
-        // If for whatever reason the status optional is empty here,
-        // then something must have gone wrong with the port test,
-        // so the UI should show the "error" state
         impl_->signal_port_tested().emit(is_open, ip_protocol);
     });
 }
@@ -1112,37 +1048,36 @@ void Session::Impl::set_port_test_pending(bool const pending, tr_address_type co
 
 void Session::blocklist_update()
 {
-    impl_->send_rpc_request(
-        TR_KEY_blocklist_update,
-        tr_variant{}, // no params
-        [this](tr_variant& response) {
-            std::optional<int64_t> n_rules;
+    exec(TR_KEY_blocklist_update, {}, [this](RpcResponse const& response) {
+        // success iff the reply reports the new rule count
+        auto n_rules = std::optional<int64_t>{};
+        if (auto const* const result = get_result_map(response); result != nullptr) {
+            n_rules = result->value_if<int64_t>(TR_KEY_blocklist_size);
+        }
 
-            if (auto const* resmap = response.get_if<tr_variant::Map>()) {
-                if (auto const* result = resmap->find_if<tr_variant::Map>(TR_KEY_result)) {
-                    n_rules = result->value_if<int64_t>(TR_KEY_blocklist_size);
-                }
-            }
-
-            impl_->signal_blocklist_updated().emit(n_rules >= 0);
-        });
+        impl_->signal_blocklist_updated().emit(n_rules.has_value());
+    });
 }
 
 void Session::refresh_blocklist_info()
 {
     // session_get reads the blocklist under the session lock,
     // which tr_blocklistGetRuleCount() does not take.
-    impl_->send_session_get({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }, [this](tr_variant::Map const* const result) {
-        if (result == nullptr) {
-            return;
-        }
+    exec(
+        TR_KEY_session_get,
+        make_session_get_params({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }),
+        [this](RpcResponse const& response) {
+            auto const* const result = get_result_map(response);
+            if (result == nullptr) {
+                return;
+            }
 
-        auto const rule_count = result->value_if<int64_t>(TR_KEY_blocklist_size);
-        auto const updated_at = result->value_if<int64_t>(TR_KEY_blocklist_date);
-        if (rule_count && updated_at) {
-            impl_->signal_blocklist_info().emit(static_cast<size_t>(*rule_count), static_cast<time_t>(*updated_at));
-        }
-    });
+            auto const rule_count = result->value_if<int64_t>(TR_KEY_blocklist_size);
+            auto const updated_at = result->value_if<int64_t>(TR_KEY_blocklist_date);
+            if (rule_count && updated_at) {
+                impl_->signal_blocklist_info().emit(static_cast<size_t>(*rule_count), static_cast<time_t>(*updated_at));
+            }
+        });
 }
 
 // ---
@@ -1162,14 +1097,23 @@ std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
     using Traits = PrefsStringTraits<Glib::ustring>;
 
     auto dirs = std::vector<Glib::ustring>{};
+
+    // A request sent after close() is dropped and never answered,
+    // and an unanswered request would never end the wait below.
+    if (impl_->get_session() == nullptr) {
+        return dirs;
+    }
+
     auto done = false;
 
-    impl_->send_session_get({ key }, [&dirs, &done, key](tr_variant::Map const* const result) {
-        if (auto const* const recent = result != nullptr ? result->find_if<tr_variant::Vector>(key) : nullptr) {
-            dirs.reserve(std::size(*recent));
-            for (auto const& dir : *recent) {
-                if (auto const sv = dir.value_if<std::string_view>()) {
-                    dirs.emplace_back(Traits::from_utf8(*sv));
+    impl_->rpc().exec(TR_KEY_session_get, make_session_get_params({ key }), [&dirs, &done, key](RpcResponse const& response) {
+        if (auto const* const result = get_result_map(response); result != nullptr) {
+            if (auto const* const recent = result->find_if<tr_variant::Vector>(key); recent != nullptr) {
+                dirs.reserve(std::size(*recent));
+                for (auto const& dir : *recent) {
+                    if (auto const sv = dir.value_if<std::string_view>()) {
+                        dirs.emplace_back(Traits::from_utf8(*sv));
+                    }
                 }
             }
         }
@@ -1177,7 +1121,7 @@ std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
         done = true;
     });
 
-    // the response callback is dispatched on the main loop's idle queue,
+    // the reply is delivered on the main loop's idle queue,
     // so pump the main context until it has run
     auto const context = Glib::MainContext::get_default();
     while (!done) {
@@ -1185,13 +1129,6 @@ std::vector<Glib::ustring> Session::get_recent_dirs(tr_quark const key) const
     }
 
     return dirs;
-}
-
-// ---
-
-void Session::exec(tr_quark method, tr_variant&& params)
-{
-    impl_->send_rpc_request(method, std::move(params), {});
 }
 
 /***

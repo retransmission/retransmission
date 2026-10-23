@@ -105,7 +105,7 @@ public:
         return ret;
     }
 
-    bool move(
+    [[nodiscard]] bool move(
         std::span<std::string_view const> old_parents,
         std::string_view parent_in,
         std::string_view parent_name = "",

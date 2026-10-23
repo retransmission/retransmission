@@ -194,7 +194,7 @@ void tr_sessionSetDownloadDir(tr_session* session, std::string_view download_dir
 void tr_sessionSetIncompleteDir(tr_session* session, std::string_view dir);
 
 /** @brief get whether or not the incomplete download folder is enabled */
-bool tr_sessionIsIncompleteDirEnabled(tr_session const* session);
+[[nodiscard]] bool tr_sessionIsIncompleteDirEnabled(tr_session const* session);
 
 /** @brief enable or disable use of the incomplete download folder */
 void tr_sessionSetIncompleteDirEnabled(tr_session* session, bool enabled);
@@ -506,7 +506,7 @@ void tr_sessionSetScriptEnabled(tr_session* session, TrScript type, bool enabled
  * The caller only needs to invoke this when the blocklist
  * has changed.
  */
-std::optional<size_t> tr_blocklistSetContent(tr_session* session, std::string_view content_filename);
+[[nodiscard]] std::optional<size_t> tr_blocklistSetContent(tr_session* session, std::string_view content_filename);
 
 [[nodiscard]] size_t tr_blocklistGetRuleCount(tr_session const* session);
 
@@ -666,7 +666,10 @@ void tr_torrentSetLocation(tr_torrent* torrent, std::string_view location, bool 
  * @return True if given metainfo was set.
  *
  */
-bool tr_torrentSetMetainfoFromFile(tr_torrent* torrent, tr_torrent_metainfo const* metainfo, char const* filename);
+[[nodiscard]] bool tr_torrentSetMetainfoFromFile(
+    tr_torrent* torrent,
+    tr_torrent_metainfo const* metainfo,
+    char const* filename);
 
 /**
  * @return this torrent's name.
@@ -739,11 +742,11 @@ void tr_torrentSetFileDLs(tr_torrent* tor, std::span<tr_file_index_t const> file
 void tr_torrentSetDownloadDir(tr_torrent* torrent, std::string_view path);
 
 /**
- * Returns the torrent's root directory.
+ * Returns the directory that the torrent's file names are relative to.
  *
- * This will usually be the downloadDir. However if the torrent
- * has an incompleteDir enabled and hasn't finished downloading
- * yet, that will be returned instead.
+ * Without an incomplete dir, this is the download dir.
+ * Otherwise it is whichever of the two held the first file found on disk
+ * when libtransmission last looked, or the incomplete dir if none was found.
  */
 [[nodiscard]] std::string tr_torrentGetCurrentDir(tr_torrent const* tor);
 
@@ -773,7 +776,7 @@ void tr_torrentSetDownloadDir(tr_torrent* torrent, std::string_view path);
  * This updates both the `torrent` object's tracker list
  * and the metainfo file in `tr_sessionGetConfigDir()`'s torrent subdirectory.
  */
-bool tr_torrentSetTrackerList(tr_torrent* tor, std::string_view txt);
+[[nodiscard]] bool tr_torrentSetTrackerList(tr_torrent* tor, std::string_view txt);
 
 // ---
 
@@ -833,7 +836,7 @@ void tr_sessionSetIdleLimitHitCallback(tr_session* session, tr_session_idle_limi
 
 void tr_torrentManualUpdate(tr_torrent* torrent);
 
-bool tr_torrentCanManualUpdate(tr_torrent const* torrent);
+[[nodiscard]] bool tr_torrentCanManualUpdate(tr_torrent const* torrent);
 
 [[nodiscard]] std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* torrent);
 

@@ -144,14 +144,14 @@ public:
     Impl& operator=(Impl const&) = delete;
     ~Impl();
 
-    std::string const& get_filename() const;
+    [[nodiscard]] std::string const& get_filename() const;
     void set_filename(std::string const& value);
 
     void set_recent_paths(std::vector<Glib::ustring> const& value);
 
     void add_filter(Glib::RefPtr<Gtk::FileFilter> const& value);
 
-    sigc::signal<void()>& signal_selection_changed();
+    [[nodiscard]] sigc::signal<void()>& signal_selection_changed();
 
 private:
     void on_clicked();

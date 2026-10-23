@@ -84,7 +84,7 @@ public:
     using Tag = uint64_t;
 
     template<typename T, typename... Rest>
-    Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
+    [[nodiscard]] Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
     {
         return torrentSetImpl(makeParams(TR_KEY_ids, torrent_ids, key1, val1, rest...));
     }
