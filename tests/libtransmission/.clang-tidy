@@ -25,9 +25,6 @@ Checks:
   - -cppcoreguidelines-use-enum-class
   - google-readability-*
   - google-runtime-operator
-  - hicpp-*
-  - -hicpp-signed-bitwise
-  - -hicpp-use-nullptr # alias of `modernize-use-nullptr
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
