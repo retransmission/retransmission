@@ -841,7 +841,7 @@ TEST_F(RpcTest, torrentGetCurrentDir)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
     ASSERT_NE(nullptr, tor);
 
-    auto const get_current_dir = [this]() -> std::optional<std::string> {
+    auto const get_current_dir = [this] -> std::optional<std::string> {
         // spelled as a client sends it, so that the test pins the key's name
         static auto constexpr Request =
             R"json({"id":12345,"jsonrpc":"2.0","method":"torrent_get","params":{"fields":["current_dir"]}})json"sv;
@@ -877,7 +877,7 @@ TEST_F(RpcTest, torrentGetCurrentDir)
 
     // a file found in the download dir makes it current, though the torrent is unfinished
     createFileWithContents(tr_pathbuf{ download_dir, '/', tr_torrentFile(tor, 0).name }, "partial"sv);
-    auto const set_location = [tor, &download_dir]() {
+    auto const set_location = [tor, &download_dir] {
         auto state = -1;
         tr_torrentSetLocation(tor, download_dir, false, &state);
         return state;

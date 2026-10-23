@@ -71,7 +71,7 @@ public:
 
         evhttp_set_gencb(http_, &LoopbackServer::onRequest, this);
 
-        thread_ = std::thread{ [this]() {
+        thread_ = std::thread{ [this] {
             // Poll instead of a blocking dispatch so teardown doesn't depend
             // on libevent being built with cross-thread wakeup support.
             using namespace std::chrono_literals;

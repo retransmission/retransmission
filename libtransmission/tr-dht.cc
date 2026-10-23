@@ -125,9 +125,9 @@ public:
         , udp6_socket_{ udp6_socket }
         , mediator_{ mediator }
         , state_filename_{ tr_pathbuf{ mediator_.config_dir(), "/dht.dat" } }
-        , announce_timer_{ mediator_.timer_maker().create([this]() { on_announce_timer(); }) }
-        , bootstrap_timer_{ mediator_.timer_maker().create([this]() { on_bootstrap_timer(); }) }
-        , periodic_timer_{ mediator_.timer_maker().create([this]() { on_periodic_timer(); }) }
+        , announce_timer_{ mediator_.timer_maker().create([this] { on_announce_timer(); }) }
+        , bootstrap_timer_{ mediator_.timer_maker().create([this] { on_bootstrap_timer(); }) }
+        , periodic_timer_{ mediator_.timer_maker().create([this] { on_periodic_timer(); }) }
     {
         tr_logAddDebug(fmt::format("Starting DHT on port {port}", fmt::arg("port", peer_port.host())));
 

@@ -207,7 +207,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 
 Updater::Updater(Mediator& mediator)
     : mediator_{ mediator }
-    , timer_{ mediator.timer_maker().create([this]() { on_auto_update_timer(); }) }
+    , timer_{ mediator.timer_maker().create([this] { on_auto_update_timer(); }) }
 {
 }
 
@@ -230,7 +230,7 @@ Updater::~Updater()
 
 void Updater::update(tr_blocklist_update_func on_done)
 {
-    mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
+    mediator_.run_in_session_thread([this, on_done = std::move(on_done)] mutable {
         // Supersede any in-flight request so only the newest one updates the
         // list. The older fetch still runs, since tr_web doesn't have an abort
         // API, but taking its waiters both silences it and moves those callers
@@ -255,7 +255,7 @@ void Updater::update(tr_blocklist_update_func on_done)
 
 void Updater::cancel()
 {
-    mediator_.run_in_session_thread([this]() {
+    mediator_.run_in_session_thread([this] {
         if (auto pending = latest_.lock()) {
             pending->waiters.clear();
         }
@@ -264,7 +264,7 @@ void Updater::cancel()
 
 void Updater::update_timer()
 {
-    mediator_.run_in_session_thread([this]() { arm_timer(); });
+    mediator_.run_in_session_thread([this] { arm_timer(); });
 }
 
 void Updater::arm_timer()

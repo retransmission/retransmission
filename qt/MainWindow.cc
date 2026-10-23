@@ -142,7 +142,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(ui_.action_DeselectAll, &QAction::triggered, ui_.listView, &QAbstractItemView::clearSelection);
     connect(ui_.action_Quit, &QAction::triggered, qApp, &QCoreApplication::quit);
 
-    auto refresh_action_sensitivity_soon = [this]() {
+    auto refresh_action_sensitivity_soon = [this] {
         refreshSoon(RefreshActionSensitivity);
     };
     connect(&filter_model_, &TorrentFilter::rowsInserted, this, refresh_action_sensitivity_soon);
@@ -151,7 +151,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
 
     // torrent view
     filter_model_.setSourceModel(&model_);
-    auto refresh_soon_adapter = [this]() {
+    auto refresh_soon_adapter = [this] {
         refreshSoon(~RefreshIcon);
     };
     connect(&model_, &TorrentModel::modelReset, this, refresh_soon_adapter);
@@ -216,7 +216,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     ui_.verticalLayout->insertWidget(0, filter_bar);
     filter_bar_ = filter_bar;
 
-    auto refresh_header_soon = [this]() {
+    auto refresh_header_soon = [this] {
         refreshSoon(RefreshTorrentViewHeader);
     };
     connect(&model_, &TorrentModel::rowsInserted, this, refresh_header_soon);
@@ -252,7 +252,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
         refreshPref(key);
     }
 
-    auto refresh_status_soon = [this]() {
+    auto refresh_status_soon = [this] {
         refreshSoon(RefreshStatusBar);
     };
     connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
@@ -340,7 +340,7 @@ QMenu* MainWindow::createOptionsMenu()
 
             for (auto const kbyps : { 50, 100, 250, 500, 1000, 2500, 5000, 10000 }) {
                 auto* const action = menu->addAction(Speed{ kbyps, Speed::Units::KByps }.toQstring());
-                connect(action, &QAction::triggered, this, [set_limit, kbyps]() { set_limit(kbyps); });
+                connect(action, &QAction::triggered, this, [set_limit, kbyps] { set_limit(kbyps); });
             }
         };
 
@@ -381,7 +381,7 @@ QMenu* MainWindow::createOptionsMenu()
 
             for (double const i : StockRatios) {
                 QAction* action = menu->addAction(Formatter::ratioToString(i));
-                connect(action, &QAction::triggered, this, [set_ratio, i]() { set_ratio(i); });
+                connect(action, &QAction::triggered, this, [set_ratio, i] { set_ratio(i); });
             }
         };
 

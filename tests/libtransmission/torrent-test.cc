@@ -162,7 +162,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
 
     // Hold the session thread, so that each call below queues its work.
     auto release = std::promise<void>{};
-    session_->queue_session_thread([released = release.get_future().share()]() { released.wait(); });
+    session_->queue_session_thread([released = release.get_future().share()] { released.wait(); });
 
     // `tor` is valid for every call, but the first removal frees it before the rest of the work runs.
     // Only a sanitizer build checks the work that reports nothing.
@@ -186,7 +186,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     tr_torrentRemove(tor, false);
 
     release.set_value();
-    blockingRunInSessionThread([]() {}); // runs after the work queued above
+    blockingRunInSessionThread([] {}); // runs after the work queued above
 
     // The work that reports back reports an error.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
@@ -240,7 +240,7 @@ protected:
 
     [[nodiscard]] bool waitUntilRemoved(tr_torrent_id_t const id)
     {
-        return waitForInSessionThread([this, id]() { return tr_torrentFindFromId(session_, id) == nullptr; }, 10'000);
+        return waitForInSessionThread([this, id] { return tr_torrentFindFromId(session_, id) == nullptr; }, 10'000);
     }
 };
 

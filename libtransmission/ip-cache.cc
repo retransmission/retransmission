@@ -131,7 +131,7 @@ tr_ip_cache::tr_ip_cache(Mediator& mediator_in)
 
     for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i) {
         auto const type = static_cast<tr_address_type>(i);
-        auto const cb = [this, type]() {
+        auto const cb = [this, type] {
             update_addr(type);
         };
         upkeep_timers_[i]->set_callback(cb);

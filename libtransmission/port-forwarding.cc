@@ -98,7 +98,7 @@ private:
 
     void startTimer()
     {
-        timer_ = mediator_.timer_maker().create([this]() { this->onTimer(); });
+        timer_ = mediator_.timer_maker().create([this] { this->onTimer(); });
         restartTimer();
     }
 

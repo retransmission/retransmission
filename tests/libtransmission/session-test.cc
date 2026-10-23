@@ -407,7 +407,7 @@ struct SavedBandwidthGroup {
 void setBandwidthGroup(tr_session* const session, std::string_view const name, SavedBandwidthGroup const& saved)
 {
     auto done = std::promise<void>{};
-    session->run_in_session_thread([&]() {
+    session->run_in_session_thread([&] {
         auto& group = session->getBandwidthGroup(name);
         group.set_limits(saved.limits);
         group.honor_parent_limits(tr_direction::Up, saved.honors_session_limits);

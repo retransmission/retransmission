@@ -49,5 +49,5 @@ std::string FaviconCache<Icon>::app_cache_dir() const
 template<>
 void FaviconCache<Icon>::add_to_ui_thread(std::function<void()> idlefunc)
 {
-    Glib::signal_idle().connect_once([idlefunc = std::move(idlefunc)]() { idlefunc(); });
+    Glib::signal_idle().connect_once([idlefunc = std::move(idlefunc)] { idlefunc(); });
 }

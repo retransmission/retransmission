@@ -1025,7 +1025,7 @@ void tr_peerMsgsImpl::parse_ltep(MessageReader& payload)
         send_ltep_handshake();
 
         if (can_send_ut_pex()) {
-            pex_timer_ = session->timerMaker().create([this]() { send_ut_pex(); });
+            pex_timer_ = session->timerMaker().create([this] { send_ut_pex(); });
             pex_timer_->start_repeating(SendPexInterval);
             send_ut_pex();
         }

@@ -153,7 +153,7 @@ tr_open_files::Handle tr_open_files::get(
     auto path = Paths::iterator{};
     {
         auto lock = std::unique_lock{ mutex_ };
-        opening_cv_.wait(lock, [this, filename]() { return !opening_.contains(filename); });
+        opening_cv_.wait(lock, [this, filename] { return !opening_.contains(filename); });
         if (auto* const found = pool_.get(key); found != nullptr) {
             if (!writable || (*found)->is_writable()) {
                 return *found;

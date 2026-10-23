@@ -139,7 +139,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
     // N.B. This array needs to be kept in the same order as
     // the tr_preferred_transport enum.
     auto const get_socket = std::array<std::function<std::shared_ptr<tr_peer_socket>()>, PreferredTransportCount>{
-        [&]() -> std::shared_ptr<tr_peer_socket> {
+        [&] -> std::shared_ptr<tr_peer_socket> {
             if (utp) {
                 return tr_peer_socket_utp::create(socket_address, session->utp_context, session->timerMaker());
             }

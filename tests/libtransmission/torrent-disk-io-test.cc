@@ -220,7 +220,7 @@ protected:
     void TearDown() override
     {
         session_->local_data.set_workers_paused(false);
-        blockingRunInSessionThread([this]() { webseed_.reset(); });
+        blockingRunInSessionThread([this] { webseed_.reset(); });
         peers_.clear();
         TorrentDiskIoWorkersTest::TearDown();
     }
@@ -235,7 +235,7 @@ protected:
         peer->remote = sockets[1];
         auto const address = *tr_address::from_string("127.0.0." + std::to_string(peers_.size() + 2U));
         auto const socket_address = tr_socket_address{ address, tr_port::from_host(8080) };
-        blockingRunInSessionThread([&]() {
+        blockingRunInSessionThread([&] {
             tr_peerMgrAddIncoming(
                 peerManager(),
                 tr_peer_socket_tcp::create(*session_, socket_address, static_cast<tr_socket_t>(sockets[0])));
@@ -358,7 +358,7 @@ protected:
     [[nodiscard]] size_t spareBlocks()
     {
         auto spare = size_t{};
-        blockingRunInSessionThread([this, &spare]() { spare = session_->spare_request_blocks().value(); });
+        blockingRunInSessionThread([this, &spare] { spare = session_->spare_request_blocks().value(); });
         return spare;
     }
 
@@ -439,7 +439,7 @@ protected:
         });
 
         session_->local_data.set_workers_paused(true);
-        blockingRunInSessionThread([tor, &before]() {
+        blockingRunInSessionThread([tor, &before] {
             auto const block = tor->block_span_for_piece(0U).begin;
             tor->save_block(block, zeroBlock(tor, block));
             if (before) {
@@ -450,16 +450,16 @@ protected:
         tr_torrentSetFileDLs(tor, std::span{ &file, 1U }, false);
 
         // the callback waits for the move out, which waits for the write
-        blockingRunInSessionThread([&called]() { EXPECT_FALSE(called); });
+        blockingRunInSessionThread([&called] { EXPECT_FALSE(called); });
         session_->local_data.set_workers_paused(false);
-        EXPECT_TRUE(waitFor([&called]() { return called.load(); }, MaxWaitMsec));
+        EXPECT_TRUE(waitFor([&called] { return called.load(); }, MaxWaitMsec));
         tr_sessionSetCompletenessCallback(session_, nullptr);
         return dir;
     }
 
     void expectFilesIn(tr_torrent* const tor, std::string_view const dir)
     {
-        blockingRunInSessionThread([tor, dir]() {
+        blockingRunInSessionThread([tor, dir] {
             EXPECT_EQ(dir, tor->current_dir().sv());
             EXPECT_TRUE(std::empty(tor->incomplete_dir()));
             for (auto file = tr_file_index_t{ 1U }; file < tor->file_count(); ++file) {
@@ -496,14 +496,14 @@ TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
         EXPECT_EQ(std::min(bytes / 2U, 32U * MiB), session_->local_data.retained_bytes());
     };
 
-    blockingRunInSessionThread([&]() { check(GetParam()); });
+    blockingRunInSessionThread([&] { check(GetParam()); });
 
     for (auto const budget_mib : { int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }, int64_t{ 128 } }) {
         SCOPED_TRACE(budget_mib);
         auto config = tr_sessionGetSettings(session_);
         config.insert_or_assign(TR_KEY_disk_write_budget_mib, budget_mib);
         tr_sessionSet(session_, config);
-        blockingRunInSessionThread([&]() { check(budget_mib); });
+        blockingRunInSessionThread([&] { check(budget_mib); });
     }
 }
 
@@ -514,7 +514,7 @@ TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    blockingRunInSessionThread([this, tor, block]() {
+    blockingRunInSessionThread([this, tor, block] {
         ASSERT_TRUE(tor->on_block_received(block));
         tor->save_block(block, zeroBlock(tor, block));
 
@@ -538,7 +538,7 @@ TEST_F(TorrentDiskIoTest, failedWriteStopsTorrent)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         ASSERT_TRUE(tor->on_block_received(block));
         EXPECT_FALSE(tor->error().is_local_error());
 
@@ -559,7 +559,7 @@ TEST_F(TorrentDiskIoTest, writtenPieceIsNotAdvertisedUntilItsHashCompletes)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const span = tor->block_span_for_piece(0U);
-    blockingRunInSessionThread([this, tor, span]() {
+    blockingRunInSessionThread([this, tor, span] {
         ASSERT_TRUE(tor->is_piece_checked(0U));
         for (auto block = span.begin; block < span.end; ++block) {
             tor->save_block(block, zeroBlock(tor, block));
@@ -584,7 +584,7 @@ TEST_F(TorrentDiskIoTest, failedHashNeverMakesThePieceAvailable)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const span = tor->block_span_for_piece(0U);
-    blockingRunInSessionThread([this, tor, span]() {
+    blockingRunInSessionThread([this, tor, span] {
         for (auto block = span.begin; block < span.end; ++block) {
             auto data = zeroBlock(tor, block);
             std::ranges::fill(*data, uint8_t{ 1U });
@@ -612,7 +612,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
     auto n_completed = size_t{};
     auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
 
-    blockingRunInSessionThread([this, tor, span, &n_completed]() {
+    blockingRunInSessionThread([this, tor, span, &n_completed] {
         for (auto block = span.begin; block < span.end; ++block) {
             ASSERT_TRUE(tor->on_block_received(block));
             tor->save_block(block, zeroBlock(tor, block));
@@ -640,7 +640,7 @@ TEST_F(TorrentDiskIoTest, blockSharedByTwoPiecesCountsOnceBothPass)
     auto n_completed = size_t{};
     auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
 
-    blockingRunInSessionThread([this, tor, &n_completed]() {
+    blockingRunInSessionThread([this, tor, &n_completed] {
         // the middle block's write leaves both hashes in flight
         writeStraddlingBlocks(tor, false);
         EXPECT_FALSE(tor->has_block(1U));
@@ -664,7 +664,7 @@ TEST_F(TorrentDiskIoTest, blockSharedWithAFailedPieceIsDownloadedAgain)
     // Piece 0's hash passes before piece 1's starts. The block they share
     // still waits for piece 1, which fails and takes the block back.
     session_->local_data.set_completions(tr::LocalData::Completions::Inline);
-    blockingRunInSessionThread([this, tor, &n_completed]() {
+    blockingRunInSessionThread([this, tor, &n_completed] {
         writeStraddlingBlocks(tor, true);
         EXPECT_EQ(0U, n_completed);
         EXPECT_TRUE(tor->has_block(0U));
@@ -680,7 +680,7 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
     auto verified = std::atomic<bool>{ false };
     auto const tag = session_->verify_done_.connect_scoped([&verified](tr_torrent_id_t) { verified = true; });
 
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         tr_torrentVerify(tor);
 
         // Stopping the torrent doesn't stop a webseed fetch, so its block
@@ -711,11 +711,11 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
         MaxWaitMsec));
     session_->local_data.set_workers_paused(true);
     auto& first = addPeer(*tor);
-    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    ASSERT_TRUE(waitFor([this] { return requestCount() >= 32U; }, 15000));
     EXPECT_EQ(32U, requestCount());
     EXPECT_EQ(32U, spareBlocks());
     auto& second = addPeer(*tor);
-    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+    ASSERT_TRUE(waitFor([this] { return requestCount() >= BudgetBlocks; }, 15000));
     EXPECT_EQ(32U, second.requests.size());
     auto& waiting = addPeer(*tor);
     ASSERT_TRUE(waitFor(
@@ -731,17 +731,17 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
     auto const request = std::ranges::find_if(first.requests, [](Request const& item) { return item.length == TrBlockSize; });
     ASSERT_NE(first.requests.end(), request);
     receiveBlock(first, *request);
-    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == TrBlockSize; }, MaxWaitMsec));
+    ASSERT_TRUE(waitFor([this] { return session_->local_data.enqueued_write_bytes() == TrBlockSize; }, MaxWaitMsec));
     EXPECT_EQ(0U, spareBlocks());
     EXPECT_EQ(BudgetBlocks, requestCount());
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == 0U; }, MaxWaitMsec));
-    EXPECT_TRUE(waitFor([this]() { return requestCount() > BudgetBlocks; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return session_->local_data.enqueued_write_bytes() == 0U; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return requestCount() > BudgetBlocks; }, MaxWaitMsec));
     EXPECT_EQ(BudgetBlocks + 1U, requestCount());
     EXPECT_EQ(0U, spareBlocks());
     peers_.clear();
-    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
 }
 
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
@@ -756,9 +756,9 @@ TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
         MaxWaitMsec));
     session_->local_data.set_workers_paused(true);
     auto& first = addPeer(*tor);
-    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    ASSERT_TRUE(waitFor([this] { return requestCount() >= 32U; }, 15000));
     auto& second = addPeer(*tor);
-    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+    ASSERT_TRUE(waitFor([this] { return requestCount() >= BudgetBlocks; }, 15000));
     EXPECT_EQ(0U, spareBlocks());
 
     auto const was_requested = [&first, &second](tr_block_info::Location const& loc) {
@@ -787,7 +787,7 @@ TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
     receiveBlock(first, Request{ .piece = loc.piece, .offset = loc.piece_offset, .length = tor->block_size(*unrequested) });
     receiveBlock(first, *requested);
     ASSERT_TRUE(waitFor(
-        [tor, requested_block]() {
+        [tor, requested_block] {
             auto const lock = tor->unique_lock();
             return tor->has_block_or_pending(requested_block);
         },
@@ -818,7 +818,7 @@ TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
         MaxWaitMsec));
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([&]() {
+    blockingRunInSessionThread([&] {
         webseed_ = tr_webseed::create(*tor, server.url(), nullptr, nullptr);
         auto const span = tr_block_span_t{ .begin = 0U, .end = 1U };
         webseed_->request_blocks(&span, 1U);
@@ -830,13 +830,13 @@ TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
     EXPECT_EQ(std::future_status::ready, requested.get_future().wait_for(5s));
     release_response.set_value();
 
-    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks - 1U; }, MaxWaitMsec));
-    blockingRunInSessionThread([this]() {
+    EXPECT_TRUE(waitFor([this] { return spareBlocks() == BudgetBlocks - 1U; }, MaxWaitMsec));
+    blockingRunInSessionThread([this] {
         EXPECT_EQ(0U, webseed_->active_requests().count());
         EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
     });
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
 }
 
 TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
@@ -847,14 +847,14 @@ TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
         auto* const peer_torrent = makeBudgetTorrent("peer.bin");
         tr_torrentStart(peer_torrent);
         ASSERT_TRUE(waitFor(
-            [peer_torrent]() {
+            [peer_torrent] {
                 auto const lock = peer_torrent->unique_lock();
                 return peer_torrent->is_running();
             },
             MaxWaitMsec));
         auto& peer = addPeer(*peer_torrent);
         ASSERT_TRUE(waitFor(
-            [&peer, peer_blocks]() {
+            [&peer, peer_blocks] {
                 collectMessages(peer);
                 return peer.requests.size() >= peer_blocks;
             },
@@ -897,7 +897,7 @@ TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
     session_->local_data.set_workers_paused(true);
     tr_torrentStart(tor);
     ASSERT_TRUE(
-        waitFor([this, available_bytes]() { return session_->local_data.enqueued_write_bytes() == available_bytes; }, 15000));
+        waitFor([this, available_bytes] { return session_->local_data.enqueued_write_bytes() == available_bytes; }, 15000));
     EXPECT_EQ(0U, spareBlocks());
     EXPECT_EQ(available_bytes, received_bytes.load());
     auto const requests_when_full = requests.load();
@@ -905,7 +905,7 @@ TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
 
     session_->local_data.set_workers_paused(false);
     ASSERT_TRUE(waitFor(
-        [tor]() {
+        [tor] {
             auto const lock = tor->unique_lock();
             return tor->is_done();
         },
@@ -929,7 +929,7 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
     auto hash_completed = false;
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, id, &hash_completed]() {
+    blockingRunInSessionThread([this, tor, id, &hash_completed] {
         tor->save_block(0U, zeroBlock(tor, 0U));
         session_->local_data.test_piece(
             id,
@@ -947,7 +947,7 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
     session_->local_data.set_workers_paused(false);
 
     EXPECT_TRUE(waitForInSessionThread([this, id]() { return session_->torrents().get(id) == nullptr; }, MaxWaitMsec));
-    blockingRunInSessionThread([this, &hash_completed]() {
+    blockingRunInSessionThread([this, &hash_completed] {
         EXPECT_TRUE(hash_completed);
         EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
     });
@@ -962,7 +962,7 @@ TEST_P(TorrentRemovalTest, rpcSeesTheRemovalBeforeDiskIoDrains)
 
     // A paused write holds back the removal.
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, id]() {
+    blockingRunInSessionThread([this, tor, id] {
         tor->save_block(0U, zeroBlock(tor, 0U));
         tr_torrentRemove(tor, GetParam());
         tr_torrentRemove(tor, !GetParam());
@@ -989,7 +989,7 @@ TEST_P(TorrentRemovalTest, rpcSeesTheRemovalBeforeDiskIoDrains)
     });
     session_->local_data.set_workers_paused(false);
 
-    EXPECT_TRUE(waitForInSessionThread([this, id]() { return session_->torrents().get(id) == nullptr; }, MaxWaitMsec));
+    EXPECT_TRUE(waitForInSessionThread([this, id] { return session_->torrents().get(id) == nullptr; }, MaxWaitMsec));
     // the first request's keep-or-delete choice stands
     EXPECT_EQ(!GetParam(), tr_sys_path_exists(filename));
 }
@@ -999,7 +999,7 @@ INSTANTIATE_TEST_SUITE_P(KeepOrDeleteData, TorrentRemovalTest, ::testing::Bool()
 TEST_F(TorrentDiskIoWorkersTest, requestBudgetTracksChangesAndPeerDestruction)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
-    blockingRunInSessionThread([this, tor]() {
+    blockingRunInSessionThread([this, tor] {
         auto const budget = session_->spare_request_blocks();
         ASSERT_TRUE(budget);
         {
@@ -1030,13 +1030,13 @@ TEST_F(TorrentDiskIoWorkersTest, queuedWritesConsumeTheRequestBudget)
     auto const block = tor->block_span_for_piece(0).begin;
 
     auto budget = std::optional<size_t>{};
-    blockingRunInSessionThread([this, &budget]() { budget = session_->spare_request_blocks(); });
+    blockingRunInSessionThread([this, &budget] { budget = session_->spare_request_blocks(); });
     ASSERT_TRUE(budget.has_value());
     EXPECT_GT(*budget, 0U);
 
     // a queued write takes its block out of the budget until it lands
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, block, &budget]() {
+    blockingRunInSessionThread([this, tor, block, &budget] {
         ASSERT_TRUE(tor->on_block_received(block));
         tor->save_block(block, zeroBlock(tor, block));
         EXPECT_EQ(*budget - 1U, session_->spare_request_blocks());
@@ -1044,7 +1044,7 @@ TEST_F(TorrentDiskIoWorkersTest, queuedWritesConsumeTheRequestBudget)
 
     session_->local_data.set_workers_paused(false);
     EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
-    blockingRunInSessionThread([this, &budget]() { EXPECT_EQ(budget, session_->spare_request_blocks()); });
+    blockingRunInSessionThread([this, &budget] { EXPECT_EQ(budget, session_->spare_request_blocks()); });
 }
 
 TEST_F(TorrentDiskIoWorkersTest, writesBehindBarriersConsumeTheRequestBudget)
@@ -1053,7 +1053,7 @@ TEST_F(TorrentDiskIoWorkersTest, writesBehindBarriersConsumeTheRequestBudget)
     auto const block = tor->block_span_for_piece(0).begin;
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, block]() {
+    blockingRunInSessionThread([this, tor, block] {
         auto const budget = session_->spare_request_blocks();
         ASSERT_TRUE(budget.has_value());
         tor->save_block(block, zeroBlock(tor, block));
@@ -1073,7 +1073,7 @@ TEST_F(TorrentDiskIoWorkersTest, blockCountsOnlyAfterItsWriteFinishes)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         ASSERT_TRUE(tor->on_block_received(block));
         tor->save_block(block, zeroBlock(tor, block));
 
@@ -1097,7 +1097,7 @@ TEST_F(TorrentDiskIoWorkersTest, queuedMovesUseTheLatestSourceDirectory)
     auto closed = std::atomic<bool>{ false };
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, block, &first_dir, &last_dir, &first_state, &last_state, &closed]() {
+    blockingRunInSessionThread([this, tor, block, &first_dir, &last_dir, &first_state, &last_state, &closed] {
         tor->save_block(block, zeroBlock(tor, block));
         tr_torrentSetLocation(tor, first_dir, true, &first_state);
         tr_torrentSetLocation(tor, last_dir, true, &last_state);
@@ -1107,8 +1107,8 @@ TEST_F(TorrentDiskIoWorkersTest, queuedMovesUseTheLatestSourceDirectory)
     });
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([&closed]() { return closed.load(); }, MaxWaitMsec));
-    blockingRunInSessionThread([tor, &last_dir, &first_state, &last_state]() {
+    EXPECT_TRUE(waitFor([&closed] { return closed.load(); }, MaxWaitMsec));
+    blockingRunInSessionThread([tor, &last_dir, &first_state, &last_state] {
         EXPECT_EQ(TR_LOC_DONE, first_state);
         EXPECT_EQ(TR_LOC_DONE, last_state);
         EXPECT_EQ(last_dir.sv(), tor->download_dir().sv());
@@ -1128,7 +1128,7 @@ TEST_F(TorrentDiskIoWorkersTest, verificationWaitsForPendingWrites)
     auto const tag = session_->verify_done_.connect_scoped([&verified](tr_torrent_id_t) { verified = true; });
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([tor, span]() {
+    blockingRunInSessionThread([tor, span] {
         for (auto block = span.begin; block < span.end; ++block) {
             tor->save_block(block, zeroBlock(tor, block));
         }
@@ -1139,7 +1139,7 @@ TEST_F(TorrentDiskIoWorkersTest, verificationWaitsForPendingWrites)
 
     session_->local_data.set_workers_paused(false);
     EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
-    blockingRunInSessionThread([this, tor]() {
+    blockingRunInSessionThread([this, tor] {
         EXPECT_TRUE(tor->has_piece(0));
         EXPECT_EQ(0U, session_->local_data.stats().hashes_from_buffers);
         EXPECT_EQ(0U, session_->local_data.stats().hashes_from_disk);
@@ -1155,7 +1155,7 @@ TEST_F(TorrentDiskIoWorkersTest, stoppingCancelsVerificationWaitingForWrites)
     auto const tag = session_->verify_done_.connect_scoped([&verified](tr_torrent_id_t) { verified = true; });
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([this, tor, block, &closed]() {
+    blockingRunInSessionThread([this, tor, block, &closed] {
         tor->save_block(block, zeroBlock(tor, block));
         tr_torrentVerify(tor);
         tr_torrentStop(tor);
@@ -1164,8 +1164,8 @@ TEST_F(TorrentDiskIoWorkersTest, stoppingCancelsVerificationWaitingForWrites)
     });
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([&closed]() { return closed.load(); }, MaxWaitMsec));
-    blockingRunInSessionThread([tor, &verified]() {
+    EXPECT_TRUE(waitFor([&closed] { return closed.load(); }, MaxWaitMsec));
+    blockingRunInSessionThread([tor, &verified] {
         EXPECT_EQ(TR_STATUS_STOPPED, tor->activity());
         EXPECT_FALSE(verified);
     });
@@ -1183,7 +1183,7 @@ TEST_F(TorrentDiskIoWorkersTest, cancelledVerificationRestoresDeferredPieceHashe
     });
 
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         // the paused write holds the verify back...
         tor->save_block(block, zeroBlock(tor, block));
         tr_torrentVerify(tor);
@@ -1198,7 +1198,7 @@ TEST_F(TorrentDiskIoWorkersTest, cancelledVerificationRestoresDeferredPieceHashe
     });
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([&hashed]() { return hashed.load(); }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([&hashed] { return hashed.load(); }, MaxWaitMsec));
 }
 
 TEST_F(TorrentDiskIoWorkersTest, completedPieceIsHashedFromBufferedBlocks)
@@ -1210,7 +1210,7 @@ TEST_F(TorrentDiskIoWorkersTest, completedPieceIsHashedFromBufferedBlocks)
     auto n_completed = std::atomic<size_t>{};
     auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
 
-    blockingRunInSessionThread([tor, span]() {
+    blockingRunInSessionThread([tor, span] {
         for (auto block = span.begin; block < span.end; ++block) {
             ASSERT_TRUE(tor->on_block_received(block));
             tor->save_block(block, zeroBlock(tor, block));
@@ -1237,7 +1237,7 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
     ASSERT_TRUE(tr_sys_path_remove(filename));
     ASSERT_TRUE(tr_sys_dir_create(filename, 0, 0700));
 
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         ASSERT_TRUE(tor->on_block_received(block));
         tor->save_block(block, zeroBlock(tor, block));
     });
@@ -1245,7 +1245,7 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
     EXPECT_TRUE(waitForInSessionThread([tor]() { return tor->error().is_local_error(); }, MaxWaitMsec));
 
     // the block was not counted, and is no longer pending
-    blockingRunInSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block] {
         EXPECT_FALSE(tor->has_block(block));
         EXPECT_FALSE(tor->has_block_or_pending(block));
     });
@@ -1264,7 +1264,7 @@ TEST_F(TorrentDiskIoWorkersTest, doneStepOfAnUndoneCompletionIsDropped)
 
     // A paused write holds back each completion's done step.
     session_->local_data.set_workers_paused(true);
-    blockingRunInSessionThread([tor]() {
+    blockingRunInSessionThread([tor] {
         auto const block = tor->block_span_for_piece(0U).begin;
         tor->save_block(block, zeroBlock(tor, block));
     });
@@ -1279,9 +1279,9 @@ TEST_F(TorrentDiskIoWorkersTest, doneStepOfAnUndoneCompletionIsDropped)
     // This close queues behind both done steps.
     auto closed = std::atomic<bool>{ false };
     blockingRunInSessionThread(
-        [this, id, &closed]() { session_->local_data.close_torrent(id, [&closed](tr_torrent_id_t) { closed = true; }); });
+        [this, id, &closed] { session_->local_data.close_torrent(id, [&closed](tr_torrent_id_t) { closed = true; }); });
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([&closed]() { return closed.load(); }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([&closed] { return closed.load(); }, MaxWaitMsec));
     tr_sessionSetCompletenessCallback(session_, nullptr);
 
     EXPECT_EQ(1U, n_done.load());
@@ -1302,7 +1302,7 @@ TEST_F(IncompleteDirWorkersTest, setLocationQueuedBeforeCompletionPicksTheDir)
     auto const target = tr_pathbuf{ sandboxDir(), "/target" };
     auto state = -1;
 
-    EXPECT_EQ(target.sv(), completeBehindAWrite(tor, [tor, &target, &state]() {
+    EXPECT_EQ(target.sv(), completeBehindAWrite(tor, [tor, &target, &state] {
                   tr_torrentSetLocation(tor, target, true, &state);
               }));
     EXPECT_EQ(TR_LOC_DONE, state);
@@ -1320,7 +1320,7 @@ TEST_F(IncompleteDirWorkersTest, failedSetLocationStillLeavesTheIncompleteDir)
     auto const target = tr_pathbuf{ blocker, "/target" };
     auto state = -1;
 
-    EXPECT_EQ(download_dir, completeBehindAWrite(tor, [tor, &target, &state]() {
+    EXPECT_EQ(download_dir, completeBehindAWrite(tor, [tor, &target, &state] {
                   tr_torrentSetLocation(tor, target, true, &state);
               }));
     EXPECT_EQ(TR_LOC_ERROR, state);

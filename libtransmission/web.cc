@@ -902,7 +902,7 @@ public:
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
-                auto const stop_waiting = [this, &lock]() {
+                auto const stop_waiting = [this, &lock] {
                     return !is_idle(lock) || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);

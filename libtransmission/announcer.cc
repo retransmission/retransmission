@@ -117,7 +117,7 @@ public:
         , announcer_udp_{ announcer_udp }
         , upkeep_timer_{ session_in->timerMaker().create() }
     {
-        upkeep_timer_->set_callback([this]() { this->upkeep(); });
+        upkeep_timer_->set_callback([this] { this->upkeep(); });
         upkeep_timer_->start_repeating(UpkeepInterval);
     }
 

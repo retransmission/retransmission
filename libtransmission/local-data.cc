@@ -387,7 +387,7 @@ public:
         // std::terminate.
         try {
             for (auto i = size_t{}; i < n_workers; ++i) {
-                workers_.emplace_back([this]() { worker_main(); });
+                workers_.emplace_back([this] { worker_main(); });
             }
         } catch (...) {
             stop_workers();
@@ -490,7 +490,7 @@ public:
             }
 
             auto lock = std::unique_lock{ done_mutex_ };
-            done_cv_.wait_until(lock, next_warning, [this]() { return !std::empty(done_); });
+            done_cv_.wait_until(lock, next_warning, [this] { return !std::empty(done_); });
         }
     }
 
@@ -886,7 +886,7 @@ private:
         done_cv_.notify_all();
 
         if (need_wake) {
-            marshal_([weak = weak_from_this()]() {
+            marshal_([weak = weak_from_this()] {
                 if (auto const self = weak.lock(); self) {
                     self->pump_done();
                 }
@@ -919,7 +919,7 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &run]() {
+                work_cv_.wait(lock, [this, &test, &run] {
                     if (paused_) {
                         return false;
                     }
@@ -1035,7 +1035,7 @@ private:
             }
         }
 
-        post_completion([this, run = std::move(run), err]() mutable {
+        post_completion([this, run = std::move(run), err] mutable {
             auto const id = run.front().tor_id;
 
             // Each op stays registered until just before its own callback,
@@ -1077,7 +1077,7 @@ private:
             hashes_from_disk_.fetch_add(1U, std::memory_order_relaxed);
         }
 
-        post_completion([this, op = std::move(op), err, hash]() mutable {
+        post_completion([this, op = std::move(op), err, hash] mutable {
             auto const id = op.tor_id;
             unregister_running_hash(gate_of(id), op.desc->block_info.byte_span_for_piece(op.piece));
             if (op.on_test) {
@@ -1168,7 +1168,7 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     }
 
     if (on_read) {
-        finish([id, byte_span, err, data = std::move(data), on_read = std::move(on_read)]() mutable {
+        finish([id, byte_span, err, data = std::move(data), on_read = std::move(on_read)] mutable {
             std::move(on_read)(id, byte_span, make_error(err), std::move(data));
         });
     }
@@ -1185,7 +1185,7 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     auto const err = backend_->test_piece(id, piece, hash);
 
     if (on_test) {
-        finish([id, piece, err, hash, on_test = std::move(on_test)]() mutable {
+        finish([id, piece, err, hash, on_test = std::move(on_test)] mutable {
             std::move(on_test)(id, piece, make_error(err), err == 0 ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
         });
     }
@@ -1205,7 +1205,7 @@ void LocalData::write(
     auto const err = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error_code_t{ TR_ERROR_EINVAL };
 
     if (on_write) {
-        finish([id, byte_span, err, on_write = std::move(on_write)]() mutable {
+        finish([id, byte_span, err, on_write = std::move(on_write)] mutable {
             std::move(on_write)(id, byte_span, make_error(err));
         });
     }
@@ -1228,7 +1228,7 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
 
 void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(tor_id, [this, tor_id, on_close = std::move(on_close)]() mutable {
+    admin(tor_id, [this, tor_id, on_close = std::move(on_close)] mutable {
         backend_->close_torrent(tor_id);
         if (threaded_) {
             threaded_->forget(tor_id);
@@ -1246,7 +1246,7 @@ void LocalData::close_file(
 {
     admin(
         tor_id,
-        [this, tor_id, file_num, on_close = std::move(on_close)]() mutable {
+        [this, tor_id, file_num, on_close = std::move(on_close)] mutable {
             backend_->close_file(tor_id, file_num);
             if (on_close) {
                 std::move(on_close)(tor_id);
@@ -1270,7 +1270,7 @@ void LocalData::move(
     MoveParent parent, // NOLINT(performance-unnecessary-value-param)
     OnMove on_move) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)]() mutable {
+    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)] mutable {
         auto const dir = parent();
         auto const err = std::empty(dir) ? tr_error_code_t{} : backend_->move(id, dir);
         if (on_move) {
@@ -1284,7 +1284,7 @@ void LocalData::remove(
     tr_torrent_remove_func remove_func,
     OnRemove on_remove) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)]() mutable {
+    admin(id, [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)] mutable {
         auto const err = backend_->remove(id, std::move(remove_func));
         if (threaded_) {
             threaded_->forget(id);
@@ -1303,11 +1303,9 @@ void LocalData::rename(
 {
     admin(
         id,
-        [this,
-         id,
-         oldpath = std::string{ oldpath },
-         newname = std::string{ newname },
-         callback = std::move(callback)]() mutable { backend_->rename(id, oldpath, newname, std::move(callback)); });
+        [this, id, oldpath = std::string{ oldpath }, newname = std::string{ newname }, callback = std::move(callback)] mutable {
+            backend_->rename(id, oldpath, newname, std::move(callback));
+        });
 }
 
 void LocalData::shutdown()

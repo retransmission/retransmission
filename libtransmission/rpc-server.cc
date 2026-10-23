@@ -652,7 +652,7 @@ void start_server(tr_rpc_server* server);
 auto rpc_server_start_retry(tr_rpc_server* server)
 {
     if (!server->start_retry_timer) {
-        server->start_retry_timer = server->session->timerMaker().create([server]() { start_server(server); });
+        server->start_retry_timer = server->session->timerMaker().create([server] { start_server(server); });
     }
 
     ++server->start_retry_counter;
@@ -821,7 +821,7 @@ void tr_rpc_server::set_enabled(bool is_enabled)
 {
     settings_.is_enabled = is_enabled;
 
-    session->run_in_session_thread([this]() {
+    session->run_in_session_thread([this] {
         if (!settings_.is_enabled) {
             stop_server(this);
         } else {

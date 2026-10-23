@@ -1027,10 +1027,10 @@ public:
         , torrents_{ torrents }
         , blocklists_{ blocklist }
         , handshake_mediator_{ *session, timer_maker, torrents }
-        , bandwidth_timer_{ timer_maker.create([this]() { bandwidth_pulse(); }) }
-        , peer_info_timer_{ timer_maker.create([this]() { peer_info_pulse(); }) }
-        , rechoke_timer_{ timer_maker.create([this]() { rechoke_pulse_marshall(); }) }
-        , blocklists_tag_{ blocklist.observe_changes([this]() { on_blocklists_changed(); }) }
+        , bandwidth_timer_{ timer_maker.create([this] { bandwidth_pulse(); }) }
+        , peer_info_timer_{ timer_maker.create([this] { peer_info_pulse(); }) }
+        , rechoke_timer_{ timer_maker.create([this] { rechoke_pulse_marshall(); }) }
+        , blocklists_tag_{ blocklist.observe_changes([this] { on_blocklists_changed(); }) }
     {
         bandwidth_timer_->start_repeating(BandwidthTimerPeriod);
         peer_info_timer_->start_repeating(PeerInfoPeriod);

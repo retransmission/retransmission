@@ -33,7 +33,7 @@ public:
         , callback_{ std::move(callback) }
         , retry_timer_{ timer_maker.create() }
     {
-        retry_timer_->set_callback([this]() { onRetryTimer(); });
+        retry_timer_->set_callback([this] { onRetryTimer(); });
     }
 
     ~BaseWatchdir() override = default;
