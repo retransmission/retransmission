@@ -15,7 +15,6 @@
 @property(nonatomic) NSButton* fCheckForUpdatesButton;
 @property(nonatomic) NSButton* fCheckForUpdatesBetaButton;
 
-@property(nonatomic) NSButton* fAutoSizeButton;
 @property(nonatomic) NSButton* fBadgeDownloadButton;
 @property(nonatomic) NSButton* fBadgeUploadButton;
 @property(nonatomic) NSButton* fPromptRemoveButton;
@@ -79,9 +78,6 @@
 
 - (void)createUIElements
 {
-    self.fAutoSizeButton = [NSButton checkboxWithTitle:LStr(@"Automatically size window to fit all torrents") target:self
-                                                action:@selector(setAutoSize:)];
-
     self.fBadgeDownloadButton = [NSButton checkboxWithTitle:LStr(@"Total download rate") target:self action:@selector(setBadge:)];
     self.fBadgeUploadButton = [NSButton checkboxWithTitle:LStr(@"Total upload rate") target:self action:@selector(setBadge:)];
 
@@ -124,8 +120,6 @@ static NSView* indentedView(NSView* view)
 
     gridView.xPlacement = NSGridCellPlacementLeading;
     gridView.yPlacement = NSGridCellPlacementCenter;
-
-    [gridView addRowWithViews:@[ [NSTextField labelWithString:LStr(@"Auto resize:")], self.fAutoSizeButton ]];
 
     [gridView addRowWithViews:@[ [NSTextField labelWithString:LStr(@"Badge Dock icon with:")], self.fBadgeDownloadButton ]];
 
@@ -171,8 +165,6 @@ static NSView* indentedView(NSView* view)
 {
     NSUserDefaultsController* defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 
-    [self.fAutoSizeButton bind:NSValueBinding toObject:defaultsController withKeyPath:@"values.AutoSize" options:nil];
-
     [self.fBadgeDownloadButton bind:NSValueBinding toObject:defaultsController withKeyPath:@"values.BadgeDownloadRate" options:nil];
 
     [self.fBadgeUploadButton bind:NSValueBinding toObject:defaultsController withKeyPath:@"values.BadgeUploadRate" options:nil];
@@ -199,11 +191,6 @@ static NSView* indentedView(NSView* view)
 }
 
 #pragma mark - Actions & Logic
-
-- (void)setAutoSize:(id)sender
-{
-    [NSNotificationCenter.defaultCenter postNotificationName:@"AutoSizeSettingChange" object:self];
-}
 
 - (void)setBadge:(id)sender
 {
