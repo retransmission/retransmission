@@ -144,7 +144,7 @@ public:
     {
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     [[nodiscard]] constexpr operator int() const noexcept
     {
         return value_;
@@ -167,7 +167,7 @@ public:
     {
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     [[nodiscard]] constexpr operator uint16_t() const noexcept
     {
         return value_;
