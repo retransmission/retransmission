@@ -14,6 +14,7 @@
 
 #include <libtransmission-app/interop.h> // is_metainfo_link()
 
+#include "QtCompat.h"
 #include "Utils.h"
 
 namespace
@@ -81,15 +82,12 @@ std::optional<AddData> AddData::fromWireMetainfo(std::string_view const metainfo
         return create(Utils::qstringFromUtf8(metainfo));
     }
 
-    auto const contents = tr::interop::decode_metainfo_torrent(metainfo);
-    if (!contents) {
-        return {};
-    }
-
-    auto ret = AddData{};
-    ret.type = METAINFO;
-    ret.metainfo = QByteArray{ std::data(*contents), static_cast<int>(std::size(*contents)) };
-    return ret;
+    return tr::interop::decode_metainfo_torrent(metainfo).transform([](auto const& contents) {
+        auto ret = AddData{};
+        ret.type = METAINFO;
+        ret.metainfo = QByteArray{ std::data(contents), static_cast<QtrSizeArgType>(std::size(contents)) };
+        return ret;
+    });
 }
 
 QByteArray AddData::toBase64() const

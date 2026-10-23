@@ -420,8 +420,7 @@ namespace
     // Shortcut to avoid extra work below.
     // All the paths below involve filenames that begin with one of these chars
     static auto constexpr ReservedFilesBeginWithOneOf = "ACLNP"sv;
-    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(static_cast<unsigned char>(in.front())))) ==
-        std::string_view::npos) {
+    if (!ReservedFilesBeginWithOneOf.contains(static_cast<char>(toupper(static_cast<unsigned char>(in.front()))))) {
         return false;
     }
 

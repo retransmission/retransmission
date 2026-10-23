@@ -46,7 +46,6 @@
 #include "libtransmission/digest.h"
 #include "libtransmission/ip-cache.h"
 #include "libtransmission/local-data.h"
-#include "libtransmission/macros.h"
 #include "libtransmission/net.h" // for tr_port, tr_tos_t
 #include "libtransmission/open-files.h"
 #include "libtransmission/port-forwarding.h"
@@ -1067,17 +1066,17 @@ public:
         return TR_RPC_OK;
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 auto get_anti_brute_force_limit() const noexcept
+    [[nodiscard]] constexpr auto get_anti_brute_force_limit() const noexcept
     {
         return rpc_server_->get_anti_brute_force_limit();
     }
 
-    TR_CONSTEXPR23 void set_anti_brute_force_limit(size_t const limit) noexcept
+    constexpr void set_anti_brute_force_limit(size_t const limit) noexcept
     {
         rpc_server_->set_anti_brute_force_limit(limit);
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 auto is_anti_brute_force_enabled() const noexcept
+    [[nodiscard]] constexpr auto is_anti_brute_force_enabled() const noexcept
     {
         return rpc_server_->is_anti_brute_force_enabled();
     }
@@ -1087,7 +1086,7 @@ public:
         rpc_server_->set_anti_brute_force_enabled(enabled);
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 auto get_max_request_body_size() const noexcept
+    [[nodiscard]] constexpr auto get_max_request_body_size() const noexcept
     {
         return rpc_server_->get_max_request_body_size();
     }

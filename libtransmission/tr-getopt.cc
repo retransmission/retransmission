@@ -168,7 +168,7 @@ void tr_getopt_usage(char const* app_name, char const* description, struct tr_op
     }
 
     printf(description, app_name);
-    printf("\n\nOptions:\n");
+    fmt::print("\n\nOptions:\n");
     getopts_usage_line(&help, long_width, short_width, arg_width);
 
     for (tr_option const* o = opts; o->val != 0; ++o) {

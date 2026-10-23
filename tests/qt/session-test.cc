@@ -263,10 +263,10 @@ private slots:
 
         auto const bodies = server.request_bodies();
         auto const get = std::ranges::find_if(bodies, [](std::string const& body) {
-            return body.find(R"("session_get")") != std::string::npos;
+            return body.contains(R"("session_get")");
         });
         QVERIFY(get != std::end(bodies));
-        QVERIFY2(get->find(R"("fields":["blocklist_date","blocklist_size"])") != std::string::npos, get->c_str());
+        QVERIFY2(get->contains(R"("fields":["blocklist_date","blocklist_size"])"), get->c_str());
     }
 
     // stop() forgets the blocklist info and says so,

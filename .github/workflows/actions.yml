@@ -400,6 +400,8 @@ jobs:
       needs.what-to-make.outputs.tidy-core == 'true' ||
       needs.what-to-make.outputs.tidy-gtk == 'true' ||
       needs.what-to-make.outputs.tidy-qt == 'true'
+    env:
+      CLANG_TIDY_VERSION: 22
     # One cell per toolkit version. Each cell generates code (Qt moc/uic) so
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
@@ -415,14 +417,14 @@ jobs:
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: gtk3
             enable-gtk: gtk3
             enable-qt: false
             enable-tests: false
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
             regex: 'gtk/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: gtk4
             enable-gtk: gtk4
             enable-qt: false
@@ -436,14 +438,14 @@ jobs:
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - toolkit: qt6
             enable-gtk: false
             enable-qt: qt6
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
     steps:
       - name: Show Configuration
         run: |
@@ -463,7 +465,7 @@ jobs:
         uses: ./.github/actions/install-deps
         with:
           compiler: clang
-          enable-clang-tidy: true
+          enable-clang-tidy: ${{ env.CLANG_TIDY_VERSION }}
           use-sudo: true
           enable-gtk: ${{ matrix.enable-gtk }}
           enable-qt: ${{ matrix.enable-qt }}
@@ -475,8 +477,8 @@ jobs:
             -B obj \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_CXX_COMPILER='clang++' \
-            -DCMAKE_C_COMPILER='clang' \
+            -DCMAKE_CXX_COMPILER="clang++-${CLANG_TIDY_VERSION}" \
+            -DCMAKE_C_COMPILER="clang-${CLANG_TIDY_VERSION}" \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_INSTALL_PREFIX=pfx \
             -DENABLE_GTK=${{ matrix.enable-gtk && 'ON' || 'OFF' }} \
@@ -511,7 +513,7 @@ jobs:
         with:
           regex: ${{ matrix.regex }}
           cache-key: ${{ github.job }}-${{ matrix.toolkit }}
-          clang-tidy-binary: clang-tidy-22
+          clang-tidy-binary: clang-tidy-${{ env.CLANG_TIDY_VERSION }}
 
   clang-tidy-windows:
     runs-on: windows-2025
@@ -1427,69 +1429,6 @@ jobs:
       run: |
         gradle build
 
-  cxx23:
-    needs: [ what-to-make ]
-    if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show Configuration
-        run: |
-          echo '${{ toJSON(needs) }}'
-          echo '${{ toJSON(runner) }}'
-          cat /etc/os-release
-      - name: Get Source
-        uses: actions/checkout@v7
-        with:
-          submodules: recursive
-      - name: Get Dependencies
-        uses: ./.github/actions/install-deps
-        with:
-          compiler: clang
-          enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk3' || 'false' }}
-          enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
-          use-sudo: true
-          enable-mold: true
-      - name: Setup ccache
-        uses: ./.github/actions/setup-ccache
-        with:
-          max-size: 100M
-      - name: Configure
-        run: |
-          cmake \
-            -S . \
-            -B obj \
-            -G Ninja \
-            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_STANDARD=23 \
-            -DCMAKE_CXX_COMPILER='clang++' \
-            -DCMAKE_C_COMPILER='clang' \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=pfx \
-            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
-            -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_MAC=OFF \
-            -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=OFF \
-            -DENABLE_WERROR=ON \
-            -DRUN_CLANG_TIDY=OFF \
-            -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
-            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
-            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
-      - name: Make
-        run: cmake --build obj --config Release -- "-k 0"
-      - name: Finalize ccache
-        uses: ./.github/actions/finalize-ccache
-
   ubuntu-24-04-arm64:
     needs: [ make-source-tarball, what-to-make ]
     if: |
@@ -1933,7 +1872,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:

@@ -1968,12 +1968,12 @@ void filter_ids(tr_variant::Map const& result, RemoteConfig& config)
             }
             break;
         case 'd': // Downloading (Status is Downloading or Up&Down)
-            if (status.find("Down") != std::string::npos) {
+            if (status.contains("Down"sv)) {
                 include = !include;
             }
             break;
         case 'u': // Uploading (Status is Uploading, Up&Down or Seeding
-            if (status.find("Up") != std::string::npos || status == "Seeding") {
+            if (status.contains("Up"sv) || status == "Seeding") {
                 include = !include;
             }
             break;
@@ -1990,7 +1990,7 @@ void filter_ids(tr_variant::Map const& result, RemoteConfig& config)
         case 'n': // Torrent name substring
             if (auto name = t->value_if<std::string_view>(TR_KEY_name); !name) {
                 continue;
-            } else if (name->find(arg) != std::string::npos) {
+            } else if (name->contains(arg)) {
                 include = !include;
             }
             break;
@@ -2153,7 +2153,7 @@ namespace flush_utils
 {
 [[nodiscard]] long get_timeout_secs(std::string_view req)
 {
-    if (tr_strv_contains(req, R"("method":"blocklist-update")") || tr_strv_contains(req, R"("method":"blocklist_update")")) {
+    if (req.contains(R"("method":"blocklist-update")") || req.contains(R"("method":"blocklist_update")")) {
         return 300L;
     }
 

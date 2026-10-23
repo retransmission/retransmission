@@ -208,7 +208,7 @@ namespace
         "{}|\\^[]`" // unwise
     };
 
-    return !std::empty(url) && std::ranges::all_of(url, [&ValidChars](auto ch) { return tr_strv_contains(ValidChars, ch); });
+    return !std::empty(url) && std::ranges::all_of(url, [&ValidChars](auto ch) { return ValidChars.contains(ch); });
 }
 
 [[nodiscard]] bool tr_isValidTrackerScheme(std::string_view scheme)

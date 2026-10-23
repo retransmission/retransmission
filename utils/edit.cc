@@ -15,7 +15,6 @@
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
@@ -194,7 +193,7 @@ namespace
 
     bool changed = false;
 
-    if (auto sv_opt = map->value_if<std::string_view>(TR_KEY_announce); sv_opt && tr_strv_contains(*sv_opt, oldval)) {
+    if (auto sv_opt = map->value_if<std::string_view>(TR_KEY_announce); sv_opt && sv_opt->contains(oldval)) {
         auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
         fmt::print("\tReplaced in 'announce': '{:s}' --> '{:s}'\n", *sv_opt, newstr);
         (*map)[TR_KEY_announce] = std::string_view{ newstr };
@@ -207,7 +206,7 @@ namespace
         for (auto& tier_variant : *al_vec) {
             if (auto* const tier_vec = tier_variant.get_if<tr_variant::Vector>()) {
                 for (auto& node : *tier_vec) {
-                    if (auto sv_opt = node.value_if<std::string_view>(); sv_opt && tr_strv_contains(*sv_opt, oldval)) {
+                    if (auto sv_opt = node.value_if<std::string_view>(); sv_opt && sv_opt->contains(oldval)) {
                         auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
                         fmt::print(
                             "\tReplaced in 'announce-list' tier #{:d}: '{:s}' --> '{:s}'\n",

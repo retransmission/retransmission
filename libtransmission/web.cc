@@ -22,7 +22,6 @@
 #include <stack>
 #include <string>
 #include <thread>
-#include <type_traits>
 #include <utility>
 
 #ifdef _WIN32
@@ -384,12 +383,9 @@ public:
             }
         }
 
-        [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
+        [[nodiscard]] auto bind_address(int const af) const
         {
-            if (auto const addr = impl.mediator.bind_address(af)) {
-                return tr_address::from_string(*addr);
-            }
-            return {};
+            return impl.mediator.bind_address(af).and_then(&tr_address::from_string);
         }
 
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
@@ -993,7 +989,7 @@ public:
                             task->response.errmsg = fmt::format(
                                 "curl error: {} ({})",
                                 curl_easy_strerror(msg->data.result),
-                                static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                                std::to_underlying(msg->data.result));
                         }
 
                         auto req_bytes_sent = long{};

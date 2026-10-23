@@ -31,6 +31,7 @@ class tr_arc4
 public:
     constexpr void init(std::span<std::byte const> key)
     {
+        // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
         std::iota(std::begin(s_), std::end(s_), uint8_t{ 0 });
 
         for (size_t i = 0, j = 0; i < 256; ++i) {
