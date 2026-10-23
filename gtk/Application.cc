@@ -497,7 +497,7 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
         break;
 
     case TR_RPC_SESSION_CHANGED:
-        // Reported for every session_set, this client's own included.
+        // Another RPC client's session_set: the callback in on_startup() drops our own.
         core_->import_embedded_settings();
         break;
 
@@ -623,10 +623,24 @@ void Application::Impl::on_startup()
 
     app_.hold();
     app_setup();
-    tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
-        Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
-        return TR_RPC_NOREMOVE;
-    });
+
+    // Fires on the thread that made the change: the session thread for another
+    // RPC client's request, this thread for our own session_set. Only another
+    // client's settings change needs importing. Ours are already in Prefs, and
+    // importing them here could read stale values back: tr_sessionSetPeerPort()
+    // and the DHT, uTP, LPD and port-forwarding setters queue their change for
+    // the session thread, which may apply it after the import runs.
+    auto const ui_thread = std::this_thread::get_id();
+    tr_sessionSetRPCCallback(
+        session,
+        [this, ui_thread](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
+            if (type == TR_RPC_SESSION_CHANGED && std::this_thread::get_id() == ui_thread) {
+                return TR_RPC_NOREMOVE;
+            }
+
+            Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
+            return TR_RPC_NOREMOVE;
+        });
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
