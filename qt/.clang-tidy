@@ -16,6 +16,7 @@ Checks:
   - cppcoreguidelines-*
   - -cppcoreguidelines-avoid-const-or-ref-data-members
   - -cppcoreguidelines-avoid-magic-numbers
+  - -cppcoreguidelines-explicit-constructor # alias of `misc-explicit-constructor`
   - -cppcoreguidelines-macro-usage
   - -cppcoreguidelines-narrowing-conversions
   - -cppcoreguidelines-non-private-member-variables-in-classes
@@ -26,12 +27,6 @@ Checks:
   - -cppcoreguidelines-use-enum-class
   - google-readability-*
   - google-runtime-operator
-  - hicpp-*
-  - -hicpp-named-parameter # alias of `readability-named-parameter`
-  - -hicpp-signed-bitwise
-  - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
-  - -hicpp-use-equals-delete # alias of `modernize-use-equals-delete`
-  - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner

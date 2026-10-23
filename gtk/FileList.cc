@@ -544,7 +544,7 @@ void FileList::Impl::set_torrent(tr_torrent_id_t torrent_id)
 
         refresh();
         timeout_tag_ = Glib::signal_timeout().connect_seconds(
-            [this]() { return refresh(), true; },
+            [this] { return refresh(), true; },
             SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     }
 
@@ -744,7 +744,6 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
     bool handled = false;
 
     if (button == GDK_BUTTON_PRIMARY &&
-        // NOLINTNEXTLINE(hicpp-signed-bitwise)
         (state & (TR_GDK_MODIFIED_TYPE(SHIFT_MASK) | TR_GDK_MODIFIED_TYPE(CONTROL_MASK))) == TrGdkModifierType{} &&
         getAndSelectEventPath(view_x, view_y, col, path)) {
         handled = onViewPathToggled(col, path);
@@ -755,7 +754,7 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
 
 void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
 {
-    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error]() {
+    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error] {
         rename_done_tags_.pop();
         on_rename_done_idle(path_string, newname, error);
         return false;

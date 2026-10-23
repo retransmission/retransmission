@@ -165,7 +165,7 @@ void PathButton::rebuildMenu()
         auto const native = QDir::toNativeSeparators(path);
         auto* const action = menu_->addAction(metrics.elidedText(native, Qt::ElideLeft, 400));
         action->setToolTip(native);
-        connect(action, &QAction::triggered, this, [this, native]() { setPath(native); });
+        connect(action, &QAction::triggered, this, [this, native] { setPath(native); });
     }
 
     menu_->addSeparator();

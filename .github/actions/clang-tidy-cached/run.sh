@@ -18,7 +18,8 @@
 #   CTCACHE_CLIENT  (required) path to ctcache's clang_tidy_cache.py
 #   PY              (required) Python interpreter
 #   BUILD_PATH      (default: obj) dir containing compile_commands.json
-#   CLANG_TIDY      (default: clang-tidy) real clang-tidy executable
+#   CLANG_TIDY      (default: clang-tidy) clang-tidy executable or launcher
+#   CLANG_TIDY_ARGS (optional) whitespace-separated launcher arguments
 #   TIDY_EXTRA_ARG  (optional) single -extra-arg value appended to every invocation
 #   CTCACHE_LOCAL=1 CTCACHE_DIR=<persisted dir> CTCACHE_STRIP=<workspace>  (ctcache)
 #
@@ -29,6 +30,10 @@ set -uo pipefail
 : "${PY:?set PY}"
 build_path="${BUILD_PATH:-obj}"
 clang_tidy="${CLANG_TIDY:-clang-tidy}"
+clang_tidy_args=()
+if [[ -n "${CLANG_TIDY_ARGS:-}" ]]; then
+  read -r -a clang_tidy_args <<< "$CLANG_TIDY_ARGS"
+fi
 extra_arg="${TIDY_EXTRA_ARG:-}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -66,7 +71,8 @@ extra=()
 
 printf '%s\0' "${files[@]}" \
   | xargs -0 -P "$jobs" -I{} \
-      "$PY" "$CTCACHE_CLIENT" "$clang_tidy" "{}" -p "$build_path" -quiet -warnings-as-errors='*' "${extra[@]}"
+      "$PY" "$CTCACHE_CLIENT" "$clang_tidy" "${clang_tidy_args[@]}" \
+      "{}" -p "$build_path" -quiet -warnings-as-errors='*' "${extra[@]}"
 rc=$?
 
 if [ "$rc" -ne 0 ]; then

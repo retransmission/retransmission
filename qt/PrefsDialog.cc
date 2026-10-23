@@ -58,7 +58,7 @@ auto constexpr BlocklistInfoRefreshInterval = std::chrono::seconds{ 15 };
 template<typename T, typename W, typename Setter>
 void PrefsDialog::addUpdater(W* const w, tr_quark const key, Setter const setter)
 {
-    auto updater = [this, w, key, setter]() {
+    auto updater = [this, w, key, setter] {
         auto const blocker = QSignalBlocker{ w };
         std::invoke(setter, w, prefs_.get<T>(key));
     };
@@ -77,7 +77,7 @@ void PrefsDialog::bind(W* const w, tr_quark const key, Setter const setter, Sign
 // Enables `widgets` iff every pref in `keys` is true.
 void PrefsDialog::bindEnabled(QWidgetList const& widgets, std::initializer_list<tr_quark> const keys)
 {
-    auto updater = [this, widgets, keys = std::vector<tr_quark>{ keys }]() {
+    auto updater = [this, widgets, keys = std::vector<tr_quark>{ keys }] {
         auto const enabled = std::ranges::all_of(keys, [this](tr_quark const key) { return prefs_.get<bool>(key); });
         for (auto* const w : widgets) {
             w->setEnabled(enabled);
@@ -145,7 +145,7 @@ void PrefsDialog::initWidget(QLineEdit* const w, tr_quark const key)
 {
     addUpdater<QString>(w, key, &QLineEdit::setText);
 
-    auto on_editing_finished = [this, key, w]() {
+    auto on_editing_finished = [this, key, w] {
         if (w->isModified()) {
             set(key, w->text());
         }
@@ -165,7 +165,7 @@ void PrefsDialog::initWidget(QTimeEdit* const w, tr_quark const key)
     };
     addUpdater<int>(w, key, set_minutes);
 
-    auto on_editing_finished = [this, key, w]() {
+    auto on_editing_finished = [this, key, w] {
         auto const minutes = w->time().msecsSinceStartOfDay() / (1000 * 60);
         set(key, minutes);
     };
@@ -359,7 +359,7 @@ void PrefsDialog::initNetworkTab()
     ui_.globalPeerLimitSpin->setRange(1, INT_MAX);
 
     initWidget(ui_.peerPortSpin, TR_KEY_peer_port);
-    updaters_.emplace(TR_KEY_peer_port, [this]() {
+    updaters_.emplace(TR_KEY_peer_port, [this] {
         port_test_status_.fill(PortTestStatus::Unknown);
         updatePortStatusLabel();
         portTestSetEnabled();
@@ -471,7 +471,7 @@ void PrefsDialog::initSeedingTab()
     bindEnabled({ ui_.idleLimitSpin }, { TR_KEY_idle_seeding_limit_enabled });
     bindEnabled({ ui_.doneSeedingScriptStack }, { TR_KEY_script_torrent_done_seeding_enabled });
 
-    auto const update_idle_limit_format = [this]() {
+    auto const update_idle_limit_format = [this] {
         //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
         auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes:L} minute(s)");
         Utils::updateSpinBoxFormat(ui_.idleLimitSpin, "PrefsDialog", units_format, "minutes");
@@ -526,7 +526,7 @@ void PrefsDialog::initDownloadingTab()
     cr->addLayout(ui_.incompleteSectionLayout);
     cr->update();
 
-    auto const update_queue_stalled_format = [this]() {
+    auto const update_queue_stalled_format = [this] {
         //: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
         auto const* const units_format = QT_TRANSLATE_N_NOOP("PrefsDialog", "{minutes_ago:L} minute(s) ago");
         Utils::updateSpinBoxFormat(ui_.queueStalledMinutesSpin, "PrefsDialog", units_format, "minutes_ago");

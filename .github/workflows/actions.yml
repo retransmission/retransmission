@@ -29,6 +29,7 @@ env:
   CCACHE_COMPILERCHECK: content
   CCACHE_COMPRESSLEVEL: '5'
   CCACHE_DIR: ${{ github.workspace }}/.ccache
+  CLANG_TIDY_VERSION: 23
   GTEST_OUTPUT: xml:./
 jobs:
   what-to-make:
@@ -400,8 +401,6 @@ jobs:
       needs.what-to-make.outputs.tidy-core == 'true' ||
       needs.what-to-make.outputs.tidy-gtk == 'true' ||
       needs.what-to-make.outputs.tidy-qt == 'true'
-    env:
-      CLANG_TIDY_VERSION: 22
     # One cell per toolkit version. Each cell generates code (Qt moc/uic) so
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
@@ -602,7 +601,8 @@ jobs:
         with:
           regex: ${{ matrix.regex }}
           cache-key: ${{ github.job }}-${{ matrix.toolkit }}
-          clang-tidy-binary: clang-tidy
+          clang-tidy-binary: pipx
+          clang-tidy-args: run clang-tidy~=${{ env.CLANG_TIDY_VERSION }}.0
           # MSVC-style compile commands carry flags clang-cl ignores (e.g. /GL);
           # silence the resulting driver diagnostic so -warnings-as-errors=* does
           # not treat it as a finding.

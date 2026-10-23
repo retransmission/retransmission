@@ -571,7 +571,7 @@ void Session::Impl::on_torrent_completeness_changed(
 {
     if (auto* const tor = tr_torrentFindFromId(session_, tor_id);
         was_running && completeness != TR_LEECH && tor != nullptr && tr_torrentStat(tor).size_when_done != 0U) {
-        Glib::signal_idle().connect([core = get_core_ptr(), &prefs = core_.prefs_, tor_id]() {
+        Glib::signal_idle().connect([core = get_core_ptr(), &prefs = core_.prefs_, tor_id] {
             gtr_notify_torrent_completed(core, prefs, tor_id);
             return false;
         });
@@ -620,7 +620,7 @@ std::pair<Glib::RefPtr<Torrent>, guint> Session::Impl::find_torrent_by_id(tr_tor
    so delegate to the GTK+ thread before changing our list store... */
 void Session::Impl::on_torrent_metadata_changed(tr_torrent_id_t const tor_id)
 {
-    Glib::signal_idle().connect([this, core = get_core_ptr(), tor_id]() {
+    Glib::signal_idle().connect([this, core = get_core_ptr(), tor_id] {
         update_torrent(tor_id);
         return false;
     });

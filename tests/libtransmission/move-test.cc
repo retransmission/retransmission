@@ -47,7 +47,7 @@ protected:
     {
         auto const [begin, end] = span;
         for (auto block_index = begin; block_index < end; ++block_index) {
-            auto const save_zeroes = [tor, block_index]() {
+            auto const save_zeroes = [tor, block_index] {
                 if (tor->on_block_received(block_index)) {
                     auto const zeroes = std::vector<uint8_t>(TrBlockSize);
                     tor->save_block(block_index, std::make_unique<tr::LocalData::BlockData>(zeroes));
@@ -55,7 +55,7 @@ protected:
             };
             session_->run_in_session_thread(save_zeroes);
             // save_block() may return before the write finishes
-            auto const test = [tor, block_index]() {
+            auto const test = [tor, block_index] {
                 return tor->has_block(block_index);
             };
             EXPECT_TRUE(waitForInSessionThread(test, MaxWaitMsec));
@@ -78,7 +78,7 @@ protected:
 
     [[nodiscard]] auto setLocation(tr_torrent* tor, std::string_view path, bool move = true)
     {
-        return blockingRunInSessionThread([tor, path = std::string{ path }, move]() {
+        return blockingRunInSessionThread([tor, path = std::string{ path }, move] {
             auto state = -1;
             tr_torrentSetLocation(tor, path, move, &state);
             return state;
@@ -101,7 +101,7 @@ protected:
         auto const download_tree = tr_pathbuf{ download_dir, '/', tor->name() };
         auto const incomplete_tree = tr_pathbuf{ incomplete_dir, '/', tor->name() };
 
-        blockingRunInSessionThread([session = session_, tor, via_backend]() {
+        blockingRunInSessionThread([session = session_, tor, via_backend] {
             if (via_backend) {
                 session->local_data.remove(tor->id(), {});
             }
@@ -142,10 +142,10 @@ protected:
         if (via_backend) {
             auto result = std::make_shared<std::promise<tr_error_code_t>>();
             auto ready = result->get_future();
-            session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, result]() {
+            session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, result] {
                 session->local_data.move(
                     tor->id(),
-                    [target]() { return target; },
+                    [target] { return target; },
                     [result](auto, auto, tr_error const& error) { result->set_value(error ? error.code() : 0); });
             });
             ASSERT_EQ(std::future_status::ready, ready.wait_for(5s));
@@ -206,7 +206,7 @@ TEST_P(IncompleteDirTest, incompleteDir)
     blockingTorrentVerify(tor);
     EXPECT_EQ(0, tr_torrentStat(tor).left_until_done);
 
-    auto test = [&completeness]() {
+    auto test = [&completeness] {
         return completeness != TR_LEECH;
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -366,7 +366,7 @@ TEST_F(MoveTest, setLocation)
     // now move it
     auto state = -1;
     tr_torrentSetLocation(tor, target_dir, true, &state);
-    auto test = [&state]() {
+    auto test = [&state] {
         return state == TR_LOC_DONE;
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));

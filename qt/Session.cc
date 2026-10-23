@@ -127,7 +127,7 @@ Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
-    session_refresh_tag_ = session_refresh_needed.connect_scoped([this]() { refreshSessionInfo(); });
+    session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc_, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
@@ -234,7 +234,7 @@ Session::Tag Session::torrentSetImpl(tr_variant::Map params)
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
             rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));
         })
-        .finally([this, tag]() { emit sessionCalled(tag); })
+        .finally([this, tag] { emit sessionCalled(tag); })
         .run();
 
     return tag;
@@ -494,7 +494,7 @@ void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& tor
             exec(method, std::move(params), std::move(done));
         })
         // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids]() { refreshTorrents(torrent_ids, TorrentProperties::MainStats); })
+        .add([this, torrent_ids] { refreshTorrents(torrent_ids, TorrentProperties::MainStats); })
         .run();
 }
 
