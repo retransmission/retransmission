@@ -864,6 +864,7 @@ private:
         auto* s = static_cast<tr_swarm*>(vs);
         auto const lock = s->unique_lock();
 
+        // NOLINTBEGIN(readability-trivial-switch)
         switch (event.type) {
         case tr_peer_event::Type::ClientGotPieceData:
             s->tor->add_downloaded(event.length, tr_time());
@@ -873,6 +874,7 @@ private:
             peer_callback_common(peer, event, s);
             break;
         }
+        // NOLINTEND(readability-trivial-switch)
     }
 
     static void peer_callback_common(tr_peer* const peer, tr_peer_event const& event, tr_swarm* const s)
