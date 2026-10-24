@@ -355,7 +355,7 @@ bool Session::Impl::watchdir_idle()
     }
 
     /* keep monitoring the ones that are still changing */
-    monitor_files_ = changing;
+    monitor_files_ = std::move(changing);
 
     /* if monitor_files is nonempty, keep checking every second */
     if (!monitor_files_.empty()) {
@@ -443,7 +443,7 @@ void Session::Impl::watchdir_update()
 
     watchdir_scan();
 
-    monitor_ = monitor;
+    monitor_ = std::move(monitor);
     monitor_dir_ = dir;
     monitor_tag_ = monitor_->signal_changed().connect(sigc::mem_fun(*this, &Impl::on_file_changed_in_watchdir));
 }

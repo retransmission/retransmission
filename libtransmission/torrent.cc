@@ -2512,7 +2512,7 @@ void tr_torrent::refresh_current_dir(std::optional<tr::shared_string> const& fir
     TR_ASSERT(!std::empty(dir));
     TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
 
-    current_dir_ = dir;
+    current_dir_ = std::move(dir);
     invalidate_storage_descriptor();
 }
 

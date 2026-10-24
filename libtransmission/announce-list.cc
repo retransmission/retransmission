@@ -261,7 +261,7 @@ bool tr_announce_list::parse(std::string_view text)
         }
     }
 
-    *this = scratch;
+    *this = std::move(scratch);
     return true;
 }
 
