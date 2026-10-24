@@ -238,18 +238,16 @@ bool refreshFilesForeach(
 
     new_progress = std::clamp(new_progress, 0, 100);
 
-    if (new_priority != old_priority || new_enabled != old_enabled) {
+    if (!refresh_data.resort_needed &&
+        ((refresh_data.sort_column_id == file_cols.priority.index() && new_priority != old_priority) ||
+         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled))) {
         /* Changing a value in the sort column can trigger a resort
          * which breaks this foreach () call. (See #3529)
          * As a workaround: if that's about to happen, temporarily disable
          * sorting until we finish walking the tree. */
-        if (!refresh_data.resort_needed &&
-            (((refresh_data.sort_column_id == file_cols.priority.index()) && (new_priority != old_priority)) ||
-             ((refresh_data.sort_column_id == file_cols.enabled.index()) && (new_enabled != old_enabled)))) {
-            refresh_data.resort_needed = true;
+        refresh_data.resort_needed = true;
 
-            store->set_sort_column(GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, TR_GTK_SORT_TYPE(ASCENDING));
-        }
+        store->set_sort_column(GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, TR_GTK_SORT_TYPE(ASCENDING));
     }
 
     if (new_enabled != old_enabled) {
@@ -373,10 +371,8 @@ bool getSubtreeForeach(
     Gtk::TreeModel::Path const& subtree_path,
     std::vector<tr_file_index_t>& indexBuf)
 {
-    if (bool const is_file = iter->children().empty(); is_file) {
-        if (path == subtree_path || path.is_descendant(subtree_path)) {
-            indexBuf.push_back(iter->get_value(file_cols.index));
-        }
+    if (bool const is_file = iter->children().empty(); is_file && (path == subtree_path || path.is_descendant(subtree_path))) {
+        indexBuf.push_back(iter->get_value(file_cols.index));
     }
 
     return false; /* keep walking */
