@@ -59,8 +59,8 @@ TEST_F(CompletionTest, MagnetLink)
 
 TEST_F(CompletionTest, setBlocks)
 {
-    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 64 * 50000 }; // 50GB
-    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
+    auto constexpr TotalSize = BlockSizeU64 * 64 * 50000; // 50GB
+    auto constexpr PieceSize = BlockSizeU64 * 64;
 
     auto torrent = TestTorrent{};
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
