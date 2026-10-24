@@ -1668,7 +1668,7 @@ void tr_torrent::set_verify_state(VerifyState const state)
     TR_ASSERT(state == VerifyState::None || state == VerifyState::Queued || state == VerifyState::Active);
 
     verify_state_ = state;
-    verify_progress_ = {};
+    verify_checked_pieces_ = 0;
     mark_changed();
 }
 
@@ -1737,10 +1737,7 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
     tor_->checked_pieces_.set(piece, true);
     tor_->mark_changed();
     tor_->session->set_date_active(tr_time());
-    tor_->verify_progress_ = std::clamp(
-        static_cast<float>(piece + 1U) / static_cast<float>(tor_->metainfo_.piece_count()),
-        0.0F,
-        1.0F);
+    tor_->verify_checked_pieces_ = piece + 1U;
 }
 
 // (usually called from tr_verify_worker's thread)

@@ -1333,11 +1333,11 @@ private:
 
     [[nodiscard]] constexpr std::optional<float> verify_progress() const noexcept
     {
-        if (verify_state_ == VerifyState::Active) {
-            return verify_progress_;
+        if (verify_state_ != VerifyState::Active) {
+            return {};
         }
 
-        return {};
+        return static_cast<float>(verify_checked_pieces_) / static_cast<float>(piece_count());
     }
 
     // must be called after the torrent's announce list changes.
@@ -1494,7 +1494,7 @@ private:
     time_t seconds_downloading_before_current_start_ = 0;
     time_t seconds_seeding_before_current_start_ = 0;
 
-    float verify_progress_ = -1.0F;
+    tr_piece_index_t verify_checked_pieces_ = 0;
     double seed_ratio_ = 0.0;
 
     tr_announce_key_t announce_key_ = tr_rand_obj<tr_announce_key_t>();
