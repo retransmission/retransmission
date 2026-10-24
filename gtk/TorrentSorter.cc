@@ -5,7 +5,6 @@
 
 #include "TorrentSorter.h"
 
-#include "Percents.h"
 #include "SorterBase.hh"
 
 #include <libtransmission-app/display-modes.h>

@@ -21,8 +21,6 @@
 #include <cstdint>
 #include <memory>
 
-class Percents;
-
 struct tr_torrent;
 
 class Torrent
@@ -79,6 +77,7 @@ public:
     }
 
 public:
+    using Percent = tr::Values::Percent;
     using Speed = tr::Values::Speed;
     using Storage = tr::Values::Storage;
 
@@ -95,14 +94,14 @@ public:
     [[nodiscard]] tr_torrent_id_t get_id() const;
     [[nodiscard]] Glib::ustring const& get_name_collated() const;
     [[nodiscard]] Glib::ustring get_name() const;
-    [[nodiscard]] Percents get_percent_complete() const;
-    [[nodiscard]] Percents get_percent_done() const;
+    [[nodiscard]] Percent get_percent_complete() const;
+    [[nodiscard]] Percent get_percent_done() const;
     [[nodiscard]] float get_percent_done_fraction() const;
     [[nodiscard]] tr_priority_t get_priority() const;
     [[nodiscard]] size_t get_queue_position() const;
     [[nodiscard]] float get_ratio() const;
-    [[nodiscard]] Percents get_recheck_progress() const;
-    [[nodiscard]] Percents get_seed_ratio_percent_done() const;
+    [[nodiscard]] Percent get_recheck_progress() const;
+    [[nodiscard]] Percent get_seed_ratio_percent_done() const;
     [[nodiscard]] Speed get_speed_down() const;
     [[nodiscard]] Speed get_speed_up() const;
     [[nodiscard]] tr_torrent& get_underlying() const;

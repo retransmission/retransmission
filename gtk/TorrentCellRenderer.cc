@@ -7,7 +7,6 @@
 
 #include "GtkCompat.h"
 #include "HigWorkarea.h" // GUI_PAD, GUI_PAD_SMALL
-#include "Percents.h"
 #include "Torrent.h"
 
 #include <libtransmission/types.h>
@@ -357,7 +356,7 @@ void TorrentCellRenderer::Impl::render_compact(
     int width = 0;
 
     auto const& torrent = *property_torrent_.get_value();
-    auto const percent_done = torrent.get_percent_done().to_int();
+    auto const percent_done = torrent.get_percent_done();
     bool const sensitive = torrent.get_sensitive();
 
     set_error_color(*text_renderer_, torrent, widget, flags);
@@ -415,8 +414,10 @@ void TorrentCellRenderer::Impl::render_compact(
     icon_renderer_->property_sensitive() = sensitive;
     icon_renderer_->render(context, widget, icon_area, icon_area, flags);
 
-    progress_renderer_->property_value() = percent_done;
-    progress_renderer_->property_text() = fmt::format("{:Ld}%", percent_done);
+    progress_renderer_->property_value() = static_cast<int>(100 * percent_done.to_fraction());
+    progress_renderer_->property_text() = fmt::format(
+        fmt::runtime(_("{percent}%")),
+        fmt::arg("percent", percent_done.to_whole_string()));
     progress_renderer_->property_sensitive() = sensitive;
     render_progress_bar(context, widget, prog_area, flags, progress_color);
 
@@ -443,7 +444,7 @@ void TorrentCellRenderer::Impl::render_full(
     Gtk::Requisition size;
 
     auto const& torrent = *property_torrent_.get_value();
-    auto const percent_done = torrent.get_percent_done().to_int();
+    auto const percent_done = torrent.get_percent_done();
     bool const sensitive = torrent.get_sensitive();
 
     set_error_color(*text_renderer_, torrent, widget, flags);
@@ -547,7 +548,7 @@ void TorrentCellRenderer::Impl::render_full(
     text_renderer_->property_weight() = TR_PANGO_WEIGHT(NORMAL);
     text_renderer_->render(context, widget, prog_area, prog_area, flags);
 
-    progress_renderer_->property_value() = percent_done;
+    progress_renderer_->property_value() = static_cast<int>(100 * percent_done.to_fraction());
     progress_renderer_->property_text() = Glib::ustring();
     progress_renderer_->property_sensitive() = sensitive;
     render_progress_bar(context, widget, prct_area, flags, progress_color);
