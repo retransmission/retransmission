@@ -17,6 +17,7 @@
 #include "FileTreeModel.h"
 #include "Formatter.h"
 #include "IconCache.h"
+#include "TrFormat.h"
 
 std::unordered_map<QString, int> const& FileTreeItem::getMyChildRows() const
 {
@@ -102,6 +103,10 @@ QVariant FileTreeItem::data(int column, int role) const
         value.setValue(isComplete());
         break;
 
+    case FileTreeModel::ProgressRole:
+        value.setValue(progress());
+        break;
+
     case Qt::ToolTipRole:
     case Qt::EditRole:
         if (column == FileTreeModel::COL_NAME) {
@@ -134,7 +139,12 @@ QVariant FileTreeItem::data(int column, int role) const
             break;
 
         case FileTreeModel::COL_PROGRESS:
-            value.setValue(progress());
+            if (role == Qt::DisplayRole) {
+                value.setValue(progressString());
+            } else {
+                value.setValue(progress().to_fraction());
+            }
+
             break;
 
         case FileTreeModel::COL_WANTED:
@@ -186,11 +196,15 @@ std::pair<uint64_t, uint64_t> FileTreeItem::get_subtree_wanted_size() const
     return { have, total };
 }
 
-double FileTreeItem::progress() const
+tr::Values::Percent FileTreeItem::progress() const
 {
     auto const [have, total] = get_subtree_wanted_size();
+    return { have, total };
+}
 
-    return have >= total ? 1.0 : static_cast<double>(have) / static_cast<double>(total);
+QString FileTreeItem::progressString() const
+{
+    return TR_FORMAT("{percent}%", fmt::arg("percent", progress().to_whole_string()));
 }
 
 QString FileTreeItem::sizeString() const
