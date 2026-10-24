@@ -765,12 +765,8 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         }
 
         {
-            auto const d = sizeWhenDone != 0 ? 100.0 * static_cast<double>(available) / static_cast<double>(sizeWhenDone) : 0;
-            auto const ratio = 100.0 *
-                (sizeWhenDone != 0 ? static_cast<double>(haveValid + haveUnchecked) / static_cast<double>(sizeWhenDone) : 1.);
-
-            auto const avail = tr_strpercent(d);
-            auto const buf2 = tr_strpercent(ratio);
+            auto const avail = Percent{ available, sizeWhenDone }.to_string();
+            auto const buf2 = Percent{ haveValid + haveUnchecked, sizeWhenDone }.to_string();
             auto const total = tr_strlsize(haveUnchecked + haveValid);
             auto const unver = tr_strlsize(haveUnchecked);
 
@@ -839,7 +835,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         str = fmt::format(
             fmt::runtime(_("{uploaded_size} (Ratio: {ratio})")),
             fmt::arg("uploaded_size", tr_strlsize(uploaded)),
-            fmt::arg("ratio", tr_strlratio(tr_getRatio(uploaded, denominator))));
+            fmt::arg("ratio", Ratio{ uploaded, denominator }.to_string()));
     }
 
     ul_lb_->set_text(str);
@@ -944,6 +940,7 @@ public:
         add(upload_rate_string);
         add(client);
         add(progress);
+        add(progress_string);
         add(upload_request_count_number);
         add(upload_request_count_string);
         add(download_request_count_number);
@@ -963,6 +960,7 @@ public:
     Gtk::TreeModelColumn<Glib::ustring> upload_rate_string;
     Gtk::TreeModelColumn<Glib::ustring> client;
     Gtk::TreeModelColumn<int> progress;
+    Gtk::TreeModelColumn<Glib::ustring> progress_string;
     Gtk::TreeModelColumn<decltype(tr_peer_stat::active_reqs_to_client)> upload_request_count_number;
     Gtk::TreeModelColumn<Glib::ustring> upload_request_count_string;
     Gtk::TreeModelColumn<decltype(tr_peer_stat::active_reqs_to_peer)> download_request_count_number;
@@ -1027,7 +1025,8 @@ void refreshPeerRow(Gtk::TreeModel::iterator const& iter, tr_peer_stat const& pe
         up_count = std::to_string(peer.active_reqs_to_client);
     }
 
-    (*iter)[peer_cols.progress] = static_cast<int>(100.0 * peer.progress_deprecated);
+    (*iter)[peer_cols.progress] = static_cast<int>(100 * peer.progress.to_fraction());
+    (*iter)[peer_cols.progress_string] = peer.progress.to_whole_string();
     (*iter)[peer_cols.upload_request_count_number] = peer.active_reqs_to_client;
     (*iter)[peer_cols.upload_request_count_string] = up_count;
     (*iter)[peer_cols.download_request_count_number] = peer.active_reqs_to_peer;
@@ -1291,7 +1290,7 @@ void setPeerViewColumns(Gtk::TreeView* const peer_view, tr::app::Prefs const& pr
         view_columns.push_back(&peer_cols.download_request_count_string);
     }
 
-    view_columns.push_back(&peer_cols.progress);
+    view_columns.push_back(&peer_cols.progress_string);
     view_columns.push_back(&peer_cols.flags);
     view_columns.push_back(&peer_cols.address);
     view_columns.push_back(&peer_cols.client);
@@ -1307,11 +1306,12 @@ void setPeerViewColumns(Gtk::TreeView* const peer_view, tr::app::Prefs const& pr
             c = Gtk::make_managed<Gtk::TreeViewColumn>(_("Address"), *r);
             c->add_attribute(r->property_text(), *col);
             sort_col = &peer_cols.address_collated;
-        } else if (*col == peer_cols.progress) {
+        } else if (*col == peer_cols.progress_string) {
             auto* r = Gtk::make_managed<Gtk::CellRendererProgress>();
             // % is percent done
             c = Gtk::make_managed<Gtk::TreeViewColumn>(_("%"), *r);
             c->add_attribute(r->property_text(), *col);
+            sort_col = &peer_cols.progress;
         } else if (*col == peer_cols.encryption_stock_id) {
             auto* r = Gtk::make_managed<Gtk::CellRendererPixbuf>();
             r->property_xalign() = 0.0F;
