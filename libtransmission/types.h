@@ -542,11 +542,11 @@ struct tr_stat {
     size_t queue_position = {};
 
     // When `tr_stat.activity` is `TR_STATUS_CHECK` or `TR_STATUS_CHECK_WAIT`,
-    // this is the percentage of how much of the files has been
-    // verified. When it gets to 1, the verify process is done.
-    // Range is [0..1]
+    // how much of the files has been verified.
     // @see `tr_stat.activity`
-    float recheck_progress = {};
+    tr::Values::Percent recheck_progress;
+
+    float recheck_progress_deprecated = {}; // use `recheck_progress`
 
     /** Byte count of the data a running verification has checked so far, or 0. */
     uint64_t checked_bytes = {};

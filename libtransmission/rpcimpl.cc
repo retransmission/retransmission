@@ -877,7 +877,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_rate_upload:
         return st.piece_upload_speed.base_quantity();
     case TR_KEY_recheck_progress:
-        return st.recheck_progress;
+        return st.recheck_progress.quotient();
     case TR_KEY_seconds_downloading:
         return st.seconds_downloading;
     case TR_KEY_seconds_seeding:

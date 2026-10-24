@@ -873,7 +873,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)checkingProgress
 {
-    return self.fStat.recheck_progress;
+    return self.fStat.recheck_progress_deprecated;
 }
 
 - (CGFloat)availableDesired

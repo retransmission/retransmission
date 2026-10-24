@@ -235,7 +235,11 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         stats.peers_sending_to_us + stats.webseeds_sending_to_us,
         result,
         ChangeFlag::ACTIVE_PEERS_DOWN);
-    update_cache_value(cache_.recheck_progress, Percents(stats.recheck_progress), result, ChangeFlag::RECHECK_PROGRESS);
+    update_cache_value(
+        cache_.recheck_progress,
+        Percents(stats.recheck_progress_deprecated),
+        result,
+        ChangeFlag::RECHECK_PROGRESS);
     update_cache_value(
         cache_.active,
         stats.peers_sending_to_us > 0 || stats.peers_getting_from_us > 0 || stats.activity == TR_STATUS_CHECK,

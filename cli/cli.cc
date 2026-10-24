@@ -128,7 +128,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
     if (st.activity == TR_STATUS_CHECK) {
         return fmt::format(
             "Verifying local files ({:.2f}%, {:.2f}% valid)",
-            tr_truncd(100 * st.recheck_progress, 2),
+            tr_truncd(100 * st.recheck_progress_deprecated, 2),
             tr_truncd(100 * st.percent_done_deprecated, 2));
     }
 
