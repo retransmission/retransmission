@@ -49,6 +49,36 @@ using namespace std::literals;
 
 std::atomic<time_t> tr::detail::tr_time::current_time = {};
 
+// --- translation
+
+namespace
+{
+auto translator_gettext = std::atomic<tr_gettext_func>{};
+auto translator_ngettext = std::atomic<tr_ngettext_func>{};
+} // namespace
+
+void tr_set_translator(tr_gettext_func const gettext_func, tr_ngettext_func const ngettext_func) noexcept
+{
+    translator_gettext = gettext_func;
+    translator_ngettext = ngettext_func;
+}
+
+char const* tr_gettext(char const* const msgid) noexcept
+{
+    auto const func = translator_gettext.load();
+    return func != nullptr ? func(msgid) : msgid;
+}
+
+char const* tr_ngettext(char const* const msgid, char const* const msgid_plural, uint64_t const n) noexcept
+{
+    auto const func = translator_ngettext.load();
+    if (func != nullptr) {
+        return func(msgid, msgid_plural, n);
+    }
+
+    return n == 1U ? msgid : msgid_plural;
+}
+
 // ---
 
 #if defined(_WIN32) && defined(__clang_analyzer__)

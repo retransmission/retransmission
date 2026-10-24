@@ -16,6 +16,10 @@
 #include <QtCore/QDebug>
 #include <QtCore/QLocale>
 
+#include <libtransmission/utils.h>
+
+#include <libtransmission-app/l10n.h>
+
 namespace trqt
 {
 namespace
@@ -86,61 +90,8 @@ private:
     QLocale qlocale_;
 };
 
-struct Field {
-    std::string_view name;
-    std::string_view spec;
-};
-
-[[nodiscard]] constexpr bool isIdentifier(std::string_view const str) noexcept
-{
-    auto const is_start = [](char const ch) {
-        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_';
-    };
-    auto const is_rest = [&is_start](char const ch) {
-        return is_start(ch) || (ch >= '0' && ch <= '9');
-    };
-
-    return !std::empty(str) && is_start(str.front()) && std::all_of(std::begin(str) + 1, std::end(str), is_rest);
-}
-
-// Returns the replacement fields in `text`, or nullopt if it has a brace that isn't
-// an escaped brace or a named field.
-// {fmt} accepts more, e.g. positional fields,
-// but translations have no use for them.
-[[nodiscard]] std::optional<std::vector<Field>> parseFields(std::string_view const text)
-{
-    auto fields = std::vector<Field>{};
-
-    for (size_t pos = 0; pos < std::size(text); ++pos) {
-        auto const ch = text[pos];
-        if (ch != '{' && ch != '}') {
-            continue;
-        }
-
-        if (pos + 1 < std::size(text) && text[pos + 1] == ch) {
-            ++pos; // an escaped "{{" or "}}"
-            continue;
-        }
-
-        auto const end = text.find_first_of("{}", pos + 1);
-        if (ch == '}' || end == std::string_view::npos || text[end] != '}') {
-            return {};
-        }
-
-        auto const body = text.substr(pos + 1, end - pos - 1);
-        auto const colon = body.find(':');
-        auto const field = Field{ .name = body.substr(0, colon),
-                                  .spec = colon == std::string_view::npos ? std::string_view{} : body.substr(colon + 1) };
-        if (!isIdentifier(field.name)) {
-            return {};
-        }
-
-        fields.push_back(field);
-        pos = end;
-    }
-
-    return fields;
-}
+using tr::app::l10n::Field;
+using tr::app::l10n::parse_fields;
 
 // Whether {fmt} can format `text` with these arguments without reporting an error.
 // Every field must name an argument,
@@ -150,7 +101,7 @@ struct Field {
     std::span<Field const> const source_fields,
     std::span<format_detail::ArgInfo const> const arg_infos)
 {
-    auto const fields = parseFields(text);
+    auto const fields = parse_fields(text);
     if (!fields) {
         return false;
     }
@@ -203,9 +154,16 @@ std::locale const& fmtLocale()
     return cache->second;
 }
 
+void setGlobalFmtLocale()
+{
+    // std::locale owns its facets and deletes them along with its last copy.
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
+    tr_locale_set_global(std::locale{ std::locale{}, new QLocaleFacet{ QLocale{} } });
+}
+
 std::pair<QString, QString> splitAtField(QString const& translation, char const* const source, std::string_view const name)
 {
-    // Unescapes "{{" and "}}", which parseFields() has checked come in pairs.
+    // Unescapes "{{" and "}}", which parse_fields() has checked come in pairs.
     auto const unescape = [](std::string_view const text) {
         auto str = std::string{};
         for (size_t pos = 0; pos < std::size(text); ++pos) {
@@ -216,7 +174,7 @@ std::pair<QString, QString> splitAtField(QString const& translation, char const*
     };
 
     auto const split = [&](std::string_view const text) -> std::optional<std::pair<QString, QString>> {
-        auto const fields = parseFields(text);
+        auto const fields = parse_fields(text);
         if (!fields || std::size(*fields) != 1U || fields->front().name != name) {
             return {};
         }
@@ -242,7 +200,7 @@ QString format_detail::formatTranslation(
     std::span<ArgInfo const> const arg_infos,
     fmt::format_args const args)
 {
-    auto const source_fields = parseFields(source).value_or(std::vector<Field>{});
+    auto const source_fields = parse_fields(source).value_or(std::vector<Field>{});
     auto const format = [&](std::string_view const text) {
         return QString::fromStdString(fmt::vformat(fmtLocale(), text, args));
     };
