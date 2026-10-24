@@ -41,6 +41,8 @@ target_sources(${TR_NAME}-mac
         AboutWindowController.mm
         AddMagnetWindowController.h
         AddMagnetWindowController.mm
+        AddTorrentViewModel.h
+        AddTorrentViewModel.mm
         AddWindowController.h
         AddWindowController.mm
         Badger.h
