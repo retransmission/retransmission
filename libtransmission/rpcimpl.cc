@@ -1067,13 +1067,22 @@ namespace make_torrent_field_helpers
         std::iota(std::begin(files), std::end(files), 0);
     } else {
         for (auto const& file_var : files_vec) {
-            if (auto const idx = file_var.value_if<tr_file_index_t>()) {
-                if (*idx < n_files) {
-                    files.push_back(*idx);
-                } else {
-                    return { std::vector<tr_file_index_t>{}, Error::FILE_IDX_OOR, std::string{} };
-                }
+            auto const idx = file_var.value_if<tr_file_index_t>();
+            if (!idx) {
+                return {
+                    std::vector<tr_file_index_t>{},
+                    Error::INVALID_PARAMS,
+                    fmt::format(
+                        "file indices must be {:d}-bit unsigned integers",
+                        std::numeric_limits<tr_file_index_t>::digits),
+                };
             }
+
+            if (*idx >= n_files) {
+                return { std::vector<tr_file_index_t>{}, Error::FILE_IDX_OOR, std::string{} };
+            }
+
+            files.push_back(*idx);
         }
     }
 
