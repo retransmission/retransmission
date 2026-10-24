@@ -36,7 +36,7 @@
 #endif
 
 namespace api_compat = tr::api_compat;
-using Style = api_compat::Style;
+using api_compat::Style;
 
 Q_DECLARE_METATYPE(Style)
 

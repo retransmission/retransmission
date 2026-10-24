@@ -9,13 +9,13 @@
 
 #include <libtransmission-app/display-modes.h>
 
-using ShowMode = tr::app::ShowMode;
+using tr::app::ShowMode;
 Q_DECLARE_METATYPE(ShowMode)
 inline auto constexpr ShowModeCount = tr::app::ShowModeCount;
 
-using SortMode = tr::app::SortMode;
+using tr::app::SortMode;
 Q_DECLARE_METATYPE(SortMode)
 
-using StatsMode = tr::app::StatsMode;
+using tr::app::StatsMode;
 Q_DECLARE_METATYPE(StatsMode)
 inline auto constexpr StatsModeCount = tr::app::StatsModeCount;
