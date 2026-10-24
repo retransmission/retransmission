@@ -160,21 +160,23 @@ private:
 class tr_mode_t
 {
 public:
+    using value_type = uint16_t;
+
     constexpr tr_mode_t() = default;
 
-    constexpr explicit tr_mode_t(uint16_t value) noexcept
+    constexpr explicit tr_mode_t(value_type const value) noexcept
         : value_{ value }
     {
     }
 
     // NOLINTNEXTLINE(google-explicit-constructor)
-    [[nodiscard]] constexpr operator uint16_t() const noexcept
+    [[nodiscard]] constexpr operator value_type() const noexcept
     {
         return value_;
     }
 
 private:
-    uint16_t value_ = 0;
+    value_type value_ = 0;
 };
 
 // fmt formats `tr_mode_t` through this ADL opt-in

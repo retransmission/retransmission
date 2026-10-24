@@ -1067,9 +1067,9 @@ namespace make_torrent_field_helpers
         std::iota(std::begin(files), std::end(files), 0);
     } else {
         for (auto const& file_var : files_vec) {
-            if (auto const val = file_var.value_if<int64_t>()) {
-                if (auto const idx = static_cast<tr_file_index_t>(*val); idx < n_files) {
-                    files.push_back(idx);
+            if (auto const idx = file_var.value_if<tr_file_index_t>()) {
+                if (*idx < n_files) {
+                    files.push_back(*idx);
                 } else {
                     return { std::vector<tr_file_index_t>{}, Error::FILE_IDX_OOR, std::string{} };
                 }
@@ -1151,11 +1151,11 @@ namespace make_torrent_field_helpers
     auto const baseline = ann;
 
     for (size_t i = 0, vec_size = std::size(urls_vec); i + 1 < vec_size; i += 2U) {
-        auto const id = urls_vec[i].value_if<int64_t>();
+        auto const id = urls_vec[i].value_if<tr_tracker_id_t>();
         auto const url = urls_vec[i + 1U].value_if<std::string_view>();
 
         if (id && url) {
-            ann.replace(static_cast<tr_tracker_id_t>(*id), *url);
+            ann.replace(*id, *url);
         }
     }
 
@@ -1179,8 +1179,8 @@ namespace make_torrent_field_helpers
     auto const baseline = ann;
 
     for (auto const& id_var : ids_vec) {
-        if (auto const val = id_var.value_if<int64_t>()) {
-            ann.remove(static_cast<tr_tracker_id_t>(*val));
+        if (auto const val = id_var.value_if<tr_tracker_id_t>()) {
+            ann.remove(*val);
         }
     }
 
@@ -1231,7 +1231,7 @@ namespace make_torrent_field_helpers
             std::tie(err, errmsg) = set_file_dls(tor, true, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
+        if (auto const val = args_in.value_if<uint16_t>(TR_KEY_peer_limit)) {
             tr_torrentSetPeerLimit(tor, *val);
         }
 
@@ -1250,7 +1250,7 @@ namespace make_torrent_field_helpers
             std::tie(err, errmsg) = set_file_priorities(tor, TR_PRI_NORMAL, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_download_limit); val) {
+        if (auto const val = args_in.value_if<size_t>(TR_KEY_download_limit)) {
             tr_torrentSetSpeedLimit_KBps(tor, tr_direction::Down, *val);
         }
 
@@ -1258,7 +1258,8 @@ namespace make_torrent_field_helpers
             tor->set_sequential_download(*val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_sequential_download_from_piece); val && err == Error::SUCCESS) {
+        if (auto const val = args_in.value_if<tr_piece_index_t>(TR_KEY_sequential_download_from_piece);
+            val && err == Error::SUCCESS) {
             std::tie(err, errmsg) = set_sequential_download_from_piece(*tor, *val);
         }
 
