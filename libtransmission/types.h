@@ -552,8 +552,9 @@ struct tr_stat {
     uint64_t checked_bytes = {};
 
     // How much has been downloaded of the entire torrent.
-    // Range is [0..1]
-    float percent_complete = {};
+    tr::Values::Percent percent_complete;
+
+    float percent_complete_deprecated = {}; // use `percent_complete`
 
     // How much of the metadata the torrent has.
     // For torrents added from a torrent this will always be 1.
@@ -569,9 +570,10 @@ struct tr_stat {
 
     // How much has been downloaded of the files the user wants. This differs
     // from percentComplete if the user wants only some of the torrent's files.
-    // Range is [0..1]
     // @see tr_stat.left_until_done
-    float percent_done = {};
+    tr::Values::Percent percent_done;
+
+    float percent_done_deprecated = {}; // use `percent_done`
 
     // How much has been uploaded to satisfy the seed ratio.
     // This is 1 if the ratio is reached or the torrent is set to seed forever.

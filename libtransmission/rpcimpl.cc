@@ -857,9 +857,9 @@ namespace make_torrent_field_helpers
     case TR_KEY_peers_sending_to_us:
         return st.peers_sending_to_us;
     case TR_KEY_percent_complete:
-        return st.percent_complete;
+        return st.percent_complete.quotient();
     case TR_KEY_percent_done:
-        return st.percent_done;
+        return st.percent_done.quotient();
     case TR_KEY_piece_count:
         return tor.piece_count();
     case TR_KEY_piece_size:

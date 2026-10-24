@@ -853,12 +853,12 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)progress
 {
-    return self.fStat.percent_complete;
+    return self.fStat.percent_complete_deprecated;
 }
 
 - (CGFloat)progressDone
 {
-    return self.fStat.percent_done;
+    return self.fStat.percent_done_deprecated;
 }
 
 - (CGFloat)progressLeft

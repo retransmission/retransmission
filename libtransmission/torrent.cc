@@ -55,6 +55,15 @@ struct tr_torrent_builder;
 using namespace std::literals;
 using namespace tr::Values;
 
+namespace
+{
+// for the `_deprecated` float fields
+[[nodiscard]] constexpr float as_float(Percent const percent) noexcept
+{
+    return static_cast<float>(percent.quotient());
+}
+} // namespace
+
 #define tr_return_if_fail(expr) \
     do { \
         if (expr) [[likely]] { \
@@ -1353,12 +1362,14 @@ tr_stat tr_torrent::stats() const
     stats.piece_upload_speed = piece_upload_speed;
     stats.piece_download_speed = piece_download_speed;
 
-    stats.percent_complete = static_cast<float>(this->completion_.percent_complete());
+    stats.percent_complete = this->completion_.percent_complete();
+    stats.percent_complete_deprecated = as_float(stats.percent_complete);
     stats.metadata_percent_complete = static_cast<float>(get_metadata_percent());
     stats.metadata_have = get_metadata_have();
     stats.metadata_size = get_metadata_size();
 
-    stats.percent_done = static_cast<float>(this->completion_.percent_done());
+    stats.percent_done = this->completion_.percent_done();
+    stats.percent_done_deprecated = as_float(stats.percent_done);
     stats.left_until_done = this->completion_.left_until_done();
     stats.size_when_done = this->completion_.size_when_done();
 
