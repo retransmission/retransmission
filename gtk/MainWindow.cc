@@ -520,7 +520,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createRatioMenu(Glib::RefPtr<Gio:
         [this](Glib::VariantBase const& value) { onRatioSet(Glib::VariantBase::cast_dynamic<VariantDouble>(value).get()); });
 
     for (auto const ratio : stockRatios) {
-        auto item = Gio::MenuItem::create(tr_strlratio(ratio), full_stock_action_name);
+        auto item = Gio::MenuItem::create(Ratio::from_double(ratio).to_string(), full_stock_action_name);
         item->set_action_and_target(full_stock_action_name, VariantDouble::create(ratio));
         section->append_item(item);
     }
@@ -583,7 +583,7 @@ void MainWindow::Impl::onOptionsClicked()
         ratio_menu_info_,
         fmt::format(
             fmt::runtime(_("Stop at Ratio ({ratio})")),
-            fmt::arg("ratio", tr_strlratio(prefs_.get<double>(TR_KEY_seed_ratio_limit)))),
+            fmt::arg("ratio", Ratio::from_double(prefs_.get<double>(TR_KEY_seed_ratio_limit)).to_string())),
         TR_KEY_seed_ratio_limited);
 }
 
@@ -773,7 +773,7 @@ void MainWindow::Impl::updateStats()
                 fmt::runtime(_("Down: {downloaded_size}, Up: {uploaded_size}")),
                 fmt::arg("downloaded_size", tr_strlsize(stats.downloadedBytes)),
                 fmt::arg("uploaded_size", tr_strlsize(stats.uploadedBytes))) :
-            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", tr_strlratio(stats.ratio_deprecated))));
+            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", stats.ratio.to_string())));
 }
 
 void MainWindow::Impl::updateSpeeds()
