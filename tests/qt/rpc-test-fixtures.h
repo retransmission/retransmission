@@ -147,7 +147,7 @@ private:
     {
         auto const lock = std::scoped_lock{ mutex_ };
         for (auto const& [marker, body] : replies_) {
-            if (request_body.find(marker) != std::string::npos) {
+            if (request_body.contains(marker)) {
                 return body;
             }
         }
