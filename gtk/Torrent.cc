@@ -90,6 +90,7 @@ public:
         ICON = 1,
         NAME,
         PERCENT_DONE,
+        PERCENT_DONE_TEXT,
         SHORT_STATUS,
         LONG_PROGRESS,
         LONG_STATUS,
@@ -327,6 +328,7 @@ void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
         { Property::ICON, ChangeFlag::HAS_METADATA | ChangeFlag::IS_FOLDER | ChangeFlag::PRIMARY_MIME_TYPE },
         { Property::NAME, ChangeFlag::NAME },
         { Property::PERCENT_DONE, ChangeFlag::PERCENT_DONE },
+        { Property::PERCENT_DONE_TEXT, ChangeFlag::PERCENT_DONE },
         { Property::SHORT_STATUS,
           ChangeFlag::ACTIVE_PEERS_DOWN | ChangeFlag::ACTIVE_PEERS_UP | ChangeFlag::ACTIVITY | ChangeFlag::FINISHED |
               ChangeFlag::RATIO | ChangeFlag::RECHECK_PROGRESS | ChangeFlag::SPEED_DOWN | ChangeFlag::SPEED_UP },
@@ -527,6 +529,11 @@ void Torrent::Impl::class_init(void* cls, void* /*user_data*/)
               "Percent done",
               "Percent done (0..1) for current activity (leeching or seeding)",
               &Torrent::get_percent_done_fraction },
+            { Property::PERCENT_DONE_TEXT,
+              "percent-done-text",
+              "Percent done text",
+              "Percent done label for the progress bar in compact view mode",
+              &Torrent::get_percent_done_text },
             { Property::SHORT_STATUS,
               "short-status",
               "Short status",
@@ -800,6 +807,11 @@ Percent Torrent::get_percent_done() const
 float Torrent::get_percent_done_fraction() const
 {
     return static_cast<float>(get_percent_done().to_fraction());
+}
+
+Glib::ustring Torrent::get_percent_done_text() const
+{
+    return fmt::format(fmt::runtime(_("{percent}%")), fmt::arg("percent", get_percent_done().to_whole_string()));
 }
 
 Glib::ustring Torrent::get_short_status_text() const

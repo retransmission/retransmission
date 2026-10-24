@@ -98,6 +98,7 @@ public:
     [[nodiscard]] Percent get_percent_complete() const;
     [[nodiscard]] Percent get_percent_done() const;
     [[nodiscard]] float get_percent_done_fraction() const;
+    [[nodiscard]] Glib::ustring get_percent_done_text() const;
     [[nodiscard]] tr_priority_t get_priority() const;
     [[nodiscard]] size_t get_queue_position() const;
     [[nodiscard]] Ratio get_ratio() const;
