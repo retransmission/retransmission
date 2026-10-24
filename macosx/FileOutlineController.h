@@ -13,6 +13,8 @@
 @property(nonatomic) Torrent* torrent;
 @property(nonatomic) NSString* filterText;
 
+- (void)setupWithOutlineView:(FileOutlineView*)outlineView;
+
 - (void)reloadVisibleRows;
 
 - (void)setCheck:(id)sender;

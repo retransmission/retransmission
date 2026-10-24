@@ -200,7 +200,6 @@ target_sources(${TR_NAME}-mac
 
 set(XIB_FILES
     FilterBar.xib
-    InfoFileView.xib
     InfoPeersView.xib
     InfoWindow.xib
     MessageWindow.xib
