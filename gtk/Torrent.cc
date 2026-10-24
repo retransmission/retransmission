@@ -20,7 +20,6 @@
 #include <fmt/format.h>
 
 #include <array>
-#include <cmath>
 #include <cstddef> // size_t
 #include <functional> // std::hash
 #include <utility>
@@ -43,15 +42,6 @@ void update_cache_value(T& value, U&& new_value, Torrent::ChangeFlags& changes, 
 {
     if (value != new_value) {
         value = std::forward<U>(new_value);
-        changes.set(flag);
-    }
-}
-
-template<std::floating_point T, typename U>
-void update_cache_value(T& value, U new_value, T epsilon, Torrent::ChangeFlags& changes, Torrent::ChangeFlag flag)
-{
-    if (std::fabs(value - new_value) >= epsilon) {
-        value = new_value;
         changes.set(flag);
     }
 }
@@ -152,8 +142,8 @@ public:
         uint16_t peers_sending_to_us = {};
         uint16_t webseeds_sending_to_us = {};
 
-        float ratio = {};
-        float seed_ratio = {};
+        Ratio ratio;
+        Ratio seed_ratio;
 
         tr_priority_t priority = {};
 
@@ -270,7 +260,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
             ChangeFlag::PRIMARY_MIME_TYPE);
     }
     update_cache_value(cache_.stalled, stats.is_stalled, result, ChangeFlag::STALLED);
-    update_cache_value(cache_.ratio, stats.upload_ratio_deprecated, 0.01F, result, ChangeFlag::RATIO);
+    update_cache_value(cache_.ratio, stats.upload_ratio, result, ChangeFlag::RATIO);
 
     update_cache_value(cache_.added_date, stats.added_date, result, ChangeFlag::ADDED_DATE);
     update_cache_value(cache_.eta, stats.eta, result, ChangeFlag::ETA);
@@ -299,7 +289,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         result,
         ChangeFlag::LONG_PROGRESS);
     update_cache_value(cache_.percent_done, stats.percent_done, result, ChangeFlag::LONG_PROGRESS);
-    update_cache_value(cache_.seed_ratio, static_cast<float>(seed_ratio), 0.01F, result, ChangeFlag::LONG_PROGRESS);
+    update_cache_value(cache_.seed_ratio, Ratio::from_double(seed_ratio), result, ChangeFlag::LONG_PROGRESS);
     update_cache_value(
         cache_.size_when_done,
         Storage{ stats.size_when_done, Storage::Units::Bytes },
@@ -410,7 +400,7 @@ Glib::ustring Torrent::Impl::get_short_status_text() const
         return fmt::format(
             "{:s} {:s}",
             get_short_transfer_text(),
-            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", tr_strlratio(cache_.ratio))));
+            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", cache_.ratio.to_string())));
 
     default:
         return {};
@@ -444,8 +434,8 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("complete_size", tr_strlsize(cache_.total_size)),
             fmt::arg("percent_complete", cache_.percent_complete.to_string()),
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
-            fmt::arg("ratio", tr_strlratio(cache_.ratio)),
-            fmt::arg("seed_ratio", tr_strlratio(cache_.seed_ratio)));
+            fmt::arg("ratio", cache_.ratio.to_string()),
+            fmt::arg("seed_ratio", cache_.seed_ratio.to_string()));
     } else if (!isSeed) // partial seed, no seed ratio
     {
         gstr += fmt::format(
@@ -456,22 +446,22 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("complete_size", tr_strlsize(cache_.total_size)),
             fmt::arg("percent_complete", cache_.percent_complete.to_string()),
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
-            fmt::arg("ratio", tr_strlratio(cache_.ratio)));
+            fmt::arg("ratio", cache_.ratio.to_string()));
     } else if (cache_.has_seed_ratio) // seed, seed ratio
     {
         gstr += fmt::format(
             fmt::runtime(_("{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})")),
             fmt::arg("complete_size", tr_strlsize(cache_.total_size)),
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
-            fmt::arg("ratio", tr_strlratio(cache_.ratio)),
-            fmt::arg("seed_ratio", tr_strlratio(cache_.seed_ratio)));
+            fmt::arg("ratio", cache_.ratio.to_string()),
+            fmt::arg("seed_ratio", cache_.seed_ratio.to_string()));
     } else // seed, no seed ratio
     {
         gstr += fmt::format(
             fmt::runtime(_("{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})")),
             fmt::arg("complete_size", tr_strlsize(cache_.total_size)),
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
-            fmt::arg("ratio", tr_strlratio(cache_.ratio)));
+            fmt::arg("ratio", cache_.ratio.to_string()));
     }
 
     // add time remaining when applicable
@@ -767,7 +757,7 @@ Storage Torrent::get_total_size() const
     return impl_->get_cache().total_size;
 }
 
-float Torrent::get_ratio() const
+Torrent::Ratio Torrent::get_ratio() const
 {
     return impl_->get_cache().ratio;
 }

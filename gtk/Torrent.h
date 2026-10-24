@@ -78,6 +78,7 @@ public:
 
 public:
     using Percent = tr::Values::Percent;
+    using Ratio = tr::Values::Ratio;
     using Speed = tr::Values::Speed;
     using Storage = tr::Values::Storage;
 
@@ -99,7 +100,7 @@ public:
     [[nodiscard]] float get_percent_done_fraction() const;
     [[nodiscard]] tr_priority_t get_priority() const;
     [[nodiscard]] size_t get_queue_position() const;
-    [[nodiscard]] float get_ratio() const;
+    [[nodiscard]] Ratio get_ratio() const;
     [[nodiscard]] Percent get_recheck_progress() const;
     [[nodiscard]] Percent get_seed_ratio_percent_done() const;
     [[nodiscard]] Speed get_speed_down() const;
