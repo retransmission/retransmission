@@ -338,7 +338,7 @@ TEST_F(RenameTest, multifileTorrent)
     str = tr_torrentFindFile(tor, 2);
     EXPECT_NE(""sv, str);
     tr_sys_path_remove(str);
-    tr_sys_path_remove(std::string{ tr_sys_path_dirname(str) });
+    tr_sys_path_remove(tr_sys_path_dirname(str));
     sync();
     blockingTorrentVerify(tor);
     testFileExistsAndConsistsOfThisString(tor, 0, ExpectedContents[0]);

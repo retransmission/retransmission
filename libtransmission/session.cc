@@ -2088,7 +2088,7 @@ auto constexpr SaveInterval = 360s;
 {
     // A dir has to exist before it can be locked,
     // so create it here rather than wait for the first write.
-    tr_sys_dir_create(std::string{ config_dir }, TR_SYS_DIR_CREATE_PARENTS, 0777);
+    tr_sys_dir_create(config_dir, TR_SYS_DIR_CREATE_PARENTS, 0777);
     return tr_config_dir_lock{ config_dir };
 }
 } // namespace
