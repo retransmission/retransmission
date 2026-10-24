@@ -679,12 +679,8 @@ void add_id_arg(tr_variant::Map& params, std::string_view id_str, std::string_vi
     if (IdActive == id_str) {
         params.insert_or_assign(TR_KEY_ids, tr_variant::unmanaged_string(TR_KEY_recently_active));
     } else if (IdAll != id_str) {
-        bool const is_list = id_str.find_first_of(",-") != std::string_view::npos;
-        bool is_num = true;
-
-        for (auto const& ch : id_str) {
-            is_num = is_num && isdigit(static_cast<unsigned char>(ch));
-        }
+        auto const is_list = id_str.find_first_of(",-") != std::string_view::npos;
+        auto const is_num = std::ranges::all_of(id_str, [](unsigned char ch) { return isdigit(ch) != 0; });
 
         if (is_num || is_list) {
             params.insert_or_assign(TR_KEY_ids, rpc_parse_list_str(id_str));
