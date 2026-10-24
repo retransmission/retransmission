@@ -1355,6 +1355,8 @@ tr_stat tr_torrent::stats() const
 
     stats.percent_complete = static_cast<float>(this->completion_.percent_complete());
     stats.metadata_percent_complete = static_cast<float>(get_metadata_percent());
+    stats.metadata_have = get_metadata_have();
+    stats.metadata_size = get_metadata_size();
 
     stats.percent_done = static_cast<float>(this->completion_.percent_done());
     stats.left_until_done = this->completion_.left_until_done();

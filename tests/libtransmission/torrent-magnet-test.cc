@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -92,6 +93,8 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
     auto* const tor = zeroTorrentMagnetInit();
     EXPECT_NE(nullptr, tor);
     EXPECT_FALSE(tor->has_metainfo());
+    EXPECT_EQ(tor->get_metadata_have(), 0U);
+    EXPECT_EQ(tor->get_metadata_size(), 0U);
 
     auto const metainfo_benc = tr_base64_decode(InfoDictBase64);
     auto const metainfo_size = std::size(metainfo_benc);
@@ -104,6 +107,25 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
     EXPECT_TRUE(waitFor([tor] { return tor->has_metainfo(); }, 5s));
     EXPECT_EQ(tor->info_dict_size(), metainfo_size);
     EXPECT_EQ(tor->get_metadata_percent(), 1.0);
+    EXPECT_EQ(tor->get_metadata_have(), metainfo_size);
+    EXPECT_EQ(tor->get_metadata_size(), metainfo_size);
+}
+
+TEST_F(TorrentMagnetTest, metadataHaveCountsReceivedBytes)
+{
+    static auto constexpr LastPieceSize = size_t{ 100U };
+    static auto constexpr Size = MetadataPieceSize + LastPieceSize;
+
+    auto download = tr_metadata_download{ "test", Size };
+    EXPECT_EQ(download.get_metadata_size(), Size);
+    EXPECT_EQ(download.get_metadata_have(), 0U);
+
+    auto const data = std::vector<char>(MetadataPieceSize, 'x');
+    EXPECT_FALSE(download.set_metadata_piece(1, std::data(data), LastPieceSize));
+    EXPECT_EQ(download.get_metadata_have(), LastPieceSize);
+
+    EXPECT_TRUE(download.set_metadata_piece(0, std::data(data), MetadataPieceSize));
+    EXPECT_EQ(download.get_metadata_have(), Size);
 }
 
 } // namespace tr::test

@@ -713,6 +713,10 @@ struct tr_torrent {
 
     [[nodiscard]] double get_metadata_percent() const noexcept;
 
+    [[nodiscard]] uint64_t get_metadata_have() const noexcept;
+
+    [[nodiscard]] uint64_t get_metadata_size() const noexcept;
+
     ///
 
     [[nodiscard]] tr_stat stats() const;

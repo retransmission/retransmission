@@ -561,6 +561,12 @@ struct tr_stat {
     // Range is [0..1]
     float metadata_percent_complete = {};
 
+    /** Byte count of the metadata received so far. */
+    uint64_t metadata_have = {};
+
+    /** Byte count of the metadata, or 0 until a peer reports it. */
+    uint64_t metadata_size = {};
+
     // How much has been downloaded of the files the user wants. This differs
     // from percentComplete if the user wants only some of the torrent's files.
     // Range is [0..1]

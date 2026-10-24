@@ -340,6 +340,16 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
     return 0.0;
 }
 
+[[nodiscard]] uint64_t tr_metadata_download::get_metadata_have() const noexcept
+{
+    auto needed = uint64_t{};
+    for (auto const& node : pieces_needed_) {
+        needed += get_piece_length(node.piece);
+    }
+
+    return std::size(metadata_) - needed;
+}
+
 [[nodiscard]] double tr_torrent::get_metadata_percent() const noexcept
 {
     if (has_metainfo()) {
@@ -351,6 +361,32 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
     }
 
     return 0.0;
+}
+
+[[nodiscard]] uint64_t tr_torrent::get_metadata_have() const noexcept
+{
+    if (has_metainfo()) {
+        return info_dict_size();
+    }
+
+    if (auto const& m = metadata_download_; m) {
+        return m->get_metadata_have();
+    }
+
+    return 0U;
+}
+
+[[nodiscard]] uint64_t tr_torrent::get_metadata_size() const noexcept
+{
+    if (has_metainfo()) {
+        return info_dict_size();
+    }
+
+    if (auto const& m = metadata_download_; m) {
+        return m->get_metadata_size();
+    }
+
+    return 0U;
 }
 
 // ---
