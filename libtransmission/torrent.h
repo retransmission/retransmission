@@ -1340,6 +1340,16 @@ private:
         return static_cast<float>(verify_checked_pieces_) / static_cast<float>(piece_count());
     }
 
+    [[nodiscard]] constexpr std::optional<uint64_t> verify_checked_bytes() const noexcept
+    {
+        if (verify_state_ != VerifyState::Active) {
+            return {};
+        }
+
+        // the last piece can be short; min() trims it
+        return std::min(uint64_t{ verify_checked_pieces_ } * piece_size(), total_size());
+    }
+
     // must be called after the torrent's announce list changes.
     void on_announce_list_changed();
 

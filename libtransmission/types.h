@@ -545,6 +545,9 @@ struct tr_stat {
     // @see `tr_stat.activity`
     float recheck_progress = {};
 
+    /** Byte count of the data a running verification has checked so far, or 0. */
+    uint64_t checked_bytes = {};
+
     // How much has been downloaded of the entire torrent.
     // Range is [0..1]
     float percent_complete = {};
