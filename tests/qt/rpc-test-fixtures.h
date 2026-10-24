@@ -84,7 +84,7 @@ public:
 
     [[nodiscard]] std::vector<std::string> request_bodies() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return bodies_;
     }
 
@@ -92,7 +92,7 @@ public:
     // method name). Requests matching nothing get the default empty success.
     void set_reply_for(std::string_view const marker, std::string_view const body)
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         replies_.emplace_back(std::string{ marker }, std::string{ body });
     }
 
@@ -109,7 +109,7 @@ private:
 
         auto const request_body = read_request_body(req);
         {
-            auto const lock = std::lock_guard{ mutex_ };
+            auto const lock = std::scoped_lock{ mutex_ };
             bodies_.push_back(request_body);
         }
 
@@ -145,7 +145,7 @@ private:
 
     [[nodiscard]] std::string reply_for(std::string const& request_body) const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         for (auto const& [marker, body] : replies_) {
             if (request_body.find(marker) != std::string::npos) {
                 return body;

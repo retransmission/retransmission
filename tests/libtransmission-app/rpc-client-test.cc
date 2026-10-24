@@ -108,25 +108,25 @@ public:
 
     [[nodiscard]] std::vector<std::string> request_bodies() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return bodies_;
     }
 
     [[nodiscard]] std::string last_content_type() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return content_type_;
     }
 
     [[nodiscard]] std::string last_user_agent() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return user_agent_;
     }
 
     [[nodiscard]] bool saw_authorization() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return saw_authorization_;
     }
 
@@ -181,7 +181,7 @@ private:
         auto const* const user_agent = evhttp_find_header(in_headers, "User-Agent");
         auto const* const authorization = evhttp_find_header(in_headers, "Authorization");
 
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         bodies_.push_back(std::move(body));
         if (content_type != nullptr) {
             content_type_ = content_type;
@@ -222,7 +222,7 @@ public:
     [[nodiscard]] RpcClient::UiThreadFunc marshaler()
     {
         return [this](std::function<void()> fn) {
-            auto const lock = std::lock_guard{ mutex_ };
+            auto const lock = std::scoped_lock{ mutex_ };
             queue_.push_back(std::move(fn));
             cv_.notify_one();
         };
