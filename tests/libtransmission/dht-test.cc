@@ -625,8 +625,7 @@ TEST_F(DhtTest, pingsAddedNodes)
     EXPECT_EQ(0U, std::size(mediator.mock_dht_.pinged_));
 
     auto const addr = tr_address::from_string("10.10.10.1");
-    EXPECT_TRUE(addr.has_value());
-    assert(addr.has_value());
+    ASSERT_TRUE(addr.has_value());
     auto constexpr Port = tr_port::from_host(128);
     dht->maybe_add_node(*addr, Port);
 

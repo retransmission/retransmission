@@ -11,6 +11,7 @@ Checks:
   - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-throwing-static-initialization
   - cert-*
+  - -cert-dcl03-c # alias of `misc-static-assert`
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c
   - clang-analyzer-*
@@ -34,6 +35,7 @@ Checks:
   - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
+  - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed
   - modernize-*
   - -modernize-use-trailing-return-type # keep
   - performance-*

@@ -4,7 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <cassert>
 #include <cstddef> // size_t
 #include <string>
 #include <string_view>
@@ -215,8 +214,7 @@ TEST_F(TorrentFilesTest, find)
 
     auto search_path = std::vector<std::string_view>{ search_path_1.sv(), search_path_2.sv() };
     auto found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(filename, found->filename());
     EXPECT_EQ(search_path_1, found->base);
     EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
@@ -225,8 +223,7 @@ TEST_F(TorrentFilesTest, find)
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(filename, found->filename());
 
     // now make it an incomplete file
@@ -234,8 +231,7 @@ TEST_F(TorrentFilesTest, find)
     EXPECT_TRUE(tr_sys_path_rename(filename, partial_filename));
     search_path = std::vector<std::string_view>{ search_path_1.sv(), search_path_2.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(partial_filename, found->filename());
     EXPECT_EQ(search_path_1, found->base);
     EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
@@ -244,8 +240,7 @@ TEST_F(TorrentFilesTest, find)
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(partial_filename, found->filename());
 
     // what about if we look for a file that does not exist

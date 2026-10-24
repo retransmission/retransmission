@@ -6,6 +6,7 @@ Checks:
   - -bugprone-easily-swappable-parameters
   - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - cert-*
+  - -cert-dcl03-c # alias of `misc-static-assert`
   - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-optin*
   - -clang-analyzer-optin.core.EnumCastOutOfRange # TODO: enable after https://github.com/llvm/llvm-project/issues/179094 is fixed
@@ -23,6 +24,7 @@ Checks:
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
   - -misc-multiple-inheritance
+  - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed
   - modernize-*
   - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
