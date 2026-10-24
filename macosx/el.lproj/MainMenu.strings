@@ -1,4 +1,3 @@
-
 /* Class = "NSWindow"; title = "Retransmission"; ObjectID = "21"; */
 "21.title" = "Retransmission";
 
@@ -77,38 +76,14 @@
 /* Class = "NSMenuItem"; title = "Forums"; ObjectID = "418"; */
 "418.title" = "Forums";
 
-/* Class = "NSMenu"; title = "Menu"; ObjectID = "456"; */
-"456.title" = "Μενού";
-
-/* Class = "NSMenuItem"; title = "Pause Selected"; ObjectID = "457"; */
-"457.title" = "Παύση Επιλεγμένων ";
-
-/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "459"; */
-"459.title" = "Εμφάνιση Επιθεωρητή";
-
-/* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "516"; */
-"516.title" = "Εμφάνιση στο Finder";
-
 /* Class = "NSMenuItem"; title = "Customize Toolbar…"; ObjectID = "545"; */
 "545.title" = "Επεξεργασία Εργαλειοθήκης…";
 
 /* Class = "NSMenuItem"; title = "Hide Status Bar"; ObjectID = "547"; */
 "547.title" = "Απόκρυψη Γραμμής Κατάστασης";
 
-/* Class = "NSMenu"; title = "Menu"; ObjectID = "589"; */
-"589.title" = "Μενού";
-
-/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "598"; */
-"598.title" = "Εμφάνιση Επιθεωρητή";
-
-/* Class = "NSMenuItem"; title = "Open Torrent File…"; ObjectID = "611"; */
-"611.title" = "Άνοιγμα Αρχείου Torrent…";
-
 /* Class = "NSMenuItem"; title = "Check for Update…"; ObjectID = "975"; */
 "975.title" = "Έλεγχος για Ενημέρωση…";
-
-/* Class = "NSMenuItem"; title = "Resume Selected"; ObjectID = "1028"; */
-"1028.title" = "Συνέχιση Επιλεγμένων";
 
 /* Class = "NSMenuItem"; title = "Hide Toolbar"; ObjectID = "1222"; */
 "1222.title" = "Απόκρυψη Μπάρας εργαλείων";
@@ -145,12 +120,6 @@
 
 /* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "1539"; */
 "1539.title" = "Εμφάνιση στο Finder";
-
-/* Class = "NSMenuItem"; title = "Remove From List"; ObjectID = "1550"; */
-"1550.title" = "Διαγραφή από τη Λίστα";
-
-/* Class = "NSMenuItem"; title = "Remove and Trash Data File"; ObjectID = "1551"; */
-"1551.title" = "Διαγραφή και Απόρριψη Αρχείου Δεδομένων";
 
 /* Class = "NSMenuItem"; title = "Retransmission Homepage"; ObjectID = "1558"; */
 "1558.title" = "Κεντρική Σελίδα Retransmission";
@@ -212,14 +181,8 @@
 /* Class = "NSMenuItem"; title = "Resume All Waiting"; ObjectID = "1804"; */
 "1804.title" = "Συνέχεια Όλων σε Αναμονή";
 
-/* Class = "NSMenuItem"; title = "Resume Selected Right Away"; ObjectID = "1808"; */
-"1808.title" = "Συνέχεια Επιλεγμένων Αμέσως";
-
 /* Class = "NSMenuItem"; title = "Open Torrent Address…"; ObjectID = "1846"; */
 "1846.title" = "Άνοιγμα Διεύθυνσης Torrent…";
-
-/* Class = "NSMenuItem"; title = "Open Torrent Address…"; ObjectID = "1858"; */
-"1858.title" = "Άνοιγμα Διεύθυνσης Torrent…";
 
 /* Class = "NSMenuItem"; title = "Update Tracker"; ObjectID = "1860"; */
 "1860.title" = "Ενημέρωση Ιχνηλάτη";
@@ -257,14 +220,8 @@
 /* Class = "NSMenuItem"; title = "Create Torrent File…"; ObjectID = "1921"; */
 "1921.title" = "Δημιουργία Αρχείου Torrent…";
 
-/* Class = "NSMenuItem"; title = "Create Torrent File…"; ObjectID = "1923"; */
-"1923.title" = "Δημιουργία Αρχείου Torrent…";
-
 /* Class = "NSMenuItem"; title = "Tracker"; ObjectID = "1933"; */
 "1933.title" = "Ιχνηλάτης";
-
-/* Class = "NSMenuItem"; title = "Update Tracker"; ObjectID = "2122"; */
-"2122.title" = "Ενημέρωση Ιχνηλάτη";
 
 /* Class = "NSMenuItem"; title = "Pieces Bar"; ObjectID = "2185"; */
 "2185.title" = "Μπάρα Κομματιών";
@@ -284,12 +241,6 @@
 /* Class = "NSMenu"; title = "Group"; ObjectID = "2840"; */
 "2840.title" = "Ομάδα";
 
-/* Class = "NSMenuItem"; title = "Group"; ObjectID = "2849"; */
-"2849.title" = "Ομάδα";
-
-/* Class = "NSMenu"; title = "Group"; ObjectID = "2850"; */
-"2850.title" = "Ομάδα";
-
 /* Class = "NSTextFieldCell"; title = "Transfers"; ObjectID = "3049"; */
 /* "3049.title" = ""; */
 
@@ -305,23 +256,11 @@
 /* Class = "NSMenuItem"; title = "Support & Development"; ObjectID = "3170"; */
 "3170.title" = "Υποστήριξη και Ανάπτυξη";
 
-/* Class = "NSMenuItem"; title = "Save Torrent File As…"; ObjectID = "3207"; */
-"3207.title" = "Αποθήκευση Αρχείου Torrent Ως…";
-
-/* Class = "NSMenuItem"; title = "Move Data File To…"; ObjectID = "3209"; */
-"3209.title" = "Μετακίνηση Αρχείων Δεδομένων Σε…";
-
 /* Class = "NSMenuItem"; title = "Donate…"; ObjectID = "3212"; */
 "3212.title" = "Δωρεά…";
 
 /* Class = "NSMenuItem"; title = "Copy Magnet Link to Clipboard"; ObjectID = "3216"; */
 "3216.title" = "Αντιγραφή Μαγνητικού Συνδέσμου στο Πρόχειρο";
-
-/* Class = "NSMenuItem"; title = "Copy Magnet Link to Clipboard"; ObjectID = "3218"; */
-"3218.title" = "Αντιγραφή Μαγνητικού Συνδέσμου στο Πρόχειρο";
-
-/* Class = "NSMenuItem"; title = "Verify Local Data"; ObjectID = "3221"; */
-"3221.title" = "Επαλήθευση Τοπικών Δεδομένων";
 
 /* Class = "NSMenuItem"; title = "Undo"; ObjectID = "3321"; */
 "3321.title" = "Αναίρεση";
@@ -338,20 +277,11 @@
 /* Class = "NSMenuItem"; title = "Size"; ObjectID = "3430"; */
 "3430.title" = "Μέγεθος";
 
-/* Class = "NSMenuItem"; title = "Rename File…"; ObjectID = "3445"; */
-"3445.title" = "Μετονομασία Αρχείου…";
-
 /* Class = "NSMenuItem"; title = "Rename File…"; ObjectID = "3448"; */
 "3448.title" = "Μετονομασία Αρχείου…";
 
-/* Class = "NSMenuItem"; title = "Share Torrent File"; ObjectID = "8t6-wh-5UW"; */
-"8t6-wh-5UW.title" = "Διαμοιρασμός Αρχείου Torrent";
-
 /* Class = "NSMenu"; title = "Share Torrent File"; ObjectID = "Cay-iU-bH4"; */
 "Cay-iU-bH4.title" = "Διαμοιρασμός Αρχείου Torrent";
-
-/* Class = "NSMenu"; title = "Share Torrent File"; ObjectID = "lvU-Va-GzM"; */
-"lvU-Va-GzM.title" = "Διαμοιρασμός Αρχείου Torrent";
 
 /* Class = "NSMenuItem"; title = "Share Torrent File"; ObjectID = "s5v-VO-G2y"; */
 "s5v-VO-G2y.title" = "Διαμοιρασμός Αρχείου Torrent";

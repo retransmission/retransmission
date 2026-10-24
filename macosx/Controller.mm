@@ -36,6 +36,7 @@
 #import "Torrent.h"
 #import "TorrentGroup.h"
 #import "TorrentTableView.h"
+#import "TorrentContextMenuProvider.h"
 #import "CreatorWindowController.h"
 #import "StatsWindowController.h"
 #import "InfoWindowController.h"
@@ -314,10 +315,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) IBOutlet NSMenu* fSortMenu;
 
 @property(nonatomic) IBOutlet NSMenu* fGroupsSetMenu;
-@property(nonatomic) IBOutlet NSMenu* fGroupsSetContextMenu;
 
 @property(nonatomic) IBOutlet NSMenu* fShareMenu;
-@property(nonatomic) IBOutlet NSMenu* fShareContextMenu;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -3276,7 +3275,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)menuNeedsUpdate:(NSMenu*)menu
 {
-    if (menu == self.fGroupsSetMenu || menu == self.fGroupsSetContextMenu) {
+    if (menu == self.fGroupsSetMenu || [TorrentContextMenuProvider isGroupsSubmenu:menu]) {
         [menu removeAllItems];
 
         NSMenu* groupMenu = [GroupsController.groups groupMenuWithTarget:self action:@selector(setGroup:) isSmall:NO];
@@ -3287,7 +3286,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [groupMenu removeItemAtIndex:0];
             [menu addItem:item];
         }
-    } else if (menu == self.fShareMenu || menu == self.fShareContextMenu) {
+    } else if (menu == self.fShareMenu || [TorrentContextMenuProvider isShareSubmenu:menu]) {
         [menu removeAllItems];
 
         for (NSMenuItem* item in ShareTorrentFileHelper.sharedHelper.menuItems) {

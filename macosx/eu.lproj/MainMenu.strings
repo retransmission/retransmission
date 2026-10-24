@@ -1,4 +1,3 @@
-
 /* Class = "NSWindow"; title = "Retransmission"; ObjectID = "21"; */
 "21.title" = "Retransmission";
 
@@ -77,38 +76,14 @@
 /* Class = "NSMenuItem"; title = "Forums"; ObjectID = "418"; */
 "418.title" = "Foroak";
 
-/* Class = "NSMenu"; title = "Menu"; ObjectID = "456"; */
-"456.title" = "Menua";
-
-/* Class = "NSMenuItem"; title = "Pause Selected"; ObjectID = "457"; */
-"457.title" = "Pausatu Aukeratutakoak";
-
-/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "459"; */
-"459.title" = "Erakutsi Ikuskatzailea";
-
-/* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "516"; */
-"516.title" = "Erakutsi Finder-en";
-
 /* Class = "NSMenuItem"; title = "Customize Toolbar…"; ObjectID = "545"; */
 "545.title" = "Pertsonalizatu Tresna-barra...";
 
 /* Class = "NSMenuItem"; title = "Hide Status Bar"; ObjectID = "547"; */
 "547.title" = "Ezkutatu Egoera-barra";
 
-/* Class = "NSMenu"; title = "Menu"; ObjectID = "589"; */
-"589.title" = "Menua";
-
-/* Class = "NSMenuItem"; title = "Show Inspector"; ObjectID = "598"; */
-"598.title" = "Erakutsi Ikuskatzailea";
-
-/* Class = "NSMenuItem"; title = "Open Torrent File…"; ObjectID = "611"; */
-"611.title" = "Ireki Torrent Fitxategia...";
-
 /* Class = "NSMenuItem"; title = "Check for Update…"; ObjectID = "975"; */
 "975.title" = "Egiaztatu Eguneratzeak...";
-
-/* Class = "NSMenuItem"; title = "Resume Selected"; ObjectID = "1028"; */
-"1028.title" = "Jarraitu Aukeratutakoekin";
 
 /* Class = "NSMenuItem"; title = "Hide Toolbar"; ObjectID = "1222"; */
 "1222.title" = "Ezkutatu Tresna-barra";
@@ -145,12 +120,6 @@
 
 /* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "1539"; */
 "1539.title" = "Erakutsi Finder-en";
-
-/* Class = "NSMenuItem"; title = "Remove From List"; ObjectID = "1550"; */
-"1550.title" = "Kendu Zerrendatik";
-
-/* Class = "NSMenuItem"; title = "Remove and Trash Data File"; ObjectID = "1551"; */
-"1551.title" = "Kendu eta Bota Zakarrontzira Datu-fitxategiak";
 
 /* Class = "NSMenuItem"; title = "Retransmission Homepage"; ObjectID = "1558"; */
 "1558.title" = "Retransmission Hasiera-orria";
@@ -212,14 +181,8 @@
 /* Class = "NSMenuItem"; title = "Resume All Waiting"; ObjectID = "1804"; */
 "1804.title" = "Jarraitu Itxaroten Dauden Guztiak";
 
-/* Class = "NSMenuItem"; title = "Resume Selected Right Away"; ObjectID = "1808"; */
-"1808.title" = "Jarraitu Aukeratutakoekin Oraintxe Bertan";
-
 /* Class = "NSMenuItem"; title = "Open Torrent Address…"; ObjectID = "1846"; */
 "1846.title" = "Ireki Torrent Helbidea...";
-
-/* Class = "NSMenuItem"; title = "Open Torrent Address…"; ObjectID = "1858"; */
-"1858.title" = "Ireki Torrent Helbidea...";
 
 /* Class = "NSMenuItem"; title = "Update Tracker"; ObjectID = "1860"; */
 "1860.title" = "Eguneratu Aztarnaria";
@@ -257,14 +220,8 @@
 /* Class = "NSMenuItem"; title = "Create Torrent File…"; ObjectID = "1921"; */
 "1921.title" = "Sortu Torrent Fitxategia...";
 
-/* Class = "NSMenuItem"; title = "Create Torrent File…"; ObjectID = "1923"; */
-"1923.title" = "Sortu Torrent Fitxategia...";
-
 /* Class = "NSMenuItem"; title = "Tracker"; ObjectID = "1933"; */
 "1933.title" = "Aztarnaria";
-
-/* Class = "NSMenuItem"; title = "Update Tracker"; ObjectID = "2122"; */
-"2122.title" = "Eguneratu Aztarnaria";
 
 /* Class = "NSMenuItem"; title = "Pieces Bar"; ObjectID = "2185"; */
 "2185.title" = "Zatien Barra";
@@ -284,12 +241,6 @@
 /* Class = "NSMenu"; title = "Group"; ObjectID = "2840"; */
 "2840.title" = "Taldea";
 
-/* Class = "NSMenuItem"; title = "Group"; ObjectID = "2849"; */
-"2849.title" = "Taldea";
-
-/* Class = "NSMenu"; title = "Group"; ObjectID = "2850"; */
-"2850.title" = "Taldea";
-
 /* Class = "NSTextFieldCell"; title = "Transfers"; ObjectID = "3049"; */
 /* "3049.title" = ""; */
 
@@ -305,23 +256,11 @@
 /* Class = "NSMenuItem"; title = "Support & Development"; ObjectID = "3170"; */
 "3170.title" = "Laguntza eta Garapena";
 
-/* Class = "NSMenuItem"; title = "Save Torrent File As…"; ObjectID = "3207"; */
-"3207.title" = "Gorde Torrent-fitxategia Honela...";
-
-/* Class = "NSMenuItem"; title = "Move Data File To…"; ObjectID = "3209"; */
-"3209.title" = "Mugitu Datu-fitxategiak hona...";
-
 /* Class = "NSMenuItem"; title = "Donate…"; ObjectID = "3212"; */
 "3212.title" = "Donatu...";
 
 /* Class = "NSMenuItem"; title = "Copy Magnet Link to Clipboard"; ObjectID = "3216"; */
 "3216.title" = "Kopiatu Magnet Esteka Arbelera";
-
-/* Class = "NSMenuItem"; title = "Copy Magnet Link to Clipboard"; ObjectID = "3218"; */
-"3218.title" = "Kopiatu Magnet Esteka Arbelera";
-
-/* Class = "NSMenuItem"; title = "Verify Local Data"; ObjectID = "3221"; */
-"3221.title" = "Egiaztatu Datu Lokalak";
 
 /* Class = "NSMenuItem"; title = "Undo"; ObjectID = "3321"; */
 "3321.title" = "Desegin";
@@ -338,23 +277,15 @@
 /* Class = "NSMenuItem"; title = "Size"; ObjectID = "3430"; */
 "3430.title" = "Tamaina";
 
-/* Class = "NSMenuItem"; title = "Rename File…"; ObjectID = "3445"; */
-"3445.title" = "Aldatu Fitxategi-izena...";
-
 /* Class = "NSMenuItem"; title = "Rename File…"; ObjectID = "3448"; */
 "3448.title" = "Aldatu Fitxategi-izena...";
 
-/* Class = "NSMenuItem"; title = "Share Torrent File"; ObjectID = "8t6-wh-5UW"; */
-"8t6-wh-5UW.title" = "Partekatu Torrent-fitxategia";
-
 /* Class = "NSMenu"; title = "Share Torrent File"; ObjectID = "Cay-iU-bH4"; */
 "Cay-iU-bH4.title" = "Partekatu Torrent-fitxategia";
-
-/* Class = "NSMenu"; title = "Share Torrent File"; ObjectID = "lvU-Va-GzM"; */
-"lvU-Va-GzM.title" = "Partekatu Torrent-fitxategia";
 
 /* Class = "NSMenuItem"; title = "Share Torrent File"; ObjectID = "s5v-VO-G2y"; */
 "s5v-VO-G2y.title" = "Partekatu Torrent-fitxategia";
 
 /* Class = "NSMenuItem"; title = "ETA"; ObjectID = "zLF-YR-Oq6"; */
 /* "zLF-YR-Oq6.title" = ""; */
+

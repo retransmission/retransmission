@@ -179,6 +179,8 @@ target_sources(${TR_NAME}-mac
         TorrentCellControlButton.mm
         TorrentCellRevealButton.h
         TorrentCellRevealButton.mm
+        TorrentContextMenuProvider.h
+        TorrentContextMenuProvider.mm
         TorrentGroup.h
         TorrentGroup.mm
         TorrentTableView.h
@@ -357,7 +359,8 @@ set(LANG_STRINGS_FILES
     GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings
-    PreferencesGeneralTab.strings)
+    PreferencesGeneralTab.strings
+    TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)

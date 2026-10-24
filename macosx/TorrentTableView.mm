@@ -20,6 +20,7 @@
 #import "TorrentCellActionButton.h"
 #import "TorrentCellControlButton.h"
 #import "TorrentCellRevealButton.h"
+#import "TorrentContextMenuProvider.h"
 
 CGFloat const kGroupSeparatorHeight = 18.0;
 
@@ -42,8 +43,8 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 @property(nonatomic, readonly) NSMutableIndexSet* fCollapsedGroups;
 
-@property(nonatomic) IBOutlet NSMenu* fContextRow;
-@property(nonatomic) IBOutlet NSMenu* fContextNoRow;
+@property(nonatomic) NSMenu* fContextRow;
+@property(nonatomic) NSMenu* fContextNoRow;
 
 @property(nonatomic) CGFloat piecesBarPercent;
 @property(nonatomic) NSAnimation* fPiecesBarAnimation;
@@ -92,6 +93,12 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+
+    if (self.fController != nil) {
+        self.fContextRow = [TorrentContextMenuProvider makeRowContextMenuWithTarget:self.fController];
+        self.fContextNoRow = [TorrentContextMenuProvider makeNoRowContextMenuWithTarget:self.fController];
+    }
+
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(reloadVisibleRows) name:@"RefreshTorrentTable"
                                              object:nil];
 }
