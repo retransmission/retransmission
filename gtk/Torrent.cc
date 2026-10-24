@@ -327,7 +327,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
 
     update_cache_value(
         cache_.metadata_percent_complete,
-        Percents(stats.metadata_percent_complete),
+        Percents(stats.metadata_percent_complete_deprecated),
         result,
         ChangeFlag::LONG_STATUS);
     update_cache_value(cache_.peers_connected, stats.peers_connected, result, ChangeFlag::LONG_STATUS);

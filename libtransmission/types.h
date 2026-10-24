@@ -557,10 +557,10 @@ struct tr_stat {
     float percent_complete_deprecated = {}; // use `percent_complete`
 
     // How much of the metadata the torrent has.
-    // For torrents added from a torrent this will always be 1.
-    // For magnet links, this number will from from 0 to 1 as the metadata is downloaded.
-    // Range is [0..1]
-    float metadata_percent_complete = {};
+    // Always complete for torrents added from a torrent file.
+    tr::Values::Percent metadata_percent_complete;
+
+    float metadata_percent_complete_deprecated = {}; // use `metadata_percent_complete`
 
     /** Byte count of the metadata received so far. */
     uint64_t metadata_have = {};

@@ -39,8 +39,6 @@ public:
 
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 
-    [[nodiscard]] double get_metadata_percent() const noexcept;
-
     // byte count of the metadata received so far
     [[nodiscard]] uint64_t get_metadata_have() const noexcept;
 

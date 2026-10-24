@@ -1010,9 +1010,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (NSString*)progressString
 {
     if (self.magnet) {
-        NSString* progressString = self.fStat.metadata_percent_complete > 0.0 ?
+        NSString* progressString = self.fStat.metadata_percent_complete_deprecated > 0.0 ?
             [NSString stringWithFormat:NSLocalizedString(@"%@ of torrent metadata retrieved", "Torrent -> progress string"),
-                                       [NSString percentString:self.fStat.metadata_percent_complete longDecimals:YES]] :
+                                       [NSString percentString:self.fStat.metadata_percent_complete_deprecated longDecimals:YES]] :
             NSLocalizedString(@"torrent metadata needed", "Torrent -> progress string");
 
         return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", "Torrent -> progress string"), progressString];

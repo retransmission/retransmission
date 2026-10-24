@@ -839,7 +839,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_metadata_have:
         return st.metadata_have;
     case TR_KEY_metadata_percent_complete:
-        return st.metadata_percent_complete;
+        return st.metadata_percent_complete.quotient();
     case TR_KEY_metadata_size:
         return st.metadata_size;
     case TR_KEY_name:

@@ -93,8 +93,9 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
     auto* const tor = zeroTorrentMagnetInit();
     EXPECT_NE(nullptr, tor);
     EXPECT_FALSE(tor->has_metainfo());
-    EXPECT_EQ(tor->get_metadata_have(), 0U);
-    EXPECT_EQ(tor->get_metadata_size(), 0U);
+    EXPECT_EQ(tor->get_metadata_percent().have(), 0U);
+    EXPECT_EQ(tor->get_metadata_percent().total(), 0U);
+    EXPECT_FALSE(tor->get_metadata_percent().is_complete());
 
     auto const metainfo_benc = tr_base64_decode(InfoDictBase64);
     auto const metainfo_size = std::size(metainfo_benc);
@@ -106,9 +107,9 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
 
     EXPECT_TRUE(waitFor([tor] { return tor->has_metainfo(); }, 5s));
     EXPECT_EQ(tor->info_dict_size(), metainfo_size);
-    EXPECT_EQ(tor->get_metadata_percent(), 1.0);
-    EXPECT_EQ(tor->get_metadata_have(), metainfo_size);
-    EXPECT_EQ(tor->get_metadata_size(), metainfo_size);
+    EXPECT_TRUE(tor->get_metadata_percent().is_complete());
+    EXPECT_EQ(tor->get_metadata_percent().have(), metainfo_size);
+    EXPECT_EQ(tor->get_metadata_percent().total(), metainfo_size);
 }
 
 TEST_F(TorrentMagnetTest, metadataHaveCountsReceivedBytes)
