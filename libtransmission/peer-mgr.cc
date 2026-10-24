@@ -1845,6 +1845,7 @@ namespace peer_stat_helpers
     stats.port = port.host();
     stats.from = peer->peer_info->from_first();
     stats.progress = peer->percent_done();
+    stats.have_total = peer->swarm->tor->size_of_pieces(peer->has());
     stats.is_utp = peer->is_utp_connection();
     stats.is_encrypted = peer->is_encrypted();
     stats.rate_to_peer = peer->get_piece_speed(now_msec, tr_direction::ClientToPeer);

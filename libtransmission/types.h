@@ -420,6 +420,9 @@ struct tr_peer_stat {
     size_t bytes_to_peer = {};
     size_t bytes_to_client = {};
 
+    // byte count of the pieces the peer has
+    uint64_t have_total = {};
+
     tr_peer_id_t peer_id = {};
 
     float progress = {};
