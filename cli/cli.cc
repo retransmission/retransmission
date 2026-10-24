@@ -141,7 +141,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
             st.piece_download_speed.to_string(),
             st.peers_getting_from_us,
             st.piece_upload_speed.to_string(),
-            tr_strlratio(st.upload_ratio));
+            tr_strlratio(st.upload_ratio_deprecated));
     }
 
     if (st.activity == TR_STATUS_SEED) {
@@ -150,7 +150,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
             st.peers_getting_from_us,
             st.peers_connected,
             st.piece_upload_speed.to_string(),
-            tr_strlratio(st.upload_ratio));
+            tr_strlratio(st.upload_ratio_deprecated));
     }
 
     return {};

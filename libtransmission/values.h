@@ -328,7 +328,7 @@ public:
     }
 
     // For a ratio that exists only as a number, e.g. the seed ratio limit pref,
-    // or a `tr_stat::upload_ratio` carrying TR_RATIO_NA (-1) or TR_RATIO_INF (-2).
+    // or the RPC `upload_ratio`, which can carry TR_RATIO_NA (-1) or TR_RATIO_INF (-2).
     [[nodiscard]] static Ratio from_double(double ratio) noexcept;
 
     [[nodiscard]] constexpr bool is_none() const noexcept

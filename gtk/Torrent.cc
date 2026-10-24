@@ -280,7 +280,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
             ChangeFlag::PRIMARY_MIME_TYPE);
     }
     update_cache_value(cache_.stalled, stats.is_stalled, result, ChangeFlag::STALLED);
-    update_cache_value(cache_.ratio, stats.upload_ratio, 0.01F, result, ChangeFlag::RATIO);
+    update_cache_value(cache_.ratio, stats.upload_ratio_deprecated, 0.01F, result, ChangeFlag::RATIO);
 
     update_cache_value(cache_.added_date, stats.added_date, result, ChangeFlag::ADDED_DATE);
     update_cache_value(cache_.eta, stats.eta, result, ChangeFlag::ETA);

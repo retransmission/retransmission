@@ -369,7 +369,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)ratio
 {
-    return self.fStat.upload_ratio;
+    return self.fStat.upload_ratio_deprecated;
 }
 
 - (tr_ratiolimit)ratioSetting

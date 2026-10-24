@@ -584,7 +584,9 @@ struct tr_stat {
     // Total uploaded bytes / size_when_done.
     // NB: In Transmission 3.00 and earlier, this was total upload / download,
     // which caused edge cases when total download was less than size_when_done.
-    float upload_ratio = {};
+    tr::Values::Ratio upload_ratio;
+
+    float upload_ratio_deprecated = {}; // use `upload_ratio`
 
     // The torrent's unique Id.
     // @see `tr_torrentId()`
