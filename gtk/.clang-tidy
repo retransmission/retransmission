@@ -4,6 +4,7 @@ HeaderFilterRegex: .*/gtk/.*
 Checks:
   - bugprone-*
   - -bugprone-easily-swappable-parameters
+  - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - cert-*
   - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-optin*

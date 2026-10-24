@@ -7,6 +7,7 @@ Checks:
   - -bugprone-branch-clone
   - -bugprone-easily-swappable-parameters
   - -bugprone-implicit-widening-of-multiplication-result
+  - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-throwing-static-initialization
   - cert-*
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`

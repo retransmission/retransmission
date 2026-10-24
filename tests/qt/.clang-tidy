@@ -9,10 +9,11 @@ Checks:
   - -bugprone-easily-swappable-parameters
   - -bugprone-implicit-widening-of-multiplication-result
   - -bugprone-narrowing-conversions
+  - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
+  - -bugprone-throwing-static-initialization
   # a test asserts an optional holds a value and then reads it, which the check
   # cannot follow across an assertion macro (off in tests/libtransmission for the same reason)
   - -bugprone-unchecked-optional-access
-  - -bugprone-throwing-static-initialization
   - cert-*
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c
