@@ -219,7 +219,7 @@ using Speed = Value<SpeedUnits, Config::speed>;
 
 // Progress in [0..1], e.g. a download's completion or a seed's progress toward its ratio.
 // Exact about completion. Otherwise quantized to 0.01%, the finest step any display
-// shows, so values that display the same compare equal and a poll that only moves
+// shows, so values that compare equal display the same and a poll that only moves
 // within a step reports no change.
 class Percent
 {
