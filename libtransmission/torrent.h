@@ -1341,6 +1341,11 @@ private:
             return {};
         }
 
+        // a zero-byte torrent has no pieces to check
+        if (piece_count() == 0U) {
+            return 0.0F;
+        }
+
         return static_cast<float>(verify_checked_pieces_) / static_cast<float>(piece_count());
     }
 
