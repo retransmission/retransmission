@@ -89,6 +89,17 @@ tr::Values::Percent Torrent::progressOf(uint64_t const have, uint64_t const tota
     return hasMetadata() ? tr::Values::Percent{ have, total } : tr::Values::Percent{};
 }
 
+tr::Values::Percent Torrent::peerProgress(Peer const& peer) const noexcept
+{
+    // `have_total` is newer than `progress`.
+    // Without metadata, every size is 0 and `progress` alone tells seeds apart.
+    if (peer.have_total && hasMetadata()) {
+        return { *peer.have_total, totalSize() };
+    }
+
+    return tr::Values::Percent::from_double(peer.progress);
+}
+
 tr::Values::Percent Torrent::percentComplete() const noexcept
 {
     return progressOf(haveTotal(), totalSize());

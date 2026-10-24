@@ -48,6 +48,7 @@ struct Peer {
     int port = {};
     Speed rate_to_client;
     Speed rate_to_peer;
+    std::optional<uint64_t> have_total;
     double progress = {};
 
     template<auto MemberPtr>
@@ -59,6 +60,7 @@ struct Peer {
         Field<&Peer::address>{ TR_KEY_address },
         Field<&Peer::client_name>{ TR_KEY_client_name },
         Field<&Peer::flags>{ TR_KEY_flag_str },
+        Field<&Peer::have_total>{ TR_KEY_have_total },
         Field<&Peer::is_encrypted>{ TR_KEY_is_encrypted },
         Field<&Peer::port>{ TR_KEY_port },
         Field<&Peer::progress>{ TR_KEY_progress },
@@ -311,6 +313,8 @@ public:
     [[nodiscard]] tr::Values::Percent metadataPercentDone() const noexcept;
 
     [[nodiscard]] bool hasMetadata() const noexcept;
+
+    [[nodiscard]] tr::Values::Percent peerProgress(Peer const& peer) const noexcept;
 
     [[nodiscard]] constexpr auto pieceCount() const noexcept
     {
