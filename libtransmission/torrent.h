@@ -315,6 +315,10 @@ struct tr_torrent {
     {
         return metainfo_.piece_size(piece);
     }
+    [[nodiscard]] auto size_of_pieces(tr_bitfield const& pieces) const noexcept
+    {
+        return metainfo_.size_of_pieces(pieces);
+    }
     [[nodiscard]] constexpr auto total_size() const noexcept
     {
         return metainfo_.total_size();
