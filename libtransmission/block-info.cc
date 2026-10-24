@@ -31,7 +31,8 @@ void tr_block_info::init_sizes(uint64_t const total_size_in, uint32_t const piec
 
 uint64_t tr_block_info::size_of_pieces(tr_bitfield const& pieces) const noexcept
 {
-    if (!is_initialized()) {
+    // a bitfield of another size does not describe these pieces
+    if (!is_initialized() || pieces.size() != piece_count()) {
         return 0U;
     }
 
