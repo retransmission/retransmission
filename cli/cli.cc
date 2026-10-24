@@ -89,27 +89,6 @@ namespace
 {
 void sigHandler(int signal);
 
-[[nodiscard]] std::string tr_strlratio(double ratio)
-{
-    if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return _("None");
-    }
-
-    if (static_cast<int>(ratio) == TR_RATIO_INF) {
-        return _("Inf");
-    }
-
-    if (ratio < 10.0) {
-        return fmt::format("{:.2f}", ratio);
-    }
-
-    if (ratio < 100.0) {
-        return fmt::format("{:.1f}", ratio);
-    }
-
-    return fmt::format("{:.0f}", ratio);
-}
-
 bool waitingOnWeb;
 
 void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
@@ -127,21 +106,21 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
 
     if (st.activity == TR_STATUS_CHECK) {
         return fmt::format(
-            "Verifying local files ({:.2f}%, {:.2f}% valid)",
-            tr_truncd(100 * st.recheck_progress_deprecated, 2),
-            tr_truncd(100 * st.percent_done_deprecated, 2));
+            "Verifying local files ({:s}%, {:s}% valid)",
+            st.recheck_progress.to_string(),
+            st.percent_done.to_string());
     }
 
     if (st.activity == TR_STATUS_DOWNLOAD) {
         return fmt::format(
-            "Progress: {:.1f}%, dl from {:d} of {:d} peers ({:s}), ul to {:d} ({:s}) [{:s}]",
-            tr_truncd(100 * st.percent_done_deprecated, 1),
+            "Progress: {:s}%, dl from {:d} of {:d} peers ({:s}), ul to {:d} ({:s}) [{:s}]",
+            st.percent_done.to_string(),
             st.peers_sending_to_us,
             st.peers_connected,
             st.piece_download_speed.to_string(),
             st.peers_getting_from_us,
             st.piece_upload_speed.to_string(),
-            tr_strlratio(st.upload_ratio_deprecated));
+            st.upload_ratio.to_string());
     }
 
     if (st.activity == TR_STATUS_SEED) {
@@ -150,7 +129,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
             st.peers_getting_from_us,
             st.peers_connected,
             st.piece_upload_speed.to_string(),
-            tr_strlratio(st.upload_ratio_deprecated));
+            st.upload_ratio.to_string());
     }
 
     return {};
@@ -316,6 +295,9 @@ int tr_main(int argc, char* argv[])
     tr_lib_init();
 
     tr_locale_set_global("");
+
+    // keep the output ASCII, so the status line's byte padding lines up
+    Config::ratio = { .none = "None", .infinity = "Inf" };
 
     printf("%s %s\n", MyReadableName, LONG_VERSION_STRING);
 
