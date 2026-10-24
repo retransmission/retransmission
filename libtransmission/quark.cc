@@ -93,6 +93,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bytes_to_peer"sv, // rpc
     "cache-size-mb"sv, // rpc, tr_session::Settings
     "cache_size_mib"sv, // rpc, tr_session::Settings
+    "checked_bytes"sv, // rpc
     "clientIsChoked"sv, // rpc
     "clientIsInterested"sv, // rpc
     "clientName"sv, // rpc

@@ -8,11 +8,13 @@
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
 #include <future>
+#include <initializer_list>
 #include <iterator> // std::inserter
 #include <optional>
 #include <set>
 #include <string>
 #include <string_view>
+#include <utility> // std::move
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -48,6 +50,45 @@ namespace
     }
 
     return {};
+}
+
+// the first torrent in a `torrent_get` response for `keys`
+[[nodiscard]] tr_variant::Map torrentGetFirst(tr_session* const session, std::initializer_list<tr_quark> const keys)
+{
+    auto fields = tr_variant::Vector{};
+    for (auto const key : keys) {
+        fields.emplace_back(tr_quark_get_string_view(key));
+    }
+
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+
+    auto request = tr_variant::Map{ 4U };
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
+    request.try_emplace(TR_KEY_params, std::move(params));
+
+    auto response = tr_variant{};
+    tr_rpc_request_exec(session, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* const response_map = response.get_if<tr_variant::Map>();
+    if (response_map == nullptr) {
+        return {};
+    }
+
+    auto* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    if (result == nullptr) {
+        return {};
+    }
+
+    auto* const torrents = result->find_if<tr_variant::Vector>(TR_KEY_torrents);
+    if (torrents == nullptr || std::empty(*torrents)) {
+        return {};
+    }
+
+    auto* const first = torrents->front().get_if<tr_variant::Map>();
+    return first != nullptr ? std::move(*first) : tr_variant::Map{};
 }
 } // namespace
 
@@ -750,6 +791,18 @@ TEST_F(RpcTest, torrentGetIsFolder)
     EXPECT_TRUE(*is_folder);
 
     // cleanup
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentGetCheckedBytesIsZeroWhenNotVerifying)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_checked_bytes, TR_KEY_recheck_progress });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_checked_bytes), 0);
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_recheck_progress), 0.0);
+
     tr_torrentRemove(tor, false);
 }
 

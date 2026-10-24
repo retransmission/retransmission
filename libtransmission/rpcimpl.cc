@@ -660,6 +660,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_availability:
     case TR_KEY_bandwidth_priority:
     case TR_KEY_bytes_completed:
+    case TR_KEY_checked_bytes:
     case TR_KEY_comment:
     case TR_KEY_corrupt_ever:
     case TR_KEY_creator:
@@ -762,6 +763,8 @@ namespace make_torrent_field_helpers
         return tor.get_priority();
     case TR_KEY_bytes_completed:
         return make_bytes_completed_vec(tor);
+    case TR_KEY_checked_bytes:
+        return st.checked_bytes;
     case TR_KEY_comment:
         return tor.comment().sv();
     case TR_KEY_corrupt_ever:

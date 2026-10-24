@@ -241,6 +241,7 @@ The 'source' column here corresponds to the data structure there.
 | `availability` | array (see below)| tr_torrentAvailability()
 | `bandwidth_priority` | number | tr_priority_t
 | `bytes_completed` | array (see below)| n/a
+| `checked_bytes` | number | tr_stat
 | `comment` | string | tr_torrent_view
 | `corrupt_ever`| number | tr_stat
 | `creator`| string | tr_torrent_view
@@ -1143,6 +1144,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 
 | Method | Description
 |:---|:---
+| `torrent_get` | new arg `checked_bytes`
 | `torrent_get` | new arg `current_dir`
 | `torrent_get` | new arg `is_folder`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
