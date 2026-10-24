@@ -396,7 +396,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)progressStopRatio
 {
-    return self.fStat.seed_ratio_percent_done;
+    return self.fStat.seed_ratio_percent_done_deprecated;
 }
 
 - (tr_idlelimit)idleSetting

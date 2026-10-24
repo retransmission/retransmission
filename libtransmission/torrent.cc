@@ -1427,15 +1427,13 @@ tr_stat tr_torrent::stats() const
     stats.finished = this->finished_seeding_by_idle_ ||
         (seed_ratio_applies && seed_ratio_bytes_left == 0 && stats.have_valid != 0);
 
+    // the goal counts as reached when the ratio doesn't apply
     if (!seed_ratio_applies || stats.finished) {
-        stats.seed_ratio_percent_done = 1.0F;
-    } else if (seed_ratio_bytes_goal == 0) /* impossible? safeguard for div by zero */
-    {
-        stats.seed_ratio_percent_done = 0.0F;
+        stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal, seed_ratio_bytes_goal };
     } else {
-        stats.seed_ratio_percent_done = static_cast<float>(seed_ratio_bytes_goal - seed_ratio_bytes_left) /
-            static_cast<float>(seed_ratio_bytes_goal);
+        stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal - seed_ratio_bytes_left, seed_ratio_bytes_goal };
     }
+    stats.seed_ratio_percent_done_deprecated = as_float(stats.seed_ratio_percent_done);
 
     /* test some of the constraints */
     TR_ASSERT(stats.size_when_done <= this->total_size());

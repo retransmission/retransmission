@@ -250,7 +250,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         cache_.activity_percent_done,
         Percents(
             std::clamp(
-                stats.activity == TR_STATUS_SEED && has_seed_ratio ? stats.seed_ratio_percent_done :
+                stats.activity == TR_STATUS_SEED && has_seed_ratio ? stats.seed_ratio_percent_done_deprecated :
                                                                      stats.percent_done_deprecated,
                 0.0F,
                 1.0F)),
@@ -291,7 +291,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         ChangeFlag::PERCENT_COMPLETE);
     update_cache_value(
         cache_.seed_ratio_percent_done,
-        Percents(stats.seed_ratio_percent_done),
+        Percents(stats.seed_ratio_percent_done_deprecated),
         result,
         ChangeFlag::SEED_RATIO_PERCENT_DONE);
     update_cache_value(cache_.total_size, Storage{ view.total_size, Storage::Units::Bytes }, result, ChangeFlag::TOTAL_SIZE);
