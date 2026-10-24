@@ -108,7 +108,9 @@ private:
         }
 
         InFlightData(InFlightData const&) = delete;
+        InFlightData(InFlightData&&) = delete;
         InFlightData& operator=(InFlightData const&) = delete;
+        InFlightData& operator=(InFlightData&&) = delete;
 
         [[nodiscard]] constexpr auto const& sitename() const noexcept
         {

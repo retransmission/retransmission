@@ -32,6 +32,7 @@ public:
     RpcQueue(RpcQueue const&) = delete;
     RpcQueue& operator=(RpcQueue&&) = delete;
     RpcQueue& operator=(RpcQueue const&) = delete;
+    ~RpcQueue() = default;
 
     [[nodiscard]] static RpcQueue& create()
     {
