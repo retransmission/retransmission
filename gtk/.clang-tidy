@@ -7,6 +7,8 @@ Checks:
   - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - cert-*
   - -cert-dcl03-c # alias of `misc-static-assert`
+  - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
+  - -cert-dcl51-cpp # alias of `bugprone-reserved-identifier`
   - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-optin*
   - -clang-analyzer-optin.core.EnumCastOutOfRange # TODO: enable after https://github.com/llvm/llvm-project/issues/179094 is fixed

@@ -16,6 +16,8 @@ Checks:
   - -bugprone-unchecked-optional-access
   - cert-*
   - -cert-dcl03-c # alias of `misc-static-assert`
+  - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
+  - -cert-dcl51-cpp # alias of `bugprone-reserved-identifier`
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c
   - clang-analyzer-*

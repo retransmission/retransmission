@@ -5,10 +5,6 @@
 
 #pragma once
 
-#ifndef __TRANSMISSION__
-#define __TRANSMISSION__ // for libtransmission/net.h
-#endif
-
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -19,12 +15,18 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+#include <ws2tcpip.h>
+#else
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#endif
+
 #include <event2/buffer.h>
 #include <event2/event.h>
 #include <event2/http.h>
 
 #include <libtransmission/constants.h> // TrRpcSessionIdHeader
-#include <libtransmission/net.h> // sockaddr_storage, ntohs()
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise Session's remote transport end to end: the CSRF
