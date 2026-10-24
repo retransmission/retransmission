@@ -103,11 +103,11 @@ int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
 
 namespace
 {
-constexpr std::array<std::pair<char const*, uint16_t>, 3> const DefaultBootstraps = { {
+constexpr auto DefaultBootstraps = std::to_array<std::pair<char const*, uint16_t>>({
     { TR_PROJ_DOMAIN_DHT, 6881 },
     { "router.bittorrent.com", 6881 },
     { "dht.libtorrent.org", 25401 },
-} };
+});
 
 class tr_dht_impl final : public tr_dht
 {

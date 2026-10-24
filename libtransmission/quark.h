@@ -756,7 +756,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_webseeds_ex,
     TR_KEY_webseeds_sending_to_us,
     TR_KEY_yourip,
-    TR_N_KEYS
+    TR_N_KEYS,
 };
 
 /**

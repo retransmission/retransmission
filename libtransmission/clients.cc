@@ -50,7 +50,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
 [[nodiscard]] constexpr std::string_view base62str(uint8_t chr)
 {
     // clang-format off: 90 characters per column
-    auto constexpr Strings = std::array<std::string_view, 256>{
+    auto constexpr Strings = std::to_array<std::string_view>({
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
@@ -76,8 +76,8 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
-         "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv
-    } ;
+         "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
+    });
     // clang-format on
 
     return Strings[chr];

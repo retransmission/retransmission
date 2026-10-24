@@ -58,7 +58,7 @@ enum : uint16_t {
     /* these two fields could be any number at all so long as they're not
      * TR_PRI_LOW, TR_PRI_NORMAL, TR_PRI_HIGH, true, or false */
     NOT_SET = 1000,
-    MIXED = 1001
+    MIXED = 1001,
 };
 
 class FileModelColumns : public Gtk::TreeModelColumnRecord

@@ -62,7 +62,7 @@ public:
         ClientSentPieceData,
         ClientSentRequest,
         ClientStaleBitfield,
-        Error // generic
+        Error, // generic
     };
 
     Type type = Type::Error;

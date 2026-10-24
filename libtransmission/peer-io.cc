@@ -145,8 +145,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
             }
             return {};
         },
-
-        [&] { return tr_peer_socket_tcp::create(*session, socket_address, client_is_seed); }
+        [&] { return tr_peer_socket_tcp::create(*session, socket_address, client_is_seed); },
     };
 
     for (auto const& transport : session->preferred_transports()) {

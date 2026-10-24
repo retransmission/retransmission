@@ -101,7 +101,7 @@ public:
         std::byte{ 19 },  std::byte{ 'B' }, std::byte{ 'i' }, std::byte{ 't' }, std::byte{ 'T' },
         std::byte{ 'o' }, std::byte{ 'r' }, std::byte{ 'r' }, std::byte{ 'e' }, std::byte{ 'n' },
         std::byte{ 't' }, std::byte{ ' ' }, std::byte{ 'p' }, std::byte{ 'r' }, std::byte{ 'o' },
-        std::byte{ 't' }, std::byte{ 'o' }, std::byte{ 'c' }, std::byte{ 'o' }, std::byte{ 'l' }
+        std::byte{ 't' }, std::byte{ 'o' }, std::byte{ 'c' }, std::byte{ 'o' }, std::byte{ 'l' },
     };
 
     // [Next comes] eight reserved bytes [used for enabling ltep, dht, fext]
@@ -168,7 +168,7 @@ private:
         AwaitingYb,
         AwaitingVc,
         AwaitingCryptoSelect,
-        AwaitingPadD
+        AwaitingPadD,
     };
 
     // ---

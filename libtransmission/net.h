@@ -475,8 +475,10 @@ struct tr_socket_address {
     tr_address address_;
     tr_port port_;
 
-    static auto constexpr CompactSockAddrBytes = std::array{ tr_address::CompactAddrBytes[0] + tr_port::CompactPortBytes,
-                                                             tr_address::CompactAddrBytes[1] + tr_port::CompactPortBytes };
+    static auto constexpr CompactSockAddrBytes = std::array{
+        tr_address::CompactAddrBytes[0] + tr_port::CompactPortBytes,
+        tr_address::CompactAddrBytes[1] + tr_port::CompactPortBytes,
+    };
     static auto constexpr CompactSockAddrMaxBytes = tr_address::CompactAddrMaxBytes + tr_port::CompactPortBytes;
     static_assert(std::size(CompactSockAddrBytes) == NUM_TR_AF_INET_TYPES);
 };

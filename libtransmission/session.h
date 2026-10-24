@@ -1340,7 +1340,7 @@ public:
         TrScript script;
     };
 
-    static constexpr std::array<ScriptInfo, 3U> Scripts{ {
+    static constexpr auto Scripts = std::to_array<ScriptInfo>({
         {
             .enabled_key = TR_KEY_script_torrent_added_enabled,
             .filename_key = TR_KEY_script_torrent_added_filename,
@@ -1356,7 +1356,7 @@ public:
             .filename_key = TR_KEY_script_torrent_done_seeding_filename,
             .script = TR_SCRIPT_ON_TORRENT_DONE_SEEDING,
         },
-    } };
+    });
 
 private:
     /// const fields

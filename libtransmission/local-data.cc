@@ -519,10 +519,12 @@ public:
 
     [[nodiscard]] Stats stats() const noexcept
     {
-        return { .write_runs = write_runs_.load(std::memory_order_relaxed),
-                 .blocks_written = blocks_written_.load(std::memory_order_relaxed),
-                 .hashes_from_buffers = hashes_from_buffers_.load(std::memory_order_relaxed),
-                 .hashes_from_disk = hashes_from_disk_.load(std::memory_order_relaxed) };
+        return {
+            .write_runs = write_runs_.load(std::memory_order_relaxed),
+            .blocks_written = blocks_written_.load(std::memory_order_relaxed),
+            .hashes_from_buffers = hashes_from_buffers_.load(std::memory_order_relaxed),
+            .hashes_from_disk = hashes_from_disk_.load(std::memory_order_relaxed),
+        };
     }
 
     void set_paused(bool const paused)
@@ -860,11 +862,13 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_writes_.emplace(
                 WriteKey{ .tor_id = id, .begin = span.begin },
-                PendingWrite{ .tor_id = id,
-                              .desc = std::move(desc),
-                              .span = span,
-                              .data = std::move(op.data),
-                              .on_write = std::move(op.on_write) });
+                PendingWrite{
+                    .tor_id = id,
+                    .desc = std::move(desc),
+                    .span = span,
+                    .data = std::move(op.data),
+                    .on_write = std::move(op.on_write),
+                });
         }
         work_cv_.notify_one();
     }

@@ -21,7 +21,7 @@ enum class Intent : uint8_t {
     // If we handed it over, we would drop what it asked for and report success.
     Standalone,
     Present,
-    AddTorrents
+    AddTorrents,
 };
 
 // What a launch would have another instance do for it, if one is there.

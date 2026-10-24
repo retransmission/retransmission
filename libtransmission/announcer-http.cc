@@ -539,8 +539,10 @@ void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::stri
                 auto const it = std::ranges::find_if(
                     response_.rows,
                     [value](auto const& row) {
-                        auto const row_hash = std::string_view{ reinterpret_cast<char const*>(std::data(row.info_hash)),
-                                                                std::size(row.info_hash) };
+                        auto const row_hash = std::string_view{
+                            reinterpret_cast<char const*>(std::data(row.info_hash)),
+                            std::size(row.info_hash),
+                        };
                         return row_hash == value;
                     });
                 it == std::ranges::end(response_.rows)) {

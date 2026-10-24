@@ -39,7 +39,7 @@ public:
         StringIndex,
         StringViewIndex,
         VectorIndex,
-        MapIndex
+        MapIndex,
     };
 
     using Vector = std::vector<tr_variant>;

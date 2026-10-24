@@ -50,7 +50,7 @@ enum : uint8_t {
     ADDED_F_HOLEPUNCH = 8,
     /* true if the peer telling us about this peer
      * initiated the connection (implying that it is connectible) */
-    ADDED_F_CONNECTABLE = 16
+    ADDED_F_CONNECTABLE = 16,
 };
 
 /**

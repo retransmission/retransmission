@@ -303,7 +303,7 @@ struct tau_announce_request {
         TAU_ANNOUNCE_EVENT_NONE = 0,
         TAU_ANNOUNCE_EVENT_COMPLETED = 1,
         TAU_ANNOUNCE_EVENT_STARTED = 2,
-        TAU_ANNOUNCE_EVENT_STOPPED = 3
+        TAU_ANNOUNCE_EVENT_STOPPED = 3,
     };
 
     PayloadBuffer payload;

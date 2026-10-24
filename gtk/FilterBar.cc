@@ -457,7 +457,7 @@ Glib::RefPtr<Gtk::ListStore> FilterBar::Impl::show_mode_filter_model_new()
         char const* icon_name;
     };
 
-    static auto constexpr types = std::array<FilterTypeInfo, 9>({ {
+    static auto constexpr types = std::to_array<FilterTypeInfo>({
         { .show_mode = ShowMode::ShowAll, .context = nullptr, .name = N_("All"), .icon_name = nullptr },
         { .show_mode = ShowModeSeparator, .context = nullptr, .name = nullptr, .icon_name = nullptr },
         { .show_mode = ShowMode::ShowActive, .context = nullptr, .name = N_("Active"), .icon_name = "system-run" },
@@ -479,7 +479,7 @@ Glib::RefPtr<Gtk::ListStore> FilterBar::Impl::show_mode_filter_model_new()
           .name = NC_("Verb", "Verifying"),
           .icon_name = "view-refresh" },
         { .show_mode = ShowMode::ShowError, .context = nullptr, .name = N_("Error"), .icon_name = "dialog-error" },
-    } });
+    });
 
     auto store = Gtk::ListStore::create(show_mode_filter_cols);
 
