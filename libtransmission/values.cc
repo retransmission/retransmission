@@ -5,7 +5,7 @@
 
 #include <algorithm> // std::copy_n(), std::min(), std::ranges::transform()
 #include <array>
-#include <cmath> // std::fabs(), std::floor()
+#include <cmath> // std::fabs(), std::floor(), std::llround()
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
 #include <iterator> // std::begin(), std::size()
@@ -71,5 +71,50 @@ std::string to_string(uint64_t const quantity, Config::UnitsBase const& units)
 }
 
 } // namespace detail
+
+// ---
+
+Percent Percent::from_double(double const fraction) noexcept
+{
+    if (fraction >= 1.0) {
+        return Percent{ 1U, 1U };
+    }
+
+    if (!(fraction > 0.0)) { // also NaN
+        return {};
+    }
+
+    auto const have = static_cast<uint64_t>(std::llround(fraction * static_cast<double>(Granularity)));
+    return Percent{ std::min(have, Granularity - 1U), Granularity };
+}
+
+std::string Percent::to_string() const
+{
+    auto const hundredths = ten_thousandths(); // of a percent
+
+    if (hundredths == Granularity) {
+        return "100";
+    }
+
+    if (hundredths < 500U) {
+        return fmt::format("{:.2Lf}", static_cast<double>(hundredths) / 100.0);
+    }
+
+    // incomplete never reads as 100.0
+    auto const tenths = std::min((hundredths + 5U) / 10U, uint64_t{ 999U });
+    return fmt::format("{:.1Lf}", static_cast<double>(tenths) / 10.0);
+}
+
+std::string Percent::to_whole_string() const
+{
+    auto const hundredths = ten_thousandths();
+
+    if (hundredths == Granularity) {
+        return "100";
+    }
+
+    // incomplete never reads as 100
+    return std::to_string(std::min((hundredths + 50U) / 100U, uint64_t{ 99U }));
+}
 
 } // namespace tr::Values

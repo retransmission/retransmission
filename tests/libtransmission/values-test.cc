@@ -3,6 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstdint>
+#include <limits>
+#include <locale>
+#include <optional>
+
+#include <libtransmission/utils.h> // tr_locale_set_global()
 #include <libtransmission/values.h>
 
 #include "test-fixtures.h"
@@ -65,4 +71,131 @@ TEST_F(ValuesTest, displayNames)
     EXPECT_EQ((Names{ "B", "KiB", "MiB", "GiB", "TiB" }), Config::memory.display_names());
     EXPECT_EQ((Names{ "B/s", "kB/s", "MB/s", "GB/s", "TB/s" }), Config::speed.display_names());
     EXPECT_EQ((Names{ "B", "kB", "MB", "GB", "TB" }), Config::storage.display_names());
+}
+
+TEST_F(ValuesTest, percentIsBuiltFromCounts)
+{
+    auto const half = Percent{ 50U, 100U };
+    EXPECT_FALSE(half.is_complete());
+    EXPECT_EQ(50U, half.have());
+    EXPECT_EQ(100U, half.total());
+    EXPECT_DOUBLE_EQ(0.5, half.to_fraction());
+    EXPECT_DOUBLE_EQ(0.5, half.quotient());
+
+    EXPECT_TRUE((Percent{ 100U, 100U }).is_complete());
+    EXPECT_TRUE((Percent{ 150U, 100U }).is_complete());
+    EXPECT_DOUBLE_EQ(1.0, (Percent{ 150U, 100U }).to_fraction());
+    EXPECT_DOUBLE_EQ(1.0, (Percent{ 150U, 100U }).quotient());
+
+    // an empty torrent has nothing left to do
+    EXPECT_TRUE((Percent{ 0U, 0U }).is_complete());
+
+    // a default Percent is 0% and incomplete, e.g. metadata of unknown size
+    EXPECT_FALSE(Percent{}.is_complete());
+    EXPECT_DOUBLE_EQ(0.0, Percent{}.to_fraction());
+    EXPECT_DOUBLE_EQ(0.0, Percent{}.quotient());
+}
+
+TEST_F(ValuesTest, percentNeverReadsCompleteEarly)
+{
+    // 99.995% rounds to the grid's top step but stays below completion
+    auto const almost = Percent{ 99995U, 100000U };
+    EXPECT_FALSE(almost.is_complete());
+    EXPECT_DOUBLE_EQ(0.9999, almost.to_fraction());
+    EXPECT_DOUBLE_EQ(0.99995, almost.quotient());
+    EXPECT_EQ("99.9", almost.to_string());
+    EXPECT_EQ("99", almost.to_whole_string());
+
+    EXPECT_EQ("99.9", (Percent{ 9995U, 10000U }).to_string()); // would round to "100.0"
+    EXPECT_EQ("99", (Percent{ 996U, 1000U }).to_whole_string()); // would round to "100"
+
+    EXPECT_EQ("100", (Percent{ 1U, 1U }).to_string());
+    EXPECT_EQ("100", (Percent{ 1U, 1U }).to_whole_string());
+    EXPECT_EQ("100", (Percent{ 0U, 0U }).to_string());
+}
+
+TEST_F(ValuesTest, percentToStringTiers)
+{
+    EXPECT_EQ("0.00", (Percent{ 0U, 1U }).to_string());
+    EXPECT_EQ("0.01", (Percent{ 1U, 10000U }).to_string());
+    EXPECT_EQ("4.99", (Percent{ 499U, 10000U }).to_string());
+    EXPECT_EQ("5.0", (Percent{ 4995U, 100000U }).to_string()); // 4.995% rounds into the next tier
+    EXPECT_EQ("5.0", (Percent{ 500U, 10000U }).to_string());
+    EXPECT_EQ("50.0", (Percent{ 1U, 2U }).to_string());
+    EXPECT_EQ("99.9", (Percent{ 999U, 1000U }).to_string());
+
+    EXPECT_EQ("0", (Percent{ 4U, 1000U }).to_whole_string());
+    EXPECT_EQ("1", (Percent{ 5U, 1000U }).to_whole_string()); // half rounds up
+    EXPECT_EQ("50", (Percent{ 1U, 2U }).to_whole_string());
+}
+
+TEST_F(ValuesTest, percentFromDouble)
+{
+    EXPECT_TRUE(Percent::from_double(1.0).is_complete());
+    EXPECT_TRUE(Percent::from_double(1.5).is_complete());
+
+    auto const almost = Percent::from_double(0.99996);
+    EXPECT_FALSE(almost.is_complete());
+    EXPECT_DOUBLE_EQ(0.9999, almost.to_fraction());
+    EXPECT_EQ("99.9", almost.to_string());
+
+    EXPECT_EQ(Percent::from_double(0.5), (Percent{ 1U, 2U }));
+    EXPECT_EQ(Percent{}, Percent::from_double(0.0));
+    EXPECT_EQ(Percent{}, Percent::from_double(-0.5));
+    EXPECT_EQ(Percent{}, Percent::from_double(std::numeric_limits<double>::quiet_NaN()));
+}
+
+TEST_F(ValuesTest, percentComparesAtDisplayGranularity)
+{
+    EXPECT_EQ((Percent{ 50004U, 100000U }), (Percent{ 5U, 10U })); // 50.004% reads as 50.00%
+    EXPECT_NE((Percent{ 5001U, 10000U }), (Percent{ 5U, 10U }));
+    EXPECT_LT((Percent{ 5U, 10U }), (Percent{ 5001U, 10000U }));
+    EXPECT_LT((Percent{ 9999U, 10000U }), (Percent{ 1U, 1U }));
+    EXPECT_GT((Percent{ 1U, 1U }), Percent::from_double(0.99999));
+
+    // the largest counts don't overflow, nor does the remainder's rounding term
+    static auto constexpr Max = std::numeric_limits<uint64_t>::max();
+    EXPECT_EQ((Percent{ Max / 2U, Max }), (Percent{ 1U, 2U }));
+    EXPECT_TRUE((Percent{ Max, Max }).is_complete());
+    EXPECT_EQ((Percent{ (Max / 10000U) - 1U, Max / 10000U }), (Percent{ 9999U, 10000U }));
+}
+
+namespace
+{
+
+class ValuesLocaleTest : public ::tr::test::TransmissionTest
+{
+protected:
+    void SetUp() override
+    {
+        TransmissionTest::SetUp();
+
+        old_locale_ = tr_locale_set_global("de_DE.UTF-8");
+
+        // musl and OpenBSD accept any locale name but keep "C" numerics
+        if (!old_locale_ || std::use_facet<std::numpunct<char>>(std::locale{}).decimal_point() != ',') {
+            GTEST_SKIP() << "de_DE.UTF-8 is not installed";
+        }
+    }
+
+    void TearDown() override
+    {
+        if (old_locale_) {
+            tr_locale_set_global(*old_locale_);
+        }
+
+        TransmissionTest::TearDown();
+    }
+
+private:
+    std::optional<std::locale> old_locale_;
+};
+
+} // namespace
+
+TEST_F(ValuesLocaleTest, percentUsesTheGlobalLocale)
+{
+    EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string());
+    EXPECT_EQ("99,9", (Percent{ 999U, 1000U }).to_string());
+    EXPECT_EQ("50", (Percent{ 1U, 2U }).to_whole_string());
 }
