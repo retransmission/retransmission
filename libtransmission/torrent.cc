@@ -1478,25 +1478,14 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
     auto const length = tor->file_size(file);
     auto const [begin, end] = tor->piece_span_for_file(file);
 
-    if (tor->is_seed() || length == 0) {
-        return {
-            .name = subpath.c_str(),
-            .have = length,
-            .length = length,
-            .progress = 1.0,
-            .beginPiece = begin,
-            .endPiece = end,
-            .priority = priority,
-            .wanted = wanted,
-        };
-    }
-
-    auto const have = tor->count_has_bytes_in_file(file);
+    auto const have = tor->is_seed() || length == 0 ? length : tor->count_has_bytes_in_file(file);
+    auto const progress = Percent{ have, length };
     return {
         .name = subpath.c_str(),
         .have = have,
         .length = length,
-        .progress = have >= length ? 1.0 : static_cast<double>(have) / static_cast<double>(length),
+        .progress = progress,
+        .progress_deprecated = progress.quotient(),
         .beginPiece = begin,
         .endPiece = end,
         .priority = priority,
