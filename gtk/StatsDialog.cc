@@ -84,14 +84,14 @@ bool StatsDialog::Impl::updateStats()
     setLabel(one_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(one_down_lb_, tr_strlsize(stats.downloadedBytes));
     setLabel(one_time_lb_, tr_format_time(stats.secondsActive));
-    setLabelFromRatio(one_ratio_lb_, stats.ratio);
+    setLabelFromRatio(one_ratio_lb_, stats.ratio_deprecated);
 
     stats = tr_sessionGetCumulativeStats(core_->get_session());
     setLabel(all_sessions_lb_, startedTimesText(stats.sessionCount));
     setLabel(all_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(all_down_lb_, tr_strlsize(stats.downloadedBytes));
     setLabel(all_time_lb_, tr_format_time(stats.secondsActive));
-    setLabelFromRatio(all_ratio_lb_, stats.ratio);
+    setLabelFromRatio(all_ratio_lb_, stats.ratio_deprecated);
 
     return true;
 }

@@ -637,7 +637,8 @@ void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& st
     };
     tr::serializer::load(args_dict, stats, Fields);
 
-    stats.ratio = static_cast<float>(tr_getRatio(stats.uploadedBytes, stats.downloadedBytes));
+    stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
+    stats.ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploadedBytes, stats.downloadedBytes));
 }
 
 void Session::updateStats(tr_variant* dict)

@@ -449,12 +449,13 @@ struct tr_peer_stat {
 
 /** @brief Used by `tr_sessionGetStats()` and `tr_sessionGetCumulativeStats()` */
 struct tr_session_stats {
-    double ratio; /* TR_RATIO_INF, TR_RATIO_NA, or total up/down */
-    uint64_t uploadedBytes; /* total up */
-    uint64_t downloadedBytes; /* total down */
-    uint64_t filesAdded; /* number of files added */
-    uint64_t sessionCount; /* program started N times */
-    time_t secondsActive; /* how long Transmission's been running */
+    tr::Values::Ratio ratio; /* total up/down */
+    double ratio_deprecated = {}; /* use `ratio`: TR_RATIO_INF, TR_RATIO_NA, or total up/down */
+    uint64_t uploadedBytes = {}; /* total up */
+    uint64_t downloadedBytes = {}; /* total down */
+    uint64_t filesAdded = {}; /* number of files added */
+    uint64_t sessionCount = {}; /* program started N times */
+    time_t secondsActive = {}; /* how long Transmission's been running */
 };
 
 struct tr_stat {

@@ -53,12 +53,12 @@ void StatsDialog::updateStats()
 
     ui_.currentUploadedValueLabel->setText(Formatter::storageToString(current.uploadedBytes));
     ui_.currentDownloadedValueLabel->setText(Formatter::storageToString(current.downloadedBytes));
-    ui_.currentRatioValueLabel->setText(Formatter::ratioToString(current.ratio));
+    ui_.currentRatioValueLabel->setText(Formatter::ratioToString(current.ratio_deprecated));
     ui_.currentDurationValueLabel->setText(Formatter::timeToString(static_cast<int>(current.secondsActive)));
 
     ui_.totalUploadedValueLabel->setText(Formatter::storageToString(total.uploadedBytes));
     ui_.totalDownloadedValueLabel->setText(Formatter::storageToString(total.downloadedBytes));
-    ui_.totalRatioValueLabel->setText(Formatter::ratioToString(total.ratio));
+    ui_.totalRatioValueLabel->setText(Formatter::ratioToString(total.ratio_deprecated));
     ui_.totalDurationValueLabel->setText(Formatter::timeToString(static_cast<int>(total.secondsActive)));
 
     ui_.startCountLabel->setText(

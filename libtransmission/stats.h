@@ -82,7 +82,8 @@ private:
     time_t start_time_;
 
     static constexpr auto Zero = tr_session_stats{
-        .ratio = TR_RATIO_NA,
+        .ratio = {},
+        .ratio_deprecated = TR_RATIO_NA,
         .uploadedBytes = 0U,
         .downloadedBytes = 0U,
         .filesAdded = 0U,
