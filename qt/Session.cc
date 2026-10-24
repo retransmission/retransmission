@@ -34,7 +34,6 @@
 #include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/rpc-queue.h>
@@ -640,7 +639,6 @@ void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& st
     tr::serializer::load(args_dict, stats, Fields);
 
     stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
-    stats.ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploadedBytes, stats.downloadedBytes));
 }
 
 void Session::updateStats(tr_variant* dict)

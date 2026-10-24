@@ -10,8 +10,8 @@
 #include <QtWidgets/QApplication>
 
 #include "FileTreeModel.h"
+#include "Formatter.h"
 #include "StyleHelper.h"
-#include "TrFormat.h"
 
 QSize FileTreeDelegate::sizeHint(QStyleOptionViewItem const& item, QModelIndex const& index) const
 {
@@ -59,7 +59,7 @@ void FileTreeDelegate::paint(QPainter* painter, QStyleOptionViewItem const& opti
         p.textVisible = true;
         auto const progress = index.data(FileTreeModel::ProgressRole).value<tr::Values::Percent>();
         p.progress = static_cast<int>(100 * progress.to_fraction());
-        p.text = TR_FORMAT("{percent}%", fmt::arg("percent", progress.to_whole_string()));
+        p.text = Formatter::percentToString(progress);
         StyleHelper::drawProgressBar(*painter, p);
     } else if (column == FileTreeModel::COL_WANTED) {
         QStyleOptionViewItem vi(option);

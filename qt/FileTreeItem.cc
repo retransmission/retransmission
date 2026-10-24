@@ -17,7 +17,6 @@
 #include "FileTreeModel.h"
 #include "Formatter.h"
 #include "IconCache.h"
-#include "TrFormat.h"
 
 std::unordered_map<QString, int> const& FileTreeItem::getMyChildRows() const
 {
@@ -204,7 +203,7 @@ tr::Values::Percent FileTreeItem::progress() const
 
 QString FileTreeItem::progressString() const
 {
-    return TR_FORMAT("{percent}%", fmt::arg("percent", progress().to_whole_string()));
+    return Formatter::percentToString(progress());
 }
 
 QString FileTreeItem::sizeString() const

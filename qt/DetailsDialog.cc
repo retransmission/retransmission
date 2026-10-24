@@ -17,7 +17,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QDateTime>
 #include <QtCore/QItemSelectionModel>
 #include <QtCore/QList>
@@ -236,8 +235,6 @@ void setIfIdle(SpinBox* const spin, Value const value)
 // A row in the peers table
 class DetailsDialog::PeerItem : public QTreeWidgetItem
 {
-    Q_DECLARE_TR_FUNCTIONS(DetailsDialog)
-
     Peer peer_;
     tr::Values::Percent progress_;
     QString collated_address_;
@@ -317,10 +314,7 @@ private:
         setText(COL_UP_REQS, peer_.active_reqs_to_client > 0 ? QString::number(peer_.active_reqs_to_client) : QString{});
         setText(COL_DOWN, peer_.rate_to_client.is_zero() ? QString{} : peer_.rate_to_client.toQstring());
         setText(COL_DOWN_REQS, peer_.active_reqs_to_peer > 0 ? QString::number(peer_.active_reqs_to_peer) : QString{});
-        setText(
-            COL_PERCENT,
-            progress_ != tr::Values::Percent{} ? TR_FORMAT("{percent}%", fmt::arg("percent", progress_.to_whole_string())) :
-                                                 QString{});
+        setText(COL_PERCENT, progress_ != tr::Values::Percent{} ? Formatter::percentToString(progress_) : QString{});
         setText(COL_STATUS, peer_.flags);
     }
 
