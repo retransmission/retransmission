@@ -38,8 +38,8 @@ public:
 
     [[nodiscard]] bool hasTorrent(TorrentHash const& hash) const;
 
-    [[nodiscard]] Torrent* getTorrentFromId(int id);
-    [[nodiscard]] Torrent const* getTorrentFromId(int id) const;
+    [[nodiscard]] Torrent* getTorrentFromId(tr_torrent_id_t id);
+    [[nodiscard]] Torrent const* getTorrentFromId(tr_torrent_id_t id) const;
 
     using torrents_t = std::vector<Torrent*>;
 
@@ -68,7 +68,7 @@ private:
     void rowsRemove(torrents_t const& torrents);
     void rowsEmitChanged(torrent_ids_t const& ids);
 
-    [[nodiscard]] std::optional<int> getRow(int id) const;
+    [[nodiscard]] std::optional<int> getRow(tr_torrent_id_t id) const;
     using span_t = std::pair<int, int>;
     [[nodiscard]] std::vector<span_t> getSpans(torrent_ids_t const& ids) const;
 
