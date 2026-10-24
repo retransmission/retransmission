@@ -218,11 +218,6 @@ struct tr_peer {
         return has().test(piece);
     }
 
-    [[nodiscard]] float percent_done() const noexcept
-    {
-        return has().percent();
-    }
-
     [[nodiscard]] bool is_seed() const noexcept
     {
         return has().has_all();

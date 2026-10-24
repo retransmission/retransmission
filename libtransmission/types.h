@@ -425,7 +425,10 @@ struct tr_peer_stat {
 
     tr_peer_id_t peer_id = {};
 
-    float progress = {};
+    // how much of the torrent the peer has
+    tr::Values::Percent progress;
+
+    float progress_deprecated = {}; // use `progress`
 
     uint16_t port = {};
     uint8_t from = {};

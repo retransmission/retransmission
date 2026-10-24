@@ -1027,7 +1027,7 @@ void refreshPeerRow(Gtk::TreeModel::iterator const& iter, tr_peer_stat const& pe
         up_count = std::to_string(peer.active_reqs_to_client);
     }
 
-    (*iter)[peer_cols.progress] = static_cast<int>(100.0 * peer.progress);
+    (*iter)[peer_cols.progress] = static_cast<int>(100.0 * peer.progress_deprecated);
     (*iter)[peer_cols.upload_request_count_number] = peer.active_reqs_to_client;
     (*iter)[peer_cols.upload_request_count_string] = up_count;
     (*iter)[peer_cols.download_request_count_number] = peer.active_reqs_to_peer;

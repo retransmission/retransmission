@@ -960,7 +960,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         dict[@"From"] = @(peer.from);
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
-        dict[@"Progress"] = @(peer.progress);
+        dict[@"Progress"] = @(peer.progress_deprecated);
         dict[@"Seed"] = @(peer.is_seed);
         dict[@"Encryption"] = @(peer.is_encrypted);
         dict[@"uTP"] = @(peer.is_utp);

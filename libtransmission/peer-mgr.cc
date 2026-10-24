@@ -1844,8 +1844,17 @@ namespace peer_stat_helpers
     stats.peer_id = peer->peer_id();
     stats.port = port.host();
     stats.from = peer->peer_info->from_first();
-    stats.progress = peer->percent_done();
-    stats.have_total = peer->swarm->tor->size_of_pieces(peer->has());
+    auto const* const tor = peer->swarm->tor;
+    stats.have_total = tor->size_of_pieces(peer->has());
+    if (tor->has_metainfo()) {
+        stats.progress = Percent{ stats.have_total, tor->total_size() };
+    } else if (peer->is_seed()) {
+        stats.progress = Percent{ 0U, 0U }; // all of a size nobody has reported yet
+    } else if (auto const& have = peer->has(); have.is_size_known()) {
+        // the bitfield's byte-padded size stands in for the unknown piece count
+        stats.progress = Percent{ have.count(), have.size() };
+    }
+    stats.progress_deprecated = static_cast<float>(stats.progress.quotient());
     stats.is_utp = peer->is_utp_connection();
     stats.is_encrypted = peer->is_encrypted();
     stats.rate_to_peer = peer->get_piece_speed(now_msec, tr_direction::ClientToPeer);
