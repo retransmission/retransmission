@@ -118,6 +118,8 @@ target_sources(${TR_NAME}-mac
         InfoWindowController.h
         InfoWindowController.mm
         main.mm
+        MessageLogsViews.h
+        MessageLogsViews.mm
         MessageWindowController.h
         MessageWindowController.mm
         NSApplicationAdditions.h
@@ -203,7 +205,6 @@ set(XIB_FILES
     InfoFileView.xib
     InfoPeersView.xib
     InfoWindow.xib
-    MessageWindow.xib
     StatusBar.xib)
 
 set(RESOURCES
