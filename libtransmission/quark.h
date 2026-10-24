@@ -355,6 +355,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_message_level_kebab_APICOMPAT,
     TR_KEY_message_level,
     TR_KEY_metadata_percent_complete_camel_APICOMPAT,
+    TR_KEY_metadata_have,
     TR_KEY_metadata_percent_complete,
     TR_KEY_metadata_size,
     TR_KEY_metainfo,

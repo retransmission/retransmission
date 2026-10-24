@@ -276,7 +276,9 @@ The 'source' column here corresponds to the data structure there.
 | `magnet_link` | string| n/a
 | `manual_announce_time` | number| **DEPRECATED** don't use it, it never worked
 | `max_connected_peers` | number| tr_torrent
+| `metadata_have` | number | tr_stat
 | `metadata_percent_complete` | double| tr_stat
+| `metadata_size` | number | tr_stat
 | `name` | string| tr_torrent_view
 | `peer_limit` | number| tr_torrent
 | `peers` | array (see below)| n/a
@@ -1147,6 +1149,8 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `checked_bytes`
 | `torrent_get` | new arg `current_dir`
 | `torrent_get` | new arg `is_folder`
+| `torrent_get` | new arg `metadata_have`
+| `torrent_get` | new arg `metadata_size`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
 | `torrent_get` | new arg `peers.active_reqs_to_peer`
 | `torrent_get` | new arg `peers.supports_holepunch`

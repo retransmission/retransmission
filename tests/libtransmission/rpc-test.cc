@@ -806,6 +806,32 @@ TEST_F(RpcTest, torrentGetCheckedBytesIsZeroWhenNotVerifying)
     tr_torrentRemove(tor, false);
 }
 
+TEST_F(RpcTest, torrentGetMetadataCounts)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_metadata_have, TR_KEY_metadata_size });
+    auto const expected = static_cast<int64_t>(tor->info_dict_size());
+    EXPECT_GT(expected, 0);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_metadata_have), expected);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_metadata_size), expected);
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentGetMetadataCountsAreZeroForNewMagnet)
+{
+    auto* const tor = zeroTorrentMagnetInit();
+    ASSERT_NE(nullptr, tor);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_metadata_have, TR_KEY_metadata_size });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_metadata_have), 0);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_metadata_size), 0);
+
+    tr_torrentRemove(tor, false);
+}
+
 TEST_F(RpcTest, torrentGetCurrentDir)
 {
     tr_sessionSetIncompleteDirEnabled(session_, true);
