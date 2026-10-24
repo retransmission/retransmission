@@ -1450,8 +1450,8 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
     }
 
     /* get peer's maximum request queue size */
-    if (auto reqq = map->value_if<size_t>(TR_KEY_reqq); reqq && reqq != 0U) {
-        peer_reqq_ = std::move(reqq);
+    if (auto const reqq = map->value_if<size_t>(TR_KEY_reqq); reqq && reqq != 0U) {
+        peer_reqq_ = reqq;
     }
 }
 
