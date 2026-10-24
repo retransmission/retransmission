@@ -235,6 +235,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "hash_string"sv, // rpc
     "haveUnchecked"sv, // rpc
     "haveValid"sv, // rpc
+    "have_total"sv, // rpc
     "have_unchecked"sv, // rpc
     "have_valid"sv, // rpc
     "honorsSessionLimits"sv, // rpc

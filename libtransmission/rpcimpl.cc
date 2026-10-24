@@ -587,7 +587,7 @@ namespace make_torrent_field_helpers
     auto peers_vec = tr_variant::Vector{};
     peers_vec.reserve(std::size(peers));
     for (auto const& peer : peers) {
-        auto peer_map = tr_variant::Map{ 22U };
+        auto peer_map = tr_variant::Map{ 23U };
         peer_map.try_emplace(TR_KEY_active_reqs_to_client, peer.active_reqs_to_client);
         peer_map.try_emplace(TR_KEY_active_reqs_to_peer, peer.active_reqs_to_peer);
         peer_map.try_emplace(TR_KEY_address, peer.addr);
@@ -596,6 +596,7 @@ namespace make_torrent_field_helpers
         peer_map.try_emplace(TR_KEY_client_name, peer.user_agent);
         peer_map.try_emplace(TR_KEY_peer_id, tr_base64_encode(std::string_view{ peer.peer_id.data(), peer.peer_id.size() }));
         peer_map.try_emplace(TR_KEY_flag_str, peer.flag_str);
+        peer_map.try_emplace(TR_KEY_have_total, peer.have_total);
         peer_map.try_emplace(TR_KEY_is_downloading_from, peer.is_downloading_from);
         peer_map.try_emplace(TR_KEY_is_encrypted, peer.is_encrypted);
         peer_map.try_emplace(TR_KEY_is_incoming, peer.is_incoming);

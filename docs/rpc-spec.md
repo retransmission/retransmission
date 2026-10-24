@@ -359,6 +359,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 | `client_is_interested`  | boolean    | tr_peer_stat
 | `client_name`           | string     | tr_peer_stat
 | `flag_str`              | string     | tr_peer_stat
+| `have_total`            | number     | tr_peer_stat
 | `is_downloading_from`   | boolean    | tr_peer_stat
 | `is_encrypted`          | boolean    | tr_peer_stat
 | `is_incoming`           | boolean    | tr_peer_stat
@@ -1153,6 +1154,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `metadata_size`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
 | `torrent_get` | new arg `peers.active_reqs_to_peer`
+| `torrent_get` | new arg `peers.have_total`
 | `torrent_get` | new arg `peers.supports_holepunch`
 | `torrent_get` | new arg `peers_from.from_holepunch`
 | `torrent_get` | new arg `webseeds_ex`

@@ -247,6 +247,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_hash_string,
     TR_KEY_have_unchecked_camel_APICOMPAT,
     TR_KEY_have_valid_camel_APICOMPAT,
+    TR_KEY_have_total,
     TR_KEY_have_unchecked,
     TR_KEY_have_valid,
     TR_KEY_honors_session_limits_camel_APICOMPAT,
