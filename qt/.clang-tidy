@@ -51,6 +51,7 @@ Checks:
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                   value: true       }
+  - { key: readability-else-after-return.WarnOnConditionVariables,                  value: false      }
   - { key: readability-identifier-naming.ClassCase,                         value: CamelCase  }
   # https://stackoverflow.com/a/49892587/11390656:
   # Qt slot names with underscore has a special meaning, so we don't use lower_case for class method names

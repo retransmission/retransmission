@@ -44,4 +44,5 @@ CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros, value: true }
   - { key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: true }
   - { key: modernize-pass-by-value.ValuesOnly, value: true }
+  - { key: readability-else-after-return.WarnOnConditionVariables, value: false }
   - { key: readability-implicit-bool-conversion.UseUpperCaseLiteralSuffix, value: true }
