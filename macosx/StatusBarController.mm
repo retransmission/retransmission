@@ -27,11 +27,11 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
 @interface StatusBarController ()
 
-@property(nonatomic) IBOutlet NSButton* fStatusButton;
-@property(nonatomic) IBOutlet NSTextField* fTotalDLField;
-@property(nonatomic) IBOutlet NSTextField* fTotalULField;
-@property(nonatomic) IBOutlet NSImageView* fTotalDLImageView;
-@property(nonatomic) IBOutlet NSImageView* fTotalULImageView;
+@property(nonatomic) NSPopUpButton* fStatusButton;
+@property(nonatomic) NSTextField* fTotalDLField;
+@property(nonatomic) NSTextField* fTotalULField;
+@property(nonatomic) NSImageView* fTotalDLImageView;
+@property(nonatomic) NSImageView* fTotalULImageView;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
 - (instancetype)initWithLib:(tr_session*)lib
 {
-    if ((self = [super initWithNibName:@"StatusBar" bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         _fLib = lib;
 
         _fPreviousDownloadRate = -1.0;
@@ -54,15 +54,107 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
-    //localize menu items
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalRatio].title = NSLocalizedString(@"Total Ratio", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionRatio].title = NSLocalizedString(@"Session Ratio", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalTransfer].title = NSLocalizedString(@"Total Transfer", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionTransfer].title = NSLocalizedString(@"Session Transfer", "Status Bar -> status menu");
+    NSView* statusBarView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 500, 24)];
+    statusBarView.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
+    self.view = statusBarView;
 
+    [self createSubviews];
+
+    [self.fStatusButton setContentCompressionResistancePriority:250 forOrientation:NSLayoutConstraintOrientationHorizontal];
+
+    NSStackView* stackView = [[NSStackView alloc] init];
+    [stackView addView:self.fStatusButton inGravity:NSStackViewGravityLeading];
+    [stackView addView:self.fTotalDLImageView inGravity:NSStackViewGravityTrailing];
+    [stackView addView:self.fTotalDLField inGravity:NSStackViewGravityTrailing];
+    [stackView addView:self.fTotalULImageView inGravity:NSStackViewGravityTrailing];
+    [stackView addView:self.fTotalULField inGravity:NSStackViewGravityTrailing];
+
+    stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    stackView.alignment = NSLayoutAttributeCenterY;
+    stackView.spacing = 5.0;
+    [stackView setHuggingPriority:NSLayoutPriorityDefaultLow - 1 forOrientation:NSLayoutConstraintOrientationHorizontal];
+
+    [stackView setCustomSpacing:20.0 afterView:self.fTotalDLField];
+
+    stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    [statusBarView addSubview:stackView];
+
+    NSBox* separator = [[NSBox alloc] init];
+    separator.boxType = NSBoxSeparator;
+    separator.translatesAutoresizingMaskIntoConstraints = NO;
+    [statusBarView addSubview:separator];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [stackView.leadingAnchor constraintEqualToAnchor:statusBarView.leadingAnchor constant:5],
+        [stackView.trailingAnchor constraintEqualToAnchor:statusBarView.trailingAnchor constant:-20],
+        [stackView.topAnchor constraintEqualToAnchor:statusBarView.topAnchor],
+        [stackView.bottomAnchor constraintEqualToAnchor:statusBarView.bottomAnchor],
+
+        [separator.topAnchor constraintEqualToAnchor:statusBarView.topAnchor],
+        [separator.leadingAnchor constraintEqualToAnchor:statusBarView.leadingAnchor],
+        [separator.trailingAnchor constraintEqualToAnchor:statusBarView.trailingAnchor],
+        [separator.heightAnchor constraintEqualToConstant:1.0]
+    ]];
+}
+
+- (void)createSubviews
+{
+    NSPopUpButton* button = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:YES];
+    button.showsBorderOnlyWhileMouseInside = YES;
+    button.controlSize = NSControlSizeSmall;
+    button.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    [button.cell setArrowPosition:NSPopUpNoArrow];
+    button.lineBreakMode = NSLineBreakByTruncatingTail;
+
+    NSMenu* menu = [[NSMenu alloc] init];
+
+    NSMenuItem* hiddenItem = [[NSMenuItem alloc] initWithTitle:@"status menu" action:nil keyEquivalent:@""];
+    hiddenItem.image = [NSImage imageNamed:@"YingYangTemplate"];
+    hiddenItem.hidden = YES;
+    hiddenItem.tag = -1;
+    [menu addItem:hiddenItem];
+
+    void (^addStatusItem)(NSString*, StatusTag) = ^void(NSString* const title, StatusTag const tag) {
+        NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:title action:@selector(setStatusLabel:) keyEquivalent:@""];
+        item.target = self;
+        item.tag = tag;
+        [menu addItem:item];
+    };
+
+    addStatusItem(NSLocalizedString(@"Total Ratio", "Status Bar -> status menu"), StatusTagTotalRatio);
+    addStatusItem(NSLocalizedString(@"Session Ratio", "Status Bar -> status menu"), StatusTagSessionRatio);
+    addStatusItem(NSLocalizedString(@"Total Transfer", "Status Bar -> status menu"), StatusTagTotalTransfer);
+    addStatusItem(NSLocalizedString(@"Session Transfer", "Status Bar -> status menu"), StatusTagSessionTransfer);
+
+    button.menu = menu;
+    self.fStatusButton = button;
+
+    NSTextField* (^createTextField)(void) = ^NSTextField* {
+        auto result = [NSTextField labelWithString:@"999.9 KB/s"];
+        result.controlSize = NSControlSizeSmall;
+        result.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+        return result;
+    };
+
+    self.fTotalDLImageView = [NSImageView imageViewWithImage:[NSImage imageNamed:@"DownArrowTemplate"]];
+
+    self.fTotalDLField = createTextField();
+
+    self.fTotalULImageView = [NSImageView imageViewWithImage:[NSImage imageNamed:@"UpArrowTemplate"]];
+
+    self.fTotalULField = createTextField();
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self setupUIConfiguration];
+}
+
+- (void)setupUIConfiguration
+{
     self.fStatusButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fTotalDLField.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fTotalULField.cell.backgroundStyle = NSBackgroundStyleRaised;
@@ -71,7 +163,6 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
     [self updateSpeedFieldsToolTips];
 
-    //update when speed limits are changed
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateSpeedFieldsToolTips) name:@"SpeedLimitUpdate"
                                              object:nil];
 }
