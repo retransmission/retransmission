@@ -643,4 +643,13 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     tr_sessionClose(session, 1);
 }
 
+TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)
+{
+    auto const stats = tr_sessionGetStats(session_);
+    EXPECT_EQ(0U, stats.uploadedBytes);
+    EXPECT_EQ(0U, stats.downloadedBytes);
+    EXPECT_TRUE(stats.ratio.is_none());
+    EXPECT_EQ(-1.0, stats.ratio_deprecated); // TR_RATIO_NA
+}
+
 } // namespace tr::test
