@@ -5,6 +5,7 @@
 
 #include "TorrentDelegate.h"
 
+#include <optional>
 #include <utility>
 
 #include <QtCore/QModelIndex>
@@ -172,7 +173,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
         //: {percent_done} is the percentage of torrent metadata downloaded
         str = TR_FORMAT(
             "Magnetized torrent - retrieving metadata ({percent_done}%)",
-            fmt::arg("percent_done", Formatter::percentToString(tor.metadataPercentDone() * 100.0)));
+            fmt::arg("percent_done", tor.metadataPercentDone().to_string()));
     } else if (!is_done) // downloading
     {
         //: First part of torrent progress string,
@@ -183,7 +184,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
             "{current_size} of {complete_size} ({percent_done}%)",
             fmt::arg("current_size", Formatter::storageToString(have_total)),
             fmt::arg("complete_size", Formatter::storageToString(tor.sizeWhenDone())),
-            fmt::arg("percent_done", Formatter::percentToString(tor.percentDone() * 100.0)));
+            fmt::arg("percent_done", tor.percentDone().to_string()));
     } else if (!is_seed) // partial seed
     {
         if (seed_ratio_limit) {
@@ -198,10 +199,10 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})",
                 fmt::arg("current_size", Formatter::storageToString(have_total)),
                 fmt::arg("complete_size", Formatter::storageToString(tor.totalSize())),
-                fmt::arg("percent_complete", Formatter::percentToString(tor.percentComplete() * 100.0)),
+                fmt::arg("percent_complete", tor.percentComplete().to_string()),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
-                fmt::arg("ratio", Formatter::ratioToString(tor.ratio())),
-                fmt::arg("seed_ratio", Formatter::ratioToString(*seed_ratio_limit)));
+                fmt::arg("ratio", tor.ratio().to_string()),
+                fmt::arg("seed_ratio", tr::Values::Ratio::from_double(*seed_ratio_limit).to_string()));
         } else {
             //: First part of torrent progress string,
             //: {current_size} is how much we've got,
@@ -213,9 +214,9 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})",
                 fmt::arg("current_size", Formatter::storageToString(have_total)),
                 fmt::arg("complete_size", Formatter::storageToString(tor.totalSize())),
-                fmt::arg("percent_complete", Formatter::percentToString(tor.percentComplete() * 100.0)),
+                fmt::arg("percent_complete", tor.percentComplete().to_string()),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
-                fmt::arg("ratio", Formatter::ratioToString(tor.ratio())));
+                fmt::arg("ratio", tor.ratio().to_string()));
         }
     } else // seeding
     {
@@ -229,8 +230,8 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})",
                 fmt::arg("complete_size", Formatter::storageToString(have_total)),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
-                fmt::arg("ratio", Formatter::ratioToString(tor.ratio())),
-                fmt::arg("seed_ratio", Formatter::ratioToString(*seed_ratio_limit)));
+                fmt::arg("ratio", tor.ratio().to_string()),
+                fmt::arg("seed_ratio", tr::Values::Ratio::from_double(*seed_ratio_limit).to_string()));
         } else // seeding w/o a ratio
         {
             //: First part of torrent progress string,
@@ -241,7 +242,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                 "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})",
                 fmt::arg("complete_size", Formatter::storageToString(have_total)),
                 fmt::arg("uploaded_size", Formatter::storageToString(tor.uploadedEver())),
-                fmt::arg("ratio", Formatter::ratioToString(tor.ratio())));
+                fmt::arg("ratio", tor.ratio().to_string()));
         }
     }
 
@@ -285,13 +286,13 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
     case TR_STATUS_CHECK:
         str = TR_FORMAT(
             "Verifying local data ({percent_done}% tested)",
-            fmt::arg("percent_done", Formatter::percentToString(tor.getVerifyProgress() * 100.0)));
+            fmt::arg("percent_done", tor.getVerifyProgress().to_string()));
         break;
 
     case TR_STATUS_DOWNLOAD:
     case TR_STATUS_SEED:
         str = shortTransferString(tor) + QStringLiteral("    ") +
-            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(tor.ratio())));
+            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", tor.ratio().to_string()));
         break;
 
     default:
@@ -339,7 +340,7 @@ QString TorrentDelegate::statusString(Torrent const& tor)
                     "Downloading metadata from {active_count:L} peer(s) ({percent_done}% done)",
                     tor.peersWeAreDownloadingFrom(),
                     fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
-                    fmt::arg("percent_done", Formatter::percentToString(100.0 * tor.metadataPercentDone())));
+                    fmt::arg("percent_done", tor.metadataPercentDone().to_string()));
             } else {
                 // One string would translate better, but tr() picks a plural form by one count only.
                 if (tor.connectedPeersAndWebseeds() == 0) {
@@ -440,19 +441,18 @@ void TorrentDelegate::paint(QPainter* painter, QStyleOptionViewItem const& optio
 
 void TorrentDelegate::setProgressBarPercentDone(QStyleOptionViewItem const& option, Torrent const& tor) const
 {
-    auto const seed_ratio_limit = tor.getSeedRatioLimit();
+    auto const seed_ratio_percent_done = tor.isSeeding() ? tor.seedRatioPercentDone() : std::nullopt;
 
-    if (tor.isSeeding() && seed_ratio_limit) {
-        auto const seed_rate_ratio = tor.ratio() / *seed_ratio_limit;
+    if (seed_ratio_percent_done) {
         auto const scaled_progress = static_cast<int>(
-            seed_rate_ratio * (progress_bar_style_.maximum - progress_bar_style_.minimum));
+            seed_ratio_percent_done->to_fraction() * (progress_bar_style_.maximum - progress_bar_style_.minimum));
         progress_bar_style_.progress = progress_bar_style_.minimum + scaled_progress;
     } else {
         bool const is_magnet(!tor.hasMetadata());
         progress_bar_style_.direction = option.direction;
         progress_bar_style_.progress = static_cast<int>(
             progress_bar_style_.minimum +
-            ((is_magnet ? tor.metadataPercentDone() : tor.percentDone()) *
+            ((is_magnet ? tor.metadataPercentDone() : tor.percentDone()).to_fraction() *
              (progress_bar_style_.maximum - progress_bar_style_.minimum)));
     }
 }

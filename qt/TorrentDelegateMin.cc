@@ -21,10 +21,9 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleOptionProgressBar>
 
-#include <libtransmission/utils.h>
-
 #include "StyleHelper.h"
 #include "Torrent.h"
+#include "TrFormat.h"
 #include "Utils.h"
 
 /***
@@ -249,7 +248,7 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     }
 
     progress_bar_style_.state = progress_bar_state;
-    progress_bar_style_.text = QStringLiteral("%1%").arg(static_cast<int>(tr_truncd(100.0 * tor.percentDone(), 0)));
+    progress_bar_style_.text = TR_FORMAT("{percent}%", fmt::arg("percent", tor.percentDone().to_whole_string()));
     progress_bar_style_.textVisible = true;
     progress_bar_style_.textAlignment = Qt::AlignCenter;
     setProgressBarPercentDone(option, tor);
