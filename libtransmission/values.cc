@@ -25,6 +25,7 @@ namespace tr::Values
 Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "MiB"sv, "GiB"sv, "TiB"sv };
 Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
 Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
+Config::RatioStrings Config::ratio{ .none = "None", .infinity = "\xE2\x88\x9E" };
 
 std::array<std::string, Config::UnitsBase::UnitCount> Config::UnitsBase::display_names() const
 {
@@ -115,6 +116,46 @@ std::string Percent::to_whole_string() const
 
     // incomplete never reads as 100
     return std::to_string(std::min((hundredths + 50U) / 100U, uint64_t{ 99U }));
+}
+
+Ratio Ratio::from_double(double const ratio) noexcept
+{
+    if (ratio < -1.5) { // TR_RATIO_INF (-2), not TR_RATIO_NA (-1)
+        return Ratio{ 1U, 0U };
+    }
+
+    if (!(ratio >= 0.0)) { // also NaN
+        return {};
+    }
+
+    // past what llround() can return, the ratio reads as its saturated maximum anyway
+    static auto constexpr Max = 9.0e18;
+    auto const scaled = ratio * static_cast<double>(Granularity);
+    return Ratio{ scaled < Max ? static_cast<uint64_t>(std::llround(scaled)) : UINT64_MAX, Granularity };
+}
+
+std::string Ratio::to_string() const
+{
+    if (is_none()) {
+        return Config::ratio.none;
+    }
+
+    if (is_infinite()) {
+        return Config::ratio.infinity;
+    }
+
+    auto const hundredths = this->hundredths();
+
+    if (hundredths < 500U) {
+        return fmt::format("{:.2Lf}", static_cast<double>(hundredths) / 100.0);
+    }
+
+    // `hundredths` may be saturated at UINT64_MAX; scaled_quotient() rounds without overflowing
+    if (auto const tenths = detail::scaled_quotient(hundredths, 10U, 1U); tenths < 1000U) {
+        return fmt::format("{:.1Lf}", static_cast<double>(tenths) / 10.0);
+    }
+
+    return fmt::format("{:L}", detail::scaled_quotient(hundredths, 100U, 1U));
 }
 
 } // namespace tr::Values

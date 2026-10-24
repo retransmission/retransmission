@@ -7,7 +7,9 @@
 #include <limits>
 #include <locale>
 #include <optional>
+#include <string>
 
+#include <libtransmission/types.h> // TR_RATIO_NA, TR_RATIO_INF
 #include <libtransmission/utils.h> // tr_locale_set_global()
 #include <libtransmission/values.h>
 
@@ -198,4 +200,79 @@ TEST_F(ValuesLocaleTest, percentUsesTheGlobalLocale)
     EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string());
     EXPECT_EQ("99,9", (Percent{ 999U, 1000U }).to_string());
     EXPECT_EQ("50", (Percent{ 1U, 2U }).to_whole_string());
+}
+
+TEST_F(ValuesTest, ratioStates)
+{
+    EXPECT_TRUE(Ratio{}.is_none());
+    EXPECT_TRUE((Ratio{ 0U, 0U }).is_none());
+    EXPECT_TRUE((Ratio{ 5U, 0U }).is_infinite());
+    EXPECT_FALSE((Ratio{ 5U, 1U }).is_none());
+    EXPECT_FALSE((Ratio{ 5U, 1U }).is_infinite());
+
+    EXPECT_EQ(std::nullopt, Ratio{}.to_double());
+    EXPECT_EQ(std::nullopt, (Ratio{ 5U, 0U }).to_double());
+    EXPECT_EQ(std::nullopt, (Ratio{ 5U, 0U }).quotient());
+    EXPECT_EQ(5.0, (Ratio{ 5U, 1U }).to_double());
+    EXPECT_EQ(5U, (Ratio{ 5U, 1U }).numerator());
+    EXPECT_EQ(1U, (Ratio{ 5U, 1U }).denominator());
+}
+
+TEST_F(ValuesTest, ratioFromDouble)
+{
+    EXPECT_TRUE(Ratio::from_double(TR_RATIO_NA).is_none());
+    EXPECT_TRUE(Ratio::from_double(TR_RATIO_INF).is_infinite());
+    EXPECT_TRUE(Ratio::from_double(std::numeric_limits<double>::quiet_NaN()).is_none());
+    EXPECT_EQ(2.0, Ratio::from_double(2.0).to_double());
+    EXPECT_EQ(Ratio::from_double(0.5), (Ratio{ 1U, 2U }));
+    EXPECT_EQ("2.00", Ratio::from_double(2.0).to_string());
+    EXPECT_EQ("30000000", Ratio::from_double(3.0e7).to_string()); // in hundredths, past a 32-bit long
+}
+
+TEST_F(ValuesTest, ratioToStringTiers)
+{
+    EXPECT_EQ("0.00", (Ratio{ 0U, 1U }).to_string());
+    EXPECT_EQ("0.50", (Ratio{ 1U, 2U }).to_string());
+    EXPECT_EQ("4.99", (Ratio{ 499U, 100U }).to_string());
+    EXPECT_EQ("5.0", (Ratio{ 4996U, 1000U }).to_string()); // 4.996 rounds into the next tier
+    EXPECT_EQ("7.5", (Ratio{ 75U, 10U }).to_string());
+    EXPECT_EQ("100", (Ratio{ 9995U, 100U }).to_string()); // 99.95 rounds into the next tier
+    EXPECT_EQ("123", (Ratio{ 1234U, 10U }).to_string());
+
+    EXPECT_EQ("None", Ratio{}.to_string());
+    EXPECT_EQ("\xE2\x88\x9E", (Ratio{ 1U, 0U }).to_string());
+}
+
+TEST_F(ValuesTest, ratioStringsComeFromConfig)
+{
+    auto const saved = Config::ratio;
+    Config::ratio = { .none = "n/a", .infinity = "inf" };
+    EXPECT_EQ("n/a", Ratio{}.to_string());
+    EXPECT_EQ("inf", (Ratio{ 1U, 0U }).to_string());
+    Config::ratio = saved;
+}
+
+TEST_F(ValuesTest, ratioComparesAtDisplayGranularity)
+{
+    EXPECT_EQ((Ratio{ 1004U, 1000U }), (Ratio{ 1U, 1U })); // 1.004 reads as 1.00
+    EXPECT_NE((Ratio{ 101U, 100U }), (Ratio{ 1U, 1U }));
+    EXPECT_EQ(Ratio{}, (Ratio{ 0U, 0U }));
+    EXPECT_NE(Ratio{}, (Ratio{ 1U, 0U }));
+    EXPECT_NE((Ratio{ 1U, 0U }), (Ratio{ 1U, 1U }));
+
+    // the largest counts don't overflow, nor does the remainder's rounding term
+    static auto constexpr Max = std::numeric_limits<uint64_t>::max();
+    EXPECT_EQ((Ratio{ Max, Max }), (Ratio{ 1U, 1U }));
+    EXPECT_EQ("1.00", (Ratio{ Max, Max }).to_string());
+    EXPECT_EQ((Ratio{ (Max / 100U) - 1U, Max / 100U }), (Ratio{ 1U, 1U }));
+
+    // a quotient past UINT64_MAX hundredths saturates and still reads as a number
+    EXPECT_FALSE((Ratio{ Max, 1U }).is_infinite());
+    EXPECT_EQ(std::to_string(Max / 100U), (Ratio{ Max, 1U }).to_string());
+}
+
+TEST_F(ValuesLocaleTest, ratioUsesTheGlobalLocale)
+{
+    EXPECT_EQ("0,50", (Ratio{ 1U, 2U }).to_string());
+    EXPECT_EQ("7,5", (Ratio{ 75U, 10U }).to_string());
 }

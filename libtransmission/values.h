@@ -9,6 +9,7 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <cstdint> // for uint64_t
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -88,6 +89,15 @@ struct Config {
     static Units<MemoryUnits> memory;
     static Units<SpeedUnits> speed;
     static Units<StorageUnits> storage;
+
+    // How `Ratio` shows its two non-numeric states.
+    // Apps set these with the unit names, after loading translations.
+    struct RatioStrings {
+        std::string none;
+        std::string infinity;
+    };
+
+    static RatioStrings ratio;
 };
 
 namespace detail
@@ -298,6 +308,97 @@ private:
     uint64_t have_ = 0U;
     uint64_t total_ = 0U;
     bool complete_ = false;
+};
+
+// An upload ratio, `uploaded / downloaded`, or one of the two states a zero
+// denominator leaves: no data at all, or uploads against nothing downloaded.
+// Quantized to 0.01, the finest step any display shows.
+class Ratio
+{
+public:
+    // none
+    constexpr Ratio() noexcept = default;
+
+    constexpr Ratio(uint64_t const numerator, uint64_t const denominator) noexcept
+        : numerator_{ numerator }
+        , denominator_{ denominator }
+    {
+    }
+
+    // For a ratio that exists only as a number, e.g. the seed ratio limit pref,
+    // or a `tr_stat::upload_ratio` carrying TR_RATIO_NA (-1) or TR_RATIO_INF (-2).
+    [[nodiscard]] static Ratio from_double(double ratio) noexcept;
+
+    [[nodiscard]] constexpr bool is_none() const noexcept
+    {
+        return state() == State::None;
+    }
+
+    [[nodiscard]] constexpr bool is_infinite() const noexcept
+    {
+        return state() == State::Infinite;
+    }
+
+    [[nodiscard]] constexpr auto numerator() const noexcept
+    {
+        return numerator_;
+    }
+
+    [[nodiscard]] constexpr auto denominator() const noexcept
+    {
+        return denominator_;
+    }
+
+    // The ratio when it is a number, quantized; nullopt for the two states.
+    [[nodiscard]] constexpr std::optional<double> to_double() const noexcept
+    {
+        if (state() != State::Finite) {
+            return {};
+        }
+
+        return static_cast<double>(hundredths()) / static_cast<double>(Granularity);
+    }
+
+    // `numerator / denominator` as is, e.g. for the RPC; nullopt for the two states.
+    [[nodiscard]] constexpr std::optional<double> quotient() const noexcept
+    {
+        if (state() != State::Finite) {
+            return {};
+        }
+
+        return static_cast<double>(numerator_) / static_cast<double>(denominator_);
+    }
+
+    // `Config::ratio.none`, `Config::ratio.infinity`, or digits with Percent::to_string()'s tiers.
+    [[nodiscard]] std::string to_string() const;
+
+    // No ordering: where the two states sort is a view's decision.
+    [[nodiscard]] constexpr bool operator==(Ratio const& that) const noexcept
+    {
+        return state() == that.state() && (state() != State::Finite || hundredths() == that.hundredths());
+    }
+
+private:
+    enum class State : uint8_t { Finite, None, Infinite };
+
+    static constexpr auto Granularity = uint64_t{ 100U };
+
+    [[nodiscard]] constexpr State state() const noexcept
+    {
+        if (denominator_ != 0U) {
+            return State::Finite;
+        }
+
+        return numerator_ != 0U ? State::Infinite : State::None;
+    }
+
+    [[nodiscard]] constexpr uint64_t hundredths() const noexcept
+    {
+        return detail::scaled_quotient(numerator_, denominator_, Granularity);
+    }
+
+    uint64_t numerator_ = 0U;
+    uint64_t denominator_ = 0U;
 };
 
 } // namespace tr::Values
