@@ -67,24 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Átvitel beragadt ha inaktív ennyi ideig:";
 
-/* Class = "NSButtonCell"; title = "Automatically map port"; ObjectID = "1247"; */
-"1247.title" = "Port átirányítása automatikusan";
-
-/* Class = "NSTextFieldCell"; title = "NAT traversal uses either NAT-PMP or UPnP"; ObjectID = "1248"; */
-"1248.title" = "A NAT átjárás NAT-PMP-t vagy UPnP-t használ";
-
-/* Class = "NSTextFieldCell"; title = "Port is open"; ObjectID = "1250"; */
-"1250.title" = "A port nyitva van";
-
-/* Class = "NSTextFieldCell"; title = "Peer communication:"; ObjectID = "1253"; */
-"1253.title" = "Partner kommunikáció:";
-
-/* Class = "NSButtonCell"; title = "Prevent computer from sleeping with active transfers"; ObjectID = "1254"; */
-"1254.title" = "Számítógép altatásának megakadályozása aktív átvitelek esetén";
-
-/* Class = "NSTextFieldCell"; title = "System sleep:"; ObjectID = "1255"; */
-"1255.title" = "Rendszer alvás:";
-
 /* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
 "1265.title" = "Feltöltési sebesség:";
 
@@ -256,12 +238,6 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Az átvitelek az első, feltételeknek megfelelő csoportba fognak kerülni";
 
-/* Class = "NSButtonCell"; title = "Randomize port on launch"; ObjectID = "1890"; */
-"1890.title" = "Véletlenszerű port választása indításkor";
-
-/* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
-"1892.title" = "Véletlenszerű";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Minden nap";
 
@@ -321,12 +297,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "2053"; */
 "2053.title" = "Egyéb...";
-
-/* Class = "NSButtonCell"; title = "Enable Micro Transport Protocol (µTP)"; ObjectID = "2078"; */
-"2078.title" = "µTP protokoll engedélyezése";
-
-/* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
-"2082.title" = "Átvitelhez használt port:";
 
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Távolítsa el az átviteli listából ha a seedelés befejeződött";

@@ -1,0 +1,9 @@
+"Automatically map port" = "Αυτόματη απεικόνιση θύρας:";
+"NAT traversal uses either NAT-PMP or UPnP" = "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP";
+"Peer communication:" = "Επικοινωνία διαμοιραστών:";
+"Prevent computer from sleeping with active torrents" = "Αποτροπή αδρανοποίησης υπολογιστή με ενεργές μεταφορές";
+"System sleep:" = "Αδρανοποίηση συστήματος:";
+"Pick a random port at startup" = "Χρήση τυχαίας θύρας κατά την εκκίνηση";
+"Randomize" = "Τυχαιοποίηση";
+"Enable µTP for peer connections" = "Ενεργοποίηση Micro Transport Protocol (µTP)";
+"Port for incoming connections:" = "Θύρα παρακολούθησης διαμοιραστών:";

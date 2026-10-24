@@ -67,24 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Un transfert est considéré sans réponse si inactif depuis :";
 
-/* Class = "NSButtonCell"; title = "Automatically map port"; ObjectID = "1247"; */
-"1247.title" = "Mapper le port automatiquement";
-
-/* Class = "NSTextFieldCell"; title = "NAT traversal uses either NAT-PMP or UPnP"; ObjectID = "1248"; */
-"1248.title" = "La traversée NAT utilise soit NAT-PMP soit UPnP";
-
-/* Class = "NSTextFieldCell"; title = "Port is open"; ObjectID = "1250"; */
-"1250.title" = "Le port est ouvert…";
-
-/* Class = "NSTextFieldCell"; title = "Peer communication:"; ObjectID = "1253"; */
-"1253.title" = "Connexions avec les pairs :";
-
-/* Class = "NSButtonCell"; title = "Prevent computer from sleeping with active transfers"; ObjectID = "1254"; */
-"1254.title" = "Empêcher la veille si des transferts sont actifs";
-
-/* Class = "NSTextFieldCell"; title = "System sleep:"; ObjectID = "1255"; */
-"1255.title" = "Mise en veille de l’ordinateur :";
-
 /* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
 "1265.title" = "Débit de téléversement :";
 
@@ -256,12 +238,6 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Les transferts seront attribués au premier groupe qui satisfera tous les critères";
 
-/* Class = "NSButtonCell"; title = "Randomize port on launch"; ObjectID = "1890"; */
-"1890.title" = "Port aléatoire au démarrage";
-
-/* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
-"1892.title" = "Attribution aléatoire";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Tous les jours";
 
@@ -321,12 +297,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "2053"; */
 "2053.title" = "Autre…";
-
-/* Class = "NSButtonCell"; title = "Enable Micro Transport Protocol (µTP)"; ObjectID = "2078"; */
-"2078.title" = "Activer le protocole de micro-transport (µTP)";
-
-/* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
-"2082.title" = "Port d’écoute des pairs :";
 
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Supprimer de la liste des transferts après propagation";

@@ -148,6 +148,10 @@ target_sources(${TR_NAME}-mac
         PrefsController.mm
         PrefsGeneralTabViewController.h
         PrefsGeneralTabViewController.mm
+        PrefsNetworkTabViewController.h
+        PrefsNetworkTabViewController.mm
+        PrefsUI.h
+        PrefsUI.mm
         PrefsWindow.h
         PrefsWindow.mm
         PriorityPopUpButtonCell.h
@@ -357,7 +361,8 @@ set(LANG_STRINGS_FILES
     GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings
-    PreferencesGeneralTab.strings)
+    PreferencesGeneralTab.strings
+    PreferencesNetworkTab.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)

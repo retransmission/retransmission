@@ -1,0 +1,9 @@
+"Automatically map port" = "Port átirányítása automatikusan";
+"NAT traversal uses either NAT-PMP or UPnP" = "A NAT átjárás NAT-PMP-t vagy UPnP-t használ";
+"Peer communication:" = "Partner kommunikáció:";
+"Prevent computer from sleeping with active torrents" = "Számítógép altatásának megakadályozása aktív átvitelek esetén";
+"System sleep:" = "Rendszer alvás:";
+"Pick a random port at startup" = "Véletlenszerű port választása indításkor";
+"Randomize" = "Véletlenszerű";
+"Enable µTP for peer connections" = "µTP protokoll engedélyezése";
+"Port for incoming connections:" = "Átvitelhez használt port:";

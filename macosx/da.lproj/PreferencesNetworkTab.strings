@@ -1,0 +1,9 @@
+"Automatically map port" = "Tildel port automatisk";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT traversal benytter enten NAT-PMP eller UPnP";
+"Peer communication:" = "Kommunikation:";
+"Prevent computer from sleeping with active torrents" = "Forhindre computer i at gå i dvale når der hentes";
+"System sleep:" = "Vågeblus:";
+"Pick a random port at startup" = "Vælg tilfældig port ved start";
+"Randomize" = "Vælg tilfældig";
+"Enable µTP for peer connections" = "Aktiver Micro Transport Protocol (µTP)";
+"Port for incoming connections:" = "Peer listening port:";

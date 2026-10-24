@@ -1,0 +1,9 @@
+"Automatically map port" = "Lotu ataka automatikoki";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du";
+"Peer communication:" = "Kideen komunikazioa:";
+"Prevent computer from sleeping with active torrents" = "Saihestu ordenagailua lokartzea transferentzia aktiboak daudenean";
+"System sleep:" = "Sistemaren lokartzea:";
+"Pick a random port at startup" = "Ausaz aukeratu ataka abiaraztean";
+"Randomize" = "Ausaz aukeratu";
+"Enable µTP for peer connections" = "Gaitu Micro Transport Protokoloa (µTP)";
+"Port for incoming connections:" = "Kideak entzuteko ataka:";
