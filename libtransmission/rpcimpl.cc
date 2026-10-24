@@ -1103,15 +1103,28 @@ namespace make_torrent_field_helpers
 
 [[nodiscard]] std::pair<JsonRpc::Error::Code, std::string> set_sequential_download_from_piece(
     tr_torrent& tor,
-    tr_piece_index_t piece)
+    std::optional<tr_piece_index_t> const& piece)
 {
     using namespace JsonRpc;
 
-    if (piece >= tor.piece_count()) {
-        return { Error::PIECE_IDX_OOR, "piece to sequentially download from is outside pieces range"s };
+    if (!piece) {
+        return {
+            Error::INVALID_PARAMS,
+            fmt::format(
+                "'{:s}' must be a {:d}-bit unsigned integer",
+                tr_quark_get_string_view(TR_KEY_sequential_download_from_piece),
+                std::numeric_limits<tr_piece_index_t>::digits),
+        };
     }
 
-    tor.set_sequential_download_from_piece(piece);
+    if (*piece >= tor.piece_count()) {
+        return {
+            Error::PIECE_IDX_OOR,
+            fmt::format("{:s} is outside pieces range", tr_quark_get_string_view(TR_KEY_sequential_download_from_piece)),
+        };
+    }
+
+    tor.set_sequential_download_from_piece(*piece);
     return { Error::SUCCESS, std::string{} }; // no error
 }
 
@@ -1267,9 +1280,9 @@ namespace make_torrent_field_helpers
             tor->set_sequential_download(*val);
         }
 
-        if (auto const val = args_in.value_if<tr_piece_index_t>(TR_KEY_sequential_download_from_piece);
-            val && err == Error::SUCCESS) {
-            std::tie(err, errmsg) = set_sequential_download_from_piece(*tor, *val);
+        if (auto const iter = args_in.find(TR_KEY_sequential_download_from_piece);
+            iter != args_in.end() && err == Error::SUCCESS) {
+            std::tie(err, errmsg) = set_sequential_download_from_piece(*tor, iter->second.value_if<tr_piece_index_t>());
         }
 
         if (auto const val = args_in.value_if<bool>(TR_KEY_download_limited); val) {
