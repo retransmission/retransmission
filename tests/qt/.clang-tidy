@@ -1,5 +1,5 @@
 ---
-HeaderFilterRegex: .*/libtransmission/.*
+HeaderFilterRegex: .*/tests/qt/[^/]*$
 
 # TODO: Enable `cppcoreguidelines-pro-bounds-pointer-arithmetic` after converting all pointers to std::span
 # PRs welcome to fix & re-enable any of these explicitly-disabled checks
