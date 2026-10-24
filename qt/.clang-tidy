@@ -46,6 +46,7 @@ Checks:
   - -readability-implicit-bool-conversion
   - -readability-magic-numbers
   - -readability-redundant-access-specifiers # keep: 'private' vs 'private slots'
+  - -readability-redundant-parentheses # TODO: enable after https://github.com/llvm/llvm-project/pull/228666 is released
   - -readability-trailing-comma # Adds too much indentation to `std::array` definitions with 2 braces
   - -readability-use-concise-preprocessor-directives
 
