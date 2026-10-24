@@ -298,7 +298,7 @@ void bits_on_wheels_formatter(char* buf, size_t buflen, std::string_view name, t
 
 constexpr void blizzard_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    buf_append(buf, buflen, name, ' ', static_cast<int>(id[3] + 1), static_cast<int>(id[4]));
+    buf_append(buf, buflen, name, ' ', id[3] + 1, static_cast<int>(id[4]));
 }
 
 constexpr void btpd_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)

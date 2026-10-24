@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <limits>
 #include <type_traits>
+#include <utility>
 
 template<typename FlagType>
 class Flags
@@ -64,13 +65,13 @@ public:
 private:
     using ValueType = std::uint64_t;
 
-    static constexpr auto NFlags = static_cast<unsigned>(FlagType::N_FLAGS);
+    static constexpr auto NFlags = std::to_underlying(FlagType::N_FLAGS);
     static_assert(NFlags < std::numeric_limits<ValueType>::digits);
-    static constexpr auto AllBits = ValueType{ (ValueType{ 1U } << NFlags) - 1U };
+    static constexpr auto AllBits = ~ValueType{} >> (std::numeric_limits<ValueType>::digits - NFlags);
 
     [[nodiscard]] static constexpr ValueType bit(FlagType const flag) noexcept
     {
-        return ValueType{ 1U } << static_cast<unsigned>(flag);
+        return ValueType{ 1U } << std::to_underlying(flag);
     }
 
     ValueType value_ = {};
