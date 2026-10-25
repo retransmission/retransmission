@@ -120,7 +120,7 @@ std::string Percent::to_whole_string() const
 
 Ratio Ratio::from_double(double const ratio) noexcept
 {
-    if (ratio < -1.5) { // TR_RATIO_INF (-2), not TR_RATIO_NA (-1)
+    if (ratio < -1.5 || std::isinf(ratio)) { // TR_RATIO_INF (-2) or an actual infinity, not TR_RATIO_NA (-1)
         return Ratio{ 1U, 0U };
     }
 
@@ -128,10 +128,10 @@ Ratio Ratio::from_double(double const ratio) noexcept
         return {};
     }
 
-    // past what llround() can return, the ratio reads as its saturated maximum anyway
-    static auto constexpr Max = 9.0e18;
-    auto const scaled = ratio * static_cast<double>(Granularity);
-    return Ratio{ scaled < Max ? static_cast<uint64_t>(std::llround(scaled)) : UINT64_MAX, Granularity };
+    // from 2^64 hundredths up, saturate as `Ratio{ UINT64_MAX, 1U }` does
+    static auto constexpr Max = 0x1p64;
+    auto const scaled = std::round(ratio * static_cast<double>(Granularity));
+    return Ratio{ scaled < Max ? static_cast<uint64_t>(scaled) : UINT64_MAX, Granularity };
 }
 
 std::string Ratio::to_string() const
