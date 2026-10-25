@@ -41,6 +41,8 @@ target_sources(${TR_NAME}-mac
         AboutWindowController.mm
         AddMagnetWindowController.h
         AddMagnetWindowController.mm
+        AddTorrentViewModel.h
+        AddTorrentViewModel.mm
         AddWindowController.h
         AddWindowController.mm
         Badger.h
@@ -148,6 +150,10 @@ target_sources(${TR_NAME}-mac
         PrefsController.mm
         PrefsGeneralTabViewController.h
         PrefsGeneralTabViewController.mm
+        PrefsNetworkTabViewController.h
+        PrefsNetworkTabViewController.mm
+        PrefsUI.h
+        PrefsUI.mm
         PrefsWindow.h
         PrefsWindow.mm
         PriorityPopUpButtonCell.h
@@ -179,6 +185,8 @@ target_sources(${TR_NAME}-mac
         TorrentCellControlButton.mm
         TorrentCellRevealButton.h
         TorrentCellRevealButton.mm
+        TorrentContextMenuProvider.h
+        TorrentContextMenuProvider.mm
         TorrentGroup.h
         TorrentGroup.mm
         TorrentTableView.h
@@ -202,10 +210,8 @@ set(XIB_FILES
     FilterBar.xib
     InfoFileView.xib
     InfoPeersView.xib
-    InfoTrackersView.xib
     InfoWindow.xib
-    MessageWindow.xib
-    StatusBar.xib)
+    MessageWindow.xib)
 
 set(RESOURCES
     Defaults.plist
@@ -358,7 +364,9 @@ set(LANG_STRINGS_FILES
     GlobalOptionsPopover.strings
     InfoPlist.strings
     Localizable.strings
-    PreferencesGeneralTab.strings)
+    PreferencesGeneralTab.strings
+    PreferencesNetworkTab.strings
+    TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)

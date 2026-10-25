@@ -62,14 +62,14 @@ void gtr_run_on_ui_thread(std::function<void()> func);
 
 enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
 
-Glib::ustring gtr_get_unicode_string(GtrUnicode uni);
+[[nodiscard]] Glib::ustring gtr_get_unicode_string(GtrUnicode uni);
 
 /* return a human-readable string for the size given in bytes. */
-Glib::ustring tr_strlsize(guint64 size_in_bytes);
-Glib::ustring tr_strlsize(tr::Values::Storage const& storage);
+[[nodiscard]] Glib::ustring tr_strlsize(guint64 size_in_bytes);
+[[nodiscard]] Glib::ustring tr_strlsize(tr::Values::Storage const& storage);
 
 /* return a human-readable string for the given ratio. */
-Glib::ustring tr_strlratio(double ratio);
+[[nodiscard]] Glib::ustring tr_strlratio(double ratio);
 
 // The desktop's activation token for this launch, from wherever the toolkit left it.
 // The GTK client calls this rather than tr::interop::activation_token(). GTK4 moves
@@ -85,9 +85,9 @@ template<typename... Ts>
         { Glib::Variant<std::remove_cvref_t<Ts>>::create(std::forward<Ts>(args))... });
 }
 
-std::string tr_format_time_relative(time_t timestamp, time_t origin);
-std::string tr_format_time_left(time_t timestamp);
-std::string tr_format_time(time_t timestamp);
+[[nodiscard]] std::string tr_format_time_relative(time_t timestamp, time_t origin);
+[[nodiscard]] std::string tr_format_time_left(time_t timestamp);
+[[nodiscard]] std::string tr_format_time(time_t timestamp);
 
 /***
 ****
@@ -95,11 +95,11 @@ std::string tr_format_time(time_t timestamp);
 
 using TrObjectSignalNotifyCallback = void(Glib::RefPtr<Glib::ObjectBase const> const&);
 
-Glib::SignalProxy<TrObjectSignalNotifyCallback> gtr_object_signal_notify(Glib::ObjectBase& object);
+[[nodiscard]] Glib::SignalProxy<TrObjectSignalNotifyCallback> gtr_object_signal_notify(Glib::ObjectBase& object);
 void gtr_object_notify_emit(Glib::ObjectBase& object);
 
 template<typename T>
-inline GParamSpec* gtr_get_param_spec(char const* name, char const* nick, char const* blurb)
+[[nodiscard]] inline GParamSpec* gtr_get_param_spec(char const* name, char const* nick, char const* blurb)
 {
     auto dummy_value = Glib::Value<T>();
     dummy_value.init(decltype(dummy_value)::value_type());
@@ -120,7 +120,7 @@ void gtr_open_uri(std::string_view uri);
 /* backwards-compatible wrapper around gtk_widget_set_visible() */
 void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible);
 
-Gtk::Window& gtr_widget_get_window(Gtk::Widget& widget);
+[[nodiscard]] Gtk::Window& gtr_widget_get_window(Gtk::Widget& widget);
 
 void gtr_window_set_skip_taskbar_hint(Gtk::Window& window, bool value);
 void gtr_window_set_urgency_hint(Gtk::Window& window, bool value);
@@ -133,7 +133,7 @@ void gtr_window_raise(Gtk::Window& window);
 void gtr_priority_combo_init(Gtk::ComboBox& combo);
 
 void gtr_combo_box_set_enum(Gtk::ComboBox& combo, std::vector<std::pair<Glib::ustring, int>> const& items);
-int gtr_combo_box_get_active_enum(Gtk::ComboBox const& combo);
+[[nodiscard]] int gtr_combo_box_get_active_enum(Gtk::ComboBox const& combo);
 void gtr_combo_box_set_active_enum(Gtk::ComboBox& combo, int value);
 
 /***
@@ -191,14 +191,14 @@ void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry);
 void gtr_label_set_text(Gtk::Label& lb, Glib::ustring const& text);
 
 template<typename T>
-inline T gtr_str_strip(T const& text)
+[[nodiscard]] inline T gtr_str_strip(T const& text)
 {
     auto const new_begin = text.find_first_not_of("\t\n\v\f\r ");
     auto const new_end = text.find_last_not_of("\t\n\v\f\r ");
     return new_begin == T::npos ? T() : text.substr(new_begin, new_end == T::npos ? new_end : new_end - new_begin + 1);
 }
 
-std::string gtr_get_full_resource_path(std::string const& rel_path);
+[[nodiscard]] std::string gtr_get_full_resource_path(std::string const& rel_path);
 
 // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
 [[nodiscard]] Glib::ustring gtr_with_app_name(Glib::ustring const& text);
@@ -210,7 +210,7 @@ std::string gtr_get_full_resource_path(std::string const& rel_path);
 class Session;
 
 template<typename T, typename U>
-inline Glib::RefPtr<T> gtr_ptr_static_cast(Glib::RefPtr<U> const& ptr)
+[[nodiscard]] inline Glib::RefPtr<T> gtr_ptr_static_cast(Glib::RefPtr<U> const& ptr)
 {
 #if GLIBMM_CHECK_VERSION(2, 68, 0)
     return std::static_pointer_cast<T>(ptr);
@@ -220,7 +220,7 @@ inline Glib::RefPtr<T> gtr_ptr_static_cast(Glib::RefPtr<U> const& ptr)
 }
 
 template<typename T, typename U>
-inline Glib::RefPtr<T> gtr_ptr_dynamic_cast(Glib::RefPtr<U> const& ptr)
+[[nodiscard]] inline Glib::RefPtr<T> gtr_ptr_dynamic_cast(Glib::RefPtr<U> const& ptr)
 {
 #if GLIBMM_CHECK_VERSION(2, 68, 0)
     return std::dynamic_pointer_cast<T>(ptr);

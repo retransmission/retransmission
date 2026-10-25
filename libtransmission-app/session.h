@@ -7,7 +7,10 @@
 
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include <sigslot/signal.hpp>
 
@@ -67,6 +70,12 @@ public:
     // Also refreshes the RPC server settings when the session is embedded.
     // For security reasons, an embedded session is the only place to read them.
     void import_session_settings(tr_variant::Map const& settings);
+
+    // Asks the session for its recently-used paths, `TR_KEY_recent_download_paths` or
+    // `TR_KEY_recent_relocate_paths`, and hands them to `on_paths` on the UI thread.
+    // Imported settings carry these lists too, but only as of the last import:
+    // libtransmission adds to them without reporting a settings change.
+    void fetch_recent_paths(tr_quark key, std::function<void(std::vector<std::string> const&)> on_paths);
 
     // The blocklist's rule count, or nullopt until the session reports it.
     [[nodiscard]] constexpr std::optional<int64_t> blocklist_size() const noexcept

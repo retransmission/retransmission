@@ -32,7 +32,7 @@ void get_lockfile_path(std::string_view session_id, tr_pathbuf& path)
     fmt::format_to(std::back_inserter(path), "{:s}/tr_session_id_{:s}", tr_getSessionIdDir(), session_id);
 }
 
-tr_sys_file_t create_lockfile(std::string_view session_id)
+[[nodiscard]] tr_sys_file_t create_lockfile(std::string_view session_id)
 {
     if (std::empty(session_id)) {
         return TR_BAD_SYS_FILE;

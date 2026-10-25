@@ -48,7 +48,9 @@
 #include <unordered_map>
 #include <utility> // std::exchange()
 
-using namespace tr::app;
+using tr::app::DefaultShowMode;
+using tr::app::Prefs;
+using tr::app::ShowMode;
 
 namespace
 {
@@ -107,17 +109,17 @@ private:
     void notify_visible_count_idle();
     bool notify_visible_count();
 
-    static Glib::RefPtr<Gtk::ListStore> show_mode_filter_model_new();
+    [[nodiscard]] static Glib::RefPtr<Gtk::ListStore> show_mode_filter_model_new();
     static void status_model_update_count(Gtk::TreeModel::iterator const& iter, int n);
     static bool show_mode_is_it_a_separator(Gtk::TreeModel::const_iterator const& iter);
 
-    static Glib::RefPtr<Gtk::TreeStore> tracker_filter_model_new();
+    [[nodiscard]] static Glib::RefPtr<Gtk::TreeStore> tracker_filter_model_new();
     static void tracker_model_update_count(Gtk::TreeModel::iterator const& iter, int n);
     static bool is_it_a_separator(Gtk::TreeModel::const_iterator const& iter);
 
-    static Glib::ustring get_name_from_host(std::string const& host);
+    [[nodiscard]] static Glib::ustring get_name_from_host(std::string const& host);
 
-    static Gtk::CellRendererText* number_renderer_new();
+    [[nodiscard]] static Gtk::CellRendererText* number_renderer_new();
 
 private:
     FilterBar& widget_;

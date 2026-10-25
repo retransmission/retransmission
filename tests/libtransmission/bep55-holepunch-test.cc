@@ -18,7 +18,9 @@ using namespace std::literals;
 
 namespace
 {
-tr_socket_address makeIpv6(std::array<uint8_t, tr_address::CompactAddrBytes[TR_AF_INET6]> const& bytes, uint16_t port)
+[[nodiscard]] tr_socket_address makeIpv6(
+    std::array<uint8_t, tr_address::CompactAddrBytes[TR_AF_INET6]> const& bytes,
+    uint16_t port)
 {
     auto buf = std::array<uint8_t, tr_socket_address::CompactSockAddrBytes[TR_AF_INET6]>{};
     std::memcpy(buf.data(), bytes.data(), bytes.size());

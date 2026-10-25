@@ -100,7 +100,7 @@ private:
         return nullptr;
     }
 
-    Entry& get_free_slot()
+    [[nodiscard]] Entry& get_free_slot()
     {
         auto const iter = std::min_element(std::begin(entries_), std::end(entries_), [](auto const& a, auto const& b) {
             return a.sequence_ < b.sequence_;

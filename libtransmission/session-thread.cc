@@ -127,7 +127,7 @@ void init_evthreads_once()
 
 } // namespace tr_evthread_init_helpers
 
-auto make_event_base()
+[[nodiscard]] auto make_event_base()
 {
     tr_session_thread::tr_evthread_init();
 

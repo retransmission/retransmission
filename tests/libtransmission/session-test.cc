@@ -252,7 +252,7 @@ namespace
 
 auto value = time_t{};
 
-time_t get()
+[[nodiscard]] time_t get()
 {
     return value;
 }

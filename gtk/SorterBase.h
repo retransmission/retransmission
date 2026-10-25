@@ -34,10 +34,10 @@ public:
     SorterBase& operator=(SorterBase const&) = delete;
     ~SorterBase() override = default;
 
-    virtual int compare(T const& lhs, T const& rhs) const = 0;
+    [[nodiscard]] virtual int compare(T const& lhs, T const& rhs) const = 0;
 
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
-    sigc::signal<void(Change)>& signal_changed();
+    [[nodiscard]] sigc::signal<void(Change)>& signal_changed();
 #endif
 
 protected:

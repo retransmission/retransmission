@@ -14,6 +14,8 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #endif
 
+#import <Quartz/Quartz.h>
+
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
 #include <iterator>
 #include <string_view>
@@ -36,6 +38,7 @@
 #import "Torrent.h"
 #import "TorrentGroup.h"
 #import "TorrentTableView.h"
+#import "TorrentContextMenuProvider.h"
 #import "CreatorWindowController.h"
 #import "StatsWindowController.h"
 #import "InfoWindowController.h"
@@ -117,6 +120,14 @@ typedef NS_ENUM(NSUInteger, SortTag) {
 typedef NS_ENUM(NSUInteger, SortOrderTag) { //
     SortOrderTagAscending = 0,
     SortOrderTagDescending = 1
+};
+
+typedef NS_ENUM(NSUInteger, AddType) { //
+    AddTypeManual,
+    AddTypeAuto,
+    AddTypeShowOptions,
+    AddTypeURL,
+    AddTypeCreated
 };
 
 static NSString* const kTorrentTableViewDataType = @"TorrentTableViewDataType";
@@ -298,7 +309,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return settings;
 }
 
-@interface Controller ()<UNUserNotificationCenterDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, PowerManagerDelegate>
+@interface Controller ()<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
 
 @property(nonatomic) IBOutlet NSWindow* fWindow;
 @property(nonatomic) IBOutlet SPUStandardUpdaterController* fUpdaterController;
@@ -319,10 +330,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) IBOutlet NSMenu* fSortMenu;
 
 @property(nonatomic) IBOutlet NSMenu* fGroupsSetMenu;
-@property(nonatomic) IBOutlet NSMenu* fGroupsSetContextMenu;
 
 @property(nonatomic) IBOutlet NSMenu* fShareMenu;
-@property(nonatomic) IBOutlet NSMenu* fShareContextMenu;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -332,6 +341,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @property(nonatomic, readonly) InfoWindowController* fInfoController;
 @property(nonatomic) MessageWindowController* fMessageController;
+
+@property(nonatomic, readonly) VDKQueue* fileWatcherQueue;
 
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
 
@@ -779,7 +790,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         _fInfoController = [[InfoWindowController alloc] init];
 
-        //needs to be done before init-ing the prefs controller
         _fileWatcherQueue = [[VDKQueue alloc] init];
         _fileWatcherQueue.delegate = self;
 
@@ -1167,7 +1177,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 
     //auto importing
-    [self checkAutoImportDirectory];
+    [self changeAutoImport];
 
     //registering the Web UI to Bonjour
     if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
@@ -3434,7 +3444,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)menuNeedsUpdate:(NSMenu*)menu
 {
-    if (menu == self.fGroupsSetMenu || menu == self.fGroupsSetContextMenu) {
+    if (menu == self.fGroupsSetMenu || [TorrentContextMenuProvider isGroupsSubmenu:menu]) {
         [menu removeAllItems];
 
         NSMenu* groupMenu = [GroupsController.groups groupMenuWithTarget:self action:@selector(setGroup:) isSmall:NO];
@@ -3445,7 +3455,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [groupMenu removeItemAtIndex:0];
             [menu addItem:item];
         }
-    } else if (menu == self.fShareMenu || menu == self.fShareContextMenu) {
+    } else if (menu == self.fShareMenu || [TorrentContextMenuProvider isShareSubmenu:menu]) {
         [menu removeAllItems];
 
         for (NSMenuItem* item in ShareTorrentFileHelper.sharedHelper.menuItems) {
@@ -3505,7 +3515,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 {
     //don't assume that just because we're watching for write notification, we'll only receive write notifications
 
-    if (![self.fDefaults boolForKey:@"AutoImport"] || ![self.fDefaults stringForKey:@"AutoImportDirectory"]) {
+    if ([self autoImportPath] == nil) {
         return;
     }
 
@@ -3522,6 +3532,16 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self checkAutoImportDirectory];
 }
 
+- (nullable NSString*)autoImportPath
+{
+    if (![self.fDefaults boolForKey:@"AutoImport"]) {
+        return nil;
+    }
+
+    NSString* path = [self.fDefaults stringForKey:@"AutoImportDirectory"];
+    return path.length > 0 ? path.stringByExpandingTildeInPath : nil;
+}
+
 - (void)changeAutoImport
 {
     if (self.fAutoImportTimer.valid) {
@@ -3531,17 +3551,23 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     self.fAutoImportedNames = nil;
 
+    [self.fileWatcherQueue removeAllPaths];
+
+    NSString* autoImportPath = [self autoImportPath];
+
+    if (autoImportPath) {
+        [self.fileWatcherQueue addPath:autoImportPath notifyingAbout:VDKQueueNotifyAboutWrite];
+    }
+
     [self checkAutoImportDirectory];
 }
 
 - (void)checkAutoImportDirectory
 {
-    NSString* path;
-    if (![self.fDefaults boolForKey:@"AutoImport"] || !(path = [self.fDefaults stringForKey:@"AutoImportDirectory"])) {
+    NSString* path = [self autoImportPath];
+    if (path == nil) {
         return;
     }
-
-    path = path.stringByExpandingTildeInPath;
 
     NSArray<NSString*>* importedNames;
     if (!(importedNames = [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:NULL])) {
@@ -3598,14 +3624,14 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)beginCreateFile:(NSNotification*)notification
 {
-    if (![self.fDefaults boolForKey:@"AutoImport"]) {
+    NSString* path = [self autoImportPath];
+    if (path == nil) {
         return;
     }
 
-    NSString *location = ((NSURL*)notification.object).path, *path = [self.fDefaults stringForKey:@"AutoImportDirectory"];
+    NSString* location = ((NSURL*)notification.object).path;
 
-    if (location && path &&
-        [location.stringByDeletingLastPathComponent.stringByExpandingTildeInPath isEqualToString:path.stringByExpandingTildeInPath]) {
+    if (location && [location.stringByDeletingLastPathComponent.stringByExpandingTildeInPath isEqualToString:path]) {
         [self.fAutoImportedNames addObject:location.lastPathComponent];
     }
 }

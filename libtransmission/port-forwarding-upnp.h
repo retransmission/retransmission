@@ -19,7 +19,7 @@
 class tr_port;
 struct tr_upnp;
 
-tr_upnp* tr_upnpInit();
+[[nodiscard]] tr_upnp* tr_upnpInit();
 
 // The handle must be unmapped already, which a tr_upnpPulse() with
 // is_enabled=false does by contacting the gateway; see tr_upnpDiscard.
@@ -29,7 +29,7 @@ void tr_upnpClose(tr_upnp* handle);
 // gateway it holds. For when the route they were reached over is gone.
 void tr_upnpDiscard(tr_upnp* handle);
 
-tr_port_forwarding_state tr_upnpPulse(
+[[nodiscard]] tr_port_forwarding_state tr_upnpPulse(
     tr_upnp* handle,
     tr_port advertised_port,
     tr_port local_port,

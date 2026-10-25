@@ -98,7 +98,7 @@ void base32_to_sha1(std::span<std::byte, Sha1Len> const out, std::span<char cons
 
 } // namespace bitzi
 
-std::optional<tr_sha1_digest_t> parseBase32Hash(std::string_view sv)
+[[nodiscard]] std::optional<tr_sha1_digest_t> parseBase32Hash(std::string_view sv)
 {
     if (std::size(sv) != Base32HashStrLen) {
         return {};
@@ -115,7 +115,7 @@ std::optional<tr_sha1_digest_t> parseBase32Hash(std::string_view sv)
     return digest;
 }
 
-std::optional<tr_sha1_digest_t> parseHash(std::string_view sv)
+[[nodiscard]] std::optional<tr_sha1_digest_t> parseHash(std::string_view sv)
 {
     // https://www.bittorrent.org/beps/bep_0009.html
     // Is the info-hash hex encoded, for a total of 40 characters.
@@ -125,23 +125,14 @@ std::optional<tr_sha1_digest_t> parseHash(std::string_view sv)
     if (auto const hash = tr_sha1_from_string(sv); hash) {
         return hash;
     }
-    if (auto const hash = parseBase32Hash(sv); hash) {
-        return hash;
-    }
-
-    return {};
+    return parseBase32Hash(sv);
 }
 
-std::optional<tr_sha256_digest_t> parseHash2(std::string_view sv)
+[[nodiscard]] std::optional<tr_sha256_digest_t> parseHash2(std::string_view sv)
 {
     // https://www.bittorrent.org/beps/bep_0009.html
     // Is the info-hash v2 hex encoded and tag removed, for a total of 64 characters.
-
-    if (auto const hash = tr_sha256_from_string(sv); hash) {
-        return hash;
-    }
-
-    return {};
+    return tr_sha256_from_string(sv);
 }
 
 } // namespace

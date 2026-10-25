@@ -73,7 +73,7 @@ void depth_first_walk(
     func(path);
 }
 
-bool is_junk_file(std::string_view filename)
+[[nodiscard]] bool is_junk_file(std::string_view filename)
 {
     auto const base = tr_sys_path_basename(filename);
 
@@ -420,12 +420,12 @@ namespace
     // Shortcut to avoid extra work below.
     // All the paths below involve filenames that begin with one of these chars
     static auto constexpr ReservedFilesBeginWithOneOf = "ACLNP"sv;
-    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(in.front()))) == std::string_view::npos) {
+    if (!ReservedFilesBeginWithOneOf.contains(static_cast<char>(toupper(static_cast<unsigned char>(in.front()))))) {
         return false;
     }
 
     auto in_upper = tr_pathbuf{ in };
-    std::ranges::for_each(in_upper, [](auto& ch) { ch = static_cast<char>(toupper(ch)); });
+    std::ranges::for_each(in_upper, [](auto& ch) { ch = static_cast<char>(toupper(static_cast<unsigned char>(ch))); });
     auto const in_upper_sv = in_upper.sv();
 
     static auto constexpr ReservedNames = std::to_array<std::string_view>({

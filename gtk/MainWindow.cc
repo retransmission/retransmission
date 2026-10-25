@@ -65,7 +65,9 @@
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 using namespace tr::Values;
-using namespace tr::app;
+using tr::app::Prefs;
+using tr::app::StatsMode;
+using tr::app::StatsModeCount;
 
 using VariantInt = Glib::Variant<int>;
 using VariantDouble = Glib::Variant<double>;
@@ -109,7 +111,7 @@ public:
 
     void prefsChanged(tr_quark key);
 
-    auto& signal_selection_changed()
+    [[nodiscard]] auto& signal_selection_changed()
     {
         return signal_selection_changed_;
     }
@@ -117,11 +119,13 @@ public:
 private:
     void init_view(TorrentView* view, Glib::RefPtr<FilterBar::Model> const& model);
 
-    Glib::RefPtr<Gio::MenuModel> createOptionsMenu();
-    Glib::RefPtr<Gio::MenuModel> createSpeedMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions, tr_direction dir);
-    Glib::RefPtr<Gio::MenuModel> createRatioMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions);
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createOptionsMenu();
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createSpeedMenu(
+        Glib::RefPtr<Gio::SimpleActionGroup> const& actions,
+        tr_direction dir);
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createRatioMenu(Glib::RefPtr<Gio::SimpleActionGroup> const& actions);
 
-    Glib::RefPtr<Gio::MenuModel> createStatsMenu();
+    [[nodiscard]] Glib::RefPtr<Gio::MenuModel> createStatsMenu();
 
     void on_popup_menu(double event_x, double event_y);
 
@@ -140,7 +144,6 @@ private:
 
     void onOptionsClicked();
     void alt_speed_toggled_cb();
-    void onAltSpeedToggledIdle();
 
 private:
     MainWindow& window_;
@@ -400,15 +403,6 @@ void MainWindow::Impl::syncAltSpeedButton()
 void MainWindow::Impl::alt_speed_toggled_cb()
 {
     core_->set_pref(TR_KEY_alt_speed_enabled, alt_speed_button_->get_active());
-}
-
-/***
-****  FILTER
-***/
-
-void MainWindow::Impl::onAltSpeedToggledIdle()
-{
-    core_->set_pref(TR_KEY_alt_speed_enabled, tr_sessionUsesAltSpeed(core_->get_session()));
 }
 
 /***
@@ -748,10 +742,6 @@ MainWindow::Impl::Impl(
     prefsChanged(TR_KEY_show_toolbar);
     prefsChanged(TR_KEY_alt_speed_enabled);
     pref_handler_id_ = core_->signal_prefs_changed().connect(sigc::mem_fun(*this, &Impl::prefsChanged));
-
-    tr_sessionSetAltSpeedFunc(core_->get_session(), [this](bool const /*is_enabled*/, bool const /*by_user*/) {
-        Glib::signal_idle().connect_once([this]() { onAltSpeedToggledIdle(); });
-    });
 
     refresh();
 

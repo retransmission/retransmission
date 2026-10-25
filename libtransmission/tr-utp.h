@@ -20,7 +20,12 @@ struct tr_session;
 
 void tr_utp_init(tr_session* session);
 
-bool tr_utp_packet(unsigned char const* buf, size_t buflen, struct sockaddr const* from, socklen_t fromlen, tr_session* ss);
+[[nodiscard]] bool tr_utp_packet(
+    unsigned char const* buf,
+    size_t buflen,
+    struct sockaddr const* from,
+    socklen_t fromlen,
+    tr_session* ss);
 
 void tr_utp_issue_deferred_acks(tr_session* ss);
 

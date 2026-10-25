@@ -20,17 +20,14 @@ tr_tracker_trying_order::tr_tracker_trying_order(size_t const tracker_count)
     : order_(tracker_count)
 {
     static thread_local auto urbg = tr_urbg<size_t>{};
+    // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
     std::iota(std::begin(order_), std::end(order_), size_t{});
     std::shuffle(std::begin(order_), std::end(order_), urbg);
 }
 
 std::optional<size_t> tr_tracker_trying_order::current() const
 {
-    if (pos_) {
-        return order_[*pos_];
-    }
-
-    return {};
+    return pos_.transform([this](auto const pos) { return order_[pos]; });
 }
 
 std::optional<size_t> tr_tracker_trying_order::advance()

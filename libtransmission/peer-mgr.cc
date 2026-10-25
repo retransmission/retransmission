@@ -2382,7 +2382,7 @@ namespace
 {
 namespace peer_info_pulse_helpers
 {
-auto get_max_peer_info_count(tr_torrent const& tor)
+[[nodiscard]] auto get_max_peer_info_count(tr_torrent const& tor)
 {
     return tor.is_done() ? tor.peer_limit() : tor.peer_limit() * 3U;
 }

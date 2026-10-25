@@ -110,7 +110,7 @@ struct tr_upnp {
 
 namespace
 {
-constexpr auto port_fwd_state(UpnpState upnp_state, bool is_mapped)
+[[nodiscard]] constexpr auto port_fwd_state(UpnpState upnp_state, bool is_mapped)
 {
     switch (upnp_state) {
     case UpnpState::WillDiscover:
@@ -290,7 +290,7 @@ auto discover_and_validate_thread_func(std::string bindaddr) // NOLINT performan
 }
 
 template<typename T>
-bool is_future_ready(std::future<T> const& future)
+[[nodiscard]] bool is_future_ready(std::future<T> const& future)
 {
     return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 }

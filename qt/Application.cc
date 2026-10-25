@@ -64,7 +64,11 @@ auto constexpr SessionRefreshIntervalMsec = 3000;
 auto constexpr ModelRefreshIntervalMsec = 3000;
 auto constexpr InternRefreshIntervalMsec = 5 * 60 * 1000;
 
-bool loadTranslation(QTranslator& translator, QString const& name, QLocale const& locale, QStringList const& search_directories)
+[[nodiscard]] bool loadTranslation(
+    QTranslator& translator,
+    QString const& name,
+    QLocale const& locale,
+    QStringList const& search_directories)
 {
     for (QString const& directory : search_directories) {
         if (translator.load(locale, name, QStringLiteral("_"), directory)) {

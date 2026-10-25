@@ -200,7 +200,7 @@ bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* m
 
 namespace
 {
-bool did_files_disappear(tr_torrent* tor, std::optional<bool> has_any_local_data = {})
+[[nodiscard]] bool did_files_disappear(tr_torrent* tor, std::optional<bool> has_any_local_data = {})
 {
     auto const has = has_any_local_data ? *has_any_local_data : tor->has_any_local_data();
     return tor->has_total() > 0 && !has;
@@ -222,7 +222,7 @@ bool set_local_error_if_files_disappeared(tr_torrent* tor, std::optional<bool> h
 
 /* returns true if the seed ratio applies --
  * it applies if the torrent's a seed AND it has a seed ratio set */
-bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, uint64_t* setme_goal)
+[[nodiscard]] bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, uint64_t* setme_goal)
 {
     bool seed_ratio_applies = false;
 
@@ -247,7 +247,7 @@ bool tr_torrentGetSeedRatioBytes(tr_torrent const* tor, uint64_t* setme_left, ui
     return seed_ratio_applies;
 }
 
-bool tr_torrentIsSeedRatioDone(tr_torrent const* tor)
+[[nodiscard]] bool tr_torrentIsSeedRatioDone(tr_torrent const* tor)
 {
     auto bytes_left = uint64_t{};
     return tr_torrentGetSeedRatioBytes(tor, &bytes_left, nullptr) && bytes_left == 0;
@@ -563,7 +563,7 @@ namespace
 {
 namespace start_stop_helpers
 {
-bool torrentShouldQueue(tr_torrent const* const tor)
+[[nodiscard]] bool torrentShouldQueue(tr_torrent const* const tor)
 {
     tr_direction const dir = tor->queue_direction();
 
@@ -1698,11 +1698,7 @@ tr_torrent_metainfo const& tr_torrent::VerifyMediator::metainfo() const
 
 std::optional<std::string> tr_torrent::VerifyMediator::find_file(tr_file_index_t const file_index) const
 {
-    if (auto const found = tor_->find_file(file_index); found) {
-        return found->filename();
-    }
-
-    return {};
+    return tor_->find_file(file_index).transform(&tr_torrent_files::FoundFile::filename<std::string>);
 }
 
 void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_file) const
@@ -2259,7 +2255,7 @@ std::string_view tr_torrent::primary_mime_type() const
 bool tr_torrent::is_folder() const
 {
     auto const n_files = file_count();
-    return n_files > 1U || (n_files == 1U && tr_strv_contains(file_subpath(0), '/'));
+    return n_files > 1U || (n_files == 1U && file_subpath(0).contains('/'));
 }
 
 // ---
@@ -2545,14 +2541,14 @@ namespace
 {
 namespace rename_helpers
 {
-bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
+[[nodiscard]] bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
-    if (std::empty(oldpath) || std::empty(newname) || newname == "."sv || newname == ".."sv || tr_strv_contains(newname, '/')) {
+    if (std::empty(oldpath) || std::empty(newname) || newname == "."sv || newname == ".."sv || newname.contains('/')) {
         return false;
     }
 
-    auto const newpath = tr_strv_contains(oldpath, '/') ? tr_pathbuf{ tr_sys_path_dirname(oldpath), '/', newname } :
-                                                          tr_pathbuf{ newname };
+    auto const newpath = oldpath.contains('/') ? tr_pathbuf{ tr_sys_path_dirname(oldpath), '/', newname } :
+                                                 tr_pathbuf{ newname };
 
     if (newpath == oldpath) {
         return true;
@@ -2571,7 +2567,7 @@ bool renameArgsAreValid(tr_torrent const* tor, std::string_view oldpath, std::st
     return true;
 }
 
-auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
+[[nodiscard]] auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
 {
     auto indices = std::vector<tr_file_index_t>{};
     auto const oldpath_as_dir = tr_pathbuf{ oldpath, '/' };
@@ -2587,7 +2583,7 @@ auto renameFindAffectedFiles(tr_torrent const* tor, std::string_view oldpath)
     return indices;
 }
 
-auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
+[[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
     tr_error_code_t err = 0;
 
@@ -2630,7 +2626,7 @@ void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::str
     auto const subpath = std::string_view{ tor->file_subpath(file_index) };
     auto const oldpath_len = std::size(oldpath);
 
-    if (!tr_strv_contains(oldpath, '/')) {
+    if (!oldpath.contains('/')) {
         if (oldpath_len >= std::size(subpath)) {
             name = newname;
         } else {
@@ -2681,7 +2677,7 @@ void tr_torrent::rename_path_in_session_thread(
             }
 
             /* update tr_info.name if user changed the toplevel */
-            if (std::size(file_indices) == file_count() && !tr_strv_contains(oldpath, '/')) {
+            if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
                 set_name(newname);
             }
 

@@ -3,17 +3,9 @@
 // License text can be found in the licenses/ folder.
 
 #import "AddMagnetWindowController.h"
+#import "AddTorrentViewModel.h"
 #import "Controller.h"
-#import "ExpandedPathToIconTransformer.h"
-#import "GroupsController.h"
-#import "NSStringAdditions.h"
 #import "Torrent.h"
-
-typedef NS_ENUM(NSUInteger, PopupPriority) {
-    PopupPriorityHigh = 0,
-    PopupPriorityNormal = 1,
-    PopupPriorityLow = 2,
-};
 
 @interface AddMagnetWindowController ()
 
@@ -26,25 +18,22 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 
 @property(nonatomic, readonly) Controller* fController;
 
-@property(nonatomic) NSString* fDestination;
-
-@property(nonatomic) NSInteger fGroupValue;
-@property(nonatomic) TorrentDeterminationType fGroupDeterminationType;
+@property(nonatomic) AddTorrentViewModel* viewModel;
 
 @end
 
 @implementation AddMagnetWindowController
 
+- (Torrent*)torrent
+{
+    return self.viewModel.torrent;
+}
+
 - (instancetype)initWithTorrent:(Torrent*)torrent destination:(NSString*)path controller:(Controller*)controller
 {
     if ((self = [super initWithWindowNibName:@"AddMagnetWindow"])) {
-        _torrent = torrent;
-        _fDestination = path.stringByExpandingTildeInPath;
-
         _fController = controller;
-
-        _fGroupValue = torrent.groupValue;
-        _fGroupDeterminationType = TorrentDeterminationAutomatic;
+        _viewModel = [[AddTorrentViewModel alloc] initWithTorrent:torrent destination:path lockDestination:NO];
     }
     return self;
 }
@@ -52,160 +41,56 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateGroupMenu:) name:@"UpdateGroups" object:nil];
 
-    NSString* name = self.torrent.name;
+    NSString* name = self.viewModel.torrent.name;
     self.window.title = name;
     self.fNameField.stringValue = name;
     self.fNameField.toolTip = name;
 
-    //disable fullscreen support
     self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
 
-    [self setGroupsMenu];
-    [self.fGroupPopUp selectItemWithTag:self.fGroupValue];
+    __weak __auto_type weakSelf = self;
+    self.viewModel.onDataUpdate = ^(AddTorrentViewModel* viewModel) {
+        weakSelf.fLocationField.stringValue = viewModel.guardedDestinationPath.stringByAbbreviatingWithTildeInPath;
+        weakSelf.fLocationField.toolTip = viewModel.guardedDestinationPath;
+        weakSelf.fLocationImageView.image = viewModel.locationIcon;
+        [weakSelf.fGroupPopUp selectItemWithTag:viewModel.groupValue];
+    };
 
-    PopupPriority priorityIndex;
-    switch (self.torrent.priority) {
-    case TR_PRI_HIGH:
-        priorityIndex = PopupPriorityHigh;
-        break;
-    case TR_PRI_NORMAL:
-        priorityIndex = PopupPriorityNormal;
-        break;
-    case TR_PRI_LOW:
-        priorityIndex = PopupPriorityLow;
-        break;
-    default:
-        NSAssert1(NO, @"Unknown priority for adding torrent: %d", self.torrent.priority);
-        priorityIndex = PopupPriorityNormal;
-    }
-    [self.fPriorityPopUp selectItemAtIndex:priorityIndex];
+    self.viewModel.onCancelTrigger = ^{
+        [weakSelf cancelAdd:nil];
+    };
+
+    self.viewModel.onSuccessTrigger = ^{
+        [weakSelf confirmAdd];
+    };
+
+    self.viewModel.onGroupsUpdate = ^(AddTorrentViewModel* viewModel) {
+        weakSelf.fGroupPopUp.menu = [viewModel createGroupsMenuWithTarget:weakSelf action:@selector(changeGroupValue:)];
+    };
+    [self.viewModel triggerGroupsUpdate];
+
+    [self.fPriorityPopUp selectItemAtIndex:self.viewModel.priorityIndex];
 
     self.fStartCheck.state = [NSUserDefaults.standardUserDefaults boolForKey:@"AutoStartDownload"] ? NSControlStateValueOn :
                                                                                                      NSControlStateValueOff;
 
-    if (self.fDestination) {
-        [self setDestinationPath:self.fDestination determinationType:TorrentDeterminationAutomatic];
-    } else {
-        self.fLocationField.stringValue = @"";
-        self.fLocationImageView.image = nil;
-    }
+    [self.viewModel triggerDataUpdate];
 }
 
 - (void)windowDidLoad
 {
-    //if there is no destination, prompt for one right away
-    if (!self.fDestination) {
-        [self setDestination:nil];
+    [super windowDidLoad];
+    // if there is no destination, prompt for one right away
+    if (!self.viewModel.destinationPath) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.viewModel selectDestinationModalForWindow:self.window];
+        });
     }
 }
-
-- (IBAction)setDestination:(id)sender
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-
-    panel.prompt = NSLocalizedString(@"Select", "Open torrent -> prompt");
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = NO;
-    panel.canChooseDirectories = YES;
-    panel.canCreateDirectories = YES;
-
-    panel.message = [NSString stringWithFormat:NSLocalizedString(@"Select the download folder for \"%@\"", "Add -> select destination folder"),
-                                               self.torrent.name];
-
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK) {
-            [self setDestinationPath:panel.URLs[0].path determinationType:TorrentDeterminationUserSpecified];
-        } else {
-            if (!self.fDestination) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self cancelAdd:nil];
-                });
-            }
-        }
-    }];
-}
-
-- (IBAction)add:(id)sender
-{
-    if ([self.fDestination.lastPathComponent isEqualToString:self.torrent.name] &&
-        [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"]) {
-        NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = NSLocalizedString(@"The destination directory and root data directory have the same name.", "Add torrent -> same name -> title");
-        alert.informativeText = NSLocalizedString(
-            @"If you are attempting to use already existing data,"
-             " the root data directory should be inside the destination directory.",
-            "Add torrent -> same name -> message");
-        alert.alertStyle = NSAlertStyleWarning;
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Add torrent -> same name -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Add", "Add torrent -> same name -> button")];
-        alert.showsSuppressionButton = YES;
-
-        [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-            if (alert.suppressionButton.state == NSControlStateValueOn) {
-                [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningFolderDataSameName"];
-            }
-
-            if (returnCode == NSAlertSecondButtonReturn) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self confirmAdd];
-                });
-            }
-        }];
-    } else {
-        [self confirmAdd];
-    }
-}
-
-- (IBAction)cancelAdd:(id)sender
-{
-    [self.window performClose:sender];
-}
-
-//only called on cancel
-- (BOOL)windowShouldClose:(id)window
-{
-    [self.fController askOpenMagnetConfirmed:self add:NO];
-    return YES;
-}
-
-- (IBAction)changePriority:(id)sender
-{
-    tr_priority_t priority;
-    switch ([sender indexOfSelectedItem]) {
-    case PopupPriorityHigh:
-        priority = TR_PRI_HIGH;
-        break;
-    case PopupPriorityNormal:
-        priority = TR_PRI_NORMAL;
-        break;
-    case PopupPriorityLow:
-        priority = TR_PRI_LOW;
-        break;
-    default:
-        NSAssert1(NO, @"Unknown priority tag for adding torrent: %ld", [sender tag]);
-        priority = TR_PRI_NORMAL;
-    }
-    self.torrent.priority = priority;
-}
-
-- (void)updateGroupMenu:(NSNotification*)notification
-{
-    [self setGroupsMenu];
-    if (![self.fGroupPopUp selectItemWithTag:self.fGroupValue]) {
-        self.fGroupValue = -1;
-        self.fGroupDeterminationType = TorrentDeterminationAutomatic;
-        [self.fGroupPopUp selectItemWithTag:self.fGroupValue];
-    }
-}
-
-#pragma mark - Private
 
 - (void)confirmAdd
 {
-    [self.torrent setGroupValue:self.fGroupValue determinationType:self.fGroupDeterminationType];
-
     if (self.fStartCheck.state == NSControlStateValueOn) {
         [self.torrent startMagnetTransferAfterMetaDownload];
     }
@@ -214,41 +99,36 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     [self.fController askOpenMagnetConfirmed:self add:YES];
 }
 
-- (void)setDestinationPath:(NSString*)destination determinationType:(TorrentDeterminationType)determinationType
+- (IBAction)setDestination:(id)sender
 {
-    destination = destination.stringByExpandingTildeInPath;
-    if (!self.fDestination || ![self.fDestination isEqualToString:destination]) {
-        self.fDestination = destination;
-
-        [self.torrent changeDownloadFolderBeforeUsing:self.fDestination determinationType:determinationType];
-    }
-
-    self.fLocationField.stringValue = self.fDestination.stringByAbbreviatingWithTildeInPath;
-    self.fLocationField.toolTip = self.fDestination;
-
-    ExpandedPathToIconTransformer* iconTransformer = [[ExpandedPathToIconTransformer alloc] init];
-    self.fLocationImageView.image = [iconTransformer transformedValue:self.fDestination];
+    [self.viewModel selectDestinationModalForWindow:self.window];
 }
 
-- (void)setGroupsMenu
+- (IBAction)changeGroupValue:(id)sender
 {
-    NSMenu* groupMenu = [GroupsController.groups groupMenuWithTarget:self action:@selector(changeGroupValue:) isSmall:NO];
-    self.fGroupPopUp.menu = groupMenu;
+    [self.viewModel changeGroupValueToTag:[sender tag]];
 }
 
-- (void)changeGroupValue:(id)sender
+- (IBAction)changePriority:(id)sender
 {
-    NSInteger previousGroup = self.fGroupValue;
-    self.fGroupValue = [sender tag];
-    self.fGroupDeterminationType = TorrentDeterminationUserSpecified;
+    [self.viewModel changePriorityToIndex:[sender indexOfSelectedItem]];
+}
 
-    if ([GroupsController.groups usesCustomDownloadLocationForIndex:self.fGroupValue]) {
-        [self setDestinationPath:[GroupsController.groups customDownloadLocationForIndex:self.fGroupValue]
-               determinationType:TorrentDeterminationAutomatic];
-    } else if ([self.fDestination isEqualToString:[GroupsController.groups customDownloadLocationForIndex:previousGroup]]) {
-        [self setDestinationPath:[NSUserDefaults.standardUserDefaults stringForKey:@"DownloadFolder"]
-               determinationType:TorrentDeterminationAutomatic];
-    }
+- (IBAction)add:(id)sender
+{
+    [self.viewModel confirmAddWithWindow:self.window];
+}
+
+- (IBAction)cancelAdd:(id)sender
+{
+    [self.window performClose:sender];
+}
+
+// only called on cancel
+- (BOOL)windowShouldClose:(id)window
+{
+    [self.fController askOpenMagnetConfirmed:self add:NO];
+    return YES;
 }
 
 @end

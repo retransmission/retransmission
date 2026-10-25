@@ -24,7 +24,7 @@ namespace
 // Deletes `path` and, if it is a folder, everything inside it.
 // Symlinks are deleted, not followed.
 // It deletes all it can and reports the first failure.
-bool remove_tree(std::string_view const path, tr_error* const error)
+[[nodiscard]] bool remove_tree(std::string_view const path, tr_error* const error)
 {
     auto ok = true;
 

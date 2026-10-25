@@ -1,0 +1,9 @@
+"Automatically map port" = "Mapear puerto automáticamente";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT traversal o NAT-PMP o UPnP";
+"Peer communication:" = "Red:";
+"Prevent computer from sleeping with active torrents" = "Impedir reposo del Mac con tareas activas";
+"System sleep:" = "Modo reposo:";
+"Pick a random port at startup" = "Puerto aleatorio al arrancar";
+"Randomize" = "Aleatorio";
+"Enable µTP for peer connections" = "Activar Micro Transport Protocol (µTP)";
+"Port for incoming connections:" = "Puerto de escucha de clientes:";

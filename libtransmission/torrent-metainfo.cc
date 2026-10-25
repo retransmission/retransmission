@@ -381,7 +381,7 @@ private:
         return ok;
     }
 
-    bool finishInfoDict(Context const& context)
+    [[nodiscard]] bool finishInfoDict(Context const& context)
     {
         if (std::empty(info_dict_begin_)) {
             context.error.set(EINVAL, "no info_dict found");
@@ -424,7 +424,7 @@ private:
         return true;
     }
 
-    bool finish(Context const& context)
+    [[nodiscard]] bool finish(Context const& context)
     {
         // bittorrent 1.0 spec
         // https://www.bittorrent.org/beps/bep_0003.html

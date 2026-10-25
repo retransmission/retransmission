@@ -1,0 +1,9 @@
+"Automatically map port" = "מיפוי פתחה אוטומטית";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP";
+"Peer communication:" = "תקשורת מול עמיתים:";
+"Prevent computer from sleeping with active torrents" = "למנוע מהמחשב לישון כשיש העברות פעילות";
+"System sleep:" = "שנת המערכת:";
+"Pick a random port at startup" = "בחירת פתחה באקראי עם הפתיחה";
+"Randomize" = "הגרלה אקראית";
+"Enable µTP for peer connections" = "הפעלת פרוטוקול תעבורה מזערי (µTP)";
+"Port for incoming connections:" = "פתחת האזנה לעמיתים:";

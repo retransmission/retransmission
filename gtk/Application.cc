@@ -32,7 +32,6 @@
 #include <libtransmission/api-compat.h>
 #include <libtransmission/converters.h>
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
-#include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
@@ -61,8 +60,6 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/value.h>
 #include <glibmm/vectorutils.h>
-
-#include <woke/woke.hpp>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/droptarget.h>
@@ -119,7 +116,6 @@ public:
         , start_iconified_{ start_iconified }
         , startup_coordinator_{ std::move(startup_coordinator) }
     {
-        nap_inhibitor_.inhibit(TR_PROJ_APPNAME_CAPITALIZED, "Application is running");
     }
 
     Impl(Impl&&) = delete;
@@ -237,8 +233,6 @@ private:
     bool is_closing_ = false;
     bool config_dir_contended_ = false;
 
-    woke::NapInhibitor nap_inhibitor_;
-
     Glib::RefPtr<Gtk::Builder> ui_builder_;
 
     unsigned int activation_count_ = 0;
@@ -276,7 +270,7 @@ void gtr_window_present(T const& window)
 ****
 ***/
 
-std::string get_details_dialog_key(std::vector<tr_torrent_id_t> const& id_list)
+[[nodiscard]] std::string get_details_dialog_key(std::vector<tr_torrent_id_t> const& id_list)
 {
     auto tmp = id_list;
     std::ranges::sort(tmp);
@@ -398,7 +392,7 @@ void Application::Impl::refresh_actions_soon()
 namespace
 {
 
-bool has_magnet_link_handler()
+[[nodiscard]] bool has_magnet_link_handler()
 {
     return bool{ Gio::AppInfo::get_default_for_uri_scheme("magnet") };
 }
@@ -503,12 +497,8 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
         break;
 
     case TR_RPC_SESSION_CHANGED:
-        for (auto const& [key, value] : tr_sessionGetSettings(core_->get_session())) {
-            // prefs only holds the session settings that tr::app::SessionPrefs registers
-            if (tr::app::prefs_is_core(key)) {
-                prefs_.set(key, value);
-            }
-        }
+        // Another RPC client's session_set: the callback in on_startup() drops our own.
+        core_->import_embedded_settings();
         break;
 
     case TR_RPC_TORRENT_CHANGED:
@@ -601,9 +591,11 @@ void Application::Impl::on_startup()
         return;
     }
 
-    prefs_.set(TR_KEY_alt_speed_enabled, tr_sessionUsesAltSpeed(session));
-    prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(session));
     core_ = Session::create(session, prefs_, rpc_);
+
+    // Starting the session can change its settings, e.g. a random peer port,
+    // so read them back before anything shows them.
+    core_->import_embedded_settings();
 
     /* init the ui manager */
     ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-menus.ui"));
@@ -631,10 +623,24 @@ void Application::Impl::on_startup()
 
     app_.hold();
     app_setup();
-    tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
-        Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
-        return TR_RPC_NOREMOVE;
-    });
+
+    // Fires on the thread that made the change: the session thread for another
+    // RPC client's request, this thread for our own session_set. Only another
+    // client's settings change needs importing. Ours are already in Prefs, and
+    // importing them here could read stale values back: tr_sessionSetPeerPort()
+    // and the DHT, uTP, LPD and port-forwarding setters queue their change for
+    // the session thread, which may apply it after the import runs.
+    auto const ui_thread = std::this_thread::get_id();
+    tr_sessionSetRPCCallback(
+        session,
+        [this, ui_thread](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
+            if (type == TR_RPC_SESSION_CHANGED && std::this_thread::get_id() == ui_thread) {
+                return TR_RPC_NOREMOVE;
+            }
+
+            Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
+            return TR_RPC_NOREMOVE;
+        });
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
@@ -1051,7 +1057,8 @@ void Application::Impl::on_main_window_focus_in()
 
 void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
 {
-    auto w = std::shared_ptr<OptionsDialog>(OptionsDialog::create(*wind_, core_, std::unique_ptr<tr_torrent_builder>(builder)));
+    auto w = std::shared_ptr<OptionsDialog>(
+        OptionsDialog::create(*wind_, core_, prefs_, std::unique_ptr<tr_torrent_builder>(builder)));
 
     gtr_window_on_close(*w, [w]() mutable { w.reset(); });
 
@@ -1072,41 +1079,7 @@ void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
 
 void Application::Impl::on_prefs_changed(tr_quark const key)
 {
-    auto* tr = core_->get_session();
-
     switch (key) {
-    case TR_KEY_encryption:
-        tr_sessionSetEncryption(tr, prefs_.get<tr_encryption_mode>(key));
-        break;
-
-    case TR_KEY_default_trackers:
-        tr_sessionSetDefaultTrackers(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_download_dir:
-        tr_sessionSetDownloadDir(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_message_level:
-        tr_logSetLevel(prefs_.get<tr_log_level>(key));
-        break;
-
-    case TR_KEY_peer_port:
-        tr_sessionSetPeerPort(tr, prefs_.get<uint16_t>(key));
-        break;
-
-    case TR_KEY_blocklist_enabled:
-        tr_blocklistSetEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_blocklist_url:
-        tr_blocklistSetURL(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_blocklist_updates_enabled:
-        tr_blocklistSetUpdatesEnabled(tr, prefs_.get<bool>(key));
-        break;
-
     case TR_KEY_show_notification_area_icon:
         if (bool const show = prefs_.get<bool>(key); show && icon_ == nullptr) {
             icon_ = SystemTrayIcon::create(*wind_, core_);
@@ -1115,168 +1088,8 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
         }
         break;
 
-    case TR_KEY_speed_limit_down_enabled:
-        tr_sessionLimitSpeed(tr, tr_direction::Down, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_speed_limit_down:
-        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Down, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_speed_limit_up_enabled:
-        tr_sessionLimitSpeed(tr, tr_direction::Up, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_speed_limit_up:
-        tr_sessionSetSpeedLimit_KBps(tr, tr_direction::Up, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_seed_ratio_limited:
-        tr_sessionSetRatioLimited(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_seed_ratio_limit:
-        tr_sessionSetRatioLimit(tr, prefs_.get<double>(key));
-        break;
-
-    case TR_KEY_idle_seeding_limit:
-        tr_sessionSetIdleLimit(tr, prefs_.get<uint16_t>(key));
-        break;
-
-    case TR_KEY_idle_seeding_limit_enabled:
-        tr_sessionSetIdleLimited(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_port_forwarding_enabled:
-        tr_sessionSetPortForwardingEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_pex_enabled:
-        tr_sessionSetPexEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_rename_partial_files:
-        tr_sessionSetIncompleteFileNamingEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_download_queue_size:
-        tr_sessionSetQueueSize(tr, tr_direction::Down, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_queue_stalled_minutes:
-        tr_sessionSetQueueStalledMinutes(tr, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_dht_enabled:
-        tr_sessionSetDHTEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_utp_enabled:
-        tr_sessionSetUTPEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_lpd_enabled:
-        tr_sessionSetLPDEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_rpc_port:
-        tr_sessionSetRPCPort(tr, prefs_.get<uint16_t>(key));
-        break;
-
-    case TR_KEY_rpc_enabled:
-        tr_sessionSetRPCEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_rpc_whitelist:
-        tr_sessionSetRPCWhitelist(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_rpc_whitelist_enabled:
-        tr_sessionSetRPCWhitelistEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_rpc_username:
-        tr_sessionSetRPCUsername(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_rpc_password:
-        tr_sessionSetRPCPassword(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_rpc_authentication_required:
-        tr_sessionSetRPCPasswordEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_alt_speed_up:
-        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Up, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_alt_speed_down:
-        tr_sessionSetAltSpeed_KBps(tr, tr_direction::Down, prefs_.get<size_t>(key));
-        break;
-
     case TR_KEY_alt_speed_enabled:
-        {
-            bool const b = prefs_.get<bool>(key);
-            tr_sessionUseAltSpeed(tr, b);
-            gtr_action_set_toggled("alt-speed-enabled", b);
-            break;
-        }
-
-    case TR_KEY_alt_speed_time_begin:
-        tr_sessionSetAltSpeedBegin(tr, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_alt_speed_time_end:
-        tr_sessionSetAltSpeedEnd(tr, prefs_.get<size_t>(key));
-        break;
-
-    case TR_KEY_alt_speed_time_enabled:
-        tr_sessionUseAltSpeedTime(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_alt_speed_time_day:
-        tr_sessionSetAltSpeedDay(tr, prefs_.get<tr_sched_day>(key));
-        break;
-
-    case TR_KEY_peer_port_random_on_start:
-        tr_sessionSetPeerPortRandomOnStart(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_incomplete_dir:
-        tr_sessionSetIncompleteDir(tr, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_incomplete_dir_enabled:
-        tr_sessionSetIncompleteDirEnabled(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_script_torrent_done_enabled:
-        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_script_torrent_done_filename:
-        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_script_torrent_done_seeding_enabled:
-        tr_sessionSetScriptEnabled(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_script_torrent_done_seeding_filename:
-        tr_sessionSetScript(tr, TR_SCRIPT_ON_TORRENT_DONE_SEEDING, prefs_.get<std::string>(key));
-        break;
-
-    case TR_KEY_start_added_torrents:
-        tr_sessionSetPaused(tr, !prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_trash_original_torrent_files:
-        tr_sessionSetDeleteSource(tr, prefs_.get<bool>(key));
-        break;
-
-    case TR_KEY_torrent_complete_verify_enabled:
-        tr_sessionSetCompleteVerifyEnabled(tr, prefs_.get<bool>(key));
+        gtr_action_set_toggled("alt-speed-enabled", prefs_.get<bool>(key));
         break;
 
     default:

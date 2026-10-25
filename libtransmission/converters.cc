@@ -134,7 +134,7 @@ template<typename T, size_t N>
 
 // ---
 
-bool to_bool(tr_variant const& src, bool* tgt)
+[[nodiscard]] bool to_bool(tr_variant const& src, bool* tgt)
 {
     if (auto val = src.value_if<bool>()) {
         *tgt = *val;
@@ -144,14 +144,14 @@ bool to_bool(tr_variant const& src, bool* tgt)
     return false;
 }
 
-tr_variant from_bool(bool const& val)
+[[nodiscard]] tr_variant from_bool(bool const& val)
 {
     return val;
 }
 
 // ---
 
-bool to_double(tr_variant const& src, double* tgt)
+[[nodiscard]] bool to_double(tr_variant const& src, double* tgt)
 {
     if (auto val = src.value_if<double>()) {
         *tgt = *val;
@@ -161,7 +161,7 @@ bool to_double(tr_variant const& src, double* tgt)
     return false;
 }
 
-tr_variant from_double(double const& val)
+[[nodiscard]] tr_variant from_double(double const& val)
 {
     return val;
 }
@@ -178,12 +178,12 @@ auto constexpr EncryptionKeys = to_lookup<tr_encryption_mode>({
     { "allowed", TR_CLEAR_PREFERRED },
 });
 
-bool to_encryption_mode(tr_variant const& src, tr_encryption_mode* tgt)
+[[nodiscard]] bool to_encryption_mode(tr_variant const& src, tr_encryption_mode* tgt)
 {
     return to_enum_or_integral_with_lookup(EncryptionKeys, src, tgt);
 }
 
-tr_variant from_encryption_mode(tr_encryption_mode const& val)
+[[nodiscard]] tr_variant from_encryption_mode(tr_encryption_mode const& val)
 {
     return from_enum_or_integral_with_lookup(EncryptionKeys, val);
 }
@@ -200,19 +200,19 @@ auto constexpr LogKeys = to_lookup<tr_log_level>({
     { "warn", TR_LOG_WARN },
 });
 
-bool to_log_level(tr_variant const& src, tr_log_level* tgt)
+[[nodiscard]] bool to_log_level(tr_variant const& src, tr_log_level* tgt)
 {
     return to_enum_or_integral_with_lookup(LogKeys, src, tgt);
 }
 
-tr_variant from_log_level(tr_log_level const& val)
+[[nodiscard]] tr_variant from_log_level(tr_log_level const& val)
 {
     return static_cast<int64_t>(val);
 }
 
 // ---
 
-bool to_mode_t(tr_variant const& src, tr_mode_t* tgt)
+[[nodiscard]] bool to_mode_t(tr_variant const& src, tr_mode_t* tgt)
 {
     if (auto const val = src.value_if<std::string_view>()) {
         if (auto const mode = tr_num_parse<uint32_t>(*val, nullptr, 8); mode) {
@@ -229,14 +229,14 @@ bool to_mode_t(tr_variant const& src, tr_mode_t* tgt)
     return false;
 }
 
-tr_variant from_mode_t(tr_mode_t const& val)
+[[nodiscard]] tr_variant from_mode_t(tr_mode_t const& val)
 {
     return fmt::format("{:#03o}", val);
 }
 
 // ---
 
-bool to_sched_day(tr_variant const& src, tr_sched_day* tgt)
+[[nodiscard]] bool to_sched_day(tr_variant const& src, tr_sched_day* tgt)
 {
     if (auto const val = src.value_if<int64_t>()) {
         switch (*val) {
@@ -289,14 +289,14 @@ bool to_sched_day(tr_variant const& src, tr_sched_day* tgt)
     return false;
 }
 
-tr_variant from_sched_day(tr_sched_day const& val)
+[[nodiscard]] tr_variant from_sched_day(tr_sched_day const& val)
 {
     return val;
 }
 
 // ---
 
-bool to_msec(tr_variant const& src, std::chrono::milliseconds* tgt)
+[[nodiscard]] bool to_msec(tr_variant const& src, std::chrono::milliseconds* tgt)
 {
     if (auto val = src.value_if<int64_t>()) {
         *tgt = std::chrono::milliseconds(*val);
@@ -306,14 +306,14 @@ bool to_msec(tr_variant const& src, std::chrono::milliseconds* tgt)
     return false;
 }
 
-tr_variant from_msec(std::chrono::milliseconds const& src)
+[[nodiscard]] tr_variant from_msec(std::chrono::milliseconds const& src)
 {
     return src.count();
 }
 
 // ---
 
-bool to_port(tr_variant const& src, tr_port* tgt)
+[[nodiscard]] bool to_port(tr_variant const& src, tr_port* tgt)
 {
     if (auto const val = src.value_if<uint16_t>()) {
         *tgt = tr_port::from_host(*val);
@@ -323,7 +323,7 @@ bool to_port(tr_variant const& src, tr_port* tgt)
     return false;
 }
 
-tr_variant from_port(tr_port const& val)
+[[nodiscard]] tr_variant from_port(tr_port const& val)
 {
     return val.host();
 }
@@ -338,12 +338,12 @@ auto constexpr PreallocationKeys = to_lookup<tr_file_preallocation>({
     { "full", tr_file_preallocation::Full },
 });
 
-bool to_preallocation_mode(tr_variant const& src, tr_file_preallocation* tgt)
+[[nodiscard]] bool to_preallocation_mode(tr_variant const& src, tr_file_preallocation* tgt)
 {
     return to_enum_or_integral_with_lookup(PreallocationKeys, src, tgt);
 }
 
-tr_variant from_preallocation_mode(tr_file_preallocation const& val)
+[[nodiscard]] tr_variant from_preallocation_mode(tr_file_preallocation const& val)
 {
     return static_cast<int64_t>(val);
 }
@@ -356,7 +356,9 @@ auto constexpr PreferredTransportKeys = to_lookup<tr_preferred_transport>({
 });
 static_assert(PreferredTransportKeys.size() == PreferredTransportCount);
 
-bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
+[[nodiscard]] bool to_preferred_transport(
+    tr_variant const& src,
+    small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
 {
     static auto constexpr LoadSingle = [](tr_variant const& var) -> std::optional<tr_preferred_transport> {
         auto tmp = tr_preferred_transport{};
@@ -389,7 +391,8 @@ bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_pre
     return true;
 }
 
-tr_variant from_preferred_transport(small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& val)
+[[nodiscard]] tr_variant from_preferred_transport(
+    small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& val)
 {
     static auto constexpr SaveSingle = [](tr_preferred_transport const ele) -> tr_variant {
         return from_enum_or_integral_with_lookup(PreferredTransportKeys, ele);
@@ -406,7 +409,7 @@ tr_variant from_preferred_transport(small::max_size_vector<tr_preferred_transpor
 
 // ---
 
-bool to_string(tr_variant const& src, std::string* tgt)
+[[nodiscard]] bool to_string(tr_variant const& src, std::string* tgt)
 {
     if (auto const val = src.value_if<std::string_view>()) {
         *tgt = std::string{ *val };
@@ -416,7 +419,7 @@ bool to_string(tr_variant const& src, std::string* tgt)
     return false;
 }
 
-tr_variant from_string(std::string const& val)
+[[nodiscard]] tr_variant from_string(std::string const& val)
 {
     return val;
 }
@@ -460,7 +463,7 @@ auto constexpr DiffServKeys = to_lookup<int>({
     { "lowdelay", 0x10 }, // IPTOS_LOWDELAY
 });
 
-bool to_diffserv_t(tr_variant const& src, tr_diffserv_t* tgt)
+[[nodiscard]] bool to_diffserv_t(tr_variant const& src, tr_diffserv_t* tgt)
 {
     auto tmp = int{};
     if (!to_enum_or_integral_with_lookup(DiffServKeys, src, &tmp)) {
@@ -471,7 +474,7 @@ bool to_diffserv_t(tr_variant const& src, tr_diffserv_t* tgt)
     return true;
 }
 
-tr_variant from_diffserv_t(tr_diffserv_t const& val)
+[[nodiscard]] tr_variant from_diffserv_t(tr_diffserv_t const& val)
 {
     return from_enum_or_integral_with_lookup(DiffServKeys, static_cast<int>(val));
 }
@@ -483,19 +486,19 @@ auto constexpr VerifyModeKeys = to_lookup<tr_verify_added_mode>({
     { "full", TR_VERIFY_ADDED_FULL },
 });
 
-bool to_verify_added_mode(tr_variant const& src, tr_verify_added_mode* tgt)
+[[nodiscard]] bool to_verify_added_mode(tr_variant const& src, tr_verify_added_mode* tgt)
 {
     return to_enum_or_integral_with_lookup(VerifyModeKeys, src, tgt);
 }
 
-tr_variant from_verify_added_mode(tr_verify_added_mode const& val)
+[[nodiscard]] tr_variant from_verify_added_mode(tr_verify_added_mode const& val)
 {
     return from_enum_or_integral_with_lookup(VerifyModeKeys, val);
 }
 
 // ---
 
-bool to_pex(tr_variant const& src, tr_pex* tgt)
+[[nodiscard]] bool to_pex(tr_variant const& src, tr_pex* tgt)
 {
     auto* const map = src.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -528,7 +531,7 @@ bool to_pex(tr_variant const& src, tr_pex* tgt)
     return true;
 }
 
-tr_variant from_pex(tr_pex const& val)
+[[nodiscard]] tr_variant from_pex(tr_pex const& val)
 {
     auto pex = tr_variant::Map{ 2U };
 

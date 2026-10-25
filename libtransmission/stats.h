@@ -74,9 +74,9 @@ public:
     void save_if_dirty();
 
 private:
-    static tr_session_stats add(tr_session_stats const& a, tr_session_stats const& b);
+    [[nodiscard]] static tr_session_stats add(tr_session_stats const& a, tr_session_stats const& b);
 
-    static tr_session_stats load_old_stats(std::string_view config_dir);
+    [[nodiscard]] static tr_session_stats load_old_stats(std::string_view config_dir);
 
     std::string const config_dir_;
     time_t start_time_;

@@ -25,8 +25,8 @@ public:
 
     void refresh();
 
-    static bool is_available();
-    static std::unique_ptr<SystemTrayIcon> create(Gtk::Window& main_window, Glib::RefPtr<Session> const& core);
+    [[nodiscard]] static bool is_available();
+    [[nodiscard]] static std::unique_ptr<SystemTrayIcon> create(Gtk::Window& main_window, Glib::RefPtr<Session> const& core);
 
 private:
     class Impl;

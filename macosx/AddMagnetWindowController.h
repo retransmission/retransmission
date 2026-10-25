@@ -13,6 +13,4 @@
 
 - (instancetype)initWithTorrent:(Torrent*)torrent destination:(NSString*)path controller:(Controller*)controller;
 
-- (void)updateGroupMenu:(NSNotification*)notification;
-
 @end

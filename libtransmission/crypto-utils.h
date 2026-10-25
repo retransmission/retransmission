@@ -131,11 +131,11 @@ void tr_rand_buffer(R& range)
 
 // Client code should use `tr_rand_buffer()`.
 // These helpers are only exposed here to permit open-box tests.
-bool tr_rand_buffer_crypto(std::span<std::byte> buffer);
+[[nodiscard]] bool tr_rand_buffer_crypto(std::span<std::byte> buffer);
 void tr_rand_buffer_std(std::span<std::byte> buffer);
 
 template<typename T>
-T tr_rand_obj()
+[[nodiscard]] T tr_rand_obj()
 {
     auto t = T{};
     tr_rand_buffer(&t, sizeof(T));

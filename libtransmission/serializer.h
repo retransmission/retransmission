@@ -286,11 +286,7 @@ template<Serializable S, Serializable... Ss>
 template<typename T, Serializable S, Serializable... Ss>
 [[nodiscard]] std::optional<T> get(tr_quark const key, S const& src, Ss const&... srcs)
 {
-    if (auto value = to_variant(key, src, srcs...)) {
-        return to_value<T>(*value);
-    }
-
-    return std::nullopt;
+    return to_variant(key, src, srcs...).and_then([](auto const& value) { return to_value<T>(value); });
 }
 
 template<typename T, tr_quark Key, Serializable S>

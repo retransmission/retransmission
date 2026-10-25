@@ -839,17 +839,16 @@ void Session::launchWebInterface() const
 namespace
 {
 
-std::optional<Session::Type> computeType(tr_session const* const session, std::optional<std::string> const& session_id)
+[[nodiscard]] std::optional<Session::Type> computeType(
+    tr_session const* const session,
+    std::optional<std::string> const& session_id)
 {
     if (session != nullptr) {
         return Session::Type::Embedded;
     }
 
-    if (session_id) {
-        return tr_session_id::is_local(*session_id) ? Session::Type::Local : Session::Type::Remote;
-    }
-
-    return std::nullopt;
+    return session_id.transform(
+        [](auto const& id) { return tr_session_id::is_local(id) ? Session::Type::Local : Session::Type::Remote; });
 }
 
 } // namespace

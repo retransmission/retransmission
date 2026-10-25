@@ -120,11 +120,8 @@ namespace global_source_ip_helpers
     // this should be a global unicast address, not Teredo or 6to4
     TR_ASSERT(dst_addr && dst_addr->is_global_unicast() && !dst_addr->is_ipv6_teredo() && !dst_addr->is_ipv6_6to4());
 
-    if (dst_addr) {
-        return get_source_address(*dst_addr, dst_port, bind_addr, bind_interface, err_out);
-    }
-
-    return {};
+    return dst_addr.and_then(
+        [&](auto const& addr) { return get_source_address(addr, dst_port, bind_addr, bind_interface, err_out); });
 }
 
 } // namespace global_source_ip_helpers

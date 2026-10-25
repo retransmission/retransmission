@@ -1,0 +1,9 @@
+"Automatically map port" = "Kartlägg portar automatiskt";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT-genompassering använder antingen NAT-PMP eller UPnP";
+"Peer communication:" = "Jämlikekommunikation:";
+"Prevent computer from sleeping with active torrents" = "Förhindra att datorn går i viloläge med aktiva överföringar";
+"System sleep:" = "System viloläge:";
+"Pick a random port at startup" = "Slumpmässig port vid start";
+"Randomize" = "Slumpmässig";
+"Enable µTP for peer connections" = "Aktivera mikrotransportprotokoll (µTP)";
+"Port for incoming connections:" = "Lyssningsport för jämlike:";

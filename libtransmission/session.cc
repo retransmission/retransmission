@@ -586,7 +586,10 @@ namespace
 {
 namespace queue_helpers
 {
-std::vector<tr_torrent*> get_next_queued_torrents(tr_torrents const& torrents, tr_direction dir, size_t num_wanted)
+[[nodiscard]] std::vector<tr_torrent*> get_next_queued_torrents(
+    tr_torrents const& torrents,
+    tr_direction dir,
+    size_t num_wanted)
 {
     auto candidates = torrents.get_matching([dir](auto const* const tor) { return tor->is_queued(dir); });
 
@@ -1553,7 +1556,7 @@ namespace
 {
 namespace load_torrents_helpers
 {
-auto get_remaining_files(std::string_view folder, std::vector<std::string>& queue_order)
+[[nodiscard]] auto get_remaining_files(std::string_view folder, std::vector<std::string>& queue_order)
 {
     auto files = tr_sys_dir_get_files(folder);
     auto ret = std::vector<std::string>{};
@@ -2185,7 +2188,7 @@ auto constexpr SaveInterval = 360s;
     return dir;
 }
 
-auto makeResumeDir(std::string_view config_dir)
+[[nodiscard]] auto makeResumeDir(std::string_view config_dir)
 {
 #if defined(__APPLE__) || defined(_WIN32)
     return makeSubdir(config_dir, "Resume"sv);
@@ -2194,7 +2197,7 @@ auto makeResumeDir(std::string_view config_dir)
 #endif
 }
 
-auto makeTorrentDir(std::string_view config_dir)
+[[nodiscard]] auto makeTorrentDir(std::string_view config_dir)
 {
 #if defined(__APPLE__) || defined(_WIN32)
     return makeSubdir(config_dir, "Torrents"sv);
@@ -2203,12 +2206,12 @@ auto makeTorrentDir(std::string_view config_dir)
 #endif
 }
 
-auto makeBlocklistDir(std::string_view config_dir)
+[[nodiscard]] auto makeBlocklistDir(std::string_view config_dir)
 {
     return makeSubdir(config_dir, "blocklists"sv);
 }
 
-auto makeConfigDirLock(std::string_view const config_dir)
+[[nodiscard]] auto makeConfigDirLock(std::string_view const config_dir)
 {
     // A dir has to exist before it can be locked,
     // so create it here rather than wait for the first write.

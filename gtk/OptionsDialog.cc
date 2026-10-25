@@ -53,6 +53,7 @@ public:
         OptionsDialog& dialog,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Session> const& core,
+        tr::app::Prefs const& prefs,
         std::unique_ptr<tr_torrent_builder> torrent_builder);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
@@ -214,9 +215,10 @@ OptionsDialog::OptionsDialog(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs,
     std::unique_ptr<tr_torrent_builder> torrent_builder)
     : Gtk::Dialog(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core, std::move(torrent_builder)))
+    , impl_(std::make_unique<Impl>(*this, builder, core, prefs, std::move(torrent_builder)))
 {
     set_transient_for(parent);
 }
@@ -226,17 +228,19 @@ OptionsDialog::~OptionsDialog() = default;
 std::unique_ptr<OptionsDialog> OptionsDialog::create(
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs,
     std::unique_ptr<tr_torrent_builder> torrent_builder)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("OptionsDialog.ui"));
     return std::unique_ptr<OptionsDialog>(
-        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, std::move(torrent_builder)));
+        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, prefs, std::move(torrent_builder)));
 }
 
 OptionsDialog::Impl::Impl(
     OptionsDialog& dialog,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Session> const& core,
+    tr::app::Prefs const& prefs,
     std::unique_ptr<tr_torrent_builder> torrent_builder)
     : dialog_(dialog)
     , core_(core)
@@ -261,7 +265,7 @@ OptionsDialog::Impl::Impl(
 
     auto* destination_chooser = gtr_get_widget_derived<PathButton>(builder, "destination_button");
     destination_chooser->set_filename(downloadDir_);
-    destination_chooser->set_recent_paths(core_->get_recent_download_paths());
+    core_->fetch_recent_paths(TR_KEY_recent_download_paths, sigc::mem_fun(*destination_chooser, &PathButton::set_recent_paths));
 
     destination_chooser->signal_selection_changed().connect(
         [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
@@ -272,7 +276,8 @@ OptionsDialog::Impl::Impl(
     }
 
     run_check_->set_active(!paused.value_or(false));
-    trash_check_->set_active(tr_sessionGetDeleteSource(core_->get_session()));
+    // Prefs, not tr_session: the client's copy of the setting, which exists for every kind of session.
+    trash_check_->set_active(prefs.get<bool>(TR_KEY_trash_original_torrent_files));
 
     /* trigger sourceChanged, either directly or indirectly,
      * so that it creates the tor/gtor objects */

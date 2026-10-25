@@ -1,0 +1,9 @@
+"Automatically map port" = "Открывать порт автоматически";
+"NAT traversal uses either NAT-PMP or UPnP" = "Используя NAT-T с NAT-PMP или UPnP";
+"Peer communication:" = "Связь:";
+"Prevent computer from sleeping with active torrents" = "Отключить при наличии активных раздач";
+"System sleep:" = "Спящий режим:";
+"Pick a random port at startup" = "Cлучайный порт при запуске";
+"Randomize" = "Случайный порт";
+"Enable µTP for peer connections" = "Использовать Micro Transport Protocol (µTP)";
+"Port for incoming connections:" = "Порт прослушивания:";

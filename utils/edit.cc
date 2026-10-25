@@ -15,7 +15,6 @@
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
@@ -51,7 +50,7 @@ static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace
 {
-int parseCommandLine(app_options& opts, int argc, char const* const* argv)
+[[nodiscard]] int parseCommandLine(app_options& opts, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;
@@ -67,6 +66,9 @@ int parseCommandLine(app_options& opts, int argc, char const* const* argv)
             break;
 
         case 'r':
+            if (*optarg == '\0') {
+                return 1;
+            }
             opts.replace[0] = optarg;
             c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg);
 
@@ -97,7 +99,7 @@ int parseCommandLine(app_options& opts, int argc, char const* const* argv)
     return 0;
 }
 
-bool removeURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool removeURL(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -182,7 +184,7 @@ bool removeURL(tr_variant& metainfo, std::string_view url)
     return ret;
 }
 
-bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
+[[nodiscard]] bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -191,7 +193,7 @@ bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view 
 
     bool changed = false;
 
-    if (auto sv_opt = map->value_if<std::string_view>(TR_KEY_announce); sv_opt && tr_strv_contains(*sv_opt, oldval)) {
+    if (auto sv_opt = map->value_if<std::string_view>(TR_KEY_announce); sv_opt && sv_opt->contains(oldval)) {
         auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
         fmt::print("\tReplaced in 'announce': '{:s}' --> '{:s}'\n", *sv_opt, newstr);
         (*map)[TR_KEY_announce] = std::string_view{ newstr };
@@ -204,7 +206,7 @@ bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view 
         for (auto& tier_variant : *al_vec) {
             if (auto* const tier_vec = tier_variant.get_if<tr_variant::Vector>()) {
                 for (auto& node : *tier_vec) {
-                    if (auto sv_opt = node.value_if<std::string_view>(); sv_opt && tr_strv_contains(*sv_opt, oldval)) {
+                    if (auto sv_opt = node.value_if<std::string_view>(); sv_opt && sv_opt->contains(oldval)) {
                         auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
                         fmt::print(
                             "\tReplaced in 'announce-list' tier #{:d}: '{:s}' --> '{:s}'\n",
@@ -238,7 +240,7 @@ bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view 
     return false;
 }
 
-bool addURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool addURL(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -283,7 +285,7 @@ bool addURL(tr_variant& metainfo, std::string_view url)
     return changed;
 }
 
-bool setSource(tr_variant& metainfo, std::string_view source_value)
+[[nodiscard]] bool setSource(tr_variant& metainfo, std::string_view source_value)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -318,6 +320,7 @@ int tr_main(int argc, char* argv[])
 
     auto options = app_options{};
     if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
+        tr_getopt_usage(MyName, Usage, std::data(Options));
         return EXIT_FAILURE;
     }
 

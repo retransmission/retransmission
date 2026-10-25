@@ -43,8 +43,8 @@ public slots:
     void clear();
 
 private:
-    FilterBarComboBox* createTrackerCombo(QStandardItemModel* model);
-    FilterBarComboBox* createActivityCombo();
+    [[nodiscard]] FilterBarComboBox* createTrackerCombo(QStandardItemModel* model);
+    [[nodiscard]] FilterBarComboBox* createActivityCombo();
     void refreshTrackers();
 
     enum : uint8_t {

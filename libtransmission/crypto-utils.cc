@@ -35,7 +35,7 @@ namespace ssha1_impl
 auto constexpr DigestStringSize = tr_sha1_string::Strlen;
 auto constexpr SaltedPrefix = "{"sv;
 
-std::string tr_salt(std::string_view plaintext, std::string_view salt)
+[[nodiscard]] std::string tr_salt(std::string_view plaintext, std::string_view salt)
 {
     static_assert(DigestStringSize == 40);
 
@@ -114,8 +114,8 @@ constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_le
     auto* output = static_cast<uint8_t*>(voutput);
 
     for (size_t i = 0; i < byte_length; ++i) {
-        auto const upper_nibble = Hex.find(static_cast<char>(std::tolower(*input++)));
-        auto const lower_nibble = Hex.find(static_cast<char>(std::tolower(*input++)));
+        auto const upper_nibble = Hex.find(static_cast<char>(std::tolower(static_cast<unsigned char>(*input++))));
+        auto const lower_nibble = Hex.find(static_cast<char>(std::tolower(static_cast<unsigned char>(*input++))));
         *output++ = static_cast<uint8_t>((upper_nibble << 4) | lower_nibble);
     }
 }

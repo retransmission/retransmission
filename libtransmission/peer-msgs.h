@@ -132,7 +132,7 @@ public:
         tr_socket_address const& addr,
         bep55::ErrorCode err_code = bep55::ErrNonError) = 0;
 
-    static std::shared_ptr<tr_peerMsgs> create(
+    [[nodiscard]] static std::shared_ptr<tr_peerMsgs> create(
         tr_torrent& torrent,
         std::shared_ptr<tr_peer_info> peer_info,
         std::shared_ptr<tr_peerIo> io,

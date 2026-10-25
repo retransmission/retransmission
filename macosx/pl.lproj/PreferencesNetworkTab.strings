@@ -1,0 +1,9 @@
+"Automatically map port" = "Automatyczne mapowanie portu";
+"NAT traversal uses either NAT-PMP or UPnP" = "Przechodzenie NAT używa NAT-PMP lub UPnP";
+"Peer communication:" = "Komunikacja z partnerami:";
+"Prevent computer from sleeping with active torrents" = "Uniemożliwienie uśpienia komputera, kiedy są aktywne przesyłania";
+"System sleep:" = "Uśpienie komputera:";
+"Pick a random port at startup" = "Losowanie portu podczas uruchamiania";
+"Randomize" = "Losowanie";
+"Enable µTP for peer connections" = "Włączenie µTP (Micro Transport Protocol)";
+"Port for incoming connections:" = "Port nasłuchiwania partnerów:";

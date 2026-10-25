@@ -1029,7 +1029,7 @@ namespace make_torrent_field_helpers
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot be empty"s };
             }
 
-            if (tr_strv_contains(label, ',')) {
+            if (label.contains(',')) {
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 
@@ -1063,6 +1063,7 @@ namespace make_torrent_field_helpers
     if (std::empty(files_vec)) // if empty set, apply to all
     {
         files.resize(n_files);
+        // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
         std::iota(std::begin(files), std::end(files), 0);
     } else {
         for (auto const& file_var : files_vec) {
@@ -1569,7 +1570,7 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
     delete data;
 }
 
-bool isCurlURL(std::string_view url)
+[[nodiscard]] bool isCurlURL(std::string_view url)
 {
     auto constexpr Schemes = std::to_array<std::string_view>({ "http"sv, "https"sv, "ftp"sv, "sftp"sv });
     auto const parsed = tr_urlParse(url);
@@ -2061,7 +2062,6 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
     map.try_emplace(
         TR_KEY_download_dir_free_space,
         [](tr_session const& src) -> tr_variant {
-            // TODO(C++23): use std::optional::transform() instead
             if (auto const space = tr_sys_path_get_capacity(src.downloadDir())) {
                 return space->available;
             }

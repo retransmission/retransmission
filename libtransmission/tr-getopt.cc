@@ -94,7 +94,7 @@ void maxWidth(struct tr_option const* o, size_t& long_width, size_t& short_width
     }
 }
 
-tr_option const* findOption(tr_option const* opts, char const* str, char const** setme_arg)
+[[nodiscard]] tr_option const* findOption(tr_option const* opts, char const* str, char const** setme_arg)
 {
     size_t matchlen = 0;
     char const* arg = nullptr;
@@ -168,7 +168,7 @@ void tr_getopt_usage(char const* app_name, char const* description, struct tr_op
     }
 
     printf(description, app_name);
-    printf("\n\nOptions:\n");
+    fmt::print("\n\nOptions:\n");
     getopts_usage_line(&help, long_width, short_width, arg_width);
 
     for (tr_option const* o = opts; o->val != 0; ++o) {

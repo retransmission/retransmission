@@ -42,7 +42,7 @@ class ListModelAdapter
 
 public:
     template<typename T>
-    static Glib::RefPtr<ListModelAdapter> create(Glib::RefPtr<Gio::ListModel> const& adaptee)
+    [[nodiscard]] static Glib::RefPtr<ListModelAdapter> create(Glib::RefPtr<Gio::ListModel> const& adaptee)
     {
         return Glib::make_refptr_for_instance(
             // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
@@ -71,7 +71,7 @@ private:
         IdGetter id_getter,
         ValueGetter value_getter);
 
-    std::optional<guint> find_item_position_by_id(int item_id) const;
+    [[nodiscard]] std::optional<guint> find_item_position_by_id(int item_id) const;
     void adjust_item_positions(guint min_position, PositionAdjustment adjustment);
 
     void on_adaptee_items_changed(guint position, guint removed, guint added);

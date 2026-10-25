@@ -5,14 +5,6 @@
 
 #pragma once
 
-#if __cplusplus >= 202302L // _MSVC_LANG value for C++23 not available yet
-#define TR_CONSTEXPR23 constexpr
-#else
-#define TR_CONSTEXPR23
-#endif
-
-// ---
-
 #ifdef _WIN32
 #define TR_IF_WIN32(ThenValue, ElseValue) ThenValue
 #else

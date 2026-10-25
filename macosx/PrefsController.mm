@@ -8,18 +8,15 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 
-#import "VDKQueue.h"
-
 #import "PrefsController.h"
 #import "BlocklistDownloaderViewController.h"
 #import "Controller.h"
 #import "DefaultAppHelper.h"
-#import "PortChecker.h"
 #import "BonjourController.h"
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
-#import "Utils.h"
 #import "PrefsGeneralTabViewController.h"
+#import "PrefsNetworkTabViewController.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
     DownloadPopupIndexFolder = 0,
@@ -46,20 +43,6 @@ static char const* const kRPCKeychainName = "Remote";
 
 static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
-static NSString* TRDisplayableBindInterface(NSString* bindInterface)
-{
-    return [bindInterface isEqualToString:TRBlockedBindInterfaceName] ? @"" : (bindInterface ?: @"");
-}
-
-static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
-{
-    if ([bindInterface isEqualToString:TRBlockedBindInterfaceName]) {
-        return NSLocalizedString(@"No active VPN; traffic blocked", "Preferences -> Network -> bind interface info");
-    }
-
-    return bindInterface.length > 0 ? bindInterface : NSLocalizedString(@"Automatic", "Preferences -> Network -> bind interface info");
-}
-
 @interface PrefsController ()<NSWindowRestoration>
 
 @property(nonatomic, readonly) tr_session* fHandle;
@@ -67,10 +50,10 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 @property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
+@property(nonatomic) PrefsNetworkTabViewController* networkViewController;
 @property(nonatomic) IBOutlet NSView* fTransfersView;
 @property(nonatomic) IBOutlet NSView* fBandwidthView;
 @property(nonatomic) IBOutlet NSView* fPeersView;
-@property(nonatomic) IBOutlet NSView* fNetworkView;
 @property(nonatomic) IBOutlet NSView* fRemoteView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
 
@@ -100,28 +83,12 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 @property(nonatomic) IBOutlet NSTextField* fBlocklistDateField;
 @property(nonatomic) IBOutlet NSButton* fBlocklistButton;
 
-@property(nonatomic) PortChecker* fPortChecker;
-@property(nonatomic) IBOutlet NSTextField* fPortField;
-@property(nonatomic) IBOutlet NSTextField* fPortStatusField;
-@property(nonatomic) IBOutlet NSButton* fNatCheck;
-@property(nonatomic) IBOutlet NSImageView* fPortStatusImage;
-@property(nonatomic) IBOutlet NSProgressIndicator* fPortStatusProgress;
-@property(nonatomic) IBOutlet NSPopUpButton* fBindInterfacePopUp;
-@property(nonatomic) IBOutlet NSTextField* fBindInterfaceStatusField;
-@property(nonatomic) IBOutlet NSButton* fBindInterfaceInfoButton;
-@property(nonatomic) NSPopover* fBindInterfaceInfoPopover;
-@property(nonatomic, copy) NSString* fActiveVPNPortProbeBindInterface;
-@property(nonatomic) NSTimer* fPortStatusTimer;
-@property(nonatomic) int fPeerPort, fNatStatus;
-
 @property(nonatomic) IBOutlet NSTextField* fRPCPortField;
 @property(nonatomic) IBOutlet NSTextField* fRPCPasswordField;
 @property(nonatomic) IBOutlet NSTableView* fRPCWhitelistTable;
 @property(nonatomic, readonly) NSMutableArray<NSString*>* fRPCWhitelistArray;
 @property(nonatomic) IBOutlet NSSegmentedControl* fRPCAddRemoveControl;
 @property(nonatomic, copy) NSString* fRPCPassword;
-
-- (void)activeVPNBindInterfaceDidChange:(NSNotification*)notification;
 
 @end
 
@@ -139,13 +106,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
         }
 
-        //set auto import
-        NSString* autoPath;
-        if ([_fDefaults boolForKey:@"AutoImport"] && (autoPath = [_fDefaults stringForKey:@"AutoImportDirectory"])) {
-            [((Controller*)NSApp.delegate).fileWatcherQueue addPath:autoPath.stringByExpandingTildeInPath
-                                                     notifyingAbout:VDKQueueNotifyAboutWrite];
-        }
-
         //set encryption
         [self setEncryptionMode:nil];
 
@@ -157,18 +117,10 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
         [self updateRPCWhitelist];
 
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
+        _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
     }
 
     return self;
-}
-
-- (void)dealloc
-{
-    [NSNotificationCenter.defaultCenter removeObserver:self];
-    [_fPortStatusTimer invalidate];
-    if (_fPortChecker) {
-        [_fPortChecker cancelProbe];
-    }
 }
 
 - (void)awakeFromNib
@@ -214,19 +166,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     self.fSpeedLimitUploadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitUploadLimit"];
     self.fSpeedLimitDownloadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitDownloadLimit"];
 
-    //set port
-    self.fPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"BindPort"]);
-    self.fNatStatus = -1;
-
-    [self updateBindInterfaceMenu];
-
-    [self updatePortStatus];
-
-    __weak __auto_type weakSelf = self;
-    self.fPortStatusTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 repeats:YES block:^(NSTimer* _Nonnull) {
-        [weakSelf updatePortStatus];
-    }];
-
     //set peer connections
     self.fPeersGlobalField.integerValue = [self.fDefaults integerForKey:@"PeersTotal"];
     self.fPeersTorrentField.integerValue = [self.fDefaults integerForKey:@"PeersTorrent"];
@@ -260,10 +199,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateBlocklistURLField)
                                                name:NSControlTextDidChangeNotification
                                              object:self.fBlocklistURLField];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(activeVPNBindInterfaceDidChange:)
-                                               name:TRActiveVPNBindInterfaceDidChangeNotification
-                                             object:nil];
 
     //set rpc port
     self.fRPCPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"RPCPort"]);
@@ -371,231 +306,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     [self.window setFrame:windowRect display:YES animate:NO];
 }
 
-- (void)setPort:(id)sender
-{
-    uint16_t const port = [sender intValue];
-    [self.fDefaults setInteger:port forKey:@"BindPort"];
-    tr_sessionSetPeerPort(self.fHandle, port);
-
-    self.fPeerPort = -1;
-    [self updatePortStatus];
-}
-
-- (void)randomPort:(id)sender
-{
-    auto const port = tr_sessionSetPeerPortRandom(self.fHandle);
-    [self.fDefaults setInteger:port forKey:@"BindPort"];
-    self.fPortField.intValue = port;
-
-    self.fPeerPort = -1;
-    [self updatePortStatus];
-}
-
-- (void)setRandomPortOnStart:(id)sender
-{
-    tr_sessionSetPeerPortRandomOnStart(self.fHandle, ((NSButton*)sender).state == NSControlStateValueOn);
-}
-
-- (void)setNat:(id)sender
-{
-    tr_sessionSetPortForwardingEnabled(self.fHandle, [self.fDefaults boolForKey:@"NatTraversal"]);
-
-    self.fNatStatus = -1;
-    [self updatePortStatus];
-}
-
-- (BOOL)usesActiveVPNBindInterface
-{
-    return [[self.fDefaults stringForKey:@"BindInterfaceMode"] isEqualToString:TRBindInterfaceModeActiveVPN];
-}
-
-- (NSString*)bindInterfaceStatusString
-{
-    if (![self usesActiveVPNBindInterface]) {
-        NSString* bindInterface = TRDisplayableBindInterface([self.fDefaults stringForKey:@"BindInterface"]);
-        return bindInterface.length > 0 ?
-            [NSString stringWithFormat:NSLocalizedString(@"Literal interface: %@", "Preferences -> Network -> bind interface status"),
-                                       bindInterface] :
-            NSLocalizedString(@"Automatic default connection", "Preferences -> Network -> bind interface status");
-    }
-
-    NSDictionary<NSString*, id>* status = [((Controller*)NSApp.delegate) activeVPNBindInterfaceStatus];
-    NSString* resolvedInterface = status[TRActiveVPNResolutionInterfaceKey];
-    NSString* displayName = status[TRActiveVPNResolutionDisplayNameKey];
-    NSArray<NSString*>* candidates = status[TRActiveVPNResolutionCandidatesKey];
-    if ([status[TRActiveVPNResolutionActiveKey] boolValue]) {
-        return [NSString stringWithFormat:NSLocalizedString(@"Active VPN Tunnel: %@", "Preferences -> Network -> bind interface status"),
-                                          displayName.length > 0 ? displayName : resolvedInterface];
-    }
-    if (candidates.count > 1) {
-        return NSLocalizedString(@"VPN tunnel ambiguous; traffic blocked", "Preferences -> Network -> bind interface status");
-    }
-
-    NSString* lastInterface = TRDisplayableBindInterface([self.fDefaults stringForKey:@"BindInterface"]);
-    return lastInterface.length > 0 ?
-        [NSString stringWithFormat:NSLocalizedString(@"No active VPN; blocked on %@", "Preferences -> Network -> bind interface status"),
-                                   lastInterface] :
-        NSLocalizedString(@"No active VPN; traffic blocked", "Preferences -> Network -> bind interface status");
-}
-
-- (NSString*)bindInterfaceInfoString
-{
-    NSDictionary<NSString*, id>* status = [((Controller*)NSApp.delegate) activeVPNBindInterfaceStatus];
-    NSString* routeInterface = status[TRActiveVPNResolutionRouteInterfaceKey];
-    NSArray<NSString*>* candidates = status[TRActiveVPNResolutionCandidatesKey];
-    NSString* resolvedInterface = status[TRActiveVPNResolutionInterfaceKey];
-    NSString* serviceName = status[TRActiveVPNResolutionServiceNameKey];
-    NSString* providerIdentifier = status[TRActiveVPNResolutionProviderIdentifierKey];
-    NSString* sessionInterface = tr_strv_to_utf8_nsstring(tr_sessionGetBindInterface(self.fHandle));
-
-    return [NSString
-        stringWithFormat:@"%@\n%@: %@\n%@: %@\n%@: %@\n%@: %@\n%@: %@\n%@: %@",
-                         [self usesActiveVPNBindInterface] ?
-                             NSLocalizedString(@"Mode: Active VPN Tunnel", "Preferences -> Network -> bind interface info") :
-                             NSLocalizedString(@"Mode: Literal Interface", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"Resolved interface", "Preferences -> Network -> bind interface info"),
-                         resolvedInterface.length > 0 ? resolvedInterface :
-                                                        NSLocalizedString(@"None", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"VPN service", "Preferences -> Network -> bind interface info"),
-                         serviceName.length > 0 ? serviceName : NSLocalizedString(@"Unknown", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"Provider", "Preferences -> Network -> bind interface info"),
-                         providerIdentifier.length > 0 ? providerIdentifier :
-                                                         NSLocalizedString(@"Unknown", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"Current route", "Preferences -> Network -> bind interface info"),
-                         routeInterface.length > 0 ? routeInterface : NSLocalizedString(@"Unknown", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"VPN candidates", "Preferences -> Network -> bind interface info"),
-                         candidates.count > 0 ? [candidates componentsJoinedByString:@", "] :
-                                                NSLocalizedString(@"None", "Preferences -> Network -> bind interface info"),
-                         NSLocalizedString(@"Session bind", "Preferences -> Network -> bind interface info"),
-                         TRDisplayableSessionBindInterface(sessionInterface)];
-}
-
-- (void)updateBindInterfaceStatus
-{
-    self.fBindInterfaceStatusField.stringValue = [self bindInterfaceStatusString];
-    self.fBindInterfaceStatusField.toolTip = [self bindInterfaceInfoString];
-}
-
-- (void)activeVPNBindInterfaceDidChange:(NSNotification*)notification
-{
-    NSDictionary<NSString*, id>* status = [notification.userInfo isKindOfClass:NSDictionary.class] ? notification.userInfo : @{};
-    NSString* resolvedInterface = status[TRActiveVPNResolutionInterfaceKey];
-    NSString* activeVPNBindInterface = resolvedInterface.length > 0 ? resolvedInterface : TRBlockedBindInterfaceName;
-    BOOL const probeBindChanged = ![self.fActiveVPNPortProbeBindInterface isEqualToString:activeVPNBindInterface];
-
-    [self updateBindInterfaceMenu];
-
-    if ([self usesActiveVPNBindInterface] && probeBindChanged) {
-        self.fActiveVPNPortProbeBindInterface = activeVPNBindInterface;
-        self.fPeerPort = -1;
-        self.fNatStatus = -1;
-        [self updatePortStatus];
-    }
-}
-
-- (void)showBindInterfaceInfo:(id)sender
-{
-    NSViewController* viewController = [[NSViewController alloc] init];
-    NSTextField* textField = [NSTextField wrappingLabelWithString:[self bindInterfaceInfoString]];
-    textField.frame = NSMakeRect(0.0, 0.0, 320.0, 150.0);
-
-    NSView* view = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 340.0, 170.0)];
-    textField.translatesAutoresizingMaskIntoConstraints = NO;
-    [view addSubview:textField];
-    [NSLayoutConstraint activateConstraints:@[
-        [textField.leadingAnchor constraintEqualToAnchor:view.leadingAnchor constant:10.0],
-        [textField.trailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:-10.0],
-        [textField.topAnchor constraintEqualToAnchor:view.topAnchor constant:10.0],
-        [textField.bottomAnchor constraintLessThanOrEqualToAnchor:view.bottomAnchor constant:-10.0],
-    ]];
-
-    viewController.view = view;
-    self.fBindInterfaceInfoPopover = [[NSPopover alloc] init];
-    self.fBindInterfaceInfoPopover.contentViewController = viewController;
-    self.fBindInterfaceInfoPopover.behavior = NSPopoverBehaviorTransient;
-    [self.fBindInterfaceInfoPopover showRelativeToRect:self.fBindInterfaceInfoButton.bounds ofView:self.fBindInterfaceInfoButton
-                                         preferredEdge:NSRectEdgeMaxY];
-}
-
-- (void)updateBindInterfaceMenu
-{
-    TRPopulateAppBindInterfacePopUp(
-        self.fBindInterfacePopUp,
-        [self.fDefaults stringForKey:@"BindInterface"],
-        [self.fDefaults stringForKey:@"BindInterfaceMode"] ?: TRBindInterfaceModeLiteral);
-    [self updateBindInterfaceStatus];
-}
-
-- (void)setBindInterface:(id)sender
-{
-    NSString* bindInterfaceMode = TRBindInterfacePopUpModeValue(self.fBindInterfacePopUp);
-    [self.fDefaults setObject:bindInterfaceMode forKey:@"BindInterfaceMode"];
-    // forget the VPN an earlier choice resolved to, so this one binds to the VPN active now
-    [self.fDefaults setObject:@"" forKey:TRBindInterfaceServiceNameDefaultsKey];
-    [self.fDefaults setObject:@"" forKey:TRBindInterfaceProviderIdentifierDefaultsKey];
-
-    if ([bindInterfaceMode isEqualToString:TRBindInterfaceModeActiveVPN]) {
-        [((Controller*)NSApp.delegate) updateActiveVPNBindInterfacePreference];
-    } else {
-        NSString* bindInterface = TRBindInterfacePopUpValue(self.fBindInterfacePopUp);
-        [self.fDefaults setObject:bindInterface forKey:@"BindInterface"];
-        tr_sessionSetBindInterface(self.fHandle, bindInterface.UTF8String);
-    }
-
-    self.fPeerPort = -1;
-    self.fNatStatus = -1;
-    [self updateBindInterfaceMenu];
-    [self updatePortStatus];
-}
-
-- (void)updatePortStatus
-{
-    auto const fwd = tr_sessionGetPortForwarding(self.fHandle);
-    int const port = tr_sessionGetPeerPort(self.fHandle);
-    BOOL natStatusChanged = (self.fNatStatus != fwd);
-    BOOL peerPortChanged = (self.fPeerPort != port);
-
-    if (natStatusChanged || peerPortChanged) {
-        self.fNatStatus = fwd;
-        self.fPeerPort = port;
-
-        self.fPortStatusField.stringValue = @"";
-        self.fPortStatusImage.image = nil;
-        [self.fPortStatusProgress startAnimation:self];
-
-        if (self.fPortChecker) {
-            [self.fPortChecker cancelProbe];
-        }
-        BOOL delay = natStatusChanged || tr_sessionIsPortForwardingEnabled(self.fHandle);
-        self.fPortChecker = [[PortChecker alloc] initForPort:self.fPeerPort delay:delay withDelegate:self];
-    }
-}
-
-- (void)portCheckerDidFinishProbing:(PortChecker*)portChecker
-{
-    [self.fPortStatusProgress stopAnimation:self];
-    switch (self.fPortChecker.status) {
-    case PortStatusOpen:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is open", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusAvailable];
-        break;
-    case PortStatusClosed:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is closed", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
-        break;
-    case PortStatusError:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port check site is down", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
-        break;
-    case PortStatusChecking:
-        break;
-    default:
-        NSAssert(NO, @"Port checker returned invalid status: %lu", self.fPortChecker.status);
-        break;
-    }
-    self.fPortChecker = nil;
-}
-
 - (NSArray<NSString*>*)sounds
 {
     NSMutableArray* sounds = [NSMutableArray array];
@@ -627,11 +337,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     if ((sound = [NSSound soundNamed:[sender titleOfSelectedItem]])) {
         [sound play];
     }
-}
-
-- (void)setUTP:(id)sender
-{
-    tr_sessionSetUTPEnabled(self.fHandle, [self.fDefaults boolForKey:@"UTPGlobal"]);
 }
 
 - (void)setPeersGlobal:(id)sender
@@ -1078,16 +783,7 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 
 - (void)setAutoImport:(id)sender
 {
-    NSString* path;
-    if ((path = [self.fDefaults stringForKey:@"AutoImportDirectory"])) {
-        VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-        if ([self.fDefaults boolForKey:@"AutoImport"]) {
-            path = path.stringByExpandingTildeInPath;
-            [watcherQueue addPath:path notifyingAbout:VDKQueueNotifyAboutWrite];
-        } else {
-            [watcherQueue removeAllPaths];
-        }
-
+    if ([self.fDefaults stringForKey:@"AutoImportDirectory"]) {
         [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
     } else {
         [self importFolderSheetShow:nil];
@@ -1106,12 +802,8 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
-            VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-            [watcherQueue removeAllPaths];
-
             NSString* path = (panel.URLs[0]).path;
             [self.fDefaults setObject:path forKey:@"AutoImportDirectory"];
-            [watcherQueue addPath:path.stringByExpandingTildeInPath notifyingAbout:VDKQueueNotifyAboutWrite];
 
             [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
         } else {
@@ -1288,12 +980,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
                                              inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
 }
 
-- (void)helpForNetwork:(id)sender
-{
-    [NSHelpManager.sharedHelpManager openHelpAnchor:@"network"
-                                             inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
-}
-
 - (void)helpForRemote:(id)sender
 {
     [NSHelpManager.sharedHelpManager openHelpAnchor:@"remote"
@@ -1354,19 +1040,10 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     BOOL const nat = tr_sessionIsPortForwardingEnabled(self.fHandle);
     [self.fDefaults setBool:nat forKey:@"NatTraversal"];
 
-    if ([self usesActiveVPNBindInterface]) {
-        [((Controller*)NSApp.delegate) updateActiveVPNBindInterfacePreference];
-    } else {
-        [self.fDefaults setObject:tr_strv_to_utf8_nsstring(tr_sessionGetBindInterface(self.fHandle)) forKey:@"BindInterface"];
-    }
-    [self updateBindInterfaceMenu];
-
-    self.fPeerPort = -1;
-    self.fNatStatus = -1;
-    [self updatePortStatus];
-
     BOOL const randomPort = tr_sessionGetPeerPortRandomOnStart(self.fHandle);
     [self.fDefaults setBool:randomPort forKey:@"RandomPort"];
+
+    [self.networkViewController updateBindInterfaceFromSession];
 
     //speed limit - down
     BOOL const downLimitEnabled = tr_sessionIsSpeedLimited(self.fHandle, tr_direction::Down);
@@ -1471,7 +1148,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 
         //lpd handled by bindings
 
-        self.fPortField.intValue = port;
         //port forwarding (nat) handled by bindings
         //random port handled by bindings
 
@@ -1535,8 +1211,7 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     } else if ([identifier isEqualToString:ToolbarTabPeers]) {
         view = self.fPeersView;
     } else if ([identifier isEqualToString:ToolbarTabNetwork]) {
-        view = self.fNetworkView;
-        [self updateBindInterfaceMenu];
+        view = self.networkViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
         view = self.fRemoteView;
     } else {

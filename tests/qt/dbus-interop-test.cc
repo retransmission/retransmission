@@ -72,13 +72,13 @@ public:
 
 public slots:
     // NOLINTBEGIN(readability-identifier-naming)
-    bool AddMetainfo(QString const& metainfo)
+    [[nodiscard]] bool AddMetainfo(QString const& metainfo)
     {
         record(metainfo);
         return true;
     }
 
-    bool PresentWindow()
+    [[nodiscard]] bool PresentWindow()
     {
         record(QStringLiteral("PresentWindow"));
         return true;
@@ -118,7 +118,7 @@ public slots:
         return config_dir_;
     }
 
-    bool PresentWindowWithToken(QString const& activation_token)
+    [[nodiscard]] bool PresentWindowWithToken(QString const& activation_token)
     {
         record(QStringLiteral("PresentWindowWithToken ") + activation_token);
         return true;

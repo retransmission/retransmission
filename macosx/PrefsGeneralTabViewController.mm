@@ -4,8 +4,9 @@
 
 #import "PrefsGeneralTabViewController.h"
 #import "DefaultAppHelper.h"
+#import "PrefsUI.h"
 
-#define LStr(key) NSLocalizedStringFromTable(key, @"Preferences", @"")
+#define LStr(key) NSLocalizedStringFromTable(key, @"PreferencesGeneralTab", @"")
 
 @interface PrefsGeneralTabViewController ()
 
@@ -108,13 +109,6 @@
 
 #pragma mark - Layout Setup
 
-static NSView* indentedView(NSView* view)
-{
-    NSStackView* const stack = [NSStackView stackViewWithViews:@[ view ]];
-    stack.edgeInsets = { 0, 19, 0, 0 };
-    return stack;
-}
-
 - (void)setupLayoutInView:(NSView*)parent
 {
     NSGridView* gridView = [[NSGridView alloc] init];
@@ -135,11 +129,11 @@ static NSView* indentedView(NSView* view)
 
     [gridView addRowWithViews:@[ [NSTextField labelWithString:LStr(@"Prompt user for:")], self.fPromptRemoveButton ]];
 
-    [gridView addRowWithViews:@[ NSGridCell.emptyContentView, indentedView(self.fPromptRemoveDownloadingButton) ]];
+    [gridView addRowWithViews:@[ NSGridCell.emptyContentView, [PrefsUI indentedView:self.fPromptRemoveDownloadingButton] ]];
 
     [gridView addRowWithViews:@[ NSGridCell.emptyContentView, self.fPromptQuitButton ]];
 
-    [gridView addRowWithViews:@[ NSGridCell.emptyContentView, indentedView(self.fPromptQuitDownloadingButton) ]];
+    [gridView addRowWithViews:@[ NSGridCell.emptyContentView, [PrefsUI indentedView:self.fPromptQuitDownloadingButton] ]];
 
     [gridView addRowWithViews:@[ [NSTextField labelWithString:LStr(@"Reset all alerts:")], self.fResetWarningsButton ]];
 

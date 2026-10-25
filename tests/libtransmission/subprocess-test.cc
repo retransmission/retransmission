@@ -36,7 +36,7 @@ namespace tr::test
 
 namespace
 {
-std::string getTestProgramPath(std::string_view const filename)
+[[nodiscard]] std::string getTestProgramPath(std::string_view const filename)
 {
     auto const exe_path = tr_sys_path_resolve(testing::internal::GetArgvs().front());
     auto const exe_dir = tr_sys_path_dirname(exe_path);

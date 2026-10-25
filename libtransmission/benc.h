@@ -22,9 +22,9 @@ namespace tr::benc
 namespace impl
 {
 
-std::optional<int64_t> ParseInt(std::string_view* benc);
+[[nodiscard]] std::optional<int64_t> ParseInt(std::string_view* benc);
 
-std::optional<std::string_view> ParseString(std::string_view* benc);
+[[nodiscard]] std::optional<std::string_view> ParseString(std::string_view* benc);
 
 } // namespace impl
 
@@ -216,7 +216,7 @@ struct ParserStack {
         return depth > 0 && stack[depth].parent_type == ParentType::Dict && (stack[depth].n_children_walked % 2) == 0;
     }
 
-    std::optional<ParentType> pop(tr_error& error)
+    [[nodiscard]] std::optional<ParentType> pop(tr_error& error)
     {
         if (depth == 0) {
             error.set(EILSEQ, "Cannot pop empty stack");
@@ -233,7 +233,7 @@ struct ParserStack {
         return ret;
     }
 
-    bool push(ParentType parent_type, tr_error& error)
+    [[nodiscard]] bool push(ParentType parent_type, tr_error& error)
     {
         if (depth + 1 >= std::size(stack)) {
             error.set(E2BIG, "Max stack depth reached; unable to continue parsing");

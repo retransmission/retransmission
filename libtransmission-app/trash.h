@@ -26,6 +26,6 @@ using TrashFunc = std::function<bool(std::string_view path, std::string& why)>;
 // so a refused folder costs one trash try and one warning.
 //
 // A failed delete goes into `error`, or into the log when `error` is null.
-bool trash_or_remove(std::string_view path, tr_error* error, TrashFunc const& trash);
+[[nodiscard]] bool trash_or_remove(std::string_view path, tr_error* error, TrashFunc const& trash);
 
 } // namespace tr::app

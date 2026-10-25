@@ -155,7 +155,7 @@ std::string tr_win32_format_message(uint32_t code)
     LocalFree(wide_text);
 
     // Most (all?) messages contain "\r\n" in the end, chop it
-    while (!std::empty(text) && isspace(text.back()) != 0) {
+    while (!std::empty(text) && isspace(static_cast<unsigned char>(text.back())) != 0) {
         text.resize(text.size() - 1);
     }
 

@@ -536,7 +536,7 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
     });
 
     for (auto const& [substr, code] : Phrases) {
-        if (tr_strv_contains(result, substr)) {
+        if (result.contains(substr)) {
             return code;
         }
     }

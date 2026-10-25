@@ -54,7 +54,7 @@ namespace
 class FileTest : public SandboxedTest
 {
 protected:
-    auto createTestDir(std::string const& child_name)
+    [[nodiscard]] auto createTestDir(std::string const& child_name)
     {
         auto test_dir = tr_pathbuf{ sandboxDir(), '/', child_name };
         tr_sys_dir_create(test_dir, 0, 0777);
@@ -91,7 +91,7 @@ protected:
         *info = {};
     }
 
-    static bool pathContainsNoSymlinks(char const* path)
+    [[nodiscard]] static bool pathContainsNoSymlinks(char const* path)
     {
         char const* p = path;
 
@@ -122,7 +122,7 @@ protected:
         return true;
     }
 
-    static bool validatePermissions([[maybe_unused]] char const* path, [[maybe_unused]] unsigned int permissions)
+    [[nodiscard]] static bool validatePermissions([[maybe_unused]] char const* path, [[maybe_unused]] unsigned int permissions)
     {
 #ifndef _WIN32
         struct stat sb = {};

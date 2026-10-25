@@ -23,7 +23,7 @@ protected:
 public:
     static void tr_evthread_init();
 
-    static std::unique_ptr<tr_session_thread> create();
+    [[nodiscard]] static std::unique_ptr<tr_session_thread> create();
     virtual ~tr_session_thread() = default;
 
     [[nodiscard]] virtual struct event_base* event_base() noexcept = 0;

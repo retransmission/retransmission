@@ -1,0 +1,12 @@
+"Automatically map port" = "Automatically map port";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT traversal uses either NAT-PMP or UPnP";
+"Peer communication:" = "Peer communication:";
+"Prevent computer from sleeping with active torrents" = "Prevent computer from sleeping with active torrents";
+"System sleep:" = "System sleep:";
+"Pick a random port at startup" = "Pick a random port at startup";
+"Randomize" = "Randomize";
+"Enable µTP for peer connections" = "Enable µTP for peer connections";
+"Port for incoming connections:" = "Port for incoming connections:";
+"Bind connection:" = "Bind connection:";
+"Choose which network connection Retransmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable. Name lookups for trackers and web seeds use the system resolver and are not routed through the selected connection." = "Choose which network connection Retransmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable. Name lookups for trackers and web seeds use the system resolver and are not routed through the selected connection.";
+"Show details about the current bind connection." = "Show details about the current bind connection.";

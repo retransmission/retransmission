@@ -617,7 +617,7 @@ void renderPriority(Gtk::CellRenderer* renderer, Gtk::TreeModel::const_iterator 
 }
 
 /* build a filename from tr_torrentGetCurrentDir() + the model's FC_LABELs */
-std::string build_filename(tr_torrent const* tor, Gtk::TreeModel::iterator const& iter)
+[[nodiscard]] std::string build_filename(tr_torrent const* tor, Gtk::TreeModel::iterator const& iter)
 {
     std::vector<std::string> tokens;
     for (auto child = iter; child; child = child->parent()) {
@@ -629,7 +629,7 @@ std::string build_filename(tr_torrent const* tor, Gtk::TreeModel::iterator const
     return Glib::build_filename(tokens);
 }
 
-std::optional<std::string> get_filename_to_open(tr_torrent const* tor, Gtk::TreeModel::iterator const& iter)
+[[nodiscard]] std::optional<std::string> get_filename_to_open(tr_torrent const* tor, Gtk::TreeModel::iterator const& iter)
 {
     auto file = Gio::File::create_for_path(build_filename(tor, iter));
 

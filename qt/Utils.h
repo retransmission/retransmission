@@ -24,7 +24,7 @@ struct tr_error;
 class Utils
 {
 public:
-    static QIcon getIconFromIndex(QModelIndex const& index);
+    [[nodiscard]] static QIcon getIconFromIndex(QModelIndex const& index);
 
     [[nodiscard]] static QString qstringFromUtf8(std::string_view str);
 
@@ -35,14 +35,14 @@ public:
     // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
     [[nodiscard]] static QString withAppName(QString text);
 
-    static QString removeTrailingDirSeparator(QString const& path);
+    [[nodiscard]] static QString removeTrailingDirSeparator(QString const& path);
 
     static void narrowRect(QRect& rect, int dx1, int dx2, Qt::LayoutDirection direction);
 
-    static int measureViewItem(QAbstractItemView const* view, QString const& text);
-    static int measureHeaderItem(QHeaderView const* view, QString const& text);
+    [[nodiscard]] static int measureViewItem(QAbstractItemView const* view, QString const& text);
+    [[nodiscard]] static int measureHeaderItem(QHeaderView const* view, QString const& text);
 
-    static QColor getFadedColor(QColor const& color);
+    [[nodiscard]] static QColor getFadedColor(QColor const& color);
 
     template<typename DialogT, typename... ArgsT>
     static void openDialog(QPointer<DialogT>& dialog, ArgsT&&... args)

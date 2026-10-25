@@ -54,7 +54,7 @@ auto const Win11IconFamily = QStringLiteral("Segoe Fluent Icons");
 // #define DEV_FORCE_FONT_FAMILY Win11IconFamily
 // #define DEV_FORCE_FONT_RESOURCE QStringLiteral(":devonly/segoe_fluent_icons.ttf")
 
-QString getWindowsFontFamily()
+[[nodiscard]] QString getWindowsFontFamily()
 {
 #ifdef DEV_FORCE_FONT_FAMILY
     return DEV_FORCE_FONT_FAMILY;

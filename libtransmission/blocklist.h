@@ -53,7 +53,7 @@ public:
 
     void load(std::string_view folder, bool is_enabled);
     void set_enabled(bool is_enabled);
-    std::optional<size_t> update_primary_blocklist(std::string_view external_file, bool is_enabled);
+    [[nodiscard]] std::optional<size_t> update_primary_blocklist(std::string_view external_file, bool is_enabled);
 
     // Returns when the primary blocklist was last modified, i.e. last updated.
     // Returns 0 if it doesn't exist yet.
@@ -69,7 +69,10 @@ private:
     class Blocklist
     {
     public:
-        static std::optional<Blocklist> saveNew(std::string_view external_file, std::string_view bin_file, bool is_enabled);
+        [[nodiscard]] static std::optional<Blocklist> saveNew(
+            std::string_view external_file,
+            std::string_view bin_file,
+            bool is_enabled);
 
         Blocklist() = default;
 

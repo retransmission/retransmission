@@ -590,7 +590,7 @@ namespace
 namespace preallocate_helpers
 {
 #ifdef HAVE_FALLOCATE64
-bool preallocate_fallocate64(tr_sys_file_t handle, uint64_t size)
+[[nodiscard]] bool preallocate_fallocate64(tr_sys_file_t handle, uint64_t size)
 {
     return fallocate64(handle, 0, 0, static_cast<off64_t>(size)) == 0;
 }
@@ -618,7 +618,7 @@ bool full_preallocate_apple(tr_sys_file_t handle, uint64_t size)
 #endif
 
 #ifdef HAVE_POSIX_FALLOCATE
-bool full_preallocate_posix(tr_sys_file_t handle, uint64_t size)
+[[nodiscard]] bool full_preallocate_posix(tr_sys_file_t handle, uint64_t size)
 {
     return posix_fallocate(handle, 0, static_cast<off_t>(size)) == 0;
 }

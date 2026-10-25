@@ -32,7 +32,7 @@ protected:
     static constexpr std::string_view JunkBasename = ".DS_Store"sv;
     static constexpr std::string_view NonJunkBasename = "passwords.txt"sv;
 
-    static auto aliceFiles()
+    [[nodiscard]] static auto aliceFiles()
     {
         static constexpr std::array<SubpathAndSize, 106> AliceFiles = { {
             { "alice_in_wonderland_librivox/AliceInWonderland_librivox.m4b", 87525736ULL },
@@ -153,7 +153,7 @@ protected:
         return files;
     }
 
-    static auto ubuntuFiles()
+    [[nodiscard]] static auto ubuntuFiles()
     {
         static auto constexpr Files = std::to_array<SubpathAndSize>(
             { { "ubuntu-20.04.4-desktop-amd64.iso"sv, 3379068928ULL } });
@@ -168,7 +168,7 @@ protected:
         return files;
     }
 
-    static auto createFiles(tr_torrent_files const& files, char const* parent)
+    [[nodiscard]] static auto createFiles(tr_torrent_files const& files, char const* parent)
     {
         auto paths = std::set<std::string>{};
 
@@ -187,7 +187,7 @@ protected:
         return paths;
     }
 
-    static auto getSubtreeContents(std::string_view const parent_dir)
+    [[nodiscard]] static auto getSubtreeContents(std::string_view const parent_dir)
     {
         auto filenames = std::set<std::string>{};
 

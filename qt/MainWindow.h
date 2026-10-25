@@ -126,8 +126,8 @@ private:
     void updateNetworkLabel();
     void refreshSoon(int fields);
 
-    QMenu* createOptionsMenu();
-    QMenu* createStatsModeMenu();
+    [[nodiscard]] QMenu* createOptionsMenu();
+    [[nodiscard]] QMenu* createStatsModeMenu();
     void initStatusBar();
 
     void addTorrentFromClipboard();

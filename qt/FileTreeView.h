@@ -57,7 +57,7 @@ private slots:
     void uncheckSelectedItems();
     void onlyCheckSelectedItems();
     void setSelectedItemsPriority();
-    bool openSelectedItem();
+    [[nodiscard]] bool openSelectedItem();
     void renameSelectedItem();
 
     void refreshContextMenuActionsSensitivity();
@@ -66,7 +66,7 @@ private:
     void initContextMenu();
     [[nodiscard]] QModelIndexList selectedSourceRows(int column = 0) const;
 
-    static Qt::CheckState getCumulativeCheckState(QModelIndexList const& indices);
+    [[nodiscard]] static Qt::CheckState getCumulativeCheckState(QModelIndexList const& indices);
 
     FileTreeModel* model_ = {};
     QSortFilterProxyModel* proxy_ = {};

@@ -66,7 +66,7 @@ using ipp_t = std::underlying_type_t<tr_address_type>;
 
 constexpr auto TauConnectionTtlSecs = time_t{ 45 };
 
-auto tau_transaction_new()
+[[nodiscard]] auto tau_transaction_new()
 {
     return tr_rand_obj<tau_transaction_t>();
 }
@@ -407,10 +407,7 @@ struct tau_tracker {
         for (ipp_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp) {
             // do we have a DNS request that's ready?
             if (auto& dns = addr_pending_dns_[ipp]; dns && dns->wait_for(0ms) == std::future_status::ready) {
-                // TODO(C++23): use std::optional::transform() instead
-                if (auto const& addr = dns->get(); addr.has_value()) {
-                    addr_[ipp] = addr->to_sockaddr();
-                }
+                addr_[ipp] = dns->get().transform([](auto const& addr) { return addr.to_sockaddr(); });
                 dns.reset();
                 addr_expires_at_[ipp] = now + DnsRetryIntervalSecs;
             }
@@ -569,7 +566,7 @@ private:
     }
 
     template<typename T>
-    bool maybe_send_request(T const& req, time_t now)
+    [[nodiscard]] bool maybe_send_request(T const& req, time_t now)
     {
         for (uint8_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp) {
             auto const ipp_enum = static_cast<tr_address_type>(ipp);
@@ -730,7 +727,7 @@ public:
 private:
     // Finds the tau_tracker struct that corresponds to this url.
     // If it doesn't exist yet, create one.
-    tau_tracker* get_tracker_from_url(tr::shared_string const& announce_url)
+    [[nodiscard]] tau_tracker* get_tracker_from_url(tr::shared_string const& announce_url)
     {
         // build a lookup key for this tracker
         auto const parsed = tr_urlParseTracker(announce_url.sv());

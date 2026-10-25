@@ -59,7 +59,7 @@ protected:
         "# this is a comment\n"
         "// this is a comment\n"sv;
 
-    bool addressIsBlocked(char const* address_str)
+    [[nodiscard]] bool addressIsBlocked(char const* address_str)
     {
         auto const addr = tr_address::from_string(address_str);
         return !addr || session_->blocklist().contains(*addr);

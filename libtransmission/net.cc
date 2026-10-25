@@ -225,7 +225,7 @@ void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos,
 
 namespace
 {
-tr_socket_t tr_netBindTCPImpl(
+[[nodiscard]] tr_socket_t tr_netBindTCPImpl(
     tr_address const& addr,
     tr_port port,
     bool suppress_msgs,

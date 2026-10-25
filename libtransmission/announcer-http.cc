@@ -31,7 +31,6 @@
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" /* pex */
 #include "libtransmission/session.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/web-utils.h"
@@ -93,7 +92,7 @@ struct http_announce_data {
     std::string log_name;
 };
 
-bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
+[[nodiscard]] bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
 {
     auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
     auto const& log_name = static_cast<http_announce_data const*>(vdata)->log_name;
@@ -177,7 +176,7 @@ void onAnnounceDone(tr_web::FetchResponse const& web_response)
     // the info_hash is appended rather than formatted in so that it
     // needs no intermediate buffer of its own
     url += req.announce_url.sv();
-    url += tr_strv_contains(req.announce_url.sv(), '?') ? '&' : '?';
+    url += req.announce_url.sv().contains('?') ? '&' : '?';
     url += "info_hash="sv;
     tr_urlPercentEncode(url, req.info_hash);
 
@@ -214,7 +213,8 @@ void onAnnounceDone(tr_web::FetchResponse const& web_response)
     }
 
     if (!std::empty(req.tracker_id)) {
-        fmt::format_to(out, "&trackerid={}", req.tracker_id);
+        url += "&trackerid="sv;
+        tr_urlPercentEncode(url, req.tracker_id);
     }
 
     if (auto ipv4_addr = session->global_address(TR_AF_INET); ipv4_addr) {
@@ -472,7 +472,7 @@ void onScrapeDone(tr_web::FetchResponse const& web_response)
     auto scrape_url = std::string{};
     scrape_url.reserve(std::size(req.scrape_url.sv()) + (req.info_hash_count * MaxCharsPerHash));
     scrape_url += req.scrape_url.sv();
-    char delimiter = tr_strv_contains(scrape_url, '?') ? '&' : '?';
+    char delimiter = scrape_url.contains('?') ? '&' : '?';
 
     for (size_t i = 0; i < req.info_hash_count; ++i) {
         scrape_url += delimiter;

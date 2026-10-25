@@ -2,12 +2,11 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#import "PortChecker.h"
 #import <AppKit/AppKit.h>
 
 struct tr_session;
 
-@interface PrefsController : NSWindowController<NSToolbarDelegate, PortCheckerDelegate>
+@interface PrefsController : NSWindowController<NSToolbarDelegate>
 
 @property(nonatomic, readonly) NSArray<NSString*>* sounds;
 

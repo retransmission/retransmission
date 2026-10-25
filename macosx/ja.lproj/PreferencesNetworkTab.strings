@@ -1,0 +1,9 @@
+"Automatically map port" = "自動的にポートをマッピング";
+"NAT traversal uses either NAT-PMP or UPnP" = "NATトラバーサルには NAT-PMP か UPnP を使用";
+"Peer communication:" = "ピア通信:";
+"Prevent computer from sleeping with active torrents" = "転送が稼働中ならコンピューターのスリープを防止";
+"System sleep:" = "システムのスリープ:";
+"Pick a random port at startup" = "起動時にポートをランダムに変更";
+"Randomize" = "ランダム化";
+"Enable µTP for peer connections" = "マイクロトランスポートプロトコル (µTP) 有効";
+"Port for incoming connections:" = "ピアの待ち受けポート:";

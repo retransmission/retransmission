@@ -132,8 +132,9 @@ private:
         keepalive_.reset();
     }
 
+    // TODO(c++23): delete this method and use `std::move_only_function` (P0288, gcc 12.1, clang unimplemented)
     template<typename Func>
-    static auto make_copyable(Func&& func)
+    [[nodiscard]] static auto make_copyable(Func&& func)
     {
         using FuncType = std::remove_cvref_t<Func>;
         auto shared_func = std::make_shared<FuncType>(std::forward<Func>(func));
@@ -145,7 +146,7 @@ private:
     // Adapts any of the four step shapes to a uniform QueuedFunction.
     // Precedence (most specific first): (prev, done) | (done) | (prev) | ().
     template<typename Func>
-    static QueuedFunction normalize_func(Func&& func)
+    [[nodiscard]] static QueuedFunction normalize_func(Func&& func)
     {
         using F = std::remove_cvref_t<Func>;
         return
@@ -167,7 +168,7 @@ private:
 
     // Adapts an error handler that takes either the failing response or nothing.
     template<typename Func>
-    static ErrorHandlerFunction normalize_error_handler(Func&& func)
+    [[nodiscard]] static ErrorHandlerFunction normalize_error_handler(Func&& func)
     {
         using F = std::remove_cvref_t<Func>;
         return [func = make_copyable(std::forward<Func>(func))]([[maybe_unused]] RpcResponse const& r) mutable {

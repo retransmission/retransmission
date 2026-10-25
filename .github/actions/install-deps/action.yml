@@ -6,7 +6,7 @@ inputs:
     required: false
     default: 'clang'
   enable-clang-tidy:
-    description: 'Install clang-tidy-22'
+    description: 'Install clang-tidy (specify major version)'
     required: false
     default: 'false'
   enable-gtk:
@@ -99,14 +99,30 @@ runs:
           fi
 
           # Setup LLVM repo if clang-tidy is needed.
-          # Ubuntu 26.04 already ships clang-tidy-22 in its own repositories,
-          # so apt.llvm.org is only needed on older releases.
-          if [[ "${{ inputs.enable-clang-tidy }}" == "true" && ! ( "$DISTRO" == "ubuntu" && "$DISTRO_VERSION" == "26.04" ) ]]; then
-            wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | $SUDO_CMD apt-key add -
-            if [[ "$DISTRO_VERSION" == "24.04" ]]; then
-              $SUDO_CMD add-apt-repository "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main"
+          if [[ "${{ inputs.enable-clang-tidy }}" != "false" ]]; then
+            curl -fsSL 'https://apt.llvm.org/llvm-snapshot.gpg.key' | $SUDO_CMD gpg --dearmor -o /etc/apt/keyrings/llvm-apt.gpg
+
+            $SUDO_CMD tee /etc/apt/sources.list.d/llvm-apt.sources << 'EOF' > /dev/null
+        Types: deb
+        Components: main
+        Signed-By: /etc/apt/keyrings/llvm-apt.gpg
+        EOF
+
+            if [[ "$DISTRO_VERSION" == "26.04" ]]; then
+              $SUDO_CMD tee -a /etc/apt/sources.list.d/llvm-apt.sources << 'EOF' > /dev/null
+        URIs: https://apt.llvm.org/resolute/
+        Suites: llvm-toolchain-resolute-${{ inputs.enable-clang-tidy }}
+        EOF
+            elif [[ "$DISTRO_VERSION" == "24.04" ]]; then
+              $SUDO_CMD tee -a /etc/apt/sources.list.d/llvm-apt.sources << 'EOF' > /dev/null
+        URIs: https://apt.llvm.org/noble/
+        Suites: llvm-toolchain-noble-${{ inputs.enable-clang-tidy }}
+        EOF
             elif [[ "$DISTRO_VERSION" == "22.04" ]]; then
-              $SUDO_CMD add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-22 main"
+              $SUDO_CMD tee -a /etc/apt/sources.list.d/llvm-apt.sources << 'EOF' > /dev/null
+        URIs: https://apt.llvm.org/jammy/
+        Suites: llvm-toolchain-jammy-${{ inputs.enable-clang-tidy }}
+        EOF
             fi
           fi
 
@@ -141,14 +157,19 @@ runs:
 
           # Compiler packages
           if [[ "${{ inputs.compiler }}" == "clang" ]]; then
-            BASE_PACKAGES+=(clang)
+            if [[ "${{ inputs.enable-clang-tidy }}" == "false" ]]; then
+              BASE_PACKAGES+=(clang)
+            else
+              # Install the specific version of clang that matches the requested clang-tidy version
+              BASE_PACKAGES+=(clang-${{ inputs.enable-clang-tidy }})
+            fi
           elif [[ "${{ inputs.compiler }}" == "gcc" ]]; then
             BASE_PACKAGES+=(gcc g++)
           fi
 
           # clang-tidy
-          if [[ "${{ inputs.enable-clang-tidy }}" == "true" ]]; then
-            BASE_PACKAGES+=(clang-tidy-22)
+          if [[ "${{ inputs.enable-clang-tidy }}" != "false" ]]; then
+            BASE_PACKAGES+=(clang-tidy-${{ inputs.enable-clang-tidy }})
           fi
 
           # Faster linker
@@ -297,8 +318,8 @@ runs:
         # Compilers
         echo "Compilers:"
         if [[ "${{ inputs.compiler }}" == "clang" || "${{ inputs.compiler }}" == "system-default" ]]; then
-          clang --version 2>/dev/null | head -1 || echo "clang: not found"
-          clang++ --version 2>/dev/null | head -1 || echo "clang++: not found"
+          clang-${{ inputs.enable-clang-tidy }} --version 2>/dev/null | head -1 || clang --version 2>/dev/null | head -1 || echo "clang: not found"
+          clang++-${{ inputs.enable-clang-tidy }} --version 2>/dev/null | head -1 || clang++ --version 2>/dev/null | head -1 || echo "clang++: not found"
         fi
         if [[ "${{ inputs.compiler }}" == "gcc" || "${{ inputs.compiler }}" == "system-default" ]]; then
           gcc --version 2>/dev/null | head -1 || echo "gcc: not found"
@@ -335,8 +356,8 @@ runs:
         fi
 
         # Development tools (if enabled)
-        if [[ "${{ inputs.enable-clang-tidy }}" == "true" ]]; then
+        if [[ "${{ inputs.enable-clang-tidy }}" != "false" ]]; then
           echo "Static Analysis:"
-          clang-tidy-22 --version 2>/dev/null | head -1 || clang-tidy --version 2>/dev/null | head -1 || echo "clang-tidy: not found"
+          clang-tidy-${{ inputs.enable-clang-tidy }} --version 2>/dev/null | head -1 || clang-tidy --version 2>/dev/null | head -1 || echo "clang-tidy: not found"
           echo ""
         fi
