@@ -9,6 +9,7 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <cstdint> // for uint64_t
+#include <locale>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -270,9 +271,10 @@ public:
         return static_cast<double>(ten_thousandths()) / static_cast<double>(Granularity);
     }
 
-    // Digits only, locale-formatted, for a "{percent}%" template that the caller translates:
+    // Digits only, for a "{percent}%" template that the caller translates:
     // two decimals below 5, one below 100, none at 100. Rounds, but reads "99.9" until complete.
-    [[nodiscard]] std::string to_string() const;
+    // `loc` supplies the separators; the default is the global C++ locale.
+    [[nodiscard]] std::string to_string(std::locale const& loc = std::locale{}) const;
 
     // Likewise in whole percents, for compact progress bars: "99" until complete.
     [[nodiscard]] std::string to_whole_string() const;
@@ -370,7 +372,8 @@ public:
     }
 
     // `Config::ratio.none`, `Config::ratio.infinity`, or digits with Percent::to_string()'s tiers.
-    [[nodiscard]] std::string to_string() const;
+    // `loc` supplies the separators; the default is the global C++ locale.
+    [[nodiscard]] std::string to_string(std::locale const& loc = std::locale{}) const;
 
     // No ordering: where the two states sort is a view's decision.
     [[nodiscard]] constexpr bool operator==(Ratio const& that) const noexcept

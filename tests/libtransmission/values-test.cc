@@ -3,10 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <clocale>
 #include <cstdint>
 #include <limits>
 #include <locale>
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 #include <libtransmission/types.h> // TR_RATIO_NA, TR_RATIO_INF
@@ -165,6 +167,44 @@ TEST_F(ValuesTest, percentComparesAtDisplayGranularity)
 namespace
 {
 
+// de_DE.UTF-8, or nullopt where it is not installed
+[[nodiscard]] std::optional<std::locale> germanLocale()
+{
+    auto loc = std::locale{};
+    try {
+        loc = std::locale{ "de_DE.UTF-8" };
+    } catch (std::runtime_error const&) {
+        return {};
+    }
+
+    // musl and OpenBSD accept any locale name but keep "C" numerics
+    if (std::use_facet<std::numpunct<char>>(loc).decimal_point() != ',') {
+        return {};
+    }
+
+    return loc;
+}
+
+// Passes de_DE.UTF-8 explicitly; the global locale stays classic.
+class ValuesGivenLocaleTest : public ::tr::test::TransmissionTest
+{
+protected:
+    void SetUp() override
+    {
+        TransmissionTest::SetUp();
+
+        if (!de_) {
+            GTEST_SKIP() << "de_DE.UTF-8 is not installed";
+        }
+
+        // so German separators in the output can only come from `de_`
+        ASSERT_EQ("C", std::locale{}.name());
+    }
+
+    std::optional<std::locale> de_ = germanLocale();
+};
+
+// Sets the global locale to de_DE.UTF-8.
 class ValuesLocaleTest : public ::tr::test::TransmissionTest
 {
 protected:
@@ -172,12 +212,12 @@ protected:
     {
         TransmissionTest::SetUp();
 
-        old_locale_ = tr_locale_set_global("de_DE.UTF-8");
-
-        // musl and OpenBSD accept any locale name but keep "C" numerics
-        if (!old_locale_ || std::use_facet<std::numpunct<char>>(std::locale{}).decimal_point() != ',') {
+        auto const de = germanLocale();
+        if (!de) {
             GTEST_SKIP() << "de_DE.UTF-8 is not installed";
         }
+
+        old_locale_ = tr_locale_set_global(*de);
     }
 
     void TearDown() override
@@ -200,6 +240,11 @@ TEST_F(ValuesLocaleTest, percentUsesTheGlobalLocale)
     EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string());
     EXPECT_EQ("99,9", (Percent{ 999U, 1000U }).to_string());
     EXPECT_EQ("50", (Percent{ 1U, 2U }).to_whole_string());
+}
+
+TEST_F(ValuesGivenLocaleTest, percentUsesTheGivenLocale)
+{
+    EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string(*de_));
 }
 
 TEST_F(ValuesTest, ratioStates)
@@ -275,4 +320,24 @@ TEST_F(ValuesLocaleTest, ratioUsesTheGlobalLocale)
 {
     EXPECT_EQ("0,50", (Ratio{ 1U, 2U }).to_string());
     EXPECT_EQ("7,5", (Ratio{ 75U, 10U }).to_string());
+}
+
+TEST_F(ValuesGivenLocaleTest, ratioUsesTheGivenLocale)
+{
+    EXPECT_EQ("0,67", (Ratio{ 2U, 3U }).to_string(*de_));
+    EXPECT_EQ("1.234.567", (Ratio{ 1234567U, 1U }).to_string(*de_));
+}
+
+TEST_F(ValuesLocaleTest, givenLocaleOverridesTheGlobal)
+{
+    EXPECT_EQ("4.99", (Percent{ 499U, 10000U }).to_string(std::locale::classic()));
+    EXPECT_EQ("0.67", (Ratio{ 2U, 3U }).to_string(std::locale::classic()));
+}
+
+TEST_F(ValuesGivenLocaleTest, givenLocaleLeavesTheCLocaleAlone)
+{
+    auto const numeric = std::string{ std::setlocale(LC_NUMERIC, nullptr) };
+    EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string(*de_));
+    EXPECT_EQ("0,67", (Ratio{ 2U, 3U }).to_string(*de_));
+    EXPECT_EQ(numeric, std::setlocale(LC_NUMERIC, nullptr));
 }
