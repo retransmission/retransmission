@@ -2,11 +2,85 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/types.h>
-#include <libtransmission/utils.h>
+#include <locale>
+#include <optional>
+#include <string>
+#include <utility>
+
+#include <libtransmission/string-utils.h>
 
 #import "NSStringAdditions.h"
 #import "NSDataAdditions.h"
+
+namespace
+{
+class RegionNumpunct final : public std::numpunct<char>
+{
+public:
+    RegionNumpunct(char const decimal_point, char const thousands_sep, std::string grouping)
+        : decimal_point_{ decimal_point }
+        , thousands_sep_{ thousands_sep }
+        , grouping_{ std::move(grouping) }
+    {
+    }
+
+private:
+    [[nodiscard]] char do_decimal_point() const override
+    {
+        return decimal_point_;
+    }
+
+    [[nodiscard]] char do_thousands_sep() const override
+    {
+        return thousands_sep_;
+    }
+
+    [[nodiscard]] std::string do_grouping() const override
+    {
+        return grouping_;
+    }
+
+    char decimal_point_;
+    char thousands_sep_;
+    std::string grouping_;
+};
+
+// The user's region's number separators, passed to each tr::Values to_string() call.
+// Installing a locale globally can also change the C locale, and AppKit then draws SF Symbols
+// at the wrong size whenever the C locale's decimal separator is a comma.
+std::locale const& regionLocale()
+{
+    static auto const locale = []
+    {
+        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterDecimalStyle;
+
+        // a separator longer than one byte falls back to "." or to no grouping
+        auto const as_byte = [](NSString* str) -> std::optional<char>
+        {
+            if (str.length == 1 && [str characterAtIndex:0] < 0x80) {
+                return static_cast<char>([str characterAtIndex:0]);
+            }
+            return {};
+        };
+
+        auto grouping = std::string{};
+        auto const thousands_sep = as_byte(formatter.groupingSeparator);
+        if (formatter.usesGroupingSeparator && thousands_sep && formatter.groupingSize > 0) {
+            grouping += static_cast<char>(formatter.groupingSize);
+            if (formatter.secondaryGroupingSize > 0) {
+                grouping += static_cast<char>(formatter.secondaryGroupingSize);
+            }
+        }
+
+        auto const decimal_point = as_byte(formatter.decimalSeparator).value_or('.');
+        return std::locale{ std::locale::classic(),
+                            new RegionNumpunct{ decimal_point, thousands_sep.value_or(','), std::move(grouping) } };
+    }();
+
+    return locale;
+}
+} // namespace
 
 @interface NSString (Private)
 
@@ -76,27 +150,9 @@
     return [self stringForSpeedCompact:speed kb:@"K" mb:@"M" gb:@"G"];
 }
 
-+ (NSString*)stringForRatio:(CGFloat)ratio
++ (NSString*)stringForRatio:(tr::Values::Ratio)ratio
 {
-    //N/A is different than libtransmission's
-
-    if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return NSLocalizedString(@"N/A", "No Ratio");
-    }
-
-    if (static_cast<int>(ratio) == TR_RATIO_INF) {
-        return @"\xE2\x88\x9E";
-    }
-
-    if (ratio < 10.0) {
-        return [NSString localizedStringWithFormat:@"%.2f", tr_truncd(ratio, 2)];
-    }
-
-    if (ratio < 100.0) {
-        return [NSString localizedStringWithFormat:@"%.1f", tr_truncd(ratio, 1)];
-    }
-
-    return [NSString localizedStringWithFormat:@"%.0f", tr_truncd(ratio, 0)];
+    return tr_strv_to_utf8_nsstring(ratio.to_string(regionLocale()));
 }
 
 + (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals

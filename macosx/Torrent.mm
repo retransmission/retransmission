@@ -368,9 +368,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return tr_strv_to_utf8_nsstring(tr_torrentGetMagnetLink(self.fHandle));
 }
 
-- (CGFloat)ratio
+- (tr::Values::Ratio)ratio
 {
-    return self.fStat.upload_ratio_deprecated;
+    return self.fStat.upload_ratio;
 }
 
 - (tr_ratiolimit)ratioSetting
@@ -1657,7 +1657,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 // None sorts below every number, Infinite above
 - (double)ratioSortKey
 {
-    auto const ratio = self.fStat.upload_ratio;
+    auto const ratio = self.ratio;
     if (ratio.is_infinite()) {
         return std::numeric_limits<double>::infinity();
     }

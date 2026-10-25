@@ -4,6 +4,8 @@
 
 #import <Foundation/Foundation.h>
 
+#include <libtransmission/values.h>
+
 @interface NSString (NSStringAdditions)
 
 @property(nonatomic, class, readonly) NSString* ellipsis;
@@ -18,7 +20,7 @@
 + (NSString*)stringForSpeedAbbrev:(CGFloat)speed;
 // 3 significant digits
 + (NSString*)stringForSpeedAbbrevCompact:(CGFloat)speed;
-+ (NSString*)stringForRatio:(CGFloat)ratio;
++ (NSString*)stringForRatio:(tr::Values::Ratio)ratio;
 
 + (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals;
 

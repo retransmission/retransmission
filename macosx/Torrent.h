@@ -66,7 +66,7 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, getter=isMagnet, readonly) BOOL magnet;
 @property(nonatomic, readonly) NSString* magnetLink;
 
-@property(nonatomic, readonly) CGFloat ratio;
+@property(nonatomic, readonly) tr::Values::Ratio ratio;
 @property(nonatomic) tr_ratiolimit ratioSetting;
 @property(nonatomic) CGFloat ratioLimit;
 @property(nonatomic, readonly) CGFloat progressStopRatio;

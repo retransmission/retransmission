@@ -188,6 +188,8 @@ static void initUnits()
     t_str = NSLocalizedString(@"TB/s", "Transfer speed (terabytes per second)");
     Config::speed = { Config::Base::Kilo, b_str.UTF8String, k_str.UTF8String,
                       m_str.UTF8String,   g_str.UTF8String, t_str.UTF8String };
+
+    Config::ratio.none = NSLocalizedString(@"N/A", "No Ratio").UTF8String;
 }
 
 static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
