@@ -85,7 +85,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
 
 [[nodiscard]] int strint(char const* pch, int span, int base = 10)
 {
-    auto sv = std::string_view{ pch, static_cast<size_t>(span) };
+    auto const sv = std::string_view{ pch, static_cast<size_t>(span) };
     return tr_num_parse<int>(sv, nullptr, base).value_or(0);
 }
 

@@ -161,7 +161,7 @@ struct ParsedAnnounce {
 
     key = "cookie: "sv;
     if (auto const pos = announce.find(key); pos != std::string_view::npos) {
-        auto walk = announce.substr(pos + std::size(key));
+        auto const walk = announce.substr(pos + std::size(key));
         if (auto const end = walk.find(CrLf); end != std::string_view::npos) {
             ret.cookie = walk.substr(0, end);
         } else {

@@ -283,7 +283,7 @@ void gtr_window_on_close(Gtk::Window& widget, F&& callback)
     };
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    widget.signal_close_request().connect(bool_callback, false);
+    widget.signal_close_request().connect(std::move(bool_callback), false);
 #else
     widget.signal_delete_event().connect(sigc::hide<0>(bool_callback), false);
 #endif

@@ -109,7 +109,7 @@ private:
         if (auto next_kick_time = nextKickTime(); next_kick_time) {
             using namespace std::chrono;
             auto const now = steady_clock::now();
-            auto duration = duration_cast<milliseconds>(*next_kick_time - now);
+            auto const duration = duration_cast<milliseconds>(*next_kick_time - now);
             retry_timer_->start_single_shot(duration);
         }
     }

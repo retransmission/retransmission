@@ -955,6 +955,7 @@ template<typename... Args>
 template<typename... Args>
 size_t build_peer_message(MessageWriter& out, uint8_t type, Args const&... args)
 {
+    // NOLINTNEXTLINE(misc-const-correctness): https://github.com/llvm/llvm-project/issues/235460
     auto msg_len = sizeof(type);
     ((msg_len += get_param_length(args)), ...);
     out.add_uint32(msg_len);
@@ -1202,7 +1203,7 @@ void tr_peerMsgsImpl::send_ut_pex()
             // "added.f"
             tmpbuf.resize(std::size(added));
             auto* begin = std::data(tmpbuf);
-            auto* walk = begin;
+            auto* walk = begin; // NOLINT(misc-const-correctness): TODO https://github.com/llvm/llvm-project/pull/215285
             for (auto const& p : added) {
                 *walk++ = std::byte{ p.flags };
             }

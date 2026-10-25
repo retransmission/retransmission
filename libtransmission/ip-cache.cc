@@ -157,7 +157,7 @@ tr_ip_cache::~tr_ip_cache()
 
 bool tr_ip_cache::try_shutdown() noexcept
 {
-    for (auto& timer : upkeep_timers_) {
+    for (auto const& timer : upkeep_timers_) {
         timer->stop();
     }
 

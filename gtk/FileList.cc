@@ -433,6 +433,7 @@ struct row_struct {
 
 using FileRowNode = Glib::NodeTree<row_struct>;
 
+// NOLINTNEXTLINE(misc-const-correctness)
 void buildTree(FileRowNode& node, build_data& build)
 {
     auto const& child_data = node.data();
@@ -443,7 +444,7 @@ void buildTree(FileRowNode& node, build_data& build)
     auto const file = isLeaf ? tr_torrentFile(build.tor, child_data.index) : tr_file_view{};
     int const priority = isLeaf ? file.priority : 0;
     bool const enabled = isLeaf ? file.wanted : true;
-    auto name_esc = Glib::Markup::escape_text(child_data.name);
+    auto const name_esc = Glib::Markup::escape_text(child_data.name);
 
     auto const child_iter = build.store->prepend(build.iter->children());
     (*child_iter)[file_cols.index] = child_data.index;

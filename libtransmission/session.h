@@ -101,7 +101,7 @@ private:
     private:
         static void onCanRead(evutil_socket_t fd, short /*what*/, void* vself)
         {
-            auto* const self = static_cast<BoundSocket*>(vself);
+            auto const self = static_cast<BoundSocket const*>(vself);
             self->cb_(fd, self->cb_data_);
         }
 
@@ -1490,7 +1490,7 @@ private:
     std::unique_ptr<tr::blocklist::Updater> blocklist_updater_ = std::make_unique<tr::blocklist::Updater>(blocklist_mediator_);
 
     // depends-on: timer_maker_, blocklists_, top_bandwidth_, utp_context, torrents_, web_
-    std::unique_ptr<struct tr_peerMgr, void (*)(struct tr_peerMgr*)> peer_mgr_;
+    std::unique_ptr<struct tr_peerMgr, void (*)(struct tr_peerMgr const*)> peer_mgr_;
 
     // depends-on: peer_mgr_, advertised_peer_port_, torrents_
     LpdMediator lpd_mediator_{ *this };

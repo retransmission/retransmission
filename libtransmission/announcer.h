@@ -91,7 +91,7 @@ void tr_announcerTorrentCompleted(tr_torrent* tor);
 
 enum : uint8_t { TR_ANN_UP, TR_ANN_DOWN, TR_ANN_CORRUPT };
 
-void tr_announcerAddBytes(tr_torrent* tor, int type, uint32_t n_bytes);
+void tr_announcerAddBytes(tr_torrent const* tor, int type, uint32_t n_bytes);
 
 [[nodiscard]] time_t tr_announcerNextManualAnnounce(tr_torrent const* tor);
 

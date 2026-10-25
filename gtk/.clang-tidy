@@ -23,7 +23,7 @@ Checks:
   - -cppcoreguidelines-pro-bounds-constant-array-index
   - -cppcoreguidelines-use-enum-class
   - misc-*
-  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/236012 is fixed
   - -misc-include-cleaner
   - -misc-multiple-inheritance
   - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed

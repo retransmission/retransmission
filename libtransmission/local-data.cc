@@ -127,7 +127,7 @@ public:
 
     [[nodiscard]] tr_error_code_t move(tr_torrent_id_t const id, std::string_view const parent) override
     {
-        auto* const tor = torrents_.get(id);
+        auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
@@ -142,7 +142,7 @@ public:
 
     [[nodiscard]] tr_error_code_t remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
     {
-        auto* const tor = torrents_.get(id);
+        auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
@@ -704,7 +704,7 @@ private:
 
     void dispatch(tr_torrent_id_t const id, Gate& gate, Queued&& op)
     {
-        if (auto* const read = std::get_if<ReadOp>(&op); read != nullptr) {
+        if (auto const* const read = std::get_if<ReadOp>(&op); read != nullptr) {
             // We read only pieces we have, and we never write those.
             TR_ASSERT(!overlaps_running_write(gate, read->span));
             exec_read(id, *read);
@@ -906,7 +906,7 @@ private:
             std::swap(done, done_);
         }
 
-        for (auto& completion : done) {
+        for (auto const& completion : done) {
             completion->deliver();
         }
     }
@@ -1047,10 +1047,10 @@ private:
             // barrier that one callback enqueues, not even a file close,
             // overtakes the callbacks still to come.
             auto& gate = gate_of(id);
-            for (auto& op : run) {
+            for (auto const& op : run) {
                 unregister_running_write(gate, op.span);
                 if (op.on_write) {
-                    std::move(op.on_write)(id, op.span, make_error(err));
+                    op.on_write(id, op.span, make_error(err));
                 }
             }
             release(id, std::size(run));
@@ -1410,7 +1410,7 @@ void LocalData::pump()
 
     std::ranges::shuffle(parked, rng_);
 
-    for (auto& completion : parked) {
+    for (auto const& completion : parked) {
         completion->deliver();
     }
 }

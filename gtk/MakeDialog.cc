@@ -392,7 +392,7 @@ void MakeDialog::Impl::updatePiecesLabel()
 void MakeDialog::Impl::configurePieceSizeScale(uint32_t piece_size)
 {
     // the below lower & upper bounds would allow piece size selection between approx 16KiB - 256MiB
-    auto adjustment = Gtk::Adjustment::create(log2(piece_size), 14, 28, 1.0, 1.0);
+    auto const adjustment = Gtk::Adjustment::create(log2(piece_size), 14, 28, 1.0, 1.0);
     piece_size_scale_->set_adjustment(adjustment);
     piece_size_scale_->set_visible(true);
 }
@@ -529,7 +529,7 @@ MakeDialog::Impl::Impl(MakeDialog& dialog, Glib::RefPtr<Gtk::Builder> const& bui
     piece_size_scale_->signal_value_changed().connect([this] { onPieceSizeUpdated(); });
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    auto drop_controller = Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY);
+    auto const drop_controller = Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY);
     drop_controller->signal_drop().connect(sigc::mem_fun(*this, &Impl::on_drag_data_received), false);
     dialog_.add_controller(drop_controller);
 #else

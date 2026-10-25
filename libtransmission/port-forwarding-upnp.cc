@@ -306,7 +306,7 @@ tr_upnp* tr_upnpInit()
     return new tr_upnp();
 }
 
-void tr_upnpClose(tr_upnp* handle)
+void tr_upnpClose(tr_upnp const* const handle)
 {
     delete handle;
 }

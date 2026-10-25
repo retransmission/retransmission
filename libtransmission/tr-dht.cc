@@ -460,7 +460,7 @@ private:
         static auto constexpr IdTtl = time_t{ 30 * 24 * 60 * 60 }; // 30 days
 
         auto& top = *otop;
-        auto* const top_map = top.get_if<tr_variant::Map>();
+        auto const* const top_map = top.get_if<tr_variant::Map>();
         if (top_map == nullptr) {
             return;
         }
@@ -547,7 +547,7 @@ private:
             return;
         }
 
-        for (auto* infop = info; infop != nullptr; infop = infop->ai_next) {
+        for (auto const* infop = info; infop != nullptr; infop = infop->ai_next) {
             if (auto addrport = tr_socket_address::from_sockaddr(infop->ai_addr); addrport) {
                 nodes.emplace_back(*addrport);
             }

@@ -392,7 +392,7 @@ void addLatestMessagesToStore(
 
         char const* name = !std::empty(message.name) ? message.name.c_str() : default_name.c_str();
 
-        auto row_it = store->append();
+        auto const row_it = store->append();
         auto& row = *row_it;
         row[message_log_cols.tr_msg] = &message;
         row[message_log_cols.name] = name;

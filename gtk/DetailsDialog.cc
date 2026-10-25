@@ -547,7 +547,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
 
     std::vector<tr_torrent_view> infos;
     infos.reserve(torrents.size());
-    for (auto* const torrent : torrents) {
+    for (auto const* const torrent : torrents) {
         infos.push_back(tr_torrentView(torrent));
     }
 
@@ -1060,7 +1060,7 @@ void DetailsDialog::Impl::refreshPeerList(std::vector<tr_torrent*> const& torren
         row[peer_cols.was_updated] = false;
     }
 
-    auto make_key = [](tr_torrent const* tor, tr_peer_stat const& ps) {
+    static auto constexpr MakeKey = [](tr_torrent const* tor, tr_peer_stat const& ps) {
         return fmt::format("{:d}.{:s}", tr_torrentId(tor), ps.addr);
     };
 
@@ -1070,7 +1070,7 @@ void DetailsDialog::Impl::refreshPeerList(std::vector<tr_torrent*> const& torren
         auto const& torrent_peers = peers.at(i);
 
         for (auto const& peer : torrent_peers) {
-            auto const key = make_key(tor, peer);
+            auto const key = MakeKey(tor, peer);
 
             if (!hash.contains(key)) {
                 auto const iter = store->append();
@@ -1086,7 +1086,7 @@ void DetailsDialog::Impl::refreshPeerList(std::vector<tr_torrent*> const& torren
         auto const& torrent_peers = peers.at(i);
 
         for (auto const& peer : torrent_peers) {
-            auto const key = make_key(tor, peer);
+            auto const key = MakeKey(tor, peer);
             refreshPeerRow(store->get_iter(hash.at(key).get_path()), peer);
         }
     }
@@ -1111,7 +1111,7 @@ void DetailsDialog::Impl::refreshWebseedList(std::vector<tr_torrent*> const& tor
     auto& hash = webseed_hash_;
     auto const& store = webseed_store_;
 
-    auto make_key = [](tr_torrent const* tor, char const* url) {
+    static auto constexpr MakeKey = [](tr_torrent const* tor, char const* url) {
         return fmt::format("{:d}.{:s}", tr_torrentId(tor), url);
     };
 
@@ -1126,7 +1126,7 @@ void DetailsDialog::Impl::refreshWebseedList(std::vector<tr_torrent*> const& tor
             has_any_webseeds = true;
 
             auto const* const url = tr_torrentWebseed(tor, j).url;
-            auto const key = make_key(tor, url);
+            auto const key = MakeKey(tor, url);
 
             if (!hash.contains(key)) {
                 auto const iter = store->append();
@@ -1141,7 +1141,7 @@ void DetailsDialog::Impl::refreshWebseedList(std::vector<tr_torrent*> const& tor
     for (auto const* const tor : torrents) {
         for (size_t j = 0, n = tr_torrentWebseedCount(tor); j < n; ++j) {
             auto const webseed = tr_torrentWebseed(tor, j);
-            auto const key = make_key(tor, webseed.url);
+            auto const key = MakeKey(tor, webseed.url);
             auto const iter = store->get_iter(hash.at(key).get_path());
 
             auto const speed = Speed{ webseed.download_bytes_per_second, Speed::Units::Byps };
@@ -1411,7 +1411,7 @@ void DetailsDialog::Impl::peer_page_init(Glib::RefPtr<Gtk::Builder> const& build
     /* peers */
 
     peer_store_ = Gtk::ListStore::create(peer_cols);
-    auto m = Gtk::TreeModelSort::create(peer_store_);
+    auto const m = Gtk::TreeModelSort::create(peer_store_);
     m->set_sort_column(peer_cols.progress, TR_GTK_SORT_TYPE(DESCENDING));
 
     peer_view_->set_model(m);
@@ -2018,7 +2018,7 @@ void DetailsDialog::Impl::on_tracker_list_add_button_clicked()
 void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
 {
     auto* v = tracker_view_;
-    auto sel = v->get_selection();
+    auto const sel = v->get_selection();
 
     if (auto const iter = sel->get_selected(); iter) {
         auto const torrent_id = iter->get_value(tracker_cols.torrent_id);
@@ -2050,7 +2050,7 @@ void DetailsDialog::Impl::tracker_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         },
         [this](double view_x, double view_y) { return on_item_view_button_released(*tracker_view_, view_x, view_y); });
 
-    auto sel = tracker_view_->get_selection();
+    auto const sel = tracker_view_->get_selection();
     sel->signal_changed().connect(sigc::mem_fun(*this, &Impl::on_tracker_list_selection_changed));
 
     auto* c = Gtk::make_managed<Gtk::TreeViewColumn>();

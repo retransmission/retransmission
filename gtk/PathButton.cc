@@ -125,6 +125,7 @@ void tr_image_set_from_gicon(Gtk::Image& image, Glib::RefPtr<Gio::Icon const> co
 }
 
 // gtkmm4 widgets are visible by default; gtkmm3 needs children shown explicitly.
+// NOLINTNEXTLINE(misc-const-correctness)
 void tr_show_all([[maybe_unused]] Gtk::Widget& widget)
 {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)

@@ -261,7 +261,7 @@ private:
 
     [[nodiscard]] static std::optional<DH> pop_dh_pool()
     {
-        auto lock = std::unique_lock(dh_pool_mutex);
+        auto const lock = std::unique_lock(dh_pool_mutex);
 
         if (std::empty(dh_pool)) {
             return {};
@@ -274,7 +274,7 @@ private:
 
     static void push_dh_pool(DH dh)
     {
-        auto lock = std::unique_lock(dh_pool_mutex);
+        auto const lock = std::unique_lock(dh_pool_mutex);
 
         if (std::size(dh_pool) < dh_pool.max_size()) {
             dh_pool.emplace_back(std::move(dh));

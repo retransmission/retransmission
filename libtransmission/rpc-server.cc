@@ -375,8 +375,8 @@ void handle_rpc(struct evhttp_request* req, tr_session* session)
 {
     if (auto const cmd = evhttp_request_get_command(req); cmd == EVHTTP_REQ_POST) {
         auto* const input_buffer = evhttp_request_get_input_buffer(req);
-        auto json = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(input_buffer, -1)),
-                                      evbuffer_get_length(input_buffer) };
+        auto const json = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(input_buffer, -1)),
+                                            evbuffer_get_length(input_buffer) };
         handle_rpc_from_json(req, session, json);
         return;
     }

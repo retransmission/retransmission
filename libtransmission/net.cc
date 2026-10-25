@@ -223,7 +223,7 @@ tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_ms
     return tr_netBindTCPImpl(addr, port, suppress_msgs, &unused);
 }
 
-std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session* session, tr_socket_t listening_sockfd)
+std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session const* session, tr_socket_t listening_sockfd)
 {
     TR_ASSERT(session != nullptr);
 

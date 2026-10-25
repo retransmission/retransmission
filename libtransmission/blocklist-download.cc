@@ -216,7 +216,7 @@ Updater::~Updater()
     // Answer whoever still waits on an in-flight fetch, e.g. an RPC client's blocklist_update.
     // The fetch's own completion then finds no waiters and does nothing.
     closing_ = true;
-    if (auto pending = latest_.lock()) {
+    if (auto const pending = latest_.lock()) {
         // A status without a message: composing one allocates, and a
         // destructor has no way to report allocation failure.
         auto const result = tr_blocklist_update_result{
@@ -236,12 +236,12 @@ void Updater::update(tr_blocklist_update_func on_done)
         // API, but taking its waiters both silences it and moves those callers
         // onto the update that wins.
         auto waiters = std::vector<tr_blocklist_update_func>{};
-        if (auto previous = latest_.lock()) {
+        if (auto const previous = latest_.lock()) {
             waiters = std::exchange(previous->waiters, {});
         }
         waiters.push_back(std::move(on_done));
 
-        auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .waiters = std::move(waiters) });
+        auto const pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .waiters = std::move(waiters) });
         latest_ = pending;
         auto options = tr_web::FetchOptions{
             mediator_.blocklist_url(),
@@ -256,7 +256,7 @@ void Updater::update(tr_blocklist_update_func on_done)
 void Updater::cancel()
 {
     mediator_.run_in_session_thread([this] {
-        if (auto pending = latest_.lock()) {
+        if (auto const pending = latest_.lock()) {
             pending->waiters.clear();
         }
     });

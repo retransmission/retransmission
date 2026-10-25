@@ -220,7 +220,7 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
     if (!reader.HasParseError()) {
         return std::optional<tr_variant>{ std::move(top) };
     }
-    if (auto err_code = reader.GetParseErrorCode(); err_code == rapidjson::kParseErrorDocumentEmpty) {
+    if (auto const err_code = reader.GetParseErrorCode(); err_code == rapidjson::kParseErrorDocumentEmpty) {
         error_.set(EINVAL, "No content");
     } else if (err_code == rapidjson::kParseErrorTermination) {
         error_.set(E2BIG, "Max stack depth reached; unable to continue parsing");
