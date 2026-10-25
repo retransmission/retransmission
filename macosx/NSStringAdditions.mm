@@ -2,11 +2,13 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <array>
+#include <cstddef>
 #include <locale>
-#include <optional>
-#include <string>
 #include <string_view>
-#include <utility>
+#include <type_traits>
+
+#include <fmt/format.h>
 
 #include <libtransmission/string-utils.h>
 
@@ -15,65 +17,73 @@
 
 namespace
 {
-class RegionNumpunct final : public std::numpunct<char>
+// Formats localized numbers the way NSNumberFormatter does for the user's region, with its digits and separators.
+// {fmt} hands every "L" field of a number to this facet first.
+// A separator in one `char`, as std::numpunct<char> offers, could not hold French's narrow no-break space
+// or Arabic's decimal separator.
+class RegionFacet final : public fmt::format_facet<std::locale>
 {
   public:
-    RegionNumpunct(char const decimal_point, char const thousands_sep, std::string grouping)
-        : decimal_point_{ decimal_point }, thousands_sep_{ thousands_sep }, grouping_{ std::move(grouping) }
+    RegionFacet()
     {
+        for (size_t digits = 0; digits < std::size(formatters_); ++digits) {
+            NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+            formatter.numberStyle = NSNumberFormatterDecimalStyle;
+            formatter.minimumFractionDigits = digits;
+            formatter.maximumFractionDigits = digits;
+            formatters_[digits] = formatter;
+        }
+    }
+
+  protected:
+    [[nodiscard]] bool do_put(fmt::appender out, fmt::loc_value val, fmt::format_specs const& specs) const override
+    {
+        // Returning false leaves the value to {fmt}, which formats it unlocalized.
+        if (specs.width != 0 || specs.sign() != fmt::sign::none || specs.alt()) {
+            return false;
+        }
+
+        return val.visit([&](auto const value) -> bool {
+            using T = std::remove_cv_t<decltype(value)>;
+            auto const type = specs.type();
+
+            if constexpr (std::is_same_v<T, int> || std::is_same_v<T, long long>) {
+                auto const is_decimal = type == fmt::presentation_type::none || type == fmt::presentation_type::dec;
+                return is_decimal && write(out, [formatters_[0] stringFromNumber:@(static_cast<long long>(value))]);
+            } else if constexpr (std::is_same_v<T, unsigned> || std::is_same_v<T, unsigned long long>) {
+                auto const is_decimal = type == fmt::presentation_type::none || type == fmt::presentation_type::dec;
+                return is_decimal && write(out, [formatters_[0] stringFromNumber:@(static_cast<unsigned long long>(value))]);
+            } else if constexpr (std::is_floating_point_v<T>) {
+                auto const precision = specs.precision;
+                if (type != fmt::presentation_type::fixed || precision < 0 || precision >= static_cast<int>(std::size(formatters_))) {
+                    return false;
+                }
+                return write(out, [formatters_[precision] stringFromNumber:@(static_cast<double>(value))]);
+            } else {
+                return false;
+            }
+        });
     }
 
   private:
-    [[nodiscard]] char do_decimal_point() const override
+    static bool write(fmt::appender out, NSString* str)
     {
-        return decimal_point_;
+        for (char const* ch = str.UTF8String; ch != nullptr && *ch != '\0'; ++ch) {
+            *out++ = *ch;
+        }
+        return true;
     }
 
-    [[nodiscard]] char do_thousands_sep() const override
-    {
-        return thousands_sep_;
-    }
-
-    [[nodiscard]] std::string do_grouping() const override
-    {
-        return grouping_;
-    }
-
-    char decimal_point_;
-    char thousands_sep_;
-    std::string grouping_;
+    // with 0, 1, and 2 fraction digits, the precisions tr::Values formats
+    std::array<NSNumberFormatter*, 3> formatters_;
 };
 
-// The user's region's number separators, passed to each tr::Values to_string() call.
+// The user's region's number format, passed to each tr::Values to_string() call.
 // Installing a locale globally can also change the C locale, and AppKit then draws SF Symbols
 // at the wrong size whenever the C locale's decimal separator is a comma.
 std::locale const& regionLocale()
 {
-    static auto const locale = [] {
-        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
-        formatter.numberStyle = NSNumberFormatterDecimalStyle;
-
-        // a separator longer than one byte falls back to "." or to no grouping
-        auto const as_byte = [](NSString* str) -> std::optional<char> {
-            if (str.length == 1 && [str characterAtIndex:0] < 0x80) {
-                return static_cast<char>([str characterAtIndex:0]);
-            }
-            return {};
-        };
-
-        auto grouping = std::string{};
-        auto const thousands_sep = as_byte(formatter.groupingSeparator);
-        if (formatter.usesGroupingSeparator && thousands_sep && formatter.groupingSize > 0) {
-            grouping += static_cast<char>(formatter.groupingSize);
-            if (formatter.secondaryGroupingSize > 0) {
-                grouping += static_cast<char>(formatter.secondaryGroupingSize);
-            }
-        }
-
-        auto const decimal_point = as_byte(formatter.decimalSeparator).value_or('.');
-        return std::locale{ std::locale::classic(), new RegionNumpunct{ decimal_point, thousands_sep.value_or(','), std::move(grouping) } };
-    }();
-
+    static auto const locale = std::locale{ std::locale::classic(), new RegionFacet{} };
     return locale;
 }
 
