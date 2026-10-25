@@ -224,6 +224,7 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 
 @property(nonatomic, readonly) NSInteger stateSortKey;
 @property(nonatomic, readonly) NSString* trackerSortKey;
+// numbers for NSSortDescriptor, whose key paths can't compare the tr::Values types of ratio and progress
 @property(nonatomic, readonly) double ratioSortKey;
 @property(nonatomic, readonly) double progressSortKey;
 @property(nonatomic, readonly) double progressStopRatioSortKey;
