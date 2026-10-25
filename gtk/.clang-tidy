@@ -41,7 +41,6 @@ Checks:
   - -readability-qualified-auto
   - -readability-redundant-access-specifiers
   - -readability-redundant-parentheses # TODO: enable after https://github.com/llvm/llvm-project/pull/228666 is released
-  - -readability-redundant-typename # TODO: enable after https://github.com/llvm/llvm-project/issues/206995 is fixed
   - -readability-trailing-comma # Adds too much indentation to `std::array` definitions with 2 braces
   - -readability-use-concise-preprocessor-directives
 
