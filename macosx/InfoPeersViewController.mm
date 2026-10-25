@@ -604,8 +604,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
             [components addObject:peer[@"Name"]];
         }
 
-        NSString* progressString = [NSString stringWithFormat:NSLocalizedString(@"Progress: %@", "Inspector -> Peers tab -> table row tooltip"),
-                                                              peer[@"Progress String"]];
+        NSString* progressString = [NSString
+            stringWithFormat:NSLocalizedString(@"Progress: %@", "Inspector -> Peers tab -> table row tooltip"), peer[@"Progress String"]];
         if (![peer[@"Complete"] boolValue] && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
                 stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial seed", "Inspector -> Peers tab -> table row tooltip")];
