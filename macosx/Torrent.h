@@ -225,6 +225,8 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, readonly) NSInteger stateSortKey;
 @property(nonatomic, readonly) NSString* trackerSortKey;
 @property(nonatomic, readonly) double ratioSortKey;
+@property(nonatomic, readonly) double progressSortKey;
+@property(nonatomic, readonly) double progressStopRatioSortKey;
 
 @property(nonatomic, readonly) tr_torrent* torrentStruct;
 

@@ -2709,21 +2709,21 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     NSString* sortType = [self.fDefaults stringForKey:@"Sort"];
     if ([sortType isEqualToString:SortTypeState]) {
         NSSortDescriptor* stateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stateSortKey" ascending:!asc];
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:!asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:!asc];
         NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:!asc];
 
         descriptors = @[ stateDescriptor, progressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeProgress]) {
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
         NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeETA]) {
         NSSortDescriptor* etaDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:asc];
         // falling back on sort by progress
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
         NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ etaDescriptor, progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];

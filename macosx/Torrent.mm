@@ -1665,6 +1665,16 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return ratio.to_double().value_or(-1.0);
 }
 
+- (double)progressSortKey
+{
+    return self.fStat.percent_complete.to_fraction();
+}
+
+- (double)progressStopRatioSortKey
+{
+    return self.fStat.seed_ratio_percent_done.to_fraction();
+}
+
 - (tr_torrent*)torrentStruct
 {
     return self.fHandle;
