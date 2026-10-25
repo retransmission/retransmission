@@ -955,13 +955,15 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSMutableArray* peerDicts = [NSMutableArray arrayWithCapacity:totalPeers];
 
     for (auto const& peer : peers) {
-        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:12];
+        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
 
         dict[@"Name"] = self.name;
         dict[@"From"] = @(peer.from);
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
-        dict[@"Progress"] = @(peer.progress_deprecated);
+        dict[@"Progress"] = @(peer.progress.to_fraction());
+        dict[@"Progress String"] = [NSString percentString:peer.progress.to_fraction() longDecimals:NO];
+        dict[@"Complete"] = @(peer.progress.is_complete());
         dict[@"Seed"] = @(peer.is_seed);
         dict[@"Encryption"] = @(peer.is_encrypted);
         dict[@"uTP"] = @(peer.is_utp);
