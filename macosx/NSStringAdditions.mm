@@ -17,15 +17,13 @@ namespace
 {
 class RegionNumpunct final : public std::numpunct<char>
 {
-public:
+  public:
     RegionNumpunct(char const decimal_point, char const thousands_sep, std::string grouping)
-        : decimal_point_{ decimal_point }
-        , thousands_sep_{ thousands_sep }
-        , grouping_{ std::move(grouping) }
+        : decimal_point_{ decimal_point }, thousands_sep_{ thousands_sep }, grouping_{ std::move(grouping) }
     {
     }
 
-private:
+  private:
     [[nodiscard]] char do_decimal_point() const override
     {
         return decimal_point_;
@@ -51,14 +49,12 @@ private:
 // at the wrong size whenever the C locale's decimal separator is a comma.
 std::locale const& regionLocale()
 {
-    static auto const locale = []
-    {
+    static auto const locale = [] {
         NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
 
         // a separator longer than one byte falls back to "." or to no grouping
-        auto const as_byte = [](NSString* str) -> std::optional<char>
-        {
+        auto const as_byte = [](NSString* str) -> std::optional<char> {
             if (str.length == 1 && [str characterAtIndex:0] < 0x80) {
                 return static_cast<char>([str characterAtIndex:0]);
             }
@@ -75,8 +71,7 @@ std::locale const& regionLocale()
         }
 
         auto const decimal_point = as_byte(formatter.decimalSeparator).value_or('.');
-        return std::locale{ std::locale::classic(),
-                            new RegionNumpunct{ decimal_point, thousands_sep.value_or(','), std::move(grouping) } };
+        return std::locale{ std::locale::classic(), new RegionNumpunct{ decimal_point, thousands_sep.value_or(','), std::move(grouping) } };
     }();
 
     return locale;
