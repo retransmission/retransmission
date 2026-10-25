@@ -8,7 +8,6 @@
 #import "Controller.h"
 #import "FileListNode.h"
 #import "InfoOptionsViewController.h"
-#import "NSKeyedUnarchiverAdditions.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
 #import "TorrentCell.h"
@@ -67,11 +66,9 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         NSData* groupData;
         if ((groupData = [_fDefaults dataForKey:@"CollapsedGroupIndexes"])) {
             _fCollapsedGroups = [NSKeyedUnarchiver unarchivedObjectOfClass:NSMutableIndexSet.class fromData:groupData error:nil];
-        } else if ((groupData = [_fDefaults dataForKey:@"CollapsedGroups"])) //handle old groups
-        {
-            _fCollapsedGroups = [[NSKeyedUnarchiver deprecatedUnarchiveObjectWithData:groupData] mutableCopy];
+        } else if ([_fDefaults objectForKey:@"CollapsedGroups"]) {
+            // Dropped unread: it's Transmission 3's NSArchiver data, and NSUnarchiver instantiates any class such data names.
             [_fDefaults removeObjectForKey:@"CollapsedGroups"];
-            [self saveCollapsedGroups];
         }
         if (_fCollapsedGroups == nil) {
             _fCollapsedGroups = [[NSMutableIndexSet alloc] init];

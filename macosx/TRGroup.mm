@@ -80,7 +80,7 @@ static NSDictionary* _Nullable plistFromRule(id _Nullable rule, NSUInteger& node
             }
             [subplists addObject:subplist];
         }
-        return @{ @"Type" : @"Compound", @"Compound" : @(compound.compoundPredicateType), @"Subpredicates" : subplists };
+        return @{@"Type" : @"Compound", @"Compound" : @(compound.compoundPredicateType), @"Subpredicates" : subplists};
     }
 
     if ([rule isKindOfClass:NSComparisonPredicate.class]) {
@@ -147,8 +147,7 @@ static NSPredicate* _Nullable ruleFromPlist(id _Nullable plist, NSUInteger& node
         NSNumber* const options = objectOfClass(dict[@"Options"], NSNumber.class);
         NSString* const value = objectOfClass(dict[@"Value"], NSString.class);
         if (keyPath == nil || operatorType == nil || modifier == nil || options == nil || value == nil ||
-            !isRuleComparison(keyPath, operatorType.unsignedIntegerValue, modifier.unsignedIntegerValue,
-                              options.unsignedIntegerValue)) {
+            !isRuleComparison(keyPath, operatorType.unsignedIntegerValue, modifier.unsignedIntegerValue, options.unsignedIntegerValue)) {
             return nil;
         }
 
