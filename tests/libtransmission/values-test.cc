@@ -57,3 +57,12 @@ TEST_F(ValuesTest, isZero)
     val = Speed{ 1, Speed::Units::Byps };
     EXPECT_FALSE(val.is_zero());
 }
+
+TEST_F(ValuesTest, displayNames)
+{
+    using Names = decltype(Config::memory.display_names());
+
+    EXPECT_EQ((Names{ "B", "KiB", "MiB", "GiB", "TiB" }), Config::memory.display_names());
+    EXPECT_EQ((Names{ "B/s", "kB/s", "MB/s", "GB/s", "TB/s" }), Config::speed.display_names());
+    EXPECT_EQ((Names{ "B", "kB", "MB", "GB", "TB" }), Config::storage.display_names());
+}

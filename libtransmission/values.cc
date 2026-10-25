@@ -3,7 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm> // std::copy_n(), std::min()
+#include <algorithm> // std::copy_n(), std::min(), std::ranges::transform()
 #include <array>
 #include <cmath> // std::fabs(), std::floor()
 #include <cstddef> // size_t
@@ -11,7 +11,6 @@
 #include <iterator> // std::begin(), std::size()
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include <fmt/format.h>
 
@@ -27,15 +26,10 @@ Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "
 Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
 Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
 
-std::vector<std::string> Config::UnitsBase::display_names() const
+std::array<std::string, Config::UnitsBase::UnitCount> Config::UnitsBase::display_names() const
 {
-    auto names = std::vector<std::string>{};
-    names.reserve(display_names_.size());
-
-    for (auto const& name : display_names_) {
-        names.emplace_back(std::data(name));
-    }
-
+    auto names = std::array<std::string, UnitCount>{};
+    std::ranges::transform(display_names_, std::begin(names), [](auto const& name) { return std::string{ std::data(name) }; });
     return names;
 }
 
