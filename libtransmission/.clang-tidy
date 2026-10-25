@@ -47,7 +47,6 @@ Checks:
   - -misc-non-private-member-variables-in-classes
   - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed
   - modernize-*
-  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - portability-*
