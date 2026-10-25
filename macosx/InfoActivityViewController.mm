@@ -199,11 +199,11 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         self.fStateField.stringValue = torrent.stateString;
 
-        NSString* progressString = [NSString percentString:torrent.progress longDecimals:YES];
+        NSString* progressString = [NSString percentString:torrent.progress];
         if (torrent.folder) {
             NSString* progressSelectedString = [NSString
                 stringWithFormat:NSLocalizedString(@"%@ selected", "Inspector -> Activity tab -> progress"),
-                                 [NSString percentString:torrent.progressDone longDecimals:YES]];
+                                 [NSString percentString:torrent.progressDone]];
             progressString = [progressString stringByAppendingFormat:@" (%@)", progressSelectedString];
         }
         self.fProgressField.stringValue = progressString;

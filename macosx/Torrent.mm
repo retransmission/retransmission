@@ -962,7 +962,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
         dict[@"Progress"] = @(peer.progress.to_fraction());
-        dict[@"Progress String"] = [NSString percentString:peer.progress longDecimals:NO];
+        dict[@"Progress String"] = [NSString wholePercentString:peer.progress];
         dict[@"Complete"] = @(peer.progress.is_complete());
         dict[@"Seed"] = @(peer.is_seed);
         dict[@"Encryption"] = @(peer.is_encrypted);
@@ -1016,7 +1016,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         auto const metadataProgress = self.fStat.metadata_percent_complete;
         NSString* progressString = metadataProgress.have() > 0 ?
             [NSString stringWithFormat:NSLocalizedString(@"%@ of torrent metadata retrieved", "Torrent -> progress string"),
-                                       [NSString percentString:metadataProgress longDecimals:YES]] :
+                                       [NSString percentString:metadataProgress]] :
             NSLocalizedString(@"torrent metadata needed", "Torrent -> progress string");
 
         return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", "Torrent -> progress string"), progressString];
@@ -1034,7 +1034,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             progress = self.progress;
         }
 
-        string = [string stringByAppendingFormat:@" (%@)", [NSString percentString:progress longDecimals:YES]];
+        string = [string stringByAppendingFormat:@" (%@)", [NSString percentString:progress]];
     } else {
         NSString* downloadString;
         if (!self.complete) //only multifile possible
@@ -1044,7 +1044,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                                                             [NSString stringForFileSize:self.haveTotal]];
             } else {
                 downloadString = [NSString stringForFilePartialSize:self.haveTotal fullSize:self.size];
-                downloadString = [downloadString stringByAppendingFormat:@" (%@)", [NSString percentString:self.progress longDecimals:YES]];
+                downloadString = [downloadString stringByAppendingFormat:@" (%@)", [NSString percentString:self.progress]];
             }
         } else {
             downloadString = [NSString stringForFileSize:self.size];
@@ -1113,7 +1113,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         case TR_STATUS_CHECK:
             string = [NSString stringWithFormat:@"%@ (%@)",
                                                 NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
-                                                [NSString percentString:self.checkingProgress longDecimals:YES]];
+                                                [NSString percentString:self.checkingProgress]];
             break;
 
         case TR_STATUS_DOWNLOAD:
@@ -1205,7 +1205,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     case TR_STATUS_CHECK:
         string = [NSString stringWithFormat:@"%@ (%@)",
                                             NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
-                                            [NSString percentString:self.checkingProgress longDecimals:YES]];
+                                            [NSString percentString:self.checkingProgress]];
         break;
 
     case TR_STATUS_DOWNLOAD:
@@ -1259,7 +1259,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     case TR_STATUS_CHECK:
         return [NSString stringWithFormat:@"%@ (%@)",
                                           NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
-                                          [NSString percentString:self.checkingProgress longDecimals:YES]];
+                                          [NSString percentString:self.checkingProgress]];
 
     case TR_STATUS_DOWNLOAD:
         return NSLocalizedString(@"Downloading", "Torrent -> status string");

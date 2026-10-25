@@ -119,7 +119,7 @@ static NSCache<UTType*, NSImage*>* iconCache;
 
     // Update status
     Torrent* torrent = node.torrent;
-    NSString* percentString = [NSString percentString:[torrent fileProgress:node] longDecimals:YES];
+    NSString* percentString = [NSString wholePercentString:[torrent fileProgress:node]];
 
     NSString* status = [NSString stringWithFormat:NSLocalizedString(@"%@ of %@", "Inspector -> Files tab -> file status string"),
                                                   percentString,

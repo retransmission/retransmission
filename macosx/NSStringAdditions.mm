@@ -5,6 +5,7 @@
 #include <locale>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include <libtransmission/string-utils.h>
@@ -79,6 +80,22 @@ std::locale const& regionLocale()
     }();
 
     return locale;
+}
+
+// the region's percent pattern places the sign, e.g. "5%", "5 %", or "%5"
+NSString* withPercentSign(std::string_view const digits)
+{
+    static NSString* prefix;
+    static NSString* suffix;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterPercentStyle;
+        prefix = formatter.positivePrefix;
+        suffix = formatter.positiveSuffix;
+    });
+
+    return [NSString stringWithFormat:@"%@%@%@", prefix, tr_strv_to_utf8_nsstring(digits), suffix];
 }
 } // namespace
 
@@ -155,27 +172,14 @@ std::locale const& regionLocale()
     return tr_strv_to_utf8_nsstring(ratio.to_string(regionLocale()));
 }
 
-+ (NSString*)percentString:(tr::Values::Percent)progress longDecimals:(BOOL)longDecimals
++ (NSString*)percentString:(tr::Values::Percent)progress
 {
-    static NSNumberFormatter* longFormatter;
-    static NSNumberFormatter* shortFormatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        longFormatter = [[NSNumberFormatter alloc] init];
-        longFormatter.numberStyle = NSNumberFormatterPercentStyle;
-        longFormatter.maximumFractionDigits = 2;
-        shortFormatter = [[NSNumberFormatter alloc] init];
-        shortFormatter.numberStyle = NSNumberFormatterPercentStyle;
-        shortFormatter.maximumFractionDigits = 1;
-    });
-    // each cap is the largest value its formatter shows below 100%
-    if (progress.is_complete()) {
-        return [shortFormatter stringFromNumber:@(1)];
-    } else if (longDecimals) {
-        return [longFormatter stringFromNumber:@(MIN(progress.to_fraction(), 0.9999))];
-    } else {
-        return [shortFormatter stringFromNumber:@(MIN(progress.to_fraction(), 0.999))];
-    }
+    return withPercentSign(progress.to_string(regionLocale()));
+}
+
++ (NSString*)wholePercentString:(tr::Values::Percent)progress
+{
+    return withPercentSign(progress.to_whole_string());
 }
 
 - (NSComparisonResult)compareNumeric:(NSString*)string
