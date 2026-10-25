@@ -2,6 +2,7 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <limits>
 #include <optional>
 #include <vector>
 
@@ -1651,6 +1652,17 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
 
     return best;
+}
+
+// None sorts below every number, Infinite above
+- (double)ratioSortKey
+{
+    auto const ratio = self.fStat.upload_ratio;
+    if (ratio.is_infinite()) {
+        return std::numeric_limits<double>::infinity();
+    }
+
+    return ratio.to_double().value_or(-1.0);
 }
 
 - (tr_torrent*)torrentStruct
