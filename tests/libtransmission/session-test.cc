@@ -655,4 +655,23 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     tr_sessionClose(session, 1);
 }
 
+// A new UDP core binds the port the old one held, which macOS refuses while both are open.
+TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
+{
+#ifndef __APPLE__
+    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
+#else
+    auto constexpr Loopback = "lo0"sv;
+
+    if (!is_valid_socket(udpSocket4())) {
+        GTEST_SKIP() << "the session has no IPv4 UDP socket to begin with";
+    }
+
+    tr_sessionSetBindInterface(session_, Loopback);
+    EXPECT_TRUE(waitFor([this, Loopback] { return tr_sessionGetBindInterface(session_) == Loopback; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(udpSocket4()));
+#endif
+}
+
 } // namespace tr::test

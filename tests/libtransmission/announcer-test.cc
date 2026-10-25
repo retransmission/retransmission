@@ -412,3 +412,18 @@ TEST_F(AnnouncerTest, tryingOrderEmpty)
     order.set_current(std::nullopt);
     EXPECT_EQ(std::nullopt, order.current());
 }
+
+TEST_F(AnnouncerTest, compareFailedRanksCancelledFirst)
+{
+    auto refused = tr_announce_response{};
+    auto timed_out = tr_announce_response{};
+    timed_out.did_connect = true;
+    timed_out.did_timeout = true;
+    auto cancelled = tr_announce_response{};
+    cancelled.did_cancel = true;
+
+    // a cancelled request says nothing about the tracker, so it beats any real failure
+    EXPECT_TRUE(tr_announce_response::compare_failed(refused, cancelled) < 0);
+    EXPECT_TRUE(tr_announce_response::compare_failed(timed_out, cancelled) < 0);
+    EXPECT_TRUE(tr_announce_response::compare_failed(cancelled, refused) > 0);
+}

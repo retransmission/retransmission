@@ -939,6 +939,18 @@ void tr_announcer_impl::onAnnounceDone(
             !std::empty(response.errmsg) ? response.errmsg : "none"sv,
             !std::empty(response.warning) ? response.warning : "none"sv));
 
+    // A cancelled announce never reached the tracker, so it's no failure. The
+    // restart that follows a binding change queues its own events; otherwise
+    // send this one again now. "completed" is always sent again, since the
+    // restart's "stopped" drops only a queued one, and no later event replaces it.
+    if (response.did_cancel) {
+        tier->isAnnouncing = false;
+        if (event == TR_ANNOUNCE_EVENT_COMPLETED || std::empty(tier->announce_events)) {
+            tier_announce_event_push(tier, event, now);
+        }
+        return;
+    }
+
     // https://github.com/arvidn/libtorrent/issues/5084#issuecomment-688516452
     if (response.min_interval != 0) {
         tier->announceMinIntervalSec = response.min_interval;
@@ -1238,6 +1250,13 @@ void tr_announcer_impl::onScrapeDone(tr_scrape_response const& response)
                 std::empty(response.errmsg) ? "none"sv : response.errmsg));
 
         tier->isScraping = false;
+
+        // a cancelled scrape never reached the tracker, so it's no failure
+        if (response.did_cancel) {
+            tier->scrapeSoon();
+            continue;
+        }
+
         tier->lastScrapeTime = now;
         tier->lastScrapeSucceeded = false;
         tier->lastScrapeTimedOut = response.did_timeout;

@@ -549,6 +549,7 @@ TEST_F(WebTest, cancelAllCompletesRunningFetch)
     EXPECT_EQ(0, response.status);
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
+    EXPECT_TRUE(response.did_cancel);
     EXPECT_EQ(&user_data, response.user_data);
 }
 
@@ -594,6 +595,7 @@ TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)
     auto const after = fetch(options("/after"sv));
     EXPECT_EQ(200, after.status);
     EXPECT_EQ("after"sv, after.body);
+    EXPECT_FALSE(after.did_cancel);
 
     // while the one made before it was cancelled
     ASSERT_EQ(std::future_status::ready, future.wait_for(5s));

@@ -974,6 +974,7 @@ public:
             task.response.status = 0;
             task.response.did_connect = false;
             task.response.did_timeout = false;
+            task.response.did_cancel = true;
             task.done();
         }
 

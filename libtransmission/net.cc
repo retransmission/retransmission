@@ -11,6 +11,7 @@
 #include <cstring>
 #include <iterator> // std::back_inserter
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -132,6 +133,44 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     return if_nametoindex(std::string{ name }.c_str());
 }
 
+#ifdef __APPLE__
+namespace
+{
+// The interface last warned about as missing, so an outage warns once instead
+// of once per socket. Sockets are bound on more than one thread.
+struct MissingInterfaceWarning {
+    std::mutex mutex;
+    std::string name;
+};
+
+[[nodiscard]] MissingInterfaceWarning& missing_interface_warning()
+{
+    static auto warning = MissingInterfaceWarning{};
+    return warning;
+}
+
+// true the first time `name` is missing since a socket last bound to an interface
+[[nodiscard]] bool should_warn_missing_interface(std::string_view const name)
+{
+    auto& warning = missing_interface_warning();
+    auto const lock = std::scoped_lock{ warning.mutex };
+    if (warning.name == name) {
+        return false;
+    }
+    warning.name = name;
+    return true;
+}
+
+// a successful bind ends the outage, so the next one warns again
+void forget_missing_interface()
+{
+    auto& warning = missing_interface_warning();
+    auto const lock = std::scoped_lock{ warning.mutex };
+    warning.name.clear();
+}
+} // namespace
+#endif
+
 bool tr_netSetSocketInterface(
     tr_socket_t const sock,
     [[maybe_unused]] tr_address_type const type,
@@ -139,6 +178,14 @@ bool tr_netSetSocketInterface(
     bool const suppress_msgs)
 {
     auto const name = tr_net_effective_bind_interface(bind_interface);
+
+#ifdef __APPLE__
+    // a socket under another binding ends any outage, so the next one warns again
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        forget_missing_interface();
+    }
+#endif
+
     if (std::empty(name)) {
         return true;
     }
@@ -155,8 +202,10 @@ bool tr_netSetSocketInterface(
     auto const if_index = tr_net_interface_index(name);
     if (if_index == 0U) {
         set_sockerrno(ENXIO);
-        if (!suppress_msgs) {
+        if (!suppress_msgs && should_warn_missing_interface(name)) {
             tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': interface not found", name));
+        } else {
+            tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': interface not found", sock, name));
         }
         return false;
     }
@@ -172,6 +221,7 @@ bool tr_netSetSocketInterface(
         return false;
     }
 
+    forget_missing_interface();
     tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
     return true;
 #else

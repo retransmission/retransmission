@@ -926,7 +926,13 @@ void tr_session::apply_network_bindings(
         port_forwarding_->local_port_changed();
     }
 
-    if (!udp_core_ || force || addr_changed || interface_changed || port_changed || utp_changed) {
+    bool const udp_core_rebuilt = !udp_core_ || force || addr_changed || interface_changed || port_changed || utp_changed;
+    if (udp_core_rebuilt) {
+        // DHT uses the core's sockets, and libdht is process-global: the old
+        // DHT must uninit before the new one inits, so it goes first.
+        dht_.reset();
+        // the old core must release the port before the new one binds it
+        udp_core_.reset();
         udp_core_ = std::make_unique<tr_session::tr_udp_core>(*this, udpPort());
     }
 
@@ -943,9 +949,7 @@ void tr_session::apply_network_bindings(
 
     if (!new_settings.dht_enabled) {
         dht_.reset();
-    } else if (
-        force || !dht_ || port_changed || addr_changed || interface_changed ||
-        new_settings.dht_enabled != old_settings.dht_enabled) {
+    } else if (!dht_) {
         dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
     }
 

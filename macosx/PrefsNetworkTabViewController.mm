@@ -318,6 +318,14 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 - (NSString*)bindInterfaceStatusString
 {
     if (![self usesActiveVPNBindInterface]) {
+        // an RPC client can set the blocked value in literal mode too, and
+        // libtransmission ignores the whitespace around it
+        NSString* trimmedInterface = [[self.fDefaults stringForKey:@"BindInterface"]
+            stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+        if ([trimmedInterface isEqualToString:TRBlockedBindInterfaceName]) {
+            return NSLocalizedString(@"Traffic blocked", "Preferences -> Network -> bind interface status");
+        }
+
         NSString* bindInterface = TRDisplayableBindInterface([self.fDefaults stringForKey:@"BindInterface"]);
         return bindInterface.length > 0 ?
             [NSString stringWithFormat:NSLocalizedString(@"Literal interface: %@", "Preferences -> Network -> bind interface status"),

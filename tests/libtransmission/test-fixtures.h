@@ -491,6 +491,13 @@ protected:
         return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
     }
 
+    // the UDP core's IPv4 socket, read on the session thread
+    [[nodiscard]] tr_socket_t udpSocket4()
+    {
+        return blockingRunInSessionThread(
+            [this] { return session_->udp_core_ ? session_->udp_core_->socket4() : TR_BAD_SOCKET; });
+    }
+
     // Waits for `test` to hold, checking it on the session thread,
     // which owns the torrent state that tests wait on.
     [[nodiscard]] bool waitForInSessionThread(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
