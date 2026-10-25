@@ -22,7 +22,7 @@
 + (NSString*)stringForSpeedAbbrevCompact:(CGFloat)speed;
 + (NSString*)stringForRatio:(tr::Values::Ratio)ratio;
 
-+ (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals;
++ (NSString*)percentString:(tr::Values::Percent)progress longDecimals:(BOOL)longDecimals;
 
 // simple compare method for strings with numbers (works for IP addresses)
 - (NSComparisonResult)compareNumeric:(NSString*)string;

@@ -395,9 +395,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     tr_torrentSetRatioLimit(self.fHandle, limit);
 }
 
-- (CGFloat)progressStopRatio
+- (tr::Values::Percent)progressStopRatio
 {
-    return self.fStat.seed_ratio_percent_done_deprecated;
+    return self.fStat.seed_ratio_percent_done;
 }
 
 - (tr_idlelimit)idleSetting
@@ -852,14 +852,14 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return LONG_MAX;
 }
 
-- (CGFloat)progress
+- (tr::Values::Percent)progress
 {
-    return self.fStat.percent_complete_deprecated;
+    return self.fStat.percent_complete;
 }
 
-- (CGFloat)progressDone
+- (tr::Values::Percent)progressDone
 {
-    return self.fStat.percent_done_deprecated;
+    return self.fStat.percent_done;
 }
 
 - (CGFloat)progressLeft
@@ -872,9 +872,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return (CGFloat)self.sizeLeft / self.size;
 }
 
-- (CGFloat)checkingProgress
+- (tr::Values::Percent)checkingProgress
 {
-    return self.fStat.recheck_progress_deprecated;
+    return self.fStat.recheck_progress;
 }
 
 - (CGFloat)availableDesired
@@ -915,7 +915,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (BOOL)isComplete
 {
-    return self.progress >= 1.0;
+    return self.progress.is_complete();
 }
 
 - (BOOL)isFinishedSeeding
@@ -962,7 +962,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
         dict[@"Progress"] = @(peer.progress.to_fraction());
-        dict[@"Progress String"] = [NSString percentString:peer.progress.to_fraction() longDecimals:NO];
+        dict[@"Progress String"] = [NSString percentString:peer.progress longDecimals:NO];
         dict[@"Complete"] = @(peer.progress.is_complete());
         dict[@"Seed"] = @(peer.is_seed);
         dict[@"Encryption"] = @(peer.is_encrypted);
@@ -1013,9 +1013,10 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (NSString*)progressString
 {
     if (self.magnet) {
-        NSString* progressString = self.fStat.metadata_percent_complete_deprecated > 0.0 ?
+        auto const metadataProgress = self.fStat.metadata_percent_complete;
+        NSString* progressString = metadataProgress.have() > 0 ?
             [NSString stringWithFormat:NSLocalizedString(@"%@ of torrent metadata retrieved", "Torrent -> progress string"),
-                                       [NSString percentString:self.fStat.metadata_percent_complete_deprecated longDecimals:YES]] :
+                                       [NSString percentString:metadataProgress longDecimals:YES]] :
             NSLocalizedString(@"torrent metadata needed", "Torrent -> progress string");
 
         return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", "Torrent -> progress string"), progressString];
@@ -1024,7 +1025,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSString* string;
 
     if (!self.allDownloaded) {
-        CGFloat progress;
+        tr::Values::Percent progress;
         if (self.folder && [self.fDefaults boolForKey:@"DisplayStatusProgressSelected"]) {
             string = [NSString stringForFilePartialSize:self.haveTotal fullSize:self.totalSizeSelected];
             progress = self.progressDone;
@@ -1424,15 +1425,10 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return tr_torrentFileCount(self.fHandle);
 }
 
-- (CGFloat)fileProgress:(FileListNode*)node
+- (tr::Values::Percent)fileProgress:(FileListNode*)node
 {
     if (self.fileCount == 1 || self.complete) {
         return self.progress;
-    }
-
-    // #5501
-    if (node.size == 0) {
-        return 1.0;
     }
 
     uint64_t have = 0;
@@ -1441,7 +1437,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         have += tr_torrentFile(self.fHandle, index).have;
     }
 
-    return (CGFloat)have / node.size;
+    // complete for a zero-size node, e.g. an empty file (#5501)
+    return tr::Values::Percent{ have, node.size };
 }
 
 - (BOOL)canChangeDownloadChecks
@@ -1669,12 +1666,12 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (double)progressSortKey
 {
-    return self.fStat.percent_complete.to_fraction();
+    return self.progress.to_fraction();
 }
 
 - (double)progressStopRatioSortKey
 {
-    return self.fStat.seed_ratio_percent_done.to_fraction();
+    return self.progressStopRatio.to_fraction();
 }
 
 - (tr_torrent*)torrentStruct

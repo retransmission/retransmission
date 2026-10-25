@@ -155,7 +155,7 @@ std::locale const& regionLocale()
     return tr_strv_to_utf8_nsstring(ratio.to_string(regionLocale()));
 }
 
-+ (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals
++ (NSString*)percentString:(tr::Values::Percent)progress longDecimals:(BOOL)longDecimals
 {
     static NSNumberFormatter* longFormatter;
     static NSNumberFormatter* shortFormatter;
@@ -168,12 +168,13 @@ std::locale const& regionLocale()
         shortFormatter.numberStyle = NSNumberFormatterPercentStyle;
         shortFormatter.maximumFractionDigits = 1;
     });
-    if (progress >= 1.0) {
+    // each cap is the largest value its formatter shows below 100%
+    if (progress.is_complete()) {
         return [shortFormatter stringFromNumber:@(1)];
     } else if (longDecimals) {
-        return [longFormatter stringFromNumber:@(MIN(progress, 0.9999))];
+        return [longFormatter stringFromNumber:@(MIN(progress.to_fraction(), 0.9999))];
     } else {
-        return [shortFormatter stringFromNumber:@(MIN(progress, 0.999))];
+        return [shortFormatter stringFromNumber:@(MIN(progress.to_fraction(), 0.999))];
     }
 }
 
