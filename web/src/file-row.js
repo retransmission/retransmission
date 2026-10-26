@@ -4,6 +4,7 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
+import { Percent } from './percent.js';
 import {
   addCheckedClass,
   makeUUID,
@@ -30,10 +31,9 @@ export class FileRow extends EventTarget {
 
   refreshProgressHTML() {
     const { size, have } = this.fields;
-    const pct = 100 * (size ? have / size : 1);
     const fmt = Formatter;
-    const c = `${fmt.size(have)} of ${fmt.size(size)} (${fmt.percentString(
-      pct,
+    const c = `${fmt.size(have)} of ${fmt.size(size)} (${fmt.percent(
+      new Percent(have, size),
       1,
     )}%)`;
     setTextContent(this.elements.progress, c);

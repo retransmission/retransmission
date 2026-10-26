@@ -5,6 +5,7 @@
 
 import { FileRow } from './file-row.js';
 import { Formatter } from './formatter.js';
+import { Percent } from './percent.js';
 import { Torrent } from './torrent.js';
 import { createTextualTabsContainer, setTextContent, Utils } from './utils.js';
 
@@ -324,10 +325,10 @@ export class Inspector extends EventTarget {
         0,
       );
 
-      const d =
-        100 *
-        (sizeWhenDone ? (sizeWhenDone - leftUntilDone) / sizeWhenDone : 1);
-      string = fmt.percentString(d, 1);
+      string = fmt.percent(
+        new Percent(sizeWhenDone - leftUntilDone, sizeWhenDone),
+        1,
+      );
 
       if (unverified) {
         string = `${fmt.size(verified)} of ${fmt.size(
@@ -354,7 +355,7 @@ export class Inspector extends EventTarget {
         (accumulator, t) => accumulator + t.getHave() + t.getDesiredAvailable(),
         0,
       );
-      string = `${fmt.percentString((100 * available) / sizeWhenDone, 1)}%`;
+      string = `${fmt.percent(new Percent(available, sizeWhenDone), 1)}%`;
     }
     setTextContent(e.info.availability, fmt.stringSanitizer(string));
 
@@ -652,7 +653,8 @@ export class Inspector extends EventTarget {
           td,
           peer.rate_to_client ? fmt.speedBps(peer.rate_to_client) : '',
         ),
-      (peer, td) => setTextContent(td, `${Math.floor(peer.progress * 100)}%`),
+      (peer, td, tor) =>
+        setTextContent(td, `${fmt.percent(tor.getPeerPercent(peer), 0)}%`),
       (peer, td) => {
         setTextContent(td, peer.flag_str);
         td.setAttribute('title', Inspector._peerStatusTitle(peer.flag_str));
@@ -727,7 +729,7 @@ export class Inspector extends EventTarget {
         for (const [index, setter] of cell_setters.entries()) {
           const td = document.createElement('td');
           td.classList.add(peer_column_classes[index]);
-          setter(peer, td);
+          setter(peer, td, tor);
           tr.append(td);
         }
         peersRows.push(tr);

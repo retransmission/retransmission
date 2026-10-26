@@ -198,6 +198,12 @@ export class Torrent extends EventTarget {
   getPeers() {
     return this.fields.peers || [];
   }
+  // `have_total` needs `total_size`, which a later fetch brings once metadata completes
+  getPeerPercent(peer) {
+    return peer.have_total === undefined || !(this.getTotalSize() > 0)
+      ? Percent.fromDouble(peer.progress)
+      : new Percent(peer.have_total, this.getTotalSize());
+  }
   getWebseedsEx() {
     return this.fields.webseeds_ex || [];
   }
