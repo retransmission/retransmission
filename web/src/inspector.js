@@ -351,7 +351,7 @@ export class Inspector extends EventTarget {
       string = none;
     } else {
       const available = torrents.reduce(
-        (accumulator, t) => t.getHave() + t.getDesiredAvailable(),
+        (accumulator, t) => accumulator + t.getHave() + t.getDesiredAvailable(),
         0,
       );
       string = `${fmt.percentString((100 * available) / sizeWhenDone, 1)}%`;
