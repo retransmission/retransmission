@@ -92,7 +92,8 @@ export const Formatter = {
     return number_format.format(number);
   },
 
-  // Format a ratio, rounded half up: one decimal below 100, none from there
+  // Format a ratio, rounded half up to hundredths:
+  // two decimals below 5, one below 100, none from there
   ratioString(x) {
     if (x === -1) {
       return 'None';
@@ -100,8 +101,14 @@ export const Formatter = {
     if (x === -2) {
       return '&infin;';
     }
-    const tenths = Math.round(x * 10);
-    return tenths < 1000 ? (tenths / 10).toFixed(1) : Math.round(x).toFixed(0);
+    const hundredths = Math.round(x * 100);
+    if (hundredths < 500) {
+      return (hundredths / 100).toFixed(2);
+    }
+    const tenths = Math.round(hundredths / 10);
+    return tenths < 1000
+      ? (tenths / 10).toFixed(1)
+      : Math.round(hundredths / 100).toFixed(0);
   },
 
   /**
