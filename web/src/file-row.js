@@ -205,13 +205,14 @@ export class FileRow extends EventTarget {
 
     this.controller = controller;
     this.fields = {
-      have: 0,
+      // NaN differs from every total, so the first refresh() always renders progress, even for 0 of 0 bytes
+      have: Number.NaN,
       indices: subtree.file_indices,
       isWanted: true,
       // priorityHigh: false,
       // priorityLow: false,
       // priorityNormal: false,
-      size: 0,
+      size: Number.NaN,
       torrent,
     };
     this.elements = {
