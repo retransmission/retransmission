@@ -30,7 +30,7 @@ const TorrentRendererHelper = {
     const status = t.getStatus();
     const classList = ['torrent-progress-bar'];
     let percent = new Percent(1, 1);
-    let ratio = null;
+    let seed_ratio_percent = null;
 
     if (status === Torrent._StatusStopped) {
       classList.push('paused');
@@ -49,10 +49,14 @@ const TorrentRendererHelper = {
       classList.push('seed');
       if (status !== Torrent._StatusStopped) {
         const seed_ratio_limit = t.seedRatioLimit(controller);
-        ratio =
-          seed_ratio_limit > 0
-            ? (t.getUploadRatio() * 100) / seed_ratio_limit
-            : 100;
+        if (seed_ratio_limit > 0) {
+          // -2 is an infinite ratio; -1 (none) reads as empty
+          const ratio = t.getUploadRatio();
+          seed_ratio_percent =
+            ratio === -2
+              ? new Percent(1, 1)
+              : Percent.fromDouble(ratio / seed_ratio_limit);
+        }
       }
     }
     if (t.isQueued()) {
@@ -62,12 +66,13 @@ const TorrentRendererHelper = {
     return {
       classList,
       percent,
-      ratio,
+      seed_ratio_percent,
     };
   },
   renderProgressbar: (controller, t, progressbar) => {
     const info = TorrentRendererHelper.getProgressInfo(controller, t);
-    const width = Math.min(info.ratio || 100 * info.percent.toFraction(), 100);
+    const bar = info.seed_ratio_percent ?? info.percent;
+    const width = 100 * bar.toFraction();
     progressbar.className = info.classList.join(' ');
     // CSS needs plain digits with a '.', whatever the display locale
     progressbar.style.setProperty('--progress', `${width.toFixed(2)}%`);
