@@ -92,25 +92,6 @@ export const Formatter = {
     return number_format.format(number);
   },
 
-  // Format a ratio, rounded half up to hundredths:
-  // two decimals below 5, one below 100, none from there
-  ratioString(x) {
-    if (x === -1) {
-      return 'None';
-    }
-    if (x === -2) {
-      return '∞';
-    }
-    const hundredths = Math.round(x * 100);
-    if (hundredths < 500) {
-      return (hundredths / 100).toFixed(2);
-    }
-    const tenths = Math.round(hundredths / 10);
-    return tenths < 1000
-      ? (tenths / 10).toFixed(1)
-      : Math.round(hundredths / 100).toFixed(0);
-  },
-
   /**
    * Formats a disk capacity or file size into a human-readable string
    * @param {Number} bytes the filesize in bytes

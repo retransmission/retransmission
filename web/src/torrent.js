@@ -5,6 +5,7 @@
 
 import { Percent } from './percent.js';
 import { Prefs } from './prefs.js';
+import { Ratio } from './ratio.js';
 import { deepEqual } from './utils.js';
 
 ///
@@ -475,10 +476,10 @@ export class Torrent extends EventTarget {
     return b - a || Torrent.compareByState(ta, tb);
   }
   static compareByRatio(ta, tb) {
-    // -2 (infinite) above every number; -1 (none) is already below them
+    // `Ratio.None` (-1) already sorts below every number
     const rank = (t) => {
       const ratio = t.getUploadRatio();
-      return ratio === -2 ? Number.POSITIVE_INFINITY : ratio;
+      return ratio === Ratio.Infinite ? Number.POSITIVE_INFINITY : ratio;
     };
     const a = rank(ta);
     const b = rank(tb);

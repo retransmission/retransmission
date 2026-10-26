@@ -6,6 +6,7 @@
 import { FileRow } from './file-row.js';
 import { Formatter } from './formatter.js';
 import { Percent } from './percent.js';
+import { Ratio } from './ratio.js';
 import { Torrent } from './torrent.js';
 import { createTextualTabsContainer, setTextContent, Utils } from './utils.js';
 
@@ -392,7 +393,7 @@ export class Inspector extends EventTarget {
           0,
         ) ||
         torrents.reduce((accumulator, t) => accumulator + t.getHaveValid(), 0);
-      string = `${fmt.size(uploaded)} (Ratio: ${fmt.ratioString(
+      string = `${fmt.size(uploaded)} (Ratio: ${Ratio.format(
         Utils.ratio(uploaded, denominator),
       )})`;
     }

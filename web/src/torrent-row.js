@@ -5,6 +5,7 @@
 
 import { Formatter } from './formatter.js';
 import { Percent } from './percent.js';
+import { Ratio } from './ratio.js';
 import { Torrent } from './torrent.js';
 import { setTextContent } from './utils.js';
 
@@ -50,10 +51,10 @@ const TorrentRendererHelper = {
       if (status !== Torrent._StatusStopped) {
         const seed_ratio_limit = t.seedRatioLimit(controller);
         if (seed_ratio_limit > 0) {
-          // -2 is an infinite ratio; -1 (none) reads as empty
+          // `Ratio.None` (-1) reads as empty
           const ratio = t.getUploadRatio();
           seed_ratio_percent =
-            ratio === -2
+            ratio === Ratio.Infinite
               ? Percent.Complete
               : Percent.fromDouble(ratio / seed_ratio_limit);
         }
@@ -189,7 +190,7 @@ export class TorrentRendererFull {
         ', uploaded ',
         fmt.size(t.getUploadedEver()),
         ' (Ratio: ',
-        fmt.ratioString(t.getUploadRatio()),
+        Ratio.format(t.getUploadRatio()),
         ')',
       );
     } else {
@@ -308,7 +309,7 @@ export class TorrentRendererCompact {
     } else if (t.isSeeding()) {
       const str = [
         'Ratio:',
-        fmt.ratioString(t.getUploadRatio()),
+        Ratio.format(t.getUploadRatio()),
         '-',
         TorrentRendererHelper.symbol.up,
         fmt.speedBps(t.getUploadSpeed()),

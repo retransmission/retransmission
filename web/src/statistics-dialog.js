@@ -4,6 +4,7 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
+import { Ratio } from './ratio.js';
 import {
   createDialogContainer,
   createInfoSection,
@@ -53,7 +54,7 @@ export class StatisticsDialog extends EventTarget {
     let ratio = Utils.ratio(s.uploaded_bytes, s.downloaded_bytes);
     setTextContent(this.elements.session.up, fmt.size(s.uploaded_bytes));
     setTextContent(this.elements.session.down, fmt.size(s.downloaded_bytes));
-    setTextContent(this.elements.session.ratio, fmt.ratioString(ratio));
+    setTextContent(this.elements.session.ratio, Ratio.format(ratio));
     setTextContent(
       this.elements.session.time,
       fmt.timeInterval(s.seconds_active),
@@ -63,7 +64,7 @@ export class StatisticsDialog extends EventTarget {
     ratio = Utils.ratio(s.uploaded_bytes, s.downloaded_bytes);
     setTextContent(this.elements.total.up, fmt.size(s.uploaded_bytes));
     setTextContent(this.elements.total.down, fmt.size(s.downloaded_bytes));
-    setTextContent(this.elements.total.ratio, fmt.ratioString(ratio));
+    setTextContent(this.elements.total.ratio, Ratio.format(ratio));
     setTextContent(
       this.elements.total.time,
       fmt.timeInterval(s.seconds_active),

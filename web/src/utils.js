@@ -3,17 +3,18 @@
    or any future license endorsed by Mnemosaic LLC.
    License text can be found in the licenses/ folder. */
 
+import { Ratio } from './ratio.js';
 import equal from './vendor/fast-deep-equal.js';
 
 export const Utils = {
-  /** `numerator / denominator`, unrounded; -1 (none) for 0/0, -2 (infinite) for x/0 */
+  /** `numerator / denominator`, unrounded; `Ratio.None` for 0/0, `Ratio.Infinite` for x/0 */
   ratio(numerator, denominator) {
     const result = numerator / denominator;
     if (Number.isNaN(result)) {
-      return -1;
+      return Ratio.None;
     }
     if (!Number.isFinite(result)) {
-      return -2;
+      return Ratio.Infinite;
     }
     return result;
   },
