@@ -28,7 +28,6 @@ set(WEB_SOURCES
     src/labels-dialog.js
     src/main.js
     src/move-dialog.js
-    src/notifications.js
     src/open-dialog.js
     src/overflow-menu.js
     src/prefs-dialog.js

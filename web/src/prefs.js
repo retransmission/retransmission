@@ -114,7 +114,6 @@ Prefs.FilterPrivate = 'private';
 Prefs.FilterPublic = 'public';
 Prefs.FilterSeeding = 'seeding';
 Prefs.HighlightColor = 'highlight-color';
-Prefs.NotificationsEnabled = 'notifications-enabled';
 Prefs.RefreshRate = 'refresh-rate-sec';
 Prefs.SortAscending = 'ascending';
 Prefs.SortByActivity = 'activity';
@@ -138,7 +137,6 @@ Prefs._Defaults = {
     : Prefs.ContrastLess,
   [Prefs.FilterMode]: Prefs.FilterAll,
   [Prefs.HighlightColor]: 'AccentColor',
-  [Prefs.NotificationsEnabled]: false,
   [Prefs.RefreshRate]: 5,
   [Prefs.SortDirection]: Prefs.SortAscending,
   [Prefs.SortMode]: Prefs.SortByName,
