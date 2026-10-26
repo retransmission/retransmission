@@ -66,8 +66,8 @@ static CGFloat const kIconWidthSmall = 12.0;
             }
         } else if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"GroupDicts"])) {
             NSError* error = nil;
-            NSArray* oldDicts = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:NSMutableArray.class,
-                                                                                                   NSMutableDictionary.class,
+            NSArray* oldDicts = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:NSArray.class,
+                                                                                                   NSDictionary.class,
                                                                                                    NSNumber.class,
                                                                                                    NSColor.class,
                                                                                                    NSString.class,
