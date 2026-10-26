@@ -98,6 +98,21 @@ export const Formatter = {
     return number_format.format(number);
   },
 
+  // Format a Percent's digits, rounded half up.
+  // A complete one reads "100"; an incomplete one never does.
+  percent(percent, decimal_places) {
+    if (percent.isComplete()) {
+      return '100';
+    }
+    const scale = 10 ** decimal_places;
+    const { have, total } = percent;
+    const steps = Math.min(
+      Math.round((have * 100 * scale) / total),
+      100 * scale - 1,
+    );
+    return (steps / scale).toFixed(decimal_places);
+  },
+
   // format a percentage to a string
   percentString(x, decimal_places) {
     decimal_places = x < 100 ? decimal_places : 0;
