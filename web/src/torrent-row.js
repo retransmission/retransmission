@@ -4,10 +4,9 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
-import { Percent } from './percent.js';
-import { Ratio } from './ratio.js';
 import { Torrent } from './torrent.js';
 import { setTextContent } from './utils.js';
+import { Percent, Ratio } from './values.js';
 
 const TorrentRendererHelper = {
   formatETA: (t) => {

@@ -3,10 +3,9 @@
    or any future license endorsed by Mnemosaic LLC.
    License text can be found in the licenses/ folder. */
 
-import { Percent } from './percent.js';
 import { Prefs } from './prefs.js';
-import { Ratio } from './ratio.js';
 import { deepEqual } from './utils.js';
+import { Percent, Ratio } from './values.js';
 
 ///
 

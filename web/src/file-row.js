@@ -4,13 +4,13 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
-import { Percent } from './percent.js';
 import {
   addCheckedClass,
   makeUUID,
   setEnabled,
   setTextContent,
 } from './utils.js';
+import { Percent } from './values.js';
 
 export class FileRow extends EventTarget {
   isDone() {

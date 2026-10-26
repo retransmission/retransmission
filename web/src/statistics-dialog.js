@@ -4,12 +4,12 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
-import { Ratio } from './ratio.js';
 import {
   createDialogContainer,
   createInfoSection,
   setTextContent,
 } from './utils.js';
+import { Ratio } from './values.js';
 
 export class StatisticsDialog extends EventTarget {
   constructor(remote) {

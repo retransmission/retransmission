@@ -5,10 +5,9 @@
 
 import { FileRow } from './file-row.js';
 import { Formatter } from './formatter.js';
-import { Percent } from './percent.js';
-import { Ratio } from './ratio.js';
 import { Torrent } from './torrent.js';
 import { createTextualTabsContainer, setTextContent } from './utils.js';
+import { Percent, Ratio } from './values.js';
 
 const peer_column_classes = [
   'encryption',
