@@ -99,7 +99,7 @@ export const Formatter = {
       return 'None';
     }
     if (x === -2) {
-      return '&infin;';
+      return '∞';
     }
     const hundredths = Math.round(x * 100);
     if (hundredths < 500) {
