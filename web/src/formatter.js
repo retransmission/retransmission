@@ -58,12 +58,6 @@ const fmt_GBps = new Intl.NumberFormat(current_locale, {
 });
 
 export const Formatter = {
-  /** Round a string of a number to a specified number of decimal places */
-  _toTruncFixed(number, places) {
-    const returnValue = Math.floor(number * 10 ** places) / 10 ** places;
-    return returnValue.toFixed(places);
-  },
-
   countString(msgid, msgid_plural, n) {
     return `${this.number(n)} ${this.ngettext(msgid, msgid_plural, n)}`;
   },
@@ -113,15 +107,7 @@ export const Formatter = {
     return (steps / scale).toFixed(decimal_places);
   },
 
-  // format a percentage to a string
-  percentString(x, decimal_places) {
-    decimal_places = x < 100 ? decimal_places : 0;
-    return this._toTruncFixed(x, decimal_places);
-  },
-
-  /*
-   *   Format a ratio to a string
-   */
+  // Format a ratio, rounded half up: one decimal below 100, none from there
   ratioString(x) {
     if (x === -1) {
       return 'None';
@@ -129,7 +115,8 @@ export const Formatter = {
     if (x === -2) {
       return '&infin;';
     }
-    return this.percentString(x, 1);
+    const tenths = Math.round(x * 10);
+    return tenths < 1000 ? (tenths / 10).toFixed(1) : Math.round(x).toFixed(0);
   },
 
   /**

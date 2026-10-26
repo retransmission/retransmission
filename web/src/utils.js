@@ -6,20 +6,15 @@
 import equal from './vendor/fast-deep-equal.js';
 
 export const Utils = {
-  /** Given a numerator and denominator, return a ratio string */
+  /** `numerator / denominator`, unrounded; -1 (none) for 0/0, -2 (infinite) for x/0 */
   ratio(numerator, denominator) {
-    let result = Math.floor((100 * numerator) / denominator) / 100;
-
-    // check for special cases
-    if (
-      result === Number.POSITIVE_INFINITY ||
-      result === Number.NEGATIVE_INFINITY
-    ) {
-      result = -2;
-    } else if (Number.isNaN(result)) {
-      result = -1;
+    const result = numerator / denominator;
+    if (Number.isNaN(result)) {
+      return -1;
     }
-
+    if (!Number.isFinite(result)) {
+      return -2;
+    }
     return result;
   },
 };
