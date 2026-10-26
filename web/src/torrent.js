@@ -305,9 +305,6 @@ export class Torrent extends EventTarget {
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
   }
-  getPercentDoneStr() {
-    return this.getPercentDone().toString();
-  }
   getPercentDone() {
     if (this.needsMetaData()) {
       return Percent.Unknown;
