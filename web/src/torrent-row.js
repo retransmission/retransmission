@@ -178,9 +178,9 @@ export class TorrentRendererFull {
         s.push(
           fmt.size(sizeWhenDone),
           ' of ',
-          fmt.size(t.getTotalSize()),
+          fmt.size(totalSize),
           ' (',
-          t.getPercentDoneStr(),
+          new Percent(sizeWhenDone, totalSize).toString(),
           '%)',
         );
       }
