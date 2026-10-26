@@ -76,7 +76,7 @@ const TorrentRendererHelper = {
     progressbar.className = info.classList.join(' ');
     // CSS needs plain digits with a '.', whatever the display locale
     progressbar.style.setProperty('--progress', `${width.toFixed(2)}%`);
-    progressbar.dataset.progress = `${Formatter.percent(info.percent, 2)}%`;
+    progressbar.dataset.progress = `${info.percent}%`;
   },
   symbol: { down: '▼', up: '▲' },
   updateIcon: (e, torrent) => {
@@ -136,7 +136,7 @@ export class TorrentRendererFull {
     } else if (t.isChecking()) {
       const str = [
         'Verifying local data (',
-        fmt.percent(t.getRecheckProgress(), 1),
+        t.getRecheckProgress().toString(),
         '% tested)',
       ].join('');
       setTextContent(peer_details, str);
@@ -157,7 +157,7 @@ export class TorrentRendererFull {
         'Magnetized transfer - ',
         MetaDataStatus,
         ' metadata (',
-        fmt.percent(t.getMetadataPercent(), 1),
+        t.getMetadataPercent().toString(),
         '%)',
       ].join('');
       setTextContent(progress_details, str);

@@ -325,10 +325,10 @@ export class Inspector extends EventTarget {
         0,
       );
 
-      string = fmt.percent(
-        new Percent(sizeWhenDone - leftUntilDone, sizeWhenDone),
-        1,
-      );
+      string = new Percent(
+        sizeWhenDone - leftUntilDone,
+        sizeWhenDone,
+      ).toString();
 
       if (unverified) {
         string = `${fmt.size(verified)} of ${fmt.size(
@@ -355,7 +355,7 @@ export class Inspector extends EventTarget {
         (accumulator, t) => accumulator + t.getHave() + t.getDesiredAvailable(),
         0,
       );
-      string = `${fmt.percent(new Percent(available, sizeWhenDone), 1)}%`;
+      string = `${new Percent(available, sizeWhenDone)}%`;
     }
     setTextContent(e.info.availability, fmt.stringSanitizer(string));
 
@@ -654,7 +654,7 @@ export class Inspector extends EventTarget {
           peer.rate_to_client ? fmt.speedBps(peer.rate_to_client) : '',
         ),
       (peer, td, tor) =>
-        setTextContent(td, `${fmt.percent(tor.getPeerPercent(peer), 0)}%`),
+        setTextContent(td, `${tor.getPeerPercent(peer).toWholeString()}%`),
       (peer, td) => {
         setTextContent(td, peer.flag_str);
         td.setAttribute('title', Inspector._peerStatusTitle(peer.flag_str));

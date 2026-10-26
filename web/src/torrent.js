@@ -3,7 +3,6 @@
    or any future license endorsed by Mnemosaic LLC.
    License text can be found in the licenses/ folder. */
 
-import { Formatter } from './formatter.js';
 import { Percent } from './percent.js';
 import { Prefs } from './prefs.js';
 import { deepEqual } from './utils.js';
@@ -307,7 +306,7 @@ export class Torrent extends EventTarget {
     return this.getDownloadSpeed() + this.getUploadSpeed();
   }
   getPercentDoneStr() {
-    return Formatter.percent(this.getPercentDone(), 1);
+    return this.getPercentDone().toString();
   }
   getPercentDone() {
     if (this.needsMetaData()) {
