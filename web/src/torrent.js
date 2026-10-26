@@ -197,11 +197,8 @@ export class Torrent extends EventTarget {
   getPeers() {
     return this.fields.peers || [];
   }
-  // `have_total` needs `total_size`, which a later fetch brings once metadata completes
   getPeerPercent(peer) {
-    return peer.have_total === undefined || !(this.getTotalSize() > 0)
-      ? Percent.fromDouble(peer.progress)
-      : new Percent(peer.have_total, this.getTotalSize());
+    return this._percentOfTotalSize(peer.have_total, peer.progress);
   }
   getWebseedsEx() {
     return this.fields.webseeds_ex || [];
@@ -230,12 +227,9 @@ export class Torrent extends EventTarget {
   getQueuePosition() {
     return this.fields.queue_position;
   }
-  // a new torrent's first refresh can come before the fetch that brings `total_size`
   getRecheckProgress() {
-    const { checked_bytes, recheck_progress, total_size } = this.fields;
-    return checked_bytes === undefined || !(total_size > 0)
-      ? Percent.fromDouble(recheck_progress)
-      : new Percent(checked_bytes, total_size);
+    const { checked_bytes, recheck_progress } = this.fields;
+    return this._percentOfTotalSize(checked_bytes, recheck_progress);
   }
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
@@ -304,6 +298,12 @@ export class Torrent extends EventTarget {
   }
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
+  }
+  // `bytes` of `total_size`, which is 0 until the metadata arrives; else `fraction`
+  _percentOfTotalSize(bytes, fraction) {
+    return bytes === undefined || this.needsMetaData()
+      ? Percent.fromDouble(fraction)
+      : new Percent(bytes, this.getTotalSize());
   }
   getPercentDone() {
     if (this.needsMetaData()) {
