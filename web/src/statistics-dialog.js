@@ -9,7 +9,6 @@ import {
   createDialogContainer,
   createInfoSection,
   setTextContent,
-  Utils,
 } from './utils.js';
 
 export class StatisticsDialog extends EventTarget {
@@ -51,7 +50,7 @@ export class StatisticsDialog extends EventTarget {
     const fmt = Formatter;
 
     let s = stats.current_stats;
-    let ratio = Utils.ratio(s.uploaded_bytes, s.downloaded_bytes);
+    let ratio = Ratio.fromCounts(s.uploaded_bytes, s.downloaded_bytes);
     setTextContent(this.elements.session.up, fmt.size(s.uploaded_bytes));
     setTextContent(this.elements.session.down, fmt.size(s.downloaded_bytes));
     setTextContent(this.elements.session.ratio, Ratio.format(ratio));
@@ -61,7 +60,7 @@ export class StatisticsDialog extends EventTarget {
     );
 
     s = stats.cumulative_stats;
-    ratio = Utils.ratio(s.uploaded_bytes, s.downloaded_bytes);
+    ratio = Ratio.fromCounts(s.uploaded_bytes, s.downloaded_bytes);
     setTextContent(this.elements.total.up, fmt.size(s.uploaded_bytes));
     setTextContent(this.elements.total.down, fmt.size(s.downloaded_bytes));
     setTextContent(this.elements.total.ratio, Ratio.format(ratio));

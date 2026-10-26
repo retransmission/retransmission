@@ -10,6 +10,18 @@ export const Ratio = Object.freeze({
   // TR_RATIO_NA: no data at all
   None: -1,
 
+  // `uploaded / downloaded`, unrounded; `None` for 0/0, `Infinite` for x/0
+  fromCounts(uploaded, downloaded) {
+    const ratio = uploaded / downloaded;
+    if (Number.isNaN(ratio)) {
+      return Ratio.None;
+    }
+    if (!Number.isFinite(ratio)) {
+      return Ratio.Infinite;
+    }
+    return ratio;
+  },
+
   // Rounded half up to hundredths: two decimals below 5, one below 100, none from there
   format(ratio) {
     if (ratio === Ratio.None) {

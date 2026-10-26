@@ -8,7 +8,7 @@ import { Formatter } from './formatter.js';
 import { Percent } from './percent.js';
 import { Ratio } from './ratio.js';
 import { Torrent } from './torrent.js';
-import { createTextualTabsContainer, setTextContent, Utils } from './utils.js';
+import { createTextualTabsContainer, setTextContent } from './utils.js';
 
 const peer_column_classes = [
   'encryption',
@@ -394,7 +394,7 @@ export class Inspector extends EventTarget {
         ) ||
         torrents.reduce((accumulator, t) => accumulator + t.getHaveValid(), 0);
       string = `${fmt.size(uploaded)} (Ratio: ${Ratio.format(
-        Utils.ratio(uploaded, denominator),
+        Ratio.fromCounts(uploaded, denominator),
       )})`;
     }
     setTextContent(e.info.uploaded, string);
