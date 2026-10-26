@@ -112,39 +112,8 @@
     self.fSpeedLimitAutoButton = [PrefsUI checkbox:LStr(@"Scheduled times:") target:self action:@selector(setAutoSpeedLimit:)];
 
     self.fAutoSpeedDayTypePopUp = [PrefsUI popUpButton];
-    NSArray<NSString*>* days = @[
-        LStr(@"Every Day"),
-        LStr(@"Weekdays"),
-        LStr(@"Weekends"),
-        LStr(@"Monday"),
-        LStr(@"Tuesday"),
-        LStr(@"Wednesday"),
-        LStr(@"Thursday"),
-        LStr(@"Friday"),
-        LStr(@"Saturday"),
-        LStr(@"Sunday")
-    ];
 
-    NSArray<NSNumber*>* tags = @[
-        @(TR_SCHED_ALL),
-        @(TR_SCHED_WEEKDAY),
-        @(TR_SCHED_WEEKEND),
-        @(TR_SCHED_MON),
-        @(TR_SCHED_TUES),
-        @(TR_SCHED_WED),
-        @(TR_SCHED_THURS),
-        @(TR_SCHED_FRI),
-        @(TR_SCHED_SAT),
-        @(TR_SCHED_SUN)
-    ];
-
-    for (NSUInteger i = 0; i < days.count; i++) {
-        [self.fAutoSpeedDayTypePopUp addItemWithTitle:days[i]];
-        self.fAutoSpeedDayTypePopUp.lastItem.tag = tags[i].integerValue;
-        if (tags[i].integerValue == TR_SCHED_WEEKEND) {
-            [self.fAutoSpeedDayTypePopUp.menu addItem:NSMenuItem.separatorItem];
-        }
-    }
+    [self configureAutoSpeedDayTypePopup];
 
     self.fAutoSpeedDayTypePopUp.target = self;
     self.fAutoSpeedDayTypePopUp.action = @selector(setAutoSpeedLimitDay:);
@@ -164,6 +133,51 @@
     self.fSpeedLimitAutoOffDatePicker.datePickerElements = NSDatePickerElementFlagHourMinute;
     self.fSpeedLimitAutoOffDatePicker.target = self;
     self.fSpeedLimitAutoOffDatePicker.action = @selector(setAutoSpeedLimitTime:);
+}
+
+- (void)configureAutoSpeedDayTypePopup
+{
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    NSArray<NSString*>* weekdays = [dateFormatter standaloneWeekdaySymbols];
+    NSMutableArray* weekdaysResult = [NSMutableArray arrayWithArray:weekdays];
+
+    // first is sunday.
+    NSString* sunday = [weekdaysResult firstObject];
+    [weekdaysResult removeObjectAtIndex:0];
+    [weekdaysResult addObject:sunday];
+    NSArray* orderedWeekdays = [NSArray arrayWithArray:weekdaysResult];
+
+    NSString* strEveryDay = LStr(@"Every Day");
+    NSString* strWeekdays = LStr(@"Weekdays");
+    NSString* strWeekends = LStr(@"Weekends");
+
+    NSArray* menuItems = @[
+        @{ @"title" : strEveryDay, @"tag" : @(TR_SCHED_ALL) },
+        @{ @"title" : strWeekdays, @"tag" : @(TR_SCHED_WEEKDAY) },
+        @{ @"title" : strWeekends, @"tag" : @(TR_SCHED_WEEKEND) },
+
+        @{ @"title" : @"---SEPARATOR---", @"tag" : @(-1) },
+
+        @{ @"title" : orderedWeekdays[0], @"tag" : @(TR_SCHED_MON) },
+        @{ @"title" : orderedWeekdays[1], @"tag" : @(TR_SCHED_TUES) },
+        @{ @"title" : orderedWeekdays[2], @"tag" : @(TR_SCHED_WED) },
+        @{ @"title" : orderedWeekdays[3], @"tag" : @(TR_SCHED_THURS) },
+        @{ @"title" : orderedWeekdays[4], @"tag" : @(TR_SCHED_FRI) },
+        @{ @"title" : orderedWeekdays[5], @"tag" : @(TR_SCHED_SAT) },
+        @{ @"title" : orderedWeekdays[6], @"tag" : @(TR_SCHED_SUN) }
+    ];
+
+    [self.fAutoSpeedDayTypePopUp removeAllItems];
+
+    for (NSDictionary* item in menuItems) {
+        if ([item[@"title"] isEqualToString:@"---SEPARATOR---"]) {
+            [self.fAutoSpeedDayTypePopUp.menu addItem:[NSMenuItem separatorItem]];
+            continue;
+        }
+
+        [self.fAutoSpeedDayTypePopUp addItemWithTitle:item[@"title"]];
+        self.fAutoSpeedDayTypePopUp.lastItem.tag = [item[@"tag"] integerValue];
+    }
 }
 
 #pragma mark - Layout Setup
@@ -248,6 +262,10 @@
     ]];
 
     NSTextField* hintLabel = [PrefsUI smallLabel:LStr(@"Override normal speed limits manually or at scheduled times")];
+    hintLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    hintLabel.maximumNumberOfLines = 0;
+    hintLabel.preferredMaxLayoutWidth = 460;
+
     NSGridRow* r7 = [gridView addRowWithViews:@[ [PrefsUI indentedView:hintLabel] ]];
     NSInteger r7Index = [gridView indexOfRow:r7];
     [gridView mergeCellsInHorizontalRange:NSMakeRange(0, 4) verticalRange:NSMakeRange(r7Index, 1)];
@@ -264,6 +282,9 @@
     ]];
     scheduleControlsStack.spacing = 6;
     scheduleControlsStack.alignment = NSLayoutAttributeCenterY;
+
+    [self.fSpeedLimitAutoOnDatePicker.widthAnchor constraintEqualToConstant:83].active = YES;
+    [self.fSpeedLimitAutoOffDatePicker.widthAnchor constraintEqualToConstant:83].active = YES;
 
     NSGridRow* r9 = [gridView addRowWithViews:@[ [PrefsUI indentedView:scheduleControlsStack] ]];
     NSInteger r9Index = [gridView indexOfRow:r9];
