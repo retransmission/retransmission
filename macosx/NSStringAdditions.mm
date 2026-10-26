@@ -78,7 +78,7 @@ class RegionFacet final : public fmt::format_facet<std::locale>
     std::array<NSNumberFormatter*, 3> formatters_;
 };
 
-// The user's region's number format, passed to each tr::Values to_string() call.
+// The user's region's number format, passed to each tr::Values to_string() and to_whole_string() call.
 // Installing a locale globally can also change the C locale, and AppKit then draws SF Symbols
 // at the wrong size whenever the C locale's decimal separator is a comma.
 std::locale const& regionLocale()
@@ -184,7 +184,7 @@ NSString* withPercentSign(std::string_view const digits)
 
 + (NSString*)wholePercentString:(tr::Values::Percent)progress
 {
-    return withPercentSign(progress.to_whole_string());
+    return withPercentSign(progress.to_whole_string(regionLocale()));
 }
 
 - (NSComparisonResult)compareNumeric:(NSString*)string
