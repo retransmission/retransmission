@@ -605,6 +605,7 @@ Torrent.Fields.Metadata = [
 
 // commonly used fields which need to be periodically refreshed
 Torrent.Fields.Stats = [
+  'checked_bytes',
   'error',
   'error_string',
   'eta',
@@ -612,7 +613,9 @@ Torrent.Fields.Stats = [
   'is_stalled',
   'labels',
   'left_until_done',
+  'metadata_have',
   'metadata_percent_complete',
+  'metadata_size',
   'peers_connected',
   'peers_getting_from_us',
   'peers_sending_to_us',
