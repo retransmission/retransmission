@@ -51,11 +51,9 @@ const TorrentRendererHelper = {
         const seed_ratio_limit = t.seedRatioLimit(controller);
         if (seed_ratio_limit > 0) {
           // `Ratio.None` (-1) reads as empty
-          const ratio = t.getUploadRatio();
-          seed_ratio_percent =
-            ratio === Ratio.Infinite
-              ? Percent.Complete
-              : Percent.fromDouble(ratio / seed_ratio_limit);
+          seed_ratio_percent = Percent.fromDouble(
+            Ratio.toNumber(t.getUploadRatio()) / seed_ratio_limit,
+          );
         }
       }
     }

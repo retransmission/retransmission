@@ -91,6 +91,11 @@ export const Ratio = Object.freeze({
     return ratio;
   },
 
+  // For comparisons and arithmetic: `Infinite` as `Infinity`, else unchanged
+  toNumber(ratio) {
+    return ratio === Ratio.Infinite ? Number.POSITIVE_INFINITY : ratio;
+  },
+
   // Rounded half up to hundredths: two decimals below 5, one below 100, none from there
   format(ratio) {
     if (ratio === Ratio.None) {
