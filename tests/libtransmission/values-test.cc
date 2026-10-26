@@ -10,6 +10,10 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <string_view>
+#include <type_traits>
+
+#include <fmt/format.h>
 
 #include <libtransmission/types.h> // TR_RATIO_NA, TR_RATIO_INF
 #include <libtransmission/utils.h> // tr_locale_set_global()
@@ -233,6 +237,39 @@ private:
     std::optional<std::locale> old_locale_;
 };
 
+// `digits` in Arabic-Indic digits, e.g. "٤٦" for "46"
+[[nodiscard]] std::string arabicIndic(std::string_view const digits)
+{
+    auto ret = std::string{};
+    for (auto const ch : digits) {
+        ret += '\xD9';
+        ret += static_cast<char>(0xA0 + (ch - '0'));
+    }
+    return ret;
+}
+
+// Writes unsigned integers in Arabic-Indic digits, as a client's {fmt} facet can,
+// so the output shows which numbers were formatted with the locale.
+class ArabicIndicDigits final : public fmt::format_facet<std::locale>
+{
+protected:
+    [[nodiscard]] bool do_put(fmt::appender out, fmt::loc_value val, fmt::format_specs const& /*specs*/) const override
+    {
+        return val.visit([&](auto const value) -> bool {
+            using T = std::remove_cv_t<decltype(value)>;
+
+            if constexpr (std::is_same_v<T, unsigned> || std::is_same_v<T, unsigned long long>) {
+                for (auto const ch : arabicIndic(fmt::format("{}", value))) {
+                    *out++ = ch;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
+};
+
 } // namespace
 
 TEST_F(ValuesLocaleTest, percentUsesTheGlobalLocale)
@@ -245,6 +282,17 @@ TEST_F(ValuesLocaleTest, percentUsesTheGlobalLocale)
 TEST_F(ValuesGivenLocaleTest, percentUsesTheGivenLocale)
 {
     EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string(*de_));
+}
+
+TEST_F(ValuesTest, percentDigitsComeFromTheGivenLocale)
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory,clang-analyzer-cplusplus.NewDeleteLeaks): the locale owns the facet
+    auto const loc = std::locale{ std::locale::classic(), new ArabicIndicDigits{} };
+    EXPECT_EQ(arabicIndic("100"), (Percent{ 1U, 1U }).to_string(loc));
+    EXPECT_EQ(arabicIndic("100"), (Percent{ 1U, 1U }).to_whole_string(loc));
+    EXPECT_EQ(arabicIndic("99"), (Percent{ 999U, 1000U }).to_whole_string(loc));
+    EXPECT_EQ(arabicIndic("46"), (Percent{ 4567U, 10000U }).to_whole_string(loc));
+    EXPECT_EQ(arabicIndic("0"), (Percent{ 0U, 1U }).to_whole_string(loc));
 }
 
 TEST_F(ValuesTest, ratioStates)

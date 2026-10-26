@@ -95,7 +95,7 @@ std::string Percent::to_string(std::locale const& loc) const
     auto const hundredths = ten_thousandths(); // of a percent
 
     if (hundredths == Granularity) {
-        return "100";
+        return fmt::format(loc, "{:L}", 100U);
     }
 
     if (hundredths < 500U) {
@@ -107,16 +107,16 @@ std::string Percent::to_string(std::locale const& loc) const
     return fmt::format(loc, "{:.1Lf}", static_cast<double>(tenths) / 10.0);
 }
 
-std::string Percent::to_whole_string() const
+std::string Percent::to_whole_string(std::locale const& loc) const
 {
     auto const hundredths = ten_thousandths();
 
     if (hundredths == Granularity) {
-        return "100";
+        return fmt::format(loc, "{:L}", 100U);
     }
 
     // incomplete never reads as 100
-    return std::to_string(std::min((hundredths + 50U) / 100U, uint64_t{ 99U }));
+    return fmt::format(loc, "{:L}", std::min((hundredths + 50U) / 100U, uint64_t{ 99U }));
 }
 
 Ratio Ratio::from_double(double const ratio) noexcept
