@@ -76,7 +76,7 @@ const TorrentRendererHelper = {
     progressbar.className = info.classList.join(' ');
     // CSS needs plain digits with a '.', whatever the display locale
     progressbar.style.setProperty('--progress', `${width.toFixed(2)}%`);
-    progressbar.dataset.progress = `${info.percent}%`;
+    progressbar.dataset.progress = `${info.percent.toWholeString()}%`;
   },
   symbol: { down: '▼', up: '▲' },
   updateIcon: (e, torrent) => {

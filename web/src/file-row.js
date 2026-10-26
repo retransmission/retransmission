@@ -32,7 +32,7 @@ export class FileRow extends EventTarget {
   refreshProgressHTML() {
     const { size, have } = this.fields;
     const fmt = Formatter;
-    const c = `${fmt.size(have)} of ${fmt.size(size)} (${new Percent(have, size)}%)`;
+    const c = `${fmt.size(have)} of ${fmt.size(size)} (${new Percent(have, size).toWholeString()}%)`;
     setTextContent(this.elements.progress, c);
   }
 
