@@ -1779,8 +1779,8 @@ tr_swarm_stats tr_swarmGetStats(tr_swarm const* const swarm)
     };
 
     auto& stats = swarm->stats;
-    stats.active_peer_count[static_cast<uint8_t>(tr_direction::Up)] = count_active_peers(tr_direction::Up);
-    stats.active_peer_count[static_cast<uint8_t>(tr_direction::Down)] = count_active_peers(tr_direction::Down);
+    stats.active_peer_count[std::to_underlying(tr_direction::Up)] = count_active_peers(tr_direction::Up);
+    stats.active_peer_count[std::to_underlying(tr_direction::Down)] = count_active_peers(tr_direction::Down);
     stats.active_webseed_count = swarm->count_active_webseeds(tr_time_msec());
     return stats;
 }
