@@ -4,6 +4,7 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
+import { Percent } from './percent.js';
 import { Torrent } from './torrent.js';
 import { setTextContent } from './utils.js';
 
@@ -28,7 +29,7 @@ const TorrentRendererHelper = {
   getProgressInfo: (controller, t) => {
     const status = t.getStatus();
     const classList = ['torrent-progress-bar'];
-    let percent = 100;
+    let percent = new Percent(1, 1);
     let ratio = null;
 
     if (status === Torrent._StatusStopped) {
@@ -37,13 +38,13 @@ const TorrentRendererHelper = {
 
     if (t.needsMetaData()) {
       classList.push('magnet');
-      percent = t.getMetadataPercentComplete() * 100;
+      percent = t.getMetadataPercent();
     } else if (status === Torrent._StatusCheck) {
       classList.push('verify');
-      percent = t.getRecheckProgress() * 100;
-    } else if (t.getLeftUntilDone() > 0) {
+      percent = t.getRecheckProgress();
+    } else if (!t.isDone()) {
       classList.push('leech');
-      percent = t.getPercentDone() * 100;
+      percent = t.getPercentDone();
     } else {
       classList.push('seed');
       if (status !== Torrent._StatusStopped) {
@@ -66,11 +67,11 @@ const TorrentRendererHelper = {
   },
   renderProgressbar: (controller, t, progressbar) => {
     const info = TorrentRendererHelper.getProgressInfo(controller, t);
-    const percent = Math.min(info.ratio || info.percent, 100);
-    const pct_str = `${Formatter.percentString(percent, 2)}%`;
+    const width = Math.min(info.ratio || 100 * info.percent.toFraction(), 100);
     progressbar.className = info.classList.join(' ');
-    progressbar.style.setProperty('--progress', pct_str);
-    progressbar.dataset.progress = info.ratio ? '100%' : pct_str;
+    // CSS needs plain digits with a '.', whatever the display locale
+    progressbar.style.setProperty('--progress', `${width.toFixed(2)}%`);
+    progressbar.dataset.progress = `${Formatter.percent(info.percent, 2)}%`;
   },
   symbol: { down: '▼', up: '▲' },
   updateIcon: (e, torrent) => {
@@ -130,7 +131,7 @@ export class TorrentRendererFull {
     } else if (t.isChecking()) {
       const str = [
         'Verifying local data (',
-        fmt.percentString(100 * t.getRecheckProgress(), 1),
+        fmt.percent(t.getRecheckProgress(), 1),
         '% tested)',
       ].join('');
       setTextContent(peer_details, str);
@@ -147,12 +148,11 @@ export class TorrentRendererFull {
       if (t.isStopped()) {
         MetaDataStatus = 'needs';
       }
-      const percent = 100 * t.getMetadataPercentComplete();
       const str = [
         'Magnetized transfer - ',
         MetaDataStatus,
         ' metadata (',
-        fmt.percentString(percent, 1),
+        fmt.percent(t.getMetadataPercent(), 1),
         '%)',
       ].join('');
       setTextContent(progress_details, str);

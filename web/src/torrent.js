@@ -4,6 +4,7 @@
    License text can be found in the licenses/ folder. */
 
 import { Formatter } from './formatter.js';
+import { Percent } from './percent.js';
 import { Prefs } from './prefs.js';
 import { deepEqual } from './utils.js';
 
@@ -180,8 +181,16 @@ export class Torrent extends EventTarget {
   getMagnetLink() {
     return this.fields.magnet_link;
   }
-  getMetadataPercentComplete() {
-    return this.fields.metadata_percent_complete;
+  getMetadataPercent() {
+    const { metadata_have, metadata_percent_complete, metadata_size } =
+      this.fields;
+    if (metadata_size === undefined) {
+      return Percent.fromDouble(metadata_percent_complete);
+    }
+    // a zero `metadata_size` means no peer has reported the size yet
+    return metadata_size > 0
+      ? new Percent(metadata_have, metadata_size)
+      : Percent.unknown();
   }
   getName() {
     return this.fields.name || 'Unknown';
@@ -216,8 +225,12 @@ export class Torrent extends EventTarget {
   getQueuePosition() {
     return this.fields.queue_position;
   }
+  // a new torrent's first refresh can come before the fetch that brings `total_size`
   getRecheckProgress() {
-    return this.fields.recheck_progress;
+    const { checked_bytes, recheck_progress, total_size } = this.fields;
+    return checked_bytes === undefined || !(total_size > 0)
+      ? Percent.fromDouble(recheck_progress)
+      : new Percent(checked_bytes, total_size);
   }
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
@@ -279,19 +292,26 @@ export class Torrent extends EventTarget {
     );
   }
   isDone() {
-    return this.getLeftUntilDone() < 1;
+    return this.getPercentDone().isComplete();
   }
   needsMetaData() {
-    return this.getMetadataPercentComplete() < 1;
+    return !this.getMetadataPercent().isComplete();
   }
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
   }
   getPercentDoneStr() {
-    return Formatter.percentString(100 * this.getPercentDone(), 1);
+    return Formatter.percent(this.getPercentDone(), 1);
   }
   getPercentDone() {
-    return this.fields.percent_done;
+    if (this.needsMetaData()) {
+      return Percent.unknown();
+    }
+    const size_when_done = this.getSizeWhenDone();
+    return new Percent(
+      size_when_done - this.getLeftUntilDone(),
+      size_when_done,
+    );
   }
   getStateString() {
     switch (this.getStatus()) {
@@ -465,8 +485,8 @@ export class Torrent extends EventTarget {
     return Torrent.compareByState(ta, tb);
   }
   static compareByProgress(ta, tb) {
-    const a = ta.getPercentDone();
-    const b = tb.getPercentDone();
+    const a = ta.getPercentDone().toFraction();
+    const b = tb.getPercentDone().toFraction();
 
     return a - b || Torrent.compareByRatio(ta, tb);
   }
@@ -619,7 +639,6 @@ Torrent.Fields.Stats = [
   'peers_connected',
   'peers_getting_from_us',
   'peers_sending_to_us',
-  'percent_done',
   'queue_position',
   'rate_download',
   'rate_upload',
