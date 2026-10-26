@@ -260,7 +260,7 @@ private:
         }
 
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
-        [[nodiscard]] std::optional<std::string> bind_address(int af) const override;
+        [[nodiscard]] tr_web::BindAddresses bind_addresses() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
         [[nodiscard]] std::optional<std::string> proxyUrl() const override;
@@ -321,13 +321,6 @@ private:
         void fetch(tr_web::FetchOptions&& options) override
         {
             session_.fetch(std::move(options));
-        }
-
-        void source_addr_changed(tr_address_type const /*type*/) override
-        {
-            if (auto const& web = session_.web_; web) {
-                web->network_changed();
-            }
         }
 
         [[nodiscard]] std::string_view settings_bind_addr(tr_address_type type) override
