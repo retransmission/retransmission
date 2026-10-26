@@ -153,6 +153,7 @@ public:
     tr_dht_impl& operator=(tr_dht_impl&&) = delete;
     tr_dht_impl& operator=(tr_dht_impl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_dht_impl() override
     {
         tr_logAddTrace("Uninitializing DHT");

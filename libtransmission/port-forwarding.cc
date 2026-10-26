@@ -32,6 +32,7 @@ public:
     {
     }
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_port_forwarding_impl() override
     {
         is_shutting_down_ = true;

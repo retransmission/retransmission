@@ -121,6 +121,7 @@ public:
         upkeep_timer_->start_repeating(UpkeepInterval);
     }
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_announcer_impl() override
     {
         flushCloseMessages();
@@ -338,7 +339,7 @@ private:
 // ---
 
 /** @brief A group of trackers in a single tier, as per the multitracker spec */
-struct tr_tier {
+struct tr_tier { // NOLINT(bugprone-exception-escape): falsely reports on MSVC STL's std::deque move constructor
     tr_tier(tr_announcer_impl* announcer, tr_torrent* tor_in, std::vector<tr_announce_list::tracker_info const*> const& infos)
         : trying_order_{ std::size(infos) }
         , tor{ tor_in }

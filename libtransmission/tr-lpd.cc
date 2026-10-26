@@ -211,6 +211,7 @@ public:
     tr_lpd_impl& operator=(tr_lpd_impl&&) = delete;
     tr_lpd_impl& operator=(tr_lpd_impl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_lpd_impl() override
     {
         for (auto& event : events_) {

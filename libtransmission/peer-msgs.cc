@@ -333,6 +333,7 @@ public:
     tr_peerMsgsImpl& operator=(tr_peerMsgsImpl&&) = delete;
     tr_peerMsgsImpl& operator=(tr_peerMsgsImpl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_peerMsgsImpl() override
     {
         set_active(tr_direction::Up, false);
@@ -389,7 +390,7 @@ public:
         disconnect_soon();
     }
 
-    void on_torrent_got_metainfo() noexcept override
+    void on_torrent_got_metainfo() override
     {
         // A peer may not be interesting to us anymore after
         // sending us metadata, so do a status update

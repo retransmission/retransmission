@@ -179,6 +179,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
     return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed);
 }
 
+// NOLINTNEXTLINE(bugprone-exception-escape): logging throws
 tr_peerIo::~tr_peerIo()
 {
     auto const lock = session_->unique_lock();

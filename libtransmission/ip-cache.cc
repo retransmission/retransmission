@@ -142,6 +142,7 @@ std::shared_ptr<tr_ip_cache> tr_ip_cache::create(Mediator& mediator)
     return std::shared_ptr<tr_ip_cache>{ new tr_ip_cache{ mediator } };
 }
 
+// NOLINTNEXTLINE(bugprone-exception-escape): logging throws
 tr_ip_cache::~tr_ip_cache()
 {
     // Destroying mutex while someone owns it is undefined behaviour, so we acquire it first
