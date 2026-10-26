@@ -29,7 +29,7 @@ const TorrentRendererHelper = {
   getProgressInfo: (controller, t) => {
     const status = t.getStatus();
     const classList = ['torrent-progress-bar'];
-    let percent = new Percent(1, 1);
+    let percent = Percent.Complete;
     let seed_ratio_percent = null;
 
     if (status === Torrent._StatusStopped) {
@@ -54,7 +54,7 @@ const TorrentRendererHelper = {
           const ratio = t.getUploadRatio();
           seed_ratio_percent =
             ratio === -2
-              ? new Percent(1, 1)
+              ? Percent.Complete
               : Percent.fromDouble(ratio / seed_ratio_limit);
         }
       }

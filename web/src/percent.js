@@ -14,18 +14,13 @@ export class Percent {
     this.total = total;
   }
 
-  // 0%, incomplete, e.g. for a size that is not known yet
-  static unknown() {
-    return new Percent(0, 1);
-  }
-
   // For sources that only report a fraction. Complete iff `fraction >= 1`.
   static fromDouble(fraction) {
     if (fraction >= 1) {
-      return new Percent(1, 1);
+      return Percent.Complete;
     }
     if (!(fraction > 0)) {
-      return Percent.unknown();
+      return Percent.Unknown;
     }
     const have = Math.min(Math.round(fraction * granularity), granularity - 1);
     return new Percent(have, granularity);
@@ -72,3 +67,7 @@ export class Percent {
     return Math.min(rounded, granularity - 1);
   }
 }
+
+Percent.Complete = Object.freeze(new Percent(1, 1));
+// 0%, incomplete, e.g. for a size that is not known yet
+Percent.Unknown = Object.freeze(new Percent(0, 1));

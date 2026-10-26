@@ -189,7 +189,7 @@ export class Torrent extends EventTarget {
     // a zero `metadata_size` means no peer has reported the size yet
     return metadata_size > 0
       ? new Percent(metadata_have, metadata_size)
-      : Percent.unknown();
+      : Percent.Unknown;
   }
   getName() {
     return this.fields.name || 'Unknown';
@@ -310,7 +310,7 @@ export class Torrent extends EventTarget {
   }
   getPercentDone() {
     if (this.needsMetaData()) {
-      return Percent.unknown();
+      return Percent.Unknown;
     }
     const size_when_done = this.getSizeWhenDone();
     return new Percent(
