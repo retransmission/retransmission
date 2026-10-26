@@ -625,7 +625,6 @@ Torrent.Fields.Metadata = [
   'is_private',
   'name',
   'primary_mime_type',
-  'total_size',
 ];
 
 // commonly used fields which need to be periodically refreshed
@@ -652,6 +651,7 @@ Torrent.Fields.Stats = [
   'seed_ratio_limit',
   'size_when_done',
   'status',
+  'total_size', // refreshed with the counts it divides: checked_bytes, size_when_done, peers' have_total
   'trackers',
   'download_dir',
   'uploaded_ever',
