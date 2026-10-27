@@ -22,13 +22,13 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 @property(nonatomic) NSMutableArray<NSDictionary*>* fPeers;
 @property(nonatomic) NSMutableArray<NSDictionary*>* fWebSeeds;
 
-@property(nonatomic) IBOutlet NSTableView* fPeerTable;
-@property(nonatomic) IBOutlet NSTableView* fWebSeedTable;
+@property(nonatomic) NSTableView* fPeerTable;
+@property(nonatomic) NSTableView* fWebSeedTable;
 
-@property(nonatomic) IBOutlet NSTextField* fConnectedPeersField;
+@property(nonatomic) NSTextField* fConnectedPeersField;
 
 @property(nonatomic) CGFloat fViewTopMargin;
-@property(nonatomic) IBOutlet NSLayoutConstraint* fWebSeedTableTopConstraint;
+@property(nonatomic) NSLayoutConstraint* fWebSeedTableTopConstraint;
 @property(nonatomic, readonly) NSArray<NSSortDescriptor*>* peerSortDescriptors;
 
 @end
@@ -37,16 +37,202 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoPeersView" bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         self.title = NSLocalizedString(@"Peers", "Inspector view -> title");
     }
-
     return self;
 }
 
-- (void)awakeFromNib
+- (void)addColumnToTable:(NSTableView*)table
+              identifier:(NSString*)identifier
+                   title:(NSString*)title
+                   width:(CGFloat)width
+                minWidth:(CGFloat)minWidth
+                maxWidth:(CGFloat)maxWidth
+          sortDescriptor:(NSSortDescriptor*)sortDescriptor
+            resizingMask:(NSTableColumnResizingOptions)resizingMask
 {
-    [super awakeFromNib];
+    NSTableColumn* column = [[NSTableColumn alloc] initWithIdentifier:identifier];
+    column.editable = NO;
+    column.headerCell.title = title;
+    column.width = width;
+    column.minWidth = minWidth;
+    column.maxWidth = maxWidth;
+    column.sortDescriptorPrototype = sortDescriptor;
+    column.resizingMask = resizingMask;
+    [table addTableColumn:column];
+}
+
+- (void)loadView
+{
+    NSView* containerView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 324, 282)];
+    containerView.translatesAutoresizingMaskIntoConstraints = NO;
+    containerView.clipsToBounds = YES;
+    containerView.wantsLayer = YES;
+    self.view = containerView;
+
+    // setWebSeedTableHidden: reads this height before the first layout pass
+    NSScrollView* webSeedScrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, 300, 72)];
+    webSeedScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    webSeedScrollView.autohidesScrollers = YES;
+    webSeedScrollView.hasHorizontalScroller = YES;
+    webSeedScrollView.hasVerticalScroller = YES;
+    webSeedScrollView.horizontalScroller.controlSize = NSControlSizeSmall;
+    webSeedScrollView.verticalScroller.controlSize = NSControlSizeSmall;
+    webSeedScrollView.borderType = NSBezelBorder;
+    [containerView addSubview:webSeedScrollView];
+
+    NSTableView* webSeedTable = [[NSTableView alloc] init];
+    webSeedTable.allowsExpansionToolTips = YES;
+    webSeedTable.usesAlternatingRowBackgroundColors = YES;
+    webSeedTable.allowsMultipleSelection = YES;
+    webSeedTable.allowsTypeSelect = NO;
+    webSeedTable.columnAutoresizingStyle = NSTableViewUniformColumnAutoresizingStyle;
+    webSeedTable.rowHeight = 14;
+    webSeedTable.dataSource = self;
+    webSeedTable.delegate = self;
+
+    webSeedTable.headerView = [[NSTableHeaderView alloc] initWithFrame:NSMakeRect(0, 0, 0, 23)];
+
+    [self addColumnToTable:webSeedTable identifier:@"Address"
+                     title:NSLocalizedString(@"Web Seeds", "inspector -> web seed table -> header")
+                     width:246
+                  minWidth:10
+                  maxWidth:10000
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"Address" ascending:YES
+                                                          selector:@selector(localizedCaseInsensitiveCompare:)]
+              resizingMask:NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:webSeedTable identifier:@"DL From"
+                     title:NSLocalizedString(@"Down", "inspector -> web seed table -> header")
+                     width:38
+                  minWidth:18
+                  maxWidth:60
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"DL From Rate" ascending:YES selector:@selector(compare:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    webSeedTable.autosaveTableColumns = YES;
+    webSeedTable.autosaveName = @"InspectorTableWebSeeds";
+
+    webSeedScrollView.documentView = webSeedTable;
+    _fWebSeedTable = webSeedTable;
+
+    NSScrollView* peerScrollView = [[NSScrollView alloc] init];
+    peerScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    peerScrollView.autohidesScrollers = YES;
+    peerScrollView.hasHorizontalScroller = YES;
+    peerScrollView.hasVerticalScroller = YES;
+    peerScrollView.horizontalScroller.controlSize = NSControlSizeSmall;
+    peerScrollView.verticalScroller.controlSize = NSControlSizeSmall;
+    peerScrollView.borderType = NSBezelBorder;
+    [containerView addSubview:peerScrollView];
+
+    NSTableView* peerTable = [[NSTableView alloc] init];
+    peerTable.allowsExpansionToolTips = YES;
+    peerTable.usesAlternatingRowBackgroundColors = YES;
+    peerTable.allowsMultipleSelection = NO;
+    peerTable.allowsTypeSelect = NO;
+    peerTable.columnAutoresizingStyle = NSTableViewUniformColumnAutoresizingStyle;
+    peerTable.rowHeight = 16;
+    peerTable.dataSource = self;
+    peerTable.delegate = self;
+
+    peerTable.headerView = [[NSTableHeaderView alloc] initWithFrame:NSMakeRect(0, 0, 0, 23)];
+
+    [self addColumnToTable:peerTable identifier:@"IP" title:NSLocalizedString(@"Address", "inspector -> peer table -> header")
+                     width:111
+                  minWidth:10
+                  maxWidth:250
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"IP" ascending:YES selector:@selector(compareNumeric:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:peerTable identifier:@"Client"
+                     title:NSLocalizedString(@"Client", "inspector -> peer table -> header")
+                     width:20
+                  minWidth:20
+                  maxWidth:10000
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"Client" ascending:YES
+                                                          selector:@selector(localizedStandardCompare:)]
+              resizingMask:NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:peerTable identifier:@"Encryption" title:@"" width:14 minWidth:14 maxWidth:50
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"Encryption" ascending:NO selector:@selector(compare:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:peerTable identifier:@"Progress" title:@"%" width:32 minWidth:10 maxWidth:1000
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"Progress" ascending:YES selector:@selector(compare:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:peerTable identifier:@"DL From" title:NSLocalizedString(@"Down", "inspector -> peer table -> header")
+                     width:47
+                  minWidth:18
+                  maxWidth:120
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"DL From Rate" ascending:NO selector:@selector(compare:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    [self addColumnToTable:peerTable identifier:@"UL To" title:NSLocalizedString(@"Up", "inspector -> peer table -> header")
+                     width:47
+                  minWidth:18
+                  maxWidth:120
+            sortDescriptor:[NSSortDescriptor sortDescriptorWithKey:@"UL To Rate" ascending:NO selector:@selector(compare:)]
+              resizingMask:NSTableColumnUserResizingMask];
+
+    peerTable.autosaveTableColumns = YES;
+    peerTable.autosaveName = @"InspectorTable";
+
+    peerScrollView.documentView = peerTable;
+    _fPeerTable = peerTable;
+
+    NSTextField* connectedPeersField = [[NSTextField alloc] init];
+    connectedPeersField.translatesAutoresizingMaskIntoConstraints = NO;
+    connectedPeersField.bezeled = NO;
+    connectedPeersField.editable = NO;
+    connectedPeersField.selectable = NO;
+    connectedPeersField.drawsBackground = NO;
+    connectedPeersField.alignment = NSTextAlignmentCenter;
+    connectedPeersField.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    connectedPeersField.cell.lineBreakMode = NSLineBreakByTruncatingTail;
+    connectedPeersField.cell.usesSingleLineMode = NO;
+    [containerView addSubview:connectedPeersField];
+    _fConnectedPeersField = connectedPeersField;
+
+    _fWebSeedTableTopConstraint = [webSeedScrollView.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:12];
+
+    NSLayoutConstraint* peerTopConstraint = [peerScrollView.topAnchor constraintEqualToAnchor:webSeedScrollView.bottomAnchor
+                                                                                     constant:4];
+    peerTopConstraint.priority = 998;
+
+    NSLayoutConstraint* fieldTopConstraint = [connectedPeersField.topAnchor constraintEqualToAnchor:peerScrollView.bottomAnchor
+                                                                                           constant:4];
+    fieldTopConstraint.priority = 998;
+
+    NSLayoutConstraint* peerBackupTopConstraint = [peerScrollView.topAnchor constraintEqualToAnchor:containerView.topAnchor
+                                                                                           constant:12];
+    peerBackupTopConstraint.priority = 999;
+
+    [NSLayoutConstraint activateConstraints:@[
+        _fWebSeedTableTopConstraint,
+        [webSeedScrollView.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor constant:12],
+        [webSeedScrollView.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor constant:-12],
+        [webSeedScrollView.heightAnchor constraintEqualToConstant:72],
+
+        peerTopConstraint,
+        peerBackupTopConstraint,
+        [peerScrollView.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor constant:12],
+        [peerScrollView.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor constant:-12],
+        [peerScrollView.topAnchor constraintGreaterThanOrEqualToAnchor:webSeedScrollView.bottomAnchor constant:4],
+
+        fieldTopConstraint,
+        [connectedPeersField.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor constant:12],
+        [connectedPeersField.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor constant:-12],
+        [connectedPeersField.bottomAnchor constraintEqualToAnchor:containerView.bottomAnchor constant:-12]
+    ]];
+
+    [self setupUI];
+}
+
+- (void)setupUI
+{
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightPeers"];
     if (height != 0.0) {
         NSRect viewRect = self.view.frame;
@@ -54,30 +240,17 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         self.view.frame = viewRect;
     }
 
-    //set table header text
-    [self.fPeerTable tableColumnWithIdentifier:@"IP"].headerCell.stringValue = NSLocalizedString(@"Address", "inspector -> peer table -> header");
-    [self.fPeerTable tableColumnWithIdentifier:@"Client"].headerCell.stringValue = NSLocalizedString(@"Client", "inspector -> peer table -> header");
-    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = NSLocalizedString(@"Down", "inspector -> peer table -> header");
-    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerCell.stringValue = NSLocalizedString(@"Up", "inspector -> peer table -> header");
-
-    [self.fWebSeedTable tableColumnWithIdentifier:@"Address"].headerCell.stringValue = NSLocalizedString(@"Web Seeds", "inspector -> web seed table -> header");
-    [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerCell.stringValue = NSLocalizedString(@"Down", "inspector -> web seed table -> header");
-
-    //set table header tool tips
     [self.fPeerTable tableColumnWithIdentifier:@"Encryption"].headerToolTip = NSLocalizedString(
         @"Encrypted connection",
         "inspector -> peer table -> header tool tip");
     [self.fPeerTable tableColumnWithIdentifier:@"Progress"].headerToolTip = NSLocalizedString(@"Available", "inspector -> peer table -> header tool tip");
     [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(@"Downloading from peer", "inspector -> peer table -> header tool tip");
     [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerToolTip = NSLocalizedString(@"Uploading to peer", "inspector -> peer table -> header tool tip");
-
     [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(
         @"Downloading from web seed",
         "inspector -> web seed table -> header tool tip");
-
     self.fConnectedPeersField.placeholderString = NSLocalizedString(@"no peer info available", "Inspector -> Peers tab -> peers");
 
-    //prepare for animating peer table and web seed table
     self.fViewTopMargin = self.fWebSeedTableTopConstraint.constant;
 
     CABasicAnimation* webSeedTableAnimation = [CABasicAnimation animation];
@@ -85,6 +258,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     webSeedTableAnimation.duration = 0.125;
     webSeedTableAnimation.delegate = self;
     [webSeedTableAnimation setValue:kWebSeedAnimationId forKey:kAnimationIdKey];
+
     self.fWebSeedTableTopConstraint.animations = @{ @"constant" : webSeedTableAnimation };
 
     [self setWebSeedTableHidden:YES animate:NO];

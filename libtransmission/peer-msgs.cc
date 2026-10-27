@@ -1360,13 +1360,13 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
     auto holepunch_supported = false;
     if (auto const* const sub = map->find_if<tr_variant::Map>(TR_KEY_m)) {
         if (tor_.is_public()) {
-            if (auto const ut_pex = sub->value_if<int64_t>(TR_KEY_ut_pex)) {
-                ut_pex_id_ = static_cast<uint8_t>(*ut_pex);
+            if (auto const ut_pex = sub->value_if<uint8_t>(TR_KEY_ut_pex)) {
+                ut_pex_id_ = *ut_pex;
                 logtrace(this, fmt::format("msgs->ut_pex is {:d}", ut_pex_id_));
             }
 
-            if (auto const ut_metadata = sub->value_if<int64_t>(TR_KEY_ut_metadata)) {
-                ut_metadata_id_ = static_cast<uint8_t>(*ut_metadata);
+            if (auto const ut_metadata = sub->value_if<uint8_t>(TR_KEY_ut_metadata)) {
+                ut_metadata_id_ = *ut_metadata;
                 logtrace(this, fmt::format("msgs->ut_metadata_id_ is {:d}", ut_metadata_id_));
             }
         }
@@ -1426,9 +1426,9 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
     }
 
     /* get peer's listening port */
-    if (auto const p = map->value_if<int64_t>(TR_KEY_p).value_or(0); p > 0) {
-        publish(tr_peer_event::GotPort(tr_port::from_host(p)));
-        logtrace(this, fmt::format("peer's port is now {:d}", p));
+    if (auto const p = map->value_if<uint16_t>(TR_KEY_p); p && p != 0U) {
+        publish(tr_peer_event::GotPort(tr_port::from_host(*p)));
+        logtrace(this, fmt::format("peer's port is now {:d}", *p));
     }
 
     if (io_->is_incoming()) {
@@ -1450,8 +1450,8 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
     }
 
     /* get peer's maximum request queue size */
-    if (auto const reqq_in = map->value_if<int64_t>(TR_KEY_reqq).value_or(0); reqq_in > 0) {
-        peer_reqq_ = reqq_in;
+    if (auto const reqq = map->value_if<size_t>(TR_KEY_reqq); reqq && reqq != 0U) {
+        peer_reqq_ = reqq;
     }
 }
 

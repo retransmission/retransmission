@@ -334,9 +334,9 @@ void save_idle_limits(tr_variant::Map& map, tr_torrent const* const tor)
 
 void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir, tr_torrent* const tor)
 {
-    if (auto const i = map.value_if<int64_t>(TR_KEY_speed_Bps)) {
+    if (auto const i = map.value_if<uint64_t>(TR_KEY_speed_Bps)) {
         tor->set_speed_limit(dir, Speed{ *i, Speed::Units::Byps });
-    } else if (auto const i2 = map.value_if<int64_t>(TR_KEY_speed)) {
+    } else if (auto const i2 = map.value_if<uint64_t>(TR_KEY_speed)) {
         tor->set_speed_limit(dir, Speed{ *i2, Speed::Units::KByps });
     }
 
@@ -393,7 +393,7 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
         return {};
     }
 
-    if (auto const imin = d->value_if<int64_t>(TR_KEY_idle_limit)) {
+    if (auto const imin = d->value_if<uint16_t>(TR_KEY_idle_limit)) {
         tor->set_idle_limit_minutes(*imin);
     }
 
@@ -550,7 +550,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 
     auto const set_mtime = [&mtimes](tr_file_index_t const i, tr_variant const* const entry) {
         if (entry != nullptr) {
-            mtimes[i] = static_cast<time_t>(entry->value_if<int64_t>().value_or(0));
+            mtimes[i] = entry->value_if<time_t>().value_or(time_t{});
         }
     };
 

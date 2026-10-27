@@ -221,8 +221,8 @@ auto constexpr LogKeys = to_lookup<tr_log_level>({
         }
     }
 
-    if (auto const val = src.value_if<int64_t>()) {
-        *tgt = static_cast<tr_mode_t>(*val);
+    if (auto const val = src.value_if<tr_mode_t::value_type>()) {
+        *tgt = tr_mode_t{ *val };
         return true;
     }
 
@@ -525,7 +525,7 @@ auto constexpr VerifyModeKeys = to_lookup<tr_verify_added_mode>({
         return false;
     }
 
-    pex.flags = static_cast<uint8_t>(map->value_if<int64_t>(TR_KEY_flags).value_or(0));
+    pex.flags = map->value_if<uint8_t>(TR_KEY_flags).value_or(0U);
 
     *tgt = std::move(pex);
     return true;

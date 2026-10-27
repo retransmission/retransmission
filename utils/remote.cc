@@ -1040,15 +1040,15 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Percent Done: {:s}%\n", strlpercent(100.0 * *d));
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_eta); i) {
+        if (auto const i = t->value_if<time_t>(TR_KEY_eta)) {
             fmt::print("  ETA: {:s}\n", tr_strltime(*i));
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_rate_download)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_rate_download)) {
             fmt::print("  Download Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_rate_upload)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_rate_upload)) {
             fmt::print("  Upload Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
