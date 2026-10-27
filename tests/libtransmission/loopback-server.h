@@ -66,10 +66,11 @@ public:
         try {
             return std::unique_ptr<LoopbackServer>{ new LoopbackServer{ type } };
         } catch (std::system_error const& error) {
+            auto const code = error.code().value();
 #ifdef _WIN32
-            if (error.code().value() == WSAEAFNOSUPPORT || error.code().value() == WSAEPROTONOSUPPORT) {
+            if (code == WSAEAFNOSUPPORT || code == WSAEPROTONOSUPPORT || code == WSAEADDRNOTAVAIL) {
 #else
-            if (error.code().value() == EAFNOSUPPORT || error.code().value() == EPROTONOSUPPORT) {
+            if (code == EAFNOSUPPORT || code == EPROTONOSUPPORT || code == EADDRNOTAVAIL) {
 #endif
                 return {};
             }
