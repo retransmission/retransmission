@@ -10,7 +10,6 @@
 #include <cstdint>
 #include <cstring>
 #include <iterator> // std::back_inserter
-#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -139,7 +138,7 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     return if_nametoindex(std::string{ name }.c_str());
 }
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
 namespace
 {
 // The interface binding failure last warned about, so an outage warns once
@@ -178,6 +177,7 @@ void forget_bind_failure()
     warning.err = 0;
 }
 
+#if defined(__APPLE__)
 [[nodiscard]] bool bind_socket_to_interface(
     tr_socket_t const sock,
     tr_address_type const type,
@@ -189,9 +189,27 @@ void forget_bind_failure()
     auto const index = static_cast<int>(if_index);
     return setsockopt(sock, level, option, reinterpret_cast<char const*>(&index), sizeof(index)) != -1;
 }
-
-[[nodiscard]] std::string bind_failure_reason(int const err)
+#elif defined(__linux__)
+[[nodiscard]] bool bind_socket_to_interface(
+    tr_socket_t const sock,
+    tr_address_type /*type*/,
+    std::string_view const name,
+    unsigned /*if_index*/)
 {
+    // one option covers both address families, and it filters what the socket receives too
+    auto const ifname = std::string{ name };
+    return setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE, ifname.c_str(), static_cast<socklen_t>(std::size(ifname) + 1U)) != -1;
+}
+#endif
+
+[[nodiscard]] std::string bind_failure_reason([[maybe_unused]] int const err)
+{
+#ifdef __linux__
+    // SO_BINDTODEVICE needs CAP_NET_RAW on kernels before 5.7
+    if (err == EPERM) {
+        return fmt::format("{} ({}); binding to an interface needs Linux 5.7 or CAP_NET_RAW", tr_net_strerror(err), err);
+    }
+#endif
     return fmt::format("{} ({})", tr_net_strerror(err), err);
 }
 } // namespace
@@ -205,7 +223,7 @@ bool tr_netSetSocketInterface(
 {
     auto const name = tr_net_effective_bind_interface(bind_interface);
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
     // a socket under another binding ends any outage, so the next one warns again
     if (std::empty(name) || tr_net_interface_is_blocked(name)) {
         forget_bind_failure();
@@ -224,7 +242,8 @@ bool tr_netSetSocketInterface(
         return false;
     }
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
+    // looked up first so a missing interface fails the same way on every platform
     auto const if_index = tr_net_interface_index(name);
     if (if_index == 0U) {
         set_sockerrno(ENXIO);
@@ -251,7 +270,8 @@ bool tr_netSetSocketInterface(
     tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
     return true;
 #else
-    // the session warns once when the setting changes; per-socket failures stay quiet
+    // neither macOS nor Linux: no way to bind a socket to an interface.
+    // The session warns once when the setting changes; per-socket failures stay quiet
     set_sockerrno(ENXIO);
     if (!suppress_msgs) {
         tr_logAddDebug(fmt::format("Interface binding is not supported on this platform: '{}'", name));

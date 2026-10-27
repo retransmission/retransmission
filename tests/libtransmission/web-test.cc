@@ -665,11 +665,7 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
-#ifdef __linux__
-auto constexpr LoopbackInterface = "lo"sv;
-#else
-auto constexpr LoopbackInterface = "lo0"sv;
-#endif
+using tr::test::LoopbackInterface;
 
 TEST_F(WebTest, interfaceBindingOverridesBindAddress)
 {
@@ -684,6 +680,18 @@ TEST_F(WebTest, interfaceBindingOverridesBindAddress)
     EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 #endif
+}
+
+TEST_F(WebTest, missingInterfaceFailsInsteadOfFallingBack)
+{
+    // the default route reaches the server, so a fetch that
+    // drops the failed binding would succeed
+    mediator_.bind_interface_ = "tr-no-such-interface";
+
+    auto const response = fetch(options());
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
 }
 
 TEST_F(WebTest, blockedInterfaceIsRefused)

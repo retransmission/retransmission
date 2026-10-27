@@ -519,6 +519,13 @@ private:
 
 struct tr_session;
 
+// whether tr_netSetSocketInterface() can bind a socket to a named interface
+#if defined(__APPLE__) || defined(__linux__)
+inline constexpr bool TrNetCanBindInterface = true;
+#else
+inline constexpr bool TrNetCanBindInterface = false;
+#endif
+
 // true for the values that mean "normal OS routing": empty or whitespace
 [[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
 

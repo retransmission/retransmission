@@ -7,6 +7,7 @@
 #include <array>
 #include <compare>
 #include <cstddef> // std::byte, size_t
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <utility>
@@ -18,6 +19,8 @@
 #include <sys/socket.h>
 #endif
 
+#include <fmt/format.h>
+
 #include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-mgr.h>
@@ -25,6 +28,7 @@
 #include "test-fixtures.h"
 
 using NetTest = ::tr::test::TransmissionTest;
+using tr::test::LoopbackInterface;
 using namespace std::literals;
 
 TEST_F(NetTest, conversionsIPv4)
@@ -1126,18 +1130,41 @@ TEST_F(NetTest, interfaceIndex)
     EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
     EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
 
-#if defined(__APPLE__)
-    EXPECT_NE(0U, tr_net_interface_index(" lo0 "sv));
-#elif defined(__linux__)
-    EXPECT_NE(0U, tr_net_interface_index(" lo "sv));
+#ifndef _WIN32
+    EXPECT_NE(0U, tr_net_interface_index(fmt::format(" {} ", LoopbackInterface)));
 #endif
+}
+
+TEST_F(NetTest, socketIsBoundToTheNamedInterface)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    if (!tr::test::canReadBoundInterface()) {
+        GTEST_SKIP() << "the kernel can't report what a socket is bound to";
+    }
+
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        auto const sock = socket(tr_ip_protocol_to_af(type), SOCK_DGRAM, 0);
+        if (!is_valid_socket(sock)) {
+            continue; // no IPv6 on this host
+        }
+
+        EXPECT_TRUE(tr_netSetSocketInterface(sock, type, LoopbackInterface)) << tr_ip_protocol_to_sv(type);
+        EXPECT_EQ(tr_net_interface_index(LoopbackInterface), tr::test::boundInterfaceIndex(sock, type))
+            << tr_ip_protocol_to_sv(type);
+
+        tr_net_close_socket(sock);
+    }
 }
 
 TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
 {
-#ifndef __APPLE__
-    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
-#else
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
     static auto constexpr Missing = "tr-no-such-interface"sv;
 
     // Binds a fresh socket to `name` and returns how many warnings that logged.
@@ -1156,13 +1183,13 @@ TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
     tr_logSetQueueEnabled(true);
 
     // a bind that succeeds ends any outage an earlier test left behind
-    EXPECT_EQ(0, bind_and_count_warnings("lo0"sv));
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
 
     EXPECT_EQ(1, bind_and_count_warnings(Missing));
     EXPECT_EQ(0, bind_and_count_warnings(Missing));
 
     // once a socket binds again, the next outage warns again
-    EXPECT_EQ(0, bind_and_count_warnings("lo0"sv));
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
     EXPECT_EQ(1, bind_and_count_warnings(Missing));
 
     // as it does after a socket on the default route
@@ -1172,5 +1199,4 @@ TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
     tr_logSetQueueEnabled(false);
     tr_logClearQueue();
     tr_logSetLevel(old_level);
-#endif
 }

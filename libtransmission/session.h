@@ -105,6 +105,11 @@ private:
         BoundSocket operator=(BoundSocket const&) = delete;
         ~BoundSocket();
 
+        [[nodiscard]] constexpr tr_socket_t socket() const noexcept
+        {
+            return socket_;
+        }
+
     private:
         static void onCanRead(evutil_socket_t fd, short /*what*/, void* vself)
         {

@@ -430,16 +430,17 @@ public:
             }
         }
 
-        // Set by initEasy() when it hands curl an interface to bind to
+        // Set by initEasy() when this task's sockets are bound to an interface
         void set_interface_bound() noexcept
         {
             interface_bound_ = true;
         }
 
         // An interface binding takes precedence over the bind addresses:
-        // curl binds the socket to the interface (or, on macOS, to the
-        // interface's address) after open_socket() creates it, and a socket
-        // open_socket() had bound to an address could not be bound again.
+        // an address the interface lacks would make the socket unusable, and
+        // outside Linux, curl binds the socket to the interface (or its
+        // address) after open_socket() creates it, which a socket already
+        // bound to an address could not survive.
         [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
         {
             if (interface_bound_) {
@@ -668,9 +669,11 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
-#ifdef __APPLE__
-            // curl can only bind the interface's address here, which leaves the
-            // egress interface to routing; pin the socket as peer sockets are pinned
+#if defined(__APPLE__) || defined(__linux__)
+            // Pin the socket as peer sockets are pinned, or fail. curl alone isn't
+            // enough: on macOS it binds only the interface's address, leaving the
+            // egress interface to routing, and on Linux it falls back to that
+            // address when the kernel refuses SO_BINDTODEVICE.
             if (auto const& bind_interface = task->bind_interface;
                 bind_interface && !tr_netSetSocketInterface(sock, tr_af_to_ip_protocol(address->family), *bind_interface)) {
                 tr_net_close_socket(sock);
@@ -724,12 +727,15 @@ public:
         // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
         // address family it resolved, so an IPv4 bind address would also be forced onto
         // IPv6 sockets. open_socket() binds each socket according to its resolved family
-        // instead. An interface name ("if!eth0") suits both families, so it goes to curl;
-        // on macOS, curl binds only its address, so open_socket() also pins the interface.
+        // instead. An interface name ("if!eth0") suits both families, so it goes to curl,
+        // except on Linux, where open_socket() binds to the interface itself; on macOS,
+        // curl binds only its address, so open_socket() also pins the interface.
         // Separate multi handles isolate the connection caches for different bindings.
         if (auto const& bind_interface = task.bind_interface; bind_interface) {
             if (auto const curl_interface = tr_netCurlInterfaceString(*bind_interface); curl_interface) {
+#ifndef __linux__
                 (void)curl_easy_setopt(e, CURLOPT_INTERFACE, curl_interface->c_str());
+#endif
                 task.set_interface_bound();
             }
         }

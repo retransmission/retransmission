@@ -799,15 +799,12 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     if (force || interface_changed) {
         if (tr_net_interface_is_blocked(new_settings.bind_interface)) {
             tr_logAddInfo("Network interface binding is 'blocked': refusing all peer, tracker, and discovery traffic");
-        }
-#ifndef __APPLE__
-        else if (!tr_net_interface_is_default(new_settings.bind_interface)) {
+        } else if (!TrNetCanBindInterface && !tr_net_interface_is_default(new_settings.bind_interface)) {
             tr_logAddWarn(
                 fmt::format(
                     "Binding to network interface '{interface}' is not supported on this platform; all its sockets will fail",
                     fmt::arg("interface", new_settings.bind_interface)));
         }
-#endif
     }
 
     if (auto const& val = new_settings.default_trackers_str; force || val != old_settings.default_trackers_str) {

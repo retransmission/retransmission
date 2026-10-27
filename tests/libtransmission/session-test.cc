@@ -663,23 +663,52 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     tr_sessionClose(session, 1);
 }
 
-// A new UDP core binds the port the old one held, which macOS refuses while both are open.
+// A new UDP core binds the port the old one held, which is refused while both are open.
 TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
 {
-#ifndef __APPLE__
-    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
-#else
-    auto constexpr Loopback = "lo0"sv;
-
-    if (!is_valid_socket(udpSocket4())) {
-        GTEST_SKIP() << "the session has no IPv4 UDP socket to begin with";
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
     }
+
+    auto constexpr Loopback = LoopbackInterface;
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
 
     tr_sessionSetBindInterface(session_, Loopback);
     EXPECT_TRUE(waitFor([this, Loopback] { return tr_sessionGetBindInterface(session_) == Loopback; }, 5s));
 
     EXPECT_TRUE(is_valid_socket(udpSocket4()));
-#endif
+}
+
+// The setting must reach the sockets themselves, not just the session's copy of it.
+TEST_F(SessionTest, bindInterfaceBindsTheSessionSockets)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    if (!canReadBoundInterface()) {
+        GTEST_SKIP() << "the kernel can't report what a socket is bound to";
+    }
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
+
+    auto const loopback_index = tr_net_interface_index(LoopbackInterface);
+    EXPECT_EQ(0U, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    tr_sessionSetBindInterface(session_, LoopbackInterface);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) != 0U; }, 5s));
+
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    // back on the default route, the new sockets carry no binding
+    tr_sessionSetBindInterface(session_, ""sv);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) == 0U; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(listeningSocket4()));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
 }
 
 // "blocked" refuses every fetch made after the swap, so a tracker hears

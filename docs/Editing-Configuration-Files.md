@@ -118,7 +118,17 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
 #### Peers
  * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Retransmission will bind to "0.0.0.0".
  * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Retransmission will try to bind to your default global IPv6 address. If that didn't work, then Retransmission will bind to "::".
- * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (currently macOS), such as `utun4`. Empty means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Retransmission fails closed instead of falling back to the default route. Note that DNS lookups for HTTP trackers and webseeds are made by the system resolver and are not bound to the interface.
+ * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (macOS and Linux), such as `utun4` or `wg0`. Empty means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Retransmission fails closed instead of falling back to the default route. Note that DNS lookups for HTTP trackers and webseeds are made by the system resolver and are not bound to the interface.
+
+   _Linux before 5.7 needs the `CAP_NET_RAW` capability to bind to an interface._ Without it every bind fails with "Operation not permitted", and no traffic flows. The `transmission-daemon.service` unit drops all capabilities, so grant this one in a drop-in, created with `systemctl edit transmission-daemon`:
+
+   ```ini
+   [Service]
+   CapabilityBoundingSet=CAP_NET_RAW
+   AmbientCapabilities=CAP_NET_RAW
+   ```
+
+   Outside systemd, run `setcap cap_net_raw+ep` on the daemon binary instead. `CAP_NET_RAW` also allows opening raw sockets, so prefer a newer kernel where you can.
  * **peer_congestion_algorithm:** String. This is documented on https://www.pps.jussieu.fr/~jch/software/bittorrent/tcp-congestion-control.html.
  * **peer_limit_global:** Number (default = 200)
  * **peer_limit_per_torrent:** Number (default = 50)
