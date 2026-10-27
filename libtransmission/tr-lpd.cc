@@ -324,11 +324,23 @@ private:
         if constexpr (ip_protocol == TR_AF_INET) {
             std::memcpy(&mcast_addr_, &mcast_ss, mcast_sslen);
 
-            // multicast picks its own egress interface, so IP_BOUND_IF alone
-            // isn't enough: the group join and IP_MULTICAST_IF must name the
-            // bound interface too. IP_ADD_MEMBERSHIP selects it by address
-            // everywhere but Linux. The session's source address is the one
-            // the bound interface sends from; without one, don't start.
+            // multicast picks its own egress interface, so the interface binding
+            // alone isn't enough: the group join and IP_MULTICAST_IF must name the
+            // bound interface too.
+#ifdef __linux__
+            // Linux names it by index, so the interface needs no IPv4 address yet.
+            // With no binding, the index is 0 and the bind address selects it.
+            struct ip_mreqn mcast_req = {};
+            mcast_req.imr_multiaddr = mcast_addr_.sin_addr;
+            mcast_req.imr_address = mediator_.bind_address(ip_protocol).addr.addr4;
+            mcast_req.imr_ifindex = static_cast<int>(tr_net_interface_index(mediator_.bind_interface()));
+            auto const& mcast_if = mcast_req;
+#else
+            // Elsewhere it is named by address. Of these platforms only macOS
+            // (__APPLE__) gets here with a binding: on the rest, the socket
+            // already failed tr_netSetSocketInterface() above. The session's
+            // source address is the one the bound interface sends from;
+            // without one, don't start.
             auto mcast_if_addr = mediator_.bind_address(ip_protocol).addr.addr4;
             if (auto const name = tr_net_effective_bind_interface(mediator_.bind_interface()); !std::empty(name)) {
                 auto const source_addr = mediator_.source_address(ip_protocol);
@@ -340,11 +352,13 @@ private:
                 mcast_if_addr = source_addr->addr.addr4;
             }
 
-            // we want to join that LPD multicast group
             struct ip_mreq mcast_req = {};
             mcast_req.imr_multiaddr = mcast_addr_.sin_addr;
             mcast_req.imr_interface = mcast_if_addr;
+            auto const& mcast_if = mcast_if_addr;
+#endif
 
+            // we want to join that LPD multicast group
             if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char const*>(&mcast_req), sizeof(mcast_req)) ==
                 -1) {
                 return false;
@@ -360,12 +374,8 @@ private:
                 return false;
             }
 
-            if (setsockopt(
-                    sock,
-                    IPPROTO_IP,
-                    IP_MULTICAST_IF,
-                    reinterpret_cast<char const*>(&mcast_if_addr),
-                    sizeof(mcast_if_addr)) == -1) {
+            if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_IF, reinterpret_cast<char const*>(&mcast_if), sizeof(mcast_if)) ==
+                -1) {
                 return false;
             }
 
@@ -380,8 +390,8 @@ private:
             // we want to join that LPD multicast group
             struct ipv6_mreq mcast_req = {};
             mcast_req.ipv6mr_multiaddr = mcast6_addr_.sin6_addr;
-            // multicast picks its own egress interface, so IPV6_BOUND_IF alone isn't
-            // enough: the group join and IPV6_MULTICAST_IF must name the bound interface too
+            // multicast picks its own egress interface, so the interface binding alone
+            // isn't enough: the group join and IPV6_MULTICAST_IF must name it too
             mcast_req.ipv6mr_interface = tr_net_interface_index(mediator_.bind_interface());
             if (mcast_req.ipv6mr_interface == 0U) {
                 mcast_req.ipv6mr_interface = mediator_.bind_address(ip_protocol).to_interface_index().value_or(0);
