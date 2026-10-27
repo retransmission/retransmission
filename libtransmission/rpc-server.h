@@ -147,7 +147,9 @@ public:
     std::unique_ptr<tr_rpc_address> bind_address_;
 
     std::unique_ptr<tr::Timer> start_retry_timer;
-    tr::evhelpers::evhttp_unique_ptr httpd;
+    // Freeing it frees its requests, including any whose RPC is still
+    // running, so a reply first checks that the httpd it came in on is alive.
+    std::shared_ptr<struct evhttp> httpd;
     tr_session* const session;
 
     size_t login_attempts_ = 0U;
