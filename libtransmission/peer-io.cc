@@ -27,6 +27,7 @@
 #include "libtransmission/peer-socket-tcp.h"
 #include "libtransmission/peer-socket-utp.h"
 #include "libtransmission/peer-socket.h" // tr_peer_socket, tr_netOpen...
+#include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
@@ -296,6 +297,7 @@ void tr_peerIo::did_write_wrapper(size_t bytes_transferred)
 
 size_t tr_peerIo::try_write(size_t max)
 {
+    TR_PROFILE_SCOPE("peer.try_write");
     static auto constexpr Dir = tr_direction::Up;
 
     if (max == 0U) {
@@ -345,6 +347,7 @@ void tr_peerIo::write_cb()
 
 void tr_peerIo::can_read_wrapper(size_t bytes_transferred)
 {
+    TR_PROFILE_SCOPE("peer.process_incoming");
     // try to consume the input buffer
 
     if (can_read_ == nullptr) {
@@ -396,6 +399,7 @@ void tr_peerIo::can_read_wrapper(size_t bytes_transferred)
 
 size_t tr_peerIo::try_read(size_t max)
 {
+    TR_PROFILE_SCOPE("peer.try_read");
     static auto constexpr Dir = tr_direction::Down;
 
     if (!socket_) {

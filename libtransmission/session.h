@@ -748,11 +748,7 @@ public:
 
     [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
 
-    void update_active_request_count(size_t const previous, size_t const current) noexcept
-    {
-        TR_ASSERT(active_request_count_ >= previous);
-        active_request_count_ = active_request_count_ - previous + current;
-    }
+    void update_active_request_count(size_t previous, size_t current) noexcept;
 
     // announce ip
 

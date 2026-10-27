@@ -1,0 +1,9 @@
+# Exclude hidden metadata, credentials, and local workspaces.
+.*
+build
+cmake-build-*
+node_modules
+web/node_modules
+tools/profiling/results
+tools/profiling/work
+**/__pycache__

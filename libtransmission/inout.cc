@@ -21,6 +21,7 @@
 #include "libtransmission/inout.h"
 #include "libtransmission/log.h"
 #include "libtransmission/open-files.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/storage-descriptor.h"
 #include "libtransmission/string-utils.h"
@@ -38,6 +39,7 @@ namespace
 
 bool read_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uint8_t> buf, tr_error& error)
 {
+    TR_PROFILE_SCOPE("disk.read_syscall_loop");
     while (!std::empty(buf)) {
         auto n_read = uint64_t{};
 
@@ -59,6 +61,7 @@ bool read_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uin
 
 bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uint8_t const> buf, tr_error& error)
 {
+    TR_PROFILE_SCOPE("disk.write_syscall_loop");
     while (!std::empty(buf)) {
         auto n_written = uint64_t{};
 
@@ -207,6 +210,7 @@ tr_error tr_ioRead(
     uint64_t const begin,
     std::span<uint8_t> const setme)
 {
+    TR_PROFILE_SCOPE("disk.read_block");
     if (std::empty(setme)) {
         return {};
     }
@@ -236,6 +240,7 @@ tr_error tr_ioWrite(
     uint64_t const begin,
     std::span<uint8_t const> const writeme)
 {
+    TR_PROFILE_SCOPE("disk.write_block");
     if (std::empty(writeme)) {
         return {};
     }
@@ -266,6 +271,7 @@ tr_error tr_ioRecalculateHash(
     tr_sha1_digest_t& setme)
 {
     auto error = tr_error{};
+    TR_PROFILE_SCOPE("disk.recalculate_piece_hash");
     auto const& block_info = desc.block_info;
     if (piece >= block_info.piece_count()) {
         error.set_from_errno(EINVAL);

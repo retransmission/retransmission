@@ -46,6 +46,7 @@
 #include "libtransmission/peer-socket.h"
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/quark.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/rpc-server.h"
 #include "libtransmission/session-alt-speeds.h"
 #include "libtransmission/session.h"
@@ -507,6 +508,7 @@ tr_session* tr_sessionInit(
     tr::Settings const& app_settings,
     tr_torrent_remove_func remove_func)
 {
+    TR_PROFILE_SCOPE("session.init");
     using namespace bandwidth_group_helpers;
 
     tr_timeUpdate(time(nullptr));
@@ -1422,6 +1424,7 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
 
 void tr_sessionClose(tr_session* session, double const timeout_secs)
 {
+    TR_PROFILE_SCOPE("session.close");
     TR_ASSERT(session != nullptr);
     TR_ASSERT(!session->am_in_session_thread());
 
@@ -1975,6 +1978,21 @@ void tr_session::verify_add(tr_torrent* const tor)
 }
 
 // ---
+
+void tr_session::update_active_request_count(size_t const previous, size_t const current) noexcept
+{
+    TR_ASSERT(active_request_count_ >= previous);
+    active_request_count_ = active_request_count_ - previous + current;
+
+    // From the last request draining to the next one sent. It starts only
+    // on a drop to zero, so the wait before the first request isn't a stall.
+    static auto no_requests = tr::profile::Interval{ "stall.no_requests_outstanding" };
+    if (active_request_count_ == 0U && previous > current) {
+        no_requests.start();
+    } else if (active_request_count_ > 0U) {
+        no_requests.stop();
+    }
+}
 
 std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 {

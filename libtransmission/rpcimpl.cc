@@ -36,6 +36,7 @@
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/api-compat.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/rpcimpl.h"
 #include "libtransmission/session.h"
@@ -2737,6 +2738,7 @@ void tr_rpc_request_exec(tr_session* session, tr_variant request, tr_rpc_respons
 
 void tr_rpc_request_exec(tr_session* session, std::string_view request, tr_rpc_response_func&& callback)
 {
+    TR_PROFILE_SCOPE("rpc.dispatch");
     using namespace JsonRpc;
 
     auto serde = tr_variant_serde::json().inplace();

@@ -39,6 +39,7 @@
 #include "libtransmission/peer-io.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/peer-msgs.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
@@ -2009,6 +2010,7 @@ void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& error, void* 
 
 void tr_peerMsgsImpl::pulse()
 {
+    TR_PROFILE_SCOPE("peer.msgs_pulse");
     auto const now_sec = tr_time();
     auto const now_msec = tr_time_msec();
 
@@ -2052,6 +2054,7 @@ void tr_peerMsgsImpl::maybe_send_block_requests()
 
 void tr_peerMsgsImpl::check_request_timeout(time_t const now)
 {
+    TR_PROFILE_SCOPE("peer.request_timeouts");
     std::ranges::sort(request_timeouts_);
 
     for (auto it = std::begin(request_timeouts_); it != std::end(request_timeouts_);) {

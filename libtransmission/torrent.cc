@@ -34,6 +34,7 @@
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/peer-common.h"
 #include "libtransmission/peer-mgr.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/resume.h"
 #include "libtransmission/session.h"
 #include "libtransmission/storage-descriptor.h"
@@ -2427,6 +2428,7 @@ void tr_torrent::save_block(tr_block_index_t const block, std::unique_ptr<tr::Lo
 
 void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& error)
 {
+    TR_PROFILE_SCOPE("torrent.on_block_written");
     TR_ASSERT(session->am_in_session_thread());
 
     blocks_pending_write_.unset(block);
