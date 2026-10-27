@@ -567,6 +567,10 @@ void tr_session::on_now_timer()
         start_torrents_after_rebind(restarting);
     }
 
+    if (rpc_server_) {
+        rpc_server_->check_bound_interface();
+    }
+
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
     auto target_interval = target_time - now;

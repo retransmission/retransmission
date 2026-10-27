@@ -513,6 +513,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "rpc-whitelist-enabled"sv, // daemon, rpc server settings
     "rpc_authentication_required"sv, // daemon, rpc server settings
     "rpc_bind_address"sv, // daemon, rpc server settings
+    "rpc_bind_interface"sv, // daemon, rpc, rpc server settings
     "rpc_enabled"sv, // daemon, rpc server settings
     "rpc_host_whitelist"sv, // rpc, rpc server settings
     "rpc_host_whitelist_enabled"sv, // rpc, rpc server settings

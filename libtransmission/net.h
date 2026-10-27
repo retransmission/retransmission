@@ -18,6 +18,7 @@
 #include <string_view>
 #include <tuple> // std::tie
 #include <utility> // std::pair
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -538,6 +539,15 @@ inline constexpr bool TrNetCanBindInterface = false;
 // the OS index of the named interface, or 0 when `bind_interface` is
 // empty, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
+
+struct tr_net_interface {
+    std::string name;
+    std::vector<tr_address> addresses; // IPv4 first, then IPv6
+};
+
+// the OS's network interfaces sorted by name, or empty when
+// TrNetCanBindInterface is false since none of them could be bound
+[[nodiscard]] std::vector<tr_net_interface> tr_net_interfaces();
 
 [[nodiscard]] bool tr_netSetSocketInterface(
     tr_socket_t sock,

@@ -10,11 +10,13 @@
 #include <cstdint>
 #include <cstring>
 #include <iterator> // std::back_inserter
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility> // std::pair
+#include <vector>
 
 #ifdef _WIN32
 #include <winsock2.h> // must come before iphlpapi.h
@@ -136,6 +138,49 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     }
 
     return if_nametoindex(std::string{ name }.c_str());
+}
+
+std::vector<tr_net_interface> tr_net_interfaces()
+{
+    auto interfaces = std::vector<tr_net_interface>{};
+
+#if defined(__APPLE__) || defined(__linux__)
+    // if_nameindex() also lists the interfaces that have no address yet
+    auto const list = std::unique_ptr<struct if_nameindex, void (*)(struct if_nameindex*)>{ if_nameindex(), if_freenameindex };
+    if (!list) {
+        return interfaces;
+    }
+
+    for (auto const* cur = list.get(); cur->if_index != 0U; ++cur) {
+        interfaces.push_back({ cur->if_name, {} });
+    }
+
+    std::ranges::sort(interfaces, {}, &tr_net_interface::name);
+
+    struct ifaddrs* ifa = nullptr;
+    if (getifaddrs(&ifa) != 0) {
+        return interfaces;
+    }
+
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr);
+        if (!if_addr) {
+            continue;
+        }
+
+        auto const iter = std::ranges::lower_bound(interfaces, std::string_view{ ifa->ifa_name }, {}, &tr_net_interface::name);
+        if (iter != std::end(interfaces) && iter->name == ifa->ifa_name) {
+            iter->addresses.emplace_back(if_addr->address());
+        }
+    }
+
+    for (auto& iface : interfaces) {
+        std::ranges::stable_partition(iface.addresses, &tr_address::is_ipv4);
+    }
+#endif
+
+    return interfaces;
 }
 
 #if defined(__APPLE__) || defined(__linux__)

@@ -775,3 +775,20 @@ TEST_F(SettingsTest, canLoadAndSaveRpcServerSettings)
     EXPECT_EQ("alice"sv, out.value_if<std::string_view>(TR_KEY_rpc_username));
     EXPECT_EQ(9091, out.value_if<int64_t>(TR_KEY_rpc_port));
 }
+
+TEST_F(SettingsTest, rpcBindInterfaceIsIndependentOfBindInterface)
+{
+    auto rpc_settings = tr::RpcServerSettings{};
+    EXPECT_EQ(""sv, rpc_settings.bind_interface);
+
+    auto map = tr::Settings{ 2U };
+    map.try_emplace(TR_KEY_bind_interface, "wg0"sv);
+    map.try_emplace(TR_KEY_rpc_bind_interface, "eth0"sv);
+    rpc_settings.load(map);
+    auto session_settings = tr_session::Settings{};
+    session_settings.load(map);
+
+    EXPECT_EQ("eth0"sv, rpc_settings.bind_interface);
+    EXPECT_EQ("wg0"sv, session_settings.bind_interface);
+    EXPECT_EQ("eth0"sv, tr::serializer::save(rpc_settings).value_if<std::string_view>(TR_KEY_rpc_bind_interface));
+}

@@ -355,6 +355,12 @@ auto constexpr Options = std::to_array<tr_option>({
       .shortName = "r",
       .arg = Arg::Required,
       .argName = "<ip addr>" },
+    { .val = 997,
+      .longName = "rpc-bind-interface",
+      .description = "Network interface for RPC connections on supported platforms",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<ifname>" },
     { .val = 953,
       .longName = "global-seedratio",
       .description = "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
@@ -856,6 +862,10 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
 
         case 'r':
             map.insert_or_assign(TR_KEY_rpc_bind_address, optstr);
+            break;
+
+        case 997:
+            map.insert_or_assign(TR_KEY_rpc_bind_interface, optstr);
             break;
 
         case 953:

@@ -305,6 +305,7 @@ public:
     size_t anti_brute_force_limit = 100U;
     size_t max_request_body_size = TrWebDefaultMaxBodyBytes;
     std::string bind_address_str = "0.0.0.0";
+    std::string bind_interface;
     std::string host_whitelist_str;
     std::string salted_password;
     std::string url = std::string{ TrDefaultHttpServerBasePath };
@@ -323,6 +324,7 @@ public:
         Field<&RpcServerSettings::anti_brute_force_limit>{ TR_KEY_anti_brute_force_threshold },
         Field<&RpcServerSettings::authentication_required>{ TR_KEY_rpc_authentication_required },
         Field<&RpcServerSettings::bind_address_str>{ TR_KEY_rpc_bind_address },
+        Field<&RpcServerSettings::bind_interface>{ TR_KEY_rpc_bind_interface },
         Field<&RpcServerSettings::is_enabled>{ TR_KEY_rpc_enabled },
         Field<&RpcServerSettings::host_whitelist_str>{ TR_KEY_rpc_host_whitelist },
         Field<&RpcServerSettings::is_host_whitelist_enabled>{ TR_KEY_rpc_host_whitelist_enabled },

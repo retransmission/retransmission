@@ -811,6 +811,76 @@ TEST_F(RpcTest, sessionBindInterface)
     EXPECT_EQ("lo0"sv, *bind_interface);
 }
 
+// A settings reload moves a running RPC listener onto its new interface.
+TEST_F(RpcTest, reloadRebindsTheRpcListener)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const interfaces = tr_net_interfaces();
+    auto const other = std::ranges::find_if(interfaces, [](auto const& iface) { return iface.name != LoopbackInterface; });
+    if (other == std::end(interfaces)) {
+        GTEST_SKIP() << "needs a network interface besides loopback";
+    }
+
+    auto const port = freePort();
+    ASSERT_NE(0U, port) << "no free port on this host";
+
+    auto const reload = [this, port](std::string_view const bind_interface) {
+        auto settings = tr_sessionGetSettings(session_);
+        settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+        settings.insert_or_assign(TR_KEY_rpc_bind_address, "127.0.0.1"sv);
+        settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+        settings.insert_or_assign(TR_KEY_rpc_bind_interface, bind_interface);
+        tr_sessionSet(session_, settings);
+    };
+    auto const reachable = [port] {
+        return canConnectToLoopback(port);
+    };
+
+    reload(""sv);
+    EXPECT_TRUE(waitFor(reachable, 5s));
+
+    // traffic from this host arrives on loopback, which a listener bound to another interface refuses
+    reload(other->name);
+    EXPECT_TRUE(waitFor([&reachable] { return !reachable(); }, 5s)) << other->name;
+
+    reload(LoopbackInterface);
+    EXPECT_TRUE(waitFor(reachable, 5s));
+}
+
+// A listener whose interface was missing when it started binds once the interface appears.
+TEST_F(RpcTest, rpcListenerRestartsWhenItsInterfaceAppears)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const port = freePort();
+    ASSERT_NE(0U, port) << "no free port on this host";
+
+    auto settings = tr_sessionGetSettings(session_);
+    settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+    settings.insert_or_assign(TR_KEY_rpc_bind_address, "127.0.0.1"sv);
+    settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+    settings.insert_or_assign(TR_KEY_rpc_bind_interface, LoopbackInterface);
+    tr_sessionSet(session_, settings);
+    ASSERT_TRUE(waitFor([port] { return canConnectToLoopback(port); }, 5s));
+
+    // pretend loopback was missing when the listener started, and has now appeared
+    auto index = std::promise<unsigned>{};
+    session_->run_in_session_thread([server = rpcServer(), &index] {
+        server->bound_interface_index_ = 0U;
+        server->check_bound_interface();
+        index.set_value(server->bound_interface_index_);
+    });
+    auto future = index.get_future();
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_EQ(tr_net_interface_index(LoopbackInterface), future.get());
+    EXPECT_TRUE(waitFor([port] { return canConnectToLoopback(port); }, 5s));
+}
+
 TEST_F(RpcTest, torrentGet)
 {
     auto* tor = zeroTorrentInit(ZeroTorrentState::NoFiles);

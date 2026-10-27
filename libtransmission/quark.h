@@ -525,6 +525,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_rpc_whitelist_enabled_kebab_APICOMPAT,
     TR_KEY_rpc_authentication_required,
     TR_KEY_rpc_bind_address,
+    TR_KEY_rpc_bind_interface,
     TR_KEY_rpc_enabled,
     TR_KEY_rpc_host_whitelist,
     TR_KEY_rpc_host_whitelist_enabled,

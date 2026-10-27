@@ -156,6 +156,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **anti_brute_force_threshold:**: Number (default = 100) After this amount of failed authentication attempts is surpassed, the RPC server will deny any further authentication attempts until it is restarted. This is not tracked per IP but in total.
  * **rpc_authentication_required:** Boolean (default = false)
  * **rpc_bind_address:** String (default = "0.0.0.0") Where to listen for RPC connections
+ * **rpc_bind_interface:** String (default = "") Network interface name to accept RPC connections through on supported platforms (macOS and Linux), such as `eth0`. Independent of `bind_interface`, so RPC can stay on the LAN while peers use a VPN. Empty means any interface. Ignored when `rpc_bind_address` is a UNIX socket. When set, an `rpc_bind_address` of `::` listens on IPv6 only. Clients on the same host, such as `transmission-remote` or a reverse proxy, connect through the loopback interface, so binding to any other interface refuses them.
  * **rpc_enabled:** Boolean (default = true \[transmission-daemon\], false \[others\])
  * **rpc_host_whitelist:** String (Comma-delimited list of domain names. Wildcards allowed using '\*'. Example: "*.foo.org,example.com", Default: "", Always allowed: "localhost", "localhost.", all the IP addresses. Added in v2.93)
  * **rpc_host_whitelist_enabled:** Boolean (default = true. Added in v2.93)
