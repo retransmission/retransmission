@@ -1397,6 +1397,9 @@ void create_bit_torrent_peer(
 
     TR_ASSERT(swarm->stats.peer_count == swarm->peerCount());
     TR_ASSERT(swarm->stats.peer_from_count[msgs->peer_info->from_first()] <= swarm->stats.peer_count);
+
+    // The torrent-start rechoke can run before any peer has connected.
+    swarm->manager->rechokeSoon();
 }
 
 [[nodiscard]] bool is_local_peer_endpoint(tr_session const& session, tr_socket_address const& endpoint)
