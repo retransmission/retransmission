@@ -173,10 +173,8 @@ export class OpenDialog extends EventTarget {
     workarea.append(input);
     elements.url_input = input;
 
-    input_id = makeUUID();
     label = document.createElement('label');
     label.id = 'add-dialog-folder-label';
-    label.for = input_id;
     label.textContent = 'Destination folder: ';
     workarea.append(label);
 
@@ -189,6 +187,7 @@ export class OpenDialog extends EventTarget {
     input = document.createElement('input');
     input.type = 'text';
     input.id = 'add-dialog-folder-input';
+    label.setAttribute('for', input.id);
     input.addEventListener('change', () => this._updateFreeSpaceInAddDialog());
     input.value = this.controller.session_properties.download_dir;
     workarea.append(input);
