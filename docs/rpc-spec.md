@@ -584,6 +584,11 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `alt_speed_time_end` | number | when to turn off alt speeds (units: same)
 | `alt_speed_up` | number | max global upload speed (kB/s)
 | `anti_brute_force_enabled` | boolean | true means to enable a basic brute force protection for RPC server
+| `bind_address_ipv4` | string | local IPv4 address to listen on and send from; empty means any address
+| `bind_address_ipv6` | string | local IPv6 address to listen on and send from; empty means any address
+| `bind_interface` | string | session network interface binding; empty means normal OS routing; `blocked` refuses all traffic. DNS lookups for HTTP trackers and webseeds use the system resolver and are not bound
+| `bind_interface_status` | string | what `bind_interface` does to traffic now: `default` (normal OS routing), `ok`, `blocked`, `missing` (the interface doesn't exist, so traffic is stopped), `bind_failed` (the OS refuses the binding, so traffic is stopped; see `bind_interface_error`) or `unsupported` (read-only)
+| `bind_interface_error` | string | why binding failed when `bind_interface_status` is `bind_failed`, otherwise empty (read-only)
 | `blocklist_date` | number | Unix time of the last successful blocklist update, or 0 if never (read-only)
 | `blocklist_enabled` | boolean | true means enabled
 | `blocklist_size` | number | number of rules in the blocklist
@@ -603,6 +608,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `incomplete_dir` | string | path for incomplete torrents, when enabled
 | `incomplete_dir_enabled` | boolean | true means keep torrents in `incomplete_dir` until done
 | `lpd_enabled` | boolean | true means allow Local Peer Discovery in public torrents
+| `network_interfaces` | array of objects | the network interfaces `bind_interface` can name, each with its `name` and its `addresses` (array of strings, IPv4 first); empty where interface binding is unsupported (read-only)
 | `peer_limit_global` | number | maximum global number of peers
 | `peer_limit_per_torrent` | number | maximum global number of peers
 | `peer_port_random_on_start` | boolean | true means pick a random peer port on launch
@@ -616,6 +622,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `recent_relocate_paths` | string[] | recently-used relocation (move) destinations, most recent first *read-only*
 | `rename_partial_files` | boolean | true means append `.part` to incomplete files
 | `reqq` | number | the number of outstanding block requests a peer is allowed to queue in the client
+| `rpc_bind_interface` | string | network interface the RPC listener accepts connections through; empty means any interface (read-only)
 | `rpc_max_request_body_size` | number | maximum RPC request body size in bytes allowed
 | `rpc_version_minimum` | number | **DEPRECATED** the minimum RPC API version supported
 | `rpc_version_semver` | string | the current RPC API version in a [semver](https://semver.org)-compatible string
@@ -1162,5 +1169,15 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_get` | new arg `blocklist_date`
 | `session_get` | new arg `blocklist_updates_enabled`
 | `session_set` | new arg `blocklist_updates_enabled`
+| `session_get` | new arg `bind_address_ipv4`
+| `session_set` | new arg `bind_address_ipv4`
+| `session_get` | new arg `bind_address_ipv6`
+| `session_set` | new arg `bind_address_ipv6`
+| `session_get` | new arg `bind_interface`
+| `session_set` | new arg `bind_interface`
+| `session_get` | new arg `bind_interface_status`
+| `session_get` | new arg `bind_interface_error`
+| `session_get` | new arg `network_interfaces`
+| `session_get` | new arg `rpc_bind_interface`
 | `session_stats` | :warning: **DEPRECATED** `active_torrent_count`. Use `unpaused_torrent_count` instead; it will be removed in Transmission 5.0.0.
 | `session_get` | :warning: **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.

@@ -18,6 +18,7 @@
 #include <string_view>
 #include <tuple> // std::tie
 #include <utility> // std::pair
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -513,7 +514,65 @@ private:
 
 struct tr_session;
 
-[[nodiscard]] tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs);
+// whether tr_netSetSocketInterface() can bind a socket to a named interface
+#if defined(__APPLE__) || defined(__linux__)
+inline constexpr bool TrNetCanBindInterface = true;
+#else
+inline constexpr bool TrNetCanBindInterface = false;
+#endif
+
+// true for the values that mean "normal OS routing": empty or whitespace
+[[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
+
+// true for TrBindInterfaceBlocked, the value that refuses every socket
+[[nodiscard]] bool tr_net_interface_is_blocked(std::string_view bind_interface);
+
+// the interface name to bind to, or empty when `bind_interface` means normal OS routing
+[[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
+
+// the OS index of the named interface, or 0 when `bind_interface` is
+// empty, blocked, or names an interface that doesn't exist
+[[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
+
+// what a bind_interface setting does to traffic right now
+struct tr_net_bind_status {
+    enum class State {
+        Default, // normal OS routing
+        Ok, // the interface exists and its last bind succeeded
+        Blocked, // TrBindInterfaceBlocked refuses every socket
+        Missing, // the interface doesn't exist, so traffic stops until it does
+        BindFailed, // the interface exists but the OS refuses to bind to it
+        Unsupported, // the platform can't bind to an interface
+    };
+
+    State state = State::Default;
+    std::string error; // why binding failed, for BindFailed
+};
+
+[[nodiscard]] tr_net_bind_status tr_net_interface_status(std::string_view bind_interface);
+
+struct tr_net_interface {
+    std::string name;
+    std::vector<tr_address> addresses; // IPv4 first, then IPv6
+};
+
+// the OS's network interfaces sorted by name, or empty when
+// TrNetCanBindInterface is false since none of them could be bound
+[[nodiscard]] std::vector<tr_net_interface> tr_net_interfaces();
+
+[[nodiscard]] bool tr_netSetSocketInterface(
+    tr_socket_t sock,
+    tr_address_type type,
+    std::string_view bind_interface,
+    bool suppress_msgs = false);
+
+[[nodiscard]] std::optional<std::string> tr_netCurlInterfaceString(std::string_view bind_interface);
+
+[[nodiscard]] tr_socket_t tr_netBindTCP(
+    tr_address const& addr,
+    tr_port port,
+    bool suppress_msgs,
+    std::string_view bind_interface = {});
 
 [[nodiscard]] std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(
     tr_session* session,

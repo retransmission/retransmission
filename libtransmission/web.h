@@ -33,6 +33,7 @@ public:
         std::string primary_ip;
         bool did_connect = false;
         bool did_timeout = false;
+        bool did_cancel = false; // cancel_all() stopped it, so it says nothing about the server
 
         void* user_data = nullptr; // from FetchOptions::done_func_user_data
 
@@ -157,6 +158,13 @@ public:
 
     void fetch(FetchOptions&& options);
 
+    // Cancel every task queued or running at the time of the call.
+    // Each one completes through its done_func with status 0,
+    // did_connect false, and did_cancel true. Cancellation is asynchronous: the tasks complete
+    // on the curl thread after this call returns. Tasks fetched after this
+    // call are unaffected.
+    void cancel_all();
+
     // Notify tr_web that it's going to be destroyed soon.
     // New fetch() tasks will be rejected, but already-running tasks
     // are left alone so that they can finish.
@@ -195,6 +203,11 @@ public:
 
         // Return bind address string, or nullopt to not use one
         [[nodiscard]] virtual std::optional<std::string> bind_address(int /*af*/) const
+        {
+            return std::nullopt;
+        }
+
+        [[nodiscard]] virtual std::optional<std::string> bind_interface() const
         {
             return std::nullopt;
         }

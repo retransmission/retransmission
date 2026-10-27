@@ -891,6 +891,10 @@ struct tr_torrent {
 
     void start(bool bypass_queue, std::optional<bool> has_any_local_data);
 
+    // Stop a running torrent and start it again, announcing both events.
+    // Does nothing to a torrent that is stopped or stopping. Session thread only.
+    void restart();
+
     [[nodiscard]] constexpr auto has_changed_since(time_t when) const noexcept
     {
         return date_changed_ > when;

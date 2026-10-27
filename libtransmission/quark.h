@@ -48,6 +48,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_added_date_camel_APICOMPAT,
     TR_KEY_added_date, /* rpc, resume file */
     TR_KEY_address, /* rpc */
+    TR_KEY_addresses, /* rpc */
     TR_KEY_alt_speed_down_kebab_APICOMPAT,
     TR_KEY_alt_speed_enabled_kebab_APICOMPAT,
     TR_KEY_alt_speed_time_begin_kebab_APICOMPAT,
@@ -84,6 +85,9 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_bind_address_ipv6_kebab_APICOMPAT,
     TR_KEY_bind_address_ipv4,
     TR_KEY_bind_address_ipv6,
+    TR_KEY_bind_interface,
+    TR_KEY_bind_interface_error,
+    TR_KEY_bind_interface_status,
     TR_KEY_bitfield,
     TR_KEY_blocklist_date_kebab_APICOMPAT,
     TR_KEY_blocklist_enabled_kebab_APICOMPAT,
@@ -362,6 +366,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_msg_type,
     TR_KEY_mtimes,
     TR_KEY_name,
+    TR_KEY_network_interfaces,
     TR_KEY_next_announce_time_camel_APICOMPAT,
     TR_KEY_next_scrape_time_camel_APICOMPAT,
     TR_KEY_next_announce_time,
@@ -520,6 +525,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_rpc_whitelist_enabled_kebab_APICOMPAT,
     TR_KEY_rpc_authentication_required,
     TR_KEY_rpc_bind_address,
+    TR_KEY_rpc_bind_interface,
     TR_KEY_rpc_enabled,
     TR_KEY_rpc_host_whitelist,
     TR_KEY_rpc_host_whitelist_enabled,

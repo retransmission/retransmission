@@ -107,6 +107,219 @@ export class PrefsDialog extends EventTarget {
     }
   }
 
+  // the daemon reports which interfaces exist, so the options are rebuilt
+  // from each session update; a configured interface that has gone away
+  // stays selectable so the dialog shows what the daemon is actually using
+  static _updateInterfaceSelect(select, properties) {
+    const current = properties.bind_interface ?? '';
+    const names = (properties.network_interfaces ?? []).map(({ name }) => name);
+
+    const options = [new Option('Any (default route)', '')];
+    for (const name of names) {
+      options.push(new Option(name, name));
+    }
+    if (current && current !== 'blocked' && !names.includes(current)) {
+      options.push(new Option(`${current} (unavailable)`, current));
+    }
+    options.push(new Option('None (block all traffic)', 'blocked'));
+
+    select.replaceChildren(...options);
+    select.value = current;
+    // an empty list means the daemon's platform can't bind to an interface
+    setEnabled(select, names.length > 0 || current !== '');
+  }
+
+  // shows the addresses of the interface picked in `select`, which may not
+  // be saved yet, and offers them as suggestions for the bind addresses
+  _updateInterfaceAddresses() {
+    const { network } = this.elements;
+    const name = network.interface_select.value;
+    const iface = (
+      this.session_manager.session_properties.network_interfaces ?? []
+    ).find((candidate) => candidate.name === name);
+    const addresses = iface?.addresses ?? [];
+
+    // an interface that's gone has no addresses to list; the binding
+    // status says what that does to traffic
+    const label = network.interface_addresses_label;
+    const key = iface ? addresses.join(' ') || 'none' : '';
+    // rebuilt only on change, so a session refresh can't replace a button mid-click
+    if (label.dataset.addresses !== key) {
+      label.dataset.addresses = key;
+      if (addresses.length > 0) {
+        label.replaceChildren(
+          ...addresses.map((address) => PrefsDialog._createCopyButton(address)),
+        );
+      } else {
+        label.textContent = iface ? 'No addresses' : '';
+      }
+    }
+    label.classList.toggle('hidden', !key);
+
+    this._updateBindStatus();
+
+    for (const [family, { datalist }] of Object.entries(network.bind_address)) {
+      datalist.replaceChildren(
+        ...addresses
+          .filter((address) => address.includes(':') === (family === 'ipv6'))
+          .map((address) => new Option(address, address)),
+      );
+      // the interface the address must belong to may have changed,
+      // but a value still being typed isn't judged yet
+      if (network.bind_address[family].input !== document.activeElement) {
+        this._checkBindAddress(family);
+      }
+    }
+  }
+
+  static _createCopyButton(text) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.classList.add('interface-address');
+    button.textContent = text;
+    button.title = 'Click to copy';
+    button.addEventListener('click', () => {
+      if (!navigator.clipboard) {
+        // navigator.clipboard requires HTTPS or localhost
+        prompt('Select all then copy', text);
+        return;
+      }
+      navigator.clipboard.writeText(text).then(
+        () => {
+          button.dataset.copied = 'true';
+          setTimeout(() => delete button.dataset.copied, 1500);
+        },
+        () => prompt('Select all then copy', text),
+      );
+    });
+    return button;
+  }
+
+  // says when the daemon's binding is stopping traffic, which a missing
+  // interface or a refused binding does instead of using the default route
+  _updateBindStatus() {
+    const { network } = this.elements;
+    const properties = this.session_manager.session_properties;
+    const name = properties.bind_interface ?? '';
+
+    let state = null;
+    let text = '';
+    // the status describes the saved binding, not a choice still being saved
+    if (network.interface_select.value === name) {
+      switch (properties.bind_interface_status) {
+        case 'missing':
+          state = 'warning';
+          text = `Kill switch on: ${name} is missing, so peer and tracker traffic is stopped until it returns.`;
+          break;
+        case 'bind_failed':
+          state = 'error';
+          text = `Kill switch on: binding to ${name} failed, so peer and tracker traffic is stopped. ${properties.bind_interface_error ?? ''}`;
+          break;
+        case 'blocked':
+          state = 'warning';
+          text = 'All peer and tracker traffic is blocked.';
+          break;
+        case 'unsupported':
+          state = 'error';
+          text = `The daemon can't bind to ${name} on its platform, so peer and tracker traffic is stopped.`;
+          break;
+        default:
+          break;
+      }
+    }
+    PrefsDialog._setFeedback(
+      network.interface_status_label,
+      state,
+      text.trim(),
+    );
+  }
+
+  // the problem with `value` as a bind address of `family`, or null if it has none
+  static _bindAddressError(value, family) {
+    if (!value) {
+      return null;
+    }
+
+    const octet = String.raw`(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)`;
+    const is_ipv4 = new RegExp(`^${octet}(\\.${octet}){3}$`).test(value);
+    if (family === 'ipv4') {
+      return is_ipv4 ? null : 'Not an IPv4 address';
+    }
+
+    // the URL parser accepts exactly the IPv6 literals inside brackets
+    return !is_ipv4 && value.includes(':') && URL.canParse(`http://[${value}]/`)
+      ? null
+      : 'Not an IPv6 address';
+  }
+
+  // validates a bind address field and shows the result beside it;
+  // an invalid value stays in the field and is never sent
+  _checkBindAddress(family) {
+    const { feedback, input } = this.elements.network.bind_address[family];
+    const value = input.value.trim();
+
+    const error = PrefsDialog._bindAddressError(value, family);
+    if (error) {
+      input.setAttribute('aria-invalid', 'true');
+      PrefsDialog._setFeedback(feedback, 'error', error);
+      return false;
+    }
+    input.removeAttribute('aria-invalid');
+
+    // binding an address the chosen interface doesn't have fails at runtime
+    const { network } = this.elements;
+    const name = network.interface_select.value;
+    const iface = (
+      this.session_manager.session_properties.network_interfaces ?? []
+    ).find((candidate) => candidate.name === name);
+    if (value && iface && !iface.addresses.includes(value)) {
+      PrefsDialog._setFeedback(
+        feedback,
+        'warning',
+        `Not an address of ${name}`,
+      );
+    } else if (feedback.dataset.state !== 'saved') {
+      PrefsDialog._setFeedback(feedback, null, '');
+    }
+    return true;
+  }
+
+  _onBindAddressChanged(family) {
+    if (!this._checkBindAddress(family)) {
+      return;
+    }
+
+    const { feedback, input } = this.elements.network.bind_address[family];
+    const value = input.value.trim();
+    this.remote.savePrefs({ [input.dataset.key]: value }, (response) => {
+      if (this.closed) {
+        return;
+      }
+      if (response?.error) {
+        input.setAttribute('aria-invalid', 'true');
+        PrefsDialog._setFeedback(
+          feedback,
+          'error',
+          response.error.data?.error_string ?? response.error.message,
+        );
+      } else {
+        PrefsDialog._setFeedback(feedback, 'saved', 'Saved');
+        // a warning about the interface outranks the confirmation
+        this._checkBindAddress(family);
+      }
+    });
+  }
+
+  static _setFeedback(element, state, text) {
+    setTextContent(element, text);
+    if (state) {
+      element.dataset.state = state;
+    } else {
+      delete element.dataset.state;
+    }
+    element.classList.toggle('hidden', !text);
+  }
+
   _onMaybePortChanged(key) {
     if (key === 'peer_port' || key === 'port_forwarding_enabled') {
       this._checkPort();
@@ -155,7 +368,11 @@ export class PrefsDialog extends EventTarget {
             case 'search':
               // don't change the text if the user's editing it.
               // it's very annoying when that happens!
-              if (element !== document.activeElement) {
+              // Nor replace a value the dialog refused to send
+              if (
+                element !== document.activeElement &&
+                element.getAttribute('aria-invalid') !== 'true'
+              ) {
                 // eslint-disable-next-line eqeqeq
                 if (element.value != value) {
                   this._onMaybePortChanged(key);
@@ -668,6 +885,94 @@ export class PrefsDialog extends EventTarget {
     root.classList.add('prefs-network-page');
 
     let label = document.createElement('div');
+    label.textContent = 'Network Interface';
+    label.classList.add('section-label');
+    root.append(label);
+
+    label = document.createElement('label');
+    label.textContent = 'Network interface:';
+    label.title =
+      'Route peer and tracker traffic through this interface only, such as a VPN tunnel.';
+    root.append(label);
+
+    const select = document.createElement('select');
+    select.id = makeUUID();
+    select.dataset.key = 'bind_interface';
+    select.title = label.title;
+    label.setAttribute('for', select.id);
+    root.append(select);
+    const interface_select = select;
+
+    const interface_addresses_label = document.createElement('div');
+    interface_addresses_label.classList.add('interface-addresses', 'hidden');
+    root.append(interface_addresses_label);
+
+    const interface_status_label = document.createElement('div');
+    interface_status_label.classList.add('interface-status', 'hidden');
+    interface_status_label.setAttribute('aria-live', 'polite');
+    root.append(interface_status_label);
+
+    const createBindAddressInput = (text, key, placeholder) => {
+      const address_label = document.createElement('label');
+      address_label.textContent = text;
+      address_label.title =
+        'Listen for peers and send traffic from this local address only. Leave empty for any address.';
+      root.append(address_label);
+
+      const datalist = document.createElement('datalist');
+      datalist.id = makeUUID();
+      root.append(datalist);
+
+      const address_input = document.createElement('input');
+      address_input.type = 'text';
+      address_input.dataset.key = key;
+      address_input.id = makeUUID();
+      address_input.placeholder = placeholder;
+      address_input.title = address_label.title;
+      address_input.setAttribute('list', datalist.id);
+      address_label.setAttribute('for', address_input.id);
+      root.append(address_input);
+
+      const feedback = document.createElement('div');
+      feedback.classList.add('bind-address-feedback', 'hidden');
+      feedback.setAttribute('aria-live', 'polite');
+      feedback.id = makeUUID();
+      address_input.setAttribute('aria-describedby', feedback.id);
+      root.append(feedback);
+
+      return { datalist, feedback, input: address_input };
+    };
+    const bind_ipv4 = createBindAddressInput(
+      'IPv4 bind address:',
+      'bind_address_ipv4',
+      'Any (0.0.0.0)',
+    );
+    const bind_ipv6 = createBindAddressInput(
+      'IPv6 bind address:',
+      'bind_address_ipv6',
+      'Any (::)',
+    );
+
+    // shown but not editable: session_set can't change it, since moving the
+    // listener could cut off the connection this dialog is using
+    label = document.createElement('label');
+    label.textContent = 'Web interface on:';
+    label.title =
+      'The interface this web interface is reachable through. Change it with rpc_bind_interface in settings.json or --rpc-bind-interface.';
+    root.append(label);
+
+    const rpc_interface_input = document.createElement('input');
+    rpc_interface_input.type = 'text';
+    rpc_interface_input.dataset.key = 'rpc_bind_interface';
+    rpc_interface_input.id = makeUUID();
+    rpc_interface_input.placeholder = 'Any interface';
+    rpc_interface_input.title = label.title;
+    rpc_interface_input.disabled = true;
+    label.setAttribute('for', rpc_interface_input.id);
+    label.classList.add('disabled');
+    root.append(rpc_interface_input);
+
+    label = document.createElement('div');
     label.textContent = 'Listening Port';
     label.classList.add('section-label');
     root.append(label);
@@ -757,7 +1062,12 @@ export class PrefsDialog extends EventTarget {
     const default_trackers_textarea = textarea;
 
     return {
+      // nested, so the generic change handler skips these validated inputs
+      bind_address: { ipv4: bind_ipv4, ipv6: bind_ipv6 },
       default_trackers_textarea,
+      interface_addresses_label,
+      interface_status_label,
+      interface_select,
       port_forwarding_check,
       port_input,
       port_status_label: {
@@ -811,6 +1121,33 @@ export class PrefsDialog extends EventTarget {
         PrefsDialog._toggleProtocolHandler(event_.currentTarget);
       },
     );
+    this.elements.network.interface_select.addEventListener(
+      'session-change',
+      (event_) => {
+        PrefsDialog._updateInterfaceSelect(
+          event_.target,
+          this.session_manager.session_properties,
+        );
+        this._updateInterfaceAddresses();
+      },
+    );
+    this.elements.network.interface_select.addEventListener('change', () =>
+      this._updateInterfaceAddresses(),
+    );
+    for (const [family, { input }] of Object.entries(
+      this.elements.network.bind_address,
+    )) {
+      // judge the value once it's committed by Enter or leaving the field;
+      // until then, feedback about the previous value is stale
+      input.addEventListener('input', () => {
+        const { feedback } = this.elements.network.bind_address[family];
+        input.removeAttribute('aria-invalid');
+        PrefsDialog._setFeedback(feedback, null, '');
+      });
+      input.addEventListener('change', () =>
+        this._onBindAddressChanged(family),
+      );
+    }
     this.elements.dismiss.addEventListener('click', () => this.close());
     this.outside = new OutsideClickListener(this.elements.root);
     this.outside.addEventListener('click', () => this.close());

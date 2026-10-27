@@ -118,6 +118,17 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
 #### Peers
  * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Retransmission will bind to "0.0.0.0".
  * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Retransmission will try to bind to your default global IPv6 address. If that didn't work, then Retransmission will bind to "::".
+ * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (macOS and Linux), such as `utun4` or `wg0`. Empty means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Retransmission fails closed instead of falling back to the default route. Note that DNS lookups for HTTP trackers and webseeds are made by the system resolver and are not bound to the interface.
+
+   _Linux before 5.7 needs the `CAP_NET_RAW` capability to bind to an interface._ Without it every bind fails with "Operation not permitted", and no traffic flows. The `transmission-daemon.service` unit drops all capabilities, so grant this one in a drop-in, created with `systemctl edit transmission-daemon`:
+
+   ```ini
+   [Service]
+   CapabilityBoundingSet=CAP_NET_RAW
+   AmbientCapabilities=CAP_NET_RAW
+   ```
+
+   Outside systemd, run `setcap cap_net_raw+ep` on the daemon binary instead. `CAP_NET_RAW` also allows opening raw sockets, so prefer a newer kernel where you can.
  * **peer_congestion_algorithm:** String. This is documented on https://www.pps.jussieu.fr/~jch/software/bittorrent/tcp-congestion-control.html.
  * **peer_limit_global:** Number (default = 200)
  * **peer_limit_per_torrent:** Number (default = 50)
@@ -145,6 +156,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **anti_brute_force_threshold:**: Number (default = 100) After this amount of failed authentication attempts is surpassed, the RPC server will deny any further authentication attempts until it is restarted. This is not tracked per IP but in total.
  * **rpc_authentication_required:** Boolean (default = false)
  * **rpc_bind_address:** String (default = "0.0.0.0") Where to listen for RPC connections
+ * **rpc_bind_interface:** String (default = "") Network interface name to accept RPC connections through on supported platforms (macOS and Linux), such as `eth0`. Independent of `bind_interface`, so RPC can stay on the LAN while peers use a VPN. Empty means any interface. Ignored when `rpc_bind_address` is a UNIX socket. When set, an `rpc_bind_address` of `::` listens on IPv6 only.
  * **rpc_enabled:** Boolean (default = true \[transmission-daemon\], false \[others\])
  * **rpc_host_whitelist:** String (Comma-delimited list of domain names. Wildcards allowed using '\*'. Example: "*.foo.org,example.com", Default: "", Always allowed: "localhost", "localhost.", all the IP addresses. Added in v2.93)
  * **rpc_host_whitelist_enabled:** Boolean (default = true. Added in v2.93)
@@ -223,6 +235,7 @@ In short:
  * To reset a key: `defaults delete org.retransmission.retransmission <key>`
 
 ### Options
+ * **BindInterface:** String, see `bind_interface` above.
  * **PeerSocketTOS:** Number (Default = 0)
  * **RPCHostWhitelist:** String, see `rpc_host_whitelist` above.
  * **RPCUseHostWhitelist:** Boolean, see `rpc_host_whitelist_enabled` above.

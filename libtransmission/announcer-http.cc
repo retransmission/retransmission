@@ -94,11 +94,12 @@ struct http_announce_data {
 
 [[nodiscard]] bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
 {
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, vdata] = web_response;
     auto const& log_name = static_cast<http_announce_data const*>(vdata)->log_name;
 
     response.did_connect = did_connect;
     response.did_timeout = did_timeout;
+    response.did_cancel = did_cancel;
     tr_logAddTrace("Got announce response", log_name);
 
     if (errmsg) {
@@ -438,12 +439,13 @@ private:
 
 void onScrapeDone(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, vdata] = web_response;
     auto* const data = static_cast<scrape_data*>(vdata);
 
     auto& response = data->response();
     response.did_connect = did_connect;
     response.did_timeout = did_timeout;
+    response.did_cancel = did_cancel;
 
     auto const scrape_url_sv = response.scrape_url.sv();
     tr_logAddTrace(fmt::format("Got scrape response for '{}'", scrape_url_sv), data->log_name());

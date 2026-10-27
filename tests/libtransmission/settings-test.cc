@@ -392,6 +392,32 @@ TEST_F(SettingsTest, canSaveString)
     EXPECT_EQ(ChangedValue, *val);
 }
 
+TEST_F(SettingsTest, canLoadBindInterface)
+{
+    static auto constexpr ChangedValue = std::string_view{ "utun4" };
+
+    auto settings = tr_session::Settings{};
+    EXPECT_NE(ChangedValue, settings.bind_interface);
+
+    auto map = tr::Settings{ 1U };
+    map.try_emplace(TR_KEY_bind_interface, ChangedValue);
+    settings.load(map);
+    EXPECT_EQ(ChangedValue, settings.bind_interface);
+}
+
+TEST_F(SettingsTest, canSaveBindInterface)
+{
+    static auto constexpr ChangedValue = std::string_view{ "utun4" };
+
+    auto settings = tr_session::Settings{};
+    settings.bind_interface = ChangedValue;
+
+    auto const map = tr::serializer::save(settings);
+    auto const val = map.value_if<std::string_view>(TR_KEY_bind_interface);
+    ASSERT_TRUE(val);
+    EXPECT_EQ(ChangedValue, *val);
+}
+
 TEST_F(SettingsTest, canLoadNullableString)
 {
     static auto constexpr Key = TR_KEY_proxy_url;
@@ -735,4 +761,21 @@ TEST_F(SettingsTest, canLoadAndSaveRpcServerSettings)
     EXPECT_EQ(true, out.value_if<bool>(TR_KEY_rpc_authentication_required));
     EXPECT_EQ("alice"sv, out.value_if<std::string_view>(TR_KEY_rpc_username));
     EXPECT_EQ(9091, out.value_if<int64_t>(TR_KEY_rpc_port));
+}
+
+TEST_F(SettingsTest, rpcBindInterfaceIsIndependentOfBindInterface)
+{
+    auto rpc_settings = tr::RpcServerSettings{};
+    EXPECT_EQ(""sv, rpc_settings.bind_interface);
+
+    auto map = tr::Settings{ 2U };
+    map.try_emplace(TR_KEY_bind_interface, "wg0"sv);
+    map.try_emplace(TR_KEY_rpc_bind_interface, "eth0"sv);
+    rpc_settings.load(map);
+    auto session_settings = tr_session::Settings{};
+    session_settings.load(map);
+
+    EXPECT_EQ("eth0"sv, rpc_settings.bind_interface);
+    EXPECT_EQ("wg0"sv, session_settings.bind_interface);
+    EXPECT_EQ("eth0"sv, tr::serializer::save(rpc_settings).value_if<std::string_view>(TR_KEY_rpc_bind_interface));
 }

@@ -1407,7 +1407,8 @@ void onPortTested(tr_web::FetchResponse const& web_response)
 {
     using namespace JsonRpc;
 
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, user_data] =
+        web_response;
     auto* data = static_cast<tr_rpc_idle_data*>(user_data);
 
     if (auto const addr = tr_address::from_string(primary_ip);
@@ -1553,7 +1554,8 @@ struct add_torrent_idle_data {
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, user_data] =
+        web_response;
     auto* data = static_cast<struct add_torrent_idle_data*>(user_data);
 
     auto const parsed_url = tr_urlParse(url);
@@ -1995,6 +1997,92 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             }
         });
 
+    // empty means any address; anything else must be an address of the key's family
+    auto const bind_address_setter = [](tr_address_type const type, void (*set)(tr_session*, std::string_view)) {
+        return [type, set](tr_session& tgt, tr_variant const& src, ErrorInfo& err) {
+            auto const val = src.value_if<std::string_view>();
+            if (!val) {
+                return;
+            }
+
+            if (auto const stripped = tr_strv_strip(*val); !std::empty(stripped)) {
+                if (auto const addr = tr_address::from_string(stripped); !addr || addr->type != type) {
+                    err = { JsonRpc::Error::INVALID_PARAMS,
+                            type == TR_AF_INET ? "not an IPv4 address"s : "not an IPv6 address"s };
+                    return;
+                }
+            }
+
+            set(&tgt, *val);
+        };
+    };
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv4,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv4; },
+        bind_address_setter(TR_AF_INET, tr_sessionSetBindAddressIPv4));
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv6,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv6; },
+        bind_address_setter(TR_AF_INET6, tr_sessionSetBindAddressIPv6));
+
+    map.try_emplace(
+        TR_KEY_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.bind_interface(); },
+        [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
+            if (auto const val = src.value_if<std::string_view>()) {
+                tr_sessionSetBindInterface(&tgt, *val);
+            }
+        });
+
+    map.try_emplace(
+        TR_KEY_bind_interface_status,
+        [](tr_session const& src) -> tr_variant {
+            using State = tr_net_bind_status::State;
+            switch (tr_net_interface_status(src.bind_interface()).state) {
+            case State::Ok:
+                return tr_variant::unmanaged_string("ok"sv);
+            case State::Blocked:
+                return tr_variant::unmanaged_string("blocked"sv);
+            case State::Missing:
+                return tr_variant::unmanaged_string("missing"sv);
+            case State::BindFailed:
+                return tr_variant::unmanaged_string("bind_failed"sv);
+            case State::Unsupported:
+                return tr_variant::unmanaged_string("unsupported"sv);
+            case State::Default:
+                break;
+            }
+            return tr_variant::unmanaged_string("default"sv);
+        },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_bind_interface_error,
+        [](tr_session const& src) -> tr_variant { return tr_net_interface_status(src.bind_interface()).error; },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_network_interfaces,
+        [](tr_session const& /*src*/) -> tr_variant {
+            auto vec = tr_variant::Vector{};
+            for (auto& iface : tr_net_interfaces()) {
+                auto addresses = tr_variant::Vector{};
+                addresses.reserve(std::size(iface.addresses));
+                for (auto const& addr : iface.addresses) {
+                    addresses.emplace_back(addr.display_name());
+                }
+
+                auto entry = tr_variant::Map{ 2U };
+                entry.try_emplace(TR_KEY_name, std::move(iface.name));
+                entry.try_emplace(TR_KEY_addresses, std::move(addresses));
+                vec.emplace_back(std::move(entry));
+            }
+            return tr_variant{ std::move(vec) };
+        },
+        nullptr);
+
     map.try_emplace(
         TR_KEY_blocklist_date,
         [](tr_session const& src) -> tr_variant { return static_cast<int64_t>(tr_blocklistGetMTime(&src)); },
@@ -2268,6 +2356,13 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
                 tgt.set_reqq(*val);
             }
         });
+
+    // read-only: changing it over RPC could move the listener off the
+    // interface the caller is connected through
+    map.try_emplace(
+        TR_KEY_rpc_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.rpc_bind_interface(); },
+        nullptr);
 
     map.try_emplace(
         TR_KEY_rpc_max_request_body_size,

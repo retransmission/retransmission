@@ -7,6 +7,7 @@
 #include <array>
 #include <compare>
 #include <cstddef> // std::byte, size_t
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <utility>
@@ -18,12 +19,16 @@
 #include <sys/socket.h>
 #endif
 
+#include <fmt/format.h>
+
+#include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-mgr.h>
 
 #include "test-fixtures.h"
 
 using NetTest = ::tr::test::TransmissionTest;
+using tr::test::LoopbackInterface;
 using namespace std::literals;
 
 TEST_F(NetTest, conversionsIPv4)
@@ -1061,4 +1066,202 @@ TEST_F(NetTest, isValidForPeers)
             EXPECT_EQ(expected, socket_address->is_valid_for_peers(from)) << presentation << " from " << from;
         }
     }
+}
+
+TEST_F(NetTest, bindInterfaceIsDefault)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { ""sv, true },
+        { "  "sv, true },
+        { "utun4"sv, false },
+        { " utun4 "sv, false },
+        { "blocked"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_default(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, bindInterfaceIsBlocked)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { "blocked"sv, true },
+        { " blocked "sv, true },
+        { ""sv, false },
+        { "utun4"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_blocked(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, effectiveBindInterface)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { ""sv, ""sv },
+        { "  "sv, ""sv },
+        { " utun4 "sv, "utun4"sv },
+        { "blocked"sv, "blocked"sv },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_effective_bind_interface(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, curlInterfaceString)
+{
+    EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
+    EXPECT_FALSE(tr_netCurlInterfaceString("  "sv));
+
+    auto const bound = tr_netCurlInterfaceString(" utun4 "sv);
+    ASSERT_TRUE(bound);
+    EXPECT_EQ("if!utun4"sv, *bound);
+
+    // blocked is refused before the request reaches curl, so it gets no interface string
+    EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
+}
+
+TEST_F(NetTest, interfaceIndex)
+{
+    EXPECT_EQ(0U, tr_net_interface_index(""sv));
+    EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
+    EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
+
+#ifndef _WIN32
+    EXPECT_NE(0U, tr_net_interface_index(fmt::format(" {} ", LoopbackInterface)));
+#endif
+}
+
+TEST_F(NetTest, socketIsBoundToTheNamedInterface)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        auto const sock = socket(tr_ip_protocol_to_af(type), SOCK_DGRAM, 0);
+        if (!is_valid_socket(sock)) {
+            continue; // no IPv6 on this host
+        }
+
+        EXPECT_TRUE(tr_netSetSocketInterface(sock, type, LoopbackInterface)) << tr_ip_protocol_to_sv(type);
+        EXPECT_EQ(tr_net_interface_index(LoopbackInterface), tr::test::boundInterfaceIndex(sock, type))
+            << tr_ip_protocol_to_sv(type);
+
+        tr_net_close_socket(sock);
+    }
+}
+
+TEST_F(NetTest, interfaceStatus)
+{
+    using State = tr_net_bind_status::State;
+
+    EXPECT_EQ(State::Default, tr_net_interface_status(""sv).state);
+    EXPECT_EQ(State::Default, tr_net_interface_status("  "sv).state);
+    EXPECT_EQ(State::Blocked, tr_net_interface_status("blocked"sv).state);
+
+    if (!TrNetCanBindInterface) {
+        EXPECT_EQ(State::Unsupported, tr_net_interface_status(LoopbackInterface).state);
+        return;
+    }
+
+    EXPECT_EQ(State::Missing, tr_net_interface_status("tr-no-such-interface"sv).state);
+
+    // the loopback interface exists, and binding to it succeeds
+    auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+    ASSERT_TRUE(is_valid_socket(sock));
+    EXPECT_TRUE(tr_netSetSocketInterface(sock, TR_AF_INET, LoopbackInterface));
+    tr_net_close_socket(sock);
+
+    auto const status = tr_net_interface_status(LoopbackInterface);
+    EXPECT_EQ(State::Ok, status.state);
+    EXPECT_TRUE(std::empty(status.error));
+}
+
+TEST_F(NetTest, interfaceStatusIsPerInterface)
+{
+    using State = tr_net_bind_status::State;
+
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const interfaces = tr_net_interfaces();
+    auto const other = std::ranges::find_if(interfaces, [](auto const& iface) { return iface.name != LoopbackInterface; });
+    if (other == std::end(interfaces)) {
+        GTEST_SKIP() << "needs a network interface besides loopback";
+    }
+
+    // an invalid socket makes the OS refuse a bind to an interface that exists
+    auto const refuse_bind = [](std::string_view const name) {
+        EXPECT_FALSE(tr_netSetSocketInterface(TR_BAD_SOCKET, TR_AF_INET, name, true)) << name;
+    };
+    auto const bind = [](std::string_view const name) {
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        auto const ok = tr_netSetSocketInterface(sock, TR_AF_INET, name, true);
+        tr_net_close_socket(sock);
+        return ok;
+    };
+
+    // a refusal on one interface doesn't hide an earlier refusal on another
+    refuse_bind(LoopbackInterface);
+    refuse_bind(other->name);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // nor does a successful bind on one interface clear another's refusal
+    EXPECT_TRUE(bind(LoopbackInterface));
+    EXPECT_EQ(State::Ok, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // binding to the other interface may need privileges; only its success clears its refusal
+    if (bind(other->name)) {
+        EXPECT_EQ(State::Ok, tr_net_interface_status(other->name).state);
+    }
+}
+
+TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    static auto constexpr Missing = "tr-no-such-interface"sv;
+
+    // Binds a fresh socket to `name` and returns how many warnings that logged.
+    auto const bind_and_count_warnings = [](std::string_view const name) {
+        tr_logClearQueue();
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        (void)tr_netSetSocketInterface(sock, TR_AF_INET, name);
+        tr_net_close_socket(sock);
+        auto const messages = tr_logGetQueue();
+        return std::ranges::count_if(messages, [](auto const& msg) { return msg.level == TR_LOG_WARN; });
+    };
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+
+    // a bind that succeeds ends any outage an earlier test left behind
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
+
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+    EXPECT_EQ(0, bind_and_count_warnings(Missing));
+
+    // once a socket binds again, the next outage warns again
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    // as it does after a socket on the default route
+    EXPECT_EQ(0, bind_and_count_warnings(""sv));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
 }

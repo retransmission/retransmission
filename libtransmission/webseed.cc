@@ -404,7 +404,7 @@ void tr_webseed_task::on_data_received(size_t const n_bytes)
 
 void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vtask] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, vtask] = web_response;
 
     // We don't care about curl error codes here as long as there is data
     // coming in. The piece hash verifier will catch any corrupt data.

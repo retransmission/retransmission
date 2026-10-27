@@ -107,6 +107,10 @@ struct tr_announce_response {
     /* whether or not the scrape timed out */
     bool did_timeout = false;
 
+    /* whether the request was cancelled before the tracker answered,
+     * so it says nothing about the tracker */
+    bool did_cancel = false;
+
     /* preferred interval between announces.
      * transmission treats this as the interval for periodic announces */
     time_t interval = 0;
@@ -148,6 +152,10 @@ struct tr_announce_response {
         tr_announce_response const& lhs,
         tr_announce_response const& rhs) noexcept
     {
+        if (auto const val = static_cast<int>(lhs.did_cancel) <=> static_cast<int>(rhs.did_cancel); val != 0) {
+            return val;
+        }
+
         if (auto const val = static_cast<int>(lhs.did_connect) <=> static_cast<int>(rhs.did_connect); val != 0) {
             return val;
         }
@@ -243,6 +251,10 @@ struct tr_scrape_response {
 
     /* whether or not the scrape timed out */
     bool did_timeout = false;
+
+    /* whether the request was cancelled before the tracker answered,
+     * so it says nothing about the tracker */
+    bool did_cancel = false;
 
     /* how many info hashes are in the 'rows' field */
     size_t row_count;

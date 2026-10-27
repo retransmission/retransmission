@@ -308,13 +308,14 @@ export class Remote {
       this._controller.refreshTorrents();
     });
   }
-  savePrefs(params) {
+  savePrefs(params, callback, context) {
     const o = {
       jsonrpc: RPC._JsonRpcVersion,
       method: 'session_set',
       params,
     };
-    this.sendRequest(o, () => {
+    this.sendRequest(o, (response) => {
+      callback?.call(context, response);
       this._controller.loadDaemonPrefs();
     });
   }

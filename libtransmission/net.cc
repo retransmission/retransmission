@@ -9,11 +9,16 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <functional> // std::less
 #include <iterator> // std::back_inserter
+#include <map>
+#include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility> // std::pair
+#include <vector>
 
 #ifdef _WIN32
 #include <winsock2.h> // must come before iphlpapi.h
@@ -35,6 +40,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 
 using namespace std::literals;
@@ -105,6 +111,285 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 #endif
 }
 
+bool tr_net_interface_is_default(std::string_view const bind_interface)
+{
+    return std::empty(tr_strv_strip(bind_interface));
+}
+
+bool tr_net_interface_is_blocked(std::string_view const bind_interface)
+{
+    return tr_strv_strip(bind_interface) == TrBindInterfaceBlocked;
+}
+
+std::string_view tr_net_effective_bind_interface(std::string_view const bind_interface)
+{
+    return tr_strv_strip(bind_interface);
+}
+
+unsigned tr_net_interface_index(std::string_view const bind_interface)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return 0U;
+    }
+
+    return if_nametoindex(std::string{ name }.c_str());
+}
+
+std::vector<tr_net_interface> tr_net_interfaces()
+{
+    auto interfaces = std::vector<tr_net_interface>{};
+
+#if defined(__APPLE__) || defined(__linux__)
+    // if_nameindex() also lists the interfaces that have no address yet
+    auto const list = std::unique_ptr<struct if_nameindex, void (*)(struct if_nameindex*)>{ if_nameindex(), if_freenameindex };
+    if (!list) {
+        return interfaces;
+    }
+
+    for (auto const* cur = list.get(); cur->if_index != 0U; ++cur) {
+        interfaces.push_back({ cur->if_name, {} });
+    }
+
+    std::ranges::sort(interfaces, {}, &tr_net_interface::name);
+
+    struct ifaddrs* ifa = nullptr;
+    if (getifaddrs(&ifa) != 0) {
+        return interfaces;
+    }
+
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr);
+        if (!if_addr) {
+            continue;
+        }
+
+        auto const iter = std::ranges::lower_bound(interfaces, std::string_view{ ifa->ifa_name }, {}, &tr_net_interface::name);
+        if (iter != std::end(interfaces) && iter->name == ifa->ifa_name) {
+            iter->addresses.emplace_back(if_addr->address());
+        }
+    }
+
+    for (auto& iface : interfaces) {
+        std::ranges::stable_partition(iface.addresses, &tr_address::is_ipv4);
+    }
+#endif
+
+    return interfaces;
+}
+
+#if defined(__APPLE__) || defined(__linux__)
+namespace
+{
+// The interface binding failure last warned about, so an outage warns once
+// instead of once per socket. Sockets are bound on more than one thread.
+struct BindFailureWarning {
+    std::mutex mutex;
+    std::string name;
+    int err = 0;
+};
+
+[[nodiscard]] BindFailureWarning& bind_failure_warning()
+{
+    static auto warning = BindFailureWarning{};
+    return warning;
+}
+
+// true the first time binding to `name` fails with `err` since a socket last bound
+[[nodiscard]] bool should_warn_bind_failure(std::string_view const name, int const err)
+{
+    auto& warning = bind_failure_warning();
+    auto const lock = std::scoped_lock{ warning.mutex };
+    if (warning.name == name && warning.err == err) {
+        return false;
+    }
+    warning.name = name;
+    warning.err = err;
+    return true;
+}
+
+// a successful bind ends the outage, so the next one warns again
+void forget_bind_failure()
+{
+    auto& warning = bind_failure_warning();
+    auto const lock = std::scoped_lock{ warning.mutex };
+    warning.name.clear();
+    warning.err = 0;
+}
+
+// Each interface's last refused bind, for tr_net_interface_status().
+// Kept per interface, and apart from BindFailureWarning, which any
+// successful bind clears: the RPC listener binding to its own interface
+// mustn't hide that peer sockets are failing, nor its failures theirs.
+struct BindRefusals {
+    std::mutex mutex;
+    std::map<std::string, int, std::less<>> err_by_name;
+};
+
+[[nodiscard]] BindRefusals& bind_refusals()
+{
+    static auto refusals = BindRefusals{};
+    return refusals;
+}
+
+void record_bind_outcome(std::string_view const name, int const err)
+{
+    auto& refusals = bind_refusals();
+    auto const lock = std::scoped_lock{ refusals.mutex };
+    if (err != 0) {
+        refusals.err_by_name.insert_or_assign(std::string{ name }, err);
+    } else if (auto const iter = refusals.err_by_name.find(name); iter != std::end(refusals.err_by_name)) {
+        refusals.err_by_name.erase(iter);
+    }
+}
+
+#if defined(__APPLE__)
+[[nodiscard]] bool bind_socket_to_interface(
+    tr_socket_t const sock,
+    tr_address_type const type,
+    std::string_view /*name*/,
+    unsigned const if_index)
+{
+    auto const level = type == TR_AF_INET ? IPPROTO_IP : IPPROTO_IPV6;
+    auto const option = type == TR_AF_INET ? IP_BOUND_IF : IPV6_BOUND_IF;
+    auto const index = static_cast<int>(if_index);
+    return setsockopt(sock, level, option, reinterpret_cast<char const*>(&index), sizeof(index)) != -1;
+}
+#elif defined(__linux__)
+[[nodiscard]] bool bind_socket_to_interface(
+    tr_socket_t const sock,
+    tr_address_type /*type*/,
+    std::string_view const name,
+    unsigned /*if_index*/)
+{
+    // one option covers both address families, and it filters what the socket receives too
+    auto const ifname = std::string{ name };
+    return setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE, ifname.c_str(), static_cast<socklen_t>(std::size(ifname) + 1U)) != -1;
+}
+#endif
+
+[[nodiscard]] std::string bind_failure_reason([[maybe_unused]] int const err)
+{
+#ifdef __linux__
+    // SO_BINDTODEVICE needs CAP_NET_RAW on kernels before 5.7
+    if (err == EPERM) {
+        return fmt::format("{} ({}); binding to an interface needs Linux 5.7 or CAP_NET_RAW", tr_net_strerror(err), err);
+    }
+#endif
+    return fmt::format("{} ({})", tr_net_strerror(err), err);
+}
+} // namespace
+#endif
+
+tr_net_bind_status tr_net_interface_status(std::string_view const bind_interface)
+{
+    using State = tr_net_bind_status::State;
+
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name)) {
+        return { State::Default, {} };
+    }
+    if (tr_net_interface_is_blocked(name)) {
+        return { State::Blocked, {} };
+    }
+
+#if defined(__APPLE__) || defined(__linux__)
+    // checked live, since no bind is attempted on an interface that's gone
+    if (tr_net_interface_index(name) == 0U) {
+        return { State::Missing, {} };
+    }
+
+    auto& refusals = bind_refusals();
+    auto const lock = std::scoped_lock{ refusals.mutex };
+    if (auto const iter = refusals.err_by_name.find(name); iter != std::end(refusals.err_by_name)) {
+        return { State::BindFailed, bind_failure_reason(iter->second) };
+    }
+    return { State::Ok, {} };
+#else
+    return { State::Unsupported, {} };
+#endif
+}
+
+bool tr_netSetSocketInterface(
+    tr_socket_t const sock,
+    [[maybe_unused]] tr_address_type const type,
+    std::string_view const bind_interface,
+    bool const suppress_msgs)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+
+#if defined(__APPLE__) || defined(__linux__)
+    // a socket under another binding ends any outage, so the next one warns again
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        forget_bind_failure();
+    }
+#endif
+
+    if (std::empty(name)) {
+        return true;
+    }
+
+    // a deliberate "bind to nothing" setting: refuse quietly, since
+    // the session logs the policy once when the setting changes
+    if (tr_net_interface_is_blocked(name)) {
+        set_sockerrno(ENETDOWN);
+        tr_logAddTrace(fmt::format("Refusing socket {}: interface binding is '{}'", sock, name));
+        return false;
+    }
+
+#if defined(__APPLE__) || defined(__linux__)
+    // looked up first so a missing interface fails the same way on every platform
+    auto const if_index = tr_net_interface_index(name);
+    if (if_index == 0U) {
+        set_sockerrno(ENXIO);
+        if (!suppress_msgs && should_warn_bind_failure(name, ENXIO)) {
+            tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': interface not found", name));
+        } else {
+            tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': interface not found", sock, name));
+        }
+        return false;
+    }
+
+    if (!bind_socket_to_interface(sock, type, name, if_index)) {
+        auto const err = sockerrno;
+        record_bind_outcome(name, err);
+        if (!suppress_msgs && should_warn_bind_failure(name, err)) {
+            tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': {}", name, bind_failure_reason(err)));
+        } else {
+            tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': {}", sock, name, bind_failure_reason(err)));
+        }
+        set_sockerrno(err);
+        return false;
+    }
+
+    forget_bind_failure();
+    record_bind_outcome(name, 0);
+    tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
+    return true;
+#else
+    // neither macOS nor Linux: no way to bind a socket to an interface.
+    // The session warns once when the setting changes; per-socket failures stay quiet
+    set_sockerrno(ENXIO);
+    if (!suppress_msgs) {
+        tr_logAddDebug(fmt::format("Interface binding is not supported on this platform: '{}'", name));
+    }
+    return false;
+#endif
+}
+
+std::optional<std::string> tr_netCurlInterfaceString(std::string_view const bind_interface)
+{
+    // blocked gets no interface string: tr_web refuses the fetch before
+    // curl is involved, rather than naming an interface that can't exist
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return {};
+    }
+
+    return fmt::format("if!{}", name);
+}
+
 // - TCP Sockets
 
 void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos, tr_address_type type)
@@ -134,7 +419,12 @@ void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos,
 
 namespace
 {
-[[nodiscard]] tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppress_msgs, int* err_out)
+[[nodiscard]] tr_socket_t tr_netBindTCPImpl(
+    tr_address const& addr,
+    tr_port port,
+    bool suppress_msgs,
+    int* err_out,
+    std::string_view bind_interface)
 {
     TR_ASSERT(addr.is_valid());
 
@@ -157,6 +447,12 @@ namespace
     if (addr.is_ipv6() && tr_make_listen_socket_ipv6only(fd) == -1 &&
         sockerrno != ENOPROTOOPT) // if the kernel doesn't support it, ignore it
     {
+        *err_out = sockerrno;
+        tr_net_close_socket(fd);
+        return TR_BAD_SOCKET;
+    }
+
+    if (!tr_netSetSocketInterface(fd, addr.type, bind_interface, suppress_msgs)) {
         *err_out = sockerrno;
         tr_net_close_socket(fd);
         return TR_BAD_SOCKET;
@@ -217,10 +513,10 @@ namespace
 }
 } // namespace
 
-tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs)
+tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs, std::string_view bind_interface)
 {
     int unused = 0;
-    return tr_netBindTCPImpl(addr, port, suppress_msgs, &unused);
+    return tr_netBindTCPImpl(addr, port, suppress_msgs, &unused, bind_interface);
 }
 
 std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session* session, tr_socket_t listening_sockfd)

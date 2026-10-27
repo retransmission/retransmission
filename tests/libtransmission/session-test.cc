@@ -66,6 +66,18 @@ TEST_F(SessionTest, propertiesApi)
         EXPECT_EQ(value, tr_sessionGetDownloadDir(session));
     }
 
+    // bind interface
+
+    {
+        auto constexpr Value = "lo0"sv;
+        EXPECT_EQ(""sv, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, Value);
+        EXPECT_TRUE(waitFor([session, Value] { return tr_sessionGetBindInterface(session) == Value; }, 5s));
+        EXPECT_EQ(Value, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, ""sv);
+        EXPECT_TRUE(waitFor([session] { return tr_sessionGetBindInterface(session).empty(); }, 5s));
+    }
+
     // incomplete dir
 
     for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
@@ -641,6 +653,50 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     EXPECT_EQ(tr_config_dir_lock::Status::Unavailable, session->configDirLockStatus());
     EXPECT_FALSE(tr_sessionConfigDirIsContended(session));
     tr_sessionClose(session, 1);
+}
+
+// A new UDP core binds the port the old one held, which is refused while both are open.
+TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto constexpr Loopback = LoopbackInterface;
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
+
+    tr_sessionSetBindInterface(session_, Loopback);
+    EXPECT_TRUE(waitFor([this, Loopback] { return tr_sessionGetBindInterface(session_) == Loopback; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(udpSocket4()));
+}
+
+// The setting must reach the sockets themselves, not just the session's copy of it.
+TEST_F(SessionTest, bindInterfaceBindsTheSessionSockets)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
+
+    auto const loopback_index = tr_net_interface_index(LoopbackInterface);
+    EXPECT_EQ(0U, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    tr_sessionSetBindInterface(session_, LoopbackInterface);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) != 0U; }, 5s));
+
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    // back on the default route, the new sockets carry no binding
+    tr_sessionSetBindInterface(session_, ""sv);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) == 0U; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(listeningSocket4()));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
 }
 
 } // namespace tr::test

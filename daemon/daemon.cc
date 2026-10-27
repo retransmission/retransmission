@@ -148,7 +148,19 @@ auto constexpr Options = std::to_array<tr_option>({
     { 912, "encryption-tolerated", "Prefer unencrypted peer connections", "et", Arg::None, nullptr },
     { 'i', "bind-address-ipv4", "Where to listen for peer connections", "i", Arg::Required, "<ipv4 addr>" },
     { 'I', "bind-address-ipv6", "Where to listen for peer connections", "I", Arg::Required, "<ipv6 addr>" },
+    { 996,
+      "bind-interface",
+      "Network interface for BitTorrent and tracker traffic on supported platforms",
+      nullptr,
+      Arg::Required,
+      "<ifname>" },
     { 'r', "rpc-bind-address", "Where to listen for RPC connections", "r", Arg::Required, "<ip addr>" },
+    { 997,
+      "rpc-bind-interface",
+      "Network interface for RPC connections on supported platforms",
+      nullptr,
+      Arg::Required,
+      "<ifname>" },
     { 953,
       "global-seedratio",
       "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
@@ -639,8 +651,16 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
             map.insert_or_assign(TR_KEY_bind_address_ipv6, optstr);
             break;
 
+        case 996:
+            map.insert_or_assign(TR_KEY_bind_interface, optstr);
+            break;
+
         case 'r':
             map.insert_or_assign(TR_KEY_rpc_bind_address, optstr);
+            break;
+
+        case 997:
+            map.insert_or_assign(TR_KEY_rpc_bind_interface, optstr);
             break;
 
         case 953:

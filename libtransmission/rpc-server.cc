@@ -131,6 +131,11 @@ public:
         return type_ == TR_RPC_INET_ADDR;
     }
 
+    [[nodiscard]] constexpr auto const& inet_addr() const noexcept
+    {
+        return inet_addr_;
+    }
+
     [[nodiscard]] bool from_string(std::string_view src)
     {
         if (auto address = tr_address::from_string(src); address.has_value()) {
@@ -714,6 +719,28 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
     return evhttp_bind_socket(httpd, address, port);
 }
 
+// The interface must be set before bind(), and evhttp_bind_socket() offers no
+// hook between creating its socket and binding it, so this makes its own.
+// Unlike evhttp_bind_socket(), "::" here listens on IPv6 only.
+[[nodiscard]] bool bind_inet_socket_to_interface(
+    struct evhttp* httpd,
+    tr_address const& addr,
+    tr_port const port,
+    std::string_view const bind_interface)
+{
+    auto const fd = tr_netBindTCP(addr, port, false, bind_interface);
+    if (fd == TR_BAD_SOCKET) {
+        return false;
+    }
+
+    if (evhttp_accept_socket(httpd, static_cast<evutil_socket_t>(fd)) != 0) {
+        tr_net_close_socket(fd);
+        return false;
+    }
+
+    return true;
+}
+
 void start_server(tr_rpc_server* server)
 {
     if (server->httpd) {
@@ -728,9 +755,15 @@ void start_server(tr_rpc_server* server)
     auto const address = server->get_bind_address();
     auto const port = server->port();
 
-    bool const success = server->bind_address_->is_unix_addr() ?
-        bindUnixSocket(base, httpd, address.c_str(), server->settings().socket_mode) :
-        (tr_evhttp_bind_socket(httpd, address.c_str(), port.host()) != -1);
+    auto const& bind_interface = server->settings().bind_interface;
+    auto success = false;
+    if (server->bind_address_->is_unix_addr()) {
+        success = bindUnixSocket(base, httpd, address.c_str(), server->settings().socket_mode);
+    } else if (!tr_net_interface_is_default(bind_interface)) {
+        success = bind_inet_socket_to_interface(httpd, server->bind_address_->inet_addr(), port, bind_interface);
+    } else {
+        success = tr_evhttp_bind_socket(httpd, address.c_str(), port.host()) != -1;
+    }
 
     auto const addr_port_str = server->bind_address_->to_string(port);
 
@@ -915,6 +948,14 @@ tr_rpc_server::tr_rpc_server(tr_session* session_in, Settings&& settings)
 
 void tr_rpc_server::load(Settings&& settings)
 {
+    // start_server() keeps a running listener, so a changed one must stop here,
+    // while bind_address_ still names the Unix socket that stop_server() unlinks
+    if (httpd &&
+        (settings.bind_address_str != settings_.bind_address_str || settings.port != settings_.port ||
+         settings.bind_interface != settings_.bind_interface || settings.socket_mode != settings_.socket_mode)) {
+        stop_server(this);
+    }
+
     settings_ = std::move(settings);
 
     if (std::string& path = settings_.url; !path.ends_with('/')) {
@@ -939,6 +980,20 @@ void tr_rpc_server::load(Settings&& settings)
     if (bind_address_->is_unix_addr()) {
         set_whitelist_enabled(false);
         settings_.is_host_whitelist_enabled = false;
+    }
+
+    if (auto const& name = settings_.bind_interface; !tr_net_interface_is_default(name)) {
+        if (bind_address_->is_unix_addr()) {
+            tr_logAddWarn(
+                fmt::format(
+                    "Ignoring '{key}': the RPC server listens on a Unix socket",
+                    fmt::arg("key", tr_quark_get_string_view(TR_KEY_rpc_bind_interface))));
+        } else if (!TrNetCanBindInterface) {
+            tr_logAddWarn(
+                fmt::format(
+                    "Binding the RPC server to network interface '{interface}' is not supported on this platform; it won't listen",
+                    fmt::arg("interface", name)));
+        }
     }
     if (this->is_enabled()) {
         auto const& base_path = url();
