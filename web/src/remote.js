@@ -23,7 +23,7 @@ export const RPC = {
 };
 
 function getResponseParams(response) {
-  return response.result ?? response.error.data.result;
+  return response.result ?? response.error?.data?.result ?? {};
 }
 
 export class Remote {
@@ -180,8 +180,10 @@ export class Remote {
       o.params.ids = torrentIds;
     }
     this.sendRequest(o, (response) => {
-      const res = getResponseParams(response);
-      callback.call(context, res.torrents, res.removed);
+      const { torrents, removed } = getResponseParams(response);
+      if (torrents) {
+        callback.call(context, torrents, removed);
+      }
     });
   }
 
