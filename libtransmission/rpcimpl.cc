@@ -2052,6 +2052,53 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         });
 
     map.try_emplace(
+        TR_KEY_bind_interface_status,
+        [](tr_session const& src) -> tr_variant {
+            using State = tr_net_bind_status::State;
+            switch (tr_net_interface_status(src.bind_interface()).state) {
+            case State::Ok:
+                return tr_variant::unmanaged_string("ok"sv);
+            case State::Blocked:
+                return tr_variant::unmanaged_string("blocked"sv);
+            case State::Missing:
+                return tr_variant::unmanaged_string("missing"sv);
+            case State::BindFailed:
+                return tr_variant::unmanaged_string("bind_failed"sv);
+            case State::Unsupported:
+                return tr_variant::unmanaged_string("unsupported"sv);
+            case State::Default:
+                break;
+            }
+            return tr_variant::unmanaged_string("default"sv);
+        },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_bind_interface_error,
+        [](tr_session const& src) -> tr_variant { return tr_net_interface_status(src.bind_interface()).error; },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_network_interfaces,
+        [](tr_session const& /*src*/) -> tr_variant {
+            auto vec = tr_variant::Vector{};
+            for (auto& iface : tr_net_interfaces()) {
+                auto addresses = tr_variant::Vector{};
+                addresses.reserve(std::size(iface.addresses));
+                for (auto const& addr : iface.addresses) {
+                    addresses.emplace_back(addr.display_name());
+                }
+
+                auto entry = tr_variant::Map{ 2U };
+                entry.try_emplace(TR_KEY_name, std::move(iface.name));
+                entry.try_emplace(TR_KEY_addresses, std::move(addresses));
+                vec.emplace_back(std::move(entry));
+            }
+            return tr_variant{ std::move(vec) };
+        },
+        nullptr);
+
+    map.try_emplace(
         TR_KEY_blocklist_date,
         [](tr_session const& src) -> tr_variant { return static_cast<int64_t>(tr_blocklistGetMTime(&src)); },
         nullptr);
@@ -2325,6 +2372,13 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             }
         });
 
+    // read-only: changing it over RPC could move the listener off the
+    // interface the caller is connected through
+    map.try_emplace(
+        TR_KEY_rpc_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.rpc_bind_interface(); },
+        nullptr);
+
     map.try_emplace(
         TR_KEY_rpc_max_request_body_size,
         [](tr_session const& src) -> tr_variant { return src.get_max_request_body_size(); },
@@ -2520,7 +2574,11 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
     if (std::empty(fields)) // no fields specified; get them all
     {
         for (auto const& [key, accessor] : session_accessors()) {
-            fields.insert(key);
+            // listing the interfaces asks the kernel for every interface's
+            // addresses, too costly for clients that poll and never read them
+            if (key != TR_KEY_network_interfaces) {
+                fields.insert(key);
+            }
         }
     }
 

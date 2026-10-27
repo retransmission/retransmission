@@ -1147,6 +1147,11 @@ public:
         rpc_server_->set_max_request_body_size(max_request_body_size);
     }
 
+    [[nodiscard]] constexpr auto const& rpc_bind_interface() const noexcept
+    {
+        return rpc_server_->settings().bind_interface;
+    }
+
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept

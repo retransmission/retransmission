@@ -659,6 +659,8 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_bind_address_ipv4,
         TR_KEY_bind_address_ipv6,
         TR_KEY_bind_interface,
+        TR_KEY_bind_interface_error,
+        TR_KEY_bind_interface_status,
         TR_KEY_blocklist_date,
         TR_KEY_blocklist_enabled,
         TR_KEY_blocklist_size,
@@ -691,6 +693,7 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_recent_relocate_paths,
         TR_KEY_rename_partial_files,
         TR_KEY_reqq,
+        TR_KEY_rpc_bind_interface,
         TR_KEY_rpc_max_request_body_size,
         TR_KEY_rpc_version,
         TR_KEY_rpc_version_minimum,
@@ -813,6 +816,46 @@ TEST_F(RpcTest, sessionBindInterface)
     EXPECT_EQ("lo0"sv, *bind_interface);
 }
 
+TEST_F(RpcTest, sessionGetNetworkInterfaces)
+{
+    auto request_map = tr_variant::Map{ 4U };
+    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
+    request_map.try_emplace(TR_KEY_id, 12345);
+
+    auto params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_network_interfaces));
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+    request_map.try_emplace(TR_KEY_params, std::move(params));
+
+    auto response = tr_variant{};
+    auto request = tr_variant{ std::move(request_map) };
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* const response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    auto* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+    auto* const interfaces = result->find_if<tr_variant::Vector>(TR_KEY_network_interfaces);
+    ASSERT_NE(interfaces, nullptr);
+
+    auto const loopback = std::ranges::find_if(*interfaces, [](tr_variant const& iface) {
+        auto const* const map = iface.get_if<tr_variant::Map>();
+        return map != nullptr && map->value_if<std::string_view>(TR_KEY_name) == tr::test::LoopbackInterface;
+    });
+    ASSERT_EQ(TrNetCanBindInterface, loopback != std::end(*interfaces));
+    if (!TrNetCanBindInterface) {
+        return;
+    }
+
+    auto const* const addresses = loopback->get_if<tr_variant::Map>()->find_if<tr_variant::Vector>(TR_KEY_addresses);
+    ASSERT_NE(addresses, nullptr);
+    EXPECT_TRUE(std::ranges::any_of(*addresses, [](tr_variant const& addr) {
+        return addr.value_if<std::string_view>() == "127.0.0.1"sv;
+    }));
+}
+
 TEST_F(RpcTest, sessionBindAddresses)
 {
     auto const set = [this](tr_quark const key, std::string_view const value) {
@@ -870,6 +913,41 @@ TEST_F(RpcTest, sessionBindAddresses)
     // empty means any address
     EXPECT_TRUE(set(TR_KEY_bind_address_ipv4, ""sv));
     EXPECT_TRUE(waitFor([&] { return std::empty(get(TR_KEY_bind_address_ipv4)); }, 5s));
+}
+
+TEST_F(RpcTest, sessionRpcBindInterfaceIsReadOnly)
+{
+    auto const exec = [this](tr_quark const method, tr_variant::Map params) {
+        auto request_map = tr_variant::Map{ 4U };
+        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
+        request_map.try_emplace(TR_KEY_id, 12345);
+        request_map.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, tr_variant{ std::move(request_map) }, [&response](tr_variant&& resp) {
+            response = std::move(resp);
+        });
+        return response;
+    };
+
+    auto set_params = tr_variant::Map{ 1U };
+    set_params.try_emplace(TR_KEY_rpc_bind_interface, tr::test::LoopbackInterface);
+    exec(TR_KEY_session_set, std::move(set_params));
+
+    auto get_params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_rpc_bind_interface));
+    get_params.try_emplace(TR_KEY_fields, std::move(fields));
+    auto const response = exec(TR_KEY_session_get, std::move(get_params));
+
+    auto const* const response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    auto const* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+    auto const rpc_bind_interface = result->value_if<std::string_view>(TR_KEY_rpc_bind_interface);
+    ASSERT_TRUE(rpc_bind_interface);
+    EXPECT_EQ(""sv, *rpc_bind_interface);
 }
 
 // A settings reload moves a running RPC listener onto its new interface.

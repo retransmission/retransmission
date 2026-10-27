@@ -36,6 +36,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "addedDate"sv, // rpc
     "added_date"sv, // .resume, rpc
     "address"sv, // rpc
+    "addresses"sv, // rpc
     "alt-speed-down"sv, // gtk app, rpc, speed settings
     "alt-speed-enabled"sv, // gtk app, rpc, speed settings
     "alt-speed-time-begin"sv, // rpc, speed settings
@@ -73,6 +74,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bind_address_ipv4"sv, // daemon, rpc, tr_session::Settings
     "bind_address_ipv6"sv, // daemon, rpc, tr_session::Settings
     "bind_interface"sv, // daemon, rpc, tr_session::Settings
+    "bind_interface_error"sv, // rpc
+    "bind_interface_status"sv, // rpc
     "bitfield"sv, // .resume
     "blocklist-date"sv, // legacy settings.json
     "blocklist-enabled"sv, // daemon, gtk app, rpc, tr_session::Settings
@@ -355,6 +358,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "msg_type"sv, // BT protocol
     "mtimes"sv, // .resume
     "name"sv, // .resume, .torrent, rpc
+    "network_interfaces"sv, // rpc
     "nextAnnounceTime"sv, // rpc
     "nextScrapeTime"sv, // rpc
     "next_announce_time"sv, // rpc

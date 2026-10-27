@@ -9,7 +9,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <functional> // std::less
 #include <iterator> // std::back_inserter
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -239,6 +241,32 @@ void forget_bind_failure()
     warning.err = 0;
 }
 
+// Each interface's last refused bind, for tr_net_interface_status().
+// Kept per interface, and apart from BindFailureWarning, which any
+// successful bind clears: the RPC listener binding to its own interface
+// mustn't hide that peer sockets are failing, nor its failures theirs.
+struct BindRefusals {
+    std::mutex mutex;
+    std::map<std::string, int, std::less<>> err_by_name;
+};
+
+[[nodiscard]] BindRefusals& bind_refusals()
+{
+    static auto refusals = BindRefusals{};
+    return refusals;
+}
+
+void record_bind_outcome(std::string_view const name, int const err)
+{
+    auto& refusals = bind_refusals();
+    auto const lock = std::scoped_lock{ refusals.mutex };
+    if (err != 0) {
+        refusals.err_by_name.insert_or_assign(std::string{ name }, err);
+    } else if (auto const iter = refusals.err_by_name.find(name); iter != std::end(refusals.err_by_name)) {
+        refusals.err_by_name.erase(iter);
+    }
+}
+
 #if defined(__APPLE__)
 [[nodiscard]] bool bind_socket_to_interface(
     tr_socket_t const sock,
@@ -276,6 +304,35 @@ void forget_bind_failure()
 }
 } // namespace
 #endif
+
+tr_net_bind_status tr_net_interface_status(std::string_view const bind_interface)
+{
+    using State = tr_net_bind_status::State;
+
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name)) {
+        return { .state = State::Default, .error = {} };
+    }
+    if (tr_net_interface_is_blocked(name)) {
+        return { .state = State::Blocked, .error = {} };
+    }
+
+#if defined(__APPLE__) || defined(__linux__)
+    // checked live, since no bind is attempted on an interface that's gone
+    if (tr_net_interface_index(name) == 0U) {
+        return { .state = State::Missing, .error = {} };
+    }
+
+    auto& refusals = bind_refusals();
+    auto const lock = std::scoped_lock{ refusals.mutex };
+    if (auto const iter = refusals.err_by_name.find(name); iter != std::end(refusals.err_by_name)) {
+        return { .state = State::BindFailed, .error = bind_failure_reason(iter->second) };
+    }
+    return { .state = State::Ok, .error = {} };
+#else
+    return { .state = State::Unsupported, .error = {} };
+#endif
+}
 
 bool tr_netSetSocketInterface(
     tr_socket_t const sock,
@@ -319,6 +376,7 @@ bool tr_netSetSocketInterface(
 
     if (!bind_socket_to_interface(sock, type, name, if_index)) {
         auto const err = sockerrno;
+        record_bind_outcome(name, err);
         if (!suppress_msgs && should_warn_bind_failure(name, err)) {
             tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': {}", name, bind_failure_reason(err)));
         } else {
@@ -329,6 +387,7 @@ bool tr_netSetSocketInterface(
     }
 
     forget_bind_failure();
+    record_bind_outcome(name, 0);
     tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
     return true;
 #else

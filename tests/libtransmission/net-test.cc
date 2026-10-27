@@ -1178,6 +1178,75 @@ TEST_F(NetTest, socketIsBoundToTheNamedInterface)
     }
 }
 
+TEST_F(NetTest, interfaceStatus)
+{
+    using State = tr_net_bind_status::State;
+
+    EXPECT_EQ(State::Default, tr_net_interface_status(""sv).state);
+    EXPECT_EQ(State::Default, tr_net_interface_status("  "sv).state);
+    EXPECT_EQ(State::Blocked, tr_net_interface_status("blocked"sv).state);
+
+    if (!TrNetCanBindInterface) {
+        EXPECT_EQ(State::Unsupported, tr_net_interface_status(LoopbackInterface).state);
+        return;
+    }
+
+    EXPECT_EQ(State::Missing, tr_net_interface_status("tr-no-such-interface"sv).state);
+
+    // the loopback interface exists, and binding to it succeeds
+    auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+    ASSERT_TRUE(is_valid_socket(sock));
+    EXPECT_TRUE(tr_netSetSocketInterface(sock, TR_AF_INET, LoopbackInterface));
+    tr_net_close_socket(sock);
+
+    auto const status = tr_net_interface_status(LoopbackInterface);
+    EXPECT_EQ(State::Ok, status.state);
+    EXPECT_TRUE(std::empty(status.error));
+}
+
+TEST_F(NetTest, interfaceStatusIsPerInterface)
+{
+    using State = tr_net_bind_status::State;
+
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const interfaces = tr_net_interfaces();
+    auto const other = std::ranges::find_if(interfaces, [](auto const& iface) { return iface.name != LoopbackInterface; });
+    if (other == std::end(interfaces)) {
+        GTEST_SKIP() << "needs a network interface besides loopback";
+    }
+
+    // an invalid socket makes the OS refuse a bind to an interface that exists
+    auto const refuse_bind = [](std::string_view const name) {
+        EXPECT_FALSE(tr_netSetSocketInterface(TR_BAD_SOCKET, TR_AF_INET, name, true)) << name;
+    };
+    auto const bind = [](std::string_view const name) {
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        auto const ok = tr_netSetSocketInterface(sock, TR_AF_INET, name, true);
+        tr_net_close_socket(sock);
+        return ok;
+    };
+
+    // a refusal on one interface doesn't hide an earlier refusal on another
+    refuse_bind(LoopbackInterface);
+    refuse_bind(other->name);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // nor does a successful bind on one interface clear another's refusal
+    EXPECT_TRUE(bind(LoopbackInterface));
+    EXPECT_EQ(State::Ok, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // binding to the other interface may need privileges; only its success clears its refusal
+    if (bind(other->name)) {
+        EXPECT_EQ(State::Ok, tr_net_interface_status(other->name).state);
+    }
+}
+
 TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
 {
     if (!TrNetCanBindInterface) {

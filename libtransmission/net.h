@@ -544,6 +544,23 @@ inline constexpr bool TrNetCanBindInterface = false;
 // empty, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
 
+// what a bind_interface setting does to traffic right now
+struct tr_net_bind_status {
+    enum class State : uint8_t {
+        Default, // normal OS routing
+        Ok, // the interface exists and its last bind succeeded
+        Blocked, // TrBindInterfaceBlocked refuses every socket
+        Missing, // the interface doesn't exist, so traffic stops until it does
+        BindFailed, // the interface exists but the OS refuses to bind to it
+        Unsupported, // the platform can't bind to an interface
+    };
+
+    State state = State::Default;
+    std::string error; // why binding failed, for BindFailed
+};
+
+[[nodiscard]] tr_net_bind_status tr_net_interface_status(std::string_view bind_interface);
+
 struct tr_net_interface {
     std::string name;
     std::vector<tr_address> addresses; // IPv4 first, then IPv6
