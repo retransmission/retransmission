@@ -166,6 +166,8 @@ public:
     // are left alone so that they can finish.
     void startShutdown(std::chrono::milliseconds /*deadline*/);
 
+    void network_changed();
+
     [[nodiscard]] bool is_idle() const;
 
     // If you want to give running tasks a chance to finish,

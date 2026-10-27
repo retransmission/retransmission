@@ -323,6 +323,13 @@ private:
             session_.fetch(std::move(options));
         }
 
+        void source_addr_changed(tr_address_type const /*type*/) override
+        {
+            if (auto const& web = session_.web_; web) {
+                web->network_changed();
+            }
+        }
+
         [[nodiscard]] std::string_view settings_bind_addr(tr_address_type type) override
         {
             switch (type) {

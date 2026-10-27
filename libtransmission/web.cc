@@ -848,6 +848,12 @@ public:
         remove_task(task);
     }
 
+    void network_changed()
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        network_changed_ = true;
+    }
+
     [[nodiscard]] bool push_multi(BindAddresses const& bind_addresses)
     {
         auto multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
@@ -880,6 +886,7 @@ public:
                 }
             }
 
+            auto failed_tasks = std::list<Task>{};
             if (auto lock = std::unique_lock{ tasks_mutex_ }; lock.owns_lock()) {
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
@@ -896,21 +903,20 @@ public:
                 // add queued tasks
                 for (auto it = queued_tasks_.begin(); it != queued_tasks_.end();) {
                     if (!initEasy(*it) ||
-                        ((multi_pool_.empty() || multi_pool_.back().bind_addresses != it->bind_addresses) &&
+                        ((multi_pool_.empty() || network_changed_ || multi_pool_.back().bind_addresses != it->bind_addresses) &&
                          !push_multi(it->bind_addresses))) {
                         it->set_error(CURLE_OUT_OF_MEMORY);
-                        it->done();
-                        it = queued_tasks_.erase(it);
+                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
                         continue;
                     }
+                    network_changed_ = false;
 
                     if (auto const status = it->set_multi(current_multi()); status != CURLM_OK) {
                         it->response.errmsg = fmt::format(
                             "curl multi error: {} ({})",
                             curl_multi_strerror(status),
                             std::to_underlying(status));
-                        it->done();
-                        it = queued_tasks_.erase(it);
+                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
                         continue;
                     }
 
@@ -919,6 +925,11 @@ public:
 
                 running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
             }
+
+            for (auto& task : failed_tasks) {
+                task.done();
+            }
+            failed_tasks.clear();
 
             if (std::empty(running_tasks_)) {
                 continue;
@@ -996,6 +1007,7 @@ public:
     curl_helpers::shared_unique_ptr const curlsh_{ curl_share_init() };
 
     small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
+    bool network_changed_ = false;
 
     // Only the curl thread modifies multi_pool_, all other threads read it. We only need
     // to lock exclusively for writes in the curl thread and reads from any other thread,
@@ -1060,6 +1072,11 @@ void tr_web::fetch(FetchOptions&& options)
 void tr_web::startShutdown(std::chrono::milliseconds deadline)
 {
     impl_->startShutdown(deadline);
+}
+
+void tr_web::network_changed()
+{
+    impl_->network_changed();
 }
 
 bool tr_web::is_idle() const

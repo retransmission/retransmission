@@ -39,6 +39,14 @@ using tr::test::LoopbackServer;
 class ThreadGate
 {
 public:
+    ThreadGate() = default;
+
+    ThreadGate(ThreadGate const&) = delete;
+    ThreadGate(ThreadGate&&) = delete;
+    ThreadGate& operator=(ThreadGate const&) = delete;
+    ThreadGate& operator=(ThreadGate&&) = delete;
+
+    // NOLINTNEXTLINE(bugprone-exception-escape)
     ~ThreadGate()
     {
         open();
@@ -87,7 +95,7 @@ public:
         return bind_addresses_;
     }
 
-    void set_bind_address(tr_address_type const type, std::optional<std::string> address)
+    void setBindAddress(tr_address_type const type, std::optional<std::string> address)
     {
         auto const lock = std::scoped_lock{ mutex_ };
         bind_addresses_[type] = std::move(address);
@@ -425,11 +433,11 @@ TEST_F(WebTest, bindAddressChangeLetsInFlightFetchesComplete)
         LoopbackServer::reply(req, HTTP_MOVETEMP, "Found", {}, { { { "Location", target } } });
     });
 
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto first_fetch = fetchAsync(options("/slow"sv));
     ASSERT_EQ(std::future_status::ready, started_future.wait_for(15s));
 
-    mediator_.set_bind_address(TR_AF_INET, std::nullopt);
+    mediator_.setBindAddress(TR_AF_INET, std::nullopt);
     auto const second_response = fetch({ destination->url(), nullptr, nullptr });
     ASSERT_EQ(200, second_response.status);
 
@@ -448,12 +456,12 @@ TEST_F(WebTest, bindAddressChangeLetsInFlightFetchesComplete)
 
 TEST_F(WebTest, connectionsNotReusedAcrossBindAddresses)
 {
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 
-    mediator_.set_bind_address(TR_AF_INET, "192.0.2.1");
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
 
     auto const failure = fetch(options());
     EXPECT_EQ(0, failure.status);
@@ -468,13 +476,13 @@ TEST_F(WebTest, bindAddressesCapturedWhenQueued)
     if (!destination) {
         GTEST_SKIP() << "IPv4 loopback is unavailable";
     }
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto gate = ThreadGate{};
     auto paused = pauseWebThread(gate.future());
     ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
 
     auto response = fetchAsync({ destination->url(), nullptr, nullptr });
-    mediator_.set_bind_address(TR_AF_INET, "192.0.2.1");
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
     gate.open();
 
     ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
@@ -494,7 +502,7 @@ TEST_F(WebTestIPv6, connectionsPartitionedWhenMatchingFamilyBindAddressChanges)
     ASSERT_EQ(200, fetch(options6()).status);
     EXPECT_EQ(ipv6_unbound.peer_port, server6_->lastRequest().peer_port);
 
-    mediator_.set_bind_address(TR_AF_INET6, "::1");
+    mediator_.setBindAddress(TR_AF_INET6, "::1");
     ASSERT_EQ(200, fetch(options6()).status);
     auto const ipv6_bound = server6_->lastRequest();
     EXPECT_EQ("::1", ipv6_bound.peer_address);
@@ -503,13 +511,13 @@ TEST_F(WebTestIPv6, connectionsPartitionedWhenMatchingFamilyBindAddressChanges)
     ASSERT_EQ(200, fetch(options()).status);
     auto const ipv4_unbound_v6_bound = server4_->lastRequest();
 
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     ASSERT_EQ(200, fetch(options()).status);
     auto const bound = server4_->lastRequest();
     EXPECT_EQ("127.0.0.1", bound.peer_address);
     EXPECT_NE(ipv4_unbound_v6_bound.peer_port, bound.peer_port);
 
-    mediator_.set_bind_address(TR_AF_INET, std::nullopt);
+    mediator_.setBindAddress(TR_AF_INET, std::nullopt);
     ASSERT_EQ(200, fetch(options()).status);
     EXPECT_NE(bound.peer_port, server4_->lastRequest().peer_port);
 }
@@ -523,7 +531,7 @@ TEST_F(WebTest, mixedQueuedBindSnapshotsComplete)
     static auto constexpr Addresses = std::array{ "127.0.0.1", "192.0.2.1", "127.0.0.1", "192.0.2.1" };
     auto futures = std::array<std::future<tr_web::FetchResponse>, Addresses.size()>{};
     for (size_t i = 0; i < Addresses.size(); ++i) {
-        mediator_.set_bind_address(TR_AF_INET, Addresses[i]);
+        mediator_.setBindAddress(TR_AF_INET, Addresses[i]);
         futures[i] = fetchAsync(options());
     }
     gate.open();
@@ -538,8 +546,8 @@ TEST_F(WebTest, mixedQueuedBindSnapshotsComplete)
 
 TEST_F(WebTest, bindAddressUsesResolvedIPv4Family)
 {
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
-    mediator_.set_bind_address(TR_AF_INET6, "2001:db8::1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET6, "2001:db8::1");
 
     EXPECT_EQ(200, fetch(options()).status);
     EXPECT_EQ("127.0.0.1", server4_->lastRequest().peer_address);
@@ -547,8 +555,8 @@ TEST_F(WebTest, bindAddressUsesResolvedIPv4Family)
 
 TEST_F(WebTestIPv6, bindAddressUsesResolvedIPv6Family)
 {
-    mediator_.set_bind_address(TR_AF_INET, "192.0.2.1");
-    mediator_.set_bind_address(TR_AF_INET6, "::1");
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.setBindAddress(TR_AF_INET6, "::1");
 
     EXPECT_EQ(200, fetch(options6()).status);
     EXPECT_EQ("::1", server6_->lastRequest().peer_address);
@@ -560,9 +568,9 @@ TEST_F(WebTest, bindSnapshotSurvivesRedirect)
     if (!destination) {
         GTEST_SKIP() << "IPv4 loopback is unavailable";
     }
-    mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     server4_->setHandler([this, target = destination->url()](evhttp_request* req) {
-        mediator_.set_bind_address(TR_AF_INET, "192.0.2.1");
+        mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
         LoopbackServer::reply(req, HTTP_MOVETEMP, "Found", {}, { { { "Location", target } } });
     });
 
