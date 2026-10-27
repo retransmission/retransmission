@@ -1296,6 +1296,13 @@ private:
         bool utp_changed,
         Settings const& old_settings);
 
+    // Call around apply_network_bindings() when the interface changes. The
+    // first stops every running torrent and flushes the queued "stopped"
+    // announces (see tr_announcer::flushStops()) while the current binding is
+    // in place; the second starts those torrents again on the new one.
+    [[nodiscard]] std::vector<tr_torrent*> stop_torrents_for_rebind();
+    void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
+
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
 
@@ -1468,9 +1475,8 @@ private:
 
     // Held while setSettings() replaces settings_, so that other threads can
     // read settings_.bind_interface through bind_interface_thread_safe(). It
-    // is always the innermost lock: the curl thread takes it while holding
-    // tr_web's task mutex, and the session thread takes it while holding
-    // session_mutex_.
+    // is always the innermost lock: the session thread takes it while holding
+    // session_mutex_, and tr_web::fetch() releases it before taking any other.
     mutable std::mutex bind_interface_mutex_;
 
     // The OS index the bound sockets were given for settings_.bind_interface,

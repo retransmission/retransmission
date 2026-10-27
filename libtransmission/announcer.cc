@@ -136,6 +136,7 @@ public:
     void stopTorrent(tr_torrent* tor) override;
     void resetTorrent(tr_torrent* tor) override;
     void removeTorrent(tr_torrent* tor) override;
+    void flushStops() override;
 
     void startShutdown() override
     {
@@ -939,18 +940,6 @@ void tr_announcer_impl::onAnnounceDone(
             !std::empty(response.errmsg) ? response.errmsg : "none"sv,
             !std::empty(response.warning) ? response.warning : "none"sv));
 
-    // A cancelled announce never reached the tracker, so it's no failure. The
-    // restart that follows a binding change queues its own events; otherwise
-    // send this one again now. "completed" is always sent again, since the
-    // restart's "stopped" drops only a queued one, and no later event replaces it.
-    if (response.did_cancel) {
-        tier->isAnnouncing = false;
-        if (event == TR_ANNOUNCE_EVENT_COMPLETED || std::empty(tier->announce_events)) {
-            tier_announce_event_push(tier, event, now);
-        }
-        return;
-    }
-
     // https://github.com/arvidn/libtorrent/issues/5084#issuecomment-688516452
     if (response.min_interval != 0) {
         tier->announceMinIntervalSec = response.min_interval;
@@ -1131,6 +1120,43 @@ void tr_announcer_impl::removeTorrent(tr_torrent* tor)
     delete ta;
 }
 
+void tr_announcer_impl::flushStops()
+{
+    using namespace announce_helpers;
+
+    for (auto* const tor : session->torrents()) {
+        auto* const ta = tor->torrent_announcer;
+        if (ta == nullptr) {
+            continue;
+        }
+
+        for (auto& tier : ta->tiers) {
+            // A tier mid-announce, or with "completed" still ahead of its stop, keeps
+            // its queue: its tracker must hear those events before the "stopped".
+            if (auto& events = tier.announce_events;
+                tier.isAnnouncing || std::size(events) != 1U || events.front() != TR_ANNOUNCE_EVENT_STOPPED) {
+                continue;
+            }
+
+            tier.announce_events.clear();
+            tier_update_announce_priority(&tier);
+
+            // like removeTorrent(), skip trackers that never saw us start
+            if (tier.isRunning && tier.lastAnnounceSucceeded) {
+                stops_.emplace(create_announce_request(this, tor, &tier, TR_ANNOUNCE_EVENT_STOPPED));
+
+                // the stop reported these; the next "started" counts afresh
+                tier.byteCounts[TR_ANN_UP] = 0;
+                tier.byteCounts[TR_ANN_DOWN] = 0;
+                tier.byteCounts[TR_ANN_CORRUPT] = 0;
+            }
+            tier.isRunning = false;
+        }
+    }
+
+    flushCloseMessages();
+}
+
 // --- SCRAPE
 
 namespace
@@ -1250,13 +1276,6 @@ void tr_announcer_impl::onScrapeDone(tr_scrape_response const& response)
                 std::empty(response.errmsg) ? "none"sv : response.errmsg));
 
         tier->isScraping = false;
-
-        // a cancelled scrape never reached the tracker, so it's no failure
-        if (response.did_cancel) {
-            tier->scrapeSoon();
-            continue;
-        }
-
         tier->lastScrapeTime = now;
         tier->lastScrapeSucceeded = false;
         tier->lastScrapeTimedOut = response.did_timeout;

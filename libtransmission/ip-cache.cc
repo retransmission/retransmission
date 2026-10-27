@@ -310,7 +310,7 @@ void tr_ip_cache::invalidate(tr_address_type const type)
 
 void tr_ip_cache::on_response_ip_query(
     tr_address_type const type,
-    uint64_t const generation,
+    uint8_t const generation,
     tr_web::FetchResponse const& response)
 {
     if (generation != generation_[type]) {

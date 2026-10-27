@@ -11,7 +11,7 @@
 
 #include <array>
 #include <chrono> // std::chrono::milliseconds
-#include <cstdint> // uint64_t
+#include <cstdint> // uint8_t
 #include <memory> // std::unique_ptr
 #include <optional>
 #include <shared_mutex>
@@ -112,7 +112,7 @@ public:
     // Only use as a callback for web_->fetch(). `generation` is the value
     // of generation_[type] when the query was sent; a response from an
     // invalidated generation is ignored.
-    void on_response_ip_query(tr_address_type type, uint64_t generation, tr_web::FetchResponse const& response);
+    void on_response_ip_query(tr_address_type type, uint8_t generation, tr_web::FetchResponse const& response);
 
     [[nodiscard]] constexpr auto has_ip_protocol(tr_address_type type) const noexcept
     {
@@ -167,5 +167,5 @@ private:
     array_ip_t<size_t> ix_service_ = {};
 
     // bumped by invalidate(); responses to older queries are ignored
-    array_ip_t<uint64_t> generation_ = {};
+    array_ip_t<uint8_t> generation_ = {};
 };

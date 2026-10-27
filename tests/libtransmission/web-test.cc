@@ -4,10 +4,8 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <atomic>
 #include <chrono>
 #include <cstdint>
-#include <functional>
 #include <future>
 #include <memory>
 #include <mutex>
@@ -114,20 +112,14 @@ public:
         return std::nullopt;
     }
 
+    // fetch() reads this on the caller's thread, so tests set it without a lock
     [[nodiscard]] std::optional<std::string> bind_interface() const override
     {
-        if (bind_interface_func_) {
-            return bind_interface_func_();
-        }
         return bind_interface_;
     }
 
     std::optional<std::string> user_agent_;
     std::optional<std::string> bind_interface_;
-
-    // if set, answers bind_interface() instead of bind_interface_,
-    // so a test can change the binding between two reads
-    std::function<std::optional<std::string>()> bind_interface_func_;
 
 private:
     mutable std::mutex mutex_;
@@ -672,6 +664,12 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
+#ifdef __linux__
+auto constexpr LoopbackInterface = "lo"sv;
+#else
+auto constexpr LoopbackInterface = "lo0"sv;
+#endif
+
 TEST_F(WebTest, interfaceBindingOverridesBindAddress)
 {
 #ifdef _WIN32
@@ -679,11 +677,7 @@ TEST_F(WebTest, interfaceBindingOverridesBindAddress)
 #else
     // binding to 192.0.2.1 fails, so only the interface can carry the fetch
     mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
-#ifdef __linux__
-    mediator_.bind_interface_ = "lo";
-#else
-    mediator_.bind_interface_ = "lo0";
-#endif
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
 
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
@@ -706,105 +700,45 @@ TEST_F(WebTest, blockedInterfaceIsRefused)
     EXPECT_TRUE(std::empty(server4_->lastRequest().method));
 }
 
-TEST_F(WebTest, sessionInterfaceBlockedAfterQueueingIsNotSentUnbound)
+TEST_F(WebTest, bindInterfaceCapturedWhenQueued)
 {
-    // The session binding names an interface when the fetch is queued and
-    // when tr_web's thread first reads it, and is "blocked" on every read
-    // after that. Both values fail the fetch: the interface doesn't exist,
-    // and "blocked" is refused. A request that reaches the server was
-    // therefore sent unbound.
-    static auto constexpr NoSuchInterface = "nosuchif0"sv;
-    mediator_.bind_interface_func_ = [test_thread = std::this_thread::get_id(),
-                                      n_reads = std::make_shared<std::atomic<int>>()]() -> std::optional<std::string> {
-        if (std::this_thread::get_id() == test_thread || (*n_reads)++ == 0) {
-            return std::string{ NoSuchInterface };
-        }
-        return "blocked"s;
-    };
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
+    // binding to 192.0.2.1 fails, so only the loopback interface can carry the fetch
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto gate = ThreadGate{};
+    auto paused = pauseWebThread(gate.future());
+    ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
 
+    auto response = fetchAsync(options());
+    mediator_.bind_interface_ = "blocked";
+    gate.open();
+
+    ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
+    EXPECT_EQ(200, response.get().status);
+#endif
+}
+
+TEST_F(WebTest, connectionsNotReusedAcrossBindInterfaces)
+{
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
+    // only the interface differs between the two fetches
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
     auto const response = fetch(options());
-    EXPECT_EQ(0, response.status);
-    EXPECT_FALSE(response.did_connect);
-    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
-}
+    EXPECT_EQ(200, response.status);
 
-TEST_F(WebTest, cancelAllCompletesRunningFetch)
-{
-    // a handler that never replies keeps the fetch running until it is cancelled
-    server4_->setHandler([](evhttp_request* /*req*/) {});
-
-    auto promise = std::promise<tr_web::FetchResponse>{};
-    auto future = promise.get_future();
-    auto user_data = int{};
-    auto opts = options("/"sv, &user_data);
-    opts.done_func = [&promise](tr_web::FetchResponse const& response) {
-        promise.set_value(response);
-    };
-    web_->fetch(std::move(opts));
-
-    // once the server has the request, the task is running rather than queued
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
-    EXPECT_EQ(std::future_status::timeout, future.wait_for(100ms));
-
-    web_->cancel_all();
-
-    // the cancel wakes the curl thread rather than waiting out its 1s poll
-    ASSERT_EQ(std::future_status::ready, future.wait_for(500ms));
-    auto const response = future.get();
-    EXPECT_EQ(0, response.status);
-    EXPECT_FALSE(response.did_connect);
-    EXPECT_FALSE(response.did_timeout);
-    EXPECT_TRUE(response.did_cancel);
-    EXPECT_EQ(&user_data, response.user_data);
-}
-
-TEST_F(WebTest, cancelledFetchCallbackCanReenterWeb)
-{
-    // TestMediator runs callbacks inline on tr_web's thread, so a callback
-    // that calls back into tr_web deadlocks if it runs under tr_web's lock
-    server4_->setHandler([](evhttp_request* /*req*/) {});
-
-    // a deadlocked tr_web hangs this test's teardown, so a failure shows as a hang
-    auto promise = std::make_shared<std::promise<void>>();
-    auto future = promise->get_future();
-    auto opts = options();
-    opts.done_func = [this, promise](tr_web::FetchResponse const& /*response*/) {
-        (void)web_->is_idle();
-        promise->set_value();
-    };
-    web_->fetch(std::move(opts));
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
-
-    web_->cancel_all();
-
-    EXPECT_EQ(std::future_status::ready, future.wait_for(5s));
-}
-
-TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)
-{
-    server4_->setHandler([](evhttp_request* /*req*/) {});
-
-    auto promise = std::promise<tr_web::FetchResponse>{};
-    auto future = promise.get_future();
-    auto opts = options("/before"sv);
-    opts.done_func = [&promise](tr_web::FetchResponse const& response) {
-        promise.set_value(response);
-    };
-    web_->fetch(std::move(opts));
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
-
-    web_->cancel_all();
-
-    // a fetch made after the cancel runs normally
-    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "after"sv); });
-    auto const after = fetch(options("/after"sv));
-    EXPECT_EQ(200, after.status);
-    EXPECT_EQ("after"sv, after.body);
-    EXPECT_FALSE(after.did_cancel);
-
-    // while the one made before it was cancelled
-    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
-    EXPECT_EQ(0, future.get().status);
+    // curl would reuse the loopback-bound connection for a request that names no
+    // interface, which would let this fetch skip binding to 192.0.2.1
+    mediator_.bind_interface_.reset();
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
+#endif
 }
 
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)

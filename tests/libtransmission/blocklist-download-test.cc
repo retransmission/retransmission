@@ -344,7 +344,6 @@ public:
             .primary_ip = {},
             .did_connect = true,
             .did_timeout = false,
-            .did_cancel = false,
             .user_data = nullptr,
         };
         pending_.at(index)(response);

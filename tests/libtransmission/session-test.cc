@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -12,15 +13,21 @@
 #include <initializer_list>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include <event2/http.h>
+
+#include <fmt/format.h>
+
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/announcer.h>
 #include <libtransmission/bandwidth.h>
 #include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
@@ -35,6 +42,7 @@
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
+#include "loopback-server.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -671,6 +679,104 @@ TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
     EXPECT_TRUE(waitFor([this, Loopback] { return tr_sessionGetBindInterface(session_) == Loopback; }, 5s));
 
     EXPECT_TRUE(is_valid_socket(udpSocket4()));
+#endif
+}
+
+// "blocked" refuses every fetch made after the swap, so a tracker hears
+// "stopped" only if it went out on the binding the torrent started on.
+// More tiers than one announcer upkeep sends prove none of them wait for it.
+TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
+{
+    static auto constexpr NumTiers = 21U;
+
+    auto tracker = LoopbackServer::create();
+    if (!tracker) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+
+    auto n_started = std::make_shared<std::atomic<size_t>>();
+    auto n_stopped = std::make_shared<std::atomic<size_t>>();
+    tracker->setHandler([n_started, n_stopped](evhttp_request* req) {
+        auto const uri = std::string_view{ evhttp_request_get_uri(req) };
+        if (uri.contains("event=started"sv)) {
+            ++*n_started;
+        } else if (uri.contains("event=stopped"sv)) {
+            ++*n_stopped;
+        }
+        LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
+    });
+
+    auto trackers = std::string{};
+    for (size_t i = 0U; i < NumTiers; ++i) {
+        trackers += tracker->url(fmt::format("/{:d}/announce", i));
+        trackers += "\n\n";
+    }
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    ASSERT_TRUE(tr_torrentSetTrackerList(tor, trackers));
+    tr_torrentStartNow(tor);
+    ASSERT_TRUE(waitFor([&n_started] { return *n_started == NumTiers; }, 10s));
+
+    tr_sessionSetBindInterface(session_, "blocked"sv);
+    EXPECT_TRUE(waitFor([&n_stopped] { return *n_stopped == NumTiers; }, 10s)) << *n_stopped;
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->is_running(); }));
+}
+
+// The flushed "stopped" reports the session's traffic, so the "started" on the
+// new binding begins a new count.
+TEST_F(SessionTest, interfaceChangeRestartsTrafficCounts)
+{
+#ifndef __APPLE__
+    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
+#else
+    static auto constexpr Uploaded = uint32_t{ 12345U };
+
+    auto tracker = LoopbackServer::create();
+    if (!tracker) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+
+    auto const mutex = std::make_shared<std::mutex>();
+    auto const announces = std::make_shared<std::vector<std::string>>();
+    tracker->setHandler([mutex, announces](evhttp_request* req) {
+        if (auto uri = std::string{ evhttp_request_get_uri(req) }; uri.starts_with("/announce"sv)) {
+            auto const lock = std::scoped_lock{ *mutex };
+            announces->emplace_back(std::move(uri));
+        }
+        LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
+    });
+    // the first "stopped", and the first "started" after it
+    auto const restart_announces = [mutex, announces]() -> std::optional<std::pair<std::string, std::string>> {
+        auto const lock = std::scoped_lock{ *mutex };
+        auto const stopped = std::ranges::find_if(*announces, [](auto const& uri) { return uri.contains("event=stopped"sv); });
+        auto const started = std::find_if(stopped, std::end(*announces), [](auto const& uri) {
+            return uri.contains("event=started"sv);
+        });
+        if (started == std::end(*announces)) {
+            return {};
+        }
+        return std::pair{ *stopped, *started };
+    };
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    ASSERT_TRUE(tr_torrentSetTrackerList(tor, tracker->url("/announce")));
+    tr_torrentStartNow(tor);
+    ASSERT_TRUE(waitFor(
+        [mutex, announces] {
+            auto const lock = std::scoped_lock{ *mutex };
+            return !std::empty(*announces);
+        },
+        10s));
+    blockingRunInSessionThread([tor] { tr_announcerAddBytes(tor, TR_ANN_UP, Uploaded); });
+
+    tr_sessionSetBindInterface(session_, "lo0"sv);
+    ASSERT_TRUE(waitFor([&restart_announces] { return restart_announces().has_value(); }, 10s));
+
+    auto const [stopped, started] = *restart_announces();
+    EXPECT_TRUE(stopped.contains(fmt::format("uploaded={:d}&", Uploaded))) << stopped;
+    EXPECT_TRUE(started.contains("uploaded=0&"sv)) << started;
 #endif
 }
 
