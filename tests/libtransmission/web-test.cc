@@ -194,6 +194,13 @@ protected:
             GTEST_SKIP() << "IPv6 loopback is unavailable";
         }
     }
+
+    [[nodiscard]] tr_web::FetchOptions options6(std::string_view path = "/"sv, void* user_data = nullptr) const
+    {
+        auto options = tr_web::FetchOptions{ server6_->url(path), nullptr, user_data };
+        options.max_file_size = TestMaxFileSize;
+        return options;
+    }
 };
 
 TEST_F(WebTest, getReturnsBody)
@@ -475,22 +482,32 @@ TEST_F(WebTest, bindAddressesCapturedWhenQueued)
     EXPECT_EQ("127.0.0.1", destination->lastRequest().peer_address);
 }
 
-TEST_F(WebTest, ipv4ConnectionsPartitionedByIpv4BindAddress)
+TEST_F(WebTestIPv6, connectionsPartitionedWhenMatchingFamilyBindAddressChanges)
 {
     ASSERT_EQ(200, fetch(options()).status);
-    auto const unbound = server4_->lastRequest();
+    auto const ipv4_unbound = server4_->lastRequest();
     ASSERT_EQ(200, fetch(options()).status);
-    EXPECT_EQ(unbound.peer_port, server4_->lastRequest().peer_port);
+    EXPECT_EQ(ipv4_unbound.peer_port, server4_->lastRequest().peer_port);
+
+    ASSERT_EQ(200, fetch(options6()).status);
+    auto const ipv6_unbound = server6_->lastRequest();
+    ASSERT_EQ(200, fetch(options6()).status);
+    EXPECT_EQ(ipv6_unbound.peer_port, server6_->lastRequest().peer_port);
 
     mediator_.set_bind_address(TR_AF_INET6, "::1");
+    ASSERT_EQ(200, fetch(options6()).status);
+    auto const ipv6_bound = server6_->lastRequest();
+    EXPECT_EQ("::1", ipv6_bound.peer_address);
+    EXPECT_NE(ipv6_unbound.peer_port, ipv6_bound.peer_port);
+
     ASSERT_EQ(200, fetch(options()).status);
-    auto const ipv6_changed = server4_->lastRequest();
+    auto const ipv4_unbound_v6_bound = server4_->lastRequest();
 
     mediator_.set_bind_address(TR_AF_INET, "127.0.0.1");
     ASSERT_EQ(200, fetch(options()).status);
     auto const bound = server4_->lastRequest();
     EXPECT_EQ("127.0.0.1", bound.peer_address);
-    EXPECT_NE(ipv6_changed.peer_port, bound.peer_port);
+    EXPECT_NE(ipv4_unbound_v6_bound.peer_port, bound.peer_port);
 
     mediator_.set_bind_address(TR_AF_INET, std::nullopt);
     ASSERT_EQ(200, fetch(options()).status);
@@ -533,7 +550,7 @@ TEST_F(WebTestIPv6, bindAddressUsesResolvedIPv6Family)
     mediator_.set_bind_address(TR_AF_INET, "192.0.2.1");
     mediator_.set_bind_address(TR_AF_INET6, "::1");
 
-    EXPECT_EQ(200, fetch({ server6_->url(), nullptr, nullptr }).status);
+    EXPECT_EQ(200, fetch(options6()).status);
     EXPECT_EQ("::1", server6_->lastRequest().peer_address);
 }
 
