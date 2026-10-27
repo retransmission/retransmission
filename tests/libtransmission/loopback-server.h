@@ -6,6 +6,7 @@
 #pragma once
 
 #include <atomic>
+#include <cerrno>
 #include <chrono>
 #include <cstdint>
 #ifndef _WIN32
@@ -13,9 +14,12 @@
 #endif
 #include <functional>
 #include <map>
+#include <memory>
 #include <mutex>
+#include <new>
 #include <string>
 #include <string_view>
+#include <stdexcept>
 #include <system_error>
 #include <thread>
 #include <utility>
@@ -53,45 +57,24 @@ public:
     // Handler that produces the reply. If none is set, the server replies 200.
     using Handler = std::function<void(evhttp_request*)>;
 
-    explicit LoopbackServer(tr_address_type const type = TR_AF_INET)
-        : base_{ event_base_new() }
-        , http_{ evhttp_new(base_) }
-        , host_{ type == TR_AF_INET ? "127.0.0.1" : "[::1]" }
+    [[nodiscard]] static std::unique_ptr<LoopbackServer> create(tr_address_type const type = TR_AF_INET)
     {
-#ifndef _WIN32
-        // The client may close a response-limited connection while libevent is still writing.
-        (void)signal(SIGPIPE, SIG_IGN);
-#endif
-
-        evhttp_set_allowed_methods(
-            http_,
-            EVHTTP_REQ_GET | EVHTTP_REQ_POST | EVHTTP_REQ_HEAD | EVHTTP_REQ_PUT | EVHTTP_REQ_DELETE | EVHTTP_REQ_OPTIONS);
-
-        auto* const bound = evhttp_bind_socket_with_handle(http_, type == TR_AF_INET ? "127.0.0.1" : "::1", 0);
-        if (bound == nullptr) {
-            auto const error = sockerrno;
-            evhttp_free(http_);
-            event_base_free(base_);
-            throw std::system_error{ error, std::system_category(), fmt::format("Could not bind loopback server to {}", host_) };
+        if (type != TR_AF_INET && type != TR_AF_INET6) {
+            throw std::invalid_argument{ "Unsupported loopback server address type" };
         }
-        auto ss = sockaddr_storage{};
-        auto sslen = socklen_t{ sizeof(ss) };
-        getsockname(evhttp_bound_socket_get_fd(bound), reinterpret_cast<sockaddr*>(&ss), &sslen);
-        port_ = ntohs(
-            ss.ss_family == AF_INET ? reinterpret_cast<sockaddr_in const*>(&ss)->sin_port :
-                                      reinterpret_cast<sockaddr_in6 const*>(&ss)->sin6_port);
 
-        evhttp_set_gencb(http_, &LoopbackServer::onRequest, this);
-
-        thread_ = std::thread{ [this]() {
-            // Poll instead of a blocking dispatch so teardown doesn't depend
-            // on libevent being built with cross-thread wakeup support.
-            using namespace std::chrono_literals;
-            while (!stop_.load(std::memory_order_acquire)) {
-                event_base_loop(base_, EVLOOP_NONBLOCK);
-                std::this_thread::sleep_for(1ms);
+        try {
+            return std::unique_ptr<LoopbackServer>{ new LoopbackServer{ type } };
+        } catch (std::system_error const& error) {
+#ifdef _WIN32
+            if (error.code().value() == WSAEAFNOSUPPORT || error.code().value() == WSAEPROTONOSUPPORT) {
+#else
+            if (error.code().value() == EAFNOSUPPORT || error.code().value() == EPROTONOSUPPORT) {
+#endif
+                return {};
             }
-        } };
+            throw;
+        }
     }
 
     ~LoopbackServer()
@@ -100,8 +83,6 @@ public:
         if (thread_.joinable()) {
             thread_.join();
         }
-        evhttp_free(http_);
-        event_base_free(base_);
     }
 
     LoopbackServer(LoopbackServer const&) = delete;
@@ -147,6 +128,47 @@ public:
     }
 
 private:
+    explicit LoopbackServer(tr_address_type const type)
+        : host_{ type == TR_AF_INET ? "127.0.0.1" : "[::1]" }
+    {
+#ifndef _WIN32
+        // The client may close a response-limited connection while libevent is still writing.
+        (void)signal(SIGPIPE, SIG_IGN);
+#endif
+
+        evhttp_set_allowed_methods(
+            http_.get(),
+            EVHTTP_REQ_GET | EVHTTP_REQ_POST | EVHTTP_REQ_HEAD | EVHTTP_REQ_PUT | EVHTTP_REQ_DELETE | EVHTTP_REQ_OPTIONS);
+
+        auto* const bound = evhttp_bind_socket_with_handle(http_.get(), type == TR_AF_INET ? "127.0.0.1" : "::1", 0);
+        if (bound == nullptr) {
+            throw std::system_error{
+                sockerrno,
+                std::system_category(),
+                fmt::format("Could not bind loopback server to {}", host_),
+            };
+        }
+        auto ss = sockaddr_storage{};
+        auto sslen = socklen_t{ sizeof(ss) };
+        if (getsockname(evhttp_bound_socket_get_fd(bound), reinterpret_cast<sockaddr*>(&ss), &sslen) != 0) {
+            throw std::system_error{ sockerrno, std::system_category(), "Could not inspect loopback server socket" };
+        }
+        port_ = ntohs(
+            ss.ss_family == AF_INET ? reinterpret_cast<sockaddr_in const*>(&ss)->sin_port :
+                                      reinterpret_cast<sockaddr_in6 const*>(&ss)->sin6_port);
+
+        evhttp_set_gencb(http_.get(), &LoopbackServer::onRequest, this);
+
+        thread_ = std::thread{ [this]() {
+            // Poll instead of a blocking dispatch so teardown doesn't depend
+            // on libevent being built with cross-thread wakeup support.
+            using namespace std::chrono_literals;
+            while (!stop_.load(std::memory_order_acquire)) {
+                event_base_loop(base_.get(), EVLOOP_NONBLOCK);
+                std::this_thread::sleep_for(1ms);
+            }
+        } };
+    }
     static void onRequest(evhttp_request* req, void* vself)
     {
         static_cast<LoopbackServer*>(vself)->handle(req);
@@ -205,8 +227,8 @@ private:
         }
     }
 
-    event_base* base_;
-    evhttp* http_;
+    std::unique_ptr<event_base, decltype(&event_base_free)> base_{ event_base_new(), &event_base_free };
+    std::unique_ptr<evhttp, decltype(&evhttp_free)> http_{ evhttp_new(base_.get()), &evhttp_free };
     std::string_view const host_;
     uint16_t port_ = 0;
 
