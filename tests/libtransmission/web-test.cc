@@ -3,12 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -35,6 +37,42 @@ namespace
 // LoopbackServer is shared via loopback-server.h.
 using tr::test::LoopbackServer;
 
+// Releasing on scope exit keeps failed assertions from stranding a worker.
+class ThreadGate
+{
+public:
+    ThreadGate() = default;
+
+    ThreadGate(ThreadGate const&) = delete;
+    ThreadGate(ThreadGate&&) = delete;
+    ThreadGate& operator=(ThreadGate const&) = delete;
+    ThreadGate& operator=(ThreadGate&&) = delete;
+
+    // NOLINTNEXTLINE(bugprone-exception-escape)
+    ~ThreadGate()
+    {
+        open();
+    }
+
+    void open()
+    {
+        if (!open_) {
+            promise_.set_value();
+            open_ = true;
+        }
+    }
+
+    [[nodiscard]] std::shared_future<void> future() const
+    {
+        return future_;
+    }
+
+private:
+    std::promise<void> promise_;
+    std::shared_future<void> const future_ = promise_.get_future().share();
+    bool open_ = false;
+};
+
 TEST(FetchOptionsTest, effectiveMaxFileSize)
 {
     auto options = tr_web::FetchOptions{ "http://example.invalid/"s, nullptr, nullptr };
@@ -52,13 +90,20 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 
 // tr_web needs a Mediator; this one overrides only what tests set:
 // the user-agent so a test can confirm the header reaches the server,
-// and the session-level bind address and bind interface.
+// and the session-level bind addresses and bind interface.
 class TestMediator final : public tr_web::Mediator
 {
 public:
-    [[nodiscard]] std::optional<std::string> bind_address(int /*af*/) const override
+    [[nodiscard]] tr_web::BindAddresses bind_addresses() const override
     {
-        return bind_address_;
+        auto const lock = std::scoped_lock{ mutex_ };
+        return bind_addresses_;
+    }
+
+    void setBindAddress(tr_address_type const type, std::optional<std::string> address)
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        bind_addresses_[type] = std::move(address);
     }
 
     [[nodiscard]] std::optional<std::string_view> userAgent() const override
@@ -77,18 +122,29 @@ public:
         return bind_interface_;
     }
 
-    std::optional<std::string> bind_address_;
     std::optional<std::string> user_agent_;
     std::optional<std::string> bind_interface_;
 
     // if set, answers bind_interface() instead of bind_interface_,
     // so a test can change the binding between two reads
     std::function<std::optional<std::string>()> bind_interface_func_;
+
+private:
+    mutable std::mutex mutex_;
+    tr_web::BindAddresses bind_addresses_;
 };
 
 class WebTest : public ::tr::test::SandboxedTest
 {
 protected:
+    void SetUp() override
+    {
+        ::tr::test::SandboxedTest::SetUp();
+        if (!server4_) {
+            GTEST_SKIP() << "IPv4 loopback is unavailable";
+        }
+    }
+
     // Run a fetch asynchronously and return a future for the response.
     std::future<tr_web::FetchResponse> fetchAsync(tr_web::FetchOptions options)
     {
@@ -127,21 +183,55 @@ protected:
 
     [[nodiscard]] tr_web::FetchOptions options(std::string_view path = "/"sv, void* user_data = nullptr) const
     {
-        auto options = tr_web::FetchOptions{ server_.url(path), nullptr, user_data };
+        auto options = tr_web::FetchOptions{ server4_->url(path), nullptr, user_data };
         options.max_file_size = TestMaxFileSize;
         return options;
     }
 
+    std::future<void> pauseWebThread(std::shared_future<void> resume)
+    {
+        auto paused = std::make_shared<std::promise<void>>();
+        auto future = paused->get_future();
+        auto opts = options();
+        opts.done_func = [paused, resume = std::move(resume)](tr_web::FetchResponse const& response) {
+            EXPECT_EQ(200, response.status);
+            paused->set_value();
+            resume.wait();
+        };
+        web_->fetch(std::move(opts));
+        return future;
+    }
+
     TestMediator mediator_;
     std::unique_ptr<tr_web> web_ = tr_web::create(mediator_);
-    LoopbackServer server_;
+    std::unique_ptr<LoopbackServer> server4_ = LoopbackServer::create(TR_AF_INET);
+    std::unique_ptr<LoopbackServer> server6_ = LoopbackServer::create(TR_AF_INET6);
 
     static auto constexpr TestMaxFileSize = 128U;
 };
 
+class WebTestIPv6 : public WebTest
+{
+protected:
+    void SetUp() override
+    {
+        WebTest::SetUp();
+        if (!server6_) {
+            GTEST_SKIP() << "IPv6 loopback is unavailable";
+        }
+    }
+
+    [[nodiscard]] tr_web::FetchOptions options6(std::string_view path = "/"sv, void* user_data = nullptr) const
+    {
+        auto options = tr_web::FetchOptions{ server6_->url(path), nullptr, user_data };
+        options.max_file_size = TestMaxFileSize;
+        return options;
+    }
+};
+
 TEST_F(WebTest, getReturnsBody)
 {
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "hello world"sv); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "hello world"sv); });
 
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
@@ -157,19 +247,19 @@ TEST_F(WebTest, requestUrlIsCaptured)
     static constexpr auto Path = "/request-url"sv;
     auto const response = fetch(options(Path));
 
-    EXPECT_EQ(server_.url(Path), response.request_url);
+    EXPECT_EQ(server4_->url(Path), response.request_url);
 }
 
 TEST_F(WebTest, noBodyIsGet)
 {
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
-    EXPECT_EQ("GET"sv, server_.lastRequest().method);
+    EXPECT_EQ("GET"sv, server4_->lastRequest().method);
 }
 
 TEST_F(WebTest, httpErrorStatusIsSurfaced)
 {
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
 
     auto const response = fetch(options());
     EXPECT_EQ(404, response.status);
@@ -194,7 +284,7 @@ TEST_F(WebTest, postSendsBody)
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(200, response.status);
 
-    auto const req = server_.lastRequest();
+    auto const req = server4_->lastRequest();
     EXPECT_EQ("POST"sv, req.method);
     EXPECT_EQ("the request body"sv, req.body);
 }
@@ -207,14 +297,14 @@ TEST_F(WebTest, requestHeadersAreSent)
 
     fetch(std::move(opts));
 
-    auto const req = server_.lastRequest();
+    auto const req = server4_->lastRequest();
     EXPECT_EQ("custom-value"sv, req.headers.at("x-custom-header"));
     EXPECT_EQ("application/json"sv, req.headers.at("content-type"));
 }
 
 TEST_F(WebTest, responseHeadersAreCaptured)
 {
-    server_.setHandler([](evhttp_request* req) {
+    server4_->setHandler([](evhttp_request* req) {
         auto* const out = evhttp_request_get_output_headers(req);
         evhttp_add_header(out, "X-Reply-Header", "reply-value");
         LoopbackServer::reply(req, HTTP_OK, "OK", "body"sv);
@@ -240,7 +330,7 @@ TEST_F(WebTest, basicAuthSendsCredentials)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("aladdin:opensesame"sv));
-    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
+    EXPECT_EQ(expected, server4_->lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, basicAuthEmptyPassword)
@@ -252,7 +342,7 @@ TEST_F(WebTest, basicAuthEmptyPassword)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("user:"sv));
-    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
+    EXPECT_EQ(expected, server4_->lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, netrcCredentialsAreSent)
@@ -266,7 +356,7 @@ TEST_F(WebTest, netrcCredentialsAreSent)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("aladdin:opensesame"sv));
-    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
+    EXPECT_EQ(expected, server4_->lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, authSchemeAnyDefersCredentials)
@@ -280,7 +370,7 @@ TEST_F(WebTest, authSchemeAnyDefersCredentials)
 
     // Under CURLAUTH_ANY curl waits for a challenge before sending credentials,
     // so a server that answers 200 immediately never sees an Authorization header.
-    auto const& headers = server_.lastRequest().headers;
+    auto const& headers = server4_->lastRequest().headers;
     EXPECT_EQ(headers.end(), headers.find("authorization"));
 }
 
@@ -293,7 +383,7 @@ TEST_F(WebTest, userDataRoundTrips)
 
 TEST_F(WebTest, rangeRequestSetsHeader)
 {
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", "data"sv); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", "data"sv); });
 
     auto opts = options();
     opts.range = std::make_pair(uint64_t{ 0 }, uint64_t{ 3 });
@@ -303,13 +393,13 @@ TEST_F(WebTest, rangeRequestSetsHeader)
     EXPECT_EQ(206, response.status);
     EXPECT_FALSE(response.errmsg);
     EXPECT_EQ("data"sv, response.body);
-    EXPECT_EQ("bytes=0-3"sv, server_.lastRequest().headers.at("range"));
+    EXPECT_EQ("bytes=0-3"sv, server4_->lastRequest().headers.at("range"));
 }
 
 TEST_F(WebTest, rangeLengthTakesPrecedenceOverMaxFileSize)
 {
     static auto constexpr Body = "data"sv;
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", Body); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", Body); });
 
     auto opts = options();
     opts.max_file_size = 1U;
@@ -328,7 +418,7 @@ TEST_F(WebTest, cookiesAreSent)
 
     fetch(std::move(opts));
 
-    EXPECT_EQ("a=b; c=d"sv, server_.lastRequest().headers.at("cookie"));
+    EXPECT_EQ("a=b; c=d"sv, server4_->lastRequest().headers.at("cookie"));
 }
 
 TEST_F(WebTest, userAgentFromMediatorIsSent)
@@ -340,49 +430,56 @@ TEST_F(WebTest, userAgentFromMediatorIsSent)
 
     fetch(*web, options());
 
-    EXPECT_EQ("TestAgent/1.0"sv, server_.lastRequest().headers.at("user-agent"));
+    EXPECT_EQ("TestAgent/1.0"sv, server4_->lastRequest().headers.at("user-agent"));
 }
 
-TEST_F(WebTest, networkChangedLetsInFlightFetchesComplete)
+TEST_F(WebTest, bindAddressChangeLetsInFlightFetchesComplete)
 {
-    static auto constexpr Body = "body"sv;
-
-    auto first_request_started = std::promise<void>{};
-    auto first_request_started_future = first_request_started.get_future();
-    auto request_count = 0;
-    server_.setHandler([&](evhttp_request* req) {
-        if (request_count++ == 0) {
-            first_request_started.set_value();
-            // Keep the first transfer in flight while the second fetch is queued.
-            std::this_thread::sleep_for(1s);
-        }
-        LoopbackServer::reply(req, HTTP_OK, "OK", Body);
+    auto destination = LoopbackServer::create();
+    if (!destination) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    destination->setHandler([&destination](evhttp_request* req) {
+        LoopbackServer::reply(req, HTTP_OK, "OK", std::to_string(destination->lastRequest().peer_port));
+    });
+    auto gate = ThreadGate{};
+    auto started = std::make_shared<std::promise<void>>();
+    auto started_future = started->get_future();
+    server4_->setHandler([started, resume = gate.future(), target = destination->url()](evhttp_request* req) {
+        started->set_value();
+        resume.wait();
+        LoopbackServer::reply(req, HTTP_MOVETEMP, "Found", {}, { { { "Location", target } } });
     });
 
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto first_fetch = fetchAsync(options("/slow"sv));
-    ASSERT_EQ(std::future_status::ready, first_request_started_future.wait_for(15s));
+    ASSERT_EQ(std::future_status::ready, started_future.wait_for(15s));
 
-    web_->network_changed();
-    auto const second_response = fetch(options("/second"sv));
+    mediator_.setBindAddress(TR_AF_INET, std::nullopt);
+    auto const second_response = fetch({ destination->url(), nullptr, nullptr });
+    ASSERT_EQ(200, second_response.status);
+
+    gate.open();
+    ASSERT_EQ(std::future_status::ready, first_fetch.wait_for(15s));
     auto const first_response = first_fetch.get();
 
     EXPECT_EQ(200, first_response.status);
     EXPECT_FALSE(first_response.errmsg);
-    EXPECT_EQ(Body, first_response.body);
-    EXPECT_EQ(200, second_response.status);
-    EXPECT_FALSE(second_response.errmsg);
-    EXPECT_EQ(Body, second_response.body);
+    EXPECT_NE(second_response.body, first_response.body);
+
+    auto const third_response = fetch({ destination->url(), nullptr, nullptr });
+    EXPECT_EQ(200, third_response.status);
+    EXPECT_EQ(second_response.body, third_response.body);
 }
 
-TEST_F(WebTest, connectionsNotReusedAfterNetworkChange)
+TEST_F(WebTest, connectionsNotReusedAcrossBindAddresses)
 {
-    mediator_.bind_address_ = "127.0.0.1";
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 
-    mediator_.bind_address_ = "192.0.2.1";
-    web_->network_changed();
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
 
     auto const failure = fetch(options());
     EXPECT_EQ(0, failure.status);
@@ -391,10 +488,118 @@ TEST_F(WebTest, connectionsNotReusedAfterNetworkChange)
     EXPECT_NE(std::string::npos, failure.errmsg->find("curl error: "));
 }
 
+TEST_F(WebTest, bindAddressesCapturedWhenQueued)
+{
+    auto destination = LoopbackServer::create();
+    if (!destination) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    auto gate = ThreadGate{};
+    auto paused = pauseWebThread(gate.future());
+    ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
+
+    auto response = fetchAsync({ destination->url(), nullptr, nullptr });
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    gate.open();
+
+    ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
+    EXPECT_EQ(200, response.get().status);
+    EXPECT_EQ("127.0.0.1", destination->lastRequest().peer_address);
+}
+
+TEST_F(WebTestIPv6, connectionsPartitionedWhenMatchingFamilyBindAddressChanges)
+{
+    ASSERT_EQ(200, fetch(options()).status);
+    auto const ipv4_unbound = server4_->lastRequest();
+    ASSERT_EQ(200, fetch(options()).status);
+    EXPECT_EQ(ipv4_unbound.peer_port, server4_->lastRequest().peer_port);
+
+    ASSERT_EQ(200, fetch(options6()).status);
+    auto const ipv6_unbound = server6_->lastRequest();
+    ASSERT_EQ(200, fetch(options6()).status);
+    EXPECT_EQ(ipv6_unbound.peer_port, server6_->lastRequest().peer_port);
+
+    mediator_.setBindAddress(TR_AF_INET6, "::1");
+    ASSERT_EQ(200, fetch(options6()).status);
+    auto const ipv6_bound = server6_->lastRequest();
+    EXPECT_EQ("::1", ipv6_bound.peer_address);
+    EXPECT_NE(ipv6_unbound.peer_port, ipv6_bound.peer_port);
+
+    ASSERT_EQ(200, fetch(options()).status);
+    auto const ipv4_unbound_v6_bound = server4_->lastRequest();
+
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    ASSERT_EQ(200, fetch(options()).status);
+    auto const bound = server4_->lastRequest();
+    EXPECT_EQ("127.0.0.1", bound.peer_address);
+    EXPECT_NE(ipv4_unbound_v6_bound.peer_port, bound.peer_port);
+
+    mediator_.setBindAddress(TR_AF_INET, std::nullopt);
+    ASSERT_EQ(200, fetch(options()).status);
+    EXPECT_NE(bound.peer_port, server4_->lastRequest().peer_port);
+}
+
+TEST_F(WebTest, mixedQueuedBindSnapshotsComplete)
+{
+    auto gate = ThreadGate{};
+    auto paused = pauseWebThread(gate.future());
+    ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
+
+    static auto constexpr Addresses = std::array{ "127.0.0.1", "192.0.2.1", "127.0.0.1", "192.0.2.1" };
+    auto futures = std::array<std::future<tr_web::FetchResponse>, Addresses.size()>{};
+    for (size_t i = 0; i < Addresses.size(); ++i) {
+        mediator_.setBindAddress(TR_AF_INET, Addresses[i]);
+        futures[i] = fetchAsync(options());
+    }
+    gate.open();
+
+    for (size_t i = 0; i < futures.size(); ++i) {
+        ASSERT_EQ(std::future_status::ready, futures[i].wait_for(15s));
+        auto const response = futures[i].get();
+        EXPECT_EQ(i % 2 == 0 ? 200 : 0, response.status);
+        EXPECT_EQ(i % 2 != 0, response.errmsg.has_value());
+    }
+}
+
+TEST_F(WebTest, bindAddressUsesResolvedIPv4Family)
+{
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    mediator_.setBindAddress(TR_AF_INET6, "2001:db8::1");
+
+    EXPECT_EQ(200, fetch(options()).status);
+    EXPECT_EQ("127.0.0.1", server4_->lastRequest().peer_address);
+}
+
+TEST_F(WebTestIPv6, bindAddressUsesResolvedIPv6Family)
+{
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.setBindAddress(TR_AF_INET6, "::1");
+
+    EXPECT_EQ(200, fetch(options6()).status);
+    EXPECT_EQ("::1", server6_->lastRequest().peer_address);
+}
+
+TEST_F(WebTest, bindSnapshotSurvivesRedirect)
+{
+    auto destination = LoopbackServer::create();
+    if (!destination) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    server4_->setHandler([this, target = destination->url()](evhttp_request* req) {
+        mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+        LoopbackServer::reply(req, HTTP_MOVETEMP, "Found", {}, { { { "Location", target } } });
+    });
+
+    EXPECT_EQ(200, fetch(options()).status);
+    EXPECT_EQ("127.0.0.1", destination->lastRequest().peer_address);
+}
+
 TEST_F(WebTest, onDataReceivedReportsByteCount)
 {
     static auto constexpr Body = "0123456789abcdef"sv;
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
 
     auto total = std::size_t{ 0 };
     auto opts = options();
@@ -411,7 +616,7 @@ TEST_F(WebTest, responseBodyLimitReportsCurlError)
 {
     static auto constexpr Body = "0123456789"sv;
     static auto constexpr MaxFileSize = std::size_t{ 4 };
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
 
     auto opts = options();
     opts.max_file_size = MaxFileSize;
@@ -428,7 +633,7 @@ TEST_F(WebTest, responseBodyLimitReportsCurlError)
 TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
 {
     auto body = std::string(TestMaxFileSize + 1U, 'x');
-    server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
+    server4_->setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
@@ -441,7 +646,7 @@ TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
 TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
 {
     auto body = std::string(TestMaxFileSize + 1U, 'x');
-    server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
+    server4_->setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto opts = options();
     opts.max_file_size = 0U;
@@ -455,7 +660,7 @@ TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
 TEST_F(WebTest, timeoutIsReported)
 {
     // Handler that never replies, so the transfer exceeds the timeout.
-    server_.setHandler([](evhttp_request* /*req*/) {});
+    server4_->setHandler([](evhttp_request* /*req*/) {});
 
     auto opts = options();
     opts.timeout_secs = 1s;
@@ -473,7 +678,7 @@ TEST_F(WebTest, interfaceBindingOverridesBindAddress)
     GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
 #else
     // binding to 192.0.2.1 fails, so only the interface can carry the fetch
-    mediator_.bind_address_ = "192.0.2.1";
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
 #ifdef __linux__
     mediator_.bind_interface_ = "lo";
 #else
@@ -498,7 +703,7 @@ TEST_F(WebTest, blockedInterfaceIsRefused)
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
     EXPECT_EQ(&user_data, response.user_data);
-    EXPECT_TRUE(std::empty(server_.lastRequest().method));
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
 }
 
 TEST_F(WebTest, sessionInterfaceBlockedAfterQueueingIsNotSentUnbound)
@@ -520,13 +725,13 @@ TEST_F(WebTest, sessionInterfaceBlockedAfterQueueingIsNotSentUnbound)
     auto const response = fetch(options());
     EXPECT_EQ(0, response.status);
     EXPECT_FALSE(response.did_connect);
-    EXPECT_TRUE(std::empty(server_.lastRequest().method));
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
 }
 
 TEST_F(WebTest, cancelAllCompletesRunningFetch)
 {
     // a handler that never replies keeps the fetch running until it is cancelled
-    server_.setHandler([](evhttp_request* /*req*/) {});
+    server4_->setHandler([](evhttp_request* /*req*/) {});
 
     auto promise = std::promise<tr_web::FetchResponse>{};
     auto future = promise.get_future();
@@ -538,7 +743,7 @@ TEST_F(WebTest, cancelAllCompletesRunningFetch)
     web_->fetch(std::move(opts));
 
     // once the server has the request, the task is running rather than queued
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
     EXPECT_EQ(std::future_status::timeout, future.wait_for(100ms));
 
     web_->cancel_all();
@@ -557,7 +762,7 @@ TEST_F(WebTest, cancelledFetchCallbackCanReenterWeb)
 {
     // TestMediator runs callbacks inline on tr_web's thread, so a callback
     // that calls back into tr_web deadlocks if it runs under tr_web's lock
-    server_.setHandler([](evhttp_request* /*req*/) {});
+    server4_->setHandler([](evhttp_request* /*req*/) {});
 
     // a deadlocked tr_web hangs this test's teardown, so a failure shows as a hang
     auto promise = std::make_shared<std::promise<void>>();
@@ -568,7 +773,7 @@ TEST_F(WebTest, cancelledFetchCallbackCanReenterWeb)
         promise->set_value();
     };
     web_->fetch(std::move(opts));
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
 
     web_->cancel_all();
 
@@ -577,7 +782,7 @@ TEST_F(WebTest, cancelledFetchCallbackCanReenterWeb)
 
 TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)
 {
-    server_.setHandler([](evhttp_request* /*req*/) {});
+    server4_->setHandler([](evhttp_request* /*req*/) {});
 
     auto promise = std::promise<tr_web::FetchResponse>{};
     auto future = promise.get_future();
@@ -586,12 +791,12 @@ TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)
         promise.set_value(response);
     };
     web_->fetch(std::move(opts));
-    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
 
     web_->cancel_all();
 
     // a fetch made after the cancel runs normally
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "after"sv); });
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "after"sv); });
     auto const after = fetch(options("/after"sv));
     EXPECT_EQ(200, after.status);
     EXPECT_EQ("after"sv, after.body);
@@ -620,8 +825,8 @@ TEST_F(WebTest, redirectBodyBiggerThanRangeDoesNotAbort)
     static auto constexpr First = uint64_t{ 0 };
     static auto constexpr Last = uint64_t{ 3 };
 
-    server_.setHandler([this](evhttp_request* req) {
-        if (auto const& path = server_.lastRequest().uri; path.ends_with("/redirect"sv)) {
+    server4_->setHandler([this](evhttp_request* req) {
+        if (auto const& path = server4_->lastRequest().uri; path.ends_with("/redirect"sv)) {
             static auto constexpr RedirectBody = "Moved permanently to /bigfile"sv;
             static_assert(std::size(RedirectBody) > Last + 1U - First);
             LoopbackServer::reply(
@@ -629,9 +834,9 @@ TEST_F(WebTest, redirectBodyBiggerThanRangeDoesNotAbort)
                 HTTP_MOVEPERM,
                 "Moved Permanently",
                 RedirectBody,
-                { { { "Location", server_.url("/bigfile") } } });
+                { { { "Location", server4_->url("/bigfile") } } });
         } else if (path.ends_with("/bigfile"sv)) {
-            auto const range = server_.lastRequest().headers.at("range");
+            auto const range = server4_->lastRequest().headers.at("range");
             auto constexpr Prefix = "bytes="sv;
             if (!range.starts_with(Prefix)) {
                 LoopbackServer::reply(req, HTTP_BADREQUEST, "Bad Request", {});

@@ -12,14 +12,12 @@
 #include <condition_variable>
 #include <cstddef>
 #include <cstdint> // for uint64_t
-#include <functional> // for std::less()
 #include <list>
 #include <limits>
 #include <map>
 #include <memory>
 #include <ranges>
 #include <mutex>
-#include <stack>
 #include <string>
 #include <thread>
 #include <utility>
@@ -120,7 +118,7 @@ using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 
 struct MultiPoolNode {
     multi_unique_ptr multi;
-    int prev_n_running = {};
+    tr_web::BindAddresses bind_addresses;
 };
 
 } // namespace curl_helpers
@@ -263,6 +261,7 @@ public:
 
     void fetch(FetchOptions&& options)
     {
+        auto bind_addresses = mediator.bind_addresses();
         {
             auto const lock = std::unique_lock{ tasks_mutex_ };
 
@@ -275,7 +274,7 @@ public:
             // before a change was queued before the cancel and is dropped
             // by it; one that sees "blocked" is refused right here.
             if (!is_blocked(mediator.bind_interface())) {
-                queued_tasks_.emplace_back(*this, std::move(options), binding_generation_);
+                queued_tasks_.emplace_back(*this, std::move(options), std::move(bind_addresses), binding_generation_);
                 queued_tasks_cv_.notify_one();
                 wakeup_multis();
                 return;
@@ -306,8 +305,8 @@ public:
     void wakeup_multis() const
     {
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        for (auto const& [multi, prev_n_running] : multi_pool_) {
-            curl_multi_wakeup(multi.get());
+        for (auto const& node : multi_pool_) {
+            curl_multi_wakeup(node.multi.get());
         }
     }
 
@@ -333,14 +332,16 @@ public:
     class Task
     {
     public:
-        Task(tr_web::Impl& impl_in, tr_web::FetchOptions&& options_in, uint64_t const generation_in)
+        Task(
+            tr_web::Impl& impl_in,
+            tr_web::FetchOptions&& options_in,
+            BindAddresses bind_addresses_in,
+            uint64_t const generation_in)
             : impl{ impl_in }
+            , bind_addresses{ std::move(bind_addresses_in) }
             , options_{ std::move(options_in) }
             , generation_{ generation_in }
         {
-            auto const parsed = tr_urlParse(options_.url);
-            easy_ = parsed ? impl.get_easy(parsed->host) : curl_easy_init();
-
             response.request_url = options_.url;
             response.user_data = options_.done_func_user_data;
 
@@ -358,31 +359,43 @@ public:
         Task& operator=(Task&&) = delete;
         Task& operator=(Task const&) = delete;
 
-        // easy_dispose can throw on OOM while pooling the handle, but a
-        // destructor must not propagate; terminating is the correct behavior here.
-        // NOLINTNEXTLINE(bugprone-exception-escape)
         ~Task()
         {
             if (multi_ != nullptr) {
-                curl_multi_remove_handle(multi_, easy_);
+                curl_multi_remove_handle(multi_, easy());
             }
 
-            easy_dispose(easy_);
+            impl.paused_easy_handles.erase(easy());
+            easy_.reset();
 
             if (req_header_slist_ != nullptr) {
                 curl_slist_free_all(req_header_slist_);
             }
         }
 
-        [[nodiscard]] constexpr auto* easy() const
+        [[nodiscard]] constexpr CURL* easy() const
         {
-            return easy_;
+            return easy_.get();
         }
 
-        void set_multi(CURLM* const multi) noexcept
+        [[nodiscard]] CURL* init_easy()
         {
-            curl_multi_add_handle(multi, easy());
-            multi_ = multi;
+            easy_.reset(curl_easy_init());
+            return easy();
+        }
+
+        [[nodiscard]] CURLMcode set_multi(CURLM* const multi) noexcept
+        {
+            auto const status = curl_multi_add_handle(multi, easy());
+            if (status == CURLM_OK) {
+                multi_ = multi;
+            }
+            return status;
+        }
+
+        void set_error(CURLcode const code)
+        {
+            response.errmsg = fmt::format("curl error: {} ({})", curl_easy_strerror(code), std::to_underlying(code));
         }
 
         // Read-only view of the fetch options. initEasy() and the curl
@@ -432,12 +445,12 @@ public:
         // curl binds the socket to the interface after open_socket()
         // creates it, and a socket open_socket() had bound to an address
         // could not be bound again.
-        [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
+        [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
         {
             if (interface_bound_) {
                 return {};
             }
-            return impl.mediator.bind_address(af).and_then(&tr_address::from_string);
+            return bind_addresses[type].and_then(&tr_address::from_string);
         }
 
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
@@ -482,36 +495,21 @@ public:
 
         [[nodiscard]] bool operator==(Task const& that) const noexcept
         {
-            return easy() == that.easy();
+            return this == &that;
         }
 
         tr_web::Impl& impl;
         tr_web::FetchResponse response;
+        BindAddresses const bind_addresses;
 
     private:
-        void easy_dispose(CURL* easy)
-        {
-            if (easy == nullptr) {
-                return;
-            }
-
-            impl.paused_easy_handles.erase(easy_);
-
-            if (auto const url = tr_urlParse(options_.url); url) {
-                curl_easy_reset(easy);
-                impl.easy_pool_[std::string{ url->host }].emplace(easy);
-            } else {
-                curl_easy_cleanup(easy);
-            }
-        }
-
         tr_web::FetchOptions options_;
 
         uint64_t generation_;
 
         bool interface_bound_ = false;
 
-        CURL* easy_;
+        curl_helpers::easy_unique_ptr easy_;
         CURLM* multi_ = nullptr;
 
         curl_slist* req_header_slist_ = nullptr;
@@ -607,22 +605,6 @@ public:
         return deadline_exists() && deadline_ns() <= to_ns(mediator.now());
     }
 
-    [[nodiscard]] CURL* get_easy(std::string_view host)
-    {
-        CURL* easy = nullptr;
-
-        if (auto iter = easy_pool_.find(host); iter != std::end(easy_pool_) && !std::empty(iter->second)) {
-            easy = iter->second.top().release();
-            iter->second.pop();
-        }
-
-        if (easy == nullptr) {
-            easy = curl_easy_init();
-        }
-
-        return easy;
-    }
-
     static size_t onDataReceived(void* data, size_t size, size_t nmemb, void* vtask)
     {
         size_t const bytes_used = size * nmemb;
@@ -692,7 +674,7 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
-            if (auto const bind_addr = task->bind_address(address->family)) {
+            if (auto const bind_addr = task->bind_address(tr_af_to_ip_protocol(address->family))) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
                 static constexpr int One = 1;
                 (void)::setsockopt(sock, SOL_IP, IP_BIND_ADDRESS_NO_PORT, reinterpret_cast<char const*>(&One), sizeof(One));
@@ -725,17 +707,21 @@ public:
         return sock;
     }
 
-    void initEasy(Task& task, std::optional<std::string> const& session_binding)
+    [[nodiscard]] bool initEasy(Task& task, std::optional<std::string> const& session_binding)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
         TR_ASSERT(!is_blocked(session_binding));
-        auto* const e = task.easy();
+        auto* const e = task.init_easy();
+        if (e == nullptr) {
+            return false;
+        }
 
         // N.B. DO NOT set CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE, nor an address in
         // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
         // address family it resolved, so an IPv4 bind address would also be forced onto
         // IPv6 sockets. open_socket() binds each socket according to its resolved family
         // instead. An interface name ("if!eth0") suits both families, so it goes to curl.
+        // Separate multi handles isolate the connection caches for different bind pairs.
         //
         // `session_binding` must be the value cancel_invalidated_tasks() checked this
         // task against. A fresh read of the mediator could be "blocked", which has no
@@ -876,6 +862,8 @@ public:
         } else {
             // Rely on the write function to limit the size of range requests as a workaround for curl bug #14899.
         }
+
+        return true;
     }
 
     [[nodiscard]] std::optional<uint64_t> paused_tasks_upkeep()
@@ -959,8 +947,7 @@ public:
 
     // Complete cancelled_tasks_ as failed connections. Like remove_task(),
     // this runs the callbacks without tasks_mutex_ and then destroys the
-    // tasks under it, since each destructor returns its easy handle to
-    // easy_pool_, which fetch() draws from.
+    // tasks under it, since is_idle() reads cancelled_tasks_ from any thread.
     void complete_cancelled_tasks()
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
@@ -988,13 +975,19 @@ public:
         network_changed_ = true;
     }
 
-    void push_multi()
+    [[nodiscard]] bool push_multi(BindAddresses const& bind_addresses)
     {
+        auto multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
+        if (!multi) {
+            return false;
+        }
+        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
+        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
+        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
+
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        auto const multi = multi_pool_.emplace_back(curl_helpers::multi_unique_ptr{ curl_multi_init() }).multi.get();
-        (void)curl_multi_setopt(multi, CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-        (void)curl_multi_setopt(multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
-        (void)curl_multi_setopt(multi, CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
+        multi_pool_.emplace_back(std::move(multi), bind_addresses);
+        return true;
     }
 
     [[nodiscard]] CURLM* current_multi() const noexcept
@@ -1006,8 +999,6 @@ public:
     // the thread started by Impl.curl_thread runs this function
     void curlThreadFunc()
     {
-        push_multi();
-
         for (;;) {
             if (deadline_reached()) {
                 while (!std::empty(running_tasks_)) {
@@ -1016,6 +1007,7 @@ public:
                 }
             }
 
+            auto failed_tasks = std::list<Task>{};
             if (auto lock = std::unique_lock{ tasks_mutex_ }; lock.owns_lock()) {
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
@@ -1036,46 +1028,49 @@ public:
 
                 cancel_invalidated_tasks(session_binding);
 
-                if (network_changed_) {
-#if LIBCURL_VERSION_NUM >= 0x081000 /* 8.16.0 */
-                    if (curl_multi_setopt(current_multi(), CURLMOPT_NETWORK_CHANGED, CURLMNWC_CLEAR_CONNS) != CURLM_OK)
-#endif
-                    {
-                        push_multi();
+                // add queued tasks
+                for (auto it = queued_tasks_.begin(); it != queued_tasks_.end();) {
+                    if (!initEasy(*it, session_binding) ||
+                        ((multi_pool_.empty() || network_changed_ || multi_pool_.back().bind_addresses != it->bind_addresses) &&
+                         !push_multi(it->bind_addresses))) {
+                        it->set_error(CURLE_OUT_OF_MEMORY);
+                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
+                        continue;
                     }
                     network_changed_ = false;
-                }
 
-                // add queued tasks
-                if (!std::empty(queued_tasks_)) {
-                    for (auto& task : queued_tasks_) {
-                        initEasy(task, session_binding);
-                        task.set_multi(current_multi());
+                    if (auto const status = it->set_multi(current_multi()); status != CURLM_OK) {
+                        it->response.errmsg = fmt::format(
+                            "curl multi error: {} ({})",
+                            curl_multi_strerror(status),
+                            std::to_underlying(status));
+                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
+                        continue;
                     }
 
-                    running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
+                    ++it;
                 }
+
+                running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
             }
 
             complete_cancelled_tasks();
+
+            for (auto& task : failed_tasks) {
+                task.done();
+            }
+            failed_tasks.clear();
+
+            if (std::empty(running_tasks_)) {
+                continue;
+            }
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
             // start newly added or unpaused tasks
             auto n_running = int{};
-            for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
-                curl_multi_perform(it->multi.get(), &n_running);
-
-                // Cleanup old multi handles that finished. If both the previous and current n_running are zero,
-                // then this multi handle has no more tasks, and all CURLMSG_DONE messages has been processed in
-                // the previous loop, so we can safely remove it.
-                if (it->prev_n_running == 0 && n_running == 0 && it != std::prev(multi_pool_.end())) {
-                    auto const lock = std::unique_lock{ multi_pool_mutex_ };
-                    it = multi_pool_.erase(it);
-                } else {
-                    it->prev_n_running = n_running;
-                    ++it;
-                }
+            for (auto const& node : multi_pool_) {
+                curl_multi_perform(node.multi.get(), &n_running);
             }
 
             // Wake up once per second, or when the next task is due to unpause, whichever is sooner.
@@ -1091,32 +1086,29 @@ public:
             // absorbs the wait. An old handle that wakes during the wait is serviced
             // on the next iteration.
             auto numfds = int{};
-            for (auto const& [multi, prev_n_running] : multi_pool_ | std::views::take(multi_pool_.size() - 1)) {
-                if (curl_multi_poll(multi.get(), nullptr, 0, 0, &numfds) == CURLM_OK && numfds > 0) {
+            for (auto const& node : multi_pool_ | std::views::take(multi_pool_.size() - 1U)) {
+                if (curl_multi_poll(node.multi.get(), nullptr, 0, 0, &numfds) == CURLM_OK && numfds > 0) {
                     break;
                 }
             }
             curl_multi_poll(current_multi(), nullptr, 0, numfds > 0 ? 0 : timeout_ms, &numfds);
 
-            for (auto& [multi, prev_n_running] : multi_pool_) {
+            for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
+                auto* const multi = it->multi.get();
                 // curl_multi_perform should be called again immediately after curl_multi_(poll|wait)
                 // https://curl.se/mail/lib-2018-03/0119.html
-                curl_multi_perform(multi.get(), &n_running);
-                prev_n_running = n_running;
+                auto const status = curl_multi_perform(multi, &n_running);
 
                 // process any tasks that just finished
                 CURLMsg* msg = nullptr;
                 auto unused = int{};
-                while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr) {
+                while ((msg = curl_multi_info_read(multi, &unused)) != nullptr) {
                     if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
                         Task* task = nullptr;
                         curl_easy_getinfo(e, CURLINFO_PRIVATE, &task);
 
                         if (msg->data.result != CURLE_OK) {
-                            task->response.errmsg = fmt::format(
-                                "curl error: {} ({})",
-                                curl_easy_strerror(msg->data.result),
-                                std::to_underlying(msg->data.result));
+                            task->set_error(msg->data.result);
                         }
 
                         auto req_bytes_sent = long{};
@@ -1130,15 +1122,20 @@ public:
                         remove_task(*task);
                     }
                 }
+
+                // Completed easy handles must be detached before their multi is destroyed.
+                if (status == CURLM_OK && n_running == 0 && it != std::prev(multi_pool_.end())) {
+                    auto const lock = std::unique_lock{ multi_pool_mutex_ };
+                    it = multi_pool_.erase(it);
+                } else {
+                    ++it;
+                }
             }
         }
     }
 
     curl_helpers::shared_unique_ptr const curlsh_{ curl_share_init() };
 
-    std::map<std::string /*host*/, std::stack<curl_helpers::easy_unique_ptr>, std::less<>> easy_pool_;
-
-    // TODO(curl 8.16.0): Remove all the multi_pool_ BS once we require curl 8.16.0 or above
     small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
     bool network_changed_ = false;
 
@@ -1172,8 +1169,7 @@ public:
         // Do *not* share HSTS cache
         // https://github.com/transmission/transmission/issues/5199
 
-        // Do *not* share connection cache. We don't want different multi handles to share connections,
-        // so that we can clear old connections when the network changes.
+        // Each multi owns its connection cache to isolate different bind-address pairs.
 
         auto* const sh = shared();
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);

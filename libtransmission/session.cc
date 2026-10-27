@@ -303,13 +303,16 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
+tr_web::BindAddresses tr_session::WebMediator::bind_addresses() const
 {
-    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
-        return addr.display_name();
+    auto const lock = session_->unique_lock();
+    auto addresses = tr_web::BindAddresses{};
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        if (auto const addr = session_->bind_address(type); !addr.is_any()) {
+            addresses[type] = addr.display_name();
+        }
     }
-
-    return {};
+    return addresses;
 }
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
@@ -907,10 +910,9 @@ void tr_session::apply_network_bindings(
         addr_changed = true;
     }
 
-    // cancel_all() leaves curl's connection cache alone, and a connection
-    // pinned to the old interface must not serve requests on the new route
-    if (interface_changed || new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
-        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
+    // tr_web keeps a connection cache per bind-address pair, not per interface,
+    // and a connection pinned to the old interface must not serve the new route
+    if (interface_changed) {
         web_->network_changed();
     }
 
