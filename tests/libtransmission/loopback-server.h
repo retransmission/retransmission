@@ -13,10 +13,10 @@
 #include <csignal>
 #endif
 #include <functional>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <mutex>
-#include <new>
 #include <string>
 #include <string_view>
 #include <stdexcept>
@@ -66,15 +66,8 @@ public:
         try {
             return std::unique_ptr<LoopbackServer>{ new LoopbackServer{ type } };
         } catch (std::system_error const& error) {
-            auto const code = error.code().value();
-#ifdef _WIN32
-            if (code == WSAEAFNOSUPPORT || code == WSAEPROTONOSUPPORT || code == WSAEADDRNOTAVAIL) {
-#else
-            if (code == EAFNOSUPPORT || code == EPROTONOSUPPORT || code == EADDRNOTAVAIL) {
-#endif
-                return {};
-            }
-            throw;
+            std::cerr << error.what() << '\n';
+            return {};
         }
     }
 
@@ -180,7 +173,11 @@ private:
         auto request = Request{};
         request.method = methodName(evhttp_request_get_command(req));
         request.uri = evhttp_request_get_uri(req);
+#if LIBEVENT_VERSION_NUMBER >= 0x02020001
+        char const* peer_address = nullptr;
+#else
         char* peer_address = nullptr;
+#endif
         evhttp_connection_get_peer(evhttp_request_get_connection(req), &peer_address, &request.peer_port);
         request.peer_address = peer_address;
 
