@@ -317,7 +317,7 @@ tr_web::BindAddresses tr_session::WebMediator::bind_addresses() const
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
 {
-    // runs on the curl thread, so it reads the binding under its mutex
+    // fetch() runs on any thread, so read the binding under its mutex
     if (auto bind_interface = session_->bind_interface_thread_safe(); !tr_net_interface_is_default(bind_interface)) {
         return bind_interface;
     }
@@ -423,33 +423,17 @@ tr_session::BoundSocket::~BoundSocket()
 
 tr_address tr_session::bind_address(tr_address_type type) const noexcept
 {
-    if (type == TR_AF_INET) {
-        // if user provided an address, use it.
-        // otherwise, use any_ipv4 (0.0.0.0).
-        return ip_cache_->bind_addr(type);
-    }
-
-    if (type == TR_AF_INET6) {
-        // if user provided a valid address, use it.
-        if (auto const addr = tr_address::from_string(settings_.bind_address_ipv6); addr) {
-            return *addr;
-        }
-
-        // when bound to an interface, let that binding choose the source address.
-        // The curl thread calls this too, so read the binding under its mutex.
-        if (!tr_net_interface_is_default(bind_interface_thread_safe())) {
-            return tr_address::any(TR_AF_INET6);
-        }
-
-        // otherwise, if we can determine which one to use via global_source_address(ipv6) magic, use it.
-        // otherwise, use any_ipv6 (::).
+    // with no user address and no interface binding, IPv6 uses the address
+    // global_source_address(ipv6) magic found, if any, else any_ipv6 (::)
+    if (type == TR_AF_INET6 && !tr_address::from_string(settings_.bind_address_ipv6) &&
+        tr_net_interface_is_default(bind_interface())) {
         auto const source_addr = source_address(type);
-        auto const default_addr = source_addr && source_addr->is_global_unicast() ? *source_addr : tr_address::any(TR_AF_INET6);
-        return default_addr;
+        return source_addr && source_addr->is_global_unicast() ? *source_addr : tr_address::any(TR_AF_INET6);
     }
 
-    TR_ASSERT_MSG(false, "invalid type");
-    return {};
+    // otherwise, if user provided an address, use it; else use any (0.0.0.0, ::),
+    // and an interface binding chooses the source address
+    return ip_cache_->bind_addr(type);
 }
 
 // ---
@@ -573,7 +557,12 @@ void tr_session::on_now_timer()
         auto const lock = unique_lock();
         tr_logAddInfo(
             fmt::format("Network interface '{interface}' changed; rebinding its sockets", fmt::arg("interface", name)));
+        auto const restarting = stop_torrents_for_rebind();
         apply_network_bindings(false, true, false, false, settings_);
+        // the name is unchanged, so tr_web's per-binding connection caches
+        // can't tell the interface's old instance from its new one
+        web_->network_changed();
+        start_torrents_after_rebind(restarting);
     }
 
     // set the timer to kick again right after (10ms after) the next second
@@ -776,9 +765,10 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 {
     auto const lock = unique_lock();
 
-    // Other threads see the new binding before anything below acts on it,
-    // so work cancelled by apply_network_bindings() cannot be replaced by
-    // work that still reads the old value.
+    bool const interface_changed = settings_in.bind_interface != settings_.bind_interface;
+    auto const restarting = interface_changed ? stop_torrents_for_rebind() : std::vector<tr_torrent*>{};
+
+    // other threads read the binding under its mutex
     {
         auto const bind_interface_lock = std::scoped_lock{ bind_interface_mutex_ };
         std::swap(settings_, settings_in);
@@ -801,8 +791,6 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         ::umask(val);
     }
 #endif
-
-    bool const interface_changed = new_settings.bind_interface != old_settings.bind_interface;
 
     // the binding policy is logged once here; the sockets it refuses stay quiet
     if (force || interface_changed) {
@@ -836,6 +824,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     }
 
     apply_network_bindings(force, interface_changed, port_changed, utp_changed, old_settings);
+    start_torrents_after_rebind(restarting);
 
     if (auto const& val = new_settings.sleep_per_seconds_during_verify;
         force || val != old_settings.sleep_per_seconds_during_verify) {
@@ -853,6 +842,32 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     update_bandwidth(tr_direction::Down);
 }
 
+std::vector<tr_torrent*> tr_session::stop_torrents_for_rebind()
+{
+    tr_peerMgrCloseIncomingHandshakes(peer_mgr_.get());
+
+    auto restarting = std::vector<tr_torrent*>{};
+    for (auto* const tor : torrents()) {
+        if (tor->stop_for_restart()) {
+            restarting.push_back(tor);
+        }
+    }
+
+    // trackers must hear "stopped" from the address that announced "started"
+    if (announcer_) {
+        announcer_->flushStops();
+    }
+
+    return restarting;
+}
+
+void tr_session::start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting)
+{
+    for (auto* const tor : restarting) {
+        tor->start_after_restart();
+    }
+}
+
 void tr_session::apply_network_bindings(
     bool const force,
     bool const interface_changed,
@@ -862,12 +877,7 @@ void tr_session::apply_network_bindings(
 {
     auto const& new_settings = settings_;
 
-    // HTTP work in flight was started on the old route. Cancel it before
-    // the IP cache is refreshed below, so the new probe is not cancelled too.
-    if (interface_changed) {
-        web_->cancel_all();
-    }
-
+    // a query still in flight on the old binding must not refill the cache
     if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
         ip_cache_->invalidate(TR_AF_INET);
         ip_cache_->update_addr(TR_AF_INET);
@@ -910,12 +920,6 @@ void tr_session::apply_network_bindings(
         addr_changed = true;
     }
 
-    // tr_web keeps a connection cache per bind-address pair, not per interface,
-    // and a connection pinned to the old interface must not serve the new route
-    if (interface_changed) {
-        web_->network_changed();
-    }
-
     bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
 
     if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
@@ -953,15 +957,6 @@ void tr_session::apply_network_bindings(
         dht_.reset();
     } else if (!dht_) {
         dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
-    }
-
-    // Restarting drops every peer and handshake the torrent has and announces
-    // "stopped" then "started", so trackers learn the new route.
-    if (interface_changed) {
-        tr_peerMgrCloseIncomingHandshakes(peer_mgr_.get());
-        for (auto* const tor : torrents()) {
-            tor->restart();
-        }
     }
 }
 

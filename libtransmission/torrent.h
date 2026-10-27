@@ -891,9 +891,12 @@ struct tr_torrent {
 
     void start(bool bypass_queue, std::optional<bool> has_any_local_data);
 
-    // Stop a running torrent and start it again, announcing both events.
-    // Does nothing to a torrent that is stopped or stopping. Session thread only.
-    void restart();
+    // Restart a running torrent in two halves, announcing both events, so the
+    // caller can act between them. Session thread only.
+    // stop_for_restart() returns false, and does nothing, if the torrent is
+    // stopped or stopping; otherwise call start_after_restart() afterwards.
+    [[nodiscard]] bool stop_for_restart();
+    void start_after_restart();
 
     [[nodiscard]] constexpr auto has_changed_since(time_t when) const noexcept
     {

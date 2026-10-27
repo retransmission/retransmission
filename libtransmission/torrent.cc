@@ -684,19 +684,27 @@ void tr_torrent::start_in_session_thread()
     started_(this);
 }
 
-void tr_torrent::restart()
+bool tr_torrent::stop_for_restart()
 {
     TR_ASSERT(session->am_in_session_thread());
 
     // a torrent with a stop pending stays stopped
     if (!is_running() || is_stopping()) {
-        return;
+        return false;
     }
+
+    stop_now();
+    return true;
+}
+
+void tr_torrent::start_after_restart()
+{
+    TR_ASSERT(session->am_in_session_thread());
+    TR_ASSERT(!is_running());
 
     // start() would re-check the queue and local data and, for a torrent
     // that has just reached its seed ratio, disable the ratio limit. This
     // torrent was running a moment ago, so it keeps its slot and its limits.
-    stop_now();
     is_running_ = true;
     session->add_started_torrent();
     set_dirty();

@@ -1406,8 +1406,7 @@ void onPortTested(tr_web::FetchResponse const& web_response)
 {
     using namespace JsonRpc;
 
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, user_data] =
-        web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<tr_rpc_idle_data*>(user_data);
 
     if (auto const addr = tr_address::from_string(primary_ip);
@@ -1553,8 +1552,7 @@ struct add_torrent_idle_data {
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, did_cancel, user_data] =
-        web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<struct add_torrent_idle_data*>(user_data);
 
     auto const parsed_url = tr_urlParse(url);

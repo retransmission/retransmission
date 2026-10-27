@@ -261,7 +261,6 @@ TEST_F(IPCacheTest, onResponseIPQuery)
                 .primary_ip = std::string{},
                 .did_connect = true,
                 .did_timeout = false,
-                .did_cancel = false,
                 .user_data = options.done_func_user_data,
             };
             options.done_func(response);
@@ -332,7 +331,6 @@ TEST_F(IPCacheTest, invalidateForgetsAddressesAndIgnoresStaleResponse)
             .primary_ip = std::string{},
             .did_connect = true,
             .did_timeout = false,
-            .did_cancel = false,
             .user_data = nullptr,
         };
         done(response);

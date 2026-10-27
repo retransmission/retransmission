@@ -76,6 +76,11 @@ public:
     virtual void removeTorrent(tr_torrent* tor) = 0;
     virtual void startShutdown() = 0;
 
+    // Send now every "stopped" that is the only event left in its tier's queue,
+    // bypassing upkeep()'s per-pass limit. An HTTP stop is bound to the network
+    // binding of the moment; a UDP one, only if its tracker connection is live.
+    virtual void flushStops() = 0;
+
     virtual void upkeep() = 0;
 };
 

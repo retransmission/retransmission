@@ -202,7 +202,8 @@ TEST_F(TorrentTest, restartKeepsSeedRatioLimit)
     auto const [is_running, ratio_mode] = blockingRunInSessionThread([tor]() {
         tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
         tr_torrentSetRatioLimit(tor, 0.0);
-        tor->restart();
+        EXPECT_TRUE(tor->stop_for_restart());
+        tor->start_after_restart();
         return std::pair{ tor->is_running(), tr_torrentGetRatioMode(tor) };
     });
     EXPECT_TRUE(is_running);
@@ -220,7 +221,7 @@ TEST_F(TorrentTest, restartLeavesPendingStop)
     // in between must not cancel that stop
     auto const is_stopping = blockingRunInSessionThread([tor]() {
         tor->stop_soon();
-        tor->restart();
+        EXPECT_FALSE(tor->stop_for_restart());
         return tor->is_stopping();
     });
     EXPECT_TRUE(is_stopping);
