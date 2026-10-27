@@ -660,12 +660,20 @@ TEST(BlocklistUpdater, destructionDuringAutoUpdateLogsNothing)
 class BlocklistDownloadTest : public SessionTest
 {
 protected:
+    void SetUp() override
+    {
+        SessionTest::SetUp();
+        if (!server_) {
+            GTEST_SKIP() << "IPv4 loopback is unavailable";
+        }
+    }
+
     // Point the session's blocklist URL at the loopback server, kick off an
     // update, and wait for it to finish. tr_blocklistUpdate() invokes its
     // callback on the session thread, so hand the result back via a promise.
     [[nodiscard]] tr_blocklist_update_result runUpdate(std::string_view path = "/blocklist"sv)
     {
-        tr_blocklistSetURL(session_, server_.url(path));
+        tr_blocklistSetURL(session_, server_->url(path));
 
         auto promise = std::make_shared<std::promise<tr_blocklist_update_result>>();
         auto future = promise->get_future();
@@ -678,12 +686,12 @@ protected:
         return future.get();
     }
 
-    LoopbackServer server_;
+    std::unique_ptr<LoopbackServer> server_ = LoopbackServer::create(TR_AF_INET);
 };
 
 TEST_F(BlocklistDownloadTest, installsPlainText)
 {
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
 
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
@@ -695,7 +703,7 @@ TEST_F(BlocklistDownloadTest, installsPlainText)
 TEST_F(BlocklistDownloadTest, installsZip)
 {
     static auto const Zipped = makeArchive(asZip, "blocklist"sv, Rules);
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Zipped); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Zipped); });
 
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
@@ -705,7 +713,7 @@ TEST_F(BlocklistDownloadTest, installsZip)
 
 TEST_F(BlocklistDownloadTest, reportsDownloadError)
 {
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
 
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result.status);
@@ -716,13 +724,13 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
 TEST_F(BlocklistDownloadTest, emptyDownloadInstallsEmptyList)
 {
     // install a good list first
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
     ASSERT_EQ(tr_blocklist_update_status::Ok, runUpdate().status);
     ASSERT_EQ(2U, tr_blocklistGetRuleCount(session_));
 
     // an empty but valid list is honored: it replaces the installed list to
     // unblock every peer (transmission #7942, #8074)
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "# now empty\n"sv); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "# now empty\n"sv); });
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
     EXPECT_EQ(0U, result.n_rules);
@@ -732,13 +740,13 @@ TEST_F(BlocklistDownloadTest, emptyDownloadInstallsEmptyList)
 TEST_F(BlocklistDownloadTest, unparseableDownloadKeepsExistingBlocklist)
 {
     // install a good list first
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
     ASSERT_EQ(tr_blocklist_update_status::Ok, runUpdate().status);
     ASSERT_EQ(2U, tr_blocklistGetRuleCount(session_));
 
     // a body whose content doesn't parse (e.g. a server error page) is
     // rejected, leaving the installed list untouched
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "<html>503</html>\n"sv); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "<html>503</html>\n"sv); });
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::InvalidData, result.status);
     EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_)); // preserved, not wiped
@@ -748,7 +756,7 @@ TEST_F(BlocklistDownloadTest, updatesMTimeOnSuccess)
 {
     EXPECT_EQ(0, tr_blocklistGetMTime(session_));
 
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    server_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
     auto const result = runUpdate();
     ASSERT_EQ(tr_blocklist_update_status::Ok, result.status);
 
