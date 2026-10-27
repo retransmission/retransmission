@@ -1,0 +1,11 @@
+services:
+  benchmark:
+    environment:
+      TR_PROFILE_STORAGE: bind
+      TR_PROFILE_WORK_DIR: /work
+    volumes:
+      - type: bind
+        source: ${WORK_DIRECTORY:?Set WORK_DIRECTORY to an existing disk-backed directory}
+        target: /work
+        bind:
+          create_host_path: false
