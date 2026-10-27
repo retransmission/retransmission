@@ -536,6 +536,10 @@ inline constexpr bool TrNetCanBindInterface = false;
 // the interface name to bind to, or empty when `bind_interface` means normal OS routing
 [[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
 
+// true when `value`, stripped, is a bind_address_ipv4 or bind_address_ipv6
+// setting of the `type` family: empty for any address, or an address alone
+[[nodiscard]] bool tr_net_is_bind_address(std::string_view value, tr_address_type type);
+
 // the OS index of the named interface, or 0 when `bind_interface` is
 // empty, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);

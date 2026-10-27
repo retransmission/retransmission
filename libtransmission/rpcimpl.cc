@@ -2015,6 +2015,33 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             }
         });
 
+    // empty means any address; anything else must be an address of the key's family
+    auto const bind_address_setter = [](tr_address_type const type, void (*set)(tr_session*, std::string_view)) {
+        return [type, set](tr_session& tgt, tr_variant const& src, ErrorInfo& err) {
+            auto const val = src.value_if<std::string_view>();
+            if (!val) {
+                return;
+            }
+
+            if (!tr_net_is_bind_address(*val, type)) {
+                err = { JsonRpc::Error::INVALID_PARAMS, type == TR_AF_INET ? "not an IPv4 address"s : "not an IPv6 address"s };
+                return;
+            }
+
+            set(&tgt, *val);
+        };
+    };
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv4,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv4; },
+        bind_address_setter(TR_AF_INET, tr_sessionSetBindAddressIPv4));
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv6,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv6; },
+        bind_address_setter(TR_AF_INET6, tr_sessionSetBindAddressIPv6));
+
     map.try_emplace(
         TR_KEY_bind_interface,
         [](tr_session const& src) -> tr_variant { return src.bind_interface(); },

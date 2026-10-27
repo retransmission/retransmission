@@ -70,8 +70,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "begin_piece"sv, // rpc
     "bind-address-ipv4"sv, // daemon, tr_session::Settings
     "bind-address-ipv6"sv, // daemon, tr_session::Settings
-    "bind_address_ipv4"sv, // daemon, tr_session::Settings
-    "bind_address_ipv6"sv, // daemon, tr_session::Settings
+    "bind_address_ipv4"sv, // daemon, rpc, tr_session::Settings
+    "bind_address_ipv6"sv, // daemon, rpc, tr_session::Settings
     "bind_interface"sv, // daemon, rpc, tr_session::Settings
     "bitfield"sv, // .resume
     "blocklist-date"sv, // legacy settings.json

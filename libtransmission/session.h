@@ -1371,6 +1371,8 @@ private:
     friend void tr_sessionSetAltSpeedEnd(tr_session* session, size_t minutes_since_midnight);
     friend void tr_sessionSetAltSpeedFunc(tr_session* session, tr_altSpeedFunc func);
     friend void tr_sessionSetAltSpeed_KBps(tr_session* session, tr_direction dir, size_t limit_kbyps);
+    friend void tr_sessionSetBindAddressIPv4(tr_session* session, std::string_view address);
+    friend void tr_sessionSetBindAddressIPv6(tr_session* session, std::string_view address);
     friend void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
     friend void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled);
     friend void tr_sessionSetDHTEnabled(tr_session* session, bool enabled);

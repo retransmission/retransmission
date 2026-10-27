@@ -1749,6 +1749,28 @@ void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_inter
     });
 }
 
+void tr_sessionSetBindAddressIPv4(tr_session* session, std::string_view address)
+{
+    TR_ASSERT(session != nullptr);
+
+    session->run_in_session_thread([session, address = std::string{ tr_strv_strip(address) }] {
+        auto settings = session->settings_;
+        settings.bind_address_ipv4 = address;
+        session->setSettings(std::move(settings), false);
+    });
+}
+
+void tr_sessionSetBindAddressIPv6(tr_session* session, std::string_view address)
+{
+    TR_ASSERT(session != nullptr);
+
+    session->run_in_session_thread([session, address = std::string{ tr_strv_strip(address) }] {
+        auto settings = session->settings_;
+        settings.bind_address_ipv6 = address;
+        session->setSettings(std::move(settings), false);
+    });
+}
+
 // ---
 
 void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled)

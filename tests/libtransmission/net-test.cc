@@ -1124,6 +1124,25 @@ TEST_F(NetTest, curlInterfaceString)
     EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
 }
 
+TEST_F(NetTest, isBindAddress)
+{
+    // empty, even padded, means any address
+    EXPECT_TRUE(tr_net_is_bind_address(""sv, TR_AF_INET));
+    EXPECT_TRUE(tr_net_is_bind_address("  "sv, TR_AF_INET6));
+
+    EXPECT_TRUE(tr_net_is_bind_address(" 192.168.1.5 "sv, TR_AF_INET));
+    EXPECT_TRUE(tr_net_is_bind_address("fd00::2"sv, TR_AF_INET6));
+
+    // the other family, a port, brackets, or no address at all
+    EXPECT_FALSE(tr_net_is_bind_address("fd00::2"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.5"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.5:51413"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("[fd00::2]:80"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("[fd00::2]"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.256"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("wg0"sv, TR_AF_INET));
+}
+
 TEST_F(NetTest, interfaceIndex)
 {
     EXPECT_EQ(0U, tr_net_interface_index(""sv));

@@ -326,6 +326,10 @@ inline constexpr std::string_view TrBindInterfaceBlocked = TR_BIND_INTERFACE_BLO
 [[nodiscard]] std::string tr_sessionGetBindInterface(tr_session const* session);
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
 
+// the local address to listen on and send from; empty means any address
+void tr_sessionSetBindAddressIPv4(tr_session* session, std::string_view address);
+void tr_sessionSetBindAddressIPv6(tr_session* session, std::string_view address);
+
 [[nodiscard]] tr_encryption_mode tr_sessionGetEncryption(tr_session const* session);
 void tr_sessionSetEncryption(tr_session* session, tr_encryption_mode mode);
 

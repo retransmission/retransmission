@@ -130,6 +130,23 @@ std::string_view tr_net_effective_bind_interface(std::string_view const bind_int
     return tr_strv_strip(bind_interface);
 }
 
+bool tr_net_is_bind_address(std::string_view const value, tr_address_type const type)
+{
+    auto const stripped = tr_strv_strip(value);
+    if (std::empty(stripped)) {
+        return true;
+    }
+
+    // from_string() also takes "1.2.3.4:80" and "[::1]:80", but the setting
+    // is bound as written, so it must be the address alone
+    if (stripped.find_first_of(type == TR_AF_INET ? ":"sv : "[]"sv) != std::string_view::npos) {
+        return false;
+    }
+
+    auto const addr = tr_address::from_string(stripped);
+    return addr && addr->type == type;
+}
+
 unsigned tr_net_interface_index(std::string_view const bind_interface)
 {
     auto const name = tr_net_effective_bind_interface(bind_interface);
