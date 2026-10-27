@@ -899,6 +899,7 @@ void torrentAddAnnounce(tr_torrent* const tor, tr_announce_event const e, time_t
 }
 } // namespace
 
+// NOLINTNEXTLINE(readability-make-member-function-const)
 void tr_announcer_impl::onAnnounceDone(
     size_t tier_id,
     tr_announce_event event,
