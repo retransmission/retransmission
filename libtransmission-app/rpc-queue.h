@@ -132,6 +132,7 @@ private:
         keepalive_.reset();
     }
 
+    // TODO(c++23): delete this method and use `std::move_only_function` (P0288, gcc 12.1, clang unimplemented)
     template<typename Func>
     [[nodiscard]] static auto make_copyable(Func&& func)
     {

@@ -208,7 +208,7 @@ namespace
         "{}|\\^[]`" // unwise
     };
 
-    return !std::empty(url) && std::ranges::all_of(url, [&ValidChars](auto ch) { return tr_strv_contains(ValidChars, ch); });
+    return !std::empty(url) && std::ranges::all_of(url, [&ValidChars](auto ch) { return ValidChars.contains(ch); });
 }
 
 [[nodiscard]] bool tr_isValidTrackerScheme(std::string_view scheme)
@@ -475,7 +475,8 @@ std::string tr_urlPercentDecode(std::string_view in)
         }
 
         in.remove_prefix(pos);
-        if (std::size(in) >= 3 && in[0] == '%' && (std::isxdigit(in[1]) != 0) && (std::isxdigit(in[2]) != 0)) {
+        if (std::size(in) >= 3 && in[0] == '%' && std::isxdigit(static_cast<unsigned char>(in[1])) != 0 &&
+            std::isxdigit(static_cast<unsigned char>(in[2])) != 0) {
             auto hexstr = std::to_array<char>({ in[1], in[2], '\0' });
             auto const hex = strtoul(std::data(hexstr), nullptr, 16);
             out += static_cast<char>(hex);

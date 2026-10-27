@@ -10,7 +10,6 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/web-utils.h> // tr_urlIsValidTracker()
 
 #import "CreatorWindowController.h"
@@ -148,7 +147,7 @@ static NSMutableSet* creatorWindowControllerSet;
     self.fNameField.stringValue = name;
     self.fNameField.toolTip = self.fPath.path;
 
-    auto const is_folder = self.fBuilder->file_count() > 1 || tr_strv_contains(self.fBuilder->path(0), '/');
+    auto const is_folder = self.fBuilder->file_count() > 1 || self.fBuilder->path(0).contains('/');
 
     auto fileType = [UTType contentTypeForFilenameExtension:self.fPath.pathExtension isFolder:is_folder];
 

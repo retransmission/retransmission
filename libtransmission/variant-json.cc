@@ -232,7 +232,7 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
                 fmt::arg("position", pos),
                 fmt::arg("text", input.substr(pos, 16U)),
                 fmt::arg("error", rapidjson::GetParseError_En(err_code)),
-                fmt::arg("error_code", static_cast<std::underlying_type_t<decltype(err_code)>>(err_code))));
+                fmt::arg("error_code", std::to_underlying(err_code))));
     }
 
     return {};

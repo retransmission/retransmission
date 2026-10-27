@@ -407,10 +407,7 @@ struct tau_tracker {
         for (ipp_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp) {
             // do we have a DNS request that's ready?
             if (auto& dns = addr_pending_dns_[ipp]; dns && dns->wait_for(0ms) == std::future_status::ready) {
-                // TODO(C++23): use std::optional::transform() instead
-                if (auto const& addr = dns->get(); addr.has_value()) {
-                    addr_[ipp] = addr->to_sockaddr();
-                }
+                addr_[ipp] = dns->get().transform([](auto const& addr) { return addr.to_sockaddr(); });
                 dns.reset();
                 addr_expires_at_[ipp] = now + DnsRetryIntervalSecs;
             }

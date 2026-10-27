@@ -271,6 +271,7 @@ TEST_F(FilePieceMapTest, priorities)
 
     // test the batch API
     auto file_indices = std::vector<tr_file_index_t>(n_files);
+    // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
     std::iota(std::begin(file_indices), std::end(file_indices), 0U);
     pri = TR_PRI_HIGH;
     EXPECT_TRUE(file_priorities.set(file_indices, pri));
@@ -423,6 +424,7 @@ TEST_F(FilePieceMapTest, wanted)
 
     // test the batch API
     auto file_indices = std::vector<tr_file_index_t>(n_files);
+    // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
     std::iota(std::begin(file_indices), std::end(file_indices), 0);
     EXPECT_TRUE(files_wanted.set(file_indices, true));
     expected_files_wanted.set_has_all();

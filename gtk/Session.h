@@ -10,6 +10,7 @@
 
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/rpc-client.h>
+#include <libtransmission-app/session.h>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -27,9 +28,9 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <ctime>
 #include <memory>
 #include <optional>
+#include <string>
 #include <unordered_set>
 #include <vector>
 
@@ -37,7 +38,9 @@ struct tr_session;
 struct tr_torrent;
 struct tr_torrent_builder;
 
-class Session : public Glib::Object
+class Session
+    : public Glib::Object
+    , public tr::app::Session
 {
 public:
     Session(Session&&) = delete;
@@ -129,28 +132,38 @@ public:
      */
     void start_now(tr_torrent_id_t id);
 
-    // Set a preference value, save the prefs file, and emit the "prefs-changed" signal
+    // Sets a pref and saves the prefs file. The session learns of a session pref
+    // from Prefs, through the tr::app::Session base.
     template<typename T>
     void set_pref(tr_quark const key, T const& val)
     {
         if (prefs_.set(key, val)) {
-            prefs_.save(tr_sessionGetConfigDir(get_session()), tr_sessionGetSettings(get_session()));
+            save_prefs();
         }
     }
+
+    // Copies the embedded session's settings into Prefs without echoing them back,
+    // e.g. after the session changed one itself.
+    void import_embedded_settings();
+
+    // Writes settings.json: the app prefs from Prefs plus the embedded session's own settings.
+    void save_prefs() const;
 
     // ---
 
     void port_test(tr_address_type ip_protocol);
     [[nodiscard]] bool port_test_pending(tr_address_type ip_protocol) const noexcept;
 
-    // Recently-used directories, fetched from the session via a blocking RPC.
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_download_paths() const;
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_relocate_paths() const;
+    // Asks the session for its recently-used paths, `TR_KEY_recent_download_paths` or
+    // `TR_KEY_recent_relocate_paths`, and hands them to `on_paths` on the GTK thread.
+    // A slot bound to a widget or other sigc::trackable is skipped once that object is gone.
+    // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
+    void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
 
     void blocklist_update();
 
-    // Ask the session for its blocklist's rule count and last update time;
-    // signal_blocklist_info() delivers them.
+    // Asks the session for its blocklist's rule count and last update time.
+    // signal_blocklist_info() fires once blocklist_size() and blocklist_date() hold them.
     void refresh_blocklist_info();
 
     // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
@@ -160,7 +173,7 @@ public:
 
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
     [[nodiscard]] sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
-    [[nodiscard]] sigc::signal<void(size_t, time_t)>& signal_blocklist_info();
+    [[nodiscard]] sigc::signal<void()>& signal_blocklist_info();
     [[nodiscard]] sigc::signal<void(bool)>& signal_blocklist_updated();
     [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
     [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
@@ -172,9 +185,8 @@ protected:
     Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
 private:
-    [[nodiscard]] std::vector<Glib::ustring> get_recent_dirs(tr_quark key) const;
-
     tr::app::Prefs& prefs_;
+    std::string const config_dir_;
 
     class Impl;
     std::unique_ptr<Impl> const impl_;

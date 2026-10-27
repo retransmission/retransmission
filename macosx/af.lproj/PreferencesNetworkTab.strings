@@ -1,0 +1,9 @@
+"Automatically map port" = "Outomatiese poorttoekenning";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT-traversal gebruik NAT-PMP of UPnP";
+"Peer communication:" = "Ewekniekommunikasie:";
+"Prevent computer from sleeping with active torrents" = "Belet die rekenaar om te sluimer by aktiewe oordragte";
+"System sleep:" = "Stelselslaap:";
+"Pick a random port at startup" = "Maak poort ewekansig tydens lansering";
+"Randomize" = "Maak ewekansig";
+"Enable µTP for peer connections" = "Aktiveer mikro-oordragprotokol (µTP)";
+"Port for incoming connections:" = "Eweknieluisterpoort:";

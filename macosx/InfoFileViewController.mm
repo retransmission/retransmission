@@ -11,14 +11,16 @@
 @interface InfoFileViewController ()
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
-
 @property(nonatomic) BOOL fSet;
 
-@property(nonatomic) IBOutlet FileOutlineController* fFileController;
+@property(nonatomic) FileOutlineController* fFileController;
 
-@property(nonatomic) IBOutlet NSSearchField* fFileFilterField;
-@property(nonatomic) IBOutlet NSButton* fCheckAllButton;
-@property(nonatomic) IBOutlet NSButton* fUncheckAllButton;
+@property(nonatomic) NSSearchField* fFileFilterField;
+@property(nonatomic) NSButton* fCheckAllButton;
+@property(nonatomic) NSButton* fUncheckAllButton;
+
+@property(nonatomic) NSScrollView* fScrollView;
+@property(nonatomic) FileOutlineView* fOutlineView;
 
 @end
 
@@ -26,16 +28,154 @@
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoFileView" bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         self.title = NSLocalizedString(@"Files", "Inspector view -> title");
+
+        _fFileController = [[FileOutlineController alloc] init];
     }
 
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
+    NSView* rootView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 340, 365)];
+    rootView.translatesAutoresizingMaskIntoConstraints = NO;
+    rootView.clipsToBounds = YES;
+    self.view = rootView;
+
+    self.fFileFilterField = [[NSSearchField alloc] init];
+    self.fFileFilterField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fFileFilterField.wantsLayer = YES;
+    self.fFileFilterField.focusRingType = NSFocusRingTypeNone;
+
+    self.fFileFilterField.controlSize = NSControlSizeSmall;
+    self.fFileFilterField.font = [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeSmall]];
+
+    self.fFileFilterField.lineBreakMode = NSLineBreakByClipping;
+    self.fFileFilterField.cell.scrollable = YES;
+
+    self.fFileFilterField.target = self;
+    self.fFileFilterField.action = @selector(setFileFilterText:);
+
+    [rootView addSubview:self.fFileFilterField];
+
+    self.fScrollView = [[NSScrollView alloc] init];
+    self.fScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fScrollView.borderType = NSBezelBorder;
+    self.fScrollView.hasVerticalScroller = YES;
+    self.fScrollView.autohidesScrollers = YES;
+    [rootView addSubview:self.fScrollView];
+
+    self.fOutlineView = [[FileOutlineView alloc] initWithFrame:NSZeroRect];
+    self.fOutlineView.rowHeight = 34;
+    self.fOutlineView.allowsExpansionToolTips = YES;
+    self.fOutlineView.usesAlternatingRowBackgroundColors = YES;
+    self.fOutlineView.allowsMultipleSelection = YES;
+    self.fOutlineView.headerView = nil;
+    self.fOutlineView.rowSizeStyle = NSTableViewRowSizeStyleCustom;
+    self.fOutlineView.indentationPerLevel = 14;
+    self.fOutlineView.columnAutoresizingStyle = NSTableViewUniformColumnAutoresizingStyle;
+    self.fOutlineView.autoresizesOutlineColumn = NO;
+
+    self.fScrollView.documentView = self.fOutlineView;
+
+    [self.fFileController setupWithOutlineView:self.fOutlineView];
+
+    NSTableColumn* nameColumn = [[NSTableColumn alloc] initWithIdentifier:@"Name"];
+    nameColumn.editable = NO;
+    nameColumn.width = 218.0;
+    nameColumn.minWidth = 38.599;
+    nameColumn.maxWidth = 1000.0;
+    nameColumn.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
+    [self.fOutlineView addTableColumn:nameColumn];
+
+    NSTableColumn* priorityColumn = [[NSTableColumn alloc] initWithIdentifier:@"Priority"];
+    priorityColumn.editable = NO;
+    priorityColumn.width = 34.0;
+    priorityColumn.minWidth = 10.0;
+    priorityColumn.maxWidth = 1000.0;
+    priorityColumn.resizingMask = NSTableColumnNoResizing;
+    [self.fOutlineView addTableColumn:priorityColumn];
+
+    NSTableColumn* checkColumn = [[NSTableColumn alloc] initWithIdentifier:@"Check"];
+    checkColumn.editable = NO;
+    checkColumn.width = 31.0;
+    checkColumn.minWidth = 10.0;
+    checkColumn.maxWidth = 1000.0;
+    checkColumn.resizingMask = NSTableColumnNoResizing;
+    [self.fOutlineView addTableColumn:checkColumn];
+
+    self.fOutlineView.outlineTableColumn = nameColumn;
+
+    self.fCheckAllButton = [[NSButton alloc] init];
+    self.fCheckAllButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fCheckAllButton.bezelStyle = NSBezelStyleRoundRect;
+    self.fCheckAllButton.controlSize = NSControlSizeSmall;
+    self.fCheckAllButton.font = [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeSmall]];
+    self.fCheckAllButton.target = self;
+    self.fCheckAllButton.action = @selector(checkAll:);
+    [rootView addSubview:self.fCheckAllButton];
+
+    self.fUncheckAllButton = [[NSButton alloc] init];
+    self.fUncheckAllButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fUncheckAllButton.bezelStyle = NSBezelStyleRoundRect;
+    self.fUncheckAllButton.controlSize = NSControlSizeSmall;
+    self.fUncheckAllButton.font = [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeSmall]];
+    self.fUncheckAllButton.target = self;
+    self.fUncheckAllButton.action = @selector(uncheckAll:);
+    [rootView addSubview:self.fUncheckAllButton];
+
+    /// Constraints
+    NSLayoutConstraint* bottomConstraint = [self.fFileFilterField.bottomAnchor constraintEqualToAnchor:rootView.bottomAnchor
+                                                                                              constant:-12.0];
+    bottomConstraint.priority = 249.0;
+
+    NSLayoutConstraint* btnBottomConstraint = [self.fUncheckAllButton.bottomAnchor constraintEqualToAnchor:rootView.bottomAnchor
+                                                                                                  constant:-12.0];
+    btnBottomConstraint.priority = 249.0;
+    NSLayoutConstraint* topConstraint = [self.fFileFilterField.topAnchor constraintEqualToAnchor:self.fScrollView.bottomAnchor
+                                                                                        constant:8.0];
+    topConstraint.priority = 249.0;
+    NSLayoutConstraint* btnTopConstraint = [self.fUncheckAllButton.topAnchor constraintEqualToAnchor:self.fScrollView.bottomAnchor
+                                                                                            constant:8.0];
+    btnTopConstraint.priority = 249.0;
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fScrollView.topAnchor constraintEqualToAnchor:rootView.topAnchor constant:12.0],
+        [self.fScrollView.leadingAnchor constraintEqualToAnchor:rootView.leadingAnchor constant:12.0],
+        [self.fScrollView.trailingAnchor constraintEqualToAnchor:rootView.trailingAnchor constant:-12.0],
+
+        [self.fScrollView.heightAnchor constraintGreaterThanOrEqualToConstant:150.0],
+        [self.fScrollView.widthAnchor constraintGreaterThanOrEqualToConstant:300.0],
+
+        [self.fFileFilterField.leadingAnchor constraintEqualToAnchor:self.fScrollView.leadingAnchor],
+        [self.fFileFilterField.topAnchor constraintGreaterThanOrEqualToAnchor:self.fScrollView.bottomAnchor constant:8.0],
+        topConstraint,
+        [self.fFileFilterField.widthAnchor constraintEqualToConstant:110.0],
+
+        bottomConstraint,
+        [self.fFileFilterField.bottomAnchor constraintLessThanOrEqualToAnchor:rootView.bottomAnchor constant:-12.0],
+        [self.fUncheckAllButton.trailingAnchor constraintEqualToAnchor:self.fScrollView.trailingAnchor],
+        [self.fUncheckAllButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.fScrollView.bottomAnchor constant:8.0],
+
+        btnTopConstraint,
+
+        [self.fUncheckAllButton.bottomAnchor constraintLessThanOrEqualToAnchor:rootView.bottomAnchor constant:-12.0],
+        btnBottomConstraint,
+
+        [self.fUncheckAllButton.leadingAnchor constraintEqualToAnchor:self.fCheckAllButton.trailingAnchor constant:8.0],
+        [self.fCheckAllButton.widthAnchor constraintEqualToAnchor:self.fUncheckAllButton.widthAnchor],
+
+        [self.fFileFilterField.lastBaselineAnchor constraintEqualToAnchor:self.fCheckAllButton.lastBaselineAnchor],
+        [self.fCheckAllButton.lastBaselineAnchor constraintEqualToAnchor:self.fUncheckAllButton.lastBaselineAnchor]
+    ]];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightFiles"];
     if (height != 0.0) {
         NSRect viewRect = self.view.frame;
@@ -43,30 +183,9 @@
         self.view.frame = viewRect;
     }
 
-    [self.fFileFilterField.cell setPlaceholderString:NSLocalizedString(@"Filter", "inspector -> file filter")];
-
-    //localize and place all and none buttons
+    self.fFileFilterField.placeholderString = NSLocalizedString(@"Filter", "inspector -> file filter");
     self.fCheckAllButton.title = NSLocalizedString(@"All", "inspector -> check all");
     self.fUncheckAllButton.title = NSLocalizedString(@"None", "inspector -> check all");
-
-    NSRect checkAllFrame = self.fCheckAllButton.frame;
-    NSRect uncheckAllFrame = self.fUncheckAllButton.frame;
-    CGFloat const oldAllWidth = checkAllFrame.size.width;
-    CGFloat const oldNoneWidth = uncheckAllFrame.size.width;
-
-    [self.fCheckAllButton sizeToFit];
-    [self.fUncheckAllButton sizeToFit];
-    CGFloat const newWidth = MAX(self.fCheckAllButton.bounds.size.width, self.fUncheckAllButton.bounds.size.width);
-
-    CGFloat const uncheckAllChange = newWidth - oldNoneWidth;
-    uncheckAllFrame.size.width = newWidth;
-    uncheckAllFrame.origin.x -= uncheckAllChange;
-    self.fUncheckAllButton.frame = uncheckAllFrame;
-
-    CGFloat const checkAllChange = newWidth - oldAllWidth;
-    checkAllFrame.size.width = newWidth;
-    checkAllFrame.origin.x -= (checkAllChange + uncheckAllChange);
-    self.fCheckAllButton.frame = checkAllFrame;
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents

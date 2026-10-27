@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     TabTagOptions = 5
 };
 
-@interface InfoWindowController ()
+@interface InfoWindowController ()<NSWindowDelegate>
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
 
@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 @property(nonatomic) NSViewController<InfoViewController>* fViewController;
 @property(nonatomic) NSInteger fCurrentTabTag;
-@property(nonatomic) IBOutlet NSSegmentedControl* fTabs;
+@property(nonatomic) NSSegmentedControl* fTabs;
 
 @property(nonatomic) InfoGeneralViewController* fGeneralViewController;
 @property(nonatomic) InfoActivityViewController* fActivityViewController;
@@ -53,10 +53,10 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 @property(nonatomic) InfoFileViewController* fFileViewController;
 @property(nonatomic) InfoOptionsViewController* fOptionsViewController;
 
-@property(nonatomic) IBOutlet NSImageView* fImageView;
-@property(nonatomic) IBOutlet NSTextField* fNameField;
-@property(nonatomic) IBOutlet NSTextField* fBasicInfoField;
-@property(nonatomic) IBOutlet NSTextField* fNoneSelectedField;
+@property(nonatomic) NSImageView* fImageView;
+@property(nonatomic) NSTextField* fNameField;
+@property(nonatomic) NSTextField* fBasicInfoField;
+@property(nonatomic) NSTextField* fNoneSelectedField;
 
 @end
 
@@ -64,20 +64,113 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (instancetype)init
 {
-    self = [super initWithWindowNibName:@"InfoWindow"];
+    self = [super initWithWindow:nil];
+    if (self) {
+        [self setupWindow];
+        [self setupUI];
+        [self setupConstraints];
+        [self configureInitialState];
+    }
     return self;
 }
 
-- (void)awakeFromNib
+- (void)setupWindow
 {
-    [super awakeFromNib];
-    self.fNoneSelectedField.stringValue = NSLocalizedString(@"No Torrents Selected", "Inspector -> selected torrents");
+    NSPanel* window = [[NSPanel alloc] initWithContentRect:NSMakeRect(897, 867, 403, 77)
+                                                 styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable |
+                                                            NSWindowStyleMaskResizable | NSWindowStyleMaskUtilityWindow)
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:YES];
 
-    //window location and size
+    window.title = NSLocalizedString(@"Inspector", "Inspector -> title");
+    window.restorable = NO;
+    window.tabbingMode = NSWindowTabbingModeDisallowed;
+    window.minSize = NSMakeSize(350, 77);
+    window.delegate = self;
+
+    self.window = window;
+}
+
+- (void)setupUI
+{
+    NSView* contentView = self.window.contentView;
+
+    self.fImageView = [[NSImageView alloc] init];
+    self.fImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fImageView.image = [NSImage imageNamed:NSImageNameApplicationIcon];
+    [contentView addSubview:self.fImageView];
+
+    self.fNameField = [NSTextField labelWithString:@""];
+    self.fNameField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fNameField.selectable = YES;
+    self.fNameField.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    [self.fNameField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow - 1
+                                              forOrientation:NSLayoutConstraintOrientationHorizontal];
+    self.fNameField.font = [NSFont systemFontOfSize:0 weight:NSFontWeightBold];
+    [contentView addSubview:self.fNameField];
+    self.fNoneSelectedField = [NSTextField labelWithString:@""];
+    self.fNoneSelectedField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fNoneSelectedField.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.fNoneSelectedField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow - 1
+                                                      forOrientation:NSLayoutConstraintOrientationHorizontal];
+    self.fNoneSelectedField.font = [NSFont systemFontOfSize:0 weight:NSFontWeightBold];
+    [contentView addSubview:self.fNoneSelectedField];
+    self.fBasicInfoField = [NSTextField labelWithString:@""];
+    self.fBasicInfoField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fBasicInfoField.selectable = YES;
+    self.fBasicInfoField.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.fBasicInfoField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow - 1
+                                                   forOrientation:NSLayoutConstraintOrientationHorizontal];
+    self.fBasicInfoField.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    [contentView addSubview:self.fBasicInfoField];
+
+    self.fTabs = [[NSSegmentedControl alloc] init];
+    self.fTabs.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fTabs.segmentStyle = NSSegmentStyleRounded;
+    self.fTabs.segmentCount = 6;
+    self.fTabs.target = self;
+    self.fTabs.action = @selector(setTab:);
+
+    self.fTabs.segmentDistribution = NSSegmentDistributionFill;
+    [contentView addSubview:self.fTabs];
+}
+
+- (void)setupConstraints
+{
+    NSView* contentView = self.window.contentView;
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fImageView.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:10],
+        [self.fImageView.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:10],
+        [self.fImageView.widthAnchor constraintEqualToConstant:32],
+        [self.fImageView.heightAnchor constraintEqualToConstant:32],
+
+        [self.fNameField.leadingAnchor constraintEqualToAnchor:self.fImageView.trailingAnchor constant:8],
+        [self.fNameField.topAnchor constraintEqualToAnchor:self.fImageView.topAnchor],
+        [contentView.trailingAnchor constraintEqualToAnchor:self.fNameField.trailingAnchor constant:10],
+
+        [self.fBasicInfoField.leadingAnchor constraintEqualToAnchor:self.fNameField.leadingAnchor],
+        [self.fBasicInfoField.topAnchor constraintEqualToAnchor:self.fNameField.bottomAnchor],
+        [contentView.trailingAnchor constraintEqualToAnchor:self.fBasicInfoField.trailingAnchor constant:10],
+
+        [self.fNoneSelectedField.leadingAnchor constraintEqualToAnchor:self.fImageView.trailingAnchor constant:8],
+        [self.fNoneSelectedField.centerYAnchor constraintEqualToAnchor:self.fImageView.centerYAnchor],
+        [contentView.trailingAnchor constraintEqualToAnchor:self.fNoneSelectedField.trailingAnchor constant:10],
+
+        [self.fTabs.leadingAnchor constraintEqualToAnchor:contentView.leadingAnchor constant:10],
+        [contentView.trailingAnchor constraintEqualToAnchor:self.fTabs.trailingAnchor constant:10],
+        [self.fTabs.topAnchor constraintEqualToAnchor:contentView.topAnchor constant:48],
+        [self.fTabs.heightAnchor constraintEqualToConstant:22]
+    ]];
+}
+
+- (void)configureInitialState
+{
     NSPanel* window = (NSPanel*)self.window;
 
-    window.floatingPanel = NO;
+    self.fNoneSelectedField.stringValue = NSLocalizedString(@"No Torrents Selected", "Inspector -> selected torrents");
 
+    window.floatingPanel = NO;
     CGFloat const windowHeight = NSHeight(window.frame);
     self.fMinWindowWidth = window.minSize.width;
 
@@ -98,12 +191,12 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     //https://github.com/transmission/transmission/issues/3486
     [[window standardWindowButton:NSWindowZoomButton] setEnabled:NO];
 
-    //set tab images and tooltips
     void (^setImageAndToolTipForSegment)(NSImage*, NSString*, NSInteger) = ^(NSImage* image, NSString* toolTip, NSInteger segment) {
         image.accessibilityDescription = toolTip;
         [self.fTabs setImage:image forSegment:segment];
-        [self.fTabs.cell setToolTip:toolTip forSegment:segment];
+        [self.fTabs setToolTip:toolTip forSegment:segment];
     };
+
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil],
         NSLocalizedString(@"Information", "Inspector -> tab"),
@@ -129,7 +222,6 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         NSLocalizedString(@"Options", "Inspector -> tab"),
         TabTagOptions);
 
-    //set selected tab
     self.fCurrentTabTag = kInvalidTag;
     NSString* identifier = [NSUserDefaults.standardUserDefaults stringForKey:@"InspectorSelected"];
     NSInteger tag;
@@ -145,25 +237,21 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         tag = TabTagFile;
     } else if ([identifier isEqualToString:TabIdentifierOptions]) {
         tag = TabTagOptions;
-    } else //safety
-    {
+    } else {
         [NSUserDefaults.standardUserDefaults setObject:TabIdentifierInfo forKey:@"InspectorSelected"];
         tag = TabTagGeneral;
     }
 
     self.fTabs.selectedSegment = tag;
     [self setTab:nil];
-
-    //set blank inspector
     [self setInfoForTorrents:@[]];
 
-    //allow for update notifications
     NSNotificationCenter* nc = NSNotificationCenter.defaultCenter;
     [nc addObserver:self selector:@selector(resetInfoForTorrent:) name:@"ResetInspector" object:nil];
     [nc addObserver:self selector:@selector(updateInfoStats) name:@"UpdateStats" object:nil];
     [nc addObserver:self selector:@selector(updateOptions) name:@"UpdateOptions" object:nil];
 
-    //add a custom window resize notification heer so we can disable it temporarily in settab:
+    // setTab: removes this observer while it resizes the window and re-adds it afterward.
     [nc addObserver:self selector:@selector(windowWasResized:) name:NSWindowDidResizeNotification object:self.window];
 }
 
@@ -407,23 +495,23 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (void)setNextTab
 {
-    NSInteger tag = self.fTabs.selectedSegment + 1;
-    if (tag >= self.fTabs.segmentCount) {
-        tag = 0;
+    NSInteger tab = self.fTabs.selectedSegment + 1;
+    if (tab >= self.fTabs.segmentCount) {
+        tab = 0;
     }
 
-    self.fTabs.selectedSegment = tag;
+    self.fTabs.selectedSegment = tab;
     [self setTab:nil];
 }
 
 - (void)setPreviousTab
 {
-    NSInteger tag = self.fTabs.selectedSegment - 1;
-    if (tag < 0) {
-        tag = self.fTabs.segmentCount - 1;
+    NSInteger tab = self.fTabs.selectedSegment - 1;
+    if (tab < 0) {
+        tab = self.fTabs.segmentCount - 1;
     }
 
-    self.fTabs.selectedSegment = tag;
+    self.fTabs.selectedSegment = tab;
     [self setTab:nil];
 }
 

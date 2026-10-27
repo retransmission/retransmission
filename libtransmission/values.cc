@@ -11,7 +11,6 @@
 #include <iterator> // std::begin(), std::size()
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include <fmt/format.h>
 
@@ -39,15 +38,12 @@ std::string_view Config::UnitsBase::display_name(size_t const units) const noexc
     return _(std::data(display_names_[units]));
 }
 
-std::vector<std::string> Config::UnitsBase::display_names() const
+std::array<std::string, Config::UnitsBase::UnitCount> Config::UnitsBase::display_names() const
 {
-    auto names = std::vector<std::string>{};
-    names.reserve(display_names_.size());
-
-    for (size_t idx = 0; idx < std::size(display_names_); ++idx) {
-        names.emplace_back(display_name(idx));
+    auto names = std::array<std::string, UnitCount>{};
+    for (size_t idx = 0; idx < UnitCount; ++idx) {
+        names[idx] = display_name(idx);
     }
-
     return names;
 }
 

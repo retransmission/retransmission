@@ -31,28 +31,6 @@
 namespace
 {
 
-constexpr struct {
-    constexpr bool operator()(Torrent const* left, Torrent const* right) const noexcept
-    {
-        return left->id() < right->id();
-    }
-
-    constexpr bool operator()(int left_id, Torrent const* right) const noexcept
-    {
-        return left_id < right->id();
-    }
-
-    constexpr bool operator()(Torrent const* left, int right_id) const noexcept
-    {
-        return left->id() < right_id;
-    }
-
-    constexpr bool operator()(int left_id, int right_id) const noexcept
-    {
-        return left_id < right_id;
-    }
-} TorrentIdLessThan;
-
 template<typename Iter>
 [[nodiscard]] auto getIds(Iter it, Iter const& end)
 {
@@ -214,18 +192,17 @@ void TorrentModel::updateTorrents(std::span<tr_variant const> const torrent_list
             ++n_skipped;
             continue;
         }
-        auto const id_val = id_it->second->value_if<int64_t>();
-        if (!id_val) {
+        auto const id = id_it->second->value_if<tr_torrent_id_t>();
+        if (!id) {
             ++n_skipped;
             continue;
         }
-        auto const id = static_cast<int>(*id_val);
 
-        Torrent* tor = getTorrentFromId(id);
+        Torrent* tor = getTorrentFromId(*id);
         bool is_new = false;
 
         if (tor == nullptr) {
-            tor = new Torrent{ prefs_, id };
+            tor = new Torrent{ prefs_, *id };
             instantiated.push_back(tor);
             is_new = true;
         }
@@ -234,24 +211,24 @@ void TorrentModel::updateTorrents(std::span<tr_variant const> const torrent_list
 
         if (fields.any()) {
             changed_fields |= fields;
-            changed.insert(id);
+            changed.insert(*id);
         }
 
         if (fields.test(Torrent::EDIT_DATE)) {
-            edited.insert(id);
+            edited.insert(*id);
         }
 
         if (is_new && !tor->hasName()) {
-            needinfo.insert(id);
+            needinfo.insert(*id);
         }
 
-        if (recently_added(tor) && tor->hasName() && !already_added_.contains(id)) {
-            added.insert(id);
-            already_added_.insert(id);
+        if (recently_added(tor) && tor->hasName() && !already_added_.contains(*id)) {
+            added.insert(*id);
+            already_added_.insert(*id);
         }
 
         if (fields.test(Torrent::LEFT_UNTIL_DONE) && (tor->leftUntilDone() == 0) && (tor->downloadedEver() > 0)) {
-            completed.insert(id);
+            completed.insert(*id);
         }
 
         processed.push_back(tor);
@@ -299,10 +276,10 @@ void TorrentModel::updateTorrents(std::span<tr_variant const> const torrent_list
     // record defeats that reasoning: it's a torrent we failed to identify, and
     // removing it here would evict a torrent the session still has.
     if (is_complete_list && n_skipped == 0U) {
-        std::ranges::sort(processed, TorrentIdLessThan);
+        std::ranges::sort(processed, {}, &Torrent::id);
         torrents_t removed;
         removed.reserve(old.size());
-        std::ranges::set_difference(old, processed, std::back_inserter(removed), TorrentIdLessThan);
+        std::ranges::set_difference(old, processed, std::back_inserter(removed), {}, &Torrent::id, &Torrent::id);
         rowsRemove(removed);
     }
 }
@@ -311,11 +288,11 @@ void TorrentModel::updateTorrents(std::span<tr_variant const> const torrent_list
 ****
 ***/
 
-std::optional<int> TorrentModel::getRow(int id) const
+std::optional<int> TorrentModel::getRow(tr_torrent_id_t const id) const
 {
     std::optional<int> row;
 
-    if (auto const [begin, end] = std::ranges::equal_range(torrents_, id, TorrentIdLessThan); begin != end) {
+    if (auto const [begin, end] = std::ranges::equal_range(torrents_, id, {}, &Torrent::id); begin != end) {
         row = std::distance(torrents_.begin(), begin);
         assert(torrents_[*row]->id() == id);
     }
@@ -323,13 +300,13 @@ std::optional<int> TorrentModel::getRow(int id) const
     return row;
 }
 
-Torrent* TorrentModel::getTorrentFromId(int id)
+Torrent* TorrentModel::getTorrentFromId(tr_torrent_id_t const id)
 {
     auto const row = getRow(id);
     return row ? torrents_[*row] : nullptr;
 }
 
-Torrent const* TorrentModel::getTorrentFromId(int id) const
+Torrent const* TorrentModel::getTorrentFromId(tr_torrent_id_t const id) const
 {
     auto const row = getRow(id);
     return row ? torrents_[*row] : nullptr;
@@ -397,11 +374,11 @@ void TorrentModel::rowsAdd(torrents_t const& torrents)
     if (torrents_.empty()) {
         beginInsertRows(QModelIndex{}, 0, static_cast<int>(torrents.size() - 1));
         torrents_ = torrents;
-        std::ranges::sort(torrents_, TorrentIdLessThan);
+        std::ranges::sort(torrents_, {}, &Torrent::id);
         endInsertRows();
     } else {
         for (auto const& tor : torrents) {
-            auto const it = std::ranges::lower_bound(torrents_, tor, TorrentIdLessThan);
+            auto const it = std::ranges::lower_bound(torrents_, tor->id(), {}, &Torrent::id);
             auto const row = static_cast<int>(std::distance(torrents_.begin(), it));
 
             beginInsertRows(QModelIndex{}, row, row);

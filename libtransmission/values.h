@@ -10,8 +10,6 @@
 #include <cstdint> // for uint64_t
 #include <string>
 #include <string_view>
-#include <tuple>
-#include <vector>
 
 namespace tr::Values
 {
@@ -26,6 +24,10 @@ struct Config {
 
     class UnitsBase
     {
+    protected:
+        // One per enumerator of `MemoryUnits` and `SpeedUnits`.
+        static constexpr auto UnitCount = size_t{ 5U };
+
     public:
         [[nodiscard]] constexpr auto base() const noexcept
         {
@@ -35,7 +37,7 @@ struct Config {
         // The unit's name, translated with _().
         [[nodiscard]] std::string_view display_name(size_t units) const noexcept;
 
-        [[nodiscard]] std::vector<std::string> display_names() const;
+        [[nodiscard]] std::array<std::string, UnitCount> display_names() const;
 
     protected:
         constexpr void set_base(Base base) noexcept
@@ -52,8 +54,8 @@ struct Config {
         // Copies as much of `name` as fits, truncating the rest.
         void set_name(size_t idx, std::string_view name);
 
-        std::array<std::array<char, 32>, 5> display_names_ = {};
-        std::array<uint64_t, 5> multipliers_ = {};
+        std::array<std::array<char, 32>, UnitCount> display_names_ = {};
+        std::array<uint64_t, UnitCount> multipliers_ = {};
         Base base_ = {}; // NOLINT(bugprone-invalid-enum-default-initialization): overwritten by set_base()
     };
 
@@ -62,7 +64,7 @@ struct Config {
         template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor)
         Units(Base base, Names... names)
         {
-            static_assert(sizeof...(Names) == std::tuple_size_v<decltype(display_names_)>);
+            static_assert(sizeof...(Names) == UnitCount);
             set_base(base);
 
             auto idx = size_t{ 0U };

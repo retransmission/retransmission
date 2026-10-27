@@ -1,0 +1,9 @@
+"Automatically map port" = "自動對應連接埠";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT 穿透使用 NAT-PMP 或 UPnP";
+"Peer communication:" = "節點通訊：";
+"Prevent computer from sleeping with active torrents" = "在傳輸檔案期間防止電腦進入睡眠模式";
+"System sleep:" = "系統睡眠：";
+"Pick a random port at startup" = "啟動時隨機選擇通訊埠";
+"Randomize" = "隨機";
+"Enable µTP for peer connections" = "啟用微傳輸協議 (µTP)";
+"Port for incoming connections:" = "節點監聽連接埠：";

@@ -847,11 +847,8 @@ namespace
         return Session::Type::Embedded;
     }
 
-    if (session_id) {
-        return tr_session_id::is_local(*session_id) ? Session::Type::Local : Session::Type::Remote;
-    }
-
-    return std::nullopt;
+    return session_id.transform(
+        [](auto const& id) { return tr_session_id::is_local(id) ? Session::Type::Local : Session::Type::Remote; });
 }
 
 } // namespace

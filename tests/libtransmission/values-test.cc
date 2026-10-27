@@ -63,6 +63,15 @@ TEST_F(ValuesTest, isZero)
     EXPECT_FALSE(val.is_zero());
 }
 
+TEST_F(ValuesTest, displayNames)
+{
+    using Names = decltype(Config::memory.display_names());
+
+    EXPECT_EQ((Names{ "B", "KiB", "MiB", "GiB", "TiB" }), Config::memory.display_names());
+    EXPECT_EQ((Names{ "B/s", "kB/s", "MB/s", "GB/s", "TB/s" }), Config::speed.display_names());
+    EXPECT_EQ((Names{ "B", "kB", "MB", "GB", "TB" }), Config::storage.display_names());
+}
+
 TEST_F(ValuesTest, translatedUnitNames)
 {
     tr_set_translator(
@@ -72,6 +81,7 @@ TEST_F(ValuesTest, translatedUnitNames)
         });
     EXPECT_EQ("10 ko/s", (Speed{ 10, Speed::Units::KByps }.to_string()));
     EXPECT_EQ("10 MB/s", (Speed{ 10, Speed::Units::MByps }.to_string()));
+    EXPECT_EQ("ko/s", Config::speed.display_names()[1]);
 
     tr_set_translator(nullptr, nullptr);
     EXPECT_EQ("10 kB/s", (Speed{ 10, Speed::Units::KByps }.to_string()));

@@ -8,18 +8,15 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 
-#import "VDKQueue.h"
-
 #import "PrefsController.h"
 #import "BlocklistDownloaderViewController.h"
 #import "Controller.h"
 #import "DefaultAppHelper.h"
-#import "PortChecker.h"
 #import "BonjourController.h"
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
-#import "Utils.h"
 #import "PrefsGeneralTabViewController.h"
+#import "PrefsNetworkTabViewController.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
     DownloadPopupIndexFolder = 0,
@@ -53,10 +50,10 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
+@property(nonatomic) PrefsNetworkTabViewController* networkViewController;
 @property(nonatomic) IBOutlet NSView* fTransfersView;
 @property(nonatomic) IBOutlet NSView* fBandwidthView;
 @property(nonatomic) IBOutlet NSView* fPeersView;
-@property(nonatomic) IBOutlet NSView* fNetworkView;
 @property(nonatomic) IBOutlet NSView* fRemoteView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
 
@@ -86,15 +83,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) IBOutlet NSTextField* fBlocklistDateField;
 @property(nonatomic) IBOutlet NSButton* fBlocklistButton;
 
-@property(nonatomic) PortChecker* fPortChecker;
-@property(nonatomic) IBOutlet NSTextField* fPortField;
-@property(nonatomic) IBOutlet NSTextField* fPortStatusField;
-@property(nonatomic) IBOutlet NSButton* fNatCheck;
-@property(nonatomic) IBOutlet NSImageView* fPortStatusImage;
-@property(nonatomic) IBOutlet NSProgressIndicator* fPortStatusProgress;
-@property(nonatomic) NSTimer* fPortStatusTimer;
-@property(nonatomic) int fPeerPort, fNatStatus;
-
 @property(nonatomic) IBOutlet NSTextField* fRPCPortField;
 @property(nonatomic) IBOutlet NSTextField* fRPCPasswordField;
 @property(nonatomic) IBOutlet NSTableView* fRPCWhitelistTable;
@@ -118,13 +106,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
         }
 
-        //set auto import
-        NSString* autoPath;
-        if ([_fDefaults boolForKey:@"AutoImport"] && (autoPath = [_fDefaults stringForKey:@"AutoImportDirectory"])) {
-            [((Controller*)NSApp.delegate).fileWatcherQueue addPath:autoPath.stringByExpandingTildeInPath
-                                                     notifyingAbout:VDKQueueNotifyAboutWrite];
-        }
-
         //set encryption
         [self setEncryptionMode:nil];
 
@@ -136,17 +117,10 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         [self updateRPCWhitelist];
 
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
+        _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
     }
 
     return self;
-}
-
-- (void)dealloc
-{
-    [_fPortStatusTimer invalidate];
-    if (_fPortChecker) {
-        [_fPortChecker cancelProbe];
-    }
 }
 
 - (void)awakeFromNib
@@ -191,17 +165,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     //set speed limit
     self.fSpeedLimitUploadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitUploadLimit"];
     self.fSpeedLimitDownloadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitDownloadLimit"];
-
-    //set port
-    self.fPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"BindPort"]);
-    self.fNatStatus = -1;
-
-    [self updatePortStatus];
-
-    __weak __auto_type weakSelf = self;
-    self.fPortStatusTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 repeats:YES block:^(NSTimer* _Nonnull) {
-        [weakSelf updatePortStatus];
-    }];
 
     //set peer connections
     self.fPeersGlobalField.integerValue = [self.fDefaults integerForKey:@"PeersTotal"];
@@ -343,87 +306,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [self.window setFrame:windowRect display:YES animate:NO];
 }
 
-- (void)setPort:(id)sender
-{
-    uint16_t const port = [sender intValue];
-    [self.fDefaults setInteger:port forKey:@"BindPort"];
-    tr_sessionSetPeerPort(self.fHandle, port);
-
-    self.fPeerPort = -1;
-    [self updatePortStatus];
-}
-
-- (void)randomPort:(id)sender
-{
-    auto const port = tr_sessionSetPeerPortRandom(self.fHandle);
-    [self.fDefaults setInteger:port forKey:@"BindPort"];
-    self.fPortField.intValue = port;
-
-    self.fPeerPort = -1;
-    [self updatePortStatus];
-}
-
-- (void)setRandomPortOnStart:(id)sender
-{
-    tr_sessionSetPeerPortRandomOnStart(self.fHandle, ((NSButton*)sender).state == NSControlStateValueOn);
-}
-
-- (void)setNat:(id)sender
-{
-    tr_sessionSetPortForwardingEnabled(self.fHandle, [self.fDefaults boolForKey:@"NatTraversal"]);
-
-    self.fNatStatus = -1;
-    [self updatePortStatus];
-}
-
-- (void)updatePortStatus
-{
-    auto const fwd = tr_sessionGetPortForwarding(self.fHandle);
-    int const port = tr_sessionGetPeerPort(self.fHandle);
-    BOOL natStatusChanged = (self.fNatStatus != fwd);
-    BOOL peerPortChanged = (self.fPeerPort != port);
-
-    if (natStatusChanged || peerPortChanged) {
-        self.fNatStatus = fwd;
-        self.fPeerPort = port;
-
-        self.fPortStatusField.stringValue = @"";
-        self.fPortStatusImage.image = nil;
-        [self.fPortStatusProgress startAnimation:self];
-
-        if (self.fPortChecker) {
-            [self.fPortChecker cancelProbe];
-        }
-        BOOL delay = natStatusChanged || tr_sessionIsPortForwardingEnabled(self.fHandle);
-        self.fPortChecker = [[PortChecker alloc] initForPort:self.fPeerPort delay:delay withDelegate:self];
-    }
-}
-
-- (void)portCheckerDidFinishProbing:(PortChecker*)portChecker
-{
-    [self.fPortStatusProgress stopAnimation:self];
-    switch (self.fPortChecker.status) {
-    case PortStatusOpen:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is open", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusAvailable];
-        break;
-    case PortStatusClosed:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is closed", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
-        break;
-    case PortStatusError:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port check site is down", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
-        break;
-    case PortStatusChecking:
-        break;
-    default:
-        NSAssert(NO, @"Port checker returned invalid status: %lu", self.fPortChecker.status);
-        break;
-    }
-    self.fPortChecker = nil;
-}
-
 - (NSArray<NSString*>*)sounds
 {
     NSMutableArray* sounds = [NSMutableArray array];
@@ -455,11 +337,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     if ((sound = [NSSound soundNamed:[sender titleOfSelectedItem]])) {
         [sound play];
     }
-}
-
-- (void)setUTP:(id)sender
-{
-    tr_sessionSetUTPEnabled(self.fHandle, [self.fDefaults boolForKey:@"UTPGlobal"]);
 }
 
 - (void)setPeersGlobal:(id)sender
@@ -906,16 +783,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
 - (void)setAutoImport:(id)sender
 {
-    NSString* path;
-    if ((path = [self.fDefaults stringForKey:@"AutoImportDirectory"])) {
-        VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-        if ([self.fDefaults boolForKey:@"AutoImport"]) {
-            path = path.stringByExpandingTildeInPath;
-            [watcherQueue addPath:path notifyingAbout:VDKQueueNotifyAboutWrite];
-        } else {
-            [watcherQueue removeAllPaths];
-        }
-
+    if ([self.fDefaults stringForKey:@"AutoImportDirectory"]) {
         [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
     } else {
         [self importFolderSheetShow:nil];
@@ -934,12 +802,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
-            VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-            [watcherQueue removeAllPaths];
-
             NSString* path = (panel.URLs[0]).path;
             [self.fDefaults setObject:path forKey:@"AutoImportDirectory"];
-            [watcherQueue addPath:path.stringByExpandingTildeInPath notifyingAbout:VDKQueueNotifyAboutWrite];
 
             [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
         } else {
@@ -1116,12 +980,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
                                              inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
 }
 
-- (void)helpForNetwork:(id)sender
-{
-    [NSHelpManager.sharedHelpManager openHelpAnchor:@"network"
-                                             inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
-}
-
 - (void)helpForRemote:(id)sender
 {
     [NSHelpManager.sharedHelpManager openHelpAnchor:@"remote"
@@ -1181,10 +1039,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     BOOL const nat = tr_sessionIsPortForwardingEnabled(self.fHandle);
     [self.fDefaults setBool:nat forKey:@"NatTraversal"];
-
-    self.fPeerPort = -1;
-    self.fNatStatus = -1;
-    [self updatePortStatus];
 
     BOOL const randomPort = tr_sessionGetPeerPortRandomOnStart(self.fHandle);
     [self.fDefaults setBool:randomPort forKey:@"RandomPort"];
@@ -1292,7 +1146,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
         //lpd handled by bindings
 
-        self.fPortField.intValue = port;
         //port forwarding (nat) handled by bindings
         //random port handled by bindings
 
@@ -1356,7 +1209,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     } else if ([identifier isEqualToString:ToolbarTabPeers]) {
         view = self.fPeersView;
     } else if ([identifier isEqualToString:ToolbarTabNetwork]) {
-        view = self.fNetworkView;
+        view = self.networkViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
         view = self.fRemoteView;
     } else {

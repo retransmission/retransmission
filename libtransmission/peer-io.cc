@@ -6,7 +6,7 @@
 #include <cerrno>
 #include <cstdint>
 #include <functional>
-#include <type_traits> // std::underlying_type_t
+#include <utility>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -150,8 +150,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
     };
 
     for (auto const& transport : session->preferred_transports()) {
-        auto const transport_index = static_cast<std::underlying_type_t<tr_preferred_transport>>(transport);
-        if (auto sock = get_socket[transport_index]()) {
+        if (auto sock = get_socket[std::to_underlying(transport)]()) {
             return tr_peerIo::create(session, std::move(sock), parent, &info_hash, false, client_is_seed);
         }
     }

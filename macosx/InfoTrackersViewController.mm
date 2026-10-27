@@ -9,38 +9,107 @@
 #import "TrackersViews.h"
 
 static CGFloat const kTrackerGroupSeparatorHeight = 14.0;
-typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
-    TrackerSegmentTagAdd = 0,
-    TrackerSegmentTagRemove = 1,
+typedef NS_ENUM(NSInteger, TrackerSegment) {
+    TrackerSegmentAdd = 0,
+    TrackerSegmentRemove = 1,
 };
 
 @interface InfoTrackersViewController ()<NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation, TrackerInputViewDelegate>
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
 @property(nonatomic) BOOL fSet;
 @property(nonatomic) NSMutableArray* fTrackers;
-@property(nonatomic) IBOutlet NSTableView* fTrackerTable;
-@property(nonatomic) IBOutlet NSSegmentedControl* fTrackerAddRemoveControl;
+@property(nonatomic) NSTableView* fTrackerTable;
+@property(nonatomic) NSSegmentedControl* fTrackerAddRemoveControl;
 @end
 
 @implementation InfoTrackersViewController
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoTrackersView" bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         self.title = NSLocalizedString(@"Trackers", "Inspector view -> title");
     }
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
-    [self.fTrackerAddRemoveControl.cell setToolTip:NSLocalizedString(@"Add a tracker", "Inspector view -> tracker buttons")
-                                        forSegment:TrackerSegmentTagAdd];
-    [self.fTrackerAddRemoveControl.cell setToolTip:NSLocalizedString(@"Remove selected trackers", "Inspector view -> tracker buttons")
-                                        forSegment:TrackerSegmentTagRemove];
+    NSView* rootView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 382, 352)];
+    rootView.translatesAutoresizingMaskIntoConstraints = NO;
+    rootView.clipsToBounds = YES;
 
-    [self.fTrackerTable tableColumnWithIdentifier:@"Tracker"].maxWidth = 5000;
+    NSScrollView* scrollView = [[NSScrollView alloc] init];
+    scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    scrollView.hasVerticalScroller = YES;
+    scrollView.verticalScroller.controlSize = NSControlSizeSmall;
+    scrollView.autohidesScrollers = YES;
+    scrollView.borderType = NSBezelBorder;
+
+    NSTableView* tableView = [[NSTableView alloc] init];
+    tableView.rowHeight = 57;
+    tableView.headerView = nil;
+    tableView.allowsExpansionToolTips = YES;
+    tableView.usesAlternatingRowBackgroundColors = YES;
+    tableView.allowsMultipleSelection = YES;
+    tableView.allowsTypeSelect = NO;
+    tableView.allowsColumnResizing = NO;
+    tableView.allowsColumnReordering = NO;
+    tableView.columnAutoresizingStyle = NSTableViewLastColumnOnlyAutoresizingStyle;
+    tableView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    tableView.dataSource = self;
+    tableView.delegate = self;
+
+    NSTableColumn* column = [[NSTableColumn alloc] initWithIdentifier:@"Tracker"];
+    column.minWidth = 40;
+    column.width = 344;
+    column.maxWidth = 5000;
+    column.resizingMask = NSTableColumnAutoresizingMask;
+    [tableView addTableColumn:column];
+
+    scrollView.documentView = tableView;
+    [rootView addSubview:scrollView];
+    self.fTrackerTable = tableView;
+
+    NSString* addTitle = NSLocalizedString(@"Add a tracker", "Inspector view -> tracker buttons");
+    NSString* removeTitle = NSLocalizedString(@"Remove selected trackers", "Inspector view -> tracker buttons");
+
+    NSArray* images = @[
+        [NSImage imageWithSystemSymbolName:@"plus" accessibilityDescription:addTitle],
+        [NSImage imageWithSystemSymbolName:@"minus" accessibilityDescription:removeTitle]
+    ];
+    NSSegmentedControl* segmentedControl = [NSSegmentedControl segmentedControlWithImages:images
+                                                                             trackingMode:NSSegmentSwitchTrackingMomentary
+                                                                                   target:self
+                                                                                   action:@selector(addRemoveTracker:)];
+
+    segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
+    segmentedControl.controlSize = NSControlSizeSmall;
+
+    [segmentedControl setWidth:32 forSegment:TrackerSegmentAdd];
+    [segmentedControl setWidth:32 forSegment:TrackerSegmentRemove];
+
+    [segmentedControl setToolTip:addTitle forSegment:TrackerSegmentAdd];
+    [segmentedControl setToolTip:removeTitle forSegment:TrackerSegmentRemove];
+
+    [rootView addSubview:segmentedControl];
+    self.fTrackerAddRemoveControl = segmentedControl;
+
+    self.view = rootView;
+
+    [NSLayoutConstraint activateConstraints:@[
+        [scrollView.topAnchor constraintEqualToAnchor:rootView.topAnchor constant:12],
+        [scrollView.leadingAnchor constraintEqualToAnchor:rootView.leadingAnchor constant:12],
+        [rootView.trailingAnchor constraintEqualToAnchor:scrollView.trailingAnchor constant:12],
+
+        [segmentedControl.topAnchor constraintEqualToAnchor:scrollView.bottomAnchor constant:8],
+        [segmentedControl.leadingAnchor constraintEqualToAnchor:rootView.leadingAnchor constant:12],
+        [rootView.bottomAnchor constraintEqualToAnchor:segmentedControl.bottomAnchor constant:12]
+    ]];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
 
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightTracker"];
     if (height != 0.0) {
@@ -50,10 +119,10 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     }
 }
 
-- (void)viewDidLoad
+- (void)viewDidLayout
 {
-    [super viewDidLoad];
-    [self.fTrackerTable sizeToFit];
+    [super viewDidLayout];
+    [self.fTrackerTable sizeLastColumnToFit];
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents
@@ -207,7 +276,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 - (void)tableViewSelectionDidChange:(NSNotification*)notification
 {
-    [self.fTrackerAddRemoveControl setEnabled:self.fTrackerTable.numberOfSelectedRows > 0 forSegment:TrackerSegmentTagRemove];
+    [self.fTrackerAddRemoveControl setEnabled:self.fTrackerTable.numberOfSelectedRows > 0 forSegment:TrackerSegmentRemove];
 }
 
 - (BOOL)tableView:(NSTableView*)tableView isGroupRow:(NSInteger)row
@@ -262,7 +331,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 #pragma mark - Actions
 
-- (IBAction)addRemoveTracker:(id)sender
+- (void)addRemoveTracker:(NSSegmentedControl*)sender
 {
     if ([self isAddingTrackerRightNow]) {
         return;
@@ -270,7 +339,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
     [self updateInfo];
 
-    if ([[sender cell] tagForSegment:[sender selectedSegment]] == TrackerSegmentTagRemove) {
+    if (sender.selectedSegment == TrackerSegmentRemove) {
         [self removeTrackers];
     } else {
         [self addTrackers];
@@ -288,11 +357,11 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
             [self.fTrackerTable reloadData];
         }
 
-        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagAdd];
-        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagRemove];
+        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentAdd];
+        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentRemove];
     } else {
-        [self.fTrackerAddRemoveControl setEnabled:YES forSegment:TrackerSegmentTagAdd];
-        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagRemove];
+        [self.fTrackerAddRemoveControl setEnabled:YES forSegment:TrackerSegmentAdd];
+        [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentRemove];
     }
     [self.fTrackerTable deselectAll:self];
     self.fSet = YES;

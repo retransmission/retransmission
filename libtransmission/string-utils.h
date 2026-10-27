@@ -25,14 +25,14 @@
 template <typename T> [[nodiscard]] std::string tr_strlower(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::for_each(std::begin(out), std::end(out), [](char& ch) { ch = static_cast<char>(std::tolower(ch)); });
+    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch))); });
     return out;
 }
 
 template <typename T> [[nodiscard]] std::string tr_strupper(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::for_each(std::begin(out), std::end(out), [](char& ch) { ch = static_cast<char>(std::toupper(ch)); });
+    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch))); });
     return out;
 }
 
@@ -41,12 +41,6 @@ template <typename T> [[nodiscard]] std::string tr_strupper(T in)
  *        e.g. `tr_wildmat("foo.torrent", "*.torrent")` returns true.
  */
 [[nodiscard]] bool tr_wildmat(std::string_view text, std::string_view pattern);
-
-// c++23 (P1679R3), GCC 11.1, clang 12
-template <typename T> [[nodiscard]] constexpr bool tr_strv_contains(std::string_view sv, T const& key) noexcept
-{
-    return sv.find(key) != std::string_view::npos;
-}
 
 template <typename... Args> constexpr std::string_view tr_strv_sep(std::string_view* sv, Args&&... args)
 {

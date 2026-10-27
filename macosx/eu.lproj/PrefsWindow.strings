@@ -67,24 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Transferentzia trabatuta utziko da tarte honetaz inaktibo dagoenean:";
 
-/* Class = "NSButtonCell"; title = "Automatically map port"; ObjectID = "1247"; */
-"1247.title" = "Lotu ataka automatikoki";
-
-/* Class = "NSTextFieldCell"; title = "NAT traversal uses either NAT-PMP or UPnP"; ObjectID = "1248"; */
-"1248.title" = "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du";
-
-/* Class = "NSTextFieldCell"; title = "Port is open"; ObjectID = "1250"; */
-"1250.title" = "Ataka zabalik dago";
-
-/* Class = "NSTextFieldCell"; title = "Peer communication:"; ObjectID = "1253"; */
-"1253.title" = "Kideen komunikazioa:";
-
-/* Class = "NSButtonCell"; title = "Prevent computer from sleeping with active transfers"; ObjectID = "1254"; */
-"1254.title" = "Saihestu ordenagailua lokartzea transferentzia aktiboak daudenean";
-
-/* Class = "NSTextFieldCell"; title = "System sleep:"; ObjectID = "1255"; */
-"1255.title" = "Sistemaren lokartzea:";
-
 /* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
 "1265.title" = "Igoera-ratioa:";
 
@@ -256,12 +238,6 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Transferentziak irizpide guztiak betetzen dituen lehen taldera esleituko dira";
 
-/* Class = "NSButtonCell"; title = "Randomize port on launch"; ObjectID = "1890"; */
-"1890.title" = "Ausaz aukeratu ataka abiaraztean";
-
-/* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
-"1892.title" = "Ausaz aukeratu";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Egunero";
 
@@ -321,12 +297,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "2053"; */
 "2053.title" = "Beste bat...";
-
-/* Class = "NSButtonCell"; title = "Enable Micro Transport Protocol (µTP)"; ObjectID = "2078"; */
-"2078.title" = "Gaitu Micro Transport Protokoloa (µTP)";
-
-/* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
-"2082.title" = "Kideak entzuteko ataka:";
 
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Kendu transferentzien zerrendatik igortzeak amaitzen direnean";

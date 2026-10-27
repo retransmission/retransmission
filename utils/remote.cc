@@ -679,12 +679,8 @@ void add_id_arg(tr_variant::Map& params, std::string_view id_str, std::string_vi
     if (IdActive == id_str) {
         params.insert_or_assign(TR_KEY_ids, tr_variant::unmanaged_string(TR_KEY_recently_active));
     } else if (IdAll != id_str) {
-        bool const is_list = id_str.find_first_of(",-") != std::string_view::npos;
-        bool is_num = true;
-
-        for (auto const& ch : id_str) {
-            is_num = is_num && isdigit(ch);
-        }
+        auto const is_list = id_str.find_first_of(",-") != std::string_view::npos;
+        auto const is_num = std::ranges::all_of(id_str, [](unsigned char ch) { return isdigit(ch) != 0; });
 
         if (is_num || is_list) {
             params.insert_or_assign(TR_KEY_ids, rpc_parse_list_str(id_str));
@@ -1044,15 +1040,15 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Percent Done: {:s}%\n", strlpercent(100.0 * *d));
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_eta); i) {
+        if (auto const i = t->value_if<time_t>(TR_KEY_eta)) {
             fmt::print("  ETA: {:s}\n", tr_strltime(*i));
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_rate_download)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_rate_download)) {
             fmt::print("  Download Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_rate_upload)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_rate_upload)) {
             fmt::print("  Upload Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
@@ -1968,12 +1964,12 @@ void filter_ids(tr_variant::Map const& result, RemoteConfig& config)
             }
             break;
         case 'd': // Downloading (Status is Downloading or Up&Down)
-            if (status.find("Down") != std::string::npos) {
+            if (status.contains("Down"sv)) {
                 include = !include;
             }
             break;
         case 'u': // Uploading (Status is Uploading, Up&Down or Seeding
-            if (status.find("Up") != std::string::npos || status == "Seeding") {
+            if (status.contains("Up"sv) || status == "Seeding") {
                 include = !include;
             }
             break;
@@ -1990,7 +1986,7 @@ void filter_ids(tr_variant::Map const& result, RemoteConfig& config)
         case 'n': // Torrent name substring
             if (auto name = t->value_if<std::string_view>(TR_KEY_name); !name) {
                 continue;
-            } else if (name->find(arg) != std::string::npos) {
+            } else if (name->contains(arg)) {
                 include = !include;
             }
             break;
@@ -2153,7 +2149,7 @@ namespace flush_utils
 {
 [[nodiscard]] long get_timeout_secs(std::string_view req)
 {
-    if (tr_strv_contains(req, R"("method":"blocklist-update")") || tr_strv_contains(req, R"("method":"blocklist_update")")) {
+    if (req.contains(R"("method":"blocklist-update")") || req.contains(R"("method":"blocklist_update")")) {
         return 300L;
     }
 

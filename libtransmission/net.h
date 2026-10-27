@@ -16,6 +16,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple> // std::tie
 #include <utility> // std::pair
 
 #ifdef _WIN32

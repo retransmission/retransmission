@@ -14,6 +14,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -1029,7 +1030,7 @@ namespace make_torrent_field_helpers
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot be empty"s };
             }
 
-            if (tr_strv_contains(label, ',')) {
+            if (label.contains(',')) {
                 return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 
@@ -1063,16 +1064,26 @@ namespace make_torrent_field_helpers
     if (std::empty(files_vec)) // if empty set, apply to all
     {
         files.resize(n_files);
+        // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
         std::iota(std::begin(files), std::end(files), 0);
     } else {
         for (auto const& file_var : files_vec) {
-            if (auto const val = file_var.value_if<int64_t>()) {
-                if (auto const idx = static_cast<tr_file_index_t>(*val); idx < n_files) {
-                    files.push_back(idx);
-                } else {
-                    return { std::vector<tr_file_index_t>{}, Error::FILE_IDX_OOR, std::string{} };
-                }
+            auto const idx = file_var.value_if<tr_file_index_t>();
+            if (!idx) {
+                return {
+                    std::vector<tr_file_index_t>{},
+                    Error::INVALID_PARAMS,
+                    fmt::format(
+                        "file indices must be {:d}-bit unsigned integers",
+                        std::numeric_limits<tr_file_index_t>::digits),
+                };
             }
+
+            if (*idx >= n_files) {
+                return { std::vector<tr_file_index_t>{}, Error::FILE_IDX_OOR, std::string{} };
+            }
+
+            files.push_back(*idx);
         }
     }
 
@@ -1093,15 +1104,28 @@ namespace make_torrent_field_helpers
 
 [[nodiscard]] std::pair<JsonRpc::Error::Code, std::string> set_sequential_download_from_piece(
     tr_torrent& tor,
-    tr_piece_index_t piece)
+    std::optional<tr_piece_index_t> const& piece)
 {
     using namespace JsonRpc;
 
-    if (piece >= tor.piece_count()) {
-        return { Error::PIECE_IDX_OOR, "piece to sequentially download from is outside pieces range"s };
+    if (!piece) {
+        return {
+            Error::INVALID_PARAMS,
+            fmt::format(
+                "'{:s}' must be a {:d}-bit unsigned integer",
+                tr_quark_get_string_view(TR_KEY_sequential_download_from_piece),
+                std::numeric_limits<tr_piece_index_t>::digits),
+        };
     }
 
-    tor.set_sequential_download_from_piece(piece);
+    if (*piece >= tor.piece_count()) {
+        return {
+            Error::PIECE_IDX_OOR,
+            fmt::format("{:s} is outside pieces range", tr_quark_get_string_view(TR_KEY_sequential_download_from_piece)),
+        };
+    }
+
+    tor.set_sequential_download_from_piece(*piece);
     return { Error::SUCCESS, std::string{} }; // no error
 }
 
@@ -1150,11 +1174,11 @@ namespace make_torrent_field_helpers
     auto const baseline = ann;
 
     for (size_t i = 0, vec_size = std::size(urls_vec); i + 1 < vec_size; i += 2U) {
-        auto const id = urls_vec[i].value_if<int64_t>();
+        auto const id = urls_vec[i].value_if<tr_tracker_id_t>();
         auto const url = urls_vec[i + 1U].value_if<std::string_view>();
 
         if (id && url) {
-            ann.replace(static_cast<tr_tracker_id_t>(*id), *url);
+            ann.replace(*id, *url);
         }
     }
 
@@ -1178,8 +1202,8 @@ namespace make_torrent_field_helpers
     auto const baseline = ann;
 
     for (auto const& id_var : ids_vec) {
-        if (auto const val = id_var.value_if<int64_t>()) {
-            ann.remove(static_cast<tr_tracker_id_t>(*val));
+        if (auto const val = id_var.value_if<tr_tracker_id_t>()) {
+            ann.remove(*val);
         }
     }
 
@@ -1230,7 +1254,7 @@ namespace make_torrent_field_helpers
             std::tie(err, errmsg) = set_file_dls(tor, true, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
+        if (auto const val = args_in.value_if<uint16_t>(TR_KEY_peer_limit)) {
             tr_torrentSetPeerLimit(tor, *val);
         }
 
@@ -1249,7 +1273,7 @@ namespace make_torrent_field_helpers
             std::tie(err, errmsg) = set_file_priorities(tor, TR_PRI_NORMAL, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_download_limit); val) {
+        if (auto const val = args_in.value_if<size_t>(TR_KEY_download_limit)) {
             tr_torrentSetSpeedLimit_KBps(tor, tr_direction::Down, *val);
         }
 
@@ -1257,8 +1281,9 @@ namespace make_torrent_field_helpers
             tor->set_sequential_download(*val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_sequential_download_from_piece); val && err == Error::SUCCESS) {
-            std::tie(err, errmsg) = set_sequential_download_from_piece(*tor, *val);
+        if (auto const iter = args_in.find(TR_KEY_sequential_download_from_piece);
+            iter != args_in.end() && err == Error::SUCCESS) {
+            std::tie(err, errmsg) = set_sequential_download_from_piece(*tor, iter->second.value_if<tr_piece_index_t>());
         }
 
         if (auto const val = args_in.value_if<bool>(TR_KEY_download_limited); val) {
@@ -2052,7 +2077,6 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
     map.try_emplace(
         TR_KEY_download_dir_free_space,
         [](tr_session const& src) -> tr_variant {
-            // TODO(C++23): use std::optional::transform() instead
             if (auto const space = tr_sys_path_get_capacity(src.downloadDir())) {
                 return space->available;
             }

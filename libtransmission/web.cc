@@ -22,7 +22,6 @@
 #include <stack>
 #include <string>
 #include <thread>
-#include <type_traits>
 #include <utility>
 
 #ifdef _WIN32
@@ -384,12 +383,9 @@ public:
             }
         }
 
-        [[nodiscard]] std::optional<tr_address> bind_address(int const af) const
+        [[nodiscard]] auto bind_address(int const af) const
         {
-            if (auto const addr = impl.mediator.bind_address(af)) {
-                return tr_address::from_string(*addr);
-            }
-            return {};
+            return impl.mediator.bind_address(af).and_then(&tr_address::from_string);
         }
 
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
@@ -485,6 +481,17 @@ public:
         return in_range;
     }
 
+    // https://curl.se/docs/CVE-2026-92392.html
+    [[nodiscard]] static bool check_curl_cve_2026_92392() noexcept
+    {
+        static auto const version = get_curl_version();
+        static bool const in_range = 0x080c00 /* 8.12.0 */ <= version && version <= 0x081600 /* 8.22.0 */ &&
+            (version < 0x080e03 /* 8.14.3 */ || version >= 0x080f00 /* 8.15.0 */) &&
+            (version < 0x081002 /* 8.16.2 */ || version >= 0x081100 /* 8.17.0 */) &&
+            (version < 0x081402 /* 8.20.2 */ || version >= 0x081500 /* 8.21.0 */);
+        return in_range;
+    }
+
     // https://github.com/curl/curl/issues/14899
     [[nodiscard]] static bool check_curl_gh14899() noexcept
     {
@@ -504,6 +511,7 @@ public:
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
     bool const curl_proxy_ssl_verify = !tr_env_key_exists("TR_CURL_PROXY_SSL_NO_VERIFY");
     bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312(); // both related to curl http2 bugs
+    bool const curl_avoid_http2_uploads = check_curl_cve_2026_92392(); // curl http2 bug that only affects uploads
     bool const curl_dont_limit_range_requests = check_curl_gh14899();
 
     Mediator& mediator;
@@ -735,6 +743,10 @@ public:
             // curl copies the body binary-safely rather than via strlen().
             (void)curl_easy_setopt(e, CURLOPT_POSTFIELDSIZE, static_cast<long>(std::size(*body)));
             (void)curl_easy_setopt(e, CURLOPT_COPYPOSTFIELDS, std::data(*body));
+
+            if (curl_avoid_http2_uploads) {
+                (void)curl_easy_setopt(e, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            }
         }
 
         if (auto* const headers = task.make_request_headers()) {
@@ -977,7 +989,7 @@ public:
                             task->response.errmsg = fmt::format(
                                 "curl error: {} ({})",
                                 curl_easy_strerror(msg->data.result),
-                                static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                                std::to_underlying(msg->data.result));
                         }
 
                         auto req_bytes_sent = long{};

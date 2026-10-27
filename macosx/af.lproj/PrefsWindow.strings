@@ -67,24 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Oordrag is passief by geen aktiwiteit van:";
 
-/* Class = "NSButtonCell"; title = "Automatically map port"; ObjectID = "1247"; */
-"1247.title" = "Outomatiese poorttoekenning";
-
-/* Class = "NSTextFieldCell"; title = "NAT traversal uses either NAT-PMP or UPnP"; ObjectID = "1248"; */
-"1248.title" = "NAT-traversal gebruik NAT-PMP of UPnP";
-
-/* Class = "NSTextFieldCell"; title = "Port is open"; ObjectID = "1250"; */
-"1250.title" = "Poort is oop";
-
-/* Class = "NSTextFieldCell"; title = "Peer communication:"; ObjectID = "1253"; */
-"1253.title" = "Ewekniekommunikasie:";
-
-/* Class = "NSButtonCell"; title = "Prevent computer from sleeping with active transfers"; ObjectID = "1254"; */
-"1254.title" = "Belet die rekenaar om te sluimer by aktiewe oordragte";
-
-/* Class = "NSTextFieldCell"; title = "System sleep:"; ObjectID = "1255"; */
-"1255.title" = "Stelselslaap:";
-
 /* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
 "1265.title" = "Oplaaisnelheid:";
 
@@ -256,12 +238,6 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Oordragte sal aan die eerste groep wat aan alle kriteria voldoen, toegeken word";
 
-/* Class = "NSButtonCell"; title = "Randomize port on launch"; ObjectID = "1890"; */
-"1890.title" = "Maak poort ewekansig tydens lansering";
-
-/* Class = "NSButtonCell"; title = "Randomize"; ObjectID = "1892"; */
-"1892.title" = "Maak ewekansig";
-
 /* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
 "1910.title" = "Elke dag";
 
@@ -321,12 +297,6 @@
 
 /* Class = "NSMenuItem"; title = "Other…"; ObjectID = "2053"; */
 "2053.title" = "Ander…";
-
-/* Class = "NSButtonCell"; title = "Enable Micro Transport Protocol (µTP)"; ObjectID = "2078"; */
-"2078.title" = "Aktiveer mikro-oordragprotokol (µTP)";
-
-/* Class = "NSTextFieldCell"; title = "Peer listening port:"; ObjectID = "2082"; */
-"2082.title" = "Eweknieluisterpoort:";
 
 /* Class = "NSButtonCell"; title = "Remove from the transfer list when seeding completes"; ObjectID = "2119"; */
 "2119.title" = "Verwyder uit die oordraglys wanneer klaar gesaai is";

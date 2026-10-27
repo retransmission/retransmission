@@ -1,0 +1,9 @@
+"Automatically map port" = "Kapıyı otomatik ata";
+"NAT traversal uses either NAT-PMP or UPnP" = "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır";
+"Peer communication:" = "İletişim:";
+"Prevent computer from sleeping with active torrents" = "Etkin aktarım varsa bilgisayarı uyanık tut";
+"System sleep:" = "Sistem uykusu:";
+"Pick a random port at startup" = "Başlangıçta kapıları rastgele dağıt:";
+"Randomize" = "Dağıt";
+"Enable µTP for peer connections" = "Mikro İletişim Protokolünü etkinleştir (µTP)";
+"Port for incoming connections:" = "Eş dinleme kapısı:";

@@ -38,6 +38,28 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
 @implementation FileOutlineController
 
+/// Sets up an outline view built in code; -awakeFromNib sets up the one in AddWindow.xib.
+- (void)setupWithOutlineView:(FileOutlineView*)outlineView
+{
+    if (!self.fFileList) {
+        self.fFileList = [[NSMutableArray alloc] init];
+    }
+
+    self.fOutline = outlineView;
+
+    [self.fOutline tableColumnWithIdentifier:@"Check"].headerToolTip = NSLocalizedString(@"Download", "file table -> header tool tip");
+    [self.fOutline tableColumnWithIdentifier:@"Priority"].headerToolTip = NSLocalizedString(@"Priority", "file table -> header tool tip");
+
+    self.fOutline.menu = self.menu;
+
+    self.fOutline.dataSource = self;
+    self.fOutline.delegate = self;
+    self.fOutline.target = self;
+    self.fOutline.doubleAction = @selector(revealFile:);
+
+    self.torrent = nil;
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];

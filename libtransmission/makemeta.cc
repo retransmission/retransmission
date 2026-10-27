@@ -289,7 +289,7 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
     // "There is also a key `length` or a key `files`, but not both or neither.
     // If length is present then the download represents a single file,
     // otherwise it represents a set of files which go in a directory structure."
-    if (file_count() == 1U && !tr_strv_contains(path(0), '/')) {
+    if (file_count() == 1U && !path(0).contains('/')) {
         info_dict.try_emplace(TR_KEY_length, file_size(0));
     } else {
         auto const n_files = file_count();
