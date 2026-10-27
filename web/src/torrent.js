@@ -649,7 +649,7 @@ Torrent.Fields.Stats = [
   'seed_ratio_limit',
   'size_when_done',
   'status',
-  'total_size', // refreshed with the counts it divides: checked_bytes, size_when_done, peers' have_total
+  'total_size', // 0 until metadata_* report the metadata complete, so refreshed with them
   'trackers',
   'download_dir',
   'uploaded_ever',
