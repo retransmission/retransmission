@@ -142,37 +142,57 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
 #ifdef __APPLE__
 namespace
 {
-// The interface last warned about as missing, so an outage warns once instead
-// of once per socket. Sockets are bound on more than one thread.
-struct MissingInterfaceWarning {
+// The interface binding failure last warned about, so an outage warns once
+// instead of once per socket. Sockets are bound on more than one thread.
+struct BindFailureWarning {
     std::mutex mutex;
     std::string name;
+    int err = 0;
 };
 
-[[nodiscard]] MissingInterfaceWarning& missing_interface_warning()
+[[nodiscard]] BindFailureWarning& bind_failure_warning()
 {
-    static auto warning = MissingInterfaceWarning{};
+    static auto warning = BindFailureWarning{};
     return warning;
 }
 
-// true the first time `name` is missing since a socket last bound to an interface
-[[nodiscard]] bool should_warn_missing_interface(std::string_view const name)
+// true the first time binding to `name` fails with `err` since a socket last bound
+[[nodiscard]] bool should_warn_bind_failure(std::string_view const name, int const err)
 {
-    auto& warning = missing_interface_warning();
+    auto& warning = bind_failure_warning();
     auto const lock = std::scoped_lock{ warning.mutex };
-    if (warning.name == name) {
+    if (warning.name == name && warning.err == err) {
         return false;
     }
     warning.name = name;
+    warning.err = err;
     return true;
 }
 
 // a successful bind ends the outage, so the next one warns again
-void forget_missing_interface()
+void forget_bind_failure()
 {
-    auto& warning = missing_interface_warning();
+    auto& warning = bind_failure_warning();
     auto const lock = std::scoped_lock{ warning.mutex };
     warning.name.clear();
+    warning.err = 0;
+}
+
+[[nodiscard]] bool bind_socket_to_interface(
+    tr_socket_t const sock,
+    tr_address_type const type,
+    std::string_view /*name*/,
+    unsigned const if_index)
+{
+    auto const level = type == TR_AF_INET ? IPPROTO_IP : IPPROTO_IPV6;
+    auto const option = type == TR_AF_INET ? IP_BOUND_IF : IPV6_BOUND_IF;
+    auto const index = static_cast<int>(if_index);
+    return setsockopt(sock, level, option, reinterpret_cast<char const*>(&index), sizeof(index)) != -1;
+}
+
+[[nodiscard]] std::string bind_failure_reason(int const err)
+{
+    return fmt::format("{} ({})", tr_net_strerror(err), err);
 }
 } // namespace
 #endif
@@ -188,7 +208,7 @@ bool tr_netSetSocketInterface(
 #ifdef __APPLE__
     // a socket under another binding ends any outage, so the next one warns again
     if (std::empty(name) || tr_net_interface_is_blocked(name)) {
-        forget_missing_interface();
+        forget_bind_failure();
     }
 #endif
 
@@ -208,7 +228,7 @@ bool tr_netSetSocketInterface(
     auto const if_index = tr_net_interface_index(name);
     if (if_index == 0U) {
         set_sockerrno(ENXIO);
-        if (!suppress_msgs && should_warn_missing_interface(name)) {
+        if (!suppress_msgs && should_warn_bind_failure(name, ENXIO)) {
             tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': interface not found", name));
         } else {
             tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': interface not found", sock, name));
@@ -216,18 +236,18 @@ bool tr_netSetSocketInterface(
         return false;
     }
 
-    auto const level = type == TR_AF_INET ? IPPROTO_IP : IPPROTO_IPV6;
-    auto const option = type == TR_AF_INET ? IP_BOUND_IF : IPV6_BOUND_IF;
-    auto const index = static_cast<int>(if_index);
-    if (setsockopt(sock, level, option, reinterpret_cast<char const*>(&index), sizeof(index)) == -1) {
-        if (!suppress_msgs) {
-            tr_logAddWarn(
-                fmt::format("Couldn't bind socket to interface '{}': {} ({})", name, tr_net_strerror(sockerrno), sockerrno));
+    if (!bind_socket_to_interface(sock, type, name, if_index)) {
+        auto const err = sockerrno;
+        if (!suppress_msgs && should_warn_bind_failure(name, err)) {
+            tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': {}", name, bind_failure_reason(err)));
+        } else {
+            tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': {}", sock, name, bind_failure_reason(err)));
         }
+        set_sockerrno(err);
         return false;
     }
 
-    forget_missing_interface();
+    forget_bind_failure();
     tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
     return true;
 #else
