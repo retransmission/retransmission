@@ -70,14 +70,16 @@ private:
     constexpr uint8_t next(uint8_t& i, uint8_t& j)
     {
         i += 1;
-        j += s_[i];
+        j = static_cast<uint8_t>(j + s_[i]);
 
         std::swap(s_[i], s_[j]);
 
-        return s_[static_cast<uint8_t>(s_[i] + s_[j])];
+        return static_cast<uint8_t>(s_[static_cast<uint8_t>(s_[i] + s_[j])]);
     }
 
-    std::array<uint8_t, 256> s_ = {};
+    // Entries remain in [0, 255]. Word-sized slots make the hot loop
+    // faster without changing the byte-sized indices or the keystream.
+    std::array<uint32_t, 256> s_ = {};
     uint8_t i_ = 0;
     uint8_t j_ = 0;
 };
