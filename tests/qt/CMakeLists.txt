@@ -63,6 +63,7 @@ add_trqt_test(options-dialog-test.cc)
 add_trqt_test(prefs-test.cc)
 add_trqt_test(prefs-dialog-test.cc)
 add_trqt_test(session-test.cc)
+add_trqt_test(torrent-test.cc)
 add_trqt_test(tr-format-test.cc)
 
 # Builds a window, so it asks for a platform that needs no display on every host.
