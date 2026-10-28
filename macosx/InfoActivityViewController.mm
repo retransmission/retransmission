@@ -161,6 +161,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     uint64_t haveVerified = 0;
     uint64_t downloadedTotal = 0;
     uint64_t uploadedTotal = 0;
+    uint64_t sizeWhenDone = 0;
     uint64_t failedHash = 0;
     NSDate* lastActivity = nil;
     for (Torrent* torrent in self.fTorrents) {
@@ -168,6 +169,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         haveVerified += torrent.haveVerified;
         downloadedTotal += torrent.downloadedTotal;
         uploadedTotal += torrent.uploadedTotal;
+        sizeWhenDone += torrent.totalSizeSelected;
         failedHash += torrent.failedHash;
 
         NSDate* nextLastActivity;
@@ -194,6 +196,8 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
     self.fDateActivityField.objectValue = lastActivity;
 
+    self.fRatioField.stringValue = [NSString stringForRatio:tr::Values::Ratio{ uploadedTotal, sizeWhenDone }];
+
     if (numberSelected == 1) {
         Torrent* torrent = self.fTorrents[0];
 
@@ -207,8 +211,6 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
             progressString = [progressString stringByAppendingFormat:@" (%@)", progressSelectedString];
         }
         self.fProgressField.stringValue = progressString;
-
-        self.fRatioField.stringValue = [NSString stringForRatio:torrent.ratio];
 
         NSString* errorMessage = torrent.errorMessage;
         if (![errorMessage isEqualToString:self.fErrorMessageView.string])
@@ -232,8 +234,6 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         self.fSeedTimeField.stringValue = [timeFormatter stringFromTimeInterval:torrent.secondsSeeding];
 
         [self.fPiecesView updateView];
-    } else if (numberSelected > 1) {
-        self.fRatioField.stringValue = [NSString stringForRatio:tr::Values::Ratio{ uploadedTotal, downloadedTotal }];
     }
 }
 
