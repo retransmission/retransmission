@@ -75,25 +75,14 @@ Percent.Unknown = Object.freeze(new Percent(0, 1));
 // An upload ratio: a number, `None`, or `Infinite`
 export const Ratio = Object.freeze({
   // uploads against nothing downloaded
-  Infinite: -2,
-  // no data at all
+  Infinite: Number.POSITIVE_INFINITY,
+  // no data at all; sorts below every number
   None: -1,
 
   // `uploaded / downloaded`, unrounded; `None` for 0/0, `Infinite` for x/0
   fromCounts(uploaded, downloaded) {
     const ratio = uploaded / downloaded;
-    if (Number.isNaN(ratio)) {
-      return Ratio.None;
-    }
-    if (!Number.isFinite(ratio)) {
-      return Ratio.Infinite;
-    }
-    return ratio;
-  },
-
-  // For comparisons and arithmetic: `Infinite` as `Infinity`, else unchanged
-  toNumber(ratio) {
-    return ratio === Ratio.Infinite ? Number.POSITIVE_INFINITY : ratio;
+    return Number.isNaN(ratio) ? Ratio.None : ratio;
   },
 
   // Rounded half up to hundredths: two decimals below 5, one below 100, none from there

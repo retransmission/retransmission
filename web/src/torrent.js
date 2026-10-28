@@ -477,9 +477,8 @@ export class Torrent extends EventTarget {
     return b - a || Torrent.compareByState(ta, tb);
   }
   static compareByRatio(ta, tb) {
-    // `Ratio.None` (-1) sorts below every number
-    const a = Ratio.toNumber(ta.getUploadRatio());
-    const b = Ratio.toNumber(tb.getUploadRatio());
+    const a = ta.getUploadRatio();
+    const b = tb.getUploadRatio();
 
     if (a < b) {
       return 1;
