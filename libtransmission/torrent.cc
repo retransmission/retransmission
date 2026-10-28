@@ -1364,7 +1364,6 @@ tr_stat tr_torrent::stats() const
 
     stats.percent_complete = this->completion_.percent_complete();
     stats.metadata_percent_complete = get_metadata_percent();
-    stats.metadata_percent_complete_deprecated = as_float(stats.metadata_percent_complete);
     stats.metadata_have = stats.metadata_percent_complete.have();
     stats.metadata_size = stats.metadata_percent_complete.total();
 

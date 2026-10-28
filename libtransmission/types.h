@@ -563,8 +563,6 @@ struct tr_stat {
     // Always complete for torrents added from a torrent file.
     tr::Values::Percent metadata_percent_complete;
 
-    float metadata_percent_complete_deprecated = {}; // use `metadata_percent_complete`
-
     /** Byte count of the metadata received so far. */
     uint64_t metadata_have = {};
 
