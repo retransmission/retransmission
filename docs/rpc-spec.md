@@ -301,6 +301,8 @@ The 'source' column here corresponds to the data structure there.
 | `seconds_seeding`| number| tr_stat
 | `seed_idle_limit`| number| tr_torrent
 | `seed_idle_mode`| number| tr_inactivelimit
+| `seed_ratio_bytes_goal`| number| tr_stat; bytes to upload to meet the seed ratio
+| `seed_ratio_bytes_left`| number| tr_stat; 0 once the goal is met or when no seed ratio applies
 | `seed_ratio_limit`| double| tr_torrent
 | `seed_ratio_mode`| number| tr_ratiolimit
 | `sequential_download`| boolean| tr_torrent
@@ -1157,6 +1159,8 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `peers.have_total`
 | `torrent_get` | new arg `peers.supports_holepunch`
 | `torrent_get` | new arg `peers_from.from_holepunch`
+| `torrent_get` | new arg `seed_ratio_bytes_goal`
+| `torrent_get` | new arg `seed_ratio_bytes_left`
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | :warning: **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `torrent_get` | :warning: **DEPRECATED** `metadata_percent_complete`. Use `metadata_have` and `metadata_size` instead.

@@ -572,6 +572,8 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_seed_idle_mode,
     TR_KEY_seed_queue_enabled,
     TR_KEY_seed_queue_size,
+    TR_KEY_seed_ratio_bytes_goal,
+    TR_KEY_seed_ratio_bytes_left,
     TR_KEY_seed_ratio_limit,
     TR_KEY_seed_ratio_limited,
     TR_KEY_seed_ratio_mode,

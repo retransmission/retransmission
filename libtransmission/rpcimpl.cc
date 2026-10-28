@@ -726,6 +726,8 @@ namespace make_torrent_field_helpers
     case TR_KEY_seconds_seeding:
     case TR_KEY_seed_idle_limit:
     case TR_KEY_seed_idle_mode:
+    case TR_KEY_seed_ratio_bytes_goal:
+    case TR_KEY_seed_ratio_bytes_left:
     case TR_KEY_seed_ratio_limit:
     case TR_KEY_seed_ratio_mode:
     case TR_KEY_sequential_download:
@@ -891,6 +893,10 @@ namespace make_torrent_field_helpers
         return tor.idle_limit_minutes();
     case TR_KEY_seed_idle_mode:
         return tor.idle_limit_mode();
+    case TR_KEY_seed_ratio_bytes_goal:
+        return st.seed_ratio_percent_done.total();
+    case TR_KEY_seed_ratio_bytes_left:
+        return st.seed_ratio_percent_done.total() - st.seed_ratio_percent_done.have();
     case TR_KEY_seed_ratio_limit:
         return tor.seed_ratio();
     case TR_KEY_seed_ratio_mode:

@@ -832,6 +832,37 @@ TEST_F(RpcTest, torrentGetUploadRatioOfAMagnetIsNotAvailable)
     tr_torrentRemove(tor, false);
 }
 
+TEST_F(RpcTest, torrentGetSeedRatioBytes)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
+    tr_torrentSetRatioLimit(tor, 2.0);
+
+    auto const goal = static_cast<int64_t>(tr_torrentStat(tor).size_when_done * 2U);
+    EXPECT_GT(goal, 0);
+    auto const fields = torrentGetFirst(session_, { TR_KEY_seed_ratio_bytes_goal, TR_KEY_seed_ratio_bytes_left });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_goal), goal);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_left), goal);
+
+    tr_torrentRemove(tor, false);
+}
+
+// the seed ratio only applies once the download is done
+TEST_F(RpcTest, torrentGetSeedRatioBytesLeftIsZeroWhileDownloading)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
+    tr_torrentSetRatioLimit(tor, 2.0);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_seed_ratio_bytes_goal, TR_KEY_seed_ratio_bytes_left });
+    EXPECT_GT(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_goal).value_or(0), 0);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_left), 0);
+
+    tr_torrentRemove(tor, false);
+}
+
 TEST_F(RpcTest, torrentGetCurrentDir)
 {
     tr_sessionSetIncompleteDirEnabled(session_, true);

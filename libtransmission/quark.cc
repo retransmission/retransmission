@@ -560,6 +560,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "seed_idle_mode"sv, // rpc
     "seed_queue_enabled"sv, // rpc, tr_session::Settings
     "seed_queue_size"sv, // rpc, tr_session::Settings
+    "seed_ratio_bytes_goal"sv, // rpc
+    "seed_ratio_bytes_left"sv, // rpc
     "seed_ratio_limit"sv, // .resume, rpc, tr_session::Settings
     "seed_ratio_limited"sv, // rpc, tr_session::Settings
     "seed_ratio_mode"sv, // rpc
