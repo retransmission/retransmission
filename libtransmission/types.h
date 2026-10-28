@@ -581,8 +581,6 @@ struct tr_stat {
     // which caused edge cases when total download was less than size_when_done.
     tr::Values::Ratio upload_ratio;
 
-    float upload_ratio_deprecated = {}; // use `upload_ratio`
-
     // The torrent's unique Id.
     // @see `tr_torrentId()`
     tr_torrent_id_t id = {};

@@ -1380,7 +1380,6 @@ tr_stat tr_torrent::stats() const
     stats.desired_available = tr_peerMgrGetDesiredAvailable(this);
 
     stats.upload_ratio = Ratio{ stats.uploaded_ever, stats.size_when_done };
-    stats.upload_ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploaded_ever, stats.size_when_done));
 
     auto seed_ratio_bytes_left = uint64_t{};
     auto seed_ratio_bytes_goal = uint64_t{};
