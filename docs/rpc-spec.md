@@ -316,7 +316,7 @@ The 'source' column here corresponds to the data structure there.
 | `uploaded_ever`| integer| tr_stat
 | `upload_limit`| integer| tr_torrent
 | `upload_limited`| boolean| tr_torrent
-| `upload_ratio`| double| **DEPRECATED** tr_stat
+| `upload_ratio`| double| **DEPRECATED** tr_stat; -1 when `uploaded_ever` and `size_when_done` are both 0, -2 when only `size_when_done` is 0
 | `wanted`| array (see below)| n/a
 | `webseeds`| array of strings | **DEPRECATED** tr_tracker_view
 | `webseeds_ex`| array (see below)| n/a
