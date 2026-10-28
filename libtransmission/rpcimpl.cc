@@ -267,7 +267,7 @@ void tr_rpc_idle_done(struct tr_rpc_idle_data* data, JsonRpc::Error::Code code, 
 
 void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const& torrents)
 {
-    for (auto* tor : torrents) {
+    for (auto const* const tor : torrents) {
         session->rpcNotify(TR_RPC_TORRENT_CHANGED, tor->id());
     }
 
@@ -983,7 +983,8 @@ namespace make_torrent_field_helpers
     auto const format = args_in.value_if<std::string_view>(TR_KEY_format).value_or("object"sv) == "table"sv ? TrFormat::Table :
                                                                                                               TrFormat::Object;
 
-    if (auto val = args_in.value_if<std::string_view>(TR_KEY_ids); val == tr_quark_get_string_view(TR_KEY_recently_active)) {
+    if (auto const val = args_in.value_if<std::string_view>(TR_KEY_ids);
+        val == tr_quark_get_string_view(TR_KEY_recently_active)) {
         auto const cutoff = tr_time() - RecentlyActiveSeconds;
         auto const ids = session->torrents().removedSince(cutoff);
 

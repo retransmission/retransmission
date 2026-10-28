@@ -58,7 +58,7 @@ enum class UpnpState : uint8_t {
     WillDiscover, // next action is upnpDiscover()
     Discovering, // currently discovering and validating an IGD in a worker thread
     WillMap, // next action is UPNP_AddPortMapping()
-    WillUnmap // next action is UPNP_DeletePortMapping()
+    WillUnmap, // next action is UPNP_DeletePortMapping()
 };
 
 struct UpnpDiscoveryResult {
@@ -306,7 +306,7 @@ tr_upnp* tr_upnpInit()
     return new tr_upnp();
 }
 
-void tr_upnpClose(tr_upnp* handle)
+void tr_upnpClose(tr_upnp const* const handle)
 {
     delete handle;
 }

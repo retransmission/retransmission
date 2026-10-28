@@ -100,7 +100,7 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
     auto const metainfo_benc = tr_base64_decode(InfoDictBase64);
     auto const metainfo_size = std::size(metainfo_benc);
     EXPECT_LE(metainfo_size, MetadataPieceSize);
-    session_->run_in_session_thread([&]() {
+    session_->run_in_session_thread([&] {
         tor->maybe_start_metadata_transfer(metainfo_size);
         tor->set_metadata_piece(0, std::data(metainfo_benc), metainfo_size);
     });

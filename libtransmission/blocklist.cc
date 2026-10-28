@@ -169,7 +169,7 @@ namespace ParseHelpers
 {
     auto addrpair = address_range_t{};
 
-    auto pos = line.find('/');
+    auto const pos = line.find('/');
     if (pos == std::string_view::npos) {
         return {};
     }
@@ -535,7 +535,7 @@ std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view cons
     auto const n_rules = std::size(*added);
 
     // Add (or replace) it in our blocklists_ vector
-    if (auto iter = std::ranges::find_if(
+    if (auto const iter = std::ranges::find_if(
             blocklists_,
             [&bin_file](auto const& candidate) { return bin_file == candidate.binFile(); });
         iter != std::ranges::end(blocklists_)) {

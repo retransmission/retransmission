@@ -101,7 +101,7 @@ void tr_popover_unparent([[maybe_unused]] Gtk::Popover& popover)
 void tr_popover_unparent_on_destroy([[maybe_unused]] Gtk::Widget& parent, [[maybe_unused]] Gtk::Popover& popover)
 {
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    parent.signal_destroy().connect([&popover]() { tr_popover_unparent(popover); });
+    parent.signal_destroy().connect([&popover] { tr_popover_unparent(popover); });
 #endif
 }
 
@@ -125,6 +125,7 @@ void tr_image_set_from_gicon(Gtk::Image& image, Glib::RefPtr<Gio::Icon const> co
 }
 
 // gtkmm4 widgets are visible by default; gtkmm3 needs children shown explicitly.
+// NOLINTNEXTLINE(misc-const-correctness)
 void tr_show_all([[maybe_unused]] Gtk::Widget& widget)
 {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
@@ -184,7 +185,7 @@ PathButton::Impl::Impl(PathButton& widget)
     , action_{ widget, "action", TR_GTK_FILE_CHOOSER_ACTION(OPEN) }
     , title_{ widget, "title", {} }
 {
-    action_.get_proxy().signal_changed().connect([this]() { update_mode(); });
+    action_.get_proxy().signal_changed().connect([this] { update_mode(); });
 
     label_->set_ellipsize(TR_PANGO_ELLIPSIZE_MODE(END));
     label_->set_hexpand(true);
@@ -270,7 +271,7 @@ void PathButton::Impl::populate_menu()
         tr_set_child(*row, *path_label);
         tr_button_set_flat(*row);
         row->set_tooltip_text(path);
-        row->signal_clicked().connect([this, path = path.raw()]() {
+        row->signal_clicked().connect([this, path = path.raw()] {
             popover_.popdown();
             set_filename(path);
         });
@@ -285,7 +286,7 @@ void PathButton::Impl::populate_menu()
     auto* const other = Gtk::make_managed<Gtk::Button>();
     tr_set_child(*other, *other_label);
     tr_button_set_flat(*other);
-    other->signal_clicked().connect([this]() {
+    other->signal_clicked().connect([this] {
         popover_.popdown();
         show_dialog();
     });

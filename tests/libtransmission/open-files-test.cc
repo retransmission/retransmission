@@ -273,7 +273,7 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
 
     auto readers = std::vector<std::thread>{};
     for (auto reader = 0; reader < NumReaders; ++reader) {
-        readers.emplace_back([this, &bad_reads, reader]() {
+        readers.emplace_back([this, &bad_reads, reader] {
             for (auto pass = 0; pass < NumPasses; ++pass) {
                 auto const file_num = (reader + pass) % NumFiles;
                 auto const filename = tr_pathbuf{ sandboxDir(), fmt::format("/file-{:d}.txt"sv, file_num) };
@@ -295,7 +295,7 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
         });
     }
 
-    auto closer = std::thread{ [this, &stop]() {
+    auto closer = std::thread{ [this, &stop] {
         while (!stop) {
             session_->openFiles().close_torrent(TorId);
         }
@@ -320,7 +320,7 @@ TEST_F(OpenFilesTest, concurrentWritersShareTheInitializedFile)
     auto writers = std::vector<std::thread>{};
 
     for (auto index = size_t{}; index < NumWriters; ++index) {
-        writers.emplace_back([this, &filename, &ready, &handles, index]() {
+        writers.emplace_back([this, &filename, &ready, &handles, index] {
             ready.arrive_and_wait();
             auto error = tr_error{};
             handles[index] = session_->openFiles().get(0, 0, true, filename, PreallocateFull, FileSize, error);
@@ -373,7 +373,7 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
         return tr::test::failPreallocation(error, fail);
     } };
 
-    auto first = std::async(std::launch::async, [&]() {
+    auto first = std::async(std::launch::async, [&] {
         auto error = tr_error{};
         return files.get(0, 0, true, filename, PreallocateFull, FileSize, error);
     });
@@ -381,7 +381,7 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     EXPECT_FALSE(files.get(0, 0, true));
 
     auto writer_started = std::promise<void>{};
-    auto second = std::async(std::launch::async, [&]() {
+    auto second = std::async(std::launch::async, [&] {
         writer_started.set_value();
         auto error = tr_error{};
         auto file = files.get(second_tor_id, 0, true, filename, PreallocateFull, FileSize, error);
@@ -396,7 +396,7 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     EXPECT_EQ(std::future_status::ready, writer_started.get_future().wait_for(5s));
     EXPECT_EQ(std::future_status::timeout, second.wait_for(100ms));
 
-    auto independent = std::async(std::launch::async, [&]() {
+    auto independent = std::async(std::launch::async, [&] {
         auto error = tr_error{};
         return files.get(0, 1, true, other_filename, tr_file_preallocation::None, 0U, error);
     });

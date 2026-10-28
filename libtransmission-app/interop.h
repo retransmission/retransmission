@@ -21,7 +21,7 @@ enum class Intent : uint8_t {
     // If we handed it over, we would drop what it asked for and report success.
     Standalone,
     Present,
-    AddTorrents
+    AddTorrents,
 };
 
 // What a launch would have another instance do for it, if one is there.
@@ -57,6 +57,12 @@ enum class Reply : uint8_t {
 class Instance
 {
 public:
+    Instance() = default;
+    Instance(Instance&&) = delete;
+    Instance(Instance const&) = delete;
+    Instance& operator=(Instance&&) = delete;
+    Instance& operator=(Instance const&) = delete;
+
     virtual ~Instance() = default;
 
     // Gone requires proof from the transport that the instance's process has exited.
@@ -82,6 +88,12 @@ public:
 class Transport
 {
 public:
+    Transport() = default;
+    Transport(Transport&&) = delete;
+    Transport(Transport const&) = delete;
+    Transport& operator=(Transport&&) = delete;
+    Transport& operator=(Transport const&) = delete;
+
     virtual ~Transport() = default;
 
     // `self` must answer until this Transport is destroyed.

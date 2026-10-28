@@ -72,7 +72,7 @@ protected:
 
     static void waitForFileToBeReadable(std::string const& path)
     {
-        auto const test = [&path]() {
+        auto const test = [&path] {
             return std::ifstream{ path, std::ios_base::in }.is_open();
         };
         EXPECT_TRUE(waitFor(test, 30000));
@@ -366,7 +366,7 @@ TEST_P(SubprocessTest, SpawnAsyncLeavesNoChild)
             _exit(3);
         }
 
-        if (!waitFor([&result_path]() { return tr_sys_path_exists(result_path); }, 30000)) {
+        if (!waitFor([&result_path] { return tr_sys_path_exists(result_path); }, 30000)) {
             _exit(4);
         }
 

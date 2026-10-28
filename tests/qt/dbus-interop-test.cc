@@ -287,9 +287,7 @@ void claimConfigDir(
     auto coordinator = tr::interop::StartupCoordinator{ config_dir.toStdString(), tr::interop::make_transport(config_dir) };
 
     return coordinator
-        .delegate(
-            tr::interop::Intent::AddTorrents,
-            [metainfos = std::move(metainfos)]() mutable { return std::move(metainfos); })
+        .delegate(tr::interop::Intent::AddTorrents, [metainfos = std::move(metainfos)] mutable { return std::move(metainfos); })
         .has_value();
 }
 
@@ -527,7 +525,7 @@ private slots:
         QVERIFY(iface != nullptr);
         QVERIFY(
             QTest::qWaitFor(
-                [iface, &dead_name]() { return !QDBusReply<bool>{ iface->isServiceRegistered(dead_name) }.value(); },
+                [iface, &dead_name] { return !QDBusReply<bool>{ iface->isServiceRegistered(dead_name) }.value(); },
                 5000));
 
         // The client's connection closed with its thread, so its unique name has no
@@ -616,7 +614,7 @@ private slots:
         // and another thread, so this one keeps dispatching.
         auto answered = std::atomic<bool>{ false };
         auto accepted = std::atomic<bool>{ false };
-        auto caller = std::thread{ [&service, &interface, &path, &answered, &accepted]() {
+        auto caller = std::thread{ [&service, &interface, &path, &answered, &accepted] {
             auto const name = QStringLiteral("publish-caller");
             auto bus = QDBusConnection::connectToBus(QDBusConnection::SessionBus, name);
             auto request = QDBusMessage::createMethodCall(
@@ -635,7 +633,7 @@ private slots:
         // get a crash instead of the report.
         // The wait keeps this thread dispatching so the service can answer.
         // A timed-out call ends on its own, so the join is bounded.
-        auto const answered_in_time = QTest::qWaitFor([&answered]() { return answered.load(); }, 5000);
+        auto const answered_in_time = QTest::qWaitFor([&answered] { return answered.load(); }, 5000);
         caller.join();
         QVERIFY(answered_in_time);
 
@@ -659,7 +657,7 @@ private slots:
 
         auto answered = std::atomic<bool>{ false };
         auto accepted = std::atomic<bool>{ false };
-        auto caller = std::thread{ [&answered, &accepted]() {
+        auto caller = std::thread{ [&answered, &accepted] {
             auto const name = QStringLiteral("token-caller");
             auto bus = QDBusConnection::connectToBus(QDBusConnection::SessionBus, name);
             auto request = QDBusMessage::createMethodCall(
@@ -674,7 +672,7 @@ private slots:
         } };
 
         // Join before the first verify, as in the record-caller case above.
-        auto const answered_in_time = QTest::qWaitFor([&answered]() { return answered.load(); }, 5000);
+        auto const answered_in_time = QTest::qWaitFor([&answered] { return answered.load(); }, 5000);
         caller.join();
         QVERIFY(answered_in_time);
 
@@ -699,7 +697,7 @@ private slots:
         auto answered = std::atomic<bool>{ false };
         auto accepted = std::atomic<bool>{ false };
         auto presented = std::atomic<bool>{ false };
-        auto caller = std::thread{ [&answered, &accepted, &presented]() {
+        auto caller = std::thread{ [&answered, &accepted, &presented] {
             auto const name = QStringLiteral("old-launcher");
             auto bus = QDBusConnection::connectToBus(QDBusConnection::SessionBus, name);
 
@@ -723,7 +721,7 @@ private slots:
         } };
 
         // Join before the first verify, as in the record-caller case above.
-        auto const answered_in_time = QTest::qWaitFor([&answered]() { return answered.load(); }, 5000);
+        auto const answered_in_time = QTest::qWaitFor([&answered] { return answered.load(); }, 5000);
         caller.join();
         QVERIFY(answered_in_time);
 

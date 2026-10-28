@@ -33,6 +33,7 @@ public:
         old_ = load_old_stats(config_dir_);
     }
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_stats()
     {
         save();

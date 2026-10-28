@@ -30,7 +30,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
 
     auto err = tr_error_code_t{};
     // tr_ioWrite() must run in the session thread; block until it's done
-    auto const write_block = [session = session_, tor, &err]() {
+    auto const write_block = [session = session_, tor, &err] {
         auto const buf = std::vector<uint8_t>(TrBlockSize);
         err = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf);
     };
@@ -43,7 +43,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
 
     // Evict the pooled fd, then make the path unopenable by replacing
     // the file with a directory.
-    blockingRunInSessionThread([session = session_, tor]() { session->openFiles().close_torrent(tor->id()); });
+    blockingRunInSessionThread([session = session_, tor] { session->openFiles().close_torrent(tor->id()); });
     ASSERT_TRUE(tr_sys_path_remove(path));
     ASSERT_TRUE(tr_sys_dir_create(path, 0, 0700));
 
@@ -68,7 +68,7 @@ TEST_F(InOutTest, readFailsWhenFileIsShorterThanExpected)
     // The read must fail. Reporting success would hand the caller a
     // buffer whose bytes past the end of the file were never written.
     auto err = tr_error_code_t{};
-    blockingRunInSessionThread([session = session_, tor, &err]() {
+    blockingRunInSessionThread([session = session_, tor, &err] {
         auto buf = std::vector<uint8_t>(TrBlockSize);
         err = tr_ioRead(*tor->storage_descriptor(), session->openFiles(), 0U, buf);
     });

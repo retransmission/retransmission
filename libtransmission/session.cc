@@ -523,7 +523,7 @@ tr_session* tr_sessionInit(
     // run initImpl() in the libtransmission thread
     auto data = tr_session::init_data{ message_queueing_enabled, config_dir, settings };
     auto lock = session->unique_lock();
-    session->run_in_session_thread([&session, &data]() { session->initImpl(data); });
+    session->run_in_session_thread([&session, &data] { session->initImpl(data); });
     data.done_cv.wait(lock); // wait for the session to be ready
 
     return session;
@@ -704,7 +704,7 @@ void tr_session::initImpl(init_data& data)
             // Completions change torrent state, which clients read from
             // their own threads while holding the session lock.
             [this](std::function<void()> fn) {
-                queue_session_thread([this, fn = std::move(fn)]() {
+                queue_session_thread([this, fn = std::move(fn)] {
                     auto const lock = unique_lock();
                     fn();
                 });
@@ -856,7 +856,7 @@ void tr_sessionSet(tr_session* session, tr::Settings const& settings)
     // do the work in the session thread
     auto done_promise = std::promise<void>{};
     auto done_future = done_promise.get_future();
-    session->run_in_session_thread([&session, &settings, &done_promise]() {
+    session->run_in_session_thread([&session, &settings, &done_promise] {
         session->setSettings(settings, false);
         done_promise.set_value();
     });
@@ -944,7 +944,7 @@ void tr_sessionSetIncompleteFileNamingEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     session->settings_.is_incomplete_file_naming_enabled = enabled;
-    session->run_in_session_thread([session]() { session->invalidate_storage_descriptors(); });
+    session->run_in_session_thread([session] { session->invalidate_storage_descriptors(); });
 }
 
 bool tr_sessionIsIncompleteFileNamingEnabled(tr_session const* session)
@@ -991,7 +991,7 @@ void tr_sessionSetPeerPort(tr_session* session, uint16_t hport)
     TR_ASSERT(session != nullptr);
 
     if (auto const port = tr_port::from_host(hport); port != session->localPeerPort()) {
-        session->run_in_session_thread([session, port]() {
+        session->run_in_session_thread([session, port] {
             auto settings = session->settings_;
             settings.peer_port = port;
             session->setSettings(std::move(settings), false);
@@ -1121,7 +1121,7 @@ time_t tr_session::AltSpeedMediator::time()
 
 void tr_session::AltSpeedMediator::is_active_changed(bool is_active, tr_session_alt_speeds::ChangeReason reason)
 {
-    auto const in_session_thread = [session = &session_, is_active, reason]() {
+    auto const in_session_thread = [session = &session_, is_active, reason] {
         session->update_bandwidth(tr_direction::Up);
         session->update_bandwidth(tr_direction::Down);
 
@@ -1390,7 +1390,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     // recycle the now-unused save_timer_ here to wait for UDP shutdown
     TR_ASSERT(!save_timer_);
-    save_timer_ = timerMaker().create([this, closed_promise, deadline]() { closeImplPart2(closed_promise, deadline); });
+    save_timer_ = timerMaker().create([this, closed_promise, deadline] { closeImplPart2(closed_promise, deadline); });
     save_timer_->start_repeating(50ms);
 }
 
@@ -1438,7 +1438,7 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
     auto const deadline = std::chrono::steady_clock::now() +
         std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
     session->run_in_session_thread(
-        [&closed_promise, deadline, session]() { session->closeImplPart1(&closed_promise, deadline); });
+        [&closed_promise, deadline, session] { session->closeImplPart1(&closed_promise, deadline); });
     closed_future.wait();
 
     delete session;
@@ -1551,7 +1551,7 @@ void tr_sessionSetDHTEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     if (enabled != session->allowsDHT()) {
-        session->run_in_session_thread([session, enabled]() {
+        session->run_in_session_thread([session, enabled] {
             auto settings = session->settings_;
             settings.dht_enabled = enabled;
             session->setSettings(std::move(settings), false);
@@ -1585,7 +1585,7 @@ void tr_sessionSetUTPEnabled(tr_session* session, bool enabled)
         return;
     }
 
-    session->run_in_session_thread([session, enabled]() {
+    session->run_in_session_thread([session, enabled] {
         auto settings = session->settings_;
         settings.utp_enabled = enabled;
         settings.fixup_to_preferred_transports();
@@ -1598,7 +1598,7 @@ void tr_sessionSetLPDEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     if (enabled != session->allowsLPD()) {
-        session->run_in_session_thread([session, enabled]() {
+        session->run_in_session_thread([session, enabled] {
             auto settings = session->settings_;
             settings.lpd_enabled = enabled;
             session->setSettings(std::move(settings), false);
@@ -1671,7 +1671,7 @@ tr_bandwidth& tr_session::getBandwidthGroup(std::string_view name)
 
 void tr_sessionSetPortForwardingEnabled(tr_session* session, bool enabled)
 {
-    session->run_in_session_thread([session, enabled]() {
+    session->run_in_session_thread([session, enabled] {
         session->settings_.port_forwarding_enabled = enabled;
         session->port_forwarding_->set_enabled(enabled);
     });
@@ -2088,7 +2088,7 @@ auto constexpr SaveInterval = 360s;
 {
     // A dir has to exist before it can be locked,
     // so create it here rather than wait for the first write.
-    tr_sys_dir_create(std::string{ config_dir }, TR_SYS_DIR_CREATE_PARENTS, 0777);
+    tr_sys_dir_create(config_dir, TR_SYS_DIR_CREATE_PARENTS, 0777);
     return tr_config_dir_lock{ config_dir };
 }
 } // namespace
@@ -2106,9 +2106,9 @@ tr_session::tr_session(std::string_view const config_dir, tr::Settings const& se
     , remove_func{ std::move(func) }
     , peer_mgr_{ tr_peerMgrNew(this), &tr_peerMgrFree }
     , rpc_server_{ std::make_unique<tr_rpc_server>(this, tr_rpc_server::Settings{ settings }) }
-    , now_timer_{ timer_maker_->create([this]() { on_now_timer(); }) }
-    , queue_timer_{ timer_maker_->create([this]() { on_queue_timer(); }) }
-    , save_timer_{ timer_maker_->create([this]() { on_save_timer(); }) }
+    , now_timer_{ timer_maker_->create([this] { on_now_timer(); }) }
+    , queue_timer_{ timer_maker_->create([this] { on_queue_timer(); }) }
+    , save_timer_{ timer_maker_->create([this] { on_save_timer(); }) }
 {
     busy_window_.store(compute_busy_window(), std::memory_order_relaxed);
 

@@ -93,7 +93,7 @@ void run_in_session_thread_by_id(tr_torrent& tor, Work&& work, OnGone&& on_gone)
     tor.session->run_in_session_thread([session = tor.session,
                                         tor_id = tor.id(),
                                         work = std::forward<Work>(work),
-                                        on_gone = std::forward<OnGone>(on_gone)]() mutable {
+                                        on_gone = std::forward<OnGone>(on_gone)] mutable {
         // Other threads add torrents under the session lock.
         auto* const torrent = [session, tor_id] {
             auto const lock = session->unique_lock();
@@ -1203,9 +1203,9 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
     run_in_session_thread_by_id(
         *this,
         [loc = std::string(location), move_from_old_path, setme_state](tr_torrent* const tor) {
-            tor->set_location_in_session_thread([loc]() { return loc; }, move_from_old_path, setme_state);
+            tor->set_location_in_session_thread([loc] { return loc; }, move_from_old_path, setme_state);
         },
-        [setme_state]() {
+        [setme_state] {
             if (setme_state != nullptr) {
                 *setme_state = TR_LOC_ERROR;
             }
@@ -1864,7 +1864,7 @@ void tr_torrent::leave_incomplete_dir()
 
     // Decide when the move starts, once the set-locations queued before
     // it have landed. Skip it if one of them took the files elsewhere.
-    auto parent = [session = this->session, tor_id = id()]() -> std::string {
+    auto parent = [session = this->session, tor_id = id()] -> std::string {
         auto const* const tor = session->torrents().get(tor_id);
         if (tor == nullptr) {
             return {};
@@ -1946,7 +1946,7 @@ void tr_torrent::recheck_completeness()
         // Clients call this on their own threads too, but disk ops
         // must be enqueued from the session thread. Closing the files
         // behind the move runs `finish` once the move lands.
-        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)]() mutable {
+        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
             if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
                 auto const lock = tor->unique_lock();
                 tor->leave_incomplete_dir();
@@ -2512,7 +2512,7 @@ void tr_torrent::refresh_current_dir(std::optional<tr::shared_string> const& fir
     TR_ASSERT(!std::empty(dir));
     TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
 
-    current_dir_ = dir;
+    current_dir_ = std::move(dir);
     invalidate_storage_descriptor();
 }
 
@@ -2681,7 +2681,7 @@ void tr_torrent::rename_path_in_session_thread(
 
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
 {
-    auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback]() {
+    auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback] {
         if (callback != nullptr) {
             auto error = tr_error{};
             error.set_from_errno(TR_ERROR_EINVAL);

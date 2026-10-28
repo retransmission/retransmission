@@ -303,7 +303,7 @@ struct tau_announce_request {
         TAU_ANNOUNCE_EVENT_NONE = 0,
         TAU_ANNOUNCE_EVENT_COMPLETED = 1,
         TAU_ANNOUNCE_EVENT_STARTED = 2,
-        TAU_ANNOUNCE_EVENT_STOPPED = 3
+        TAU_ANNOUNCE_EVENT_STOPPED = 3,
     };
 
     PayloadBuffer payload;
@@ -690,7 +690,7 @@ public:
 
             // is it a response to one of this tracker's announces?
             if (auto& reqs = tracker.announces; !std::empty(reqs)) {
-                if (auto it = std::ranges::find_if(
+                if (auto const it = std::ranges::find_if(
                         reqs,
                         [&transaction_id](auto const& req) { return req.transaction_id == transaction_id; });
                     it != std::ranges::end(reqs)) {
@@ -703,7 +703,7 @@ public:
 
             // is it a response to one of this tracker's scrapes?
             if (auto& reqs = tracker.scrapes; !std::empty(reqs)) {
-                if (auto it = std::ranges::find_if(
+                if (auto const it = std::ranges::find_if(
                         reqs,
                         [&transaction_id](auto const& req) { return req.transaction_id == transaction_id; });
                     it != std::ranges::end(reqs)) {
