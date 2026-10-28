@@ -5,7 +5,6 @@
 
 #include <algorithm> // for std::sort, std::transform
 #include <array> // std::array
-#include <cfloat> // DBL_DIG
 #include <charconv> // std::from_chars()
 #include <chrono>
 #include <concepts>
@@ -35,8 +34,6 @@
 #endif
 
 #include <curl/curl.h>
-
-#include <fmt/format.h>
 
 #include <fast_float/fast_float.h>
 
@@ -142,21 +139,6 @@ int tr_main_win32(int argc, char** argv, int (*real_main)(int, char**))
 }
 
 #endif
-
-// ---
-
-double tr_truncd(double x, int decimal_places)
-{
-    auto buf = std::array<char, 128>{};
-    auto const [out, len] = fmt::format_to_n(std::data(buf), std::size(buf) - 1, "{:.{}f}", x, DBL_DIG);
-    *out = '\0';
-
-    if (auto* const pt = strchr(std::data(buf), '.'); pt != nullptr) {
-        pt[decimal_places != 0 ? decimal_places + 1 : 0] = '\0';
-    }
-
-    return tr_num_parse<double>(std::data(buf)).value_or(0.0);
-}
 
 // ---
 

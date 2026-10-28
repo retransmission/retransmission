@@ -107,22 +107,6 @@ template<std::integral T>
 template<std::floating_point T>
 [[nodiscard]] std::optional<T> tr_num_parse(std::string_view str, std::string_view* setme_remainder = nullptr);
 
-/**
- * @brief truncate a double value at a given number of decimal places.
- *
- * this can be used to prevent a `printf()` call from rounding up:
- * call with the `decimal_places` argument equal to the number of
- * decimal places in the `printf()`'s precision:
- *
- * - printf("%.2f%%", 99.999) ==> "100.00%"
- *
- * - printf("%.2f%%", tr_truncd(99.999, 2)) ==> "99.99%"
- *             ^                        ^
- *             |   These should match   |
- *             +------------------------+
- */
-[[nodiscard]] double tr_truncd(double x, int decimal_places);
-
 // ---
 
 namespace tr::detail::tr_time
