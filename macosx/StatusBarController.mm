@@ -187,7 +187,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
         statusString = [NSLocalizedString(@"Ratio", "status bar -> status label")
-            stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
+            stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio_deprecated]];
     } else //StatusTransferTypeTotal or StatusTransferTypeSession
     {
         total = [statusLabel isEqualToString:StatusTransferTypeTotal];

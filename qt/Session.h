@@ -213,7 +213,8 @@ private:
     QTimer duplicates_timer_;
 
     static auto constexpr EmptyStats = tr_session_stats{
-        .ratio = TR_RATIO_NA,
+        .ratio = {},
+        .ratio_deprecated = TR_RATIO_NA,
         .uploadedBytes = 0,
         .downloadedBytes = 0,
         .filesAdded = 0,

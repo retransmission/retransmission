@@ -10,6 +10,7 @@ import {
   setEnabled,
   setTextContent,
 } from './utils.js';
+import { Percent } from './values.js';
 
 export class FileRow extends EventTarget {
   isDone() {
@@ -30,12 +31,8 @@ export class FileRow extends EventTarget {
 
   refreshProgressHTML() {
     const { size, have } = this.fields;
-    const pct = 100 * (size ? have / size : 1);
     const fmt = Formatter;
-    const c = `${fmt.size(have)} of ${fmt.size(size)} (${fmt.percentString(
-      pct,
-      1,
-    )}%)`;
+    const c = `${fmt.size(have)} of ${fmt.size(size)} (${new Percent(have, size).toWholeString()}%)`;
     setTextContent(this.elements.progress, c);
   }
 
@@ -205,13 +202,14 @@ export class FileRow extends EventTarget {
 
     this.controller = controller;
     this.fields = {
-      have: 0,
+      // NaN differs from every total, so the first refresh() always renders progress, even for 0 of 0 bytes
+      have: Number.NaN,
       indices: subtree.file_indices,
       isWanted: true,
       // priorityHigh: false,
       // priorityLow: false,
       // priorityNormal: false,
-      size: 0,
+      size: Number.NaN,
       torrent,
     };
     this.elements = {

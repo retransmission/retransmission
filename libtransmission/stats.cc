@@ -89,7 +89,8 @@ void tr_stats::clear()
 {
     auto ret = single_;
     ret.secondsActive = time(nullptr) - start_time_;
-    ret.ratio = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
+    ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
+    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }
 
@@ -101,6 +102,7 @@ tr_session_stats tr_stats::add(tr_session_stats const& a, tr_session_stats const
     ret.filesAdded = a.filesAdded + b.filesAdded;
     ret.sessionCount = a.sessionCount + b.sessionCount;
     ret.secondsActive = a.secondsActive + b.secondsActive;
-    ret.ratio = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
+    ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
+    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }

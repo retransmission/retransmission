@@ -805,6 +805,32 @@ TEST_F(RpcTest, torrentGetMetadataCountsAreZeroForNewMagnet)
     tr_torrentRemove(tor, false);
 }
 
+TEST_F(RpcTest, torrentGetProgressIsTheExactQuotient)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    ASSERT_NE(nullptr, tor);
+
+    auto const st = tr_torrentStat(tor);
+    auto const expected = static_cast<double>(st.have_valid + st.have_unchecked) / static_cast<double>(st.size_when_done);
+    auto const fields = torrentGetFirst(session_, { TR_KEY_percent_done, TR_KEY_upload_ratio });
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_percent_done), expected);
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), 0.0);
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentGetUploadRatioOfAMagnetIsNotAvailable)
+{
+    auto* const tor = zeroTorrentMagnetInit();
+    ASSERT_NE(nullptr, tor);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_percent_done, TR_KEY_upload_ratio });
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_percent_done), 0.0);
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), -1.0); // TR_RATIO_NA
+
+    tr_torrentRemove(tor, false);
+}
+
 TEST_F(RpcTest, torrentGetCurrentDir)
 {
     tr_sessionSetIncompleteDirEnabled(session_, true);

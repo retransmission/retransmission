@@ -773,7 +773,7 @@ void MainWindow::Impl::updateStats()
                 fmt::runtime(_("Down: {downloaded_size}, Up: {uploaded_size}")),
                 fmt::arg("downloaded_size", tr_strlsize(stats.downloadedBytes)),
                 fmt::arg("uploaded_size", tr_strlsize(stats.uploadedBytes))) :
-            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", tr_strlratio(stats.ratio))));
+            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", tr_strlratio(stats.ratio_deprecated))));
 }
 
 void MainWindow::Impl::updateSpeeds()

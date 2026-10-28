@@ -739,7 +739,7 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
                 "Down: {downloaded_size}, Up: {uploaded_size}",
                 fmt::arg("downloaded_size", Formatter::storageToString(st.downloadedBytes)),
                 fmt::arg("uploaded_size", Formatter::storageToString(st.uploadedBytes))) :
-            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(st.ratio))));
+            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(st.ratio_deprecated))));
 }
 
 void MainWindow::refreshTorrentViewHeader()

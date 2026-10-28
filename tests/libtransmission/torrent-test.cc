@@ -25,11 +25,14 @@
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/types.h>
+#include <libtransmission/values.h>
 #include <libtransmission/variant.h>
 
 #include "test-fixtures.h"
 
 using TorrentTest = tr::test::SessionTest;
+using tr::Values::Percent;
+using tr::Values::Ratio;
 
 namespace
 {
@@ -287,4 +290,57 @@ TEST_F(TorrentRemoveTest, leavesLocalDataAloneWhenNotDeleting)
 
     EXPECT_TRUE(std::empty(removed_));
     EXPECT_TRUE(tr_sys_path_exists(dir));
+}
+
+TEST_F(TorrentTest, statBuildsProgressFromCounts)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    ASSERT_NE(nullptr, tor);
+
+    auto const st = tr_torrentStat(tor);
+    auto const have = st.have_valid + st.have_unchecked;
+    EXPECT_FALSE(st.percent_done.is_complete());
+    EXPECT_EQ((Percent{ have, st.size_when_done }), st.percent_done);
+    EXPECT_EQ((Percent{ have, tor->total_size() }), st.percent_complete);
+    EXPECT_FLOAT_EQ(static_cast<float>(st.percent_done.quotient()), st.percent_done_deprecated);
+    EXPECT_EQ((Ratio{ st.uploaded_ever, st.size_when_done }), st.upload_ratio);
+    EXPECT_TRUE(st.metadata_percent_complete.is_complete());
+    EXPECT_TRUE(st.seed_ratio_percent_done.is_complete()); // no seed ratio applies
+    EXPECT_EQ(Percent{}, st.recheck_progress); // not verifying
+
+    auto const file = tr_torrentFile(tor, 0);
+    EXPECT_FALSE(file.progress.is_complete());
+    EXPECT_EQ((Percent{ file.have, file.length }), file.progress);
+    EXPECT_DOUBLE_EQ(file.progress.quotient(), file.progress_deprecated);
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(TorrentTest, statOfACompleteTorrentIsComplete)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    auto const st = tr_torrentStat(tor);
+    EXPECT_TRUE(st.percent_done.is_complete());
+    EXPECT_TRUE(st.percent_complete.is_complete());
+    EXPECT_EQ(1.0F, st.percent_done_deprecated);
+    EXPECT_TRUE(tr_torrentFile(tor, 0).progress.is_complete());
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(TorrentTest, statOfAMagnetHasUnknownTotals)
+{
+    auto* const tor = zeroTorrentMagnetInit();
+    ASSERT_NE(nullptr, tor);
+
+    auto const st = tr_torrentStat(tor);
+    EXPECT_EQ(Percent{}, st.percent_done);
+    EXPECT_EQ(Percent{}, st.percent_complete);
+    EXPECT_EQ(Percent{}, st.metadata_percent_complete);
+    EXPECT_TRUE(st.upload_ratio.is_none());
+    EXPECT_EQ(0.0F, st.percent_done_deprecated);
+
+    tr_torrentRemove(tor, false);
 }

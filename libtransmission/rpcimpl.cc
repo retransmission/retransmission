@@ -416,6 +416,12 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
 
 namespace make_torrent_field_helpers
 {
+// the wire keeps the TR_RATIO_NA / TR_RATIO_INF sentinels for the two non-numeric states
+[[nodiscard]] constexpr double ratio_to_wire(Ratio const ratio) noexcept
+{
+    return ratio.quotient().value_or(ratio.is_infinite() ? TR_RATIO_INF : TR_RATIO_NA);
+}
+
 [[nodiscard]] auto make_file_wanted_vec(tr_torrent const& tor)
 {
     auto const n_files = tor.file_count();
@@ -606,7 +612,7 @@ namespace make_torrent_field_helpers
         peer_map.try_emplace(TR_KEY_peer_is_choked, peer.peer_is_choked);
         peer_map.try_emplace(TR_KEY_peer_is_interested, peer.peer_is_interested);
         peer_map.try_emplace(TR_KEY_port, peer.port);
-        peer_map.try_emplace(TR_KEY_progress, peer.progress);
+        peer_map.try_emplace(TR_KEY_progress, peer.progress.quotient());
         peer_map.try_emplace(TR_KEY_rate_to_client, peer.rate_to_client.base_quantity());
         peer_map.try_emplace(TR_KEY_rate_to_peer, peer.rate_to_peer.base_quantity());
         peer_map.try_emplace(TR_KEY_bytes_to_peer, peer.bytes_to_peer);
@@ -839,7 +845,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_metadata_have:
         return st.metadata_have;
     case TR_KEY_metadata_percent_complete:
-        return st.metadata_percent_complete;
+        return st.metadata_percent_complete.quotient();
     case TR_KEY_metadata_size:
         return st.metadata_size;
     case TR_KEY_name:
@@ -857,9 +863,9 @@ namespace make_torrent_field_helpers
     case TR_KEY_peers_sending_to_us:
         return st.peers_sending_to_us;
     case TR_KEY_percent_complete:
-        return st.percent_complete;
+        return st.percent_complete.quotient();
     case TR_KEY_percent_done:
-        return st.percent_done;
+        return st.percent_done.quotient();
     case TR_KEY_piece_count:
         return tor.piece_count();
     case TR_KEY_piece_size:
@@ -877,7 +883,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_rate_upload:
         return st.piece_upload_speed.base_quantity();
     case TR_KEY_recheck_progress:
-        return st.recheck_progress;
+        return st.recheck_progress.quotient();
     case TR_KEY_seconds_downloading:
         return st.seconds_downloading;
     case TR_KEY_seconds_seeding:
@@ -917,7 +923,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_upload_limited:
         return tor.uses_speed_limit(tr_direction::Up);
     case TR_KEY_upload_ratio:
-        return st.upload_ratio;
+        return ratio_to_wire(st.upload_ratio);
     case TR_KEY_uploaded_ever:
         return st.uploaded_ever;
     case TR_KEY_wanted:

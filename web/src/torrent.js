@@ -3,9 +3,9 @@
    or any future license endorsed by Mnemosaic LLC.
    License text can be found in the licenses/ folder. */
 
-import { Formatter } from './formatter.js';
 import { Prefs } from './prefs.js';
 import { deepEqual } from './utils.js';
+import { Percent, Ratio } from './values.js';
 
 ///
 
@@ -180,14 +180,25 @@ export class Torrent extends EventTarget {
   getMagnetLink() {
     return this.fields.magnet_link;
   }
-  getMetadataPercentComplete() {
-    return this.fields.metadata_percent_complete;
+  getMetadataPercent() {
+    const { metadata_have, metadata_percent_complete, metadata_size } =
+      this.fields;
+    if (metadata_size === undefined) {
+      return Percent.fromDouble(metadata_percent_complete);
+    }
+    // a zero `metadata_size` means no peer has reported the size yet
+    return metadata_size > 0
+      ? new Percent(metadata_have, metadata_size)
+      : Percent.Unknown;
   }
   getName() {
     return this.fields.name || 'Unknown';
   }
   getPeers() {
     return this.fields.peers || [];
+  }
+  getPeerPercent(peer) {
+    return this._percentOfTotalSize(peer.have_total, peer.progress);
   }
   getWebseedsEx() {
     return this.fields.webseeds_ex || [];
@@ -217,7 +228,8 @@ export class Torrent extends EventTarget {
     return this.fields.queue_position;
   }
   getRecheckProgress() {
-    return this.fields.recheck_progress;
+    const { checked_bytes, recheck_progress } = this.fields;
+    return this._percentOfTotalSize(checked_bytes, recheck_progress);
   }
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
@@ -279,19 +291,29 @@ export class Torrent extends EventTarget {
     );
   }
   isDone() {
-    return this.getLeftUntilDone() < 1;
+    return this.getPercentDone().isComplete();
   }
   needsMetaData() {
-    return this.getMetadataPercentComplete() < 1;
+    return !this.getMetadataPercent().isComplete();
   }
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
   }
-  getPercentDoneStr() {
-    return Formatter.percentString(100 * this.getPercentDone(), 1);
+  // `bytes` of `total_size`, which is 0 until the metadata arrives; else `fraction`
+  _percentOfTotalSize(bytes, fraction) {
+    return bytes === undefined || this.needsMetaData()
+      ? Percent.fromDouble(fraction)
+      : new Percent(bytes, this.getTotalSize());
   }
   getPercentDone() {
-    return this.fields.percent_done;
+    if (this.needsMetaData()) {
+      return Percent.Unknown;
+    }
+    const size_when_done = this.getSizeWhenDone();
+    return new Percent(
+      size_when_done - this.getLeftUntilDone(),
+      size_when_done,
+    );
   }
   getStateString() {
     switch (this.getStatus()) {
@@ -453,8 +475,9 @@ export class Torrent extends EventTarget {
     return b - a || Torrent.compareByState(ta, tb);
   }
   static compareByRatio(ta, tb) {
-    const a = ta.getUploadRatio();
-    const b = tb.getUploadRatio();
+    // `Ratio.None` (-1) sorts below every number
+    const a = Ratio.toNumber(ta.getUploadRatio());
+    const b = Ratio.toNumber(tb.getUploadRatio());
 
     if (a < b) {
       return 1;
@@ -465,8 +488,8 @@ export class Torrent extends EventTarget {
     return Torrent.compareByState(ta, tb);
   }
   static compareByProgress(ta, tb) {
-    const a = ta.getPercentDone();
-    const b = tb.getPercentDone();
+    const a = ta.getPercentDone().toFraction();
+    const b = tb.getPercentDone().toFraction();
 
     return a - b || Torrent.compareByRatio(ta, tb);
   }
@@ -600,11 +623,11 @@ Torrent.Fields.Metadata = [
   'is_private',
   'name',
   'primary_mime_type',
-  'total_size',
 ];
 
 // commonly used fields which need to be periodically refreshed
 Torrent.Fields.Stats = [
+  'checked_bytes',
   'error',
   'error_string',
   'eta',
@@ -612,11 +635,12 @@ Torrent.Fields.Stats = [
   'is_stalled',
   'labels',
   'left_until_done',
+  'metadata_have',
   'metadata_percent_complete',
+  'metadata_size',
   'peers_connected',
   'peers_getting_from_us',
   'peers_sending_to_us',
-  'percent_done',
   'queue_position',
   'rate_download',
   'rate_upload',
@@ -625,6 +649,7 @@ Torrent.Fields.Stats = [
   'seed_ratio_limit',
   'size_when_done',
   'status',
+  'total_size', // 0 until metadata_* report the metadata complete, so refreshed with them
   'trackers',
   'download_dir',
   'uploaded_ever',

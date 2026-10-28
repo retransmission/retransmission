@@ -277,7 +277,7 @@ The 'source' column here corresponds to the data structure there.
 | `manual_announce_time` | number| **DEPRECATED** don't use it, it never worked
 | `max_connected_peers` | number| tr_torrent
 | `metadata_have` | number | tr_stat
-| `metadata_percent_complete` | double| tr_stat
+| `metadata_percent_complete` | double| **DEPRECATED** tr_stat
 | `metadata_size` | number | tr_stat
 | `name` | string| tr_torrent_view
 | `peer_limit` | number| tr_torrent
@@ -296,7 +296,7 @@ The 'source' column here corresponds to the data structure there.
 | `queue_position`| number| tr_stat
 | `rate_download` (B/s)| number| tr_stat
 | `rate_upload` (B/s)| number| tr_stat
-| `recheck_progress`| double| tr_stat
+| `recheck_progress`| double| **DEPRECATED** tr_stat
 | `seconds_downloading`| number| tr_stat
 | `seconds_seeding`| number| tr_stat
 | `seed_idle_limit`| number| tr_torrent
@@ -369,7 +369,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 | `peer_is_choked`        | boolean    | tr_peer_stat
 | `peer_is_interested`    | boolean    | tr_peer_stat
 | `port`                  | number     | tr_peer_stat
-| `progress`              | double     | tr_peer_stat
+| `progress`              | double     | **DEPRECATED** tr_peer_stat
 | `rate_to_client` (B/s)  | number     | tr_peer_stat
 | `rate_to_peer` (B/s)    | number     | tr_peer_stat
 | `supports_holepunch`    | boolean    | tr_peer_stat
@@ -1159,6 +1159,9 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `peers_from.from_holepunch`
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | :warning: **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
+| `torrent_get` | :warning: **DEPRECATED** `metadata_percent_complete`. Use `metadata_have` and `metadata_size` instead.
+| `torrent_get` | :warning: **DEPRECATED** `peers.progress`. Use `peers.have_total` and `total_size` instead.
+| `torrent_get` | :warning: **DEPRECATED** `recheck_progress`. Use `checked_bytes` and `total_size` instead.
 | `session_get` | new arg `recent_download_paths`
 | `session_get` | new arg `recent_relocate_paths`
 | `session_get` | new arg `rpc_max_request_body_size`

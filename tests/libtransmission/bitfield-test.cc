@@ -444,7 +444,6 @@ TEST(Bitfield, deferredSize)
     EXPECT_FALSE(have_none.has_all());
     EXPECT_TRUE(have_none.is_valid());
     EXPECT_EQ(0U, have_none.count(0U, 1U));
-    EXPECT_FLOAT_EQ(0.0F, have_none.percent());
     EXPECT_FALSE(have_none.set(0U));
     EXPECT_FALSE(have_none.set_span(0U, 1U));
     EXPECT_FALSE(have_none.set_raw(Raw));
@@ -467,7 +466,6 @@ TEST(Bitfield, deferredSize)
     EXPECT_TRUE(have_all.is_valid());
     EXPECT_EQ(10U, have_all.count(0U, 10U));
     EXPECT_EQ(15U, have_all.count(5U, 20U));
-    EXPECT_FLOAT_EQ(1.0F, have_all.percent());
 
     EXPECT_TRUE(have_all.init_size(10U));
     EXPECT_TRUE(have_all.is_size_known());
@@ -591,23 +589,6 @@ TEST(Bitfield, shrinkToAfterIndividualUnset)
     EXPECT_EQ(std::byte{}, raw[0]);
 }
 
-TEST(Bitfield, percent)
-{
-    auto field = tr_bitfield{ 100 };
-    field.set_has_all();
-    EXPECT_NEAR(1.0F, field.percent(), 0.01);
-
-    field.set_has_none();
-    EXPECT_NEAR(0.0F, field.percent(), 0.01);
-
-    field.set_span(0, std::size(field) / 2U);
-    EXPECT_NEAR(0.5F, field.percent(), 0.01);
-
-    field.set_has_none();
-    field.set_span(0, std::size(field) / 4U);
-    EXPECT_NEAR(0.25F, field.percent(), 0.01);
-}
-
 TEST(Bitfield, bitwiseOr)
 {
     auto a = tr_bitfield{ 100 };
@@ -632,10 +613,7 @@ TEST(Bitfield, bitwiseOr)
     b.set_has_none();
     a.set_span(0, std::size(a) / 2U);
     b.set_span(std::size(a) / 2U, std::size(a));
-    EXPECT_EQ(0.5, a.percent());
-    EXPECT_EQ(0.5, b.percent());
     a |= b;
-    EXPECT_EQ(1.0, a.percent());
     EXPECT_TRUE(a.has_all());
 
     a.set_has_none();
@@ -647,8 +625,6 @@ TEST(Bitfield, bitwiseOr)
             b.set(i);
         }
     }
-    EXPECT_NEAR(0.5F, a.percent(), 0.01);
-    EXPECT_NEAR(0.5F, b.percent(), 0.01);
     a |= b;
     EXPECT_TRUE(a.has_all());
 }

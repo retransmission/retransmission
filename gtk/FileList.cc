@@ -200,7 +200,7 @@ bool refreshFilesForeach(
         new_priority = int{ file.priority };
         new_have = file.have;
         new_size = file.length;
-        new_progress = static_cast<int>(100 * file.progress);
+        new_progress = static_cast<int>(100 * file.progress_deprecated);
     } else {
         new_enabled = NOT_SET;
         new_priority = NOT_SET;

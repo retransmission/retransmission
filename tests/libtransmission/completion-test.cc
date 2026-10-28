@@ -48,8 +48,8 @@ TEST_F(CompletionTest, MagnetLink)
     EXPECT_FALSE(completion.has_blocks({ 0, 1 }));
     EXPECT_FALSE(completion.has_blocks({ 0, 1000 }));
     EXPECT_FALSE(completion.has_piece(0));
-    EXPECT_DOUBLE_EQ(0.0, completion.percent_done());
-    EXPECT_DOUBLE_EQ(0.0, completion.percent_complete());
+    EXPECT_DOUBLE_EQ(0.0, completion.percent_done().quotient());
+    EXPECT_DOUBLE_EQ(0.0, completion.percent_complete().quotient());
     EXPECT_EQ(TR_LEECH, completion.status());
     EXPECT_EQ(0, completion.has_total());
     EXPECT_EQ(0, completion.has_valid());
@@ -174,15 +174,15 @@ TEST_F(CompletionTest, percentCompleteAndDone)
 
     // check that in blank-slate initial state, isDone() is false
     auto completion = torrent.makeCompletion(block_info);
-    EXPECT_DOUBLE_EQ(0.0, completion.percent_complete());
-    EXPECT_DOUBLE_EQ(0.0, completion.percent_done());
+    EXPECT_DOUBLE_EQ(0.0, completion.percent_complete().quotient());
+    EXPECT_DOUBLE_EQ(0.0, completion.percent_done().quotient());
 
     // add half the pieces
     for (size_t i = 0; i < 32; ++i) {
         completion.add_piece(i);
     }
-    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete());
-    EXPECT_DOUBLE_EQ(0.5, completion.percent_done());
+    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete().quotient());
+    EXPECT_DOUBLE_EQ(0.5, completion.percent_done().quotient());
 
     // but marking some of the pieces we have as unwanted
     // should not change percent_done
@@ -190,8 +190,8 @@ TEST_F(CompletionTest, percentCompleteAndDone)
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();
-    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete());
-    EXPECT_DOUBLE_EQ(0.5, completion.percent_done());
+    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete().quotient());
+    EXPECT_DOUBLE_EQ(0.5, completion.percent_done().quotient());
 
     // but marking some of the pieces we DON'T have as unwanted
     // SHOULD change percent_done
@@ -199,8 +199,8 @@ TEST_F(CompletionTest, percentCompleteAndDone)
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();
-    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete());
-    EXPECT_DOUBLE_EQ(2.0 / 3.0, completion.percent_done());
+    EXPECT_DOUBLE_EQ(0.5, completion.percent_complete().quotient());
+    EXPECT_DOUBLE_EQ(2.0 / 3.0, completion.percent_done().quotient());
 }
 
 TEST_F(CompletionTest, hasTotalAndValid)

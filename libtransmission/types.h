@@ -393,7 +393,8 @@ struct tr_file_view {
     char const* name = ""; // This file's name. Includes the full subpath in the torrent.
     uint64_t have = {}; // the current size of the file, i.e. how much we've downloaded
     uint64_t length = {}; // the total size of the file
-    double progress = {}; // have / length
+    tr::Values::Percent progress; // have / length
+    double progress_deprecated = {}; // use `progress`
     tr_piece_index_t beginPiece = {}; // piece index where this file starts
     tr_piece_index_t endPiece = {}; // piece index where this file ends (exclusive)
     tr_priority_t priority = {}; // the file's priority
@@ -425,7 +426,10 @@ struct tr_peer_stat {
 
     tr_peer_id_t peer_id = {};
 
-    float progress = {};
+    // how much of the torrent the peer has
+    tr::Values::Percent progress;
+
+    float progress_deprecated = {}; // use `progress`
 
     uint16_t port = {};
     uint8_t from = {};
@@ -445,12 +449,13 @@ struct tr_peer_stat {
 
 /** @brief Used by `tr_sessionGetStats()` and `tr_sessionGetCumulativeStats()` */
 struct tr_session_stats {
-    double ratio; /* TR_RATIO_INF, TR_RATIO_NA, or total up/down */
-    uint64_t uploadedBytes; /* total up */
-    uint64_t downloadedBytes; /* total down */
-    uint64_t filesAdded; /* number of files added */
-    uint64_t sessionCount; /* program started N times */
-    time_t secondsActive; /* how long Transmission's been running */
+    tr::Values::Ratio ratio; /* total up/down */
+    double ratio_deprecated = {}; /* use `ratio`: TR_RATIO_INF, TR_RATIO_NA, or total up/down */
+    uint64_t uploadedBytes = {}; /* total up */
+    uint64_t downloadedBytes = {}; /* total down */
+    uint64_t filesAdded = {}; /* number of files added */
+    uint64_t sessionCount = {}; /* program started N times */
+    time_t secondsActive = {}; /* how long Transmission's been running */
 };
 
 struct tr_stat {
@@ -542,24 +547,25 @@ struct tr_stat {
     size_t queue_position = {};
 
     // When `tr_stat.activity` is `TR_STATUS_CHECK` or `TR_STATUS_CHECK_WAIT`,
-    // this is the percentage of how much of the files has been
-    // verified. When it gets to 1, the verify process is done.
-    // Range is [0..1]
+    // how much of the files has been verified.
     // @see `tr_stat.activity`
-    float recheck_progress = {};
+    tr::Values::Percent recheck_progress;
+
+    float recheck_progress_deprecated = {}; // use `recheck_progress`
 
     /** Byte count of the data a running verification has checked so far, or 0. */
     uint64_t checked_bytes = {};
 
     // How much has been downloaded of the entire torrent.
-    // Range is [0..1]
-    float percent_complete = {};
+    tr::Values::Percent percent_complete;
+
+    float percent_complete_deprecated = {}; // use `percent_complete`
 
     // How much of the metadata the torrent has.
-    // For torrents added from a torrent this will always be 1.
-    // For magnet links, this number will from from 0 to 1 as the metadata is downloaded.
-    // Range is [0..1]
-    float metadata_percent_complete = {};
+    // Always complete for torrents added from a torrent file.
+    tr::Values::Percent metadata_percent_complete;
+
+    float metadata_percent_complete_deprecated = {}; // use `metadata_percent_complete`
 
     /** Byte count of the metadata received so far. */
     uint64_t metadata_have = {};
@@ -569,19 +575,23 @@ struct tr_stat {
 
     // How much has been downloaded of the files the user wants. This differs
     // from percentComplete if the user wants only some of the torrent's files.
-    // Range is [0..1]
     // @see tr_stat.left_until_done
-    float percent_done = {};
+    tr::Values::Percent percent_done;
+
+    float percent_done_deprecated = {}; // use `percent_done`
 
     // How much has been uploaded to satisfy the seed ratio.
-    // This is 1 if the ratio is reached or the torrent is set to seed forever.
-    // Range is [0..1] */
-    float seed_ratio_percent_done = {};
+    // Complete if the ratio is reached or the torrent is set to seed forever.
+    tr::Values::Percent seed_ratio_percent_done;
+
+    float seed_ratio_percent_done_deprecated = {}; // use `seed_ratio_percent_done`
 
     // Total uploaded bytes / size_when_done.
     // NB: In Transmission 3.00 and earlier, this was total upload / download,
     // which caused edge cases when total download was less than size_when_done.
-    float upload_ratio = {};
+    tr::Values::Ratio upload_ratio;
+
+    float upload_ratio_deprecated = {}; // use `upload_ratio`
 
     // The torrent's unique Id.
     // @see `tr_torrentId()`

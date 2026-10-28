@@ -711,11 +711,7 @@ struct tr_torrent {
 
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 
-    [[nodiscard]] double get_metadata_percent() const noexcept;
-
-    [[nodiscard]] uint64_t get_metadata_have() const noexcept;
-
-    [[nodiscard]] uint64_t get_metadata_size() const noexcept;
+    [[nodiscard]] tr::Values::Percent get_metadata_percent() const noexcept;
 
     ///
 
@@ -1335,28 +1331,15 @@ private:
 
     void set_verify_state(VerifyState state);
 
-    [[nodiscard]] constexpr std::optional<float> verify_progress() const noexcept
-    {
-        if (verify_state_ != VerifyState::Active) {
-            return {};
-        }
-
-        // a zero-byte torrent has no pieces to check
-        if (piece_count() == 0U) {
-            return 0.0F;
-        }
-
-        return static_cast<float>(verify_checked_pieces_) / static_cast<float>(piece_count());
-    }
-
-    [[nodiscard]] constexpr std::optional<uint64_t> verify_checked_bytes() const noexcept
+    [[nodiscard]] constexpr std::optional<tr::Values::Percent> verify_progress() const noexcept
     {
         if (verify_state_ != VerifyState::Active) {
             return {};
         }
 
         // the last piece can be short; min() trims it
-        return std::min(uint64_t{ verify_checked_pieces_ } * piece_size(), total_size());
+        auto const checked = std::min(uint64_t{ verify_checked_pieces_ } * piece_size(), total_size());
+        return tr::Values::Percent{ checked, total_size() };
     }
 
     // must be called after the torrent's announce list changes.
