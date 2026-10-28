@@ -551,8 +551,6 @@ struct tr_stat {
     // @see `tr_stat.activity`
     tr::Values::Percent recheck_progress;
 
-    float recheck_progress_deprecated = {}; // use `recheck_progress`
-
     /** Byte count of the data a running verification has checked so far, or 0. */
     uint64_t checked_bytes = {};
 

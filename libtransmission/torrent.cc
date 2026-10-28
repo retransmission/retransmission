@@ -1372,7 +1372,6 @@ tr_stat tr_torrent::stats() const
     stats.size_when_done = this->completion_.size_when_done();
 
     stats.recheck_progress = verify_progress().value_or(Percent{});
-    stats.recheck_progress_deprecated = as_float(stats.recheck_progress);
     stats.checked_bytes = stats.recheck_progress.have();
     stats.activity_date = this->date_active_;
     stats.added_date = this->date_added_;
