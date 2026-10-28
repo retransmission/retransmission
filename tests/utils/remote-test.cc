@@ -7,10 +7,12 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdlib> // std::system()
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <vector>
 
 #ifndef _WIN32
 #include <sys/wait.h> // WIFEXITED(), WEXITSTATUS()
@@ -22,6 +24,7 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/converters.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/quark.h>
@@ -100,19 +103,29 @@ public:
         return authenticated_request_seen_.load();
     }
 
+    [[nodiscard]] std::string last_request() const
+    {
+        auto const lock = std::lock_guard{ mutex_ };
+        return last_request_;
+    }
+
 private:
     static void on_request(evhttp_request* req, void* vself)
     {
         static_cast<MockRpcServer*>(vself)->handle(req);
     }
 
-    // The client dispatches on the response's id, so reply with the request's.
-    [[nodiscard]] static std::string request_id(evhttp_request* req)
+    [[nodiscard]] static std::string_view request_body(evhttp_request* req)
     {
         auto* const in = evhttp_request_get_input_buffer(req);
         auto const len = evbuffer_get_length(in);
-        auto const body = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(in, -1)), len };
-        if (auto const parsed = tr_variant_serde::json().parse(body); parsed) {
+        return { reinterpret_cast<char const*>(evbuffer_pullup(in, -1)), len };
+    }
+
+    // The client dispatches on the response's id, so reply with the request's.
+    [[nodiscard]] static std::string request_id(std::string_view const request)
+    {
+        if (auto const parsed = tr_variant_serde::json().parse(request); parsed) {
             if (auto const* const map = parsed->get_if<tr_variant::Map>(); map != nullptr) {
                 if (auto const id = map->value_if<int64_t>(TR_KEY_id); id) {
                     return std::to_string(*id);
@@ -141,8 +154,13 @@ private:
             evhttp_send_reply(req, 409, "Conflict", out);
         } else {
             authenticated_request_seen_.store(std::string_view{ session_id } == SessionId);
+            auto const request = request_body(req);
+            {
+                auto const lock = std::lock_guard{ mutex_ };
+                last_request_ = request;
+            }
             evhttp_add_header(out_headers, "Content-Type", "application/json");
-            auto const body = fmt::format(R"({{"jsonrpc":"2.0","id":{:s},"result":{:s}}})", request_id(req), result_json_);
+            auto const body = fmt::format(R"({{"jsonrpc":"2.0","id":{:s},"result":{:s}}})", request_id(request), result_json_);
             evbuffer_add(out, std::data(body), std::size(body));
             evhttp_send_reply(req, 200, "OK", out);
         }
@@ -159,6 +177,9 @@ private:
     std::atomic<bool> stop_ = false;
     std::atomic<int> request_count_ = 0;
     std::atomic<bool> authenticated_request_seen_ = false;
+
+    mutable std::mutex mutex_;
+    std::string last_request_;
 };
 
 struct CommandResult {
@@ -218,6 +239,34 @@ TEST(RemoteLoopback, listGroupsPrintsEveryGroup)
         "foo: Upload speed limit: 50 kB/s, Download speed limit: 100 kB/s, does not honor session bandwidth limits\n"
         "bar: Upload speed limit: unlimited, Download speed limit: unlimited, honors session bandwidth limits\n",
         result.output);
+}
+
+TEST(RemoteLoopback, ratioFilterKeepsInfiniteRatios)
+{
+    tr_lib_init();
+
+    // `upload_ratio` -2 is infinite, -1 is none
+    static auto constexpr Result = R"({"torrents":[)"
+                                   R"({"id":1,"upload_ratio":-2},)"
+                                   R"({"id":2,"upload_ratio":0.5},)"
+                                   R"({"id":3,"upload_ratio":-1},)"
+                                   R"({"id":4,"upload_ratio":1.104})"
+                                   R"(]})"sv;
+    auto server = MockRpcServer{ Result };
+
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} -F r:1.1 -i 2>&1)", TR_REMOTE_EXE, server.port());
+    auto const result = run(command);
+    EXPECT_EQ(0, result.exit_code) << result.output;
+
+    // `-i` asks for the torrents the filter kept
+    auto const request = tr_variant_serde::json().parse(server.last_request());
+    ASSERT_TRUE(request);
+    auto const* const map = request->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    auto const* const params = map->find_if<tr_variant::Map>(TR_KEY_params);
+    ASSERT_NE(nullptr, params);
+    auto const ids = tr::serializer::to_value<std::vector<int64_t>>(*params, TR_KEY_ids);
+    EXPECT_EQ((std::vector<int64_t>{ 1, 4 }), ids.value_or(std::vector<int64_t>{})) << server.last_request();
 }
 
 } // namespace
