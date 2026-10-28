@@ -1858,7 +1858,6 @@ namespace peer_stat_helpers
         // the bitfield's byte-padded size stands in for the unknown piece count
         stats.progress = Percent{ have.count(), have.size() };
     }
-    stats.progress_deprecated = static_cast<float>(stats.progress.quotient());
     stats.is_utp = peer->is_utp_connection();
     stats.is_encrypted = peer->is_encrypted();
     stats.rate_to_peer = peer->get_piece_speed(now_msec, tr_direction::ClientToPeer);
