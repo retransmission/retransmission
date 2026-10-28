@@ -3,20 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <array>
 #include <cmath> // sqrt()
 #include <cstring>
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <utility>
 #include <vector>
 
 #include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 
 #include "test-fixtures.h"
@@ -50,37 +47,4 @@ TEST_F(UtilsTest, mimeTypes)
     EXPECT_EQ("video/x-msvideo"sv, tr_get_mime_type_for_filename(".avi"sv));
     EXPECT_EQ("video/x-msvideo"sv, tr_get_mime_type_for_filename("/path/to/FILENAME.AVI"sv));
     EXPECT_EQ("application/octet-stream"sv, tr_get_mime_type_for_filename("music.ajoijfeisfe"sv));
-}
-
-TEST_F(UtilsTest, ratioToString)
-{
-    // Testpairs contain ratio as a double and a string
-    static auto constexpr Tests = std::to_array<std::pair<double, std::string_view>>({
-        { 0.0, "0.00" },
-        { 0.01, "0.01" },
-        { 0.1, "0.10" },
-        { 1.0, "1.00" },
-        { 1.015, "1.01" },
-        { 4.99, "4.99" },
-        { 4.996, "4.99" },
-        { 5.0, "5.0" },
-        { 5.09999, "5.0" },
-        { 5.1, "5.1" },
-        { 99.99, "99.9" },
-        { 100.0, "100" },
-        { 4000.4, "4000" },
-        { 600000.0, "600000" },
-        { 900000000.0, "900000000" },
-        { TR_RATIO_INF, "inf" },
-    });
-    char const nullchar = '\0';
-
-    ASSERT_EQ(tr_strratio(TR_RATIO_NA, "None", "Ratio is NaN"), "None");
-    ASSERT_EQ(tr_strratio(TR_RATIO_INF, "None", "A bit longer text for infinity"), "A bit longer text for infinity");
-    // Inf contains only null character
-    ASSERT_EQ(tr_strratio(TR_RATIO_INF, "None", &nullchar), "");
-
-    for (auto const& [input, expected] : Tests) {
-        ASSERT_EQ(tr_strratio(input, "None", "inf"), expected);
-    }
 }

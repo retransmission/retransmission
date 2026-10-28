@@ -42,7 +42,6 @@
 
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
 using namespace std::literals;
@@ -170,19 +169,6 @@ std::string tr_strpercent(double x)
     }
 
     return fmt::format("{:.0Lf}", x);
-}
-
-std::string tr_strratio(double ratio, std::string_view const none, std::string_view const infinity)
-{
-    if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return std::string{ none };
-    }
-
-    if (static_cast<int>(ratio) == TR_RATIO_INF) {
-        return std::string{ infinity };
-    }
-
-    return tr_strpercent(ratio);
 }
 
 // ---
