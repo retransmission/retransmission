@@ -1188,6 +1188,7 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
         numwant = std::min(numwant, *spare);
         if (*spare == 0U) {
             budget_full.start();
+            torrent->session->defer_requests();
         } else {
             budget_full.stop();
         }
@@ -2475,7 +2476,10 @@ namespace
 {
 namespace bandwidth_helpers
 {
-void pumpAllPeers(tr_peerMgr* mgr)
+// Shuffled, so no peer is always first to claim the bandwidth or the
+// disk write budget.
+template<typename Fn>
+void for_each_peer_shuffled(tr_peerMgr* mgr, Fn fn)
 {
     auto peers = small::vector<tr_peerMsgs*, TrDefaultPeerLimitGlobal>{};
     for (auto* const tor : mgr->torrents_) {
@@ -2484,12 +2488,24 @@ void pumpAllPeers(tr_peerMgr* mgr)
 
     thread_local auto urbg = tr_urbg<size_t>{};
     std::ranges::shuffle(peers, urbg);
-    for (auto const& peer : peers) {
-        peer->pulse();
+    for (auto* const peer : peers) {
+        fn(*peer);
     }
+}
+
+void pumpAllPeers(tr_peerMgr* mgr)
+{
+    for_each_peer_shuffled(mgr, [](tr_peerMsgs& peer) { peer.pulse(); });
 }
 } // namespace bandwidth_helpers
 } // namespace
+
+void tr_peerMgrRefillRequests(tr_peerMgr* manager)
+{
+    using namespace bandwidth_helpers;
+
+    for_each_peer_shuffled(manager, [](tr_peerMsgs& peer) { peer.request_more_blocks(); });
+}
 
 void tr_peerMgr::bandwidth_pulse()
 {

@@ -122,6 +122,9 @@ public:
 
     virtual void pulse() = 0;
 
+    // Request blocks up to the desired count, if we may download from this peer.
+    virtual void request_more_blocks() = 0;
+
     virtual void on_torrent_got_metainfo() = 0;
 
     virtual void on_piece_completed(tr_piece_index_t) = 0;
