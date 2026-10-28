@@ -87,7 +87,7 @@ public:
     Gtk::TreeModelColumn<Glib::ustring> label_esc;
     Gtk::TreeModelColumn<int> prog;
     Gtk::TreeModelColumn<Glib::ustring> prog_str;
-    Gtk::TreeModelColumn<int> prog_key; // what `prog` and `prog_str` show, in 0.01% steps; -1 until the first refresh
+    Gtk::TreeModelColumn<int> prog_key; // progress in 0.01% steps for sorting and change checks; -1 before the first refresh
     Gtk::TreeModelColumn<unsigned int> index;
     Gtk::TreeModelColumn<uint64_t> size;
     Gtk::TreeModelColumn<Glib::ustring> size_str;
@@ -239,9 +239,13 @@ bool refreshFilesForeach(
         new_percent = tr::Values::Percent{ new_have, new_size };
     }
 
+    // Percent compares at 0.01%, so equal keys display the same
+    auto const new_prog_key = static_cast<int>(std::lround(new_percent.to_fraction() * 10'000));
+
     if (!refresh_data.resort_needed &&
         ((refresh_data.sort_column_id == file_cols.priority.index() && new_priority != old_priority) ||
-         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled))) {
+         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled) ||
+         (refresh_data.sort_column_id == file_cols.prog_key.index() && new_prog_key != old_prog_key))) {
         /* Changing a value in the sort column can trigger a resort
          * which breaks this foreach () call. (See #3529)
          * As a workaround: if that's about to happen, temporarily disable
@@ -268,9 +272,7 @@ bool refreshFilesForeach(
         (*iter)[file_cols.have] = new_have;
     }
 
-    // Percent compares at 0.01%, so equal keys display the same
-    if (auto const new_prog_key = static_cast<int>(std::lround(new_percent.to_fraction() * 10'000));
-        new_prog_key != old_prog_key) {
+    if (new_prog_key != old_prog_key) {
         (*iter)[file_cols.prog] = static_cast<int>(100 * new_percent.to_fraction());
         (*iter)[file_cols.prog_str] = fmt::format(
             fmt::runtime(_("{percent}%")),
@@ -924,7 +926,7 @@ FileList::Impl::Impl(
         col->add_attribute(rend->property_text(), file_cols.prog_str);
         col->add_attribute(rend->property_value(), file_cols.prog);
         col->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
-        col->set_sort_column(file_cols.prog);
+        col->set_sort_column(file_cols.prog_key);
         view_->append_column(*col);
     }
 
