@@ -197,7 +197,25 @@ private slots:
         TRCOMPARE_PERCENT(tor.peerProgress(peer), (Percent{ 1U, 4U }));
     }
 
-    void seed_ratio_percent_against_the_limit()
+    void seed_ratio_percent_from_byte_counts()
+    {
+        auto const prefs = Prefs{};
+        auto tor = Torrent{ prefs, 1 };
+        update(
+            tor,
+            {
+                { TR_KEY_seed_ratio_mode, int64_t{ TR_RATIOLIMIT_SINGLE } },
+                { TR_KEY_seed_ratio_limit, 2.0 },
+                { TR_KEY_seed_ratio_bytes_goal, int64_t{ 1000 } },
+                { TR_KEY_seed_ratio_bytes_left, int64_t{ 250 } },
+                { TR_KEY_upload_ratio, 1.0 },
+            });
+        QVERIFY(tor.seedRatioPercentDone());
+        TRCOMPARE_PERCENT(*tor.seedRatioPercentDone(), (Percent{ 750U, 1000U }));
+    }
+
+    // daemons that predate `seed_ratio_bytes_goal` and `seed_ratio_bytes_left`
+    void seed_ratio_percent_falls_back_to_upload_ratio()
     {
         auto const prefs = Prefs{};
         auto tor = Torrent{ prefs, 1 };

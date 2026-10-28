@@ -59,6 +59,11 @@ std::optional<tr::Values::Percent> Torrent::seedRatioPercentDone() const
         return {};
     }
 
+    if (seed_ratio_bytes_goal_ && seed_ratio_bytes_left_) {
+        return tr::Values::Percent{ *seed_ratio_bytes_goal_ - *seed_ratio_bytes_left_, *seed_ratio_bytes_goal_ };
+    }
+
+    // Daemons that predate the byte counts.
     // `ratio()` is the daemon's, so this measures against the daemon's own baseline.
     // A zero baseline or a zero limit makes a zero goal, which is always met.
     if (auto const ratio = this->ratio(); ratio.is_none() || ratio.is_infinite() || !(*limit > 0.0)) {
@@ -286,6 +291,8 @@ Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
             HANDLE_KEY(recheck_progress, recheck_progress, RECHECK_PROGRESS)
             HANDLE_KEY(seed_idle_limit, seed_idle_limit, SEED_IDLE_LIMIT)
             HANDLE_KEY(seed_idle_mode, seed_idle_mode, SEED_IDLE_MODE)
+            HANDLE_KEY(seed_ratio_bytes_goal, seed_ratio_bytes_goal, SEED_RATIO_BYTES_GOAL)
+            HANDLE_KEY(seed_ratio_bytes_left, seed_ratio_bytes_left, SEED_RATIO_BYTES_LEFT)
             HANDLE_KEY(seed_ratio_limit, seed_ratio_limit, SEED_RATIO_LIMIT)
             HANDLE_KEY(seed_ratio_mode, seed_ratio_mode, SEED_RATIO_MODE)
             HANDLE_KEY(size_when_done, size_when_done, SIZE_WHEN_DONE)

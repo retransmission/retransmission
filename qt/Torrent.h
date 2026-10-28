@@ -616,6 +616,8 @@ public:
         RECHECK_PROGRESS,
         SEED_IDLE_LIMIT,
         SEED_IDLE_MODE,
+        SEED_RATIO_BYTES_GOAL,
+        SEED_RATIO_BYTES_LEFT,
         SEED_RATIO_LIMIT,
         SEED_RATIO_MODE,
         SIZE_WHEN_DONE,
@@ -688,10 +690,12 @@ private:
     uint64_t upload_limit_ = {};
     uint64_t uploaded_ever_ = {};
 
-    // daemons without these keys send only `metadata_percent_complete` and `recheck_progress`
+    // daemons without these keys send only `metadata_percent_complete`, `recheck_progress` and `upload_ratio`
     std::optional<uint64_t> checked_bytes_;
     std::optional<uint64_t> metadata_have_;
     std::optional<uint64_t> metadata_size_;
+    std::optional<uint64_t> seed_ratio_bytes_goal_;
+    std::optional<uint64_t> seed_ratio_bytes_left_;
 
     double metadata_percent_complete_ = {};
     double recheck_progress_ = {};
