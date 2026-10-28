@@ -189,7 +189,7 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
     TR_ASSERT(path_template != nullptr);
 
     auto path = std::string{ path_template };
-    auto path_size = std::size(path);
+    auto const path_size = std::size(path);
 
     TR_ASSERT(path_size > 0);
 
@@ -244,7 +244,7 @@ std::string_view tr_sys_path_basename(std::string_view path, tr_error* error)
         return "/"sv;
     }
 
-    if (auto pos = path.find_last_of("\\/:"); pos != std::string_view::npos) {
+    if (auto const pos = path.find_last_of("\\/:"); pos != std::string_view::npos) {
         path.remove_prefix(pos + 1);
     }
 
@@ -467,9 +467,8 @@ tr_sys_file_t tr_sys_file_open(std::string_view const path, int const flags, int
     }
 
     auto ret = open_file(path, native_access, native_disposition, native_flags, error);
-    auto success = ret != TR_BAD_SYS_FILE;
 
-    if (!success) {
+    if (ret == TR_BAD_SYS_FILE) {
         set_system_error(error, GetLastError());
 
         CloseHandle(ret);

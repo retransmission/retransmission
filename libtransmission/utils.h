@@ -47,12 +47,13 @@ std::optional<std::locale> tr_locale_set_global(std::locale const& locale) noexc
 int tr_main_win32(int argc, char** argv, int (*real_main)(int, char**));
 
 #define tr_main(...) \
-    main_impl(__VA_ARGS__); \
+    /* NOLINTBEGIN(misc-use-anonymous-namespace) */ \
+    static main_impl(__VA_ARGS__); \
     int main(int argc, char* argv[]) \
     { \
         return tr_main_win32(argc, argv, &main_impl); \
     } \
-    int main_impl(__VA_ARGS__)
+    int static main_impl(__VA_ARGS__) // NOLINTEND(misc-use-anonymous-namespace)
 
 #else
 

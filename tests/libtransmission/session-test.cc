@@ -407,7 +407,7 @@ struct SavedBandwidthGroup {
 void setBandwidthGroup(tr_session* const session, std::string_view const name, SavedBandwidthGroup const& saved)
 {
     auto done = std::promise<void>{};
-    session->run_in_session_thread([&]() {
+    session->run_in_session_thread([&] {
         auto& group = session->getBandwidthGroup(name);
         group.set_limits(saved.limits);
         group.honor_parent_limits(tr_direction::Up, saved.honors_session_limits);
@@ -641,6 +641,15 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     EXPECT_EQ(tr_config_dir_lock::Status::Unavailable, session->configDirLockStatus());
     EXPECT_FALSE(tr_sessionConfigDirIsContended(session));
     tr_sessionClose(session, 1);
+}
+
+TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)
+{
+    auto const stats = tr_sessionGetStats(session_);
+    EXPECT_EQ(0U, stats.uploadedBytes);
+    EXPECT_EQ(0U, stats.downloadedBytes);
+    EXPECT_TRUE(stats.ratio.is_none());
+    EXPECT_EQ(-1.0, stats.ratio_deprecated); // TR_RATIO_NA
 }
 
 } // namespace tr::test

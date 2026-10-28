@@ -161,7 +161,7 @@ void tr_verify_worker::remove(tr_sha1_digest_t const& info_hash)
 
     if (current_node_ && current_node_->matches(info_hash)) {
         stop_current_ = true;
-        stop_current_cv_.wait(lock, [this]() { return !stop_current_; });
+        stop_current_cv_.wait(lock, [this] { return !stop_current_; });
     } else if (
         auto const iter = std::ranges::find_if(todo_, [&info_hash](auto const& node) { return node.matches(info_hash); });
         iter != std::ranges::end(todo_)) {

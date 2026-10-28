@@ -62,7 +62,7 @@ public:
         ClientSentPieceData,
         ClientSentRequest,
         ClientStaleBitfield,
-        Error // generic
+        Error, // generic
     };
 
     Type type = Type::Error;
@@ -216,11 +216,6 @@ struct tr_peer {
     [[nodiscard]] bool has_piece(tr_piece_index_t piece) const noexcept
     {
         return has().test(piece);
-    }
-
-    [[nodiscard]] float percent_done() const noexcept
-    {
-        return has().percent();
     }
 
     [[nodiscard]] bool is_seed() const noexcept

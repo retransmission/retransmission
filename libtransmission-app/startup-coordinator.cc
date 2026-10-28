@@ -34,7 +34,7 @@ enum class StartupDecision : uint8_t {
     Refused,
     Interrupted, // the instance took some torrents, then stopped answering
     NothingToAdd, // an instance was there, but no argument was usable
-    Busy
+    Busy,
 };
 
 // `ours_canonical` is the canonical form of `config_dir`, which the caller computes

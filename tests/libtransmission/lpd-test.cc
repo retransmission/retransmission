@@ -130,7 +130,7 @@ TEST_F(LpdTest, DISABLED_CanAnnounceAndRead)
     mediator_b.torrents_.push_back(info);
     auto lpd_b = tr_lpd::create(mediator_b, session_->event_base());
 
-    waitFor([&mediator_a]() { return !std::empty(mediator_a.found_); }, 1s);
+    waitFor([&mediator_a] { return !std::empty(mediator_a.found_); }, 1s);
     EXPECT_EQ(1U, mediator_a.found_.count(info_hash_str));
     EXPECT_EQ(0U, mediator_b.found_.count(info_hash_str));
 }
@@ -162,7 +162,7 @@ TEST_F(LpdTest, DISABLED_canMultiAnnounce)
     }
 
     auto lpd_b = tr_lpd::create(mediator_b, session_->event_base());
-    waitFor([&mediator_a]() { return !std::empty(mediator_a.found_); }, 1s);
+    waitFor([&mediator_a] { return !std::empty(mediator_a.found_); }, 1s);
 
     for (auto const& info : infos) {
         EXPECT_EQ(1U, mediator_a.found_.count(std::string{ info.info_hash_str }));
@@ -202,7 +202,7 @@ TEST_F(LpdTest, DISABLED_DoesNotReannounceTooSoon)
     }
 
     auto lpd_b = tr_lpd::create(mediator_b, session_->event_base());
-    waitFor([&mediator_a]() { return !std::empty(mediator_a.found_); }, 1s);
+    waitFor([&mediator_a] { return !std::empty(mediator_a.found_); }, 1s);
 
     for (auto& info : infos) {
         auto const expected_count = info.announce_after <= now ? 1U : 0U;

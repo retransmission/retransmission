@@ -50,7 +50,7 @@ enum : uint8_t {
     ADDED_F_HOLEPUNCH = 8,
     /* true if the peer telling us about this peer
      * initiated the connection (implying that it is connectible) */
-    ADDED_F_CONNECTABLE = 16
+    ADDED_F_CONNECTABLE = 16,
 };
 
 /**
@@ -673,7 +673,7 @@ struct tr_pex {
 
 [[nodiscard]] tr_peerMgr* tr_peerMgrNew(tr_session* session);
 
-void tr_peerMgrFree(tr_peerMgr* manager);
+void tr_peerMgrFree(tr_peerMgr const* manager);
 
 [[nodiscard]] std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant);
 

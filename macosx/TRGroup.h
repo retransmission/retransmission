@@ -19,9 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString* customDownloadLocation;
 
 @property(nonatomic, assign) BOOL usesAutoGroupRules;
-@property(nonatomic, strong, nullable) NSPredicate* autoGroupRules;
+/**
+ * Stores a rebuilt copy that is safe to evaluate, even when assigned a predicate decoded from preferences.
+ * Stores nil for a predicate that GroupRules.xib's editor can't produce.
+ */
+@property(nonatomic, copy, nullable) NSPredicate* autoGroupRules;
 
 - (instancetype)initWithIndex:(NSInteger)index name:(nullable NSString*)name color:(nullable NSColor*)color;
+
+/** Group from an element of Transmission's GroupDicts preference; nil unless it's a dictionary with a numeric Index. */
+- (nullable instancetype)initWithGroupDictsEntry:(id)entry;
 
 @end
 

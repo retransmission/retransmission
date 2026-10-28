@@ -363,7 +363,7 @@ protected:
     {
         auto timer_maker = tr::EvTimerMaker{ mediator.eventBase() };
         auto timer = timer_maker.create();
-        timer->set_callback([&announcer]() { announcer->upkeep(); });
+        timer->set_callback([&announcer] { announcer->upkeep(); });
         timer->start_repeating(200ms);
         return timer;
     }

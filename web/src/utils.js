@@ -5,25 +5,6 @@
 
 import equal from './vendor/fast-deep-equal.js';
 
-export const Utils = {
-  /** Given a numerator and denominator, return a ratio string */
-  ratio(numerator, denominator) {
-    let result = Math.floor((100 * numerator) / denominator) / 100;
-
-    // check for special cases
-    if (
-      result === Number.POSITIVE_INFINITY ||
-      result === Number.NEGATIVE_INFINITY
-    ) {
-      result = -2;
-    } else if (Number.isNaN(result)) {
-      result = -1;
-    }
-
-    return result;
-  },
-};
-
 const icon26 = {
   fill: 'none',
   height: 26,

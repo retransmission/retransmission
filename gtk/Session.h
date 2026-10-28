@@ -51,7 +51,7 @@ public:
     enum ErrorCode : uint16_t {
         ERR_ADD_TORRENT_ERR = 1,
         ERR_ADD_TORRENT_DUP = 2,
-        ERR_NO_MORE_TORRENTS = 1000 /* finished adding a batch */
+        ERR_NO_MORE_TORRENTS = 1000, /* finished adding a batch */
     };
 
     using Model = IF_GTKMM4(Gio::ListModel, Gtk::TreeModel);

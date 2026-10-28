@@ -731,6 +731,7 @@ public:
             }
         }
 
+        // NOLINTNEXTLINE(misc-const-correctness)
         if (auto* const headers = task.make_request_headers()) {
             (void)curl_easy_setopt(e, CURLOPT_HTTPHEADER, headers);
         }
@@ -891,7 +892,7 @@ public:
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
-                auto const stop_waiting = [this, &lock]() {
+                auto const stop_waiting = [this, &lock] {
                     return !is_idle(lock) || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
@@ -971,7 +972,7 @@ public:
                 auto const status = curl_multi_perform(multi, &n_running);
 
                 // process any tasks that just finished
-                CURLMsg* msg = nullptr;
+                CURLMsg const* msg = nullptr;
                 auto unused = int{};
                 while ((msg = curl_multi_info_read(multi, &unused)) != nullptr) {
                     if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
@@ -983,7 +984,7 @@ public:
                         }
 
                         auto req_bytes_sent = long{};
-                        char* primary_ip = nullptr;
+                        char* primary_ip = nullptr; // NOLINT(misc-const-correctness)
                         curl_easy_getinfo(e, CURLINFO_REQUEST_SIZE, &req_bytes_sent);
                         curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &task->response.status);
                         curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);

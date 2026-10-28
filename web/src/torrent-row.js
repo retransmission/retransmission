@@ -6,6 +6,7 @@
 import { Formatter } from './formatter.js';
 import { Torrent } from './torrent.js';
 import { setTextContent } from './utils.js';
+import { Percent, Ratio } from './values.js';
 
 const TorrentRendererHelper = {
   formatETA: (t) => {
@@ -28,8 +29,8 @@ const TorrentRendererHelper = {
   getProgressInfo: (controller, t) => {
     const status = t.getStatus();
     const classList = ['torrent-progress-bar'];
-    let percent = 100;
-    let ratio = null;
+    let percent = Percent.Complete;
+    let seed_ratio_percent = null;
 
     if (status === Torrent._StatusStopped) {
       classList.push('paused');
@@ -37,21 +38,23 @@ const TorrentRendererHelper = {
 
     if (t.needsMetaData()) {
       classList.push('magnet');
-      percent = t.getMetadataPercentComplete() * 100;
+      percent = t.getMetadataPercent();
     } else if (status === Torrent._StatusCheck) {
       classList.push('verify');
-      percent = t.getRecheckProgress() * 100;
-    } else if (t.getLeftUntilDone() > 0) {
+      percent = t.getRecheckProgress();
+    } else if (!t.isDone()) {
       classList.push('leech');
-      percent = t.getPercentDone() * 100;
+      percent = t.getPercentDone();
     } else {
       classList.push('seed');
       if (status !== Torrent._StatusStopped) {
         const seed_ratio_limit = t.seedRatioLimit(controller);
-        ratio =
-          seed_ratio_limit > 0
-            ? (t.getUploadRatio() * 100) / seed_ratio_limit
-            : 100;
+        if (seed_ratio_limit > 0) {
+          // `Ratio.None` (-1) reads as empty
+          seed_ratio_percent = Percent.fromDouble(
+            Ratio.toNumber(t.getUploadRatio()) / seed_ratio_limit,
+          );
+        }
       }
     }
     if (t.isQueued()) {
@@ -61,16 +64,17 @@ const TorrentRendererHelper = {
     return {
       classList,
       percent,
-      ratio,
+      seed_ratio_percent,
     };
   },
   renderProgressbar: (controller, t, progressbar) => {
     const info = TorrentRendererHelper.getProgressInfo(controller, t);
-    const percent = Math.min(info.ratio || info.percent, 100);
-    const pct_str = `${Formatter.percentString(percent, 2)}%`;
+    const bar = info.seed_ratio_percent ?? info.percent;
+    const width = 100 * bar.toFraction();
     progressbar.className = info.classList.join(' ');
-    progressbar.style.setProperty('--progress', pct_str);
-    progressbar.dataset.progress = info.ratio ? '100%' : pct_str;
+    // CSS needs plain digits with a '.', whatever the display locale
+    progressbar.style.setProperty('--progress', `${width.toFixed(2)}%`);
+    progressbar.dataset.progress = `${info.percent.toWholeString()}%`;
   },
   symbol: { down: '▼', up: '▲' },
   updateIcon: (e, torrent) => {
@@ -130,7 +134,7 @@ export class TorrentRendererFull {
     } else if (t.isChecking()) {
       const str = [
         'Verifying local data (',
-        fmt.percentString(100 * t.getRecheckProgress(), 1),
+        t.getRecheckProgress().toString(),
         '% tested)',
       ].join('');
       setTextContent(peer_details, str);
@@ -147,12 +151,11 @@ export class TorrentRendererFull {
       if (t.isStopped()) {
         MetaDataStatus = 'needs';
       }
-      const percent = 100 * t.getMetadataPercentComplete();
       const str = [
         'Magnetized transfer - ',
         MetaDataStatus,
         ' metadata (',
-        fmt.percentString(percent, 1),
+        t.getMetadataPercent().toString(),
         '%)',
       ].join('');
       setTextContent(progress_details, str);
@@ -173,9 +176,9 @@ export class TorrentRendererFull {
         s.push(
           fmt.size(sizeWhenDone),
           ' of ',
-          fmt.size(t.getTotalSize()),
+          fmt.size(totalSize),
           ' (',
-          t.getPercentDoneStr(),
+          new Percent(sizeWhenDone, totalSize).toString(),
           '%)',
         );
       }
@@ -184,7 +187,7 @@ export class TorrentRendererFull {
         ', uploaded ',
         fmt.size(t.getUploadedEver()),
         ' (Ratio: ',
-        fmt.ratioString(t.getUploadRatio()),
+        Ratio.format(t.getUploadRatio()),
         ')',
       );
     } else {
@@ -194,7 +197,7 @@ export class TorrentRendererFull {
         ' of ',
         fmt.size(sizeWhenDone),
         ' (',
-        t.getPercentDoneStr(),
+        t.getPercentDone().toString(),
         '%)',
       );
     }
@@ -303,7 +306,7 @@ export class TorrentRendererCompact {
     } else if (t.isSeeding()) {
       const str = [
         'Ratio:',
-        fmt.ratioString(t.getUploadRatio()),
+        Ratio.format(t.getUploadRatio()),
         '-',
         TorrentRendererHelper.symbol.up,
         fmt.speedBps(t.getUploadSpeed()),

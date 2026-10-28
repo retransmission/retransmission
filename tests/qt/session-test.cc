@@ -36,7 +36,7 @@
 #endif
 
 namespace api_compat = tr::api_compat;
-using Style = api_compat::Style;
+using api_compat::Style;
 
 Q_DECLARE_METATYPE(Style)
 
@@ -136,7 +136,7 @@ private slots:
 
         // verify that session_set::download_dir was POSTed
         auto const payload_re = getSessionSetDownloadDirRegEx(initial_style, downloads_dir);
-        auto const has_session_set = [&server, &payload_re]() {
+        auto const has_session_set = [&server, &payload_re] {
             auto const bodies = server.request_bodies();
             return std::ranges::any_of(bodies, [&payload_re](std::string const& body) {
                 return payload_re.match(QString::fromStdString(body)).hasMatch();
@@ -146,7 +146,7 @@ private slots:
 
         // drain the session_get round-trip so its RpcQueue finishes instead of
         // being left in flight (and leaked) when the test tears down.
-        QVERIFY(waitUntil([&session_get_done]() { return !session_get_done.isEmpty(); }));
+        QVERIFY(waitUntil([&session_get_done] { return !session_get_done.isEmpty(); }));
     }
 
     // Toggling blocklist_updates_enabled (now a session-owned pref) must push a
@@ -170,7 +170,7 @@ private slots:
         // drain), so just assert it reaches the wire
         prefs.set(TR_KEY_blocklist_updates_enabled, !prefs.get<bool>(TR_KEY_blocklist_updates_enabled));
 
-        auto const has_session_set = [&server]() {
+        auto const has_session_set = [&server] {
             auto const bodies = server.request_bodies();
             return std::ranges::any_of(bodies, [](std::string const& body) {
                 auto const q = QString::fromStdString(body);
@@ -223,15 +223,15 @@ private slots:
         session.updateBlocklist();
 
         if (expect_size >= 0) {
-            QVERIFY(waitUntil([&updated]() { return !updated.isEmpty(); }));
+            QVERIFY(waitUntil([&updated] { return !updated.isEmpty(); }));
             QCOMPARE(updated.first().at(0).toLongLong(), expect_size);
             QVERIFY(failed.isEmpty());
 
             // A success also sends session_get for the new size and date.
             // Drain it, or its unfinished RpcQueue leaks under LSan at teardown.
-            QVERIFY(waitUntil([&refreshed]() { return !refreshed.isEmpty(); }));
+            QVERIFY(waitUntil([&refreshed] { return !refreshed.isEmpty(); }));
         } else {
-            QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
+            QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
             QCOMPARE(failed.first().at(0).toString(), expect_error);
             QVERIFY(updated.isEmpty());
         }
@@ -257,7 +257,7 @@ private slots:
 
         auto updated = QSignalSpy{ &session, &Session::sessionUpdated };
         session.refreshBlocklistInfo();
-        QVERIFY(waitUntil([&updated]() { return !updated.isEmpty(); }));
+        QVERIFY(waitUntil([&updated] { return !updated.isEmpty(); }));
         QCOMPARE(session.blocklist_size().value_or(-1), int64_t{ 42 });
         QVERIFY(session.blocklist_date().has_value());
 
@@ -289,7 +289,7 @@ private slots:
 
         auto updated = QSignalSpy{ &session, &Session::sessionUpdated };
         session.refreshSessionInfo();
-        QVERIFY(waitUntil([&updated]() { return !updated.isEmpty(); }));
+        QVERIFY(waitUntil([&updated] { return !updated.isEmpty(); }));
         QCOMPARE(session.blocklist_size().value_or(-1), int64_t{ 42 });
         QVERIFY(session.blocklist_date().has_value());
 
@@ -328,7 +328,7 @@ private slots:
         session.updateBlocklist();
         session.restart();
 
-        QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
+        QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
         QCOMPARE(failed.count(), 1);
         QVERIFY(updated.isEmpty());
     }
@@ -364,7 +364,7 @@ private slots:
         QVERIFY(session.portTestPending(TR_AF_INET));
         session.restart();
 
-        QVERIFY(waitUntil([&tested]() { return tested > 0; }));
+        QVERIFY(waitUntil([&tested] { return tested > 0; }));
         QCOMPARE(tested, 1);
         QVERIFY(!status.has_value());
         QVERIFY(!session.portTestPending(TR_AF_INET));
@@ -387,7 +387,7 @@ private slots:
         session.updateBlocklist();
         session.restart();
 
-        QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
+        QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
         QCOMPARE(failed.count(), 1);
         QVERIFY(updated.isEmpty());
     }
@@ -417,7 +417,7 @@ private slots:
         QVERIFY(!timer->isActive());
         session.restart();
 
-        QVERIFY(waitUntil([timer]() { return timer->isActive(); }));
+        QVERIFY(waitUntil([timer] { return timer->isActive(); }));
     }
 };
 } // namespace

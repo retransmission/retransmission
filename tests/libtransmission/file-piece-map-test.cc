@@ -143,7 +143,7 @@ TEST_F(FilePieceMapTest, priorities)
     // make a helper to compare file & piece priorities
     auto expected_file_priorities = std::vector<tr_priority_t>(n_files, TR_PRI_NORMAL);
     auto expected_piece_priorities = std::vector<tr_priority_t>(block_info_.piece_count(), TR_PRI_NORMAL);
-    auto const compare_to_expected = [&, this]() {
+    auto const compare_to_expected = [&, this] {
         for (tr_file_index_t i = 0U; i < n_files; ++i) {
             auto const expected = expected_file_priorities[i];
             auto const actual = file_priorities.file_priority(i);
@@ -156,7 +156,7 @@ TEST_F(FilePieceMapTest, priorities)
         }
     };
 
-    auto const mark_file_endpoints_as_high_priority = [&]() {
+    auto const mark_file_endpoints_as_high_priority = [&] {
         for (tr_file_index_t file = 0U; file < n_files; ++file) {
             auto const [begin_piece, end_piece] = fpm.piece_span_for_file(file);
             expected_piece_priorities[begin_piece] = TR_PRI_HIGH;
@@ -328,7 +328,7 @@ TEST_F(FilePieceMapTest, wanted)
     // make a helper to compare file & piece wanted bitfields
     auto expected_files_wanted = tr_bitfield(n_files);
     auto expected_pieces_wanted = tr_bitfield(block_info_.piece_count());
-    auto const compare_to_expected = [&, this]() {
+    auto const compare_to_expected = [&, this] {
         for (tr_file_index_t i = 0U; i < n_files; ++i) {
             auto const expected = expected_files_wanted.test(i);
             auto const actual = files_wanted.file_wanted(i);

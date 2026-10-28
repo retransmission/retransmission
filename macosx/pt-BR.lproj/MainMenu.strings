@@ -241,9 +241,6 @@
 /* Class = "NSMenu"; title = "Group"; ObjectID = "2840"; */
 "2840.title" = "Grupo";
 
-/* Class = "NSTextFieldCell"; title = "Transfers"; ObjectID = "3049"; */
-/* "3049.title" = ""; */
-
 /* Class = "NSMenuItem"; title = "Use Groups"; ObjectID = "3078"; */
 "3078.title" = "Usar Grupos";
 

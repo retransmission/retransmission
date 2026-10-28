@@ -29,6 +29,7 @@ env:
   CCACHE_COMPILERCHECK: content
   CCACHE_COMPRESSLEVEL: '5'
   CCACHE_DIR: ${{ github.workspace }}/.ccache
+  CLANG_TIDY_VERSION: 23
   GTEST_OUTPUT: xml:./
 jobs:
   what-to-make:
@@ -400,8 +401,6 @@ jobs:
       needs.what-to-make.outputs.tidy-core == 'true' ||
       needs.what-to-make.outputs.tidy-gtk == 'true' ||
       needs.what-to-make.outputs.tidy-qt == 'true'
-    env:
-      CLANG_TIDY_VERSION: 22
     # One cell per toolkit version. Each cell generates code (Qt moc/uic) so
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
@@ -564,6 +563,25 @@ jobs:
         uses: ./.github/actions/setup-vs-env-win32
         with:
           arch: x64
+      - name: Get clang-tidy
+        if: matrix.enabled == 'true'
+        run: |
+          pipx install clang-tidy~=${{ env.CLANG_TIDY_VERSION }}.0
+
+          # Prevent Python launcher wrapper from conflicting
+          pipx unexpose clang-tidy 
+
+          # This is where the actual executable is
+          # https://github.com/ssciwr/clang-tidy-wheel/blob/f0324e99ad893b22693ddc08ccd02fd16a074101/clang_tidy/__init__.py#L22
+          $PipxVenvs = [System.Environment]::ExpandEnvironmentVariables((pipx environment --value PIPX_LOCAL_VENVS))
+          $VenvPython = Join-Path "$PipxVenvs" 'clang-tidy\Scripts\python.exe'
+          $ActualPath = (& "$VenvPython" -c 'from clang_tidy import get_executable; print(get_executable("clang-tidy"))').Trim()
+          Get-Item -LiteralPath "$ActualPath" -ErrorAction Stop
+          (Split-Path -Parent "$ActualPath") >> $env:GITHUB_PATH
+      - name: Show clang-tidy
+        if: matrix.enabled == 'true'
+        shell: cmd
+        run: call "%VCVARSALL%" %VC_ARCH% >nul && pwsh.exe -NoProfile -Command "Get-Item (Get-Command clang-tidy.exe -ErrorAction Stop).Path -ErrorAction Stop"
       - name: Configure
         if: matrix.enabled == 'true'
         run: |

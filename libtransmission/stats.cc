@@ -42,9 +42,9 @@ tr_session_stats tr_stats::load_old_stats(std::string_view const config_dir)
 {
     auto var = std::optional<tr_variant>{};
 
-    if (auto file = tr_pathbuf{ config_dir, "/stats.json"sv }; tr_sys_path_exists(file)) {
+    if (auto const file = tr_pathbuf{ config_dir, "/stats.json"sv }; tr_sys_path_exists(file)) {
         var = tr_variant_serde::json().parse_file(file);
-    } else if (auto oldfile = tr_pathbuf{ config_dir, "/stats.benc"sv }; tr_sys_path_exists(oldfile)) {
+    } else if (auto const oldfile = tr_pathbuf{ config_dir, "/stats.benc"sv }; tr_sys_path_exists(oldfile)) {
         var = tr_variant_serde::benc().parse_file(oldfile);
     }
 
@@ -89,7 +89,8 @@ void tr_stats::clear()
 {
     auto ret = single_;
     ret.secondsActive = time(nullptr) - start_time_;
-    ret.ratio = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
+    ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
+    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }
 
@@ -101,6 +102,7 @@ tr_session_stats tr_stats::add(tr_session_stats const& a, tr_session_stats const
     ret.filesAdded = a.filesAdded + b.filesAdded;
     ret.sessionCount = a.sessionCount + b.sessionCount;
     ret.secondsActive = a.secondsActive + b.secondsActive;
-    ret.ratio = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
+    ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
+    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }

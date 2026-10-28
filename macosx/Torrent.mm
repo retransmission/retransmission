@@ -369,7 +369,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)ratio
 {
-    return self.fStat.upload_ratio;
+    return self.fStat.upload_ratio_deprecated;
 }
 
 - (tr_ratiolimit)ratioSetting
@@ -396,7 +396,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)progressStopRatio
 {
-    return self.fStat.seed_ratio_percent_done;
+    return self.fStat.seed_ratio_percent_done_deprecated;
 }
 
 - (tr_idlelimit)idleSetting
@@ -853,12 +853,12 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)progress
 {
-    return self.fStat.percent_complete;
+    return self.fStat.percent_complete_deprecated;
 }
 
 - (CGFloat)progressDone
 {
-    return self.fStat.percent_done;
+    return self.fStat.percent_done_deprecated;
 }
 
 - (CGFloat)progressLeft
@@ -873,7 +873,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (CGFloat)checkingProgress
 {
-    return self.fStat.recheck_progress;
+    return self.fStat.recheck_progress_deprecated;
 }
 
 - (CGFloat)availableDesired
@@ -960,7 +960,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         dict[@"From"] = @(peer.from);
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
-        dict[@"Progress"] = @(peer.progress);
+        dict[@"Progress"] = @(peer.progress_deprecated);
         dict[@"Seed"] = @(peer.is_seed);
         dict[@"Encryption"] = @(peer.is_encrypted);
         dict[@"uTP"] = @(peer.is_utp);
@@ -1010,9 +1010,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (NSString*)progressString
 {
     if (self.magnet) {
-        NSString* progressString = self.fStat.metadata_percent_complete > 0.0 ?
+        NSString* progressString = self.fStat.metadata_percent_complete_deprecated > 0.0 ?
             [NSString stringWithFormat:NSLocalizedString(@"%@ of torrent metadata retrieved", "Torrent -> progress string"),
-                                       [NSString percentString:self.fStat.metadata_percent_complete longDecimals:YES]] :
+                                       [NSString percentString:self.fStat.metadata_percent_complete_deprecated longDecimals:YES]] :
             NSLocalizedString(@"torrent metadata needed", "Torrent -> progress string");
 
         return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", "Torrent -> progress string"), progressString];

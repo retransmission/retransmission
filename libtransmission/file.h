@@ -43,13 +43,13 @@ enum tr_sys_file_open_flags_t : uint8_t {
     TR_SYS_FILE_WRITE = (1 << 1),
     TR_SYS_FILE_CREATE = (1 << 2),
     TR_SYS_FILE_TRUNCATE = (1 << 3),
-    TR_SYS_FILE_SEQUENTIAL = (1 << 4)
+    TR_SYS_FILE_SEQUENTIAL = (1 << 4),
 };
 
 enum tr_sys_file_lock_flags_t : uint8_t {
     TR_SYS_FILE_LOCK_SH = (1 << 0),
     TR_SYS_FILE_LOCK_EX = (1 << 1),
-    TR_SYS_FILE_LOCK_NB = (1 << 2)
+    TR_SYS_FILE_LOCK_NB = (1 << 2),
 };
 
 enum tr_sys_path_get_info_flags_t : uint8_t { TR_SYS_PATH_NO_FOLLOW = (1 << 0) };

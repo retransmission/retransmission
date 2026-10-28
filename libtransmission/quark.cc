@@ -93,6 +93,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bytes_to_peer"sv, // rpc
     "cache-size-mb"sv, // rpc, tr_session::Settings
     "cache_size_mib"sv, // rpc, tr_session::Settings
+    "checked_bytes"sv, // rpc
     "clientIsChoked"sv, // rpc
     "clientIsInterested"sv, // rpc
     "clientName"sv, // rpc
@@ -234,6 +235,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "hash_string"sv, // rpc
     "haveUnchecked"sv, // rpc
     "haveValid"sv, // rpc
+    "have_total"sv, // rpc
     "have_unchecked"sv, // rpc
     "have_valid"sv, // rpc
     "honorsSessionLimits"sv, // rpc
@@ -342,8 +344,9 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "message-level"sv, // daemon, gtk app, tr_session::Settings
     "message_level"sv, // daemon, gtk app, tr_session::Settings
     "metadataPercentComplete"sv, // rpc
+    "metadata_have"sv, // rpc
     "metadata_percent_complete"sv, // rpc
-    "metadata_size"sv, // BEP0009; BT protocol
+    "metadata_size"sv, // BEP0009; BT protocol, rpc
     "metainfo"sv, // rpc
     "method"sv, // json-rpc
     "move"sv, // rpc

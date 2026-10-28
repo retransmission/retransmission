@@ -1072,7 +1072,7 @@ void DetailsDialog::initOptionsTab()
         });
     };
     auto const bind_spin = [this](auto* const spin, tr_quark const key) {
-        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key]() { torrentSet(key, spin->value()); });
+        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key] { torrentSet(key, spin->value()); });
     };
 
     bind_check(ui_.sessionLimitCheck, TR_KEY_honors_session_limits);

@@ -32,6 +32,7 @@ public:
     {
     }
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_port_forwarding_impl() override
     {
         is_shutting_down_ = true;
@@ -98,7 +99,7 @@ private:
 
     void startTimer()
     {
-        timer_ = mediator_.timer_maker().create([this]() { this->onTimer(); });
+        timer_ = mediator_.timer_maker().create([this] { this->onTimer(); });
         restartTimer();
     }
 

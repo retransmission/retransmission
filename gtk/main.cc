@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     }
 
     // init the unit formatters
-    using Config = tr::Values::Config;
+    using tr::Values::Config;
     Config::speed = { Config::Base::Kilo, _("B/s"), _("kB/s"), _("MB/s"), _("GB/s"), _("TB/s") };
     Config::memory = { Config::Base::Kibi, _("B"), _("KiB"), _("MiB"), _("GiB"), _("TiB") };
     Config::storage = { Config::Base::Kilo, _("B"), _("kB"), _("MB"), _("GB"), _("TB") };

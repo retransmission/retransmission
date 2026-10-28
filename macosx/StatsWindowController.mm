@@ -232,10 +232,10 @@ static tr_session* fLib = NULL;
         stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForFileSize:statsAll.downloadedBytes]];
     self.fDownloadedAllField.toolTip = [byteFormatter stringFromByteCount:statsAll.downloadedBytes];
 
-    self.fRatioField.stringValue = [NSString stringForRatio:statsSession.ratio];
+    self.fRatioField.stringValue = [NSString stringForRatio:statsSession.ratio_deprecated];
 
-    NSString* totalRatioString = static_cast<int>(statsAll.ratio) != TR_RATIO_NA ?
-        [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForRatio:statsAll.ratio]] :
+    NSString* totalRatioString = static_cast<int>(statsAll.ratio_deprecated) != TR_RATIO_NA ?
+        [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForRatio:statsAll.ratio_deprecated]] :
         NSLocalizedString(@"Total N/A", "stats total");
     self.fRatioAllField.stringValue = totalRatioString;
 

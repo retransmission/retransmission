@@ -216,7 +216,7 @@ TEST(LocalData, AdminOperationsDelegate)
     auto move_called = false;
     local_data.move(
         5,
-        []() { return std::string{ "/new" }; },
+        [] { return std::string{ "/new" }; },
         [&move_called](tr_torrent_id_t tor_id, std::string_view const parent, tr_error const& error) {
             move_called = true;
             EXPECT_EQ(5, tor_id);
@@ -230,7 +230,7 @@ TEST(LocalData, AdminOperationsDelegate)
     auto skip_called = false;
     local_data.move(
         5,
-        []() { return std::string{}; },
+        [] { return std::string{}; },
         [&skip_called](tr_torrent_id_t, std::string_view const parent, tr_error const& error) {
             skip_called = true;
             EXPECT_EQ("", parent);
@@ -342,7 +342,7 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
     auto move_finished = false;
     local_data.move(
         7,
-        []() { return std::string{ "/new" }; },
+        [] { return std::string{ "/new" }; },
         [&read_finished, &move_finished](auto, auto, auto const&) {
             EXPECT_TRUE(read_finished);
             move_finished = true;
@@ -393,7 +393,7 @@ TEST(LocalData, ShuffledCompletionsReplayFromSeed)
     static auto constexpr NumOps = 16;
     static auto constexpr Seed = uint32_t{ 12345U };
 
-    auto const run_once = []() {
+    auto const run_once = [] {
         auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
         local_data.set_completions(tr::LocalData::Completions::Shuffled, Seed);
 
@@ -460,7 +460,7 @@ protected:
             }
 
             auto lock = std::unique_lock{ marshal_mutex_ };
-            if (!marshal_cv_.wait_until(lock, deadline, [this]() { return !std::empty(marshaled_); })) {
+            if (!marshal_cv_.wait_until(lock, deadline, [this] { return !std::empty(marshaled_); })) {
                 return pred();
             }
         }
@@ -639,7 +639,7 @@ TEST_F(LocalDataWorkersTest, outOfOrderWritesPreserveBlockContents)
     local_data->set_workers_paused(true);
     for (auto const block : order) {
         auto const begin = block * BlockSize;
-        writeBlocks(*local_data, begin, std::min(begin + BlockSize, FileSize), [&n_done]() { ++n_done; });
+        writeBlocks(*local_data, begin, std::min(begin + BlockSize, FileSize), [&n_done] { ++n_done; });
     }
     local_data->set_workers_paused(false);
 
@@ -655,7 +655,7 @@ TEST_F(LocalDataWorkersTest, writesLandOnDisk)
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
 
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done] { ++n_done; });
 
     EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
     EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
@@ -673,7 +673,7 @@ TEST_F(LocalDataWorkersTest, adjacentWritesAreCombined)
     // Hold the workers so that every block is queued before any is taken.
     local_data->set_workers_paused(true);
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done] { ++n_done; });
     EXPECT_EQ(FileSize, local_data->enqueued_write_bytes());
 
     local_data->set_workers_paused(false);
@@ -697,7 +697,7 @@ TEST_F(LocalDataWorkersTest, writesCrossFileBoundaries)
 
     // the first block straddles the two files
     auto n_done = size_t{};
-    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
 
     EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
     EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
@@ -712,7 +712,7 @@ TEST_F(LocalDataWorkersTest, writeCreatesTheFileAndItsDirs)
     auto const local_data = makeLocalData(makeDescriptor({ { "sub/dir/data.bin", FileSize } }, 32768U));
 
     auto n_done = size_t{};
-    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
 
     EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
     EXPECT_EQ(1U, open_files_.take_files_created());
@@ -728,7 +728,7 @@ TEST_F(LocalDataWorkersTest, pieceIsHashedFromBufferedBlocks)
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, PieceSize));
 
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done] { ++n_done; });
     EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
 
     // Corrupt the piece on disk. A hash that read it back would notice.
@@ -773,7 +773,7 @@ TEST_F(LocalDataWorkersTest, pieceLargerThanTheRetainedCacheIsReadBack)
     // a cache of one block can't hold a whole piece, so it keeps none of it
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", PieceSize } }, PieceSize), 1U, 2U * BlockSize);
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done] { ++n_done; });
     ASSERT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
 
     auto hash = std::optional<tr_sha1_digest_t>{};
@@ -792,12 +792,12 @@ TEST_F(LocalDataWorkersTest, resizingRetainedCapacityEvictsOldestPiecesAndAllows
 {
     static auto constexpr PieceSize = size_t{ 32768U };
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * PieceSize } }, PieceSize), 1U);
-    auto const write_pieces = [&]() {
+    auto const write_pieces = [&] {
         auto n_done = size_t{};
-        auto const n_writes = writeBlocks(*local_data, 0U, 2U * PieceSize, [&n_done]() { ++n_done; });
-        EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+        auto const n_writes = writeBlocks(*local_data, 0U, 2U * PieceSize, [&n_done] { ++n_done; });
+        EXPECT_TRUE(pumpUntil([&n_done, n_writes] { return n_done == n_writes; }));
     };
-    auto const hash_pieces = [&]() {
+    auto const hash_pieces = [&] {
         for (auto piece = tr_piece_index_t{}; piece < 2U; ++piece) {
             auto hash = std::optional<tr_sha1_digest_t>{};
             local_data->test_piece(TorId, piece, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto found) {
@@ -829,7 +829,7 @@ TEST_F(LocalDataWorkersTest, pieceIsReadBackWhenItsBuffersAreGone)
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, PieceSize));
 
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done] { ++n_done; });
     EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
 
     // closing the torrent drops its buffered blocks
@@ -861,13 +861,13 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     // rule 3: the barrier waits for these...
     local_data->set_workers_paused(true);
     auto order = std::vector<std::string>{};
-    writeBlocks(*local_data, 0U, 2U * BlockSize, [&order]() { order.emplace_back("write"); });
+    writeBlocks(*local_data, 0U, 2U * BlockSize, [&order] { order.emplace_back("write"); });
 
     // The move picks its dir when it starts. (The move itself fails
     // since there's no real torrent. Only the ordering matters here.)
     local_data->move(
         TorId,
-        [&order]() {
+        [&order] {
             order.emplace_back("parent");
             return std::string{ "/new" };
         },
@@ -897,7 +897,7 @@ TEST_F(LocalDataWorkersTest, closingAFileWaitsOnlyForOpsThatTouchIt)
     // a write to a.bin is in flight...
     local_data->set_workers_paused(true);
     auto n_written = size_t{};
-    writeBlocks(*local_data, 0U, BlockSize, [&n_written]() { ++n_written; });
+    writeBlocks(*local_data, 0U, BlockSize, [&n_written] { ++n_written; });
 
     // ...so closing b.bin runs at once, while closing a.bin waits
     auto b_closed = false;
@@ -928,7 +928,7 @@ TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
 
     local_data->set_workers_paused(true);
     auto n_written = size_t{};
-    writeBlocks(*local_data, 0U, BlockSize, [&n_written]() { ++n_written; });
+    writeBlocks(*local_data, 0U, BlockSize, [&n_written] { ++n_written; });
 
     // the copy fails at once and does not join the queue
     auto code = std::optional<tr_error_code_t>{};
@@ -959,7 +959,7 @@ TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedBarr
     auto closed = false;
 
     local_data->set_workers_paused(true);
-    writeBlocks(*local_data, 0U, 2U * BlockSize, [&]() {
+    writeBlocks(*local_data, 0U, 2U * BlockSize, [&] {
         EXPECT_FALSE(closed);
         if (++n_done == 1U) {
             local_data->close_torrent(TorId, [&](tr_torrent_id_t) {
@@ -984,7 +984,7 @@ TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedFile
     auto closed = false;
 
     local_data->set_workers_paused(true);
-    writeBlocks(*local_data, 0U, 2U * BlockSize, [&]() {
+    writeBlocks(*local_data, 0U, 2U * BlockSize, [&] {
         EXPECT_FALSE(closed);
         if (++n_done == 1U) {
             local_data->close_file(TorId, 0U, [&](tr_torrent_id_t) {
@@ -1007,7 +1007,7 @@ TEST_F(LocalDataWorkersTest, emptyWriteSucceedsBesideAWriteInFlight)
     auto n_done = size_t{};
 
     local_data->set_workers_paused(true);
-    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
 
     // an empty span at the same offset has nothing to write
     auto empty_done = false;
@@ -1032,7 +1032,7 @@ TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
 
     auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done] { ++n_done; });
 
     // shutdown() delivers the callbacks inline, without a pump
     local_data->shutdown();

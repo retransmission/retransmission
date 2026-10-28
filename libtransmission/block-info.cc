@@ -5,6 +5,7 @@
 
 #include <cstdint>
 
+#include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/tr-assert.h" // TR_ASSERT
 
@@ -26,4 +27,24 @@ void tr_block_info::init_sizes(uint64_t const total_size_in, uint32_t const piec
 
     remainder = total_size_ % TrBlockSize;
     final_block_size_ = remainder != 0U ? remainder : TrBlockSize;
+}
+
+uint64_t tr_block_info::size_of_pieces(tr_bitfield const& pieces) const noexcept
+{
+    // a bitfield of another size does not describe these pieces
+    if (!is_initialized() || pieces.size() != piece_count()) {
+        return 0U;
+    }
+
+    if (pieces.has_all()) {
+        return total_size();
+    }
+
+    // only the last piece can be short
+    auto size = uint64_t{ pieces.count() } * piece_size();
+    if (auto const last = piece_count() - 1U; pieces.test(last)) {
+        size -= piece_size() - piece_size(last);
+    }
+
+    return size;
 }

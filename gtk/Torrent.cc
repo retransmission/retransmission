@@ -235,7 +235,11 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         stats.peers_sending_to_us + stats.webseeds_sending_to_us,
         result,
         ChangeFlag::ACTIVE_PEERS_DOWN);
-    update_cache_value(cache_.recheck_progress, Percents(stats.recheck_progress), result, ChangeFlag::RECHECK_PROGRESS);
+    update_cache_value(
+        cache_.recheck_progress,
+        Percents(stats.recheck_progress_deprecated),
+        result,
+        ChangeFlag::RECHECK_PROGRESS);
     update_cache_value(
         cache_.active,
         stats.peers_sending_to_us > 0 || stats.peers_getting_from_us > 0 || stats.activity == TR_STATUS_CHECK,
@@ -246,7 +250,8 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         cache_.activity_percent_done,
         Percents(
             std::clamp(
-                stats.activity == TR_STATUS_SEED && has_seed_ratio ? stats.seed_ratio_percent_done : stats.percent_done,
+                stats.activity == TR_STATUS_SEED && has_seed_ratio ? stats.seed_ratio_percent_done_deprecated :
+                                                                     stats.percent_done_deprecated,
                 0.0F,
                 1.0F)),
         result,
@@ -275,14 +280,18 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
             ChangeFlag::PRIMARY_MIME_TYPE);
     }
     update_cache_value(cache_.stalled, stats.is_stalled, result, ChangeFlag::STALLED);
-    update_cache_value(cache_.ratio, stats.upload_ratio, 0.01F, result, ChangeFlag::RATIO);
+    update_cache_value(cache_.ratio, stats.upload_ratio_deprecated, 0.01F, result, ChangeFlag::RATIO);
 
     update_cache_value(cache_.added_date, stats.added_date, result, ChangeFlag::ADDED_DATE);
     update_cache_value(cache_.eta, stats.eta, result, ChangeFlag::ETA);
-    update_cache_value(cache_.percent_complete, Percents(stats.percent_complete), result, ChangeFlag::PERCENT_COMPLETE);
+    update_cache_value(
+        cache_.percent_complete,
+        Percents(stats.percent_complete_deprecated),
+        result,
+        ChangeFlag::PERCENT_COMPLETE);
     update_cache_value(
         cache_.seed_ratio_percent_done,
-        Percents(stats.seed_ratio_percent_done),
+        Percents(stats.seed_ratio_percent_done_deprecated),
         result,
         ChangeFlag::SEED_RATIO_PERCENT_DONE);
     update_cache_value(cache_.total_size, Storage{ view.total_size, Storage::Units::Bytes }, result, ChangeFlag::TOTAL_SIZE);
@@ -303,7 +312,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         Storage{ stats.left_until_done, Storage::Units::Bytes },
         result,
         ChangeFlag::LONG_PROGRESS);
-    update_cache_value(cache_.percent_done, Percents(stats.percent_done), result, ChangeFlag::LONG_PROGRESS);
+    update_cache_value(cache_.percent_done, Percents(stats.percent_done_deprecated), result, ChangeFlag::LONG_PROGRESS);
     update_cache_value(cache_.seed_ratio, static_cast<float>(seed_ratio), 0.01F, result, ChangeFlag::LONG_PROGRESS);
     update_cache_value(
         cache_.size_when_done,
@@ -318,7 +327,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
 
     update_cache_value(
         cache_.metadata_percent_complete,
-        Percents(stats.metadata_percent_complete),
+        Percents(stats.metadata_percent_complete_deprecated),
         result,
         ChangeFlag::LONG_STATUS);
     update_cache_value(cache_.peers_connected, stats.peers_connected, result, ChangeFlag::LONG_STATUS);

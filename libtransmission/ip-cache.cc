@@ -79,17 +79,15 @@ namespace global_source_ip_helpers
     auto const [dst_ss, dst_sslen] = tr_socket_address::to_sockaddr(dst_addr, dst_port);
     auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(bind_addr, {});
     if (auto const sock = socket(dst_ss.ss_family, SOCK_DGRAM, 0); is_valid_socket(sock)) {
-        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0) {
-            if (connect(sock, reinterpret_cast<sockaddr const*>(&dst_ss), dst_sslen) == 0) {
-                auto src_ss = sockaddr_storage{};
-                auto src_sslen = socklen_t{ sizeof(src_ss) };
-                if (getsockname(sock, reinterpret_cast<sockaddr*>(&src_ss), &src_sslen) == 0) {
-                    if (auto const addrport = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr*>(&src_ss));
-                        addrport) {
-                        tr_net_close_socket(sock);
-                        set_sockerrno(save);
-                        return addrport->address();
-                    }
+        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0 &&
+            connect(sock, reinterpret_cast<sockaddr const*>(&dst_ss), dst_sslen) == 0) {
+            auto src_ss = sockaddr_storage{};
+            auto src_sslen = socklen_t{ sizeof(src_ss) };
+            if (getsockname(sock, reinterpret_cast<sockaddr*>(&src_ss), &src_sslen) == 0) {
+                if (auto const addrport = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr*>(&src_ss)); addrport) {
+                    tr_net_close_socket(sock);
+                    set_sockerrno(save);
+                    return addrport->address();
                 }
             }
         }
@@ -131,7 +129,7 @@ tr_ip_cache::tr_ip_cache(Mediator& mediator_in)
 
     for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i) {
         auto const type = static_cast<tr_address_type>(i);
-        auto const cb = [this, type]() {
+        auto const cb = [this, type] {
             update_addr(type);
         };
         upkeep_timers_[i]->set_callback(cb);
@@ -144,6 +142,7 @@ std::shared_ptr<tr_ip_cache> tr_ip_cache::create(Mediator& mediator)
     return std::shared_ptr<tr_ip_cache>{ new tr_ip_cache{ mediator } };
 }
 
+// NOLINTNEXTLINE(bugprone-exception-escape): logging throws
 tr_ip_cache::~tr_ip_cache()
 {
     // Destroying mutex while someone owns it is undefined behaviour, so we acquire it first
@@ -159,7 +158,7 @@ tr_ip_cache::~tr_ip_cache()
 
 bool tr_ip_cache::try_shutdown() noexcept
 {
-    for (auto& timer : upkeep_timers_) {
+    for (auto const& timer : upkeep_timers_) {
         timer->stop();
     }
 
