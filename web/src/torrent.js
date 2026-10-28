@@ -223,8 +223,10 @@ export class Torrent extends EventTarget {
     return this.fields.queue_position;
   }
   getRecheckProgress() {
-    const { checked_bytes, recheck_progress } = this.fields;
-    return this._percentOfTotalSize(checked_bytes, recheck_progress);
+    // `total_size` is 0 until the metadata arrives
+    return this.needsMetaData()
+      ? Percent.Unknown
+      : new Percent(this.fields.checked_bytes, this.getTotalSize());
   }
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
@@ -646,7 +648,6 @@ Torrent.Fields.Stats = [
   'queue_position',
   'rate_download',
   'rate_upload',
-  'recheck_progress',
   'seed_ratio_mode',
   'seed_ratio_limit',
   'size_when_done',
