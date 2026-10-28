@@ -1464,13 +1464,11 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
     auto const [begin, end] = tor->piece_span_for_file(file);
 
     auto const have = tor->is_seed() || length == 0 ? length : tor->count_has_bytes_in_file(file);
-    auto const progress = Percent{ have, length };
     return {
         .name = subpath.c_str(),
         .have = have,
         .length = length,
-        .progress = progress,
-        .progress_deprecated = progress.quotient(),
+        .progress = Percent{ have, length },
         .beginPiece = begin,
         .endPiece = end,
         .priority = priority,

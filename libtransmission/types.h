@@ -394,7 +394,6 @@ struct tr_file_view {
     uint64_t have = {}; // the current size of the file, i.e. how much we've downloaded
     uint64_t length = {}; // the total size of the file
     tr::Values::Percent progress; // have / length
-    double progress_deprecated = {}; // use `progress`
     tr_piece_index_t beginPiece = {}; // piece index where this file starts
     tr_piece_index_t endPiece = {}; // piece index where this file ends (exclusive)
     tr_priority_t priority = {}; // the file's priority

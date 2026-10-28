@@ -310,7 +310,6 @@ TEST_F(TorrentTest, statBuildsProgressFromCounts)
     auto const file = tr_torrentFile(tor, 0);
     EXPECT_FALSE(file.progress.is_complete());
     EXPECT_EQ((Percent{ file.have, file.length }), file.progress);
-    EXPECT_DOUBLE_EQ(file.progress.quotient(), file.progress_deprecated);
 
     tr_torrentRemove(tor, false);
 }
