@@ -50,10 +50,7 @@ const TorrentRendererHelper = {
       if (status !== Torrent._StatusStopped) {
         const seed_ratio_limit = t.seedRatioLimit(controller);
         if (seed_ratio_limit > 0) {
-          // `Ratio.None` (-1) reads as empty
-          seed_ratio_percent = Percent.fromDouble(
-            Ratio.toNumber(t.getUploadRatio()) / seed_ratio_limit,
-          );
+          seed_ratio_percent = t.getSeedRatioPercent(seed_ratio_limit);
         }
       }
     }

@@ -229,6 +229,14 @@ export class Torrent extends EventTarget {
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
   }
+  // the daemon's goal: `size_when_done` times the limit, truncated
+  getSeedRatioPercent(seed_ratio_limit) {
+    if (this.isFinished()) {
+      return Percent.Complete;
+    }
+    const goal = Math.floor(this.getSizeWhenDone() * seed_ratio_limit);
+    return new Percent(this.getUploadedEver(), goal);
+  }
   getSeedRatioMode() {
     return this.fields.seed_ratio_mode;
   }
