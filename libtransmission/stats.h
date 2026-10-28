@@ -82,17 +82,8 @@ private:
     std::string const config_dir_;
     time_t start_time_;
 
-    static constexpr auto Zero = tr_session_stats{
-        .ratio = {},
-        .ratio_deprecated = TR_RATIO_NA,
-        .uploadedBytes = 0U,
-        .downloadedBytes = 0U,
-        .filesAdded = 0U,
-        .sessionCount = 0U,
-        .secondsActive = time_t{},
-    };
-    tr_session_stats single_ = Zero;
-    tr_session_stats old_ = Zero;
+    tr_session_stats single_;
+    tr_session_stats old_;
     bool persist_ = true;
     bool is_dirty_ = false;
 };
