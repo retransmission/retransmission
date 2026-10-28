@@ -68,9 +68,6 @@ enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
 [[nodiscard]] Glib::ustring tr_strlsize(guint64 size_in_bytes);
 [[nodiscard]] Glib::ustring tr_strlsize(tr::Values::Storage const& storage);
 
-/* return a human-readable string for the given ratio. */
-[[nodiscard]] Glib::ustring tr_strlratio(double ratio);
-
 // The desktop's activation token for this launch, from wherever the toolkit left it.
 // The GTK client calls this rather than tr::interop::activation_token(). GTK4 moves
 // the token out of the environment before main() runs, and this knows where it went.

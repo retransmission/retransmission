@@ -144,6 +144,8 @@ int main(int argc, char** argv)
         return 0;
     }
 
+    tr::Values::Config::ratio = { .none = Q_("None"), .infinity = gtr_get_unicode_string(GtrUnicode::Inf) };
+
     /* set up the config dir */
     if (std::empty(config_dir)) {
         config_dir = tr::platform::get_default_config_dir(AppConfigDirName);

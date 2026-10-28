@@ -34,7 +34,6 @@
 #include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/rpc-queue.h>
@@ -340,6 +339,7 @@ using TorrentProperties = Session::TorrentProperties;
             return {
                 TR_KEY_added_date,
                 TR_KEY_download_dir,
+                TR_KEY_checked_bytes,
                 TR_KEY_downloaded_ever,
                 TR_KEY_edit_date,
                 TR_KEY_error,
@@ -355,13 +355,13 @@ using TorrentProperties = Session::TorrentProperties;
                 TR_KEY_labels,
                 TR_KEY_left_until_done,
                 TR_KEY_manual_announce_time,
+                TR_KEY_metadata_have,
                 TR_KEY_metadata_percent_complete,
+                TR_KEY_metadata_size,
                 TR_KEY_name,
                 TR_KEY_peers_connected,
                 TR_KEY_peers_getting_from_us,
                 TR_KEY_peers_sending_to_us,
-                TR_KEY_percent_complete,
-                TR_KEY_percent_done,
                 TR_KEY_primary_mime_type,
                 TR_KEY_queue_position,
                 TR_KEY_rate_download,
@@ -397,6 +397,7 @@ using TorrentProperties = Session::TorrentProperties;
         // changing fields needed by the main window
         case TorrentProperties::MainStats:
             return {
+                TR_KEY_checked_bytes,
                 TR_KEY_downloaded_ever,
                 TR_KEY_edit_date,
                 TR_KEY_error,
@@ -408,12 +409,12 @@ using TorrentProperties = Session::TorrentProperties;
                 TR_KEY_is_finished,
                 TR_KEY_left_until_done,
                 TR_KEY_manual_announce_time,
+                TR_KEY_metadata_have,
                 TR_KEY_metadata_percent_complete,
+                TR_KEY_metadata_size,
                 TR_KEY_peers_connected,
                 TR_KEY_peers_getting_from_us,
                 TR_KEY_peers_sending_to_us,
-                TR_KEY_percent_complete,
-                TR_KEY_percent_done,
                 TR_KEY_queue_position,
                 TR_KEY_rate_download,
                 TR_KEY_rate_upload,
@@ -638,7 +639,6 @@ void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& st
     tr::serializer::load(args_dict, stats, Fields);
 
     stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
-    stats.ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploadedBytes, stats.downloadedBytes));
 }
 
 void Session::updateStats(tr_variant* dict)

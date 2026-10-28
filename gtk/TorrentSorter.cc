@@ -5,7 +5,6 @@
 
 #include "TorrentSorter.h"
 
-#include "Percents.h"
 #include "SorterBase.hh"
 
 #include <libtransmission-app/display-modes.h>
@@ -18,6 +17,7 @@
 #include <algorithm>
 #include <array>
 #include <iterator>
+#include <limits>
 #include <utility>
 
 using namespace std::string_view_literals;
@@ -53,22 +53,14 @@ using CompareFunc = int (*)(Torrent const&, Torrent const&);
     return -tr_compare_3way(lhs, rhs);
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-[[nodiscard]] constexpr int compare_ratio(double lhs, double rhs)
+// None sorts below every number, Infinite above
+[[nodiscard]] constexpr double ratio_sort_key(tr::Values::Ratio const& ratio)
 {
-    if (static_cast<int>(lhs) == TR_RATIO_INF && static_cast<int>(rhs) == TR_RATIO_INF) {
-        return 0;
+    if (ratio.is_infinite()) {
+        return std::numeric_limits<double>::infinity();
     }
 
-    if (static_cast<int>(lhs) == TR_RATIO_INF) {
-        return 1;
-    }
-
-    if (static_cast<int>(rhs) == TR_RATIO_INF) {
-        return -1;
-    }
-
-    return tr_compare_3way(lhs, rhs);
+    return ratio.to_double().value_or(-1.0);
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
@@ -86,7 +78,7 @@ using CompareFunc = int (*)(Torrent const&, Torrent const&);
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 [[nodiscard]] int compare_by_ratio(Torrent const& lhs, Torrent const& rhs)
 {
-    if (auto const result = -compare_ratio(lhs.get_ratio(), rhs.get_ratio()); result != 0) {
+    if (auto const result = -tr_compare_3way(ratio_sort_key(lhs.get_ratio()), ratio_sort_key(rhs.get_ratio())); result != 0) {
         return result;
     }
 

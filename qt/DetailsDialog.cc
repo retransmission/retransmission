@@ -42,7 +42,7 @@
 #include <libtransmission/announce-list.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
-#include <libtransmission/utils.h> // tr_getRatio()
+#include <libtransmission/values.h>
 
 #include "BaseDialog.h"
 #include "ColumnResizer.h"
@@ -236,11 +236,13 @@ void setIfIdle(SpinBox* const spin, Value const value)
 class DetailsDialog::PeerItem : public QTreeWidgetItem
 {
     Peer peer_;
+    tr::Values::Percent progress_;
     QString collated_address_;
 
 public:
-    PeerItem(Peer p, QIcon const& encrypted_icon)
+    PeerItem(Peer p, tr::Values::Percent const progress, QIcon const& encrypted_icon)
         : peer_{ std::move(p) }
+        , progress_{ progress }
         , collated_address_{ collateAddress(peer_.address) }
     {
         for (auto const column : { COL_UP, COL_UP_REQS, COL_DOWN, COL_DOWN_REQS, COL_PERCENT }) {
@@ -256,13 +258,14 @@ public:
     }
 
     // `p` has this item's address: the address is part of the dialog's lookup key
-    void refresh(Peer const& p)
+    void refresh(Peer const& p, tr::Values::Percent const progress)
     {
         if (p.flags != peer_.flags) {
             setToolTip(COL_STATUS, peerFlagsTooltip(p.flags));
         }
 
         peer_ = p;
+        progress_ = progress;
         refreshCells();
     }
 
@@ -288,7 +291,7 @@ public:
             return peer_.active_reqs_to_peer < i->peer_.active_reqs_to_peer;
 
         case COL_PERCENT:
-            return peer_.progress < i->peer_.progress;
+            return progress_ < i->progress_;
 
         case COL_STATUS:
             return peer_.flags < i->peer_.flags;
@@ -311,9 +314,7 @@ private:
         setText(COL_UP_REQS, peer_.active_reqs_to_client > 0 ? QString::number(peer_.active_reqs_to_client) : QString{});
         setText(COL_DOWN, peer_.rate_to_client.is_zero() ? QString{} : peer_.rate_to_client.toQstring());
         setText(COL_DOWN_REQS, peer_.active_reqs_to_peer > 0 ? QString::number(peer_.active_reqs_to_peer) : QString{});
-        setText(
-            COL_PERCENT,
-            peer_.progress > 0 ? QStringLiteral("%1%").arg(static_cast<int>(peer_.progress * 100.0)) : QString{});
+        setText(COL_PERCENT, progress_ != tr::Values::Percent{} ? Formatter::percentToString(progress_) : QString{});
         setText(COL_STATUS, peer_.flags);
     }
 
@@ -579,10 +580,7 @@ void DetailsDialog::refreshUI()
             }
         }
 
-        double const d = size_when_done == 0 ?
-            100.0 :
-            100.0 * static_cast<double>(size_when_done - left_until_done) / static_cast<double>(size_when_done);
-        auto const pct = Formatter::percentToString(d);
+        auto const pct = tr::Values::Percent{ size_when_done - left_until_done, size_when_done }.to_string();
         auto const size_when_done_str = Formatter::storageToString(size_when_done);
 
         if (have_unverified == 0U && left_until_done == 0U) {
@@ -620,8 +618,7 @@ void DetailsDialog::refreshUI()
     if (torrents.empty() || size_when_done == 0) {
         string = none;
     } else {
-        auto const percent = 100.0 * static_cast<double>(available) / static_cast<double>(size_when_done);
-        string = QStringLiteral("%1%").arg(Formatter::percentToString(percent));
+        string = TR_FORMAT("{percent}%", fmt::arg("percent", tr::Values::Percent{ available, size_when_done }.to_string()));
     }
 
     ui_.availabilityValueLabel->setText(string);
@@ -652,7 +649,7 @@ void DetailsDialog::refreshUI()
         string = TR_FORMAT(
             "{uploaded_size} (Ratio: {ratio})",
             fmt::arg("uploaded_size", Formatter::storageToString(uploaded)),
-            fmt::arg("ratio", Formatter::ratioToString(tr_getRatio(uploaded, sum(&Torrent::sizeWhenDone)))));
+            fmt::arg("ratio", tr::Values::Ratio{ uploaded, sum(&Torrent::sizeWhenDone) }.to_string()));
     }
 
     ui_.uploadedValueLabel->setText(string);
@@ -892,9 +889,9 @@ void DetailsDialog::refreshUI()
             PeerItem* item = nullptr;
             if (auto const iter = peers_.find(key); iter != std::end(peers_)) {
                 item = iter->second;
-                item->refresh(peer);
+                item->refresh(peer, tor->peerProgress(peer));
             } else { // new peer has connected
-                item = new PeerItem{ peer, icon_encrypted_ };
+                item = new PeerItem{ peer, tor->peerProgress(peer), icon_encrypted_ };
                 new_items << item;
             }
 

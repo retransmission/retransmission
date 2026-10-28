@@ -17,6 +17,7 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
+#include <libtransmission/values.h>
 
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
@@ -40,6 +41,7 @@
 #include <fmt/format.h>
 
 #include <algorithm>
+#include <cmath> // std::lround()
 #include <memory>
 #include <optional>
 #include <queue>
@@ -71,6 +73,7 @@ public:
         add(label_esc);
         add(prog);
         add(prog_str);
+        add(prog_key);
         add(index);
         add(size);
         add(size_str);
@@ -84,6 +87,7 @@ public:
     Gtk::TreeModelColumn<Glib::ustring> label_esc;
     Gtk::TreeModelColumn<int> prog;
     Gtk::TreeModelColumn<Glib::ustring> prog_str;
+    Gtk::TreeModelColumn<int> prog_key; // progress in 0.01% steps for sorting and change checks; -1 before the first refresh
     Gtk::TreeModelColumn<unsigned int> index;
     Gtk::TreeModelColumn<uint64_t> size;
     Gtk::TreeModelColumn<Glib::ustring> size_str;
@@ -183,13 +187,13 @@ bool refreshFilesForeach(
     auto const old_enabled = iter->get_value(file_cols.enabled);
     auto const old_have = iter->get_value(file_cols.have);
     auto const old_priority = iter->get_value(file_cols.priority);
-    auto const old_progress = iter->get_value(file_cols.prog);
+    auto const old_prog_key = iter->get_value(file_cols.prog_key);
     auto const old_size = iter->get_value(file_cols.size);
 
     auto new_enabled = int{};
     auto new_have = decltype(old_have){};
     auto new_priority = int{};
-    auto new_progress = int{};
+    auto new_percent = tr::Values::Percent{};
     auto new_size = decltype(old_size){};
 
     if (is_file) {
@@ -200,7 +204,7 @@ bool refreshFilesForeach(
         new_priority = int{ file.priority };
         new_have = file.have;
         new_size = file.length;
-        new_progress = static_cast<int>(100 * file.progress_deprecated);
+        new_percent = file.progress;
     } else {
         new_enabled = NOT_SET;
         new_priority = NOT_SET;
@@ -232,15 +236,16 @@ bool refreshFilesForeach(
             }
         }
 
-        new_progress = new_size != 0 ? static_cast<int>(100.0 * static_cast<double>(new_have) / static_cast<double>(new_size)) :
-                                       1;
+        new_percent = tr::Values::Percent{ new_have, new_size };
     }
 
-    new_progress = std::clamp(new_progress, 0, 100);
+    // Percent compares at 0.01%, so equal keys display the same
+    auto const new_prog_key = static_cast<int>(std::lround(new_percent.to_fraction() * 10'000));
 
     if (!refresh_data.resort_needed &&
         ((refresh_data.sort_column_id == file_cols.priority.index() && new_priority != old_priority) ||
-         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled))) {
+         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled) ||
+         (refresh_data.sort_column_id == file_cols.prog_key.index() && new_prog_key != old_prog_key))) {
         /* Changing a value in the sort column can trigger a resort
          * which breaks this foreach () call. (See #3529)
          * As a workaround: if that's about to happen, temporarily disable
@@ -267,9 +272,12 @@ bool refreshFilesForeach(
         (*iter)[file_cols.have] = new_have;
     }
 
-    if (new_progress != old_progress) {
-        (*iter)[file_cols.prog] = new_progress;
-        (*iter)[file_cols.prog_str] = fmt::format("{:Ld}%", new_progress);
+    if (new_prog_key != old_prog_key) {
+        (*iter)[file_cols.prog] = static_cast<int>(100 * new_percent.to_fraction());
+        (*iter)[file_cols.prog_str] = fmt::format(
+            fmt::runtime(_("{percent}%")),
+            fmt::arg("percent", new_percent.to_whole_string()));
+        (*iter)[file_cols.prog_key] = new_prog_key;
     }
 
     return false; /* keep walking */
@@ -455,6 +463,7 @@ void buildTree(FileRowNode& node, build_data& build)
     (*child_iter)[file_cols.icon] = icon;
     (*child_iter)[file_cols.priority] = priority;
     (*child_iter)[file_cols.enabled] = static_cast<int>(enabled);
+    (*child_iter)[file_cols.prog_key] = -1;
 
     if (!isLeaf) {
         build_data b = build;
@@ -917,7 +926,7 @@ FileList::Impl::Impl(
         col->add_attribute(rend->property_text(), file_cols.prog_str);
         col->add_attribute(rend->property_value(), file_cols.prog);
         col->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
-        col->set_sort_column(file_cols.prog);
+        col->set_sort_column(file_cols.prog_key);
         view_->append_column(*col);
     }
 

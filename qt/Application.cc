@@ -32,6 +32,7 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/transmission.h> // tr_sessionGetSettingsFilename
+#include <libtransmission/values.h>
 
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/l10n.h>
@@ -39,6 +40,7 @@
 
 #include "AccessibleSqueezeLabel.h"
 #include "AddData.h"
+#include "Formatter.h"
 #include "MainWindow.h"
 #include "OptionsDialog.h"
 #include "Prefs.h"
@@ -132,6 +134,7 @@ Application::Application(
     setApplicationName(ConfigName);
     trqt::setGlobalFmtLocale();
     loadTranslations();
+    tr::Values::Config::ratio = { .none = Formatter::tr("None").toStdString(), .infinity = "\xE2\x88\x9E" };
 
     setWindowIcon(makeWindowIcon());
 

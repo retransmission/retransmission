@@ -654,7 +654,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 - (void)setGlobalLabels
 {
     NSString* global = [NSUserDefaults.standardUserDefaults boolForKey:@"RatioCheck"] ?
-        [NSString stringForRatio:[NSUserDefaults.standardUserDefaults floatForKey:@"RatioLimit"]] :
+        [NSString stringForRatio:tr::Values::Ratio::from_double([NSUserDefaults.standardUserDefaults floatForKey:@"RatioLimit"])] :
         NSLocalizedString(@"disabled", "Info options -> global setting");
     self.fRatioLimitGlobalLabel.stringValue = global;
 

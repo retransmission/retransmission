@@ -188,6 +188,8 @@ static void initUnits()
     t_str = NSLocalizedString(@"TB/s", "Transfer speed (terabytes per second)");
     Config::speed = { Config::Base::Kilo, b_str.UTF8String, k_str.UTF8String,
                       m_str.UTF8String,   g_str.UTF8String, t_str.UTF8String };
+
+    Config::ratio.none = NSLocalizedString(@"N/A", "No Ratio").UTF8String;
 }
 
 static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
@@ -2709,22 +2711,22 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     NSString* sortType = [self.fDefaults stringForKey:@"Sort"];
     if ([sortType isEqualToString:SortTypeState]) {
         NSSortDescriptor* stateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stateSortKey" ascending:!asc];
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:!asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:!asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:!asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:!asc];
 
         descriptors = @[ stateDescriptor, progressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeProgress]) {
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeETA]) {
         NSSortDescriptor* etaDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:asc];
         // falling back on sort by progress
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ etaDescriptor, progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeTracker]) {

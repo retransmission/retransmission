@@ -367,8 +367,9 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(
-                TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(current_value))));
+            on_action = menu->addAction(TR_FORMAT(
+                "Stop at Ratio ({ratio})",
+                fmt::arg("ratio", tr::Values::Ratio::from_double(current_value).to_string())));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_ratio, current_value](bool is_checked) {
@@ -380,7 +381,7 @@ QMenu* MainWindow::createOptionsMenu()
             menu->addSeparator();
 
             for (double const i : StockRatios) {
-                QAction* action = menu->addAction(Formatter::ratioToString(i));
+                QAction* action = menu->addAction(QString::fromStdString(tr::Values::Ratio::from_double(i).to_string()));
                 connect(action, &QAction::triggered, this, [set_ratio, i] { set_ratio(i); });
             }
         };
@@ -739,7 +740,7 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
                 "Down: {downloaded_size}, Up: {uploaded_size}",
                 fmt::arg("downloaded_size", Formatter::storageToString(st.downloadedBytes)),
                 fmt::arg("uploaded_size", Formatter::storageToString(st.uploadedBytes))) :
-            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(st.ratio_deprecated))));
+            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", st.ratio.to_string())));
 }
 
 void MainWindow::refreshTorrentViewHeader()
@@ -1109,8 +1110,9 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_seed_ratio_limit:
-        ratio_on_action_->setText(
-            TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(prefs_.get<double>(key)))));
+        ratio_on_action_->setText(TR_FORMAT(
+            "Stop at Ratio ({ratio})",
+            fmt::arg("ratio", tr::Values::Ratio::from_double(prefs_.get<double>(key)).to_string())));
         break;
 
     case TR_KEY_show_filterbar:

@@ -181,13 +181,8 @@ export class Torrent extends EventTarget {
     return this.fields.magnet_link;
   }
   getMetadataPercent() {
-    const { metadata_have, metadata_percent_complete, metadata_size } =
-      this.fields;
-    if (metadata_size === undefined) {
-      return Percent.fromDouble(metadata_percent_complete);
-    }
-    // a zero `metadata_size` means no peer has reported the size yet
-    return metadata_size > 0
+    const { metadata_have, metadata_size } = this.fields;
+    return metadata_size > 0 // zero means no peer has reported the size yet
       ? new Percent(metadata_have, metadata_size)
       : Percent.Unknown;
   }
