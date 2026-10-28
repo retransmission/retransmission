@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <cstddef> // std::byte
 #include <cstdint> // uint16_t, uint32_t, uint64_t
 #include <memory>
@@ -16,6 +17,32 @@
 using BufferTest = ::tr::test::TransmissionTest;
 using namespace std::literals;
 using Buffer = tr::StackBuffer<1024, std::byte>;
+
+TEST_F(BufferTest, reserveSpaceCommitsOnlyWrittenBytes)
+{
+    auto buf = tr::StackBuffer<16>{};
+    EXPECT_TRUE(buf.empty());
+
+    auto const first = "payload"sv;
+    auto const [head, head_space] = buf.reserve_space(16);
+    ASSERT_GE(head_space, first.size());
+    EXPECT_TRUE(buf.empty());
+    std::copy_n(reinterpret_cast<std::byte const*>(first.data()), first.size(), head);
+    buf.commit_space(first.size());
+    EXPECT_EQ(first, buf.to_string_view());
+
+    auto const last = "tail"sv;
+    auto const [tail, tail_space] = buf.reserve_space(1024);
+    ASSERT_GE(tail_space, last.size());
+    EXPECT_EQ(first, buf.to_string_view());
+    std::copy_n(reinterpret_cast<std::byte const*>(last.data()), last.size(), tail);
+    buf.commit_space(last.size());
+    EXPECT_EQ("payloadtail"sv, buf.to_string_view());
+    buf.drain(first.size());
+    EXPECT_EQ(last, buf.to_string_view());
+    buf.clear();
+    EXPECT_TRUE(buf.empty());
+}
 
 TEST_F(BufferTest, startsWithInSingleSegment)
 {
