@@ -12,7 +12,6 @@
 #include <ctime> // time_t
 #include <locale>
 #include <optional>
-#include <string>
 #include <string_view>
 
 /**
@@ -123,9 +122,6 @@ template<std::floating_point T>
  *             +------------------------+
  */
 [[nodiscard]] double tr_truncd(double x, int decimal_places);
-
-/* return a percent formatted string of either x.xx, xx.x or xxx */
-[[nodiscard]] std::string tr_strpercent(double x);
 
 // ---
 

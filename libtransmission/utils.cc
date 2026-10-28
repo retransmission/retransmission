@@ -158,19 +158,6 @@ double tr_truncd(double x, int decimal_places)
     return tr_num_parse<double>(std::data(buf)).value_or(0.0);
 }
 
-std::string tr_strpercent(double x)
-{
-    if (x < 5.0) {
-        return fmt::format("{:.2Lf}", tr_truncd(x, 2));
-    }
-
-    if (x < 100.0) {
-        return fmt::format("{:.1Lf}", tr_truncd(x, 1));
-    }
-
-    return fmt::format("{:.0Lf}", x);
-}
-
 // ---
 
 uint64_t tr_htonll(uint64_t hostlonglong)
