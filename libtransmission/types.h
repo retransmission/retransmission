@@ -191,8 +191,6 @@ using tr_tracker_tier_t = uint32_t;
 
 enum : uint8_t { TR_LOC_MOVING, TR_LOC_DONE, TR_LOC_ERROR };
 
-enum : int8_t { TR_RATIO_NA = -1, TR_RATIO_INF = -2 };
-
 enum TrScript : uint8_t {
     TR_SCRIPT_ON_TORRENT_ADDED,
     TR_SCRIPT_ON_TORRENT_DONE,

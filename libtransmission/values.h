@@ -327,8 +327,11 @@ public:
     {
     }
 
-    // For a ratio that exists only as a number, e.g. the seed ratio limit pref,
-    // or the RPC `upload_ratio`, which can carry TR_RATIO_NA (-1) or TR_RATIO_INF (-2).
+    // how the RPC `upload_ratio` sends the two states
+    static constexpr auto WireNone = -1.0;
+    static constexpr auto WireInfinite = -2.0;
+
+    // For a ratio that exists only as a number, e.g. the seed ratio limit pref or the RPC `upload_ratio`.
     [[nodiscard]] static Ratio from_double(double ratio) noexcept;
 
     [[nodiscard]] constexpr bool is_none() const noexcept

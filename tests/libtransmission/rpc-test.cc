@@ -25,6 +25,7 @@
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
+#include <libtransmission/values.h>
 
 #include "test-fixtures.h"
 
@@ -826,7 +827,7 @@ TEST_F(RpcTest, torrentGetUploadRatioOfAMagnetIsNotAvailable)
 
     auto const fields = torrentGetFirst(session_, { TR_KEY_percent_done, TR_KEY_upload_ratio });
     EXPECT_EQ(fields.value_if<double>(TR_KEY_percent_done), 0.0);
-    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), -1.0); // TR_RATIO_NA
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), tr::Values::Ratio::WireNone);
 
     tr_torrentRemove(tor, false);
 }

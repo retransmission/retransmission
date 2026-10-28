@@ -121,7 +121,7 @@ std::string Percent::to_whole_string(std::locale const& loc) const
 
 Ratio Ratio::from_double(double const ratio) noexcept
 {
-    if (ratio < -1.5 || std::isinf(ratio)) { // TR_RATIO_INF (-2) or an actual infinity, not TR_RATIO_NA (-1)
+    if (ratio < -1.5 || std::isinf(ratio)) { // WireInfinite or an actual infinity, not WireNone
         return Ratio{ 1U, 0U };
     }
 

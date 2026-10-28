@@ -416,10 +416,9 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
 
 namespace make_torrent_field_helpers
 {
-// the wire keeps the TR_RATIO_NA / TR_RATIO_INF sentinels for the two non-numeric states
 [[nodiscard]] constexpr double ratio_to_wire(Ratio const ratio) noexcept
 {
-    return ratio.quotient().value_or(ratio.is_infinite() ? TR_RATIO_INF : TR_RATIO_NA);
+    return ratio.quotient().value_or(ratio.is_infinite() ? Ratio::WireInfinite : Ratio::WireNone);
 }
 
 [[nodiscard]] auto make_file_wanted_vec(tr_torrent const& tor)
