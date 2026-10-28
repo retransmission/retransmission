@@ -90,13 +90,8 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
-        // https://github.com/transmission/transmission/issues/7307
-        static auto constexpr MinPayloadSize = 128U;
-
         if (auto const ptr = weak.lock()) {
-            if (ptr->outbuf_.size() >= MinPayloadSize) {
-                ptr->write_cb();
-            }
+            ptr->write_cb();
         }
     });
     tr_logAddTraceIo(io, fmt::format("bandwidth is {}; its parent is {}", fmt::ptr(&io->bandwidth()), fmt::ptr(parent)));
