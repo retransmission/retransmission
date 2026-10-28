@@ -71,17 +71,19 @@ private:
     {
         i += 1;
         auto const x = s_[i];
-        j += x;
+        j = static_cast<uint8_t>(j + x);
         auto const y = s_[j];
 
         // not std::swap(): the compiler can't rule out i == j, so it would reload s_[i] below
         s_[i] = y;
         s_[j] = x;
 
-        return s_[static_cast<uint8_t>(x + y)];
+        return static_cast<uint8_t>(s_[static_cast<uint8_t>(x + y)]);
     }
 
-    std::array<uint8_t, 256> s_ = {};
+    // Entries remain in [0, 255]. Word-sized slots make the hot loop
+    // faster without changing the byte-sized indices or the keystream.
+    std::array<uint32_t, 256> s_ = {};
     uint8_t i_ = 0;
     uint8_t j_ = 0;
 };
