@@ -316,7 +316,7 @@ The 'source' column here corresponds to the data structure there.
 | `uploaded_ever`| integer| tr_stat
 | `upload_limit`| integer| tr_torrent
 | `upload_limited`| boolean| tr_torrent
-| `upload_ratio`| double| tr_stat
+| `upload_ratio`| double| **DEPRECATED** tr_stat
 | `wanted`| array (see below)| n/a
 | `webseeds`| array of strings | **DEPRECATED** tr_tracker_view
 | `webseeds_ex`| array (see below)| n/a
@@ -1163,6 +1163,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | :warning: **DEPRECATED** `percent_complete`. Use `have_valid`, `have_unchecked`, and `total_size` instead. All are 0 until the torrent has metadata.
 | `torrent_get` | :warning: **DEPRECATED** `percent_done`. Use `left_until_done` and `size_when_done` instead. Both are 0 until the torrent has metadata.
 | `torrent_get` | :warning: **DEPRECATED** `recheck_progress`. Use `checked_bytes` and `total_size` instead.
+| `torrent_get` | :warning: **DEPRECATED** `upload_ratio`. Use `uploaded_ever` and `size_when_done` instead.
 | `session_get` | new arg `recent_download_paths`
 | `session_get` | new arg `recent_relocate_paths`
 | `session_get` | new arg `rpc_max_request_body_size`

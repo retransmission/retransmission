@@ -72,7 +72,7 @@ Percent.Complete = Object.freeze(new Percent(1, 1));
 // 0%, incomplete, e.g. for a size that is not known yet
 Percent.Unknown = Object.freeze(new Percent(0, 1));
 
-// An upload ratio as the RPC sends it: a number, or one of the daemon's sentinels
+// An upload ratio: a number, `None`, or `Infinite`
 export const Ratio = Object.freeze({
   // uploads against nothing downloaded
   Infinite: -2,
