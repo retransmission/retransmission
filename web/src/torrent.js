@@ -234,13 +234,9 @@ export class Torrent extends EventTarget {
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
   }
-  // the daemon's goal: `size_when_done` times the limit, truncated
-  getSeedRatioPercent(seed_ratio_limit) {
-    if (this.isFinished()) {
-      return Percent.Complete;
-    }
-    const goal = Math.floor(this.getSizeWhenDone() * seed_ratio_limit);
-    return new Percent(this.getUploadedEver(), goal);
+  getSeedRatioPercent() {
+    const goal = this.fields.seed_ratio_bytes_goal;
+    return new Percent(goal - this.fields.seed_ratio_bytes_left, goal);
   }
   getSeedRatioMode() {
     return this.fields.seed_ratio_mode;
@@ -644,6 +640,8 @@ Torrent.Fields.Stats = [
   'queue_position',
   'rate_download',
   'rate_upload',
+  'seed_ratio_bytes_goal',
+  'seed_ratio_bytes_left',
   'seed_ratio_mode',
   'seed_ratio_limit',
   'size_when_done',

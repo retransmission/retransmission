@@ -48,9 +48,8 @@ const TorrentRendererHelper = {
     } else {
       classList.push('seed');
       if (status !== Torrent._StatusStopped) {
-        const seed_ratio_limit = t.seedRatioLimit(controller);
-        if (seed_ratio_limit > 0) {
-          seed_ratio_percent = t.getSeedRatioPercent(seed_ratio_limit);
+        if (t.seedRatioLimit(controller) > 0) {
+          seed_ratio_percent = t.getSeedRatioPercent();
         }
       }
     }
