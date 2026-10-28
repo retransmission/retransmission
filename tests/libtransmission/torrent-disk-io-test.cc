@@ -744,6 +744,40 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
     EXPECT_TRUE(waitFor([this] { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
 }
 
+TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+
+    // An eighth of the budget, received and queued behind the paused workers.
+    auto constexpr NFreed = BudgetBlocks / 8U;
+    auto n_sent = size_t{};
+    for (auto const& request : first.requests) {
+        if (request.length == TrBlockSize && n_sent < NFreed) {
+            receiveBlock(first, request);
+            ++n_sent;
+        }
+    }
+    ASSERT_EQ(NFreed, n_sent);
+    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == NFreed * TrBlockSize; }, MaxWaitMsec));
+    EXPECT_EQ(BudgetBlocks, requestCount());
+
+    // The peer manager's pulse would also refill, but only every 500 ms.
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([this]() { return requestCount() > BudgetBlocks; }, 200));
+}
+
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);

@@ -465,6 +465,11 @@ public:
 
     void pulse() override;
 
+    void request_more_blocks() override
+    {
+        maybe_send_block_requests();
+    }
+
     void on_piece_completed(tr_piece_index_t piece) override
     {
         protocol_send_have(piece);

@@ -677,6 +677,9 @@ void tr_peerMgrFree(tr_peerMgr const* manager);
 
 [[nodiscard]] std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant);
 
+// Give every downloading peer a chance to request more blocks.
+void tr_peerMgrRefillRequests(tr_peerMgr* manager);
+
 void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> socket);
 
 size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, std::span<tr_pex const> pex);
