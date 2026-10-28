@@ -10,7 +10,7 @@
 #endif
 
 #include <cstddef> // size_t
-#include <cstdint> // int64_t
+#include <cstdint> // int64_t, uint64_t
 #include <ctime> // time_t
 #include <deque>
 #include <optional>
@@ -40,6 +40,14 @@ public:
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 
     [[nodiscard]] double get_metadata_percent() const noexcept;
+
+    // byte count of the metadata received so far
+    [[nodiscard]] uint64_t get_metadata_have() const noexcept;
+
+    [[nodiscard]] constexpr auto get_metadata_size() const noexcept
+    {
+        return std::size(metadata_);
+    }
 
     [[nodiscard]] constexpr auto const& get_metadata() const noexcept
     {

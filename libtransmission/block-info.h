@@ -10,6 +10,8 @@
 #include "libtransmission/constants.h"
 #include "libtransmission/types.h"
 
+class tr_bitfield;
+
 struct tr_block_info {
 public:
     tr_block_info() noexcept = default;
@@ -48,6 +50,9 @@ public:
     {
         return total_size_;
     }
+
+    // byte count of the pieces marked in `pieces`
+    [[nodiscard]] uint64_t size_of_pieces(tr_bitfield const& pieces) const noexcept;
 
     struct Location {
         [[nodiscard]] constexpr bool operator==(Location const& that) const noexcept

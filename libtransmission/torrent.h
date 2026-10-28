@@ -315,6 +315,10 @@ struct tr_torrent {
     {
         return metainfo_.piece_size(piece);
     }
+    [[nodiscard]] auto size_of_pieces(tr_bitfield const& pieces) const noexcept
+    {
+        return metainfo_.size_of_pieces(pieces);
+    }
     [[nodiscard]] constexpr auto total_size() const noexcept
     {
         return metainfo_.total_size();
@@ -708,6 +712,10 @@ struct tr_torrent {
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 
     [[nodiscard]] double get_metadata_percent() const noexcept;
+
+    [[nodiscard]] uint64_t get_metadata_have() const noexcept;
+
+    [[nodiscard]] uint64_t get_metadata_size() const noexcept;
 
     ///
 
@@ -1329,11 +1337,26 @@ private:
 
     [[nodiscard]] constexpr std::optional<float> verify_progress() const noexcept
     {
-        if (verify_state_ == VerifyState::Active) {
-            return verify_progress_;
+        if (verify_state_ != VerifyState::Active) {
+            return {};
         }
 
-        return {};
+        // a zero-byte torrent has no pieces to check
+        if (piece_count() == 0U) {
+            return 0.0F;
+        }
+
+        return static_cast<float>(verify_checked_pieces_) / static_cast<float>(piece_count());
+    }
+
+    [[nodiscard]] constexpr std::optional<uint64_t> verify_checked_bytes() const noexcept
+    {
+        if (verify_state_ != VerifyState::Active) {
+            return {};
+        }
+
+        // the last piece can be short; min() trims it
+        return std::min(uint64_t{ verify_checked_pieces_ } * piece_size(), total_size());
     }
 
     // must be called after the torrent's announce list changes.
@@ -1490,7 +1513,7 @@ private:
     time_t seconds_downloading_before_current_start_ = 0;
     time_t seconds_seeding_before_current_start_ = 0;
 
-    float verify_progress_ = -1.0F;
+    tr_piece_index_t verify_checked_pieces_ = 0;
     double seed_ratio_ = 0.0;
 
     tr_announce_key_t announce_key_ = tr_rand_obj<tr_announce_key_t>();

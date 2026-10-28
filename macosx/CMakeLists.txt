@@ -88,8 +88,6 @@ target_sources(${TR_NAME}-mac
         FileRenameSheetController.mm
         FilterBarController.h
         FilterBarController.mm
-        FilterButton.h
-        FilterButton.mm
         GlobalOptionsPopoverViewController.h
         GlobalOptionsPopoverViewController.mm
         GroupCell.h
@@ -207,7 +205,6 @@ target_sources(${TR_NAME}-mac
         UTTypeAdditions.mm)
 
 set(XIB_FILES
-    FilterBar.xib
     MessageWindow.xib)
 
 set(RESOURCES

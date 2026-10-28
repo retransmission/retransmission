@@ -587,7 +587,7 @@ namespace make_torrent_field_helpers
     auto peers_vec = tr_variant::Vector{};
     peers_vec.reserve(std::size(peers));
     for (auto const& peer : peers) {
-        auto peer_map = tr_variant::Map{ 22U };
+        auto peer_map = tr_variant::Map{ 23U };
         peer_map.try_emplace(TR_KEY_active_reqs_to_client, peer.active_reqs_to_client);
         peer_map.try_emplace(TR_KEY_active_reqs_to_peer, peer.active_reqs_to_peer);
         peer_map.try_emplace(TR_KEY_address, peer.addr);
@@ -596,6 +596,7 @@ namespace make_torrent_field_helpers
         peer_map.try_emplace(TR_KEY_client_name, peer.user_agent);
         peer_map.try_emplace(TR_KEY_peer_id, tr_base64_encode(std::string_view{ peer.peer_id.data(), peer.peer_id.size() }));
         peer_map.try_emplace(TR_KEY_flag_str, peer.flag_str);
+        peer_map.try_emplace(TR_KEY_have_total, peer.have_total);
         peer_map.try_emplace(TR_KEY_is_downloading_from, peer.is_downloading_from);
         peer_map.try_emplace(TR_KEY_is_encrypted, peer.is_encrypted);
         peer_map.try_emplace(TR_KEY_is_incoming, peer.is_incoming);
@@ -660,6 +661,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_availability:
     case TR_KEY_bandwidth_priority:
     case TR_KEY_bytes_completed:
+    case TR_KEY_checked_bytes:
     case TR_KEY_comment:
     case TR_KEY_corrupt_ever:
     case TR_KEY_creator:
@@ -694,7 +696,9 @@ namespace make_torrent_field_helpers
     case TR_KEY_magnet_link:
     case TR_KEY_manual_announce_time:
     case TR_KEY_max_connected_peers:
+    case TR_KEY_metadata_have:
     case TR_KEY_metadata_percent_complete:
+    case TR_KEY_metadata_size:
     case TR_KEY_name:
     case TR_KEY_peer_limit:
     case TR_KEY_peers:
@@ -762,6 +766,8 @@ namespace make_torrent_field_helpers
         return tor.get_priority();
     case TR_KEY_bytes_completed:
         return make_bytes_completed_vec(tor);
+    case TR_KEY_checked_bytes:
+        return st.checked_bytes;
     case TR_KEY_comment:
         return tor.comment().sv();
     case TR_KEY_corrupt_ever:
@@ -830,8 +836,12 @@ namespace make_torrent_field_helpers
         return tr_announcerNextManualAnnounce(&tor);
     case TR_KEY_max_connected_peers:
         return tor.peer_limit();
+    case TR_KEY_metadata_have:
+        return st.metadata_have;
     case TR_KEY_metadata_percent_complete:
         return st.metadata_percent_complete;
+    case TR_KEY_metadata_size:
+        return st.metadata_size;
     case TR_KEY_name:
         return tor.name();
     case TR_KEY_peer_limit:

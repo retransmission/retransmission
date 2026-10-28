@@ -1355,13 +1355,15 @@ tr_stat tr_torrent::stats() const
 
     stats.percent_complete = static_cast<float>(this->completion_.percent_complete());
     stats.metadata_percent_complete = static_cast<float>(get_metadata_percent());
+    stats.metadata_have = get_metadata_have();
+    stats.metadata_size = get_metadata_size();
 
     stats.percent_done = static_cast<float>(this->completion_.percent_done());
     stats.left_until_done = this->completion_.left_until_done();
     stats.size_when_done = this->completion_.size_when_done();
 
-    auto const verify_progress = this->verify_progress();
-    stats.recheck_progress = verify_progress.value_or(0.0);
+    stats.recheck_progress = verify_progress().value_or(0.0F);
+    stats.checked_bytes = verify_checked_bytes().value_or(0U);
     stats.activity_date = this->date_active_;
     stats.added_date = this->date_added_;
     stats.done_date = this->date_done_;
@@ -1668,7 +1670,7 @@ void tr_torrent::set_verify_state(VerifyState const state)
     TR_ASSERT(state == VerifyState::None || state == VerifyState::Queued || state == VerifyState::Active);
 
     verify_state_ = state;
-    verify_progress_ = {};
+    verify_checked_pieces_ = 0;
     mark_changed();
 }
 
@@ -1737,10 +1739,7 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
     tor_->checked_pieces_.set(piece, true);
     tor_->mark_changed();
     tor_->session->set_date_active(tr_time());
-    tor_->verify_progress_ = std::clamp(
-        static_cast<float>(piece + 1U) / static_cast<float>(tor_->metainfo_.piece_count()),
-        0.0F,
-        1.0F);
+    tor_->verify_checked_pieces_ = piece + 1U;
 }
 
 // (usually called from tr_verify_worker's thread)

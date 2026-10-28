@@ -420,6 +420,9 @@ struct tr_peer_stat {
     size_t bytes_to_peer = {};
     size_t bytes_to_client = {};
 
+    // byte count of the pieces the peer has
+    uint64_t have_total = {};
+
     tr_peer_id_t peer_id = {};
 
     float progress = {};
@@ -545,6 +548,9 @@ struct tr_stat {
     // @see `tr_stat.activity`
     float recheck_progress = {};
 
+    /** Byte count of the data a running verification has checked so far, or 0. */
+    uint64_t checked_bytes = {};
+
     // How much has been downloaded of the entire torrent.
     // Range is [0..1]
     float percent_complete = {};
@@ -554,6 +560,12 @@ struct tr_stat {
     // For magnet links, this number will from from 0 to 1 as the metadata is downloaded.
     // Range is [0..1]
     float metadata_percent_complete = {};
+
+    /** Byte count of the metadata received so far. */
+    uint64_t metadata_have = {};
+
+    /** Byte count of the metadata, or 0 until a peer reports it. */
+    uint64_t metadata_size = {};
 
     // How much has been downloaded of the files the user wants. This differs
     // from percentComplete if the user wants only some of the torrent's files.

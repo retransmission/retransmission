@@ -113,6 +113,10 @@ public:
     {
         return block_info().piece_size(piece);
     }
+    [[nodiscard]] auto size_of_pieces(tr_bitfield const& pieces) const noexcept
+    {
+        return block_info().size_of_pieces(pieces);
+    }
     [[nodiscard]] constexpr auto total_size() const noexcept
     {
         return block_info().total_size();
