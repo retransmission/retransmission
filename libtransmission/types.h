@@ -576,8 +576,6 @@ struct tr_stat {
     // Complete if the ratio is reached or the torrent is set to seed forever.
     tr::Values::Percent seed_ratio_percent_done;
 
-    float seed_ratio_percent_done_deprecated = {}; // use `seed_ratio_percent_done`
-
     // Total uploaded bytes / size_when_done.
     // NB: In Transmission 3.00 and earlier, this was total upload / download,
     // which caused edge cases when total download was less than size_when_done.

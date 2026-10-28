@@ -55,15 +55,6 @@ struct tr_torrent_builder;
 using namespace std::literals;
 using namespace tr::Values;
 
-namespace
-{
-// for the `_deprecated` float fields
-[[nodiscard]] constexpr float as_float(Percent const percent) noexcept
-{
-    return static_cast<float>(percent.quotient());
-}
-} // namespace
-
 #define tr_return_if_fail(expr) \
     do { \
         if (expr) [[likely]] { \
@@ -1430,7 +1421,6 @@ tr_stat tr_torrent::stats() const
     } else {
         stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal - seed_ratio_bytes_left, seed_ratio_bytes_goal };
     }
-    stats.seed_ratio_percent_done_deprecated = as_float(stats.seed_ratio_percent_done);
 
     /* test some of the constraints */
     TR_ASSERT(stats.size_when_done <= this->total_size());
