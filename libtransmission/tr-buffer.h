@@ -201,7 +201,11 @@ class StackBuffer final
     , public BufferWriter<value_type>
 {
 public:
-    StackBuffer() = default;
+    // Value-initialization must not clear unused inline storage.
+    // NOLINTNEXTLINE(modernize-use-equals-default)
+    StackBuffer()
+    {
+    }
     ~StackBuffer() override = default;
     StackBuffer(StackBuffer&&) = delete;
     StackBuffer(StackBuffer const&) = delete;
