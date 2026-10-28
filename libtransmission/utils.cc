@@ -83,19 +83,6 @@ uint64_t tr_time_msec()
 
 // ---
 
-double tr_getRatio(uint64_t numerator, uint64_t denominator)
-{
-    if (denominator > 0) {
-        return static_cast<double>(numerator) / static_cast<double>(denominator);
-    }
-
-    if (numerator > 0) {
-        return TR_RATIO_INF;
-    }
-
-    return TR_RATIO_NA;
-}
-
 #ifdef _WIN32
 
 namespace

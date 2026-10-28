@@ -127,10 +127,6 @@ template<std::floating_point T>
 /* return a percent formatted string of either x.xx, xx.x or xxx */
 [[nodiscard]] std::string tr_strpercent(double x);
 
-/** @brief return `TR_RATIO_NA`, `TR_RATIO_INF`, or a number in [0..1]
-    @return `TR_RATIO_NA`, `TR_RATIO_INF`, or a number in [0..1] */
-[[nodiscard]] double tr_getRatio(uint64_t numerator, uint64_t denominator);
-
 /** @param ratio    the ratio to convert to a string
     @param infinity the string representation of "infinity" */
 [[nodiscard]] std::string tr_strratio(double ratio, std::string_view none, std::string_view infinity);
