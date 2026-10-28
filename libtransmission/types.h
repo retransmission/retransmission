@@ -559,8 +559,6 @@ struct tr_stat {
     // How much has been downloaded of the entire torrent.
     tr::Values::Percent percent_complete;
 
-    float percent_complete_deprecated = {}; // use `percent_complete`
-
     // How much of the metadata the torrent has.
     // Always complete for torrents added from a torrent file.
     tr::Values::Percent metadata_percent_complete;
