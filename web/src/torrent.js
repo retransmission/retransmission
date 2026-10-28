@@ -193,7 +193,10 @@ export class Torrent extends EventTarget {
     return this.fields.peers || [];
   }
   getPeerPercent(peer) {
-    return this._percentOfTotalSize(peer.have_total, peer.progress);
+    // `total_size` is 0 until the metadata arrives
+    return this.needsMetaData()
+      ? Percent.fromDouble(peer.progress)
+      : new Percent(peer.have_total, this.getTotalSize());
   }
   getWebseedsEx() {
     return this.fields.webseeds_ex || [];
@@ -303,12 +306,6 @@ export class Torrent extends EventTarget {
   }
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
-  }
-  // `bytes` of `total_size`, which is 0 until the metadata arrives; else `fraction`
-  _percentOfTotalSize(bytes, fraction) {
-    return bytes === undefined || this.needsMetaData()
-      ? Percent.fromDouble(fraction)
-      : new Percent(bytes, this.getTotalSize());
   }
   getPercentDone() {
     if (this.needsMetaData()) {
