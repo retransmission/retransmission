@@ -2057,30 +2057,32 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     TR_PROFILE_SCOPE("peer.request_timeouts");
     std::ranges::sort(request_timeouts_);
 
-    for (auto it = std::begin(request_timeouts_); it != std::end(request_timeouts_);) {
+    // Compact in one pass. The list holds every request sent since the
+    // last pulse, so erasing entries one at a time is quadratic.
+    auto const end = std::end(request_timeouts_);
+    auto keep = std::begin(request_timeouts_);
+    for (auto it = std::begin(request_timeouts_); it != end; ++it) {
         auto const [block, timeout] = *it;
 
-        if (auto const next = std::next(it); next != std::end(request_timeouts_) && block == next->first) {
+        if (auto const next = std::next(it); next != end && block == next->first) {
             // A new request superseded this request, discard
-            it = request_timeouts_.erase(it);
             continue;
         }
 
         if (!active_requests().test(block)) {
             // request no longer active, discard
-            it = request_timeouts_.erase(it);
             continue;
         }
 
         if (now >= timeout) {
             // request timed out, discard
             cancel_block_request(block);
-            it = request_timeouts_.erase(it);
             continue;
         }
 
-        ++it;
+        *keep++ = *it;
     }
+    request_timeouts_.erase(keep, end);
 }
 
 [[nodiscard]] size_t tr_peerMsgsImpl::fill_output_buffer_impl(time_t now_sec, uint64_t now_msec)
