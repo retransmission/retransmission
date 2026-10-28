@@ -427,9 +427,9 @@ public:
         }
 
         // An interface binding takes precedence over the bind addresses:
-        // curl binds the socket to the interface after open_socket()
-        // creates it, and a socket open_socket() had bound to an address
-        // could not be bound again.
+        // curl binds the socket to the interface (or, on macOS, to the
+        // interface's address) after open_socket() creates it, and a socket
+        // open_socket() had bound to an address could not be bound again.
         [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
         {
             if (interface_bound_) {
@@ -658,6 +658,16 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
+#ifdef __APPLE__
+            // curl can only bind the interface's address here, which leaves the
+            // egress interface to routing; pin the socket as peer sockets are pinned
+            if (auto const& bind_interface = task->bind_interface;
+                bind_interface && !tr_netSetSocketInterface(sock, tr_af_to_ip_protocol(address->family), *bind_interface)) {
+                tr_net_close_socket(sock);
+                return CURL_SOCKET_BAD;
+            }
+#endif
+
             if (auto const bind_addr = task->bind_address(tr_af_to_ip_protocol(address->family))) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
                 static constexpr int One = 1;
@@ -704,7 +714,8 @@ public:
         // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
         // address family it resolved, so an IPv4 bind address would also be forced onto
         // IPv6 sockets. open_socket() binds each socket according to its resolved family
-        // instead. An interface name ("if!eth0") suits both families, so it goes to curl.
+        // instead. An interface name ("if!eth0") suits both families, so it goes to curl;
+        // on macOS, curl binds only its address, so open_socket() also pins the interface.
         // Separate multi handles isolate the connection caches for different bindings.
         if (auto const& bind_interface = task.bind_interface; bind_interface) {
             if (auto const curl_interface = tr_netCurlInterfaceString(*bind_interface); curl_interface) {
