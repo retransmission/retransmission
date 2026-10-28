@@ -578,8 +578,6 @@ struct tr_stat {
     // @see tr_stat.left_until_done
     tr::Values::Percent percent_done;
 
-    float percent_done_deprecated = {}; // use `percent_done`
-
     // How much has been uploaded to satisfy the seed ratio.
     // Complete if the ratio is reached or the torrent is set to seed forever.
     tr::Values::Percent seed_ratio_percent_done;

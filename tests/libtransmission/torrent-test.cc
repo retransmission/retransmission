@@ -302,7 +302,6 @@ TEST_F(TorrentTest, statBuildsProgressFromCounts)
     EXPECT_FALSE(st.percent_done.is_complete());
     EXPECT_EQ((Percent{ have, st.size_when_done }), st.percent_done);
     EXPECT_EQ((Percent{ have, tor->total_size() }), st.percent_complete);
-    EXPECT_FLOAT_EQ(static_cast<float>(st.percent_done.quotient()), st.percent_done_deprecated);
     EXPECT_EQ((Ratio{ st.uploaded_ever, st.size_when_done }), st.upload_ratio);
     EXPECT_TRUE(st.metadata_percent_complete.is_complete());
     EXPECT_TRUE(st.seed_ratio_percent_done.is_complete()); // no seed ratio applies
@@ -324,7 +323,6 @@ TEST_F(TorrentTest, statOfACompleteTorrentIsComplete)
     auto const st = tr_torrentStat(tor);
     EXPECT_TRUE(st.percent_done.is_complete());
     EXPECT_TRUE(st.percent_complete.is_complete());
-    EXPECT_EQ(1.0F, st.percent_done_deprecated);
     EXPECT_TRUE(tr_torrentFile(tor, 0).progress.is_complete());
 
     tr_torrentRemove(tor, false);
@@ -340,7 +338,6 @@ TEST_F(TorrentTest, statOfAMagnetHasUnknownTotals)
     EXPECT_EQ(Percent{}, st.percent_complete);
     EXPECT_EQ(Percent{}, st.metadata_percent_complete);
     EXPECT_TRUE(st.upload_ratio.is_none());
-    EXPECT_EQ(0.0F, st.percent_done_deprecated);
 
     tr_torrentRemove(tor, false);
 }
