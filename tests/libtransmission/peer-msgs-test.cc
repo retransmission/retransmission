@@ -21,6 +21,7 @@
 
 #include <libtransmission/bitfield.h>
 #include <libtransmission/net.h>
+#include <libtransmission/peer-io.h>
 #include <libtransmission/peer-mgr.h>
 #include <libtransmission/peer-socket-tcp.h>
 #include <libtransmission/session.h>
@@ -112,5 +113,49 @@ TEST_F(PeerMsgsTest, NewDownloaderIsUnchokedBeforePeriodicRechoke)
             return std::size(peers) == 1U && peers.front().peer_is_interested && !peers.front().peer_is_choked;
         },
         2000));
+}
+
+TEST_F(PeerMsgsTest, SmallProtocolMessagesFlushWithoutBandwidthPulse)
+{
+    auto sockets = std::to_array<evutil_socket_t>({ EVUTIL_INVALID_SOCKET, EVUTIL_INVALID_SOCKET });
+    ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, std::data(sockets)));
+    peer_socket_ = sockets[1];
+    ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
+    ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
+
+    auto io = std::shared_ptr<tr_peerIo>{};
+    blockingRunInSessionThread([this, &io, fd = sockets[0]]() {
+        auto const address = tr_socket_address{ *tr_address::from_string("127.0.0.1"), tr_port::from_host(48000) };
+        // Leave this I/O outside the bandwidth tree so its periodic flush
+        // cannot conceal a stalled message.
+        io = tr_peerIo::new_incoming(
+            session_,
+            nullptr,
+            tr_peer_socket_tcp::create(*session_, address, static_cast<tr_socket_t>(fd)));
+    });
+
+    // Interest, one request, seven requests, and batches at/above the old
+    // flush threshold. Split writes model protocol headers and bodies.
+    for (auto const size : { 5U, 17U, 119U, 128U, 256U }) {
+        auto const expected = std::string(size, static_cast<char>(size));
+        auto received = std::string{};
+        blockingRunInSessionThread([&io, &expected]() {
+            io->write_bytes(expected.data(), 4U, false);
+            io->write_bytes(expected.data() + 4U, expected.size() - 4U, false);
+        });
+        EXPECT_TRUE(waitForInSessionThread(
+            [this, &received, size]() {
+                auto buf = std::array<char, 256>{};
+                if (auto const n = recv(peer_socket_, std::data(buf), std::size(buf), 0); n > 0) {
+                    received.append(std::data(buf), static_cast<size_t>(n));
+                }
+                return received.size() >= size;
+            },
+            100))
+            << "message size: " << size;
+        EXPECT_EQ(expected, received);
+    }
+
+    blockingRunInSessionThread([&io]() { io.reset(); });
 }
 } // namespace tr::test

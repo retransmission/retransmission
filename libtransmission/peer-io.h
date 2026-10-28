@@ -379,6 +379,7 @@ private:
     void* user_data_ = nullptr;
 
     std::unique_ptr<tr::Timer> const flush_outbuf_trigger_;
+    bool small_flush_delayed_ = false;
 
     tr_priority_t priority_ = TR_PRI_NORMAL;
 
