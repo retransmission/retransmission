@@ -466,16 +466,7 @@ tr_sys_file_t tr_sys_file_open(std::string_view const path, int const flags, int
         native_flags |= FILE_FLAG_SEQUENTIAL_SCAN;
     }
 
-    auto ret = open_file(path, native_access, native_disposition, native_flags, error);
-
-    if (ret == TR_BAD_SYS_FILE) {
-        set_system_error(error, GetLastError());
-
-        CloseHandle(ret);
-        ret = TR_BAD_SYS_FILE;
-    }
-
-    return ret;
+    return open_file(path, native_access, native_disposition, native_flags, error);
 }
 
 tr_sys_file_t tr_sys_file_open_temp(char* path_template, tr_error* error)
