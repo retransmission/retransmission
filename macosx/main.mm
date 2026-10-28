@@ -26,7 +26,7 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification*)notification
 {
-    // Names this app in the menu bar during the alerts; the main nib's menu replaces it.
+    // Names this app in the menu bar during the alerts; Controller's applicationWillFinishLaunching: replaces it.
     NSMenu* const launchMenu = [[NSMenu alloc] init];
     [launchMenu addItemWithTitle:@"" action:nil keyEquivalent:@""].submenu = [[NSMenu alloc] init];
     NSApp.mainMenu = launchMenu;

@@ -118,6 +118,8 @@ target_sources(${TR_NAME}-mac
         InfoWindowController.h
         InfoWindowController.mm
         main.mm
+        MenuProvider.h
+        MenuProvider.mm
         MessageWindowController.h
         MessageWindowController.mm
         NSApplicationAdditions.h
@@ -126,6 +128,8 @@ target_sources(${TR_NAME}-mac
         NSDataAdditions.mm
         NSImageAdditions.h
         NSImageAdditions.mm
+        NSMenuAdditions.h
+        NSMenuAdditions.mm
         NSMutableArrayAdditions.h
         NSMutableArrayAdditions.mm
         NSStringAdditions.h
@@ -352,6 +356,7 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    AppMenu.strings
     GlobalOptionsPopover.strings
     InfoGeneralView.strings
     InfoPlist.strings

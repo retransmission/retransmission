@@ -68,6 +68,8 @@
 #import "Utils.h"
 #import "UTTypeAdditions.h"
 #import "NSURLAdditions.h"
+#import "MenuProvider.h"
+#import "NSMenuAdditions.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -102,23 +104,6 @@ static SortType const SortTypeOrder = @"Order";
 static SortType const SortTypeActivity = @"Activity";
 static SortType const SortTypeSize = @"Size";
 static SortType const SortTypeETA = @"ETA";
-
-typedef NS_ENUM(NSUInteger, SortTag) {
-    SortTagOrder = 0,
-    SortTagDate = 1,
-    SortTagName = 2,
-    SortTagProgress = 3,
-    SortTagState = 4,
-    SortTagTracker = 5,
-    SortTagActivity = 6,
-    SortTagSize = 7,
-    SortTagETA = 8
-};
-
-typedef NS_ENUM(NSUInteger, SortOrderTag) { //
-    SortOrderTagAscending = 0,
-    SortOrderTagDescending = 1
-};
 
 typedef NS_ENUM(NSUInteger, AddType) { //
     AddTypeManual,
@@ -304,21 +289,10 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) NSLayoutConstraint* fFixedHeightConstraint;
 @property(nonatomic) IBOutlet TorrentTableView* fTableView;
 
-@property(nonatomic) IBOutlet NSMenuItem* fOpenIgnoreDownloadFolder;
 @property(nonatomic) IBOutlet NSButton* fActionButton;
 @property(nonatomic) IBOutlet NSButton* fSpeedLimitButton;
 @property(nonatomic) IBOutlet NSButton* fClearCompletedButton;
 @property(nonatomic) IBOutlet NSTextField* fTotalTorrentsField;
-@property(nonatomic) IBOutlet NSMenuItem* fNextFilterItem;
-
-@property(nonatomic) IBOutlet NSMenuItem* fNextInfoTabItem;
-@property(nonatomic) IBOutlet NSMenuItem* fPrevInfoTabItem;
-
-@property(nonatomic) IBOutlet NSMenu* fSortMenu;
-
-@property(nonatomic) IBOutlet NSMenu* fGroupsSetMenu;
-
-@property(nonatomic) IBOutlet NSMenu* fShareMenu;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -833,31 +807,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self.fTableView registerForDraggedTypes:@[ kTorrentTableViewDataType ]];
     [self.fWindow registerForDraggedTypes:@[ NSPasteboardTypeFileURL, NSPasteboardTypeURL ]];
 
-    //sort the sort menu items (localization is from strings file)
-    NSMutableArray* sortMenuItems = [NSMutableArray arrayWithCapacity:7];
-    NSUInteger sortMenuIndex = 0;
-    BOOL foundSortItem = NO;
-    for (NSMenuItem* item in self.fSortMenu.itemArray) {
-        //assume all sort items are together and the Queue Order item is first
-        if (item.action == @selector(setSort:) && item.tag != SortTagOrder) {
-            [sortMenuItems addObject:item];
-            [self.fSortMenu removeItemAtIndex:sortMenuIndex];
-            foundSortItem = YES;
-        } else {
-            if (foundSortItem) {
-                break;
-            }
-            ++sortMenuIndex;
-        }
-    }
-
-    [sortMenuItems sortUsingDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES
-                                                                          selector:@selector(localizedCompare:)] ]];
-
-    for (NSMenuItem* item in sortMenuItems) {
-        [self.fSortMenu insertItem:item atIndex:sortMenuIndex++];
-    }
-
     //you would think this would be called later in this method from updateUI, but it's not reached in awakeFromNib
     //this must be called after showStatusBar:
     [self.fStatusBar updateWithDownload:0.0 upload:0.0];
@@ -985,6 +934,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                               NSLog(@"UserNotifications not configured: %@", error.localizedDescription);
                           }
                       }];
+
+    MenuProvider* menuProvider = [[MenuProvider alloc] initWithController:self];
+    NSMenu* menu = [menuProvider buildMainMenu:_fUpdaterController];
+    NSApp.mainMenu = menu;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
@@ -1582,7 +1535,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                 [filenames addObject:url.path];
             }
 
-            AddType const addType = sender == self.fOpenIgnoreDownloadFolder ? AddTypeShowOptions : AddTypeManual;
+            BOOL const showOptions = [sender isKindOfClass:[NSMenuItem class]] && [(NSMenuItem*)sender isOpenIgnoreDownloadFolderItem];
+            AddType const addType = showOptions ? AddTypeShowOptions : AddTypeManual;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self openFiles:filenames addType:addType forcePath:nil];
             });
@@ -2305,9 +2259,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)setInfoTab:(id)sender
+- (IBAction)setInfoTab:(NSMenuItem*)sender
 {
-    if (sender == self.fNextInfoTabItem) {
+    if (sender.isNextInfoTabItem) {
         [self.fInfoController setNextTab];
     } else {
         [self.fInfoController setPreviousTab];
@@ -3231,9 +3185,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)switchFilter:(id)sender
+- (IBAction)switchFilter:(NSMenuItem*)sender
 {
-    [self.fFilterBar switchFilter:sender == self.fNextFilterItem];
+    [self.fFilterBar switchFilter:sender.isNextFilterItem];
 }
 
 - (IBAction)showGlobalPopover:(id)sender
@@ -3277,7 +3231,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)menuNeedsUpdate:(NSMenu*)menu
 {
-    if (menu == self.fGroupsSetMenu || [TorrentContextMenuProvider isGroupsSubmenu:menu]) {
+    if (menu.isGroupsSubmenu) {
         [menu removeAllItems];
 
         NSMenu* groupMenu = [GroupsController.groups groupMenuWithTarget:self action:@selector(setGroup:) isSmall:NO];
@@ -3288,7 +3242,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [groupMenu removeItemAtIndex:0];
             [menu addItem:item];
         }
-    } else if (menu == self.fShareMenu || [TorrentContextMenuProvider isShareSubmenu:menu]) {
+    } else if (menu.isShareSubmenu) {
         [menu removeAllItems];
 
         for (NSMenuItem* item in ShareTorrentFileHelper.sharedHelper.menuItems) {

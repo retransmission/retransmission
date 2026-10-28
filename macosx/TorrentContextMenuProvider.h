@@ -9,9 +9,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TorrentContextMenuProvider : NSObject
 
-+ (BOOL)isGroupsSubmenu:(NSMenu*)menu;
-+ (BOOL)isShareSubmenu:(NSMenu*)menu;
-
 + (NSMenu*)makeRowContextMenuWithTarget:(Controller*)target;
 + (NSMenu*)makeNoRowContextMenuWithTarget:(Controller*)target;
 
