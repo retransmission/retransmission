@@ -8,6 +8,7 @@
 #include <cstdint> // uint8_t
 #include <cstring>
 #include <iostream>
+#include <span>
 #include <string>
 #include <string_view>
 #include <unordered_set>
@@ -18,6 +19,7 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/tr-arc4.h>
 
 using namespace std::literals;
 
@@ -90,6 +92,60 @@ TEST(Crypto, encryptDecrypt)
     a.decrypt_init(false, a_dh, SomeHash);
     a.decrypt(std::data(encrypted2), std::size(Input2), std::data(decrypted2));
     EXPECT_EQ(Input2, std::data(decrypted2)) << "Input2 " << Input2 << " decrypted2 " << std::data(decrypted2);
+}
+
+TEST(Crypto, arc4Rfc6229)
+{
+    // Independent keystream vectors, including MSE's 1024-byte discard:
+    // https://www.rfc-editor.org/rfc/rfc6229#section-2
+    auto constexpr Key = std::array{ std::byte{ 1 }, std::byte{ 2 }, std::byte{ 3 }, std::byte{ 4 }, std::byte{ 5 } };
+    struct Vector {
+        size_t offset;
+        std::string_view bytes;
+    };
+    auto constexpr Vectors = std::array{
+        Vector{ 0U, "\xb2\x39\x63\x05\xf0\x3d\xc0\x27\xcc\xc3\x52\x4a\x0a\x11\x18\xa8"sv },
+        Vector{ 256U, "\x1c\xfc\xf6\x2b\x03\xed\xdb\x64\x1d\x77\xdf\xcf\x7f\x8d\x8c\x93"sv },
+        Vector{ 1024U, "\x30\xab\xbc\xc7\xc2\x0b\x01\x60\x9f\x23\xee\x2d\x5f\x6b\xb7\xdf"sv },
+        Vector{ 4096U, "\xff\x25\xb5\x89\x95\x99\x67\x07\xe5\x1f\xbd\xf0\x8b\x34\xd8\x75"sv },
+    };
+    for (auto const& [offset, expected] : Vectors) {
+        auto cipher = tr_arc4{};
+        cipher.init(Key);
+        cipher.discard(offset);
+        auto output = std::array<char, 16>{};
+        cipher.process(std::as_bytes(std::span{ output }), std::as_writable_bytes(std::span{ output }));
+        EXPECT_EQ(expected, std::string_view(std::data(output), std::size(output))) << offset;
+    }
+}
+
+TEST(Crypto, arc4ChunkedAndInPlace)
+{
+    auto input = std::array<std::byte, 4097>{};
+    for (size_t i = 0; i < std::size(input); ++i) {
+        input[i] = static_cast<std::byte>(i % 256U);
+    }
+    auto whole = tr_arc4{};
+    auto chunked = tr_arc4{};
+    auto decrypt = tr_arc4{};
+    for (auto* const cipher : { &whole, &chunked, &decrypt }) {
+        cipher->init(SomeHash);
+        cipher->discard(1024U);
+    }
+    auto encrypted = decltype(input){};
+    whole.process(input, encrypted);
+
+    auto in_place = input;
+    auto remaining = std::span<std::byte>{ in_place };
+    for (auto const length : { 0U, 1U, 255U, 256U, 257U, 1024U, 2304U }) {
+        auto const part = remaining.first(length);
+        chunked.process(part, part);
+        remaining = remaining.subspan(length);
+    }
+    ASSERT_TRUE(std::empty(remaining));
+    EXPECT_EQ(encrypted, in_place);
+    decrypt.process(in_place, in_place);
+    EXPECT_EQ(input, in_place);
 }
 
 TEST(Crypto, sha1)
