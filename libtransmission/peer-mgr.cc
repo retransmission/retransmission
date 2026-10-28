@@ -2336,6 +2336,14 @@ void enforceSessionPeerLimit(size_t global_peer_limit, tr_torrents& torrents)
 } // namespace disconnect_helpers
 } // namespace
 
+void tr_peerMgrCloseIncomingHandshakes(tr_peerMgr* manager)
+{
+    if (manager != nullptr) {
+        auto const lock = manager->unique_lock();
+        manager->incoming_handshakes.clear();
+    }
+}
+
 void tr_peerMgr::reconnect_pulse()
 {
     using namespace disconnect_helpers;

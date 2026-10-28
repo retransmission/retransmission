@@ -10,6 +10,7 @@
 #endif
 
 #include <memory> // for std::unique_ptr
+#include <string_view>
 
 #include "libtransmission/net.h"
 #include "libtransmission/types.h" // for tr_port_forwarding_state
@@ -30,6 +31,7 @@ public:
         [[nodiscard]] virtual tr_port advertised_peer_port() const = 0;
         [[nodiscard]] virtual tr_port local_peer_port() const = 0;
         [[nodiscard]] virtual tr_address incoming_peer_address() const = 0;
+        [[nodiscard]] virtual std::string_view bind_interface() const = 0;
         [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
         virtual void on_port_forwarded(tr_port advertised_port) = 0;
     };
@@ -41,5 +43,10 @@ public:
     [[nodiscard]] virtual tr_port_forwarding_state state() const = 0;
 
     virtual void local_port_changed() = 0;
+
+    // Forget the gateways and mappings found over the old interface and
+    // start over. Nothing is unmapped: those requests would leave over
+    // the old route, which is exactly what a binding change forbids.
+    virtual void bind_interface_changed() = 0;
     virtual void set_enabled(bool enabled) = 0;
 };

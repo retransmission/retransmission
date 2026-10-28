@@ -190,6 +190,44 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
 }
 
+TEST_F(TorrentTest, restartKeepsSeedRatioLimit)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentStartNow(tor);
+    ASSERT_TRUE(tr::test::waitFor([tor]() { return tor->activity() == TR_STATUS_SEED; }, 5s));
+
+    // A ratio of 0 is reached at once, but only the next rechoke pulse stops
+    // the torrent. Restarting before then must leave the limit in place.
+    auto const [is_running, ratio_mode] = blockingRunInSessionThread([tor]() {
+        tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
+        tr_torrentSetRatioLimit(tor, 0.0);
+        EXPECT_TRUE(tor->stop_for_restart());
+        tor->start_after_restart();
+        return std::pair{ tor->is_running(), tr_torrentGetRatioMode(tor) };
+    });
+    EXPECT_TRUE(is_running);
+    EXPECT_EQ(TR_RATIOLIMIT_SINGLE, ratio_mode);
+}
+
+TEST_F(TorrentTest, restartLeavesPendingStop)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentStartNow(tor);
+    ASSERT_TRUE(tr::test::waitFor([tor]() { return tor->activity() == TR_STATUS_SEED; }, 5s));
+
+    // RPC and the seed limits stop a torrent on the next pulse; a restart
+    // in between must not cancel that stop
+    auto const is_stopping = blockingRunInSessionThread([tor]() {
+        tor->stop_soon();
+        EXPECT_FALSE(tor->stop_for_restart());
+        return tor->is_stopping();
+    });
+    EXPECT_TRUE(is_stopping);
+    EXPECT_TRUE(tr::test::waitFor([tor]() { return !tor->is_running(); }, 5s));
+}
+
 TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);

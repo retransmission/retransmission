@@ -136,6 +136,7 @@ public:
     void stopTorrent(tr_torrent* tor) override;
     void resetTorrent(tr_torrent* tor) override;
     void removeTorrent(tr_torrent* tor) override;
+    void flushStops() override;
 
     void startShutdown() override
     {
@@ -1117,6 +1118,43 @@ void tr_announcer_impl::removeTorrent(tr_torrent* tor)
 
     tor->torrent_announcer = nullptr;
     delete ta;
+}
+
+void tr_announcer_impl::flushStops()
+{
+    using namespace announce_helpers;
+
+    for (auto* const tor : session->torrents()) {
+        auto* const ta = tor->torrent_announcer;
+        if (ta == nullptr) {
+            continue;
+        }
+
+        for (auto& tier : ta->tiers) {
+            // A tier mid-announce, or with "completed" still ahead of its stop, keeps
+            // its queue: its tracker must hear those events before the "stopped".
+            if (auto& events = tier.announce_events;
+                tier.isAnnouncing || std::size(events) != 1U || events.front() != TR_ANNOUNCE_EVENT_STOPPED) {
+                continue;
+            }
+
+            tier.announce_events.clear();
+            tier_update_announce_priority(&tier);
+
+            // like removeTorrent(), skip trackers that never saw us start
+            if (tier.isRunning && tier.lastAnnounceSucceeded) {
+                stops_.emplace(create_announce_request(this, tor, &tier, TR_ANNOUNCE_EVENT_STOPPED));
+
+                // the stop reported these; the next "started" counts afresh
+                tier.byteCounts[TR_ANN_UP] = 0;
+                tier.byteCounts[TR_ANN_DOWN] = 0;
+                tier.byteCounts[TR_ANN_CORRUPT] = 0;
+            }
+            tier.isRunning = false;
+        }
+    }
+
+    flushCloseMessages();
 }
 
 // --- SCRAPE

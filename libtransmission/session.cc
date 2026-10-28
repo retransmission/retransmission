@@ -49,6 +49,7 @@
 #include "libtransmission/rpc-server.h"
 #include "libtransmission/session-alt-speeds.h"
 #include "libtransmission/session.h"
+#include "libtransmission/string-utils.h"
 #include "libtransmission/timer-ev.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/torrent-builder.h"
@@ -302,13 +303,26 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
+tr_web::BindAddresses tr_session::WebMediator::bind_addresses() const
 {
-    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
-        return addr.display_name();
+    auto const lock = session_->unique_lock();
+    auto addresses = tr_web::BindAddresses{};
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        if (auto const addr = session_->bind_address(type); !addr.is_any()) {
+            addresses[type] = addr.display_name();
+        }
+    }
+    return addresses;
+}
+
+std::optional<std::string> tr_session::WebMediator::bind_interface() const
+{
+    // fetch() runs on any thread, so read the binding under its mutex
+    if (auto bind_interface = session_->bind_interface_thread_safe(); !tr_net_interface_is_default(bind_interface)) {
+        return bind_interface;
     }
 
-    return {};
+    return std::nullopt;
 }
 
 size_t tr_session::WebMediator::clamp(int torrent_id, size_t byte_count) const
@@ -373,11 +387,12 @@ tr_session::BoundSocket::BoundSocket(
     struct event_base* evbase,
     tr_address const& addr,
     tr_port port,
+    std::string_view bind_interface,
     IncomingCallback cb,
     void* cb_data)
     : cb_{ cb }
     , cb_data_{ cb_data }
-    , socket_{ tr_netBindTCP(addr, port, false) }
+    , socket_{ tr_netBindTCP(addr, port, false, bind_interface) }
     , ev_{ tr::evhelpers::event_new_pri2(
           evbase,
           static_cast<evutil_socket_t>(socket_),
@@ -408,23 +423,17 @@ tr_session::BoundSocket::~BoundSocket()
 
 tr_address tr_session::bind_address(tr_address_type type) const noexcept
 {
-    if (type == TR_AF_INET) {
-        // if user provided an address, use it.
-        // otherwise, use any_ipv4 (0.0.0.0).
-        return ip_cache_->bind_addr(type);
-    }
-
-    if (type == TR_AF_INET6) {
-        // if user provided an address, use it.
-        // otherwise, if we can determine which one to use via global_source_address(ipv6) magic, use it.
-        // otherwise, use any_ipv6 (::).
+    // with no user address and no interface binding, IPv6 uses the address
+    // global_source_address(ipv6) magic found, if any, else any_ipv6 (::)
+    if (type == TR_AF_INET6 && !tr_address::from_string(settings_.bind_address_ipv6) &&
+        tr_net_interface_is_default(bind_interface())) {
         auto const source_addr = source_address(type);
-        auto const default_addr = source_addr && source_addr->is_global_unicast() ? *source_addr : tr_address::any(TR_AF_INET6);
-        return tr_address::from_string(settings_.bind_address_ipv6).value_or(default_addr);
+        return source_addr && source_addr->is_global_unicast() ? *source_addr : tr_address::any(TR_AF_INET6);
     }
 
-    TR_ASSERT_MSG(false, "invalid type");
-    return {};
+    // otherwise, if user provided an address, use it; else use any (0.0.0.0, ::),
+    // and an interface binding chooses the source address
+    return ip_cache_->bind_addr(type);
 }
 
 // ---
@@ -539,6 +548,22 @@ void tr_session::on_now_timer()
     alt_speeds_.check_scheduler();
     busy_window_.store(compute_busy_window(), std::memory_order_relaxed);
     collect_files_created();
+
+    // A named interface can be absent when its sockets are bound (a VPN
+    // not yet connected) or be recreated under a new index later. Either
+    // leaves every bound socket useless, so rebind when the index moves.
+    if (auto const& name = settings_.bind_interface; !tr_net_interface_is_default(name) && !tr_net_interface_is_blocked(name) &&
+        tr_net_interface_index(name) != bound_interface_index_) {
+        auto const lock = unique_lock();
+        tr_logAddInfo(
+            fmt::format("Network interface '{interface}' changed; rebinding its sockets", fmt::arg("interface", name)));
+        auto const restarting = stop_torrents_for_rebind();
+        apply_network_bindings(false, true, false, false, settings_);
+        // the name is unchanged, so tr_web's per-binding connection caches
+        // can't tell the interface's old instance from its new one
+        web_->network_changed();
+        start_torrents_after_rebind(restarting);
+    }
 
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
@@ -740,7 +765,14 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 {
     auto const lock = unique_lock();
 
-    std::swap(settings_, settings_in);
+    bool const interface_changed = settings_in.bind_interface != settings_.bind_interface;
+    auto const restarting = interface_changed ? stop_torrents_for_rebind() : std::vector<tr_torrent*>{};
+
+    // other threads read the binding under its mutex
+    {
+        auto const bind_interface_lock = std::scoped_lock{ bind_interface_mutex_ };
+        std::swap(settings_, settings_in);
+    }
     auto const& new_settings = settings_;
     auto const& old_settings = settings_in;
 
@@ -760,11 +792,19 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     }
 #endif
 
-    if (auto const& val = new_settings.bind_address_ipv4; force || val != old_settings.bind_address_ipv4) {
-        ip_cache_->update_addr(TR_AF_INET);
-    }
-    if (auto const& val = new_settings.bind_address_ipv6; force || val != old_settings.bind_address_ipv6) {
-        ip_cache_->update_addr(TR_AF_INET6);
+    // the binding policy is logged once here; the sockets it refuses stay quiet
+    if (force || interface_changed) {
+        if (tr_net_interface_is_blocked(new_settings.bind_interface)) {
+            tr_logAddInfo("Network interface binding is 'blocked': refusing all peer, tracker, and discovery traffic");
+        }
+#ifndef __APPLE__
+        else if (!tr_net_interface_is_default(new_settings.bind_interface)) {
+            tr_logAddWarn(
+                fmt::format(
+                    "Binding to network interface '{interface}' is not supported on this platform; all its sockets will fail",
+                    fmt::arg("interface", new_settings.bind_interface)));
+        }
+#endif
     }
 
     if (auto const& val = new_settings.default_trackers_str; force || val != old_settings.default_trackers_str) {
@@ -783,57 +823,8 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         port_changed = true;
     }
 
-    bool addr_changed = false;
-    if (new_settings.tcp_enabled) {
-        if (auto const& val = new_settings.bind_address_ipv4; force || port_changed || val != old_settings.bind_address_ipv4) {
-            auto const addr = bind_address(TR_AF_INET);
-            bound_ipv4_.emplace(event_base(), addr, local_peer_port_, &tr_session::onIncomingPeerConnection, this);
-            addr_changed = true;
-        }
-
-        if (auto const& val = new_settings.bind_address_ipv6; force || port_changed || val != old_settings.bind_address_ipv6) {
-            auto const addr = bind_address(TR_AF_INET6);
-            bound_ipv6_.emplace(event_base(), addr, local_peer_port_, &tr_session::onIncomingPeerConnection, this);
-            addr_changed = true;
-        }
-    } else {
-        bound_ipv4_.reset();
-        bound_ipv6_.reset();
-        addr_changed = true;
-    }
-
-    if (new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
-        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
-        web_->network_changed();
-    }
-
-    if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
-        tr_sessionSetPortForwardingEnabled(this, val);
-    }
-
-    if (port_changed) {
-        port_forwarding_->local_port_changed();
-    }
-
-    if (!udp_core_ || force || addr_changed || port_changed || utp_changed) {
-        udp_core_ = std::make_unique<tr_session::tr_udp_core>(*this, udpPort());
-    }
-
-    // Sends out announce messages with advertisedPeerPort(), so this
-    // section needs to happen here after the peer port settings changes
-    if (auto const& val = new_settings.lpd_enabled; force || val != old_settings.lpd_enabled) {
-        if (val) {
-            lpd_ = tr_lpd::create(lpd_mediator_, event_base());
-        } else {
-            lpd_.reset();
-        }
-    }
-
-    if (!new_settings.dht_enabled) {
-        dht_.reset();
-    } else if (force || !dht_ || port_changed || addr_changed || new_settings.dht_enabled != old_settings.dht_enabled) {
-        dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
-    }
+    apply_network_bindings(force, interface_changed, port_changed, utp_changed, old_settings);
+    start_torrents_after_rebind(restarting);
 
     if (auto const& val = new_settings.sleep_per_seconds_during_verify;
         force || val != old_settings.sleep_per_seconds_during_verify) {
@@ -849,6 +840,124 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     // It's a harmless call, so just call it instead of checking for settings changes
     update_bandwidth(tr_direction::Up);
     update_bandwidth(tr_direction::Down);
+}
+
+std::vector<tr_torrent*> tr_session::stop_torrents_for_rebind()
+{
+    tr_peerMgrCloseIncomingHandshakes(peer_mgr_.get());
+
+    auto restarting = std::vector<tr_torrent*>{};
+    for (auto* const tor : torrents()) {
+        if (tor->stop_for_restart()) {
+            restarting.push_back(tor);
+        }
+    }
+
+    // trackers must hear "stopped" from the address that announced "started"
+    if (announcer_) {
+        announcer_->flushStops();
+    }
+
+    return restarting;
+}
+
+void tr_session::start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting)
+{
+    for (auto* const tor : restarting) {
+        tor->start_after_restart();
+    }
+}
+
+void tr_session::apply_network_bindings(
+    bool const force,
+    bool const interface_changed,
+    bool const port_changed,
+    bool const utp_changed,
+    Settings const& old_settings)
+{
+    auto const& new_settings = settings_;
+
+    // a query still in flight on the old binding must not refill the cache
+    if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
+        ip_cache_->invalidate(TR_AF_INET);
+        ip_cache_->update_addr(TR_AF_INET);
+    }
+    if (auto const& val = new_settings.bind_address_ipv6; force || interface_changed || val != old_settings.bind_address_ipv6) {
+        ip_cache_->invalidate(TR_AF_INET6);
+        ip_cache_->update_addr(TR_AF_INET6);
+    }
+
+    bool addr_changed = false;
+    if (new_settings.tcp_enabled) {
+        if (auto const& val = new_settings.bind_address_ipv4;
+            force || interface_changed || port_changed || val != old_settings.bind_address_ipv4) {
+            auto const addr = bind_address(TR_AF_INET);
+            bound_ipv4_.emplace(
+                event_base(),
+                addr,
+                local_peer_port_,
+                settings_.bind_interface,
+                &tr_session::onIncomingPeerConnection,
+                this);
+            addr_changed = true;
+        }
+
+        if (auto const& val = new_settings.bind_address_ipv6;
+            force || interface_changed || port_changed || val != old_settings.bind_address_ipv6) {
+            auto const addr = bind_address(TR_AF_INET6);
+            bound_ipv6_.emplace(
+                event_base(),
+                addr,
+                local_peer_port_,
+                settings_.bind_interface,
+                &tr_session::onIncomingPeerConnection,
+                this);
+            addr_changed = true;
+        }
+    } else {
+        bound_ipv4_.reset();
+        bound_ipv6_.reset();
+        addr_changed = true;
+    }
+
+    bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
+
+    if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
+        tr_sessionSetPortForwardingEnabled(this, val);
+    }
+
+    if (interface_changed) {
+        port_forwarding_->bind_interface_changed();
+    } else if (port_changed) {
+        port_forwarding_->local_port_changed();
+    }
+
+    bool const udp_core_rebuilt = !udp_core_ || force || addr_changed || interface_changed || port_changed || utp_changed;
+    if (udp_core_rebuilt) {
+        // DHT uses the core's sockets, and libdht is process-global: the old
+        // DHT must uninit before the new one inits, so it goes first.
+        dht_.reset();
+        // the old core must release the port before the new one binds it
+        udp_core_.reset();
+        udp_core_ = std::make_unique<tr_session::tr_udp_core>(*this, udpPort());
+    }
+
+    // Sends out announce messages with advertisedPeerPort(), so this
+    // section needs to happen here after the peer port settings changes
+    if (auto const& val = new_settings.lpd_enabled; force || interface_changed || val != old_settings.lpd_enabled) {
+        // a "blocked" binding would refuse LPD's sockets, so don't try
+        if (val && !tr_net_interface_is_blocked(new_settings.bind_interface)) {
+            lpd_ = tr_lpd::create(lpd_mediator_, event_base());
+        } else {
+            lpd_.reset();
+        }
+    }
+
+    if (!new_settings.dht_enabled) {
+        dht_.reset();
+    } else if (!dht_) {
+        dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
+    }
 }
 
 void tr_sessionSet(tr_session* session, tr::Settings const& settings)
@@ -1611,6 +1720,25 @@ bool tr_sessionIsLPDEnabled(tr_session const* session)
     TR_ASSERT(session != nullptr);
 
     return session->allowsLPD();
+}
+
+std::string tr_sessionGetBindInterface(tr_session const* session)
+{
+    TR_ASSERT(session != nullptr);
+
+    // callable from any thread, e.g. a GUI's main thread
+    return session != nullptr ? session->bind_interface_thread_safe() : std::string{};
+}
+
+void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface)
+{
+    TR_ASSERT(session != nullptr);
+
+    session->run_in_session_thread([session, bind_interface = std::string{ tr_strv_strip(bind_interface) }]() {
+        auto settings = session->settings_;
+        settings.bind_interface = bind_interface;
+        session->setSettings(std::move(settings), false);
+    });
 }
 
 // ---
