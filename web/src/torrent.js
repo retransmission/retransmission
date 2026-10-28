@@ -639,7 +639,6 @@ Torrent.Fields.Stats = [
   'labels',
   'left_until_done',
   'metadata_have',
-  'metadata_percent_complete',
   'metadata_size',
   'peers_connected',
   'peers_getting_from_us',
