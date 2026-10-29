@@ -42,6 +42,7 @@ set(WEB_SOURCES
     src/torrent-row.js
     src/transmission.js
     src/utils.js
+    src/values.js
     src/vendor/clusterize.js
     src/vendor/fast-deep-equal.js)
 
