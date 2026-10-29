@@ -3,12 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <chrono>
 #include <cstdint>
-#include <cstdio> /* printf */
-#include <iostream>
+#include <cstdio>
 #include <iterator> /* std::back_inserter */
 #include <memory>
 #include <string_view>
@@ -78,93 +78,308 @@ using tr::Watchdir;
 
 namespace
 {
-char constexpr MyName[] = MY_NAME;
+auto constexpr MyName = MY_NAME;
 
-char constexpr Usage[] = TR_PROJ_APPNAME_CAPITALIZED " " LONG_VERSION_STRING "  " TR_PROJ_URL_HOMEPAGE
-                                                     "\n"
-                                                     "A fast and easy BitTorrent client\n"
-                                                     "\n" MY_NAME " is a headless " TR_PROJ_APPNAME_CAPITALIZED
-                                                     " session that can be\n"
-                                                     "controlled via " TR_PROJ_APPNAME "-qt, " TR_PROJ_APPNAME
-                                                     "-remote, or its web interface.\n"
-                                                     "\n"
-                                                     "Usage: " MY_NAME " [options]";
+auto constexpr Usage = TR_PROJ_APPNAME_CAPITALIZED " " LONG_VERSION_STRING "  " TR_PROJ_URL_HOMEPAGE
+                                                   "\n"
+                                                   "A fast and easy BitTorrent client\n"
+                                                   "\n" MY_NAME " is a headless " TR_PROJ_APPNAME_CAPITALIZED
+                                                   " session that can be\n"
+                                                   "controlled via " TR_PROJ_APPNAME "-qt, " TR_PROJ_APPNAME
+                                                   "-remote, or its web interface.\n"
+                                                   "\n"
+                                                   "Usage: " MY_NAME " [options]";
 
 using Arg = tr_option::Arg;
 static_assert(TrDefaultRpcWhitelist == "127.0.0.1,::1", "update 'allowed' desc");
 static_assert(TrDefaultPeerPort == 51413, "update 'peerport' desc");
 static_assert(TrDefaultPeerLimitTorrent == 50, "update 'peerlimit-torrent' desc");
 static_assert(TrDefaultPeerLimitGlobal == 200, "update 'peerlimit-global' desc");
-static_assert(TrDefaultRpcPort == 9091 && R"(update "port" desc)");
+static_assert(TrDefaultRpcPort == 9091, R"(update "port" desc)");
 auto constexpr Options = std::to_array<tr_option>({
-    { 'a', "allowed", "Allowed IP addresses. (Default: '127.0.0.1,::1')", "a", Arg::Required, "<list>" },
-    { 'b', "blocklist", "Enable peer blocklists", "b", Arg::None, nullptr },
-    { 'B', "no-blocklist", "Disable peer blocklists", "B", Arg::None, nullptr },
-    { 'c', "watch-dir", "Where to watch for new torrent files", "c", Arg::Required, "<directory>" },
-    { 'C', "no-watch-dir", "Disable the watch-dir", "C", Arg::None, nullptr },
-    { 941, "incomplete-dir", "Where to store new torrents until they're complete", nullptr, Arg::Required, "<directory>" },
-    { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", nullptr, Arg::None, nullptr },
-    { 'd', "dump-settings", "Dump the settings and exit", "d", Arg::None, nullptr },
-    { 943, "default-trackers", "Trackers for public torrents to use automatically", nullptr, Arg::Required, "<list>" },
-    { 'e', "logfile", "Dump the log messages to this filename", "e", Arg::Required, "<filename>" },
-    { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", Arg::None, nullptr },
-    { 'g', "config-dir", "Where to look for configuration files", "g", Arg::Required, "<path>" },
-    { 'p', "port", "RPC port (Default: 9091)", "p", Arg::Required, "<port>" },
-    { 't', "auth", "Require authentication", "t", Arg::None, nullptr },
-    { 'T', "no-auth", "Don't require authentication", "T", Arg::None, nullptr },
-    { 'u', "username", "Set username for authentication", "u", Arg::Required, "<username>" },
-    { 'v', "password", "Set password for authentication", "v", Arg::Required, "<password>" },
-    { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
-    { 810,
-      "log-level",
-      "Must be 'critical', 'error', 'warn', 'info', 'debug', or 'trace'.",
-      nullptr,
-      Arg::Required,
-      "<level>" },
-    { 811, "log-error", "Deprecated. Use --log-level=error", nullptr, Arg::None, nullptr },
-    { 812, "log-info", "Deprecated. Use --log-level=info", nullptr, Arg::None, nullptr },
-    { 813, "log-debug", "Deprecated. Use --log-level=debug", nullptr, Arg::None, nullptr },
-    { 'w', "download-dir", "Where to save downloaded data", "w", Arg::Required, "<path>" },
-    { 800, "paused", "Pause all torrents on startup", nullptr, Arg::None, nullptr },
-    { 'o', "dht", "Enable distributed hash tables (DHT)", "o", Arg::None, nullptr },
-    { 'O', "no-dht", "Disable distributed hash tables (DHT)", "O", Arg::None, nullptr },
-    { 'y', "lpd", "Enable local peer discovery (LPD)", "y", Arg::None, nullptr },
-    { 'Y', "no-lpd", "Disable local peer discovery (LPD)", "Y", Arg::None, nullptr },
-    { 830,
-      "preferred-transports",
-      "Comma-separated list specifying preference of transport protocols",
-      nullptr,
-      Arg::Required,
-      "<protocol(s)>" },
-    { 831, "utp", "*DEPRECATED* Enable µTP for peer connections", nullptr, Arg::None, nullptr },
-    { 832, "no-utp", "*DEPRECATED* Disable µTP for peer connections", nullptr, Arg::None, nullptr },
-    { 'P', "peerport", "Port for incoming peers (Default: 51413)", "P", Arg::Required, "<port>" },
-    { 'm', "portmap", "Enable portmapping via NAT-PMP or UPnP", "m", Arg::None, nullptr },
-    { 'M', "no-portmap", "Disable portmapping", "M", Arg::None, nullptr },
-    { 'L', "peerlimit-global", "Maximum overall number of peers (Default: 200)", "L", Arg::Required, "<limit>" },
-    { 'l', "peerlimit-torrent", "Maximum number of peers per torrent (Default: 50)", "l", Arg::Required, "<limit>" },
-    { 910, "encryption-required", "Encrypt all peer connections", "er", Arg::None, nullptr },
-    { 911, "encryption-preferred", "Prefer encrypted peer connections", "ep", Arg::None, nullptr },
-    { 912, "encryption-tolerated", "Prefer unencrypted peer connections", "et", Arg::None, nullptr },
-    { 'i', "bind-address-ipv4", "Where to listen for peer connections", "i", Arg::Required, "<ipv4 addr>" },
-    { 'I', "bind-address-ipv6", "Where to listen for peer connections", "I", Arg::Required, "<ipv6 addr>" },
-    { 'r', "rpc-bind-address", "Where to listen for RPC connections", "r", Arg::Required, "<ip addr>" },
-    { 953,
-      "global-seedratio",
-      "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
-      "gsr",
-      Arg::Required,
-      "ratio" },
-    { 954,
-      "no-global-seedratio",
-      "All torrents, unless overridden by a per-torrent setting, should seed regardless of ratio",
-      "GSR",
-      Arg::None,
-      nullptr },
-    { 994, "sequential-download", "Enable sequential download by default", "seq", Arg::None, nullptr },
-    { 995, "no-sequential-download", "Disable sequential download by default", "SEQ", Arg::None, nullptr },
-    { 'x', "pid-file", "Enable PID file", "x", Arg::Required, "<pid-file>" },
-    { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
+    { .val = 'a',
+      .longName = "allowed",
+      .description = "Allowed IP addresses. (Default: '127.0.0.1,::1')",
+      .shortName = "a",
+      .arg = Arg::Required,
+      .argName = "<list>" },
+    { .val = 'b',
+      .longName = "blocklist",
+      .description = "Enable peer blocklists",
+      .shortName = "b",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'B',
+      .longName = "no-blocklist",
+      .description = "Disable peer blocklists",
+      .shortName = "B",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'c',
+      .longName = "watch-dir",
+      .description = "Where to watch for new torrent files",
+      .shortName = "c",
+      .arg = Arg::Required,
+      .argName = "<directory>" },
+    { .val = 'C',
+      .longName = "no-watch-dir",
+      .description = "Disable the watch-dir",
+      .shortName = "C",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 941,
+      .longName = "incomplete-dir",
+      .description = "Where to store new torrents until they're complete",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<directory>" },
+    { .val = 942,
+      .longName = "no-incomplete-dir",
+      .description = "Don't store incomplete torrents in a different location",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'd',
+      .longName = "dump-settings",
+      .description = "Dump the settings and exit",
+      .shortName = "d",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 943,
+      .longName = "default-trackers",
+      .description = "Trackers for public torrents to use automatically",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<list>" },
+    { .val = 'e',
+      .longName = "logfile",
+      .description = "Dump the log messages to this filename",
+      .shortName = "e",
+      .arg = Arg::Required,
+      .argName = "<filename>" },
+    { .val = 'f',
+      .longName = "foreground",
+      .description = "Run in the foreground instead of daemonizing",
+      .shortName = "f",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'g',
+      .longName = "config-dir",
+      .description = "Where to look for configuration files",
+      .shortName = "g",
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 'p',
+      .longName = "port",
+      .description = "RPC port (Default: 9091)",
+      .shortName = "p",
+      .arg = Arg::Required,
+      .argName = "<port>" },
+    { .val = 't',
+      .longName = "auth",
+      .description = "Require authentication",
+      .shortName = "t",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'T',
+      .longName = "no-auth",
+      .description = "Don't require authentication",
+      .shortName = "T",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'u',
+      .longName = "username",
+      .description = "Set username for authentication",
+      .shortName = "u",
+      .arg = Arg::Required,
+      .argName = "<username>" },
+    { .val = 'v',
+      .longName = "password",
+      .description = "Set password for authentication",
+      .shortName = "v",
+      .arg = Arg::Required,
+      .argName = "<password>" },
+    { .val = 'V',
+      .longName = "version",
+      .description = "Show version number and exit",
+      .shortName = "V",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 810,
+      .longName = "log-level",
+      .description = "Must be 'critical', 'error', 'warn', 'info', 'debug', or 'trace'.",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<level>" },
+    { .val = 811,
+      .longName = "log-error",
+      .description = "Deprecated. Use --log-level=error",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 812,
+      .longName = "log-info",
+      .description = "Deprecated. Use --log-level=info",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 813,
+      .longName = "log-debug",
+      .description = "Deprecated. Use --log-level=debug",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'w',
+      .longName = "download-dir",
+      .description = "Where to save downloaded data",
+      .shortName = "w",
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 800,
+      .longName = "paused",
+      .description = "Pause all torrents on startup",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'o',
+      .longName = "dht",
+      .description = "Enable distributed hash tables (DHT)",
+      .shortName = "o",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'O',
+      .longName = "no-dht",
+      .description = "Disable distributed hash tables (DHT)",
+      .shortName = "O",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'y',
+      .longName = "lpd",
+      .description = "Enable local peer discovery (LPD)",
+      .shortName = "y",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'Y',
+      .longName = "no-lpd",
+      .description = "Disable local peer discovery (LPD)",
+      .shortName = "Y",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 830,
+      .longName = "preferred-transports",
+      .description = "Comma-separated list specifying preference of transport protocols",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<protocol(s)>" },
+    { .val = 831,
+      .longName = "utp",
+      .description = "*DEPRECATED* Enable µTP for peer connections",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 832,
+      .longName = "no-utp",
+      .description = "*DEPRECATED* Disable µTP for peer connections",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'P',
+      .longName = "peerport",
+      .description = "Port for incoming peers (Default: 51413)",
+      .shortName = "P",
+      .arg = Arg::Required,
+      .argName = "<port>" },
+    { .val = 'm',
+      .longName = "portmap",
+      .description = "Enable portmapping via NAT-PMP or UPnP",
+      .shortName = "m",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'M',
+      .longName = "no-portmap",
+      .description = "Disable portmapping",
+      .shortName = "M",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'L',
+      .longName = "peerlimit-global",
+      .description = "Maximum overall number of peers (Default: 200)",
+      .shortName = "L",
+      .arg = Arg::Required,
+      .argName = "<limit>" },
+    { .val = 'l',
+      .longName = "peerlimit-torrent",
+      .description = "Maximum number of peers per torrent (Default: 50)",
+      .shortName = "l",
+      .arg = Arg::Required,
+      .argName = "<limit>" },
+    { .val = 910,
+      .longName = "encryption-required",
+      .description = "Encrypt all peer connections",
+      .shortName = "er",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 911,
+      .longName = "encryption-preferred",
+      .description = "Prefer encrypted peer connections",
+      .shortName = "ep",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 912,
+      .longName = "encryption-tolerated",
+      .description = "Prefer unencrypted peer connections",
+      .shortName = "et",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'i',
+      .longName = "bind-address-ipv4",
+      .description = "Where to listen for peer connections",
+      .shortName = "i",
+      .arg = Arg::Required,
+      .argName = "<ipv4 addr>" },
+    { .val = 'I',
+      .longName = "bind-address-ipv6",
+      .description = "Where to listen for peer connections",
+      .shortName = "I",
+      .arg = Arg::Required,
+      .argName = "<ipv6 addr>" },
+    { .val = 'r',
+      .longName = "rpc-bind-address",
+      .description = "Where to listen for RPC connections",
+      .shortName = "r",
+      .arg = Arg::Required,
+      .argName = "<ip addr>" },
+    { .val = 953,
+      .longName = "global-seedratio",
+      .description = "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
+      .shortName = "gsr",
+      .arg = Arg::Required,
+      .argName = "ratio" },
+    { .val = 954,
+      .longName = "no-global-seedratio",
+      .description = "All torrents, unless overridden by a per-torrent setting, should seed regardless of ratio",
+      .shortName = "GSR",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 994,
+      .longName = "sequential-download",
+      .description = "Enable sequential download by default",
+      .shortName = "seq",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 995,
+      .longName = "no-sequential-download",
+      .description = "Disable sequential download by default",
+      .shortName = "SEQ",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'x',
+      .longName = "pid-file",
+      .description = "Enable PID file",
+      .shortName = "x",
+      .arg = Arg::Required,
+      .argName = "<pid-file>" },
+    { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
 static_assert(Options[std::size(Options) - 2].val != 0);
 } // namespace
@@ -173,8 +388,8 @@ namespace
 {
 [[nodiscard]] std::string getConfigDir(int argc, char const* const* argv)
 {
-    int c;
-    char const* optstr;
+    int c = {};
+    char const* optstr = nullptr;
     int const ind = tr_optind;
 
     while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optstr)) != TR_OPT_DONE) {
@@ -297,7 +512,7 @@ void printMessage(
 
     else /* daemon... write to syslog */
     {
-        int priority;
+        int priority = {};
 
         /* figure out the syslog priority */
         switch (level) {
@@ -349,7 +564,7 @@ void pumpLogMessages(FILE* log_stream)
     // 1. it's usually redundant, since stderr flushes itself
     // 2. when running as a systemd unit, it's redirected to a socket
     if (log_stream != stderr) {
-        fflush(log_stream);
+        (void)std::fflush(log_stream);
     }
 }
 
@@ -396,7 +611,7 @@ bool tr_daemon::reopen_log_file(char const* filename)
     log_stream_ = new_stream;
 
     if (old_stream != nullptr && old_stream != stderr) {
-        fclose(old_stream);
+        (void)std::fclose(old_stream);
     }
 
     return true;
@@ -447,9 +662,7 @@ void utp(tr::Settings& settings)
     }
 
     if (auto* const pt = settings.find_if<tr_variant::Vector>(TR_KEY_preferred_transports)) {
-        if (std::none_of(std::begin(*pt), std::end(*pt), [](tr_variant const& e) {
-                return e.value_if<std::string_view>() == UtpVal;
-            })) {
+        if (std::ranges::none_of(*pt, [](tr_variant const& e) { return e.value_if<std::string_view>() == UtpVal; })) {
             pt->emplace(std::begin(*pt), tr_variant::unmanaged_string(UtpVal));
         }
     } else {
@@ -464,10 +677,7 @@ void no_utp(tr::Settings& settings)
     }
 
     if (auto* const pt = settings.find_if<tr_variant::Vector>(TR_KEY_preferred_transports)) {
-        auto const remove_it = std::remove_if(std::begin(*pt), std::end(*pt), [](tr_variant const& e) {
-            return e.value_if<std::string_view>() == UtpVal;
-        });
-        pt->erase(remove_it, std::end(*pt));
+        std::erase_if(*pt, [](tr_variant const& e) { return e.value_if<std::string_view>() == UtpVal; });
     } else {
         settings.insert_or_assign(TR_KEY_utp_enabled, false);
     }
@@ -477,8 +687,8 @@ void no_utp(tr::Settings& settings)
 
 bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code)
 {
-    int c;
-    char const* optstr;
+    int c = {};
+    char const* optstr = nullptr;
 
     *dump_settings = false;
     *foreground = false;
@@ -551,7 +761,7 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
             break;
 
         case 'V': /* version */
-            fprintf(stderr, "%s %s\n", MyName, LONG_VERSION_STRING);
+            fmt::print(stderr, "{:s} {:s}\n", MyName, LONG_VERSION_STRING);
             *exit_code = 0;
             return false;
 
@@ -670,22 +880,22 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
             if (auto const level = tr_logGetLevelFromKey(optstr); level) {
                 map.insert_or_assign(TR_KEY_message_level, *level);
             } else {
-                std::cerr << fmt::format("Couldn't parse log level '{level}'", fmt::arg("level", optstr)) << std::endl;
+                fmt::print(stderr, "Couldn't parse log level '{level}'\n", fmt::arg("level", optstr));
             }
             break;
 
         case 811:
-            std::cerr << "WARN: --log-error is deprecated. Use --log-level=error" << std::endl;
+            fmt::print(stderr, "WARN: --log-error is deprecated. Use --log-level=error\n");
             map.insert_or_assign(TR_KEY_message_level, TR_LOG_ERROR);
             break;
 
         case 812:
-            std::cerr << "WARN: --log-info is deprecated. Use --log-level=info" << std::endl;
+            fmt::print(stderr, "WARN: --log-info is deprecated. Use --log-level=info\n");
             map.insert_or_assign(TR_KEY_message_level, TR_LOG_INFO);
             break;
 
         case 813:
-            std::cerr << "WARN: --log-debug is deprecated. Use --log-level=debug" << std::endl;
+            fmt::print(stderr, "WARN: --log-debug is deprecated. Use --log-level=debug\n");
             map.insert_or_assign(TR_KEY_message_level, TR_LOG_DEBUG);
             break;
 
@@ -702,7 +912,7 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
             break;
 
         case TR_OPT_UNK:
-            fprintf(stderr, "Unexpected argument: %s \n", optstr);
+            fmt::print(stderr, "Unexpected argument: {:s}\n", optstr);
             tr_getopt_usage(MyName, Usage, std::data(Options));
             *exit_code = 1;
             return false;
@@ -739,7 +949,7 @@ void tr_daemon::reconfigure()
         sd_notifyf(
             0,
             "STATUS=Reloading...\nRELOADING=1\nMONOTONIC_USEC=%" PRIu64 "\n",
-            static_cast<uint64_t>(ts.tv_sec) * 1000000U + static_cast<uint64_t>(ts.tv_nsec) / 1000U);
+            (static_cast<uint64_t>(ts.tv_sec) * 1000000U) + (static_cast<uint64_t>(ts.tv_nsec) / 1000U));
 #endif
 
         /* reopen the logfile to allow for log rotation */
@@ -764,7 +974,7 @@ void tr_daemon::stop()
 
 int tr_daemon::start([[maybe_unused]] bool foreground)
 {
-    sd_notifyf(0, "MAINPID=%d\n", (int)getpid());
+    sd_notifyf(0, "MAINPID=%d\n", static_cast<int>(getpid()));
 
     /* setup event state */
     ev_base_ = event_base_new();
@@ -790,7 +1000,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     static auto constexpr LockRetryInterval = std::chrono::seconds{ 1 };
 
     if (auto const deadline = std::chrono::steady_clock::now() + LockPatience; tr_configDirIsContended(config_dir_)) {
-        // printMessage rather than the log, which is not routed anywhere this early.
+        // print_message rather than the log, which is not routed anywhere this early.
         // A start that pauses for fifteen seconds has to say why while it happens.
         printMessage(
             log_stream_,
@@ -800,9 +1010,12 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             __FILE__,
             __LINE__);
 
-        do {
+        for (;;) {
             std::this_thread::sleep_for(LockRetryInterval);
-        } while (tr_configDirIsContended(config_dir_) && std::chrono::steady_clock::now() < deadline);
+            if (!tr_configDirIsContended(config_dir_) || std::chrono::steady_clock::now() >= deadline) {
+                break;
+            }
+        }
     }
 
     auto* session = tr_sessionInit(config_dir_, true, settings_);
@@ -904,9 +1117,9 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 #endif
 
     /* Create new timer event to report daemon status */
-    event* status_ev;
+    event* status_ev = nullptr;
     {
-        constexpr auto one_sec = timeval{ 1, 0 }; // 1 second
+        static constexpr auto OneSec = timeval{ .tv_sec = 1, .tv_usec = 0 }; // 1 second
         status_ev = event_new(ev_base_, -1, EV_PERSIST, &::periodic_update, this);
 
         if (status_ev == nullptr) {
@@ -919,7 +1132,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             goto CLEANUP;
         }
 
-        if (event_add(status_ev, &one_sec) == -1) {
+        if (event_add(status_ev, &OneSec) == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -944,11 +1157,9 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     }
 
 CLEANUP:
-    auto msg = fmt::format("STATUS=Closing {:s} session...\n", TR_PROJ_APPNAME);
-    sd_notify(0, msg.c_str());
+    sd_notify(0, fmt::format("STATUS=Closing {:s} session...\n", TR_PROJ_APPNAME).c_str());
 
-    msg = fmt::format("Closing {:s} session...", TR_PROJ_APPNAME);
-    printf("%s", msg.c_str());
+    fmt::print("Closing {:s} session...", TR_PROJ_APPNAME);
 
     watchdir.reset();
 
@@ -964,7 +1175,7 @@ CLEANUP:
     tr_sessionSaveSettings(my_session_, config_dir_, settings_);
     tr_sessionClose(my_session_);
     pumpLogMessages(log_stream_);
-    printf(" done.\n");
+    fmt::print(" done.\n");
 
     /* shutdown */
 #ifdef HAVE_SYSLOG
@@ -986,19 +1197,19 @@ CLEANUP:
     return 0;
 }
 
-bool tr_daemon::init(int argc, char const* const argv[], bool* foreground, int* ret)
+bool tr_daemon::init(int argc, char const* const* argv, bool* foreground, int* ret)
 {
     config_dir_ = getConfigDir(argc, argv);
 
     /* load settings from defaults + config file */
     settings_ = load_settings(config_dir_);
 
-    bool dumpSettings;
+    bool dump_settings = false;
 
     *ret = 0;
 
     /* overwrite settings from the command line */
-    if (!parse_args(argc, argv, &dumpSettings, foreground, ret)) {
+    if (!parse_args(argc, argv, &dump_settings, foreground, ret)) {
         return false;
     }
 
@@ -1006,7 +1217,7 @@ bool tr_daemon::init(int argc, char const* const argv[], bool* foreground, int* 
         log_stream_ = stderr;
     }
 
-    if (dumpSettings) {
+    if (dump_settings) {
         fmt::print("{:s}\n", tr_variant_serde::json().to_string(settings_.clone()));
         return false;
     }
@@ -1020,7 +1231,8 @@ void tr_daemon::handle_error(tr_error const& error) const
     printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
 }
 
-int tr_main(int argc, char* argv[])
+// NOLINTNEXTLINE(bugprone-exception-escape)
+int tr_main(int argc, char** argv)
 {
     tr_lib_init();
 
