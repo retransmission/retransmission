@@ -386,7 +386,7 @@ static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace
 {
-[[nodiscard]] std::string getConfigDir(int argc, char const* const* argv)
+[[nodiscard]] std::string get_config_dir(int argc, char const* const* argv)
 {
     int c = {};
     char const* optstr = nullptr;
@@ -403,7 +403,7 @@ namespace
     return tr::platform::get_default_config_dir(MY_CONFIG_DIRNAME);
 }
 
-auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view basename)
+auto on_file_added(tr_session* session, std::string_view dirname, std::string_view basename)
 {
     auto const lowercase = tr_strlower(basename);
     auto const is_torrent = lowercase.ends_with(".torrent"sv);
@@ -468,7 +468,7 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
     return Watchdir::Action::Done;
 }
 
-[[nodiscard]] constexpr char const* levelName(tr_log_level level)
+[[nodiscard]] constexpr char const* level_name(tr_log_level level)
 {
     switch (level) {
     case TR_LOG_CRITICAL:
@@ -486,7 +486,7 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
     }
 }
 
-void printMessage(
+void print_message(
     FILE* ostream,
     std::chrono::system_clock::time_point now,
     tr_log_level level,
@@ -506,7 +506,7 @@ void printMessage(
     if (ostream != nullptr) {
         auto buf = std::array<char, 64>{};
         auto const timestr = tr_logGetTimeStr(now, std::data(buf), std::size(buf));
-        fmt::print(ostream, "[{:s}] {:s} {:s}\n", timestr, levelName(level), out.c_str());
+        fmt::print(ostream, "[{:s}] {:s} {:s}\n", timestr, level_name(level), out.c_str());
     }
 #ifdef HAVE_SYSLOG
 
@@ -543,7 +543,7 @@ void printMessage(
 #endif
 }
 
-void printMessage(
+void print_message(
     FILE* ostream,
     tr_log_level level,
     std::string_view name,
@@ -551,13 +551,13 @@ void printMessage(
     std::string_view filename,
     long line)
 {
-    printMessage(ostream, std::chrono::system_clock::now(), level, name, message, filename, line);
+    print_message(ostream, std::chrono::system_clock::now(), level, name, message, filename, line);
 }
 
-void pumpLogMessages(FILE* log_stream)
+void pump_log_messages(FILE* log_stream)
 {
     for (auto const& l : tr_logGetQueue()) {
-        printMessage(log_stream, l.when, l.level, l.name.sv(), l.message, l.file, l.line);
+        print_message(log_stream, l.when, l.level, l.name.sv(), l.message, l.file, l.line);
     }
 
     // two reasons to not flush stderr:
@@ -631,7 +631,7 @@ void tr_daemon::report_status()
 
 void tr_daemon::periodic_update()
 {
-    pumpLogMessages(log_stream_);
+    pump_log_messages(log_stream_);
     report_status();
 }
 
@@ -986,7 +986,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             "Couldn't initialize daemon: {error} ({error_code})",
             fmt::arg("error", tr_strerror(error_code)),
             fmt::arg("error_code", error_code));
-        printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
+        print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         cleanup_signals(sig_ev);
         return 1;
     }
@@ -1002,7 +1002,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     if (auto const deadline = std::chrono::steady_clock::now() + LockPatience; tr_configDirIsContended(config_dir_)) {
         // print_message rather than the log, which is not routed anywhere this early.
         // A start that pauses for fifteen seconds has to say why while it happens.
-        printMessage(
+        print_message(
             log_stream_,
             TR_LOG_INFO,
             MyName,
@@ -1025,7 +1025,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     // it took to ask, so a free answer only ever described that moment.
     if (tr_sessionConfigDirIsContended(session)) {
         auto const errmsg = fmt::format("Another process is already using '{path}'.", fmt::arg("path", config_dir_));
-        printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
+        print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         tr_sessionClose(session, 1);
         cleanup_signals(sig_ev);
         return 1;
@@ -1088,7 +1088,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             tr_logAddInfo(fmt::format("Watching '{path}' for new torrent files", fmt::arg("path", dir)));
 
             auto handler = [session](std::string_view dirname, std::string_view basename) {
-                return onFileAdded(session, dirname, basename);
+                return on_file_added(session, dirname, basename);
             };
 
             auto timer_maker = tr::EvTimerMaker{ ev_base_ };
@@ -1174,7 +1174,7 @@ CLEANUP:
 
     tr_sessionSaveSettings(my_session_, config_dir_, settings_);
     tr_sessionClose(my_session_);
-    pumpLogMessages(log_stream_);
+    pump_log_messages(log_stream_);
     fmt::print(" done.\n");
 
     /* shutdown */
@@ -1199,7 +1199,7 @@ CLEANUP:
 
 bool tr_daemon::init(int argc, char const* const* argv, bool* foreground, int* ret)
 {
-    config_dir_ = getConfigDir(argc, argv);
+    config_dir_ = get_config_dir(argc, argv);
 
     /* load settings from defaults + config file */
     settings_ = load_settings(config_dir_);
@@ -1228,7 +1228,7 @@ bool tr_daemon::init(int argc, char const* const* argv, bool* foreground, int* r
 void tr_daemon::handle_error(tr_error const& error) const
 {
     auto const errmsg = fmt::format("Couldn't daemonize: {:s} ({:d})", error.message(), error.code());
-    printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
+    print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
 }
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
