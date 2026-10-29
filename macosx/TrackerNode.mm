@@ -5,13 +5,9 @@
 #import "TrackerNode.h"
 #import "NSStringAdditions.h"
 
-@interface TrackerNode ()
-
-@property(nonatomic, readonly) tr_tracker_view fStat;
-
-@end
-
-@implementation TrackerNode
+@implementation TrackerNode {
+    tr_tracker_view _fStat;
+}
 
 + (NSDateFormatter*)dateFormatter
 {
@@ -68,55 +64,55 @@
 
 - (NSString*)host
 {
-    return @(self.fStat.host_and_port);
+    return @(_fStat.host_and_port);
 }
 
 - (NSString*)fullAnnounceAddress
 {
-    return @(self.fStat.announce.c_str());
+    return @(_fStat.announce.c_str());
 }
 
 - (NSInteger)tier
 {
-    return self.fStat.tier;
+    return _fStat.tier;
 }
 
 - (NSUInteger)identifier
 {
-    return self.fStat.id;
+    return _fStat.id;
 }
 
 - (NSInteger)totalSeeders
 {
-    return self.fStat.seederCount;
+    return _fStat.seederCount;
 }
 
 - (NSInteger)totalLeechers
 {
-    return self.fStat.leecherCount;
+    return _fStat.leecherCount;
 }
 
 - (NSInteger)totalDownloaded
 {
-    return self.fStat.downloadCount;
+    return _fStat.downloadCount;
 }
 
 - (NSString*)lastAnnounceStatusString
 {
     NSString* dateString;
-    if (self.fStat.hasAnnounced) {
-        dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastAnnounceTime]];
+    if (_fStat.hasAnnounced) {
+        dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_fStat.lastAnnounceTime]];
     } else {
         dateString = NSLocalizedString(@"N/A", "Tracker last announce");
     }
 
     NSString* baseString;
-    if (self.fStat.hasAnnounced && self.fStat.lastAnnounceTimedOut) {
+    if (_fStat.hasAnnounced && _fStat.lastAnnounceTimedOut) {
         baseString = [NSLocalizedString(@"Announce timed out", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
-    } else if (self.fStat.hasAnnounced && !self.fStat.lastAnnounceSucceeded) {
+    } else if (_fStat.hasAnnounced && !_fStat.lastAnnounceSucceeded) {
         baseString = NSLocalizedString(@"Announce error", "Tracker last announce");
 
-        NSString* errorString = @(self.fStat.lastAnnounceResult);
+        NSString* errorString = @(_fStat.lastAnnounceResult);
         if ([errorString isEqualToString:@""]) {
             baseString = [baseString stringByAppendingFormat:@": %@", dateString];
         } else {
@@ -124,13 +120,13 @@
         }
     } else {
         baseString = [NSLocalizedString(@"Last Announce", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
-        if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0) {
+        if (_fStat.hasAnnounced && _fStat.lastAnnounceSucceeded && _fStat.lastAnnouncePeerCount > 0) {
             NSString* peerString;
-            if (self.fStat.lastAnnouncePeerCount == 1) {
+            if (_fStat.lastAnnouncePeerCount == 1) {
                 peerString = NSLocalizedString(@"got 1 peer", "Tracker last announce");
             } else {
                 peerString = [NSString localizedStringWithFormat:NSLocalizedString(@"got %zu peers", "Tracker last announce"),
-                                                                 (size_t)self.fStat.lastAnnouncePeerCount];
+                                                                 (size_t)_fStat.lastAnnouncePeerCount];
             }
             baseString = [baseString stringByAppendingFormat:@" (%@)", peerString];
         }
@@ -141,13 +137,13 @@
 
 - (NSString*)nextAnnounceStatusString
 {
-    switch (self.fStat.announceState) {
+    switch (_fStat.announceState) {
     case TR_TRACKER_ACTIVE:
         return [NSLocalizedString(@"Announce in progress", "Tracker next announce") stringByAppendingEllipsis];
 
     case TR_TRACKER_WAITING:
         {
-            NSTimeInterval const nextAnnounceTimeLeft = self.fStat.nextAnnounceTime - [NSDate date].timeIntervalSince1970;
+            NSTimeInterval const nextAnnounceTimeLeft = _fStat.nextAnnounceTime - [NSDate date].timeIntervalSince1970;
 
             static NSDateComponentsFormatter* formatter;
             static dispatch_once_t onceToken;
@@ -165,11 +161,11 @@
         return [NSLocalizedString(@"Queued to ask for more peers", "Tracker next announce") stringByAppendingEllipsis];
 
     case TR_TRACKER_INACTIVE:
-        return self.fStat.isBackup ? NSLocalizedString(@"Tracker will be used as a backup", "Tracker next announce") :
-                                     NSLocalizedString(@"No updates scheduled", "Tracker next announce");
+        return _fStat.isBackup ? NSLocalizedString(@"Tracker will be used as a backup", "Tracker next announce") :
+                                 NSLocalizedString(@"No updates scheduled", "Tracker next announce");
 
     default:
-        NSAssert1(NO, @"unknown announce state: %d", self.fStat.announceState);
+        NSAssert1(NO, @"unknown announce state: %d", _fStat.announceState);
         return nil;
     }
 }
@@ -177,19 +173,19 @@
 - (NSString*)lastScrapeStatusString
 {
     NSString* dateString;
-    if (self.fStat.hasScraped) {
-        dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastScrapeTime]];
+    if (_fStat.hasScraped) {
+        dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_fStat.lastScrapeTime]];
     } else {
         dateString = NSLocalizedString(@"N/A", "Tracker last scrape");
     }
 
     NSString* baseString;
-    if (self.fStat.hasScraped && self.fStat.lastScrapeTimedOut) {
+    if (_fStat.hasScraped && _fStat.lastScrapeTimedOut) {
         baseString = [NSLocalizedString(@"Scrape timed out", "Tracker last scrape") stringByAppendingFormat:@": %@", dateString];
-    } else if (self.fStat.hasScraped && !self.fStat.lastScrapeSucceeded) {
+    } else if (_fStat.hasScraped && !_fStat.lastScrapeSucceeded) {
         baseString = NSLocalizedString(@"Scrape error", "Tracker last scrape");
 
-        NSString* errorString = @(self.fStat.lastScrapeResult);
+        NSString* errorString = @(_fStat.lastScrapeResult);
         if ([errorString isEqualToString:@""]) {
             baseString = [baseString stringByAppendingFormat:@": %@", dateString];
         } else {
