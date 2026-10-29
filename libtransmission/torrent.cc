@@ -1466,6 +1466,23 @@ std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> const torrents)
     return ret;
 }
 
+void tr_torrentStatAsync(tr_session* const session, tr_torrent_stats_func callback)
+{
+    tr_return_if_fail(session != nullptr);
+    tr_return_if_fail(callback != nullptr);
+
+    session->queue_session_thread([session, callback = std::move(callback)] {
+        auto stats = std::vector<tr_stat>{};
+        {
+            auto const lock = session->unique_lock();
+            if (auto const torrents = session->torrents().get_all(); !std::empty(torrents)) {
+                stats = tr_torrentStat(torrents);
+            }
+        }
+        callback(std::move(stats));
+    });
+}
+
 // ---
 
 tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)

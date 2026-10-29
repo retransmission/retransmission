@@ -895,3 +895,9 @@ void tr_torrentVerify(tr_torrent* torrent);
 // Batch version of tr_torrentStat().
 // Prefer calling this over calling the single-torrent version in a loop.
 [[nodiscard]] std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> torrents);
+
+// Stats every torrent on libtransmission's thread after any work already
+// queued there, e.g. the stop queued by tr_torrentStop(), then passes the
+// results to `callback` on that thread.
+// Has the same restrictions as `tr_sessionSetCompletenessCallback`.
+void tr_torrentStatAsync(tr_session* session, tr_torrent_stats_func callback);
