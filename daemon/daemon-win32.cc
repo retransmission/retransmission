@@ -195,7 +195,7 @@ bool tr_daemon::setup_signals([[maybe_unused]] struct event*& sig_ev)
     return true;
 }
 
-void tr_daemon::cleanup_signals([[maybe_unused]] struct event* sig_ev) const
+void tr_daemon::cleanup_signals([[maybe_unused]] struct event* sig_ev)
 {
 }
 

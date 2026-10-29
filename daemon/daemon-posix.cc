@@ -113,7 +113,7 @@ bool tr_daemon::setup_signals(struct event*& sig_ev)
 
 #endif /* HAVE_SYS_SIGNALFD_H */
 
-void tr_daemon::cleanup_signals(struct event* sig_ev) const
+void tr_daemon::cleanup_signals(struct event* sig_ev)
 {
     if (sig_ev != nullptr) {
         event_del(sig_ev);
@@ -123,6 +123,7 @@ void tr_daemon::cleanup_signals(struct event* sig_ev) const
 #ifdef HAVE_SYS_SIGNALFD_H
     if (sigfd_ >= 0) {
         close(sigfd_);
+        sigfd_ = -1;
     }
 #endif /* HAVE_SYS_SIGNALFD_H */
 }

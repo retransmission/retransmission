@@ -26,7 +26,7 @@ public:
     ~tr_daemon()
     {
 #ifdef HAVE_SYS_SIGNALFD_H
-        if (sigfd_ != -1) {
+        if (sigfd_ >= 0) {
             close(sigfd_);
         }
 #endif /* signalfd API */
@@ -55,6 +55,6 @@ private:
     [[nodiscard]] bool parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code);
     bool reopen_log_file(char const* filename);
     [[nodiscard]] bool setup_signals(struct event*& sig_ev);
-    void cleanup_signals(struct event* sig_ev) const;
+    void cleanup_signals(struct event* sig_ev);
     void report_status();
 };
