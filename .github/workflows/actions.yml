@@ -50,6 +50,7 @@ jobs:
       test-style: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.our-code-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       test-translations: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.translations-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       tidy-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-core-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-daemon: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-daemon-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-qt-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
     steps:
@@ -86,11 +87,12 @@ jobs:
           get_changes daemon     CMakeLists.txt cmake third-party libtransmission daemon
           get_changes any-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web third-party
           get_changes our-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web
-          get_changes tidy-config libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
+          get_changes tidy-config daemon/.clang-tidy libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
           # Each tidy cell only checks the directories its regex covers, so it
           # keys off just those sources -- not the wider build deps (a
           # libtransmission-only change has no gtk/qt files to re-check).
           get_changes tidy-core-src libtransmission libtransmission-app tests/libtransmission
+          get_changes tidy-daemon-src daemon
           get_changes tidy-gtk-src  gtk
           get_changes tidy-qt-src   qt tests/qt
           get_changes dist       dist release
@@ -399,6 +401,7 @@ jobs:
     needs: what-to-make
     if: |
       needs.what-to-make.outputs.tidy-core == 'true' ||
+      needs.what-to-make.outputs.tidy-daemon == 'true' ||
       needs.what-to-make.outputs.tidy-gtk == 'true' ||
       needs.what-to-make.outputs.tidy-qt == 'true'
     # One cell per toolkit version. Each cell generates code (Qt moc/uic) so
@@ -408,16 +411,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolkit: [core, gtk3, gtk4, qt5, qt6]
+        toolkit: [core, daemon, gtk3, gtk4, qt5, qt6]
         include:
           - toolkit: core
+            enable-daemon: false
             enable-gtk: false
             enable-qt: false
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
             runner: ubuntu-26.04
+          - toolkit: daemon
+            enable-daemon: true
+            enable-gtk: false
+            enable-qt: false
+            enable-tests: false
+            enabled: ${{ needs.what-to-make.outputs.tidy-daemon }}
+            regex: 'daemon/.*'
+            runner: ubuntu-26.04
           - toolkit: gtk3
+            enable-daemon: false
             enable-gtk: gtk3
             enable-qt: false
             enable-tests: false
@@ -425,6 +438,7 @@ jobs:
             regex: 'gtk/.*'
             runner: ubuntu-26.04
           - toolkit: gtk4
+            enable-daemon: false
             enable-gtk: gtk4
             enable-qt: false
             enable-tests: false
@@ -432,6 +446,7 @@ jobs:
             regex: 'gtk/.*'
             runner: ubuntu-26.04 # 24.04 doesn't have GTKMM4_MINIMUM
           - toolkit: qt5
+            enable-daemon: false
             enable-gtk: false
             enable-qt: qt5
             enable-tests: true
@@ -439,6 +454,7 @@ jobs:
             regex: '(qt|tests/qt)/.*'
             runner: ubuntu-26.04
           - toolkit: qt6
+            enable-daemon: false
             enable-gtk: false
             enable-qt: qt6
             enable-tests: true
@@ -480,6 +496,7 @@ jobs:
             -DCMAKE_C_COMPILER="clang-${CLANG_TIDY_VERSION}" \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_INSTALL_PREFIX=pfx \
+            -DENABLE_DAEMON=${{ matrix.enable-daemon && 'ON' || 'OFF' }} \
             -DENABLE_GTK=${{ matrix.enable-gtk && 'ON' || 'OFF' }} \
             -DENABLE_QT=${{ matrix.enable-qt && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ matrix.enable-tests && 'ON' || 'OFF' }} \
@@ -519,6 +536,7 @@ jobs:
     needs: what-to-make
     if: |
       needs.what-to-make.outputs.tidy-core == 'true' ||
+      needs.what-to-make.outputs.tidy-daemon == 'true' ||
       needs.what-to-make.outputs.tidy-qt == 'true'
     # MSVC + Qt6 coverage. qt5 on Windows is intentionally omitted for now: it
     # would require building Qt5 from source on the runners (see
@@ -526,15 +544,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolkit: [core, qt6]
+        toolkit: [core, daemon, qt6]
         include:
           - toolkit: core
             deps: CoreDeps
+            enable-daemon: 'OFF'
             enable-qt: 'OFF'
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
+          - toolkit: daemon
+            deps: CoreDeps
+            enable-daemon: 'ON'
+            enable-qt: 'OFF'
+            enabled: ${{ needs.what-to-make.outputs.tidy-daemon }}
+            regex: 'daemon/.*'
           - toolkit: qt6
             deps: Deps
+            enable-daemon: 'OFF'
             enable-qt: 'ON'
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
@@ -592,6 +618,7 @@ jobs:
             '-DCMAKE_BUILD_TYPE=Debug'
             '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
             "-DCMAKE_PREFIX_PATH=`"$Env:DEPS_PREFIX`""
+            '-DENABLE_DAEMON=${{ matrix.enable-daemon }}'
             '-DENABLE_QT=${{ matrix.enable-qt }}'
             '-DENABLE_TESTS=ON'
             '-DRUN_CLANG_TIDY=OFF'

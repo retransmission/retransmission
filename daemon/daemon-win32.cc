@@ -120,6 +120,7 @@ void stop_service()
 
     update_service_status(SERVICE_STOP_PENDING, NO_ERROR, 0, 1, wait_time);
 
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
     service_stop_thread = reinterpret_cast<HANDLE>(
         _beginthreadex(nullptr, 0, &service_stop_thread_main, &wait_time, 0, nullptr));
 
@@ -166,7 +167,8 @@ VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
 
     update_service_status(SERVICE_START_PENDING, NO_ERROR, 0, 1, 1000);
 
-    service_thread = (HANDLE)_beginthreadex(nullptr, 0, &service_thread_main, nullptr, 0, nullptr);
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
+    service_thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, &service_thread_main, nullptr, 0, nullptr));
 
     if (service_thread == nullptr) {
         log_system_error(TR_LOG_ERROR, GetLastError(), "_beginthreadex() failed");
