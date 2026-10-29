@@ -132,7 +132,7 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, readonly) CGFloat progressLeft;
 @property(nonatomic, readonly) tr::Values::Percent checkingProgress;
 
-@property(nonatomic, readonly) CGFloat availableDesired;
+@property(nonatomic, readonly) tr::Values::Percent availableDesired;
 
 /// True if non-paused. Running.
 @property(nonatomic, getter=isActive, readonly) BOOL active;

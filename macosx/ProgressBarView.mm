@@ -114,10 +114,10 @@ static NSInteger const kMaxPieces = 18 * 18;
         NSDivideRect(missingRect, &wantedRect, &missingRect, widthRemaining, NSMinXEdge);
 
         //not-available section
-        if (torrent.active && !torrent.checking && torrent.availableDesired < 1.0 &&
+        if (torrent.active && !torrent.checking && !torrent.availableDesired.is_complete() &&
             [self.fDefaults boolForKey:@"DisplayProgressBarAvailable"]) {
             NSRect unavailableRect;
-            NSDivideRect(wantedRect, &wantedRect, &unavailableRect, round(NSWidth(wantedRect) * torrent.availableDesired), NSMinXEdge);
+            NSDivideRect(wantedRect, &wantedRect, &unavailableRect, round(NSWidth(wantedRect) * torrent.availableDesired.to_fraction()), NSMinXEdge);
 
             [ProgressGradients.progressRedGradient drawInRect:unavailableRect angle:90];
         }

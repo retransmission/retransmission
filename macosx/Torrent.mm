@@ -877,9 +877,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return self.fStat.recheck_progress;
 }
 
-- (CGFloat)availableDesired
+- (tr::Values::Percent)availableDesired
 {
-    return (CGFloat)self.fStat.desired_available / self.sizeLeft;
+    return { self.fStat.desired_available, self.sizeLeft };
 }
 
 - (BOOL)isActive
