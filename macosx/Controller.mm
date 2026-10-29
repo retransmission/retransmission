@@ -1209,6 +1209,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     //complete cleanup: this can take many seconds
     tr_sessionClose(self.fLib);
+    _fLib = nullptr; // the alert below runs main-queue blocks that may still use it
 
     if (self.fQuitForTransmission) {
         NSAlert* const alert = [[NSAlert alloc] init];
