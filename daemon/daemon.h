@@ -7,11 +7,9 @@
 
 #include <cstdio>
 #include <string>
+#include <vector>
 
-#ifdef HAVE_SYS_SIGNALFD_H
-#include <unistd.h>
-#endif
-
+#include <libtransmission/utils-ev.h>
 #include <libtransmission/variant.h>
 
 struct event_base;
@@ -21,17 +19,6 @@ struct tr_session;
 class tr_daemon
 {
 public:
-    tr_daemon() = default;
-
-    ~tr_daemon()
-    {
-#ifdef HAVE_SYS_SIGNALFD_H
-        if (sigfd_ >= 0) {
-            close(sigfd_);
-        }
-#endif /* signalfd API */
-    }
-
     [[nodiscard]] bool spawn(bool foreground, int* exit_code, tr_error& error);
     [[nodiscard]] bool init(int argc, char const* const argv[], bool* foreground, int* ret);
     void handle_error(tr_error const&) const;
@@ -44,6 +31,7 @@ private:
 #ifdef HAVE_SYS_SIGNALFD_H
     int sigfd_ = -1;
 #endif /* signalfd API */
+    std::vector<tr::evhelpers::event_unique_ptr> sig_evs_;
     bool seen_hup_ = false;
     std::string config_dir_;
     tr::Settings settings_ = {};
@@ -54,7 +42,7 @@ private:
 
     [[nodiscard]] bool parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code);
     bool reopen_log_file(char const* filename);
-    [[nodiscard]] bool setup_signals(struct event*& sig_ev);
-    void cleanup_signals(struct event* sig_ev);
+    [[nodiscard]] bool setup_signals();
+    void cleanup_signals();
     void report_status();
 };
