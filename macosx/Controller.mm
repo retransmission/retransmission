@@ -1447,7 +1447,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                 [torrent startTransfer];
             }
 
-            [torrent update];
             [self.fTorrents addObject:torrent];
 
             if (!self.fAddingTransfers) {
@@ -1467,7 +1466,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if (add) {
         torrent.queuePosition = self.fTorrents.count;
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -1527,7 +1525,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [torrent startTransfer];
         }
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -1546,7 +1543,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if (add) {
         torrent.queuePosition = self.fTorrents.count;
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -2259,6 +2255,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [torrent resetCache];
     }
 
+    [Torrent updateTorrents:torrents];
     [self applyFilter];
 }
 
@@ -4891,7 +4888,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [torrent changeDownloadFolderBeforeUsing:location determinationType:TorrentDeterminationAutomatic];
     }
 
-    [torrent update];
     [self.fTorrents addObject:torrent];
 
     if (!self.fAddingTransfers) {
@@ -4909,8 +4905,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)rpcStartedStoppedTorrent:(Torrent*)torrent
 {
-    [torrent update];
-
     [self updateUI];
     [self applyFilter];
     [self updateTorrentHistory];
