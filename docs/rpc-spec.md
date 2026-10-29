@@ -302,7 +302,7 @@ The 'source' column here corresponds to the data structure there.
 | `seed_idle_limit`| number| tr_torrent
 | `seed_idle_mode`| number| tr_inactivelimit
 | `seed_ratio_bytes_goal`| number| tr_stat; the total `uploaded_ever` that meets the seed ratio
-| `seed_ratio_bytes_left`| number| tr_stat; 0 once the goal is met, once `is_finished` is true, or when no seed ratio applies
+| `seed_ratio_bytes_left`| number| tr_stat; 0 while downloading, once the goal is met, once `is_finished` is true, or when no seed ratio is set
 | `seed_ratio_limit`| double| tr_torrent
 | `seed_ratio_mode`| number| tr_ratiolimit
 | `sequential_download`| boolean| tr_torrent
