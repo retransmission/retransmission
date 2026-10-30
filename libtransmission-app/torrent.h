@@ -344,6 +344,21 @@ private:
     return TorrentFieldSet{ lhs } | rhs;
 }
 
+// One entry of `Torrent::Fields`: a `torrent_get` key, the member it feeds,
+// and the field that a change to the member reports.
+// At namespace scope: `Torrent::Fields` calls this constructor before `Torrent`
+// is complete, when a nested class's constructor isn't defined yet.
+template<auto MemberPtr>
+struct TorrentFieldEntry : tr::serializer::Field<MemberPtr> {
+    constexpr TorrentFieldEntry(tr_quark const key, TorrentField const field_in) noexcept
+        : tr::serializer::Field<MemberPtr>{ key }
+        , field{ field_in }
+    {
+    }
+
+    TorrentField const field;
+};
+
 /**
  * A client-side copy of one torrent's `torrent_get` fields.
  *
@@ -373,9 +388,6 @@ public:
     // Applies one `torrent_get` row in table format: `keys` is the response's
     // first row and `values` the torrent's own. Returns the fields it changed.
     TorrentFieldSet update(std::span<tr_quark const> keys, std::span<tr_variant const> values);
-
-    // The field that a `torrent_get` key feeds, or nullopt for a key this class doesn't track.
-    [[nodiscard]] static std::optional<TorrentField> field(tr_quark key) noexcept;
 
     // --- identity
 
@@ -962,76 +974,77 @@ private:
     bool upload_limited_ = false;
 
 public:
-    // The `torrent_get` key that feeds each member, for `tr::serializer`.
-    // Two keys may feed one member; `field()` names the bit each key reports.
+    // The `torrent_get` key that feeds each member, for `tr::serializer`, and
+    // the field it reports. Two keys may feed one member and report its field.
     template<auto MemberPtr>
-    using Field = tr::serializer::Field<MemberPtr>;
+    using Field = TorrentFieldEntry<MemberPtr>;
 
     static constexpr auto Fields = std::make_tuple(
-        Field<&Torrent::activity_date_>{ TR_KEY_activity_date },
-        Field<&Torrent::added_date_>{ TR_KEY_added_date },
-        Field<&Torrent::bandwidth_priority_>{ TR_KEY_bandwidth_priority },
-        Field<&Torrent::checked_bytes_>{ TR_KEY_checked_bytes },
-        Field<&Torrent::comment_>{ TR_KEY_comment },
-        Field<&Torrent::corrupt_ever_>{ TR_KEY_corrupt_ever },
-        Field<&Torrent::creator_>{ TR_KEY_creator },
-        Field<&Torrent::date_created_>{ TR_KEY_date_created },
-        Field<&Torrent::desired_available_>{ TR_KEY_desired_available },
-        Field<&Torrent::download_dir_>{ TR_KEY_download_dir },
-        Field<&Torrent::download_limit_kbyps_>{ TR_KEY_download_limit },
-        Field<&Torrent::download_limited_>{ TR_KEY_download_limited },
-        Field<&Torrent::downloaded_ever_>{ TR_KEY_downloaded_ever },
-        Field<&Torrent::edit_date_>{ TR_KEY_edit_date },
-        Field<&Torrent::error_code_>{ TR_KEY_error },
-        Field<&Torrent::error_string_>{ TR_KEY_error_string },
-        Field<&Torrent::eta_>{ TR_KEY_eta },
-        Field<&Torrent::file_count_>{ TR_KEY_file_count },
-        Field<&Torrent::files_>{ TR_KEY_file_stats },
-        Field<&Torrent::files_>{ TR_KEY_files },
-        Field<&Torrent::hash_>{ TR_KEY_hash_string },
-        Field<&Torrent::have_unchecked_>{ TR_KEY_have_unchecked },
-        Field<&Torrent::have_valid_>{ TR_KEY_have_valid },
-        Field<&Torrent::honors_session_limits_>{ TR_KEY_honors_session_limits },
-        Field<&Torrent::is_finished_>{ TR_KEY_is_finished },
-        Field<&Torrent::is_folder_>{ TR_KEY_is_folder },
-        Field<&Torrent::is_private_>{ TR_KEY_is_private },
-        Field<&Torrent::is_stalled_>{ TR_KEY_is_stalled },
-        Field<&Torrent::labels_>{ TR_KEY_labels },
-        Field<&Torrent::left_until_done_>{ TR_KEY_left_until_done },
-        Field<&Torrent::manual_announce_time_>{ TR_KEY_manual_announce_time },
-        Field<&Torrent::metadata_have_>{ TR_KEY_metadata_have },
-        Field<&Torrent::metadata_percent_complete_>{ TR_KEY_metadata_percent_complete },
-        Field<&Torrent::metadata_size_>{ TR_KEY_metadata_size },
-        Field<&Torrent::name_>{ TR_KEY_name },
-        Field<&Torrent::peer_limit_>{ TR_KEY_peer_limit },
-        Field<&Torrent::peers_>{ TR_KEY_peers },
-        Field<&Torrent::peers_connected_>{ TR_KEY_peers_connected },
-        Field<&Torrent::peers_getting_from_us_>{ TR_KEY_peers_getting_from_us },
-        Field<&Torrent::peers_sending_to_us_>{ TR_KEY_peers_sending_to_us },
-        Field<&Torrent::piece_count_>{ TR_KEY_piece_count },
-        Field<&Torrent::piece_size_>{ TR_KEY_piece_size },
-        Field<&Torrent::primary_mime_type_>{ TR_KEY_primary_mime_type },
-        Field<&Torrent::queue_position_>{ TR_KEY_queue_position },
-        Field<&Torrent::download_speed_>{ TR_KEY_rate_download },
-        Field<&Torrent::upload_speed_>{ TR_KEY_rate_upload },
-        Field<&Torrent::recheck_progress_>{ TR_KEY_recheck_progress },
-        Field<&Torrent::seed_idle_limit_>{ TR_KEY_seed_idle_limit },
-        Field<&Torrent::seed_idle_mode_>{ TR_KEY_seed_idle_mode },
-        Field<&Torrent::seed_ratio_limit_>{ TR_KEY_seed_ratio_limit },
-        Field<&Torrent::seed_ratio_mode_>{ TR_KEY_seed_ratio_mode },
-        Field<&Torrent::size_when_done_>{ TR_KEY_size_when_done },
-        Field<&Torrent::start_date_>{ TR_KEY_start_date },
-        Field<&Torrent::activity_>{ TR_KEY_status },
-        Field<&Torrent::total_size_>{ TR_KEY_total_size },
-        Field<&Torrent::tracker_list_>{ TR_KEY_tracker_list },
-        Field<&Torrent::tracker_stats_>{ TR_KEY_tracker_stats },
-        Field<&Torrent::tracker_stats_>{ TR_KEY_trackers },
-        Field<&Torrent::upload_limit_kbyps_>{ TR_KEY_upload_limit },
-        Field<&Torrent::upload_limited_>{ TR_KEY_upload_limited },
-        Field<&Torrent::upload_ratio_>{ TR_KEY_upload_ratio },
-        Field<&Torrent::uploaded_ever_>{ TR_KEY_uploaded_ever },
-        Field<&Torrent::webseeds_>{ TR_KEY_webseeds_ex },
-        Field<&Torrent::webseeds_sending_to_us_>{ TR_KEY_webseeds_sending_to_us });
+        Field<&Torrent::activity_date_>{ TR_KEY_activity_date, TorrentField::ACTIVITY_DATE },
+        Field<&Torrent::added_date_>{ TR_KEY_added_date, TorrentField::ADDED_DATE },
+        Field<&Torrent::bandwidth_priority_>{ TR_KEY_bandwidth_priority, TorrentField::BANDWIDTH_PRIORITY },
+        Field<&Torrent::checked_bytes_>{ TR_KEY_checked_bytes, TorrentField::CHECKED_BYTES },
+        Field<&Torrent::comment_>{ TR_KEY_comment, TorrentField::COMMENT },
+        Field<&Torrent::corrupt_ever_>{ TR_KEY_corrupt_ever, TorrentField::CORRUPT_EVER },
+        Field<&Torrent::creator_>{ TR_KEY_creator, TorrentField::CREATOR },
+        Field<&Torrent::date_created_>{ TR_KEY_date_created, TorrentField::DATE_CREATED },
+        Field<&Torrent::desired_available_>{ TR_KEY_desired_available, TorrentField::DESIRED_AVAILABLE },
+        Field<&Torrent::download_dir_>{ TR_KEY_download_dir, TorrentField::DOWNLOAD_DIR },
+        Field<&Torrent::download_limit_kbyps_>{ TR_KEY_download_limit, TorrentField::DOWNLOAD_LIMIT },
+        Field<&Torrent::download_limited_>{ TR_KEY_download_limited, TorrentField::DOWNLOAD_LIMITED },
+        Field<&Torrent::downloaded_ever_>{ TR_KEY_downloaded_ever, TorrentField::DOWNLOADED_EVER },
+        Field<&Torrent::edit_date_>{ TR_KEY_edit_date, TorrentField::EDIT_DATE },
+        Field<&Torrent::error_code_>{ TR_KEY_error, TorrentField::ERROR_CODE },
+        Field<&Torrent::error_string_>{ TR_KEY_error_string, TorrentField::ERROR_STRING },
+        Field<&Torrent::eta_>{ TR_KEY_eta, TorrentField::ETA },
+        Field<&Torrent::file_count_>{ TR_KEY_file_count, TorrentField::FILE_COUNT },
+        Field<&Torrent::files_>{ TR_KEY_file_stats, TorrentField::FILES },
+        Field<&Torrent::files_>{ TR_KEY_files, TorrentField::FILES },
+        Field<&Torrent::hash_>{ TR_KEY_hash_string, TorrentField::HASH },
+        Field<&Torrent::have_unchecked_>{ TR_KEY_have_unchecked, TorrentField::HAVE_UNCHECKED },
+        Field<&Torrent::have_valid_>{ TR_KEY_have_valid, TorrentField::HAVE_VALID },
+        Field<&Torrent::honors_session_limits_>{ TR_KEY_honors_session_limits, TorrentField::HONORS_SESSION_LIMITS },
+        Field<&Torrent::is_finished_>{ TR_KEY_is_finished, TorrentField::IS_FINISHED },
+        Field<&Torrent::is_folder_>{ TR_KEY_is_folder, TorrentField::IS_FOLDER },
+        Field<&Torrent::is_private_>{ TR_KEY_is_private, TorrentField::IS_PRIVATE },
+        Field<&Torrent::is_stalled_>{ TR_KEY_is_stalled, TorrentField::IS_STALLED },
+        Field<&Torrent::labels_>{ TR_KEY_labels, TorrentField::LABELS },
+        Field<&Torrent::left_until_done_>{ TR_KEY_left_until_done, TorrentField::LEFT_UNTIL_DONE },
+        Field<&Torrent::manual_announce_time_>{ TR_KEY_manual_announce_time, TorrentField::MANUAL_ANNOUNCE_TIME },
+        Field<&Torrent::metadata_have_>{ TR_KEY_metadata_have, TorrentField::METADATA_HAVE },
+        Field<&Torrent::metadata_percent_complete_>{ TR_KEY_metadata_percent_complete,
+                                                     TorrentField::METADATA_PERCENT_COMPLETE },
+        Field<&Torrent::metadata_size_>{ TR_KEY_metadata_size, TorrentField::METADATA_SIZE },
+        Field<&Torrent::name_>{ TR_KEY_name, TorrentField::NAME },
+        Field<&Torrent::peer_limit_>{ TR_KEY_peer_limit, TorrentField::PEER_LIMIT },
+        Field<&Torrent::peers_>{ TR_KEY_peers, TorrentField::PEERS },
+        Field<&Torrent::peers_connected_>{ TR_KEY_peers_connected, TorrentField::PEERS_CONNECTED },
+        Field<&Torrent::peers_getting_from_us_>{ TR_KEY_peers_getting_from_us, TorrentField::PEERS_GETTING_FROM_US },
+        Field<&Torrent::peers_sending_to_us_>{ TR_KEY_peers_sending_to_us, TorrentField::PEERS_SENDING_TO_US },
+        Field<&Torrent::piece_count_>{ TR_KEY_piece_count, TorrentField::PIECE_COUNT },
+        Field<&Torrent::piece_size_>{ TR_KEY_piece_size, TorrentField::PIECE_SIZE },
+        Field<&Torrent::primary_mime_type_>{ TR_KEY_primary_mime_type, TorrentField::PRIMARY_MIME_TYPE },
+        Field<&Torrent::queue_position_>{ TR_KEY_queue_position, TorrentField::QUEUE_POSITION },
+        Field<&Torrent::download_speed_>{ TR_KEY_rate_download, TorrentField::DOWNLOAD_SPEED },
+        Field<&Torrent::upload_speed_>{ TR_KEY_rate_upload, TorrentField::UPLOAD_SPEED },
+        Field<&Torrent::recheck_progress_>{ TR_KEY_recheck_progress, TorrentField::RECHECK_PROGRESS },
+        Field<&Torrent::seed_idle_limit_>{ TR_KEY_seed_idle_limit, TorrentField::SEED_IDLE_LIMIT },
+        Field<&Torrent::seed_idle_mode_>{ TR_KEY_seed_idle_mode, TorrentField::SEED_IDLE_MODE },
+        Field<&Torrent::seed_ratio_limit_>{ TR_KEY_seed_ratio_limit, TorrentField::SEED_RATIO_LIMIT },
+        Field<&Torrent::seed_ratio_mode_>{ TR_KEY_seed_ratio_mode, TorrentField::SEED_RATIO_MODE },
+        Field<&Torrent::size_when_done_>{ TR_KEY_size_when_done, TorrentField::SIZE_WHEN_DONE },
+        Field<&Torrent::start_date_>{ TR_KEY_start_date, TorrentField::START_DATE },
+        Field<&Torrent::activity_>{ TR_KEY_status, TorrentField::STATUS },
+        Field<&Torrent::total_size_>{ TR_KEY_total_size, TorrentField::TOTAL_SIZE },
+        Field<&Torrent::tracker_list_>{ TR_KEY_tracker_list, TorrentField::TRACKER_LIST },
+        Field<&Torrent::tracker_stats_>{ TR_KEY_tracker_stats, TorrentField::TRACKER_STATS },
+        Field<&Torrent::tracker_stats_>{ TR_KEY_trackers, TorrentField::TRACKER_STATS },
+        Field<&Torrent::upload_limit_kbyps_>{ TR_KEY_upload_limit, TorrentField::UPLOAD_LIMIT },
+        Field<&Torrent::upload_limited_>{ TR_KEY_upload_limited, TorrentField::UPLOAD_LIMITED },
+        Field<&Torrent::upload_ratio_>{ TR_KEY_upload_ratio, TorrentField::UPLOAD_RATIO },
+        Field<&Torrent::uploaded_ever_>{ TR_KEY_uploaded_ever, TorrentField::UPLOADED_EVER },
+        Field<&Torrent::webseeds_>{ TR_KEY_webseeds_ex, TorrentField::WEBSEEDS },
+        Field<&Torrent::webseeds_sending_to_us_>{ TR_KEY_webseeds_sending_to_us, TorrentField::WEBSEEDS_SENDING_TO_US });
 };
 
 } // namespace tr::app

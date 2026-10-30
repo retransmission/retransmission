@@ -854,3 +854,61 @@ TEST_F(SerializerTest, setLoadsVectorOfSerializablesInPlace)
     EXPECT_FALSE(tr::serializer::set(entries, tr_variant{ "not a list"sv }));
     EXPECT_EQ(std::size(entries), 1U);
 }
+
+namespace
+{
+
+// a `Fields` entry that carries more than its key
+template<auto MemberPtr>
+struct TaggedField : tr::serializer::Field<MemberPtr> {
+    constexpr TaggedField(tr_quark const key, int const tag_in) noexcept
+        : tr::serializer::Field<MemberPtr>{ key }
+        , tag{ tag_in }
+    {
+    }
+
+    int const tag;
+};
+
+struct Tagged {
+    int blocks = 0;
+    bool enabled = false;
+
+    static constexpr auto Fields = std::tuple{
+        TaggedField<&Tagged::blocks>{ TR_KEY_blocks, 1 },
+        TaggedField<&Tagged::enabled>{ TR_KEY_dht_enabled, 2 },
+    };
+};
+
+static_assert(tr::serializer::Serializable<Tagged>);
+
+// a `Field`'s member names, without deriving from `Field`
+struct FieldLookalike {
+    using key_type = tr_quark;
+    static constexpr auto MemberPointer = &Tagged::blocks;
+    tr_quark key = TR_KEY_blocks;
+};
+
+struct WithLookalike {
+    static constexpr auto Fields = std::tuple{ FieldLookalike{} };
+};
+
+static_assert(!tr::serializer::Serializable<WithLookalike>);
+
+} // namespace
+
+TEST_F(SerializerTest, fieldSubclassesAreFields)
+{
+    auto const src = Tagged{ .blocks = 7, .enabled = true };
+    auto const map = tr::serializer::save(src);
+
+    auto dst = Tagged{};
+    auto const changed = tr::serializer::load(map, dst);
+    EXPECT_EQ(std::size(changed), 2U);
+    EXPECT_EQ(dst.blocks, 7);
+    EXPECT_TRUE(dst.enabled);
+
+    EXPECT_TRUE(tr::serializer::set_from_variant(TR_KEY_blocks, tr_variant{ 8 }, dst));
+    EXPECT_EQ(dst.blocks, 8);
+    EXPECT_EQ(std::get<1>(Tagged::Fields).tag, 2);
+}
