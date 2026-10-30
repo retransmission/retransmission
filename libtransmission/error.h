@@ -69,7 +69,8 @@ public:
         message_.insert(std::begin(message_), std::begin(prefix), std::end(prefix));
     }
 
-    // convenience utility for `set(errno, tr_strerror(errno))`
+    // convenience utilities for `set(errno, tr_strerror(errno))`
+    [[nodiscard]] static tr_error from_errno(int errnum);
     void set_from_errno(int errnum);
 
 private:

@@ -2674,9 +2674,7 @@ void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname,
 {
     auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback] {
         if (callback != nullptr) {
-            auto error = tr_error{};
-            error.set_from_errno(EINVAL);
-            callback(tor_id, oldpath, newname, error);
+            callback(tor_id, oldpath, newname, tr_error::from_errno(EINVAL));
         }
     };
 
