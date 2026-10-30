@@ -20,7 +20,6 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/error.h>
-#include <libtransmission/error-types.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/log.h>
@@ -186,7 +185,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     tr_torrentManualUpdate(tor);
     auto location_state = -1;
     tr_torrentSetLocation(tor, target_dir, true, &location_state);
-    auto rename_error = std::optional<tr_error_code_t>{};
+    auto rename_error = std::optional<tr_error::code_t>{};
     tr_torrentRenamePath(
         tor,
         name,

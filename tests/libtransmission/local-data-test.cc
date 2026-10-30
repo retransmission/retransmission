@@ -970,7 +970,7 @@ TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
     writeBlocks(*local_data, 0U, BlockSize, [&n_written] { ++n_written; });
 
     // the copy fails at once and does not join the queue
-    auto code = std::optional<tr_error_code_t>{};
+    auto code = std::optional<tr_error::code_t>{};
     local_data->write(
         TorId,
         { .begin = 0U, .end = BlockSize },
