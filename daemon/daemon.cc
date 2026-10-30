@@ -1020,8 +1020,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     if (tr_sessionConfigDirIsContended(session)) {
         auto const errmsg = fmt::format("Another process is already using '{path}'.", fmt::arg("path", config_dir_));
         print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
-        tr_sessionClose(session, 1);
         cleanup_signals();
+        tr_sessionClose(session, 1);
         return EXIT_FAILURE;
     }
 
