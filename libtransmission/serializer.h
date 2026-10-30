@@ -49,20 +49,19 @@ struct Field;
 namespace detail
 {
 
-// A `Field`, or a type derived from one that carries more per-entry data.
-template<typename T>
-concept FieldEntry = requires {
-    T::MemberPointer;
-    typename T::key_type;
-} && std::derived_from<T, Field<T::MemberPointer, typename T::key_type>>;
-
 // NOLINTBEGIN(readability-identifier-naming)
 // use std-style naming for these traits
+
+template<typename T>
+inline constexpr bool is_field_v = false;
+
+template<auto MemberPtr, typename Key>
+inline constexpr bool is_field_v<Field<MemberPtr, Key>> = true;
 
 template<typename Tuple, std::size_t... I>
 consteval bool is_fields_tuple(std::index_sequence<I...> /*indices*/)
 {
-    return (FieldEntry<std::tuple_element_t<I, Tuple>> && ...);
+    return (is_field_v<std::tuple_element_t<I, Tuple>> && ...);
 }
 
 template<typename Tuple>
