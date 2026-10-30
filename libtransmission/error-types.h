@@ -10,14 +10,6 @@
 
 #include <windows.h>
 
-/* MinGW :( */
-#ifndef ERROR_DIRECTORY_NOT_SUPPORTED
-#define ERROR_DIRECTORY_NOT_SUPPORTED 336
-#endif
-
-#define TR_ERROR_EINVAL ERROR_INVALID_PARAMETER
-#define TR_ERROR_EISDIR ERROR_DIRECTORY_NOT_SUPPORTED
-
 // Smallest integer type that can represent all values returned
 // by `DWORD GetLastError()` and `int WSAGetLastError()`.
 //
@@ -29,9 +21,6 @@ static_assert(sizeof(int) <= sizeof(int64_t));
 #else /* _WIN32 */
 
 #include <cerrno>
-
-#define TR_ERROR_EINVAL EINVAL
-#define TR_ERROR_EISDIR EISDIR
 
 using tr_error_code_t = int;
 
