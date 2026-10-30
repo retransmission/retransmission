@@ -5,6 +5,7 @@
 
 #include "libtransmission/file-utils.h"
 
+#include <cerrno> // EINVAL, EISDIR
 #include <string_view>
 #include <vector>
 
@@ -14,7 +15,6 @@
 
 #include <fmt/format.h>
 
-#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -45,7 +45,7 @@ bool tr_file_read(std::string_view filename, std::vector<char>& contents, tr_err
 
     if (!info || !info->isFile()) {
         tr_logAddError(fmt::format("Couldn't read '{path}': Not a regular file", fmt::arg("path", filename)));
-        error->set(TR_ERROR_EISDIR, "Not a regular file"sv);
+        error->set(EISDIR, "Not a regular file"sv);
         return false;
     }
 
@@ -135,7 +135,7 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
         return false;
     }
     if (!info->isFile()) {
-        error->set(TR_ERROR_EINVAL, "Old path does not point to a file."sv);
+        error->set(EINVAL, "Old path does not point to a file."sv);
         return false;
     }
 
