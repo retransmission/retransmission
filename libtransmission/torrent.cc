@@ -2566,7 +2566,7 @@ namespace rename_helpers
 
 [[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
-    tr_error_code_t err = 0;
+    auto error = tr_error{};
 
     auto const base = (tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir()).sv();
 
@@ -2589,16 +2589,12 @@ namespace rename_helpers
 
         if (!tgt_exists) {
             tmp = errno;
-
-            if (auto error = tr_error{}; !tr_sys_path_rename(src, tgt, &error)) {
-                err = error.code();
-            }
-
+            tr_sys_path_rename(src, tgt, &error);
             errno = tmp;
         }
     }
 
-    return err;
+    return error;
 }
 
 void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::string_view newname, tr_file_index_t file_index)
@@ -2642,16 +2638,16 @@ void tr_torrent::rename_path_in_session_thread(
 {
     using namespace rename_helpers;
 
-    tr_error_code_t error = 0;
+    auto error = tr_error{};
 
     if (!renameArgsAreValid(this, oldpath, newname)) {
-        error = EINVAL;
+        error.set_from_errno(EINVAL);
     } else if (auto const file_indices = renameFindAffectedFiles(this, oldpath); std::empty(file_indices)) {
-        error = EINVAL;
+        error.set_from_errno(EINVAL);
     } else {
         error = renamePath(this, oldpath, newname);
 
-        if (error == 0) {
+        if (!error) {
             /* update tr_info.files */
             for (auto const& file_index : file_indices) {
                 renameTorrentFileString(this, oldpath, newname, file_index);
@@ -2670,12 +2666,7 @@ void tr_torrent::rename_path_in_session_thread(
     mark_changed();
 
     if (callback != nullptr) {
-        auto rename_error = tr_error{};
-        if (error != 0) {
-            rename_error.set_from_errno(error);
-        }
-
-        callback(id(), oldpath, newname, rename_error);
+        callback(id(), oldpath, newname, error);
     }
 }
 

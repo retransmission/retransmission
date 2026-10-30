@@ -201,21 +201,22 @@ void write_bytes(
 
 } // namespace
 
-tr_error_code_t tr_ioRead(
+tr_error tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
     std::span<uint8_t> const setme)
 {
     if (std::empty(setme)) {
-        return 0;
-    }
-
-    if (begin + std::size(setme) > desc.block_info.total_size()) {
-        return TR_ERROR_EINVAL;
+        return {};
     }
 
     auto error = tr_error{};
+    if (begin + std::size(setme) > desc.block_info.total_size()) {
+        error.set_from_errno(TR_ERROR_EINVAL);
+        return error;
+    }
+
     auto [file_index, file_offset] = desc.fpm.file_offset(begin);
     auto buf = setme;
     while (!std::empty(buf) && !error) {
@@ -226,24 +227,25 @@ tr_error_code_t tr_ioRead(
         file_offset = 0U;
     }
 
-    return error.code();
+    return error;
 }
 
-tr_error_code_t tr_ioWrite(
+tr_error tr_ioWrite(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
     std::span<uint8_t const> const writeme)
 {
     if (std::empty(writeme)) {
-        return 0;
-    }
-
-    if (begin + std::size(writeme) > desc.block_info.total_size()) {
-        return TR_ERROR_EINVAL;
+        return {};
     }
 
     auto error = tr_error{};
+    if (begin + std::size(writeme) > desc.block_info.total_size()) {
+        error.set_from_errno(TR_ERROR_EINVAL);
+        return error;
+    }
+
     auto [file_index, file_offset] = desc.fpm.file_offset(begin);
     auto buf = writeme;
     while (!std::empty(buf) && !error) {
@@ -254,43 +256,47 @@ tr_error_code_t tr_ioWrite(
         file_offset = 0U;
     }
 
-    return error.code();
+    return error;
 }
 
-tr_error_code_t tr_ioRecalculateHash(
+tr_error tr_ioRecalculateHash(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_piece_index_t const piece,
     tr_sha1_digest_t& setme)
 {
+    auto error = tr_error{};
     auto const& block_info = desc.block_info;
     if (piece >= block_info.piece_count()) {
-        return TR_ERROR_EINVAL;
+        error.set_from_errno(TR_ERROR_EINVAL);
+        return error;
     }
 
     auto buffer = std::array<uint8_t, TrBlockSize>{};
-    auto err = tr_error_code_t{};
     auto const hash = tr_ioHashPiece(
         block_info,
         piece,
-        [&desc, &open_files, &block_info, &buffer, &err](tr_block_index_t const block) -> std::span<uint8_t const> {
+        [&desc, &open_files, &block_info, &buffer, &error](tr_block_index_t const block) -> std::span<uint8_t const> {
             auto const byte_span = block_info.byte_span_for_block(block);
             auto const data = std::span{ buffer }.first(static_cast<size_t>(byte_span.size()));
-            err = tr_ioRead(desc, open_files, byte_span.begin, data);
-            return err == 0 ? data : std::span<uint8_t>{};
+            error = tr_ioRead(desc, open_files, byte_span.begin, data);
+            return !error ? data : std::span<uint8_t>{};
         });
 
     if (!hash) {
-        return err != 0 ? err : EIO;
+        if (!error) {
+            error.set_from_errno(EIO);
+        }
+        return error;
     }
 
     setme = *hash;
-    return 0;
+    return {};
 }
 
 bool tr_ioTestPiece(tr_torrent const& tor, tr_piece_index_t const piece)
 {
     auto hash = tr_sha1_digest_t{};
-    return tr_ioRecalculateHash(*tor.storage_descriptor(), tor.session->openFiles(), piece, hash) == 0 &&
+    return !tr_ioRecalculateHash(*tor.storage_descriptor(), tor.session->openFiles(), piece, hash) &&
         hash == tor.piece_hash(piece);
 }
