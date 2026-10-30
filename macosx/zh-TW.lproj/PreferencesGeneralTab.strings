@@ -5,8 +5,6 @@
 "Total download rate" = "總下載速度";
 "Total upload rate" = "總上傳速度";
 "Only when torrents are downloading" = "僅於傳輸正在下載時";
-"Auto resize:" = "自動調整大小：";
-"Automatically size window to fit all torrents" = "自動調整視窗大小以符合所有傳輸";
 "Reset" = "重設";
 "Reset all alerts:" = "重設所有警示：";
 "Automatically check daily" = "每天自動更新";

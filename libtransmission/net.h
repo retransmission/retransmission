@@ -16,6 +16,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple> // std::tie
 #include <utility> // std::pair
 
 #ifdef _WIN32
@@ -474,8 +475,10 @@ struct tr_socket_address {
     tr_address address_;
     tr_port port_;
 
-    static auto constexpr CompactSockAddrBytes = std::array{ tr_address::CompactAddrBytes[0] + tr_port::CompactPortBytes,
-                                                             tr_address::CompactAddrBytes[1] + tr_port::CompactPortBytes };
+    static auto constexpr CompactSockAddrBytes = std::array{
+        tr_address::CompactAddrBytes[0] + tr_port::CompactPortBytes,
+        tr_address::CompactAddrBytes[1] + tr_port::CompactPortBytes,
+    };
     static auto constexpr CompactSockAddrMaxBytes = tr_address::CompactAddrMaxBytes + tr_port::CompactPortBytes;
     static_assert(std::size(CompactSockAddrBytes) == NUM_TR_AF_INET_TYPES);
 };
@@ -540,7 +543,7 @@ struct tr_session;
     std::string_view bind_interface = {});
 
 [[nodiscard]] std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(
-    tr_session* session,
+    tr_session const* session,
     tr_socket_t listening_sockfd);
 
 void tr_net_close_socket(tr_socket_t fd);

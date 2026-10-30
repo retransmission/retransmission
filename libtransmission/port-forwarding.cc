@@ -33,9 +33,7 @@ public:
     {
     }
 
-    // stopForwarding() can throw on OOM, but a destructor must not propagate;
-    // terminating is the correct behavior here.
-    // NOLINTNEXTLINE(bugprone-exception-escape)
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_port_forwarding_impl() override
     {
         is_shutting_down_ = true;
@@ -120,7 +118,7 @@ private:
 
     void startTimer()
     {
-        timer_ = mediator_.timer_maker().create([this]() { this->onTimer(); });
+        timer_ = mediator_.timer_maker().create([this] { this->onTimer(); });
         restartTimer();
     }
 

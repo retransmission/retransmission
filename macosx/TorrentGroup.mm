@@ -2,8 +2,6 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/utils.h> // tr_getRatio()
-
 #import "TorrentGroup.h"
 #import "GroupsController.h"
 #import "Torrent.h"
@@ -46,9 +44,7 @@
         uploadRate += torrent.uploadRate;
     }
 
-    CGFloat ratio = tr_getRatio(uploaded, total_size);
-
-    return { ratio, uploadRate, downloadRate };
+    return { tr::Values::Ratio{ uploaded, total_size }, uploadRate, downloadRate };
 }
 
 @end

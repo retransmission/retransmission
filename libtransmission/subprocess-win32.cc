@@ -165,7 +165,7 @@ void append_argument(std::string& arguments, char const* argument)
             break;
 
         case '"':
-            backslash_count = backslash_count * 2 + 1;
+            backslash_count = (backslash_count * 2) + 1;
             break;
 
         default:

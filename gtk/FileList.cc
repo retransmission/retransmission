@@ -17,6 +17,7 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
+#include <libtransmission/values.h>
 
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
@@ -40,6 +41,7 @@
 #include <fmt/format.h>
 
 #include <algorithm>
+#include <cmath> // std::lround()
 #include <memory>
 #include <optional>
 #include <queue>
@@ -58,7 +60,7 @@ enum : uint16_t {
     /* these two fields could be any number at all so long as they're not
      * TR_PRI_LOW, TR_PRI_NORMAL, TR_PRI_HIGH, true, or false */
     NOT_SET = 1000,
-    MIXED = 1001
+    MIXED = 1001,
 };
 
 class FileModelColumns : public Gtk::TreeModelColumnRecord
@@ -71,6 +73,7 @@ public:
         add(label_esc);
         add(prog);
         add(prog_str);
+        add(prog_key);
         add(index);
         add(size);
         add(size_str);
@@ -84,6 +87,7 @@ public:
     Gtk::TreeModelColumn<Glib::ustring> label_esc;
     Gtk::TreeModelColumn<int> prog;
     Gtk::TreeModelColumn<Glib::ustring> prog_str;
+    Gtk::TreeModelColumn<int> prog_key; // progress in 0.01% steps for sorting and change checks; -1 before the first refresh
     Gtk::TreeModelColumn<unsigned int> index;
     Gtk::TreeModelColumn<uint64_t> size;
     Gtk::TreeModelColumn<Glib::ustring> size_str;
@@ -183,13 +187,13 @@ bool refreshFilesForeach(
     auto const old_enabled = iter->get_value(file_cols.enabled);
     auto const old_have = iter->get_value(file_cols.have);
     auto const old_priority = iter->get_value(file_cols.priority);
-    auto const old_progress = iter->get_value(file_cols.prog);
+    auto const old_prog_key = iter->get_value(file_cols.prog_key);
     auto const old_size = iter->get_value(file_cols.size);
 
     auto new_enabled = int{};
     auto new_have = decltype(old_have){};
     auto new_priority = int{};
-    auto new_progress = int{};
+    auto new_percent = tr::Values::Percent{};
     auto new_size = decltype(old_size){};
 
     if (is_file) {
@@ -200,7 +204,7 @@ bool refreshFilesForeach(
         new_priority = int{ file.priority };
         new_have = file.have;
         new_size = file.length;
-        new_progress = static_cast<int>(100 * file.progress);
+        new_percent = file.progress;
     } else {
         new_enabled = NOT_SET;
         new_priority = NOT_SET;
@@ -232,24 +236,23 @@ bool refreshFilesForeach(
             }
         }
 
-        new_progress = new_size != 0 ? static_cast<int>(100.0 * static_cast<double>(new_have) / static_cast<double>(new_size)) :
-                                       1;
+        new_percent = tr::Values::Percent{ new_have, new_size };
     }
 
-    new_progress = std::clamp(new_progress, 0, 100);
+    // Percent compares at 0.01%, so equal keys display the same
+    auto const new_prog_key = static_cast<int>(std::lround(new_percent.to_fraction() * 10'000));
 
-    if (new_priority != old_priority || new_enabled != old_enabled) {
+    if (!refresh_data.resort_needed &&
+        ((refresh_data.sort_column_id == file_cols.priority.index() && new_priority != old_priority) ||
+         (refresh_data.sort_column_id == file_cols.enabled.index() && new_enabled != old_enabled) ||
+         (refresh_data.sort_column_id == file_cols.prog_key.index() && new_prog_key != old_prog_key))) {
         /* Changing a value in the sort column can trigger a resort
          * which breaks this foreach () call. (See #3529)
          * As a workaround: if that's about to happen, temporarily disable
          * sorting until we finish walking the tree. */
-        if (!refresh_data.resort_needed &&
-            (((refresh_data.sort_column_id == file_cols.priority.index()) && (new_priority != old_priority)) ||
-             ((refresh_data.sort_column_id == file_cols.enabled.index()) && (new_enabled != old_enabled)))) {
-            refresh_data.resort_needed = true;
+        refresh_data.resort_needed = true;
 
-            store->set_sort_column(GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, TR_GTK_SORT_TYPE(ASCENDING));
-        }
+        store->set_sort_column(GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, TR_GTK_SORT_TYPE(ASCENDING));
     }
 
     if (new_enabled != old_enabled) {
@@ -269,9 +272,12 @@ bool refreshFilesForeach(
         (*iter)[file_cols.have] = new_have;
     }
 
-    if (new_progress != old_progress) {
-        (*iter)[file_cols.prog] = new_progress;
-        (*iter)[file_cols.prog_str] = fmt::format("{:Ld}%", new_progress);
+    if (new_prog_key != old_prog_key) {
+        (*iter)[file_cols.prog] = static_cast<int>(100 * new_percent.to_fraction());
+        (*iter)[file_cols.prog_str] = fmt::format(
+            fmt::runtime(_("{percent}%")),
+            fmt::arg("percent", new_percent.to_whole_string()));
+        (*iter)[file_cols.prog_key] = new_prog_key;
     }
 
     return false; /* keep walking */
@@ -373,10 +379,8 @@ bool getSubtreeForeach(
     Gtk::TreeModel::Path const& subtree_path,
     std::vector<tr_file_index_t>& indexBuf)
 {
-    if (bool const is_file = iter->children().empty(); is_file) {
-        if (path == subtree_path || path.is_descendant(subtree_path)) {
-            indexBuf.push_back(iter->get_value(file_cols.index));
-        }
+    if (bool const is_file = iter->children().empty(); is_file && (path == subtree_path || path.is_descendant(subtree_path))) {
+        indexBuf.push_back(iter->get_value(file_cols.index));
     }
 
     return false; /* keep walking */
@@ -437,6 +441,7 @@ struct row_struct {
 
 using FileRowNode = Glib::NodeTree<row_struct>;
 
+// NOLINTNEXTLINE(misc-const-correctness)
 void buildTree(FileRowNode& node, build_data& build)
 {
     auto const& child_data = node.data();
@@ -447,7 +452,7 @@ void buildTree(FileRowNode& node, build_data& build)
     auto const file = isLeaf ? tr_torrentFile(build.tor, child_data.index) : tr_file_view{};
     int const priority = isLeaf ? file.priority : 0;
     bool const enabled = isLeaf ? file.wanted : true;
-    auto name_esc = Glib::Markup::escape_text(child_data.name);
+    auto const name_esc = Glib::Markup::escape_text(child_data.name);
 
     auto const child_iter = build.store->prepend(build.iter->children());
     (*child_iter)[file_cols.index] = child_data.index;
@@ -458,6 +463,7 @@ void buildTree(FileRowNode& node, build_data& build)
     (*child_iter)[file_cols.icon] = icon;
     (*child_iter)[file_cols.priority] = priority;
     (*child_iter)[file_cols.enabled] = static_cast<int>(enabled);
+    (*child_iter)[file_cols.prog_key] = -1;
 
     if (!isLeaf) {
         build_data b = build;
@@ -544,7 +550,7 @@ void FileList::Impl::set_torrent(tr_torrent_id_t torrent_id)
 
         refresh();
         timeout_tag_ = Glib::signal_timeout().connect_seconds(
-            [this]() { return refresh(), true; },
+            [this] { return refresh(), true; },
             SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     }
 
@@ -744,7 +750,6 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
     bool handled = false;
 
     if (button == GDK_BUTTON_PRIMARY &&
-        // NOLINTNEXTLINE(hicpp-signed-bitwise)
         (state & (TR_GDK_MODIFIED_TYPE(SHIFT_MASK) | TR_GDK_MODIFIED_TYPE(CONTROL_MASK))) == TrGdkModifierType{} &&
         getAndSelectEventPath(view_x, view_y, col, path)) {
         handled = onViewPathToggled(col, path);
@@ -755,7 +760,7 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
 
 void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
 {
-    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error]() {
+    rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error] {
         rename_done_tags_.pop();
         on_rename_done_idle(path_string, newname, error);
         return false;
@@ -921,7 +926,7 @@ FileList::Impl::Impl(
         col->add_attribute(rend->property_text(), file_cols.prog_str);
         col->add_attribute(rend->property_value(), file_cols.prog);
         col->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
-        col->set_sort_column(file_cols.prog);
+        col->set_sort_column(file_cols.prog_key);
         view_->append_column(*col);
     }
 

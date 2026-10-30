@@ -5,7 +5,7 @@
 #import <AppKit/AppKit.h>
 
 @interface PeerProgressIndicatorView : NSTableCellView
-- (void)updateProgress:(float)progressValue isSeed:(BOOL)isSeed showText:(BOOL)showText;
+- (void)updateProgress:(float)progressValue text:(NSString*)progressText isSeed:(BOOL)isSeed showText:(BOOL)showText;
 @end
 
 @interface PeerTextView : NSTableCellView

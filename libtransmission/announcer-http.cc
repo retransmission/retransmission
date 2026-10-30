@@ -180,7 +180,7 @@ void onAnnounceDone(tr_web::FetchResponse const& web_response)
     url += "info_hash="sv;
     tr_urlPercentEncode(url, req.info_hash);
 
-    auto out = std::back_inserter(url);
+    auto const out = std::back_inserter(url);
     fmt::format_to(
         out,
         "&peer_id={peer_id}"
@@ -262,7 +262,7 @@ void tr_tracker_http_announce(
     options.sndbuf = 4096;
     options.rcvbuf = 4096;
 
-    auto do_make_request = [&](std::string_view const& protocol_name, tr_web::FetchOptions&& opt) {
+    auto const do_make_request = [&](std::string_view const& protocol_name, tr_web::FetchOptions&& opt) {
         tr_logAddTrace(fmt::format("Sending {} announce to libcurl: '{}'", protocol_name, opt.url), request.log_name);
         session->fetch(std::move(opt));
     };
@@ -529,7 +529,7 @@ void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::stri
         {
             BasicHandler::Key(value, context);
 
-            if (auto cur_depth = depth(); cur_depth < 2U || !pathStartsWith("files"sv)) {
+            if (auto const cur_depth = depth(); cur_depth < 2U || !pathStartsWith("files"sv)) {
                 row_.reset();
             } else if (cur_depth > 2U) {
                 // do nothing
@@ -539,8 +539,10 @@ void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::stri
                 auto const it = std::ranges::find_if(
                     response_.rows,
                     [value](auto const& row) {
-                        auto const row_hash = std::string_view{ reinterpret_cast<char const*>(std::data(row.info_hash)),
-                                                                std::size(row.info_hash) };
+                        auto const row_hash = std::string_view{
+                            reinterpret_cast<char const*>(std::data(row.info_hash)),
+                            std::size(row.info_hash),
+                        };
                         return row_hash == value;
                     });
                 it == std::ranges::end(response_.rows)) {

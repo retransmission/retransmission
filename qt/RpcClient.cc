@@ -41,9 +41,9 @@ RpcClient::RpcClient(QObject* parent)
         [this](bool const is_network_error, std::string_view const message) {
             emit networkResponse(is_network_error, Utils::qstringFromUtf8(message));
         });
-    connections_[1] = impl_.auth_required.connect_scoped([this]() { emit httpAuthenticationRequired(); });
-    connections_[2] = impl_.data_read_progress.connect_scoped([this]() { emit dataReadProgress(); });
-    connections_[3] = impl_.data_send_progress.connect_scoped([this]() { emit dataSendProgress(); });
+    connections_[1] = impl_.auth_required.connect_scoped([this] { emit httpAuthenticationRequired(); });
+    connections_[2] = impl_.data_read_progress.connect_scoped([this] { emit dataReadProgress(); });
+    connections_[3] = impl_.data_send_progress.connect_scoped([this] { emit dataSendProgress(); });
 }
 
 RpcClient::~RpcClient() = default;

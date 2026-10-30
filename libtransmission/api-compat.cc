@@ -544,7 +544,7 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
     return {};
 }
 
-struct State {
+struct State { // NOLINT(bugprone-exception-escape): falsely reports on MSVC STL's std::deque move constructor
     api_compat::Style style = {};
     bool is_free_space_response = false;
     bool is_request = false;

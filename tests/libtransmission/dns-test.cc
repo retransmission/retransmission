@@ -53,7 +53,7 @@ TEST_F(EvDnsTest, canLookup)
         done = true;
     });
 
-    waitFor(event_base_, [&done]() { return done; });
+    waitFor(event_base_, [&done] { return done; });
     EXPECT_TRUE(done);
 }
 
@@ -77,7 +77,7 @@ TEST_F(EvDnsTest, canRequestWhilePending)
     });
 
     // wait for both callbacks to be called
-    waitFor(event_base_, [&n_done]() { return n_done >= 2U; });
+    waitFor(event_base_, [&n_done] { return n_done >= 2U; });
     EXPECT_EQ(2U, n_done);
 }
 
@@ -107,7 +107,7 @@ TEST_F(EvDnsTest, canCancel)
     dns.cancel(tag);
 
     // wait for both callbacks to be called
-    waitFor(event_base_, [&n_done]() { return n_done >= 2U; });
+    waitFor(event_base_, [&n_done] { return n_done >= 2U; });
     EXPECT_EQ(2U, n_done);
 }
 
@@ -126,7 +126,7 @@ TEST_F(EvDnsTest, doesCacheEntries)
     });
 
     // wait for the lookup
-    waitFor(event_base_, [&ai_addr]() { return ai_addr != nullptr; });
+    waitFor(event_base_, [&ai_addr] { return ai_addr != nullptr; });
     ASSERT_NE(nullptr, ai_addr);
 
     auto second_callback_called = false;

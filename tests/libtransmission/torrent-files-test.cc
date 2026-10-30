@@ -4,8 +4,8 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <cassert>
 #include <cstddef> // size_t
+#include <cstdint> // uint64_t
 #include <string>
 #include <string_view>
 #include <utility>
@@ -201,6 +201,17 @@ TEST_F(TorrentFilesTest, clear)
     EXPECT_EQ(size_t{ 0U }, files.file_count());
 }
 
+TEST_F(TorrentFilesTest, sortedByPath)
+{
+    auto files = tr_torrent_files{};
+    files.add("name/c"sv, 3U);
+    files.add("name/a"sv, 1U);
+    files.add("name/b"sv, 2U);
+
+    auto const expected = std::vector<std::pair<std::string, uint64_t>>{ { "name/a", 1U }, { "name/b", 2U }, { "name/c", 3U } };
+    EXPECT_EQ(expected, files.sorted_by_path());
+}
+
 TEST_F(TorrentFilesTest, find)
 {
     static auto constexpr Contents = "hello"sv;
@@ -215,8 +226,7 @@ TEST_F(TorrentFilesTest, find)
 
     auto search_path = std::vector<std::string_view>{ search_path_1.sv(), search_path_2.sv() };
     auto found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(filename, found->filename());
     EXPECT_EQ(search_path_1, found->base);
     EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
@@ -225,8 +235,7 @@ TEST_F(TorrentFilesTest, find)
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(filename, found->filename());
 
     // now make it an incomplete file
@@ -234,8 +243,7 @@ TEST_F(TorrentFilesTest, find)
     EXPECT_TRUE(tr_sys_path_rename(filename, partial_filename));
     search_path = std::vector<std::string_view>{ search_path_1.sv(), search_path_2.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(partial_filename, found->filename());
     EXPECT_EQ(search_path_1, found->base);
     EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
@@ -244,8 +252,7 @@ TEST_F(TorrentFilesTest, find)
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };
     found = files.find(file_index, search_path);
-    EXPECT_TRUE(found.has_value());
-    assert(found.has_value());
+    ASSERT_TRUE(found.has_value());
     EXPECT_EQ(partial_filename, found->filename());
 
     // what about if we look for a file that does not exist

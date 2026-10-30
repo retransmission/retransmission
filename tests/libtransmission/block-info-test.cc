@@ -5,6 +5,7 @@
 
 #include <cstdint>
 
+#include <libtransmission/bitfield.h>
 #include <libtransmission/block-info.h>
 
 #include "test-fixtures.h"
@@ -301,4 +302,33 @@ TEST_F(BlockInfoTest, byteSpans)
     span = info.byte_span_for_req(1, PieceSize - 1U, 1U);
     EXPECT_EQ((PieceSize * 2U) - 1U, span.begin);
     EXPECT_EQ(PieceSize * 2U, span.end);
+}
+
+TEST_F(BlockInfoTest, sizeOfPieces)
+{
+    static auto constexpr PieceSize = uint64_t{ 1024 } * 64U;
+    static auto constexpr LastPieceSize = uint64_t{ 1000U };
+    static auto constexpr TotalSize = (PieceSize * 3U) + LastPieceSize;
+
+    auto const info = tr_block_info{ TotalSize, PieceSize };
+    ASSERT_EQ(4U, info.piece_count());
+
+    auto pieces = tr_bitfield{ info.piece_count() };
+    EXPECT_EQ(0U, info.size_of_pieces(pieces));
+
+    pieces.set(0U);
+    EXPECT_EQ(PieceSize, info.size_of_pieces(pieces));
+
+    pieces.set(3U);
+    EXPECT_EQ(PieceSize + LastPieceSize, info.size_of_pieces(pieces));
+
+    pieces.set_has_all();
+    EXPECT_EQ(TotalSize, info.size_of_pieces(pieces));
+
+    // a peer's bitfield can be sized before the torrent's piece count is known
+    auto const no_metadata = tr_block_info{ 0U, 0U };
+    EXPECT_EQ(0U, no_metadata.size_of_pieces(tr_bitfield{ 0U }));
+    auto peer_pieces = tr_bitfield{ 8U };
+    peer_pieces.set(0U);
+    EXPECT_EQ(0U, no_metadata.size_of_pieces(peer_pieces));
 }

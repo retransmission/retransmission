@@ -7,19 +7,11 @@
 
 #include <algorithm>
 
-#include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 
 #include "TrFormat.h"
 
-using namespace std::literals;
 using namespace tr::Values;
-
-// static
-QString Formatter::percentToString(double const x)
-{
-    return QString::fromStdString(tr_strpercent(x));
-}
 
 QString Formatter::memoryToString(int64_t const bytes)
 {
@@ -32,6 +24,11 @@ QString Formatter::memoryToString(int64_t const bytes)
     }
 
     return QString::fromStdString(Memory{ bytes, Memory::Units::Bytes }.to_string());
+}
+
+QString Formatter::percentToString(Percent const percent)
+{
+    return TR_FORMAT("{percent}%", fmt::arg("percent", percent.to_whole_string()));
 }
 
 QString Formatter::storageToString(uint64_t const bytes)
@@ -50,14 +47,6 @@ QString Formatter::storageToString(int64_t const bytes)
     }
 
     return storageToString(static_cast<uint64_t>(bytes));
-}
-
-QString Formatter::ratioToString(double ratio)
-{
-    static auto constexpr Infinity = "\xE2\x88\x9E"sv;
-    static auto const None = tr("None").toStdString();
-
-    return QString::fromStdString(tr_strratio(ratio, None, Infinity));
 }
 
 QString Formatter::timeToString(int seconds)

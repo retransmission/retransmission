@@ -271,7 +271,7 @@ TEST_F(TorrentQueueTest, queueConsistencyAfterMutations)
     auto next_id = tr_torrent_id_t{ 1 };
 
     // pos_of_ must be a bijection between live ids and [0, size)
-    auto const check_dense = [&queue, &live]() {
+    auto const check_dense = [&queue, &live] {
         auto seen = std::vector<bool>(std::size(live), false);
         ASSERT_EQ(std::size(live), queue.size());
         for (auto const id : live) {

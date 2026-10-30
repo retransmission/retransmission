@@ -234,9 +234,9 @@ static tr_session* fLib = NULL;
 
     self.fRatioField.stringValue = [NSString stringForRatio:statsSession.ratio];
 
-    NSString* totalRatioString = static_cast<int>(statsAll.ratio) != TR_RATIO_NA ?
-        [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForRatio:statsAll.ratio]] :
-        NSLocalizedString(@"Total N/A", "stats total");
+    NSString* totalRatioString = statsAll.ratio.is_none() ?
+        NSLocalizedString(@"Total N/A", "stats total") :
+        [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForRatio:statsAll.ratio]];
     self.fRatioAllField.stringValue = totalRatioString;
 
     static NSDateComponentsFormatter* timeFormatter;

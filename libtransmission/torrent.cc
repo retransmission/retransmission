@@ -55,6 +55,15 @@ struct tr_torrent_builder;
 using namespace std::literals;
 using namespace tr::Values;
 
+namespace
+{
+// for the `_deprecated` float fields
+[[nodiscard]] constexpr float as_float(Percent const percent) noexcept
+{
+    return static_cast<float>(percent.quotient());
+}
+} // namespace
+
 #define tr_return_if_fail(expr) \
     do { \
         if (expr) [[likely]] { \
@@ -84,7 +93,7 @@ void run_in_session_thread_by_id(tr_torrent& tor, Work&& work, OnGone&& on_gone)
     tor.session->run_in_session_thread([session = tor.session,
                                         tor_id = tor.id(),
                                         work = std::forward<Work>(work),
-                                        on_gone = std::forward<OnGone>(on_gone)]() mutable {
+                                        on_gone = std::forward<OnGone>(on_gone)] mutable {
         // Other threads add torrents under the session lock.
         auto* const torrent = [session, tor_id] {
             auto const lock = session->unique_lock();
@@ -1221,9 +1230,9 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
     run_in_session_thread_by_id(
         *this,
         [loc = std::string(location), move_from_old_path, setme_state](tr_torrent* const tor) {
-            tor->set_location_in_session_thread([loc]() { return loc; }, move_from_old_path, setme_state);
+            tor->set_location_in_session_thread([loc] { return loc; }, move_from_old_path, setme_state);
         },
-        [setme_state]() {
+        [setme_state] {
             if (setme_state != nullptr) {
                 *setme_state = TR_LOC_ERROR;
             }
@@ -1380,15 +1389,21 @@ tr_stat tr_torrent::stats() const
     stats.piece_upload_speed = piece_upload_speed;
     stats.piece_download_speed = piece_download_speed;
 
-    stats.percent_complete = static_cast<float>(this->completion_.percent_complete());
-    stats.metadata_percent_complete = static_cast<float>(get_metadata_percent());
+    stats.percent_complete = this->completion_.percent_complete();
+    stats.percent_complete_deprecated = as_float(stats.percent_complete);
+    stats.metadata_percent_complete = get_metadata_percent();
+    stats.metadata_percent_complete_deprecated = as_float(stats.metadata_percent_complete);
+    stats.metadata_have = stats.metadata_percent_complete.have();
+    stats.metadata_size = stats.metadata_percent_complete.total();
 
-    stats.percent_done = static_cast<float>(this->completion_.percent_done());
+    stats.percent_done = this->completion_.percent_done();
+    stats.percent_done_deprecated = as_float(stats.percent_done);
     stats.left_until_done = this->completion_.left_until_done();
     stats.size_when_done = this->completion_.size_when_done();
 
-    auto const verify_progress = this->verify_progress();
-    stats.recheck_progress = verify_progress.value_or(0.0);
+    stats.recheck_progress = verify_progress().value_or(Percent{});
+    stats.recheck_progress_deprecated = as_float(stats.recheck_progress);
+    stats.checked_bytes = stats.recheck_progress.have();
     stats.activity_date = this->date_active_;
     stats.added_date = this->date_added_;
     stats.done_date = this->date_done_;
@@ -1404,7 +1419,8 @@ tr_stat tr_torrent::stats() const
     stats.have_unchecked = this->has_total() - stats.have_valid;
     stats.desired_available = tr_peerMgrGetDesiredAvailable(this);
 
-    stats.upload_ratio = static_cast<float>(tr_getRatio(stats.uploaded_ever, this->size_when_done()));
+    stats.upload_ratio = Ratio{ stats.uploaded_ever, stats.size_when_done };
+    stats.upload_ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploaded_ever, stats.size_when_done));
 
     auto seed_ratio_bytes_left = uint64_t{};
     auto seed_ratio_bytes_goal = uint64_t{};
@@ -1439,15 +1455,13 @@ tr_stat tr_torrent::stats() const
     stats.finished = this->finished_seeding_by_idle_ ||
         (seed_ratio_applies && seed_ratio_bytes_left == 0 && stats.have_valid != 0);
 
+    // the goal counts as reached when the ratio doesn't apply
     if (!seed_ratio_applies || stats.finished) {
-        stats.seed_ratio_percent_done = 1.0F;
-    } else if (seed_ratio_bytes_goal == 0) /* impossible? safeguard for div by zero */
-    {
-        stats.seed_ratio_percent_done = 0.0F;
+        stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal, seed_ratio_bytes_goal };
     } else {
-        stats.seed_ratio_percent_done = static_cast<float>(seed_ratio_bytes_goal - seed_ratio_bytes_left) /
-            static_cast<float>(seed_ratio_bytes_goal);
+        stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal - seed_ratio_bytes_left, seed_ratio_bytes_goal };
     }
+    stats.seed_ratio_percent_done_deprecated = as_float(stats.seed_ratio_percent_done);
 
     /* test some of the constraints */
     TR_ASSERT(stats.size_when_done <= this->total_size());
@@ -1491,25 +1505,14 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
     auto const length = tor->file_size(file);
     auto const [begin, end] = tor->piece_span_for_file(file);
 
-    if (tor->is_seed() || length == 0) {
-        return {
-            .name = subpath.c_str(),
-            .have = length,
-            .length = length,
-            .progress = 1.0,
-            .beginPiece = begin,
-            .endPiece = end,
-            .priority = priority,
-            .wanted = wanted,
-        };
-    }
-
-    auto const have = tor->count_has_bytes_in_file(file);
+    auto const have = tor->is_seed() || length == 0 ? length : tor->count_has_bytes_in_file(file);
+    auto const progress = Percent{ have, length };
     return {
         .name = subpath.c_str(),
         .have = have,
         .length = length,
-        .progress = have >= length ? 1.0 : static_cast<double>(have) / static_cast<double>(length),
+        .progress = progress,
+        .progress_deprecated = progress.quotient(),
         .beginPiece = begin,
         .endPiece = end,
         .priority = priority,
@@ -1695,7 +1698,7 @@ void tr_torrent::set_verify_state(VerifyState const state)
     TR_ASSERT(state == VerifyState::None || state == VerifyState::Queued || state == VerifyState::Active);
 
     verify_state_ = state;
-    verify_progress_ = {};
+    verify_checked_pieces_ = 0;
     mark_changed();
 }
 
@@ -1764,10 +1767,7 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
     tor_->checked_pieces_.set(piece, true);
     tor_->mark_changed();
     tor_->session->set_date_active(tr_time());
-    tor_->verify_progress_ = std::clamp(
-        static_cast<float>(piece + 1U) / static_cast<float>(tor_->metainfo_.piece_count()),
-        0.0F,
-        1.0F);
+    tor_->verify_checked_pieces_ = piece + 1U;
 }
 
 // (usually called from tr_verify_worker's thread)
@@ -1891,7 +1891,7 @@ void tr_torrent::leave_incomplete_dir()
 
     // Decide when the move starts, once the set-locations queued before
     // it have landed. Skip it if one of them took the files elsewhere.
-    auto parent = [session = this->session, tor_id = id()]() -> std::string {
+    auto parent = [session = this->session, tor_id = id()] -> std::string {
         auto const* const tor = session->torrents().get(tor_id);
         if (tor == nullptr) {
             return {};
@@ -1973,7 +1973,7 @@ void tr_torrent::recheck_completeness()
         // Clients call this on their own threads too, but disk ops
         // must be enqueued from the session thread. Closing the files
         // behind the move runs `finish` once the move lands.
-        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)]() mutable {
+        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
             if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
                 auto const lock = tor->unique_lock();
                 tor->leave_incomplete_dir();
@@ -2539,7 +2539,7 @@ void tr_torrent::refresh_current_dir(std::optional<tr::shared_string> const& fir
     TR_ASSERT(!std::empty(dir));
     TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
 
-    current_dir_ = dir;
+    current_dir_ = std::move(dir);
     invalidate_storage_descriptor();
 }
 
@@ -2708,7 +2708,7 @@ void tr_torrent::rename_path_in_session_thread(
 
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
 {
-    auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback]() {
+    auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback] {
         if (callback != nullptr) {
             auto error = tr_error{};
             error.set_from_errno(TR_ERROR_EINVAL);

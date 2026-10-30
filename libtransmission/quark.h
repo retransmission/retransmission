@@ -106,6 +106,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_bytes_to_peer,
     TR_KEY_cache_size_mb_kebab_APICOMPAT,
     TR_KEY_cache_size_mib,
+    TR_KEY_checked_bytes,
     TR_KEY_client_is_choked_camel_APICOMPAT,
     TR_KEY_client_is_interested_camel_APICOMPAT,
     TR_KEY_client_name_camel_APICOMPAT,
@@ -247,6 +248,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_hash_string,
     TR_KEY_have_unchecked_camel_APICOMPAT,
     TR_KEY_have_valid_camel_APICOMPAT,
+    TR_KEY_have_total,
     TR_KEY_have_unchecked,
     TR_KEY_have_valid,
     TR_KEY_honors_session_limits_camel_APICOMPAT,
@@ -355,6 +357,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_message_level_kebab_APICOMPAT,
     TR_KEY_message_level,
     TR_KEY_metadata_percent_complete_camel_APICOMPAT,
+    TR_KEY_metadata_have,
     TR_KEY_metadata_percent_complete,
     TR_KEY_metadata_size,
     TR_KEY_metainfo,
@@ -754,7 +757,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_webseeds_ex,
     TR_KEY_webseeds_sending_to_us,
     TR_KEY_yourip,
-    TR_N_KEYS
+    TR_N_KEYS,
 };
 
 /**

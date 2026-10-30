@@ -66,10 +66,10 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, getter=isMagnet, readonly) BOOL magnet;
 @property(nonatomic, readonly) NSString* magnetLink;
 
-@property(nonatomic, readonly) CGFloat ratio;
+@property(nonatomic, readonly) tr::Values::Ratio ratio;
 @property(nonatomic) tr_ratiolimit ratioSetting;
 @property(nonatomic) CGFloat ratioLimit;
-@property(nonatomic, readonly) CGFloat progressStopRatio;
+@property(nonatomic, readonly) tr::Values::Percent progressStopRatio;
 
 @property(nonatomic) tr_idlelimit idleSetting;
 @property(nonatomic) NSUInteger idleLimitMinutes;
@@ -127,10 +127,10 @@ extern NSString* const kTorrentDidChangeGroupNotification;
      completionHandler:(void (^)(BOOL didRename))completionHandler;
 
 @property(nonatomic, readonly) time_t eta;
-@property(nonatomic, readonly) CGFloat progress;
-@property(nonatomic, readonly) CGFloat progressDone;
+@property(nonatomic, readonly) tr::Values::Percent progress;
+@property(nonatomic, readonly) tr::Values::Percent progressDone;
 @property(nonatomic, readonly) CGFloat progressLeft;
-@property(nonatomic, readonly) CGFloat checkingProgress;
+@property(nonatomic, readonly) tr::Values::Percent checkingProgress;
 
 @property(nonatomic, readonly) CGFloat availableDesired;
 
@@ -200,7 +200,7 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, readonly) NSUInteger fileCount;
 
 //methods require fileStats to have been updated recently to be accurate
-- (CGFloat)fileProgress:(FileListNode*)node;
+- (tr::Values::Percent)fileProgress:(FileListNode*)node;
 - (BOOL)canChangeDownloadCheckForFiles:(NSIndexSet*)indexSet;
 - (NSControlStateValue)checkForFiles:(NSIndexSet*)indexSet;
 - (void)setFileCheckState:(NSControlStateValue)state forIndexes:(NSIndexSet*)indexSet;
@@ -224,6 +224,10 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 
 @property(nonatomic, readonly) NSInteger stateSortKey;
 @property(nonatomic, readonly) NSString* trackerSortKey;
+// numbers for NSSortDescriptor, whose key paths can't compare the tr::Values types of ratio and progress
+@property(nonatomic, readonly) double ratioSortKey;
+@property(nonatomic, readonly) double progressSortKey;
+@property(nonatomic, readonly) double progressStopRatioSortKey;
 
 @property(nonatomic, readonly) tr_torrent* torrentStruct;
 

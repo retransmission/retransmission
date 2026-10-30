@@ -68,9 +68,6 @@ enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
 [[nodiscard]] Glib::ustring tr_strlsize(guint64 size_in_bytes);
 [[nodiscard]] Glib::ustring tr_strlsize(tr::Values::Storage const& storage);
 
-/* return a human-readable string for the given ratio. */
-[[nodiscard]] Glib::ustring tr_strlratio(double ratio);
-
 // The desktop's activation token for this launch, from wherever the toolkit left it.
 // The GTK client calls this rather than tr::interop::activation_token(). GTK4 moves
 // the token out of the environment before main() runs, and this knows where it went.
@@ -273,7 +270,7 @@ T* gtr_get_widget_derived(Glib::RefPtr<Gtk::Builder> const& builder, Glib::ustri
 template<typename F>
 void gtr_window_on_close(Gtk::Window& widget, F&& callback)
 {
-    auto bool_callback = [callback = std::forward<F>(callback)]() mutable -> bool {
+    auto bool_callback = [callback = std::forward<F>(callback)] mutable -> bool {
         if constexpr (std::is_same_v<void, std::invoke_result_t<decltype(callback)>>) {
             callback();
             return false;
@@ -283,7 +280,7 @@ void gtr_window_on_close(Gtk::Window& widget, F&& callback)
     };
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    widget.signal_close_request().connect(bool_callback, false);
+    widget.signal_close_request().connect(std::move(bool_callback), false);
 #else
     widget.signal_delete_event().connect(sigc::hide<0>(bool_callback), false);
 #endif

@@ -50,7 +50,7 @@ Glib::RefPtr<Gio::DBus::Proxy> proxy;
 std::map<guint32, TrNotification> active_notifications;
 bool server_supports_actions = false;
 
-void get_capabilities_callback(Glib::RefPtr<Gio::AsyncResult>& res)
+void get_capabilities_callback(Glib::RefPtr<Gio::AsyncResult> const& res)
 {
     auto result = Glib::VariantContainerBase();
 
@@ -114,7 +114,7 @@ void g_signal_callback(
     }
 }
 
-void dbus_proxy_ready_callback(Glib::RefPtr<Gio::AsyncResult>& res)
+void dbus_proxy_ready_callback(Glib::RefPtr<Gio::AsyncResult> const& res)
 {
     try {
         proxy = Gio::DBus::Proxy::create_for_bus_finish(res);
@@ -149,7 +149,7 @@ void gtr_notify_init()
 namespace
 {
 
-void notify_callback(Glib::RefPtr<Gio::AsyncResult>& res, TrNotification const& n)
+void notify_callback(Glib::RefPtr<Gio::AsyncResult> const& res, TrNotification const& n)
 {
     auto result = Glib::VariantContainerBase();
 

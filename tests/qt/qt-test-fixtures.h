@@ -112,5 +112,5 @@ public:
     }
 
 private:
-    QTemporaryDir sandbox_{};
+    QTemporaryDir sandbox_;
 };

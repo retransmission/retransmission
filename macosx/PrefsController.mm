@@ -970,20 +970,17 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
 - (void)helpForScript:(id)sender
 {
-    [NSHelpManager.sharedHelpManager openHelpAnchor:@"script"
-                                             inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
+    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful.
 }
 
 - (void)helpForPeers:(id)sender
 {
-    [NSHelpManager.sharedHelpManager openHelpAnchor:@"peers"
-                                             inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
+    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful
 }
 
 - (void)helpForRemote:(id)sender
 {
-    [NSHelpManager.sharedHelpManager openHelpAnchor:@"remote"
-                                             inBook:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleHelpBookName"]];
+    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful
 }
 
 - (void)rpcUpdatePrefs

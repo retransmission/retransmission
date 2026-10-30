@@ -66,8 +66,6 @@ private:
     std::vector<std::string> adds_;
 };
 
-} // namespace
-
 // The COM transport answers one question. Is a Qt client already running, and if so,
 // how do I reach it? A transport that starts a client to answer
 // leaves a stray process holding a torrent the user cannot see.
@@ -183,6 +181,8 @@ private slots:
         QVERIFY(instance.adds() == std::vector<std::string>{ "magnet:?xt=old" });
     }
 };
+
+} // namespace
 
 int main(int argc, char** argv)
 {
