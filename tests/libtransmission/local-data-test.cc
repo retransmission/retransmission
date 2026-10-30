@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cerrno> // ENOSPC
 #include <chrono>
 #include <condition_variable>
 #include <cstddef> // size_t
@@ -45,9 +46,9 @@ namespace
 class StubBackend final : public tr::LocalData::Backend
 {
 public:
-    [[nodiscard]] tr_error_code_t read(
-        [[maybe_unused]] tr_torrent_id_t tor_id,
-        tr_byte_span_t byte_span,
+    [[nodiscard]] tr_error read(
+        [[maybe_unused]] tr_torrent_id_t const tor_id,
+        tr_byte_span_t const byte_span,
         tr::LocalData::BlockData& setme) override
     {
         read_span = byte_span;
@@ -55,9 +56,9 @@ public:
         return read_err;
     }
 
-    [[nodiscard]] tr_error_code_t test_piece(
-        [[maybe_unused]] tr_torrent_id_t tor_id,
-        tr_piece_index_t piece,
+    [[nodiscard]] tr_error test_piece(
+        [[maybe_unused]] tr_torrent_id_t const tor_id,
+        tr_piece_index_t const piece,
         tr_sha1_digest_t& setme_hash) override
     {
         tested_piece = piece;
@@ -65,9 +66,9 @@ public:
         return test_err;
     }
 
-    [[nodiscard]] tr_error_code_t write(
-        [[maybe_unused]] tr_torrent_id_t tor_id,
-        tr_byte_span_t byte_span,
+    [[nodiscard]] tr_error write(
+        [[maybe_unused]] tr_torrent_id_t const tor_id,
+        tr_byte_span_t const byte_span,
         tr::LocalData::BlockData const& data) override
     {
         write_span = byte_span;
@@ -75,15 +76,15 @@ public:
         return write_err;
     }
 
-    [[nodiscard]] tr_error_code_t move([[maybe_unused]] tr_torrent_id_t id, std::string_view const parent) override
+    [[nodiscard]] tr_error move([[maybe_unused]] tr_torrent_id_t const id, std::string_view const parent) override
     {
         moved_to = std::string{ parent };
         return move_err;
     }
 
-    [[nodiscard]] tr_error_code_t remove(
-        [[maybe_unused]] tr_torrent_id_t id,
-        [[maybe_unused]] tr_torrent_remove_func remove_func) override
+    [[nodiscard]] tr_error remove(
+        [[maybe_unused]] tr_torrent_id_t const id,
+        [[maybe_unused]] tr_torrent_remove_func const remove_func) override
     {
         remove_called = true;
         return remove_err;
@@ -114,11 +115,11 @@ public:
         closed_file = std::pair{ tor_id, file_num };
     }
 
-    tr_error_code_t read_err = 0;
-    tr_error_code_t test_err = 0;
-    tr_error_code_t write_err = 0;
-    tr_error_code_t move_err = 0;
-    tr_error_code_t remove_err = 0;
+    tr_error read_err;
+    tr_error test_err;
+    tr_error write_err;
+    tr_error move_err;
+    tr_error remove_err;
     bool remove_called = false;
     bool close_all_called = false;
     tr_byte_span_t read_span{};
@@ -282,6 +283,42 @@ TEST(LocalData, AdminOperationsDelegate)
 
     local_data.close_all();
     EXPECT_TRUE(raw_backend->close_all_called);
+
+    local_data.shutdown();
+}
+
+TEST(LocalData, ErrorsKeepTheBackendsMessage)
+{
+    auto const expected = tr_error{ ENOSPC, "injected backend error" };
+    auto backend = std::make_unique<StubBackend>();
+    backend->read_err = expected;
+    backend->test_err = expected;
+    backend->write_err = expected;
+    backend->move_err = expected;
+    backend->remove_err = expected;
+    auto local_data = tr::LocalData{ std::move(backend) };
+
+    auto errors = std::vector<tr_error>{};
+    local_data.read(1, { .begin = 0U, .end = 3U }, [&errors](auto, auto, tr_error const& error, auto) {
+        errors.push_back(error);
+    });
+    local_data.test_piece(1, 0, [&errors](auto, auto, tr_error const& error, auto) { errors.push_back(error); });
+    local_data.write(
+        1,
+        { .begin = 0U, .end = 3U },
+        std::make_unique<tr::LocalData::BlockData>(),
+        [&errors](auto, auto, tr_error const& error) { errors.push_back(error); });
+    local_data.move(
+        1,
+        [] { return std::string{ "/new" }; },
+        [&errors](auto, auto, tr_error const& error) { errors.push_back(error); });
+    local_data.remove(1, {}, [&errors](auto, tr_error const& error) { errors.push_back(error); });
+
+    ASSERT_EQ(5U, std::size(errors));
+    for (auto const& error : errors) {
+        EXPECT_EQ(expected.message(), error.message());
+        EXPECT_EQ(expected.code(), error.code());
+    }
 
     local_data.shutdown();
 }
@@ -615,6 +652,8 @@ TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
         patternBlock(0U, BlockSize),
         [&done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
             EXPECT_TRUE(tr_error_is_enospc(error.code())) << error;
+            EXPECT_TRUE(error.message().contains("injected preallocation error")) << error;
+            EXPECT_TRUE(error.message().contains("data.bin")) << error;
             done = true;
         });
 
