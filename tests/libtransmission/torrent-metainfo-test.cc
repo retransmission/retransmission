@@ -90,7 +90,7 @@ TEST_F(TorrentMetainfoTest, bucket)
 
     for (auto const& [benc, expected_parse_result] : Tests) {
         auto metainfo = tr_torrent_metainfo{};
-        EXPECT_EQ(expected_parse_result, metainfo.parse_benc(benc));
+        EXPECT_EQ(expected_parse_result, metainfo.parse_benc(benc)) << "Benc: " << benc;
     }
 }
 
