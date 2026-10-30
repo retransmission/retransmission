@@ -969,7 +969,7 @@ void tr_daemon::reconfigure()
 
 void tr_daemon::stop()
 {
-    event_base_loopexit(ev_base_, nullptr);
+    event_base_loopexit(ev_base_.get(), nullptr);
 }
 
 int tr_daemon::start([[maybe_unused]] bool foreground)
@@ -977,9 +977,9 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     sd_notifyf(0, "MAINPID=%d\n", static_cast<int>(getpid()));
 
     /* setup event state */
-    ev_base_ = event_base_new();
+    ev_base_.reset(event_base_new());
 
-    if (ev_base_ == nullptr || !setup_signals()) {
+    if (!ev_base_ || !setup_signals()) {
         auto const error_code = errno;
         auto const errmsg = fmt::format(
             "Couldn't initialize daemon: {error} ({error_code})",
@@ -1090,9 +1090,9 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
                 return on_file_added(session, dirname, basename);
             };
 
-            auto timer_maker = tr::EvTimerMaker{ ev_base_ };
+            auto timer_maker = tr::EvTimerMaker{ ev_base_.get() };
             watchdir = force_generic ? Watchdir::create_generic(dir, handler, timer_maker) :
-                                       Watchdir::create(dir, handler, timer_maker, ev_base_);
+                                       Watchdir::create(dir, handler, timer_maker, ev_base_.get());
         }
     }
 
@@ -1119,7 +1119,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     event* status_ev = nullptr;
     {
         static constexpr auto OneSec = timeval{ .tv_sec = 1, .tv_usec = 0 }; // 1 second
-        status_ev = event_new(ev_base_, -1, EV_PERSIST, &::periodic_update, this);
+        status_ev = event_new(ev_base_.get(), -1, EV_PERSIST, &::periodic_update, this);
 
         if (status_ev == nullptr) {
             auto const error_code = errno;
@@ -1145,7 +1145,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     sd_notify(0, "READY=1\n");
 
     /* Run daemon event loop */
-    if (event_base_dispatch(ev_base_) == -1) {
+    if (event_base_dispatch(ev_base_.get()) == -1) {
         auto const error_code = errno;
         tr_logAddError(
             fmt::format(
@@ -1169,8 +1169,6 @@ CLEANUP:
 
     cleanup_signals();
 
-    event_base_free(ev_base_);
-
     tr_sessionSaveSettings(my_session_, config_dir_, settings_);
     tr_sessionClose(my_session_);
     pump_log_messages(log_stream_);
@@ -1190,6 +1188,8 @@ CLEANUP:
     if (pidfile_created) {
         tr_sys_path_remove(pid_filename);
     }
+
+    ev_base_.reset();
 
     sd_notify(0, "STATUS=\n");
 

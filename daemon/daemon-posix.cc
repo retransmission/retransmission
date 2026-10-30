@@ -79,7 +79,7 @@ bool tr_daemon::setup_signals()
         return false;
     }
 
-    if (auto const sig_ev = event_new(ev_base_, sigfd_, EV_READ | EV_PERSIST, handle_signals, this)) {
+    if (auto const sig_ev = event_new(ev_base_.get(), sigfd_, EV_READ | EV_PERSIST, handle_signals, this)) {
         sig_evs_.emplace_back(sig_ev);
         return event_add(sig_ev, nullptr) >= 0;
     }
@@ -119,9 +119,9 @@ bool setup_signal(
 
 bool tr_daemon::setup_signals()
 {
-    return setup_signal(ev_base_, sig_evs_, SIGHUP, reconfigure_marshall, this) &&
-        setup_signal(ev_base_, sig_evs_, SIGINT, stop_marshall, this) &&
-        setup_signal(ev_base_, sig_evs_, SIGTERM, stop_marshall, this);
+    return setup_signal(ev_base_.get(), sig_evs_, SIGHUP, reconfigure_marshall, this) &&
+        setup_signal(ev_base_.get(), sig_evs_, SIGINT, stop_marshall, this) &&
+        setup_signal(ev_base_.get(), sig_evs_, SIGTERM, stop_marshall, this);
 }
 
 #endif /* HAVE_SYS_SIGNALFD_H */
