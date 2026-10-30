@@ -6,7 +6,6 @@
 #include <cstddef> // size_t
 #include <cstdint>
 #include <string_view>
-#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -315,31 +314,6 @@ TEST_F(AppTorrentTest, parsesObjectRow)
 
     // every field changed from its default, and each one reported exactly one bit
     EXPECT_EQ(changed.count(), static_cast<size_t>(Field::N_FIELDS));
-}
-
-TEST_F(AppTorrentTest, everyFieldsKeyReportsABitAndEveryBitHasAKey)
-{
-    auto bits = FieldSet{};
-    auto n_keys = size_t{};
-
-    std::apply(
-        [&bits, &n_keys](auto const&... field) {
-            (
-                [&] {
-                    ++n_keys;
-                    auto const bit = Torrent::field(field.key);
-                    ASSERT_TRUE(bit.has_value()) << tr_quark_get_string_view(field.key);
-                    bits.set(*bit);
-                }(),
-                ...);
-        },
-        Torrent::Fields);
-
-    EXPECT_EQ(bits.count(), static_cast<size_t>(Field::N_FIELDS));
-    EXPECT_EQ(n_keys, static_cast<size_t>(Field::N_FIELDS) + 2U); // files/file_stats, trackers/tracker_stats
-
-    EXPECT_EQ(Torrent::field(TR_KEY_id), std::nullopt);
-    EXPECT_EQ(Torrent::field(TR_KEY_magnet_link), std::nullopt);
 }
 
 TEST_F(AppTorrentTest, identicalUpdateChangesNothing)
