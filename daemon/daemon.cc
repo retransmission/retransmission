@@ -22,7 +22,6 @@
 #ifdef _WIN32
 #include <process.h> /* getpid */
 #else
-#include <sys/time.h> /* timeval */
 #include <unistd.h> /* getpid */
 #endif
 
@@ -568,11 +567,6 @@ void pump_log_messages(FILE* log_stream)
     }
 }
 
-void periodic_update(evutil_socket_t /*fd*/, short /*what*/, void* arg)
-{
-    static_cast<tr_daemon*>(arg)->periodic_update();
-}
-
 [[nodiscard]] auto get_default_settings()
 {
     auto defaults = tr::Settings{ 6U };
@@ -1078,6 +1072,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         reconfigure();
     }
 
+    auto timer_maker = tr::EvTimerMaker{ ev_base_.get() };
+
     /* maybe add a watchdir */
     auto watchdir = std::unique_ptr<Watchdir>{};
     if (map.value_if<bool>(TR_KEY_watch_dir_enabled).value_or(false)) {
@@ -1090,7 +1086,6 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
                 return on_file_added(session, dirname, basename);
             };
 
-            auto timer_maker = tr::EvTimerMaker{ ev_base_.get() };
             watchdir = force_generic ? Watchdir::create_generic(dir, handler, timer_maker) :
                                        Watchdir::create(dir, handler, timer_maker, ev_base_.get());
         }
@@ -1116,31 +1111,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 #endif
 
     /* Create new timer event to report daemon status */
-    event* status_ev = nullptr;
-    {
-        static constexpr auto OneSec = timeval{ .tv_sec = 1, .tv_usec = 0 }; // 1 second
-        status_ev = event_new(ev_base_.get(), -1, EV_PERSIST, &::periodic_update, this);
-
-        if (status_ev == nullptr) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't create event: {error} ({error_code})",
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
-            goto CLEANUP;
-        }
-
-        if (event_add(status_ev, &OneSec) == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't add event: {error} ({error_code})",
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
-            goto CLEANUP;
-        }
-    }
+    auto status_timer = timer_maker.create([this] { periodic_update(); });
+    status_timer->start_repeating(1s);
 
     sd_notify(0, "READY=1\n");
 
@@ -1160,12 +1132,9 @@ CLEANUP:
 
     fmt::print("Closing {:s} session...", TR_PROJ_APPNAME);
 
-    watchdir.reset();
+    status_timer.reset();
 
-    if (status_ev != nullptr) {
-        event_del(status_ev);
-        event_free(status_ev);
-    }
+    watchdir.reset();
 
     cleanup_signals();
 
