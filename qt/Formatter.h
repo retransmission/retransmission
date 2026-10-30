@@ -10,6 +10,8 @@
 #include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
 
+#include <libtransmission/values.h>
+
 class Formatter
 {
     Q_DECLARE_TR_FUNCTIONS(Formatter)
@@ -18,8 +20,7 @@ public:
     Formatter() = delete;
 
     [[nodiscard]] static QString memoryToString(int64_t bytes);
-    [[nodiscard]] static QString percentToString(double x);
-    [[nodiscard]] static QString ratioToString(double ratio);
+    [[nodiscard]] static QString percentToString(tr::Values::Percent percent); // "50%"
     [[nodiscard]] static QString storageToString(int64_t bytes);
     [[nodiscard]] static QString storageToString(uint64_t bytes);
     [[nodiscard]] static QString timeToString(int seconds);

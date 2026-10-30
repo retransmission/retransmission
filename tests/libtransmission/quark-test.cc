@@ -3,7 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <cassert>
 #include <cstddef> // size_t
 #include <string>
 #include <string_view>
@@ -20,7 +19,6 @@ TEST_F(QuarkTest, allPredefinedKeysCanBeLookedUp)
         auto const str = tr_quark_get_string_view(i);
         auto const q = tr_quark_lookup(str);
         ASSERT_TRUE(q.has_value());
-        assert(q.has_value());
         EXPECT_EQ(i, *q);
     }
 }

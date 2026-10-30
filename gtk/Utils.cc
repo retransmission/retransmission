@@ -15,8 +15,7 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
-#include <libtransmission/transmission.h> /* TR_RATIO_NA, TR_RATIO_INF */
-#include <libtransmission/utils.h> /* tr_strratio() */
+#include <libtransmission/transmission.h>
 #include <libtransmission/values.h>
 #include <libtransmission/version.h> /* SHORT_VERSION_STRING */
 #include <libtransmission/web-utils.h>
@@ -141,11 +140,6 @@ Glib::ustring gtr_get_unicode_string(GtrUnicode uni)
     default:
         return "err";
     }
-}
-
-Glib::ustring tr_strlratio(double ratio)
-{
-    return tr_strratio(ratio, Q_("None"), gtr_get_unicode_string(GtrUnicode::Inf).c_str());
 }
 
 Glib::ustring tr_strlsize(tr::Values::Storage const& storage)

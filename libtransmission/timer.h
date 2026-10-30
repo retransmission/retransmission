@@ -54,7 +54,7 @@ public:
     using CStyleCallback = void (*)(void* user_data);
     void set_callback(CStyleCallback callback, void* user_data)
     {
-        set_callback([user_data, callback]() { callback(user_data); });
+        set_callback([user_data, callback] { callback(user_data); });
     }
 };
 

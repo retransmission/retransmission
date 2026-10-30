@@ -97,7 +97,7 @@ void SqueezeLabel::updateAccessibilityIfNeeded()
 
     if (auto const new_text = text(); new_text != old_text_) {
         if (QAccessible::isActive()) {
-            QTimer::singleShot(0, this, [this, old_text = old_text_, new_text]() {
+            QTimer::singleShot(0, this, [this, old_text = old_text_, new_text] {
                 QAccessibleTextUpdateEvent event(this, 0, old_text, new_text);
                 event.setCursorPosition(selectionStart());
                 QAccessible::updateAccessibility(&event);
@@ -110,7 +110,7 @@ void SqueezeLabel::updateAccessibilityIfNeeded()
     // NOTE: Due to QLabel implementation specifics, this block will never be entered :(
     if (auto const new_position = selectionStart(); new_position != old_position_ && !hasSelectedText()) {
         if (QAccessible::isActive()) {
-            QTimer::singleShot(0, this, [this, new_position]() {
+            QTimer::singleShot(0, this, [this, new_position] {
                 QAccessibleTextCursorEvent event(this, new_position);
                 QAccessible::updateAccessibility(&event);
             });

@@ -66,9 +66,9 @@ void setLabel(Gtk::Label* l, Glib::ustring const& str)
     gtr_label_set_text(*l, str);
 }
 
-void setLabelFromRatio(Gtk::Label* l, double d)
+void setLabelFromRatio(Gtk::Label* l, tr::Values::Ratio const& ratio)
 {
-    setLabel(l, tr_strlratio(d));
+    setLabel(l, ratio.to_string());
 }
 
 [[nodiscard]] auto startedTimesText(uint64_t n)

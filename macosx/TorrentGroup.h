@@ -4,10 +4,12 @@
 
 #import <Foundation/Foundation.h>
 
+#include <libtransmission/values.h>
+
 @class Torrent;
 
 typedef struct {
-    CGFloat ratio;
+    tr::Values::Ratio ratio;
     CGFloat uploadRate;
     CGFloat downloadRate;
 } TorrentGroupData;

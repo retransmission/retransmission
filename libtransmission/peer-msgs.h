@@ -122,7 +122,7 @@ public:
 
     virtual void pulse() = 0;
 
-    virtual void on_torrent_got_metainfo() noexcept = 0;
+    virtual void on_torrent_got_metainfo() = 0;
 
     virtual void on_piece_completed(tr_piece_index_t) = 0;
 

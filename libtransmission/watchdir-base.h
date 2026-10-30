@@ -33,7 +33,7 @@ public:
         , callback_{ std::move(callback) }
         , retry_timer_{ timer_maker.create() }
     {
-        retry_timer_->set_callback([this]() { onRetryTimer(); });
+        retry_timer_->set_callback([this] { onRetryTimer(); });
     }
 
     ~BaseWatchdir() override = default;
@@ -109,7 +109,7 @@ private:
         if (auto next_kick_time = nextKickTime(); next_kick_time) {
             using namespace std::chrono;
             auto const now = steady_clock::now();
-            auto duration = duration_cast<milliseconds>(*next_kick_time - now);
+            auto const duration = duration_cast<milliseconds>(*next_kick_time - now);
             retry_timer_->start_single_shot(duration);
         }
     }

@@ -196,7 +196,7 @@ void MainWindow::Impl::on_popup_menu([[maybe_unused]] double event_x, [[maybe_un
         popup_menu_->set_has_arrow(false);
         popup_menu_->set_halign(view_->get_direction() == Gtk::TextDirection::RTL ? Gtk::Align::END : Gtk::Align::START);
 
-        view_->signal_destroy().connect([this]() {
+        view_->signal_destroy().connect([this] {
             popup_menu_->unparent();
             popup_menu_ = nullptr;
         });
@@ -298,13 +298,13 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
     column_->pack_start(*renderer_, false);
     column_->add_attribute(renderer_->property_torrent(), torrent_cols.self);
 
-    view->signal_popup_menu().connect_notify([this]() { on_popup_menu(0, 0); });
+    view->signal_popup_menu().connect_notify([this] { on_popup_menu(0, 0); });
     view->signal_row_activated().connect(
         [](auto const& /*path*/, auto* /*column*/) { gtr_action_activate("show-torrent-properties"); });
 
     view->set_model(model);
 
-    view->get_selection()->signal_changed().connect([this]() { signal_selection_changed_.emit(); });
+    view->get_selection()->signal_changed().connect([this] { signal_selection_changed_.emit(); });
 #endif
 
     setup_item_view_button_event_handling(
@@ -520,7 +520,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createRatioMenu(Glib::RefPtr<Gio:
         [this](Glib::VariantBase const& value) { onRatioSet(Glib::VariantBase::cast_dynamic<VariantDouble>(value).get()); });
 
     for (auto const ratio : stockRatios) {
-        auto item = Gio::MenuItem::create(tr_strlratio(ratio), full_stock_action_name);
+        auto item = Gio::MenuItem::create(Ratio::from_double(ratio).to_string(), full_stock_action_name);
         item->set_action_and_target(full_stock_action_name, VariantDouble::create(ratio));
         section->append_item(item);
     }
@@ -583,7 +583,7 @@ void MainWindow::Impl::onOptionsClicked()
         ratio_menu_info_,
         fmt::format(
             fmt::runtime(_("Stop at Ratio ({ratio})")),
-            fmt::arg("ratio", tr_strlratio(prefs_.get<double>(TR_KEY_seed_ratio_limit)))),
+            fmt::arg("ratio", Ratio::from_double(prefs_.get<double>(TR_KEY_seed_ratio_limit)).to_string())),
         TR_KEY_seed_ratio_limited);
 }
 
@@ -702,12 +702,12 @@ MainWindow::Impl::Impl(
 #if GTKMM_CHECK_VERSION(4, 0, 0)
     for (auto* child = gear_button->get_first_child(); child != nullptr; child = child->get_next_sibling()) {
         if (auto* popover = dynamic_cast<Gtk::Popover*>(child); popover != nullptr) {
-            popover->signal_show().connect([this]() { onOptionsClicked(); }, false);
+            popover->signal_show().connect([this] { onOptionsClicked(); }, false);
             break;
         }
     }
 #else
-    gear_button->signal_clicked().connect([this]() { onOptionsClicked(); }, false);
+    gear_button->signal_clicked().connect([this] { onOptionsClicked(); }, false);
 #endif
 
     /* turtle */
@@ -773,7 +773,7 @@ void MainWindow::Impl::updateStats()
                 fmt::runtime(_("Down: {downloaded_size}, Up: {uploaded_size}")),
                 fmt::arg("downloaded_size", tr_strlsize(stats.downloadedBytes)),
                 fmt::arg("uploaded_size", tr_strlsize(stats.uploadedBytes))) :
-            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", tr_strlratio(stats.ratio))));
+            fmt::format(fmt::runtime(_("Ratio: {ratio}")), fmt::arg("ratio", stats.ratio.to_string())));
 }
 
 void MainWindow::Impl::updateSpeeds()

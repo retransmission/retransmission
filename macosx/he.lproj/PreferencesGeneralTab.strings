@@ -5,8 +5,6 @@
 "Total download rate" = "קצב ההורדה הכולל";
 "Total upload rate" = "קצב ההעלאה הכול";
 "Only when torrents are downloading" = "רק כאשר ההעברות הן הורדות";
-"Auto resize:" = "שינוי גודל אוטומטי:";
-"Automatically size window to fit all torrents" = "להתאים את גודל החלון להצגת כל ההעברות אוטומטית";
 "Reset" = "איפוס";
 "Reset all alerts:" = "איפוס כל ההתראות:";
 "Automatically check daily" = "לבדוק יומית אוטומטית";

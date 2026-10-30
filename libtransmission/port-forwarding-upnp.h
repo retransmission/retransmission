@@ -21,7 +21,7 @@ struct tr_upnp;
 
 [[nodiscard]] tr_upnp* tr_upnpInit();
 
-void tr_upnpClose(tr_upnp* handle);
+void tr_upnpClose(tr_upnp const* handle);
 
 [[nodiscard]] tr_port_forwarding_state tr_upnpPulse(
     tr_upnp* handle,

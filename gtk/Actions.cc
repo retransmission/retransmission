@@ -44,7 +44,7 @@ namespace
 
 Session* myCore = nullptr;
 
-void action_cb(Gio::SimpleAction& action, gpointer user_data)
+void action_cb(Gio::SimpleAction const& action, gpointer user_data)
 {
     gtr_actions_handler(action.get_name(), user_data);
 }
@@ -223,7 +223,7 @@ Glib::RefPtr<Gio::ListModel> gtr_shortcuts_get_from_menu(Glib::RefPtr<Gio::MenuM
             Glib::ustring action_name;
             Glib::ustring action_accel;
 
-            for (auto it = link->iterate_item_attributes(i); it->next();) {
+            for (auto const it = link->iterate_item_attributes(i); it->next();) {
                 if (auto const name = it->get_name(); name == "action") {
                     action_name = Glib::VariantBase::cast_dynamic<VariantString>(it->get_value()).get();
                 } else if (name == "accel") {
@@ -238,7 +238,7 @@ Glib::RefPtr<Gio::ListModel> gtr_shortcuts_get_from_menu(Glib::RefPtr<Gio::MenuM
                         Gtk::NamedAction::create(action_name)));
             }
 
-            for (auto it = link->iterate_item_links(i); it->next();) {
+            for (auto const it = link->iterate_item_links(i); it->next();) {
                 links.push(it->get_value());
             }
         }

@@ -20,7 +20,7 @@
 
 struct tr_session;
 
-using RpcResponse = tr::app::RpcResponse;
+using tr::app::RpcResponse;
 
 // Qt wrapper for tr::app::RpcClient
 class RpcClient : public QObject

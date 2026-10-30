@@ -2,8 +2,6 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/utils.h> //tr_getRatio()
-
 #import "InfoActivityViewController.h"
 #import "NSStringAdditions.h"
 #import "PiecesView.h"
@@ -201,11 +199,11 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         self.fStateField.stringValue = torrent.stateString;
 
-        NSString* progressString = [NSString percentString:torrent.progress longDecimals:YES];
+        NSString* progressString = [NSString percentString:torrent.progress];
         if (torrent.folder) {
             NSString* progressSelectedString = [NSString
                 stringWithFormat:NSLocalizedString(@"%@ selected", "Inspector -> Activity tab -> progress"),
-                                 [NSString percentString:torrent.progressDone longDecimals:YES]];
+                                 [NSString percentString:torrent.progressDone]];
             progressString = [progressString stringByAppendingFormat:@" (%@)", progressSelectedString];
         }
         self.fProgressField.stringValue = progressString;
@@ -235,7 +233,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         [self.fPiecesView updateView];
     } else if (numberSelected > 1) {
-        self.fRatioField.stringValue = [NSString stringForRatio:tr_getRatio(uploadedTotal, downloadedTotal)];
+        self.fRatioField.stringValue = [NSString stringForRatio:tr::Values::Ratio{ uploadedTotal, downloadedTotal }];
     }
 }
 

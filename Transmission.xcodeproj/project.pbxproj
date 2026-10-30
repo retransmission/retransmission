@@ -1018,9 +1018,6 @@
 				0AD81F54304EC83D00C22874 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */,
 				0AD81F55304EC83D00C22874 /* Exceptions for "macosx" folder in "QuickLookExtension" target */,
 			);
-			explicitFolders = (
-				TransmissionHelp,
-			);
 			path = macosx;
 			sourceTree = "<group>";
 		};

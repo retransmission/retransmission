@@ -28,6 +28,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/types.h>
+#include <libtransmission/values.h>
 
 #include "IconCache.h"
 #include "Speed.h"
@@ -47,6 +48,7 @@ struct Peer {
     int port = {};
     Speed rate_to_client;
     Speed rate_to_peer;
+    std::optional<uint64_t> have_total;
     double progress = {};
 
     template<auto MemberPtr>
@@ -58,6 +60,7 @@ struct Peer {
         Field<&Peer::address>{ TR_KEY_address },
         Field<&Peer::client_name>{ TR_KEY_client_name },
         Field<&Peer::flags>{ TR_KEY_flag_str },
+        Field<&Peer::have_total>{ TR_KEY_have_total },
         Field<&Peer::is_encrypted>{ TR_KEY_is_encrypted },
         Field<&Peer::port>{ TR_KEY_port },
         Field<&Peer::progress>{ TR_KEY_progress },
@@ -279,6 +282,9 @@ public:
 
     [[nodiscard]] std::optional<double> getSeedRatioLimit() const;
 
+    // Progress toward the seed ratio limit, or nullopt without one.
+    [[nodiscard]] std::optional<tr::Values::Percent> seedRatioPercentDone() const;
+
     [[nodiscard]] constexpr auto haveUnverified() const noexcept
     {
         return have_unchecked_;
@@ -304,15 +310,11 @@ public:
         return piece_size_;
     }
 
-    [[nodiscard]] constexpr auto metadataPercentDone() const noexcept
-    {
-        return metadata_percent_complete_;
-    }
+    [[nodiscard]] tr::Values::Percent metadataPercentDone() const noexcept;
 
-    [[nodiscard]] constexpr auto hasMetadata() const noexcept
-    {
-        return metadataPercentDone() >= 1.0;
-    }
+    [[nodiscard]] bool hasMetadata() const noexcept;
+
+    [[nodiscard]] tr::Values::Percent peerProgress(Peer const& peer) const noexcept;
 
     [[nodiscard]] constexpr auto pieceCount() const noexcept
     {
@@ -329,20 +331,16 @@ public:
         return uploaded_ever_;
     }
 
-    [[nodiscard]] constexpr auto ratio() const noexcept
+    // The daemon's own ratio.
+    // 2.x and 3.x daemons divide by bytes downloaded, later ones by `size_when_done`.
+    [[nodiscard]] tr::Values::Ratio ratio() const noexcept
     {
-        return upload_ratio_;
+        return tr::Values::Ratio::from_double(upload_ratio_);
     }
 
-    [[nodiscard]] constexpr double percentComplete() const noexcept
-    {
-        return percent_complete_;
-    }
+    [[nodiscard]] tr::Values::Percent percentComplete() const noexcept;
 
-    [[nodiscard]] constexpr double percentDone() const noexcept
-    {
-        return percent_done_;
-    }
+    [[nodiscard]] tr::Values::Percent percentDone() const noexcept;
 
     [[nodiscard]] constexpr auto failedEver() const noexcept
     {
@@ -423,10 +421,7 @@ public:
         return upload_speed_;
     }
 
-    [[nodiscard]] constexpr auto getVerifyProgress() const noexcept
-    {
-        return recheck_progress_;
-    }
+    [[nodiscard]] tr::Values::Percent getVerifyProgress() const noexcept;
 
     [[nodiscard]] bool includesTracker(QString const& sitename) const;
 
@@ -578,6 +573,7 @@ public:
         ACTIVITY_DATE,
         ADDED_DATE,
         BANDWIDTH_PRIORITY,
+        CHECKED_BYTES,
         COMMENT,
         CREATOR,
         DATE_CREATED,
@@ -604,15 +600,15 @@ public:
         LABELS,
         LEFT_UNTIL_DONE,
         MANUAL_ANNOUNCE_TIME,
+        METADATA_HAVE,
         METADATA_PERCENT_COMPLETE,
+        METADATA_SIZE,
         NAME,
         PEERS,
         PEERS_CONNECTED,
         PEERS_GETTING_FROM_US,
         PEERS_SENDING_TO_US,
         PEER_LIMIT,
-        PERCENT_COMPLETE,
-        PERCENT_DONE,
         PIECE_COUNT,
         PIECE_SIZE,
         PRIMARY_MIME_TYPE,
@@ -644,6 +640,8 @@ public:
     fields_t update(std::span<keyval_t const> keyvals);
 
 private:
+    [[nodiscard]] tr::Values::Percent progressOf(uint64_t have, uint64_t total) const noexcept;
+
     tr_torrent_id_t const id_;
 
     bool download_limited_ = {};
@@ -690,9 +688,12 @@ private:
     uint64_t upload_limit_ = {};
     uint64_t uploaded_ever_ = {};
 
+    // daemons without these keys send only `metadata_percent_complete` and `recheck_progress`
+    std::optional<uint64_t> checked_bytes_;
+    std::optional<uint64_t> metadata_have_;
+    std::optional<uint64_t> metadata_size_;
+
     double metadata_percent_complete_ = {};
-    double percent_complete_ = {};
-    double percent_done_ = {};
     double recheck_progress_ = {};
     double seed_ratio_limit_ = {};
     double upload_ratio_ = {};

@@ -5,8 +5,6 @@
 "Total download rate" = "Общую скорость скачивания";
 "Total upload rate" = "Общую скорость раздачи";
 "Only when torrents are downloading" = "Только во время скачивания";
-"Auto resize:" = "Размер окна:";
-"Automatically size window to fit all torrents" = "Автоматически подстраивать размер окна";
 "Reset" = "Сбросить";
 "Reset all alerts:" = "Сбросить предупреждения:";
 "Automatically check daily" = "Проверять наличие обновлений каждый день";

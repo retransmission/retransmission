@@ -96,7 +96,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     bool is_seed)
 {
     TR_ASSERT(session != nullptr);
-    auto lock = session->unique_lock();
+    auto const lock = session->unique_lock();
 
     auto const io = std::shared_ptr<tr_peerIo>{ new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed } };
     io->set_socket(std::move(socket));
@@ -139,14 +139,13 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
     // N.B. This array needs to be kept in the same order as
     // the tr_preferred_transport enum.
     auto const get_socket = std::array<std::function<std::shared_ptr<tr_peer_socket>()>, PreferredTransportCount>{
-        [&]() -> std::shared_ptr<tr_peer_socket> {
+        [&] -> std::shared_ptr<tr_peer_socket> {
             if (utp) {
                 return tr_peer_socket_utp::create(socket_address, session->utp_context, session->timerMaker());
             }
             return {};
         },
-
-        [&] { return tr_peer_socket_tcp::create(*session, socket_address, client_is_seed); }
+        [&] { return tr_peer_socket_tcp::create(*session, socket_address, client_is_seed); },
     };
 
     for (auto const& transport : session->preferred_transports()) {
@@ -180,6 +179,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
     return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed);
 }
 
+// NOLINTNEXTLINE(bugprone-exception-escape): logging throws
 tr_peerIo::~tr_peerIo()
 {
     auto const lock = session_->unique_lock();

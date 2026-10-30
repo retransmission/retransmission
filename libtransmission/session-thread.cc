@@ -147,7 +147,7 @@ public:
         thread_id_ = thread_.get_id();
 
         // wait for the session thread's main loop to start
-        is_looping_cv_.wait(lock, [this]() { return is_looping_.load(); });
+        is_looping_cv_.wait(lock, [this] { return is_looping_.load(); });
     }
 
     tr_session_thread_impl(tr_session_thread_impl&&) = delete;
@@ -169,7 +169,7 @@ public:
         // as soon as there are no events. This step is to give pending tasks
         // a chance to finish.
         auto lock = std::unique_lock(is_looping_mutex_);
-        is_looping_cv_.wait_for(lock, Deadline, [this]() { return !is_looping_; });
+        is_looping_cv_.wait_for(lock, Deadline, [this] { return !is_looping_; });
         event_base_loopexit(event_base(), nullptr);
         thread_.join();
     }

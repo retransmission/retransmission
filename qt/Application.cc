@@ -38,6 +38,7 @@
 
 #include "AccessibleSqueezeLabel.h"
 #include "AddData.h"
+#include "Formatter.h"
 #include "MainWindow.h"
 #include "OptionsDialog.h"
 #include "Prefs.h"
@@ -81,7 +82,7 @@ auto constexpr InternRefreshIntervalMsec = 5 * 60 * 1000;
 
 void initUnits()
 {
-    using Config = tr::Values::Config;
+    using tr::Values::Config;
 
     Config::speed = { Config::Base::Kilo,
                       QObject::tr("B/s").toStdString(),
@@ -103,6 +104,8 @@ void initUnits()
                         QObject::tr("MB").toStdString(),
                         QObject::tr("GB").toStdString(),
                         QObject::tr("TB").toStdString() };
+
+    Config::ratio = { .none = Formatter::tr("None").toStdString(), .infinity = "\xE2\x88\x9E" };
 }
 
 [[nodiscard]] auto makeWindowIcon()

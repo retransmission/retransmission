@@ -347,7 +347,7 @@ void MakeDialog::Impl::onResponse(int response)
     // build the .torrent
     progress_dialog_ = MakeProgressDialog::create(target, *builder_, builder_->make_checksums(), core_);
     progress_dialog_->set_transient_for(dialog_);
-    gtr_window_on_close(*progress_dialog_, [this]() {
+    gtr_window_on_close(*progress_dialog_, [this] {
         auto const success = progress_dialog_->success();
         progress_dialog_.reset();
         if (success) {
@@ -392,7 +392,7 @@ void MakeDialog::Impl::updatePiecesLabel()
 void MakeDialog::Impl::configurePieceSizeScale(uint32_t piece_size)
 {
     // the below lower & upper bounds would allow piece size selection between approx 16KiB - 256MiB
-    auto adjustment = Gtk::Adjustment::create(log2(piece_size), 14, 28, 1.0, 1.0);
+    auto const adjustment = Gtk::Adjustment::create(log2(piece_size), 14, 28, 1.0, 1.0);
     piece_size_scale_->set_adjustment(adjustment);
     piece_size_scale_->set_visible(true);
 }
@@ -517,19 +517,19 @@ MakeDialog::Impl::Impl(MakeDialog& dialog, Glib::RefPtr<Gtk::Builder> const& bui
 
     destination_chooser_->set_filename(Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DESKTOP)));
 
-    folder_radio_->signal_toggled().connect([this]() { onSourceToggled(folder_radio_, folder_chooser_); });
-    folder_chooser_->signal_selection_changed().connect([this]() { onChooserChosen(folder_chooser_); });
+    folder_radio_->signal_toggled().connect([this] { onSourceToggled(folder_radio_, folder_chooser_); });
+    folder_chooser_->signal_selection_changed().connect([this] { onChooserChosen(folder_chooser_); });
 
-    file_radio_->signal_toggled().connect([this]() { onSourceToggled(file_radio_, file_chooser_); });
-    file_chooser_->signal_selection_changed().connect([this]() { onChooserChosen(file_chooser_); });
+    file_radio_->signal_toggled().connect([this] { onSourceToggled(file_radio_, file_chooser_); });
+    file_chooser_->signal_selection_changed().connect([this] { onChooserChosen(file_chooser_); });
 
     pieces_lb_->set_markup(fmt::format("<i>{:s}</i>", _("No source selected")));
 
     piece_size_scale_->set_visible(false);
-    piece_size_scale_->signal_value_changed().connect([this]() { onPieceSizeUpdated(); });
+    piece_size_scale_->signal_value_changed().connect([this] { onPieceSizeUpdated(); });
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    auto drop_controller = Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY);
+    auto const drop_controller = Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY);
     drop_controller->signal_drop().connect(sigc::mem_fun(*this, &Impl::on_drag_data_received), false);
     dialog_.add_controller(drop_controller);
 #else

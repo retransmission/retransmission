@@ -3,7 +3,6 @@
 // License text can be found in the licenses/ folder.
 
 #import "FilterBarController.h"
-#import "FilterButton.h"
 #import "GroupsController.h"
 #import "NSStringAdditions.h"
 
@@ -24,19 +23,19 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     FilterTypeTagTracker = 402,
 };
 
-@interface FilterBarController ()<NSSearchFieldDelegate>
+@interface FilterBarController ()
 
-@property(nonatomic) IBOutlet FilterButton* fNoFilterButton;
-@property(nonatomic) IBOutlet FilterButton* fActiveFilterButton;
-@property(nonatomic) IBOutlet FilterButton* fDownloadFilterButton;
-@property(nonatomic) IBOutlet FilterButton* fSeedFilterButton;
-@property(nonatomic) IBOutlet FilterButton* fPauseFilterButton;
-@property(nonatomic) IBOutlet FilterButton* fErrorFilterButton;
+@property(nonatomic, strong) NSButton* fNoFilterButton;
+@property(nonatomic, strong) NSButton* fActiveFilterButton;
+@property(nonatomic, strong) NSButton* fDownloadFilterButton;
+@property(nonatomic, strong) NSButton* fSeedFilterButton;
+@property(nonatomic, strong) NSButton* fPauseFilterButton;
+@property(nonatomic, strong) NSButton* fErrorFilterButton;
 
-@property(nonatomic) IBOutlet NSSearchField* fSearchField;
-@property(nonatomic) IBOutlet NSLayoutConstraint* fSearchFieldMinWidthConstraint;
+@property(nonatomic, strong) NSSearchField* fSearchField;
+@property(nonatomic, strong) NSLayoutConstraint* fSearchFieldMinWidthConstraint;
 
-@property(nonatomic) IBOutlet NSPopUpButton* fGroupsButton;
+@property(nonatomic, strong) NSPopUpButton* fGroupsButton;
 
 @end
 
@@ -44,34 +43,165 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
 
 - (instancetype)init
 {
-    self = [super initWithNibName:@"FilterBar" bundle:nil];
+    self = [super initWithNibName:nil bundle:nil];
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
-    //localizations
-    self.fNoFilterButton.title = NSLocalizedString(@"All", "Filter Bar -> filter button");
-    self.fActiveFilterButton.title = NSLocalizedString(@"Active", "Filter Bar -> filter button");
-    self.fDownloadFilterButton.title = NSLocalizedString(@"Downloading", "Filter Bar -> filter button");
-    self.fSeedFilterButton.title = NSLocalizedString(@"Seeding", "Filter Bar -> filter button");
-    self.fPauseFilterButton.title = NSLocalizedString(@"Paused", "Filter Bar -> filter button");
-    self.fErrorFilterButton.title = NSLocalizedString(@"Error", "Filter Bar -> filter button");
+    NSView* mainView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 500, 24)];
+    mainView.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
+    self.view = mainView;
 
-    self.fNoFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
-    self.fActiveFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
-    self.fDownloadFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
-    self.fSeedFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
-    self.fPauseFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
-    self.fErrorFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
+    NSBox* topSeparator = [[NSBox alloc] init];
+    topSeparator.translatesAutoresizingMaskIntoConstraints = NO;
+    topSeparator.boxType = NSBoxSeparator;
+    [mainView addSubview:topSeparator];
 
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagName].title = NSLocalizedString(@"Name", "Filter Bar -> filter menu");
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagTracker].title = NSLocalizedString(@"Tracker", "Filter Bar -> filter menu");
+    self.fGroupsButton = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:YES];
+    self.fGroupsButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fGroupsButton.controlSize = NSControlSizeMini;
+    self.fGroupsButton.bezelStyle = NSBezelStyleInline;
+    self.fGroupsButton.font = [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeMini]];
+    self.fGroupsButton.bordered = NO;
+    [self.fGroupsButton.cell setArrowPosition:NSPopUpNoArrow];
+    [self.fGroupsButton.widthAnchor constraintEqualToConstant:26].active = YES;
 
-    [self.fGroupsButton.menu itemWithTag:kGroupFilterAllTag].title = NSLocalizedString(@"All Groups", "Filter Bar -> group filter menu");
+    NSMenu* groupsMenu = [[NSMenu alloc] initWithTitle:@"OtherViews"];
+    groupsMenu.delegate = self;
 
-    //set current filter
+    NSMenuItem* hiddenItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
+    hiddenItem.tag = -999;
+    hiddenItem.hidden = YES;
+    [groupsMenu addItem:hiddenItem];
+
+    NSMenuItem* allGroupsItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All Groups", "Filter Bar -> group filter menu")
+                                                           action:@selector(setGroupFilter:)
+                                                    keyEquivalent:@""];
+    allGroupsItem.tag = kGroupFilterAllTag;
+    allGroupsItem.target = self;
+    [groupsMenu addItem:allGroupsItem];
+
+    [groupsMenu addItem:[NSMenuItem separatorItem]];
+    self.fGroupsButton.menu = groupsMenu;
+    [mainView addSubview:self.fGroupsButton];
+
+    NSBox* verticalSeparator = [[NSBox alloc] init];
+    verticalSeparator.translatesAutoresizingMaskIntoConstraints = NO;
+    verticalSeparator.boxType = NSBoxSeparator;
+    [mainView addSubview:verticalSeparator];
+
+    self.fNoFilterButton = [[NSButton alloc] init];
+    self.fActiveFilterButton = [[NSButton alloc] init];
+    self.fDownloadFilterButton = [[NSButton alloc] init];
+    self.fSeedFilterButton = [[NSButton alloc] init];
+    self.fPauseFilterButton = [[NSButton alloc] init];
+    self.fErrorFilterButton = [[NSButton alloc] init];
+
+    NSArray<NSButton*>* buttons = @[
+        self.fNoFilterButton,
+        self.fActiveFilterButton,
+        self.fDownloadFilterButton,
+        self.fSeedFilterButton,
+        self.fPauseFilterButton,
+        self.fErrorFilterButton
+    ];
+
+    NSArray<NSString*>* titles = @[
+        NSLocalizedString(@"All", "Filter Bar -> filter button"),
+        NSLocalizedString(@"Active", "Filter Bar -> filter button"),
+        NSLocalizedString(@"Downloading", "Filter Bar -> filter button"),
+        NSLocalizedString(@"Seeding", "Filter Bar -> filter button"),
+        NSLocalizedString(@"Paused", "Filter Bar -> filter button"),
+        NSLocalizedString(@"Error", "Filter Bar -> filter button")
+    ];
+
+    for (NSUInteger i = 0; i < buttons.count; i++) {
+        NSButton* button = buttons[i];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        button.showsBorderOnlyWhileMouseInside = YES;
+        button.buttonType = NSButtonTypePushOnPushOff;
+        button.bezelStyle = NSBezelStyleRecessed;
+        button.controlSize = NSControlSizeMini;
+        button.font = [NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]];
+        button.title = titles[i];
+        button.target = self;
+        button.action = @selector(setFilter:);
+        [button setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh
+                                         forOrientation:NSLayoutConstraintOrientationHorizontal];
+    }
+
+    NSStackView* stackView = [NSStackView stackViewWithViews:buttons];
+    stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    stackView.distribution = NSStackViewDistributionFill;
+    stackView.spacing = 1;
+    stackView.detachesHiddenViews = NO;
+    [mainView addSubview:stackView];
+
+    self.fSearchField = [[NSSearchField alloc] init];
+    self.fSearchField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fSearchField.controlSize = NSControlSizeMini;
+    self.fSearchField.focusRingType = NSFocusRingTypeNone;
+
+    self.fSearchField.font = [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeMini]];
+
+    self.fSearchField.delegate = self;
+    self.fSearchField.action = @selector(setSearchText:);
+    self.fSearchField.target = self;
+
+    NSMenu* searchMenu = [[NSMenu alloc] initWithTitle:@"SearchFilterMenu"];
+    NSMenuItem* nameItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Name", "Filter Bar -> filter menu")
+                                                      action:@selector(setSearchType:)
+                                               keyEquivalent:@""];
+    nameItem.tag = FilterTypeTagName;
+    nameItem.target = self;
+    NSMenuItem* trackerItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Tracker", "Filter Bar -> filter menu")
+                                                         action:@selector(setSearchType:)
+                                                  keyEquivalent:@""];
+    trackerItem.tag = FilterTypeTagTracker;
+    trackerItem.target = self;
+    [searchMenu addItem:nameItem];
+    [searchMenu addItem:trackerItem];
+    self.fSearchField.searchMenuTemplate = searchMenu;
+    [mainView addSubview:self.fSearchField];
+
+    [self.fSearchField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                                forOrientation:NSLayoutConstraintOrientationHorizontal];
+
+    self.fSearchFieldMinWidthConstraint = [self.fSearchField.widthAnchor constraintGreaterThanOrEqualToConstant:48];
+    NSLayoutConstraint* searchFieldPreferredWidth = [self.fSearchField.widthAnchor constraintEqualToConstant:80];
+    searchFieldPreferredWidth.priority = NSLayoutPriorityDefaultLow;
+    searchFieldPreferredWidth.active = YES;
+
+    [NSLayoutConstraint activateConstraints:@[
+        [topSeparator.topAnchor constraintEqualToAnchor:mainView.topAnchor],
+        [topSeparator.leadingAnchor constraintEqualToAnchor:mainView.leadingAnchor],
+        [topSeparator.trailingAnchor constraintEqualToAnchor:mainView.trailingAnchor],
+
+        [self.fGroupsButton.leadingAnchor constraintEqualToAnchor:mainView.leadingAnchor constant:10],
+        [self.fGroupsButton.centerYAnchor constraintEqualToAnchor:mainView.centerYAnchor],
+
+        [verticalSeparator.leadingAnchor constraintEqualToAnchor:self.fGroupsButton.trailingAnchor constant:8],
+        [verticalSeparator.widthAnchor constraintEqualToConstant:1],
+        [verticalSeparator.topAnchor constraintEqualToAnchor:mainView.topAnchor constant:4],
+        [verticalSeparator.bottomAnchor constraintEqualToAnchor:mainView.bottomAnchor constant:-4],
+
+        [stackView.leadingAnchor constraintEqualToAnchor:verticalSeparator.trailingAnchor constant:10],
+        [stackView.centerYAnchor constraintEqualToAnchor:mainView.centerYAnchor],
+
+        [self.fSearchField.trailingAnchor constraintEqualToAnchor:mainView.safeAreaLayoutGuide.trailingAnchor constant:-12],
+        [self.fSearchField.centerYAnchor constraintEqualToAnchor:mainView.centerYAnchor],
+        [self.fSearchField.heightAnchor constraintEqualToConstant:16],
+        self.fSearchFieldMinWidthConstraint,
+
+        [self.fSearchField.leadingAnchor constraintGreaterThanOrEqualToAnchor:stackView.trailingAnchor constant:12]
+    ]];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
     NSString* filterType = [NSUserDefaults.standardUserDefaults stringForKey:@"Filter"];
 
     NSButton* currentFilterButton;
@@ -119,12 +249,9 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
 
     // update when groups change
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateGroups:) name:@"UpdateGroups" object:nil];
-
-    // update when filter change
-    self.fSearchField.delegate = self;
 }
 
-- (IBAction)setFilter:(id)sender
+- (void)setFilter:(id)sender
 {
     NSString* oldFilterType = [NSUserDefaults.standardUserDefaults stringForKey:@"Filter"];
 
@@ -194,7 +321,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [self setFilter:button];
 }
 
-- (IBAction)setSearchText:(id)sender
+- (void)setSearchText:(id)sender
 {
     [NSUserDefaults.standardUserDefaults setObject:self.fSearchField.stringValue forKey:@"FilterSearchString"];
     [NSNotificationCenter.defaultCenter postNotificationName:@"ApplyFilter" object:nil];
@@ -222,7 +349,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [self.fSearchFieldMinWidthConstraint animator].constant = 48;
 }
 
-- (IBAction)setSearchType:(id)sender
+- (void)setSearchType:(id)sender
 {
     NSString* oldFilterType = [NSUserDefaults.standardUserDefaults stringForKey:@"FilterSearchType"];
 
@@ -249,7 +376,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [NSNotificationCenter.defaultCenter postNotificationName:@"ApplyFilter" object:nil];
 }
 
-- (IBAction)setGroupFilter:(id)sender
+- (void)setGroupFilter:(id)sender
 {
     [NSUserDefaults.standardUserDefaults setInteger:[sender tag] forKey:@"FilterGroup"];
     [self updateGroupsButton];
@@ -281,12 +408,22 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
              paused:(NSUInteger)paused
               error:(NSUInteger)error
 {
-    self.fNoFilterButton.count = all;
-    self.fActiveFilterButton.count = active;
-    self.fDownloadFilterButton.count = downloading;
-    self.fSeedFilterButton.count = seeding;
-    self.fPauseFilterButton.count = paused;
-    self.fErrorFilterButton.count = error;
+    NSArray<NSButton*>* buttons = @[
+        self.fNoFilterButton,
+        self.fActiveFilterButton,
+        self.fDownloadFilterButton,
+        self.fSeedFilterButton,
+        self.fPauseFilterButton,
+        self.fErrorFilterButton
+    ];
+    NSArray<NSNumber*>* counts = @[ @(all), @(active), @(downloading), @(seeding), @(paused), @(error) ];
+    for (NSUInteger i = 0; i < buttons.count; i++) {
+        NSButton* btn = buttons[i];
+        NSUInteger count = [counts[i] unsignedIntegerValue];
+        btn.toolTip = (count == 1) ?
+            NSLocalizedString(@"1 torrent", "Filter Button -> tool tip") :
+            [NSString localizedStringWithFormat:NSLocalizedString(@"%lu torrents", "Filter Bar Button -> tool tip"), count];
+    }
 }
 
 - (void)menuNeedsUpdate:(NSMenu*)menu

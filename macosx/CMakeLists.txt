@@ -88,8 +88,6 @@ target_sources(${TR_NAME}-mac
         FileRenameSheetController.mm
         FilterBarController.h
         FilterBarController.mm
-        FilterButton.h
-        FilterButton.mm
         GlobalOptionsPopoverViewController.h
         GlobalOptionsPopoverViewController.mm
         GroupCell.h
@@ -120,6 +118,8 @@ target_sources(${TR_NAME}-mac
         InfoWindowController.h
         InfoWindowController.mm
         main.mm
+        MenuProvider.h
+        MenuProvider.mm
         MessageWindowController.h
         MessageWindowController.mm
         NSApplicationAdditions.h
@@ -128,8 +128,8 @@ target_sources(${TR_NAME}-mac
         NSDataAdditions.mm
         NSImageAdditions.h
         NSImageAdditions.mm
-        NSKeyedUnarchiverAdditions.h
-        NSKeyedUnarchiverAdditions.mm
+        NSMenuAdditions.h
+        NSMenuAdditions.mm
         NSMutableArrayAdditions.h
         NSMutableArrayAdditions.mm
         NSStringAdditions.h
@@ -207,8 +207,6 @@ target_sources(${TR_NAME}-mac
         UTTypeAdditions.mm)
 
 set(XIB_FILES
-    FilterBar.xib
-    InfoWindow.xib
     MessageWindow.xib)
 
 set(RESOURCES
@@ -346,7 +344,6 @@ else()
 endif()
 
 set(BASE_XIB_FILES
-    AddMagnetWindow.xib
     AddWindow.xib
     Creator.xib
     GroupRules.xib
@@ -358,6 +355,8 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    AddMagnetWindow.strings
+    AppMenu.strings
     GlobalOptionsPopover.strings
     InfoGeneralView.strings
     InfoPlist.strings
@@ -438,9 +437,6 @@ install(
     TARGETS ${TR_NAME}-mac
     DESTINATION Applications)
 
-install(
-    DIRECTORY TransmissionHelp
-    DESTINATION Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
 tr_install_web(Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
 
 install(CODE

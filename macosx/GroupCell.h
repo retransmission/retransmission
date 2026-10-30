@@ -3,6 +3,9 @@
 // License text can be found in the licenses/ folder.
 
 #import <AppKit/AppKit.h>
+
+#include <libtransmission/values.h>
+
 #import "TorrentTableView.h"
 
 @interface GroupCell : NSTableCellView
@@ -11,7 +14,7 @@
 - (void)updateTitle:(NSString*)title;
 - (void)updateDownloadSpeed:(CGFloat)downloadSpeed
                 uploadSpeed:(CGFloat)uploadSpeed
-                      ratio:(CGFloat)ratio
+                      ratio:(tr::Values::Ratio)ratio
                displayRatio:(BOOL)displayRatio;
 - (void)updateTooltipForTorrentsCount:(NSUInteger)count;
 

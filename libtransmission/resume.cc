@@ -580,7 +580,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
  * so all of their pieces load as unchecked.
  * Older ones still name the blocks bitfield 'bitfield'.
  */
-[[nodiscard]] fields_t load_progress(tr_variant::Map const& map, tr_torrent* const tor, tr_torrent::ResumeHelper& helper)
+[[nodiscard]] fields_t load_progress(tr_variant::Map const& map, tr_torrent const* const tor, tr_torrent::ResumeHelper& helper)
 {
     auto const* const prog = map.find_if<tr_variant::Map>(TR_KEY_progress);
     if (prog == nullptr) {

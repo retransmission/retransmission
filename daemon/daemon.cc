@@ -769,15 +769,14 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     /* setup event state */
     ev_base_ = event_base_new();
 
-    event* sig_ev = nullptr;
-    if (ev_base_ == nullptr || !setup_signals(sig_ev)) {
+    if (ev_base_ == nullptr || !setup_signals()) {
         auto const error_code = errno;
         auto const errmsg = fmt::format(
             "Couldn't initialize daemon: {error} ({error_code})",
             fmt::arg("error", tr_strerror(error_code)),
             fmt::arg("error_code", error_code));
         printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
-        cleanup_signals(sig_ev);
+        cleanup_signals();
         return 1;
     }
 
@@ -814,7 +813,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         auto const errmsg = fmt::format("Another process is already using '{path}'.", fmt::arg("path", config_dir_));
         printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         tr_sessionClose(session, 1);
-        cleanup_signals(sig_ev);
+        cleanup_signals();
         return 1;
     }
 
@@ -957,7 +956,7 @@ CLEANUP:
         event_free(status_ev);
     }
 
-    cleanup_signals(sig_ev);
+    cleanup_signals();
 
     event_base_free(ev_base_);
 

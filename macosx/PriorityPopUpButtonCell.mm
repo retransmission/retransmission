@@ -17,3 +17,12 @@ static CGFloat const kFrameInset = 2.0;
 }
 
 @end
+
+@implementation PriorityPopUpButton
+
++ (Class)cellClass
+{
+    return [PriorityPopUpButtonCell class];
+}
+
+@end

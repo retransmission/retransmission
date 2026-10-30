@@ -5,8 +5,6 @@
 "Total download rate" = "Συνολικός ρυθμός κατεβάσματος";
 "Total upload rate" = "Συνολικός ρυθμός ανεβάσματος";
 "Only when torrents are downloading" = "Μόνο όταν οι μεταφορές κατεβαίνουν";
-"Auto resize:" = "Αυτόματη αλλαγή μεγέθους:";
-"Automatically size window to fit all torrents" = "Αυτόματη αλλαγή μεγέθους παραθύρου ώστε να χωράνε όλες οι μεταφορές";
 "Reset" = "Επαναφορά";
 "Reset all alerts:" = "Επαναφορά όλων των ειδοποιήσεων:";
 "Automatically check daily" = "Αυτόματος έλεγχος καθημερινά";

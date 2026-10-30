@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <array>
 #include <chrono>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
@@ -17,6 +18,7 @@
 #include <utility>
 
 #include "libtransmission/constants.h"
+#include "libtransmission/types.h"
 
 class tr_web
 {
@@ -42,6 +44,8 @@ public:
 
     // Callback to invoke when fetch() is done
     using FetchDoneFunc = std::function<void(FetchResponse const&)>;
+
+    using BindAddresses = std::array<std::optional<std::string>, NUM_TR_AF_INET_TYPES>;
 
     class FetchOptions
     {
@@ -179,7 +183,7 @@ public:
     /**
      * Mediates between `tr_web` and its clients.
      *
-     * NB: Note that `tr_web` calls all these methods from its own thread.
+     * Methods can run on the caller's thread or the web thread.
      * Overridden methods should take care to be threadsafe.
      */
     class Mediator
@@ -193,10 +197,10 @@ public:
             return std::nullopt;
         }
 
-        // Return bind address string, or nullopt to not use one
-        [[nodiscard]] virtual std::optional<std::string> bind_address(int /*af*/) const
+        // Called synchronously by fetch(); unset entries leave binding to the OS.
+        [[nodiscard]] virtual BindAddresses bind_addresses() const
         {
-            return std::nullopt;
+            return {};
         }
 
         // Return the preferred user aagent, or nullopt to not use one

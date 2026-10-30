@@ -83,7 +83,7 @@ public:
                 for (auto const suffix : { "ico", "png", "gif", "jpg" }) {
                     auto on_fetch_response = [this, in_flight](auto const& response) {
                         in_flight->add_response(response.body, response.status);
-                        add_to_ui_thread([this, in_flight]() { check_responses(in_flight); });
+                        add_to_ui_thread([this, in_flight] { check_responses(in_flight); });
                     };
 
                     static constexpr auto TimeoutSecs = std::chrono::seconds{ 15 };
@@ -108,7 +108,9 @@ private:
         }
 
         InFlightData(InFlightData const&) = delete;
+        InFlightData(InFlightData&&) = delete;
         InFlightData& operator=(InFlightData const&) = delete;
+        InFlightData& operator=(InFlightData&&) = delete;
 
         [[nodiscard]] constexpr auto const& sitename() const noexcept
         {

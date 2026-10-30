@@ -62,7 +62,7 @@ public:
 
         evhttp_set_gencb(http_, &MockRpcServer::on_request, this);
 
-        thread_ = std::thread{ [this]() {
+        thread_ = std::thread{ [this] {
             // Poll instead of a blocking dispatch so teardown doesn't depend on
             // libevent being built with cross-thread wakeup support.
             while (!stop_.load(std::memory_order_acquire)) {

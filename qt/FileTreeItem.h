@@ -15,6 +15,8 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
+#include <libtransmission/values.h>
+
 #include "Typedefs.h"
 
 class FileTreeItem
@@ -95,9 +97,10 @@ public:
 
 private:
     [[nodiscard]] QString priorityString() const;
+    [[nodiscard]] QString progressString() const;
     [[nodiscard]] QString sizeString() const;
     [[nodiscard]] std::pair<uint64_t, uint64_t> get_subtree_wanted_size() const;
-    [[nodiscard]] double progress() const;
+    [[nodiscard]] tr::Values::Percent progress() const;
     [[nodiscard]] uint64_t size() const;
     [[nodiscard]] std::unordered_map<QString, int> const& getMyChildRows() const;
 
