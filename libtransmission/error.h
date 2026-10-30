@@ -41,6 +41,10 @@ public:
         return has_value();
     }
 
+    // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
+    [[nodiscard]] bool is_enoent() const noexcept;
+    [[nodiscard]] bool is_enospc() const noexcept;
+
     constexpr void set(tr_error_code_t code, std::string&& message)
     {
         code_ = code;
