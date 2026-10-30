@@ -337,3 +337,126 @@ TEST_F(TorrentFilesTest, isSubpathPortable)
         EXPECT_EQ(expected, tr_torrent_files::is_subpath_sanitized(subpath)) << " subpath " << subpath;
     }
 }
+
+TEST_F(TorrentFilesTest, sanitizeSubpathReservedCharacters)
+{
+    static auto constexpr Win32ReservedChars = "\"*:<>?\\/|"sv;
+    static auto constexpr IsWin32 = TR_IF_WIN32(true, false);
+
+    auto input = std::string{};
+    auto portable_expected = std::string{};
+    auto os_specific_expected = std::string{};
+    for (auto byte = 0; byte <= 0xff; ++byte) {
+        auto const ch = static_cast<char>(byte);
+        auto const is_common_reserved = byte <= 31 || ch == '/';
+        auto const is_win32_reserved = Win32ReservedChars.contains(ch);
+
+        input.push_back(ch);
+        portable_expected.push_back(is_common_reserved || is_win32_reserved ? '_' : ch);
+        os_specific_expected.push_back(is_common_reserved || (IsWin32 && is_win32_reserved) ? '_' : ch);
+    }
+
+    EXPECT_EQ(portable_expected, tr_torrent_files::sanitize_subpath(input, false));
+    EXPECT_EQ(os_specific_expected, tr_torrent_files::sanitize_subpath(input, true));
+}
+
+TEST_F(TorrentFilesTest, sanitizeSubpathReservedNames)
+{
+    static auto constexpr ReservedNames = std::to_array<std::string_view>({
+        "AUX"sv,  "CON"sv,  "NUL"sv,  "PRN"sv,  "COM1"sv, "COM2"sv, "COM3"sv, "COM4"sv, "COM5"sv, "COM6"sv, "COM7"sv,
+        "COM8"sv, "COM9"sv, "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
+    });
+    static auto constexpr NotReserved = std::to_array<std::string_view>({
+        ""sv,
+        ".foo"sv,
+        "AUXILIARY"sv,
+        "COM0"sv,
+        "COM10"sv,
+        "COM10.txt"sv,
+        "CONSOLE"sv,
+        "LPT0"sv,
+        "LPT10"sv,
+        "NULx.txt"sv,
+        "PRN_suffix"sv,
+    });
+    static auto constexpr IsWin32 = TR_IF_WIN32(true, false);
+
+    auto const expect_reserved = [](std::string_view path) {
+        auto expected = std::string{ "_" };
+        expected.append(path);
+        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
+    };
+
+    for (auto const name : ReservedNames) {
+        for (auto const suffix : { ""sv, ".txt"sv }) {
+            auto input = std::string{ name };
+            input.append(suffix);
+
+            expect_reserved(input);
+            auto expected = IsWin32 ? std::string{ "_" } : std::string{};
+            expected += input;
+            EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(input)) << input;
+
+            for (auto& ch : input) {
+                if (ch >= 'A' && ch <= 'Z') {
+                    ch = static_cast<char>(ch - 'A' + 'a');
+                }
+            }
+            expect_reserved(input);
+            expected = IsWin32 ? std::string{ "_" } : std::string{};
+            expected += input;
+            EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(input)) << input;
+        }
+    }
+
+    for (auto const path : NotReserved) {
+        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path, false)) << path;
+        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path)) << path;
+    }
+
+    EXPECT_EQ(IsWin32 ? ""sv : "_."sv, tr_torrent_files::sanitize_subpath("."sv, false));
+    EXPECT_EQ(IsWin32 ? ""sv : "_.."sv, tr_torrent_files::sanitize_subpath(".."sv, false));
+    EXPECT_EQ(IsWin32 ? ""sv : "_."sv, tr_torrent_files::sanitize_subpath("."sv));
+    EXPECT_EQ(IsWin32 ? ""sv : "_.."sv, tr_torrent_files::sanitize_subpath(".."sv));
+}
+
+TEST_F(TorrentFilesTest, sanitizeSubpathWin32TrailingCharacters)
+{
+    static auto constexpr IsWin32 = TR_IF_WIN32(true, false);
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { " name "sv, "name"sv },
+        { "name..."sv, "name"sv },
+        { "name. "sv, "name"sv },
+        { "name . "sv, "name"sv },
+        { " NUL. "sv, "_NUL"sv },
+    });
+
+    for (auto const& [path, win32_expected] : Tests) {
+        auto const expected = IsWin32 ? win32_expected : path;
+        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, true)) << path;
+        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
+    }
+
+    auto constexpr TabbedPath = "\tname\n"sv;
+    auto constexpr TabbedExpected = TR_IF_WIN32("name"sv, "_name_"sv);
+    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, true));
+    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, false));
+
+    auto constexpr WhitespaceOnly = "\t"sv;
+    auto constexpr WhitespaceOnlyExpected = TR_IF_WIN32(""sv, "_"sv);
+    EXPECT_EQ(WhitespaceOnlyExpected, tr_torrent_files::sanitize_subpath(WhitespaceOnly, true));
+    EXPECT_EQ(WhitespaceOnlyExpected, tr_torrent_files::sanitize_subpath(WhitespaceOnly, false));
+}
+
+TEST_F(TorrentFilesTest, sanitizeSubpathAppends)
+{
+    auto output = std::string{ "prefix" };
+    tr_torrent_files::sanitize_subpath("NUL.txt"sv, output, false);
+    EXPECT_EQ("prefix_NUL.txt"sv, output);
+
+    tr_torrent_files::sanitize_subpath("A/B"sv, output, false);
+    EXPECT_EQ("prefix_NUL.txtA_B"sv, output);
+
+    tr_torrent_files::sanitize_subpath(""sv, output, false);
+    EXPECT_EQ("prefix_NUL.txtA_B"sv, output);
+}
