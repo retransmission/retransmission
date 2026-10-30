@@ -16,12 +16,13 @@
 #include <fmt/format.h>
 
 #include <libtransmission/types.h> // TR_RATIO_NA, TR_RATIO_INF
-#include <libtransmission/utils.h> // tr_locale_set_global()
+#include <libtransmission/utils.h> // tr_locale_set_global(), tr_set_translator()
 #include <libtransmission/values.h>
 
 #include "test-fixtures.h"
 
 using ValuesTest = ::tr::test::TransmissionTest;
+using namespace std::literals;
 using namespace tr::Values;
 
 TEST_F(ValuesTest, baseQuantity)
@@ -388,4 +389,19 @@ TEST_F(ValuesGivenLocaleTest, givenLocaleLeavesTheCLocaleAlone)
     EXPECT_EQ("4,99", (Percent{ 499U, 10000U }).to_string(*de_));
     EXPECT_EQ("0,67", (Ratio{ 2U, 3U }).to_string(*de_));
     EXPECT_EQ(numeric, std::setlocale(LC_NUMERIC, nullptr));
+}
+
+TEST_F(ValuesTest, translatedUnitNames)
+{
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* { return msgid == "kB/s"sv ? "ko/s" : msgid; },
+        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
+            return n == 1U ? msgid : msgid_plural;
+        });
+    EXPECT_EQ("10 ko/s", (Speed{ 10, Speed::Units::KByps }.to_string()));
+    EXPECT_EQ("10 MB/s", (Speed{ 10, Speed::Units::MByps }.to_string()));
+    EXPECT_EQ("ko/s", Config::speed.display_names()[1]);
+
+    tr_set_translator(nullptr, nullptr);
+    EXPECT_EQ("10 kB/s", (Speed{ 10, Speed::Units::KByps }.to_string()));
 }

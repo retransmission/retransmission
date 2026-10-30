@@ -9,6 +9,8 @@
 #include "IconCache.h"
 #include "Utils.h"
 
+#include <libtransmission-app/formatters.h>
+
 #include <libtransmission/shared-string.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
@@ -473,7 +475,7 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
         if (cache_.eta < 0) {
             gstr += _("Remaining time unknown");
         } else {
-            gstr += tr_format_time_left(cache_.eta);
+            gstr += tr::app::format_time_left(cache_.eta);
         }
     }
 

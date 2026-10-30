@@ -3,7 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm> // std::copy_n(), std::min(), std::ranges::transform()
+#include <algorithm> // std::copy_n(), std::min()
 #include <array>
 #include <cmath> // std::fabs(), std::floor(), std::llround()
 #include <cstddef> // size_t
@@ -15,23 +15,37 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/utils.h" // _()
 #include "libtransmission/values.h"
-
-using namespace std::literals;
 
 namespace tr::Values
 {
 
-// default values; can be overridden by client apps
-Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "MiB"sv, "GiB"sv, "TiB"sv };
-Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
-Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
+// Marks a unit name for xgettext. display_name() translates it.
+#define N_(msgid) msgid
+
+// Client apps can override these.
+Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, N_("B"), N_("KiB"), N_("MiB"), N_("GiB"), N_("TiB") };
+Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, N_("B/s"), N_("kB/s"), N_("MB/s"), N_("GB/s"), N_("TB/s") };
+Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, N_("B"), N_("kB"), N_("MB"), N_("GB"), N_("TB") };
 Config::RatioStrings Config::ratio{ .none = "None", .infinity = "\xE2\x88\x9E" };
+
+std::string_view Config::UnitsBase::display_name(size_t const units) const noexcept
+{
+    // An unused unit's name stays empty: gettext translates "" to its catalog's header.
+    if (units >= std::size(display_names_) || display_names_[units].front() == '\0') {
+        return {};
+    }
+
+    return _(std::data(display_names_[units]));
+}
 
 std::array<std::string, Config::UnitsBase::UnitCount> Config::UnitsBase::display_names() const
 {
     auto names = std::array<std::string, UnitCount>{};
-    std::ranges::transform(display_names_, std::begin(names), [](auto const& name) { return std::string{ std::data(name) }; });
+    for (size_t idx = 0; idx < UnitCount; ++idx) {
+        names[idx] = display_name(idx);
+    }
     return names;
 }
 

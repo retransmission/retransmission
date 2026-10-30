@@ -5,9 +5,9 @@
 
 #include "Formatter.h"
 
-#include <algorithm>
-
 #include <libtransmission/values.h>
+
+#include <libtransmission-app/formatters.h>
 
 #include "TrFormat.h"
 
@@ -49,27 +49,17 @@ QString Formatter::storageToString(int64_t const bytes)
     return storageToString(static_cast<uint64_t>(bytes));
 }
 
-QString Formatter::timeToString(int seconds)
+QString Formatter::timeToString(time_t const seconds)
 {
-    seconds = std::max(seconds, 0);
+    return QString::fromStdString(tr::app::format_time(seconds));
+}
 
-    if (seconds < 60) {
-        return TR_FORMAT_N("{seconds:L} second(s)", seconds, fmt::arg("seconds", seconds));
-    }
+QString Formatter::timeLeftToString(time_t const seconds)
+{
+    return QString::fromStdString(tr::app::format_time_left(seconds));
+}
 
-    auto const minutes = seconds / 60;
-
-    if (minutes < 60) {
-        return TR_FORMAT_N("{minutes:L} minute(s)", minutes, fmt::arg("minutes", minutes));
-    }
-
-    auto const hours = minutes / 60;
-
-    if (hours < 24) {
-        return TR_FORMAT_N("{hours:L} hour(s)", hours, fmt::arg("hours", hours));
-    }
-
-    auto const days = hours / 24;
-
-    return TR_FORMAT_N("{days:L} day(s)", days, fmt::arg("days", days));
+QString Formatter::relativeTimeToString(time_t const then, time_t const now)
+{
+    return QString::fromStdString(tr::app::format_time_relative(then, now));
 }

@@ -37,10 +37,8 @@ struct Config {
             return static_cast<size_t>(base_);
         }
 
-        [[nodiscard]] constexpr auto display_name(size_t const units) const noexcept
-        {
-            return std::string_view{ units < std::size(display_names_) ? std::data(display_names_[units]) : "" };
-        }
+        // The unit's name, translated with _().
+        [[nodiscard]] std::string_view display_name(size_t units) const noexcept;
 
         [[nodiscard]] std::array<std::string, UnitCount> display_names() const;
 
@@ -76,7 +74,7 @@ struct Config {
             (set_name(idx++, names), ...);
         }
 
-        [[nodiscard]] constexpr auto display_name(UnitsEnum multiplier) const noexcept
+        [[nodiscard]] auto display_name(UnitsEnum multiplier) const noexcept
         {
             return UnitsBase::display_name(static_cast<size_t>(multiplier));
         }
