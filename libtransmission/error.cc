@@ -30,6 +30,13 @@ bool tr_error::is_enospc() const noexcept
 #endif
 }
 
+tr_error tr_error::from_errno(int const errnum)
+{
+    auto error = tr_error{};
+    error.set_from_errno(errnum);
+    return error;
+}
+
 void tr_error::set_from_errno(int const errnum)
 {
     code_ = errnum;

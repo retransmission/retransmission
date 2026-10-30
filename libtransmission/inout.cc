@@ -211,12 +211,11 @@ tr_error tr_ioRead(
         return {};
     }
 
-    auto error = tr_error{};
     if (begin + std::size(setme) > desc.block_info.total_size()) {
-        error.set_from_errno(EINVAL);
-        return error;
+        return tr_error::from_errno(EINVAL);
     }
 
+    auto error = tr_error{};
     auto [file_index, file_offset] = desc.fpm.file_offset(begin);
     auto buf = setme;
     while (!std::empty(buf) && !error) {
@@ -240,12 +239,11 @@ tr_error tr_ioWrite(
         return {};
     }
 
-    auto error = tr_error{};
     if (begin + std::size(writeme) > desc.block_info.total_size()) {
-        error.set_from_errno(EINVAL);
-        return error;
+        return tr_error::from_errno(EINVAL);
     }
 
+    auto error = tr_error{};
     auto [file_index, file_offset] = desc.fpm.file_offset(begin);
     auto buf = writeme;
     while (!std::empty(buf) && !error) {
@@ -265,13 +263,12 @@ tr_error tr_ioRecalculateHash(
     tr_piece_index_t const piece,
     tr_sha1_digest_t& setme)
 {
-    auto error = tr_error{};
     auto const& block_info = desc.block_info;
     if (piece >= block_info.piece_count()) {
-        error.set_from_errno(EINVAL);
-        return error;
+        return tr_error::from_errno(EINVAL);
     }
 
+    auto error = tr_error{};
     auto buffer = std::array<uint8_t, TrBlockSize>{};
     auto const hash = tr_ioHashPiece(
         block_info,
