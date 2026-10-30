@@ -5,8 +5,6 @@
 "Total download rate" = "Taxa total de download";
 "Total upload rate" = "Taxa total de upload";
 "Only when torrents are downloading" = "Somente quando as transferências estiverem baixando";
-"Auto resize:" = "Auto-reajustar:";
-"Automatically size window to fit all torrents" = "Ajustar janela automaticamente para caber todos as transferências";
 "Reset" = "Reiniciar";
 "Reset all alerts:" = "Zerar todos os alertas";
 "Automatically check daily" = "Automaticamente verificar diariamente";

@@ -199,12 +199,12 @@ VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
 } // namespace
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-bool tr_daemon::setup_signals([[maybe_unused]] struct event*& sig_ev)
+bool tr_daemon::setup_signals()
 {
     return true;
 }
 
-void tr_daemon::cleanup_signals([[maybe_unused]] struct event* sig_ev) const
+void tr_daemon::cleanup_signals()
 {
 }
 

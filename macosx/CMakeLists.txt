@@ -344,7 +344,6 @@ else()
 endif()
 
 set(BASE_XIB_FILES
-    AddMagnetWindow.xib
     AddWindow.xib
     Creator.xib
     GroupRules.xib
@@ -356,6 +355,7 @@ list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
 set(LANG_STRINGS_FILES
+    AddMagnetWindow.strings
     AppMenu.strings
     GlobalOptionsPopover.strings
     InfoGeneralView.strings
@@ -437,9 +437,6 @@ install(
     TARGETS ${TR_NAME}-mac
     DESTINATION Applications)
 
-install(
-    DIRECTORY TransmissionHelp
-    DESTINATION Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
 tr_install_web(Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
 
 install(CODE

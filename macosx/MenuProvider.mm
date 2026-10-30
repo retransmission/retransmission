@@ -307,7 +307,7 @@
 - (NSMenu*)buildHelpMenu
 {
     NSMenu* menu = [[NSMenu alloc] initWithTitle:LStr(@"Help")];
-    [menu addItemWithTitle:LStr(@"Retransmission Help") action:@selector(showHelp:) keyEquivalent:@"?"];
+    [menu addItemWithTitle:LStr(@"Retransmission Help") action:@selector(linkHelp:) keyEquivalent:@"?"];
     [menu addItem:[NSMenuItem separatorItem]];
     NSMenuItem* home = [menu addItemWithTitle:LStr(@"Retransmission Homepage") action:@selector(linkHomepage:) keyEquivalent:@""];
     home.symbolName = @"globe";

@@ -802,8 +802,11 @@ TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
     auto release_response = std::promise<void>{};
     auto const response_allowed = release_response.get_future().share();
     auto requested = std::promise<void>{};
-    auto server = LoopbackServer{};
-    server.setHandler([&](evhttp_request* const request) {
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([&](evhttp_request* const request) {
         requested.set_value();
         EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
         LoopbackServer::reply(request, 206, "Partial Content", std::string(TrBlockSize, '\0'));
@@ -819,7 +822,7 @@ TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
 
     session_->local_data.set_workers_paused(true);
     blockingRunInSessionThread([&] {
-        webseed_ = tr_webseed::create(*tor, server.url(), nullptr, nullptr);
+        webseed_ = tr_webseed::create(*tor, server->url(), nullptr, nullptr);
         auto const span = tr_block_span_t{ .begin = 0U, .end = 1U };
         webseed_->request_blocks(&span, 1U);
         EXPECT_EQ(BudgetBlocks - 1U, session_->spare_request_blocks());
@@ -864,8 +867,11 @@ TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
 
     auto requests = std::atomic<size_t>{};
     auto received_bytes = std::atomic<uint64_t>{};
-    auto server = LoopbackServer{};
-    server.setHandler([&](evhttp_request* const request) {
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([&](evhttp_request* const request) {
         auto const* header = evhttp_find_header(evhttp_request_get_input_headers(request), "Range");
         if (header == nullptr) {
             ADD_FAILURE() << "missing HTTP range";
@@ -893,7 +899,7 @@ TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
         LoopbackServer::reply(request, 206, "Partial Content", std::string(static_cast<size_t>(length), '\0'));
     });
 
-    auto* const tor = makeBudgetTorrent("webseed.bin", server.url());
+    auto* const tor = makeBudgetTorrent("webseed.bin", server->url());
     session_->local_data.set_workers_paused(true);
     tr_torrentStart(tor);
     ASSERT_TRUE(

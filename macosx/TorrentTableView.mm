@@ -21,7 +21,7 @@
 #import "TorrentCellRevealButton.h"
 #import "TorrentContextMenuProvider.h"
 
-CGFloat const kGroupSeparatorHeight = 18.0;
+static CGFloat const kGroupSeparatorHeight = 18.0;
 
 static NSInteger const kMaxGroup = 999999;
 

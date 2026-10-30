@@ -5,8 +5,6 @@
 "Total download rate" = "Deskarga-ratioa guztira";
 "Total upload rate" = "Igoera-ratioa guztira";
 "Only when torrents are downloading" = "Soilik transferentziak deskargatzen ari direnean";
-"Auto resize:" = "Tamaina aldatu automatikoki:";
-"Automatically size window to fit all torrents" = "Aldatu automatikoki leihoaren tamaina transferentzia guztietara egokitzeko";
 "Reset" = "Berrabiarazi";
 "Reset all alerts:" = "Berrabiarazi ohar guztiak:";
 "Automatically check daily" = "Egiaztatu automatikoki egunero";

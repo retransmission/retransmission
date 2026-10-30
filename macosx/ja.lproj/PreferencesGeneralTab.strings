@@ -5,8 +5,6 @@
 "Total download rate" = "総ダウンロード速度";
 "Total upload rate" = "総アップロード速度";
 "Only when torrents are downloading" = "転送項目のダウンロード中のみ";
-"Auto resize:" = "自動リサイズ:";
-"Automatically size window to fit all torrents" = "自動ですべての転送項目をウィンドウ内に合わせる";
 "Reset" = "初期化";
 "Reset all alerts:" = "すべての通知を初期化";
 "Automatically check daily" = "毎日自動で確認";

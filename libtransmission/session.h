@@ -260,7 +260,7 @@ private:
         }
 
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
-        [[nodiscard]] std::optional<std::string> bind_address(int af) const override;
+        [[nodiscard]] tr_web::BindAddresses bind_addresses() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
         [[nodiscard]] std::optional<std::string> proxyUrl() const override;

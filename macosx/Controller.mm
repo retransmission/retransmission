@@ -118,10 +118,6 @@ static NSString* const kTorrentTableViewDataType = @"TorrentTableViewDataType";
 static CGFloat const kRowHeightRegular = 62.0;
 static CGFloat const kRowHeightSmall = 22.0;
 
-static CGFloat const kStatusBarHeight = 24.0;
-static CGFloat const kFilterBarHeight = 24.0;
-static CGFloat const kBottomBarHeight = 24.0;
-
 static NSTimeInterval const kUpdateUISeconds = 1.0;
 
 static NSString* const kTransferPlist = @"Transfers.plist";
@@ -130,6 +126,7 @@ static NSString* const kWebsiteURL = @TR_PROJ_URL_HOMEPAGE;
 static NSString* const kForumURL = @TR_PROJ_URL_FORUM;
 static NSString* const kGithubURL = @TR_PROJ_URL_GIT;
 static NSString* const kDonateURL = @TR_PROJ_URL_DONATE;
+static NSString* const kHelpURL = @TR_PROJ_URL_HELP;
 
 static NSTimeInterval const kDonateNagTime = 60 * 60 * 24 * 7;
 
@@ -283,10 +280,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @interface Controller ()<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
 
+@property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
 @property(nonatomic) IBOutlet NSWindow* fWindow;
 @property(nonatomic) IBOutlet SPUStandardUpdaterController* fUpdaterController;
-@property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
-@property(nonatomic) NSLayoutConstraint* fFixedHeightConstraint;
 @property(nonatomic) IBOutlet TorrentTableView* fTableView;
 
 @property(nonatomic) IBOutlet NSButton* fActionButton;
@@ -388,11 +384,11 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                isEqualToString:transmissionWatchFolder.stringByExpandingTildeInPath.stringByStandardizingPath];
 }
 
-// Copies Transmission's preferences, except Sparkle's state and this app's own donation request.
+// Copies Transmission's preferences, except Sparkle's state, this app's own donation request, and AutoSize.
 static void importTransmissionDefaults(NSDictionary<NSString*, id>* const transmissionDefaults)
 {
-    // The donation request is this app's own to show.
-    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate" ]];
+    // The donation request is this app's own to show, and this app has no AutoSize preference.
+    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate", @"AutoSize" ]];
 
     // Sparkle's state describes Transmission's own updates, but how to update is the user's choice.
     NSSet<NSString*>* const sparkleChoiceKeys = [NSSet setWithArray:@[
@@ -782,6 +778,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     self.fTableView.rowHeight = small ? kRowHeightSmall : kRowHeightRegular;
     self.fTableView.usesAutomaticRowHeights = NO;
     self.fTableView.floatsGroupRows = YES;
+    self.fMinHeightConstraint = [self.fTableView.enclosingScrollView.heightAnchor
+        constraintGreaterThanOrEqualToConstant:self.fTableView.rowHeight + self.fTableView.intercellSpacing.height];
+    self.fMinHeightConstraint.active = YES;
     //self.fTableView.usesAlternatingRowBackgroundColors = !small;
 
     self.fWindow.movableByWindowBackground = YES;
@@ -878,9 +877,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [nc addObserver:self selector:@selector(changeAutoImport) name:@"AutoImportSettingChange" object:nil];
 
-    [nc addObserver:self selector:@selector(updateForAutoSize) name:@"AutoSizeSettingChange" object:nil];
-
-    [nc addObserver:self selector:@selector(updateForExpandCollapse) name:@"OutlineExpandCollapse" object:nil];
+    [nc addObserver:self selector:@selector(updateBottomCountText) name:@"OutlineExpandCollapse" object:nil];
 
     [nc addObserver:self selector:@selector(fullUpdateUI) name:@"UpdateTorrentsState" object:nil];
 
@@ -970,6 +967,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
         [BonjourController.defaultController startWithPort:static_cast<int>([self.fDefaults integerForKey:@"RPCPort"])];
     }
+
+    //older versions saved "AutoSize" for the removed "Automatically size window to fit all torrents" preference
+    [self.fDefaults removeObjectForKey:@"AutoSize"];
 
     //shamelessly ask for donations
     if ([self.fDefaults boolForKey:@"WarningDonate"]) {
@@ -3178,8 +3178,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [self setBottomCountText:groupRows || filterStatus || filterGroup || searchStrings];
 
-    [self setWindowSizeToFit];
-
     if (self.fAddingTransfers) {
         self.fAddingTransfers = nil;
     }
@@ -3716,6 +3714,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     self.fTableView.rowHeight = makeSmall ? kRowHeightSmall : kRowHeightRegular;
 
+    self.fMinHeightConstraint.constant = self.fTableView.rowHeight + self.fTableView.intercellSpacing.height;
+
     [self.fTableView beginUpdates];
     [self.fTableView
         noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fTableView.numberOfRows)]];
@@ -3723,7 +3723,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     //reloaddata, otherwise the tableview has a bunch of empty cells
     [self.fTableView reloadData];
-    [self updateForAutoSize];
 }
 
 - (IBAction)togglePiecesBar:(id)sender
@@ -4680,88 +4679,15 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 
     [self fullUpdateUI];
-    [self updateForAutoSize];
-}
-
-- (void)setWindowSizeToFit
-{
-    if (!self.isFullScreen) {
-        NSScrollView* scrollView = self.fTableView.enclosingScrollView;
-
-        scrollView.hasVerticalScroller = NO;
-
-        [self removeHeightConstraints];
-
-        if (![self.fDefaults boolForKey:@"AutoSize"]) {
-            // Only set a minimum height constraint
-            CGFloat height = self.minScrollViewHeightAllowed;
-            if (self.fMinHeightConstraint == nil) {
-                self.fMinHeightConstraint = [scrollView.heightAnchor constraintGreaterThanOrEqualToConstant:height];
-            } else {
-                self.fMinHeightConstraint.constant = height;
-            }
-
-            self.fMinHeightConstraint.active = YES;
-        } else {
-            // Set a fixed height constraint
-            CGFloat height = [self calculateScrollViewHeightWithDockAdjustment];
-            if (self.fFixedHeightConstraint == nil) {
-                self.fFixedHeightConstraint = [scrollView.heightAnchor constraintEqualToConstant:height];
-            } else {
-                self.fFixedHeightConstraint.constant = height;
-            }
-
-            // Redraw table to avoid empty cells
-            [self.fTableView reloadData];
-
-            self.fFixedHeightConstraint.active = YES;
-        }
-
-        scrollView.hasVerticalScroller = YES;
-    } else {
-        [self removeHeightConstraints];
-    }
-}
-
-- (CGFloat)calculateScrollViewHeightWithDockAdjustment
-{
-    CGFloat height = self.scrollViewHeight;
-
-    // Get the main screen's visible frame
-    NSScreen* screen = self.fWindow.screen;
-    if (screen) {
-        // This frame respects the Dock and menu bar
-        NSRect visibleFrame = screen.visibleFrame;
-        height = MIN(height, visibleFrame.size.height - [self toolbarHeight] - [self mainWindowComponentHeight]);
-    }
-
-    return height;
-}
-
-- (void)updateForAutoSize
-{
-    if (!self.isFullScreen) {
-        [self setWindowSizeToFit];
-    } else {
-        [self removeHeightConstraints];
-    }
 }
 
 - (void)updateWindowAfterToolbarChange
 {
-    //Hacky way of fixing an issue with showing the Toolbar
-    if (!self.isFullScreen) {
-        //macOS shows the unified toolbar by default
-        //and we only need to "fix" the layout when showing the toolbar
-        if (!self.fWindow.toolbar.isVisible) {
-            [self removeHeightConstraints];
-        }
-
-        //this fixes a macOS bug where on toggling the toolbar item bezels will show
+    //this fixes a macOS bug where on toggling the toolbar item bezels will show
+    if (!(self.fWindow.styleMask & NSWindowStyleMaskFullScreen)) {
         [self hideToolBarBezels:YES];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateForAutoSize];
             [self hideToolBarBezels:NO];
         });
     }
@@ -4774,94 +4700,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (void)removeHeightConstraints
+- (void)updateBottomCountText
 {
-    if (self.fFixedHeightConstraint != nil) {
-        self.fFixedHeightConstraint.active = NO;
-    }
-    if (self.fMinHeightConstraint != nil) {
-        self.fMinHeightConstraint.active = NO;
-    }
-}
-
-- (CGFloat)minScrollViewHeightAllowed
-{
-    CGFloat contentMinHeight = self.fTableView.rowHeight + self.fTableView.intercellSpacing.height;
-    return contentMinHeight;
-}
-
-- (CGFloat)toolbarHeight
-{
-    return self.fWindow.frame.size.height - [self.fWindow contentRectForFrameRect:self.fWindow.frame].size.height;
-}
-
-- (CGFloat)mainWindowComponentHeight
-{
-    CGFloat height = kBottomBarHeight;
-
-    if (self.fStatusBar != nil && !self.fStatusBar.isHidden) {
-        height += kStatusBarHeight;
-    }
-
-    if (self.fFilterBar != nil && !self.fFilterBar.isHidden) {
-        height += kFilterBarHeight;
-    }
-
-    return height;
-}
-
-- (CGFloat)scrollViewHeight
-{
-    CGFloat height;
-    CGFloat minHeight = self.minScrollViewHeightAllowed;
-
-    if ([self.fDefaults boolForKey:@"AutoSize"]) {
-        NSUInteger groups = ![self.fDisplayedTorrents.firstObject isKindOfClass:[Torrent class]] ? self.fDisplayedTorrents.count : 0;
-
-        height = (kGroupSeparatorHeight + self.fTableView.intercellSpacing.height) * groups +
-            (self.fTableView.rowHeight + self.fTableView.intercellSpacing.height) * (self.fTableView.numberOfRows - groups);
-    } else {
-        height = NSHeight(self.fTableView.enclosingScrollView.frame);
-    }
-
-    //make sure we don't go bigger than the screen height
-    NSScreen* screen = self.fWindow.screen;
-    if (screen) {
-        NSSize maxSize = screen.visibleFrame.size;
-        maxSize.height -= self.toolbarHeight;
-        maxSize.height -= self.mainWindowComponentHeight;
-
-        if (height > maxSize.height) {
-            height = maxSize.height;
-        }
-    }
-
-    //make sure we don't have zero height
-    if (height < minHeight) {
-        height = minHeight;
-    }
-
-    return height;
-}
-
-- (BOOL)isFullScreen
-{
-    return (self.fWindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
-}
-
-- (void)windowWillEnterFullScreen:(NSNotification*)notification
-{
-    [self removeHeightConstraints];
-}
-
-- (void)windowDidExitFullScreen:(NSNotification*)notification
-{
-    [self updateForAutoSize];
-}
-
-- (void)updateForExpandCollapse
-{
-    [self setWindowSizeToFit];
     [self setBottomCountText:YES];
 }
 
@@ -4913,6 +4753,11 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 - (IBAction)linkDonate:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kDonateURL]];
+}
+
+- (void)linkHelp:(id)sender
+{
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kHelpURL]];
 }
 
 - (void)rpcCallback:(tr_rpc_callback_type)type forTorrentId:(std::optional<tr_torrent_id_t>)torrentId

@@ -302,13 +302,16 @@ std::optional<std::string_view> tr_session::WebMediator::userAgent() const
     return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
-std::optional<std::string> tr_session::WebMediator::bind_address(int const af) const
+tr_web::BindAddresses tr_session::WebMediator::bind_addresses() const
 {
-    if (auto const addr = session_->bind_address(tr_af_to_ip_protocol(af)); !addr.is_any()) {
-        return addr.display_name();
+    auto const lock = session_->unique_lock();
+    auto addresses = tr_web::BindAddresses{};
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        if (auto const addr = session_->bind_address(type); !addr.is_any()) {
+            addresses[type] = addr.display_name();
+        }
     }
-
-    return {};
+    return addresses;
 }
 
 size_t tr_session::WebMediator::clamp(int torrent_id, size_t byte_count) const
@@ -800,11 +803,6 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         bound_ipv4_.reset();
         bound_ipv6_.reset();
         addr_changed = true;
-    }
-
-    if (new_settings.bind_address_ipv4 != old_settings.bind_address_ipv4 ||
-        new_settings.bind_address_ipv6 != old_settings.bind_address_ipv6) {
-        web_->network_changed();
     }
 
     if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {

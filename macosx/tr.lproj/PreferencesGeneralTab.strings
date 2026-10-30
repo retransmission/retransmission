@@ -5,8 +5,6 @@
 "Total download rate" = "Toplam indirme hızı";
 "Total upload rate" = "Toplam karşıya yükleme hızı";
 "Only when torrents are downloading" = "Yalnızca aktarımlar indirilirken";
-"Auto resize:" = "Pencere boyutu:";
-"Automatically size window to fit all torrents" = "Pencereyi tüm aktarımlar sığacak biçimde ayarla";
 "Reset" = "Sıfırla";
 "Reset all alerts:" = "Tüm ikazları sıfırla:";
 "Automatically check daily" = "Günlük denetle";
