@@ -4,11 +4,13 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cstdint>
 #include <string_view>
 #include <type_traits>
 #include <utility>
 
 #include "libtransmission/converters.h"
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/display-modes.h"
@@ -156,14 +158,46 @@ static_assert(StatsKeys.size() == StatsModeCount);
     return from_stats_mode(DefaultStatsMode);
 }
 
+// ---
+
+[[nodiscard]] bool to_storage(tr_variant const& src, tr::Values::Storage* tgt)
+{
+    if (auto const val = src.value_if<uint64_t>()) {
+        *tgt = tr::Values::Storage{ *val, tr::Values::Storage::Units::Bytes };
+        return true;
+    }
+
+    return false;
+}
+
+[[nodiscard]] tr_variant from_storage(tr::Values::Storage const& src)
+{
+    return src.base_quantity();
+}
+
+[[nodiscard]] bool to_speed(tr_variant const& src, tr::Values::Speed* tgt)
+{
+    if (auto const val = src.value_if<uint64_t>()) {
+        *tgt = tr::Values::Speed{ *val, tr::Values::Speed::Units::Byps };
+        return true;
+    }
+
+    return false;
+}
+
+[[nodiscard]] tr_variant from_speed(tr::Values::Speed const& src)
+{
+    return src.base_quantity();
+}
+
 } // unnamed namespace
 
 } // namespace tr::app::detail
 
 // ---
-// `Converter<T>` out-of-line definitions for the types owned by
-// `libtransmission-app`. Each one forwards to the matching helper in
-// `tr::app::detail` above.
+// `Converter<T>` out-of-line definitions for the converters declared in
+// `libtransmission-app/converters.h`. Each one forwards to the matching
+// helper in `tr::app::detail` above.
 
 namespace tr::serializer
 {
@@ -184,6 +218,8 @@ namespace ad = tr::app::detail;
 TR_DEFINE_APP_CONVERTER(tr::app::ShowMode, to_show_mode, from_show_mode)
 TR_DEFINE_APP_CONVERTER(tr::app::SortMode, to_sort_mode, from_sort_mode)
 TR_DEFINE_APP_CONVERTER(tr::app::StatsMode, to_stats_mode, from_stats_mode)
+TR_DEFINE_APP_CONVERTER(tr::Values::Storage, to_storage, from_storage)
+TR_DEFINE_APP_CONVERTER(tr::Values::Speed, to_speed, from_speed)
 
 #undef TR_DEFINE_APP_CONVERTER
 
