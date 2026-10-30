@@ -46,13 +46,10 @@ namespace tr
 {
 namespace
 {
-[[nodiscard]] tr_error make_error(tr_error_code_t err)
+[[nodiscard]] tr_error make_error(int const errnum)
 {
     auto error = tr_error{};
-    if (err != 0) {
-        error.set_from_errno(err);
-    }
-
+    error.set_from_errno(errnum);
     return error;
 }
 
@@ -64,7 +61,7 @@ namespace
     LocalData::BlockData& setme)
 {
     if (desc == nullptr || !span.is_valid() || span.size() > TrBlockSize) {
-        return make_error(TR_ERROR_EINVAL);
+        return make_error(EINVAL);
     }
 
     auto const len = static_cast<size_t>(span.size());
@@ -93,7 +90,7 @@ public:
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
 
         return tr_ioRecalculateHash(*tor->storage_descriptor(), open_files_, piece, setme_hash);
@@ -103,18 +100,18 @@ public:
         override
     {
         if (!byte_span.is_valid()) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
 
         auto const len = byte_span.size();
         if (len > std::size(data)) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
         auto const span_size = static_cast<size_t>(len);
 
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
 
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
@@ -124,7 +121,7 @@ public:
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
 
         auto error = tr_error{};
@@ -142,7 +139,7 @@ public:
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
-            return make_error(TR_ERROR_EINVAL);
+            return make_error(EINVAL);
         }
 
         if (!remove_func) {
@@ -163,7 +160,7 @@ public:
         auto* const tor = torrents_.get(id);
         if (tor == nullptr) {
             if (callback != nullptr) {
-                callback(id, oldpath, newname, make_error(TR_ERROR_EINVAL));
+                callback(id, oldpath, newname, make_error(EINVAL));
             }
             return;
         }
@@ -426,7 +423,7 @@ public:
     {
         if (!span.is_valid() || data == nullptr || span.size() > std::size(*data)) {
             if (on_write) {
-                std::move(on_write)(id, span, make_error(TR_ERROR_EINVAL));
+                std::move(on_write)(id, span, make_error(EINVAL));
             }
             return;
         }
@@ -821,7 +818,7 @@ private:
         auto desc = provider_(id);
         if (!desc || op.piece >= desc->block_info.piece_count()) {
             if (op.on_test) {
-                std::move(op.on_test)(id, op.piece, make_error(TR_ERROR_EINVAL), {});
+                std::move(op.on_test)(id, op.piece, make_error(EINVAL), {});
             }
             return;
         }
@@ -848,7 +845,7 @@ private:
         if (!desc || span.end > desc->block_info.total_size() || overlaps_running_write(gate, span)) {
             enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
-                std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
+                std::move(op.on_write)(id, span, make_error(EINVAL));
             }
             return;
         }
@@ -1202,7 +1199,7 @@ void LocalData::write(
         return;
     }
 
-    auto error = data != nullptr ? backend_->write(id, byte_span, *data) : make_error(TR_ERROR_EINVAL);
+    auto error = data != nullptr ? backend_->write(id, byte_span, *data) : make_error(EINVAL);
 
     if (on_write) {
         finish([id, byte_span, error = std::move(error), on_write = std::move(on_write)] mutable {
