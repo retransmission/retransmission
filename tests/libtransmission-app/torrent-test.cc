@@ -26,8 +26,6 @@
 using namespace std::literals;
 
 using tr::app::Torrent;
-using Field = tr::app::TorrentField;
-using FieldSet = tr::app::TorrentFieldSet;
 using Percent = Torrent::Percent;
 using Ratio = Torrent::Ratio;
 using Speed = Torrent::Speed;
@@ -279,7 +277,6 @@ TEST_F(AppTorrentTest, parsesObjectRow)
     EXPECT_EQ(tor.uploaded_ever(), Storage(33, Storage::Units::Bytes));
     EXPECT_EQ(tor.webseeds_sending_to_us(), 35U);
     EXPECT_EQ(tor.active_peers_down(), 55U);
-    EXPECT_EQ(tor.active_peers_up(), 19U);
     EXPECT_EQ(tor.active_peer_count(), 74U);
 
     ASSERT_EQ(std::size(tor.files()), 2U);
@@ -312,8 +309,8 @@ TEST_F(AppTorrentTest, parsesObjectRow)
     EXPECT_TRUE(tor.webseeds()[0].is_downloading);
     EXPECT_EQ(tor.webseeds()[0].download_speed, Speed(34, Speed::Units::Byps));
 
-    // every field changed from its default, and each one reported exactly one bit
-    EXPECT_EQ(changed.count(), static_cast<size_t>(Field::N_FIELDS));
+    // every field changed from its default
+    EXPECT_EQ(changed, Torrent::all_fields());
 }
 
 TEST_F(AppTorrentTest, identicalUpdateChangesNothing)
@@ -339,7 +336,7 @@ TEST_F(AppTorrentTest, tableRowMatchesObjectRow)
     auto const table_changed = from_table.update(keys, values);
 
     EXPECT_EQ(object_changed, table_changed);
-    EXPECT_EQ(table_changed.count(), static_cast<size_t>(Field::N_FIELDS));
+    EXPECT_EQ(table_changed, Torrent::all_fields());
     EXPECT_EQ(from_table.name(), from_object.name());
     EXPECT_EQ(from_table.hash(), from_object.hash());
     EXPECT_EQ(from_table.download_dir(), from_object.download_dir());
@@ -360,7 +357,7 @@ TEST_F(AppTorrentTest, tableRowWithFewerValuesThanKeysAppliesThePairs)
     auto tor = Torrent{ prefs_, 1 };
     auto const changed = tor.update(keys, values);
 
-    EXPECT_EQ(changed, Field::NAME | Field::TOTAL_SIZE);
+    EXPECT_EQ(changed, (Torrent::fields<TR_KEY_name, TR_KEY_total_size>()));
     EXPECT_EQ(tor.name(), "short row"sv);
     EXPECT_EQ(tor.total_size(), Storage(99, Storage::Units::Bytes));
     EXPECT_EQ(tor.eta(), TR_ETA_NOT_AVAIL);
@@ -374,6 +371,7 @@ TEST_F(AppTorrentTest, ignoresUnknownKeysAndWrongTypes)
     // untracked keys
     EXPECT_TRUE(tor.update(make_row(TR_KEY_id, tr_variant{ 2 })).none());
     EXPECT_TRUE(tor.update(make_row(TR_KEY_magnet_link, tr_variant{ "magnet:?xt=urn:btih:00"sv })).none());
+    EXPECT_TRUE(tor.update(make_row(tr_quark_new("a_key_from_a_newer_session"sv), tr_variant{ 2 })).none());
     EXPECT_EQ(tor.id(), 1);
 
     // wrong types keep the old values
@@ -402,7 +400,7 @@ TEST_F(AppTorrentTest, partialRowLeavesOtherFieldsIntact)
 
     auto const changed = tor.update(make_row(TR_KEY_status, tr_variant{ static_cast<int64_t>(TR_STATUS_SEED) }));
 
-    EXPECT_EQ(changed, FieldSet{ Field::STATUS });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_status>());
     EXPECT_TRUE(tor.is_seeding());
     EXPECT_EQ(tor.name(), "a name"sv);
     EXPECT_EQ(tor.total_size(), Storage(32, Storage::Units::Bytes));
@@ -412,11 +410,11 @@ TEST_F(AppTorrentTest, partialRowLeavesOtherFieldsIntact)
 TEST_F(AppTorrentTest, metadataPercentFromCounts)
 {
     auto tor = Torrent{ prefs_, 1 };
-    EXPECT_EQ(tor.update(make_metadata_row(500, 1000)), Field::METADATA_HAVE | Field::METADATA_SIZE);
+    EXPECT_EQ(tor.update(make_metadata_row(500, 1000)), (Torrent::fields<TR_KEY_metadata_have, TR_KEY_metadata_size>()));
     EXPECT_EQ(tor.metadata_percent_complete(), (Percent{ 500U, 1000U }));
     EXPECT_FALSE(tor.has_metadata());
 
-    EXPECT_EQ(tor.update(make_row(TR_KEY_metadata_have, tr_variant{ 1000 })), FieldSet{ Field::METADATA_HAVE });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_metadata_have, tr_variant{ 1000 })), Torrent::fields<TR_KEY_metadata_have>());
     EXPECT_TRUE(tor.has_metadata());
 }
 
@@ -551,13 +549,17 @@ TEST_F(AppTorrentTest, fileProgressFromByteCounts)
 TEST_F(AppTorrentTest, uploadRatioDecodesTheWireStates)
 {
     auto tor = Torrent{ prefs_, 1 };
-    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 0.5 })), FieldSet{ Field::UPLOAD_RATIO });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 0.5 })), Torrent::fields<TR_KEY_upload_ratio>());
+    EXPECT_EQ(tor.upload_ratio(), (Ratio{ 1U, 2U }));
+
+    // every change is reported; a view picks the grain it redraws at, e.g. `Ratio`'s hundredths
+    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 0.5049 })), Torrent::fields<TR_KEY_upload_ratio>());
     EXPECT_EQ(tor.upload_ratio(), (Ratio{ 1U, 2U }));
 
     // -1 is none and -2 is infinite
-    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ -1.0 })), FieldSet{ Field::UPLOAD_RATIO });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ -1.0 })), Torrent::fields<TR_KEY_upload_ratio>());
     EXPECT_TRUE(tor.upload_ratio().is_none());
-    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ -2 })), FieldSet{ Field::UPLOAD_RATIO });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ -2 })), Torrent::fields<TR_KEY_upload_ratio>());
     EXPECT_TRUE(tor.upload_ratio().is_infinite());
 }
 
@@ -567,13 +569,13 @@ TEST_F(AppTorrentTest, filesAndFileStatsShareOneBit)
 
     // file_stats can arrive before files, e.g. from a stats poll
     auto changed = tor.update(make_row(TR_KEY_file_stats, make_list(make_file_stat(5, TR_PRI_NORMAL, true))));
-    EXPECT_EQ(changed, FieldSet{ Field::FILES });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_files>());
     ASSERT_EQ(std::size(tor.files()), 1U);
     EXPECT_EQ(tor.files()[0].have, 5U);
     EXPECT_TRUE(std::empty(tor.files()[0].name));
 
     changed = tor.update(make_row(TR_KEY_files, make_list(make_file("a.txt"sv, 10))));
-    EXPECT_EQ(changed, FieldSet{ Field::FILES });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_files>());
     ASSERT_EQ(std::size(tor.files()), 1U);
     EXPECT_EQ(tor.files()[0].name, "a.txt");
     EXPECT_EQ(tor.files()[0].size, 10U);
@@ -584,12 +586,12 @@ TEST_F(AppTorrentTest, filesAndFileStatsShareOneBit)
 
     // a changed entry is
     changed = tor.update(make_row(TR_KEY_file_stats, make_list(make_file_stat(10, TR_PRI_NORMAL, true))));
-    EXPECT_EQ(changed, FieldSet{ Field::FILES });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_files>());
     EXPECT_EQ(tor.files()[0].have, 10U);
 
     // and so is a changed length, which renumbers the entries
     changed = tor.update(make_row(TR_KEY_files, make_list(make_file("a.txt"sv, 10), make_file("b.txt"sv, 20))));
-    EXPECT_EQ(changed, FieldSet{ Field::FILES });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_files>());
     ASSERT_EQ(std::size(tor.files()), 2U);
     EXPECT_EQ(tor.files()[1].index, 1U);
 }
@@ -599,7 +601,7 @@ TEST_F(AppTorrentTest, trackersAndTrackerStatsShareOneBit)
     auto tor = Torrent{ prefs_, 1 };
 
     auto changed = tor.update(make_row(TR_KEY_trackers, make_list(make_tracker("https://a.example.com/"sv, "a"sv, 0))));
-    EXPECT_EQ(changed, FieldSet{ Field::TRACKER_STATS });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_tracker_stats>());
     ASSERT_EQ(std::size(tor.tracker_stats()), 1U);
     EXPECT_EQ(tor.tracker_stats()[0].sitename, "a");
 
@@ -609,7 +611,7 @@ TEST_F(AppTorrentTest, trackersAndTrackerStatsShareOneBit)
     stats.try_emplace(TR_KEY_seeder_count, 7);
     stats.try_emplace(TR_KEY_announce_state, static_cast<int64_t>(TR_TRACKER_ACTIVE));
     changed = tor.update(make_row(TR_KEY_tracker_stats, make_list(std::move(stats))));
-    EXPECT_EQ(changed, FieldSet{ Field::TRACKER_STATS });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_tracker_stats>());
     EXPECT_EQ(tor.tracker_stats()[0].seeder_count, 7);
     EXPECT_EQ(tor.tracker_stats()[0].announce_state, TR_TRACKER_ACTIVE);
 }
@@ -626,7 +628,7 @@ TEST_F(AppTorrentTest, sitenamesAreSortedUniqueAndDerivedWhenMissing)
             make_tracker("https://alpha.example.com/"sv, "alpha"sv, 1),
             make_tracker("https://announce.mid.org/"sv, ""sv, 1),
             make_tracker("https://mid.example.com/"sv, "mid"sv, 2))));
-    EXPECT_EQ(changed, FieldSet{ Field::TRACKER_STATS });
+    EXPECT_EQ(changed, Torrent::fields<TR_KEY_tracker_stats>());
 
     ASSERT_EQ(std::size(tor.tracker_stats()), 4U);
     EXPECT_EQ(tor.tracker_stats()[2].sitename, "mid");
@@ -657,20 +659,20 @@ TEST_F(AppTorrentTest, peersAndWebseedsReportListChanges)
 {
     auto tor = Torrent{ prefs_, 1 };
 
-    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, make_list(make_peer("10.0.0.1"sv, 100)))), FieldSet{ Field::PEERS });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, make_list(make_peer("10.0.0.1"sv, 100)))), Torrent::fields<TR_KEY_peers>());
     EXPECT_TRUE(tor.update(make_row(TR_KEY_peers, make_list(make_peer("10.0.0.1"sv, 100)))).none());
-    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, make_list(make_peer("10.0.0.1"sv, 200)))), FieldSet{ Field::PEERS });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, make_list(make_peer("10.0.0.1"sv, 200)))), Torrent::fields<TR_KEY_peers>());
     EXPECT_EQ(tor.peers()[0].rate_to_client, Speed(200, Speed::Units::Byps));
-    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, tr_variant::Vector{})), FieldSet{ Field::PEERS });
+    EXPECT_EQ(tor.update(make_row(TR_KEY_peers, tr_variant::Vector{})), Torrent::fields<TR_KEY_peers>());
     EXPECT_TRUE(std::empty(tor.peers()));
 
     EXPECT_EQ(
         tor.update(make_row(TR_KEY_webseeds_ex, make_list(make_webseed("https://w.example.com/"sv, false, 0)))),
-        FieldSet{ Field::WEBSEEDS });
+        Torrent::fields<TR_KEY_webseeds_ex>());
     EXPECT_TRUE(tor.update(make_row(TR_KEY_webseeds_ex, make_list(make_webseed("https://w.example.com/"sv, false, 0)))).none());
     EXPECT_EQ(
         tor.update(make_row(TR_KEY_webseeds_ex, make_list(make_webseed("https://w.example.com/"sv, true, 50)))),
-        FieldSet{ Field::WEBSEEDS });
+        Torrent::fields<TR_KEY_webseeds_ex>());
     EXPECT_TRUE(tor.webseeds()[0].is_downloading);
     EXPECT_EQ(tor.webseeds()[0].download_speed, Speed(50, Speed::Units::Byps));
 }
@@ -681,8 +683,8 @@ TEST_F(AppTorrentTest, sharedStringsArePooled)
 
     auto a = Torrent{ prefs_, 1 };
     auto b = Torrent{ prefs_, 2 };
-    EXPECT_EQ(a.update(make_row(TR_KEY_download_dir, tr_variant{ "/same/dir"sv })), FieldSet{ Field::DOWNLOAD_DIR });
-    EXPECT_EQ(b.update(make_row(TR_KEY_download_dir, tr_variant{ "/same/dir"sv })), FieldSet{ Field::DOWNLOAD_DIR });
+    EXPECT_EQ(a.update(make_row(TR_KEY_download_dir, tr_variant{ "/same/dir"sv })), Torrent::fields<TR_KEY_download_dir>());
+    EXPECT_EQ(b.update(make_row(TR_KEY_download_dir, tr_variant{ "/same/dir"sv })), Torrent::fields<TR_KEY_download_dir>());
 
     EXPECT_EQ(a.download_dir(), b.download_dir());
     EXPECT_EQ(tr::shared_string::pool_size(), before + 1U);
@@ -710,12 +712,11 @@ TEST_F(AppTorrentTest, effectiveSeedRatioFollowsModeAndPrefs)
     EXPECT_EQ(tor.effective_seed_ratio(), std::nullopt);
 }
 
-TEST_F(AppTorrentTest, seedRatioPercentDoneMatchesLibtransmission)
+TEST_F(AppTorrentTest, seedRatioPercentDoneFollowsTheUploadRatio)
 {
     auto row = tr_variant::Map{};
     row.try_emplace(TR_KEY_left_until_done, 0);
-    row.try_emplace(TR_KEY_size_when_done, 100);
-    row.try_emplace(TR_KEY_uploaded_ever, 50);
+    row.try_emplace(TR_KEY_upload_ratio, 0.5);
     row.try_emplace(TR_KEY_is_finished, false);
     row.try_emplace(TR_KEY_seed_ratio_mode, static_cast<int64_t>(TR_RATIOLIMIT_SINGLE));
     row.try_emplace(TR_KEY_seed_ratio_limit, 2.0);
@@ -723,13 +724,21 @@ TEST_F(AppTorrentTest, seedRatioPercentDoneMatchesLibtransmission)
     auto tor = Torrent{ prefs_, 1 };
     EXPECT_TRUE(tor.update(row).any());
 
-    // done, unfinished, and 50 of the 200-byte goal uploaded
-    EXPECT_EQ(tor.seed_ratio_percent_done(), (Percent{ 50U, 200U }));
+    // done, unfinished, and a quarter of the way to a 2.0 ratio
+    EXPECT_EQ(tor.seed_ratio_percent_done(), (Percent{ 1U, 4U }));
+
+    // the exact ratio, not its hundredths: 1.996 is short of 2.0
+    EXPECT_TRUE(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 1.996 })).any());
+    EXPECT_FALSE(tor.seed_ratio_percent_done().is_complete());
 
     // uploading past the goal caps at the goal
-    EXPECT_TRUE(tor.update(make_row(TR_KEY_uploaded_ever, tr_variant{ 300 })).any());
-    EXPECT_EQ(tor.seed_ratio_percent_done(), (Percent{ 200U, 200U }));
-    EXPECT_TRUE(tor.update(make_row(TR_KEY_uploaded_ever, tr_variant{ 50 })).any());
+    EXPECT_TRUE(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 3.0 })).any());
+    EXPECT_TRUE(tor.seed_ratio_percent_done().is_complete());
+
+    // a ratio with no number has nothing left to reach
+    EXPECT_TRUE(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ -1.0 })).any());
+    EXPECT_TRUE(tor.seed_ratio_percent_done().is_complete());
+    EXPECT_TRUE(tor.update(make_row(TR_KEY_upload_ratio, tr_variant{ 0.5 })).any());
 
     // not done yet: the ratio doesn't apply
     EXPECT_TRUE(tor.update(make_row(TR_KEY_left_until_done, tr_variant{ 10 })).any());
@@ -750,7 +759,7 @@ TEST_F(AppTorrentTest, seedRatioPercentDoneMatchesLibtransmission)
     EXPECT_TRUE(tor.update(make_row(TR_KEY_seed_ratio_mode, tr_variant{ static_cast<int64_t>(TR_RATIOLIMIT_GLOBAL) })).any());
     prefs_.set(TR_KEY_seed_ratio_limited, true);
     prefs_.set(TR_KEY_seed_ratio_limit, 1.0);
-    EXPECT_EQ(tor.seed_ratio_percent_done(), (Percent{ 50U, 100U }));
+    EXPECT_EQ(tor.seed_ratio_percent_done(), (Percent{ 1U, 2U }));
 
     // a zero goal is always met
     prefs_.set(TR_KEY_seed_ratio_limit, 0.0);
@@ -762,7 +771,7 @@ TEST_F(AppTorrentTest, activityPercentDoneFollowsTheActivity)
     auto row = make_metadata_row(1000, 1000);
     row.try_emplace(TR_KEY_left_until_done, 0);
     row.try_emplace(TR_KEY_size_when_done, 100);
-    row.try_emplace(TR_KEY_uploaded_ever, 50);
+    row.try_emplace(TR_KEY_upload_ratio, 0.5);
     row.try_emplace(TR_KEY_seed_ratio_mode, static_cast<int64_t>(TR_RATIOLIMIT_SINGLE));
     row.try_emplace(TR_KEY_seed_ratio_limit, 2.0);
     row.try_emplace(TR_KEY_status, static_cast<int64_t>(TR_STATUS_SEED));
@@ -771,7 +780,7 @@ TEST_F(AppTorrentTest, activityPercentDoneFollowsTheActivity)
     EXPECT_TRUE(tor.update(row).any());
 
     // seeding toward a ratio shows the ratio's progress
-    EXPECT_EQ(tor.activity_percent_done(), (Percent{ 50U, 200U }));
+    EXPECT_EQ(tor.activity_percent_done(), (Percent{ 1U, 4U }));
 
     // seeding without one shows the download's
     EXPECT_TRUE(
@@ -785,21 +794,32 @@ TEST_F(AppTorrentTest, activityPercentDoneFollowsTheActivity)
     EXPECT_EQ(tor.activity_percent_done(), (Percent{ 75U, 100U }));
 }
 
+// a magnet's only progress until its metadata arrives
+TEST_F(AppTorrentTest, activityPercentDoneOfAMagnetIsItsMetadata)
+{
+    auto row = make_metadata_row(250, 1000);
+    row.try_emplace(TR_KEY_status, static_cast<int64_t>(TR_STATUS_DOWNLOAD));
+
+    auto tor = Torrent{ prefs_, 1 };
+    EXPECT_TRUE(tor.update(row).any());
+    EXPECT_EQ(tor.activity_percent_done(), (Percent{ 1U, 4U }));
+}
+
 TEST_F(AppTorrentTest, fieldMasksCombine)
 {
-    constexpr auto Mask = Field::NAME | Field::STATUS;
-    static_assert(Mask.test(Field::NAME));
-    static_assert(Mask.test(Field::STATUS));
-    static_assert(!Mask.test(Field::ETA));
+    constexpr auto Mask = Torrent::fields<TR_KEY_name, TR_KEY_status>();
     static_assert(Mask.count() == 2U);
+    static_assert((Mask & Torrent::fields<TR_KEY_status>()).any());
+    static_assert((Mask & Torrent::fields<TR_KEY_eta>()).none());
+    static_assert((Mask | Torrent::fields<TR_KEY_eta>()).count() == 3U);
 
-    EXPECT_TRUE((Mask & FieldSet{ Field::STATUS }).any());
-    EXPECT_TRUE((Mask & FieldSet{ Field::ETA }).none());
-    EXPECT_EQ((Mask | Field::ETA).count(), 3U);
+    // keys that feed one member name its one bit
+    static_assert(Torrent::fields<TR_KEY_files>() == Torrent::fields<TR_KEY_file_stats>());
+    static_assert(Torrent::fields<TR_KEY_files, TR_KEY_file_stats>().count() == 1U);
 
-    static_assert(Torrent::ActivePeerCountFields.test(Field::WEBSEEDS_SENDING_TO_US));
-    static_assert(Torrent::ActivityPercentDoneFields.test(Field::SEED_RATIO_MODE));
-    static_assert(Torrent::ActivityPercentDoneFields.test(Field::METADATA_SIZE));
-    static_assert(!Torrent::SeedRatioPercentDoneFields.test(Field::METADATA_SIZE));
-    static_assert(Torrent::PercentCompleteFields.test(Field::HAVE_UNCHECKED));
+    static_assert((Torrent::active_peer_count_fields() & Torrent::fields<TR_KEY_webseeds_sending_to_us>()).any());
+    static_assert((Torrent::activity_percent_done_fields() & Torrent::fields<TR_KEY_seed_ratio_mode>()).any());
+    static_assert((Torrent::activity_percent_done_fields() & Torrent::fields<TR_KEY_metadata_size>()).any());
+    static_assert((Torrent::seed_ratio_percent_done_fields() & Torrent::fields<TR_KEY_metadata_size>()).none());
+    static_assert((Torrent::percent_complete_fields() & Torrent::fields<TR_KEY_have_unchecked>()).any());
 }
