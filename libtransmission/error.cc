@@ -30,9 +30,9 @@ bool tr_error::is_enospc() const noexcept
 #endif
 }
 
-void tr_error::set_from_errno(tr_error_code_t errnum)
+void tr_error::set_from_errno(int const errnum)
 {
     code_ = errnum;
 
-    message_ = errnum != 0 ? tr_strerror(static_cast<int>(errnum)) : "";
+    message_ = errnum != 0 ? tr_strerror(errnum) : "";
 }

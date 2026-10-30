@@ -63,7 +63,6 @@ target_sources(${TR_NAME}
         converters.cc
         converters.h
         digest.h
-        error-types.h
         error.cc
         error.h
         env.cc
