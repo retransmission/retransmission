@@ -132,8 +132,8 @@ private:
     bool onViewPathToggled(Gtk::TreeViewColumn* col, Gtk::TreeModel::Path const& path);
     void onRowActivated(Gtk::TreeModel::Path const& path, Gtk::TreeViewColumn* col);
     void cell_edited_callback(Glib::ustring const& path_string, Glib::ustring const& newname);
-    void on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error);
-    void on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, int error);
+    void on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, tr_error const& error);
+    void on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, tr_error const& error);
 
 private:
     FileList& widget_;
@@ -758,7 +758,7 @@ bool FileList::Impl::onViewButtonPressed(guint button, TrGdkModifierType state, 
     return handled;
 }
 
-void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
+void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustring const& newname, tr_error const& error)
 {
     rename_done_tags_.push(Glib::signal_idle().connect([this, path_string, newname, error] {
         rename_done_tags_.pop();
@@ -767,9 +767,9 @@ void FileList::Impl::on_rename_done(Glib::ustring const& path_string, Glib::ustr
     }));
 }
 
-void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, int error)
+void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib::ustring const& newname, tr_error const& error)
 {
-    if (error == 0) {
+    if (!error) {
         if (auto const iter = store_->get_iter(path_string); iter) {
             bool const isLeaf = iter->children().empty();
             auto const mime_type = isLeaf ? tr_get_mime_type_for_filename(newname.raw()) : DirectoryMimeType;
@@ -789,8 +789,8 @@ void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib:
                 fmt::runtime(_("Couldn't rename '{old_path}' as '{path}': {error} ({error_code})")),
                 fmt::arg("old_path", path_string),
                 fmt::arg("path", newname),
-                fmt::arg("error", tr_strerror(error)),
-                fmt::arg("error_code", error)),
+                fmt::arg("error", error.message()),
+                fmt::arg("error_code", error.code())),
             false,
             TR_GTK_MESSAGE_TYPE(ERROR),
             TR_GTK_BUTTONS_TYPE(CLOSE),
@@ -837,7 +837,7 @@ void FileList::Impl::cell_edited_callback(Glib::ustring const& path_string, Glib
             tr_torrent_id_t const /*tor_id*/,
             std::string_view const /*oldpath*/,
             std::string_view const /*newname*/,
-            tr_error const& error) { on_rename_done(path_string, newname, error ? error.code() : 0); });
+            tr_error const& error) { on_rename_done(path_string, newname, error); });
 }
 
 FileList::FileList(
