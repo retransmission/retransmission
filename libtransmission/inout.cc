@@ -213,7 +213,7 @@ tr_error tr_ioRead(
 
     auto error = tr_error{};
     if (begin + std::size(setme) > desc.block_info.total_size()) {
-        error.set_from_errno(TR_ERROR_EINVAL);
+        error.set_from_errno(EINVAL);
         return error;
     }
 
@@ -242,7 +242,7 @@ tr_error tr_ioWrite(
 
     auto error = tr_error{};
     if (begin + std::size(writeme) > desc.block_info.total_size()) {
-        error.set_from_errno(TR_ERROR_EINVAL);
+        error.set_from_errno(EINVAL);
         return error;
     }
 
@@ -268,7 +268,7 @@ tr_error tr_ioRecalculateHash(
     auto error = tr_error{};
     auto const& block_info = desc.block_info;
     if (piece >= block_info.piece_count()) {
-        error.set_from_errno(TR_ERROR_EINVAL);
+        error.set_from_errno(EINVAL);
         return error;
     }
 

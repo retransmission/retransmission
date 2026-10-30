@@ -4,7 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
-#include <cerrno> // ENOSPC
+#include <cerrno> // EINVAL, ENOSPC
 #include <chrono>
 #include <condition_variable>
 #include <cstddef> // size_t
@@ -976,7 +976,7 @@ TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
         { .begin = 0U, .end = BlockSize },
         patternBlock(0U),
         [&code](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) { code = error.code(); });
-    EXPECT_EQ(TR_ERROR_EINVAL, code);
+    EXPECT_EQ(EINVAL, code);
     EXPECT_EQ(BlockSize, local_data->enqueued_write_bytes());
 
     // the first write still lands, and the gate still drains
