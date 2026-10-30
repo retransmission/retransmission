@@ -30,6 +30,15 @@ bool tr_error::is_enospc() const noexcept
 #endif
 }
 
+bool tr_error::is_transient() const noexcept
+{
+#ifdef _WIN32
+    return code_ == WSAEWOULDBLOCK || code_ == WSAEINTR || code_ == WSAEINPROGRESS;
+#else
+    return code_ == EAGAIN || code_ == EWOULDBLOCK || code_ == EINTR || code_ == EINPROGRESS;
+#endif
+}
+
 tr_error tr_error::from_errno(int const errnum)
 {
     auto error = tr_error{};
