@@ -5,10 +5,6 @@
 
 #pragma once
 
-#ifndef __TRANSMISSION__
-#define __TRANSMISSION__ // for libtransmission/net.h
-#endif
-
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -19,12 +15,18 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+#include <ws2tcpip.h>
+#else
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#endif
+
 #include <event2/buffer.h>
 #include <event2/event.h>
 #include <event2/http.h>
 
 #include <libtransmission/constants.h> // TrRpcSessionIdHeader
-#include <libtransmission/net.h> // sockaddr_storage, ntohs()
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise Session's remote transport end to end: the CSRF
@@ -50,7 +52,7 @@ public:
 
         evhttp_set_gencb(http_, &MockRpcServer::on_request, this);
 
-        thread_ = std::thread{ [this]() {
+        thread_ = std::thread{ [this] {
             // Poll instead of a blocking dispatch so teardown doesn't depend on
             // libevent being built with cross-thread wakeup support.
             while (!stop_.load(std::memory_order_acquire)) {
@@ -71,7 +73,9 @@ public:
     }
 
     MockRpcServer(MockRpcServer const&) = delete;
+    MockRpcServer(MockRpcServer&&) = delete;
     MockRpcServer& operator=(MockRpcServer const&) = delete;
+    MockRpcServer& operator=(MockRpcServer&&) = delete;
 
     [[nodiscard]] std::uint16_t port() const noexcept
     {
@@ -80,7 +84,7 @@ public:
 
     [[nodiscard]] std::vector<std::string> request_bodies() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return bodies_;
     }
 
@@ -88,7 +92,7 @@ public:
     // method name). Requests matching nothing get the default empty success.
     void set_reply_for(std::string_view const marker, std::string_view const body)
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         replies_.emplace_back(std::string{ marker }, std::string{ body });
     }
 
@@ -105,7 +109,7 @@ private:
 
         auto const request_body = read_request_body(req);
         {
-            auto const lock = std::lock_guard{ mutex_ };
+            auto const lock = std::scoped_lock{ mutex_ };
             bodies_.push_back(request_body);
         }
 
@@ -141,9 +145,9 @@ private:
 
     [[nodiscard]] std::string reply_for(std::string const& request_body) const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         for (auto const& [marker, body] : replies_) {
-            if (request_body.find(marker) != std::string::npos) {
+            if (request_body.contains(marker)) {
                 return body;
             }
         }

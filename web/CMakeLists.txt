@@ -28,7 +28,6 @@ set(WEB_SOURCES
     src/labels-dialog.js
     src/main.js
     src/move-dialog.js
-    src/notifications.js
     src/open-dialog.js
     src/overflow-menu.js
     src/prefs-dialog.js
@@ -42,6 +41,7 @@ set(WEB_SOURCES
     src/torrent-row.js
     src/transmission.js
     src/utils.js
+    src/values.js
     src/vendor/clusterize.js
     src/vendor/fast-deep-equal.js)
 

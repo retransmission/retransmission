@@ -64,7 +64,7 @@ public:
         return std::string_view{ data(), size() };
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     [[nodiscard]] constexpr operator std::string_view() const noexcept
     {
         return sv();

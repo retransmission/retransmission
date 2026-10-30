@@ -150,7 +150,7 @@ template<Serializable... S>
 template<Serializable... S>
 [[nodiscard]] constexpr bool has_key(tr_quark key)
 {
-    auto fields_contain = [key](auto const& fields) {
+    auto const fields_contain = [key](auto const& fields) {
         auto found = false;
         std::apply([key, &found](auto const&... field) { ((found = found || field.key == key), ...); }, fields);
         return found;

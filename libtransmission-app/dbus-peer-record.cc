@@ -186,9 +186,11 @@ std::optional<DBusPeerRecord> select_dbus_peer(
     }
 
     if (auto const owner = name_owner(TR_INTEROP_DBUS_SERVICE_NAME); !std::empty(owner) && owner != self) {
-        return DBusPeerRecord{ .bus_name = TR_INTEROP_DBUS_SERVICE_NAME,
-                               .interface = TR_INTEROP_DBUS_INTERFACE_NAME,
-                               .path = TR_INTEROP_DBUS_OBJECT_PATH };
+        return DBusPeerRecord{
+            .bus_name = TR_INTEROP_DBUS_SERVICE_NAME,
+            .interface = TR_INTEROP_DBUS_INTERFACE_NAME,
+            .path = TR_INTEROP_DBUS_OBJECT_PATH,
+        };
     }
 
     return {};
@@ -209,9 +211,11 @@ void publish_dbus_peer(
     }
 
     auto error = tr_error{};
-    auto const record = DBusPeerRecord{ .bus_name = std::string{ unique_name },
-                                        .interface = TR_INTEROP_DBUS_INTERFACE_NAME,
-                                        .path = TR_INTEROP_DBUS_OBJECT_PATH };
+    auto const record = DBusPeerRecord{
+        .bus_name = std::string{ unique_name },
+        .interface = TR_INTEROP_DBUS_INTERFACE_NAME,
+        .path = TR_INTEROP_DBUS_OBJECT_PATH,
+    };
     if (!write_dbus_peer_record(config_dir, record, &error)) {
         tr_logAddWarn(fmt::format("couldn't record this session in '{:s}': {:s}", config_dir, error.message()));
     }

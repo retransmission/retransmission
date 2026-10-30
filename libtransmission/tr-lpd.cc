@@ -161,7 +161,7 @@ struct ParsedAnnounce {
 
     key = "cookie: "sv;
     if (auto const pos = announce.find(key); pos != std::string_view::npos) {
-        auto walk = announce.substr(pos + std::size(key));
+        auto const walk = announce.substr(pos + std::size(key));
         if (auto const end = walk.find(CrLf); end != std::string_view::npos) {
             ret.cookie = walk.substr(0, end);
         } else {
@@ -193,8 +193,8 @@ class tr_lpd_impl final : public tr_lpd
 public:
     tr_lpd_impl(Mediator& mediator, struct event_base* event_base)
         : mediator_{ mediator }
-        , announce_timer_{ mediator.timerMaker().create([this]() { announceUpkeep(); }) }
-        , dos_timer_{ mediator.timerMaker().create([this]() { dosUpkeep(); }) }
+        , announce_timer_{ mediator.timerMaker().create([this] { announceUpkeep(); }) }
+        , dos_timer_{ mediator.timerMaker().create([this] { dosUpkeep(); }) }
     {
         if (!init(event_base)) {
             return;
@@ -211,6 +211,7 @@ public:
     tr_lpd_impl& operator=(tr_lpd_impl&&) = delete;
     tr_lpd_impl& operator=(tr_lpd_impl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_lpd_impl() override
     {
         for (auto& event : events_) {

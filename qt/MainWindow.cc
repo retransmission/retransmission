@@ -142,7 +142,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(ui_.action_DeselectAll, &QAction::triggered, ui_.listView, &QAbstractItemView::clearSelection);
     connect(ui_.action_Quit, &QAction::triggered, qApp, &QCoreApplication::quit);
 
-    auto refresh_action_sensitivity_soon = [this]() {
+    auto refresh_action_sensitivity_soon = [this] {
         refreshSoon(RefreshActionSensitivity);
     };
     connect(&filter_model_, &TorrentFilter::rowsInserted, this, refresh_action_sensitivity_soon);
@@ -151,7 +151,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
 
     // torrent view
     filter_model_.setSourceModel(&model_);
-    auto refresh_soon_adapter = [this]() {
+    auto refresh_soon_adapter = [this] {
         refreshSoon(~RefreshIcon);
     };
     connect(&model_, &TorrentModel::modelReset, this, refresh_soon_adapter);
@@ -216,7 +216,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     ui_.verticalLayout->insertWidget(0, filter_bar);
     filter_bar_ = filter_bar;
 
-    auto refresh_header_soon = [this]() {
+    auto refresh_header_soon = [this] {
         refreshSoon(RefreshTorrentViewHeader);
     };
     connect(&model_, &TorrentModel::rowsInserted, this, refresh_header_soon);
@@ -252,7 +252,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
         refreshPref(key);
     }
 
-    auto refresh_status_soon = [this]() {
+    auto refresh_status_soon = [this] {
         refreshSoon(RefreshStatusBar);
     };
     connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
@@ -340,7 +340,7 @@ QMenu* MainWindow::createOptionsMenu()
 
             for (auto const kbyps : { 50, 100, 250, 500, 1000, 2500, 5000, 10000 }) {
                 auto* const action = menu->addAction(Speed{ kbyps, Speed::Units::KByps }.toQstring());
-                connect(action, &QAction::triggered, this, [set_limit, kbyps]() { set_limit(kbyps); });
+                connect(action, &QAction::triggered, this, [set_limit, kbyps] { set_limit(kbyps); });
             }
         };
 
@@ -367,8 +367,9 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(
-                TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(current_value))));
+            on_action = menu->addAction(TR_FORMAT(
+                "Stop at Ratio ({ratio})",
+                fmt::arg("ratio", tr::Values::Ratio::from_double(current_value).to_string())));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_ratio, current_value](bool is_checked) {
@@ -380,8 +381,8 @@ QMenu* MainWindow::createOptionsMenu()
             menu->addSeparator();
 
             for (double const i : StockRatios) {
-                QAction* action = menu->addAction(Formatter::ratioToString(i));
-                connect(action, &QAction::triggered, this, [set_ratio, i]() { set_ratio(i); });
+                QAction* action = menu->addAction(QString::fromStdString(tr::Values::Ratio::from_double(i).to_string()));
+                connect(action, &QAction::triggered, this, [set_ratio, i] { set_ratio(i); });
             }
         };
 
@@ -739,7 +740,7 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
                 "Down: {downloaded_size}, Up: {uploaded_size}",
                 fmt::arg("downloaded_size", Formatter::storageToString(st.downloadedBytes)),
                 fmt::arg("uploaded_size", Formatter::storageToString(st.uploadedBytes))) :
-            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", Formatter::ratioToString(st.ratio))));
+            TR_FORMAT("Ratio: {ratio}", fmt::arg("ratio", st.ratio.to_string())));
 }
 
 void MainWindow::refreshTorrentViewHeader()
@@ -1109,8 +1110,9 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_seed_ratio_limit:
-        ratio_on_action_->setText(
-            TR_FORMAT("Stop at Ratio ({ratio})", fmt::arg("ratio", Formatter::ratioToString(prefs_.get<double>(key)))));
+        ratio_on_action_->setText(TR_FORMAT(
+            "Stop at Ratio ({ratio})",
+            fmt::arg("ratio", tr::Values::Ratio::from_double(prefs_.get<double>(key)).to_string())));
         break;
 
     case TR_KEY_show_filterbar:

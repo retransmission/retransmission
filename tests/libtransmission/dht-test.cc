@@ -64,7 +64,7 @@ namespace
 
 bool waitFor(struct event_base* event_base, std::chrono::milliseconds msec)
 {
-    return tr::test::waitFor(event_base, []() { return false; }, msec);
+    return tr::test::waitFor(event_base, [] { return false; }, msec);
 }
 
 auto constexpr IdLength = size_t{ 20U };
@@ -443,7 +443,7 @@ TEST_F(DhtTest, loadsStateFromStateFile)
     // Wait for all the state nodes to be pinged
     auto& pinged = mediator.mock_dht_.pinged_;
     auto const n_expected_nodes = std::size(state_file.ipv4_nodes_) + std::size(state_file.ipv6_nodes_);
-    waitFor(event_base_, [&pinged, n_expected_nodes]() { return std::size(pinged) >= n_expected_nodes; });
+    waitFor(event_base_, [&pinged, n_expected_nodes] { return std::size(pinged) >= n_expected_nodes; });
     auto actual_nodes_str = std::string{};
     for (auto const& [addrport, timestamp] : pinged) {
         actual_nodes_str += addrport.display_name();
@@ -475,7 +475,7 @@ TEST_F(DhtTest, loadsStateFromStateFileExpiredId)
     // Wait for all the state nodes to be pinged
     auto& pinged = mediator.mock_dht_.pinged_;
     auto const n_expected_nodes = std::size(state_file.ipv4_nodes_) + std::size(state_file.ipv6_nodes_);
-    waitFor(event_base_, [&pinged, n_expected_nodes]() { return std::size(pinged) >= n_expected_nodes; });
+    waitFor(event_base_, [&pinged, n_expected_nodes] { return std::size(pinged) >= n_expected_nodes; });
     auto actual_nodes_str = std::string{};
     for (auto const& [addrport, timestamp] : pinged) {
         actual_nodes_str += addrport.display_name();
@@ -506,7 +506,7 @@ TEST_F(DhtTest, stopsBootstrappingWhenSwarmHealthIsGoodEnough)
     // Wait for N pings to occur...
     auto& mock_dht = mediator.mock_dht_;
     static auto constexpr TurnGoodAfterNthPing = size_t{ 3 };
-    waitFor(event_base_, [&mock_dht]() { return std::size(mock_dht.pinged_) == TurnGoodAfterNthPing; });
+    waitFor(event_base_, [&mock_dht] { return std::size(mock_dht.pinged_) == TurnGoodAfterNthPing; });
     EXPECT_EQ(TurnGoodAfterNthPing, std::size(mock_dht.pinged_));
 
     // Now fake that libdht says the swarm is healthy.
@@ -608,7 +608,7 @@ TEST_F(DhtTest, usesBootstrapFile)
     auto const expected = tr_socket_address{ tr_address::from_string(BootstrapNodeName).value_or(tr_address{}),
                                              BootstrapNodePort };
     auto& pinged = mediator.mock_dht_.pinged_;
-    waitFor(event_base_, [&pinged]() { return !std::empty(pinged); }, 5s);
+    waitFor(event_base_, [&pinged] { return !std::empty(pinged); }, 5s);
     ASSERT_EQ(1U, std::size(pinged));
     auto const [actual_addrport, time] = pinged.front();
     EXPECT_EQ(expected.address(), actual_addrport.address());
@@ -625,8 +625,7 @@ TEST_F(DhtTest, pingsAddedNodes)
     EXPECT_EQ(0U, std::size(mediator.mock_dht_.pinged_));
 
     auto const addr = tr_address::from_string("10.10.10.1");
-    EXPECT_TRUE(addr.has_value());
-    assert(addr.has_value());
+    ASSERT_TRUE(addr.has_value());
     auto constexpr Port = tr_port::from_host(128);
     dht->maybe_add_node(*addr, Port);
 

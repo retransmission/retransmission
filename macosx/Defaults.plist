@@ -4,8 +4,6 @@
 <dict>
 	<key>AutoImport</key>
 	<false/>
-	<key>AutoSize</key>
-	<false/>
 	<key>AutoStartDownload</key>
 	<true/>
 	<key>AutoUpdateBeta</key>

@@ -32,7 +32,7 @@ class Blocklists
 public:
     Blocklists() = default;
 
-    [[nodiscard]] bool contains(tr_address const& addr) const noexcept
+    [[nodiscard]] bool contains(tr_address const& addr) const
     {
         return std::ranges::any_of(blocklists_, [&addr](auto const& blocklist) {
             return blocklist.enabled() && blocklist.contains(addr);
@@ -44,7 +44,7 @@ public:
         return std::size(blocklists_);
     }
 
-    [[nodiscard]] constexpr auto num_rules() const noexcept
+    [[nodiscard]] constexpr auto num_rules() const
     {
         return std::accumulate(std::begin(blocklists_), std::end(blocklists_), size_t{}, [](auto sum, auto& cur) {
             return sum + std::size(cur);

@@ -23,7 +23,7 @@ public:
     enum class Status : uint8_t {
         Acquired,
         Contended, // another process holds it
-        Unavailable // could not be locked at all: unwritable, or a filesystem without locking
+        Unavailable, // could not be locked at all: unwritable, or a filesystem without locking
     };
 
     explicit tr_lock_file(std::string_view const filename)

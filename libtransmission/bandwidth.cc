@@ -92,7 +92,7 @@ void remove_child(std::vector<tr_bandwidth*>& v, tr_bandwidth* remove_me) noexce
 {
     // the list isn't sorted -- so instead of erase()ing `it`,
     // do the cheaper option of overwriting it with the final item
-    if (auto it = std::ranges::find(v, remove_me); it != std::ranges::end(v)) {
+    if (auto const it = std::ranges::find(v, remove_me); it != std::ranges::end(v)) {
         std::swap(*it, v.back());
         v.pop_back();
     }

@@ -5,8 +5,6 @@
 "Total download rate" = "Загальну швидкість завантажування";
 "Total upload rate" = "Загальну швидкість роздачі";
 "Only when torrents are downloading" = "Тільки під час завантаження";
-"Auto resize:" = "Автоматична зміна розміру:";
-"Automatically size window to fit all torrents" = "Тільки під час завантаження";
 "Reset" = "Скинути";
 "Reset all alerts:" = "Скинути всі попередження:";
 "Automatically check daily" = "Перевіряти оновлення кожен день";

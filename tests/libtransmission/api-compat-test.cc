@@ -1033,7 +1033,7 @@ constexpr std::string_view ResumeBenc =
 
 TEST_F(ApiCompatTest, canConvertRpc)
 {
-    using Style = tr::api_compat::Style;
+    using tr::api_compat::Style;
     using TestCase = std::tuple<std::string_view, std::string_view, Style, std::string_view>;
 
     // clang-format off
@@ -1128,7 +1128,7 @@ TEST_F(ApiCompatTest, canConvertRpc)
 
 TEST_F(ApiCompatTest, canConvertJsonDataFiles)
 {
-    using Style = tr::api_compat::Style;
+    using tr::api_compat::Style;
     using TestCase = std::tuple<std::string_view, std::string_view, Style, std::string_view>;
 
     static auto constexpr TestCases = std::to_array<TestCase>({
@@ -1190,7 +1190,7 @@ TEST_F(ApiCompatSessionTest, settingsFixturesHaveEverySettingsKey)
 
 TEST_F(ApiCompatTest, migratesLegacyRatioSettingKeys)
 {
-    using Style = tr::api_compat::Style;
+    using tr::api_compat::Style;
     using TestCase = std::tuple<std::string_view, std::string_view, Style, std::string_view>;
 
     static auto constexpr TestCases = std::to_array<TestCase>({
@@ -1218,7 +1218,7 @@ TEST_F(ApiCompatTest, migratesLegacyRatioSettingKeys)
 
 TEST_F(ApiCompatTest, canConvertBencDataFiles)
 {
-    using Style = tr::api_compat::Style;
+    using tr::api_compat::Style;
     using TestCase = std::tuple<std::string_view, std::string_view, Style, std::string_view>;
 
     static auto constexpr TestCases = std::to_array<TestCase>({

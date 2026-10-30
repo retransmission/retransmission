@@ -12,8 +12,7 @@
 
 - (void)setVisible:(BOOL)visible
 {
-    //we need to redraw the main window after each change
-    //otherwise we get strange drawing issues, leading to a potential crash
+    // This notification allows the controller to update and hide toolbar item bezels during the toggle.
     [NSNotificationCenter.defaultCenter postNotificationName:@"ToolbarDidChange" object:nil];
 
     super.visible = visible;

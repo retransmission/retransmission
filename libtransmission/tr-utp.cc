@@ -177,6 +177,7 @@ void tr_utp_init(tr_session* session)
     restart_timer(session);
 }
 
+// NOLINTNEXTLINE(misc-const-correctness)
 bool tr_utp_packet(unsigned char const* buf, size_t buflen, struct sockaddr const* from, socklen_t fromlen, tr_session* ss)
 {
     auto const ret = utp_process_udp(ss->utp_context, buf, buflen, from, fromlen);
@@ -184,6 +185,7 @@ bool tr_utp_packet(unsigned char const* buf, size_t buflen, struct sockaddr cons
     return ret != 0;
 }
 
+// NOLINTNEXTLINE(misc-const-correctness)
 void tr_utp_issue_deferred_acks(tr_session* ss)
 {
     utp_issue_deferred_acks(ss->utp_context);

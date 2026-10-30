@@ -103,11 +103,11 @@ int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
 
 namespace
 {
-constexpr std::array<std::pair<char const*, uint16_t>, 3> const DefaultBootstraps = { {
+constexpr auto DefaultBootstraps = std::to_array<std::pair<char const*, uint16_t>>({
     { TR_PROJ_DOMAIN_DHT, 6881 },
     { "router.bittorrent.com", 6881 },
     { "dht.libtorrent.org", 25401 },
-} };
+});
 
 class tr_dht_impl final : public tr_dht
 {
@@ -125,9 +125,9 @@ public:
         , udp6_socket_{ udp6_socket }
         , mediator_{ mediator }
         , state_filename_{ tr_pathbuf{ mediator_.config_dir(), "/dht.dat" } }
-        , announce_timer_{ mediator_.timer_maker().create([this]() { on_announce_timer(); }) }
-        , bootstrap_timer_{ mediator_.timer_maker().create([this]() { on_bootstrap_timer(); }) }
-        , periodic_timer_{ mediator_.timer_maker().create([this]() { on_periodic_timer(); }) }
+        , announce_timer_{ mediator_.timer_maker().create([this] { on_announce_timer(); }) }
+        , bootstrap_timer_{ mediator_.timer_maker().create([this] { on_bootstrap_timer(); }) }
+        , periodic_timer_{ mediator_.timer_maker().create([this] { on_periodic_timer(); }) }
     {
         tr_logAddDebug(fmt::format("Starting DHT on port {port}", fmt::arg("port", peer_port.host())));
 
@@ -153,6 +153,7 @@ public:
     tr_dht_impl& operator=(tr_dht_impl&&) = delete;
     tr_dht_impl& operator=(tr_dht_impl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_dht_impl() override
     {
         tr_logAddTrace("Uninitializing DHT");
@@ -460,7 +461,7 @@ private:
         static auto constexpr IdTtl = time_t{ 30 * 24 * 60 * 60 }; // 30 days
 
         auto& top = *otop;
-        auto* const top_map = top.get_if<tr_variant::Map>();
+        auto const* const top_map = top.get_if<tr_variant::Map>();
         if (top_map == nullptr) {
             return;
         }
@@ -547,7 +548,7 @@ private:
             return;
         }
 
-        for (auto* infop = info; infop != nullptr; infop = infop->ai_next) {
+        for (auto const* infop = info; infop != nullptr; infop = infop->ai_next) {
             if (auto addrport = tr_socket_address::from_sockaddr(infop->ai_addr); addrport) {
                 nodes.emplace_back(*addrport);
             }

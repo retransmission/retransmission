@@ -180,7 +180,7 @@ void Wishlist::candidate_list_upkeep()
             if (existing_candidate) {
                 auto& candidate = candidates_[idx_c];
 
-                if (auto& begin = candidate.block_span.begin; prev != nullptr) {
+                if (auto const begin = candidate.block_span.begin; prev != nullptr) {
                     // Shrink the block span of the previous candidate if the
                     // previous candidate shares the edge block with this candidate.
                     auto& previous_end = prev->block_span.end;

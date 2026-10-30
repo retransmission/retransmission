@@ -261,7 +261,8 @@ TEST_F(WebTest, httpErrorStatusIsSurfaced)
 
 TEST_F(WebTest, curlErrorIsReported)
 {
-    auto const response = fetch(tr_web::FetchOptions{ "http://example.invalid", nullptr, nullptr });
+    // trailing dot: a fully-qualified name, so no DNS search domain can make it resolve
+    auto const response = fetch(tr_web::FetchOptions{ "http://example.invalid.", nullptr, nullptr });
     EXPECT_EQ(0, response.status);
     EXPECT_FALSE(response.did_timeout);
     ASSERT_TRUE(response.errmsg);

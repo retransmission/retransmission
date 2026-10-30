@@ -111,6 +111,7 @@ constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_le
 {
     auto constexpr Hex = "0123456789abcdef"sv;
 
+    // NOLINTNEXTLINE(misc-const-correctness): TODO https://github.com/llvm/llvm-project/pull/215285
     auto* output = static_cast<uint8_t*>(voutput);
 
     for (size_t i = 0; i < byte_length; ++i) {

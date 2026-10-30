@@ -4,6 +4,8 @@
 
 #import <Foundation/Foundation.h>
 
+#include <libtransmission/values.h>
+
 @interface NSString (NSStringAdditions)
 
 @property(nonatomic, class, readonly) NSString* ellipsis;
@@ -18,9 +20,12 @@
 + (NSString*)stringForSpeedAbbrev:(CGFloat)speed;
 // 3 significant digits
 + (NSString*)stringForSpeedAbbrevCompact:(CGFloat)speed;
-+ (NSString*)stringForRatio:(CGFloat)ratio;
++ (NSString*)stringForRatio:(tr::Values::Ratio)ratio;
 
-+ (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals;
+// e.g. "4.99%", "45.7%", "100%"
++ (NSString*)percentString:(tr::Values::Percent)progress;
+// e.g. "5%", "46%", "100%"
++ (NSString*)wholePercentString:(tr::Values::Percent)progress;
 
 // simple compare method for strings with numbers (works for IP addresses)
 - (NSComparisonResult)compareNumeric:(NSString*)string;

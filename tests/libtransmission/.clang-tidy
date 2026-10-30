@@ -1,5 +1,5 @@
 ---
-HeaderFilterRegex: .*/tests/libtransmission/.*
+HeaderFilterRegex: .*/tests/libtransmission/[^/]*$
 
 # Many of these checks are disabled only because the code hasn't been
 # cleaned up yet. Pull requests welcomed.
@@ -7,14 +7,19 @@ Checks:
   - bugprone-*
   - -bugprone-easily-swappable-parameters
   - -bugprone-narrowing-conversions
+  - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-unchecked-optional-access
   - cert-*
+  - -cert-dcl03-c # alias of `misc-static-assert`
+  - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
+  - -cert-dcl51-cpp # alias of `bugprone-reserved-identifier`
   - -cert-int09-c
   - clang-analyzer-optin*
   - cppcoreguidelines-*
   - -cppcoreguidelines-avoid-const-or-ref-data-members
   - -cppcoreguidelines-avoid-magic-numbers
   - -cppcoreguidelines-avoid-non-const-global-variables
+  - -cppcoreguidelines-explicit-constructor # alias of `misc-explicit-constructor`
   - -cppcoreguidelines-macro-usage
   - -cppcoreguidelines-narrowing-conversions
   - -cppcoreguidelines-non-private-member-variables-in-classes
@@ -25,17 +30,14 @@ Checks:
   - -cppcoreguidelines-use-enum-class
   - google-readability-*
   - google-runtime-operator
-  - hicpp-*
-  - -hicpp-signed-bitwise
-  - -hicpp-use-nullptr # alias of `modernize-use-nullptr
   - misc-*
-  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/236012 is fixed
   - -misc-include-cleaner
   - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
+  - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed
   - modernize-*
-  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - portability-*
@@ -46,11 +48,13 @@ Checks:
   - -readability-identifier-length
   - -readability-magic-numbers
   - -readability-qualified-auto
-  - -readability-redundant-typename # TODO: enable after https://github.com/llvm/llvm-project/issues/206995 is fixed
+  - -readability-redundant-parentheses # TODO: enable after https://github.com/llvm/llvm-project/pull/228666 is released
+  - -readability-trailing-comma # Adds too much indentation to `std::array` definitions with 2 braces
   - -readability-use-concise-preprocessor-directives
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                   value: true       }
+  - { key: readability-else-after-return.WarnOnConditionVariables,          value: false      }
   - { key: readability-identifier-naming.ClassCase,                         value: CamelCase  }
   - { key: readability-identifier-naming.ClassMethodCase,                   value: camelBack  }
   - { key: readability-identifier-naming.ConstexprVariableCase,             value: CamelCase  }

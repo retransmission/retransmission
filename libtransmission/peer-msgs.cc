@@ -333,6 +333,7 @@ public:
     tr_peerMsgsImpl& operator=(tr_peerMsgsImpl&&) = delete;
     tr_peerMsgsImpl& operator=(tr_peerMsgsImpl const&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
     ~tr_peerMsgsImpl() override
     {
         set_active(tr_direction::Up, false);
@@ -389,7 +390,7 @@ public:
         disconnect_soon();
     }
 
-    void on_torrent_got_metainfo() noexcept override
+    void on_torrent_got_metainfo() override
     {
         // A peer may not be interesting to us anymore after
         // sending us metadata, so do a status update
@@ -955,6 +956,7 @@ template<typename... Args>
 template<typename... Args>
 size_t build_peer_message(MessageWriter& out, uint8_t type, Args const&... args)
 {
+    // NOLINTNEXTLINE(misc-const-correctness): https://github.com/llvm/llvm-project/issues/235460
     auto msg_len = sizeof(type);
     ((msg_len += get_param_length(args)), ...);
     out.add_uint32(msg_len);
@@ -1025,7 +1027,7 @@ void tr_peerMsgsImpl::parse_ltep(MessageReader& payload)
         send_ltep_handshake();
 
         if (can_send_ut_pex()) {
-            pex_timer_ = session->timerMaker().create([this]() { send_ut_pex(); });
+            pex_timer_ = session->timerMaker().create([this] { send_ut_pex(); });
             pex_timer_->start_repeating(SendPexInterval);
             send_ut_pex();
         }
@@ -1202,7 +1204,7 @@ void tr_peerMsgsImpl::send_ut_pex()
             // "added.f"
             tmpbuf.resize(std::size(added));
             auto* begin = std::data(tmpbuf);
-            auto* walk = begin;
+            auto* walk = begin; // NOLINT(misc-const-correctness): TODO https://github.com/llvm/llvm-project/pull/215285
             for (auto const& p : added) {
                 *walk++ = std::byte{ p.flags };
             }

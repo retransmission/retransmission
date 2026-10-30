@@ -241,7 +241,7 @@ static NSTimeInterval const kUpdateSeconds = 1.0;
         if (waiting) {
             [self.fVerifyIndicator startAnimation:self];
         } else {
-            self.fVerifyIndicator.doubleValue = self.torrent.checkingProgress;
+            self.fVerifyIndicator.doubleValue = self.torrent.checkingProgress.to_fraction();
         }
     } else {
         self.fVerifyIndicator.indeterminate = YES; // we want to hide when stopped, which only applies when indeterminate

@@ -86,7 +86,7 @@ template<typename Predicate>
     }
 
     auto const placeholder = label->text();
-    return waitUntil([label, placeholder]() { return label->text() != placeholder; });
+    return waitUntil([label, placeholder] { return label->text() != placeholder; });
 }
 
 class PrefsDialogTest
@@ -224,7 +224,7 @@ private slots:
         QVERIFY(date_label->isHidden());
 
         session.refreshSessionInfo();
-        QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
+        QVERIFY(waitUntil([status_label] { return !status_label->isHidden(); }));
         QVERIFY(!date_label->isHidden());
 
         session.stop();
@@ -260,7 +260,7 @@ private slots:
 
         // Waiting for the label also drains the request's RpcQueue, which would otherwise leak under LSan.
         dialog.show();
-        QVERIFY(waitUntil([status_label]() { return !status_label->isHidden(); }));
+        QVERIFY(waitUntil([status_label] { return !status_label->isHidden(); }));
         dialog.hide();
     }
 

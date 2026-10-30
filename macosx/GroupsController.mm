@@ -66,8 +66,8 @@ static CGFloat const kIconWidthSmall = 12.0;
             }
         } else if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"GroupDicts"])) {
             NSError* error = nil;
-            NSArray* oldDicts = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:NSMutableArray.class,
-                                                                                                   NSMutableDictionary.class,
+            NSArray* oldDicts = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:NSArray.class,
+                                                                                                   NSDictionary.class,
                                                                                                    NSNumber.class,
                                                                                                    NSColor.class,
                                                                                                    NSString.class,
@@ -76,19 +76,15 @@ static CGFloat const kIconWidthSmall = 12.0;
                                                                     fromData:data
                                                                        error:&error];
 
-            if (oldDicts == nil) {
+            if (![oldDicts isKindOfClass:NSArray.class]) {
                 NSLog(@"[GroupsController] Got error in legacy groups decoding: %@", error.localizedDescription);
                 loadFailed = YES;
             } else {
                 _fGroups = [[NSMutableArray alloc] init];
-                for (NSDictionary* dict in oldDicts) {
-                    TRGroup* g = [[TRGroup alloc] initWithIndex:[dict[@"Index"] integerValue] name:dict[@"Name"]
-                                                          color:dict[@"Color"]];
-                    g.usesCustomDownloadLocation = [dict[@"UsesCustomDownloadLocation"] boolValue];
-                    g.customDownloadLocation = dict[@"CustomDownloadLocation"];
-                    g.usesAutoGroupRules = [dict[@"UsesAutoGroupRules"] boolValue];
-                    g.autoGroupRules = dict[@"AutoGroupRules"];
-                    [_fGroups addObject:g];
+                for (id dict in oldDicts) {
+                    if (TRGroup* const group = [[TRGroup alloc] initWithGroupDictsEntry:dict]) {
+                        [_fGroups addObject:group];
+                    }
                 }
 
                 [self saveGroups];
@@ -284,6 +280,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 
     if (predicate != nil) {
         group.autoGroupRules = predicate;
+        NSAssert1(group.autoGroupRules != nil, @"TRGroup can't store the rule editor's predicate %@", predicate);
         [self saveGroups];
     } else {
         group.autoGroupRules = nil;
@@ -391,8 +388,8 @@ static CGFloat const kIconWidthSmall = 12.0;
         return NO;
     }
 
+    // TRGroup rebuilds every rule it stores from an allowlist, so this never evaluates a predicate decoded from prefs.
     NSPredicate* predicate = group.autoGroupRules;
-    [predicate allowEvaluation];
     BOOL eval = NO;
     @try {
         eval = [predicate evaluateWithObject:torrent];

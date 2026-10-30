@@ -136,7 +136,7 @@ public:
                 static_cast<double>(high),
                 static_cast<double>(step)));
         button->set_digits(std::is_floating_point_v<T> ? 2 : 0);
-        button->signal_value_changed().connect([this, button, key]() { spun_cb<T>(*button, key); });
+        button->signal_value_changed().connect([this, button, key] { spun_cb<T>(*button, key); });
         return button;
     }
 
@@ -194,7 +194,7 @@ private:
         // for a moment to keep from flooding the core with changes
         auto last_change_it = spin_timers_.find(key);
         if (last_change_it == spin_timers_.end()) {
-            auto timeout_tag = Glib::signal_timeout().connect_seconds([this, &w, key]() { return spun_cb_idle<T>(w, key); }, 1);
+            auto timeout_tag = Glib::signal_timeout().connect_seconds([this, &w, key] { return spun_cb_idle<T>(w, key); }, 1);
             last_change_it = spin_timers_.emplace(key, std::pair(std::make_unique<Glib::Timer>(), timeout_tag)).first;
         }
 
@@ -240,7 +240,7 @@ Gtk::CheckButton* PageBase::init_check_button(Glib::ustring const& name, tr_quar
 {
     auto* button = get_widget<Gtk::CheckButton>(name);
     button->set_active(prefs_.get<bool>(key));
-    button->signal_toggled().connect([this, button, key]() { core_->set_pref(key, button->get_active()); });
+    button->signal_toggled().connect([this, button, key] { core_->set_pref(key, button->get_active()); });
     return button;
 }
 
@@ -257,7 +257,7 @@ Gtk::Entry* PageBase::init_entry(Glib::ustring const& name, tr_quark const key)
         entry->set_text(value);
     }
 
-    entry->signal_changed().connect([this, entry, key]() { entry_changed_cb(*entry, key); });
+    entry->signal_changed().connect([this, entry, key] { entry_changed_cb(*entry, key); });
     return entry;
 }
 
@@ -268,7 +268,7 @@ Gtk::TextView* PageBase::init_text_view(Glib::ustring const& name, tr_quark cons
     auto buffer = view->get_buffer();
     buffer->set_text(prefs_.get<std::string>(key));
 
-    auto const save_buffer = [this, buffer, key]() {
+    auto const save_buffer = [this, buffer, key] {
         core_->set_pref(key, buffer->get_text());
     };
 
@@ -297,7 +297,7 @@ PathButton* PageBase::init_chooser_button(Glib::ustring const& name, tr_quark co
         button->set_filename(path);
     }
 
-    button->signal_selection_changed().connect([this, button, key]() { chosen_cb(*button, key); });
+    button->signal_selection_changed().connect([this, button, key] { chosen_cb(*button, key); });
     return button;
 }
 
@@ -318,7 +318,7 @@ Gtk::ComboBox* PageBase::init_encryption_combo(Glib::ustring const& name, tr_qua
         });
     auto const mode = prefs_.get<tr_encryption_mode>(key);
     gtr_combo_box_set_active_enum(*combo, static_cast<int>(mode));
-    combo->signal_changed().connect([this, combo, key]() { onIntComboChanged(*combo, key); });
+    combo->signal_changed().connect([this, combo, key] { onIntComboChanged(*combo, key); });
     return combo;
 }
 
@@ -355,7 +355,7 @@ Gtk::ComboBox* PageBase::init_time_combo(Glib::ustring const& name, tr_quark con
     combo->pack_start(*r, true);
     combo->add_attribute(r->property_text(), time_cols.title);
     combo->set_active(prefs_.get<int>(key) / 15);
-    combo->signal_changed().connect([this, combo, key]() {
+    combo->signal_changed().connect([this, combo, key] {
         if (auto const iter = combo->get_active(); iter) {
             core_->set_pref(key, iter->get_value(time_cols.offset));
         }
@@ -389,7 +389,7 @@ Gtk::ComboBox* PageBase::init_week_combo(Glib::ustring const& name, tr_quark con
             { get_weekday_string(Glib::Date::Weekday::SUNDAY), TR_SCHED_SUN },
         });
     gtr_combo_box_set_active_enum(*combo, prefs_.get<int>(key));
-    combo->signal_changed().connect([this, combo, key]() { onIntComboChanged(*combo, key); });
+    combo->signal_changed().connect([this, combo, key] { onIntComboChanged(*combo, key); });
     return combo;
 }
 
@@ -652,7 +652,7 @@ void PrivacyPage::onBlocklistUpdated(bool success)
     refreshBlocklistInfo();
 
     blocklist_update_result_tag_ = Glib::signal_timeout().connect_seconds(
-        [this]() {
+        [this] {
             showing_update_status_ = false;
             updateBlocklistText();
             return false;
@@ -700,10 +700,10 @@ PrivacyPage::PrivacyPage(
     blocklist_info_timer_tag_ = Glib::signal_timeout().connect_seconds(
         sigc::mem_fun(*this, &PrivacyPage::refreshBlocklistInfo),
         SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
-    updateBlocklistButton_->signal_clicked().connect([this]() { onBlocklistUpdate(); });
+    updateBlocklistButton_->signal_clicked().connect([this] { onBlocklistUpdate(); });
     updateBlocklistButton_->set_sensitive(check_->get_active());
     blocklist_url_entry->signal_changed().connect(
-        [this, blocklist_url_entry]() { on_blocklist_url_changed(blocklist_url_entry); });
+        [this, blocklist_url_entry] { on_blocklist_url_changed(blocklist_url_entry); });
     on_blocklist_url_changed(blocklist_url_entry);
 
     init_check_button("blocklist_autoupdate_check", TR_KEY_blocklist_updates_enabled);
@@ -872,13 +872,13 @@ RemotePage::RemotePage(
     , auth_tb_(init_check_button("enable_rpc_auth_check", TR_KEY_rpc_authentication_required))
     , whitelist_tb_(init_check_button("rpc_whitelist_check", TR_KEY_rpc_whitelist_enabled))
 {
-    rpc_tb_->signal_toggled().connect([this]() { refreshRPCSensitivity(); });
+    rpc_tb_->signal_toggled().connect([this] { refreshRPCSensitivity(); });
     auto* const open_button = get_widget<Gtk::Button>("open_web_client_button");
-    open_button->signal_clicked().connect([this]() { onLaunchClutchCB(); });
+    open_button->signal_clicked().connect([this] { onLaunchClutchCB(); });
 
     init_spin_button<uint16_t>("rpc_port_spin", TR_KEY_rpc_port, 0, std::numeric_limits<uint16_t>::max(), 1);
 
-    auth_tb_->signal_toggled().connect([this]() { refreshRPCSensitivity(); });
+    auth_tb_->signal_toggled().connect([this] { refreshRPCSensitivity(); });
 
     auto* const username_entry = init_entry("rpc_username_entry", TR_KEY_rpc_username);
     auth_widgets_.push_back(username_entry);
@@ -888,7 +888,7 @@ RemotePage::RemotePage(
     auth_widgets_.push_back(password_entry);
     auth_widgets_.push_back(get_widget<Gtk::Label>("rpc_password_label"));
 
-    whitelist_tb_->signal_toggled().connect([this]() { refreshRPCSensitivity(); });
+    whitelist_tb_->signal_toggled().connect([this] { refreshRPCSensitivity(); });
 
     {
         store_ = whitelist_tree_model_new(prefs.get<std::string>(TR_KEY_rpc_whitelist));
@@ -900,7 +900,7 @@ RemotePage::RemotePage(
 
         whitelist_widgets_.push_back(view_);
         auto const sel = view_->get_selection();
-        sel->signal_changed().connect([this]() { refreshRPCSensitivity(); });
+        sel->signal_changed().connect([this] { refreshRPCSensitivity(); });
 
         auto* r = Gtk::make_managed<Gtk::CellRendererText>();
         r->signal_edited().connect(sigc::mem_fun(*this, &RemotePage::onAddressEdited));
@@ -912,11 +912,11 @@ RemotePage::RemotePage(
 
         whitelist_widgets_.push_back(get_widget<Gtk::Label>("rpc_whitelist_label"));
 
-        remove_button_->signal_clicked().connect([this]() { onRemoveWhitelistClicked(); });
+        remove_button_->signal_clicked().connect([this] { onRemoveWhitelistClicked(); });
         refreshRPCSensitivity();
         auto* add_button = get_widget<Gtk::Button>("add_to_rpc_whitelist_button");
         whitelist_widgets_.push_back(add_button);
-        add_button->signal_clicked().connect([this]() { onAddWhitelistClicked(); });
+        add_button->signal_clicked().connect([this] { onAddWhitelistClicked(); });
     }
 
     refreshRPCSensitivity();
@@ -1127,7 +1127,7 @@ NetworkPage::NetworkPage(
     , portButton_(get_widget<Gtk::Button>("test_listening_port_button"))
     , portSpin_(init_spin_button<uint16_t>("listening_port_spin", TR_KEY_peer_port, 1, std::numeric_limits<uint16_t>::max(), 1))
 {
-    portButton_->signal_clicked().connect([this]() { onPortTest(); });
+    portButton_->signal_clicked().connect([this] { onPortTest(); });
     updatePortStatusText();
 
     prefsTag_ = core_->signal_prefs_changed().connect([this](auto key) { onCorePrefsChanged(key); });

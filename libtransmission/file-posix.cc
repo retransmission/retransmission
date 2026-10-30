@@ -107,14 +107,14 @@ std::string_view tr_sys_path_basename(std::string_view path, tr_error* /*error*/
 
     // Remove all trailing slashes.
     // If nothing is left, return "/"
-    if (auto pos = path.find_last_not_of('/'); pos != std::string_view::npos) {
+    if (auto const pos = path.find_last_not_of('/'); pos != std::string_view::npos) {
         path = path.substr(0, pos + 1);
     } else // all slashes
     {
         return "/"sv;
     }
 
-    if (auto pos = path.find_last_of('/'); pos != std::string_view::npos) {
+    if (auto const pos = path.find_last_of('/'); pos != std::string_view::npos) {
         path.remove_prefix(pos + 1);
     }
 

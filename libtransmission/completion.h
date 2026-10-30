@@ -9,7 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
@@ -80,16 +79,15 @@ struct tr_completion {
         return size_when_done() - has_total();
     }
 
-    [[nodiscard]] constexpr double percent_complete() const
+    // incomplete until the metainfo arrives, since the totals are unknown before then
+    [[nodiscard]] constexpr tr::Values::Percent percent_complete() const noexcept
     {
-        auto const denom = block_info_->total_size();
-        return denom != 0U ? std::clamp(static_cast<double>(size_now_) / static_cast<double>(denom), 0.0, 1.0) : 0.0;
+        return has_metainfo() ? tr::Values::Percent{ size_now_, block_info_->total_size() } : tr::Values::Percent{};
     }
 
-    [[nodiscard]] double percent_done() const
+    [[nodiscard]] tr::Values::Percent percent_done() const
     {
-        auto const denom = size_when_done();
-        return denom != 0U ? std::clamp(static_cast<double>(size_now_) / static_cast<double>(denom), 0.0, 1.0) : 0.0;
+        return has_metainfo() ? tr::Values::Percent{ size_now_, size_when_done() } : tr::Values::Percent{};
     }
 
     [[nodiscard]] uint64_t size_when_done() const;

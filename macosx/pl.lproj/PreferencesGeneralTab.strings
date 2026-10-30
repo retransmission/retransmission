@@ -5,8 +5,6 @@
 "Total download rate" = "Całkowity współczynnik pobierania";
 "Total upload rate" = "Całkowity współczynnik wysyłania";
 "Only when torrents are downloading" = "Tylko podczas pobierania";
-"Auto resize:" = "Automatyczna zmiana rozmiaru:";
-"Automatically size window to fit all torrents" = "Automatyczna zmiana rozmiaru okna, aby zmieścić wszystkie przesyłania";
 "Reset" = "Usuń";
 "Reset all alerts:" = "Usunięcie wszystkich alarmów:";
 "Automatically check daily" = "Automatyczne wyszukiwanie raz dziennie";

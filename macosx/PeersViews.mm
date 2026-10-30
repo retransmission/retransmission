@@ -3,7 +3,6 @@
 // License text can be found in the licenses/ folder.
 
 #import "PeersViews.h"
-#import "NSStringAdditions.h"
 
 @interface PeerProgressIndicatorView ()
 @property(nonatomic, strong) NSTextField* textProgressView;
@@ -64,10 +63,10 @@
     return self;
 }
 
-- (void)updateProgress:(float)progressValue isSeed:(BOOL)isSeed showText:(BOOL)showText
+- (void)updateProgress:(float)progressValue text:(NSString*)progressText isSeed:(BOOL)isSeed showText:(BOOL)showText
 {
     if (showText) {
-        self.textProgressView.stringValue = [NSString percentString:progressValue longDecimals:NO];
+        self.textProgressView.stringValue = progressText;
     } else {
         self.levelIndicator.floatValue = progressValue;
     }

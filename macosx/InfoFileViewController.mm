@@ -357,7 +357,7 @@
 - (BOOL)canQuickLookFile:(FileListNode*)item
 {
     Torrent* torrent = self.fTorrents[0];
-    return (item.isFolder || [torrent fileProgress:item] >= 1.0) && [torrent fileLocation:item];
+    return (item.isFolder || [torrent fileProgress:item].is_complete()) && [torrent fileLocation:item];
 }
 
 @end

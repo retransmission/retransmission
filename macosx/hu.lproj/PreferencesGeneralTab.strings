@@ -5,8 +5,6 @@
 "Total download rate" = "Teljes letöltési sebesség";
 "Total upload rate" = "Teljes feltöltési sebesség";
 "Only when torrents are downloading" = "Csak akkor ha van aktív letöltés";
-"Auto resize:" = "Auto átméretezés:";
-"Automatically size window to fit all torrents" = "Automatikusan méretezze úgy az ablakot, hogy az összes átvitel beleférjen";
 "Reset" = "Visszaállítás";
 "Reset all alerts:" = "Összes figyelmeztetés nullázása:";
 "Automatically check daily" = "Ellenőrzés naponta automatikusan";

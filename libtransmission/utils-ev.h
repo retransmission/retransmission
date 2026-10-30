@@ -5,11 +5,10 @@
 
 #pragma once
 
-#ifndef __TRANSMISSION__
-#error only libtransmission should #include this header.
-#endif
-
 #include <memory>
+
+// TODO(tearfur): remove after dropping event_new_pri2 after async IO
+#include <event2/util.h>
 
 struct event;
 struct event_base;

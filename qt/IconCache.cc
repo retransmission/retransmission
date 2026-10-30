@@ -146,13 +146,12 @@ void IconCache::addAssociatedFileIcon(QFileInfo const& file_info, unsigned int i
                 FILE_ATTRIBUTE_NORMAL,
                 &shell_file_info,
                 sizeof(shell_file_info),
-                SHGFI_ICON | icon_size | SHGFI_USEFILEATTRIBUTES) != 0) {
-            if (shell_file_info.hIcon != nullptr) {
-                pixmap = IF_QT6(
-                    QPixmap::fromImage(QImage::fromHICON(shell_file_info.hIcon)),
-                    QtWin::fromHICON(shell_file_info.hIcon));
-                ::DestroyIcon(shell_file_info.hIcon);
-            }
+                SHGFI_ICON | icon_size | SHGFI_USEFILEATTRIBUTES) != 0 &&
+            shell_file_info.hIcon != nullptr) {
+            pixmap = IF_QT6(
+                QPixmap::fromImage(QImage::fromHICON(shell_file_info.hIcon)),
+                QtWin::fromHICON(shell_file_info.hIcon));
+            ::DestroyIcon(shell_file_info.hIcon);
         }
 
         QPixmapCache::insert(pixmap_cache_key, pixmap);

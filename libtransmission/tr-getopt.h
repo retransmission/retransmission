@@ -38,7 +38,7 @@ enum : int8_t {
      * argument for an option that requires one */
     TR_OPT_ERR = -1,
     /* an unknown option was reached */
-    TR_OPT_UNK = -2
+    TR_OPT_UNK = -2,
 };
 
 /**

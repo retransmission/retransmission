@@ -8,14 +8,19 @@ Checks:
   - bugprone-*
   - -bugprone-branch-clone
   - -bugprone-easily-swappable-parameters
+  - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-throwing-static-initialization
   - cert-*
+  - -cert-dcl03-c # alias of `misc-static-assert`
+  - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
+  - -cert-dcl51-cpp # alias of `bugprone-reserved-identifier`
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c
   - clang-analyzer-*
   - cppcoreguidelines-*
   - -cppcoreguidelines-avoid-const-or-ref-data-members
   - -cppcoreguidelines-avoid-magic-numbers
+  - -cppcoreguidelines-explicit-constructor # alias of `misc-explicit-constructor`
   - -cppcoreguidelines-macro-usage
   - -cppcoreguidelines-narrowing-conversions
   - -cppcoreguidelines-non-private-member-variables-in-classes
@@ -26,18 +31,13 @@ Checks:
   - -cppcoreguidelines-use-enum-class
   - google-readability-*
   - google-runtime-operator
-  - hicpp-*
-  - -hicpp-named-parameter # alias of `readability-named-parameter`
-  - -hicpp-signed-bitwise
-  - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
-  - -hicpp-use-equals-delete # alias of `modernize-use-equals-delete`
-  - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
-  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/236012 is fixed
   - -misc-include-cleaner
   - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
+  - -misc-static-assert # TODO: enable after https://github.com/llvm/llvm-project/issues/213560 is fixed
   - modernize-*
   - -modernize-use-trailing-return-type # keep
   - performance-*
@@ -50,10 +50,13 @@ Checks:
   - -readability-implicit-bool-conversion
   - -readability-magic-numbers
   - -readability-redundant-access-specifiers # keep: 'private' vs 'private slots'
+  - -readability-redundant-parentheses # TODO: enable after https://github.com/llvm/llvm-project/pull/228666 is released
+  - -readability-trailing-comma # Adds too much indentation to `std::array` definitions with 2 braces
   - -readability-use-concise-preprocessor-directives
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                   value: true       }
+  - { key: readability-else-after-return.WarnOnConditionVariables,                  value: false      }
   - { key: readability-identifier-naming.ClassCase,                         value: CamelCase  }
   # https://stackoverflow.com/a/49892587/11390656:
   # Qt slot names with underscore has a special meaning, so we don't use lower_case for class method names

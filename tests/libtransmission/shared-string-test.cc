@@ -212,7 +212,7 @@ TEST_F(SharedStringTest, concurrentInternAndRelease)
     auto threads = std::vector<std::thread>{};
     threads.reserve(NumThreads);
     for (size_t i = 0U; i < NumThreads; ++i) {
-        threads.emplace_back([i]() {
+        threads.emplace_back([i] {
             for (size_t round = 0U; round < NumRounds; ++round) {
                 // Contend on a small key set so that the last reference to
                 // a value is repeatedly dropped while others are interning it.

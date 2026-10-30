@@ -375,8 +375,8 @@ void handle_rpc(struct evhttp_request* req, tr_session* session)
 {
     if (auto const cmd = evhttp_request_get_command(req); cmd == EVHTTP_REQ_POST) {
         auto* const input_buffer = evhttp_request_get_input_buffer(req);
-        auto json = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(input_buffer, -1)),
-                                      evbuffer_get_length(input_buffer) };
+        auto const json = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(input_buffer, -1)),
+                                            evbuffer_get_length(input_buffer) };
         handle_rpc_from_json(req, session, json);
         return;
     }
@@ -652,7 +652,7 @@ void start_server(tr_rpc_server* server);
 auto rpc_server_start_retry(tr_rpc_server* server)
 {
     if (!server->start_retry_timer) {
-        server->start_retry_timer = server->session->timerMaker().create([server]() { start_server(server); });
+        server->start_retry_timer = server->session->timerMaker().create([server] { start_server(server); });
     }
 
     ++server->start_retry_counter;
@@ -821,7 +821,7 @@ void tr_rpc_server::set_enabled(bool is_enabled)
 {
     settings_.is_enabled = is_enabled;
 
-    session->run_in_session_thread([this]() {
+    session->run_in_session_thread([this] {
         if (!settings_.is_enabled) {
             stop_server(this);
         } else {

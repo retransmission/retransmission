@@ -128,7 +128,7 @@ tr_open_files::Handle tr_open_files::get(tr_torrent_id_t const tor_id, tr_file_i
 {
     auto const lock = std::scoped_lock{ mutex_ };
 
-    if (auto* const found = pool_.get(make_key(tor_id, file_num)); found != nullptr) {
+    if (auto const* const found = pool_.get(make_key(tor_id, file_num)); found != nullptr) {
         if (writable && !(*found)->is_writable()) {
             return {};
         }
@@ -153,8 +153,8 @@ tr_open_files::Handle tr_open_files::get(
     auto path = Paths::iterator{};
     {
         auto lock = std::unique_lock{ mutex_ };
-        opening_cv_.wait(lock, [this, filename]() { return !opening_.contains(filename); });
-        if (auto* const found = pool_.get(key); found != nullptr) {
+        opening_cv_.wait(lock, [this, filename] { return !opening_.contains(filename); });
+        if (auto const* const found = pool_.get(key); found != nullptr) {
             if (!writable || (*found)->is_writable()) {
                 return *found;
             }

@@ -165,7 +165,7 @@ public:
         : tr_webseed{ tor_in }
         , tor{ tor_in }
         , base_url{ url }
-        , idle_timer_{ session->timerMaker().create([this]() { on_idle(); }) }
+        , idle_timer_{ session->timerMaker().create([this] { on_idle(); }) }
         , have_{ tor_in.piece_count() }
         , bandwidth_{ &tor_in.bandwidth() }
         , callback_{ callback_in }
@@ -367,7 +367,7 @@ void tr_webseed_task::use_fetched_blocks()
             content_.to_buf(block_buf);
 
             session_->run_in_session_thread(
-                [buf = std::move(block_buf), loc = loc_, session = session_, tor_id = tor.id(), webseed = webseed_]() {
+                [buf = std::move(block_buf), loc = loc_, session = session_, tor_id = tor.id(), webseed = webseed_] {
                     auto* const torrent = session->torrents().get(tor_id);
                     if (torrent == nullptr) {
                         return;

@@ -7,6 +7,7 @@
 #include <windows.h>
 
 #include <algorithm> /* std::max() */
+#include <array>
 
 #include <fmt/format.h>
 
@@ -26,16 +27,21 @@
 
 namespace
 {
-LPCWSTR constexpr service_name = L"" TR_PROJ_APPNAME_CAPITALIZED "Daemon";
+LPCWSTR constexpr ServiceName = L"" TR_PROJ_APPNAME_CAPITALIZED "Daemon";
 
 // If we can get rid of this global variable...
-static tr_daemon* daemon;
+tr_daemon* daemon;
 
 // ...these becomes a good candidates for being converted to 'class tr_daemon' members.
 SERVICE_STATUS_HANDLE status_handle = nullptr;
 DWORD current_state = SERVICE_STOPPED;
 HANDLE service_thread = nullptr;
 HANDLE service_stop_thread = nullptr;
+
+[[nodiscard]] constexpr bool to_bool(BOOL value) noexcept
+{
+    return value != FALSE;
+}
 
 void set_system_error(tr_error& error, DWORD code, char const* message)
 {
@@ -82,7 +88,7 @@ void update_service_status(
     status.dwCheckPoint = check_point;
     status.dwWaitHint = wait_hint;
 
-    if (SetServiceStatus(status_handle, &status)) {
+    if (to_bool(SetServiceStatus(status_handle, &status))) {
         current_state = new_state;
     } else {
         log_system_error(TR_LOG_DEBUG, GetLastError(), "SetServiceStatus() failed");
@@ -93,33 +99,34 @@ unsigned int __stdcall service_stop_thread_main(void* param)
 {
     daemon->stop();
 
-    DWORD const sleep_time = 500;
-    DWORD wait_time = (DWORD)(UINT_PTR)param;
+    static DWORD constexpr SleepTime = 500;
+    auto wait_time = *static_cast<DWORD*>(param);
 
-    for (DWORD checkpoint = 2; WaitForSingleObject(service_thread, sleep_time) == WAIT_TIMEOUT; ++checkpoint) {
-        wait_time = wait_time >= sleep_time ? wait_time - sleep_time : 0;
-        update_service_status(SERVICE_STOP_PENDING, NO_ERROR, 0, checkpoint, std::max(wait_time, sleep_time * 2));
+    for (DWORD checkpoint = 2; WaitForSingleObject(service_thread, SleepTime) == WAIT_TIMEOUT; ++checkpoint) {
+        wait_time = wait_time >= SleepTime ? wait_time - SleepTime : 0;
+        update_service_status(SERVICE_STOP_PENDING, NO_ERROR, 0, checkpoint, std::max(wait_time, SleepTime * 2));
     }
 
     return 0;
 }
 
-void stop_service(void)
+void stop_service()
 {
     if (service_stop_thread != nullptr) {
         return;
     }
 
-    DWORD const wait_time = 30 * 1000;
+    static DWORD wait_time = 30 * 1000;
 
     update_service_status(SERVICE_STOP_PENDING, NO_ERROR, 0, 1, wait_time);
 
-    service_stop_thread = (HANDLE)
-        _beginthreadex(nullptr, 0, &service_stop_thread_main, (LPVOID)(UINT_PTR)wait_time, 0, nullptr);
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
+    service_stop_thread = reinterpret_cast<HANDLE>(
+        _beginthreadex(nullptr, 0, &service_stop_thread_main, &wait_time, 0, nullptr));
 
     if (service_stop_thread == nullptr) {
         log_system_error(TR_LOG_DEBUG, GetLastError(), "_beginthreadex() failed, trying to stop synchronously");
-        service_stop_thread_main((LPVOID)(UINT_PTR)wait_time);
+        service_stop_thread_main(&wait_time);
     }
 }
 
@@ -139,9 +146,9 @@ DWORD WINAPI handle_service_ctrl(DWORD control_code, DWORD /*event_type*/, LPVOI
     case SERVICE_CONTROL_INTERROGATE:
         update_service_status(current_state, NO_ERROR, 0, 0, 0);
         return NO_ERROR;
+    default:
+        return ERROR_CALL_NOT_IMPLEMENTED;
     }
-
-    return ERROR_CALL_NOT_IMPLEMENTED;
 }
 
 unsigned int __stdcall service_thread_main(void* /*context*/)
@@ -151,7 +158,7 @@ unsigned int __stdcall service_thread_main(void* /*context*/)
 
 VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
 {
-    status_handle = RegisterServiceCtrlHandlerExW(service_name, &handle_service_ctrl, nullptr);
+    status_handle = RegisterServiceCtrlHandlerExW(ServiceName, &handle_service_ctrl, nullptr);
 
     if (status_handle == nullptr) {
         log_system_error(TR_LOG_ERROR, GetLastError(), "RegisterServiceCtrlHandlerEx() failed");
@@ -160,7 +167,8 @@ VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
 
     update_service_status(SERVICE_START_PENDING, NO_ERROR, 0, 1, 1000);
 
-    service_thread = (HANDLE)_beginthreadex(nullptr, 0, &service_thread_main, nullptr, 0, nullptr);
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
+    service_thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, &service_thread_main, nullptr, 0, nullptr));
 
     if (service_thread == nullptr) {
         log_system_error(TR_LOG_ERROR, GetLastError(), "_beginthreadex() failed");
@@ -178,9 +186,9 @@ VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
         CloseHandle(service_stop_thread);
     }
 
-    DWORD exit_code;
+    DWORD exit_code = {};
 
-    if (!GetExitCodeThread(service_thread, &exit_code)) {
+    if (!to_bool(GetExitCodeThread(service_thread, &exit_code))) {
         exit_code = 1;
     }
 
@@ -190,12 +198,13 @@ VOID WINAPI service_main(DWORD /*argc*/, LPWSTR* /*argv*/)
 }
 } // namespace
 
-bool tr_daemon::setup_signals([[maybe_unused]] struct event*& sig_ev)
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+bool tr_daemon::setup_signals()
 {
     return true;
 }
 
-void tr_daemon::cleanup_signals([[maybe_unused]] struct event* sig_ev) const
+void tr_daemon::cleanup_signals()
 {
 }
 
@@ -206,19 +215,19 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
     *exit_code = 1;
 
     if (foreground) {
-        if (!SetConsoleCtrlHandler(&handle_console_ctrl, TRUE)) {
+        if (!to_bool(SetConsoleCtrlHandler(&handle_console_ctrl, TRUE))) {
             set_system_error(error, GetLastError(), "SetConsoleCtrlHandler() failed");
             return false;
         }
 
         *exit_code = start(true);
     } else {
-        SERVICE_TABLE_ENTRY const service_table[] = {
-            { (LPWSTR)service_name, &service_main },
-            { nullptr, nullptr },
-        };
+        auto const service_table = std::to_array<SERVICE_TABLE_ENTRYW>({
+            { .lpServiceName = const_cast<LPWSTR>(ServiceName), .lpServiceProc = &service_main },
+            { .lpServiceName = nullptr, .lpServiceProc = nullptr },
+        });
 
-        if (!StartServiceCtrlDispatcherW(service_table)) {
+        if (!to_bool(StartServiceCtrlDispatcherW(service_table.data()))) {
             set_system_error(error, GetLastError(), "StartServiceCtrlDispatcher() failed");
             return false;
         }

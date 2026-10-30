@@ -66,8 +66,8 @@ TEST(GtkRunOnUiThreadTest, runsFunctionsOnTheMainLoopThread)
     auto const loop = Glib::MainLoop::create();
     auto ran_on = std::optional<std::thread::id>{};
 
-    std::thread{ [&loop, &ran_on]() {
-        gtr_run_on_ui_thread([&loop, &ran_on]() {
+    std::thread{ [&loop, &ran_on] {
+        gtr_run_on_ui_thread([&loop, &ran_on] {
             ran_on = std::this_thread::get_id();
             loop->quit();
         });
@@ -75,7 +75,7 @@ TEST(GtkRunOnUiThreadTest, runsFunctionsOnTheMainLoopThread)
 
     // fail instead of hanging if the function never runs
     auto timeout = Glib::signal_timeout().connect_seconds(
-        [&loop]() {
+        [&loop] {
             loop->quit();
             return false;
         },
@@ -119,7 +119,7 @@ TEST_F(GtkRpcClientTest, deliversRepliesOnTheMainLoop)
 
     // fail instead of hanging if the reply never comes
     auto timeout = Glib::signal_timeout().connect_seconds(
-        [&loop]() {
+        [&loop] {
             loop->quit();
             return false;
         },

@@ -312,8 +312,8 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     // The authority component is preceded by a double slash ("//") and is
     // terminated by the next slash ("/"), question mark ("?"), or number
     // sign ("#") character, or by the end of the URI.
-    if (auto key = "//"sv; url.starts_with(key)) {
-        url.remove_prefix(std::size(key));
+    if (static constexpr auto Key = "//"sv; url.starts_with(Key)) {
+        url.remove_prefix(std::size(Key));
         auto pos = url.find_first_of("/?#");
         parsed.authority = url.substr(0, pos);
         url = pos == std::string_view::npos ? ""sv : url.substr(pos);
@@ -425,7 +425,7 @@ std::vector<std::pair<std::string_view, std::string_view>> tr_url_parsed_t::quer
     ret.reserve(std::count(std::begin(tmp), std::end(tmp), '&') + 1U);
     while (!std::empty(tmp)) {
         auto val = tr_strv_sep(&tmp, '&');
-        auto key = tr_strv_sep(&val, '=');
+        auto const key = tr_strv_sep(&val, '=');
         ret.emplace_back(key, val);
     }
     return ret;
@@ -468,7 +468,7 @@ std::string tr_urlPercentDecode(std::string_view in)
     out.reserve(std::size(in));
 
     for (;;) {
-        auto pos = in.find('%');
+        auto const pos = in.find('%');
         out += in.substr(0, pos);
         if (pos == std::string_view::npos) {
             break;

@@ -70,6 +70,8 @@
 #import "Utils.h"
 #import "UTTypeAdditions.h"
 #import "NSURLAdditions.h"
+#import "MenuProvider.h"
+#import "NSMenuAdditions.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -105,23 +107,6 @@ static SortType const SortTypeActivity = @"Activity";
 static SortType const SortTypeSize = @"Size";
 static SortType const SortTypeETA = @"ETA";
 
-typedef NS_ENUM(NSUInteger, SortTag) {
-    SortTagOrder = 0,
-    SortTagDate = 1,
-    SortTagName = 2,
-    SortTagProgress = 3,
-    SortTagState = 4,
-    SortTagTracker = 5,
-    SortTagActivity = 6,
-    SortTagSize = 7,
-    SortTagETA = 8
-};
-
-typedef NS_ENUM(NSUInteger, SortOrderTag) { //
-    SortOrderTagAscending = 0,
-    SortOrderTagDescending = 1
-};
-
 typedef NS_ENUM(NSUInteger, AddType) { //
     AddTypeManual,
     AddTypeAuto,
@@ -148,10 +133,6 @@ static void TRActiveVPNDynamicStoreCallback(SCDynamicStoreRef /*store*/, CFArray
 static CGFloat const kRowHeightRegular = 62.0;
 static CGFloat const kRowHeightSmall = 22.0;
 
-static CGFloat const kStatusBarHeight = 24.0;
-static CGFloat const kFilterBarHeight = 24.0;
-static CGFloat const kBottomBarHeight = 24.0;
-
 static NSTimeInterval const kUpdateUISeconds = 1.0;
 
 static NSString* const kTransferPlist = @"Transfers.plist";
@@ -160,6 +141,7 @@ static NSString* const kWebsiteURL = @TR_PROJ_URL_HOMEPAGE;
 static NSString* const kForumURL = @TR_PROJ_URL_FORUM;
 static NSString* const kGithubURL = @TR_PROJ_URL_GIT;
 static NSString* const kDonateURL = @TR_PROJ_URL_DONATE;
+static NSString* const kHelpURL = @TR_PROJ_URL_HELP;
 
 static NSTimeInterval const kDonateNagTime = 60 * 60 * 24 * 7;
 
@@ -203,6 +185,8 @@ static void initUnits()
     t_str = NSLocalizedString(@"TB/s", "Transfer speed (terabytes per second)");
     Config::speed = { Config::Base::Kilo, b_str.UTF8String, k_str.UTF8String,
                       m_str.UTF8String,   g_str.UTF8String, t_str.UTF8String };
+
+    Config::ratio.none = NSLocalizedString(@"N/A", "No Ratio").UTF8String;
 }
 
 static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
@@ -311,27 +295,15 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @interface Controller ()<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
 
+@property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
 @property(nonatomic) IBOutlet NSWindow* fWindow;
 @property(nonatomic) IBOutlet SPUStandardUpdaterController* fUpdaterController;
-@property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
-@property(nonatomic) NSLayoutConstraint* fFixedHeightConstraint;
 @property(nonatomic) IBOutlet TorrentTableView* fTableView;
 
-@property(nonatomic) IBOutlet NSMenuItem* fOpenIgnoreDownloadFolder;
 @property(nonatomic) IBOutlet NSButton* fActionButton;
 @property(nonatomic) IBOutlet NSButton* fSpeedLimitButton;
 @property(nonatomic) IBOutlet NSButton* fClearCompletedButton;
 @property(nonatomic) IBOutlet NSTextField* fTotalTorrentsField;
-@property(nonatomic) IBOutlet NSMenuItem* fNextFilterItem;
-
-@property(nonatomic) IBOutlet NSMenuItem* fNextInfoTabItem;
-@property(nonatomic) IBOutlet NSMenuItem* fPrevInfoTabItem;
-
-@property(nonatomic) IBOutlet NSMenu* fSortMenu;
-
-@property(nonatomic) IBOutlet NSMenu* fGroupsSetMenu;
-
-@property(nonatomic) IBOutlet NSMenu* fShareMenu;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -436,11 +408,11 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                isEqualToString:transmissionWatchFolder.stringByExpandingTildeInPath.stringByStandardizingPath];
 }
 
-// Copies Transmission's preferences, except Sparkle's state and this app's own donation request.
+// Copies Transmission's preferences, except Sparkle's state, this app's own donation request, and AutoSize.
 static void importTransmissionDefaults(NSDictionary<NSString*, id>* const transmissionDefaults)
 {
-    // The donation request is this app's own to show.
-    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate" ]];
+    // The donation request is this app's own to show, and this app has no AutoSize preference.
+    NSSet<NSString*>* const skippedKeys = [NSSet setWithArray:@[ @"WarningDonate", @"DonateAskDate", @"AutoSize" ]];
 
     // Sparkle's state describes Transmission's own updates, but how to update is the user's choice.
     NSSet<NSString*>* const sparkleChoiceKeys = [NSSet setWithArray:@[
@@ -974,6 +946,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     self.fTableView.rowHeight = small ? kRowHeightSmall : kRowHeightRegular;
     self.fTableView.usesAutomaticRowHeights = NO;
     self.fTableView.floatsGroupRows = YES;
+    self.fMinHeightConstraint = [self.fTableView.enclosingScrollView.heightAnchor
+        constraintGreaterThanOrEqualToConstant:self.fTableView.rowHeight + self.fTableView.intercellSpacing.height];
+    self.fMinHeightConstraint.active = YES;
     //self.fTableView.usesAlternatingRowBackgroundColors = !small;
 
     self.fWindow.movableByWindowBackground = YES;
@@ -998,31 +973,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [self.fTableView registerForDraggedTypes:@[ kTorrentTableViewDataType ]];
     [self.fWindow registerForDraggedTypes:@[ NSPasteboardTypeFileURL, NSPasteboardTypeURL ]];
-
-    //sort the sort menu items (localization is from strings file)
-    NSMutableArray* sortMenuItems = [NSMutableArray arrayWithCapacity:7];
-    NSUInteger sortMenuIndex = 0;
-    BOOL foundSortItem = NO;
-    for (NSMenuItem* item in self.fSortMenu.itemArray) {
-        //assume all sort items are together and the Queue Order item is first
-        if (item.action == @selector(setSort:) && item.tag != SortTagOrder) {
-            [sortMenuItems addObject:item];
-            [self.fSortMenu removeItemAtIndex:sortMenuIndex];
-            foundSortItem = YES;
-        } else {
-            if (foundSortItem) {
-                break;
-            }
-            ++sortMenuIndex;
-        }
-    }
-
-    [sortMenuItems sortUsingDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES
-                                                                          selector:@selector(localizedCompare:)] ]];
-
-    for (NSMenuItem* item in sortMenuItems) {
-        [self.fSortMenu insertItem:item atIndex:sortMenuIndex++];
-    }
 
     //you would think this would be called later in this method from updateUI, but it's not reached in awakeFromNib
     //this must be called after showStatusBar:
@@ -1095,9 +1045,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [nc addObserver:self selector:@selector(changeAutoImport) name:@"AutoImportSettingChange" object:nil];
 
-    [nc addObserver:self selector:@selector(updateForAutoSize) name:@"AutoSizeSettingChange" object:nil];
-
-    [nc addObserver:self selector:@selector(updateForExpandCollapse) name:@"OutlineExpandCollapse" object:nil];
+    [nc addObserver:self selector:@selector(updateBottomCountText) name:@"OutlineExpandCollapse" object:nil];
 
     [nc addObserver:self selector:@selector(fullUpdateUI) name:@"UpdateTorrentsState" object:nil];
 
@@ -1151,6 +1099,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                               NSLog(@"UserNotifications not configured: %@", error.localizedDescription);
                           }
                       }];
+
+    MenuProvider* menuProvider = [[MenuProvider alloc] initWithController:self];
+    NSMenu* menu = [menuProvider buildMainMenu:_fUpdaterController];
+    NSApp.mainMenu = menu;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
@@ -1183,6 +1135,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
         [BonjourController.defaultController startWithPort:static_cast<int>([self.fDefaults integerForKey:@"RPCPort"])];
     }
+
+    //older versions saved "AutoSize" for the removed "Automatically size window to fit all torrents" preference
+    [self.fDefaults removeObjectForKey:@"AutoSize"];
 
     //shamelessly ask for donations
     if ([self.fDefaults boolForKey:@"WarningDonate"]) {
@@ -1749,7 +1704,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                 [filenames addObject:url.path];
             }
 
-            AddType const addType = sender == self.fOpenIgnoreDownloadFolder ? AddTypeShowOptions : AddTypeManual;
+            BOOL const showOptions = [sender isKindOfClass:[NSMenuItem class]] && [(NSMenuItem*)sender isOpenIgnoreDownloadFolderItem];
+            AddType const addType = showOptions ? AddTypeShowOptions : AddTypeManual;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self openFiles:filenames addType:addType forcePath:nil];
             });
@@ -2472,9 +2428,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)setInfoTab:(id)sender
+- (IBAction)setInfoTab:(NSMenuItem*)sender
 {
-    if (sender == self.fNextInfoTabItem) {
+    if (sender.isNextInfoTabItem) {
         [self.fInfoController setNextTab];
     } else {
         [self.fInfoController setPreviousTab];
@@ -2878,22 +2834,22 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     NSString* sortType = [self.fDefaults stringForKey:@"Sort"];
     if ([sortType isEqualToString:SortTypeState]) {
         NSSortDescriptor* stateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stateSortKey" ascending:!asc];
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:!asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:!asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:!asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:!asc];
 
         descriptors = @[ stateDescriptor, progressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeProgress]) {
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeETA]) {
         NSSortDescriptor* etaDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:asc];
         // falling back on sort by progress
-        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progress" ascending:asc];
-        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatio" ascending:asc];
-        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratio" ascending:asc];
+        NSSortDescriptor* progressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressSortKey" ascending:asc];
+        NSSortDescriptor* ratioProgressDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"progressStopRatioSortKey" ascending:asc];
+        NSSortDescriptor* ratioDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ratioSortKey" ascending:asc];
 
         descriptors = @[ etaDescriptor, progressDescriptor, ratioProgressDescriptor, ratioDescriptor, nameDescriptor ];
     } else if ([sortType isEqualToString:SortTypeTracker]) {
@@ -3391,16 +3347,14 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     [self setBottomCountText:groupRows || filterStatus || filterGroup || searchStrings];
 
-    [self setWindowSizeToFit];
-
     if (self.fAddingTransfers) {
         self.fAddingTransfers = nil;
     }
 }
 
-- (IBAction)switchFilter:(id)sender
+- (IBAction)switchFilter:(NSMenuItem*)sender
 {
-    [self.fFilterBar switchFilter:sender == self.fNextFilterItem];
+    [self.fFilterBar switchFilter:sender.isNextFilterItem];
 }
 
 - (IBAction)showGlobalPopover:(id)sender
@@ -3444,7 +3398,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)menuNeedsUpdate:(NSMenu*)menu
 {
-    if (menu == self.fGroupsSetMenu || [TorrentContextMenuProvider isGroupsSubmenu:menu]) {
+    if (menu.isGroupsSubmenu) {
         [menu removeAllItems];
 
         NSMenu* groupMenu = [GroupsController.groups groupMenuWithTarget:self action:@selector(setGroup:) isSmall:NO];
@@ -3455,7 +3409,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [groupMenu removeItemAtIndex:0];
             [menu addItem:item];
         }
-    } else if (menu == self.fShareMenu || [TorrentContextMenuProvider isShareSubmenu:menu]) {
+    } else if (menu.isShareSubmenu) {
         [menu removeAllItems];
 
         for (NSMenuItem* item in ShareTorrentFileHelper.sharedHelper.menuItems) {
@@ -3929,6 +3883,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     self.fTableView.rowHeight = makeSmall ? kRowHeightSmall : kRowHeightRegular;
 
+    self.fMinHeightConstraint.constant = self.fTableView.rowHeight + self.fTableView.intercellSpacing.height;
+
     [self.fTableView beginUpdates];
     [self.fTableView
         noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fTableView.numberOfRows)]];
@@ -3936,7 +3892,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     //reloaddata, otherwise the tableview has a bunch of empty cells
     [self.fTableView reloadData];
-    [self updateForAutoSize];
 }
 
 - (IBAction)togglePiecesBar:(id)sender
@@ -4893,88 +4848,15 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 
     [self fullUpdateUI];
-    [self updateForAutoSize];
-}
-
-- (void)setWindowSizeToFit
-{
-    if (!self.isFullScreen) {
-        NSScrollView* scrollView = self.fTableView.enclosingScrollView;
-
-        scrollView.hasVerticalScroller = NO;
-
-        [self removeHeightConstraints];
-
-        if (![self.fDefaults boolForKey:@"AutoSize"]) {
-            // Only set a minimum height constraint
-            CGFloat height = self.minScrollViewHeightAllowed;
-            if (self.fMinHeightConstraint == nil) {
-                self.fMinHeightConstraint = [scrollView.heightAnchor constraintGreaterThanOrEqualToConstant:height];
-            } else {
-                self.fMinHeightConstraint.constant = height;
-            }
-
-            self.fMinHeightConstraint.active = YES;
-        } else {
-            // Set a fixed height constraint
-            CGFloat height = [self calculateScrollViewHeightWithDockAdjustment];
-            if (self.fFixedHeightConstraint == nil) {
-                self.fFixedHeightConstraint = [scrollView.heightAnchor constraintEqualToConstant:height];
-            } else {
-                self.fFixedHeightConstraint.constant = height;
-            }
-
-            // Redraw table to avoid empty cells
-            [self.fTableView reloadData];
-
-            self.fFixedHeightConstraint.active = YES;
-        }
-
-        scrollView.hasVerticalScroller = YES;
-    } else {
-        [self removeHeightConstraints];
-    }
-}
-
-- (CGFloat)calculateScrollViewHeightWithDockAdjustment
-{
-    CGFloat height = self.scrollViewHeight;
-
-    // Get the main screen's visible frame
-    NSScreen* screen = self.fWindow.screen;
-    if (screen) {
-        // This frame respects the Dock and menu bar
-        NSRect visibleFrame = screen.visibleFrame;
-        height = MIN(height, visibleFrame.size.height - [self toolbarHeight] - [self mainWindowComponentHeight]);
-    }
-
-    return height;
-}
-
-- (void)updateForAutoSize
-{
-    if (!self.isFullScreen) {
-        [self setWindowSizeToFit];
-    } else {
-        [self removeHeightConstraints];
-    }
 }
 
 - (void)updateWindowAfterToolbarChange
 {
-    //Hacky way of fixing an issue with showing the Toolbar
-    if (!self.isFullScreen) {
-        //macOS shows the unified toolbar by default
-        //and we only need to "fix" the layout when showing the toolbar
-        if (!self.fWindow.toolbar.isVisible) {
-            [self removeHeightConstraints];
-        }
-
-        //this fixes a macOS bug where on toggling the toolbar item bezels will show
+    //this fixes a macOS bug where on toggling the toolbar item bezels will show
+    if (!(self.fWindow.styleMask & NSWindowStyleMaskFullScreen)) {
         [self hideToolBarBezels:YES];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateForAutoSize];
             [self hideToolBarBezels:NO];
         });
     }
@@ -4987,94 +4869,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (void)removeHeightConstraints
+- (void)updateBottomCountText
 {
-    if (self.fFixedHeightConstraint != nil) {
-        self.fFixedHeightConstraint.active = NO;
-    }
-    if (self.fMinHeightConstraint != nil) {
-        self.fMinHeightConstraint.active = NO;
-    }
-}
-
-- (CGFloat)minScrollViewHeightAllowed
-{
-    CGFloat contentMinHeight = self.fTableView.rowHeight + self.fTableView.intercellSpacing.height;
-    return contentMinHeight;
-}
-
-- (CGFloat)toolbarHeight
-{
-    return self.fWindow.frame.size.height - [self.fWindow contentRectForFrameRect:self.fWindow.frame].size.height;
-}
-
-- (CGFloat)mainWindowComponentHeight
-{
-    CGFloat height = kBottomBarHeight;
-
-    if (self.fStatusBar != nil && !self.fStatusBar.isHidden) {
-        height += kStatusBarHeight;
-    }
-
-    if (self.fFilterBar != nil && !self.fFilterBar.isHidden) {
-        height += kFilterBarHeight;
-    }
-
-    return height;
-}
-
-- (CGFloat)scrollViewHeight
-{
-    CGFloat height;
-    CGFloat minHeight = self.minScrollViewHeightAllowed;
-
-    if ([self.fDefaults boolForKey:@"AutoSize"]) {
-        NSUInteger groups = ![self.fDisplayedTorrents.firstObject isKindOfClass:[Torrent class]] ? self.fDisplayedTorrents.count : 0;
-
-        height = (kGroupSeparatorHeight + self.fTableView.intercellSpacing.height) * groups +
-            (self.fTableView.rowHeight + self.fTableView.intercellSpacing.height) * (self.fTableView.numberOfRows - groups);
-    } else {
-        height = NSHeight(self.fTableView.enclosingScrollView.frame);
-    }
-
-    //make sure we don't go bigger than the screen height
-    NSScreen* screen = self.fWindow.screen;
-    if (screen) {
-        NSSize maxSize = screen.visibleFrame.size;
-        maxSize.height -= self.toolbarHeight;
-        maxSize.height -= self.mainWindowComponentHeight;
-
-        if (height > maxSize.height) {
-            height = maxSize.height;
-        }
-    }
-
-    //make sure we don't have zero height
-    if (height < minHeight) {
-        height = minHeight;
-    }
-
-    return height;
-}
-
-- (BOOL)isFullScreen
-{
-    return (self.fWindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
-}
-
-- (void)windowWillEnterFullScreen:(NSNotification*)notification
-{
-    [self removeHeightConstraints];
-}
-
-- (void)windowDidExitFullScreen:(NSNotification*)notification
-{
-    [self updateForAutoSize];
-}
-
-- (void)updateForExpandCollapse
-{
-    [self setWindowSizeToFit];
     [self setBottomCountText:YES];
 }
 
@@ -5126,6 +4922,11 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 - (IBAction)linkDonate:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kDonateURL]];
+}
+
+- (void)linkHelp:(id)sender
+{
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kHelpURL]];
 }
 
 - (void)rpcCallback:(tr_rpc_callback_type)type forTorrentId:(std::optional<tr_torrent_id_t>)torrentId

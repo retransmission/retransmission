@@ -144,7 +144,7 @@ public:
     {
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     [[nodiscard]] constexpr operator int() const noexcept
     {
         return value_;
@@ -169,7 +169,7 @@ public:
     {
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
+    // NOLINTNEXTLINE(misc-explicit-constructor)
     [[nodiscard]] constexpr operator value_type() const noexcept
     {
         return value_;
@@ -198,13 +198,13 @@ enum TrScript : uint8_t {
     TR_SCRIPT_ON_TORRENT_DONE,
     TR_SCRIPT_ON_TORRENT_DONE_SEEDING,
 
-    TR_SCRIPT_N_TYPES
+    TR_SCRIPT_N_TYPES,
 };
 
 enum tr_completeness : uint8_t {
     TR_LEECH, /* doesn't have all the desired pieces */
     TR_SEED, /* has the entire torrent */
-    TR_PARTIAL_SEED /* has the desired pieces, but not the entire torrent */
+    TR_PARTIAL_SEED, /* has the desired pieces, but not the entire torrent */
 };
 
 enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
@@ -230,7 +230,7 @@ enum tr_idlelimit : uint8_t {
     /* override the global settings, seeding until a certain idle time */
     TR_IDLELIMIT_SINGLE = 1,
     /* override the global settings, seeding regardless of activity */
-    TR_IDLELIMIT_UNLIMITED = 2
+    TR_IDLELIMIT_UNLIMITED = 2,
 };
 
 enum tr_log_level : uint8_t {
@@ -256,7 +256,7 @@ enum tr_log_level : uint8_t {
     TR_LOG_DEBUG,
 
     // High-volume debug messages, e.g. tracing peer protocol messages
-    TR_LOG_TRACE
+    TR_LOG_TRACE,
 };
 
 enum tr_peer_from : uint8_t {
@@ -268,13 +268,13 @@ enum tr_peer_from : uint8_t {
     TR_PEER_FROM_RESUME, /* peers found in the .resume file */
     TR_PEER_FROM_LTEP, /* peer address provided in an LTEP handshake */
     TR_PEER_FROM_HOLEPUNCH, /* peers found via BEP 55 holepunch connect */
-    TR_PEER_FROM_N_TYPES
+    TR_PEER_FROM_N_TYPES,
 };
 
 enum tr_priority_t : int8_t {
     TR_PRI_LOW = -1,
     TR_PRI_NORMAL = 0, /* since Normal is 0, memset initializes nicely */
-    TR_PRI_HIGH = 1
+    TR_PRI_HIGH = 1,
 };
 
 enum tr_port_forwarding_state : uint8_t { TR_PORT_ERROR, TR_PORT_UNMAPPED, TR_PORT_UNMAPPING, TR_PORT_MAPPING, TR_PORT_MAPPED };
@@ -285,7 +285,7 @@ enum tr_ratiolimit : uint8_t {
     /* override the global settings, seeding until a certain ratio */
     TR_RATIOLIMIT_SINGLE = 1,
     /* override the global settings, seeding regardless of ratio */
-    TR_RATIOLIMIT_UNLIMITED = 2
+    TR_RATIOLIMIT_UNLIMITED = 2,
 };
 
 enum tr_rpc_callback_type : uint8_t {
@@ -298,7 +298,7 @@ enum tr_rpc_callback_type : uint8_t {
     TR_RPC_TORRENT_MOVED,
     TR_RPC_SESSION_CHANGED,
     TR_RPC_SESSION_QUEUE_POSITIONS_CHANGED, /* catch potentially multiple torrents being moved in the queue */
-    TR_RPC_SESSION_CLOSE
+    TR_RPC_SESSION_CLOSE,
 };
 
 enum tr_rpc_callback_status : uint8_t {
@@ -308,7 +308,7 @@ enum tr_rpc_callback_status : uint8_t {
      * removing the torrent itself. For example the client may
      * need to keep the torrent alive long enough to cleanly close
      * some resources in another thread. */
-    TR_RPC_NOREMOVE = (1 << 1)
+    TR_RPC_NOREMOVE = (1 << 1),
 };
 
 enum tr_sched_day : uint8_t {
@@ -321,7 +321,7 @@ enum tr_sched_day : uint8_t {
     TR_SCHED_SAT = (1 << 6),
     TR_SCHED_WEEKDAY = (TR_SCHED_MON | TR_SCHED_TUES | TR_SCHED_WED | TR_SCHED_THURS | TR_SCHED_FRI),
     TR_SCHED_WEEKEND = (TR_SCHED_SUN | TR_SCHED_SAT),
-    TR_SCHED_ALL = (TR_SCHED_WEEKDAY | TR_SCHED_WEEKEND)
+    TR_SCHED_ALL = (TR_SCHED_WEEKDAY | TR_SCHED_WEEKEND),
 };
 
 /**
@@ -337,7 +337,7 @@ enum tr_torrent_activity : uint8_t {
     TR_STATUS_DOWNLOAD_WAIT = 3, /* Queued to download */
     TR_STATUS_DOWNLOAD = 4, /* Downloading */
     TR_STATUS_SEED_WAIT = 5, /* Queued to seed */
-    TR_STATUS_SEED = 6 /* Seeding */
+    TR_STATUS_SEED = 6, /* Seeding */
 };
 
 enum tr_tracker_state : uint8_t {
@@ -351,7 +351,7 @@ enum tr_tracker_state : uint8_t {
      * free slot to open up in the announce manager */
     TR_TRACKER_QUEUED = 2,
     /* we're (announcing,scraping) this torrent right now */
-    TR_TRACKER_ACTIVE = 3
+    TR_TRACKER_ACTIVE = 3,
 };
 
 enum tr_verify_added_mode : uint8_t {
@@ -360,7 +360,7 @@ enum tr_verify_added_mode : uint8_t {
     TR_VERIFY_ADDED_FAST = 0,
 
     // Force torrents to be fully verified as they are added.
-    TR_VERIFY_ADDED_FULL = 1
+    TR_VERIFY_ADDED_FULL = 1,
 };
 
 struct tr_block_span_t {
@@ -393,7 +393,8 @@ struct tr_file_view {
     char const* name = ""; // This file's name. Includes the full subpath in the torrent.
     uint64_t have = {}; // the current size of the file, i.e. how much we've downloaded
     uint64_t length = {}; // the total size of the file
-    double progress = {}; // have / length
+    tr::Values::Percent progress; // have / length
+    double progress_deprecated = {}; // use `progress`
     tr_piece_index_t beginPiece = {}; // piece index where this file starts
     tr_piece_index_t endPiece = {}; // piece index where this file ends (exclusive)
     tr_priority_t priority = {}; // the file's priority
@@ -420,9 +421,15 @@ struct tr_peer_stat {
     size_t bytes_to_peer = {};
     size_t bytes_to_client = {};
 
+    // byte count of the pieces the peer has
+    uint64_t have_total = {};
+
     tr_peer_id_t peer_id = {};
 
-    float progress = {};
+    // how much of the torrent the peer has
+    tr::Values::Percent progress;
+
+    float progress_deprecated = {}; // use `progress`
 
     uint16_t port = {};
     uint8_t from = {};
@@ -442,12 +449,13 @@ struct tr_peer_stat {
 
 /** @brief Used by `tr_sessionGetStats()` and `tr_sessionGetCumulativeStats()` */
 struct tr_session_stats {
-    double ratio; /* TR_RATIO_INF, TR_RATIO_NA, or total up/down */
-    uint64_t uploadedBytes; /* total up */
-    uint64_t downloadedBytes; /* total down */
-    uint64_t filesAdded; /* number of files added */
-    uint64_t sessionCount; /* program started N times */
-    time_t secondsActive; /* how long Transmission's been running */
+    tr::Values::Ratio ratio; /* total up/down */
+    double ratio_deprecated = {}; /* use `ratio`: TR_RATIO_INF, TR_RATIO_NA, or total up/down */
+    uint64_t uploadedBytes = {}; /* total up */
+    uint64_t downloadedBytes = {}; /* total down */
+    uint64_t filesAdded = {}; /* number of files added */
+    uint64_t sessionCount = {}; /* program started N times */
+    time_t secondsActive = {}; /* how long Transmission's been running */
 };
 
 struct tr_stat {
@@ -539,37 +547,51 @@ struct tr_stat {
     size_t queue_position = {};
 
     // When `tr_stat.activity` is `TR_STATUS_CHECK` or `TR_STATUS_CHECK_WAIT`,
-    // this is the percentage of how much of the files has been
-    // verified. When it gets to 1, the verify process is done.
-    // Range is [0..1]
+    // how much of the files has been verified.
     // @see `tr_stat.activity`
-    float recheck_progress = {};
+    tr::Values::Percent recheck_progress;
+
+    float recheck_progress_deprecated = {}; // use `recheck_progress`
+
+    /** Byte count of the data a running verification has checked so far, or 0. */
+    uint64_t checked_bytes = {};
 
     // How much has been downloaded of the entire torrent.
-    // Range is [0..1]
-    float percent_complete = {};
+    tr::Values::Percent percent_complete;
+
+    float percent_complete_deprecated = {}; // use `percent_complete`
 
     // How much of the metadata the torrent has.
-    // For torrents added from a torrent this will always be 1.
-    // For magnet links, this number will from from 0 to 1 as the metadata is downloaded.
-    // Range is [0..1]
-    float metadata_percent_complete = {};
+    // Always complete for torrents added from a torrent file.
+    tr::Values::Percent metadata_percent_complete;
+
+    float metadata_percent_complete_deprecated = {}; // use `metadata_percent_complete`
+
+    /** Byte count of the metadata received so far. */
+    uint64_t metadata_have = {};
+
+    /** Byte count of the metadata, or 0 until a peer reports it. */
+    uint64_t metadata_size = {};
 
     // How much has been downloaded of the files the user wants. This differs
     // from percentComplete if the user wants only some of the torrent's files.
-    // Range is [0..1]
     // @see tr_stat.left_until_done
-    float percent_done = {};
+    tr::Values::Percent percent_done;
+
+    float percent_done_deprecated = {}; // use `percent_done`
 
     // How much has been uploaded to satisfy the seed ratio.
-    // This is 1 if the ratio is reached or the torrent is set to seed forever.
-    // Range is [0..1] */
-    float seed_ratio_percent_done = {};
+    // Complete if the ratio is reached or the torrent is set to seed forever.
+    tr::Values::Percent seed_ratio_percent_done;
+
+    float seed_ratio_percent_done_deprecated = {}; // use `seed_ratio_percent_done`
 
     // Total uploaded bytes / size_when_done.
     // NB: In Transmission 3.00 and earlier, this was total upload / download,
     // which caused edge cases when total download was less than size_when_done.
-    float upload_ratio = {};
+    tr::Values::Ratio upload_ratio;
+
+    float upload_ratio_deprecated = {}; // use `upload_ratio`
 
     // The torrent's unique Id.
     // @see `tr_torrentId()`
@@ -602,7 +624,7 @@ struct tr_stat {
         Ok, // everything's fine
         TrackerWarning, // tracker returned a warning
         TrackerError, // tracker returned an error
-        LocalError // local non-tracker error, e.g. disk full or file permissions
+        LocalError, // local non-tracker error, e.g. disk full or file permissions
     };
 
     // Defines what kind of text is in error_string.

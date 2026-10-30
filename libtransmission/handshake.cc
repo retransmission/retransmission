@@ -591,11 +591,11 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 {
     auto* handshake = static_cast<tr_handshake*>(vhandshake);
 
-    auto const retry_plain = [&]() {
+    auto const retry_plain = [&] {
         handshake->send_handshake(io);
         handshake->set_state(State::AwaitingHandshake);
     };
-    auto const fail = [&]() {
+    auto const fail = [&] {
         tr_logAddTraceHand(handshake, fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code()));
         handshake->done(false);
     };
@@ -792,7 +792,7 @@ std::string_view tr_handshake::state_string(State state) noexcept
 tr_handshake::tr_handshake(Mediator* mediator, std::shared_ptr<tr_peerIo> peer_io, tr_encryption_mode mode, DoneFunc on_done)
     : on_done_{ std::move(on_done) }
     , peer_io_{ std::move(peer_io) }
-    , timeout_timer_{ mediator->timer_maker().create([this]() { fire_timer(); }) }
+    , timeout_timer_{ mediator->timer_maker().create([this] { fire_timer(); }) }
     , mediator_{ mediator }
     , encryption_mode_{ mode }
 {

@@ -47,7 +47,7 @@ Glib::RefPtr<Gio::Icon> gtr_get_mime_type_icon(std::string_view mime_type)
 {
     static IconCache cache;
 
-    if (auto mime_it = cache.find(mime_type); mime_it != std::end(cache)) {
+    if (auto const mime_it = cache.find(mime_type); mime_it != std::end(cache)) {
         return mime_it->second;
     }
 

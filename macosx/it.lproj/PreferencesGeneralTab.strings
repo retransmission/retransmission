@@ -5,8 +5,6 @@
 "Total download rate" = "Velocità totale ricezione";
 "Total upload rate" = "Velocità totale invio";
 "Only when torrents are downloading" = "Solo per trasferimenti in ricezione";
-"Auto resize:" = "Dimensione finestra:";
-"Automatically size window to fit all torrents" = "Dimensione automatica in base al contenuto";
 "Reset" = "Reset";
 "Reset all alerts:" = "Azzerare avvisi:";
 "Automatically check daily" = "Controlla automaticamente ogni giorno";

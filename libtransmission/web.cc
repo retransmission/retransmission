@@ -794,6 +794,7 @@ public:
             }
         }
 
+        // NOLINTNEXTLINE(misc-const-correctness)
         if (auto* const headers = task.make_request_headers()) {
             (void)curl_easy_setopt(e, CURLOPT_HTTPHEADER, headers);
         }
@@ -958,12 +959,12 @@ public:
                 }
             }
 
-            auto failed_tasks = std::list<Task>{};
+            auto failed_tasks = small::vector<Task*, 4U>{};
             if (auto lock = std::unique_lock{ tasks_mutex_ }; lock.owns_lock()) {
                 // sleep until there's something to do.
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
-                auto const stop_waiting = [this, &lock]() {
+                auto const stop_waiting = [this, &lock] {
                     return !is_idle(lock) || deadline_exists();
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
@@ -973,32 +974,32 @@ public:
                 }
 
                 // add queued tasks
-                for (auto it = queued_tasks_.begin(); it != queued_tasks_.end();) {
-                    if (!initEasy(*it) ||
-                        ((multi_pool_.empty() || network_changed_ || !current_multi_fits(*it)) && !push_multi(*it))) {
-                        it->set_error(CURLE_OUT_OF_MEMORY);
-                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
+                for (auto& task : queued_tasks_) {
+                    if (!initEasy(task) ||
+                        ((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task))) {
+                        task.set_error(CURLE_OUT_OF_MEMORY);
+                        failed_tasks.push_back(&task);
                         continue;
                     }
                     network_changed_ = false;
 
-                    if (auto const status = it->set_multi(current_multi()); status != CURLM_OK) {
-                        it->response.errmsg = fmt::format(
+                    if (auto const status = task.set_multi(current_multi()); status != CURLM_OK) {
+                        task.response.errmsg = fmt::format(
                             "curl multi error: {} ({})",
                             curl_multi_strerror(status),
                             std::to_underlying(status));
-                        failed_tasks.splice(failed_tasks.end(), queued_tasks_, it++);
-                        continue;
+                        failed_tasks.push_back(&task);
                     }
-
-                    ++it;
                 }
 
                 running_tasks_.splice(std::end(running_tasks_), queued_tasks_);
             }
 
-            for (auto& task : failed_tasks) {
-                task.done();
+            for (auto const task : failed_tasks) {
+                // Keep failed tasks in one of the task lists until the done callback
+                // was invoked, so that there is no time gap between `is_idle()`
+                // becoming true and the callbacks being invoked.
+                remove_task(*task);
             }
             failed_tasks.clear();
 
@@ -1041,7 +1042,7 @@ public:
                 auto const status = curl_multi_perform(multi, &n_running);
 
                 // process any tasks that just finished
-                CURLMsg* msg = nullptr;
+                CURLMsg const* msg = nullptr;
                 auto unused = int{};
                 while ((msg = curl_multi_info_read(multi, &unused)) != nullptr) {
                     if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
@@ -1053,7 +1054,7 @@ public:
                         }
 
                         auto req_bytes_sent = long{};
-                        char* primary_ip = nullptr;
+                        char* primary_ip = nullptr; // NOLINT(misc-const-correctness)
                         curl_easy_getinfo(e, CURLINFO_REQUEST_SIZE, &req_bytes_sent);
                         curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &task->response.status);
                         curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);

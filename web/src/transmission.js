@@ -31,13 +31,12 @@ import {
 import Clusterize from './vendor/clusterize.js';
 
 export class Transmission extends EventTarget {
-  constructor(action_manager, notifications, prefs) {
+  constructor(action_manager, prefs) {
     super();
 
     // Initialize the helper classes
     this.action_manager = action_manager;
     this.handler = null;
-    this.notifications = notifications;
     this.prefs = prefs;
     this.remote = new Remote(this);
     this.speed = {
@@ -1001,25 +1000,6 @@ export class Transmission extends EventTarget {
       }
     });
   }
-  /*
-TODO: fix this when notifications get fixed
-        t.notifyOnFieldChange('status', (newValue, oldValue) => {
-          if (
-            oldValue === Torrent._StatusDownload &&
-            (newValue === Torrent._StatusSeed || newValue === Torrent._StatusSeedWait)
-          ) {
-            $(this).trigger('downloadComplete', [t]);
-          } else if (
-            oldValue === Torrent._StatusSeed &&
-            newValue === Torrent._StatusStopped &&
-            t.isFinished()
-          ) {
-            $(this).trigger('seedingComplete', [t]);
-          } else {
-            $(this).trigger('statusChange', [t]);
-          }
-        });
-*/
 
   refreshTorrents() {
     const fields = ['id', ...Torrent.Fields.Stats];

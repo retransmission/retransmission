@@ -204,7 +204,7 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
 
 - (void)updateDownloadSpeed:(CGFloat)downloadSpeed
                 uploadSpeed:(CGFloat)uploadSpeed
-                      ratio:(CGFloat)ratio
+                      ratio:(tr::Values::Ratio)ratio
                displayRatio:(BOOL)displayRatio
 {
     self.fDownloadStack.hidden = displayRatio;

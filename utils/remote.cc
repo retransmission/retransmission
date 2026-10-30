@@ -7,7 +7,6 @@
 #include <array>
 #include <cctype> // isspace
 #include <chrono>
-#include <cmath> // floor
 #include <cstdint> // int64_t
 #include <cstdio>
 #include <cstdlib>
@@ -177,19 +176,15 @@ struct RemoteConfig {
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
-[[nodiscard]] auto strlpercent(double x)
+// RPC byte counts are never negative
+[[nodiscard]] Percent to_percent(int64_t const have, int64_t const total) noexcept
 {
-    return tr_strpercent(x);
+    return { static_cast<uint64_t>(have), static_cast<uint64_t>(total) };
 }
 
-[[nodiscard]] auto strlratio2(double ratio)
+[[nodiscard]] Ratio to_ratio(int64_t const numerator, int64_t const denominator) noexcept
 {
-    return tr_strratio(ratio, "None", "Inf");
-}
-
-[[nodiscard]] auto strlratio(int64_t numerator, int64_t denominator)
-{
-    return strlratio2(tr_getRatio(numerator, denominator));
+    return { static_cast<uint64_t>(numerator), static_cast<uint64_t>(denominator) };
 }
 
 [[nodiscard]] auto strlsize(int64_t bytes)
@@ -798,6 +793,7 @@ auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_activity_date,
     TR_KEY_added_date,
     TR_KEY_bandwidth_priority,
+    TR_KEY_checked_bytes,
     TR_KEY_comment,
     TR_KEY_corrupt_ever,
     TR_KEY_creator,
@@ -827,7 +823,6 @@ auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_peers_getting_from_us,
     TR_KEY_peers_sending_to_us,
     TR_KEY_peer_limit,
-    TR_KEY_percent_done,
     TR_KEY_piece_count,
     TR_KEY_piece_size,
     TR_KEY_rate_download,
@@ -904,6 +899,21 @@ void update_config_from_response(tr_web::FetchResponse const& response, RemoteCo
     }
 }
 
+// `checked_bytes` is newer than `recheck_progress`
+[[nodiscard]] std::optional<Percent> get_recheck_progress(tr_variant::Map const& t)
+{
+    if (auto const checked = t.value_if<int64_t>(TR_KEY_checked_bytes), total = t.value_if<int64_t>(TR_KEY_total_size);
+        checked && total) {
+        return to_percent(*checked, *total);
+    }
+
+    if (auto const fraction = t.value_if<double>(TR_KEY_recheck_progress)) {
+        return Percent::from_double(*fraction);
+    }
+
+    return {};
+}
+
 [[nodiscard]] std::string get_status_string(tr_variant::Map const& t)
 {
     auto const status = t.value_if<int64_t>(TR_KEY_status);
@@ -923,14 +933,14 @@ void update_config_from_response(tr_web::FetchResponse const& response, RemoteCo
         return "Stopped"s;
 
     case TR_STATUS_CHECK_WAIT:
-        if (auto const percent = t.value_if<double>(TR_KEY_recheck_progress)) {
-            return fmt::format("Will Verify ({:.0f}%)", floor(*percent * 100.0));
+        if (auto const percent = get_recheck_progress(t)) {
+            return fmt::format("Will Verify ({:s}%)", percent->to_whole_string());
         }
         return "Will Verify"s;
 
     case TR_STATUS_CHECK:
-        if (auto const percent = t.value_if<double>(TR_KEY_recheck_progress)) {
-            return fmt::format("Verifying ({:.0f}%)", floor(*percent * 100.0));
+        if (auto const percent = get_recheck_progress(t)) {
+            return fmt::format("Verifying ({:s}%)", percent->to_whole_string());
         }
         return "Verifying"s;
 
@@ -1036,8 +1046,13 @@ void print_details(tr_variant::Map const& result)
             }
         }
 
-        if (auto const d = t->value_if<double>(TR_KEY_percent_done)) {
-            fmt::print("  Percent Done: {:s}%\n", strlpercent(100.0 * *d));
+        if (auto const size_when_done = t->value_if<int64_t>(TR_KEY_size_when_done),
+            left_until_done = t->value_if<int64_t>(TR_KEY_left_until_done),
+            total_size = t->value_if<int64_t>(TR_KEY_total_size);
+            size_when_done && left_until_done && total_size) {
+            // every size is 0 until the metadata arrives
+            auto const percent = *total_size > 0 ? to_percent(*size_when_done - *left_until_done, *size_when_done) : Percent{};
+            fmt::print("  Percent Done: {:s}%\n", percent.to_string());
         }
 
         if (auto const i = t->value_if<time_t>(TR_KEY_eta)) {
@@ -1063,7 +1078,7 @@ void print_details(tr_variant::Map const& result)
             } else if (
                 auto j = t->value_if<int64_t>(TR_KEY_desired_available), k = t->value_if<int64_t>(TR_KEY_left_until_done);
                 j && k) {
-                fmt::print("  Availability: {:s}%\n", strlpercent(100.0 * (*j + i - *k) / i));
+                fmt::print("  Availability: {:s}%\n", to_percent(*j + i - *k, i).to_string());
             }
 
             if (auto j = t->value_if<int64_t>(TR_KEY_total_size)) {
@@ -1083,7 +1098,7 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Uploaded: {:s}\n", strlsize(*i));
 
             if (auto const j = t->value_if<int64_t>(TR_KEY_size_when_done)) {
-                fmt::print("  Ratio: {:s}\n", strlratio(*i, *j));
+                fmt::print("  Ratio: {:s}\n", to_ratio(*i, *j).to_string());
             }
         }
 
@@ -1219,7 +1234,7 @@ void print_details(tr_variant::Map const& result)
 
             case TR_RATIOLIMIT_SINGLE:
                 if (auto const d = t->value_if<double>(TR_KEY_seed_ratio_limit)) {
-                    fmt::print("  Ratio Limit: {:s}\n", strlratio2(*d));
+                    fmt::print("  Ratio Limit: {:s}\n", Ratio::from_double(*d).to_string());
                 }
                 break;
 
@@ -1325,7 +1340,7 @@ void print_file_list(tr_variant::Map const& result)
             fmt::print(
                 "{:3d}: {:>4s}% {:<8s} {:<3s} {:9s}  {:s}\n",
                 i,
-                strlpercent(100.0 * *have / *length),
+                to_percent(*have, *length).to_string(),
                 Pristr(*priority),
                 *wanted ? "Yes" : "No",
                 strlsize(*length),
@@ -1334,7 +1349,7 @@ void print_file_list(tr_variant::Map const& result)
     }
 }
 
-void print_peers_impl(tr_variant::Vector const& peers)
+void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> const total_size)
 {
     fmt::print("{:<40s}  {:<12s}  {:<5s} {:>8s}  {:>8s}  {:s}\n", "Address", "Flags", "Done", "Down", "Up", "Client");
 
@@ -1347,16 +1362,26 @@ void print_peers_impl(tr_variant::Vector const& peers)
         auto const address = peer->value_if<std::string_view>(TR_KEY_address);
         auto const client = peer->value_if<std::string_view>(TR_KEY_client_name);
         auto const flagstr = peer->value_if<std::string_view>(TR_KEY_flag_str);
-        auto const progress = peer->value_if<double>(TR_KEY_progress);
+        auto const have_total = peer->value_if<int64_t>(TR_KEY_have_total);
+        auto const fraction = peer->value_if<double>(TR_KEY_progress);
         auto const rate_to_client = peer->value_if<int64_t>(TR_KEY_rate_to_client);
         auto const rate_to_peer = peer->value_if<int64_t>(TR_KEY_rate_to_peer);
+
+        // `have_total` is newer than `progress`.
+        // Without metadata, every size is 0 and `progress` alone tells seeds apart.
+        auto progress = std::optional<Percent>{};
+        if (have_total && total_size && *total_size > 0) {
+            progress = to_percent(*have_total, *total_size);
+        } else if (fraction) {
+            progress = Percent::from_double(*fraction);
+        }
 
         if (address && client && progress && flagstr && rate_to_client && rate_to_peer) {
             fmt::print(
                 "{:<40s}  {:<12s}  {:<5s} {:8.1f}  {:8.1f}  {:s}\n",
                 *address,
                 *flagstr,
-                strlpercent(*progress * 100.0),
+                progress->to_string(),
                 Speed{ *rate_to_client, Speed::Units::Byps }.count(Speed::Units::KByps),
                 Speed{ *rate_to_peer, Speed::Units::Byps }.count(Speed::Units::KByps),
                 *client);
@@ -1378,7 +1403,7 @@ void print_peers(tr_variant::Map const& result)
         }
 
         if (auto* peers = t->find_if<tr_variant::Vector>(TR_KEY_peers); peers != nullptr) {
-            print_peers_impl(*peers);
+            print_peers_impl(*peers, t->value_if<int64_t>(TR_KEY_total_size));
 
             if (it < std::prev(end)) {
                 fmt::print("\n");
@@ -1508,7 +1533,7 @@ void print_torrent_list(tr_variant::Map const& result)
         auto const eta_str = left_until_done != 0 || eta != -1 ? eta_to_string(eta) : "Done";
         auto const error_mark = t->value_if<int64_t>(TR_KEY_error).value_or(0) != 0 ? '*' : ' ';
         auto const done_str = size_when_done != 0 ?
-            strlpercent(100.0 * (size_when_done - left_until_done) / size_when_done) + '%' :
+            to_percent(size_when_done - left_until_done, size_when_done).to_string() + '%' :
             std::string{ "n/a" };
 
         fmt::print(
@@ -1520,7 +1545,7 @@ void print_torrent_list(tr_variant::Map const& result)
             eta_str,
             Speed{ up, Speed::Units::Byps }.count(Speed::Units::KByps),
             Speed{ down, Speed::Units::Byps }.count(Speed::Units::KByps),
-            strlratio2(*o_ratio),
+            Ratio::from_double(*o_ratio).to_string(),
             get_status_string(*t),
             *o_name);
 
@@ -1765,7 +1790,9 @@ void print_session(tr_variant::Map const& result)
         fmt::print("LIMITS\n");
         fmt::print("  Peer limit: {:d}\n", *peer_limit);
 
-        fmt::print("  Default seed ratio limit: {:s}\n", *speed_ratio_limited ? strlratio2(*seed_ratio_limit) : "Unlimited");
+        fmt::print(
+            "  Default seed ratio limit: {:s}\n",
+            *speed_ratio_limited ? Ratio::from_double(*seed_ratio_limit).to_string() : "Unlimited");
 
         fmt::print(
             "  Default idle seeding time limit: {:s}\n",
@@ -1871,7 +1898,7 @@ void print_session_stats(tr_variant::Map const& result)
             fmt::print("\nCURRENT SESSION\n");
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", strlratio(*up, *down));
+            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
@@ -1887,7 +1914,7 @@ void print_session_stats(tr_variant::Map const& result)
             fmt::print("  Started {:d} times\n", *sessions);
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", strlratio(*up, *down));
+            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
@@ -2508,6 +2535,7 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
             case 941:
                 map.insert_or_assign(TR_KEY_id, ID_PEERS);
                 fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_peers));
+                fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_total_size));
                 add_id_arg(params, config);
                 break;
 
@@ -3244,6 +3272,9 @@ int tr_main(int argc, char* argv[])
     tr_lib_init();
 
     tr_locale_set_global("");
+
+    // keep the output ASCII
+    Config::ratio = { .none = "None", .infinity = "Inf" };
 
     auto config = RemoteConfig{};
     auto port = uint16_t{ TrDefaultRpcPort };

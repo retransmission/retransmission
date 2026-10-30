@@ -315,6 +315,10 @@ struct tr_torrent {
     {
         return metainfo_.piece_size(piece);
     }
+    [[nodiscard]] auto size_of_pieces(tr_bitfield const& pieces) const noexcept
+    {
+        return metainfo_.size_of_pieces(pieces);
+    }
     [[nodiscard]] constexpr auto total_size() const noexcept
     {
         return metainfo_.total_size();
@@ -707,7 +711,7 @@ struct tr_torrent {
 
     [[nodiscard]] std::optional<int64_t> get_next_metadata_request(time_t now);
 
-    [[nodiscard]] double get_metadata_percent() const noexcept;
+    [[nodiscard]] tr::Values::Percent get_metadata_percent() const noexcept;
 
     ///
 
@@ -1334,13 +1338,15 @@ private:
 
     void set_verify_state(VerifyState state);
 
-    [[nodiscard]] constexpr std::optional<float> verify_progress() const noexcept
+    [[nodiscard]] constexpr std::optional<tr::Values::Percent> verify_progress() const noexcept
     {
-        if (verify_state_ == VerifyState::Active) {
-            return verify_progress_;
+        if (verify_state_ != VerifyState::Active) {
+            return {};
         }
 
-        return {};
+        // the last piece can be short; min() trims it
+        auto const checked = std::min(uint64_t{ verify_checked_pieces_ } * piece_size(), total_size());
+        return tr::Values::Percent{ checked, total_size() };
     }
 
     // must be called after the torrent's announce list changes.
@@ -1497,7 +1503,7 @@ private:
     time_t seconds_downloading_before_current_start_ = 0;
     time_t seconds_seeding_before_current_start_ = 0;
 
-    float verify_progress_ = -1.0F;
+    tr_piece_index_t verify_checked_pieces_ = 0;
     double seed_ratio_ = 0.0;
 
     tr_announce_key_t announce_key_ = tr_rand_obj<tr_announce_key_t>();

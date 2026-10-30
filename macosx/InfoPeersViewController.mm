@@ -522,7 +522,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
             }
             __auto_type progress = [peer[@"Progress"] floatValue];
             __auto_type isSeed = [peer[@"Seed"] boolValue];
-            [cell updateProgress:progress isSeed:isSeed
+            [cell updateProgress:progress text:peer[@"Progress String"] isSeed:isSeed
                         showText:[NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]];
             return cell;
         }
@@ -604,10 +604,9 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
             [components addObject:peer[@"Name"]];
         }
 
-        CGFloat const progress = [peer[@"Progress"] floatValue];
-        NSString* progressString = [NSString stringWithFormat:NSLocalizedString(@"Progress: %@", "Inspector -> Peers tab -> table row tooltip"),
-                                                              [NSString percentString:progress longDecimals:NO]];
-        if (progress < 1.0 && [peer[@"Seed"] boolValue]) {
+        NSString* progressString = [NSString
+            stringWithFormat:NSLocalizedString(@"Progress: %@", "Inspector -> Peers tab -> table row tooltip"), peer[@"Progress String"]];
+        if (![peer[@"Complete"] boolValue] && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
                 stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial seed", "Inspector -> Peers tab -> table row tooltip")];
         }

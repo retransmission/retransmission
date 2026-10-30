@@ -113,19 +113,6 @@ public:
 
     [[nodiscard]] bool is_valid() const;
 
-    [[nodiscard]] constexpr auto percent() const noexcept
-    {
-        if (has_all()) {
-            return 1.0F;
-        }
-
-        if (has_none() || !is_size_known()) {
-            return 0.0F;
-        }
-
-        return static_cast<float>(count()) / static_cast<float>(size());
-    }
-
     tr_bitfield& operator|=(tr_bitfield const& that);
 
 private:

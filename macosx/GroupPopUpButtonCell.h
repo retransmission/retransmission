@@ -7,3 +7,6 @@
 @interface GroupPopUpButtonCell : NSPopUpButtonCell
 
 @end
+
+@interface GroupPopUpButton : NSPopUpButton
+@end

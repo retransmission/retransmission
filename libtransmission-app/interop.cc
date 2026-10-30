@@ -47,7 +47,7 @@ std::string canonical_config_dir_created(std::string_view const config_dir)
 {
     // 0777 defers to the process umask, as every other config-dir create in
     // libtransmission does.
-    tr_sys_dir_create(std::string{ config_dir }, TR_SYS_DIR_CREATE_PARENTS, 0777);
+    tr_sys_dir_create(config_dir, TR_SYS_DIR_CREATE_PARENTS, 0777);
     return canonical_config_dir(config_dir);
 }
 

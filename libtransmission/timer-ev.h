@@ -26,6 +26,8 @@ public:
 
     [[nodiscard]] std::unique_ptr<Timer> create() override;
 
+    using TimerMaker::create;
+
 private:
     event_base* const event_base_;
 };

@@ -44,7 +44,7 @@ template <typename T> [[nodiscard]] std::string tr_strupper(T in)
 
 template <typename... Args> constexpr std::string_view tr_strv_sep(std::string_view* sv, Args&&... args)
 {
-    auto pos = sv->find_first_of(std::forward<Args>(args)...);
+    auto const pos = sv->find_first_of(std::forward<Args>(args)...);
     auto const ret = sv->substr(0, pos);
     sv->remove_prefix(pos != std::string_view::npos ? pos + 1 : std::size(*sv));
     return ret;

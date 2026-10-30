@@ -12,6 +12,8 @@
 
 #include <QtCore/QAbstractItemModel>
 
+#include <libtransmission/values.h>
+
 #include "Typedefs.h" // file_indices_t
 
 class FileTreeItem;
@@ -31,7 +33,7 @@ public:
         NUM_COLUMNS
     };
 
-    enum Role : uint16_t { SortRole = Qt::UserRole, FileIndexRole, WantedRole, CompleteRole };
+    enum Role : uint16_t { SortRole = Qt::UserRole, FileIndexRole, WantedRole, CompleteRole, ProgressRole };
 
     explicit FileTreeModel(QObject* parent = nullptr, bool is_editable = true);
     FileTreeModel& operator=(FileTreeModel&&) = delete;
@@ -95,3 +97,5 @@ private:
     std::unique_ptr<FileTreeItem> root_item_;
     bool is_editable_ = {};
 };
+
+Q_DECLARE_METATYPE(tr::Values::Percent)

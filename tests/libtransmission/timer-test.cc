@@ -43,7 +43,7 @@ protected:
 
     void sleepMsec(std::chrono::milliseconds msec)
     {
-        EXPECT_FALSE(waitFor(evbase_.get(), []() { return false; }, msec));
+        EXPECT_FALSE(waitFor(evbase_.get(), [] { return false; }, msec));
     }
 
     static void expectTime(
@@ -88,7 +88,7 @@ TEST_F(TimerTest, singleShotCallsCallback)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]() {
+    auto callback = [&called] {
         called = true;
     };
     timer->set_callback(callback);
@@ -107,7 +107,7 @@ TEST_F(TimerTest, repeatingCallsCallback)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]() {
+    auto callback = [&called] {
         called = true;
     };
     timer->set_callback(callback);
@@ -126,7 +126,7 @@ TEST_F(TimerTest, singleShotHonorsInterval)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]() {
+    auto callback = [&called] {
         called = true;
     };
     timer->set_callback(callback);
@@ -152,7 +152,7 @@ TEST_F(TimerTest, repeatingHonorsInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -180,7 +180,7 @@ TEST_F(TimerTest, DISABLED_restartWithDifferentInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -189,7 +189,7 @@ TEST_F(TimerTest, DISABLED_restartWithDifferentInterval)
         auto const next = n_calls + 1;
         auto const begin_time = currentTime();
         timer->start_single_shot(interval);
-        waitFor(evbase_.get(), [&n_calls, next]() { return n_calls >= next; });
+        waitFor(evbase_.get(), [&n_calls, next] { return n_calls >= next; });
         auto const end_time = currentTime();
 
         expectInterval(interval, AsMSec(end_time - begin_time));
@@ -208,7 +208,7 @@ TEST_F(TimerTest, DISABLED_restartWithSameInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -217,7 +217,7 @@ TEST_F(TimerTest, DISABLED_restartWithSameInterval)
         auto const next = n_calls + 1;
         auto const begin_time = currentTime();
         timer->start_single_shot(interval);
-        waitFor(evbase_.get(), [&n_calls, next]() { return n_calls >= next; });
+        waitFor(evbase_.get(), [&n_calls, next] { return n_calls >= next; });
         auto const end_time = currentTime();
 
         expectInterval(interval, AsMSec(end_time - begin_time));
@@ -236,7 +236,7 @@ TEST_F(TimerTest, DISABLED_repeatingThenSingleShot)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -248,7 +248,7 @@ TEST_F(TimerTest, DISABLED_repeatingThenSingleShot)
     timer->start_repeating(RepeatingInterval);
     EXPECT_EQ(RepeatingInterval, timer->interval());
     EXPECT_TRUE(timer->is_repeating());
-    waitFor(evbase_.get(), [&n_calls]() { return n_calls >= DesiredLoops; });
+    waitFor(evbase_.get(), [&n_calls] { return n_calls >= DesiredLoops; });
     auto end_time = currentTime();
     expectTime(RepeatingInterval * DesiredLoops, AsMSec(end_time - begin_time), RepeatingInterval / 2);
 
@@ -259,7 +259,7 @@ TEST_F(TimerTest, DISABLED_repeatingThenSingleShot)
     timer->start_single_shot(SingleShotInterval);
     EXPECT_EQ(SingleShotInterval, timer->interval());
     EXPECT_FALSE(timer->is_repeating());
-    waitFor(evbase_.get(), [&n_calls]() { return n_calls >= DesiredLoops + 1; });
+    waitFor(evbase_.get(), [&n_calls] { return n_calls >= DesiredLoops + 1; });
     end_time = currentTime();
 
     // confirm that the single shot interval was honored
@@ -278,7 +278,7 @@ TEST_F(TimerTest, DISABLED_singleShotStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -307,7 +307,7 @@ TEST_F(TimerTest, repeatingStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -336,7 +336,7 @@ TEST_F(TimerTest, destroyedTimersStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]() {
+    auto callback = [&n_calls] {
         ++n_calls;
     };
     timer->set_callback(callback);

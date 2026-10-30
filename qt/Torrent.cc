@@ -6,6 +6,7 @@
 #include "Torrent.h"
 
 #include <algorithm>
+#include <limits>
 #include <set>
 #include <span>
 
@@ -51,10 +52,90 @@ std::optional<double> Torrent::getSeedRatioLimit() const
     return {};
 }
 
+std::optional<tr::Values::Percent> Torrent::seedRatioPercentDone() const
+{
+    auto const limit = getSeedRatioLimit();
+    if (!limit) {
+        return {};
+    }
+
+    // `ratio()` is the daemon's, so this measures against the daemon's own baseline.
+    // A zero baseline or a zero limit makes a zero goal, which is always met.
+    if (auto const ratio = this->ratio(); ratio.is_none() || ratio.is_infinite() || !(*limit > 0.0)) {
+        return tr::Values::Percent{ 1U, 1U };
+    }
+
+    return tr::Values::Percent::from_double(upload_ratio_ / *limit);
+}
+
+tr::Values::Percent Torrent::metadataPercentDone() const noexcept
+{
+    if (metadata_have_ && metadata_size_) {
+        // the size is 0 until a peer reports it
+        return *metadata_size_ != 0U ? tr::Values::Percent{ *metadata_have_, *metadata_size_ } : tr::Values::Percent{};
+    }
+
+    return tr::Values::Percent::from_double(metadata_percent_complete_);
+}
+
+bool Torrent::hasMetadata() const noexcept
+{
+    return metadataPercentDone().is_complete();
+}
+
+// every size is 0 until the metadata arrives
+tr::Values::Percent Torrent::progressOf(uint64_t const have, uint64_t const total) const noexcept
+{
+    return hasMetadata() ? tr::Values::Percent{ have, total } : tr::Values::Percent{};
+}
+
+tr::Values::Percent Torrent::peerProgress(Peer const& peer) const noexcept
+{
+    // `have_total` is newer than `progress`.
+    // Without metadata, every size is 0 and `progress` alone tells seeds apart.
+    if (peer.have_total && hasMetadata()) {
+        return { *peer.have_total, totalSize() };
+    }
+
+    return tr::Values::Percent::from_double(peer.progress);
+}
+
+tr::Values::Percent Torrent::percentComplete() const noexcept
+{
+    return progressOf(haveTotal(), totalSize());
+}
+
+tr::Values::Percent Torrent::percentDone() const noexcept
+{
+    return progressOf(sizeWhenDone() - leftUntilDone(), sizeWhenDone());
+}
+
+tr::Values::Percent Torrent::getVerifyProgress() const noexcept
+{
+    if (checked_bytes_) {
+        return progressOf(*checked_bytes_, totalSize());
+    }
+
+    return tr::Values::Percent::from_double(recheck_progress_);
+}
+
 bool Torrent::includesTracker(QString const& sitename) const
 {
     return std::ranges::binary_search(sitenames_, sitename);
 }
+
+namespace
+{
+// None sorts below every number, Infinite above
+[[nodiscard]] constexpr double ratioSortKey(tr::Values::Ratio const& ratio) noexcept
+{
+    if (ratio.is_infinite()) {
+        return std::numeric_limits<double>::infinity();
+    }
+
+    return ratio.to_double().value_or(-1.0);
+}
+} // namespace
 
 std::partial_ordering Torrent::compareSeedProgress(Torrent const& that) const
 {
@@ -65,8 +146,8 @@ std::partial_ordering Torrent::compareSeedProgress(Torrent const& that) const
         return compareRatio(that);
     }
 
-    auto const a_ratio = ratio();
-    auto const b_ratio = that.ratio();
+    auto const a_ratio = ratioSortKey(ratio());
+    auto const b_ratio = ratioSortKey(that.ratio());
 
     if (!a_ratio_limit) {
         return b_ratio < *b_ratio_limit ? std::partial_ordering::greater : std::partial_ordering::less;
@@ -95,22 +176,7 @@ std::partial_ordering Torrent::compareSeedProgress(Torrent const& that) const
 
 std::partial_ordering Torrent::compareRatio(Torrent const& that) const
 {
-    double const a = ratio();
-    double const b = that.ratio();
-
-    if (static_cast<int>(a) == TR_RATIO_INF && static_cast<int>(b) == TR_RATIO_INF) {
-        return std::partial_ordering::equivalent;
-    }
-
-    if (static_cast<int>(a) == TR_RATIO_INF) {
-        return std::partial_ordering::greater;
-    }
-
-    if (static_cast<int>(b) == TR_RATIO_INF) {
-        return std::partial_ordering::less;
-    }
-
-    return a <=> b;
+    return ratioSortKey(ratio()) <=> ratioSortKey(that.ratio());
 }
 
 std::strong_ordering Torrent::compareETA(Torrent const& that) const
@@ -180,6 +246,7 @@ Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
             HANDLE_KEY(activity_date, activity_date, ACTIVITY_DATE)
             HANDLE_KEY(added_date, added_date, ADDED_DATE)
             HANDLE_KEY(bandwidth_priority, bandwidth_priority, BANDWIDTH_PRIORITY)
+            HANDLE_KEY(checked_bytes, checked_bytes, CHECKED_BYTES)
             HANDLE_KEY(corrupt_ever, failed_ever, FAILED_EVER)
             HANDLE_KEY(date_created, date_created, DATE_CREATED)
             HANDLE_KEY(desired_available, desired_available, DESIRED_AVAILABLE)
@@ -201,15 +268,15 @@ Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
             HANDLE_KEY(labels, labels, LABELS)
             HANDLE_KEY(left_until_done, left_until_done, LEFT_UNTIL_DONE)
             HANDLE_KEY(manual_announce_time, manual_announce_time, MANUAL_ANNOUNCE_TIME)
+            HANDLE_KEY(metadata_have, metadata_have, METADATA_HAVE)
             HANDLE_KEY(metadata_percent_complete, metadata_percent_complete, METADATA_PERCENT_COMPLETE)
+            HANDLE_KEY(metadata_size, metadata_size, METADATA_SIZE)
             HANDLE_KEY(name, name, NAME)
             HANDLE_KEY(peer_limit, peer_limit, PEER_LIMIT)
             HANDLE_KEY(peers, peers, PEERS)
             HANDLE_KEY(peers_connected, peers_connected, PEERS_CONNECTED)
             HANDLE_KEY(peers_getting_from_us, peers_getting_from_us, PEERS_GETTING_FROM_US)
             HANDLE_KEY(peers_sending_to_us, peers_sending_to_us, PEERS_SENDING_TO_US)
-            HANDLE_KEY(percent_complete, percent_complete, PERCENT_COMPLETE)
-            HANDLE_KEY(percent_done, percent_done, PERCENT_DONE)
             HANDLE_KEY(piece_count, piece_count, PIECE_COUNT)
             HANDLE_KEY(piece_size, piece_size, PIECE_SIZE)
             HANDLE_KEY(primary_mime_type, primary_mime_type, PRIMARY_MIME_TYPE)

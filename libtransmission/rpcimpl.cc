@@ -14,6 +14,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -266,7 +267,7 @@ void tr_rpc_idle_done(struct tr_rpc_idle_data* data, JsonRpc::Error::Code code, 
 
 void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const& torrents)
 {
-    for (auto* tor : torrents) {
+    for (auto const* const tor : torrents) {
         session->rpcNotify(TR_RPC_TORRENT_CHANGED, tor->id());
     }
 
@@ -415,6 +416,12 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
 
 namespace make_torrent_field_helpers
 {
+// the wire keeps the TR_RATIO_NA / TR_RATIO_INF sentinels for the two non-numeric states
+[[nodiscard]] constexpr double ratio_to_wire(Ratio const ratio) noexcept
+{
+    return ratio.quotient().value_or(ratio.is_infinite() ? TR_RATIO_INF : TR_RATIO_NA);
+}
+
 [[nodiscard]] auto make_file_wanted_vec(tr_torrent const& tor)
 {
     auto const n_files = tor.file_count();
@@ -586,7 +593,7 @@ namespace make_torrent_field_helpers
     auto peers_vec = tr_variant::Vector{};
     peers_vec.reserve(std::size(peers));
     for (auto const& peer : peers) {
-        auto peer_map = tr_variant::Map{ 22U };
+        auto peer_map = tr_variant::Map{ 23U };
         peer_map.try_emplace(TR_KEY_active_reqs_to_client, peer.active_reqs_to_client);
         peer_map.try_emplace(TR_KEY_active_reqs_to_peer, peer.active_reqs_to_peer);
         peer_map.try_emplace(TR_KEY_address, peer.addr);
@@ -595,6 +602,7 @@ namespace make_torrent_field_helpers
         peer_map.try_emplace(TR_KEY_client_name, peer.user_agent);
         peer_map.try_emplace(TR_KEY_peer_id, tr_base64_encode(std::string_view{ peer.peer_id.data(), peer.peer_id.size() }));
         peer_map.try_emplace(TR_KEY_flag_str, peer.flag_str);
+        peer_map.try_emplace(TR_KEY_have_total, peer.have_total);
         peer_map.try_emplace(TR_KEY_is_downloading_from, peer.is_downloading_from);
         peer_map.try_emplace(TR_KEY_is_encrypted, peer.is_encrypted);
         peer_map.try_emplace(TR_KEY_is_incoming, peer.is_incoming);
@@ -604,7 +612,7 @@ namespace make_torrent_field_helpers
         peer_map.try_emplace(TR_KEY_peer_is_choked, peer.peer_is_choked);
         peer_map.try_emplace(TR_KEY_peer_is_interested, peer.peer_is_interested);
         peer_map.try_emplace(TR_KEY_port, peer.port);
-        peer_map.try_emplace(TR_KEY_progress, peer.progress);
+        peer_map.try_emplace(TR_KEY_progress, peer.progress.quotient());
         peer_map.try_emplace(TR_KEY_rate_to_client, peer.rate_to_client.base_quantity());
         peer_map.try_emplace(TR_KEY_rate_to_peer, peer.rate_to_peer.base_quantity());
         peer_map.try_emplace(TR_KEY_bytes_to_peer, peer.bytes_to_peer);
@@ -659,6 +667,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_availability:
     case TR_KEY_bandwidth_priority:
     case TR_KEY_bytes_completed:
+    case TR_KEY_checked_bytes:
     case TR_KEY_comment:
     case TR_KEY_corrupt_ever:
     case TR_KEY_creator:
@@ -693,7 +702,9 @@ namespace make_torrent_field_helpers
     case TR_KEY_magnet_link:
     case TR_KEY_manual_announce_time:
     case TR_KEY_max_connected_peers:
+    case TR_KEY_metadata_have:
     case TR_KEY_metadata_percent_complete:
+    case TR_KEY_metadata_size:
     case TR_KEY_name:
     case TR_KEY_peer_limit:
     case TR_KEY_peers:
@@ -761,6 +772,8 @@ namespace make_torrent_field_helpers
         return tor.get_priority();
     case TR_KEY_bytes_completed:
         return make_bytes_completed_vec(tor);
+    case TR_KEY_checked_bytes:
+        return st.checked_bytes;
     case TR_KEY_comment:
         return tor.comment().sv();
     case TR_KEY_corrupt_ever:
@@ -829,8 +842,12 @@ namespace make_torrent_field_helpers
         return tr_announcerNextManualAnnounce(&tor);
     case TR_KEY_max_connected_peers:
         return tor.peer_limit();
+    case TR_KEY_metadata_have:
+        return st.metadata_have;
     case TR_KEY_metadata_percent_complete:
-        return st.metadata_percent_complete;
+        return st.metadata_percent_complete.quotient();
+    case TR_KEY_metadata_size:
+        return st.metadata_size;
     case TR_KEY_name:
         return tor.name();
     case TR_KEY_peer_limit:
@@ -846,9 +863,9 @@ namespace make_torrent_field_helpers
     case TR_KEY_peers_sending_to_us:
         return st.peers_sending_to_us;
     case TR_KEY_percent_complete:
-        return st.percent_complete;
+        return st.percent_complete.quotient();
     case TR_KEY_percent_done:
-        return st.percent_done;
+        return st.percent_done.quotient();
     case TR_KEY_piece_count:
         return tor.piece_count();
     case TR_KEY_piece_size:
@@ -866,7 +883,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_rate_upload:
         return st.piece_upload_speed.base_quantity();
     case TR_KEY_recheck_progress:
-        return st.recheck_progress;
+        return st.recheck_progress.quotient();
     case TR_KEY_seconds_downloading:
         return st.seconds_downloading;
     case TR_KEY_seconds_seeding:
@@ -906,7 +923,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_upload_limited:
         return tor.uses_speed_limit(tr_direction::Up);
     case TR_KEY_upload_ratio:
-        return st.upload_ratio;
+        return ratio_to_wire(st.upload_ratio);
     case TR_KEY_uploaded_ever:
         return st.uploaded_ever;
     case TR_KEY_wanted:
@@ -966,7 +983,8 @@ namespace make_torrent_field_helpers
     auto const format = args_in.value_if<std::string_view>(TR_KEY_format).value_or("object"sv) == "table"sv ? TrFormat::Table :
                                                                                                               TrFormat::Object;
 
-    if (auto val = args_in.value_if<std::string_view>(TR_KEY_ids); val == tr_quark_get_string_view(TR_KEY_recently_active)) {
+    if (auto const val = args_in.value_if<std::string_view>(TR_KEY_ids);
+        val == tr_quark_get_string_view(TR_KEY_recently_active)) {
         auto const cutoff = tr_time() - RecentlyActiveSeconds;
         auto const ids = session->torrents().removedSince(cutoff);
 

@@ -34,7 +34,7 @@ bool tr_announce_list::remove(std::string_view announce_url)
 
 bool tr_announce_list::remove(tr_tracker_id_t id)
 {
-    auto it = find(id);
+    auto const it = find(id);
     if (it == std::end(trackers_)) {
         return false;
     }
@@ -49,7 +49,7 @@ bool tr_announce_list::replace(tr_tracker_id_t id, std::string_view announce_url
         return false;
     }
 
-    auto it = find(id);
+    auto const it = find(id);
     if (it == std::end(trackers_)) {
         return false;
     }
@@ -121,7 +121,7 @@ std::optional<std::string> tr_announce_list::announce_to_scrape(std::string_view
     // 'announce' to find the scrape page.
     auto constexpr Oldval = "/announce"sv;
     auto constexpr Newval = "/scrape"sv;
-    if (auto pos = announce.rfind(Oldval.front()); pos != std::string_view::npos && announce.find(Oldval, pos) == pos) {
+    if (auto const pos = announce.rfind(Oldval.front()); pos != std::string_view::npos && announce.find(Oldval, pos) == pos) {
         return std::string{ announce }.replace(pos, std::size(Oldval), Newval);
     }
 
@@ -261,7 +261,7 @@ bool tr_announce_list::parse(std::string_view text)
         }
     }
 
-    *this = scratch;
+    *this = std::move(scratch);
     return true;
 }
 

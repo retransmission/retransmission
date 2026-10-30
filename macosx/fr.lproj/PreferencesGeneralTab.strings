@@ -5,8 +5,6 @@
 "Total download rate" = "Débit total en téléchargement";
 "Total upload rate" = "Débit total en téléversement";
 "Only when torrents are downloading" = "Seulement si des transferts sont en cours de téléchargement";
-"Auto resize:" = "Ajustement automatique :";
-"Automatically size window to fit all torrents" = "Faire automatiquement correspondre la taille de la fenêtre aux transferts";
 "Reset" = "Réinitialiser";
 "Reset all alerts:" = "Réinitialiser toutes les alertes :";
 "Automatically check daily" = "Vérification automatique quotidienne";

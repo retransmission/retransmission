@@ -7,13 +7,14 @@
 #include <cerrno>
 #include <csignal>
 #include <string_view>
+#include <vector>
 
 #include <fcntl.h>
 #include <unistd.h> /* fork(), setsid(), chdir(), dup2(), close(), pipe() */
 
 #ifdef HAVE_SYS_SIGNALFD_H
 #include <sys/signalfd.h>
-#endif /* signalfd API */
+#endif /* HAVE_SYS_SIGNALFD_H */
 
 #include <event2/event.h>
 
@@ -21,24 +22,30 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/utils-ev.h>
 
 #include "daemon.h"
 
-static void set_system_error(tr_error& error, int code, std::string_view message)
+namespace
 {
-    error.set(code, fmt::format("{:s}: {:s} ({:d}", message, tr_strerror(code), code));
+void set_system_error(tr_error& error, int code, std::string_view message)
+{
+    error.set(code, fmt::format("{:s}: {:s} ({:d})", message, tr_strerror(code), code));
 }
+} // namespace
 
 #ifdef HAVE_SYS_SIGNALFD_H
 
-static void handle_signals(evutil_socket_t fd, short /*what*/, void* arg)
+namespace
 {
-    struct signalfd_siginfo fdsi;
+void handle_signals(evutil_socket_t fd, short /*what*/, void* arg)
+{
+    struct signalfd_siginfo fdsi = {};
     auto* const daemon = static_cast<tr_daemon*>(arg);
 
-    if (read(fd, &fdsi, sizeof(fdsi)) != sizeof(fdsi))
+    if (read(fd, &fdsi, sizeof(fdsi)) != sizeof(fdsi)) {
         assert("Error reading signal descriptor" && 0);
-    else {
+    } else {
         switch (fdsi.ssi_signo) {
         case SIGHUP:
             daemon->reconfigure();
@@ -52,27 +59,31 @@ static void handle_signals(evutil_socket_t fd, short /*what*/, void* arg)
         }
     }
 }
+} // namespace
 
-bool tr_daemon::setup_signals(struct event*& sig_ev)
+bool tr_daemon::setup_signals()
 {
     sigset_t mask = {};
-    struct event_base* base = ev_base_;
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGINT);
     sigaddset(&mask, SIGTERM);
     sigaddset(&mask, SIGHUP);
 
-    if (sigprocmask(SIG_BLOCK, &mask, nullptr) < 0)
+    if (sigprocmask(SIG_BLOCK, &mask, nullptr) < 0) {
         return false;
+    }
 
     sigfd_ = signalfd(-1, &mask, 0);
-    if (sigfd_ < 0)
+    if (sigfd_ < 0) {
         return false;
+    }
 
-    sig_ev = event_new(base, sigfd_, EV_READ | EV_PERSIST, handle_signals, this);
-
-    return sig_ev != nullptr && event_add(sig_ev, nullptr) >= 0;
+    if (auto const sig_ev = event_new(ev_base_.get(), sigfd_, EV_READ | EV_PERSIST, handle_signals, this)) {
+        sig_evs_.emplace_back(sig_ev);
+        return event_add(sig_ev, nullptr) >= 0;
+    }
+    return false;
 }
 
 #else /* no signalfd API, use evsignal */
@@ -80,49 +91,49 @@ bool tr_daemon::setup_signals(struct event*& sig_ev)
 namespace
 {
 
-static void reconfigureMarshall(evutil_socket_t /*fd*/, short /*events*/, void* arg)
+void reconfigure_marshall(evutil_socket_t /*fd*/, short /*events*/, void* vdaemon)
 {
-    static_cast<tr_daemon*>(arg)->reconfigure();
+    static_cast<tr_daemon*>(vdaemon)->reconfigure();
 }
 
-static void stopMarshall(evutil_socket_t /*fd*/, short /*events*/, void* arg)
+void stop_marshall(evutil_socket_t /*fd*/, short /*events*/, void* vdaemon)
 {
-    static_cast<tr_daemon*>(arg)->stop();
+    static_cast<tr_daemon*>(vdaemon)->stop();
 }
 
-static bool setup_signal(
-    struct event_base* base,
-    struct event*& sig_ev,
+bool setup_signal(
+    struct event_base* ev_base,
+    std::vector<tr::evhelpers::event_unique_ptr>& sig_evs,
     int sig,
     void (*callback)(evutil_socket_t, short, void*),
     void* arg)
 {
-    sig_ev = evsignal_new(base, sig, callback, arg);
-
-    return sig_ev != nullptr && evsignal_add(sig_ev, nullptr) >= 0;
+    if (auto const sig_ev = evsignal_new(ev_base, sig, callback, arg)) {
+        sig_evs.emplace_back(sig_ev);
+        return evsignal_add(sig_ev, nullptr) >= 0;
+    }
+    return false;
 }
 
-} // anonymous namespace
+} // namespace
 
-bool tr_daemon::setup_signals(struct event*& sig_ev)
+bool tr_daemon::setup_signals()
 {
-    return setup_signal(ev_base_, sig_ev, SIGHUP, reconfigureMarshall, this) &&
-        setup_signal(ev_base_, sig_ev, SIGINT, stopMarshall, this) &&
-        setup_signal(ev_base_, sig_ev, SIGTERM, stopMarshall, this);
+    return setup_signal(ev_base_.get(), sig_evs_, SIGHUP, reconfigure_marshall, this) &&
+        setup_signal(ev_base_.get(), sig_evs_, SIGINT, stop_marshall, this) &&
+        setup_signal(ev_base_.get(), sig_evs_, SIGTERM, stop_marshall, this);
 }
 
 #endif /* HAVE_SYS_SIGNALFD_H */
 
-void tr_daemon::cleanup_signals(struct event* sig_ev) const
+void tr_daemon::cleanup_signals()
 {
-    if (sig_ev != nullptr) {
-        event_del(sig_ev);
-        event_free(sig_ev);
-    }
+    sig_evs_.clear();
 
 #ifdef HAVE_SYS_SIGNALFD_H
     if (sigfd_ >= 0) {
         close(sigfd_);
+        sigfd_ = -1;
     }
 #endif /* HAVE_SYS_SIGNALFD_H */
 }
@@ -134,7 +145,7 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
     if (!foreground) {
 #if defined(HAVE_DAEMON) && !defined(__APPLE__) && !defined(__UCLIBC__)
 
-        if (daemon(true, false) == -1) {
+        if (daemon(1, 0) == -1) {
             set_system_error(error, errno, "daemon() failed");
             return false;
         }
@@ -161,14 +172,6 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
             set_system_error(error, errno, "setsid() failed");
             return false;
         }
-
-        /*
-        if (chdir("/") == -1)
-        {
-            set_system_error(error, errno, "chdir() failed");
-            return false;
-        }
-        */
 
         {
             int const fd = open("/dev/null", O_RDWR, 0);

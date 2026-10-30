@@ -39,7 +39,7 @@ public:
         StringIndex,
         StringViewIndex,
         VectorIndex,
-        MapIndex
+        MapIndex,
     };
 
     using Vector = std::vector<tr_variant>;
@@ -116,7 +116,7 @@ public:
 
         auto erase(tr_quark const key)
         {
-            if (auto iter = find(key); iter != end()) {
+            if (auto const iter = find(key); iter != end()) {
                 vec_.erase(iter);
                 return 1U;
             }
@@ -130,7 +130,7 @@ public:
                 return false;
             }
 
-            auto iter = find(old_key);
+            auto const iter = find(old_key);
             if (iter == end()) {
                 return false;
             }
@@ -147,7 +147,7 @@ public:
         template<typename Val>
         std::pair<tr_variant&, bool> try_emplace(tr_quark const key, Val&& val)
         {
-            if (auto iter = find(key); iter != end()) {
+            if (auto const iter = find(key); iter != end()) {
                 return { iter->second, false };
             }
 
@@ -182,7 +182,7 @@ public:
         template<typename Val>
         [[nodiscard]] std::optional<Val> value_if(tr_quark const key) const noexcept
         {
-            if (auto it = find(key); it != end()) {
+            if (auto const it = find(key); it != end()) {
                 return it->second.value_if<Val>();
             }
 
@@ -210,7 +210,7 @@ public:
     tr_variant& operator=(tr_variant const&) = delete;
 
     template<typename Val>
-    tr_variant(Val&& value) // NOLINT(bugprone-forwarding-reference-overload, google-explicit-constructor)
+    tr_variant(Val&& value) // NOLINT(bugprone-forwarding-reference-overload, misc-explicit-constructor)
     {
         *this = std::forward<Val>(value);
     }

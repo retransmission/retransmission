@@ -101,7 +101,7 @@ public:
         std::byte{ 19 },  std::byte{ 'B' }, std::byte{ 'i' }, std::byte{ 't' }, std::byte{ 'T' },
         std::byte{ 'o' }, std::byte{ 'r' }, std::byte{ 'r' }, std::byte{ 'e' }, std::byte{ 'n' },
         std::byte{ 't' }, std::byte{ ' ' }, std::byte{ 'p' }, std::byte{ 'r' }, std::byte{ 'o' },
-        std::byte{ 't' }, std::byte{ 'o' }, std::byte{ 'c' }, std::byte{ 'o' }, std::byte{ 'l' }
+        std::byte{ 't' }, std::byte{ 'o' }, std::byte{ 'c' }, std::byte{ 'o' }, std::byte{ 'l' },
     };
 
     // [Next comes] eight reserved bytes [used for enabling ltep, dht, fext]
@@ -168,7 +168,7 @@ private:
         AwaitingYb,
         AwaitingVc,
         AwaitingCryptoSelect,
-        AwaitingPadD
+        AwaitingPadD,
     };
 
     // ---
@@ -261,7 +261,7 @@ private:
 
     [[nodiscard]] static std::optional<DH> pop_dh_pool()
     {
-        auto lock = std::unique_lock(dh_pool_mutex);
+        auto const lock = std::unique_lock(dh_pool_mutex);
 
         if (std::empty(dh_pool)) {
             return {};
@@ -274,7 +274,7 @@ private:
 
     static void push_dh_pool(DH dh)
     {
-        auto lock = std::unique_lock(dh_pool_mutex);
+        auto const lock = std::unique_lock(dh_pool_mutex);
 
         if (std::size(dh_pool) < dh_pool.max_size()) {
             dh_pool.emplace_back(std::move(dh));

@@ -5,8 +5,6 @@
 "Total download rate" = "Samlet downloadrate";
 "Total upload rate" = "Samlet uploadrate";
 "Only when torrents are downloading" = "Kun hvis der hentes";
-"Auto resize:" = "Størrelse:";
-"Automatically size window to fit all torrents" = "Tilpas vinduet automatisk til alle overførsler";
 "Reset" = "Nulstil";
 "Reset all alerts:" = "Nulstil alle advarsler";
 "Automatically check daily" = "Søg automatisk efter opdateringer dagligt";

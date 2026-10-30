@@ -25,3 +25,12 @@ static CGFloat const kFrameInset = 2.0;
 }
 
 @end
+
+@implementation GroupPopUpButton
+
++ (Class)cellClass
+{
+    return [GroupPopUpButtonCell class];
+}
+
+@end

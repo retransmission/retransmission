@@ -331,26 +331,27 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
     return {};
 }
 
-[[nodiscard]] double tr_metadata_download::get_metadata_percent() const noexcept
+[[nodiscard]] uint64_t tr_metadata_download::get_metadata_have() const noexcept
 {
-    if (auto const n = piece_count_; n != 0) {
-        return static_cast<double>(n - std::size(pieces_needed_)) / static_cast<double>(n);
+    auto needed = uint64_t{};
+    for (auto const& node : pieces_needed_) {
+        needed += get_piece_length(node.piece);
     }
 
-    return 0.0;
+    return std::size(metadata_) - needed;
 }
 
-[[nodiscard]] double tr_torrent::get_metadata_percent() const noexcept
+[[nodiscard]] tr::Values::Percent tr_torrent::get_metadata_percent() const noexcept
 {
     if (has_metainfo()) {
-        return 1.0;
+        return { info_dict_size(), info_dict_size() };
     }
 
     if (auto const& m = metadata_download_; m) {
-        return m->get_metadata_percent();
+        return { m->get_metadata_have(), m->get_metadata_size() };
     }
 
-    return 0.0;
+    return {}; // no peer has reported the size yet
 }
 
 // ---

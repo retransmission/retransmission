@@ -111,7 +111,7 @@ void Session::import_session_settings(tr_variant::Map const& settings)
 {
     importing_settings_ = true;
 
-    auto* const embedded = embedded_session_;
+    auto const* const embedded = embedded_session_;
 
     for (auto const& [key, value] : settings) {
         // An embedded session's port comes from the session itself, below:

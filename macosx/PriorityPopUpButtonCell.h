@@ -7,3 +7,6 @@
 @interface PriorityPopUpButtonCell : NSPopUpButtonCell
 
 @end
+
+@interface PriorityPopUpButton : NSPopUpButton
+@end

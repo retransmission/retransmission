@@ -50,7 +50,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
 [[nodiscard]] constexpr std::string_view base62str(uint8_t chr)
 {
     // clang-format off: 90 characters per column
-    auto constexpr Strings = std::array<std::string_view, 256>{
+    auto constexpr Strings = std::to_array<std::string_view>({
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
@@ -76,8 +76,8 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
          "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
-         "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv
-    } ;
+         "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,  "x"sv,
+    });
     // clang-format on
 
     return Strings[chr];
@@ -85,7 +85,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
 
 [[nodiscard]] int strint(char const* pch, int span, int base = 10)
 {
-    auto sv = std::string_view{ pch, static_cast<size_t>(span) };
+    auto const sv = std::string_view{ pch, static_cast<size_t>(span) };
     return tr_num_parse<int>(sv, nullptr, base).value_or(0);
 }
 
@@ -298,7 +298,7 @@ void bits_on_wheels_formatter(char* buf, size_t buflen, std::string_view name, t
 
 constexpr void blizzard_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    buf_append(buf, buflen, name, ' ', static_cast<int>(id[3] + 1), static_cast<int>(id[4]));
+    buf_append(buf, buflen, name, ' ', id[3] + 1, static_cast<int>(id[4]));
 }
 
 constexpr void btpd_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)

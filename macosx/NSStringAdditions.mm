@@ -2,11 +2,107 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/types.h>
-#include <libtransmission/utils.h>
+#include <array>
+#include <cstddef>
+#include <locale>
+#include <string_view>
+#include <type_traits>
+
+#include <fmt/format.h>
+
+#include <libtransmission/string-utils.h>
 
 #import "NSStringAdditions.h"
 #import "NSDataAdditions.h"
+
+namespace
+{
+// Formats localized numbers the way NSNumberFormatter does for the user's region, with its digits and separators.
+// {fmt} hands every "L" field of a number to this facet first.
+// A separator in one `char`, as std::numpunct<char> offers, could not hold French's narrow no-break space
+// or Arabic's decimal separator.
+class RegionFacet final : public fmt::format_facet<std::locale>
+{
+  public:
+    RegionFacet()
+    {
+        for (size_t digits = 0; digits < std::size(formatters_); ++digits) {
+            NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+            formatter.numberStyle = NSNumberFormatterDecimalStyle;
+            formatter.minimumFractionDigits = digits;
+            formatter.maximumFractionDigits = digits;
+            formatters_[digits] = formatter;
+        }
+    }
+
+  protected:
+    [[nodiscard]] bool do_put(fmt::appender out, fmt::loc_value val, fmt::format_specs const& specs) const override
+    {
+        // Returning false leaves the value to {fmt}, which formats it unlocalized.
+        if (specs.width != 0 || specs.sign() != fmt::sign::none || specs.alt()) {
+            return false;
+        }
+
+        return val.visit([&](auto const value) -> bool {
+            using T = std::remove_cv_t<decltype(value)>;
+            auto const type = specs.type();
+
+            if constexpr (std::is_same_v<T, int> || std::is_same_v<T, long long>) {
+                auto const is_decimal = type == fmt::presentation_type::none || type == fmt::presentation_type::dec;
+                return is_decimal && write(out, [formatters_[0] stringFromNumber:@(static_cast<long long>(value))]);
+            } else if constexpr (std::is_same_v<T, unsigned> || std::is_same_v<T, unsigned long long>) {
+                auto const is_decimal = type == fmt::presentation_type::none || type == fmt::presentation_type::dec;
+                return is_decimal && write(out, [formatters_[0] stringFromNumber:@(static_cast<unsigned long long>(value))]);
+            } else if constexpr (std::is_floating_point_v<T>) {
+                auto const precision = specs.precision;
+                if (type != fmt::presentation_type::fixed || precision < 0 || precision >= static_cast<int>(std::size(formatters_))) {
+                    return false;
+                }
+                return write(out, [formatters_[precision] stringFromNumber:@(static_cast<double>(value))]);
+            } else {
+                return false;
+            }
+        });
+    }
+
+  private:
+    static bool write(fmt::appender out, NSString* str)
+    {
+        for (char const* ch = str.UTF8String; ch != nullptr && *ch != '\0'; ++ch) {
+            *out++ = *ch;
+        }
+        return true;
+    }
+
+    // with 0, 1, and 2 fraction digits, the precisions tr::Values formats
+    std::array<NSNumberFormatter*, 3> formatters_;
+};
+
+// The user's region's number format, passed to each tr::Values to_string() and to_whole_string() call.
+// Installing a locale globally can also change the C locale, and AppKit then draws SF Symbols
+// at the wrong size whenever the C locale's decimal separator is a comma.
+std::locale const& regionLocale()
+{
+    static auto const locale = std::locale{ std::locale::classic(), new RegionFacet{} };
+    return locale;
+}
+
+// the region's percent pattern places the sign, e.g. "5%", "5 %", or "%5"
+NSString* withPercentSign(std::string_view const digits)
+{
+    static NSString* prefix;
+    static NSString* suffix;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterPercentStyle;
+        prefix = formatter.positivePrefix;
+        suffix = formatter.positiveSuffix;
+    });
+
+    return [NSString stringWithFormat:@"%@%@%@", prefix, tr_strv_to_utf8_nsstring(digits), suffix];
+}
+} // namespace
 
 @interface NSString (Private)
 
@@ -76,49 +172,19 @@
     return [self stringForSpeedCompact:speed kb:@"K" mb:@"M" gb:@"G"];
 }
 
-+ (NSString*)stringForRatio:(CGFloat)ratio
++ (NSString*)stringForRatio:(tr::Values::Ratio)ratio
 {
-    //N/A is different than libtransmission's
-
-    if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return NSLocalizedString(@"N/A", "No Ratio");
-    }
-
-    if (static_cast<int>(ratio) == TR_RATIO_INF) {
-        return @"\xE2\x88\x9E";
-    }
-
-    if (ratio < 10.0) {
-        return [NSString localizedStringWithFormat:@"%.2f", tr_truncd(ratio, 2)];
-    }
-
-    if (ratio < 100.0) {
-        return [NSString localizedStringWithFormat:@"%.1f", tr_truncd(ratio, 1)];
-    }
-
-    return [NSString localizedStringWithFormat:@"%.0f", tr_truncd(ratio, 0)];
+    return tr_strv_to_utf8_nsstring(ratio.to_string(regionLocale()));
 }
 
-+ (NSString*)percentString:(CGFloat)progress longDecimals:(BOOL)longDecimals
++ (NSString*)percentString:(tr::Values::Percent)progress
 {
-    static NSNumberFormatter* longFormatter;
-    static NSNumberFormatter* shortFormatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        longFormatter = [[NSNumberFormatter alloc] init];
-        longFormatter.numberStyle = NSNumberFormatterPercentStyle;
-        longFormatter.maximumFractionDigits = 2;
-        shortFormatter = [[NSNumberFormatter alloc] init];
-        shortFormatter.numberStyle = NSNumberFormatterPercentStyle;
-        shortFormatter.maximumFractionDigits = 1;
-    });
-    if (progress >= 1.0) {
-        return [shortFormatter stringFromNumber:@(1)];
-    } else if (longDecimals) {
-        return [longFormatter stringFromNumber:@(MIN(progress, 0.9999))];
-    } else {
-        return [shortFormatter stringFromNumber:@(MIN(progress, 0.999))];
-    }
+    return withPercentSign(progress.to_string(regionLocale()));
+}
+
++ (NSString*)wholePercentString:(tr::Values::Percent)progress
+{
+    return withPercentSign(progress.to_whole_string(regionLocale()));
 }
 
 - (NSComparisonResult)compareNumeric:(NSString*)string

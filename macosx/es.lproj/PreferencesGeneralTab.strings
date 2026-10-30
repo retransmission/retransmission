@@ -5,8 +5,6 @@
 "Total download rate" = "Velocidad total de descarga";
 "Total upload rate" = "Velocidad total de subida";
 "Only when torrents are downloading" = "Sólo cuando se esté descargando";
-"Auto resize:" = "Ventana:";
-"Automatically size window to fit all torrents" = "Autoajustar para mostrar todas las tareas";
 "Reset" = "Restaurar";
 "Reset all alerts:" = "Restaurar todos los avisos:";
 "Automatically check daily" = "Comprobar diariamente";

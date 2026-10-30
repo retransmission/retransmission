@@ -105,7 +105,8 @@ FileTreeModel::FileTreeModel(QObject* parent, bool is_editable)
 
 FileTreeModel::~FileTreeModel()
 {
-    clear();
+    clearSubtree(QModelIndex{});
+    assert(std::empty(index_cache_));
 }
 
 void FileTreeModel::setEditable(bool is_editable)

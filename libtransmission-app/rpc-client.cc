@@ -118,7 +118,7 @@ void RpcClient::exec(tr_quark const method, tr_variant::Map args, ResponseFunc o
 void RpcClient::exec(tr_quark const method, tr_variant* args, ResponseFunc on_done)
 {
     if (args != nullptr) {
-        if (auto* const args_map = args->get_if<tr_variant::Map>()) {
+        if (auto const* const args_map = args->get_if<tr_variant::Map>()) {
             exec(method, args_map->clone(), std::move(on_done));
             return;
         }
@@ -141,8 +141,8 @@ void RpcClient::send_embedded_request(tr_variant&& req, ResponseFunc on_done)
 
             // this callback runs on the libtransmission thread; do the parse
             // here and hop the result over to the UI thread.
-            auto shared = std::make_shared<tr_variant>(std::move(response));
-            run_on_ui_thread_([this, generation, shared, on_done = std::move(on_done)]() mutable {
+            auto const shared = std::make_shared<tr_variant>(std::move(response));
+            run_on_ui_thread_([this, generation, shared, on_done = std::move(on_done)] mutable {
                 if (drop_if_stale(generation, on_done)) {
                     return;
                 }
@@ -197,7 +197,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                                did_timeout,
                                did_connect,
                                status,
-                               parsed]() mutable {
+                               parsed] mutable {
                 // A reply from before stop() belongs to the previous server,
                 // so it must not set this server's session id or RPC style.
                 if (drop_if_stale(generation, on_done)) {

@@ -79,7 +79,7 @@ static NSInteger const kMaxPieces = 18 * 18;
 - (void)drawRegularBar:(NSRect)barRect forTorrent:(Torrent*)torrent
 {
     NSRect haveRect, missingRect;
-    NSDivideRect(barRect, &haveRect, &missingRect, round(torrent.progress * NSWidth(barRect)), NSMinXEdge);
+    NSDivideRect(barRect, &haveRect, &missingRect, round(torrent.progress.to_fraction() * NSWidth(barRect)), NSMinXEdge);
 
     if (!NSIsEmptyRect(haveRect)) {
         if (torrent.active) {
@@ -87,7 +87,7 @@ static NSInteger const kMaxPieces = 18 * 18;
                 [ProgressGradients.progressYellowGradient drawInRect:haveRect angle:90];
             } else if (torrent.seeding) {
                 NSRect ratioHaveRect, ratioRemainingRect;
-                NSDivideRect(haveRect, &ratioHaveRect, &ratioRemainingRect, round(torrent.progressStopRatio * NSWidth(haveRect)), NSMinXEdge);
+                NSDivideRect(haveRect, &ratioHaveRect, &ratioRemainingRect, round(torrent.progressStopRatio.to_fraction() * NSWidth(haveRect)), NSMinXEdge);
 
                 [ProgressGradients.progressGreenGradient drawInRect:ratioHaveRect angle:90];
                 [ProgressGradients.progressLightGreenGradient drawInRect:ratioRemainingRect angle:90];
