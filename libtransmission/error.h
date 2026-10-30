@@ -46,6 +46,8 @@ public:
     // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
     [[nodiscard]] bool is_enoent() const noexcept;
     [[nodiscard]] bool is_enospc() const noexcept;
+    // e.g. `EAGAIN` or `EINTR`: nothing happened, so try again
+    [[nodiscard]] bool is_transient() const noexcept;
 
     constexpr void set(code_t code, std::string&& message)
     {
