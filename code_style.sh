@@ -97,7 +97,7 @@ else
   echo "clang-format version is not ${clang_format_version}, skipping C/C++ code formatting checks"
   echo "Here are some ways to install clang-format ${clang_format_version}:"
   echo " - On Debian/Ubuntu, you may install from LLVM's apt repository: https://apt.llvm.org/"
-  echo " - On other platforms, you may install from PyPI: pip install clang-format~=${clang_format_version}.0"
+  echo " - On other platforms, you may install from PyPI: pipx install clang-format~=${clang_format_version}.0"
   echo "Run this script again with '--force' to force the formatting checks"
 fi
 
