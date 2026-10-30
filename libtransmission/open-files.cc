@@ -14,7 +14,6 @@
 
 #include <fmt/format.h>
 
-#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -48,7 +47,7 @@ namespace
 
     tr_logAddDebug(fmt::format("Fast preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!tr_error_is_enospc(local_error.code())) {
+    if (!local_error.is_enospc()) {
         static char constexpr Zero = '\0';
 
         local_error = {};
@@ -87,7 +86,7 @@ namespace
 
     tr_logAddDebug(fmt::format("Full preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!tr_error_is_enospc(local_error.code())) {
+    if (!local_error.is_enospc()) {
         // This fallback writes out the whole file.
         // It runs on FAT and exFAT, which are usually slow external
         // drives, so write in big chunks.
