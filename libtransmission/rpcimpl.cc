@@ -9,6 +9,7 @@
 #include <ctime>
 #include <functional>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <numeric>
 #include <set>
