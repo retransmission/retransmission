@@ -1196,6 +1196,11 @@ TEST_F(FileTest, filePreallocateReadOnly)
     EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, 0, &error));
     EXPECT_EQ(EBADF, error.code()) << error;
 
+    // Sparse tries only fallocate(), so ENOSYS means it wasn't compiled in
+    error = {};
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_EQ(EBADF, error.code()) << error;
+
     tr_sys_file_close(fd);
     tr_sys_path_remove(path);
 }
