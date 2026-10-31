@@ -21,6 +21,7 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -849,6 +850,24 @@ public:
         remove_task(task);
     }
 
+    // ends, as failed connections, the running fetches shutdown needn't wait for
+    void cancel_unfinished_at_shutdown()
+    {
+        auto tasks = std::vector<Task*>{};
+        for (auto& task : running_tasks_) {
+            if (!task.options().finish_at_shutdown) {
+                tasks.push_back(&task);
+            }
+        }
+
+        for (auto* const task : tasks) {
+            tr_logAddTrace(fmt::format("Cancelled fetch of '{}' at shutdown", task->options().url));
+            task->response.status = 0;
+            task->response.did_connect = false;
+            remove_task(*task);
+        }
+    }
+
     void network_changed()
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
@@ -935,6 +954,11 @@ public:
 
             if (std::empty(running_tasks_)) {
                 continue;
+            }
+
+            // before curl starts the queued ones
+            if (deadline_exists()) {
+                cancel_unfinished_at_shutdown();
             }
 
             auto const next_unpause_ms = paused_tasks_upkeep();
