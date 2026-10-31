@@ -2666,7 +2666,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant request, tr_rpc_re
             tr_rpc_idle_done(data, Error::INVALID_REQUEST, "id type must be String, Number, or Null"sv);
             return;
         }
-        data->id.merge(id);
+        data->id = id.clone();
     }
 
     auto const is_notification = is_jsonrpc && !data->id.has_value();
