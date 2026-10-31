@@ -351,13 +351,19 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
     }
 }
 
-void handle_rpc_from_json(struct evhttp_request* req, tr_session* const session, std::string_view const json)
+void handle_rpc_from_json(struct evhttp_request* req, tr_rpc_server const* const server, std::string_view const json)
 {
     tr_rpc_request_exec(
-        session,
+        server->session,
         json,
         // NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
-        [req](tr_variant&& content) {
+        [req, httpd = std::weak_ptr{ server->httpd }](tr_variant&& content) {
+            // freeing the httpd freed req too; stop_server() and this
+            // callback both run on the session thread, so no race
+            if (httpd.expired()) {
+                return;
+            }
+
             if (!content.has_value()) {
                 evhttp_send_reply(req, HTTP_NOCONTENT, "OK", nullptr);
                 return;
@@ -371,13 +377,13 @@ void handle_rpc_from_json(struct evhttp_request* req, tr_session* const session,
         });
 }
 
-void handle_rpc(struct evhttp_request* req, tr_session* session)
+void handle_rpc(struct evhttp_request* req, tr_rpc_server const* const server)
 {
     if (auto const cmd = evhttp_request_get_command(req); cmd == EVHTTP_REQ_POST) {
         auto* const input_buffer = evhttp_request_get_input_buffer(req);
         auto const json = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(input_buffer, -1)),
                                             evbuffer_get_length(input_buffer) };
-        handle_rpc_from_json(req, session, json);
+        handle_rpc_from_json(req, server, json);
         return;
     }
 
@@ -598,7 +604,7 @@ void handle_request(struct evhttp_request* req, void* arg)
     }
 #endif
     else {
-        handle_rpc(req, server->session);
+        handle_rpc(req, server);
     }
 }
 
@@ -758,7 +764,7 @@ void start_server(tr_rpc_server* server)
         // the connection alive indefinitely. Setting timeouts using evhttp_set_timeout or its siblings
         // only partially mitigates the attack. GHSA-hrw7-9gf2-gw65
 
-        server->httpd.reset(httpd);
+        server->httpd.reset(httpd, &evhttp_free);
 
         tr_logAddInfo(fmt::format("Listening for RPC and Web requests on '{address}'", fmt::arg("address", addr_port_str)));
     }
