@@ -510,13 +510,14 @@ namespace
 void append_sanitized_component(std::string_view in, std::string& out, bool os_specific)
 {
 #ifdef _WIN32
-    // remove leading and trailing spaces
-    in = tr_strv_strip(in);
+    // strip surrounding spaces and trailing periods
+    auto const it = std::ranges::find_if_not(in, [](unsigned char ch) { return std::isspace(ch); });
+    in.remove_prefix(std::ranges::distance(std::ranges::begin(in), it));
 
-    // remove trailing periods
-    while (in.ends_with('.')) {
-        in.remove_suffix(1);
-    }
+    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(in), std::ranges::rend(in), [](unsigned char ch) {
+        return ch == '.' || std::isspace(ch);
+    });
+    in.remove_suffix(std::ranges::distance(std::ranges::rbegin(in), rit));
 #endif
 
     // replace reserved filenames with an underscore
