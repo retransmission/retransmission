@@ -23,28 +23,9 @@
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 
-template<>
-[[nodiscard]] std::optional<double> tr_variant::value_if() const noexcept
+std::optional<double> tr_variant::parse_double(std::string_view const str) noexcept
 {
-    switch (index()) {
-    case DoubleIndex:
-        return *get_if<DoubleIndex>();
-
-    case IntIndex:
-        return static_cast<double>(*get_if<IntIndex>());
-
-    case StringIndex:
-    case StringViewIndex:
-        if (auto const sv = value_if<std::string_view>()) {
-            return tr_num_parse<double>(*sv);
-        }
-        break;
-
-    default:
-        break;
-    }
-
-    return {};
+    return tr_num_parse<double>(str);
 }
 
 // ---
