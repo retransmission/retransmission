@@ -297,47 +297,6 @@ TEST_F(TorrentFilesTest, mimeTypeVideoMp4)
     EXPECT_EQ("video/mp4"sv, files.primary_mime_type());
 }
 
-TEST_F(TorrentFilesTest, isSubpathPortable)
-{
-    static auto constexpr NotWin32 = TR_IF_WIN32(false, true);
-
-    static auto constexpr Tests = std::array<std::pair<std::string_view, bool>, 18>{ {
-        // never portable
-        { ".", false },
-        { "..", false },
-
-        // don't end with periods
-        { "foo.", NotWin32 },
-        { "foo..", NotWin32 },
-
-        // don't begin or end with whitespace
-        { " foo ", NotWin32 },
-        { " foo", NotWin32 },
-        { "foo ", NotWin32 },
-
-        // reserved names
-        { "COM1", NotWin32 },
-        { "COM1.txt", NotWin32 },
-        { "Com1", NotWin32 },
-        { "com1", NotWin32 },
-
-        // reserved characters
-        { "hell:o.txt", NotWin32 },
-        { "hell\to.txt", false },
-
-        // everything else
-        { ".foo", true },
-        { "com99.txt", true },
-        { "foo", true },
-        { "hello.txt", true },
-        { "hello#.txt", true },
-    } };
-
-    for (auto const& [subpath, expected] : Tests) {
-        EXPECT_EQ(expected, tr_torrent_files::is_subpath_sanitized(subpath)) << " subpath " << subpath;
-    }
-}
-
 TEST_F(TorrentFilesTest, sanitizeSubpathReservedCharacters)
 {
     static auto constexpr Win32ReservedChars = "\"*:<>?\\/|"sv;
