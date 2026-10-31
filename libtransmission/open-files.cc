@@ -51,10 +51,8 @@ namespace
     if (!tr_error_is_enospc(local_error.code())) {
         local_error = {};
 
-        // Growing the file with truncate is one metadata call. Writing a
-        // byte at the end instead goes through the page cache and, on a
-        // network filesystem, waits for the server to grow the file before
-        // the write can land.
+        // Truncate is one metadata call. The write below dirties a page and,
+        // on a network filesystem, waits for the server to grow the file.
         if (tr_sys_file_truncate(fd, length, &local_error)) {
             return true;
         }
