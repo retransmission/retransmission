@@ -1110,41 +1110,51 @@ void DetailsDialog::Impl::refreshWebseedList(std::vector<tr_torrent*> const& tor
     auto& hash = webseed_hash_;
     auto const& store = webseed_store_;
 
-    static auto constexpr MakeKey = [](tr_torrent const* tor, char const* url) {
+    static auto constexpr MakeKey = [](tr_torrent const* tor, std::string_view url) {
         return fmt::format("{:d}.{:s}", tr_torrentId(tor), url);
     };
 
-    /* step 1: mark all webseeds as not-updated */
+    /* step 1: get all the webseeds */
+    std::vector<std::vector<tr_webseed_stat>> webseeds;
+
+    webseeds.reserve(torrents.size());
+    for (auto const* const torrent : torrents) {
+        webseeds.push_back(tr_torrentWebseeds(torrent));
+    }
+
+    /* step 2: mark all webseeds as not-updated */
     for (auto& row : store->children()) {
         row[webseed_cols.was_updated] = false;
     }
 
-    /* step 2: add any new webseeds */
-    for (auto const* const tor : torrents) {
-        for (size_t j = 0, n = tr_torrentWebseedCount(tor); j < n; ++j) {
+    /* step 3: add any new webseeds */
+    for (size_t i = 0; i < torrents.size(); ++i) {
+        auto const* tor = torrents.at(i);
+
+        for (auto const& webseed : webseeds.at(i)) {
             has_any_webseeds = true;
 
-            auto const* const url = tr_torrentWebseed(tor, j).url;
-            auto const key = MakeKey(tor, url);
+            auto const key = MakeKey(tor, webseed.url);
 
             if (!hash.contains(key)) {
                 auto const iter = store->append();
-                (*iter)[webseed_cols.url] = url;
+                (*iter)[webseed_cols.url] = webseed.url;
                 (*iter)[webseed_cols.key] = key;
                 hash.try_emplace(key, Gtk::TreeRowReference(store, store->get_path(iter)));
             }
         }
     }
 
-    /* step 3: update the webseeds */
-    for (auto const* const tor : torrents) {
-        for (size_t j = 0, n = tr_torrentWebseedCount(tor); j < n; ++j) {
-            auto const webseed = tr_torrentWebseed(tor, j);
+    /* step 4: update the webseeds */
+    for (size_t i = 0; i < torrents.size(); ++i) {
+        auto const* tor = torrents.at(i);
+
+        for (auto const& webseed : webseeds.at(i)) {
             auto const key = MakeKey(tor, webseed.url);
             auto const iter = store->get_iter(hash.at(key).get_path());
 
-            auto const speed = Speed{ webseed.download_bytes_per_second, Speed::Units::Byps };
-            auto const speed_string = webseed.is_downloading ? speed.to_string() : std::string{};
+            auto const speed = webseed.download_speed.value_or(Speed{});
+            auto const speed_string = webseed.download_speed ? speed.to_string() : std::string{};
 
             (*iter)[webseed_cols.download_rate_speed] = speed;
             (*iter)[webseed_cols.download_rate_string] = speed_string;
@@ -1152,7 +1162,7 @@ void DetailsDialog::Impl::refreshWebseedList(std::vector<tr_torrent*> const& tor
         }
     }
 
-    /* step 4: remove webseeds that have disappeared */
+    /* step 5: remove webseeds that have disappeared */
     if (auto iter = store->children().begin(); iter) {
         while (iter) {
             if (iter->get_value(webseed_cols.was_updated)) {

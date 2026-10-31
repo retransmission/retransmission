@@ -8,6 +8,7 @@
 #include <ctime>
 #include <iterator>
 #include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <string_view>
@@ -190,14 +191,16 @@ public:
         return dir == tr_direction::Down ? bandwidth_.get_piece_speed(now, dir) : Speed{};
     }
 
-    [[nodiscard]] tr_webseed_view get_view() const override
+    [[nodiscard]] tr_webseed_stat get_stat() const override
     {
-        auto const is_downloading = !std::empty(tasks);
-        auto const speed = get_piece_speed(tr_time_msec(), tr_direction::Down);
+        auto download_speed = std::optional<Speed>{};
+        if (!std::empty(tasks)) {
+            download_speed = get_piece_speed(tr_time_msec(), tr_direction::Down);
+        }
+
         return {
-            .url = base_url.c_str(),
-            .is_downloading = is_downloading,
-            .download_bytes_per_second = speed.base_quantity(),
+            .url = base_url,
+            .download_speed = download_speed,
         };
     }
 

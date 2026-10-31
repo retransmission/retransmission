@@ -1822,14 +1822,17 @@ uint64_t tr_peerMgrGetDesiredAvailable(tr_torrent const* tor)
     return desired_available;
 }
 
-tr_webseed_view tr_peerMgrWebseed(tr_torrent const* tor, size_t i)
+std::vector<tr_webseed_stat> tr_peerMgrWebseedStats(tr_torrent const* const tor)
 {
     TR_ASSERT(tr_isTorrent(tor));
     TR_ASSERT(tor->swarm != nullptr);
-    size_t const n = std::size(tor->swarm->webseeds);
-    TR_ASSERT(i < n);
 
-    return i >= n ? tr_webseed_view{} : tor->swarm->webseeds[i]->get_view();
+    auto const lock = tor->unique_lock();
+    auto const& webseeds = tor->swarm->webseeds;
+    auto ret = std::vector<tr_webseed_stat>(std::size(webseeds));
+    std::ranges::transform(webseeds, std::data(ret), [](auto const& webseed) { return webseed->get_stat(); });
+
+    return ret;
 }
 
 namespace

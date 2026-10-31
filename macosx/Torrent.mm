@@ -960,18 +960,17 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
 - (NSArray<NSDictionary*>*)webSeeds
 {
-    NSUInteger n = tr_torrentWebseedCount(self.fHandle);
-    NSMutableArray* webSeeds = [NSMutableArray arrayWithCapacity:n];
+    auto const webseeds = tr_torrentWebseeds(self.fHandle);
+    NSMutableArray* webSeeds = [NSMutableArray arrayWithCapacity:webseeds.size()];
 
-    for (NSUInteger i = 0; i < n; ++i) {
-        auto const webseed = tr_torrentWebseed(self.fHandle, i);
+    for (auto const& webseed : webseeds) {
         NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:3];
 
         dict[@"Name"] = self.name;
-        dict[@"Address"] = @(webseed.url);
+        dict[@"Address"] = tr_strv_to_utf8_nsstring(webseed.url);
 
-        if (webseed.is_downloading) {
-            dict[@"DL From Rate"] = @(double(webseed.download_bytes_per_second) / 1000);
+        if (webseed.download_speed) {
+            dict[@"DL From Rate"] = @(webseed.download_speed->count(tr::Values::Speed::Units::KByps));
         }
 
         [webSeeds addObject:dict];

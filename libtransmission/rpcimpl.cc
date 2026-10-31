@@ -509,15 +509,14 @@ namespace make_torrent_field_helpers
 
 [[nodiscard]] auto make_webseed_ex_vec(tr_torrent const& tor)
 {
-    auto const n_webseeds = tor.webseed_count();
+    auto const webseeds = tr_torrentWebseeds(&tor);
     auto vec = tr_variant::Vector{};
-    vec.reserve(n_webseeds);
-    for (size_t idx = 0U; idx != n_webseeds; ++idx) {
-        auto const webseed = tr_torrentWebseed(&tor, idx);
+    vec.reserve(std::size(webseeds));
+    for (auto const& webseed : webseeds) {
         auto webseed_map = tr_variant::Map{ 3U };
         webseed_map.try_emplace(TR_KEY_url, webseed.url);
-        webseed_map.try_emplace(TR_KEY_is_downloading, webseed.is_downloading);
-        webseed_map.try_emplace(TR_KEY_download_bytes_per_second, webseed.download_bytes_per_second);
+        webseed_map.try_emplace(TR_KEY_is_downloading, webseed.download_speed.has_value());
+        webseed_map.try_emplace(TR_KEY_download_bytes_per_second, webseed.download_speed.value_or(Speed{}).base_quantity());
         vec.emplace_back(std::move(webseed_map));
     }
     return tr_variant{ std::move(vec) };

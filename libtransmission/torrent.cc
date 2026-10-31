@@ -1507,13 +1507,6 @@ std::string_view tr_torrentPrimaryMimeType(tr_torrent const* tor)
     return tor->primary_mime_type();
 }
 
-tr_webseed_view tr_torrentWebseed(tr_torrent const* tor, size_t nth)
-{
-    tr_return_val_if_fail(tr_isTorrent(tor), {});
-
-    return tr_peerMgrWebseed(tor, nth);
-}
-
 size_t tr_torrentWebseedCount(tr_torrent const* tor)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), {});
@@ -1568,6 +1561,13 @@ std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* tor)
     tr_return_val_if_fail(tr_isTorrent(tor), {});
 
     return tr_peerMgrPeerStats(tor);
+}
+
+std::vector<tr_webseed_stat> tr_torrentWebseeds(tr_torrent const* const tor)
+{
+    tr_return_val_if_fail(tr_isTorrent(tor), {});
+
+    return tr_peerMgrWebseedStats(tor);
 }
 
 void tr_torrentAvailability(tr_torrent const* tor, std::span<int8_t> const tab)

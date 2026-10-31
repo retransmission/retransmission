@@ -695,14 +695,9 @@ struct tr_tracker_view {
 };
 // NOLINTEND(modernize-avoid-c-arrays)
 
-/*
- * This view structure is intended for short-term use. Its pointers are owned
- * by the torrent and may be invalidated if the torrent is edited or removed.
- */
-struct tr_webseed_view {
-    char const* url = ""; // the url to download from
-    bool is_downloading = {}; // can be true even if speed is 0, e.g. slow download
-    uint64_t download_bytes_per_second = {}; // current download speed
+struct tr_webseed_stat {
+    std::string url; // the url to download from
+    std::optional<tr::Values::Speed> download_speed; // empty unless downloading; can be 0, e.g. slow download
 };
 
 struct tr_blocklist_update_result {

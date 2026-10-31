@@ -455,9 +455,9 @@ Files are returned in the order they are laid out in the torrent. References to 
 
 | Key | Value Type | transmission.h source
 |:--|:--|:--
-| `url` | string | tr_webseed_view
-| `is_downloading` | boolean | tr_webseed_view
-| `download_bytes_per_second` | number | tr_webseed_view
+| `url` | string | tr_webseed_stat
+| `is_downloading` | boolean | tr_webseed_stat
+| `download_bytes_per_second` | number | tr_webseed_stat
 
 `wanted`: An array of `tr_torrentFileCount()` booleans, true if the corresponding file is to be downloaded. (Source: `tr_file_view`)
 

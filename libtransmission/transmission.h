@@ -840,6 +840,8 @@ void tr_torrentManualUpdate(tr_torrent* torrent);
 
 [[nodiscard]] std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* torrent);
 
+[[nodiscard]] std::vector<tr_webseed_stat> tr_torrentWebseeds(tr_torrent const* torrent);
+
 // --- tr_tracker_stat
 
 [[nodiscard]] struct tr_tracker_view tr_torrentTracker(tr_torrent const* torrent, size_t i);
@@ -858,8 +860,6 @@ void tr_torrentManualUpdate(tr_torrent* torrent);
 [[nodiscard]] size_t tr_torrentFileCount(tr_torrent const* torrent);
 
 [[nodiscard]] std::string_view tr_torrentPrimaryMimeType(tr_torrent const* torrent);
-
-[[nodiscard]] struct tr_webseed_view tr_torrentWebseed(tr_torrent const* torrent, size_t nth);
 
 [[nodiscard]] size_t tr_torrentWebseedCount(tr_torrent const* torrent);
 

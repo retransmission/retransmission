@@ -111,7 +111,7 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     EXPECT_EQ(0, tr_torrentFileCount(nullptr));
     ++expected_log_size;
 
-    (void)tr_torrentWebseed(nullptr, 0);
+    EXPECT_TRUE(std::empty(tr_torrentWebseeds(nullptr)));
     ++expected_log_size;
 
     EXPECT_EQ(0, tr_torrentWebseedCount(nullptr));

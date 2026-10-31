@@ -707,7 +707,7 @@ void tr_peerMgrTorrentAvailability(tr_torrent const* tor, std::span<int8_t> tab)
 
 [[nodiscard]] std::vector<tr_peer_stat> tr_peerMgrPeerStats(tr_torrent const* tor);
 
-[[nodiscard]] tr_webseed_view tr_peerMgrWebseed(tr_torrent const* tor, size_t i);
+[[nodiscard]] std::vector<tr_webseed_stat> tr_peerMgrWebseedStats(tr_torrent const* tor);
 
 // BEP 55: Holepunch extension relay.
 // Called when a connected peer sends us a rendezvous message.

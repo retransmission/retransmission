@@ -31,5 +31,5 @@ public:
         tr_peer_callback_webseed callback,
         void* callback_data);
 
-    [[nodiscard]] virtual tr_webseed_view get_view() const = 0;
+    [[nodiscard]] virtual tr_webseed_stat get_stat() const = 0;
 };
