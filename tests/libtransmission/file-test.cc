@@ -206,7 +206,7 @@ TEST_F(FileTest, getInfo)
     ASSERT_TRUE(info.has_value());
     EXPECT_FALSE(err) << err;
     EXPECT_EQ(TR_SYS_PATH_IS_DIRECTORY, info->type);
-    EXPECT_NE(uint64_t(-1), info->size);
+    EXPECT_EQ(0U, info->size);
     EXPECT_GE(info->last_modified_at, t - 1);
     EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
     tr_sys_path_remove(path1);
@@ -235,6 +235,7 @@ TEST_F(FileTest, getInfo)
         ASSERT_TRUE(info.has_value());
         EXPECT_FALSE(err) << err;
         EXPECT_EQ(TR_SYS_PATH_IS_OTHER, info->type);
+        EXPECT_EQ(0U, info->size);
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
@@ -247,7 +248,7 @@ TEST_F(FileTest, getInfo)
         ASSERT_TRUE(info.has_value());
         EXPECT_FALSE(err) << err;
         EXPECT_EQ(TR_SYS_PATH_IS_DIRECTORY, info->type);
-        EXPECT_NE(uint64_t(-1), info->size);
+        EXPECT_EQ(0U, info->size);
         EXPECT_GE(info->last_modified_at, t - 1);
         EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
 
@@ -256,6 +257,7 @@ TEST_F(FileTest, getInfo)
         ASSERT_TRUE(info.has_value());
         EXPECT_FALSE(err) << err;
         EXPECT_EQ(TR_SYS_PATH_IS_OTHER, info->type);
+        EXPECT_EQ(0U, info->size);
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
