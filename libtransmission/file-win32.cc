@@ -273,6 +273,23 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
     set_system_error(error, GetLastError());
     return {};
 }
+
+// Symlinks and junctions are links; other reparse points, such as
+// cloud-file placeholders, are not. An unreadable tag counts as a link,
+// so a junction is never followed.
+[[nodiscard]] bool is_link_reparse_point(wchar_t const* const wide_path)
+{
+    auto data = WIN32_FIND_DATAW{};
+    auto const find = FindFirstFileW(wide_path, &data);
+    if (find == INVALID_HANDLE_VALUE) {
+        return true;
+    }
+
+    FindClose(find);
+
+    // dwReserved0 holds the reparse tag
+    return data.dwReserved0 == IO_REPARSE_TAG_SYMLINK || data.dwReserved0 == IO_REPARSE_TAG_MOUNT_POINT;
+}
 } // namespace
 
 std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path, int const flags, tr_error* const error)
@@ -294,9 +311,9 @@ std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path
             attributes.nFileSizeHigh,
             attributes.ftLastWriteTime);
 
-        // Every reparse point counts as a link, as lstat() reports a symlink,
+        // A link reads as OTHER, as lstat() reports a symlink,
         // so a junction never reads as a folder.
-        if (is_reparse_point) {
+        if (is_reparse_point && is_link_reparse_point(wide_path.c_str())) {
             info.type = TR_SYS_PATH_IS_OTHER;
         }
 
