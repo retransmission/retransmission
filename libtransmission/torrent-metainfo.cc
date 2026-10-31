@@ -98,10 +98,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
                 return false;
             }
 
-            if (!std::empty(file_subpath_)) {
-                file_subpath_ += '/';
-            }
-            tr_torrent_files::sanitize_subpath(tr_strv_to_utf8_string(*path_element), file_subpath_);
+            addSubpath(*path_element);
         } else if (pathIs(InfoKey)) {
             info_dict_begin_ = context.raw();
             tm_.info_dict_offset_ = context.tokenSpan().first;
@@ -251,11 +248,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
             }
         } else if (state_ == State::Files) {
             if (curdepth > 1 && (key(curdepth - 1) == PathKey || key(curdepth - 1) == PathUtf8Key)) {
-                if (!std::empty(file_subpath_)) {
-                    file_subpath_ += '/';
-                }
-                // BEP-3 says strings are UTF-8, so mask non-conformant path strings
-                tr_torrent_files::sanitize_subpath(tr_strv_to_utf8_string(value), file_subpath_);
+                addSubpath(value);
             } else if (current_key == AttrKey) {
                 // currently unused. TODO support for BEP0047
                 // TODO https://github.com/transmission/transmission/issues/3387
@@ -364,6 +357,19 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
     }
 
 private:
+    void addSubpath(std::string_view const subpath)
+    {
+        if (!std::empty(file_subpath_)) {
+            file_subpath_ += '/';
+        }
+        // BEP-3 and BEP-52 says strings are UTF-8, so mask non-conformant path strings
+        tr_torrent_files::sanitize_subpath(tr_strv_to_utf8_string(subpath), file_subpath_);
+        if (file_subpath_.ends_with('/')) {
+            // don't add path separator if this subpath is empty
+            file_subpath_.resize(file_subpath_.size() - 1U);
+        }
+    }
+
     [[nodiscard]] bool addFile(Context const& context)
     {
         bool ok = true;

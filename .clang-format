@@ -28,6 +28,11 @@ BreakBeforeCloseBracketIf: false
 BreakBeforeCloseBracketLoop: false
 BreakBeforeCloseBracketSwitch: false
 BreakBeforeTernaryOperators: false
+BreakBinaryOperations:
+  Default: Never
+  PerOperator:
+    - Operators: ['|']
+      Style: OnePerLine
 BreakStringLiterals: false
 ColumnLimit: 128
 ContinuationIndentWidth: 4
@@ -74,6 +79,7 @@ SpaceAfterTemplateKeyword: false
 ---
 Language: ObjC
 
+BreakBinaryOperations: Never
 ObjCBlockIndentWidth: 4
 ObjCBreakBeforeNestedBlockParam: false
 ObjCSpaceBeforeProtocolList: false

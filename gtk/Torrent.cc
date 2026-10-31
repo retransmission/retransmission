@@ -330,15 +330,33 @@ void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
         { Property::PERCENT_DONE, ChangeFlag::PERCENT_DONE },
         { Property::PERCENT_DONE_TEXT, ChangeFlag::PERCENT_DONE },
         { Property::SHORT_STATUS,
-          ChangeFlag::ACTIVE_PEERS_DOWN | ChangeFlag::ACTIVE_PEERS_UP | ChangeFlag::ACTIVITY | ChangeFlag::FINISHED |
-              ChangeFlag::RATIO | ChangeFlag::RECHECK_PROGRESS | ChangeFlag::SPEED_DOWN | ChangeFlag::SPEED_UP },
+          ChangeFlag::ACTIVE_PEERS_DOWN |
+              ChangeFlag::ACTIVE_PEERS_UP |
+              ChangeFlag::ACTIVITY |
+              ChangeFlag::FINISHED |
+              ChangeFlag::RATIO |
+              ChangeFlag::RECHECK_PROGRESS |
+              ChangeFlag::SPEED_DOWN |
+              ChangeFlag::SPEED_UP },
         { Property::LONG_PROGRESS,
-          ChangeFlag::ACTIVITY | ChangeFlag::ETA | ChangeFlag::LONG_PROGRESS | ChangeFlag::PERCENT_COMPLETE |
-              ChangeFlag::PERCENT_DONE | ChangeFlag::RATIO | ChangeFlag::TOTAL_SIZE },
+          ChangeFlag::ACTIVITY |
+              ChangeFlag::ETA |
+              ChangeFlag::LONG_PROGRESS |
+              ChangeFlag::PERCENT_COMPLETE |
+              ChangeFlag::PERCENT_DONE |
+              ChangeFlag::RATIO |
+              ChangeFlag::TOTAL_SIZE },
         { Property::LONG_STATUS,
-          ChangeFlag::ACTIVE_PEERS_DOWN | ChangeFlag::ACTIVE_PEERS_UP | ChangeFlag::ACTIVITY | ChangeFlag::ERROR_CODE |
-              ChangeFlag::ERROR_MESSAGE | ChangeFlag::HAS_METADATA | ChangeFlag::LONG_STATUS | ChangeFlag::SPEED_DOWN |
-              ChangeFlag::SPEED_UP | ChangeFlag::STALLED },
+          ChangeFlag::ACTIVE_PEERS_DOWN |
+              ChangeFlag::ACTIVE_PEERS_UP |
+              ChangeFlag::ACTIVITY |
+              ChangeFlag::ERROR_CODE |
+              ChangeFlag::ERROR_MESSAGE |
+              ChangeFlag::HAS_METADATA |
+              ChangeFlag::LONG_STATUS |
+              ChangeFlag::SPEED_DOWN |
+              ChangeFlag::SPEED_UP |
+              ChangeFlag::STALLED },
         { Property::SENSITIVE, ChangeFlag::ACTIVITY },
         { Property::CSS_CLASSES, ChangeFlag::ACTIVITY | ChangeFlag::ERROR_CODE },
     });
