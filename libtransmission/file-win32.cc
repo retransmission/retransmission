@@ -30,7 +30,7 @@ namespace
 {
 auto constexpr NativeLocalPathPrefix = L"\\\\?\\"sv;
 auto constexpr NativeUncPathPrefix = L"\\\\?\\UNC\\"sv;
-auto constexpr DeltaEpochInMicrosecs = UINT64_C(11644473600000000);
+auto constexpr DeltaEpochInSecs = INT64_C(11644473600);
 
 void set_system_error(tr_error* error, DWORD code)
 {
@@ -42,14 +42,9 @@ void set_system_error(tr_error* error, DWORD code)
 
 [[nodiscard]] constexpr time_t filetime_to_unix_time(FILETIME const& t) noexcept
 {
-    uint64_t tmp = 0;
-    tmp |= t.dwHighDateTime;
-    tmp <<= 32;
-    tmp |= t.dwLowDateTime;
-    tmp /= 10; /* to microseconds */
-    tmp -= DeltaEpochInMicrosecs;
-
-    return tmp / 1000000UL;
+    // FILETIME counts 100 ns ticks since 1601, so pre-1970 times are negative
+    auto const ticks = static_cast<int64_t>((uint64_t{ t.dwHighDateTime } << 32U) | t.dwLowDateTime);
+    return ticks / 10'000'000 - DeltaEpochInSecs;
 }
 
 constexpr bool to_bool(BOOL value) noexcept
