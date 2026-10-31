@@ -351,7 +351,6 @@ set(BASE_XIB_FILES
     AddWindow.xib
     Creator.xib
     GroupRules.xib
-    InfoActivityView.xib
     InfoOptionsView.xib
     PrefsWindow.xib)
 list(TRANSFORM BASE_XIB_FILES
@@ -361,6 +360,7 @@ set(LANG_STRINGS_FILES
     AddMagnetWindow.strings
     AppMenu.strings
     GlobalOptionsPopover.strings
+    InfoActivityView.strings
     InfoGeneralView.strings
     InfoPlist.strings
     Localizable.strings
