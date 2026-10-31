@@ -206,9 +206,7 @@ std::string tr_variant_serde::to_string(tr_variant const& var) const
 
 bool tr_variant_serde::to_file(tr_variant const& var, std::string_view filename)
 {
-    tr_file_save(filename, to_string(var), &error_);
-
-    if (error_) {
+    if (!tr_file_save(filename, to_string(var), &error_)) {
         tr_logAddError(
             fmt::format(
                 "Couldn't save '{path}': {error} ({error_code})",
