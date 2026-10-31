@@ -639,10 +639,10 @@ namespace
 {
 namespace preallocate_helpers
 {
-#ifdef HAVE_FALLOCATE64
-[[nodiscard]] bool preallocate_fallocate64(tr_sys_file_t handle, uint64_t size)
+#ifdef HAVE_FALLOCATE
+[[nodiscard]] bool preallocate_fallocate(tr_sys_file_t const handle, uint64_t const size) noexcept
 {
-    return fallocate64(handle, 0, 0, static_cast<off64_t>(size)) == 0;
+    return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0;
 }
 #endif
 
@@ -686,8 +686,8 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
 
     // these approaches are fast and should be tried first
     auto approaches = std::vector<prealloc_func>{
-#ifdef HAVE_FALLOCATE64
-        preallocate_fallocate64
+#ifdef HAVE_FALLOCATE
+        preallocate_fallocate
 #endif
     };
 
