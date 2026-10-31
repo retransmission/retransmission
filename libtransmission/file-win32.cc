@@ -44,7 +44,7 @@ void set_system_error(tr_error* error, DWORD code)
 {
     // FILETIME counts 100 ns ticks since 1601, so pre-1970 times are negative
     auto const ticks = static_cast<int64_t>((uint64_t{ t.dwHighDateTime } << 32U) | t.dwLowDateTime);
-    return ticks / 10'000'000 - DeltaEpochInSecs;
+    return (ticks / 10'000'000) - DeltaEpochInSecs;
 }
 
 constexpr bool to_bool(BOOL value) noexcept
