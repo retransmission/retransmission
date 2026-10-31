@@ -341,7 +341,10 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) BOOL fGlobalPopoverShown;
 @property(nonatomic) NSView* fPositioningView;
 
+@property(nonatomic) BOOL fQueueOrderRefreshPending;
+
 - (void)removeTorrentsImpl:(NSArray<Torrent*>*)torrents deleteData:(BOOL)deleteData;
+- (void)sortTorrentsByQueuePosition;
 
 @end
 
@@ -881,6 +884,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [self.fTorrents addObject:torrent];
         self.fTorrentHashes[torrent.hashString] = torrent;
     }
+    [self sortTorrentsByQueuePosition];
 
     //update previous transfers state by recreating a torrent from history
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
@@ -2393,8 +2397,13 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [torrents addObject:[addController torrent]];
     }
 
+    auto const updateTorrentResult = [Torrent updateTorrents:torrents fromStats:std::move(stats)];
+    if (updateTorrentResult & UpdateTorrentsQueuePositionChanged) {
+        [self sortTorrentsByQueuePosition];
+        self.fQueueOrderRefreshPending = YES;
+    }
     // the "active" filter depends on `transmitting`
-    if ([Torrent updateTorrents:torrents fromStats:std::move(stats)]) {
+    if (updateTorrentResult & UpdateTorrentsTransmittingChanged) {
         [self applyFilter];
     }
 
@@ -2414,7 +2423,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     if (!NSApp.hidden) {
         if (self.fWindow.visible) {
-            [self sortTorrentsAndIncludeQueueOrder:NO];
+            [self sortTorrentsAndIncludeQueueOrder:self.fQueueOrderRefreshPending];
+            self.fQueueOrderRefreshPending = NO;
 
             [self.fStatusBar updateWithDownload:dlRate upload:ulRate];
 
@@ -4987,13 +4997,13 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)rpcUpdateQueue
 {
-    [self requestStats:^{
-        NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"queuePosition" ascending:YES];
-        NSArray* descriptors = @[ descriptor ];
-        [self.fTorrents sortUsingDescriptors:descriptors];
+    [self requestStats:nil];
+}
 
-        [self sortTorrentsAndIncludeQueueOrder:YES];
-    }];
+- (void)sortTorrentsByQueuePosition
+{
+    NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"queuePosition" ascending:YES];
+    [self.fTorrents sortUsingDescriptors:@[ descriptor ]];
 }
 
 @end
