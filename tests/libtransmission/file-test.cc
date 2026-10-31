@@ -251,6 +251,12 @@ TEST_F(FileTest, getInfo)
         EXPECT_GE(info->last_modified_at, t - 1);
         EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
 
+        // Symlink
+        info = tr_sys_path_get_info(path1, TR_SYS_PATH_NO_FOLLOW, &err);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_FALSE(err) << err;
+        EXPECT_EQ(TR_SYS_PATH_IS_OTHER, info->type);
+
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
     } else {

@@ -1027,8 +1027,9 @@ void tr_torrent::init(tr_torrent_builder const& builder)
     auto const file_path = store_file();
 
     // if we don't have a local .torrent or .magnet file already,
-    // assume the torrent is new
-    bool const is_new_torrent = !tr_sys_path_exists(file_path);
+    // assume the torrent is new.
+    // A builder that read the stored file has already shown that it exists.
+    bool const is_new_torrent = builder.source_filename() != file_path && !tr_sys_path_exists(file_path);
 
     if (is_new_torrent) {
         session->add_recent_download_dir(download_dir_.sv());

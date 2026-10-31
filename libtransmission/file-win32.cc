@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <cctype> // for isalpha()
 #include <cstring>
+#include <ctime>
 #include <iterator> // for std::back_inserter
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -28,6 +30,7 @@ namespace
 {
 auto constexpr NativeLocalPathPrefix = L"\\\\?\\"sv;
 auto constexpr NativeUncPathPrefix = L"\\\\?\\UNC\\"sv;
+auto constexpr DeltaEpochInMicrosecs = UINT64_C(11644473600000000);
 
 void set_system_error(tr_error* error, DWORD code)
 {
@@ -37,9 +40,46 @@ void set_system_error(tr_error* error, DWORD code)
     }
 }
 
+[[nodiscard]] constexpr time_t filetime_to_unix_time(FILETIME const& t) noexcept
+{
+    uint64_t tmp = 0;
+    tmp |= t.dwHighDateTime;
+    tmp <<= 32;
+    tmp |= t.dwLowDateTime;
+    tmp /= 10; /* to microseconds */
+    tmp -= DeltaEpochInMicrosecs;
+
+    return tmp / 1000000UL;
+}
+
 constexpr bool to_bool(BOOL value) noexcept
 {
     return value != FALSE;
+}
+
+[[nodiscard]] constexpr auto stat_to_sys_path_info(
+    DWORD const attributes,
+    DWORD const size_low,
+    DWORD const size_high,
+    FILETIME const& mtime) noexcept
+{
+    auto info = tr_sys_path_info{};
+
+    if ((attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+        info.type = TR_SYS_PATH_IS_DIRECTORY;
+    } else if ((attributes & (FILE_ATTRIBUTE_DEVICE | FILE_ATTRIBUTE_VIRTUAL)) == 0) {
+        info.type = TR_SYS_PATH_IS_FILE;
+    } else {
+        info.type = TR_SYS_PATH_IS_OTHER;
+    }
+
+    info.size = size_high;
+    info.size <<= 32;
+    info.size |= size_low;
+
+    info.last_modified_at = filetime_to_unix_time(mtime);
+
+    return info;
 }
 
 auto constexpr Slashes = R"(\/)"sv;
@@ -222,7 +262,63 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
     }
 }
 
+[[nodiscard]] std::optional<tr_sys_path_info> tr_sys_file_get_info_(tr_sys_file_t const handle, tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+
+    auto attributes = BY_HANDLE_FILE_INFORMATION{};
+    if (to_bool(GetFileInformationByHandle(handle, &attributes))) {
+        return stat_to_sys_path_info(
+            attributes.dwFileAttributes,
+            attributes.nFileSizeLow,
+            attributes.nFileSizeHigh,
+            attributes.ftLastWriteTime);
+    }
+
+    set_system_error(error, GetLastError());
+    return {};
+}
 } // namespace
+
+std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path, int const flags, tr_error* const error)
+{
+    auto const wide_path = path_to_native_path(path);
+
+    auto attributes = WIN32_FILE_ATTRIBUTE_DATA{};
+    if (std::empty(wide_path) || !to_bool(GetFileAttributesExW(wide_path.c_str(), GetFileExInfoStandard, &attributes))) {
+        set_system_error(error, GetLastError());
+        return {};
+    }
+
+    auto const is_reparse_point = (attributes.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0;
+
+    if (!is_reparse_point || (flags & TR_SYS_PATH_NO_FOLLOW) != 0) {
+        auto info = stat_to_sys_path_info(
+            attributes.dwFileAttributes,
+            attributes.nFileSizeLow,
+            attributes.nFileSizeHigh,
+            attributes.ftLastWriteTime);
+
+        // Every reparse point counts as a link, as lstat() reports a symlink,
+        // so a junction never reads as a folder.
+        if (is_reparse_point) {
+            info.type = TR_SYS_PATH_IS_OTHER;
+        }
+
+        return info;
+    }
+
+    // Opening a link opens its target.
+    if (auto const handle = CreateFileW(wide_path.c_str(), 0, 0, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+        handle != INVALID_HANDLE_VALUE) {
+        auto ret = tr_sys_file_get_info_(handle, error);
+        CloseHandle(handle);
+        return ret;
+    }
+
+    set_system_error(error, GetLastError());
+    return {};
+}
 
 std::string_view tr_sys_path_basename(std::string_view path, tr_error* error)
 {
