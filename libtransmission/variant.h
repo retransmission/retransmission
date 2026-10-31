@@ -63,22 +63,12 @@ public:
             return std::cbegin(vec_);
         }
 
-        [[nodiscard]] constexpr auto cbegin() const noexcept
-        {
-            return std::cbegin(vec_);
-        }
-
         [[nodiscard]] constexpr auto end() noexcept
         {
             return std::end(vec_);
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
-        {
-            return std::cend(vec_);
-        }
-
-        [[nodiscard]] constexpr auto cend() const noexcept
         {
             return std::cend(vec_);
         }
@@ -299,23 +289,7 @@ public:
     template<typename Val>
     [[nodiscard]] constexpr auto const* get_if() const noexcept
     {
-        static_assert(
-            !std::is_same_v<std::remove_cvref_t<Val>, std::string> &&
-                !std::is_same_v<std::remove_cvref_t<Val>, std::string_view>,
-            "not supported -- use value_if<std::string_view>() instead.");
         return const_cast<tr_variant*>(this)->get_if<Val>();
-    }
-
-    template<size_t Index>
-    [[nodiscard]] constexpr auto* get_if() noexcept
-    {
-        return std::get_if<Index>(&val_);
-    }
-
-    template<size_t Index>
-    [[nodiscard]] constexpr auto const* get_if() const noexcept
-    {
-        return const_cast<tr_variant*>(this)->get_if<Index>();
     }
 
     template<typename Val>
