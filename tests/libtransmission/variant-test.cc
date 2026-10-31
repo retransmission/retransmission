@@ -641,6 +641,14 @@ TEST_F(VariantTest, cloneCopiesEveryType)
     }
 }
 
+TEST_F(VariantTest, cloneCopiesVectorValues)
+{
+    auto serde = tr_variant_serde::json();
+    serde.compact();
+    auto const src = serde.parse(R"([{"a":1},"x"])"sv).value_or(tr_variant{});
+    EXPECT_EQ(R"([{"a":1},"x"])"sv, serde.to_string(src.clone()));
+}
+
 TEST_F(VariantTest, stackSmashBenc)
 {
     // set up a nested list of list of lists.
