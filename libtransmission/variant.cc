@@ -3,15 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <cstddef>
-#include <cstdint>
 #include <iterator>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
-#include <variant>
 #include <vector>
 
 #include <fmt/format.h>
@@ -25,95 +22,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
-
-namespace
-{
-void merge_variant(tr_variant& dest, tr_variant const& src);
-void merge_variant(tr_variant& dest, tr_variant&& src);
-
-void merge_map(tr_variant::Map& dest, tr_variant::Map const& src)
-{
-    dest.reserve(std::size(dest) + std::size(src));
-    for (auto const& [key, child] : src) {
-        if (!dest.contains(key)) {
-            dest.try_emplace(key, child.clone());
-        }
-    }
-}
-
-void merge_map(tr_variant::Map& dest, tr_variant::Map&& src)
-{
-    dest.reserve(std::size(dest) + std::size(src));
-    for (auto& [key, child] : std::move(src)) {
-        if (!dest.contains(key)) {
-            dest.try_emplace(key, std::move(child));
-        }
-    }
-}
-
-template<bool MoveSrc>
-void merge_variant_impl(tr_variant& dest, std::conditional_t<MoveSrc, tr_variant&, tr_variant const&> src)
-{
-    src.visit([&dest](auto& value) {
-        using ValueType = std::remove_cvref_t<decltype(value)>;
-
-        if constexpr (
-            std::is_same_v<ValueType, std::monostate> || std::is_same_v<ValueType, std::nullptr_t> ||
-            std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, int64_t> || std::is_same_v<ValueType, double>) {
-            dest = value;
-        } else if constexpr (std::is_same_v<ValueType, std::string>) {
-            if constexpr (MoveSrc) {
-                dest = std::move(value);
-            } else {
-                // std::string assignment via std::string_view materializes into an owned string.
-                dest = std::string_view{ value };
-            }
-        } else if constexpr (std::is_same_v<ValueType, std::string_view>) {
-            // std::string_view assignment is materialized into an owned string.
-            dest = std::string_view{ value };
-        } else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>) {
-            dest = tr_variant::Vector{};
-
-            if (auto* out = dest.get_if<tr_variant::VectorIndex>(); out != nullptr) {
-                out->resize(std::size(value));
-
-                for (size_t i = 0; i < std::size(value); ++i) {
-                    if constexpr (MoveSrc) {
-                        merge_variant((*out)[i], std::move(value[i]));
-                    } else {
-                        merge_variant((*out)[i], value[i]);
-                    }
-                }
-            }
-        } else if constexpr (std::is_same_v<ValueType, tr_variant::Map>) {
-            if (!dest.holds_alternative<tr_variant::Map>()) {
-                dest = tr_variant::Map{};
-            }
-
-            if (auto* out = dest.get_if<tr_variant::MapIndex>(); out != nullptr) {
-                if constexpr (MoveSrc) {
-                    merge_map(*out, std::move(value));
-                } else {
-                    merge_map(*out, value);
-                }
-            }
-        }
-    });
-}
-
-void merge_variant(tr_variant& dest, tr_variant const& src)
-{
-    merge_variant_impl<false>(dest, src);
-}
-
-void merge_variant(tr_variant& dest, tr_variant&& src)
-{
-    auto moved_src = std::move(src);
-    merge_variant_impl<true>(dest, moved_src);
-}
-} // namespace
-
-// ---
 
 template<>
 [[nodiscard]] std::optional<double> tr_variant::value_if() const noexcept
@@ -143,39 +51,51 @@ template<>
 
 tr_variant tr_variant::clone() const
 {
-    auto ret = tr_variant{};
-    ret.merge(*this);
-    return ret;
+    return visit([](auto const& val) -> tr_variant {
+        using ValueType = std::remove_cvref_t<decltype(val)>;
+
+        if constexpr (std::is_same_v<ValueType, Vector>) {
+            auto vec = Vector{};
+            vec.reserve(std::size(val));
+            for (auto const& child : val) {
+                vec.emplace_back(child.clone());
+            }
+            return vec;
+        } else if constexpr (std::is_same_v<ValueType, Map>) {
+            return val.clone();
+        } else {
+            // operator=() copies a std::string_view into an owned std::string
+            return val;
+        }
+    });
 }
 
 tr_variant::Map tr_variant::Map::clone() const
 {
-    auto ret = tr_variant::Map{};
-    ret.merge(*this);
+    auto ret = Map{ size() };
+    for (auto const& [key, child] : vec_) {
+        ret.vec_.emplace_back(key, child.clone());
+    }
     return ret;
 }
 
 tr_variant::Map& tr_variant::Map::merge(Map const& that)
 {
-    merge_map(*this, that);
+    reserve(size() + that.size());
+    for (auto const& [key, child] : that) {
+        if (!contains(key)) {
+            vec_.emplace_back(key, child.clone());
+        }
+    }
     return *this;
 }
 
 tr_variant::Map& tr_variant::Map::merge(Map&& that)
 {
-    merge_map(*this, std::move(that));
-    return *this;
-}
-
-tr_variant& tr_variant::merge(tr_variant const& that)
-{
-    merge_variant(*this, that);
-    return *this;
-}
-
-tr_variant& tr_variant::merge(tr_variant&& that)
-{
-    merge_variant(*this, std::move(that));
+    reserve(size() + that.size());
+    for (auto& [key, child] : std::move(that)) {
+        try_emplace(key, std::move(child));
+    }
     return *this;
 }
 
