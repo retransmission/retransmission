@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <cstddef> // size_t
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -91,6 +92,21 @@ TEST_F(TorrentMetainfoTest, bucket)
     for (auto const& [benc, expected_parse_result] : Tests) {
         auto metainfo = tr_torrent_metainfo{};
         EXPECT_EQ(expected_parse_result, metainfo.parse_benc(benc)) << "Benc: " << benc;
+    }
+}
+
+TEST_F(TorrentMetainfoTest, sanitizesPathElements)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { BEFORE_PATH "7:a/a.txt" AFTER_PATH, "foo/a_a.txt"sv },
+        { BEFORE_PATH "1:a0:5:b.txt" AFTER_PATH, "foo/a/b.txt"sv },
+        { BEFORE_PATH "5:a.txt0:" AFTER_PATH, "foo/a.txt"sv },
+    });
+
+    for (auto const& [benc, expected] : Tests) {
+        auto tm = tr_torrent_metainfo{};
+        ASSERT_TRUE(tm.parse_benc(benc)) << benc;
+        EXPECT_EQ(expected, tm.file_subpath(0)) << benc;
     }
 }
 
