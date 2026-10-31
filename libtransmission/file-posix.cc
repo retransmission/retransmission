@@ -131,15 +131,17 @@ std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path
 
     auto info = tr_sys_path_info{};
 
+    // Only a regular file has a size: a folder's st_size varies by
+    // filesystem, and a symlink's is the length of its target's path.
     if (S_ISREG(sb.st_mode)) {
         info.type = TR_SYS_PATH_IS_FILE;
+        info.size = static_cast<uint64_t>(sb.st_size);
     } else if (S_ISDIR(sb.st_mode)) {
         info.type = TR_SYS_PATH_IS_DIRECTORY;
     } else {
         info.type = TR_SYS_PATH_IS_OTHER;
     }
 
-    info.size = static_cast<uint64_t>(sb.st_size);
     info.last_modified_at = sb.st_mtime;
 
     return info;
