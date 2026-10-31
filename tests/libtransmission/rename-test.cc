@@ -108,12 +108,12 @@ protected:
         EXPECT_EQ(0, stats.have_valid);
     }
 
-    [[nodiscard]] static int torrentRenameAndWait(
+    [[nodiscard]] static tr_error::code_t torrentRenameAndWait(
         tr_torrent* tor,
         std::string_view const oldpath,
         std::string_view const newname)
     {
-        int error = -1;
+        auto error = tr_error::code_t{ -1 };
         tr_torrentRenamePath(
             tor,
             oldpath,

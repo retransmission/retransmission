@@ -11,7 +11,6 @@
 
 #define LIBTRANSMISSION_WATCHDIR_MODULE
 
-#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -44,7 +43,7 @@ namespace
 
     auto error = tr_error{};
     auto const info = tr_sys_path_get_info(path, 0, &error);
-    if (error && !tr_error_is_enoent(error.code())) {
+    if (error && !error.is_enoent()) {
         tr_logAddWarn(
             fmt::format(
                 "Skipping '{path}': {error} ({error_code})",

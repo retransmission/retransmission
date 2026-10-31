@@ -635,7 +635,7 @@ static NSMutableSet* creatorWindowControllerSet;
         alert.alertStyle = NSAlertStyleWarning;
 
         alert.informativeText = [NSString
-            stringWithFormat:@"%.*s (%d)", static_cast<int>(std::size(error.message())), std::data(error.message()), error.code()];
+            stringWithFormat:@"%.*s (%lld)", static_cast<int>(std::size(error.message())), std::data(error.message()), error.code()];
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse /*returnCode*/) {
             [self.window close];
         }];
