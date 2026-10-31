@@ -322,21 +322,14 @@ TEST_F(TorrentFilesTest, sanitizeSubpathReservedCharacters)
 TEST_F(TorrentFilesTest, sanitizeSubpathReservedNames)
 {
     static auto constexpr ReservedNames = std::to_array<std::string_view>({
-        "AUX"sv,  "CON"sv,  "NUL"sv,  "PRN"sv,  "COM1"sv, "COM2"sv, "COM3"sv, "COM4"sv, "COM5"sv, "COM6"sv, "COM7"sv,
-        "COM8"sv, "COM9"sv, "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
+        "AUX"sv,  "CON"sv,  "NUL"sv,  "PRN"sv,  "COM1"sv, "COM2"sv, "COM3"sv, "COM4"sv, "COM5"sv,   "COM6"sv,
+        "COM7"sv, "COM8"sv, "COM9"sv, "COM¹"sv, "COM²"sv, "COM³"sv, "LPT¹"sv, "LPT²"sv, "LPT³"sv,   "LPT1"sv,
+        "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv, "CONIN$"sv, "CONOUT$"sv,
     });
     static auto constexpr NotReserved = std::to_array<std::string_view>({
-        ""sv,
-        ".foo"sv,
-        "AUXILIARY"sv,
-        "COM0"sv,
-        "COM10"sv,
-        "COM10.txt"sv,
-        "CONSOLE"sv,
-        "LPT0"sv,
-        "LPT10"sv,
-        "NULx.txt"sv,
-        "PRN_suffix"sv,
+        ""sv,     ".foo"sv, "AUXILIARY"sv, "COM0"sv, "COM10"sv,   "COM10.txt"sv, "COM⁰"sv,   "COM⁴"sv,     "COM⁵"sv,
+        "COM⁶"sv, "COM⁷"sv, "COM⁸"sv,      "COM⁹"sv, "CONSOLE"sv, "CONIN"sv,     "CONOUT"sv, "LPT0"sv,     "LPT10"sv,
+        "LPT⁰"sv, "LPT⁴"sv, "LPT⁵"sv,      "LPT⁶"sv, "LPT⁷"sv,    "LPT⁸"sv,      "LPT⁹"sv,   "NULx.txt"sv, "PRN_suffix"sv,
     });
     static auto constexpr IsWin32 = TR_IF_WIN32(true, false);
 
@@ -344,33 +337,51 @@ TEST_F(TorrentFilesTest, sanitizeSubpathReservedNames)
         auto expected = std::string{ "_" };
         expected.append(path);
         EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
+        expected = IsWin32 ? std::string{ "_" } : std::string{};
+        expected.append(path);
+        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path)) << path;
+    };
+    auto const expect_not_reserved = [](std::string_view path) {
+        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path, false)) << path;
+        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path)) << path;
     };
 
     for (auto const name : ReservedNames) {
-        for (auto const suffix : { ""sv, ".txt"sv }) {
+        auto near_miss = std::string{ name };
+        near_miss += 'x';
+        expect_not_reserved(near_miss);
+
+        for (auto const suffix : { ""sv, ".txt"sv, ".tar.gz"sv }) {
             auto input = std::string{ name };
             input.append(suffix);
 
             expect_reserved(input);
-            auto expected = IsWin32 ? std::string{ "_" } : std::string{};
-            expected += input;
-            EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(input)) << input;
 
-            for (auto& ch : input) {
+            auto lowercase = input;
+            for (auto& ch : lowercase) {
                 if (ch >= 'A' && ch <= 'Z') {
                     ch = static_cast<char>(ch - 'A' + 'a');
                 }
             }
-            expect_reserved(input);
-            expected = IsWin32 ? std::string{ "_" } : std::string{};
-            expected += input;
-            EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(input)) << input;
+            expect_reserved(lowercase);
+
+            auto mixed_case = std::string{ name };
+            auto lowercase_next = false;
+            for (auto& ch : mixed_case) {
+                if (ch >= 'A' && ch <= 'Z') {
+                    if (lowercase_next) {
+                        ch = static_cast<char>(ch - 'A' + 'a');
+                    }
+                    lowercase_next = !lowercase_next;
+                }
+            }
+            mixed_case.append(suffix);
+            expect_reserved(mixed_case);
         }
     }
 
     for (auto const path : NotReserved) {
-        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path, false)) << path;
-        EXPECT_EQ(path, tr_torrent_files::sanitize_subpath(path)) << path;
+        expect_not_reserved(path);
     }
 
     EXPECT_EQ(IsWin32 ? ""sv : "_."sv, tr_torrent_files::sanitize_subpath("."sv, false));
