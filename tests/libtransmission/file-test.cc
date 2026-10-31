@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cerrno>
 #include <cstdint> // uint64_t
 #include <cstdio> // stderr
 #include <cstring>
@@ -1180,6 +1181,25 @@ TEST_F(FileTest, filePreallocate)
 
     tr_sys_path_remove(path1);
 }
+
+#ifdef __linux__
+TEST_F(FileTest, filePreallocateReadOnly)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    createFileWithContents(path, "test");
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ, 0);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    // On Linux, both fallocate() and posix_fallocate() fail with EBADF here
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, 0, &error));
+    EXPECT_EQ(EBADF, error.code()) << error;
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+#endif
 
 TEST_F(FileTest, dirCreate)
 {
