@@ -1,0 +1,11 @@
+"Upload:" = "Velocidade de envio:";
+"Download:" = "Velocidade de recepção:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Limites globais de transferência:";
+"Alternative speed limits:" = "Limitador de Velocidade:";
+"Override normal speed limits manually or at scheduled times" = "Quando activo, o Limitador de Velocidade sobrepõe-se aos limites globais de largura de banda de tranferência";
+"Scheduled times:" = "Programar Limitador de Velocidade:";
+"to" = "até";
+"Every Day" = "Diariamente";
+"Weekdays" = "Dias de semana";
+"Weekends" = "Fins de semana";

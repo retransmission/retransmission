@@ -1,0 +1,11 @@
+"Upload:" = "Feltöltési sebesség:";
+"Download:" = "Letöltési sebesség:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Globális sávszélességi korlátok:";
+"Alternative speed limits:" = "Sebességkorlát mód:";
+"Override normal speed limits manually or at scheduled times" = "Mikor engedélyezve van, a Sebesség Korlát felülírja a globális sávszélességi korlátokat";
+"Scheduled times:" = "Sebességkorlát ütemezése:";
+"to" = "-";
+"Every Day" = "Minden nap";
+"Weekdays" = "Hétköznap";
+"Weekends" = "Hétvégén";

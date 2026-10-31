@@ -1,0 +1,11 @@
+"Upload:" = "Invio:";
+"Download:" = "Ricezione:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Limiti generali di banda:";
+"Alternative speed limits:" = "Limite di velocità:";
+"Override normal speed limits manually or at scheduled times" = "Quando abilitato, il limite di velocità sostituisce i limiti generali di banda";
+"Scheduled times:" = "Applica il limite di velocità tra le ore:";
+"to" = "e";
+"Every Day" = "Ogni giorno";
+"Weekdays" = "Giorni feriali";
+"Weekends" = "Fine settimana";

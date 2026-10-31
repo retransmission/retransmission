@@ -1,0 +1,11 @@
+"Upload:" = "上传速度：";
+"Download:" = "下载速度：";
+"KB/s" = "KB/秒";
+"Speed limits:" = "全局带宽限制：";
+"Alternative speed limits:" = "限速模式：";
+"Override normal speed limits manually or at scheduled times" = "启用限速时将覆盖全局带宽限制";
+"Scheduled times:" = "计划限速：";
+"to" = "到";
+"Every Day" = "每天";
+"Weekdays" = "工作日";
+"Weekends" = "周末";

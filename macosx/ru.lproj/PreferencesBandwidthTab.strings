@@ -1,0 +1,11 @@
+"Upload:" = "Раздачи:";
+"Download:" = "Скачивания:";
+"KB/s" = "КБ/с";
+"Speed limits:" = "Ширина канала:";
+"Alternative speed limits:" = "Режим ограничения:";
+"Override normal speed limits manually or at scheduled times" = "В режиме ограничения скорости настройки общей ширины канала не учитывается";
+"Scheduled times:" = "Включать по расписанию:";
+"to" = "до";
+"Every Day" = "Каждый день";
+"Weekdays" = "На неделе";
+"Weekends" = "По выходным";
