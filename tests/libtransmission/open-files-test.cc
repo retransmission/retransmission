@@ -26,6 +26,7 @@
 #include <windows.h>
 #endif
 
+#include <libtransmission/error-types.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/open-files.h>
@@ -429,6 +430,41 @@ INSTANTIATE_TEST_SUITE_P(
     FullAllocation,
     OpenFilesPreallocationTest,
     ::testing::Combine(::testing::Bool(), ::testing::Values(tr_torrent_id_t{ 0 }, tr_torrent_id_t{ 1 })));
+
+namespace
+{
+
+// Param: whether the injected preallocation failure is a full disk.
+class OpenFilesSparsePreallocationTest
+    : public tr::test::SandboxedTest
+    , public ::testing::WithParamInterface<bool>
+{
+};
+
+} // namespace
+
+TEST_P(OpenFilesSparsePreallocationTest, growsFileUnlessDiskIsFull)
+{
+    static auto constexpr FileSize = uint64_t{ 4096U };
+    auto const disk_full = GetParam();
+    auto const filename = tr_pathbuf{ sandboxDir(), "/sparse.bin" };
+    auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int const flags, tr_error* const error) {
+        EXPECT_EQ(FileSize, size);
+        EXPECT_EQ(TR_SYS_FILE_PREALLOC_SPARSE, flags);
+        return tr::test::failPreallocation(error, disk_full);
+    } };
+
+    auto error = tr_error{};
+    EXPECT_EQ(!disk_full, static_cast<bool>(files.get(0, 0, true, filename, tr_file_preallocation::Sparse, FileSize, error)));
+    EXPECT_EQ(disk_full, tr_error_is_enospc(error.code())) << error;
+
+    // a full disk skips the fallbacks
+    auto const info = tr_sys_path_get_info(filename);
+    ASSERT_TRUE(info);
+    EXPECT_EQ(disk_full ? 0U : FileSize, info->size);
+}
+
+INSTANTIATE_TEST_SUITE_P(SparseAllocation, OpenFilesSparsePreallocationTest, ::testing::Bool());
 
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {
