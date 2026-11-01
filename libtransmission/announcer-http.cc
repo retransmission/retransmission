@@ -259,6 +259,7 @@ void tr_tracker_http_announce(
      */
     auto options = tr_web::FetchOptions{ announce_url_new(session, request), onAnnounceDone, d };
     options.timeout_secs = TrAnnounceTimeoutSec;
+    options.finish_at_shutdown = true; // a "stopped" announce frees the tracker's slot for us
     options.sndbuf = 4096;
     options.rcvbuf = 4096;
 

@@ -135,6 +135,10 @@ public:
         // Maximum time to wait before timeout
         std::chrono::seconds timeout_secs = DefaultTimeoutSecs;
 
+        // Whether shutdown waits for this fetch, up to its deadline, as for a
+        // tracker's "stopped" announce. Shutdown cancels every other fetch.
+        bool finish_at_shutdown = false;
+
         // If set, overrides the default TLS certificate verification (which is
         // otherwise controlled by the TR_CURL_SSL_NO_VERIFY env var).
         // Set to false to accept self-signed certs, e.g. a local RPC server's.

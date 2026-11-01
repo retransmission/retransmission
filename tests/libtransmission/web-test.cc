@@ -655,6 +655,30 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
+TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
+{
+    // a handler that never replies keeps both fetches running
+    server4_->setHandler([](evhttp_request* /*req*/) {});
+
+    auto plain = fetchAsync(options("/plain"sv));
+    auto opts = options("/announce"sv);
+    opts.finish_at_shutdown = true;
+    auto announce = fetchAsync(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
+
+    web_->startShutdown(10s);
+
+    // the shutdown wakes the curl thread rather than waiting out its 1s poll
+    ASSERT_EQ(std::future_status::ready, plain.wait_for(500ms));
+    auto const response = plain.get();
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+
+    // the other runs on until it ends or the deadline comes
+    EXPECT_EQ(std::future_status::timeout, announce.wait_for(300ms));
+    EXPECT_FALSE(web_->is_idle());
+}
+
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a

@@ -133,6 +133,8 @@ private:
 
     enum class is_updating_t : uint8_t { No = 0, Yes, Abort };
     array_ip_t<is_updating_t> is_updating_ = {};
+    // a refused fetch never calls back, so fallbacks would leave is_updating_ set
+    bool shutting_down_ = false;
     array_ip_t<std::vector<std::string>> current_ip_endpoints_ = {};
 
     // Never directly read/write IP addresses for the sake of being thread safe
