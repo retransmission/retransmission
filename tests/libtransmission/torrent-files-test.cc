@@ -384,8 +384,8 @@ TEST_F(TorrentFilesTest, sanitizeSubpathReservedNames)
         expect_not_reserved(path);
     }
 
-    EXPECT_EQ(IsWin32 ? ""sv : "_."sv, tr_torrent_files::sanitize_subpath("."sv, false));
-    EXPECT_EQ(IsWin32 ? ""sv : "_.."sv, tr_torrent_files::sanitize_subpath(".."sv, false));
+    EXPECT_EQ(""sv, tr_torrent_files::sanitize_subpath("."sv, false));
+    EXPECT_EQ(""sv, tr_torrent_files::sanitize_subpath(".."sv, false));
     EXPECT_EQ(IsWin32 ? ""sv : "_."sv, tr_torrent_files::sanitize_subpath("."sv));
     EXPECT_EQ(IsWin32 ? ""sv : "_.."sv, tr_torrent_files::sanitize_subpath(".."sv));
 }
@@ -402,20 +402,23 @@ TEST_F(TorrentFilesTest, sanitizeSubpathWin32TrailingCharacters)
     });
 
     for (auto const& [path, win32_expected] : Tests) {
-        auto const expected = IsWin32 ? win32_expected : path;
-        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, true)) << path;
-        EXPECT_EQ(expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
+        EXPECT_EQ(IsWin32 ? win32_expected : path, tr_torrent_files::sanitize_subpath(path, true)) << path;
+        EXPECT_EQ(win32_expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
     }
 
     auto constexpr TabbedPath = "\tname\n"sv;
-    auto constexpr TabbedExpected = TR_IF_WIN32("name"sv, "_name_"sv);
-    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, true));
-    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, false));
+    auto constexpr TabbedExpectedWin32 = "name"sv;
+    auto constexpr TabbedExpectedOthers = "_name_"sv;
+    EXPECT_EQ(IsWin32 ? TabbedExpectedWin32 : TabbedExpectedOthers, tr_torrent_files::sanitize_subpath(TabbedPath, true));
+    EXPECT_EQ(TabbedExpectedWin32, tr_torrent_files::sanitize_subpath(TabbedPath, false));
 
     auto constexpr WhitespaceOnly = "\t"sv;
-    auto constexpr WhitespaceOnlyExpected = TR_IF_WIN32(""sv, "_"sv);
-    EXPECT_EQ(WhitespaceOnlyExpected, tr_torrent_files::sanitize_subpath(WhitespaceOnly, true));
-    EXPECT_EQ(WhitespaceOnlyExpected, tr_torrent_files::sanitize_subpath(WhitespaceOnly, false));
+    auto constexpr WhitespaceOnlyExpectedWin32 = ""sv;
+    auto constexpr WhitespaceOnlyExpectedOthers = "_";
+    EXPECT_EQ(
+        IsWin32 ? WhitespaceOnlyExpectedWin32 : WhitespaceOnlyExpectedOthers,
+        tr_torrent_files::sanitize_subpath(WhitespaceOnly, true));
+    EXPECT_EQ(WhitespaceOnlyExpectedWin32, tr_torrent_files::sanitize_subpath(WhitespaceOnly, false));
 }
 
 TEST_F(TorrentFilesTest, sanitizeSubpathAppends)
