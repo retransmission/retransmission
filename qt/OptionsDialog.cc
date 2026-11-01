@@ -26,7 +26,6 @@
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
-#include "Torrent.h"
 #include "Utils.h"
 
 /***
@@ -172,14 +171,14 @@ void OptionsDialog::reload()
         wanted_.assign(n_files, true);
 
         for (tr_file_index_t i = 0; i < n_files; ++i) {
-            auto f = TorrentFile{};
-            f.index = static_cast<int>(i);
-            f.priority = priorities_[i];
+            auto f = tr::app::TorrentFile{};
+            f.index = i;
+            f.priority = static_cast<tr_priority_t>(priorities_[i]);
             f.wanted = wanted_[i];
             f.size = metainfo_->file_size(i);
             f.have = 0;
-            f.filename = QString::fromStdString(metainfo_->file_subpath(i));
-            files_.push_back(f);
+            f.name = metainfo_->file_subpath(i);
+            files_.push_back(std::move(f));
         }
     }
 

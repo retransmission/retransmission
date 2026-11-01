@@ -16,8 +16,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QWidget>
 
+#include <libtransmission-app/torrent.h>
+
 #include "Prefs.h"
-#include "Torrent.h"
 #include "Typedefs.h"
 
 class QLabel;
@@ -94,6 +95,6 @@ private slots:
     void refreshPref(tr_quark key);
     void onActivityIndexChanged(int index);
     void onTextChanged(QString const& str);
-    void onTorrentsChanged(torrent_ids_t const& ids, Torrent::fields_t const& fields);
+    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
     void onTrackerIndexChanged(int index);
 };

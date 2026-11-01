@@ -5,66 +5,23 @@
 
 #pragma once
 
-#include <cstddef> // size_t
 #include <optional>
-#include <vector>
 
 #include <libtransmission/converters.h>
+#include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
 class QString;
-
-class Speed;
-class TorrentHash;
-struct Peer;
-struct TorrentFile;
-struct TrackerStat;
 
 namespace tr::serializer
 {
 
 TR_DECLARE_CONVERTER(QString)
-TR_DECLARE_CONVERTER(Speed)
-TR_DECLARE_CONVERTER(TorrentHash)
 
 } // namespace tr::serializer
 
 namespace trqt::variant_helpers
 {
-template<typename T>
-bool change(T& setme, tr_variant const* var)
-{
-    return var && tr::serializer::set(setme, *var);
-}
-
-bool change(Peer& setme, tr_variant const* value);
-bool change(TorrentFile& setme, tr_variant const* value);
-bool change(TrackerStat& setme, tr_variant const* value);
-
-template<typename T>
-bool change(std::vector<T>& setme, tr_variant const* value)
-{
-    if (!value) {
-        return false;
-    }
-
-    bool changed = false;
-
-    auto const* const vec = value->get_if<tr_variant::Vector>();
-    auto const n = vec ? std::size(*vec) : 0;
-    if (setme.size() != n) {
-        setme.resize(n);
-        changed = true;
-    }
-
-    for (size_t i = 0; i < n; ++i) {
-        changed = change(setme[i], &(*vec)[i]) || changed;
-    }
-
-    return changed;
-}
-
-///
 
 template<typename T>
 [[nodiscard]] std::optional<T> dictFind(tr_variant const* dict, tr_quark key)
@@ -77,4 +34,5 @@ template<typename T>
 
     return {};
 }
+
 } // namespace trqt::variant_helpers

@@ -16,8 +16,8 @@
 
 #include "Prefs.h"
 #include "Session.h"
-#include "Torrent.h"
 #include "TorrentModel.h"
+#include "Utils.h"
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 bool RelocateDialog::move_flag = true;
@@ -48,11 +48,12 @@ RelocateDialog::RelocateDialog(
     QString path;
 
     for (int const id : ids_) {
-        Torrent const* tor = model.getTorrentFromId(id);
+        auto const* const tor = model.list().find(id);
+        auto const tor_path = tor != nullptr ? Utils::qstringFromUtf8(tor->download_dir().sv()) : QString{};
 
         if (path.isEmpty()) {
-            path = tor->getPath();
-        } else if (path != tor->getPath()) {
+            path = tor_path;
+        } else if (path != tor_path) {
             if (session_.is_local_filesystem()) {
                 path = QDir::homePath();
             } else {
