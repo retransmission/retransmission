@@ -14,6 +14,7 @@ target_sources(libtransmission-app-test
 		test-fixtures.h
 		torrent-filter-test.cc
 		torrent-get-helpers.h
+		torrent-keys-test.cc
 		torrent-list-test.cc
 		torrent-sort-test.cc
 		torrent-test.cc

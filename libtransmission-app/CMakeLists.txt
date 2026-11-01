@@ -31,6 +31,7 @@ target_sources(${LIBNAME}
         torrent-filter.cc
         torrent-filter.h
         torrent-icon.h
+        torrent-keys.h
         torrent-list.cc
         torrent-list.h
         torrent-sort.cc
