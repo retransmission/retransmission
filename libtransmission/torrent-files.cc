@@ -506,16 +506,19 @@ namespace
 // https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
 void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
 {
-#ifdef _WIN32
-    // strip surrounding spaces and trailing periods
-    auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
-    path.remove_prefix(std::ranges::distance(std::ranges::begin(path), it));
-
-    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
-        return ch == '.' || std::isspace(ch);
-    });
-    path.remove_suffix(std::ranges::distance(std::ranges::rbegin(path), rit));
+#ifndef _WIN32
+    if (!os_specific)
 #endif
+    {
+        // strip surrounding spaces and trailing periods
+        auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
+        path.remove_prefix(std::ranges::distance(std::ranges::begin(path), it));
+
+        auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
+            return ch == '.' || std::isspace(ch);
+        });
+        path.remove_suffix(std::ranges::distance(std::ranges::rbegin(path), rit));
+    }
 
     // replace reserved filenames with an underscore
     if (is_reserved_file(path, os_specific)) {
