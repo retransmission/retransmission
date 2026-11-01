@@ -589,7 +589,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         NSError* localError;
         if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
             if (error != nullptr) {
-                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
+                error->set(localError.code, localError.description.UTF8String);
             }
             return false;
         }

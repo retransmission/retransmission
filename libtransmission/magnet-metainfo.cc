@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cerrno> // EINVAL
 #include <cstdint> // uint8_t
 #include <cstring>
 #include <iterator>
@@ -15,7 +16,6 @@
 #include <fmt/format.h>
 
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/string-utils.h"
@@ -192,7 +192,7 @@ bool tr_magnet_metainfo::parseMagnet(std::string_view magnet_link, tr_error* err
     auto const parsed = tr_urlParse(magnet_link);
     if (!parsed || parsed->scheme != "magnet"sv) {
         if (error != nullptr) {
-            error->set(TR_ERROR_EINVAL, "Error parsing URL"sv);
+            error->set(EINVAL, "Error parsing URL"sv);
         }
 
         return false;
