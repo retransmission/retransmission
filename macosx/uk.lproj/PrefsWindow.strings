@@ -67,45 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "В кінець у разі неактивності протягом";
 
-/* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
-"1265.title" = "Роздачі:";
-
-/* Class = "NSButtonCell"; title = "Download rate:"; ObjectID = "1267"; */
-"1267.title" = "Завантаження:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1268"; */
-"1268.title" = "КБ/с";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1269"; */
-"1269.title" = "КБ/с";
-
-/* Class = "NSTextFieldCell"; title = "Global bandwidth limits:"; ObjectID = "1270"; */
-"1270.title" = "Ширина каналу:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1273"; */
-"1273.title" = "КБ/с";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1274"; */
-"1274.title" = "КБ/с";
-
-/* Class = "NSTextFieldCell"; title = "Speed Limit mode:"; ObjectID = "1275"; */
-"1275.title" = "Режим обмеження:";
-
-/* Class = "NSTextFieldCell"; title = "Upload rate:"; ObjectID = "1276"; */
-"1276.title" = "Роздачі:";
-
-/* Class = "NSTextFieldCell"; title = "Download rate:"; ObjectID = "1277"; */
-"1277.title" = "Завантаження:";
-
-/* Class = "NSTextFieldCell"; title = "When enabled Speed Limit overrides the global bandwidth limits"; ObjectID = "1278"; */
-"1278.title" = "У режимі обмеження швидкості налаштування загальної ширини каналу не враховується";
-
-/* Class = "NSButtonCell"; title = "Schedule Speed Limit:"; ObjectID = "1280"; */
-"1280.title" = "Вмикати за розкладом:";
-
-/* Class = "NSTextFieldCell"; title = "to"; ObjectID = "1281"; */
-"1281.title" = "до";
-
 /* Class = "NSButtonCell"; title = "Display a window when opening a torrent file"; ObjectID = "1294"; */
 "1294.title" = "Показувати діалогове вікно під час відкриття торент-файлу";
 
@@ -237,36 +198,6 @@
 
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Роздачі будуть додані в першу \n групу що задовольняє  всім правилам";
-
-/* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
-"1910.title" = "Щодня";
-
-/* Class = "NSMenuItem"; title = "Weekdays"; ObjectID = "1911"; */
-"1911.title" = "У робочі дні";
-
-/* Class = "NSMenuItem"; title = "Weekends"; ObjectID = "1912"; */
-"1912.title" = "У вихідні";
-
-/* Class = "NSMenuItem"; title = "Monday"; ObjectID = "1914"; */
-"1914.title" = "Понеділок";
-
-/* Class = "NSMenuItem"; title = "Tuesday"; ObjectID = "1915"; */
-"1915.title" = "Вівторок";
-
-/* Class = "NSMenuItem"; title = "Wednesday"; ObjectID = "1916"; */
-"1916.title" = "Середа";
-
-/* Class = "NSMenuItem"; title = "Thursday"; ObjectID = "1917"; */
-"1917.title" = "Четвер";
-
-/* Class = "NSMenuItem"; title = "Friday"; ObjectID = "1918"; */
-"1918.title" = "П’ятниця";
-
-/* Class = "NSMenuItem"; title = "Saturday"; ObjectID = "1919"; */
-"1919.title" = "Субота";
-
-/* Class = "NSMenuItem"; title = "Sunday"; ObjectID = "1920"; */
-"1920.title" = "Неділя";
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "Використовувати розподілену геш-таблицю (DHT) для публічних торентів";

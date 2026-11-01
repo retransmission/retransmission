@@ -67,45 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Överföringen stoppas när den är inaktiv i:";
 
-/* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
-"1265.title" = "Sändningshastighet:";
-
-/* Class = "NSButtonCell"; title = "Download rate:"; ObjectID = "1267"; */
-"1267.title" = "Hämtningshastighet:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1268"; */
-"1268.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1269"; */
-"1269.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "Global bandwidth limits:"; ObjectID = "1270"; */
-"1270.title" = "Globala bandbreddsgränser:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1273"; */
-"1273.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1274"; */
-"1274.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "Speed Limit mode:"; ObjectID = "1275"; */
-"1275.title" = "Hastighetsgränsläge:";
-
-/* Class = "NSTextFieldCell"; title = "Upload rate:"; ObjectID = "1276"; */
-"1276.title" = "Sändningshastighet:";
-
-/* Class = "NSTextFieldCell"; title = "Download rate:"; ObjectID = "1277"; */
-"1277.title" = "Hämtningshastighet:";
-
-/* Class = "NSTextFieldCell"; title = "When enabled Speed Limit overrides the global bandwidth limits"; ObjectID = "1278"; */
-"1278.title" = "När det är aktiverat åsidosätter hastighetsgränsen de globala bandbreddsgränserna";
-
-/* Class = "NSButtonCell"; title = "Schedule Speed Limit:"; ObjectID = "1280"; */
-"1280.title" = "Schemalagd hastighetsgräns:";
-
-/* Class = "NSTextFieldCell"; title = "to"; ObjectID = "1281"; */
-"1281.title" = "till";
-
 /* Class = "NSButtonCell"; title = "Display a window when opening a torrent file"; ObjectID = "1294"; */
 "1294.title" = "Visa ett fönster när du öppnar en torrentfil";
 
@@ -237,36 +198,6 @@
 
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Överföringar kommer att tilldelas den första gruppen där alla kriterier är uppfyllda";
-
-/* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
-"1910.title" = "Varje dag";
-
-/* Class = "NSMenuItem"; title = "Weekdays"; ObjectID = "1911"; */
-"1911.title" = "Veckodagar";
-
-/* Class = "NSMenuItem"; title = "Weekends"; ObjectID = "1912"; */
-"1912.title" = "Helger";
-
-/* Class = "NSMenuItem"; title = "Monday"; ObjectID = "1914"; */
-"1914.title" = "Måndag";
-
-/* Class = "NSMenuItem"; title = "Tuesday"; ObjectID = "1915"; */
-"1915.title" = "Tisdag";
-
-/* Class = "NSMenuItem"; title = "Wednesday"; ObjectID = "1916"; */
-"1916.title" = "Onsdag";
-
-/* Class = "NSMenuItem"; title = "Thursday"; ObjectID = "1917"; */
-"1917.title" = "Torsdag";
-
-/* Class = "NSMenuItem"; title = "Friday"; ObjectID = "1918"; */
-"1918.title" = "Fredag";
-
-/* Class = "NSMenuItem"; title = "Saturday"; ObjectID = "1919"; */
-"1919.title" = "Lördag";
-
-/* Class = "NSMenuItem"; title = "Sunday"; ObjectID = "1920"; */
-"1920.title" = "Söndag";
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "Använd distribuerad hashtabell (DHT) för publika torrenter";

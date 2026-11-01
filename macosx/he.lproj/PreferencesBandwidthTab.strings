@@ -1,0 +1,11 @@
+"Upload:" = "קצב העלאה:";
+"Download:" = "קצב הורדה:";
+"KB/s" = "ק״ב/שנייה";
+"Speed limits:" = "מגבלות רוחב פס גלובליות:";
+"Alternative speed limits:" = "מצב מגבלת מהירות";
+"Override normal speed limits manually or at scheduled times" = "כשהאפשרות פעילה מגבלת המהירות תדרוס את מגבלות רוחב הפס הכלליות";
+"Scheduled times:" = "תזמון מגבלת מהירות:";
+"to" = "עד";
+"Every Day" = "כל יום";
+"Weekdays" = "ימי השבוע";
+"Weekends" = "סופי שבוע";

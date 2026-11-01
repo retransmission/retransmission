@@ -232,7 +232,6 @@
     [self.fDefaults setInteger:limit forKey:@"DownloadLimit"];
     tr_sessionSetSpeedLimit_KBps(self.fHandle, tr_direction::Down, limit);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateSpeedLimitValuesOutsidePrefs" object:nil];
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
@@ -240,7 +239,6 @@
 {
     tr_sessionLimitSpeed(self.fHandle, tr_direction::Up, [self.fDefaults boolForKey:@"CheckUpload"]);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateSpeedLimitValuesOutsidePrefs" object:nil];
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 

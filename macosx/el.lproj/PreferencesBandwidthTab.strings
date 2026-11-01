@@ -1,0 +1,11 @@
+"Upload:" = "Ρυθμός ανεβάσματος:";
+"Download:" = "Ρυθμός κατεβάσματος:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Καθολικά όρια δικτύου:";
+"Alternative speed limits:" = "Λειτουργία Περιορισμού Ταχύτητας:";
+"Override normal speed limits manually or at scheduled times" = "Όταν είναι ενεργοποιημένο, το Όριο Ταχύτητας υπερκεράζει τα καθολικά όρια δικτύου";
+"Scheduled times:" = "Προγραμματισμός Ορίων Ταχύτητας:";
+"to" = "σε";
+"Every Day" = "Κάθε μέρα";
+"Weekdays" = "Εργάσιμες";
+"Weekends" = "Σαββατοκύριακα";

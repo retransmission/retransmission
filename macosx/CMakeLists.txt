@@ -146,6 +146,8 @@ target_sources(${TR_NAME}-mac
         PowerManager.mm
         PredicateEditorRowTemplateAny.h
         PredicateEditorRowTemplateAny.mm
+        PrefsBandwidthTabViewController.h
+        PrefsBandwidthTabViewController.mm
         PrefsController.h
         PrefsController.mm
         PrefsGeneralTabViewController.h
@@ -364,6 +366,7 @@ set(LANG_STRINGS_FILES
     InfoGeneralView.strings
     InfoPlist.strings
     Localizable.strings
+    PreferencesBandwidthTab.strings
     PreferencesGeneralTab.strings
     PreferencesNetworkTab.strings
     TorrentContextMenu.strings)

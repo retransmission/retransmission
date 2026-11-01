@@ -8,14 +8,11 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PrefsController">
             <connections>
-                <outlet property="fAutoSpeedDayTypePopUp" destination="1907" id="1921"/>
-                <outlet property="fBandwidthView" destination="153" id="179"/>
                 <outlet property="fBlocklistButton" destination="1436" id="2031"/>
                 <outlet property="fBlocklistDateField" destination="1738" id="1740"/>
                 <outlet property="fBlocklistMessageField" destination="1435" id="1463"/>
                 <outlet property="fBlocklistURLField" destination="1985" id="1994"/>
                 <outlet property="fDoneScriptPopUp" destination="2048" id="2060"/>
-                <outlet property="fDownloadField" destination="154" id="623"/>
                 <outlet property="fFolderPopUp" destination="51" id="98"/>
                 <outlet property="fGroupsView" destination="1760" id="1761"/>
                 <outlet property="fIdleStopField" destination="1959" id="1979"/>
@@ -33,11 +30,8 @@
                 <outlet property="fRatioStopField" destination="265" id="600"/>
                 <outlet property="fRemoteView" destination="1481" id="1512"/>
                 <outlet property="fShowMagnetAddWindowCheck" destination="1947" id="2130"/>
-                <outlet property="fSpeedLimitDownloadField" destination="190" id="626"/>
-                <outlet property="fSpeedLimitUploadField" destination="192" id="625"/>
                 <outlet property="fStalledField" destination="636" id="643"/>
                 <outlet property="fTransfersView" destination="41" id="72"/>
-                <outlet property="fUploadField" destination="156" id="624"/>
                 <outlet property="window" destination="23" id="82"/>
             </connections>
         </customObject>
@@ -114,7 +108,7 @@
                                                     </menu>
                                                 </popUpButtonCell>
                                             </popUpButton>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59">
                                                 <rect key="frame" x="84" y="280" width="105" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Save to location:" id="1216">
                                                     <font key="font" metaFont="system"/>
@@ -122,7 +116,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="61">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="61">
                                                 <rect key="frame" x="-2" y="280" width="82" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Settings:" usesSingleLineMode="YES" id="1217">
                                                     <font key="font" metaFont="system"/>
@@ -199,7 +193,7 @@
                                                     <binding destination="365" name="enabled" keyPath="values.AutoImport" id="404"/>
                                                 </connections>
                                             </popUpButton>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="352">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="352">
                                                 <rect key="frame" x="-2" y="57" width="82" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Auto add:" usesSingleLineMode="YES" id="1226">
                                                     <font key="font" metaFont="system"/>
@@ -309,7 +303,7 @@
                                                     <binding destination="365" name="value" keyPath="values.DownloadAskManual" id="1480"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1337">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1337">
                                                 <rect key="frame" x="-2" y="157" width="82" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Add window:" usesSingleLineMode="YES" id="1338">
                                                     <font key="font" metaFont="system"/>
@@ -396,7 +390,7 @@
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="4cS-54-dlc">
                                         <rect key="frame" x="52" y="40" width="456" height="274"/>
                                         <subviews>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="257">
+                                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="257">
                                                 <rect key="frame" x="277" y="141" width="35" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="35" id="YML-4c-aJ3"/>
@@ -419,7 +413,7 @@
                                                     <outlet property="nextKeyView" destination="604" id="1638"/>
                                                 </connections>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="262">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="262">
                                                 <rect key="frame" x="-2" y="143" width="74" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Queues:" usesSingleLineMode="YES" id="1230">
                                                     <font key="font" metaFont="system"/>
@@ -427,7 +421,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="263" customClass="ColorTextField">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="263" customClass="ColorTextField">
                                                 <rect key="frame" x="314" y="143" width="98" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="active torrents" id="1231">
                                                     <font key="font" metaFont="system"/>
@@ -449,7 +443,7 @@
                                                     <binding destination="365" name="value" keyPath="values.RatioCheck" id="430"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="265">
+                                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="265">
                                                 <rect key="frame" x="236" y="253" width="50" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="aGg-C8-Vxz"/>
@@ -483,7 +477,7 @@
                                                     <binding destination="365" name="value" keyPath="values.IdleLimitCheck" id="1982"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1959">
+                                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1959">
                                                 <rect key="frame" x="297" y="213" width="41" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="41" id="7nq-FP-89m"/>
@@ -504,7 +498,7 @@
                                                     <outlet property="nextKeyView" destination="257" id="1963"/>
                                                 </connections>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="267">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="267">
                                                 <rect key="frame" x="-2" y="255" width="74" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Limits:" usesSingleLineMode="YES" id="1234">
                                                     <font key="font" metaFont="system"/>
@@ -512,7 +506,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="268">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="268">
                                                 <rect key="frame" x="96" y="239" width="261" height="14"/>
                                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Ratio is amount uploaded to amount downloaded" id="1235">
                                                     <font key="font" metaFont="smallSystem"/>
@@ -531,7 +525,7 @@
                                                     <binding destination="365" name="value" keyPath="values.Queue" id="405"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="604">
+                                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="604">
                                                 <rect key="frame" x="266" y="120" width="35" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="35" id="cb1-iB-Jxb"/>
@@ -554,7 +548,7 @@
                                                     <outlet property="nextKeyView" destination="636" id="1639"/>
                                                 </connections>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="606" customClass="ColorTextField">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="606" customClass="ColorTextField">
                                                 <rect key="frame" x="303" y="123" width="98" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="active torrents" id="1239">
                                                     <font key="font" metaFont="system"/>
@@ -576,7 +570,7 @@
                                                     <binding destination="365" name="value" keyPath="values.QueueSeed" id="608"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="636">
+                                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="636">
                                                 <rect key="frame" x="324" y="100" width="41" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="41" id="y6b-9f-3xe"/>
@@ -599,7 +593,7 @@
                                                     <outlet property="nextKeyView" destination="1298" id="1640"/>
                                                 </connections>
                                             </textField>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="638" customClass="ColorTextField">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="638" customClass="ColorTextField">
                                                 <rect key="frame" x="367" y="102" width="53" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="minutes" id="1242">
                                                     <font key="font" metaFont="system"/>
@@ -621,7 +615,7 @@
                                                     <binding destination="365" name="value" keyPath="values.CheckStalled" id="640"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1297">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1297">
                                                 <rect key="frame" x="-2" y="64" width="74" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Play sound:" usesSingleLineMode="YES" id="1310">
                                                     <font key="font" metaFont="system"/>
@@ -692,7 +686,7 @@
                                                     <binding destination="365" name="value" keyPath="values.PlayDownloadSound" id="1322"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1969" customClass="ColorTextField">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1969" customClass="ColorTextField">
                                                 <rect key="frame" x="340" y="215" width="53" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="minutes" id="1970">
                                                     <font key="font" metaFont="system"/>
@@ -714,7 +708,7 @@
                                                     <binding destination="365" name="value" keyPath="values.DoneScriptEnabled" id="2058"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2046">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2046">
                                                 <rect key="frame" x="-2" y="6" width="74" height="16"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Call script:" usesSingleLineMode="YES" id="2047">
                                                     <font key="font" metaFont="system"/>
@@ -772,7 +766,7 @@
                                                     <binding destination="365" name="value" keyPath="values.RemoveWhenFinishSeeding" id="2125"/>
                                                 </connections>
                                             </button>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2122">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2122">
                                                 <rect key="frame" x="96" y="179" width="177" height="14"/>
                                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Applies to newly added torrents" id="2123">
                                                     <font key="font" metaFont="smallSystem"/>
@@ -917,7 +911,7 @@
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="uFR-ma-abW">
                     <rect key="frame" x="20" y="40" width="522" height="206"/>
                     <subviews>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1834">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1834">
                             <rect key="frame" x="189" y="48" width="225" height="28"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Torrents will be assigned to the first group where all criteria are met" id="1835">
                                 <font key="font" metaFont="smallSystem"/>
@@ -948,7 +942,7 @@
                                 <action selector="toggleUseAutoAssignRules:" target="1783" id="1884"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1823">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1823">
                             <rect key="frame" x="189" y="107" width="279" height="14"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="The location will only be set when adding the torrent" id="1824">
                                 <font key="font" metaFont="smallSystem"/>
@@ -997,7 +991,7 @@
                             </constraints>
                             <color key="color" red="0.058130499000000002" green="0.055541898999999999" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         </colorWell>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1795">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1795">
                             <rect key="frame" x="229" y="190" width="84" height="16"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group Name:" id="1796">
                                 <font key="font" metaFont="system"/>
@@ -1005,7 +999,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1793">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1793">
                             <rect key="frame" x="231" y="159" width="271" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="271" id="Iag-F7-aqK"/>
@@ -1132,361 +1126,6 @@
             </constraints>
             <point key="canvasLocation" x="-512" y="461"/>
         </customView>
-        <customView id="153" userLabel="Bandwidth">
-            <rect key="frame" x="0.0" y="0.0" width="592" height="268"/>
-            <autoresizingMask key="autoresizingMask"/>
-            <subviews>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="a4A-eF-t64">
-                    <rect key="frame" x="20" y="40" width="552" height="208"/>
-                    <subviews>
-                        <popUpButton horizontalHuggingPriority="1000" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1907">
-                            <rect key="frame" x="222" y="-1" width="118" height="24"/>
-                            <popUpButtonCell key="cell" type="push" title="Every Day" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="127" imageScaling="proportionallyDown" inset="2" selectedItem="1910" id="1908">
-                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="message"/>
-                                <menu key="menu" id="1909">
-                                    <items>
-                                        <menuItem title="Every Day" state="on" tag="127" id="1910"/>
-                                        <menuItem title="Weekdays" tag="62" id="1911"/>
-                                        <menuItem title="Weekends" tag="65" id="1912"/>
-                                        <menuItem isSeparatorItem="YES" tag="-1" id="1913"/>
-                                        <menuItem title="Monday" tag="2" id="1914"/>
-                                        <menuItem title="Tuesday" tag="4" id="1915"/>
-                                        <menuItem title="Wednesday" tag="8" id="1916"/>
-                                        <menuItem title="Thursday" tag="16" id="1917"/>
-                                        <menuItem title="Friday" tag="32" id="1918"/>
-                                        <menuItem title="Saturday" tag="64" id="1919"/>
-                                        <menuItem title="Sunday" tag="1" id="1920"/>
-                                    </items>
-                                </menu>
-                            </popUpButtonCell>
-                            <connections>
-                                <action selector="setAutoSpeedLimitDay:" target="-2" id="1922"/>
-                                <binding destination="365" name="enabled" keyPath="values.SpeedLimitAuto" id="1923"/>
-                                <binding destination="365" name="selectedTag" keyPath="values.SpeedLimitAutoDay" id="1924"/>
-                            </connections>
-                        </popUpButton>
-                        <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="526">
-                            <rect key="frame" x="449" y="0.0" width="86" height="26"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="83" id="Gpc-7F-EcD"/>
-                            </constraints>
-                            <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="1283">
-                                <font key="font" metaFont="system"/>
-                                <date key="date" timeIntervalSinceReferenceDate="678949666.07677197">
-                                    <!--2022-07-08 05:07:46 +0000-->
-                                </date>
-                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <datePickerElements key="datePickerElements" hour="YES" minute="YES"/>
-                            </datePickerCell>
-                            <connections>
-                                <action selector="setAutoSpeedLimitTime:" target="-2" id="1902"/>
-                                <binding destination="365" name="enabled" keyPath="values.SpeedLimitAuto" id="530"/>
-                                <binding destination="365" name="value" keyPath="values.SpeedLimitAutoOffDate" id="535"/>
-                                <outlet property="nextKeyView" destination="154" id="584"/>
-                            </connections>
-                        </datePicker>
-                        <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="525">
-                            <rect key="frame" x="352" y="0.0" width="86" height="26"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="83" id="jiN-XB-lhe"/>
-                            </constraints>
-                            <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="1282">
-                                <font key="font" metaFont="system"/>
-                                <date key="date" timeIntervalSinceReferenceDate="678949666.09633195">
-                                    <!--2022-07-08 05:07:46 +0000-->
-                                </date>
-                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <datePickerElements key="datePickerElements" hour="YES" minute="YES"/>
-                            </datePickerCell>
-                            <connections>
-                                <action selector="setAutoSpeedLimitTime:" target="-2" id="1903"/>
-                                <binding destination="365" name="enabled" keyPath="values.SpeedLimitAuto" id="529"/>
-                                <binding destination="365" name="value" keyPath="values.SpeedLimitAutoOnDate" id="534"/>
-                                <outlet property="nextKeyView" destination="526" id="583"/>
-                            </connections>
-                        </datePicker>
-                        <textField focusRingType="none" horizontalHuggingPriority="1000" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="310" customClass="ColorTextField">
-                            <rect key="frame" x="440" y="4" width="4" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="to" id="1281">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <binding destination="365" name="enabled" keyPath="values.SpeedLimitAuto" id="1702"/>
-                            </connections>
-                        </textField>
-                        <button translatesAutoresizingMaskIntoConstraints="NO" id="307">
-                            <rect key="frame" x="197" y="28" width="127" height="16"/>
-                            <buttonCell key="cell" type="check" title="Scheduled times:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1280">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <connections>
-                                <action selector="setAutoSpeedLimit:" target="-2" id="531"/>
-                                <binding destination="365" name="value" keyPath="values.SpeedLimitAuto" id="455"/>
-                            </connections>
-                        </button>
-                        <imageView translatesAutoresizingMaskIntoConstraints="NO" id="228">
-                            <rect key="frame" x="20" y="113" width="18" height="18"/>
-                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="TortoiseTemplate" id="1279"/>
-                        </imageView>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="200">
-                            <rect key="frame" x="215" y="51" width="319" height="28"/>
-                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Override normal speed limits manually or at scheduled times" id="1278">
-                                <font key="font" metaFont="smallSystem"/>
-                                <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="199">
-                            <rect key="frame" x="195" y="115" width="68" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Download:" id="1277">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="198">
-                            <rect key="frame" x="195" y="87" width="51" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Upload:" id="1276">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="196">
-                            <rect key="frame" x="41" y="115" width="150" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Alternative speed limits:" id="1275">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="195">
-                            <rect key="frame" x="350" y="87" width="32" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="KB/s" id="1274">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="194">
-                            <rect key="frame" x="350" y="115" width="32" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="KB/s" id="1273">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="192">
-                            <rect key="frame" x="295" y="83" width="50" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="FWF-uP-zz7"/>
-                            </constraints>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1272">
-                                <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" id="929">
-                                    <nil key="negativeInfinitySymbol"/>
-                                    <nil key="positiveInfinitySymbol"/>
-                                    <integer key="minimum" value="0"/>
-                                    <real key="maximum" value="99999"/>
-                                </numberFormatter>
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <action selector="setSpeedLimit:" target="-2" id="587"/>
-                                <outlet property="delegate" destination="-2" id="933"/>
-                                <outlet property="nextKeyView" destination="525" id="581"/>
-                            </connections>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="190">
-                            <rect key="frame" x="295" y="111" width="50" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="bKh-IT-cHa"/>
-                            </constraints>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1271">
-                                <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" id="928">
-                                    <nil key="negativeInfinitySymbol"/>
-                                    <nil key="positiveInfinitySymbol"/>
-                                    <integer key="minimum" value="0"/>
-                                    <real key="maximum" value="99999"/>
-                                </numberFormatter>
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <action selector="setSpeedLimit:" target="-2" id="586"/>
-                                <outlet property="delegate" destination="-2" id="932"/>
-                                <outlet property="nextKeyView" destination="192" id="580"/>
-                            </connections>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="163">
-                            <rect key="frame" x="18" y="189" width="173" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Speed limits:" id="1270">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="159" customClass="ColorTextField">
-                            <rect key="frame" x="350" y="161" width="32" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="KB/s" id="1269">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <binding destination="365" name="enabled" keyPath="values.CheckUpload" id="1701"/>
-                            </connections>
-                        </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="158" customClass="ColorTextField">
-                            <rect key="frame" x="350" y="189" width="32" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="KB/s" id="1268">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <binding destination="365" name="enabled" keyPath="values.CheckDownload" id="1700"/>
-                            </connections>
-                        </textField>
-                        <button translatesAutoresizingMaskIntoConstraints="NO" id="157">
-                            <rect key="frame" x="197" y="189" width="86" height="16"/>
-                            <buttonCell key="cell" type="check" title="Download:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1267">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <connections>
-                                <action selector="applySpeedSettings:" target="-2" id="473"/>
-                                <binding destination="365" name="value" keyPath="values.CheckDownload" id="465"/>
-                            </connections>
-                        </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="156">
-                            <rect key="frame" x="295" y="157" width="50" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="8vq-FW-FXz"/>
-                            </constraints>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1266">
-                                <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" id="927">
-                                    <nil key="negativeInfinitySymbol"/>
-                                    <nil key="positiveInfinitySymbol"/>
-                                    <integer key="minimum" value="0"/>
-                                    <real key="maximum" value="99999"/>
-                                </numberFormatter>
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <action selector="setGlobalLimit:" target="-2" id="599"/>
-                                <binding destination="365" name="enabled" keyPath="values.CheckUpload" id="633"/>
-                                <outlet property="delegate" destination="-2" id="931"/>
-                                <outlet property="nextKeyView" destination="190" id="934"/>
-                            </connections>
-                        </textField>
-                        <button translatesAutoresizingMaskIntoConstraints="NO" id="155">
-                            <rect key="frame" x="197" y="161" width="86" height="16"/>
-                            <buttonCell key="cell" type="check" title="Upload:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1265">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <connections>
-                                <action selector="applySpeedSettings:" target="-2" id="472"/>
-                                <binding destination="365" name="value" keyPath="values.CheckUpload" id="464"/>
-                            </connections>
-                        </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="154">
-                            <rect key="frame" x="295" y="185" width="50" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="6ka-cM-20f"/>
-                            </constraints>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1264">
-                                <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" id="926">
-                                    <nil key="negativeInfinitySymbol"/>
-                                    <nil key="positiveInfinitySymbol"/>
-                                    <integer key="minimum" value="0"/>
-                                    <real key="maximum" value="99999"/>
-                                </numberFormatter>
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                            <connections>
-                                <action selector="setGlobalLimit:" target="-2" id="598"/>
-                                <binding destination="365" name="enabled" keyPath="values.CheckDownload" id="632"/>
-                                <outlet property="delegate" destination="-2" id="930"/>
-                                <outlet property="nextKeyView" destination="156" id="577"/>
-                            </connections>
-                        </textField>
-                    </subviews>
-                    <constraints>
-                        <constraint firstItem="192" firstAttribute="centerY" secondItem="198" secondAttribute="centerY" id="0An-WN-j9P"/>
-                        <constraint firstItem="192" firstAttribute="trailing" secondItem="154" secondAttribute="trailing" id="2Ci-69-dXL"/>
-                        <constraint firstItem="192" firstAttribute="top" secondItem="190" secondAttribute="bottom" constant="4" id="2Y5-Ow-KPq"/>
-                        <constraint firstItem="196" firstAttribute="leading" secondItem="228" secondAttribute="trailing" constant="5" id="3dL-jk-Que"/>
-                        <constraint firstItem="156" firstAttribute="centerY" secondItem="155" secondAttribute="centerY" id="4Cl-qN-h67"/>
-                        <constraint firstItem="525" firstAttribute="centerY" secondItem="1907" secondAttribute="centerY" id="4K1-57-qF5"/>
-                        <constraint firstItem="199" firstAttribute="centerY" secondItem="196" secondAttribute="centerY" id="7mo-Zq-APO"/>
-                        <constraint firstItem="228" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="a4A-eF-t64" secondAttribute="leading" constant="20" symbolic="YES" id="9Qf-rP-qht"/>
-                        <constraint firstItem="157" firstAttribute="centerY" secondItem="163" secondAttribute="centerY" id="9bj-16-n7Q"/>
-                        <constraint firstItem="199" firstAttribute="leading" secondItem="157" secondAttribute="leading" id="ApQ-SG-V6h"/>
-                        <constraint firstItem="190" firstAttribute="trailing" secondItem="154" secondAttribute="trailing" id="BuK-UU-l9k"/>
-                        <constraint firstItem="199" firstAttribute="top" secondItem="155" secondAttribute="bottom" constant="30" id="CDw-Gi-bcH"/>
-                        <constraint firstItem="196" firstAttribute="centerY" secondItem="228" secondAttribute="centerY" constant="-1" id="EE7-2m-MFx"/>
-                        <constraint firstItem="1907" firstAttribute="leading" secondItem="307" secondAttribute="leading" constant="25" id="Ebi-eC-iqD"/>
-                        <constraint firstItem="525" firstAttribute="leading" secondItem="1907" secondAttribute="trailing" constant="12" id="F9u-uv-VMH"/>
-                        <constraint firstItem="200" firstAttribute="leading" secondItem="157" secondAttribute="leading" constant="20" id="FPH-Ol-fvQ"/>
-                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="526" secondAttribute="trailing" constant="20" symbolic="YES" id="Hjj-27-atc"/>
-                        <constraint firstItem="190" firstAttribute="centerY" secondItem="196" secondAttribute="centerY" id="HuN-sa-dlq"/>
-                        <constraint firstItem="196" firstAttribute="trailing" secondItem="163" secondAttribute="trailing" id="IZW-uU-JA8"/>
-                        <constraint firstItem="310" firstAttribute="centerY" secondItem="525" secondAttribute="centerY" constant="-1" id="IrK-9T-8Qv"/>
-                        <constraint firstItem="194" firstAttribute="leading" secondItem="158" secondAttribute="leading" id="Kgl-nk-wJU"/>
-                        <constraint firstItem="159" firstAttribute="centerY" secondItem="155" secondAttribute="centerY" id="MT6-OP-3rB"/>
-                        <constraint firstItem="155" firstAttribute="leading" secondItem="157" secondAttribute="leading" id="MsS-pR-ew0"/>
-                        <constraint firstItem="526" firstAttribute="centerY" secondItem="1907" secondAttribute="centerY" id="NRB-55-2Fv"/>
-                        <constraint firstItem="158" firstAttribute="centerY" secondItem="163" secondAttribute="centerY" id="OT4-00-QLS"/>
-                        <constraint firstItem="525" firstAttribute="top" secondItem="307" secondAttribute="bottom" constant="6" id="Q3w-qf-DCQ"/>
-                        <constraint firstItem="526" firstAttribute="leading" secondItem="310" secondAttribute="trailing" constant="7" id="Q7s-gP-m13"/>
-                        <constraint firstItem="156" firstAttribute="trailing" secondItem="154" secondAttribute="trailing" id="SL0-N4-Mm8"/>
-                        <constraint firstItem="154" firstAttribute="centerY" secondItem="163" secondAttribute="centerY" id="TFq-HO-rco"/>
-                        <constraint firstItem="195" firstAttribute="leading" secondItem="158" secondAttribute="leading" id="UaN-DU-47X"/>
-                        <constraint firstItem="310" firstAttribute="leading" secondItem="525" secondAttribute="trailing" constant="7" id="VTe-SV-9KO"/>
-                        <constraint firstItem="195" firstAttribute="centerY" secondItem="198" secondAttribute="centerY" id="YWp-tk-Dwb"/>
-                        <constraint firstItem="157" firstAttribute="leading" secondItem="163" secondAttribute="trailing" constant="8" symbolic="YES" id="Z5a-b3-Mvq"/>
-                        <constraint firstItem="190" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="199" secondAttribute="trailing" constant="12" id="aYh-bx-7xI"/>
-                        <constraint firstItem="159" firstAttribute="leading" secondItem="158" secondAttribute="leading" id="dgQ-TO-KNu"/>
-                        <constraint firstAttribute="bottom" secondItem="526" secondAttribute="bottom" id="eeG-vK-amc"/>
-                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="200" secondAttribute="trailing" constant="20" symbolic="YES" id="ey8-0B-VKY"/>
-                        <constraint firstItem="154" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="157" secondAttribute="trailing" constant="12" id="fcW-dU-FG0"/>
-                        <constraint firstItem="198" firstAttribute="leading" secondItem="157" secondAttribute="leading" id="gFh-76-GuJ"/>
-                        <constraint firstItem="156" firstAttribute="leading" secondItem="155" secondAttribute="trailing" constant="12" id="iFp-uT-1ce"/>
-                        <constraint firstItem="200" firstAttribute="top" secondItem="198" secondAttribute="bottom" constant="8" symbolic="YES" id="jJC-Zt-QBL"/>
-                        <constraint firstItem="194" firstAttribute="centerY" secondItem="196" secondAttribute="centerY" id="nRs-hv-2KX"/>
-                        <constraint firstItem="196" firstAttribute="leading" secondItem="228" secondAttribute="trailing" constant="5" id="nrz-Af-dC1"/>
-                        <constraint firstItem="307" firstAttribute="leading" secondItem="157" secondAttribute="leading" id="r0L-jB-5eB"/>
-                        <constraint firstItem="307" firstAttribute="top" secondItem="200" secondAttribute="bottom" constant="7" id="stc-KL-OlN"/>
-                        <constraint firstItem="163" firstAttribute="leading" secondItem="a4A-eF-t64" secondAttribute="leading" constant="20" symbolic="YES" id="v2a-yk-NUx"/>
-                        <constraint firstItem="163" firstAttribute="top" secondItem="a4A-eF-t64" secondAttribute="top" constant="3" id="vAT-pn-hBy"/>
-                        <constraint firstItem="158" firstAttribute="leading" secondItem="154" secondAttribute="trailing" constant="7" id="wSn-aq-7wZ"/>
-                        <constraint firstItem="156" firstAttribute="top" secondItem="154" secondAttribute="bottom" constant="4" id="wib-T4-k0Q"/>
-                    </constraints>
-                </customView>
-            </subviews>
-            <constraints>
-                <constraint firstItem="a4A-eF-t64" firstAttribute="top" secondItem="153" secondAttribute="top" constant="20" symbolic="YES" id="Hkf-rW-hSQ"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="a4A-eF-t64" secondAttribute="trailing" constant="20" symbolic="YES" id="NLQ-4W-8Qn"/>
-                <constraint firstAttribute="bottom" secondItem="a4A-eF-t64" secondAttribute="bottom" constant="40" id="dY0-SP-y5M"/>
-                <constraint firstItem="a4A-eF-t64" firstAttribute="centerX" secondItem="153" secondAttribute="centerX" id="ig7-zh-7UR"/>
-                <constraint firstItem="a4A-eF-t64" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="153" secondAttribute="leading" constant="20" symbolic="YES" id="ig9-mv-HpH"/>
-            </constraints>
-            <point key="canvasLocation" x="-542" y="156"/>
-        </customView>
         <customView id="1361" userLabel="Peers">
             <rect key="frame" x="0.0" y="0.0" width="600" height="370"/>
             <autoresizingMask key="autoresizingMask"/>
@@ -1494,7 +1133,7 @@
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="Uul-ab-ka5">
                     <rect key="frame" x="40" y="40" width="520" height="310"/>
                     <subviews>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1427">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1427">
                             <rect key="frame" x="303" y="291" width="4" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1447">
                                 <font key="font" metaFont="system"/>
@@ -1502,7 +1141,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1424">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1424">
                             <rect key="frame" x="18" y="291" width="73" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Peer limits:" usesSingleLineMode="YES" id="1451">
                                 <font key="font" metaFont="system"/>
@@ -1533,7 +1172,7 @@
                                 <binding destination="365" name="value" keyPath="values.EncryptionRequire" id="1466"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1428">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1428">
                             <rect key="frame" x="360" y="266" width="4" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1446">
                                 <font key="font" metaFont="system"/>
@@ -1541,7 +1180,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1434">
+                        <textField verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1434">
                             <rect key="frame" x="18" y="97" width="73" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Blocklist:" usesSingleLineMode="YES" id="1439">
                                 <font key="font" metaFont="system"/>
@@ -1549,7 +1188,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1430">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1430">
                             <rect key="frame" x="95" y="266" width="205" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Maximum peers for new torrents:" id="1443">
                                 <font key="font" metaFont="system"/>
@@ -1557,7 +1196,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1738">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1738">
                             <rect key="frame" x="134" y="21" width="99" height="14"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Last updated: N/A" id="1739">
                                 <font key="font" metaFont="smallSystem"/>
@@ -1565,7 +1204,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1422">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1422">
                             <rect key="frame" x="18" y="153" width="73" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Encryption:" usesSingleLineMode="YES" id="1453">
                                 <font key="font" metaFont="system"/>
@@ -1584,7 +1223,7 @@
                                 <binding destination="365" name="value" keyPath="values.EncryptionPrefer" id="1465"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1426">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1426">
                             <rect key="frame" x="248" y="287" width="50" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="50" id="gvK-FZ-BmL"/>
@@ -1617,7 +1256,7 @@
                                 <binding destination="365" name="enabled" keyPath="values.BlocklistNew" id="1989"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1425">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1425">
                             <rect key="frame" x="95" y="291" width="148" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Maximum peers overall:" id="1450">
                                 <font key="font" metaFont="system"/>
@@ -1625,7 +1264,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1435">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1435">
                             <rect key="frame" x="188" y="44" width="168" height="16"/>
                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" title="blocklist loaded/not loaded" id="1438">
                                 <font key="font" metaFont="system"/>
@@ -1644,7 +1283,7 @@
                                 <binding destination="365" name="value" keyPath="values.PEXGlobal" id="1464"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1987" customClass="ColorTextField">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1987" customClass="ColorTextField">
                             <rect key="frame" x="114" y="74" width="34" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="URL:" id="1988">
                                 <font key="font" metaFont="system"/>
@@ -1676,7 +1315,7 @@
                                 <action selector="updateBlocklist:" target="-2" id="1462"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1429">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1429">
                             <rect key="frame" x="305" y="262" width="50" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="50" id="lcN-i7-y3Z"/>
@@ -1696,7 +1335,7 @@
                                 <action selector="setPeersTorrent:" target="-2" id="1457"/>
                             </connections>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1432">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1432">
                             <rect key="frame" x="115" y="250" width="370" height="14"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="High connection limits might significantly impact system performance" id="1441">
                                 <font key="font" metaFont="smallSystem"/>
@@ -1704,7 +1343,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1985">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1985">
                             <rect key="frame" x="153" y="71" width="347" height="21"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="21" id="v1A-Uu-Yga"/>
@@ -1834,7 +1473,7 @@
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="g2p-4Y-QU9">
                     <rect key="frame" x="60" y="40" width="388" height="380"/>
                     <subviews>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1552">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1552">
                             <rect key="frame" x="133" y="237" width="184" height="24"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1553">
                                 <font key="font" metaFont="system"/>
@@ -1856,7 +1495,7 @@
                                 <outlet property="nextKeyView" destination="1509" id="1625"/>
                             </connections>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1541">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1541">
                             <rect key="frame" x="95" y="29" width="275" height="14"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="IP addresses may use wildcards, such as 192.168.*.*" id="1542">
                                 <font key="font" metaFont="smallSystem"/>
@@ -1889,11 +1528,11 @@
                         <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1518">
                             <rect key="frame" x="60" y="53" width="308" height="73"/>
                             <clipView key="contentView" id="DtM-n3-Fsk">
-                                <rect key="frame" x="1" y="1" width="289" height="71"/>
+                                <rect key="frame" x="1" y="1" width="306" height="71"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" id="1521">
-                                        <rect key="frame" x="0.0" y="0.0" width="289" height="71"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="306" height="71"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <size key="intercellSpacing" width="3" height="2"/>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1940,7 +1579,7 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>
-                        <secureTextField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1509">
+                        <secureTextField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1509">
                             <rect key="frame" x="133" y="208" width="184" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="184" id="bne-80-KqO"/>
@@ -1967,7 +1606,7 @@
                                 <outlet property="nextKeyView" destination="1491" id="1626"/>
                             </connections>
                         </secureTextField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1644">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1644">
                             <rect key="frame" x="38" y="348" width="312" height="14"/>
                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="This enables the web interface and allows remote requests" id="1645">
                                 <font key="font" metaFont="smallSystem"/>
@@ -2022,7 +1661,7 @@
                                 <binding destination="365" name="value" keyPath="values.RPC" id="1511"/>
                             </connections>
                         </button>
-                        <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1491">
+                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1491">
                             <rect key="frame" x="115" y="165" width="50" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="50" id="ujf-b3-hxU"/>
@@ -2045,7 +1684,7 @@
                                 <outlet property="nextKeyView" destination="1552" id="1627"/>
                             </connections>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1556" customClass="ColorTextField">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1556" customClass="ColorTextField">
                             <rect key="frame" x="57" y="241" width="70" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Username:" usesSingleLineMode="YES" id="1557">
                                 <font key="font" metaFont="system"/>
@@ -2064,7 +1703,7 @@
                                 </binding>
                             </connections>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1554" customClass="ColorTextField">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1554" customClass="ColorTextField">
                             <rect key="frame" x="57" y="212" width="70" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Password:" usesSingleLineMode="YES" id="1555">
                                 <font key="font" metaFont="system"/>
@@ -2083,7 +1722,7 @@
                                 </binding>
                             </connections>
                         </textField>
-                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1492" customClass="ColorTextField">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1492" customClass="ColorTextField">
                             <rect key="frame" x="38" y="169" width="71" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="HTTP port:" id="1493">
                                 <font key="font" metaFont="system"/>
@@ -2197,7 +1836,6 @@
     <resources>
         <image name="NSAddTemplate" width="18" height="17"/>
         <image name="NSRemoveTemplate" width="18" height="5"/>
-        <image name="TortoiseTemplate" width="18" height="18"/>
         <image name="imageCell:1782:image" width="18" height="18">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T

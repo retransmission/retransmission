@@ -67,45 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "閒置超過時間時判斷傳輸已停滯：";
 
-/* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
-"1265.title" = "上傳速度：";
-
-/* Class = "NSButtonCell"; title = "Download rate:"; ObjectID = "1267"; */
-"1267.title" = "下載速度：";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1268"; */
-"1268.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1269"; */
-"1269.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "Global bandwidth limits:"; ObjectID = "1270"; */
-"1270.title" = "全域頻寬限制：";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1273"; */
-"1273.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1274"; */
-"1274.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "Speed Limit mode:"; ObjectID = "1275"; */
-"1275.title" = "速度限制模式：";
-
-/* Class = "NSTextFieldCell"; title = "Upload rate:"; ObjectID = "1276"; */
-"1276.title" = "上傳速度：";
-
-/* Class = "NSTextFieldCell"; title = "Download rate:"; ObjectID = "1277"; */
-"1277.title" = "下載速度：";
-
-/* Class = "NSTextFieldCell"; title = "When enabled Speed Limit overrides the global bandwidth limits"; ObjectID = "1278"; */
-"1278.title" = "啟用「速度限制」時會覆蓋全域頻寬限制。";
-
-/* Class = "NSButtonCell"; title = "Schedule Speed Limit:"; ObjectID = "1280"; */
-"1280.title" = "速度限制排程：";
-
-/* Class = "NSTextFieldCell"; title = "to"; ObjectID = "1281"; */
-"1281.title" = "到";
-
 /* Class = "NSButtonCell"; title = "Display a window when opening a torrent file"; ObjectID = "1294"; */
 "1294.title" = "開啟 torrent 檔案時顯示視窗";
 
@@ -237,36 +198,6 @@
 
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "傳輸將被分配到符合所有標準的第一個群組";
-
-/* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
-"1910.title" = "每天";
-
-/* Class = "NSMenuItem"; title = "Weekdays"; ObjectID = "1911"; */
-"1911.title" = "週間";
-
-/* Class = "NSMenuItem"; title = "Weekends"; ObjectID = "1912"; */
-"1912.title" = "週末";
-
-/* Class = "NSMenuItem"; title = "Monday"; ObjectID = "1914"; */
-"1914.title" = "週一";
-
-/* Class = "NSMenuItem"; title = "Tuesday"; ObjectID = "1915"; */
-"1915.title" = "週二";
-
-/* Class = "NSMenuItem"; title = "Wednesday"; ObjectID = "1916"; */
-"1916.title" = "週三";
-
-/* Class = "NSMenuItem"; title = "Thursday"; ObjectID = "1917"; */
-"1917.title" = "週四";
-
-/* Class = "NSMenuItem"; title = "Friday"; ObjectID = "1918"; */
-"1918.title" = "週五";
-
-/* Class = "NSMenuItem"; title = "Saturday"; ObjectID = "1919"; */
-"1919.title" = "週六";
-
-/* Class = "NSMenuItem"; title = "Sunday"; ObjectID = "1920"; */
-"1920.title" = "週日";
 
 /* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
 "1926.title" = "使用分散式雜湊表（DHT）來下載公開種子";

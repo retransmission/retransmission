@@ -36,6 +36,15 @@
     return button;
 }
 
++ (NSPopUpButton*)popUpButton
+{
+    NSPopUpButton* button = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    button.bezelStyle = NSBezelStyleRounded;
+    button.autoenablesItems = NO;
+    return button;
+}
+
 + (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max
 {
     NSTextField* textField = [[NSTextField alloc] init];
