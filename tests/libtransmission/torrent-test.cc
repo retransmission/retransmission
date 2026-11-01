@@ -60,7 +60,7 @@ TEST_F(TorrentTest, queueMoveUp)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_up(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_up(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -83,7 +83,7 @@ TEST_F(TorrentTest, queueMoveDown)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_down(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_down(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -123,7 +123,7 @@ TEST_F(TorrentTest, queueMoveTop)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_top(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_top(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -146,7 +146,7 @@ TEST_F(TorrentTest, queueMoveBottom)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_bottom(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_bottom(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
