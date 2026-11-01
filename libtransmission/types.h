@@ -735,6 +735,8 @@ using tr_torrent_remove_func = std::function<bool(std::string_view filename, tr_
 
 using tr_torrent_stats_func = std::function<void(std::vector<tr_stat>)>;
 
+using tr_torrent_peers_func = std::function<void(std::vector<tr_peer_stat>)>;
+
 using tr_rpc_func = std::function<tr_rpc_callback_status(tr_rpc_callback_type type, std::optional<tr_torrent_id_t>)>;
 
 using tr_torrent_rename_done_func = std::function<

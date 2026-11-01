@@ -54,6 +54,14 @@ auto constexpr TorFilenames = std::array{
     tr_torrentStatAsync(session, [promise](std::vector<tr_stat> stats) { promise->set_value(std::move(stats)); });
     return future;
 }
+
+// Holds the session thread until the returned promise is set, so that later calls queue behind it.
+[[nodiscard]] std::promise<void> holdSessionThread(tr_session* const session)
+{
+    auto release = std::promise<void>{};
+    session->queue_session_thread([released = release.get_future().share()] { released.wait(); });
+    return release;
+}
 } // namespace
 
 TEST_F(TorrentTest, queueMoveUp)
@@ -173,8 +181,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     auto const target_dir = tr_pathbuf{ sandboxDir(), "/target"sv };
 
     // Hold the session thread, so that each call below queues its work.
-    auto release = std::promise<void>{};
-    session_->queue_session_thread([released = release.get_future().share()] { released.wait(); });
+    auto release = holdSessionThread(session_);
 
     // `tor` is valid for every call, but the first removal frees it before the rest of the work runs.
     // Only a sanitizer build checks the work that reports nothing.
@@ -373,8 +380,7 @@ TEST_F(TorrentTest, statAsyncRunsAfterQueuedWork)
     ASSERT_EQ(TR_STATUS_SEED, tr_torrentStat(tor).activity);
 
     // Hold the session thread, so that the stop is still queued when the stats are requested.
-    auto release = std::promise<void>{};
-    session_->queue_session_thread([released = release.get_future().share()] { released.wait(); });
+    auto release = holdSessionThread(session_);
     tr_torrentStop(tor);
     EXPECT_EQ(TR_STATUS_SEED, tr_torrentStat(tor).activity); // a synchronous stat runs ahead of the stop
     auto future = statAsync(session_);
@@ -433,4 +439,31 @@ TEST_F(TorrentTest, statAsyncIgnoresAnEmptyCallback)
 
     tr_logSetQueueEnabled(false);
     tr_logSetLevel(old_level);
+}
+
+TEST_F(TorrentTest, peersAsyncCallsBackOnTheSessionThread)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    auto const on_session_thread = std::make_shared<std::promise<bool>>();
+    auto future = on_session_thread->get_future();
+    tr_torrentPeersAsync(tor, [session = session_, on_session_thread](std::vector<tr_peer_stat> const& peers) {
+        EXPECT_TRUE(std::empty(peers)); // nothing is connected
+        on_session_thread->set_value(session->am_in_session_thread());
+    });
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_TRUE(future.get());
+
+    // A torrent removed ahead of the request still gets a (now empty) answer.
+    auto release = holdSessionThread(session_);
+    tr_torrentRemove(tor, false);
+    auto const answered = std::make_shared<std::promise<void>>();
+    auto answered_future = answered->get_future();
+    tr_torrentPeersAsync(tor, [answered](std::vector<tr_peer_stat> const& peers) {
+        EXPECT_TRUE(std::empty(peers));
+        answered->set_value();
+    });
+    release.set_value();
+    ASSERT_EQ(std::future_status::ready, answered_future.wait_for(5s));
 }

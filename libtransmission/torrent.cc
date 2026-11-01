@@ -1570,6 +1570,24 @@ std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* tor)
     return tr_peerMgrPeerStats(tor);
 }
 
+void tr_torrentPeersAsync(tr_torrent* const tor, tr_torrent_peers_func callback)
+{
+    tr_return_if_fail(tr_isTorrent(tor));
+    tr_return_if_fail(callback != nullptr);
+
+    auto* const session = tor->session;
+    session->queue_session_thread([session, tor_id = tor->id(), callback = std::move(callback)] {
+        auto peers = std::vector<tr_peer_stat>{};
+        {
+            auto const lock = session->unique_lock();
+            if (auto const* const torrent = session->torrents().get(tor_id); torrent != nullptr) {
+                peers = tr_torrentPeers(torrent);
+            }
+        }
+        callback(std::move(peers));
+    });
+}
+
 void tr_torrentAvailability(tr_torrent const* tor, std::span<int8_t> const tab)
 {
     tr_return_if_fail(tr_isTorrent(tor));

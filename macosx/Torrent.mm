@@ -55,6 +55,9 @@ static dispatch_queue_t timeMachineExcludeQueue;
 @property(nonatomic) BOOL fResumeOnWake;
 @property(nonatomic, copy, readwrite) NSString* hashString;
 
+@property(nonatomic, copy) NSArray<NSDictionary*>* peers;
+@property(nonatomic) BOOL fPeersPending;
+
 - (BOOL)canChangeDownloadChecks;
 
 - (void)renameFinished:(BOOL)success
@@ -917,17 +920,15 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return error;
 }
 
-- (NSArray<NSDictionary*>*)peers
+[[nodiscard]]
+static NSArray<NSDictionary*>* peerDicts(std::vector<tr_peer_stat> const& peers, NSString* const name)
 {
-    auto const peers = tr_torrentPeers(self.fHandle);
-    size_t const totalPeers = peers.size();
-
-    NSMutableArray* peerDicts = [NSMutableArray arrayWithCapacity:totalPeers];
+    NSMutableArray* dicts = [NSMutableArray arrayWithCapacity:peers.size()];
 
     for (auto const& peer : peers) {
         NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
 
-        dict[@"Name"] = self.name;
+        dict[@"Name"] = name;
         dict[@"From"] = @(peer.from);
         dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
         dict[@"Port"] = @(peer.port);
@@ -947,10 +948,27 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             dict[@"DL From Rate"] = @(peer.rate_to_client.count(tr::Values::Speed::Units::KByps));
         }
 
-        [peerDicts addObject:dict];
+        [dicts addObject:dict];
     }
 
-    return peerDicts;
+    return dicts;
+}
+
+- (void)refreshPeers
+{
+    if (self.fPeersPending) {
+        return; // requests can't pile up behind a stalled session thread
+    }
+    self.fPeersPending = YES;
+
+    NSString* const name = self.name;
+    tr_torrentPeersAsync(self.fHandle, [torrent = self, name](std::vector<tr_peer_stat> peers) {
+        dispatch_async(dispatch_get_main_queue(), ^{ // the block captures `peers` by copy
+            torrent.peers = peerDicts(peers, name);
+            torrent.fPeersPending = NO;
+            [NSNotificationCenter.defaultCenter postNotificationName:@"TorrentPeersChange" object:torrent];
+        });
+    });
 }
 
 - (NSUInteger)webSeedCount
@@ -1707,6 +1725,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
 
     _fResumeOnWake = NO;
+    _peers = @[];
     _hashString = @(tr_torrentView(self.fHandle).hash_string);
     _id = tr_torrentId(self.fHandle);
 
