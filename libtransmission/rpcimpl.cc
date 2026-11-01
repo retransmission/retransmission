@@ -417,11 +417,6 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
 
 namespace make_torrent_field_helpers
 {
-[[nodiscard]] constexpr double ratio_to_wire(Ratio const ratio) noexcept
-{
-    return ratio.quotient().value_or(ratio.is_infinite() ? Ratio::WireInfinite : Ratio::WireNone);
-}
-
 [[nodiscard]] auto make_file_wanted_vec(tr_torrent const& tor)
 {
     auto const n_files = tor.file_count();
@@ -929,7 +924,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_upload_limited:
         return tor.uses_speed_limit(tr_direction::Up);
     case TR_KEY_upload_ratio:
-        return ratio_to_wire(st.upload_ratio);
+        return tr::serializer::to_variant(st.upload_ratio);
     case TR_KEY_uploaded_ever:
         return st.uploaded_ever;
     case TR_KEY_wanted:
