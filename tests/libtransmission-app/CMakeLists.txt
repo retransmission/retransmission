@@ -12,8 +12,10 @@ target_sources(libtransmission-app-test
 		rpc-queue-test.cc
 		session-test.cc
 		test-fixtures.h
+		torrent-filter-test.cc
 		torrent-get-helpers.h
 		torrent-list-test.cc
+		torrent-sort-test.cc
 		torrent-test.cc
 		trash-test.cc)
 
