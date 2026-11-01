@@ -5,74 +5,77 @@
 
 #pragma once
 
+#include <array>
+#include <cstddef> // size_t
 #include <optional>
-#include <span>
-#include <utility>
 #include <vector>
 
-#include <QtCore/QAbstractListModel>
+#include <sigslot/signal.hpp>
 
-#include "Torrent.h"
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QMetaType>
+#include <QtCore/QString>
+
+#include <QtGui/QIcon>
+
+#include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/torrent.h>
+
 #include "Typedefs.h"
 
-class Prefs;
-class Speed;
-
-struct tr_variant;
-
+// A `tr::app::TorrentList` as a Qt list model: one row per torrent, in id order.
+// The list does the diffing; this brackets its row signals with Qt's and
+// re-emits its `Changes` as Qt signals.
 class TorrentModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
     // NOLINTNEXTLINE(performance-enum-size)
-    enum Role { TorrentRole = Qt::UserRole };
+    enum Role { TorrentRole = Qt::UserRole }; // `tr::app::Torrent const*`
 
-    explicit TorrentModel(Prefs const& prefs);
+    explicit TorrentModel(tr::app::TorrentList& torrents);
     TorrentModel& operator=(TorrentModel&&) = delete;
     TorrentModel& operator=(TorrentModel const&) = delete;
     TorrentModel(TorrentModel&&) = delete;
     TorrentModel(TorrentModel const&) = delete;
-    ~TorrentModel() override;
-    void clear();
+    ~TorrentModel() override = default;
 
-    [[nodiscard]] bool hasTorrent(TorrentHash const& hash) const;
-
-    [[nodiscard]] Torrent* getTorrentFromId(tr_torrent_id_t id);
-    [[nodiscard]] Torrent const* getTorrentFromId(tr_torrent_id_t id) const;
-
-    using torrents_t = std::vector<Torrent*>;
-
-    [[nodiscard]] torrents_t const& torrents() const
+    [[nodiscard]] tr::app::TorrentList const& list() const noexcept
     {
         return torrents_;
     }
 
-    // QAbstractItemModel
-    int rowCount(QModelIndex const& parent = QModelIndex{}) const override;
-    QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const override;
+    // forgets every torrent, e.g. when the session changes
+    void clear();
 
-public slots:
-    void updateTorrents(std::span<tr_variant const> torrent_list, bool is_complete_list);
-    void removeTorrents(std::span<tr_variant const> torrent_ids);
+    // QAbstractItemModel
+    [[nodiscard]] int rowCount(QModelIndex const& parent = QModelIndex{}) const override;
+    [[nodiscard]] QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const override;
 
 signals:
     void torrentsAdded(torrent_ids_t const&);
-    void torrentsChanged(torrent_ids_t const&, Torrent::fields_t const& fields);
+    void torrentsChanged(torrent_ids_t const&, tr::app::TorrentFieldSet const& fields);
     void torrentsCompleted(torrent_ids_t const&);
     void torrentsEdited(torrent_ids_t const&);
     void torrentsNeedInfo(torrent_ids_t const&);
 
 private:
-    void rowsAdd(torrents_t const& torrents);
-    void rowsRemove(torrents_t const& torrents);
-    void rowsEmitChanged(torrent_ids_t const& ids);
+    // the conversions the delegate asks for on every paint, built on first use
+    struct Row {
+        std::optional<QString> name;
+        std::optional<QIcon> icon;
+    };
 
-    [[nodiscard]] std::optional<int> getRow(tr_torrent_id_t id) const;
-    using span_t = std::pair<int, int>;
-    [[nodiscard]] std::vector<span_t> getSpans(torrent_ids_t const& ids) const;
+    void onRowsInserting(size_t row, size_t count);
+    void onRowsInserted(size_t row, size_t count);
+    void onRowsRemoving(size_t row, size_t count);
+    void onRowsRemoved(size_t row, size_t count);
+    void onChanged(tr::app::TorrentList::Changes const& changes);
 
-    Prefs const& prefs_;
-    torrent_ids_t already_added_;
-    torrents_t torrents_;
+    tr::app::TorrentList& torrents_;
+    mutable std::vector<Row> rows_; // parallel to the list's rows
+    std::array<sigslot::scoped_connection, 5> connections_;
 };
+
+Q_DECLARE_METATYPE(tr::app::Torrent const*)

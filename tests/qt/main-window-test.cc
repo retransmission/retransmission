@@ -15,6 +15,8 @@
 #include "Session.h"
 #include "TorrentModel.h"
 
+#include <libtransmission-app/torrent-list.h>
+
 namespace
 {
 // This client shows the window on someone else's behalf. A launch handed here
@@ -33,14 +35,16 @@ private:
     struct Client {
         explicit Client(QString const& config_dir)
             : prefs{ config_dir }
-            , session{ config_dir, prefs, rpc }
-            , model{ prefs }
+            , torrents{ prefs }
+            , session{ config_dir, prefs, rpc, torrents }
+            , model{ torrents }
             , window{ session, prefs, model, /*minimized=*/true }
         {
         }
 
         Prefs prefs;
         RpcClient rpc;
+        tr::app::TorrentList torrents;
         Session session;
         TorrentModel model;
         MainWindow window;

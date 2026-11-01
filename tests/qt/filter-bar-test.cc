@@ -13,6 +13,8 @@
 
 #include <libtransmission/quark.h>
 
+#include <libtransmission-app/torrent-list.h>
+
 #include "FilterBar.h"
 #include "Prefs.h"
 #include "TorrentFilter.h"
@@ -43,7 +45,8 @@ class FilterBarTest : public QObject
 
     struct Client {
         Prefs prefs;
-        TorrentModel model{ prefs };
+        tr::app::TorrentList torrents{ prefs };
+        TorrentModel model{ torrents };
         TorrentFilter filter{ prefs };
         FilterBar bar{ prefs, model, filter };
     };

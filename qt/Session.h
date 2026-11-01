@@ -10,7 +10,6 @@
 #include <cstdint> // uint64_t
 #include <map>
 #include <optional>
-#include <span>
 #include <string>
 #include <type_traits>
 
@@ -26,6 +25,7 @@
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/session.h>
+#include <libtransmission-app/torrent-list.h>
 
 #include "Prefs.h"
 #include "RpcClient.h"
@@ -42,7 +42,7 @@ class Session
     Q_OBJECT
 
 public:
-    Session(QString config_dir, Prefs& prefs, RpcClient& rpc);
+    Session(QString config_dir, Prefs& prefs, RpcClient& rpc, tr::app::TorrentList& torrents);
     Session(Session&&) = delete;
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
@@ -133,8 +133,6 @@ signals:
     void sessionUpdated();
     void blocklistUpdated(qint64);
     void blocklistUpdateFailed(QString const& message);
-    void torrentsUpdated(std::span<tr_variant const> torrents, bool complete_list);
-    void torrentsRemoved(std::span<tr_variant const> torrent_ids);
     void sessionCalled(Tag);
     void dataReadProgress();
     void dataSendProgress();
@@ -195,6 +193,7 @@ private:
 
     QString const config_dir_;
     Prefs& prefs_;
+    tr::app::TorrentList& torrents_;
 
     std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};

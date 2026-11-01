@@ -63,7 +63,6 @@ auto const FDONotificationsInterfaceName = QStringLiteral("org.freedesktop.Notif
 auto constexpr StatsRefreshIntervalMsec = 3000;
 auto constexpr SessionRefreshIntervalMsec = 3000;
 auto constexpr ModelRefreshIntervalMsec = 3000;
-auto constexpr InternRefreshIntervalMsec = 5 * 60 * 1000;
 
 [[nodiscard]] bool loadTranslation(
     QTranslator& translator,
@@ -132,16 +131,6 @@ QAccessibleInterface* accessibleFactory(QString const& className, QObject* objec
 
 } // namespace
 
-void Application::pruneInternedStrings()
-{
-    std::erase_if(interned_strings_, [](QString const& str) { return str.isDetached(); });
-}
-
-QString Application::intern(QString const& in)
-{
-    return *interned_strings_.insert(in).first;
-}
-
 Application::Application(
     Prefs& prefs,
     RpcClient& rpc,
@@ -180,10 +169,10 @@ Application::Application(
     QAccessible::installFactory(&accessibleFactory);
 #endif
 
-    session_ = std::make_unique<Session>(config_dir, prefs_, rpc);
-    model_ = std::make_unique<TorrentModel>(prefs_);
+    session_ = std::make_unique<Session>(config_dir, prefs_, rpc, torrents_);
+    model_ = std::make_unique<TorrentModel>(torrents_);
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
-    watch_dir_ = std::make_unique<WatchDir>(*model_);
+    watch_dir_ = std::make_unique<WatchDir>(torrents_);
 
     connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
     connect(model_.get(), &TorrentModel::torrentsAdded, this, &Application::onTorrentsAdded);
@@ -193,8 +182,18 @@ Application::Application(
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
     connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
-    connect(session_.get(), &Session::torrentsRemoved, model_.get(), &TorrentModel::removeTorrents);
-    connect(session_.get(), &Session::torrentsUpdated, model_.get(), &TorrentModel::updateTorrents);
+    favicon_connections_[0] = torrents_.rows_inserted.connect_scoped([this](size_t const row, size_t const count) {
+        for (auto i = row; i < row + count; ++i) {
+            loadFavicons(torrents_[i]);
+        }
+    });
+    favicon_connections_[1] = torrents_.changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+        for (auto const& change : changes.changed) {
+            if ((change.fields & tr::app::Torrent::fields<TR_KEY_trackers>()).any()) {
+                loadFavicons(torrents_[change.row]);
+            }
+        }
+    });
     connect(watch_dir_.get(), &WatchDir::torrentFileAdded, this, qOverload<QString const&>(&Application::addWatchdirTorrent));
 
     // init from preferences
@@ -218,12 +217,6 @@ Application::Application(
     connect(timer, &QTimer::timeout, session_.get(), &Session::refreshSessionInfo);
     timer->setSingleShot(false);
     timer->setInterval(SessionRefreshIntervalMsec);
-    timer->start();
-
-    timer = &intern_timer_;
-    connect(timer, &QTimer::timeout, this, &Application::pruneInternedStrings);
-    timer->setSingleShot(false);
-    timer->setInterval(InternRefreshIntervalMsec);
     timer->start();
 
     if (!first_time) {
@@ -309,7 +302,9 @@ QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
 {
     QStringList names;
     for (auto const& id : torrent_ids) {
-        names.push_back(model_->getTorrentFromId(id)->name());
+        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+            names.push_back(Utils::qstringFromUtf8(tor->name()));
+        }
     }
 
     names.sort();
@@ -323,7 +318,9 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
     }
 
     for (auto id : torrent_ids) {
-        notifyTorrentAdded(model_->getTorrentFromId(id));
+        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+            notifyTorrentAdded(*tor);
+        }
     }
 }
 
@@ -361,11 +358,18 @@ void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
     }
 }
 
-void Application::notifyTorrentAdded(Torrent const* tor) const
+void Application::notifyTorrentAdded(tr::app::Torrent const& tor) const
 {
     QStringList actions;
-    actions << QString{ QStringLiteral("start-now(%1)") }.arg(tor->id()) << QObject::tr("Start Now");
-    notifyApp(tr("Torrent Added"), tor->name(), actions);
+    actions << QString{ QStringLiteral("start-now(%1)") }.arg(tor.id()) << QObject::tr("Start Now");
+    notifyApp(tr("Torrent Added"), Utils::qstringFromUtf8(tor.name()), actions);
+}
+
+void Application::loadFavicons(tr::app::Torrent const& tor)
+{
+    for (auto const& tracker : tor.tracker_stats()) {
+        load_favicon(tracker.announce.sv());
+    }
 }
 
 // ---

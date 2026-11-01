@@ -9,7 +9,9 @@
 #include <array>
 #include <cassert>
 #include <memory>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 #include <QtCore/QMimeData>
 #include <QtCore/QProcess> // openSelect() on Windows and macOS
@@ -29,6 +31,8 @@
 #include "libtransmission/macros.h"
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/version.h"
+
+#include "libtransmission-app/torrent.h"
 
 #include "AboutDialog.h"
 #include "AddData.h"
@@ -538,24 +542,24 @@ void openSelect(QString const& path)
 #endif
 
 // if all torrents in a list have the same top folder, return it
-[[nodiscard]] QString getTopFolder(FileList const& files)
+[[nodiscard]] QString getTopFolder(std::vector<tr::app::TorrentFile> const& files)
 {
     if (std::empty(files)) {
         return {};
     }
 
-    auto const& first_filename = files.at(0).filename;
-    auto const slash_index = first_filename.indexOf(QLatin1Char{ '/' });
-    if (slash_index == -1) {
+    auto const first_name = std::string_view{ files.front().name };
+    auto const slash_index = first_name.find('/');
+    if (slash_index == std::string_view::npos) {
         return {};
     }
 
-    auto top = first_filename.left(slash_index);
-    if (!std::ranges::all_of(files, [&top](auto const& file) { return file.filename.startsWith(top); })) {
+    auto const top = first_name.substr(0, slash_index);
+    if (!std::ranges::all_of(files, [top](auto const& file) { return std::string_view{ file.name }.starts_with(top); })) {
         return {};
     }
 
-    return top;
+    return Utils::qstringFromUtf8(top);
 }
 
 [[nodiscard]] bool isTopFolder(QDir const& parent, QString const& child)
@@ -568,13 +572,13 @@ void openSelect(QString const& path)
     return info.exists() && info.isDir();
 }
 
-[[nodiscard]] QString getTopFolder(QDir const& parent, Torrent const* const tor)
+[[nodiscard]] QString getTopFolder(QDir const& parent, tr::app::Torrent const* const tor)
 {
     if (auto top = getTopFolder(tor->files()); isTopFolder(parent, top)) {
         return top;
     }
 
-    if (auto const& top = tor->name(); isTopFolder(parent, top)) {
+    if (auto const top = Utils::qstringFromUtf8(tor->name()); isTopFolder(parent, top)) {
         return top;
     }
 
@@ -593,12 +597,12 @@ void MainWindow::openFolder()
     }
 
     auto const torrent_id = *selected_torrents.begin();
-    auto const* const tor = model_.getTorrentFromId(torrent_id);
+    auto const* const tor = model_.list().find(torrent_id);
     if (tor == nullptr) {
         return;
     }
 
-    auto const parent = QDir{ tor->getPath() };
+    auto const parent = QDir{ Utils::qstringFromUtf8(tor->download_dir().sv()) };
     auto const child = getTopFolder(parent, tor);
     openSelect(parent.filePath(child));
 }
@@ -648,12 +652,11 @@ MainWindow::TransferStats MainWindow::getTransferStats() const
 {
     TransferStats stats;
 
-    for (auto const& tor : model_.torrents()) {
-        stats.speed_up += tor->uploadSpeed();
-        stats.speed_down += tor->downloadSpeed();
-        stats.peers_sending += tor->webseedsWeAreDownloadingFrom();
-        stats.peers_sending += tor->peersWeAreDownloadingFrom();
-        stats.peers_receiving += tor->peersWeAreUploadingTo();
+    for (auto const& tor : model_.list().torrents()) {
+        stats.speed_up += tor.upload_speed();
+        stats.speed_down += tor.download_speed();
+        stats.peers_sending += tor.active_peers_down();
+        stats.peers_receiving += tor.peers_getting_from_us();
     }
 
     return stats;
@@ -773,33 +776,33 @@ void MainWindow::refreshActionSensitivity()
     auto selected_with_metadata = int{};
     auto const now = time(nullptr);
     for (auto const& row : selection_model->selectedRows()) {
-        auto const* const tor = model->data(row, TorrentModel::TorrentRole).value<Torrent const*>();
+        auto const* const tor = model->data(row, TorrentModel::TorrentRole).value<tr::app::Torrent const*>();
         if (tor == nullptr) {
             continue;
         }
 
         ++selected;
 
-        if (tor->isPaused()) {
+        if (tor->is_paused()) {
             ++selected_and_paused;
         }
 
-        if (tor->isQueued()) {
+        if (tor->is_queued()) {
             ++selected_and_queued;
         }
 
-        if (tor->hasMetadata()) {
+        if (tor->has_metadata()) {
             ++selected_with_metadata;
         }
 
-        if (tor->canManualAnnounceAt(now)) {
+        if (tor->can_manual_announce_at(now)) {
             ++selected_and_can_announce;
         }
     }
 
-    auto const& torrents = model_.torrents();
-    auto const is_paused = [](auto const* tor) {
-        return tor->isPaused();
+    auto const torrents = model_.list().torrents();
+    auto const is_paused = [](auto const& tor) {
+        return tor.is_paused();
     };
     auto const any_paused = std::ranges::any_of(torrents, is_paused);
     auto const any_not_paused = !std::ranges::all_of(torrents, is_paused);
@@ -890,9 +893,9 @@ torrent_ids_t MainWindow::getSelectedTorrents(bool with_metadata_only) const
     torrent_ids_t ids;
 
     for (QModelIndex const& index : ui_.listView->selectionModel()->selectedRows()) {
-        auto const* tor(index.data(TorrentModel::TorrentRole).value<Torrent const*>());
+        auto const* const tor = index.data(TorrentModel::TorrentRole).value<tr::app::Torrent const*>();
 
-        if (tor != nullptr && (!with_metadata_only || tor->hasMetadata())) {
+        if (tor != nullptr && (!with_metadata_only || tor->has_metadata())) {
             ids.insert(tor->id());
         }
     }
@@ -1309,14 +1312,14 @@ void MainWindow::removeTorrents(bool const delete_files)
     int connected = 0;
 
     for (QModelIndex const& index : ui_.listView->selectionModel()->selectedRows()) {
-        auto const* tor(index.data(TorrentModel::TorrentRole).value<Torrent const*>());
+        auto const* const tor = index.data(TorrentModel::TorrentRole).value<tr::app::Torrent const*>();
         ids.insert(tor->id());
 
-        if (tor->connectedPeers()) {
+        if (tor->peers_connected() != 0) {
             ++connected;
         }
 
-        if (!tor->isDone()) {
+        if (!tor->is_done()) {
             ++incomplete;
         }
     }

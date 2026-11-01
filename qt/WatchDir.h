@@ -12,14 +12,14 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-class TorrentModel;
+#include <libtransmission-app/torrent-list.h>
 
 class WatchDir : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit WatchDir(TorrentModel const& model);
+    explicit WatchDir(tr::app::TorrentList const& torrents);
     ~WatchDir() override = default;
     WatchDir(WatchDir&&) = delete;
     WatchDir(WatchDir const&) = delete;
@@ -42,7 +42,7 @@ private:
 
     [[nodiscard]] AddResult metainfoTest(QString const& filename) const;
 
-    TorrentModel const& model_;
+    tr::app::TorrentList const& torrents_;
 
     std::set<QString> watch_dir_files_;
     std::unique_ptr<QFileSystemWatcher> watcher_;

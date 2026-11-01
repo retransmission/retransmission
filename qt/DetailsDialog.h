@@ -11,9 +11,10 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/torrent.h>
+
 #include "BaseDialog.h"
 #include "Session.h"
-#include "Torrent.h"
 #include "Typedefs.h"
 #include "ui_DetailsDialog.h"
 
@@ -67,7 +68,7 @@ private slots:
     void refreshUI();
 
     void onTorrentsEdited(torrent_ids_t const& ids);
-    void onTorrentsChanged(torrent_ids_t const& ids, Torrent::fields_t const& fields);
+    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
     void onSessionCalled(Session::Tag tag);
 
     // Details tab
