@@ -34,8 +34,6 @@ struct EvhttpDeleter {
     void operator()(struct evhttp* evh) const noexcept;
 };
 
-using evhttp_unique_ptr = std::unique_ptr<struct evhttp, EvhttpDeleter>;
-
 [[nodiscard]] struct event* event_new_pri2(
     struct event_base* base,
     evutil_socket_t fd,
