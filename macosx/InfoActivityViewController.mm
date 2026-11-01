@@ -7,6 +7,8 @@
 #import "PiecesView.h"
 #import "Torrent.h"
 
+#define LStr(key) NSLocalizedStringFromTable(key, @"InfoActivityView", @"")
+
 typedef NS_ENUM(NSUInteger, PiecesControlSegment) {
     PiecesControlSegmentProgress = 0,
     PiecesControlSegmentAvailable = 1,
@@ -22,25 +24,26 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
 @property(nonatomic) BOOL fSet;
 
-@property(nonatomic) IBOutlet NSTextField* fDateAddedField;
-@property(nonatomic) IBOutlet NSTextField* fDateCompletedField;
-@property(nonatomic) IBOutlet NSTextField* fDateActivityField;
-@property(nonatomic) IBOutlet NSTextField* fStateField;
-@property(nonatomic) IBOutlet NSTextField* fProgressField;
-@property(nonatomic) IBOutlet NSTextField* fHaveField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadedTotalField;
-@property(nonatomic) IBOutlet NSTextField* fUploadedTotalField;
-@property(nonatomic) IBOutlet NSTextField* fFailedHashField;
-@property(nonatomic) IBOutlet NSTextField* fRatioField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadTimeField;
-@property(nonatomic) IBOutlet NSTextField* fSeedTimeField;
-@property(nonatomic) IBOutlet NSTextView* fErrorMessageView;
+@property(nonatomic) NSTextField* fDateAddedField;
+@property(nonatomic) NSTextField* fDateCompletedField;
+@property(nonatomic) NSTextField* fDateActivityField;
+@property(nonatomic) NSTextField* fStateField;
+@property(nonatomic) NSTextField* fProgressField;
+@property(nonatomic) NSTextField* fHaveField;
+@property(nonatomic) NSTextField* fDownloadedTotalField;
+@property(nonatomic) NSTextField* fUploadedTotalField;
+@property(nonatomic) NSTextField* fFailedHashField;
+@property(nonatomic) NSTextField* fRatioField;
+@property(nonatomic) NSTextField* fDownloadTimeField;
+@property(nonatomic) NSTextField* fSeedTimeField;
+@property(nonatomic) NSTextView* fErrorMessageView;
 
-@property(nonatomic) IBOutlet PiecesView* fPiecesView;
-@property(nonatomic) IBOutlet NSSegmentedControl* fPiecesControl;
+@property(nonatomic) PiecesView* fPiecesView;
+@property(nonatomic) NSSegmentedControl* fPiecesControl;
 
-@property(nonatomic) IBOutlet NSStackView* fActivityStackView;
-@property(nonatomic) IBOutlet NSView* fDatesView;
+@property(nonatomic) NSStackView* fActivityStackView;
+@property(nonatomic) NSView* fTransferView;
+@property(nonatomic) NSView* fDatesView;
 @property(nonatomic, readonly) CGFloat fHeightChange;
 @property(nonatomic, readwrite) CGFloat fCurrentHeight;
 @property(nonatomic, readonly) CGFloat fHorizLayoutHeight;
@@ -51,37 +54,363 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
 @implementation InfoActivityViewController
 
+#pragma mark - Lifecycle
+
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoActivityView" bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         self.title = NSLocalizedString(@"Activity", "Inspector view -> title");
     }
-
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
+    NSView* root = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 358, 358)];
+    root.translatesAutoresizingMaskIntoConstraints = NO;
+    self.view = root;
+
+    self.fTransferView = [self makeTransferView];
+    self.fDatesView = [self makeDatesView];
+
+    self.fActivityStackView = [NSStackView stackViewWithViews:@[ self.fTransferView, self.fDatesView ]];
+    self.fActivityStackView.orientation = NSUserInterfaceLayoutOrientationVertical;
+    self.fActivityStackView.alignment = NSLayoutAttributeLeading;
+    self.fActivityStackView.distribution = NSStackViewDistributionGravityAreas;
+    self.fActivityStackView.spacing = kStackViewVerticalSpacing;
+    self.fActivityStackView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fActivityStackView.detachesHiddenViews = YES;
+
+    [root addSubview:self.fActivityStackView];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fActivityStackView.topAnchor constraintEqualToAnchor:root.topAnchor constant:kStackViewInset],
+        [self.fActivityStackView.leadingAnchor constraintEqualToAnchor:root.leadingAnchor constant:kStackViewInset],
+        [root.bottomAnchor constraintEqualToAnchor:self.fActivityStackView.bottomAnchor constant:kStackViewInset],
+        [root.trailingAnchor constraintEqualToAnchor:self.fActivityStackView.trailingAnchor constant:kStackViewInset],
+    ]];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     [self checkWindowSize];
 
-    auto gestureRecognizer = [[NSClickGestureRecognizer alloc] initWithTarget:self action:@selector(togglePiecesViewAvailability:)];
-    [self.fPiecesView addGestureRecognizer:gestureRecognizer];
+    NSClickGestureRecognizer* gesture = [[NSClickGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(togglePiecesViewAvailability:)];
+    [self.fPiecesView addGestureRecognizer:gesture];
+}
+
+#pragma mark - View factories
+
+- (NSView*)makeTransferView
+{
+    NSView* container = [[NSView alloc] initWithFrame:NSZeroRect];
+    container.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSGridView* grid = [self makeTransferGrid];
+    NSView* piecesColumn = [self makePiecesColumn];
+    NSView* errorRow = [self makeErrorRow];
+
+    grid.translatesAutoresizingMaskIntoConstraints = NO;
+    piecesColumn.translatesAutoresizingMaskIntoConstraints = NO;
+    errorRow.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [container addSubview:grid];
+    [container addSubview:piecesColumn];
+    [container addSubview:errorRow];
+
+    [NSLayoutConstraint activateConstraints:@[
+        // grid — top-left
+        [grid.topAnchor constraintEqualToAnchor:container.topAnchor],
+        [grid.leadingAnchor constraintEqualToAnchor:container.leadingAnchor],
+
+        // pieces — right of grid
+        [piecesColumn.topAnchor constraintEqualToAnchor:container.topAnchor constant:16.0],
+        [piecesColumn.trailingAnchor constraintEqualToAnchor:container.trailingAnchor],
+        [piecesColumn.leadingAnchor constraintGreaterThanOrEqualToAnchor:grid.trailingAnchor constant:8.0],
+
+        // error — full width
+        [errorRow.leadingAnchor constraintEqualToAnchor:container.leadingAnchor],
+        [errorRow.trailingAnchor constraintEqualToAnchor:container.trailingAnchor],
+        [errorRow.bottomAnchor constraintEqualToAnchor:container.bottomAnchor constant:-12.0],
+
+        // the error row sits directly under the taller of the grid and the pieces column
+        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:grid.bottomAnchor constant:8.0],
+        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:piecesColumn.bottomAnchor constant:8.0],
+    ]];
+
+    NSLayoutConstraint* errorBelowGrid = [errorRow.topAnchor constraintEqualToAnchor:grid.bottomAnchor constant:8.0];
+    errorBelowGrid.priority = NSLayoutPriorityDefaultHigh - 1;
+    errorBelowGrid.active = YES;
+
+    [container setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+    [container setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
+
+    return container;
+}
+
+- (NSView*)makeDatesView
+{
+    NSView* container = [[NSView alloc] initWithFrame:NSZeroRect];
+    container.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSGridView* grid = [self makeDatesGrid];
+    grid.translatesAutoresizingMaskIntoConstraints = NO;
+    [container addSubview:grid];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [grid.topAnchor constraintEqualToAnchor:container.topAnchor],
+        [grid.leadingAnchor constraintEqualToAnchor:container.leadingAnchor],
+        [grid.trailingAnchor constraintLessThanOrEqualToAnchor:container.trailingAnchor],
+        [grid.bottomAnchor constraintEqualToAnchor:container.bottomAnchor],
+        [container.widthAnchor constraintGreaterThanOrEqualToConstant:139.0],
+    ]];
+
+    [container setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+    [container setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
+
+    [container.heightAnchor constraintEqualToConstant:128.0].active = YES;
+
+    return container;
+}
+
+#pragma mark - Transfer pieces
+
+- (NSGridView*)makeTransferGrid
+{
+    NSTextField* header = [self makeSectionLabel:LStr(@"Transfer")];
+
+    NSTextField* stateLabel = [self makeCaptionLabel:LStr(@"State:")];
+    NSTextField* progressLabel = [self makeCaptionLabel:LStr(@"Progress:")];
+    NSTextField* haveLabel = [self makeCaptionLabel:LStr(@"Have:")];
+    NSTextField* downloadedLabel = [self makeCaptionLabel:LStr(@"Downloaded:")];
+    NSTextField* uploadedLabel = [self makeCaptionLabel:LStr(@"Uploaded:")];
+    NSTextField* failedLabel = [self makeCaptionLabel:LStr(@"Failed DL:")];
+    NSTextField* ratioLabel = [self makeCaptionLabel:LStr(@"Ratio:")];
+
+    self.fStateField = [self makeValueField];
+    self.fProgressField = [self makeValueField];
+    self.fHaveField = [self makeValueField];
+    self.fDownloadedTotalField = [self makeValueField];
+    self.fUploadedTotalField = [self makeValueField];
+    self.fFailedHashField = [self makeValueField];
+    self.fRatioField = [self makeValueField];
+
+    NSGridView* grid = [NSGridView gridViewWithViews:@[
+        @[ header ],
+        @[ stateLabel, self.fStateField ],
+        @[ progressLabel, self.fProgressField ],
+        @[ haveLabel, self.fHaveField ],
+        @[ downloadedLabel, self.fDownloadedTotalField ],
+        @[ uploadedLabel, self.fUploadedTotalField ],
+        @[ failedLabel, self.fFailedHashField ],
+        @[ ratioLabel, self.fRatioField ],
+    ]];
+
+    grid.rowSpacing = 2.0;
+    grid.columnSpacing = 8.0;
+    grid.rowAlignment = NSGridRowAlignmentFirstBaseline;
+
+    [grid mergeCellsInHorizontalRange:NSMakeRange(0, 2) verticalRange:NSMakeRange(0, 1)];
+    [grid rowAtIndex:0].topPadding = 0.0;
+
+    for (NSInteger r = 1; r < grid.numberOfRows; r++) {
+        NSGridCell* labelCell = [grid cellAtColumnIndex:0 rowIndex:r];
+        labelCell.xPlacement = NSGridCellPlacementTrailing;
+    }
+    for (NSInteger r = 1; r < grid.numberOfRows; r++) {
+        NSGridCell* valueCell = [grid cellAtColumnIndex:1 rowIndex:r];
+        valueCell.xPlacement = NSGridCellPlacementFill;
+    }
+
+    return grid;
+}
+
+- (NSView*)makePiecesColumn
+{
+    NSView* column = [[NSView alloc] initWithFrame:NSZeroRect];
+    column.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.fPiecesView = [[PiecesView alloc] initWithFrame:NSZeroRect];
+    self.fPiecesView.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.fPiecesControl = [[NSSegmentedControl alloc] initWithFrame:NSZeroRect];
+    self.fPiecesControl.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fPiecesControl.segmentCount = 2;
+    self.fPiecesControl.segmentStyle = NSSegmentStyleRounded;
+    self.fPiecesControl.controlSize = NSControlSizeMini;
+    self.fPiecesControl.trackingMode = NSSegmentSwitchTrackingSelectAny;
+    [self.fPiecesControl setLabel:LStr(@"Progress") forSegment:0];
+    [self.fPiecesControl setLabel:LStr(@"Available") forSegment:1];
+    self.fPiecesControl.target = self;
+    self.fPiecesControl.action = @selector(setPiecesView:);
+
+    [column addSubview:self.fPiecesView];
+    [column addSubview:self.fPiecesControl];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fPiecesView.topAnchor constraintEqualToAnchor:column.topAnchor],
+        [self.fPiecesView.leadingAnchor constraintEqualToAnchor:column.leadingAnchor],
+        [self.fPiecesView.trailingAnchor constraintEqualToAnchor:column.trailingAnchor],
+        [self.fPiecesView.widthAnchor constraintEqualToConstant:93.0],
+        [self.fPiecesView.heightAnchor constraintEqualToConstant:93.0],
+
+        [self.fPiecesControl.topAnchor constraintEqualToAnchor:self.fPiecesView.bottomAnchor constant:2.0],
+        [self.fPiecesControl.leadingAnchor constraintEqualToAnchor:column.leadingAnchor],
+        [self.fPiecesControl.trailingAnchor constraintEqualToAnchor:column.trailingAnchor],
+        [self.fPiecesControl.bottomAnchor constraintEqualToAnchor:column.bottomAnchor],
+        [self.fPiecesControl.widthAnchor constraintEqualToAnchor:self.fPiecesView.widthAnchor],
+    ]];
+
+    return column;
+}
+
+- (NSView*)makeErrorRow
+{
+    NSView* row = [[NSView alloc] initWithFrame:NSZeroRect];
+    row.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSTextField* errorLabel = [self makeCaptionLabel:LStr(@"Error:")];
+
+    NSScrollView* scroll = [NSTextView scrollableTextView];
+    scroll.translatesAutoresizingMaskIntoConstraints = NO;
+    scroll.borderType = NSBezelBorder;
+    scroll.autohidesScrollers = YES;
+
+    self.fErrorMessageView = scroll.documentView;
+    self.fErrorMessageView.editable = NO;
+    self.fErrorMessageView.richText = NO;
+    self.fErrorMessageView.importsGraphics = NO;
+
+    [row addSubview:errorLabel];
+    [row addSubview:scroll];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [errorLabel.leadingAnchor constraintEqualToAnchor:row.leadingAnchor],
+        [errorLabel.topAnchor constraintEqualToAnchor:row.topAnchor],
+
+        [scroll.leadingAnchor constraintEqualToAnchor:errorLabel.trailingAnchor constant:8.0],
+        [scroll.trailingAnchor constraintEqualToAnchor:row.trailingAnchor],
+        [scroll.topAnchor constraintEqualToAnchor:row.topAnchor],
+        [scroll.bottomAnchor constraintEqualToAnchor:row.bottomAnchor],
+        [scroll.heightAnchor constraintEqualToConstant:58.0],
+        [scroll.widthAnchor constraintGreaterThanOrEqualToConstant:247.0],
+    ]];
+
+    return row;
+}
+
+#pragma mark - Dates grid
+
+- (NSGridView*)makeDatesGrid
+{
+    NSTextField* datesHeader = [self makeSectionLabel:LStr(@"Dates")];
+    NSTextField* timeHeader = [self makeSectionLabel:LStr(@"Time Elapsed")];
+
+    NSTextField* addedLabel = [self makeCaptionLabel:LStr(@"Added:")];
+    NSTextField* completedLabel = [self makeCaptionLabel:LStr(@"Completed:")];
+    NSTextField* activityLabel = [self makeCaptionLabel:LStr(@"Last activity:")];
+    NSTextField* downloadingLabel = [self makeCaptionLabel:LStr(@"Downloading:")];
+    NSTextField* seedingLabel = [self makeCaptionLabel:LStr(@"Seeding:")];
+
+    self.fDateAddedField = [self makeDateValueField];
+    self.fDateCompletedField = [self makeDateValueField];
+    self.fDateActivityField = [self makeDateValueField];
+    self.fDownloadTimeField = [self makeValueField];
+    self.fSeedTimeField = [self makeValueField];
+
+    NSGridView* grid = [NSGridView gridViewWithViews:@[
+        @[ datesHeader ],
+        @[ addedLabel, self.fDateAddedField ],
+        @[ completedLabel, self.fDateCompletedField ],
+        @[ activityLabel, self.fDateActivityField ],
+        @[ timeHeader ],
+        @[ downloadingLabel, self.fDownloadTimeField ],
+        @[ seedingLabel, self.fSeedTimeField ],
+    ]];
+
+    grid.rowSpacing = 2.0;
+    grid.columnSpacing = 8.0;
+    grid.rowAlignment = NSGridRowAlignmentFirstBaseline;
+
+    [grid mergeCellsInHorizontalRange:NSMakeRange(0, 2) verticalRange:NSMakeRange(0, 1)];
+    [grid mergeCellsInHorizontalRange:NSMakeRange(0, 2) verticalRange:NSMakeRange(4, 1)];
+
+    [grid rowAtIndex:4].topPadding = 18.0;
+
+    for (NSInteger r = 0; r < grid.numberOfRows; r++) {
+        NSView* label = [grid cellAtColumnIndex:0 rowIndex:r].contentView;
+        if (label == datesHeader || label == timeHeader)
+            continue;
+        [grid cellAtColumnIndex:0 rowIndex:r].xPlacement = NSGridCellPlacementTrailing;
+        [grid cellAtColumnIndex:1 rowIndex:r].xPlacement = NSGridCellPlacementFill;
+    }
+
+    return grid;
+}
+
+#pragma mark - Field helpers
+
+- (NSTextField*)makeSectionLabel:(NSString*)title
+{
+    NSTextField* tf = [NSTextField labelWithString:title];
+    tf.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
+    tf.translatesAutoresizingMaskIntoConstraints = NO;
+    return tf;
+}
+
+- (NSTextField*)makeCaptionLabel:(NSString*)title
+{
+    NSTextField* tf = [NSTextField labelWithString:title];
+    tf.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    tf.alignment = NSTextAlignmentRight;
+    tf.translatesAutoresizingMaskIntoConstraints = NO;
+    [tf setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [tf setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+    return tf;
+}
+
+- (NSTextField*)makeValueField
+{
+    NSTextField* tf = [[NSTextField alloc] initWithFrame:NSZeroRect];
+    tf.translatesAutoresizingMaskIntoConstraints = NO;
+    tf.editable = NO;
+    tf.bezeled = NO;
+
+    tf.drawsBackground = NO;
+    tf.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    tf.lineBreakMode = NSLineBreakByTruncatingTail;
+    tf.placeholderString = LStr(@"N/A");
+    [tf setContentHuggingPriority:249 forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [tf setContentHuggingPriority:750 forOrientation:NSLayoutConstraintOrientationVertical];
+    return tf;
+}
+
+- (NSTextField*)makeDateValueField
+{
+    NSTextField* tf = [self makeValueField];
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    formatter.dateStyle = NSDateFormatterLongStyle;
+    formatter.timeStyle = NSDateFormatterShortStyle;
+    formatter.doesRelativeDateFormatting = YES;
+    tf.formatter = formatter;
+    return tf;
 }
 
 - (CGFloat)fHorizLayoutHeight
 {
-    return NSHeight(self.fTransferView.frame) + 2 * kStackViewInset;
+    return self.fTransferView.fittingSize.height + 2 * kStackViewInset;
 }
 
 - (CGFloat)fHorizLayoutWidth
 {
-    return NSWidth(self.fTransferView.frame) + NSWidth(self.fDatesView.frame) + (2 * kStackViewInset) + kStackViewHorizontalSpacing;
+    return self.fTransferView.fittingSize.width + self.fDatesView.fittingSize.width + (2 * kStackViewInset) + kStackViewHorizontalSpacing;
 }
 
 - (CGFloat)fVertLayoutHeight
 {
-    return NSHeight(self.fTransferView.frame) + NSHeight(self.fDatesView.frame) + (2 * kStackViewInset) + kStackViewVerticalSpacing;
+    return self.fTransferView.fittingSize.height + self.fDatesView.fittingSize.height + (2 * kStackViewInset) + kStackViewVerticalSpacing;
 }
 
 - (CGFloat)fHeightChange

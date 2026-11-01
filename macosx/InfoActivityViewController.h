@@ -18,7 +18,7 @@
 
 - (void)clearView;
 
-@property(nonatomic) IBOutlet NSView* fTransferView;
+@property(nonatomic, readonly) NSView* fTransferView;
 @property(nonatomic) CGFloat oldHeight;
 
 @end
