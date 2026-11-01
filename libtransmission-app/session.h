@@ -6,10 +6,13 @@
 #pragma once
 
 #include <chrono>
+#include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <optional>
 #include <string>
+#include <variant> // std::monostate
 #include <vector>
 
 #include <sigslot/signal.hpp>
@@ -19,13 +22,14 @@
 #include "libtransmission/quark.h"
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/rpc-client.h"
+
 struct tr_session;
 
 namespace tr::app
 {
 
 class Prefs;
-class RpcClient;
 
 class Session
 {
@@ -65,7 +69,14 @@ public:
         return session_type_.value_or(Type::Remote) != Type::Remote;
     }
 
+    // Issues `method` and runs `on_done` with the reply unless this Session has
+    // been destroyed by then. Every request goes through here, this class's own
+    // and a client's, so no reply ever reaches a dead Session.
+    void send(tr_quark method, tr_variant::Map params = {}, RpcClient::ResponseFunc on_done = {});
+
     // Copy the session's settings, e.g. a `session_get` response, into Prefs without echoing them back to the session.
+    // Leaves alone a key with a `session_set` of ours in flight: a `session_get`
+    // queued before that set carries the value it is replacing.
     // Also refreshes the blocklist info that `settings` reports.
     // Also refreshes the RPC server settings when the session is embedded.
     // For security reasons, an embedded session is the only place to read them.
@@ -116,6 +127,9 @@ protected:
         blocklist_date_.reset();
     }
 
+    // how many `session_set` requests for `key` await their reply
+    [[nodiscard]] size_t pending_session_sets(tr_quark key) const noexcept;
+
 private:
     void update_sleep_inhibit();
     void update_nap_inhibit();
@@ -131,6 +145,14 @@ private:
     std::optional<Type> session_type_;
     bool busy_ = false;
     bool importing_settings_ = false;
+
+    // the core prefs with a `session_set` in flight, one entry per request
+    std::vector<tr_quark> session_sets_in_flight_;
+
+    // Reply closures hold a weak_ptr to this token, so a reply the UI thread
+    // delivers after this Session is destroyed does nothing.
+    std::shared_ptr<std::monostate const> const alive_ = std::make_shared<std::monostate const>();
+
     sigslot::scoped_connection prefs_connection_;
 };
 

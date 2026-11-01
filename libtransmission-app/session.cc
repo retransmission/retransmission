@@ -5,7 +5,11 @@
 
 #include "libtransmission-app/session.h"
 
+#include <algorithm>
+#include <cstddef> // size_t
 #include <functional>
+#include <iterator> // std::end()
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -36,6 +40,20 @@ Session::Session(Prefs& prefs, RpcClient& rpc)
             sync_pref_to_session(key);
         }
     });
+}
+
+void Session::send(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
+{
+    rpc_.exec(method, std::move(params), [alive = std::weak_ptr{ alive_ }, on_done = std::move(on_done)](RpcResponse response) {
+        if (on_done && alive.lock()) {
+            on_done(std::move(response));
+        }
+    });
+}
+
+size_t Session::pending_session_sets(tr_quark const key) const noexcept
+{
+    return static_cast<size_t>(std::ranges::count(session_sets_in_flight_, key));
 }
 
 void Session::sync_pref_to_session(tr_quark const key)
@@ -97,7 +115,14 @@ void Session::sync_pref_to_session(tr_quark const key)
         {
             auto params = tr_variant::Map{ 1U };
             params.insert_or_assign(key, prefs_.get<tr_variant>(key));
-            rpc_.exec(TR_KEY_session_set, std::move(params), {});
+            session_sets_in_flight_.push_back(key);
+            send(TR_KEY_session_set, std::move(params), [this, key](RpcResponse const& /*response*/) {
+                // one entry per request: another set of the same key may still be in flight
+                if (auto const iter = std::ranges::find(session_sets_in_flight_, key);
+                    iter != std::end(session_sets_in_flight_)) {
+                    session_sets_in_flight_.erase(iter);
+                }
+            });
 
             if (key == TR_KEY_download_dir) {
                 session_refresh_needed();
@@ -121,7 +146,8 @@ void Session::import_session_settings(tr_variant::Map const& settings)
             continue;
         }
 
-        if (prefs_is_core(key)) {
+        // a reply from before our own set carries the value that set replaced
+        if (prefs_is_core(key) && pending_session_sets(key) == 0U) {
             prefs_.set(key, value);
         }
     }
@@ -138,7 +164,9 @@ void Session::import_session_settings(tr_variant::Map const& settings)
     // `session_get` responses; read them directly when the session is embedded.
     if (embedded != nullptr) {
         // the port the session listens on, which neither settings source above reports
-        prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(embedded));
+        if (pending_session_sets(TR_KEY_peer_port) == 0U) {
+            prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(embedded));
+        }
 
         prefs_.set(TR_KEY_rpc_authentication_required, tr_sessionIsRPCPasswordEnabled(embedded));
         prefs_.set(TR_KEY_rpc_enabled, tr_sessionIsRPCEnabled(embedded));
@@ -159,7 +187,7 @@ void Session::fetch_recent_paths(tr_quark const key, std::function<void(std::vec
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_fields, std::move(fields));
 
-    rpc_.exec(TR_KEY_session_get, std::move(params), [key, on_paths = std::move(on_paths)](RpcResponse const& response) {
+    send(TR_KEY_session_get, std::move(params), [key, on_paths = std::move(on_paths)](RpcResponse const& response) {
         auto paths = std::vector<std::string>{};
 
         if (auto const* const result = response.args ? response.args->get_if<tr_variant::Map>() : nullptr; result != nullptr) {

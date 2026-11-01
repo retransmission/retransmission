@@ -7,8 +7,10 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <string>
 #include <thread>
+#include <tuple> // std::ignore
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -31,11 +33,10 @@ namespace
 using namespace std::literals;
 using namespace tr::app;
 
-// Run RpcClient continuations inline. These tests poll for observable
-// side effects, so they don't need a UI-thread event loop.
-// Embedded replies then run on the session thread, which UiThreadFunc forbids.
-// No test here calls stop(), and Session sends its requests without a reply callback,
-// so those replies touch no state that the test thread writes.
+// Run RpcClient continuations inline, for a Session whose client is never
+// started: its only reply is the "not connected" error, which then runs inside
+// exec() itself, on the test thread. A started client answers on the session
+// thread, which UiThreadFunc forbids, so those tests pump a UiLoop instead.
 [[nodiscard]] RpcClient::UiThreadFunc inline_marshaler()
 {
     return [](std::function<void()> fn) {
@@ -48,31 +49,12 @@ class TestSession : public Session
 {
 public:
     using Session::clear_session_info;
+    using Session::pending_session_sets;
     using Session::Session;
     using Session::set_busy;
     using Session::set_embedded_session;
     using Session::set_session_type;
 };
-
-// Poll for a condition; RPC dispatch and session setters land asynchronously
-// on the session thread.
-template<typename Pred>
-[[nodiscard]] bool wait_for(Pred pred, std::chrono::milliseconds const timeout = 10'000ms)
-{
-    auto const deadline = std::chrono::steady_clock::now() + timeout;
-
-    for (;;) {
-        if (pred()) {
-            return true;
-        }
-
-        if (std::chrono::steady_clock::now() >= deadline) {
-            return false;
-        }
-
-        std::this_thread::sleep_for(5ms);
-    }
-}
 
 TEST(AppSessionTest, inhibitsSleepOnlyWhenLocalActiveAndEnabled)
 {
@@ -232,7 +214,8 @@ protected:
 
 TEST_F(AppSessionSyncTest, syncsCorePrefsToTheSessionOverRpc)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -242,13 +225,14 @@ TEST_F(AppSessionSyncTest, syncsCorePrefsToTheSessionOverRpc)
     ASSERT_NE(new_limit, tr_sessionGetPeerLimit(session_));
 
     prefs.set(TR_KEY_peer_limit_global, new_limit);
-    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == new_limit; }));
+    EXPECT_TRUE(loop.pump_until([this]() { return tr_sessionGetPeerLimit(session_) == new_limit; }));
 }
 
 // session_set ignores a `uint16_t` setting unless it arrives as an int.
 TEST_F(AppSessionSyncTest, syncsUint16PrefsToTheSessionOverRpc)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -258,12 +242,13 @@ TEST_F(AppSessionSyncTest, syncsUint16PrefsToTheSessionOverRpc)
     ASSERT_NE(new_limit, tr_sessionGetIdleLimit(session_));
 
     prefs.set(TR_KEY_idle_seeding_limit, new_limit);
-    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetIdleLimit(session_) == new_limit; }));
+    EXPECT_TRUE(loop.pump_until([this]() { return tr_sessionGetIdleLimit(session_) == new_limit; }));
 }
 
 TEST_F(AppSessionSyncTest, appliesRpcServerPrefsWithTheCApi)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -273,15 +258,16 @@ TEST_F(AppSessionSyncTest, appliesRpcServerPrefsWithTheCApi)
     auto const new_port = 54321;
     ASSERT_NE(new_port, tr_sessionGetRPCPort(session_));
     prefs.set(TR_KEY_rpc_port, new_port);
-    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetRPCPort(session_) == new_port; }));
+    EXPECT_TRUE(loop.pump_until([this]() { return tr_sessionGetRPCPort(session_) == new_port; }));
 
     prefs.set(TR_KEY_rpc_username, "alice"s);
-    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
+    EXPECT_TRUE(loop.pump_until([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
 }
 
 TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -290,7 +276,7 @@ TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
 
     auto const session_limit = uint16_t{ 99 };
     tr_sessionSetPeerLimit(session_, session_limit);
-    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == session_limit; }));
+    ASSERT_TRUE(loop.pump_until([this]() { return tr_sessionGetPeerLimit(session_) == session_limit; }));
 
     // an imported value lands in prefs but must not be pushed to the session
     auto settings = tr_variant::Map{ 1U };
@@ -304,7 +290,7 @@ TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
 
     // ...and syncing works again once the import is done
     prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
-    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == 111U; }));
+    EXPECT_TRUE(loop.pump_until([this]() { return tr_sessionGetPeerLimit(session_) == 111U; }));
 }
 
 // With a random port on start, the session's settings map still holds the configured port;
@@ -312,7 +298,8 @@ TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
 // land in Prefs on the way, or every import would announce two port changes.
 TEST_F(AppSessionSyncTest, importingSettingsReadsTheBoundPeerPortWhenEmbedded)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -321,7 +308,7 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsTheBoundPeerPortWhenEmbedded)
 
     auto const bound_port = uint16_t{ 51999 };
     tr_sessionSetPeerPort(session_, bound_port);
-    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetPeerPort(session_) == bound_port; }));
+    ASSERT_TRUE(loop.pump_until([this]() { return tr_sessionGetPeerPort(session_) == bound_port; }));
 
     auto port_changes = 0;
     auto const tag = prefs.observe_changes([&port_changes](tr_quark const key) {
@@ -339,7 +326,8 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsTheBoundPeerPortWhenEmbedded)
 
 TEST_F(AppSessionSyncTest, embeddedSettingsRequireAnEmbeddedSession)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -354,7 +342,8 @@ TEST_F(AppSessionSyncTest, embeddedSettingsRequireAnEmbeddedSession)
 
 TEST_F(AppSessionSyncTest, importingSettingsReadsRpcServerSettingsWhenEmbedded)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -362,11 +351,11 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsRpcServerSettingsWhenEmbedded)
     session.set_embedded_session(session_);
 
     tr_sessionSetRPCUsername(session_, "alice");
-    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
+    ASSERT_TRUE(loop.pump_until([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
 
     auto const rpc_port = uint16_t{ 54321 };
     tr_sessionSetRPCPort(session_, rpc_port);
-    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetRPCPort(session_) == rpc_port; }));
+    ASSERT_TRUE(loop.pump_until([this]() { return tr_sessionGetRPCPort(session_) == rpc_port; }));
 
     // session_get responses omit the RPC server's settings,
     // so import must read them from the session directly
@@ -379,7 +368,8 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsRpcServerSettingsWhenEmbedded)
 // since adding a torrent changes them without a settings-changed notice.
 TEST_F(AppSessionSyncTest, fetchesRecentPathsFromTheSession)
 {
-    auto rpc = RpcClient{ inline_marshaler() };
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
     rpc.start(session_);
 
     auto prefs = Prefs{};
@@ -399,9 +389,108 @@ TEST_F(AppSessionSyncTest, fetchesRecentPathsFromTheSession)
         replied = true;
     });
 
-    ASSERT_TRUE(wait_for([&replied]() { return replied.load(); }));
+    ASSERT_TRUE(loop.pump_until([&replied]() { return replied.load(); }));
     ASSERT_FALSE(std::empty(paths));
     EXPECT_EQ(download_dir, paths.front());
+}
+
+// A session_get queued before our session_set carries the value being replaced;
+// importing it would revert the pref until the next poll.
+TEST_F(AppSessionSyncTest, importSkipsAKeyWithASessionSetInFlight)
+{
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    auto stale = tr_variant::Map{ 1U };
+    stale.insert_or_assign(TR_KEY_peer_limit_global, 50);
+
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 111 }); // its reply is queued until pumped
+    EXPECT_EQ(1U, session.pending_session_sets(TR_KEY_peer_limit_global));
+    session.import_session_settings(stale);
+    EXPECT_EQ(111U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+
+    ASSERT_TRUE(loop.pump_until([&session] { return session.pending_session_sets(TR_KEY_peer_limit_global) == 0U; }));
+    session.import_session_settings(stale);
+    EXPECT_EQ(50U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+}
+
+// A spin box stepped twice has two sets in flight; the key stays guarded until both are answered.
+TEST_F(AppSessionSyncTest, importSkipsAKeyUntilEverySessionSetIsAnswered)
+{
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    auto stale = tr_variant::Map{ 1U };
+    stale.insert_or_assign(TR_KEY_peer_limit_global, 50);
+
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 112 });
+    EXPECT_EQ(2U, session.pending_session_sets(TR_KEY_peer_limit_global));
+
+    ASSERT_TRUE(loop.pump_until([&session] { return session.pending_session_sets(TR_KEY_peer_limit_global) == 1U; }));
+    session.import_session_settings(stale);
+    EXPECT_EQ(112U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+
+    ASSERT_TRUE(loop.pump_until([&session] { return session.pending_session_sets(TR_KEY_peer_limit_global) == 0U; }));
+    session.import_session_settings(stale);
+    EXPECT_EQ(50U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+}
+
+// A set in flight at stop() is answered with a network error, which still clears its guard.
+TEST_F(AppSessionSyncTest, aSessionSetInFlightAtStopStillClearsItsGuard)
+{
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
+    rpc.stop();
+    EXPECT_TRUE(loop.pump_until([&session] { return session.pending_session_sets(TR_KEY_peer_limit_global) == 0U; }));
+}
+
+// A set sent before the client starts is answered at once, so it can't pin its key.
+TEST(AppSessionTest, aSessionSetBeforeStartDoesNotGuardItsKey)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
+    EXPECT_EQ(0U, session.pending_session_sets(TR_KEY_peer_limit_global));
+
+    auto settings = tr_variant::Map{ 1U };
+    settings.insert_or_assign(TR_KEY_peer_limit_global, 50);
+    session.import_session_settings(settings);
+    EXPECT_EQ(50U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+}
+
+// A toolkit's event queue outlives the Session, so a reply may be delivered after it is gone.
+TEST_F(AppSessionSyncTest, aReplyToADestroyedSessionDoesNothing)
+{
+    auto loop = UiLoop{};
+    auto rpc = RpcClient{ loop.marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = std::make_unique<TestSession>(prefs, rpc);
+
+    prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
+    session.reset();
+
+    // the reply runs against the dead Session's token
+    EXPECT_TRUE(loop.pump_until([this] { return tr_sessionGetPeerLimit(session_) == 111U; }));
+    std::ignore = loop.quiet_for(100ms);
 }
 
 } // namespace
