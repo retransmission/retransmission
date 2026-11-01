@@ -2397,64 +2397,6 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
 </context>
 <context>
-    <name>Torrent</name>
-    <message>
-        <location filename="../Torrent.cc" line="+307"/>
-        <source>Verifying local data</source>
-        <translation>正在验证本地数据</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Downloading</source>
-        <translation>正在下载</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Seeding</source>
-        <translation>正在做种</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <source>Finished</source>
-        <translation>已完成</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Paused</source>
-        <translation>已暂停</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Queued for verification</source>
-        <translation>等待验证</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for download</source>
-        <translation>排队下载</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for seeding</source>
-        <translation>排队做种</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tracker gave a warning: {warning}</source>
-        <translation>Tracker 给出一个警告: {warning}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tracker gave an error: {error}</source>
-        <translation>Tracker 给出一个错误: {error}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: {error}</source>
-        <translation>错误: {error}</translation>
-    </message>
-</context>
-<context>
     <name>TorrentDelegate</name>
     <message>
         <location filename="../TorrentDelegate.cc" line="+173"/>
@@ -2575,6 +2517,56 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="-95"/>
         <source>Verifying local data ({percent_done}% tested)</source>
         <translation>正在验证本地数据 (已测试 {percent_done}%)</translation>
+    </message>
+    <message>
+        <location filename="../Torrent.cc" line="+307"/>
+        <source>Verifying local data</source>
+        <translation>正在验证本地数据</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Downloading</source>
+        <translation>正在下载</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Seeding</source>
+        <translation>正在做种</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Paused</source>
+        <translation>已暂停</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Queued for verification</source>
+        <translation>等待验证</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for download</source>
+        <translation>排队下载</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for seeding</source>
+        <translation>排队做种</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>Tracker 给出一个警告: {warning}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tracker gave an error: {error}</source>
+        <translation>Tracker 给出一个错误: {error}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error: {error}</source>
+        <translation>错误: {error}</translation>
     </message>
 </context>
 <context>

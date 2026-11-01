@@ -15,8 +15,6 @@
 
 class QString;
 
-class Torrent;
-
 class TorrentFilter : public QSortFilterProxyModel
 {
     Q_OBJECT

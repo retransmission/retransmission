@@ -2398,64 +2398,6 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
 </context>
 <context>
-    <name>Torrent</name>
-    <message>
-        <location filename="../Torrent.cc" line="+307"/>
-        <source>Verifying local data</source>
-        <translation>Verificar dados locais</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Downloading</source>
-        <translation>A transferir</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Seeding</source>
-        <translation>A enviar</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <source>Finished</source>
-        <translation>Terminado</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Paused</source>
-        <translation>Em pausa</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Queued for verification</source>
-        <translation>Em fila para verificação</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for download</source>
-        <translation>Em fila para transferência</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for seeding</source>
-        <translation>Em fila para carregamento</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tracker gave a warning: {warning}</source>
-        <translation>O tracker devolveu um aviso: {warning}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tracker gave an error: {error}</source>
-        <translation>O tracker devolveu um erro: {error}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: {error}</source>
-        <translation>Erro: {error}</translation>
-    </message>
-</context>
-<context>
     <name>TorrentDelegate</name>
     <message>
         <location filename="../TorrentDelegate.cc" line="+173"/>
@@ -2582,6 +2524,56 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="-95"/>
         <source>Verifying local data ({percent_done}% tested)</source>
         <translation>A verificar dados locais ({percent_done}% verificado)</translation>
+    </message>
+    <message>
+        <location filename="../Torrent.cc" line="+307"/>
+        <source>Verifying local data</source>
+        <translation>Verificar dados locais</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Downloading</source>
+        <translation>A transferir</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Seeding</source>
+        <translation>A enviar</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Paused</source>
+        <translation>Em pausa</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Queued for verification</source>
+        <translation>Em fila para verificação</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for download</source>
+        <translation>Em fila para transferência</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for seeding</source>
+        <translation>Em fila para carregamento</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>O tracker devolveu um aviso: {warning}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tracker gave an error: {error}</source>
+        <translation>O tracker devolveu um erro: {error}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error: {error}</source>
+        <translation>Erro: {error}</translation>
     </message>
 </context>
 <context>

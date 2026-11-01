@@ -178,12 +178,19 @@ void FileTreeView::contextMenuEvent(QContextMenuEvent* event)
     context_menu_->popup(event->globalPos());
 }
 
-void FileTreeView::update(FileList const& files, bool update_fields)
+void FileTreeView::update(std::vector<tr::app::TorrentFile> const& files, bool const update_fields)
 {
     bool const model_was_empty = proxy_->rowCount() == 0;
 
-    for (TorrentFile const& file : files) {
-        model_->addFile(file.index, file.filename, file.wanted, file.priority, file.size, file.have, update_fields);
+    for (auto const& file : files) {
+        model_->addFile(
+            static_cast<int>(file.index),
+            Utils::qstringFromUtf8(file.name),
+            file.wanted,
+            file.priority,
+            file.size,
+            file.have,
+            update_fields);
     }
 
     if (model_was_empty) {

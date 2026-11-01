@@ -34,8 +34,6 @@ target_sources(${TR_NAME}-qt-lib
         FilterBarComboBox.h
         FilterBarComboBoxDelegate.cc
         FilterBarComboBoxDelegate.h
-        Filters.cc
-        Filters.h
         Formatter.cc
         Formatter.h
         FreeSpaceLabel.cc
@@ -76,8 +74,6 @@ target_sources(${TR_NAME}-qt-lib
         StatsDialog.h
         StyleHelper.cc
         StyleHelper.h
-        Torrent.cc
-        Torrent.h
         TorrentDelegate.cc
         TorrentDelegate.h
         TorrentDelegateMin.cc

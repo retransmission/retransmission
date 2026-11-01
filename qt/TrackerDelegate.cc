@@ -15,9 +15,10 @@
 #include <libtransmission/web-utils.h>
 
 #include <libtransmission-app/favicon-cache.h>
+#include <libtransmission-app/torrent.h>
 
+#include "Application.h"
 #include "Formatter.h"
-#include "Torrent.h"
 #include "TrackerModel.h"
 #include "TrFormat.h"
 #include "Utils.h"
@@ -126,7 +127,7 @@ void TrackerDelegate::drawTracker(QPainter* painter, QStyleOptionViewItem const&
     bool const is_item_enabled((option.state & QStyle::State_Enabled) != 0);
     bool const is_item_active((option.state & QStyle::State_Active) != 0);
 
-    QIcon const tracker_icon(inf.st.getFavicon());
+    QIcon const tracker_icon{ trApp->find_favicon(inf.st.sitename) };
 
     QRect const content_rect(option.rect.adjusted(Margin.width(), Margin.height(), -Margin.width(), -Margin.height()));
     ItemLayout const layout(getText(inf), is_item_selected, option.direction, content_rect.topLeft(), content_rect.width());
@@ -194,8 +195,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
 
     // hostname
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
-    auto const announce_url = inf.st.announce.toStdString();
-    if (auto const parsed = tr_urlParse(announce_url); parsed) {
+    if (auto const parsed = tr_urlParse(inf.st.announce.sv()); parsed) {
         str += QStringLiteral("%1:%2").arg(Utils::qstringFromUtf8(parsed->host), QString::number(parsed->port));
     }
     str += inf.st.is_backup ? QStringLiteral("</i>") : QStringLiteral("</b>");
@@ -210,7 +210,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                 //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
                 str += TR_FORMAT_N(
                     "Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago",
-                    inf.st.last_announce_peer_count,
+                    static_cast<int>(inf.st.last_announce_peer_count),
                     fmt::arg("markup_begin", success_markup_begin),
                     fmt::arg("peer_count", inf.st.last_announce_peer_count),
                     fmt::arg("markup_end", success_markup_end),
@@ -287,7 +287,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                 //: {markup_begin} and {markup_end} are replaced with HTML markup
                 str += TR_FORMAT_N(
                     "Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}",
-                    inf.st.seeder_count,
+                    static_cast<int>(inf.st.seeder_count),
                     fmt::arg("markup_begin", success_markup_begin),
                     fmt::arg("seeder_count", inf.st.seeder_count),
                     fmt::arg("markup_end", success_markup_end));
@@ -296,7 +296,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                 //: notice that leading space (before "and") is included here
                 str += TR_FORMAT_N(
                     " and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago",
-                    inf.st.leecher_count,
+                    static_cast<int>(inf.st.leecher_count),
                     fmt::arg("markup_begin", success_markup_begin),
                     fmt::arg("leecher_count", inf.st.leecher_count),
                     fmt::arg("markup_end", success_markup_end),

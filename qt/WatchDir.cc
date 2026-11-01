@@ -13,12 +13,12 @@
 
 #include <libtransmission/torrent-metainfo.h>
 
-#include "TorrentModel.h"
+#include <libtransmission-app/torrent-list.h>
 
 // ---
 
-WatchDir::WatchDir(TorrentModel const& model)
-    : model_{ model }
+WatchDir::WatchDir(tr::app::TorrentList const& torrents)
+    : torrents_{ torrents }
 {
 }
 
@@ -31,7 +31,7 @@ WatchDir::AddResult WatchDir::metainfoTest(QString const& filename) const
         return AddResult::Error;
     }
 
-    if (model_.hasTorrent(TorrentHash{ metainfo.info_hash() })) {
+    if (torrents_.find(metainfo.info_hash()) != nullptr) {
         return AddResult::Duplicate;
     }
 

@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <ctime> // time()
 #include <string_view>
 #include <utility>
 
@@ -41,7 +42,6 @@
 #include "AddData.h"
 #include "Prefs.h"
 #include "SessionDialog.h"
-#include "Torrent.h"
 #include "TrFormat.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
@@ -120,10 +120,11 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 ****
 ***/
 
-Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
+Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc, tr::app::TorrentList& torrents)
     : tr::app::Session{ prefs, rpc.impl() }
     , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
+    , torrents_{ torrents }
     , rpc_{ rpc }
 {
     session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
@@ -367,8 +368,6 @@ using TorrentProperties = Session::TorrentProperties;
                 TR_KEY_rate_download,
                 TR_KEY_rate_upload,
                 TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_bytes_goal,
-                TR_KEY_seed_ratio_bytes_left,
                 TR_KEY_seed_ratio_limit,
                 TR_KEY_seed_ratio_mode,
                 TR_KEY_size_when_done,
@@ -421,8 +420,6 @@ using TorrentProperties = Session::TorrentProperties;
                 TR_KEY_rate_download,
                 TR_KEY_rate_upload,
                 TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_bytes_goal,
-                TR_KEY_seed_ratio_bytes_left,
                 TR_KEY_seed_ratio_limit,
                 TR_KEY_seed_ratio_mode,
                 TR_KEY_size_when_done,
@@ -466,17 +463,9 @@ void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentPropertie
             exec(TR_KEY_torrent_get, std::move(map), std::move(done));
         })
         .add([this, all_torrents](RpcResponse const& r) {
-            auto const* const args = r.args->get_if<tr_variant::Map>();
-            if (args == nullptr) {
-                return;
-            }
-
-            if (auto const* const torrents = args->find_if<tr_variant::Vector>(TR_KEY_torrents)) {
-                emit torrentsUpdated(*torrents, all_torrents);
-            }
-
-            if (auto const* const removed = args->find_if<tr_variant::Vector>(TR_KEY_removed)) {
-                emit torrentsRemoved(*removed);
+            if (auto const* const args = r.args->get_if<tr_variant::Map>(); args != nullptr) {
+                using Coverage = tr::app::TorrentList::Coverage;
+                torrents_.update(*args, all_torrents ? Coverage::Complete : Coverage::Partial, time(nullptr));
             }
         })
         .run();

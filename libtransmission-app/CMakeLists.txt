@@ -28,7 +28,13 @@ target_sources(${LIBNAME}
         session.h
         startup-coordinator.cc
         startup-coordinator.h
+        torrent-filter.cc
+        torrent-filter.h
         torrent-icon.h
+        torrent-list.cc
+        torrent-list.h
+        torrent-sort.cc
+        torrent-sort.h
         torrent.cc
         torrent.h
         trash.cc
