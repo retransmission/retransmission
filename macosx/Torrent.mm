@@ -55,6 +55,8 @@ static dispatch_queue_t timeMachineExcludeQueue;
 @property(nonatomic) BOOL fResumeOnWake;
 @property(nonatomic, copy, readwrite) NSString* hashString;
 
+@property(nonatomic, copy) NSArray<NSDictionary*>* peers;
+
 - (BOOL)canChangeDownloadChecks;
 
 - (void)renameFinished:(BOOL)success
@@ -927,44 +929,54 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     return error;
 }
 
-- (NSArray<NSDictionary*>*)peers
+[[nodiscard]]
+static NSArray<NSDictionary*>* peerDicts(std::vector<tr_peer_stat> const& peers, NSString* const name)
 {
-    auto const peers = tr_torrentPeers(self.fHandle);
-    size_t const totalPeers = peers.size();
+    NSMutableArray* dicts = [NSMutableArray arrayWithCapacity:peers.size()];
 
-    NSMutableArray* peerDicts = [NSMutableArray arrayWithCapacity:totalPeers];
+    for (auto const& peer : peers) {
+        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
 
-    if (totalPeers > 0) {
-        NSString* const name = self.name;
+        dict[@"Name"] = name;
+        dict[@"From"] = @(peer.from);
+        dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
+        dict[@"Port"] = @(peer.port);
+        dict[@"Progress"] = @(peer.progress.to_fraction());
+        dict[@"Progress String"] = [NSString wholePercentString:peer.progress];
+        dict[@"Complete"] = @(peer.progress.is_complete());
+        dict[@"Seed"] = @(peer.is_seed);
+        dict[@"Encryption"] = @(peer.is_encrypted);
+        dict[@"uTP"] = @(peer.is_utp);
+        dict[@"Client"] = tr_strv_to_utf8_nsstring(peer.user_agent);
+        dict[@"Flags"] = tr_strv_to_utf8_nsstring(peer.flag_str);
 
-        for (auto const& peer : peers) {
-            NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
-
-            dict[@"Name"] = name;
-            dict[@"From"] = @(peer.from);
-            dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
-            dict[@"Port"] = @(peer.port);
-            dict[@"Progress"] = @(peer.progress.to_fraction());
-            dict[@"Progress String"] = [NSString wholePercentString:peer.progress];
-            dict[@"Complete"] = @(peer.progress.is_complete());
-            dict[@"Seed"] = @(peer.is_seed);
-            dict[@"Encryption"] = @(peer.is_encrypted);
-            dict[@"uTP"] = @(peer.is_utp);
-            dict[@"Client"] = tr_strv_to_utf8_nsstring(peer.user_agent);
-            dict[@"Flags"] = tr_strv_to_utf8_nsstring(peer.flag_str);
-
-            if (peer.is_uploading_to) {
-                dict[@"UL To Rate"] = @(peer.rate_to_peer.count(tr::Values::Speed::Units::KByps));
-            }
-            if (peer.is_downloading_from) {
-                dict[@"DL From Rate"] = @(peer.rate_to_client.count(tr::Values::Speed::Units::KByps));
-            }
-
-            [peerDicts addObject:dict];
+        if (peer.is_uploading_to) {
+            dict[@"UL To Rate"] = @(peer.rate_to_peer.count(tr::Values::Speed::Units::KByps));
         }
+        if (peer.is_downloading_from) {
+            dict[@"DL From Rate"] = @(peer.rate_to_client.count(tr::Values::Speed::Units::KByps));
+        }
+
+        [dicts addObject:dict];
     }
 
-    return peerDicts;
+    return dicts;
+}
+
+- (void)refreshPeers
+{
+    NSString* const name = self.name;
+    tr_torrentPeersAsync(self.fHandle, [torrent = self, name](std::vector<tr_peer_stat> peers) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            torrent.peers = peerDicts(peers, name);
+
+            // coalescing: N selected torrents bring N arrivals per update, and each reload re-sorts all their peers
+            [NSNotificationQueue.defaultQueue enqueueNotification:[NSNotification notificationWithName:@"TorrentPeersChange" object:nil]
+                                                     postingStyle:NSPostASAP
+                                                     coalesceMask:NSNotificationCoalescingOnName
+                                                         forModes:nil];
+        });
+    });
 }
 
 - (NSUInteger)webSeedCount
@@ -1725,6 +1737,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
 
     _fResumeOnWake = NO;
+    _peers = @[];
     _hashString = @(tr_torrentView(self.fHandle).hash_string);
     _id = tr_torrentId(self.fHandle);
 
