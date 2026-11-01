@@ -21,6 +21,7 @@
 #include <libtransmission/crypto-utils.h> // tr_rand_buffer(), tr_rand_int()
 #include <libtransmission/error.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
 
 #include "test-fixtures.h"
@@ -953,4 +954,18 @@ TEST_F(VariantTest, serdeEnd)
         EXPECT_EQ(*benc_serde.end(), c);
         EXPECT_EQ(benc_serde.end() - std::data(in), pos);
     }
+}
+
+TEST_F(VariantTest, serdeFileOpsIgnoreAnEarlierError)
+{
+    auto const sandbox = tr::test::Sandbox{};
+    auto const missing = tr_pathbuf{ sandbox.path(), "/missing.json"sv };
+    auto const filename = tr_pathbuf{ sandbox.path(), "/test.json"sv };
+
+    // each call starts with `error_` still holding the failure before it
+    auto serde = tr_variant_serde::json();
+    EXPECT_FALSE(serde.parse_file(missing));
+    EXPECT_TRUE(serde.to_file(tr_variant{ 1 }, filename)) << serde.error_;
+    EXPECT_FALSE(serde.parse_file(missing));
+    EXPECT_TRUE(serde.parse_file(filename)) << serde.error_;
 }

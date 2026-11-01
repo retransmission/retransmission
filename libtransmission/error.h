@@ -46,6 +46,8 @@ public:
     // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
     [[nodiscard]] bool is_enoent() const noexcept;
     [[nodiscard]] bool is_enospc() const noexcept;
+    // e.g. `EAGAIN` or `EINTR`: nothing happened, so try again
+    [[nodiscard]] bool is_transient() const noexcept;
 
     constexpr void set(code_t code, std::string&& message)
     {
@@ -69,7 +71,8 @@ public:
         message_.insert(std::begin(message_), std::begin(prefix), std::end(prefix));
     }
 
-    // convenience utility for `set(errno, tr_strerror(errno))`
+    // convenience utilities for `set(errno, tr_strerror(errno))`
+    [[nodiscard]] static tr_error from_errno(int errnum);
     void set_from_errno(int errnum);
 
 private:

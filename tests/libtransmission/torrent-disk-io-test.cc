@@ -542,9 +542,7 @@ TEST_F(TorrentDiskIoTest, failedWriteStopsTorrent)
         ASSERT_TRUE(tor->on_block_received(block));
         EXPECT_FALSE(tor->error().is_local_error());
 
-        auto error = tr_error{};
-        error.set_from_errno(ENOSPC);
-        tor->on_block_written(block, error);
+        tor->on_block_written(block, tr_error::from_errno(ENOSPC));
 
         EXPECT_TRUE(tor->error().is_local_error());
         EXPECT_FALSE(tor->is_running());

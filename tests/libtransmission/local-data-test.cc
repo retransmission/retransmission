@@ -17,6 +17,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple> // std::ignore
 #include <utility>
 #include <vector>
 
@@ -660,6 +661,41 @@ TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
     EXPECT_TRUE(pumpUntil([&done]() { return done; }));
     EXPECT_EQ(0U, local_data.enqueued_write_bytes());
     local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, failedReadsKeepTheSystemsMessage)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+    ASSERT_TRUE(tr_sys_dir_create(pathOf("data.bin"), 0, 0700));
+
+    // a directory fails the open on Windows and the read elsewhere
+    auto const expected = [this] {
+        auto error = tr_error{};
+        if (auto const fd = tr_sys_file_open(pathOf("data.bin"), TR_SYS_FILE_READ, 0, &error); fd != TR_BAD_SYS_FILE) {
+            auto byte = uint8_t{};
+            std::ignore = tr_sys_file_read_at(fd, &byte, 1U, 0U, nullptr, &error);
+            tr_sys_file_close(fd);
+        }
+        return error;
+    }();
+    if (!expected) {
+        GTEST_SKIP() << "this filesystem can read a directory";
+    }
+
+    auto errors = std::vector<tr_error>{};
+    local_data->read(TorId, { .begin = 0U, .end = BlockSize }, [&errors](auto, auto, tr_error const& error, auto) {
+        errors.push_back(error);
+    });
+    local_data->test_piece(TorId, 0U, [&errors](auto, auto, tr_error const& error, auto) { errors.push_back(error); });
+
+    EXPECT_TRUE(pumpUntil([&errors]() { return std::size(errors) == 2U; }));
+    for (auto const& error : errors) {
+        EXPECT_EQ(expected.code(), error.code()) << error;
+        EXPECT_TRUE(error.message().contains(expected.message())) << error;
+    }
+
+    local_data->shutdown();
 }
 
 TEST_F(LocalDataWorkersTest, blockPatternsAreDistinct)
