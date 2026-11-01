@@ -5,9 +5,17 @@
 
 #pragma once
 
+#include <chrono>
+#include <condition_variable>
 #include <cstdlib> // std::getenv()
+#include <deque>
+#include <functional>
+#include <future>
+#include <mutex>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include <fmt/format.h>
 
@@ -17,6 +25,7 @@
 #include <libtransmission/macros.h>
 
 #include "libtransmission-app/app.h"
+#include "libtransmission-app/rpc-client.h"
 
 class TransmissionTest : public ::testing::Test
 {
@@ -96,4 +105,83 @@ protected:
 
 private:
     Sandbox sandbox_;
+};
+
+// Stands in for the toolkit's UI thread. RpcClient marshals every response and
+// signal through this hook; the test drives it like an event loop from the main
+// thread, so continuations run where a real toolkit would run them.
+// Declare it before the RpcClient that uses its marshaler: a late embedded reply
+// calls the marshaler from the session thread and must find the loop alive.
+// The destructor drops queued closures unrun.
+class UiLoop
+{
+public:
+    [[nodiscard]] tr::app::RpcClient::UiThreadFunc marshaler()
+    {
+        return [this](std::function<void()> fn) {
+            auto const lock = std::scoped_lock{ mutex_ };
+            queue_.push_back(std::move(fn));
+            cv_.notify_one();
+        };
+    }
+
+    // Runs one queued closure, waiting up to `wait` for one to arrive. Returns whether one ran.
+    bool pump_one(std::chrono::milliseconds const wait = std::chrono::milliseconds{ 10 })
+    {
+        auto fn = std::function<void()>{};
+        {
+            auto lock = std::unique_lock{ mutex_ };
+            cv_.wait_for(lock, wait, [this] { return !queue_.empty(); });
+            if (queue_.empty()) {
+                return false;
+            }
+            fn = std::move(queue_.front());
+            queue_.pop_front();
+        }
+
+        fn();
+        return true;
+    }
+
+    // Pumps until `pred` holds. Returns false if `timeout` passes first.
+    template<typename Pred>
+    [[nodiscard]] bool pump_until(Pred pred, std::chrono::milliseconds const timeout = std::chrono::seconds{ 10 })
+    {
+        auto const deadline = std::chrono::steady_clock::now() + timeout;
+        while (!pred()) {
+            if (std::chrono::steady_clock::now() >= deadline) {
+                return false;
+            }
+            pump_one();
+        }
+        return true;
+    }
+
+    // Pumps until `fut` is ready, then returns its value. Throws if that takes too long.
+    template<typename T>
+    [[nodiscard]] T pump_until_ready(std::future<T>& fut)
+    {
+        if (!pump_until([&fut] { return fut.wait_for(std::chrono::seconds{}) == std::future_status::ready; })) {
+            throw std::runtime_error{ "timed out waiting for RPC response" };
+        }
+        return fut.get();
+    }
+
+    // Pumps whatever arrives for `quiet`. Returns true if nothing did.
+    [[nodiscard]] bool quiet_for(std::chrono::milliseconds const quiet)
+    {
+        auto const deadline = std::chrono::steady_clock::now() + quiet;
+        auto ran = false;
+        for (auto now = std::chrono::steady_clock::now(); now < deadline; now = std::chrono::steady_clock::now()) {
+            if (pump_one(std::chrono::duration_cast<std::chrono::milliseconds>(deadline - now))) {
+                ran = true;
+            }
+        }
+        return !ran;
+    }
+
+private:
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    std::deque<std::function<void()>> queue_;
 };
