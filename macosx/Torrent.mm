@@ -604,16 +604,20 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     NSMutableArray* trackers = [NSMutableArray arrayWithCapacity:count * 2];
 
-    for (size_t i = 0; i < count; ++i) {
-        auto const tracker = tr_torrentTracker(self.fHandle, i);
+    if (count > 0) {
+        NSString* const name = self.name;
 
-        if (!tier || tier != tracker.tier) {
-            tier = tracker.tier;
-            [trackers addObject:@{ @"Tier" : @(tracker.tier + 1), @"Name" : self.name }];
+        for (size_t i = 0; i < count; ++i) {
+            auto const tracker = tr_torrentTracker(self.fHandle, i);
+
+            if (!tier || tier != tracker.tier) {
+                tier = tracker.tier;
+                [trackers addObject:@{ @"Tier" : @(tracker.tier + 1), @"Name" : name }];
+            }
+
+            auto* tracker_node = [[TrackerNode alloc] initWithTrackerView:&tracker torrent:self];
+            [trackers addObject:tracker_node];
         }
-
-        auto* tracker_node = [[TrackerNode alloc] initWithTrackerView:&tracker torrent:self];
-        [trackers addObject:tracker_node];
     }
 
     return trackers;
@@ -924,30 +928,34 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     NSMutableArray* peerDicts = [NSMutableArray arrayWithCapacity:totalPeers];
 
-    for (auto const& peer : peers) {
-        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
+    if (totalPeers > 0) {
+        NSString* const name = self.name;
 
-        dict[@"Name"] = self.name;
-        dict[@"From"] = @(peer.from);
-        dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
-        dict[@"Port"] = @(peer.port);
-        dict[@"Progress"] = @(peer.progress.to_fraction());
-        dict[@"Progress String"] = [NSString wholePercentString:peer.progress];
-        dict[@"Complete"] = @(peer.progress.is_complete());
-        dict[@"Seed"] = @(peer.is_seed);
-        dict[@"Encryption"] = @(peer.is_encrypted);
-        dict[@"uTP"] = @(peer.is_utp);
-        dict[@"Client"] = tr_strv_to_utf8_nsstring(peer.user_agent);
-        dict[@"Flags"] = tr_strv_to_utf8_nsstring(peer.flag_str);
+        for (auto const& peer : peers) {
+            NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:14];
 
-        if (peer.is_uploading_to) {
-            dict[@"UL To Rate"] = @(peer.rate_to_peer.count(tr::Values::Speed::Units::KByps));
+            dict[@"Name"] = name;
+            dict[@"From"] = @(peer.from);
+            dict[@"IP"] = tr_strv_to_utf8_nsstring(peer.addr);
+            dict[@"Port"] = @(peer.port);
+            dict[@"Progress"] = @(peer.progress.to_fraction());
+            dict[@"Progress String"] = [NSString wholePercentString:peer.progress];
+            dict[@"Complete"] = @(peer.progress.is_complete());
+            dict[@"Seed"] = @(peer.is_seed);
+            dict[@"Encryption"] = @(peer.is_encrypted);
+            dict[@"uTP"] = @(peer.is_utp);
+            dict[@"Client"] = tr_strv_to_utf8_nsstring(peer.user_agent);
+            dict[@"Flags"] = tr_strv_to_utf8_nsstring(peer.flag_str);
+
+            if (peer.is_uploading_to) {
+                dict[@"UL To Rate"] = @(peer.rate_to_peer.count(tr::Values::Speed::Units::KByps));
+            }
+            if (peer.is_downloading_from) {
+                dict[@"DL From Rate"] = @(peer.rate_to_client.count(tr::Values::Speed::Units::KByps));
+            }
+
+            [peerDicts addObject:dict];
         }
-        if (peer.is_downloading_from) {
-            dict[@"DL From Rate"] = @(peer.rate_to_client.count(tr::Values::Speed::Units::KByps));
-        }
-
-        [peerDicts addObject:dict];
     }
 
     return peerDicts;
@@ -963,18 +971,22 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSUInteger n = tr_torrentWebseedCount(self.fHandle);
     NSMutableArray* webSeeds = [NSMutableArray arrayWithCapacity:n];
 
-    for (NSUInteger i = 0; i < n; ++i) {
-        auto const webseed = tr_torrentWebseed(self.fHandle, i);
-        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:3];
+    if (n > 0) {
+        NSString* const name = self.name;
 
-        dict[@"Name"] = self.name;
-        dict[@"Address"] = @(webseed.url);
+        for (NSUInteger i = 0; i < n; ++i) {
+            auto const webseed = tr_torrentWebseed(self.fHandle, i);
+            NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:3];
 
-        if (webseed.is_downloading) {
-            dict[@"DL From Rate"] = @(double(webseed.download_bytes_per_second) / 1000);
+            dict[@"Name"] = name;
+            dict[@"Address"] = @(webseed.url);
+
+            if (webseed.is_downloading) {
+                dict[@"DL From Rate"] = @(double(webseed.download_bytes_per_second) / 1000);
+            }
+
+            [webSeeds addObject:dict];
         }
-
-        [webSeeds addObject:dict];
     }
 
     return webSeeds;
