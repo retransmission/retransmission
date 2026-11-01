@@ -10,7 +10,6 @@
 #include <string>
 #include <utility>
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
 
 #include "Utils.h"
@@ -22,12 +21,8 @@ namespace
 [[nodiscard]] tr::app::RpcClient::UiThreadFunc makeUiMarshaler(QObject* context)
 {
     return [context](std::function<void()> fn) {
-        if (qApp != nullptr) {
-            QTimer::singleShot(0, context, std::move(fn));
-            return;
-        }
-
-        fn();
+        // queued even when called on the UI thread: a reply never runs inside exec()
+        QTimer::singleShot(0, context, std::move(fn));
     };
 }
 

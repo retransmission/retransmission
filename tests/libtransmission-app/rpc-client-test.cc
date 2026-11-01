@@ -82,6 +82,27 @@ private:
     api_compat::Style saved_style_ = api_compat::Style::Tr4;
 };
 
+// A caller that counts replies, e.g. a dialog holding its widgets until a
+// torrent_set completes, needs one reply per exec() whether or not the client
+// is connected yet.
+TEST_F(AppRpcClientTest, answersARequestMadeBeforeStartWithANetworkError)
+{
+    auto loop = UiLoop{};
+    auto client = RpcClient{ loop.marshaler() };
+    auto network_responses = 0;
+    auto const tag = client.network_response.connect_scoped(
+        [&network_responses](bool /*is_network_error*/, std::string_view /*message*/) { ++network_responses; });
+
+    auto fut = exec_async(client, TR_KEY_session_get);
+    EXPECT_NE(fut.wait_for(0s), std::future_status::ready); // answered on the UI thread, not inside exec()
+
+    auto const response = loop.pump_until_ready(fut);
+    EXPECT_FALSE(response.success);
+    EXPECT_TRUE(response.network_error);
+    EXPECT_FALSE(std::empty(response.errmsg));
+    EXPECT_EQ(0, network_responses);
+}
+
 TEST_F(AppRpcClientTest, firstPostUsesDefaultStyleTr4)
 {
     api_compat::set_default_style(api_compat::Style::Tr4);
