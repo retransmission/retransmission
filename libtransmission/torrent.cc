@@ -1570,6 +1570,20 @@ std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* tor)
     return tr_peerMgrPeerStats(tor);
 }
 
+void tr_torrentPeersAsync(tr_torrent* const tor, tr_torrent_peers_func callback)
+{
+    tr_return_if_fail(tr_isTorrent(tor));
+    tr_return_if_fail(callback != nullptr);
+
+    auto on_gone = [callback] {
+        callback({});
+    };
+    run_in_session_thread_by_id(
+        *tor,
+        [callback = std::move(callback)](tr_torrent const* const torrent) { callback(tr_torrentPeers(torrent)); },
+        std::move(on_gone));
+}
+
 void tr_torrentAvailability(tr_torrent const* tor, std::span<int8_t> const tab)
 {
     tr_return_if_fail(tr_isTorrent(tor));

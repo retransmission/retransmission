@@ -195,14 +195,17 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
             std::string_view const /*oldpath*/,
             std::string_view const /*newname*/,
             tr_error const& error) { rename_error = error.code(); });
+    auto peer_count = std::optional<size_t>{};
+    tr_torrentPeersAsync(tor, [&peer_count](std::vector<tr_peer_stat> const& peers) { peer_count = std::size(peers); });
     tr_torrentRemove(tor, false);
 
     release.set_value();
     blockingRunInSessionThread([] {}); // runs after the work queued above
 
-    // The work that reports back reports an error.
+    // The work that reports back reports an error or no peers.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
     EXPECT_EQ(EINVAL, rename_error);
+    EXPECT_EQ(0U, peer_count);
 }
 
 TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)
@@ -433,4 +436,19 @@ TEST_F(TorrentTest, statAsyncIgnoresAnEmptyCallback)
 
     tr_logSetQueueEnabled(false);
     tr_logSetLevel(old_level);
+}
+
+TEST_F(TorrentTest, peersAsyncCallsBackOnTheSessionThread)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    auto const on_session_thread = std::make_shared<std::promise<bool>>();
+    auto future = on_session_thread->get_future();
+    tr_torrentPeersAsync(tor, [session = session_, on_session_thread](std::vector<tr_peer_stat> const& peers) {
+        EXPECT_TRUE(std::empty(peers)); // nothing is connected
+        on_session_thread->set_value(session->am_in_session_thread());
+    });
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_TRUE(future.get());
 }
