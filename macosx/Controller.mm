@@ -338,6 +338,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) NSView* fPositioningView;
 
 - (void)removeTorrentsImpl:(NSArray<Torrent*>*)torrents deleteData:(BOOL)deleteData;
+- (void)sortTorrentsByQueuePosition;
 
 @end
 
@@ -877,6 +878,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [self.fTorrents addObject:torrent];
         self.fTorrentHashes[torrent.hashString] = torrent;
     }
+    [self sortTorrentsByQueuePosition];
 
     //update previous transfers state by recreating a torrent from history
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
@@ -4940,11 +4942,14 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 {
     [Torrent updateTorrents:self.fTorrents];
 
-    NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"queuePosition" ascending:YES];
-    NSArray* descriptors = @[ descriptor ];
-    [self.fTorrents sortUsingDescriptors:descriptors];
-
+    [self sortTorrentsByQueuePosition];
     [self sortTorrentsAndIncludeQueueOrder:YES];
+}
+
+- (void)sortTorrentsByQueuePosition
+{
+    NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"queuePosition" ascending:YES];
+    [self.fTorrents sortUsingDescriptors:@[ descriptor ]];
 }
 
 @end
