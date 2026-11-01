@@ -22,7 +22,6 @@ Checks:
   - cppcoreguidelines-*
   - -cppcoreguidelines-avoid-c-arrays
   - -cppcoreguidelines-avoid-const-or-ref-data-members
-  - -cppcoreguidelines-avoid-goto
   - -cppcoreguidelines-avoid-magic-numbers
   - -cppcoreguidelines-avoid-non-const-global-variables
   - -cppcoreguidelines-explicit-constructor # alias of `misc-explicit-constructor`
