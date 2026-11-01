@@ -19,25 +19,25 @@
 
 #define LStr(key) NSLocalizedStringFromTable(key, @"Creator", @"")
 
-typedef NS_ENUM(NSUInteger, TrackerSegmentTag) {
-    TrackerSegmentTagAdd = 0,
-    TrackerSegmentTagRemove = 1,
+typedef NS_ENUM(NSUInteger, TrackerSegment) {
+    TrackerSegmentAdd = 0,
+    TrackerSegmentRemove = 1,
 };
 
-@interface CreatorWindowController ()<NSWindowRestoration, NSMenuItemValidation>
+@interface CreatorWindowController ()<NSWindowRestoration, NSWindowDelegate, NSMenuItemValidation, NSTableViewDelegate, NSTableViewDataSource>
 
-@property(nonatomic) IBOutlet NSImageView* fIconView;
-@property(nonatomic) IBOutlet NSTextField* fNameField;
-@property(nonatomic) IBOutlet NSTextField* fStatusField;
-@property(nonatomic) IBOutlet NSTextField* fPiecesField;
-@property(nonatomic) IBOutlet NSTextField* fLocationField;
-@property(nonatomic) IBOutlet NSTableView* fTrackerTable;
-@property(nonatomic) IBOutlet NSSegmentedControl* fTrackerAddRemoveControl;
-@property(nonatomic) IBOutlet NSTextView* fCommentView;
-@property(nonatomic) IBOutlet NSButton* fPrivateCheck;
-@property(nonatomic) IBOutlet NSButton* fOpenCheck;
-@property(nonatomic) IBOutlet NSTextField* fSource;
-@property(nonatomic) IBOutlet NSStepper* fPieceSizeStepper;
+@property(nonatomic) NSImageView* fIconView;
+@property(nonatomic) NSTextField* fNameField;
+@property(nonatomic) NSTextField* fStatusField;
+@property(nonatomic) NSTextField* fPiecesField;
+@property(nonatomic) NSTextField* fLocationField;
+@property(nonatomic) NSTableView* fTrackerTable;
+@property(nonatomic) NSSegmentedControl* fTrackerAddRemoveControl;
+@property(nonatomic) NSTextView* fCommentView;
+@property(nonatomic) NSButton* fPrivateCheck;
+@property(nonatomic) NSButton* fOpenCheck;
+@property(nonatomic) NSTextField* fSource;
+@property(nonatomic) NSStepper* fPieceSizeStepper;
 
 @property(nonatomic) NSAlert* fProgressAlert;
 @property(nonatomic) NSProgressIndicator* fProgressIndicator;
@@ -82,7 +82,7 @@ static NSMutableSet* creatorWindowControllerSet;
 
 - (instancetype)initWithHandle:(tr_session*)handle path:(NSURL*)path
 {
-    if ((self = [super initWithWindowNibName:@"Creator"])) {
+    if ((self = [super initWithWindow:nil])) {
         if (!creatorWindowControllerSet) {
             creatorWindowControllerSet = [NSMutableSet set];
         }
@@ -130,13 +130,257 @@ static NSMutableSet* creatorWindowControllerSet;
         }
 
         [creatorWindowControllerSet addObject:self];
+
+        [self setupWindow];
     }
     return self;
 }
 
-- (void)awakeFromNib
+- (NSView*)spacer
 {
-    [super awakeFromNib];
+    NSView* spacer = [[NSView alloc] init];
+    [spacer setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
+    return spacer;
+}
+
+- (void)setupWindow
+{
+    NSWindow* window = [[NSWindow alloc]
+        initWithContentRect:NSMakeRect(0, 0, 520, 460)
+                  styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable
+                    backing:NSBackingStoreBuffered
+                      defer:NO];
+    window.title = self.fPath.lastPathComponent;
+    window.minSize = NSMakeSize(440, 380);
+    window.tabbingMode = NSWindowTabbingModeDisallowed;
+    [window center];
+    window.frameAutosaveName = @"CreatorWindow";
+    window.delegate = self;
+    self.window = window;
+
+    NSStackView* mainStack = [NSStackView stackViewWithViews:@[]];
+    mainStack.orientation = NSUserInterfaceLayoutOrientationVertical;
+    mainStack.alignment = NSLayoutAttributeWidth;
+    mainStack.spacing = 14.0;
+    mainStack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20);
+    window.contentView = mainStack;
+
+    // ==========================================
+    // Section: File's info
+    // ==========================================
+    NSImageView* iconView = [[NSImageView alloc] init];
+    iconView.imageScaling = NSImageScaleProportionallyUpOrDown;
+    self.fIconView = iconView;
+
+    NSTextField* nameField = [NSTextField labelWithString:@""];
+    nameField.font = [NSFont systemFontOfSize:16 weight:NSFontWeightMedium];
+    nameField.lineBreakMode = NSLineBreakByTruncatingTail;
+    self.fNameField = nameField;
+
+    NSTextField* statusField = [NSTextField labelWithString:@""];
+    statusField.font = [NSFont systemFontOfSize:12];
+    statusField.textColor = [NSColor secondaryLabelColor];
+    self.fStatusField = statusField;
+
+    NSStackView* infoTextStack = [NSStackView stackViewWithViews:@[ nameField, statusField ]];
+    infoTextStack.orientation = NSUserInterfaceLayoutOrientationVertical;
+    infoTextStack.alignment = NSLayoutAttributeLeading;
+    infoTextStack.spacing = 4.0;
+
+    NSStackView* topFileInfoStack = [NSStackView stackViewWithViews:@[ iconView, infoTextStack, self.spacer ]];
+    topFileInfoStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    topFileInfoStack.alignment = NSLayoutAttributeCenterY;
+    topFileInfoStack.spacing = 12.0;
+    [mainStack addView:topFileInfoStack inGravity:NSStackViewGravityTop];
+
+    // ==========================================
+    // Section: Trackers table
+    // ==========================================
+    NSTableView* tableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    tableView.usesAlternatingRowBackgroundColors = YES;
+    tableView.allowsMultipleSelection = YES;
+    tableView.headerView = [[NSTableHeaderView alloc] initWithFrame:NSMakeRect(0, 0, 0, 24)];
+
+    NSTableColumn* column = [[NSTableColumn alloc] initWithIdentifier:@"TrackerColumn"];
+    column.title = NSLocalizedString(@"Trackers", nil);
+    [tableView addTableColumn:column];
+    self.fTrackerTable = tableView;
+
+    NSScrollView* tableScrollView = [[NSScrollView alloc] init];
+    tableScrollView.hasVerticalScroller = YES;
+    tableScrollView.borderType = NSBezelBorder;
+    tableScrollView.documentView = tableView;
+    [mainStack addView:tableScrollView inGravity:NSStackViewGravityCenter];
+
+    NSSegmentedControl* trackerControl = [NSSegmentedControl segmentedControlWithLabels:@[ @"", @"" ]
+                                                                           trackingMode:NSSegmentSwitchTrackingMomentary
+                                                                                 target:self
+                                                                                 action:@selector(addRemoveTracker:)];
+    trackerControl.segmentStyle = NSSegmentStyleRoundRect;
+    NSString* addTitle = NSLocalizedString(@"Add a tracker", "Create torrent -> tracker buttons");
+    NSString* removeTitle = NSLocalizedString(@"Remove selected trackers", "Create torrent -> tracker buttons");
+    [trackerControl setImage:[NSImage imageWithSystemSymbolName:@"plus" accessibilityDescription:addTitle] forSegment:0];
+    [trackerControl setImage:[NSImage imageWithSystemSymbolName:@"minus" accessibilityDescription:removeTitle] forSegment:1];
+    [trackerControl setWidth:32 forSegment:0];
+    [trackerControl setWidth:32 forSegment:1];
+    [trackerControl setEnabled:NO forSegment:TrackerSegmentRemove];
+    self.fTrackerAddRemoveControl = trackerControl;
+
+    NSTextField* trackerHintLabel = [NSTextField labelWithString:LStr(@"Each tracker will be placed into its own tier")];
+    trackerHintLabel.font = [NSFont systemFontOfSize:11];
+    trackerHintLabel.textColor = [NSColor disabledControlTextColor];
+
+    NSStackView* trackerBarStack = [NSStackView stackViewWithViews:@[ trackerControl, trackerHintLabel, self.spacer ]];
+    trackerBarStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    trackerBarStack.alignment = NSLayoutAttributeCenterY;
+    trackerBarStack.spacing = 8.0;
+    [mainStack addView:trackerBarStack inGravity:NSStackViewGravityCenter];
+
+    // ==========================================
+    // Section: Inputs
+    // ==========================================
+
+    NSTextField* commentTextField = [NSTextField labelWithString:LStr(@"Comment:")];
+    NSStackView* commentTextFieldStack = [NSStackView stackViewWithViews:@[ commentTextField ]];
+    commentTextFieldStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    commentTextFieldStack.alignment = NSLayoutAttributeCenterY;
+    commentTextFieldStack.distribution = NSStackViewDistributionGravityAreas;
+    commentTextFieldStack.spacing = 8.0;
+    [commentTextFieldStack addView:self.spacer inGravity:NSStackViewGravityTrailing];
+    [mainStack addView:commentTextFieldStack inGravity:NSStackViewGravityCenter];
+
+    NSScrollView* commentScrollView = [NSTextView scrollableTextView];
+    commentScrollView.borderType = NSBezelBorder;
+
+    NSTextView* commentTextView = commentScrollView.documentView;
+    commentTextView.richText = NO;
+    commentTextView.importsGraphics = NO;
+    commentTextView.allowsUndo = YES;
+    commentTextView.continuousSpellCheckingEnabled = YES;
+    commentTextView.font = [NSFont systemFontOfSize:13];
+    self.fCommentView = commentTextView;
+
+    [mainStack addView:commentScrollView inGravity:NSStackViewGravityCenter];
+
+    NSTextField* sourceField = [[NSTextField alloc] init];
+    sourceField.placeholderString = LStr(@"Source:");
+    self.fSource = sourceField;
+    [mainStack addView:sourceField inGravity:NSStackViewGravityCenter];
+
+    // ==========================================
+    // Section: Settings
+    // ==========================================
+    NSButton* privateCheck = [NSButton checkboxWithTitle:LStr(@"Private torrent") target:nil action:nil];
+    self.fPrivateCheck = privateCheck;
+
+    NSTextField* piecesField = [NSTextField labelWithString:@""];
+    piecesField.font = [NSFont systemFontOfSize:12];
+    self.fPiecesField = piecesField;
+
+    NSStepper* pieceStepper = [[NSStepper alloc] init];
+    pieceStepper.minValue = 14;
+    pieceStepper.maxValue = 31;
+    pieceStepper.autorepeat = NO;
+    pieceStepper.target = self;
+    pieceStepper.action = @selector(incrementOrDecrementPieceSize:);
+    self.fPieceSizeStepper = pieceStepper;
+
+    NSStackView* stepperStack = [NSStackView stackViewWithViews:@[ piecesField, pieceStepper ]];
+    stepperStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    stepperStack.alignment = NSLayoutAttributeCenterY;
+    stepperStack.spacing = 4.0;
+
+    NSStackView* optionsBarStack = [NSStackView stackViewWithViews:@[ privateCheck ]];
+    optionsBarStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    optionsBarStack.alignment = NSLayoutAttributeCenterY;
+    optionsBarStack.distribution = NSStackViewDistributionGravityAreas;
+    [optionsBarStack setViews:@[ privateCheck, self.spacer ] inGravity:NSStackViewGravityLeading];
+    [optionsBarStack setViews:@[ stepperStack ] inGravity:NSStackViewGravityTrailing];
+    [mainStack addView:optionsBarStack inGravity:NSStackViewGravityCenter];
+
+    NSBox* separator = [[NSBox alloc] init];
+    separator.boxType = NSBoxSeparator;
+    [mainStack addView:separator inGravity:NSStackViewGravityCenter];
+
+    // ==========================================
+    // Section: Location and bottom panel
+    // ==========================================
+    NSImageView* docIconView = [NSImageView imageViewWithImage:[NSImage imageNamed:@"TransmissionDocument"]];
+
+    NSTextField* locationField = [NSTextField labelWithString:@""];
+    locationField.font = [NSFont systemFontOfSize:11];
+    locationField.lineBreakMode = NSLineBreakByCharWrapping;
+    [locationField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                            forOrientation:NSLayoutConstraintOrientationHorizontal];
+    self.fLocationField = locationField;
+
+    NSButton* changeLocationButton = [NSButton buttonWithTitle:LStr(@"Change…") target:self action:@selector(setLocation:)];
+    changeLocationButton.controlSize = NSControlSizeSmall;
+
+    NSStackView* locationStack = [NSStackView stackViewWithViews:@[]];
+    locationStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    locationStack.alignment = NSLayoutAttributeCenterY;
+    locationStack.distribution = NSStackViewDistributionGravityAreas;
+    locationStack.spacing = 6.0;
+    [locationStack setViews:@[ docIconView, locationField ] inGravity:NSStackViewGravityLeading];
+    [locationStack setViews:@[ self.spacer, changeLocationButton ] inGravity:NSStackViewGravityTrailing];
+    [mainStack addView:locationStack inGravity:NSStackViewGravityBottom];
+
+    NSButton* openCheck = [NSButton checkboxWithTitle:LStr(@"Open when created") target:nil action:nil];
+    openCheck.state = NSControlStateValueOn;
+    self.fOpenCheck = openCheck;
+
+    NSButton* cancelButton = [NSButton buttonWithTitle:LStr(@"Cancel") target:self action:@selector(cancelCreateWindow:)];
+    cancelButton.keyEquivalent = @"\e";
+    NSButton* createButton = [NSButton buttonWithTitle:LStr(@"Create") target:self action:@selector(create:)];
+    createButton.keyEquivalent = @"\r";
+
+    NSStackView* actionButtonsStack = [NSStackView stackViewWithViews:@[ cancelButton, createButton ]];
+    actionButtonsStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    actionButtonsStack.spacing = 12.0;
+
+    NSStackView* bottomActionStack = [NSStackView stackViewWithViews:@[]];
+    bottomActionStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    bottomActionStack.alignment = NSLayoutAttributeCenterY;
+    bottomActionStack.distribution = NSStackViewDistributionGravityAreas;
+    [bottomActionStack setViews:@[ openCheck, self.spacer ] inGravity:NSStackViewGravityLeading];
+    [bottomActionStack setViews:@[ actionButtonsStack ] inGravity:NSStackViewGravityTrailing];
+    [mainStack addView:bottomActionStack inGravity:NSStackViewGravityBottom];
+
+    // ==========================================
+    // Constraints
+    // ==========================================
+    [NSLayoutConstraint activateConstraints:@[
+        [iconView.widthAnchor constraintEqualToConstant:64],
+        [iconView.heightAnchor constraintEqualToConstant:64],
+
+        [tableScrollView.heightAnchor constraintGreaterThanOrEqualToConstant:100],
+        [commentScrollView.heightAnchor constraintEqualToConstant:60],
+
+        [docIconView.widthAnchor constraintEqualToConstant:16],
+        [docIconView.heightAnchor constraintEqualToConstant:16],
+        [cancelButton.widthAnchor constraintEqualToAnchor:createButton.widthAnchor]
+    ]];
+
+    [tableScrollView setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationVertical];
+    [tableScrollView setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                              forOrientation:NSLayoutConstraintOrientationVertical];
+
+    for (NSView* view in mainStack.arrangedSubviews) {
+        if (view != tableScrollView) {
+            [view setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
+            [view setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
+        }
+    }
+
+    [self configureContent];
+}
+
+- (void)configureContent
+{
+    self.window.identifier = @"CreatorWindow";
     self.window.restorationClass = [self class];
 
     NSString* name = self.fPath.lastPathComponent;
@@ -153,10 +397,7 @@ static NSMutableSet* creatorWindowControllerSet;
 
     auto fileType = [UTType contentTypeForFilenameExtension:self.fPath.pathExtension isFolder:is_folder];
 
-    NSImage* icon = [NSWorkspace.sharedWorkspace iconForContentType:fileType];
-    icon = [icon copy];
-    icon.size = self.fIconView.frame.size;
-    self.fIconView.image = icon;
+    self.fIconView.image = [NSWorkspace.sharedWorkspace iconForContentType:fileType];
 
     NSString* status_string = [NSString stringForFileSize:self.fBuilder->total_size()];
     if (is_folder) {
@@ -348,7 +589,7 @@ static NSMutableSet* creatorWindowControllerSet;
         return;
     }
 
-    if ([[sender cell] tagForSegment:[sender selectedSegment]] == TrackerSegmentTagRemove) {
+    if ([sender selectedSegment] == TrackerSegmentRemove) {
         [self.fTrackers removeObjectsAtIndexes:self.fTrackerTable.selectedRowIndexes];
 
         [self.fTrackerTable deselectAll:self];
@@ -389,7 +630,7 @@ static NSMutableSet* creatorWindowControllerSet;
 
 - (void)tableViewSelectionDidChange:(NSNotification*)notification
 {
-    [self.fTrackerAddRemoveControl setEnabled:self.fTrackerTable.numberOfSelectedRows > 0 forSegment:TrackerSegmentTagRemove];
+    [self.fTrackerAddRemoveControl setEnabled:self.fTrackerTable.numberOfSelectedRows > 0 forSegment:TrackerSegmentRemove];
 }
 
 - (void)copy:(id)sender
@@ -572,10 +813,10 @@ static NSMutableSet* creatorWindowControllerSet;
 - (void)configureProgressAlert
 {
     self.fProgressAlert = [[NSAlert alloc] init];
-    self.fProgressAlert.messageText = LStr(@"83.title"); // Creating torrent file…
+    self.fProgressAlert.messageText = LStr(@"Creating torrent…");
     self.fProgressAlert.alertStyle = NSAlertStyleInformational;
 
-    NSButton* cancelButton = [self.fProgressAlert addButtonWithTitle:LStr(@"82.title")]; // Cancel
+    NSButton* cancelButton = [self.fProgressAlert addButtonWithTitle:LStr(@"Cancel")];
     cancelButton.target = self;
     cancelButton.action = @selector(handleProgressCancellation);
     cancelButton.keyEquivalent = @"\e"; // Esc

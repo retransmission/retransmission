@@ -1,39 +1,9 @@
-
-/* Class = "NSWindow"; title = "New Torrent"; ObjectID = "5"; */
-"5.title" = "New Torrent";
-
-/* Class = "NSTextFieldCell"; title = "Comment:"; ObjectID = "70"; */
-"70.title" = "Comment:";
-
-/* Class = "NSTextFieldCell"; title = "Trackers:"; ObjectID = "71"; */
-"71.title" = "Trackers:";
-
-/* Class = "NSButtonCell"; title = "Change…"; ObjectID = "73"; */
-"73.title" = "Change…";
-
-/* Class = "NSTextFieldCell"; title = "Torrent file:"; ObjectID = "74"; */
-"74.title" = "Torrent file:";
-
-/* Class = "NSButtonCell"; title = "Private torrent"; ObjectID = "77"; */
-"77.title" = "Private torrent";
-
-/* Class = "NSButtonCell"; title = "Create"; ObjectID = "78"; */
-"78.title" = "Create";
-
-/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "79"; */
-"79.title" = "Cancel";
-
-/* Class = "NSButtonCell"; title = "Open when created"; ObjectID = "81"; */
-"81.title" = "Open when created";
-
-/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "82"; */
-"82.title" = "Cancel";
-
-/* Class = "NSTextFieldCell"; title = "Creating torrent…"; ObjectID = "83"; */
-"83.title" = "Creating torrent…";
-
-/* Class = "NSTextFieldCell"; title = "Each tracker will be placed into its own tier"; ObjectID = "108"; */
-"108.title" = "Each tracker will be placed into its own tier";
-
-/* Class = "NSTextFieldCell"; title = "Source:"; ObjectID = "f1g-Kk-weU"; */
-"f1g-Kk-weU.title" = "Source:";
+"Comment:" = "Comment:";
+"Change…" = "Change…";
+"Private torrent" = "Private torrent";
+"Create" = "Create";
+"Cancel" = "Cancel";
+"Open when created" = "Open when created";
+"Creating torrent…" = "Creating torrent…";
+"Each tracker will be placed into its own tier" = "Each tracker will be placed into its own tier";
+"Source:" = "Source:";
