@@ -29,6 +29,8 @@ target_sources(${LIBNAME}
         startup-coordinator.cc
         startup-coordinator.h
         torrent-icon.h
+        torrent-list.cc
+        torrent-list.h
         torrent.cc
         torrent.h
         trash.cc
