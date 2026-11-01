@@ -134,15 +134,21 @@ void TorrentModel::onChanged(TorrentList::Changes const& changes)
     }
 
     // one dataChanged() per span of adjacent rows
-    auto const& changed = changes.changed;
-    for (auto first = std::begin(changed), end = std::end(changed); first != end;) {
-        auto last = first;
-        while (std::next(last) != end && std::next(last)->row == last->row + 1U) {
-            ++last;
+    auto const emit_spans = [this](auto const& rows, auto const row_of) {
+        for (auto first = std::begin(rows), end = std::end(rows); first != end;) {
+            auto last = first;
+            while (std::next(last) != end && row_of(*std::next(last)) == row_of(*last) + 1U) {
+                ++last;
+            }
+            emit dataChanged(index(static_cast<int>(row_of(*first))), index(static_cast<int>(row_of(*last))));
+            first = std::next(last);
         }
-        emit dataChanged(index(static_cast<int>(first->row)), index(static_cast<int>(last->row)));
-        first = std::next(last);
-    }
+    };
+    emit_spans(changes.changed, [](TorrentList::TorrentChange const& change) { return change.row; });
+
+    // A sorting proxy placed each new row among the old rows before those
+    // moved, so have it place the new rows again now that they have.
+    emit_spans(changes.inserted, [](size_t const row) { return row; });
 
     if (!std::empty(changes.edited)) {
         emit torrentsEdited(to_ids(changes.edited));

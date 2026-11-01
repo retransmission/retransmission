@@ -28,6 +28,7 @@
 #include "TorrentModel.h"
 #include "TrQtInit.h"
 #include "Typedefs.h"
+#include "UserMetaType.h"
 #include "qt-test-fixtures.h"
 
 using namespace std::literals;
@@ -152,7 +153,7 @@ private slots:
                           QStringLiteral("charlie"),
                           QStringLiteral("echo"),
                           QStringLiteral("foxtrot") }));
-        QVERIFY(spans == (Spans{ { 0, 0 } }));
+        QVERIFY(spans == (Spans{ { 0, 0 }, { 1, 1 }, { 4, 4 } })); // the changed row, then the new rows
 
         // adjacent changed rows share one dataChanged()
         spans.clear();
@@ -161,6 +162,46 @@ private slots:
             Coverage::Partial,
             Now);
         QVERIFY(spans == (Spans{ { 0, 1 }, { 4, 4 } }));
+    }
+
+    static void placesANewRowAfterTheSameUpdateMovedAnother()
+    {
+        // sort by a live field, which the proxy reads through TorrentRole
+        auto prefs = Prefs{};
+        prefs.set(TR_KEY_sort_mode, SortMode::SortByActivity);
+        auto list = tr::app::TorrentList{ prefs };
+        auto model = TorrentModel{ list };
+        auto filter = TorrentFilter{ prefs };
+        filter.setSourceModel(&model);
+
+        list.update(
+            make_args(
+                make_row(1, "a"sv, 10),
+                make_row(2, "b"sv, 20),
+                make_row(3, "c"sv, 30),
+                make_row(4, "d"sv, 40),
+                make_row(5, "e"sv, 50)),
+            Coverage::Complete,
+            Now);
+        QCOMPARE(
+            names_of(filter),
+            (QStringList{ QStringLiteral("e"),
+                          QStringLiteral("d"),
+                          QStringLiteral("c"),
+                          QStringLiteral("b"),
+                          QStringLiteral("a") }));
+
+        // "c" jumps to the front as "n" arrives: the proxy first places "n" by
+        // searching past the slot "c" still holds, so it must place it again
+        list.update(make_args(make_row(3, "c"sv, 100), make_row(6, "n"sv, 45)), Coverage::Partial, Now);
+        QCOMPARE(
+            names_of(filter),
+            (QStringList{ QStringLiteral("c"),
+                          QStringLiteral("e"),
+                          QStringLiteral("n"),
+                          QStringLiteral("d"),
+                          QStringLiteral("b"),
+                          QStringLiteral("a") }));
     }
 
     static void showsARenamedTorrentUnderItsNewName()
