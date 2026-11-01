@@ -1,0 +1,15 @@
+"Update" = "Opdater";
+"Blocklist:" = "Blokering:";
+"Enable blocklist" = "Forhindre blokerede forbindelser i at få adgang";
+"High connection limits might significantly impact system performance" = "Høje forbindelsesbegrænsninger kan have indflydelse på systemydeevnen";
+"Use PEX to find more peers for public torrents" = "Brug peer exchange (PEX) for offentlige torrents";
+"Maximum peers for new torrents:" = "Max antal for nye overførsler:";
+"Maximum peers overall:" = "Max antal forbindelser generelt:";
+"Peer limits:" = "Forbindelser:";
+"Prefer encryption" = "Foretræk krypterede forbindelser";
+"Encryption:" = "Kryptering:";
+"Require encryption" = "Ignorer ikke-krypterede forbindelser";
+"Automatically update weekly" = "Opdater automatisk ugentligt";
+"Use DHT to find more peers for public torrents" = "Brug distributed hash table (DHT) for offentlige torrents";
+"Use Local Peer Discovery to find more peers for public torrents" = "Brug local peer discovery for offentlige torrents";
+"URL:" = "URL:";

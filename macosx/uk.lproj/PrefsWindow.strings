@@ -88,48 +88,6 @@
 /* Class = "NSButtonCell"; title = "Only when there are multiple files"; ObjectID = "1340"; */
 "1340.title" = "Тільки за наявності декількох файлів";
 
-/* Class = "NSButtonCell"; title = "Update"; ObjectID = "1437"; */
-"1437.title" = "Оновити";
-
-/* Class = "NSTextFieldCell"; title = "blocklist loaded/not loaded"; ObjectID = "1438"; */
-"1438.title" = "чорний список завантажений / не завантажений";
-
-/* Class = "NSTextFieldCell"; title = "Blocklist:"; ObjectID = "1439"; */
-"1439.title" = "Список блокування:";
-
-/* Class = "NSButtonCell"; title = "Prevent peers in blocklist from connecting"; ObjectID = "1440"; */
-"1440.title" = "Не підключатися до учасників з чорного списку";
-
-/* Class = "NSTextFieldCell"; title = "High connection limits might significantly impact system performance"; ObjectID = "1441"; */
-"1441.title" = "Деякі роутери будуть \"гальмувати\" якщо підключень дуже багато";
-
-/* Class = "NSButtonCell"; title = "Use peer exchange (PEX) for public torrents"; ObjectID = "1442"; */
-"1442.title" = "Використовувати одноранговий обмін (PEX) для публічних торентів";
-
-/* Class = "NSTextFieldCell"; title = "Maximum connections for new transfers:"; ObjectID = "1443"; */
-"1443.title" = "Максимум підключень для нових роздач:";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1446"; */
-"1446.title" = "вузли";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1447"; */
-"1447.title" = "вузли";
-
-/* Class = "NSTextFieldCell"; title = "Global maximum connections:"; ObjectID = "1450"; */
-"1450.title" = "Глобальний максимум підключень:";
-
-/* Class = "NSTextFieldCell"; title = "Connections:"; ObjectID = "1451"; */
-"1451.title" = "Підключення:";
-
-/* Class = "NSButtonCell"; title = "Prefer encrypted peers"; ObjectID = "1452"; */
-"1452.title" = "Надавати перевагу зашифрованим користувачам";
-
-/* Class = "NSTextFieldCell"; title = "Encryption:"; ObjectID = "1453"; */
-"1453.title" = "Шифрування:";
-
-/* Class = "NSButtonCell"; title = "Ignore unencrypted peers"; ObjectID = "1454"; */
-"1454.title" = "Ігнорувати незашифрованих користувачів";
-
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Тільки при додаванні вручну";
 
@@ -159,12 +117,6 @@
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "Відкрити веб-інтерфейс";
-
-/* Class = "NSTextFieldCell"; title = "Last updated: N/A"; ObjectID = "1739"; */
-"1739.title" = "Останнє оновлення: немає даних";
-
-/* Class = "NSButtonCell"; title = "Automatically update weekly"; ObjectID = "1742"; */
-"1742.title" = "Оновлювати список щотижня";
 
 /* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
 "1748.title" = "Дозволяти підключатися тільки наступним IP:";
@@ -199,26 +151,17 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Роздачі будуть додані в першу \n групу що задовольняє  всім правилам";
 
-/* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
-"1926.title" = "Використовувати розподілену геш-таблицю (DHT) для публічних торентів";
-
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "Додавати .part до незавершених файлів";
 
 /* Class = "NSButtonCell"; title = "Display a window when opening a magnet link"; ObjectID = "1948"; */
 "1948.title" = "Показувати діалогове вікно під час відкриття магнет-посилання";
 
-/* Class = "NSButtonCell"; title = "Use local peer discovery for public torrents"; ObjectID = "1952"; */
-"1952.title" = "Використовувати локальне виявлення учасників для публічних торентів";
-
 /* Class = "NSButtonCell"; title = "Stop seeding when inactive for:"; ObjectID = "1962"; */
 "1962.title" = "Припинити висів коли неактивний протягом:";
 
 /* Class = "NSTextFieldCell"; title = "minutes"; ObjectID = "1970"; */
 "1970.title" = "хвилини";
-
-/* Class = "NSTextFieldCell"; title = "URL:"; ObjectID = "1988"; */
-"1988.title" = "URL:";
 
 /* Class = "NSButtonCell"; title = "When download completes:"; ObjectID = "2044"; */
 "2044.title" = "Коли завантаження завершені:";

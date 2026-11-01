@@ -1,0 +1,15 @@
+"Update" = "עדכון";
+"Blocklist:" = "רשימת חסימה:";
+"Enable blocklist" = "למנוע תחברות מצד עמיתים ברשימת החסימה";
+"High connection limits might significantly impact system performance" = "מגבלות מהירות חיבור גבוהות עלולות לפגוע בביצועי המערכת";
+"Use PEX to find more peers for public torrents" = "להשתמש בהתמסרות בעמיתים (PEX) לטורנטים ציבוריים";
+"Maximum peers for new torrents:" = "כמות חיבורים מרבית להעברות חדשות:";
+"Maximum peers overall:" = "מס׳ חיבורים מרבי כללי:";
+"Peer limits:" = "חיבורים:";
+"Prefer encryption" = "להעדיף עמיתים מוצפנים";
+"Encryption:" = "הצפנה:";
+"Require encryption" = "התעלמות מעמיתים לא מוצפנים";
+"Automatically update weekly" = "לעדכן אוטומטית כל שבוע";
+"Use DHT to find more peers for public torrents" = "להשתמש בטבלת גיבוב מבוזרת (DHT) לטורנטים ציבוריים";
+"Use Local Peer Discovery to find more peers for public torrents" = "להשתמש בגילוי עמיתים מקומי לטורנטים ציבוריים";
+"URL:" = "כתובת:";

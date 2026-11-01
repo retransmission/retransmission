@@ -4,7 +4,17 @@
 
 #import "PrefsUI.h"
 
+static CGFloat const defaultPadding = 19;
+
 @implementation PrefsUI
+
++ (NSTextField*)sectionTitle:(NSString*)text
+{
+    NSTextField* label = [NSTextField labelWithString:text];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.font = [NSFont preferredFontForTextStyle:NSFontTextStyleTitle3 options:@{}];
+    return label;
+}
 
 + (NSTextField*)smallLabel:(NSString*)text
 {
@@ -67,8 +77,13 @@
 
 + (NSView*)indentedView:(NSView*)view
 {
+    return [self indentedView:view level:1];
+}
+
++ (NSView*)indentedView:(NSView*)view level:(NSInteger)level
+{
     NSStackView* const stack = [NSStackView stackViewWithViews:@[ view ]];
-    stack.edgeInsets = { 0, 19, 0, 0 };
+    stack.edgeInsets = { 0, defaultPadding * level, 0, 0 };
     return stack;
 }
 

@@ -1,0 +1,15 @@
+"Update" = "Güncelle";
+"Blocklist:" = "Kara dizelge:";
+"Enable blocklist" = "Kara dizelgedeki kullanıcıların bağlanmasına izin verme";
+"High connection limits might significantly impact system performance" = "Yüksek bağlantı sınırları, sistem başarımını önemli ölçüde etkiler";
+"Use PEX to find more peers for public torrents" = "Genel torrentler için kullanıcı değişimi (PEX) kullan";
+"Maximum peers for new torrents:" = "Yeni aktarımlar için bağlantı sayısı sınırı:";
+"Maximum peers overall:" = "Olabilecek en çok bağlantı sayısı:";
+"Peer limits:" = "Bağlantılar:";
+"Prefer encryption" = "Şifreleme kullanan kullanıcıları yeğle";
+"Encryption:" = "Şifreleme:";
+"Require encryption" = "Şifrelemesiz kullanıcıları yok say ";
+"Automatically update weekly" = "Haftalık olarak güncelle";
+"Use DHT to find more peers for public torrents" = "Genel torrentler için komut tablosu (DHT) kullan";
+"Use Local Peer Discovery to find more peers for public torrents" = "Genel torrentler için yerel kullanıcıları bul";
+"URL:" = "URL:";
