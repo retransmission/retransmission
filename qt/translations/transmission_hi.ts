@@ -2402,64 +2402,6 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
 </context>
 <context>
-    <name>Torrent</name>
-    <message>
-        <location filename="../Torrent.cc" line="+307"/>
-        <source>Verifying local data</source>
-        <translation>लोकल डाटा प्रमाणीकरण जारी</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Downloading</source>
-        <translation>डाउनलोड जारी</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Seeding</source>
-        <translation>सीड जारी</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <source>Finished</source>
-        <translation>पूर्ण</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Paused</source>
-        <translation>स्थगित</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Queued for verification</source>
-        <translation>प्रमाणीकरण हेतु पंक्तिबद्ध</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for download</source>
-        <translation>डाउनलोड हेतु पंक्तिबद्ध</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for seeding</source>
-        <translation>सीड हेतु पंक्तिबद्ध</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tracker gave a warning: {warning}</source>
-        <translation>ट्रैकर द्वारा चेतावनी : {warning}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tracker gave an error: {error}</source>
-        <translation>ट्रैकर द्वारा त्रुटि : {error}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: {error}</source>
-        <translation>त्रुटि : {error}</translation>
-    </message>
-</context>
-<context>
     <name>TorrentDelegate</name>
     <message>
         <location filename="../TorrentDelegate.cc" line="+173"/>
@@ -2586,6 +2528,56 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="-95"/>
         <source>Verifying local data ({percent_done}% tested)</source>
         <translation>लोकल डाटा प्रमाणीकरण जारी ({percent_done}% जाँचा गया)</translation>
+    </message>
+    <message>
+        <location filename="../Torrent.cc" line="+307"/>
+        <source>Verifying local data</source>
+        <translation>लोकल डाटा प्रमाणीकरण जारी</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Downloading</source>
+        <translation>डाउनलोड जारी</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Seeding</source>
+        <translation>सीड जारी</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Paused</source>
+        <translation>स्थगित</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Queued for verification</source>
+        <translation>प्रमाणीकरण हेतु पंक्तिबद्ध</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for download</source>
+        <translation>डाउनलोड हेतु पंक्तिबद्ध</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for seeding</source>
+        <translation>सीड हेतु पंक्तिबद्ध</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>ट्रैकर द्वारा चेतावनी : {warning}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tracker gave an error: {error}</source>
+        <translation>ट्रैकर द्वारा त्रुटि : {error}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error: {error}</source>
+        <translation>त्रुटि : {error}</translation>
     </message>
 </context>
 <context>
