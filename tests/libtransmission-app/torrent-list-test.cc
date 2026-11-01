@@ -204,6 +204,7 @@ TEST_F(AppTorrentListTest, insertsNewTorrentsInIdOrder)
     EXPECT_EQ(
         recorder_.lines,
         (std::vector<std::string>{ "inserting 0 3 size 0", "inserted 0 3 size 3 ids 1 2 3", "changed" }));
+    EXPECT_EQ(recorder_.last_changes().inserted, (std::vector<size_t>{ 0U, 1U, 2U }));
 }
 
 TEST_F(AppTorrentListTest, newTorrentsHoldTheirFieldsWhenInserted)
@@ -572,15 +573,17 @@ TEST_F(AppTorrentListTest, changedExcludesTorrentsRemovedInTheSameUpdate)
     EXPECT_EQ(changes.removed, (Ids{ 2 }));
 }
 
-TEST_F(AppTorrentListTest, newTorrentsAreNotChanges)
+TEST_F(AppTorrentListTest, newTorrentsAreInsertedNotChanged)
 {
-    // the row signals report it, and a named torrent with an old date has nothing else to say
+    // a named torrent with an old date is news only as a row
     list_.update(
         make_args(make_list(make_row(1, kv(TR_KEY_name, "alpha"sv), kv(TR_KEY_added_date, Now - 3600)))),
         Coverage::Complete,
         Now);
 
-    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "inserting 0 1 size 0", "inserted 0 1 size 1 ids 1" }));
+    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "inserting 0 1 size 0", "inserted 0 1 size 1 ids 1", "changed" }));
+    EXPECT_EQ(recorder_.last_changes().inserted, (std::vector<size_t>{ 0U }));
+    EXPECT_TRUE(std::empty(recorder_.last_changes().changed));
 }
 
 TEST_F(AppTorrentListTest, identicalUpdateFiresNothing)
@@ -642,6 +645,7 @@ TEST_F(AppTorrentListTest, signalOrderIsInsertsRemovesChanged)
                                    "changed" }));
 
     auto const& changes = recorder_.last_changes();
+    EXPECT_EQ(changes.inserted, (std::vector<size_t>{ 1U }));
     EXPECT_EQ(changes.changed, (std::vector<TorrentChange>{ { 1, 0U, Torrent::fields<TR_KEY_rate_download>() } }));
     EXPECT_EQ(changes.removed, (Ids{ 2, 3 }));
 }
@@ -710,8 +714,15 @@ TEST_F(AppTorrentListTest, startupListIsQuiet)
     EXPECT_EQ(list_.size(), 10U);
     EXPECT_EQ(
         recorder_.lines,
-        (std::vector<std::string>{ "inserting 0 10 size 0", "inserted 0 10 size 10 ids 1 2 3 4 5 6 7 8 9 10" }));
-    EXPECT_TRUE(std::empty(recorder_.changes));
+        (std::vector<std::string>{ "inserting 0 10 size 0", "inserted 0 10 size 10 ids 1 2 3 4 5 6 7 8 9 10", "changed" }));
+    auto const& changes = recorder_.last_changes();
+    EXPECT_EQ(std::size(changes.inserted), 10U);
+    EXPECT_TRUE(std::empty(changes.changed));
+    EXPECT_TRUE(std::empty(changes.added));
+    EXPECT_TRUE(std::empty(changes.completed));
+    EXPECT_TRUE(std::empty(changes.edited));
+    EXPECT_TRUE(std::empty(changes.need_info));
+    EXPECT_TRUE(std::empty(changes.removed));
 }
 
 TEST_F(AppTorrentListTest, needInfoOnlyForNewNamelessTorrents)
@@ -735,7 +746,7 @@ TEST_F(AppTorrentListTest, editedFollowsEditDateChangesOfKnownTorrents)
         make_args(make_list(make_row(1, kv(TR_KEY_name, "alpha"sv), kv(TR_KEY_edit_date, Now - 100)))),
         Coverage::Complete,
         Now);
-    EXPECT_TRUE(std::empty(recorder_.changes));
+    EXPECT_TRUE(std::empty(recorder_.last_changes().edited));
     recorder_.reset();
 
     list_.update(make_args(make_list(make_row(1, kv(TR_KEY_edit_date, Now - 50)))), Coverage::Complete, Now);

@@ -62,8 +62,10 @@ public:
 
     // What one `update()` did. Every torrent named here is in the list when
     // `changed` fires, except the removed ones. The torrents it inserted
-    // aren't changes: the row signals report them.
+    // aren't changes: the row signals report them, and `inserted` says where
+    // they ended up.
     struct Changes {
+        std::vector<size_t> inserted; // the rows the update inserted, ascending
         std::vector<TorrentChange> changed; // in row order
         TorrentFieldSet changed_fields; // the union of `changed[i].fields`
         Ids added; // named torrents the session got within `AddedWindow` of `now`; each is reported once

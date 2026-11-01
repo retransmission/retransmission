@@ -33,8 +33,8 @@ namespace tr::app
 
 bool TorrentList::Changes::any() const noexcept
 {
-    return !std::empty(changed) || !std::empty(added) || !std::empty(completed) || !std::empty(edited) ||
-        !std::empty(need_info) || !std::empty(removed);
+    return !std::empty(inserted) || !std::empty(changed) || !std::empty(added) || !std::empty(completed) ||
+        !std::empty(edited) || !std::empty(need_info) || !std::empty(removed);
 }
 
 TorrentList::TorrentList(Prefs const& prefs) noexcept
@@ -230,15 +230,16 @@ void TorrentList::report(std::span<Seen const> const seen, Ids removed, time_t c
 
         auto& entry = *iter;
         auto const& tor = *entry.torrent;
+        auto const row = static_cast<size_t>(std::distance(std::begin(entries_), iter));
 
         if (item.is_new) {
-            // the row signals report the torrent itself; its first row's values aren't changes
+            // the torrent itself is the news; its first row's values aren't changes
+            changes.inserted.push_back(row);
             if (!tor.has_name()) {
                 changes.need_info.push_back(item.id);
             }
         } else {
             if (item.fields.any()) {
-                auto const row = static_cast<size_t>(std::distance(std::begin(entries_), iter));
                 changes.changed.push_back({ .id = item.id, .row = row, .fields = item.fields });
                 changes.changed_fields |= item.fields;
             }
