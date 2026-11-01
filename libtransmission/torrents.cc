@@ -14,33 +14,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
-namespace
-{
-
-constexpr struct {
-    bool operator()(tr_sha1_digest_t const& a, tr_sha1_digest_t const& b) const
-    {
-        return a < b;
-    }
-
-    bool operator()(tr_torrent const* a, tr_torrent const* b) const
-    {
-        return (*this)(a->info_hash(), b->info_hash());
-    }
-
-    bool operator()(tr_torrent const* a, tr_sha1_digest_t const& b) const
-    {
-        return (*this)(a->info_hash(), b);
-    }
-
-    bool operator()(tr_sha1_digest_t const& a, tr_torrent const* b) const
-    {
-        return (*this)(a, b->info_hash());
-    }
-} CompareTorrentByHash{};
-
-} // namespace
-
 tr_torrent* tr_torrents::get(std::string_view magnet_link) const
 {
     auto magnet = tr_magnet_metainfo{};
@@ -49,7 +22,7 @@ tr_torrent* tr_torrents::get(std::string_view magnet_link) const
 
 tr_torrent* tr_torrents::get(tr_sha1_digest_t const& hash) const
 {
-    auto const range = std::ranges::equal_range(by_hash_, hash, CompareTorrentByHash);
+    auto const range = std::ranges::equal_range(by_hash_, hash, {}, &tr_torrent::info_hash);
     return range.empty() ? nullptr : range.front();
 }
 
@@ -68,7 +41,7 @@ tr_torrent_id_t tr_torrents::add(tr_torrent* tor)
 {
     auto const id = static_cast<tr_torrent_id_t>(std::size(by_id_));
     by_id_.push_back(tor);
-    by_hash_.insert(std::ranges::lower_bound(by_hash_, tor, CompareTorrentByHash), tor);
+    by_hash_.insert(std::ranges::lower_bound(by_hash_, tor->info_hash(), {}, &tr_torrent::info_hash), tor);
     return id;
 }
 
@@ -78,7 +51,7 @@ void tr_torrents::remove(tr_torrent const* tor)
     TR_ASSERT(get(tor->id()) == tor);
 
     by_id_[tor->id()] = nullptr;
-    auto const [begin, end] = std::ranges::equal_range(by_hash_, tor, CompareTorrentByHash);
+    auto const [begin, end] = std::ranges::equal_range(by_hash_, tor->info_hash(), {}, &tr_torrent::info_hash);
     by_hash_.erase(begin, end);
 }
 
