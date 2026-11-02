@@ -216,7 +216,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     toggleWindows(!minimized);
 
     initStatusBar();
-    auto* filter_bar = new FilterBar{ prefs_, model_, filter_model_ };
+    auto* filter_bar = new FilterBar{ prefs_, model_ };
     ui_.verticalLayout->insertWidget(0, filter_bar);
     filter_bar_ = filter_bar;
 

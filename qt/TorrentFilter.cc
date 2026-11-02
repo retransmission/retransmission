@@ -5,7 +5,6 @@
 
 #include "TorrentFilter.h"
 
-#include <array>
 #include <compare>
 #include <string>
 #include <string_view>
@@ -22,7 +21,6 @@
 #include "TorrentModel.h"
 #include "Utils.h"
 
-using tr::app::should_show_torrent;
 using tr::app::Torrent;
 
 TorrentFilter::TorrentFilter(Prefs const& prefs)
@@ -97,24 +95,4 @@ bool TorrentFilter::filterAcceptsRow(int source_row, QModelIndex const& source_p
 {
     auto const index = sourceModel()->index(source_row, 0, source_parent);
     return filter_.matches(*index.data(TorrentModel::TorrentRole).value<Torrent const*>());
-}
-
-std::array<int, ShowModeCount> TorrentFilter::countTorrentsPerMode() const
-{
-    auto const* const torrent_model = dynamic_cast<TorrentModel const*>(sourceModel());
-    if (torrent_model == nullptr) {
-        return {};
-    }
-
-    auto torrent_counts = std::array<int, ShowModeCount>{};
-
-    for (auto const& tor : torrent_model->list().torrents()) {
-        for (unsigned int mode = 0; mode < ShowModeCount; ++mode) {
-            if (should_show_torrent(tor, static_cast<ShowMode>(mode))) {
-                ++torrent_counts[mode];
-            }
-        }
-    }
-
-    return torrent_counts;
 }

@@ -25,7 +25,6 @@ class QLabel;
 class QString;
 
 class FilterBarComboBox;
-class TorrentFilter;
 class TorrentModel;
 
 class FilterBar : public QWidget
@@ -33,7 +32,7 @@ class FilterBar : public QWidget
     Q_OBJECT
 
 public:
-    FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter const& filter, QWidget* parent = nullptr);
+    FilterBar(Prefs& prefs, TorrentModel const& torrents, QWidget* parent = nullptr);
     ~FilterBar() override = default;
     FilterBar(FilterBar&&) = delete;
     FilterBar(FilterBar const&) = delete;
@@ -59,7 +58,6 @@ private:
 
     Prefs& prefs_;
     TorrentModel const& torrents_;
-    TorrentFilter const& filter_;
 
     QStandardItemModel* const tracker_model_ = new QStandardItemModel{ this };
 

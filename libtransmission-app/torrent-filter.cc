@@ -5,6 +5,8 @@
 
 #include "libtransmission-app/torrent-filter.h"
 
+#include <array>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -15,6 +17,7 @@
 
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/prefs.h"
+#include "libtransmission-app/torrent-list.h"
 #include "libtransmission-app/torrent.h"
 
 namespace tr::app
@@ -48,6 +51,34 @@ bool should_show_torrent(Torrent const& tor, ShowMode const mode) noexcept
     default:
         return true;
     }
+}
+
+std::array<int, ShowModeCount> count_torrents_per_mode(TorrentList const& torrents) noexcept
+{
+    auto counts = std::array<int, ShowModeCount>{};
+
+    for (auto const& tor : torrents.torrents()) {
+        for (auto mode = 0U; mode < ShowModeCount; ++mode) {
+            if (should_show_torrent(tor, static_cast<ShowMode>(mode))) {
+                ++counts[mode];
+            }
+        }
+    }
+
+    return counts;
+}
+
+std::map<std::string_view, int> count_torrents_per_sitename(TorrentList const& torrents)
+{
+    auto counts = std::map<std::string_view, int>{};
+
+    for (auto const& tor : torrents.torrents()) {
+        for (auto const& sitename : tor.sitenames()) {
+            ++counts[sitename];
+        }
+    }
+
+    return counts;
 }
 
 // ---

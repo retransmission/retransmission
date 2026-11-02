@@ -4,11 +4,16 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cstddef> // size_t
 #include <cstdint>
+#include <ctime> // time_t
+#include <map>
 #include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
+
+#include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
@@ -19,6 +24,7 @@
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/torrent-filter.h"
+#include "libtransmission-app/torrent-list.h"
 #include "libtransmission-app/torrent.h"
 
 #include "test-fixtures.h"
@@ -137,6 +143,54 @@ TEST_F(AppTorrentFilterTest, showModeFieldsOfOneModeNameOnlyWhatItReads)
     EXPECT_EQ(
         (Torrent::fields<TR_KEY_peers_getting_from_us, TR_KEY_peers_sending_to_us, TR_KEY_status>()),
         show_mode_fields(ShowMode::ShowActive));
+}
+
+TEST_F(AppTorrentFilterTest, countsTheTorrentsEachModeShows)
+{
+    auto const row = [](tr_torrent_id_t const id, tr_torrent_activity const activity) {
+        return make_row(id, kv(TR_KEY_status, static_cast<int64_t>(activity)));
+    };
+    auto args = tr_variant::Map{ 1U };
+    args.try_emplace(TR_KEY_torrents, make_list(row(1, TR_STATUS_STOPPED), row(2, TR_STATUS_DOWNLOAD), row(3, TR_STATUS_SEED)));
+
+    auto list = tr::app::TorrentList{ prefs_ };
+    list.update(args, tr::app::TorrentList::Coverage::Complete, time_t{ 1 });
+
+    auto const counts = tr::app::count_torrents_per_mode(list);
+    auto const count = [&counts](ShowMode const mode) {
+        return counts[static_cast<size_t>(mode)];
+    };
+    EXPECT_EQ(3, count(ShowMode::ShowAll));
+    EXPECT_EQ(1, count(ShowMode::ShowPaused));
+    EXPECT_EQ(1, count(ShowMode::ShowDownloading));
+    EXPECT_EQ(1, count(ShowMode::ShowSeeding));
+    EXPECT_EQ(0, count(ShowMode::ShowActive));
+    EXPECT_EQ(0, count(ShowMode::ShowError));
+    EXPECT_EQ(0, count(ShowMode::ShowFinished));
+    EXPECT_EQ(0, count(ShowMode::ShowVerifying));
+}
+
+// a torrent with two trackers on one site counts once for that site
+TEST_F(AppTorrentFilterTest, countsTheTorrentsPerSitename)
+{
+    auto const tracker = [](std::string_view const sitename, int64_t const tier = 0) {
+        return make_tracker(fmt::format("https://tracker.{:s}/announce", sitename), sitename, tier);
+    };
+    auto args = tr_variant::Map{ 1U };
+    args.try_emplace(
+        TR_KEY_torrents,
+        make_list(
+            make_row(1, kv(TR_KEY_trackers, make_list(tracker("a.example"sv)))),
+            make_row(
+                2,
+                kv(TR_KEY_trackers, make_list(tracker("a.example"sv), tracker("a.example"sv, 1), tracker("b.example"sv)))),
+            make_row(3)));
+
+    auto list = tr::app::TorrentList{ prefs_ };
+    list.update(args, tr::app::TorrentList::Coverage::Complete, time_t{ 1 });
+
+    auto const expected = std::map<std::string_view, int>{ { "a.example"sv, 2 }, { "b.example"sv, 1 } };
+    EXPECT_EQ(expected, tr::app::count_torrents_per_sitename(list));
 }
 
 // --- TorrentFilter

@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <array>
-
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QSortFilterProxyModel>
@@ -28,8 +26,6 @@ public:
     TorrentFilter(TorrentFilter const&) = delete;
     TorrentFilter& operator=(TorrentFilter&&) = delete;
     TorrentFilter& operator=(TorrentFilter const&) = delete;
-
-    [[nodiscard]] std::array<int, ShowModeCount> countTorrentsPerMode() const;
 
 protected:
     // QSortFilterProxyModel

@@ -18,7 +18,6 @@
 
 #include "FilterBar.h"
 #include "Prefs.h"
-#include "TorrentFilter.h"
 #include "TorrentModel.h"
 #include "TrQtInit.h"
 #include "UserMetaType.h"
@@ -48,8 +47,7 @@ class FilterBarTest : public QObject
         Prefs prefs;
         tr::app::TorrentList torrents{ prefs };
         TorrentModel model{ torrents };
-        TorrentFilter filter{ prefs };
-        FilterBar bar{ prefs, model, filter };
+        FilterBar bar{ prefs, model };
     };
 
     // The tracker combo has no "Active" row.

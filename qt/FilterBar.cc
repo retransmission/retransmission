@@ -5,8 +5,6 @@
 
 #include "FilterBar.h"
 
-#include <string_view>
-#include <unordered_map>
 #include <utility>
 
 #include <QtGui/QStandardItemModel>
@@ -26,8 +24,8 @@
 #include "IconCache.h"
 #include "NativeIcon.h"
 #include "Prefs.h"
-#include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "UserMetaType.h"
 #include "Utils.h"
 
 // NOLINTNEXTLINE(performance-enum-size)
@@ -102,14 +100,6 @@ void FilterBar::refreshTrackers()
     // NOLINTNEXTLINE(performance-enum-size)
     enum { ROW_TOTALS = 0, ROW_SEPARATOR, ROW_FIRST_TRACKER };
 
-    // only the distinct sitenames become QStrings
-    auto torrents_per_sitename = std::unordered_map<std::string_view, int>{};
-    for (auto const& tor : torrents_.list().torrents()) {
-        for (auto const& sitename : tor.sitenames()) {
-            ++torrents_per_sitename[sitename];
-        }
-    }
-
     // update the "All" row
     auto const num_torrents = torrents_.rowCount();
     auto* item = tracker_model_->item(ROW_TOTALS);
@@ -128,8 +118,9 @@ void FilterBar::refreshTrackers()
         return i;
     };
 
+    // only the distinct sitenames become QStrings
     auto new_trackers = small::map<QString, int>{};
-    for (auto const& [sitename, count] : torrents_per_sitename) {
+    for (auto const& [sitename, count] : tr::app::count_torrents_per_sitename(torrents_.list())) {
         new_trackers.emplace(Utils::qstringFromUtf8(sitename), count);
     }
     auto old_it = sitename_counts_.cbegin();
@@ -189,11 +180,10 @@ FilterBarComboBox* FilterBar::createTrackerCombo(QStandardItemModel* model)
 ****
 ***/
 
-FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter const& filter, QWidget* parent)
+FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, QWidget* parent)
     : QWidget{ parent }
     , prefs_{ prefs }
     , torrents_{ torrents }
-    , filter_{ filter }
     , count_label_{ new QLabel{ tr("&Show:"), this } }
     , is_bootstrapping_{ true }
 {
@@ -368,7 +358,7 @@ void FilterBar::recount()
     std::swap(pending_, pending);
 
     if (pending[ACTIVITY]) {
-        auto const torrents_per_mode = filter_.countTorrentsPerMode();
+        auto const torrents_per_mode = tr::app::count_torrents_per_mode(torrents_.list());
 
         for (int row = 0, n = model->rowCount(); row < n; ++row) {
             auto const index = model->index(row, 0);
