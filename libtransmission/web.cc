@@ -268,9 +268,18 @@ public:
     {
         auto bind_addresses = mediator.bind_addresses();
         {
-            auto const lock = std::unique_lock{ tasks_mutex_ };
+            auto lock = std::unique_lock{ tasks_mutex_ };
 
             if (deadline_exists()) { // no new tasks once shutdown has begun
+                lock.unlock(); // the callback may call fetch()
+
+                // answer as a failed connection so callers' fallback chains end
+                if (options.done_func) {
+                    auto response = FetchResponse{};
+                    response.request_url = options.url;
+                    response.user_data = options.done_func_user_data;
+                    mediator.run(std::move(options.done_func), std::move(response));
+                }
                 return;
             }
 

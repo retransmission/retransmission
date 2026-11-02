@@ -158,8 +158,6 @@ tr_ip_cache::~tr_ip_cache()
 
 bool tr_ip_cache::try_shutdown() noexcept
 {
-    shutting_down_ = true;
-
     for (auto const& timer : upkeep_timers_) {
         timer->stop();
     }
@@ -334,7 +332,7 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
 
     // Try next IP query URL
     if (!success) {
-        if (!shutting_down_ && ++ix_service < std::size(ip_endpoints)) {
+        if (++ix_service < std::size(ip_endpoints)) {
             update_global_addr(type);
             return;
         }
