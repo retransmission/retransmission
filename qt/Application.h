@@ -27,7 +27,6 @@
 
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/interop.h>
-#include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include "AddData.h"
@@ -105,8 +104,6 @@ private slots:
     void onSessionSourceChanged() const;
     void onTorrentsAdded(torrent_ids_t const& torrent_ids) const;
     void onTorrentsCompleted(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsEdited(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const;
     void refreshPref(tr_quark key) const;
     void refreshTorrents();
     void saveGeometry() const;
@@ -144,7 +141,6 @@ private:
     Prefs& prefs_;
     QString const config_dir_;
 
-    tr::app::TorrentList torrents_{ prefs_ };
     std::unique_ptr<Session> session_;
     std::unique_ptr<TorrentModel> model_;
     std::unique_ptr<MainWindow> window_;
@@ -157,7 +153,7 @@ private:
     QTranslator app_translator_;
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
-    std::array<sigslot::scoped_connection, 2> favicon_connections_;
+    sigslot::scoped_connection favicon_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

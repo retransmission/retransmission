@@ -8,11 +8,8 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <ctime> // time()
 #include <string_view>
 #include <utility>
-
-#include <small/vector.hpp>
 
 #include <QtCore/QByteArray>
 #include <QtCore/QCoreApplication>
@@ -120,11 +117,10 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 ****
 ***/
 
-Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc, tr::app::TorrentList& torrents)
+Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     : tr::app::Session{ prefs, rpc.impl() }
     , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
-    , torrents_{ torrents }
     , rpc_{ rpc }
 {
     session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
@@ -215,10 +211,6 @@ void Session::start()
 // static
 tr_variant Session::getTorrentIdsVariant(torrent_ids_t const& torrent_ids)
 {
-    if (&torrent_ids == &RecentlyActiveIDs) {
-        return tr_variant::unmanaged_string(TR_KEY_recently_active);
-    }
-
     if (!std::empty(torrent_ids)) {
         return tr::serializer::to_variant(torrent_ids);
     }
@@ -278,207 +270,20 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                 d->show();
             })
         // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids](RpcResponse const& /*r*/) { refreshTorrents(torrent_ids, TorrentProperties::Rename); })
-        .run();
-}
-
-namespace
-{
-using TorrentProperties = Session::TorrentProperties;
-
-[[nodiscard]] small::max_size_vector<tr_quark, 64U> getKeys(TorrentProperties const props)
-{
-    // IMPORTANT when changing these key sets:
-    // 1. `TR_KEY_id` must be in every set
-    // 2. When changing `MainInfo` or `MainStats`, update their union in `MainAll`
-
-    // clang-format off: one line per key
-    switch (props)
-    {
-        // unchanging fields needed by the details dialog
-        case TorrentProperties::DetailInfo:
-            return {
-                TR_KEY_comment,
-                TR_KEY_creator,
-                TR_KEY_date_created,
-                TR_KEY_files,
-                TR_KEY_id,
-                TR_KEY_is_private,
-                TR_KEY_labels,
-                TR_KEY_piece_count,
-                TR_KEY_piece_size,
-                TR_KEY_tracker_list,
-                TR_KEY_trackers,
-            };
-
-        // changing fields needed by the details dialog
-        case TorrentProperties::DetailStat:
-            return {
-                TR_KEY_activity_date,
-                TR_KEY_bandwidth_priority,
-                TR_KEY_corrupt_ever,
-                TR_KEY_desired_available,
-                TR_KEY_download_limit,
-                TR_KEY_download_limited,
-                TR_KEY_downloaded_ever,
-                TR_KEY_file_stats,
-                TR_KEY_have_unchecked,
-                TR_KEY_honors_session_limits,
-                TR_KEY_id,
-                TR_KEY_peer_limit,
-                TR_KEY_peers,
-                TR_KEY_seed_idle_limit,
-                TR_KEY_seed_idle_mode,
-                TR_KEY_start_date,
-                TR_KEY_tracker_stats,
-                TR_KEY_upload_limit,
-                TR_KEY_upload_limited,
-            };
-
-        // union of MainInfoKeys + MainStatKeys
-        case TorrentProperties::MainAll:
-            return {
-                TR_KEY_added_date,
-                TR_KEY_download_dir,
-                TR_KEY_checked_bytes,
-                TR_KEY_downloaded_ever,
-                TR_KEY_edit_date,
-                TR_KEY_error,
-                TR_KEY_error_string,
-                TR_KEY_eta,
-                TR_KEY_file_count,
-                TR_KEY_hash_string,
-                TR_KEY_have_unchecked,
-                TR_KEY_have_valid,
-                TR_KEY_id,
-                TR_KEY_is_finished,
-                TR_KEY_is_folder,
-                TR_KEY_labels,
-                TR_KEY_left_until_done,
-                TR_KEY_manual_announce_time,
-                TR_KEY_metadata_have,
-                TR_KEY_metadata_percent_complete,
-                TR_KEY_metadata_size,
-                TR_KEY_name,
-                TR_KEY_peers_connected,
-                TR_KEY_peers_getting_from_us,
-                TR_KEY_peers_sending_to_us,
-                TR_KEY_primary_mime_type,
-                TR_KEY_queue_position,
-                TR_KEY_rate_download,
-                TR_KEY_rate_upload,
-                TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_limit,
-                TR_KEY_seed_ratio_mode,
-                TR_KEY_size_when_done,
-                TR_KEY_status,
-                TR_KEY_total_size,
-                TR_KEY_trackers,
-                TR_KEY_upload_ratio,
-                TR_KEY_uploaded_ever,
-                TR_KEY_webseeds_sending_to_us,
-            };
-
-        // unchanging fields needed by the main window
-        case TorrentProperties::MainInfo:
-            return {
-                TR_KEY_added_date,
-                TR_KEY_download_dir,
-                TR_KEY_file_count,
-                TR_KEY_hash_string,
-                TR_KEY_id,
-                TR_KEY_is_folder,
-                TR_KEY_labels,
-                TR_KEY_name,
-                TR_KEY_primary_mime_type,
-                TR_KEY_total_size,
-                TR_KEY_trackers,
-            };
-
-        // changing fields needed by the main window
-        case TorrentProperties::MainStats:
-            return {
-                TR_KEY_checked_bytes,
-                TR_KEY_downloaded_ever,
-                TR_KEY_edit_date,
-                TR_KEY_error,
-                TR_KEY_error_string,
-                TR_KEY_eta,
-                TR_KEY_have_unchecked,
-                TR_KEY_have_valid,
-                TR_KEY_id,
-                TR_KEY_is_finished,
-                TR_KEY_left_until_done,
-                TR_KEY_manual_announce_time,
-                TR_KEY_metadata_have,
-                TR_KEY_metadata_percent_complete,
-                TR_KEY_metadata_size,
-                TR_KEY_peers_connected,
-                TR_KEY_peers_getting_from_us,
-                TR_KEY_peers_sending_to_us,
-                TR_KEY_queue_position,
-                TR_KEY_rate_download,
-                TR_KEY_rate_upload,
-                TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_limit,
-                TR_KEY_seed_ratio_mode,
-                TR_KEY_size_when_done,
-                TR_KEY_status,
-                TR_KEY_upload_ratio,
-                TR_KEY_uploaded_ever,
-                TR_KEY_webseeds_sending_to_us,
-            };
-
-        // keys needed after renaming a torrent
-        case TorrentProperties::Rename:
-            return {
-                TR_KEY_file_stats,
-                TR_KEY_files,
-                TR_KEY_id,
-                TR_KEY_name,
-            };
-    }
-    // clang-format on
-
-    return {};
-}
-} // namespace
-
-void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentProperties const props)
-{
-    bool const all_torrents = std::empty(torrent_ids);
-    auto const keys = getKeys(props);
-
-    auto fields = tr_variant::Vector{};
-    fields.reserve(std::size(keys));
-    std::ranges::transform(keys, std::back_inserter(fields), [](auto key) { return tr_variant::unmanaged_string(key); });
-
-    auto map = tr_variant::Map{ 3U };
-    map.try_emplace(TR_KEY_format, tr_variant::unmanaged_string("table"sv));
-    map.try_emplace(TR_KEY_fields, std::move(fields));
-    addParamPair(map, TR_KEY_ids, torrent_ids);
-
-    RpcQueue::create()
-        .add([this, map = std::move(map)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_torrent_get, std::move(map), std::move(done));
-        })
-        .add([this, all_torrents](RpcResponse const& r) {
-            if (auto const* const args = r.args->get_if<tr_variant::Map>(); args != nullptr) {
-                using Coverage = tr::app::TorrentList::Coverage;
-                torrents_.update(*args, all_torrents ? Coverage::Complete : Coverage::Partial, time(nullptr));
-            }
+        .add([this, torrent_ids](RpcResponse const& /*r*/) {
+            refresh_torrents({ std::begin(torrent_ids), std::end(torrent_ids) }, tr::app::TorrentKeySet::Rename);
         })
         .run();
 }
 
 void Session::refreshDetailInfo(torrent_ids_t const& ids)
 {
-    refreshTorrents(ids, TorrentProperties::DetailInfo);
+    refresh_torrents({ std::begin(ids), std::end(ids) }, tr::app::TorrentKeySet::DetailInfo);
 }
 
 void Session::refreshExtraStats(torrent_ids_t const& ids)
 {
-    refreshTorrents(ids, TorrentProperties::DetailStat);
+    refresh_torrents({ std::begin(ids), std::end(ids) }, tr::app::TorrentKeySet::DetailStats);
 }
 
 void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& torrent_ids)
@@ -488,7 +293,14 @@ void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& tor
             exec(method, std::move(params), std::move(done));
         })
         // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids] { refreshTorrents(torrent_ids, TorrentProperties::MainStats); })
+        .add([this, torrent_ids] {
+            // no ids: the request named every torrent
+            if (std::empty(torrent_ids)) {
+                refresh_all_torrents();
+            } else {
+                refresh_torrents({ std::begin(torrent_ids), std::end(torrent_ids) }, tr::app::TorrentKeySet::MainStats);
+            }
+        })
         .run();
 }
 
@@ -529,20 +341,17 @@ void Session::queueMoveBottom(torrent_ids_t const& ids)
 
 void Session::refreshActiveTorrents()
 {
-    // If this object is passed as "ids" (compared by address), then recently active torrents are queried.
-    refreshTorrents(RecentlyActiveIDs, TorrentProperties::MainStats);
+    refresh_active_torrents();
 }
 
 void Session::refreshAllTorrents()
 {
-    // if an empty ids object is used, all torrents are queried.
-    torrent_ids_t const ids = {};
-    refreshTorrents(ids, TorrentProperties::MainStats);
+    refresh_all_torrents();
 }
 
-void Session::initTorrents(torrent_ids_t const& ids)
+void Session::initTorrents()
 {
-    refreshTorrents(ids, TorrentProperties::MainAll);
+    refresh_all_torrents(tr::app::TorrentKeySet::MainAll);
 }
 
 void Session::refreshSessionStats()

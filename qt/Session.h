@@ -25,7 +25,6 @@
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/session.h>
-#include <libtransmission-app/torrent-list.h>
 
 #include "Prefs.h"
 #include "RpcClient.h"
@@ -42,7 +41,7 @@ class Session
     Q_OBJECT
 
 public:
-    Session(QString config_dir, Prefs& prefs, RpcClient& rpc, tr::app::TorrentList& torrents);
+    Session(QString config_dir, Prefs& prefs, RpcClient& rpc);
     Session(Session&&) = delete;
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
@@ -92,7 +91,7 @@ public:
     void torrentSetLocation(torrent_ids_t const& torrent_ids, QString const& path, bool do_move);
     void torrentRenamePath(torrent_ids_t const& torrent_ids, QString const& oldpath, QString const& newname);
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
-    void initTorrents(torrent_ids_t const& ids = {});
+    void initTorrents();
     void pauseTorrents(torrent_ids_t const& torrent_ids = {});
     void startTorrents(torrent_ids_t const& torrent_ids = {});
     void startTorrentsNow(torrent_ids_t const& torrent_ids = {});
@@ -103,8 +102,6 @@ public:
     void verifyTorrents(torrent_ids_t const& torrent_ids);
     void reannounceTorrents(torrent_ids_t const& torrent_ids);
     void refreshExtraStats(torrent_ids_t const& torrent_ids);
-
-    enum class TorrentProperties : uint8_t { MainInfo, MainStats, MainAll, DetailInfo, DetailStat, Rename };
 
 public slots:
     void addTorrent(AddData const& add_me);
@@ -187,13 +184,11 @@ private:
 
     Tag torrentSetImpl(tr_variant::Map params);
     void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
-    void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
 
     static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
 
     QString const config_dir_;
     Prefs& prefs_;
-    tr::app::TorrentList& torrents_;
 
     std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
@@ -205,8 +200,6 @@ private:
 
     // changing some prefs (eg download_dir) invalidates cached session info
     sigslot::scoped_connection session_refresh_tag_;
-
-    static inline torrent_ids_t const RecentlyActiveIDs = { -1 };
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;

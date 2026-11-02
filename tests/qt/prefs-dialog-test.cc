@@ -22,8 +22,6 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
-#include <libtransmission-app/torrent-list.h>
-
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
@@ -116,8 +114,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
@@ -158,8 +155,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
@@ -209,8 +205,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = PrefsDialog{ session, prefs };
@@ -249,8 +244,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = PrefsDialog{ session, prefs };
@@ -284,8 +278,7 @@ private slots:
         prefs.set(TR_KEY_watch_dir_enabled, false);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = PrefsDialog{ session, prefs };
@@ -326,8 +319,7 @@ private slots:
         prefs.set(TR_KEY_alt_speed_time_enabled, true);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = std::make_unique<PrefsDialog>(session, prefs);

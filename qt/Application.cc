@@ -35,6 +35,7 @@
 
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/startup-coordinator.h>
+#include <libtransmission-app/torrent-list.h>
 
 #include "AccessibleSqueezeLabel.h"
 #include "AddData.h"
@@ -169,28 +170,26 @@ Application::Application(
     QAccessible::installFactory(&accessibleFactory);
 #endif
 
-    session_ = std::make_unique<Session>(config_dir, prefs_, rpc, torrents_);
-    model_ = std::make_unique<TorrentModel>(torrents_);
+    session_ = std::make_unique<Session>(config_dir, prefs_, rpc);
+    model_ = std::make_unique<TorrentModel>(session_->torrents());
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
-    watch_dir_ = std::make_unique<WatchDir>(torrents_);
+    watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
     connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
     connect(model_.get(), &TorrentModel::torrentsAdded, this, &Application::onTorrentsAdded);
     connect(model_.get(), &TorrentModel::torrentsCompleted, this, &Application::onTorrentsCompleted);
-    connect(model_.get(), &TorrentModel::torrentsEdited, this, &Application::onTorrentsEdited);
-    connect(model_.get(), &TorrentModel::torrentsNeedInfo, this, &Application::onTorrentsNeedInfo);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
     connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
-    favicon_connections_[0] = torrents_.rows_inserted.connect_scoped([this](size_t const row, size_t const count) {
-        for (auto i = row; i < row + count; ++i) {
-            loadFavicons(torrents_[i]);
+    // the trackers of a new torrent, and of one whose trackers changed
+    favicon_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+        for (auto const row : changes.inserted) {
+            loadFavicons(session_->torrents()[row]);
         }
-    });
-    favicon_connections_[1] = torrents_.changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+
         for (auto const& change : changes.changed) {
             if ((change.fields & tr::app::Torrent::fields<TR_KEY_trackers>()).any()) {
-                loadFavicons(torrents_[change.row]);
+                loadFavicons(session_->torrents()[change.row]);
             }
         }
     });
@@ -292,17 +291,11 @@ void Application::loadTranslations()
     }
 }
 
-void Application::onTorrentsEdited(torrent_ids_t const& torrent_ids) const
-{
-    // the backend's tr_info has changed, so reload those fields
-    session_->initTorrents(torrent_ids);
-}
-
 QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
 {
     QStringList names;
     for (auto const& id : torrent_ids) {
-        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+        if (auto const* const tor = session_->torrents().find(id); tor != nullptr) {
             names.push_back(Utils::qstringFromUtf8(tor->name()));
         }
     }
@@ -318,7 +311,7 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
     }
 
     for (auto id : torrent_ids) {
-        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+        if (auto const* const tor = session_->torrents().find(id); tor != nullptr) {
             notifyTorrentAdded(*tor);
         }
     }
@@ -349,13 +342,6 @@ void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
     }
 
     notifyApp(title, body, {}, std::move(hints));
-}
-
-void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
-{
-    if (!torrent_ids.empty()) {
-        session_->initTorrents(torrent_ids);
-    }
 }
 
 void Application::notifyTorrentAdded(tr::app::Torrent const& tor) const

@@ -24,8 +24,6 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
 
-#include <libtransmission-app/torrent-list.h>
-
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
@@ -128,8 +126,7 @@ private slots:
 
         // setup: make a Session
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandbox_dir, prefs, rpc, torrents };
+        auto session = Session{ sandbox_dir, prefs, rpc };
         session.restart();
 
         // action: changing download-dir fires two RPCs -- a "session-set" to push
@@ -166,8 +163,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandbox_dir, prefs, rpc, torrents };
+        auto session = Session{ sandbox_dir, prefs, rpc };
         session.restart();
 
         // toggling the pref is a bare session_set (no follow-up session_get to
@@ -218,8 +214,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
@@ -257,8 +252,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto updated = QSignalSpy{ &session, &Session::sessionUpdated };
@@ -290,8 +284,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto updated = QSignalSpy{ &session, &Session::sessionUpdated };
@@ -326,8 +319,7 @@ private slots:
         prefs.set(TR_KEY_remote_session_enabled, false);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_embedded());
 
@@ -356,8 +348,7 @@ private slots:
         auto tested = 0;
         auto status = std::optional<bool>{ true };
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         // A lambda, not QSignalSpy, which needs portTested()'s argument types registered as metatypes.
@@ -388,8 +379,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
@@ -411,8 +401,7 @@ private slots:
         setRemotePrefs(prefs, server);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto label = FreeSpaceLabel{};

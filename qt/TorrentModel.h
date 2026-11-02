@@ -58,7 +58,6 @@ signals:
     void torrentsChanged(torrent_ids_t const&, tr::app::TorrentFieldSet const& fields);
     void torrentsCompleted(torrent_ids_t const&);
     void torrentsEdited(torrent_ids_t const&);
-    void torrentsNeedInfo(torrent_ids_t const&);
 
 private:
     // the conversions the delegate asks for on every paint, built on first use

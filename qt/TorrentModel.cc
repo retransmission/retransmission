@@ -158,10 +158,6 @@ void TorrentModel::onChanged(TorrentList::Changes const& changes)
         emit torrentsAdded(to_ids(changes.added));
     }
 
-    if (!std::empty(changes.need_info)) {
-        emit torrentsNeedInfo(to_ids(changes.need_info));
-    }
-
     if (!std::empty(ids)) {
         emit torrentsChanged(ids, changes.changed_fields);
     }
