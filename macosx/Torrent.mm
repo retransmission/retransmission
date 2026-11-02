@@ -232,7 +232,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     self.fPreviousFinishedIndexesDate = indexes != nil ? [[NSDate alloc] init] : nil;
 }
 
-+ (BOOL)updateTorrents:(NSArray<Torrent*>*)torrents fromStats:(std::vector<tr_stat>)stats
++ (UpdateTorrentsResult)updateTorrents:(NSArray<Torrent*>*)torrents fromStats:(std::vector<tr_stat>)stats
 {
     auto torrents_by_id = std::unordered_map<tr_torrent_id_t, Torrent*>{};
     torrents_by_id.reserve(torrents.count);
@@ -240,17 +240,23 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         torrents_by_id.try_emplace(torrent.id, torrent);
     }
 
-    bool transmitting_changed = false;
+    UpdateTorrentsResult result = {};
     for (auto& stat : stats) {
         if (auto const iter = torrents_by_id.find(stat.id); iter != torrents_by_id.end()) {
             Torrent* const torrent = iter->second;
             auto const was_transmitting = torrent.transmitting;
+            auto const old_queue_position = torrent.queuePosition;
             torrent->_fStat = std::move(stat);
-            transmitting_changed |= was_transmitting != torrent.transmitting;
+            if (was_transmitting != torrent.transmitting) {
+                result |= UpdateTorrentsTransmittingChanged;
+            }
+            if (old_queue_position != torrent.queuePosition) {
+                result |= UpdateTorrentsQueuePositionChanged;
+            }
         }
     }
 
-    return transmitting_changed;
+    return result;
 }
 
 - (void)startTransferIgnoringQueue:(BOOL)ignoreQueue
