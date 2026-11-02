@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstddef> // size_t
@@ -50,6 +51,8 @@ using namespace tr::app;
 // started: its only reply is the "not connected" error, which then runs inside
 // exec() itself, on the test thread. A started client answers on the session
 // thread, which UiThreadFunc forbids, so those tests pump a UiLoop instead.
+// Not for set_torrents(): `torrent_set_done` would fire inside the call,
+// before the caller holds the tag.
 [[nodiscard]] RpcClient::UiThreadFunc inline_marshaler()
 {
     return [](std::function<void()> fn) {
@@ -778,7 +781,12 @@ TEST_F(AppSessionRpcTest, verbsWithNoIdsSendNothing)
     session_.set_torrent_location({}, sandbox_dir(), false);
     session_.rename_torrent_path({}, "old", "new");
 
+    auto done = size_t{};
+    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag /*tag*/) { ++done; });
+    EXPECT_EQ(Session::Tag{}, session_.set_torrents({}, TR_KEY_peer_limit, 7));
+
     EXPECT_TRUE(loop_.quiet_for(50ms));
+    EXPECT_EQ(0U, done);
 }
 
 // No poller exists, so only the verb's own re-fetch can update the list.
@@ -946,6 +954,83 @@ TEST_F(AppSessionRpcTest, renameReFetchesTheTorrent)
     session_.rename_torrent_path({ id }, "debian-11.2.0-amd64-DVD-1.iso", "renamed.iso");
     EXPECT_TRUE(loop_.pump_until([this, id] { return session_.torrents().find(id)->name() == "renamed.iso"; }));
     EXPECT_EQ(0U, failures);
+}
+
+// `peer_limit` is in `DetailStats` but not `MainAll`, so only the set's re-fetch can bring it.
+TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagAfterTheReFetchLands)
+{
+    auto const id = add_torrent(Debian);
+
+    auto done = std::vector<Session::Tag>{};
+    auto peer_limit_at_done = std::optional<uint16_t>{};
+    auto const tag = session_.torrent_set_done.connect_scoped([this, id, &done, &peer_limit_at_done](Session::Tag const set) {
+        done.push_back(set);
+        if (auto const* const tor = session_.torrents().find(id); tor != nullptr) {
+            peer_limit_at_done = tor->peer_limit();
+        }
+    });
+
+    auto const set = session_.set_torrents({ id, id }, TR_KEY_peer_limit, 7);
+    EXPECT_NE(Session::Tag{}, set);
+    ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
+    EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_EQ(7U, peer_limit_at_done);
+}
+
+TEST_F(AppSessionRpcTest, setTorrentsIssuesADistinctTagPerCall)
+{
+    auto const id = add_torrent(Debian);
+
+    auto done = std::vector<Session::Tag>{};
+    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+
+    auto const first = session_.set_torrents({ id }, TR_KEY_peer_limit, 7);
+    auto const second = session_.set_torrents({ id }, TR_KEY_peer_limit, 8);
+    EXPECT_NE(first, second);
+    EXPECT_NE(Session::Tag{}, first);
+    EXPECT_NE(Session::Tag{}, second);
+
+    ASSERT_TRUE(loop_.pump_until([&done] { return std::size(done) == 2U; }));
+    std::ignore = loop_.quiet_for(50ms); // the new row's `MainAll` fetch lands here
+    std::ranges::sort(done);
+    EXPECT_EQ((std::vector{ std::min(first, second), std::max(first, second) }), done);
+}
+
+// A failed set ends the chain before the re-fetch, so the list stays empty.
+TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagOnFailure)
+{
+    auto const id = add_torrent(Debian);
+
+    auto done = std::vector<Session::Tag>{};
+    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+
+    // file indices must be integers
+    auto files = tr_variant::Vector{};
+    files.emplace_back("not-an-index"sv);
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_files_wanted, std::move(files));
+    auto const set = session_.set_torrents({ id }, std::move(params));
+
+    ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
+    EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_TRUE(loop_.quiet_for(50ms));
+    EXPECT_EQ(0U, session_.torrents().size());
+}
+
+TEST_F(AppSessionRpcTest, setTorrentsAfterStopFiresItsTag)
+{
+    auto const id = add_torrent(Debian);
+
+    auto done = std::vector<Session::Tag>{};
+    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+
+    auto const set = session_.set_torrents({ id }, TR_KEY_peer_limit, 7);
+    rpc_.stop();
+
+    ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
+    EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_TRUE(loop_.quiet_for(50ms));
+    EXPECT_EQ(0U, session_.torrents().size());
 }
 
 } // namespace

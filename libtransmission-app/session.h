@@ -15,6 +15,7 @@
 #include <optional>
 #include <span>
 #include <string>
+#include <utility>
 #include <variant> // std::monostate
 #include <vector>
 
@@ -23,6 +24,7 @@
 #include <woke/woke.hpp>
 
 #include "libtransmission/quark.h"
+#include "libtransmission/serializer.h"
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-client.h"
@@ -129,6 +131,35 @@ public:
     };
 
     sigslot::signal<RenameError const&> torrent_rename_failed;
+
+    // --- torrent_set
+
+    // Identifies one `set_torrents()` call to `torrent_set_done`. A call that sent
+    // nothing returns 0, which `torrent_set_done` never names: a set of pending tags
+    // must not store it, or it waits forever.
+    using Tag = uint64_t;
+
+    // Sends `torrent_set` with `params` for `ids` (this adds `ids` to `params`),
+    // then re-fetches `DetailStats` for them, then fires `torrent_set_done` with the
+    // returned tag. A dialog that keeps the pending tags can hold its widgets steady
+    // until then: by the time the tag fires, `torrents()` holds the set's result,
+    // and a fetch that was in flight before the set can no longer appear to undo it.
+    // The tag fires on failure and network error too, without the re-fetch, and
+    // never inside this call: `RpcClient::UiThreadFunc` queues every reply.
+    // Sends nothing when `ids` is empty.
+    [[nodiscard]] Tag set_torrents(Ids ids, tr_variant::Map params);
+
+    // one field; `val` goes through `tr::serializer::to_variant()`, so a toolkit
+    // type works wherever its converter is visible
+    template<typename Val>
+    [[nodiscard]] Tag set_torrents(Ids ids, tr_quark const key, Val const& val)
+    {
+        auto params = tr_variant::Map{ 2U };
+        params.insert_or_assign(key, tr::serializer::to_variant(val));
+        return set_torrents(std::move(ids), std::move(params));
+    }
+
+    sigslot::signal<Tag> torrent_set_done;
 
     // --- session
 
@@ -271,6 +302,7 @@ private:
     std::optional<std::chrono::sys_seconds> blocklist_date_;
     std::optional<int64_t> blocklist_size_;
     std::optional<Type> session_type_;
+    Tag next_tag_ = 1; // 0 is never issued, so a zero-initialized tag means "none"
     bool busy_ = false;
     bool importing_settings_ = false;
 

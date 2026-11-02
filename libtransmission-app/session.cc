@@ -315,6 +315,32 @@ void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new
         .run();
 }
 
+// --- torrent_set
+
+Session::Tag Session::set_torrents(Ids ids, tr_variant::Map params)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return {};
+    }
+
+    scope->add_to(params);
+    auto const tag = next_tag_++;
+
+    // the re-fetch step takes the chain's `done`, so `finally` runs after its reply is applied
+    RpcQueue::create()
+        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+            send(TR_KEY_torrent_set, std::move(params), std::move(done));
+        })
+        .add([this, scope = std::move(*scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::DetailStats, scope, std::move(done));
+        })
+        .finally([this, tag] { torrent_set_done(tag); })
+        .run();
+
+    return tag;
+}
+
 // --- session
 
 size_t Session::pending_session_sets(tr_quark const key) const noexcept
