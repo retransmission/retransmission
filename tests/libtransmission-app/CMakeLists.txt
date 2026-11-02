@@ -11,6 +11,7 @@ target_sources(libtransmission-app-test
 		prefs-test.cc
 		rpc-client-test.cc
 		rpc-queue-test.cc
+		session-poller-test.cc
 		session-test.cc
 		test-fixtures.h
 		torrent-filter-test.cc

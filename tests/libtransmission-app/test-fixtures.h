@@ -11,11 +11,13 @@
 #include <deque>
 #include <functional>
 #include <future>
+#include <memory>
 #include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -23,6 +25,7 @@
 
 #include <libtransmission/file.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/timer.h>
 
 #include "libtransmission-app/app.h"
 #include "libtransmission-app/rpc-client.h"
@@ -184,4 +187,103 @@ private:
     std::mutex mutex_;
     std::condition_variable cv_;
     std::deque<std::function<void()>> queue_;
+};
+
+// A `tr::Timer` that never elapses on its own: the test calls `fire()`.
+// As with libtransmission's own timer, `start()` on a running timer does nothing.
+class FakeTimer final : public tr::Timer
+{
+public:
+    void stop() override
+    {
+        ++stop_count_;
+        is_running_ = false;
+    }
+
+    void set_callback(std::function<void()> callback) override
+    {
+        callback_ = std::move(callback);
+    }
+
+    void set_repeating(bool const repeating = true) override
+    {
+        is_repeating_ = repeating;
+    }
+
+    void set_interval(std::chrono::milliseconds const interval) override
+    {
+        interval_ = interval;
+    }
+
+    void start() override
+    {
+        ++start_count_;
+        is_running_ = true;
+    }
+
+    [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
+    {
+        return interval_;
+    }
+
+    [[nodiscard]] bool is_repeating() const noexcept override
+    {
+        return is_repeating_;
+    }
+
+    [[nodiscard]] constexpr bool is_running() const noexcept
+    {
+        return is_running_;
+    }
+
+    // every call, including the ones a running timer ignores
+    [[nodiscard]] constexpr int start_count() const noexcept
+    {
+        return start_count_;
+    }
+
+    [[nodiscard]] constexpr int stop_count() const noexcept
+    {
+        return stop_count_;
+    }
+
+    // runs the callback as if the interval had elapsed; does nothing while stopped
+    void fire() const
+    {
+        if (is_running_ && callback_) {
+            callback_();
+        }
+    }
+
+private:
+    std::function<void()> callback_;
+    std::chrono::milliseconds interval_ = {};
+    int start_count_ = 0;
+    int stop_count_ = 0;
+    bool is_repeating_ = false;
+    bool is_running_ = false;
+};
+
+// Makes `FakeTimer`s and keeps a pointer to each, so a test can fire the timers
+// of the object under test. The pointers dangle once that object destroys them.
+class FakeTimerMaker final : public tr::TimerMaker
+{
+public:
+    [[nodiscard]] std::unique_ptr<tr::Timer> create() override
+    {
+        auto timer = std::make_unique<FakeTimer>();
+        timers_.push_back(timer.get());
+        return timer;
+    }
+
+    using tr::TimerMaker::create;
+
+    // in creation order
+    [[nodiscard]] std::vector<FakeTimer*> const& timers() const noexcept
+    {
+        return timers_;
+    }
+
+private:
+    std::vector<FakeTimer*> timers_;
 };

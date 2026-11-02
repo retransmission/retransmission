@@ -24,6 +24,8 @@ target_sources(${LIBNAME}
         rpc-client.cc
         rpc-client.h
         rpc-queue.h
+        session-poller.cc
+        session-poller.h
         session.cc
         session.h
         startup-coordinator.cc
