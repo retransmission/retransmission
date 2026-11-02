@@ -1,0 +1,11 @@
+"HTTP port:" = "Port d’écoute :";
+"Allow remote access" = "Activer l’accès à distance";
+"Use authentication" = "Exiger une authentification";
+"Address" = "Adresse IP";
+"IP addresses may use wildcards, such as 192.168.*.*" = "Les adresses IP peuvent comporter le métacaractère *";
+"Password:" = "Mot de passe :";
+"Username:" = "Utilisateur :";
+"This enables the web interface and allows remote requests" = "Active l’interface Web et permet les requêtes distantes";
+"Open Web Client" = "Lancer l’interface Web";
+"Only allow these IP addresses:" = "N’autoriser que les adresses IP suivantes à se connecter :";
+"Display the web interface with Bonjour" = "Utiliser Bonjour pour afficher l’interface Web";

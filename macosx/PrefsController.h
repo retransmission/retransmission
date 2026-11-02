@@ -13,10 +13,6 @@ struct tr_session;
 /// - returns: number of minutes
 + (int)dateToTimeSum:(NSDate*)date;
 
-/// Replaces any saved remote access password with an unguessable one.
-/// - returns: whether the new password is saved
-+ (BOOL)saveUnguessableRPCPassword;
-
 - (instancetype)initWithHandle:(tr_session*)handle;
 
 - (void)rpcUpdatePrefs;

@@ -91,36 +91,6 @@
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "僅於手動加入時";
 
-/* Class = "NSTextFieldCell"; title = "Listening port:"; ObjectID = "1493"; */
-"1493.title" = "監聽連接埠：";
-
-/* Class = "NSButtonCell"; title = "Enable remote access"; ObjectID = "1502"; */
-"1502.title" = "啟用遠端存取";
-
-/* Class = "NSButtonCell"; title = "Require authentication"; ObjectID = "1505"; */
-"1505.title" = "需要認證";
-
-/* Class = "NSTableColumn"; headerCell.title = "IP Address"; ObjectID = "1523"; */
-"1523.headerCell.title" = "IP 位址";
-
-/* Class = "NSTextFieldCell"; title = "IP addresses may include * wildcard"; ObjectID = "1542"; */
-"1542.title" = "IP地址可能包含萬用字元 *";
-
-/* Class = "NSTextFieldCell"; title = "Password:"; ObjectID = "1555"; */
-"1555.title" = "密碼：";
-
-/* Class = "NSTextFieldCell"; title = "Username:"; ObjectID = "1557"; */
-"1557.title" = "使用者名稱：";
-
-/* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "這會啟用網頁介面，並允許遠端請求";
-
-/* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
-"1718.title" = "啟動網頁介面";
-
-/* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
-"1748.title" = "僅允許以下 IP 位址連線：";
-
 /* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
 "1777.headerCell.title" = "色彩";
 
@@ -138,9 +108,6 @@
 
 /* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
 "1824.title" = "只有在加入傳輸時才會設定位置";
-
-/* Class = "NSButtonCell"; title = "Display the web interface with Bonjour"; ObjectID = "1826"; */
-"1826.title" = "顯示具備 Bonjour 的網頁介面";
 
 /* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
 "1831.title" = "根據條件為新的傳輸指派群組";

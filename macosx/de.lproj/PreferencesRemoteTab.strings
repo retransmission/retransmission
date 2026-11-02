@@ -1,0 +1,11 @@
+"HTTP port:" = "Zugriff über Port:";
+"Allow remote access" = "Entfernten Zugriff ermöglichen";
+"Use authentication" = "Kennwort für den entfernten Zugriff erforderlich ";
+"Address" = "IP-Adresse";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP-Adressen können „*“ als Platzhalter enthalten.";
+"Password:" = "Kennwort:";
+"Username:" = "Benutzername:";
+"This enables the web interface and allows remote requests" = "Hierdurch kann Retransmission mit einem Web-Browser bedient werden.";
+"Open Web Client" = "Im Web-Browser öffnen";
+"Only allow these IP addresses:" = "Zugriff nur von diesen IP-Adressen zulassen:";
+"Display the web interface with Bonjour" = "Webseite im lokalen Netzwerk mit Bonjour ankündigen";

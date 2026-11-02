@@ -91,36 +91,6 @@
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "רק בעת הוספה ידנית";
 
-/* Class = "NSTextFieldCell"; title = "Listening port:"; ObjectID = "1493"; */
-"1493.title" = "פתחה להאזנה:";
-
-/* Class = "NSButtonCell"; title = "Enable remote access"; ObjectID = "1502"; */
-"1502.title" = "הפעלת גישה מרחוק";
-
-/* Class = "NSButtonCell"; title = "Require authentication"; ObjectID = "1505"; */
-"1505.title" = "דרישת אימות";
-
-/* Class = "NSTableColumn"; headerCell.title = "IP Address"; ObjectID = "1523"; */
-"1523.headerCell.title" = "כתובת IP";
-
-/* Class = "NSTextFieldCell"; title = "IP addresses may include * wildcard"; ObjectID = "1542"; */
-"1542.title" = "כתובות IP יכולות לכלול * כוללני";
-
-/* Class = "NSTextFieldCell"; title = "Password:"; ObjectID = "1555"; */
-"1555.title" = "סיסמה:";
-
-/* Class = "NSTextFieldCell"; title = "Username:"; ObjectID = "1557"; */
-"1557.title" = "שם משתמש:";
-
-/* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "מפעיל את מנשק הדפדפן ומאפשר בקשות מרוחקות";
-
-/* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
-"1718.title" = "הפעלת מנשק הדפדפן";
-
-/* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
-"1748.title" = "לאפשר רק לכתובות ה־IP הבאות להתחבר:";
-
 /* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
 "1777.headerCell.title" = "צבע";
 
@@ -138,9 +108,6 @@
 
 /* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
 "1824.title" = "המיקום יוגדר רק בעת הוספת העברה";
-
-/* Class = "NSButtonCell"; title = "Display the web interface with Bonjour"; ObjectID = "1826"; */
-"1826.title" = "להציג את מנשק הדפדפן עם Bonjour";
 
 /* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
 "1831.title" = "להקצות קבוצה להעברות חדשות לפי תנאים מסוימים";

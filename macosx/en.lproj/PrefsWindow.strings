@@ -91,36 +91,6 @@
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Only when adding manually";
 
-/* Class = "NSTextFieldCell"; title = "HTTP port:"; ObjectID = "1493"; */
-"1493.title" = "HTTP port:";
-
-/* Class = "NSButtonCell"; title = "Allow remote access"; ObjectID = "1502"; */
-"1502.title" = "Allow remote access";
-
-/* Class = "NSButtonCell"; title = "Use authentication"; ObjectID = "1505"; */
-"1505.title" = "Use authentication";
-
-/* Class = "NSTableColumn"; headerCell.title = "Address"; ObjectID = "1523"; */
-"1523.headerCell.title" = "Address";
-
-/* Class = "NSTextFieldCell"; title = "IP addresses may use wildcards, such as 192.168.*.*"; ObjectID = "1542"; */
-"1542.title" = "IP addresses may use wildcards, such as 192.168.*.*";
-
-/* Class = "NSTextFieldCell"; title = "Password:"; ObjectID = "1555"; */
-"1555.title" = "Password:";
-
-/* Class = "NSTextFieldCell"; title = "Username:"; ObjectID = "1557"; */
-"1557.title" = "Username:";
-
-/* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "This enables the web interface and allows remote requests";
-
-/* Class = "NSButtonCell"; title = "Open Web Client"; ObjectID = "1718"; */
-"1718.title" = "Open Web Client";
-
-/* Class = "NSButtonCell"; title = "Only allow these IP addresses:"; ObjectID = "1748"; */
-"1748.title" = "Only allow these IP addresses:";
-
 /* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
 "1777.headerCell.title" = "Color";
 
@@ -138,9 +108,6 @@
 
 /* Class = "NSTextFieldCell"; title = "The location will only be set when adding the torrent"; ObjectID = "1824"; */
 "1824.title" = "The location will only be set when adding the torrent";
-
-/* Class = "NSButtonCell"; title = "Display the web interface with Bonjour"; ObjectID = "1826"; */
-"1826.title" = "Display the web interface with Bonjour";
 
 /* Class = "NSButtonCell"; title = "Assign group to new torrents based on criteria"; ObjectID = "1831"; */
 "1831.title" = "Assign group to new torrents based on criteria";

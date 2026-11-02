@@ -1,0 +1,11 @@
+"HTTP port:" = "Inkomende poort:";
+"Allow remote access" = "Aktiveer afstandstoegang";
+"Use authentication" = "Vereis waarmerking";
+"Address" = "IP-adres";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP-adresse mag *-oorheersstring insluit";
+"Password:" = "Wagwoord:";
+"Username:" = "Gebruikersnaam:";
+"This enables the web interface and allows remote requests" = "Dit aktiveer die webkoppelvlak en laat afstandsversoeke toe";
+"Open Web Client" = "Lanseer webkoppelvlak";
+"Only allow these IP addresses:" = "Laat slegs die volgende IP-adresse koppel:";
+"Display the web interface with Bonjour" = "Toon die webkoppelvlak met Bonjour";
