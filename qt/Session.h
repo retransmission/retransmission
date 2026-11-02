@@ -11,7 +11,7 @@
 #include <map>
 #include <optional>
 #include <string>
-#include <type_traits>
+#include <utility>
 
 #include <sigslot/signal.hpp>
 
@@ -28,7 +28,6 @@
 
 #include "Prefs.h"
 #include "RpcClient.h"
-#include "Typedefs.h"
 
 class AddData;
 
@@ -83,37 +82,25 @@ public:
     using Tag = uint64_t;
 
     template<typename T, typename... Rest>
-    [[nodiscard]] Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
+    [[nodiscard]] Tag torrentSet(Ids const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
     {
-        return torrentSetImpl(makeParams(TR_KEY_ids, torrent_ids, key1, val1, rest...));
+        auto params = makeParams(key1, val1, rest...);
+        params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(torrent_ids));
+        return torrentSetImpl(std::move(params));
     }
 
-    void torrentSetLocation(torrent_ids_t const& torrent_ids, QString const& path, bool do_move);
-    void torrentRenamePath(torrent_ids_t const& torrent_ids, QString const& oldpath, QString const& newname);
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void initTorrents();
-    void pauseTorrents(torrent_ids_t const& torrent_ids = {});
-    void startTorrents(torrent_ids_t const& torrent_ids = {});
-    void startTorrentsNow(torrent_ids_t const& torrent_ids = {});
-    void refreshDetailInfo(torrent_ids_t const& torrent_ids);
     void refreshActiveTorrents();
     void refreshAllTorrents();
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
-    void verifyTorrents(torrent_ids_t const& torrent_ids);
-    void reannounceTorrents(torrent_ids_t const& torrent_ids);
-    void refreshExtraStats(torrent_ids_t const& torrent_ids);
 
 public slots:
     void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
-    void queueMoveBottom(torrent_ids_t const& torrentIds = {});
-    void queueMoveDown(torrent_ids_t const& torrentIds = {});
-    void queueMoveTop(torrent_ids_t const& torrentIds = {});
-    void queueMoveUp(torrent_ids_t const& torrentIds = {});
     void refreshBlocklistInfo();
     void refreshSessionInfo();
     void refreshSessionStats();
-    void removeTorrents(torrent_ids_t const& torrent_ids, bool delete_files = false);
 
 signals:
     void sourceChanged();
@@ -140,41 +127,6 @@ private slots:
     void onDuplicatesTimer();
 
 private:
-    [[nodiscard]] static tr_variant getTorrentIdsVariant(torrent_ids_t const& torrent_ids);
-
-    template<typename T>
-    static void addParamPair(tr_variant::Map& params, tr_quark const key, T const& val)
-    {
-        if constexpr (std::is_same_v<std::remove_cvref_t<T>, torrent_ids_t>) {
-            if (auto var = getTorrentIdsVariant(val); var.has_value()) {
-                params.insert_or_assign(key, std::move(var));
-            }
-        } else {
-            params.insert_or_assign(key, tr::serializer::to_variant(val));
-        }
-    }
-
-    template<typename T, typename... Rest>
-    static void addParamPairs(tr_variant::Map& params, tr_quark const key, T const& val, Rest const&... rest)
-    {
-        addParamPair(params, key, val);
-
-        if constexpr (sizeof...(rest) != 0U) {
-            addParamPairs(params, rest...);
-        }
-    }
-
-    template<typename T, typename... Rest>
-    [[nodiscard]] static tr_variant::Map makeParams(tr_quark const key1, T const& val1, Rest const&... rest)
-    {
-        static_assert(sizeof...(rest) % 2U == 0U, "Expected key/value argument pairs");
-
-        auto params = tr_variant::Map{ 1U + static_cast<size_t>(sizeof...(rest) / 2U) };
-        addParamPairs(params, key1, val1, rest...);
-
-        return params;
-    }
-
     void start();
 
     void updateStats(tr_variant* args_dict);
@@ -183,7 +135,8 @@ private:
     void updateType(std::optional<std::string> session_id = {});
 
     Tag torrentSetImpl(tr_variant::Map params);
-    void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
+
+    void onRenameFailed(RenameError const& error) const;
 
     static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
 
@@ -200,6 +153,7 @@ private:
 
     // changing some prefs (eg download_dir) invalidates cached session info
     sigslot::scoped_connection session_refresh_tag_;
+    sigslot::scoped_connection rename_failed_connection_;
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;

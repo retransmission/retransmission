@@ -888,64 +888,65 @@ void MainWindow::refreshIcons()
 ***
 **/
 
-torrent_ids_t MainWindow::getSelectedTorrents(bool with_metadata_only) const
+tr::app::TorrentList::Ids MainWindow::getSelectedTorrents(bool const with_metadata_only) const
 {
-    torrent_ids_t ids;
+    auto ids = tr::app::TorrentList::Ids{};
 
     for (QModelIndex const& index : ui_.listView->selectionModel()->selectedRows()) {
         auto const* const tor = index.data(TorrentModel::TorrentRole).value<tr::app::Torrent const*>();
 
         if (tor != nullptr && (!with_metadata_only || tor->has_metadata())) {
-            ids.insert(tor->id());
+            ids.push_back(tor->id());
         }
     }
 
+    std::ranges::sort(ids);
     return ids;
 }
 
 void MainWindow::startSelected()
 {
-    session_.startTorrents(getSelectedTorrents());
+    session_.start_torrents(getSelectedTorrents());
 }
 
 void MainWindow::startSelectedNow()
 {
-    session_.startTorrentsNow(getSelectedTorrents());
+    session_.start_torrents_now(getSelectedTorrents());
 }
 
 void MainWindow::pauseSelected()
 {
-    session_.pauseTorrents(getSelectedTorrents());
+    session_.stop_torrents(getSelectedTorrents());
 }
 
 void MainWindow::queueMoveTop()
 {
-    session_.queueMoveTop(getSelectedTorrents());
+    session_.queue_move_top(getSelectedTorrents());
 }
 
 void MainWindow::queueMoveUp()
 {
-    session_.queueMoveUp(getSelectedTorrents());
+    session_.queue_move_up(getSelectedTorrents());
 }
 
 void MainWindow::queueMoveDown()
 {
-    session_.queueMoveDown(getSelectedTorrents());
+    session_.queue_move_down(getSelectedTorrents());
 }
 
 void MainWindow::queueMoveBottom()
 {
-    session_.queueMoveBottom(getSelectedTorrents());
+    session_.queue_move_bottom(getSelectedTorrents());
 }
 
 void MainWindow::startAll()
 {
-    session_.startTorrents();
+    session_.start_all_torrents();
 }
 
 void MainWindow::pauseAll()
 {
-    session_.pauseTorrents();
+    session_.stop_all_torrents();
 }
 
 void MainWindow::removeSelected()
@@ -960,12 +961,12 @@ void MainWindow::deleteSelected()
 
 void MainWindow::verifySelected()
 {
-    session_.verifyTorrents(getSelectedTorrents(true));
+    session_.verify_torrents(getSelectedTorrents(true));
 }
 
 void MainWindow::reannounceSelected()
 {
-    session_.reannounceTorrents(getSelectedTorrents());
+    session_.reannounce_torrents(getSelectedTorrents());
 }
 
 /**
@@ -1304,7 +1305,7 @@ void MainWindow::addTorrent(AddData const& add_me, bool show_options)
 
 void MainWindow::removeTorrents(bool const delete_files)
 {
-    torrent_ids_t ids;
+    auto ids = tr::app::TorrentList::Ids{};
     QMessageBox msg_box(this);
     QString primary_text;
     QString secondary_text;
@@ -1313,7 +1314,7 @@ void MainWindow::removeTorrents(bool const delete_files)
 
     for (QModelIndex const& index : ui_.listView->selectionModel()->selectedRows()) {
         auto const* const tor = index.data(TorrentModel::TorrentRole).value<tr::app::Torrent const*>();
-        ids.insert(tor->id());
+        ids.push_back(tor->id());
 
         if (tor->peers_connected() != 0) {
             ++connected;
@@ -1382,7 +1383,7 @@ void MainWindow::removeTorrents(bool const delete_files)
 
     if (msg_box.exec() == QMessageBox::Ok) {
         ui_.listView->selectionModel()->clear();
-        session_.removeTorrents(ids, delete_files);
+        session_.remove_torrents(std::move(ids), delete_files);
     }
 }
 

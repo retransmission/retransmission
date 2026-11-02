@@ -516,7 +516,7 @@ void Application::onNotificationActionInvoked(quint32 /* notification_id */, QSt
 
     if (auto const match = StartNowRegex.match(action_key); match.hasMatch()) {
         int const torrent_id = match.captured(1).toInt();
-        session_->startTorrentsNow({ torrent_id });
+        session_->start_torrents_now({ torrent_id });
     }
 }
 #endif

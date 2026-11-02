@@ -24,7 +24,7 @@ bool RelocateDialog::move_flag = true;
 
 void RelocateDialog::onSetLocation()
 {
-    session_.torrentSetLocation(ids_, newLocation(), move_flag);
+    session_.set_torrent_location(ids_, newLocation().toStdString(), move_flag);
     close();
 }
 
@@ -37,7 +37,7 @@ RelocateDialog::RelocateDialog(
     Session& session,
     Prefs const& prefs,
     TorrentModel const& model,
-    torrent_ids_t ids,
+    tr::app::TorrentList::Ids ids,
     QWidget* parent)
     : BaseDialog{ parent }
     , session_{ session }

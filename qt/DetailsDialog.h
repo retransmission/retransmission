@@ -11,6 +11,7 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include "BaseDialog.h"
@@ -38,7 +39,7 @@ public:
     DetailsDialog& operator=(DetailsDialog const&) = delete;
     ~DetailsDialog() override;
 
-    void setIds(torrent_ids_t const& ids);
+    void setIds(tr::app::TorrentList::Ids ids);
 
     // QWidget
     QSize sizeHint() const override
@@ -103,7 +104,7 @@ private:
     std::unordered_set<Session::Tag> pending_changes_tags_;
 
     template<typename T>
-    void torrentSet(torrent_ids_t const& ids, tr_quark key, T const& val)
+    void torrentSet(tr::app::TorrentList::Ids const& ids, tr_quark key, T const& val)
     {
         pending_changes_tags_.insert(session_.torrentSet(ids, key, val));
     }
@@ -120,7 +121,7 @@ private:
 
     Ui::DetailsDialog ui_ = {};
 
-    torrent_ids_t ids_;
+    tr::app::TorrentList::Ids ids_;
     QTimer model_timer_;
     QTimer ui_debounce_timer_;
     bool labels_need_refresh_ = true;

@@ -16,10 +16,11 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSystemTrayIcon>
 
+#include <libtransmission-app/torrent-list.h>
+
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"
-#include "Typedefs.h"
 #include "ui_MainWindow.h"
 
 class QAction;
@@ -122,7 +123,7 @@ private slots:
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
 
 private:
-    [[nodiscard]] torrent_ids_t getSelectedTorrents(bool with_metadata_only = false) const;
+    [[nodiscard]] tr::app::TorrentList::Ids getSelectedTorrents(bool with_metadata_only = false) const;
     void updateNetworkLabel();
     void refreshSoon(int fields);
 

@@ -89,11 +89,9 @@ bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)
 {
-    auto params = makeParams(TR_KEY_ids, torrent_ids_t{ torrent_id });
-    auto fields = tr_variant::Vector{};
-    fields.reserve(1U);
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_magnet_link));
-    params.insert_or_assign(TR_KEY_fields, std::move(fields));
+    auto params = tr_variant::Map{ 2U };
+    params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(Ids{ torrent_id }));
+    params.insert_or_assign(TR_KEY_fields, tr::app::make_fields({ TR_KEY_magnet_link }));
 
     RpcQueue::create()
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
@@ -124,6 +122,7 @@ Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     , rpc_{ rpc }
 {
     session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
+    rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc_, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
@@ -208,16 +207,6 @@ void Session::start()
 
 // ---
 
-// static
-tr_variant Session::getTorrentIdsVariant(torrent_ids_t const& torrent_ids)
-{
-    if (!std::empty(torrent_ids)) {
-        return tr::serializer::to_variant(torrent_ids);
-    }
-
-    return {};
-}
-
 Session::Tag Session::torrentSetImpl(tr_variant::Map params)
 {
     auto const tag = next_tag_++;
@@ -232,111 +221,20 @@ Session::Tag Session::torrentSetImpl(tr_variant::Map params)
     return tag;
 }
 
-void Session::torrentSetLocation(torrent_ids_t const& torrent_ids, QString const& path, bool do_move)
+void Session::onRenameFailed(RenameError const& error) const
 {
-    if (!torrent_ids.empty()) {
-        exec(TR_KEY_torrent_set_location, makeParams(TR_KEY_ids, torrent_ids, TR_KEY_location, path, TR_KEY_move, do_move));
-    }
-}
-
-void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const& oldpath, QString const& newname)
-{
-    if (torrent_ids.empty()) {
-        return;
-    }
-
-    RpcQueue::create()
-        .add(
-            [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
-                RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
-            [oldpath, newname](RpcResponse const& r) {
-                auto const title = tr("Error Renaming Path");
-                auto const summary = TR_FORMAT(
-                    R"(Unable to rename "{old_path}" as "{path}": {error}.)",
-                    fmt::arg("old_path", oldpath),
-                    fmt::arg("path", newname),
-                    fmt::arg("error", r.errmsg));
-                // The user can't fix a network error by editing the path.
-                auto const advice = r.network_error ?
-                    QString{} :
-                    QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
-                auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
-                auto* d = new QMessageBox{ QMessageBox::Information,
-                                           title,
-                                           text,
-                                           QMessageBox::Close,
-                                           QApplication::activeWindow() };
-                QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
-                d->show();
-            })
-        // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids](RpcResponse const& /*r*/) {
-            refresh_torrents({ std::begin(torrent_ids), std::end(torrent_ids) }, tr::app::TorrentKeySet::Rename);
-        })
-        .run();
-}
-
-void Session::refreshDetailInfo(torrent_ids_t const& ids)
-{
-    refresh_torrents({ std::begin(ids), std::end(ids) }, tr::app::TorrentKeySet::DetailInfo);
-}
-
-void Session::refreshExtraStats(torrent_ids_t const& ids)
-{
-    refresh_torrents({ std::begin(ids), std::end(ids) }, tr::app::TorrentKeySet::DetailStats);
-}
-
-void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& torrent_ids)
-{
-    RpcQueue::create()
-        .add([this, method, params = makeParams(TR_KEY_ids, torrent_ids)](RpcClient::ResponseFunc done) mutable {
-            exec(method, std::move(params), std::move(done));
-        })
-        // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids] {
-            // no ids: the request named every torrent
-            if (std::empty(torrent_ids)) {
-                refresh_all_torrents();
-            } else {
-                refresh_torrents({ std::begin(torrent_ids), std::end(torrent_ids) }, tr::app::TorrentKeySet::MainStats);
-            }
-        })
-        .run();
-}
-
-void Session::pauseTorrents(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_stop, ids);
-}
-
-void Session::startTorrents(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_start, ids);
-}
-
-void Session::startTorrentsNow(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_start_now, ids);
-}
-
-void Session::queueMoveTop(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_top, ids);
-}
-
-void Session::queueMoveUp(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_up, ids);
-}
-
-void Session::queueMoveDown(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_down, ids);
-}
-
-void Session::queueMoveBottom(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_bottom, ids);
+    auto const title = tr("Error Renaming Path");
+    auto const summary = TR_FORMAT(
+        R"(Unable to rename "{old_path}" as "{path}": {error}.)",
+        fmt::arg("old_path", Utils::qstringFromUtf8(error.old_path)),
+        fmt::arg("path", Utils::qstringFromUtf8(error.new_name)),
+        fmt::arg("error", Utils::qstringFromUtf8(error.errmsg)));
+    auto const advice = error.network_error ? QString{} :
+                                              QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
+    auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
+    auto* d = new QMessageBox{ QMessageBox::Information, title, text, QMessageBox::Close, QApplication::activeWindow() };
+    QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
+    d->show();
 }
 
 void Session::refreshActiveTorrents()
@@ -578,38 +476,11 @@ void Session::addTorrent(AddData const& add_me)
 
 void Session::addNewlyCreatedTorrent(QString const& filename, QString const& local_path)
 {
-    QByteArray const b64 = AddData(filename).toBase64();
-
-    exec(
-        TR_KEY_torrent_add,
-        makeParams(
-            TR_KEY_download_dir,
-            local_path,
-            TR_KEY_paused,
-            !prefs_.get<bool>(TR_KEY_start_added_torrents),
-            TR_KEY_metainfo,
-            b64.toStdString()));
-}
-
-void Session::removeTorrents(torrent_ids_t const& ids, bool delete_files)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_remove, makeParams(TR_KEY_ids, ids, TR_KEY_delete_local_data, delete_files));
-    }
-}
-
-void Session::verifyTorrents(torrent_ids_t const& ids)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_verify, makeParams(TR_KEY_ids, ids));
-    }
-}
-
-void Session::reannounceTorrents(torrent_ids_t const& ids)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_reannounce, makeParams(TR_KEY_ids, ids));
-    }
+    auto params = tr_variant::Map{ 3U };
+    params.insert_or_assign(TR_KEY_download_dir, local_path.toStdString());
+    params.insert_or_assign(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
+    params.insert_or_assign(TR_KEY_metainfo, AddData(filename).toBase64().toStdString());
+    exec(TR_KEY_torrent_add, std::move(params));
 }
 
 /***
