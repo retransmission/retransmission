@@ -2,6 +2,7 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <cinttypes>
 #include <chrono>
 #include <cmath>
 #include <future>
@@ -875,8 +876,10 @@ static NSMutableSet* creatorWindowControllerSet;
                                                        self.fLocation.lastPathComponent];
         alert.alertStyle = NSAlertStyleWarning;
 
-        alert.informativeText = [NSString
-            stringWithFormat:@"%.*s (%" PRId64 ")", static_cast<int>(std::size(error.message())), std::data(error.message()), error.code()];
+        alert.informativeText = [NSString stringWithFormat:@"%.*s (%" PRId64 ")",
+                                                           static_cast<int>(std::size(error.message())),
+                                                           std::data(error.message()),
+                                                           error.code()];
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse /*returnCode*/) {
             [self.window close];
         }];
