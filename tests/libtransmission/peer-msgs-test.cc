@@ -38,7 +38,7 @@ class PeerMsgsTest : public SessionTest
 protected:
     void TearDown() override
     {
-        if (peer_socket_ != EVUTIL_INVALID_SOCKET) {
+        if (is_valid_socket(peer_socket_)) {
             tr_net_close_socket(peer_socket_);
         }
         SessionTest::TearDown();
@@ -51,9 +51,9 @@ protected:
         // Let the torrent-start rechoke run before a peer arrives.
         std::this_thread::sleep_for(300ms);
 
-        auto sockets = std::to_array<evutil_socket_t>({ EVUTIL_INVALID_SOCKET, EVUTIL_INVALID_SOCKET });
+        auto sockets = std::array<evutil_socket_t, 2>{};
         ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, std::data(sockets)));
-        peer_socket_ = sockets[1];
+        peer_socket_ = static_cast<tr_socket_t>(sockets[1]);
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
 
@@ -86,7 +86,7 @@ protected:
         ASSERT_TRUE(waitForInSessionThread([tor] { return std::size(tr_peerMgrPeerStats(tor)) == 1U; }, 2000));
     }
 
-    evutil_socket_t peer_socket_ = EVUTIL_INVALID_SOCKET;
+    tr_socket_t peer_socket_ = static_cast<tr_socket_t>(TR_BAD_SOCKET);
 };
 } // namespace
 
@@ -120,9 +120,9 @@ TEST_F(PeerMsgsTest, NewDownloaderIsUnchokedBeforePeriodicRechoke)
 
 TEST_F(PeerMsgsTest, SmallProtocolMessagesFlushWithoutBandwidthPulse)
 {
-    auto sockets = std::to_array<evutil_socket_t>({ EVUTIL_INVALID_SOCKET, EVUTIL_INVALID_SOCKET });
+    auto sockets = std::array<evutil_socket_t, 2>{};
     ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, std::data(sockets)));
-    peer_socket_ = sockets[1];
+    peer_socket_ = static_cast<tr_socket_t>(sockets[1]);
     ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
     ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
 
