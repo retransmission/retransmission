@@ -21,6 +21,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include <event2/util.h>
@@ -757,7 +758,7 @@ TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
     session_->local_data.set_workers_paused(true);
     auto& first = addPeer(*tor);
     ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
-    addPeer(*tor);
+    std::ignore = addPeer(*tor);
     ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
 
     // An eighth of the budget, received and queued behind the paused workers.

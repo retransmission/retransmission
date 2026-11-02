@@ -879,7 +879,7 @@ private:
     void post_completion(Fn&& fn)
     {
         // Measures how long the session thread takes to get to a finished op.
-        auto timed = [posted = tr::profile::Stamp{}, fn = std::forward<Fn>(fn)]() mutable {
+        auto timed = [posted = tr::profile::Stamp{}, fn = std::forward<Fn>(fn)] mutable {
             posted.record_since("storage.completion_wait");
             fn();
         };

@@ -2483,7 +2483,7 @@ namespace bandwidth_helpers
 // Shuffled, so no peer is always first to claim the bandwidth or the
 // disk write budget.
 template<typename Fn>
-void for_each_peer_shuffled(tr_peerMgr* mgr, Fn&& fn)
+void for_each_peer_shuffled(tr_peerMgr* mgr, Fn fn)
 {
     auto peers = small::vector<tr_peerMsgs*, TrDefaultPeerLimitGlobal>{};
     for (auto* const tor : mgr->torrents_) {
