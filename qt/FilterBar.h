@@ -70,6 +70,7 @@ private:
 
     small::map<QString, int> sitename_counts_;
     QTimer recount_timer_;
+    QTimer text_timer_;
     Pending pending_;
     bool is_bootstrapping_ = {};
 
@@ -93,6 +94,7 @@ private slots:
     }
 
     void refreshPref(tr_quark key);
+    void applyText();
     void onActivityIndexChanged(int index);
     void onTextChanged(QString const& str);
     void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);

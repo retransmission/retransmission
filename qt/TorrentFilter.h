@@ -7,6 +7,8 @@
 
 #include <array>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
 
@@ -14,8 +16,6 @@
 
 #include "Prefs.h"
 #include "UserMetaType.h"
-
-class QString;
 
 class TorrentFilter : public QSortFilterProxyModel
 {
@@ -41,7 +41,11 @@ private slots:
     void refilter();
 
 private:
+    void refilterSoon();
+
     QTimer refilter_timer_;
     Prefs const& prefs_;
     tr::app::TorrentFilter filter_;
+    sigslot::scoped_connection filter_changed_ = filter_.changed.connect_scoped(
+        [this](tr::app::TorrentFilter::Change /*change*/) { refilterSoon(); });
 };

@@ -221,6 +221,7 @@ FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter c
     connect(&torrents_, &TorrentModel::rowsRemoved, this, &FilterBar::recountAllSoon);
     connect(&torrents_, &TorrentModel::torrentsChanged, this, &FilterBar::onTorrentsChanged);
     connect(&recount_timer_, &QTimer::timeout, this, &FilterBar::recount);
+    connect(&text_timer_, &QTimer::timeout, this, &FilterBar::applyText);
     connect(trApp, &Application::faviconsChanged, this, &FilterBar::recountTrackersSoon);
 
     recountAllSoon();
@@ -306,9 +307,27 @@ void FilterBar::onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFiel
 
 void FilterBar::onTextChanged(QString const& str)
 {
-    if (!is_bootstrapping_) {
-        prefs_.set(TR_KEY_filter_text, str.trimmed());
+    if (is_bootstrapping_) {
+        return;
     }
+
+    // the user probably hit the 'clear' button
+    if (str.trimmed().isEmpty()) {
+        text_timer_.stop();
+        applyText();
+        return;
+    }
+
+    // the user is probably still typing
+    if (!text_timer_.isActive()) {
+        text_timer_.setSingleShot(true);
+        text_timer_.start(500);
+    }
+}
+
+void FilterBar::applyText()
+{
+    prefs_.set(TR_KEY_filter_text, line_edit_->text().trimmed());
 }
 
 void FilterBar::onTrackerIndexChanged(int i)

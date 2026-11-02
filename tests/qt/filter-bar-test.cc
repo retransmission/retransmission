@@ -8,6 +8,7 @@
 
 #include <QApplication>
 #include <QComboBox>
+#include <QLineEdit>
 #include <QString>
 #include <QTest>
 
@@ -99,6 +100,29 @@ private slots:
 
             QVERIFY2(combo->currentText() == QString::fromUtf8(label), label);
         }
+    }
+
+    static void setsTheTextPrefWhenTheUserPauses()
+    {
+        auto client = Client{};
+        auto* const edit = client.bar.findChild<QLineEdit*>();
+        QVERIFY(edit != nullptr);
+
+        edit->setText(QStringLiteral("  alpha "));
+        QVERIFY(client.prefs.get<QString>(TR_KEY_filter_text).isEmpty());
+        QTRY_COMPARE(client.prefs.get<QString>(TR_KEY_filter_text), QStringLiteral("alpha"));
+    }
+
+    static void clearingTheTextSetsThePrefAtOnce()
+    {
+        auto client = Client{};
+        auto* const edit = client.bar.findChild<QLineEdit*>();
+        QVERIFY(edit != nullptr);
+
+        client.prefs.set(TR_KEY_filter_text, QStringLiteral("alpha"));
+        edit->setText(QStringLiteral("alpha"));
+        edit->clear();
+        QVERIFY(client.prefs.get<QString>(TR_KEY_filter_text).isEmpty());
     }
 };
 

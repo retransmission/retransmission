@@ -7,7 +7,6 @@
 
 #include <array>
 #include <compare>
-#include <optional>
 #include <string>
 #include <string_view>
 
@@ -42,36 +41,19 @@ TorrentFilter::TorrentFilter(Prefs const& prefs)
 ****
 ***/
 
-void TorrentFilter::onPrefChanged(tr_quark key)
+void TorrentFilter::onPrefChanged(tr_quark const key)
 {
-    // For refiltering nearly immediately. Used to debounce batched prefs changes.
-    static int const FastMSec = 50;
-
-    // For waiting a little longer. Useful when user is typing the filter text.
-    static int const SlowMSec = 500;
-
-    std::optional<int> msec;
-    switch (key) {
-    case TR_KEY_filter_text:
-        // special case for isEmpty: user probably hit the 'clear' button
-        msec = prefs_.get<QString>(key).isEmpty() ? FastMSec : SlowMSec;
-        break;
-
-    case TR_KEY_filter_trackers:
-    case TR_KEY_show_mode:
-    case TR_KEY_sort_mode:
-    case TR_KEY_sort_reversed:
-        msec = FastMSec;
-        break;
-
-    default:
-        break;
+    if (key == TR_KEY_sort_mode || key == TR_KEY_sort_reversed) {
+        refilterSoon();
     }
+}
 
-    // if this pref change affects filtering, ensure that a refilter is queued
-    if (msec && !refilter_timer_.isActive()) {
+void TorrentFilter::refilterSoon()
+{
+    // debounces batched prefs changes
+    if (!refilter_timer_.isActive()) {
         refilter_timer_.setSingleShot(true);
-        refilter_timer_.start(*msec);
+        refilter_timer_.start(50);
     }
 }
 

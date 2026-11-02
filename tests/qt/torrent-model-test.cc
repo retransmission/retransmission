@@ -125,6 +125,24 @@ private slots:
             client.list.find(3));
     }
 
+    static void refiltersWhenAFilterPrefChanges()
+    {
+        auto client = Client{};
+        client.list.update(make_args(make_row(1, "Éclair"sv), make_row(3, "charlie"sv)), Coverage::Complete, Now);
+        QCOMPARE(client.filter.rowCount(), 2);
+
+        client.prefs.set(TR_KEY_filter_text, QStringLiteral("éCLAIR"));
+        QTRY_COMPARE(client.filter.rowCount(), 1);
+        QCOMPARE(names_of(client.filter), QStringList{ QStringLiteral("Éclair") });
+
+        client.prefs.set(TR_KEY_filter_text, QString{});
+        QTRY_COMPARE(client.filter.rowCount(), 2);
+
+        client.prefs.set(TR_KEY_show_mode, ShowMode::ShowPaused);
+        client.prefs.set(TR_KEY_filter_trackers, QStringLiteral("example"));
+        QTRY_COMPARE(client.filter.rowCount(), 0);
+    }
+
     static void insertsIntoTheGapsAndReportsChangesBySpan()
     {
         auto client = Client{};
