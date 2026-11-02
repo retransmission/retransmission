@@ -5,17 +5,19 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <string_view>
-
-#include "libtransmission/error-types.h"
 
 /** @brief Structure holding error information. */
 struct tr_error {
 public:
+    // fits errno, `DWORD GetLastError()`, and `int WSAGetLastError()`
+    using code_t = int64_t;
+
     constexpr tr_error() = default;
 
-    constexpr tr_error(tr_error_code_t code, std::string message)
+    constexpr tr_error(code_t code, std::string message)
         : message_{ std::move(message) }
         , code_{ code }
     {
@@ -41,19 +43,23 @@ public:
         return has_value();
     }
 
-    constexpr void set(tr_error_code_t code, std::string&& message)
+    // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
+    [[nodiscard]] bool is_enoent() const noexcept;
+    [[nodiscard]] bool is_enospc() const noexcept;
+
+    constexpr void set(code_t code, std::string&& message)
     {
         code_ = code;
         message_ = std::move(message);
     }
 
-    constexpr void set(tr_error_code_t code, std::string_view message)
+    constexpr void set(code_t code, std::string_view message)
     {
         code_ = code;
         message_.assign(message);
     }
 
-    constexpr void set(tr_error_code_t code, char const* const message)
+    constexpr void set(code_t code, char const* const message)
     {
         set(code, std::string_view{ message != nullptr ? message : "" });
     }
@@ -64,12 +70,12 @@ public:
     }
 
     // convenience utility for `set(errno, tr_strerror(errno))`
-    void set_from_errno(tr_error_code_t errnum);
+    void set_from_errno(int errnum);
 
 private:
     /** @brief Error message */
     std::string message_;
 
     /** @brief Error code, platform-specific */
-    tr_error_code_t code_ = 0;
+    code_t code_ = 0;
 };

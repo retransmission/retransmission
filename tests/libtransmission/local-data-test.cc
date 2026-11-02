@@ -651,7 +651,7 @@ TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
         { .begin = 0U, .end = BlockSize },
         patternBlock(0U, BlockSize),
         [&done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
-            EXPECT_TRUE(tr_error_is_enospc(error.code())) << error;
+            EXPECT_TRUE(error.is_enospc()) << error;
             EXPECT_TRUE(error.message().contains("injected preallocation error")) << error;
             EXPECT_TRUE(error.message().contains("data.bin")) << error;
             done = true;
@@ -970,7 +970,7 @@ TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
     writeBlocks(*local_data, 0U, BlockSize, [&n_written] { ++n_written; });
 
     // the copy fails at once and does not join the queue
-    auto code = std::optional<tr_error_code_t>{};
+    auto code = std::optional<tr_error::code_t>{};
     local_data->write(
         TorId,
         { .begin = 0U, .end = BlockSize },

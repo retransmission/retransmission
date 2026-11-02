@@ -3,12 +3,36 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <cerrno>
+#endif
+
 #include "libtransmission/error.h"
 #include "libtransmission/string-utils.h"
 
-void tr_error::set_from_errno(tr_error_code_t errnum)
+bool tr_error::is_enoent() const noexcept
+{
+#ifdef _WIN32
+    return code_ == ERROR_FILE_NOT_FOUND || code_ == ERROR_PATH_NOT_FOUND;
+#else
+    return code_ == ENOENT;
+#endif
+}
+
+bool tr_error::is_enospc() const noexcept
+{
+#ifdef _WIN32
+    return code_ == ERROR_DISK_FULL;
+#else
+    return code_ == ENOSPC;
+#endif
+}
+
+void tr_error::set_from_errno(int const errnum)
 {
     code_ = errnum;
 
-    message_ = errnum != 0 ? tr_strerror(static_cast<int>(errnum)) : "";
+    message_ = errnum != 0 ? tr_strerror(errnum) : "";
 }
