@@ -11,6 +11,8 @@
 #include <map>
 #include <optional>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QTimer>
 
 #include <libtransmission/types.h>
@@ -96,4 +98,6 @@ private:
     std::multimap<tr_quark, std::function<void()>> updaters_;
 
     QTimer blocklist_info_timer_;
+
+    sigslot::scoped_connection session_connection_;
 };

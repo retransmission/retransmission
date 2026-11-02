@@ -223,7 +223,7 @@ private slots:
         QVERIFY(status_label->isHidden());
         QVERIFY(date_label->isHidden());
 
-        session.refreshSessionInfo();
+        session.refresh_session_info();
         QVERIFY(waitUntil([status_label] { return !status_label->isHidden(); }));
         QVERIFY(!date_label->isHidden());
 

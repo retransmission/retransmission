@@ -105,7 +105,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     connect(ui_.filesView, &FileTreeView::priorityChanged, this, &OptionsDialog::onPriorityChanged);
     connect(ui_.filesView, &FileTreeView::wantedChanged, this, &OptionsDialog::onWantedChanged);
 
-    connect(&session_, &Session::sessionUpdated, this, &OptionsDialog::onSessionUpdated);
+    session_connection_ = session_.session_updated.connect_scoped(&OptionsDialog::onSessionUpdated, this);
 
     updateWidgetsLocality();
     reload();

@@ -29,7 +29,6 @@
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
-#include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
@@ -121,7 +120,7 @@ Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
-    session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
+    session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refresh_session_info(); });
     rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
@@ -152,7 +151,7 @@ void Session::stop()
     }
 
     clear_session_info();
-    updateType();
+    set_session_type({});
     emit stopped();
 }
 
@@ -189,7 +188,6 @@ void Session::start()
         auto const settings = tr_sessionLoadSettings(config_dir);
         session_ = tr_sessionInit(config_dir, true, settings, Utils::trashOrRemove);
         set_embedded_session(session_);
-        updateType();
 
         if (tr_sessionConfigDirIsContended(session_)) {
             emit configDirContended();
@@ -238,14 +236,6 @@ void Session::initTorrents()
     refresh_all_torrents(tr::app::TorrentKeySet::MainAll);
 }
 
-void Session::refreshSessionStats()
-{
-    RpcQueue::create()
-        .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_stats, nullptr, std::move(done)); })
-        .add([this](RpcResponse const& r) { updateStats(r.args.get()); })
-        .run();
-}
-
 // Asks for the blocklist fields only.
 // A full session_get reply could overwrite prefs that the user changed while it was in flight.
 void Session::refreshBlocklistInfo()
@@ -262,20 +252,12 @@ void Session::refreshBlocklistInfo()
             exec(TR_KEY_session_get, std::move(params), std::move(done));
         })
         .add([this](RpcResponse const& r) {
-            // not updateInfo(), which reads the session type from the session id this reply lacks
+            // not import_session_info(), which reads the session type from the session id this reply lacks
             if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
                 import_session_settings(*map);
-                emit sessionUpdated();
+                session_updated();
             }
         })
-        .run();
-}
-
-void Session::refreshSessionInfo()
-{
-    RpcQueue::create()
-        .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_get, nullptr, std::move(done)); })
-        .add([this](RpcResponse const& r) { updateInfo(r.args.get()); })
         .run();
 }
 
@@ -289,7 +271,7 @@ void Session::updateBlocklist()
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
             // session_get reports the new size and date with the rest of the session info
-            refreshSessionInfo();
+            refresh_session_info();
 
             // Only this manual update announces success, not every session_get refresh.
             if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
@@ -311,54 +293,6 @@ void Session::exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on
 void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
     rpc_.exec(method, std::move(params), std::move(on_done));
-}
-
-void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats)
-{
-    static constexpr auto Fields = std::tuple{
-        tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
-        tr::serializer::Field<&tr_session_stats::filesAdded>{ TR_KEY_files_added },
-        tr::serializer::Field<&tr_session_stats::secondsActive>{ TR_KEY_seconds_active },
-        tr::serializer::Field<&tr_session_stats::sessionCount>{ TR_KEY_session_count },
-        tr::serializer::Field<&tr_session_stats::uploadedBytes>{ TR_KEY_uploaded_bytes },
-    };
-    tr::serializer::load(args_dict, stats, Fields);
-
-    stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
-}
-
-void Session::updateStats(tr_variant* dict)
-{
-    if (auto const* const map = dict != nullptr ? dict->get_if<tr_variant::Map>() : nullptr; map != nullptr) {
-        if (auto const* const current = map->find_if<tr_variant::Map>(TR_KEY_current_stats); current != nullptr) {
-            updateStats(*current, stats_);
-        }
-
-        if (auto const* const cumulative = map->find_if<tr_variant::Map>(TR_KEY_cumulative_stats); cumulative != nullptr) {
-            updateStats(*cumulative, cumulative_stats_);
-        }
-    }
-
-    if (auto const busy = dictFind<bool>(dict, TR_KEY_busy)) {
-        set_busy(*busy);
-    }
-
-    emit statsUpdated();
-}
-
-void Session::updateInfo(tr_variant* args_dict)
-{
-    if (auto const* const settings = args_dict->get_if<tr_variant::Map>(); settings != nullptr) {
-        import_session_settings(*settings);
-    }
-
-    if (auto const str = dictFind<QString>(args_dict, TR_KEY_version); str) {
-        session_version_ = *str;
-    }
-
-    updateType(dictFind<std::string>(args_dict, TR_KEY_session_id));
-
-    emit sessionUpdated();
 }
 
 void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
@@ -492,29 +426,4 @@ void Session::launchWebInterface() const
     }
 
     QDesktopServices::openUrl(url);
-}
-
-/// ---
-
-namespace
-{
-
-[[nodiscard]] std::optional<Session::Type> computeType(
-    tr_session const* const session,
-    std::optional<std::string> const& session_id)
-{
-    if (session != nullptr) {
-        return Session::Type::Embedded;
-    }
-
-    return session_id.transform(
-        [](auto const& id) { return tr_session_id::is_local(id) ? Session::Type::Local : Session::Type::Remote; });
-}
-
-} // namespace
-
-// NOLINTNEXTLINE(performance-unnecessary-value-param)
-void Session::updateType(std::optional<std::string> session_id)
-{
-    set_session_type(computeType(session_, session_id));
 }

@@ -29,10 +29,10 @@ StatsDialog::StatsDialog(Session& session, QWidget* parent)
     cr->update();
 
     timer_.setSingleShot(false);
-    connect(&timer_, &QTimer::timeout, &session_, &Session::refreshSessionStats);
-    connect(&session_, &Session::statsUpdated, this, &StatsDialog::updateStats);
+    connect(&timer_, &QTimer::timeout, this, [this] { session_.refresh_session_stats(); });
+    stats_connection_ = session_.stats_updated.connect_scoped(&StatsDialog::updateStats, this);
     updateStats();
-    session_.refreshSessionStats();
+    session_.refresh_session_stats();
 }
 
 void StatsDialog::setVisible(bool visible)
@@ -48,8 +48,8 @@ void StatsDialog::setVisible(bool visible)
 
 void StatsDialog::updateStats()
 {
-    tr_session_stats const& current(session_.getStats());
-    tr_session_stats const& total(session_.getCumulativeStats());
+    tr_session_stats const& current(session_.stats());
+    tr_session_stats const& total(session_.cumulative_stats());
 
     ui_.currentUploadedValueLabel->setText(Formatter::storageToString(current.uploadedBytes));
     ui_.currentDownloadedValueLabel->setText(Formatter::storageToString(current.downloadedBytes));

@@ -9,6 +9,8 @@
 #include <ctime>
 #include <memory>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
@@ -192,6 +194,7 @@ private:
     static constexpr auto RefreshIcon = 1 << 5;
     int refresh_fields_ = {};
     QTimer refresh_timer_;
+    sigslot::scoped_connection stats_connection_;
 
     void refreshActionSensitivity();
     void refreshIcons();

@@ -576,7 +576,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* const parent)
 
     updateLocality();
 
-    connect(&session_, &Session::sessionUpdated, this, &PrefsDialog::sessionUpdated);
+    session_connection_ = session_.session_updated.connect_scoped(&PrefsDialog::sessionUpdated, this);
     // stop() clears the blocklist info, which the next session reports anew.
     connect(&session_, &Session::stopped, this, &PrefsDialog::updateBlocklistLabel);
     // The session also updates the blocklist on its own schedule.

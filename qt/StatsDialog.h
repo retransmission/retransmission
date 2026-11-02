@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QTimer>
 
 #include "BaseDialog.h"
@@ -27,13 +29,14 @@ public:
     // QWidget
     void setVisible(bool visible) override;
 
-private slots:
+private:
     void updateStats();
 
-private:
     Session& session_;
 
     Ui::StatsDialog ui_ = {};
 
     QTimer timer_;
+
+    sigslot::scoped_connection stats_connection_;
 };

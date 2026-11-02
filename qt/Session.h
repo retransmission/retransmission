@@ -8,7 +8,6 @@
 #include <array>
 #include <map>
 #include <optional>
-#include <string>
 
 #include <sigslot/signal.hpp>
 
@@ -52,21 +51,6 @@ public:
         return rpc_.url();
     }
 
-    [[nodiscard]] constexpr auto const& getStats() const noexcept
-    {
-        return stats_;
-    }
-
-    [[nodiscard]] constexpr auto const& getCumulativeStats() const noexcept
-    {
-        return cumulative_stats_;
-    }
-
-    [[nodiscard]] constexpr auto const& sessionVersion() const noexcept
-    {
-        return session_version_;
-    }
-
     void updateBlocklist();
     void portTest(tr_address_type ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
@@ -86,8 +70,6 @@ public slots:
     void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
     void refreshBlocklistInfo();
-    void refreshSessionInfo();
-    void refreshSessionStats();
 
 signals:
     void sourceChanged();
@@ -100,8 +82,6 @@ signals:
     void configDirContended();
 
     void portTested(std::optional<bool> status, tr_address_type ip_protocol);
-    void statsUpdated();
-    void sessionUpdated();
     void blocklistUpdated(qint64);
     void blocklistUpdateFailed(QString const& message);
     void dataReadProgress();
@@ -115,23 +95,13 @@ private slots:
 private:
     void start();
 
-    void updateStats(tr_variant* args_dict);
-    void updateInfo(tr_variant* args_dict);
-
-    void updateType(std::optional<std::string> session_id = {});
-
     void onRenameFailed(RenameError const& error) const;
-
-    static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
 
     QString const config_dir_;
     Prefs& prefs_;
 
     std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
-    tr_session_stats stats_ = EmptyStats;
-    tr_session_stats cumulative_stats_ = EmptyStats;
-    QString session_version_;
     RpcClient& rpc_;
 
     // changing some prefs (eg download_dir) invalidates cached session info
@@ -140,6 +110,4 @@ private:
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;
-
-    static auto constexpr EmptyStats = tr_session_stats{};
 };

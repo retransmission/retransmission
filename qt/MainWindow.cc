@@ -260,7 +260,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
         refreshSoon(RefreshStatusBar);
     };
     connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
-    connect(&session_, &Session::statsUpdated, this, refresh_status_soon);
+    stats_connection_ = session_.stats_updated.connect_scoped(refresh_status_soon);
     connect(&session_, &Session::dataReadProgress, this, &MainWindow::dataReadProgress);
     connect(&session_, &Session::dataSendProgress, this, &MainWindow::dataSendProgress);
     connect(&session_, &Session::httpAuthenticationRequired, this, &MainWindow::wrongAuthentication);
@@ -736,7 +736,7 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
     static_assert(StatsModeCount == 4U && "StatsMode changed: update this code");
     auto const mode = prefs_.get<StatsMode>(TR_KEY_statusbar_stats);
     auto const use_session_stats = mode == StatsMode::SessionRatio || mode == StatsMode::SessionTransfer;
-    auto const& st = use_session_stats ? session_.getStats() : session_.getCumulativeStats();
+    auto const& st = use_session_stats ? session_.stats() : session_.cumulative_stats();
     ui_.statsLabel->setText(
         mode == StatsMode::SessionTransfer || mode == StatsMode::TotalTransfer ?
             TR_FORMAT(

@@ -207,13 +207,13 @@ Application::Application(
     timer->start();
 
     timer = &stats_timer_;
-    connect(timer, &QTimer::timeout, session_.get(), &Session::refreshSessionStats);
+    connect(timer, &QTimer::timeout, this, [this] { session_->refresh_session_stats(); });
     timer->setSingleShot(false);
     timer->setInterval(StatsRefreshIntervalMsec);
     timer->start();
 
     timer = &session_timer_;
-    connect(timer, &QTimer::timeout, session_.get(), &Session::refreshSessionInfo);
+    connect(timer, &QTimer::timeout, this, [this] { session_->refresh_session_info(); });
     timer->setSingleShot(false);
     timer->setInterval(SessionRefreshIntervalMsec);
     timer->start();
@@ -407,8 +407,8 @@ void Application::onConfigDirContended()
 void Application::onSessionSourceChanged() const
 {
     session_->initTorrents();
-    session_->refreshSessionStats();
-    session_->refreshSessionInfo();
+    session_->refresh_session_stats();
+    session_->refresh_session_info();
 }
 
 void Application::refreshTorrents()
