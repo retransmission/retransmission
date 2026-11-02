@@ -391,7 +391,7 @@ DetailsDialog::DetailsDialog(Session& session, Prefs& prefs, TorrentModel const&
     connect(&model_, &TorrentModel::torrentsChanged, this, &DetailsDialog::onTorrentsChanged);
     connect(&model_, &TorrentModel::torrentsEdited, this, &DetailsDialog::onTorrentsEdited);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &DetailsDialog::refreshPref);
-    connect(&session_, &Session::sessionCalled, this, &DetailsDialog::onSessionCalled);
+    set_done_connection_ = session_.torrent_set_done.connect_scoped(&DetailsDialog::onTorrentSetDone, this);
 
     // call refreshModel periodically
     connect(&model_timer_, &QTimer::timeout, this, &DetailsDialog::refreshModel);
@@ -426,10 +426,9 @@ void DetailsDialog::setIds(tr::app::TorrentList::Ids ids)
         ui_.filesView->clear();
 
         ids_ = std::move(ids);
-        session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailInfo);
+        session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailAll);
         labels_need_refresh_ = true;
 
-        refreshModel();
         refreshUI();
     }
 }
@@ -492,10 +491,12 @@ void DetailsDialog::onTorrentsChanged(torrent_ids_t const& ids, tr::app::Torrent
     ui_debounce_timer_.start(DebounceIntervalMSec);
 }
 
-void DetailsDialog::onSessionCalled(Session::Tag const tag)
+void DetailsDialog::onTorrentSetDone(tr::app::Session::Tag const tag)
 {
-    if (pending_changes_tags_.erase(tag) > 0 && canEdit()) {
-        refreshModel();
+    // The Session re-fetched before firing. canEdit() held refreshUI() back, so start it here:
+    // a set that changed nothing fires no `torrentsChanged` to do it.
+    if (pending_changes_tags_.erase(tag) > 0 && canEdit() && !ui_debounce_timer_.isActive()) {
+        ui_debounce_timer_.start(DebounceIntervalMSec);
     }
 }
 
@@ -517,8 +518,6 @@ void DetailsDialog::onButtonBoxClicked(QAbstractButton* const button)
 
     static auto const Separators = QRegularExpression{ QStringLiteral("[,;]\\s*") };
     torrentSet(TR_KEY_labels, labels_text.split(Separators, Qt::SkipEmptyParts));
-
-    session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailInfo);
 }
 
 void DetailsDialog::refreshUI()

@@ -207,20 +207,6 @@ void Session::start()
 
 // ---
 
-Session::Tag Session::torrentSetImpl(tr_variant::Map params)
-{
-    auto const tag = next_tag_++;
-
-    RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));
-        })
-        .finally([this, tag] { emit sessionCalled(tag); })
-        .run();
-
-    return tag;
-}
-
 void Session::onRenameFailed(RenameError const& error) const
 {
     auto const title = tr("Error Renaming Path");

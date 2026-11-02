@@ -7,10 +7,14 @@
 
 #include <map>
 #include <unordered_set>
+#include <utility>
+
+#include <sigslot/signal.hpp>
 
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/session.h>
 #include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
@@ -60,6 +64,8 @@ private:
     void initFilesTab() const;
     void initOptionsTab();
 
+    void onTorrentSetDone(tr::app::Session::Tag tag);
+
     // Keeps a checkbox and a boolean pref in sync
     void bindPrefCheckBox(QAbstractButton* check, tr_quark key);
 
@@ -70,7 +76,6 @@ private slots:
 
     void onTorrentsEdited(torrent_ids_t const& ids);
     void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
-    void onSessionCalled(Session::Tag tag);
 
     // Details tab
     void onButtonBoxClicked(QAbstractButton* button);
@@ -101,12 +106,14 @@ private:
     {
         return std::empty(pending_changes_tags_);
     }
-    std::unordered_set<Session::Tag> pending_changes_tags_;
+    std::unordered_set<tr::app::Session::Tag> pending_changes_tags_;
 
     template<typename T>
-    void torrentSet(tr::app::TorrentList::Ids const& ids, tr_quark key, T const& val)
+    void torrentSet(tr::app::TorrentList::Ids ids, tr_quark key, T const& val)
     {
-        pending_changes_tags_.insert(session_.torrentSet(ids, key, val));
+        if (auto const tag = session_.set_torrents(std::move(ids), key, val); tag != 0) {
+            pending_changes_tags_.insert(tag);
+        }
     }
 
     template<typename T>
@@ -134,6 +141,8 @@ private:
     std::map<QString, PeerItem*> peers_;
 
     QIcon const icon_encrypted_ = QIcon{ QStringLiteral(":/icons/encrypted.svg") };
+
+    sigslot::scoped_connection set_done_connection_;
 
     static int prev_tab_index;
 };

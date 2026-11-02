@@ -6,12 +6,9 @@
 #pragma once
 
 #include <array>
-#include <cstddef> // size_t
-#include <cstdint> // uint64_t
 #include <map>
 #include <optional>
 #include <string>
-#include <utility>
 
 #include <sigslot/signal.hpp>
 
@@ -79,16 +76,6 @@ public:
     void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 
-    using Tag = uint64_t;
-
-    template<typename T, typename... Rest>
-    [[nodiscard]] Tag torrentSet(Ids const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
-    {
-        auto params = makeParams(key1, val1, rest...);
-        params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(torrent_ids));
-        return torrentSetImpl(std::move(params));
-    }
-
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void initTorrents();
     void refreshActiveTorrents();
@@ -117,7 +104,6 @@ signals:
     void sessionUpdated();
     void blocklistUpdated(qint64);
     void blocklistUpdateFailed(QString const& message);
-    void sessionCalled(Tag);
     void dataReadProgress();
     void dataSendProgress();
     void networkResponse(bool is_network_error, QString const& message);
@@ -134,8 +120,6 @@ private:
 
     void updateType(std::optional<std::string> session_id = {});
 
-    Tag torrentSetImpl(tr_variant::Map params);
-
     void onRenameFailed(RenameError const& error) const;
 
     static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
@@ -149,7 +133,6 @@ private:
     tr_session_stats cumulative_stats_ = EmptyStats;
     QString session_version_;
     RpcClient& rpc_;
-    Tag next_tag_ = {};
 
     // changing some prefs (eg download_dir) invalidates cached session info
     sigslot::scoped_connection session_refresh_tag_;
