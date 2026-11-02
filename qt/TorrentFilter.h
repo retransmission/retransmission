@@ -10,6 +10,8 @@
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/torrent-filter.h>
+
 #include "Prefs.h"
 #include "UserMetaType.h"
 
@@ -41,4 +43,5 @@ private slots:
 private:
     QTimer refilter_timer_;
     Prefs const& prefs_;
+    tr::app::TorrentFilter filter_;
 };

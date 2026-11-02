@@ -9,6 +9,7 @@
 #include <compare>
 #include <optional>
 #include <string>
+#include <string_view>
 
 #include <QtCore/QString>
 
@@ -27,6 +28,7 @@ using tr::app::Torrent;
 
 TorrentFilter::TorrentFilter(Prefs const& prefs)
     : prefs_{ prefs }
+    , filter_{ prefs, [](std::string_view const text) { return Utils::qstringFromUtf8(text).toCaseFolded().toStdString(); } }
 {
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &TorrentFilter::onPrefChanged);
     connect(&refilter_timer_, &QTimer::timeout, this, &TorrentFilter::refilter);
@@ -112,23 +114,7 @@ bool TorrentFilter::lessThan(QModelIndex const& left, QModelIndex const& right) 
 bool TorrentFilter::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
 {
     auto const index = sourceModel()->index(source_row, 0, source_parent);
-    auto const& tor = *index.data(TorrentModel::TorrentRole).value<Torrent const*>();
-
-    if (!should_show_torrent(tor, prefs_.get<ShowMode>(TR_KEY_show_mode))) {
-        return false;
-    }
-
-    if (auto const sitename = prefs_.get<std::string>(TR_KEY_filter_trackers);
-        !std::empty(sitename) && !tor.includes_tracker(sitename)) {
-        return false;
-    }
-
-    if (auto const text = prefs_.get<QString>(TR_KEY_filter_text); !text.isEmpty()) {
-        return index.data(Qt::DisplayRole).toString().contains(text, Qt::CaseInsensitive) ||
-            Utils::qstringFromUtf8(tor.hash_string()).contains(text, Qt::CaseInsensitive);
-    }
-
-    return true;
+    return filter_.matches(*index.data(TorrentModel::TorrentRole).value<Torrent const*>());
 }
 
 std::array<int, ShowModeCount> TorrentFilter::countTorrentsPerMode() const
