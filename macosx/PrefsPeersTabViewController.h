@@ -10,6 +10,7 @@ struct tr_session;
 
 - (instancetype)initWithHandle:(tr_session*)handle;
 
+- (void)configureEncryptionMode;
 - (void)updateBlocklistButton;
 - (void)updateBlocklistFields;
 

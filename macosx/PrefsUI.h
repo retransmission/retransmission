@@ -18,6 +18,12 @@
 
 + (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max;
 
++ (NSTextField*)decimalInputFieldWithWidth:(CGFloat)width
+                                   minimum:(NSInteger)min
+                                   maximum:(NSInteger)max
+                                 minDigits:(NSUInteger)minDigits
+                                 maxDigits:(NSUInteger)maxDigits;
+
 /// Views modifiers
 /// Wrapped into stack with default padding.
 + (NSView*)indentedView:(NSView*)view;

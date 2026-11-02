@@ -158,6 +158,12 @@ target_sources(${TR_NAME}-mac
         PrefsPeersTabViewController.mm
         PrefsRemoteTabViewController.h
         PrefsRemoteTabViewController.mm
+        PrefsTransfersAddingViewController.h
+        PrefsTransfersAddingViewController.mm
+        PrefsTransfersManagementViewController.h
+        PrefsTransfersManagementViewController.mm
+        PrefsTransfersTabViewController.h
+        PrefsTransfersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
         PrefsWindow.h
@@ -375,6 +381,7 @@ set(LANG_STRINGS_FILES
     PreferencesNetworkTab.strings
     PreferencesPeersTab.strings
     PreferencesRemoteTab.strings
+    PreferencesTransfersTab.strings
     TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
