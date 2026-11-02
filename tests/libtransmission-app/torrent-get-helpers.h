@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include <concepts>
+#include <cstdint>
+#include <string_view>
 #include <utility>
 
 #include <libtransmission/quark.h>
@@ -22,13 +25,28 @@ template<typename Val>
 }
 
 // an object-format row: its `id`, then `keyvals`
-template<typename... KeyVals>
+template<std::same_as<KeyVal>... KeyVals>
 [[nodiscard]] tr_variant::Map make_row(tr_torrent_id_t const id, KeyVals... keyvals)
 {
     auto row = tr_variant::Map{ 1U + sizeof...(keyvals) };
     row.try_emplace(TR_KEY_id, id);
     (row.insert_or_assign(keyvals.first, std::move(keyvals.second)), ...);
     return row;
+}
+
+// a `trackers` entry; `Torrent` works out an omitted `sitename` from `announce`
+[[nodiscard]] inline tr_variant::Map make_tracker(
+    std::string_view const announce,
+    std::string_view const sitename = {},
+    int64_t const tier = 0)
+{
+    auto tracker = tr_variant::Map{ 3U };
+    tracker.try_emplace(TR_KEY_announce, announce);
+    if (!std::empty(sitename)) {
+        tracker.try_emplace(TR_KEY_sitename, sitename);
+    }
+    tracker.try_emplace(TR_KEY_tier, tier);
+    return tracker;
 }
 
 template<typename... Items>
