@@ -1938,16 +1938,15 @@ std::vector<tr_peer_stat> tr_peerMgrPeerStats(tr_torrent const* tor)
     TR_ASSERT(tr_isTorrent(tor));
     TR_ASSERT(tor->swarm->manager != nullptr);
 
-    auto const peers = tor->swarm->peers;
-    auto ret = std::vector<tr_peer_stat>(std::size(peers));
-
     auto const lock = tor->unique_lock();
+    auto const& peers = tor->swarm->peers;
     auto const now = tr_time();
     auto const now_msec = tr_time_msec();
-    std::ranges::transform(peers, std::data(ret), [&now, &now_msec](auto const& peer) {
+
+    auto ret = std::vector<tr_peer_stat>(std::size(peers));
+    std::ranges::transform(peers, std::data(ret), [now, now_msec](auto const& peer) {
         return peer_stat_helpers::get_peer_stats(peer.get(), now, now_msec);
     });
-
     return ret;
 }
 
