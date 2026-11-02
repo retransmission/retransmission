@@ -90,6 +90,46 @@ public:
     // Fetches `keys` for `ids`. Sends nothing when `ids` is empty.
     void refresh_torrents(Ids ids, TorrentKeySet keys);
 
+    // --- verbs. Each sends its request, then re-fetches `MainStats` for the same
+    // ids so `torrents()` shows the new state without waiting for a poll. A verb
+    // given no ids sends nothing: "every torrent" is the explicit `_all` call.
+
+    void start_torrents(Ids ids);
+    void start_torrents_now(Ids ids);
+    void stop_torrents(Ids ids);
+    void start_all_torrents();
+    void stop_all_torrents();
+    void verify_torrents(Ids ids);
+    void reannounce_torrents(Ids ids);
+    void queue_move_top(Ids ids);
+    void queue_move_up(Ids ids);
+    void queue_move_down(Ids ids);
+    void queue_move_bottom(Ids ids);
+
+    // Removes `ids` from the session, with their data when `delete_local_data`. On
+    // success the rows leave `torrents()` at once, as if a poll had named them
+    // `removed`; nothing is fetched. After a failure the next poll decides.
+    void remove_torrents(Ids ids, bool delete_local_data);
+
+    // Moves `ids` to `location`, moving their files when `move`. No re-fetch: the
+    // session moves asynchronously, so a reply-time fetch would still carry the old
+    // `download_dir`. The move marks the torrent edited, and `edited` fetches `MainAll`.
+    void set_torrent_location(Ids ids, std::string location, bool move);
+
+    // Renames `old_path`, relative to the torrent root, to `new_name`, then
+    // re-fetches `Rename`. On failure fires `torrent_rename_failed` instead.
+    void rename_torrent_path(Ids ids, std::string old_path, std::string new_name);
+
+    struct RenameError {
+        Ids ids;
+        std::string old_path;
+        std::string new_name;
+        std::string errmsg; // the session's message, or the transport's
+        bool network_error = false; // the user can't fix a network error by editing the path
+    };
+
+    sigslot::signal<RenameError const&> torrent_rename_failed;
+
     // --- session
 
     // keep the machine awake: a local-filesystem session with active transfers
@@ -208,6 +248,12 @@ private:
 
     // `torrent_get` for `scope`, applied to `torrents_`; `on_done` runs after the apply
     void fetch_torrents(TorrentKeySet keys, TorrentScope const& scope, RpcClient::ResponseFunc on_done = {});
+
+    // sends `method` for `scope`, then fetches `MainStats` for it
+    void send_torrent_verb(tr_quark method, TorrentScope scope);
+
+    // sends `method` for `ids`, as above; sends nothing when `ids` is empty
+    void send_torrent_verb(tr_quark method, Ids ids);
 
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);

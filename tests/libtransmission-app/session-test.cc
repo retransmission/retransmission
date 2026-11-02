@@ -5,15 +5,18 @@
 
 #include <atomic>
 #include <chrono>
+#include <cstddef> // size_t
 #include <cstdint>
 #include <ctime> // std::time()
 #include <functional>
 #include <future>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
 #include <tuple> // std::ignore
+#include <type_traits> // std::invoke_result_t
 #include <vector>
 
 #include <fmt/format.h>
@@ -553,25 +556,77 @@ protected:
         ASSERT_TRUE(loop_.pump_until([&answered] { return answered; }));
     }
 
-    // Asks the session whether it still has `id`: tr_torrentRemove() finishes on the session thread.
-    [[nodiscard]] bool session_has(tr_torrent_id_t const id)
+    // Asks the session for `id`'s `key` and returns `read(row)`, where `row` is
+    // nullptr when the session lacks `id`. Some changes, e.g. tr_torrentRemove(),
+    // finish on the session thread, so the session is the one to ask.
+    template<typename Read>
+    [[nodiscard]] auto read_session_row(tr_torrent_id_t const id, tr_quark const key, Read read)
     {
         auto ids = tr_variant::Vector{};
         ids.emplace_back(id);
         auto fields = tr_variant::Vector{};
-        fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_id));
+        fields.emplace_back(tr_variant::unmanaged_string(key));
         auto params = tr_variant::Map{ 2U };
         params.try_emplace(TR_KEY_ids, std::move(ids));
         params.try_emplace(TR_KEY_fields, std::move(fields));
 
-        auto promise = std::promise<bool>{};
+        auto promise = std::promise<std::invoke_result_t<Read, tr_variant::Map const*>>{};
         auto future = promise.get_future();
-        rpc_.exec(TR_KEY_torrent_get, std::move(params), [&promise](RpcResponse const& response) {
+        rpc_.exec(TR_KEY_torrent_get, std::move(params), [&promise, &read](RpcResponse const& response) {
             auto const* const args = response.args ? response.args->get_if<tr_variant::Map>() : nullptr;
             auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
-            promise.set_value(torrents != nullptr && !std::empty(*torrents));
+            auto const* const row = torrents != nullptr && !std::empty(*torrents) ?
+                torrents->front().get_if<tr_variant::Map>() :
+                nullptr;
+            promise.set_value(read(row));
         });
         return loop_.pump_until_ready(future);
+    }
+
+    [[nodiscard]] bool session_has(tr_torrent_id_t const id)
+    {
+        return read_session_row(id, TR_KEY_id, [](tr_variant::Map const* const row) { return row != nullptr; });
+    }
+
+    [[nodiscard]] std::string session_download_dir(tr_torrent_id_t const id)
+    {
+        return read_session_row(id, TR_KEY_download_dir, [](tr_variant::Map const* const row) {
+            auto const dir = row != nullptr ? row->value_if<std::string_view>(TR_KEY_download_dir) : std::nullopt;
+            return std::string{ dir.value_or(""sv) };
+        });
+    }
+
+    [[nodiscard]] int64_t session_status(tr_torrent_id_t const id)
+    {
+        return read_session_row(id, TR_KEY_status, [](tr_variant::Map const* const row) {
+            return row != nullptr ? row->value_if<int64_t>(TR_KEY_status).value_or(-1) : -1;
+        });
+    }
+
+    // Gives the list a row for `id` that predates every edit. Seeded by hand: `edit_date`
+    // has one-second resolution, so a fetch just before an edit could carry the same date.
+    void seed_unedited_row(tr_torrent_id_t const id)
+    {
+        auto header = tr_variant::Vector{};
+        header.emplace_back(tr_variant::unmanaged_string(TR_KEY_id));
+        header.emplace_back(tr_variant::unmanaged_string(TR_KEY_edit_date));
+        header.emplace_back(tr_variant::unmanaged_string(TR_KEY_name));
+        auto row = tr_variant::Vector{};
+        row.emplace_back(id);
+        row.emplace_back(0);
+        row.emplace_back("unedited"sv);
+        auto table = tr_variant::Vector{};
+        table.emplace_back(std::move(header));
+        table.emplace_back(std::move(row));
+        auto args = tr_variant::Map{ 1U };
+        args.try_emplace(TR_KEY_torrents, std::move(table));
+        session_.torrents().update(args, TorrentList::Coverage::Partial, std::time(nullptr));
+    }
+
+    [[nodiscard]] tr_torrent_activity activity(tr_torrent_id_t const id) const
+    {
+        auto const* const tor = session_.torrents().find(id);
+        return tor != nullptr ? tor->activity() : TR_STATUS_STOPPED;
     }
 
     [[nodiscard]] bool has_name(tr_torrent_id_t const id) const
@@ -655,22 +710,8 @@ TEST_F(AppSessionRpcTest, anEditedTorrentGetsMainAll)
     params.try_emplace(TR_KEY_labels, std::move(labels));
     rpc_.exec(TR_KEY_torrent_set, std::move(params), {});
 
-    // The list's copy predates that edit. Seeded by hand: `edit_date` has one-second
-    // resolution, so a fetch just before the edit could carry the same date.
-    auto header = tr_variant::Vector{};
-    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_id));
-    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_edit_date));
-    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_name));
-    auto row = tr_variant::Vector{};
-    row.emplace_back(id);
-    row.emplace_back(0);
-    row.emplace_back("unlabeled"sv);
-    auto table = tr_variant::Vector{};
-    table.emplace_back(std::move(header));
-    table.emplace_back(std::move(row));
-    auto args = tr_variant::Map{ 1U };
-    args.try_emplace(TR_KEY_torrents, std::move(table));
-    session_.torrents().update(args, TorrentList::Coverage::Partial, std::time(nullptr));
+    // the list's copy predates that edit
+    seed_unedited_row(id);
     ASSERT_TRUE(has_name(id));
     ASSERT_TRUE(std::empty(session_.torrents().find(id)->labels()));
 
@@ -717,6 +758,194 @@ TEST_F(AppSessionRpcTest, aTorrentReplyToADestroyedSessionDoesNothing)
 
     // the reply runs against the dead Session's token
     pump_replies();
+}
+
+TEST_F(AppSessionRpcTest, verbsWithNoIdsSendNothing)
+{
+    for (
+        auto const verb : { &Session::start_torrents,
+                            &Session::start_torrents_now,
+                            &Session::stop_torrents,
+                            &Session::verify_torrents,
+                            &Session::reannounce_torrents,
+                            &Session::queue_move_top,
+                            &Session::queue_move_up,
+                            &Session::queue_move_down,
+                            &Session::queue_move_bottom }) {
+        (session_.*verb)({});
+    }
+    session_.remove_torrents({}, false);
+    session_.set_torrent_location({}, sandbox_dir(), false);
+    session_.rename_torrent_path({}, "old", "new");
+
+    EXPECT_TRUE(loop_.quiet_for(50ms));
+}
+
+// No poller exists, so only the verb's own re-fetch can update the list.
+TEST_F(AppSessionRpcTest, startReFetchesItsTorrents)
+{
+    // a new torrent may wait to verify; start from one that is plainly stopped
+    auto const id = add_torrent(Debian);
+    ASSERT_TRUE(loop_.pump_until([this, id] { return session_status(id) == TR_STATUS_STOPPED; }));
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this, id] { return has_name(id); }));
+    ASSERT_EQ(TR_STATUS_STOPPED, activity(id));
+
+    session_.start_torrents({ id });
+    EXPECT_TRUE(loop_.pump_until([this, id] { return activity(id) != TR_STATUS_STOPPED; }));
+}
+
+// The list starts empty each time, so the row can only come from the verb's re-fetch.
+TEST_F(AppSessionRpcTest, everyVerbReFetchesItsTorrents)
+{
+    auto const id = add_torrent(Debian);
+
+    for (
+        auto const verb : { &Session::stop_torrents,
+                            &Session::verify_torrents,
+                            &Session::reannounce_torrents,
+                            &Session::queue_move_top,
+                            &Session::queue_move_up,
+                            &Session::queue_move_down,
+                            &Session::queue_move_bottom,
+                            &Session::start_torrents_now }) {
+        session_.torrents().clear();
+        (session_.*verb)({ id, id });
+        // the stats-only row needs info, so a `MainAll` fetch follows; let it land before the next clear()
+        EXPECT_TRUE(loop_.pump_until([this, id] { return has_name(id); }));
+    }
+}
+
+TEST_F(AppSessionRpcTest, startAllReachesEveryTorrent)
+{
+    auto const id1 = add_torrent(Debian);
+    auto const id2 = add_torrent(Arch);
+    ASSERT_TRUE(loop_.pump_until(
+        [this, id1, id2] { return session_status(id1) == TR_STATUS_STOPPED && session_status(id2) == TR_STATUS_STOPPED; }));
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+    ASSERT_EQ(TR_STATUS_STOPPED, activity(id1));
+    ASSERT_EQ(TR_STATUS_STOPPED, activity(id2));
+
+    session_.start_all_torrents();
+    EXPECT_TRUE(loop_.pump_until(
+        [this, id1, id2] { return activity(id1) != TR_STATUS_STOPPED && activity(id2) != TR_STATUS_STOPPED; }));
+}
+
+// The `_all` verbs re-fetch every torrent, a complete fetch, so the list also learns of removals.
+TEST_F(AppSessionRpcTest, theAllVerbsDropTheTorrentsTheSessionLacks)
+{
+    auto const kept = add_torrent(Debian);
+
+    for (auto const verb : { &Session::start_all_torrents, &Session::stop_all_torrents }) {
+        auto const gone = add_torrent(Arch);
+        session_.refresh_all_torrents(TorrentKeySet::MainAll);
+        ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+
+        tr_torrentRemove(tr_torrentFindFromId(core_, gone), false);
+        ASSERT_TRUE(loop_.pump_until([this, gone] { return !session_has(gone); }));
+
+        (session_.*verb)();
+        EXPECT_TRUE(loop_.pump_until([this, gone] { return session_.torrents().find(gone) == nullptr; }));
+        EXPECT_NE(nullptr, session_.torrents().find(kept));
+    }
+}
+
+// A complete re-fetch answered after stop() is a network error, so it removes nothing.
+TEST_F(AppSessionRpcTest, startAllAfterStopRemovesNothing)
+{
+    auto const id2 = add_torrent(Arch);
+    std::ignore = add_torrent(Debian);
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+
+    tr_torrentRemove(tr_torrentFindFromId(core_, id2), false);
+    ASSERT_TRUE(loop_.pump_until([this, id2] { return !session_has(id2); }));
+
+    // the start's reply is the only one in flight; running it sends the re-fetch
+    session_.start_all_torrents();
+    ASSERT_TRUE(loop_.pump_one(10s));
+    rpc_.stop();
+
+    std::ignore = loop_.quiet_for(50ms);
+    EXPECT_EQ(2U, session_.torrents().size());
+}
+
+TEST_F(AppSessionRpcTest, queueMoveReFetchesThePosition)
+{
+    auto const id1 = add_torrent(Debian);
+    auto const id2 = add_torrent(Arch);
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+    ASSERT_LT(session_.torrents().find(id1)->queue_position(), session_.torrents().find(id2)->queue_position());
+
+    session_.queue_move_top({ id2 });
+    EXPECT_TRUE(loop_.pump_until([this, id2] { return session_.torrents().find(id2)->queue_position() == 0U; }));
+}
+
+TEST_F(AppSessionRpcTest, removeDropsTheRowsAtOnce)
+{
+    auto const id1 = add_torrent(Debian);
+    auto const id2 = add_torrent(Arch);
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+
+    session_.remove_torrents({ id2 }, false);
+    EXPECT_TRUE(loop_.pump_until([this, id2] { return session_.torrents().find(id2) == nullptr; }));
+    EXPECT_NE(nullptr, session_.torrents().find(id1));
+    EXPECT_FALSE(session_has(id2));
+}
+
+// The session moves asynchronously and marks the torrent edited when done; `edited` fetches `MainAll`.
+TEST_F(AppSessionRpcTest, setLocationReachesTheListThroughEdited)
+{
+    auto const id = add_torrent(Debian);
+    seed_unedited_row(id);
+
+    auto const location = fmt::format("{:s}/b", sandbox_dir());
+    session_.set_torrent_location({ id }, location, false);
+    ASSERT_TRUE(loop_.pump_until([this, id, &location] { return session_download_dir(id) == location; }));
+    EXPECT_NE(location, session_.torrents().find(id)->download_dir().sv());
+
+    // `download_dir` is in `MainAll`, not `MainStats`
+    session_.refresh_torrents({ id }, TorrentKeySet::MainStats);
+    EXPECT_TRUE(loop_.pump_until([this, id, &location] { return session_.torrents().find(id)->download_dir() == location; }));
+}
+
+TEST_F(AppSessionRpcTest, renameFailureFiresTheSignal)
+{
+    auto const id = add_torrent(Debian);
+
+    auto failures = std::vector<Session::RenameError>{};
+    auto const tag = session_.torrent_rename_failed.connect_scoped(
+        [&failures](Session::RenameError const& error) { failures.push_back(error); });
+
+    session_.rename_torrent_path({ id }, "no-such", "x");
+    ASSERT_TRUE(loop_.pump_until([&failures] { return !std::empty(failures); }));
+    EXPECT_TRUE(loop_.quiet_for(50ms));
+    ASSERT_EQ(1U, std::size(failures));
+    auto const& failure = failures.front();
+    EXPECT_EQ(Session::Ids{ id }, failure.ids);
+    EXPECT_EQ("no-such", failure.old_path);
+    EXPECT_EQ("x", failure.new_name);
+    EXPECT_FALSE(std::empty(failure.errmsg));
+    EXPECT_FALSE(failure.network_error);
+    EXPECT_EQ(nullptr, session_.torrents().find(id));
+}
+
+// `name` is in `Rename` but not `MainStats`, and the list's row is seeded, so only the re-fetch updates it.
+TEST_F(AppSessionRpcTest, renameReFetchesTheTorrent)
+{
+    auto const id = add_torrent(Debian);
+    seed_unedited_row(id);
+
+    auto failures = size_t{};
+    auto const tag = session_.torrent_rename_failed.connect_scoped(
+        [&failures](Session::RenameError const& /*error*/) { ++failures; });
+
+    session_.rename_torrent_path({ id }, "debian-11.2.0-amd64-DVD-1.iso", "renamed.iso");
+    EXPECT_TRUE(loop_.pump_until([this, id] { return session_.torrents().find(id)->name() == "renamed.iso"; }));
+    EXPECT_EQ(0U, failures);
 }
 
 } // namespace

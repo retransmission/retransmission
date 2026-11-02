@@ -29,6 +29,7 @@
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
+#include "libtransmission-app/rpc-queue.h"
 #include "libtransmission-app/torrent-keys.h"
 #include "libtransmission-app/torrent-list.h"
 
@@ -167,6 +168,151 @@ void Session::on_torrents_changed(TorrentList::Changes const& changes)
     if (auto const scope = TorrentScope::of(std::move(ids))) {
         fetch_torrents(TorrentKeySet::MainAll, *scope);
     }
+}
+
+// --- verbs
+
+void Session::send_torrent_verb(tr_quark const method, TorrentScope scope)
+{
+    auto params = tr_variant::Map{ 1U };
+    scope.add_to(params);
+
+    RpcQueue::create()
+        .add([this, method, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+            send(method, std::move(params), std::move(done));
+        })
+        .add([this, scope = std::move(scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::MainStats, scope, std::move(done));
+        })
+        .run();
+}
+
+void Session::send_torrent_verb(tr_quark const method, Ids ids)
+{
+    if (auto scope = TorrentScope::of(std::move(ids))) {
+        send_torrent_verb(method, std::move(*scope));
+    }
+}
+
+void Session::start_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_start, std::move(ids));
+}
+
+void Session::start_torrents_now(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_start_now, std::move(ids));
+}
+
+void Session::stop_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_stop, std::move(ids));
+}
+
+void Session::start_all_torrents()
+{
+    send_torrent_verb(TR_KEY_torrent_start, TorrentScope::all());
+}
+
+void Session::stop_all_torrents()
+{
+    send_torrent_verb(TR_KEY_torrent_stop, TorrentScope::all());
+}
+
+void Session::verify_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_verify, std::move(ids));
+}
+
+void Session::reannounce_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_reannounce, std::move(ids));
+}
+
+void Session::queue_move_top(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_top, std::move(ids));
+}
+
+void Session::queue_move_up(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_up, std::move(ids));
+}
+
+void Session::queue_move_down(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_down, std::move(ids));
+}
+
+void Session::queue_move_bottom(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_bottom, std::move(ids));
+}
+
+void Session::remove_torrents(Ids ids, bool const delete_local_data)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 2U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_delete_local_data, delete_local_data);
+    send(TR_KEY_torrent_remove, std::move(params), [this, ids = std::move(scope->ids)](RpcResponse const& response) {
+        if (response.success) {
+            torrents_.remove(ids); // the rows go now rather than on the next poll
+        }
+    });
+}
+
+void Session::set_torrent_location(Ids ids, std::string location, bool const move)
+{
+    auto const scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 3U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_location, std::move(location));
+    params.try_emplace(TR_KEY_move, move);
+    send(TR_KEY_torrent_set_location, std::move(params));
+}
+
+void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new_name)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 3U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_path, old_path);
+    params.try_emplace(TR_KEY_name, new_name);
+    auto failure = RenameError{
+        .ids = scope->ids,
+        .old_path = std::move(old_path),
+        .new_name = std::move(new_name),
+        .errmsg = {},
+        .network_error = false,
+    };
+
+    RpcQueue::create()
+        .add(
+            [this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+                send(TR_KEY_torrent_rename_path, std::move(params), std::move(done));
+            },
+            [this, failure = std::move(failure)](RpcResponse const& response) mutable {
+                failure.errmsg = response.errmsg;
+                failure.network_error = response.network_error;
+                torrent_rename_failed(failure);
+            })
+        .add([this, scope = std::move(*scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::Rename, scope, std::move(done));
+        })
+        .run();
 }
 
 // --- session

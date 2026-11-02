@@ -326,6 +326,22 @@ void TorrentList::update(tr_variant::Map const& args, Coverage const coverage, t
     updating_ = false;
 }
 
+void TorrentList::remove(Ids ids)
+{
+    TR_ASSERT(!updating_);
+
+    normalize(ids);
+    std::erase_if(ids, [this](tr_torrent_id_t const id) { return find(id) == nullptr; });
+    if (std::empty(ids)) {
+        return;
+    }
+
+    updating_ = true;
+    erase_runs(ids);
+    report({}, std::move(ids), {}); // nothing seen, so nothing for `now` to date
+    updating_ = false;
+}
+
 void TorrentList::normalize(Ids& ids)
 {
     std::ranges::sort(ids);
