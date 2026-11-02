@@ -435,18 +435,9 @@ namespace
         "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
         // clang-format on
     });
-    if (std::ranges::find(ReservedNames, in_upper_sv) != std::ranges::end(ReservedNames)) {
-        return true;
-    }
-
-    static auto constexpr ReservedPrefixes = std::to_array<std::string_view>({
-        // clang-format off: related names on the same line
-        "AUX."sv,  "CON."sv,  "NUL."sv,  "PRN."sv,
-        "COM1."sv, "COM2."sv, "COM3."sv, "COM4."sv, "COM5."sv, "COM6."sv, "COM7."sv, "COM8."sv, "COM9."sv,
-        "LPT1."sv, "LPT2."sv, "LPT3."sv, "LPT4."sv, "LPT5."sv, "LPT6."sv, "LPT7."sv, "LPT8."sv, "LPT9."sv,
-        // clang-format on
+    return std::ranges::any_of(ReservedNames, [in_upper_sv](auto const& name) {
+        return in_upper_sv.starts_with(name) && (in_upper_sv.size() == name.size() || in_upper_sv[name.size()] == '.');
     });
-    return std::ranges::any_of(ReservedPrefixes, [in_upper_sv](auto const& prefix) { return in_upper_sv.starts_with(prefix); });
 }
 
 [[nodiscard]] bool is_reserved_file(std::string_view in, bool os_specific) noexcept
@@ -506,43 +497,30 @@ namespace
 #endif
 }
 
+} // namespace
+
 // https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
-void append_sanitized_component(std::string_view in, std::string& out, bool os_specific)
+void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
 {
 #ifdef _WIN32
     // strip surrounding spaces and trailing periods
-    auto const it = std::ranges::find_if_not(in, [](unsigned char ch) { return std::isspace(ch); });
-    in.remove_prefix(std::ranges::distance(std::ranges::begin(in), it));
+    auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
+    path.remove_prefix(std::ranges::distance(std::ranges::begin(path), it));
 
-    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(in), std::ranges::rend(in), [](unsigned char ch) {
+    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
         return ch == '.' || std::isspace(ch);
     });
-    in.remove_suffix(std::ranges::distance(std::ranges::rbegin(in), rit));
+    path.remove_suffix(std::ranges::distance(std::ranges::rbegin(path), rit));
 #endif
 
     // replace reserved filenames with an underscore
-    if (is_reserved_file(in, os_specific)) {
-        out += '_';
+    if (is_reserved_file(path, os_specific)) {
+        append_me += '_';
     }
 
     // replace reserved characters with an underscore
     auto const add_char = [os_specific](auto ch) {
         return is_reserved_char(ch, os_specific) ? '_' : ch;
     };
-    std::ranges::transform(in, std::back_inserter(out), add_char);
-}
-
-} // namespace
-
-void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
-{
-    auto segment = std::string_view{};
-    while (tr_strv_sep(&path, &segment, '/')) {
-        append_sanitized_component(segment, append_me, os_specific);
-        append_me += '/';
-    }
-
-    if (auto const n = std::size(append_me); n > 0) {
-        append_me.resize(n - 1); // remove trailing slash
-    }
+    std::ranges::transform(path, std::back_inserter(append_me), add_char);
 }
