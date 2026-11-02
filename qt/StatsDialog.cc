@@ -5,17 +5,10 @@
 
 #include "StatsDialog.h"
 
-#include <QtCore/QTimer>
-
 #include "ColumnResizer.h"
 #include "Formatter.h"
 #include "Session.h"
 #include "TrFormat.h"
-
-namespace
-{
-int constexpr RefreshIntervalMsec = 15 * 1000;
-}
 
 StatsDialog::StatsDialog(Session& session, QWidget* parent)
     : BaseDialog{ parent }
@@ -28,22 +21,9 @@ StatsDialog::StatsDialog(Session& session, QWidget* parent)
     cr->addLayout(ui_.totalSectionLayout);
     cr->update();
 
-    timer_.setSingleShot(false);
-    connect(&timer_, &QTimer::timeout, this, [this] { session_.refresh_session_stats(); });
+    // the session poll refreshes the stats every tick
     stats_connection_ = session_.stats_updated.connect_scoped(&StatsDialog::updateStats, this);
     updateStats();
-    session_.refresh_session_stats();
-}
-
-void StatsDialog::setVisible(bool visible)
-{
-    timer_.stop();
-
-    if (visible) {
-        timer_.start(RefreshIntervalMsec);
-    }
-
-    BaseDialog::setVisible(visible);
 }
 
 void StatsDialog::updateStats()

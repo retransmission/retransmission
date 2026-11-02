@@ -120,7 +120,6 @@ Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
-    session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refresh_session_info(); });
     rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
@@ -150,6 +149,7 @@ void Session::stop()
         session_ = nullptr;
     }
 
+    torrents().clear();
     clear_session_info();
     set_session_type({});
     emit stopped();
@@ -219,46 +219,6 @@ void Session::onRenameFailed(RenameError const& error) const
     auto* d = new QMessageBox{ QMessageBox::Information, title, text, QMessageBox::Close, QApplication::activeWindow() };
     QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
     d->show();
-}
-
-void Session::refreshActiveTorrents()
-{
-    refresh_active_torrents();
-}
-
-void Session::refreshAllTorrents()
-{
-    refresh_all_torrents();
-}
-
-void Session::initTorrents()
-{
-    refresh_all_torrents(tr::app::TorrentKeySet::MainAll);
-}
-
-// Asks for the blocklist fields only.
-// A full session_get reply could overwrite prefs that the user changed while it was in flight.
-void Session::refreshBlocklistInfo()
-{
-    auto fields = tr_variant::Vector{};
-    fields.reserve(2U);
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_blocklist_date));
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_blocklist_size));
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
-
-    RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_session_get, std::move(params), std::move(done));
-        })
-        .add([this](RpcResponse const& r) {
-            // not import_session_info(), which reads the session type from the session id this reply lacks
-            if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
-                import_session_settings(*map);
-                session_updated();
-            }
-        })
-        .run();
 }
 
 void Session::updateBlocklist()

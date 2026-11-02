@@ -85,7 +85,7 @@ public:
     // Fetches `keys` for every torrent into `torrents()`. A complete fetch, so the
     // torrents the reply omits leave the list. `MainStats` is the periodic poll;
     // `MainAll` rebuilds the list, e.g. after connecting.
-    void refresh_all_torrents(TorrentKeySet keys = TorrentKeySet::MainStats);
+    void refresh_all_torrents(TorrentKeySet keys);
 
     // Fetches `MainStats` for the torrents active in the last minute, plus the
     // session's `removed` list. The poll between full refreshes.
@@ -265,10 +265,6 @@ public:
     // The embedded session's settings, e.g. for `Prefs::save()`;
     // nullopt when there is no embedded session.
     [[nodiscard]] std::optional<tr::Settings> embedded_settings() const;
-
-    // Fired after syncing a pref whose change invalidates other session info,
-    // e.g. changing `download_dir` changes `session_get`'s freespace argument.
-    sigslot::signal<> session_refresh_needed;
 
 protected:
     void set_session_type(std::optional<Type> type);

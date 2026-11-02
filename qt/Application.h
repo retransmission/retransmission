@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <array>
-#include <ctime>
 #include <memory>
 #include <optional>
 #include <string>
@@ -15,7 +13,6 @@
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QPointer>
-#include <QtCore/QTimer>
 #include <QtCore/QTranslator>
 #include <QtCore/QVariant>
 
@@ -31,7 +28,13 @@
 
 #include "AddData.h"
 #include "Prefs.h"
+#include "Timer.h"
 #include "Typedefs.h"
+
+namespace tr::app
+{
+class SessionPoller;
+}
 
 namespace tr::interop
 {
@@ -105,7 +108,6 @@ private slots:
     void onTorrentsAdded(torrent_ids_t const& torrent_ids) const;
     void onTorrentsCompleted(torrent_ids_t const& torrent_ids) const;
     void refreshPref(tr_quark key) const;
-    void refreshTorrents();
     void saveGeometry() const;
 #ifdef QT_DBUS_LIB
     void onNotificationActionInvoked(quint32 notification_id, QString action_key);
@@ -141,14 +143,12 @@ private:
     Prefs& prefs_;
     QString const config_dir_;
 
+    QtTimerMaker timer_maker_;
     std::unique_ptr<Session> session_;
+    std::unique_ptr<tr::app::SessionPoller> poller_;
     std::unique_ptr<TorrentModel> model_;
     std::unique_ptr<MainWindow> window_;
     std::unique_ptr<WatchDir> watch_dir_;
-    QTimer model_timer_;
-    QTimer stats_timer_;
-    QTimer session_timer_;
-    time_t last_full_update_time_ = {};
     QTranslator qt_translator_;
     QTranslator app_translator_;
 

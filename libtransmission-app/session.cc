@@ -498,10 +498,6 @@ void Session::sync_pref_to_session(tr_quark const key)
                     session_sets_in_flight_.erase(iter);
                 }
             });
-
-            if (key == TR_KEY_download_dir) {
-                session_refresh_needed();
-            }
         }
         break;
     }

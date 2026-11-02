@@ -7,8 +7,6 @@
 
 #include <sigslot/signal.hpp>
 
-#include <QtCore/QTimer>
-
 #include "BaseDialog.h"
 #include "ui_StatsDialog.h"
 
@@ -26,17 +24,12 @@ public:
     StatsDialog& operator=(StatsDialog&&) = delete;
     StatsDialog& operator=(StatsDialog const&) = delete;
 
-    // QWidget
-    void setVisible(bool visible) override;
-
 private:
     void updateStats();
 
     Session& session_;
 
     Ui::StatsDialog ui_ = {};
-
-    QTimer timer_;
 
     sigslot::scoped_connection stats_connection_;
 };

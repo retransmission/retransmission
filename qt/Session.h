@@ -61,20 +61,16 @@ public:
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
-    void initTorrents();
-    void refreshActiveTorrents();
-    void refreshAllTorrents();
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
 
 public slots:
     void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
-    void refreshBlocklistInfo();
 
 signals:
     void sourceChanged();
 
-    // stop() disconnected from the session and forgot its info.
+    // stop() disconnected from the session and forgot its info and torrents.
     void stopped();
 
     // The session found its config dir held by another and started nothing.
@@ -104,8 +100,6 @@ private:
     tr_session* session_ = {};
     RpcClient& rpc_;
 
-    // changing some prefs (eg download_dir) invalidates cached session info
-    sigslot::scoped_connection session_refresh_tag_;
     sigslot::scoped_connection rename_failed_connection_;
 
     std::map<QString, QString> duplicates_;

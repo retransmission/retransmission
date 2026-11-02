@@ -34,6 +34,7 @@
 #include <libtransmission/values.h>
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/startup-coordinator.h>
 #include <libtransmission-app/torrent-list.h>
 
@@ -60,10 +61,6 @@ auto const FDONotificationsPath = QStringLiteral("/org/freedesktop/Notifications
 auto const FDONotificationsInterfaceName = QStringLiteral("org.freedesktop.Notifications");
 #endif
 // NOLINTEND(cert-err58-cpp)
-
-auto constexpr StatsRefreshIntervalMsec = 3000;
-auto constexpr SessionRefreshIntervalMsec = 3000;
-auto constexpr ModelRefreshIntervalMsec = 3000;
 
 [[nodiscard]] bool loadTranslation(
     QTranslator& translator,
@@ -171,6 +168,7 @@ Application::Application(
 #endif
 
     session_ = std::make_unique<Session>(config_dir, prefs_, rpc);
+    poller_ = std::make_unique<tr::app::SessionPoller>(*session_, timer_maker_);
     model_ = std::make_unique<TorrentModel>(session_->torrents());
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
     watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
@@ -200,23 +198,7 @@ Application::Application(
         refreshPref(key);
     }
 
-    QTimer* timer = &model_timer_;
-    connect(timer, &QTimer::timeout, this, &Application::refreshTorrents);
-    timer->setSingleShot(false);
-    timer->setInterval(ModelRefreshIntervalMsec);
-    timer->start();
-
-    timer = &stats_timer_;
-    connect(timer, &QTimer::timeout, this, [this] { session_->refresh_session_stats(); });
-    timer->setSingleShot(false);
-    timer->setInterval(StatsRefreshIntervalMsec);
-    timer->start();
-
-    timer = &session_timer_;
-    connect(timer, &QTimer::timeout, this, [this] { session_->refresh_session_info(); });
-    timer->setSingleShot(false);
-    timer->setInterval(SessionRefreshIntervalMsec);
-    timer->start();
+    poller_->start();
 
     if (!first_time) {
         session_->restart();
@@ -406,24 +388,7 @@ void Application::onConfigDirContended()
 
 void Application::onSessionSourceChanged() const
 {
-    session_->initTorrents();
-    session_->refresh_session_stats();
-    session_->refresh_session_info();
-}
-
-void Application::refreshTorrents()
-{
-    // usually we just poll the torrents that have shown recent activity,
-    // but we also periodically ask for updates on the others to ensure
-    // nothing's falling through the cracks.
-    time_t const now = time(nullptr);
-
-    if (last_full_update_time_ + 60 >= now) {
-        session_->refreshActiveTorrents();
-    } else {
-        last_full_update_time_ = now;
-        session_->refreshAllTorrents();
-    }
+    poller_->refresh_now();
 }
 
 /***

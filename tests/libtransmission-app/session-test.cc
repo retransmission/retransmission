@@ -124,24 +124,6 @@ TEST(AppSessionTest, inhibitsNapOnlyForEmbeddedSession)
     EXPECT_FALSE(session.should_inhibit_nap()); // remote daemon
 }
 
-// Changing a pref that invalidates cached session info, e.g. download_dir
-// changing session_get's freespace argument, should request a refresh.
-TEST(AppSessionTest, changingDownloadDirRequestsSessionRefresh)
-{
-    auto rpc = RpcClient{ inline_marshaler() };
-    auto prefs = Prefs{};
-    auto session = TestSession{ prefs, rpc };
-
-    auto refreshes = 0;
-    auto const tag = session.session_refresh_needed.connect_scoped([&refreshes]() { ++refreshes; });
-
-    prefs.set(TR_KEY_download_dir, "/some/new/dir"s);
-    EXPECT_EQ(1, refreshes);
-
-    prefs.set(TR_KEY_compact_view, true); // an app pref; not session-facing
-    EXPECT_EQ(1, refreshes);
-}
-
 // message_level applies to this process's logger rather than being
 // sent over RPC, so it works without any session at all.
 TEST(AppSessionTest, appliesMessageLevelToTheProcessLogger)
@@ -754,7 +736,7 @@ TEST_F(AppSessionRpcTest, refreshAllTorrentsFetchesEveryTorrent)
     pump_replies();
     EXPECT_EQ(1U, session_.torrents().size());
 
-    session_.refresh_all_torrents();
+    session_.refresh_all_torrents(TorrentKeySet::MainStats);
     ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
     EXPECT_NE(nullptr, session_.torrents().find(id2));
 }
