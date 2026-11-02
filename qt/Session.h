@@ -15,7 +15,6 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
-#include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
@@ -26,8 +25,6 @@
 #include "RpcClient.h"
 
 class AddData;
-
-struct tr_variant;
 
 class Session
     : public QObject
@@ -56,9 +53,6 @@ public:
     void copyMagnetLinkToClipboard(int torrent_id);
 
     [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
-
-    void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
-    void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);

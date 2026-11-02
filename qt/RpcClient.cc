@@ -71,13 +71,3 @@ void RpcClient::start(QUrl const& url)
     clean_url.setUserInfo(QString{});
     impl_.start(clean_url.toString().toStdString(), std::move(username), std::move(password));
 }
-
-void RpcClient::exec(tr_quark const method, tr_variant::Map args, ResponseFunc on_done)
-{
-    impl_.exec(method, std::move(args), std::move(on_done));
-}
-
-void RpcClient::exec(tr_quark const method, tr_variant* args, ResponseFunc on_done)
-{
-    impl_.exec(method, args, std::move(on_done));
-}

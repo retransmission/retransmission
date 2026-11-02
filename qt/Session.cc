@@ -5,19 +5,14 @@
 
 #include "Session.h"
 
-#include <algorithm>
 #include <array>
 #include <cassert>
+#include <optional>
 #include <string_view>
 #include <utility>
 
-#include <QtCore/QByteArray>
-#include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
 #include <QtCore/QtDebug>
-#include <QtCore/QTextStream>
 
 #include <QtGui/QClipboard>
 #include <QtGui/QDesktopServices>
@@ -26,7 +21,6 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStyle>
 
-#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/torrent-builder.h>
@@ -37,15 +31,12 @@
 
 #include "AddData.h"
 #include "Prefs.h"
-#include "SessionDialog.h"
 #include "TrFormat.h"
 #include "Utils.h"
-#include "VariantHelpers.h"
 
 using namespace std::literals;
 
 using tr::app::RpcQueue;
-using ::trqt::variant_helpers::dictFind;
 
 /***
 ****
@@ -68,13 +59,14 @@ void Session::portTest(tr_address_type const ip_protocol)
 
         // The status optional can be empty here, e.g. on network errors,
         // and the UI should show the "error" state
-        emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
+        auto const* const result = r.args_map();
+        emit portTested(result != nullptr ? result->value_if<bool>(TR_KEY_port_is_open) : std::optional<bool>{}, ip_protocol);
     };
 
     RpcQueue::create()
         .add(
             [this, args = std::move(args)](RpcClient::ResponseFunc done) mutable {
-                exec(TR_KEY_port_test, std::move(args), std::move(done));
+                send(TR_KEY_port_test, std::move(args), std::move(done));
             },
             response_func)
         .add(response_func)
@@ -94,17 +86,18 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 
     RpcQueue::create()
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_torrent_get, std::move(params), std::move(done));
+            send(TR_KEY_torrent_get, std::move(params), std::move(done));
         })
         .add([](RpcResponse const& r) {
-            auto const* const args = r.args->get_if<tr_variant::Map>();
+            auto const* const args = r.args_map();
             auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
-            if (torrents == nullptr || std::empty(*torrents)) {
-                return;
-            }
-
-            if (auto const link = dictFind<QString>(&torrents->front(), TR_KEY_magnet_link)) {
-                QApplication::clipboard()->setText(*link);
+            auto const* const row = torrents != nullptr && !std::empty(*torrents) ?
+                torrents->front().get_if<tr_variant::Map>() :
+                nullptr;
+            auto const link = row != nullptr ? row->value_if<std::string_view>(TR_KEY_magnet_link) :
+                                               std::optional<std::string_view>{};
+            if (link) {
+                QApplication::clipboard()->setText(Utils::qstringFromUtf8(*link));
             }
         })
         .run();
@@ -225,7 +218,7 @@ void Session::updateBlocklist()
 {
     RpcQueue::create()
         .add(
-            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
+            [this](RpcClient::ResponseFunc done) { send(TR_KEY_blocklist_update, {}, std::move(done)); },
             // A JSON-RPC or network error aborts the queue before the step below, so
             // report the failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
@@ -234,7 +227,7 @@ void Session::updateBlocklist()
             refresh_session_info();
 
             // Only this manual update announces success, not every session_get refresh.
-            if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
+            if (auto const* const map = r.args_map()) {
                 emit blocklistUpdated(map->value_if<int64_t>(TR_KEY_blocklist_size).value_or(0));
             }
         })
@@ -244,16 +237,6 @@ void Session::updateBlocklist()
 /***
 ****
 ***/
-
-void Session::exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done)
-{
-    rpc_.exec(method, args, std::move(on_done));
-}
-
-void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
-{
-    rpc_.exec(method, std::move(params), std::move(on_done));
-}
 
 void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
 {
@@ -285,7 +268,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
     RpcQueue::create()
         .add(
             [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
-                exec(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
+                send(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
             },
             [add_me](RpcResponse const& r) {
                 auto const title = tr("Error Adding Torrent");
@@ -300,7 +283,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
                 d->show();
             })
         .add([this, add_me](RpcResponse const& r) {
-            if (auto const* const args = r.args->get_if<tr_variant::Map>()) {
+            if (auto const* const args = r.args_map()) {
                 if (args->contains(TR_KEY_torrent_added)) {
                     add_me.disposeSourceFile();
                 } else if (auto const* const dup = args->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate)) {
@@ -360,7 +343,7 @@ void Session::addNewlyCreatedTorrent(QString const& filename, QString const& loc
     params.insert_or_assign(TR_KEY_download_dir, local_path.toStdString());
     params.insert_or_assign(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
     params.insert_or_assign(TR_KEY_metainfo, AddData(filename).toBase64().toStdString());
-    exec(TR_KEY_torrent_add, std::move(params));
+    send(TR_KEY_torrent_add, std::move(params));
 }
 
 /***
