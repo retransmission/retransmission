@@ -6,12 +6,17 @@
 #include <atomic>
 #include <chrono>
 #include <cstdint>
+#include <ctime> // std::time()
 #include <functional>
+#include <future>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <tuple> // std::ignore
 #include <vector>
+
+#include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
@@ -19,12 +24,17 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
 #include "libtransmission-app/session.h"
+#include "libtransmission-app/torrent-keys.h"
+#include "libtransmission-app/torrent-list.h"
+#include "libtransmission-app/torrent.h"
 
+#include "mock-rpc-server.h"
 #include "test-fixtures.h"
 
 namespace
@@ -491,6 +501,222 @@ TEST_F(AppSessionSyncTest, aReplyToADestroyedSessionDoesNothing)
     // the reply runs against the dead Session's token
     EXPECT_TRUE(loop.pump_until([this] { return tr_sessionGetPeerLimit(session_) == 111U; }));
     std::ignore = loop.quiet_for(100ms);
+}
+
+// Session tests against a real embedded session, its replies pumped through a UiLoop.
+class AppSessionRpcTest : public SandboxedTest
+{
+protected:
+    static constexpr auto Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
+    static constexpr auto Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
+
+    void SetUp() override
+    {
+        auto settings = tr_sessionGetDefaultSettings();
+        for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
+            settings.insert_or_assign(key, false);
+        }
+        settings.insert_or_assign(TR_KEY_download_dir, sandbox_dir());
+
+        core_ = tr_sessionInit(sandbox_dir(), false, settings);
+        rpc_.start(core_);
+    }
+
+    void TearDown() override
+    {
+        // let every reply land, including those to the requests the replies sent
+        while (!loop_.quiet_for(50ms)) {
+        }
+
+        rpc_.stop();
+        tr_sessionClose(core_, 0.5);
+        core_ = nullptr;
+    }
+
+    // adds a paused torrent to the session directly, as another client would
+    [[nodiscard]] tr_torrent_id_t add_torrent(std::string_view const filename)
+    {
+        auto builder = tr_torrent_builder{ core_ };
+        EXPECT_TRUE(builder.set_metainfo_from_file(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, filename)));
+        builder.set_paused(true);
+        auto const* const tor = tr_torrentNew(&builder, nullptr);
+        EXPECT_NE(nullptr, tor);
+        return tor != nullptr ? tr_torrentId(tor) : tr_torrent_id_t{};
+    }
+
+    // Pumps until the session has answered every request sent so far.
+    // It answers `torrent_get` and `session_stats` inside exec(), so their replies queue in order.
+    void pump_replies()
+    {
+        auto answered = false;
+        rpc_.exec(TR_KEY_session_stats, {}, [&answered](RpcResponse const& /*response*/) { answered = true; });
+        ASSERT_TRUE(loop_.pump_until([&answered] { return answered; }));
+    }
+
+    // Asks the session whether it still has `id`: tr_torrentRemove() finishes on the session thread.
+    [[nodiscard]] bool session_has(tr_torrent_id_t const id)
+    {
+        auto ids = tr_variant::Vector{};
+        ids.emplace_back(id);
+        auto fields = tr_variant::Vector{};
+        fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_id));
+        auto params = tr_variant::Map{ 2U };
+        params.try_emplace(TR_KEY_ids, std::move(ids));
+        params.try_emplace(TR_KEY_fields, std::move(fields));
+
+        auto promise = std::promise<bool>{};
+        auto future = promise.get_future();
+        rpc_.exec(TR_KEY_torrent_get, std::move(params), [&promise](RpcResponse const& response) {
+            auto const* const args = response.args ? response.args->get_if<tr_variant::Map>() : nullptr;
+            auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
+            promise.set_value(torrents != nullptr && !std::empty(*torrents));
+        });
+        return loop_.pump_until_ready(future);
+    }
+
+    [[nodiscard]] bool has_name(tr_torrent_id_t const id) const
+    {
+        auto const* const tor = session_.torrents().find(id);
+        return tor != nullptr && tor->has_name();
+    }
+
+    tr_session* core_ = nullptr;
+    UiLoop loop_; // before rpc_, whose marshaler it is
+    RpcClient rpc_{ loop_.marshaler() };
+    Prefs prefs_;
+    TestSession session_{ prefs_, rpc_ };
+};
+
+TEST_F(AppSessionRpcTest, refreshAllTorrentsFetchesEveryTorrent)
+{
+    auto const id1 = add_torrent(Debian);
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    EXPECT_TRUE(has_name(id1));
+
+    // a listed refresh only reaches the torrents it names
+    auto const id2 = add_torrent(Arch);
+    session_.refresh_torrents({ id1 }, TorrentKeySet::MainStats);
+    pump_replies();
+    EXPECT_EQ(1U, session_.torrents().size());
+
+    session_.refresh_all_torrents();
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+    EXPECT_NE(nullptr, session_.torrents().find(id2));
+}
+
+TEST_F(AppSessionRpcTest, refreshActiveTorrentsIsPartialAndAppliesRemoved)
+{
+    auto const id1 = add_torrent(Debian);
+    auto const id2 = add_torrent(Arch);
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
+
+    tr_torrentRemove(tr_torrentFindFromId(core_, id2), false);
+    ASSERT_TRUE(loop_.pump_until([this, id2] { return !session_has(id2); }));
+
+    session_.refresh_active_torrents();
+    ASSERT_TRUE(loop_.pump_until([this, id2] { return session_.torrents().find(id2) == nullptr; }));
+    EXPECT_NE(nullptr, session_.torrents().find(id1));
+}
+
+TEST_F(AppSessionRpcTest, refreshTorrentsWithNoIdsSendsNothing)
+{
+    session_.refresh_torrents({}, TorrentKeySet::MainStats);
+    EXPECT_TRUE(loop_.quiet_for(50ms));
+}
+
+// A stats-only row has no name, so the list asks for its info; the Session fetches it.
+TEST_F(AppSessionRpcTest, aTorrentThatNeedsInfoGetsMainAll)
+{
+    auto need_info = TorrentList::Ids{};
+    auto const tag = session_.torrents().changed.connect_scoped([&need_info](TorrentList::Changes const& changes) {
+        need_info.insert(std::end(need_info), std::begin(changes.need_info), std::end(changes.need_info));
+    });
+
+    auto const id = add_torrent(Debian);
+    session_.refresh_all_torrents(TorrentKeySet::MainStats);
+    EXPECT_TRUE(loop_.pump_until([this, id] { return has_name(id); }));
+    EXPECT_EQ(TorrentList::Ids{ id }, need_info);
+}
+
+// `labels` is in `MainAll` but not `MainStats`, so only the Session's reaction to `edited` can fetch it.
+TEST_F(AppSessionRpcTest, anEditedTorrentGetsMainAll)
+{
+    auto const id = add_torrent(Debian);
+
+    // another client labels the torrent
+    auto ids = tr_variant::Vector{};
+    ids.emplace_back(id);
+    auto labels = tr_variant::Vector{};
+    labels.emplace_back("linux"sv);
+    auto params = tr_variant::Map{ 2U };
+    params.try_emplace(TR_KEY_ids, std::move(ids));
+    params.try_emplace(TR_KEY_labels, std::move(labels));
+    rpc_.exec(TR_KEY_torrent_set, std::move(params), {});
+
+    // The list's copy predates that edit. Seeded by hand: `edit_date` has one-second
+    // resolution, so a fetch just before the edit could carry the same date.
+    auto header = tr_variant::Vector{};
+    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_id));
+    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_edit_date));
+    header.emplace_back(tr_variant::unmanaged_string(TR_KEY_name));
+    auto row = tr_variant::Vector{};
+    row.emplace_back(id);
+    row.emplace_back(0);
+    row.emplace_back("unlabeled"sv);
+    auto table = tr_variant::Vector{};
+    table.emplace_back(std::move(header));
+    table.emplace_back(std::move(row));
+    auto args = tr_variant::Map{ 1U };
+    args.try_emplace(TR_KEY_torrents, std::move(table));
+    session_.torrents().update(args, TorrentList::Coverage::Partial, std::time(nullptr));
+    ASSERT_TRUE(has_name(id));
+    ASSERT_TRUE(std::empty(session_.torrents().find(id)->labels()));
+
+    session_.refresh_torrents({ id }, TorrentKeySet::MainStats);
+    EXPECT_TRUE(loop_.pump_until([this, id] {
+        auto const& fetched = session_.torrents().find(id)->labels();
+        return std::size(fetched) == 1U && fetched.front() == "linux";
+    }));
+}
+
+// TransmissionTest's suite setup brings up networking (Winsock on Windows) before the mock server binds.
+using AppSessionErrorReplyTest = TransmissionTest;
+
+// An error reply may carry a partial `data.result`; applied as a complete list, it would empty the list.
+TEST_F(AppSessionErrorReplyTest, leavesTheListAlone)
+{
+    static auto constexpr ErrorBody =
+        R"({"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"bad fields","data":{"result":{"torrents":[]}}}})"sv;
+    auto server = MockRpcServer{ /*advertise_tr5=*/true, /*require_auth=*/false, std::string{ ErrorBody } };
+    auto loop = UiLoop{}; // before rpc: a late reply calls its marshaler
+    auto rpc = RpcClient{ loop.marshaler() };
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+    rpc.start(server.url());
+
+    auto const row = make_row(1, kv(TR_KEY_name, "kept"sv));
+    session.torrents().update(make_args(make_list(row.clone())), TorrentList::Coverage::Partial, std::time(nullptr));
+    ASSERT_EQ(1U, session.torrents().size());
+
+    session.refresh_all_torrents(TorrentKeySet::MainAll);
+    std::ignore = exec_and_wait(rpc, loop, TR_KEY_session_stats); // the fetch's reply landed before this one
+    loop.drain();
+    EXPECT_EQ(1U, session.torrents().size());
+}
+
+// A toolkit's event queue outlives the Session, so a torrent_get reply may be delivered after it is gone.
+TEST_F(AppSessionRpcTest, aTorrentReplyToADestroyedSessionDoesNothing)
+{
+    std::ignore = add_torrent(Debian);
+
+    auto session = std::make_unique<TestSession>(prefs_, rpc_);
+    session->refresh_all_torrents(TorrentKeySet::MainAll);
+    session.reset();
+
+    // the reply runs against the dead Session's token
+    pump_replies();
 }
 
 } // namespace

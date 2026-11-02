@@ -9,8 +9,11 @@
 #include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
+#include <iterator> // std::data(), std::size()
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <variant> // std::monostate
 #include <vector>
@@ -23,6 +26,8 @@
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-client.h"
+#include "libtransmission-app/torrent-keys.h"
+#include "libtransmission-app/torrent-list.h"
 
 struct tr_session;
 
@@ -30,6 +35,14 @@ namespace tr::app
 {
 
 class Prefs;
+
+// a `torrent_get` or `session_get` `fields` list: `keys` as unmanaged strings
+[[nodiscard]] tr_variant::Vector make_fields(std::span<tr_quark const> keys);
+
+[[nodiscard]] inline tr_variant::Vector make_fields(std::initializer_list<tr_quark> const keys)
+{
+    return make_fields(std::span{ std::data(keys), std::size(keys) });
+}
 
 class Session
 {
@@ -41,12 +54,43 @@ public:
         Remote, // a daemon on another machine
     };
 
+    // ascending unique torrent ids; a method that takes them sorts what it is given
+    using Ids = TorrentList::Ids;
+
     Session(Prefs& prefs, RpcClient& rpc);
     Session(Session&&) = delete;
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
     Session& operator=(Session const&) = delete;
     virtual ~Session() = default;
+
+    // --- torrents
+
+    // The session's torrents as last fetched. Views connect to its signals.
+    // `clear()` it when the session source changes.
+    [[nodiscard]] TorrentList& torrents() noexcept
+    {
+        return torrents_;
+    }
+
+    [[nodiscard]] TorrentList const& torrents() const noexcept
+    {
+        return torrents_;
+    }
+
+    // Fetches `keys` for every torrent into `torrents()`. A complete fetch, so the
+    // torrents the reply omits leave the list. `MainStats` is the periodic poll;
+    // `MainAll` rebuilds the list, e.g. after connecting.
+    void refresh_all_torrents(TorrentKeySet keys = TorrentKeySet::MainStats);
+
+    // Fetches `MainStats` for the torrents active in the last minute, plus the
+    // session's `removed` list. The poll between full refreshes.
+    void refresh_active_torrents();
+
+    // Fetches `keys` for `ids`. Sends nothing when `ids` is empty.
+    void refresh_torrents(Ids ids, TorrentKeySet keys);
+
+    // --- session
 
     // keep the machine awake: a local-filesystem session with active transfers
     [[nodiscard]] bool should_inhibit_sleep() const;
@@ -131,12 +175,50 @@ protected:
     [[nodiscard]] size_t pending_session_sets(tr_quark key) const noexcept;
 
 private:
+    // Which torrents a `torrent_get` names. Owned, so it can ride in a reply closure.
+    // Only `All` lets the reply remove by absence.
+    struct TorrentScope {
+        enum class Kind : uint8_t {
+            All,
+            RecentlyActive,
+            Listed,
+        };
+
+        Kind kind = Kind::All;
+        Ids ids; // `Listed` only; never empty
+
+        [[nodiscard]] static TorrentScope all() noexcept;
+        [[nodiscard]] static TorrentScope recently_active() noexcept;
+
+        // `Listed` for `ids` as a toolkit hands them over, in selection order and
+        // maybe with repeats; nullopt when none are left, so there is nothing to send
+        [[nodiscard]] static std::optional<TorrentScope> of(Ids ids) noexcept;
+
+        [[nodiscard]] constexpr TorrentList::Coverage coverage() const noexcept
+        {
+            return kind == Kind::All ? TorrentList::Coverage::Complete : TorrentList::Coverage::Partial;
+        }
+
+        // sets `ids`: omitted for `All`, "recently_active", or the list
+        void add_to(tr_variant::Map& params) const;
+    };
+
+    // `torrent_get` params: `format: "table"`, the `fields` of `keys`, and `scope`'s ids
+    [[nodiscard]] static tr_variant::Map make_torrent_get_params(TorrentKeySet keys, TorrentScope const& scope);
+
+    // `torrent_get` for `scope`, applied to `torrents_`; `on_done` runs after the apply
+    void fetch_torrents(TorrentKeySet keys, TorrentScope const& scope, RpcClient::ResponseFunc on_done = {});
+
+    // the list's own needs: `MainAll` for the torrents that lack info or were edited
+    void on_torrents_changed(TorrentList::Changes const& changes);
+
     void update_sleep_inhibit();
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
 
     Prefs& prefs_;
     RpcClient& rpc_;
+    TorrentList torrents_{ prefs_ }; // after prefs_: constructed from it
     tr_session* embedded_session_ = nullptr;
     woke::SleepInhibitor sleep_inhibitor_;
     woke::NapInhibitor nap_inhibitor_;
@@ -154,6 +236,7 @@ private:
     std::shared_ptr<std::monostate const> const alive_ = std::make_shared<std::monostate const>();
 
     sigslot::scoped_connection prefs_connection_;
+    sigslot::scoped_connection torrents_connection_;
 };
 
 } // namespace tr::app

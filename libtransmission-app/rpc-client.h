@@ -30,6 +30,12 @@ struct RpcResponse {
     bool success = false;
     bool network_error = false; // true if no valid HTTP response
     long http_status = 0; // HTTP status, or 0 for no response, or 200 for embedded
+
+    // `args` as a map, or nullptr when the reply carries none, e.g. a network error
+    [[nodiscard]] tr_variant::Map const* args_map() const noexcept
+    {
+        return args ? args->get_if<tr_variant::Map>() : nullptr;
+    }
 };
 
 // RPC client which speaks either to an embedded (in-process) session
