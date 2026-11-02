@@ -8,13 +8,13 @@
 #include <cstddef> // size_t
 #include <string>
 #include <string_view>
+#include <tuple> // std::ignore
 #include <vector>
 
 #include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/constants.h> // TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath
 #include <libtransmission/quark.h>
 
 #include "libtransmission-app/prefs.h"
@@ -23,6 +23,7 @@
 #include "libtransmission-app/session.h"
 #include "libtransmission-app/torrent-keys.h"
 
+#include "../libtransmission/fake-timer.h"
 #include "mock-rpc-server.h"
 #include "test-fixtures.h"
 
@@ -30,12 +31,9 @@ namespace
 {
 
 using namespace std::literals;
-using tr::app::Prefs;
-using tr::app::RpcClient;
-using tr::app::RpcResponse;
-using tr::app::Session;
 using tr::app::SessionPoller;
 using tr::app::TorrentKeySet;
+using tr::test::FakeTimerMaker;
 
 // whether `body` is a request for `method`
 [[nodiscard]] bool is_request(std::string_view const body, std::string_view const method)
@@ -69,36 +67,23 @@ using tr::app::TorrentKeySet;
 
 // A Session whose client talks to a MockRpcServer that answers every request
 // with an empty success, and a FakeTimerMaker for the poller under test.
-class AppSessionPollerTest : public TransmissionTest
+class AppSessionPollerTest
+    : public TransmissionTest
+    , public SessionUnderTest<>
 {
 protected:
     void TearDown() override
     {
-        drain();
+        loop_.drain();
     }
 
     // Starts the client on the mock and completes its CSRF handshake, so every
     // later request reaches the mock exactly once.
     void connect()
     {
-        rpc_.start(
-            fmt::format(
-                "http://127.0.0.1:{:d}{:s}{:s}",
-                server_.port(),
-                TrDefaultHttpServerBasePath,
-                TrHttpServerRpcRelativePath));
-
-        auto answered = false;
-        rpc_.exec(TR_KEY_session_stats, {}, [&answered](RpcResponse const& /*response*/) { answered = true; });
-        ASSERT_TRUE(loop_.pump_until([&answered] { return answered; }));
+        rpc_.start(server_.url());
+        std::ignore = exec_and_wait(rpc_, loop_, TR_KEY_session_stats);
         seen_ = std::size(server_.request_bodies());
-    }
-
-    // lets every reply land, including those to the requests the replies sent
-    void drain()
-    {
-        while (!loop_.quiet_for(50ms)) {
-        }
     }
 
     // Waits for `n` more requests to reach the mock and for their replies to land,
@@ -106,7 +91,7 @@ protected:
     [[nodiscard]] std::vector<std::string> take_bodies(size_t const n)
     {
         EXPECT_TRUE(loop_.pump_until([this, n] { return std::size(server_.request_bodies()) >= seen_ + n; }));
-        drain();
+        loop_.drain();
 
         auto bodies = server_.request_bodies();
         bodies.erase(std::begin(bodies), std::begin(bodies) + static_cast<std::ptrdiff_t>(seen_));
@@ -114,11 +99,8 @@ protected:
         return bodies;
     }
 
-    MockRpcServer server_{ /*advertise_tr5=*/true }; // first: outlives the client's requests
-    UiLoop loop_; // before rpc_: a late reply calls its marshaler
-    RpcClient rpc_{ loop_.marshaler() };
-    Prefs prefs_;
-    Session session_{ prefs_, rpc_ };
+    // after the client, a base: TearDown drains the client's requests before the server goes
+    MockRpcServer server_{ /*advertise_tr5=*/true };
     FakeTimerMaker timer_maker_;
     size_t seen_ = 0;
 };
@@ -128,20 +110,20 @@ TEST_F(AppSessionPollerTest, startAndStopDriveOneRepeatingTimer)
     auto poller = SessionPoller{ session_, timer_maker_, { .tick = 3s, .full_list = 60s } };
     ASSERT_EQ(1U, std::size(timer_maker_.timers()));
     auto const& timer = *timer_maker_.timers().front();
-    EXPECT_FALSE(timer.is_running());
+    EXPECT_FALSE(timer.isRunning());
     EXPECT_FALSE(poller.is_running());
 
     poller.start();
-    EXPECT_TRUE(timer.is_running());
+    EXPECT_TRUE(timer.isRunning());
     EXPECT_TRUE(poller.is_running());
     EXPECT_TRUE(timer.is_repeating());
     EXPECT_EQ(3s, timer.interval());
 
     poller.start();
-    EXPECT_EQ(1, timer.start_count());
+    EXPECT_EQ(1, timer.startCount());
 
     poller.stop();
-    EXPECT_FALSE(timer.is_running());
+    EXPECT_FALSE(timer.isRunning());
     EXPECT_FALSE(poller.is_running());
 }
 
@@ -201,8 +183,8 @@ TEST_F(AppSessionPollerTest, refreshNowFetchesEverythingAndRestartsTheTick)
     auto poller = SessionPoller{ session_, timer_maker_, { .tick = 3s, .full_list = 1h } };
     poller.start();
     auto const& timer = *timer_maker_.timers().front();
-    auto const starts = timer.start_count();
-    auto const stops = timer.stop_count();
+    auto const starts = timer.startCount();
+    auto const stops = timer.stopCount();
 
     poller.refresh_now();
     auto bodies = take_bodies(3U);
@@ -214,9 +196,9 @@ TEST_F(AppSessionPollerTest, refreshNowFetchesEverythingAndRestartsTheTick)
     EXPECT_FALSE(std::empty(the_request(bodies, "session_get")));
 
     // stopped then started: a start then a stop would leave it stopped
-    EXPECT_EQ(starts + 1, timer.start_count());
-    EXPECT_EQ(stops + 1, timer.stop_count());
-    EXPECT_TRUE(timer.is_running());
+    EXPECT_EQ(starts + 1, timer.startCount());
+    EXPECT_EQ(stops + 1, timer.stopCount());
+    EXPECT_TRUE(timer.isRunning());
 
     // refresh_now() was the full poll
     timer.fire();
@@ -234,9 +216,9 @@ TEST_F(AppSessionPollerTest, refreshNowWhileStoppedLeavesTheTimerAlone)
 
     poller.refresh_now();
     EXPECT_EQ(3U, std::size(take_bodies(3U)));
-    EXPECT_EQ(0, timer.start_count());
-    EXPECT_EQ(0, timer.stop_count());
-    EXPECT_FALSE(timer.is_running());
+    EXPECT_EQ(0, timer.startCount());
+    EXPECT_EQ(0, timer.stopCount());
+    EXPECT_FALSE(timer.isRunning());
     EXPECT_FALSE(poller.is_running());
 }
 
@@ -250,7 +232,7 @@ TEST_F(AppSessionPollerTest, ticksBeforeTheClientStartsSendNothing)
 
     // the client answers each request with a network error, which ends its chain
     timer_maker_.timers().front()->fire();
-    drain();
+    loop_.drain();
 
     EXPECT_TRUE(std::empty(server_.request_bodies()));
     EXPECT_EQ(0U, std::size(session_.torrents()));

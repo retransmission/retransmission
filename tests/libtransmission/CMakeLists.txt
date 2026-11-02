@@ -25,6 +25,7 @@ target_sources(libtransmission-test
         dht-test.cc
         error-test.cc
         env-test.cc
+        fake-timer.h
         file-piece-map-test.cc
         file-utils-test.cc
         file-test.cc

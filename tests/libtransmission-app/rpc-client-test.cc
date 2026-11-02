@@ -15,8 +15,6 @@
 #include <utility>
 #include <vector>
 
-#include <fmt/format.h>
-
 #include <libtransmission/api-compat.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
@@ -39,22 +37,6 @@ using namespace std::literals;
 namespace
 {
 
-[[nodiscard]] std::future<RpcResponse> exec_async(RpcClient& client, tr_quark const method)
-{
-    auto promise = std::make_shared<std::promise<RpcResponse>>();
-    auto fut = promise->get_future();
-    client.exec(method, static_cast<tr_variant*>(nullptr), [promise](RpcResponse response) {
-        promise->set_value(std::move(response));
-    });
-    return fut;
-}
-
-[[nodiscard]] RpcResponse exec_and_wait(RpcClient& client, UiLoop& loop, tr_quark const method)
-{
-    auto fut = exec_async(client, method);
-    return loop.pump_until_ready(fut);
-}
-
 class AppRpcClientTest : public ::testing::Test
 {
 protected:
@@ -67,15 +49,6 @@ protected:
     void TearDown() override
     {
         api_compat::set_default_style(saved_style_);
-    }
-
-    [[nodiscard]] static std::string url(MockRpcServer const& server)
-    {
-        return fmt::format(
-            "http://127.0.0.1:{:d}{:s}{:s}",
-            server.port(),
-            TrDefaultHttpServerBasePath,
-            TrHttpServerRpcRelativePath);
     }
 
 private:
@@ -110,7 +83,7 @@ TEST_F(AppRpcClientTest, firstPostUsesDefaultStyleTr4)
     auto server = MockRpcServer{ /*advertise_tr5=*/false };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
     EXPECT_EQ(200, response.http_status);
@@ -133,7 +106,7 @@ TEST_F(AppRpcClientTest, firstPostUsesDefaultStyleTr5)
     auto server = MockRpcServer{ /*advertise_tr5=*/false };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
     EXPECT_EQ(200, response.http_status);
@@ -151,7 +124,7 @@ TEST_F(AppRpcClientTest, switchesToTr5AfterA409ThatAdvertisesTheVersion)
     auto server = MockRpcServer{ /*advertise_tr5=*/true };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     // first request drives the 409 handshake; the server advertises Tr5 on it.
     EXPECT_EQ(200, exec_and_wait(client, loop, TR_KEY_session_get).http_status);
@@ -172,7 +145,7 @@ TEST_F(AppRpcClientTest, staysTr4AfterA409WithoutTheVersionHeader)
     auto server = MockRpcServer{ /*advertise_tr5=*/false };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     // first request drives the 409 handshake; no version header is advertised.
     EXPECT_EQ(200, exec_and_wait(client, loop, TR_KEY_session_get).http_status);
@@ -192,7 +165,7 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     auto url_str = std::string{};
     {
         auto const server = MockRpcServer{ /*advertise_tr5=*/false };
-        url_str = url(server);
+        url_str = server.url();
     }
 
     auto loop = UiLoop{};
@@ -222,7 +195,7 @@ TEST_F(AppRpcClientTest, stopDropsRepliesToEarlierRequests)
     auto server = MockRpcServer{ /*advertise_tr5=*/false };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     auto network_responses = 0;
     auto const tag = client.network_response.connect_scoped(
@@ -230,7 +203,7 @@ TEST_F(AppRpcClientTest, stopDropsRepliesToEarlierRequests)
 
     auto fut = exec_async(client, TR_KEY_session_get);
     client.stop();
-    client.start(url(server));
+    client.start(server.url());
 
     // The server answered with the 409 handshake, which the client must not resend.
     auto const stale = loop.pump_until_ready(fut);
@@ -255,12 +228,12 @@ TEST_F(AppRpcClientTest, stopDropsTheRpcStyleOfEarlierReplies)
     auto tr4_server = MockRpcServer{ /*advertise_tr5=*/false };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(tr5_server));
+    client.start(tr5_server.url());
 
     // The Tr5 server answers with a 409 that advertises its RPC version.
     auto fut = exec_async(client, TR_KEY_session_get);
     client.stop();
-    client.start(url(tr4_server));
+    client.start(tr4_server.url());
     EXPECT_TRUE(loop.pump_until_ready(fut).network_error);
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
@@ -278,7 +251,7 @@ TEST_F(AppRpcClientTest, signalsAuthRequiredOn401)
     auto server = MockRpcServer{ /*advertise_tr5=*/false, /*require_auth=*/true };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     auto auth_signals = 0;
     auto const tag = client.auth_required.connect_scoped([&auth_signals]() { ++auth_signals; });
@@ -295,7 +268,7 @@ TEST_F(AppRpcClientTest, authenticatesWithSuppliedCredentials)
     auto server = MockRpcServer{ /*advertise_tr5=*/false, /*require_auth=*/true };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server), "alice", "sekrit");
+    client.start(server.url(), "alice", "sekrit");
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
     EXPECT_EQ(200, response.http_status);
@@ -308,7 +281,7 @@ TEST_F(AppRpcClientTest, reportsAnUnparseableBodyAsAnError)
     auto server = MockRpcServer{ /*advertise_tr5=*/false, /*require_auth=*/false, "this is not json" };
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(url(server));
+    client.start(server.url());
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
     EXPECT_EQ(200, response.http_status);
@@ -318,33 +291,13 @@ TEST_F(AppRpcClientTest, reportsAnUnparseableBodyAsAnError)
 }
 
 // exec against a real tr_session, exercising the tr_rpc_request_exec dispatch
-class AppRpcClientSessionTest : public SandboxedTest
-{
-protected:
-    void SetUp() override
-    {
-        auto settings = tr_sessionGetDefaultSettings();
-        for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
-            settings.insert_or_assign(key, false);
-        }
-
-        session_ = tr_sessionInit(sandbox_dir(), false, settings);
-    }
-
-    void TearDown() override
-    {
-        tr_sessionClose(session_, 0.5);
-        session_ = nullptr;
-    }
-
-    tr_session* session_ = nullptr;
-};
+using AppRpcClientSessionTest = EmbeddedSessionTest;
 
 TEST_F(AppRpcClientSessionTest, execParsesSuccessResponse)
 {
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(session_);
+    client.start(core_);
 
     auto const response = exec_and_wait(client, loop, TR_KEY_session_get);
     EXPECT_TRUE(response.success);
@@ -352,8 +305,7 @@ TEST_F(AppRpcClientSessionTest, execParsesSuccessResponse)
     EXPECT_EQ(200, response.http_status);
     EXPECT_TRUE(std::empty(response.errmsg));
 
-    ASSERT_NE(nullptr, response.args);
-    auto const* const args = response.args->get_if<tr_variant::Map>();
+    auto const* const args = response.args_map();
     ASSERT_NE(nullptr, args);
     EXPECT_TRUE(args->contains(TR_KEY_version));
 }
@@ -362,11 +314,11 @@ TEST_F(AppRpcClientSessionTest, stopDropsRepliesToEarlierRequests)
 {
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(session_);
+    client.start(core_);
 
     auto fut = exec_async(client, TR_KEY_session_get);
     client.stop();
-    client.start(session_);
+    client.start(core_);
 
     auto const response = loop.pump_until_ready(fut);
     EXPECT_TRUE(response.network_error);
@@ -378,7 +330,7 @@ TEST_F(AppRpcClientSessionTest, execReportsAnUnknownMethodAsAnError)
 {
     auto loop = UiLoop{};
     auto client = RpcClient{ loop.marshaler() };
-    client.start(session_);
+    client.start(core_);
 
     // any quark that isn't an RPC method name will do
     auto const response = exec_and_wait(client, loop, TR_KEY_compact_view);

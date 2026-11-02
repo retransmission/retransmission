@@ -48,23 +48,6 @@ namespace
 // `added_date` is judged against this
 auto constexpr Now = time_t{ 1'700'000'000 };
 
-// the `arguments` of a `torrent_get` response; `removed` is omitted unless given
-[[nodiscard]] tr_variant::Map make_args(tr_variant::Vector torrents, std::optional<Ids> const& removed = {})
-{
-    auto args = tr_variant::Map{ 2U };
-    args.try_emplace(TR_KEY_torrents, std::move(torrents));
-
-    if (removed) {
-        auto ids = tr_variant::Vector{};
-        for (auto const id : *removed) {
-            ids.emplace_back(id);
-        }
-        args.try_emplace(TR_KEY_removed, std::move(ids));
-    }
-
-    return args;
-}
-
 // Rewrites object-format rows as one table: a key row, then each row's values.
 // Every row must carry the first row's keys.
 [[nodiscard]] tr_variant::Vector to_table(tr_variant::Vector const& rows)

@@ -17,7 +17,6 @@
 #include <string>
 #include <string_view>
 #include <utility>
-#include <vector>
 
 #include <fmt/format.h>
 
@@ -25,10 +24,14 @@
 
 #include <libtransmission/file.h>
 #include <libtransmission/macros.h>
-#include <libtransmission/timer.h>
+#include <libtransmission/quark.h>
+#include <libtransmission/transmission.h>
+#include <libtransmission/variant.h>
 
 #include "libtransmission-app/app.h"
+#include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
+#include "libtransmission-app/session.h"
 
 class TransmissionTest : public ::testing::Test
 {
@@ -110,6 +113,30 @@ private:
     Sandbox sandbox_;
 };
 
+// A `SandboxedTest` with an embedded `tr_session` in the sandbox, kept off the network.
+class EmbeddedSessionTest : public SandboxedTest
+{
+protected:
+    void SetUp() override
+    {
+        auto settings = tr_sessionGetDefaultSettings();
+        for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
+            settings.insert_or_assign(key, false);
+        }
+        settings.insert_or_assign(TR_KEY_download_dir, sandbox_dir());
+
+        core_ = tr_sessionInit(sandbox_dir(), false, settings);
+    }
+
+    void TearDown() override
+    {
+        tr_sessionClose(core_, 0.5);
+        core_ = nullptr;
+    }
+
+    tr_session* core_ = nullptr;
+};
+
 // Stands in for the toolkit's UI thread. RpcClient marshals every response and
 // signal through this hook; the test drives it like an event loop from the main
 // thread, so continuations run where a real toolkit would run them.
@@ -183,107 +210,47 @@ public:
         return !ran;
     }
 
+    // Pumps until nothing arrives for `quiet`: every reply has landed, including
+    // the replies to the requests earlier replies sent.
+    void drain(std::chrono::milliseconds const quiet = std::chrono::milliseconds{ 50 })
+    {
+        while (!quiet_for(quiet)) {
+        }
+    }
+
 private:
     std::mutex mutex_;
     std::condition_variable cv_;
     std::deque<std::function<void()>> queue_;
 };
 
-// A `tr::Timer` that never elapses on its own: the test calls `fire()`.
-// As with libtransmission's own timer, `start()` on a running timer does nothing.
-class FakeTimer final : public tr::Timer
+// Sends `method` with no params; the future holds its reply.
+[[nodiscard]] inline std::future<tr::app::RpcResponse> exec_async(tr::app::RpcClient& client, tr_quark const method)
 {
-public:
-    void stop() override
-    {
-        ++stop_count_;
-        is_running_ = false;
-    }
+    auto promise = std::make_shared<std::promise<tr::app::RpcResponse>>();
+    auto fut = promise->get_future();
+    client.exec(method, static_cast<tr_variant*>(nullptr), [promise](tr::app::RpcResponse response) {
+        promise->set_value(std::move(response));
+    });
+    return fut;
+}
 
-    void set_callback(std::function<void()> callback) override
-    {
-        callback_ = std::move(callback);
-    }
-
-    void set_repeating(bool const repeating = true) override
-    {
-        is_repeating_ = repeating;
-    }
-
-    void set_interval(std::chrono::milliseconds const interval) override
-    {
-        interval_ = interval;
-    }
-
-    void start() override
-    {
-        ++start_count_;
-        is_running_ = true;
-    }
-
-    [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
-    {
-        return interval_;
-    }
-
-    [[nodiscard]] bool is_repeating() const noexcept override
-    {
-        return is_repeating_;
-    }
-
-    [[nodiscard]] constexpr bool is_running() const noexcept
-    {
-        return is_running_;
-    }
-
-    // every call, including the ones a running timer ignores
-    [[nodiscard]] constexpr int start_count() const noexcept
-    {
-        return start_count_;
-    }
-
-    [[nodiscard]] constexpr int stop_count() const noexcept
-    {
-        return stop_count_;
-    }
-
-    // runs the callback as if the interval had elapsed; does nothing while stopped
-    void fire() const
-    {
-        if (is_running_ && callback_) {
-            callback_();
-        }
-    }
-
-private:
-    std::function<void()> callback_;
-    std::chrono::milliseconds interval_ = {};
-    int start_count_ = 0;
-    int stop_count_ = 0;
-    bool is_repeating_ = false;
-    bool is_running_ = false;
-};
-
-// Makes `FakeTimer`s and keeps a pointer to each, so a test can fire the timers
-// of the object under test. The pointers dangle once that object destroys them.
-class FakeTimerMaker final : public tr::TimerMaker
+// Sends `method` and pumps `loop` until its reply lands, so every reply queued
+// before it has landed too. Throws if that takes too long.
+[[nodiscard]] inline tr::app::RpcResponse exec_and_wait(tr::app::RpcClient& client, UiLoop& loop, tr_quark const method)
 {
-public:
-    [[nodiscard]] std::unique_ptr<tr::Timer> create() override
-    {
-        auto timer = std::make_unique<FakeTimer>();
-        timers_.push_back(timer.get());
-        return timer;
-    }
+    auto fut = exec_async(client, method);
+    return loop.pump_until_ready(fut);
+}
 
-    using tr::TimerMaker::create;
-
-    // in creation order
-    [[nodiscard]] std::vector<FakeTimer*> const& timers() const noexcept
-    {
-        return timers_;
-    }
-
-private:
-    std::vector<FakeTimer*> timers_;
+// A Session with the client and prefs it needs, declared in the order their
+// lifetimes require: the loop outlives the client, whose late replies call its
+// marshaler, and the client and prefs outlive the Session, which refers to both.
+// A fixture derives from it so its tests name the members directly.
+template<typename SessionT = tr::app::Session>
+struct SessionUnderTest {
+    UiLoop loop_;
+    tr::app::RpcClient rpc_{ loop_.marshaler() };
+    tr::app::Prefs prefs_;
+    SessionT session_{ prefs_, rpc_ };
 };

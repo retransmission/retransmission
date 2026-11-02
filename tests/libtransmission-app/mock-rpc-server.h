@@ -19,7 +19,9 @@
 #include <event2/event.h>
 #include <event2/http.h>
 
-#include <libtransmission/constants.h> // TrRpcSessionIdHeader, TrRpcVersionHeader
+#include <fmt/format.h>
+
+#include <libtransmission/constants.h> // TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath, TrRpcSessionIdHeader, TrRpcVersionHeader
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/rpcimpl.h> // TrRpcVersionSemver
 
@@ -74,9 +76,10 @@ public:
     MockRpcServer(MockRpcServer const&) = delete;
     MockRpcServer& operator=(MockRpcServer const&) = delete;
 
-    [[nodiscard]] uint16_t port() const noexcept
+    // the RPC endpoint, e.g. for `RpcClient::start()`
+    [[nodiscard]] std::string url() const
     {
-        return port_;
+        return fmt::format("http://127.0.0.1:{:d}{:s}{:s}", port_, TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath);
     }
 
     [[nodiscard]] std::vector<std::string> request_bodies() const
