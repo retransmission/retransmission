@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cerrno> // EINVAL
 #include <chrono>
 #include <cstddef>
 #include <future>
@@ -202,7 +203,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
 
     // The work that reports back reports an error.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
-    EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
+    EXPECT_EQ(EINVAL, rename_error);
 }
 
 TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)
