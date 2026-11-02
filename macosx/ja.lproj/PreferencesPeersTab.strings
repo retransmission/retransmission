@@ -1,0 +1,15 @@
+"Update" = "更新";
+"Blocklist:" = "ブロックリスト:";
+"Enable blocklist" = "ブロックリスト中のピアからの接続を止める";
+"High connection limits might significantly impact system performance" = "過大な接続制限はシステムの性能に大きく影響を与えがちです";
+"Use PEX to find more peers for public torrents" = "パブリックトレントにピア交換 (PEX) を使用";
+"Maximum peers for new torrents:" = "新規転送項目の最大接続数:";
+"Maximum peers overall:" = "全体の最大接続数:";
+"Peer limits:" = "接続:";
+"Prefer encryption" = "暗号化されたピアを優先";
+"Encryption:" = "暗号化:";
+"Require encryption" = "暗号化のないピアを無視";
+"Automatically update weekly" = "毎週自動更新";
+"Use DHT to find more peers for public torrents" = "分散ハッシュテーブル (DHT) を公開トレントに使用";
+"Use Local Peer Discovery to find more peers for public torrents" = "ローカルピア探索で公開トレントを探す";
+"URL:" = "URL:";

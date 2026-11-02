@@ -1,0 +1,15 @@
+"Update" = "Uppdatera";
+"Blocklist:" = "Blockeringslista:";
+"Enable blocklist" = "Förhindra att jämlikar i blockeringslistan ansluter";
+"High connection limits might significantly impact system performance" = "Höga anslutningsgränser kan avsevärt påverka systemets prestanda";
+"Use PEX to find more peers for public torrents" = "Använd jämlikeutbyte (PEX) för publika torrenter";
+"Maximum peers for new torrents:" = "Maximalt antal anslutningar för nya överföringar:";
+"Maximum peers overall:" = "Globala maximala anslutningar:";
+"Peer limits:" = "Anslutningar:";
+"Prefer encryption" = "Föredra krypterade jämlikar";
+"Encryption:" = "Kryptering:";
+"Require encryption" = "Ignorera okrypterade jämlikar";
+"Automatically update weekly" = "Uppdatera automatiskt varje vecka";
+"Use DHT to find more peers for public torrents" = "Använd distribuerad hashtabell (DHT) för publika torrenter";
+"Use Local Peer Discovery to find more peers for public torrents" = "Använd lokal jämlikeupptäckt för publika torrenter";
+"URL:" = "URL:";

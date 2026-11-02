@@ -1,0 +1,15 @@
+"Update" = "Eguneratu";
+"Blocklist:" = "Blokeo-zerrenda:";
+"Enable blocklist" = "Saihestu blokeo-zerrendako kideak konektatzea";
+"High connection limits might significantly impact system performance" = "Konexio-muga altuek sistemaren errendimenduan eragin nabarmena izan dezakete";
+"Use PEX to find more peers for public torrents" = "Erabili kide-trukaketa (PEX) torrent publikoetarako";
+"Maximum peers for new torrents:" = "Gehieneko konexioak transferentzia berrietarako:";
+"Maximum peers overall:" = "Gehieneko konexio kopuru orokorra:";
+"Peer limits:" = "Konexioak:";
+"Prefer encryption" = "Hobetsi zifratutako kideak";
+"Encryption:" = "Zifratzea:";
+"Require encryption" = "Ezikusiarena egin zifratu gabeko kideei";
+"Automatically update weekly" = "Automatikoki eguneratu astero";
+"Use DHT to find more peers for public torrents" = "Erabili banatutako hash-taula (DHT) torrent publikoetarako";
+"Use Local Peer Discovery to find more peers for public torrents" = "Erabili kideen aurkikuntza lokala torrent publikoetarako";
+"URL:" = "URLa:";

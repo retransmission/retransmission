@@ -21,6 +21,4 @@ struct tr_session;
 
 - (void)rpcUpdatePrefs;
 
-- (void)updateBlocklistFields;
-
 @end

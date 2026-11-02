@@ -154,6 +154,8 @@ target_sources(${TR_NAME}-mac
         PrefsGeneralTabViewController.mm
         PrefsNetworkTabViewController.h
         PrefsNetworkTabViewController.mm
+        PrefsPeersTabViewController.h
+        PrefsPeersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
         PrefsWindow.h
@@ -369,6 +371,7 @@ set(LANG_STRINGS_FILES
     PreferencesBandwidthTab.strings
     PreferencesGeneralTab.strings
     PreferencesNetworkTab.strings
+    PreferencesPeersTab.strings
     TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
