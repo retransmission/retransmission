@@ -44,8 +44,10 @@ char const* tr_strerror(int errnum)
 
 std::string_view tr_strv_strip(std::string_view str)
 {
-    auto constexpr Test = [](auto ch) {
-        return isspace(static_cast<unsigned char>(ch));
+    // ASCII only: isspace() depends on the locale, and macOS's UTF-8 locales
+    // treat 0xA0, the last byte of multibyte characters such as "à", as a space.
+    auto constexpr Test = [](char const ch) {
+        return ch == ' ' || (ch >= '\t' && ch <= '\r');
     };
 
     auto const it = std::ranges::find_if_not(str, Test);
