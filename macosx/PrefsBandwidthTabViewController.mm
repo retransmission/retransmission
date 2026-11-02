@@ -201,9 +201,7 @@
     gridView.xPlacement = NSGridCellPlacementLeading;
     gridView.yPlacement = NSGridCellPlacementCenter;
 
-    NSTextField* globalTitle = [NSTextField labelWithString:LStr(@"Speed limits:")];
-    globalTitle.font = [NSFont systemFontOfSize:NSFont.systemFontSize weight:NSFontWeightBold];
-
+    NSTextField* globalTitle = [PrefsUI sectionTitle:LStr(@"Speed limits:")];
     NSGridRow* r1 = [gridView addRowWithViews:@[
         globalTitle,
         NSGridCell.emptyContentView,
@@ -226,9 +224,7 @@
         self.spacer
     ]];
 
-    NSTextField* altTitle = [NSTextField labelWithString:LStr(@"Alternative speed limits:")];
-    altTitle.font = [NSFont systemFontOfSize:NSFont.systemFontSize weight:NSFontWeightBold];
-
+    NSTextField* altTitle = [PrefsUI sectionTitle:LStr(@"Alternative speed limits:")];
     NSImageView* tortoise = [NSImageView imageViewWithImage:[NSImage imageWithSystemSymbolName:@"tortoise.fill"
                                                                       accessibilityDescription:nil]];
     tortoise.imageScaling = NSImageScaleProportionallyDown;

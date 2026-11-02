@@ -1,0 +1,15 @@
+"Update" = "Оновити";
+"Blocklist:" = "Список блокування:";
+"Enable blocklist" = "Не підключатися до учасників з чорного списку";
+"High connection limits might significantly impact system performance" = "Деякі роутери будуть \"гальмувати\" якщо підключень дуже багато";
+"Use PEX to find more peers for public torrents" = "Використовувати одноранговий обмін (PEX) для публічних торентів";
+"Maximum peers for new torrents:" = "Максимум підключень для нових роздач:";
+"Maximum peers overall:" = "Глобальний максимум підключень:";
+"Peer limits:" = "Підключення:";
+"Prefer encryption" = "Надавати перевагу зашифрованим користувачам";
+"Encryption:" = "Шифрування:";
+"Require encryption" = "Ігнорувати незашифрованих користувачів";
+"Automatically update weekly" = "Оновлювати список щотижня";
+"Use DHT to find more peers for public torrents" = "Використовувати розподілену геш-таблицю (DHT) для публічних торентів";
+"Use Local Peer Discovery to find more peers for public torrents" = "Використовувати локальне виявлення учасників для публічних торентів";
+"URL:" = "URL:";

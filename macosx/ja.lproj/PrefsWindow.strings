@@ -88,48 +88,6 @@
 /* Class = "NSButtonCell"; title = "Only when there are multiple files"; ObjectID = "1340"; */
 "1340.title" = "複数ファイルがある場合のみ";
 
-/* Class = "NSButtonCell"; title = "Update"; ObjectID = "1437"; */
-"1437.title" = "更新";
-
-/* Class = "NSTextFieldCell"; title = "blocklist loaded/not loaded"; ObjectID = "1438"; */
-"1438.title" = "ブロックリスト 読込済み/なし";
-
-/* Class = "NSTextFieldCell"; title = "Blocklist:"; ObjectID = "1439"; */
-"1439.title" = "ブロックリスト:";
-
-/* Class = "NSButtonCell"; title = "Prevent peers in blocklist from connecting"; ObjectID = "1440"; */
-"1440.title" = "ブロックリスト中のピアからの接続を止める";
-
-/* Class = "NSTextFieldCell"; title = "High connection limits might significantly impact system performance"; ObjectID = "1441"; */
-"1441.title" = "過大な接続制限はシステムの性能に大きく影響を与えがちです";
-
-/* Class = "NSButtonCell"; title = "Use peer exchange (PEX) for public torrents"; ObjectID = "1442"; */
-"1442.title" = "パブリックトレントにピア交換 (PEX) を使用";
-
-/* Class = "NSTextFieldCell"; title = "Maximum connections for new transfers:"; ObjectID = "1443"; */
-"1443.title" = "新規転送項目の最大接続数:";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1446"; */
-"1446.title" = "ピア";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1447"; */
-"1447.title" = "ピア";
-
-/* Class = "NSTextFieldCell"; title = "Global maximum connections:"; ObjectID = "1450"; */
-"1450.title" = "全体の最大接続数:";
-
-/* Class = "NSTextFieldCell"; title = "Connections:"; ObjectID = "1451"; */
-"1451.title" = "接続:";
-
-/* Class = "NSButtonCell"; title = "Prefer encrypted peers"; ObjectID = "1452"; */
-"1452.title" = "暗号化されたピアを優先";
-
-/* Class = "NSTextFieldCell"; title = "Encryption:"; ObjectID = "1453"; */
-"1453.title" = "暗号化:";
-
-/* Class = "NSButtonCell"; title = "Ignore unencrypted peers"; ObjectID = "1454"; */
-"1454.title" = "暗号化のないピアを無視";
-
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "手動で追加した場合のみ";
 
@@ -159,12 +117,6 @@
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "ウェブインターフェースを起動";
-
-/* Class = "NSTextFieldCell"; title = "Last updated: N/A"; ObjectID = "1739"; */
-"1739.title" = "最終更新: なし";
-
-/* Class = "NSButtonCell"; title = "Automatically update weekly"; ObjectID = "1742"; */
-"1742.title" = "毎週自動更新";
 
 /* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
 "1748.title" = "以下のIPアドレスのみ接続を許可:";
@@ -199,26 +151,17 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "転送項目は、すべての条件を満たす最初のグループに割り当てられます";
 
-/* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
-"1926.title" = "分散ハッシュテーブル (DHT) を公開トレントに使用";
-
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "未完了ファイルに .part を付与";
 
 /* Class = "NSButtonCell"; title = "Display a window when opening a magnet link"; ObjectID = "1948"; */
 "1948.title" = "マグネットリンクを開いたらウィンドウを表示";
 
-/* Class = "NSButtonCell"; title = "Use local peer discovery for public torrents"; ObjectID = "1952"; */
-"1952.title" = "ローカルピア探索で公開トレントを探す";
-
 /* Class = "NSButtonCell"; title = "Stop seeding when inactive for:"; ObjectID = "1962"; */
 "1962.title" = "未稼働状態が続けばシード停止:";
 
 /* Class = "NSTextFieldCell"; title = "minutes"; ObjectID = "1970"; */
 "1970.title" = "分";
-
-/* Class = "NSTextFieldCell"; title = "URL:"; ObjectID = "1988"; */
-"1988.title" = "URL:";
 
 /* Class = "NSButtonCell"; title = "When download completes:"; ObjectID = "2044"; */
 "2044.title" = "ダウンロード完了時:";

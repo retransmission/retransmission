@@ -1,0 +1,15 @@
+"Update" = "Update";
+"Blocklist:" = "Blocklist:";
+"Enable blocklist" = "Enable blocklist";
+"High connection limits might significantly impact system performance" = "High connection limits might significantly impact system performance";
+"Use PEX to find more peers for public torrents" = "Use PEX to find more peers for public torrents";
+"Maximum peers for new torrents:" = "Maximum peers for new torrents:";
+"Maximum peers overall:" = "Maximum peers overall:";
+"Peer limits:" = "Peer limits:";
+"Prefer encryption" = "Prefer encryption";
+"Encryption:" = "Encryption:";
+"Require encryption" = "Require encryption";
+"Automatically update weekly" = "Automatically update weekly";
+"Use DHT to find more peers for public torrents" = "Use DHT to find more peers for public torrents";
+"Use Local Peer Discovery to find more peers for public torrents" = "Use Local Peer Discovery to find more peers for public torrents";
+"URL:" = "URL:";

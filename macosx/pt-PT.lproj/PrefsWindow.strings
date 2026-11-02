@@ -88,48 +88,6 @@
 /* Class = "NSButtonCell"; title = "Only when there are multiple files"; ObjectID = "1340"; */
 "1340.title" = "Apenas se existirem múltiplos ficheiros";
 
-/* Class = "NSButtonCell"; title = "Update"; ObjectID = "1437"; */
-"1437.title" = "Actualizar";
-
-/* Class = "NSTextFieldCell"; title = "blocklist loaded/not loaded"; ObjectID = "1438"; */
-"1438.title" = "lista de bloqueio carregada/não carregada";
-
-/* Class = "NSTextFieldCell"; title = "Blocklist:"; ObjectID = "1439"; */
-"1439.title" = "Lista de bloqueio:";
-
-/* Class = "NSButtonCell"; title = "Prevent peers in blocklist from connecting"; ObjectID = "1440"; */
-"1440.title" = "Prevenir ligação a peers reconhecidos como perigosos";
-
-/* Class = "NSTextFieldCell"; title = "High connection limits might significantly impact system performance"; ObjectID = "1441"; */
-"1441.title" = "Limites de ligações altos podem ter impacto significativo na performance";
-
-/* Class = "NSButtonCell"; title = "Use peer exchange (PEX) for public torrents"; ObjectID = "1442"; */
-"1442.title" = "Usar PEX (peer exchange) em torrents públicos";
-
-/* Class = "NSTextFieldCell"; title = "Maximum connections for new transfers:"; ObjectID = "1443"; */
-"1443.title" = "Máximo de ligações para novas transferências:";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1446"; */
-"1446.title" = "peers";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1447"; */
-"1447.title" = "peers";
-
-/* Class = "NSTextFieldCell"; title = "Global maximum connections:"; ObjectID = "1450"; */
-"1450.title" = "Máximo global de ligações:";
-
-/* Class = "NSTextFieldCell"; title = "Connections:"; ObjectID = "1451"; */
-"1451.title" = "Ligações:";
-
-/* Class = "NSButtonCell"; title = "Prefer encrypted peers"; ObjectID = "1452"; */
-"1452.title" = "Preferir peers cifrados";
-
-/* Class = "NSTextFieldCell"; title = "Encryption:"; ObjectID = "1453"; */
-"1453.title" = "Cifragem:";
-
-/* Class = "NSButtonCell"; title = "Ignore unencrypted peers"; ObjectID = "1454"; */
-"1454.title" = "Ignorar peers não cifrados";
-
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Apenas ao adicionar manualmente";
 
@@ -159,12 +117,6 @@
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "Abrir interface web";
-
-/* Class = "NSTextFieldCell"; title = "Last updated: N/A"; ObjectID = "1739"; */
-"1739.title" = "Última actualização: N/D";
-
-/* Class = "NSButtonCell"; title = "Automatically update weekly"; ObjectID = "1742"; */
-"1742.title" = "Actualizar automaticamente todas as semanas";
 
 /* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
 "1748.title" = "Permitir ligação apenas aos seguintes endereços IP:";
@@ -199,26 +151,17 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "As transferências serão atribuídas ao primeiro grupo em que satisfaçam todos os critérios";
 
-/* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
-"1926.title" = "Usar DHT (distributed hash table) em torrents públicos";
-
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "Acrescentar .part ao nome dos ficheiros incompletos";
 
 /* Class = "NSButtonCell"; title = "Display a window when opening a magnet link"; ObjectID = "1948"; */
 "1948.title" = "Mostrar janela ao adicionar ligações magnet";
 
-/* Class = "NSButtonCell"; title = "Use local peer discovery for public torrents"; ObjectID = "1952"; */
-"1952.title" = "Usar pesquisa de peers locais em torrents públicos";
-
 /* Class = "NSButtonCell"; title = "Stop seeding when inactive for:"; ObjectID = "1962"; */
 "1962.title" = "Parar de enviar quando inactiva por:";
 
 /* Class = "NSTextFieldCell"; title = "minutes"; ObjectID = "1970"; */
 "1970.title" = "minutos";
-
-/* Class = "NSTextFieldCell"; title = "URL:"; ObjectID = "1988"; */
-"1988.title" = "URL:";
 
 /* Class = "NSButtonCell"; title = "When download completes:"; ObjectID = "2044"; */
 "2044.title" = "Ao terminar de receber transferência:";
