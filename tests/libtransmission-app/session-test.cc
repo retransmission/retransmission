@@ -26,6 +26,7 @@
 
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -203,6 +204,101 @@ TEST(AppSessionTest, importingSettingsReadsBlocklistInfo)
     session.clear_session_info();
     EXPECT_FALSE(session.blocklist_size().has_value());
     EXPECT_FALSE(session.blocklist_date().has_value());
+}
+
+[[nodiscard]] tr_variant::Map make_stats_map(uint64_t const uploaded, uint64_t const downloaded, uint64_t const session_count)
+{
+    auto map = tr_variant::Map{ 3U };
+    map.insert_or_assign(TR_KEY_uploaded_bytes, uploaded);
+    map.insert_or_assign(TR_KEY_downloaded_bytes, downloaded);
+    map.insert_or_assign(TR_KEY_session_count, session_count);
+    return map;
+}
+
+TEST(AppSessionTest, importingStatsReadsBothRunsAndBusy)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    auto prefs = Prefs{};
+    prefs.set(TR_KEY_inhibit_desktop_hibernation, true);
+    auto session = TestSession{ prefs, rpc };
+    session.set_session_type(Session::Type::Local);
+
+    auto updates = 0;
+    auto const tag = session.stats_updated.connect_scoped([&updates] { ++updates; });
+
+    auto args = tr_variant::Map{ 3U };
+    args.insert_or_assign(TR_KEY_current_stats, make_stats_map(300U, 100U, 1U));
+    args.insert_or_assign(TR_KEY_cumulative_stats, make_stats_map(9000U, 3000U, 7U));
+    args.insert_or_assign(TR_KEY_busy, true);
+    session.import_session_stats(args);
+
+    EXPECT_EQ(1, updates);
+    EXPECT_EQ(300U, session.stats().uploadedBytes);
+    EXPECT_EQ(100U, session.stats().downloadedBytes);
+    EXPECT_EQ(1U, session.stats().sessionCount);
+    EXPECT_EQ(3.0, session.stats().ratio.to_double());
+    EXPECT_EQ(9000U, session.cumulative_stats().uploadedBytes);
+    EXPECT_EQ(7U, session.cumulative_stats().sessionCount);
+    EXPECT_EQ(3.0, session.cumulative_stats().ratio.to_double());
+    EXPECT_TRUE(session.should_inhibit_sleep());
+
+    // a reply without `busy` leaves it alone
+    auto idle = tr_variant::Map{ 1U };
+    idle.insert_or_assign(TR_KEY_current_stats, make_stats_map(301U, 100U, 1U));
+    session.import_session_stats(idle);
+    EXPECT_EQ(2, updates);
+    EXPECT_EQ(301U, session.stats().uploadedBytes);
+    EXPECT_EQ(7U, session.cumulative_stats().sessionCount);
+    EXPECT_TRUE(session.should_inhibit_sleep());
+
+    idle.insert_or_assign(TR_KEY_busy, false);
+    session.import_session_stats(idle);
+    EXPECT_FALSE(session.should_inhibit_sleep());
+}
+
+TEST(AppSessionTest, importingInfoReadsTheVersionAndType)
+{
+#ifdef __sun
+    // tr_session_id::is_local() relies on file locking that Solaris lacks
+    GTEST_SKIP();
+#endif
+
+    auto rpc = RpcClient{ inline_marshaler() };
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+    EXPECT_TRUE(std::empty(session.session_version()));
+
+    auto updates = 0;
+    auto const tag = session.session_updated.connect_scoped([&updates] { ++updates; });
+
+    // a session id is local while this machine holds its lock file
+    auto const local_id = tr_session_id{ [] { return std::time(nullptr); } };
+    auto args = tr_variant::Map{ 3U };
+    args.insert_or_assign(TR_KEY_version, "4.2.0"sv);
+    args.insert_or_assign(TR_KEY_session_id, local_id.sv());
+    args.insert_or_assign(TR_KEY_peer_limit_global, 123);
+    session.import_session_info(args);
+
+    EXPECT_EQ(1, updates);
+    EXPECT_EQ("4.2.0", session.session_version());
+    EXPECT_TRUE(session.is_local_filesystem());
+    EXPECT_FALSE(session.is_embedded());
+    EXPECT_EQ(123U, prefs.get<size_t>(TR_KEY_peer_limit_global));
+
+    args.insert_or_assign(TR_KEY_session_id, "not-a-local-session"sv);
+    session.import_session_info(args);
+    EXPECT_FALSE(session.is_local_filesystem());
+
+    // without a session id the type is unknown, and a reply without a version keeps the old one
+    session.set_session_type(Session::Type::Local);
+    session.import_session_info(tr_variant::Map{});
+    EXPECT_EQ(3, updates);
+    EXPECT_FALSE(session.is_local_filesystem());
+    EXPECT_FALSE(session.is_embedded());
+    EXPECT_EQ("4.2.0", session.session_version());
+
+    session.clear_session_info();
+    EXPECT_TRUE(std::empty(session.session_version()));
 }
 
 // Sync tests against a real embedded session.
@@ -1031,6 +1127,50 @@ TEST_F(AppSessionRpcTest, setTorrentsAfterStopFiresItsTag)
     EXPECT_EQ(std::vector{ set }, done);
     EXPECT_TRUE(loop_.quiet_for(50ms));
     EXPECT_EQ(0U, session_.torrents().size());
+}
+
+TEST_F(AppSessionRpcTest, refreshSessionStatsImportsTheReply)
+{
+    auto updates = 0;
+    auto const tag = session_.stats_updated.connect_scoped([&updates] { ++updates; });
+
+    session_.refresh_session_stats();
+    ASSERT_TRUE(loop_.pump_until([&updates] { return updates > 0; }));
+    EXPECT_EQ(1, updates);
+    EXPECT_GE(session_.stats().sessionCount, 1U);
+    EXPECT_GE(session_.cumulative_stats().sessionCount, 1U);
+}
+
+TEST_F(AppSessionRpcTest, refreshSessionInfoImportsTheReply)
+{
+    auto const session_limit = uint16_t{ 99 };
+    ASSERT_NE(session_limit, prefs_.get<size_t>(TR_KEY_peer_limit_global));
+    tr_sessionSetPeerLimit(core_, session_limit);
+    ASSERT_TRUE(loop_.pump_until([this] { return tr_sessionGetPeerLimit(core_) == session_limit; }));
+
+    auto updates = 0;
+    auto const tag = session_.session_updated.connect_scoped([&updates] { ++updates; });
+
+    session_.refresh_session_info();
+    ASSERT_TRUE(loop_.pump_until([&updates] { return updates > 0; }));
+    EXPECT_EQ(1, updates);
+    EXPECT_EQ(session_limit, prefs_.get<size_t>(TR_KEY_peer_limit_global));
+    EXPECT_FALSE(std::empty(session_.session_version()));
+    EXPECT_FALSE(session_.is_embedded());
+}
+
+// The session id can't make an embedded session look like a daemon.
+TEST_F(AppSessionRpcTest, importingInfoKeepsAnEmbeddedSessionEmbedded)
+{
+    session_.set_embedded_session(core_);
+
+    auto args = tr_variant::Map{ 1U };
+    args.insert_or_assign(TR_KEY_session_id, "not-a-local-session"sv);
+    session_.import_session_info(args);
+    EXPECT_TRUE(session_.is_embedded());
+
+    session_.import_session_info(tr_variant::Map{});
+    EXPECT_TRUE(session_.is_embedded());
 }
 
 } // namespace

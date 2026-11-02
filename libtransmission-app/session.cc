@@ -15,6 +15,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -23,8 +24,10 @@
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
-#include "libtransmission/tr-assert.h"
+#include "libtransmission/session-id.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/prefs.h"
@@ -339,6 +342,86 @@ Session::Tag Session::set_torrents(Ids ids, tr_variant::Map params)
         .run();
 
     return tag;
+}
+
+// --- session stats
+
+void Session::load_stats(tr_variant::Map const& map, tr_session_stats& stats)
+{
+    static constexpr auto Fields = std::tuple{
+        tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
+        tr::serializer::Field<&tr_session_stats::filesAdded>{ TR_KEY_files_added },
+        tr::serializer::Field<&tr_session_stats::secondsActive>{ TR_KEY_seconds_active },
+        tr::serializer::Field<&tr_session_stats::sessionCount>{ TR_KEY_session_count },
+        tr::serializer::Field<&tr_session_stats::uploadedBytes>{ TR_KEY_uploaded_bytes },
+    };
+    tr::serializer::load(map, stats, Fields);
+
+    stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
+}
+
+void Session::refresh_session_stats()
+{
+    send(TR_KEY_session_stats, {}, [this](RpcResponse const& response) {
+        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+            import_session_stats(*args);
+        }
+    });
+}
+
+void Session::import_session_stats(tr_variant::Map const& args)
+{
+    if (auto const* const current = args.find_if<tr_variant::Map>(TR_KEY_current_stats)) {
+        load_stats(*current, stats_);
+    }
+
+    if (auto const* const cumulative = args.find_if<tr_variant::Map>(TR_KEY_cumulative_stats)) {
+        load_stats(*cumulative, cumulative_stats_);
+    }
+
+    if (auto const busy = args.value_if<bool>(TR_KEY_busy)) {
+        set_busy(*busy);
+    }
+
+    stats_updated();
+}
+
+// --- session info
+
+void Session::refresh_session_info()
+{
+    send(TR_KEY_session_get, {}, [this](RpcResponse const& response) {
+        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+            import_session_info(*args);
+        }
+    });
+}
+
+void Session::import_session_info(tr_variant::Map const& args)
+{
+    import_session_settings(args);
+
+    if (auto const version = args.value_if<std::string_view>(TR_KEY_version)) {
+        session_version_ = *version;
+    }
+
+    // an embedded session is Embedded whatever its id says: `set_embedded_session()` set that
+    if (embedded_session_ == nullptr) {
+        set_session_type(args.value_if<std::string_view>(TR_KEY_session_id).transform([this](std::string_view const id) {
+            return probe_session_type(id);
+        }));
+    }
+
+    session_updated();
+}
+
+Session::Type Session::probe_session_type(std::string_view const id)
+{
+    if (!probed_id_ || probed_id_->id != id) {
+        probed_id_ = ProbedId{ .id = std::string{ id }, .type = tr_session_id::is_local(id) ? Type::Local : Type::Remote };
+    }
+
+    return probed_id_->type;
 }
 
 // --- session

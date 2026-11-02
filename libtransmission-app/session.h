@@ -15,6 +15,7 @@
 #include <optional>
 #include <span>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <variant> // std::monostate
 #include <vector>
@@ -25,6 +26,7 @@
 
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
+#include "libtransmission/types.h" // tr_session_stats
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-client.h"
@@ -161,6 +163,50 @@ public:
 
     sigslot::signal<Tag> torrent_set_done;
 
+    // --- session stats
+
+    // Asks the session for `session_stats`, then `import_session_stats()`.
+    void refresh_session_stats();
+
+    // Applies a `session_stats` reply's arguments: `stats()`, `cumulative_stats()` and
+    // the `busy` flag behind `should_inhibit_sleep()`. Fires `stats_updated`.
+    void import_session_stats(tr_variant::Map const& args);
+
+    // this run of the session, as of the last import
+    [[nodiscard]] constexpr tr_session_stats const& stats() const noexcept
+    {
+        return stats_;
+    }
+
+    // every run of the session, as of the last import
+    [[nodiscard]] constexpr tr_session_stats const& cumulative_stats() const noexcept
+    {
+        return cumulative_stats_;
+    }
+
+    sigslot::signal<> stats_updated;
+
+    // --- session info
+
+    // Asks the session for every `session_get` field, then `import_session_info()`.
+    void refresh_session_info();
+
+    // Applies a full `session_get` reply: `import_session_settings()`, the session's
+    // `version`, and its type from `session_id` (Embedded while an embedded session is
+    // set, else Local or Remote by `tr_session_id::is_local()`, else unknown).
+    // Fires `session_updated`. A reply to a partial `session_get`, e.g. the blocklist
+    // fields alone, lacks `session_id`, so give that to `import_session_settings()`.
+    void import_session_info(tr_variant::Map const& args);
+
+    // the session's version string, empty until a `session_get` reports it
+    [[nodiscard]] constexpr std::string const& session_version() const noexcept
+    {
+        return session_version_;
+    }
+
+    // after `import_session_info()`, and after a derived class imports settings another way
+    sigslot::signal<> session_updated;
+
     // --- session
 
     // keep the machine awake: a local-filesystem session with active transfers
@@ -228,18 +274,24 @@ protected:
     void set_session_type(std::optional<Type> type);
     void set_busy(bool busy);
 
-    // The embedded session, or nullptr when there isn't one. Some settings,
-    // e.g. the RPC server's, can only be applied to an embedded session.
-    void set_embedded_session(tr_session* session) noexcept
+    // The embedded session, or nullptr when there isn't one. Setting one makes
+    // the type Embedded; clearing it leaves the type to `set_session_type()`.
+    // Some settings, e.g. the RPC server's, can only be applied to an embedded session.
+    void set_embedded_session(tr_session* const session)
     {
         embedded_session_ = session;
+        if (session != nullptr) {
+            set_session_type(Type::Embedded);
+        }
     }
 
-    // Forget the previous session's blocklist info, e.g. after disconnecting from it.
+    // Forget the previous session's blocklist info and version, e.g. after disconnecting from it.
     constexpr void clear_session_info() noexcept
     {
         blocklist_size_.reset();
         blocklist_date_.reset();
+        session_version_.clear();
+        probed_id_.reset();
     }
 
     // how many `session_set` requests for `key` await their reply
@@ -289,6 +341,13 @@ private:
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);
 
+    // reads one `session_stats` map, e.g. `current_stats`, into `stats`
+    static void load_stats(tr_variant::Map const& map, tr_session_stats& stats);
+
+    // Local or Remote by `tr_session_id::is_local()`, which opens the daemon's
+    // lock file; every poll repeats the id, so it is probed once
+    [[nodiscard]] Type probe_session_type(std::string_view id);
+
     void update_sleep_inhibit();
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
@@ -302,7 +361,18 @@ private:
     std::optional<std::chrono::sys_seconds> blocklist_date_;
     std::optional<int64_t> blocklist_size_;
     std::optional<Type> session_type_;
-    Tag next_tag_ = 1; // 0 is never issued, so a zero-initialized tag means "none"
+
+    // the last `session_id` probed and its answer
+    struct ProbedId {
+        std::string id;
+        Type type = Type::Remote;
+    };
+    std::optional<ProbedId> probed_id_;
+
+    tr_session_stats stats_ = {};
+    tr_session_stats cumulative_stats_ = {};
+    std::string session_version_;
+    Tag next_tag_ = 1; // 0 is never issued
     bool busy_ = false;
     bool importing_settings_ = false;
 
