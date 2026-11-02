@@ -67,45 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "Tarea atascada por inactividad durante:";
 
-/* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
-"1265.title" = "Velocidad de subida:";
-
-/* Class = "NSButtonCell"; title = "Download rate:"; ObjectID = "1267"; */
-"1267.title" = "Velocidad de descarga:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1268"; */
-"1268.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1269"; */
-"1269.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "Global bandwidth limits:"; ObjectID = "1270"; */
-"1270.title" = "Límites globales:";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1273"; */
-"1273.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1274"; */
-"1274.title" = "KB/s";
-
-/* Class = "NSTextFieldCell"; title = "Speed Limit mode:"; ObjectID = "1275"; */
-"1275.title" = "Límite de Velocidad:";
-
-/* Class = "NSTextFieldCell"; title = "Upload rate:"; ObjectID = "1276"; */
-"1276.title" = "Velocidad de subida:";
-
-/* Class = "NSTextFieldCell"; title = "Download rate:"; ObjectID = "1277"; */
-"1277.title" = "Velocidad de descarga:";
-
-/* Class = "NSTextFieldCell"; title = "When enabled Speed Limit overrides the global bandwidth limits"; ObjectID = "1278"; */
-"1278.title" = "Cuando esté activado, el Límite de Velocidad reemplaza\nlos límites globales de ancho de banda";
-
-/* Class = "NSButtonCell"; title = "Schedule Speed Limit:"; ObjectID = "1280"; */
-"1280.title" = "Programar Límite de Velocidad:";
-
-/* Class = "NSTextFieldCell"; title = "to"; ObjectID = "1281"; */
-"1281.title" = "y";
-
 /* Class = "NSButtonCell"; title = "Display a window when opening a torrent file"; ObjectID = "1294"; */
 "1294.title" = "Mostrar la ventana de opciones";
 
@@ -126,48 +87,6 @@
 
 /* Class = "NSButtonCell"; title = "Only when there are multiple files"; ObjectID = "1340"; */
 "1340.title" = "Sólo cuando haya varios archivos";
-
-/* Class = "NSButtonCell"; title = "Update"; ObjectID = "1437"; */
-"1437.title" = "Actualizar";
-
-/* Class = "NSTextFieldCell"; title = "blocklist loaded/not loaded"; ObjectID = "1438"; */
-"1438.title" = "Lista de bloqueo cargada/no cargada";
-
-/* Class = "NSTextFieldCell"; title = "Blocklist:"; ObjectID = "1439"; */
-"1439.title" = "Lista de bloqueo:";
-
-/* Class = "NSButtonCell"; title = "Prevent peers in blocklist from connecting"; ObjectID = "1440"; */
-"1440.title" = "Impedir conectarse a clientes de la lista de bloqueo";
-
-/* Class = "NSTextFieldCell"; title = "High connection limits might significantly impact system performance"; ObjectID = "1441"; */
-"1441.title" = "Un límite de conexiones alto puede ralentizar algunos routers";
-
-/* Class = "NSButtonCell"; title = "Use peer exchange (PEX) for public torrents"; ObjectID = "1442"; */
-"1442.title" = "Activar intercambio de clientes (PEX) para torrents públicos";
-
-/* Class = "NSTextFieldCell"; title = "Maximum connections for new transfers:"; ObjectID = "1443"; */
-"1443.title" = "Conexiones máximas para nuevas tareas:";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1446"; */
-"1446.title" = "clientes";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1447"; */
-"1447.title" = "clientes";
-
-/* Class = "NSTextFieldCell"; title = "Global maximum connections:"; ObjectID = "1450"; */
-"1450.title" = "Conexiones globales máximas:";
-
-/* Class = "NSTextFieldCell"; title = "Connections:"; ObjectID = "1451"; */
-"1451.title" = "Conexiones:";
-
-/* Class = "NSButtonCell"; title = "Prefer encrypted peers"; ObjectID = "1452"; */
-"1452.title" = "Preferir clientes encriptados";
-
-/* Class = "NSTextFieldCell"; title = "Encryption:"; ObjectID = "1453"; */
-"1453.title" = "Encriptación:";
-
-/* Class = "NSButtonCell"; title = "Ignore unencrypted peers"; ObjectID = "1454"; */
-"1454.title" = "Ignorar clientes no encriptados";
 
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Sólo cuando se añadan manualmente";
@@ -198,12 +117,6 @@
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "Ejecutar interfaz web";
-
-/* Class = "NSTextFieldCell"; title = "Last updated: N/A"; ObjectID = "1739"; */
-"1739.title" = "Actualizado por última vez: N/D";
-
-/* Class = "NSButtonCell"; title = "Automatically update weekly"; ObjectID = "1742"; */
-"1742.title" = "Actualizar semanalmente";
 
 /* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
 "1748.title" = "Permitir sólo las siguientes direcciones IP:";
@@ -238,56 +151,17 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "Las tareas serán asignadas al primer grupo que reuna las condiciones del criterio";
 
-/* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
-"1910.title" = "Cada día";
-
-/* Class = "NSMenuItem"; title = "Weekdays"; ObjectID = "1911"; */
-"1911.title" = "Entre semana";
-
-/* Class = "NSMenuItem"; title = "Weekends"; ObjectID = "1912"; */
-"1912.title" = "Fines de semana";
-
-/* Class = "NSMenuItem"; title = "Monday"; ObjectID = "1914"; */
-"1914.title" = "Lunes";
-
-/* Class = "NSMenuItem"; title = "Tuesday"; ObjectID = "1915"; */
-"1915.title" = "Martes";
-
-/* Class = "NSMenuItem"; title = "Wednesday"; ObjectID = "1916"; */
-"1916.title" = "Miércoles";
-
-/* Class = "NSMenuItem"; title = "Thursday"; ObjectID = "1917"; */
-"1917.title" = "Jueves";
-
-/* Class = "NSMenuItem"; title = "Friday"; ObjectID = "1918"; */
-"1918.title" = "Viernes";
-
-/* Class = "NSMenuItem"; title = "Saturday"; ObjectID = "1919"; */
-"1919.title" = "Sábado";
-
-/* Class = "NSMenuItem"; title = "Sunday"; ObjectID = "1920"; */
-"1920.title" = "Domingo";
-
-/* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
-"1926.title" = "Usar tabla de hash distribuido (DHT) para torrents públicos";
-
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "Añadir .part a los archivos incompletos";
 
 /* Class = "NSButtonCell"; title = "Display a window when opening a magnet link"; ObjectID = "1948"; */
 "1948.title" = "Mostrar una ventana al abrir un enlace magnet";
 
-/* Class = "NSButtonCell"; title = "Use local peer discovery for public torrents"; ObjectID = "1952"; */
-"1952.title" = "Usar búsqueda de clientes local para torrents públicos";
-
 /* Class = "NSButtonCell"; title = "Stop seeding when inactive for:"; ObjectID = "1962"; */
 "1962.title" = "Dejar de subir cuando esté inactivo durante:";
 
 /* Class = "NSTextFieldCell"; title = "minutes"; ObjectID = "1970"; */
 "1970.title" = "minutos";
-
-/* Class = "NSTextFieldCell"; title = "URL:"; ObjectID = "1988"; */
-"1988.title" = "URL:";
 
 /* Class = "NSButtonCell"; title = "When download completes:"; ObjectID = "2044"; */
 "2044.title" = "Cuando la descarga finalice:";

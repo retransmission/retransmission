@@ -11,6 +11,7 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/constants.h>
+#include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/inout.h>
 #include <libtransmission/torrent.h>
@@ -28,18 +29,18 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     auto const path = tr_torrentFindFile(tor, 0U);
     ASSERT_FALSE(std::empty(path));
 
-    auto err = tr_error_code_t{};
+    auto error = tr_error{};
     // tr_ioWrite() must run in the session thread; block until it's done
-    auto const write_block = [session = session_, tor, &err] {
+    auto const write_block = [session = session_, tor, &error] {
         auto const buf = std::vector<uint8_t>(TrBlockSize);
-        err = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf);
+        error = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf);
     };
 
     // Neither the fixture nor verify go through the fd pool, so warm it
     // with a write that succeeds: this is the steady state of a torrent
     // that's been receiving blocks from peers.
     blockingRunInSessionThread(write_block);
-    ASSERT_EQ(0, err);
+    ASSERT_FALSE(error) << error;
 
     // Evict the pooled fd, then make the path unopenable by replacing
     // the file with a directory.
@@ -53,7 +54,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     // into the torrent's local error is on_block_written()'s job, which
     // TorrentDiskIoTest.failedWriteStopsTorrent covers.
     blockingRunInSessionThread(write_block);
-    EXPECT_NE(0, err);
+    EXPECT_TRUE(error);
 }
 TEST_F(InOutTest, readFailsWhenFileIsShorterThanExpected)
 {
@@ -67,11 +68,11 @@ TEST_F(InOutTest, readFailsWhenFileIsShorterThanExpected)
 
     // The read must fail. Reporting success would hand the caller a
     // buffer whose bytes past the end of the file were never written.
-    auto err = tr_error_code_t{};
-    blockingRunInSessionThread([session = session_, tor, &err] {
+    auto error = tr_error{};
+    blockingRunInSessionThread([session = session_, tor, &error] {
         auto buf = std::vector<uint8_t>(TrBlockSize);
-        err = tr_ioRead(*tor->storage_descriptor(), session->openFiles(), 0U, buf);
+        error = tr_ioRead(*tor->storage_descriptor(), session->openFiles(), 0U, buf);
     });
-    EXPECT_NE(0, err);
+    EXPECT_TRUE(error);
 }
 } // namespace

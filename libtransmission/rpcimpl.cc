@@ -9,6 +9,7 @@
 #include <ctime>
 #include <functional>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <numeric>
 #include <set>
@@ -416,12 +417,6 @@ void notifyBatchQueueChange(tr_session* session, std::vector<tr_torrent*> const&
 
 namespace make_torrent_field_helpers
 {
-// the wire keeps the TR_RATIO_NA / TR_RATIO_INF sentinels for the two non-numeric states
-[[nodiscard]] constexpr double ratio_to_wire(Ratio const ratio) noexcept
-{
-    return ratio.quotient().value_or(ratio.is_infinite() ? TR_RATIO_INF : TR_RATIO_NA);
-}
-
 [[nodiscard]] auto make_file_wanted_vec(tr_torrent const& tor)
 {
     auto const n_files = tor.file_count();
@@ -727,6 +722,8 @@ namespace make_torrent_field_helpers
     case TR_KEY_seconds_seeding:
     case TR_KEY_seed_idle_limit:
     case TR_KEY_seed_idle_mode:
+    case TR_KEY_seed_ratio_bytes_goal:
+    case TR_KEY_seed_ratio_bytes_left:
     case TR_KEY_seed_ratio_limit:
     case TR_KEY_seed_ratio_mode:
     case TR_KEY_sequential_download:
@@ -892,6 +889,10 @@ namespace make_torrent_field_helpers
         return tor.idle_limit_minutes();
     case TR_KEY_seed_idle_mode:
         return tor.idle_limit_mode();
+    case TR_KEY_seed_ratio_bytes_goal:
+        return st.seed_ratio_percent_done.total();
+    case TR_KEY_seed_ratio_bytes_left:
+        return st.seed_ratio_percent_done.total() - st.seed_ratio_percent_done.have();
     case TR_KEY_seed_ratio_limit:
         return tor.seed_ratio();
     case TR_KEY_seed_ratio_mode:
@@ -923,7 +924,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_upload_limited:
         return tor.uses_speed_limit(tr_direction::Up);
     case TR_KEY_upload_ratio:
-        return ratio_to_wire(st.upload_ratio);
+        return tr::serializer::to_variant(st.upload_ratio);
     case TR_KEY_uploaded_ever:
         return st.uploaded_ever;
     case TR_KEY_wanted:
@@ -2661,7 +2662,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant request, tr_rpc_re
             tr_rpc_idle_done(data, Error::INVALID_REQUEST, "id type must be String, Number, or Null"sv);
             return;
         }
-        data->id.merge(id);
+        data->id = id.clone();
     }
 
     auto const is_notification = is_jsonrpc && !data->id.has_value();

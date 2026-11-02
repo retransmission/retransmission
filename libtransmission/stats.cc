@@ -13,7 +13,7 @@
 #include "libtransmission/serializer.h"
 #include "libtransmission/stats.h"
 #include "libtransmission/tr-strbuf.h"
-#include "libtransmission/utils.h" // for tr_getRatio(), tr_time()
+#include "libtransmission/utils.h" // for tr_time()
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
@@ -80,7 +80,7 @@ void tr_stats::save_if_dirty()
 
 void tr_stats::clear()
 {
-    single_ = old_ = Zero;
+    single_ = old_ = {};
     start_time_ = tr_time();
     is_dirty_ = true;
 }
@@ -90,7 +90,6 @@ void tr_stats::clear()
     auto ret = single_;
     ret.secondsActive = time(nullptr) - start_time_;
     ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
-    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }
 
@@ -103,6 +102,5 @@ tr_session_stats tr_stats::add(tr_session_stats const& a, tr_session_stats const
     ret.sessionCount = a.sessionCount + b.sessionCount;
     ret.secondsActive = a.secondsActive + b.secondsActive;
     ret.ratio = Values::Ratio{ ret.uploadedBytes, ret.downloadedBytes };
-    ret.ratio_deprecated = tr_getRatio(ret.uploadedBytes, ret.downloadedBytes);
     return ret;
 }

@@ -761,7 +761,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
             haveValid += st.have_valid;
             sizeWhenDone += st.size_when_done;
             leftUntilDone += st.left_until_done;
-            available += st.size_when_done - st.left_until_done + st.have_unchecked + st.desired_available;
+            available += st.size_when_done - st.left_until_done + st.desired_available;
         }
 
         {

@@ -67,45 +67,6 @@
 /* Class = "NSButtonCell"; title = "Transfer is stalled when inactive for:"; ObjectID = "1243"; */
 "1243.title" = "閒置超過時間時判斷傳輸已停滯：";
 
-/* Class = "NSButtonCell"; title = "Upload rate:"; ObjectID = "1265"; */
-"1265.title" = "上傳速度：";
-
-/* Class = "NSButtonCell"; title = "Download rate:"; ObjectID = "1267"; */
-"1267.title" = "下載速度：";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1268"; */
-"1268.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1269"; */
-"1269.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "Global bandwidth limits:"; ObjectID = "1270"; */
-"1270.title" = "全域頻寬限制：";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1273"; */
-"1273.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "KB/s"; ObjectID = "1274"; */
-"1274.title" = "KB/秒";
-
-/* Class = "NSTextFieldCell"; title = "Speed Limit mode:"; ObjectID = "1275"; */
-"1275.title" = "速度限制模式：";
-
-/* Class = "NSTextFieldCell"; title = "Upload rate:"; ObjectID = "1276"; */
-"1276.title" = "上傳速度：";
-
-/* Class = "NSTextFieldCell"; title = "Download rate:"; ObjectID = "1277"; */
-"1277.title" = "下載速度：";
-
-/* Class = "NSTextFieldCell"; title = "When enabled Speed Limit overrides the global bandwidth limits"; ObjectID = "1278"; */
-"1278.title" = "啟用「速度限制」時會覆蓋全域頻寬限制。";
-
-/* Class = "NSButtonCell"; title = "Schedule Speed Limit:"; ObjectID = "1280"; */
-"1280.title" = "速度限制排程：";
-
-/* Class = "NSTextFieldCell"; title = "to"; ObjectID = "1281"; */
-"1281.title" = "到";
-
 /* Class = "NSButtonCell"; title = "Display a window when opening a torrent file"; ObjectID = "1294"; */
 "1294.title" = "開啟 torrent 檔案時顯示視窗";
 
@@ -126,48 +87,6 @@
 
 /* Class = "NSButtonCell"; title = "Only when there are multiple files"; ObjectID = "1340"; */
 "1340.title" = "僅於存在多個檔案時";
-
-/* Class = "NSButtonCell"; title = "Update"; ObjectID = "1437"; */
-"1437.title" = "更新";
-
-/* Class = "NSTextFieldCell"; title = "blocklist loaded/not loaded"; ObjectID = "1438"; */
-"1438.title" = "黑名單已載入 / 未載入";
-
-/* Class = "NSTextFieldCell"; title = "Blocklist:"; ObjectID = "1439"; */
-"1439.title" = "黑名單：";
-
-/* Class = "NSButtonCell"; title = "Prevent peers in blocklist from connecting"; ObjectID = "1440"; */
-"1440.title" = "禁止黑名單中的節點連線";
-
-/* Class = "NSTextFieldCell"; title = "High connection limits might significantly impact system performance"; ObjectID = "1441"; */
-"1441.title" = "高連線數量可能會顯著影響系統效能";
-
-/* Class = "NSButtonCell"; title = "Use peer exchange (PEX) for public torrents"; ObjectID = "1442"; */
-"1442.title" = "使用公開 Torrent 的點對點交換（PEX）功能";
-
-/* Class = "NSTextFieldCell"; title = "Maximum connections for new transfers:"; ObjectID = "1443"; */
-"1443.title" = "新傳輸的最大連線數量：";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1446"; */
-"1446.title" = "共享端";
-
-/* Class = "NSTextFieldCell"; title = "peers"; ObjectID = "1447"; */
-"1447.title" = "共享端";
-
-/* Class = "NSTextFieldCell"; title = "Global maximum connections:"; ObjectID = "1450"; */
-"1450.title" = "全域最大連線數量：";
-
-/* Class = "NSTextFieldCell"; title = "Connections:"; ObjectID = "1451"; */
-"1451.title" = "連線數：";
-
-/* Class = "NSButtonCell"; title = "Prefer encrypted peers"; ObjectID = "1452"; */
-"1452.title" = "偏好加密節點";
-
-/* Class = "NSTextFieldCell"; title = "Encryption:"; ObjectID = "1453"; */
-"1453.title" = "加密：";
-
-/* Class = "NSButtonCell"; title = "Ignore unencrypted peers"; ObjectID = "1454"; */
-"1454.title" = "忽略未加密的節點";
 
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "僅於手動加入時";
@@ -198,12 +117,6 @@
 
 /* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
 "1718.title" = "啟動網頁介面";
-
-/* Class = "NSTextFieldCell"; title = "Last updated: N/A"; ObjectID = "1739"; */
-"1739.title" = "最後更新於：N/A";
-
-/* Class = "NSButtonCell"; title = "Automatically update weekly"; ObjectID = "1742"; */
-"1742.title" = "每週自動更新";
 
 /* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
 "1748.title" = "僅允許以下 IP 位址連線：";
@@ -238,56 +151,17 @@
 /* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
 "1835.title" = "傳輸將被分配到符合所有標準的第一個群組";
 
-/* Class = "NSMenuItem"; title = "Every Day"; ObjectID = "1910"; */
-"1910.title" = "每天";
-
-/* Class = "NSMenuItem"; title = "Weekdays"; ObjectID = "1911"; */
-"1911.title" = "週間";
-
-/* Class = "NSMenuItem"; title = "Weekends"; ObjectID = "1912"; */
-"1912.title" = "週末";
-
-/* Class = "NSMenuItem"; title = "Monday"; ObjectID = "1914"; */
-"1914.title" = "週一";
-
-/* Class = "NSMenuItem"; title = "Tuesday"; ObjectID = "1915"; */
-"1915.title" = "週二";
-
-/* Class = "NSMenuItem"; title = "Wednesday"; ObjectID = "1916"; */
-"1916.title" = "週三";
-
-/* Class = "NSMenuItem"; title = "Thursday"; ObjectID = "1917"; */
-"1917.title" = "週四";
-
-/* Class = "NSMenuItem"; title = "Friday"; ObjectID = "1918"; */
-"1918.title" = "週五";
-
-/* Class = "NSMenuItem"; title = "Saturday"; ObjectID = "1919"; */
-"1919.title" = "週六";
-
-/* Class = "NSMenuItem"; title = "Sunday"; ObjectID = "1920"; */
-"1920.title" = "週日";
-
-/* Class = "NSButtonCell"; title = "Use distributed hash table (DHT) for public torrents"; ObjectID = "1926"; */
-"1926.title" = "使用分散式雜湊表（DHT）來下載公開種子";
-
 /* Class = "NSButtonCell"; title = "Append .part to incomplete files"; ObjectID = "1940"; */
 "1940.title" = "將 .part 附加到尚未完成的檔案";
 
 /* Class = "NSButtonCell"; title = "Display a window when opening a magnet link"; ObjectID = "1948"; */
 "1948.title" = "開啟磁力連結時顯示視窗";
 
-/* Class = "NSButtonCell"; title = "Use local peer discovery for public torrents"; ObjectID = "1952"; */
-"1952.title" = "使用本機節點探索以尋找公開 torrents";
-
 /* Class = "NSButtonCell"; title = "Stop seeding when inactive for:"; ObjectID = "1962"; */
 "1962.title" = "閒置超過時間時停止做種：";
 
 /* Class = "NSTextFieldCell"; title = "minutes"; ObjectID = "1970"; */
 "1970.title" = "分鐘";
-
-/* Class = "NSTextFieldCell"; title = "URL:"; ObjectID = "1988"; */
-"1988.title" = "URL：";
 
 /* Class = "NSButtonCell"; title = "When download completes:"; ObjectID = "2044"; */
 "2044.title" = "下載完成時：";

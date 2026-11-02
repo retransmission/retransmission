@@ -639,8 +639,8 @@ TEST_F(FileTest, pathResolve)
 
 TEST_F(FileTest, pathBasename)
 {
-    auto const common_xname_tests = std::vector<XnameTestData>{
-        XnameTestData{ .input = "/", .output = "/" },
+    static constexpr auto CommonXnameTests = std::to_array<XnameTestData>({
+        { .input = "/", .output = "/" },
         { .input = "", .output = "." },
 #ifdef _WIN32
         { .input = "\\", .output = "/" },
@@ -669,16 +669,18 @@ TEST_F(FileTest, pathBasename)
         { .input = R"(c:\a\b|c\d)", .output = "" },
         { .input = R"(c:\a\b?c\d)", .output = "" },
         { .input = R"(c:\a\b*c\d)", .output = "" },
+        { .input = R"(\\)", .output = "" },
+        { .input = R"(\\a)"sv.substr(0, 2), .output = "" },
+        { .input = "//", .output = "" },
 #else
         { .input = "////", .output = "/" },
 #endif
-    };
+    });
 
-    testPathXname(common_xname_tests.data(), common_xname_tests.size(), tr_sys_path_basename);
-    // testPathXname(common_xname_tests.data(), common_xname_tests.size(), tr_sys_path_dirname);
+    testPathXname(CommonXnameTests.data(), CommonXnameTests.size(), tr_sys_path_basename);
 
-    auto const basename_tests = std::vector<XnameTestData>{
-        XnameTestData{ .input = "a", .output = "a" },
+    static constexpr auto BasenameTests = std::to_array<XnameTestData>({
+        { .input = "a", .output = "a" },
         { .input = "aa", .output = "aa" },
         { .input = "/aa", .output = "aa" },
         { .input = "/a/b/c", .output = "c" },
@@ -698,9 +700,9 @@ TEST_F(FileTest, pathBasename)
         { .input = "\\", .output = "/" },
         { .input = "\\a", .output = "a" },
 #endif
-    };
+    });
 
-    testPathXname(basename_tests.data(), basename_tests.size(), tr_sys_path_basename);
+    testPathXname(BasenameTests.data(), BasenameTests.size(), tr_sys_path_basename);
 }
 
 TEST_F(FileTest, pathDirname)

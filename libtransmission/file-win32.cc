@@ -57,7 +57,7 @@ constexpr bool is_unc_path(std::string_view path)
 bool is_valid_path(std::string_view path)
 {
     if (is_unc_path(path)) {
-        if (path[2] != '\0' && isalnum(static_cast<unsigned char>(path[2])) == 0) {
+        if (std::size(path) <= 2 || isalnum(static_cast<unsigned char>(path[2])) == 0) {
             return false;
         }
     } else if (auto const pos = path.find(':'); pos != std::string_view::npos) {

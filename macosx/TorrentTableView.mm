@@ -36,8 +36,6 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 @interface TorrentTableView ()
 
-@property(nonatomic) IBOutlet Controller* fController;
-
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
 
 @property(nonatomic, readonly) NSMutableIndexSet* fCollapsedGroups;
@@ -57,9 +55,9 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 @implementation TorrentTableView
 
-- (instancetype)initWithCoder:(NSCoder*)decoder
+- (instancetype)initWithFrame:(NSRect)frameRect
 {
-    if ((self = [super initWithCoder:decoder])) {
+    if ((self = [super initWithFrame:frameRect])) {
         self.hoveringData = [[TorrentTableViewHoveringData alloc] init];
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
@@ -82,20 +80,25 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         _piecesBarPercent = [_fDefaults boolForKey:@"PiecesBar"] ? 1.0 : 0.0;
 
         self.style = NSTableViewStyleFullWidth;
+
+        [self setupUI];
     }
 
     return self;
 }
 
-- (void)awakeFromNib
+- (void)setFController:(Controller*)fController
 {
-    [super awakeFromNib];
-
-    if (self.fController != nil) {
-        self.fContextRow = [TorrentContextMenuProvider makeRowContextMenuWithTarget:self.fController];
-        self.fContextNoRow = [TorrentContextMenuProvider makeNoRowContextMenuWithTarget:self.fController];
+    _fController = fController;
+    if (_fController != nil) {
+        self.fContextRow = [TorrentContextMenuProvider makeRowContextMenuWithTarget:_fController];
+        self.fContextNoRow = [TorrentContextMenuProvider makeNoRowContextMenuWithTarget:_fController];
     }
+}
 
+- (void)setupUI
+{
+    self.headerView = nil;
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(reloadVisibleRows) name:@"RefreshTorrentTable"
                                              object:nil];
 }

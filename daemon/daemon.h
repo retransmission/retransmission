@@ -12,7 +12,6 @@
 #include <libtransmission/utils-ev.h>
 #include <libtransmission/variant.h>
 
-struct event_base;
 struct tr_error;
 struct tr_session;
 
@@ -28,6 +27,7 @@ public:
     void stop();
 
 private:
+    tr::evhelpers::evbase_unique_ptr ev_base_;
 #ifdef HAVE_SYS_SIGNALFD_H
     int sigfd_ = -1;
 #endif /* HAVE_SYS_SIGNALFD_H */
@@ -37,7 +37,6 @@ private:
     tr::Settings settings_;
     tr_session* my_session_ = nullptr;
     char const* log_file_name_ = nullptr;
-    struct event_base* ev_base_ = nullptr;
     FILE* log_stream_ = nullptr;
 
     [[nodiscard]] bool parse_args(int argc, char const* const* argv, bool* dump_settings, bool* foreground, int* exit_code);

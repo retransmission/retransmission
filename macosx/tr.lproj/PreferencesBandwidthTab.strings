@@ -1,0 +1,11 @@
+"Upload:" = "Karşıya yükleme hızı:";
+"Download:" = "İndirme hızı:";
+"KB/s" = "KB/sn";
+"Speed limits:" = "Genel bant genişliği sınırları:";
+"Alternative speed limits:" = "Hız Sınırı kipi:";
+"Override normal speed limits manually or at scheduled times" = "Hız Sınırı, Genel Bant Genişliğini etkisiz kılar";
+"Scheduled times:" = "Hız Sınırını düzenli kıl:";
+"to" = "arası";
+"Every Day" = "Her gün";
+"Weekdays" = "Hafta içi";
+"Weekends" = "Hafta sonu";

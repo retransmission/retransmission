@@ -49,6 +49,8 @@ using tr_socket_t = SOCKET;
 #define EAFNOSUPPORT WSAEAFNOSUPPORT
 #undef ENETUNREACH
 #define ENETUNREACH WSAENETUNREACH
+#undef ETIMEDOUT
+#define ETIMEDOUT WSAETIMEDOUT
 
 #define sockerrno WSAGetLastError()
 #define set_sockerrno(save)

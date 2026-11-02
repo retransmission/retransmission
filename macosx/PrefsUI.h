@@ -6,16 +6,21 @@
 
 @interface PrefsUI : NSObject
 
++ (NSTextField*)sectionTitle:(NSString*)text;
+
 + (NSTextField*)smallLabel:(NSString*)text;
 
 + (NSButton*)checkbox:(NSString*)title target:(id)target action:(SEL)action;
 
 + (NSButton*)pushButton:(NSString*)title target:(id)target action:(SEL)action;
 
++ (NSPopUpButton*)popUpButton;
+
 + (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max;
 
 /// Views modifiers
 /// Wrapped into stack with default padding.
 + (NSView*)indentedView:(NSView*)view;
++ (NSView*)indentedView:(NSView*)view level:(NSInteger)level;
 
 @end

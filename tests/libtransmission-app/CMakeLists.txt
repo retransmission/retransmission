@@ -12,6 +12,7 @@ target_sources(libtransmission-app-test
 		rpc-queue-test.cc
 		session-test.cc
 		test-fixtures.h
+		torrent-test.cc
 		trash-test.cc)
 
 set_property(

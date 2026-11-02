@@ -6,11 +6,13 @@ on:
     paths-ignore:
       - 'docs/**'
       - '.github/**'
+      - 'macosx/**'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - 'docs/**'
       - '.github/**'
+      - 'macosx/**'
   schedule:
     - cron: '29 14 * * 1'
 

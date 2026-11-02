@@ -576,7 +576,7 @@ void DetailsDialog::refreshUI()
                 have_verified += tor->haveVerified();
                 size_when_done += tor->sizeWhenDone();
                 left_until_done += tor->leftUntilDone();
-                available += tor->sizeWhenDone() - tor->leftUntilDone() + tor->haveUnverified() + tor->desiredAvailable();
+                available += tor->sizeWhenDone() - tor->leftUntilDone() + tor->desiredAvailable();
             }
         }
 

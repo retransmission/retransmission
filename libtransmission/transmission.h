@@ -628,7 +628,8 @@ void tr_torrentStop(tr_torrent* torrent);
  *   ".", or "..", the error argument will be EINVAL.
  *
  *   If the path exists on disk but can't be renamed, the callback's `error`
- *   argument will be set via `set_with_errno()` with `rename()`'s errno.
+ *   argument will hold the system's code and message from the rename. The
+ *   code is errno on POSIX and GetLastError() on Windows.
  */
 void tr_torrentRenamePath(
     tr_torrent* tor,
@@ -895,3 +896,9 @@ void tr_torrentVerify(tr_torrent* torrent);
 // Batch version of tr_torrentStat().
 // Prefer calling this over calling the single-torrent version in a loop.
 [[nodiscard]] std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> torrents);
+
+// Stats every torrent on libtransmission's thread after any work already
+// queued there, e.g. the stop queued by tr_torrentStop(), then passes the
+// results to `callback` on that thread.
+// Has the same restrictions as `tr_sessionSetCompletenessCallback`.
+void tr_torrentStatAsync(tr_session* session, tr_torrent_stats_func callback);

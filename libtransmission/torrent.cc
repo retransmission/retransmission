@@ -55,15 +55,6 @@ struct tr_torrent_builder;
 using namespace std::literals;
 using namespace tr::Values;
 
-namespace
-{
-// for the `_deprecated` float fields
-[[nodiscard]] constexpr float as_float(Percent const percent) noexcept
-{
-    return static_cast<float>(percent.quotient());
-}
-} // namespace
-
 #define tr_return_if_fail(expr) \
     do { \
         if (expr) [[likely]] { \
@@ -1363,19 +1354,15 @@ tr_stat tr_torrent::stats() const
     stats.piece_download_speed = piece_download_speed;
 
     stats.percent_complete = this->completion_.percent_complete();
-    stats.percent_complete_deprecated = as_float(stats.percent_complete);
     stats.metadata_percent_complete = get_metadata_percent();
-    stats.metadata_percent_complete_deprecated = as_float(stats.metadata_percent_complete);
     stats.metadata_have = stats.metadata_percent_complete.have();
     stats.metadata_size = stats.metadata_percent_complete.total();
 
     stats.percent_done = this->completion_.percent_done();
-    stats.percent_done_deprecated = as_float(stats.percent_done);
     stats.left_until_done = this->completion_.left_until_done();
     stats.size_when_done = this->completion_.size_when_done();
 
     stats.recheck_progress = verify_progress().value_or(Percent{});
-    stats.recheck_progress_deprecated = as_float(stats.recheck_progress);
     stats.checked_bytes = stats.recheck_progress.have();
     stats.activity_date = this->date_active_;
     stats.added_date = this->date_added_;
@@ -1393,7 +1380,6 @@ tr_stat tr_torrent::stats() const
     stats.desired_available = tr_peerMgrGetDesiredAvailable(this);
 
     stats.upload_ratio = Ratio{ stats.uploaded_ever, stats.size_when_done };
-    stats.upload_ratio_deprecated = static_cast<float>(tr_getRatio(stats.uploaded_ever, stats.size_when_done));
 
     auto seed_ratio_bytes_left = uint64_t{};
     auto seed_ratio_bytes_goal = uint64_t{};
@@ -1434,7 +1420,6 @@ tr_stat tr_torrent::stats() const
     } else {
         stats.seed_ratio_percent_done = Percent{ seed_ratio_bytes_goal - seed_ratio_bytes_left, seed_ratio_bytes_goal };
     }
-    stats.seed_ratio_percent_done_deprecated = as_float(stats.seed_ratio_percent_done);
 
     /* test some of the constraints */
     TR_ASSERT(stats.size_when_done <= this->total_size());
@@ -1466,6 +1451,23 @@ std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> const torrents)
     return ret;
 }
 
+void tr_torrentStatAsync(tr_session* const session, tr_torrent_stats_func callback)
+{
+    tr_return_if_fail(session != nullptr);
+    tr_return_if_fail(callback != nullptr);
+
+    session->queue_session_thread([session, callback = std::move(callback)] {
+        auto stats = std::vector<tr_stat>{};
+        {
+            auto const lock = session->unique_lock();
+            if (auto const torrents = session->torrents().get_all(); !std::empty(torrents)) {
+                stats = tr_torrentStat(torrents);
+            }
+        }
+        callback(std::move(stats));
+    });
+}
+
 // ---
 
 tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
@@ -1479,13 +1481,11 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
     auto const [begin, end] = tor->piece_span_for_file(file);
 
     auto const have = tor->is_seed() || length == 0 ? length : tor->count_has_bytes_in_file(file);
-    auto const progress = Percent{ have, length };
     return {
         .name = subpath.c_str(),
         .have = have,
         .length = length,
-        .progress = progress,
-        .progress_deprecated = progress.quotient(),
+        .progress = Percent{ have, length },
         .beginPiece = begin,
         .endPiece = end,
         .priority = priority,
@@ -2566,7 +2566,7 @@ namespace rename_helpers
 
 [[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
 {
-    tr_error_code_t err = 0;
+    auto error = tr_error{};
 
     auto const base = (tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir()).sv();
 
@@ -2589,16 +2589,12 @@ namespace rename_helpers
 
         if (!tgt_exists) {
             tmp = errno;
-
-            if (auto error = tr_error{}; !tr_sys_path_rename(src, tgt, &error)) {
-                err = error.code();
-            }
-
+            tr_sys_path_rename(src, tgt, &error);
             errno = tmp;
         }
     }
 
-    return err;
+    return error;
 }
 
 void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::string_view newname, tr_file_index_t file_index)
@@ -2642,16 +2638,16 @@ void tr_torrent::rename_path_in_session_thread(
 {
     using namespace rename_helpers;
 
-    tr_error_code_t error = 0;
+    auto error = tr_error{};
 
     if (!renameArgsAreValid(this, oldpath, newname)) {
-        error = EINVAL;
+        error.set_from_errno(EINVAL);
     } else if (auto const file_indices = renameFindAffectedFiles(this, oldpath); std::empty(file_indices)) {
-        error = EINVAL;
+        error.set_from_errno(EINVAL);
     } else {
         error = renamePath(this, oldpath, newname);
 
-        if (error == 0) {
+        if (!error) {
             /* update tr_info.files */
             for (auto const& file_index : file_indices) {
                 renameTorrentFileString(this, oldpath, newname, file_index);
@@ -2670,12 +2666,7 @@ void tr_torrent::rename_path_in_session_thread(
     mark_changed();
 
     if (callback != nullptr) {
-        auto rename_error = tr_error{};
-        if (error != 0) {
-            rename_error.set_from_errno(error);
-        }
-
-        callback(id(), oldpath, newname, rename_error);
+        callback(id(), oldpath, newname, error);
     }
 }
 
@@ -2684,7 +2675,7 @@ void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname,
     auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback] {
         if (callback != nullptr) {
             auto error = tr_error{};
-            error.set_from_errno(TR_ERROR_EINVAL);
+            error.set_from_errno(EINVAL);
             callback(tor_id, oldpath, newname, error);
         }
     };

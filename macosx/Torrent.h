@@ -5,6 +5,8 @@
 #import <Foundation/Foundation.h>
 #import <Quartz/Quartz.h>
 
+#include <vector>
+
 #include <libtransmission/types.h>
 
 @class FileListNode;
@@ -13,6 +15,11 @@ struct tr_session;
 struct tr_torrent;
 
 typedef NS_ENUM(NSUInteger, TorrentDeterminationType) { TorrentDeterminationAutomatic = 0, TorrentDeterminationUserSpecified };
+
+typedef NS_OPTIONS(NSUInteger, UpdateTorrentsResult) {
+    UpdateTorrentsTransmittingChanged = 1 << 0,
+    UpdateTorrentsQueuePositionChanged = 1 << 1
+};
 
 extern NSString* const kTorrentDidChangeGroupNotification;
 
@@ -38,11 +45,9 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 - (void)getAmountFinished:(float*)tab size:(int)size;
 @property(nonatomic) NSIndexSet* previousFinishedPieces;
 
-// Updates one or more torrents by refreshing their libtransmission stats.
-// Prefer using this batch method when updating many torrents at once.
-+ (void)updateTorrents:(NSArray<Torrent*>*)torrents;
-
-- (void)update;
+// Gives each torrent the stat with its id; stats for other torrents are ignored.
+// Returns a bitfield flagging changed fields.
++ (UpdateTorrentsResult)updateTorrents:(NSArray<Torrent*>*)torrents fromStats:(std::vector<tr_stat>)stats;
 
 - (void)startTransferIgnoringQueue:(BOOL)ignoreQueue;
 - (void)startTransferNoQueue;
@@ -132,7 +137,7 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic, readonly) CGFloat progressLeft;
 @property(nonatomic, readonly) tr::Values::Percent checkingProgress;
 
-@property(nonatomic, readonly) CGFloat availableDesired;
+@property(nonatomic, readonly) tr::Values::Percent availableDesired;
 
 /// True if non-paused. Running.
 @property(nonatomic, getter=isActive, readonly) BOOL active;

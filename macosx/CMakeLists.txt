@@ -146,12 +146,16 @@ target_sources(${TR_NAME}-mac
         PowerManager.mm
         PredicateEditorRowTemplateAny.h
         PredicateEditorRowTemplateAny.mm
+        PrefsBandwidthTabViewController.h
+        PrefsBandwidthTabViewController.mm
         PrefsController.h
         PrefsController.mm
         PrefsGeneralTabViewController.h
         PrefsGeneralTabViewController.mm
         PrefsNetworkTabViewController.h
         PrefsNetworkTabViewController.mm
+        PrefsPeersTabViewController.h
+        PrefsPeersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
         PrefsWindow.h
@@ -189,6 +193,10 @@ target_sources(${TR_NAME}-mac
         TorrentContextMenuProvider.mm
         TorrentGroup.h
         TorrentGroup.mm
+        TorrentMainView.h
+        TorrentMainView.mm
+        TorrentMainWindow.h
+        TorrentMainWindow.mm
         TorrentTableView.h
         TorrentTableView.mm
         TrackerIconLoader.h
@@ -345,11 +353,9 @@ endif()
 
 set(BASE_XIB_FILES
     AddWindow.xib
-    Creator.xib
     GroupRules.xib
     InfoActivityView.xib
     InfoOptionsView.xib
-    MainMenu.xib
     PrefsWindow.xib)
 list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
@@ -357,12 +363,15 @@ list(TRANSFORM BASE_XIB_FILES
 set(LANG_STRINGS_FILES
     AddMagnetWindow.strings
     AppMenu.strings
+    Creator.strings
     GlobalOptionsPopover.strings
     InfoGeneralView.strings
     InfoPlist.strings
     Localizable.strings
+    PreferencesBandwidthTab.strings
     PreferencesGeneralTab.strings
     PreferencesNetworkTab.strings
+    PreferencesPeersTab.strings
     TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})

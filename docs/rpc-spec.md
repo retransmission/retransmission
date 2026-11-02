@@ -286,8 +286,8 @@ The 'source' column here corresponds to the data structure there.
 | `peers_from` | object (see below)| n/a
 | `peers_getting_from_us` | number| tr_stat
 | `peers_sending_to_us` | number| tr_stat
-| `percent_complete` | double | tr_stat
-| `percent_done` | double | tr_stat
+| `percent_complete` | double | **DEPRECATED** tr_stat
+| `percent_done` | double | **DEPRECATED** tr_stat
 | `pieces` | string (see below)| tr_torrent
 | `piece_count`| number| tr_torrent_view
 | `piece_size`| number| tr_torrent_view
@@ -301,6 +301,8 @@ The 'source' column here corresponds to the data structure there.
 | `seconds_seeding`| number| tr_stat
 | `seed_idle_limit`| number| tr_torrent
 | `seed_idle_mode`| number| tr_inactivelimit
+| `seed_ratio_bytes_goal`| number| tr_stat; the total `uploaded_ever` that meets the seed ratio
+| `seed_ratio_bytes_left`| number| tr_stat; 0 while downloading, once the goal is met, once `is_finished` is true, or when no seed ratio is set
 | `seed_ratio_limit`| double| tr_torrent
 | `seed_ratio_mode`| number| tr_ratiolimit
 | `sequential_download`| boolean| tr_torrent
@@ -316,7 +318,7 @@ The 'source' column here corresponds to the data structure there.
 | `uploaded_ever`| integer| tr_stat
 | `upload_limit`| integer| tr_torrent
 | `upload_limited`| boolean| tr_torrent
-| `upload_ratio`| double| tr_stat
+| `upload_ratio`| double| **DEPRECATED** tr_stat; -1 when `uploaded_ever` and `size_when_done` are both 0, -2 when only `size_when_done` is 0
 | `wanted`| array (see below)| n/a
 | `webseeds`| array of strings | **DEPRECATED** tr_tracker_view
 | `webseeds_ex`| array (see below)| n/a
@@ -369,7 +371,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 | `peer_is_choked`        | boolean    | tr_peer_stat
 | `peer_is_interested`    | boolean    | tr_peer_stat
 | `port`                  | number     | tr_peer_stat
-| `progress`              | double     | **DEPRECATED** tr_peer_stat
+| `progress`              | double     | tr_peer_stat; an estimate before the torrent has metadata, afterwards `have_total` / `total_size`
 | `rate_to_client` (B/s)  | number     | tr_peer_stat
 | `rate_to_peer` (B/s)    | number     | tr_peer_stat
 | `supports_holepunch`    | boolean    | tr_peer_stat
@@ -1157,11 +1159,15 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `peers.have_total`
 | `torrent_get` | new arg `peers.supports_holepunch`
 | `torrent_get` | new arg `peers_from.from_holepunch`
+| `torrent_get` | new arg `seed_ratio_bytes_goal`
+| `torrent_get` | new arg `seed_ratio_bytes_left`
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | :warning: **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `torrent_get` | :warning: **DEPRECATED** `metadata_percent_complete`. Use `metadata_have` and `metadata_size` instead.
-| `torrent_get` | :warning: **DEPRECATED** `peers.progress`. Use `peers.have_total` and `total_size` instead.
+| `torrent_get` | :warning: **DEPRECATED** `percent_complete`. Use `have_valid`, `have_unchecked`, and `total_size` instead. All are 0 until the torrent has metadata.
+| `torrent_get` | :warning: **DEPRECATED** `percent_done`. Use `left_until_done` and `size_when_done` instead. Both are 0 until the torrent has metadata.
 | `torrent_get` | :warning: **DEPRECATED** `recheck_progress`. Use `checked_bytes` and `total_size` instead.
+| `torrent_get` | :warning: **DEPRECATED** `upload_ratio`. Use `uploaded_ever` and `size_when_done` instead.
 | `session_get` | new arg `recent_download_paths`
 | `session_get` | new arg `recent_relocate_paths`
 | `session_get` | new arg `rpc_max_request_body_size`

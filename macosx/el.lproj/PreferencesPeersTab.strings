@@ -1,0 +1,15 @@
+"Update" = "Ενημέρωση";
+"Blocklist:" = "Λίστα φραγής:";
+"Enable blocklist" = "Αποτροπή σύνδεσης διαμοιραστών στη λίστα φραγής";
+"High connection limits might significantly impact system performance" = "Τα υψηλά όρια συνδέσεων μπορεί να επηρεάσουν σημαντικά την επίδοση του συστήματος";
+"Use PEX to find more peers for public torrents" = "Χρήση peer exchange (PEX) για δημόσια torrents";
+"Maximum peers for new torrents:" = "Μέγιστος αριθμός συνδέσεων για νέες μεταφορές:";
+"Maximum peers overall:" = "Καθολικός μέγιστος αριθμός συνδέσεων:";
+"Peer limits:" = "Συνδέσεις:";
+"Prefer encryption" = "Προτίμηση κρυπτογραφημένων διαμοιραστών";
+"Encryption:" = "Κρυπτογράφηση:";
+"Require encryption" = "Αγνόηση μη κρυπτογραφημένων διαμοιραστών";
+"Automatically update weekly" = "Αυτόματη ενημέρωση εβδομαδιαίως";
+"Use DHT to find more peers for public torrents" = "Χρήση distributed hash table (DHT) για δημόσια torrents";
+"Use Local Peer Discovery to find more peers for public torrents" = "Χρήση ανακάλυψης τοπικών διαμοιραστών για δημόσια torrents";
+"URL:" = "URL:";

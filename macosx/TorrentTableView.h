@@ -5,8 +5,11 @@
 #import <AppKit/AppKit.h>
 
 @class Torrent;
+@class Controller;
 
 @interface TorrentTableView : NSOutlineView<NSOutlineViewDelegate, NSAnimationDelegate, NSPopoverDelegate, NSMenuItemValidation>
+
+@property(nonatomic, weak) Controller* fController;
 
 - (void)reloadVisibleRows;
 

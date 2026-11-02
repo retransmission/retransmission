@@ -16,7 +16,10 @@
 
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
 #include <iterator>
+#include <memory>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 #include <libtransmission/transmission.h>
 
@@ -70,6 +73,8 @@
 #import "NSURLAdditions.h"
 #import "MenuProvider.h"
 #import "NSMenuAdditions.h"
+#import "TorrentMainWindow.h"
+#import "TorrentMainView.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -278,17 +283,18 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return settings;
 }
 
-@interface Controller ()<NSApplicationDelegate, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
+@interface Controller ()<NSApplicationDelegate, NSOutlineViewDataSource, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
 
 @property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
-@property(nonatomic) IBOutlet NSWindow* fWindow;
-@property(nonatomic) IBOutlet SPUStandardUpdaterController* fUpdaterController;
-@property(nonatomic) IBOutlet TorrentTableView* fTableView;
+@property(nonatomic) TorrentMainWindow* fWindow;
+@property(nonatomic) TorrentMainView* fMainView;
+@property(nonatomic) SPUStandardUpdaterController* fUpdaterController;
+@property(nonatomic, readonly) TorrentTableView* fTableView;
 
-@property(nonatomic) IBOutlet NSButton* fActionButton;
-@property(nonatomic) IBOutlet NSButton* fSpeedLimitButton;
-@property(nonatomic) IBOutlet NSButton* fClearCompletedButton;
-@property(nonatomic) IBOutlet NSTextField* fTotalTorrentsField;
+@property(nonatomic, readonly) NSButton* fActionButton;
+@property(nonatomic, readonly) NSButton* fSpeedLimitButton;
+@property(nonatomic, readonly) NSButton* fClearCompletedButton;
+@property(nonatomic, readonly) NSTextField* fTotalTorrentsField;
 
 @property(nonatomic, readonly) tr_session* fLib;
 
@@ -308,6 +314,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) DragOverlayWindow* fOverlayWindow;
 
 @property(nonatomic) NSTimer* fTimer;
+@property(nonatomic) BOOL fTimerStatsPending;
 
 @property(nonatomic) StatusBarController* fStatusBar;
 
@@ -334,7 +341,10 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic) BOOL fGlobalPopoverShown;
 @property(nonatomic) NSView* fPositioningView;
 
+@property(nonatomic) BOOL fQueueOrderRefreshPending;
+
 - (void)removeTorrentsImpl:(NSArray<Torrent*>*)torrents deleteData:(BOOL)deleteData;
+- (void)sortTorrentsByQueuePosition;
 
 @end
 
@@ -586,7 +596,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         NSError* localError;
         if (![Torrent trashFile:tr_strv_to_utf8_nsstring(filename) error:&localError]) {
             if (error != nullptr) {
-                error->set(static_cast<int>(localError.code), localError.description.UTF8String);
+                error->set(localError.code, localError.description.UTF8String);
             }
             return false;
         }
@@ -639,7 +649,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 
     // Offered only on the first launch, before this app has settings or transfers of its own.
-    // It runs before the main nib loads, so every object sees what was imported.
+    // It runs before Controller is created, so every object sees what was imported.
     if (![defaults boolForKey:kTransmissionImportOfferedKey]) {
         offerToImportFromTransmission();
         [defaults setBool:YES forKey:kTransmissionImportOfferedKey];
@@ -708,6 +718,11 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             });
         });
 
+        _fMainView = [[TorrentMainView alloc] initWithFrame:NSZeroRect];
+        _fWindow = [[TorrentMainWindow alloc] initWindowWithContentView:_fMainView];
+
+        [self bindInterfaceActions];
+
         NSApp.delegate = self;
 
         _fTorrents = [[NSMutableArray alloc] init];
@@ -747,14 +762,59 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         _fQuitRequested = NO;
 
         _fPauseOnLaunch = (NSEvent.modifierFlags & NSEventModifierFlagOption) != 0;
+
+        [self configureMainWindowLayout];
     }
     return self;
 }
 
-- (void)awakeFromNib
+- (TorrentTableView*)fTableView
 {
-    [super awakeFromNib];
+    return self.fMainView.tableView;
+}
 
+- (NSButton*)fActionButton
+{
+    return self.fMainView.globalActionsButton;
+}
+
+- (NSButton*)fSpeedLimitButton
+{
+    return self.fMainView.speedLimitButton;
+}
+
+- (NSButton*)fClearCompletedButton
+{
+    return self.fMainView.clearCompletedButton;
+}
+
+- (NSTextField*)fTotalTorrentsField
+{
+    return self.fMainView.totalTorrentsField;
+}
+
+- (void)bindInterfaceActions
+{
+    self.fTableView.dataSource = self;
+
+    self.fActionButton.target = self;
+    self.fActionButton.action = @selector(showGlobalPopover:);
+
+    self.fSpeedLimitButton.target = self;
+    self.fSpeedLimitButton.action = @selector(speedLimitChanged:);
+
+    self.fClearCompletedButton.target = self;
+    self.fClearCompletedButton.action = @selector(clearCompleted:);
+
+    [self.fSpeedLimitButton bind:NSValueBinding toObject:NSUserDefaultsController.sharedUserDefaultsController
+                     withKeyPath:@"values.SpeedLimit"
+                         options:nil];
+
+    self.fTableView.fController = self;
+}
+
+- (void)configureMainWindowLayout
+{
     Toolbar* toolbar = [[Toolbar alloc] initWithIdentifier:@"TRMainToolbar"];
     toolbar.delegate = self;
     toolbar.allowsUserCustomization = YES;
@@ -806,8 +866,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self.fTableView registerForDraggedTypes:@[ kTorrentTableViewDataType ]];
     [self.fWindow registerForDraggedTypes:@[ NSPasteboardTypeFileURL, NSPasteboardTypeURL ]];
 
-    //you would think this would be called later in this method from updateUI, but it's not reached in awakeFromNib
-    //this must be called after showStatusBar:
+    // you would think this would be called later in this method from updateUI, but it's not reached in configureMainWindowLayout.
+    // this must be called after showStatusBar:
     [self.fStatusBar updateWithDownload:0.0 upload:0.0];
 
     auto* const session = self.fLib;
@@ -824,6 +884,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [self.fTorrents addObject:torrent];
         self.fTorrentHashes[torrent.hashString] = torrent;
     }
+    [self sortTorrentsByQueuePosition];
 
     //update previous transfers state by recreating a torrent from history
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
@@ -898,7 +959,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     //timer to update the interface every second
     __weak __auto_type weakSelf = self;
     self.fTimer = [NSTimer scheduledTimerWithTimeInterval:kUpdateUISeconds repeats:YES block:^(NSTimer* _Nonnull) {
-        [weakSelf updateUI];
+        [weakSelf updateUIFromTimer];
     }];
 
     [NSRunLoop.currentRunLoop addTimer:self.fTimer forMode:NSModalPanelRunLoopMode];
@@ -933,7 +994,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                       }];
 
     MenuProvider* menuProvider = [[MenuProvider alloc] initWithController:self];
-    NSMenu* menu = [menuProvider buildMainMenu:_fUpdaterController];
+    self.fUpdaterController = [[SPUStandardUpdaterController alloc] initWithUpdaterDelegate:self userDriverDelegate:nil];
+    NSMenu* menu = [menuProvider buildMainMenu:self.fUpdaterController];
     NSApp.mainMenu = menu;
 }
 
@@ -1151,6 +1213,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     //complete cleanup: this can take many seconds
     tr_sessionClose(self.fLib);
+    _fLib = nullptr; // the alert below runs main-queue blocks that may still use it
 
     if (self.fQuitForTransmission) {
         NSAlert* const alert = [[NSAlert alloc] init];
@@ -1393,7 +1456,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                 [torrent startTransfer];
             }
 
-            [torrent update];
             [self.fTorrents addObject:torrent];
 
             if (!self.fAddingTransfers) {
@@ -1413,7 +1475,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if (add) {
         torrent.queuePosition = self.fTorrents.count;
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -1473,7 +1534,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [torrent startTransfer];
         }
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -1492,7 +1552,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     if (add) {
         torrent.queuePosition = self.fTorrents.count;
 
-        [torrent update];
         [self.fTorrents addObject:torrent];
 
         if (!self.fAddingTransfers) {
@@ -2205,7 +2264,9 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [torrent resetCache];
     }
 
-    [self applyFilter];
+    [self requestStats:^{
+        [self applyFilter];
+    }];
 }
 
 - (NSArray<Torrent*>*)selectedTorrents
@@ -2289,10 +2350,65 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)updateUI
 {
+    [self requestStats:nil];
+}
+
+// Skips ticks while the last tick's stats are pending, so requests can't pile up behind a stalled session thread.
+- (void)updateUIFromTimer
+{
+    if (self.fTimerStatsPending) {
+        return;
+    }
+
+    self.fTimerStatsPending = YES;
+    [self requestStats:^{
+        self.fTimerStatsPending = NO;
+    }];
+}
+
+// The stats are taken on libtransmission's thread, so the main thread never waits for its lock.
+- (void)requestStats:(void (^)(void))completion
+{
+    if (self.fQuitting) {
+        return; // tr_sessionClose() may have freed the session
+    }
+
+    tr_torrentStatAsync(self.fLib, [controller = self, completion](std::vector<tr_stat> stats) {
+        // a block's C++ captures are const, so share the vector to move it out later
+        auto const shared_stats = std::make_shared<std::vector<tr_stat>>(std::move(stats));
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (controller.fQuitting) {
+                return; // tr_sessionClose() may have freed the session
+            }
+
+            [controller statsArrived:std::move(*shared_stats)];
+            if (completion != nil) {
+                completion();
+            }
+        });
+    });
+}
+
+- (void)statsArrived:(std::vector<tr_stat>)stats
+{
+    // an Add window's torrent is in the session before it is in fTorrents
+    NSMutableArray<Torrent*>* torrents = [self.fTorrents mutableCopy];
+    for (id addController in self.fAddWindows) {
+        [torrents addObject:[addController torrent]];
+    }
+
+    auto const updateTorrentResult = [Torrent updateTorrents:torrents fromStats:std::move(stats)];
+    if (updateTorrentResult & UpdateTorrentsQueuePositionChanged) {
+        [self sortTorrentsByQueuePosition];
+        self.fQueueOrderRefreshPending = YES;
+    }
+    // the "active" filter depends on `transmitting`
+    if (updateTorrentResult & UpdateTorrentsTransmittingChanged) {
+        [self applyFilter];
+    }
+
     CGFloat dlRate = 0.0, ulRate = 0.0;
     BOOL anyCompleted = NO;
-
-    [Torrent updateTorrents:self.fTorrents];
 
     for (Torrent* torrent in self.fTorrents) {
         //pull the upload and download speeds - most consistent by using current stats
@@ -2307,7 +2423,8 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     if (!NSApp.hidden) {
         if (self.fWindow.visible) {
-            [self sortTorrentsAndIncludeQueueOrder:NO];
+            [self sortTorrentsAndIncludeQueueOrder:self.fQueueOrderRefreshPending];
+            self.fQueueOrderRefreshPending = NO;
 
             [self.fStatusBar updateWithDownload:dlRate upload:ulRate];
 
@@ -2329,10 +2446,11 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 #warning can this be removed or refined?
 - (void)fullUpdateUI
 {
-    [self updateUI];
-    [self applyFilter];
-    [self.fWindow.toolbar validateVisibleItems];
-    [self updateTorrentHistory];
+    [self requestStats:^{
+        [self applyFilter];
+        [self.fWindow.toolbar validateVisibleItems];
+        [self updateTorrentHistory];
+    }];
 }
 
 - (void)setBottomCountText:(BOOL)filtering
@@ -3559,8 +3677,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
                 torrent.queuePosition = i++;
             }
 
-            [Torrent updateTorrents:self.fTorrents];
-
             //do the drag animation here so that the dragged torrents are the ones that are animated as moving, and not the torrents around them
             [self.fTableView beginUpdates];
 
@@ -3592,7 +3708,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [self.fTableView endUpdates];
         }
 
-        [self applyFilter];
+        // sorting reads the queue positions from the stats
+        [self requestStats:^{
+            [self applyFilter];
+        }];
     }
 
     return YES;
@@ -4837,7 +4956,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         [torrent changeDownloadFolderBeforeUsing:location determinationType:TorrentDeterminationAutomatic];
     }
 
-    [torrent update];
     [self.fTorrents addObject:torrent];
 
     if (!self.fAddingTransfers) {
@@ -4855,26 +4973,21 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)rpcStartedStoppedTorrent:(Torrent*)torrent
 {
-    [torrent update];
-
-    [self updateUI];
-    [self applyFilter];
-    [self updateTorrentHistory];
+    [self fullUpdateUI];
 }
 
 - (void)rpcChangedTorrent:(Torrent*)torrent
 {
-    [torrent update];
-
-    if ([self.fTableView.selectedTorrents containsObject:torrent]) {
-        [self.fInfoController updateInfoStats]; //this will reload the file table
-        [self.fInfoController updateOptions];
-    }
+    [self requestStats:^{
+        if ([self.fTableView.selectedTorrents containsObject:torrent]) {
+            [self.fInfoController updateInfoStats]; //this will reload the file table
+            [self.fInfoController updateOptions];
+        }
+    }];
 }
 
 - (void)rpcMovedTorrent:(Torrent*)torrent
 {
-    [torrent update];
     [torrent updateTimeMachineExclude];
 
     if ([self.fTableView.selectedTorrents containsObject:torrent]) {
@@ -4884,13 +4997,13 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)rpcUpdateQueue
 {
-    [Torrent updateTorrents:self.fTorrents];
+    [self requestStats:nil];
+}
 
+- (void)sortTorrentsByQueuePosition
+{
     NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"queuePosition" ascending:YES];
-    NSArray* descriptors = @[ descriptor ];
-    [self.fTorrents sortUsingDescriptors:descriptors];
-
-    [self sortTorrentsAndIncludeQueueOrder:YES];
+    [self.fTorrents sortUsingDescriptors:@[ descriptor ]];
 }
 
 @end

@@ -1,0 +1,11 @@
+"Upload:" = "Débit de téléversement :";
+"Download:" = "Débit de téléchargement :";
+"KB/s" = "Kb/s";
+"Speed limits:" = "Limites globales de bande passante :";
+"Alternative speed limits:" = "Mode à vitesse limitée :";
+"Override normal speed limits manually or at scheduled times" = "Activée, l’option Limite de vitesse outrepasse les limites globales de bande passante";
+"Scheduled times:" = "Limite de vitesse programmée :";
+"to" = "à";
+"Every Day" = "Tous les jours";
+"Weekdays" = "En semaine";
+"Weekends" = "En fin de semaine";

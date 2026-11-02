@@ -9,6 +9,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <iterator> /* std::back_inserter */
 #include <memory>
 #include <string_view>
@@ -22,7 +23,6 @@
 #ifdef _WIN32
 #include <process.h> /* getpid */
 #else
-#include <sys/time.h> /* timeval */
 #include <unistd.h> /* getpid */
 #endif
 
@@ -568,11 +568,6 @@ void pump_log_messages(FILE* log_stream)
     }
 }
 
-void periodic_update(evutil_socket_t /*fd*/, short /*what*/, void* arg)
-{
-    static_cast<tr_daemon*>(arg)->periodic_update();
-}
-
 [[nodiscard]] auto get_default_settings()
 {
     auto defaults = tr::Settings{ 6U };
@@ -969,7 +964,7 @@ void tr_daemon::reconfigure()
 
 void tr_daemon::stop()
 {
-    event_base_loopexit(ev_base_, nullptr);
+    event_base_loopexit(ev_base_.get(), nullptr);
 }
 
 int tr_daemon::start([[maybe_unused]] bool foreground)
@@ -977,9 +972,9 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     sd_notifyf(0, "MAINPID=%d\n", static_cast<int>(getpid()));
 
     /* setup event state */
-    ev_base_ = event_base_new();
+    ev_base_.reset(event_base_new());
 
-    if (ev_base_ == nullptr || !setup_signals()) {
+    if (!ev_base_ || !setup_signals()) {
         auto const error_code = errno;
         auto const errmsg = fmt::format(
             "Couldn't initialize daemon: {error} ({error_code})",
@@ -987,7 +982,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             fmt::arg("error_code", error_code));
         print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         cleanup_signals();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* start the session */
@@ -1027,7 +1022,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         tr_sessionClose(session, 1);
         cleanup_signals();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
@@ -1078,6 +1073,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         reconfigure();
     }
 
+    auto timer_maker = tr::EvTimerMaker{ ev_base_.get() };
+
     /* maybe add a watchdir */
     auto watchdir = std::unique_ptr<Watchdir>{};
     if (map.value_if<bool>(TR_KEY_watch_dir_enabled).value_or(false)) {
@@ -1090,9 +1087,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
                 return on_file_added(session, dirname, basename);
             };
 
-            auto timer_maker = tr::EvTimerMaker{ ev_base_ };
             watchdir = force_generic ? Watchdir::create_generic(dir, handler, timer_maker) :
-                                       Watchdir::create(dir, handler, timer_maker, ev_base_);
+                                       Watchdir::create(dir, handler, timer_maker, ev_base_.get());
         }
     }
 
@@ -1116,60 +1112,34 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 #endif
 
     /* Create new timer event to report daemon status */
-    event* status_ev = nullptr;
-    {
-        static constexpr auto OneSec = timeval{ .tv_sec = 1, .tv_usec = 0 }; // 1 second
-        status_ev = event_new(ev_base_, -1, EV_PERSIST, &::periodic_update, this);
-
-        if (status_ev == nullptr) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't create event: {error} ({error_code})",
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
-            goto CLEANUP;
-        }
-
-        if (event_add(status_ev, &OneSec) == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't add event: {error} ({error_code})",
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
-            goto CLEANUP;
-        }
-    }
+    auto status_timer = timer_maker.create([this] { periodic_update(); });
+    status_timer->start_repeating(1s);
 
     sd_notify(0, "READY=1\n");
 
+    int exit_code = EXIT_FAILURE;
+
     /* Run daemon event loop */
-    if (event_base_dispatch(ev_base_) == -1) {
+    if (event_base_dispatch(ev_base_.get()) == -1) {
         auto const error_code = errno;
         tr_logAddError(
             fmt::format(
                 "Couldn't launch daemon event loop: {error} ({error_code})",
                 fmt::arg("error", tr_strerror(error_code)),
                 fmt::arg("error_code", error_code)));
-        goto CLEANUP;
+    } else {
+        exit_code = EXIT_SUCCESS;
     }
 
-CLEANUP:
     sd_notify(0, fmt::format("STATUS=Closing {:s} session...\n", TR_PROJ_APPNAME).c_str());
 
     fmt::print("Closing {:s} session...", TR_PROJ_APPNAME);
 
+    status_timer.reset();
+
     watchdir.reset();
 
-    if (status_ev != nullptr) {
-        event_del(status_ev);
-        event_free(status_ev);
-    }
-
     cleanup_signals();
-
-    event_base_free(ev_base_);
 
     tr_sessionSaveSettings(my_session_, config_dir_, settings_);
     tr_sessionClose(my_session_);
@@ -1191,9 +1161,11 @@ CLEANUP:
         tr_sys_path_remove(pid_filename);
     }
 
+    ev_base_.reset();
+
     sd_notify(0, "STATUS=\n");
 
-    return 0;
+    return exit_code;
 }
 
 bool tr_daemon::init(int argc, char const* const* argv, bool* foreground, int* ret)

@@ -12,7 +12,6 @@
 #include <ctime> // time_t
 #include <locale>
 #include <optional>
-#include <string>
 #include <string_view>
 
 /**
@@ -107,33 +106,6 @@ template<std::integral T>
 
 template<std::floating_point T>
 [[nodiscard]] std::optional<T> tr_num_parse(std::string_view str, std::string_view* setme_remainder = nullptr);
-
-/**
- * @brief truncate a double value at a given number of decimal places.
- *
- * this can be used to prevent a `printf()` call from rounding up:
- * call with the `decimal_places` argument equal to the number of
- * decimal places in the `printf()`'s precision:
- *
- * - printf("%.2f%%", 99.999) ==> "100.00%"
- *
- * - printf("%.2f%%", tr_truncd(99.999, 2)) ==> "99.99%"
- *             ^                        ^
- *             |   These should match   |
- *             +------------------------+
- */
-[[nodiscard]] double tr_truncd(double x, int decimal_places);
-
-/* return a percent formatted string of either x.xx, xx.x or xxx */
-[[nodiscard]] std::string tr_strpercent(double x);
-
-/** @brief return `TR_RATIO_NA`, `TR_RATIO_INF`, or a number in [0..1]
-    @return `TR_RATIO_NA`, `TR_RATIO_INF`, or a number in [0..1] */
-[[nodiscard]] double tr_getRatio(uint64_t numerator, uint64_t denominator);
-
-/** @param ratio    the ratio to convert to a string
-    @param infinity the string representation of "infinity" */
-[[nodiscard]] std::string tr_strratio(double ratio, std::string_view none, std::string_view infinity);
 
 // ---
 

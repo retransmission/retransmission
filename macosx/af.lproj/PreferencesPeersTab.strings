@@ -1,0 +1,15 @@
+"Update" = "Werk by";
+"Blocklist:" = "Swartlys:";
+"Enable blocklist" = "Belet eweknieë in swartlys om te verbind";
+"High connection limits might significantly impact system performance" = "Hoë verbindingslimieten kan swaar invloed op stelselverrigting hê";
+"Use PEX to find more peers for public torrents" = "Gebruik eweknie-uitruiling (PEX) vir openbare torrents";
+"Maximum peers for new torrents:" = "Maksimum verbindings vir nuwe oordragte:";
+"Maximum peers overall:" = "Globale maksimum verbindings:";
+"Peer limits:" = "Verbindings:";
+"Prefer encryption" = "Verkies geënkripteerde eweknieë";
+"Encryption:" = "Enkripsie:";
+"Require encryption" = "Ignoreer ongeënkripteerde eweknieë";
+"Automatically update weekly" = "Werk outomaties weekliks by";
+"Use DHT to find more peers for public torrents" = "Gebruik verspreidehutstabel (DHT) vir openbare torrents";
+"Use Local Peer Discovery to find more peers for public torrents" = "Gebruik lokale-eweknieverkenning vir openbare torrents";
+"URL:" = "Bronadres:";

@@ -9,13 +9,14 @@
 #include <libtransmission/transmission.h>
 
 #import "PrefsController.h"
-#import "BlocklistDownloaderViewController.h"
 #import "Controller.h"
 #import "DefaultAppHelper.h"
 #import "BonjourController.h"
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "PrefsGeneralTabViewController.h"
+#import "PrefsBandwidthTabViewController.h"
+#import "PrefsPeersTabViewController.h"
 #import "PrefsNetworkTabViewController.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
@@ -50,10 +51,10 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
+@property(nonatomic) PrefsBandwidthTabViewController* bandwidthViewController;
+@property(nonatomic) PrefsPeersTabViewController* peersViewController;
 @property(nonatomic) PrefsNetworkTabViewController* networkViewController;
 @property(nonatomic) IBOutlet NSView* fTransfersView;
-@property(nonatomic) IBOutlet NSView* fBandwidthView;
-@property(nonatomic) IBOutlet NSView* fPeersView;
 @property(nonatomic) IBOutlet NSView* fRemoteView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
 
@@ -69,19 +70,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) IBOutlet NSTextField* fQueueDownloadField;
 @property(nonatomic) IBOutlet NSTextField* fQueueSeedField;
 @property(nonatomic) IBOutlet NSTextField* fStalledField;
-
-@property(nonatomic) IBOutlet NSTextField* fUploadField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadField;
-@property(nonatomic) IBOutlet NSTextField* fSpeedLimitUploadField;
-@property(nonatomic) IBOutlet NSTextField* fSpeedLimitDownloadField;
-@property(nonatomic) IBOutlet NSPopUpButton* fAutoSpeedDayTypePopUp;
-
-@property(nonatomic) IBOutlet NSTextField* fPeersGlobalField;
-@property(nonatomic) IBOutlet NSTextField* fPeersTorrentField;
-@property(nonatomic) IBOutlet NSTextField* fBlocklistURLField;
-@property(nonatomic) IBOutlet NSTextField* fBlocklistMessageField;
-@property(nonatomic) IBOutlet NSTextField* fBlocklistDateField;
-@property(nonatomic) IBOutlet NSButton* fBlocklistButton;
 
 @property(nonatomic) IBOutlet NSTextField* fRPCPortField;
 @property(nonatomic) IBOutlet NSTextField* fRPCPasswordField;
@@ -117,6 +105,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         [self updateRPCWhitelist];
 
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
+        _bandwidthViewController = [[PrefsBandwidthTabViewController alloc] initWithHandle:handle];
+        _peersViewController = [[PrefsPeersTabViewController alloc] initWithHandle:handle];
         _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
     }
 
@@ -159,34 +149,10 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     //set idle seeding minutes
     self.fIdleStopField.integerValue = [self.fDefaults integerForKey:@"IdleLimitMinutes"];
 
-    //set limits
-    [self updateLimitFields];
-
-    //set speed limit
-    self.fSpeedLimitUploadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitUploadLimit"];
-    self.fSpeedLimitDownloadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitDownloadLimit"];
-
-    //set peer connections
-    self.fPeersGlobalField.integerValue = [self.fDefaults integerForKey:@"PeersTotal"];
-    self.fPeersTorrentField.integerValue = [self.fDefaults integerForKey:@"PeersTorrent"];
-
     //set queue values
     self.fQueueDownloadField.integerValue = [self.fDefaults integerForKey:@"QueueDownloadNumber"];
     self.fQueueSeedField.integerValue = [self.fDefaults integerForKey:@"QueueSeedNumber"];
     self.fStalledField.integerValue = [self.fDefaults integerForKey:@"StalledMinutes"];
-
-    //set blocklist
-    NSString* blocklistURL = [self.fDefaults stringForKey:@"BlocklistURL"];
-    if (blocklistURL) {
-        self.fBlocklistURLField.stringValue = blocklistURL;
-    }
-
-    [self updateBlocklistButton];
-    [self updateBlocklistFields];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateLimitFields)
-                                               name:@"UpdateSpeedLimitValuesOutsidePrefs"
-                                             object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateRatioStopField)
                                                name:@"UpdateRatioStopValueOutsidePrefs"
@@ -195,10 +161,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateLimitStopField)
                                                name:@"UpdateIdleStopValueOutsidePrefs"
                                              object:nil];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateBlocklistURLField)
-                                               name:NSControlTextDidChangeNotification
-                                             object:self.fBlocklistURLField];
 
     //set rpc port
     self.fRPCPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"RPCPort"]);
@@ -339,30 +301,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     }
 }
 
-- (void)setPeersGlobal:(id)sender
-{
-    int const count = [sender intValue];
-    [self.fDefaults setInteger:count forKey:@"PeersTotal"];
-    tr_sessionSetPeerLimit(self.fHandle, count);
-}
-
-- (void)setPeersTorrent:(id)sender
-{
-    int const count = [sender intValue];
-    [self.fDefaults setInteger:count forKey:@"PeersTorrent"];
-    tr_sessionSetPeerLimitPerTorrent(self.fHandle, count);
-}
-
-- (void)setPEX:(id)sender
-{
-    tr_sessionSetPexEnabled(self.fHandle, [self.fDefaults boolForKey:@"PEXGlobal"]);
-}
-
-- (void)setDHT:(id)sender
-{
-    tr_sessionSetDHTEnabled(self.fHandle, [self.fDefaults boolForKey:@"DHTGlobal"]);
-}
-
 - (void)setLPD:(id)sender
 {
     tr_sessionSetLPDEnabled(self.fHandle, [self.fDefaults boolForKey:@"LocalPeerDiscoveryGlobal"]);
@@ -376,109 +314,9 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     tr_sessionSetEncryption(self.fHandle, mode);
 }
 
-- (void)setBlocklistEnabled:(id)sender
-{
-    tr_blocklistSetEnabled(self.fHandle, [self.fDefaults boolForKey:@"BlocklistNew"]);
-
-    [self updateBlocklistButton];
-}
-
-- (void)updateBlocklist:(id)sender
-{
-    auto const blocklistDownloaderViewController = [[BlocklistDownloaderViewController alloc] initWithSessionHandle:self.fHandle];
-
-    __weak auto weakSelf = self;
-
-    [blocklistDownloaderViewController showAsSheetModalForWindow:self.window completionHandler:^(NSString* _Nullable error) {
-        if (error) {
-            NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Blocklist -> button")];
-            alert.messageText = NSLocalizedString(@"Download of the blocklist failed.", @"Blocklist -> message");
-            alert.alertStyle = NSAlertStyleWarning;
-            alert.informativeText = error;
-
-            [alert beginSheetModalForWindow:weakSelf.window completionHandler:nil];
-        } else {
-            [weakSelf updateBlocklistFields];
-        }
-    }];
-}
-
-- (void)setBlocklistAutoUpdate:(id)sender
-{
-    tr_blocklistSetUpdatesEnabled(self.fHandle, [self.fDefaults boolForKey:@"BlocklistAutoUpdate"]);
-}
-
-- (void)updateBlocklistFields
-{
-    BOOL const exists = tr_blocklistExists(self.fHandle);
-
-    if (exists) {
-        self.fBlocklistMessageField.stringValue = [NSString
-            localizedStringWithFormat:NSLocalizedString(@"%lu IP address rules in list", "Prefs -> blocklist -> message"),
-                                      tr_blocklistGetRuleCount(self.fHandle)];
-    } else {
-        self.fBlocklistMessageField.stringValue = NSLocalizedString(@"A blocklist must first be downloaded", "Prefs -> blocklist -> message");
-    }
-
-    NSString* updatedDateString;
-    if (exists) {
-        time_t const mtime = tr_blocklistGetMTime(self.fHandle);
-        NSDate* updatedDate = mtime > 0 ? [NSDate dateWithTimeIntervalSince1970:mtime] : nil;
-
-        if (updatedDate) {
-            updatedDateString = [NSDateFormatter localizedStringFromDate:updatedDate dateStyle:NSDateFormatterFullStyle
-                                                               timeStyle:NSDateFormatterShortStyle];
-        } else {
-            updatedDateString = NSLocalizedString(@"N/A", "Prefs -> blocklist -> message");
-        }
-    } else {
-        updatedDateString = NSLocalizedString(@"Never", "Prefs -> blocklist -> message");
-    }
-
-    self.fBlocklistDateField.stringValue = [NSString
-        stringWithFormat:@"%@: %@", NSLocalizedString(@"Last updated", "Prefs -> blocklist -> message"), updatedDateString];
-}
-
-- (void)updateBlocklistURLField
-{
-    NSString* blocklistString = self.fBlocklistURLField.stringValue;
-
-    [self.fDefaults setObject:blocklistString forKey:@"BlocklistURL"];
-    tr_blocklistSetURL(self.fHandle, blocklistString.UTF8String);
-
-    [self updateBlocklistButton];
-}
-
-- (void)updateBlocklistButton
-{
-    NSString* blocklistString = [self.fDefaults objectForKey:@"BlocklistURL"];
-    BOOL const enable = (blocklistString && ![blocklistString isEqualToString:@""]) && [self.fDefaults boolForKey:@"BlocklistNew"];
-    self.fBlocklistButton.enabled = enable;
-}
-
 - (void)setAutoStartDownloads:(id)sender
 {
     tr_sessionSetPaused(self.fHandle, ![self.fDefaults boolForKey:@"AutoStartDownload"]);
-}
-
-- (void)applySpeedSettings:(id)sender
-{
-    tr_sessionLimitSpeed(self.fHandle, tr_direction::Up, [self.fDefaults boolForKey:@"CheckUpload"]);
-    tr_sessionSetSpeedLimit_KBps(self.fHandle, tr_direction::Up, [self.fDefaults integerForKey:@"UploadLimit"]);
-
-    tr_sessionLimitSpeed(self.fHandle, tr_direction::Down, [self.fDefaults boolForKey:@"CheckDownload"]);
-    tr_sessionSetSpeedLimit_KBps(self.fHandle, tr_direction::Down, [self.fDefaults integerForKey:@"DownloadLimit"]);
-
-    [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
-}
-
-- (void)applyAltSpeedSettings
-{
-    tr_sessionSetAltSpeed_KBps(self.fHandle, tr_direction::Up, [self.fDefaults integerForKey:@"SpeedLimitUploadLimit"]);
-    tr_sessionSetAltSpeed_KBps(self.fHandle, tr_direction::Down, [self.fDefaults integerForKey:@"SpeedLimitDownloadLimit"]);
-
-    [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
 - (void)applyRatioSetting:(id)sender
@@ -538,45 +376,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     if (self.fHasLoaded) {
         self.fIdleStopField.integerValue = [self.fDefaults integerForKey:@"IdleLimitMinutes"];
     }
-}
-
-- (void)updateLimitFields
-{
-    if (!self.fHasLoaded) {
-        return;
-    }
-
-    self.fUploadField.integerValue = [self.fDefaults integerForKey:@"UploadLimit"];
-    self.fDownloadField.integerValue = [self.fDefaults integerForKey:@"DownloadLimit"];
-}
-
-- (void)setGlobalLimit:(id)sender
-{
-    [self.fDefaults setInteger:[sender integerValue] forKey:sender == self.fUploadField ? @"UploadLimit" : @"DownloadLimit"];
-    [self applySpeedSettings:self];
-}
-
-- (void)setSpeedLimit:(id)sender
-{
-    [self.fDefaults setInteger:[sender integerValue]
-                        forKey:sender == self.fSpeedLimitUploadField ? @"SpeedLimitUploadLimit" : @"SpeedLimitDownloadLimit"];
-    [self applyAltSpeedSettings];
-}
-
-- (void)setAutoSpeedLimit:(id)sender
-{
-    tr_sessionUseAltSpeedTime(self.fHandle, [self.fDefaults boolForKey:@"SpeedLimitAuto"]);
-}
-
-- (void)setAutoSpeedLimitTime:(id)sender
-{
-    tr_sessionSetAltSpeedBegin(self.fHandle, [PrefsController dateToTimeSum:[self.fDefaults objectForKey:@"SpeedLimitAutoOnDate"]]);
-    tr_sessionSetAltSpeedEnd(self.fHandle, [PrefsController dateToTimeSum:[self.fDefaults objectForKey:@"SpeedLimitAutoOffDate"]]);
-}
-
-- (void)setAutoSpeedLimitDay:(id)sender
-{
-    tr_sessionSetAltSpeedDay(self.fHandle, static_cast<tr_sched_day>([sender selectedItem].tag));
 }
 
 + (int)dateToTimeSum:(NSDate*)date
@@ -973,11 +772,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful.
 }
 
-- (void)helpForPeers:(id)sender
-{
-    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful
-}
-
 - (void)helpForRemote:(id)sender
 {
     // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful
@@ -1134,9 +928,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
         //utp handled by bindings
 
-        self.fPeersGlobalField.intValue = peersTotal;
-        self.fPeersTorrentField.intValue = peersTorrent;
-
         //pex handled by bindings
 
         //dht handled by bindings
@@ -1146,23 +937,12 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         //port forwarding (nat) handled by bindings
         //random port handled by bindings
 
-        //limit check handled by bindings
-        self.fDownloadField.integerValue = downLimit;
-
-        //limit check handled by bindings
-        self.fUploadField.integerValue = upLimit;
-
-        self.fSpeedLimitDownloadField.integerValue = downLimitAlt;
-
-        self.fSpeedLimitUploadField.integerValue = upLimitAlt;
-
         //speed limit schedule handled by bindings
 
         //speed limit schedule times and day handled by bindings
 
-        self.fBlocklistURLField.stringValue = blocklistURL;
-        [self updateBlocklistButton];
-        [self updateBlocklistFields];
+        [self.peersViewController updateBlocklistButton];
+        [self.peersViewController updateBlocklistFields];
 
         //ratio limit enabled handled by bindings
         self.fRatioStopField.floatValue = ratioLimit;
@@ -1202,9 +982,9 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     } else if ([identifier isEqualToString:ToolbarTabGroups]) {
         view = self.fGroupsView;
     } else if ([identifier isEqualToString:ToolbarTabBandwidth]) {
-        view = self.fBandwidthView;
+        view = self.bandwidthViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabPeers]) {
-        view = self.fPeersView;
+        view = self.peersViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabNetwork]) {
         view = self.networkViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
