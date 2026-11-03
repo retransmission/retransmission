@@ -7,6 +7,10 @@
 
 #include <optional>
 
+#include <QtCore/QString>
+
+#include <QtGui/QIcon>
+
 #include <QtWidgets/QStyledItemDelegate>
 
 #include "NativeIcon.h"
@@ -14,7 +18,10 @@
 class QStyle;
 class QStyleOptionProgressBar;
 
+namespace tr::app
+{
 class Torrent;
+}
 
 class TorrentDelegate : public QStyledItemDelegate
 {
@@ -32,22 +39,35 @@ public:
     QSize sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const override;
     void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const override;
 
+    // The words for a torrent's state and error. Here until libtransmission-app can translate.
+    [[nodiscard]] static QString activityString(tr::app::Torrent const& tor);
+    [[nodiscard]] static QString errorString(tr::app::Torrent const& tor);
+
 protected:
+    // a row's torrent, with the model's cached conversions of it
+    struct Item {
+        tr::app::Torrent const& torrent;
+        QString name;
+        QIcon icon;
+    };
+
+    [[nodiscard]] static Item item(QModelIndex const& index);
+
     [[nodiscard]] QSize margin(QStyle const& style) const;
-    void setProgressBarPercentDone(QStyleOptionViewItem const& option, Torrent const& tor) const;
+    void setProgressBarPercentDone(QStyleOptionViewItem const& option, tr::app::Torrent const& tor) const;
     [[nodiscard]] QIcon warningEmblem() const
     {
         return warning_emblem_;
     }
 
     // Our own overridables
-    [[nodiscard]] virtual QSize sizeHint(QStyleOptionViewItem const& option, Torrent const& tor) const;
-    virtual void drawTorrent(QPainter* painter, QStyleOptionViewItem const& option, Torrent const& tor) const;
+    [[nodiscard]] virtual QSize itemSizeHint(QStyleOptionViewItem const& option, Item const& item) const;
+    virtual void drawTorrent(QPainter* painter, QStyleOptionViewItem const& option, Item const& item) const;
 
-    [[nodiscard]] static QString statusString(Torrent const& tor);
-    [[nodiscard]] static QString progressString(Torrent const& tor);
-    [[nodiscard]] static QString shortStatusString(Torrent const& tor);
-    [[nodiscard]] static QString shortTransferString(Torrent const& tor);
+    [[nodiscard]] static QString statusString(tr::app::Torrent const& tor);
+    [[nodiscard]] static QString progressString(tr::app::Torrent const& tor);
+    [[nodiscard]] static QString shortStatusString(tr::app::Torrent const& tor);
+    [[nodiscard]] static QString shortTransferString(tr::app::Torrent const& tor);
 
     static inline QColor const BlueBack{ "lightgrey" };
     static inline QColor const BlueBrush{ "steelblue" };

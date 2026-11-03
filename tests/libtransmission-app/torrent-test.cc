@@ -22,6 +22,7 @@
 #include "libtransmission-app/torrent.h"
 
 #include "test-fixtures.h"
+#include "torrent-get-helpers.h"
 
 using namespace std::literals;
 
@@ -53,17 +54,6 @@ auto constexpr HashString = "f0e1d2c3b4a5968778695a4b3c2d1e0f10203040"sv;
     return stat;
 }
 
-[[nodiscard]] tr_variant::Map make_tracker(std::string_view const announce, std::string_view const sitename, int64_t const tier)
-{
-    auto tracker = tr_variant::Map{ 3U };
-    tracker.try_emplace(TR_KEY_announce, announce);
-    if (!std::empty(sitename)) {
-        tracker.try_emplace(TR_KEY_sitename, sitename);
-    }
-    tracker.try_emplace(TR_KEY_tier, tier);
-    return tracker;
-}
-
 [[nodiscard]] tr_variant::Map make_peer(std::string_view const address, int64_t const rate_to_client)
 {
     auto peer = tr_variant::Map{ 2U };
@@ -79,15 +69,6 @@ auto constexpr HashString = "f0e1d2c3b4a5968778695a4b3c2d1e0f10203040"sv;
     webseed.try_emplace(TR_KEY_is_downloading, is_downloading);
     webseed.try_emplace(TR_KEY_download_bytes_per_second, byps);
     return webseed;
-}
-
-template<typename... Maps>
-[[nodiscard]] tr_variant::Vector make_list(Maps&&... maps)
-{
-    auto list = tr_variant::Vector{};
-    list.reserve(sizeof...(Maps));
-    (list.emplace_back(std::forward<Maps>(maps)), ...);
-    return list;
 }
 
 // A row that sets every tracked field to a value other than its default.

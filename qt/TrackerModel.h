@@ -9,13 +9,14 @@
 
 #include <QtCore/QAbstractListModel>
 
-#include "Torrent.h"
+#include <libtransmission-app/torrent.h>
+
 #include "Typedefs.h"
 
 class TorrentModel;
 
 struct TrackerInfo {
-    TrackerStat st;
+    tr::app::TrackerStat st;
     int torrent_id = {};
 };
 

@@ -6,11 +6,13 @@
 #include "TrackerModel.h"
 
 #include <algorithm> // std::sort()
+#include <utility> // std::move()
 
 #include <QtCore/QUrl>
 
 #include "Application.h" // Application
 #include "TorrentModel.h"
+#include "Utils.h"
 
 int TrackerModel::rowCount(QModelIndex const& parent) const
 {
@@ -28,11 +30,11 @@ QVariant TrackerModel::data(QModelIndex const& index, int role) const
 
         switch (role) {
         case Qt::DisplayRole:
-            var = tracker_info.st.announce;
+            var = Utils::qstringFromUtf8(tracker_info.st.announce.sv());
             break;
 
         case Qt::DecorationRole:
-            var = QIcon{ tracker_info.st.getFavicon() };
+            var = QIcon{ trApp->find_favicon(tracker_info.st.sitename) };
             break;
 
         case TrackerRole:
@@ -76,16 +78,11 @@ void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t cons
     auto trackers = std::vector<TrackerInfo>{};
 
     for (int const id : ids) {
-        Torrent const* tor = torrent_model.getTorrentFromId(id);
+        auto const* const tor = torrent_model.list().find(id);
 
         if (tor != nullptr) {
-            TrackerStatsList const tracker_list = tor->trackerStats();
-
-            for (TrackerStat const& st : tracker_list) {
-                TrackerInfo tracker_info;
-                tracker_info.st = st;
-                tracker_info.torrent_id = id;
-                trackers.push_back(tracker_info);
+            for (auto const& st : tor->tracker_stats()) {
+                trackers.push_back({ .st = st, .torrent_id = id });
             }
         }
     }
@@ -105,7 +102,7 @@ void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t cons
         if (is_end_of_old || (!is_end_of_new && Comp(trackers.at(new_index), rows_.at(old_index)))) {
             // add this new row
             beginInsertRows(QModelIndex{}, old_index, old_index);
-            rows_.insert(rows_.begin() + old_index, trackers.at(new_index));
+            rows_.insert(rows_.begin() + old_index, std::move(trackers.at(new_index)));
             endInsertRows();
             ++old_index;
             ++new_index;
@@ -116,7 +113,7 @@ void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t cons
             endRemoveRows();
         } else // update existing row
         {
-            rows_[old_index].st = trackers.at(new_index).st;
+            rows_[old_index].st = std::move(trackers.at(new_index).st);
             emit dataChanged(index(old_index, 0), index(old_index, 0));
             ++old_index;
             ++new_index;
@@ -126,10 +123,12 @@ void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t cons
 
 int TrackerModel::find(int torrent_id, QString const& url) const
 {
+    auto const url_str = url.toStdString();
+
     for (size_t i = 0, n = rows_.size(); i < n; ++i) {
         TrackerInfo const& inf = rows_.at(i);
 
-        if (inf.torrent_id == torrent_id && url == inf.st.announce) {
+        if (inf.torrent_id == torrent_id && inf.st.announce == url_str) {
             return static_cast<int>(i);
         }
     }

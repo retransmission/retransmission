@@ -13,9 +13,10 @@
 
 #include <libtransmission/torrent-metainfo.h>
 
+#include <libtransmission-app/torrent.h> // TorrentFile
+
 #include "AddData.h" // AddData
 #include "BaseDialog.h"
-#include "Torrent.h" // FileList
 #include "Typedefs.h" // file_indices_t
 #include "ui_OptionsDialog.h"
 
@@ -50,7 +51,7 @@ private:
     void clearInfo();
 
     AddData add_;
-    FileList files_;
+    std::vector<tr::app::TorrentFile> files_;
 
     QDir local_destination_;
     QTimer edit_timer_;

@@ -8,14 +8,16 @@
 
 #include <QApplication>
 #include <QComboBox>
+#include <QLineEdit>
 #include <QString>
 #include <QTest>
 
 #include <libtransmission/quark.h>
 
+#include <libtransmission-app/torrent-list.h>
+
 #include "FilterBar.h"
 #include "Prefs.h"
-#include "TorrentFilter.h"
 #include "TorrentModel.h"
 #include "TrQtInit.h"
 #include "UserMetaType.h"
@@ -43,9 +45,9 @@ class FilterBarTest : public QObject
 
     struct Client {
         Prefs prefs;
-        TorrentModel model{ prefs };
-        TorrentFilter filter{ prefs };
-        FilterBar bar{ prefs, model, filter };
+        tr::app::TorrentList torrents{ prefs };
+        TorrentModel model{ torrents };
+        FilterBar bar{ prefs, model };
     };
 
     // The tracker combo has no "Active" row.
@@ -96,6 +98,29 @@ private slots:
 
             QVERIFY2(combo->currentText() == QString::fromUtf8(label), label);
         }
+    }
+
+    static void setsTheTextPrefWhenTheUserPauses()
+    {
+        auto client = Client{};
+        auto* const edit = client.bar.findChild<QLineEdit*>();
+        QVERIFY(edit != nullptr);
+
+        edit->setText(QStringLiteral("  alpha "));
+        QVERIFY(client.prefs.get<QString>(TR_KEY_filter_text).isEmpty());
+        QTRY_COMPARE(client.prefs.get<QString>(TR_KEY_filter_text), QStringLiteral("alpha"));
+    }
+
+    static void clearingTheTextSetsThePrefAtOnce()
+    {
+        auto client = Client{};
+        auto* const edit = client.bar.findChild<QLineEdit*>();
+        QVERIFY(edit != nullptr);
+
+        client.prefs.set(TR_KEY_filter_text, QStringLiteral("alpha"));
+        edit->setText(QStringLiteral("alpha"));
+        edit->clear();
+        QVERIFY(client.prefs.get<QString>(TR_KEY_filter_text).isEmpty());
     }
 };
 

@@ -16,6 +16,11 @@ class Speed : public tr::Values::Speed
 public:
     Speed() = default;
 
+    explicit constexpr Speed(tr::Values::Speed const& speed) noexcept
+        : tr::Values::Speed{ speed }
+    {
+    }
+
     template<std::integral Number>
     constexpr Speed(Number value, Units multiple)
         : tr::Values::Speed{ value, multiple }

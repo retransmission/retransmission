@@ -16,15 +16,15 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QWidget>
 
+#include <libtransmission-app/torrent.h>
+
 #include "Prefs.h"
-#include "Torrent.h"
 #include "Typedefs.h"
 
 class QLabel;
 class QString;
 
 class FilterBarComboBox;
-class TorrentFilter;
 class TorrentModel;
 
 class FilterBar : public QWidget
@@ -32,7 +32,7 @@ class FilterBar : public QWidget
     Q_OBJECT
 
 public:
-    FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter const& filter, QWidget* parent = nullptr);
+    FilterBar(Prefs& prefs, TorrentModel const& torrents, QWidget* parent = nullptr);
     ~FilterBar() override = default;
     FilterBar(FilterBar&&) = delete;
     FilterBar(FilterBar const&) = delete;
@@ -58,7 +58,6 @@ private:
 
     Prefs& prefs_;
     TorrentModel const& torrents_;
-    TorrentFilter const& filter_;
 
     QStandardItemModel* const tracker_model_ = new QStandardItemModel{ this };
 
@@ -69,6 +68,7 @@ private:
 
     small::map<QString, int> sitename_counts_;
     QTimer recount_timer_;
+    QTimer text_timer_;
     Pending pending_;
     bool is_bootstrapping_ = {};
 
@@ -92,8 +92,9 @@ private slots:
     }
 
     void refreshPref(tr_quark key);
+    void applyText();
     void onActivityIndexChanged(int index);
     void onTextChanged(QString const& str);
-    void onTorrentsChanged(torrent_ids_t const& ids, Torrent::fields_t const& fields);
+    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
     void onTrackerIndexChanged(int index);
 };
