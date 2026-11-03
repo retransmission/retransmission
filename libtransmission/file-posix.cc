@@ -639,19 +639,20 @@ namespace
 {
 namespace preallocate_helpers
 {
-// These return 0 or an errno value.
+// Returns 0 or an errno value.
 // errno can't carry the result: posix_fallocate() returns its error and leaves errno alone.
-
-#ifdef HAVE_FALLOCATE
-[[nodiscard]] int preallocate_fallocate(tr_sys_file_t const handle, uint64_t const size) noexcept
+[[nodiscard]] int reserve_blocks(
+    [[maybe_unused]] tr_sys_file_t const handle,
+    [[maybe_unused]] uint64_t const size,
+    [[maybe_unused]] bool const fast) noexcept
 {
+#if defined(HAVE_FALLOCATE)
     return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0 ? 0 : errno;
-}
-#endif
+#elif defined(__APPLE__)
+    if (fast) {
+        return ENOSYS;
+    }
 
-#ifdef __APPLE__
-[[nodiscard]] int full_preallocate_apple(tr_sys_file_t const handle, uint64_t const size) noexcept
-{
     fstore_t fst;
 
     fst.fst_flags = F_ALLOCATEALL;
@@ -665,75 +666,30 @@ namespace preallocate_helpers
     }
 
     return ftruncate(handle, size) == 0 ? 0 : errno;
-}
+#elif defined(HAVE_POSIX_FALLOCATE)
+    // Below fallocate() on purpose: on Linux this is the same syscall,
+    // and glibc's fallback writes one byte per 4 KiB block.
+    return fast ? ENOSYS : posix_fallocate(handle, 0, static_cast<off_t>(size));
+#else
+    return ENOSYS;
 #endif
-
-// Linux skips this: it would reissue the fallocate() that just failed,
-// and glibc's fallback then writes one byte per 4 KiB block.
-#if defined(HAVE_POSIX_FALLOCATE) && !defined(HAVE_FALLOCATE)
-[[nodiscard]] int full_preallocate_posix(tr_sys_file_t const handle, uint64_t const size) noexcept
-{
-    return posix_fallocate(handle, 0, static_cast<off_t>(size));
 }
-#endif
 } // namespace preallocate_helpers
 } // unnamed namespace
 
-bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error)
+bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, int const flags, tr_error* const error)
 {
     using namespace preallocate_helpers;
 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    using prealloc_func = int (*)(tr_sys_file_t, uint64_t);
+    auto const err = reserve_blocks(handle, size, (flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0);
 
-    // these approaches are fast and should be tried first
-    auto approaches = std::vector<prealloc_func>{
-#ifdef HAVE_FALLOCATE
-        preallocate_fallocate
-#endif
-    };
-
-    // these approaches are sometimes slower in some settings (e.g.
-    // a slow zeroing of all the preallocated space) so only use them
-    // if specified by `flags`
-    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) == 0) {
-        // TODO: these functions haven't been reviewed in awhile.
-        // It's possible that some are faster now & should be promoted
-        // to 'always try' and/or replaced with fresher platform API.
-        approaches.insert(
-            std::end(approaches),
-            {
-#ifdef __APPLE__
-                full_preallocate_apple,
-#endif
-#if defined(HAVE_POSIX_FALLOCATE) && !defined(HAVE_FALLOCATE)
-                full_preallocate_posix,
-#endif
-            });
+    if (err != 0 && error != nullptr) {
+        error->set_from_errno(err);
     }
 
-    auto last = 0;
-
-    for (auto const& approach : approaches) // try until one of them works
-    {
-        last = approach(handle, size);
-
-        if (last == 0) {
-            return true;
-        }
-
-        if (last == ENOSPC) // disk full, so subsequent approaches will fail too
-        {
-            break;
-        }
-    }
-
-    if (error != nullptr) {
-        error->set_from_errno(last != 0 ? last : ENOSYS);
-    }
-
-    return false;
+    return err == 0;
 }
 
 bool tr_sys_file_lock([[maybe_unused]] tr_sys_file_t handle, [[maybe_unused]] int operation, tr_error* error)
