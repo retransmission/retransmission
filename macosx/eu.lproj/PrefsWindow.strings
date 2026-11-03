@@ -91,36 +91,6 @@
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Soilik eskuz gehitzerakoan";
 
-/* Class = "NSTextFieldCell"; title = "Listening port:"; ObjectID = "1493"; */
-"1493.title" = "Entzuten ari den ataka:";
-
-/* Class = "NSButtonCell"; title = "Enable remote access"; ObjectID = "1502"; */
-"1502.title" = "Gaitu urruneko sarbidea";
-
-/* Class = "NSButtonCell"; title = "Require authentication"; ObjectID = "1505"; */
-"1505.title" = "Behartu autentifikazioa";
-
-/* Class = "NSTableColumn"; headerCell.title = "IP Address"; ObjectID = "1523"; */
-"1523.headerCell.title" = "IP Helbidea";
-
-/* Class = "NSTextFieldCell"; title = "IP addresses may include * wildcard"; ObjectID = "1542"; */
-"1542.title" = "IP helbideak * komodina izan dezake";
-
-/* Class = "NSTextFieldCell"; title = "Password:"; ObjectID = "1555"; */
-"1555.title" = "Pasahitza:";
-
-/* Class = "NSTextFieldCell"; title = "Username:"; ObjectID = "1557"; */
-"1557.title" = "Erabiltzaile-izena";
-
-/* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "Aukera honek web interfazea gaitu eta urruneko eskaerak baimentzen ditu";
-
-/* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
-"1718.title" = "Abiarazi Web Interfazea";
-
-/* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
-"1748.title" = "Baimendu soilik hurrengo IP helbidetik konektatzea:";
-
 /* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
 "1777.headerCell.title" = "Kolorea";
 
@@ -138,9 +108,6 @@
 
 /* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
 "1824.title" = "Kokapena transferentzia gehitzerakoan zehaztuko da soilik.";
-
-/* Class = "NSButtonCell"; title = "Display the web interface with Bonjour"; ObjectID = "1826"; */
-"1826.title" = "Erakutsi web interfazea Bonjour-ekin";
 
 /* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
 "1831.title" = "Esleitu taldea transferentzia berriei irizpideetan oinarrituta";

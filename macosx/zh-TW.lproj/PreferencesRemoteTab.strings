@@ -1,0 +1,11 @@
+"HTTP port:" = "監聽連接埠：";
+"Allow remote access" = "啟用遠端存取";
+"Use authentication" = "需要認證";
+"Address" = "IP 位址";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP地址可能包含萬用字元 *";
+"Password:" = "密碼：";
+"Username:" = "使用者名稱：";
+"This enables the web interface and allows remote requests" = "這會啟用網頁介面，並允許遠端請求";
+"Open Web Client" = "啟動網頁介面";
+"Only allow these IP addresses:" = "僅允許以下 IP 位址連線：";
+"Display the web interface with Bonjour" = "顯示具備 Bonjour 的網頁介面";

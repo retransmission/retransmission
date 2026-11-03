@@ -1,0 +1,11 @@
+"HTTP port:" = "Listening port:";
+"Allow remote access" = "Aktiver fjernkontrol";
+"Use authentication" = "Kræv godkendelse";
+"Address" = "IP Address";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP-adresser kan indeholde * wildcard";
+"Password:" = "Adgangskode:";
+"Username:" = "Brugernavn:";
+"This enables the web interface and allows remote requests" = "Denne indstilling aktiverer et web interface og tillader fjernanmodninger";
+"Open Web Client" = "Åbn web interface";
+"Only allow these IP addresses:" = "Tilad kun følgende IP-adresser at oprette forbindelse:";
+"Display the web interface with Bonjour" = "Vis web interface med Bonjour";

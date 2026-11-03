@@ -44,6 +44,7 @@
 #import "StatsWindowController.h"
 #import "InfoWindowController.h"
 #import "PrefsController.h"
+#import "PrefsRemoteTabViewController.h"
 #import "GroupsController.h"
 #import "AboutWindowController.h"
 #import "URLSheetWindowController.h"
@@ -427,7 +428,7 @@ static void replaceImportedRPCPassword()
         return;
     }
 
-    BOOL const saved = [PrefsController saveUnguessableRPCPassword];
+    BOOL const saved = [PrefsRemoteTabViewController saveUnguessableRPCPassword];
     if (!saved) {
         // Remote access with no saved password would accept an empty one.
         [defaults setBool:NO forKey:@"RPC"];

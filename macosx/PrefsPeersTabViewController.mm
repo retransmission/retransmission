@@ -170,6 +170,9 @@
     updateStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
     updateStack.alignment = NSLayoutAttributeCenterY;
 
+    NSView* encryptionSectionTitle = [PrefsUI sectionTitle:LStr(@"Encryption:")];
+    NSView* blocklistSectionTitle = [PrefsUI sectionTitle:LStr(@"Blocklist:")];
+
     NSGridView* gridView = [NSGridView gridViewWithViews:@[
         // --- Peer Limits Section ---
         @[ [PrefsUI sectionTitle:LStr(@"Peer limits:")] ],
@@ -183,12 +186,12 @@
         @[ [PrefsUI indentedView:self.fLpdButton] ],
 
         // --- Encryption Section ---
-        @[ [PrefsUI sectionTitle:LStr(@"Encryption:")] ],
+        @[ encryptionSectionTitle ],
         @[ [PrefsUI indentedView:self.fEncryptionPreferButton] ],
         @[ [PrefsUI indentedView:self.fEncryptionRequireButton] ],
 
         // --- Blocklist Section ---
-        @[ [PrefsUI sectionTitle:LStr(@"Blocklist:")] ],
+        @[ blocklistSectionTitle ],
         @[ [PrefsUI indentedView:self.fBlocklistNewButton] ],
         @[ [PrefsUI indentedView:urlStack] ],
         @[ [PrefsUI indentedView:updateStack] ],
@@ -203,16 +206,17 @@
     gridView.yPlacement = NSGridCellPlacementCenter;
 
     // Set top paddings for logical section separators
-    [gridView rowAtIndex:7].topPadding = 14; // Before Encryption section
-    [gridView rowAtIndex:10].topPadding = 14; // Before Blocklist section
+    [gridView cellForView:encryptionSectionTitle].row.topPadding = 14;
+    [gridView cellForView:blocklistSectionTitle].row.topPadding = 14;
 
     [parent addSubview:gridView];
 
     [NSLayoutConstraint activateConstraints:@[
         [gridView.topAnchor constraintEqualToAnchor:parent.topAnchor],
         [gridView.bottomAnchor constraintEqualToAnchor:parent.bottomAnchor],
-        [gridView.leadingAnchor constraintEqualToAnchor:parent.leadingAnchor],
-        [gridView.trailingAnchor constraintEqualToAnchor:parent.trailingAnchor]
+        [gridView.leadingAnchor constraintGreaterThanOrEqualToAnchor:parent.leadingAnchor],
+        [gridView.trailingAnchor constraintLessThanOrEqualToAnchor:parent.trailingAnchor],
+        [gridView.centerXAnchor constraintEqualToAnchor:parent.centerXAnchor]
     ]];
 }
 

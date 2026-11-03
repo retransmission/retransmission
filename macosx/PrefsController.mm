@@ -2,31 +2,23 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <string_view>
-
-#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 
 #import "PrefsController.h"
 #import "Controller.h"
 #import "DefaultAppHelper.h"
-#import "BonjourController.h"
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "PrefsGeneralTabViewController.h"
 #import "PrefsBandwidthTabViewController.h"
 #import "PrefsPeersTabViewController.h"
 #import "PrefsNetworkTabViewController.h"
+#import "PrefsRemoteTabViewController.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
     DownloadPopupIndexFolder = 0,
     DownloadPopupIndexTorrent = 2,
-};
-
-typedef NS_ENUM(NSUInteger, RPCIPTag) {
-    RPCIPTagAdd = 0,
-    RPCIPTagRemove = 1,
 };
 
 typedef NSString* ToolbarTab NS_TYPED_EXTENSIBLE_ENUM;
@@ -39,11 +31,6 @@ static ToolbarTab const ToolbarTabPeers = @"TOOLBAR_PEERS";
 static ToolbarTab const ToolbarTabNetwork = @"TOOLBAR_NETWORK";
 static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
-static char const* const kRPCKeychainService = TR_PROJ_APPNAME_CAPITALIZED ":Remote";
-static char const* const kRPCKeychainName = "Remote";
-
-static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
-
 @interface PrefsController ()<NSWindowRestoration>
 
 @property(nonatomic, readonly) tr_session* fHandle;
@@ -54,8 +41,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) PrefsBandwidthTabViewController* bandwidthViewController;
 @property(nonatomic) PrefsPeersTabViewController* peersViewController;
 @property(nonatomic) PrefsNetworkTabViewController* networkViewController;
+@property(nonatomic) PrefsRemoteTabViewController* remoteViewController;
 @property(nonatomic) IBOutlet NSView* fTransfersView;
-@property(nonatomic) IBOutlet NSView* fRemoteView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
 
 @property(nonatomic, copy) NSString* fInitialString;
@@ -70,13 +57,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) IBOutlet NSTextField* fQueueDownloadField;
 @property(nonatomic) IBOutlet NSTextField* fQueueSeedField;
 @property(nonatomic) IBOutlet NSTextField* fStalledField;
-
-@property(nonatomic) IBOutlet NSTextField* fRPCPortField;
-@property(nonatomic) IBOutlet NSTextField* fRPCPasswordField;
-@property(nonatomic) IBOutlet NSTableView* fRPCWhitelistTable;
-@property(nonatomic, readonly) NSMutableArray<NSString*>* fRPCWhitelistArray;
-@property(nonatomic) IBOutlet NSSegmentedControl* fRPCAddRemoveControl;
-@property(nonatomic, copy) NSString* fRPCPassword;
 
 @end
 
@@ -97,17 +77,11 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         //set encryption
         [self setEncryptionMode:nil];
 
-        //update rpc password
-        [self updateRPCPassword];
-
-        //update rpc whitelist
-        _fRPCWhitelistArray = [NSMutableArray arrayWithArray:[self.fDefaults arrayForKey:@"RPCWhitelist"] ?: @[ @"127.0.0.1" ]];
-        [self updateRPCWhitelist];
-
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
         _bandwidthViewController = [[PrefsBandwidthTabViewController alloc] initWithHandle:handle];
         _peersViewController = [[PrefsPeersTabViewController alloc] initWithHandle:handle];
         _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
+        _remoteViewController = [[PrefsRemoteTabViewController alloc] initWithHandle:handle];
     }
 
     return self;
@@ -161,15 +135,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateLimitStopField)
                                                name:@"UpdateIdleStopValueOutsidePrefs"
                                              object:nil];
-
-    //set rpc port
-    self.fRPCPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"RPCPort"]);
-
-    //set rpc password
-    self.fRPCPasswordField.stringValue = self.fRPCPassword ?: @"";
-
-    //set fRPCWhitelistTable column width to table width
-    [self.fRPCWhitelistTable sizeToFit];
 }
 
 - (NSToolbarItem*)toolbar:(NSToolbar*)toolbar itemForItemIdentifier:(NSString*)ident willBeInsertedIntoToolbar:(BOOL)flag
@@ -615,166 +580,9 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     }];
 }
 
-- (IBAction)setRPCEnabled:(id)sender
-{
-    BOOL enable = [self.fDefaults boolForKey:@"RPC"];
-    tr_sessionSetRPCEnabled(self.fHandle, enable);
-
-    [self setRPCWebUIDiscovery:nil];
-}
-
-- (IBAction)linkWebUI:(id)sender
-{
-    NSString* urlString = [NSString stringWithFormat:kWebUIURLFormat, [self.fDefaults integerForKey:@"RPCPort"]];
-    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
-}
-
-- (IBAction)setRPCAuthorize:(id)sender
-{
-    tr_sessionSetRPCPasswordEnabled(self.fHandle, [self.fDefaults boolForKey:@"RPCAuthorize"]);
-}
-
-- (IBAction)setRPCUsername:(id)sender
-{
-    tr_sessionSetRPCUsername(self.fHandle, [self.fDefaults stringForKey:@"RPCUsername"].UTF8String);
-}
-
-- (IBAction)setRPCPassword:(id)sender
-{
-    self.fRPCPassword = [sender stringValue];
-
-    char const* password = self.fRPCPassword.UTF8String;
-    [self setKeychainPassword:password];
-
-    tr_sessionSetRPCPassword(self.fHandle, password);
-}
-
-- (IBAction)setRPCPort:(id)sender
-{
-    int port = [sender intValue];
-    [self.fDefaults setInteger:port forKey:@"RPCPort"];
-    tr_sessionSetRPCPort(self.fHandle, port);
-
-    [self setRPCWebUIDiscovery:nil];
-}
-
-- (IBAction)setRPCUseWhitelist:(id)sender
-{
-    tr_sessionSetRPCWhitelistEnabled(self.fHandle, [self.fDefaults boolForKey:@"RPCUseWhitelist"]);
-}
-
-- (IBAction)setRPCWebUIDiscovery:(id)sender
-{
-    if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
-        [BonjourController.defaultController startWithPort:static_cast<int>([self.fDefaults integerForKey:@"RPCPort"])];
-    } else {
-        if (BonjourController.defaultControllerExists) {
-            [BonjourController.defaultController stop];
-        }
-    }
-}
-
-- (IBAction)addRemoveRPCIP:(id)sender
-{
-    //don't allow add/remove when currently adding - it leads to weird results
-    if (self.fRPCWhitelistTable.editedRow != -1) {
-        return;
-    }
-
-    if ([[sender cell] tagForSegment:[sender selectedSegment]] == RPCIPTagRemove) {
-        [self.fRPCWhitelistArray removeObjectsAtIndexes:self.fRPCWhitelistTable.selectedRowIndexes];
-        [self.fRPCWhitelistTable deselectAll:self];
-        [self.fRPCWhitelistTable reloadData];
-
-        [self.fDefaults setObject:self.fRPCWhitelistArray forKey:@"RPCWhitelist"];
-        [self updateRPCWhitelist];
-    } else {
-        [self.fRPCWhitelistArray addObject:@""];
-        [self.fRPCWhitelistTable reloadData];
-
-        NSUInteger const row = self.fRPCWhitelistArray.count - 1;
-        [self.fRPCWhitelistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-        [self.fRPCWhitelistTable editColumn:0 row:row withEvent:nil select:YES];
-    }
-}
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView*)tableView
-{
-    return self.fRPCWhitelistArray.count;
-}
-
-- (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
-{
-    return self.fRPCWhitelistArray[row];
-}
-
-- (void)tableView:(NSTableView*)tableView
-    setObjectValue:(id)object
-    forTableColumn:(NSTableColumn*)tableColumn
-               row:(NSInteger)row
-{
-    NSArray* components = [object componentsSeparatedByString:@"."];
-    NSMutableArray* newComponents = [NSMutableArray arrayWithCapacity:4];
-
-    //create better-formatted ip string
-    BOOL valid = false;
-    if (components.count == 4) {
-        valid = true;
-        for (NSString* component in components) {
-            if ([component isEqualToString:@"*"]) {
-                [newComponents addObject:component];
-            } else {
-                int num = component.intValue;
-                if (num >= 0 && num < 256) {
-                    [newComponents addObject:@(num).stringValue];
-                } else {
-                    valid = false;
-                    break;
-                }
-            }
-        }
-    }
-
-    NSString* newIP;
-    if (valid) {
-        newIP = [newComponents componentsJoinedByString:@"."];
-
-        //don't allow the same ip address
-        if ([self.fRPCWhitelistArray containsObject:newIP] && ![self.fRPCWhitelistArray[row] isEqualToString:newIP]) {
-            valid = false;
-        }
-    }
-
-    if (valid) {
-        self.fRPCWhitelistArray[row] = newIP;
-        [self.fRPCWhitelistArray sortUsingSelector:@selector(compareNumeric:)];
-    } else {
-        NSBeep();
-        if ([self.fRPCWhitelistArray[row] isEqualToString:@""]) {
-            [self.fRPCWhitelistArray removeObjectAtIndex:row];
-        }
-    }
-
-    [self.fRPCWhitelistTable deselectAll:self];
-    [self.fRPCWhitelistTable reloadData];
-
-    [self.fDefaults setObject:self.fRPCWhitelistArray forKey:@"RPCWhitelist"];
-    [self updateRPCWhitelist];
-}
-
-- (void)tableViewSelectionDidChange:(NSNotification*)notification
-{
-    [self.fRPCAddRemoveControl setEnabled:self.fRPCWhitelistTable.numberOfSelectedRows > 0 forSegment:RPCIPTagRemove];
-}
-
 - (void)helpForScript:(id)sender
 {
     // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful.
-}
-
-- (void)helpForRemote:(id)sender
-{
-    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful
 }
 
 - (void)rpcUpdatePrefs
@@ -988,7 +796,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     } else if ([identifier isEqualToString:ToolbarTabNetwork]) {
         view = self.networkViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
-        view = self.fRemoteView;
+        view = self.remoteViewController.view;
     } else {
         identifier = ToolbarTabGeneral; //general view is the default selected
         view = self.generalViewController.view;
@@ -1029,116 +837,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
             }
         }
     }
-}
-
-static NSString* getOSStatusDescription(OSStatus errorCode)
-{
-    return [NSError errorWithDomain:NSOSStatusErrorDomain code:errorCode userInfo:NULL].description;
-}
-
-// The keychain item that holds the remote access password, plus the given attributes.
-[[nodiscard]] static NSDictionary* rpcKeychainQuery(NSDictionary* const attributes = @{})
-{
-    NSMutableDictionary* const query = [attributes mutableCopy];
-    query[(NSString*)kSecClass] = (NSString*)kSecClassGenericPassword;
-    query[(NSString*)kSecAttrAccount] = @(kRPCKeychainName);
-    query[(NSString*)kSecAttrService] = @(kRPCKeychainService);
-    return query;
-}
-
-- (void)updateRPCPassword
-{
-    CFTypeRef data{};
-    OSStatus result = SecItemCopyMatching((__bridge CFDictionaryRef)rpcKeychainQuery(@{ (NSString*)kSecReturnData : @YES }), &data);
-    if (result == errSecItemNotFound) {
-        return;
-    }
-    if (result != noErr) {
-        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
-        return;
-    }
-
-    NSData* const passwordData = (__bridge_transfer NSData*)data;
-    NSString* const password = [[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding];
-    if (!password) {
-        NSLog(@"Problem accessing Keychain: password is not valid UTF-8");
-        return;
-    }
-
-    tr_sessionSetRPCPassword(self.fHandle, std::string_view{ static_cast<char const*>(passwordData.bytes), passwordData.length });
-
-    // NSString's UTF-8 decoding drops a leading byte order mark,
-    // which is part of the password.
-    auto const droppedBom = [password lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < passwordData.length;
-    self.fRPCPassword = droppedBom ? [@"\uFEFF" stringByAppendingString:password] : password;
-}
-
-- (void)setKeychainPassword:(char const*)password
-{
-    OSStatus result = SecItemCopyMatching((__bridge CFDictionaryRef)rpcKeychainQuery(), nil);
-    if (result != noErr && result != errSecItemNotFound) {
-        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
-        return;
-    }
-
-    size_t passwordLength = strlen(password);
-    if (result == noErr) {
-        if (passwordLength > 0) // found and needed, so update it
-        {
-            result = SecItemUpdate((__bridge CFDictionaryRef)rpcKeychainQuery(), (CFDictionaryRef) @{
-                (NSString*)kSecValueData : [NSData dataWithBytes:password length:passwordLength],
-            });
-            if (result != noErr) {
-                NSLog(@"Problem updating Keychain item: %@", getOSStatusDescription(result));
-            }
-        } else // found and not needed, so remove it
-        {
-            result = SecItemDelete((__bridge CFDictionaryRef)rpcKeychainQuery());
-            if (result != noErr) {
-                NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
-            }
-        }
-    } else {
-        if (passwordLength > 0) // not found and needed, so add it
-        {
-            result = SecItemAdd(
-                (__bridge CFDictionaryRef)rpcKeychainQuery(@{
-                    (NSString*)kSecValueData : [NSData dataWithBytes:password length:passwordLength],
-                }),
-                nil);
-            if (result != noErr) {
-                NSLog(@"Problem adding Keychain item: %@", getOSStatusDescription(result));
-            }
-        }
-    }
-}
-
-+ (BOOL)saveUnguessableRPCPassword
-{
-    // Deletes any saved item first, so the new password replaces it.
-    // macOS refuses to delete an item another app owns, which may also be unreadable here, and then nothing is saved.
-    OSStatus result = SecItemDelete((__bridge CFDictionaryRef)rpcKeychainQuery());
-    if (result != noErr && result != errSecItemNotFound) {
-        NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
-        return NO;
-    }
-
-    NSMutableData* const randomBytes = [NSMutableData dataWithLength:18];
-    arc4random_buf(randomBytes.mutableBytes, randomBytes.length);
-    NSData* const password = [[randomBytes base64EncodedStringWithOptions:0] dataUsingEncoding:NSUTF8StringEncoding];
-
-    result = SecItemAdd((__bridge CFDictionaryRef)rpcKeychainQuery(@{ (NSString*)kSecValueData : password }), nil);
-    if (result != noErr) {
-        NSLog(@"Problem adding Keychain item: %@", getOSStatusDescription(result));
-        return NO;
-    }
-    return YES;
-}
-
-- (void)updateRPCWhitelist
-{
-    NSString* string = [self.fRPCWhitelistArray componentsJoinedByString:@","];
-    tr_sessionSetRPCWhitelist(self.fHandle, string.UTF8String);
 }
 
 @end

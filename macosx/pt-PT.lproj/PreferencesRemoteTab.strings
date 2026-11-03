@@ -1,0 +1,11 @@
+"HTTP port:" = "Porta de escuta:";
+"Allow remote access" = "Activar acesso remoto";
+"Use authentication" = "Autenticação necessária";
+"Address" = "IP Address";
+"IP addresses may use wildcards, such as 192.168.*.*" = "Os endereços IP podem incluir um * wildcard";
+"Password:" = "Palavra-passe:";
+"Username:" = "Nome de utilizador:";
+"This enables the web interface and allows remote requests" = "Esta opção activa a interface web e permite a recepção de pedidos remotos";
+"Open Web Client" = "Abrir interface web";
+"Only allow these IP addresses:" = "Permitir ligação apenas aos seguintes endereços IP:";
+"Display the web interface with Bonjour" = "Mostrar a interface web na rede local com o protocolo Bonjour";

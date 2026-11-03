@@ -1,0 +1,11 @@
+"HTTP port:" = "Παρακολουθούμενη θύρα:";
+"Allow remote access" = "Ενεργοποίηση πρόσβασης εξ αποστάσεως";
+"Use authentication" = "Απαίτηση πιστοποίησης";
+"Address" = "Διεύθυνση IP";
+"IP addresses may use wildcards, such as 192.168.*.*" = "Οι διευθύνσεις IP μπορούν να περιέχουν το regex σύμβολο *";
+"Password:" = "Κωδικός:";
+"Username:" = "Όνομα χρήστη:";
+"This enables the web interface and allows remote requests" = "Αυτό ενεργοποιεί τη διεπαφή ιστού και επιτρέπει αιτήματα εξ αποστάσεως";
+"Open Web Client" = "Εκκίνηση Διεπαφής Ιστού";
+"Only allow these IP addresses:" = "Να επιτρέπεται η σύνδεση μόνο στις ακόλουθες διευθύνσεις IP:";
+"Display the web interface with Bonjour" = "Εμφάνιση της διεπαφής ιστού με το Bonjour";

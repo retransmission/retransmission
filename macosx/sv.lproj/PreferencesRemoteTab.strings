@@ -1,0 +1,11 @@
+"HTTP port:" = "Lyssningsport:";
+"Allow remote access" = "Aktivera fjärråtkomst";
+"Use authentication" = "Kräv autentisering";
+"Address" = "IP-adress";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP-adresser kan innehålla * jokertecken";
+"Password:" = "Lösenord:";
+"Username:" = "Användarnamn:";
+"This enables the web interface and allows remote requests" = "Detta aktiverar webbgränssnittet och tillåter fjärrförfrågningar";
+"Open Web Client" = "Starta webbgränssnitt";
+"Only allow these IP addresses:" = "Tillåt endast följande IP-adresser att ansluta:";
+"Display the web interface with Bonjour" = "Visa webbgränssnittet med Bonjour";

@@ -91,36 +91,6 @@
 /* Class = "NSButtonCell"; title = "Only when adding manually"; ObjectID = "1477"; */
 "1477.title" = "Somente ao adicionar manualmente";
 
-/* Class = "NSTextFieldCell"; title = "Listening port:"; ObjectID = "1493"; */
-"1493.title" = "Porta de escuta:";
-
-/* Class = "NSButtonCell"; title = "Enable remote access"; ObjectID = "1502"; */
-"1502.title" = "Habilitar acesso remoto";
-
-/* Class = "NSButtonCell"; title = "Require authentication"; ObjectID = "1505"; */
-"1505.title" = "Exigir autenticação";
-
-/* Class = "NSTableColumn"; headerCell.title = "IP Address"; ObjectID = "1523"; */
-"1523.headerCell.title" = "Endereço IP";
-
-/* Class = "NSTextFieldCell"; title = "IP addresses may include * wildcard"; ObjectID = "1542"; */
-"1542.title" = "Os endereços IP podem incluir caractere curinga *";
-
-/* Class = "NSTextFieldCell"; title = "Password:"; ObjectID = "1555"; */
-"1555.title" = "Senha:";
-
-/* Class = "NSTextFieldCell"; title = "Username:"; ObjectID = "1557"; */
-"1557.title" = "Nome de usuário:";
-
-/* Class = "NSTextFieldCell"; title = "This enables the web interface and allows remote requests"; ObjectID = "1645"; */
-"1645.title" = "Isso habilita a interface web e permite solicitações remotas";
-
-/* Class = "NSButtonCell"; title = "Launch Web Interface"; ObjectID = "1718"; */
-"1718.title" = "Iniciar Interface Web";
-
-/* Class = "NSButtonCell"; title = "Only allow the following IP addresses to connect:"; ObjectID = "1748"; */
-"1748.title" = "Permita a conexão apenas dos seguintes endereços IP:";
-
 /* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
 "1777.headerCell.title" = "Cor";
 
@@ -138,9 +108,6 @@
 
 /* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
 "1824.title" = "A localização só será definida ao adicionar a transferência";
-
-/* Class = "NSButtonCell"; title = "Display the web interface with Bonjour"; ObjectID = "1826"; */
-"1826.title" = "Exibir a interface web com Bonjour";
 
 /* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
 "1831.title" = "Atribuir grupo a novas transferências com base em critérios";
