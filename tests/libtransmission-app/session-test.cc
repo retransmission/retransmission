@@ -277,6 +277,7 @@ class AppSessionRpcTest
 protected:
     static constexpr auto Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
     static constexpr auto Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
+    static constexpr auto Gimp = "gimp-2.10.32-1-arm64.dmg.torrent"sv;
 
     void SetUp() override
     {
@@ -613,11 +614,11 @@ TEST_F(AppSessionRpcTest, refreshActiveTorrentsIsPartialAndAppliesRemoved)
     session_.refresh_all_torrents(TorrentKeySet::MainAll);
     ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
 
+    // the session marks the removal on its own thread, so one poll may be too early to carry it
     tr_torrentRemove(tr_torrentFindFromId(core_, id2), false);
-    ASSERT_TRUE(loop_.pump_until([this, id2] { return !session_has(id2); }));
-
-    session_.refresh_active_torrents();
-    ASSERT_TRUE(loop_.pump_until([this, id2] { return session_.torrents().find(id2) == nullptr; }));
+    ASSERT_TRUE(refresh_until(
+        [this] { session_.refresh_active_torrents(); },
+        [this, id2] { return session_.torrents().find(id2) == nullptr; }));
     EXPECT_NE(nullptr, session_.torrents().find(id1));
 }
 
@@ -783,13 +784,15 @@ TEST_F(AppSessionRpcTest, theAllVerbsDropTheTorrentsTheSessionLacks)
 {
     auto const kept = add_torrent(Debian);
 
-    for (auto const verb : { &Session::start_all_torrents, &Session::stop_all_torrents }) {
-        auto const gone = add_torrent(Arch);
+    // a torrent per verb: the first `gone` may still be closing when the second is added
+    for (
+        auto const& [verb, filename] :
+        { std::pair{ &Session::start_all_torrents, Arch }, std::pair{ &Session::stop_all_torrents, Gimp } }) {
+        auto const gone = add_torrent(filename);
         session_.refresh_all_torrents(TorrentKeySet::MainAll);
         ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
 
         tr_torrentRemove(tr_torrentFindFromId(core_, gone), false);
-        ASSERT_TRUE(loop_.pump_until([this, gone] { return !session_has(gone); }));
 
         (session_.*verb)();
         EXPECT_TRUE(loop_.pump_until([this, gone] { return session_.torrents().find(gone) == nullptr; }));
@@ -806,7 +809,6 @@ TEST_F(AppSessionRpcTest, startAllAfterStopRemovesNothing)
     ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 2U; }));
 
     tr_torrentRemove(tr_torrentFindFromId(core_, id2), false);
-    ASSERT_TRUE(loop_.pump_until([this, id2] { return !session_has(id2); }));
 
     // the start's reply is the only one in flight; running it sends the re-fetch
     session_.start_all_torrents();
