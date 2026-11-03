@@ -782,6 +782,10 @@ bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, in
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
+    if (size == 0U) {
+        return true;
+    }
+
     if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0) {
         // best effort: FAT32, exFAT, and some SMB shares refuse
         DWORD tmp = 0;

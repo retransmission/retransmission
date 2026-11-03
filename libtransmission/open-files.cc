@@ -35,10 +35,6 @@ namespace
     uint64_t const length,
     tr_error* const error)
 {
-    if (length == 0U) {
-        return true;
-    }
-
     auto local_error = tr_error{};
 
     if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_SPARSE, &local_error)) {
@@ -73,10 +69,6 @@ namespace
     uint64_t length,
     tr_error* const error)
 {
-    if (length == 0U) {
-        return true;
-    }
-
     auto local_error = tr_error{};
 
     if (preallocate(fd, length, 0, &local_error)) {

@@ -683,6 +683,11 @@ bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, in
 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
+    // fallocate() and posix_fallocate() reject a zero length
+    if (size == 0U) {
+        return true;
+    }
+
     auto const fast = (flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0;
     auto err = reserve_blocks(handle, size, fast);
 

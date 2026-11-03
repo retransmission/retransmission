@@ -1206,6 +1206,27 @@ TEST_F(FileTest, filePreallocateReadOnly)
 }
 #endif
 
+TEST_F(FileTest, filePreallocateZeroBytes)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_SPARSE } }) {
+        auto error = tr_error{};
+        EXPECT_TRUE(tr_sys_file_preallocate(fd, 0U, flags, &error)) << error;
+        EXPECT_FALSE(error) << error;
+
+        auto const info = tr_sys_path_get_info(path);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_EQ(0U, info->size);
+    }
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+
 #ifdef __linux__
 TEST_F(FileTest, filePreallocateFastFallsBackToTruncate)
 {

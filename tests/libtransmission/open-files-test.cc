@@ -465,6 +465,25 @@ TEST_P(OpenFilesSparsePreallocationTest, growsFileUnlessDiskIsFull)
 
 INSTANTIATE_TEST_SUITE_P(SparseAllocation, OpenFilesSparsePreallocationTest, ::testing::Bool());
 
+TEST_F(OpenFilesTest, createsEmptyFilesInEveryPreallocationMode)
+{
+    auto files = tr_open_files{};
+    auto file_num = tr_file_index_t{};
+
+    for (auto const mode : { tr_file_preallocation::None, tr_file_preallocation::Sparse, tr_file_preallocation::Full }) {
+        auto const filename = tr_pathbuf{ sandboxDir(), fmt::format("/empty-{:d}.bin"sv, file_num) };
+        auto error = tr_error{};
+        EXPECT_TRUE(files.get(0, file_num, true, filename, mode, 0U, error)) << error;
+        EXPECT_FALSE(error) << error;
+
+        auto const info = tr_sys_path_get_info(filename);
+        ASSERT_TRUE(info);
+        EXPECT_EQ(0U, info->size);
+
+        ++file_num;
+    }
+}
+
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {
     auto error = tr_error{};
