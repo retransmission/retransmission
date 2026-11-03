@@ -301,10 +301,16 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
 // Symlinks and junctions are links; other reparse points, such as
 // cloud-file placeholders, are not. An unreadable tag counts as a link,
 // so a junction is never followed.
-[[nodiscard]] bool is_link_reparse_point(wchar_t const* const wide_path)
+[[nodiscard]] bool is_link_reparse_point(std::wstring wide_path)
 {
+    // https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+    // "An attempt to open a search with a trailing backslash always fails."
+    if (auto const pos = wide_path.find_last_not_of(L'\\'); pos != std::wstring::npos) {
+        wide_path.erase(pos + 1);
+    }
+
     auto data = WIN32_FIND_DATAW{};
-    auto const find = FindFirstFileW(wide_path, &data);
+    auto const find = FindFirstFileW(wide_path.c_str(), &data);
     if (find == INVALID_HANDLE_VALUE) {
         return true;
     }
@@ -337,7 +343,7 @@ std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path
 
         // A link reads as OTHER, as lstat() reports a symlink,
         // so a junction never reads as a folder.
-        if (is_reparse_point && is_link_reparse_point(wide_path.c_str())) {
+        if (is_reparse_point && is_link_reparse_point(wide_path)) {
             info.type = TR_SYS_PATH_IS_OTHER;
         }
 
