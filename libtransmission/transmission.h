@@ -841,6 +841,12 @@ void tr_torrentManualUpdate(tr_torrent* torrent);
 
 [[nodiscard]] std::vector<tr_peer_stat> tr_torrentPeers(tr_torrent const* torrent);
 
+// Passes `torrent`'s peer stats to `callback` on libtransmission's thread,
+// or an empty vector if the torrent is gone by then.
+// Called from another thread, it runs after any work already queued there.
+// Has the same restrictions as `tr_sessionSetCompletenessCallback`.
+void tr_torrentPeersAsync(tr_torrent* torrent, tr_torrent_peers_func callback);
+
 // --- tr_tracker_stat
 
 [[nodiscard]] struct tr_tracker_view tr_torrentTracker(tr_torrent const* torrent, size_t i);
