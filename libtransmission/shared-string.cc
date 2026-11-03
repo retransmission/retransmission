@@ -10,7 +10,7 @@
 #include <new> // placement new, ::operator new()
 #include <string_view>
 #include <unordered_map>
-#include <utility> // std::exchange()
+#include <utility> // std::exchange(), std::swap()
 
 #include "libtransmission/shared-string.h"
 
@@ -192,27 +192,12 @@ shared_string::shared_string(shared_string&& that) noexcept
 {
 }
 
-// Self-assignment is covered: a shared_string always has the same node as
-// itself, so the comparison below skips the whole body.
-// NOLINTNEXTLINE(bugprone-unhandled-self-assignment,cert-oop54-cpp)
-shared_string& shared_string::operator=(shared_string const& that) noexcept
+// `that` holds the new node before the old one is released, so assigning
+// a view of this string's own text stays valid throughout, and
+// self-assignment needs no special case.
+shared_string& shared_string::operator=(shared_string that) noexcept
 {
-    if (node_ != that.node_) {
-        add_ref(that.node_);
-        remove_ref(node_);
-        node_ = that.node_;
-    }
-
-    return *this;
-}
-
-shared_string& shared_string::operator=(shared_string&& that) noexcept
-{
-    if (this != &that) {
-        remove_ref(node_);
-        node_ = std::exchange(that.node_, nullptr);
-    }
-
+    std::swap(node_, that.node_);
     return *this;
 }
 
