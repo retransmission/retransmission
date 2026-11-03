@@ -39,6 +39,7 @@
     _tableView = [[TorrentTableView alloc] init];
     _tableView.intercellSpacing = NSMakeSize(2, 3);
     _tableView.allowsExpansionToolTips = YES;
+    _tableView.allowsMultipleSelection = YES;
 
     NSTableColumn* torrentColumn = [[NSTableColumn alloc] initWithIdentifier:@"Torrent"];
     torrentColumn.editable = NO;
