@@ -11,6 +11,7 @@
 
 #include <libtransmission/crypto-utils.h> // tr_rand_int()
 #include <libtransmission/string-utils.h>
+#include <libtransmission/utils.h> // tr_locale_set_global()
 
 #include "test-fixtures.h"
 
@@ -97,6 +98,19 @@ TEST_F(UtilsTest, trStrvStrip)
     EXPECT_EQ("test"sv, tr_strv_strip(" test       "sv));
     EXPECT_EQ("test"sv, tr_strv_strip(" test "sv));
     EXPECT_EQ("test"sv, tr_strv_strip("test"sv));
+    EXPECT_EQ("test"sv, tr_strv_strip("\t\n\v\f\r test \t\n\v\f\r"sv));
+}
+
+TEST_F(UtilsTest, trStrvStripKeepsMultibyteCharacters)
+{
+    auto const old_locale = tr_locale_set_global("en_US.UTF-8");
+
+    EXPECT_EQ("voilà"sv, tr_strv_strip(" voilà "sv));
+    EXPECT_EQ("voilà"sv, tr_strv_strip("voilà"sv));
+
+    if (old_locale) {
+        tr_locale_set_global(*old_locale);
+    }
 }
 
 TEST_F(UtilsTest, strvReplaceInvalid)
