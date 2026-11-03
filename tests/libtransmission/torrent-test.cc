@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cerrno> // EINVAL
 #include <chrono>
 #include <cstddef>
 #include <future>
@@ -19,7 +20,6 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/error.h>
-#include <libtransmission/error-types.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/log.h>
@@ -185,7 +185,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     tr_torrentManualUpdate(tor);
     auto location_state = -1;
     tr_torrentSetLocation(tor, target_dir, true, &location_state);
-    auto rename_error = std::optional<tr_error_code_t>{};
+    auto rename_error = std::optional<tr_error::code_t>{};
     tr_torrentRenamePath(
         tor,
         name,
@@ -202,7 +202,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
 
     // The work that reports back reports an error.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
-    EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
+    EXPECT_EQ(EINVAL, rename_error);
 }
 
 TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)

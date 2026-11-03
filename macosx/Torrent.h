@@ -16,6 +16,11 @@ struct tr_torrent;
 
 typedef NS_ENUM(NSUInteger, TorrentDeterminationType) { TorrentDeterminationAutomatic = 0, TorrentDeterminationUserSpecified };
 
+typedef NS_OPTIONS(NSUInteger, UpdateTorrentsResult) {
+    UpdateTorrentsTransmittingChanged = 1 << 0,
+    UpdateTorrentsQueuePositionChanged = 1 << 1
+};
+
 extern NSString* const kTorrentDidChangeGroupNotification;
 
 @interface Torrent : NSObject<NSCopying, QLPreviewItem>
@@ -41,8 +46,8 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 @property(nonatomic) NSIndexSet* previousFinishedPieces;
 
 // Gives each torrent the stat with its id; stats for other torrents are ignored.
-// Returns whether any torrent's `transmitting` changed.
-+ (BOOL)updateTorrents:(NSArray<Torrent*>*)torrents fromStats:(std::vector<tr_stat>)stats;
+// Returns a bitfield flagging changed fields.
++ (UpdateTorrentsResult)updateTorrents:(NSArray<Torrent*>*)torrents fromStats:(std::vector<tr_stat>)stats;
 
 - (void)startTransferIgnoringQueue:(BOOL)ignoreQueue;
 - (void)startTransferNoQueue;
