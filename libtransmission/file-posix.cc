@@ -649,23 +649,23 @@ namespace preallocate_helpers
 #if defined(HAVE_FALLOCATE)
     return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0 ? 0 : errno;
 #elif defined(__APPLE__)
-    if (fast) {
-        return ENOSYS;
-    }
-
-    fstore_t fst;
-
+    // F_ALLOCATEALL alone: trying F_ALLOCATECONTIG first can report partial success on APFS (rustix #1682).
+    // F_ALLOCATEPERSIST isn't needed: the ftruncate() below puts the blocks inside EOF.
+    auto fst = fstore_t{};
     fst.fst_flags = F_ALLOCATEALL;
     fst.fst_posmode = F_PEOFPOSMODE;
-    fst.fst_offset = 0;
-    fst.fst_length = size;
-    fst.fst_bytesalloc = 0;
+    fst.fst_length = static_cast<off_t>(size);
 
     if (fcntl(handle, F_PREALLOCATE, &fst) == -1) {
         return errno;
     }
 
-    return ftruncate(handle, size) == 0 ? 0 : errno;
+    // FAT reports success with nothing allocated for an oversize request
+    if (fst.fst_bytesalloc < fst.fst_length) {
+        return ENOSPC;
+    }
+
+    return ftruncate(handle, fst.fst_length) == 0 ? 0 : errno;
 #elif defined(HAVE_POSIX_FALLOCATE)
     // Below fallocate() on purpose: on Linux this is the same syscall,
     // and glibc's fallback writes one byte per 4 KiB block.

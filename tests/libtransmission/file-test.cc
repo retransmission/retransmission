@@ -1247,10 +1247,11 @@ TEST_F(FileTest, filePreallocateFastFallsBackToTruncate)
 }
 #endif
 
-#ifdef __linux__
+// Apple only: on Linux, ext4 refuses this size with or without the reservation, and XFS fills the disk before failing.
+#ifdef __APPLE__
 TEST_F(FileTest, filePreallocateFastStopsWhenOutOfSpace)
 {
-    // more than any test machine's disk, though ftruncate() alone could make it on most filesystems
+    // more than any test machine's disk, though ftruncate() alone could make it
     static auto constexpr Size = uint64_t{ 100U } << 40U;
 
     auto const test_dir = createTestDir(currentTestName());

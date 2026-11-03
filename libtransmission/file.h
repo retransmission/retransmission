@@ -388,7 +388,7 @@ bool tr_sys_file_write(
  * @brief Give a new, empty file its final size.
  *
  * `TR_SYS_FILE_PREALLOC_FAST` makes the file `size` bytes long without writing data.
- * Blocks are also reserved where the OS can do that without writing (Linux `fallocate()`).
+ * Blocks are also reserved where the OS can do that without writing (Linux `fallocate()`, macOS `F_PREALLOCATE`).
  *
  * Otherwise, every block is reserved, so later writes can't fail for lack of space.
  * This can fail where the filesystem can't reserve blocks; zero-filling the file is then up to the caller.
