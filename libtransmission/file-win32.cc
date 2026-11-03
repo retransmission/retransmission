@@ -778,17 +778,14 @@ bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
     return ret;
 }
 
-bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error)
+bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, int const flags, tr_error* const error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
     if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0) {
+        // best effort: FAT32, exFAT, and some SMB shares refuse
         DWORD tmp = 0;
-
-        if (!to_bool(DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr))) {
-            set_system_error(error, GetLastError());
-            return false;
-        }
+        (void)DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr);
     }
 
     return tr_sys_file_truncate(handle, size, error);

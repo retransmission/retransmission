@@ -48,24 +48,11 @@ namespace
     tr_logAddDebug(fmt::format("Fast preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
     if (!local_error.is_out_of_space()) {
-        local_error = {};
-
-        // Truncate is one metadata call. The write below dirties a page and,
-        // on a network filesystem, waits for the server to grow the file.
-        if (tr_sys_file_truncate(fd, length, &local_error)) {
-            return true;
-        }
-
-        tr_logAddDebug(
-            fmt::format("Sparse preallocation by truncate failed: {} ({})", local_error.message(), local_error.code()));
-    }
-
-    if (!local_error.is_out_of_space()) {
         static char constexpr Zero = '\0';
 
         local_error = {};
 
-        /* fallback: the old-style seek-and-write */
+        // for filesystems that refuse to grow a file by truncating
         if (tr_sys_file_write_at(fd, &Zero, 1, length - 1, nullptr, &local_error)) {
             return true;
         }

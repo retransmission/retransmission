@@ -1196,10 +1196,54 @@ TEST_F(FileTest, filePreallocateReadOnly)
     EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, 0, &error));
     EXPECT_EQ(EBADF, error.code()) << error;
 
-    // Sparse tries only fallocate(), so ENOSYS means it wasn't compiled in
+    // EINVAL would come from ftruncate(), meaning fallocate() wasn't compiled in
     error = {};
     EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, TR_SYS_FILE_PREALLOC_SPARSE, &error));
     EXPECT_EQ(EBADF, error.code()) << error;
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+#endif
+
+#ifdef __linux__
+TEST_F(FileTest, filePreallocateFastFallsBackToTruncate)
+{
+    // a pipe fails fallocate() with ESPIPE and ftruncate() with EINVAL
+    auto fds = std::array<int, 2U>{};
+    ASSERT_EQ(0, pipe(std::data(fds)));
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, 0, &error));
+    EXPECT_EQ(ESPIPE, error.code()) << error;
+
+    error = {};
+    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_EQ(EINVAL, error.code()) << error;
+
+    close(fds[0]);
+    close(fds[1]);
+}
+#endif
+
+#ifdef __linux__
+TEST_F(FileTest, filePreallocateFastStopsWhenOutOfSpace)
+{
+    // more than any test machine's disk, though ftruncate() alone could make it on most filesystems
+    static auto constexpr Size = uint64_t{ 100U } << 40U;
+
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_TRUE(error.is_out_of_space()) << error;
+
+    auto const info = tr_sys_path_get_info(path);
+    ASSERT_TRUE(info.has_value());
+    EXPECT_EQ(0U, info->size);
 
     tr_sys_file_close(fd);
     tr_sys_path_remove(path);

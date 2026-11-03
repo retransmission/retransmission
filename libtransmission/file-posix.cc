@@ -683,13 +683,24 @@ bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, in
 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    auto const err = reserve_blocks(handle, size, (flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0);
+    auto const fast = (flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0;
+    auto err = reserve_blocks(handle, size, fast);
 
-    if (err != 0 && error != nullptr) {
+    if (err == 0) {
+        return true;
+    }
+
+    // No reservation? Fast mode can still set the size,
+    // unless there's no room or the handle isn't writable.
+    if (fast && err != EBADF && !tr_error::is_out_of_space(err)) {
+        return tr_sys_file_truncate(handle, size, error);
+    }
+
+    if (error != nullptr) {
         error->set_from_errno(err);
     }
 
-    return err == 0;
+    return false;
 }
 
 bool tr_sys_file_lock([[maybe_unused]] tr_sys_file_t handle, [[maybe_unused]] int operation, tr_error* error)
