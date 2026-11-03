@@ -744,7 +744,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 {
     NSMutableIndexSet* selectedIndexes = [NSMutableIndexSet new];
     for (id item in items) {
-        // a row of -1 would make selectRowIndexes: clear the whole selection
+        // selectRowIndexes: ignores the whole set if it holds -1
         NSInteger const row = [self rowForItem:item];
         if (row != -1) {
             [selectedIndexes addIndex:row];
