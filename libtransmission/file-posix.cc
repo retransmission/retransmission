@@ -639,15 +639,18 @@ namespace
 {
 namespace preallocate_helpers
 {
+// These return 0 or an errno value.
+// errno can't carry the result: posix_fallocate() returns its error and leaves errno alone.
+
 #ifdef HAVE_FALLOCATE
-[[nodiscard]] bool preallocate_fallocate(tr_sys_file_t const handle, uint64_t const size) noexcept
+[[nodiscard]] int preallocate_fallocate(tr_sys_file_t const handle, uint64_t const size) noexcept
 {
-    return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0;
+    return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0 ? 0 : errno;
 }
 #endif
 
 #ifdef __APPLE__
-bool full_preallocate_apple(tr_sys_file_t handle, uint64_t size)
+[[nodiscard]] int full_preallocate_apple(tr_sys_file_t const handle, uint64_t const size) noexcept
 {
     fstore_t fst;
 
@@ -657,20 +660,18 @@ bool full_preallocate_apple(tr_sys_file_t handle, uint64_t size)
     fst.fst_length = size;
     fst.fst_bytesalloc = 0;
 
-    bool ok = fcntl(handle, F_PREALLOCATE, &fst) != -1;
-
-    if (ok) {
-        ok = ftruncate(handle, size) == 0;
+    if (fcntl(handle, F_PREALLOCATE, &fst) == -1) {
+        return errno;
     }
 
-    return ok;
+    return ftruncate(handle, size) == 0 ? 0 : errno;
 }
 #endif
 
 #ifdef HAVE_POSIX_FALLOCATE
-[[nodiscard]] bool full_preallocate_posix(tr_sys_file_t handle, uint64_t size)
+[[nodiscard]] int full_preallocate_posix(tr_sys_file_t const handle, uint64_t const size) noexcept
 {
-    return posix_fallocate(handle, 0, static_cast<off_t>(size)) == 0;
+    return posix_fallocate(handle, 0, static_cast<off_t>(size));
 }
 #endif
 } // namespace preallocate_helpers
@@ -682,7 +683,7 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    using prealloc_func = bool (*)(tr_sys_file_t, uint64_t);
+    using prealloc_func = int (*)(tr_sys_file_t, uint64_t);
 
     // these approaches are fast and should be tried first
     auto approaches = std::vector<prealloc_func>{
@@ -710,22 +711,24 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
             });
     }
 
-    for (auto& approach : approaches) // try until one of them works
-    {
-        errno = 0;
+    auto last = 0;
 
-        if (auto const success = approach(handle, size); success) {
-            return success;
+    for (auto const& approach : approaches) // try until one of them works
+    {
+        last = approach(handle, size);
+
+        if (last == 0) {
+            return true;
         }
 
-        if (errno == ENOSPC) // disk full, so subsequent approaches will fail too
+        if (last == ENOSPC) // disk full, so subsequent approaches will fail too
         {
             break;
         }
     }
 
     if (error != nullptr) {
-        error->set_from_errno(errno ? errno : ENOSYS);
+        error->set_from_errno(last != 0 ? last : ENOSYS);
     }
 
     return false;
