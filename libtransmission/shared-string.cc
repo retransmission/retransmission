@@ -112,18 +112,16 @@ struct string_pool {
     auto const lock = std::scoped_lock{ pool.mutex };
 
     if (auto const iter = pool.nodes.find(key); iter != std::end(pool.nodes)) {
-        // Take a reference only while the count is nonzero. A node whose
-        // count hit zero is owned by the remove_ref() call that zeroed it,
-        // which will delete it without relocking, so it must never be revived.
         auto* const node = iter->second;
-        for (auto count = node->refcount.load(std::memory_order_relaxed); count != 0U;) {
-            if (node->refcount.compare_exchange_weak(count, count + 1U, std::memory_order_relaxed)) {
-                return node;
-            }
+        if (node->refcount.fetch_add(1U, std::memory_order_relaxed) != 0U) {
+            return node;
         }
 
-        // Unlink the dying node so a fresh one can take the key.
-        // Its owning remove_ref() call still deletes it.
+        // A zero count means the remove_ref() call that zeroed it owns the
+        // node: it destroys the node once it has taken this lock to erase
+        // the entry, and never reads the count again, so the stray
+        // increment above is harmless. Unlink the node now so a fresh one
+        // can take the key.
         pool.nodes.erase(iter);
     }
 
@@ -149,10 +147,10 @@ void remove_ref(Node* const node) noexcept
         return;
     }
 
-    // The count hit zero, and acquire_node() never revives a zero-count
-    // node, so this call owns the node. acquire_node() may have already
-    // unlinked it and pooled an equal replacement, though, so erase only
-    // the entry that still points at this node.
+    // The count hit zero, and acquire_node() never hands out a node whose
+    // count was zero, so this call owns the node. acquire_node() may have
+    // already unlinked it and pooled an equal replacement, though, so
+    // erase only the entry that still points at this node.
     auto& pool = string_pool::instance();
     {
         auto const lock = std::scoped_lock{ pool.mutex };
