@@ -86,6 +86,20 @@ protected:
 #endif
     }
 
+    // how much disk space the filesystem has given the file
+    [[nodiscard]] static uint64_t allocatedBytes(tr_sys_file_t const fd)
+    {
+#ifndef _WIN32
+        struct stat sb = {};
+        EXPECT_EQ(0, fstat(fd, &sb));
+        return static_cast<uint64_t>(sb.st_blocks) * 512U;
+#else
+        auto info = FILE_STANDARD_INFO{};
+        EXPECT_NE(0, GetFileInformationByHandleEx(fd, FileStandardInfo, &info, sizeof(info)));
+        return static_cast<uint64_t>(info.AllocationSize.QuadPart);
+#endif
+    }
+
     static void clearPathInfo(tr_sys_path_info* info)
     {
         *info = {};
@@ -1129,60 +1143,68 @@ TEST_F(FileTest, fileTruncate)
     tr_sys_path_remove(path);
 }
 
-TEST_F(FileTest, filePreallocate)
+TEST_F(FileTest, filePreallocateFast)
 {
-    auto const test_dir = createTestDir(currentTestName());
+    static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
 
-    auto const path1 = tr_pathbuf{ test_dir, "/a"sv };
-    auto fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
     auto error = tr_error{};
-    auto prealloc_size = size_t{ 50 };
-    if (tr_sys_file_preallocate(fd, prealloc_size, 0, &error)) {
-        EXPECT_FALSE(error) << error;
-        auto info = tr_sys_path_get_info(path1);
-        ASSERT_TRUE(info.has_value());
-        EXPECT_EQ(prealloc_size, info->size);
-    } else {
-        EXPECT_TRUE(error);
-        fmt::print(
-            stderr,
-            "WARNING: [{:s}] unable to preallocate file (full): {:s} ({:d})\n",
-            __FUNCTION__,
-            error.message(),
-            error.code());
-        error = {};
-    }
+    EXPECT_TRUE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_FAST, &error)) << error;
+    EXPECT_FALSE(error) << error;
+
+    auto const info = tr_sys_path_get_info(path);
+    ASSERT_TRUE(info.has_value());
+    EXPECT_EQ(Size, info->size);
+
+#if defined(__linux__) || defined(__APPLE__)
+    EXPECT_GE(allocatedBytes(fd), Size);
+#elif defined(_WIN32)
+    EXPECT_EQ(0U, allocatedBytes(fd)); // sparse
+#endif
 
     tr_sys_file_close(fd);
-
-    tr_sys_path_remove(path1);
-
-    fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
-
-    prealloc_size = size_t{ 500U } * 1024U * 1024U;
-    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_FAST, &error)) {
-        EXPECT_FALSE(error) << error;
-        auto info = tr_sys_path_get_info(path1);
-        ASSERT_TRUE(info.has_value());
-        EXPECT_EQ(prealloc_size, info->size);
-    } else {
-        EXPECT_TRUE(error);
-        fmt::print(
-            stderr,
-            "WARNING: [{:s}] unable to preallocate file (fast): {:s} ({:d})\n",
-            __FUNCTION__,
-            error.message(),
-            error.code());
-        error = {};
-    }
-
-    tr_sys_file_close(fd);
-
-    tr_sys_path_remove(path1);
+    tr_sys_path_remove(path);
 }
 
-#ifdef __linux__
+TEST_F(FileTest, filePreallocateFull)
+{
+    static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
+
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    auto error = tr_error{};
+    auto const success = tr_sys_file_preallocate(fd, Size, 0, &error);
+
+#if defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+    EXPECT_TRUE(success) << error;
+    EXPECT_GE(allocatedBytes(fd), Size);
+#else
+    // some of these can't reserve blocks without writing
+    if (!success) {
+        auto const code = error.code();
+        EXPECT_TRUE(code == EINVAL || code == EOPNOTSUPP || code == ENOTSUP || code == ENOSYS) << error;
+    }
+#endif
+
+    if (success) {
+        EXPECT_FALSE(error) << error;
+
+        auto const info = tr_sys_path_get_info(path);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_EQ(Size, info->size);
+    }
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+
 TEST_F(FileTest, filePreallocateReadOnly)
 {
     auto const test_dir = createTestDir(currentTestName());
@@ -1191,20 +1213,21 @@ TEST_F(FileTest, filePreallocateReadOnly)
     auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ, 0);
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
-    // fallocate() fails with EBADF here
-    auto error = tr_error{};
-    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, 0, &error));
-    EXPECT_EQ(EBADF, error.code()) << error;
-
-    // EINVAL would come from ftruncate(), meaning fallocate() wasn't compiled in
-    error = {};
-    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, TR_SYS_FILE_PREALLOC_FAST, &error));
-    EXPECT_EQ(EBADF, error.code()) << error;
+    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_FAST } }) {
+        auto error = tr_error{};
+        EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, flags, &error));
+        EXPECT_TRUE(error);
+#ifdef _WIN32
+        EXPECT_EQ(ERROR_ACCESS_DENIED, error.code()) << error;
+#elif defined(__linux__) || defined(__APPLE__)
+        // EINVAL would come from ftruncate(), meaning the reservation call wasn't compiled in
+        EXPECT_EQ(EBADF, error.code()) << error;
+#endif
+    }
 
     tr_sys_file_close(fd);
     tr_sys_path_remove(path);
 }
-#endif
 
 TEST_F(FileTest, filePreallocateZeroBytes)
 {
