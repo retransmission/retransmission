@@ -447,7 +447,7 @@ void Application::raise() const
     alert(window_.get());
 }
 
-bool Application::notifyApp(QString const& title, QString const& body, QStringList const& actions, QVariantMap hints) const
+void Application::notifyApp(QString const& title, QString const& body, QStringList const& actions, QVariantMap hints) const
 {
 #ifdef QT_DBUS_LIB
     if (auto bus = QDBusConnection::sessionBus(); bus.isConnected()) {
@@ -470,14 +470,13 @@ bool Application::notifyApp(QString const& title, QString const& body, QStringLi
         QDBusReply<quint32> const reply_msg = bus.call(m);
 
         if (reply_msg.isValid() && reply_msg.value() > 0) {
-            return true;
+            return;
         }
     }
 
 #endif
 
     window_->trayIcon().showMessage(title, body);
-    return true;
 }
 
 #ifdef QT_DBUS_LIB

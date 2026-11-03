@@ -71,7 +71,7 @@ public:
     ~Application() override;
 
     void raise() const;
-    bool notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
+    void notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
 
     // True when this launch found the config dir held by another session.
     // We give way rather than write over the files that session owns.
