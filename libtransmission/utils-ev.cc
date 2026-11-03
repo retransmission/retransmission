@@ -26,13 +26,6 @@ void EventDeleter::operator()(struct event* event) const
     }
 }
 
-void EvhttpDeleter::operator()(struct evhttp* evh) const noexcept
-{
-    if (evh != nullptr) {
-        evhttp_free(evh);
-    }
-}
-
 // RPC events (evhttp) will default to pri1, one level higher than pri2 events
 // created here. Depends on event_base having three priority levels
 struct event* event_new_pri2(
