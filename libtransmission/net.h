@@ -73,6 +73,8 @@ using tr_socket_t = int;
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // tr_hash_combine()
 
+struct tr_error;
+
 [[nodiscard]] std::string_view tr_ip_protocol_to_sv(tr_address_type type);
 [[nodiscard]] int tr_ip_protocol_to_af(tr_address_type type);
 [[nodiscard]] tr_address_type tr_af_to_ip_protocol(int af);
@@ -535,5 +537,8 @@ void tr_netSetDiffServ(tr_socket_t sock, int tos, tr_address_type type);
  * @param err an errno on Unix/Linux and an WSAError on win32)
  */
 [[nodiscard]] std::string tr_net_strerror(int err);
+
+// `tr_error{ err, tr_net_strerror(err) }`
+[[nodiscard]] tr_error tr_net_error(int err);
 
 [[nodiscard]] int tr_make_listen_socket_ipv6only(tr_socket_t sock);

@@ -28,6 +28,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/error.h"
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-socket.h"
@@ -52,6 +53,11 @@ std::string tr_net_strerror(int err)
     return std::string{ tr_strerror(err) };
 
 #endif
+}
+
+tr_error tr_net_error(int const err)
+{
+    return { err, tr_net_strerror(err) };
 }
 
 std::string_view tr_ip_protocol_to_sv(tr_address_type type)

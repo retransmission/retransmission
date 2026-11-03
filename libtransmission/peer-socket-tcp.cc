@@ -256,8 +256,7 @@ protected:
         // When a stream socket peer has performed an orderly shutdown,
         // the return value will be 0 (the traditional "end-of-file" return).
         if (error != nullptr) {
-            auto const code = n_read == 0 ? ENOTCONN : err;
-            error->set(code, tr_net_strerror(code));
+            *error = tr_net_error(n_read == 0 ? ENOTCONN : err);
         }
 
         return {};
@@ -281,8 +280,7 @@ protected:
         }
 
         if (error != nullptr) {
-            auto const err = sockerrno;
-            error->set(err, tr_net_strerror(err));
+            *error = tr_net_error(sockerrno);
         }
 
         return {};

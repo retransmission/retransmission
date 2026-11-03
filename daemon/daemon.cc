@@ -931,13 +931,12 @@ void tr_daemon::reconfigure()
 #ifdef WITH_SYSTEMD
         auto ts = timespec{};
         if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
-            auto error = tr_error{};
-            error.set_from_errno(errno);
+            auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
                     "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})",
-                    fmt::arg("errmsg", error.message()),
-                    fmt::arg("errno", error.code())));
+                    fmt::arg("errmsg", tr_strerror(error_code)),
+                    fmt::arg("errno", error_code)));
             return;
         }
 
