@@ -47,7 +47,7 @@ namespace
 
     tr_logAddDebug(fmt::format("Fast preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!local_error.is_enospc()) {
+    if (!local_error.is_out_of_space()) {
         local_error = {};
 
         // Truncate is one metadata call. The write below dirties a page and,
@@ -60,7 +60,7 @@ namespace
             fmt::format("Sparse preallocation by truncate failed: {} ({})", local_error.message(), local_error.code()));
     }
 
-    if (!local_error.is_enospc()) {
+    if (!local_error.is_out_of_space()) {
         static char constexpr Zero = '\0';
 
         local_error = {};
@@ -98,7 +98,7 @@ namespace
 
     tr_logAddDebug(fmt::format("Full preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!local_error.is_enospc()) {
+    if (!local_error.is_out_of_space()) {
         // This fallback writes out the whole file.
         // It runs on FAT and exFAT, which are usually slow external
         // drives, so write in big chunks.

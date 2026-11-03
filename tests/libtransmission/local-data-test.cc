@@ -652,7 +652,7 @@ TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
         { .begin = 0U, .end = BlockSize },
         patternBlock(0U, BlockSize),
         [&done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
-            EXPECT_TRUE(error.is_enospc()) << error;
+            EXPECT_TRUE(error.is_out_of_space()) << error;
             EXPECT_TRUE(error.message().contains("injected preallocation error")) << error;
             EXPECT_TRUE(error.message().contains("data.bin")) << error;
             done = true;

@@ -455,7 +455,7 @@ TEST_P(OpenFilesSparsePreallocationTest, growsFileUnlessDiskIsFull)
 
     auto error = tr_error{};
     EXPECT_EQ(!disk_full, static_cast<bool>(files.get(0, 0, true, filename, tr_file_preallocation::Sparse, FileSize, error)));
-    EXPECT_EQ(disk_full, error.is_enospc()) << error;
+    EXPECT_EQ(disk_full, error.is_out_of_space()) << error;
 
     // a full disk skips the fallbacks
     auto const info = tr_sys_path_get_info(filename);

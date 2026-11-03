@@ -45,7 +45,9 @@ public:
 
     // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
     [[nodiscard]] bool is_enoent() const noexcept;
-    [[nodiscard]] bool is_enospc() const noexcept;
+    // disk full, quota used up, or past the maximum file size
+    [[nodiscard]] bool is_out_of_space() const noexcept;
+    [[nodiscard]] static bool is_out_of_space(code_t code) noexcept;
     // e.g. `EAGAIN` or `EINTR`: nothing happened, so try again
     [[nodiscard]] bool is_transient() const noexcept;
 
