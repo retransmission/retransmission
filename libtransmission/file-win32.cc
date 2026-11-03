@@ -7,6 +7,7 @@
 #include <cctype> // for isalpha()
 #include <cstring>
 #include <iterator> // for std::back_inserter
+#include <ranges>
 #include <string>
 #include <string_view>
 
@@ -27,7 +28,10 @@ using namespace std::literals;
 namespace
 {
 auto constexpr NativeLocalPathPrefix = L"\\\\?\\"sv;
+auto constexpr Utf8LocalPathPrefix = R"(\\?\)"sv;
 auto constexpr NativeUncPathPrefix = L"\\\\?\\UNC\\"sv;
+auto constexpr Utf8UncPathPrefix = R"(\\?\UNC\)"sv;
+auto constexpr Utf8DeviceNamespacePathPrefix = R"(\\.\)"sv;
 
 void set_system_error(tr_error* error, DWORD code)
 {
@@ -49,17 +53,37 @@ constexpr bool is_slash(char c)
     return Slashes.contains(c);
 }
 
-constexpr bool is_unc_path(std::string_view path)
+// https://devblogs.microsoft.com/oldnewthing/20160324-00/?p=93194/
+// There was a bug in the Windows XP version of the `PathIsUNC` function where it reported that
+// anything that began with two backslashes was a UNC, even if it wasn’t. In particular, paths that
+// begin with `\\?\` are not UNCs, unless they happen to begin with `\\?\UNC\`.
+[[nodiscard]] constexpr std::optional<std::string_view> is_utf8_unc_path(std::string_view const path)
 {
-    return std::size(path) >= 2 && is_slash(path[0]) && path[1] == path[0];
+    if (auto const prefix = path.substr(0U, Utf8UncPathPrefix.size()); std::ranges::equal(
+            std::views::transform(prefix, [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); }),
+            Utf8UncPathPrefix)) {
+        return prefix;
+    }
+
+    if (path.starts_with(Utf8LocalPathPrefix) || path.starts_with(Utf8DeviceNamespacePathPrefix)) {
+        return {};
+    }
+
+    if (std::size(path) >= 2U && is_slash(path[0]) && path[0] == path[1]) {
+        return path.substr(0U, 2U);
+    }
+
+    return {};
 }
 
 bool is_valid_path(std::string_view path)
 {
-    if (is_unc_path(path)) {
-        if (std::size(path) <= 2 || isalnum(static_cast<unsigned char>(path[2])) == 0) {
+    if (auto const unc_prefix = is_utf8_unc_path(path)) {
+        if (std::size(path) <= unc_prefix->size() || isalnum(static_cast<unsigned char>(path[unc_prefix->size()])) == 0) {
             return false;
         }
+
+        path.remove_prefix(unc_prefix->size());
     } else if (auto const pos = path.find(':'); pos != std::string_view::npos) {
         if (pos != 1 || isalpha(static_cast<unsigned char>(path[0])) == 0) {
             return false;
@@ -96,9 +120,9 @@ bool is_valid_path(std::string_view path)
    https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247.aspx for more info */
 [[nodiscard]] auto path_to_native_path(std::string_view path)
 {
-    if (is_unc_path(path)) {
+    if (auto const unc_prefix = is_utf8_unc_path(path)) {
         // UNC path: "\\server\share" -> "\\?\UNC\server\share"
-        path.remove_prefix(2); // remove path's UNC prefix slashes
+        path.remove_prefix(unc_prefix->size()); // remove path's UNC prefix
         auto wide_path = path_to_fixed_native_path(path);
         wide_path.insert(0, NativeUncPathPrefix);
         return wide_path;

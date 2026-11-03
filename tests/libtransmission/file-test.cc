@@ -672,6 +672,10 @@ TEST_F(FileTest, pathBasename)
         { .input = R"(\\)", .output = "" },
         { .input = R"(\\a)"sv.substr(0, 2), .output = "" },
         { .input = "//", .output = "" },
+        { .input = R"(\\?\UNC\)", .output = "" },
+        { .input = R"(\\?\unc\)", .output = "" },
+        { .input = R"(\\?\uNc\)", .output = "" },
+        { .input = R"(\\?\UNC\a\b\c)", .output = "c" },
 #else
         { .input = "////", .output = "/" },
 #endif
