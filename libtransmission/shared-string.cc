@@ -228,7 +228,7 @@ shared_string& shared_string::operator=(std::string_view const sv)
 
 shared_string& shared_string::operator=(char const* const c_str)
 {
-    return *this = std::string_view{ c_str != nullptr ? c_str : "" };
+    return *this = shared_string{ c_str };
 }
 
 void shared_string::clear() noexcept
