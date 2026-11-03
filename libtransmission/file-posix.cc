@@ -668,7 +668,9 @@ namespace preallocate_helpers
 }
 #endif
 
-#ifdef HAVE_POSIX_FALLOCATE
+// Linux skips this: it would reissue the fallocate() that just failed,
+// and glibc's fallback then writes one byte per 4 KiB block.
+#if defined(HAVE_POSIX_FALLOCATE) && !defined(HAVE_FALLOCATE)
 [[nodiscard]] int full_preallocate_posix(tr_sys_file_t const handle, uint64_t const size) noexcept
 {
     return posix_fallocate(handle, 0, static_cast<off_t>(size));
@@ -705,7 +707,7 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
 #ifdef __APPLE__
                 full_preallocate_apple,
 #endif
-#ifdef HAVE_POSIX_FALLOCATE
+#if defined(HAVE_POSIX_FALLOCATE) && !defined(HAVE_FALLOCATE)
                 full_preallocate_posix,
 #endif
             });

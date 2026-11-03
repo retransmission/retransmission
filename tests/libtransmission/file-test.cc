@@ -1191,7 +1191,7 @@ TEST_F(FileTest, filePreallocateReadOnly)
     auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ, 0);
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
-    // On Linux, both fallocate() and posix_fallocate() fail with EBADF here
+    // fallocate() fails with EBADF here
     auto error = tr_error{};
     EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, 0, &error));
     EXPECT_EQ(EBADF, error.code()) << error;
