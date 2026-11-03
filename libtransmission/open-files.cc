@@ -29,7 +29,7 @@ namespace
     return fd != TR_BAD_SYS_FILE;
 }
 
-[[nodiscard]] bool preallocate_file_sparse(
+[[nodiscard]] bool preallocate_file_fast(
     tr_open_files::Preallocate const& preallocate,
     tr_sys_file_t const fd,
     uint64_t const length,
@@ -37,7 +37,7 @@ namespace
 {
     auto local_error = tr_error{};
 
-    if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_SPARSE, &local_error)) {
+    if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_FAST, &local_error)) {
         return true;
     }
 
@@ -204,9 +204,9 @@ tr_open_files::Handle tr_open_files::get(
         if (allocation == tr_file_preallocation::Full) {
             success = preallocate_file_full(preallocate_, fd, file_size, &error);
             type = "full";
-        } else if (allocation == tr_file_preallocation::Sparse) {
-            success = preallocate_file_sparse(preallocate_, fd, file_size, &error);
-            type = "sparse";
+        } else if (allocation == tr_file_preallocation::Fast) {
+            success = preallocate_file_fast(preallocate_, fd, file_size, &error);
+            type = "fast";
         }
 
         TR_ASSERT(type != nullptr);

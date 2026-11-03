@@ -310,6 +310,19 @@ TEST_F(SettingsTest, canLoadPreallocation)
     EXPECT_EQ(ExpectedValue, settings->preallocation_mode);
 }
 
+TEST_F(SettingsTest, canLoadFastPreallocationByEitherName)
+{
+    for (auto const name : { "fast"sv, "sparse"sv }) {
+        auto settings = tr_session::Settings{};
+        settings.preallocation_mode = tr_file_preallocation::None;
+
+        auto map = tr::Settings{ 1U };
+        map.try_emplace(TR_KEY_preallocation, name);
+        settings.load(map);
+        EXPECT_EQ(tr_file_preallocation::Fast, settings.preallocation_mode) << name;
+    }
+}
+
 TEST_F(SettingsTest, canSavePreallocation)
 {
     static auto constexpr Key = TR_KEY_preallocation;

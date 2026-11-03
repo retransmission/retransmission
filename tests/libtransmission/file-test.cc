@@ -1161,7 +1161,7 @@ TEST_F(FileTest, filePreallocate)
     fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
 
     prealloc_size = size_t{ 500U } * 1024U * 1024U;
-    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_SPARSE, &error)) {
+    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_FAST, &error)) {
         EXPECT_FALSE(error) << error;
         auto info = tr_sys_path_get_info(path1);
         ASSERT_TRUE(info.has_value());
@@ -1170,7 +1170,7 @@ TEST_F(FileTest, filePreallocate)
         EXPECT_TRUE(error);
         fmt::print(
             stderr,
-            "WARNING: [{:s}] unable to preallocate file (sparse): {:s} ({:d})\n",
+            "WARNING: [{:s}] unable to preallocate file (fast): {:s} ({:d})\n",
             __FUNCTION__,
             error.message(),
             error.code());
@@ -1198,7 +1198,7 @@ TEST_F(FileTest, filePreallocateReadOnly)
 
     // EINVAL would come from ftruncate(), meaning fallocate() wasn't compiled in
     error = {};
-    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, TR_SYS_FILE_PREALLOC_FAST, &error));
     EXPECT_EQ(EBADF, error.code()) << error;
 
     tr_sys_file_close(fd);
@@ -1213,7 +1213,7 @@ TEST_F(FileTest, filePreallocateZeroBytes)
     auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
-    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_SPARSE } }) {
+    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_FAST } }) {
         auto error = tr_error{};
         EXPECT_TRUE(tr_sys_file_preallocate(fd, 0U, flags, &error)) << error;
         EXPECT_FALSE(error) << error;
@@ -1239,7 +1239,7 @@ TEST_F(FileTest, filePreallocateFastFallsBackToTruncate)
     EXPECT_EQ(ESPIPE, error.code()) << error;
 
     error = {};
-    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, TR_SYS_FILE_PREALLOC_FAST, &error));
     EXPECT_EQ(EINVAL, error.code()) << error;
 
     close(fds[0]);
@@ -1259,7 +1259,7 @@ TEST_F(FileTest, filePreallocateFastStopsWhenOutOfSpace)
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
     auto error = tr_error{};
-    EXPECT_FALSE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_SPARSE, &error));
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_FAST, &error));
     EXPECT_TRUE(error.is_out_of_space()) << error;
 
     auto const info = tr_sys_path_get_info(path);

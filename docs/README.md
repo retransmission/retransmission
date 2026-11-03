@@ -20,7 +20,7 @@ Much of this documentation is out-of-date or could be improved. Pull requests ar
 * [Why is my port closed?](./Why-is-my-port-closed.md)
 * Q: How can I prevent the fragmentation of my downloaded files? 
 
-  A: Use the [configuration option](./Editing-Configuration-Files.md) "preallocation": 2
+  A: Use the [configuration option](./Editing-Configuration-Files.md) "preallocation": 2. On Linux, the default of 1 already avoids most fragmentation.
 # 3. More documentation #
  * [Configuration files](./Configuration-Files.md)
  * [Editing configuration files](./Editing-Configuration-Files.md)

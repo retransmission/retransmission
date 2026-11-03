@@ -336,8 +336,8 @@ auto constexpr LogKeys = to_lookup<tr_log_level>({
 auto constexpr PreallocationKeys = to_lookup<tr_file_preallocation>({
     { "off", tr_file_preallocation::None },
     { "none", tr_file_preallocation::None },
-    { "fast", tr_file_preallocation::Sparse },
-    { "sparse", tr_file_preallocation::Sparse },
+    { "fast", tr_file_preallocation::Fast },
+    { "sparse", tr_file_preallocation::Fast },
     { "full", tr_file_preallocation::Full },
 });
 

@@ -54,7 +54,7 @@ enum tr_sys_file_lock_flags_t : uint8_t {
 
 enum tr_sys_path_get_info_flags_t : uint8_t { TR_SYS_PATH_NO_FOLLOW = (1 << 0) };
 
-enum tr_sys_file_preallocate_flags_t : uint8_t { TR_SYS_FILE_PREALLOC_SPARSE = (1 << 0) };
+enum tr_sys_file_preallocate_flags_t : uint8_t { TR_SYS_FILE_PREALLOC_FAST = (1 << 0) };
 
 enum tr_sys_dir_create_flags_t : uint8_t { TR_SYS_DIR_CREATE_PARENTS = (1 << 0) };
 
@@ -385,10 +385,17 @@ bool tr_sys_file_write(
 [[nodiscard]] bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error = nullptr);
 
 /**
- * @brief Preallocate file to specified size in full or sparse mode.
+ * @brief Give a new, empty file its final size.
  *
- * @param[in]  handle Valid file descriptor.
- * @param[in]  size   Number of bytes to preallocate file to.
+ * `TR_SYS_FILE_PREALLOC_FAST` makes the file `size` bytes long without writing data.
+ * Blocks are also reserved where the OS can do that without writing (Linux `fallocate()`).
+ *
+ * Otherwise, every block is reserved, so later writes can't fail for lack of space.
+ * This can fail where the filesystem can't reserve blocks; zero-filling the file is then up to the caller.
+ *
+ * @param[in]  handle Valid descriptor of a newly-created, empty regular file.
+ *                    Some platforms would shrink a larger file or reserve past its end.
+ * @param[in]  size   Number of bytes the file should have. 0 always succeeds.
  * @param[in]  flags  Combination of @ref tr_sys_file_preallocate_flags_t values.
  * @param[out] error  Pointer to error object. Optional, pass `nullptr` if you
  *                    are not interested in error details.

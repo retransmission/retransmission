@@ -786,7 +786,7 @@ bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, in
         return true;
     }
 
-    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0) {
+    if ((flags & TR_SYS_FILE_PREALLOC_FAST) != 0) {
         // best effort: FAT32, exFAT, and some SMB shares refuse
         DWORD tmp = 0;
         (void)DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr);

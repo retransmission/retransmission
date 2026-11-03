@@ -66,7 +66,7 @@ inline auto constexpr PreferredTransportCount = 2U;
 
 enum class tr_file_preallocation : uint8_t {
     None,
-    Sparse,
+    Fast,
     Full,
 };
 
