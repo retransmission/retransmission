@@ -187,15 +187,17 @@
 
     window.contentView = mainStack;
 
-    [self.fGroupPopUp.widthAnchor constraintGreaterThanOrEqualToConstant:100].active = YES;
-    [self.fPriorityPopUp.widthAnchor constraintEqualToAnchor:self.fGroupPopUp.widthAnchor].active = YES;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fGroupPopUp.widthAnchor constraintGreaterThanOrEqualToConstant:100],
+        [self.fPriorityPopUp.widthAnchor constraintEqualToAnchor:self.fGroupPopUp.widthAnchor],
 
-    [cancelButton.widthAnchor constraintEqualToAnchor:addButton.widthAnchor].active = YES;
-    [addButton.widthAnchor constraintGreaterThanOrEqualToConstant:76].active = YES;
+        [cancelButton.widthAnchor constraintEqualToAnchor:addButton.widthAnchor],
+        [addButton.widthAnchor constraintGreaterThanOrEqualToConstant:76],
 
-    [self.fNameField.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20].active = YES;
-    [settingsBox.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20].active = YES;
-    [footerStack.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20].active = YES;
+        [self.fNameField.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20],
+        [settingsBox.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20],
+        [footerStack.trailingAnchor constraintEqualToAnchor:mainStack.trailingAnchor constant:-20],
+    ]];
 
     window.minSize = NSMakeSize(440, 260);
 }
@@ -253,27 +255,27 @@
     [self.fController askOpenMagnetConfirmed:self add:YES];
 }
 
-- (IBAction)setDestination:(id)sender
+- (void)setDestination:(id)sender
 {
     [self.viewModel selectDestinationModalForWindow:self.window];
 }
 
-- (IBAction)changeGroupValue:(id)sender
+- (void)changeGroupValue:(id)sender
 {
     [self.viewModel changeGroupValueToTag:[sender tag]];
 }
 
-- (IBAction)changePriority:(id)sender
+- (void)changePriority:(id)sender
 {
     [self.viewModel changePriorityToIndex:[sender indexOfSelectedItem]];
 }
 
-- (IBAction)add:(id)sender
+- (void)add:(id)sender
 {
     [self.viewModel confirmAddWithWindow:self.window];
 }
 
-- (IBAction)cancelAdd:(id)sender
+- (void)cancelAdd:(id)sender
 {
     [self.window performClose:sender];
 }

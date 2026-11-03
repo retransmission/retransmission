@@ -221,17 +221,17 @@
     [NSUserDefaults.standardUserDefaults setFloat:NSHeight(self.view.frame) forKey:@"InspectorContentHeightFiles"];
 }
 
-- (IBAction)setFileFilterText:(id)sender
+- (void)setFileFilterText:(id)sender
 {
     self.fFileController.filterText = [sender stringValue];
 }
 
-- (IBAction)checkAll:(id)sender
+- (void)checkAll:(id)sender
 {
     [self.fFileController checkAll];
 }
 
-- (IBAction)uncheckAll:(id)sender
+- (void)uncheckAll:(id)sender
 {
     [self.fFileController uncheckAll];
 }
