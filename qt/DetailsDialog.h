@@ -6,6 +6,7 @@
 #pragma once
 
 #include <map>
+#include <span>
 #include <unordered_set>
 #include <utility>
 
@@ -66,6 +67,9 @@ private:
 
     void onTorrentSetDone(tr::app::Session::Tag tag);
 
+    // refreshUI() once the debounce interval passes, unless one is already due
+    void scheduleRefreshUI();
+
     // Keeps a checkbox and a boolean pref in sync
     void bindPrefCheckBox(QAbstractButton* check, tr_quark key);
 
@@ -74,8 +78,8 @@ private slots:
     void refreshPref(tr_quark key);
     void refreshUI();
 
-    void onTorrentsEdited(torrent_ids_t const& ids);
-    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
+    void onTorrentsEdited(std::span<tr_torrent_id_t const> ids);
+    void onTorrentsChanged(std::span<tr_torrent_id_t const> ids, tr::app::TorrentFieldSet const& fields);
 
     // Details tab
     void onButtonBoxClicked(QAbstractButton* button);

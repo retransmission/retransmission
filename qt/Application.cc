@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <span>
 #include <utility>
 
 #include <QtCore/QFileInfo>
@@ -174,13 +175,11 @@ Application::Application(
     watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
     connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
-    connect(model_.get(), &TorrentModel::torrentsAdded, this, &Application::onTorrentsAdded);
-    connect(model_.get(), &TorrentModel::torrentsCompleted, this, &Application::onTorrentsCompleted);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
     connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
-    // the trackers of a new torrent, and of one whose trackers changed
-    favicon_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+    torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+        // the trackers of a new torrent, and of one whose trackers changed
         for (auto const row : changes.inserted) {
             loadFavicons(session_->torrents()[row]);
         }
@@ -189,6 +188,14 @@ Application::Application(
             if ((change.fields & tr::app::Torrent::fields<TR_KEY_trackers>()).any()) {
                 loadFavicons(session_->torrents()[change.row]);
             }
+        }
+
+        if (!std::empty(changes.added)) {
+            onTorrentsAdded(changes.added);
+        }
+
+        if (!std::empty(changes.completed)) {
+            onTorrentsCompleted(changes.completed);
         }
     });
     connect(watch_dir_.get(), &WatchDir::torrentFileAdded, this, qOverload<QString const&>(&Application::addWatchdirTorrent));
@@ -273,7 +280,7 @@ void Application::loadTranslations()
     }
 }
 
-QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
+QStringList Application::getNames(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     QStringList names;
     for (auto const& id : torrent_ids) {
@@ -286,7 +293,7 @@ QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
     return names;
 }
 
-void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
+void Application::onTorrentsAdded(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     if (!prefs_.get<bool>(TR_KEY_torrent_added_notification_enabled)) {
         return;
@@ -299,7 +306,7 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
     }
 }
 
-void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
+void Application::onTorrentsCompleted(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     auto const sound = prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled);
 

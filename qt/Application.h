@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -21,6 +22,7 @@
 #include <QtWidgets/QApplication>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/types.h> // tr_torrent_id_t
 
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/interop.h>
@@ -29,7 +31,6 @@
 #include "AddData.h"
 #include "Prefs.h"
 #include "Timer.h"
-#include "Typedefs.h"
 
 namespace tr::app
 {
@@ -105,8 +106,6 @@ public slots:
 private slots:
     void onConfigDirContended();
     void onSessionSourceChanged() const;
-    void onTorrentsAdded(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsCompleted(torrent_ids_t const& torrent_ids) const;
     void refreshPref(tr_quark key) const;
     void saveGeometry() const;
 #ifdef QT_DBUS_LIB
@@ -134,7 +133,9 @@ private:
     };
 
     void loadTranslations();
-    [[nodiscard]] QStringList getNames(torrent_ids_t const& ids) const;
+    void onTorrentsAdded(std::span<tr_torrent_id_t const> torrent_ids) const;
+    void onTorrentsCompleted(std::span<tr_torrent_id_t const> torrent_ids) const;
+    [[nodiscard]] QStringList getNames(std::span<tr_torrent_id_t const> ids) const;
     void notifyTorrentAdded(tr::app::Torrent const& tor) const;
 
     // the favicons of a torrent's trackers
@@ -153,7 +154,7 @@ private:
     QTranslator app_translator_;
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
-    sigslot::scoped_connection favicon_connection_;
+    sigslot::scoped_connection torrents_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

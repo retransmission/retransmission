@@ -11,9 +11,11 @@
 #include <ctime>
 #include <functional>
 #include <initializer_list>
+#include <iterator> // std::back_inserter()
 #include <map>
 #include <optional>
 #include <set>
+#include <span>
 #include <type_traits>
 #include <utility>
 
@@ -464,39 +466,34 @@ void DetailsDialog::refreshModel()
     session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailStats);
 }
 
-void DetailsDialog::onTorrentsEdited(torrent_ids_t const& ids)
+void DetailsDialog::onTorrentsEdited(std::span<tr_torrent_id_t const> const ids)
 {
     // refresh the edited torrents that are on display here
     auto interesting_ids = tr::app::TorrentList::Ids{};
-
-    for (auto const id : ids_) {
-        if (ids.contains(id)) {
-            interesting_ids.push_back(id);
-        }
-    }
-
+    std::ranges::set_intersection(ids_, ids, std::back_inserter(interesting_ids));
     session_.refresh_torrents(std::move(interesting_ids), tr::app::TorrentKeySet::DetailInfo);
 }
 
-void DetailsDialog::onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& /*fields*/)
+void DetailsDialog::scheduleRefreshUI()
 {
-    if (ui_debounce_timer_.isActive()) {
-        return;
+    if (!ui_debounce_timer_.isActive()) {
+        ui_debounce_timer_.start(DebounceIntervalMSec);
     }
+}
 
-    if (!std::ranges::any_of(ids_, [&ids](auto const id) { return ids.contains(id); })) {
-        return;
+void DetailsDialog::onTorrentsChanged(std::span<tr_torrent_id_t const> const ids, tr::app::TorrentFieldSet const& /*fields*/)
+{
+    if (std::ranges::any_of(ids_, [&ids](auto const id) { return std::ranges::binary_search(ids, id); })) {
+        scheduleRefreshUI();
     }
-
-    ui_debounce_timer_.start(DebounceIntervalMSec);
 }
 
 void DetailsDialog::onTorrentSetDone(tr::app::Session::Tag const tag)
 {
     // The Session re-fetched before firing. canEdit() held refreshUI() back, so start it here:
     // a set that changed nothing fires no `torrentsChanged` to do it.
-    if (pending_changes_tags_.erase(tag) > 0 && canEdit() && !ui_debounce_timer_.isActive()) {
-        ui_debounce_timer_.start(DebounceIntervalMSec);
+    if (pending_changes_tags_.erase(tag) > 0 && canEdit()) {
+        scheduleRefreshUI();
     }
 }
 

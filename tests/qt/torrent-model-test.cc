@@ -27,7 +27,6 @@
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
 #include "TrQtInit.h"
-#include "Typedefs.h"
 #include "UserMetaType.h"
 #include "qt-test-fixtures.h"
 
