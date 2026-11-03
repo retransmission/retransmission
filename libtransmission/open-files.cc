@@ -70,7 +70,7 @@ namespace
             return true;
         }
 
-        tr_logAddDebug(fmt::format("Fast prellocation fallback failed: {} ({})", local_error.message(), local_error.code()));
+        tr_logAddDebug(fmt::format("Fast preallocation fallback failed: {} ({})", local_error.message(), local_error.code()));
     }
 
     if (error != nullptr) {
