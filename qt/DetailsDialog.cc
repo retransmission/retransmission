@@ -14,6 +14,7 @@
 #include <iterator> // std::back_inserter()
 #include <map>
 #include <optional>
+#include <ranges>
 #include <set>
 #include <span>
 #include <type_traits>
@@ -47,6 +48,7 @@
 
 #include <libtransmission/announce-list.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/shared-string.h>
 #include <libtransmission/types.h>
 #include <libtransmission/values.h>
 
@@ -268,7 +270,7 @@ public:
         setIcon(COL_LOCK, peer_.is_encrypted ? encrypted_icon : QIcon{});
         setToolTip(COL_LOCK, peer_.is_encrypted ? DetailsDialog::tr("Encrypted connection") : QString{});
         setText(COL_ADDRESS, Utils::qstringFromUtf8(peer_.address));
-        setText(COL_CLIENT, Utils::qstringFromUtf8(peer_.client_name));
+        setText(COL_CLIENT, Utils::qstringFromUtf8(peer_.client_name.sv()));
         setToolTip(COL_STATUS, peerFlagsTooltip(Utils::qstringFromUtf8(peer_.flags)));
         refreshCells();
     }
@@ -774,7 +776,10 @@ void DetailsDialog::refreshUI()
 
         auto const labels = uniformValue(torrents, &Torrent::labels);
         bool const editable = labels.has_value();
-        labels_baseline_ = editable ? Utils::qstringFromUtf8(fmt::format("{}", fmt::join(*labels, ", "))) : QString{};
+        labels_baseline_ = editable ?
+            Utils::qstringFromUtf8(
+                fmt::format("{}", fmt::join(*labels | std::views::transform(&tr::shared_string::sv), ", "))) :
+            QString{};
         ui_.labelsTextEdit->setPlainText(labels_baseline_);
         ui_.labelsTextEdit->setPlaceholderText(editable || torrents.empty() ? none : mixed);
         ui_.labelsTextEdit->setReadOnly(!editable);
@@ -1017,7 +1022,7 @@ void DetailsDialog::onEditTrackersClicked()
         return;
     }
 
-    auto* dialog = new TrackersDialog{ Utils::qstringFromUtf8(tor->tracker_list()), this };
+    auto* dialog = new TrackersDialog{ Utils::qstringFromUtf8(tor->tracker_list().sv()), this };
     dialog->setWindowTitle(TR_FORMAT("{torrent_name} - Edit Trackers", fmt::arg("torrent_name", tor->name())));
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     connect(dialog, &TrackersDialog::trackerListEdited, this, &DetailsDialog::onTrackerListEdited);

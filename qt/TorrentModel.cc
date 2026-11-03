@@ -74,7 +74,7 @@ QVariant TorrentModel::data(QModelIndex const& index, int const role) const
             // a magnet has no files until its metadata arrives
             cache.icon = tor.file_count() == 0 ?
                 IconCache::get().magnetIcon() :
-                IconCache::get().getMimeTypeIcon(Utils::qstringFromUtf8(tor.primary_mime_type()), tor.is_folder());
+                IconCache::get().getMimeTypeIcon(Utils::qstringFromUtf8(tor.primary_mime_type().sv()), tor.is_folder());
         }
         return *cache.icon;
 

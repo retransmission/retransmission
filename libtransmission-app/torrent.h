@@ -64,7 +64,7 @@ struct TorrentFile {
 // One entry of a torrent's `peers` list.
 struct Peer {
     std::string address;
-    std::string client_name;
+    tr::shared_string client_name; // pooled: many peers run the same client
     std::string flags; // TR_KEY_flag_str
     tr::Values::Speed rate_to_client;
     tr::Values::Speed rate_to_peer;
@@ -95,11 +95,12 @@ struct Peer {
 // One entry of a torrent's `trackers` and `tracker_stats` lists.
 // `trackers` carries only the announce URL, id, sitename, and tier.
 struct TrackerStat {
-    tr::shared_string announce; // pooled: many torrents share a tracker
-    std::string host; // "host:port", unique per tracker
-    std::string last_announce_result;
-    std::string last_scrape_result;
-    std::string sitename;
+    // pooled: many torrents share a tracker
+    tr::shared_string announce;
+    tr::shared_string host; // "host:port"
+    tr::shared_string last_announce_result;
+    tr::shared_string last_scrape_result;
+    tr::shared_string sitename;
     time_t last_announce_start_time = 0;
     time_t last_announce_time = 0;
     time_t last_scrape_start_time = 0;
@@ -875,18 +876,18 @@ private:
     std::vector<TorrentFile> files_;
     std::vector<TrackerStat> tracker_stats_;
     std::vector<Webseed> webseeds_;
-    std::vector<std::string> labels_;
-    std::vector<std::string> sitenames_;
 
     std::string name_;
-    std::string primary_mime_type_;
-    std::string tracker_list_;
 
     // pooled: many torrents share the same value
+    std::vector<tr::shared_string> labels_;
+    std::vector<tr::shared_string> sitenames_;
     tr::shared_string comment_;
     tr::shared_string creator_;
     tr::shared_string download_dir_;
     tr::shared_string error_string_;
+    tr::shared_string primary_mime_type_;
+    tr::shared_string tracker_list_;
 
     tr_sha1_digest_t hash_ = {};
 

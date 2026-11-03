@@ -16,6 +16,7 @@
 #include <sigslot/signal.hpp>
 
 #include "libtransmission/quark.h"
+#include "libtransmission/shared-string.h"
 
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/torrent.h"
@@ -66,9 +67,8 @@ class TorrentList;
 // how many of `torrents` each show mode shows, indexed by `ShowMode`
 [[nodiscard]] std::array<int, ShowModeCount> count_torrents_per_mode(TorrentList const& torrents) noexcept;
 
-// how many of `torrents` each tracker site has, by sitename, for a tracker
-// filter's menu. The keys point into `torrents`: use them before its next update.
-[[nodiscard]] std::map<std::string_view, int> count_torrents_per_sitename(TorrentList const& torrents);
+// how many of `torrents` each tracker site has, by sitename, for a tracker filter's menu
+[[nodiscard]] std::map<tr::shared_string, int> count_torrents_per_sitename(TorrentList const& torrents);
 
 /**
  * The main window's torrent filters as the prefs hold them: a show mode

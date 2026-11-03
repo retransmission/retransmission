@@ -127,7 +127,7 @@ void TrackerDelegate::drawTracker(QPainter* painter, QStyleOptionViewItem const&
     bool const is_item_enabled((option.state & QStyle::State_Enabled) != 0);
     bool const is_item_active((option.state & QStyle::State_Active) != 0);
 
-    QIcon const tracker_icon{ trApp->find_favicon(inf.st.sitename) };
+    QIcon const tracker_icon{ trApp->find_favicon(inf.st.sitename.sv()) };
 
     QRect const content_rect(option.rect.adjusted(Margin.width(), Margin.height(), -Margin.width(), -Margin.height()));
     ItemLayout const layout(getText(inf), is_item_selected, option.direction, content_rect.topLeft(), content_rect.width());
@@ -228,7 +228,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                 str += TR_FORMAT(
                     "Got an error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
                     fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_announce_result),
+                    fmt::arg("error", inf.st.last_announce_result.sv()),
                     fmt::arg("markup_end", err_markup_end),
                     fmt::arg("time_span", tstr));
             }
@@ -279,7 +279,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                 str += TR_FORMAT(
                     "Got a scrape error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
                     fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_scrape_result),
+                    fmt::arg("error", inf.st.last_scrape_result.sv()),
                     fmt::arg("markup_end", err_markup_end),
                     fmt::arg("time_span", tstr));
             } else if (inf.st.seeder_count >= 0 && inf.st.leecher_count >= 0) {
