@@ -11,14 +11,6 @@
 
 @implementation FileOutlineView
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-
-    self.autoresizesOutlineColumn = NO;
-    self.indentationPerLevel = 14.0;
-}
-
 - (NSMenu*)menuForEvent:(NSEvent*)event
 {
     NSInteger const row = [self rowAtPoint:[self convertPoint:event.locationInWindow fromView:nil]];

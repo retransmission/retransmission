@@ -360,7 +360,6 @@ else()
 endif()
 
 set(BASE_XIB_FILES
-    AddWindow.xib
     GroupRules.xib
     InfoActivityView.xib
     InfoOptionsView.xib
@@ -370,6 +369,7 @@ list(TRANSFORM BASE_XIB_FILES
 
 set(LANG_STRINGS_FILES
     AddMagnetWindow.strings
+    AddWindow.strings
     AppMenu.strings
     Creator.strings
     GlobalOptionsPopover.strings
