@@ -852,7 +852,7 @@ public:
     // ends, as failed connections, the running fetches shutdown needn't wait for
     void cancel_unfinished_at_shutdown()
     {
-        auto tasks = std::vector<Task*>{};
+        auto tasks = small::vector<Task*, 4U>{};
         for (auto& task : running_tasks_) {
             if (!task.options().finish_at_shutdown) {
                 tasks.push_back(&task);
