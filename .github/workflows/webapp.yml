@@ -24,7 +24,7 @@ jobs:
       - name: Get source
         uses: actions/checkout@v7
         with:
-          fetch-depth: 2 # >1 needed for merge base
+          fetch-depth: 2 # HEAD^ is main's previous commit, or the base of a PR's test merge
       - name: Check push-to-main
         id: check-main-push
         run: |
@@ -41,14 +41,8 @@ jobs:
           function get_changes() { # name, paths...
             local name="$1"
             shift
-            if [ "$GITHUB_EVENT_NAME" = 'push' ] && [ "$GITHUB_REF_NAME" = 'main' ]; then
-              DIFF_TARGET='--name-only HEAD^'
-            else
-              git fetch --depth=1 origin "$GITHUB_BASE_REF"
-              DIFF_TARGET="--merge-base origin/$GITHUB_BASE_REF"
-            fi
             set +e # do not abort if git --exit-code returns nonzero
-            git diff --exit-code ${DIFF_TARGET} -- "$@"
+            git diff --exit-code --name-only HEAD^ -- "$@"
             echo "$name-changed=$?" >> "$GITHUB_OUTPUT"
           }
           get_changes web CMakeLists.txt web
@@ -122,17 +116,16 @@ jobs:
       - name: Get source
         uses: actions/checkout@v7
         with:
-          fetch-depth: 2 # >1 needed for merge base
+          fetch-depth: 2 # HEAD^ is the base of the PR's test merge
       - name: Check for changes to generated files
         run: |
-          git fetch --quiet --depth=1 origin "$GITHUB_BASE_REF"
           set -e # abort if diff --exit-code fails
           echo
           echo Hello, code contributor!
           echo For security reasons, ${GITHUB_REPOSITORY} does not accept PRs that change generated files.
           echo
           echo Please undo your changes to these files:
-          git diff --exit-code --name-only --merge-base "origin/$GITHUB_BASE_REF" -- \
+          git diff --exit-code --name-only HEAD^ -- \
               web/public_html/transmission-app.css \
               web/public_html/transmission-app.css.LEGAL.txt \
               web/public_html/transmission-app.css.map \
