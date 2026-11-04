@@ -681,6 +681,13 @@ TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
 
+    // a fetch started after shutdown begins is answered as a failure
+    auto refused = fetchAsync(options("/refused"sv));
+    ASSERT_EQ(std::future_status::ready, refused.wait_for(5s));
+    auto const refused_response = refused.get();
+    EXPECT_EQ(0, refused_response.status);
+    EXPECT_TRUE(refused_response.errmsg);
+
     // the other runs on until it ends or the deadline comes
     EXPECT_EQ(std::future_status::timeout, announce.wait_for(300ms));
     EXPECT_FALSE(web_->is_idle());

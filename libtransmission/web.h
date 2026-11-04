@@ -166,15 +166,15 @@ public:
     void fetch(FetchOptions&& options);
 
     // Notify tr_web that it's going to be destroyed soon.
-    // New fetch() tasks will be rejected, but already-running tasks
-    // are left alone so that they can finish.
+    // New fetch() tasks are rejected and running ones cancelled, except
+    // those marked finish_at_shutdown, which may run until the deadline.
     void startShutdown(std::chrono::milliseconds /*deadline*/);
 
     void network_changed();
 
     [[nodiscard]] bool is_idle() const;
 
-    // If you want to give running tasks a chance to finish,
+    // To give finish_at_shutdown tasks a chance to finish,
     // call startShutdown() before destroying the tr_web object.
     // Deleting the object will cancel all of its tasks.
     ~tr_web();

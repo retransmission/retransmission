@@ -277,6 +277,7 @@ public:
                 if (options.done_func) {
                     auto response = FetchResponse{};
                     response.request_url = options.url;
+                    response.errmsg = "fetch refused: shutting down";
                     response.user_data = options.done_func_user_data;
                     mediator.run(std::move(options.done_func), std::move(response));
                 }
@@ -527,7 +528,7 @@ public:
     std::unique_ptr<std::thread> curl_thread;
 
     // if unset: steady-state, all is good
-    // if set: do not accept new tasks
+    // if set: refuse new tasks and cancel running ones not marked finish_at_shutdown
     // if set and deadline reached: kill all remaining tasks
     using Clock = std::chrono::steady_clock;
     static auto constexpr NoDeadline = std::chrono::nanoseconds::rep{ 0 };
