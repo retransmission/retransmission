@@ -1,0 +1,9 @@
+"Color" = "Szín";
+"Name" = "Név";
+"Group Name:" = "Csoport név:";
+"Other…" = "Egyéb...";
+"Custom location:" = "Egyéni hely:";
+"The location will only be set when adding the torrent" = "A helyszín csak akkor lesz beállítva mikor átvitel kerül hozzáadásra";
+"Assign group to new torrents based on criteria" = "Csoportok hozzárendelése új átvitelekhez a következő feltételek alapján";
+"Edit…" = "Szerkesztés...";
+"Torrents will be assigned to the first group where all criteria are met" = "Az átvitelek az első, feltételeknek megfelelő csoportba fognak kerülni";

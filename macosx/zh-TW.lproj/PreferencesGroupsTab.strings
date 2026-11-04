@@ -1,0 +1,9 @@
+"Color" = "色彩";
+"Name" = "檔名";
+"Group Name:" = "群組名稱：";
+"Other…" = "其他…";
+"Custom location:" = "自訂位置：";
+"The location will only be set when adding the torrent" = "只有在加入傳輸時才會設定位置";
+"Assign group to new torrents based on criteria" = "根據條件為新的傳輸指派群組";
+"Edit…" = "編輯…";
+"Torrents will be assigned to the first group where all criteria are met" = "傳輸將被分配到符合所有標準的第一個群組";

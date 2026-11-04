@@ -1,0 +1,9 @@
+"Color" = "Farbe";
+"Name" = "Name";
+"Group Name:" = "Name:";
+"Other…" = "Auswählen …";
+"Custom location:" = "Voreingestellter Ort:";
+"The location will only be set when adding the torrent" = "Der Speicherort für die empfangenen Daten wird beim Hinzufügen automatisch gesetzt.";
+"Assign group to new torrents based on criteria" = "Neue Übertragungen ggf. dieser Gruppe hinzufügen";
+"Edit…" = "Hinzufügebedingungen bearbeiten …";
+"Torrents will be assigned to the first group where all criteria are met" = "Übertragungen werden der ersten Gruppe hinzugefügt, deren Hinzufügebedingungen sie erfüllen.";

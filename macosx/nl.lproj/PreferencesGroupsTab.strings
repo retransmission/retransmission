@@ -1,0 +1,9 @@
+"Color" = "Kleur";
+"Name" = "Naam";
+"Group Name:" = "Groepsnaam:";
+"Other…" = "Ander…";
+"Custom location:" = "Gewijzigde Locatie:";
+"The location will only be set when adding the torrent" = "De locatie wordt enkel toegekend bij het toevoegen van de transfer.";
+"Assign group to new torrents based on criteria" = "Automatisch toevoegen op basis van criteria";
+"Edit…" = "Wijzig…";
+"Torrents will be assigned to the first group where all criteria are met" = "Transfers worden toegekend aan de eerste groep dat aan alle voorwaarden voldoet.";

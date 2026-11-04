@@ -1,0 +1,9 @@
+"Color" = "Колір";
+"Name" = "Назва";
+"Group Name:" = "Назва групи:";
+"Other…" = "Інші…";
+"Custom location:" = "Місце розташування:";
+"The location will only be set when adding the torrent" = "Буде вибрано під час додавання нових роздач";
+"Assign group to new torrents based on criteria" = "Автоматично додавати роздачі до групи";
+"Edit…" = "Редагування…";
+"Torrents will be assigned to the first group where all criteria are met" = "Роздачі будуть додані в першу \n групу що задовольняє  всім правилам";

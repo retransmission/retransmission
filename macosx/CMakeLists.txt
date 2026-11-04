@@ -96,8 +96,6 @@ target_sources(${TR_NAME}-mac
         GroupPopUpButtonCell.mm
         GroupsController.h
         GroupsController.mm
-        GroupsPrefsController.h
-        GroupsPrefsController.mm
         GroupToolbarItem.h
         GroupToolbarItem.mm
         InfoActivityViewController.h
@@ -152,6 +150,8 @@ target_sources(${TR_NAME}-mac
         PrefsController.mm
         PrefsGeneralTabViewController.h
         PrefsGeneralTabViewController.mm
+        PrefsGroupsTabViewController.h
+        PrefsGroupsTabViewController.mm
         PrefsNetworkTabViewController.h
         PrefsNetworkTabViewController.mm
         PrefsPeersTabViewController.h
@@ -378,6 +378,7 @@ set(LANG_STRINGS_FILES
     Localizable.strings
     PreferencesBandwidthTab.strings
     PreferencesGeneralTab.strings
+    PreferencesGroupsTab.strings
     PreferencesNetworkTab.strings
     PreferencesPeersTab.strings
     PreferencesRemoteTab.strings
