@@ -1,29 +1,2 @@
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Настройки";
-
-/* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
-"1777.headerCell.title" = "Цвет";
-
-/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "1779"; */
-"1779.headerCell.title" = "Имя";
-
-/* Class = "NSTextFieldCell"; title = "Group Name:"; ObjectID = "1796"; */
-"1796.title" = "Имя группы:";
-
-/* Class = "NSMenuItem"; title = "Other…"; ObjectID = "1813"; */
-"1813.title" = "Выбрать…";
-
-/* Class = "NSButtonCell"; title = "Custom location:"; ObjectID = "1815"; */
-"1815.title" = "Местоположение:";
-
-/* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
-"1824.title" = "Будет выбрано при добавлении новых раздач";
-
-/* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
-"1831.title" = "Автоматически добавлять раздачи в группу";
-
-/* Class = "NSButtonCell"; title = "Edit…"; ObjectID = "1833"; */
-"1833.title" = "Правила…";
-
-/* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
-"1835.title" = "Раздачи будут добавлены в первую \nудовлетворяющую всем правилам группу";

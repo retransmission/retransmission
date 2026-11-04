@@ -1,29 +1,2 @@
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Einstellungen";
-
-/* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
-"1777.headerCell.title" = "Farbe";
-
-/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "1779"; */
-"1779.headerCell.title" = "Name";
-
-/* Class = "NSTextFieldCell"; title = "Group Name:"; ObjectID = "1796"; */
-"1796.title" = "Name:";
-
-/* Class = "NSMenuItem"; title = "Other…"; ObjectID = "1813"; */
-"1813.title" = "Auswählen …";
-
-/* Class = "NSButtonCell"; title = "Custom location:"; ObjectID = "1815"; */
-"1815.title" = "Voreingestellter Ort:";
-
-/* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
-"1824.title" = "Der Speicherort für die empfangenen Daten wird beim Hinzufügen automatisch gesetzt.";
-
-/* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
-"1831.title" = "Neue Übertragungen ggf. dieser Gruppe hinzufügen";
-
-/* Class = "NSButtonCell"; title = "Edit…"; ObjectID = "1833"; */
-"1833.title" = "Hinzufügebedingungen bearbeiten …";
-
-/* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
-"1835.title" = "Übertragungen werden der ersten Gruppe hinzugefügt, deren Hinzufügebedingungen sie erfüllen.";

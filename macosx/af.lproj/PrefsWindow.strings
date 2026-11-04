@@ -1,29 +1,2 @@
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Voorkeure";
-
-/* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
-"1777.headerCell.title" = "Kleur";
-
-/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "1779"; */
-"1779.headerCell.title" = "Naam";
-
-/* Class = "NSTextFieldCell"; title = "Group Name:"; ObjectID = "1796"; */
-"1796.title" = "Groepnaam:";
-
-/* Class = "NSMenuItem"; title = "Other…"; ObjectID = "1813"; */
-"1813.title" = "Ander…";
-
-/* Class = "NSButtonCell"; title = "Custom location:"; ObjectID = "1815"; */
-"1815.title" = "Pasgemaakte ligging:";
-
-/* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
-"1824.title" = "Die ligging word gestel wanneer die oordrag toegevoeg word";
-
-/* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
-"1831.title" = "Ken groep toe aan nuwe oordrag gebaseer op kriteria";
-
-/* Class = "NSButtonCell"; title = "Edit…"; ObjectID = "1833"; */
-"1833.title" = "Wysig…";
-
-/* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
-"1835.title" = "Oordragte sal aan die eerste groep wat aan alle kriteria voldoen, toegeken word";

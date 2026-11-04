@@ -1,29 +1,2 @@
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "偏好設定";
-
-/* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
-"1777.headerCell.title" = "色彩";
-
-/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "1779"; */
-"1779.headerCell.title" = "檔名";
-
-/* Class = "NSTextFieldCell"; title = "Group Name:"; ObjectID = "1796"; */
-"1796.title" = "群組名稱：";
-
-/* Class = "NSMenuItem"; title = "Other…"; ObjectID = "1813"; */
-"1813.title" = "其他…";
-
-/* Class = "NSButtonCell"; title = "Custom location:"; ObjectID = "1815"; */
-"1815.title" = "自訂位置：";
-
-/* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
-"1824.title" = "只有在加入傳輸時才會設定位置";
-
-/* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
-"1831.title" = "根據條件為新的傳輸指派群組";
-
-/* Class = "NSButtonCell"; title = "Edit…"; ObjectID = "1833"; */
-"1833.title" = "編輯…";
-
-/* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
-"1835.title" = "傳輸將被分配到符合所有標準的第一個群組";

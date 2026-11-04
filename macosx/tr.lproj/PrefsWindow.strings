@@ -1,29 +1,2 @@
 /* Class = "NSWindow"; title = "Preferences"; ObjectID = "23"; */
 "23.title" = "Ayarlar";
-
-/* Class = "NSTableColumn"; headerCell.title = "Color"; ObjectID = "1777"; */
-"1777.headerCell.title" = "Renk";
-
-/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "1779"; */
-"1779.headerCell.title" = "Ad";
-
-/* Class = "NSTextFieldCell"; title = "Group Name:"; ObjectID = "1796"; */
-"1796.title" = "Öbek adı:";
-
-/* Class = "NSMenuItem"; title = "Other…"; ObjectID = "1813"; */
-"1813.title" = "Diğer…";
-
-/* Class = "NSButtonCell"; title = "Custom location:"; ObjectID = "1815"; */
-"1815.title" = "Konum belirt:";
-
-/* Class = "NSTextFieldCell"; title = "The location will only be set when adding the transfer"; ObjectID = "1824"; */
-"1824.title" = "Konum yalnızca aktarım eklenirken belirlenecektir";
-
-/* Class = "NSButtonCell"; title = "Assign group to new transfers based on criteria"; ObjectID = "1831"; */
-"1831.title" = "Öbeği yeni aktarımlara şu kriterlere göre ekle:";
-
-/* Class = "NSButtonCell"; title = "Edit…"; ObjectID = "1833"; */
-"1833.title" = "Düzenle…";
-
-/* Class = "NSTextFieldCell"; title = "Transfers will be assigned to the first group where all criteria are met"; ObjectID = "1835"; */
-"1835.title" = "Aktarımlar tüm kriterlerin sağlandığı ilk gruba atanacaklardır";

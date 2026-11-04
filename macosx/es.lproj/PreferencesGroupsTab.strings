@@ -1,0 +1,9 @@
+"Color" = "Color";
+"Name" = "Nombre";
+"Group Name:" = "Nombre del grupo:";
+"Other…" = "Otro...";
+"Custom location:" = "Ubicación:";
+"The location will only be set when adding the torrent" = "La ubicación sólo se definirá cuando se añada la tarea";
+"Assign group to new torrents based on criteria" = "Asignar grupo a nuevas tareas según criterios";
+"Edit…" = "Editar...";
+"Torrents will be assigned to the first group where all criteria are met" = "Las tareas serán asignadas al primer grupo que reuna las condiciones del criterio";

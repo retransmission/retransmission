@@ -1,0 +1,9 @@
+"Color" = "Kolorea";
+"Name" = "Izena";
+"Group Name:" = "Taldearen Izena:";
+"Other…" = "Beste bat...";
+"Custom location:" = "Kokapen pertsonalizatua:";
+"The location will only be set when adding the torrent" = "Kokapena transferentzia gehitzerakoan zehaztuko da soilik.";
+"Assign group to new torrents based on criteria" = "Esleitu taldea transferentzia berriei irizpideetan oinarrituta";
+"Edit…" = "Editatu...";
+"Torrents will be assigned to the first group where all criteria are met" = "Transferentziak irizpide guztiak betetzen dituen lehen taldera esleituko dira";

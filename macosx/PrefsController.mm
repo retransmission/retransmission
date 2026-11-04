@@ -12,6 +12,7 @@
 #import "NSStringAdditions.h"
 #import "PrefsGeneralTabViewController.h"
 #import "PrefsTransfersTabViewController.h"
+#import "PrefsGroupsTabViewController.h"
 #import "PrefsBandwidthTabViewController.h"
 #import "PrefsPeersTabViewController.h"
 #import "PrefsNetworkTabViewController.h"
@@ -35,11 +36,11 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
 @property(nonatomic) PrefsTransfersTabViewController* transfersViewController;
+@property(nonatomic) PrefsGroupsTabViewController* groupsViewController;
 @property(nonatomic) PrefsBandwidthTabViewController* bandwidthViewController;
 @property(nonatomic) PrefsPeersTabViewController* peersViewController;
 @property(nonatomic) PrefsNetworkTabViewController* networkViewController;
 @property(nonatomic) PrefsRemoteTabViewController* remoteViewController;
-@property(nonatomic) IBOutlet NSView* fGroupsView;
 
 @end
 
@@ -59,6 +60,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
         _transfersViewController = [[PrefsTransfersTabViewController alloc] initWithHandle:handle];
+        _groupsViewController = [[PrefsGroupsTabViewController alloc] initWithHandle:handle];
         _bandwidthViewController = [[PrefsBandwidthTabViewController alloc] initWithHandle:handle];
         _peersViewController = [[PrefsPeersTabViewController alloc] initWithHandle:handle];
         _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
@@ -404,7 +406,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     if ([identifier isEqualToString:ToolbarTabTransfers]) {
         view = self.transfersViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabGroups]) {
-        view = self.fGroupsView;
+        view = self.groupsViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabBandwidth]) {
         view = self.bandwidthViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabPeers]) {

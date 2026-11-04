@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="GroupsPrefsController">
+        <customObject id="-2" userLabel="File's Owner" customClass="PrefsGroupsTabViewController">
             <connections>
                 <outlet property="groupRulesSheetWindow" destination="1" id="17"/>
                 <outlet property="ruleEditor" destination="34" id="56"/>

@@ -1,0 +1,9 @@
+"Color" = "Цвет";
+"Name" = "Имя";
+"Group Name:" = "Имя группы:";
+"Other…" = "Выбрать…";
+"Custom location:" = "Местоположение:";
+"The location will only be set when adding the torrent" = "Будет выбрано при добавлении новых раздач";
+"Assign group to new torrents based on criteria" = "Автоматически добавлять раздачи в группу";
+"Edit…" = "Правила…";
+"Torrents will be assigned to the first group where all criteria are met" = "Раздачи будут добавлены в первую \nудовлетворяющую всем правилам группу";
