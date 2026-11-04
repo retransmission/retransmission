@@ -12,6 +12,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -225,7 +226,7 @@ public:
 
     [[nodiscard]] value_type const* data() const noexcept override
     {
-        return std::data(buf_) + begin_pos_;
+        return storage() + begin_pos_;
     }
 
     void drain(size_t n_bytes) override
@@ -244,7 +245,7 @@ public:
             if (auto const total_free = begin_pos_ + free_at_end; total_free >= n_bytes) {
                 // move data so that all free space is at the end
                 auto const size = this->size();
-                std::copy(data(), data() + size, std::data(buf_));
+                std::copy(data(), data() + size, storage());
                 begin_pos_ = 0;
                 end_pos_ = size;
             } else // even `total_free` is not enough, so resize
@@ -253,7 +254,7 @@ public:
             }
         }
 
-        return { buf_.data() + end_pos_, n_bytes };
+        return { storage() + end_pos_, n_bytes };
     }
 
     void commit_space(size_t n_bytes) override
@@ -262,7 +263,29 @@ public:
     }
 
 private:
-    small::vector<value_type, N, std::allocator<value_type>, std::true_type, size_t, GrowthFactor> buf_ = {};
+    // Resizing leaves these unset, so reserved space is not cleared just to
+    // be overwritten by the writer.
+    struct Element {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init, modernize-use-equals-default)
+        Element() noexcept
+        {
+        }
+
+        value_type value;
+    };
+    static_assert(sizeof(Element) == sizeof(value_type) && std::is_trivially_copyable_v<Element>);
+
+    [[nodiscard]] value_type const* storage() const noexcept
+    {
+        return reinterpret_cast<value_type const*>(std::data(buf_));
+    }
+
+    [[nodiscard]] value_type* storage() noexcept
+    {
+        return reinterpret_cast<value_type*>(std::data(buf_));
+    }
+
+    small::vector<Element, N, std::allocator<Element>, std::true_type, size_t, GrowthFactor> buf_ = {};
     size_t begin_pos_ = {};
     size_t end_pos_ = {};
 };
