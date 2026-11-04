@@ -268,8 +268,6 @@
     [self.fDefaults setFloat:value forKey:@"RatioLimit"];
     tr_sessionSetRatioLimit(self.fHandle, value);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateRatioStopValueOutsidePrefs" object:nil];
-
     //reload main table for seeding progress
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
 
@@ -293,8 +291,6 @@
     NSInteger const value = [sender integerValue];
     [self.fDefaults setInteger:value forKey:@"IdleLimitMinutes"];
     tr_sessionSetIdleLimit(self.fHandle, value);
-
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateIdleStopValueOutsidePrefs" object:nil];
 
     //reload main table for remaining seeding time
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];

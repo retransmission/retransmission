@@ -8,8 +8,6 @@ struct tr_session;
 
 @interface PrefsController : NSWindowController<NSToolbarDelegate>
 
-@property(nonatomic, readonly) NSArray<NSString*>* sounds;
-
 /// - returns: number of minutes
 + (int)dateToTimeSum:(NSDate*)date;
 

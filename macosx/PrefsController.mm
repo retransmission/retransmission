@@ -11,15 +11,11 @@
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "PrefsGeneralTabViewController.h"
+#import "PrefsTransfersTabViewController.h"
 #import "PrefsBandwidthTabViewController.h"
 #import "PrefsPeersTabViewController.h"
 #import "PrefsNetworkTabViewController.h"
 #import "PrefsRemoteTabViewController.h"
-
-typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
-    DownloadPopupIndexFolder = 0,
-    DownloadPopupIndexTorrent = 2,
-};
 
 typedef NSString* ToolbarTab NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -38,25 +34,12 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 @property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
+@property(nonatomic) PrefsTransfersTabViewController* transfersViewController;
 @property(nonatomic) PrefsBandwidthTabViewController* bandwidthViewController;
 @property(nonatomic) PrefsPeersTabViewController* peersViewController;
 @property(nonatomic) PrefsNetworkTabViewController* networkViewController;
 @property(nonatomic) PrefsRemoteTabViewController* remoteViewController;
-@property(nonatomic) IBOutlet NSView* fTransfersView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
-
-@property(nonatomic, copy) NSString* fInitialString;
-
-@property(nonatomic) IBOutlet NSPopUpButton* fFolderPopUp;
-@property(nonatomic) IBOutlet NSPopUpButton* fIncompleteFolderPopUp;
-@property(nonatomic) IBOutlet NSPopUpButton* fImportFolderPopUp;
-@property(nonatomic) IBOutlet NSPopUpButton* fDoneScriptPopUp;
-@property(nonatomic) IBOutlet NSButton* fShowMagnetAddWindowCheck;
-@property(nonatomic) IBOutlet NSTextField* fRatioStopField;
-@property(nonatomic) IBOutlet NSTextField* fIdleStopField;
-@property(nonatomic) IBOutlet NSTextField* fQueueDownloadField;
-@property(nonatomic) IBOutlet NSTextField* fQueueSeedField;
-@property(nonatomic) IBOutlet NSTextField* fStalledField;
 
 @end
 
@@ -74,14 +57,14 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
         }
 
-        //set encryption
-        [self setEncryptionMode:nil];
-
         _generalViewController = [[PrefsGeneralTabViewController alloc] init];
+        _transfersViewController = [[PrefsTransfersTabViewController alloc] initWithHandle:handle];
         _bandwidthViewController = [[PrefsBandwidthTabViewController alloc] initWithHandle:handle];
         _peersViewController = [[PrefsPeersTabViewController alloc] initWithHandle:handle];
         _networkViewController = [[PrefsNetworkTabViewController alloc] initWithHandle:handle];
         _remoteViewController = [[PrefsRemoteTabViewController alloc] initWithHandle:handle];
+
+        [_peersViewController configureEncryptionMode];
     }
 
     return self;
@@ -109,32 +92,6 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     [self.window center];
 
     [self setPrefView:nil];
-
-    //set special-handling of magnet link add window checkbox
-    [self updateShowAddMagnetWindowField];
-
-    //set download folder
-    [self.fFolderPopUp selectItemAtIndex:[self.fDefaults boolForKey:@"DownloadLocationConstant"] ? DownloadPopupIndexFolder :
-                                                                                                   DownloadPopupIndexTorrent];
-
-    //set stop ratio
-    self.fRatioStopField.floatValue = [self.fDefaults floatForKey:@"RatioLimit"];
-
-    //set idle seeding minutes
-    self.fIdleStopField.integerValue = [self.fDefaults integerForKey:@"IdleLimitMinutes"];
-
-    //set queue values
-    self.fQueueDownloadField.integerValue = [self.fDefaults integerForKey:@"QueueDownloadNumber"];
-    self.fQueueSeedField.integerValue = [self.fDefaults integerForKey:@"QueueSeedNumber"];
-    self.fStalledField.integerValue = [self.fDefaults integerForKey:@"StalledMinutes"];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateRatioStopField)
-                                               name:@"UpdateRatioStopValueOutsidePrefs"
-                                             object:nil];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateLimitStopField)
-                                               name:@"UpdateIdleStopValueOutsidePrefs"
-                                             object:nil];
 }
 
 - (NSToolbarItem*)toolbar:(NSToolbar*)toolbar itemForItemIdentifier:(NSString*)ident willBeInsertedIntoToolbar:(BOOL)flag
@@ -233,116 +190,6 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     [self.window setFrame:windowRect display:YES animate:NO];
 }
 
-- (NSArray<NSString*>*)sounds
-{
-    NSMutableArray* sounds = [NSMutableArray array];
-
-    NSArray* directories = NSSearchPathForDirectoriesInDomains(NSAllLibrariesDirectory, NSUserDomainMask | NSLocalDomainMask | NSSystemDomainMask, YES);
-
-    for (__strong NSString* directory in directories) {
-        directory = [directory stringByAppendingPathComponent:@"Sounds"];
-
-        BOOL isDirectory;
-        if ([NSFileManager.defaultManager fileExistsAtPath:directory isDirectory:&isDirectory] && isDirectory) {
-            NSArray* directoryContents = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:NULL];
-            for (__strong NSString* sound in directoryContents) {
-                sound = sound.stringByDeletingPathExtension;
-                if ([NSSound soundNamed:sound]) {
-                    [sounds addObject:sound];
-                }
-            }
-        }
-    }
-
-    return sounds;
-}
-
-- (void)setSound:(id)sender
-{
-    //play sound when selecting
-    NSSound* sound;
-    if ((sound = [NSSound soundNamed:[sender titleOfSelectedItem]])) {
-        [sound play];
-    }
-}
-
-- (void)setLPD:(id)sender
-{
-    tr_sessionSetLPDEnabled(self.fHandle, [self.fDefaults boolForKey:@"LocalPeerDiscoveryGlobal"]);
-}
-
-- (void)setEncryptionMode:(id)sender
-{
-    tr_encryption_mode const mode = [self.fDefaults boolForKey:@"EncryptionPrefer"] ?
-        ([self.fDefaults boolForKey:@"EncryptionRequire"] ? TR_ENCRYPTION_REQUIRED : TR_ENCRYPTION_PREFERRED) :
-        TR_CLEAR_PREFERRED;
-    tr_sessionSetEncryption(self.fHandle, mode);
-}
-
-- (void)setAutoStartDownloads:(id)sender
-{
-    tr_sessionSetPaused(self.fHandle, ![self.fDefaults boolForKey:@"AutoStartDownload"]);
-}
-
-- (void)applyRatioSetting:(id)sender
-{
-    tr_sessionSetRatioLimited(self.fHandle, [self.fDefaults boolForKey:@"RatioCheck"]);
-    tr_sessionSetRatioLimit(self.fHandle, [self.fDefaults floatForKey:@"RatioLimit"]);
-
-    //reload main table for seeding progress
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
-
-    //reload global settings in inspector
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
-}
-
-- (void)setRatioStop:(id)sender
-{
-    [self.fDefaults setFloat:[sender floatValue] forKey:@"RatioLimit"];
-
-    [self applyRatioSetting:nil];
-}
-
-- (void)updateRatioStopField
-{
-    if (self.fHasLoaded) {
-        self.fRatioStopField.floatValue = [self.fDefaults floatForKey:@"RatioLimit"];
-    }
-}
-
-- (void)updateRatioStopFieldOld
-{
-    [self updateRatioStopField];
-
-    [self applyRatioSetting:nil];
-}
-
-- (void)applyIdleStopSetting:(id)sender
-{
-    tr_sessionSetIdleLimited(self.fHandle, [self.fDefaults boolForKey:@"IdleLimitCheck"]);
-    tr_sessionSetIdleLimit(self.fHandle, [self.fDefaults integerForKey:@"IdleLimitMinutes"]);
-
-    //reload main table for remaining seeding time
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
-
-    //reload global settings in inspector
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
-}
-
-- (void)setIdleStop:(id)sender
-{
-    [self.fDefaults setInteger:[sender integerValue] forKey:@"IdleLimitMinutes"];
-
-    [self applyIdleStopSetting:nil];
-}
-
-- (void)updateLimitStopField
-{
-    if (self.fHasLoaded) {
-        self.fIdleStopField.integerValue = [self.fDefaults integerForKey:@"IdleLimitMinutes"];
-    }
-}
-
 + (int)dateToTimeSum:(NSDate*)date
 {
     NSCalendar* calendar = NSCalendar.currentCalendar;
@@ -357,232 +204,6 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     comps.minute = sum % 60;
 
     return [NSCalendar.currentCalendar dateFromComponents:comps];
-}
-
-- (BOOL)control:(NSControl*)control textShouldBeginEditing:(NSText*)fieldEditor
-{
-    self.fInitialString = control.stringValue;
-
-    return YES;
-}
-
-- (BOOL)control:(NSControl*)control didFailToFormatString:(NSString*)string errorDescription:(NSString*)error
-{
-    NSBeep();
-    if (self.fInitialString) {
-        control.stringValue = self.fInitialString;
-        self.fInitialString = nil;
-    }
-    return NO;
-}
-
-- (void)setQueue:(id)sender
-{
-    //let's just do both - easier that way
-    tr_sessionSetQueueEnabled(self.fHandle, tr_direction::Down, [self.fDefaults boolForKey:@"Queue"]);
-    tr_sessionSetQueueEnabled(self.fHandle, tr_direction::Up, [self.fDefaults boolForKey:@"QueueSeed"]);
-
-    //handle if any transfers switch from queued to paused
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateTorrentsState" object:nil];
-}
-
-- (void)setQueueNumber:(id)sender
-{
-    NSInteger const number = [sender integerValue];
-    BOOL const seed = sender == self.fQueueSeedField;
-
-    [self.fDefaults setInteger:number forKey:seed ? @"QueueSeedNumber" : @"QueueDownloadNumber"];
-
-    tr_sessionSetQueueSize(self.fHandle, seed ? tr_direction::Up : tr_direction::Down, number);
-}
-
-- (void)setStalled:(id)sender
-{
-    tr_sessionSetQueueStalledEnabled(self.fHandle, [self.fDefaults boolForKey:@"CheckStalled"]);
-
-    //reload main table for stalled status
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
-}
-
-- (void)setStalledMinutes:(id)sender
-{
-    int const min = [sender intValue];
-    [self.fDefaults setInteger:min forKey:@"StalledMinutes"];
-    tr_sessionSetQueueStalledMinutes(self.fHandle, min);
-
-    //reload main table for stalled status
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:self];
-}
-
-- (void)setDownloadLocation:(id)sender
-{
-    [self.fDefaults setBool:self.fFolderPopUp.indexOfSelectedItem == DownloadPopupIndexFolder forKey:@"DownloadLocationConstant"];
-    [self updateShowAddMagnetWindowField];
-}
-
-- (IBAction)setVerifyDataOnCompletion:(id)sender
-{
-    bool enabled = [self.fDefaults boolForKey:@"VerifyDataOnCompletion"];
-    tr_sessionSetCompleteVerifyEnabled(self.fHandle, enabled);
-}
-
-- (void)folderSheetShow:(id)sender
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = NO;
-    panel.canChooseDirectories = YES;
-    panel.canCreateDirectories = YES;
-
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK) {
-            [self.fFolderPopUp selectItemAtIndex:DownloadPopupIndexFolder];
-
-            NSString* folder = panel.URLs[0].path;
-            [self.fDefaults setObject:folder forKey:@"DownloadFolder"];
-            [self.fDefaults setBool:YES forKey:@"DownloadLocationConstant"];
-            [self updateShowAddMagnetWindowField];
-
-            assert(folder.length > 0);
-            tr_sessionSetDownloadDir(self.fHandle, folder.fileSystemRepresentation);
-        } else {
-            //reset if cancelled
-            [self.fFolderPopUp selectItemAtIndex:[self.fDefaults boolForKey:@"DownloadLocationConstant"] ? DownloadPopupIndexFolder :
-                                                                                                           DownloadPopupIndexTorrent];
-        }
-    }];
-}
-
-- (void)incompleteFolderSheetShow:(id)sender
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = NO;
-    panel.canChooseDirectories = YES;
-    panel.canCreateDirectories = YES;
-
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK) {
-            NSString* folder = panel.URLs[0].path;
-            [self.fDefaults setObject:folder forKey:@"IncompleteDownloadFolder"];
-
-            assert(folder.length > 0);
-            tr_sessionSetIncompleteDir(self.fHandle, folder.fileSystemRepresentation);
-        }
-        [self.fIncompleteFolderPopUp selectItemAtIndex:0];
-    }];
-}
-
-- (void)doneScriptSheetShow:(id)sender
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = YES;
-    panel.canChooseDirectories = NO;
-    panel.canCreateDirectories = NO;
-
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK) {
-            NSString* filePath = panel.URLs[0].path;
-
-            assert(filePath.length > 0);
-
-            [self.fDefaults setObject:filePath forKey:@"DoneScriptPath"];
-            tr_sessionSetScript(self.fHandle, TR_SCRIPT_ON_TORRENT_DONE, filePath.fileSystemRepresentation);
-
-            [self.fDefaults setBool:YES forKey:@"DoneScriptEnabled"];
-            tr_sessionSetScriptEnabled(self.fHandle, TR_SCRIPT_ON_TORRENT_DONE, YES);
-        }
-        [self.fDoneScriptPopUp selectItemAtIndex:0];
-    }];
-}
-
-- (void)setUseIncompleteFolder:(id)sender
-{
-    tr_sessionSetIncompleteDirEnabled(self.fHandle, [self.fDefaults boolForKey:@"UseIncompleteDownloadFolder"]);
-}
-
-- (void)setRenamePartialFiles:(id)sender
-{
-    tr_sessionSetIncompleteFileNamingEnabled(self.fHandle, [self.fDefaults boolForKey:@"RenamePartialFiles"]);
-}
-
-- (void)setShowAddMagnetWindow:(id)sender
-{
-    [self.fDefaults setBool:(self.fShowMagnetAddWindowCheck.state == NSControlStateValueOn) forKey:@"MagnetOpenAsk"];
-}
-
-- (void)updateShowAddMagnetWindowField
-{
-    if (![self.fDefaults boolForKey:@"DownloadLocationConstant"]) {
-        //always show the add window for magnet links when the download location is the same as the torrent file
-        self.fShowMagnetAddWindowCheck.state = NSControlStateValueOn;
-        self.fShowMagnetAddWindowCheck.enabled = NO;
-        self.fShowMagnetAddWindowCheck.toolTip = NSLocalizedString(
-            @"This option is not available if Save to location is set to Same as torrent file.",
-            "Preferences -> Transfers -> Adding -> Magnet tooltip");
-    } else {
-        self.fShowMagnetAddWindowCheck.state = [self.fDefaults boolForKey:@"MagnetOpenAsk"];
-        self.fShowMagnetAddWindowCheck.enabled = YES;
-        self.fShowMagnetAddWindowCheck.toolTip = nil;
-    }
-}
-
-- (void)setDoneScriptEnabled:(id)sender
-{
-    if ([self.fDefaults boolForKey:@"DoneScriptEnabled"] &&
-        ![NSFileManager.defaultManager fileExistsAtPath:[self.fDefaults stringForKey:@"DoneScriptPath"]]) {
-        // enabled is set but script file doesn't exist, so prompt for one and disable until they pick one
-        [self.fDefaults setBool:NO forKey:@"DoneScriptEnabled"];
-        [self doneScriptSheetShow:sender];
-    }
-    tr_sessionSetScriptEnabled(self.fHandle, TR_SCRIPT_ON_TORRENT_DONE, [self.fDefaults boolForKey:@"DoneScriptEnabled"]);
-}
-
-- (void)setAutoImport:(id)sender
-{
-    if ([self.fDefaults stringForKey:@"AutoImportDirectory"]) {
-        [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
-    } else {
-        [self importFolderSheetShow:nil];
-    }
-}
-
-- (void)importFolderSheetShow:(id)sender
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = NO;
-    panel.canChooseDirectories = YES;
-    panel.canCreateDirectories = YES;
-
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK) {
-            NSString* path = (panel.URLs[0]).path;
-            [self.fDefaults setObject:path forKey:@"AutoImportDirectory"];
-
-            [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
-        } else {
-            NSString* path = [self.fDefaults stringForKey:@"AutoImportDirectory"];
-            if (!path)
-                [self.fDefaults setBool:NO forKey:@"AutoImport"];
-        }
-
-        [self.fImportFolderPopUp selectItemAtIndex:0];
-    }];
-}
-
-- (void)helpForScript:(id)sender
-{
-    // extract related tab from xib and remove this handler. do not touch XIB. extra touches are painful.
 }
 
 - (void)rpcUpdatePrefs
@@ -753,17 +374,12 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
         [self.peersViewController updateBlocklistFields];
 
         //ratio limit enabled handled by bindings
-        self.fRatioStopField.floatValue = ratioLimit;
 
         //idle limit enabled handled by bindings
-        self.fIdleStopField.integerValue = idleLimitMin;
 
         //queues enabled handled by bindings
-        self.fQueueDownloadField.integerValue = downloadQueueNum;
-        self.fQueueSeedField.integerValue = seedQueueNum;
 
         //check stalled handled by bindings
-        self.fStalledField.integerValue = stalledMinutes;
     }
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
@@ -786,7 +402,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
     NSView* view;
     if ([identifier isEqualToString:ToolbarTabTransfers]) {
-        view = self.fTransfersView;
+        view = self.transfersViewController.view;
     } else if ([identifier isEqualToString:ToolbarTabGroups]) {
         view = self.fGroupsView;
     } else if ([identifier isEqualToString:ToolbarTabBandwidth]) {

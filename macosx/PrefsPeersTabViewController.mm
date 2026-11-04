@@ -245,6 +245,12 @@
                                   options:nil];
 }
 
+#pragma mark - Configure
+- (void)configureEncryptionMode
+{
+    [self setEncryptionMode:nil];
+}
+
 #pragma mark - Actions & Transmission Logic
 - (void)setPeersGlobal:(id)sender
 {

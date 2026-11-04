@@ -55,7 +55,7 @@ static CGFloat const defaultPadding = 19;
     return button;
 }
 
-+ (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max
++ (NSTextField*)numberInputFieldWithFormatter:(NSNumberFormatter*)formatter width:(CGFloat)width
 {
     NSTextField* textField = [[NSTextField alloc] init];
     textField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -65,12 +65,40 @@ static CGFloat const defaultPadding = 19;
 
     [textField.widthAnchor constraintEqualToConstant:width].active = YES;
 
+    textField.formatter = formatter;
+
+    return textField;
+}
+
++ (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max
+{
     NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
     formatter.numberStyle = NSNumberFormatterNoStyle;
     formatter.allowsFloats = NO;
     formatter.minimum = @(min);
     formatter.maximum = @(max);
-    textField.formatter = formatter;
+
+    NSTextField* textField = [self numberInputFieldWithFormatter:formatter width:width];
+
+    return textField;
+}
+
++ (NSTextField*)decimalInputFieldWithWidth:(CGFloat)width
+                                   minimum:(NSInteger)min
+                                   maximum:(NSInteger)max
+                                 minDigits:(NSUInteger)minDigits
+                                 maxDigits:(NSUInteger)maxDigits
+{
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterNoStyle;
+    formatter.allowsFloats = YES;
+    formatter.minimumIntegerDigits = 1;
+    formatter.minimum = @(min);
+    formatter.maximum = @(max);
+    formatter.minimumFractionDigits = minDigits;
+    formatter.maximumFractionDigits = maxDigits;
+
+    NSTextField* textField = [self numberInputFieldWithFormatter:formatter width:width];
 
     return textField;
 }
