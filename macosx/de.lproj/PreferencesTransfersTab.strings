@@ -9,12 +9,12 @@
 "Auto add:" = "Automatisches Hinzufügen:";
 "Keep incomplete files in:" = "Unvollständige Übertragungen sichern in:";
 "Queues:" = "Warteliste:";
-"active torrents" = "aktive Empfangsvorgänge";
+"active torrents" = "";
 "Stop seeding at ratio:" = "ab Erreichen des Verhältnisses:";
 "Limits:" = "Verteilen anhalten:";
 "Ratio is amount uploaded to amount downloaded" = "Das „Verhältnis“ ist der Quotient der Menge der gesendeten Daten durch die Menge der empfangenen Daten.";
-"Download with maximum of:" = "höchstens";
-"Seeding with maximum of:" = "höchstens";
+"Download with maximum of:" = "Maximale aktive Downloads:";
+"Seeding with maximum of:" = "Maximale aktive Verteilungen:";
 "minutes" = "Minuten Inaktivität";
 "Torrent is stalled when inactive for:" = "steckengeblieben nach";
 "Display a window when opening a torrent file" = "Übertragungseinstellungen beim Öffnen von Torrent-Dateien anzeigen";
@@ -28,7 +28,7 @@
 "Append \".part\" to incomplete files' names" = "„.part“ an Dateinamen unvollständer Übertragungen anhängen";
 "Display a window when opening a magnet link" = "Übertragungseinstellungen beim Öffnen von magnet-Links anzeigen";
 "Stop seeding if idle for:" = "nach";
-"When download completes, run script:" = "vollständig empfangen:";
+"When download completes, run script:" = "Nach Download-Abschluss Skript ausführen:";
 "Call script:" = "Skript ausführen:";
 "Remove from the torrent list when seeding completes" = "nach automatischem Anhalten aus der Liste entfernen";
 "Applies to newly added torrents" = "Für neu hinzugefügte Übertragungen.";

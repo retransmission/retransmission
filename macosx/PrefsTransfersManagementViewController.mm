@@ -82,6 +82,10 @@
     self.fQueueSeedFieldSuffixLabel = [ColorTextField labelWithString:LStr(@"active torrents")];
     self.fStalledFieldSuffixLabel = [ColorTextField labelWithString:LStr(@"minutes")];
 
+    // Locales whose checkbox titles name the unit leave "active torrents" empty.
+    self.fQueueDownloadFieldSuffixLabel.hidden = self.fQueueDownloadFieldSuffixLabel.stringValue.length == 0;
+    self.fQueueSeedFieldSuffixLabel.hidden = self.fQueueSeedFieldSuffixLabel.stringValue.length == 0;
+
     self.fRatioCheckButton = [PrefsUI checkbox:LStr(@"Stop seeding at ratio:") target:self action:@selector(applyRatioSetting:)];
     self.fRatioStopField = [PrefsUI decimalInputFieldWithWidth:50 minimum:0 maximum:99999 minDigits:2 maxDigits:2];
     self.fRatioStopField.delegate = self;
