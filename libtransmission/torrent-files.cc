@@ -405,12 +405,6 @@ namespace
     return (std::ranges::find(ReservedNames, in) != std::ranges::end(ReservedNames));
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
-// Do not use the following reserved names for the name of a file:
-// CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8,
-// COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, and LPT9.
-// Also avoid these names followed immediately by an extension;
-// for example, NUL.txt is not recommended.
 [[nodiscard, maybe_unused]] bool is_win32_reserved_file(std::string_view in) noexcept
 {
     if (std::empty(in)) {
@@ -430,9 +424,19 @@ namespace
 
     static auto constexpr ReservedNames = std::to_array<std::string_view>({
         // clang-format off: related names on the same line
+        // https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+        // CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9,
+        // COM¹, COM², COM³, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, LPT9, LPT¹, LPT², and LPT³.
+        // Also avoid these names followed immediately by an extension;
+        // for example, NUL.txt and NUL.tar.gz are both equivalent to NUL.
         "AUX"sv,  "CON"sv,  "NUL"sv,  "PRN"sv,
         "COM1"sv, "COM2"sv, "COM3"sv, "COM4"sv, "COM5"sv, "COM6"sv, "COM7"sv, "COM8"sv, "COM9"sv,
+        "COM¹"sv, "COM²"sv, "COM³"sv, "LPT¹"sv, "LPT²"sv, "LPT³"sv,
         "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
+        // https://learn.microsoft.com/en-us/windows/console/console-handles
+        // To open a handle to a console's input buffer, specify the CONIN$ value in a call to CreateFile.
+        // Specify the CONOUT$ value in a call to CreateFile to open a handle to a console's active screen buffer.
+        "CONIN$"sv, "CONOUT$"sv,
         // clang-format on
     });
     return std::ranges::any_of(ReservedNames, [in_upper_sv](auto const& name) {
