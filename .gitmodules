@@ -32,10 +32,6 @@
 	path = third-party/fast_float
 	# synced with https://github.com/fastfloat/fast_float.git
 	url = https://github.com/retransmission/fast_float.git
-[submodule "third-party/wide-integer"]
-	path = third-party/wide-integer
-	# synced with https://github.com/ckormanyos/wide-integer.git
-	url = https://github.com/retransmission/wide-integer.git
 [submodule "third-party/small"]
 	path = third-party/small
 	# synced with https://github.com/alandefreitas/small.git

@@ -113,7 +113,6 @@ target_link_libraries(libtransmission-test
         transmission::fmt-header-only
         libevent::core
         libevent::extra
-        WideInteger::WideInteger
         wildmat)
 
 tr_setup_gtest_target(libtransmission-test "LT.")
