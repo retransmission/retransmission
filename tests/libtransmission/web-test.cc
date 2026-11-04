@@ -657,8 +657,15 @@ TEST_F(WebTest, timeoutIsReported)
 
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
 {
-    // a handler that never replies keeps both fetches running
-    server4_->setHandler([](evhttp_request* /*req*/) {});
+    // the plain fetch never gets a reply; the announce gets one once the gate opens
+    auto gate = ThreadGate{};
+    server4_->setHandler([resume = gate.future()](evhttp_request* req) {
+        if (evhttp_request_get_uri(req) != "/announce"sv) {
+            return;
+        }
+        resume.wait();
+        LoopbackServer::reply(req, HTTP_OK, "OK", "late"sv);
+    });
 
     auto plain = fetchAsync(options("/plain"sv));
     auto opts = options("/announce"sv);
@@ -677,8 +684,12 @@ TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
     // the other runs on until it ends or the deadline comes
     EXPECT_EQ(std::future_status::timeout, announce.wait_for(300ms));
     EXPECT_FALSE(web_->is_idle());
-}
 
+    // and its reply still reaches the caller
+    gate.open();
+    ASSERT_EQ(std::future_status::ready, announce.wait_for(15s));
+    EXPECT_EQ(200, announce.get().status);
+}
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a
