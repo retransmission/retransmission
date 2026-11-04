@@ -957,6 +957,9 @@ public:
             // before curl starts the queued ones
             if (deadline_exists()) {
                 cancel_unfinished_at_shutdown();
+                if (std::empty(running_tasks_)) {
+                    continue;
+                }
             }
 
             auto const next_unpause_ms = paused_tasks_upkeep();
