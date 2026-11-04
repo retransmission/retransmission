@@ -362,7 +362,6 @@ endif()
 set(BASE_XIB_FILES
     GroupRules.xib
     InfoActivityView.xib
-    InfoOptionsView.xib
     PrefsWindow.xib)
 list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
@@ -374,6 +373,7 @@ set(LANG_STRINGS_FILES
     Creator.strings
     GlobalOptionsPopover.strings
     InfoGeneralView.strings
+    InfoOptionsView.strings
     InfoPlist.strings
     Localizable.strings
     PreferencesBandwidthTab.strings

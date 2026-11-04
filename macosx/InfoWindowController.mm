@@ -422,7 +422,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         [self.fOptionsViewController setOldHeight:oldHeight];
         [self.fOptionsViewController checkLayout];
 
-        minWindowWidth = MAX(self.fMinWindowWidth, self.fOptionsViewController.fPriorityView.frame.size.width);
+        minWindowWidth = MAX(self.fMinWindowWidth, self.fOptionsViewController.fPriorityView.fittingSize.width);
         viewRect = [self.fOptionsViewController viewRect];
     }
 
