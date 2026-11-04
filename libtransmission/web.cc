@@ -861,8 +861,7 @@ public:
 
         for (auto* const task : tasks) {
             tr_logAddTrace(fmt::format("Cancelled fetch of '{}' at shutdown", task->options().url));
-            task->response.status = 0;
-            task->response.did_connect = false;
+            task->set_error(CURLE_ABORTED_BY_CALLBACK);
             remove_task(*task);
         }
     }
