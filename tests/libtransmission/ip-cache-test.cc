@@ -274,7 +274,7 @@ TEST_F(IPCacheTest, refusedQueriesEndFallbackChain)
 {
     // Like tr_web once shutdown has begun: refused fetches fail at once
     struct LocalMockMediator final : public MockMediator {
-        void fetch(tr_web::FetchOptions&& options) override
+        void fetch(tr_web::FetchOptions&& options) override // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         {
             ++fetch_count;
             options.done_func(
