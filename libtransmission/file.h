@@ -219,6 +219,8 @@ struct tr_sys_path_capacity {
 /**
  * @brief Portability wrapper for `rename()`.
  *
+ * Like POSIX `rename()`, it replaces a read-only file too.
+ *
  * @param[in]  src_path Path to source file or directory.
  * @param[in]  dst_path Path to destination file or directory.
  * @param[out] error    Pointer to error object. Optional, pass `nullptr` if you
