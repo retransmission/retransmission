@@ -1324,7 +1324,7 @@ double tr_sessionGetRawSpeed_KBps(tr_session const* session, tr_direction dir)
     return {};
 }
 
-void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline)
+void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds const tracker_wait)
 {
     is_closing_ = true;
 
@@ -1386,12 +1386,12 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     // ...and now that those are done, tell web_ that we're shutting
     // down soon. This leaves the `event=stopped` going but refuses any
     // new tasks.
-    auto const now = std::chrono::steady_clock::now();
-    auto const remaining_ms = now < deadline ? std::chrono::duration_cast<std::chrono::milliseconds>(deadline - now) : 0ms;
-    this->web_->startShutdown(remaining_ms);
+    this->web_->startShutdown(tracker_wait);
 
     // recycle the now-unused save_timer_ here to wait for UDP shutdown
+    // The wait starts here so that slow disk work above can't use it up.
     TR_ASSERT(!save_timer_);
+    auto const deadline = std::chrono::steady_clock::now() + tracker_wait;
     save_timer_ = timerMaker().create([this, closed_promise, deadline] { closeImplPart2(closed_promise, deadline); });
     save_timer_->start_repeating(50ms);
 }
@@ -1437,10 +1437,9 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
 
     auto closed_promise = std::promise<void>{};
     auto closed_future = closed_promise.get_future();
-    auto const deadline = std::chrono::steady_clock::now() +
-        std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
+    auto const tracker_wait = std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
     session->run_in_session_thread(
-        [&closed_promise, deadline, session] { session->closeImplPart1(&closed_promise, deadline); });
+        [&closed_promise, tracker_wait, session] { session->closeImplPart1(&closed_promise, tracker_wait); });
     closed_future.wait();
 
     delete session;
