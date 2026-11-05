@@ -168,8 +168,6 @@ target_sources(${TR_NAME}-mac
         PrefsTransfersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
-        PrefsWindow.h
-        PrefsWindow.mm
         PriorityPopUpButtonCell.h
         PriorityPopUpButtonCell.mm
         ProgressBarView.h
@@ -360,8 +358,7 @@ endif()
 
 set(BASE_XIB_FILES
     GroupRules.xib
-    InfoActivityView.xib
-    PrefsWindow.xib)
+    InfoActivityView.xib)
 list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 

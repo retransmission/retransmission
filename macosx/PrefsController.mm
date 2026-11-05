@@ -28,11 +28,10 @@ static ToolbarTab const ToolbarTabPeers = @"TOOLBAR_PEERS";
 static ToolbarTab const ToolbarTabNetwork = @"TOOLBAR_NETWORK";
 static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
-@interface PrefsController ()<NSWindowRestoration>
+@interface PrefsController ()<NSWindowDelegate, NSWindowRestoration>
 
 @property(nonatomic, readonly) tr_session* fHandle;
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
-@property(nonatomic) BOOL fHasLoaded;
 
 @property(nonatomic) PrefsGeneralTabViewController* generalViewController;
 @property(nonatomic) PrefsTransfersTabViewController* transfersViewController;
@@ -48,12 +47,12 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
 - (instancetype)initWithHandle:(tr_session*)handle
 {
-    if ((self = [super initWithWindowNibName:@"PrefsWindow"])) {
+    if ((self = [super initWithWindow:nil])) {
         _fHandle = handle;
 
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
-        //save a new random port
+        // save a new random port
         if ([_fDefaults boolForKey:@"RandomPort"]) {
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
         }
@@ -67,21 +66,35 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
         _remoteViewController = [[PrefsRemoteTabViewController alloc] initWithHandle:handle];
 
         [_peersViewController configureEncryptionMode];
+
+        [self loadWindow];
+        [self setupUI];
     }
 
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadWindow
 {
-    [super awakeFromNib];
-    self.fHasLoaded = YES;
+    NSWindow* window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 542, 280)
+                                                   styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                                                     backing:NSBackingStoreBuffered
+                                                       defer:YES];
+    window.identifier = @"PrefsWindow";
+    window.restorationClass = [self class];
 
-    self.window.restorationClass = [self class];
+    // disable fullscreen support
+    window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
+    window.tabbingMode = NSWindowTabbingModeDisallowed;
+    window.releasedWhenClosed = NO;
+    window.delegate = self;
+    window.toolbarStyle = NSWindowToolbarStylePreference;
 
-    //disable fullscreen support
-    self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
+    self.window = window;
+}
 
+- (void)setupUI
+{
     NSToolbar* toolbar = [[NSToolbar alloc] initWithIdentifier:@"Preferences Toolbar"];
     toolbar.delegate = self;
     toolbar.allowsUserCustomization = NO;
@@ -94,6 +107,17 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     [self.window center];
 
     [self setPrefView:nil];
+}
+
+- (void)windowWillClose:(NSNotification*)notification
+{
+    // commits an in-progress text field edit
+    [self.window makeFirstResponder:nil];
+}
+
+- (void)cancelOperation:(id)sender
+{
+    [self.window close];
 }
 
 - (NSToolbarItem*)toolbar:(NSToolbar*)toolbar itemForItemIdentifier:(NSString*)ident willBeInsertedIntoToolbar:(BOOL)flag
@@ -182,7 +206,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
 - (void)setWindowSize
 {
-    //set window width with localised value
+    // set window width with localised value
     NSRect windowRect = self.window.frame;
     NSString* sizeString = NSLocalizedString(@"PrefWindowSize", nil);
     if ([sizeString isEqualToString:@"PrefWindowSize"]) {
@@ -210,12 +234,12 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
 - (void)rpcUpdatePrefs
 {
-    //encryption
+    // encryption
     tr_encryption_mode const encryptionMode = tr_sessionGetEncryption(self.fHandle);
     [self.fDefaults setBool:encryptionMode != TR_CLEAR_PREFERRED forKey:@"EncryptionPrefer"];
     [self.fDefaults setBool:encryptionMode == TR_ENCRYPTION_REQUIRED forKey:@"EncryptionRequire"];
 
-    //download directory
+    // download directory
     NSString* downloadLocation = tr_strv_to_utf8_nsstring(tr_sessionGetDownloadDir(self.fHandle)).stringByStandardizingPath;
     [self.fDefaults setObject:downloadLocation forKey:@"DownloadFolder"];
 
@@ -228,34 +252,34 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     BOOL const usePartialFileRenaming = tr_sessionIsIncompleteFileNamingEnabled(self.fHandle);
     [self.fDefaults setBool:usePartialFileRenaming forKey:@"RenamePartialFiles"];
 
-    //utp
+    // utp
     BOOL const utp = tr_sessionIsUTPEnabled(self.fHandle);
     [self.fDefaults setBool:utp forKey:@"UTPGlobal"];
 
-    //peers
+    // peers
     uint16_t const peersTotal = tr_sessionGetPeerLimit(self.fHandle);
     [self.fDefaults setInteger:peersTotal forKey:@"PeersTotal"];
 
     uint16_t const peersTorrent = tr_sessionGetPeerLimitPerTorrent(self.fHandle);
     [self.fDefaults setInteger:peersTorrent forKey:@"PeersTorrent"];
 
-    //pex
+    // pex
     BOOL const pex = tr_sessionIsPexEnabled(self.fHandle);
     [self.fDefaults setBool:pex forKey:@"PEXGlobal"];
 
-    //dht
+    // dht
     BOOL const dht = tr_sessionIsDHTEnabled(self.fHandle);
     [self.fDefaults setBool:dht forKey:@"DHTGlobal"];
 
-    //lpd
+    // lpd
     BOOL const lpd = tr_sessionIsLPDEnabled(self.fHandle);
     [self.fDefaults setBool:lpd forKey:@"LocalPeerDiscoveryGlobal"];
 
-    //auto start
+    // auto start
     BOOL const autoStart = !tr_sessionGetPaused(self.fHandle);
     [self.fDefaults setBool:autoStart forKey:@"AutoStartDownload"];
 
-    //port
+    // port
     auto const port = tr_sessionGetPeerPort(self.fHandle);
     [self.fDefaults setInteger:port forKey:@"BindPort"];
 
@@ -265,33 +289,33 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     BOOL const randomPort = tr_sessionGetPeerPortRandomOnStart(self.fHandle);
     [self.fDefaults setBool:randomPort forKey:@"RandomPort"];
 
-    //speed limit - down
+    // speed limit - down
     BOOL const downLimitEnabled = tr_sessionIsSpeedLimited(self.fHandle, tr_direction::Down);
     [self.fDefaults setBool:downLimitEnabled forKey:@"CheckDownload"];
 
     auto const downLimit = tr_sessionGetSpeedLimit_KBps(self.fHandle, tr_direction::Down);
     [self.fDefaults setInteger:downLimit forKey:@"DownloadLimit"];
 
-    //speed limit - up
+    // speed limit - up
     BOOL const upLimitEnabled = tr_sessionIsSpeedLimited(self.fHandle, tr_direction::Up);
     [self.fDefaults setBool:upLimitEnabled forKey:@"CheckUpload"];
 
     auto const upLimit = tr_sessionGetSpeedLimit_KBps(self.fHandle, tr_direction::Up);
     [self.fDefaults setInteger:upLimit forKey:@"UploadLimit"];
 
-    //alt speed limit enabled
+    // alt speed limit enabled
     BOOL const useAltSpeed = tr_sessionUsesAltSpeed(self.fHandle);
     [self.fDefaults setBool:useAltSpeed forKey:@"SpeedLimit"];
 
-    //alt speed limit - down
+    // alt speed limit - down
     auto const downLimitAlt = tr_sessionGetAltSpeed_KBps(self.fHandle, tr_direction::Down);
     [self.fDefaults setInteger:downLimitAlt forKey:@"SpeedLimitDownloadLimit"];
 
-    //alt speed limit - up
+    // alt speed limit - up
     auto const upLimitAlt = tr_sessionGetAltSpeed_KBps(self.fHandle, tr_direction::Up);
     [self.fDefaults setInteger:upLimitAlt forKey:@"SpeedLimitUploadLimit"];
 
-    //alt speed limit schedule
+    // alt speed limit schedule
     BOOL const useAltSpeedSched = tr_sessionUsesAltSpeedTime(self.fHandle);
     [self.fDefaults setBool:useAltSpeedSched forKey:@"SpeedLimitAuto"];
 
@@ -304,28 +328,28 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     int const limitDay = tr_sessionGetAltSpeedDay(self.fHandle);
     [self.fDefaults setInteger:limitDay forKey:@"SpeedLimitAutoDay"];
 
-    //blocklist
+    // blocklist
     BOOL const blocklist = tr_blocklistIsEnabled(self.fHandle);
     [self.fDefaults setBool:blocklist forKey:@"BlocklistNew"];
 
     NSString* blocklistURL = tr_strv_to_utf8_nsstring(tr_blocklistGetURL(self.fHandle));
     [self.fDefaults setObject:blocklistURL forKey:@"BlocklistURL"];
 
-    //seed ratio
+    // seed ratio
     BOOL const ratioLimited = tr_sessionIsRatioLimited(self.fHandle);
     [self.fDefaults setBool:ratioLimited forKey:@"RatioCheck"];
 
     float const ratioLimit = tr_sessionGetRatioLimit(self.fHandle);
     [self.fDefaults setFloat:ratioLimit forKey:@"RatioLimit"];
 
-    //idle seed limit
+    // idle seed limit
     BOOL const idleLimited = tr_sessionIsIdleLimited(self.fHandle);
     [self.fDefaults setBool:idleLimited forKey:@"IdleLimitCheck"];
 
     NSUInteger const idleLimitMin = tr_sessionGetIdleLimit(self.fHandle);
     [self.fDefaults setInteger:idleLimitMin forKey:@"IdleLimitMinutes"];
 
-    //queue
+    // queue
     BOOL const downloadQueue = tr_sessionGetQueueEnabled(self.fHandle, tr_direction::Down);
     [self.fDefaults setBool:downloadQueue forKey:@"Queue"];
 
@@ -344,49 +368,46 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     NSInteger const stalledMinutes = tr_sessionGetQueueStalledMinutes(self.fHandle);
     [self.fDefaults setInteger:stalledMinutes forKey:@"StalledMinutes"];
 
-    //done script
+    // done script
     BOOL const doneScriptEnabled = tr_sessionIsScriptEnabled(self.fHandle, TR_SCRIPT_ON_TORRENT_DONE);
     [self.fDefaults setBool:doneScriptEnabled forKey:@"DoneScriptEnabled"];
 
     NSString* doneScriptPath = tr_strv_to_utf8_nsstring(tr_sessionGetScript(self.fHandle, TR_SCRIPT_ON_TORRENT_DONE));
     [self.fDefaults setObject:doneScriptPath forKey:@"DoneScriptPath"];
 
-    //update gui if loaded
-    if (self.fHasLoaded) {
-        //encryption handled by bindings
+    // encryption handled by bindings
 
-        //download directory handled by bindings
+    // download directory handled by bindings
 
-        //utp handled by bindings
+    // utp handled by bindings
 
-        //pex handled by bindings
+    // pex handled by bindings
 
-        //dht handled by bindings
+    // dht handled by bindings
 
-        //lpd handled by bindings
+    // lpd handled by bindings
 
-        //port forwarding (nat) handled by bindings
-        //random port handled by bindings
+    // port forwarding (nat) handled by bindings
+    // random port handled by bindings
 
-        //speed limit schedule handled by bindings
+    // speed limit schedule handled by bindings
 
-        //speed limit schedule times and day handled by bindings
+    // speed limit schedule times and day handled by bindings
 
-        [self.peersViewController updateBlocklistButton];
-        [self.peersViewController updateBlocklistFields];
+    [self.peersViewController updateBlocklistButton];
+    [self.peersViewController updateBlocklistFields];
 
-        //ratio limit enabled handled by bindings
+    // ratio limit enabled handled by bindings
 
-        //idle limit enabled handled by bindings
+    // idle limit enabled handled by bindings
 
-        //queues enabled handled by bindings
+    // queues enabled handled by bindings
 
-        //check stalled handled by bindings
-    }
+    // check stalled handled by bindings
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 
-    //reload global settings in inspector
+    // reload global settings in inspector
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
 }
 
@@ -416,7 +437,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
         view = self.remoteViewController.view;
     } else {
-        identifier = ToolbarTabGeneral; //general view is the default selected
+        identifier = ToolbarTabGeneral; // general tab is the default selected
         view = self.generalViewController.view;
     }
 
@@ -442,7 +463,7 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
         view.hidden = NO;
     }];
 
-    //set title label
+    // set title label
     if (sender) {
         window.title = [sender label];
     } else {
