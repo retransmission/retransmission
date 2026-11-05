@@ -485,9 +485,8 @@ Glib::RefPtr<Session> Session::create(tr_session* const session, Prefs& prefs, R
 
 Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
     : Glib::ObjectBase(typeid(Session))
-    , tr::app::Session(prefs, rpc)
+    , tr::app::Session(tr_sessionGetConfigDir(session), prefs, rpc)
     , prefs_(prefs)
-    , config_dir_(tr_sessionGetConfigDir(session))
     , impl_(std::make_unique<Impl>(*this, session, rpc))
 {
     set_embedded_session(session);
@@ -563,11 +562,6 @@ void Session::import_embedded_settings()
     if (auto const settings = embedded_settings(); settings) {
         import_session_settings(*settings);
     }
-}
-
-void Session::save_prefs() const
-{
-    prefs_.save(config_dir_, embedded_settings());
 }
 
 /***

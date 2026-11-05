@@ -9,6 +9,8 @@
 #include <memory>
 #include <optional>
 
+#include <sigslot/signal.hpp>
+
 #include "libtransmission/timer.h"
 
 namespace tr::app
@@ -25,7 +27,8 @@ struct PollIntervals {
 // Keeps a `Session`'s torrents, stats and info fresh: every `tick` refreshes the
 // recently active torrents, the stats and the info; once per `full_list` the
 // torrent poll asks for every torrent instead, so the list also learns of
-// removals and of torrents that never showed activity. Apart from `Session`,
+// removals and of torrents that never showed activity. A stopped session pauses the
+// timer, and a new session source gets `refresh_now()`. Apart from `Session`,
 // which then needs no timer: a client may poll another way, and a test drives
 // the Session's refreshes directly.
 class SessionPoller
@@ -53,8 +56,8 @@ public:
     }
 
     // Fetches everything now: every torrent with `MainAll`, the stats, the info.
-    // For a new or reconnected session source. Counts as the full poll, and while
-    // running restarts the tick so the next one is a whole interval away.
+    // Counts as the full poll, and while running restarts the tick so the next one
+    // is a whole interval away.
     void refresh_now();
 
 private:
@@ -67,6 +70,9 @@ private:
     // when the list was last fetched whole; empty until then, so the first tick is a full poll
     std::optional<std::chrono::steady_clock::time_point> last_full_;
     bool running_ = false;
+
+    sigslot::scoped_connection source_changed_connection_;
+    sigslot::scoped_connection stopped_connection_;
 };
 
 } // namespace tr::app

@@ -108,7 +108,7 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 ***/
 
 Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
-    : tr::app::Session{ prefs, rpc.impl() }
+    : tr::app::Session{ std::string{}, prefs, rpc.impl() }
     , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
     , rpc_{ rpc }
