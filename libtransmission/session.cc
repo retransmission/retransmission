@@ -1370,6 +1370,10 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
         tr_torrentFreeInSessionThread(tor);
     }
     torrents.clear();
+    // Save the stats now and again at the end, so that nothing
+    // is lost if the process ends during the wait for the trackers.
+    collect_files_created();
+    stats().save();
     // ...now that all the torrents have been closed, any remaining
     // `&event=stopped` announce messages are queued in the announcer.
     // Tell the announcer to start shutdown, which sends out the stop
