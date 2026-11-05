@@ -5,17 +5,15 @@
 
 #pragma once
 
-#include <array>
-#include <ctime>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QPointer>
-#include <QtCore/QTimer>
 #include <QtCore/QTranslator>
 #include <QtCore/QVariant>
 
@@ -24,15 +22,20 @@
 #include <QtWidgets/QApplication>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/types.h> // tr_torrent_id_t
 
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/interop.h>
-#include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include "AddData.h"
 #include "Prefs.h"
-#include "Typedefs.h"
+#include "Timer.h"
+
+namespace tr::app
+{
+class SessionPoller;
+}
 
 namespace tr::interop
 {
@@ -68,7 +71,7 @@ public:
     ~Application() override;
 
     void raise() const;
-    bool notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
+    void notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
 
     // True when this launch found the config dir held by another session.
     // We give way rather than write over the files that session owns.
@@ -103,12 +106,7 @@ public slots:
 private slots:
     void onConfigDirContended();
     void onSessionSourceChanged() const;
-    void onTorrentsAdded(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsCompleted(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsEdited(torrent_ids_t const& torrent_ids) const;
-    void onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const;
     void refreshPref(tr_quark key) const;
-    void refreshTorrents();
     void saveGeometry() const;
 #ifdef QT_DBUS_LIB
     void onNotificationActionInvoked(quint32 notification_id, QString action_key);
@@ -135,7 +133,9 @@ private:
     };
 
     void loadTranslations();
-    [[nodiscard]] QStringList getNames(torrent_ids_t const& ids) const;
+    void onTorrentsAdded(std::span<tr_torrent_id_t const> torrent_ids) const;
+    void onTorrentsCompleted(std::span<tr_torrent_id_t const> torrent_ids) const;
+    [[nodiscard]] QStringList getNames(std::span<tr_torrent_id_t const> ids) const;
     void notifyTorrentAdded(tr::app::Torrent const& tor) const;
 
     // the favicons of a torrent's trackers
@@ -144,20 +144,17 @@ private:
     Prefs& prefs_;
     QString const config_dir_;
 
-    tr::app::TorrentList torrents_{ prefs_ };
+    QtTimerMaker timer_maker_;
     std::unique_ptr<Session> session_;
+    std::unique_ptr<tr::app::SessionPoller> poller_;
     std::unique_ptr<TorrentModel> model_;
     std::unique_ptr<MainWindow> window_;
     std::unique_ptr<WatchDir> watch_dir_;
-    QTimer model_timer_;
-    QTimer stats_timer_;
-    QTimer session_timer_;
-    time_t last_full_update_time_ = {};
     QTranslator qt_translator_;
     QTranslator app_translator_;
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
-    std::array<sigslot::scoped_connection, 2> favicon_connections_;
+    sigslot::scoped_connection torrents_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

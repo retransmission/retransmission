@@ -7,8 +7,10 @@
 
 #include <concepts>
 #include <cstdint>
+#include <optional>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h> // tr_torrent_id_t
@@ -56,4 +58,24 @@ template<typename... Items>
     list.reserve(sizeof...(Items));
     (list.emplace_back(std::forward<Items>(items)), ...);
     return list;
+}
+
+// the `arguments` of a `torrent_get` response; `removed` is omitted unless given
+[[nodiscard]] inline tr_variant::Map make_args(
+    tr_variant::Vector torrents,
+    std::optional<std::vector<tr_torrent_id_t>> const& removed = {})
+{
+    auto args = tr_variant::Map{ 2U };
+    args.try_emplace(TR_KEY_torrents, std::move(torrents));
+
+    if (removed) {
+        auto ids = tr_variant::Vector{};
+        ids.reserve(std::size(*removed));
+        for (auto const id : *removed) {
+            ids.emplace_back(id);
+        }
+        args.try_emplace(TR_KEY_removed, std::move(ids));
+    }
+
+    return args;
 }

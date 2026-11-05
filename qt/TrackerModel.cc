@@ -53,7 +53,7 @@ QVariant TrackerModel::data(QModelIndex const& index, int role) const
 ****
 ***/
 
-void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t const& ids)
+void TrackerModel::refresh(TorrentModel const& torrent_model, tr::app::TorrentList::Ids const& ids)
 {
     struct CompareTrackers {
         bool operator()(TrackerInfo const& a, TrackerInfo const& b) const

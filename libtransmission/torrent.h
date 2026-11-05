@@ -889,11 +889,12 @@ struct tr_torrent {
         return is_stopping_;
     }
 
-    // Whether the torrent's removal is queued behind its disk IO.
-    // RPC treats it as removed from then on. Session thread only.
-    [[nodiscard]] constexpr auto is_removal_queued() const noexcept
+    // Whether `tr_torrentRemove()` has been called. Set on the caller's thread,
+    // before the session thread queues the removal, so RPC leaves the torrent
+    // out of its replies from then on, even one that runs in between.
+    [[nodiscard]] constexpr auto is_deleting() const noexcept
     {
-        return removal_queued_;
+        return is_deleting_;
     }
 
     constexpr void stop_soon() noexcept

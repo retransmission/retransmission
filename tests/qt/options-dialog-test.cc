@@ -26,8 +26,6 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/quark.h>
 
-#include <libtransmission-app/torrent-list.h>
-
 #include "AddData.h"
 #include "FreeSpaceLabel.h"
 #include "OptionsDialog.h"
@@ -135,8 +133,7 @@ private slots:
         prefs.set(TR_KEY_recent_download_paths, recents);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
@@ -174,8 +171,7 @@ private slots:
         prefs.set(TR_KEY_recent_download_paths, std::vector<QString>{});
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
@@ -204,8 +200,7 @@ private slots:
         prefs.set(TR_KEY_recent_download_paths, recents);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
@@ -247,8 +242,7 @@ private slots:
         prefs.set(TR_KEY_recent_download_paths, std::vector<QString>{});
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 

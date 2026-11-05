@@ -27,7 +27,6 @@
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
 #include "TrQtInit.h"
-#include "Typedefs.h"
 #include "UserMetaType.h"
 #include "qt-test-fixtures.h"
 
@@ -300,25 +299,6 @@ private slots:
 
         client.list.update(make_args(make_row(3, "charlie"sv)), Coverage::Complete, Now);
         QCOMPARE(names_of(client.filter), QStringList{ QStringLiteral("charlie") });
-    }
-
-    static void asksForInfoWhenANewTorrentHasNoName()
-    {
-        auto client = Client{};
-        auto need_info = torrent_ids_t{};
-        QObject::connect(&client.model, &TorrentModel::torrentsNeedInfo, [&need_info](torrent_ids_t const& ids) {
-            need_info = ids;
-        });
-
-        // a stats-only row for a torrent we haven't seen
-        auto row = tr_variant::Map{ 1U };
-        row.try_emplace(TR_KEY_id, 7);
-        client.list.update(make_args(std::move(row)), Coverage::Partial, Now);
-        QVERIFY(need_info == (torrent_ids_t{ 7 }));
-        QVERIFY(client.model.index(0, 0).data(Qt::DisplayRole).toString().isEmpty());
-
-        client.list.update(make_args(make_row(7, "golf"sv)), Coverage::Partial, Now);
-        QCOMPARE(client.model.index(0, 0).data(Qt::DisplayRole).toString(), QStringLiteral("golf"));
     }
 
     static void rejectsIndexesOutsideTheList()

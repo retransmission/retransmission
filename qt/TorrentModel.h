@@ -8,6 +8,7 @@
 #include <array>
 #include <cstddef> // size_t
 #include <optional>
+#include <span>
 #include <vector>
 
 #include <sigslot/signal.hpp>
@@ -18,10 +19,10 @@
 
 #include <QtGui/QIcon>
 
+#include <libtransmission/types.h> // tr_torrent_id_t
+
 #include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
-
-#include "Typedefs.h"
 
 // A `tr::app::TorrentList` as a Qt list model: one row per torrent, in id order.
 // The list does the diffing; this brackets its row signals with Qt's and
@@ -54,11 +55,10 @@ public:
     [[nodiscard]] QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const override;
 
 signals:
-    void torrentsAdded(torrent_ids_t const&);
-    void torrentsChanged(torrent_ids_t const&, tr::app::TorrentFieldSet const& fields);
-    void torrentsCompleted(torrent_ids_t const&);
-    void torrentsEdited(torrent_ids_t const&);
-    void torrentsNeedInfo(torrent_ids_t const&);
+    // The list's `Changes` ids, ascending and unique, as a view that lives for
+    // the emit: connect directly, not queued.
+    void torrentsChanged(std::span<tr_torrent_id_t const> ids, tr::app::TorrentFieldSet const& fields);
+    void torrentsEdited(std::span<tr_torrent_id_t const> ids);
 
 private:
     // the conversions the delegate asks for on every paint, built on first use

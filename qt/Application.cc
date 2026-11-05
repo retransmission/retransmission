@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <span>
 #include <utility>
 
 #include <QtCore/QFileInfo>
@@ -34,7 +35,9 @@
 #include <libtransmission/values.h>
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/startup-coordinator.h>
+#include <libtransmission-app/torrent-list.h>
 
 #include "AccessibleSqueezeLabel.h"
 #include "AddData.h"
@@ -59,10 +62,6 @@ auto const FDONotificationsPath = QStringLiteral("/org/freedesktop/Notifications
 auto const FDONotificationsInterfaceName = QStringLiteral("org.freedesktop.Notifications");
 #endif
 // NOLINTEND(cert-err58-cpp)
-
-auto constexpr StatsRefreshIntervalMsec = 3000;
-auto constexpr SessionRefreshIntervalMsec = 3000;
-auto constexpr ModelRefreshIntervalMsec = 3000;
 
 [[nodiscard]] bool loadTranslation(
     QTranslator& translator,
@@ -169,29 +168,34 @@ Application::Application(
     QAccessible::installFactory(&accessibleFactory);
 #endif
 
-    session_ = std::make_unique<Session>(config_dir, prefs_, rpc, torrents_);
-    model_ = std::make_unique<TorrentModel>(torrents_);
+    session_ = std::make_unique<Session>(config_dir, prefs_, rpc);
+    poller_ = std::make_unique<tr::app::SessionPoller>(*session_, timer_maker_);
+    model_ = std::make_unique<TorrentModel>(session_->torrents());
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
-    watch_dir_ = std::make_unique<WatchDir>(torrents_);
+    watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
     connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
-    connect(model_.get(), &TorrentModel::torrentsAdded, this, &Application::onTorrentsAdded);
-    connect(model_.get(), &TorrentModel::torrentsCompleted, this, &Application::onTorrentsCompleted);
-    connect(model_.get(), &TorrentModel::torrentsEdited, this, &Application::onTorrentsEdited);
-    connect(model_.get(), &TorrentModel::torrentsNeedInfo, this, &Application::onTorrentsNeedInfo);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
     connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
-    favicon_connections_[0] = torrents_.rows_inserted.connect_scoped([this](size_t const row, size_t const count) {
-        for (auto i = row; i < row + count; ++i) {
-            loadFavicons(torrents_[i]);
+    torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+        // the trackers of a new torrent, and of one whose trackers changed
+        for (auto const row : changes.inserted) {
+            loadFavicons(session_->torrents()[row]);
         }
-    });
-    favicon_connections_[1] = torrents_.changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
+
         for (auto const& change : changes.changed) {
             if ((change.fields & tr::app::Torrent::fields<TR_KEY_trackers>()).any()) {
-                loadFavicons(torrents_[change.row]);
+                loadFavicons(session_->torrents()[change.row]);
             }
+        }
+
+        if (!std::empty(changes.added)) {
+            onTorrentsAdded(changes.added);
+        }
+
+        if (!std::empty(changes.completed)) {
+            onTorrentsCompleted(changes.completed);
         }
     });
     connect(watch_dir_.get(), &WatchDir::torrentFileAdded, this, qOverload<QString const&>(&Application::addWatchdirTorrent));
@@ -201,23 +205,7 @@ Application::Application(
         refreshPref(key);
     }
 
-    QTimer* timer = &model_timer_;
-    connect(timer, &QTimer::timeout, this, &Application::refreshTorrents);
-    timer->setSingleShot(false);
-    timer->setInterval(ModelRefreshIntervalMsec);
-    timer->start();
-
-    timer = &stats_timer_;
-    connect(timer, &QTimer::timeout, session_.get(), &Session::refreshSessionStats);
-    timer->setSingleShot(false);
-    timer->setInterval(StatsRefreshIntervalMsec);
-    timer->start();
-
-    timer = &session_timer_;
-    connect(timer, &QTimer::timeout, session_.get(), &Session::refreshSessionInfo);
-    timer->setSingleShot(false);
-    timer->setInterval(SessionRefreshIntervalMsec);
-    timer->start();
+    poller_->start();
 
     if (!first_time) {
         session_->restart();
@@ -292,17 +280,11 @@ void Application::loadTranslations()
     }
 }
 
-void Application::onTorrentsEdited(torrent_ids_t const& torrent_ids) const
-{
-    // the backend's tr_info has changed, so reload those fields
-    session_->initTorrents(torrent_ids);
-}
-
-QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
+QStringList Application::getNames(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     QStringList names;
     for (auto const& id : torrent_ids) {
-        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+        if (auto const* const tor = session_->torrents().find(id); tor != nullptr) {
             names.push_back(Utils::qstringFromUtf8(tor->name()));
         }
     }
@@ -311,20 +293,20 @@ QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
     return names;
 }
 
-void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
+void Application::onTorrentsAdded(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     if (!prefs_.get<bool>(TR_KEY_torrent_added_notification_enabled)) {
         return;
     }
 
     for (auto id : torrent_ids) {
-        if (auto const* const tor = torrents_.find(id); tor != nullptr) {
+        if (auto const* const tor = session_->torrents().find(id); tor != nullptr) {
             notifyTorrentAdded(*tor);
         }
     }
 }
 
-void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
+void Application::onTorrentsCompleted(std::span<tr_torrent_id_t const> const torrent_ids) const
 {
     auto const sound = prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled);
 
@@ -349,13 +331,6 @@ void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
     }
 
     notifyApp(title, body, {}, std::move(hints));
-}
-
-void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
-{
-    if (!torrent_ids.empty()) {
-        session_->initTorrents(torrent_ids);
-    }
 }
 
 void Application::notifyTorrentAdded(tr::app::Torrent const& tor) const
@@ -420,24 +395,7 @@ void Application::onConfigDirContended()
 
 void Application::onSessionSourceChanged() const
 {
-    session_->initTorrents();
-    session_->refreshSessionStats();
-    session_->refreshSessionInfo();
-}
-
-void Application::refreshTorrents()
-{
-    // usually we just poll the torrents that have shown recent activity,
-    // but we also periodically ask for updates on the others to ensure
-    // nothing's falling through the cracks.
-    time_t const now = time(nullptr);
-
-    if (last_full_update_time_ + 60 >= now) {
-        session_->refreshActiveTorrents();
-    } else {
-        last_full_update_time_ = now;
-        session_->refreshAllTorrents();
-    }
+    poller_->refresh_now();
 }
 
 /***
@@ -489,7 +447,7 @@ void Application::raise() const
     alert(window_.get());
 }
 
-bool Application::notifyApp(QString const& title, QString const& body, QStringList const& actions, QVariantMap hints) const
+void Application::notifyApp(QString const& title, QString const& body, QStringList const& actions, QVariantMap hints) const
 {
 #ifdef QT_DBUS_LIB
     if (auto bus = QDBusConnection::sessionBus(); bus.isConnected()) {
@@ -512,14 +470,13 @@ bool Application::notifyApp(QString const& title, QString const& body, QStringLi
         QDBusReply<quint32> const reply_msg = bus.call(m);
 
         if (reply_msg.isValid() && reply_msg.value() > 0) {
-            return true;
+            return;
         }
     }
 
 #endif
 
     window_->trayIcon().showMessage(title, body);
-    return true;
 }
 
 #ifdef QT_DBUS_LIB
@@ -530,7 +487,7 @@ void Application::onNotificationActionInvoked(quint32 /* notification_id */, QSt
 
     if (auto const match = StartNowRegex.match(action_key); match.hasMatch()) {
         int const torrent_id = match.captured(1).toInt();
-        session_->startTorrentsNow({ torrent_id });
+        session_->start_torrents_now({ torrent_id });
     }
 }
 #endif

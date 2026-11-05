@@ -74,6 +74,8 @@ target_sources(${TR_NAME}-qt-lib
         StatsDialog.h
         StyleHelper.cc
         StyleHelper.h
+        Timer.cc
+        Timer.h
         TorrentDelegate.cc
         TorrentDelegate.h
         TorrentDelegateMin.cc

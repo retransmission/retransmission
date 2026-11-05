@@ -6,11 +6,17 @@
 #pragma once
 
 #include <map>
+#include <span>
 #include <unordered_set>
+#include <utility>
+
+#include <sigslot/signal.hpp>
 
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/session.h>
+#include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include "BaseDialog.h"
@@ -38,7 +44,7 @@ public:
     DetailsDialog& operator=(DetailsDialog const&) = delete;
     ~DetailsDialog() override;
 
-    void setIds(torrent_ids_t const& ids);
+    void setIds(tr::app::TorrentList::Ids ids);
 
     // QWidget
     QSize sizeHint() const override
@@ -59,6 +65,11 @@ private:
     void initFilesTab() const;
     void initOptionsTab();
 
+    void onTorrentSetDone(tr::app::Session::Tag tag);
+
+    // refreshUI() once the debounce interval passes, unless one is already due
+    void scheduleRefreshUI();
+
     // Keeps a checkbox and a boolean pref in sync
     void bindPrefCheckBox(QAbstractButton* check, tr_quark key);
 
@@ -67,9 +78,8 @@ private slots:
     void refreshPref(tr_quark key);
     void refreshUI();
 
-    void onTorrentsEdited(torrent_ids_t const& ids);
-    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
-    void onSessionCalled(Session::Tag tag);
+    void onTorrentsEdited(std::span<tr_torrent_id_t const> ids);
+    void onTorrentsChanged(std::span<tr_torrent_id_t const> ids, tr::app::TorrentFieldSet const& fields);
 
     // Details tab
     void onButtonBoxClicked(QAbstractButton* button);
@@ -100,12 +110,14 @@ private:
     {
         return std::empty(pending_changes_tags_);
     }
-    std::unordered_set<Session::Tag> pending_changes_tags_;
+    std::unordered_set<tr::app::Session::Tag> pending_changes_tags_;
 
     template<typename T>
-    void torrentSet(torrent_ids_t const& ids, tr_quark key, T const& val)
+    void torrentSet(tr::app::TorrentList::Ids ids, tr_quark key, T const& val)
     {
-        pending_changes_tags_.insert(session_.torrentSet(ids, key, val));
+        if (auto const tag = session_.set_torrents(std::move(ids), key, val); tag != 0) {
+            pending_changes_tags_.insert(tag);
+        }
     }
 
     template<typename T>
@@ -120,7 +132,7 @@ private:
 
     Ui::DetailsDialog ui_ = {};
 
-    torrent_ids_t ids_;
+    tr::app::TorrentList::Ids ids_;
     QTimer model_timer_;
     QTimer ui_debounce_timer_;
     bool labels_need_refresh_ = true;
@@ -133,6 +145,8 @@ private:
     std::map<QString, PeerItem*> peers_;
 
     QIcon const icon_encrypted_ = QIcon{ QStringLiteral(":/icons/encrypted.svg") };
+
+    sigslot::scoped_connection set_done_connection_;
 
     static int prev_tab_index;
 };

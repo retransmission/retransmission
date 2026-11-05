@@ -18,6 +18,7 @@
 #include <libtransmission/timer.h>
 #include <libtransmission/web.h>
 
+#include "fake-timer.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -27,45 +28,6 @@ namespace
 class IPCacheTest : public ::tr::test::TransmissionTest
 {
 protected:
-    struct MockTimerMaker final : public tr::TimerMaker {
-        [[nodiscard]] std::unique_ptr<tr::Timer> create() override
-        {
-            return std::make_unique<MockTimer>();
-        }
-    };
-
-    struct MockTimer final : public tr::Timer {
-        void stop() override
-        {
-        }
-
-        void set_callback(std::function<void()> /* callback */) override
-        {
-        }
-
-        void set_repeating(bool /* is_repeating */ = true) override
-        {
-        }
-
-        void set_interval(std::chrono::milliseconds /* msec */) override
-        {
-        }
-
-        void start() override
-        {
-        }
-
-        [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
-        {
-            return {};
-        }
-
-        [[nodiscard]] bool is_repeating() const noexcept override
-        {
-            return {};
-        }
-    };
-
     class MockMediator : public tr_ip_cache::Mediator
     {
     public:
@@ -75,7 +37,7 @@ protected:
         }
 
     private:
-        MockTimerMaker timer_maker_;
+        tr::test::FakeTimerMaker timer_maker_;
     };
 
     void TearDown() override

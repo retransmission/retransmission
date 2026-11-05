@@ -5,22 +5,14 @@
 
 #include "Session.h"
 
-#include <algorithm>
 #include <array>
 #include <cassert>
-#include <ctime> // time()
+#include <optional>
 #include <string_view>
 #include <utility>
 
-#include <small/vector.hpp>
-
-#include <QtCore/QByteArray>
-#include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
 #include <QtCore/QtDebug>
-#include <QtCore/QTextStream>
 
 #include <QtGui/QClipboard>
 #include <QtGui/QDesktopServices>
@@ -29,10 +21,8 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStyle>
 
-#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
-#include <libtransmission/session-id.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
@@ -41,15 +31,12 @@
 
 #include "AddData.h"
 #include "Prefs.h"
-#include "SessionDialog.h"
 #include "TrFormat.h"
 #include "Utils.h"
-#include "VariantHelpers.h"
 
 using namespace std::literals;
 
 using tr::app::RpcQueue;
-using ::trqt::variant_helpers::dictFind;
 
 /***
 ****
@@ -72,13 +59,14 @@ void Session::portTest(tr_address_type const ip_protocol)
 
         // The status optional can be empty here, e.g. on network errors,
         // and the UI should show the "error" state
-        emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
+        auto const* const result = r.args_map();
+        emit portTested(result != nullptr ? result->value_if<bool>(TR_KEY_port_is_open) : std::optional<bool>{}, ip_protocol);
     };
 
     RpcQueue::create()
         .add(
             [this, args = std::move(args)](RpcClient::ResponseFunc done) mutable {
-                exec(TR_KEY_port_test, std::move(args), std::move(done));
+                send(TR_KEY_port_test, std::move(args), std::move(done));
             },
             response_func)
         .add(response_func)
@@ -92,25 +80,24 @@ bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)
 {
-    auto params = makeParams(TR_KEY_ids, torrent_ids_t{ torrent_id });
-    auto fields = tr_variant::Vector{};
-    fields.reserve(1U);
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_magnet_link));
-    params.insert_or_assign(TR_KEY_fields, std::move(fields));
+    auto params = tr_variant::Map{ 2U };
+    params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(Ids{ torrent_id }));
+    params.insert_or_assign(TR_KEY_fields, tr::app::make_fields({ TR_KEY_magnet_link }));
 
     RpcQueue::create()
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_torrent_get, std::move(params), std::move(done));
+            send(TR_KEY_torrent_get, std::move(params), std::move(done));
         })
         .add([](RpcResponse const& r) {
-            auto const* const args = r.args->get_if<tr_variant::Map>();
+            auto const* const args = r.args_map();
             auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
-            if (torrents == nullptr || std::empty(*torrents)) {
-                return;
-            }
-
-            if (auto const link = dictFind<QString>(&torrents->front(), TR_KEY_magnet_link)) {
-                QApplication::clipboard()->setText(*link);
+            auto const* const row = torrents != nullptr && !std::empty(*torrents) ?
+                torrents->front().get_if<tr_variant::Map>() :
+                nullptr;
+            auto const link = row != nullptr ? row->value_if<std::string_view>(TR_KEY_magnet_link) :
+                                               std::optional<std::string_view>{};
+            if (link) {
+                QApplication::clipboard()->setText(Utils::qstringFromUtf8(*link));
             }
         })
         .run();
@@ -120,14 +107,13 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 ****
 ***/
 
-Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc, tr::app::TorrentList& torrents)
+Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
     : tr::app::Session{ prefs, rpc.impl() }
     , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
-    , torrents_{ torrents }
     , rpc_{ rpc }
 {
-    session_refresh_tag_ = session_refresh_needed.connect_scoped([this] { refreshSessionInfo(); });
+    rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc_, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
@@ -156,8 +142,9 @@ void Session::stop()
         session_ = nullptr;
     }
 
+    torrents().clear();
     clear_session_info();
-    updateType();
+    set_session_type({});
     emit stopped();
 }
 
@@ -194,7 +181,6 @@ void Session::start()
         auto const settings = tr_sessionLoadSettings(config_dir);
         session_ = tr_sessionInit(config_dir, true, settings, Utils::trashOrRemove);
         set_embedded_session(session_);
-        updateType();
 
         if (tr_sessionConfigDirIsContended(session_)) {
             emit configDirContended();
@@ -212,394 +198,36 @@ void Session::start()
 
 // ---
 
-// static
-tr_variant Session::getTorrentIdsVariant(torrent_ids_t const& torrent_ids)
+void Session::onRenameFailed(RenameError const& error) const
 {
-    if (&torrent_ids == &RecentlyActiveIDs) {
-        return tr_variant::unmanaged_string(TR_KEY_recently_active);
-    }
-
-    if (!std::empty(torrent_ids)) {
-        return tr::serializer::to_variant(torrent_ids);
-    }
-
-    return {};
-}
-
-Session::Tag Session::torrentSetImpl(tr_variant::Map params)
-{
-    auto const tag = next_tag_++;
-
-    RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));
-        })
-        .finally([this, tag] { emit sessionCalled(tag); })
-        .run();
-
-    return tag;
-}
-
-void Session::torrentSetLocation(torrent_ids_t const& torrent_ids, QString const& path, bool do_move)
-{
-    if (!torrent_ids.empty()) {
-        exec(TR_KEY_torrent_set_location, makeParams(TR_KEY_ids, torrent_ids, TR_KEY_location, path, TR_KEY_move, do_move));
-    }
-}
-
-void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const& oldpath, QString const& newname)
-{
-    if (torrent_ids.empty()) {
-        return;
-    }
-
-    RpcQueue::create()
-        .add(
-            [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
-                RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
-            [oldpath, newname](RpcResponse const& r) {
-                auto const title = tr("Error Renaming Path");
-                auto const summary = TR_FORMAT(
-                    R"(Unable to rename "{old_path}" as "{path}": {error}.)",
-                    fmt::arg("old_path", oldpath),
-                    fmt::arg("path", newname),
-                    fmt::arg("error", r.errmsg));
-                // The user can't fix a network error by editing the path.
-                auto const advice = r.network_error ?
-                    QString{} :
-                    QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
-                auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
-                auto* d = new QMessageBox{ QMessageBox::Information,
-                                           title,
-                                           text,
-                                           QMessageBox::Close,
-                                           QApplication::activeWindow() };
-                QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
-                d->show();
-            })
-        // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids](RpcResponse const& /*r*/) { refreshTorrents(torrent_ids, TorrentProperties::Rename); })
-        .run();
-}
-
-namespace
-{
-using TorrentProperties = Session::TorrentProperties;
-
-[[nodiscard]] small::max_size_vector<tr_quark, 64U> getKeys(TorrentProperties const props)
-{
-    // IMPORTANT when changing these key sets:
-    // 1. `TR_KEY_id` must be in every set
-    // 2. When changing `MainInfo` or `MainStats`, update their union in `MainAll`
-
-    // clang-format off: one line per key
-    switch (props)
-    {
-        // unchanging fields needed by the details dialog
-        case TorrentProperties::DetailInfo:
-            return {
-                TR_KEY_comment,
-                TR_KEY_creator,
-                TR_KEY_date_created,
-                TR_KEY_files,
-                TR_KEY_id,
-                TR_KEY_is_private,
-                TR_KEY_labels,
-                TR_KEY_piece_count,
-                TR_KEY_piece_size,
-                TR_KEY_tracker_list,
-                TR_KEY_trackers,
-            };
-
-        // changing fields needed by the details dialog
-        case TorrentProperties::DetailStat:
-            return {
-                TR_KEY_activity_date,
-                TR_KEY_bandwidth_priority,
-                TR_KEY_corrupt_ever,
-                TR_KEY_desired_available,
-                TR_KEY_download_limit,
-                TR_KEY_download_limited,
-                TR_KEY_downloaded_ever,
-                TR_KEY_file_stats,
-                TR_KEY_have_unchecked,
-                TR_KEY_honors_session_limits,
-                TR_KEY_id,
-                TR_KEY_peer_limit,
-                TR_KEY_peers,
-                TR_KEY_seed_idle_limit,
-                TR_KEY_seed_idle_mode,
-                TR_KEY_start_date,
-                TR_KEY_tracker_stats,
-                TR_KEY_upload_limit,
-                TR_KEY_upload_limited,
-            };
-
-        // union of MainInfoKeys + MainStatKeys
-        case TorrentProperties::MainAll:
-            return {
-                TR_KEY_added_date,
-                TR_KEY_download_dir,
-                TR_KEY_checked_bytes,
-                TR_KEY_downloaded_ever,
-                TR_KEY_edit_date,
-                TR_KEY_error,
-                TR_KEY_error_string,
-                TR_KEY_eta,
-                TR_KEY_file_count,
-                TR_KEY_hash_string,
-                TR_KEY_have_unchecked,
-                TR_KEY_have_valid,
-                TR_KEY_id,
-                TR_KEY_is_finished,
-                TR_KEY_is_folder,
-                TR_KEY_labels,
-                TR_KEY_left_until_done,
-                TR_KEY_manual_announce_time,
-                TR_KEY_metadata_have,
-                TR_KEY_metadata_percent_complete,
-                TR_KEY_metadata_size,
-                TR_KEY_name,
-                TR_KEY_peers_connected,
-                TR_KEY_peers_getting_from_us,
-                TR_KEY_peers_sending_to_us,
-                TR_KEY_primary_mime_type,
-                TR_KEY_queue_position,
-                TR_KEY_rate_download,
-                TR_KEY_rate_upload,
-                TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_limit,
-                TR_KEY_seed_ratio_mode,
-                TR_KEY_size_when_done,
-                TR_KEY_status,
-                TR_KEY_total_size,
-                TR_KEY_trackers,
-                TR_KEY_upload_ratio,
-                TR_KEY_uploaded_ever,
-                TR_KEY_webseeds_sending_to_us,
-            };
-
-        // unchanging fields needed by the main window
-        case TorrentProperties::MainInfo:
-            return {
-                TR_KEY_added_date,
-                TR_KEY_download_dir,
-                TR_KEY_file_count,
-                TR_KEY_hash_string,
-                TR_KEY_id,
-                TR_KEY_is_folder,
-                TR_KEY_labels,
-                TR_KEY_name,
-                TR_KEY_primary_mime_type,
-                TR_KEY_total_size,
-                TR_KEY_trackers,
-            };
-
-        // changing fields needed by the main window
-        case TorrentProperties::MainStats:
-            return {
-                TR_KEY_checked_bytes,
-                TR_KEY_downloaded_ever,
-                TR_KEY_edit_date,
-                TR_KEY_error,
-                TR_KEY_error_string,
-                TR_KEY_eta,
-                TR_KEY_have_unchecked,
-                TR_KEY_have_valid,
-                TR_KEY_id,
-                TR_KEY_is_finished,
-                TR_KEY_left_until_done,
-                TR_KEY_manual_announce_time,
-                TR_KEY_metadata_have,
-                TR_KEY_metadata_percent_complete,
-                TR_KEY_metadata_size,
-                TR_KEY_peers_connected,
-                TR_KEY_peers_getting_from_us,
-                TR_KEY_peers_sending_to_us,
-                TR_KEY_queue_position,
-                TR_KEY_rate_download,
-                TR_KEY_rate_upload,
-                TR_KEY_recheck_progress,
-                TR_KEY_seed_ratio_limit,
-                TR_KEY_seed_ratio_mode,
-                TR_KEY_size_when_done,
-                TR_KEY_status,
-                TR_KEY_upload_ratio,
-                TR_KEY_uploaded_ever,
-                TR_KEY_webseeds_sending_to_us,
-            };
-
-        // keys needed after renaming a torrent
-        case TorrentProperties::Rename:
-            return {
-                TR_KEY_file_stats,
-                TR_KEY_files,
-                TR_KEY_id,
-                TR_KEY_name,
-            };
-    }
-    // clang-format on
-
-    return {};
-}
-} // namespace
-
-void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentProperties const props)
-{
-    bool const all_torrents = std::empty(torrent_ids);
-    auto const keys = getKeys(props);
-
-    auto fields = tr_variant::Vector{};
-    fields.reserve(std::size(keys));
-    std::ranges::transform(keys, std::back_inserter(fields), [](auto key) { return tr_variant::unmanaged_string(key); });
-
-    auto map = tr_variant::Map{ 3U };
-    map.try_emplace(TR_KEY_format, tr_variant::unmanaged_string("table"sv));
-    map.try_emplace(TR_KEY_fields, std::move(fields));
-    addParamPair(map, TR_KEY_ids, torrent_ids);
-
-    RpcQueue::create()
-        .add([this, map = std::move(map)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_torrent_get, std::move(map), std::move(done));
-        })
-        .add([this, all_torrents](RpcResponse const& r) {
-            if (auto const* const args = r.args->get_if<tr_variant::Map>(); args != nullptr) {
-                using Coverage = tr::app::TorrentList::Coverage;
-                torrents_.update(*args, all_torrents ? Coverage::Complete : Coverage::Partial, time(nullptr));
-            }
-        })
-        .run();
-}
-
-void Session::refreshDetailInfo(torrent_ids_t const& ids)
-{
-    refreshTorrents(ids, TorrentProperties::DetailInfo);
-}
-
-void Session::refreshExtraStats(torrent_ids_t const& ids)
-{
-    refreshTorrents(ids, TorrentProperties::DetailStat);
-}
-
-void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& torrent_ids)
-{
-    RpcQueue::create()
-        .add([this, method, params = makeParams(TR_KEY_ids, torrent_ids)](RpcClient::ResponseFunc done) mutable {
-            exec(method, std::move(params), std::move(done));
-        })
-        // NOLINTNEXTLINE(bugprone-exception-escape)
-        .add([this, torrent_ids] { refreshTorrents(torrent_ids, TorrentProperties::MainStats); })
-        .run();
-}
-
-void Session::pauseTorrents(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_stop, ids);
-}
-
-void Session::startTorrents(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_start, ids);
-}
-
-void Session::startTorrentsNow(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_torrent_start_now, ids);
-}
-
-void Session::queueMoveTop(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_top, ids);
-}
-
-void Session::queueMoveUp(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_up, ids);
-}
-
-void Session::queueMoveDown(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_down, ids);
-}
-
-void Session::queueMoveBottom(torrent_ids_t const& ids)
-{
-    sendTorrentRequest(TR_KEY_queue_move_bottom, ids);
-}
-
-void Session::refreshActiveTorrents()
-{
-    // If this object is passed as "ids" (compared by address), then recently active torrents are queried.
-    refreshTorrents(RecentlyActiveIDs, TorrentProperties::MainStats);
-}
-
-void Session::refreshAllTorrents()
-{
-    // if an empty ids object is used, all torrents are queried.
-    torrent_ids_t const ids = {};
-    refreshTorrents(ids, TorrentProperties::MainStats);
-}
-
-void Session::initTorrents(torrent_ids_t const& ids)
-{
-    refreshTorrents(ids, TorrentProperties::MainAll);
-}
-
-void Session::refreshSessionStats()
-{
-    RpcQueue::create()
-        .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_stats, nullptr, std::move(done)); })
-        .add([this](RpcResponse const& r) { updateStats(r.args.get()); })
-        .run();
-}
-
-// Asks for the blocklist fields only.
-// A full session_get reply could overwrite prefs that the user changed while it was in flight.
-void Session::refreshBlocklistInfo()
-{
-    auto fields = tr_variant::Vector{};
-    fields.reserve(2U);
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_blocklist_date));
-    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_blocklist_size));
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
-
-    RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            exec(TR_KEY_session_get, std::move(params), std::move(done));
-        })
-        .add([this](RpcResponse const& r) {
-            // not updateInfo(), which reads the session type from the session id this reply lacks
-            if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
-                import_session_settings(*map);
-                emit sessionUpdated();
-            }
-        })
-        .run();
-}
-
-void Session::refreshSessionInfo()
-{
-    RpcQueue::create()
-        .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_get, nullptr, std::move(done)); })
-        .add([this](RpcResponse const& r) { updateInfo(r.args.get()); })
-        .run();
+    auto const title = tr("Error Renaming Path");
+    auto const summary = TR_FORMAT(
+        R"(Unable to rename "{old_path}" as "{path}": {error}.)",
+        fmt::arg("old_path", Utils::qstringFromUtf8(error.old_path)),
+        fmt::arg("path", Utils::qstringFromUtf8(error.new_name)),
+        fmt::arg("error", Utils::qstringFromUtf8(error.errmsg)));
+    auto const advice = error.network_error ? QString{} :
+                                              QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
+    auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
+    auto* d = new QMessageBox{ QMessageBox::Information, title, text, QMessageBox::Close, QApplication::activeWindow() };
+    QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
+    d->show();
 }
 
 void Session::updateBlocklist()
 {
     RpcQueue::create()
         .add(
-            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
+            [this](RpcClient::ResponseFunc done) { send(TR_KEY_blocklist_update, {}, std::move(done)); },
             // A JSON-RPC or network error aborts the queue before the step below, so
             // report the failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
             // session_get reports the new size and date with the rest of the session info
-            refreshSessionInfo();
+            refresh_session_info();
 
             // Only this manual update announces success, not every session_get refresh.
-            if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
+            if (auto const* const map = r.args_map()) {
                 emit blocklistUpdated(map->value_if<int64_t>(TR_KEY_blocklist_size).value_or(0));
             }
         })
@@ -609,64 +237,6 @@ void Session::updateBlocklist()
 /***
 ****
 ***/
-
-void Session::exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done)
-{
-    rpc_.exec(method, args, std::move(on_done));
-}
-
-void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
-{
-    rpc_.exec(method, std::move(params), std::move(on_done));
-}
-
-void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats)
-{
-    static constexpr auto Fields = std::tuple{
-        tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
-        tr::serializer::Field<&tr_session_stats::filesAdded>{ TR_KEY_files_added },
-        tr::serializer::Field<&tr_session_stats::secondsActive>{ TR_KEY_seconds_active },
-        tr::serializer::Field<&tr_session_stats::sessionCount>{ TR_KEY_session_count },
-        tr::serializer::Field<&tr_session_stats::uploadedBytes>{ TR_KEY_uploaded_bytes },
-    };
-    tr::serializer::load(args_dict, stats, Fields);
-
-    stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
-}
-
-void Session::updateStats(tr_variant* dict)
-{
-    if (auto const* const map = dict != nullptr ? dict->get_if<tr_variant::Map>() : nullptr; map != nullptr) {
-        if (auto const* const current = map->find_if<tr_variant::Map>(TR_KEY_current_stats); current != nullptr) {
-            updateStats(*current, stats_);
-        }
-
-        if (auto const* const cumulative = map->find_if<tr_variant::Map>(TR_KEY_cumulative_stats); cumulative != nullptr) {
-            updateStats(*cumulative, cumulative_stats_);
-        }
-    }
-
-    if (auto const busy = dictFind<bool>(dict, TR_KEY_busy)) {
-        set_busy(*busy);
-    }
-
-    emit statsUpdated();
-}
-
-void Session::updateInfo(tr_variant* args_dict)
-{
-    if (auto const* const settings = args_dict->get_if<tr_variant::Map>(); settings != nullptr) {
-        import_session_settings(*settings);
-    }
-
-    if (auto const str = dictFind<QString>(args_dict, TR_KEY_version); str) {
-        session_version_ = *str;
-    }
-
-    updateType(dictFind<std::string>(args_dict, TR_KEY_session_id));
-
-    emit sessionUpdated();
-}
 
 void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
 {
@@ -698,7 +268,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
     RpcQueue::create()
         .add(
             [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
-                exec(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
+                send(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
             },
             [add_me](RpcResponse const& r) {
                 auto const title = tr("Error Adding Torrent");
@@ -713,7 +283,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
                 d->show();
             })
         .add([this, add_me](RpcResponse const& r) {
-            if (auto const* const args = r.args->get_if<tr_variant::Map>()) {
+            if (auto const* const args = r.args_map()) {
                 if (args->contains(TR_KEY_torrent_added)) {
                     add_me.disposeSourceFile();
                 } else if (auto const* const dup = args->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate)) {
@@ -769,38 +339,11 @@ void Session::addTorrent(AddData const& add_me)
 
 void Session::addNewlyCreatedTorrent(QString const& filename, QString const& local_path)
 {
-    QByteArray const b64 = AddData(filename).toBase64();
-
-    exec(
-        TR_KEY_torrent_add,
-        makeParams(
-            TR_KEY_download_dir,
-            local_path,
-            TR_KEY_paused,
-            !prefs_.get<bool>(TR_KEY_start_added_torrents),
-            TR_KEY_metainfo,
-            b64.toStdString()));
-}
-
-void Session::removeTorrents(torrent_ids_t const& ids, bool delete_files)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_remove, makeParams(TR_KEY_ids, ids, TR_KEY_delete_local_data, delete_files));
-    }
-}
-
-void Session::verifyTorrents(torrent_ids_t const& ids)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_verify, makeParams(TR_KEY_ids, ids));
-    }
-}
-
-void Session::reannounceTorrents(torrent_ids_t const& ids)
-{
-    if (!ids.empty()) {
-        exec(TR_KEY_torrent_reannounce, makeParams(TR_KEY_ids, ids));
-    }
+    auto params = tr_variant::Map{ 3U };
+    params.insert_or_assign(TR_KEY_download_dir, local_path.toStdString());
+    params.insert_or_assign(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
+    params.insert_or_assign(TR_KEY_metainfo, AddData(filename).toBase64().toStdString());
+    send(TR_KEY_torrent_add, std::move(params));
 }
 
 /***
@@ -826,29 +369,4 @@ void Session::launchWebInterface() const
     }
 
     QDesktopServices::openUrl(url);
-}
-
-/// ---
-
-namespace
-{
-
-[[nodiscard]] std::optional<Session::Type> computeType(
-    tr_session const* const session,
-    std::optional<std::string> const& session_id)
-{
-    if (session != nullptr) {
-        return Session::Type::Embedded;
-    }
-
-    return session_id.transform(
-        [](auto const& id) { return tr_session_id::is_local(id) ? Session::Type::Local : Session::Type::Remote; });
-}
-
-} // namespace
-
-// NOLINTNEXTLINE(performance-unnecessary-value-param)
-void Session::updateType(std::optional<std::string> session_id)
-{
-    set_session_type(computeType(session_, session_id));
 }
