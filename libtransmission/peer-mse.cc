@@ -107,7 +107,8 @@ auto constexpr RSquared = from_hex(
 
 auto constexpr MontgomeryOne = multiply(One, RSquared);
 
-// variable-time is fine: a peer can only time the key of its own session
+// variable-time is fine: each private key gets at most two exponentiations, too few samples for a timing attack
+// (publicKey() caches its result; tr_handshake recycles a DH only before setPeerPublicKey() runs)
 [[nodiscard]] constexpr limbs_t powm(limbs_t const& base, DH::private_key_bigend_t const& exponent) noexcept
 {
     auto const montgomery_base = multiply(base, RSquared);
