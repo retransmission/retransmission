@@ -146,9 +146,6 @@ public:
     // e.g. after the session changed one itself.
     void import_embedded_settings();
 
-    // Writes settings.json: the app prefs from Prefs plus the embedded session's own settings.
-    void save_prefs() const;
-
     // ---
 
     void port_test(tr_address_type ip_protocol);
@@ -186,7 +183,6 @@ protected:
 
 private:
     tr::app::Prefs& prefs_;
-    std::string const config_dir_;
 
     class Impl;
     std::unique_ptr<Impl> const impl_;

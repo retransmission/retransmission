@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstddef> // size_t
@@ -23,6 +24,8 @@
 #include <fmt/format.h>
 
 #include <gtest/gtest.h>
+
+#include <sigslot/signal.hpp>
 
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
@@ -80,7 +83,7 @@ class AppSessionTest : public TransmissionTest
 protected:
     RpcClient rpc_{ inline_marshaler() };
     Prefs prefs_;
-    TestSession session_{ prefs_, rpc_ };
+    TestSession session_{ std::string{}, prefs_, rpc_ };
 };
 
 TEST_F(AppSessionTest, inhibitsSleepOnlyWhenLocalActiveAndEnabled)
@@ -270,12 +273,13 @@ TEST_F(AppSessionTest, importingInfoReadsTheVersionAndType)
 }
 
 // Session tests against a real embedded session, its replies pumped through a UiLoop.
+auto constexpr Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
+
 class AppSessionRpcTest
     : public EmbeddedSessionTest
     , public SessionUnderTest<TestSession>
 {
 protected:
-    static constexpr auto Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
     static constexpr auto Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
     static constexpr auto Gimp = "gimp-2.10.32-1-arm64.dmg.torrent"sv;
 
@@ -579,7 +583,7 @@ TEST_F(AppSessionTest, aSessionSetBeforeStartDoesNotGuardItsKey)
 TEST_F(AppSessionRpcTest, aReplyToADestroyedSessionDoesNothing)
 {
     auto prefs = Prefs{};
-    auto session = std::make_unique<TestSession>(prefs, rpc_);
+    auto session = std::make_unique<TestSession>(std::string{}, prefs, rpc_);
 
     prefs.set(TR_KEY_peer_limit_global, size_t{ 111 });
     session.reset();
@@ -695,7 +699,7 @@ TEST_F(AppSessionRpcTest, aTorrentReplyToADestroyedSessionDoesNothing)
 {
     std::ignore = add_torrent(Debian);
 
-    auto session = std::make_unique<TestSession>(prefs_, rpc_);
+    auto session = std::make_unique<TestSession>(std::string{}, prefs_, rpc_);
     session->refresh_all_torrents(TorrentKeySet::MainAll);
     session.reset();
 
@@ -1013,6 +1017,310 @@ TEST_F(AppSessionRpcTest, importingInfoKeepsAnEmbeddedSessionEmbedded)
 
     session_.import_session_info(tr_variant::Map{});
     EXPECT_TRUE(session_.is_embedded());
+}
+
+// A Session that runs its own session, kept off the network if it's an embedded one
+// in the sandbox, and what its signals report.
+class AppSessionLifecycleTest : public SandboxedTest
+{
+protected:
+    void SetUp() override
+    {
+        tr::settings::save(tr_sessionGetSettingsFilename(sandbox_dir()), offline_settings(sandbox_dir()));
+    }
+
+    void set_remote_prefs(std::string_view const host, int const port)
+    {
+        prefs_.set(TR_KEY_remote_session_enabled, true);
+        prefs_.set(TR_KEY_remote_session_host, std::string{ host });
+        prefs_.set(TR_KEY_remote_session_port, port);
+    }
+
+    void start_on(MockRpcServer const& server)
+    {
+        set_remote_prefs("127.0.0.1"sv, server.port());
+        session_.start();
+    }
+
+    [[nodiscard]] bool pump_until_closed()
+    {
+        return loop_.pump_until([this] { return !session_.is_closing(); });
+    }
+
+    UiLoop loop_;
+    RpcClient rpc_{ loop_.marshaler() };
+    Prefs prefs_;
+    Session session_{ sandbox_dir(), prefs_, rpc_ };
+
+    int source_changes_ = 0;
+    int stops_ = 0;
+    int closes_ = 0;
+    int contentions_ = 0;
+
+private:
+    sigslot::scoped_connection source_changed_connection_ = session_.source_changed.connect_scoped(
+        [this] { ++source_changes_; });
+    sigslot::scoped_connection stopped_connection_ = session_.stopped.connect_scoped([this] { ++stops_; });
+    sigslot::scoped_connection closed_connection_ = session_.closed.connect_scoped([this] { ++closes_; });
+    sigslot::scoped_connection contended_connection_ = session_.config_dir_contended.connect_scoped([this] { ++contentions_; });
+};
+
+TEST_F(AppSessionLifecycleTest, startsAnEmbeddedSessionWhenPrefsNameNoRemote)
+{
+    session_.start();
+
+    EXPECT_TRUE(session_.is_embedded());
+    EXPECT_TRUE(std::empty(session_.remote_url()));
+    EXPECT_EQ(1, source_changes_);
+    EXPECT_TRUE(exec_and_wait(rpc_, loop_, TR_KEY_session_stats).success);
+}
+
+TEST_F(AppSessionLifecycleTest, anEmbeddedSessionLoadsItsTorrents)
+{
+    session_.start();
+
+    auto params = tr_variant::Map{ 2U };
+    params.try_emplace(TR_KEY_filename, fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Debian));
+    params.try_emplace(TR_KEY_paused, true);
+    auto added = false;
+    session_.send(TR_KEY_torrent_add, std::move(params), [&added](RpcResponse const& response) {
+        EXPECT_TRUE(response.success);
+        added = true;
+    });
+    ASSERT_TRUE(loop_.pump_until([&added] { return added; }));
+
+    session_.restart();
+    ASSERT_TRUE(pump_until_closed());
+    ASSERT_TRUE(session_.is_embedded());
+
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    EXPECT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+}
+
+TEST_F(AppSessionLifecycleTest, startsARemoteSessionAtTheUrlInPrefs)
+{
+    struct LocalTest {
+        std::string_view host;
+        bool https = false;
+        std::string_view base_path;
+        std::string_view expected;
+    };
+
+    static auto constexpr Tests = std::array{
+        LocalTest{ "example.com"sv, false, "/transmission/"sv, "http://example.com:9091/transmission/rpc"sv },
+        LocalTest{ "example.com"sv, true, "/custom/"sv, "https://example.com:9091/custom/rpc"sv },
+        LocalTest{ "::1"sv, false, "/transmission/"sv, "http://[::1]:9091/transmission/rpc"sv },
+        LocalTest{ "[::1]"sv, false, "/transmission/"sv, "http://[::1]:9091/transmission/rpc"sv },
+    };
+
+    prefs_.set(TR_KEY_remote_session_username, "alice"s);
+    prefs_.set(TR_KEY_remote_session_requires_authentication, true);
+
+    for (auto const& test : Tests) {
+        set_remote_prefs(test.host, 9091);
+        prefs_.set(TR_KEY_remote_session_https, test.https);
+        prefs_.set(TR_KEY_remote_session_url_base_path, std::string{ test.base_path });
+
+        auto const changes = source_changes_;
+        session_.start();
+        EXPECT_EQ(test.expected, session_.remote_url());
+        EXPECT_FALSE(session_.is_embedded());
+        EXPECT_EQ(changes + 1, source_changes_);
+
+        session_.stop();
+        EXPECT_TRUE(std::empty(session_.remote_url()));
+    }
+}
+
+TEST_F(AppSessionLifecycleTest, sendsCredentialsOnlyWhenPrefsRequireThem)
+{
+    for (auto const requires_auth : { false, true }) {
+        auto server = MockRpcServer{ /*advertise_tr5=*/true, /*require_auth=*/requires_auth };
+        set_remote_prefs("127.0.0.1"sv, server.port());
+        prefs_.set(TR_KEY_remote_session_requires_authentication, requires_auth);
+        prefs_.set(TR_KEY_remote_session_username, "alice"s);
+        prefs_.set(TR_KEY_remote_session_password, "secret"s);
+
+        session_.start();
+        EXPECT_TRUE(exec_and_wait(rpc_, loop_, TR_KEY_session_stats).success);
+        EXPECT_EQ(requires_auth, server.saw_authorization());
+
+        session_.stop();
+        loop_.drain();
+    }
+}
+
+TEST_F(AppSessionLifecycleTest, webClientUrlFollowsTheSource)
+{
+    prefs_.set(TR_KEY_rpc_port, 12345);
+    session_.start();
+    EXPECT_EQ("http://localhost:12345"sv, session_.web_client_url());
+    session_.stop();
+    ASSERT_TRUE(pump_until_closed());
+
+    set_remote_prefs("example.com"sv, 9091);
+    session_.start();
+    EXPECT_EQ("http://example.com:9091/transmission/web/"sv, session_.web_client_url());
+
+    prefs_.set(TR_KEY_remote_session_requires_authentication, true);
+    prefs_.set(TR_KEY_remote_session_username, "a b"s);
+    prefs_.set(TR_KEY_remote_session_password, "p@ss"s);
+    EXPECT_EQ("http://a%20b:p%40ss@example.com:9091/transmission/web/"sv, session_.web_client_url());
+}
+
+TEST_F(AppSessionLifecycleTest, aContendedConfigDirStartsNothing)
+{
+    auto* const holder = tr_sessionInit(sandbox_dir(), false, offline_settings(sandbox_dir()));
+
+    session_.start();
+    EXPECT_EQ(1, contentions_);
+    EXPECT_EQ(0, source_changes_);
+    EXPECT_FALSE(session_.is_embedded());
+
+    tr_sessionClose(holder, 0.5);
+
+    session_.start();
+    EXPECT_EQ(1, contentions_);
+    EXPECT_EQ(1, source_changes_);
+    EXPECT_TRUE(session_.is_embedded());
+}
+
+// The close happens on another thread, so stop() returns while it's under way.
+TEST_F(AppSessionLifecycleTest, stopForgetsTheSessionNowAndClosesItLater)
+{
+    session_.start();
+    session_.stop();
+
+    EXPECT_FALSE(session_.is_embedded());
+    EXPECT_EQ(1, stops_);
+    EXPECT_TRUE(session_.is_closing());
+    EXPECT_EQ(0, closes_);
+
+    EXPECT_TRUE(pump_until_closed());
+    EXPECT_EQ(1, closes_);
+}
+
+TEST_F(AppSessionLifecycleTest, stoppingWithoutAnEmbeddedSessionHasNothingToClose)
+{
+    session_.stop();
+    EXPECT_EQ(1, stops_);
+    EXPECT_FALSE(session_.is_closing());
+
+    set_remote_prefs("example.com"sv, 9091);
+    session_.start();
+    session_.stop();
+    EXPECT_EQ(2, stops_);
+    EXPECT_FALSE(session_.is_closing());
+
+    loop_.drain();
+    EXPECT_EQ(0, closes_);
+}
+
+// The closing session holds the config dir, so a start must wait or it would find the dir contended.
+TEST_F(AppSessionLifecycleTest, aStartDuringACloseWaitsForIt)
+{
+    session_.start();
+    session_.restart();
+    EXPECT_FALSE(session_.is_embedded());
+    EXPECT_EQ(1, source_changes_);
+
+    EXPECT_TRUE(loop_.pump_until([this] { return source_changes_ == 2; }));
+    EXPECT_TRUE(session_.is_embedded());
+    EXPECT_EQ(1, closes_);
+    EXPECT_EQ(0, contentions_);
+}
+
+// A remote session doesn't need the config dir that the closing session holds.
+TEST_F(AppSessionLifecycleTest, aRemoteStartDuringACloseDoesNotWait)
+{
+    session_.start();
+    set_remote_prefs("example.com"sv, 9091);
+    session_.restart();
+
+    EXPECT_TRUE(session_.is_closing());
+    EXPECT_EQ(2, source_changes_);
+    EXPECT_FALSE(std::empty(session_.remote_url()));
+
+    EXPECT_TRUE(pump_until_closed());
+    EXPECT_EQ(2, source_changes_);
+}
+
+TEST_F(AppSessionLifecycleTest, aStopCancelsAStartWaitingOnAClose)
+{
+    session_.start();
+    session_.restart();
+    session_.stop();
+
+    EXPECT_TRUE(pump_until_closed());
+    loop_.drain();
+    EXPECT_EQ(1, source_changes_);
+    EXPECT_FALSE(session_.is_embedded());
+}
+
+TEST_F(AppSessionLifecycleTest, waitForCloseFinishesTheCloseOnce)
+{
+    session_.start();
+    session_.stop();
+
+    session_.wait_for_close();
+    EXPECT_FALSE(session_.is_closing());
+    EXPECT_EQ(1, closes_);
+
+    loop_.drain(); // the thread's own report of the finished close
+    EXPECT_EQ(1, closes_);
+}
+
+// The config dir is free again as soon as the destructor returns.
+TEST_F(AppSessionLifecycleTest, destroyingASessionFinishesItsClose)
+{
+    {
+        auto started = Session{ sandbox_dir(), prefs_, rpc_ };
+        started.start();
+        ASSERT_TRUE(started.is_embedded());
+    }
+
+    {
+        auto closing = Session{ sandbox_dir(), prefs_, rpc_ };
+        closing.start();
+        ASSERT_TRUE(closing.is_embedded());
+        closing.stop();
+        ASSERT_TRUE(closing.is_closing());
+    }
+
+    loop_.drain();
+    session_.start();
+    EXPECT_EQ(0, contentions_);
+    EXPECT_TRUE(session_.is_embedded());
+}
+
+// The next session never shows the previous one's values, and numbers its torrents from 1 too.
+TEST_F(AppSessionLifecycleTest, stopForgetsTheSessionsInfoAndTorrents)
+{
+    auto server = MockRpcServer{
+        /*advertise_tr5=*/true,
+        /*require_auth=*/false,
+        R"({"jsonrpc":"2.0","id":1,"result":{"blocklist_date":1700000000,"blocklist_size":42,"version":"9.9.9"}})"
+    };
+    start_on(server);
+
+    auto updates = 0;
+    auto const updated_connection = session_.session_updated.connect_scoped([&updates] { ++updates; });
+    session_.refresh_session_info();
+    ASSERT_TRUE(loop_.pump_until([&updates] { return updates > 0; }));
+    EXPECT_EQ(42, session_.blocklist_size());
+    EXPECT_TRUE(session_.blocklist_date().has_value());
+    EXPECT_EQ("9.9.9"sv, session_.session_version());
+
+    auto row = make_row(1, kv(TR_KEY_name, "kept"sv));
+    session_.torrents().update(make_args(make_list(std::move(row))), TorrentList::Coverage::Partial, std::time(nullptr));
+    ASSERT_EQ(1U, session_.torrents().size());
+
+    session_.stop();
+    EXPECT_EQ(1, stops_);
+    EXPECT_FALSE(session_.blocklist_size().has_value());
+    EXPECT_FALSE(session_.blocklist_date().has_value());
+    EXPECT_TRUE(std::empty(session_.session_version()));
+    EXPECT_EQ(0U, session_.torrents().size());
 }
 
 } // namespace

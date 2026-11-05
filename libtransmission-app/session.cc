@@ -15,20 +15,27 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <tuple>
 #include <utility>
 #include <vector>
 
+#include <fmt/format.h>
+
+#include "libtransmission/constants.h" // TrHttpServerRpcRelativePath, TrHttpServerWebRelativePath
 #include "libtransmission/converters.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
 #include "libtransmission/session-id.h"
+#include "libtransmission/torrent-builder.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 #include "libtransmission/values.h"
 #include "libtransmission/variant.h"
+#include "libtransmission/web-utils.h"
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
@@ -53,8 +60,52 @@ tr_variant::Vector make_fields(std::span<tr_quark const> const keys)
 
 // ---
 
-Session::Session(Prefs& prefs, RpcClient& rpc)
-    : prefs_{ prefs }
+namespace
+{
+
+struct Credentials {
+    std::string username;
+    std::string password;
+};
+
+// what the remote session requires, if anything
+[[nodiscard]] std::optional<Credentials> remote_credentials(Prefs const& prefs)
+{
+    auto username = prefs.get<std::string>(TR_KEY_remote_session_username);
+    if (!prefs.get<bool>(TR_KEY_remote_session_requires_authentication) || std::empty(username)) {
+        return {};
+    }
+
+    return Credentials{ .username = std::move(username), .password = prefs.get<std::string>(TR_KEY_remote_session_password) };
+}
+
+// `relative_path` on the remote session. `userinfo` is empty or ends with '@'.
+[[nodiscard]] std::string remote_url_for(
+    Prefs const& prefs,
+    std::string_view const relative_path,
+    std::string_view const userinfo = {})
+{
+    auto host = prefs.get<std::string>(TR_KEY_remote_session_host);
+    if (host.contains(':') && !host.starts_with('[')) {
+        host = fmt::format("[{:s}]", host); // a bare IPv6 literal
+    }
+
+    return fmt::format(
+        "{:s}://{:s}{:s}:{:d}{:s}{:s}",
+        prefs.get<bool>(TR_KEY_remote_session_https) ? "https"sv : "http"sv,
+        userinfo,
+        host,
+        prefs.get<int>(TR_KEY_remote_session_port),
+        prefs.get<std::string>(TR_KEY_remote_session_url_base_path),
+        relative_path);
+}
+
+} // namespace
+
+Session::Session(std::string config_dir, Prefs& prefs, RpcClient& rpc, tr_torrent_remove_func remove_func)
+    : config_dir_{ std::move(config_dir) }
+    , remove_func_{ std::move(remove_func) }
+    , prefs_{ prefs }
     , rpc_{ rpc }
 {
     torrents_connection_ = torrents_.changed.connect_scoped(&Session::on_torrents_changed, this);
@@ -69,6 +120,129 @@ Session::Session(Prefs& prefs, RpcClient& rpc)
         }
     });
 }
+
+// NOLINTNEXTLINE(bugprone-exception-escape): stop() allocates
+Session::~Session()
+{
+    if (started_session_ != nullptr) {
+        stop();
+    }
+
+    if (is_closing()) {
+        close_thread_.join();
+    }
+}
+
+// --- lifecycle
+
+void Session::start()
+{
+    if (prefs_.get<bool>(TR_KEY_remote_session_enabled)) {
+        start_remote();
+    } else if (is_closing()) {
+        start_after_close_ = true;
+    } else {
+        start_embedded();
+    }
+}
+
+void Session::start_remote()
+{
+    auto const url = remote_url_for(prefs_, TrHttpServerRpcRelativePath);
+    if (auto credentials = remote_credentials(prefs_)) {
+        rpc_.start(url, std::move(credentials->username), std::move(credentials->password));
+    } else {
+        rpc_.start(url);
+    }
+
+    source_changed();
+}
+
+void Session::start_embedded()
+{
+    TR_ASSERT(!std::empty(config_dir_));
+
+    auto* const session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), remove_func_);
+
+    if (tr_sessionConfigDirIsContended(session)) {
+        tr_sessionClose(session, 1); // it has loaded no torrents, so no tracker to wait on
+        config_dir_contended();
+        return;
+    }
+
+    started_session_ = session;
+    set_embedded_session(session);
+    rpc_.start(session);
+
+    auto builder = tr_torrent_builder{ session };
+    tr_sessionLoadTorrents(session, &builder);
+
+    source_changed();
+}
+
+void Session::stop()
+{
+    start_after_close_ = false;
+    rpc_.stop();
+
+    if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
+        set_embedded_session(nullptr);
+
+        close_thread_ = std::thread{ [this, session] {
+            tr_sessionClose(session);
+
+            rpc_.run_on_ui_thread([this, alive = std::weak_ptr{ alive_ }] {
+                if (alive.lock()) {
+                    wait_for_close();
+                }
+            });
+        } };
+    }
+
+    torrents_.clear();
+    clear_session_info();
+    set_session_type({});
+    stopped();
+}
+
+void Session::restart()
+{
+    stop();
+    start();
+}
+
+void Session::wait_for_close()
+{
+    if (!is_closing()) {
+        return;
+    }
+
+    close_thread_.join();
+    closed();
+
+    if (std::exchange(start_after_close_, false)) {
+        start();
+    }
+}
+
+std::string Session::web_client_url() const
+{
+    if (is_embedded()) {
+        return fmt::format("http://localhost:{:d}", prefs_.get<int>(TR_KEY_rpc_port));
+    }
+
+    auto userinfo = std::string{};
+    if (auto const credentials = remote_credentials(prefs_)) {
+        tr_urlPercentEncode(userinfo, credentials->username);
+        userinfo += ':';
+        tr_urlPercentEncode(userinfo, credentials->password);
+        userinfo += '@';
+    }
+
+    return remote_url_for(prefs_, TrHttpServerWebRelativePath, userinfo);
+}
+
+// --- rpc
 
 void Session::send(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
@@ -574,6 +748,11 @@ std::optional<tr::Settings> Session::embedded_settings() const
     }
 
     return {};
+}
+
+void Session::save_prefs() const
+{
+    prefs_.save(config_dir_, embedded_settings());
 }
 
 void Session::set_session_type(std::optional<Type> const type)
