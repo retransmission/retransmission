@@ -667,6 +667,9 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
         }
     };
 
+    load_field(CompletionMove, map.value_if<bool>(TR_KEY_completion_move_pending), [&helper](bool const val) {
+        helper.load_completion_move_pending(val);
+    });
     load_field(Corrupt, map.value_if<uint64_t>(TR_KEY_corrupt), [tor](uint64_t const val) {
         tor->bytes_corrupt_.set_prev(val);
     });
@@ -782,6 +785,10 @@ void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)
 
     if (!std::empty(tor->incomplete_dir())) {
         map.try_emplace(TR_KEY_incomplete_dir, tr_variant::unmanaged_string(tor->incomplete_dir().sv()));
+    }
+
+    if (tor->completion_move_pending()) {
+        map.try_emplace(TR_KEY_completion_move_pending, true);
     }
 
     map.try_emplace(TR_KEY_downloaded, tor->bytes_downloaded_.ever());

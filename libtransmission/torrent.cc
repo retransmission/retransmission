@@ -1071,6 +1071,18 @@ void tr_torrent::init(tr_torrent_builder const& builder)
         set_local_error_if_files_disappeared(this, has_any_local_data);
     }
 
+    // A kill interrupted this torrent's completion move, so finish it once loading is done.
+    // That's up to the session that holds the config dir.
+    if (completion_move_pending_ && is_done() && session->mayWriteConfigDir()) {
+        session->queue_session_thread([session = this->session, tor_id = id()] {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                tor->finish_completion(false, false);
+            }
+        });
+    } else {
+        completion_move_pending_ = false;
+    }
+
     // Recover from the bug reported at https://github.com/transmission/transmission/issues/6899
     if (is_done() && date_done_ == time_t{}) {
         date_done_ = now_sec;
@@ -1930,9 +1942,10 @@ void tr_torrent::recheck_completeness()
                 get_completion_string(new_completeness)));
 
         completeness_ = new_completeness;
-        auto const token = ++completeness_token_;
+        ++completeness_token_;
 
         if (!is_done()) {
+            completion_move_pending_ = false;
             session->onTorrentCompletenessChanged(id(), completeness_, was_running);
             set_dirty();
             mark_changed();
@@ -1947,9 +1960,18 @@ void tr_torrent::recheck_completeness()
         }
         date_done_ = tr_time();
 
-        // The rest waits until the files are where they end up.
-        // The done script, for one, is told where they are.
-        auto finish = [session = this->session, recent_change, was_running, token](tr_torrent_id_t const tor_id) {
+        finish_completion(recent_change, was_running);
+    }
+}
+
+void tr_torrent::finish_completion(bool const recent_change, bool const was_running) const
+{
+    using namespace completeness_helpers;
+
+    // The rest waits until the files are where they end up.
+    // The done script, for one, is told where they are.
+    auto finish =
+        [session = this->session, recent_change, was_running, token = completeness_token_](tr_torrent_id_t const tor_id) {
             auto* const tor = session->torrents().get(tor_id);
             if (tor == nullptr) {
                 return;
@@ -1964,23 +1986,30 @@ void tr_torrent::recheck_completeness()
 
             tor->done_(tor, recent_change);
             session->onTorrentCompletenessChanged(tor_id, tor->completeness_, was_running);
+            tor->completion_move_pending_ = false;
             tor->set_dirty();
             tor->mark_changed();
             tor->save_resume_file();
             callScriptIfEnabled(tor, TR_SCRIPT_ON_TORRENT_DONE);
         };
 
-        // Clients call this on their own threads too, but disk ops
-        // must be enqueued from the session thread. Closing the files
-        // behind the move runs `finish` once the move lands.
-        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
-            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
-                auto const lock = tor->unique_lock();
-                tor->leave_incomplete_dir();
-                session->local_data.close_torrent(tor_id, std::move(finish));
+    // Clients call this on their own threads too, but disk ops
+    // must be enqueued from the session thread. Closing the files
+    // behind the move runs `finish` once the move lands.
+    session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+            auto const lock = tor->unique_lock();
+
+            if (!std::empty(tor->incomplete_dir())) {
+                tor->completion_move_pending_ = true;
+                tor->set_dirty();
+                tor->save_resume_file();
             }
-        });
-    }
+
+            tor->leave_incomplete_dir();
+            session->local_data.close_torrent(tor_id, std::move(finish));
+        }
+    });
 }
 
 // --- File DND
@@ -2841,6 +2870,11 @@ void tr_torrent::ResumeHelper::load_date_added(time_t when) noexcept
 time_t tr_torrent::ResumeHelper::date_done() const noexcept
 {
     return tor_.date_done_;
+}
+
+void tr_torrent::ResumeHelper::load_completion_move_pending(bool const val) noexcept
+{
+    tor_.completion_move_pending_ = val;
 }
 
 void tr_torrent::ResumeHelper::load_date_done(time_t when) noexcept

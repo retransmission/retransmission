@@ -194,9 +194,11 @@ TEST_P(IncompleteDirTest, incompleteDir)
     EXPECT_EQ(tor->piece_size(), tr_torrentStat(tor).left_until_done);
 
     auto completeness = TR_LEECH;
+    auto pending_during_done_step = false;
     tr_sessionSetCompletenessCallback(
         session_,
-        [&completeness](tr_torrent_id_t const /*tor_id*/, tr_completeness const c, bool const /*was_running*/) noexcept {
+        [&completeness, &pending_during_done_step, tor](tr_torrent_id_t, tr_completeness const c, bool) noexcept {
+            pending_during_done_step = tor->completion_move_pending();
             completeness = c;
         });
 
@@ -211,6 +213,8 @@ TEST_P(IncompleteDirTest, incompleteDir)
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));
     EXPECT_EQ(TR_SEED, completeness);
+    EXPECT_TRUE(pending_during_done_step);
+    EXPECT_TRUE(waitFor([tor] { return !tor->completion_move_pending(); }, MaxWaitMsec));
 
     auto const n = tr_torrentFileCount(tor);
     for (tr_file_index_t i = 0; i < n; ++i) {

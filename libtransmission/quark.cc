@@ -105,6 +105,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "compact-view"sv, // gtk app, qt app
     "compact_view"sv, // gtk app, qt app
     "complete"sv, // BEP0048; BT protocol
+    "completion_move_pending"sv, // .resume
     "config-dir"sv, // rpc
     "config_dir"sv, // rpc
     "cookies"sv, // rpc
