@@ -1129,11 +1129,28 @@ void tr_torrent::set_location_in_session_thread(
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
-    auto on_done = [session = this->session,
-                    move_from_old_path,
-                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+    auto on_placed = [session = this->session, move_from_old_path](tr_torrent_id_t const tor_id, std::string_view const path) {
         auto* const tor = session->torrents().get(tor_id);
-        if (tor != nullptr && error) {
+        if (tor == nullptr || std::empty(path)) {
+            return;
+        }
+
+        if (move_from_old_path) {
+            // set_download_dir() then makes `path` the current dir
+            tor->incomplete_dir_.clear();
+        }
+
+        // tell the torrent where the files are
+        tor->set_download_dir(path);
+        session->add_recent_relocate_dir(path);
+
+        // Saved before the old location is cleared, so a restart always finds the files.
+        tor->save_resume_file();
+    };
+
+    auto on_done = [session = this->session,
+                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && error) {
             tor->error().set_local_error(
                 fmt::format(
                     fmt::runtime(_("Couldn't move torrent files to '{path}': {error} ({error_code})")),
@@ -1141,15 +1158,6 @@ void tr_torrent::set_location_in_session_thread(
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
             tr_torrentStop(tor);
-        } else if (tor != nullptr && !std::empty(path)) {
-            if (move_from_old_path) {
-                // set_download_dir() then makes `path` the current dir
-                tor->incomplete_dir_.clear();
-            }
-
-            // tell the torrent where the files are
-            tor->set_download_dir(path);
-            session->add_recent_relocate_dir(path);
         }
 
         if (setme_state != nullptr) {
@@ -1164,8 +1172,11 @@ void tr_torrent::set_location_in_session_thread(
         // now-stale fds close with them.
         session->local_data.close_torrent(
             id(),
-            [path = std::move(path), on_done = std::move(on_done)](tr_torrent_id_t const tor_id) {
-                on_done(tor_id, path(), {});
+            [path = std::move(path), on_placed = std::move(on_placed), on_done = std::move(on_done)](
+                tr_torrent_id_t const tor_id) {
+                auto const dir = path();
+                on_placed(tor_id, dir);
+                on_done(tor_id, dir, {});
             });
         return;
     }
@@ -1178,7 +1189,7 @@ void tr_torrent::set_location_in_session_thread(
     // those hashes must run before the files close and move.
     session->verify_remove(this);
     session->local_data.close_torrent(id());
-    session->local_data.move(id(), std::move(path), std::move(on_done));
+    session->local_data.move(id(), std::move(path), std::move(on_done), std::move(on_placed));
 }
 
 small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const

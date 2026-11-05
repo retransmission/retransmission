@@ -112,6 +112,15 @@ void remove_junk(std::string_view const filename)
     }
 }
 
+// Derive each tree from a moved file, not the torrent name.
+// That sweeps each tree once and leaves unused trees alone.
+void add_tree(std::set<std::string>& trees, std::string_view const base, std::string_view const subpath)
+{
+    if (auto const slash = subpath.find('/'); slash != std::string_view::npos) {
+        trees.emplace(tr_pathbuf{ base, '/', subpath.substr(0, slash) }.sv());
+    }
+}
+
 } // unnamed namespace
 
 // ---
@@ -174,7 +183,7 @@ std::string_view tr_torrent_files::primary_mime_type() const
 
 // ---
 
-bool tr_torrent_files::move(
+std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     std::span<std::string_view const> const old_parents,
     std::string_view const parent_in,
     std::string_view const parent_name,
@@ -183,8 +192,13 @@ bool tr_torrent_files::move(
     auto const parent = tr_pathbuf{ parent_in };
     tr_logAddTrace(fmt::format("Moving files from [{}] to '{:s}'", fmt::join(old_parents, ", "), parent.sv()), parent_name);
 
+    auto leftovers = MoveLeftovers{};
+    leftovers.parent_name = parent_name;
+    leftovers.roots.emplace_back(parent.sv());
+    leftovers.roots.insert(std::end(leftovers.roots), std::begin(old_parents), std::end(old_parents));
+
     if (std::ranges::all_of(old_parents, [&parent](auto old_parent) { return tr_sys_path_is_same(old_parent, parent); })) {
-        return true;
+        return leftovers;
     }
 
     auto local_error = tr_error{};
@@ -212,11 +226,11 @@ bool tr_torrent_files::move(
     }
 
     if (std::empty(moves)) {
-        return true;
+        return leftovers;
     }
 
     if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
-        return false;
+        return {};
     }
 
     // Copied sources stay until every file is in place.
@@ -253,22 +267,27 @@ bool tr_torrent_files::move(
         if (!how) {
             error->prefix_message(fmt::format("'{:s}': ", old_path.sv()));
             undo();
-            return false;
+            return {};
         }
         moved.emplace_back(found, *how);
+
+        if (*how == tr_file_moved::Copied) {
+            leftovers.sources.emplace(old_path.sv());
+        }
+        add_tree(leftovers.trees, found.base, found.subpath);
     }
 
-    for (auto const& [found, how] : moved) {
-        if (how != tr_file_moved::Copied) {
-            continue;
-        }
+    return leftovers;
+}
 
-        auto const old_path = found.filename<tr_pathbuf>();
-        if (auto log_error = tr_error{}; !tr_sys_path_remove(old_path, &log_error)) {
+void tr_torrent_files::MoveLeftovers::remove() const
+{
+    for (auto const& source : sources) {
+        if (auto log_error = tr_error{}; !tr_sys_path_remove(source, &log_error)) {
             tr_logAddError(
                 fmt::format(
                     "Couldn't remove '{path}': {error} ({error_code})",
-                    fmt::arg("path", old_path.sv()),
+                    fmt::arg("path", source),
                     fmt::arg("error", log_error.message()),
                     fmt::arg("error_code", log_error.code())),
                 parent_name);
@@ -277,8 +296,8 @@ bool tr_torrent_files::move(
 
     // Protect the roots themselves while still cleaning their siblings and ancestors.
     // If identity cannot be checked, leave the directory alone.
-    auto const skip_directory = [&parent, old_parents, parent_name](std::string_view directory) {
-        auto const is_root = [directory, parent_name](auto root) {
+    auto const skip_directory = [this](std::string_view directory) {
+        return std::ranges::any_of(roots, [this, directory](std::string_view const root) {
             auto path_error = tr_error{};
             auto const same = tr_sys_path_is_same(directory, root, &path_error);
 
@@ -301,31 +320,12 @@ bool tr_torrent_files::move(
 
             tr_logAddDebug(fmt::format("Skipping cleanup of '{:s}': configured root '{:s}'", directory, root), parent_name);
             return true;
-        };
-        return is_root(parent.sv()) || std::ranges::any_of(old_parents, is_root);
+        });
     };
 
-    for (auto const old_parent : old_parents) {
-        if (tr_sys_path_is_same(old_parent, parent)) {
-            continue;
-        }
-
-        // Derive each tree from a moved file, not the torrent name.
-        // Scan it once and leave unused trees alone.
-        auto trees = std::set<std::string_view>{};
-        for (auto const& found : moves | std::views::values) {
-            auto const slash = found.subpath.find('/');
-            if (found.base == old_parent && slash != std::string_view::npos) {
-                trees.emplace(found.subpath.substr(0, slash));
-            }
-        }
-        for (auto const top : trees) {
-            auto const tree = tr_pathbuf{ old_parent, '/', top };
-            depth_first_walk(tree, remove_junk, {}, skip_directory);
-        }
+    for (auto const& tree : trees) {
+        depth_first_walk(tree, remove_junk, {}, skip_directory);
     }
-
-    return true;
 }
 
 // ---

@@ -110,7 +110,8 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
-    [[nodiscard]] tr_error move(tr_torrent_id_t const id, std::string_view const parent) override
+    [[nodiscard]] tr_error move(tr_torrent_id_t const id, std::string_view const parent, std::function<void()> const& on_placed)
+        override
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
@@ -118,14 +119,17 @@ public:
         }
 
         auto error = tr_error{};
-        if (tor->files().move(tor->search_paths(), parent, tor->name(), &error)) {
-            return {};
+        auto const leftovers = tor->files().move(tor->search_paths(), parent, tor->name(), &error);
+        if (!leftovers) {
+            if (!error) {
+                error.set_from_errno(EIO);
+            }
+            return error;
         }
 
-        if (!error) {
-            error.set_from_errno(EIO);
-        }
-        return error;
+        on_placed();
+        leftovers->remove();
+        return {};
     }
 
     [[nodiscard]] tr_error remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
@@ -1258,11 +1262,17 @@ void LocalData::close_all()
 void LocalData::move(
     tr_torrent_id_t const id,
     MoveParent parent, // NOLINT(performance-unnecessary-value-param)
-    OnMove on_move) // NOLINT(performance-unnecessary-value-param)
+    OnMove on_move, // NOLINT(performance-unnecessary-value-param)
+    OnPlaced on_placed) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)] mutable {
+    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move), on_placed = std::move(on_placed)] mutable {
         auto const dir = parent();
-        auto const error = std::empty(dir) ? tr_error{} : backend_->move(id, dir);
+        auto const placed = [&on_placed, id, &dir] {
+            if (on_placed) {
+                on_placed(id, dir);
+            }
+        };
+        auto const error = std::empty(dir) ? tr_error{} : backend_->move(id, dir, placed);
         if (on_move) {
             std::move(on_move)(id, dir, error);
         }
