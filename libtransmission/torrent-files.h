@@ -128,6 +128,14 @@ public:
         std::string_view parent_name = "",
         tr_error* error = nullptr) const;
 
+    // Adds same-sized copies of the files under `parent_in` to `leftovers`.
+    // Only for a move known to have been interrupted, which leaves whole copies behind.
+    // Otherwise a same-named file under an old parent may be another torrent's.
+    void add_copies_left_by_killed_move(
+        MoveLeftovers& leftovers,
+        std::span<std::string_view const> old_parents,
+        std::string_view parent_in) const;
+
     void remove(
         std::string_view parent_in,
         std::string_view tmpdir_prefix,

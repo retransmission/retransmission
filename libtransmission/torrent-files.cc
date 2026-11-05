@@ -290,6 +290,29 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     return leftovers;
 }
 
+void tr_torrent_files::add_copies_left_by_killed_move(
+    MoveLeftovers& leftovers,
+    std::span<std::string_view const> const old_parents,
+    std::string_view const parent_in) const
+{
+    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
+        auto const found = find(i, std::span{ &parent_in, 1U });
+        if (!found) {
+            continue;
+        }
+
+        auto const path = found->filename<tr_pathbuf>();
+        for (auto const old_parent : old_parents) {
+            auto const old_path = found->filename_under<tr_pathbuf>(old_parent);
+            auto const info = tr_sys_path_get_info(old_path);
+            if (info && info->size == found->size && !tr_sys_path_is_same(old_path, path)) {
+                leftovers.sources.emplace(old_path.sv());
+                add_tree(leftovers.trees, old_parent, found->subpath);
+            }
+        }
+    }
+}
+
 void tr_torrent_files::MoveLeftovers::remove() const
 {
     for (auto const& source : sources) {

@@ -119,12 +119,16 @@ public:
         }
 
         auto error = tr_error{};
-        auto const leftovers = tor->files().move(tor->search_paths(), parent, tor->name(), &error);
+        auto leftovers = tor->files().move(tor->search_paths(), parent, tor->name(), &error);
         if (!leftovers) {
             if (!error) {
                 error.set_from_errno(EIO);
             }
             return error;
+        }
+
+        if (tor->completion_move_pending()) {
+            tor->files().add_copies_left_by_killed_move(*leftovers, tor->search_paths(), parent);
         }
 
         on_placed();

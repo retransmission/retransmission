@@ -190,6 +190,35 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     expectContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
 }
 
+TEST_F(TorrentFilesTest, killedMoveLeavesCopiesThatOnlyARetryRemoves)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    auto const roots = std::array<std::string_view, 2>{ download.sv(), incomplete.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/whole", 5);
+    files.add("name/different", 5);
+    files.add("name/single", 5);
+    createFileWithContents(tr_pathbuf{ download, "/name/whole"sv }, "whole"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/whole"sv }, "whole"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/different"sv }, "other"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/different"sv }, "not the same size"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/single"sv }, "single"sv);
+
+    // Without knowing a move was killed, a same-named file may be another torrent's.
+    auto leftovers = files.move(roots, download, "name");
+    ASSERT_TRUE(leftovers);
+    EXPECT_TRUE(std::empty(leftovers->sources));
+
+    files.add_copies_left_by_killed_move(*leftovers, roots, download);
+    leftovers->remove();
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ incomplete, "/name/whole"sv }));
+    expectContents(tr_pathbuf{ incomplete, "/name/different"sv }, "not the same size"sv);
+    expectContents(tr_pathbuf{ download, "/name/whole"sv }, "whole"sv);
+    expectContents(tr_pathbuf{ download, "/name/different"sv }, "other"sv);
+    expectContents(tr_pathbuf{ download, "/name/single"sv }, "single"sv);
+}
+
 TEST_F(TorrentFilesTest, failedMovePutsBackWhatMoved)
 {
     expectFailedMoveKeepsSources(tr_pathbuf{ sandboxDir(), "/target"sv });
