@@ -219,15 +219,64 @@ void send_simple_response(struct evhttp_request* req, int code, char const* text
     return "application/octet-stream";
 }
 
+[[nodiscard]] std::optional<double> parse_qvalue(std::string_view qvalue)
+{
+    qvalue = tr_strv_strip(qvalue);
+
+    // No quality score specified
+    if (qvalue.empty()) {
+        return 1.;
+    }
+
+    // Only quality score is valid here
+    if (!qvalue.starts_with("q="sv)) {
+        return {};
+    }
+    qvalue.remove_prefix(2U);
+
+    return tr_num_parse<double>(qvalue);
+}
+
+[[nodiscard]] bool allows_gzip(std::string_view const allowed_encodings)
+{
+    // RFC 9110, section 12.5.3
+    // An Accept-Encoding header field with a field value that is empty implies
+    // that the user agent does not want any content coding in response.
+    if (tr_strv_is_empty_or_blank(allowed_encodings)) {
+        return false;
+    }
+
+    static auto constexpr GzipTokens = std::to_array({ "gzip"sv, "x-gzip"sv });
+    static auto constexpr WildcardToken = "*"sv;
+
+    auto wildcard_allowed = false;
+    for (auto const encoding : allowed_encodings | std::views::split(',')) {
+        auto const lowercase = tr_strlower(std::string_view{ encoding });
+        auto walk = std::string_view{ lowercase };
+        auto const token = tr_strv_strip(tr_strv_sep(&walk, ';'));
+        auto const is_allowed = parse_qvalue(walk).value_or(0.) != 0.;
+
+        if (std::ranges::find(GzipTokens, token) != GzipTokens.end()) {
+            return is_allowed;
+        }
+
+        if (token == WildcardToken) {
+            wildcard_allowed = is_allowed;
+        }
+    }
+
+    return wildcard_allowed;
+}
+
 [[nodiscard]] evbuffer* make_response(struct evhttp_request* req, std::string_view const content)
 {
     auto* const out = evbuffer_new();
     auto const* const input_headers = evhttp_request_get_input_headers(req);
     auto* const output_headers = evhttp_request_get_output_headers(req);
 
-    char const* encoding = evhttp_find_header(input_headers, "Accept-Encoding");
+    char const* encodings = evhttp_find_header(input_headers, "Accept-Encoding");
 
-    if (bool const do_compress = encoding != nullptr && std::string_view{ encoding }.contains("gzip"sv); !do_compress) {
+    if (bool const do_compress = encodings != nullptr && allows_gzip(encodings); !do_compress) {
         evbuffer_add(out, std::data(content), std::size(content));
     } else {
         auto strm = z_stream{};
