@@ -130,7 +130,7 @@ def main():
         # CMake -D value has type UNINITIALIZED, but the build is still OFF.
         if actual != expected and not (expected == "OFF" and actual is None):
             raise RuntimeError(f"{build}: expected ENABLE_BLOCK_PROFILING={expected}")
-        if expected == "OFF" and "-DTR_ENABLE_BLOCK_PROFILING" in (build / "build.ninja").read_text():
+        if expected == "OFF" and "-DTR_ENABLE_BLOCK_PROFILING" in cache:
             raise RuntimeError(f"{build}: compile flags enable block profiling")
     # Rotate worker ordering to reduce systematic warm-cache/order bias.
     phases = [("timing", args.repeats, args.timing_build)]
