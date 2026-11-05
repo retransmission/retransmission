@@ -10,6 +10,7 @@
 #include <glibmm/refptr.h>
 
 #include <memory>
+#include <string>
 
 class Session;
 
@@ -24,6 +25,9 @@ public:
     ~SystemTrayIcon();
 
     void refresh();
+
+    // While the session closes: says `message` where the tray can, and offers nothing to do.
+    void set_shutting_down(std::string const& message);
 
     [[nodiscard]] static bool is_available();
     [[nodiscard]] static std::unique_ptr<SystemTrayIcon> create(Gtk::Window& main_window, Glib::RefPtr<Session> const& core);
