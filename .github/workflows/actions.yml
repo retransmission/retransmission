@@ -1202,6 +1202,105 @@ jobs:
         if: always()
         run: ccache --show-stats
 
+  s390x:
+    needs: [ make-source-tarball, what-to-make ]
+    if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Composite Actions
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            .github/actions
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Get Source
+        uses: actions/download-artifact@v8
+        with:
+          name: source-tarball
+      - name: Extract Source
+        run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: s390x
+          cache-image: false
+      - name: Install host ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ccache
+      - name: Setup ccache
+        uses: ./.github/actions/setup-ccache
+      - name: Build and test libtransmission
+        id: build-test
+        run: |
+          docker run --rm \
+            --platform linux/s390x \
+            --volume "$GITHUB_WORKSPACE:/work" \
+            --workdir /work/src \
+            --env CCACHE_DIR=/work/.ccache \
+            --env CCACHE_COMPILERCHECK \
+            --env CCACHE_COMPRESSLEVEL \
+            --env DEBIAN_FRONTEND=noninteractive \
+            debian:stable-slim \
+            bash -euxc '
+              arch=$(uname -m)
+              if [ "$arch" != s390x ]; then
+                echo "::error::Expected s390x, got $arch"
+                exit 1
+              fi
+              byte_order=$(printf "\001\000" | od -An -tu2)
+              if [ "$byte_order" -ne 256 ]; then
+                echo "::error::Expected big-endian byte order, got $byte_order"
+                exit 1
+              fi
+
+              apt-get update
+              bash /work/.github/actions/install-deps/apt-install.sh \
+                build-essential \
+                ccache \
+                cmake \
+                libarchive-dev \
+                libcurl4-openssl-dev \
+                libevent-dev \
+                libgtest-dev \
+                libminiupnpc-dev \
+                libnatpmp-dev \
+                libpsl-dev \
+                libssl-dev \
+                ninja-build \
+                pkg-config \
+                zlib1g-dev
+
+              cmake \
+                -S . \
+                -B /obj \
+                -G Ninja \
+                -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                -DENABLE_CLI=OFF \
+                -DENABLE_DAEMON=OFF \
+                -DENABLE_GTK=OFF \
+                -DENABLE_IPO=OFF \
+                -DENABLE_MAC=OFF \
+                -DENABLE_QT=OFF \
+                -DENABLE_TESTS=ON \
+                -DENABLE_UTILS=OFF \
+                -DRUN_CLANG_TIDY=OFF \
+                -DUSE_SYSTEM_GTEST=ON
+              cmake --build /obj --target libtransmission-test
+              ctest --test-dir /obj/tests/libtransmission --output-on-failure --no-tests=error
+            '
+      - name: Restore ccache ownership
+        # The container writes as root; cache maintenance runs on the host.
+        if: ${{ always() && steps.build-test.outcome != '' && steps.build-test.outcome != 'skipped' }}
+        run: sudo chown -R "$(id -u):$(id -g)" "$CCACHE_DIR"
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
+
   rhel-family:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
@@ -1904,7 +2003,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, s390x, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:
