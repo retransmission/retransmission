@@ -45,18 +45,16 @@ namespace find_files_helpers
 struct TorrentFile {
     TorrentFile(std::string_view subpath, size_t size)
         : subpath_{ subpath }
-        , lowercase_{ tr_strlower(subpath) }
         , size_{ size }
     {
     }
 
     [[nodiscard]] auto operator<(TorrentFile const& that) const noexcept
     {
-        return lowercase_ < that.lowercase_;
+        return subpath_ < that.subpath_;
     }
 
     std::string subpath_;
-    std::string lowercase_;
     uint64_t size_ = 0;
 };
 

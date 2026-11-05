@@ -189,6 +189,28 @@ TEST_F(MakemetaTest, nameIsRootMultifile)
     EXPECT_EQ(tr_sys_path_basename(filename), testBuilder(builder).name());
 }
 
+TEST_F(MakemetaTest, filesAreSortedByByteValue)
+{
+    auto const top = tr_pathbuf{ sandboxDir(), "/files"sv };
+    createFileWithContents(tr_pathbuf{ top, "/retRansmission.05.txt"sv }, "d"sv);
+    createFileWithContents(tr_pathbuf{ top, "/retrAnsmission.02.txt"sv }, "e"sv);
+    createFileWithContents(tr_pathbuf{ top, "/rEtransmission.01.txt"sv }, "b"sv);
+    createFileWithContents(tr_pathbuf{ top, "/reTransmission.04.txt"sv }, "c"sv);
+    createFileWithContents(tr_pathbuf{ top, "/Retransmission.03.txt"sv }, "a"sv);
+
+    auto builder = tr_metainfo_builder{ top };
+    ASSERT_EQ(5U, builder.file_count());
+    EXPECT_EQ("files/Retransmission.03.txt"sv, builder.path(0));
+    EXPECT_EQ("files/rEtransmission.01.txt"sv, builder.path(1));
+    EXPECT_EQ("files/reTransmission.04.txt"sv, builder.path(2));
+    EXPECT_EQ("files/retRansmission.05.txt"sv, builder.path(3));
+    EXPECT_EQ("files/retrAnsmission.02.txt"sv, builder.path(4));
+
+    auto const metainfo = testBuilder(builder);
+    ASSERT_EQ(1U, metainfo.piece_count());
+    EXPECT_EQ(tr_sha1::digest("abcde"sv), metainfo.piece_hash(0));
+}
+
 TEST_F(MakemetaTest, singleFile)
 {
     auto const files = makeRandomFiles(sandboxDir(), 1);
