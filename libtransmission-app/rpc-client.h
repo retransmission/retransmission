@@ -36,6 +36,12 @@ struct RpcResponse {
     {
         return args ? args->get_if<tr_variant::Map>() : nullptr;
     }
+
+    // `args` as a map if the request succeeded. An error reply can carry `args` too, its `data.result`.
+    [[nodiscard]] tr_variant::Map const* result_map() const noexcept
+    {
+        return success ? args_map() : nullptr;
+    }
 };
 
 // RPC client which speaks either to an embedded (in-process) session

@@ -133,9 +133,7 @@ void Session::fetch_torrents(TorrentKeySet const keys, TorrentScope const& scope
         TR_KEY_torrent_get,
         make_torrent_get_params(keys, scope),
         [this, coverage, on_done = std::move(on_done)](RpcResponse response) {
-            // An error reply may still carry `args`, its `data.result`, and a stale
-            // reply is a network error without any: only a success reaches the list.
-            if (auto const* const args = response.success ? response.args_map() : nullptr) {
+            if (auto const* const args = response.result_map()) {
                 torrents_.update(*args, coverage, std::time(nullptr));
             }
 
@@ -363,7 +361,7 @@ void Session::load_stats(tr_variant::Map const& map, tr_session_stats& stats)
 void Session::refresh_session_stats()
 {
     send(TR_KEY_session_stats, {}, [this](RpcResponse const& response) {
-        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+        if (auto const* const args = response.result_map()) {
             import_session_stats(*args);
         }
     });
@@ -391,7 +389,7 @@ void Session::import_session_stats(tr_variant::Map const& args)
 void Session::refresh_session_info()
 {
     send(TR_KEY_session_get, {}, [this](RpcResponse const& response) {
-        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+        if (auto const* const args = response.result_map()) {
             import_session_info(*args);
         }
     });
