@@ -176,8 +176,7 @@ Application::Application(
 
     connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
-    connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
-    connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
+    contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
         // the trackers of a new torrent, and of one whose trackers changed
         for (auto const row : changes.inserted) {
@@ -208,7 +207,7 @@ Application::Application(
     poller_->start();
 
     if (!first_time) {
-        session_->restart();
+        session_->start();
     } else {
         window_->openSession();
     }
@@ -391,11 +390,6 @@ void Application::onConfigDirContended()
     // A session started from the connection dialog gets here after exec() is under way,
     // where returning from the constructor no longer ends the launch.
     quit();
-}
-
-void Application::onSessionSourceChanged() const
-{
-    poller_->refresh_now();
 }
 
 /***

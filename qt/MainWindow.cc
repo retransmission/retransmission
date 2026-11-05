@@ -259,7 +259,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     auto refresh_status_soon = [this] {
         refreshSoon(RefreshStatusBar);
     };
-    connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
+    source_changed_connection_ = session_.source_changed.connect_scoped(&MainWindow::onSessionSourceChanged, this);
     stats_connection_ = session_.stats_updated.connect_scoped(refresh_status_soon);
     connect(&session_, &Session::dataReadProgress, this, &MainWindow::dataReadProgress);
     connect(&session_, &Session::dataSendProgress, this, &MainWindow::dataSendProgress);

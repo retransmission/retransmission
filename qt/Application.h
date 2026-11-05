@@ -104,8 +104,6 @@ public slots:
     void addWatchdirTorrent(QString const& filename) const;
 
 private slots:
-    void onConfigDirContended();
-    void onSessionSourceChanged() const;
     void refreshPref(tr_quark key) const;
     void saveGeometry() const;
 #ifdef QT_DBUS_LIB
@@ -132,6 +130,7 @@ private:
         Application& app_;
     };
 
+    void onConfigDirContended();
     void loadTranslations();
     void onTorrentsAdded(std::span<tr_torrent_id_t const> torrent_ids) const;
     void onTorrentsCompleted(std::span<tr_torrent_id_t const> torrent_ids) const;
@@ -155,6 +154,7 @@ private:
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
     sigslot::scoped_connection torrents_connection_;
+    sigslot::scoped_connection contended_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

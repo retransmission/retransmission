@@ -5,7 +5,6 @@
 
 #include "Session.h"
 
-#include <array>
 #include <cassert>
 #include <optional>
 #include <string_view>
@@ -23,8 +22,6 @@
 
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
-#include <libtransmission/torrent-builder.h>
-#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/rpc-queue.h>
@@ -107,93 +104,25 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
 ****
 ***/
 
-Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
-    : tr::app::Session{ std::string{}, prefs, rpc.impl() }
-    , config_dir_{ std::move(config_dir) }
+Session::Session(QString const& config_dir, Prefs& prefs, RpcClient& rpc)
+    : tr::app::Session{ config_dir.toStdString(), prefs, rpc.impl(), Utils::trashOrRemove }
     , prefs_{ prefs }
-    , rpc_{ rpc }
 {
     rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
-    connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
-    connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
-    connect(&rpc_, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
-    connect(&rpc_, &RpcClient::networkResponse, this, &Session::networkResponse);
+    connect(&rpc, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
+    connect(&rpc, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
+    connect(&rpc, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
+    connect(&rpc, &RpcClient::networkResponse, this, &Session::networkResponse);
 
     duplicates_timer_.setSingleShot(true);
     connect(&duplicates_timer_, &QTimer::timeout, this, &Session::onDuplicatesTimer);
 }
 
-Session::~Session()
+Session::~Session() = default;
+
+QUrl Session::getRemoteUrl() const
 {
-    stop();
-}
-
-/***
-****
-***/
-
-void Session::stop()
-{
-    rpc_.stop();
-
-    if (session_ != nullptr) {
-        set_embedded_session(nullptr);
-        tr_sessionClose(session_);
-        session_ = nullptr;
-    }
-
-    torrents().clear();
-    clear_session_info();
-    set_session_type({});
-    emit stopped();
-}
-
-void Session::restart()
-{
-    stop();
-    start();
-}
-
-void Session::start()
-{
-    if (prefs_.get<bool>(TR_KEY_remote_session_enabled)) {
-        QUrl url;
-        if (prefs_.get<bool>(TR_KEY_remote_session_https)) {
-            url.setScheme(QStringLiteral("https"));
-        } else {
-            url.setScheme(QStringLiteral("http"));
-        }
-        url.setHost(prefs_.get<QString>(TR_KEY_remote_session_host));
-        url.setPort(prefs_.get<int>(TR_KEY_remote_session_port));
-
-        auto const root_path = prefs_.get<QString>(TR_KEY_remote_session_url_base_path);
-        auto const relative_path = TrHttpServerRpcRelativePath;
-        url.setPath(root_path + Utils::qstringFromUtf8(relative_path));
-
-        if (prefs_.get<bool>(TR_KEY_remote_session_requires_authentication)) {
-            url.setUserName(prefs_.get<QString>(TR_KEY_remote_session_username));
-            url.setPassword(prefs_.get<QString>(TR_KEY_remote_session_password));
-        }
-
-        rpc_.start(url);
-    } else {
-        auto config_dir = config_dir_.toStdString();
-        auto const settings = tr_sessionLoadSettings(config_dir);
-        session_ = tr_sessionInit(config_dir, true, settings, Utils::trashOrRemove);
-        set_embedded_session(session_);
-
-        if (tr_sessionConfigDirIsContended(session_)) {
-            emit configDirContended();
-            return;
-        }
-
-        rpc_.start(session_);
-
-        auto builder = tr_torrent_builder{ session_ };
-        tr_sessionLoadTorrents(session_, &builder);
-    }
-
-    emit sourceChanged();
+    return QUrl{ Utils::qstringFromUtf8(remote_url()) };
 }
 
 // ---
@@ -352,21 +281,5 @@ void Session::addNewlyCreatedTorrent(QString const& filename, QString const& loc
 
 void Session::launchWebInterface() const
 {
-    QUrl url;
-
-    if (session_ == nullptr) // remote session
-    {
-        url = rpc_.url();
-
-        auto const root_path = prefs_.get<QString>(TR_KEY_remote_session_url_base_path);
-        auto const relative_path = TrHttpServerWebRelativePath;
-        url.setPath(root_path + Utils::qstringFromUtf8(relative_path));
-    } else // embedded session
-    {
-        url.setScheme(QStringLiteral("http"));
-        url.setHost(QStringLiteral("localhost"));
-        url.setPort(prefs_.get<int>(TR_KEY_rpc_port));
-    }
-
-    QDesktopServices::openUrl(url);
+    QDesktopServices::openUrl(QUrl{ Utils::qstringFromUtf8(web_client_url()) });
 }
