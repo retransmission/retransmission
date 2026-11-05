@@ -94,6 +94,8 @@ target_sources(${TR_NAME}-mac
         GroupCell.mm
         GroupPopUpButtonCell.h
         GroupPopUpButtonCell.mm
+        GroupRulesWindowController.h
+        GroupRulesWindowController.mm
         GroupsController.h
         GroupsController.mm
         GroupToolbarItem.h
@@ -357,7 +359,6 @@ else()
 endif()
 
 set(BASE_XIB_FILES
-    GroupRules.xib
     InfoActivityView.xib)
 list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
@@ -368,6 +369,7 @@ set(LANG_STRINGS_FILES
     AppMenu.strings
     Creator.strings
     GlobalOptionsPopover.strings
+    GroupRules.strings
     InfoGeneralView.strings
     InfoOptionsView.strings
     InfoPlist.strings

@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL usesAutoGroupRules;
 /**
  * Stores a rebuilt copy that is safe to evaluate, even when assigned a predicate decoded from preferences.
- * Stores nil for a predicate that GroupRules.xib's editor can't produce.
+ * Stores nil for a predicate that GroupRulesWindowController's editor can't produce.
  */
 @property(nonatomic, copy, nullable) NSPredicate* autoGroupRules;
 
