@@ -8,8 +8,11 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <cstdint> // int64_t
 #include <functional>
+#include <iterator> // std::empty()
 #include <optional>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -277,18 +280,18 @@ void PrefsDialog::initDesktopTab()
 
 // ---
 
-QString PrefsDialog::getPortStatusText(PortTestStatus const status)
+QString PrefsDialog::getPortStatusText(tr::app::Session::PortStatus const status)
 {
     switch (status) {
-    case PortTestStatus::Unknown:
+    case tr::app::Session::PortStatus::Unknown:
         return tr("unknown");
-    case PortTestStatus::Checking:
+    case tr::app::Session::PortStatus::Checking:
         return tr("checking…");
-    case PortTestStatus::Open:
+    case tr::app::Session::PortStatus::Open:
         return tr("open");
-    case PortTestStatus::Closed:
+    case tr::app::Session::PortStatus::Closed:
         return tr("closed");
-    case PortTestStatus::Error:
+    case tr::app::Session::PortStatus::Error:
         return tr("error");
     }
 
@@ -297,11 +300,11 @@ QString PrefsDialog::getPortStatusText(PortTestStatus const status)
 
 void PrefsDialog::updatePortStatusLabel()
 {
-    auto const status_ipv4 = getPortStatusText(port_test_status_[TR_AF_INET]);
-    auto const status_ipv6 = getPortStatusText(port_test_status_[TR_AF_INET6]);
+    auto const status_ipv4 = getPortStatusText(session_.port_status(TR_AF_INET));
+    auto const status_ipv6 = getPortStatusText(session_.port_status(TR_AF_INET6));
 
     ui_.peerPortStatusLabel->setText(
-        port_test_status_[TR_AF_INET] == port_test_status_[TR_AF_INET6] ?
+        session_.port_status(TR_AF_INET) == session_.port_status(TR_AF_INET6) ?
             TR_FORMAT("Status: <b>{status}</b>", fmt::arg("status", status_ipv4)) :
             TR_FORMAT(
                 "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)",
@@ -311,39 +314,9 @@ void PrefsDialog::updatePortStatusLabel()
 
 void PrefsDialog::portTestSetEnabled()
 {
-    // Depend on the RPC call status instead of the UI status, so that the widgets
-    // won't be enabled even if the port peer port changed while we have port_test
-    // RPC call(s) in-flight.
-    auto const sensitive = !session_.portTestPending(TR_AF_INET) && !session_.portTestPending(TR_AF_INET6);
+    auto const sensitive = !session_.port_test_pending();
     ui_.testPeerPortButton->setEnabled(sensitive);
     ui_.peerPortSpin->setEnabled(sensitive);
-}
-
-void PrefsDialog::onPortTested(std::optional<bool> const result, tr_address_type const ip_protocol)
-{
-    // Only update the UI if the current status is "checking", so that
-    // we won't show the port test results for the old peer port if it
-    // changed while we have port_test RPC call(s) in-flight.
-    if (auto& status = port_test_status_[ip_protocol]; status == PortTestStatus::Checking) {
-        if (!result) {
-            status = PortTestStatus::Error;
-        } else {
-            status = *result ? PortTestStatus::Open : PortTestStatus::Closed;
-        }
-        updatePortStatusLabel();
-    }
-    portTestSetEnabled();
-}
-
-void PrefsDialog::onPortTest()
-{
-    port_test_status_.fill(PortTestStatus::Checking);
-    updatePortStatusLabel();
-
-    session_.portTest(TR_AF_INET);
-    session_.portTest(TR_AF_INET6);
-
-    portTestSetEnabled();
 }
 
 void PrefsDialog::initNetworkTab()
@@ -352,11 +325,6 @@ void PrefsDialog::initNetworkTab()
     ui_.globalPeerLimitSpin->setRange(1, INT_MAX);
 
     initWidget(ui_.peerPortSpin, TR_KEY_peer_port);
-    updaters_.emplace(TR_KEY_peer_port, [this] {
-        port_test_status_.fill(PortTestStatus::Unknown);
-        updatePortStatusLabel();
-        portTestSetEnabled();
-    });
     initWidget(ui_.randomPeerPortCheck, TR_KEY_peer_port_random_on_start);
     initWidget(ui_.enablePortForwardingCheck, TR_KEY_port_forwarding_enabled);
     initWidget(ui_.torrentPeerLimitSpin, TR_KEY_peer_limit_per_torrent);
@@ -372,49 +340,64 @@ void PrefsDialog::initNetworkTab()
     cr->addLayout(ui_.peerLimitsSectionLayout);
     cr->update();
 
-    connect(ui_.testPeerPortButton, &QAbstractButton::clicked, this, &PrefsDialog::onPortTest);
-    connect(&session_, &Session::portTested, this, &PrefsDialog::onPortTested);
+    session_.forget_port_status();
+    connect(ui_.testPeerPortButton, &QAbstractButton::clicked, this, [this] { session_.test_port(); });
+    port_test_connection_ = session_.port_test_changed.connect_scoped([this] {
+        updatePortStatusLabel();
+        portTestSetEnabled();
+    });
 
     updatePortStatusLabel();
+    portTestSetEnabled();
 }
 
 // ---
 
 void PrefsDialog::onUpdateBlocklistClicked()
 {
-    auto* const box = new QMessageBox{
+    if (blocklist_box_ != nullptr) {
+        blocklist_box_->close();
+    }
+
+    blocklist_box_ = new QMessageBox{
         QMessageBox::Information,
         QString{},
         QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Update Blocklist"), tr("Getting new blocklist…")),
         QMessageBox::Close,
         this
     };
-    box->setAttribute(Qt::WA_DeleteOnClose);
-    box->setTextFormat(Qt::RichText);
+    blocklist_box_->setAttribute(Qt::WA_DeleteOnClose);
+    blocklist_box_->setTextFormat(Qt::RichText);
+    blocklist_box_->show();
 
-    auto on_updated = [box](qint64 const n) {
-        box->setText(TR_FORMAT_N(
+    session_.update_blocklist();
+}
+
+void PrefsDialog::onBlocklistUpdated(int64_t const rule_count) const
+{
+    if (blocklist_box_ != nullptr) {
+        blocklist_box_->setText(TR_FORMAT_N(
             "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule(s).</p>",
-            static_cast<int>(n),
-            fmt::arg("count", n)));
-    };
-    connect(&session_, &Session::blocklistUpdated, box, std::move(on_updated));
+            static_cast<int>(rule_count),
+            fmt::arg("count", rule_count)));
+    }
+}
 
-    auto on_failed = [box](QString const& message) {
-        // Keep markup out of the translatable strings (assemble it here) and match the
-        // macOS client's wording. The detail line is libtransmission's own error text
-        // when present, or a generic fallback otherwise.
-        //
-        // SECURITY: `message` originates from the session -- a remote daemon can be hostile --
-        // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
-        // malicious daemon from injecting markup here. Don't drop it.
-        auto const detail = message.isEmpty() ? tr("Couldn't update blocklist") : message.toHtmlEscaped();
-        box->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
-    };
-    connect(&session_, &Session::blocklistUpdateFailed, box, std::move(on_failed));
+void PrefsDialog::onBlocklistUpdateFailed(std::string_view const errmsg) const
+{
+    if (blocklist_box_ == nullptr) {
+        return;
+    }
 
-    box->show();
-    session_.updateBlocklist();
+    // Keep markup out of the translatable strings (assemble it here) and match the
+    // macOS client's wording. The detail line is libtransmission's own error text
+    // when present, or a generic fallback otherwise.
+    //
+    // SECURITY: `errmsg` originates from the session -- a remote daemon can be hostile --
+    // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
+    // malicious daemon from injecting markup here. Don't drop it.
+    auto const detail = std::empty(errmsg) ? tr("Couldn't update blocklist") : Utils::qstringFromUtf8(errmsg).toHtmlEscaped();
+    blocklist_box_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
 }
 
 void PrefsDialog::initPrivacyTab()
@@ -442,6 +425,10 @@ void PrefsDialog::initPrivacyTab()
     cr->update();
 
     connect(ui_.updateBlocklistButton, &QAbstractButton::clicked, this, &PrefsDialog::onUpdateBlocklistClicked);
+    blocklist_updated_connection_ = session_.blocklist_updated.connect_scoped(&PrefsDialog::onBlocklistUpdated, this);
+    blocklist_update_failed_connection_ = session_.blocklist_update_failed.connect_scoped(
+        &PrefsDialog::onBlocklistUpdateFailed,
+        this);
 
     updateBlocklistLabel();
 }

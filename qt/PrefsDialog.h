@@ -5,21 +5,22 @@
 
 #pragma once
 
-#include <array>
+#include <cstdint> // int64_t
 #include <functional>
 #include <initializer_list>
 #include <map>
-#include <optional>
+#include <string_view>
 
 #include <sigslot/signal.hpp>
 
-#include <libtransmission/types.h>
+#include <QtCore/QPointer>
 
 #include "BaseDialog.h"
 #include "Prefs.h"
 #include "Session.h"
 #include "ui_PrefsDialog.h"
 
+class QMessageBox;
 class QString;
 
 class PrefsDialog : public BaseDialog
@@ -35,8 +36,6 @@ public:
     PrefsDialog(PrefsDialog const&) = delete;
 
 private:
-    enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
-
     template<typename T>
     void set(tr_quark const key, T const& val)
     {
@@ -47,13 +46,13 @@ private:
     void refreshPref(tr_quark key);
     void sessionUpdated();
 
-    void onPortTest();
-    void onPortTested(std::optional<bool> result, tr_address_type ip_protocol);
     void portTestSetEnabled();
     void updatePortStatusLabel();
-    [[nodiscard]] static QString getPortStatusText(PortTestStatus status);
+    [[nodiscard]] static QString getPortStatusText(tr::app::Session::PortStatus status);
 
     void onUpdateBlocklistClicked();
+    void onBlocklistUpdated(int64_t rule_count) const;
+    void onBlocklistUpdateFailed(std::string_view errmsg) const;
     void updateBlocklistLabel();
     void updateLocality();
 
@@ -88,10 +87,15 @@ private:
     Ui::PrefsDialog ui_ = {};
 
     bool is_local_fs_ = {};
-    std::array<PortTestStatus, NUM_TR_AF_INET_TYPES> port_test_status_ = {};
 
     std::multimap<tr_quark, std::function<void()>> updaters_;
 
+    // the box showing the latest blocklist update, while it is open
+    QPointer<QMessageBox> blocklist_box_;
+
     sigslot::scoped_connection session_connection_;
     sigslot::scoped_connection stopped_connection_;
+    sigslot::scoped_connection port_test_connection_;
+    sigslot::scoped_connection blocklist_updated_connection_;
+    sigslot::scoped_connection blocklist_update_failed_connection_;
 };
