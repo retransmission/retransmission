@@ -63,7 +63,7 @@ case "$WORK_STORAGE" in
     *) echo 'Storage must be container-layer, bind, or tmpfs' >&2; exit 1 ;;
 esac
 echo "Benchmark storage: $WORK_STORAGE"
-if git submodule status --recursive | rg -q '^-'; then
+if git submodule status --recursive | grep '^-' > /dev/null; then
     echo 'Initialize dependencies first: git submodule update --init --recursive' >&2
     exit 1
 fi
