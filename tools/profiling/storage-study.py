@@ -168,6 +168,8 @@ def main():
                     metrics = json.loads((dest / "metrics.json").read_text())
                     if metrics["observed_peer_encryption"] != [encryption == "required"]:
                         raise RuntimeError(f"Unexpected encryption: {dest}")
+                    if phase == "timing" and metrics["steady_state"] is None:
+                        raise RuntimeError(f"No steady-state window; use a larger --size-mib: {dest}")
                     if phase == "diagnostic":
                         summary = batches(dest / "leech.csv.batches.tsv")
                         if summary["errors"] or summary["total_bytes"] != args.size_mib * 1024 * 1024:
