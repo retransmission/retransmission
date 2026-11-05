@@ -104,7 +104,6 @@ private slots:
     void newTorrent();
     void onNetworkResponse(bool is_network_error, QString const& message);
     void onRefreshTimer();
-    void onSessionSourceChanged();
     void onSortModeChanged(QAction const* action);
     void onStatsModeChanged(QAction const* action);
     void openAbout();
@@ -195,7 +194,9 @@ private:
     int refresh_fields_ = {};
     QTimer refresh_timer_;
     sigslot::scoped_connection stats_connection_;
+    sigslot::scoped_connection source_changed_connection_;
 
+    void onSessionSourceChanged();
     void refreshActionSensitivity();
     void refreshIcons();
     void refreshStatusBar(TransferStats const& stats);

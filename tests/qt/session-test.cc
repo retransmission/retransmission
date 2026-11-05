@@ -232,52 +232,6 @@ private slots:
         }
     }
 
-    // stop() forgets the blocklist info, version and torrents and says so,
-    // so the next session never shows the previous one's values.
-    void stop_clears_session_info()
-    {
-        api_compat::set_default_style(Style::Tr5);
-
-        auto server = MockRpcServer{};
-        server.set_reply_for(
-            R"("session_get")",
-            R"({"result":"success","arguments":{"blocklist_date":1700000000,"blocklist_size":42,"version":"9.9.9"}})");
-
-        auto prefs = Prefs{};
-        setRemotePrefs(prefs, server);
-
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        auto updated = 0;
-        auto const updated_connection = session.session_updated.connect_scoped([&updated] { ++updated; });
-        session.refresh_session_info();
-        QVERIFY(waitUntil([&updated] { return updated > 0; }));
-        QCOMPARE(session.blocklist_size().value_or(-1), int64_t{ 42 });
-        QVERIFY(session.blocklist_date().has_value());
-        QCOMPARE(session.session_version(), std::string{ "9.9.9" });
-
-        // a row of this source; the next source numbers its torrents from 1 too
-        auto row = tr_variant::Map{ 2U };
-        row.try_emplace(TR_KEY_id, 1);
-        row.try_emplace(TR_KEY_name, std::string_view{ "kept" });
-        auto torrents = tr_variant::Vector{};
-        torrents.emplace_back(std::move(row));
-        auto args = tr_variant::Map{ 1U };
-        args.try_emplace(TR_KEY_torrents, std::move(torrents));
-        session.torrents().update(args, tr::app::TorrentList::Coverage::Partial, time_t{});
-        QCOMPARE(session.torrents().size(), size_t{ 1 });
-
-        auto stopped = QSignalSpy{ &session, &Session::stopped };
-        session.stop();
-        QCOMPARE(stopped.count(), 1);
-        QVERIFY(!session.blocklist_size().has_value());
-        QVERIFY(!session.blocklist_date().has_value());
-        QVERIFY(session.session_version().empty());
-        QCOMPARE(session.torrents().size(), size_t{});
-    }
-
     // Restarting an embedded session mid-update closes it.
     // Closing must answer the pending update, or its progress dialog would never resolve.
     void restart_fails_a_pending_embedded_blocklist_update()

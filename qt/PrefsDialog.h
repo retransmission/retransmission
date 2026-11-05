@@ -93,4 +93,5 @@ private:
     std::multimap<tr_quark, std::function<void()>> updaters_;
 
     sigslot::scoped_connection session_connection_;
+    sigslot::scoped_connection stopped_connection_;
 };

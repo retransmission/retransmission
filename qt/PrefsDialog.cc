@@ -571,7 +571,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* const parent)
 
     session_connection_ = session_.session_updated.connect_scoped(&PrefsDialog::sessionUpdated, this);
     // stop() clears the blocklist info, which the next session reports anew.
-    connect(&session_, &Session::stopped, this, &PrefsDialog::updateBlocklistLabel);
+    stopped_connection_ = session_.stopped.connect_scoped(&PrefsDialog::updateBlocklistLabel, this);
 
     adjustSize();
 }
