@@ -388,4 +388,53 @@ TEST_F(MoveTest, setLocation)
     tr_torrentRemove(tor, true);
 }
 
+TEST_F(MoveTest, backendSweepsTheOldLocationAfterPlacingFiles)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+    auto const junk = tr_pathbuf{ tor->current_dir().sv(), '/', tor->name(), "/.DS_Store"sv };
+    createFileWithContents(junk, "junk"sv);
+
+    auto placed = std::make_shared<std::promise<bool>>();
+    auto moved = std::make_shared<std::promise<bool>>();
+    auto placed_future = placed->get_future();
+    auto moved_future = moved->get_future();
+    session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, junk, placed, moved] {
+        session->local_data.move(
+            tor->id(),
+            [target] { return target; },
+            [moved, junk](auto, auto, tr_error const&) { moved->set_value(tr_sys_path_exists(junk)); },
+            [placed, junk](auto, auto) { placed->set_value(tr_sys_path_exists(junk)); });
+    });
+    ASSERT_EQ(std::future_status::ready, placed_future.wait_for(5s));
+    ASSERT_EQ(std::future_status::ready, moved_future.wait_for(5s));
+    EXPECT_TRUE(placed_future.get());
+    EXPECT_FALSE(moved_future.get());
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(MoveTest, setLocationSavesTheNewLocation)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    tr_sys_dir_create(target_dir, TR_SYS_DIR_CREATE_PARENTS, 0777, nullptr);
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+
+    auto state = -1;
+    tr_torrentSetLocation(tor, target_dir, true, &state);
+    EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
+
+    auto const resume = tr_variant_serde::benc().parse_file(tor->resume_file());
+    ASSERT_TRUE(resume);
+    auto const* const map = resume->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    EXPECT_EQ(target_dir.sv(), map->value_if<std::string_view>(TR_KEY_destination));
+
+    tr_torrentRemove(tor, true);
+}
+
 } // namespace tr::test

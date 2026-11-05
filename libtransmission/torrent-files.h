@@ -11,6 +11,7 @@
 #include <iterator>
 #include <optional>
 #include <ranges>
+#include <set>
 #include <span>
 #include <string>
 #include <string_view>
@@ -105,7 +106,23 @@ public:
         return ret;
     }
 
-    [[nodiscard]] bool move(
+    // What a move leaves at the old location.
+    // It owns its paths, so it stays valid however the torrent changes.
+    struct MoveLeftovers {
+        // Removes `sources`, then sweeps junk and empty dirs out of `trees`.
+        // Nothing in `roots` is swept.
+        void remove() const;
+
+        std::set<std::string> sources;
+        std::set<std::string> trees;
+        std::vector<std::string> roots;
+        std::string parent_name;
+    };
+
+    // Puts every file under `parent_in`, or puts back what moved and returns nothing.
+    // Call remove() on the result once the new location is saved.
+    // A kill before that leaves the saved location usable.
+    [[nodiscard]] std::optional<MoveLeftovers> move(
         std::span<std::string_view const> old_parents,
         std::string_view parent_in,
         std::string_view parent_name = "",

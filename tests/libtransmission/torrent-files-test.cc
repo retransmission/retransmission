@@ -7,6 +7,7 @@
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -32,6 +33,19 @@ namespace
 class TorrentFilesTest : public ::tr::test::SandboxedTest
 {
 protected:
+    [[nodiscard]] static bool moveAndClean(
+        tr_torrent_files const& files,
+        std::span<std::string_view const> const roots,
+        std::string_view const target,
+        tr_error* const error = nullptr)
+    {
+        auto const leftovers = files.move(roots, target, "name", error);
+        if (leftovers) {
+            leftovers->remove();
+        }
+        return leftovers.has_value();
+    }
+
     void expectFailedMoveKeepsSources(std::string_view const target) const
     {
         auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
@@ -102,7 +116,7 @@ TEST_F(TorrentFilesTest, consolidatesIntoSourceRoot)
     // A normal source leaves a stale .part destination untouched.
     createFileWithContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
 
-    ASSERT_TRUE(files.move(roots, incomplete, "name"));
+    ASSERT_TRUE(moveAndClean(files, roots, incomplete));
     expectContents(tr_pathbuf{ incomplete, "/name/first"sv }, "first"sv);
     expectContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
     expectContents(tr_pathbuf{ incomplete, "/name/second.part"sv }, "second"sv);
@@ -129,7 +143,7 @@ TEST_F(TorrentFilesTest, cleanupPreservesNestedRootAndDestination)
         // Junk in its parent must still be cleaned.
         createFileWithContents(tr_pathbuf{ download, "/name/desktop.ini"sv }, "junk"sv);
 
-        ASSERT_TRUE(files.move(roots, target, "name"));
+        ASSERT_TRUE(moveAndClean(files, roots, target));
         expectContents(tr_pathbuf{ nested, "/desktop.ini"sv }, "protected"sv);
         expectContents(tr_pathbuf{ target, "/name/data"sv }, "data"sv);
         expectContents(tr_pathbuf{ target, "/name/dir1/file"sv }, "other"sv);
@@ -158,7 +172,7 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
         "interrupted copy"sv);
     createFileWithContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     createFileWithContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
-    ASSERT_TRUE(files.move(roots, target, "name"));
+    ASSERT_TRUE(moveAndClean(files, roots, target));
     expectContents(tr_pathbuf{ target, "/name/data"sv }, "first"sv);
     expectContents(tr_pathbuf{ target, "/name/nested/data"sv }, "second"sv);
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/data"sv }));
@@ -184,10 +198,17 @@ TEST_F(TorrentFilesCrossFilesystemTest, moveRemovesCopiedSources)
     createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
 
     auto error = tr_error{};
-    EXPECT_TRUE(files.move(roots, target, "name", &error));
+    auto const leftovers = files.move(roots, target, "name", &error);
+    ASSERT_TRUE(leftovers);
     EXPECT_FALSE(error) << error;
     expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
     expectContents(tr_pathbuf{ target, "/name/b"sv }, "b"sv);
+
+    // The sources stay until the caller has saved the new location.
+    expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    expectContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+    leftovers->remove();
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
 }
 
