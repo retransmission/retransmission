@@ -304,10 +304,9 @@ python3 tools/profiling/compare-storage-writes.py \
     --work-dir .tmp/work --peer-address <local-IPv4>
 ```
 
-The measured `pwritev` candidate was neutral and was saved under
-`.tmp/sources/storage-vectored-write/candidate.patch`; it is not enabled in the
-application. The example uses the archived comparison binaries. Both builds must
-have profiling OFF; finish compilation before measuring.
+A `pwritev` vectored-write candidate measured neutral and is not in the
+application. Both builds must have profiling OFF; finish compilation before
+measuring.
 The script records binary hashes and runs three 4 GiB repeats per variant in
 plaintext and RC4, alternating variant order. Each transfer verifies its data
 and requires available disk-load counters. Reuse identical arguments/binaries
