@@ -88,6 +88,8 @@ def main():
                 metrics = json.loads((dest / "metrics.json").read_text())
                 if metrics["observed_peer_encryption"] != [mode == "required"]:
                     raise RuntimeError(f"Wrong encryption in {dest}")
+                if metrics["steady_state"] is None:
+                    raise RuntimeError(f"No steady-state window; use a larger --size-mib: {dest}")
                 if not all(metrics["disk_load"][phase]["available"] for phase in ("transfer", "flush")):
                     raise RuntimeError(f"Missing disk load in {dest}")
     lines = ["| Mode | Variant | Median steady MiB/s | Min–max MiB/s | Leech CPU s | Device write MiB/s | Device busy % | Write await ms |",
