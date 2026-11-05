@@ -856,7 +856,7 @@ void RemotePage::refreshRPCSensitivity()
 
 void RemotePage::onLaunchClutchCB() const
 {
-    gtr_open_uri(fmt::format("http://localhost:{}/", prefs().get<uint16_t>(TR_KEY_rpc_port)));
+    gtr_open_uri(core_->web_client_url());
 }
 
 RemotePage::RemotePage(
