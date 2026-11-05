@@ -6,7 +6,9 @@
 #include "libtransmission-app/session.h"
 
 #include <algorithm>
+#include <array>
 #include <cstddef> // size_t
+#include <cstdint>
 #include <ctime> // std::time()
 #include <functional>
 #include <iterator> // std::back_inserter(), std::end()
@@ -115,6 +117,10 @@ Session::Session(std::string config_dir, Prefs& prefs, RpcClient& rpc, tr_torren
             update_sleep_inhibit();
         }
 
+        if (key == TR_KEY_peer_port) {
+            forget_port_status();
+        }
+
         if (prefs_is_core(key) && !importing_settings_) {
             sync_pref_to_session(key);
         }
@@ -202,6 +208,7 @@ void Session::stop()
     torrents_.clear();
     clear_session_info();
     set_session_type({});
+    forget_port_status();
     stopped();
 }
 
@@ -594,6 +601,70 @@ Session::Type Session::probe_session_type(std::string_view const id)
     }
 
     return probed_id_->type;
+}
+
+// --- blocklist
+
+void Session::update_blocklist()
+{
+    send(TR_KEY_blocklist_update, {}, [this](RpcResponse const& response) {
+        auto const* const args = response.result_map();
+        auto const rule_count = args != nullptr ? args->value_if<int64_t>(TR_KEY_blocklist_size) : std::nullopt;
+        if (!rule_count) {
+            blocklist_update_failed(response.errmsg);
+            return;
+        }
+
+        refresh_session_info();
+        blocklist_updated(*rule_count);
+    });
+}
+
+// --- port test
+
+void Session::test_port()
+{
+    static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
+
+    if (port_test_pending()) {
+        return;
+    }
+
+    port_status_.fill(PortStatus::Checking);
+    port_test_pending_.fill(true);
+    port_test_changed();
+
+    for (auto const ip_protocol : { TR_AF_INET, TR_AF_INET6 }) {
+        auto params = tr_variant::Map{ 1U };
+        params.try_emplace(TR_KEY_ip_protocol, tr_variant::unmanaged_string(IpStr[ip_protocol]));
+        send(TR_KEY_port_test, std::move(params), [this, ip_protocol](RpcResponse const& response) {
+            on_port_tested(ip_protocol, response);
+        });
+    }
+}
+
+void Session::forget_port_status()
+{
+    port_status_.fill(PortStatus::Unknown);
+    port_test_changed();
+}
+
+void Session::on_port_tested(tr_address_type const ip_protocol, RpcResponse const& response)
+{
+    port_test_pending_[ip_protocol] = false;
+
+    // Otherwise the peer port changed during the test, so its answer is about an old port.
+    if (auto& status = port_status_[ip_protocol]; status == PortStatus::Checking) {
+        auto const* const args = response.result_map();
+        auto const is_open = args != nullptr ? args->value_if<bool>(TR_KEY_port_is_open) : std::nullopt;
+        if (!is_open) {
+            status = PortStatus::Error;
+        } else {
+            status = *is_open ? PortStatus::Open : PortStatus::Closed;
+        }
+    }
+
+    port_test_changed();
 }
 
 // --- session

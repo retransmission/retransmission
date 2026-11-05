@@ -1024,6 +1024,8 @@ TEST_F(AppSessionRpcTest, importingInfoKeepsAnEmbeddedSessionEmbedded)
 class AppSessionLifecycleTest : public SandboxedTest
 {
 protected:
+    static constexpr auto ErrorBody = R"({"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"nope"}})"sv;
+
     void SetUp() override
     {
         tr::settings::save(tr_sessionGetSettingsFilename(sandbox_dir()), offline_settings(sandbox_dir()));
@@ -1047,6 +1049,11 @@ protected:
         return loop_.pump_until([this] { return !session_.is_closing(); });
     }
 
+    [[nodiscard]] bool pump_until_port_tested()
+    {
+        return loop_.pump_until([this] { return !session_.port_test_pending(); });
+    }
+
     UiLoop loop_;
     RpcClient rpc_{ loop_.marshaler() };
     Prefs prefs_;
@@ -1056,6 +1063,8 @@ protected:
     int stops_ = 0;
     int closes_ = 0;
     int contentions_ = 0;
+    std::vector<int64_t> updated_;
+    std::vector<std::string> failed_;
 
 private:
     sigslot::scoped_connection source_changed_connection_ = session_.source_changed.connect_scoped(
@@ -1063,6 +1072,10 @@ private:
     sigslot::scoped_connection stopped_connection_ = session_.stopped.connect_scoped([this] { ++stops_; });
     sigslot::scoped_connection closed_connection_ = session_.closed.connect_scoped([this] { ++closes_; });
     sigslot::scoped_connection contended_connection_ = session_.config_dir_contended.connect_scoped([this] { ++contentions_; });
+    sigslot::scoped_connection updated_connection_ = session_.blocklist_updated.connect_scoped(
+        [this](int64_t const n) { updated_.push_back(n); });
+    sigslot::scoped_connection failed_connection_ = session_.blocklist_update_failed.connect_scoped(
+        [this](std::string_view const errmsg) { failed_.emplace_back(errmsg); });
 };
 
 TEST_F(AppSessionLifecycleTest, startsAnEmbeddedSessionWhenPrefsNameNoRemote)
@@ -1293,6 +1306,96 @@ TEST_F(AppSessionLifecycleTest, destroyingASessionFinishesItsClose)
     EXPECT_TRUE(session_.is_embedded());
 }
 
+TEST_F(AppSessionLifecycleTest, aBlocklistUpdateReportsTheRuleCountAndRefreshesTheInfo)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true,
+                                 /*require_auth=*/false,
+                                 R"({"jsonrpc":"2.0","id":1,"result":{"blocklist_size":42}})" };
+    start_on(server);
+
+    auto refreshed = false;
+    auto const refreshed_connection = session_.session_updated.connect_scoped([&refreshed] { refreshed = true; });
+    session_.update_blocklist();
+
+    EXPECT_TRUE(loop_.pump_until([&refreshed] { return refreshed; }));
+    EXPECT_EQ(std::vector<int64_t>{ 42 }, updated_);
+    EXPECT_TRUE(std::empty(failed_));
+    EXPECT_EQ(42, session_.blocklist_size());
+}
+
+TEST_F(AppSessionLifecycleTest, aBlocklistUpdateErrorReportsItsMessage)
+{
+    struct LocalTest {
+        bool advertise_tr5 = false;
+        std::string_view body;
+        std::string_view expected;
+    };
+
+    static auto constexpr Tests = std::array{
+        LocalTest{ true, ErrorBody, "nope"sv },
+        LocalTest{ false, R"({"result":"Not Found","arguments":{}})"sv, "Not Found"sv },
+    };
+
+    for (auto const& test : Tests) {
+        auto server = MockRpcServer{ test.advertise_tr5, /*require_auth=*/false, std::string{ test.body } };
+        start_on(server);
+        failed_.clear();
+
+        session_.update_blocklist();
+
+        EXPECT_TRUE(loop_.pump_until([this] { return !std::empty(failed_); }));
+        EXPECT_EQ(std::vector<std::string>{ std::string{ test.expected } }, failed_);
+        EXPECT_TRUE(std::empty(updated_));
+
+        session_.stop();
+        loop_.drain();
+    }
+}
+
+TEST_F(AppSessionLifecycleTest, aBlocklistUpdateWithoutARuleCountFails)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_on(server);
+
+    session_.update_blocklist();
+
+    EXPECT_TRUE(loop_.pump_until([this] { return !std::empty(failed_); }));
+    EXPECT_TRUE(std::empty(updated_));
+}
+
+// Its progress UI would otherwise never resolve.
+TEST_F(AppSessionLifecycleTest, aStopFailsAPendingBlocklistUpdate)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_on(server);
+
+    session_.update_blocklist();
+    session_.stop();
+
+    EXPECT_TRUE(loop_.pump_until([this] { return !std::empty(failed_); }));
+    EXPECT_EQ(1U, std::size(failed_));
+    EXPECT_TRUE(std::empty(updated_));
+}
+
+// Nothing listens on port 1, so the download fails without leaving this machine.
+// That failure reaches the session thread only after the close that restart() queues.
+TEST_F(AppSessionLifecycleTest, aRestartFailsAPendingEmbeddedBlocklistUpdate)
+{
+    auto settings = offline_settings(sandbox_dir());
+    settings.insert_or_assign(TR_KEY_blocklist_url, "http://127.0.0.1:1/blocklist"sv);
+    tr::settings::save(tr_sessionGetSettingsFilename(sandbox_dir()), settings);
+
+    session_.start();
+    ASSERT_TRUE(session_.is_embedded());
+
+    session_.update_blocklist();
+    session_.restart();
+
+    EXPECT_TRUE(loop_.pump_until([this] { return !std::empty(failed_); }));
+    EXPECT_EQ(1U, std::size(failed_));
+    EXPECT_TRUE(std::empty(updated_));
+}
+
 // The next session never shows the previous one's values, and numbers its torrents from 1 too.
 TEST_F(AppSessionLifecycleTest, stopForgetsTheSessionsInfoAndTorrents)
 {
@@ -1321,6 +1424,137 @@ TEST_F(AppSessionLifecycleTest, stopForgetsTheSessionsInfoAndTorrents)
     EXPECT_FALSE(session_.blocklist_date().has_value());
     EXPECT_TRUE(std::empty(session_.session_version()));
     EXPECT_EQ(0U, session_.torrents().size());
+}
+
+TEST_F(AppSessionLifecycleTest, aPortTestReportsEachProtocol)
+{
+    using Status = Session::PortStatus;
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true,
+                                 /*require_auth=*/false,
+                                 R"({"jsonrpc":"2.0","id":1,"result":{"port_is_open":true}})" };
+    start_on(server);
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+
+    auto changes = 0;
+    auto const changed_connection = session_.port_test_changed.connect_scoped([&changes] { ++changes; });
+    session_.test_port();
+    EXPECT_EQ(1, changes);
+    EXPECT_EQ(Status::Checking, session_.port_status(TR_AF_INET));
+    EXPECT_EQ(Status::Checking, session_.port_status(TR_AF_INET6));
+    EXPECT_TRUE(session_.port_test_pending());
+
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(3, changes);
+    EXPECT_EQ(Status::Open, session_.port_status(TR_AF_INET));
+    EXPECT_EQ(Status::Open, session_.port_status(TR_AF_INET6));
+}
+
+TEST_F(AppSessionLifecycleTest, aClosedPortAndAnErrorEachHaveAStatus)
+{
+    using Status = Session::PortStatus;
+
+    {
+        auto server = MockRpcServer{ /*advertise_tr5=*/true,
+                                     /*require_auth=*/false,
+                                     R"({"jsonrpc":"2.0","id":1,"result":{"port_is_open":false}})" };
+        start_on(server);
+        session_.test_port();
+        EXPECT_TRUE(pump_until_port_tested());
+        EXPECT_EQ(Status::Closed, session_.port_status(TR_AF_INET));
+        session_.stop();
+        loop_.drain();
+    }
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true, /*require_auth=*/false, std::string{ ErrorBody } };
+    start_on(server);
+    session_.test_port();
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Status::Error, session_.port_status(TR_AF_INET));
+}
+
+TEST_F(AppSessionLifecycleTest, aPortTestWhileOneIsPendingSendsNothing)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_on(server);
+    std::ignore = exec_and_wait(rpc_, loop_, TR_KEY_session_stats); // the CSRF handshake, so a request reaches the server once
+
+    session_.test_port();
+    session_.test_port();
+
+    EXPECT_TRUE(pump_until_port_tested());
+    loop_.drain();
+
+    auto const bodies = server.request_bodies();
+    auto const is_port_test = [](std::string const& body) {
+        return body.find(R"("port_test")") != std::string::npos;
+    };
+    EXPECT_EQ(2, std::ranges::count_if(bodies, is_port_test));
+}
+
+// An answer that arrives after the change is about the old port.
+TEST_F(AppSessionLifecycleTest, aPeerPortChangeForgetsTheStatus)
+{
+    using Status = Session::PortStatus;
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true,
+                                 /*require_auth=*/false,
+                                 R"({"jsonrpc":"2.0","id":1,"result":{"port_is_open":true}})" };
+    start_on(server);
+
+    session_.test_port();
+    prefs_.set(TR_KEY_peer_port, 12345);
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+    EXPECT_TRUE(session_.port_test_pending());
+
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+
+    session_.test_port();
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Status::Open, session_.port_status(TR_AF_INET));
+
+    prefs_.set(TR_KEY_peer_port, 12346);
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+}
+
+TEST_F(AppSessionLifecycleTest, forgettingThePortStatusLeavesAPendingTestPending)
+{
+    using Status = Session::PortStatus;
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true,
+                                 /*require_auth=*/false,
+                                 R"({"jsonrpc":"2.0","id":1,"result":{"port_is_open":true}})" };
+    start_on(server);
+
+    session_.test_port();
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Status::Open, session_.port_status(TR_AF_INET));
+
+    auto changes = 0;
+    auto const changed_connection = session_.port_test_changed.connect_scoped([&changes] { ++changes; });
+    session_.forget_port_status();
+    EXPECT_EQ(1, changes);
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+
+    session_.test_port();
+    session_.forget_port_status();
+    EXPECT_TRUE(session_.port_test_pending());
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Status::Unknown, session_.port_status(TR_AF_INET));
+}
+
+TEST_F(AppSessionLifecycleTest, aStopEndsAPendingPortTest)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_on(server);
+
+    session_.test_port();
+    session_.stop();
+
+    EXPECT_EQ(Session::PortStatus::Unknown, session_.port_status(TR_AF_INET));
+    EXPECT_TRUE(pump_until_port_tested());
+    EXPECT_EQ(Session::PortStatus::Unknown, session_.port_status(TR_AF_INET));
 }
 
 } // namespace
