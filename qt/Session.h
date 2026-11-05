@@ -5,9 +5,7 @@
 
 #pragma once
 
-#include <array>
 #include <map>
-#include <optional>
 
 #include <sigslot/signal.hpp>
 
@@ -17,7 +15,6 @@
 #include <QtCore/QUrl>
 
 #include <libtransmission/quark.h>
-#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/session.h>
@@ -43,11 +40,7 @@ public:
 
     [[nodiscard]] QUrl getRemoteUrl() const;
 
-    void updateBlocklist();
-    void portTest(tr_address_type ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
-
-    [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
 
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
@@ -57,9 +50,6 @@ public slots:
     void launchWebInterface() const;
 
 signals:
-    void portTested(std::optional<bool> status, tr_address_type ip_protocol);
-    void blocklistUpdated(qint64);
-    void blocklistUpdateFailed(QString const& message);
     void dataReadProgress();
     void dataSendProgress();
     void networkResponse(bool is_network_error, QString const& message);
@@ -72,8 +62,6 @@ private:
     void onRenameFailed(RenameError const& error) const;
 
     Prefs& prefs_;
-
-    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
 
     sigslot::scoped_connection rename_failed_connection_;
 

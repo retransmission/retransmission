@@ -31,49 +31,11 @@
 #include "TrFormat.h"
 #include "Utils.h"
 
-using namespace std::literals;
-
 using tr::app::RpcQueue;
 
 /***
 ****
 ***/
-
-void Session::portTest(tr_address_type const ip_protocol)
-{
-    static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
-
-    if (portTestPending(ip_protocol)) {
-        return;
-    }
-    port_test_pending_[ip_protocol] = true;
-
-    auto args = tr_variant::Map{ 1U };
-    args.insert_or_assign(TR_KEY_ip_protocol, tr_variant::unmanaged_string(IpStr[ip_protocol]));
-
-    auto const response_func = [this, ip_protocol](RpcResponse const& r) {
-        port_test_pending_[ip_protocol] = false;
-
-        // The status optional can be empty here, e.g. on network errors,
-        // and the UI should show the "error" state
-        auto const* const result = r.args_map();
-        emit portTested(result != nullptr ? result->value_if<bool>(TR_KEY_port_is_open) : std::optional<bool>{}, ip_protocol);
-    };
-
-    RpcQueue::create()
-        .add(
-            [this, args = std::move(args)](RpcClient::ResponseFunc done) mutable {
-                send(TR_KEY_port_test, std::move(args), std::move(done));
-            },
-            response_func)
-        .add(response_func)
-        .run();
-}
-
-bool Session::portTestPending(tr_address_type const ip_protocol) const noexcept
-{
-    return port_test_pending_[ip_protocol];
-}
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)
 {
@@ -141,26 +103,6 @@ void Session::onRenameFailed(RenameError const& error) const
     auto* d = new QMessageBox{ QMessageBox::Information, title, text, QMessageBox::Close, QApplication::activeWindow() };
     QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
     d->show();
-}
-
-void Session::updateBlocklist()
-{
-    RpcQueue::create()
-        .add(
-            [this](RpcClient::ResponseFunc done) { send(TR_KEY_blocklist_update, {}, std::move(done)); },
-            // A JSON-RPC or network error aborts the queue before the step below, so
-            // report the failure here or the progress dialog is left with no result.
-            [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
-        .add([this](RpcResponse const& r) {
-            // session_get reports the new size and date with the rest of the session info
-            refresh_session_info();
-
-            // Only this manual update announces success, not every session_get refresh.
-            if (auto const* const map = r.args_map()) {
-                emit blocklistUpdated(map->value_if<int64_t>(TR_KEY_blocklist_size).value_or(0));
-            }
-        })
-        .run();
 }
 
 /***
