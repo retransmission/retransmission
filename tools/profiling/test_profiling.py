@@ -42,7 +42,7 @@ import unittest
 from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
-from benchmark import (Tracker, Rpc, complete, process_cpu, start_daemon, thread_cpu, thread_cpu_delta, thread_roles,
+from benchmark import (Tracker, Rpc, check_profiles, complete, process_cpu, start_daemon, thread_cpu, thread_cpu_delta, thread_roles,
                        torrent_state, transfer_progress, verified_throughput, wait_for)
 from report import summarize
 from filesystem_benchmark import disk_target_eligible, filesystem_info, summarize_fio
@@ -138,14 +138,25 @@ class ScopeTest(unittest.TestCase):
 class HarnessTest(unittest.TestCase):
     def test_worker_study_resume_allows_appending_counts_without_changing_workload(self):
         check = runpy.run_path(str(Path(__file__).with_name("storage-study.py")))["previous_workers_for_resume"]
-        previous = dict(workers=[0, 1, 2], timing_only=True, size_mib=4096, repeats=3)
+        previous = dict(workers=[0, 1, 2], timing_only=True, size_mib=4096, repeats=3, binary_sha256={"OFF": "a"})
         extended = dict(previous, workers=[0, 1, 2, 4])
         self.assertEqual(check(previous, extended), [0, 1, 2])
         self.assertEqual(previous["workers"], [0, 1, 2])
         for changed in (dict(extended, size_mib=1024), dict(extended, repeats=4),
+                        dict(extended, binary_sha256={"OFF": "b"}),
                         dict(extended, workers=[2, 1, 0, 4]), dict(extended, workers=[0, 1])):
             with self.assertRaisesRegex(RuntimeError, "different settings"):
                 check(previous, changed)
+
+    def test_profile_files_must_match_the_declared_build(self):
+        both = [Path("leech.csv"), Path("seed.csv")]
+        check_profiles("ON", both)
+        check_profiles("OFF", [])
+        check_profiles("unknown", both)
+        with self.assertRaisesRegex(RuntimeError, "both profiles"):
+            check_profiles("ON", both[:1])
+        with self.assertRaisesRegex(RuntimeError, "instrumented"):
+            check_profiles("OFF", both)
 
     def test_disk_load_rates_use_sector_units_and_elapsed_time(self):
         before = dict.fromkeys(FIELDS, 0)

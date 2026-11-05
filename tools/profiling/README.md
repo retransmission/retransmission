@@ -45,12 +45,10 @@ compare throughput before drawing conclusions about instrumentation overhead.
 The image uses `RelWithDebInfo`, frame pointers, and disabled IPO to preserve
 useful stacks for subsequent sampling with a CPU profiler.
 
-Docker builds reuse image layers plus persistent BuildKit caches for apt,
-CMake/Ninja, and `ccache`. The build directory is cached separately for each
-architecture and profiling mode. Only the daemon and torrent-creation binaries
-are copied from the build cache into the runnable image. Source edits reuse
-previous compilation work; the first build after enabling these caches must
-populate them. Build logs show cumulative `ccache` statistics when compilation
+Docker builds reuse image layers plus persistent BuildKit caches for apt and
+`ccache`. Every image compiles in a fresh build tree, and only the daemon and
+torrent-creation binaries stay in the runnable image. Source edits reuse
+previous compilation work through `ccache`; the first build must populate it. Build logs show cumulative `ccache` statistics when compilation
 runs. Cache storage belongs to the Docker builder and can be removed by Docker
 cache pruning. See Docker's [cache guide](https://docs.docker.com/build/cache/optimize/).
 
@@ -83,7 +81,7 @@ Use repeated runs and a larger `SIZE_MIB` for confirmation.
 prefers plaintext, while `required` requires encryption. Negotiated peer flags
 are saved in progress samples and summarized by `observed_peer_encryption`.
 Compare these modes explicitly; plaintext results do not establish encrypted
-throughput. The application's default encryption policy is unchanged.
+throughput.
 
 ```sh
 sudo BLOCK_PROFILING=OFF PEER_ENCRYPTION=preferred bash tools/profiling/run.sh
@@ -169,9 +167,9 @@ This increases the number of peers visited by a request-refill pass without
 changing the source of the payload. The Docker runner accepts `IDLE_PEERS=N` and
 `DISK_WRITE_BUDGET_MIB=N`; native runs can pass both options to `benchmark.py`.
 
-To measure the cost of the early-refill change, build pull request #676 and
-its base commit with the same compiler, CMake options, and profiling mode. Use
-this version of `benchmark.py` with `--daemon` pointing to each binary. Run alternating
+To measure the cost of a request-refill change, build it and its base commit
+with the same compiler, CMake options, and profiling mode. Use this version of
+`benchmark.py` with `--daemon` pointing to each binary. Run alternating
 before/after pairs with `--idle-peers` set to 0, 100, and 500, four disk workers,
 an 8 MiB disk write budget, and a payload large enough to produce a sustained
 transfer window. Use at least three pairs per peer count. Keep storage,
@@ -278,7 +276,7 @@ memory-buffer hashing, disk reads/writes and hashing, and verification.
 
 ### Live disk load and write-copy comparison
 
-Every native benchmark now records the target filesystem's source block device
+Every native benchmark records the target filesystem's source block device
 and, for partitions, the parent disk during transfer and final `fsync`.
 `disk_load.py` reads Linux sysfs counters without generating an extra I/O
 workload. `metrics.json` contains `disk_load.transfer` and `disk_load.flush`;
@@ -345,7 +343,7 @@ The timing build must have `ENABLE_BLOCK_PROFILING=OFF`; the diagnostic build
 must have it `ON`. Each path must contain `CMakeCache.txt`,
 `daemon/transmission-daemon`, and `utils/transmission-create`. Use the same source
 and record the build options when interpreting results. An existing output is
-resumed with matching study arguments. Extra worker counts may be appended
+resumed only with matching study arguments and daemon binaries. Extra worker counts may be appended
 while keeping all other arguments unchanged; the settings history records this
 extension. Completed runs are skipped.
 

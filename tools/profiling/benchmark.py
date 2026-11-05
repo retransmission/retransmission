@@ -362,6 +362,14 @@ def attach_idle_peers(stack, address, port, info_hash, count):
                 print(f"Connected {connected}/{count} idle peers in {time.monotonic() - started:.1f}s", flush=True)
 
 
+def check_profiles(block_profiling, profiles):
+    written = {path.name for path in profiles}
+    if block_profiling == "ON" and written != {"seed.csv", "leech.csv"}:
+        raise RuntimeError("Instrumented daemons did not write both profiles; check daemon logs")
+    if block_profiling == "OFF" and written:
+        raise RuntimeError(f"Run labelled profiling OFF wrote {sorted(written)}; the daemon is instrumented")
+
+
 def run(args, output):
     metrics = {"size_mib": args.size_mib, "platform": platform.platform(),
                "started_utc": datetime.now(timezone.utc).isoformat(),
@@ -518,16 +526,17 @@ def run(args, output):
         roles = thread_roles(output / f"{name}.csv")
         for row in rows:
             row["role"] = roles.get(row["tid"], "unknown")
-    (output / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
     profiles = sorted(output.glob("*.csv"))
-    if metrics["block_profiling"] == "ON":
-        if {path.name for path in profiles} != {"seed.csv", "leech.csv"}:
-            raise RuntimeError("Instrumented daemons did not write both profiles; check daemon logs")
+    check_profiles(metrics["block_profiling"], profiles)
+    # Resuming studies treat metrics.json as proof of a complete run, so it comes after every check.
+    (output / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
     report = "\n\n".join([thread_report(name, rows) for name, rows in metrics["thread_cpu"].items()] +
                          [summarize(path) for path in profiles])
     (output / "report.txt").write_text(report + "\n")
     print(json.dumps(metrics, indent=2), flush=True)
-    print(report or "No block profiles: this build has profiling disabled.", flush=True)
+    print(report, flush=True)
+    if not profiles:
+        print("No block profiles: this build has profiling disabled.", flush=True)
 
 
 def main():
@@ -592,6 +601,9 @@ def main():
     address = ipaddress.IPv4Address(args.peer_address)
     if address.is_loopback or address.is_unspecified or address.is_multicast:
         parser.error("peer-address must be a local non-loopback unicast IPv4 address")
+    # torrent_add rejects relative paths, and mkdtemp keeps them relative before Python 3.12.
+    if args.work_dir is not None:
+        args.work_dir = args.work_dir.resolve()
     output = args.output.resolve()
     if not args.output_exact:
         output /= datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")

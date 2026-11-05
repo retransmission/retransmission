@@ -311,8 +311,9 @@ private:
 
 #define TR_PROFILE_JOIN_IMPL(a, b) a##b
 #define TR_PROFILE_JOIN(a, b) TR_PROFILE_JOIN_IMPL(a, b)
+// Not const: a child scope adds its time to the parent while the parent is alive.
 #define TR_PROFILE_SCOPE(name) \
-    auto const TR_PROFILE_JOIN(tr_profile_scope_, __LINE__) = tr::profile::Scope \
+    auto TR_PROFILE_JOIN(tr_profile_scope_, __LINE__) = tr::profile::Scope \
     { \
         name \
     }

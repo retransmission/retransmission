@@ -43,6 +43,7 @@ Traces add memory/locking overhead and are not production throughput benchmarks.
 import argparse
 import csv
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
 import os
@@ -107,18 +108,6 @@ def main():
         parser.error("--diagnostic-build is required unless --timing-only is set")
     args.output.mkdir(parents=True, exist_ok=True)
     args.work_dir.mkdir(parents=True, exist_ok=True)
-    settings = vars(args)
-    settings = {key: str(value.resolve()) if isinstance(value, Path) else value for key, value in settings.items()}
-    settings["cpu_affinity"] = "unpinned"
-    settings_path = args.output / "study-settings.json"
-    if settings_path.exists():
-        previous = json.loads(settings_path.read_text())
-        old_workers = previous_workers_for_resume(previous, settings)
-        if old_workers != settings["workers"]:
-            with (args.output / "study-settings-history.jsonl").open("a") as history:
-                history.write(json.dumps({"updated_utc": datetime.now(timezone.utc).isoformat(),
-                                          "previous_workers": old_workers, "workers": settings["workers"]}) + "\n")
-    settings_path.write_text(json.dumps(settings, indent=2) + "\n")
     builds = [(args.timing_build, "OFF")]
     if not args.timing_only:
         builds.append((args.diagnostic_build, "ON"))
@@ -132,6 +121,20 @@ def main():
             raise RuntimeError(f"{build}: expected ENABLE_BLOCK_PROFILING={expected}")
         if expected == "OFF" and "-DTR_ENABLE_BLOCK_PROFILING" in cache:
             raise RuntimeError(f"{build}: compile flags enable block profiling")
+    settings = vars(args)
+    settings = {key: str(value.resolve()) if isinstance(value, Path) else value for key, value in settings.items()}
+    settings["cpu_affinity"] = "unpinned"
+    settings["binary_sha256"] = {profiling: hashlib.sha256((build / "daemon/transmission-daemon").read_bytes()).hexdigest()
+                                 for build, profiling in builds}
+    settings_path = args.output / "study-settings.json"
+    if settings_path.exists():
+        previous = json.loads(settings_path.read_text())
+        old_workers = previous_workers_for_resume(previous, settings)
+        if old_workers != settings["workers"]:
+            with (args.output / "study-settings-history.jsonl").open("a") as history:
+                history.write(json.dumps({"updated_utc": datetime.now(timezone.utc).isoformat(),
+                                          "previous_workers": old_workers, "workers": settings["workers"]}) + "\n")
+    settings_path.write_text(json.dumps(settings, indent=2) + "\n")
     # Rotate worker ordering to reduce systematic warm-cache/order bias.
     phases = [("timing", args.repeats, args.timing_build)]
     if not args.timing_only:

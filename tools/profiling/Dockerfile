@@ -19,15 +19,10 @@ ARG SOURCE_REVISION=0
 ARG TARGETARCH
 ENV TR_PROFILE_BUILD_ENABLED=${BLOCK_PROFILING}
 ENV CCACHE_DIR=/root/.cache/ccache
-# Ninja rebuilds by file time. Sources from another revision or worktree can
-# be older than the cached objects, and linking those stale objects crashes
-# the daemon. Start over when the revision changes; ccache keeps that cheap.
-RUN --mount=type=cache,id=retransmission-profile-build-${TARGETARCH}-${BLOCK_PROFILING},target=/build-cache,sharing=locked \
-    --mount=type=cache,id=retransmission-profile-ccache-${TARGETARCH},target=/root/.cache/ccache,sharing=locked \
-    if [ "$(cat /build-cache/.source-revision 2>/dev/null)" != "${SOURCE_REVISION}" ]; then \
-        find /build-cache -mindepth 1 -delete; \
-    fi \
-    && cmake -S . -B /build-cache -G Ninja \
+# Every image compiles in a fresh tree, so no object can outlive its source.
+# ccache keeps that cheap.
+RUN --mount=type=cache,id=retransmission-profile-ccache-${TARGETARCH},target=/root/.cache/ccache,sharing=locked \
+    cmake -S . -B /build-tree -G Ninja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DTR_VCS_REVISION=${SOURCE_REVISION} \
     -DCMAKE_C_COMPILER_LAUNCHER=ccache \
@@ -36,12 +31,12 @@ RUN --mount=type=cache,id=retransmission-profile-build-${TARGETARCH}-${BLOCK_PRO
     -DENABLE_IPO=OFF -DENABLE_GTK=OFF -DENABLE_QT=OFF -DENABLE_MAC=OFF \
     -DENABLE_TESTS=OFF -DENABLE_NLS=OFF -DINSTALL_DOC=OFF \
     -DENABLE_BLOCK_PROFILING=${BLOCK_PROFILING} \
-    && cmake --build /build-cache --parallel ${BUILD_JOBS} \
+    && cmake --build /build-tree --parallel ${BUILD_JOBS} \
         --target transmission-daemon transmission-create \
     && mkdir -p /build/daemon /build/utils \
-    && cp /build-cache/daemon/transmission-daemon /build/daemon/ \
-    && cp /build-cache/utils/transmission-create /build/utils/ \
-    && echo "${SOURCE_REVISION}" > /build-cache/.source-revision \
+    && cp /build-tree/daemon/transmission-daemon /build/daemon/ \
+    && cp /build-tree/utils/transmission-create /build/utils/ \
+    && rm -rf /build-tree \
     && ccache --show-stats
 
 ENTRYPOINT ["python3", "/src/tools/profiling/benchmark.py"]
