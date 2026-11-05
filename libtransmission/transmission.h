@@ -124,7 +124,7 @@ void tr_sessionReloadBlocklists(tr_session* session);
  * @param timeout_secs specifies how long to wait on these announces,
  *        counted from when the session has finished its disk work.
  */
-void tr_sessionClose(tr_session* session, double timeout_secs = 15.0);
+void tr_sessionClose(tr_session* session, double timeout_secs = 5.0);
 
 /**
  * @brief Return the session's configuration directory.
