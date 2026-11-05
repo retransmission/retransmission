@@ -5,6 +5,7 @@
 
 #include "FilterBar.h"
 
+#include <span>
 #include <utility>
 
 #include <QtGui/QStandardItemModel>
@@ -282,7 +283,7 @@ void FilterBar::refreshPref(tr_quark key)
     }
 }
 
-void FilterBar::onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& changed_fields)
+void FilterBar::onTorrentsChanged(std::span<tr_torrent_id_t const> const ids, tr::app::TorrentFieldSet const& changed_fields)
 {
     Q_UNUSED(ids)
 

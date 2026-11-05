@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -157,6 +158,25 @@ TEST(AppRpcQueueTest, staysAliveUntilAParkedStepCompletes)
 
     parked(ok_response());
     EXPECT_EQ((std::vector<std::string>{ "second", "finally" }), events);
+}
+
+// A step whose `done` is destroyed unanswered, e.g. because the Session it would
+// have reached is gone, abandons the chain; the queue must not hold itself for it.
+TEST(AppRpcQueueTest, aStepThatDropsDoneReleasesTheQueue)
+{
+    auto token = std::make_shared<int>(0);
+    auto const weak = std::weak_ptr{ token };
+    auto later = 0;
+
+    RpcQueue::create()
+        .add([token](RpcClient::ResponseFunc /*done*/) {}) // dropped: no reply will come
+        .add([&later] { ++later; })
+        .finally([&later] { later += 10; })
+        .run();
+
+    token.reset();
+    EXPECT_TRUE(weak.expired()); // the queue, and the steps it held, are gone
+    EXPECT_EQ(0, later); // an abandoned chain neither continues nor finishes
 }
 
 } // namespace

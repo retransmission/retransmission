@@ -6,6 +6,7 @@
 #pragma once
 
 #include <bitset>
+#include <span>
 
 #include <small/map.hpp>
 
@@ -16,10 +17,11 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QWidget>
 
+#include <libtransmission/types.h> // tr_torrent_id_t
+
 #include <libtransmission-app/torrent.h>
 
 #include "Prefs.h"
-#include "Typedefs.h"
 
 class QLabel;
 class QString;
@@ -95,6 +97,6 @@ private slots:
     void applyText();
     void onActivityIndexChanged(int index);
     void onTextChanged(QString const& str);
-    void onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& fields);
+    void onTorrentsChanged(std::span<tr_torrent_id_t const> ids, tr::app::TorrentFieldSet const& fields);
     void onTrackerIndexChanged(int index);
 };

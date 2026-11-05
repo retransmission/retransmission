@@ -8,6 +8,8 @@
 #include <optional>
 #include <vector>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QDir>
 #include <QtCore/QTimer>
 
@@ -43,9 +45,8 @@ private slots:
     void onSourceChanged();
     void onDestinationChanged();
 
-    void onSessionUpdated();
-
 private:
+    void onSessionUpdated();
     void reload();
     void updateWidgetsLocality();
     void clearInfo();
@@ -61,4 +62,6 @@ private:
     Ui::OptionsDialog ui_ = {};
     std::optional<tr_torrent_metainfo> metainfo_;
     bool is_local_fs_ = {};
+
+    sigslot::scoped_connection session_connection_;
 };

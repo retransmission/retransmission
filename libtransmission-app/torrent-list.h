@@ -98,6 +98,10 @@ public:
     // `now` dates the `added` window. A slot must not call `update()` or `clear()`.
     void update(tr_variant::Map const& args, Coverage coverage, time_t now);
 
+    // Removes the rows of `ids`, reported as `removed`, as a response naming them
+    // would. For a removal this client asked for and the session confirmed.
+    void remove(Ids ids);
+
     // Removes every row as one run. Fires the row signals only: the session keeps its torrents.
     void clear();
 

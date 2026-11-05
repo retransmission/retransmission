@@ -22,8 +22,6 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
-#include <libtransmission-app/torrent-list.h>
-
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
@@ -116,8 +114,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
@@ -158,8 +155,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
@@ -209,8 +205,7 @@ private slots:
         setLocalPrefs(prefs, dl_dir);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = PrefsDialog{ session, prefs };
@@ -228,46 +223,13 @@ private slots:
         QVERIFY(status_label->isHidden());
         QVERIFY(date_label->isHidden());
 
-        session.refreshSessionInfo();
+        session.refresh_session_info();
         QVERIFY(waitUntil([status_label] { return !status_label->isHidden(); }));
         QVERIFY(!date_label->isHidden());
 
         session.stop();
         QVERIFY(status_label->isHidden());
         QVERIFY(date_label->isHidden());
-    }
-
-    // Showing the dialog fetches the blocklist info,
-    // because the session also updates the blocklist on its own schedule.
-    void showing_fetches_blocklist_info()
-    {
-        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
-        QVERIFY(QDir{}.mkpath(dl_dir));
-
-        auto prefs = Prefs{};
-        writeQuietSettings(sandboxDir());
-        setLocalPrefs(prefs, dl_dir);
-
-        auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
-        session.restart();
-
-        auto dialog = PrefsDialog{ session, prefs };
-        QVERIFY(drainFreeSpace(dialog));
-
-        auto const* const status_label = dialog.findChild<QLabel*>(QStringLiteral("blocklistStatusLabel"));
-        QVERIFY(status_label != nullptr);
-        if (status_label == nullptr) {
-            return;
-        }
-
-        QVERIFY(status_label->isHidden());
-
-        // Waiting for the label also drains the request's RpcQueue, which would otherwise leak under LSan.
-        dialog.show();
-        QVERIFY(waitUntil([status_label] { return !status_label->isHidden(); }));
-        dialog.hide();
     }
 
     // A widget that a checkbox enables must follow that checkbox's pref, both
@@ -284,8 +246,7 @@ private slots:
         prefs.set(TR_KEY_watch_dir_enabled, false);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = PrefsDialog{ session, prefs };
@@ -326,8 +287,7 @@ private slots:
         prefs.set(TR_KEY_alt_speed_time_enabled, true);
 
         auto rpc = RpcClient{};
-        auto torrents = tr::app::TorrentList{ prefs };
-        auto session = Session{ sandboxDir(), prefs, rpc, torrents };
+        auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
 
         auto dialog = std::make_unique<PrefsDialog>(session, prefs);

@@ -9,6 +9,8 @@
 #include <ctime>
 #include <memory>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
@@ -16,10 +18,11 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSystemTrayIcon>
 
+#include <libtransmission-app/torrent-list.h>
+
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"
-#include "Typedefs.h"
 #include "ui_MainWindow.h"
 
 class QAction;
@@ -122,7 +125,7 @@ private slots:
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
 
 private:
-    [[nodiscard]] torrent_ids_t getSelectedTorrents(bool with_metadata_only = false) const;
+    [[nodiscard]] tr::app::TorrentList::Ids getSelectedTorrents(bool with_metadata_only = false) const;
     void updateNetworkLabel();
     void refreshSoon(int fields);
 
@@ -191,6 +194,7 @@ private:
     static constexpr auto RefreshIcon = 1 << 5;
     int refresh_fields_ = {};
     QTimer refresh_timer_;
+    sigslot::scoped_connection stats_connection_;
 
     void refreshActionSensitivity();
     void refreshIcons();

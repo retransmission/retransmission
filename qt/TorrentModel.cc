@@ -29,11 +29,6 @@ namespace
 auto constexpr NameFields = Torrent::fields<TR_KEY_name>();
 auto constexpr IconFields = Torrent::fields<TR_KEY_file_count, TR_KEY_is_folder, TR_KEY_primary_mime_type>();
 
-[[nodiscard]] torrent_ids_t to_ids(TorrentList::Ids const& ids)
-{
-    return { std::begin(ids), std::end(ids) };
-}
-
 } // namespace
 
 TorrentModel::TorrentModel(TorrentList& torrents)
@@ -120,9 +115,11 @@ void TorrentModel::onChanged(TorrentList::Changes const& changes)
 {
     // Drop every stale conversion before the first dataChanged(): a sort
     // triggered by one span compares its rows against the others.
-    auto ids = torrent_ids_t{};
+    // `changed` is in row order, and the rows are in id order, so `ids` ascends.
+    auto ids = TorrentList::Ids{};
+    ids.reserve(std::size(changes.changed));
     for (auto const& change : changes.changed) {
-        ids.insert(change.id);
+        ids.push_back(change.id);
 
         auto& cache = rows_[change.row];
         if ((change.fields & NameFields).any()) {
@@ -151,22 +148,10 @@ void TorrentModel::onChanged(TorrentList::Changes const& changes)
     emit_spans(changes.inserted, [](size_t const row) { return row; });
 
     if (!std::empty(changes.edited)) {
-        emit torrentsEdited(to_ids(changes.edited));
-    }
-
-    if (!std::empty(changes.added)) {
-        emit torrentsAdded(to_ids(changes.added));
-    }
-
-    if (!std::empty(changes.need_info)) {
-        emit torrentsNeedInfo(to_ids(changes.need_info));
+        emit torrentsEdited(changes.edited);
     }
 
     if (!std::empty(ids)) {
         emit torrentsChanged(ids, changes.changed_fields);
-    }
-
-    if (!std::empty(changes.completed)) {
-        emit torrentsCompleted(to_ids(changes.completed));
     }
 }

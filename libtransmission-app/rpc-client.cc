@@ -86,6 +86,14 @@ tr_web& RpcClient::web()
     return *web_;
 }
 
+RpcResponse RpcClient::unreachable_response(std::string errmsg)
+{
+    auto response = RpcResponse{};
+    response.network_error = true;
+    response.errmsg = std::move(errmsg);
+    return response;
+}
+
 bool RpcClient::drop_if_stale(uint64_t const generation, ResponseFunc const& on_done) const
 {
     if (generation == generation_) {
@@ -93,10 +101,7 @@ bool RpcClient::drop_if_stale(uint64_t const generation, ResponseFunc const& on_
     }
 
     if (on_done) {
-        auto result = RpcResponse{};
-        result.network_error = true;
-        result.errmsg = "the RPC client stopped before the reply arrived";
-        on_done(std::move(result));
+        on_done(unreachable_response("the RPC client stopped before the reply arrived"));
     }
 
     return true;
@@ -112,6 +117,11 @@ void RpcClient::exec(tr_quark const method, tr_variant::Map args, ResponseFunc o
         api_compat::convert(req, network_style_);
         auto body = tr_variant_serde::json().compact().to_string(req);
         send_remote_request(std::move(body), std::move(on_done));
+    } else if (on_done) {
+        // Not started. Answer on the UI thread like every other reply, so a
+        // caller never sees its callback run inside exec().
+        run_on_ui_thread_(
+            [on_done = std::move(on_done)] mutable { on_done(unreachable_response("not connected to a session")); });
     }
 }
 

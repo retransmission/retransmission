@@ -5,8 +5,9 @@
 
 #pragma once
 
+#include <libtransmission-app/torrent-list.h>
+
 #include "BaseDialog.h"
-#include "Typedefs.h"
 #include "ui_RelocateDialog.h"
 
 class Prefs;
@@ -22,7 +23,7 @@ public:
         Session& session,
         Prefs const& prefs,
         TorrentModel const& model,
-        torrent_ids_t ids,
+        tr::app::TorrentList::Ids ids,
         QWidget* parent = nullptr);
     ~RelocateDialog() override = default;
     RelocateDialog(RelocateDialog&&) = delete;
@@ -38,7 +39,7 @@ private:
     [[nodiscard]] QString newLocation() const;
 
     Session& session_;
-    torrent_ids_t const ids_;
+    tr::app::TorrentList::Ids const ids_;
 
     Ui::RelocateDialog ui_ = {};
 

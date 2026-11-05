@@ -8,6 +8,7 @@
 #include <ctime>
 #include <functional>
 #include <future>
+#include <iterator> // std::empty()
 #include <memory>
 #include <optional>
 #include <string>
@@ -29,6 +30,7 @@
 #include <libtransmission/timer.h>
 #include <libtransmission/web.h>
 
+#include "fake-timer.h"
 #include "loopback-server.h"
 #include "test-fixtures.h"
 
@@ -206,65 +208,6 @@ TEST(BlocklistDecompress, rejectsCorruptArchive)
 // network, no threads, no timers. run_in_session_thread() runs inline, so every
 // test below is deterministic -- fetch responses are delivered explicitly.
 
-class MockTimer final : public tr::Timer
-{
-public:
-    void stop() override
-    {
-        is_running_ = false;
-    }
-    void set_callback(std::function<void()> callback) override
-    {
-        callback_ = std::move(callback);
-    }
-    void set_repeating(bool repeating = true) override
-    {
-        is_repeating_ = repeating;
-    }
-    void set_interval(std::chrono::milliseconds interval) override
-    {
-        interval_ = interval;
-    }
-    void start() override
-    {
-        is_running_ = true;
-    }
-    [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
-    {
-        return interval_;
-    }
-    [[nodiscard]] bool is_repeating() const noexcept override
-    {
-        return is_repeating_;
-    }
-
-    // fire the timer callback as if it had elapsed
-    void fire() const
-    {
-        if (callback_) {
-            callback_();
-        }
-    }
-
-    std::function<void()> callback_;
-    std::chrono::milliseconds interval_ = {};
-    bool is_repeating_ = false;
-    bool is_running_ = false;
-};
-
-class MockTimerMaker final : public tr::TimerMaker
-{
-public:
-    [[nodiscard]] std::unique_ptr<tr::Timer> create() override
-    {
-        auto timer = std::make_unique<MockTimer>();
-        last_ = timer.get();
-        return timer;
-    }
-
-    MockTimer* last_ = nullptr;
-};
-
 class MockMediator final : public tr::blocklist::Updater::Mediator
 {
 public:
@@ -355,13 +298,14 @@ public:
         respond(std::size(pending_) - 1U, status, std::move(body));
     }
 
-    [[nodiscard]] MockTimer* timer() const
+    // the timer the updater made last, or nullptr before it made one
+    [[nodiscard]] FakeTimer* timer() const
     {
-        return timer_maker_.last_;
+        return std::empty(timer_maker_.timers()) ? nullptr : timer_maker_.timers().back();
     }
 
 private:
-    MockTimerMaker timer_maker_;
+    FakeTimerMaker timer_maker_;
     std::vector<tr_web::FetchDoneFunc> pending_;
 };
 
@@ -575,8 +519,8 @@ TEST(BlocklistUpdater, armsTimerWhenEnabled)
 
     auto* const timer = mediator.timer();
     ASSERT_NE(nullptr, timer);
-    EXPECT_TRUE(timer->is_running_);
-    EXPECT_FALSE(timer->is_repeating_); // single-shot
+    EXPECT_TRUE(timer->isRunning());
+    EXPECT_FALSE(timer->is_repeating()); // single-shot
 }
 
 TEST(BlocklistUpdater, disarmsTimerWhenBlocklistDisabled)
@@ -586,7 +530,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenBlocklistDisabled)
     auto updater = tr::blocklist::Updater{ mediator };
 
     updater.update_timer();
-    EXPECT_FALSE(mediator.timer()->is_running_);
+    EXPECT_FALSE(mediator.timer()->isRunning());
 }
 
 TEST(BlocklistUpdater, disarmsTimerWhenUrlEmpty)
@@ -596,7 +540,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenUrlEmpty)
     auto updater = tr::blocklist::Updater{ mediator };
 
     updater.update_timer();
-    EXPECT_FALSE(mediator.timer()->is_running_);
+    EXPECT_FALSE(mediator.timer()->isRunning());
 }
 
 TEST(BlocklistUpdater, disarmsTimerWhenUpdatesDisabled)
@@ -606,7 +550,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenUpdatesDisabled)
     auto updater = tr::blocklist::Updater{ mediator };
 
     updater.update_timer();
-    EXPECT_FALSE(mediator.timer()->is_running_);
+    EXPECT_FALSE(mediator.timer()->isRunning());
 }
 
 TEST(BlocklistUpdater, autoUpdateTimerFetchesAndReArms)
@@ -617,12 +561,12 @@ TEST(BlocklistUpdater, autoUpdateTimerFetchesAndReArms)
 
     auto* const timer = mediator.timer();
     ASSERT_NE(nullptr, timer);
-    ASSERT_TRUE(timer->is_running_);
+    ASSERT_TRUE(timer->isRunning());
 
     // firing the timer starts a fetch and re-arms for the next interval
     timer->fire();
     EXPECT_EQ(1, mediator.fetch_count_);
-    EXPECT_TRUE(timer->is_running_);
+    EXPECT_TRUE(timer->isRunning());
 
     // and the downloaded list is installed
     mediator.respond(200, std::string{ Rules });

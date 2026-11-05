@@ -176,15 +176,10 @@ TEST_F(AppTorrentFilterTest, countsTheTorrentsPerSitename)
     auto const tracker = [](std::string_view const sitename, int64_t const tier = 0) {
         return make_tracker(fmt::format("https://tracker.{:s}/announce", sitename), sitename, tier);
     };
-    auto args = tr_variant::Map{ 1U };
-    args.try_emplace(
-        TR_KEY_torrents,
-        make_list(
-            make_row(1, kv(TR_KEY_trackers, make_list(tracker("a.example"sv)))),
-            make_row(
-                2,
-                kv(TR_KEY_trackers, make_list(tracker("a.example"sv), tracker("a.example"sv, 1), tracker("b.example"sv)))),
-            make_row(3)));
+    auto const args = make_args(make_list(
+        make_row(1, kv(TR_KEY_trackers, make_list(tracker("a.example"sv)))),
+        make_row(2, kv(TR_KEY_trackers, make_list(tracker("a.example"sv), tracker("a.example"sv, 1), tracker("b.example"sv)))),
+        make_row(3)));
 
     auto list = tr::app::TorrentList{ prefs_ };
     list.update(args, tr::app::TorrentList::Coverage::Complete, time_t{ 1 });

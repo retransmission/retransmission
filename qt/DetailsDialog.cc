@@ -11,9 +11,11 @@
 #include <ctime>
 #include <functional>
 #include <initializer_list>
+#include <iterator> // std::back_inserter()
 #include <map>
 #include <optional>
 #include <set>
+#include <span>
 #include <type_traits>
 #include <utility>
 
@@ -391,7 +393,7 @@ DetailsDialog::DetailsDialog(Session& session, Prefs& prefs, TorrentModel const&
     connect(&model_, &TorrentModel::torrentsChanged, this, &DetailsDialog::onTorrentsChanged);
     connect(&model_, &TorrentModel::torrentsEdited, this, &DetailsDialog::onTorrentsEdited);
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &DetailsDialog::refreshPref);
-    connect(&session_, &Session::sessionCalled, this, &DetailsDialog::onSessionCalled);
+    set_done_connection_ = session_.torrent_set_done.connect_scoped(&DetailsDialog::onTorrentSetDone, this);
 
     // call refreshModel periodically
     connect(&model_timer_, &QTimer::timeout, this, &DetailsDialog::refreshModel);
@@ -420,16 +422,15 @@ void DetailsDialog::resizeEvent(QResizeEvent* event)
     prefs_.set(TR_KEY_details_window_height, rect.height());
 }
 
-void DetailsDialog::setIds(torrent_ids_t const& ids)
+void DetailsDialog::setIds(tr::app::TorrentList::Ids ids)
 {
     if (ids != ids_) {
         ui_.filesView->clear();
 
-        ids_ = ids;
-        session_.refreshDetailInfo(ids_);
+        ids_ = std::move(ids);
+        session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailAll);
         labels_need_refresh_ = true;
 
-        refreshModel();
         refreshUI();
     }
 }
@@ -462,44 +463,37 @@ void DetailsDialog::bindPrefCheckBox(QAbstractButton* const check, tr_quark cons
 
 void DetailsDialog::refreshModel()
 {
-    if (!ids_.empty()) {
-        session_.refreshExtraStats(ids_);
-    }
+    session_.refresh_torrents(ids_, tr::app::TorrentKeySet::DetailStats);
 }
 
-void DetailsDialog::onTorrentsEdited(torrent_ids_t const& ids)
+void DetailsDialog::onTorrentsEdited(std::span<tr_torrent_id_t const> const ids)
 {
     // refresh the edited torrents that are on display here
-    auto interesting_ids = torrent_ids_t{};
+    auto interesting_ids = tr::app::TorrentList::Ids{};
+    std::ranges::set_intersection(ids_, ids, std::back_inserter(interesting_ids));
+    session_.refresh_torrents(std::move(interesting_ids), tr::app::TorrentKeySet::DetailInfo);
+}
 
-    for (auto const id : ids) {
-        if (ids_.contains(id)) {
-            interesting_ids.insert(id);
-        }
-    }
-
-    if (!interesting_ids.empty()) {
-        session_.refreshDetailInfo(interesting_ids);
+void DetailsDialog::scheduleRefreshUI()
+{
+    if (!ui_debounce_timer_.isActive()) {
+        ui_debounce_timer_.start(DebounceIntervalMSec);
     }
 }
 
-void DetailsDialog::onTorrentsChanged(torrent_ids_t const& ids, tr::app::TorrentFieldSet const& /*fields*/)
+void DetailsDialog::onTorrentsChanged(std::span<tr_torrent_id_t const> const ids, tr::app::TorrentFieldSet const& /*fields*/)
 {
-    if (ui_debounce_timer_.isActive()) {
-        return;
+    if (std::ranges::any_of(ids_, [&ids](auto const id) { return std::ranges::binary_search(ids, id); })) {
+        scheduleRefreshUI();
     }
-
-    if (!std::ranges::any_of(ids_, [&ids](auto const id) { return ids.contains(id); })) {
-        return;
-    }
-
-    ui_debounce_timer_.start(DebounceIntervalMSec);
 }
 
-void DetailsDialog::onSessionCalled(Session::Tag const tag)
+void DetailsDialog::onTorrentSetDone(tr::app::Session::Tag const tag)
 {
+    // The Session re-fetched before firing. canEdit() held refreshUI() back, so start it here:
+    // a set that changed nothing fires no `torrentsChanged` to do it.
     if (pending_changes_tags_.erase(tag) > 0 && canEdit()) {
-        refreshModel();
+        scheduleRefreshUI();
     }
 }
 
@@ -521,10 +515,6 @@ void DetailsDialog::onButtonBoxClicked(QAbstractButton* const button)
 
     static auto const Separators = QRegularExpression{ QStringLiteral("[,;]\\s*") };
     torrentSet(TR_KEY_labels, labels_text.split(Separators, Qt::SkipEmptyParts));
-
-    if (!ids_.empty()) {
-        session_.refreshDetailInfo(ids_);
-    }
 }
 
 void DetailsDialog::refreshUI()
@@ -1006,7 +996,7 @@ void DetailsDialog::onAddTrackerClicked()
         QMessageBox::warning(this, tr("Error"), tr("No new URLs found."));
     } else {
         for (auto const& [ids, urls] : ids_to_urls) {
-            torrentSet(torrent_ids_t{ std::begin(ids), std::end(ids) }, TR_KEY_tracker_add, urls);
+            torrentSet(tr::app::TorrentList::Ids{ std::begin(ids), std::end(ids) }, TR_KEY_tracker_add, urls);
         }
     }
 }
@@ -1048,7 +1038,7 @@ void DetailsDialog::onRemoveTrackerClicked()
 
     // batch all of a tracker's torrents into one command
     for (auto const& [torrent_id, tracker_ids] : torrent_id_to_tracker_ids) {
-        torrentSet(torrent_ids_t{ torrent_id }, TR_KEY_tracker_remove, tracker_ids);
+        torrentSet({ torrent_id }, TR_KEY_tracker_remove, tracker_ids);
     }
 
     selection_model->clearSelection();
@@ -1183,7 +1173,7 @@ void DetailsDialog::onFileWantedChanged(file_indices_t const& indices, bool cons
 
 void DetailsDialog::onPathEdited(QString const& old_path, QString const& new_name)
 {
-    session_.torrentRenamePath(ids_, old_path, new_name);
+    session_.rename_torrent_path(ids_, old_path.toStdString(), new_name.toStdString());
 }
 
 void DetailsDialog::onOpenRequested(QString const& path) const

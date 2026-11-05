@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <chrono>
 #include <functional>
 #include <optional>
 #include <utility>
@@ -18,7 +17,6 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QSignalBlocker>
 #include <QtCore/QTime>
-#include <QtCore/QTimer>
 
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
@@ -46,11 +44,6 @@
 #include "Utils.h"
 
 using namespace tr;
-
-namespace
-{
-auto constexpr BlocklistInfoRefreshInterval = std::chrono::seconds{ 15 };
-} // namespace
 
 // ---
 
@@ -576,13 +569,9 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* const parent)
 
     updateLocality();
 
-    connect(&session_, &Session::sessionUpdated, this, &PrefsDialog::sessionUpdated);
+    session_connection_ = session_.session_updated.connect_scoped(&PrefsDialog::sessionUpdated, this);
     // stop() clears the blocklist info, which the next session reports anew.
     connect(&session_, &Session::stopped, this, &PrefsDialog::updateBlocklistLabel);
-    // The session also updates the blocklist on its own schedule.
-    // setVisible() runs this timer while the dialog is shown.
-    blocklist_info_timer_.setInterval(BlocklistInfoRefreshInterval);
-    connect(&blocklist_info_timer_, &QTimer::timeout, &session_, &Session::refreshBlocklistInfo);
 
     adjustSize();
 }
@@ -592,18 +581,6 @@ PrefsDialog::~PrefsDialog()
     // Hide here, not in ~QDialog: hiding takes focus from the dialog,
     // which runs focus-out handlers that save prefs through this class's members.
     hide();
-}
-
-void PrefsDialog::setVisible(bool const visible)
-{
-    blocklist_info_timer_.stop();
-
-    if (visible) {
-        session_.refreshBlocklistInfo();
-        blocklist_info_timer_.start();
-    }
-
-    BaseDialog::setVisible(visible);
 }
 
 // ---

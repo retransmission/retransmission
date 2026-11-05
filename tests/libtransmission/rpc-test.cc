@@ -756,6 +756,18 @@ TEST_F(RpcTest, torrentGet)
     tr_torrentRemove(tor, false);
 }
 
+// `tr_torrentRemove()` queues the removal on the session thread; a request that
+// runs before that queue drains must already leave the torrent out.
+TEST_F(RpcTest, torrentGetOmitsATorrentWhoseRemovalIsPending)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(torrentGetFirst(session_, { TR_KEY_id }).value_if<int64_t>(TR_KEY_id), tr_torrentId(tor));
+
+    tr_torrentRemove(tor, false);
+    EXPECT_TRUE(std::empty(torrentGetFirst(session_, { TR_KEY_id })));
+}
+
 TEST_F(RpcTest, torrentGetIsFolder)
 {
     // the zero torrent holds three files, so its content lands in a directory
