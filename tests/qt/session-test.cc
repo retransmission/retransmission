@@ -15,12 +15,14 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QRegularExpression>
+#include <QMessageBox>
 #include <QTest>
 #include <QTimer>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
 
+#include "AddData.h"
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
@@ -168,6 +170,38 @@ private slots:
             });
         };
         QVERIFY(waitUntil(has_session_set));
+    }
+
+    // A failed request is worth a message box only while the app is on screen.
+    static void failed_add_shows_a_message_box_unless_shutting_down_data()
+    {
+        QTest::addColumn<bool>("shutting_down");
+        QTest::newRow("running") << false;
+        QTest::newRow("shutting down") << true;
+    }
+    void failed_add_shows_a_message_box_unless_shutting_down()
+    {
+        QFETCH(bool const, shutting_down);
+
+        auto prefs = Prefs{};
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        if (shutting_down) {
+            session.setShuttingDown();
+        }
+
+        // Never started, the session fails each request with no round trip, so replies land in the order sent.
+        session.addTorrent(AddData{ QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567") });
+        auto done = false;
+        session.send(TR_KEY_session_stats, {}, [&done](auto const& /*response*/) { done = true; });
+        QVERIFY(waitUntil([&done] { return done; }));
+
+        auto const boxes = QApplication::topLevelWidgets();
+        auto const n_boxes = std::ranges::count_if(boxes, [](QWidget const* const widget) {
+            return qobject_cast<QMessageBox const*>(widget) != nullptr;
+        });
+        QCOMPARE(n_boxes, shutting_down ? 0 : 1);
+        qDeleteAll(boxes);
     }
 
     // The reply to a request sent before a restart arrives after stop(), so RpcClient drops it as a network error.

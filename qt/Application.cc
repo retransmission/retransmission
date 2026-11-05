@@ -10,6 +10,7 @@
 #include <span>
 #include <utility>
 
+#include <QtCore/QEventLoop>
 #include <QtCore/QFileInfo>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QRegularExpression>
@@ -18,6 +19,12 @@
 
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSystemTrayIcon>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+
+#include <QtCore/QTimer>
+#endif
 
 #ifdef QT_DBUS_LIB
 #include <QtDBus/QDBusConnection>
@@ -174,7 +181,20 @@ Application::Application(
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
     watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
-    connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
+#ifdef Q_OS_WIN
+    // Windows ends the process soon after this signal's slots return, so the close has to finish here.
+    connect(
+        this,
+        &QGuiApplication::commitDataRequest,
+        this,
+        [this] {
+            beginShutdown();
+            session_->wait_for_close();
+            QTimer::singleShot(0, this, [] { quit(); });
+        },
+        Qt::DirectConnection);
+#endif
+
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
@@ -241,6 +261,51 @@ Application::Application(
 }
 
 Application::~Application() = default;
+
+void Application::beginShutdown()
+{
+    if (config_dir_contended_ || session_->isShuttingDown()) {
+        return;
+    }
+
+    saveGeometry();
+
+    watch_dir_->setPath(QString{}, false);
+
+    // Nobody is left to read a message box, or to take a launch.
+    session_->setShuttingDown();
+    startup_coordinator_->withdraw();
+
+    // A dialog commits its pending edits when it hides, so this comes before the save.
+    // The save still misses a session key's edit that the session hasn't applied yet.
+    setQuitOnLastWindowClosed(false);
+    for (auto* const widget : topLevelWidgets()) {
+        widget->hide();
+    }
+
+    auto const message = tr("Shutting down…");
+    window_->setShuttingDown(message);
+
+#ifdef Q_OS_WIN
+    // Windows ignores the reason unless it has a window, and hide() can change the window's id.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr): a WId is an HWND
+    ::ShutdownBlockReasonCreate(reinterpret_cast<HWND>(window_->effectiveWinId()), message.toStdWString().c_str());
+#endif
+
+    session_->shut_down();
+}
+
+void Application::shutdown()
+{
+    beginShutdown();
+
+    // An event loop rather than wait_for_close(), so that the tray icon stays responsive.
+    if (session_->is_closing()) {
+        auto loop = QEventLoop{};
+        auto const closed_connection = session_->closed.connect_scoped([&loop] { loop.quit(); });
+        loop.exec();
+    }
+}
 
 bool Application::configDirIsContended() const noexcept
 {
@@ -425,13 +490,6 @@ void Application::addTorrent(AddData addme) const
     }
 
     raise();
-}
-
-// ---
-
-std::optional<tr::Settings> Application::embedded_session_settings() const
-{
-    return session_->embedded_settings();
 }
 
 // ---
