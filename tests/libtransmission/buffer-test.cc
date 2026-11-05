@@ -40,8 +40,27 @@ TEST_F(BufferTest, reserveSpaceCommitsOnlyWrittenBytes)
     EXPECT_EQ("payloadtail"sv, buf.to_string_view());
     buf.drain(first.size());
     EXPECT_EQ(last, buf.to_string_view());
+    // The tail has 1020 free bytes, and the drained bytes make up the rest.
+    EXPECT_EQ(1025U, buf.reserve_space(1025).second);
+    EXPECT_EQ(last, buf.to_string_view());
     buf.clear();
     EXPECT_TRUE(buf.empty());
+}
+
+TEST_F(BufferTest, reserveSpaceGrowthKeepsLiveBytes)
+{
+    auto const live = "live"sv;
+
+    auto buf = tr::StackBuffer<16>{};
+    buf.add("drained"sv);
+    buf.add(live);
+    buf.drain("drained"sv.size());
+
+    // Too large for the free tail plus the drained bytes, so each call grows.
+    EXPECT_EQ(64U, buf.reserve_space(64).second);
+    EXPECT_EQ(live, buf.to_string_view());
+    EXPECT_EQ(4096U, buf.reserve_space(4096).second);
+    EXPECT_EQ(live, buf.to_string_view());
 }
 
 TEST_F(BufferTest, startsWithInSingleSegment)

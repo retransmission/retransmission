@@ -6,21 +6,20 @@
 #pragma once
 
 #include <algorithm> // for std::copy_n
+#include <array>
 #include <cstddef> // size_t
-#include <memory> // std::allocator
+#include <memory> // std::unique_ptr
 #include <ratio>
 #include <span>
 #include <string>
 #include <string_view>
-#include <type_traits>
+#include <utility>
 
 #ifdef _WIN32
 #include <winsock2.h>
 #else
 #include <arpa/inet.h>
 #endif
-
-#include <small/vector.hpp>
 
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_htonll(), tr_ntohll()
@@ -132,6 +131,7 @@ class BufferWriter
 
 public:
     virtual ~BufferWriter() = default;
+    // These bytes are uninitialized, so callers must commit only what they write.
     [[nodiscard]] virtual std::pair<value_type*, size_t> reserve_space(size_t n_bytes) = 0;
     virtual void commit_space(size_t n_bytes) = 0;
 
@@ -202,9 +202,9 @@ class StackBuffer final
     , public BufferWriter<value_type>
 {
 public:
-    // Value-initialization must not clear unused inline storage.
+    // Not `= default`: `StackBuffer{}` would then zero the whole inline array.
     // NOLINTNEXTLINE(modernize-use-equals-default)
-    StackBuffer()
+    StackBuffer() noexcept
     {
     }
     ~StackBuffer() override = default;
@@ -226,7 +226,7 @@ public:
 
     [[nodiscard]] value_type const* data() const noexcept override
     {
-        return storage() + begin_pos_;
+        return buf_ + begin_pos_;
     }
 
     void drain(size_t n_bytes) override
@@ -241,20 +241,28 @@ public:
 
     std::pair<value_type*, size_t> reserve_space(size_t n_bytes) override
     {
-        if (auto const free_at_end = buf_.size() - end_pos_; free_at_end < n_bytes) {
+        if (auto const free_at_end = capacity_ - end_pos_; free_at_end < n_bytes) {
+            auto const size = this->size();
             if (auto const total_free = begin_pos_ + free_at_end; total_free >= n_bytes) {
                 // move data so that all free space is at the end
-                auto const size = this->size();
-                std::copy(data(), data() + size, storage());
-                begin_pos_ = 0;
-                end_pos_ = size;
-            } else // even `total_free` is not enough, so resize
+                std::copy(data(), data() + size, buf_);
+            } else // even `total_free` is not enough, so grow
             {
-                buf_.resize(end_pos_ + n_bytes);
+                auto const grown = capacity_ * static_cast<size_t>(GrowthFactor::num) / static_cast<size_t>(GrowthFactor::den);
+                auto const capacity = std::max(size + n_bytes, grown);
+                // NOLINTNEXTLINE(modernize-avoid-c-arrays)
+                auto heap = std::make_unique_for_overwrite<value_type[]>(capacity);
+                std::copy(data(), data() + size, heap.get());
+                heap_ = std::move(heap);
+                buf_ = heap_.get();
+                capacity_ = capacity;
             }
+            begin_pos_ = 0;
+            end_pos_ = size;
         }
 
-        return { storage() + end_pos_, n_bytes };
+        // These bytes are uninitialized, so callers must commit only what they write.
+        return { buf_ + end_pos_, n_bytes };
     }
 
     void commit_space(size_t n_bytes) override
@@ -263,29 +271,11 @@ public:
     }
 
 private:
-    // Resizing leaves these unset, so reserved space is not cleared just to
-    // be overwritten by the writer.
-    struct Element {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init, modernize-use-equals-default)
-        Element() noexcept
-        {
-        }
-
-        value_type value;
-    };
-    static_assert(sizeof(Element) == sizeof(value_type) && std::is_trivially_copyable_v<Element>);
-
-    [[nodiscard]] value_type const* storage() const noexcept
-    {
-        return reinterpret_cast<value_type const*>(std::data(buf_));
-    }
-
-    [[nodiscard]] value_type* storage() noexcept
-    {
-        return reinterpret_cast<value_type*>(std::data(buf_));
-    }
-
-    small::vector<Element, N, std::allocator<Element>, std::true_type, size_t, GrowthFactor> buf_ = {};
+    // Not cleared: writers overwrite whatever they reserve.
+    std::array<value_type, N> inline_;
+    std::unique_ptr<value_type[]> heap_; // NOLINT(modernize-avoid-c-arrays)
+    value_type* buf_ = inline_.data(); // `heap_` once it is allocated
+    size_t capacity_ = N;
     size_t begin_pos_ = {};
     size_t end_pos_ = {};
 };
