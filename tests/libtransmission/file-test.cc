@@ -904,6 +904,22 @@ TEST_F(FileTest, pathRename)
     tr_sys_path_remove(path1);
 }
 
+TEST_F(FileTest, pathRenameReplacesAReadOnlyFile)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const source = tr_pathbuf{ test_dir, "/source"sv };
+    auto const target = tr_pathbuf{ test_dir, "/target"sv };
+    createFileWithContents(source, "new");
+    createFileWithContents(target, "old");
+    makeReadOnly(target);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_sys_path_rename(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    expectContents(target, "new"sv);
+    EXPECT_FALSE(tr_sys_path_exists(source));
+}
+
 TEST_F(FileTest, pathIsSameFilesystem)
 {
     auto const test_dir = createTestDir(currentTestName());
