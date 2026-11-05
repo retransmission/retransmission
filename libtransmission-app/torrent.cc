@@ -17,6 +17,7 @@
 
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/types.h"
 #include "libtransmission/values.h"
 #include "libtransmission/variant.h"
@@ -137,7 +138,7 @@ void Torrent::finish_update(TorrentFieldSet const& changed)
 
 bool Torrent::includes_tracker(std::string_view const sitename) const noexcept
 {
-    return std::ranges::binary_search(sitenames_, sitename);
+    return std::ranges::binary_search(sitenames_, sitename, {}, &tr::shared_string::sv);
 }
 
 std::optional<double> Torrent::effective_seed_ratio() const

@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/shared-string.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/types.h>
 
@@ -184,7 +185,10 @@ TEST_F(AppTorrentFilterTest, countsTheTorrentsPerSitename)
     auto list = tr::app::TorrentList{ prefs_ };
     list.update(args, tr::app::TorrentList::Coverage::Complete, time_t{ 1 });
 
-    auto const expected = std::map<std::string_view, int>{ { "a.example"sv, 2 }, { "b.example"sv, 1 } };
+    auto const expected = std::map<tr::shared_string, int>{
+        { tr::shared_string{ "a.example"sv }, 2 },
+        { tr::shared_string{ "b.example"sv }, 1 },
+    };
     EXPECT_EQ(expected, tr::app::count_torrents_per_sitename(list));
 }
 

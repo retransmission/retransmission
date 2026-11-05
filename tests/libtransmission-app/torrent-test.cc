@@ -5,6 +5,8 @@
 
 #include <cstddef> // size_t
 #include <cstdint>
+#include <initializer_list>
+#include <iterator>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -166,6 +168,11 @@ auto constexpr HashString = "f0e1d2c3b4a5968778695a4b3c2d1e0f10203040"sv;
     return row;
 }
 
+[[nodiscard]] std::vector<tr::shared_string> pooled(std::initializer_list<std::string_view> const strings)
+{
+    return { std::begin(strings), std::end(strings) };
+}
+
 [[nodiscard]] tr_variant::Map make_metadata_row(int64_t const have, int64_t const size)
 {
     auto row = tr_variant::Map{ 2U };
@@ -217,7 +224,7 @@ TEST_F(AppTorrentTest, parsesObjectRow)
     EXPECT_TRUE(tor.is_folder());
     EXPECT_TRUE(tor.is_private());
     EXPECT_TRUE(tor.is_stalled());
-    EXPECT_EQ(tor.labels(), (std::vector<std::string>{ "red", "green" }));
+    EXPECT_EQ(tor.labels(), pooled({ "red", "green" }));
     EXPECT_EQ(tor.left_until_done(), Storage(16, Storage::Units::Bytes));
     EXPECT_FALSE(tor.is_done());
     EXPECT_EQ(tor.manual_announce_time(), 1'700'000'005);
@@ -281,7 +288,7 @@ TEST_F(AppTorrentTest, parsesObjectRow)
     ASSERT_EQ(std::size(tor.tracker_stats()), 1U);
     EXPECT_EQ(tor.tracker_stats()[0].announce, "https://tracker.example.com/announce");
     EXPECT_EQ(tor.tracker_stats()[0].sitename, "example");
-    EXPECT_EQ(tor.sitenames(), (std::vector<std::string>{ "example" }));
+    EXPECT_EQ(tor.sitenames(), pooled({ "example" }));
     EXPECT_TRUE(tor.includes_tracker("example"sv));
     EXPECT_FALSE(tor.includes_tracker("other"sv));
 
@@ -613,7 +620,7 @@ TEST_F(AppTorrentTest, sitenamesAreSortedUniqueAndDerivedWhenMissing)
 
     ASSERT_EQ(std::size(tor.tracker_stats()), 4U);
     EXPECT_EQ(tor.tracker_stats()[2].sitename, "mid");
-    EXPECT_EQ(tor.sitenames(), (std::vector<std::string>{ "alpha", "mid", "zed" }));
+    EXPECT_EQ(tor.sitenames(), pooled({ "alpha", "mid", "zed" }));
     EXPECT_TRUE(tor.includes_tracker("mid"sv));
     EXPECT_FALSE(tor.includes_tracker("example"sv));
 }
@@ -627,13 +634,87 @@ TEST_F(AppTorrentTest, derivedSitenamesFollowTheirAnnounceUrls)
                                    make_tracker("https://tracker.alpha.org/"sv, ""sv, 0),
                                    make_tracker("https://tracker.beta.org/"sv, ""sv, 1))))
                     .any());
-    EXPECT_EQ(tor.sitenames(), (std::vector<std::string>{ "alpha", "beta" }));
+    EXPECT_EQ(tor.sitenames(), pooled({ "alpha", "beta" }));
 
     // removing the first tracker loads the second into its entry
     EXPECT_TRUE(tor.update(make_row(TR_KEY_trackers, make_list(make_tracker("https://tracker.beta.org/"sv, ""sv, 1)))).any());
     ASSERT_EQ(std::size(tor.tracker_stats()), 1U);
     EXPECT_EQ(tor.tracker_stats()[0].sitename, "beta");
-    EXPECT_EQ(tor.sitenames(), (std::vector<std::string>{ "beta" }));
+    EXPECT_EQ(tor.sitenames(), pooled({ "beta" }));
+}
+
+TEST_F(AppTorrentTest, torrentsOnOneTrackerShareOneSitename)
+{
+    static auto constexpr Announce = "https://tracker.example.com/announce"sv;
+
+    auto const trackers = [](std::string_view const sitename) {
+        return make_row(TR_KEY_trackers, make_list(make_tracker(Announce, sitename)));
+    };
+
+    auto tor_a = Torrent{ prefs_, 1 };
+    auto tor_b = Torrent{ prefs_, 2 };
+    auto tor_derived = Torrent{ prefs_, 3 };
+    EXPECT_TRUE(tor_a.update(trackers("example"sv)).any());
+    EXPECT_TRUE(tor_b.update(trackers("example"sv)).any());
+    EXPECT_TRUE(tor_derived.update(trackers({})).any());
+
+    ASSERT_EQ(std::size(tor_a.sitenames()), 1U);
+    ASSERT_EQ(std::size(tor_b.sitenames()), 1U);
+    ASSERT_EQ(std::size(tor_derived.sitenames()), 1U);
+
+    // equal shared_strings have one pooled copy of the text
+    EXPECT_EQ(tor_a.sitenames().front(), tor_b.sitenames().front());
+    EXPECT_EQ(tor_a.sitenames().front(), tor_derived.sitenames().front());
+    EXPECT_EQ(tor_a.sitenames().front().c_str(), tor_b.sitenames().front().c_str());
+    EXPECT_EQ(tor_a.sitenames().front().c_str(), tor_derived.sitenames().front().c_str());
+}
+
+TEST_F(AppTorrentTest, torrentsShareTheirRepeatedStrings)
+{
+    auto const make_shared_row = [] {
+        auto stat = make_tracker("https://tracker.example.com/announce"sv, "example"sv);
+        stat.try_emplace(TR_KEY_host, "tracker.example.com:443"sv);
+        stat.try_emplace(TR_KEY_last_announce_result, "Success"sv);
+        stat.try_emplace(TR_KEY_last_scrape_result, "Tracker gave HTTP response code 404"sv);
+
+        auto peer = make_peer("10.0.0.1"sv, 100);
+        peer.try_emplace(TR_KEY_client_name, "Transmission 4.0.6"sv);
+
+        auto row = tr_variant::Map{ 5U };
+        row.try_emplace(TR_KEY_labels, make_list("red"sv));
+        row.try_emplace(TR_KEY_peers, make_list(std::move(peer)));
+        row.try_emplace(TR_KEY_primary_mime_type, "text/plain"sv);
+        row.try_emplace(TR_KEY_tracker_list, "https://tracker.example.com/announce\n"sv);
+        row.try_emplace(TR_KEY_tracker_stats, make_list(std::move(stat)));
+        return row;
+    };
+
+    auto tor_a = Torrent{ prefs_, 1 };
+    auto tor_b = Torrent{ prefs_, 2 };
+    EXPECT_TRUE(tor_a.update(make_shared_row()).any());
+    EXPECT_TRUE(tor_b.update(make_shared_row()).any());
+
+    ASSERT_EQ(std::size(tor_a.labels()), 1U);
+    ASSERT_EQ(std::size(tor_b.labels()), 1U);
+    ASSERT_EQ(std::size(tor_a.peers()), 1U);
+    ASSERT_EQ(std::size(tor_b.peers()), 1U);
+    ASSERT_EQ(std::size(tor_a.tracker_stats()), 1U);
+    ASSERT_EQ(std::size(tor_b.tracker_stats()), 1U);
+
+    auto const expect_shared = [](tr::shared_string const& lhs, tr::shared_string const& rhs, std::string_view const text) {
+        EXPECT_EQ(lhs, text);
+        EXPECT_EQ(lhs.c_str(), rhs.c_str());
+    };
+
+    auto const& stat_a = tor_a.tracker_stats().front();
+    auto const& stat_b = tor_b.tracker_stats().front();
+    expect_shared(stat_a.host, stat_b.host, "tracker.example.com:443"sv);
+    expect_shared(stat_a.last_announce_result, stat_b.last_announce_result, "Success"sv);
+    expect_shared(stat_a.last_scrape_result, stat_b.last_scrape_result, "Tracker gave HTTP response code 404"sv);
+    expect_shared(tor_a.labels().front(), tor_b.labels().front(), "red"sv);
+    expect_shared(tor_a.peers().front().client_name, tor_b.peers().front().client_name, "Transmission 4.0.6"sv);
+    expect_shared(tor_a.primary_mime_type(), tor_b.primary_mime_type(), "text/plain"sv);
+    expect_shared(tor_a.tracker_list(), tor_b.tracker_list(), "https://tracker.example.com/announce\n"sv);
 }
 
 TEST_F(AppTorrentTest, peersAndWebseedsReportListChanges)

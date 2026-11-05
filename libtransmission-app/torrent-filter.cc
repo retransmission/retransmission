@@ -9,10 +9,10 @@
 #include <map>
 #include <optional>
 #include <string>
-#include <string_view>
 #include <utility>
 
 #include "libtransmission/quark.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h" // tr_strv_strip()
 
 #include "libtransmission-app/display-modes.h"
@@ -68,9 +68,9 @@ std::array<int, ShowModeCount> count_torrents_per_mode(TorrentList const& torren
     return counts;
 }
 
-std::map<std::string_view, int> count_torrents_per_sitename(TorrentList const& torrents)
+std::map<tr::shared_string, int> count_torrents_per_sitename(TorrentList const& torrents)
 {
-    auto counts = std::map<std::string_view, int>{};
+    auto counts = std::map<tr::shared_string, int>{};
 
     for (auto const& tor : torrents.torrents()) {
         for (auto const& sitename : tor.sitenames()) {

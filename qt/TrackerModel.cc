@@ -34,7 +34,7 @@ QVariant TrackerModel::data(QModelIndex const& index, int role) const
             break;
 
         case Qt::DecorationRole:
-            var = QIcon{ trApp->find_favicon(tracker_info.st.sitename) };
+            var = QIcon{ trApp->find_favicon(tracker_info.st.sitename.sv()) };
             break;
 
         case TrackerRole:

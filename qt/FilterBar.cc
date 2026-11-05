@@ -122,7 +122,7 @@ void FilterBar::refreshTrackers()
     // only the distinct sitenames become QStrings
     auto new_trackers = small::map<QString, int>{};
     for (auto const& [sitename, count] : tr::app::count_torrents_per_sitename(torrents_.list())) {
-        new_trackers.emplace(Utils::qstringFromUtf8(sitename), count);
+        new_trackers.emplace(Utils::qstringFromUtf8(sitename.sv()), count);
     }
     auto old_it = sitename_counts_.cbegin();
     auto new_it = new_trackers.cbegin();
