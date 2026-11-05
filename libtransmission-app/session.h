@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <array>
 #include <chrono>
 #include <cstddef> // size_t
 #include <cstdint>
@@ -27,7 +28,7 @@
 
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
-#include "libtransmission/types.h" // tr_session_stats
+#include "libtransmission/types.h" // tr_address_type, tr_session_stats
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-client.h"
@@ -253,6 +254,50 @@ public:
     // after `import_session_info()`, and after a derived class imports settings another way
     sigslot::signal<> session_updated;
 
+    // --- blocklist
+
+    // Asks the session to download its blocklist. One of the two signals below answers
+    // each call. A success also refreshes the session info, for the new size and date.
+    void update_blocklist();
+
+    sigslot::signal<int64_t /*rule_count*/> blocklist_updated;
+    sigslot::signal<std::string_view /*errmsg*/> blocklist_update_failed;
+
+    // --- port test
+
+    enum class PortStatus : uint8_t {
+        Unknown,
+        Checking,
+        Open,
+        Closed,
+        Error,
+    };
+
+    // Asks the session whether its peer port is reachable over IPv4 and over IPv6.
+    // Sends nothing while a test is pending.
+    void test_port();
+
+    // `Unknown` until a test, and again after the peer port changes, `stop()`
+    // or `forget_port_status()`.
+    [[nodiscard]] constexpr PortStatus port_status(tr_address_type const ip_protocol) const noexcept
+    {
+        return port_status_[ip_protocol];
+    }
+
+    // Back to `Unknown`. An old result says little about the port now, so a UI
+    // calls this when it opens, to show only what it tested itself.
+    void forget_port_status();
+
+    // Whether a test awaits its replies. It can outlast a `Checking` status, since
+    // the peer port can change in the meantime. A UI holds the port's widgets on this.
+    [[nodiscard]] constexpr bool port_test_pending() const noexcept
+    {
+        return port_test_pending_[TR_AF_INET] || port_test_pending_[TR_AF_INET6];
+    }
+
+    // when `port_status()` or `port_test_pending()` changes
+    sigslot::signal<> port_test_changed;
+
     // --- session
 
     // keep the machine awake: a local-filesystem session with active transfers
@@ -394,6 +439,7 @@ private:
     // lock file; every poll repeats the id, so it is probed once
     [[nodiscard]] Type probe_session_type(std::string_view id);
 
+    void on_port_tested(tr_address_type ip_protocol, RpcResponse const& response);
     void update_sleep_inhibit();
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
@@ -422,6 +468,8 @@ private:
     };
     std::optional<ProbedId> probed_id_;
 
+    std::array<PortStatus, NUM_TR_AF_INET_TYPES> port_status_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session_stats stats_ = {};
     tr_session_stats cumulative_stats_ = {};
     std::string session_version_;
