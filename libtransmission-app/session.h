@@ -50,6 +50,14 @@ class Prefs;
     return make_fields(std::span{ std::data(keys), std::size(keys) });
 }
 
+// How long a client that has left the screen lets its shutdown run. Long enough for a slow
+// close, and shorter than a waiting launch's patience, so that launch still gets to start.
+inline constexpr auto ShutdownGracePeriod = std::chrono::seconds{ 60 };
+
+// Ends the process after `delay`, whatever it's doing then. `tr_sessionClose()` limits its
+// wait on trackers but not on a stuck disk, and a user with no window has no way to quit.
+void exit_process_after(std::chrono::milliseconds delay = ShutdownGracePeriod);
+
 class Session
 {
 public:

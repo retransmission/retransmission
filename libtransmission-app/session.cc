@@ -7,8 +7,11 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef> // size_t
 #include <cstdint>
+#include <cstdio> // stderr
+#include <cstdlib> // std::_Exit(), EXIT_FAILURE
 #include <ctime> // std::time()
 #include <functional>
 #include <iterator> // std::back_inserter(), std::end()
@@ -58,6 +61,15 @@ tr_variant::Vector make_fields(std::span<tr_quark const> const keys)
         return tr_variant::unmanaged_string(key);
     });
     return fields;
+}
+
+void exit_process_after(std::chrono::milliseconds const delay)
+{
+    std::thread{ [delay] {
+        std::this_thread::sleep_for(delay);
+        fmt::print(stderr, "Still shutting down after {:d} ms; exiting anyway.\n", delay.count());
+        std::_Exit(EXIT_FAILURE);
+    } }.detach();
 }
 
 // ---
