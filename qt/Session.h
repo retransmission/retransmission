@@ -14,6 +14,8 @@
 #include <QtCore/QTimer>
 #include <QtCore/QUrl>
 
+#include <QtWidgets/QMessageBox>
+
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
@@ -40,6 +42,13 @@ public:
 
     [[nodiscard]] QUrl getRemoteUrl() const;
 
+    // From here on, a failure shows no message box: the app has left the screen,
+    // and a reply that `stop()` cut short fails only because the session went away.
+    void setShuttingDown() noexcept
+    {
+        is_shutting_down_ = true;
+    }
+
     void copyMagnetLinkToClipboard(int torrent_id);
 
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
@@ -60,8 +69,10 @@ private slots:
 
 private:
     void onRenameFailed(RenameError const& error) const;
+    void showMessage(QMessageBox::Icon icon, QString const& title, QString const& text, QString const& detail = {}) const;
 
     Prefs& prefs_;
+    bool is_shutting_down_ = false;
 
     sigslot::scoped_connection rename_failed_connection_;
 

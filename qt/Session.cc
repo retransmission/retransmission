@@ -100,7 +100,17 @@ void Session::onRenameFailed(RenameError const& error) const
     auto const advice = error.network_error ? QString{} :
                                               QStringLiteral("<p>%1</p>").arg(tr("Please correct the errors and try again."));
     auto const text = QStringLiteral("<p><b>%1</b></p>%2").arg(summary, advice);
-    auto* d = new QMessageBox{ QMessageBox::Information, title, text, QMessageBox::Close, QApplication::activeWindow() };
+    showMessage(QMessageBox::Information, title, text);
+}
+
+void Session::showMessage(QMessageBox::Icon const icon, QString const& title, QString const& text, QString const& detail) const
+{
+    if (is_shutting_down_) {
+        return;
+    }
+
+    auto* const d = new QMessageBox{ icon, title, text, QMessageBox::Close, QApplication::activeWindow() };
+    d->setDetailedText(detail);
     QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
     d->show();
 }
@@ -141,17 +151,10 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
             [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
                 send(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
             },
-            [add_me](RpcResponse const& r) {
-                auto const title = tr("Error Adding Torrent");
+            [this, add_me](RpcResponse const& r) {
                 auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
                                       .arg(Utils::qstringFromUtf8(r.errmsg), add_me.readableName());
-                auto* d = new QMessageBox{ QMessageBox::Warning,
-                                           title,
-                                           text,
-                                           QMessageBox::Close,
-                                           QApplication::activeWindow() };
-                QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
-                d->show();
+                showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text);
             })
         .add([this, add_me](RpcResponse const& r) {
             if (auto const* const args = r.args_map()) {
@@ -193,13 +196,7 @@ void Session::onDuplicatesTimer()
         auto const use_detail = lines.size() > 1;
         auto const text = use_detail ? detail_text : detail;
 
-        auto* d = new QMessageBox{ QMessageBox::Warning, title, text, QMessageBox::Close, QApplication::activeWindow() };
-        if (use_detail) {
-            d->setDetailedText(detail);
-        }
-
-        QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
-        d->show();
+        showMessage(QMessageBox::Warning, title, text, use_detail ? detail : QString{});
     }
 }
 

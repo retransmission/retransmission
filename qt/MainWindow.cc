@@ -638,6 +638,15 @@ void MainWindow::openHelp() const
 *****
 ****/
 
+void MainWindow::setShuttingDown(QString const& message)
+{
+    disconnect(&refresh_timer_, &QTimer::timeout, this, &MainWindow::onRefreshTimer);
+
+    tray_icon_.setToolTip(message);
+    tray_icon_.contextMenu()->setEnabled(false);
+    disconnect(&tray_icon_, &QSystemTrayIcon::activated, this, &MainWindow::trayActivated);
+}
+
 void MainWindow::refreshSoon(int fields)
 {
     refresh_fields_ |= fields;

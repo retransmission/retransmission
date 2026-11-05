@@ -54,6 +54,9 @@ public:
     MainWindow& operator=(MainWindow&&) = delete;
     MainWindow& operator=(MainWindow const&) = delete;
 
+    // While the session closes, the tray icon says `message` and offers nothing to do.
+    void setShuttingDown(QString const& message);
+
     [[nodiscard]] constexpr QSystemTrayIcon& trayIcon() noexcept
     {
         return tray_icon_;
