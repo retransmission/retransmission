@@ -9,6 +9,7 @@
 #include <chrono>
 #include <cstddef> // size_t
 #include <cstdint>
+#include <cstdlib> // EXIT_FAILURE
 #include <ctime> // std::time()
 #include <functional>
 #include <future>
@@ -1017,6 +1018,19 @@ TEST_F(AppSessionRpcTest, importingInfoKeepsAnEmbeddedSessionEmbedded)
 
     session_.import_session_info(tr_variant::Map{});
     EXPECT_TRUE(session_.is_embedded());
+}
+
+TEST(AppExitTest, exitProcessAfterEndsTheProcess)
+{
+    GTEST_FLAG_SET(death_test_style, "threadsafe");
+
+    EXPECT_EXIT(
+        {
+            exit_process_after(10ms);
+            std::this_thread::sleep_for(1min);
+        },
+        ::testing::ExitedWithCode(EXIT_FAILURE),
+        "exiting anyway");
 }
 
 // A Session that runs its own session, kept off the network if it's an embedded one
