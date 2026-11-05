@@ -2715,6 +2715,9 @@ void tr_torrent::rename_path_in_session_thread(
 
             mark_edited();
             set_dirty();
+
+            // A restart must look for the files under their new names.
+            save_resume_file();
         }
     }
 
