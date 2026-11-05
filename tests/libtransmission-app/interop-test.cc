@@ -652,6 +652,66 @@ TEST_F(InteropTest, publishesBeforeReleasingTheStartupLock)
     EXPECT_TRUE(prober.try_acquire());
 }
 
+TEST_F(InteropTest, withdrawingStopsAnsweringAndHoldsTheStartupLock)
+{
+    auto guard_was_held_during_publish = false;
+    auto destroyed = false;
+    auto script = Script{};
+    auto instance = ScriptedInstance{ script };
+    auto transport = std::make_unique<GuardProbingTransport>(sandboxDir(), guard_was_held_during_publish, destroyed);
+    auto coordinator = interop::StartupCoordinator{ sandboxDir(), std::move(transport) };
+    coordinator.publish(instance);
+
+    coordinator.withdraw();
+
+    EXPECT_TRUE(destroyed);
+    auto const filename = sandboxDir() + '/' + std::string{ interop::StartupLockFilename };
+    auto prober = tr_lock_file{ filename };
+    EXPECT_FALSE(prober.try_acquire());
+}
+
+// The launch doesn't start beside a closing instance, which still holds the config dir,
+// and starts as soon as that instance is gone.
+TEST_F(InteropTest, aLaunchWaitsOutAWithdrawnInstanceThenStarts)
+{
+    using namespace std::chrono_literals;
+
+    auto script = Script{};
+    auto instance = ScriptedInstance{ script };
+    auto closing = make_coordinator(sandboxDir());
+    closing->publish(instance);
+    closing->withdraw();
+
+    auto launcher_coordinator = make_coordinator(sandboxDir());
+    auto exit_code = std::optional<int>{ -1 };
+    auto launched = std::atomic<bool>{ false };
+    auto launcher = std::thread{ [&] {
+        exit_code = launcher_coordinator->delegate(Intent::Present, {}, {}, 5s);
+        launched = true;
+    } };
+
+    std::this_thread::sleep_for(100ms);
+    EXPECT_FALSE(launched);
+
+    closing.reset();
+    launcher.join();
+    EXPECT_FALSE(exit_code.has_value());
+}
+
+TEST_F(InteropTest, aLaunchGivesUpOnAWithdrawnInstanceThatNeverExits)
+{
+    using namespace std::chrono_literals;
+
+    auto script = Script{};
+    auto instance = ScriptedInstance{ script };
+    auto closing = make_coordinator(sandboxDir());
+    closing->publish(instance);
+    closing->withdraw();
+
+    auto launcher = make_coordinator(sandboxDir());
+    EXPECT_EQ(1, launcher->delegate(Intent::Present, {}, {}, 200ms));
+}
+
 TEST_F(InteropTest, destroysTransportWhenDestroyed)
 {
     auto guard_was_held_during_publish = false;
