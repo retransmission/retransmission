@@ -172,6 +172,17 @@ struct tr_sys_path_capacity {
 [[nodiscard]] bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_error* error = nullptr);
 
 /**
+ * @brief Test to see if two paths are on the same filesystem.
+ *
+ * @param[in] path1 Path to first file or directory.
+ * @param[in] path2 Path to second file or directory.
+ *
+ * @return `True` if both paths exist and are on the same filesystem,
+ *         `false` otherwise.
+ */
+[[nodiscard]] bool tr_sys_path_is_same_filesystem(std::string_view path1, std::string_view path2);
+
+/**
  * @brief Portability wrapper for `realpath()`.
  *
  * @param[in]  path  Path to file or directory.
