@@ -9,6 +9,7 @@
 #include <cctype>
 #include <functional>
 #include <iterator>
+#include <map>
 #include <optional>
 #include <ranges>
 #include <set>
@@ -232,6 +233,15 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
         return {};
     }
+
+    // Copies can take minutes and renames don't, so copies go first.
+    // A kill during a copy then finds nothing renamed yet.
+    // This only sets the order: a rename that fails still falls back to a copy.
+    auto is_copied_from = std::map<std::string_view, bool>{};
+    for (auto const old_parent : old_parents) {
+        is_copied_from[old_parent] = !tr_sys_path_is_same_filesystem(old_parent, parent);
+    }
+    std::ranges::stable_partition(moves, [&is_copied_from](auto const& entry) { return is_copied_from.at(entry.second.base); });
 
     // Copied sources stay until every file is in place.
     // A kill mid-copy then leaves each copied file's source where the resume file says it is.

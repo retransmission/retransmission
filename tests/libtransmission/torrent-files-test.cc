@@ -4,14 +4,23 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
 #include <optional>
 #include <span>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <utility>
 #include <vector>
+
+#ifndef _WIN32
+#include <csignal>
+
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
 
 #include <gtest/gtest.h>
 
@@ -216,6 +225,61 @@ TEST_F(TorrentFilesCrossFilesystemTest, failedMoveKeepsCopiedSources)
 {
     expectFailedMoveKeepsSources(tr_pathbuf{ otherFilesystemDir(), "/target"sv });
 }
+
+#ifndef _WIN32
+TEST_F(TorrentFilesCrossFilesystemTest, killDuringCopyLeavesEverySourceInPlace)
+{
+    // A rename carries `a` to the target. Only a copy can carry `b`.
+    auto constexpr BSize = uint64_t{ 256U } * 1024U * 1024U;
+    auto const rename_root = tr_pathbuf{ sandboxDir(), "/rename-root"sv };
+    auto const copy_root = tr_pathbuf{ otherFilesystemDir(), "/copy-root"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 2>{ rename_root.sv(), copy_root.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/b", BSize);
+    auto const source_a = tr_pathbuf{ rename_root, "/name/a"sv };
+    auto const source_b = tr_pathbuf{ copy_root, "/name/b"sv };
+    createFileWithContents(source_a, "a"sv);
+    createFileWithContents(source_b, ""sv);
+    auto const fd = tr_sys_file_open(source_b, TR_SYS_FILE_WRITE, 0);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+    ASSERT_TRUE(tr_sys_file_truncate(fd, BSize));
+    tr_sys_file_close(fd);
+
+    auto const target_b = tr_pathbuf{ target, "/name/b"sv };
+    auto const temp_b = tr::detail::file_copy_temp_path(target_b);
+
+    auto const pid = fork();
+    ASSERT_NE(-1, pid);
+    if (pid == 0) {
+        _exit(files.move(roots, target, "name") ? EXIT_SUCCESS : EXIT_FAILURE);
+    }
+
+    while (!tr_sys_path_exists(temp_b)) {
+        std::this_thread::yield();
+    }
+    kill(pid, SIGKILL);
+    auto status = 0;
+    ASSERT_EQ(pid, waitpid(pid, &status, 0));
+    if (!WIFSIGNALED(status)) {
+        GTEST_SKIP() << "the copy finished before the kill landed";
+    }
+
+    expectContents(source_a, "a"sv);
+    EXPECT_EQ(BSize, tr_sys_path_get_info(source_b).value_or(tr_sys_path_info{}).size);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/name/a"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(target_b));
+
+    // A retry finishes the move and replaces what the kill left.
+    ASSERT_TRUE(moveAndClean(files, roots, target));
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    EXPECT_EQ(BSize, tr_sys_path_get_info(target_b).value_or(tr_sys_path_info{}).size);
+    EXPECT_FALSE(tr_sys_path_exists(temp_b));
+    EXPECT_FALSE(tr_sys_path_exists(source_a));
+    EXPECT_FALSE(tr_sys_path_exists(source_b));
+}
+#endif
 
 TEST_F(TorrentFilesTest, removePreservesRootsWithoutMatchingFiles)
 {

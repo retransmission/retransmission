@@ -948,6 +948,19 @@ TEST_F(FileTest, pathRename)
     tr_sys_path_remove(path1);
 }
 
+TEST_F(FileTest, pathIsSameFilesystem)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const file = tr_pathbuf{ test_dir, "/a"sv };
+    auto const missing = tr_pathbuf{ test_dir, "/missing"sv };
+    createFileWithContents(file, "test");
+
+    EXPECT_TRUE(tr_sys_path_is_same_filesystem(test_dir, test_dir));
+    EXPECT_TRUE(tr_sys_path_is_same_filesystem(test_dir, file));
+    EXPECT_FALSE(tr_sys_path_is_same_filesystem(test_dir, missing));
+    EXPECT_FALSE(tr_sys_path_is_same_filesystem(missing, test_dir));
+}
+
 TEST_F(FileTest, pathRemoveRemovesAReadOnlyFile)
 {
     auto const test_dir = createTestDir(currentTestName());
