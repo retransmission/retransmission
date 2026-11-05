@@ -50,7 +50,11 @@ def main():
     settings = {key: str(value.resolve()) if isinstance(value, Path) else value for key, value in vars(args).items()}
     settings["binary_sha256"] = {}
     for variant, build in builds.items():
-        if "ENABLE_BLOCK_PROFILING:BOOL=OFF\n" not in (build / "CMakeCache.txt").read_text():
+        cache = (build / "CMakeCache.txt").read_text()
+        actual = next((line.split("=", 1)[1] for line in cache.splitlines()
+                       if line.startswith("ENABLE_BLOCK_PROFILING:")), None)
+        # Revisions that predate the option always build without profiling.
+        if actual not in (None, "OFF"):
             raise RuntimeError(f"{build}: profiling must be OFF")
         settings["binary_sha256"][variant] = hashlib.sha256((build / "daemon/transmission-daemon").read_bytes()).hexdigest()
     path = args.output / "settings.json"
