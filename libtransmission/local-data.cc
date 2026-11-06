@@ -18,10 +18,12 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <span>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -47,14 +49,20 @@ namespace tr
 {
 namespace
 {
-// Reads at most one block. `desc` is null when the torrent is gone.
+// A read is at most one block, inside the torrent. `desc` is null when
+// the torrent is gone.
+[[nodiscard]] bool is_valid_read(StorageDescriptor const* const desc, tr_byte_span_t const span) noexcept
+{
+    return desc != nullptr && span.is_valid() && span.size() <= TrBlockSize && span.end <= desc->block_info.total_size();
+}
+
 [[nodiscard]] tr_error read_block(
     StorageDescriptor const* const desc,
     tr_open_files& open_files,
     tr_byte_span_t const span,
     LocalData::BlockData& setme)
 {
-    if (desc == nullptr || !span.is_valid() || span.size() > TrBlockSize) {
+    if (!is_valid_read(desc, span)) {
         return tr_error::from_errno(EINVAL);
     }
 
@@ -346,19 +354,23 @@ private:
  * admitted op's completion has been delivered, and then runs
  * exclusively on the session thread. Ops enqueued behind it wait in
  * the queue until it finishes. This gate is what makes move, rename,
- * remove, and close safe against in-flight writes. A file close is a
- * barrier on its file alone: it waits only for the ops that touch the
- * file, and holds back only those.
+ * remove, and close safe against in-flight reads and writes. A file
+ * close is a barrier on its file alone: it waits only for the ops that
+ * touch the file, and holds back only those.
  *
- * Reads run on the session thread the moment the gate admits them, so
- * a read completes before the enqueue call returns unless a barrier
- * is holding it back.
+ * Reads: once admitted, a read first tries the page cache from the
+ * session thread, through files already open, without waiting for the
+ * disk. A hit completes before the enqueue call returns. A miss is
+ * staged, and the staged reads go to the workers together once the
+ * session thread finishes its current event, so that the requests one
+ * pass issued can be merged before any worker takes one.
  *
- * Write scheduling: pending writes are indexed by (torrent, offset). A
- * worker takes the next one past its last position, sweeping the index
- * like an elevator, then takes that write's contiguous successors and
- * writes the whole run with one call. That turns the swarm's random
- * block order into sequential disk writes of up to MaxRunBytes.
+ * Scheduling: pending reads and pending writes are each indexed by
+ * (torrent, offset). A worker takes the next op past the last one taken,
+ * sweeping the index like an elevator, then takes the ops that continue
+ * it and does the whole run with one call. That turns the swarm's
+ * scattered block requests into sequential disk IO of up to MaxRunBytes.
+ * A worker alternates between reads and writes when both are waiting.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.
@@ -406,10 +418,10 @@ public:
     {
         auto op = ReadOp{ .span = span, .on_read = std::move(on_read) };
 
-        // A torrent with nothing in flight has no gate, and a read runs
-        // inline anyway. Skip creating and erasing one per read.
+        // A torrent with nothing in flight has no gate and no barrier to
+        // wait for. Skip creating a gate for a read the page cache answers.
         if (!gates_.contains(id)) {
-            exec_read(id, op);
+            admit_read(id, std::move(op));
             return;
         }
 
@@ -475,7 +487,11 @@ public:
         auto next_warning = std::chrono::steady_clock::now() + WarnInterval;
 
         for (;;) {
+            // The marshaled flush can't run while this blocks the session
+            // thread, and the completions just delivered may have staged
+            // reads of their own.
             pump_done();
+            flush_reads();
 
             if (idle()) {
                 return;
@@ -521,6 +537,9 @@ public:
             .blocks_written = blocks_written_.load(std::memory_order_relaxed),
             .hashes_from_buffers = hashes_from_buffers_.load(std::memory_order_relaxed),
             .hashes_from_disk = hashes_from_disk_.load(std::memory_order_relaxed),
+            .cached_reads = cached_reads_.load(std::memory_order_relaxed),
+            .read_runs = read_runs_.load(std::memory_order_relaxed),
+            .blocks_read = blocks_read_.load(std::memory_order_relaxed),
         };
     }
 
@@ -569,9 +588,20 @@ private:
         std::deque<Queued> queue;
         // The data ops in flight. Writes never overlap one another, so
         // an ordered map keyed by begin finds an overlap in two lookups.
-        // Hashes are few, and may overlap writes.
+        // Hashes are few, and may overlap writes. Reads may duplicate
+        // one another when two peers ask for the same block.
         std::map<uint64_t, uint64_t> running_writes; // begin -> end
         std::vector<tr_byte_span_t> running_hashes;
+        std::multiset<std::pair<uint64_t, uint64_t>> running_reads; // (begin, end)
+    };
+
+    // A read the page cache couldn't answer, waiting for a worker.
+    struct PendingRead {
+        tr_torrent_id_t tor_id;
+        std::shared_ptr<StorageDescriptor const> desc;
+        tr_byte_span_t span;
+        std::unique_ptr<BlockData> data; // already sized to `span`
+        OnRead on_read;
     };
 
     // A write the gate admitted, waiting for a worker.
@@ -595,16 +625,13 @@ private:
         OnTest on_test;
     };
 
-    struct WriteKey {
+    // Where a pending op sits in its worker queue: disk order, more or less.
+    struct OpKey {
         tr_torrent_id_t tor_id;
         uint64_t begin;
 
-        [[nodiscard]] auto operator<=>(WriteKey const&) const noexcept = default;
+        [[nodiscard]] auto operator<=>(OpKey const&) const noexcept = default;
     };
-
-    // Adjacent pending writes are combined into runs of up to this many
-    // bytes and written with one call.
-    static auto constexpr MaxRunBytes = uint64_t{ 1024U * 1024U };
 
     // --- the admission gate. Session thread only.
 
@@ -635,6 +662,18 @@ private:
         return std::ranges::any_of(gate.running_hashes, [span](auto const& hash) { return overlaps(hash, span); });
     }
 
+    // True if a read in flight covers any byte of `span`. A read is at
+    // most a block long, so only reads starting less than a block before
+    // `span` can reach into it.
+    [[nodiscard]] static bool overlaps_running_read(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        auto const& reads = gate.running_reads;
+        auto const from = span.begin - std::min(span.begin, uint64_t{ TrBlockSize });
+        return std::any_of(reads.lower_bound({ from, 0U }), reads.lower_bound({ span.end, 0U }), [span](auto const& read) {
+            return read.second > span.begin;
+        });
+    }
+
     // True if a running or queued barrier holds back an op on `span`.
     [[nodiscard]] static bool is_blocked(Gate const& gate, tr_byte_span_t const span) noexcept
     {
@@ -648,6 +687,16 @@ private:
         });
     }
 
+    // True if `op` is a read or a hash that must wait for a write in flight.
+    // We read and hash only what we have, and never write that, with one
+    // exception: a piece loses the block it shares with a neighbor that
+    // fails its hash, and a read or hash of it that queued behind a barrier
+    // earlier can come up while that block is downloaded again.
+    [[nodiscard]] static bool waits_for_write(Gate const& gate, Queued const& op, tr_byte_span_t const span) noexcept
+    {
+        return !std::holds_alternative<WriteOp>(op) && overlaps_running_write(gate, span);
+    }
+
     // True if no op in flight touches the barrier's span.
     [[nodiscard]] static bool can_run(Gate const& gate, BarrierOp const& barrier) noexcept
     {
@@ -655,7 +704,8 @@ private:
             return gate.n_running == 0U;
         }
 
-        return !overlaps_running_write(gate, *barrier.span) && !overlaps_running_hash(gate, *barrier.span);
+        return !overlaps_running_write(gate, *barrier.span) && !overlaps_running_hash(gate, *barrier.span) &&
+            !overlaps_running_read(gate, *barrier.span);
     }
 
     // The bytes a data op touches. Nothing for a barrier, or for a hash
@@ -687,14 +737,14 @@ private:
         return std::empty(gates_);
     }
 
-    // Queue the op if a barrier blocks it, else run it, then run
-    // whatever the gate allows next. Barriers always queue; advance()
-    // is what grants them.
+    // Queue the op if a barrier blocks it or it must wait for a write,
+    // else run it, then run whatever the gate allows next. Barriers
+    // always queue; advance() is what grants them.
     void submit(tr_torrent_id_t const id, Queued&& op)
     {
         auto& gate = gates_[id];
         auto const span = span_of(id, op);
-        if (std::holds_alternative<BarrierOp>(op) || (span && is_blocked(gate, *span))) {
+        if (std::holds_alternative<BarrierOp>(op) || (span && (is_blocked(gate, *span) || waits_for_write(gate, op, *span)))) {
             gate.queue.emplace_back(std::move(op));
         } else {
             dispatch(id, gate, std::move(op));
@@ -705,10 +755,10 @@ private:
 
     void dispatch(tr_torrent_id_t const id, Gate& gate, Queued&& op)
     {
-        if (auto const* const read = std::get_if<ReadOp>(&op); read != nullptr) {
-            // We read only pieces we have, and we never write those.
+        if (auto* const read = std::get_if<ReadOp>(&op); read != nullptr) {
+            // See waits_for_write().
             TR_ASSERT(!overlaps_running_write(gate, read->span));
-            exec_read(id, *read);
+            admit_read(id, std::move(*read));
         } else if (auto* const test = std::get_if<TestOp>(&op); test != nullptr) {
             admit_test(id, gate, std::move(*test));
         } else {
@@ -752,6 +802,10 @@ private:
                 continue;
             }
 
+            if (auto const span = span_of(id, gate.queue.front()); span && waits_for_write(gate, gate.queue.front(), *span)) {
+                return; // that write's completion calls advance() again
+            }
+
             auto op = std::move(gate.queue.front());
             gate.queue.pop_front();
             dispatch(id, gate, std::move(op));
@@ -784,9 +838,9 @@ private:
         TR_ASSERT(n_erased == 1U);
     }
 
-    // A hash must never overlap a write in flight: we hash a piece only
-    // after its writes complete, so a failure here is a caller bug, not
-    // a backend race. A write may overlap a hash in flight. When a piece
+    // A hash never overlaps a write in flight: a download hash starts only
+    // after its piece's writes complete, and waits_for_write() holds back
+    // any other. A write may overlap a hash in flight. When a piece
     // fails its hash, a block it shares with a neighbor is downloaded
     // again while the neighbor's hash may still be running. The torrent
     // drops that hash's result, since the neighbor no longer has the
@@ -806,17 +860,77 @@ private:
         hashes.erase(it);
     }
 
-    void exec_read(tr_torrent_id_t const id, ReadOp const& op)
+    static void unregister_running_read(Gate& gate, tr_byte_span_t const span)
     {
-        auto data = std::make_unique<BlockData>();
-        auto const error = read_block(provider_(id).get(), open_files_, op.span, *data);
-        if (error) {
-            data = nullptr;
+        auto& reads = gate.running_reads;
+        auto const it = reads.find({ span.begin, span.end });
+        TR_ASSERT(it != std::end(reads));
+        if (it != std::end(reads)) {
+            reads.erase(it);
+        }
+    }
+
+    // Answer the read from the page cache if that needs no disk access.
+    // Otherwise stage it for the workers.
+    void admit_read(tr_torrent_id_t const id, ReadOp op)
+    {
+        auto desc = provider_(id);
+        auto const span = op.span;
+        if (!is_valid_read(desc.get(), span)) {
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error::from_errno(EINVAL), nullptr);
+            }
+            return;
         }
 
-        if (op.on_read) {
-            op.on_read(id, op.span, error, std::move(data));
+        auto data = std::make_unique<BlockData>();
+        data->resize(static_cast<size_t>(span.size()));
+        if (tr_ioReadCached(*desc, open_files_, span.begin, std::span{ data->data(), data->size() })) {
+            cached_reads_.fetch_add(1U, std::memory_order_relaxed);
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error{}, std::move(data));
+            }
+            return;
         }
+
+        auto& gate = gates_[id];
+        ++gate.n_running;
+        gate.running_reads.emplace(span.begin, span.end);
+
+        auto const flush_scheduled = !std::empty(staged_reads_);
+        staged_reads_.emplace(
+            OpKey{ .tor_id = id, .begin = span.begin },
+            PendingRead{
+                .tor_id = id,
+                .desc = std::move(desc),
+                .span = span,
+                .data = std::move(data),
+                .on_read = std::move(op.on_read),
+            });
+
+        if (!flush_scheduled) {
+            marshal_([weak = weak_from_this()] {
+                if (auto const self = weak.lock(); self) {
+                    self->flush_reads();
+                }
+            });
+        }
+    }
+
+    // Hand the staged reads to the workers. They wait until the session
+    // thread is done with its current event so that the requests it
+    // issued in one pass, from one peer or several, can be merged.
+    void flush_reads()
+    {
+        if (std::empty(staged_reads_)) {
+            return;
+        }
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            pending_reads_.merge(staged_reads_);
+        }
+        work_cv_.notify_all();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -862,7 +976,7 @@ private:
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_writes_.emplace(
-                WriteKey{ .tor_id = id, .begin = span.begin },
+                OpKey{ .tor_id = id, .begin = span.begin },
                 PendingWrite{
                     .tor_id = id,
                     .desc = std::move(desc),
@@ -924,13 +1038,18 @@ private:
     {
         auto scratch = std::vector<uint8_t>{};
 
+        // When reads and writes are both waiting, take turns, so that
+        // neither seeding nor downloading starves the other.
+        auto reads_first = true;
+
         for (;;) {
             auto test = std::optional<PendingTest>{};
-            auto run = std::vector<PendingWrite>{};
+            auto reads = std::vector<PendingRead>{};
+            auto writes = std::vector<PendingWrite>{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &run] {
+                work_cv_.wait(lock, [this, &test, &reads, &writes, reads_first] {
                     if (paused_) {
                         return false;
                     }
@@ -941,57 +1060,73 @@ private:
                         return true;
                     }
 
-                    run = take_write_run();
-                    return !std::empty(run) || stopping_;
+                    if (reads_first) {
+                        reads = take_run(pending_reads_, read_cursor_);
+                    }
+                    if (std::empty(reads)) {
+                        writes = take_run(pending_writes_, write_cursor_);
+                    }
+                    if (!reads_first && std::empty(writes)) {
+                        reads = take_run(pending_reads_, read_cursor_);
+                    }
+
+                    return !std::empty(reads) || !std::empty(writes) || stopping_;
                 });
             }
 
             if (test) {
                 exec_test(std::move(*test));
-            } else if (!std::empty(run)) {
-                exec_write_run(std::move(run), scratch);
+            } else if (!std::empty(reads)) {
+                exec_read_run(std::move(reads), scratch);
+                reads_first = false;
+            } else if (!std::empty(writes)) {
+                exec_write_run(std::move(writes), scratch);
+                reads_first = true;
             } else {
                 return;
             }
         }
     }
 
-    // Take the next write past the cursor, plus the writes contiguous
-    // with it. Call with work_mutex_ held.
-    [[nodiscard]] std::vector<PendingWrite> take_write_run()
+    // Take the next op past `cursor`, plus the ops that continue or
+    // overlap it. Writes never overlap, so a run of writes is contiguous.
+    // Call with work_mutex_ held.
+    template<typename Pending>
+    [[nodiscard]] static std::vector<typename Pending::mapped_type> take_run(Pending& pending, OpKey& cursor)
     {
-        auto it = pending_writes_.lower_bound(cursor_);
-        if (it == std::end(pending_writes_)) {
-            it = std::begin(pending_writes_);
+        auto it = pending.lower_bound(cursor);
+        if (it == std::end(pending)) {
+            it = std::begin(pending);
         }
-        if (it == std::end(pending_writes_)) {
+        if (it == std::end(pending)) {
             return {};
         }
 
         auto const tor_id = it->second.tor_id;
-        auto const desc = it->second.desc;
-        auto next_byte = it->second.span.begin;
-        auto n_bytes = uint64_t{};
+        auto const* const desc = it->second.desc.get();
+        auto const begin = it->second.span.begin;
+        auto end = it->second.span.end;
 
-        auto run = std::vector<PendingWrite>{};
-        while (it != std::end(pending_writes_)) {
+        auto run = std::vector<typename Pending::mapped_type>{};
+        while (it != std::end(pending)) {
             auto& op = it->second;
-            if (op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
-                n_bytes + op.span.size() > MaxRunBytes) {
+            if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
+                std::max(end, op.span.end) - begin > MaxRunBytes) {
                 break;
             }
 
-            n_bytes += op.span.size();
-            next_byte = op.span.end;
-            cursor_ = it->first;
+            end = std::max(end, op.span.end);
+            cursor = it->first;
+            if constexpr (std::is_same_v<typename Pending::mapped_type, PendingWrite>) {
 #ifdef TR_ENABLE_BLOCK_PROFILING
-            if (tr::profile::Collector::instance().batches_enabled()) {
-                op.queue_ns = op.admitted.elapsed_ns();
-            }
+                if (tr::profile::Collector::instance().batches_enabled()) {
+                    op.queue_ns = op.admitted.elapsed_ns();
+                }
 #endif
-            op.admitted.record_since("storage.write_queue_wait");
+                op.admitted.record_since("storage.write_queue_wait");
+            }
             run.emplace_back(std::move(it->second));
-            it = pending_writes_.erase(it);
+            it = pending.erase(it);
         }
 
         return run;
@@ -1096,6 +1231,78 @@ private:
         });
     }
 
+    void exec_read_run(std::vector<PendingRead> run, std::vector<uint8_t>& scratch)
+    {
+        TR_ASSERT(!std::empty(run));
+
+        auto const& desc = *run.front().desc;
+        auto const begin = run.front().span.begin;
+        auto end = begin;
+        for (auto const& op : run) {
+            end = std::max(end, op.span.end);
+        }
+
+        auto const buffer_of = [](PendingRead const& op) {
+            return std::span{ op.data->data(), op.data->size() };
+        };
+
+        // The run comes off the disk as one read. Adjacent requests are
+        // read straight into their buffers. Duplicate or overlapping ones
+        // share a read into `scratch` and copy out of it. If the one read
+        // fails, each is tried on its own, so that one missing file of
+        // several doesn't fail its neighbors.
+        auto merged = false;
+        if (std::size(run) > 1U) {
+            auto const adjacent = std::ranges::adjacent_find(run, [](PendingRead const& a, PendingRead const& b) {
+                                      return b.span.begin != a.span.end;
+                                  }) == std::end(run);
+            if (adjacent) {
+                auto buffers = std::vector<std::span<uint8_t>>{};
+                buffers.reserve(std::size(run));
+                for (auto const& op : run) {
+                    buffers.emplace_back(buffer_of(op));
+                }
+                merged = !tr_ioReadv(desc, open_files_, begin, buffers);
+            } else {
+                scratch.resize(static_cast<size_t>(end - begin));
+                merged = !tr_ioRead(desc, open_files_, begin, scratch);
+                if (merged) {
+                    for (auto const& op : run) {
+                        std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
+                    }
+                }
+            }
+        }
+
+        auto errors = std::vector<tr_error>(std::size(run));
+        if (!merged) {
+            for (auto i = size_t{}; i < std::size(run); ++i) {
+                errors[i] = tr_ioRead(desc, open_files_, run[i].span.begin, buffer_of(run[i]));
+            }
+        }
+
+        auto const n_ok = static_cast<uint64_t>(std::ranges::count_if(errors, [](tr_error const& error) { return !error; }));
+        read_runs_.fetch_add(merged ? 1U : n_ok, std::memory_order_relaxed);
+        blocks_read_.fetch_add(n_ok, std::memory_order_relaxed);
+
+        post_completion([this, run = std::move(run), errors = std::move(errors)] mutable {
+            auto const id = run.front().tor_id;
+
+            // As with writes, the run holds its gate until every callback
+            // has run, so no barrier a callback enqueues overtakes the rest.
+            auto& gate = gate_of(id);
+            for (auto i = size_t{}; i < std::size(run); ++i) {
+                auto& op = run[i];
+                unregister_running_read(gate, op.span);
+                if (op.on_read) {
+                    auto data = errors[i] ? nullptr : std::move(op.data);
+                    std::move(op.on_read)(id, op.span, errors[i], std::move(data));
+                }
+            }
+            release(id, std::size(run));
+        });
+    }
+
     void exec_test(PendingTest op)
     {
         TR_PROFILE_SCOPE("storage.test_piece");
@@ -1142,13 +1349,20 @@ private:
 
     std::map<tr_torrent_id_t, Gate> gates_;
 
+    // Reads the page cache couldn't answer, waiting for flush_reads().
+    // Keyed like pending_reads_, so the flush moves them under the lock
+    // without allocating.
+    std::multimap<OpKey, PendingRead> staged_reads_;
+
     // --- state shared with the workers
 
     std::mutex work_mutex_;
     std::condition_variable work_cv_;
     std::deque<PendingTest> pending_tests_;
-    std::map<WriteKey, PendingWrite> pending_writes_;
-    WriteKey cursor_ = {};
+    std::multimap<OpKey, PendingRead> pending_reads_;
+    std::map<OpKey, PendingWrite> pending_writes_;
+    OpKey read_cursor_ = {};
+    OpKey write_cursor_ = {};
     bool stopping_ = false;
     bool paused_ = false;
 
@@ -1163,6 +1377,9 @@ private:
     std::atomic<uint64_t> blocks_written_ = 0U;
     std::atomic<uint64_t> hashes_from_buffers_ = 0U;
     std::atomic<uint64_t> hashes_from_disk_ = 0U;
+    std::atomic<uint64_t> cached_reads_ = 0U;
+    std::atomic<uint64_t> read_runs_ = 0U;
+    std::atomic<uint64_t> blocks_read_ = 0U;
 
     std::vector<std::thread> workers_;
 };

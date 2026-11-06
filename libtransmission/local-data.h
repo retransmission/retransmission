@@ -83,7 +83,9 @@ struct StorageDescriptor;
  *
  * start_workers() switches to the threaded backend. Writes and piece
  * hashes then run on worker threads and complete later, from the
- * session thread. Reads still run on the session thread.
+ * session thread. A read completes inline when the page cache can
+ * answer it without waiting for the disk, and otherwise runs on a
+ * worker like the rest.
  */
 class LocalData
 {
@@ -262,6 +264,12 @@ public:
         uint64_t hashes_from_buffers = 0U;
         // piece hashes that read the piece back from disk
         uint64_t hashes_from_disk = 0U;
+        // reads answered from the page cache on the session thread
+        uint64_t cached_reads = 0U;
+        // disk reads that succeeded, after adjacent requests were combined
+        uint64_t read_runs = 0U;
+        // read requests those disk reads answered
+        uint64_t blocks_read = 0U;
     };
 
     explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files);
@@ -321,6 +329,15 @@ public:
     // synchronous backend writes a block before it reads the next one
     // off the wire, so nothing buffers there.
     [[nodiscard]] std::optional<uint64_t> spare_write_bytes(uint64_t requested) const noexcept;
+
+    // How many bytes of reads one requester should keep in flight: two
+    // runs' worth, so that one run is read while the last is consumed.
+    // Keeping more in flight would let one requester crowd out the rest
+    // at the disk.
+    [[nodiscard]] static constexpr size_t read_ahead_bytes() noexcept
+    {
+        return 2U * MaxRunBytes;
+    }
 
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
@@ -391,6 +408,10 @@ private:
 
     // The threaded backend. See start_workers().
     class Threaded;
+
+    // The threaded backend combines pending ops that continue one another
+    // into runs of up to this many bytes, and does each run with one call.
+    static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 

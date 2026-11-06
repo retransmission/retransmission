@@ -567,6 +567,32 @@ protected:
         return { std::data(contents), std::size(contents) };
     }
 
+    // True if the whole file can be read from the page cache alone. Not on
+    // every platform, or every filesystem, and only once the data is cached.
+    [[nodiscard]] bool canReadCached(std::string_view const subpath) const
+    {
+        auto const fd = tr_sys_file_open(pathOf(subpath), TR_SYS_FILE_READ, 0);
+        if (fd == TR_BAD_SYS_FILE) {
+            return false;
+        }
+
+        auto const size = tr_sys_path_get_info(pathOf(subpath))->size;
+        auto buf = std::vector<uint8_t>(static_cast<size_t>(size));
+        auto const read = tr_sys_file_read_cached_at(fd, std::data(buf), size, 0U);
+        tr_sys_file_close(fd);
+        return read;
+    }
+
+    // Opens a torrent file into the pool, as a read through a worker would.
+    // Cached reads only use files that are already open.
+    void openInPool(tr_file_index_t const file_index, std::string_view const subpath)
+    {
+        auto error = tr_error{};
+        auto const size = tr_sys_path_get_info(pathOf(subpath))->size;
+        EXPECT_TRUE(open_files_.get(TorId, file_index, false, pathOf(subpath), tr_file_preallocation::None, size, error))
+            << error;
+    }
+
     // A descriptor whose files live in the sandbox. The files
     // themselves are created by whoever writes to them.
     [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> makeDescriptor(
@@ -617,6 +643,27 @@ protected:
             return id == TorId ? desc : nullptr;
         });
         return local_data;
+    }
+
+    struct ReadResult {
+        bool done = false;
+        tr_error error;
+        std::string data;
+    };
+
+    // Read torrent bytes [begin, begin + len) into `result`.
+    static void readInto(tr::LocalData& local_data, size_t const begin, size_t const len, ReadResult& result)
+    {
+        local_data.read(
+            TorId,
+            { .begin = begin, .end = begin + len },
+            [&result](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+                result.done = true;
+                result.error = error;
+                if (data) {
+                    result.data.assign(reinterpret_cast<char const*>(data->data()), data->size());
+                }
+            });
     }
 
     // Write the blocks covering torrent bytes [begin, end).
@@ -1002,16 +1049,20 @@ TEST_F(LocalDataWorkersTest, closingAFileWaitsOnlyForOpsThatTouchIt)
     local_data->close_file(TorId, 0U, [&a_closed](tr_torrent_id_t) { a_closed = true; });
     EXPECT_FALSE(a_closed);
 
-    // ...and the queued close of a.bin does not hold back a read of b.bin
-    // (the read fails since b.bin does not exist yet)
+    // ...and the queued close of a.bin does not hold back a read of b.bin.
+    // With b.bin open and cached, the read needs no worker and completes
+    // at once, wherever the platform can read from the cache alone.
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
+    auto const cached = canReadCached("b.bin");
+    openInPool(1U, "b.bin");
     auto read_done = false;
     local_data->read(TorId, { .begin = BlockSize, .end = 2U * BlockSize }, [&read_done](auto, auto, auto const&, auto) {
         read_done = true;
     });
-    EXPECT_TRUE(read_done);
+    EXPECT_EQ(cached, read_done);
 
     local_data->set_workers_paused(false);
-    EXPECT_TRUE(pumpUntil([&a_closed]() { return a_closed; }));
+    EXPECT_TRUE(pumpUntil([&a_closed, &read_done]() { return a_closed && read_done; }));
     EXPECT_EQ(1U, n_written);
 
     local_data->shutdown();
@@ -1202,6 +1253,226 @@ TEST_F(LocalDataWorkersTest, unwritableFileFailsTheWrite)
     auto const stats = local_data->stats();
     EXPECT_EQ(0U, stats.write_runs);
     EXPECT_EQ(0U, stats.blocks_written);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, readMissCompletesLaterFromAWorker)
+{
+    static auto constexpr FileSize = size_t{ 4U * BlockSize };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 2U * BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, FileSize)));
+
+    // data.bin isn't open yet, so the page cache can't answer
+    auto result = ReadResult{};
+    readInto(*local_data, BlockSize, BlockSize, result);
+    EXPECT_FALSE(result.done);
+
+    EXPECT_TRUE(pumpUntil([&result]() { return result.done; }));
+    EXPECT_FALSE(result.error) << result.error;
+    EXPECT_EQ(patternString(BlockSize, BlockSize), result.data);
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(0U, stats.cached_reads);
+    EXPECT_EQ(1U, stats.read_runs);
+    EXPECT_EQ(1U, stats.blocks_read);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, cachedReadCompletesInline)
+{
+    static auto constexpr FileSize = size_t{ 2U * BlockSize };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, FileSize)));
+    if (!canReadCached("data.bin")) {
+        GTEST_SKIP() << "this platform or filesystem can't read from the page cache alone";
+    }
+
+    // the first read opens the file on a worker...
+    auto first = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, first);
+    ASSERT_TRUE(pumpUntil([&first]() { return first.done; }));
+
+    // ...so the next one is answered before read() returns
+    auto second = ReadResult{};
+    readInto(*local_data, BlockSize, BlockSize, second);
+    EXPECT_TRUE(second.done);
+    EXPECT_FALSE(second.error) << second.error;
+    EXPECT_EQ(patternString(BlockSize, BlockSize), second.data);
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.cached_reads);
+    EXPECT_EQ(1U, stats.blocks_read);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, adjacentReadsAreCombined)
+{
+    static auto constexpr NBlocks = size_t{ 8U };
+    static auto constexpr FileSize = NBlocks * BlockSize;
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 4U * BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, FileSize)));
+
+    // reads issued in one pass, out of order...
+    auto results = std::vector<ReadResult>(NBlocks);
+    for (auto const block : { 5U, 0U, 7U, 2U, 1U, 6U, 3U, 4U }) {
+        readInto(*local_data, block * BlockSize, BlockSize, results[block]);
+    }
+
+    EXPECT_TRUE(pumpUntil([&results]() { return std::ranges::all_of(results, &ReadResult::done); }));
+    for (auto block = size_t{}; block < NBlocks; ++block) {
+        EXPECT_FALSE(results[block].error) << results[block].error;
+        EXPECT_EQ(patternString(block * BlockSize, BlockSize), results[block].data) << block;
+    }
+
+    // ...come off the disk as one
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.read_runs);
+    EXPECT_EQ(NBlocks, stats.blocks_read);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, duplicateReadsShareOneDiskRead)
+{
+    static auto constexpr FileSize = size_t{ 2U * BlockSize };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, FileSize)));
+
+    // two peers asking for the same block
+    auto results = std::vector<ReadResult>(2U);
+    for (auto& result : results) {
+        readInto(*local_data, BlockSize, BlockSize, result);
+    }
+
+    EXPECT_TRUE(pumpUntil([&results]() { return std::ranges::all_of(results, &ReadResult::done); }));
+    for (auto const& result : results) {
+        EXPECT_FALSE(result.error) << result.error;
+        EXPECT_EQ(patternString(BlockSize, BlockSize), result.data);
+    }
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.read_runs);
+    EXPECT_EQ(2U, stats.blocks_read);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, failedReadDoesNotFailItsNeighbor)
+{
+    // a.bin is on disk, b.bin isn't
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+
+    // adjacent, so they're tried as one read first
+    auto a = ReadResult{};
+    auto b = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, a);
+    readInto(*local_data, BlockSize, BlockSize, b);
+
+    EXPECT_TRUE(pumpUntil([&a, &b]() { return a.done && b.done; }));
+    EXPECT_FALSE(a.error) << a.error;
+    EXPECT_EQ(patternString(0U, BlockSize), a.data);
+    EXPECT_TRUE(b.error);
+    EXPECT_TRUE(std::empty(b.data));
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.read_runs);
+    EXPECT_EQ(1U, stats.blocks_read);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barriersWaitForReadsAndHoldBackLaterOnes)
+{
+    static auto constexpr FileSize = size_t{ 2U * BlockSize };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, FileSize)));
+
+    auto events = std::vector<std::string>{};
+    local_data->read(TorId, { .begin = 0U, .end = BlockSize }, [&events](auto, auto, tr_error const& error, auto) {
+        EXPECT_FALSE(error) << error;
+        events.emplace_back("read before");
+    });
+    local_data->close_torrent(TorId, [&events](tr_torrent_id_t) { events.emplace_back("closed"); });
+    local_data->read(TorId, { .begin = BlockSize, .end = FileSize }, [&events](auto, auto, tr_error const& error, auto) {
+        EXPECT_FALSE(error) << error;
+        events.emplace_back("read after");
+    });
+    EXPECT_TRUE(std::empty(events));
+
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 3U; }));
+    EXPECT_EQ((std::vector<std::string>{ "read before", "closed", "read after" }), events);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownDeliversReadsThatCompletionsStart)
+{
+    // Neither file is open yet, so the page cache answers neither read.
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
+
+    // a.bin's completion starts a read of b.bin, as a peer refilling its
+    // output buffer does
+    auto a = ReadResult{};
+    auto b = ReadResult{};
+    local_data->read(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        [&local_data, &a, &b](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto) {
+            a.done = true;
+            a.error = error;
+            readInto(*local_data, BlockSize, BlockSize, b);
+        });
+
+    // ...and shutdown() delivers both, well inside its 10 s stall warning
+    auto const started = std::chrono::steady_clock::now();
+    local_data->shutdown();
+    EXPECT_LT(std::chrono::steady_clock::now() - started, std::chrono::seconds{ 5 });
+    EXPECT_TRUE(a.done);
+    EXPECT_FALSE(a.error) << a.error;
+    EXPECT_TRUE(b.done);
+    EXPECT_FALSE(b.error) << b.error;
+    EXPECT_EQ(patternString(BlockSize, BlockSize), b.data);
+}
+
+TEST_F(LocalDataWorkersTest, queuedHashWaitsForAWriteThatOverlapsIt)
+{
+    // Piece 0 is blocks 0-2: a.bin, then the start of b.bin. One worker, so
+    // the write of block 0 is delivered before the write of block 2.
+    auto const local_data = makeLocalData(
+        makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", 2U * BlockSize } }, 3U * BlockSize),
+        1U);
+
+    auto events = std::vector<std::string>{};
+    auto const on_write = [&events](std::string_view const event) {
+        return [&events, event](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back(event);
+        };
+    };
+
+    // Closing a.bin waits for block 0's write, and holds back the hash of
+    // piece 0. The write of block 2 is in b.bin, so it goes ahead.
+    local_data->set_workers_paused(true);
+    local_data->write(TorId, { .begin = 0U, .end = BlockSize }, patternBlock(0U), on_write("wrote block 0"));
+    local_data->close_file(TorId, 0U, [&events](tr_torrent_id_t) { events.emplace_back("closed a.bin"); });
+    local_data->test_piece(TorId, 0U, [&events](auto, auto, auto const&, auto) { events.emplace_back("hashed"); });
+    local_data->write(
+        TorId,
+        { .begin = 2U * BlockSize, .end = 3U * BlockSize },
+        patternBlock(2U * BlockSize),
+        on_write("wrote block 2"));
+    local_data->set_workers_paused(false);
+
+    // The close brings the hash up while block 2 is still being written.
+    // The hash waits for that write instead of reading under it.
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 4U; }));
+    EXPECT_EQ((std::vector<std::string>{ "wrote block 0", "closed a.bin", "wrote block 2", "hashed" }), events);
 
     local_data->shutdown();
 }

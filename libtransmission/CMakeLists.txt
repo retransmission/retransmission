@@ -269,6 +269,8 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
         ntohll
         posix_fadvise
         posix_fallocate
+        preadv
+        preadv2
         sendfile64)
 
 target_include_directories(${TR_NAME}

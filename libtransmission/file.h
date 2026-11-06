@@ -9,6 +9,7 @@
 #include <ctime> // time_t
 #include <functional>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -341,6 +342,37 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
     tr_sys_file_t handle,
     void* buffer,
     uint64_t size,
+    uint64_t offset,
+    uint64_t* bytes_read,
+    tr_error* error = nullptr);
+
+/**
+ * @brief Reads `size` bytes at `offset`, but only if every one of them is
+ *        already in the page cache. A miss reads nothing from the disk.
+ *
+ * Linux 6.5 and later. `cachestat()` looks first, because a `RWF_NOWAIT`
+ * read that misses still starts readahead from the calling thread, and
+ * then `preadv2()` reads with `RWF_NOWAIT`.
+ *
+ * @return true if every byte was read from memory. False on a miss, past
+ *         the end of the file, where the platform or filesystem can't read
+ *         this way, or on error; `buffer` may then be partly written.
+ */
+[[nodiscard]] bool tr_sys_file_read_cached_at(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_t offset) noexcept;
+
+// False if this build's tr_sys_file_read_cached_at() always returns false.
+[[nodiscard]] bool tr_sys_file_can_read_cached() noexcept;
+
+/**
+ * @brief Like tr_sys_file_read_at(), but fills `buffers` in turn.
+ *
+ * One call fills as many of them as the platform allows, and may stop
+ * short as tr_sys_file_read_at() can. `buffers` must not be empty, and
+ * neither may its first buffer.
+ */
+[[nodiscard]] bool tr_sys_file_readv_at(
+    tr_sys_file_t handle,
+    std::span<std::span<uint8_t> const> buffers,
     uint64_t offset,
     uint64_t* bytes_read,
     tr_error* error = nullptr);
