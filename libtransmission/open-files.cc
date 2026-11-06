@@ -218,6 +218,10 @@ tr_open_files::Handle tr_open_files::get(
                     fmt::arg("path", filename),
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
+
+            // Free what the failed attempt reserved. The empty file
+            // stays, so the next open skips preallocation.
+            (void)tr_sys_file_truncate(fd, 0U);
             return {};
         }
 
