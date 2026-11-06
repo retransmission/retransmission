@@ -1,0 +1,417 @@
+add_subdirectory(VDKQueue)
+
+add_executable(${TR_NAME}-mac MACOSX_BUNDLE)
+
+target_sources(${TR_NAME}-mac
+    PRIVATE
+        AboutWindowController.h
+        AboutWindowController.mm
+        AddMagnetWindowController.h
+        AddMagnetWindowController.mm
+        AddTorrentViewModel.h
+        AddTorrentViewModel.mm
+        AddWindowController.h
+        AddWindowController.mm
+        Badger.h
+        Badger.mm
+        BadgeView.h
+        BadgeView.mm
+        BaseFileNameCellView.h
+        BaseFileNameCellView.mm
+        BlocklistDownloaderViewController.h
+        BlocklistDownloaderViewController.mm
+        BonjourController.h
+        BonjourController.mm
+        ButtonToolbarItem.h
+        ButtonToolbarItem.mm
+        CocoaCompatibility.h
+        ColorTextField.h
+        ColorTextField.mm
+        Controller.h
+        Controller.mm
+        CreatorWindowController.h
+        CreatorWindowController.mm
+        DefaultAppHelper.h
+        DefaultAppHelper.mm
+        DragOverlayView.h
+        DragOverlayView.mm
+        DragOverlayWindow.h
+        DragOverlayWindow.mm
+        ExpandedPathToIconTransformer.h
+        ExpandedPathToIconTransformer.mm
+        ExpandedPathToPathTransformer.h
+        ExpandedPathToPathTransformer.mm
+        FileCheckCellView.h
+        FileCheckCellView.mm
+        FileListNode.h
+        FileListNode.mm
+        FileOutlineController.h
+        FileOutlineController.mm
+        FileOutlineView.h
+        FileOutlineView.mm
+        FilePriorityCellView.h
+        FilePriorityCellView.mm
+        FileRenameSheetController.h
+        FileRenameSheetController.mm
+        FilterBarController.h
+        FilterBarController.mm
+        GlobalOptionsPopoverViewController.h
+        GlobalOptionsPopoverViewController.mm
+        GroupCell.h
+        GroupCell.mm
+        GroupPopUpButtonCell.h
+        GroupPopUpButtonCell.mm
+        GroupRulesWindowController.h
+        GroupRulesWindowController.mm
+        GroupsController.h
+        GroupsController.mm
+        GroupToolbarItem.h
+        GroupToolbarItem.mm
+        InfoActivityViewController.h
+        InfoActivityViewController.mm
+        InfoFileViewController.h
+        InfoFileViewController.mm
+        InfoGeneralViewController.h
+        InfoGeneralViewController.mm
+        InfoOptionsViewController.h
+        InfoOptionsViewController.mm
+        InfoPeersViewController.h
+        InfoPeersViewController.mm
+        InfoTextField.h
+        InfoTextField.mm
+        InfoTrackersViewController.h
+        InfoTrackersViewController.mm
+        InfoViewController.h
+        InfoWindowController.h
+        InfoWindowController.mm
+        main.mm
+        MenuProvider.h
+        MenuProvider.mm
+        MessageLogsViews.h
+        MessageLogsViews.mm
+        MessageWindowController.h
+        MessageWindowController.mm
+        NSApplicationAdditions.h
+        NSApplicationAdditions.mm
+        NSDataAdditions.h
+        NSDataAdditions.mm
+        NSImageAdditions.h
+        NSImageAdditions.mm
+        NSMenuAdditions.h
+        NSMenuAdditions.mm
+        NSMutableArrayAdditions.h
+        NSMutableArrayAdditions.mm
+        NSStringAdditions.h
+        NSStringAdditions.mm
+        NSURLAdditions.h
+        NSURLAdditions.mm
+        PeersViews.h
+        PeersViews.mm
+        PiecesView.h
+        PiecesView.mm
+        PortChecker.h
+        PortChecker.mm
+        PowerManager.h
+        PowerManager.mm
+        PredicateEditorRowTemplateAny.h
+        PredicateEditorRowTemplateAny.mm
+        PrefsBandwidthTabViewController.h
+        PrefsBandwidthTabViewController.mm
+        PrefsController.h
+        PrefsController.mm
+        PrefsGeneralTabViewController.h
+        PrefsGeneralTabViewController.mm
+        PrefsGroupsTabViewController.h
+        PrefsGroupsTabViewController.mm
+        PrefsNetworkTabViewController.h
+        PrefsNetworkTabViewController.mm
+        PrefsPeersTabViewController.h
+        PrefsPeersTabViewController.mm
+        PrefsRemoteTabViewController.h
+        PrefsRemoteTabViewController.mm
+        PrefsTransfersAddingViewController.h
+        PrefsTransfersAddingViewController.mm
+        PrefsTransfersManagementViewController.h
+        PrefsTransfersManagementViewController.mm
+        PrefsTransfersTabViewController.h
+        PrefsTransfersTabViewController.mm
+        PrefsUI.h
+        PrefsUI.mm
+        PriorityPopUpButtonCell.h
+        PriorityPopUpButtonCell.mm
+        ProgressBarView.h
+        ProgressBarView.mm
+        ProgressGradients.h
+        ProgressGradients.mm
+        ShareToolbarItem.h
+        ShareToolbarItem.mm
+        ShareTorrentFileHelper.h
+        ShareTorrentFileHelper.mm
+        SmallTorrentCell.h
+        SmallTorrentCell.mm
+        SparkleProxy.mm
+        StatsWindowController.h
+        StatsWindowController.mm
+        StatusBarController.h
+        StatusBarController.mm
+        Toolbar.h
+        Toolbar.mm
+        Torrent.h
+        Torrent.mm
+        TorrentCell.h
+        TorrentCell.mm
+        TorrentCellActionButton.h
+        TorrentCellActionButton.mm
+        TorrentCellControlButton.h
+        TorrentCellControlButton.mm
+        TorrentCellRevealButton.h
+        TorrentCellRevealButton.mm
+        TorrentContextMenuProvider.h
+        TorrentContextMenuProvider.mm
+        TorrentGroup.h
+        TorrentGroup.mm
+        TorrentMainView.h
+        TorrentMainView.mm
+        TorrentMainWindow.h
+        TorrentMainWindow.mm
+        TorrentTableView.h
+        TorrentTableView.mm
+        TrackerIconLoader.h
+        TrackerIconLoader.mm
+        TrackerNode.h
+        TrackerNode.mm
+        TrackersViews.h
+        TrackersViews.mm
+        TRGroup.h
+        TRGroup.mm
+        URLSheetWindowController.h
+        URLSheetWindowController.mm
+        Utils.h
+        Utils.mm
+        UTTypeAdditions.h
+        UTTypeAdditions.mm)
+
+set(RESOURCES
+    Defaults.plist
+    ${PROJECT_SOURCE_DIR}/COPYING
+    Images/TransmissionDocument.icns)
+source_group(Resources
+    FILES ${RESOURCES})
+
+set_source_files_properties(
+    ${RESOURCES}
+    PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources)
+
+set(IMAGESETS
+    ActionHover
+    CleanupTemplate
+    CompleteCheck
+    CreateLarge
+    DownArrowGroupTemplate
+    DownArrowTemplate
+    DownloadBadge
+    EllipsisTemplate
+    Globe
+    Magnet
+    PauseHover
+    PauseOff
+    PauseOn
+    PinTemplate
+    PriorityControlHigh
+    PriorityControlLow
+    PriorityControlNormal
+    PriorityHighTemplate
+    PriorityLowTemplate
+    PriorityNormalTemplate
+    ResumeHover
+    ResumeNoWaitHover
+    ResumeNoWaitOff
+    ResumeNoWaitOn
+    ResumeOff
+    ResumeOn
+    RevealHover
+    RevealOff
+    RevealOn
+    TortoiseTemplate
+    UpArrowGroupTemplate
+    UpArrowTemplate
+    UploadBadge
+    YingYangGroupTemplate
+    YingYangTemplate)
+
+set(APPICON_NAME AppIcon)
+
+set(IMAGE_ASSETS_DIR Images/Images.xcassets)
+set(APPICONSET_DIR "${IMAGE_ASSETS_DIR}/${APPICON_NAME}.appiconset")
+
+set(IMAGE_ASSETS
+    ${IMAGE_ASSETS_DIR}/Contents.json
+    ${APPICONSET_DIR}/Contents.json)
+
+foreach(IMG IN LISTS IMAGESETS)
+    set(IMG_DIR "${IMAGE_ASSETS_DIR}/${IMG}.imageset")
+    list(APPEND IMAGE_ASSETS
+        ${IMG_DIR}/${IMG}.png
+        ${IMG_DIR}/${IMG}@2x.png
+        ${IMG_DIR}/Contents.json)
+endforeach()
+
+foreach(SIZE IN ITEMS 16 32 128 256 512)
+    list(APPEND IMAGE_ASSETS
+        ${APPICONSET_DIR}/icon_${SIZE}x${SIZE}.png
+        ${APPICONSET_DIR}/icon_${SIZE}x${SIZE}@2x.png)
+endforeach()
+
+set(COMPILED_IMAGE_ASSETS
+    "${CMAKE_CURRENT_BINARY_DIR}/${APPICON_NAME}.icns"
+    "${CMAKE_CURRENT_BINARY_DIR}/Assets.car")
+
+add_custom_command(
+    OUTPUT
+        ${COMPILED_IMAGE_ASSETS}
+        ${APPICON_NAME}.Info.plist
+    COMMAND
+        ${ACTOOL_EXECUTABLE}
+        --compile "${CMAKE_CURRENT_BINARY_DIR}"
+        --platform macosx
+        --minimum-deployment-target ${CMAKE_OSX_DEPLOYMENT_TARGET}
+        --app-icon ${APPICON_NAME}
+        --output-partial-info-plist "${CMAKE_CURRENT_BINARY_DIR}/${APPICON_NAME}.Info.plist"
+        ${IMAGE_ASSETS_DIR}
+    DEPENDS ${IMAGE_ASSETS}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+source_group("Generated Files"
+    FILES
+        ${COMPILED_IMAGE_ASSETS}
+        ${APPICON_NAME}.Info.plist)
+
+list(APPEND RESOURCES
+    ${COMPILED_IMAGE_ASSETS})
+
+set_source_files_properties(
+    ${COMPILED_IMAGE_ASSETS}
+    PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources)
+
+set(LINGUAS
+    af
+    da
+    de
+    el
+    en
+    es
+    eu
+    fr
+    he
+    hu
+    it
+    ja
+    nl
+    pl
+    pt-BR
+    pt-PT
+    ru
+    sv
+    tr
+    uk
+    zh-CN
+    zh-TW
+    )
+
+if(ENABLE_NLS)
+    set(ENABLED_LINGUAS ${LINGUAS})
+else()
+    set(ENABLED_LINGUAS en)
+endif()
+
+set(LANG_STRINGS_FILES
+    AddMagnetWindow.strings
+    AddWindow.strings
+    AppMenu.strings
+    Creator.strings
+    GlobalOptionsPopover.strings
+    GroupRules.strings
+    InfoActivityView.strings
+    InfoGeneralView.strings
+    InfoOptionsView.strings
+    InfoPlist.strings
+    Localizable.strings
+    PreferencesBandwidthTab.strings
+    PreferencesGeneralTab.strings
+    PreferencesGroupsTab.strings
+    PreferencesNetworkTab.strings
+    PreferencesPeersTab.strings
+    PreferencesRemoteTab.strings
+    PreferencesTransfersTab.strings
+    TorrentContextMenu.strings)
+
+foreach(LANG ${ENABLED_LINGUAS})
+    set(${LANG}_STRINGS_FILES)
+    foreach(F ${LANG_STRINGS_FILES})
+        list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
+    endforeach()
+    source_group(Resources/${LANG}.lproj
+        FILES ${${LANG}_STRINGS_FILES})
+endforeach()
+
+foreach(LANG ${ENABLED_LINGUAS})
+    list(APPEND RESOURCES ${${LANG}_STRINGS_FILES})
+    set(STRINGS_FILES_RESOURCES_DIR Resources)
+    if(NOT CMAKE_GENERATOR STREQUAL Xcode)
+        string(APPEND STRINGS_FILES_RESOURCES_DIR /${LANG}.lproj)
+    endif()
+    set_source_files_properties(
+        ${${LANG}_STRINGS_FILES}
+        PROPERTIES
+            MACOSX_PACKAGE_LOCATION ${STRINGS_FILES_RESOURCES_DIR})
+endforeach()
+
+target_sources(${TR_NAME}-mac
+    PRIVATE
+        ${RESOURCES})
+
+set(SPARKLE_FRAMEWORK ${CMAKE_CURRENT_SOURCE_DIR}/Sparkle.framework)
+
+target_link_libraries(${TR_NAME}-mac
+    PRIVATE
+        ${TR_NAME}
+        woke::woke
+        transmission::fmt-header-only
+        vdkqueue
+        ${SPARKLE_FRAMEWORK}
+        "-framework AppKit"
+        "-framework Foundation"
+        "-framework Quartz"
+        "-framework Security"
+        "-weak_framework Sparkle"
+        "-weak_framework UniformTypeIdentifiers"
+        "-weak_framework UserNotifications")
+
+if(NOT CMAKE_GENERATOR STREQUAL Xcode)
+    add_custom_command(
+        TARGET ${TR_NAME}-mac
+        POST_BUILD
+        COMMAND ${CODESIGN_EXECUTABLE} -s - $<TARGET_BUNDLE_DIR:${TR_NAME}-mac>)
+endif()
+
+set_target_properties(
+    ${TR_NAME}-mac
+    PROPERTIES
+        INSTALL_RPATH "@executable_path;@executable_path/../Frameworks"
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
+        OUTPUT_NAME ${MAC_BUNDLE_NAME})
+
+install(
+    TARGETS ${TR_NAME}-mac
+    DESTINATION Applications)
+
+tr_install_web(Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
+
+install(CODE
+    "list(APPEND CMAKE_MODULE_PATH \"${PROJECT_SOURCE_DIR}/cmake\")
+    include(TrMacros)
+    include(GetPrerequisites)
+    tr_fixup_bundle_item(
+        \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/Applications/${MAC_BUNDLE_NAME}.app\"
+        \"Contents/MacOS/${MAC_BUNDLE_NAME}\" \"${CMAKE_CURRENT_SOURCE_DIR}\")")
