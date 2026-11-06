@@ -250,7 +250,10 @@ void TorrentList::report(std::span<Seen const> const seen, Ids removed, time_t c
                 changes.changed_fields |= item.fields;
             }
 
-            if ((item.fields & Torrent::fields<TR_KEY_edit_date>()).any()) {
+            // Metadata brings the metainfo, often within the second of the add,
+            // and `edit_date` only counts seconds.
+            if ((item.fields & Torrent::fields<TR_KEY_edit_date>()).any() ||
+                ((item.fields & Torrent::metadata_percent_complete_fields()).any() && tor.has_metadata())) {
                 changes.edited.push_back(item.id);
             }
 
