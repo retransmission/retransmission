@@ -11,6 +11,7 @@
 #import "ColorTextField.h"
 #import "ExpandedPathToPathTransformer.h"
 #import "ExpandedPathToIconTransformer.h"
+#import "GroupRulesWindowController.h"
 
 #define LStr(key) NSLocalizedStringFromTable(key, @"PreferencesGroupsTab", @"")
 
@@ -35,12 +36,10 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 @property(nonatomic) NSButton* fAutoAssignRulesEnableCheck;
 @property(nonatomic) NSButton* fAutoAssignRulesEditButton;
 
-@property(nonatomic) IBOutlet NSWindow* groupRulesSheetWindow;
-@property(nonatomic) IBOutlet NSPredicateEditor* ruleEditor;
-@property(nonatomic) IBOutlet NSLayoutConstraint* ruleEditorHeightConstraint;
-
 @property(nonatomic, readonly) tr_session* fHandle;
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
+
+@property(nonatomic) GroupRulesWindowController* rulesWindowController;
 
 @end
 
@@ -419,48 +418,32 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
 - (void)orderFrontRulesSheet:(id)sender
 {
-    if (!self.groupRulesSheetWindow) {
-        [NSBundle.mainBundle loadNibNamed:@"GroupRules" owner:self topLevelObjects:NULL];
-    }
-    NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
+    NSInteger const index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
     NSPredicate* predicate = [GroupsController.groups autoAssignRulesForIndex:index];
-    self.ruleEditor.objectValue = predicate;
-    if (self.ruleEditor.numberOfRows == 0) {
-        [self.ruleEditor addRow:nil];
-    }
-    [self.view.window beginSheet:self.groupRulesSheetWindow completionHandler:nil];
-}
 
-- (IBAction)cancelRules:(id)sender
-{
-    [self.view.window endSheet:self.groupRulesSheetWindow];
-    NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-    if (![GroupsController.groups autoAssignRulesForIndex:index]) {
-        [GroupsController.groups setUsesAutoAssignRules:NO forIndex:index];
-        self.fAutoAssignRulesEnableCheck.state = NSControlStateValueOff;
-        self.fAutoAssignRulesEditButton.enabled = NO;
-    }
-}
+    self.rulesWindowController = [[GroupRulesWindowController alloc]
+        initWithPredicate:predicate completionHandler:^(BOOL saved, NSPredicate* finalPredicate) {
+            [self.view.window endSheet:self.rulesWindowController.window];
 
-- (IBAction)saveRules:(id)sender
-{
-    [self.view.window endSheet:self.groupRulesSheetWindow];
-    NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-    [GroupsController.groups setUsesAutoAssignRules:YES forIndex:index];
-    [GroupsController.groups setAutoAssignRules:self.ruleEditor.objectValue forIndex:index];
-    self.fAutoAssignRulesEnableCheck.state = [GroupsController.groups usesAutoAssignRulesForIndex:index];
-    self.fAutoAssignRulesEditButton.enabled = (self.fAutoAssignRulesEnableCheck.state == NSControlStateValueOn);
-}
+            NSInteger const currentIndex = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
 
-- (void)ruleEditorRowsDidChange:(NSNotification*)notification
-{
-    NSScrollView* ruleEditorScrollView = self.ruleEditor.enclosingScrollView;
-    CGFloat const rowHeight = self.ruleEditor.rowHeight;
-    CGFloat const bordersHeight = ruleEditorScrollView.frame.size.height - ruleEditorScrollView.contentSize.height;
-    CGFloat const requiredRowCount = self.ruleEditor.numberOfRows;
-    CGFloat const maxVisibleRowCount = (long)((NSHeight(self.ruleEditor.window.screen.visibleFrame) * 2 / 3) / rowHeight);
-    self.ruleEditorHeightConstraint.constant = MIN(requiredRowCount, maxVisibleRowCount) * rowHeight + bordersHeight;
-    ruleEditorScrollView.hasVerticalScroller = requiredRowCount > maxVisibleRowCount;
+            if (saved) {
+                BOOL const hasRules = (finalPredicate != nil);
+                [GroupsController.groups setUsesAutoAssignRules:hasRules forIndex:currentIndex];
+                [GroupsController.groups setAutoAssignRules:finalPredicate forIndex:currentIndex];
+            } else {
+                if (![GroupsController.groups autoAssignRulesForIndex:currentIndex]) {
+                    [GroupsController.groups setUsesAutoAssignRules:NO forIndex:currentIndex];
+                }
+            }
+
+            self.fAutoAssignRulesEnableCheck.state = [GroupsController.groups usesAutoAssignRulesForIndex:currentIndex];
+            self.fAutoAssignRulesEditButton.enabled = (self.fAutoAssignRulesEnableCheck.state == NSControlStateValueOn);
+
+            self.rulesWindowController = nil;
+        }];
+
+    [self.view.window beginSheet:self.rulesWindowController.window completionHandler:nil];
 }
 
 #pragma mark - Private State Management
