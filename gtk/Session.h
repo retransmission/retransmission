@@ -113,9 +113,6 @@ public:
     *******
     ******/
 
-    /* remove a torrent */
-    void remove_torrent(tr_torrent_id_t id, bool delete_files);
-
     // Sets a pref and saves the prefs file. The session learns of a session pref
     // from Prefs, through the tr::app::Session base.
     template<typename T>

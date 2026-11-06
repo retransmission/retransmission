@@ -225,12 +225,27 @@ TEST_F(GtkSessionTest, aRemovedTorrentsObjectKeepsItsValues)
     ASSERT_TRUE(torrent);
     auto const progress = torrent->get_long_progress_text();
 
-    core_->remove_torrent(id, false);
+    core_->remove_torrents({ id }, false);
+    ASSERT_TRUE(wait_for([this] { return core_->get_model()->get_n_items() == 0U; }));
 
-    EXPECT_EQ(0U, core_->get_model()->get_n_items());
     EXPECT_EQ(id, torrent->get_id());
     EXPECT_EQ("debian-11.2.0-amd64-DVD-1.iso", torrent->get_name());
     EXPECT_EQ(progress, torrent->get_long_progress_text());
+}
+
+// A poll still in flight when a torrent is removed doesn't bring its row back.
+TEST_F(GtkSessionTest, aPollInFlightDoesNotBringBackARemovedTorrent)
+{
+    auto const id = add_listed_torrent(Debian);
+
+    core_->refresh_all_torrents(tr::app::TorrentKeySet::MainStats);
+    core_->remove_torrents({ id }, false);
+    ASSERT_TRUE(wait_for([this] { return core_->get_model()->get_n_items() == 0U; }));
+
+    // let every reply land
+    std::ignore = wait_for([] { return false; }, 300ms);
+    EXPECT_EQ(0U, core_->get_model()->get_n_items());
+    EXPECT_EQ(nullptr, core_->torrents().find(id));
 }
 
 // A change fetched from the session reaches the list's object and the change signal.

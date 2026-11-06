@@ -84,8 +84,6 @@ public:
     void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt);
     [[nodiscard]] bool add_from_url(Glib::ustring const& url);
 
-    void remove_torrent(tr_torrent_id_t id, bool delete_files);
-
     [[nodiscard]] constexpr auto& rpc() noexcept
     {
         return rpc_;
@@ -792,19 +790,6 @@ void Session::Impl::add_files(std::vector<Glib::RefPtr<Gio::File>> const& files,
 void Session::Impl::torrents_added()
 {
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
-}
-
-void Session::remove_torrent(tr_torrent_id_t id, bool delete_files)
-{
-    impl_->remove_torrent(id, delete_files);
-}
-
-void Session::Impl::remove_torrent(tr_torrent_id_t const id, bool const delete_files)
-{
-    if (auto* const tor = core_.find_torrent(id); tor != nullptr) {
-        core_.torrents().remove({ id });
-        tr_torrentRemove(tor, delete_files);
-    }
 }
 
 void Session::load(bool force_paused)
