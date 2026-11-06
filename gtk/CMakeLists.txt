@@ -27,7 +27,6 @@ target_sources(${TR_NAME}-gtk-lib
         FilterBase.hh
         FilterListModel.h
         FilterListModel.hh
-        Flags.h
         FreeSpaceLabel.cc
         FreeSpaceLabel.h
         GtkCompat.h
@@ -65,6 +64,8 @@ target_sources(${TR_NAME}-gtk-lib
         StatsDialog.h
         SystemTrayIcon.cc
         SystemTrayIcon.h
+        Timer.cc
+        Timer.h
         Torrent.cc
         Torrent.h
         TorrentCellRenderer.cc
