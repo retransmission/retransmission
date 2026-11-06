@@ -639,93 +639,70 @@ namespace
 {
 namespace preallocate_helpers
 {
-#ifdef HAVE_FALLOCATE64
-[[nodiscard]] bool preallocate_fallocate64(tr_sys_file_t handle, uint64_t size)
+// Returns 0 or an errno value.
+// errno can't carry the result: posix_fallocate() returns its error and leaves errno alone.
+[[nodiscard]] int reserve_blocks(
+    [[maybe_unused]] tr_sys_file_t const handle,
+    [[maybe_unused]] uint64_t const size,
+    [[maybe_unused]] bool const fast) noexcept
 {
-    return fallocate64(handle, 0, 0, static_cast<off64_t>(size)) == 0;
-}
-#endif
-
-#ifdef __APPLE__
-bool full_preallocate_apple(tr_sys_file_t handle, uint64_t size)
-{
-    fstore_t fst;
-
+#if defined(HAVE_FALLOCATE)
+    return fallocate(handle, 0, 0, static_cast<off_t>(size)) == 0 ? 0 : errno;
+#elif defined(__APPLE__)
+    // F_ALLOCATEALL alone: trying F_ALLOCATECONTIG first can report partial success on APFS (rustix #1682).
+    // F_ALLOCATEPERSIST isn't needed: the ftruncate() below puts the blocks inside EOF.
+    auto fst = fstore_t{};
     fst.fst_flags = F_ALLOCATEALL;
     fst.fst_posmode = F_PEOFPOSMODE;
-    fst.fst_offset = 0;
-    fst.fst_length = size;
-    fst.fst_bytesalloc = 0;
+    fst.fst_length = static_cast<off_t>(size);
 
-    bool ok = fcntl(handle, F_PREALLOCATE, &fst) != -1;
-
-    if (ok) {
-        ok = ftruncate(handle, size) == 0;
+    if (fcntl(handle, F_PREALLOCATE, &fst) == -1) {
+        return errno;
     }
 
-    return ok;
-}
-#endif
+    // FAT reports success with nothing allocated for an oversize request
+    if (fst.fst_bytesalloc < fst.fst_length) {
+        return ENOSPC;
+    }
 
-#ifdef HAVE_POSIX_FALLOCATE
-[[nodiscard]] bool full_preallocate_posix(tr_sys_file_t handle, uint64_t size)
-{
-    return posix_fallocate(handle, 0, static_cast<off_t>(size)) == 0;
-}
+    return ftruncate(handle, fst.fst_length) == 0 ? 0 : errno;
+#elif defined(HAVE_POSIX_FALLOCATE)
+    // Below fallocate() on purpose: on Linux this is the same syscall,
+    // and glibc's fallback writes one byte per 4 KiB block.
+    return fast ? ENOSYS : posix_fallocate(handle, 0, static_cast<off_t>(size));
+#else
+    return ENOSYS;
 #endif
+}
 } // namespace preallocate_helpers
 } // unnamed namespace
 
-bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error)
+bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, int const flags, tr_error* const error)
 {
     using namespace preallocate_helpers;
 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    using prealloc_func = bool (*)(tr_sys_file_t, uint64_t);
-
-    // these approaches are fast and should be tried first
-    auto approaches = std::vector<prealloc_func>{
-#ifdef HAVE_FALLOCATE64
-        preallocate_fallocate64
-#endif
-    };
-
-    // these approaches are sometimes slower in some settings (e.g.
-    // a slow zeroing of all the preallocated space) so only use them
-    // if specified by `flags`
-    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) == 0) {
-        // TODO: these functions haven't been reviewed in awhile.
-        // It's possible that some are faster now & should be promoted
-        // to 'always try' and/or replaced with fresher platform API.
-        approaches.insert(
-            std::end(approaches),
-            {
-#ifdef __APPLE__
-                full_preallocate_apple,
-#endif
-#ifdef HAVE_POSIX_FALLOCATE
-                full_preallocate_posix,
-#endif
-            });
+    // fallocate() and posix_fallocate() reject a zero length
+    if (size == 0U) {
+        return true;
     }
 
-    for (auto& approach : approaches) // try until one of them works
-    {
-        errno = 0;
+    auto const fast = (flags & TR_SYS_FILE_PREALLOC_FAST) != 0;
+    auto const err = reserve_blocks(handle, size, fast);
 
-        if (auto const success = approach(handle, size); success) {
-            return success;
-        }
+    if (err == 0) {
+        return true;
+    }
 
-        if (errno == ENOSPC) // disk full, so subsequent approaches will fail too
-        {
-            break;
-        }
+    // No reservation? Fast mode can still set the size,
+    // unless there's no room or the handle isn't writable.
+    if (fast && err != EBADF && !tr_error::is_out_of_space(err)) {
+        return tr_sys_file_truncate(handle, size, error);
     }
 
     if (error != nullptr) {
-        error->set_from_errno(errno ? errno : ENOSYS);
+        error->set_from_errno(err);
     }
 
     return false;

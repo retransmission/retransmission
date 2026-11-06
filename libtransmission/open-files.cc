@@ -29,48 +29,31 @@ namespace
     return fd != TR_BAD_SYS_FILE;
 }
 
-[[nodiscard]] bool preallocate_file_sparse(
+[[nodiscard]] bool preallocate_file_fast(
     tr_open_files::Preallocate const& preallocate,
     tr_sys_file_t const fd,
     uint64_t const length,
     tr_error* const error)
 {
-    if (length == 0U) {
-        return true;
-    }
-
     auto local_error = tr_error{};
 
-    if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_SPARSE, &local_error)) {
+    if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_FAST, &local_error)) {
         return true;
     }
 
     tr_logAddDebug(fmt::format("Fast preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!local_error.is_enospc()) {
-        local_error = {};
-
-        // Truncate is one metadata call. The write below dirties a page and,
-        // on a network filesystem, waits for the server to grow the file.
-        if (tr_sys_file_truncate(fd, length, &local_error)) {
-            return true;
-        }
-
-        tr_logAddDebug(
-            fmt::format("Sparse preallocation by truncate failed: {} ({})", local_error.message(), local_error.code()));
-    }
-
-    if (!local_error.is_enospc()) {
+    if (!local_error.is_out_of_space()) {
         static char constexpr Zero = '\0';
 
         local_error = {};
 
-        /* fallback: the old-style seek-and-write */
+        // for filesystems that refuse to grow a file by truncating
         if (tr_sys_file_write_at(fd, &Zero, 1, length - 1, nullptr, &local_error)) {
             return true;
         }
 
-        tr_logAddDebug(fmt::format("Fast prellocation fallback failed: {} ({})", local_error.message(), local_error.code()));
+        tr_logAddDebug(fmt::format("Fast preallocation fallback failed: {} ({})", local_error.message(), local_error.code()));
     }
 
     if (error != nullptr) {
@@ -86,10 +69,6 @@ namespace
     uint64_t length,
     tr_error* const error)
 {
-    if (length == 0U) {
-        return true;
-    }
-
     auto local_error = tr_error{};
 
     if (preallocate(fd, length, 0, &local_error)) {
@@ -98,7 +77,7 @@ namespace
 
     tr_logAddDebug(fmt::format("Full preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
-    if (!local_error.is_enospc()) {
+    if (!local_error.is_out_of_space()) {
         // This fallback writes out the whole file.
         // It runs on FAT and exFAT, which are usually slow external
         // drives, so write in big chunks.
@@ -225,9 +204,9 @@ tr_open_files::Handle tr_open_files::get(
         if (allocation == tr_file_preallocation::Full) {
             success = preallocate_file_full(preallocate_, fd, file_size, &error);
             type = "full";
-        } else if (allocation == tr_file_preallocation::Sparse) {
-            success = preallocate_file_sparse(preallocate_, fd, file_size, &error);
-            type = "sparse";
+        } else if (allocation == tr_file_preallocation::Fast) {
+            success = preallocate_file_fast(preallocate_, fd, file_size, &error);
+            type = "fast";
         }
 
         TR_ASSERT(type != nullptr);

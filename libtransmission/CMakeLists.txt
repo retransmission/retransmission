@@ -260,7 +260,7 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
     PRIVATE
         copyfile
         copy_file_range
-        fallocate64
+        fallocate
         flock
         htonll
         ntohll

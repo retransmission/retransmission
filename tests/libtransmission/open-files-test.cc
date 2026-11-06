@@ -434,7 +434,7 @@ namespace
 {
 
 // Param: whether the injected preallocation failure is a full disk.
-class OpenFilesSparsePreallocationTest
+class OpenFilesFastPreallocationTest
     : public tr::test::SandboxedTest
     , public ::testing::WithParamInterface<bool>
 {
@@ -442,28 +442,51 @@ class OpenFilesSparsePreallocationTest
 
 } // namespace
 
-TEST_P(OpenFilesSparsePreallocationTest, growsFileUnlessDiskIsFull)
+TEST_P(OpenFilesFastPreallocationTest, growsFileUnlessDiskIsFull)
 {
     static auto constexpr FileSize = uint64_t{ 4096U };
     auto const disk_full = GetParam();
-    auto const filename = tr_pathbuf{ sandboxDir(), "/sparse.bin" };
+    auto const filename = tr_pathbuf{ sandboxDir(), "/fast.bin" };
     auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int const flags, tr_error* const error) {
         EXPECT_EQ(FileSize, size);
-        EXPECT_EQ(TR_SYS_FILE_PREALLOC_SPARSE, flags);
+        EXPECT_EQ(TR_SYS_FILE_PREALLOC_FAST, flags);
         return tr::test::failPreallocation(error, disk_full);
     } };
 
     auto error = tr_error{};
-    EXPECT_EQ(!disk_full, static_cast<bool>(files.get(0, 0, true, filename, tr_file_preallocation::Sparse, FileSize, error)));
-    EXPECT_EQ(disk_full, error.is_enospc()) << error;
+    EXPECT_EQ(!disk_full, static_cast<bool>(files.get(0, 0, true, filename, tr_file_preallocation::Fast, FileSize, error)));
+    EXPECT_EQ(disk_full, error.is_out_of_space()) << error;
 
-    // a full disk skips the fallbacks
+    // a full disk skips the fallback
     auto const info = tr_sys_path_get_info(filename);
     ASSERT_TRUE(info);
     EXPECT_EQ(disk_full ? 0U : FileSize, info->size);
 }
 
-INSTANTIATE_TEST_SUITE_P(SparseAllocation, OpenFilesSparsePreallocationTest, ::testing::Bool());
+INSTANTIATE_TEST_SUITE_P(FastAllocation, OpenFilesFastPreallocationTest, ::testing::Bool());
+
+TEST_F(OpenFilesTest, preallocatesNewFilesToTheirFullSize)
+{
+    static auto constexpr FileSize = (uint64_t{ 1024U } * 1024U) + 17U;
+
+    auto files = tr_open_files{};
+    auto file_num = tr_file_index_t{};
+
+    for (auto const mode : { tr_file_preallocation::Fast, tr_file_preallocation::Full }) {
+        for (auto const size : { uint64_t{ 0U }, FileSize }) {
+            auto const filename = tr_pathbuf{ sandboxDir(), fmt::format("/preallocated-{:d}.bin"sv, file_num) };
+            auto error = tr_error{};
+            EXPECT_TRUE(files.get(0, file_num, true, filename, mode, size, error)) << error;
+            EXPECT_FALSE(error) << error;
+
+            auto const info = tr_sys_path_get_info(filename);
+            ASSERT_TRUE(info);
+            EXPECT_EQ(size, info->size);
+
+            ++file_num;
+        }
+    }
+}
 
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {

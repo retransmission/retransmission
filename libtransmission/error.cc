@@ -21,12 +21,18 @@ bool tr_error::is_enoent() const noexcept
 #endif
 }
 
-bool tr_error::is_enospc() const noexcept
+bool tr_error::is_out_of_space() const noexcept
+{
+    return is_out_of_space(code_);
+}
+
+bool tr_error::is_out_of_space(code_t const code) noexcept
 {
 #ifdef _WIN32
-    return code_ == ERROR_DISK_FULL;
+    return code == ERROR_DISK_FULL || code == ERROR_HANDLE_DISK_FULL || code == ERROR_DISK_QUOTA_EXCEEDED ||
+        code == ERROR_FILE_TOO_LARGE;
 #else
-    return code_ == ENOSPC;
+    return code == ENOSPC || code == EDQUOT || code == EFBIG;
 #endif
 }
 
