@@ -423,8 +423,9 @@ def run(args, output):
             if (settings.get("speed_limit_down_enabled") is not True
                     or settings.get("speed_limit_down") != args.download_limit_kilobytes_per_second):
                 raise RuntimeError("downloader speed limit was not applied")
-        metrics["cpu_affinity"] = {name: sorted(os.sched_getaffinity(process.pid))
-                                   for name, process in (("seed", seed_process), ("leech", leech_process))}
+        if hasattr(os, "sched_getaffinity"):  # Linux only
+            metrics["cpu_affinity"] = {name: sorted(os.sched_getaffinity(process.pid))
+                                       for name, process in (("seed", seed_process), ("leech", leech_process))}
         metrics["daemon_pids"] = {"seed": seed_process.pid, "leech": leech_process.pid}
         payload = seed_dir / "payload.bin"
         rng = random.Random(0)
