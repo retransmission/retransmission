@@ -5,8 +5,11 @@
 
 #include <atomic>
 #include <chrono>
+#include <clocale>
 #include <cstddef>
+#include <memory>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <tuple>
 #include <vector>
@@ -22,6 +25,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/variant.h>
 
 #include <libtransmission-app/display-modes.h>
 #include <libtransmission-app/prefs.h>
@@ -299,4 +303,30 @@ TEST_F(GtkSessionTest, filtersByTheSearchTextPref)
     EXPECT_FALSE(filter->matches_all());
     EXPECT_TRUE(filter->match(*debian));
     EXPECT_FALSE(filter->match(*arch));
+}
+
+// A name that begins another sorts first, though the other's info hash is lower.
+// en_US.UTF-8 collation ignores a tab, so collating "name<tab>hash" as one string would let the hash decide.
+TEST_F(GtkSessionTest, sortsANameBeforeTheNamesItBegins)
+{
+    auto const old_locale = std::string{ std::setlocale(LC_COLLATE, nullptr) };
+    if (std::setlocale(LC_COLLATE, "en_US.UTF-8") == nullptr) {
+        GTEST_SKIP() << "no en_US.UTF-8 locale";
+    }
+
+    auto const make = [this](tr_torrent_id_t const id, std::string_view const name, std::string_view const hash) {
+        auto tor = std::make_unique<tr::app::Torrent>(*prefs_, id);
+        auto row = tr_variant::Map{ 2U };
+        row.try_emplace(TR_KEY_name, name);
+        row.try_emplace(TR_KEY_hash_string, hash);
+        std::ignore = tor->update(row);
+        return tor;
+    };
+    auto const a = make(1, "a", "ffffffffffffffffffffffffffffffffffffffff");
+    auto const ab = make(2, "ab", "0000000000000000000000000000000000000000");
+
+    auto const sorter = TorrentSorter::create();
+    EXPECT_LT(sorter->compare(*Torrent::create(*a), *Torrent::create(*ab)), 0);
+
+    std::setlocale(LC_COLLATE, old_locale.c_str());
 }
