@@ -655,6 +655,48 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
+TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
+{
+    // the plain fetch never gets a reply; the announce gets one once the gate opens
+    auto gate = ThreadGate{};
+    server4_->setHandler([resume = gate.future()](evhttp_request* req) {
+        if (evhttp_request_get_uri(req) != "/announce"sv) {
+            return;
+        }
+        resume.wait();
+        LoopbackServer::reply(req, HTTP_OK, "OK", "late"sv);
+    });
+
+    auto plain = fetchAsync(options("/plain"sv));
+    auto opts = options("/announce"sv);
+    opts.finish_at_shutdown = true;
+    auto announce = fetchAsync(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
+
+    web_->startShutdown(10s);
+
+    // the shutdown wakes the curl thread rather than waiting out its 1s poll
+    ASSERT_EQ(std::future_status::ready, plain.wait_for(500ms));
+    auto const response = plain.get();
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+
+    // a fetch started after shutdown begins is answered as a failure
+    auto refused = fetchAsync(options("/refused"sv));
+    ASSERT_EQ(std::future_status::ready, refused.wait_for(5s));
+    auto const refused_response = refused.get();
+    EXPECT_EQ(0, refused_response.status);
+    EXPECT_TRUE(refused_response.errmsg);
+
+    // the other runs on until it ends or the deadline comes
+    EXPECT_EQ(std::future_status::timeout, announce.wait_for(300ms));
+    EXPECT_FALSE(web_->is_idle());
+
+    // and its reply still reaches the caller
+    gate.open();
+    ASSERT_EQ(std::future_status::ready, announce.wait_for(15s));
+    EXPECT_EQ(200, announce.get().status);
+}
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a

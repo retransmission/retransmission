@@ -268,9 +268,19 @@ public:
     {
         auto bind_addresses = mediator.bind_addresses();
         {
-            auto const lock = std::unique_lock{ tasks_mutex_ };
+            auto lock = std::unique_lock{ tasks_mutex_ };
 
             if (deadline_exists()) { // no new tasks once shutdown has begun
+                lock.unlock(); // the callback may call fetch()
+
+                // answer as a failed connection so callers' fallback chains end
+                if (options.done_func) {
+                    auto response = FetchResponse{};
+                    response.request_url = options.url;
+                    response.errmsg = "fetch refused: shutting down";
+                    response.user_data = options.done_func_user_data;
+                    mediator.run(std::move(options.done_func), std::move(response));
+                }
                 return;
             }
 
@@ -518,7 +528,7 @@ public:
     std::unique_ptr<std::thread> curl_thread;
 
     // if unset: steady-state, all is good
-    // if set: do not accept new tasks
+    // if set: refuse new tasks and cancel running ones not marked finish_at_shutdown
     // if set and deadline reached: kill all remaining tasks
     using Clock = std::chrono::steady_clock;
     static auto constexpr NoDeadline = std::chrono::nanoseconds::rep{ 0 };
@@ -849,6 +859,23 @@ public:
         remove_task(task);
     }
 
+    // ends, as failed connections, the running fetches shutdown needn't wait for
+    void cancel_unfinished_at_shutdown()
+    {
+        auto tasks = small::vector<Task*, 4U>{};
+        for (auto& task : running_tasks_) {
+            if (!task.options().finish_at_shutdown) {
+                tasks.push_back(&task);
+            }
+        }
+
+        for (auto* const task : tasks) {
+            tr_logAddTrace(fmt::format("Cancelled fetch of '{}' at shutdown", task->options().url));
+            task->set_error(CURLE_ABORTED_BY_CALLBACK);
+            remove_task(*task);
+        }
+    }
+
     void network_changed()
     {
         auto const lock = std::unique_lock{ tasks_mutex_ };
@@ -935,6 +962,14 @@ public:
 
             if (std::empty(running_tasks_)) {
                 continue;
+            }
+
+            // before curl starts the queued ones
+            if (deadline_exists()) {
+                cancel_unfinished_at_shutdown();
+                if (std::empty(running_tasks_)) {
+                    continue;
+                }
             }
 
             auto const next_unpause_ms = paused_tasks_upkeep();

@@ -231,3 +231,42 @@ TEST_F(IPCacheTest, onResponseIPQuery)
         }
     }
 }
+
+TEST_F(IPCacheTest, refusedQueriesEndFallbackChain)
+{
+    // Like tr_web once shutdown has begun: refused fetches fail at once
+    struct LocalMockMediator final : public MockMediator {
+        void fetch(tr_web::FetchOptions&& options) override // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        {
+            ++fetch_count;
+            options.done_func(
+                tr_web::FetchResponse{
+                    .request_url = options.url,
+                    .errmsg = {},
+                    .status = 0,
+                    .headers = {},
+                    .body = {},
+                    .primary_ip = {},
+                    .did_connect = false,
+                    .did_timeout = false,
+                    .user_data = options.done_func_user_data,
+                });
+        }
+
+        [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type /*type*/) noexcept override
+        {
+            return ip_endpoints;
+        }
+
+        std::size_t fetch_count = 0U;
+
+        std::array<std::string, 2U> const ip_endpoints = { { "first url"s, "second url"s } };
+    };
+
+    auto mediator = LocalMockMediator{};
+    ip_cache_ = tr_ip_cache::create(mediator);
+
+    ip_cache_->update_global_addr(TR_AF_INET);
+    EXPECT_EQ(mediator.fetch_count, 2U); // both endpoints tried, then the chain ends
+    EXPECT_TRUE(ip_cache_->try_shutdown());
+}
