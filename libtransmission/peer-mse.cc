@@ -70,6 +70,8 @@ auto constexpr RSquared = from_hex(
     "A6130C9D54DA3D538D001CB98C6F28C7A95D0ECBC5679266AFBC083554E85EE33361BFF33A35E04B112CE56282E51749D515B23CD4ACE6DD3423ECEE2DDC6158D4C85168A99A751F6D9F175993AF6D83FF0CA2A3D838C98595F0194046281A8E"sv);
 
 // a * b / 2^768 mod P, if a or b is below P
+// FIOS method from https://www.microsoft.com/en-us/research/wp-content/uploads/1996/01/j37acmon.pdf,
+// with the a * b and m * P carries in separate variables instead of folding one into t with ADD()
 [[nodiscard]] constexpr limbs_t multiply(limbs_t const& a, limbs_t const& b) noexcept
 {
     auto t = limbs_t{};
