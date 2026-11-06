@@ -1241,6 +1241,7 @@ jobs:
             --env CCACHE_DIR=/work/.ccache \
             --env CCACHE_COMPILERCHECK \
             --env CCACHE_COMPRESSLEVEL \
+            --env CI \
             --env DEBIAN_FRONTEND=noninteractive \
             debian:stable-slim \
             bash -euxc '
