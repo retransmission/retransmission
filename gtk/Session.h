@@ -11,6 +11,7 @@
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/rpc-client.h>
 #include <libtransmission-app/session.h>
+#include <libtransmission-app/torrent-list.h>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -30,7 +31,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
 struct tr_session;
@@ -105,8 +105,8 @@ public:
     /** @brief Add a torrent. */
     void add_builder(std::unique_ptr<tr_torrent_builder> builder);
 
-    /** Add a torrent. */
-    void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
+    // Fetches a torrent just added to the session, so the list shows it before the next poll.
+    void add_torrent(tr_torrent_id_t id, bool do_notify);
 
     /**
      * Notifies listeners that torrents have been added.
@@ -114,6 +114,7 @@ public:
      */
     void torrents_added();
 
+    // Fetches a torrent that changed outside the session's RPC, so the list shows it before the next poll.
     void torrent_changed(tr_torrent_id_t id);
 
     /******
@@ -123,7 +124,7 @@ public:
     /* remove a torrent */
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
 
-    /* update the model with current torrent status */
+    // Reads the session's busy state for the sleep inhibitor. The poll updates the torrents.
     void update();
 
     /**
@@ -167,8 +168,8 @@ public:
     [[nodiscard]] sigc::signal<void()>& signal_blocklist_info();
     [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
     [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
-    [[nodiscard]] sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>&
-    signal_torrents_changed();
+    // the torrents an update changed, by id, and the union of the fields it changed
+    [[nodiscard]] sigc::signal<void(tr::app::TorrentList::Ids const&, Torrent::Fields const&)>& signal_torrents_changed();
 
 protected:
     Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);

@@ -241,7 +241,7 @@ void set_error_color(
     static auto const error_color_name = Glib::ustring{ "tr_error_color" };
 
     auto color = Gdk::RGBA();
-    if (torrent.get_error_code() != tr_stat::Error::Ok &&
+    if (torrent.get_shared().has_error() &&
         (flags & TR_GTK_CELL_RENDERER_STATE(SELECTED)) == static_cast<Gtk::CellRendererState>(0) &&
         widget.get_style_context()->lookup_color(error_color_name, color)) {
         text_renderer.property_foreground_rgba() = color;
@@ -257,7 +257,7 @@ void set_error_color(
     static auto const idle_color_name = Glib::ustring{ "tr_transfer_idle_color" };
 
     auto const* color_name = &idle_color_name;
-    switch (torrent.get_activity()) {
+    switch (torrent.get_shared().activity()) {
     case TR_STATUS_DOWNLOAD:
         color_name = &down_color_name;
         break;
