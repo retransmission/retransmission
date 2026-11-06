@@ -780,6 +780,32 @@ TEST_F(AppTorrentListTest, editedFollowsEditDateChangesOfKnownTorrents)
     EXPECT_TRUE(std::empty(recorder_.lines));
 }
 
+// a magnet's metadata can arrive within the second its edit date already holds
+TEST_F(AppTorrentListTest, editedFollowsTheArrivalOfMetadata)
+{
+    list_.update(
+        make_args(make_list(make_row(
+            1,
+            kv(TR_KEY_name, "magnet"sv),
+            kv(TR_KEY_edit_date, Now),
+            kv(TR_KEY_metadata_have, 0),
+            kv(TR_KEY_metadata_size, 100)))),
+        Coverage::Complete,
+        Now);
+    recorder_.reset();
+
+    // more of it, but not all, is no edit
+    list_.update(make_args(make_list(make_row(1, kv(TR_KEY_metadata_have, 50)))), Coverage::Complete, Now);
+    EXPECT_TRUE(std::empty(recorder_.last_changes().edited));
+    recorder_.reset();
+
+    list_.update(
+        make_args(make_list(make_row(1, kv(TR_KEY_edit_date, Now), kv(TR_KEY_metadata_have, 100)))),
+        Coverage::Complete,
+        Now);
+    EXPECT_EQ(recorder_.last_changes().edited, (Ids{ 1 }));
+}
+
 TEST_F(AppTorrentListTest, completedNeedsLeftUntilDoneToReachZeroAfterDownloading)
 {
     // 1 downloads to completion; 2 finishes a verify with nothing downloaded; 3 is seen done; 4 is seen downloading

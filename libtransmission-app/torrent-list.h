@@ -76,7 +76,7 @@ public:
         TorrentFieldSet changed_fields; // the union of `changed[i].fields`
         Ids added; // named torrents the session got within `AddedWindow` of `now`; each is reported once
         Ids completed; // `left_until_done` reached zero after downloading something
-        Ids edited; // `edit_date` changed, so the session's copy of the metainfo did too
+        Ids edited; // the session's copy of the metainfo changed: `edit_date` moved, or the metadata arrived
         Ids need_info; // first seen without a name, e.g. a new magnet or a stats-only row; fetch their info
         Ids removed; // the rows the response's `removed` named, plus those a complete response omitted
 
