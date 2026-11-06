@@ -113,9 +113,6 @@ public:
     *******
     ******/
 
-    /* remove a torrent */
-    void remove_torrent(tr_torrent_id_t id, bool delete_files);
-
     /**
      * Attempts to start a torrent immediately.
      */
