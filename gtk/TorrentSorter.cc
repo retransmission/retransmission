@@ -47,6 +47,10 @@ int TorrentSorter::compare(Torrent const& lhs, Torrent const& rhs) const
         val = lhs.get_name_collate_key() <=> rhs.get_name_collate_key();
     }
 
+    if (val == 0) {
+        val = lhs.get_shared().hash() <=> rhs.get_shared().hash();
+    }
+
     // SorterBase wants exactly -1, 0 or 1
     auto const ret = static_cast<int>(val > 0) - static_cast<int>(val < 0);
     return is_reversed_ ? -ret : ret;

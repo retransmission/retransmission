@@ -49,9 +49,9 @@ public:
 
     [[nodiscard]] tr_torrent_id_t get_id() const noexcept;
     [[nodiscard]] Glib::ustring get_name() const;
-    // sorts by name, case-insensitively, then by info hash
+    // the lowercase name, a tab and the info hash, for the type-ahead search
     [[nodiscard]] Glib::ustring const& get_name_collated() const noexcept;
-    // `get_name_collated()`'s collation key: two keys compare as `std::string`s
+    // the lowercase name's collation key: two keys compare as `std::string`s
     // the way their names compare as `Glib::ustring`s, without collating again
     [[nodiscard]] std::string const& get_name_collate_key() const noexcept;
 

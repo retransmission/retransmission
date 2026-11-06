@@ -176,8 +176,11 @@ void Torrent::Impl::detach()
 
 void Torrent::Impl::update_names()
 {
-    name_collated_ = fmt::format("{}\t{}", Glib::ustring{ shared().name() }.lowercase(), shared().hash_string().sv());
-    name_collate_key_ = name_collated_.collate_key();
+    auto const lowercase_name = Glib::ustring{ shared().name() }.lowercase();
+    name_collated_ = fmt::format("{}\t{}", lowercase_name, shared().hash_string().sv());
+
+    // the name alone: collation can ignore the tab, which would let the hash decide between "a" and "ab"
+    name_collate_key_ = lowercase_name.collate_key();
 }
 
 void Torrent::Impl::notify_property_changes(Fields const& fields) const
