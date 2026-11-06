@@ -70,11 +70,15 @@ private:
     constexpr uint8_t next(uint8_t& i, uint8_t& j)
     {
         i += 1;
-        j += s_[i];
+        auto const x = s_[i];
+        j += x;
+        auto const y = s_[j];
 
-        std::swap(s_[i], s_[j]);
+        // not std::swap(): the compiler can't rule out i == j, so it would reload s_[i] below
+        s_[i] = y;
+        s_[j] = x;
 
-        return s_[static_cast<uint8_t>(s_[i] + s_[j])];
+        return s_[static_cast<uint8_t>(x + y)];
     }
 
     std::array<uint8_t, 256> s_ = {};
