@@ -10,6 +10,7 @@
 #include <condition_variable>
 #include <cstdlib> // getenv()
 #include <cstring> // strlen()
+#include <filesystem>
 #include <future>
 #include <iostream>
 #include <memory>
@@ -17,6 +18,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -32,6 +34,7 @@
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/env.h> // tr_env_key_exists()
 #include <libtransmission/error.h>
+#include <libtransmission/file-utils.h> // tr_file_read()
 #include <libtransmission/file.h> // tr_sys_file_*()
 #include <libtransmission/local-data.h>
 #include <libtransmission/macros.h>
@@ -133,7 +136,12 @@ class Sandbox
 {
 public:
     Sandbox()
-        : parent_dir_{ getDefaultParentDir() }
+        : Sandbox{ getDefaultParentDir() }
+    {
+    }
+
+    explicit Sandbox(std::string parent_dir)
+        : parent_dir_{ std::move(parent_dir) }
         , sandbox_dir_{ createSandbox(parent_dir_, TR_PROJ_APPNAME "-test-XXXXXX") }
     {
     }
@@ -263,6 +271,20 @@ protected:
         errno = tmperr;
     }
 
+    // Makes a file read-only: clears its write bits on POSIX, sets its read-only attribute on Windows.
+    static void makeReadOnly(std::string_view const path)
+    {
+        using std::filesystem::perms;
+
+        auto ec = std::error_code{};
+        std::filesystem::permissions(
+            std::filesystem::path{ std::u8string{ std::begin(path), std::end(path) } },
+            perms::owner_write | perms::group_write | perms::others_write,
+            std::filesystem::perm_options::remove,
+            ec);
+        EXPECT_FALSE(ec) << path << ": " << ec.message();
+    }
+
     static void createFileWithContents(std::string_view path, void const* payload, size_t n)
     {
         auto const tmperr = errno;
@@ -289,6 +311,13 @@ protected:
     static void createFileWithContents(std::string_view path, void const* payload)
     {
         createFileWithContents(path, payload, strlen(static_cast<char const*>(payload)));
+    }
+
+    static void expectContents(std::string_view const path, std::string_view const expected)
+    {
+        auto contents = std::vector<char>{};
+        ASSERT_TRUE(tr_file_read(path, contents));
+        EXPECT_EQ(expected, (std::string_view{ contents.data(), contents.size() }));
     }
 
     bool verbose_ = false;

@@ -172,6 +172,17 @@ struct tr_sys_path_capacity {
 [[nodiscard]] bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_error* error = nullptr);
 
 /**
+ * @brief Test to see if two paths are on the same filesystem.
+ *
+ * @param[in] path1 Path to first file or directory.
+ * @param[in] path2 Path to second file or directory.
+ *
+ * @return `True` if both paths exist and are on the same filesystem,
+ *         `false` otherwise.
+ */
+[[nodiscard]] bool tr_sys_path_is_same_filesystem(std::string_view path1, std::string_view path2);
+
+/**
  * @brief Portability wrapper for `realpath()`.
  *
  * @param[in]  path  Path to file or directory.
@@ -208,6 +219,8 @@ struct tr_sys_path_capacity {
 /**
  * @brief Portability wrapper for `rename()`.
  *
+ * Like POSIX `rename()`, it replaces a read-only file too.
+ *
  * @param[in]  src_path Path to source file or directory.
  * @param[in]  dst_path Path to destination file or directory.
  * @param[out] error    Pointer to error object. Optional, pass `nullptr` if you
@@ -221,6 +234,8 @@ bool tr_sys_path_rename(std::string_view src_path, std::string_view dst_path, tr
 
 /**
  * @brief Portability wrapper for `remove()`.
+ *
+ * Like POSIX `remove()`, it removes a read-only file too.
  *
  * @param[in]  path  Path to file or directory.
  * @param[out] error Pointer to error object. Optional, pass `nullptr` if you

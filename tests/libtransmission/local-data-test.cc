@@ -77,9 +77,15 @@ public:
         return write_err;
     }
 
-    [[nodiscard]] tr_error move([[maybe_unused]] tr_torrent_id_t const id, std::string_view const parent) override
+    [[nodiscard]] tr_error move(
+        [[maybe_unused]] tr_torrent_id_t const id,
+        std::string_view const parent,
+        std::function<void()> const& on_placed) override
     {
         moved_to = std::string{ parent };
+        if (!move_err) {
+            on_placed();
+        }
         return move_err;
     }
 
@@ -228,6 +234,19 @@ TEST(LocalData, AdminOperationsDelegate)
     EXPECT_TRUE(move_called);
     EXPECT_EQ("/new", raw_backend->moved_to);
 
+    // placing the files comes before the end of the move
+    auto events = std::vector<std::string>{};
+    local_data.move(
+        5,
+        [] { return std::string{ "/newer" }; },
+        [&events](tr_torrent_id_t, std::string_view, tr_error const&) { events.emplace_back("moved"); },
+        [&events](tr_torrent_id_t tor_id, std::string_view const parent) {
+            EXPECT_EQ(5, tor_id);
+            EXPECT_EQ("/newer", parent);
+            events.emplace_back("placed");
+        });
+    EXPECT_EQ((std::vector<std::string>{ "placed", "moved" }), events);
+
     // an empty parent skips the move
     auto skip_called = false;
     local_data.move(
@@ -237,9 +256,10 @@ TEST(LocalData, AdminOperationsDelegate)
             skip_called = true;
             EXPECT_EQ("", parent);
             EXPECT_FALSE(error);
-        });
+        },
+        [](tr_torrent_id_t, std::string_view) { FAIL() << "a skipped move places nothing"; });
     EXPECT_TRUE(skip_called);
-    EXPECT_EQ("/new", raw_backend->moved_to);
+    EXPECT_EQ("/newer", raw_backend->moved_to);
 
     auto rename_called = false;
     local_data.rename(

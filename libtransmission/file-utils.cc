@@ -6,6 +6,7 @@
 #include "libtransmission/file-utils.h"
 
 #include <cerrno> // EINVAL, EISDIR
+#include <optional>
 #include <string_view>
 #include <vector>
 
@@ -15,6 +16,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -121,14 +123,11 @@ bool tr_file_save(std::string_view filename, std::string_view contents, tr_error
     return true;
 }
 
-bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow_copy, tr_error* error)
+namespace
 {
-    auto local_error = tr_error{};
-    if (error == nullptr) {
-        error = &local_error;
-    }
-
-    // make sure the old file exists
+// Checks that `oldpath` is a file, and creates the dir that `newpath` goes in.
+[[nodiscard]] bool prepare_move(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
+{
     auto const info = tr_sys_path_get_info(oldpath, 0, error);
     if (!info) {
         error->prefix_message("Unable to get information on old file: ");
@@ -139,40 +138,80 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
         return false;
     }
 
-    // ensure the target directory exists
     if (!tr_sys_dir_create(tr_sys_path_dirname(newpath), TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
         error->prefix_message("Unable to create directory for new file: ");
         return false;
     }
 
-    if (allow_copy) {
-        // they might be on the same filesystem...
-        if (tr_sys_path_rename(oldpath, newpath)) {
-            return true;
-        }
-    } else {
-        // do the actual moving
-        if (tr_sys_path_rename(oldpath, newpath, error)) {
-            return true;
-        }
+    return true;
+}
+} // namespace
+
+bool tr_file_move(std::string_view const oldpath, std::string_view const newpath, tr_error* error)
+{
+    auto local_error = tr_error{};
+    if (error == nullptr) {
+        error = &local_error;
+    }
+
+    if (!prepare_move(oldpath, newpath, error)) {
+        return false;
+    }
+
+    if (!tr_sys_path_rename(oldpath, newpath, error)) {
         error->prefix_message("Unable to move file: ");
         return false;
     }
 
-    /* Otherwise, copy the file. */
-    if (!tr_sys_path_copy(oldpath, newpath, error)) {
-        error->prefix_message("Unable to copy: ");
-        return false;
-    }
-
-    if (auto log_error = tr_error{}; !tr_sys_path_remove(oldpath, &log_error)) {
-        tr_logAddError(
-            fmt::format(
-                "Couldn't remove '{path}': {error} ({error_code})",
-                fmt::arg("path", oldpath),
-                fmt::arg("error", log_error.message()),
-                fmt::arg("error_code", log_error.code())));
-    }
-
     return true;
+}
+
+std::optional<tr_file_moved> tr_file_rename_or_copy(
+    std::string_view const oldpath,
+    std::string_view const newpath,
+    tr_error* error)
+{
+    auto local_error = tr_error{};
+    if (error == nullptr) {
+        error = &local_error;
+    }
+
+    if (!prepare_move(oldpath, newpath, error)) {
+        return {};
+    }
+
+    // Renaming fails across filesystems.
+    if (tr_sys_path_rename(oldpath, newpath)) {
+        return tr_file_moved::Renamed;
+    }
+
+    if (!tr_file_copy_atomic(oldpath, newpath, error)) {
+        error->prefix_message("Unable to copy: ");
+        return {};
+    }
+
+    return tr_file_moved::Copied;
+}
+
+bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
+{
+    auto const tmp = tr::detail::file_copy_temp_path(newpath);
+
+    // A killed copy may have left it behind.
+    tr_sys_path_remove(tmp);
+
+    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+        return true;
+    }
+
+    tr_sys_path_remove(tmp);
+    return false;
+}
+
+tr_pathbuf tr::detail::file_copy_temp_path(std::string_view const newpath)
+{
+    // Naming it after `newpath` lets a retry replace what a killed copy left behind.
+    // Hashing the name keeps its length fixed, so it fits wherever `newpath` does.
+    auto const hash = tr_sha1_string{ tr_sha1::digest(tr_sys_path_basename(newpath)) };
+    return tr_pathbuf{ tr_sys_path_dirname(newpath), '/', TrFileCopyPrefix, hash.sv() };
 }
