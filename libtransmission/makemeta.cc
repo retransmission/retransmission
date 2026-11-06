@@ -49,9 +49,13 @@ struct TorrentFile {
     {
     }
 
-    [[nodiscard]] auto operator<(TorrentFile const& that) const noexcept
+    [[nodiscard]] constexpr auto operator<(TorrentFile const& that) const noexcept
     {
-        return subpath_ < that.subpath_;
+        // Compare path elements: `/` ranks below every other byte.
+        auto constexpr Rank = [](char const ch) {
+            return ch == '/' ? 0 : static_cast<unsigned char>(ch) + 1;
+        };
+        return std::ranges::lexicographical_compare(subpath_, that.subpath_, {}, Rank, Rank);
     }
 
     std::string subpath_;

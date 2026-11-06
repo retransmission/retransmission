@@ -211,6 +211,25 @@ TEST_F(MakemetaTest, filesAreSortedByByteValue)
     EXPECT_EQ(tr_sha1::digest("abcde"sv), metainfo.piece_hash(0));
 }
 
+TEST_F(MakemetaTest, filesAreSortedByPathElement)
+{
+    auto const top = tr_pathbuf{ sandboxDir(), "/files"sv };
+    createFileWithContents(tr_pathbuf{ top, "/\xC3\xB8.txt"sv }, "e"sv);
+    createFileWithContents(tr_pathbuf{ top, "/z.txt"sv }, "d"sv);
+    createFileWithContents(tr_pathbuf{ top, "/foo.txt"sv }, "c"sv);
+    createFileWithContents(tr_pathbuf{ top, "/foo-bar/x.txt"sv }, "b"sv);
+    createFileWithContents(tr_pathbuf{ top, "/foo/x.txt"sv }, "a"sv);
+
+    auto const builder = tr_metainfo_builder{ top };
+    ASSERT_EQ(5U, builder.file_count());
+    EXPECT_EQ("files/foo/x.txt"sv, builder.path(0));
+    EXPECT_EQ("files/foo-bar/x.txt"sv, builder.path(1));
+    EXPECT_EQ("files/foo.txt"sv, builder.path(2));
+    EXPECT_EQ("files/z.txt"sv, builder.path(3));
+    // U+00F8 sorts after ASCII because bytes compare as unsigned.
+    EXPECT_EQ("files/\xC3\xB8.txt"sv, builder.path(4));
+}
+
 TEST_F(MakemetaTest, singleFile)
 {
     auto const files = makeRandomFiles(sandboxDir(), 1);
