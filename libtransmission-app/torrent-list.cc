@@ -26,6 +26,7 @@
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/prefs.h"
 #include "libtransmission-app/torrent.h"
 
 namespace tr::app
@@ -37,8 +38,13 @@ bool TorrentList::Changes::any() const noexcept
         !std::empty(edited) || !std::empty(need_info) || !std::empty(removed);
 }
 
-TorrentList::TorrentList(Prefs const& prefs) noexcept
+TorrentList::TorrentList(Prefs const& prefs)
     : prefs_{ prefs }
+    , prefs_connection_{ prefs.observe_changes([this](tr_quark const key) {
+        if (std::ranges::find(Torrent::SeedRatioPrefKeys, key) != std::end(Torrent::SeedRatioPrefKeys)) {
+            report_seed_ratio_prefs_change();
+        }
+    }) }
 {
 }
 
@@ -262,6 +268,23 @@ void TorrentList::report(std::span<Seen const> const seen, Ids removed, time_t c
     }
 
     if (changes.any()) {
+        changed(changes);
+    }
+}
+
+void TorrentList::report_seed_ratio_prefs_change()
+{
+    static auto constexpr Fields = Torrent::effective_seed_ratio_fields();
+
+    auto changes = Changes{};
+    for (size_t row = 0U, n = std::size(entries_); row < n; ++row) {
+        if (auto const& tor = *entries_[row].torrent; tor.seed_ratio_mode() == TR_RATIOLIMIT_GLOBAL) {
+            changes.changed.push_back({ .id = tor.id(), .row = row, .fields = Fields });
+        }
+    }
+
+    if (!std::empty(changes.changed)) {
+        changes.changed_fields = Fields;
         changed(changes);
     }
 }

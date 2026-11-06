@@ -20,7 +20,6 @@ namespace tr::app
 
 // The fields `compare_torrents()` reads for `mode`, so a change to one of them may move a torrent.
 // The caller's tie-breaks read the name and the info hash, which these leave out.
-// `SortByProgress`, and the modes that fall through to it, also read `Torrent::SeedRatioPrefKeys`.
 [[nodiscard]] constexpr TorrentFieldSet sort_mode_fields(SortMode const mode) noexcept
 {
     auto constexpr Ratio = Torrent::fields<TR_KEY_upload_ratio>();

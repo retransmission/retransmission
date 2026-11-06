@@ -36,6 +36,9 @@ class Prefs;
  * view learns the same things whether a toolkit or a poll scheduler made
  * the call. A `Torrent` keeps its address until `rows_removing` names its
  * row, so a view may hold a `Torrent const*` between calls.
+ *
+ * A change to a pref in `Torrent::SeedRatioPrefKeys` is reported through
+ * `changed` too, for the torrents that follow the session's seed ratio.
  */
 class TorrentList
 {
@@ -83,7 +86,7 @@ public:
     // a torrent the session has had longer than this is not `added`, so a startup or reconnect list is quiet
     static constexpr auto AddedWindow = time_t{ 60 };
 
-    explicit TorrentList(Prefs const& prefs) noexcept;
+    explicit TorrentList(Prefs const& prefs);
     ~TorrentList() = default;
     TorrentList(TorrentList&&) = delete;
     TorrentList(TorrentList const&) = delete;
@@ -150,7 +153,8 @@ public:
     sigslot::signal<size_t /*row*/, size_t /*count*/> rows_removing;
     sigslot::signal<size_t /*row*/, size_t /*count*/> rows_removed;
 
-    // once per `update()` that did anything, after its row signals
+    // once per `update()` that did anything, after its row signals,
+    // and once per seed-ratio pref change that a listed torrent follows
     sigslot::signal<Changes const&> changed;
 
 private:
@@ -207,9 +211,13 @@ private:
     // fires `changed` with what `seen` and `removed` amount to
     void report(std::span<Seen const> seen, Ids removed, time_t now);
 
+    // fires `changed` for the torrents whose `effective_seed_ratio()` reads the session's limit
+    void report_seed_ratio_prefs_change();
+
     Prefs const& prefs_;
     std::vector<Entry> entries_; // sorted by id
     bool updating_ = false; // a slot that re-entered `update()` would corrupt the runs
+    sigslot::scoped_connection prefs_connection_;
 };
 
 } // namespace tr::app
