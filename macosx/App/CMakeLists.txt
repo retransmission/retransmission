@@ -30,7 +30,6 @@ add_link_options(
     # equivalent of XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING YES for this directory
     $<$<LINK_LANGUAGE:C,CXX>:-dead_strip>)
 
-add_subdirectory(QuickLookExtension)
 add_subdirectory(VDKQueue)
 
 add_executable(${TR_NAME}-mac MACOSX_BUNDLE)
@@ -226,7 +225,7 @@ target_sources(${TR_NAME}-mac
 
 set(RESOURCES
     Defaults.plist
-    ../COPYING
+    ../../COPYING
     Images/TransmissionDocument.icns)
 source_group(Resources
     FILES ${RESOURCES})
