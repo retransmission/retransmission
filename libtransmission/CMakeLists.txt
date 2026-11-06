@@ -242,8 +242,6 @@ tr_allow_compile_if(
 target_compile_definitions(${TR_NAME}
     PRIVATE
         __TRANSMISSION__
-        WIDE_INTEGER_DISABLE_FLOAT_INTEROP
-        WIDE_INTEGER_DISABLE_IOSTREAM
         PACKAGE_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}"
         $<$<BOOL:${WITH_INOTIFY}>:WITH_INOTIFY>
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
@@ -297,7 +295,6 @@ target_link_libraries(${TR_NAME}
         RapidJSON
         simdutf::simdutf
         wildmat
-        transmission::WideInteger
         MadlerCrcany
         $<$<BOOL:${WIN32}>:crypt32>
         $<$<BOOL:${WIN32}>:shlwapi>

@@ -105,7 +105,6 @@ tr_auto_option(USE_SYSTEM_SIGSLOT "Use system sigslot library" ${USE_SYSTEM_DEFA
 tr_auto_option(USE_SYSTEM_SIMDUTF "Use system simdutf library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_SMALL "Use system small library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_UTP "Use system utp library" ${USE_SYSTEM_DEFAULT})
-tr_auto_option(USE_SYSTEM_WIDE_INTEGER "Use system WideInteger library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_PSL "Use system psl library" ${USE_SYSTEM_DEFAULT})
 tr_list_option(USE_GTK_VERSION "Use specific GTK version" AUTO 3 4)
 tr_list_option(USE_QT_VERSION "Use specific Qt version" AUTO 5 6)
@@ -754,25 +753,6 @@ target_link_libraries(transmission::small
 target_compile_definitions(transmission::small
     INTERFACE
         SMALL_DISABLE_EXCEPTIONS=1)
-
-tr_add_external_auto_library(WIDE_INTEGER WideInteger
-    SUBPROJECT
-    SOURCE_DIR wide-integer)
-add_library(transmission::WideInteger INTERFACE IMPORTED)
-target_link_libraries(transmission::WideInteger
-    INTERFACE
-        WideInteger::WideInteger)
-include(CheckCXXSourceCompiles)
-check_cxx_source_compiles(
-"int main()
-{
-    unsigned __int128 u;
-    signed __int128 i;
-    return 0;
-}" TR_HAVE_INT128)
-target_compile_definitions(transmission::WideInteger
-    INTERFACE
-        $<$<BOOL:${TR_HAVE_INT128}>:WIDE_INTEGER_HAS_LIMB_TYPE_UINT64>)
 
 set(TR_WEB_ASSETS ${PROJECT_SOURCE_DIR}/web/public_html)
 if(REBUILD_WEB)
