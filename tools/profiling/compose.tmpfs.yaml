@@ -1,0 +1,6 @@
+services:
+  benchmark:
+    environment:
+      TR_PROFILE_STORAGE: tmpfs
+    tmpfs:
+      - /tmp:size=${TMPFS_SIZE:-4g},mode=1777

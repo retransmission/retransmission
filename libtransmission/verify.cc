@@ -17,6 +17,7 @@
 
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/file.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/types.h"
 #include "libtransmission/verify.h"
 
@@ -35,6 +36,7 @@ void tr_verify_worker::verify_torrent(
     std::atomic<bool> const& abort_flag,
     std::chrono::milliseconds const sleep_per_seconds_during_verify)
 {
+    TR_PROFILE_SCOPE("verify.torrent");
     verify_mediator.on_verify_started();
 
     tr_sys_file_t fd = TR_BAD_SYS_FILE;
@@ -65,6 +67,7 @@ void tr_verify_worker::verify_torrent(
 
         /* read a bit */
         if (fd != TR_BAD_SYS_FILE) {
+            TR_PROFILE_SCOPE("verify.read_and_hash");
             auto num_read = uint64_t{};
             if (tr_sys_file_read_at(fd, this_pass.data(), this_pass.size(), file_pos, &num_read) && num_read > 0U) {
                 this_pass = this_pass.first(num_read);
@@ -88,6 +91,7 @@ void tr_verify_worker::verify_torrent(
                  * way towards reducing IO load... */
                 if (auto const now = current_time_secs(); last_slept_at != now) {
                     last_slept_at = now;
+                    TR_PROFILE_SCOPE("verify.throttle_sleep");
                     std::this_thread::sleep_for(sleep_per_seconds_during_verify);
                 }
             }

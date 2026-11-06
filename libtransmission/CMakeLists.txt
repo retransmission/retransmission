@@ -14,6 +14,10 @@ add_compile_options(
 
 add_library(${TR_NAME} STATIC)
 
+if(ENABLE_BLOCK_PROFILING)
+    target_compile_definitions(${TR_NAME} PRIVATE TR_ENABLE_BLOCK_PROFILING)
+endif()
+
 set(IS_APPLE_CLANG FALSE)
 if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(IS_APPLE_CLANG TRUE)
@@ -121,6 +125,7 @@ target_sources(${TR_NAME}
         port-forwarding-upnp.h
         port-forwarding.cc
         port-forwarding.h
+        profile.h
         quark.cc
         quark.h
         resume.cc

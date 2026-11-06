@@ -43,6 +43,7 @@
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/peer-msgs.h"
 #include "libtransmission/peer-socket.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
@@ -1174,12 +1175,22 @@ void tr_peerMgrFree(tr_peerMgr const* const manager)
 // NOLINTNEXTLINE(misc-const-correctness)
 std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant)
 {
+    TR_PROFILE_SCOPE("peer.next_requests");
     TR_ASSERT(!torrent->is_done());
+
+    // From a refill the budget turned away to the next one it admits.
+    // Session thread only.
+    static auto budget_full = tr::profile::Interval{ "stall.write_budget_full" };
 
     // Keep the session's in-flight data under its disk budget. Every
     // requester comes through here, so this is the one place to clamp.
     if (auto const spare = torrent->session->spare_request_blocks(); spare) {
         numwant = std::min(numwant, *spare);
+        if (*spare == 0U) {
+            budget_full.start();
+        } else {
+            budget_full.stop();
+        }
     }
 
     if (auto const& controller = torrent->swarm->wishlist_controller) {
@@ -2482,6 +2493,7 @@ void pumpAllPeers(tr_peerMgr* mgr)
 
 void tr_peerMgr::bandwidth_pulse()
 {
+    TR_PROFILE_SCOPE("peer.bandwidth_pulse");
     using namespace bandwidth_helpers;
 
     auto const lock = unique_lock();
