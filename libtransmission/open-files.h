@@ -62,6 +62,18 @@ public:
             return writable_;
         }
 
+        // False once tr_sys_file_read_cached_at() has said this file can't
+        // be read that way, so later reads skip straight to the disk.
+        [[nodiscard]] bool can_read_cached() const noexcept
+        {
+            return can_read_cached_.load(std::memory_order_relaxed);
+        }
+
+        void set_cannot_read_cached() const noexcept
+        {
+            can_read_cached_.store(false, std::memory_order_relaxed);
+        }
+
         // Hold this around positioned reads and writes.
         //
         // Everyone using a file shares one descriptor, and on Windows
@@ -82,6 +94,7 @@ public:
     private:
         tr_sys_file_t fd_ = TR_BAD_SYS_FILE;
         bool writable_ = false;
+        mutable std::atomic<bool> can_read_cached_ = true;
 
 #ifdef _WIN32
         mutable std::mutex io_mutex_;
