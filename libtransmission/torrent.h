@@ -13,6 +13,7 @@
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -70,7 +71,9 @@ namespace tr::test
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+class TorrentDiskIoTest_lazyCheckOfALostPieceIsDropped_Test;
 class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
+class UploadTest;
 
 } // namespace tr::test
 
@@ -105,6 +108,7 @@ struct tr_torrent {
     private:
         friend class tr::test::RenameTest_multifileTorrent_Test;
         friend class tr::test::RenameTest_singleFilenameTorrent_Test;
+        friend class tr::test::UploadTest;
         friend struct tr_torrent;
 
         explicit ResumeHelper(tr_torrent& tor)
@@ -705,7 +709,16 @@ struct tr_torrent {
 
     /// METAINFO - PIECE CHECKSUMS
 
+    // Checks the piece on disk now, on the session thread, unless it's been
+    // checked since its files last changed.
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    // Reads `length` bytes at `offset` in a piece we have, to send to a
+    // peer. A piece whose files changed since it was last checked is
+    // hashed first, as a tr::LocalData data op. If that check fails, so
+    // does the read, and a failed hash sets the torrent's local error.
+    // `on_read` may run before this returns.
+    void read_piece_data(tr_piece_index_t piece, uint32_t offset, uint32_t length, tr::LocalData::OnRead on_read);
 
     void cancel_pending_verify();
 
@@ -1142,6 +1155,7 @@ struct tr_torrent {
 
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+    friend class tr::test::TorrentDiskIoTest_lazyCheckOfALostPieceIsDropped_Test;
     friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
@@ -1398,6 +1412,13 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
+
+    using OnPieceChecked = std::function<void(bool ok)>;
+
+    // Hashes the piece as a tr::LocalData data op, and reports to
+    // `on_checked`, maybe before this returns.
+    void check_piece_lazily(tr_piece_index_t piece, OnPieceChecked on_checked);
+    void on_piece_checked(tr_piece_index_t piece, bool ok);
     void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
@@ -1445,6 +1466,10 @@ private:
     // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
+
+    // Who's waiting on each piece's lazy check. A piece is hashed once,
+    // however many requests for it arrive meanwhile.
+    std::unordered_map<tr_piece_index_t, std::vector<OnPieceChecked>> piece_check_waiters_;
 
     tr_labels_t labels_;
 

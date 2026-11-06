@@ -664,14 +664,34 @@ private:
 
     void maybe_send_metadata_requests(time_t now) const;
     [[nodiscard]] size_t add_next_metadata_piece();
-    [[nodiscard]] size_t add_next_block(uint64_t now_msec);
+    [[nodiscard]] bool start_next_read(uint64_t now_msec);
     void on_upload_read(peer_request const& req, tr_error const& error, std::unique_ptr<tr::LocalData::BlockData> data);
 
     [[nodiscard]] size_t fill_output_buffer_impl(time_t now_sec, uint64_t now_msec);
     void fill_output_buffer(time_t now_sec, uint64_t now_msec)
     {
+        auto const was_filling = std::exchange(filling_, true);
         while (fill_output_buffer_impl(now_sec, now_msec) != 0U) {
         }
+        filling_ = was_filling;
+    }
+
+    // A read that finished on its own, outside a fill pass, made room for
+    // the next one. Reads finish in batches, so refill once, after the
+    // batch is delivered.
+    void on_read_finished()
+    {
+        if (filling_ || std::exchange(refill_queued_, true)) {
+            return;
+        }
+
+        session->queue_session_thread([weak = weak_from_this()] {
+            if (auto const self = weak.lock(); self) {
+                auto const lock = self->session->unique_lock();
+                self->refill_queued_ = false;
+                self->fill_output_buffer(tr_time(), tr_time_msec());
+            }
+        });
     }
 
     // ---
@@ -781,15 +801,21 @@ private:
     // requests from this peer that we haven't started reading yet
     std::deque<peer_request> peer_requested_;
 
-    // requests from this peer whose read is in flight.
-    // A read completion looks for its request here. If it's gone, the
-    // request was cancelled or rejected, so the data is dropped.
+    // requests from this peer whose read, or the check of whose piece,
+    // is in flight. A completion looks for its request here. If it's
+    // gone, the request was cancelled or rejected, so the data is dropped.
     std::vector<peer_request> reading_;
 
-    // bytes a read completion queued for this peer, whether piece or reject.
-    // add_next_block() zeroes it, issues one read, then checks it again.
-    // Nonzero means that read finished inline.
-    size_t n_reply_bytes_queued_ = 0U;
+    // bytes of the reads and checks in flight for this peer, counting
+    // those whose requests were cancelled since. Their buffers still
+    // exist, so they still count against the cap.
+    size_t n_bytes_reading_ = 0U;
+
+    // true while fill_output_buffer() runs
+    bool filling_ = false;
+
+    // true from when on_read_finished() queues a refill until it runs
+    bool refill_queued_ = false;
 
     std::array<std::vector<tr_pex>, NUM_TR_AF_INET_TYPES> pex_;
 
@@ -2093,13 +2119,9 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
         }
     }
 
-    // fulfill piece requests
-    for (;;) {
-        auto const old_len = n_bytes_written;
-        n_bytes_written += add_next_block(now_msec);
-        if (old_len == n_bytes_written) {
-            break;
-        }
+    // fulfill piece requests. Reads that finish inside this loop free room
+    // that it goes on to use, so piece bytes don't call for another pass.
+    while (start_next_read(now_msec)) {
     }
 
     if (client_sent_at_ != 0 && now_sec - client_sent_at_ > KeepaliveIntervalSecs) {
@@ -2135,47 +2157,43 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     return protocol_send_message(BtPeerMsgs::Ltep, ut_metadata_id_, tr_variant_serde::benc().to_string(std::move(tmp)), *data);
 }
 
-[[nodiscard]] size_t tr_peerMsgsImpl::add_next_block(uint64_t const now_msec)
+// Start on the peer's next request, if the reads already in flight leave
+// room for it. True if a request was taken off the queue.
+//
+// Several reads are kept in flight so that a backend that defers them
+// can merge and sort them. The output buffer bounds them, and so does
+// LocalData's read-ahead budget, so that one peer's backlog doesn't
+// crowd out everyone else's at the disk.
+[[nodiscard]] bool tr_peerMsgsImpl::start_next_read(uint64_t const now_msec)
 {
-    if (std::empty(peer_requested_) || io_->get_write_buffer_space(now_msec) == 0U) {
-        return {};
+    if (std::empty(peer_requested_) || n_bytes_reading_ >= tr::LocalData::read_ahead_bytes() ||
+        io_->get_write_buffer_space(now_msec) <= n_bytes_reading_) {
+        return false;
     }
 
     auto const req = peer_requested_.front();
     peer_requested_.pop_front();
 
-    auto ok = is_valid_request(req) && tor_.has_piece(req.index);
-
-    if (ok) {
-        ok = tor_.ensure_piece_is_checked(req.index);
-
-        if (!ok) {
-            tor_.error().set_local_error(fmt::format("Please Verify Local Data! Piece #{:d} is corrupt.", req.index));
+    if (!is_valid_request(req) || !tor_.has_piece(req.index)) {
+        if (io_->supports_fext()) {
+            protocol_send_reject(req);
         }
-    }
-
-    if (!ok) {
-        return io_->supports_fext() ? protocol_send_reject(req) : size_t{};
+        return true;
     }
 
     reading_.push_back(req);
-
-    auto const loc = tor_.piece_loc(req.index, req.offset);
-    n_reply_bytes_queued_ = 0U;
-    session->local_data.read(
-        tor_.id(),
-        { .begin = loc.byte, .end = loc.byte + req.length },
+    n_bytes_reading_ += req.length;
+    tor_.read_piece_data(
+        req.index,
+        req.offset,
+        req.length,
         [weak = weak_from_this(), req](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
             if (auto const self = weak.lock(); self) {
                 self->on_upload_read(req, error, std::move(data));
             }
         });
 
-    // Nonzero only if the read finished inline. Returning zero for a
-    // deferred read stops the caller's send loop until the data arrives.
-    // A backend that defers every read therefore serves one block per
-    // call to fill_output_buffer().
-    return n_reply_bytes_queued_;
+    return true;
 }
 
 void tr_peerMsgsImpl::on_upload_read(
@@ -2183,6 +2201,9 @@ void tr_peerMsgsImpl::on_upload_read(
     tr_error const& error,
     std::unique_ptr<tr::LocalData::BlockData> data)
 {
+    TR_ASSERT(n_bytes_reading_ >= req.length);
+    n_bytes_reading_ -= req.length;
+
     // Look the request up by value, not by position. Reads finish in
     // whatever order the disk answers them, and this one may have been
     // cancelled while we waited.
@@ -2191,21 +2212,20 @@ void tr_peerMsgsImpl::on_upload_read(
     // cancels a request and immediately repeats it gets the first read's
     // data, and the second read's data is dropped. The bytes are the
     // same either way.
-    auto const iter = std::ranges::find(reading_, req);
-    if (iter == std::ranges::end(reading_)) {
-        return;
-    }
-    reading_.erase(iter);
+    if (auto const iter = std::ranges::find(reading_, req); iter != std::ranges::end(reading_)) {
+        reading_.erase(iter);
 
-    if (error || data == nullptr || std::size(*data) < req.length) {
-        if (io_->supports_fext()) {
-            n_reply_bytes_queued_ += protocol_send_reject(req);
+        if (error || data == nullptr || std::size(*data) < req.length) {
+            if (io_->supports_fext()) {
+                protocol_send_reject(req);
+            }
+        } else {
+            auto const piece_data = std::string_view{ reinterpret_cast<char const*>(data->data()), req.length };
+            protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
         }
-        return;
     }
 
-    auto const piece_data = std::string_view{ reinterpret_cast<char const*>(data->data()), req.length };
-    n_reply_bytes_queued_ += protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
+    on_read_finished();
 }
 
 // ---

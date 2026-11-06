@@ -2801,6 +2801,85 @@ void tr_torrent::mark_changed()
     return checked;
 }
 
+void tr_torrent::read_piece_data(
+    tr_piece_index_t const piece,
+    uint32_t const offset,
+    uint32_t const length,
+    tr::LocalData::OnRead on_read)
+{
+    TR_ASSERT(piece < this->piece_count());
+
+    auto const loc = piece_loc(piece, offset);
+    auto const span = tr_byte_span_t{ .begin = loc.byte, .end = loc.byte + length };
+
+    // Most pieces are already checked, and skip building a callback.
+    if (is_piece_checked(piece)) {
+        session->local_data.read(id(), span, std::move(on_read));
+        return;
+    }
+
+    check_piece_lazily(
+        piece,
+        [session = this->session, tor_id = id(), span, on_read = std::move(on_read)](bool const ok) mutable {
+            if (ok) {
+                session->local_data.read(tor_id, span, std::move(on_read));
+            } else if (on_read) {
+                std::move(on_read)(tor_id, span, tr_error::from_errno(EIO), nullptr);
+            }
+        });
+}
+
+void tr_torrent::check_piece_lazily(tr_piece_index_t const piece, OnPieceChecked on_checked)
+{
+    auto& waiters = piece_check_waiters_[piece];
+    waiters.emplace_back(std::move(on_checked));
+    if (std::size(waiters) > 1U) {
+        return; // already being checked
+    }
+
+    session->local_data.test_piece(
+        id(),
+        piece,
+        [session = this->session](
+            tr_torrent_id_t const tor_id,
+            tr_piece_index_t const tested,
+            tr_error const&,
+            auto const hash) {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                tor->on_piece_checked(tested, hash && *hash == tor->piece_hash(tested));
+            }
+        });
+}
+
+void tr_torrent::on_piece_checked(tr_piece_index_t const piece, bool const ok)
+{
+    auto waiters = piece_check_waiters_.extract(piece);
+    if (waiters.empty()) {
+        return;
+    }
+
+    tr_logAddTraceTor(this, fmt::format("[LAZY] tested piece {}, pass=={}", piece, ok));
+
+    // Record nothing, and send nothing that was asked for, while:
+    // - a verify owns checked_pieces_, since the torrent's peers are going
+    //   away anyway;
+    // - the piece is gone, as when a neighbor's failed hash takes back a
+    //   block they share. The hash may have read that block mid-rewrite.
+    auto const recorded = verify_state_ == VerifyState::None && has_piece(piece);
+    if (recorded) {
+        mark_changed();
+        set_dirty();
+        checked_pieces_.set(piece, ok);
+        if (!ok) {
+            error().set_local_error(fmt::format("Please Verify Local Data! Piece #{:d} is corrupt.", piece));
+        }
+    }
+
+    for (auto const& waiter : waiters.mapped()) {
+        waiter(recorded && ok);
+    }
+}
+
 // --- RESUME HELPER
 
 tr_bitfield const& tr_torrent::ResumeHelper::checked_pieces() const noexcept
