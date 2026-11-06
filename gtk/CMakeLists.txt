@@ -27,7 +27,6 @@ target_sources(${TR_NAME}-gtk-lib
         FilterBase.hh
         FilterListModel.h
         FilterListModel.hh
-        Flags.h
         FreeSpaceLabel.cc
         FreeSpaceLabel.h
         GtkCompat.h

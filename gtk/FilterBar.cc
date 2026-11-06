@@ -14,6 +14,9 @@
 #include "Utils.h"
 
 #include <libtransmission-app/display-modes.h>
+#include <libtransmission-app/torrent-filter.h>
+#include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/torrent.h>
 
 #include <libtransmission/transmission.h>
 
@@ -40,12 +43,12 @@
 
 #include <fmt/format.h>
 
-#include <algorithm> // std::transform()
 #include <array>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <string_view>
 #include <utility> // std::exchange()
 
 using tr::app::DefaultShowMode;
@@ -54,7 +57,10 @@ using tr::app::ShowMode;
 
 namespace
 {
-using TrackerType = TorrentFilter::Tracker;
+enum class TrackerType : int8_t {
+    ALL,
+    HOST,
+};
 
 constexpr auto ShowModeSeparator = static_cast<ShowMode>(-1);
 constexpr auto TrackerSeparator = static_cast<TrackerType>(-1);
@@ -103,8 +109,8 @@ private:
     bool tracker_filter_model_update();
     void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeModel::Path const& path);
 
-    void update_filter_models(Torrent::ChangeFlags changes);
-    void update_filter_models_idle(Torrent::ChangeFlags changes);
+    void update_filter_models(Torrent::Fields const& changes);
+    void update_filter_models_idle(Torrent::Fields const& changes);
 
     void notify_visible_count_idle();
     bool notify_visible_count();
@@ -117,7 +123,10 @@ private:
     static void tracker_model_update_count(Gtk::TreeModel::iterator const& iter, int n);
     static bool is_it_a_separator(Gtk::TreeModel::const_iterator const& iter);
 
-    [[nodiscard]] static Glib::ustring get_name_from_host(std::string const& host);
+    [[nodiscard]] static Glib::ustring get_name_from_host(std::string_view host);
+
+    // the announce URL of a tracker on `sitename`, for its favicon
+    [[nodiscard]] std::string_view find_announce_url(std::string_view sitename) const;
 
     [[nodiscard]] static Gtk::CellRendererText* number_renderer_new();
 
@@ -132,7 +141,7 @@ private:
     Gtk::ComboBox* show_mode_ = nullptr;
     Gtk::ComboBox* tracker_ = nullptr;
     Gtk::Entry* entry_ = nullptr;
-    Glib::RefPtr<TorrentFilter> filter_ = TorrentFilter::create();
+    Glib::RefPtr<TorrentFilter> filter_ = TorrentFilter::create(prefs_);
     Glib::RefPtr<FilterListModel<Torrent>> filter_model_;
 
     sigc::signal<void(guint)> signal_visible_count_changed_;
@@ -140,7 +149,7 @@ private:
     sigc::connection update_filter_models_tag_;
     sigc::connection update_filter_models_on_add_remove_tag_;
     sigc::connection update_filter_models_on_change_tag_;
-    Torrent::ChangeFlags pending_filter_models_changes_;
+    Torrent::Fields pending_filter_models_changes_;
 };
 
 // --- TRACKERS
@@ -171,9 +180,9 @@ TrackerFilterModelColumns const tracker_filter_cols;
 } // namespace
 
 /* human-readable name; ie, Legaltorrents */
-Glib::ustring FilterBar::Impl::get_name_from_host(std::string const& host)
+Glib::ustring FilterBar::Impl::get_name_from_host(std::string_view const host)
 {
-    std::string name = host;
+    auto name = std::string{ host };
 
     if (!name.empty()) {
         name.front() = Glib::Ascii::toupper(name.front());
@@ -198,61 +207,24 @@ void FilterBar::Impl::favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, 
     }
 }
 
-bool FilterBar::Impl::tracker_filter_model_update()
+std::string_view FilterBar::Impl::find_announce_url(std::string_view const sitename) const
 {
-    struct site_info {
-        int count = 0;
-        std::string host;
-        std::string sitename;
-        std::string announce_url;
-
-        constexpr auto operator<=>(site_info const& that) const noexcept
-        {
-            return sitename <=> that.sitename;
+    for (auto const& tor : core_->torrents().torrents()) {
+        for (auto const& tracker : tor.tracker_stats()) {
+            if (tracker.sitename.sv() == sitename) {
+                return tracker.announce.sv();
+            }
         }
-
-        constexpr auto operator==(site_info const& that) const noexcept
-        {
-            return sitename == that.sitename;
-        }
-    };
-
-    auto const torrents_model = core_->get_model();
-
-    /* Walk through all the torrents, tallying how many matches there are
-     * for the various categories. Also make a sorted list of all tracker
-     * hosts s.t. we can merge it with the existing list */
-    auto n_torrents = 0;
-    auto site_infos = std::unordered_map<std::string /*site*/, site_info>{};
-    for (auto i = 0U, count = torrents_model->get_n_items(); i < count; ++i) {
-        auto const torrent = gtr_ptr_dynamic_cast<Torrent>(torrents_model->get_object(i));
-        if (torrent == nullptr) {
-            continue;
-        }
-
-        auto const& raw_torrent = torrent->get_underlying();
-
-        auto site_to_host_and_announce = std::map<std::string, std::pair<std::string, std::string>>{};
-        for (size_t j = 0, n = tr_torrentTrackerCount(&raw_torrent); j < n; ++j) {
-            auto const view = tr_torrentTracker(&raw_torrent, j);
-            site_to_host_and_announce.try_emplace(std::data(view.sitename), view.host_and_port, view.announce.sv());
-        }
-
-        for (auto const& [sitename, host_and_announce] : site_to_host_and_announce) {
-            auto& info = site_infos[sitename];
-            info.host = host_and_announce.first;
-            info.announce_url = host_and_announce.second;
-            info.sitename = sitename;
-            ++info.count;
-        }
-
-        ++n_torrents;
     }
 
-    auto const n_sites = std::size(site_infos);
-    auto sites_v = std::vector<site_info>(n_sites);
-    std::ranges::transform(site_infos, std::begin(sites_v), [](auto const& it) { return it.second; });
-    std::ranges::sort(sites_v);
+    return {};
+}
+
+bool FilterBar::Impl::tracker_filter_model_update()
+{
+    // sorted by sitename, to merge with the rows already listed
+    auto const site_counts = tr::app::count_torrents_per_sitename(core_->torrents());
+    auto const n_torrents = static_cast<int>(std::size(core_->torrents()));
 
     // update the "all" count
     auto iter = tracker_model_->children().begin();
@@ -264,10 +236,10 @@ bool FilterBar::Impl::tracker_filter_model_update()
     ++iter;
     ++iter;
 
-    size_t i = 0;
+    auto site = std::begin(site_counts);
     for (;;) {
         // are we done yet?
-        bool const new_sites_done = i >= n_sites;
+        bool const new_sites_done = site == std::end(site_counts);
         bool const old_sites_done = !iter;
         if (new_sites_done && old_sites_done) {
             break;
@@ -282,7 +254,7 @@ bool FilterBar::Impl::tracker_filter_model_update()
             insert_row = true;
         } else {
             auto const sitename = iter->get_value(tracker_filter_cols.sitename);
-            int const cmp = sitename.raw().compare(sites_v.at(i).sitename);
+            int const cmp = sitename.raw().compare(site->first.sv());
 
             if (cmp < 0) {
                 remove_row = true;
@@ -295,22 +267,22 @@ bool FilterBar::Impl::tracker_filter_model_update()
         if (remove_row) {
             iter = tracker_model_->erase(iter);
         } else if (insert_row) {
-            auto const& site = sites_v.at(i);
+            auto const& [sitename, count] = *site;
             auto const add = tracker_model_->insert(iter);
-            add->set_value(tracker_filter_cols.sitename, Glib::ustring{ site.sitename });
-            add->set_value(tracker_filter_cols.displayname, get_name_from_host(site.sitename));
-            add->set_value(tracker_filter_cols.count, site.count);
+            add->set_value(tracker_filter_cols.sitename, Glib::ustring{ std::string{ sitename.sv() } });
+            add->set_value(tracker_filter_cols.displayname, get_name_from_host(sitename.sv()));
+            add->set_value(tracker_filter_cols.count, count);
             add->set_value(tracker_filter_cols.type, TrackerType::HOST);
             auto path = tracker_model_->get_path(add);
-            core_->favicon_cache().load(site.announce_url, [this, path = std::move(path)](auto const* pixbuf) {
+            core_->favicon_cache().load(find_announce_url(sitename.sv()), [this, path = std::move(path)](auto const* pixbuf) {
                 favicon_ready_cb(pixbuf, path);
             });
-            ++i;
+            ++site;
         } else // update row
         {
-            tracker_model_update_count(iter, sites_v.at(i).count);
+            tracker_model_update_count(iter, site->second);
             ++iter;
-            ++i;
+            ++site;
         }
     }
 
@@ -425,7 +397,7 @@ void FilterBar::Impl::status_model_update_count(Gtk::TreeModel::iterator const& 
 
 bool FilterBar::Impl::show_mode_filter_model_update()
 {
-    auto const torrents_model = core_->get_model();
+    auto const counts = tr::app::count_torrents_per_mode(core_->torrents());
 
     for (auto& row : show_mode_model_->children()) {
         auto const type = row.get_value(show_mode_filter_cols.show_mode);
@@ -433,16 +405,7 @@ bool FilterBar::Impl::show_mode_filter_model_update()
             continue;
         }
 
-        auto hits = 0;
-
-        for (auto i = 0U, count = torrents_model->get_n_items(); i < count; ++i) {
-            auto const torrent = gtr_ptr_dynamic_cast<Torrent>(torrents_model->get_object(i));
-            if (torrent != nullptr && TorrentFilter::match_mode(*torrent, static_cast<ShowMode>(type))) {
-                ++hits;
-            }
-        }
-
-        status_model_update_count(TR_GTK_TREE_MODEL_CHILD_ITER(row), hits);
+        status_model_update_count(TR_GTK_TREE_MODEL_CHILD_ITER(row), counts.at(static_cast<size_t>(type)));
     }
 
     return false;
@@ -531,31 +494,23 @@ void FilterBar::Impl::show_mode_combo_box_init(Gtk::ComboBox& combo)
     }
 }
 
+// The filter reads these prefs.
+
 void FilterBar::Impl::update_filter_text()
 {
-    filter_->set_text(entry_->get_text());
+    prefs_.set(TR_KEY_filter_text, gtr_str_strip(entry_->get_text()));
 }
 
 void FilterBar::Impl::update_filter_show_mode()
 {
-    // set the filter's show-mode from the combobox selection and persist it
     auto const iter = show_mode_->get_active();
-    auto const mode = iter ? iter->get_value(show_mode_filter_cols.show_mode) : DefaultShowMode;
-    filter_->set_mode(mode);
-    prefs_.set(TR_KEY_show_mode, mode);
+    prefs_.set(TR_KEY_show_mode, iter ? iter->get_value(show_mode_filter_cols.show_mode) : DefaultShowMode);
 }
 
 void FilterBar::Impl::update_filter_tracker()
 {
-    // set the filter's tracker from the combobox selection and persist it
-    if (auto const iter = tracker_->get_active(); iter) {
-        auto const sitename = iter->get_value(tracker_filter_cols.sitename);
-        filter_->set_tracker(static_cast<TrackerType>(iter->get_value(tracker_filter_cols.type)), sitename);
-        prefs_.set(TR_KEY_filter_trackers, sitename);
-    } else {
-        filter_->set_tracker(TrackerType::ALL, {});
-        prefs_.set(TR_KEY_filter_trackers, Glib::ustring{});
-    }
+    auto const iter = tracker_->get_active();
+    prefs_.set(TR_KEY_filter_trackers, iter ? iter->get_value(tracker_filter_cols.sitename) : Glib::ustring{});
 }
 
 void FilterBar::Impl::select_saved_tracker()
@@ -593,33 +548,28 @@ void FilterBar::Impl::notify_visible_count_idle()
     }
 }
 
-void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
+void FilterBar::Impl::update_filter_models(Torrent::Fields const& changes)
 {
-    static auto constexpr show_mode_flags = Torrent::ChangeFlag::ACTIVE_PEERS_DOWN |
-        Torrent::ChangeFlag::ACTIVE_PEERS_UP |
-        Torrent::ChangeFlag::ACTIVE |
-        Torrent::ChangeFlag::ACTIVITY |
-        Torrent::ChangeFlag::ERROR_CODE |
-        Torrent::ChangeFlag::FINISHED;
-    static auto constexpr tracker_flags = Torrent::ChangeFlag::TRACKERS;
+    static auto constexpr ShowModeFields = tr::app::show_mode_fields();
+    static auto constexpr TrackerFields = tr::app::Torrent::fields<TR_KEY_trackers>();
 
-    if (changes.test(show_mode_flags)) {
+    if ((changes & ShowModeFields).any()) {
         show_mode_filter_model_update();
     }
 
-    if (changes.test(tracker_flags)) {
+    if ((changes & TrackerFields).any()) {
         tracker_filter_model_update();
         select_saved_tracker(); // the saved tracker may have just been listed
     }
 
     filter_->update(changes);
 
-    if (changes.test(show_mode_flags | tracker_flags)) {
+    if ((changes & (ShowModeFields | TrackerFields)).any()) {
         notify_visible_count_idle();
     }
 }
 
-void FilterBar::Impl::update_filter_models_idle(Torrent::ChangeFlags changes)
+void FilterBar::Impl::update_filter_models_idle(Torrent::Fields const& changes)
 {
     // Changes reported before the idle handler runs are merged into one update.
     pending_filter_models_changes_ |= changes;
@@ -693,7 +643,9 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core, Pref
     , entry_(get_template_child<Gtk::Entry>("text_entry"))
 {
     update_filter_models_on_add_remove_tag_ = core_->get_model()->signal_items_changed().connect(
-        [this](guint /*position*/, guint /*removed*/, guint /*added*/) { update_filter_models_idle(~Torrent::ChangeFlags()); });
+        [this](guint /*position*/, guint /*removed*/, guint /*added*/) {
+            update_filter_models_idle(tr::app::Torrent::all_fields());
+        });
     update_filter_models_on_change_tag_ = core_->signal_torrents_changed().connect(
         sigc::hide<0>(sigc::mem_fun(*this, &Impl::update_filter_models_idle)));
 

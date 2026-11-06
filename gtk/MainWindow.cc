@@ -778,29 +778,23 @@ void MainWindow::Impl::updateStats()
 
 void MainWindow::Impl::updateSpeeds()
 {
-    auto const* const session = core_->get_session();
+    auto dn_count = int{};
+    auto dn_speed = Speed{};
+    auto up_count = int{};
+    auto up_speed = Speed{};
 
-    if (session != nullptr) {
-        auto dn_count = int{};
-        auto dn_speed = Speed{};
-        auto up_count = int{};
-        auto up_speed = Speed{};
-
-        auto const model = core_->get_model();
-        for (auto i = 0U, count = model->get_n_items(); i < count; ++i) {
-            auto const torrent = gtr_ptr_dynamic_cast<Torrent>(model->get_object(i));
-            dn_count += torrent->get_active_peers_down();
-            dn_speed += torrent->get_speed_down();
-            up_count += torrent->get_active_peers_up();
-            up_speed += torrent->get_speed_up();
-        }
-
-        dl_lb_->set_text(fmt::format("{} ▾", dn_speed.to_string()));
-        dl_lb_->set_visible(dn_count > 0);
-
-        ul_lb_->set_text(fmt::format("{} ▴", up_speed.to_string()));
-        ul_lb_->set_visible(dn_count > 0 || up_count > 0);
+    for (auto const& tor : core_->torrents().torrents()) {
+        dn_count += static_cast<int>(tor.active_peers_down());
+        dn_speed += tor.download_speed();
+        up_count += tor.peers_getting_from_us();
+        up_speed += tor.upload_speed();
     }
+
+    dl_lb_->set_text(fmt::format("{} ▾", dn_speed.to_string()));
+    dl_lb_->set_visible(dn_count > 0);
+
+    ul_lb_->set_text(fmt::format("{} ▴", up_speed.to_string()));
+    ul_lb_->set_visible(dn_count > 0 || up_count > 0);
 }
 
 void MainWindow::refresh()

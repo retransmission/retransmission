@@ -21,11 +21,13 @@
 #include "Session.h"
 #include "StatsDialog.h"
 #include "SystemTrayIcon.h"
+#include "Timer.h"
 #include "Torrent.h"
 #include "Utils.h"
 
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/rpc-client.h>
+#include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/startup-coordinator.h>
 
 #include <libtransmission/api-compat.h>
@@ -187,7 +189,7 @@ private:
     void toggleMainWindow();
 
     bool winclose();
-    void rowChangedCB(std::unordered_set<tr_torrent_id_t> const& torrent_ids, Torrent::ChangeFlags changes);
+    void rowChangedCB(tr::app::TorrentList::Ids const& torrent_ids, Torrent::Fields const& changes);
 
     void app_setup();
     void main_window_setup();
@@ -239,6 +241,11 @@ private:
     // Declared before core_, which holds a reference to it.
     tr::app::RpcClient rpc_{ &gtr_run_on_ui_thread };
     Glib::RefPtr<Session> core_;
+
+    // Declared after core_, which it polls.
+    GlibTimerMaker timer_maker_;
+    std::unique_ptr<tr::app::SessionPoller> poller_;
+
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
     std::vector<std::string> error_list_;
@@ -318,13 +325,13 @@ Application::Impl::counts_data Application::Impl::get_selected_torrent_counts() 
     wind_->for_each_selected_torrent([&counts](auto const& torrent) {
         ++counts.total_count;
 
-        auto const activity = torrent->get_activity();
+        auto const& tor = torrent->get_shared();
 
-        if (activity == TR_STATUS_DOWNLOAD_WAIT || activity == TR_STATUS_SEED_WAIT) {
+        if (tor.is_queued()) {
             ++counts.queued_count;
         }
 
-        if (activity == TR_STATUS_STOPPED) {
+        if (tor.is_paused()) {
             ++counts.stopped_count;
         }
     });
@@ -362,9 +369,9 @@ bool Application::Impl::refresh_actions()
         gtr_action_set_sensitive("open-torrent-folder", sel_counts.total_count == 1);
         gtr_action_set_sensitive("copy-magnet-link-to-clipboard", sel_counts.total_count == 1);
 
-        bool const can_update = wind_ != nullptr && wind_->for_each_selected_torrent_until([](auto const& torrent) {
-            return tr_torrentCanManualUpdate(&torrent->get_underlying());
-        });
+        bool const can_update = wind_ != nullptr &&
+            wind_->for_each_selected_torrent_until(
+                [now = time(nullptr)](auto const& torrent) { return torrent->get_shared().can_manual_announce_at(now); });
         gtr_action_set_sensitive("torrent-reannounce", can_update);
     }
 
@@ -472,9 +479,7 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
 
     case TR_RPC_TORRENT_ADDED:
         if (tor_id) {
-            if (auto* tor = core_->find_torrent(*tor_id); tor != nullptr) {
-                core_->add_torrent(Torrent::create(tor), true);
-            }
+            core_->add_torrent(*tor_id, true);
         }
         break;
 
@@ -586,6 +591,7 @@ void Application::Impl::on_startup()
     }
 
     core_ = Session::create(session, prefs_, rpc_);
+    poller_ = std::make_unique<tr::app::SessionPoller>(*core_, timer_maker_);
 
     // Starting the session can change its settings, e.g. a random peer port,
     // so read them back before anything shows them.
@@ -722,6 +728,7 @@ void Application::Impl::app_setup()
     /* add torrents from command-line and saved state */
     core_->load(start_paused_);
     core_->torrents_added();
+    poller_->start();
 
     /* set up main window */
     main_window_setup();
@@ -813,11 +820,11 @@ bool Application::Impl::winclose()
     return true; /* don't propagate event further */
 }
 
-void Application::Impl::rowChangedCB(std::unordered_set<tr_torrent_id_t> const& torrent_ids, Torrent::ChangeFlags changes)
+void Application::Impl::rowChangedCB(tr::app::TorrentList::Ids const& torrent_ids, Torrent::Fields const& changes)
 {
-    if (changes.test(Torrent::ChangeFlag::ACTIVITY) &&
+    if ((changes & tr::app::Torrent::fields<TR_KEY_status>()).any() &&
         wind_->for_each_selected_torrent_until(
-            [&torrent_ids](auto const& torrent) { return torrent_ids.find(torrent->get_id()) != torrent_ids.end(); })) {
+            [&torrent_ids](auto const& torrent) { return std::ranges::binary_search(torrent_ids, torrent->get_id()); })) {
         refresh_actions_soon();
     }
 }
@@ -940,6 +947,7 @@ void Application::Impl::on_app_exit()
         icon_->set_shutting_down(message);
     }
 
+    poller_->stop();
     core_->clear();
 
     /* shut down libT */
@@ -1137,15 +1145,17 @@ void Application::Impl::pause_all_torrents()
 
 void Application::Impl::copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const
 {
-    auto const magnet = tr_torrentGetMagnetLink(&torrent->get_underlying());
-    auto const display = wind_->get_display();
+    core_->fetch_magnet_link(torrent->get_id(), [display = wind_->get_display()](std::string_view const link) {
+        auto const magnet = Glib::ustring{ std::string{ link } };
 
-    /* this is The Right Thing for copy/paste... */
-    IF_GTKMM4(display->get_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_CLIPBOARD))->set_text(magnet);
+        /* this is The Right Thing for copy/paste... */
+        IF_GTKMM4(display->get_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_CLIPBOARD))
+            ->set_text(magnet);
 
-    /* ...but people using plain ol' X need this instead */
-    IF_GTKMM4(display->get_primary_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_PRIMARY))
-        ->set_text(magnet);
+        /* ...but people using plain ol' X need this instead */
+        IF_GTKMM4(display->get_primary_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_PRIMARY))
+            ->set_text(magnet);
+    });
 }
 
 void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data)

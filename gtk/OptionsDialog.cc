@@ -27,6 +27,7 @@
 #include <glibmm/i18n.h>
 
 #include <memory>
+#include <optional>
 #include <utility>
 
 using namespace std::literals;
@@ -65,6 +66,8 @@ private:
     void sourceChanged(PathButton* b);
     void downloadDirChanged(PathButton* b);
 
+    // the previewed torrent, or nullptr once it or the session is gone
+    [[nodiscard]] tr_torrent* tor() const;
     void removeOldTorrent();
     void updateTorrent();
 
@@ -77,7 +80,9 @@ private:
 
     std::string filename_;
     std::string downloadDir_;
-    tr_torrent* tor_ = nullptr;
+
+    // The torrent this dialog previews. By id, since the main window lists it too and can remove it.
+    std::optional<tr_torrent_id_t> tor_id_;
 
     FileList* file_list_ = nullptr;
     Gtk::CheckButton* run_check_ = nullptr;
@@ -91,32 +96,41 @@ OptionsDialog::Impl::~Impl()
     removeOldTorrent();
 }
 
+tr_torrent* OptionsDialog::Impl::tor() const
+{
+    return tor_id_ ? core_->find_torrent(*tor_id_) : nullptr;
+}
+
 void OptionsDialog::Impl::removeOldTorrent()
 {
-    if (tor_ != nullptr) {
-        file_list_->clear();
-        tr_torrentRemove(tor_, false);
-        tor_ = nullptr;
+    if (!tor_id_) {
+        return;
     }
+
+    file_list_->clear();
+    if (auto* const torrent = tor(); torrent != nullptr) {
+        tr_torrentRemove(torrent, false);
+    }
+    tor_id_.reset();
 }
 
 void OptionsDialog::Impl::addResponseCB(int response)
 {
-    if (tor_ != nullptr) {
+    if (auto* const torrent = tor(); torrent != nullptr) {
         if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-            tr_torrentSetPriority(tor_, static_cast<tr_priority_t>(gtr_combo_box_get_active_enum(*priority_combo_)));
+            tr_torrentSetPriority(torrent, static_cast<tr_priority_t>(gtr_combo_box_get_active_enum(*priority_combo_)));
 
             if (run_check_->get_active()) {
-                tr_torrentStart(tor_);
+                tr_torrentStart(torrent);
             }
 
-            core_->add_torrent(Torrent::create(tor_), false);
+            core_->add_torrent(*tor_id_, false);
 
             if (trash_check_->get_active()) {
                 gtr_file_trash_or_remove(filename_, nullptr);
             }
 
-            tor_ = nullptr;
+            tor_id_.reset();
         }
     }
 
@@ -128,14 +142,14 @@ void OptionsDialog::Impl::updateTorrent()
     bool const isLocalFile = !std::empty(torrent_builder_->source_filename());
     trash_check_->set_sensitive(isLocalFile);
 
-    if (tor_ == nullptr) {
+    if (auto* const torrent = tor(); torrent == nullptr) {
         file_list_->clear();
         file_list_->set_sensitive(false);
     } else {
-        tr_torrentSetDownloadDir(tor_, downloadDir_);
-        file_list_->set_sensitive(tr_torrentHasMetadata(tor_));
-        file_list_->set_torrent(tr_torrentId(tor_));
-        tr_torrentVerify(tor_);
+        tr_torrentSetDownloadDir(torrent, downloadDir_);
+        file_list_->set_sensitive(tr_torrentHasMetadata(torrent));
+        file_list_->set_torrent(tr_torrentId(torrent));
+        tr_torrentVerify(torrent);
     }
 }
 
@@ -151,7 +165,7 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
     auto const filename = b->get_filename();
 
     /* maybe instantiate a torrent */
-    if (!filename.empty() || tor_ == nullptr) {
+    if (!filename.empty() || tor() == nullptr) {
         bool new_file = false;
 
         if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_))) {
@@ -166,7 +180,7 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
         tr_torrent* duplicate_of = nullptr;
         if (tr_torrent* const torrent = tr_torrentNew(torrent_builder_.get(), &duplicate_of); torrent != nullptr) {
             removeOldTorrent();
-            tor_ = torrent;
+            tor_id_ = tr_torrentId(torrent);
         } else if (new_file) {
             gtr_add_torrent_error_dialog(*b, duplicate_of, filename_);
         }

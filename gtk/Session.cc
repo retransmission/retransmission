@@ -11,6 +11,9 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
+#include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/torrent.h>
+
 #include <libtransmission/converters.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/torrent-builder.h>
@@ -56,8 +59,8 @@ using namespace std::literals;
 using tr::app::FaviconCache;
 using tr::app::Prefs;
 using tr::app::RpcClient;
-using tr::app::RpcResponse;
 using tr::app::SortMode;
+using tr::app::TorrentList;
 
 class Session::Impl
 {
@@ -75,17 +78,11 @@ public:
     [[nodiscard]] Glib::RefPtr<SortListModel<Torrent>> get_model();
     [[nodiscard]] tr_session* get_session() const;
 
-    [[nodiscard]] std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
-
-    [[nodiscard]] size_t get_unpaused_torrent_count() const;
-
-    void update();
-    void update_torrent(tr_torrent_id_t id);
     void torrents_added();
 
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
     void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt, bool do_notify);
-    void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
+    void add_torrent(tr_torrent_id_t id, bool do_notify);
     [[nodiscard]] bool add_from_url(Glib::ustring const& url);
 
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
@@ -103,11 +100,6 @@ public:
     [[nodiscard]] auto& signal_add_prompt()
     {
         return signal_add_prompt_;
-    }
-
-    [[nodiscard]] auto& signal_blocklist_info()
-    {
-        return signal_blocklist_info_;
     }
 
     [[nodiscard]] auto& signal_busy()
@@ -146,7 +138,7 @@ private:
         bool do_prompt,
         bool do_notify);
 
-    [[nodiscard]] Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
+    [[nodiscard]] tr_torrent* create_new_torrent(tr_torrent_builder* builder);
 
     void watchdir_update();
     void watchdir_scan();
@@ -159,6 +151,11 @@ private:
 
     void on_pref_changed(tr_quark key);
 
+    // keep raw_model_ a mirror of the list's rows
+    void on_rows_inserted(size_t row, size_t count);
+    void on_rows_removing(size_t row, size_t count);
+    void on_torrents_changed(TorrentList::Changes const& changes);
+
     void on_torrent_completeness_changed(tr_torrent_id_t tor_id, tr_completeness completeness, bool was_running);
     void on_torrent_metadata_changed(tr_torrent_id_t tor_id);
 
@@ -167,12 +164,12 @@ private:
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
     sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
-    sigc::signal<void()> signal_blocklist_info_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
-    sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
+    sigc::signal<void(TorrentList::Ids const&, Torrent::Fields const&)> signal_torrents_changed_;
 
     sigslot::scoped_connection prefs_changed_tag_;
+    std::array<sigslot::scoped_connection, 3U> torrent_list_tags_;
 
     Glib::RefPtr<Gio::FileMonitor> monitor_;
     sigc::connection monitor_tag_;
@@ -486,6 +483,10 @@ Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
     rpc_.start(session);
 
     raw_model_ = Gio::ListStore<Torrent>::create();
+    auto& torrents = core_.torrents();
+    torrent_list_tags_ = { torrents.rows_inserted.connect_scoped(&Impl::on_rows_inserted, this),
+                           torrents.rows_removing.connect_scoped(&Impl::on_rows_removing, this),
+                           torrents.changed.connect_scoped(&Impl::on_torrents_changed, this) };
     signal_torrents_changed_.connect(sigc::hide<0>(sigc::mem_fun(*sorter_, &TorrentSorter::update)));
     sorted_model_ = SortListModel<Torrent>::create(gtr_ptr_static_cast<Gio::ListModel>(raw_model_), sorter_);
 
@@ -571,48 +572,56 @@ void Session::Impl::on_torrent_completeness_changed(
 ****  METADATA CALLBACK
 ***/
 
-namespace
-{
-
-struct metadata_callback_data {
-    Session* core;
-    tr_torrent_id_t torrent_id;
-};
-
-} // namespace
-
-std::pair<Glib::RefPtr<Torrent>, guint> Session::Impl::find_torrent_by_id(tr_torrent_id_t torrent_id) const
-{
-    auto begin_position = 0U;
-    auto end_position = raw_model_->get_n_items();
-
-    while (begin_position < end_position) {
-        auto const position = begin_position + ((end_position - begin_position) / 2);
-        auto const torrent = raw_model_->get_item(position);
-        auto const current_torrent_id = torrent->get_id();
-
-        if (current_torrent_id == torrent_id) {
-            return { torrent, position };
-        }
-
-        if (current_torrent_id < torrent_id) {
-            begin_position = position + 1;
-        } else {
-            end_position = position;
-        }
-    }
-
-    return {};
-}
-
-/* this is called in the libtransmission thread, *NOT* the GTK+ thread,
-   so delegate to the GTK+ thread before changing our list store... */
+// this is called in the libtransmission thread, *NOT* the GTK+ thread
 void Session::Impl::on_torrent_metadata_changed(tr_torrent_id_t const tor_id)
 {
-    Glib::signal_idle().connect([this, core = get_core_ptr(), tor_id] {
-        update_torrent(tor_id);
+    Glib::signal_idle().connect([core = get_core_ptr(), tor_id] {
+        core->torrent_changed(tor_id);
         return false;
     });
+}
+
+/***
+****  MIRRORING THE TORRENT LIST
+***/
+
+void Session::Impl::on_rows_inserted(size_t const row, size_t const count)
+{
+    auto const& torrents = core_.torrents();
+
+    auto items = std::vector<Glib::RefPtr<Torrent>>{};
+    items.reserve(count);
+    for (auto i = row; i < row + count; ++i) {
+        items.emplace_back(Torrent::create(torrents[i]));
+    }
+
+    raw_model_->splice(static_cast<guint>(row), 0U, items);
+}
+
+void Session::Impl::on_rows_removing(size_t const row, size_t const count)
+{
+    // A view may still hold one of these, so give it a copy of the torrent the list is about to destroy.
+    for (auto i = row; i < row + count; ++i) {
+        raw_model_->get_item(static_cast<guint>(i))->detach();
+    }
+
+    raw_model_->splice(static_cast<guint>(row), static_cast<guint>(count), {});
+}
+
+void Session::Impl::on_torrents_changed(TorrentList::Changes const& changes)
+{
+    if (std::empty(changes.changed)) {
+        return;
+    }
+
+    auto ids = TorrentList::Ids{};
+    ids.reserve(std::size(changes.changed));
+    for (auto const& change : changes.changed) {
+        raw_model_->get_item(static_cast<guint>(change.row))->update(change.fields);
+        ids.push_back(change.id);
+    }
+
+    signal_torrents_changed_.emit(ids, changes.changed_fields);
 }
 
 /***
@@ -621,23 +630,21 @@ void Session::Impl::on_torrent_metadata_changed(tr_torrent_id_t const tor_id)
 ****
 ***/
 
-void Session::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify)
+void Session::add_torrent(tr_torrent_id_t const id, bool const do_notify)
 {
-    impl_->add_torrent(torrent, do_notify);
+    impl_->add_torrent(id, do_notify);
 }
 
-void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify)
+void Session::Impl::add_torrent(tr_torrent_id_t const id, bool const do_notify)
 {
-    if (torrent != nullptr) {
-        raw_model_->insert_sorted(torrent, &Torrent::compare_by_id);
+    core_.refresh_torrents({ id }, tr::app::TorrentKeySet::MainAll);
 
-        if (do_notify) {
-            gtr_notify_torrent_added(get_core_ptr(), core_.prefs_, torrent->get_id());
-        }
+    if (do_notify) {
+        gtr_notify_torrent_added(get_core_ptr(), core_.prefs_, id);
     }
 }
 
-Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* builder)
+tr_torrent* Session::Impl::create_new_torrent(tr_torrent_builder* builder)
 {
     // let the gtk client handle the removal, since libT
     // doesn't have any concept of the glib trash API.
@@ -656,7 +663,7 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* buil
         }
     }
 
-    return Torrent::create(tor);
+    return tor;
 }
 
 void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, bool const do_prompt, bool const do_notify)
@@ -678,7 +685,9 @@ void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, boo
     }
 
     if (!do_prompt) {
-        add_torrent(create_new_torrent(builder.get()), do_notify);
+        if (auto const* const tor = create_new_torrent(builder.get()); tor != nullptr) {
+            add_torrent(tr_torrentId(tor), do_notify);
+        }
         return;
     }
 
@@ -843,13 +852,12 @@ void Session::torrents_added()
 
 void Session::Impl::torrents_added()
 {
-    update();
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
 }
 
 void Session::torrent_changed(tr_torrent_id_t const id)
 {
-    impl_->update_torrent(id);
+    refresh_torrents({ id }, tr::app::TorrentKeySet::MainAll);
 }
 
 void Session::remove_torrent(tr_torrent_id_t id, bool delete_files)
@@ -857,13 +865,11 @@ void Session::remove_torrent(tr_torrent_id_t id, bool delete_files)
     impl_->remove_torrent(id, delete_files);
 }
 
-// NOLINTNEXTLINE(readability-make-member-function-const)
 void Session::Impl::remove_torrent(tr_torrent_id_t const id, bool const delete_files)
 {
-    if (auto const& [torrent, position] = find_torrent_by_id(id); torrent) {
-        get_raw_model()->remove(position);
-
-        tr_torrentRemove(&torrent->get_underlying(), delete_files);
+    if (auto* const tor = core_.find_torrent(id); tor != nullptr) {
+        core_.torrents().remove({ id });
+        tr_torrentRemove(tor, delete_files);
     }
 }
 
@@ -875,23 +881,13 @@ void Session::load(bool force_paused)
         builder.set_paused(true);
     }
 
-    auto* session = impl_->get_session();
-    tr_sessionLoadTorrents(session, &builder);
-
-    auto const raw_torrents = tr_sessionGetAllTorrents(session);
-
-    auto torrents = std::vector<Glib::RefPtr<Torrent>>();
-    torrents.reserve(raw_torrents.size());
-    std::ranges::transform(raw_torrents, std::back_inserter(torrents), &Torrent::create);
-    std::ranges::sort(torrents, &Torrent::less_by_id);
-
-    auto const model = impl_->get_raw_model();
-    model->splice(0, model->get_n_items(), torrents);
+    tr_sessionLoadTorrents(impl_->get_session(), &builder);
+    refresh_all_torrents(tr::app::TorrentKeySet::MainAll);
 }
 
 void Session::clear()
 {
-    impl_->get_raw_model()->remove_all();
+    torrents().clear();
 }
 
 /***
@@ -904,8 +900,6 @@ void Session::update()
     if (auto* const session = get_session(); session != nullptr) {
         set_busy(tr_sessionIsBusy(session));
     }
-
-    impl_->update();
 }
 
 void Session::start_now(tr_torrent_id_t const id)
@@ -913,34 +907,6 @@ void Session::start_now(tr_torrent_id_t const id)
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ id }));
     exec(TR_KEY_torrent_start_now, std::move(params));
-}
-
-void Session::Impl::update()
-{
-    auto torrent_ids = std::unordered_set<tr_torrent_id_t>();
-    auto changes = Torrent::ChangeFlags();
-
-    /* update the model */
-    for (auto i = 0U, count = raw_model_->get_n_items(); i < count; ++i) {
-        auto const torrent = raw_model_->get_item(i);
-        if (auto const torrent_changes = torrent->update(); torrent_changes.any()) {
-            torrent_ids.insert(torrent->get_id());
-            changes |= torrent_changes;
-        }
-    }
-
-    if (changes.any()) {
-        signal_torrents_changed_.emit(torrent_ids, changes);
-    }
-}
-
-void Session::Impl::update_torrent(tr_torrent_id_t const id)
-{
-    if (auto const& [torrent, position] = find_torrent_by_id(id); torrent) {
-        if (auto const changes = torrent->update(); changes.any()) {
-            signal_torrents_changed_.emit({ id }, changes);
-        }
-    }
 }
 
 /***
@@ -952,24 +918,6 @@ void Session::Impl::update_torrent(tr_torrent_id_t const id)
 void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
     impl_->rpc().exec(method, std::move(params), std::move(on_done));
-}
-
-/***
-****  Reading the blocklist's info via RPC
-***/
-
-void Session::refresh_blocklist_info()
-{
-    // session_get reads the blocklist under the session lock,
-    // which tr_blocklistGetRuleCount() does not take.
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, tr::app::make_fields({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }));
-    exec(TR_KEY_session_get, std::move(params), [this](RpcResponse const& response) {
-        if (auto const* const args = response.args_map()) {
-            import_session_settings(*args);
-            impl_->signal_blocklist_info().emit();
-        }
-    });
 }
 
 // ---
@@ -987,25 +935,12 @@ void Session::fetch_recent_paths(tr_quark const key, sigc::slot<void(std::vector
 
 size_t Session::get_torrent_count() const
 {
-    return impl_->get_raw_model()->get_n_items();
+    return std::size(torrents());
 }
 
 size_t Session::get_unpaused_torrent_count() const
 {
-    return impl_->get_unpaused_torrent_count();
-}
-
-size_t Session::Impl::get_unpaused_torrent_count() const
-{
-    size_t activeCount = 0;
-
-    for (auto i = 0U, count = raw_model_->get_n_items(); i < count; ++i) {
-        if (raw_model_->get_item(i)->get_activity() != TR_STATUS_STOPPED) {
-            ++activeCount;
-        }
-    }
-
-    return activeCount;
+    return static_cast<size_t>(std::ranges::count_if(torrents().torrents(), [](auto const& tor) { return !tor.is_paused(); }));
 }
 
 std::vector<tr_torrent*> Session::find_torrents(std::vector<tr_torrent_id_t> const& ids) const
@@ -1069,11 +1004,6 @@ sigc::signal<void(tr_torrent_builder*)>& Session::signal_add_prompt()
     return impl_->signal_add_prompt();
 }
 
-sigc::signal<void()>& Session::signal_blocklist_info()
-{
-    return impl_->signal_blocklist_info();
-}
-
 sigc::signal<void(bool)>& Session::signal_busy()
 {
     return impl_->signal_busy();
@@ -1084,7 +1014,7 @@ sigc::signal<void(tr_quark)>& Session::signal_prefs_changed()
     return impl_->signal_prefs_changed();
 }
 
-sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>& Session::signal_torrents_changed()
+sigc::signal<void(TorrentList::Ids const&, Torrent::Fields const&)>& Session::signal_torrents_changed()
 {
     return impl_->signal_torrents_changed();
 }
