@@ -80,16 +80,19 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     self.fActivityStackView.distribution = NSStackViewDistributionGravityAreas;
     self.fActivityStackView.spacing = kStackViewVerticalSpacing;
     self.fActivityStackView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.fActivityStackView.detachesHiddenViews = YES;
 
     [root addSubview:self.fActivityStackView];
 
     [NSLayoutConstraint activateConstraints:@[
         [self.fActivityStackView.topAnchor constraintEqualToAnchor:root.topAnchor constant:kStackViewInset],
         [self.fActivityStackView.leadingAnchor constraintEqualToAnchor:root.leadingAnchor constant:kStackViewInset],
-        [root.bottomAnchor constraintEqualToAnchor:self.fActivityStackView.bottomAnchor constant:kStackViewInset],
-        [root.trailingAnchor constraintEqualToAnchor:self.fActivityStackView.trailingAnchor constant:kStackViewInset],
+        [root.trailingAnchor constraintGreaterThanOrEqualToAnchor:self.fActivityStackView.trailingAnchor constant:kStackViewInset],
     ]];
+
+    // keeps the sections at their fitting width when the window is wider
+    NSLayoutConstraint* compact = [self.fActivityStackView.widthAnchor constraintEqualToConstant:0.0];
+    compact.priority = NSLayoutPriorityDefaultLow;
+    compact.active = YES;
 }
 
 - (void)viewDidLoad
@@ -125,6 +128,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         constraintEqualToAnchor:self.fStateField.leadingAnchor];
     errorInValueColumn.priority = NSLayoutPriorityDefaultHigh;
 
+    // the value column takes the room left of the pieces column, so Have truncates only when it must
+    NSLayoutConstraint* gridFillsRoom = [piecesColumn.leadingAnchor constraintEqualToAnchor:grid.trailingAnchor constant:8.0];
+    gridFillsRoom.priority = NSLayoutPriorityDefaultLow + 1;
+
     [NSLayoutConstraint activateConstraints:@[
         // grid — top-left
         [grid.topAnchor constraintEqualToAnchor:container.topAnchor],
@@ -133,7 +140,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         // pieces — right of grid
         [piecesColumn.topAnchor constraintEqualToAnchor:container.topAnchor constant:16.0],
         [piecesColumn.trailingAnchor constraintEqualToAnchor:container.trailingAnchor],
-        [piecesColumn.leadingAnchor constraintGreaterThanOrEqualToAnchor:grid.trailingAnchor constant:8.0],
+        gridFillsRoom,
 
         // error — full width
         [errorRow.leadingAnchor constraintEqualToAnchor:container.leadingAnchor],
@@ -141,17 +148,14 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         [errorRow.bottomAnchor constraintEqualToAnchor:container.bottomAnchor constant:-12.0],
 
         // the error row sits directly under the taller of the grid and the pieces column
-        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:grid.bottomAnchor constant:8.0],
-        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:piecesColumn.bottomAnchor constant:8.0],
+        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:grid.bottomAnchor constant:2.0],
+        [errorRow.topAnchor constraintGreaterThanOrEqualToAnchor:piecesColumn.bottomAnchor constant:1.0],
         errorInValueColumn
     ]];
 
-    NSLayoutConstraint* errorBelowGrid = [errorRow.topAnchor constraintEqualToAnchor:grid.bottomAnchor constant:8.0];
+    NSLayoutConstraint* errorBelowGrid = [errorRow.topAnchor constraintEqualToAnchor:grid.bottomAnchor constant:2.0];
     errorBelowGrid.priority = NSLayoutPriorityDefaultHigh - 1;
     errorBelowGrid.active = YES;
-
-    [container setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
-    [container setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
 
     return container;
 }
@@ -168,13 +172,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     [NSLayoutConstraint activateConstraints:@[
         [grid.topAnchor constraintEqualToAnchor:container.topAnchor],
         [grid.leadingAnchor constraintEqualToAnchor:container.leadingAnchor],
-        [grid.trailingAnchor constraintLessThanOrEqualToAnchor:container.trailingAnchor],
+        [grid.trailingAnchor constraintLessThanOrEqualToAnchor:container.trailingAnchor constant:-12.0],
         [grid.bottomAnchor constraintEqualToAnchor:container.bottomAnchor],
         [container.widthAnchor constraintGreaterThanOrEqualToConstant:139.0],
     ]];
-
-    [container setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
-    [container setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationVertical];
 
     [container.heightAnchor constraintEqualToConstant:128.0].active = YES;
 
@@ -204,7 +205,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     self.fRatioField = [self makeValueField];
 
     // the longest value: truncates rather than widening the inspector window
-    [self.fHaveField setContentCompressionResistancePriority:NSLayoutPriorityWindowSizeStayPut - 1
+    [self.fHaveField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow - 1
                                               forOrientation:NSLayoutConstraintOrientationHorizontal];
 
     NSGridView* grid = [NSGridView gridViewWithViews:@[
@@ -223,16 +224,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     grid.rowAlignment = NSGridRowAlignmentFirstBaseline;
 
     [grid mergeCellsInHorizontalRange:NSMakeRange(0, 2) verticalRange:NSMakeRange(0, 1)];
-    [grid rowAtIndex:0].topPadding = 0.0;
 
-    for (NSInteger r = 1; r < grid.numberOfRows; r++) {
-        NSGridCell* labelCell = [grid cellAtColumnIndex:0 rowIndex:r];
-        labelCell.xPlacement = NSGridCellPlacementTrailing;
-    }
-    for (NSInteger r = 1; r < grid.numberOfRows; r++) {
-        NSGridCell* valueCell = [grid cellAtColumnIndex:1 rowIndex:r];
-        valueCell.xPlacement = NSGridCellPlacementFill;
-    }
+    [grid columnAtIndex:0].xPlacement = NSGridCellPlacementTrailing;
+    [grid columnAtIndex:1].xPlacement = NSGridCellPlacementFill;
+    [grid cellForView:header].xPlacement = NSGridCellPlacementLeading;
 
     return grid;
 }
@@ -245,6 +240,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     // sized up front: the first updateInfo renders the map before the first layout pass
     self.fPiecesView = [[PiecesView alloc] initWithFrame:NSMakeRect(0, 0, 93, 93)];
     self.fPiecesView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.fPiecesView.clipsToBounds = YES;
 
     self.fPiecesControl = [[NSSegmentedControl alloc] initWithFrame:NSZeroRect];
     self.fPiecesControl.translatesAutoresizingMaskIntoConstraints = NO;
@@ -272,7 +268,6 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         [self.fPiecesControl.leadingAnchor constraintEqualToAnchor:column.leadingAnchor],
         [self.fPiecesControl.trailingAnchor constraintEqualToAnchor:column.trailingAnchor],
         [self.fPiecesControl.bottomAnchor constraintEqualToAnchor:column.bottomAnchor],
-        [self.fPiecesControl.widthAnchor constraintEqualToAnchor:self.fPiecesView.widthAnchor],
     ]];
 
     return column;
@@ -288,12 +283,11 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     NSScrollView* scroll = [NSTextView scrollableTextView];
     scroll.translatesAutoresizingMaskIntoConstraints = NO;
     scroll.borderType = NSBezelBorder;
-    scroll.autohidesScrollers = YES;
+    scroll.verticalScroller.controlSize = NSControlSizeSmall;
 
     self.fErrorMessageView = scroll.documentView;
     self.fErrorMessageView.editable = NO;
     self.fErrorMessageView.richText = NO;
-    self.fErrorMessageView.importsGraphics = NO;
 
     [row addSubview:errorLabel];
     [row addSubview:scroll];
@@ -351,13 +345,10 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
     [grid rowAtIndex:4].topPadding = 18.0;
 
-    for (NSInteger r = 0; r < grid.numberOfRows; r++) {
-        NSView* label = [grid cellAtColumnIndex:0 rowIndex:r].contentView;
-        if (label == datesHeader || label == timeHeader)
-            continue;
-        [grid cellAtColumnIndex:0 rowIndex:r].xPlacement = NSGridCellPlacementTrailing;
-        [grid cellAtColumnIndex:1 rowIndex:r].xPlacement = NSGridCellPlacementFill;
-    }
+    [grid columnAtIndex:0].xPlacement = NSGridCellPlacementTrailing;
+    [grid columnAtIndex:1].xPlacement = NSGridCellPlacementFill;
+    [grid cellForView:datesHeader].xPlacement = NSGridCellPlacementLeading;
+    [grid cellForView:timeHeader].xPlacement = NSGridCellPlacementLeading;
 
     return grid;
 }
