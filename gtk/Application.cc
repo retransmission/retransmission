@@ -182,8 +182,6 @@ private:
         guint time_);
 #endif
 
-    bool on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id);
-
     void placeWindowFromPrefs();
     void presentMainWindow(Glib::ustring const& activation_token = {});
     void hideMainWindow();
@@ -468,55 +466,6 @@ void Application::Impl::on_main_window_size_allocated()
 }
 
 /***
-**** listen to changes that come from RPC
-***/
-
-bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id)
-{
-    switch (type) {
-    case TR_RPC_SESSION_CLOSE:
-        gtr_action_activate("quit");
-        break;
-
-    case TR_RPC_TORRENT_ADDED:
-        if (tor_id) {
-            core_->add_torrent(*tor_id, true);
-        }
-        break;
-
-    case TR_RPC_TORRENT_REMOVING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, false);
-        }
-        break;
-
-    case TR_RPC_TORRENT_TRASHING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, true);
-        }
-        break;
-
-    case TR_RPC_SESSION_CHANGED:
-        // Another RPC client's session_set: the callback in on_startup() drops our own.
-        core_->import_embedded_settings();
-        break;
-
-    case TR_RPC_TORRENT_CHANGED:
-    case TR_RPC_TORRENT_MOVED:
-    case TR_RPC_TORRENT_STARTED:
-    case TR_RPC_TORRENT_STOPPED:
-    case TR_RPC_SESSION_QUEUE_POSITIONS_CHANGED:
-        // nothing interesting to do here
-        break;
-
-    default:
-        g_assert_not_reached();
-    }
-
-    return false;
-}
-
-/***
 ****  signal handling
 ***/
 
@@ -625,23 +574,15 @@ void Application::Impl::on_startup()
     app_.hold();
     app_setup();
 
-    // Fires on the thread that made the change: the session thread for another
-    // RPC client's request, this thread for our own session_set. Only another
-    // client's settings change needs importing. Ours are already in Prefs, and
-    // importing them here could read stale values back: tr_sessionSetPeerPort()
-    // and the DHT, uTP, LPD and port-forwarding setters queue their change for
-    // the session thread, which may apply it after the import runs.
-    auto const ui_thread = std::this_thread::get_id();
-    tr_sessionSetRPCCallback(
-        session,
-        [this, ui_thread](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
-            if (type == TR_RPC_SESSION_CHANGED && std::this_thread::get_id() == ui_thread) {
-                return TR_RPC_NOREMOVE;
-            }
+    // Another RPC client's session_close quits the app. The poll brings
+    // every other change, and the session removes torrents itself.
+    tr_sessionSetRPCCallback(session, [](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
+        if (type == TR_RPC_SESSION_CLOSE) {
+            gtr_run_on_ui_thread([] { gtr_action_activate("quit"); });
+        }
 
-            Glib::signal_idle().connect([this, type, tor_id] { return on_rpc_changed_idle(type, tor_id); });
-            return TR_RPC_NOREMOVE;
-        });
+        return TR_RPC_OK;
+    });
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
@@ -679,9 +620,8 @@ void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& f
 {
     bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents) && !start_paused_;
     bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
-    bool const do_notify = true;
 
-    core_->add_files(files, do_start, do_prompt, do_notify);
+    core_->add_files(files, do_start, do_prompt);
 }
 
 void Application::on_open(std::vector<Glib::RefPtr<Gio::File>> const& files, Glib::ustring const& hint)
@@ -728,7 +668,6 @@ void Application::Impl::app_setup()
 
     /* add torrents from command-line and saved state */
     core_->load(start_paused_);
-    core_->torrents_added();
     poller_->start();
 
     /* set up main window */
@@ -1071,9 +1010,6 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
 
 bool Application::Impl::update_model_once()
 {
-    /* update the torrent data in the model */
-    core_->update();
-
     /* refresh the main window's statusbar and toolbar buttons */
     if (wind_ != nullptr) {
         wind_->refresh();

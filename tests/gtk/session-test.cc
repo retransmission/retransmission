@@ -106,7 +106,7 @@ protected:
         EXPECT_NE(nullptr, tor);
         auto const id = tr_torrentId(tor);
 
-        core_->add_torrent(id, false);
+        core_->fetch_torrent(id);
         EXPECT_TRUE(wait_for([this, id] { return core_->torrents().find(id) != nullptr; }));
         return id;
     }
@@ -255,7 +255,7 @@ TEST_F(GtkSessionTest, aFetchedChangeReachesTheObject)
         "renamed.iso",
         [&renamed](auto /*id*/, auto /*oldpath*/, auto /*newname*/, auto const& /*error*/) { renamed = true; });
     ASSERT_TRUE(wait_for([&renamed] { return renamed.load(); }));
-    core_->torrent_changed(id);
+    core_->fetch_torrent(id);
     ASSERT_TRUE(wait_for([&changed_fields] { return (changed_fields & NameField).any(); }));
 
     tr::app::TorrentList::normalize(changed_ids);

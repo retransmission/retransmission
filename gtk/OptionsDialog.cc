@@ -110,7 +110,7 @@ void OptionsDialog::Impl::addResponseCB(int response)
                 tr_torrentStart(tor_);
             }
 
-            core_->add_torrent(tr_torrentId(tor_), false);
+            core_->fetch_torrent(tr_torrentId(tor_));
 
             if (trash_check_->get_active()) {
                 gtr_file_trash_or_remove(filename_, nullptr);
@@ -299,7 +299,6 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
     if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
         bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents);
         bool const do_prompt = get_choice(std::string(ShowOptionsDialogChoice)) == "true";
-        bool const do_notify = false;
 
         auto const files = IF_GTKMM4(get_files2, get_files)();
         g_assert(!files.empty());
@@ -312,7 +311,7 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
             }
         }
 
-        core->add_files(files, do_start, do_prompt, do_notify);
+        core->add_files(files, do_start, do_prompt);
     }
 }
 

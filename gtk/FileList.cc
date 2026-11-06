@@ -779,7 +779,7 @@ void FileList::Impl::on_rename_done_idle(Glib::ustring const& path_string, Glib:
             (*iter)[file_cols.icon] = icon;
 
             if (!iter->parent()) {
-                core_->torrent_changed(torrent_id_);
+                core_->fetch_torrent(torrent_id_);
             }
         }
     } else {

@@ -97,7 +97,7 @@ public:
      * May pop up dialogs for each torrent if that preference is enabled.
      * May trigger one or more "error" signals with ERR_ADD_TORRENT
      */
-    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
+    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt);
 
     /** @brief Add a torrent from a URL */
     bool add_from_url(Glib::ustring const& url);
@@ -105,17 +105,9 @@ public:
     /** @brief Add a torrent. */
     void add_builder(std::unique_ptr<tr_torrent_builder> builder);
 
-    // Fetches a torrent just added to the session, so the list shows it before the next poll.
-    void add_torrent(tr_torrent_id_t id, bool do_notify);
-
-    /**
-     * Notifies listeners that torrents have been added.
-     * This should be called after one or more tr_core_add* () calls.
-     */
-    void torrents_added();
-
-    // Fetches a torrent that changed outside the session's RPC, so the list shows it before the next poll.
-    void torrent_changed(tr_torrent_id_t id);
+    // Fetches a torrent that changed outside the session's RPC, e.g. one added or
+    // renamed through the C API, so the list shows it before the next poll.
+    void fetch_torrent(tr_torrent_id_t id);
 
     /******
     *******
@@ -123,9 +115,6 @@ public:
 
     /* remove a torrent */
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
-
-    // Reads the session's busy state for the sleep inhibitor. The poll updates the torrents.
-    void update();
 
     /**
      * Attempts to start a torrent immediately.
