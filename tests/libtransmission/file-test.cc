@@ -17,6 +17,7 @@
 #include <vector>
 
 #ifndef _WIN32
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #else
@@ -99,6 +100,34 @@ protected:
         return static_cast<uint64_t>(info.AllocationSize.QuadPart);
 #endif
     }
+
+#ifdef __linux__
+    // ZFS and NFSv3 can't.
+    // Calls fallocate() directly, so a libtransmission built without it still runs, and fails, the checks.
+    [[nodiscard]] static bool canReserveBlocks(std::string_view const dir, uint64_t const size)
+    {
+        auto const path = tr_pathbuf{ dir, "/reservation-probe"sv };
+        auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+        EXPECT_NE(TR_BAD_SYS_FILE, fd);
+        auto const reserved = fallocate(fd, 0, 0, static_cast<off_t>(size)) == 0 && allocatedBytes(fd) >= size;
+        tr_sys_file_close(fd);
+        tr_sys_path_remove(path);
+        return reserved;
+    }
+#endif
+
+#ifdef _WIN32
+    // FAT and exFAT don't, so growing a file allocates all of it.
+    [[nodiscard]] static bool supportsSparseFiles(std::string_view const dir)
+    {
+        auto const wide_dir = tr_win32_utf8_to_native(dir);
+        auto root = std::array<wchar_t, MAX_PATH + 1>{};
+        auto flags = DWORD{};
+        EXPECT_NE(0, GetVolumePathNameW(wide_dir.c_str(), std::data(root), static_cast<DWORD>(std::size(root))));
+        EXPECT_NE(0, GetVolumeInformationW(std::data(root), nullptr, 0, nullptr, nullptr, &flags, nullptr, 0));
+        return (flags & FILE_SUPPORTS_SPARSE_FILES) != 0;
+    }
+#endif
 
     static void clearPathInfo(tr_sys_path_info* info)
     {
@@ -1148,6 +1177,15 @@ TEST_F(FileTest, filePreallocateFast)
     static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
 
     auto const test_dir = createTestDir(currentTestName());
+#ifdef __linux__
+    if (!canReserveBlocks(test_dir, Size)) {
+        GTEST_SKIP() << "the test folder's filesystem can't reserve blocks";
+    }
+#elif defined(_WIN32)
+    if (!supportsSparseFiles(test_dir)) {
+        GTEST_SKIP() << "the test folder's filesystem doesn't support sparse files";
+    }
+#endif
     auto const path = tr_pathbuf{ test_dir, "/a"sv };
     auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
@@ -1175,6 +1213,11 @@ TEST_F(FileTest, filePreallocateFull)
     static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
 
     auto const test_dir = createTestDir(currentTestName());
+#ifdef __linux__
+    if (!canReserveBlocks(test_dir, Size)) {
+        GTEST_SKIP() << "the test folder's filesystem can't reserve blocks";
+    }
+#endif
     auto const path = tr_pathbuf{ test_dir, "/a"sv };
     auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
     ASSERT_NE(TR_BAD_SYS_FILE, fd);
