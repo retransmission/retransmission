@@ -278,10 +278,16 @@ public:
         lock_.release();
     }
 
+    void withdraw()
+    {
+        (void)lock_.try_acquire();
+        transport_.reset();
+    }
+
 private:
     std::string const config_dir_;
     std::string const ours_canonical_;
-    std::unique_ptr<Transport> const transport_;
+    std::unique_ptr<Transport> transport_;
     tr_lock_file lock_;
 };
 
@@ -310,6 +316,11 @@ int report_config_dir_busy(std::string_view const config_dir)
 void StartupCoordinator::publish(Instance& self)
 {
     impl_->publish(self);
+}
+
+void StartupCoordinator::withdraw()
+{
+    impl_->withdraw();
 }
 
 } // namespace tr::interop

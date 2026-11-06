@@ -73,6 +73,7 @@ public:
     ~Impl();
 
     void refresh();
+    void set_shutting_down(std::string const& message);
 
 private:
     static void activated();
@@ -105,6 +106,12 @@ void SystemTrayIcon::Impl::refresh()
 {
 }
 
+void SystemTrayIcon::Impl::set_shutting_down(std::string const& message)
+{
+    app_indicator_set_title(indicator_, message.c_str());
+    menu_->set_sensitive(false);
+}
+
 #elif defined(TR_SYS_TRAY_IMPL_STATUS_ICON)
 
 SystemTrayIcon::Impl::~Impl() = default;
@@ -122,6 +129,12 @@ void SystemTrayIcon::Impl::popup(guint /*button*/, guint /*when*/)
 void SystemTrayIcon::Impl::refresh()
 {
     icon_->set_tooltip_text(make_tooltip_text());
+}
+
+void SystemTrayIcon::Impl::set_shutting_down(std::string const& message)
+{
+    icon_->set_tooltip_text(message);
+    menu_->set_sensitive(false);
 }
 
 #else
@@ -159,6 +172,13 @@ void SystemTrayIcon::refresh()
 {
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
     impl_->refresh();
+#endif
+}
+
+void SystemTrayIcon::set_shutting_down([[maybe_unused]] std::string const& message)
+{
+#if !defined(TR_SYS_TRAY_IMPL_NONE)
+    impl_->set_shutting_down(message);
 #endif
 }
 

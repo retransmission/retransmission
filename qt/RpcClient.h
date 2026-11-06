@@ -11,11 +11,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
-#include <QtCore/QUrl>
 
 #include <libtransmission-app/rpc-client.h>
-
-struct tr_session;
 
 using tr::app::RpcResponse;
 
@@ -34,19 +31,10 @@ public:
     RpcClient& operator=(RpcClient&&) = delete;
     RpcClient& operator=(RpcClient const&) = delete;
 
-    [[nodiscard]] constexpr auto const& url() const noexcept
-    {
-        return url_;
-    }
-
     [[nodiscard]] constexpr tr::app::RpcClient& impl() noexcept
     {
         return impl_;
     }
-
-    void stop();
-    void start(tr_session* session);
-    void start(QUrl const& url);
 
 signals:
     void httpAuthenticationRequired();
@@ -55,7 +43,6 @@ signals:
     void networkResponse(bool is_network_error, QString const& message);
 
 private:
-    QUrl url_;
     tr::app::RpcClient impl_;
     std::array<sigslot::scoped_connection, 4> connections_;
 };

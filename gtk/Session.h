@@ -29,7 +29,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
-#include <optional>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -146,21 +145,13 @@ public:
     // e.g. after the session changed one itself.
     void import_embedded_settings();
 
-    // Writes settings.json: the app prefs from Prefs plus the embedded session's own settings.
-    void save_prefs() const;
-
     // ---
-
-    void port_test(tr_address_type ip_protocol);
-    [[nodiscard]] bool port_test_pending(tr_address_type ip_protocol) const noexcept;
 
     // Asks the session for its recently-used paths, `TR_KEY_recent_download_paths` or
     // `TR_KEY_recent_relocate_paths`, and hands them to `on_paths` on the GTK thread.
     // A slot bound to a widget or other sigc::trackable is skipped once that object is gone.
     // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
     void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
-
-    void blocklist_update();
 
     // Asks the session for its blocklist's rule count and last update time.
     // signal_blocklist_info() fires once blocklist_size() and blocklist_date() hold them.
@@ -174,10 +165,8 @@ public:
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
     [[nodiscard]] sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
     [[nodiscard]] sigc::signal<void()>& signal_blocklist_info();
-    [[nodiscard]] sigc::signal<void(bool)>& signal_blocklist_updated();
     [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
     [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
-    [[nodiscard]] sigc::signal<void(std::optional<bool>, tr_address_type)>& signal_port_tested();
     [[nodiscard]] sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>&
     signal_torrents_changed();
 
@@ -186,7 +175,6 @@ protected:
 
 private:
     tr::app::Prefs& prefs_;
-    std::string const config_dir_;
 
     class Impl;
     std::unique_ptr<Impl> const impl_;

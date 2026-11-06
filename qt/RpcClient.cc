@@ -6,8 +6,6 @@
 #include "RpcClient.h"
 
 #include <functional>
-#include <optional>
-#include <string>
 #include <utility>
 
 #include <QtCore/QTimer>
@@ -42,32 +40,3 @@ RpcClient::RpcClient(QObject* parent)
 }
 
 RpcClient::~RpcClient() = default;
-
-void RpcClient::stop()
-{
-    impl_.stop();
-    url_.clear();
-}
-
-void RpcClient::start(tr_session* session)
-{
-    impl_.start(session);
-}
-
-void RpcClient::start(QUrl const& url)
-{
-    // keep the full URL (with any userinfo) for url(); tr::app::RpcClient
-    // receives the credentials separately and a URL without userinfo.
-    url_ = url;
-
-    auto username = std::optional<std::string>{};
-    auto password = std::optional<std::string>{};
-    if (!url.userName().isEmpty()) {
-        username = url.userName().toStdString();
-        password = url.password().toStdString();
-    }
-
-    auto clean_url = url;
-    clean_url.setUserInfo(QString{});
-    impl_.start(clean_url.toString().toStdString(), std::move(username), std::move(password));
-}

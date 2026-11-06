@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <array>
 #include <chrono>
 #include <cstddef> // size_t
 #include <cstdint>
@@ -16,6 +17,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <utility>
 #include <variant> // std::monostate
 #include <vector>
@@ -26,7 +28,7 @@
 
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
-#include "libtransmission/types.h" // tr_session_stats
+#include "libtransmission/types.h" // tr_address_type, tr_session_stats
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-client.h"
@@ -48,6 +50,14 @@ class Prefs;
     return make_fields(std::span{ std::data(keys), std::size(keys) });
 }
 
+// How long a client that has left the screen lets its shutdown run. Long enough for a slow
+// close, and shorter than a waiting launch's patience, so that launch still gets to start.
+inline constexpr auto ShutdownGracePeriod = std::chrono::seconds{ 60 };
+
+// Ends the process after `delay`, whatever it's doing then. `tr_sessionClose()` limits its
+// wait on trackers but not on a stuck disk, and a user with no window has no way to quit.
+void exit_process_after(std::chrono::milliseconds delay = ShutdownGracePeriod);
+
 class Session
 {
 public:
@@ -61,12 +71,57 @@ public:
     // ascending unique torrent ids; a method that takes them sorts what it is given
     using Ids = TorrentList::Ids;
 
-    Session(Prefs& prefs, RpcClient& rpc);
+    // `start()` creates an embedded session in `config_dir`, which disposes of removed
+    // torrents' files with `remove_func`. A client that creates its own `tr_session`
+    // reports it with `set_embedded_session()` instead, and doesn't call `start()` or `stop()`.
+    Session(std::string config_dir, Prefs& prefs, RpcClient& rpc, tr_torrent_remove_func remove_func = {});
+
     Session(Session&&) = delete;
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
     Session& operator=(Session const&) = delete;
-    virtual ~Session() = default;
+
+    // Blocks until an embedded session has finished closing.
+    virtual ~Session();
+
+    // --- lifecycle
+
+    // Connects to the session that prefs name: `remote_session_*`, or else an embedded one.
+    // Fires `source_changed`, or `config_dir_contended` if the embedded session can't have
+    // its config dir. An embedded session started during a close waits until `closed` has
+    // fired, since the closing session holds that dir until then.
+    void start();
+
+    // Disconnects from the session, forgets its info and torrents, and fires `stopped`.
+    // `tr_sessionClose()` can wait on trackers for seconds, so an embedded session
+    // closes on another thread: `is_closing()` until `closed` fires on the UI thread.
+    // Cancels a `start()` that is waiting on an earlier close.
+    void stop();
+
+    void restart();
+
+    [[nodiscard]] bool is_closing() const noexcept
+    {
+        return close_thread_.joinable();
+    }
+
+    // Blocks until a close has finished, then fires `closed`.
+    // For a process that can't get back to its event loop, e.g. during an OS shutdown.
+    void wait_for_close();
+
+    sigslot::signal<> source_changed;
+    sigslot::signal<> stopped;
+    sigslot::signal<> closed;
+    sigslot::signal<> config_dir_contended;
+
+    // the remote session's url without credentials, or empty when not connected to one
+    [[nodiscard]] constexpr std::string const& remote_url() const noexcept
+    {
+        return rpc_.url();
+    }
+
+    // where a browser finds the session's web client, with any credentials the session needs
+    [[nodiscard]] std::string web_client_url() const;
 
     // --- torrents
 
@@ -207,6 +262,50 @@ public:
     // after `import_session_info()`, and after a derived class imports settings another way
     sigslot::signal<> session_updated;
 
+    // --- blocklist
+
+    // Asks the session to download its blocklist. One of the two signals below answers
+    // each call. A success also refreshes the session info, for the new size and date.
+    void update_blocklist();
+
+    sigslot::signal<int64_t /*rule_count*/> blocklist_updated;
+    sigslot::signal<std::string_view /*errmsg*/> blocklist_update_failed;
+
+    // --- port test
+
+    enum class PortStatus : uint8_t {
+        Unknown,
+        Checking,
+        Open,
+        Closed,
+        Error,
+    };
+
+    // Asks the session whether its peer port is reachable over IPv4 and over IPv6.
+    // Sends nothing while a test is pending.
+    void test_port();
+
+    // `Unknown` until a test, and again after the peer port changes, `stop()`
+    // or `forget_port_status()`.
+    [[nodiscard]] constexpr PortStatus port_status(tr_address_type const ip_protocol) const noexcept
+    {
+        return port_status_[ip_protocol];
+    }
+
+    // Back to `Unknown`. An old result says little about the port now, so a UI
+    // calls this when it opens, to show only what it tested itself.
+    void forget_port_status();
+
+    // Whether a test awaits its replies. It can outlast a `Checking` status, since
+    // the peer port can change in the meantime. A UI holds the port's widgets on this.
+    [[nodiscard]] constexpr bool port_test_pending() const noexcept
+    {
+        return port_test_pending_[TR_AF_INET] || port_test_pending_[TR_AF_INET6];
+    }
+
+    // when `port_status()` or `port_test_pending()` changes
+    sigslot::signal<> port_test_changed;
+
     // --- session
 
     // keep the machine awake: a local-filesystem session with active transfers
@@ -265,6 +364,10 @@ public:
     // The embedded session's settings, e.g. for `Prefs::save()`;
     // nullopt when there is no embedded session.
     [[nodiscard]] std::optional<tr::Settings> embedded_settings() const;
+
+    // Writes settings.json: the app prefs plus the embedded session's own settings.
+    // Comes before `stop()`, which ends the embedded session.
+    void save_prefs() const;
 
 protected:
     void set_session_type(std::optional<Type> type);
@@ -344,14 +447,22 @@ private:
     // lock file; every poll repeats the id, so it is probed once
     [[nodiscard]] Type probe_session_type(std::string_view id);
 
+    void on_port_tested(tr_address_type ip_protocol, RpcResponse const& response);
     void update_sleep_inhibit();
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
+    void start_remote();
+    void start_embedded();
 
+    std::string const config_dir_;
+    tr_torrent_remove_func const remove_func_;
     Prefs& prefs_;
     RpcClient& rpc_;
     TorrentList torrents_{ prefs_ }; // after prefs_: constructed from it
     tr_session* embedded_session_ = nullptr;
+    tr_session* started_session_ = nullptr; // the embedded session, when `start()` created it
+    std::thread close_thread_;
+    bool start_after_close_ = false;
     woke::SleepInhibitor sleep_inhibitor_;
     woke::NapInhibitor nap_inhibitor_;
     std::optional<std::chrono::sys_seconds> blocklist_date_;
@@ -365,6 +476,8 @@ private:
     };
     std::optional<ProbedId> probed_id_;
 
+    std::array<PortStatus, NUM_TR_AF_INET_TYPES> port_status_ = {};
+    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session_stats stats_ = {};
     tr_session_stats cumulative_stats_ = {};
     std::string session_version_;

@@ -82,6 +82,11 @@ public:
         return fmt::format("http://127.0.0.1:{:d}{:s}{:s}", port_, TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath);
     }
 
+    [[nodiscard]] constexpr uint16_t port() const noexcept
+    {
+        return port_;
+    }
+
     [[nodiscard]] std::vector<std::string> request_bodies() const
     {
         auto const lock = std::scoped_lock{ mutex_ };
