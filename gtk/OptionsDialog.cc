@@ -81,7 +81,8 @@ private:
     std::string filename_;
     std::string downloadDir_;
 
-    // The torrent this dialog previews. By id, since the main window lists it too and can remove it.
+    // The torrent this dialog previews. By id, since the session can drop it under the
+    // dialog, e.g. when another RPC client removes it or the app quits.
     std::optional<tr_torrent_id_t> tor_id_;
 
     FileList* file_list_ = nullptr;
@@ -124,7 +125,7 @@ void OptionsDialog::Impl::addResponseCB(int response)
                 tr_torrentStart(torrent);
             }
 
-            core_->add_torrent(*tor_id_, false);
+            core_->release_torrent(tr_torrentId(torrent));
 
             if (trash_check_->get_active()) {
                 gtr_file_trash_or_remove(filename_, nullptr);
@@ -181,6 +182,7 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
         if (tr_torrent* const torrent = tr_torrentNew(torrent_builder_.get(), &duplicate_of); torrent != nullptr) {
             removeOldTorrent();
             tor_id_ = tr_torrentId(torrent);
+            core_->withhold_torrent(*tor_id_); // until the user adds it
         } else if (new_file) {
             gtr_add_torrent_error_dialog(*b, duplicate_of, filename_);
         }
@@ -313,7 +315,6 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
     if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
         bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents);
         bool const do_prompt = get_choice(std::string(ShowOptionsDialogChoice)) == "true";
-        bool const do_notify = false;
 
         auto const files = IF_GTKMM4(get_files2, get_files)();
         g_assert(!files.empty());
@@ -326,7 +327,7 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
             }
         }
 
-        core->add_files(files, do_start, do_prompt, do_notify);
+        core->add_files(files, do_start, do_prompt);
     }
 }
 

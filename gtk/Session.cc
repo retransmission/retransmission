@@ -80,9 +80,8 @@ public:
 
     void torrents_added();
 
-    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
-    void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt, bool do_notify);
-    void add_torrent(tr_torrent_id_t id, bool do_notify);
+    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt);
+    void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt);
     [[nodiscard]] bool add_from_url(Glib::ustring const& url);
 
     void remove_torrent(tr_torrent_id_t id, bool delete_files);
@@ -130,13 +129,12 @@ private:
     void inc_busy();
     void dec_busy();
 
-    bool add(Glib::ustring const& name_in, bool do_start, bool do_prompt, bool do_notify);
+    bool add(Glib::ustring const& name_in, bool do_start, bool do_prompt);
     void add_file_async_callback(
         Glib::RefPtr<Gio::File> const& file,
         Glib::RefPtr<Gio::AsyncResult>& result,
         std::unique_ptr<tr_torrent_builder> builder,
-        bool do_prompt,
-        bool do_notify);
+        bool do_prompt);
 
     [[nodiscard]] tr_torrent* create_new_torrent(tr_torrent_builder* builder);
 
@@ -155,9 +153,6 @@ private:
     void on_rows_inserted(size_t row, size_t count);
     void on_rows_removing(size_t row, size_t count);
     void on_torrents_changed(TorrentList::Changes const& changes);
-
-    void on_torrent_completeness_changed(tr_torrent_id_t tor_id, tr_completeness completeness, bool was_running);
-    void on_torrent_metadata_changed(tr_torrent_id_t tor_id);
 
 private:
     Session& core_;
@@ -329,7 +324,7 @@ bool Session::Impl::watchdir_idle()
         bool const do_prompt = core_.prefs_.get<bool>(TR_KEY_show_options_window);
 
         adding_from_watch_dir_ = true;
-        add_files(unchanging, do_start, do_prompt, true);
+        add_files(unchanging, do_start, do_prompt);
         std::ranges::for_each(unchanging, rename_torrent);
         adding_from_watch_dir_ = false;
     }
@@ -496,20 +491,6 @@ Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
     on_pref_changed(TR_KEY_watch_dir_enabled);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
     prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
-
-    tr_sessionSetMetadataCallback(session, [this](tr_torrent_id_t const tor_id) { on_torrent_metadata_changed(tor_id); });
-
-    tr_sessionSetCompletenessCallback(
-        session,
-        [this](tr_torrent_id_t const tor_id, tr_completeness const completeness, bool const was_running) {
-            on_torrent_completeness_changed(tor_id, completeness, was_running);
-        });
-
-    // The scheduler turns alt speeds on and off without a settings-changed notice,
-    // so read the new value back here. Runs on the session thread.
-    tr_sessionSetAltSpeedFunc(session, [this](bool const /*is_enabled*/, bool const /*by_user*/) {
-        gtr_run_on_ui_thread([core = get_core_ptr()] { core->import_embedded_settings(); });
-    });
 }
 
 Session::Impl::~Impl()
@@ -549,39 +530,6 @@ void Session::import_embedded_settings()
 }
 
 /***
-****  COMPLETENESS CALLBACK
-***/
-
-/* this is called in the libtransmission thread, *NOT* the GTK+ thread,
-   so delegate to the GTK+ thread before calling notify's dbus code... */
-void Session::Impl::on_torrent_completeness_changed(
-    tr_torrent_id_t const tor_id,
-    tr_completeness const completeness,
-    bool const was_running)
-{
-    if (auto* const tor = tr_torrentFindFromId(session_, tor_id);
-        was_running && completeness != TR_LEECH && tor != nullptr && tr_torrentStat(tor).size_when_done != 0U) {
-        Glib::signal_idle().connect([core = get_core_ptr(), &prefs = core_.prefs_, tor_id] {
-            gtr_notify_torrent_completed(core, prefs, tor_id);
-            return false;
-        });
-    }
-}
-
-/***
-****  METADATA CALLBACK
-***/
-
-// this is called in the libtransmission thread, *NOT* the GTK+ thread
-void Session::Impl::on_torrent_metadata_changed(tr_torrent_id_t const tor_id)
-{
-    Glib::signal_idle().connect([core = get_core_ptr(), tor_id] {
-        core->torrent_changed(tor_id);
-        return false;
-    });
-}
-
-/***
 ****  MIRRORING THE TORRENT LIST
 ***/
 
@@ -610,6 +558,14 @@ void Session::Impl::on_rows_removing(size_t const row, size_t const count)
 
 void Session::Impl::on_torrents_changed(TorrentList::Changes const& changes)
 {
+    for (auto const id : changes.added) {
+        gtr_notify_torrent_added(get_core_ptr(), core_.prefs_, id);
+    }
+
+    for (auto const id : changes.completed) {
+        gtr_notify_torrent_completed(get_core_ptr(), core_.prefs_, id);
+    }
+
     if (std::empty(changes.changed)) {
         return;
     }
@@ -630,18 +586,9 @@ void Session::Impl::on_torrents_changed(TorrentList::Changes const& changes)
 ****
 ***/
 
-void Session::add_torrent(tr_torrent_id_t const id, bool const do_notify)
+void Session::fetch_torrent(tr_torrent_id_t const id)
 {
-    impl_->add_torrent(id, do_notify);
-}
-
-void Session::Impl::add_torrent(tr_torrent_id_t const id, bool const do_notify)
-{
-    core_.refresh_torrents({ id }, tr::app::TorrentKeySet::MainAll);
-
-    if (do_notify) {
-        gtr_notify_torrent_added(get_core_ptr(), core_.prefs_, id);
-    }
+    refresh_torrents({ id }, tr::app::TorrentKeySet::MainAll);
 }
 
 tr_torrent* Session::Impl::create_new_torrent(tr_torrent_builder* builder)
@@ -666,7 +613,7 @@ tr_torrent* Session::Impl::create_new_torrent(tr_torrent_builder* builder)
     return tor;
 }
 
-void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, bool const do_prompt, bool const do_notify)
+void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, bool const do_prompt)
 {
     auto const& metainfo = builder->metainfo();
     if (std::empty(metainfo.info_hash_string())) {
@@ -686,7 +633,7 @@ void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, boo
 
     if (!do_prompt) {
         if (auto const* const tor = create_new_torrent(builder.get()); tor != nullptr) {
-            add_torrent(tr_torrentId(tor), do_notify);
+            core_.fetch_torrent(tr_torrentId(tor));
         }
         return;
     }
@@ -717,14 +664,13 @@ void core_apply_defaults(tr_torrent_builder* const builder, Prefs const& prefs)
 
 void Session::add_builder(std::unique_ptr<tr_torrent_builder> builder)
 {
-    bool const do_notify = false;
     bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
     core_apply_defaults(builder.get(), prefs_);
-    impl_->add_builder(std::move(builder), do_prompt, do_notify);
+    impl_->add_builder(std::move(builder), do_prompt);
 
     // This is a batch of one, so end it here.
     // Otherwise what add_builder() reported, usually a duplicate, never reaches the user.
-    torrents_added();
+    impl_->torrents_added();
 }
 
 /***
@@ -735,8 +681,7 @@ void Session::Impl::add_file_async_callback(
     Glib::RefPtr<Gio::File> const& file,
     Glib::RefPtr<Gio::AsyncResult>& result,
     std::unique_ptr<tr_torrent_builder> builder,
-    bool const do_prompt,
-    bool const do_notify)
+    bool const do_prompt)
 {
     try {
         gsize length = 0;
@@ -745,7 +690,7 @@ void Session::Impl::add_file_async_callback(
         if (!file->load_contents_finish(result, contents, length)) {
             gtr_message(fmt::format("Couldn't read '{path}'", fmt::arg("path", file->get_parse_name())));
         } else if (builder->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
-            add_builder(std::move(builder), do_prompt, do_notify);
+            add_builder(std::move(builder), do_prompt);
         }
     } catch (Glib::Error const& e) {
         gtr_message(
@@ -764,7 +709,7 @@ void Session::Impl::add_file_async_callback(
 }
 
 // Add `name,` which might be a local filename, a magnet link, or a URI.
-bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool const do_prompt, bool const do_notify)
+bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool const do_prompt)
 {
     auto name = name_in;
 
@@ -800,13 +745,13 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     // if we could make sense of it, add it
     if (loaded) {
         handled = true;
-        add_builder(std::move(builder), do_prompt, do_notify);
+        add_builder(std::move(builder), do_prompt);
     } else if (tr_urlIsValid(file->get_uri())) {
         handled = true;
         inc_busy();
         // released because the slot must be copyable; the callback re-owns it
-        file->load_contents_async([this, file, builder = builder.release(), do_prompt, do_notify](auto& result) {
-            add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt, do_notify);
+        file->load_contents_async([this, file, builder = builder.release(), do_prompt](auto& result) {
+            add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt);
         });
     } else {
         std::cerr << fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", file->get_parse_name())) << '\n';
@@ -824,40 +769,29 @@ bool Session::Impl::add_from_url(Glib::ustring const& url)
 {
     auto const do_start = core_.prefs_.get<bool>(TR_KEY_start_added_torrents);
     auto const do_prompt = core_.prefs_.get<bool>(TR_KEY_show_options_window);
-    auto const do_notify = false;
 
-    auto const handled = add(url, do_start, do_prompt, do_notify);
+    auto const handled = add(url, do_start, do_prompt);
     torrents_added();
     return handled;
 }
 
-void Session::add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify)
+void Session::add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt)
 {
-    impl_->add_files(files, do_start, do_prompt, do_notify);
+    impl_->add_files(files, do_start, do_prompt);
 }
 
-void Session::Impl::add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify)
+void Session::Impl::add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt)
 {
     for (auto const& file : files) {
-        add(file->get_parse_name(), do_start, do_prompt, do_notify);
+        add(file->get_parse_name(), do_start, do_prompt);
     }
 
     torrents_added();
 }
 
-void Session::torrents_added()
-{
-    impl_->torrents_added();
-}
-
 void Session::Impl::torrents_added()
 {
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
-}
-
-void Session::torrent_changed(tr_torrent_id_t const id)
-{
-    refresh_torrents({ id }, tr::app::TorrentKeySet::MainAll);
 }
 
 void Session::remove_torrent(tr_torrent_id_t id, bool delete_files)
@@ -888,25 +822,6 @@ void Session::load(bool force_paused)
 void Session::clear()
 {
     torrents().clear();
-}
-
-/***
-****
-***/
-
-void Session::update()
-{
-    // Feeds the sleep inhibitor until the session's stats are polled over RPC.
-    if (auto* const session = get_session(); session != nullptr) {
-        set_busy(tr_sessionIsBusy(session));
-    }
-}
-
-void Session::start_now(tr_torrent_id_t const id)
-{
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ id }));
-    exec(TR_KEY_torrent_start_now, std::move(params));
 }
 
 /***

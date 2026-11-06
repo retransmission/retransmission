@@ -95,6 +95,9 @@ using FileListHandler = Glib::SListHandler<Glib::RefPtr<Gio::File>>;
 using StringValue = Glib::Value<Glib::ustring>;
 #endif
 
+// a `tr::app::Session` verb, which re-fetches its torrents so the list shows the result at once
+using TorrentVerb = void (tr::app::Session::*)(tr::app::Session::Ids);
+
 class Application::Impl
 {
 public:
@@ -181,8 +184,6 @@ private:
         guint time_);
 #endif
 
-    bool on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id);
-
     void placeWindowFromPrefs();
     void presentMainWindow(Glib::ustring const& activation_token = {});
     void hideMainWindow();
@@ -215,7 +216,7 @@ private:
     void start_all_torrents();
     void pause_all_torrents();
     void copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const;
-    bool call_rpc_for_selected_torrents(tr_quark method);
+    [[nodiscard]] bool run_verb_for_selected_torrents(TorrentVerb verb);
     void remove_selected(bool delete_files);
 
 private:
@@ -467,55 +468,6 @@ void Application::Impl::on_main_window_size_allocated()
 }
 
 /***
-**** listen to changes that come from RPC
-***/
-
-bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id)
-{
-    switch (type) {
-    case TR_RPC_SESSION_CLOSE:
-        gtr_action_activate("quit");
-        break;
-
-    case TR_RPC_TORRENT_ADDED:
-        if (tor_id) {
-            core_->add_torrent(*tor_id, true);
-        }
-        break;
-
-    case TR_RPC_TORRENT_REMOVING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, false);
-        }
-        break;
-
-    case TR_RPC_TORRENT_TRASHING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, true);
-        }
-        break;
-
-    case TR_RPC_SESSION_CHANGED:
-        // Another RPC client's session_set: the callback in on_startup() drops our own.
-        core_->import_embedded_settings();
-        break;
-
-    case TR_RPC_TORRENT_CHANGED:
-    case TR_RPC_TORRENT_MOVED:
-    case TR_RPC_TORRENT_STARTED:
-    case TR_RPC_TORRENT_STOPPED:
-    case TR_RPC_SESSION_QUEUE_POSITIONS_CHANGED:
-        // nothing interesting to do here
-        break;
-
-    default:
-        g_assert_not_reached();
-    }
-
-    return false;
-}
-
-/***
 ****  signal handling
 ***/
 
@@ -624,23 +576,15 @@ void Application::Impl::on_startup()
     app_.hold();
     app_setup();
 
-    // Fires on the thread that made the change: the session thread for another
-    // RPC client's request, this thread for our own session_set. Only another
-    // client's settings change needs importing. Ours are already in Prefs, and
-    // importing them here could read stale values back: tr_sessionSetPeerPort()
-    // and the DHT, uTP, LPD and port-forwarding setters queue their change for
-    // the session thread, which may apply it after the import runs.
-    auto const ui_thread = std::this_thread::get_id();
-    tr_sessionSetRPCCallback(
-        session,
-        [this, ui_thread](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
-            if (type == TR_RPC_SESSION_CHANGED && std::this_thread::get_id() == ui_thread) {
-                return TR_RPC_NOREMOVE;
-            }
+    // Another RPC client's session_close quits the app. The poll brings
+    // every other change, and the session removes torrents itself.
+    tr_sessionSetRPCCallback(session, [](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
+        if (type == TR_RPC_SESSION_CLOSE) {
+            gtr_run_on_ui_thread([] { gtr_action_activate("quit"); });
+        }
 
-            Glib::signal_idle().connect([this, type, tor_id] { return on_rpc_changed_idle(type, tor_id); });
-            return TR_RPC_NOREMOVE;
-        });
+        return TR_RPC_OK;
+    });
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
@@ -678,9 +622,8 @@ void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& f
 {
     bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents) && !start_paused_;
     bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
-    bool const do_notify = true;
 
-    core_->add_files(files, do_start, do_prompt, do_notify);
+    core_->add_files(files, do_start, do_prompt);
 }
 
 void Application::on_open(std::vector<Glib::RefPtr<Gio::File>> const& files, Glib::ustring const& hint)
@@ -727,7 +670,6 @@ void Application::Impl::app_setup()
 
     /* add torrents from command-line and saved state */
     core_->load(start_paused_);
-    core_->torrents_added();
     poller_->start();
 
     /* set up main window */
@@ -1070,9 +1012,6 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
 
 bool Application::Impl::update_model_once()
 {
-    /* update the torrent data in the model */
-    core_->update();
-
     /* refresh the main window's statusbar and toolbar buttons */
     if (wind_ != nullptr) {
         wind_->refresh();
@@ -1113,16 +1052,14 @@ void Application::Impl::show_about_dialog()
     d->show();
 }
 
-bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
+bool Application::Impl::run_verb_for_selected_torrents(TorrentVerb const verb)
 {
-    auto const ids = get_selected_torrent_ids();
+    auto ids = get_selected_torrent_ids();
     if (std::empty(ids)) {
         return false;
     }
 
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids));
-    core_->exec(method, std::move(params));
+    (core_.get()->*verb)(std::move(ids));
     return true;
 }
 
@@ -1135,12 +1072,12 @@ void Application::Impl::remove_selected(bool delete_files)
 
 void Application::Impl::start_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_start, {});
+    core_->start_all_torrents();
 }
 
 void Application::Impl::pause_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_stop, {});
+    core_->stop_all_torrents();
 }
 
 void Application::Impl::copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const
@@ -1166,7 +1103,7 @@ void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data)
 namespace
 {
 
-[[nodiscard]] std::optional<tr_quark> action_name_to_torrent_rpc_method(std::string_view const action_name)
+[[nodiscard]] TorrentVerb action_name_to_torrent_verb(std::string_view const action_name)
 {
     // action-name -> rpc_method
     auto action_to_rpc = [](std::string_view const in) {
@@ -1177,24 +1114,30 @@ namespace
 
     if (auto quark = tr_quark_lookup(action_to_rpc(action_name))) {
         switch (*quark) {
-        // supported methods
         case TR_KEY_queue_move_bottom:
+            return &tr::app::Session::queue_move_bottom;
         case TR_KEY_queue_move_down:
+            return &tr::app::Session::queue_move_down;
         case TR_KEY_queue_move_top:
+            return &tr::app::Session::queue_move_top;
         case TR_KEY_queue_move_up:
+            return &tr::app::Session::queue_move_up;
         case TR_KEY_torrent_reannounce:
+            return &tr::app::Session::reannounce_torrents;
         case TR_KEY_torrent_start:
+            return &tr::app::Session::start_torrents;
         case TR_KEY_torrent_start_now:
+            return &tr::app::Session::start_torrents_now;
         case TR_KEY_torrent_stop:
+            return &tr::app::Session::stop_torrents;
         case TR_KEY_torrent_verify:
-            return quark;
-
+            return &tr::app::Session::verify_torrents;
         default:
             break;
         }
     }
 
-    return {};
+    return nullptr;
 }
 
 } // namespace
@@ -1232,8 +1175,8 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
             gtr_window_on_close(*w, [w] mutable { w.reset(); });
             w->show();
         }
-    } else if (auto const method = action_name_to_torrent_rpc_method(action_name.raw())) {
-        changed = call_rpc_for_selected_torrents(*method);
+    } else if (auto const verb = action_name_to_torrent_verb(action_name.raw())) {
+        changed = run_verb_for_selected_torrents(verb);
     } else if (action_name == "open-torrent-folder") {
         wind_->for_each_selected_torrent([this](auto const& torrent) { core_->open_folder(torrent->get_id()); });
     } else if (action_name == "show-torrent-properties") {
