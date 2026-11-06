@@ -573,6 +573,29 @@ TEST_F(AppTorrentListTest, changedExcludesTorrentsRemovedInTheSameUpdate)
     EXPECT_EQ(changes.removed, (Ids{ 2 }));
 }
 
+// a torrent that follows the session's seed ratio reads the prefs, so their change is its change
+TEST_F(AppTorrentListTest, seedRatioPrefsChangeTheTorrentsThatFollowThem)
+{
+    seed({ 1, 2 });
+    list_.update(
+        make_args(make_list(make_row(2, kv(TR_KEY_seed_ratio_mode, static_cast<int64_t>(TR_RATIOLIMIT_SINGLE))))),
+        Coverage::Partial,
+        Now);
+    recorder_.reset();
+
+    prefs_.set(TR_KEY_seed_ratio_limit, 5.5);
+
+    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "changed" }));
+    auto const& changes = recorder_.last_changes();
+    EXPECT_EQ(changes.changed, (std::vector<TorrentChange>{ { 1, 0U, Torrent::effective_seed_ratio_fields() } }));
+    EXPECT_EQ(changes.changed_fields, Torrent::effective_seed_ratio_fields());
+
+    // no torrent reads an unrelated pref
+    recorder_.reset();
+    prefs_.set(TR_KEY_filter_text, std::string{ "x" });
+    EXPECT_TRUE(std::empty(recorder_.lines));
+}
+
 TEST_F(AppTorrentListTest, newTorrentsAreInsertedNotChanged)
 {
     // a named torrent with an old date is news only as a row
