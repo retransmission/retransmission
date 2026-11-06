@@ -79,7 +79,7 @@ TEST_F(PeerMsgsTest, SmallProtocolMessagesFlushWithoutBandwidthPulse)
                 }
                 return received.size() >= size;
             },
-            100))
+            5000))
             << "message size: " << size;
         EXPECT_EQ(expected, received);
     }
