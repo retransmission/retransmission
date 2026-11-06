@@ -967,38 +967,32 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0AD81F53304EC83D00C22874 /* Exceptions for "macosx" folder in "Transmission" target */ = {
+		0AA3CC62309E287500AA8A9E /* Exceptions for "App" folder in "Transmission" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			attributesByRelativePath = {
 				Sparkle.framework = (Weak, );
 			};
 			membershipExceptions = (
-				"/Localized: QuickLookExtension/Localizable.strings",
 				CMakeLists.txt,
 				Info.plist,
 				Info.plist.in,
-				QuickLookExtension/CMakeLists.txt,
-				QuickLookExtension/Info.plist,
-				QuickLookExtension/Info.plist.in,
-				QuickLookExtension/PreviewProvider.mm,
-				QuickLookExtension/style.css,
 				VDKQueue/CMakeLists.txt,
 			);
 			target = 8D1107260486CEB800E47090 /* Transmission */;
 		};
-		0AD81F55304EC83D00C22874 /* Exceptions for "macosx" folder in "QuickLookExtension" target */ = {
+		0AA3CC63309E291500AA8A9E /* Exceptions for "QuickLookExtension" folder in "QuickLookExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"/Localized: QuickLookExtension/Localizable.strings",
-				QuickLookExtension/PreviewProvider.mm,
-				QuickLookExtension/style.css,
+				CMakeLists.txt,
+				Info.plist,
+				Info.plist.in,
 			);
 			target = ED5E0E7B2CD30B180071433B /* QuickLookExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		0AD81F54304EC83D00C22874 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */ = {
+		0AA3CC66309E29E100AA8A9E /* Exceptions for "App" folder in "Copy Files to Frameworks" phase from "Transmission" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
 				Sparkle.framework = (CodeSignOnCopy, );
@@ -1011,14 +1005,21 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0AD81ED4304EC83C00C22874 /* macosx */ = {
+		0AA3C36B309E258C00AA8A9E /* QuickLookExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0AD81F53304EC83D00C22874 /* Exceptions for "macosx" folder in "Transmission" target */,
-				0AD81F54304EC83D00C22874 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */,
-				0AD81F55304EC83D00C22874 /* Exceptions for "macosx" folder in "QuickLookExtension" target */,
+				0AA3CC63309E291500AA8A9E /* Exceptions for "QuickLookExtension" folder in "QuickLookExtension" target */,
 			);
-			path = macosx;
+			path = QuickLookExtension;
+			sourceTree = "<group>";
+		};
+		0AA3C8C7309E27BE00AA8A9E /* App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0AA3CC62309E287500AA8A9E /* Exceptions for "App" folder in "Transmission" target */,
+				0AA3CC66309E29E100AA8A9E /* Exceptions for "App" folder in "Copy Files to Frameworks" phase from "Transmission" target */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -1153,6 +1154,15 @@
 			name = Sources;
 			sourceTree = "<group>";
 		};
+		0AA3C348309E256400AA8A9E /* macosx */ = {
+			isa = PBXGroup;
+			children = (
+				0AA3C36B309E258C00AA8A9E /* QuickLookExtension */,
+				0AA3C8C7309E27BE00AA8A9E /* App */,
+			);
+			path = macosx;
+			sourceTree = "<group>";
+		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1178,7 +1188,7 @@
 			children = (
 				ADD1A00000000000000000F9 /* libarchive */,
 				080E96DDFE201D6D7F000001 /* Sources */,
-				0AD81ED4304EC83C00C22874 /* macosx */,
+				0AA3C348309E256400AA8A9E /* macosx */,
 				4D1838DC09DEC04A0047D688 /* libtransmission */,
 				A22CFCB50FC24F630009BD3E /* dht */,
 				A2E384BF130DFA49001F501B /* libutp */,
@@ -2007,7 +2017,7 @@
 				ED5E0E8C2CD30B180071433B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				0AD81ED4304EC83C00C22874 /* macosx */,
+				0AA3C8C7309E27BE00AA8A9E /* App */,
 			);
 			name = Transmission;
 			productInstallPath = "$(HOME)/Applications";
@@ -2150,6 +2160,9 @@
 			);
 			dependencies = (
 				ED5E0E9F2CD3134B0071433B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0AA3C36B309E258C00AA8A9E /* QuickLookExtension */,
 			);
 			name = QuickLookExtension;
 			packageProductDependencies = (
@@ -2886,16 +2899,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/App/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/App",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
@@ -3080,16 +3095,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/App/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/App",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
@@ -3345,16 +3362,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/App/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/App",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
