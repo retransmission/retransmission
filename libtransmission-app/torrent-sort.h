@@ -18,4 +18,51 @@ namespace tr::app
 // then info hashes, so the order is total.
 [[nodiscard]] std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortMode mode);
 
+// The fields `compare_torrents()` reads for `mode`, so a change to one of them may move a torrent.
+// The caller's tie-breaks read the name and the info hash, which these leave out.
+// `SortByProgress`, and the modes that fall through to it, also read `Torrent::SeedRatioPrefKeys`.
+[[nodiscard]] constexpr TorrentFieldSet sort_mode_fields(SortMode const mode) noexcept
+{
+    auto constexpr Ratio = Torrent::fields<TR_KEY_upload_ratio>();
+    auto constexpr Progress = Torrent::percent_complete_fields() |
+        Torrent::effective_seed_ratio_fields() |
+        Torrent::fields<TR_KEY_queue_position>() |
+        Ratio;
+    auto constexpr State = Torrent::fields<TR_KEY_error, TR_KEY_queue_position, TR_KEY_status>() | Progress;
+
+    switch (mode) {
+    case SortMode::SortByActivity:
+        return Torrent::fields<
+                   TR_KEY_peers_getting_from_us,
+                   TR_KEY_rate_download,
+                   TR_KEY_rate_upload,
+                   TR_KEY_webseeds_sending_to_us>() |
+            State;
+
+    case SortMode::SortByAge:
+        return Torrent::fields<TR_KEY_added_date>();
+
+    case SortMode::SortByEta:
+        return Torrent::fields<TR_KEY_eta>();
+
+    case SortMode::SortByProgress:
+        return Progress;
+
+    case SortMode::SortByQueue:
+        return Torrent::fields<TR_KEY_queue_position>();
+
+    case SortMode::SortByRatio:
+        return Ratio;
+
+    case SortMode::SortBySize:
+        return Torrent::fields<TR_KEY_size_when_done>();
+
+    case SortMode::SortByState:
+        return State;
+
+    default:
+        return {};
+    }
+}
+
 } // namespace tr::app
