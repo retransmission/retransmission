@@ -27,7 +27,7 @@ Build the app:
 ```bash
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build -t transmission-mac
-open ./build/macosx/Retransmission.app
+open ./build/macosx/App/Retransmission.app
 ```
 
 ### Building CLI Tools and Daemons on macOS ###

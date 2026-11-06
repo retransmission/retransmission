@@ -24,9 +24,9 @@ jobs:
           commitTitle: 'chore: update copyright year in user-facing files'
           token: ${{ secrets.GITHUB_TOKEN }}
           path: |
-            macosx/Info.plist
-            macosx/Info.plist.in
-            macosx/*/InfoPlist.strings
+            macosx/App/Info.plist
+            macosx/App/Info.plist.in
+            macosx/App/*/InfoPlist.strings
             macosx/QuickLookExtension/Info.plist
             macosx/QuickLookExtension/Info.plist.in
           transform: (?<=Copyright © )(?<from>\d{4})?[-–]?(\d{4})
