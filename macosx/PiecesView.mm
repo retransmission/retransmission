@@ -99,12 +99,6 @@ typedef struct PieceInfo {
     [super drawRect:dirtyRect];
 }
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    self.torrent = nil;
-}
-
 - (void)viewDidChangeEffectiveAppearance
 {
     self.torrent = _torrent;

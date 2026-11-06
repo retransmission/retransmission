@@ -358,11 +358,6 @@ else()
     set(ENABLED_LINGUAS en)
 endif()
 
-set(BASE_XIB_FILES
-    InfoActivityView.xib)
-list(TRANSFORM BASE_XIB_FILES
-    PREPEND Base.lproj/)
-
 set(LANG_STRINGS_FILES
     AddMagnetWindow.strings
     AddWindow.strings
@@ -370,6 +365,7 @@ set(LANG_STRINGS_FILES
     Creator.strings
     GlobalOptionsPopover.strings
     GroupRules.strings
+    InfoActivityView.strings
     InfoGeneralView.strings
     InfoOptionsView.strings
     InfoPlist.strings
@@ -385,12 +381,6 @@ set(LANG_STRINGS_FILES
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)
-    if(NOT LANG STREQUAL "en")
-        foreach(F ${BASE_XIB_FILES})
-            get_filename_component(F_BASE "${F}" NAME_WE)
-            list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F_BASE}.strings)
-        endforeach()
-    endif()
     foreach(F ${LANG_STRINGS_FILES})
         list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
     endforeach()
@@ -413,9 +403,6 @@ endforeach()
 target_sources(${TR_NAME}-mac
     PRIVATE
         ${RESOURCES})
-
-tr_target_xib_files(${TR_NAME}-mac
-    ${BASE_XIB_FILES})
 
 find_library(SPARKLE_FRAMEWORK Sparkle
     PATHS ${CMAKE_CURRENT_SOURCE_DIR}
