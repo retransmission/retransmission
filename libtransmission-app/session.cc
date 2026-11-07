@@ -157,8 +157,6 @@ void Session::start()
 {
     if (prefs_.get<bool>(TR_KEY_remote_session_enabled)) {
         start_remote();
-    } else if (is_closing()) {
-        start_after_close_ = true;
     } else {
         start_embedded();
     }
@@ -166,6 +164,9 @@ void Session::start()
 
 void Session::start_remote()
 {
+    TR_ASSERT(started_session_ == nullptr && std::empty(rpc_.url()));
+    start_after_close_.reset(); // the latest start wins
+
     auto const url = remote_url_for(prefs_, TrHttpServerRpcRelativePath);
     if (auto credentials = remote_credentials(prefs_)) {
         rpc_.start(url, std::move(credentials->username), std::move(credentials->password));
@@ -176,8 +177,15 @@ void Session::start_remote()
     source_changed();
 }
 
-void Session::start_embedded()
+void Session::start_embedded(bool const paused)
 {
+    TR_ASSERT(started_session_ == nullptr && std::empty(rpc_.url()));
+
+    if (is_closing()) {
+        start_after_close_ = PendingStart{ .paused = paused };
+        return;
+    }
+
     TR_ASSERT(!std::empty(config_dir_));
 
     auto* const session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), remove_func_);
@@ -193,6 +201,9 @@ void Session::start_embedded()
     rpc_.start(session);
 
     auto builder = tr_torrent_builder{ session };
+    if (paused) {
+        builder.set_paused(true);
+    }
     tr_sessionLoadTorrents(session, &builder);
 
     source_changed();
@@ -200,7 +211,7 @@ void Session::start_embedded()
 
 void Session::stop()
 {
-    start_after_close_ = false;
+    start_after_close_.reset();
     rpc_.stop();
 
     if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
@@ -246,8 +257,8 @@ void Session::wait_for_close()
     close_thread_.join();
     closed();
 
-    if (std::exchange(start_after_close_, false)) {
-        start();
+    if (auto const pending = std::exchange(start_after_close_, {})) {
+        start_embedded(pending->paused);
     }
 }
 
