@@ -100,6 +100,11 @@ public:
 
     void restart();
 
+    // For a client that has left the screen and is quitting: `save_prefs()`, then
+    // `stop()`. Ends the process if it is still running after `ShutdownGracePeriod`,
+    // since a stuck close would otherwise leave a process the user can't see or quit.
+    void shut_down();
+
     [[nodiscard]] bool is_closing() const noexcept
     {
         return close_thread_.joinable();

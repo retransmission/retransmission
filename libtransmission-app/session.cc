@@ -230,6 +230,13 @@ void Session::restart()
     start();
 }
 
+void Session::shut_down()
+{
+    exit_process_after();
+    save_prefs();
+    stop();
+}
+
 void Session::wait_for_close()
 {
     if (!is_closing()) {
