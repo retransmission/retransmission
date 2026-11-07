@@ -90,12 +90,17 @@ public:
     // Fires `source_changed`, or `config_dir_contended` if the embedded session can't have
     // its config dir. An embedded session started during a close waits until `closed` has
     // fired, since the closing session holds that dir until then.
+    // A started Session must `stop()` before it starts again.
     void start();
+
+    // Starts an embedded session whatever prefs name, as `start()` would, for a client
+    // that can't drive a remote session. Its saved torrents load paused when `paused`.
+    void start_embedded(bool paused = false);
 
     // Disconnects from the session, forgets its info and torrents, and fires `stopped`.
     // `tr_sessionClose()` can wait on trackers for seconds, so an embedded session
     // closes on another thread: `is_closing()` until `closed` fires on the UI thread.
-    // Cancels a `start()` that is waiting on an earlier close.
+    // Cancels a start that is waiting on an earlier close.
     void stop();
 
     void restart();
@@ -452,7 +457,6 @@ private:
     void update_nap_inhibit();
     void sync_pref_to_session(tr_quark key);
     void start_remote();
-    void start_embedded();
 
     std::string const config_dir_;
     tr_torrent_remove_func const remove_func_;
@@ -460,9 +464,14 @@ private:
     RpcClient& rpc_;
     TorrentList torrents_{ prefs_ }; // after prefs_: constructed from it
     tr_session* embedded_session_ = nullptr;
-    tr_session* started_session_ = nullptr; // the embedded session, when `start()` created it
+    tr_session* started_session_ = nullptr; // the embedded session, when this class started it
     std::thread close_thread_;
-    bool start_after_close_ = false;
+
+    // an embedded start that waits for `closed`
+    struct PendingStart {
+        bool paused = false;
+    };
+    std::optional<PendingStart> start_after_close_;
     woke::SleepInhibitor sleep_inhibitor_;
     woke::NapInhibitor nap_inhibitor_;
     std::optional<std::chrono::sys_seconds> blocklist_date_;
