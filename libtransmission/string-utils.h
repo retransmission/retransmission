@@ -24,6 +24,11 @@
     @param errnum the error number to describe */
 [[nodiscard]] char const* tr_strerror(int errnum);
 
+[[nodiscard]] constexpr bool tr_ascii_isspace(char const ch) noexcept
+{
+    return ch == ' ' || (ch >= '\t' && ch <= '\r');
+}
+
 template <typename T> [[nodiscard]] constexpr std::string tr_strlower(T in)
 {
     auto out = std::string{ std::move(in) };
@@ -60,6 +65,11 @@ template <typename... Args> constexpr bool tr_strv_sep(std::string_view* sv, std
 
     *token = tr_strv_sep(sv, std::forward<Args>(args)...);
     return true;
+}
+
+[[nodiscard]] constexpr bool tr_strv_is_empty_or_blank(std::string_view sv) noexcept
+{
+    return sv.empty() || std::ranges::all_of(sv, tr_ascii_isspace);
 }
 
 [[nodiscard]] std::string_view tr_strv_strip(std::string_view str TR_LIFETIMEBOUND);
