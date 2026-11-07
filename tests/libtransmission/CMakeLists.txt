@@ -128,17 +128,17 @@ tr_setup_gtest_target(libtransmission-test "LT.")
 if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
     add_test(
         NAME LT.ShuffledDiskIo
-        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*)
+        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:UploadTest.*)
 
     set_tests_properties(LT.ShuffledDiskIo
         PROPERTIES
             ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
 
-    # ...and once more on the threaded backend, where writes and piece
-    # hashes finish on worker threads and admin ops wait for them.
+    # ...and once more on the threaded backend, where reads, writes, and
+    # piece hashes finish on worker threads and admin ops wait for them.
     add_test(
         NAME LT.ThreadedDiskIo
-        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RpcTest.*)
+        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RpcTest.*:UploadTest.*)
 
     set_tests_properties(LT.ThreadedDiskIo
         PROPERTIES

@@ -41,6 +41,32 @@ struct StorageDescriptor;
     std::span<uint8_t> setme);
 
 /**
+ * Like tr_ioRead(), but fills each of `setme` in turn, from consecutive
+ * torrent bytes. Each file's share comes off the disk in as few calls as
+ * the platform allows.
+ *
+ * Safe to call from any thread.
+ */
+[[nodiscard]] tr_error tr_ioReadv(
+    tr::StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    uint64_t begin,
+    std::span<std::span<uint8_t> const> setme);
+
+/**
+ * Like tr_ioRead(), but succeeds only if it never waits for the disk:
+ * every file it touches is already open in `open_files`, and every byte
+ * is already in the page cache. False means call tr_ioRead() instead.
+ *
+ * Safe to call from any thread.
+ */
+[[nodiscard]] bool tr_ioReadCached(
+    tr::StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    uint64_t begin,
+    std::span<uint8_t> setme);
+
+/**
  * Writes torrent data starting at byte `begin`.
  *
  * Creates, preallocates, and truncates files as needed.
