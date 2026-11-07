@@ -11,6 +11,7 @@
 #include <cstdint> // uint8_t, uint32_t, int64_t
 #include <ctime>
 #include <deque>
+#include <functional> // std::greater
 #include <iterator>
 #include <memory> // std::unique_ptr
 #include <optional>
@@ -2055,32 +2056,27 @@ void tr_peerMsgsImpl::maybe_send_block_requests()
 void tr_peerMsgsImpl::check_request_timeout(time_t const now)
 {
     TR_PROFILE_SCOPE("peer.request_timeouts");
-    std::ranges::sort(request_timeouts_);
+    // Sort newest first so that unique() keeps each block's latest request.
+    std::ranges::sort(request_timeouts_, std::greater{});
+    auto const [first, last] = std::ranges::unique(request_timeouts_, {}, &std::pair<tr_block_index_t, time_t>::first);
+    request_timeouts_.erase(first, last);
 
-    for (auto it = std::begin(request_timeouts_); it != std::end(request_timeouts_);) {
-        auto const [block, timeout] = *it;
-
-        if (auto const next = std::next(it); next != std::end(request_timeouts_) && block == next->first) {
-            // A new request superseded this request, discard
-            it = request_timeouts_.erase(it);
-            continue;
-        }
+    std::erase_if(request_timeouts_, [this, now](auto const& entry) {
+        auto const [block, timeout] = entry;
 
         if (!active_requests().test(block)) {
             // request no longer active, discard
-            it = request_timeouts_.erase(it);
-            continue;
+            return true;
         }
 
         if (now >= timeout) {
             // request timed out, discard
             cancel_block_request(block);
-            it = request_timeouts_.erase(it);
-            continue;
+            return true;
         }
 
-        ++it;
-    }
+        return false;
+    });
 }
 
 [[nodiscard]] size_t tr_peerMsgsImpl::fill_output_buffer_impl(time_t now_sec, uint64_t now_msec)
