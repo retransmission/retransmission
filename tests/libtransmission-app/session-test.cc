@@ -532,6 +532,22 @@ TEST_F(AppSessionRpcTest, fetchesRecentPathsFromTheSession)
     EXPECT_EQ(download_dir, paths.front());
 }
 
+TEST_F(AppSessionRpcTest, fetchesAMagnetLinkFromTheSession)
+{
+    auto const id = add_torrent(Debian);
+
+    auto link = std::string{};
+    session_.fetch_magnet_link(id, [&link](std::string_view const value) { link = value; });
+    ASSERT_TRUE(loop_.pump_until([&link] { return !std::empty(link); }));
+    EXPECT_TRUE(link.starts_with("magnet:?xt=urn:btih:")) << link;
+
+    // a torrent the session lacks has no link to hand over
+    auto called = false;
+    session_.fetch_magnet_link(id + 1, [&called](std::string_view const /*value*/) { called = true; });
+    pump_replies();
+    EXPECT_FALSE(called);
+}
+
 // A session_get queued before our session_set carries the value being replaced;
 // importing it would revert the pref until the next poll.
 TEST_F(AppSessionRpcTest, importSkipsAKeyWithASessionSetInFlight)

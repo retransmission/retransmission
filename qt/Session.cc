@@ -6,7 +6,6 @@
 #include "Session.h"
 
 #include <cassert>
-#include <optional>
 #include <string_view>
 #include <utility>
 
@@ -21,7 +20,6 @@
 #include <QtWidgets/QStyle>
 
 #include <libtransmission/quark.h>
-#include <libtransmission/serializer.h>
 #include <libtransmission/variant.h>
 
 #include <libtransmission-app/rpc-queue.h>
@@ -37,29 +35,11 @@ using tr::app::RpcQueue;
 ****
 ***/
 
-void Session::copyMagnetLinkToClipboard(int torrent_id)
+void Session::copyMagnetLinkToClipboard(int const torrent_id)
 {
-    auto params = tr_variant::Map{ 2U };
-    params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(Ids{ torrent_id }));
-    params.insert_or_assign(TR_KEY_fields, tr::app::make_fields({ TR_KEY_magnet_link }));
-
-    RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            send(TR_KEY_torrent_get, std::move(params), std::move(done));
-        })
-        .add([](RpcResponse const& r) {
-            auto const* const args = r.args_map();
-            auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
-            auto const* const row = torrents != nullptr && !std::empty(*torrents) ?
-                torrents->front().get_if<tr_variant::Map>() :
-                nullptr;
-            auto const link = row != nullptr ? row->value_if<std::string_view>(TR_KEY_magnet_link) :
-                                               std::optional<std::string_view>{};
-            if (link) {
-                QApplication::clipboard()->setText(Utils::qstringFromUtf8(*link));
-            }
-        })
-        .run();
+    fetch_magnet_link(torrent_id, [](std::string_view const link) {
+        QApplication::clipboard()->setText(Utils::qstringFromUtf8(link));
+    });
 }
 
 /***

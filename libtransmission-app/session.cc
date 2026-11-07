@@ -842,6 +842,23 @@ void Session::fetch_recent_paths(tr_quark const key, std::function<void(std::vec
     });
 }
 
+void Session::fetch_magnet_link(tr_torrent_id_t const id, std::function<void(std::string_view)> on_link)
+{
+    auto params = tr_variant::Map{ 2U };
+    params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(Ids{ id }));
+    params.try_emplace(TR_KEY_fields, make_fields({ TR_KEY_magnet_link }));
+
+    send(TR_KEY_torrent_get, std::move(params), [on_link = std::move(on_link)](RpcResponse const& response) {
+        auto const* const args = response.result_map();
+        auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
+        auto const* const row = torrents != nullptr && !std::empty(*torrents) ? torrents->front().get_if<tr_variant::Map>() :
+                                                                                nullptr;
+        if (auto const link = row != nullptr ? row->value_if<std::string_view>(TR_KEY_magnet_link) : std::nullopt) {
+            on_link(*link);
+        }
+    });
+}
+
 std::optional<tr::Settings> Session::embedded_settings() const
 {
     if (embedded_session_ != nullptr) {

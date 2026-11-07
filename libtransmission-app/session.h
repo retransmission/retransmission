@@ -359,6 +359,10 @@ public:
     // libtransmission adds to them without reporting a settings change.
     void fetch_recent_paths(tr_quark key, std::function<void(std::vector<std::string> const&)> on_paths);
 
+    // Asks the session for `id`'s magnet link and hands it to `on_link` on the UI thread.
+    // Calls nothing when the reply has no link, e.g. once the torrent is gone.
+    void fetch_magnet_link(tr_torrent_id_t id, std::function<void(std::string_view)> on_link);
+
     // The blocklist's rule count, or nullopt until the session reports it.
     [[nodiscard]] constexpr std::optional<int64_t> blocklist_size() const noexcept
     {
