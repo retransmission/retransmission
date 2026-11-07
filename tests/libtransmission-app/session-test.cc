@@ -814,8 +814,11 @@ TEST_F(AppSessionRpcTest, startAllReachesEveryTorrent)
             return session_.torrents().size() == 2U && activity(id1) == TR_STATUS_STOPPED && activity(id2) == TR_STATUS_STOPPED;
         }));
 
+    // A torrent that is still verifying starts when its check ends, which can be after
+    // the verb's own re-fetch, so ask again until both have started.
     session_.start_all_torrents();
-    EXPECT_TRUE(loop_.pump_until(
+    EXPECT_TRUE(refresh_until(
+        [this] { session_.refresh_all_torrents(TorrentKeySet::MainStats); },
         [this, id1, id2] { return activity(id1) != TR_STATUS_STOPPED && activity(id2) != TR_STATUS_STOPPED; }));
 }
 
