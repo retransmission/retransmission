@@ -766,6 +766,10 @@ void MainWindow::Impl::updateStats()
     auto const mode = prefs_.get<StatsMode>(TR_KEY_statusbar_stats);
     auto const use_session_stats = mode == StatsMode::SessionRatio || mode == StatsMode::SessionTransfer;
     auto const* const ses = core_->get_session();
+    if (ses == nullptr) {
+        return;
+    }
+
     auto const stats = use_session_stats ? tr_sessionGetStats(ses) : tr_sessionGetCumulativeStats(ses);
     stats_lb_->set_text(
         mode == StatsMode::SessionTransfer || mode == StatsMode::TotalTransfer ?

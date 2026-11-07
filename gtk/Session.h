@@ -58,16 +58,17 @@ public:
 public:
     ~Session() override;
 
-    [[nodiscard]] static Glib::RefPtr<Session> create(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
-
-    [[nodiscard]] tr_session* close();
+    // A Session for the embedded session that `start_embedded()` creates in `config_dir`.
+    [[nodiscard]] static Glib::RefPtr<Session> create(std::string config_dir, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
     [[nodiscard]] Glib::RefPtr<Gio::ListModel> get_model() const;
     [[nodiscard]] Glib::RefPtr<Model> get_sorted_model() const;
 
-    void clear();
-
-    [[nodiscard]] tr_session* get_session() const;
+    // the embedded session, or nullptr before `start_embedded()` or after `stop()`
+    [[nodiscard]] tr_session* get_session() const noexcept
+    {
+        return embedded_session();
+    }
 
     [[nodiscard]] size_t get_unpaused_torrent_count() const;
 
@@ -83,12 +84,6 @@ public:
     /******
     *******
     ******/
-
-    /**
-     * Load saved state and return number of torrents added.
-     * May trigger one or more "error" signals with ERR_ADD_TORRENT
-     */
-    void load(bool force_paused);
 
     /**
      * Add a list of torrents.
@@ -144,9 +139,6 @@ public:
     // signal_blocklist_info() fires once blocklist_size() and blocklist_date() hold them.
     void refresh_blocklist_info();
 
-    // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
-    void exec(tr_quark method, tr_variant::Map params = {}, tr::app::RpcClient::ResponseFunc on_done = {});
-
     void open_folder(tr_torrent_id_t torrent_id) const;
 
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
@@ -158,7 +150,7 @@ public:
     [[nodiscard]] sigc::signal<void(tr::app::TorrentList::Ids const&, Torrent::Fields const&)>& signal_torrents_changed();
 
 protected:
-    Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
+    Session(std::string config_dir, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);
 
 private:
     tr::app::Prefs& prefs_;

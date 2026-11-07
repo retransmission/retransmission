@@ -7,6 +7,7 @@
 #include <chrono>
 #include <clocale>
 #include <cstddef>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -46,8 +47,7 @@ using namespace std::literals;
 namespace
 {
 
-// The client's Session on an embedded session in a sandbox,
-// with peer discovery and port forwarding off.
+// The client's Session on the embedded session it starts in a sandbox, kept off the network.
 class GtkSessionTest : public SandboxedTest
 {
 protected:
@@ -56,26 +56,26 @@ protected:
         Glib::init();
         Gio::init();
 
-        auto settings = tr_sessionGetDefaultSettings();
-        for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
-            settings.insert_or_assign(key, false);
-        }
-
-        session_ = tr_sessionInit(sandbox_dir(), false, settings);
+        tr::settings::save(tr_sessionGetSettingsFilename(sandbox_dir()), offline_settings(sandbox_dir()));
         prefs_ = std::make_unique<tr::app::Prefs>(sandbox_dir());
         rpc_ = std::make_unique<tr::app::RpcClient>(&gtr_run_on_ui_thread);
-        core_ = Session::create(session_, *prefs_, *rpc_);
+        core_ = Session::create(sandbox_dir(), *prefs_, *rpc_);
+        core_->start_embedded();
+        session_ = core_->get_session();
+        ASSERT_NE(nullptr, session_);
     }
 
     void TearDown() override
     {
-        if (core_->get_session() != nullptr) {
-            std::ignore = core_->close();
+        session_ = nullptr;
+        core_->stop();
+        core_->wait_for_close();
+
+        // Replies already queued for the main loop read `rpc_`, so run them while it lives.
+        auto const context = Glib::MainContext::get_default();
+        while (context->iteration(false)) {
         }
 
-        // The session's callbacks reach into core_, so close it first, as the client does.
-        tr_sessionClose(session_, 0.5);
-        session_ = nullptr;
         core_.reset();
     }
 
@@ -135,17 +135,64 @@ protected:
 
 } // namespace
 
-// close() returns the session for the caller to tr_sessionClose(), which can take seconds,
-// so the nap inhibitor outlives it: the session stays embedded until the Session is destroyed.
-TEST_F(GtkSessionTest, staysEmbeddedAfterClose)
+// A view may still hold a row's object after stop() empties the model.
+TEST_F(GtkSessionTest, stopEmptiesTheModelAndLetsGoOfTheSession)
 {
-    EXPECT_TRUE(core_->is_embedded());
-    EXPECT_TRUE(core_->should_inhibit_nap());
+    auto const id = add_listed_torrent(Debian);
+    auto const torrent = listed(id);
+    ASSERT_TRUE(torrent);
+    auto const name = torrent->get_name();
 
-    EXPECT_EQ(session_, core_->close());
+    core_->stop();
+    EXPECT_EQ(0U, core_->get_model()->get_n_items());
     EXPECT_EQ(nullptr, core_->get_session());
-    EXPECT_TRUE(core_->is_embedded());
-    EXPECT_TRUE(core_->should_inhibit_nap());
+    EXPECT_FALSE(core_->is_embedded());
+    EXPECT_EQ(name, torrent->get_name());
+}
+
+// e.g. a builder waiting on a URL's download when the user quits
+TEST_F(GtkSessionTest, aBuilderThatOutlivesItsSessionAddsNothing)
+{
+    prefs_->set(TR_KEY_show_options_window, true);
+    auto prompts = 0;
+    core_->signal_add_prompt().connect([&prompts](tr_torrent_builder* const builder) {
+        ++prompts;
+        std::unique_ptr<tr_torrent_builder>{ builder }.reset();
+    });
+
+    auto builder = std::make_unique<tr_torrent_builder>(session_);
+    ASSERT_TRUE(builder->set_metainfo_from_file(std::string{ LIBTRANSMISSION_TEST_ASSETS_DIR "/" } + Debian));
+
+    core_->stop();
+    core_->wait_for_close();
+    core_->add_builder(std::move(builder));
+    EXPECT_EQ(0, prompts);
+}
+
+// The watch dir renames each file it tries, added or not, so it stops with the session.
+TEST_F(GtkSessionTest, theWatchDirStopsWithTheSession)
+{
+    namespace fs = std::filesystem;
+
+    auto const watch_dir = fs::path{ sandbox_dir() } / "watch";
+    fs::create_directory(watch_dir);
+    // copies an asset into the watch dir, aged so the watch dir needn't wait for it to settle
+    auto const drop = [&watch_dir](char const* const name) {
+        auto const path = watch_dir / name;
+        fs::copy_file(fs::path{ LIBTRANSMISSION_TEST_ASSETS_DIR } / name, path);
+        fs::last_write_time(path, fs::file_time_type::clock::now() - 1h);
+        return path;
+    };
+
+    auto const tried = drop(Debian);
+    prefs_->set(TR_KEY_watch_dir, watch_dir.string());
+    prefs_->set(TR_KEY_watch_dir_enabled, true);
+    ASSERT_TRUE(wait_for([&tried] { return !fs::exists(tried); }));
+
+    core_->stop();
+    auto const untried = drop(Arch);
+    std::ignore = wait_for([] { return false; }, 2500ms);
+    EXPECT_TRUE(fs::exists(untried));
 }
 
 // A session pref set through the client reaches the embedded session over RPC.
