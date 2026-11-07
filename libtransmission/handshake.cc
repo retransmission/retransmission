@@ -4,7 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <cerrno> // ECONNREFUSED, ETIMEDOUT
+#include <cerrno> // ECONNABORTED, ECONNREFUSED, ECONNRESET, ENOTCONN, EPIPE, ETIMEDOUT
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
@@ -627,9 +627,30 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     /* if the error happened while we were sending a public key, we might
      * have encountered a peer that doesn't do encryption... reconnect and
      * try a plaintext handshake */
-    if (handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
+    if (!handshake->have_retried_ && handshake->is_state(State::AwaitingYb) &&
+        handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
         tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
+        handshake->have_retried_ = true;
         retry_plain();
+        return;
+    }
+
+    /* a peer that requires encryption closes the connection on our
+     * plaintext handshake without answering it... reconnect and try an
+     * MSE handshake. A failed connect (refused, timed out, unreachable)
+     * reports another error and is not retried. A peer that closes
+     * because it lacks the torrent looks the same, and costs a redial.
+     * µTP is not redialled: reconnect() always dials TCP, which a peer
+     * reached over µTP, such as a BEP 55 holepunch, may not accept. */
+    // end of stream, reset, abort (Windows), or a write after the close
+    auto const peer_closed = error.code() == ENOTCONN || error.code() == ECONNRESET || error.code() == ECONNABORTED ||
+        error.code() == EPIPE;
+    if (!handshake->have_retried_ && handshake->is_state(State::AwaitingHandshake) && !io->is_incoming() && !io->is_utp() &&
+        handshake->encryption_mode_ == TR_CLEAR_PREFERRED && !handshake->have_read_anything_from_peer_ && peer_closed &&
+        io->reconnect()) {
+        tr_logAddTraceHand(handshake, "plaintext handshake failed, trying MSE...");
+        handshake->have_retried_ = true;
+        handshake->send_ya(io);
         return;
     }
 
