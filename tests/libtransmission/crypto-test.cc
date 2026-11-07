@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::ranges::equal
 #include <array>
 #include <cstddef> // std::byte, size_t
 #include <cstdint> // uint8_t
@@ -284,6 +285,45 @@ TEST(Crypto, arc4Rfc6229)
         cipher.process(std::as_bytes(std::span{ output }), std::as_writable_bytes(std::span{ output }));
         EXPECT_EQ(expected, std::string_view(std::data(output), std::size(output))) << offset;
     }
+
+    // The same vectors from a single process() call, whose 8-bit index wraps many times
+    auto stream = std::array<char, 4096U + 16U>{};
+    auto cipher = tr_arc4{};
+    cipher.init(Key);
+    cipher.process(std::as_bytes(std::span{ stream }), std::as_writable_bytes(std::span{ stream }));
+    auto const stream_view = std::string_view{ std::data(stream), std::size(stream) };
+    for (auto const& [offset, expected] : Vectors) {
+        EXPECT_EQ(expected, stream_view.substr(offset, std::size(expected))) << offset;
+    }
+}
+
+TEST(Crypto, arc4DiscardBetweenProcessCalls)
+{
+    auto input = std::array<std::byte, 600>{};
+    for (size_t i = 0; i < std::size(input); ++i) {
+        input[i] = static_cast<std::byte>(i % 256U);
+    }
+    auto whole = tr_arc4{};
+    auto split = tr_arc4{};
+    for (auto* const cipher : { &whole, &split }) {
+        cipher->init(SomeHash);
+    }
+
+    auto expected = input;
+    whole.process(expected, expected);
+
+    // process, skip some bytes, process the rest
+    auto constexpr Head = size_t{ 251U };
+    auto constexpr Skipped = size_t{ 101U };
+    auto actual = input;
+    auto const actual_span = std::span<std::byte>{ actual };
+    split.process(actual_span.first(Head), actual_span.first(Head));
+    split.discard(Skipped);
+    split.process(actual_span.subspan(Head + Skipped), actual_span.subspan(Head + Skipped));
+
+    auto const expected_span = std::span<std::byte const>{ expected };
+    EXPECT_TRUE(std::ranges::equal(expected_span.first(Head), actual_span.first(Head)));
+    EXPECT_TRUE(std::ranges::equal(expected_span.subspan(Head + Skipped), actual_span.subspan(Head + Skipped)));
 }
 
 TEST(Crypto, arc4ChunkedAndInPlace)

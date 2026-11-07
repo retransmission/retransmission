@@ -11,6 +11,20 @@
 #include <span>
 #include <utility> // std::swap
 
+#include "libtransmission/tr-assert.h"
+
+// The hot loop is unrolled by calling step() several times per iteration.
+// Those calls must be inlined whatever the surrounding translation unit
+// looks like: when the inliner declines, every keystream byte becomes a
+// call through reference parameters, which halves throughput.
+#if defined(__GNUC__) || defined(__clang__)
+#define TR_ARC4_ALWAYS_INLINE [[gnu::always_inline]] inline
+#elif defined(_MSC_VER)
+#define TR_ARC4_ALWAYS_INLINE __forceinline
+#else
+#define TR_ARC4_ALWAYS_INLINE inline
+#endif
+
 /**
  * This is a tiny and reusable implementation of alleged RC4 cipher.
  * https://en.wikipedia.org/wiki/RC4
@@ -43,42 +57,89 @@ public:
     // tgt must hold at least std::size(src) bytes; src and tgt may be equal
     constexpr void process(std::span<std::byte const> src, std::span<std::byte> tgt)
     {
-        // tldr: the compiler thinks the in-loop assignment call could
-        // overwrite `i_` or `j_`, so it reloads them each time we loop.
-        // Hosting them into locals avoids that work.
-        auto i = i_;
-        auto j = j_;
+        // the loop below writes through a raw pointer, so nothing else checks this
+        TR_ASSERT(std::size(tgt) >= std::size(src));
 
-        for (size_t k = 0, n = std::size(src); k < n; ++k) {
-            tgt[k] = src[k] ^ std::byte{ next(i, j) };
+        auto remaining = std::size(src);
+
+        // Each step writes back the swap for one byte, then loads the two
+        // table entries the following byte needs before storing the output.
+        // The output store goes through a std::byte pointer, which may alias
+        // the table, so loads placed after it could not be hoisted above it.
+        auto const* in = std::data(src);
+        auto* out = std::data(tgt);
+        auto i = static_cast<uint8_t>(i_ + 1);
+        auto x = s_[i];
+        auto j = static_cast<uint8_t>(j_ + x);
+        auto y = s_[j];
+
+        // Eight steps per iteration, written out: -O2 leaves an inner
+        // counted loop as a loop instead of unrolling it.
+        while (remaining >= 8) {
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            step(i, j, x, y, in, out);
+            remaining -= 8;
+        }
+        while (remaining > 0) {
+            step(i, j, x, y, in, out);
+            --remaining;
         }
 
-        i_ = i;
-        j_ = j;
+        // i, j, x, y describe the byte after the last one emitted; the
+        // stored state is the last byte's indices.
+        i_ = static_cast<uint8_t>(i - 1);
+        j_ = static_cast<uint8_t>(j - x);
     }
 
     constexpr void discard(size_t length)
     {
         while (length-- > 0) {
-            next(i_, j_);
+            advance(i_, j_);
         }
     }
 
 private:
-    // state is passed by reference so that process() can keep it
-    // in locals across its hot loop instead of touching members
-    constexpr uint8_t next(uint8_t& i, uint8_t& j)
+    // Emits one keystream byte whose swap entries x = s_[i] and y = s_[j]
+    // are already loaded, and leaves i, j, x, y loaded for the next byte.
+    TR_ARC4_ALWAYS_INLINE constexpr void step(
+        uint8_t& i,
+        uint8_t& j,
+        uint32_t& x,
+        uint32_t& y,
+        std::byte const*& in,
+        std::byte*& out) noexcept
+    {
+        s_[i] = y;
+        s_[j] = x;
+        auto const keystream = s_[static_cast<uint8_t>(x + y)];
+        i += 1;
+        auto const next_x = s_[i];
+        auto const next_j = static_cast<uint8_t>(j + next_x);
+        auto const next_y = s_[next_j];
+        *out++ = *in++ ^ static_cast<std::byte>(keystream);
+        j = next_j;
+        x = next_x;
+        y = next_y;
+    }
+
+    // Advances the state past one byte without producing its keystream value.
+    // discard() uses it; process() does the same work through step().
+    constexpr void advance(uint8_t& i, uint8_t& j) noexcept
     {
         i += 1;
         auto const x = s_[i];
         j = static_cast<uint8_t>(j + x);
         auto const y = s_[j];
 
-        // not std::swap(): the compiler can't rule out i == j, so it would reload s_[i] below
+        // x and y are already loaded, so store them back directly
         s_[i] = y;
         s_[j] = x;
-
-        return static_cast<uint8_t>(s_[static_cast<uint8_t>(x + y)]);
     }
 
     // Entries remain in [0, 255]. Word-sized slots make the hot loop
@@ -87,3 +148,5 @@ private:
     uint8_t i_ = 0;
     uint8_t j_ = 0;
 };
+
+#undef TR_ARC4_ALWAYS_INLINE
