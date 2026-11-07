@@ -356,8 +356,8 @@ bool tr_netSetSocketInterface(
     // a deliberate "bind to nothing" setting: refuse quietly, since
     // the session logs the policy once when the setting changes
     if (tr_net_interface_is_blocked(name)) {
-        set_sockerrno(ENETDOWN);
         tr_logAddTrace(fmt::format("Refusing socket {}: interface binding is '{}'", sock, name));
+        set_sockerrno(ENETDOWN);
         return false;
     }
 
@@ -365,12 +365,13 @@ bool tr_netSetSocketInterface(
     // looked up first so a missing interface fails the same way on every platform
     auto const if_index = tr_net_interface_index(name);
     if (if_index == 0U) {
-        set_sockerrno(ENXIO);
         if (!suppress_msgs && should_warn_bind_failure(name, ENXIO)) {
             tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': interface not found", name));
         } else {
             tr_logAddTrace(fmt::format("Couldn't bind socket {} to interface '{}': interface not found", sock, name));
         }
+        // after logging, which may change errno
+        set_sockerrno(ENXIO);
         return false;
     }
 
@@ -393,10 +394,10 @@ bool tr_netSetSocketInterface(
 #else
     // neither macOS nor Linux: no way to bind a socket to an interface.
     // The session warns once when the setting changes; per-socket failures stay quiet
-    set_sockerrno(ENXIO);
     if (!suppress_msgs) {
         tr_logAddDebug(fmt::format("Interface binding is not supported on this platform: '{}'", name));
     }
+    set_sockerrno(ENXIO);
     return false;
 #endif
 }
