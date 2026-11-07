@@ -68,6 +68,7 @@
 #endif
 
 #include <fmt/format.h>
+#include <sigslot/signal.hpp>
 
 #include <algorithm>
 #include <csignal>
@@ -79,7 +80,6 @@
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <thread>
 #include <utility>
 #include <vector>
 
@@ -241,9 +241,11 @@ private:
     tr::app::RpcClient rpc_{ &gtr_run_on_ui_thread };
     Glib::RefPtr<Session> core_;
 
-    // Declared after core_, which it polls.
+    // Declared after core_, which they observe.
     GlibTimerMaker timer_maker_;
     std::unique_ptr<tr::app::SessionPoller> poller_;
+    sigslot::scoped_connection contended_tag_;
+    sigslot::scoped_connection closed_tag_;
 
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
@@ -514,8 +516,6 @@ void Application::Impl::on_startup()
     std::ignore = FilterBar();
     std::ignore = PathButton();
 
-    tr_session* session = nullptr;
-
 #ifdef G_OS_UNIX
     g_unix_signal_add(SIGINT, &signal_handler, this);
     g_unix_signal_add(SIGTERM, &signal_handler, this);
@@ -530,18 +530,20 @@ void Application::Impl::on_startup()
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
-    /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), gtr_file_trash_or_remove);
+    core_ = Session::create(config_dir_, prefs_, rpc_);
+    poller_ = std::make_unique<tr::app::SessionPoller>(*core_, timer_maker_);
+    contended_tag_ = core_->config_dir_contended.connect_scoped([this] { config_dir_contended_ = true; });
+    closed_tag_ = core_->closed.connect_scoped([this] {
+        // `core_` is mid-emit, so tear it down from a later turn of the loop
+        Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
+    });
 
-    if (tr_sessionConfigDirIsContended(session)) {
-        config_dir_contended_ = true;
-        tr_sessionClose(session, 1);
+    // Embedded whatever the remote_session_* prefs say: this client can't drive a remote session.
+    core_->start_embedded(start_paused_);
+    if (config_dir_contended_) {
         app_.quit();
         return;
     }
-
-    core_ = Session::create(session, prefs_, rpc_);
-    poller_ = std::make_unique<tr::app::SessionPoller>(*core_, timer_maker_);
 
     // Starting the session can change its settings, e.g. a random peer port,
     // so read them back before anything shows them.
@@ -576,6 +578,7 @@ void Application::Impl::on_startup()
 
     // Another RPC client's session_close quits the app. The poll brings
     // every other change, and the session removes torrents itself.
+    auto* const session = core_->get_session();
     tr_sessionSetRPCCallback(session, [](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
         if (type == TR_RPC_SESSION_CLOSE) {
             gtr_run_on_ui_thread([] { gtr_action_activate("quit"); });
@@ -666,8 +669,6 @@ void Application::Impl::app_setup()
     core_->signal_add_prompt().connect(sigc::mem_fun(*this, &Impl::on_add_torrent));
     core_->signal_prefs_changed().connect(sigc::mem_fun(*this, &Impl::on_prefs_changed));
 
-    /* add torrents from command-line and saved state */
-    core_->load(start_paused_);
     poller_->start();
 
     /* set up main window */
@@ -849,6 +850,7 @@ bool Application::Impl::on_session_closed()
     prefs_dialog_.reset();
     wind_.reset();
 
+    poller_.reset();
     core_.reset();
 
     icon_.reset();
@@ -881,23 +883,16 @@ void Application::Impl::on_app_exit()
     app_.inhibit(*wind_, IF_GTKMM4(Gtk::Application::InhibitFlags::LOGOUT, Gtk::APPLICATION_INHIBIT_LOGOUT), message);
 
     hideMainWindow();
-    wind_->get_display()->flush(); // clearing a long list below takes time
+    wind_->get_display()->flush(); // `stop()` below clears a long list, which takes time
 
     if (icon_ != nullptr) {
         icon_->set_shutting_down(message);
     }
 
-    poller_->stop();
-    core_->clear();
+    core_->save_prefs();
 
-    /* shut down libT */
-    /* since tr_sessionClose () is a blocking function,
-     * delegate its call to another thread here... when it's done,
-     * punt the GUI teardown back to the GTK+ thread */
-    std::thread([this, session = core_->close()] {
-        tr_sessionClose(session);
-        Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
-    }).detach();
+    // The close runs on another thread and ends in `closed`, which tears down the rest.
+    core_->stop();
 }
 
 void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)

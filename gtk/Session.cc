@@ -66,29 +66,21 @@ using tr::app::TorrentList;
 class Session::Impl
 {
 public:
-    Impl(Session& core, tr_session* session, RpcClient& rpc);
+    explicit Impl(Session& core);
     Impl& operator=(Impl&&) = delete;
     Impl& operator=(Impl const&) = delete;
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     ~Impl();
 
-    [[nodiscard]] tr_session* close();
-
     [[nodiscard]] Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
     [[nodiscard]] Glib::RefPtr<SortListModel<Torrent>> get_model();
-    [[nodiscard]] tr_session* get_session() const;
 
     void torrents_added();
 
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt);
     void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt);
     [[nodiscard]] bool add_from_url(Glib::ustring const& url);
-
-    [[nodiscard]] constexpr auto& rpc() noexcept
-    {
-        return rpc_;
-    }
 
     [[nodiscard]] auto& signal_add_error()
     {
@@ -183,8 +175,6 @@ private:
     Glib::RefPtr<Gio::ListStore<Torrent>> raw_model_;
     Glib::RefPtr<SortListModel<Torrent>> sorted_model_;
     Glib::RefPtr<TorrentSorter> sorter_ = TorrentSorter::create();
-    tr_session* session_ = nullptr;
-    RpcClient& rpc_;
 
     FaviconCache<Glib::RefPtr<Gdk::Pixbuf>> favicon_cache_;
 };
@@ -217,16 +207,6 @@ Glib::RefPtr<Session::Model> Session::get_sorted_model() const
 Glib::RefPtr<SortListModel<Torrent>> Session::Impl::get_model()
 {
     return sorted_model_;
-}
-
-tr_session* Session::get_session() const
-{
-    return impl_->get_session();
-}
-
-tr_session* Session::Impl::get_session() const
-{
-    return session_;
 }
 
 /***
@@ -457,31 +437,25 @@ void Session::Impl::on_pref_changed(tr_quark const key)
 ***
 **/
 
-Glib::RefPtr<Session> Session::create(tr_session* const session, Prefs& prefs, RpcClient& rpc)
+Glib::RefPtr<Session> Session::create(std::string config_dir, Prefs& prefs, RpcClient& rpc)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    return Glib::make_refptr_for_instance(new Session(session, prefs, rpc));
+    return Glib::make_refptr_for_instance(new Session(std::move(config_dir), prefs, rpc));
 }
 
-Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
+Session::Session(std::string config_dir, Prefs& prefs, RpcClient& rpc)
     : Glib::ObjectBase(typeid(Session))
-    , tr::app::Session(tr_sessionGetConfigDir(session), prefs, rpc)
+    , tr::app::Session(std::move(config_dir), prefs, rpc, gtr_file_trash_or_remove)
     , prefs_(prefs)
-    , impl_(std::make_unique<Impl>(*this, session, rpc))
+    , impl_(std::make_unique<Impl>(*this))
 {
-    set_embedded_session(session);
 }
 
 Session::~Session() = default;
 
-Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
+Session::Impl::Impl(Session& core)
     : core_{ core }
-    , session_{ session }
-    , rpc_{ rpc }
 {
-    // Before anything can send: exec() drops requests made before start().
-    rpc_.start(session);
-
     raw_model_ = Gio::ListStore<Torrent>::create();
     auto& torrents = core_.torrents();
     torrent_list_tags_ = { torrents.rows_inserted.connect_scoped(&Impl::on_rows_inserted, this),
@@ -501,30 +475,6 @@ Session::Impl::Impl(Session& core, tr_session* const session, RpcClient& rpc)
 Session::Impl::~Impl()
 {
     monitor_idle_tag_.disconnect();
-}
-
-tr_session* Session::close()
-{
-    auto* const session = impl_->close();
-
-    if (session != nullptr) {
-        save_prefs();
-        set_embedded_session(nullptr);
-    }
-
-    return session;
-}
-
-tr_session* Session::Impl::close()
-{
-    auto* session = session_;
-
-    if (session != nullptr) {
-        session_ = nullptr;
-        rpc_.stop();
-    }
-
-    return session;
 }
 
 void Session::import_embedded_settings()
@@ -607,8 +557,7 @@ tr_torrent* Session::Impl::create_new_torrent(tr_torrent_builder* builder)
     if (tor != nullptr && do_trash) {
         if (auto const& source = builder->source_filename(); !std::empty(source)) {
             // #1294: don't delete the .torrent file if it's our internal copy
-            std::string const config_dir = tr_sessionGetConfigDir(session_);
-            bool const is_internal = source.starts_with(config_dir);
+            bool const is_internal = source.starts_with(core_.config_dir());
             if (!is_internal) {
                 gtr_file_trash_or_remove(source);
             }
@@ -625,7 +574,7 @@ void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, boo
         return;
     }
 
-    if (tr_torrentFindFromMetainfo(get_session(), &metainfo) != nullptr) {
+    if (tr_torrentFindFromMetainfo(core_.get_session(), &metainfo) != nullptr) {
         /* don't complain about torrent files in the watch directory
          * that have already been added... that gets annoying and we
          * don't want to be nagging users to clean up their watch dirs */
@@ -725,7 +674,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
         name.replace(0, std::size(BrokenMagnetLinkPrefix), "magnet:?");
     }
 
-    auto* const session = get_session();
+    auto* const session = core_.get_session();
     if (session == nullptr) {
         return false;
     }
@@ -799,23 +748,6 @@ void Session::Impl::torrents_added()
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
 }
 
-void Session::load(bool force_paused)
-{
-    auto builder = tr_torrent_builder{ impl_->get_session() };
-
-    if (force_paused) {
-        builder.set_paused(true);
-    }
-
-    tr_sessionLoadTorrents(impl_->get_session(), &builder);
-    refresh_all_torrents(tr::app::TorrentKeySet::MainAll);
-}
-
-void Session::clear()
-{
-    torrents().clear();
-}
-
 void Session::start_now(tr_torrent_id_t const id)
 {
     auto params = tr_variant::Map{ 1U };
@@ -831,7 +763,7 @@ void Session::start_now(tr_torrent_id_t const id)
 
 void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
-    impl_->rpc().exec(method, std::move(params), std::move(on_done));
+    send(method, std::move(params), std::move(on_done));
 }
 
 /***
@@ -879,7 +811,7 @@ std::vector<tr_torrent*> Session::find_torrents(std::vector<tr_torrent_id_t> con
 {
     auto ret = std::vector<tr_torrent*>{};
 
-    if (auto* const session = impl_->get_session()) {
+    if (auto* const session = get_session()) {
         ret.reserve(std::size(ids));
 
         for (auto const& id : ids) {
@@ -896,7 +828,7 @@ tr_torrent* Session::find_torrent(tr_torrent_id_t id) const
 {
     tr_torrent* tor = nullptr;
 
-    if (auto* const session = impl_->get_session(); session != nullptr) {
+    if (auto* const session = get_session(); session != nullptr) {
         tor = tr_torrentFindFromId(session, id);
     }
 
