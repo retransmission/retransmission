@@ -80,13 +80,19 @@ void setLabelFromRatio(Gtk::Label* l, tr::Values::Ratio const& ratio)
 
 bool StatsDialog::Impl::updateStats()
 {
-    auto stats = tr_sessionGetStats(core_->get_session());
+    // the dialog outlives the session during a quit, hidden with the main window
+    auto const* const session = core_->get_session();
+    if (session == nullptr) {
+        return true;
+    }
+
+    auto stats = tr_sessionGetStats(session);
     setLabel(one_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(one_down_lb_, tr_strlsize(stats.downloadedBytes));
     setLabel(one_time_lb_, tr_format_time(stats.secondsActive));
     setLabelFromRatio(one_ratio_lb_, stats.ratio);
 
-    stats = tr_sessionGetCumulativeStats(core_->get_session());
+    stats = tr_sessionGetCumulativeStats(session);
     setLabel(all_sessions_lb_, startedTimesText(stats.sessionCount));
     setLabel(all_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(all_down_lb_, tr_strlsize(stats.downloadedBytes));
@@ -117,8 +123,8 @@ void StatsDialog::Impl::dialogResponse(int response)
             _("These statistics are for your information only. "
               "Resetting them doesn't affect the statistics logged by your BitTorrent trackers."));
         w->signal_response().connect([this, w](int inner_response) mutable {
-            if (inner_response == TR_RESPONSE_RESET) {
-                tr_sessionClearStats(core_->get_session());
+            if (auto* const session = core_->get_session(); inner_response == TR_RESPONSE_RESET && session != nullptr) {
+                tr_sessionClearStats(session);
                 updateStats();
             }
             w.reset();
