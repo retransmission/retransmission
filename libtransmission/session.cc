@@ -1742,7 +1742,7 @@ void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_inter
 {
     TR_ASSERT(session != nullptr);
 
-    session->run_in_session_thread([session, bind_interface = std::string{ tr_strv_strip(bind_interface) }]() {
+    session->run_in_session_thread([session, bind_interface = std::string{ tr_strv_strip(bind_interface) }] {
         auto settings = session->settings_;
         settings.bind_interface = bind_interface;
         session->setSettings(std::move(settings), false);

@@ -217,7 +217,7 @@ TEST_F(TorrentTest, restartKeepsSeedRatioLimit)
 
     // A ratio of 0 is reached at once, but only the next rechoke pulse stops
     // the torrent. Restarting before then must leave the limit in place.
-    auto const [is_running, ratio_mode] = blockingRunInSessionThread([tor]() {
+    auto const [is_running, ratio_mode] = blockingRunInSessionThread([tor] {
         tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
         tr_torrentSetRatioLimit(tor, 0.0);
         EXPECT_TRUE(tor->stop_for_restart());
@@ -237,7 +237,7 @@ TEST_F(TorrentTest, restartLeavesPendingStop)
 
     // RPC and the seed limits stop a torrent on the next pulse; a restart
     // in between must not cancel that stop
-    auto const is_stopping = blockingRunInSessionThread([tor]() {
+    auto const is_stopping = blockingRunInSessionThread([tor] {
         tor->stop_soon();
         EXPECT_FALSE(tor->stop_for_restart());
         return tor->is_stopping();
