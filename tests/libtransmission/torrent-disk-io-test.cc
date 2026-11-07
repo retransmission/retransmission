@@ -101,6 +101,20 @@ void sendFromRemote(evutil_socket_t const remote, std::vector<uint8_t> const& me
     }
 }
 
+// Lets `sock` hold a burst of block messages. A macOS socketpair holds
+// 8 KiB, and a test that drains it every 10 ms then moves under 1 MiB/s.
+// Tries smaller sizes because NetBSD refuses any above kern.sbmax.
+void growSocketBuffers(evutil_socket_t const sock)
+{
+    for (auto const option : { SO_SNDBUF, SO_RCVBUF }) {
+        for (auto size = 1024 * 1024; size >= 16 * 1024; size /= 2) {
+            if (setsockopt(sock, SOL_SOCKET, option, reinterpret_cast<char const*>(&size), sizeof(size)) == 0) {
+                break;
+            }
+        }
+    }
+}
+
 // Appends to `input` what the session has sent to the remote end of a
 // peer connection so far.
 void receiveAtRemote(evutil_socket_t const remote, std::vector<uint8_t>& input)
@@ -596,6 +610,9 @@ protected:
         ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, sockets.data()));
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
+        for (auto const sock : sockets) {
+            growSocketBuffers(sock);
+        }
         remote_ = sockets[1];
 
         blockingRunInSessionThread([this, tor, local = sockets[0]] {
