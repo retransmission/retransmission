@@ -874,3 +874,57 @@ TEST_F(AppTorrentListTest, clearForgetsAddedReports)
     list_.update(make(), Coverage::Complete, Now);
     EXPECT_EQ(recorder_.last_changes().added, (Ids{ 1 }));
 }
+
+// --- withheld torrents
+
+TEST_F(AppTorrentListTest, aWithheldTorrentStaysOutOfEveryUpdate)
+{
+    seed({ 1 });
+    list_.withhold(2);
+
+    auto const rows = [] {
+        return make_list(make_row(1), make_row(2, kv(TR_KEY_name, "pending"sv), kv(TR_KEY_added_date, Now - 10)));
+    };
+    list_.update(make_args(rows()), Coverage::Partial, Now);
+    list_.update(make_args(rows()), Coverage::Complete, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
+    for (auto const& changes : recorder_.changes) {
+        EXPECT_TRUE(std::empty(changes.inserted));
+        EXPECT_TRUE(std::empty(changes.added));
+        EXPECT_TRUE(std::empty(changes.removed));
+    }
+}
+
+TEST_F(AppTorrentListTest, withholdingAListedTorrentRemovesIt)
+{
+    seed({ 1, 2 });
+
+    list_.withhold(2);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
+    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "removing 1 1 size 2 ids 2", "removed 1 1 size 1", "changed" }));
+    EXPECT_EQ(recorder_.last_changes().removed, (Ids{ 2 }));
+}
+
+TEST_F(AppTorrentListTest, aReleasedTorrentIsListedAgain)
+{
+    seed({ 1 });
+    list_.withhold(2);
+
+    list_.release(2);
+    list_.update(make_args(make_list(make_row(2))), Coverage::Partial, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1, 2 }));
+}
+
+TEST_F(AppTorrentListTest, clearForgetsWithheldIds)
+{
+    list_.withhold(1);
+
+    // another session may reuse the id
+    list_.clear();
+    list_.update(make_args(make_list(make_row(1))), Coverage::Complete, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
+}
