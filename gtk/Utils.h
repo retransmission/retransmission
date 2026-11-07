@@ -117,6 +117,9 @@ void gtr_open_uri(std::string_view uri);
 /* backwards-compatible wrapper around gtk_widget_set_visible() */
 void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible);
 
+// adds or removes a CSS class, through the style context GTK 3 needs
+void gtr_widget_set_css_class(Gtk::Widget& widget, Glib::ustring const& css_class, bool enabled);
+
 [[nodiscard]] Gtk::Window& gtr_widget_get_window(Gtk::Widget& widget);
 
 void gtr_window_set_skip_taskbar_hint(Gtk::Window& window, bool value);

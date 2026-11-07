@@ -130,6 +130,28 @@ public:
     // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
     void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
 
+    struct NetworkAddress {
+        std::string address;
+        std::vector<std::string> tags; // e.g. "gua", "slaac-stable"; none for IPv4
+    };
+
+    struct NetworkInterface {
+        std::string name;
+        std::vector<NetworkAddress> addresses; // IPv4 first
+    };
+
+    // What the session reports about its interface binding.
+    struct NetworkBinding {
+        std::vector<NetworkInterface> interfaces; // empty where binding is unsupported
+        std::string status; // `bind_interface_status`, e.g. "ok" or "missing"
+        std::string error; // why the binding failed, when `status` is "bind_failed"
+        std::string rpc_bind_interface; // empty means any interface
+    };
+
+    // Asks the session for its network interfaces and the state of its binding,
+    // and hands them to `on_binding` on the GTK thread. A failed request gives an empty NetworkBinding.
+    void fetch_network_binding(sigc::slot<void(NetworkBinding const&)> on_binding);
+
     void open_folder(tr_torrent_id_t torrent_id) const;
 
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();

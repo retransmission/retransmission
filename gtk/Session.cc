@@ -753,6 +753,68 @@ void Session::Impl::torrents_added()
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
 }
 
+/***
+****  Network interface binding
+***/
+
+void Session::fetch_network_binding(sigc::slot<void(NetworkBinding const&)> on_binding)
+{
+    // network_interfaces must be named: session_get leaves it out of a request for every field
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(
+        TR_KEY_fields,
+        tr::app::make_fields(
+            { TR_KEY_network_interfaces,
+              TR_KEY_bind_interface_status,
+              TR_KEY_bind_interface_error,
+              TR_KEY_rpc_bind_interface }));
+
+    send(TR_KEY_session_get, std::move(params), [on_binding = std::move(on_binding)](tr::app::RpcResponse const& response) {
+        auto binding = NetworkBinding{};
+
+        if (auto const* const result = response.result_map(); result != nullptr) {
+            if (auto const* const interfaces = result->find_if<tr_variant::Vector>(TR_KEY_network_interfaces)) {
+                for (auto const& entry : *interfaces) {
+                    auto const* const map = entry.get_if<tr_variant::Map>();
+                    auto const name = map != nullptr ? map->value_if<std::string_view>(TR_KEY_name) : std::nullopt;
+                    if (!name) {
+                        continue;
+                    }
+
+                    auto& iface = binding.interfaces.emplace_back(
+                        NetworkInterface{ .name = std::string{ *name }, .addresses = {} });
+                    if (auto const* const addresses = map->find_if<tr_variant::Vector>(TR_KEY_addresses)) {
+                        for (auto const& address : *addresses) {
+                            auto const* const address_map = address.get_if<tr_variant::Map>();
+                            auto const str = address_map != nullptr ? address_map->value_if<std::string_view>(TR_KEY_address) :
+                                                                      std::nullopt;
+                            if (!str) {
+                                continue;
+                            }
+
+                            auto& net_address = iface.addresses.emplace_back(
+                                NetworkAddress{ .address = std::string{ *str }, .tags = {} });
+                            if (auto const* const tags = address_map->find_if<tr_variant::Vector>(TR_KEY_tags)) {
+                                for (auto const& tag : *tags) {
+                                    if (auto const tag_str = tag.value_if<std::string_view>()) {
+                                        net_address.tags.emplace_back(*tag_str);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            binding.status = result->value_if<std::string_view>(TR_KEY_bind_interface_status).value_or(""sv);
+            binding.error = result->value_if<std::string_view>(TR_KEY_bind_interface_error).value_or(""sv);
+            binding.rpc_bind_interface = result->value_if<std::string_view>(TR_KEY_rpc_bind_interface).value_or(""sv);
+        }
+
+        on_binding(binding);
+    });
+}
+
 // ---
 
 void Session::fetch_recent_paths(tr_quark const key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths)
