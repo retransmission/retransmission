@@ -1,0 +1,15 @@
+"Update" = "Werk bij";
+"Blocklist:" = "Zwarte lijst:";
+"Enable blocklist" = "Belet deze peers te verbinden";
+"High connection limits might significantly impact system performance" = "Hoge verbindingslimieten kunnen zware impact op systeemprestaties hebben";
+"Use PEX to find more peers for public torrents" = "Gebruik peer uitwisseling (PEX) bij publieke torrents";
+"Maximum peers for new torrents:" = "Nieuwe transfers:";
+"Maximum peers overall:" = "Globaal maximum:";
+"Peer limits:" = "Verbindingen:";
+"Prefer encryption" = "Verkies gecodeerde peers";
+"Encryption:" = "Codering:";
+"Require encryption" = "Negeer ongecodeerde peers";
+"Automatically update weekly" = "Werk automatisch wekelijks bij";
+"Use DHT to find more peers for public torrents" = "Gebruik gedistribueerde hash tabel (DHT) bij publieke torrents";
+"Use Local Peer Discovery to find more peers for public torrents" = "Gebruik lokale peer-ontdekking (LPD) bij publieke torrents";
+"URL:" = "URL:";

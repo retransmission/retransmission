@@ -193,7 +193,10 @@ export class Torrent extends EventTarget {
     return this.fields.peers || [];
   }
   getPeerPercent(peer) {
-    return this._percentOfTotalSize(peer.have_total, peer.progress);
+    // `total_size` is 0 until the metadata arrives
+    return this.needsMetaData()
+      ? Percent.fromDouble(peer.progress)
+      : new Percent(peer.have_total, this.getTotalSize());
   }
   getWebseedsEx() {
     return this.fields.webseeds_ex || [];
@@ -223,11 +226,17 @@ export class Torrent extends EventTarget {
     return this.fields.queue_position;
   }
   getRecheckProgress() {
-    const { checked_bytes, recheck_progress } = this.fields;
-    return this._percentOfTotalSize(checked_bytes, recheck_progress);
+    // `total_size` is 0 until the metadata arrives
+    return this.needsMetaData()
+      ? Percent.Unknown
+      : new Percent(this.fields.checked_bytes, this.getTotalSize());
   }
   getSeedRatioLimit() {
     return this.fields.seed_ratio_limit;
+  }
+  getSeedRatioPercent() {
+    const goal = this.fields.seed_ratio_bytes_goal;
+    return new Percent(goal - this.fields.seed_ratio_bytes_left, goal);
   }
   getSeedRatioMode() {
     return this.fields.seed_ratio_mode;
@@ -251,7 +260,7 @@ export class Torrent extends EventTarget {
     return this.fields.rate_upload;
   }
   getUploadRatio() {
-    return this.fields.upload_ratio;
+    return Ratio.fromCounts(this.getUploadedEver(), this.getSizeWhenDone());
   }
   getUploadedEver() {
     return this.fields.uploaded_ever;
@@ -293,12 +302,6 @@ export class Torrent extends EventTarget {
   }
   getActivity() {
     return this.getDownloadSpeed() + this.getUploadSpeed();
-  }
-  // `bytes` of `total_size`, which is 0 until the metadata arrives; else `fraction`
-  _percentOfTotalSize(bytes, fraction) {
-    return bytes === undefined || this.needsMetaData()
-      ? Percent.fromDouble(fraction)
-      : new Percent(bytes, this.getTotalSize());
   }
   getPercentDone() {
     if (this.needsMetaData()) {
@@ -470,9 +473,8 @@ export class Torrent extends EventTarget {
     return b - a || Torrent.compareByState(ta, tb);
   }
   static compareByRatio(ta, tb) {
-    // `Ratio.None` (-1) sorts below every number
-    const a = Ratio.toNumber(ta.getUploadRatio());
-    const b = Ratio.toNumber(tb.getUploadRatio());
+    const a = ta.getUploadRatio();
+    const b = tb.getUploadRatio();
 
     if (a < b) {
       return 1;
@@ -631,7 +633,6 @@ Torrent.Fields.Stats = [
   'labels',
   'left_until_done',
   'metadata_have',
-  'metadata_percent_complete',
   'metadata_size',
   'peers_connected',
   'peers_getting_from_us',
@@ -639,7 +640,8 @@ Torrent.Fields.Stats = [
   'queue_position',
   'rate_download',
   'rate_upload',
-  'recheck_progress',
+  'seed_ratio_bytes_goal',
+  'seed_ratio_bytes_left',
   'seed_ratio_mode',
   'seed_ratio_limit',
   'size_when_done',
@@ -648,7 +650,6 @@ Torrent.Fields.Stats = [
   'trackers',
   'download_dir',
   'uploaded_ever',
-  'upload_ratio',
   'webseeds_sending_to_us',
 ];
 

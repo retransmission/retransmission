@@ -2394,64 +2394,6 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
 </context>
 <context>
-    <name>Torrent</name>
-    <message>
-        <location filename="../Torrent.cc" line="+307"/>
-        <source>Verifying local data</source>
-        <translation>Helyi adatok ellenőrzése</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Downloading</source>
-        <translation>Letöltés</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Seeding</source>
-        <translation>Megosztás</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <source>Finished</source>
-        <translation>Befejezve</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Paused</source>
-        <translation>Szünetelteve</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Queued for verification</source>
-        <translation>Sorbaállítva ellenőrzésre</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for download</source>
-        <translation>Sorbaállítva letöltésre</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for seeding</source>
-        <translation>Sorba állítva megosztáshoz</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tracker gave a warning: {warning}</source>
-        <translation>A tracker figyelmeztetést adott: {warning}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tracker gave an error: {error}</source>
-        <translation>A tracker hibát adott: {error}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: {error}</source>
-        <translation>Hiba: {error}</translation>
-    </message>
-</context>
-<context>
     <name>TorrentDelegate</name>
     <message>
         <location filename="../TorrentDelegate.cc" line="+173"/>
@@ -2572,6 +2514,56 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="-95"/>
         <source>Verifying local data ({percent_done}% tested)</source>
         <translation>Helyi adatok ellenőrzése ({percent_done}% ellenőrizve)</translation>
+    </message>
+    <message>
+        <location filename="../Torrent.cc" line="+307"/>
+        <source>Verifying local data</source>
+        <translation>Helyi adatok ellenőrzése</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Downloading</source>
+        <translation>Letöltés</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Seeding</source>
+        <translation>Megosztás</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Paused</source>
+        <translation>Szünetelteve</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Queued for verification</source>
+        <translation>Sorbaállítva ellenőrzésre</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for download</source>
+        <translation>Sorbaállítva letöltésre</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for seeding</source>
+        <translation>Sorba állítva megosztáshoz</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>A tracker figyelmeztetést adott: {warning}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tracker gave an error: {error}</source>
+        <translation>A tracker hibát adott: {error}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error: {error}</source>
+        <translation>Hiba: {error}</translation>
     </message>
 </context>
 <context>

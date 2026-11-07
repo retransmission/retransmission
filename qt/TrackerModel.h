@@ -9,13 +9,13 @@
 
 #include <QtCore/QAbstractListModel>
 
-#include "Torrent.h"
-#include "Typedefs.h"
+#include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/torrent.h>
 
 class TorrentModel;
 
 struct TrackerInfo {
-    TrackerStat st;
+    tr::app::TrackerStat st;
     int torrent_id = {};
 };
 
@@ -40,7 +40,7 @@ public:
     TrackerModel& operator=(TrackerModel&&) = delete;
     TrackerModel& operator=(TrackerModel const&) = delete;
 
-    void refresh(TorrentModel const& torrent_model, torrent_ids_t const& ids);
+    void refresh(TorrentModel const& torrent_model, tr::app::TorrentList::Ids const& ids);
     [[nodiscard]] int find(int torrent_id, QString const& url) const;
 
     // QAbstractItemModel

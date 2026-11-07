@@ -1,0 +1,11 @@
+"HTTP port:" = "Порт очікування:";
+"Allow remote access" = "Включити віддалений доступ";
+"Use authentication" = "Необхідна автентифікація";
+"Address" = "IP Адреси";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP-адреси можуть містити символ *";
+"Password:" = "Пароль:";
+"Username:" = "Користувач:";
+"This enables the web interface and allows remote requests" = "Керування програмою буде доступне через веб-інтерфейс";
+"Open Web Client" = "Відкрити веб-інтерфейс";
+"Only allow these IP addresses:" = "Дозволяти підключатися тільки наступним IP:";
+"Display the web interface with Bonjour" = "Анонсувати веб-інтерфейс через Bonjour";

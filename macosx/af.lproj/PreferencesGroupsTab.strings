@@ -1,0 +1,9 @@
+"Color" = "Kleur";
+"Name" = "Naam";
+"Group Name:" = "Groepnaam:";
+"Other…" = "Ander…";
+"Custom location:" = "Pasgemaakte ligging:";
+"The location will only be set when adding the torrent" = "Die ligging word gestel wanneer die oordrag toegevoeg word";
+"Assign group to new torrents based on criteria" = "Ken groep toe aan nuwe oordrag gebaseer op kriteria";
+"Edit…" = "Wysig…";
+"Torrents will be assigned to the first group where all criteria are met" = "Oordragte sal aan die eerste groep wat aan alle kriteria voldoen, toegeken word";

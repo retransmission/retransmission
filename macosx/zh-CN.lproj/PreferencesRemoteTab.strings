@@ -1,0 +1,11 @@
+"HTTP port:" = "监听端口：";
+"Allow remote access" = "启用远程访问";
+"Use authentication" = "需要身份验证";
+"Address" = "IP地址";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP 地址可以包含 * 通配符";
+"Password:" = "密码：";
+"Username:" = "用户名：";
+"This enables the web interface and allows remote requests" = "这将启用 Web 界面并允许远程请求";
+"Open Web Client" = "启动 Web 界面";
+"Only allow these IP addresses:" = "仅允许以下 IP 地址进行连接：";
+"Display the web interface with Bonjour" = "使用 Bonjour 显示 Web 界面";

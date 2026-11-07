@@ -18,7 +18,7 @@ struct tr_session;
 @interface Controller : NSObject<NSSharingServiceDelegate>
 
 /// Quits if another copy is running, registers the default settings, and on the first launch offers the import from Transmission.
-/// Runs while the app finishes launching, before the main nib loads, because the nib's objects read the settings as they load.
+/// Runs while the app finishes launching.
 + (void)prepareForLaunch;
 
 // In StatsWindowController / CreatorWindowController

@@ -1,0 +1,11 @@
+"HTTP port:" = "Port nasłuchiwania:";
+"Allow remote access" = "Włączenie zdalnego dostępu";
+"Use authentication" = "Wymaganie uwierzytelnienia";
+"Address" = "Adres IP";
+"IP addresses may use wildcards, such as 192.168.*.*" = "Adresy IP mogą zawierać wieloznaczniki (*)";
+"Password:" = "Hasło:";
+"Username:" = "Nazwa użytkownika:";
+"This enables the web interface and allows remote requests" = "Włącza to interfejs WWW i umożliwia zdalne żądania";
+"Open Web Client" = "Uruchom interfejs WWW";
+"Only allow these IP addresses:" = "Tylko te adresy IP mogą się łączyć:";
+"Display the web interface with Bonjour" = "Wyświetlanie interfejsu WWW za pomocą Bonjour";

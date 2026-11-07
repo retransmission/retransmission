@@ -13,9 +13,6 @@
 #include <QtCore/QString>
 #include <QtCore/QUrl>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
-
 #include <libtransmission-app/rpc-client.h>
 
 struct tr_session;
@@ -50,9 +47,6 @@ public:
     void stop();
     void start(tr_session* session);
     void start(QUrl const& url);
-
-    void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done = {});
-    void exec(tr_quark method, tr_variant* args, ResponseFunc on_done = {});
 
 signals:
     void httpAuthenticationRequired();

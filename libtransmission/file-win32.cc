@@ -6,7 +6,10 @@
 #include <algorithm>
 #include <cctype> // for isalpha()
 #include <cstring>
+#include <ctime>
 #include <iterator> // for std::back_inserter
+#include <optional>
+#include <ranges>
 #include <string>
 #include <string_view>
 
@@ -27,7 +30,11 @@ using namespace std::literals;
 namespace
 {
 auto constexpr NativeLocalPathPrefix = L"\\\\?\\"sv;
+auto constexpr Utf8LocalPathPrefix = R"(\\?\)"sv;
 auto constexpr NativeUncPathPrefix = L"\\\\?\\UNC\\"sv;
+auto constexpr Utf8UncPathPrefix = R"(\\?\UNC\)"sv;
+auto constexpr Utf8DeviceNamespacePathPrefix = R"(\\.\)"sv;
+auto constexpr DeltaEpochInSecs = INT64_C(11644473600);
 
 void set_system_error(tr_error* error, DWORD code)
 {
@@ -37,9 +44,41 @@ void set_system_error(tr_error* error, DWORD code)
     }
 }
 
+[[nodiscard]] constexpr time_t filetime_to_unix_time(FILETIME const& t) noexcept
+{
+    // FILETIME counts 100 ns ticks since 1601, so pre-1970 times are negative
+    auto const ticks = static_cast<int64_t>((uint64_t{ t.dwHighDateTime } << 32U) | t.dwLowDateTime);
+    return (ticks / 10'000'000) - DeltaEpochInSecs;
+}
+
 constexpr bool to_bool(BOOL value) noexcept
 {
     return value != FALSE;
+}
+
+[[nodiscard]] constexpr auto stat_to_sys_path_info(
+    DWORD const attributes,
+    DWORD const size_low,
+    DWORD const size_high,
+    FILETIME const& mtime) noexcept
+{
+    auto info = tr_sys_path_info{};
+
+    if ((attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+        info.type = TR_SYS_PATH_IS_DIRECTORY;
+    } else if ((attributes & (FILE_ATTRIBUTE_DEVICE | FILE_ATTRIBUTE_VIRTUAL)) == 0) {
+        info.type = TR_SYS_PATH_IS_FILE;
+    } else {
+        info.type = TR_SYS_PATH_IS_OTHER;
+    }
+
+    info.size = size_high;
+    info.size <<= 32;
+    info.size |= size_low;
+
+    info.last_modified_at = filetime_to_unix_time(mtime);
+
+    return info;
 }
 
 auto constexpr Slashes = R"(\/)"sv;
@@ -49,17 +88,37 @@ constexpr bool is_slash(char c)
     return Slashes.contains(c);
 }
 
-constexpr bool is_unc_path(std::string_view path)
+// https://devblogs.microsoft.com/oldnewthing/20160324-00/?p=93194/
+// There was a bug in the Windows XP version of the `PathIsUNC` function where it reported that
+// anything that began with two backslashes was a UNC, even if it wasn’t. In particular, paths that
+// begin with `\\?\` are not UNCs, unless they happen to begin with `\\?\UNC\`.
+[[nodiscard]] constexpr std::optional<std::string_view> is_utf8_unc_path(std::string_view const path)
 {
-    return std::size(path) >= 2 && is_slash(path[0]) && path[1] == path[0];
+    if (auto const prefix = path.substr(0U, Utf8UncPathPrefix.size()); std::ranges::equal(
+            std::views::transform(prefix, [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); }),
+            Utf8UncPathPrefix)) {
+        return prefix;
+    }
+
+    if (path.starts_with(Utf8LocalPathPrefix) || path.starts_with(Utf8DeviceNamespacePathPrefix)) {
+        return {};
+    }
+
+    if (std::size(path) >= 2U && is_slash(path[0]) && path[0] == path[1]) {
+        return path.substr(0U, 2U);
+    }
+
+    return {};
 }
 
 bool is_valid_path(std::string_view path)
 {
-    if (is_unc_path(path)) {
-        if (path[2] != '\0' && isalnum(static_cast<unsigned char>(path[2])) == 0) {
+    if (auto const unc_prefix = is_utf8_unc_path(path)) {
+        if (std::size(path) <= unc_prefix->size() || isalnum(static_cast<unsigned char>(path[unc_prefix->size()])) == 0) {
             return false;
         }
+
+        path.remove_prefix(unc_prefix->size());
     } else if (auto const pos = path.find(':'); pos != std::string_view::npos) {
         if (pos != 1 || isalpha(static_cast<unsigned char>(path[0])) == 0) {
             return false;
@@ -96,9 +155,9 @@ bool is_valid_path(std::string_view path)
    https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247.aspx for more info */
 [[nodiscard]] auto path_to_native_path(std::string_view path)
 {
-    if (is_unc_path(path)) {
+    if (auto const unc_prefix = is_utf8_unc_path(path)) {
         // UNC path: "\\server\share" -> "\\?\UNC\server\share"
-        path.remove_prefix(2); // remove path's UNC prefix slashes
+        path.remove_prefix(unc_prefix->size()); // remove path's UNC prefix
         auto wide_path = path_to_fixed_native_path(path);
         wide_path.insert(0, NativeUncPathPrefix);
         return wide_path;
@@ -222,7 +281,86 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
     }
 }
 
+[[nodiscard]] std::optional<tr_sys_path_info> tr_sys_file_get_info_(tr_sys_file_t const handle, tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+
+    auto attributes = BY_HANDLE_FILE_INFORMATION{};
+    if (to_bool(GetFileInformationByHandle(handle, &attributes))) {
+        return stat_to_sys_path_info(
+            attributes.dwFileAttributes,
+            attributes.nFileSizeLow,
+            attributes.nFileSizeHigh,
+            attributes.ftLastWriteTime);
+    }
+
+    set_system_error(error, GetLastError());
+    return {};
+}
+
+// Symlinks and junctions are links; other reparse points, such as
+// cloud-file placeholders, are not. An unreadable tag counts as a link,
+// so a junction is never followed.
+[[nodiscard]] bool is_link_reparse_point(std::wstring wide_path)
+{
+    // https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+    // "An attempt to open a search with a trailing backslash always fails."
+    if (auto const pos = wide_path.find_last_not_of(L'\\'); pos != std::wstring::npos) {
+        wide_path.erase(pos + 1);
+    }
+
+    auto data = WIN32_FIND_DATAW{};
+    auto const find = FindFirstFileW(wide_path.c_str(), &data);
+    if (find == INVALID_HANDLE_VALUE) {
+        return true;
+    }
+
+    FindClose(find);
+
+    // dwReserved0 holds the reparse tag
+    return data.dwReserved0 == IO_REPARSE_TAG_SYMLINK || data.dwReserved0 == IO_REPARSE_TAG_MOUNT_POINT;
+}
 } // namespace
+
+std::optional<tr_sys_path_info> tr_sys_path_get_info(std::string_view const path, int const flags, tr_error* const error)
+{
+    auto const wide_path = path_to_native_path(path);
+
+    auto attributes = WIN32_FILE_ATTRIBUTE_DATA{};
+    if (std::empty(wide_path) || !to_bool(GetFileAttributesExW(wide_path.c_str(), GetFileExInfoStandard, &attributes))) {
+        set_system_error(error, GetLastError());
+        return {};
+    }
+
+    auto const is_reparse_point = (attributes.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0;
+
+    if (!is_reparse_point || (flags & TR_SYS_PATH_NO_FOLLOW) != 0) {
+        auto info = stat_to_sys_path_info(
+            attributes.dwFileAttributes,
+            attributes.nFileSizeLow,
+            attributes.nFileSizeHigh,
+            attributes.ftLastWriteTime);
+
+        // A link reads as OTHER, as lstat() reports a symlink,
+        // so a junction never reads as a folder.
+        if (is_reparse_point && is_link_reparse_point(wide_path)) {
+            info.type = TR_SYS_PATH_IS_OTHER;
+        }
+
+        return info;
+    }
+
+    // Opening a link opens its target.
+    if (auto const handle = CreateFileW(wide_path.c_str(), 0, 0, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+        handle != INVALID_HANDLE_VALUE) {
+        auto ret = tr_sys_file_get_info_(handle, error);
+        CloseHandle(handle);
+        return ret;
+    }
+
+    set_system_error(error, GetLastError());
+    return {};
+}
 
 std::string_view tr_sys_path_basename(std::string_view path, tr_error* error)
 {
@@ -640,17 +778,18 @@ bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
     return ret;
 }
 
-bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_error* error)
+bool tr_sys_file_preallocate(tr_sys_file_t const handle, uint64_t const size, int const flags, tr_error* const error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0) {
-        DWORD tmp = 0;
+    if (size == 0U) {
+        return true;
+    }
 
-        if (!to_bool(DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr))) {
-            set_system_error(error, GetLastError());
-            return false;
-        }
+    if ((flags & TR_SYS_FILE_PREALLOC_FAST) != 0) {
+        // best effort: FAT32, exFAT, and some SMB shares refuse
+        DWORD tmp = 0;
+        (void)DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr);
     }
 
     return tr_sys_file_truncate(handle, size, error);

@@ -24,11 +24,22 @@ target_sources(${LIBNAME}
         rpc-client.cc
         rpc-client.h
         rpc-queue.h
+        session-poller.cc
+        session-poller.h
         session.cc
         session.h
         startup-coordinator.cc
         startup-coordinator.h
+        torrent-filter.cc
+        torrent-filter.h
         torrent-icon.h
+        torrent-keys.h
+        torrent-list.cc
+        torrent-list.h
+        torrent-sort.cc
+        torrent-sort.h
+        torrent.cc
+        torrent.h
         trash.cc
         trash.h)
 

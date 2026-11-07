@@ -94,10 +94,10 @@ target_sources(${TR_NAME}-mac
         GroupCell.mm
         GroupPopUpButtonCell.h
         GroupPopUpButtonCell.mm
+        GroupRulesWindowController.h
+        GroupRulesWindowController.mm
         GroupsController.h
         GroupsController.mm
-        GroupsPrefsController.h
-        GroupsPrefsController.mm
         GroupToolbarItem.h
         GroupToolbarItem.mm
         InfoActivityViewController.h
@@ -120,6 +120,8 @@ target_sources(${TR_NAME}-mac
         main.mm
         MenuProvider.h
         MenuProvider.mm
+        MessageLogsViews.h
+        MessageLogsViews.mm
         MessageWindowController.h
         MessageWindowController.mm
         NSApplicationAdditions.h
@@ -146,16 +148,28 @@ target_sources(${TR_NAME}-mac
         PowerManager.mm
         PredicateEditorRowTemplateAny.h
         PredicateEditorRowTemplateAny.mm
+        PrefsBandwidthTabViewController.h
+        PrefsBandwidthTabViewController.mm
         PrefsController.h
         PrefsController.mm
         PrefsGeneralTabViewController.h
         PrefsGeneralTabViewController.mm
+        PrefsGroupsTabViewController.h
+        PrefsGroupsTabViewController.mm
         PrefsNetworkTabViewController.h
         PrefsNetworkTabViewController.mm
+        PrefsPeersTabViewController.h
+        PrefsPeersTabViewController.mm
+        PrefsRemoteTabViewController.h
+        PrefsRemoteTabViewController.mm
+        PrefsTransfersAddingViewController.h
+        PrefsTransfersAddingViewController.mm
+        PrefsTransfersManagementViewController.h
+        PrefsTransfersManagementViewController.mm
+        PrefsTransfersTabViewController.h
+        PrefsTransfersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
-        PrefsWindow.h
-        PrefsWindow.mm
         PriorityPopUpButtonCell.h
         PriorityPopUpButtonCell.mm
         ProgressBarView.h
@@ -189,6 +203,10 @@ target_sources(${TR_NAME}-mac
         TorrentContextMenuProvider.mm
         TorrentGroup.h
         TorrentGroup.mm
+        TorrentMainView.h
+        TorrentMainView.mm
+        TorrentMainWindow.h
+        TorrentMainWindow.mm
         TorrentTableView.h
         TorrentTableView.mm
         TrackerIconLoader.h
@@ -205,9 +223,6 @@ target_sources(${TR_NAME}-mac
         Utils.mm
         UTTypeAdditions.h
         UTTypeAdditions.mm)
-
-set(XIB_FILES
-    MessageWindow.xib)
 
 set(RESOURCES
     Defaults.plist
@@ -343,36 +358,29 @@ else()
     set(ENABLED_LINGUAS en)
 endif()
 
-set(BASE_XIB_FILES
-    AddWindow.xib
-    Creator.xib
-    GroupRules.xib
-    InfoActivityView.xib
-    InfoOptionsView.xib
-    MainMenu.xib
-    PrefsWindow.xib)
-list(TRANSFORM BASE_XIB_FILES
-    PREPEND Base.lproj/)
-
 set(LANG_STRINGS_FILES
     AddMagnetWindow.strings
+    AddWindow.strings
     AppMenu.strings
+    Creator.strings
     GlobalOptionsPopover.strings
+    GroupRules.strings
+    InfoActivityView.strings
     InfoGeneralView.strings
+    InfoOptionsView.strings
     InfoPlist.strings
     Localizable.strings
+    PreferencesBandwidthTab.strings
     PreferencesGeneralTab.strings
+    PreferencesGroupsTab.strings
     PreferencesNetworkTab.strings
+    PreferencesPeersTab.strings
+    PreferencesRemoteTab.strings
+    PreferencesTransfersTab.strings
     TorrentContextMenu.strings)
 
 foreach(LANG ${ENABLED_LINGUAS})
     set(${LANG}_STRINGS_FILES)
-    if(NOT LANG STREQUAL "en")
-        foreach(F ${BASE_XIB_FILES})
-            get_filename_component(F_BASE "${F}" NAME_WE)
-            list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F_BASE}.strings)
-        endforeach()
-    endif()
     foreach(F ${LANG_STRINGS_FILES})
         list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
     endforeach()
@@ -395,10 +403,6 @@ endforeach()
 target_sources(${TR_NAME}-mac
     PRIVATE
         ${RESOURCES})
-
-tr_target_xib_files(${TR_NAME}-mac
-    ${XIB_FILES}
-    ${BASE_XIB_FILES})
 
 find_library(SPARKLE_FRAMEWORK Sparkle
     PATHS ${CMAKE_CURRENT_SOURCE_DIR}

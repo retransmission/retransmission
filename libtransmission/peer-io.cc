@@ -3,7 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <cerrno>
 #include <cstdint>
 #include <functional>
 #include <utility>
@@ -27,6 +26,7 @@
 #include "libtransmission/peer-socket-tcp.h"
 #include "libtransmission/peer-socket-utp.h"
 #include "libtransmission/peer-socket.h" // tr_peer_socket, tr_netOpen...
+#include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
@@ -42,18 +42,6 @@ struct sockaddr;
 
 namespace
 {
-// Helps us to ignore errors that say "try again later"
-// since that's what peer-io does by default anyway.
-[[nodiscard]] constexpr auto can_retry_from_error(tr_error_code_t error_code) noexcept
-{
-#ifdef _WIN32
-    return error_code == 0 || error_code == WSAEWOULDBLOCK || error_code == WSAEINTR || error_code == WSAEINPROGRESS;
-#else
-    return error_code == 0 || error_code == EAGAIN || error_code == EWOULDBLOCK || error_code == EINTR ||
-        error_code == EINPROGRESS;
-#endif
-}
-
 [[nodiscard]] size_t get_desired_output_buffer_size(tr_peerIo const* io, uint64_t now)
 {
     // this is all kind of arbitrary, but what seems to work well is
@@ -296,6 +284,7 @@ void tr_peerIo::did_write_wrapper(size_t bytes_transferred)
 
 size_t tr_peerIo::try_write(size_t max)
 {
+    TR_PROFILE_SCOPE("peer.try_write");
     static auto constexpr Dir = tr_direction::Up;
 
     if (max == 0U) {
@@ -317,10 +306,10 @@ size_t tr_peerIo::try_write(size_t max)
     auto error = tr_error{};
     auto const n_written = socket_->try_write(buf, max, &error);
     // enable further writes if there's more data to write
-    set_enabled(Dir, !std::empty(buf) && (!error || can_retry_from_error(error.code())));
+    set_enabled(Dir, !std::empty(buf) && (!error || error.is_transient()));
 
     if (error) {
-        if (!can_retry_from_error(error.code())) {
+        if (!error.is_transient()) {
             tr_logAddTraceIo(
                 this,
                 fmt::format("try_write err: wrote:{}, errno:{} ({})", n_written, error.code(), error.message()));
@@ -345,6 +334,7 @@ void tr_peerIo::write_cb()
 
 void tr_peerIo::can_read_wrapper(size_t bytes_transferred)
 {
+    TR_PROFILE_SCOPE("peer.process_incoming");
     // try to consume the input buffer
 
     if (can_read_ == nullptr) {
@@ -396,6 +386,7 @@ void tr_peerIo::can_read_wrapper(size_t bytes_transferred)
 
 size_t tr_peerIo::try_read(size_t max)
 {
+    TR_PROFILE_SCOPE("peer.try_read");
     static auto constexpr Dir = tr_direction::Down;
 
     if (!socket_) {
@@ -415,10 +406,10 @@ size_t tr_peerIo::try_read(size_t max)
     auto& buf = inbuf_;
     auto error = tr_error{};
     auto const n_read = socket_->try_read(buf, max, &error);
-    set_enabled(Dir, !error || can_retry_from_error(error.code()));
+    set_enabled(Dir, !error || error.is_transient());
 
     if (error) {
-        if (!can_retry_from_error(error.code())) {
+        if (!error.is_transient()) {
             tr_logAddTraceIo(this, fmt::format("try_read err: n_read:{} errno:{} ({})", n_read, error.code(), error.message()));
             call_error_callback(error);
         }

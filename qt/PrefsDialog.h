@@ -11,7 +11,7 @@
 #include <map>
 #include <optional>
 
-#include <QtCore/QTimer>
+#include <sigslot/signal.hpp>
 
 #include <libtransmission/types.h>
 
@@ -33,9 +33,6 @@ public:
     PrefsDialog& operator=(PrefsDialog const&) = delete;
     PrefsDialog(PrefsDialog&&) = delete;
     PrefsDialog(PrefsDialog const&) = delete;
-
-    // QWidget
-    void setVisible(bool visible) override;
 
 private:
     enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
@@ -95,5 +92,5 @@ private:
 
     std::multimap<tr_quark, std::function<void()>> updaters_;
 
-    QTimer blocklist_info_timer_;
+    sigslot::scoped_connection session_connection_;
 };

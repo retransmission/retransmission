@@ -1,0 +1,11 @@
+"Upload:" = "Sändningshastighet:";
+"Download:" = "Hämtningshastighet:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Globala bandbreddsgränser:";
+"Alternative speed limits:" = "Hastighetsgränsläge:";
+"Override normal speed limits manually or at scheduled times" = "När det är aktiverat åsidosätter hastighetsgränsen de globala bandbreddsgränserna";
+"Scheduled times:" = "Schemalagd hastighetsgräns:";
+"to" = "till";
+"Every Day" = "Varje dag";
+"Weekdays" = "Veckodagar";
+"Weekends" = "Helger";

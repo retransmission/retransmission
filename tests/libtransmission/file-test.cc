@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cerrno>
 #include <cstdint> // uint64_t
 #include <cstdio> // stderr
 #include <cstring>
@@ -16,6 +17,7 @@
 #include <vector>
 
 #ifndef _WIN32
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #else
@@ -84,6 +86,48 @@ protected:
         return CreateHardLinkW(wide_dst_path.c_str(), wide_src_path.c_str(), nullptr) != 0;
 #endif
     }
+
+    // how much disk space the filesystem has given the file
+    [[nodiscard]] static uint64_t allocatedBytes(tr_sys_file_t const fd)
+    {
+#ifndef _WIN32
+        struct stat sb = {};
+        EXPECT_EQ(0, fstat(fd, &sb));
+        return static_cast<uint64_t>(sb.st_blocks) * 512U;
+#else
+        auto info = FILE_STANDARD_INFO{};
+        EXPECT_NE(0, GetFileInformationByHandleEx(fd, FileStandardInfo, &info, sizeof(info)));
+        return static_cast<uint64_t>(info.AllocationSize.QuadPart);
+#endif
+    }
+
+#ifdef __linux__
+    // ZFS and NFSv3 can't.
+    // Calls fallocate() directly, so a libtransmission built without it still runs, and fails, the checks.
+    [[nodiscard]] static bool canReserveBlocks(std::string_view const dir, uint64_t const size)
+    {
+        auto const path = tr_pathbuf{ dir, "/reservation-probe"sv };
+        auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+        EXPECT_NE(TR_BAD_SYS_FILE, fd);
+        auto const reserved = fallocate(fd, 0, 0, static_cast<off_t>(size)) == 0 && allocatedBytes(fd) >= size;
+        tr_sys_file_close(fd);
+        tr_sys_path_remove(path);
+        return reserved;
+    }
+#endif
+
+#ifdef _WIN32
+    // FAT and exFAT don't, so growing a file allocates all of it.
+    [[nodiscard]] static bool supportsSparseFiles(std::string_view const dir)
+    {
+        auto const wide_dir = tr_win32_utf8_to_native(dir);
+        auto root = std::array<wchar_t, MAX_PATH + 1>{};
+        auto flags = DWORD{};
+        EXPECT_NE(0, GetVolumePathNameW(wide_dir.c_str(), std::data(root), static_cast<DWORD>(std::size(root))));
+        EXPECT_NE(0, GetVolumeInformationW(std::data(root), nullptr, 0, nullptr, nullptr, &flags, nullptr, 0));
+        return (flags & FILE_SUPPORTS_SPARSE_FILES) != 0;
+    }
+#endif
 
     static void clearPathInfo(tr_sys_path_info* info)
     {
@@ -206,7 +250,7 @@ TEST_F(FileTest, getInfo)
     ASSERT_TRUE(info.has_value());
     EXPECT_FALSE(err) << err;
     EXPECT_EQ(TR_SYS_PATH_IS_DIRECTORY, info->type);
-    EXPECT_NE(uint64_t(-1), info->size);
+    EXPECT_EQ(0U, info->size);
     EXPECT_GE(info->last_modified_at, t - 1);
     EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
     tr_sys_path_remove(path1);
@@ -235,6 +279,7 @@ TEST_F(FileTest, getInfo)
         ASSERT_TRUE(info.has_value());
         EXPECT_FALSE(err) << err;
         EXPECT_EQ(TR_SYS_PATH_IS_OTHER, info->type);
+        EXPECT_EQ(0U, info->size);
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
@@ -247,9 +292,16 @@ TEST_F(FileTest, getInfo)
         ASSERT_TRUE(info.has_value());
         EXPECT_FALSE(err) << err;
         EXPECT_EQ(TR_SYS_PATH_IS_DIRECTORY, info->type);
-        EXPECT_NE(uint64_t(-1), info->size);
+        EXPECT_EQ(0U, info->size);
         EXPECT_GE(info->last_modified_at, t - 1);
         EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
+
+        // Symlink
+        info = tr_sys_path_get_info(path1, TR_SYS_PATH_NO_FOLLOW, &err);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_FALSE(err) << err;
+        EXPECT_EQ(TR_SYS_PATH_IS_OTHER, info->type);
+        EXPECT_EQ(0U, info->size);
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
@@ -639,8 +691,8 @@ TEST_F(FileTest, pathResolve)
 
 TEST_F(FileTest, pathBasename)
 {
-    auto const common_xname_tests = std::vector<XnameTestData>{
-        XnameTestData{ .input = "/", .output = "/" },
+    static constexpr auto CommonXnameTests = std::to_array<XnameTestData>({
+        { .input = "/", .output = "/" },
         { .input = "", .output = "." },
 #ifdef _WIN32
         { .input = "\\", .output = "/" },
@@ -669,16 +721,22 @@ TEST_F(FileTest, pathBasename)
         { .input = R"(c:\a\b|c\d)", .output = "" },
         { .input = R"(c:\a\b?c\d)", .output = "" },
         { .input = R"(c:\a\b*c\d)", .output = "" },
+        { .input = R"(\\)", .output = "" },
+        { .input = R"(\\a)"sv.substr(0, 2), .output = "" },
+        { .input = "//", .output = "" },
+        { .input = R"(\\?\UNC\)", .output = "" },
+        { .input = R"(\\?\unc\)", .output = "" },
+        { .input = R"(\\?\uNc\)", .output = "" },
+        { .input = R"(\\?\UNC\a\b\c)", .output = "c" },
 #else
         { .input = "////", .output = "/" },
 #endif
-    };
+    });
 
-    testPathXname(common_xname_tests.data(), common_xname_tests.size(), tr_sys_path_basename);
-    // testPathXname(common_xname_tests.data(), common_xname_tests.size(), tr_sys_path_dirname);
+    testPathXname(CommonXnameTests.data(), CommonXnameTests.size(), tr_sys_path_basename);
 
-    auto const basename_tests = std::vector<XnameTestData>{
-        XnameTestData{ .input = "a", .output = "a" },
+    static constexpr auto BasenameTests = std::to_array<XnameTestData>({
+        { .input = "a", .output = "a" },
         { .input = "aa", .output = "aa" },
         { .input = "/aa", .output = "aa" },
         { .input = "/a/b/c", .output = "c" },
@@ -698,9 +756,9 @@ TEST_F(FileTest, pathBasename)
         { .input = "\\", .output = "/" },
         { .input = "\\a", .output = "a" },
 #endif
-    };
+    });
 
-    testPathXname(basename_tests.data(), basename_tests.size(), tr_sys_path_basename);
+    testPathXname(BasenameTests.data(), BasenameTests.size(), tr_sys_path_basename);
 }
 
 TEST_F(FileTest, pathDirname)
@@ -1114,58 +1172,171 @@ TEST_F(FileTest, fileTruncate)
     tr_sys_path_remove(path);
 }
 
-TEST_F(FileTest, filePreallocate)
+TEST_F(FileTest, filePreallocateFast)
 {
-    auto const test_dir = createTestDir(currentTestName());
+    static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
 
-    auto const path1 = tr_pathbuf{ test_dir, "/a"sv };
-    auto fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    auto const test_dir = createTestDir(currentTestName());
+#ifdef __linux__
+    if (!canReserveBlocks(test_dir, Size)) {
+        GTEST_SKIP() << "the test folder's filesystem can't reserve blocks";
+    }
+#elif defined(_WIN32)
+    if (!supportsSparseFiles(test_dir)) {
+        GTEST_SKIP() << "the test folder's filesystem doesn't support sparse files";
+    }
+#endif
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
 
     auto error = tr_error{};
-    auto prealloc_size = size_t{ 50 };
-    if (tr_sys_file_preallocate(fd, prealloc_size, 0, &error)) {
-        EXPECT_FALSE(error) << error;
-        auto info = tr_sys_path_get_info(path1);
-        ASSERT_TRUE(info.has_value());
-        EXPECT_EQ(prealloc_size, info->size);
-    } else {
-        EXPECT_TRUE(error);
-        fmt::print(
-            stderr,
-            "WARNING: [{:s}] unable to preallocate file (full): {:s} ({:d})\n",
-            __FUNCTION__,
-            error.message(),
-            error.code());
-        error = {};
-    }
+    EXPECT_TRUE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_FAST, &error)) << error;
+    EXPECT_FALSE(error) << error;
+
+    auto const info = tr_sys_path_get_info(path);
+    ASSERT_TRUE(info.has_value());
+    EXPECT_EQ(Size, info->size);
+
+#if defined(__linux__) || defined(__APPLE__)
+    EXPECT_GE(allocatedBytes(fd), Size);
+#elif defined(_WIN32)
+    EXPECT_EQ(0U, allocatedBytes(fd)); // sparse
+#endif
 
     tr_sys_file_close(fd);
-
-    tr_sys_path_remove(path1);
-
-    fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
-
-    prealloc_size = size_t{ 500U } * 1024U * 1024U;
-    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_SPARSE, &error)) {
-        EXPECT_FALSE(error) << error;
-        auto info = tr_sys_path_get_info(path1);
-        ASSERT_TRUE(info.has_value());
-        EXPECT_EQ(prealloc_size, info->size);
-    } else {
-        EXPECT_TRUE(error);
-        fmt::print(
-            stderr,
-            "WARNING: [{:s}] unable to preallocate file (sparse): {:s} ({:d})\n",
-            __FUNCTION__,
-            error.message(),
-            error.code());
-        error = {};
-    }
-
-    tr_sys_file_close(fd);
-
-    tr_sys_path_remove(path1);
+    tr_sys_path_remove(path);
 }
+
+TEST_F(FileTest, filePreallocateFull)
+{
+    static auto constexpr Size = (uint64_t{ 1024U } * 1024U) + 17U;
+
+    auto const test_dir = createTestDir(currentTestName());
+#ifdef __linux__
+    if (!canReserveBlocks(test_dir, Size)) {
+        GTEST_SKIP() << "the test folder's filesystem can't reserve blocks";
+    }
+#endif
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ | TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    auto error = tr_error{};
+    auto const success = tr_sys_file_preallocate(fd, Size, 0, &error);
+
+#if defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+    EXPECT_TRUE(success) << error;
+    EXPECT_GE(allocatedBytes(fd), Size);
+#else
+    // some of these can't reserve blocks without writing
+    if (!success) {
+        auto const code = error.code();
+        EXPECT_TRUE(code == EINVAL || code == EOPNOTSUPP || code == ENOTSUP || code == ENOSYS) << error;
+    }
+#endif
+
+    if (success) {
+        EXPECT_FALSE(error) << error;
+
+        auto const info = tr_sys_path_get_info(path);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_EQ(Size, info->size);
+    }
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+
+TEST_F(FileTest, filePreallocateReadOnly)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    createFileWithContents(path, "test");
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_READ, 0);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_FAST } }) {
+        auto error = tr_error{};
+        EXPECT_FALSE(tr_sys_file_preallocate(fd, 4096U, flags, &error));
+        EXPECT_TRUE(error);
+#ifdef _WIN32
+        EXPECT_EQ(ERROR_ACCESS_DENIED, error.code()) << error;
+#elif defined(__linux__) || defined(__APPLE__)
+        // EINVAL would come from ftruncate(), meaning the reservation call wasn't compiled in
+        EXPECT_EQ(EBADF, error.code()) << error;
+#endif
+    }
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+
+TEST_F(FileTest, filePreallocateZeroBytes)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    for (auto const flags : { 0, int{ TR_SYS_FILE_PREALLOC_FAST } }) {
+        auto error = tr_error{};
+        EXPECT_TRUE(tr_sys_file_preallocate(fd, 0U, flags, &error)) << error;
+        EXPECT_FALSE(error) << error;
+
+        auto const info = tr_sys_path_get_info(path);
+        ASSERT_TRUE(info.has_value());
+        EXPECT_EQ(0U, info->size);
+    }
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+
+#ifdef __linux__
+TEST_F(FileTest, filePreallocateFastFallsBackToTruncate)
+{
+    // a pipe fails fallocate() with ESPIPE and ftruncate() with EINVAL
+    auto fds = std::array<int, 2U>{};
+    ASSERT_EQ(0, pipe(std::data(fds)));
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, 0, &error));
+    EXPECT_EQ(ESPIPE, error.code()) << error;
+
+    error = {};
+    EXPECT_FALSE(tr_sys_file_preallocate(fds[1], 4096U, TR_SYS_FILE_PREALLOC_FAST, &error));
+    EXPECT_EQ(EINVAL, error.code()) << error;
+
+    close(fds[0]);
+    close(fds[1]);
+}
+#endif
+
+// Apple only: on Linux, ext4 refuses this size with or without the reservation, and XFS fills the disk before failing.
+#ifdef __APPLE__
+TEST_F(FileTest, filePreallocateFastStopsWhenOutOfSpace)
+{
+    // more than any test machine's disk, though ftruncate() alone could make it
+    static auto constexpr Size = uint64_t{ 100U } << 40U;
+
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_sys_file_preallocate(fd, Size, TR_SYS_FILE_PREALLOC_FAST, &error));
+    EXPECT_TRUE(error.is_out_of_space()) << error;
+
+    auto const info = tr_sys_path_get_info(path);
+    ASSERT_TRUE(info.has_value());
+    EXPECT_EQ(0U, info->size);
+
+    tr_sys_file_close(fd);
+    tr_sys_path_remove(path);
+}
+#endif
 
 TEST_F(FileTest, dirCreate)
 {

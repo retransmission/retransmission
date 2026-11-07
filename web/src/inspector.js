@@ -386,14 +386,8 @@ export class Inspector extends EventTarget {
         (accumulator, t) => accumulator + t.getUploadedEver(),
         0,
       );
-      const denominator =
-        torrents.reduce(
-          (accumulator, t) => accumulator + t.getSizeWhenDone(),
-          0,
-        ) ||
-        torrents.reduce((accumulator, t) => accumulator + t.getHaveValid(), 0);
       string = `${fmt.size(uploaded)} (Ratio: ${Ratio.format(
-        Ratio.fromCounts(uploaded, denominator),
+        Ratio.fromCounts(uploaded, sizeWhenDone),
       )})`;
     }
     setTextContent(e.info.uploaded, string);

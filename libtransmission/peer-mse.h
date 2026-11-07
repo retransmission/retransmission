@@ -54,7 +54,7 @@ public:
     [[nodiscard]] key_bigend_t publicKey() noexcept;
 
     // Compute the shared secret from our private key and the peer's public key.
-    void setPeerPublicKey(key_bigend_t const& peer_public_key);
+    void setPeerPublicKey(key_bigend_t const& peer_public_key) noexcept;
 
     // Returns the shared secret.
     [[nodiscard]] constexpr auto const& secret() const noexcept

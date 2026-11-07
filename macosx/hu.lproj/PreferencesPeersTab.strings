@@ -1,0 +1,15 @@
+"Update" = "Frissítés";
+"Blocklist:" = "Tiltólista:";
+"Enable blocklist" = "Tiltólistán szereplő partnerek csatlakozásának tiltása";
+"High connection limits might significantly impact system performance" = "Magas kapcsolati számok jelentősen befolyásolhatják a rendszer teljesítményt";
+"Use PEX to find more peers for public torrents" = "Partnercsere (PeX) engedélyezése publikus torrentek esetén";
+"Maximum peers for new torrents:" = "Kapcsolatok maximális száma új átviteleknél:";
+"Maximum peers overall:" = "Globális kapcsolatok maximális száma:";
+"Peer limits:" = "Kapcsolatok:";
+"Prefer encryption" = "Titkosított peerek előnyben részesítése";
+"Encryption:" = "Titkosítás:";
+"Require encryption" = "Nem titkosított peerek figyelmen kívül hagyása";
+"Automatically update weekly" = "Frissítések keresése hetente";
+"Use DHT to find more peers for public torrents" = "Megosztott Hash-tábla (DHT) használata publikus torrenteknél";
+"Use Local Peer Discovery to find more peers for public torrents" = "Helyi peerek felkutatásának használata publikus torrenteknél";
+"URL:" = "Webcím:";

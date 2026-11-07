@@ -30,6 +30,12 @@ struct RpcResponse {
     bool success = false;
     bool network_error = false; // true if no valid HTTP response
     long http_status = 0; // HTTP status, or 0 for no response, or 200 for embedded
+
+    // `args` as a map, or nullptr when the reply carries none, e.g. a network error
+    [[nodiscard]] tr_variant::Map const* args_map() const noexcept
+    {
+        return args ? args->get_if<tr_variant::Map>() : nullptr;
+    }
 };
 
 // RPC client which speaks either to an embedded (in-process) session
@@ -47,6 +53,8 @@ public:
     // GTK -> Glib::signal_idle().connect_once(...).
     // It must run `fn` on the thread that calls exec() and stop(),
     // because `fn` uses the client's state without locking.
+    // It must queue `fn`, never run it inside the call, even on that thread:
+    // a caller records a request's handle after exec() returns.
     // It must drop `fn` once the client is destroyed.
     using UiThreadFunc = std::function<void(std::function<void()>)>;
 
@@ -67,8 +75,10 @@ public:
     void stop();
 
     // Issue a request. `on_done` runs on the UI thread when it completes.
-    // A reply to a request sent before the last stop() reaches `on_done` only as a network error,
-    // without firing signals or changing client state.
+    // A request no session can answer, because the client isn't started or
+    // because stop() came before the reply, reaches `on_done` only as a network
+    // error, without firing signals or changing client state. So every
+    // request gets exactly one reply, and a caller may count on it.
     void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done);
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
 
@@ -86,6 +96,9 @@ private:
 
     // If `generation` predates the last stop(), answers `on_done` with a network error and returns true.
     [[nodiscard]] bool drop_if_stale(uint64_t generation, ResponseFunc const& on_done) const;
+
+    // the reply to a request no session can answer
+    [[nodiscard]] static RpcResponse unreachable_response(std::string errmsg);
 
     [[nodiscard]] static RpcResponse parse_response_data(tr_variant& response);
 

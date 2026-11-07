@@ -34,7 +34,7 @@ private:
         explicit Client(QString const& config_dir)
             : prefs{ config_dir }
             , session{ config_dir, prefs, rpc }
-            , model{ prefs }
+            , model{ session.torrents() }
             , window{ session, prefs, model, /*minimized=*/true }
         {
         }

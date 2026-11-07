@@ -2417,64 +2417,6 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
     </message>
 </context>
 <context>
-    <name>Torrent</name>
-    <message>
-        <location filename="../Torrent.cc" line="+307"/>
-        <source>Verifying local data</source>
-        <translation>Vahvistetaan paikallista dataa</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Downloading</source>
-        <translation>Ladataan</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Seeding</source>
-        <translation>Kylvätään</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <source>Finished</source>
-        <translation>Valmistunut</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Paused</source>
-        <translation>Tauotettu</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Queued for verification</source>
-        <translation>Laitettiin jonoon tarkistusta varten</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for download</source>
-        <translation>Laitettiin jonoon latausta varten</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Queued for seeding</source>
-        <translation>Laitettiin jonoon jakamista varten</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tracker gave a warning: {warning}</source>
-        <translation>Seurantapalvelin antoi varoituksen: {warning}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tracker gave an error: {error}</source>
-        <translation>Seurantapalvelin antoi virheen: {error}</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: {error}</source>
-        <translation>Virhe: {error}</translation>
-    </message>
-</context>
-<context>
     <name>TorrentDelegate</name>
     <message>
         <location filename="../TorrentDelegate.cc" line="+173"/>
@@ -2601,6 +2543,56 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
         <location line="-95"/>
         <source>Verifying local data ({percent_done}% tested)</source>
         <translation>Vahvistetaan paikallista daataa ({percent_done}% testattu)</translation>
+    </message>
+    <message>
+        <location filename="../Torrent.cc" line="+307"/>
+        <source>Verifying local data</source>
+        <translation>Vahvistetaan paikallista dataa</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Downloading</source>
+        <translation>Ladataan</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Seeding</source>
+        <translation>Kylvätään</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Paused</source>
+        <translation>Tauotettu</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Queued for verification</source>
+        <translation>Laitettiin jonoon tarkistusta varten</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for download</source>
+        <translation>Laitettiin jonoon latausta varten</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Queued for seeding</source>
+        <translation>Laitettiin jonoon jakamista varten</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>Seurantapalvelin antoi varoituksen: {warning}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tracker gave an error: {error}</source>
+        <translation>Seurantapalvelin antoi virheen: {error}</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error: {error}</source>
+        <translation>Virhe: {error}</translation>
     </message>
 </context>
 <context>

@@ -221,8 +221,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu`
       - name: Make
         run: cmake --build obj --config Debug --target all-tests
       - name: Test with sanitizers
@@ -283,8 +282,7 @@ jobs:
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Homebrew`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew`
       - name: Make
         run: cmake --build obj --config Debug --target all-tests
       - name: Test with sanitizers
@@ -507,8 +505,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu`
       - name: Generate sources
         if: matrix.enabled == 'true'
         run: |
@@ -739,8 +736,7 @@ jobs:
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Homebrew`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew`
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
       - name: Test
@@ -833,8 +829,7 @@ jobs:
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Alpine` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Alpine` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Alpine`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Alpine`
       - name: Make
         run: cmake --build obj --config Release
       - name: Test
@@ -1184,8 +1179,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in sid` \
             -DUSE_SYSTEM_SMALL=OFF \
-            -DUSE_SYSTEM_UTP=OFF \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF
+            -DUSE_SYSTEM_UTP=OFF
       - name: Build
         run: cmake --build obj --config Release
       - name: Test
@@ -1301,8 +1295,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in RHEL/Fedora` \
             -DUSE_SYSTEM_SIMDUTF=${{ matrix.docker-image == 'fedora' && 'ON' || 'OFF' }} `# Not packaged in RHEL/EPEL` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in RHEL/Fedora` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL/Fedora` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in RHEL/Fedora`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL/Fedora`
       - name: Build
         run: cmake --build obj --config Release
       - name: Test
@@ -1389,8 +1382,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu`
       - name: Make
         run: cmake --build obj --config Release
       - name: Test
@@ -1543,8 +1535,7 @@ jobs:
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu`
       - name: Build
         run: cmake --build obj --config Release
       - name: Test
@@ -1632,7 +1623,6 @@ jobs:
               -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in FreeBSD` \
               -DUSE_SYSTEM_SMALL=OFF `# Not packaged in FreeBSD` \
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in FreeBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in FreeBSD` \
               -DWITH_CRYPTO=openssl
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
@@ -1720,7 +1710,6 @@ jobs:
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in Ubuntu` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu` \
             -DWITH_CRYPTO=${{ matrix.crypto.cmake }}
       - name: Make
         run: cmake --build obj --config Release
@@ -1806,8 +1795,7 @@ jobs:
               -DUSE_SYSTEM_DHT=OFF `# Not packaged in OpenBSD` \
               -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in OpenBSD` \
               -DUSE_SYSTEM_SMALL=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in OpenBSD`
+              -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
               cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
@@ -1897,8 +1885,7 @@ jobs:
               -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in NetBSD` \
               -DUSE_SYSTEM_SIMDUTF=OFF `# Not packaged in NetBSD` \
               -DUSE_SYSTEM_SMALL=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_UTP=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in NetBSD`
+              -DUSE_SYSTEM_UTP=OFF `# Not packaged in NetBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
               cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure

@@ -6,6 +6,10 @@
 #import "NSStringAdditions.h"
 #import "Torrent.h"
 #import "Utils.h"
+#import "ColorTextField.h"
+#import "InfoWindowController.h"
+
+#define LStr(key) NSLocalizedStringFromTable(key, @"InfoOptionsView", @"")
 
 typedef NS_ENUM(NSInteger, OptionPopupType) {
     OptionPopupTypeGlobal = 0,
@@ -23,36 +27,43 @@ static NSInteger const kInvalidValue = -99;
 
 static CGFloat const kStackViewInset = 12.0;
 static CGFloat const kStackViewSpacing = 8.0;
+static NSEdgeInsets const kStackViewEdgeInsets = NSEdgeInsetsMake(kStackViewInset, kStackViewInset, kStackViewInset, kStackViewInset);
 
-@interface InfoOptionsViewController ()
+@interface InfoOptionsViewController ()<NSTextFieldDelegate>
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
-
 @property(nonatomic) BOOL fSet;
 
-@property(nonatomic) IBOutlet NSPopUpButton* fPriorityPopUp;
-@property(nonatomic) IBOutlet NSPopUpButton* fRatioPopUp;
-@property(nonatomic) IBOutlet NSPopUpButton* fIdlePopUp;
-@property(nonatomic) IBOutlet NSButton* fUploadLimitCheck;
-@property(nonatomic) IBOutlet NSButton* fDownloadLimitCheck;
-@property(nonatomic) IBOutlet NSButton* fGlobalLimitCheck;
-@property(nonatomic) IBOutlet NSButton* fRemoveSeedingCompleteCheck;
-@property(nonatomic) IBOutlet NSTextField* fUploadLimitField;
-@property(nonatomic) IBOutlet NSTextField* fDownloadLimitField;
-@property(nonatomic) IBOutlet NSTextField* fRatioLimitField;
-@property(nonatomic) IBOutlet NSTextField* fIdleLimitField;
-@property(nonatomic) IBOutlet NSTextField* fUploadLimitLabel;
-@property(nonatomic) IBOutlet NSTextField* fDownloadLimitLabel;
-@property(nonatomic) IBOutlet NSTextField* fIdleLimitLabel;
-@property(nonatomic) IBOutlet NSTextField* fRatioLimitGlobalLabel;
-@property(nonatomic) IBOutlet NSTextField* fIdleLimitGlobalLabel;
-@property(nonatomic) IBOutlet NSTextField* fPeersConnectLabel;
-@property(nonatomic) IBOutlet NSTextField* fPeersConnectField;
+// === UI Elements ===
+@property(nonatomic) NSStackView* fOptionsStackView;
+
+@property(nonatomic) NSGridView* fPriorityGrid;
+@property(nonatomic) NSGridView* fSeedingGrid;
+
+// Priority + Speed
+@property(nonatomic) NSPopUpButton* fPriorityPopUp;
+@property(nonatomic) NSButton* fUploadLimitCheck;
+@property(nonatomic) NSButton* fDownloadLimitCheck;
+@property(nonatomic) NSButton* fGlobalLimitCheck;
+@property(nonatomic) NSTextField* fUploadLimitField;
+@property(nonatomic) NSTextField* fDownloadLimitField;
+@property(nonatomic) NSTextField* fUploadLimitLabel;
+@property(nonatomic) NSTextField* fDownloadLimitLabel;
+
+// Seeding
+@property(nonatomic) NSPopUpButton* fRatioPopUp;
+@property(nonatomic) NSPopUpButton* fIdlePopUp;
+@property(nonatomic) NSButton* fRemoveSeedingCompleteCheck;
+@property(nonatomic) NSTextField* fRatioLimitField;
+@property(nonatomic) NSTextField* fIdleLimitField;
+@property(nonatomic) NSTextField* fIdleLimitLabel;
+@property(nonatomic) NSTextField* fRatioLimitGlobalLabel;
+@property(nonatomic) NSTextField* fIdleLimitGlobalLabel;
+@property(nonatomic) NSTextField* fPeersConnectLabel;
+@property(nonatomic) NSTextField* fPeersConnectField;
 
 @property(nonatomic, copy) NSString* fInitialString;
 
-@property(nonatomic) IBOutlet NSStackView* fOptionsStackView;
-@property(nonatomic) IBOutlet NSView* fSeedingView;
 @property(nonatomic, readonly) CGFloat fHeightChange;
 @property(nonatomic, readwrite) CGFloat fCurrentHeight;
 @property(nonatomic, readonly) CGFloat fHorizLayoutHeight;
@@ -62,42 +73,291 @@ static CGFloat const kStackViewSpacing = 8.0;
 @end
 
 @implementation InfoOptionsViewController
+#pragma mark - UI Helpers
+
+- (NSView*)fPriorityView
+{
+    return self.fPriorityGrid;
+}
+
+- (NSTextField*)makeLabel:(NSString*)title
+{
+    NSTextField* label = [NSTextField labelWithString:title];
+    label.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    return label;
+}
+
+- (NSTextField*)makeColoredLabel:(NSString*)title
+{
+    NSTextField* label = [ColorTextField labelWithString:title];
+    label.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    return label;
+}
+
+- (NSTextField*)makeBoldLabel:(NSString*)title
+{
+    NSTextField* label = [NSTextField labelWithString:title];
+    label.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    return label;
+}
+
+- (NSButton*)makeCheckbox:(NSString*)title
+{
+    NSButton* btn = [NSButton checkboxWithTitle:title target:nil action:nil];
+    btn.controlSize = NSControlSizeSmall;
+    btn.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    btn.allowsMixedState = YES;
+    btn.translatesAutoresizingMaskIntoConstraints = NO;
+    return btn;
+}
+
+- (NSPopUpButton*)makePopUpButton
+{
+    NSPopUpButton* popup = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    popup.controlSize = NSControlSizeSmall;
+    popup.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    popup.translatesAutoresizingMaskIntoConstraints = NO;
+    return popup;
+}
+
+- (NSTextField*)makeNumberField
+{
+    NSTextField* field = [[NSTextField alloc] initWithFrame:NSZeroRect];
+    field.controlSize = NSControlSizeSmall;
+    field.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+    field.alignment = NSTextAlignmentRight;
+    field.cell.sendsActionOnEndEditing = YES;
+    field.translatesAutoresizingMaskIntoConstraints = NO;
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    formatter.usesGroupingSeparator = NO;
+    formatter.allowsFloats = NO;
+    formatter.minimum = @0;
+    formatter.maximum = @99999;
+    field.formatter = formatter;
+
+    [field.widthAnchor constraintEqualToConstant:50].active = YES;
+    return field;
+}
+
+- (NSTextField*)makeFloatField
+{
+    NSTextField* field = [self makeNumberField];
+    NSNumberFormatter* formatter = (NSNumberFormatter*)field.formatter;
+    formatter.allowsFloats = YES;
+    formatter.minimumFractionDigits = 2;
+    formatter.maximumFractionDigits = 2;
+    return field;
+}
+
+static inline NSStackView* mergeViews(NSArray<NSView*>* views)
+{
+    NSStackView* stackView = [NSStackView stackViewWithViews:views];
+    stackView.alignment = NSLayoutAttributeFirstBaseline;
+    return stackView;
+}
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoOptionsView" bundle:nil])) {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
         self.title = NSLocalizedString(@"Options", "Inspector view -> title");
     }
-
     return self;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-    [super awakeFromNib];
-    [self checkWindowSize];
+    NSView* mainView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 380, 300)];
+    mainView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.view = mainView;
+
+    [self createUIElements];
+    [self setupLayoutInView:mainView];
+    [self setupBindings];
+}
+
+- (void)createUIElements
+{
+    // --- Priority section ---
+    self.fPriorityPopUp = [self makePopUpButton];
+    [self.fPriorityPopUp addItemWithTitle:LStr(@"High")];
+    [self.fPriorityPopUp.itemArray[0] setImage:[NSImage imageNamed:@"PriorityHighTemplate"]];
+    [self.fPriorityPopUp addItemWithTitle:LStr(@"Normal")];
+    [self.fPriorityPopUp.itemArray[1] setImage:[NSImage imageNamed:@"PriorityNormalTemplate"]];
+    [self.fPriorityPopUp addItemWithTitle:LStr(@"Low")];
+    [self.fPriorityPopUp.itemArray[2] setImage:[NSImage imageNamed:@"PriorityLowTemplate"]];
+
+    // --- Speed section ---
+    self.fDownloadLimitCheck = [self makeCheckbox:LStr(@"Limit download speed:")];
+    self.fDownloadLimitField = [self makeNumberField];
+    self.fDownloadLimitLabel = [self makeColoredLabel:LStr(@"KB/s")];
+
+    self.fUploadLimitCheck = [self makeCheckbox:LStr(@"Limit upload speed:")];
+    self.fUploadLimitField = [self makeNumberField];
+    self.fUploadLimitLabel = [self makeColoredLabel:LStr(@"KB/s")];
+
+    self.fGlobalLimitCheck = [self makeCheckbox:LStr(@"Honor global limits")];
+
+    // --- Seeding section ---
+    self.fRatioPopUp = [self makePopUpButton];
+    [self.fRatioPopUp addItemsWithTitles:@[ LStr(@"Use Global Settings"), LStr(@"Unlimited"), LStr(@"Stop Seeding at Ratio") ]];
+
+    self.fRatioLimitField = [self makeFloatField];
+    self.fRatioLimitGlobalLabel = [self makeLabel:@""];
+    self.fRatioLimitGlobalLabel.textColor = [NSColor secondaryLabelColor];
+
+    self.fIdlePopUp = [self makePopUpButton];
+    [self.fIdlePopUp addItemsWithTitles:@[ LStr(@"Use Global Settings"), LStr(@"Unlimited"), LStr(@"Stop When Inactive") ]];
+
+    self.fIdleLimitField = [self makeNumberField];
+    NSNumberFormatter* idleFormatter = (NSNumberFormatter*)self.fIdleLimitField.formatter;
+    idleFormatter.minimum = @1;
+    idleFormatter.maximum = @40320;
+
+    self.fIdleLimitLabel = [self makeLabel:LStr(@"minutes")];
+    self.fIdleLimitGlobalLabel = [self makeLabel:@""];
+    self.fIdleLimitGlobalLabel.textColor = [NSColor secondaryLabelColor];
+    self.fRemoveSeedingCompleteCheck = [self makeCheckbox:LStr(@"Remove from the torrent list when seeding completes")];
+
+    // --- Peers section ---
+    self.fPeersConnectField = [self makeNumberField];
+    NSNumberFormatter* peersFormatter = (NSNumberFormatter*)self.fPeersConnectField.formatter;
+    peersFormatter.minimum = @1;
+    peersFormatter.maximum = @9999;
+    self.fPeersConnectLabel = [self makeColoredLabel:LStr(@"Maximum peers:")];
+}
+
+- (void)setupLayoutInView:(NSView*)parent
+{
+    NSTextField* priorityTitle = [self makeBoldLabel:LStr(@"Priority")];
+    NSTextField* priorityLabel = [self makeLabel:LStr(@"Torrent priority:")];
+    NSTextField* speedTitle = [self makeBoldLabel:LStr(@"Speed")];
+    NSTextField* seedingTitle = [self makeBoldLabel:LStr(@"Seeding Limits")];
+    NSTextField* ratioLabel = [self makeLabel:LStr(@"Ratio:")];
+    NSTextField* idleLabel = [self makeLabel:LStr(@"Idle:")];
+    NSTextField* peersTitle = [self makeBoldLabel:LStr(@"Peer Connections")];
+
+    // --- Priority + Speed Grid ---
+    self.fPriorityGrid = [NSGridView gridViewWithViews:@[
+        @[ priorityTitle ],
+        @[ mergeViews(@[ priorityLabel, self.fPriorityPopUp ]) ],
+        @[ speedTitle ],
+        @[ mergeViews(@[ self.fDownloadLimitCheck, self.fDownloadLimitField, self.fDownloadLimitLabel ]) ],
+        @[ mergeViews(@[ self.fUploadLimitCheck, self.fUploadLimitField, self.fUploadLimitLabel ]) ],
+        @[ self.fGlobalLimitCheck ]
+    ]];
+
+    [self.fDownloadLimitCheck.widthAnchor constraintEqualToAnchor:self.fUploadLimitCheck.widthAnchor].active = YES;
+
+    self.fPriorityGrid.rowSpacing = 6;
+    self.fPriorityGrid.columnSpacing = 8;
+    self.fPriorityGrid.rowAlignment = NSGridRowAlignmentFirstBaseline;
+
+    // --- Seeding + Peers Grid ---
+    self.fSeedingGrid = [NSGridView gridViewWithViews:@[
+        @[ seedingTitle ],
+        @[ mergeViews(@[ ratioLabel, self.fRatioPopUp, self.fRatioLimitField, self.fRatioLimitGlobalLabel ]) ],
+        @[ mergeViews(
+            @[ idleLabel, self.fIdlePopUp, self.fIdleLimitField, self.fIdleLimitLabel, self.fIdleLimitGlobalLabel ]) ],
+        @[
+            self.fRemoveSeedingCompleteCheck,
+        ],
+        @[ peersTitle ],
+        @[ mergeViews(@[ self.fPeersConnectLabel, self.fPeersConnectField ]) ]
+    ]];
+
+    [ratioLabel.widthAnchor constraintEqualToAnchor:idleLabel.widthAnchor].active = YES;
+    [self.fRatioPopUp.widthAnchor constraintEqualToAnchor:self.fIdlePopUp.widthAnchor].active = YES;
+
+    self.fSeedingGrid.rowSpacing = 6;
+    self.fSeedingGrid.columnSpacing = 8;
+    self.fSeedingGrid.rowAlignment = NSGridRowAlignmentFirstBaseline;
+
+    // --- Main StackView ---
+    self.fOptionsStackView = [NSStackView stackViewWithViews:@[ self.fPriorityGrid, self.fSeedingGrid ]];
+    self.fOptionsStackView.orientation = NSUserInterfaceLayoutOrientationVertical;
+    self.fOptionsStackView.alignment = NSLayoutAttributeLeading;
+    self.fOptionsStackView.spacing = kStackViewSpacing;
+    self.fOptionsStackView.edgeInsets = kStackViewEdgeInsets;
+    self.fOptionsStackView.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [parent addSubview:self.fOptionsStackView];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.fOptionsStackView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.fOptionsStackView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.fOptionsStackView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.fOptionsStackView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
+    ]];
+}
+
+- (void)setupBindings
+{
+    self.fPriorityPopUp.target = self;
+    self.fPriorityPopUp.action = @selector(setPriority:);
+    self.fDownloadLimitCheck.target = self;
+    self.fDownloadLimitCheck.action = @selector(setUseSpeedLimit:);
+    self.fDownloadLimitField.target = self;
+    self.fDownloadLimitField.action = @selector(setSpeedLimit:);
+    self.fDownloadLimitField.delegate = self;
+    self.fUploadLimitCheck.target = self;
+    self.fUploadLimitCheck.action = @selector(setUseSpeedLimit:);
+    self.fUploadLimitField.target = self;
+    self.fUploadLimitField.action = @selector(setSpeedLimit:);
+    self.fUploadLimitField.delegate = self;
+    self.fGlobalLimitCheck.target = self;
+    self.fGlobalLimitCheck.action = @selector(setUseGlobalSpeedLimit:);
+    self.fRatioPopUp.target = self;
+    self.fRatioPopUp.action = @selector(setRatioSetting:);
+    self.fRatioLimitField.target = self;
+    self.fRatioLimitField.action = @selector(setRatioLimit:);
+    self.fRatioLimitField.delegate = self;
+    self.fIdlePopUp.target = self;
+    self.fIdlePopUp.action = @selector(setIdleSetting:);
+    self.fIdleLimitField.target = self;
+    self.fIdleLimitField.action = @selector(setIdleLimit:);
+    self.fIdleLimitField.delegate = self;
+    self.fRemoveSeedingCompleteCheck.target = self;
+    self.fRemoveSeedingCompleteCheck.action = @selector(setRemoveWhenSeedingCompletes:);
+    self.fPeersConnectField.target = self;
+    self.fPeersConnectField.action = @selector(setPeersConnectLimit:);
+    self.fPeersConnectField.delegate = self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
 
     [self setGlobalLabels];
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(setGlobalLabels) name:@"UpdateGlobalOptions" object:nil];
+
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateOptionsNotification:)
                                                name:@"UpdateOptionsNotification"
                                              object:nil];
 }
 
+#pragma mark - Layout
+
 - (CGFloat)fHorizLayoutHeight
 {
-    return NSHeight(self.fPriorityView.frame) + 2 * kStackViewInset;
+    CGFloat h1 = self.fPriorityGrid.fittingSize.height;
+    CGFloat h2 = self.fSeedingGrid.fittingSize.height;
+    return MAX(h1, h2) + kStackViewInset * 2;
 }
 
 - (CGFloat)fHorizLayoutWidth
 {
-    return NSWidth(self.fPriorityView.frame) + NSWidth(self.fSeedingView.frame) + (2 * kStackViewInset) + kStackViewSpacing;
+    return self.fPriorityGrid.fittingSize.width + self.fSeedingGrid.fittingSize.width + 2 * kStackViewInset + kStackViewSpacing; // insets + spacing
 }
 
 - (CGFloat)fVertLayoutHeight
 {
-    return NSHeight(self.fPriorityView.frame) + NSHeight(self.fSeedingView.frame) + (2 * kStackViewInset) + kStackViewSpacing;
+    return self.fPriorityGrid.fittingSize.height + self.fSeedingGrid.fittingSize.height + 2 * kStackViewInset + kStackViewSpacing; // insets + spacing
 }
 
 - (CGFloat)fHeightChange
@@ -111,9 +371,9 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     CGFloat difference = self.fHeightChange;
 
-    // we check for existence of self.view.window
-    // as when view is shown from TorrentTableView.mm popover we don't want to customize the view height
-    if (self.view.window) {
+    // Only the Inspector window resizes to fit this view;
+    // the popover from TorrentTableView.mm keeps its height.
+    if ([self.view.window.windowController isKindOfClass:InfoWindowController.class]) {
         viewRect.size.height -= difference;
     }
 
@@ -134,15 +394,14 @@ static CGFloat const kStackViewSpacing = 8.0;
 - (void)checkWindowSize
 {
     self.oldHeight = self.fCurrentHeight;
-
     [self updateWindowLayout];
 }
 
 - (void)updateWindowLayout
 {
-    // we check for existence of self.view.window
-    // as when view is shown from TorrentTableView.mm popover we don't want to customize the view height
-    if (self.view.window) {
+    // Only the Inspector window resizes to fit this view;
+    // the popover from TorrentTableView.mm keeps its height.
+    if ([self.view.window.windowController isKindOfClass:InfoWindowController.class]) {
         [self checkLayout];
 
         CGFloat difference = self.fHeightChange;
@@ -159,7 +418,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     } else {
         // set popover width
         NSRect rect = self.view.frame;
-        rect.size.width = NSWidth(self.fOptionsStackView.frame) + (2 * kStackViewInset);
+        rect.size.width = self.fOptionsStackView.fittingSize.width;
         self.view.frame = rect;
     }
 }
@@ -388,9 +647,11 @@ static CGFloat const kStackViewSpacing = 8.0;
     } else {
         self.fPeersConnectField.stringValue = @"";
     }
+
+    [self checkWindowSize];
 }
 
-- (IBAction)setUseSpeedLimit:(id)sender
+- (void)setUseSpeedLimit:(id)sender
 {
     BOOL const upload = sender == self.fUploadLimitCheck;
 
@@ -416,7 +677,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setUseGlobalSpeedLimit:(id)sender
+- (void)setUseGlobalSpeedLimit:(id)sender
 {
     if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
@@ -430,7 +691,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setSpeedLimit:(id)sender
+- (void)setSpeedLimit:(id)sender
 {
     BOOL const upload = sender == self.fUploadLimitField;
     NSInteger const limit = [sender intValue];
@@ -442,7 +703,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setRatioSetting:(id)sender
+- (void)setRatioSetting:(id)sender
 {
     NSInteger setting;
     BOOL single = NO;
@@ -475,9 +736,10 @@ static CGFloat const kStackViewSpacing = 8.0;
     self.fRatioLimitGlobalLabel.hidden = setting != TR_RATIOLIMIT_GLOBAL;
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self checkWindowSize];
 }
 
-- (IBAction)setRatioLimit:(id)sender
+- (void)setRatioLimit:(id)sender
 {
     CGFloat const limit = [sender floatValue];
 
@@ -488,7 +750,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setIdleSetting:(id)sender
+- (void)setIdleSetting:(id)sender
 {
     NSInteger setting;
     BOOL single = NO;
@@ -522,9 +784,10 @@ static CGFloat const kStackViewSpacing = 8.0;
     self.fIdleLimitGlobalLabel.hidden = setting != TR_IDLELIMIT_GLOBAL;
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self checkWindowSize];
 }
 
-- (IBAction)setIdleLimit:(id)sender
+- (void)setIdleLimit:(id)sender
 {
     NSUInteger const limit = [sender integerValue];
 
@@ -535,7 +798,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setRemoveWhenSeedingCompletes:(id)sender
+- (void)setRemoveWhenSeedingCompletes:(id)sender
 {
     if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
@@ -549,7 +812,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setPriority:(id)sender
+- (void)setPriority:(id)sender
 {
     tr_priority_t priority;
     switch ([sender indexOfSelectedItem]) {
@@ -576,7 +839,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (IBAction)setPeersConnectLimit:(id)sender
+- (void)setPeersConnectLimit:(id)sender
 {
     NSInteger limit = [sender intValue];
 
@@ -646,6 +909,7 @@ static CGFloat const kStackViewSpacing = 8.0;
         self.fPeersConnectField.enabled = NO;
         self.fPeersConnectField.stringValue = @"";
         self.fPeersConnectLabel.enabled = NO;
+        [self checkWindowSize];
     } else {
         [self updateOptions];
     }
@@ -669,6 +933,8 @@ static CGFloat const kStackViewSpacing = 8.0;
         globalIdle = NSLocalizedString(@"disabled", "Info options -> global setting");
     }
     self.fIdleLimitGlobalLabel.stringValue = globalIdle;
+
+    [self checkWindowSize];
 }
 
 - (void)updateOptionsNotification:(NSNotification*)notification

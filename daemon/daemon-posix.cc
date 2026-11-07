@@ -174,11 +174,13 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
         }
 
         {
-            int const fd = open("/dev/null", O_RDWR, 0);
+            auto const fd = open("/dev/null", O_RDWR, 0);
             dup2(fd, STDIN_FILENO);
             dup2(fd, STDOUT_FILENO);
             dup2(fd, STDERR_FILENO);
-            close(fd);
+            if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO) {
+                close(fd);
+            }
         }
 
 #endif

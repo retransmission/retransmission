@@ -17,7 +17,7 @@
 #include "libtransmission/block-info.h"
 #include "libtransmission/crypto-utils.h" // tr_sha1
 #include "libtransmission/digest.h"
-#include "libtransmission/error-types.h"
+#include "libtransmission/error.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
@@ -33,10 +33,8 @@ struct StorageDescriptor;
  * Reads `std::size(setme)` bytes of torrent data, starting at byte `begin`.
  *
  * Safe to call from any thread.
- *
- * @return 0 on success, or an errno value on failure.
  */
-[[nodiscard]] tr_error_code_t tr_ioRead(
+[[nodiscard]] tr_error tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
@@ -49,9 +47,9 @@ struct StorageDescriptor;
  * Safe to call from any thread.
  *
  * Does no error handling of its own. The caller decides what to do with
- * the returned code.
+ * the returned error.
  */
-[[nodiscard]] tr_error_code_t tr_ioWrite(
+[[nodiscard]] tr_error tr_ioWrite(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
@@ -106,10 +104,8 @@ template<typename GetBlock> // std::span<uint8_t const>(tr_block_index_t)
  * Recalculates a piece's hash from the data on disk.
  *
  * Safe to call from any thread.
- *
- * @return 0 on success, or an errno value on failure.
  */
-[[nodiscard]] tr_error_code_t tr_ioRecalculateHash(
+[[nodiscard]] tr_error tr_ioRecalculateHash(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_piece_index_t piece,

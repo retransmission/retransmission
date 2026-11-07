@@ -31,8 +31,10 @@ permissions:
   pull-requests: write
 
 # A new request supersedes a review still in progress on the same PR.
+# Any other label also starts a run, which the job then skips.
+# Each of those runs gets a group of its own, so it cannot cancel a review.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}-${{ github.event.label.name == 'needs ai review' && 'review' || github.run_id }}
   cancel-in-progress: true
 
 jobs:

@@ -21,6 +21,7 @@
 #include <libtransmission/crypto-utils.h> // tr_rand_buffer(), tr_rand_int()
 #include <libtransmission/error.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
 
 #include "test-fixtures.h"
@@ -140,7 +141,7 @@ TYPED_TEST(VariantIntTest, getIntTypes)
     test(std::numeric_limits<uint32_t>::max() + uint64_t{ 1 });
 }
 
-TEST_F(VariantTest, mergeStringsTakesOwnership)
+TEST_F(VariantTest, cloneTakesOwnershipOfStrings)
 {
     auto const is_equal_string = [](std::string_view const a, std::string_view const b) {
         return a == b;
@@ -155,21 +156,13 @@ TEST_F(VariantTest, mergeStringsTakesOwnership)
     auto const src = tr_variant::unmanaged_string(Original);
     auto src_sv = src.value_if<std::string_view>().value_or(""sv);
 
-    // set up `tgt` to hold another unmanaged string
-    auto constexpr WillBeReplaced = "some other string"sv;
-    static_assert(Original != WillBeReplaced);
-    auto tgt = tr_variant::unmanaged_string(WillBeReplaced);
-    auto tgt_sv = tgt.value_if<std::string_view>().value_or(""sv);
-
-    // test that `src` and `tgt` hold unmanaged strings
+    // test that `src` holds an unmanaged string
     EXPECT_TRUE(is_equal_string(Original, src_sv));
-    EXPECT_TRUE(is_equal_string(WillBeReplaced, tgt_sv));
     EXPECT_TRUE(is_same_address(Original, src_sv));
-    EXPECT_TRUE(is_same_address(WillBeReplaced, tgt_sv));
 
-    tgt.merge(src);
+    auto const tgt = src.clone();
 
-    // test that `tgt` now holds its own copy of `Original`.
+    // test that `tgt` holds its own copy of `Original`.
     auto const actual = tgt.value_if<std::string_view>().value_or(""sv);
     EXPECT_TRUE(is_equal_string(Original, actual));
     EXPECT_FALSE(is_same_address(Original, actual));
@@ -446,39 +439,19 @@ TEST_F(VariantTest, bencToJson)
     }
 }
 
-TEST_F(VariantTest, mergeMapsCreatesCombinedMap)
+TEST_F(VariantTest, mapMergeKeepsExistingNestedMapUnchanged)
 {
     auto serde = tr_variant_serde::json();
     serde.compact();
     serde.inplace();
 
-    auto src = serde.parse(R"({"src_key":123})"sv).value_or(tr_variant{});
-    auto tgt = serde.parse(R"({"tgt_key":456})"sv).value_or(tr_variant{});
-    tgt.merge(src);
-    EXPECT_EQ(R"({"src_key":123,"tgt_key":456})"sv, serde.to_string(tgt));
-}
-
-TEST_F(VariantTest, mergeMapsPreservesTargetMapEntries)
-{
-    auto serde = tr_variant_serde::json();
-    serde.compact();
-    serde.inplace();
-
-    auto src = serde.parse(R"({"src_key": 123, "dup_key":789})"sv).value_or(tr_variant{});
-    auto tgt = serde.parse(R"({"tgt_key": 456, "dup_key":456})"sv).value_or(tr_variant{});
-    tgt.merge(src);
-    EXPECT_EQ(R"({"dup_key":456,"src_key":123,"tgt_key":456})"sv, serde.to_string(tgt));
-}
-
-TEST_F(VariantTest, mergeMapsKeepsExistingNestedMapUnchanged)
-{
-    auto serde = tr_variant_serde::json();
-    serde.compact();
-    serde.inplace();
-
-    auto src = serde.parse(R"({"dup_key":{"src_only":2}})"sv).value_or(tr_variant{});
+    auto const src = serde.parse(R"({"dup_key":{"src_only":2}})"sv).value_or(tr_variant{});
     auto tgt = serde.parse(R"({"dup_key":{"tgt_only":1}})"sv).value_or(tr_variant{});
-    tgt.merge(src);
+    auto const* const src_map = src.get_if<tr_variant::Map>();
+    auto* const tgt_map = tgt.get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, src_map);
+    ASSERT_NE(nullptr, tgt_map);
+    tgt_map->merge(*src_map);
     EXPECT_EQ(R"({"dup_key":{"tgt_only":1}})"sv, serde.to_string(tgt));
 }
 
@@ -518,30 +491,6 @@ TEST_F(VariantTest, mapMergeMovePreservesTargetEntries)
     map_tgt.merge(std::move(map_src));
 
     EXPECT_EQ(R"({"dup_key":1,"src_key":3})"sv, serde.to_string(tr_variant{ std::move(map_tgt) }));
-}
-
-TEST_F(VariantTest, variantMergeMovePreservesTargetEntries)
-{
-    auto serde = tr_variant_serde::json();
-    serde.compact();
-    serde.inplace();
-
-    auto src = serde.parse(R"({"src_key": 123, "dup_key":789})"sv).value_or(tr_variant{});
-    auto tgt = serde.parse(R"({"tgt_key": 456, "dup_key":456})"sv).value_or(tr_variant{});
-    tgt.merge(std::move(src));
-    EXPECT_EQ(R"({"dup_key":456,"src_key":123,"tgt_key":456})"sv, serde.to_string(tgt));
-}
-
-TEST_F(VariantTest, variantMergeMoveCopiesVectorValues)
-{
-    auto serde = tr_variant_serde::json();
-    serde.compact();
-    serde.inplace();
-
-    auto src = serde.parse(R"([{"a":1},"x"])"sv).value_or(tr_variant{});
-    auto tgt = serde.parse(R"([0])"sv).value_or(tr_variant{});
-    tgt.merge(std::move(src));
-    EXPECT_EQ(R"([{"a":1},"x"])"sv, serde.to_string(tgt));
 }
 
 TEST_F(VariantTest, mapCloneReturnsDeepCopy)
@@ -660,7 +609,20 @@ TEST_F(VariantTest, variantAssingmentOperator)
     EXPECT_EQ(var.index(), tr_variant::StringIndex);
 }
 
-TEST_F(VariantTest, mergeOverwritesDifferingTypes)
+TEST_F(VariantTest, assignmentFromOwnString)
+{
+    // too long for the small-string buffer, so the old string is on the heap
+    auto const expected = std::string(64, 'x');
+
+    auto var = tr_variant{ expected };
+    var = *var.value_if<std::string_view>();
+    EXPECT_EQ(expected, var.value_if<std::string_view>().value_or(""sv));
+
+    var = std::data(*var.value_if<std::string_view>());
+    EXPECT_EQ(expected, var.value_if<std::string_view>().value_or(""sv));
+}
+
+TEST_F(VariantTest, cloneCopiesEveryType)
 {
     auto const variants = std::to_array<std::pair<tr_variant, std::string_view>>({
         { tr_variant{ true }, "true" },
@@ -674,22 +636,18 @@ TEST_F(VariantTest, mergeOverwritesDifferingTypes)
 
     auto serde = tr_variant_serde::json();
     serde.compact();
-    serde.inplace();
 
-    for (auto const& [src, src_expected] : variants) {
-        for (auto const& [tgt, tgt_expected] : variants) {
-            if (&src != &tgt) {
-                // set up `var` to be a copy of `src`
-                auto var = src.clone();
-                EXPECT_EQ(src_expected, serde.to_string(var));
-
-                var.merge(tgt);
-
-                // test that `var` is now a copy of `tgt`
-                EXPECT_EQ(tgt_expected, serde.to_string(var));
-            }
-        }
+    for (auto const& [var, expected] : variants) {
+        EXPECT_EQ(expected, serde.to_string(var.clone()));
     }
+}
+
+TEST_F(VariantTest, cloneCopiesVectorValues)
+{
+    auto serde = tr_variant_serde::json();
+    serde.compact();
+    auto const src = serde.parse(R"([{"a":1},"x"])"sv).value_or(tr_variant{});
+    EXPECT_EQ(R"([{"a":1},"x"])"sv, serde.to_string(src.clone()));
 }
 
 TEST_F(VariantTest, stackSmashBenc)
@@ -957,7 +915,7 @@ TEST_F(VariantTest, visitsNodesDepthFirst)
 
 TEST_F(VariantTest, variantFromBufFuzz)
 {
-    auto benc_serde = tr_variant_serde::json();
+    auto benc_serde = tr_variant_serde::benc();
     auto json_serde = tr_variant_serde::json();
     auto buf = std::vector<char>{};
 
@@ -996,4 +954,18 @@ TEST_F(VariantTest, serdeEnd)
         EXPECT_EQ(*benc_serde.end(), c);
         EXPECT_EQ(benc_serde.end() - std::data(in), pos);
     }
+}
+
+TEST_F(VariantTest, serdeFileOpsIgnoreAnEarlierError)
+{
+    auto const sandbox = tr::test::Sandbox{};
+    auto const missing = tr_pathbuf{ sandbox.path(), "/missing.json"sv };
+    auto const filename = tr_pathbuf{ sandbox.path(), "/test.json"sv };
+
+    // each call starts with `error_` still holding the failure before it
+    auto serde = tr_variant_serde::json();
+    EXPECT_FALSE(serde.parse_file(missing));
+    EXPECT_TRUE(serde.to_file(tr_variant{ 1 }, filename)) << serde.error_;
+    EXPECT_FALSE(serde.parse_file(missing));
+    EXPECT_TRUE(serde.parse_file(filename)) << serde.error_;
 }

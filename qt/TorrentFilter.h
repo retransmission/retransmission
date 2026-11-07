@@ -5,17 +5,15 @@
 
 #pragma once
 
-#include <array>
+#include <sigslot/signal.hpp>
 
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/torrent-filter.h>
+
 #include "Prefs.h"
 #include "UserMetaType.h"
-
-class QString;
-
-class Torrent;
 
 class TorrentFilter : public QSortFilterProxyModel
 {
@@ -29,8 +27,6 @@ public:
     TorrentFilter& operator=(TorrentFilter&&) = delete;
     TorrentFilter& operator=(TorrentFilter const&) = delete;
 
-    [[nodiscard]] std::array<int, ShowModeCount> countTorrentsPerMode() const;
-
 protected:
     // QSortFilterProxyModel
     [[nodiscard]] bool filterAcceptsRow(int source_row, QModelIndex const& source_parent) const override;
@@ -41,6 +37,11 @@ private slots:
     void refilter();
 
 private:
+    void refilterSoon();
+
     QTimer refilter_timer_;
     Prefs const& prefs_;
+    tr::app::TorrentFilter filter_;
+    sigslot::scoped_connection filter_changed_ = filter_.changed.connect_scoped(
+        [this](tr::app::TorrentFilter::Change /*change*/) { refilterSoon(); });
 };

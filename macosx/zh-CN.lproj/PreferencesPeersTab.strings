@@ -1,0 +1,15 @@
+"Update" = "更新";
+"Blocklist:" = "屏蔽列表：";
+"Enable blocklist" = "阻止来自屏蔽列表中的节点连接";
+"High connection limits might significantly impact system performance" = "高连接限制可能会显著影响系统性能";
+"Use PEX to find more peers for public torrents" = "对公共 Torrent 文件使用节点交换（PEX）";
+"Maximum peers for new torrents:" = "新传输的最大连接数：";
+"Maximum peers overall:" = "全局最大连接数：";
+"Peer limits:" = "连接数：";
+"Prefer encryption" = "优先选择加密的节点";
+"Encryption:" = "加密：";
+"Require encryption" = "忽略未加密的节点";
+"Automatically update weekly" = "每周自动更新";
+"Use DHT to find more peers for public torrents" = "对于公共 Torrent 文件，使用分布式哈希表（DHT）";
+"Use Local Peer Discovery to find more peers for public torrents" = "对公共 Torrent 文件使用本地节点发现";
+"URL:" = "网址：";

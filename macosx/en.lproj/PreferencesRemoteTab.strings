@@ -1,0 +1,11 @@
+"HTTP port:" = "HTTP port:";
+"Allow remote access" = "Allow remote access";
+"Use authentication" = "Use authentication";
+"Address" = "Address";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP addresses may use wildcards, such as 192.168.*.*";
+"Password:" = "Password:";
+"Username:" = "Username:";
+"This enables the web interface and allows remote requests" = "This enables the web interface and allows remote requests";
+"Open Web Client" = "Open Web Client";
+"Only allow these IP addresses:" = "Only allow these IP addresses:";
+"Display the web interface with Bonjour" = "Display the web interface with Bonjour";

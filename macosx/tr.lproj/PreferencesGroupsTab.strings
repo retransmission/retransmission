@@ -1,0 +1,9 @@
+"Color" = "Renk";
+"Name" = "Ad";
+"Group Name:" = "Öbek adı:";
+"Other…" = "Diğer…";
+"Custom location:" = "Konum belirt:";
+"The location will only be set when adding the torrent" = "Konum yalnızca aktarım eklenirken belirlenecektir";
+"Assign group to new torrents based on criteria" = "Öbeği yeni aktarımlara şu kriterlere göre ekle:";
+"Edit…" = "Düzenle…";
+"Torrents will be assigned to the first group where all criteria are met" = "Aktarımlar tüm kriterlerin sağlandığı ilk gruba atanacaklardır";

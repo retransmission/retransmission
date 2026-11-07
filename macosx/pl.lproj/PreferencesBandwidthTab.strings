@@ -1,0 +1,11 @@
+"Upload:" = "Współczynnik wysyłania:";
+"Download:" = "Współczynnik pobierania:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Globalne ograniczenia prędkości:";
+"Alternative speed limits:" = "Tryb ograniczenia prędkości:";
+"Override normal speed limits manually or at scheduled times" = "Po włączeniu ograniczenie prędkości zastępuje globalne ograniczenia prędkości";
+"Scheduled times:" = "Zaplanowane ograniczenie prędkości:";
+"to" = "do";
+"Every Day" = "Codziennie";
+"Weekdays" = "Dni robocze";
+"Weekends" = "Weekendy";

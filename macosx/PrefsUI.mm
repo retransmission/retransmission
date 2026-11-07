@@ -4,7 +4,17 @@
 
 #import "PrefsUI.h"
 
+static CGFloat const defaultPadding = 19;
+
 @implementation PrefsUI
+
++ (NSTextField*)sectionTitle:(NSString*)text
+{
+    NSTextField* label = [NSTextField labelWithString:text];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.font = [NSFont preferredFontForTextStyle:NSFontTextStyleTitle3 options:@{}];
+    return label;
+}
 
 + (NSTextField*)smallLabel:(NSString*)text
 {
@@ -36,7 +46,16 @@
     return button;
 }
 
-+ (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max
++ (NSPopUpButton*)popUpButton
+{
+    NSPopUpButton* button = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    button.bezelStyle = NSBezelStyleRounded;
+    button.autoenablesItems = NO;
+    return button;
+}
+
++ (NSTextField*)numberInputFieldWithFormatter:(NSNumberFormatter*)formatter width:(CGFloat)width
 {
     NSTextField* textField = [[NSTextField alloc] init];
     textField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -46,20 +65,53 @@
 
     [textField.widthAnchor constraintEqualToConstant:width].active = YES;
 
+    textField.formatter = formatter;
+
+    return textField;
+}
+
++ (NSTextField*)numberInputFieldWithWidth:(CGFloat)width minimum:(NSInteger)min maximum:(NSInteger)max
+{
     NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
     formatter.numberStyle = NSNumberFormatterNoStyle;
     formatter.allowsFloats = NO;
     formatter.minimum = @(min);
     formatter.maximum = @(max);
-    textField.formatter = formatter;
+
+    NSTextField* textField = [self numberInputFieldWithFormatter:formatter width:width];
+
+    return textField;
+}
+
++ (NSTextField*)decimalInputFieldWithWidth:(CGFloat)width
+                                   minimum:(NSInteger)min
+                                   maximum:(NSInteger)max
+                                 minDigits:(NSUInteger)minDigits
+                                 maxDigits:(NSUInteger)maxDigits
+{
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterNoStyle;
+    formatter.allowsFloats = YES;
+    formatter.minimumIntegerDigits = 1;
+    formatter.minimum = @(min);
+    formatter.maximum = @(max);
+    formatter.minimumFractionDigits = minDigits;
+    formatter.maximumFractionDigits = maxDigits;
+
+    NSTextField* textField = [self numberInputFieldWithFormatter:formatter width:width];
 
     return textField;
 }
 
 + (NSView*)indentedView:(NSView*)view
 {
+    return [self indentedView:view level:1];
+}
+
++ (NSView*)indentedView:(NSView*)view level:(NSInteger)level
+{
     NSStackView* const stack = [NSStackView stackViewWithViews:@[ view ]];
-    stack.edgeInsets = { 0, 19, 0, 0 };
+    stack.edgeInsets = { 0, defaultPadding * level, 0, 0 };
     return stack;
 }
 

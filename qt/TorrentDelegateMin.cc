@@ -21,9 +21,10 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleOptionProgressBar>
 
+#include <libtransmission-app/torrent.h>
+
 #include "Formatter.h"
 #include "StyleHelper.h"
-#include "Torrent.h"
 #include "Utils.h"
 
 /***
@@ -140,24 +141,20 @@ ItemLayout::ItemLayout(
 
 } // namespace
 
-QSize TorrentDelegateMin::sizeHint(QStyleOptionViewItem const& option, Torrent const& tor) const
+QSize TorrentDelegateMin::itemSizeHint(QStyleOptionViewItem const& option, Item const& item) const
 {
     auto const m = margin(*QApplication::style());
-    auto const layout = ItemLayout{ tor.name(),
-                                    shortStatusString(tor),
-                                    QIcon{},
-                                    option.font,
-                                    option.direction,
-                                    QPoint{},
-                                    option.rect.width() - (m.width() * 2) };
+    auto const layout = ItemLayout{ item.name, shortStatusString(item.torrent),      QIcon{}, option.font, option.direction,
+                                    QPoint{},  option.rect.width() - (m.width() * 2) };
     return layout.size() + m * 2;
 }
 
-void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem const& option, Torrent const& tor) const
+void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem const& option, Item const& item) const
 {
     auto const* style = QApplication::style();
+    auto const& tor = item.torrent;
 
-    bool const is_paused(tor.isPaused());
+    bool const is_paused = tor.is_paused();
 
     bool const is_item_selected((option.state & QStyle::State_Selected) != 0);
     bool const is_item_enabled((option.state & QStyle::State_Enabled) != 0);
@@ -189,8 +186,8 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     auto const color_group = is_item_active ? QPalette::Normal : QPalette::Inactive;
     auto const color_role = is_item_selected ? QPalette::HighlightedText : QPalette::Text;
 
-    auto text_color = (tor.hasError() && !is_item_selected) ? QColor{ Qt::GlobalColor::red } :
-                                                              option.palette.color(color_group, color_role);
+    auto text_color = (tor.has_error() && !is_item_selected) ? QColor{ Qt::GlobalColor::red } :
+                                                               option.palette.color(color_group, color_role);
     if (is_paused || !is_item_enabled) {
         text_color.setAlphaF(0.5);
     }
@@ -205,12 +202,12 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     // Native icons draw QIcon::Selected in the active HighlightedText, which inactive selections don't use.
     QIcon::Mode const emblem_im = is_item_selected && is_item_active ? QIcon::Selected : QIcon::Normal;
-    QIcon const emblem_icon = tor.hasError() ? warningEmblem() : QIcon{};
+    QIcon const emblem_icon = tor.has_error() ? warningEmblem() : QIcon{};
 
     // layout
     QSize const m(margin(*style));
     QRect const content_rect(option.rect.adjusted(m.width(), m.height(), -m.width(), -m.height()));
-    auto const layout = ItemLayout{ tor.name(), //
+    auto const layout = ItemLayout{ item.name, //
                                     shortStatusString(tor),
                                     emblem_icon,
                                     option.font,
@@ -221,7 +218,7 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     // render
     painter->setPen(text_color);
 
-    tor.getMimeTypeIcon().paint(painter, layout.icon_rect, Qt::AlignCenter, icon_mode, icon_state);
+    item.icon.paint(painter, layout.icon_rect, Qt::AlignCenter, icon_mode, icon_state);
 
     if (!emblem_icon.isNull()) {
         emblem_icon.paint(painter, layout.emblem_rect, Qt::AlignCenter, emblem_im, icon_state);
@@ -233,11 +230,11 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     painter->drawText(layout.status_rect, Qt::AlignLeft | Qt::AlignVCenter, layout.statusText());
     progress_bar_style_.rect = layout.bar_rect;
 
-    if (tor.isDownloading()) {
+    if (tor.is_downloading()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, BlueBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, BlueBack);
         progress_bar_style_.palette.setColor(QPalette::Window, BlueBack);
-    } else if (tor.isSeeding()) {
+    } else if (tor.is_seeding()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, GreenBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, GreenBack);
         progress_bar_style_.palette.setColor(QPalette::Window, GreenBack);
@@ -248,7 +245,7 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     }
 
     progress_bar_style_.state = progress_bar_state;
-    progress_bar_style_.text = Formatter::percentToString(tor.percentDone());
+    progress_bar_style_.text = Formatter::percentToString(tor.percent_done());
     progress_bar_style_.textVisible = true;
     progress_bar_style_.textAlignment = Qt::AlignCenter;
     setProgressBarPercentDone(option, tor);

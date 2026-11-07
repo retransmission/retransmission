@@ -1,0 +1,11 @@
+"HTTP port:" = "Entzuten ari den ataka:";
+"Allow remote access" = "Gaitu urruneko sarbidea";
+"Use authentication" = "Behartu autentifikazioa";
+"Address" = "IP Helbidea";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP helbideak * komodina izan dezake";
+"Password:" = "Pasahitza:";
+"Username:" = "Erabiltzaile-izena";
+"This enables the web interface and allows remote requests" = "Aukera honek web interfazea gaitu eta urruneko eskaerak baimentzen ditu";
+"Open Web Client" = "Abiarazi Web Interfazea";
+"Only allow these IP addresses:" = "Baimendu soilik hurrengo IP helbidetik konektatzea:";
+"Display the web interface with Bonjour" = "Erakutsi web interfazea Bonjour-ekin";

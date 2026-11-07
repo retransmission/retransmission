@@ -1,0 +1,9 @@
+"Color" = "צבע";
+"Name" = "שם";
+"Group Name:" = "שם קבוצה:";
+"Other…" = "אחר…";
+"Custom location:" = "מקום משלך:";
+"The location will only be set when adding the torrent" = "המיקום יוגדר רק בעת הוספת העברה";
+"Assign group to new torrents based on criteria" = "להקצות קבוצה להעברות חדשות לפי תנאים מסוימים";
+"Edit…" = "עריכה…";
+"Torrents will be assigned to the first group where all criteria are met" = "העברות יוקצו לקבוצה הראשונה שכל התנאים שלה תואמים";

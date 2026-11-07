@@ -1,0 +1,9 @@
+"Color" = "色";
+"Name" = "名前";
+"Group Name:" = "グループ名:";
+"Other…" = "ほか...";
+"Custom location:" = "独自の保存場所:";
+"The location will only be set when adding the torrent" = "保存場所は転送項目が追加された場合にのみ設定されます";
+"Assign group to new torrents based on criteria" = "新たな転送項目を条件でグループに割り当て";
+"Edit…" = "編集...";
+"Torrents will be assigned to the first group where all criteria are met" = "転送項目は、すべての条件を満たす最初のグループに割り当てられます";

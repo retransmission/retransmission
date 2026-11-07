@@ -15,7 +15,6 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/types.h> // TR_RATIO_NA, TR_RATIO_INF
 #include <libtransmission/utils.h> // tr_locale_set_global()
 #include <libtransmission/values.h>
 
@@ -313,8 +312,8 @@ TEST_F(ValuesTest, ratioStates)
 
 TEST_F(ValuesTest, ratioFromDouble)
 {
-    EXPECT_TRUE(Ratio::from_double(TR_RATIO_NA).is_none());
-    EXPECT_TRUE(Ratio::from_double(TR_RATIO_INF).is_infinite());
+    EXPECT_TRUE(Ratio::from_double(Ratio::WireNone).is_none());
+    EXPECT_TRUE(Ratio::from_double(Ratio::WireInfinite).is_infinite());
     EXPECT_TRUE(Ratio::from_double(std::numeric_limits<double>::quiet_NaN()).is_none());
     EXPECT_EQ(2.0, Ratio::from_double(2.0).to_double());
     EXPECT_EQ(Ratio::from_double(0.5), (Ratio{ 1U, 2U }));

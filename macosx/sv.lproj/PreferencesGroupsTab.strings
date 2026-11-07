@@ -1,0 +1,9 @@
+"Color" = "Färg";
+"Name" = "Namn";
+"Group Name:" = "Gruppnamn:";
+"Other…" = "Andra…";
+"Custom location:" = "Anpassad plats:";
+"The location will only be set when adding the torrent" = "Platsen kommer endast att ställas in när överföringen läggs till";
+"Assign group to new torrents based on criteria" = "Tilldela grupp till nya överföringar baserat på kriterier";
+"Edit…" = "Redigera…";
+"Torrents will be assigned to the first group where all criteria are met" = "Överföringar kommer att tilldelas den första gruppen där alla kriterier är uppfyllda";
