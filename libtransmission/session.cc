@@ -1997,16 +1997,17 @@ void tr_session::update_active_request_count(size_t const previous, size_t const
 
 void tr_session::resume_deferred_requests()
 {
-    if (!requests_deferred_ || !peer_mgr_) {
+    if (!requests_deferred_) {
         return;
     }
 
-    // Wait for an eighth of the budget. A disk that keeps the budget full
-    // would otherwise get a pass over every peer per finished write, and
-    // the writes still queued keep the disk busy meanwhile.
+    // While writes are queued, wait for an eighth of the budget. A disk
+    // that keeps the budget full would otherwise get a pass over every
+    // peer per finished write, and the queued writes keep it busy
+    // meanwhile. Once the queue is empty, no later write will free more.
     auto const spare = spare_request_blocks();
     auto const enough = effective_write_budget_bytes() / TrBlockSize / 8U;
-    if (!spare || *spare < enough) {
+    if (!spare || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
         return;
     }
 

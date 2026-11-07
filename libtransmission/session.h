@@ -748,9 +748,9 @@ public:
 
     [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
 
-    // A request refill found the disk write budget spent. Only finished
-    // disk writes free it, so peers refill again from there, not at the
-    // next peer manager pulse.
+    // A request refill found the disk write budget spent. Refill again
+    // when finished disk writes free enough of it. Budget freed any other
+    // way, such as by a disconnect, waits for the next peer manager pulse.
     void defer_requests() noexcept
     {
         requests_deferred_ = true;
@@ -1534,11 +1534,13 @@ private:
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
-    size_t active_request_count_ = 0U;
-    bool requests_deferred_ = false;
     std::atomic<size_t> n_verify_jobs_;
     std::atomic<time_t> date_active_{ 0 };
     std::atomic<time_t> busy_window_{ 0 };
+
+    // Request accounting against the disk write budget. Session thread only.
+    size_t active_request_count_ = 0U;
+    bool requests_deferred_ = false;
 
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;

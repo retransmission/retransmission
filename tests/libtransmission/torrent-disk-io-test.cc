@@ -745,7 +745,7 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
 
 TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
 {
-    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    auto* const tor = makeBudgetTorrent("refill.bin");
     tr_torrentStart(tor);
     ASSERT_TRUE(waitFor(
         [tor]() {
@@ -772,10 +772,42 @@ TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
     ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == NFreed * TrBlockSize; }, MaxWaitMsec));
     EXPECT_EQ(BudgetBlocks, requestCount());
 
-    // The peer manager's pulse would also refill, but only every 500 ms.
-    // Finished writes leave NFreed blocks spare until a refill claims them.
+    // Finished writes free NFreed blocks, which a refill then requests.
+    // The peer manager's pulse would request them too, so it is stopped.
+    blockingRunInSessionThread([this] { tr::detail::tr_peerMgrStopBandwidthTimer(peerManager()); });
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == 0U && spareBlocks() < NFreed; }, 200));
+    EXPECT_TRUE(waitFor(
+        [this]() { return session_->local_data.enqueued_write_bytes() == 0U && requestCount() == BudgetBlocks + NFreed; },
+        MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, peersResumeWhenTheDiskQueueDrains)
+{
+    auto* const tor = makeBudgetTorrent("drain.bin");
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    std::ignore = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+
+    // One block, less than an eighth of the budget, and nothing else queued.
+    auto const request = std::ranges::find_if(first.requests, [](auto const& r) { return r.length == TrBlockSize; });
+    ASSERT_NE(std::end(first.requests), request);
+    receiveBlock(first, *request);
+    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == TrBlockSize; }, MaxWaitMsec));
+
+    blockingRunInSessionThread([this] { tr::detail::tr_peerMgrStopBandwidthTimer(peerManager()); });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor(
+        [this]() { return session_->local_data.enqueued_write_bytes() == 0U && requestCount() == BudgetBlocks + 1U; },
+        MaxWaitMsec));
 }
 
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)

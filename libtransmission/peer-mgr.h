@@ -680,6 +680,13 @@ void tr_peerMgrFree(tr_peerMgr const* manager);
 // Give every downloading peer a chance to request more blocks.
 void tr_peerMgrRefillRequests(tr_peerMgr* manager);
 
+namespace tr::detail
+{
+// For tests. Without the periodic peer pulse, only a request refill
+// sends new requests.
+void tr_peerMgrStopBandwidthTimer(tr_peerMgr* manager);
+} // namespace tr::detail
+
 void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> socket);
 
 size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, std::span<tr_pex const> pex);
