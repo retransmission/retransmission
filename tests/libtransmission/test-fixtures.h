@@ -455,6 +455,11 @@ protected:
         return session_->peer_mgr_.get();
     }
 
+    [[nodiscard]] tr_rpc_server* rpcServer() const noexcept
+    {
+        return session_->rpc_server_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);

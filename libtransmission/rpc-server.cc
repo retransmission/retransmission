@@ -921,6 +921,14 @@ tr_rpc_server::tr_rpc_server(tr_session* session_in, Settings&& settings)
 
 void tr_rpc_server::load(Settings&& settings)
 {
+    // start_server() keeps a running listener, so a changed one must stop here,
+    // while bind_address_ still names the Unix socket that stop_server() unlinks
+    if (httpd &&
+        (settings.bind_address_str != settings_.bind_address_str || settings.port != settings_.port ||
+         settings.socket_mode != settings_.socket_mode)) {
+        stop_server(this);
+    }
+
     settings_ = std::move(settings);
 
     if (std::string& path = settings_.url; !path.ends_with('/')) {
@@ -934,7 +942,8 @@ void tr_rpc_server::load(Settings&& settings)
     set_password(settings_.salted_password);
 
     if (!bind_address_->from_string(settings_.bind_address_str)) {
-        // NOTE: bind_address_ is default initialized to INADDR_ANY
+        // from_string() leaves the address alone, which a reload may have set
+        *bind_address_ = tr_rpc_address{};
         tr_logAddWarn(
             fmt::format(
                 "The '{key}' setting is '{value}' but must be an IPv4 or IPv6 address or a Unix socket path. Using default value '0.0.0.0'",

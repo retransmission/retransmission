@@ -19,8 +19,10 @@
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/net.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/rpc-server.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
@@ -40,6 +42,23 @@ using RpcTest = SessionTest;
 
 namespace
 {
+// true when a TCP connection to 127.0.0.1:`port` is accepted
+[[nodiscard]] bool canConnectToLoopback(uint16_t const port)
+{
+    auto const sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (!is_valid_socket(sock)) {
+        return false;
+    }
+
+    auto sin = sockaddr_in{};
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    sin.sin_port = htons(port);
+    auto const connected = connect(sock, reinterpret_cast<sockaddr const*>(&sin), sizeof(sin)) == 0;
+    tr_net_close_socket(sock);
+    return connected;
+}
+
 [[nodiscard]] std::string makeRequest(tr_session* session, std::string_view const jsonreq)
 {
     auto serde = tr_variant_serde::json().inplace();
@@ -717,6 +736,35 @@ TEST_F(RpcTest, sessionGet)
 
     // cleanup
     tr_torrentRemove(tor, false);
+}
+
+// A settings reload moves a running RPC listener to its new address or port.
+TEST_F(RpcTest, reloadMovesTheRpcListener)
+{
+    auto const old_port = freePort();
+    auto const new_port = freePort();
+    ASSERT_NE(0U, old_port) << "no free port on this host";
+    ASSERT_NE(0U, new_port) << "no free port on this host";
+    ASSERT_NE(old_port, new_port);
+
+    auto const reload = [this](std::string_view const address, uint16_t const port) {
+        auto settings = tr_sessionGetSettings(session_);
+        settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+        settings.insert_or_assign(TR_KEY_rpc_bind_address, address);
+        settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+        tr_sessionSet(session_, settings);
+    };
+
+    reload("127.0.0.1"sv, old_port);
+    EXPECT_TRUE(waitFor([old_port] { return canConnectToLoopback(old_port); }, 5s));
+
+    reload("127.0.0.1"sv, new_port);
+    EXPECT_TRUE(waitFor([new_port] { return canConnectToLoopback(new_port); }, 5s));
+    EXPECT_FALSE(canConnectToLoopback(old_port));
+
+    // an invalid address falls back to the default, not to the previous address
+    reload("10.0.0.256"sv, new_port);
+    EXPECT_EQ("0.0.0.0"sv, rpcServer()->get_bind_address());
 }
 
 TEST_F(RpcTest, sessionBindInterface)
