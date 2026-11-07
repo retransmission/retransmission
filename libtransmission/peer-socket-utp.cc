@@ -155,11 +155,7 @@ public:
             }
             break;
         case UTP_STATE_EOF:
-            {
-                auto error = tr_error{};
-                error.set_from_errno(ENOTCONN);
-                error_cb(error);
-            }
+            error_cb(tr_net_error(ENOTCONN));
             break;
         case UTP_STATE_DESTROYING:
             tr_logAddErrorSock(this, "Impossible state UTP_STATE_DESTROYING");
@@ -181,13 +177,13 @@ public:
         auto error = tr_error{};
         switch (errcode) {
         case UTP_ECONNREFUSED:
-            error.set_from_errno(ECONNREFUSED);
+            error = tr_net_error(ECONNREFUSED);
             break;
         case UTP_ECONNRESET:
-            error.set_from_errno(ECONNRESET);
+            error = tr_net_error(ECONNRESET);
             break;
         case UTP_ETIMEDOUT:
-            error.set_from_errno(ETIMEDOUT);
+            error = tr_net_error(ETIMEDOUT);
             break;
         default:
             error.set(errcode, utp_error_code_names[errcode]);
@@ -227,7 +223,7 @@ protected:
         }
 
         if (auto const error_code = sockerrno; error != nullptr && error_code != 0) {
-            error->set(error_code, tr_net_strerror(error_code));
+            *error = tr_net_error(error_code);
         }
 
         return {};

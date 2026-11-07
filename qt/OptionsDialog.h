@@ -8,14 +8,17 @@
 #include <optional>
 #include <vector>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QDir>
 #include <QtCore/QTimer>
 
 #include <libtransmission/torrent-metainfo.h>
 
+#include <libtransmission-app/torrent.h> // TorrentFile
+
 #include "AddData.h" // AddData
 #include "BaseDialog.h"
-#include "Torrent.h" // FileList
 #include "Typedefs.h" // file_indices_t
 #include "ui_OptionsDialog.h"
 
@@ -42,15 +45,14 @@ private slots:
     void onSourceChanged();
     void onDestinationChanged();
 
-    void onSessionUpdated();
-
 private:
+    void onSessionUpdated();
     void reload();
     void updateWidgetsLocality();
     void clearInfo();
 
     AddData add_;
-    FileList files_;
+    std::vector<tr::app::TorrentFile> files_;
 
     QDir local_destination_;
     QTimer edit_timer_;
@@ -60,4 +62,6 @@ private:
     Ui::OptionsDialog ui_ = {};
     std::optional<tr_torrent_metainfo> metainfo_;
     bool is_local_fs_ = {};
+
+    sigslot::scoped_connection session_connection_;
 };

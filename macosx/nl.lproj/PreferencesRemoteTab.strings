@@ -1,0 +1,11 @@
+"HTTP port:" = "Binnenkomende poort:";
+"Allow remote access" = "Activeer externe toegang";
+"Use authentication" = "Identiteitscontrole vereist";
+"Address" = "IP-adres";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP adressen mogen * (wildcard) bevatten";
+"Password:" = "Wachtwoord:";
+"Username:" = "Gebruikersnaam:";
+"This enables the web interface and allows remote requests" = "Dit activeert de web interface en laat externe controle toe";
+"Open Web Client" = "Start web interface";
+"Only allow these IP addresses:" = "Sta enkel de volgende IP-adressen toe te verbinden:";
+"Display the web interface with Bonjour" = "Toon de web interface via Bonjour";

@@ -1,0 +1,15 @@
+"Update" = "Atualização";
+"Blocklist:" = "Lista de bloqueio:";
+"Enable blocklist" = "Impedir que pares na lista de bloqueio se conectem";
+"High connection limits might significantly impact system performance" = "Limites altos de conexão podem afetar significativamente o desempenho do sistema";
+"Use PEX to find more peers for public torrents" = "Usar peer exchange (PEX) para torrents públicos";
+"Maximum peers for new torrents:" = "Conexões máximas para novas transferências:";
+"Maximum peers overall:" = "Conexões máximas globais:";
+"Peer limits:" = "Conexões:";
+"Prefer encryption" = "Preferir pares criptografados";
+"Encryption:" = "Criptografia:";
+"Require encryption" = "Ignorar pares não criptografados";
+"Automatically update weekly" = "Atualizar automaticamente semanalmente";
+"Use DHT to find more peers for public torrents" = "Usar a tabela de hash distribuída (DHT) para torrents públicos";
+"Use Local Peer Discovery to find more peers for public torrents" = "Usar a descoberta de pares locais para torrents públicos";
+"URL:" = "URL:";

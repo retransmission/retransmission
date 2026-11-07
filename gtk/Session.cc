@@ -491,7 +491,6 @@ Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
     , impl_(std::make_unique<Impl>(*this, session, rpc))
 {
     set_embedded_session(session);
-    set_session_type(Type::Embedded);
 }
 
 Session::~Session() = default;

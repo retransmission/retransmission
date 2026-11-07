@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
 @property(nonatomic) NSMutableArray<FileListNode*>* fFileList;
 
-@property(nonatomic) IBOutlet FileOutlineView* fOutline;
+@property(nonatomic) FileOutlineView* fOutline;
 
 @property(nonatomic, readonly) NSMenu* menu;
 
@@ -38,12 +38,10 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
 @implementation FileOutlineController
 
-/// Sets up an outline view built in code; -awakeFromNib sets up the one in AddWindow.xib.
+/// Connects the outline view's data source, delegate, menu and double-click action.
 - (void)setupWithOutlineView:(FileOutlineView*)outlineView
 {
-    if (!self.fFileList) {
-        self.fFileList = [[NSMutableArray alloc] init];
-    }
+    self.fFileList = [[NSMutableArray alloc] init];
 
     self.fOutline = outlineView;
 
@@ -56,20 +54,6 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     self.fOutline.delegate = self;
     self.fOutline.target = self;
     self.fOutline.doubleAction = @selector(revealFile:);
-
-    self.torrent = nil;
-}
-
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    self.fFileList = [[NSMutableArray alloc] init];
-
-    //set table header tool tips
-    [self.fOutline tableColumnWithIdentifier:@"Check"].headerToolTip = NSLocalizedString(@"Download", "file table -> header tool tip");
-    [self.fOutline tableColumnWithIdentifier:@"Priority"].headerToolTip = NSLocalizedString(@"Priority", "file table -> header tool tip");
-
-    self.fOutline.menu = self.menu;
 
     self.torrent = nil;
 }
@@ -386,7 +370,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     [self reloadVisibleRows];
 }
 
-- (IBAction)revealFile:(id)sender
+- (void)revealFile:(id)sender
 {
     NSIndexSet* indexes = self.fOutline.selectedRowIndexes;
     NSMutableArray* paths = [NSMutableArray arrayWithCapacity:indexes.count];

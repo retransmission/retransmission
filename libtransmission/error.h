@@ -5,17 +5,19 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <string_view>
-
-#include "libtransmission/error-types.h"
 
 /** @brief Structure holding error information. */
 struct tr_error {
 public:
+    // fits errno, `DWORD GetLastError()`, and `int WSAGetLastError()`
+    using code_t = int64_t;
+
     constexpr tr_error() = default;
 
-    constexpr tr_error(tr_error_code_t code, std::string message)
+    constexpr tr_error(code_t code, std::string message)
         : message_{ std::move(message) }
         , code_{ code }
     {
@@ -41,19 +43,27 @@ public:
         return has_value();
     }
 
-    constexpr void set(tr_error_code_t code, std::string&& message)
+    // these compare native codes, e.g. `ERROR_FILE_NOT_FOUND` on Windows
+    [[nodiscard]] bool is_enoent() const noexcept;
+    // disk full, quota used up, or past the maximum file size
+    [[nodiscard]] bool is_out_of_space() const noexcept;
+    [[nodiscard]] static bool is_out_of_space(code_t code) noexcept;
+    // e.g. `EAGAIN` or `EINTR`: nothing happened, so try again
+    [[nodiscard]] bool is_transient() const noexcept;
+
+    constexpr void set(code_t code, std::string&& message)
     {
         code_ = code;
         message_ = std::move(message);
     }
 
-    constexpr void set(tr_error_code_t code, std::string_view message)
+    constexpr void set(code_t code, std::string_view message)
     {
         code_ = code;
         message_.assign(message);
     }
 
-    constexpr void set(tr_error_code_t code, char const* const message)
+    constexpr void set(code_t code, char const* const message)
     {
         set(code, std::string_view{ message != nullptr ? message : "" });
     }
@@ -63,13 +73,14 @@ public:
         message_.insert(std::begin(message_), std::begin(prefix), std::end(prefix));
     }
 
-    // convenience utility for `set(errno, tr_strerror(errno))`
-    void set_from_errno(tr_error_code_t errnum);
+    // convenience utilities for `set(errno, tr_strerror(errno))`
+    [[nodiscard]] static tr_error from_errno(int errnum);
+    void set_from_errno(int errnum);
 
 private:
     /** @brief Error message */
     std::string message_;
 
     /** @brief Error code, platform-specific */
-    tr_error_code_t code_ = 0;
+    code_t code_ = 0;
 };

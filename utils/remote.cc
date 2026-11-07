@@ -2020,7 +2020,7 @@ void filter_ids(tr_variant::Map const& result, RemoteConfig& config)
         case 'r': // Minimal ratio
             if (auto ratio = t->value_if<double>(TR_KEY_upload_ratio); !ratio) {
                 continue;
-            } else if (*ratio >= std::stof(std::string{ arg })) {
+            } else if (Ratio::from_double(*ratio).is_infinite() || *ratio >= std::stof(std::string{ arg })) {
                 include = !include;
             }
             break;

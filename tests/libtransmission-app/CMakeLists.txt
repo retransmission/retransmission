@@ -7,11 +7,19 @@ target_sources(libtransmission-app-test
 		converter-tests.cc
 		dbus-peer-record-test.cc
 		interop-test.cc
+		mock-rpc-server.h
 		prefs-test.cc
 		rpc-client-test.cc
 		rpc-queue-test.cc
+		session-poller-test.cc
 		session-test.cc
 		test-fixtures.h
+		torrent-filter-test.cc
+		torrent-get-helpers.h
+		torrent-keys-test.cc
+		torrent-list-test.cc
+		torrent-sort-test.cc
+		torrent-test.cc
 		trash-test.cc)
 
 set_property(

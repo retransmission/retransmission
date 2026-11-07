@@ -1,0 +1,11 @@
+"HTTP port:" = "Használt port:";
+"Allow remote access" = "Távoli hozzáférés engedélyezése";
+"Use authentication" = "Hitelesítés szükséges";
+"Address" = "IP cím";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP címek tartalmazhatnak * helyettesítő karaktert";
+"Password:" = "Jelszó:";
+"Username:" = "Felhasználónév:";
+"This enables the web interface and allows remote requests" = "Ez engedélyezi a web felületet és a távoli kéréseket";
+"Open Web Client" = "Web felület indítása";
+"Only allow these IP addresses:" = "Csak a következő IP címek csatlakozhassanak:";
+"Display the web interface with Bonjour" = "Web-felület mutatása Bonjour-ral.";

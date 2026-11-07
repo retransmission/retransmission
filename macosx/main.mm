@@ -12,13 +12,12 @@
 
 #import "Controller.h"
 
-// Shows the launch alerts and then loads the main nib, while the app finishes launching.
-// The nib's objects read the settings an import changes, so the nib loads after the alerts.
+// Shows the launch alerts and then loads the Controller, while the app finishes launching.
 // Alerts shown before NSApplication runs would keep every window the app opens afterwards off screen.
 @interface LaunchDelegate : NSObject<NSApplicationDelegate>
 
-// Kept for the app's lifetime, as NSApplicationMain keeps a main nib's objects.
-@property(nonatomic) NSArray* mainNibObjects;
+// Keep actual delegate (Controller) as strong reference for app's lifetime.
+@property(nonatomic) Controller* controller;
 
 @end
 
@@ -33,11 +32,7 @@
 
     [Controller prepareForLaunch];
 
-    NSArray* objects = nil;
-    [NSBundle.mainBundle loadNibNamed:@"MainMenu" owner:NSApp topLevelObjects:&objects];
-    self.mainNibObjects = objects;
-
-    // The nib made Controller the app's delegate after this notification went out.
+    self.controller = [[Controller alloc] init]; // Controller will set itself as NSApp.delegate in init.
     [NSApp.delegate applicationWillFinishLaunching:notification];
 }
 

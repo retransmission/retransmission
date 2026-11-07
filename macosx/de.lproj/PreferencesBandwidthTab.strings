@@ -1,0 +1,11 @@
+"Upload:" = "Senden (höchstens):";
+"Download:" = "Empfangen (höchstens):";
+"KB/s" = "KB/s";
+"Speed limits:" = "Datendurchsatz begrenzen:";
+"Alternative speed limits:" = "Begrenzte Übertragungsgeschwindigkeit:";
+"Override normal speed limits manually or at scheduled times" = "Wenn die Begrenzte Übertragungsgeschwindigkeit aktiviert ist, werden diese Einstellungen anstelle der normalen Begrenzung des Datendurchsatzes verwendet.";
+"Scheduled times:" = "automatisch aktivieren";
+"to" = "bis";
+"Every Day" = "Täglich";
+"Weekdays" = "An Wochentagen";
+"Weekends" = "An Wochenenden";

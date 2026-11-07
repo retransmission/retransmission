@@ -1,0 +1,9 @@
+"Color" = "Color";
+"Name" = "Name";
+"Group Name:" = "Gruppe navn:";
+"Other…" = "Andet …";
+"Custom location:" = "Tilpas placering:";
+"The location will only be set when adding the torrent" = "Placering tildeles kun når overførslen er tilføjet";
+"Assign group to new torrents based on criteria" = "Tildel gruppe til nye overførsler baseret på kriterier";
+"Edit…" = "Rediger …";
+"Torrents will be assigned to the first group where all criteria are met" = "Overførsler tildeles til den første gruppe hvor alle kriterier er opfyldt";

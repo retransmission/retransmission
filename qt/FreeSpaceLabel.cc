@@ -77,7 +77,7 @@ void FreeSpaceLabel::onTimer()
     tr::app::RpcQueue::create()
         .add(
             [this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-                session_->exec(TR_KEY_free_space, std::move(params), std::move(done));
+                session_->send(TR_KEY_free_space, std::move(params), std::move(done));
             },
             [self = QPointer<FreeSpaceLabel>{ this }] {
                 // the request failed, so clear the stale "Calculating…" placeholder

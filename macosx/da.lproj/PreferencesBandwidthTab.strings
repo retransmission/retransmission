@@ -1,0 +1,11 @@
+"Upload:" = "Uploadrate:";
+"Download:" = "Downloadrate:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Generel begrænsning:";
+"Alternative speed limits:" = "Hastighedsbegrænsningstilstand:";
+"Override normal speed limits manually or at scheduled times" = "Når den er aktiveret, tilsidesætter Hastighedsbegrænsning de globale begrænsninger";
+"Scheduled times:" = "Planlæg begrænsning:";
+"to" = "til";
+"Every Day" = "Hver dag";
+"Weekdays" = "Ugedage";
+"Weekends" = "Weekender";

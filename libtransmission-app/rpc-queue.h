@@ -25,6 +25,10 @@ namespace tr::app
 //   * auxiliary, no argument:       []{ ... }
 //
 // Usage: create().add(step)[.add(step)][.finally(step)].run()
+//
+// A step that drops `done` unanswered, e.g. because the Session it would have
+// reached is gone, abandons the chain: no later step runs, `finally` doesn't
+// either, and the queue is freed.
 class RpcQueue
 {
 public:
@@ -98,6 +102,39 @@ private:
         return ret;
     }
 
+    // Holds the queue for one step. `answer()` finishes the step; a guard destroyed
+    // unanswered lets the queue go instead, or `keepalive_` would hold it forever.
+    class Continuation
+    {
+    public:
+        explicit Continuation(std::shared_ptr<RpcQueue> queue) noexcept
+            : queue_{ std::move(queue) }
+        {
+        }
+
+        Continuation(Continuation&&) = delete;
+        Continuation(Continuation const&) = delete;
+        Continuation& operator=(Continuation&&) = delete;
+        Continuation& operator=(Continuation const&) = delete;
+
+        ~Continuation()
+        {
+            if (queue_) {
+                queue_->keepalive_.reset();
+            }
+        }
+
+        void answer(RpcResponse const& result)
+        {
+            if (auto const queue = std::exchange(queue_, {})) {
+                queue->step_finished(result);
+            }
+        }
+
+    private:
+        std::shared_ptr<RpcQueue> queue_;
+    };
+
     void run_next(RpcResponse const& prev)
     {
         auto [func, error_handler] = std::move(queue_.front());
@@ -105,11 +142,12 @@ private:
 
         next_error_handler_ = std::move(error_handler);
 
-        auto self = keepalive_; // keep alive across the (possibly async) step
-        func(prev, [self](RpcResponse result) { self->step_finished(std::move(result)); });
+        // shared: `done` is a std::function, which copies
+        auto const continuation = std::make_shared<Continuation>(keepalive_);
+        func(prev, [continuation](RpcResponse const& result) { continuation->answer(result); });
     }
 
-    void step_finished(RpcResponse result)
+    void step_finished(RpcResponse const& result)
     {
         // call the user error handler.
         if (!result.success && next_error_handler_) {
@@ -150,21 +188,21 @@ private:
     [[nodiscard]] static QueuedFunction normalize_func(Func&& func)
     {
         using F = std::remove_cvref_t<Func>;
-        return
-            [func = make_copyable(std::forward<Func>(func))]([[maybe_unused]] RpcResponse const& prev, Continue done) mutable {
-                if constexpr (std::invocable<F, RpcResponse const&, Continue>) {
-                    std::invoke(func, prev, std::move(done));
-                } else if constexpr (std::invocable<F, Continue>) {
-                    std::invoke(func, std::move(done));
-                } else if constexpr (std::invocable<F, RpcResponse const&>) {
-                    std::invoke(func, prev);
-                    done(make_ok_response());
-                } else {
-                    static_assert(std::invocable<F>, "step must take (prev, done), (done), (prev), or ()");
-                    std::invoke(func);
-                    done(make_ok_response());
-                }
-            };
+        auto copyable = make_copyable(std::forward<Func>(func));
+        return [func = std::move(copyable)]([[maybe_unused]] RpcResponse const& prev, Continue done) mutable {
+            if constexpr (std::invocable<F, RpcResponse const&, Continue>) {
+                std::invoke(func, prev, std::move(done));
+            } else if constexpr (std::invocable<F, Continue>) {
+                std::invoke(func, std::move(done));
+            } else if constexpr (std::invocable<F, RpcResponse const&>) {
+                std::invoke(func, prev);
+                done(make_ok_response());
+            } else {
+                static_assert(std::invocable<F>, "step must take (prev, done), (done), (prev), or ()");
+                std::invoke(func);
+                done(make_ok_response());
+            }
+        };
     }
 
     // Adapts an error handler that takes either the failing response or nothing.
@@ -172,7 +210,8 @@ private:
     [[nodiscard]] static ErrorHandlerFunction normalize_error_handler(Func&& func)
     {
         using F = std::remove_cvref_t<Func>;
-        return [func = make_copyable(std::forward<Func>(func))]([[maybe_unused]] RpcResponse const& r) mutable {
+        auto copyable = make_copyable(std::forward<Func>(func));
+        return [func = std::move(copyable)]([[maybe_unused]] RpcResponse const& r) mutable {
             if constexpr (std::invocable<F, RpcResponse const&>) {
                 std::invoke(func, r);
             } else {

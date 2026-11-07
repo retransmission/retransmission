@@ -1,0 +1,45 @@
+services:
+  benchmark:
+    build:
+      context: ../..
+      dockerfile: tools/profiling/Dockerfile
+      args:
+        BLOCK_PROFILING: ${BLOCK_PROFILING:-ON}
+        BUILD_JOBS: ${BUILD_JOBS:-2}
+        SOURCE_REVISION: ${SOURCE_REVISION:-0}
+    networks: [benchmark]
+    init: true
+    user: "${PROFILE_UID:-1000}:${PROFILE_GID:-1000}"
+    environment:
+      TR_PROFILE_STORAGE: container-layer
+      TR_PROFILE_DISK_BASELINE: "${DISK_BASELINE:-0}"
+      DISK_WRITE_BUDGET_MIB: "${DISK_WRITE_BUDGET_MIB:-}"
+    volumes:
+      - ./results:/results
+    command:
+      - --output
+      - /results
+      - --size-mib
+      - "${SIZE_MIB:-1024}"
+      - --timeout
+      - "${TIMEOUT:-180}"
+      - --disk-io-workers
+      - "${DISK_IO_WORKERS:-2}"
+      - --idle-peers
+      - "${IDLE_PEERS:-0}"
+      - --expect-block-profiling
+      - "${BLOCK_PROFILING:-ON}"
+      - --encryption
+      - "${PEER_ENCRYPTION:-preferred}"
+      - --poll-interval
+      - "${POLL_INTERVAL:-0.02}"
+      - --target-gbit
+      - "${TARGET_GBIT:-10}"
+      - --piece-size-kib
+      - "${PIECE_SIZE_KIB:-256}"
+      - --seed-verify-mode
+      - "${SEED_VERIFY_MODE:-fast}"
+
+networks:
+  benchmark:
+    internal: true

@@ -5,6 +5,12 @@
 
 #include <string_view>
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <cerrno>
+#endif
+
 #include <gtest/gtest.h>
 
 #include <libtransmission/error.h>
@@ -34,4 +40,23 @@ TEST(Error, errorSet)
     error = {};
     EXPECT_FALSE(error) << error;
     EXPECT_FALSE(error.has_value()) << error;
+}
+
+TEST(Error, isOutOfSpace)
+{
+#ifdef _WIN32
+    auto const out_of_space = { ERROR_DISK_FULL, ERROR_HANDLE_DISK_FULL, ERROR_DISK_QUOTA_EXCEEDED, ERROR_FILE_TOO_LARGE };
+    auto const other = ERROR_ACCESS_DENIED;
+#else
+    auto const out_of_space = { ENOSPC, EDQUOT, EFBIG };
+    auto const other = EACCES;
+#endif
+
+    for (auto const code : out_of_space) {
+        EXPECT_TRUE(tr_error::is_out_of_space(code)) << code;
+        EXPECT_TRUE((tr_error{ code, "oops" }).is_out_of_space()) << code;
+    }
+
+    EXPECT_FALSE(tr_error::is_out_of_space(other));
+    EXPECT_FALSE(tr_error{}.is_out_of_space());
 }

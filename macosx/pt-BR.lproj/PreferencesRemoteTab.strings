@@ -1,0 +1,11 @@
+"HTTP port:" = "Porta de escuta:";
+"Allow remote access" = "Habilitar acesso remoto";
+"Use authentication" = "Exigir autenticação";
+"Address" = "Endereço IP";
+"IP addresses may use wildcards, such as 192.168.*.*" = "Os endereços IP podem incluir caractere curinga *";
+"Password:" = "Senha:";
+"Username:" = "Nome de usuário:";
+"This enables the web interface and allows remote requests" = "Isso habilita a interface web e permite solicitações remotas";
+"Open Web Client" = "Iniciar Interface Web";
+"Only allow these IP addresses:" = "Permita a conexão apenas dos seguintes endereços IP:";
+"Display the web interface with Bonjour" = "Exibir a interface web com Bonjour";

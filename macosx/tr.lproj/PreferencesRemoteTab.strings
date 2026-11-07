@@ -1,0 +1,11 @@
+"HTTP port:" = "Dinleme kapısı:";
+"Allow remote access" = "Uzaktan erişimi etkinleştir";
+"Use authentication" = "Kimlik denetimi iste";
+"Address" = "IP Adresi";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IP adresleri, * jokerini içerebilir";
+"Password:" = "Parola:";
+"Username:" = "Kullanıcı adı: ";
+"This enables the web interface and allows remote requests" = "Web arabirimini etkinleştirir ve uzaktan isteklere izin verir";
+"Open Web Client" = "Web Arabirimini Çalıştır";
+"Only allow these IP addresses:" = "Yalnızca aşağıdaki IP adreslerinin bağlanmasına izin ver";
+"Display the web interface with Bonjour" = "Web arabirimini Bonjour ile görüntüle";

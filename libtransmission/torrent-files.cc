@@ -405,12 +405,6 @@ namespace
     return (std::ranges::find(ReservedNames, in) != std::ranges::end(ReservedNames));
 }
 
-// https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
-// Do not use the following reserved names for the name of a file:
-// CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8,
-// COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, and LPT9.
-// Also avoid these names followed immediately by an extension;
-// for example, NUL.txt is not recommended.
 [[nodiscard, maybe_unused]] bool is_win32_reserved_file(std::string_view in) noexcept
 {
     if (std::empty(in)) {
@@ -430,23 +424,24 @@ namespace
 
     static auto constexpr ReservedNames = std::to_array<std::string_view>({
         // clang-format off: related names on the same line
+        // https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+        // CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9,
+        // COM¹, COM², COM³, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, LPT9, LPT¹, LPT², and LPT³.
+        // Also avoid these names followed immediately by an extension;
+        // for example, NUL.txt and NUL.tar.gz are both equivalent to NUL.
         "AUX"sv,  "CON"sv,  "NUL"sv,  "PRN"sv,
         "COM1"sv, "COM2"sv, "COM3"sv, "COM4"sv, "COM5"sv, "COM6"sv, "COM7"sv, "COM8"sv, "COM9"sv,
+        "COM¹"sv, "COM²"sv, "COM³"sv, "LPT¹"sv, "LPT²"sv, "LPT³"sv,
         "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
+        // https://learn.microsoft.com/en-us/windows/console/console-handles
+        // To open a handle to a console's input buffer, specify the CONIN$ value in a call to CreateFile.
+        // Specify the CONOUT$ value in a call to CreateFile to open a handle to a console's active screen buffer.
+        "CONIN$"sv, "CONOUT$"sv,
         // clang-format on
     });
-    if (std::ranges::find(ReservedNames, in_upper_sv) != std::ranges::end(ReservedNames)) {
-        return true;
-    }
-
-    static auto constexpr ReservedPrefixes = std::to_array<std::string_view>({
-        // clang-format off: related names on the same line
-        "AUX."sv,  "CON."sv,  "NUL."sv,  "PRN."sv,
-        "COM1."sv, "COM2."sv, "COM3."sv, "COM4."sv, "COM5."sv, "COM6."sv, "COM7."sv, "COM8."sv, "COM9."sv,
-        "LPT1."sv, "LPT2."sv, "LPT3."sv, "LPT4."sv, "LPT5."sv, "LPT6."sv, "LPT7."sv, "LPT8."sv, "LPT9."sv,
-        // clang-format on
+    return std::ranges::any_of(ReservedNames, [in_upper_sv](auto const& name) {
+        return in_upper_sv.starts_with(name) && (in_upper_sv.size() == name.size() || in_upper_sv[name.size()] == '.');
     });
-    return std::ranges::any_of(ReservedPrefixes, [in_upper_sv](auto const& prefix) { return in_upper_sv.starts_with(prefix); });
 }
 
 [[nodiscard]] bool is_reserved_file(std::string_view in, bool os_specific) noexcept
@@ -506,42 +501,33 @@ namespace
 #endif
 }
 
-// https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
-void append_sanitized_component(std::string_view in, std::string& out, bool os_specific)
-{
-#ifdef _WIN32
-    // remove leading and trailing spaces
-    in = tr_strv_strip(in);
+} // namespace
 
-    // remove trailing periods
-    while (in.ends_with('.')) {
-        in.remove_suffix(1);
-    }
+// https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
+void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
+{
+#ifndef _WIN32
+    if (!os_specific)
 #endif
+    {
+        // strip surrounding spaces and trailing periods
+        auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
+        path.remove_prefix(std::ranges::distance(std::ranges::begin(path), it));
+
+        auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
+            return ch == '.' || std::isspace(ch);
+        });
+        path.remove_suffix(std::ranges::distance(std::ranges::rbegin(path), rit));
+    }
 
     // replace reserved filenames with an underscore
-    if (is_reserved_file(in, os_specific)) {
-        out += '_';
+    if (is_reserved_file(path, os_specific)) {
+        append_me += '_';
     }
 
     // replace reserved characters with an underscore
     auto const add_char = [os_specific](auto ch) {
         return is_reserved_char(ch, os_specific) ? '_' : ch;
     };
-    std::ranges::transform(in, std::back_inserter(out), add_char);
-}
-
-} // namespace
-
-void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
-{
-    auto segment = std::string_view{};
-    while (tr_strv_sep(&path, &segment, '/')) {
-        append_sanitized_component(segment, append_me, os_specific);
-        append_me += '/';
-    }
-
-    if (auto const n = std::size(append_me); n > 0) {
-        append_me.resize(n - 1); // remove trailing slash
-    }
+    std::ranges::transform(path, std::back_inserter(append_me), add_char);
 }

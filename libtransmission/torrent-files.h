@@ -187,14 +187,8 @@ public:
         return ret;
     }
 
-    [[nodiscard]] static bool is_subpath_sanitized(std::string_view path, bool os_specific = true)
-    {
-        return sanitize_subpath(path, os_specific) == path;
-    }
-
 private:
     struct file_t {
-    public:
         constexpr void set_path(std::string_view subpath)
         {
             if (path_ != subpath) {

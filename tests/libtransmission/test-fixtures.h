@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <cerrno> // errno, ENOSPC, ENOSYS
 #include <chrono>
 #include <condition_variable>
 #include <cstdlib> // getenv()

@@ -23,6 +23,7 @@ struct string_pool_node;
  * Equal strings share a single pooled string,
  * which is freed after the last shared_string sharing it goes away.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions): the by-value operator= is both copy and move assignment
 class shared_string
 {
 public:
@@ -31,8 +32,7 @@ public:
     explicit shared_string(char const* c_str);
     shared_string(shared_string const& that) noexcept;
     shared_string(shared_string&& that) noexcept;
-    shared_string& operator=(shared_string const& that) noexcept;
-    shared_string& operator=(shared_string&& that) noexcept;
+    shared_string& operator=(shared_string that) noexcept;
     shared_string& operator=(char const* c_str);
     shared_string& operator=(std::string_view sv);
     ~shared_string();

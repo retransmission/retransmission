@@ -9,6 +9,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <iterator> /* std::back_inserter */
 #include <memory>
 #include <string_view>
@@ -940,13 +941,12 @@ void tr_daemon::reconfigure()
 #ifdef WITH_SYSTEMD
         auto ts = timespec{};
         if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
-            auto error = tr_error{};
-            error.set_from_errno(errno);
+            auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
                     "Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})",
-                    fmt::arg("errmsg", error.message()),
-                    fmt::arg("errno", error.code())));
+                    fmt::arg("errmsg", tr_strerror(error_code)),
+                    fmt::arg("errno", error_code)));
             return;
         }
 
@@ -991,7 +991,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
             fmt::arg("error_code", error_code));
         print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         cleanup_signals();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* start the session */
@@ -1031,7 +1031,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         print_message(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
         tr_sessionClose(session, 1);
         cleanup_signals();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
@@ -1126,6 +1126,8 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 
     sd_notify(0, "READY=1\n");
 
+    int exit_code = EXIT_FAILURE;
+
     /* Run daemon event loop */
     if (event_base_dispatch(ev_base_.get()) == -1) {
         auto const error_code = errno;
@@ -1134,10 +1136,10 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
                 "Couldn't launch daemon event loop: {error} ({error_code})",
                 fmt::arg("error", tr_strerror(error_code)),
                 fmt::arg("error_code", error_code)));
-        goto CLEANUP;
+    } else {
+        exit_code = EXIT_SUCCESS;
     }
 
-CLEANUP:
     sd_notify(0, fmt::format("STATUS=Closing {:s} session...\n", TR_PROJ_APPNAME).c_str());
 
     fmt::print("Closing {:s} session...", TR_PROJ_APPNAME);
@@ -1172,7 +1174,7 @@ CLEANUP:
 
     sd_notify(0, "STATUS=\n");
 
-    return 0;
+    return exit_code;
 }
 
 bool tr_daemon::init(int argc, char const* const* argv, bool* foreground, int* ret)

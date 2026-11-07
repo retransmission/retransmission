@@ -20,6 +20,7 @@
 #include <libtransmission/timer.h>
 #include <libtransmission/web.h>
 
+#include "fake-timer.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -29,45 +30,6 @@ namespace
 class IPCacheTest : public ::tr::test::TransmissionTest
 {
 protected:
-    struct MockTimerMaker final : public tr::TimerMaker {
-        [[nodiscard]] std::unique_ptr<tr::Timer> create() override
-        {
-            return std::make_unique<MockTimer>();
-        }
-    };
-
-    struct MockTimer final : public tr::Timer {
-        void stop() override
-        {
-        }
-
-        void set_callback(std::function<void()> /* callback */) override
-        {
-        }
-
-        void set_repeating(bool /* is_repeating */ = true) override
-        {
-        }
-
-        void set_interval(std::chrono::milliseconds /* msec */) override
-        {
-        }
-
-        void start() override
-        {
-        }
-
-        [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
-        {
-            return {};
-        }
-
-        [[nodiscard]] bool is_repeating() const noexcept override
-        {
-            return {};
-        }
-    };
-
     class MockMediator : public tr_ip_cache::Mediator
     {
     public:
@@ -77,7 +39,7 @@ protected:
         }
 
     private:
-        MockTimerMaker timer_maker_;
+        tr::test::FakeTimerMaker timer_maker_;
     };
 
     void TearDown() override
@@ -359,4 +321,43 @@ TEST_F(IPCacheTest, invalidateForgetsAddressesAndIgnoresStaleResponse)
     respond(mediator.pending[1], "1.1.1.1"sv);
     ASSERT_TRUE(ip_cache_->global_addr(TR_AF_INET));
     EXPECT_EQ("1.1.1.1"sv, ip_cache_->global_addr(TR_AF_INET)->display_name());
+}
+
+TEST_F(IPCacheTest, refusedQueriesEndFallbackChain)
+{
+    // Like tr_web once shutdown has begun: refused fetches fail at once
+    struct LocalMockMediator final : public MockMediator {
+        void fetch(tr_web::FetchOptions&& options) override // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        {
+            ++fetch_count;
+            options.done_func(
+                tr_web::FetchResponse{
+                    .request_url = options.url,
+                    .errmsg = {},
+                    .status = 0,
+                    .headers = {},
+                    .body = {},
+                    .primary_ip = {},
+                    .did_connect = false,
+                    .did_timeout = false,
+                    .user_data = options.done_func_user_data,
+                });
+        }
+
+        [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type /*type*/) noexcept override
+        {
+            return ip_endpoints;
+        }
+
+        std::size_t fetch_count = 0U;
+
+        std::array<std::string, 2U> const ip_endpoints = { { "first url"s, "second url"s } };
+    };
+
+    auto mediator = LocalMockMediator{};
+    ip_cache_ = tr_ip_cache::create(mediator);
+
+    ip_cache_->update_global_addr(TR_AF_INET);
+    EXPECT_EQ(mediator.fetch_count, 2U); // both endpoints tried, then the chain ends
+    EXPECT_TRUE(ip_cache_->try_shutdown());
 }

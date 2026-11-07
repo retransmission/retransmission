@@ -14,6 +14,10 @@ add_compile_options(
 
 add_library(${TR_NAME} STATIC)
 
+if(ENABLE_BLOCK_PROFILING)
+    target_compile_definitions(${TR_NAME} PRIVATE TR_ENABLE_BLOCK_PROFILING)
+endif()
+
 set(IS_APPLE_CLANG FALSE)
 if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(IS_APPLE_CLANG TRUE)
@@ -63,7 +67,6 @@ target_sources(${TR_NAME}
         converters.cc
         converters.h
         digest.h
-        error-types.h
         error.cc
         error.h
         env.cc
@@ -122,6 +125,7 @@ target_sources(${TR_NAME}
         port-forwarding-upnp.h
         port-forwarding.cc
         port-forwarding.h
+        profile.h
         quark.cc
         quark.h
         resume.cc
@@ -243,8 +247,6 @@ tr_allow_compile_if(
 target_compile_definitions(${TR_NAME}
     PRIVATE
         __TRANSMISSION__
-        WIDE_INTEGER_DISABLE_FLOAT_INTEROP
-        WIDE_INTEGER_DISABLE_IOSTREAM
         PACKAGE_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}"
         $<$<BOOL:${WITH_INOTIFY}>:WITH_INOTIFY>
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
@@ -261,7 +263,7 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
     PRIVATE
         copyfile
         copy_file_range
-        fallocate64
+        fallocate
         flock
         htonll
         ntohll
@@ -298,7 +300,6 @@ target_link_libraries(${TR_NAME}
         RapidJSON
         simdutf::simdutf
         wildmat
-        transmission::WideInteger
         MadlerCrcany
         $<$<BOOL:${WIN32}>:crypt32>
         $<$<BOOL:${WIN32}>:shlwapi>

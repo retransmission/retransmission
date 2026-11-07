@@ -43,6 +43,7 @@
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/peer-msgs.h"
 #include "libtransmission/peer-socket.h"
+#include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
@@ -1174,12 +1175,22 @@ void tr_peerMgrFree(tr_peerMgr const* const manager)
 // NOLINTNEXTLINE(misc-const-correctness)
 std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant)
 {
+    TR_PROFILE_SCOPE("peer.next_requests");
     TR_ASSERT(!torrent->is_done());
+
+    // From a refill the budget turned away to the next one it admits.
+    // Session thread only.
+    static auto budget_full = tr::profile::Interval{ "stall.write_budget_full" };
 
     // Keep the session's in-flight data under its disk budget. Every
     // requester comes through here, so this is the one place to clamp.
     if (auto const spare = torrent->session->spare_request_blocks(); spare) {
         numwant = std::min(numwant, *spare);
+        if (*spare == 0U) {
+            budget_full.start();
+        } else {
+            budget_full.stop();
+        }
     }
 
     if (auto const& controller = torrent->swarm->wishlist_controller) {
@@ -1858,7 +1869,6 @@ namespace peer_stat_helpers
         // the bitfield's byte-padded size stands in for the unknown piece count
         stats.progress = Percent{ have.count(), have.size() };
     }
-    stats.progress_deprecated = static_cast<float>(stats.progress.quotient());
     stats.is_utp = peer->is_utp_connection();
     stats.is_encrypted = peer->is_encrypted();
     stats.rate_to_peer = peer->get_piece_speed(now_msec, tr_direction::ClientToPeer);
@@ -1939,16 +1949,15 @@ std::vector<tr_peer_stat> tr_peerMgrPeerStats(tr_torrent const* tor)
     TR_ASSERT(tr_isTorrent(tor));
     TR_ASSERT(tor->swarm->manager != nullptr);
 
-    auto const peers = tor->swarm->peers;
-    auto ret = std::vector<tr_peer_stat>(std::size(peers));
-
     auto const lock = tor->unique_lock();
+    auto const& peers = tor->swarm->peers;
     auto const now = tr_time();
     auto const now_msec = tr_time_msec();
-    std::ranges::transform(peers, std::data(ret), [&now, &now_msec](auto const& peer) {
+
+    auto ret = std::vector<tr_peer_stat>(std::size(peers));
+    std::ranges::transform(peers, std::data(ret), [now, now_msec](auto const& peer) {
         return peer_stat_helpers::get_peer_stats(peer.get(), now, now_msec);
     });
-
     return ret;
 }
 
@@ -2492,6 +2501,7 @@ void pumpAllPeers(tr_peerMgr* mgr)
 
 void tr_peerMgr::bandwidth_pulse()
 {
+    TR_PROFILE_SCOPE("peer.bandwidth_pulse");
     using namespace bandwidth_helpers;
 
     auto const lock = unique_lock();

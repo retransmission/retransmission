@@ -9,12 +9,11 @@
 #include <concepts> // std::integral
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
-#include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits> // std::is_same_v
-#include <utility> // std::pair
+#include <utility> // std::in_range, std::pair
 #include <variant>
 #include <vector>
 
@@ -64,22 +63,12 @@ public:
             return std::cbegin(vec_);
         }
 
-        [[nodiscard]] constexpr auto cbegin() const noexcept
-        {
-            return std::cbegin(vec_);
-        }
-
         [[nodiscard]] constexpr auto end() noexcept
         {
             return std::end(vec_);
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
-        {
-            return std::cend(vec_);
-        }
-
-        [[nodiscard]] constexpr auto cend() const noexcept
         {
             return std::cend(vec_);
         }
@@ -189,6 +178,7 @@ public:
             return std::nullopt;
         }
 
+        // adds the entries of `that` whose keys aren't in this map
         Map& merge(Map const& that);
         Map& merge(Map&& that);
         [[nodiscard]] Map clone() const;
@@ -259,9 +249,10 @@ public:
         if constexpr (std::is_same_v<Val, std::string_view>) {
             // Note: std::string_view assignment takes ownership by copying.
             // Use unmanaged_string() if you want the variant to hold a shallow copy.
-            val_.emplace<std::string>(value);
+            // Copy before replacing `val_`: `value` may point into it.
+            val_ = std::string{ value };
         } else if constexpr (std::is_same_v<Val, char const*> || std::is_same_v<Val, char*>) {
-            val_.emplace<std::string>(value != nullptr ? value : "");
+            val_ = std::string{ value != nullptr ? value : "" };
         }
         // note: std::is_integral_v<bool> is true, so this check
         // must come first to prevent bools from being stored as ints
@@ -298,37 +289,88 @@ public:
     template<typename Val>
     [[nodiscard]] constexpr auto const* get_if() const noexcept
     {
-        static_assert(
-            !std::is_same_v<std::remove_cvref_t<Val>, std::string> &&
-                !std::is_same_v<std::remove_cvref_t<Val>, std::string_view>,
-            "not supported -- use value_if<std::string_view>() instead.");
         return const_cast<tr_variant*>(this)->get_if<Val>();
-    }
-
-    template<size_t Index>
-    [[nodiscard]] constexpr auto* get_if() noexcept
-    {
-        return std::get_if<Index>(&val_);
-    }
-
-    template<size_t Index>
-    [[nodiscard]] constexpr auto const* get_if() const noexcept
-    {
-        return const_cast<tr_variant*>(this)->get_if<Index>();
     }
 
     template<typename Val>
     [[nodiscard]] constexpr std::optional<Val> value_if() const noexcept
     {
-        if (auto const* const val = get_if<Val>()) {
-            return *val;
+        if constexpr (std::is_same_v<Val, std::string_view>) {
+            switch (index()) {
+            case StringIndex:
+                return *std::get_if<std::string>(&val_);
+
+            case StringViewIndex:
+                return *std::get_if<std::string_view>(&val_);
+
+            default:
+                break;
+            }
+        } else if constexpr (std::is_same_v<Val, bool>) {
+            // checked before std::integral<Val>, which is also true for bool
+            switch (index()) {
+            case BoolIndex:
+                return *get_if<bool>();
+
+            case IntIndex:
+                if (auto const val = *get_if<int64_t>(); val == 0 || val == 1) {
+                    return val != 0;
+                }
+                break;
+
+            case StringIndex:
+            case StringViewIndex:
+                if (auto const val = value_if<std::string_view>(); val == "true") {
+                    return true;
+                } else if (val == "false") {
+                    return false;
+                }
+                break;
+
+            default:
+                break;
+            }
+        } else if constexpr (std::is_same_v<Val, int64_t>) {
+            switch (index()) {
+            case IntIndex:
+                return *get_if<int64_t>();
+
+            case BoolIndex:
+                return *get_if<bool>() ? 1 : 0;
+
+            default:
+                break;
+            }
+        } else if constexpr (std::integral<Val>) {
+            if (auto const val = value_if<int64_t>(); val && std::in_range<Val>(*val)) {
+                return static_cast<Val>(*val);
+            }
+        } else if constexpr (std::is_same_v<Val, double>) {
+            switch (index()) {
+            case DoubleIndex:
+                return *get_if<double>();
+
+            case IntIndex:
+                return static_cast<double>(*get_if<int64_t>());
+
+            case StringIndex:
+            case StringViewIndex:
+                if (auto const sv = value_if<std::string_view>()) {
+                    return parse_double(*sv);
+                }
+                break;
+
+            default:
+                break;
+            }
+        } else {
+            if (auto const* const val = get_if<Val>()) {
+                return *val;
+            }
         }
 
         return {};
     }
-
-    template<std::integral Val>
-    [[nodiscard]] constexpr std::optional<Val> value_if() const noexcept;
 
     template<typename Val>
     [[nodiscard]] constexpr bool holds_alternative() const noexcept
@@ -357,98 +399,16 @@ public:
         return std::visit(std::forward<Visitor>(visitor), val_);
     }
 
-    // Usually updates `this` to hold a clone of `that`, with two exceptions:
-    // 1. If both sides hold maps, insert entries from `that` that are missing
-    //    in `this` and keep pre-existing keys in `this` unchanged.
-    // 2. Any unmanaged string taken from `that` is copied so `this` owns its copy.
-    tr_variant& merge(tr_variant const& that);
-    tr_variant& merge(tr_variant&& that);
-
     // Returns a new copy of `this`.
     // Any unmanaged strings in `this` are copied so the new variant owns its copy.
     [[nodiscard]] tr_variant clone() const;
 
 private:
+    // out of line to keep utils.h out of this header
+    [[nodiscard]] static std::optional<double> parse_double(std::string_view str) noexcept;
+
     std::variant<std::monostate, std::nullptr_t, bool, int64_t, double, std::string, std::string_view, Vector, Map> val_;
 };
-
-// These specialisations could have been in the class body,
-// but aren't because https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85282
-
-template<>
-[[nodiscard]] constexpr std::optional<std::string_view> tr_variant::value_if() const noexcept
-{
-    switch (index()) {
-    case StringIndex:
-        return *std::get_if<std::string>(&val_);
-
-    case StringViewIndex:
-        return *std::get_if<std::string_view>(&val_);
-
-    default:
-        return {};
-    }
-}
-
-template<>
-[[nodiscard]] constexpr std::optional<int64_t> tr_variant::value_if() const noexcept
-{
-    switch (index()) {
-    case IntIndex:
-        return *get_if<IntIndex>();
-
-    case BoolIndex:
-        return *get_if<BoolIndex>() ? 1 : 0;
-
-    default:
-        return {};
-    }
-}
-
-template<>
-[[nodiscard]] constexpr std::optional<bool> tr_variant::value_if() const noexcept
-{
-    switch (index()) {
-    case BoolIndex:
-        return *get_if<BoolIndex>();
-
-    case IntIndex:
-        if (auto const val = *get_if<IntIndex>(); val == 0 || val == 1) {
-            return val != 0;
-        }
-        break;
-
-    case StringIndex:
-    case StringViewIndex:
-        if (auto const val = value_if<std::string_view>(); val == "true") {
-            return true;
-        } else if (val == "false") {
-            return false;
-        }
-        break;
-
-    default:
-        break;
-    }
-
-    return {};
-}
-
-template<>
-[[nodiscard]] std::optional<double> tr_variant::value_if() const noexcept;
-
-template<std::integral Val>
-[[nodiscard]] constexpr std::optional<Val> tr_variant::value_if() const noexcept
-{
-    static_assert(!std::is_same_v<Val, bool>);
-    static_assert(!std::is_same_v<Val, int64_t>);
-    if (auto val = value_if<int64_t>(); val && std::cmp_greater_equal(*val, std::numeric_limits<Val>::lowest()) &&
-        std::cmp_less_equal(*val, std::numeric_limits<Val>::max())) {
-        return val;
-    }
-
-    return {};
-}
 
 /**
  * Helper class for serializing and deserializing benc/json data.

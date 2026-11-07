@@ -16,15 +16,15 @@
 
 #include "Prefs.h"
 #include "Session.h"
-#include "Torrent.h"
 #include "TorrentModel.h"
+#include "Utils.h"
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 bool RelocateDialog::move_flag = true;
 
 void RelocateDialog::onSetLocation()
 {
-    session_.torrentSetLocation(ids_, newLocation(), move_flag);
+    session_.set_torrent_location(ids_, newLocation().toStdString(), move_flag);
     close();
 }
 
@@ -37,7 +37,7 @@ RelocateDialog::RelocateDialog(
     Session& session,
     Prefs const& prefs,
     TorrentModel const& model,
-    torrent_ids_t ids,
+    tr::app::TorrentList::Ids ids,
     QWidget* parent)
     : BaseDialog{ parent }
     , session_{ session }
@@ -48,11 +48,12 @@ RelocateDialog::RelocateDialog(
     QString path;
 
     for (int const id : ids_) {
-        Torrent const* tor = model.getTorrentFromId(id);
+        auto const* const tor = model.list().find(id);
+        auto const tor_path = tor != nullptr ? Utils::qstringFromUtf8(tor->download_dir().sv()) : QString{};
 
         if (path.isEmpty()) {
-            path = tor->getPath();
-        } else if (path != tor->getPath()) {
+            path = tor_path;
+        } else if (path != tor_path) {
             if (session_.is_local_filesystem()) {
                 path = QDir::homePath();
             } else {

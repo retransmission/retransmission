@@ -6,11 +6,13 @@
 #include <cmath>
 #include <climits>
 #include <cstdint>
+#include <initializer_list>
 #include <list>
 #include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <vector>
 
 #include <fmt/core.h>
@@ -786,3 +788,69 @@ TEST_F(SerializerTest, hasKeyAcrossMultipleObjects)
 }
 
 } // namespace
+
+// ---
+
+namespace
+{
+
+struct FileEntry {
+    std::string name;
+    int64_t have = 0;
+    bool wanted = true;
+
+    template<auto MemberPtr>
+    using Field = tr::serializer::Field<MemberPtr>;
+
+    static constexpr auto Fields = std::make_tuple(
+        Field<&FileEntry::have>{ TR_KEY_bytes_completed },
+        Field<&FileEntry::name>{ TR_KEY_name },
+        Field<&FileEntry::wanted>{ TR_KEY_wanted });
+};
+
+// a list of single-key maps, e.g. `[{ "name": "a" }, { "name": "b" }]`
+template<typename Val>
+[[nodiscard]] tr_variant makeSingleKeyMaps(tr_quark const key, std::initializer_list<Val> const vals)
+{
+    auto vec = tr_variant::Vector{};
+    for (auto const& val : vals) {
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(key, val);
+        vec.emplace_back(std::move(map));
+    }
+    return vec;
+}
+
+} // namespace
+
+TEST_F(SerializerTest, setLoadsVectorOfSerializablesInPlace)
+{
+    auto entries = std::vector<FileEntry>{};
+
+    // a list carrying only names creates the entries
+    EXPECT_TRUE(tr::serializer::set(entries, makeSingleKeyMaps(TR_KEY_name, { "a"sv, "b"sv })));
+    ASSERT_EQ(std::size(entries), 2U);
+    EXPECT_EQ(entries[0].name, "a");
+    EXPECT_EQ(entries[1].name, "b");
+
+    // a list carrying only byte counts updates those same entries and keeps their names
+    EXPECT_TRUE(tr::serializer::set(entries, makeSingleKeyMaps<int64_t>(TR_KEY_bytes_completed, { 5, 6 })));
+    ASSERT_EQ(std::size(entries), 2U);
+    EXPECT_EQ(entries[0].name, "a");
+    EXPECT_EQ(entries[0].have, 5);
+    EXPECT_EQ(entries[1].name, "b");
+    EXPECT_EQ(entries[1].have, 6);
+
+    // the same values again are not a change
+    EXPECT_FALSE(tr::serializer::set(entries, makeSingleKeyMaps<int64_t>(TR_KEY_bytes_completed, { 5, 6 })));
+
+    // a shorter list drops the tail
+    EXPECT_TRUE(tr::serializer::set(entries, makeSingleKeyMaps(TR_KEY_name, { "a"sv })));
+    ASSERT_EQ(std::size(entries), 1U);
+    EXPECT_EQ(entries[0].name, "a");
+    EXPECT_EQ(entries[0].have, 5);
+
+    // anything but a list is ignored
+    EXPECT_FALSE(tr::serializer::set(entries, tr_variant{ "not a list"sv }));
+    EXPECT_EQ(std::size(entries), 1U);
+}

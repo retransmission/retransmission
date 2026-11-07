@@ -1,0 +1,11 @@
+"HTTP port:" = "待ち受けポート:";
+"Allow remote access" = "リモート接続を有効化";
+"Use authentication" = "認証を要求";
+"Address" = "IP アドレス";
+"IP addresses may use wildcards, such as 192.168.*.*" = "IPアドレスには * ワイルドカードが使えます";
+"Password:" = "パスワード:";
+"Username:" = "ユーザー名:";
+"This enables the web interface and allows remote requests" = "ウェブインターフェースを有効にしリモートからの要求を許可します";
+"Open Web Client" = "ウェブインターフェースを起動";
+"Only allow these IP addresses:" = "以下のIPアドレスのみ接続を許可:";
+"Display the web interface with Bonjour" = "Bonjour でウェブインターフェースを表示";

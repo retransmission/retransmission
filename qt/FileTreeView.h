@@ -5,9 +5,12 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QtWidgets/QTreeView>
 
-#include "Torrent.h" // FileList
+#include <libtransmission-app/torrent.h> // TorrentFile
+
 #include "Typedefs.h" // file_indices_t
 
 class QAction;
@@ -30,7 +33,7 @@ public:
     FileTreeView& operator=(FileTreeView const&) = delete;
 
     void clear();
-    void update(FileList const& files, bool update_fields = true);
+    void update(std::vector<tr::app::TorrentFile> const& files, bool update_fields = true);
 
     void setEditable(bool editable);
 

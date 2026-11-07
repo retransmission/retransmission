@@ -1,0 +1,11 @@
+"Upload:" = "Uploadsnelheid:";
+"Download:" = "Downloadsnelheid:";
+"KB/s" = "KB/s";
+"Speed limits:" = "Globale bandbreedte:";
+"Alternative speed limits:" = "Snelheidsbeperking:";
+"Override normal speed limits manually or at scheduled times" = "Deze limiet negeert de globale bandbreedtebeperking";
+"Scheduled times:" = "Beperk bandbreedte tussen:";
+"to" = "en";
+"Every Day" = "Elke dag";
+"Weekdays" = "Werkdagen";
+"Weekends" = "Weekend";

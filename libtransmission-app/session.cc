@@ -5,8 +5,17 @@
 
 #include "libtransmission-app/session.h"
 
+#include <algorithm>
+#include <cstddef> // size_t
+#include <ctime> // std::time()
 #include <functional>
+#include <iterator> // std::back_inserter(), std::end()
+#include <memory>
+#include <optional>
+#include <span>
 #include <string>
+#include <string_view>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -14,19 +23,42 @@
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
+#include "libtransmission/serializer.h"
+#include "libtransmission/session-id.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
+#include "libtransmission-app/rpc-queue.h"
+#include "libtransmission-app/torrent-keys.h"
+#include "libtransmission-app/torrent-list.h"
+
+using namespace std::string_view_literals;
 
 namespace tr::app
 {
+
+tr_variant::Vector make_fields(std::span<tr_quark const> const keys)
+{
+    auto fields = tr_variant::Vector{};
+    fields.reserve(std::size(keys));
+    std::ranges::transform(keys, std::back_inserter(fields), [](tr_quark const key) {
+        return tr_variant::unmanaged_string(key);
+    });
+    return fields;
+}
+
+// ---
 
 Session::Session(Prefs& prefs, RpcClient& rpc)
     : prefs_{ prefs }
     , rpc_{ rpc }
 {
+    torrents_connection_ = torrents_.changed.connect_scoped(&Session::on_torrents_changed, this);
+
     prefs_connection_ = prefs_.observe_changes([this](tr_quark const key) {
         if (key == TR_KEY_inhibit_desktop_hibernation) {
             update_sleep_inhibit();
@@ -36,6 +68,367 @@ Session::Session(Prefs& prefs, RpcClient& rpc)
             sync_pref_to_session(key);
         }
     });
+}
+
+void Session::send(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
+{
+    rpc_.exec(method, std::move(params), [alive = std::weak_ptr{ alive_ }, on_done = std::move(on_done)](RpcResponse response) {
+        if (on_done && alive.lock()) {
+            on_done(std::move(response));
+        }
+    });
+}
+
+// --- torrents
+
+Session::TorrentScope Session::TorrentScope::all() noexcept
+{
+    return {};
+}
+
+Session::TorrentScope Session::TorrentScope::recently_active() noexcept
+{
+    return { .kind = Kind::RecentlyActive, .ids = {} };
+}
+
+std::optional<Session::TorrentScope> Session::TorrentScope::of(Ids ids) noexcept
+{
+    TorrentList::normalize(ids);
+    if (std::empty(ids)) {
+        return {};
+    }
+
+    return TorrentScope{ .kind = Kind::Listed, .ids = std::move(ids) };
+}
+
+void Session::TorrentScope::add_to(tr_variant::Map& params) const
+{
+    switch (kind) {
+    case Kind::All:
+        break;
+
+    case Kind::RecentlyActive:
+        params.insert_or_assign(TR_KEY_ids, tr_variant::unmanaged_string(TR_KEY_recently_active));
+        break;
+
+    case Kind::Listed:
+        params.insert_or_assign(TR_KEY_ids, tr::serializer::to_variant(ids));
+        break;
+    }
+}
+
+tr_variant::Map Session::make_torrent_get_params(TorrentKeySet const keys, TorrentScope const& scope)
+{
+    auto params = tr_variant::Map{ 3U };
+    params.try_emplace(TR_KEY_format, tr_variant::unmanaged_string("table"sv));
+    params.try_emplace(TR_KEY_fields, make_fields(torrent_keys(keys)));
+    scope.add_to(params);
+    return params;
+}
+
+void Session::fetch_torrents(TorrentKeySet const keys, TorrentScope const& scope, RpcClient::ResponseFunc on_done)
+{
+    auto const coverage = scope.coverage();
+    send(
+        TR_KEY_torrent_get,
+        make_torrent_get_params(keys, scope),
+        [this, coverage, on_done = std::move(on_done)](RpcResponse response) {
+            // An error reply may still carry `args`, its `data.result`, and a stale
+            // reply is a network error without any: only a success reaches the list.
+            if (auto const* const args = response.success ? response.args_map() : nullptr) {
+                torrents_.update(*args, coverage, std::time(nullptr));
+            }
+
+            if (on_done) {
+                on_done(std::move(response));
+            }
+        });
+}
+
+void Session::refresh_all_torrents(TorrentKeySet const keys)
+{
+    fetch_torrents(keys, TorrentScope::all());
+}
+
+void Session::refresh_active_torrents()
+{
+    fetch_torrents(TorrentKeySet::MainStats, TorrentScope::recently_active());
+}
+
+void Session::refresh_torrents(Ids ids, TorrentKeySet const keys)
+{
+    if (auto const scope = TorrentScope::of(std::move(ids))) {
+        fetch_torrents(keys, *scope);
+    }
+}
+
+// A slot of `changed` must not call `update()`. This one only sends a request,
+// whose reply RpcClient delivers on a later UI-thread turn.
+void Session::on_torrents_changed(TorrentList::Changes const& changes)
+{
+    auto ids = Ids{};
+    std::ranges::set_union(changes.need_info, changes.edited, std::back_inserter(ids));
+    if (auto const scope = TorrentScope::of(std::move(ids))) {
+        fetch_torrents(TorrentKeySet::MainAll, *scope);
+    }
+}
+
+// --- verbs
+
+void Session::send_torrent_verb(tr_quark const method, TorrentScope scope)
+{
+    auto params = tr_variant::Map{ 1U };
+    scope.add_to(params);
+
+    RpcQueue::create()
+        .add([this, method, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+            send(method, std::move(params), std::move(done));
+        })
+        .add([this, scope = std::move(scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::MainStats, scope, std::move(done));
+        })
+        .run();
+}
+
+void Session::send_torrent_verb(tr_quark const method, Ids ids)
+{
+    if (auto scope = TorrentScope::of(std::move(ids))) {
+        send_torrent_verb(method, std::move(*scope));
+    }
+}
+
+void Session::start_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_start, std::move(ids));
+}
+
+void Session::start_torrents_now(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_start_now, std::move(ids));
+}
+
+void Session::stop_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_stop, std::move(ids));
+}
+
+void Session::start_all_torrents()
+{
+    send_torrent_verb(TR_KEY_torrent_start, TorrentScope::all());
+}
+
+void Session::stop_all_torrents()
+{
+    send_torrent_verb(TR_KEY_torrent_stop, TorrentScope::all());
+}
+
+void Session::verify_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_verify, std::move(ids));
+}
+
+void Session::reannounce_torrents(Ids ids)
+{
+    send_torrent_verb(TR_KEY_torrent_reannounce, std::move(ids));
+}
+
+void Session::queue_move_top(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_top, std::move(ids));
+}
+
+void Session::queue_move_up(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_up, std::move(ids));
+}
+
+void Session::queue_move_down(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_down, std::move(ids));
+}
+
+void Session::queue_move_bottom(Ids ids)
+{
+    send_torrent_verb(TR_KEY_queue_move_bottom, std::move(ids));
+}
+
+void Session::remove_torrents(Ids ids, bool const delete_local_data)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 2U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_delete_local_data, delete_local_data);
+    send(TR_KEY_torrent_remove, std::move(params), [this, ids = std::move(scope->ids)](RpcResponse const& response) {
+        if (response.success) {
+            torrents_.remove(ids); // the rows go now rather than on the next poll
+        }
+    });
+}
+
+void Session::set_torrent_location(Ids ids, std::string location, bool const move)
+{
+    auto const scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 3U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_location, std::move(location));
+    params.try_emplace(TR_KEY_move, move);
+    send(TR_KEY_torrent_set_location, std::move(params));
+}
+
+void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new_name)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return;
+    }
+
+    auto params = tr_variant::Map{ 3U };
+    scope->add_to(params);
+    params.try_emplace(TR_KEY_path, old_path);
+    params.try_emplace(TR_KEY_name, new_name);
+    auto failure = RenameError{
+        .ids = scope->ids,
+        .old_path = std::move(old_path),
+        .new_name = std::move(new_name),
+        .errmsg = {},
+        .network_error = false,
+    };
+
+    RpcQueue::create()
+        .add(
+            [this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+                send(TR_KEY_torrent_rename_path, std::move(params), std::move(done));
+            },
+            [this, failure = std::move(failure)](RpcResponse const& response) mutable {
+                failure.errmsg = response.errmsg;
+                failure.network_error = response.network_error;
+                torrent_rename_failed(failure);
+            })
+        .add([this, scope = std::move(*scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::Rename, scope, std::move(done));
+        })
+        .run();
+}
+
+// --- torrent_set
+
+Session::Tag Session::set_torrents(Ids ids, tr_variant::Map params)
+{
+    auto scope = TorrentScope::of(std::move(ids));
+    if (!scope) {
+        return {};
+    }
+
+    scope->add_to(params);
+    auto const tag = next_tag_++;
+
+    // the re-fetch step takes the chain's `done`, so `finally` runs after its reply is applied
+    RpcQueue::create()
+        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+            send(TR_KEY_torrent_set, std::move(params), std::move(done));
+        })
+        .add([this, scope = std::move(*scope)](RpcClient::ResponseFunc done) {
+            fetch_torrents(TorrentKeySet::DetailStats, scope, std::move(done));
+        })
+        .finally([this, tag] { torrent_set_done(tag); })
+        .run();
+
+    return tag;
+}
+
+// --- session stats
+
+void Session::load_stats(tr_variant::Map const& map, tr_session_stats& stats)
+{
+    static constexpr auto Fields = std::tuple{
+        tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
+        tr::serializer::Field<&tr_session_stats::filesAdded>{ TR_KEY_files_added },
+        tr::serializer::Field<&tr_session_stats::secondsActive>{ TR_KEY_seconds_active },
+        tr::serializer::Field<&tr_session_stats::sessionCount>{ TR_KEY_session_count },
+        tr::serializer::Field<&tr_session_stats::uploadedBytes>{ TR_KEY_uploaded_bytes },
+    };
+    tr::serializer::load(map, stats, Fields);
+
+    stats.ratio = tr::Values::Ratio{ stats.uploadedBytes, stats.downloadedBytes };
+}
+
+void Session::refresh_session_stats()
+{
+    send(TR_KEY_session_stats, {}, [this](RpcResponse const& response) {
+        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+            import_session_stats(*args);
+        }
+    });
+}
+
+void Session::import_session_stats(tr_variant::Map const& args)
+{
+    if (auto const* const current = args.find_if<tr_variant::Map>(TR_KEY_current_stats)) {
+        load_stats(*current, stats_);
+    }
+
+    if (auto const* const cumulative = args.find_if<tr_variant::Map>(TR_KEY_cumulative_stats)) {
+        load_stats(*cumulative, cumulative_stats_);
+    }
+
+    if (auto const busy = args.value_if<bool>(TR_KEY_busy)) {
+        set_busy(*busy);
+    }
+
+    stats_updated();
+}
+
+// --- session info
+
+void Session::refresh_session_info()
+{
+    send(TR_KEY_session_get, {}, [this](RpcResponse const& response) {
+        if (auto const* const args = response.success ? response.args_map() : nullptr) {
+            import_session_info(*args);
+        }
+    });
+}
+
+void Session::import_session_info(tr_variant::Map const& args)
+{
+    import_session_settings(args);
+
+    if (auto const version = args.value_if<std::string_view>(TR_KEY_version)) {
+        session_version_ = *version;
+    }
+
+    // an embedded session is Embedded whatever its id says: `set_embedded_session()` set that
+    if (embedded_session_ == nullptr) {
+        set_session_type(args.value_if<std::string_view>(TR_KEY_session_id).transform([this](std::string_view const id) {
+            return probe_session_type(id);
+        }));
+    }
+
+    session_updated();
+}
+
+Session::Type Session::probe_session_type(std::string_view const id)
+{
+    if (!probed_id_ || probed_id_->id != id) {
+        probed_id_ = ProbedId{ .id = std::string{ id }, .type = tr_session_id::is_local(id) ? Type::Local : Type::Remote };
+    }
+
+    return probed_id_->type;
+}
+
+// --- session
+
+size_t Session::pending_session_sets(tr_quark const key) const noexcept
+{
+    return static_cast<size_t>(std::ranges::count(session_sets_in_flight_, key));
 }
 
 void Session::sync_pref_to_session(tr_quark const key)
@@ -97,11 +490,14 @@ void Session::sync_pref_to_session(tr_quark const key)
         {
             auto params = tr_variant::Map{ 1U };
             params.insert_or_assign(key, prefs_.get<tr_variant>(key));
-            rpc_.exec(TR_KEY_session_set, std::move(params), {});
-
-            if (key == TR_KEY_download_dir) {
-                session_refresh_needed();
-            }
+            session_sets_in_flight_.push_back(key);
+            send(TR_KEY_session_set, std::move(params), [this, key](RpcResponse const& /*response*/) {
+                // one entry per request: another set of the same key may still be in flight
+                if (auto const iter = std::ranges::find(session_sets_in_flight_, key);
+                    iter != std::end(session_sets_in_flight_)) {
+                    session_sets_in_flight_.erase(iter);
+                }
+            });
         }
         break;
     }
@@ -121,7 +517,8 @@ void Session::import_session_settings(tr_variant::Map const& settings)
             continue;
         }
 
-        if (prefs_is_core(key)) {
+        // a reply from before our own set carries the value that set replaced
+        if (prefs_is_core(key) && pending_session_sets(key) == 0U) {
             prefs_.set(key, value);
         }
     }
@@ -138,7 +535,9 @@ void Session::import_session_settings(tr_variant::Map const& settings)
     // `session_get` responses; read them directly when the session is embedded.
     if (embedded != nullptr) {
         // the port the session listens on, which neither settings source above reports
-        prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(embedded));
+        if (pending_session_sets(TR_KEY_peer_port) == 0U) {
+            prefs_.set(TR_KEY_peer_port, tr_sessionGetPeerPort(embedded));
+        }
 
         prefs_.set(TR_KEY_rpc_authentication_required, tr_sessionIsRPCPasswordEnabled(embedded));
         prefs_.set(TR_KEY_rpc_enabled, tr_sessionIsRPCEnabled(embedded));
@@ -154,15 +553,13 @@ void Session::import_session_settings(tr_variant::Map const& settings)
 
 void Session::fetch_recent_paths(tr_quark const key, std::function<void(std::vector<std::string> const&)> on_paths)
 {
-    auto fields = tr_variant::Vector{};
-    fields.emplace_back(tr_variant::unmanaged_string(key));
     auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
+    params.try_emplace(TR_KEY_fields, make_fields({ key }));
 
-    rpc_.exec(TR_KEY_session_get, std::move(params), [key, on_paths = std::move(on_paths)](RpcResponse const& response) {
+    send(TR_KEY_session_get, std::move(params), [key, on_paths = std::move(on_paths)](RpcResponse const& response) {
         auto paths = std::vector<std::string>{};
 
-        if (auto const* const result = response.args ? response.args->get_if<tr_variant::Map>() : nullptr; result != nullptr) {
+        if (auto const* const result = response.args_map(); result != nullptr) {
             if (auto const iter = result->find(key); iter != std::end(*result)) {
                 paths = tr::serializer::to_value<std::vector<std::string>>(iter->second).value_or(std::vector<std::string>{});
             }

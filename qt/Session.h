@@ -6,13 +6,8 @@
 #pragma once
 
 #include <array>
-#include <cstddef> // size_t
-#include <cstdint> // uint64_t
 #include <map>
 #include <optional>
-#include <span>
-#include <string>
-#include <type_traits>
 
 #include <sigslot/signal.hpp>
 
@@ -20,7 +15,6 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
-#include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
@@ -29,11 +23,8 @@
 
 #include "Prefs.h"
 #include "RpcClient.h"
-#include "Typedefs.h"
 
 class AddData;
-
-struct tr_variant;
 
 class Session
     : public QObject
@@ -57,71 +48,23 @@ public:
         return rpc_.url();
     }
 
-    [[nodiscard]] constexpr auto const& getStats() const noexcept
-    {
-        return stats_;
-    }
-
-    [[nodiscard]] constexpr auto const& getCumulativeStats() const noexcept
-    {
-        return cumulative_stats_;
-    }
-
-    [[nodiscard]] constexpr auto const& sessionVersion() const noexcept
-    {
-        return session_version_;
-    }
-
     void updateBlocklist();
     void portTest(tr_address_type ip_protocol);
     void copyMagnetLinkToClipboard(int torrent_id);
 
     [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
 
-    void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
-    void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
-
-    using Tag = uint64_t;
-
-    template<typename T, typename... Rest>
-    [[nodiscard]] Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
-    {
-        return torrentSetImpl(makeParams(TR_KEY_ids, torrent_ids, key1, val1, rest...));
-    }
-
-    void torrentSetLocation(torrent_ids_t const& torrent_ids, QString const& path, bool do_move);
-    void torrentRenamePath(torrent_ids_t const& torrent_ids, QString const& oldpath, QString const& newname);
     void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
-    void initTorrents(torrent_ids_t const& ids = {});
-    void pauseTorrents(torrent_ids_t const& torrent_ids = {});
-    void startTorrents(torrent_ids_t const& torrent_ids = {});
-    void startTorrentsNow(torrent_ids_t const& torrent_ids = {});
-    void refreshDetailInfo(torrent_ids_t const& torrent_ids);
-    void refreshActiveTorrents();
-    void refreshAllTorrents();
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
-    void verifyTorrents(torrent_ids_t const& torrent_ids);
-    void reannounceTorrents(torrent_ids_t const& torrent_ids);
-    void refreshExtraStats(torrent_ids_t const& torrent_ids);
-
-    enum class TorrentProperties : uint8_t { MainInfo, MainStats, MainAll, DetailInfo, DetailStat, Rename };
 
 public slots:
     void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
-    void queueMoveBottom(torrent_ids_t const& torrentIds = {});
-    void queueMoveDown(torrent_ids_t const& torrentIds = {});
-    void queueMoveTop(torrent_ids_t const& torrentIds = {});
-    void queueMoveUp(torrent_ids_t const& torrentIds = {});
-    void refreshBlocklistInfo();
-    void refreshSessionInfo();
-    void refreshSessionStats();
-    void removeTorrents(torrent_ids_t const& torrent_ids, bool delete_files = false);
 
 signals:
     void sourceChanged();
 
-    // stop() disconnected from the session and forgot its info.
+    // stop() disconnected from the session and forgot its info and torrents.
     void stopped();
 
     // The session found its config dir held by another and started nothing.
@@ -129,13 +72,8 @@ signals:
     void configDirContended();
 
     void portTested(std::optional<bool> status, tr_address_type ip_protocol);
-    void statsUpdated();
-    void sessionUpdated();
     void blocklistUpdated(qint64);
     void blocklistUpdateFailed(QString const& message);
-    void torrentsUpdated(std::span<tr_variant const> torrents, bool complete_list);
-    void torrentsRemoved(std::span<tr_variant const> torrent_ids);
-    void sessionCalled(Tag);
     void dataReadProgress();
     void dataSendProgress();
     void networkResponse(bool is_network_error, QString const& message);
@@ -145,72 +83,19 @@ private slots:
     void onDuplicatesTimer();
 
 private:
-    [[nodiscard]] static tr_variant getTorrentIdsVariant(torrent_ids_t const& torrent_ids);
-
-    template<typename T>
-    static void addParamPair(tr_variant::Map& params, tr_quark const key, T const& val)
-    {
-        if constexpr (std::is_same_v<std::remove_cvref_t<T>, torrent_ids_t>) {
-            if (auto var = getTorrentIdsVariant(val); var.has_value()) {
-                params.insert_or_assign(key, std::move(var));
-            }
-        } else {
-            params.insert_or_assign(key, tr::serializer::to_variant(val));
-        }
-    }
-
-    template<typename T, typename... Rest>
-    static void addParamPairs(tr_variant::Map& params, tr_quark const key, T const& val, Rest const&... rest)
-    {
-        addParamPair(params, key, val);
-
-        if constexpr (sizeof...(rest) != 0U) {
-            addParamPairs(params, rest...);
-        }
-    }
-
-    template<typename T, typename... Rest>
-    [[nodiscard]] static tr_variant::Map makeParams(tr_quark const key1, T const& val1, Rest const&... rest)
-    {
-        static_assert(sizeof...(rest) % 2U == 0U, "Expected key/value argument pairs");
-
-        auto params = tr_variant::Map{ 1U + static_cast<size_t>(sizeof...(rest) / 2U) };
-        addParamPairs(params, key1, val1, rest...);
-
-        return params;
-    }
-
     void start();
 
-    void updateStats(tr_variant* args_dict);
-    void updateInfo(tr_variant* args_dict);
-
-    void updateType(std::optional<std::string> session_id = {});
-
-    Tag torrentSetImpl(tr_variant::Map params);
-    void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
-    void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
-
-    static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
+    void onRenameFailed(RenameError const& error) const;
 
     QString const config_dir_;
     Prefs& prefs_;
 
     std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
     tr_session* session_ = {};
-    tr_session_stats stats_ = EmptyStats;
-    tr_session_stats cumulative_stats_ = EmptyStats;
-    QString session_version_;
     RpcClient& rpc_;
-    Tag next_tag_ = {};
 
-    // changing some prefs (eg download_dir) invalidates cached session info
-    sigslot::scoped_connection session_refresh_tag_;
-
-    static inline torrent_ids_t const RecentlyActiveIDs = { -1 };
+    sigslot::scoped_connection rename_failed_connection_;
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;
-
-    static auto constexpr EmptyStats = tr_session_stats{};
 };

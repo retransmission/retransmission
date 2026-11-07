@@ -25,6 +25,7 @@
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
+#include <libtransmission/values.h>
 
 #include "test-fixtures.h"
 
@@ -800,6 +801,18 @@ TEST_F(RpcTest, torrentGet)
     tr_torrentRemove(tor, false);
 }
 
+// `tr_torrentRemove()` queues the removal on the session thread; a request that
+// runs before that queue drains must already leave the torrent out.
+TEST_F(RpcTest, torrentGetOmitsATorrentWhoseRemovalIsPending)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(torrentGetFirst(session_, { TR_KEY_id }).value_if<int64_t>(TR_KEY_id), tr_torrentId(tor));
+
+    tr_torrentRemove(tor, false);
+    EXPECT_TRUE(std::empty(torrentGetFirst(session_, { TR_KEY_id })));
+}
+
 TEST_F(RpcTest, torrentGetIsFolder)
 {
     // the zero torrent holds three files, so its content lands in a directory
@@ -871,7 +884,38 @@ TEST_F(RpcTest, torrentGetUploadRatioOfAMagnetIsNotAvailable)
 
     auto const fields = torrentGetFirst(session_, { TR_KEY_percent_done, TR_KEY_upload_ratio });
     EXPECT_EQ(fields.value_if<double>(TR_KEY_percent_done), 0.0);
-    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), -1.0); // TR_RATIO_NA
+    EXPECT_EQ(fields.value_if<double>(TR_KEY_upload_ratio), tr::Values::Ratio::WireNone);
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentGetSeedRatioBytes)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
+    tr_torrentSetRatioLimit(tor, 2.0);
+
+    auto const goal = static_cast<int64_t>(tr_torrentStat(tor).size_when_done * 2U);
+    EXPECT_GT(goal, 0);
+    auto const fields = torrentGetFirst(session_, { TR_KEY_seed_ratio_bytes_goal, TR_KEY_seed_ratio_bytes_left });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_goal), goal);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_left), goal);
+
+    tr_torrentRemove(tor, false);
+}
+
+// the seed ratio only applies once the download is done
+TEST_F(RpcTest, torrentGetSeedRatioBytesLeftIsZeroWhileDownloading)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentSetRatioMode(tor, TR_RATIOLIMIT_SINGLE);
+    tr_torrentSetRatioLimit(tor, 2.0);
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_seed_ratio_bytes_goal, TR_KEY_seed_ratio_bytes_left });
+    EXPECT_GT(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_goal).value_or(0), 0);
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_seed_ratio_bytes_left), 0);
 
     tr_torrentRemove(tor, false);
 }

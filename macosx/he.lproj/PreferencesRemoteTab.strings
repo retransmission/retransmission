@@ -1,0 +1,11 @@
+"HTTP port:" = "פתחה להאזנה:";
+"Allow remote access" = "הפעלת גישה מרחוק";
+"Use authentication" = "דרישת אימות";
+"Address" = "כתובת IP";
+"IP addresses may use wildcards, such as 192.168.*.*" = "כתובות IP יכולות לכלול * כוללני";
+"Password:" = "סיסמה:";
+"Username:" = "שם משתמש:";
+"This enables the web interface and allows remote requests" = "מפעיל את מנשק הדפדפן ומאפשר בקשות מרוחקות";
+"Open Web Client" = "הפעלת מנשק הדפדפן";
+"Only allow these IP addresses:" = "לאפשר רק לכתובות ה־IP הבאות להתחבר:";
+"Display the web interface with Bonjour" = "להציג את מנשק הדפדפן עם Bonjour";

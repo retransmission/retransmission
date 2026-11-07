@@ -7,7 +7,7 @@
 #pragma mark - Auto-assign rules
 
 // Rules are archived as property lists because evaluating a decoded NSPredicate can send any message its expressions
-// name. ruleFromPlist() builds only the predicate shapes that GroupRules.xib's editor produces:
+// name. ruleFromPlist() builds only the predicate shapes that GroupRulesWindowController's editor produces:
 //   { Type = Compound; Compound = NOT|AND|OR; Subpredicates = (rule, ...); }  one rule for NOT, one or more for AND, OR
 //   { Type = Comparison; KeyPath; Operator; Modifier; Options; Value = string; }
 // Transmission 4.1.4 and later save rules in this form too.
@@ -33,7 +33,7 @@ static BOOL isRuleCompound(NSUInteger compoundType, NSUInteger subruleCount)
     }
 }
 
-// Accepts the key paths, operators, modifiers, and options of GroupRules.xib's row templates.
+// Accepts the key paths, operators, modifiers, and options of GroupRulesWindowController's row templates.
 static BOOL isRuleComparison(NSString* keyPath, NSUInteger operatorType, NSUInteger modifier, NSUInteger options)
 {
     static NSSet<NSString*>* const keyPaths = [NSSet setWithArray:@[

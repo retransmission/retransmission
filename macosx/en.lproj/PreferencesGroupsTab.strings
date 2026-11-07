@@ -1,0 +1,9 @@
+"Color" = "Color";
+"Name" = "Name";
+"Group Name:" = "Group Name:";
+"Other…" = "Other…";
+"Custom location:" = "Custom location:";
+"The location will only be set when adding the torrent" = "The location will only be set when adding the torrent";
+"Assign group to new torrents based on criteria" = "Assign group to new torrents based on criteria";
+"Edit…" = "Edit…";
+"Torrents will be assigned to the first group where all criteria are met" = "Torrents will be assigned to the first group where all criteria are met";

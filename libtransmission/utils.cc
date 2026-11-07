@@ -5,7 +5,6 @@
 
 #include <algorithm> // for std::sort, std::transform
 #include <array> // std::array
-#include <cfloat> // DBL_DIG
 #include <charconv> // std::from_chars()
 #include <chrono>
 #include <concepts>
@@ -36,13 +35,10 @@
 
 #include <curl/curl.h>
 
-#include <fmt/format.h>
-
 #include <fast_float/fast_float.h>
 
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
 using namespace std::literals;
@@ -82,19 +78,6 @@ uint64_t tr_time_msec()
 }
 
 // ---
-
-double tr_getRatio(uint64_t numerator, uint64_t denominator)
-{
-    if (denominator > 0) {
-        return static_cast<double>(numerator) / static_cast<double>(denominator);
-    }
-
-    if (numerator > 0) {
-        return TR_RATIO_INF;
-    }
-
-    return TR_RATIO_NA;
-}
 
 #ifdef _WIN32
 
@@ -156,47 +139,6 @@ int tr_main_win32(int argc, char** argv, int (*real_main)(int, char**))
 }
 
 #endif
-
-// ---
-
-double tr_truncd(double x, int decimal_places)
-{
-    auto buf = std::array<char, 128>{};
-    auto const [out, len] = fmt::format_to_n(std::data(buf), std::size(buf) - 1, "{:.{}f}", x, DBL_DIG);
-    *out = '\0';
-
-    if (auto* const pt = strchr(std::data(buf), '.'); pt != nullptr) {
-        pt[decimal_places != 0 ? decimal_places + 1 : 0] = '\0';
-    }
-
-    return tr_num_parse<double>(std::data(buf)).value_or(0.0);
-}
-
-std::string tr_strpercent(double x)
-{
-    if (x < 5.0) {
-        return fmt::format("{:.2Lf}", tr_truncd(x, 2));
-    }
-
-    if (x < 100.0) {
-        return fmt::format("{:.1Lf}", tr_truncd(x, 1));
-    }
-
-    return fmt::format("{:.0Lf}", x);
-}
-
-std::string tr_strratio(double ratio, std::string_view const none, std::string_view const infinity)
-{
-    if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return std::string{ none };
-    }
-
-    if (static_cast<int>(ratio) == TR_RATIO_INF) {
-        return std::string{ infinity };
-    }
-
-    return tr_strpercent(ratio);
-}
 
 // ---
 

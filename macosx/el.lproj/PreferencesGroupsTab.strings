@@ -1,0 +1,9 @@
+"Color" = "Χρώμα";
+"Name" = "Όνομα";
+"Group Name:" = "Όνομα Ομάδας:";
+"Other…" = "Άλλο…";
+"Custom location:" = "Προσαρμοσμένη τοποθεσία:";
+"The location will only be set when adding the torrent" = "Η τοποθεσία θα καθοριστεί μόνο κατά την προσθήκη της μεταφοράς";
+"Assign group to new torrents based on criteria" = "Ανάθεση ομάδας σε νέες μεταφορές βάσει κριτηρίων";
+"Edit…" = "Επεξεργασία…";
+"Torrents will be assigned to the first group where all criteria are met" = "Οι μεταφορές θα ανατεθούν στην πρώτη ομάδα όπου όλα τα κριτήρια ικανοποιούνται";

@@ -5,9 +5,12 @@
 
 #include <algorithm>
 #include <array>
+#include <cerrno> // EINVAL
+#include <chrono>
 #include <cstddef>
 #include <future>
 #include <iterator>
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -17,9 +20,9 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/error.h>
-#include <libtransmission/error-types.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent.h>
@@ -42,7 +45,16 @@ auto constexpr TorFilenames = std::array{
     "ubuntu-18.04.6-desktop-amd64.iso.torrent"sv,
     "ubuntu-20.04.4-desktop-amd64.iso.torrent"sv,
 };
+
+[[nodiscard]] std::future<std::vector<tr_stat>> statAsync(tr_session* const session)
+{
+    // shared, so that a callback that runs after the caller stops waiting still has its promise
+    auto const promise = std::make_shared<std::promise<std::vector<tr_stat>>>();
+    auto future = promise->get_future();
+    tr_torrentStatAsync(session, [promise](std::vector<tr_stat> stats) { promise->set_value(std::move(stats)); });
+    return future;
 }
+} // namespace
 
 TEST_F(TorrentTest, queueMoveUp)
 {
@@ -60,7 +72,7 @@ TEST_F(TorrentTest, queueMoveUp)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_up(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_up(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -83,7 +95,7 @@ TEST_F(TorrentTest, queueMoveDown)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_down(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_down(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -123,7 +135,7 @@ TEST_F(TorrentTest, queueMoveTop)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_top(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_top(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -146,7 +158,7 @@ TEST_F(TorrentTest, queueMoveBottom)
         ASSERT_EQ(i + 1U, torrents[i]->id());
     }
 
-    tr_torrent::queue_move_bottom(move_torrents);
+    blockingRunInSessionThread([&] { tr_torrent::queue_move_bottom(move_torrents); });
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
@@ -173,7 +185,7 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
     tr_torrentManualUpdate(tor);
     auto location_state = -1;
     tr_torrentSetLocation(tor, target_dir, true, &location_state);
-    auto rename_error = std::optional<tr_error_code_t>{};
+    auto rename_error = std::optional<tr_error::code_t>{};
     tr_torrentRenamePath(
         tor,
         name,
@@ -183,14 +195,17 @@ TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
             std::string_view const /*oldpath*/,
             std::string_view const /*newname*/,
             tr_error const& error) { rename_error = error.code(); });
+    auto peer_count = std::optional<size_t>{};
+    tr_torrentPeersAsync(tor, [&peer_count](std::vector<tr_peer_stat> const& peers) { peer_count = std::size(peers); });
     tr_torrentRemove(tor, false);
 
     release.set_value();
     blockingRunInSessionThread([] {}); // runs after the work queued above
 
-    // The work that reports back reports an error.
+    // The work that reports back reports an error or no peers.
     EXPECT_EQ(TR_LOC_ERROR, location_state);
-    EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
+    EXPECT_EQ(EINVAL, rename_error);
+    EXPECT_EQ(0U, peer_count);
 }
 
 TEST_F(TorrentTest, restartKeepsSeedRatioLimit)
@@ -340,7 +355,6 @@ TEST_F(TorrentTest, statBuildsProgressFromCounts)
     EXPECT_FALSE(st.percent_done.is_complete());
     EXPECT_EQ((Percent{ have, st.size_when_done }), st.percent_done);
     EXPECT_EQ((Percent{ have, tor->total_size() }), st.percent_complete);
-    EXPECT_FLOAT_EQ(static_cast<float>(st.percent_done.quotient()), st.percent_done_deprecated);
     EXPECT_EQ((Ratio{ st.uploaded_ever, st.size_when_done }), st.upload_ratio);
     EXPECT_TRUE(st.metadata_percent_complete.is_complete());
     EXPECT_TRUE(st.seed_ratio_percent_done.is_complete()); // no seed ratio applies
@@ -349,7 +363,6 @@ TEST_F(TorrentTest, statBuildsProgressFromCounts)
     auto const file = tr_torrentFile(tor, 0);
     EXPECT_FALSE(file.progress.is_complete());
     EXPECT_EQ((Percent{ file.have, file.length }), file.progress);
-    EXPECT_DOUBLE_EQ(file.progress.quotient(), file.progress_deprecated);
 
     tr_torrentRemove(tor, false);
 }
@@ -362,7 +375,6 @@ TEST_F(TorrentTest, statOfACompleteTorrentIsComplete)
     auto const st = tr_torrentStat(tor);
     EXPECT_TRUE(st.percent_done.is_complete());
     EXPECT_TRUE(st.percent_complete.is_complete());
-    EXPECT_EQ(1.0F, st.percent_done_deprecated);
     EXPECT_TRUE(tr_torrentFile(tor, 0).progress.is_complete());
 
     tr_torrentRemove(tor, false);
@@ -378,7 +390,103 @@ TEST_F(TorrentTest, statOfAMagnetHasUnknownTotals)
     EXPECT_EQ(Percent{}, st.percent_complete);
     EXPECT_EQ(Percent{}, st.metadata_percent_complete);
     EXPECT_TRUE(st.upload_ratio.is_none());
-    EXPECT_EQ(0.0F, st.percent_done_deprecated);
 
     tr_torrentRemove(tor, false);
+}
+
+TEST_F(TorrentTest, statAsyncCallsBackOnTheSessionThread)
+{
+    auto const on_session_thread = std::make_shared<std::promise<bool>>();
+    auto future = on_session_thread->get_future();
+    tr_torrentStatAsync(session_, [session = session_, on_session_thread](std::vector<tr_stat> const& /*stats*/) {
+        on_session_thread->set_value(session->am_in_session_thread());
+    });
+
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_TRUE(future.get());
+}
+
+TEST_F(TorrentTest, statAsyncRunsAfterQueuedWork)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    tr_torrentStartNow(tor);
+    ASSERT_EQ(TR_STATUS_SEED, tr_torrentStat(tor).activity);
+
+    // Hold the session thread, so that the stop is still queued when the stats are requested.
+    auto release = std::promise<void>{};
+    session_->queue_session_thread([released = release.get_future().share()] { released.wait(); });
+    tr_torrentStop(tor);
+    EXPECT_EQ(TR_STATUS_SEED, tr_torrentStat(tor).activity); // a synchronous stat runs ahead of the stop
+    auto future = statAsync(session_);
+    release.set_value();
+
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    auto const stats = future.get();
+    ASSERT_EQ(1U, std::size(stats));
+    EXPECT_EQ(TR_STATUS_STOPPED, stats.front().activity);
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(TorrentTest, statAsyncReportsEveryTorrentById)
+{
+    auto torrents = std::array<tr_torrent*, TorFilenames.size()>{};
+    std::ranges::transform(TorFilenames, torrents.begin(), [this](auto const filename) {
+        return torrentInitFromFile(filename);
+    });
+
+    auto future = statAsync(session_);
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    auto stats = future.get();
+    ASSERT_EQ(std::size(torrents), std::size(stats));
+    for (auto const* const tor : torrents) {
+        auto const iter = std::ranges::find(stats, tor->id(), &tr_stat::id);
+        ASSERT_NE(std::end(stats), iter);
+        EXPECT_EQ(tor->total_size(), iter->size_when_done); // each torrent has a different size
+    }
+
+    // the request queues behind the removal
+    auto const removed_id = torrents.front()->id();
+    tr_torrentRemove(torrents.front(), false);
+    future = statAsync(session_);
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    stats = future.get();
+    EXPECT_EQ(std::size(torrents) - 1U, std::size(stats));
+    EXPECT_EQ(std::end(stats), std::ranges::find(stats, removed_id, &tr_stat::id));
+}
+
+TEST_F(TorrentTest, statAsyncIgnoresAnEmptyCallback)
+{
+    auto const old_level = tr_logGetLevel();
+    tr_logClearQueue();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+
+    tr_torrentStatAsync(session_, {});
+    auto const msgs = tr_logGetQueue();
+    EXPECT_NE(std::end(msgs), std::ranges::find(msgs, "callback != nullptr"sv, &tr_log_message::message));
+
+    // the session thread survives to answer the next request
+    auto future = statAsync(session_);
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_TRUE(std::empty(future.get()));
+
+    tr_logSetQueueEnabled(false);
+    tr_logSetLevel(old_level);
+}
+
+TEST_F(TorrentTest, peersAsyncCallsBackOnTheSessionThread)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    ASSERT_NE(nullptr, tor);
+
+    auto const on_session_thread = std::make_shared<std::promise<bool>>();
+    auto future = on_session_thread->get_future();
+    tr_torrentPeersAsync(tor, [session = session_, on_session_thread](std::vector<tr_peer_stat> const& peers) {
+        EXPECT_TRUE(std::empty(peers)); // nothing is connected
+        on_session_thread->set_value(session->am_in_session_thread());
+    });
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_TRUE(future.get());
 }

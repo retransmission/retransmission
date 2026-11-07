@@ -14,7 +14,6 @@
 #include <fmt/format.h>
 
 #include "libtransmission/crypto-utils.h" // for tr_rand_obj()
-#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
@@ -112,7 +111,7 @@ bool tr_session_id::is_local(std::string_view session_id)
     get_lockfile_path(session_id, lockfile_path);
     auto error = tr_error{};
     if (auto const lockfile_fd = tr_sys_file_open(lockfile_path, TR_SYS_FILE_READ, 0, &error); lockfile_fd == TR_BAD_SYS_FILE) {
-        if (tr_error_is_enoent(error.code())) {
+        if (error.is_enoent()) {
             error = {};
         }
     } else {

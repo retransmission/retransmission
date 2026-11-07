@@ -6,7 +6,7 @@
 
 #include <array>
 #include <cstddef> // size_t, std::byte
-#include <cstdint> // uint8_t
+#include <cstdint> // uint8_t, uint32_t
 #include <numeric> // std::iota
 #include <span>
 #include <utility> // std::swap
@@ -32,7 +32,7 @@ public:
     constexpr void init(std::span<std::byte const> key)
     {
         // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
-        std::iota(std::begin(s_), std::end(s_), uint8_t{ 0 });
+        std::iota(std::begin(s_), std::end(s_), uint32_t{ 0 });
 
         for (size_t i = 0, j = 0; i < 256; ++i) {
             j = static_cast<uint8_t>(j + s_[i] + std::to_integer<uint8_t>(key[i % std::size(key)]));
@@ -70,14 +70,20 @@ private:
     constexpr uint8_t next(uint8_t& i, uint8_t& j)
     {
         i += 1;
-        j += s_[i];
+        auto const x = s_[i];
+        j = static_cast<uint8_t>(j + x);
+        auto const y = s_[j];
 
-        std::swap(s_[i], s_[j]);
+        // not std::swap(): the compiler can't rule out i == j, so it would reload s_[i] below
+        s_[i] = y;
+        s_[j] = x;
 
-        return s_[static_cast<uint8_t>(s_[i] + s_[j])];
+        return static_cast<uint8_t>(s_[static_cast<uint8_t>(x + y)]);
     }
 
-    std::array<uint8_t, 256> s_ = {};
+    // Entries remain in [0, 255]. Word-sized slots make the hot loop
+    // faster without changing the byte-sized indices or the keystream.
+    std::array<uint32_t, 256> s_ = {};
     uint8_t i_ = 0;
     uint8_t j_ = 0;
 };

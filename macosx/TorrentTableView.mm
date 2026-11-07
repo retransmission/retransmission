@@ -36,8 +36,6 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 @interface TorrentTableView ()
 
-@property(nonatomic) IBOutlet Controller* fController;
-
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
 
 @property(nonatomic, readonly) NSMutableIndexSet* fCollapsedGroups;
@@ -57,9 +55,9 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 @implementation TorrentTableView
 
-- (instancetype)initWithCoder:(NSCoder*)decoder
+- (instancetype)initWithFrame:(NSRect)frameRect
 {
-    if ((self = [super initWithCoder:decoder])) {
+    if ((self = [super initWithFrame:frameRect])) {
         self.hoveringData = [[TorrentTableViewHoveringData alloc] init];
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
@@ -82,20 +80,25 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         _piecesBarPercent = [_fDefaults boolForKey:@"PiecesBar"] ? 1.0 : 0.0;
 
         self.style = NSTableViewStyleFullWidth;
+
+        [self setupUI];
     }
 
     return self;
 }
 
-- (void)awakeFromNib
+- (void)setFController:(Controller*)fController
 {
-    [super awakeFromNib];
-
-    if (self.fController != nil) {
-        self.fContextRow = [TorrentContextMenuProvider makeRowContextMenuWithTarget:self.fController];
-        self.fContextNoRow = [TorrentContextMenuProvider makeNoRowContextMenuWithTarget:self.fController];
+    _fController = fController;
+    if (_fController != nil) {
+        self.fContextRow = [TorrentContextMenuProvider makeRowContextMenuWithTarget:_fController];
+        self.fContextNoRow = [TorrentContextMenuProvider makeNoRowContextMenuWithTarget:_fController];
     }
+}
 
+- (void)setupUI
+{
+    self.headerView = nil;
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(reloadVisibleRows) name:@"RefreshTorrentTable"
                                              object:nil];
 }
@@ -103,9 +106,15 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 //make sure we don't lose selection on manual reloads
 - (void)reloadData
 {
-    NSArray<Torrent*>* selectedTorrents = self.selectedTorrents;
+    // remember the items, not selectedTorrents: a collapsed group's torrents have no rows
+    NSMutableArray* selectedItems = [NSMutableArray arrayWithCapacity:self.numberOfSelectedRows];
+    [self.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL*) {
+        [selectedItems addObject:[self itemAtRow:row]];
+    }];
+
     [super reloadData];
-    self.selectedTorrents = selectedTorrents;
+
+    [self selectItems:selectedItems];
 }
 
 - (void)reloadVisibleRows
@@ -395,11 +404,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 - (void)setSelectedTorrents:(NSArray<Torrent*>*)selectedTorrents
 {
-    NSMutableIndexSet* selectedIndexes = [NSMutableIndexSet new];
-    for (Torrent* i in selectedTorrents) {
-        [selectedIndexes addIndex:[self rowForItem:i]];
-    }
-    [self selectRowIndexes:selectedIndexes byExtendingSelection:NO];
+    [self selectItems:selectedTorrents];
 }
 
 - (NSMenu*)menuForEvent:(NSEvent*)event
@@ -734,6 +739,19 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 }
 
 #pragma mark - Private
+
+- (void)selectItems:(NSArray*)items
+{
+    NSMutableIndexSet* selectedIndexes = [NSMutableIndexSet new];
+    for (id item in items) {
+        // selectRowIndexes: ignores the whole set if it holds -1
+        NSInteger const row = [self rowForItem:item];
+        if (row != -1) {
+            [selectedIndexes addIndex:row];
+        }
+    }
+    [self selectRowIndexes:selectedIndexes byExtendingSelection:NO];
+}
 
 - (BOOL)pointInGroupStatusRect:(NSPoint)point
 {

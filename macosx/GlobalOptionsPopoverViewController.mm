@@ -232,7 +232,6 @@
     [self.fDefaults setInteger:limit forKey:@"DownloadLimit"];
     tr_sessionSetSpeedLimit_KBps(self.fHandle, tr_direction::Down, limit);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateSpeedLimitValuesOutsidePrefs" object:nil];
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
@@ -240,7 +239,6 @@
 {
     tr_sessionLimitSpeed(self.fHandle, tr_direction::Up, [self.fDefaults boolForKey:@"CheckUpload"]);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateSpeedLimitValuesOutsidePrefs" object:nil];
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
@@ -270,8 +268,6 @@
     [self.fDefaults setFloat:value forKey:@"RatioLimit"];
     tr_sessionSetRatioLimit(self.fHandle, value);
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateRatioStopValueOutsidePrefs" object:nil];
-
     //reload main table for seeding progress
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
 
@@ -295,8 +291,6 @@
     NSInteger const value = [sender integerValue];
     [self.fDefaults setInteger:value forKey:@"IdleLimitMinutes"];
     tr_sessionSetIdleLimit(self.fHandle, value);
-
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateIdleStopValueOutsidePrefs" object:nil];
 
     //reload main table for remaining seeding time
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
