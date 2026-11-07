@@ -7,6 +7,7 @@
 #include <chrono>
 #include <clocale>
 #include <cstddef>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -147,6 +148,51 @@ TEST_F(GtkSessionTest, stopEmptiesTheModelAndLetsGoOfTheSession)
     EXPECT_EQ(nullptr, core_->get_session());
     EXPECT_FALSE(core_->is_embedded());
     EXPECT_EQ(name, torrent->get_name());
+}
+
+// e.g. a builder waiting on a URL's download when the user quits
+TEST_F(GtkSessionTest, aBuilderThatOutlivesItsSessionAddsNothing)
+{
+    prefs_->set(TR_KEY_show_options_window, true);
+    auto prompts = 0;
+    core_->signal_add_prompt().connect([&prompts](tr_torrent_builder* const builder) {
+        ++prompts;
+        std::unique_ptr<tr_torrent_builder>{ builder }.reset();
+    });
+
+    auto builder = std::make_unique<tr_torrent_builder>(session_);
+    ASSERT_TRUE(builder->set_metainfo_from_file(std::string{ LIBTRANSMISSION_TEST_ASSETS_DIR "/" } + Debian));
+
+    core_->stop();
+    core_->wait_for_close();
+    core_->add_builder(std::move(builder));
+    EXPECT_EQ(0, prompts);
+}
+
+// The watch dir renames each file it tries, added or not, so it stops with the session.
+TEST_F(GtkSessionTest, theWatchDirStopsWithTheSession)
+{
+    namespace fs = std::filesystem;
+
+    auto const watch_dir = fs::path{ sandbox_dir() } / "watch";
+    fs::create_directory(watch_dir);
+    // copies an asset into the watch dir, aged so the watch dir needn't wait for it to settle
+    auto const drop = [&watch_dir](char const* const name) {
+        auto const path = watch_dir / name;
+        fs::copy_file(fs::path{ LIBTRANSMISSION_TEST_ASSETS_DIR } / name, path);
+        fs::last_write_time(path, fs::file_time_type::clock::now() - 1h);
+        return path;
+    };
+
+    auto const tried = drop(Debian);
+    prefs_->set(TR_KEY_watch_dir, watch_dir.string());
+    prefs_->set(TR_KEY_watch_dir_enabled, true);
+    ASSERT_TRUE(wait_for([&tried] { return !fs::exists(tried); }));
+
+    core_->stop();
+    auto const untried = drop(Arch);
+    std::ignore = wait_for([] { return false; }, 2500ms);
+    EXPECT_TRUE(fs::exists(untried));
 }
 
 // A session pref set through the client reaches the embedded session over RPC.
