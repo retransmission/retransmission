@@ -597,6 +597,15 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
         handshake->done(false);
     };
 
+    // each attempt gets the full handshake timeout
+    auto const reconnect = [&]() {
+        if (!io->reconnect()) {
+            return false;
+        }
+        handshake->timeout_timer_->start_single_shot(HandshakeTimeoutSec);
+        return true;
+    };
+
     handshake->maybe_recycle_dh();
 
     if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
@@ -610,7 +619,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
             handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
         }
 
-        if (io->reconnect()) {
+        if (reconnect()) {
             tr_logAddTraceHand(handshake, "uTP connection failed, trying TCP...");
             if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
                 handshake->send_ya(io);
@@ -628,7 +637,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
      * have encountered a peer that doesn't do encryption... reconnect and
      * try a plaintext handshake */
     if (!handshake->have_retried_ && handshake->is_state(State::AwaitingYb) &&
-        handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
+        handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && reconnect()) {
         tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
         handshake->have_retried_ = true;
         retry_plain();
@@ -647,7 +656,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
         error.code() == EPIPE;
     if (!handshake->have_retried_ && handshake->is_state(State::AwaitingHandshake) && !io->is_incoming() && !io->is_utp() &&
         handshake->encryption_mode_ == TR_CLEAR_PREFERRED && !handshake->have_read_anything_from_peer_ && peer_closed &&
-        io->reconnect()) {
+        reconnect()) {
         tr_logAddTraceHand(handshake, "plaintext handshake failed, trying MSE...");
         handshake->have_retried_ = true;
         handshake->send_ya(io);

@@ -7,7 +7,9 @@
 #include <array>
 #include <cerrno>
 #include <cstddef> // size_t, std::byte
+#include <chrono>
 #include <cstdint> // uint8_t
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
@@ -55,11 +57,87 @@ auto constexpr MaxWaitMsec = 5000;
 class HandshakeTest : public SessionTest
 {
 public:
+    // Makes session timers that count how often they are started,
+    // so a test can see each time a handshake arms its timeout.
+    class CountingTimerMaker final : public tr::TimerMaker
+    {
+    public:
+        explicit CountingTimerMaker(tr::TimerMaker& real)
+            : real_{ real }
+        {
+        }
+
+        [[nodiscard]] std::unique_ptr<tr::Timer> create() override
+        {
+            return std::make_unique<CountingTimer>(real_.create(), n_starts_);
+        }
+
+        [[nodiscard]] size_t startCount() const noexcept
+        {
+            return *n_starts_;
+        }
+
+    private:
+        class CountingTimer final : public tr::Timer
+        {
+        public:
+            CountingTimer(std::unique_ptr<tr::Timer> real, std::shared_ptr<size_t> n_starts)
+                : real_{ std::move(real) }
+                , n_starts_{ std::move(n_starts) }
+            {
+            }
+
+            void stop() override
+            {
+                real_->stop();
+            }
+
+            void set_callback(std::function<void()> callback) override
+            {
+                real_->set_callback(std::move(callback));
+            }
+
+            void set_repeating(bool const repeating) override
+            {
+                real_->set_repeating(repeating);
+            }
+
+            void set_interval(std::chrono::milliseconds const msec) override
+            {
+                real_->set_interval(msec);
+            }
+
+            void start() override
+            {
+                ++*n_starts_;
+                real_->start();
+            }
+
+            [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
+            {
+                return real_->interval();
+            }
+
+            [[nodiscard]] bool is_repeating() const noexcept override
+            {
+                return real_->is_repeating();
+            }
+
+        private:
+            std::unique_ptr<tr::Timer> const real_;
+            std::shared_ptr<size_t> const n_starts_;
+        };
+
+        tr::TimerMaker& real_;
+        std::shared_ptr<size_t> n_starts_ = std::make_shared<size_t>();
+    };
+
     class MediatorMock final : public tr_handshake::Mediator
     {
     public:
         explicit MediatorMock(tr_session* session)
             : session_{ session }
+            , timer_maker_{ session->timerMaker() }
         {
         }
 
@@ -83,9 +161,9 @@ public:
             return {};
         }
 
-        [[nodiscard]] tr::TimerMaker& timer_maker() override
+        [[nodiscard]] CountingTimerMaker& timer_maker() override
         {
-            return session_->timerMaker();
+            return timer_maker_;
         }
 
         [[nodiscard]] bool allows_dht() const override
@@ -118,6 +196,7 @@ public:
         }
 
         tr_session* const session_;
+        CountingTimerMaker timer_maker_;
         std::map<tr_sha1_digest_t, TorrentInfo> torrents;
         tr_message_stream_encryption::DH::private_key_bigend_t private_key_ = {};
     };
@@ -621,6 +700,7 @@ protected:
         Side local;
         Side remote; // the remote's last handshake
         size_t connections = 0U;
+        size_t local_timeouts_armed = 0U;
     };
 
     [[nodiscard]] MediatorMock makeMediator(tr_peer_id_t const& peer_id)
@@ -708,7 +788,10 @@ protected:
             },
             MaxWaitMsec));
 
-        blockingRunInSessionThread([&] { handshakes.clear(); });
+        blockingRunInSessionThread([&] {
+            out.local_timeouts_armed = local.timer_maker().startCount();
+            handshakes.clear();
+        });
 
         if (out.local.connected.value_or(false)) {
             EXPECT_EQ(remote_peer_id, out.local.peer_id);
@@ -727,6 +810,8 @@ TEST_P(HandshakeModeTest, connectsAsExpected)
     ASSERT_TRUE(out.local.connected.has_value());
     EXPECT_EQ(param.connected, *out.local.connected);
     EXPECT_EQ(param.connections, out.connections);
+    // each connection attempt gets the full handshake timeout
+    EXPECT_EQ(param.connections, out.local_timeouts_armed);
     if (param.connected) {
         EXPECT_EQ(param.encrypted, out.local.encrypted);
         EXPECT_EQ(std::optional{ true }, out.remote.connected);
