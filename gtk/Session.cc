@@ -741,17 +741,6 @@ void Session::Impl::torrents_added()
     signal_add_error_.emit(ERR_NO_MORE_TORRENTS, {});
 }
 
-/***
-****
-****  RPC Interface
-****
-***/
-
-void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
-{
-    send(method, std::move(params), std::move(on_done));
-}
-
 // ---
 
 void Session::fetch_recent_paths(tr_quark const key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths)

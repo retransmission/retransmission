@@ -130,9 +130,6 @@ public:
     // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
     void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
 
-    // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
-    void exec(tr_quark method, tr_variant::Map params = {}, tr::app::RpcClient::ResponseFunc on_done = {});
-
     void open_folder(tr_torrent_id_t torrent_id) const;
 
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
