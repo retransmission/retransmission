@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <bit>
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -24,6 +25,7 @@
 
 #define LIBTRANSMISSION_WATCHDIR_MODULE
 
+#include <libtransmission/env.h>
 #include <libtransmission/file.h>
 #include <libtransmission/timer.h>
 #include <libtransmission/timer-ev.h>
@@ -169,6 +171,10 @@ TEST_P(WatchDirTest, initialScan)
 
 TEST_P(WatchDirTest, watch)
 {
+    if (tr_env_key_exists("CI") && std::endian::native == std::endian::big) {
+        GTEST_SKIP() << "https://gitlab.com/qemu-project/qemu/-/work_items/356";
+    }
+
     auto const dirname = sandboxDir();
 
     // create a new watchdir and confirm it's empty
