@@ -6,7 +6,7 @@
 
 #include <array>
 #include <cstddef> // size_t, std::byte
-#include <cstdint> // uint8_t
+#include <cstdint> // uint8_t, uint32_t
 #include <numeric> // std::iota
 #include <span>
 #include <utility> // std::swap
@@ -32,7 +32,7 @@ public:
     constexpr void init(std::span<std::byte const> key)
     {
         // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
-        std::iota(std::begin(s_), std::end(s_), uint8_t{ 0 });
+        std::iota(std::begin(s_), std::end(s_), uint32_t{ 0 });
 
         for (size_t i = 0, j = 0; i < 256; ++i) {
             j = static_cast<uint8_t>(j + s_[i] + std::to_integer<uint8_t>(key[i % std::size(key)]));
