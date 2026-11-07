@@ -752,18 +752,7 @@ void Session::start_now(tr_torrent_id_t const id)
 {
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ id }));
-    exec(TR_KEY_torrent_start_now, std::move(params));
-}
-
-/***
-****
-****  RPC Interface
-****
-***/
-
-void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
-{
-    send(method, std::move(params), std::move(on_done));
+    send(TR_KEY_torrent_start_now, std::move(params));
 }
 
 /***
@@ -776,7 +765,7 @@ void Session::refresh_blocklist_info()
     // which tr_blocklistGetRuleCount() does not take.
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_fields, tr::app::make_fields({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }));
-    exec(TR_KEY_session_get, std::move(params), [this](RpcResponse const& response) {
+    send(TR_KEY_session_get, std::move(params), [this](RpcResponse const& response) {
         if (auto const* const args = response.args_map()) {
             import_session_settings(*args);
             impl_->signal_blocklist_info().emit();

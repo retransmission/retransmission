@@ -1054,7 +1054,7 @@ bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
 
     auto params = tr_variant::Map{ 1U };
     params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids));
-    core_->exec(method, std::move(params));
+    core_->send(method, std::move(params));
     return true;
 }
 
@@ -1067,12 +1067,12 @@ void Application::Impl::remove_selected(bool delete_files)
 
 void Application::Impl::start_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_start, {});
+    core_->send(TR_KEY_torrent_start, {});
 }
 
 void Application::Impl::pause_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_stop, {});
+    core_->send(TR_KEY_torrent_stop, {});
 }
 
 void Application::Impl::copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const
