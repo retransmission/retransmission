@@ -43,8 +43,11 @@
 class tr_arc4
 {
 public:
+    // key must not be empty: the schedule below indexes it modulo its size
     constexpr void init(std::span<std::byte const> key)
     {
+        TR_ASSERT(!std::empty(key));
+
         // NOLINTNEXTLINE(modernize-use-ranges): TODO(c++23) P2440, gcc 13.1, clang 23
         std::iota(std::begin(s_), std::end(s_), uint32_t{ 0 });
 
