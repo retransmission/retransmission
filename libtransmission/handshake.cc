@@ -599,7 +599,8 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 
     handshake->maybe_recycle_dh();
 
-    if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
+    // no reply yet to our Ya (MSE) or BitTorrent handshake (plaintext, in Allow mode)
+    if (io->is_utp() && !io->is_incoming() && !handshake->have_read_anything_from_peer_) {
         // the peer probably doesn't speak µTP.
 
         auto const info_hash = io->torrent_hash();

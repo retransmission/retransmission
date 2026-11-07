@@ -11,12 +11,14 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h> // write()
 #endif
@@ -26,6 +28,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/crypto-utils.h> // tr_sha1, tr_sha1_from_string, tr_base...
+#include <libtransmission/error.h>
 #include <libtransmission/handshake.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-io.h>
@@ -105,7 +108,10 @@ public:
 
         void set_utp_failed(tr_sha1_digest_t const& /*info_hash*/, tr_socket_address const& /*socket_address*/) override
         {
+            ++n_utp_failed;
         }
+
+        size_t n_utp_failed = 0U;
 
         void setPrivateKeyFromBase64(std::string_view b64)
         {
@@ -187,6 +193,98 @@ public:
             false /*incoming*/,
             false /*seed*/);
         return std::pair{ std::move(peer_io), sockpair[1] };
+    }
+
+    // A µTP socket to a peer that never answers: it discards writes,
+    // reads nothing, and reports a connect timeout when timeOut() is called.
+    class UnansweredUtpSocket final : public tr_peer_socket
+    {
+    public:
+        explicit UnansweredUtpSocket(tr_socket_address const& socket_address)
+            : tr_peer_socket{ socket_address }
+        {
+        }
+
+        void set_read_enabled(bool const enabled) override
+        {
+            read_enabled_ = enabled;
+        }
+
+        void set_write_enabled(bool const enabled) override
+        {
+            write_enabled_ = enabled;
+        }
+
+        [[nodiscard]] bool is_read_enabled() const override
+        {
+            return read_enabled_;
+        }
+
+        [[nodiscard]] bool is_write_enabled() const override
+        {
+            return write_enabled_;
+        }
+
+        void timeOut() const
+        {
+            auto error = tr_error{};
+            error.set_from_errno(ETIMEDOUT);
+            error_cb(error);
+        }
+
+    protected:
+        [[nodiscard]] constexpr Type type() const noexcept override
+        {
+            return Type::UTP;
+        }
+
+        [[nodiscard]] size_t try_read_impl(InBuf& /*buf*/, size_t /*n_bytes*/, tr_error* /*error*/) override
+        {
+            return {};
+        }
+
+        [[nodiscard]] size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* /*error*/) override
+        {
+            buf.drain(n_bytes);
+            return n_bytes;
+        }
+
+    private:
+        bool read_enabled_ = false;
+        bool write_enabled_ = false;
+    };
+
+    // a loopback TCP listener on an ephemeral port, for peer IOs that redial over TCP
+    [[nodiscard]] static std::pair<tr_socket_t, tr_socket_address> createLoopbackListener()
+    {
+        auto addr = sockaddr_in{};
+        addr.sin_family = AF_INET;
+        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        auto addrlen = socklen_t{ sizeof(addr) };
+        auto const sock = socket(AF_INET, SOCK_STREAM, 0);
+        EXPECT_NE(TR_BAD_SOCKET, sock);
+        EXPECT_EQ(0, bind(sock, reinterpret_cast<sockaddr*>(&addr), addrlen));
+        EXPECT_EQ(0, listen(sock, 1));
+        EXPECT_EQ(0, getsockname(sock, reinterpret_cast<sockaddr*>(&addr), &addrlen));
+        EXPECT_EQ(0, evutil_make_socket_nonblocking(sock));
+        return { sock, { *tr_address::from_string("127.0.0.1"sv), tr_port::from_network(addr.sin_port) } };
+    }
+
+    [[nodiscard]] static auto createOutgoingUtpIo(
+        tr_session* session,
+        tr_socket_address const& socket_address,
+        tr_sha1_digest_t const& info_hash)
+    {
+        auto socket = std::make_shared<UnansweredUtpSocket>(socket_address);
+        auto* const raw = socket.get();
+        auto peer_io = tr_peerIo::create(
+            session,
+            std::move(socket),
+            &session->top_bandwidth_,
+            &info_hash,
+            false /*incoming*/,
+            false /*seed*/);
+        return std::pair{ std::move(peer_io), raw };
     }
 
     [[nodiscard]] static constexpr auto makePeerId(std::string_view sv)
@@ -311,6 +409,60 @@ TEST_F(HandshakeTest, outgoingPlaintext)
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
+}
+
+// In Allow mode the first message is a plaintext handshake, so a µTP
+// connect failure must fall back to TCP from that state as well.
+TEST_F(HandshakeTest, outgoingPlaintextFallsBackFromUtpToTcp)
+{
+    auto const peer_id = makeRandomPeerId();
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+    auto const [listener, listener_address] = createLoopbackListener();
+    auto [io, utp_socket] = createOutgoingUtpIo(session_, listener_address, UbuntuTorrent.info_hash);
+
+    auto res = std::optional<tr_handshake::Result>{};
+    auto const handshake = startHandshake(res, &mediator, io, TR_CLEAR_PREFERRED);
+    utp_socket->timeOut(); // destroys the µTP socket
+
+    auto sock = TR_BAD_SOCKET;
+    ASSERT_TRUE(waitFor(
+        [&] {
+            sock = accept(listener, nullptr, nullptr);
+            return sock != TR_BAD_SOCKET;
+        },
+        MaxWaitMsec));
+    EXPECT_EQ(0, evutil_make_socket_nonblocking(sock));
+
+    // the TCP redial opens with a plaintext handshake
+    auto received = std::string{};
+    waitFor(
+        [&] {
+            auto buf = std::array<char, 128>{};
+            if (auto const n = recv(sock, std::data(buf), std::size(buf), 0); n > 0) {
+                received.append(std::data(buf), n);
+            }
+            return std::size(received) >= std::size(PlaintextProtocolName);
+        },
+        MaxWaitMsec);
+    EXPECT_TRUE(received.starts_with(PlaintextProtocolName));
+
+    sendToClient(sock, PlaintextProtocolName);
+    sendToClient(sock, ReservedBytesNoExtensions);
+    sendToClient(sock, UbuntuTorrent.info_hash);
+    sendToClient(sock, peer_id);
+    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+
+    ASSERT_TRUE(res.has_value());
+    EXPECT_TRUE(res->is_connected);
+    EXPECT_EQ(peer_id, res->peer_id);
+    EXPECT_FALSE(io->is_utp());
+    EXPECT_FALSE(io->is_encrypted());
+    EXPECT_EQ(1U, mediator.n_utp_failed);
+
+    tr_net_close_socket(sock);
+    tr_net_close_socket(listener);
 }
 
 TEST_F(HandshakeTest, incomingEncrypted)
