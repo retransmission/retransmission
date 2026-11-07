@@ -213,10 +213,9 @@ void Session::stop()
 {
     start_after_close_.reset();
     rpc_.stop();
+    set_embedded_session(nullptr);
 
     if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
-        set_embedded_session(nullptr);
-
         close_thread_ = std::thread{ [this, session] {
             tr_sessionClose(session);
 

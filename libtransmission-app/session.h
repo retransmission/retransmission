@@ -72,8 +72,9 @@ public:
     using Ids = TorrentList::Ids;
 
     // `start()` creates an embedded session in `config_dir`, which disposes of removed
-    // torrents' files with `remove_func`. A client that creates its own `tr_session`
-    // reports it with `set_embedded_session()` instead, and doesn't call `start()` or `stop()`.
+    // torrents' files with `remove_func`. A subclass that creates its own `tr_session`,
+    // e.g. a test's, reports it with `set_embedded_session()` instead of calling `start()`,
+    // and closes it itself: `stop()` only forgets it.
     Session(std::string config_dir, Prefs& prefs, RpcClient& rpc, tr_torrent_remove_func remove_func = {});
 
     Session(Session&&) = delete;
@@ -123,6 +124,12 @@ public:
     sigslot::signal<> stopped;
     sigslot::signal<> closed;
     sigslot::signal<> config_dir_contended;
+
+    // where an embedded session keeps its settings and torrents
+    [[nodiscard]] constexpr std::string const& config_dir() const noexcept
+    {
+        return config_dir_;
+    }
 
     // the remote session's url without credentials, or empty when not connected to one
     [[nodiscard]] constexpr std::string const& remote_url() const noexcept
@@ -393,8 +400,15 @@ protected:
     void set_session_type(std::optional<Type> type);
     void set_busy(bool busy);
 
-    // The embedded session, or nullptr when there isn't one. Setting one makes
-    // the type Embedded; clearing it leaves the type to `set_session_type()`.
+    // The embedded session, or nullptr when there isn't one, e.g. after `stop()`.
+    // For a client's features that still use the C API instead of RPC.
+    [[nodiscard]] constexpr tr_session* embedded_session() const noexcept
+    {
+        return embedded_session_;
+    }
+
+    // Setting an embedded session makes the type Embedded;
+    // clearing it leaves the type to `set_session_type()`.
     // Some settings, e.g. the RPC server's, can only be applied to an embedded session.
     void set_embedded_session(tr_session* const session)
     {

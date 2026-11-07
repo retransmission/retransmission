@@ -437,6 +437,17 @@ TEST_F(AppSessionRpcTest, appliesRpcServerPrefsWithTheCApi)
     EXPECT_TRUE(loop_.pump_until([this]() { return tr_sessionGetRPCUsername(core_) == "alice"; }));
 }
 
+// The fixture owns `core_` and closes it; the Session just lets go of it.
+TEST_F(AppSessionRpcTest, stopForgetsASessionItDidNotStart)
+{
+    session_.set_embedded_session(core_);
+    ASSERT_TRUE(session_.embedded_settings());
+
+    session_.stop();
+    EXPECT_FALSE(session_.embedded_settings());
+    EXPECT_FALSE(session_.is_closing());
+}
+
 TEST_F(AppSessionRpcTest, importingSettingsDoesNotEchoBackToTheSession)
 {
     session_.set_embedded_session(core_);
