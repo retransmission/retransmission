@@ -155,6 +155,7 @@ private:
 
     sigslot::scoped_connection prefs_changed_tag_;
     std::array<sigslot::scoped_connection, 3U> torrent_list_tags_;
+    std::array<sigslot::scoped_connection, 2U> session_tags_;
 
     Glib::RefPtr<Gio::FileMonitor> monitor_;
     sigc::connection monitor_tag_;
@@ -371,12 +372,15 @@ void Session::Impl::watchdir_scan()
 
 void Session::Impl::watchdir_update()
 {
-    bool const is_enabled = core_.prefs_.get<bool>(TR_KEY_watch_dir_enabled);
+    // Only while there's a session to add to: watchdir_idle() renames every file it tries, added or not.
+    bool const is_enabled = core_.get_session() != nullptr && core_.prefs_.get<bool>(TR_KEY_watch_dir_enabled);
     auto const dir = Gio::File::create_for_path(core_.prefs_.get<std::string>(TR_KEY_watch_dir));
 
     if (monitor_ != nullptr && (!is_enabled || !dir->equal(monitor_dir_))) {
         monitor_tag_.disconnect();
         monitor_->cancel();
+        monitor_files_.clear();
+        monitor_idle_tag_.disconnect();
 
         monitor_dir_.reset();
         monitor_.reset();
@@ -460,9 +464,11 @@ Session::Impl::Impl(Session& core)
     /* init from prefs & listen to pref changes */
     on_pref_changed(TR_KEY_sort_mode);
     on_pref_changed(TR_KEY_sort_reversed);
-    on_pref_changed(TR_KEY_watch_dir_enabled);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
     prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
+
+    session_tags_ = { core_.source_changed.connect_scoped(&Impl::watchdir_update, this),
+                      core_.stopped.connect_scoped(&Impl::watchdir_update, this) };
 }
 
 Session::Impl::~Impl()
@@ -562,6 +568,11 @@ tr_torrent* Session::Impl::create_new_torrent(tr_torrent_builder* builder)
 
 void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, bool const do_prompt)
 {
+    // A builder can outlive its session, e.g. one waiting on a URL's download during a quit.
+    if (core_.get_session() == nullptr) {
+        return;
+    }
+
     auto const& metainfo = builder->metainfo();
     if (std::empty(metainfo.info_hash_string())) {
         return;
@@ -696,8 +707,9 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     } else if (tr_urlIsValid(file->get_uri())) {
         handled = true;
         inc_busy();
-        // released because the slot must be copyable; the callback re-owns it
-        file->load_contents_async([this, file, builder = builder.release(), do_prompt](auto& result) {
+        // `builder` is released because the slot must be copyable; the callback re-owns it.
+        // `core` keeps this Impl alive until the download finishes, which can be after a quit.
+        file->load_contents_async([this, core = get_core_ptr(), file, builder = builder.release(), do_prompt](auto& result) {
             add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt);
         });
     } else {
