@@ -2085,14 +2085,24 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             for (auto& iface : tr_net_interfaces()) {
                 auto addresses = tr_variant::Vector{};
                 addresses.reserve(std::size(iface.addresses));
-                for (auto const& addr : iface.addresses) {
-                    addresses.emplace_back(addr.display_name());
+                for (auto const& entry : iface.addresses) {
+                    auto const tags = tr_net_address_tags(entry);
+                    auto tag_vec = tr_variant::Vector{};
+                    tag_vec.reserve(std::size(tags));
+                    for (auto const tag : tags) {
+                        tag_vec.emplace_back(tr_variant::unmanaged_string(tag));
+                    }
+
+                    auto address = tr_variant::Map{ 2U };
+                    address.try_emplace(TR_KEY_address, entry.address.display_name());
+                    address.try_emplace(TR_KEY_tags, std::move(tag_vec));
+                    addresses.emplace_back(std::move(address));
                 }
 
-                auto entry = tr_variant::Map{ 2U };
-                entry.try_emplace(TR_KEY_name, std::move(iface.name));
-                entry.try_emplace(TR_KEY_addresses, std::move(addresses));
-                vec.emplace_back(std::move(entry));
+                auto iface_map = tr_variant::Map{ 2U };
+                iface_map.try_emplace(TR_KEY_name, std::move(iface.name));
+                iface_map.try_emplace(TR_KEY_addresses, std::move(addresses));
+                vec.emplace_back(std::move(iface_map));
             }
             return tr_variant{ std::move(vec) };
         },

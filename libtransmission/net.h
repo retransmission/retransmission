@@ -561,10 +561,29 @@ struct tr_net_bind_status {
 
 [[nodiscard]] tr_net_bind_status tr_net_interface_status(std::string_view bind_interface);
 
+// how an IPv6 address was assigned, as far as the OS records it
+enum class tr_net_address_origin : uint8_t {
+    Unknown, // e.g. configured by hand, or any IPv4 address
+    Dhcp, // leased by DHCPv6
+    SlaacStable, // autoconfigured, keeping its interface ID (RFC 7217 or EUI-64)
+    SlaacPrivacy, // autoconfigured temporary address (RFC 8981)
+};
+
+struct tr_net_interface_address {
+    tr_address address;
+    tr_net_address_origin origin = tr_net_address_origin::Unknown;
+};
+
 struct tr_net_interface {
     std::string name;
-    std::vector<tr_address> addresses; // IPv4 first, then IPv6
+    std::vector<tr_net_interface_address> addresses; // IPv4 first, then IPv6
 };
+
+// short names for an IPv6 address's kind: its type ("gua", "ula", "link-local",
+// "nat64", "teredo", "6to4", "documentation", "site-local" or "loopback"), when
+// it has one, then its origin ("dhcp", "slaac-stable" or "slaac-privacy"), when
+// known. Empty for an IPv4 address.
+[[nodiscard]] std::vector<std::string_view> tr_net_address_tags(tr_net_interface_address const& address);
 
 // the OS's network interfaces sorted by name, or empty when
 // TrNetCanBindInterface is false since none of them could be bound

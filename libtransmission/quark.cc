@@ -650,6 +650,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "statusbar_stats"sv, // gtk app, qt app
     "supports_holepunch"sv, // rpc
     "tag"sv, // rpc
+    "tags"sv, // rpc
     "tcp-enabled"sv, // rpc, tr_session::Settings
     "tcp_enabled"sv, // rpc, tr_session::Settings
     "tier"sv, // rpc

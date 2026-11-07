@@ -27,6 +27,16 @@
 #else
 #include <ifaddrs.h>
 #include <net/if.h>
+#include <sys/ioctl.h>
+#endif
+
+#ifdef __linux__
+#include <linux/netlink.h>
+#include <linux/rtnetlink.h>
+#endif
+
+#ifdef __APPLE__
+#include <netinet6/in6_var.h> // SIOCGIFAFLAG_IN6
 #endif
 
 #include <event2/util.h>
@@ -159,6 +169,219 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     return if_nametoindex(std::string{ name }.c_str());
 }
 
+namespace
+{
+#ifdef __linux__
+// The origins of the IPv6 addresses, keyed by interface index and address.
+// getifaddrs() leaves out the flags that tell them apart, so this asks the
+// kernel directly. Empty if it can't be asked.
+[[nodiscard]] std::map<std::pair<unsigned, tr_address>, tr_net_address_origin> ipv6_address_origins()
+{
+    auto origins = std::map<std::pair<unsigned, tr_address>, tr_net_address_origin>{};
+
+    auto const fd = socket(AF_NETLINK, SOCK_RAW | SOCK_CLOEXEC, NETLINK_ROUTE);
+    if (fd < 0) {
+        return origins;
+    }
+    auto const fd_uniq = std::unique_ptr<int const, void (*)(int const*)>{ &fd, [](int const* p) { tr_net_close_socket(*p); } };
+
+    struct {
+        nlmsghdr header;
+        ifaddrmsg body;
+    } request = {};
+    request.header.nlmsg_len = NLMSG_LENGTH(sizeof(ifaddrmsg));
+    request.header.nlmsg_type = RTM_GETADDR;
+    request.header.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP;
+    request.header.nlmsg_seq = 1U;
+    request.body.ifa_family = AF_INET6;
+    if (send(fd, &request, request.header.nlmsg_len, 0) < 0) {
+        return origins;
+    }
+
+    // aligned for the header; the kernel pads every message and attribute
+    // after it to NLMSG_ALIGNTO and RTA_ALIGNTO, so the casts below are safe
+    alignas(nlmsghdr) auto buf = std::array<char, 32768U>{};
+    for (;;) {
+        auto len = recv(fd, std::data(buf), std::size(buf), 0);
+        if (len <= 0) {
+            return origins;
+        }
+
+        // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic,clang-diagnostic-cast-align)
+        for (
+            auto const* msg = reinterpret_cast<nlmsghdr const*>(std::data(buf)); NLMSG_OK(msg, len);
+            msg = NLMSG_NEXT(msg, len)) {
+            if (msg->nlmsg_type == NLMSG_DONE || msg->nlmsg_type == NLMSG_ERROR) {
+                return origins;
+            }
+            if (msg->nlmsg_type != RTM_NEWADDR) {
+                continue;
+            }
+
+            auto const* const ifa = static_cast<ifaddrmsg const*>(NLMSG_DATA(msg));
+            auto flags = uint32_t{ ifa->ifa_flags };
+            // IFA_LOCAL is the local address when the address has a peer, as on a
+            // point-to-point link, and IFA_ADDRESS is then the peer's
+            auto address = std::optional<tr_address>{};
+            auto local = std::optional<tr_address>{};
+
+            auto attr_len = IFA_PAYLOAD(msg);
+            for (auto const* attr = IFA_RTA(ifa); RTA_OK(attr, attr_len); attr = RTA_NEXT(attr, attr_len)) {
+                if ((attr->rta_type == IFA_ADDRESS || attr->rta_type == IFA_LOCAL) && RTA_PAYLOAD(attr) == sizeof(in6_addr)) {
+                    auto addr6 = in6_addr{};
+                    std::memcpy(&addr6, RTA_DATA(attr), sizeof(addr6));
+                    auto& dst = attr->rta_type == IFA_LOCAL ? local : address;
+                    dst = tr_address{ .type = TR_AF_INET6, .addr = { .addr6 = addr6 } };
+                } else if (attr->rta_type == IFA_FLAGS && RTA_PAYLOAD(attr) == sizeof(uint32_t)) {
+                    // the full flags; ifa_flags has only their low 8 bits
+                    std::memcpy(&flags, RTA_DATA(attr), sizeof(flags));
+                }
+            }
+            // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic,clang-diagnostic-cast-align)
+
+            auto const addr = local ? local : address;
+            if (!addr) {
+                continue;
+            }
+
+            // An address the kernel or a user added for good is permanent. The rest
+            // come and go with router advertisements and leases: SLAAC hands out
+            // /64s and DHCPv6 /128s.
+            auto origin = tr_net_address_origin::Unknown;
+            if ((flags & IFA_F_TEMPORARY) != 0U) {
+                origin = tr_net_address_origin::SlaacPrivacy;
+            } else if ((flags & (IFA_F_STABLE_PRIVACY | IFA_F_MANAGETEMPADDR)) != 0U) {
+                origin = tr_net_address_origin::SlaacStable;
+            } else if ((flags & IFA_F_PERMANENT) == 0U && ifa->ifa_prefixlen == 64U) {
+                origin = tr_net_address_origin::SlaacStable;
+            } else if ((flags & IFA_F_PERMANENT) == 0U && ifa->ifa_prefixlen == 128U) {
+                origin = tr_net_address_origin::Dhcp;
+            }
+
+            origins.try_emplace({ ifa->ifa_index, *addr }, origin);
+        }
+    }
+}
+#endif
+
+#if defined(__APPLE__) && defined(SIOCGIFAFLAG_IN6)
+// the origin the kernel records in an IPv6 address's flags
+[[nodiscard]] tr_net_address_origin ipv6_address_origin(char const* if_name, sockaddr const* sa)
+{
+    auto const fd = socket(AF_INET6, SOCK_DGRAM, 0);
+    if (fd < 0) {
+        return tr_net_address_origin::Unknown;
+    }
+
+    auto ifr = in6_ifreq{};
+    std::strncpy(ifr.ifr_name, if_name, sizeof(ifr.ifr_name) - 1U);
+    std::memcpy(&ifr.ifr_addr, sa, sizeof(ifr.ifr_addr));
+    auto const ok = ioctl(fd, SIOCGIFAFLAG_IN6, &ifr) == 0;
+    tr_net_close_socket(fd);
+    if (!ok) {
+        return tr_net_address_origin::Unknown;
+    }
+
+    auto const flags = ifr.ifr_ifru.ifru_flags6;
+    if ((flags & IN6_IFF_TEMPORARY) != 0) {
+        return tr_net_address_origin::SlaacPrivacy;
+    }
+    if ((flags & IN6_IFF_AUTOCONF) != 0) {
+        return tr_net_address_origin::SlaacStable;
+    }
+    if ((flags & IN6_IFF_DYNAMIC) != 0) {
+        return tr_net_address_origin::Dhcp;
+    }
+    return tr_net_address_origin::Unknown;
+}
+#endif
+
+// an IPv6 address's special-purpose range (RFC 6890's registry) that an
+// interface's own address can be in, or empty; "gua" is the rest of 2000::/3
+[[nodiscard]] std::string_view ipv6_range_tag(tr_address const& address)
+{
+    if (address.is_ipv6_loopback()) {
+        return "loopback"sv;
+    }
+    if (address.is_ipv6_link_local()) {
+        return "link-local"sv;
+    }
+    // both carved out of 2000::/3, so checked before the table's "gua"
+    if (address.is_ipv6_teredo()) {
+        return "teredo"sv;
+    }
+    if (address.is_ipv6_6to4()) {
+        return "6to4"sv;
+    }
+
+    // the ranges tr_address has no predicate for, most specific first
+    struct Range {
+        std::array<uint8_t, 6U> prefix;
+        size_t bits;
+        std::string_view tag;
+    };
+    static auto constexpr Ranges = std::array<Range, 7U>{ {
+        { .prefix = { 0x00, 0x64, 0xFF, 0x9B, 0x00, 0x01 }, .bits = 48U, .tag = "nat64"sv }, // local-use, RFC 8215
+        { .prefix = { 0x00, 0x64, 0xFF, 0x9B, 0x00, 0x00 }, .bits = 96U, .tag = "nat64"sv }, // well-known, RFC 6052
+        { .prefix = { 0x20, 0x01, 0x0D, 0xB8 }, .bits = 32U, .tag = "documentation"sv }, // RFC 3849
+        { .prefix = { 0x3F, 0xFF }, .bits = 20U, .tag = "documentation"sv }, // RFC 9637
+        { .prefix = { 0x20 }, .bits = 3U, .tag = "gua"sv }, // global unicast, RFC 4291
+        { .prefix = { 0xFC }, .bits = 7U, .tag = "ula"sv }, // RFC 4193
+        { .prefix = { 0xFE, 0xC0 }, .bits = 10U, .tag = "site-local"sv }, // deprecated by RFC 3879
+    } };
+
+    auto const& bytes = address.addr.addr6.s6_addr;
+    auto const in_range = [&bytes](Range const& range) {
+        // the 96-bit NAT64 prefix is its first 4 bytes followed by zeros
+        auto const n_bytes = std::min<size_t>(range.bits, 48U) / 8U;
+        for (size_t i = 0; i < n_bytes; ++i) {
+            if (bytes[i] != range.prefix[i]) {
+                return false;
+            }
+        }
+        if (range.bits == 96U) {
+            return std::all_of(&bytes[6], &bytes[12], [](auto const byte) { return byte == 0U; });
+        }
+        if (auto const rest = range.bits % 8U; rest != 0U && range.bits < 48U) {
+            auto const mask = static_cast<uint8_t>(0xFFU << (8U - rest));
+            return (bytes[n_bytes] & mask) == (range.prefix[n_bytes] & mask);
+        }
+        return true;
+    };
+
+    auto const range = std::ranges::find_if(Ranges, in_range);
+    return range != std::end(Ranges) ? range->tag : std::string_view{};
+}
+} // namespace
+
+std::vector<std::string_view> tr_net_address_tags(tr_net_interface_address const& address)
+{
+    auto tags = std::vector<std::string_view>{};
+    if (!address.address.is_ipv6()) {
+        return tags;
+    }
+
+    if (auto const range = ipv6_range_tag(address.address); !std::empty(range)) {
+        tags.emplace_back(range);
+    }
+
+    switch (address.origin) {
+    case tr_net_address_origin::Dhcp:
+        tags.emplace_back("dhcp"sv);
+        break;
+    case tr_net_address_origin::SlaacStable:
+        tags.emplace_back("slaac-stable"sv);
+        break;
+    case tr_net_address_origin::SlaacPrivacy:
+        tags.emplace_back("slaac-privacy"sv);
+        break;
+    case tr_net_address_origin::Unknown:
+        break;
+    }
+
+    return tags;
+}
+
 std::vector<tr_net_interface> tr_net_interfaces()
 {
     auto interfaces = std::vector<tr_net_interface>{};
@@ -170,8 +393,10 @@ std::vector<tr_net_interface> tr_net_interfaces()
         return interfaces;
     }
 
+    auto index_by_name = std::map<std::string, unsigned, std::less<>>{};
     for (auto const* cur = list.get(); cur->if_index != 0U; ++cur) {
-        interfaces.push_back({ cur->if_name, {} });
+        interfaces.push_back({ .name = cur->if_name, .addresses = {} });
+        index_by_name.try_emplace(cur->if_name, cur->if_index);
     }
 
     std::ranges::sort(interfaces, {}, &tr_net_interface::name);
@@ -181,6 +406,10 @@ std::vector<tr_net_interface> tr_net_interfaces()
         return interfaces;
     }
 
+#ifdef __linux__
+    auto const origins = ipv6_address_origins();
+#endif
+
     auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
     for (; ifa != nullptr; ifa = ifa->ifa_next) {
         auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr);
@@ -188,14 +417,70 @@ std::vector<tr_net_interface> tr_net_interfaces()
             continue;
         }
 
-        auto const iter = std::ranges::lower_bound(interfaces, std::string_view{ ifa->ifa_name }, {}, &tr_net_interface::name);
-        if (iter != std::end(interfaces) && iter->name == ifa->ifa_name) {
-            iter->addresses.emplace_back(if_addr->address());
+        // Linux lists a labelled IPv4 address under its label, e.g. "eth0:1",
+        // which names no interface: the address belongs to "eth0"
+        auto name = std::string_view{ ifa->ifa_name };
+        if (!index_by_name.contains(name)) {
+            name = name.substr(0, name.find(':'));
         }
+
+        auto const iter = std::ranges::lower_bound(interfaces, name, {}, &tr_net_interface::name);
+        if (iter == std::end(interfaces) || iter->name != name) {
+            continue;
+        }
+
+        auto& entry = iter->addresses.emplace_back(tr_net_interface_address{ .address = if_addr->address() });
+        if (!entry.address.is_ipv6()) {
+            continue;
+        }
+
+#ifdef __linux__
+        if (auto const index = index_by_name.find(iter->name); index != std::end(index_by_name)) {
+            if (auto const origin = origins.find({ index->second, entry.address }); origin != std::end(origins)) {
+                entry.origin = origin->second;
+            }
+        }
+#elif defined(__APPLE__) && defined(SIOCGIFAFLAG_IN6)
+        entry.origin = ipv6_address_origin(ifa->ifa_name, ifa->ifa_addr);
+#endif
     }
 
+    // IPv4 first; then IPv6 from the widest reach to the narrowest, and the
+    // addresses that last before the temporary ones within a range
+    auto const rank = [](tr_net_interface_address const& entry) {
+        if (entry.address.is_ipv4()) {
+            return std::pair{ 0, 0 };
+        }
+
+        static auto constexpr RangeOrder = std::array{ "gua"sv, "ula"sv, "nat64"sv };
+        auto const tag = ipv6_range_tag(entry.address);
+        auto range = static_cast<int>(std::size(RangeOrder)) + 1;
+        if (auto const iter = std::ranges::find(RangeOrder, tag); iter != std::end(RangeOrder)) {
+            range = static_cast<int>(iter - std::begin(RangeOrder)) + 1;
+        } else if (tag == "link-local"sv || tag == "loopback"sv) {
+            range += 1;
+        }
+
+        auto origin = 3;
+        switch (entry.origin) {
+        case tr_net_address_origin::SlaacStable:
+            origin = 0;
+            break;
+        case tr_net_address_origin::Dhcp:
+            origin = 1;
+            break;
+        case tr_net_address_origin::SlaacPrivacy:
+            origin = 2;
+            break;
+        case tr_net_address_origin::Unknown:
+            break;
+        }
+
+        return std::pair{ range, origin };
+    };
+
     for (auto& iface : interfaces) {
-        std::ranges::stable_partition(iface.addresses, &tr_address::is_ipv4);
+        std::ranges::stable_sort(iface.addresses, {}, rank);
     }
 #endif
 

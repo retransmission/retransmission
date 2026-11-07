@@ -753,11 +753,12 @@ a {
     font-size: smaller;
   }
 
+  /* both columns, so that an IPv6 address fits on one line */
   .interface-addresses {
     display: flex;
     flex-wrap: wrap;
     gap: 2px 4px;
-    grid-column: 2 / 3;
+    grid-column: 1 / -1;
   }
 
   .interface-address {
@@ -779,6 +780,10 @@ a {
       content: ' ✓ Copied';
       color: var(--color-fg-port-open);
     }
+  }
+
+  .interface-address.link-local {
+    color: var(--color-fg-disabled);
   }
 
   .bind-address-feedback,

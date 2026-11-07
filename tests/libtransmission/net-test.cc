@@ -1124,6 +1124,42 @@ TEST_F(NetTest, curlInterfaceString)
     EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
 }
 
+TEST_F(NetTest, addressTags)
+{
+    using Origin = tr_net_address_origin;
+    auto const tags = [](std::string_view const address, Origin const origin = Origin::Unknown) {
+        auto const addr = tr_address::from_string(address);
+        EXPECT_TRUE(addr) << address;
+        return tr_net_address_tags({ .address = addr.value_or(tr_address{}), .origin = origin });
+    };
+    using Tags = std::vector<std::string_view>;
+
+    // the scope comes from the address, the origin from the OS
+    EXPECT_EQ((Tags{ "gua"sv, "slaac-privacy"sv }), tags("2a01:799:3a1::1"sv, Origin::SlaacPrivacy));
+    EXPECT_EQ((Tags{ "gua"sv, "slaac-stable"sv }), tags("2a02:1:2::abcd"sv, Origin::SlaacStable));
+    EXPECT_EQ((Tags{ "ula"sv, "dhcp"sv }), tags("fd12:3456::2"sv, Origin::Dhcp));
+    EXPECT_EQ((Tags{ "link-local"sv }), tags("fe80::1"sv));
+    EXPECT_EQ((Tags{ "nat64"sv }), tags("64:ff9b::c000:201"sv));
+    EXPECT_EQ((Tags{ "nat64"sv }), tags("64:ff9b:1::1"sv));
+
+    // ranges carved out of 2000::/3 aren't global unicast
+    EXPECT_EQ((Tags{ "documentation"sv }), tags("2001:db8:1:2::ffff"sv));
+    EXPECT_EQ((Tags{ "documentation"sv }), tags("3fff:fff::1"sv));
+    EXPECT_EQ((Tags{ "gua"sv }), tags("3fff:1000::1"sv)); // just past 3fff::/20
+    EXPECT_EQ((Tags{ "teredo"sv }), tags("2001:0:4136:e378::1"sv));
+    EXPECT_EQ((Tags{ "6to4"sv }), tags("2002:c000:201::1"sv));
+    EXPECT_EQ((Tags{ "gua"sv }), tags("2001:470::1"sv));
+
+    // a NAT64 /96 must be followed by zeros up to the embedded IPv4 address
+    EXPECT_EQ(Tags{}, tags("64:ff9b:0:1::1"sv));
+
+    EXPECT_EQ((Tags{ "site-local"sv }), tags("fec0::1"sv));
+    EXPECT_EQ((Tags{ "loopback"sv }), tags("::1"sv));
+
+    // IPv4 addresses have no tags at all
+    EXPECT_EQ(Tags{}, tags("192.168.1.5"sv, Origin::Dhcp));
+}
+
 TEST_F(NetTest, isBindAddress)
 {
     // empty, even padded, means any address

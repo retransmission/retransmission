@@ -13,6 +13,60 @@ import {
 } from './utils.js';
 
 export class PrefsDialog extends EventTarget {
+  // An IPv6 address's range, the first of session_get's tags, is shown as a
+  // coloured mark that the tooltips explain. A native <option> can only hold
+  // plain text, so the colour comes from the character itself.
+  static _RangeMarks = {
+    gua: {
+      about: 'global, reachable from the internet',
+      mark: '🟢',
+      name: 'GUA',
+    },
+    ula: {
+      about: 'unique local, reachable only within your site',
+      mark: '🔵',
+      name: 'ULA',
+    },
+    'link-local': {
+      about:
+        "this link only. Grayed out, since peers and trackers aren't on your link. Local peer discovery reaches the link through the interface, without a bind address.",
+      mark: '⚪',
+      name: 'Link-local',
+    },
+    nat64: {
+      about: 'an IPv4 address translated by NAT64',
+      mark: '🟣',
+      name: 'NAT64',
+    },
+    teredo: { about: 'a Teredo tunnel', mark: '🟠', name: 'Teredo' },
+    '6to4': { about: 'a 6to4 tunnel (deprecated)', mark: '🟠', name: '6to4' },
+    documentation: {
+      about: 'for examples only, not routed',
+      mark: '🟤',
+      name: 'Documentation',
+    },
+    'site-local': { about: 'deprecated', mark: '🟡', name: 'Site-local' },
+    loopback: { about: 'this host only', mark: '⚫', name: 'Loopback' },
+  };
+
+  // session_get's other tags, an address's origin
+  static _Origins = {
+    'slaac-stable': {
+      about: 'autoconfigured, keeps its address',
+      name: 'SLAAC-stable',
+    },
+    'slaac-privacy': {
+      about: 'autoconfigured, temporary, replaced regularly',
+      name: 'SLAAC-privacy',
+    },
+    dhcp: { about: 'leased from a DHCPv6 server', name: 'DHCP' },
+  };
+
+  static _BindAddressAdvice = {
+    ipv4: 'Recommended: Any. The chosen interface already keeps traffic on it.',
+    ipv6: 'Recommended: Any. The chosen interface already keeps traffic on it, and IPv6 addresses change: SLAAC-privacy addresses are replaced regularly, and a new prefix from your provider replaces the rest. To pin one anyway, pick a SLAAC-stable or DHCP address.',
+  };
+
   static _initTimeDropDown(e) {
     for (let index = 0; index < 24 * 4; ++index) {
       const hour = Math.trunc(index / 4);
@@ -162,8 +216,37 @@ export class PrefsDialog extends EventTarget {
     setEnabled(select, names.length > 0 || current !== '');
   }
 
+  // one line for an address: its range's mark, the address, and its origin,
+  // e.g. "🟢 2001:db8::1 · SLAAC-stable"
+  static _describeAddress({ address, tags }) {
+    const [range, ...rest] = tags ?? [];
+    const mark = PrefsDialog._RangeMarks[range]?.mark;
+    const origins = rest.map((tag) => PrefsDialog._Origins[tag]?.name ?? tag);
+    return [mark, address, ...origins.map((origin) => `· ${origin}`)]
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  // explains the marks and origins among `addresses`, one per line
+  static _describeTags(addresses) {
+    const tags = new Set(addresses.flatMap((address) => address.tags ?? []));
+    const ranges = Object.entries(PrefsDialog._RangeMarks)
+      .filter(([tag]) => tags.has(tag))
+      .map(([, { about, mark, name }]) => `${mark} ${name}: ${about}`);
+    const origins = Object.entries(PrefsDialog._Origins)
+      .filter(([tag]) => tags.has(tag))
+      .map(([, { about, name }]) => `${name}: ${about}`);
+    return [ranges.join('\n'), origins.join('\n')].filter(Boolean).join('\n\n');
+  }
+
+  // a link-local address is only reachable on its own link,
+  // which no peer or tracker is on
+  static _isLinkLocal({ tags }) {
+    return (tags ?? []).includes('link-local');
+  }
+
   // shows the addresses of the interface picked in `select`, which may not
-  // be saved yet, and offers them as suggestions for the bind addresses
+  // be saved yet, and offers them in the bind address lists
   _updateInterfaceAddresses() {
     const { network } = this.elements;
     const iface = this._findInterface(network.interface_select.value);
@@ -172,13 +255,16 @@ export class PrefsDialog extends EventTarget {
     // an interface that's gone has no addresses to list; the binding
     // status says what that does to traffic
     const label = network.interface_addresses_label;
-    const key = iface ? addresses.join(' ') || 'none' : '';
+    const key = iface ? JSON.stringify(addresses) : '';
     // rebuilt only on change, so a session refresh can't replace a button mid-click
     if (label.dataset.addresses !== key) {
       label.dataset.addresses = key;
       if (addresses.length > 0) {
+        const about = PrefsDialog._describeTags(addresses);
         label.replaceChildren(
-          ...addresses.map((address) => PrefsDialog._createCopyButton(address)),
+          ...addresses.map((address) =>
+            PrefsDialog._createCopyButton(address, about),
+          ),
         );
       } else {
         label.textContent = iface ? 'No addresses' : '';
@@ -188,26 +274,118 @@ export class PrefsDialog extends EventTarget {
 
     this._updateBindStatus();
 
-    for (const [family, { datalist }] of Object.entries(network.bind_address)) {
-      datalist.replaceChildren(
-        ...addresses
-          .filter((address) => address.includes(':') === (family === 'ipv6'))
-          .map((address) => new Option(address, address)),
-      );
-      // the interface the address must belong to may have changed,
-      // but a value still being typed isn't judged yet
-      if (network.bind_address[family].input !== document.activeElement) {
-        this._checkBindAddress(family);
-      }
+    for (const family of Object.keys(network.bind_address)) {
+      this._updateBindAddressSelect(family);
     }
   }
 
-  static _createCopyButton(text) {
+  // Lists the local addresses of `family` a bind address can be: the chosen
+  // interface's, or every interface's while the default route is chosen.
+  // A saved address no interface has stays selectable, as with interfaces.
+  _updateBindAddressSelect(family) {
+    const { network } = this.elements;
+    const { feedback, select } = network.bind_address[family];
+    const saved = (
+      this.session_manager.session_properties[select.dataset.key] ?? ''
+    ).trim();
+
+    const chosen = network.interface_select.value;
+    let interfaces = [];
+    if (chosen === '') {
+      interfaces = this.network_interfaces;
+    } else if (chosen !== 'blocked') {
+      interfaces = [this._findInterface(chosen)].filter(Boolean);
+    }
+    const is_family = ({ address }) =>
+      address.includes(':') === (family === 'ipv6');
+    const groups = interfaces
+      .map(({ addresses, name }) => ({
+        addresses: addresses.filter(is_family),
+        name,
+      }))
+      .filter(({ addresses }) => addresses.length > 0);
+    const listed = groups.flatMap(({ addresses }) =>
+      addresses.map(({ address }) => address),
+    );
+
+    // rebuilt only on change: replacing the options closes an open dropdown
+    const key = JSON.stringify([saved, groups]);
+    if (select.dataset.options !== key) {
+      select.dataset.options = key;
+      select.title = [
+        PrefsDialog._BindAddressAdvice[family],
+        PrefsDialog._describeTags(groups.flatMap(({ addresses }) => addresses)),
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const options = [
+        new Option(
+          family === 'ipv4'
+            ? 'Any (0.0.0.0), recommended'
+            : 'Any (::), recommended',
+          '',
+        ),
+      ];
+      const toOption = (address) => {
+        const option = new Option(
+          PrefsDialog._describeAddress(address),
+          address.address,
+        );
+        // grayed out, though a saved one stays shown as what's in use
+        option.disabled =
+          PrefsDialog._isLinkLocal(address) && address.address !== saved;
+        return option;
+      };
+      if (groups.length === 1) {
+        options.push(...groups[0].addresses.map(toOption));
+      } else {
+        for (const { addresses, name } of groups) {
+          const group = document.createElement('optgroup');
+          group.label = name;
+          group.append(...addresses.map(toOption));
+          options.push(group);
+        }
+      }
+      if (saved && !listed.includes(saved)) {
+        options.push(new Option(`${saved} (unavailable)`, saved));
+      }
+      select.replaceChildren(...options);
+    }
+    select.value = saved;
+
+    // binding an address the chosen interface doesn't have fails at runtime,
+    // but the interface may be changed next, so this only warns;
+    // an unavailable interface has no addresses to check against
+    if (
+      saved &&
+      chosen !== '' &&
+      chosen !== 'blocked' &&
+      this._findInterface(chosen) &&
+      !listed.includes(saved)
+    ) {
+      PrefsDialog._setFeedback(
+        feedback,
+        'warning',
+        `Not an address of ${chosen}`,
+      );
+    } else if (feedback.dataset.state !== 'saved') {
+      PrefsDialog._setFeedback(feedback, null, '');
+    }
+  }
+
+  // a button that copies `address`, labelled with the address and its tags
+  static _createCopyButton({ address, tags }, about) {
+    const text = address;
     const button = document.createElement('button');
     button.type = 'button';
     button.classList.add('interface-address');
-    button.textContent = text;
-    button.title = 'Click to copy';
+    button.classList.toggle(
+      'link-local',
+      PrefsDialog._isLinkLocal({ address, tags }),
+    );
+    button.textContent = PrefsDialog._describeAddress({ address, tags });
+    button.title = about ? `Click to copy\n\n${about}` : 'Click to copy';
     button.addEventListener('click', () => {
       if (!navigator.clipboard) {
         // navigator.clipboard requires HTTPS or localhost
@@ -264,90 +442,25 @@ export class PrefsDialog extends EventTarget {
     );
   }
 
-  // the problem with `value` as a bind address of `family`, or null if it has none
-  static _bindAddressError(value, family) {
-    if (!value) {
-      return null;
-    }
-
-    const octet = String.raw`(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)`;
-    const is_ipv4 = new RegExp(`^${octet}(\\.${octet}){3}$`).test(value);
-    if (family === 'ipv4') {
-      return is_ipv4 ? null : 'Not an IPv4 address';
-    }
-
-    // the URL parser accepts exactly the IPv6 literals inside brackets
-    return !is_ipv4 &&
-      value.includes(':') &&
-      PrefsDialog._isUrl(`http://[${value}]/`)
-      ? null
-      : 'Not an IPv6 address';
-  }
-
-  // URL.canParse() is too new for some supported browsers
-  static _isUrl(text) {
-    try {
-      new URL(text);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  // validates a bind address field and shows the result beside it;
-  // an invalid value stays in the field and is never sent
-  _checkBindAddress(family) {
-    const { feedback, input } = this.elements.network.bind_address[family];
-    const value = input.value.trim();
-
-    const error = PrefsDialog._bindAddressError(value, family);
-    if (error) {
-      input.setAttribute('aria-invalid', 'true');
-      PrefsDialog._setFeedback(feedback, 'error', error);
-      return false;
-    }
-    input.removeAttribute('aria-invalid');
-
-    // binding an address the chosen interface doesn't have fails at runtime
-    const { network } = this.elements;
-    const name = network.interface_select.value;
-    const iface = this._findInterface(name);
-    if (value && iface && !iface.addresses.includes(value)) {
-      PrefsDialog._setFeedback(
-        feedback,
-        'warning',
-        `Not an address of ${name}`,
-      );
-    } else if (feedback.dataset.state !== 'saved') {
-      PrefsDialog._setFeedback(feedback, null, '');
-    }
-    return true;
-  }
-
   _onBindAddressChanged(family) {
-    if (!this._checkBindAddress(family)) {
-      return;
-    }
-
-    const { feedback, input } = this.elements.network.bind_address[family];
-    const value = input.value.trim();
-    this.remote.savePrefs({ [input.dataset.key]: value }, (response) => {
-      if (this.closed) {
-        return;
-      }
-      if (response?.error) {
-        input.setAttribute('aria-invalid', 'true');
-        PrefsDialog._setFeedback(
-          feedback,
-          'error',
-          response.error.data?.error_string ?? response.error.message,
-        );
-      } else {
-        PrefsDialog._setFeedback(feedback, 'saved', 'Saved');
-        // a warning about the interface outranks the confirmation
-        this._checkBindAddress(family);
-      }
-    });
+    const { feedback, select } = this.elements.network.bind_address[family];
+    this.remote.savePrefs(
+      { [select.dataset.key]: select.value },
+      (response) => {
+        if (this.closed) {
+          return;
+        }
+        if (response?.error) {
+          PrefsDialog._setFeedback(
+            feedback,
+            'error',
+            response.error.data?.error_string ?? response.error.message,
+          );
+        } else {
+          PrefsDialog._setFeedback(feedback, 'saved', 'Saved');
+        }
+      },
+    );
   }
 
   static _setFeedback(element, state, text) {
@@ -952,45 +1065,37 @@ export class PrefsDialog extends EventTarget {
     interface_status_label.setAttribute('aria-live', 'polite');
     root.append(interface_status_label);
 
-    const createBindAddressInput = (text, key, placeholder) => {
+    const createBindAddressSelect = (text, key) => {
       const address_label = document.createElement('label');
       address_label.textContent = text;
       address_label.title =
-        'Listen for peers and send traffic from this local address only. Leave empty for any address.';
+        'Listen for peers and send traffic from this local address only.';
       root.append(address_label);
 
-      const datalist = document.createElement('datalist');
-      datalist.id = makeUUID();
-      root.append(datalist);
-
-      const address_input = document.createElement('input');
-      address_input.type = 'text';
-      address_input.dataset.key = key;
-      address_input.id = makeUUID();
-      address_input.placeholder = placeholder;
-      address_input.title = address_label.title;
-      address_input.setAttribute('list', datalist.id);
-      address_label.setAttribute('for', address_input.id);
-      root.append(address_input);
+      const address_select = document.createElement('select');
+      // _update() sets it from this key, then _updateBindAddressSelect() rebuilds it
+      address_select.dataset.key = key;
+      address_select.id = makeUUID();
+      address_select.title = address_label.title;
+      address_label.setAttribute('for', address_select.id);
+      root.append(address_select);
 
       const feedback = document.createElement('div');
       feedback.classList.add('bind-address-feedback', 'hidden');
       feedback.setAttribute('aria-live', 'polite');
       feedback.id = makeUUID();
-      address_input.setAttribute('aria-describedby', feedback.id);
+      address_select.setAttribute('aria-describedby', feedback.id);
       root.append(feedback);
 
-      return { datalist, feedback, input: address_input };
+      return { feedback, select: address_select };
     };
-    const bind_ipv4 = createBindAddressInput(
+    const bind_ipv4 = createBindAddressSelect(
       'IPv4 bind address:',
       'bind_address_ipv4',
-      'Any (0.0.0.0)',
     );
-    const bind_ipv6 = createBindAddressInput(
+    const bind_ipv6 = createBindAddressSelect(
       'IPv6 bind address:',
       'bind_address_ipv6',
-      'Any (::)',
     );
 
     // shown but not editable: session_set can't change it, since moving the
@@ -1173,17 +1278,10 @@ export class PrefsDialog extends EventTarget {
     this.elements.network.interface_select.addEventListener('change', () =>
       this._updateInterfaceAddresses(),
     );
-    for (const [family, { input }] of Object.entries(
+    for (const [family, { select }] of Object.entries(
       this.elements.network.bind_address,
     )) {
-      // judge the value once it's committed by Enter or leaving the field;
-      // until then, feedback about the previous value is stale
-      input.addEventListener('input', () => {
-        const { feedback } = this.elements.network.bind_address[family];
-        input.removeAttribute('aria-invalid');
-        PrefsDialog._setFeedback(feedback, null, '');
-      });
-      input.addEventListener('change', () =>
+      select.addEventListener('change', () =>
         this._onBindAddressChanged(family),
       );
     }

@@ -851,9 +851,20 @@ TEST_F(RpcTest, sessionGetNetworkInterfaces)
 
     auto const* const addresses = loopback->get_if<tr_variant::Map>()->find_if<tr_variant::Vector>(TR_KEY_addresses);
     ASSERT_NE(addresses, nullptr);
-    EXPECT_TRUE(std::ranges::any_of(*addresses, [](tr_variant const& addr) {
-        return addr.value_if<std::string_view>() == "127.0.0.1"sv;
-    }));
+    // each address carries its tags, which IPv4 addresses have none of
+    auto const* const ipv4 = [addresses] -> tr_variant::Map const* {
+        for (auto const& addr : *addresses) {
+            if (auto const* const map = addr.get_if<tr_variant::Map>();
+                map != nullptr && map->value_if<std::string_view>(TR_KEY_address) == "127.0.0.1"sv) {
+                return map;
+            }
+        }
+        return nullptr;
+    }();
+    ASSERT_NE(nullptr, ipv4);
+    auto const* const tags = ipv4->find_if<tr_variant::Vector>(TR_KEY_tags);
+    ASSERT_NE(nullptr, tags);
+    EXPECT_TRUE(std::empty(*tags));
 }
 
 TEST_F(RpcTest, sessionBindAddresses)
