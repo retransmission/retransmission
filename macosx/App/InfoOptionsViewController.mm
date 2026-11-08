@@ -335,10 +335,6 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
     [self setGlobalLabels];
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(setGlobalLabels) name:@"UpdateGlobalOptions" object:nil];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateOptionsNotification:)
-                                               name:@"UpdateOptionsNotification"
-                                             object:nil];
 }
 
 #pragma mark - Layout
@@ -674,7 +670,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
     NSTextField* label = upload ? self.fUploadLimitLabel : self.fDownloadLimitLabel;
     label.enabled = limit;
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setUseGlobalSpeedLimit:(id)sender
@@ -688,7 +684,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         torrent.usesGlobalSpeedLimit = limit;
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setSpeedLimit:(id)sender
@@ -700,7 +696,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         [torrent setSpeedLimit:limit upload:upload];
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setRatioSetting:(id)sender
@@ -735,7 +731,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
 
     self.fRatioLimitGlobalLabel.hidden = setting != TR_RATIOLIMIT_GLOBAL;
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
     [self checkWindowSize];
 }
 
@@ -747,7 +743,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         torrent.ratioLimit = limit;
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setIdleSetting:(id)sender
@@ -783,7 +779,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
 
     self.fIdleLimitGlobalLabel.hidden = setting != TR_IDLELIMIT_GLOBAL;
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
     [self checkWindowSize];
 }
 
@@ -795,7 +791,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         torrent.idleLimitMinutes = limit;
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setRemoveWhenSeedingCompletes:(id)sender
@@ -809,7 +805,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         torrent.removeWhenFinishSeeding = enable;
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setPriority:(id)sender
@@ -836,7 +832,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil];
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (void)setPeersConnectLimit:(id)sender
@@ -847,7 +843,7 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
         torrent.maxPeerConnect = limit;
     }
 
-    [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
+    [self updateOptions];
 }
 
 - (BOOL)control:(NSControl*)control textShouldBeginEditing:(NSText*)fieldEditor
@@ -935,13 +931,6 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
     self.fIdleLimitGlobalLabel.stringValue = globalIdle;
 
     [self checkWindowSize];
-}
-
-- (void)updateOptionsNotification:(NSNotification*)notification
-{
-    if (notification.object != self) {
-        [self updateOptions];
-    }
 }
 
 @end
