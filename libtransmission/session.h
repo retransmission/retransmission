@@ -1127,6 +1127,12 @@ public:
         return ip_cache_->source_addr(type);
     }
 
+    [[nodiscard]] bool has_source_address(tr_address_type type) const noexcept
+    {
+        TR_ASSERT(tr_address::is_valid(type));
+        return ip_cache_->has_source_addr(type);
+    }
+
     [[nodiscard]] auto speed_limit(tr_direction const dir) const noexcept
     {
         auto const kbyps = dir == tr_direction::Down ? settings_.speed_limit_down : settings_.speed_limit_up;

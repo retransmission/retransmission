@@ -131,6 +131,7 @@ TEST_F(IPCacheTest, globalSourceIPv4)
 
     ip_cache_->update_source_addr(TR_AF_INET);
     auto const addr = ip_cache_->source_addr(TR_AF_INET);
+    EXPECT_EQ(addr.has_value(), ip_cache_->has_source_addr(TR_AF_INET));
     if (!addr) {
         GTEST_SKIP() << "globalSourceIPv4 did not return an address, either:\n"
                      << "1. globalSourceIPv4 is broken\n"
@@ -153,6 +154,7 @@ TEST_F(IPCacheTest, globalSourceIPv6)
 
     ip_cache_->update_source_addr(TR_AF_INET6);
     auto const addr = ip_cache_->source_addr(TR_AF_INET6);
+    EXPECT_EQ(addr.has_value(), ip_cache_->has_source_addr(TR_AF_INET6));
     if (!addr) {
         GTEST_SKIP() << "globalSourceIPv6 did not return an address, either:\n"
                      << "1. globalSourceIPv6 is broken\n"

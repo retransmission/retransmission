@@ -28,6 +28,11 @@
 
 namespace
 {
+[[nodiscard]] bool is_loopback(sockaddr const* const sa)
+{
+    auto const addrport = tr_socket_address::from_sockaddr(sa);
+    return addrport && (addrport->address().is_ipv4_loopback() || addrport->address().is_ipv6_loopback());
+}
 
 // Since we use a single UDP socket in order to implement multiple
 // µTP sockets, try to set up huge buffers.
@@ -259,15 +264,12 @@ tr_session::tr_udp_core::~tr_udp_core()
 
 void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t const tolen) const
 {
-    auto const addrport = tr_socket_address::from_sockaddr(to);
     if (to->sa_family != AF_INET && to->sa_family != AF_INET6) {
         errno = EAFNOSUPPORT;
     } else if (auto const sock = to->sa_family == AF_INET ? udp4_socket_ : udp6_socket_; !is_valid_socket(sock)) {
         // don't warn on bad sockets; the system may not support IPv6
         return;
-    } else if (
-        addrport && !addrport->address().is_ipv4_loopback() && !addrport->address().is_ipv6_loopback() &&
-        !session_.source_address(tr_af_to_ip_protocol(to->sa_family))) {
+    } else if (!session_.has_source_address(tr_af_to_ip_protocol(to->sa_family)) && !is_loopback(to)) {
         // don't try to send if we don't have a route in this IP protocol
         return;
     }
@@ -277,7 +279,7 @@ void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sock
     }
 
     auto display_name = std::string{};
-    if (addrport) {
+    if (auto const addrport = tr_socket_address::from_sockaddr(to)) {
         display_name = addrport->display_name();
     }
 

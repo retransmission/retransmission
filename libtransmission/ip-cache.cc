@@ -359,6 +359,7 @@ void tr_ip_cache::set_source_addr(tr_address const& addr_new)
         auto const lock = std::scoped_lock{ source_addr_mutex_[addr_new.type] };
         if (auto& addr = source_addr_[addr_new.type]; addr != addr_new) {
             addr = addr_new;
+            has_source_addr_[addr_new.type] = true;
             tr_logAddInfo(fmt::format("Cached {} source address {}", tr_ip_protocol_to_sv(addr->type), addr->display_name()));
             changed = true;
         }
@@ -376,6 +377,7 @@ void tr_ip_cache::unset_addr(tr_address_type const type)
         auto const lock = std::scoped_lock{ source_addr_mutex_[type] };
         had_source_addr = source_addr_[type].has_value();
         source_addr_[type].reset();
+        has_source_addr_[type] = false;
     }
     tr_logAddTrace(fmt::format("Unset {} source address cache", tr_ip_protocol_to_sv(type)));
 
