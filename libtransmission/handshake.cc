@@ -598,7 +598,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     };
 
     // each attempt gets the full handshake timeout
-    auto const reconnect = [&]() {
+    auto const reconnect = [&] {
         if (!io->reconnect()) {
             return false;
         }

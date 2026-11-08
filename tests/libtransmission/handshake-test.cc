@@ -627,6 +627,8 @@ TEST_F(HandshakeTest, outgoingEncrypted)
 // The remote peer closes its first `drops` connections unanswered, then
 // answers each later one with an incoming tr_handshake in `mode`.
 // Without a `mode` it closes every connection.
+namespace
+{
 struct RemotePeer {
     size_t drops = 0U;
     std::optional<tr_encryption_mode> mode;
@@ -656,7 +658,7 @@ protected:
             addr.sin_family = AF_INET;
             addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
             auto addrlen = socklen_t{ sizeof(addr) };
-            EXPECT_NE(TR_BAD_SOCKET, sock_);
+            EXPECT_TRUE(is_valid_socket(sock_));
             EXPECT_EQ(0, bind(sock_, reinterpret_cast<sockaddr*>(&addr), addrlen));
             EXPECT_EQ(0, listen(sock_, 8));
             EXPECT_EQ(0, getsockname(sock_, reinterpret_cast<sockaddr*>(&addr), &addrlen));
@@ -703,14 +705,13 @@ protected:
         size_t local_timeouts_armed = 0U;
     };
 
-    [[nodiscard]] MediatorMock makeMediator(tr_peer_id_t const& peer_id)
+    // Configures a mediator in place: moving a MediatorMock can throw.
+    static void addTorrent(MediatorMock& mediator, tr_peer_id_t const& peer_id)
     {
         auto torrent = UbuntuTorrent;
         torrent.client_peer_id = peer_id;
-        auto mediator = MediatorMock{ session_ };
         mediator.torrents.emplace(torrent.info_hash, torrent);
         mediator.private_key_ = tr_handshake::DH::randomPrivateKey();
-        return mediator;
     }
 
     [[nodiscard]] std::shared_ptr<tr_peerIo> dial(tr_socket_address const& address)
@@ -755,8 +756,10 @@ protected:
     {
         auto const listener = LoopbackListener{};
         auto const remote_peer_id = makeRandomPeerId();
-        auto local = makeMediator(UbuntuTorrent.client_peer_id);
-        auto remote = makeMediator(remote_peer_id);
+        auto local = MediatorMock{ session_ };
+        auto remote = MediatorMock{ session_ };
+        addTorrent(local, UbuntuTorrent.client_peer_id);
+        addTorrent(remote, remote_peer_id);
 
         auto out = Outcome{};
         auto handshakes = std::vector<std::unique_ptr<tr_handshake>>{};
@@ -764,7 +767,7 @@ protected:
         blockingRunInSessionThread([&] { addHandshake(handshakes, local, dial(listener.address()), mode, out.local); });
 
         auto const answer_connections = [&] {
-            for (auto sock = listener.accept(); sock != TR_BAD_SOCKET; sock = listener.accept()) {
+            for (auto sock = listener.accept(); is_valid_socket(sock); sock = listener.accept()) {
                 if (++out.connections <= peer.drops || !peer.mode) {
                     tr_net_close_socket(sock);
                     continue;
@@ -800,6 +803,7 @@ protected:
         return out;
     }
 };
+} // namespace
 
 TEST_P(HandshakeModeTest, connectsAsExpected)
 {
@@ -976,8 +980,10 @@ TEST_F(HandshakeModeTest, simultaneousDialsBothConnect)
     auto const local_listener = LoopbackListener{};
     auto const remote_listener = LoopbackListener{};
     auto const remote_peer_id = makeRandomPeerId();
-    auto local = makeMediator(UbuntuTorrent.client_peer_id);
-    auto remote = makeMediator(remote_peer_id);
+    auto local = MediatorMock{ session_ };
+    auto remote = MediatorMock{ session_ };
+    addTorrent(local, UbuntuTorrent.client_peer_id);
+    addTorrent(remote, remote_peer_id);
 
     auto local_dial = Side{};
     auto local_answer = Side{};
@@ -991,7 +997,7 @@ TEST_F(HandshakeModeTest, simultaneousDialsBothConnect)
     });
 
     auto const answer = [&](LoopbackListener const& listener, MediatorMock& mediator, tr_encryption_mode mode, Side& side) {
-        if (auto const sock = listener.accept(); sock != TR_BAD_SOCKET) {
+        if (auto const sock = listener.accept(); is_valid_socket(sock)) {
             blockingRunInSessionThread([&] { addHandshake(handshakes, mediator, adopt(sock), mode, side); });
         }
     };
