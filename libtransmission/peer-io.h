@@ -64,6 +64,8 @@ public:
         bool client_is_seed,
         bool utp);
 
+    // A BEP 55 holepunch: the peer is reachable only over the punched µTP path,
+    // so reconnect() never falls back to TCP.
     [[nodiscard]] static std::shared_ptr<tr_peerIo> new_outgoing_utp(
         tr_session* session,
         tr_bandwidth* parent,
@@ -94,6 +96,11 @@ public:
     [[nodiscard]] auto is_utp() const noexcept
     {
         return socket_ ? socket_->is_utp() : false;
+    }
+
+    [[nodiscard]] constexpr auto is_utp_only() const noexcept
+    {
+        return is_utp_only_;
     }
 
     [[nodiscard]] auto is_utp_connect_pending() const noexcept
@@ -326,7 +333,8 @@ private:
         tr_bandwidth* parent_bandwidth,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
-        bool client_is_seed);
+        bool client_is_seed,
+        bool is_utp_only);
 
     [[nodiscard]] constexpr auto client_is_seed() const noexcept
     {
@@ -358,7 +366,8 @@ private:
         tr_bandwidth* parent,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
-        bool is_seed);
+        bool is_seed,
+        bool is_utp_only = false);
 
     Filter filter_;
     std::optional<size_t> n_decrypt_remain_;
@@ -389,6 +398,7 @@ private:
 
     bool const client_is_seed_;
     bool const is_incoming_;
+    bool const is_utp_only_;
 
     bool dht_supported_ = false;
     bool extended_protocol_supported_ = false;

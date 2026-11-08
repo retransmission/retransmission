@@ -386,7 +386,8 @@ public:
     [[nodiscard]] static auto createOutgoingUtpIo(
         tr_session* session,
         tr_socket_address const& socket_address,
-        tr_sha1_digest_t const& info_hash)
+        tr_sha1_digest_t const& info_hash,
+        bool const is_utp_only = false)
     {
         auto socket = std::make_shared<SilentUtpSocket>(socket_address);
         auto* const raw = socket.get();
@@ -396,8 +397,18 @@ public:
             &session->top_bandwidth_,
             &info_hash,
             false /*incoming*/,
-            false /*seed*/);
+            false /*seed*/,
+            is_utp_only);
         return std::pair{ std::move(peer_io), raw };
+    }
+
+    // a BEP 55 holepunch IO, as tr_peerIo::new_outgoing_utp() makes
+    [[nodiscard]] static auto createHolepunchIo(
+        tr_session* session,
+        tr_socket_address const& socket_address,
+        tr_sha1_digest_t const& info_hash)
+    {
+        return createOutgoingUtpIo(session, socket_address, info_hash, true /*is_utp_only*/);
     }
 
     // The peer IO's callbacks run on the session thread, and a TCP redial
@@ -679,6 +690,59 @@ TEST_F(HandshakeTest, utpErrorAfterConnectAwaitingYbRetriesPlaintext)
     waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
     ASSERT_TRUE(res.has_value());
     EXPECT_FALSE(res->is_connected);
+}
+
+// Only the IOs tr_peerIo::new_outgoing_utp() makes for a BEP 55 holepunch are µTP-only.
+TEST_F(HandshakeTest, onlyHolepunchIosAreUtpOnly)
+{
+    auto const listener = createLoopbackListener();
+    ASSERT_TRUE(listener);
+
+    // libutp runs on the session thread, so the µTP sockets are made there
+    auto const flags = blockingRunInSessionThread([this, &listener] {
+        auto const& info_hash = UbuntuTorrent.info_hash;
+        auto* const bandwidth = &session_->top_bandwidth_;
+        auto const holepunch = tr_peerIo::new_outgoing_utp(session_, bandwidth, listener->address, info_hash, false);
+        auto const dialled = tr_peerIo::new_outgoing(session_, bandwidth, listener->address, info_hash, false, true);
+        return std::array{
+            holepunch && holepunch->is_utp(),
+            holepunch && holepunch->is_utp_only(),
+            dialled && dialled->is_utp(),
+            dialled && dialled->is_utp_only(),
+        };
+    });
+
+    EXPECT_TRUE(flags[0]) << "holepunch IO is µTP";
+    EXPECT_TRUE(flags[1]) << "holepunch IO is µTP-only";
+    EXPECT_TRUE(flags[2]) << "dialled IO is µTP";
+    EXPECT_FALSE(flags[3]) << "dialled IO is not µTP-only";
+}
+
+// A holepunched peer is reachable only over the punched µTP path, so a failed
+// holepunch handshake ends without a TCP redial, whatever the encryption mode.
+TEST_F(HandshakeTest, failedHolepunchDoesNotFallBackToTcp)
+{
+    for (auto const mode : { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED, TR_ENCRYPTION_REQUIRED }) {
+        SCOPED_TRACE("encryption mode " + std::to_string(static_cast<int>(mode)));
+
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+        auto const listener = createLoopbackListener();
+        ASSERT_TRUE(listener);
+        auto [io, utp_socket] = createHolepunchIo(session_, listener->address, UbuntuTorrent.info_hash);
+
+        auto res = std::optional<tr_handshake::Result>{};
+        auto const handshake = startHandshake(res, &mediator, io, mode);
+        reportUtpError(utp_socket, ETIMEDOUT);
+        waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+
+        ASSERT_TRUE(res.has_value());
+        EXPECT_FALSE(res->is_connected);
+        EXPECT_TRUE(io->is_utp());
+        EXPECT_EQ(0U, mediator.n_utp_failed);
+        EXPECT_EQ(TR_BAD_SOCKET, accept(listener->sock.get(), nullptr, nullptr));
+    }
 }
 
 TEST_F(HandshakeTest, incomingEncrypted)
