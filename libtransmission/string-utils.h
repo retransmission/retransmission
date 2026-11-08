@@ -18,6 +18,8 @@
 [[nodiscard]] std::wstring tr_win32_utf8_to_native(std::string_view);
 #endif
 
+#include "libtransmission/macros.h"
+
 /** @brief Convenience wrapper around `strerorr()` guaranteed to not return nullptr
     @param errnum the error number to describe */
 [[nodiscard]] char const* tr_strerror(int errnum);
@@ -60,7 +62,7 @@ template <typename... Args> constexpr bool tr_strv_sep(std::string_view* sv, std
     return true;
 }
 
-[[nodiscard]] std::string_view tr_strv_strip(std::string_view str);
+[[nodiscard]] std::string_view tr_strv_strip(std::string_view str TR_LIFETIMEBOUND);
 
 [[nodiscard]] std::string tr_strv_to_utf8_string(std::string_view sv);
 

@@ -10,6 +10,8 @@
 #include <cstddef> // size_t, std::byte
 #include <string_view>
 
+#include "libtransmission/macros.h"
+
 using tr_sha1_digest_t = std::array<std::byte, 20U>;
 
 using tr_sha256_digest_t = std::array<std::byte, 32U>;
@@ -39,12 +41,12 @@ public:
         }
     }
 
-    [[nodiscard]] constexpr auto const* data() const noexcept
+    [[nodiscard]] constexpr auto const* data() const noexcept TR_LIFETIMEBOUND
     {
         return std::data(chars_);
     }
 
-    [[nodiscard]] constexpr auto const* c_str() const noexcept
+    [[nodiscard]] constexpr auto const* c_str() const noexcept TR_LIFETIMEBOUND
     {
         return data();
     }
@@ -59,13 +61,13 @@ public:
         return empty() ? 0U : Strlen;
     }
 
-    [[nodiscard]] constexpr auto sv() const noexcept
+    [[nodiscard]] constexpr auto sv() const noexcept TR_LIFETIMEBOUND
     {
         return std::string_view{ data(), size() };
     }
 
     // NOLINTNEXTLINE(misc-explicit-constructor)
-    [[nodiscard]] constexpr operator std::string_view() const noexcept
+    [[nodiscard]] constexpr operator std::string_view() const noexcept TR_LIFETIMEBOUND
     {
         return sv();
     }

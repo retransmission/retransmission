@@ -17,6 +17,8 @@
 #include <windows.h>
 #endif
 
+#include "libtransmission/macros.h"
+
 struct tr_error;
 
 /**
@@ -193,7 +195,7 @@ struct tr_sys_path_capacity {
  * @return base name (last path component; parent path removed) on success,
  *         or empty string otherwise (with `error` set accordingly).
  */
-[[nodiscard]] std::string_view tr_sys_path_basename(std::string_view path, tr_error* error = nullptr);
+[[nodiscard]] std::string_view tr_sys_path_basename(std::string_view path TR_LIFETIMEBOUND, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `dirname()`.
@@ -203,7 +205,7 @@ struct tr_sys_path_capacity {
  * @return parent path substring of `path` (last path component removed) on
  *         success, or empty string otherwise with `error` set accordingly).
  */
-[[nodiscard]] std::string_view tr_sys_path_dirname(std::string_view path);
+[[nodiscard]] std::string_view tr_sys_path_dirname(std::string_view path TR_LIFETIMEBOUND);
 
 /**
  * @brief Portability wrapper for `rename()`.
