@@ -174,8 +174,12 @@ public:
             }
             break;
         case UTP_STATE_EOF:
-            error_cb(tr_net_error(ENOTCONN));
-            break;
+            {
+                // The callback can redial over TCP, which destroys this socket.
+                auto const keep_alive = shared_from_this();
+                error_cb(tr_net_error(ENOTCONN));
+                break;
+            }
         case UTP_STATE_DESTROYING:
             tr_logAddErrorSock(this, "Impossible state UTP_STATE_DESTROYING");
             break;
@@ -209,6 +213,8 @@ public:
             break;
         }
 
+        // The callback can redial over TCP, which destroys this socket.
+        auto const keep_alive = shared_from_this();
         error_cb_(error);
     }
 
