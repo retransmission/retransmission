@@ -4,6 +4,7 @@ add_executable(libtransmission-app-test)
 
 target_sources(libtransmission-app-test
 	PRIVATE
+		add-data-test.cc
 		converter-tests.cc
 		dbus-peer-record-test.cc
 		interop-test.cc

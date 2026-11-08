@@ -152,6 +152,10 @@ template<typename CallToken, typename CallPlain>
 // calls gtr_activation_token() (gtk/Utils.h) rather than this directly.
 [[nodiscard]] std::string activation_token();
 
+// The filename a local name refers to: `arg` itself for a path,
+// or the path of the file:// URI that a desktop's Exec=%U hands us.
+[[nodiscard]] std::string local_filename(std::string_view arg);
+
 // Returns true if `arg` is a URL or a magnet link.
 // Returns false if `arg` is a base64-encoded .torrent.
 [[nodiscard]] bool is_metainfo_link(std::string_view arg);
