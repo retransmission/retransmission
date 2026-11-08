@@ -12,7 +12,9 @@
 #include <algorithm> // for std::copy_n()
 #include <array>
 #include <cstddef> // size_t, std::byte
+#include <memory> // std::unique_ptr
 #include <span>
+#include <string_view>
 
 #include "libtransmission/digest.h"
 #include "libtransmission/tr-arc4.h"
@@ -71,62 +73,110 @@ private:
 };
 
 // --- arc4 encryption for both incoming and outgoing stream
+// Cipher state is allocated when the first direction is initialized,
+// so plaintext peers do not carry the tables.
 class Filter
 {
 public:
+    Filter() = default;
+    ~Filter() = default;
+
+    // Not movable: a moved-from Filter would pass bytes through unencrypted.
+    Filter(Filter&&) = delete;
+    Filter(Filter const&) = delete;
+    Filter& operator=(Filter&&) = delete;
+    Filter& operator=(Filter const&) = delete;
+
     void decrypt_init(bool is_incoming, DH const& dh, tr_sha1_digest_t const& info_hash);
     constexpr void decrypt_disable() noexcept
     {
-        dec_active_ = false;
+        disable(&Ciphers::dec);
     }
 
     template<typename T>
     constexpr void decrypt(T const* buf_in, size_t buf_len, T* buf_out) noexcept
     {
-        process(buf_in, buf_len, buf_out, dec_active_, dec_key_);
+        process(buf_in, buf_len, buf_out, active_cipher(&Ciphers::dec));
     }
 
     void encrypt_init(bool is_incoming, DH const& dh, tr_sha1_digest_t const& info_hash);
     constexpr void encrypt_disable() noexcept
     {
-        enc_active_ = false;
+        disable(&Ciphers::enc);
     }
 
     template<typename T>
     constexpr void encrypt(T const* buf_in, size_t buf_len, T* buf_out) noexcept
     {
-        process(buf_in, buf_len, buf_out, enc_active_, enc_key_);
+        process(buf_in, buf_len, buf_out, active_cipher(&Ciphers::enc));
     }
 
     [[nodiscard]] constexpr auto is_active() const noexcept
     {
-        return dec_active_ || enc_active_;
+        return ciphers_ != nullptr;
     }
 
+    // Encrypts src into dst with a cipher keyed as encrypt_init() would key it,
+    // without allocating or keeping any state.
+    static void encrypt_once(
+        bool is_incoming,
+        DH const& dh,
+        tr_sha1_digest_t const& info_hash,
+        std::span<std::byte const> src,
+        std::span<std::byte> dst);
+
 private:
+    struct Direction {
+        tr_arc4 cipher;
+        bool active = false;
+    };
+
+    // Both directions share one allocation; it exists while either is active.
+    struct Ciphers {
+        Direction dec;
+        Direction enc;
+    };
+
+    using DirectionMember = Direction Ciphers::*;
+
+    void init(DirectionMember direction, std::string_view key, DH const& dh, tr_sha1_digest_t const& info_hash);
+
+    constexpr void disable(DirectionMember direction) noexcept
+    {
+        if (ciphers_) {
+            ((*ciphers_).*direction).active = false;
+            if (!ciphers_->dec.active && !ciphers_->enc.active) {
+                ciphers_.reset();
+            }
+        }
+    }
+
+    // null when this direction is not encrypted
+    [[nodiscard]] constexpr tr_arc4* active_cipher(DirectionMember direction) noexcept
+    {
+        if (!ciphers_) {
+            return nullptr;
+        }
+        auto& dir = (*ciphers_).*direction;
+        return dir.active ? &dir.cipher : nullptr;
+    }
+
+    // arc4 is null when this direction is not encrypted
     template<typename T>
-    static constexpr void process(T const* buf_in, size_t buf_len, T* buf_out, bool active, tr_arc4& arc4) noexcept
+    static constexpr void process(T const* buf_in, size_t buf_len, T* buf_out, tr_arc4* arc4) noexcept
     {
         if (buf_in == nullptr || buf_out == nullptr) {
-            skip(buf_len, active, arc4);
-        } else if (active) {
-            arc4.process(std::as_bytes(std::span{ buf_in, buf_len }), std::as_writable_bytes(std::span{ buf_out, buf_len }));
+            if (arc4 != nullptr) {
+                arc4->discard(buf_len);
+            }
+        } else if (arc4 != nullptr) {
+            arc4->process(std::as_bytes(std::span{ buf_in, buf_len }), std::as_writable_bytes(std::span{ buf_out, buf_len }));
         } else if (buf_in != buf_out) {
             std::copy_n(buf_in, buf_len, buf_out);
         }
     }
 
-    static constexpr void skip(size_t len, bool active, tr_arc4& arc4)
-    {
-        if (active) {
-            arc4.discard(len);
-        }
-    }
-
-    tr_arc4 dec_key_;
-    tr_arc4 enc_key_;
-    bool dec_active_ = false;
-    bool enc_active_ = false;
+    std::unique_ptr<Ciphers> ciphers_;
 };
 
 } // namespace tr_message_stream_encryption
