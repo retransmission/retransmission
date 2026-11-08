@@ -373,6 +373,11 @@ are retained in memory until shutdown and add allocation/locking overhead; use
 them to explain behavior, not to measure production throughput. No batch tracing
 code is compiled into builds with block profiling disabled.
 
+## Transport benchmarks
+
+To measure TCP and µTP on their own, without disk, hashing or handshakes, see
+[transport/README.md](transport/README.md).
+
 ## Checks Without Docker
 
 For a native benchmark alongside a running client, choose unused ports:
