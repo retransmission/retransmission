@@ -85,7 +85,10 @@ struct StorageDescriptor;
  * hashes then run on worker threads and complete later, from the
  * session thread. A read completes inline when the page cache can
  * answer it without waiting for the disk, and otherwise runs on a
- * worker like the rest.
+ * worker like the rest. `move`, `rename`, and `remove` do their disk
+ * work on background threads of their own, so that a long copy doesn't
+ * hold up other torrents' data ops. Their callbacks run on the session
+ * thread, and the barrier stays up until the last of them has returned.
  */
 class LocalData
 {
@@ -185,9 +188,16 @@ public:
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
-    // Names the dir a move puts the files under, or an empty one to skip
-    // the move. It runs when the move starts, after the ops queued before it.
-    using MoveParent = std::function<std::string()>;
+    struct MoveTarget {
+        // The dir the files go under. Empty skips the move.
+        std::string parent;
+
+        // Also clear the copies that a killed move left at the old location.
+        bool clear_killed_move = false;
+    };
+
+    // Runs when the move starts, after the ops queued before it.
+    using MoveParent = std::function<MoveTarget()>;
 
     // Runs once every file is under `parent`, before the old location is cleared.
     // A location saved here can't name files that a kill has since removed.
@@ -200,10 +210,11 @@ public:
 
     using OnClose = std::function<void(tr_torrent_id_t)>;
 
-    // Runs when the rename starts, after the ops queued before it.
+    // Required. Runs when the rename starts, after the ops queued before it.
     // An error fails the rename without touching the disk.
     using RenameCheck = std::function<tr_error()>;
 
+    // Required.
     using OnRename = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
     class Backend
@@ -219,7 +230,7 @@ public:
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
-            std::string_view parent,
+            MoveTarget const& target,
             std::function<void()> const& on_placed) = 0;
         [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         [[nodiscard]] virtual tr_error rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname) = 0;

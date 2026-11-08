@@ -1135,7 +1135,7 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 // --- Location
 
 void tr_torrent::set_location_in_session_thread(
-    tr::LocalData::MoveParent path,
+    std::function<std::string()> path,
     bool const move_from_old_path,
     int volatile* setme_state)
 {
@@ -1202,7 +1202,13 @@ void tr_torrent::set_location_in_session_thread(
     // those hashes must run before the files close and move.
     session->verify_remove(this);
     session->local_data.close_torrent(id());
-    session->local_data.move(id(), std::move(path), std::move(on_done), std::move(on_placed));
+
+    auto target = [session = this->session, tor_id = id(), path = std::move(path)] {
+        auto const* const tor = session->torrents().get(tor_id);
+        return tr::LocalData::MoveTarget{ .parent = path(),
+                                          .clear_killed_move = tor != nullptr && tor->completion_move_pending() };
+    };
+    session->local_data.move(id(), std::move(target), std::move(on_done), std::move(on_placed));
 }
 
 small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
@@ -1220,6 +1226,8 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
         *this,
         [loc = std::string(location), move_from_old_path, setme_state](tr_torrent* const tor) {
             tor->set_location_in_session_thread([loc] { return loc; }, move_from_old_path, setme_state);
+            // Analyzer false positive: the std::function moved into the move's barrier still owns the closure.
+            // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
         },
         [setme_state] {
             if (setme_state != nullptr) {

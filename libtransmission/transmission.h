@@ -95,7 +95,7 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  * @param remove_func how `tr_torrentRemove()` deletes a torrent's local data,
  *                    e.g. by moving it to a recycle bin.
  *                    Empty means `tr_sys_path_remove()`.
- *                    It is called on the session thread,
+ *                    It may be called on a background thread, though never by two at once,
  *                    and the filename view is only valid for the duration of the call.
  * @see `tr_sessionGetDefaultSettings()`
  * @see `tr_sessionLoadSettings()`

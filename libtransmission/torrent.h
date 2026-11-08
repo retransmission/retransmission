@@ -1422,7 +1422,7 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(std::function<std::string()> path, bool move_from_old_path, int volatile* setme_state);
 
     // The two session-thread halves of rename_path(), on either side of the disk work.
     [[nodiscard]] tr_error check_rename(std::string_view oldpath, std::string_view newname) const;
