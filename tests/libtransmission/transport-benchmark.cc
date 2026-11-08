@@ -16,7 +16,8 @@
 //
 // --seconds streams for that long instead of a fixed size. --sample-ms prints the receive
 // rate every N ms as `sample <transport> <seconds since start> <MiB/s>`, which lets a caller
-// follow how the rate reacts to changes on the link.
+// follow how the rate reacts to changes on the link. Before the first sample it prints
+// `started <transport> <Unix time>`, so a caller can put samples on its own clock.
 
 #include <algorithm>
 #include <array>
@@ -375,6 +376,11 @@ private:
     auto next_sample = started + options.sample_interval;
     auto sampled_at = started;
     auto sampled_bytes = uint64_t{};
+
+    if (sampling) {
+        auto const since_epoch = std::chrono::system_clock::now() - (Clock::now() - started);
+        fmt::print("started {} {:.3f}\n", transport, std::chrono::duration<double>{ since_epoch.time_since_epoch() }.count());
+    }
 
     for (;;) {
         auto const wake = sampling ? std::min(next_sample, deadline) : deadline;
