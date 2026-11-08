@@ -36,7 +36,12 @@ namespace tr
 {
 template<typename value_type>
 class BufferWriter;
+
+namespace test
+{
+class HandshakeTest;
 }
+} // namespace tr
 
 // short-term class which manages the handshake phase of a tr_peerIo
 class tr_handshake
@@ -152,6 +157,8 @@ public:
     static auto constexpr VC = vc_t{};
 
 private:
+    friend class tr::test::HandshakeTest;
+
     enum class State : uint8_t {
         // incoming and outgoing
         AwaitingHandshake,

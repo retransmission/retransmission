@@ -10,9 +10,11 @@
 #include <cstdint> // uint8_t
 #include <map>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple> // std::tuple_size_v
 #include <utility>
 
 #ifdef _WIN32
@@ -54,6 +56,16 @@ auto constexpr MaxWaitMsec = 5000;
 
 class HandshakeTest : public SessionTest
 {
+protected:
+    // A handshake that reads nothing from its peer recycles its DH key into a process-wide pool.
+    // Tests that expect their mediator's private key must not get another test's recycled key.
+    void SetUp() override
+    {
+        SessionTest::SetUp();
+        auto const lock = std::unique_lock{ tr_handshake::dh_pool_mutex };
+        tr_handshake::dh_pool.clear();
+    }
+
 public:
     class MediatorMock final : public tr_handshake::Mediator
     {
@@ -195,12 +207,14 @@ public:
         return std::pair{ std::move(peer_io), sockpair[1] };
     }
 
-    // A µTP socket to a peer that never answers: it discards writes,
-    // reads nothing, and reports a connect timeout when timeOut() is called.
-    class UnansweredUtpSocket final : public tr_peer_socket
+    // A µTP socket whose peer stays silent: it discards writes and reads nothing.
+    // Its connect is pending until answer() is called.
+    class SilentUtpSocket final
+        : public tr_peer_socket
+        , public std::enable_shared_from_this<SilentUtpSocket>
     {
     public:
-        explicit UnansweredUtpSocket(tr_socket_address const& socket_address)
+        explicit SilentUtpSocket(tr_socket_address const& socket_address)
             : tr_peer_socket{ socket_address }
         {
         }
@@ -225,10 +239,22 @@ public:
             return write_enabled_;
         }
 
-        void timeOut() const
+        [[nodiscard]] bool is_utp_connect_pending() const noexcept override
         {
+            return connect_pending_;
+        }
+
+        void answer() noexcept
+        {
+            connect_pending_ = false;
+        }
+
+        // The error callback can redial over TCP, which destroys this socket.
+        void reportError(int const error_code)
+        {
+            auto const keep_alive = shared_from_this();
             auto error = tr_error{};
-            error.set_from_errno(ETIMEDOUT);
+            error.set_from_errno(error_code);
             error_cb(error);
         }
 
@@ -252,22 +278,109 @@ public:
     private:
         bool read_enabled_ = false;
         bool write_enabled_ = false;
+        bool connect_pending_ = true;
     };
 
-    // a loopback TCP listener on an ephemeral port, for peer IOs that redial over TCP
-    [[nodiscard]] static std::pair<tr_socket_t, tr_socket_address> createLoopbackListener()
+    // A socket closed on destruction, so a failed ASSERT doesn't leak it.
+    class OwnedSocket
     {
+    public:
+        explicit OwnedSocket(tr_socket_t const sock = TR_BAD_SOCKET) noexcept
+            : sock_{ sock }
+        {
+        }
+
+        OwnedSocket(OwnedSocket&& that) noexcept
+            : sock_{ std::exchange(that.sock_, TR_BAD_SOCKET) }
+        {
+        }
+
+        OwnedSocket& operator=(OwnedSocket&& that) noexcept
+        {
+            std::swap(sock_, that.sock_);
+            return *this;
+        }
+
+        OwnedSocket(OwnedSocket const&) = delete;
+        OwnedSocket& operator=(OwnedSocket const&) = delete;
+
+        ~OwnedSocket()
+        {
+            if (is_valid_socket(sock_)) {
+                tr_net_close_socket(sock_);
+            }
+        }
+
+        [[nodiscard]] constexpr tr_socket_t get() const noexcept
+        {
+            return sock_;
+        }
+
+    private:
+        tr_socket_t sock_;
+    };
+
+    struct LoopbackListener {
+        OwnedSocket sock;
+        tr_socket_address address;
+    };
+
+    // a nonblocking loopback TCP listener on an ephemeral port, for peer IOs that redial over TCP
+    [[nodiscard]] static std::optional<LoopbackListener> createLoopbackListener()
+    {
+        auto sock = OwnedSocket{ socket(AF_INET, SOCK_STREAM, 0) };
+        if (!is_valid_socket(sock.get())) {
+            return {};
+        }
+
         auto addr = sockaddr_in{};
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
         auto addrlen = socklen_t{ sizeof(addr) };
-        auto const sock = socket(AF_INET, SOCK_STREAM, 0);
-        EXPECT_NE(TR_BAD_SOCKET, sock);
-        EXPECT_EQ(0, bind(sock, reinterpret_cast<sockaddr*>(&addr), addrlen));
-        EXPECT_EQ(0, listen(sock, 1));
-        EXPECT_EQ(0, getsockname(sock, reinterpret_cast<sockaddr*>(&addr), &addrlen));
-        EXPECT_EQ(0, evutil_make_socket_nonblocking(sock));
-        return { sock, { *tr_address::from_string("127.0.0.1"sv), tr_port::from_network(addr.sin_port) } };
+        if (bind(sock.get(), reinterpret_cast<sockaddr*>(&addr), addrlen) != 0 || listen(sock.get(), 1) != 0 ||
+            getsockname(sock.get(), reinterpret_cast<sockaddr*>(&addr), &addrlen) != 0 ||
+            evutil_make_socket_nonblocking(sock.get()) != 0) {
+            return {};
+        }
+
+        auto const address = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&addr));
+        if (!address) {
+            return {};
+        }
+
+        return LoopbackListener{ .sock = std::move(sock), .address = *address };
+    }
+
+    // the first connection to `listener` within MaxWaitMsec, made nonblocking
+    [[nodiscard]] static OwnedSocket acceptConnection(LoopbackListener const& listener)
+    {
+        auto sock = OwnedSocket{};
+        waitFor(
+            [&] {
+                sock = OwnedSocket{ accept(listener.sock.get(), nullptr, nullptr) };
+                return is_valid_socket(sock.get());
+            },
+            MaxWaitMsec);
+        if (is_valid_socket(sock.get())) {
+            EXPECT_EQ(0, evutil_make_socket_nonblocking(sock.get()));
+        }
+        return sock;
+    }
+
+    // at least `n_bytes` from `sock`, or whatever arrived within MaxWaitMsec
+    [[nodiscard]] static std::string receive(OwnedSocket const& sock, size_t const n_bytes)
+    {
+        auto received = std::string{};
+        waitFor(
+            [&] {
+                auto buf = std::array<char, 128>{};
+                if (auto const n = recv(sock.get(), std::data(buf), std::size(buf), 0); n > 0) {
+                    received.append(std::data(buf), n);
+                }
+                return std::size(received) >= n_bytes;
+            },
+            MaxWaitMsec);
+        return received;
     }
 
     [[nodiscard]] static auto createOutgoingUtpIo(
@@ -275,7 +388,7 @@ public:
         tr_socket_address const& socket_address,
         tr_sha1_digest_t const& info_hash)
     {
-        auto socket = std::make_shared<UnansweredUtpSocket>(socket_address);
+        auto socket = std::make_shared<SilentUtpSocket>(socket_address);
         auto* const raw = socket.get();
         auto peer_io = tr_peerIo::create(
             session,
@@ -285,6 +398,13 @@ public:
             false /*incoming*/,
             false /*seed*/);
         return std::pair{ std::move(peer_io), raw };
+    }
+
+    // The peer IO's callbacks run on the session thread, and a TCP redial
+    // swaps its socket, so µTP errors are injected there too.
+    void reportUtpError(SilentUtpSocket* const socket, int const error_code)
+    {
+        blockingRunInSessionThread([socket, error_code] { socket->reportError(error_code); });
     }
 
     [[nodiscard]] static constexpr auto makePeerId(std::string_view sv)
@@ -411,47 +531,29 @@ TEST_F(HandshakeTest, outgoingPlaintext)
     tr_net_close_socket(sock);
 }
 
-// In Allow mode the first message is a plaintext handshake, so a µTP
-// connect failure must fall back to TCP from that state as well.
+// In Allow mode our first message is the plaintext BitTorrent handshake.
 TEST_F(HandshakeTest, outgoingPlaintextFallsBackFromUtpToTcp)
 {
     auto const peer_id = makeRandomPeerId();
     auto mediator = MediatorMock{ session_ };
     mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
 
-    auto const [listener, listener_address] = createLoopbackListener();
-    auto [io, utp_socket] = createOutgoingUtpIo(session_, listener_address, UbuntuTorrent.info_hash);
+    auto const listener = createLoopbackListener();
+    ASSERT_TRUE(listener);
+    auto [io, utp_socket] = createOutgoingUtpIo(session_, listener->address, UbuntuTorrent.info_hash);
 
     auto res = std::optional<tr_handshake::Result>{};
     auto const handshake = startHandshake(res, &mediator, io, TR_CLEAR_PREFERRED);
-    utp_socket->timeOut(); // destroys the µTP socket
+    reportUtpError(utp_socket, ETIMEDOUT);
 
-    auto sock = TR_BAD_SOCKET;
-    ASSERT_TRUE(waitFor(
-        [&] {
-            sock = accept(listener, nullptr, nullptr);
-            return sock != TR_BAD_SOCKET;
-        },
-        MaxWaitMsec));
-    EXPECT_EQ(0, evutil_make_socket_nonblocking(sock));
+    auto const sock = acceptConnection(*listener);
+    ASSERT_NE(TR_BAD_SOCKET, sock.get());
+    EXPECT_TRUE(receive(sock, std::size(PlaintextProtocolName)).starts_with(PlaintextProtocolName));
 
-    // the TCP redial opens with a plaintext handshake
-    auto received = std::string{};
-    waitFor(
-        [&] {
-            auto buf = std::array<char, 128>{};
-            if (auto const n = recv(sock, std::data(buf), std::size(buf), 0); n > 0) {
-                received.append(std::data(buf), n);
-            }
-            return std::size(received) >= std::size(PlaintextProtocolName);
-        },
-        MaxWaitMsec);
-    EXPECT_TRUE(received.starts_with(PlaintextProtocolName));
-
-    sendToClient(sock, PlaintextProtocolName);
-    sendToClient(sock, ReservedBytesNoExtensions);
-    sendToClient(sock, UbuntuTorrent.info_hash);
-    sendToClient(sock, peer_id);
+    sendToClient(sock.get(), PlaintextProtocolName);
+    sendToClient(sock.get(), ReservedBytesNoExtensions);
+    sendToClient(sock.get(), UbuntuTorrent.info_hash);
+    sendToClient(sock.get(), peer_id);
     waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
 
     ASSERT_TRUE(res.has_value());
@@ -460,9 +562,123 @@ TEST_F(HandshakeTest, outgoingPlaintextFallsBackFromUtpToTcp)
     EXPECT_FALSE(io->is_utp());
     EXPECT_FALSE(io->is_encrypted());
     EXPECT_EQ(1U, mediator.n_utp_failed);
+}
 
-    tr_net_close_socket(sock);
-    tr_net_close_socket(listener);
+// In the encrypting modes our first message is the MSE public key (Ya).
+TEST_F(HandshakeTest, outgoingEncryptedFallsBackFromUtpToTcp)
+{
+    static auto constexpr YaSize = std::tuple_size_v<tr_message_stream_encryption::DH::key_bigend_t>;
+
+    for (auto const mode : { TR_ENCRYPTION_PREFERRED, TR_ENCRYPTION_REQUIRED }) {
+        SCOPED_TRACE("encryption mode " + std::to_string(static_cast<int>(mode)));
+
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+        auto const listener = createLoopbackListener();
+        ASSERT_TRUE(listener);
+        auto [io, utp_socket] = createOutgoingUtpIo(session_, listener->address, UbuntuTorrent.info_hash);
+
+        auto res = std::optional<tr_handshake::Result>{};
+        auto const handshake = startHandshake(res, &mediator, io, mode);
+        reportUtpError(utp_socket, ETIMEDOUT);
+
+        auto const sock = acceptConnection(*listener);
+        ASSERT_NE(TR_BAD_SOCKET, sock.get());
+        auto const received = receive(sock, YaSize);
+        EXPECT_GE(std::size(received), YaSize);
+        EXPECT_FALSE(received.starts_with(PlaintextProtocolName));
+        EXPECT_FALSE(io->is_utp());
+        EXPECT_EQ(1U, mediator.n_utp_failed);
+
+        // a junk Yb and PadB longer than PadbMaxlen end the handshake before the test does
+        sendToClient(sock.get(), std::string(YaSize + (size_t{ 2U } * tr_handshake::PadbMaxlen), 'x'));
+        waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+        ASSERT_TRUE(res.has_value());
+        EXPECT_FALSE(res->is_connected);
+    }
+}
+
+// Only a timeout or refusal shows the peer lacks µTP; a reset still redials over TCP.
+TEST_F(HandshakeTest, utpConnectResetFallsBackWithoutMarkingPeer)
+{
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+    auto const listener = createLoopbackListener();
+    ASSERT_TRUE(listener);
+    auto [io, utp_socket] = createOutgoingUtpIo(session_, listener->address, UbuntuTorrent.info_hash);
+
+    auto res = std::optional<tr_handshake::Result>{};
+    auto const handshake = startHandshake(res, &mediator, io, TR_CLEAR_PREFERRED);
+    reportUtpError(utp_socket, ECONNRESET);
+
+    {
+        auto const sock = acceptConnection(*listener);
+        ASSERT_NE(TR_BAD_SOCKET, sock.get());
+        EXPECT_FALSE(io->is_utp());
+        EXPECT_EQ(0U, mediator.n_utp_failed);
+    } // closing the TCP connection ends the handshake before the test does
+
+    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(res.has_value());
+    EXPECT_FALSE(res->is_connected);
+}
+
+// A peer that answered the µTP connect speaks µTP; its error ends the handshake.
+TEST_F(HandshakeTest, utpErrorAfterConnectDoesNotFallBackToTcp)
+{
+    for (auto const error_code : { ETIMEDOUT, ENOTCONN }) {
+        SCOPED_TRACE("error code " + std::to_string(error_code));
+
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+        auto const listener = createLoopbackListener();
+        ASSERT_TRUE(listener);
+        auto [io, utp_socket] = createOutgoingUtpIo(session_, listener->address, UbuntuTorrent.info_hash);
+        utp_socket->answer();
+
+        auto res = std::optional<tr_handshake::Result>{};
+        auto const handshake = startHandshake(res, &mediator, io, TR_CLEAR_PREFERRED);
+        reportUtpError(utp_socket, error_code);
+        waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+
+        ASSERT_TRUE(res.has_value());
+        EXPECT_FALSE(res->is_connected);
+        EXPECT_TRUE(io->is_utp());
+        EXPECT_EQ(0U, mediator.n_utp_failed);
+        EXPECT_EQ(TR_BAD_SOCKET, accept(listener->sock.get(), nullptr, nullptr));
+    }
+}
+
+// A µTP peer that connected and then dropped our public key may not do MSE,
+// so it gets the plaintext retry; reconnect() sends that over TCP.
+TEST_F(HandshakeTest, utpErrorAfterConnectAwaitingYbRetriesPlaintext)
+{
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+
+    auto const listener = createLoopbackListener();
+    ASSERT_TRUE(listener);
+    auto [io, utp_socket] = createOutgoingUtpIo(session_, listener->address, UbuntuTorrent.info_hash);
+    utp_socket->answer();
+
+    auto res = std::optional<tr_handshake::Result>{};
+    auto const handshake = startHandshake(res, &mediator, io, TR_ENCRYPTION_PREFERRED);
+    reportUtpError(utp_socket, ECONNRESET);
+
+    {
+        auto const sock = acceptConnection(*listener);
+        ASSERT_NE(TR_BAD_SOCKET, sock.get());
+        EXPECT_TRUE(receive(sock, std::size(PlaintextProtocolName)).starts_with(PlaintextProtocolName));
+        EXPECT_FALSE(io->is_utp());
+        EXPECT_EQ(0U, mediator.n_utp_failed);
+    } // closing the TCP connection ends the handshake before the test does
+
+    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(res.has_value());
+    EXPECT_FALSE(res->is_connected);
 }
 
 TEST_F(HandshakeTest, incomingEncrypted)

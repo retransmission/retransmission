@@ -96,6 +96,11 @@ public:
         return socket_ ? socket_->is_utp() : false;
     }
 
+    [[nodiscard]] auto is_utp_connect_pending() const noexcept
+    {
+        return socket_ ? socket_->is_utp_connect_pending() : false;
+    }
+
     void clear();
 
     [[nodiscard]] bool reconnect();
