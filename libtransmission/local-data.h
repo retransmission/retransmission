@@ -187,6 +187,10 @@ public:
     // the move. It runs when the move starts, after the ops queued before it.
     using MoveParent = std::function<std::string()>;
 
+    // Runs once every file is under `parent`, before the old location is cleared.
+    // A location saved here can't name files that a kill has since removed.
+    using OnPlaced = std::function<void(tr_torrent_id_t, std::string_view parent)>;
+
     // `parent` is the dir the files went under, or empty if the move was skipped.
     using OnMove = std::function<void(tr_torrent_id_t, std::string_view parent, tr_error const& error)>;
 
@@ -205,7 +209,10 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
-        [[nodiscard]] virtual tr_error move(tr_torrent_id_t id, std::string_view parent) = 0;
+        [[nodiscard]] virtual tr_error move(
+            tr_torrent_id_t id,
+            std::string_view parent,
+            std::function<void()> const& on_placed) = 0;
         [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         virtual void rename(
             tr_torrent_id_t id,
@@ -287,7 +294,7 @@ public:
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
     void close_all();
-    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move);
+    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move, OnPlaced on_placed = {});
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
 

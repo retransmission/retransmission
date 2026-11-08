@@ -83,6 +83,7 @@ struct tr_torrent {
     public:
         void load_checked_pieces(tr_bitfield const& checked, time_t const* mtimes /*file_count()*/);
         void load_blocks(tr_bitfield blocks);
+        void load_completion_move_pending(bool val) noexcept;
         void load_date_added(time_t when) noexcept;
         void load_date_done(time_t when) noexcept;
         void load_download_dir(std::string_view dir) noexcept;
@@ -415,6 +416,13 @@ struct tr_torrent {
     [[nodiscard]] constexpr bool is_done() const noexcept
     {
         return completeness_ != TR_LEECH;
+    }
+
+    // Whether a completed torrent's files are leaving the incomplete dir.
+    // This stays set until the done step runs.
+    [[nodiscard]] constexpr bool completion_move_pending() const noexcept
+    {
+        return completion_move_pending_;
     }
 
     [[nodiscard]] constexpr bool is_seed() const noexcept
@@ -1406,6 +1414,9 @@ private:
     // Once done, move the files from the incomplete dir to the download dir.
     void leave_incomplete_dir();
 
+    // Moves a done torrent's files to where they end up, then runs the done step.
+    void finish_completion(bool recent_change, bool was_running) const;
+
     void start_in_session_thread();
 
     void stop_now();
@@ -1518,6 +1529,9 @@ private:
     uint16_t idle_limit_minutes_ = 0;
 
     uint16_t max_connected_peers_ = TrDefaultPeerLimitTorrent;
+
+    // Saved in the resume file, so a restart can finish what a kill interrupts.
+    bool completion_move_pending_ = false;
 
     bool is_deleting_ = false;
     bool removal_queued_ = false;

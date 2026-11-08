@@ -5,9 +5,13 @@
 
 #pragma once
 
+#include <cstdint> // uint8_t
 #include <iterator> // for std::data(), std::size()
+#include <optional>
 #include <string_view>
 #include <vector>
+
+#include "libtransmission/tr-strbuf.h"
 
 struct tr_error;
 
@@ -19,11 +23,34 @@ struct tr_error;
 bool tr_file_read(std::string_view filename, std::vector<char>& contents, tr_error* error = nullptr);
 
 /**
- * Tries to move a file by renaming, and [optionally] if that fails, by copying.
+ * Moves a file by renaming it.
  *
  * Creates the destination directory if it doesn't exist.
  */
-[[nodiscard]] bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow_copy, tr_error* error = nullptr);
+[[nodiscard]] bool tr_file_move(std::string_view oldpath, std::string_view newpath, tr_error* error = nullptr);
+
+enum class tr_file_moved : uint8_t { Renamed, Copied };
+
+/**
+ * Moves a file by renaming it, or copies it with tr_file_copy_atomic() if renaming fails.
+ * A copy leaves `oldpath` in place for the caller to remove.
+ *
+ * Creates the destination directory if it doesn't exist.
+ */
+[[nodiscard]] std::optional<tr_file_moved> tr_file_rename_or_copy(
+    std::string_view oldpath,
+    std::string_view newpath,
+    tr_error* error = nullptr);
+
+/**
+ * Copies a file to a temporary name in `newpath`'s dir, then renames it into place.
+ * `newpath` keeps its old state until the copy is whole, even if the process is killed mid-copy.
+ */
+[[nodiscard]] bool tr_file_copy_atomic(std::string_view oldpath, std::string_view newpath, tr_error* error = nullptr);
+
+// Every tr_file_copy_atomic() temporary name starts with this,
+// so cleanup can recognize one that an interrupted copy left behind.
+inline constexpr auto TrFileCopyPrefix = std::string_view{ ".tr-copy-" };
 
 bool tr_file_save(std::string_view filename, std::string_view contents, tr_error* error = nullptr);
 
@@ -32,3 +59,10 @@ constexpr auto tr_file_save(std::string_view filename, ContiguousRange const& x,
 {
     return tr_file_save(filename, std::string_view{ std::data(x), std::size(x) }, error);
 }
+
+namespace tr::detail
+{
+// Where tr_file_copy_atomic() stages its copy of `newpath`.
+// Public for tests; everything else calls tr_file_copy_atomic().
+[[nodiscard]] tr_pathbuf file_copy_temp_path(std::string_view newpath);
+} // namespace tr::detail
