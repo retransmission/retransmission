@@ -27,6 +27,7 @@
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
+#include <libtransmission/session.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -303,6 +304,13 @@ protected:
         builder.set_paused(true);
         auto const* const tor = tr_torrentNew(&builder, nullptr);
         EXPECT_NE(nullptr, tor);
+
+        // wait until the session thread has marked the verify that tr_torrentNew() queued
+        auto done_promise = std::promise<void>{};
+        auto done_future = done_promise.get_future();
+        core_->run_in_session_thread([&done_promise] { done_promise.set_value(); });
+        done_future.wait();
+
         return tor != nullptr ? tr_torrentId(tor) : tr_torrent_id_t{};
     }
 
