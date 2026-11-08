@@ -2621,39 +2621,6 @@ namespace rename_helpers
     return indices;
 }
 
-[[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
-{
-    auto error = tr_error{};
-
-    auto const base = (tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir()).sv();
-
-    auto src = tr_pathbuf{ base, '/', oldpath };
-
-    if (!tr_sys_path_exists(src)) /* check for it as a partial */
-    {
-        src += tr_torrent_files::PartialFileSuffix;
-    }
-
-    if (tr_sys_path_exists(src)) {
-        auto const parent = tr_sys_path_dirname(src);
-        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
-            tr_pathbuf{ parent, '/', newname, tr_torrent_files::PartialFileSuffix } :
-            tr_pathbuf{ parent, '/', newname };
-
-        auto tmp = errno;
-        bool const tgt_exists = tr_sys_path_exists(tgt);
-        errno = tmp;
-
-        if (!tgt_exists) {
-            tmp = errno;
-            tr_sys_path_rename(src, tgt, &error);
-            errno = tmp;
-        }
-    }
-
-    return error;
-}
-
 void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::string_view newname, tr_file_index_t file_index)
 {
     auto name = std::string{};
@@ -2688,46 +2655,38 @@ void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::str
 } // namespace rename_helpers
 } // namespace
 
-void tr_torrent::rename_path_in_session_thread(
-    std::string_view const oldpath,
-    std::string_view const newname,
-    tr_torrent_rename_done_func const& callback)
+tr_error tr_torrent::check_rename(std::string_view const oldpath, std::string_view const newname) const
 {
     using namespace rename_helpers;
 
-    auto error = tr_error{};
-
-    if (!renameArgsAreValid(this, oldpath, newname)) {
-        error.set_from_errno(EINVAL);
-    } else if (auto const file_indices = renameFindAffectedFiles(this, oldpath); std::empty(file_indices)) {
-        error.set_from_errno(EINVAL);
-    } else {
-        error = renamePath(this, oldpath, newname);
-
-        if (!error) {
-            /* update tr_info.files */
-            for (auto const& file_index : file_indices) {
-                renameTorrentFileString(this, oldpath, newname, file_index);
-            }
-
-            /* update tr_info.name if user changed the toplevel */
-            if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
-                set_name(newname);
-            }
-
-            mark_edited();
-            set_dirty();
-
-            // A restart must look for the files under their new names.
-            save_resume_file();
-        }
+    if (!renameArgsAreValid(this, oldpath, newname) || std::empty(renameFindAffectedFiles(this, oldpath))) {
+        return tr_error::from_errno(EINVAL);
     }
 
-    mark_changed();
+    return {};
+}
 
-    if (callback != nullptr) {
-        callback(id(), oldpath, newname, error);
+void tr_torrent::apply_rename(std::string_view const oldpath, std::string_view const newname)
+{
+    using namespace rename_helpers;
+
+    auto const file_indices = renameFindAffectedFiles(this, oldpath);
+
+    /* update tr_info.files */
+    for (auto const& file_index : file_indices) {
+        renameTorrentFileString(this, oldpath, newname, file_index);
     }
+
+    /* update tr_info.name if user changed the toplevel */
+    if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
+        set_name(newname);
+    }
+
+    mark_edited();
+    set_dirty();
+
+    // A restart must look for the files under their new names.
+    save_resume_file();
 }
 
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
@@ -2741,7 +2700,30 @@ void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname,
     run_in_session_thread_by_id(
         *this,
         [oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)](
-            tr_torrent* const tor) mutable { tor->session->local_data.rename(tor->id(), oldpath, newname, std::move(cb)); },
+            tr_torrent* const tor) mutable {
+            auto* const session = tor->session;
+            auto const tor_id = tor->id();
+
+            auto check = [session, tor_id, oldpath, newname] {
+                auto const* const torrent = session->torrents().get(tor_id);
+                return torrent != nullptr ? torrent->check_rename(oldpath, newname) : tr_error::from_errno(EINVAL);
+            };
+
+            auto on_rename = [session, oldpath, newname, cb = std::move(cb)](tr_torrent_id_t const id, tr_error const& error) {
+                if (auto* const torrent = session->torrents().get(id); torrent != nullptr) {
+                    if (!error) {
+                        torrent->apply_rename(oldpath, newname);
+                    }
+                    torrent->mark_changed();
+                }
+
+                if (cb != nullptr) {
+                    cb(id, oldpath, newname, error);
+                }
+            };
+
+            session->local_data.rename(tor_id, oldpath, newname, std::move(check), std::move(on_rename));
+        },
         std::move(on_gone));
 }
 

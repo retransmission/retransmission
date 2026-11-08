@@ -99,14 +99,14 @@ public:
         return remove_err;
     }
 
-    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback)
-        override
+    [[nodiscard]] tr_error rename(
+        [[maybe_unused]] tr_torrent_id_t const id,
+        std::string_view const oldpath,
+        std::string_view const newname) override
     {
         renamed_from = std::string{ oldpath };
         renamed_to = std::string{ newname };
-        if (callback != nullptr) {
-            callback(id, oldpath, newname, tr_error{});
-        }
+        return rename_err;
     }
 
     void close_all() override
@@ -129,6 +129,7 @@ public:
     tr_error write_err;
     tr_error move_err;
     tr_error remove_err;
+    tr_error rename_err;
     bool remove_called = false;
     bool close_all_called = false;
     tr_byte_span_t read_span{};
@@ -264,18 +265,29 @@ TEST(LocalData, AdminOperationsDelegate)
     EXPECT_EQ("/newer", raw_backend->moved_to);
 
     auto rename_called = false;
+    local_data.rename(8, "old", "new", {}, [&rename_called](tr_torrent_id_t tor_id, tr_error const& error) {
+        rename_called = true;
+        EXPECT_EQ(8, tor_id);
+        EXPECT_FALSE(error);
+    });
+    EXPECT_TRUE(rename_called);
+    EXPECT_EQ("old", raw_backend->renamed_from);
+    EXPECT_EQ("new", raw_backend->renamed_to);
+
+    // a failed check keeps the rename off the disk
+    raw_backend->renamed_from.clear();
+    auto rename_rejected = false;
     local_data.rename(
         8,
         "old",
         "new",
-        [&rename_called](tr_torrent_id_t tor_id, std::string_view oldpath, std::string_view newname, tr_error const& error) {
-            rename_called = true;
-            EXPECT_EQ(8, tor_id);
-            EXPECT_EQ("old", oldpath);
-            EXPECT_EQ("new", newname);
-            EXPECT_FALSE(error);
+        [] { return tr_error::from_errno(EINVAL); },
+        [&rename_rejected](tr_torrent_id_t, tr_error const& error) {
+            rename_rejected = true;
+            EXPECT_TRUE(error);
         });
-    EXPECT_TRUE(rename_called);
+    EXPECT_TRUE(rename_rejected);
+    EXPECT_EQ("", raw_backend->renamed_from);
 
     auto remove_called = false;
     local_data.remove(12, {}, [&remove_called](tr_torrent_id_t tor_id, tr_error const& error) {

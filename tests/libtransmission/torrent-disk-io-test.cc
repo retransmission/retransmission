@@ -1085,7 +1085,7 @@ TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
     // writes finish and pauses the workers again. The refill must arrive
     // while that block is still queued.
     blockingRunInSessionThread([this, tor] {
-        session_->local_data.rename(tor->id(), "missing", "renamed", [this](auto&&...) {
+        session_->local_data.close_file(tor->id(), 0U, [this](tr_torrent_id_t) {
             session_->local_data.set_workers_paused(true);
         });
     });

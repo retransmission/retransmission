@@ -200,6 +200,12 @@ public:
 
     using OnClose = std::function<void(tr_torrent_id_t)>;
 
+    // Runs when the rename starts, after the ops queued before it.
+    // An error fails the rename without touching the disk.
+    using RenameCheck = std::function<tr_error()>;
+
+    using OnRename = std::function<void(tr_torrent_id_t, tr_error const& error)>;
+
     class Backend
     {
     public:
@@ -216,11 +222,7 @@ public:
             std::string_view parent,
             std::function<void()> const& on_placed) = 0;
         [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
-        virtual void rename(
-            tr_torrent_id_t id,
-            std::string_view oldpath,
-            std::string_view newname,
-            tr_torrent_rename_done_func callback) = 0;
+        [[nodiscard]] virtual tr_error rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname) = 0;
         virtual void close_all() = 0;
         virtual void close_torrent(tr_torrent_id_t tor_id) = 0;
         virtual void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num) = 0;
@@ -304,7 +306,7 @@ public:
     void close_all();
     void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move, OnPlaced on_placed = {});
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
-    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
+    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, RenameCheck check, OnRename on_rename);
 
     // Deliver every outstanding completion and stop the workers.
     // Later ops run on the synchronous backend.

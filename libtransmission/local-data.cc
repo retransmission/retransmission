@@ -72,6 +72,38 @@ namespace
     return tr_ioRead(*desc, open_files, span.begin, std::span{ std::data(setme), len });
 }
 
+// Renames `oldpath`, or its partial file, wherever `desc` looks for files.
+// A path that isn't there, or a new name already taken, is not an error.
+[[nodiscard]] tr_error rename_on_disk(
+    StorageDescriptor const& desc,
+    std::string_view const oldpath,
+    std::string_view const newname)
+{
+    for (auto const parent : search_paths(desc.download_dir, desc.incomplete_dir)) {
+        auto src = tr_pathbuf{ parent, '/', oldpath };
+        if (!tr_sys_path_exists(src)) {
+            src += tr_torrent_files::PartialFileSuffix;
+        }
+
+        if (!tr_sys_path_exists(src)) {
+            continue;
+        }
+
+        auto const dir = tr_sys_path_dirname(src);
+        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
+            tr_pathbuf{ dir, '/', newname, tr_torrent_files::PartialFileSuffix } :
+            tr_pathbuf{ dir, '/', newname };
+
+        auto error = tr_error{};
+        if (!tr_sys_path_exists(tgt)) {
+            tr_sys_path_rename(src, tgt, &error);
+        }
+        return error;
+    }
+
+    return {};
+}
+
 class DefaultBackend final : public LocalData::Backend
 {
 public:
@@ -162,21 +194,11 @@ public:
         return error;
     }
 
-    void rename(
-        tr_torrent_id_t const id,
-        std::string_view const oldpath,
-        std::string_view const newname,
-        tr_torrent_rename_done_func callback) override
+    [[nodiscard]] tr_error rename(tr_torrent_id_t const id, std::string_view const oldpath, std::string_view const newname)
+        override
     {
-        auto* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            if (callback != nullptr) {
-                callback(id, oldpath, newname, tr_error::from_errno(EINVAL));
-            }
-            return;
-        }
-
-        tor->rename_path_in_session_thread(oldpath, newname, callback);
+        auto const* const tor = torrents_.get(id);
+        return tor != nullptr ? rename_on_disk(*tor->storage_descriptor(), oldpath, newname) : tr_error::from_errno(EINVAL);
     }
 
     void close_all() override
@@ -1570,12 +1592,24 @@ void LocalData::rename(
     tr_torrent_id_t const id,
     std::string_view const oldpath,
     std::string_view const newname,
-    tr_torrent_rename_done_func callback)
+    RenameCheck check, // NOLINT(performance-unnecessary-value-param)
+    OnRename on_rename) // NOLINT(performance-unnecessary-value-param)
 {
     admin(
         id,
-        [this, id, oldpath = std::string{ oldpath }, newname = std::string{ newname }, callback = std::move(callback)] mutable {
-            backend_->rename(id, oldpath, newname, std::move(callback));
+        [this,
+         id,
+         oldpath = std::string{ oldpath },
+         newname = std::string{ newname },
+         check = std::move(check),
+         on_rename = std::move(on_rename)] mutable {
+            auto error = check ? check() : tr_error{};
+            if (!error) {
+                error = backend_->rename(id, oldpath, newname);
+            }
+            if (on_rename) {
+                std::move(on_rename)(id, error);
+            }
         });
 }
 
