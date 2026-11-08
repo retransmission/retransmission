@@ -262,6 +262,80 @@ TEST(Crypto, encryptDecrypt)
     EXPECT_EQ(Input2, std::data(decrypted2)) << "Input2 " << Input2 << " decrypted2 " << std::data(decrypted2);
 }
 
+TEST(Crypto, filterEncryptsOnlyInitializedDirections)
+{
+    using tr_message_stream_encryption::Filter;
+    auto constexpr Input = "plaintext"sv;
+    auto dh = MseDh{ fromHex<MseDh::PrivateKeySize>(PrivateKeyA) };
+    dh.setPeerPublicKey(fromHex<MseDh::KeySize>(KeyB));
+
+    auto const encrypted = [&](Filter& filter) {
+        auto out = std::array<char, std::size(Input)>{};
+        filter.encrypt(std::data(Input), std::size(Input), std::data(out));
+        return std::string{ std::data(out), std::size(out) };
+    };
+    auto const decrypted = [&](Filter& filter) {
+        auto out = std::array<char, std::size(Input)>{};
+        filter.decrypt(std::data(Input), std::size(Input), std::data(out));
+        return std::string{ std::data(out), std::size(out) };
+    };
+    // first output of a Filter whose direction was just initialized
+    auto const fresh_encrypted = [&] {
+        auto filter = Filter{};
+        filter.encrypt_init(false, dh, SomeHash);
+        return encrypted(filter);
+    };
+    auto const fresh_decrypted = [&] {
+        auto filter = Filter{};
+        filter.decrypt_init(false, dh, SomeHash);
+        return decrypted(filter);
+    };
+
+    auto filter = Filter{};
+    EXPECT_FALSE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+
+    filter.encrypt_init(false, dh, SomeHash);
+    filter.decrypt_init(false, dh, SomeHash);
+    EXPECT_TRUE(filter.is_active());
+
+    // The handshake disables encryption first and decryption later
+    filter.encrypt_disable();
+    EXPECT_TRUE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(fresh_decrypted(), decrypted(filter));
+
+    filter.decrypt_disable();
+    EXPECT_FALSE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+
+    // Initializing again after both directions were disabled allocates new cipher state
+    filter.encrypt_init(false, dh, SomeHash);
+    EXPECT_TRUE(filter.is_active());
+    EXPECT_EQ(fresh_encrypted(), encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+}
+
+TEST(Crypto, filterEncryptOnceMatchesEncrypt)
+{
+    auto dh = MseDh{ fromHex<MseDh::PrivateKeySize>(PrivateKeyA) };
+    dh.setPeerPublicKey(fromHex<MseDh::KeySize>(KeyB));
+    auto constexpr Input = std::array<std::byte, 8>{};
+
+    for (auto const is_incoming : { false, true }) {
+        auto filter = tr_message_stream_encryption::Filter{};
+        filter.encrypt_init(is_incoming, dh, SomeHash);
+        auto expected = std::array<std::byte, 8>{};
+        filter.encrypt(std::data(Input), std::size(Input), std::data(expected));
+
+        auto actual = std::array<std::byte, 8>{};
+        tr_message_stream_encryption::Filter::encrypt_once(is_incoming, dh, SomeHash, Input, actual);
+        EXPECT_EQ(expected, actual) << is_incoming;
+    }
+}
+
 TEST(Crypto, arc4Rfc6229)
 {
     // Independent keystream vectors, including MSE's 1024-byte discard:
