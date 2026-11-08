@@ -37,12 +37,14 @@
 #include "libtransmission/serializer.h"
 #include "libtransmission/session-id.h"
 #include "libtransmission/torrent-builder.h"
+#include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 #include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
+#include "libtransmission/web.h" // tr_web::FetchResponse
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
@@ -540,6 +542,59 @@ void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new
 }
 
 // --- adding torrents
+
+void Session::request_add(AddData add, AddPrompt const prompt)
+{
+    if (add.type == AddData::Type::None && prompt != AddPrompt::Always) {
+        return;
+    }
+
+    add.trash_source = prefs_.get<bool>(TR_KEY_trash_original_torrent_files);
+
+    if (prompt == AddPrompt::Never || (prompt == AddPrompt::FromPrefs && !prefs_.get<bool>(TR_KEY_show_options_window))) {
+        add_torrent(std::move(add));
+    } else if (add.type == AddData::Type::Url) {
+        fetch_url_then_prompt(std::move(add));
+    } else {
+        prompt_unless_duplicate(add);
+    }
+}
+
+void Session::fetch_url_then_prompt(AddData add)
+{
+    // The user is waiting, with nothing on screen yet. If time runs out, the session gets to try.
+    static auto constexpr Timeout = std::chrono::seconds{ 30 };
+
+    auto url = add.source;
+
+    rpc_.fetch(
+        std::move(url),
+        Timeout,
+        [this, alive = std::weak_ptr{ alive_ }, add = std::move(add)](tr_web::FetchResponse const& response) mutable {
+            if (alive.expired()) {
+                return;
+            }
+
+            if (response.status == 200 && tr_torrent_metainfo{}.parse_benc(response.body)) {
+                add.type = AddData::Type::Metainfo;
+                add.metainfo = response.body;
+            }
+
+            prompt_unless_duplicate(add);
+        });
+}
+
+void Session::prompt_unless_duplicate(AddData const& add)
+{
+    if (auto const tm = add.parsed()) {
+        if (auto const* const tor = torrents_.find(tm->info_hash()); tor != nullptr) {
+            drop_duplicate(add, tor->hash_string().sv());
+            return;
+        }
+    }
+
+    torrent_add_prompt(add);
+}
 
 void Session::add_torrent(AddData add, AddOptions options)
 {

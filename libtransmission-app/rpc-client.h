@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint> // uint64_t
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -100,6 +101,11 @@ public:
     // request gets exactly one reply, and a caller may count on it.
     void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done);
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
+
+    // Downloads `url` from this process: through an embedded session, which has the user's
+    // proxy, bind address and cookies, or else with this client's own connection.
+    // `on_done` runs on the UI thread, unless `stop()` comes first.
+    void fetch(std::string url, std::chrono::seconds timeout, std::function<void(tr_web::FetchResponse const&)> on_done);
 
     // Signals, fired on the UI thread. Connect with connect_scoped().
     sigslot::signal<bool /*is_network_error*/, std::string_view /*message*/> network_response;

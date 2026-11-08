@@ -215,6 +215,28 @@ public:
 
     // --- adding torrents
 
+    // Whether to ask the user about a torrent before adding it.
+    enum class AddPrompt : uint8_t {
+        FromPrefs, // as `show_options_window` says
+        Always,
+        Never,
+    };
+
+    // Takes a request to add a torrent from anywhere in the client, and is the one place that
+    // applies `show_options_window` and `trash_original_torrent_files`.
+    //
+    // With no prompt, calls `add_torrent()`. With one, fires `torrent_add_prompt`, and the slot
+    // shows the toolkit's dialog and calls `add_torrent()` if the user accepts. Before prompting:
+    // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
+    //   the session to fetch, which may be able to reach what this client can't.
+    // - A torrent already in `torrents()` is dropped, and reported by `torrent_add_duplicate`
+    //   unless it came from the watch dir.
+    //
+    // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
+    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs);
+
+    sigslot::signal<AddData const&> torrent_add_prompt;
+
     // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
     // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
     // copy. A new torrent is fetched into `torrents()` at once.
@@ -484,6 +506,8 @@ private:
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
 
+    void fetch_url_then_prompt(AddData add);
+    void prompt_unless_duplicate(AddData const& add);
     void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
     void drop_duplicate(AddData const& add, std::string_view hash_string);
     void dispose_source_file(AddData const& add) const;

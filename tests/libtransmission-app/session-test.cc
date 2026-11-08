@@ -280,6 +280,7 @@ TEST_F(AppSessionTest, importingInfoReadsTheVersionAndType)
 
 // Session tests against a real embedded session, its replies pumped through a UiLoop.
 auto constexpr Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
+auto constexpr MagnetLink = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
 auto constexpr Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
 
 class AppSessionRpcTest
@@ -1050,6 +1051,49 @@ TEST_F(AppSessionRpcTest, aWatchDirDuplicateIsNotReported)
     EXPECT_EQ(0, duplicates);
 }
 
+TEST_F(AppSessionRpcTest, aPromptedDuplicateIsReportedInsteadOfPrompting)
+{
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+
+    auto prompts = 0;
+    auto duplicates = 0;
+    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const duplicate_tag = session_.torrent_add_duplicate.connect_scoped(
+        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+
+    prefs_.set(TR_KEY_trash_original_torrent_files, true);
+    auto const source = copy_asset(Arch, "again.torrent"sv);
+    session_.request_add(AddData{ source }, Session::AddPrompt::Always);
+
+    EXPECT_EQ(0, prompts);
+    EXPECT_EQ(1, duplicates);
+    EXPECT_FALSE(tr_sys_path_exists(source));
+}
+
+TEST_F(AppSessionRpcTest, aPromptedWatchDirDuplicateIsNeitherReportedNorPrompted)
+{
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+
+    auto prompts = 0;
+    auto duplicates = 0;
+    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const duplicate_tag = session_.torrent_add_duplicate.connect_scoped(
+        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+
+    prefs_.set(TR_KEY_trash_original_torrent_files, false);
+    auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
+    add.from_watch_dir = true;
+    auto const source = add.source;
+    session_.request_add(std::move(add), Session::AddPrompt::Always);
+
+    EXPECT_EQ(0, prompts);
+    EXPECT_EQ(0, duplicates);
+    EXPECT_FALSE(tr_sys_path_exists(source));
+    EXPECT_TRUE(tr_sys_path_exists(fmt::format("{:s}.added", source)));
+}
+
 TEST_F(AppSessionRpcTest, addTorrentReportsWhatCanNotBeAdded)
 {
     auto errors = std::vector<std::string>{};
@@ -1060,6 +1104,25 @@ TEST_F(AppSessionRpcTest, addTorrentReportsWhatCanNotBeAdded)
 
     ASSERT_TRUE(loop_.pump_until([&errors] { return !std::empty(errors); }));
     EXPECT_FALSE(std::empty(errors.front()));
+}
+
+TEST_F(AppSessionRpcTest, aPromptedUrlIsFetchedByAnEmbeddedSession)
+{
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
+    auto const benc = std::string{ std::data(contents), std::size(contents) };
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get(benc);
+
+    auto prompted = std::optional<AddData>{};
+    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompted](AddData const& add) { prompted = add; });
+
+    session_.request_add(AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) }, Session::AddPrompt::Always);
+
+    ASSERT_TRUE(loop_.pump_until([&prompted] { return prompted.has_value(); }));
+    EXPECT_EQ(AddData::Type::Metainfo, prompted->type);
+    EXPECT_EQ(benc, prompted->metainfo);
 }
 
 // The user will want the file to try again.
@@ -1259,6 +1322,17 @@ protected:
         EXPECT_TRUE(found);
         n_adds_seen_ = std::size(adds);
         return found ? adds.back() : std::string{};
+    }
+
+    // What `torrent_add_prompt` fires with once `url` has been requested with a prompt.
+    [[nodiscard]] std::optional<AddData> prompted_add_for(std::string const& url)
+    {
+        auto prompted = std::optional<AddData>{};
+        auto const tag = session_.torrent_add_prompt.connect_scoped([&prompted](AddData const& add) { prompted = add; });
+
+        session_.request_add(AddData{ url }, Session::AddPrompt::Always);
+        EXPECT_TRUE(loop_.pump_until([&prompted] { return prompted.has_value(); }));
+        return prompted;
     }
 
     [[nodiscard]] bool pump_until_closed()
@@ -1533,8 +1607,7 @@ TEST_F(AppSessionLifecycleTest, addTorrentSendsLinksByNameAndFilesByContents)
     auto server = MockRpcServer{ /*advertise_tr5=*/true };
     start_negotiated(server);
 
-    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
-    session_.add_torrent(AddData{ Magnet });
+    session_.add_torrent(AddData{ MagnetLink });
     auto const magnet_body = next_add_body(server);
     EXPECT_TRUE(magnet_body.contains(R"("filename":"magnet:)")) << magnet_body;
     EXPECT_FALSE(magnet_body.contains(R"("metainfo")")) << magnet_body;
@@ -1549,29 +1622,27 @@ TEST_F(AppSessionLifecycleTest, addTorrentDefaultsPausedFromThePrefUnlessTold)
 {
     auto server = MockRpcServer{ /*advertise_tr5=*/true };
     start_negotiated(server);
-    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
 
     prefs_.set(TR_KEY_start_added_torrents, false);
-    session_.add_torrent(AddData{ Magnet });
+    session_.add_torrent(AddData{ MagnetLink });
     EXPECT_TRUE(next_add_body(server).contains(R"("paused":true)"));
 
     prefs_.set(TR_KEY_start_added_torrents, true);
-    session_.add_torrent(AddData{ Magnet });
+    session_.add_torrent(AddData{ MagnetLink });
     EXPECT_TRUE(next_add_body(server).contains(R"("paused":false)"));
 
     auto options = AddOptions{};
     options.paused = true;
-    session_.add_torrent(AddData{ Magnet }, std::move(options));
+    session_.add_torrent(AddData{ MagnetLink }, std::move(options));
     EXPECT_TRUE(next_add_body(server).contains(R"("paused":true)"));
 }
 
 TEST_F(AppSessionLifecycleTest, addTorrentSendsOnlyTheOptionsThatAreSet)
 {
-    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
     auto server = MockRpcServer{ /*advertise_tr5=*/true };
     start_negotiated(server);
 
-    session_.add_torrent(AddData{ Magnet });
+    session_.add_torrent(AddData{ MagnetLink });
     auto const bare = next_add_body(server);
     for (auto const* const key : { "download_dir", "bandwidth_priority", "files_unwanted", "priority_low", "priority_high" }) {
         EXPECT_FALSE(bare.contains(key)) << key;
@@ -1583,13 +1654,124 @@ TEST_F(AppSessionLifecycleTest, addTorrentSendsOnlyTheOptionsThatAreSet)
     options.files_unwanted = { 1, 2 };
     options.priority_low = { 3 };
     options.priority_high = { 4 };
-    session_.add_torrent(AddData{ Magnet }, std::move(options));
+    session_.add_torrent(AddData{ MagnetLink }, std::move(options));
     auto const full = next_add_body(server);
     EXPECT_TRUE(full.contains(R"("download_dir":"/some/dir")")) << full;
     EXPECT_TRUE(full.contains(R"("bandwidth_priority":1)")) << full;
     EXPECT_TRUE(full.contains(R"("files_unwanted":[1,2])")) << full;
     EXPECT_TRUE(full.contains(R"("priority_low":[3])")) << full;
     EXPECT_TRUE(full.contains(R"("priority_high":[4])")) << full;
+}
+
+TEST_F(AppSessionLifecycleTest, requestAddPromptsOrAddsAsItIsTold)
+{
+    struct LocalTest {
+        bool show_options_window;
+        Session::AddPrompt prompt;
+        bool expect_prompt;
+    };
+
+    static auto constexpr Tests = std::array{
+        LocalTest{ false, Session::AddPrompt::FromPrefs, false },
+        LocalTest{ true, Session::AddPrompt::FromPrefs, true },
+        LocalTest{ false, Session::AddPrompt::Always, true },
+        LocalTest{ true, Session::AddPrompt::Never, false },
+    };
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    auto prompts = 0;
+    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+
+    for (auto const& test : Tests) {
+        prompts = 0;
+        prefs_.set(TR_KEY_show_options_window, test.show_options_window);
+        session_.request_add(AddData{ MagnetLink }, test.prompt);
+
+        EXPECT_EQ(test.expect_prompt ? 1 : 0, prompts);
+        if (!test.expect_prompt) {
+            EXPECT_TRUE(next_add_body(server).contains("magnet:"));
+        }
+    }
+}
+
+TEST_F(AppSessionLifecycleTest, requestAddAppliesTheTrashPref)
+{
+    auto trash_source = std::optional<bool>{};
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&trash_source](AddData const& add) { trash_source = add.trash_source; });
+
+    for (auto const trash_pref : { false, true }) {
+        trash_source.reset();
+        prefs_.set(TR_KEY_trash_original_torrent_files, trash_pref);
+        session_.request_add(AddData{ MagnetLink }, Session::AddPrompt::Always);
+        EXPECT_EQ(trash_pref, trash_source);
+    }
+}
+
+TEST_F(AppSessionLifecycleTest, requestAddOnlyPromptsForNothingWhenAskedTo)
+{
+    auto prompts = 0;
+    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+
+    prefs_.set(TR_KEY_show_options_window, true);
+    session_.request_add(AddData{});
+    EXPECT_EQ(0, prompts);
+
+    session_.request_add(AddData{}, Session::AddPrompt::Always);
+    EXPECT_EQ(1, prompts);
+}
+
+TEST_F(AppSessionLifecycleTest, aPromptedUrlBringsItsMetainfo)
+{
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Debian), contents));
+    auto const benc = std::string{ std::data(contents), std::size(contents) };
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get(benc);
+
+    auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
+    auto const prompted = prompted_add_for(url);
+
+    ASSERT_TRUE(prompted.has_value());
+    EXPECT_EQ(AddData::Type::Metainfo, prompted->type);
+    EXPECT_EQ(benc, prompted->metainfo);
+    EXPECT_EQ(url, prompted->source);
+}
+
+// The session may be able to reach what this client can't.
+TEST_F(AppSessionLifecycleTest, aPromptedUrlThatCantBeFetchedStaysAUrl)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+
+    auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
+    auto const prompted = prompted_add_for(url);
+
+    ASSERT_TRUE(prompted.has_value());
+    EXPECT_EQ(AddData::Type::Url, prompted->type);
+    EXPECT_EQ(url, prompted->source);
+}
+
+TEST_F(AppSessionLifecycleTest, aUrlFetchedAcrossAStopPromptsNothing)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get("not a torrent");
+
+    auto prompts = 0;
+    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+
+    auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
+    session_.request_add(AddData{ url }, Session::AddPrompt::Always);
+    session_.stop();
+
+    auto done = false;
+    rpc_.fetch(url, std::chrono::seconds{ 30 }, [&done](tr_web::FetchResponse const& /*response*/) { done = true; });
+    ASSERT_TRUE(loop_.pump_until([&done] { return done; }));
+    loop_.drain();
+
+    EXPECT_EQ(0, prompts);
 }
 
 TEST_F(AppSessionLifecycleTest, startEmbeddedIgnoresTheRemotePrefs)
