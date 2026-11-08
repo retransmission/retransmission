@@ -162,17 +162,24 @@ tr_open_files::Handle tr_open_files::get(
     // Opens of the same path wait for initialization, including preallocation.
     // Other paths can be opened while this one waits on disk.
 
-    // create subfolders, if any
-    if (writable) {
-        if (auto const dir = tr_sys_path_dirname(filename); !tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0777, &error)) {
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't create '{path}': {error} ({error_code})",
-                    fmt::arg("path", dir),
-                    fmt::arg("error", error.message()),
-                    fmt::arg("error_code", error.code())));
-            return {};
+    auto const create_parent = [filename, &error] {
+        auto const dir = tr_sys_path_dirname(filename);
+        if (tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0777, &error)) {
+            return true;
         }
+
+        tr_logAddError(
+            fmt::format(
+                "Couldn't create '{path}': {error} ({error_code})",
+                fmt::arg("path", dir),
+                fmt::arg("error", error.message()),
+                fmt::arg("error_code", error.code())));
+        return false;
+    };
+
+    // create subfolders, if any
+    if (writable && !create_parent()) {
+        return {};
     }
 
     auto const info = tr_sys_path_get_info(filename);
@@ -185,7 +192,18 @@ tr_open_files::Handle tr_open_files::get(
     // open the file
     int flags = writable ? (TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE) : 0;
     flags |= TR_SYS_FILE_READ;
-    auto const fd = tr_sys_file_open(filename, flags, 0666, &error);
+    auto fd = tr_sys_file_open(filename, flags, 0666, &error);
+
+    // Clearing another torrent's old location removes empty folders, and it
+    // can catch the one we just made here before the open puts a file in it.
+    if (!is_open(fd) && writable && error.is_enoent()) {
+        error = {};
+        if (!create_parent()) {
+            return {};
+        }
+        fd = tr_sys_file_open(filename, flags, 0666, &error);
+    }
+
     if (!is_open(fd)) {
         tr_logAddError(
             fmt::format(
