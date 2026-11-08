@@ -1130,8 +1130,14 @@ void tr_torrent::set_location_in_session_thread(
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
+    // Cancel a pending verify first. Cancelling re-hashes pieces, and
+    // those hashes must run before the files close and move.
+    auto const restart_verify = !move_from_old_path && verify_state_ != VerifyState::None;
+    session->verify_remove(this);
+
     auto on_done = [session = this->session,
                     move_from_old_path,
+                    restart_verify,
                     setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
         auto* const tor = session->torrents().get(tor_id);
         if (tor != nullptr && error) {
@@ -1151,6 +1157,11 @@ void tr_torrent::set_location_in_session_thread(
             // tell the torrent where the files are
             tor->set_download_dir(path);
             session->add_recent_relocate_dir(path);
+
+            if (restart_verify) {
+                // the verify starts over where the files now are
+                tr_torrentVerify(tor);
+            }
         }
 
         if (setme_state != nullptr) {
@@ -1175,9 +1186,6 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
-    // Cancel a pending verify first. Cancelling re-hashes pieces, and
-    // those hashes must run before the files close and move.
-    session->verify_remove(this);
     session->local_data.close_torrent(id());
     session->local_data.move(id(), std::move(path), std::move(on_done));
 }
@@ -1698,7 +1706,7 @@ tr_torrent_metainfo const& tr_torrent::VerifyMediator::metainfo() const
 
 std::optional<std::string> tr_torrent::VerifyMediator::find_file(tr_file_index_t const file_index) const
 {
-    return tor_->find_file(file_index).transform(&tr_torrent_files::FoundFile::filename<std::string>);
+    return storage_->find(file_index).transform(&tr_torrent_files::FoundFile::filename<std::string>);
 }
 
 void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_file) const
@@ -2677,6 +2685,11 @@ void tr_torrent::rename_path_in_session_thread(
 
             mark_edited();
             set_dirty();
+
+            // a verify starts over, under the new names
+            if (verify_state_ != VerifyState::None) {
+                tr_torrentVerify(this);
+            }
         }
     }
 
