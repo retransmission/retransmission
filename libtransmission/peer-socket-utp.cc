@@ -150,7 +150,13 @@ public:
     {
         switch (state) {
         case UTP_STATE_CONNECT:
+            // utp_write() takes nothing before the connection is up, and libutp raises
+            // UTP_STATE_WRITABLE only after a full window drains, so this is the first
+            // chance to send what was queued while connecting.
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to connected");
+            if (is_write_enabled()) {
+                write_cb();
+            }
             break;
         case UTP_STATE_WRITABLE:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to writable");

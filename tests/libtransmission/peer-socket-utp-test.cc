@@ -290,6 +290,25 @@ TEST_F(PeerSocketUtpTest, overrunIsReportedAfterReadsStop)
     EXPECT_EQ(ENOBUFS, error_code);
 }
 
+// A peer IO queues its first message (the handshake) while the connection is still
+// being set up. It must go out when the connection comes up, not on the next
+// bandwidth pulse.
+TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
+{
+    tr_peer_socket_utp::init(sender_.ctx);
+    auto const outgoing = tr_peer_socket_utp::create(receiver_.address, sender_.ctx, timer_maker_);
+    ASSERT_NE(nullptr, outgoing);
+
+    auto n_writes = 0;
+    outgoing->set_write_cb([&] { ++n_writes; });
+    outgoing->set_write_enabled(true);
+    EXPECT_EQ(0, n_writes);
+
+    deliverAll();
+    EXPECT_NE(nullptr, accepted_);
+    EXPECT_EQ(1, n_writes);
+}
+
 } // namespace
 } // namespace tr::test
 
