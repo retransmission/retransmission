@@ -13,6 +13,7 @@ repository root.
 | how they behave with real delay, a slower link or loss | `transport-link.py` |
 | whether µTP yields to the link and keeps queueing delay low | `transport-link.py --choke` |
 | where the CPU time goes | `transport-link.py --perf` |
+| whether a branch is faster or slower than `main` | `transport-compare.py` |
 
 ## Example: checking a µTP change
 
@@ -75,6 +76,14 @@ Each phase must use at least half the link (`rate_MiB/s` against
 `link_MiB/s`), never drop to zero (`min_sample`), and keep `queue_delay_ms`
 under 150 ms. The exit status is 0 only when every phase passes, so the
 command also works as a check in a script.
+
+Once these look right on your branch, compare it with `main` on the same
+machine (see [Comparing branches](#comparing-branches)):
+
+```sh
+git worktree add --detach ../compare-worktree
+python3 tools/profiling/transport/transport-compare.py --worktree ../compare-worktree main my-branch
+```
 
 ## Tools
 
@@ -141,6 +150,31 @@ The container mounts the host's root read-only and chroots into it, so the
 benchmark runs with the host's libraries, as the invoking user. It needs
 Docker and the host's `ip`, `tc`, `ping` and `setpriv`, and `perf` for
 `--perf`.
+
+## Comparing branches
+
+Use `transport-compare.py` to decide whether a branch helps or hurts: it puts
+`main` and your branches through the same suite on the same machine, one after
+another, and waits for the machine to be idle before each, so the rows are
+comparable. It builds `transport-benchmark` for each ref in a scratch worktree
+and runs µTP and TCP on loopback, both at 25 ms RTT, and `--choke short` for
+µTP. It merges the benchmark tools
+(`--tools-ref`, by default the commit the script runs from) into each ref first,
+so refs without them can be measured. A ref is skipped when that merge would
+change files outside the tools, since the build would then include the tools
+ref's base as well.
+
+```sh
+git worktree add --detach ../compare-worktree
+python3 tools/profiling/transport/transport-compare.py --worktree ../compare-worktree main my-branch
+```
+
+It prints one row per ref: median µTP rate and CPU seconds per GiB over the
+runs that did not stall, the stall count (a failed µTP run counts as one), TCP's
+rate, the rates at 25 ms, the choke verdict, and the steps that failed. Raw
+output per ref goes to `--out`, with the choke run's `choke.csv` and its charts
+in `choke.md`. Refs that pin libutp commits not yet published need `--libutp-from`
+pointing at a libutp repository that has them.
 
 When you change the scripts, run their unit tests; they need neither Docker nor
 a build:
