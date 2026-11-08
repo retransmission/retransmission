@@ -1176,6 +1176,7 @@ private:
     void post_completion(Fn&& fn)
     {
         // Measures how long the session thread takes to get to a finished op.
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
         auto timed = [posted = tr::profile::Stamp{}, fn = std::forward<Fn>(fn)] mutable {
             posted.record_since("storage.completion_wait");
             fn();
@@ -1328,6 +1329,7 @@ private:
         auto error = tr_error{};
         auto leftovers = place_files(desc, job.target, error);
 
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
         post_completion([this, job = std::move(job), error = std::move(error), leftovers = std::move(leftovers)] mutable {
             if (!leftovers) {
                 finish_move(job, error);
@@ -1338,6 +1340,7 @@ private:
                 job.on_placed(job.id, job.target.parent);
             }
 
+            // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
             post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
                 leftovers.remove();
                 post_completion([this, job = std::move(job)] { finish_move(job, {}); });
