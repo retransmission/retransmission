@@ -1,4 +1,5 @@
-"""Check transport-link.py's link setup and choke verdicts, and choke-chart.py's charts.
+"""Check transport-link.py's link setup and choke verdicts, choke-chart.py's charts, and
+transport-compare.py's parsing.
 
 Usage (from the repository root)
 -------------------------------
@@ -13,6 +14,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 
@@ -26,6 +28,7 @@ def load(path: str):
 
 
 link = load("transport-link")
+compare = load("transport-compare")
 chart = load("support/choke-chart")
 
 # 60 Mbit/s in MiB/s
@@ -280,6 +283,80 @@ class ChokeChartTest(unittest.TestCase):
     def test_both_transports_get_a_comparison(self):
         rows = chart_rows([(60, 5)], "tcp") + chart_rows([(60, 5)], "utp")
         self.assertIn("### TCP vs µTP", chart.render(rows, 30, show_all=False))
+
+
+BENCHMARK_OUTPUT = """\
+[2026-11-08T09:48:42.915+0100] ip-cache.cc:275: Couldn't obtain source address
+sample utp 0.500 12.0
+transport  size_mib  connect_s  transfer_s    MiB/s  Gbit/s   cpu_s  cpu_s/GiB
+tcp              64      0.500       0.014   4518.7   37.91    0.03       0.48
+utp              16      0.499      28.992      0.6    0.00    0.19      12.16
+utp              16      0.007       0.091    176.4    1.48    0.17      10.88
+"""
+
+
+class CompareTest(unittest.TestCase):
+    def test_parse_runs_reads_only_the_result_table(self):
+        runs = compare.parse_runs(BENCHMARK_OUTPUT)
+        self.assertEqual(["tcp", "utp", "utp"], [r.transport for r in runs])
+        self.assertEqual(176.4, runs[2].mib_per_s)
+        self.assertEqual(10.88, runs[2].cpu_s_per_gib)
+
+    def test_table_counts_stalls_and_leaves_them_out_of_the_rates(self):
+        utp = [r for r in compare.parse_runs(BENCHMARK_OUTPUT) if r.transport == "utp"]
+        result = compare.RefResult("main", "abc", loopback_utp=utp, choke_ok=True)
+        row = compare.format_table([result]).splitlines()[1].split()
+        self.assertEqual(["main", "abc", "176.4", "10.88", "1/2"], row[:5])
+        self.assertEqual(["ok", "-"], row[-2:])
+
+    def test_missing_utp_runs_count_as_stalls(self):
+        utp = [r for r in compare.parse_runs(BENCHMARK_OUTPUT) if r.transport == "utp"]
+        result = compare.RefResult("main", "abc", loopback_utp=utp, utp_missing=4, choke_ok=True,
+                                   failed=["loopback-utp"])
+        row = compare.format_table([result]).splitlines()[1].split()
+        self.assertEqual("5/6", row[4])
+        self.assertEqual("loopback-utp", row[-1])
+
+    def test_only_tool_paths_may_change(self):
+        self.assertEqual([], compare.outside_tools(["tools/profiling/transport/support/choke-chart.py",
+                                                    "tests/libtransmission/transport-benchmark.cc"]))
+        self.assertEqual(["libtransmission/peer-io.cc", "tests/libtransmission/peer-io-test.cc"],
+                         compare.outside_tools(["libtransmission/peer-io.cc", "tools/profiling/README.md",
+                                                "tests/libtransmission/peer-io-test.cc"]))
+
+    def test_table_shows_a_failed_ref(self):
+        table = compare.format_table([compare.RefResult("x", error="git merge failed")])
+        self.assertIn("git merge failed", table)
+
+    def test_waits_until_few_cpus_are_busy(self):
+        readings = iter([9.0, 6.0, 3.5])
+        intervals = []
+
+        def measure(interval_s):
+            intervals.append(interval_s)
+            return next(readings)
+
+        with patch("sys.stderr") as stderr:
+            self.assertEqual(3.5, compare.wait_for_quiet(4.0, measure))
+        self.assertEqual([5.0, 20.0, 20.0], intervals)
+        printed = "".join(call.args[0] for call in stderr.write.call_args_list)
+        self.assertEqual("9.0 CPUs busy > 4, waiting.. 3.5\n", printed)
+
+    def test_does_not_wait_when_quiet(self):
+        with patch("sys.stderr") as stderr:
+            self.assertEqual(1.0, compare.wait_for_quiet(4.0, lambda _: 1.0))
+        stderr.write.assert_not_called()
+
+    def test_busy_cpus_counts_all_but_idle_and_iowait(self):
+        jiffies = iter([(100, 1000), (900, 2000)])  # 800 of 1000 jiffies busy
+        with patch.object(compare, "cpu_jiffies", lambda: next(jiffies)), patch("time.sleep"), \
+                patch("os.cpu_count", lambda: 16):
+            self.assertAlmostEqual(12.8, compare.busy_cpus(20.0))
+
+    def test_refuses_its_own_checkout(self):
+        argv = ["transport-compare.py", "--worktree", str(HERE.parent.parent.parent), "main"]
+        with patch("sys.argv", argv), self.assertRaises(SystemExit), patch("sys.stderr"):
+            compare.main()
 
 
 if __name__ == "__main__":
