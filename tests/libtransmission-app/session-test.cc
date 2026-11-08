@@ -13,6 +13,7 @@
 #include <ctime> // std::time()
 #include <functional>
 #include <future>
+#include <iterator>
 #include <memory>
 #include <optional>
 #include <string>
@@ -28,6 +29,8 @@
 
 #include <sigslot/signal.hpp>
 
+#include <libtransmission/file-utils.h>
+#include <libtransmission/file.h>
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
@@ -37,6 +40,7 @@
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
+#include "libtransmission-app/add-data.h"
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
 #include "libtransmission-app/session.h"
@@ -317,6 +321,15 @@ protected:
         done_future.wait();
 
         return tor != nullptr ? tr_torrentId(tor) : tr_torrent_id_t{};
+    }
+
+    // Copies a test asset into the sandbox and returns the copy's path,
+    // for a test that looks at what becomes of the file.
+    [[nodiscard]] std::string copy_asset(std::string_view const asset, std::string_view const name = {}) const
+    {
+        auto path = fmt::format("{:s}/{:s}", sandbox_dir(), std::empty(name) ? asset : name);
+        EXPECT_TRUE(tr_sys_path_copy(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, asset), path));
+        return path;
     }
 
     // Pumps until the session has answered every request sent so far.
@@ -954,6 +967,120 @@ TEST_F(AppSessionRpcTest, renameReFetchesTheTorrent)
     EXPECT_EQ(0U, failures);
 }
 
+TEST_F(AppSessionRpcTest, addTorrentListsTheNewTorrent)
+{
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    EXPECT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+}
+
+TEST_F(AppSessionRpcTest, addTorrentDisposesOfTheSourceFileOnceAdded)
+{
+    struct LocalTest {
+        std::string_view asset;
+        bool trash_source;
+        bool from_watch_dir;
+        bool source_stays;
+        bool renamed;
+    };
+
+    auto const tests = std::array{
+        LocalTest{ Debian, false, false, true, false },
+        LocalTest{ Arch, true, false, false, false },
+        LocalTest{ Gimp, false, true, false, true },
+        LocalTest{ "ubuntu-20.04.4-desktop-amd64.iso.torrent"sv, true, true, false, false },
+    };
+
+    auto n_listed = size_t{};
+    for (auto const& test : tests) {
+        auto add = AddData{ copy_asset(test.asset) };
+        add.trash_source = test.trash_source;
+        add.from_watch_dir = test.from_watch_dir;
+        auto const source = add.source;
+
+        session_.add_torrent(std::move(add));
+        ++n_listed;
+        ASSERT_TRUE(loop_.pump_until([this, n_listed] { return session_.torrents().size() == n_listed; }));
+
+        EXPECT_EQ(test.source_stays, tr_sys_path_exists(source)) << test.asset;
+        EXPECT_EQ(test.renamed, tr_sys_path_exists(fmt::format("{:s}.added", source))) << test.asset;
+    }
+}
+
+TEST_F(AppSessionRpcTest, addTorrentReportsADuplicateAndDisposesOfItsSourceFile)
+{
+    auto hashes = std::vector<std::string>{};
+    auto names = std::vector<std::string>{};
+    auto const tag = session_.torrent_add_duplicate.connect_scoped(
+        [&hashes, &names](AddData const& add, std::string_view const hash_string) {
+            names.emplace_back(add.source);
+            hashes.emplace_back(hash_string);
+        });
+
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    auto const hash_string = std::string{ session_.torrents()[0].hash_string().sv() };
+
+    auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
+    add.trash_source = true;
+    auto const source = add.source;
+    session_.add_torrent(std::move(add));
+
+    ASSERT_TRUE(loop_.pump_until([&hashes] { return !std::empty(hashes); }));
+    EXPECT_EQ(std::vector{ hash_string }, hashes);
+    EXPECT_EQ(std::vector{ source }, names);
+    EXPECT_FALSE(tr_sys_path_exists(source));
+}
+
+TEST_F(AppSessionRpcTest, aWatchDirDuplicateIsNotReported)
+{
+    auto duplicates = 0;
+    auto const tag = session_.torrent_add_duplicate.connect_scoped(
+        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+
+    auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
+    add.from_watch_dir = true;
+    auto const renamed = fmt::format("{:s}.added", add.source);
+    session_.add_torrent(std::move(add));
+
+    // the rename and the report happen in the same reply
+    ASSERT_TRUE(loop_.pump_until([&renamed] { return tr_sys_path_exists(renamed); }));
+    EXPECT_EQ(0, duplicates);
+}
+
+TEST_F(AppSessionRpcTest, addTorrentReportsWhatCanNotBeAdded)
+{
+    auto errors = std::vector<std::string>{};
+    auto const tag = session_.torrent_add_failed.connect_scoped(
+        [&errors](AddData const& /*add*/, std::string_view const errmsg) { errors.emplace_back(errmsg); });
+
+    session_.add_torrent(AddData{});
+
+    ASSERT_TRUE(loop_.pump_until([&errors] { return !std::empty(errors); }));
+    EXPECT_FALSE(std::empty(errors.front()));
+}
+
+// The user will want the file to try again.
+TEST_F(AppSessionRpcTest, aRejectedAddReportsTheErrorAndKeepsTheSourceFile)
+{
+    auto const source = fmt::format("{:s}/corrupt.torrent", sandbox_dir());
+    ASSERT_TRUE(tr_file_save(source, "this is not a torrent"sv));
+
+    auto errors = std::vector<std::string>{};
+    auto const tag = session_.torrent_add_failed.connect_scoped(
+        [&errors](AddData const& /*add*/, std::string_view const errmsg) { errors.emplace_back(errmsg); });
+
+    auto add = AddData{ source };
+    add.trash_source = true;
+    session_.add_torrent(std::move(add));
+
+    ASSERT_TRUE(loop_.pump_until([&errors] { return !std::empty(errors); }));
+    EXPECT_FALSE(std::empty(errors.front()));
+    EXPECT_TRUE(tr_sys_path_exists(source));
+}
+
 // `peer_limit` is in `DetailStats` but not `MainAll`, so only the set's re-fetch can bring it.
 TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagAfterTheReFetchLands)
 {
@@ -1111,6 +1238,29 @@ protected:
         session_.start();
     }
 
+    // Starts on `server` and finishes the CSRF handshake, so that each later request reaches it once.
+    void start_negotiated(MockRpcServer const& server)
+    {
+        start_on(server);
+        ASSERT_TRUE(exec_and_wait(rpc_, loop_, TR_KEY_session_stats).success);
+    }
+
+    // The next `torrent_add` that `server` receives, as sent. For use after `start_negotiated()`.
+    [[nodiscard]] std::string next_add_body(MockRpcServer const& server)
+    {
+        auto adds = std::vector<std::string>{};
+        auto const found = loop_.pump_until([this, &server, &adds] {
+            adds.clear();
+            std::ranges::copy_if(server.request_bodies(), std::back_inserter(adds), [](auto const& body) {
+                return body.contains("torrent_add") || body.contains("torrent-add");
+            });
+            return std::size(adds) > n_adds_seen_;
+        });
+        EXPECT_TRUE(found);
+        n_adds_seen_ = std::size(adds);
+        return found ? adds.back() : std::string{};
+    }
+
     [[nodiscard]] bool pump_until_closed()
     {
         return loop_.pump_until([this] { return !session_.is_closing(); });
@@ -1140,6 +1290,7 @@ protected:
     Prefs prefs_;
     Session session_{ sandbox_dir(), prefs_, rpc_ };
 
+    size_t n_adds_seen_ = 0U;
     int source_changes_ = 0;
     int stops_ = 0;
     int closes_ = 0;
@@ -1340,6 +1491,105 @@ TEST_F(AppSessionLifecycleTest, aStopCancelsAStartWaitingOnAClose)
     loop_.drain();
     EXPECT_EQ(1, source_changes_);
     EXPECT_FALSE(session_.is_embedded());
+}
+
+TEST_F(AppSessionLifecycleTest, addTorrentNeverDisposesOfTheSessionsOwnCopy)
+{
+    session_.start_embedded();
+
+    auto const torrents_dir = fmt::format("{:s}/torrents", session_.config_dir());
+    ASSERT_TRUE(tr_sys_dir_create(torrents_dir, TR_SYS_DIR_CREATE_PARENTS, 0777));
+    auto const source = fmt::format("{:s}/own.torrent", torrents_dir);
+    ASSERT_TRUE(tr_sys_path_copy(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), source));
+
+    auto add = AddData{ source };
+    add.trash_source = true;
+    session_.add_torrent(std::move(add));
+
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    EXPECT_TRUE(tr_sys_path_exists(source));
+}
+
+TEST_F(AppSessionLifecycleTest, addTorrentRenamesAWatchDirFileUnderTheConfigDir)
+{
+    session_.start_embedded();
+
+    auto const watch_dir = fmt::format("{:s}/watch", session_.config_dir());
+    ASSERT_TRUE(tr_sys_dir_create(watch_dir, TR_SYS_DIR_CREATE_PARENTS, 0777));
+    auto const source = fmt::format("{:s}/watched.torrent", watch_dir);
+    ASSERT_TRUE(tr_sys_path_copy(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Debian), source));
+
+    auto add = AddData{ source };
+    add.from_watch_dir = true;
+    session_.add_torrent(std::move(add));
+
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    EXPECT_FALSE(tr_sys_path_exists(source));
+    EXPECT_TRUE(tr_sys_path_exists(fmt::format("{:s}.added", source)));
+}
+
+TEST_F(AppSessionLifecycleTest, addTorrentSendsLinksByNameAndFilesByContents)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
+    session_.add_torrent(AddData{ Magnet });
+    auto const magnet_body = next_add_body(server);
+    EXPECT_TRUE(magnet_body.contains(R"("filename":"magnet:)")) << magnet_body;
+    EXPECT_FALSE(magnet_body.contains(R"("metainfo")")) << magnet_body;
+
+    session_.add_torrent(AddData{ fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Debian) });
+    auto const file_body = next_add_body(server);
+    EXPECT_TRUE(file_body.contains(R"("metainfo")")) << file_body;
+    EXPECT_FALSE(file_body.contains(R"("filename")")) << file_body;
+}
+
+TEST_F(AppSessionLifecycleTest, addTorrentDefaultsPausedFromThePrefUnlessTold)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
+
+    prefs_.set(TR_KEY_start_added_torrents, false);
+    session_.add_torrent(AddData{ Magnet });
+    EXPECT_TRUE(next_add_body(server).contains(R"("paused":true)"));
+
+    prefs_.set(TR_KEY_start_added_torrents, true);
+    session_.add_torrent(AddData{ Magnet });
+    EXPECT_TRUE(next_add_body(server).contains(R"("paused":false)"));
+
+    auto options = AddOptions{};
+    options.paused = true;
+    session_.add_torrent(AddData{ Magnet }, std::move(options));
+    EXPECT_TRUE(next_add_body(server).contains(R"("paused":true)"));
+}
+
+TEST_F(AppSessionLifecycleTest, addTorrentSendsOnlyTheOptionsThatAreSet)
+{
+    auto constexpr Magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    session_.add_torrent(AddData{ Magnet });
+    auto const bare = next_add_body(server);
+    for (auto const* const key : { "download_dir", "bandwidth_priority", "files_unwanted", "priority_low", "priority_high" }) {
+        EXPECT_FALSE(bare.contains(key)) << key;
+    }
+
+    auto options = AddOptions{};
+    options.download_dir = "/some/dir";
+    options.bandwidth_priority = TR_PRI_HIGH;
+    options.files_unwanted = { 1, 2 };
+    options.priority_low = { 3 };
+    options.priority_high = { 4 };
+    session_.add_torrent(AddData{ Magnet }, std::move(options));
+    auto const full = next_add_body(server);
+    EXPECT_TRUE(full.contains(R"("download_dir":"/some/dir")")) << full;
+    EXPECT_TRUE(full.contains(R"("bandwidth_priority":1)")) << full;
+    EXPECT_TRUE(full.contains(R"("files_unwanted":[1,2])")) << full;
+    EXPECT_TRUE(full.contains(R"("priority_low":[3])")) << full;
+    EXPECT_TRUE(full.contains(R"("priority_high":[4])")) << full;
 }
 
 TEST_F(AppSessionLifecycleTest, startEmbeddedIgnoresTheRemotePrefs)

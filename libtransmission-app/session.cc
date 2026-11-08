@@ -29,6 +29,8 @@
 
 #include "libtransmission/constants.h" // TrHttpServerRpcRelativePath, TrHttpServerWebRelativePath
 #include "libtransmission/converters.h"
+#include "libtransmission/crypto-utils.h" // tr_base64_encode()
+#include "libtransmission/file.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
@@ -118,7 +120,7 @@ struct Credentials {
 
 Session::Session(std::string config_dir, Prefs& prefs, RpcClient& rpc, tr_torrent_remove_func remove_func)
     : config_dir_{ std::move(config_dir) }
-    , remove_func_{ std::move(remove_func) }
+    , remove_func_{ remove_func ? std::move(remove_func) : tr_sys_path_remove }
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
@@ -535,6 +537,103 @@ void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new
             fetch_torrents(TorrentKeySet::Rename, scope, std::move(done));
         })
         .run();
+}
+
+// --- adding torrents
+
+void Session::add_torrent(AddData add, AddOptions options)
+{
+    auto args = tr_variant::Map{ 8U };
+
+    switch (add.type) {
+    case AddData::Type::Magnet:
+    case AddData::Type::Url:
+        args.insert_or_assign(TR_KEY_filename, add.source);
+        break;
+
+    case AddData::Type::File:
+    case AddData::Type::Metainfo:
+        args.insert_or_assign(TR_KEY_metainfo, tr_base64_encode(add.metainfo));
+        break;
+
+    case AddData::Type::None:
+        // the session's error tells the user this can't be added
+        break;
+    }
+
+    args.try_emplace(TR_KEY_paused, options.paused.value_or(!prefs_.get<bool>(TR_KEY_start_added_torrents)));
+
+    if (!std::empty(options.download_dir)) {
+        args.try_emplace(TR_KEY_download_dir, std::move(options.download_dir));
+    }
+
+    if (options.bandwidth_priority) {
+        args.try_emplace(TR_KEY_bandwidth_priority, tr::serializer::to_variant(*options.bandwidth_priority));
+    }
+
+    auto const add_file_indices = [&args](tr_quark const key, std::vector<int> const& indices) {
+        if (!std::empty(indices)) {
+            args.try_emplace(key, tr::serializer::to_variant(indices));
+        }
+    };
+    add_file_indices(TR_KEY_files_unwanted, options.files_unwanted);
+    add_file_indices(TR_KEY_priority_low, options.priority_low);
+    add_file_indices(TR_KEY_priority_high, options.priority_high);
+
+    send(TR_KEY_torrent_add, std::move(args), [this, add = std::move(add)](RpcResponse const& response) {
+        on_torrent_add_reply(add, response);
+    });
+}
+
+void Session::on_torrent_add_reply(AddData const& add, RpcResponse const& response)
+{
+    if (!response.success) {
+        torrent_add_failed(add, response.errmsg);
+        return;
+    }
+
+    auto const* const result = response.result_map();
+    if (result == nullptr) {
+        return;
+    }
+
+    if (auto const* const added = result->find_if<tr_variant::Map>(TR_KEY_torrent_added)) {
+        dispose_source_file(add);
+
+        if (auto const id = added->value_if<int64_t>(TR_KEY_id)) {
+            refresh_torrents({ static_cast<tr_torrent_id_t>(*id) }, TorrentKeySet::MainAll);
+        }
+    } else if (auto const* const duplicate = result->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate)) {
+        drop_duplicate(add, duplicate->value_if<std::string_view>(TR_KEY_hash_string).value_or(std::string_view{}));
+    }
+}
+
+void Session::drop_duplicate(AddData const& add, std::string_view const hash_string)
+{
+    dispose_source_file(add);
+
+    if (!add.from_watch_dir) {
+        torrent_add_duplicate(add, hash_string);
+    }
+}
+
+void Session::dispose_source_file(AddData const& add) const
+{
+    if (add.type != AddData::Type::File || (!add.trash_source && !add.from_watch_dir) || !tr_sys_path_exists(add.source)) {
+        return;
+    }
+
+    // The session keeps its own copy of each torrent in a directory directly under its config dir.
+    // A watch dir's file is never that copy, even if the watch dir is there too.
+    if (!add.from_watch_dir && tr_sys_path_is_same(tr_sys_path_dirname(tr_sys_path_dirname(add.source)), config_dir_)) {
+        return;
+    }
+
+    if (add.trash_source) {
+        remove_func_(add.source, nullptr);
+    } else if (add.from_watch_dir) {
+        tr_sys_path_rename(add.source, fmt::format("{:s}.added", add.source));
+    }
 }
 
 // --- torrent_set

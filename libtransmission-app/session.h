@@ -31,6 +31,7 @@
 #include "libtransmission/types.h" // tr_address_type, tr_session_stats
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/add-data.h"
 #include "libtransmission-app/rpc-client.h"
 #include "libtransmission-app/torrent-keys.h"
 #include "libtransmission-app/torrent-list.h"
@@ -211,6 +212,18 @@ public:
     };
 
     sigslot::signal<RenameError const&> torrent_rename_failed;
+
+    // --- adding torrents
+
+    // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
+    // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
+    // copy. A new torrent is fetched into `torrents()` at once.
+    void add_torrent(AddData add, AddOptions options = {});
+
+    sigslot::signal<AddData const& /*add*/, std::string_view /*errmsg*/> torrent_add_failed;
+
+    // not fired for a watch dir's file
+    sigslot::signal<AddData const& /*add*/, std::string_view /*hash_string*/> torrent_add_duplicate;
 
     // --- torrent_set
 
@@ -470,6 +483,10 @@ private:
 
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
+
+    void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
+    void drop_duplicate(AddData const& add, std::string_view hash_string);
+    void dispose_source_file(AddData const& add) const;
 
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);

@@ -9,8 +9,10 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/types.h" // tr_priority_t
 
 namespace tr::app
 {
@@ -54,6 +56,19 @@ struct AddData {
     // A watch dir's file must not stay as it is, or the watch dir would offer it again.
     bool trash_source = false;
     bool from_watch_dir = false;
+};
+
+// What the user chose for a torrent they're adding.
+// Whatever is left unset gets the session's default.
+struct AddOptions {
+    std::string download_dir;
+    std::optional<bool> paused; // defaults to the `start_added_torrents` pref instead
+    std::optional<tr_priority_t> bandwidth_priority;
+
+    // file indices
+    std::vector<int> files_unwanted;
+    std::vector<int> priority_low;
+    std::vector<int> priority_high;
 };
 
 } // namespace tr::app
