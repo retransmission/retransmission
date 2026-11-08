@@ -396,6 +396,10 @@ private:
 
         void sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t tolen) const;
 
+        // Like sendto(), but may hold the datagram to send it together with others in one
+        // system call, at the latest at the end of this pass of the event loop.
+        void sendto_soon(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t tolen);
+
         [[nodiscard]] constexpr auto socket4() const noexcept
         {
             return udp4_socket_;
@@ -407,12 +411,20 @@ private:
         }
 
     private:
+        class SendQueue;
+
+        void flush();
+
         tr_port const udp_port_;
         tr_session& session_;
         tr_socket_t udp4_socket_ = TR_BAD_SOCKET;
         tr_socket_t udp6_socket_ = TR_BAD_SOCKET;
         tr::evhelpers::event_unique_ptr udp4_event_;
         tr::evhelpers::event_unique_ptr udp6_event_;
+        std::unique_ptr<SendQueue> send_queue4_;
+        std::unique_ptr<SendQueue> send_queue6_;
+        std::unique_ptr<tr::Timer> flush_timer_;
+        bool is_flush_scheduled_ = false;
     };
 
 public:
