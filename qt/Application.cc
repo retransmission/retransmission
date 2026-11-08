@@ -47,7 +47,6 @@
 #include <libtransmission-app/torrent-list.h>
 
 #include "AccessibleSqueezeLabel.h"
-#include "AddData.h"
 #include "Formatter.h"
 #include "MainWindow.h"
 #include "OptionsDialog.h"
@@ -197,6 +196,11 @@ Application::Application(
 
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
+    add_prompt_connection_ = session_->torrent_add_prompt.connect_scoped([this](tr::app::AddData const& add) {
+        auto* const dialog = new OptionsDialog{ *session_, prefs_, add, window_.get() };
+        dialog->show();
+        QApplication::alert(dialog);
+    });
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
         // the trackers of a new torrent, and of one whose trackers changed
         for (auto const row : changes.inserted) {
@@ -238,7 +242,7 @@ Application::Application(
 
     // torrent files passed in on the command line
     for (QString const& filename : filenames) {
-        addTorrent(AddData{ filename });
+        addTorrent(tr::app::AddData{ filename.toStdString() });
     }
 
 #ifdef QT_DBUS_LIB
@@ -463,31 +467,14 @@ void Application::onConfigDirContended()
 
 void Application::addWatchdirTorrent(QString const& filename) const
 {
-    auto add_data = AddData{ filename };
-    auto const disposal = prefs_.get<bool>(TR_KEY_trash_original_torrent_files) ? AddData::FilenameDisposal::Delete :
-                                                                                  AddData::FilenameDisposal::Rename;
-    add_data.setFileDisposal(disposal);
-    addTorrent(std::move(add_data));
+    auto add = tr::app::AddData{ filename.toStdString() };
+    add.from_watch_dir = true;
+    addTorrent(std::move(add));
 }
 
-void Application::addTorrent(AddData addme) const
+void Application::addTorrent(tr::app::AddData add) const
 {
-    if (addme.type == AddData::NONE) {
-        return;
-    }
-
-    // if there's not already a disposal action set,
-    // then honor the `trash original` preference setting
-    if (!addme.fileDisposal() && prefs_.get<bool>(TR_KEY_trash_original_torrent_files)) {
-        addme.setFileDisposal(AddData::FilenameDisposal::Delete);
-    }
-
-    if (!prefs_.get<bool>(TR_KEY_show_options_window)) {
-        session_->addTorrent(addme);
-    } else {
-        auto* o = new OptionsDialog{ *session_, prefs_, addme, window_.get() };
-        o->show();
-    }
+    session_->request_add(std::move(add));
 
     raise();
 }
@@ -554,12 +541,12 @@ tr::interop::Reply Application::LocalInstance::present_window(std::string_view c
 
 tr::interop::Reply Application::LocalInstance::add_metainfo(std::string_view const metainfo)
 {
-    auto add_data = AddData::fromWireMetainfo(metainfo);
-    if (!add_data) {
+    auto add = tr::app::AddData::from_wire_metainfo(metainfo);
+    if (add.type == tr::app::AddData::Type::None) {
         return tr::interop::Reply::No;
     }
 
-    app_.addTorrent(std::move(*add_data));
+    app_.addTorrent(std::move(add));
     return tr::interop::Reply::Yes;
 }
 

@@ -23,11 +23,11 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h> // tr_torrent_id_t
 
+#include <libtransmission-app/add-data.h>
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/torrent.h>
 
-#include "AddData.h"
 #include "Prefs.h"
 #include "Timer.h"
 
@@ -41,7 +41,6 @@ namespace tr::interop
 class StartupCoordinator;
 }
 
-class AddData;
 class MainWindow;
 class Prefs;
 class RpcClient;
@@ -70,6 +69,7 @@ public:
     ~Application() override;
 
     void raise() const;
+    void addTorrent(tr::app::AddData add) const;
     void notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
 
     // True when this launch found the config dir held by another session.
@@ -101,7 +101,6 @@ signals:
     void faviconsChanged();
 
 public slots:
-    void addTorrent(AddData addme) const;
     void addWatchdirTorrent(QString const& filename) const;
 
 private slots:
@@ -157,6 +156,7 @@ private:
     tr::app::FaviconCache<QPixmap> favicon_cache_;
     sigslot::scoped_connection torrents_connection_;
     sigslot::scoped_connection contended_connection_;
+    sigslot::scoped_connection add_prompt_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

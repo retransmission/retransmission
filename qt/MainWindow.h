@@ -30,7 +30,6 @@ class QIcon;
 class QMenu;
 
 class AboutDialog;
-class AddData;
 class DetailsDialog;
 class ListViewProxyStyle;
 class Prefs;
@@ -136,7 +135,6 @@ private:
     void initStatusBar();
 
     void addTorrentFromClipboard();
-    void addTorrent(AddData const& add_me, bool show_options);
 
     Session& session_;
     Prefs& prefs_;

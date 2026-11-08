@@ -6,6 +6,7 @@
 #pragma once
 
 #include <map>
+#include <string_view>
 
 #include <sigslot/signal.hpp>
 
@@ -16,15 +17,10 @@
 
 #include <QtWidgets/QMessageBox>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
-
 #include <libtransmission-app/session.h>
 
 #include "Prefs.h"
 #include "RpcClient.h"
-
-class AddData;
 
 class Session
     : public QObject
@@ -56,11 +52,9 @@ public:
 
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
 
 public slots:
-    void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
 
 signals:
@@ -74,12 +68,15 @@ private slots:
 
 private:
     void onRenameFailed(RenameError const& error) const;
+    void onAddFailed(tr::app::AddData const& add, std::string_view errmsg) const;
+    void onAddDuplicate(tr::app::AddData const& add, std::string_view hash_string);
     void showMessage(QMessageBox::Icon icon, QString const& title, QString const& text, QString const& detail = {}) const;
 
-    Prefs& prefs_;
     bool is_shutting_down_ = false;
 
     sigslot::scoped_connection rename_failed_connection_;
+    sigslot::scoped_connection add_failed_connection_;
+    sigslot::scoped_connection add_duplicate_connection_;
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;

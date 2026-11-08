@@ -5,12 +5,8 @@
 
 #include "Session.h"
 
-#include <cassert>
 #include <string_view>
 #include <utility>
-
-#include <QtCore/QDebug>
-#include <QtCore/QtDebug>
 
 #include <QtGui/QClipboard>
 #include <QtGui/QDesktopServices>
@@ -19,17 +15,9 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStyle>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
-
-#include <libtransmission-app/rpc-queue.h>
-
-#include "AddData.h"
 #include "Prefs.h"
 #include "TrFormat.h"
 #include "Utils.h"
-
-using tr::app::RpcQueue;
 
 /***
 ****
@@ -48,9 +36,10 @@ void Session::copyMagnetLinkToClipboard(int const torrent_id)
 
 Session::Session(QString const& config_dir, Prefs& prefs, RpcClient& rpc)
     : tr::app::Session{ config_dir.toStdString(), prefs, rpc.impl(), Utils::trashOrRemove }
-    , prefs_{ prefs }
 {
     rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
+    add_failed_connection_ = torrent_add_failed.connect_scoped(&Session::onAddFailed, this);
+    add_duplicate_connection_ = torrent_add_duplicate.connect_scoped(&Session::onAddDuplicate, this);
     connect(&rpc, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
@@ -99,60 +88,17 @@ void Session::showMessage(QMessageBox::Icon const icon, QString const& title, QS
 ****
 ***/
 
-void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
+void Session::onAddFailed(tr::app::AddData const& add, std::string_view const errmsg) const
 {
-    assert(!args_dict.contains(TR_KEY_filename));
-    assert(!args_dict.contains(TR_KEY_metainfo));
+    auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
+                          .arg(Utils::qstringFromUtf8(errmsg), Utils::qstringFromUtf8(add.readable_name()));
+    showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text);
+}
 
-    args_dict.try_emplace(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
-
-    switch (add_me.type) {
-    case AddData::MAGNET:
-        args_dict.insert_or_assign(TR_KEY_filename, add_me.magnet.toStdString());
-        break;
-
-    case AddData::URL:
-        args_dict.insert_or_assign(TR_KEY_filename, add_me.url.toString().toStdString());
-        break;
-
-    case AddData::FILENAME:
-        [[fallthrough]];
-    case AddData::METAINFO:
-        args_dict.insert_or_assign(TR_KEY_metainfo, add_me.toBase64().toStdString());
-        break;
-
-    default:
-        qWarning() << "Unhandled AddData type: " << add_me.type;
-        break;
-    }
-
-    RpcQueue::create()
-        .add(
-            [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
-                send(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
-            },
-            [this, add_me](RpcResponse const& r) {
-                auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(Utils::qstringFromUtf8(r.errmsg), add_me.readableName());
-                showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text);
-            })
-        .add([this, add_me](RpcResponse const& r) {
-            if (auto const* const args = r.args_map()) {
-                if (args->contains(TR_KEY_torrent_added)) {
-                    add_me.disposeSourceFile();
-                } else if (auto const* const dup = args->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate)) {
-                    add_me.disposeSourceFile();
-
-                    if (auto const iter = dup->find(TR_KEY_hash_string); iter != dup->end()) {
-                        if (auto const hash = iter->second.value_if<std::string_view>()) {
-                            duplicates_.try_emplace(add_me.readableShortName(), Utils::qstringFromUtf8(*hash));
-                            duplicates_timer_.start(1000);
-                        }
-                    }
-                }
-            }
-        })
-        .run();
+void Session::onAddDuplicate(tr::app::AddData const& add, std::string_view const hash_string)
+{
+    duplicates_.try_emplace(Utils::qstringFromUtf8(add.readable_short_name()), Utils::qstringFromUtf8(hash_string));
+    duplicates_timer_.start(1000);
 }
 
 void Session::onDuplicatesTimer()
@@ -180,18 +126,11 @@ void Session::onDuplicatesTimer()
     }
 }
 
-void Session::addTorrent(AddData const& add_me)
-{
-    addTorrent(add_me, tr_variant::Map{ 3U });
-}
-
 void Session::addNewlyCreatedTorrent(QString const& filename, QString const& local_path)
 {
-    auto params = tr_variant::Map{ 3U };
-    params.insert_or_assign(TR_KEY_download_dir, local_path.toStdString());
-    params.insert_or_assign(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
-    params.insert_or_assign(TR_KEY_metainfo, AddData(filename).toBase64().toStdString());
-    send(TR_KEY_torrent_add, std::move(params));
+    auto options = tr::app::AddOptions{};
+    options.download_dir = local_path.toStdString();
+    add_torrent(tr::app::AddData{ filename.toStdString() }, std::move(options));
 }
 
 /***

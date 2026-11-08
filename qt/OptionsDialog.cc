@@ -5,23 +5,23 @@
 
 #include "OptionsDialog.h"
 
-#include <algorithm>
+#include <memory>
+#include <optional>
 #include <utility>
+#include <variant>
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QSignalBlocker>
 #include <QtCore/QString>
 
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 
-#include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/types.h>
-#include <libtransmission/variant.h>
 
-#include "AddData.h"
 #include "FileTreeModel.h"
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
@@ -32,7 +32,7 @@
 ****
 ***/
 
-OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme, QWidget* parent)
+OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddData addme, QWidget* parent)
     : BaseDialog{ parent }
     , add_{ std::move(addme) }
     , session_{ session }
@@ -46,16 +46,17 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     edit_timer_.setSingleShot(true);
     connect(&edit_timer_, &QTimer::timeout, this, &OptionsDialog::onDestinationChanged);
 
-    if (add_.type == AddData::FILENAME) {
+    if (add_.type == tr::app::AddData::Type::File) {
         ui_.sourceStack->setCurrentWidget(ui_.sourceButton);
         ui_.sourceButton->setMode(PathButton::FileMode);
         ui_.sourceButton->setTitle(tr("Open a Torrent"));
         ui_.sourceButton->setNameFilter(tr("Torrent Files (*.torrent);;All Files (*.*)"));
-        ui_.sourceButton->setPath(add_.filename);
+        ui_.sourceButton->setPath(Utils::qstringFromUtf8(add_.source));
         connect(ui_.sourceButton, &PathButton::pathChanged, this, &OptionsDialog::onSourceChanged);
     } else {
         ui_.sourceStack->setCurrentWidget(ui_.sourceEdit);
-        ui_.sourceEdit->setText(add_.readableName());
+        submitted_source_ = Utils::qstringFromUtf8(add_.readable_name());
+        ui_.sourceEdit->setText(submitted_source_);
         ui_.sourceEdit->selectAll();
         connect(ui_.sourceEdit, &QLineEdit::editingFinished, this, &OptionsDialog::onSourceChanged);
     }
@@ -97,9 +98,14 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     ui_.priorityCombo->setCurrentIndex(1); // Normal
 
     ui_.startCheck->setChecked(prefs.get<bool>(TR_KEY_start_added_torrents));
-    ui_.trashCheck->setChecked(prefs.get<bool>(TR_KEY_trash_original_torrent_files));
+    ui_.trashCheck->setChecked(add_.trash_source);
 
-    connect(ui_.dialogButtons, &QDialogButtonBox::rejected, this, &QObject::deleteLater);
+    // a resolve that lands after the user is done with the dialog must not report a duplicate
+    connect(this, &QDialog::rejected, this, [this] { resolving_.reset(); });
+    connect(ui_.dialogButtons, &QDialogButtonBox::rejected, this, [this] {
+        resolving_.reset();
+        deleteLater();
+    });
     connect(ui_.dialogButtons, &QDialogButtonBox::accepted, this, &OptionsDialog::onAccepted);
 
     connect(ui_.filesView, &FileTreeView::priorityChanged, this, &OptionsDialog::onPriorityChanged);
@@ -130,35 +136,11 @@ void OptionsDialog::reload()
 {
     clearInfo();
 
-    auto metainfo = tr_torrent_metainfo{};
-    auto ok = bool{};
-
-    switch (add_.type) {
-    case AddData::MAGNET:
-        ok = metainfo.parseMagnet(add_.magnet.toStdString());
-        break;
-
-    case AddData::FILENAME:
-        ok = metainfo.parse_torrent_file(add_.filename.toStdString());
-        break;
-
-    case AddData::METAINFO:
-        ok = metainfo.parse_benc(add_.metainfo.toStdString());
-        break;
-
-    default:
-        break;
-    }
-
-    metainfo_.reset();
     ui_.filesView->clear();
-    files_.clear();
     priorities_.clear();
     wanted_.clear();
 
-    if (ok) {
-        metainfo_ = metainfo;
-    }
+    metainfo_ = add_.parsed();
 
     bool const have_files_to_show = metainfo_ && !std::empty(*metainfo_);
 
@@ -219,93 +201,82 @@ void OptionsDialog::onWantedChanged(file_indices_t const& file_indices, bool is_
 
 void OptionsDialog::onAccepted()
 {
-    // rpc spec section 3.4 "adding a torrent"
+    auto options = tr::app::AddOptions{};
 
-    auto args = tr_variant::Map{ 10U };
-    QString download_dir;
+    options.download_dir = (ui_.destinationStack->currentWidget() == ui_.destinationButton ?
+                                local_destination_.absolutePath() :
+                                ui_.destinationCombo->currentText())
+                               .toStdString();
+    options.paused = !ui_.startCheck->isChecked();
+    options.bandwidth_priority = static_cast<tr_priority_t>(ui_.priorityCombo->currentData().toInt());
 
-    // "download-dir"
-    if (ui_.destinationStack->currentWidget() == ui_.destinationButton) {
-        download_dir = local_destination_.absolutePath();
-    } else {
-        download_dir = ui_.destinationCombo->currentText();
-    }
-
-    args.insert_or_assign(TR_KEY_download_dir, download_dir.toStdString());
-
-    // paused
-    args.insert_or_assign(TR_KEY_paused, !ui_.startCheck->isChecked());
-
-    // priority
-    int const index = ui_.priorityCombo->currentIndex();
-    int const priority = ui_.priorityCombo->itemData(index).toInt();
-    args.insert_or_assign(TR_KEY_bandwidth_priority, priority);
-
-    // files_unwanted
-    auto count = std::count(wanted_.begin(), wanted_.end(), false);
-
-    if (count > 0) {
-        auto files_unwanted = std::vector<int>{};
-        files_unwanted.reserve(static_cast<size_t>(count));
-
-        for (size_t i = 0, n = wanted_.size(); i < n; ++i) {
-            if (!wanted_.at(i)) {
-                files_unwanted.push_back(static_cast<int>(i));
-            }
+    for (int i = 0, n = static_cast<int>(std::size(wanted_)); i < n; ++i) {
+        if (!wanted_[i]) {
+            options.files_unwanted.push_back(i);
         }
 
-        args.insert_or_assign(TR_KEY_files_unwanted, tr::serializer::to_variant(files_unwanted));
-    }
-
-    // priority_low
-    count = std::count(priorities_.begin(), priorities_.end(), TR_PRI_LOW);
-
-    if (count > 0) {
-        auto priority_low = std::vector<int>{};
-        priority_low.reserve(static_cast<size_t>(count));
-
-        for (size_t i = 0, n = priorities_.size(); i < n; ++i) {
-            if (priorities_.at(i) == TR_PRI_LOW) {
-                priority_low.push_back(static_cast<int>(i));
-            }
+        if (priorities_[i] == TR_PRI_LOW) {
+            options.priority_low.push_back(i);
+        } else if (priorities_[i] == TR_PRI_HIGH) {
+            options.priority_high.push_back(i);
         }
-
-        args.insert_or_assign(TR_KEY_priority_low, tr::serializer::to_variant(priority_low));
     }
 
-    // priority_high
-    count = std::count(priorities_.begin(), priorities_.end(), TR_PRI_HIGH);
-
-    if (count > 0) {
-        auto priority_high = std::vector<int>{};
-        priority_high.reserve(static_cast<size_t>(count));
-
-        for (size_t i = 0, n = priorities_.size(); i < n; ++i) {
-            if (priorities_.at(i) == TR_PRI_HIGH) {
-                priority_high.push_back(static_cast<int>(i));
-            }
-        }
-
-        args.insert_or_assign(TR_KEY_priority_high, tr::serializer::to_variant(priority_high));
-    }
-
-    auto const disposal = ui_.trashCheck->isChecked() ? AddData::FilenameDisposal::Delete : AddData::FilenameDisposal::NoAction;
-    add_.setFileDisposal(disposal);
-
-    session_.addTorrent(add_, std::move(args));
+    add_.trash_source = ui_.trashCheck->isChecked();
+    resolving_.reset();
+    session_.add_torrent(add_, std::move(options));
 
     deleteLater();
 }
 
 void OptionsDialog::onSourceChanged()
 {
+    auto add = tr::app::AddData{};
+
     if (ui_.sourceStack->currentWidget() == ui_.sourceButton) {
-        add_.set(ui_.sourceButton->path());
-    } else if (auto const text = ui_.sourceEdit->text(); text != add_.readableName()) {
-        add_.set(text);
+        add = tr::app::AddData{ ui_.sourceButton->path().toStdString() };
+    } else {
+        auto const text = ui_.sourceEdit->text();
+        if (text == submitted_source_) {
+            return;
+        }
+
+        submitted_source_ = text;
+        add = tr::app::AddData{ text.toStdString() };
     }
 
+    add_ = add;
     reload();
+
+    resolving_.reset();
+    if (add.type == tr::app::AddData::Type::None) {
+        return;
+    }
+
+    // runs only while `resolving_` is this source's token, so `this` is alive
+    resolving_ = std::make_shared<std::monostate const>();
+    session_.resolve_add(std::move(add), resolving_, [this](std::optional<tr::app::AddData> resolved) {
+        if (resolved) {
+            add_ = std::move(*resolved);
+        } else {
+            // the session already has it; the duplicate report tells the user
+            add_ = {};
+            clearSource();
+        }
+
+        reload();
+    });
+}
+
+void OptionsDialog::clearSource()
+{
+    if (ui_.sourceStack->currentWidget() == ui_.sourceButton) {
+        auto const blocker = QSignalBlocker{ ui_.sourceButton };
+        ui_.sourceButton->setPath({});
+    } else {
+        ui_.sourceEdit->clear();
+        submitted_source_.clear();
+    }
 }
 
 void OptionsDialog::onDestinationChanged()

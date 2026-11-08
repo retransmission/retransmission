@@ -22,7 +22,6 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
 
-#include "AddData.h"
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
@@ -191,7 +190,7 @@ private slots:
         }
 
         // Never started, the session fails each request with no round trip, so replies land in the order sent.
-        session.addTorrent(AddData{ QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567") });
+        session.add_torrent(tr::app::AddData{ "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567" });
         auto done = false;
         session.send(TR_KEY_session_stats, {}, [&done](auto const& /*response*/) { done = true; });
         QVERIFY(waitUntil([&done] { return done; }));

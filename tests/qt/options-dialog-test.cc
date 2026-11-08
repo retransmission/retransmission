@@ -8,6 +8,7 @@
 //#define __TRANSMISSION__ // for libtransmission/net.h (via rpc-test-fixtures.h)
 
 #include <cstdint>
+#include <ctime>
 #include <string_view>
 #include <vector>
 
@@ -17,6 +18,7 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QLineEdit>
 #include <QMenu>
 #include <QStackedWidget>
 #include <QString>
@@ -25,8 +27,11 @@
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/variant.h>
 
-#include "AddData.h"
+#include <libtransmission-app/add-data.h>
+#include <libtransmission-app/torrent-list.h>
+
 #include "FreeSpaceLabel.h"
 #include "OptionsDialog.h"
 #include "PathButton.h"
@@ -38,6 +43,7 @@
 namespace
 {
 auto const Magnet = QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567");
+auto const ListedHash = QStringLiteral("89abcdef0123456789abcdef0123456789abcdef");
 auto const DownloadDir = QStringLiteral("/data/downloads");
 
 // Point prefs at a remote RPC server on the loopback `port`. The session stays
@@ -137,7 +143,7 @@ private slots:
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
+        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
@@ -175,7 +181,7 @@ private slots:
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
+        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
@@ -204,7 +210,7 @@ private slots:
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
+        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
@@ -246,7 +252,7 @@ private slots:
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
+        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
@@ -256,6 +262,51 @@ private slots:
         }
         QVERIFY(button->menu() == nullptr);
         QCOMPARE(button->path(), QDir::toNativeSeparators(dl_dir));
+    }
+
+    // A source the user names in the dialog gets the same duplicate check as the one it opened with.
+    void a_listed_source_empties_the_dialog()
+    {
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        setRemotePrefs(prefs, server.port());
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto row = tr_variant::Map{ 3U };
+        row.try_emplace(TR_KEY_id, 1);
+        row.try_emplace(TR_KEY_hash_string, ListedHash.toStdString());
+        row.try_emplace(TR_KEY_name, std::string_view{ "listed" });
+        auto rows = tr_variant::Vector{};
+        rows.emplace_back(std::move(row));
+        auto args = tr_variant::Map{ 1U };
+        args.try_emplace(TR_KEY_torrents, std::move(rows));
+        session.torrents().update(args, tr::app::TorrentList::Coverage::Partial, std::time(nullptr));
+        QCOMPARE(session.torrents().size(), size_t{ 1U });
+
+        auto duplicates = QStringList{};
+        auto const tag = session.torrent_add_duplicate.connect_scoped(
+            [&duplicates](tr::app::AddData const& /*add*/, std::string_view const hash_string) {
+                duplicates << QString::fromUtf8(std::data(hash_string), static_cast<int>(std::size(hash_string)));
+            });
+
+        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
+        QVERIFY(drainFreeSpace(dialog));
+
+        auto* const edit = dialog.findChild<QLineEdit*>(QStringLiteral("sourceEdit"));
+        QVERIFY(edit != nullptr);
+        if (edit == nullptr) {
+            return;
+        }
+
+        edit->setText(QStringLiteral("magnet:?xt=urn:btih:%1").arg(ListedHash));
+        emit edit->editingFinished();
+
+        QCOMPARE(duplicates, QStringList{ ListedHash });
+        QVERIFY(edit->text().isEmpty());
     }
 };
 } // namespace
