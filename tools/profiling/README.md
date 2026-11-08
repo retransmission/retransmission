@@ -1,12 +1,15 @@
 # Retransmission profiling
 
 The benchmark runs a local seeder, downloader, and private HTTP tracker inside
-one container. It transfers a deterministic 1024 MiB file over TCP, explicitly
-re-verifies the downloaded torrent, checks SHA-256, then shuts down both daemons
-to write their code-block timings. An internal Docker network isolates the
-benchmark from external networks; no ports are published. Image building needs
-network access. Peers use the container's private IPv4 because Retransmission
-rejects tracker-provided loopback addresses.
+one container. It transfers a deterministic 1024 MiB file over TCP or µTP,
+explicitly re-verifies the downloaded torrent, checks SHA-256, then shuts down
+both daemons to write their code-block timings. An internal Docker network
+isolates the benchmark from external networks; no ports are published. Image
+building needs network access. Peers use the container's private IPv4 because
+Retransmission rejects tracker-provided loopback addresses. Retransmission sends
+UDP only once it has a route to the internet, so the container starts as root to
+give that network a default route without a gateway, then runs the benchmark as
+your UID.
 
 From the repository root:
 
@@ -86,6 +89,14 @@ throughput.
 ```sh
 sudo BLOCK_PROFILING=OFF PEER_ENCRYPTION=preferred bash tools/profiling/run.sh
 sudo BLOCK_PROFILING=OFF PEER_ENCRYPTION=allowed DISK_IO_WORKERS=4 bash tools/profiling/run.sh
+```
+
+`PEER_TRANSPORT` (`--transport`) is `tcp` or `utp`; both daemons disable the other
+transport. A run fails unless `observed_peer_transports` matches the request.
+Idle peers connect over TCP, so `IDLE_PEERS` needs `tcp`.
+
+```sh
+sudo BLOCK_PROFILING=OFF PEER_TRANSPORT=utp bash tools/profiling/run.sh
 ```
 
 `PIECE_SIZE_KIB` defaults to 256; use 4096 to measure the effect of larger

@@ -250,6 +250,10 @@ class HarnessTest(unittest.TestCase):
                 self.assertEqual(settings["disk_io_workers"], 4)
                 self.assertEqual(settings["torrent_added_verify_mode"], "full")
                 self.assertNotIn("disk_write_budget_mib", settings)
+                self.assertEqual((settings["tcp_enabled"], settings["utp_enabled"]), (True, False))
+                start_daemon(stack, Path("daemon"), root, root, "utp", 19093, 51415, transport="utp")
+                settings = json.loads((root / "utp/config/settings.json").read_text())
+                self.assertEqual((settings["tcp_enabled"], settings["utp_enabled"]), (False, True))
                 start_daemon(stack, Path("daemon"), root, root, "leech", 19092, 51414, disk_write_budget_mib=256)
                 settings = json.loads((root / "leech/config/settings.json").read_text())
                 self.assertEqual(settings["disk_write_budget_mib"], 256)
@@ -389,7 +393,7 @@ class RunScriptTest(unittest.TestCase):
             docker.write_text(
                 "#!/usr/bin/env python3\nimport json, os, sys\n"
                 "print(json.dumps({'command': sys.argv[1:], 'profiling': os.environ['BLOCK_PROFILING'], "
-                "'workers': os.environ['DISK_IO_WORKERS'], 'encryption': os.environ['PEER_ENCRYPTION']}))\n")
+                "'workers': os.environ['DISK_IO_WORKERS'], 'encryption': os.environ['PEER_ENCRYPTION'], 'transport': os.environ['PEER_TRANSPORT']}))\n")
             git.chmod(0o755)
             docker.chmod(0o755)
             script = Path(__file__).with_name("run.sh").resolve()
@@ -399,7 +403,7 @@ class RunScriptTest(unittest.TestCase):
                 with self.subTest(storage=storage):
                     result = subprocess.run(
                         ["bash", str(script), "--block-profiling", "OFF", "--disk-io-workers", "4",
-                         "--encryption", "allowed", "--storage", storage],
+                         "--encryption", "allowed", "--transport", "utp", "--storage", storage],
                         env=dict(env, WORK_DIRECTORY=str(root / "payload")), check=True, capture_output=True, text=True)
                     calls = [json.loads(line) for line in result.stdout.splitlines() if line.startswith("{")]
                     self.assertEqual(len(calls), 2)  # docker info output is redirected.
@@ -410,6 +414,7 @@ class RunScriptTest(unittest.TestCase):
                         self.assertEqual(call["profiling"], "OFF")
                         self.assertEqual(call["workers"], "4")
                         self.assertEqual(call["encryption"], "allowed")
+                        self.assertEqual(call["transport"], "utp")
 
             # With no override, both compose invocations use the application default.
             default_env = dict(env)

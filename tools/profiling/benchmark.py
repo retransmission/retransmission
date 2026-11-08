@@ -4,7 +4,7 @@ Overview
 --------
 Starts two daemons with private configuration/download directories and a local
 HTTP tracker and creates a deterministic payload/torrent. It flushes the source
-before measuring, transfers over TCP, then flushes, re-verifies, and
+before measuring, transfers over TCP or µTP, then flushes, re-verifies, and
 checks the downloaded SHA-256. Temporary work files
 are removed when the run exits; logs and measurements remain in the output.
 
@@ -17,7 +17,7 @@ Usage (from the repository root)
 Use a local non-loopback IPv4 address. Seed/downloader use adjacent peer and RPC
 ports; choose unused pairs with --peer-port and --rpc-port. --disk-io-workers,
 --disk-write-budget-mib, --download-limit-kilobytes-per-second, --encryption,
---size-mib, and --piece-size-kib control the workload. CPU affinity is unrestricted
+--transport, --size-mib, and --piece-size-kib control the workload. CPU affinity is unrestricted
 unless --seed-cpus/--leech-cpus are set.
 Requires built transmission-daemon/transmission-create and Python 3.11+; Linux
 provides the CPU accounting and filesystem details. No third-party Python modules.
@@ -137,11 +137,14 @@ def stop(process):
 
 
 def start_daemon(stack, binary, root, output, name, rpc_port, peer_port, disk_io_workers=2,
-                 encryption="preferred", verify_mode="fast", disk_write_budget_mib=None, peer_limit=None, cpus=None):
+                 encryption="preferred", verify_mode="fast", disk_write_budget_mib=None, peer_limit=None, cpus=None,
+                 transport="tcp"):
     # Fail before launching or sending RPC to an unrelated running daemon.
     with ExitStack() as ports:
-        for port in (rpc_port, peer_port):
-            listener = ports.enter_context(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+        # µTP runs over UDP on the peer port.
+        for port, kind in ((rpc_port, socket.SOCK_STREAM), (peer_port, socket.SOCK_STREAM),
+                           (peer_port, socket.SOCK_DGRAM)):
+            listener = ports.enter_context(socket.socket(socket.AF_INET, kind))
             listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             listener.bind(("0.0.0.0", port))
     config = root / name / "config"
@@ -153,7 +156,9 @@ def start_daemon(stack, binary, root, output, name, rpc_port, peer_port, disk_io
         "rpc_authentication_required": False, "rpc_whitelist_enabled": False,
         "rpc_host_whitelist_enabled": False, "peer_port": peer_port,
         "peer_port_random_on_start": False, "dht_enabled": False,
-        "lpd_enabled": False, "pex_enabled": False, "utp_enabled": False,
+        "lpd_enabled": False, "pex_enabled": False,
+        # one transport per run, so the measured transfer can't use the other
+        "tcp_enabled": transport == "tcp", "utp_enabled": transport == "utp",
         "port_forwarding_enabled": False, "speed_limit_up_enabled": False,
         "speed_limit_down_enabled": False, "alt_speed_enabled": False,
         "download_dir": str(download), "incomplete_dir_enabled": False,
@@ -373,7 +378,7 @@ def check_profiles(block_profiling, profiles):
 def run(args, output):
     metrics = {"size_mib": args.size_mib, "platform": platform.platform(),
                "started_utc": datetime.now(timezone.utc).isoformat(),
-               "verification_throttle_ms": 0, "transport": "TCP over container private IPv4",
+               "verification_throttle_ms": 0, "transport": args.transport,
                "peer_address": args.peer_address,
                "disk_io_workers": args.disk_io_workers,
                "encryption": args.encryption, "poll_interval_seconds": args.poll_interval,
@@ -410,12 +415,14 @@ def run(args, output):
         stack.callback(tracker.shutdown)
         seed_process, seed, seed_dir = start_daemon(
             stack, args.daemon, root, output, "seed", args.rpc_port, args.peer_port, args.disk_io_workers,
-            args.encryption, args.seed_verify_mode, args.disk_write_budget_mib, cpus=args.seed_cpus)
+            args.encryption, args.seed_verify_mode, args.disk_write_budget_mib, cpus=args.seed_cpus,
+            transport=args.transport)
         leech_process, leech, leech_dir = start_daemon(
             stack, args.daemon, root, output, "leech", args.rpc_port + 1, args.peer_port + 1,
             args.disk_io_workers, "preferred" if args.idle_peers and args.encryption == "required" else args.encryption,
             disk_write_budget_mib=args.disk_write_budget_mib,
-            peer_limit=max(64, args.idle_peers + 16) if args.idle_peers else None, cpus=args.leech_cpus)
+            peer_limit=max(64, args.idle_peers + 16) if args.idle_peers else None, cpus=args.leech_cpus,
+            transport=args.transport)
         if args.download_limit_kilobytes_per_second is not None:
             leech.call("session_set", speed_limit_down_enabled=True,
                        speed_limit_down=args.download_limit_kilobytes_per_second)
@@ -494,6 +501,9 @@ def run(args, output):
         metrics["target_met"] = metrics["disk_target_eligible"] and metrics["payload_rate_target_met"]
         peers = [peer for sample in samples for peer in sample.get("peers", [])]
         metrics["observed_peer_encryption"] = sorted({peer["is_encrypted"] for peer in peers})
+        metrics["observed_peer_transports"] = sorted({"utp" if peer["is_utp"] else "tcp" for peer in peers})
+        if metrics["observed_peer_transports"] != [args.transport]:
+            raise RuntimeError(f"Requested {args.transport}, but peers used {metrics['observed_peer_transports']}")
         metrics["transfer_cpu"] = {}
         for name, process in (("seed", seed_process), ("leech", leech_process)):
             before, after = cpu_start[name], process_cpu(process.pid)
@@ -557,6 +567,8 @@ def main():
                         help="Set the downloader session speed limit (decimal kB/s)")
     parser.add_argument("--expect-block-profiling", choices=["ON", "OFF"], help="Fail if image profiling mode differs")
     parser.add_argument("--encryption", choices=["preferred", "allowed", "required"], default="preferred")
+    parser.add_argument("--transport", choices=["tcp", "utp"], default="tcp",
+                        help="Peer transport; both daemons disable the other one (default: tcp)")
     parser.add_argument("--poll-interval", type=float, default=0.02)
     parser.add_argument("--target-gbit", type=float, default=10.0)
     parser.add_argument("--piece-size-kib", type=int, default=256)
@@ -590,10 +602,12 @@ def main():
         parser.error("disk-write-budget-mib must be positive")
     if not 0 <= args.idle_peers <= 1000:
         parser.error("idle-peers must be between 0 and 1000")
+    if args.idle_peers and args.transport != "tcp":
+        parser.error("idle peers connect over TCP, so they need --transport tcp")
     if args.expect_block_profiling and os.environ.get("TR_PROFILE_BUILD_ENABLED") != args.expect_block_profiling:
         parser.error("image profiling mode differs from requested mode; rebuild the benchmark image")
     print(f"Benchmark settings: block_profiling={os.environ.get('TR_PROFILE_BUILD_ENABLED', 'unknown')} "
-          f"disk_io_workers={args.disk_io_workers} encryption={args.encryption} "
+          f"disk_io_workers={args.disk_io_workers} encryption={args.encryption} transport={args.transport} "
           f"piece_size_kib={args.piece_size_kib} seed_verify_mode={args.seed_verify_mode} "
           f"disk_write_budget_mib={args.disk_write_budget_mib or 'default'} "
           f"download_limit_kBps={args.download_limit_kilobytes_per_second or 'none'} "
