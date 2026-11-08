@@ -706,7 +706,7 @@ protected:
     };
 
     // Configures a mediator in place: moving a MediatorMock can throw.
-    static void addTorrent(MediatorMock& mediator, tr_peer_id_t const& peer_id)
+    void addTorrent(MediatorMock& mediator, tr_peer_id_t const& peer_id) const
     {
         auto torrent = UbuntuTorrent;
         torrent.client_peer_id = peer_id;
