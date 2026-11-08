@@ -1297,6 +1297,36 @@ TEST_F(LocalDataWorkersTest, aStuckRemovalDoesntHoldUpPlacingAnotherTorrentsFile
     local_data.shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, adminOpPendingCoversWholeTorrentBarriers)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    // a write in flight makes the close of its file wait in the queue...
+    local_data->set_workers_paused(true);
+    writeBlocks(*local_data, 0U, BlockSize, [] {});
+    auto closed = false;
+    local_data->close_file(TorId, 0U, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_FALSE(closed);
+
+    // ...and a queued close of one file doesn't count
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&moved](auto, auto, tr_error const&) { moved = true; });
+    EXPECT_TRUE(local_data->admin_op_pending(TorId));
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&moved]() { return moved; }));
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    local_data->shutdown();
+}
+
 TEST_F(LocalDataWorkersTest, shutdownFinishesAMoveInFlight)
 {
     ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));

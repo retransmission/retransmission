@@ -609,6 +609,20 @@ public:
         submit(id, BarrierOp{ .body = std::move(body), .span = {} });
     }
 
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t const id) const
+    {
+        auto const it = gates_.find(id);
+        if (it == std::end(gates_)) {
+            return false;
+        }
+
+        auto const& gate = it->second;
+        return (gate.running_barrier && !gate.running_barrier->span) || std::ranges::any_of(gate.queue, [](auto const& queued) {
+                   auto const* const barrier = std::get_if<BarrierOp>(&queued);
+                   return barrier != nullptr && !barrier->span;
+               });
+    }
+
     // Drop the buffers kept for a torrent whose files are closed.
     void forget(tr_torrent_id_t const id)
     {
@@ -1846,6 +1860,11 @@ void LocalData::shutdown()
     }
 
     drain();
+}
+
+bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
+{
+    return threaded_ && threaded_->admin_op_pending(id);
 }
 
 uint64_t LocalData::enqueued_write_bytes() const noexcept

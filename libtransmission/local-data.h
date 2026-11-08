@@ -323,6 +323,12 @@ public:
     // Later ops run on the synchronous backend.
     void shutdown();
 
+    // True while an admin op on the whole torrent is queued or running.
+    // Blocks requested now would wait behind it, holding write budget that
+    // other torrents need, so callers shouldn't request any.
+    // Call from the session thread.
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t id) const;
+
     // Bytes of block data waiting to be written, or being written now.
     // Always zero on the synchronous backend.
     [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept;

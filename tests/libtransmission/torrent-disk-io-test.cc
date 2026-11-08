@@ -1130,6 +1130,33 @@ TEST_F(RequestBudgetTest, peersResumeWhenTheDiskQueueDrains)
         MaxWaitMsec));
 }
 
+TEST_F(RequestBudgetTest, peersRequestNothingWhileTheTorrentMoves)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitForInSessionThread([tor] { return tor->is_running(); }, MaxWaitMsec));
+
+    // the move waits for a worker...
+    session_->local_data.set_workers_paused(true);
+    int volatile state = -1;
+    tr_torrentSetLocation(tor, tr_pathbuf{ session_->configDir(), "/target"sv }, true, &state);
+    blockingRunInSessionThread([this, tor] { EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id())); });
+
+    // ...so a peer that's ready to give us blocks isn't asked for any
+    auto& peer = addPeer(*tor);
+    ASSERT_TRUE(waitFor(
+        [&peer]() {
+            collectMessages(peer);
+            return peer.interested;
+        },
+        15000));
+    EXPECT_FALSE(waitFor([this] { return requestCount() != 0U; }, 1000));
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return requestCount() != 0U; }, 15000));
+}
+
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
