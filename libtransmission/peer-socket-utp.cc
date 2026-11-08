@@ -204,6 +204,16 @@ protected:
         n_bytes = std::min(n_bytes, read_buffer_size());
         buf.add(std::data(inbuf_), n_bytes);
         inbuf_.drain(n_bytes);
+
+        // inbuf_ is the receive window libutp advertises, so draining it reopens the window.
+        // A sender blocked on a full window sends nothing until it hears of that, so the
+        // update must go out now: utp_read_drained() only schedules the ACK, and scheduled
+        // ACKs otherwise wait for the next incoming UDP batch.
+        if (n_bytes > 0U) {
+            utp_read_drained(sock_);
+            utp_issue_deferred_acks(utp_get_context(sock_));
+        }
+
         return n_bytes;
     }
 
