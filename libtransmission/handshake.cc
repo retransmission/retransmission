@@ -591,13 +591,16 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 {
     auto* handshake = static_cast<tr_handshake*>(vhandshake);
 
-    auto const retry_plain = [&] {
-        handshake->send_handshake(io);
-        handshake->set_state(State::AwaitingHandshake);
-    };
     auto const fail = [&] {
         tr_logAddTraceHand(handshake, fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code()));
         handshake->done(false);
+    };
+    auto const retry_plain = [&] {
+        if (!handshake->send_handshake(io)) {
+            fail();
+            return;
+        }
+        handshake->set_state(State::AwaitingHandshake);
     };
 
     handshake->maybe_recycle_dh();
