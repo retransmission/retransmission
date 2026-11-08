@@ -259,7 +259,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     auto refresh_status_soon = [this] {
         refreshSoon(RefreshStatusBar);
     };
-    connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
+    source_changed_connection_ = session_.source_changed.connect_scoped(&MainWindow::onSessionSourceChanged, this);
     stats_connection_ = session_.stats_updated.connect_scoped(refresh_status_soon);
     connect(&session_, &Session::dataReadProgress, this, &MainWindow::dataReadProgress);
     connect(&session_, &Session::dataSendProgress, this, &MainWindow::dataSendProgress);
@@ -637,6 +637,15 @@ void MainWindow::openHelp() const
 /****
 *****
 ****/
+
+void MainWindow::setShuttingDown(QString const& message)
+{
+    disconnect(&refresh_timer_, &QTimer::timeout, this, &MainWindow::onRefreshTimer);
+
+    tray_icon_.setToolTip(message);
+    tray_icon_.contextMenu()->setEnabled(false);
+    disconnect(&tray_icon_, &QSystemTrayIcon::activated, this, &MainWindow::trayActivated);
+}
 
 void MainWindow::refreshSoon(int fields)
 {

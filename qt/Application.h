@@ -6,7 +6,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -77,7 +76,9 @@ public:
     // We give way rather than write over the files that session owns.
     [[nodiscard]] bool configDirIsContended() const noexcept;
 
-    [[nodiscard]] std::optional<tr::Settings> embedded_session_settings() const;
+    // Call once the event loop is done. Saves the prefs and leaves the screen right away,
+    // then returns when the session has finished closing, which can take many seconds.
+    void shutdown();
 
     [[nodiscard]] QPixmap find_favicon(std::string_view const sitename) const
     {
@@ -104,10 +105,7 @@ public slots:
     void addWatchdirTorrent(QString const& filename) const;
 
 private slots:
-    void onConfigDirContended();
-    void onSessionSourceChanged() const;
     void refreshPref(tr_quark key) const;
-    void saveGeometry() const;
 #ifdef QT_DBUS_LIB
     void onNotificationActionInvoked(quint32 notification_id, QString action_key);
 #endif
@@ -132,6 +130,9 @@ private:
         Application& app_;
     };
 
+    void beginShutdown();
+    void onConfigDirContended();
+    void saveGeometry() const;
     void loadTranslations();
     void onTorrentsAdded(std::span<tr_torrent_id_t const> torrent_ids) const;
     void onTorrentsCompleted(std::span<tr_torrent_id_t const> torrent_ids) const;
@@ -155,6 +156,7 @@ private:
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
     sigslot::scoped_connection torrents_connection_;
+    sigslot::scoped_connection contended_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

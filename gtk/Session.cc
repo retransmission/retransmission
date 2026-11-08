@@ -48,7 +48,6 @@
 #include <initializer_list>
 #include <iostream>
 #include <memory>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -79,9 +78,6 @@ public:
     [[nodiscard]] std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
 
     [[nodiscard]] size_t get_unpaused_torrent_count() const;
-
-    [[nodiscard]] bool get_port_test_pending(tr_address_type ip_protocol) const noexcept;
-    void set_port_test_pending(bool pending, tr_address_type ip_protocol);
 
     void update();
     void update_torrent(tr_torrent_id_t id);
@@ -114,11 +110,6 @@ public:
         return signal_blocklist_info_;
     }
 
-    [[nodiscard]] auto& signal_blocklist_updated()
-    {
-        return signal_blocklist_updated_;
-    }
-
     [[nodiscard]] auto& signal_busy()
     {
         return signal_busy_;
@@ -127,11 +118,6 @@ public:
     [[nodiscard]] auto& signal_prefs_changed()
     {
         return signal_prefs_changed_;
-    }
-
-    [[nodiscard]] auto& signal_port_tested()
-    {
-        return signal_port_tested_;
     }
 
     [[nodiscard]] auto& signal_torrents_changed()
@@ -182,10 +168,8 @@ private:
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
     sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
     sigc::signal<void()> signal_blocklist_info_;
-    sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
-    sigc::signal<void(std::optional<bool>, tr_address_type)> signal_port_tested_;
     sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)> signal_torrents_changed_;
 
     sigslot::scoped_connection prefs_changed_tag_;
@@ -197,7 +181,6 @@ private:
     sigc::connection monitor_idle_tag_;
 
     bool adding_from_watch_dir_ = false;
-    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
 
     gint busy_count_ = 0;
     Glib::RefPtr<Gio::ListStore<Torrent>> raw_model_;
@@ -485,9 +468,8 @@ Glib::RefPtr<Session> Session::create(tr_session* const session, Prefs& prefs, R
 
 Session::Session(tr_session* const session, Prefs& prefs, RpcClient& rpc)
     : Glib::ObjectBase(typeid(Session))
-    , tr::app::Session(prefs, rpc)
+    , tr::app::Session(tr_sessionGetConfigDir(session), prefs, rpc)
     , prefs_(prefs)
-    , config_dir_(tr_sessionGetConfigDir(session))
     , impl_(std::make_unique<Impl>(*this, session, rpc))
 {
     set_embedded_session(session);
@@ -563,11 +545,6 @@ void Session::import_embedded_settings()
     if (auto const settings = embedded_settings(); settings) {
         import_session_settings(*settings);
     }
-}
-
-void Session::save_prefs() const
-{
-    prefs_.save(config_dir_, embedded_settings());
 }
 
 /***
@@ -972,109 +949,27 @@ void Session::Impl::update_torrent(tr_torrent_id_t const id)
 ****
 ***/
 
-namespace
-{
-
-[[nodiscard]] tr_variant::Map const* get_result_map(RpcResponse const& response) noexcept
-{
-    return response.args ? response.args->get_if<tr_variant::Map>() : nullptr;
-}
-
-// params for a `session_get` that asks only for `keys`
-[[nodiscard]] tr_variant::Map make_session_get_params(std::initializer_list<tr_quark> const keys)
-{
-    auto fields = tr_variant::Vector{};
-    fields.reserve(std::size(keys));
-    for (auto const key : keys) {
-        fields.emplace_back(tr_variant::unmanaged_string(key));
-    }
-
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_fields, std::move(fields));
-    return params;
-}
-
-} // namespace
-
 void Session::exec(tr_quark const method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
     impl_->rpc().exec(method, std::move(params), std::move(on_done));
 }
 
 /***
-****  Sending a test-port request via RPC
+****  Reading the blocklist's info via RPC
 ***/
-
-void Session::port_test(tr_address_type const ip_protocol)
-{
-    static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
-
-    if (port_test_pending(ip_protocol)) {
-        return;
-    }
-    impl_->set_port_test_pending(true, ip_protocol);
-
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_ip_protocol, tr_variant::unmanaged_string(IpStr[ip_protocol]));
-
-    exec(TR_KEY_port_test, std::move(params), [this, ip_protocol](RpcResponse const& response) {
-        impl_->set_port_test_pending(false, ip_protocol);
-
-        // An empty status, e.g. after an error reply, shows as the "error" state in the UI
-        auto is_open = std::optional<bool>{};
-        if (auto const* const result = get_result_map(response); result != nullptr) {
-            is_open = result->value_if<bool>(TR_KEY_port_is_open);
-        }
-
-        impl_->signal_port_tested().emit(is_open, ip_protocol);
-    });
-}
-
-bool Session::port_test_pending(tr_address_type const ip_protocol) const noexcept
-{
-    return impl_->get_port_test_pending(ip_protocol);
-}
-
-bool Session::Impl::get_port_test_pending(tr_address_type const ip_protocol) const noexcept
-{
-    return port_test_pending_[ip_protocol];
-}
-
-void Session::Impl::set_port_test_pending(bool const pending, tr_address_type const ip_protocol)
-{
-    port_test_pending_[ip_protocol] = pending;
-}
-
-/***
-****  Updating a blocklist via RPC
-***/
-
-void Session::blocklist_update()
-{
-    exec(TR_KEY_blocklist_update, {}, [this](RpcResponse const& response) {
-        // success iff the reply reports the new rule count
-        auto n_rules = std::optional<int64_t>{};
-        if (auto const* const result = get_result_map(response); result != nullptr) {
-            n_rules = result->value_if<int64_t>(TR_KEY_blocklist_size);
-        }
-
-        impl_->signal_blocklist_updated().emit(n_rules.has_value());
-    });
-}
 
 void Session::refresh_blocklist_info()
 {
     // session_get reads the blocklist under the session lock,
     // which tr_blocklistGetRuleCount() does not take.
-    exec(
-        TR_KEY_session_get,
-        make_session_get_params({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }),
-        [this](RpcResponse const& response) {
-            if (auto const* const result = get_result_map(response); result != nullptr) {
-                import_session_settings(*result);
-                impl_->signal_blocklist_info().emit();
-            }
-        });
+    auto params = tr_variant::Map{ 1U };
+    params.try_emplace(TR_KEY_fields, tr::app::make_fields({ TR_KEY_blocklist_date, TR_KEY_blocklist_size }));
+    exec(TR_KEY_session_get, std::move(params), [this](RpcResponse const& response) {
+        if (auto const* const args = response.args_map()) {
+            import_session_settings(*args);
+            impl_->signal_blocklist_info().emit();
+        }
+    });
 }
 
 // ---
@@ -1179,11 +1074,6 @@ sigc::signal<void()>& Session::signal_blocklist_info()
     return impl_->signal_blocklist_info();
 }
 
-sigc::signal<void(bool)>& Session::signal_blocklist_updated()
-{
-    return impl_->signal_blocklist_updated();
-}
-
 sigc::signal<void(bool)>& Session::signal_busy()
 {
     return impl_->signal_busy();
@@ -1192,11 +1082,6 @@ sigc::signal<void(bool)>& Session::signal_busy()
 sigc::signal<void(tr_quark)>& Session::signal_prefs_changed()
 {
     return impl_->signal_prefs_changed();
-}
-
-sigc::signal<void(std::optional<bool>, tr_address_type)>& Session::signal_port_tested()
-{
-    return impl_->signal_port_tested();
 }
 
 sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>& Session::signal_torrents_changed()

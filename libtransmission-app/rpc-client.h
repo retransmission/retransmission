@@ -11,6 +11,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include <sigslot/signal.hpp>
 
@@ -35,6 +36,12 @@ struct RpcResponse {
     [[nodiscard]] tr_variant::Map const* args_map() const noexcept
     {
         return args ? args->get_if<tr_variant::Map>() : nullptr;
+    }
+
+    // `args` as a map if the request succeeded. An error reply can carry `args` too, its `data.result`.
+    [[nodiscard]] tr_variant::Map const* result_map() const noexcept
+    {
+        return success ? args_map() : nullptr;
     }
 };
 
@@ -73,6 +80,18 @@ public:
 
     // Resets our internal url/session bookkeeping. does not stop a tr_session.
     void stop();
+
+    // the remote server's url, or empty when there isn't one
+    [[nodiscard]] constexpr std::string const& url() const noexcept
+    {
+        return url_;
+    }
+
+    // Queues `fn` on the UI thread. Safe to call from any thread.
+    void run_on_ui_thread(std::function<void()> fn) const
+    {
+        run_on_ui_thread_(std::move(fn));
+    }
 
     // Issue a request. `on_done` runs on the UI thread when it completes.
     // A request no session can answer, because the client isn't started or

@@ -19,6 +19,8 @@ SessionPoller::SessionPoller(Session& session, tr::TimerMaker& timer_maker, Poll
     : session_{ session }
     , intervals_{ intervals }
     , timer_{ timer_maker.create([this] { tick(); }) }
+    , source_changed_connection_{ session.source_changed.connect_scoped(&SessionPoller::refresh_now, this) }
+    , stopped_connection_{ session.stopped.connect_scoped([this] { timer_->stop(); }) }
 {
 }
 

@@ -10,7 +10,6 @@
 #include "Dialogs.h"
 #include "FilterBar.h"
 #include "GtkCompat.h"
-#include "HigWorkarea.h" // GUI_PAD, GUI_PAD_BIG
 #include "MainWindow.h"
 #include "MakeDialog.h"
 #include "MessageLogWindow.h"
@@ -41,12 +40,8 @@
 
 #include <gdkmm/display.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/button.h>
 #include <gtkmm/cssprovider.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/icontheme.h>
-#include <gtkmm/image.h>
-#include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/window.h>
@@ -74,7 +69,6 @@
 
 #include <algorithm>
 #include <csignal>
-#include <cstdlib> // exit()
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
@@ -797,6 +791,10 @@ void Application::Impl::hideMainWindow()
 
 void Application::Impl::toggleMainWindow()
 {
+    if (is_closing_) {
+        return;
+    }
+
     if (is_iconified_) {
         presentMainWindow();
     } else {
@@ -927,57 +925,22 @@ void Application::Impl::on_app_exit()
     update_model_soon_tag_.disconnect();
     timer_.disconnect();
 
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-    wind_->remove();
-#endif
+    tr::app::exit_process_after();
+    startup_coordinator_->withdraw();
 
-    wind_->set_show_menubar(false);
+    auto const message = std::string{ _("Shutting down…") };
 
-    auto* p = Gtk::make_managed<Gtk::Grid>();
-    p->set_column_spacing(GUI_PAD_BIG);
-    p->set_halign(TR_GTK_ALIGN(CENTER));
-    p->set_valign(TR_GTK_ALIGN(CENTER));
-#if GTKMM_CHECK_VERSION(4, 0, 0)
-    wind_->set_child(*p);
-#else
-    wind_->add(*p);
-#endif
+    // Tell the desktop why a logout should wait, while the window still exists to name.
+    app_.inhibit(*wind_, IF_GTKMM4(Gtk::Application::InhibitFlags::LOGOUT, Gtk::APPLICATION_INHIBIT_LOGOUT), message);
 
-    auto* icon = Gtk::make_managed<Gtk::Image>();
-    icon->property_icon_name() = "network-workgroup";
-    icon->property_icon_size() = IF_GTKMM4(Gtk::IconSize::LARGE, Gtk::ICON_SIZE_DIALOG);
-    p->attach(*icon, 0, 0, 1, 2);
+    hideMainWindow();
+    wind_->get_display()->flush(); // clearing a long list below takes time
 
-    auto* top_label = Gtk::make_managed<Gtk::Label>();
-    top_label->set_markup(fmt::format("<b>{:s}</b>", _("Closing Connections…")));
-    top_label->set_halign(TR_GTK_ALIGN(START));
-    top_label->set_valign(TR_GTK_ALIGN(CENTER));
-    p->attach(*top_label, 1, 0, 1, 1);
+    if (icon_ != nullptr) {
+        icon_->set_shutting_down(message);
+    }
 
-    auto* bottom_label = Gtk::make_managed<Gtk::Label>(_("Sending upload/download totals to tracker…"));
-    bottom_label->set_halign(TR_GTK_ALIGN(START));
-    bottom_label->set_valign(TR_GTK_ALIGN(CENTER));
-    p->attach(*bottom_label, 1, 1, 1, 1);
-
-    auto* button = Gtk::make_managed<Gtk::Button>(_("_Quit Now"), true);
-    button->set_margin_top(GUI_PAD);
-    button->set_halign(TR_GTK_ALIGN(START));
-    button->set_valign(TR_GTK_ALIGN(END));
-    button->signal_clicked().connect([] { ::exit(0); });
-    p->attach(*button, 1, 2, 1, 1);
-
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-    p->show_all();
-#endif
-    button->grab_focus();
-
-    /* clear the UI */
     core_->clear();
-
-    /* ensure the window is in its previous position & size.
-     * this seems to be necessary because changing the main window's
-     * child seems to unset the size */
-    placeWindowFromPrefs();
 
     /* shut down libT */
     /* since tr_sessionClose () is a blocking function,
@@ -1318,24 +1281,12 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
 
 tr::interop::Reply Application::Impl::LocalInstance::present_window(std::string_view const activation_token)
 {
-    // The transport answers until the main loop stops, which outlasts the window.
-    // A client on its way out has one only until its session has finished closing.
-    if (impl_.is_closing_) {
-        return tr::interop::Reply::No;
-    }
-
     impl_.presentMainWindow(Glib::ustring{ std::string{ activation_token } });
     return tr::interop::Reply::Yes;
 }
 
 bool Application::Impl::add_wire_metainfo(std::string_view const metainfo)
 {
-    // Refuse rather than take a torrent into a session that is closing. The caller then
-    // keeps it and says so, and we never reach a core_ that the close has already freed.
-    if (is_closing_) {
-        return false;
-    }
-
     // The forms interop-names.h documents for AddMetainfo(s):
     // a URL or magnet link as itself, or a torrent file's contents base64'd.
     if (tr::interop::is_metainfo_link(metainfo)) {
