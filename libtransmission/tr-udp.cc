@@ -6,6 +6,7 @@
 #include <cerrno>
 #include <cstddef>
 #include <string>
+#include <utility> // std::cmp_less
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -82,61 +83,140 @@ void set_socket_buffers(tr_socket_t fd, bool large)
     }
 }
 
+// Hands one datagram to its protocol. Returns true for a µTP packet.
+// buf must have room for one more byte after buflen.
+bool handle_packet(
+    tr_session* const session,
+    unsigned char* const buf,
+    size_t const buflen,
+    sockaddr* const from_sa,
+    socklen_t const fromlen)
+{
+    auto const from_str = [from_sa] {
+        return tr_socket_address::from_sockaddr(from_sa).value_or(tr_socket_address{}).display_name();
+    };
+
+    // Since most packets we receive here are µTP, make quick inline
+    // checks for the other protocols. The logic is as follows:
+    // - all DHT packets start with 'd' (100)
+    // - all UDP tracker packets start with a 32-bit (!) "action", which
+    //   is between 0 and 3
+    // - the above cannot be µTP packets, since these start with a 4-bit
+    //   "type" between 0 and 4, followed by a 4-bit version number (1)
+    if (buf[0] == 'd') {
+        if (session->dht_) {
+            buf[buflen] = '\0'; // libdht requires zero-terminated messages
+            session->dht_->handle_message(buf, buflen, from_sa, fromlen);
+        }
+    } else if (buflen >= 8 && buf[0] == 0 && buf[1] == 0 && buf[2] == 0 && buf[3] <= 3) {
+        if (!session->announcer_udp_->handle_message(buf, buflen, from_sa, fromlen)) {
+            tr_logAddTrace(fmt::format("{} Couldn't parse UDP tracker packet.", from_str()));
+        }
+    } else if (session->allowsUTP() && session->utp_context != nullptr) {
+        if (tr_utp_packet(buf, buflen, from_sa, fromlen, session)) {
+            return true;
+        }
+
+        tr_logAddTrace(
+            fmt::format(
+                "{} Unexpected UDP packet... len {} [{}]",
+                from_str(),
+                buflen,
+                tr_base64_encode({ reinterpret_cast<char const*>(buf), buflen })));
+    }
+
+    return false;
+}
+
+auto constexpr DatagramBufferSize = size_t{ 8192U };
+
+#ifdef HAVE_RECVMMSG
+// Datagrams read per recvmmsg() call. µTP at full speed delivers tens of thousands of
+// packets per second, so one syscall per datagram is a large part of its cost.
+auto constexpr DatagramsPerRead = size_t{ 16U };
+
+// Reads every pending datagram; returns true if any was a µTP packet.
+bool read_datagrams(evutil_socket_t const s, tr_session* const session)
+{
+    struct Datagram {
+        std::array<unsigned char, DatagramBufferSize> buf;
+        sockaddr_storage from;
+        iovec iov;
+    };
+    // Per thread, so that a read neither shares nor value-initialises 128 KiB.
+    thread_local auto datagrams = std::array<Datagram, DatagramsPerRead>{};
+    thread_local auto headers = std::array<mmsghdr, DatagramsPerRead>{};
+
+    auto got_utp_packet = false;
+    for (;;) {
+        for (size_t i = 0; i < DatagramsPerRead; ++i) {
+            auto& datagram = datagrams[i];
+            datagram.iov = { .iov_base = std::data(datagram.buf), .iov_len = std::size(datagram.buf) - 1U };
+            headers[i] = {};
+            headers[i].msg_hdr.msg_name = &datagram.from;
+            headers[i].msg_hdr.msg_namelen = sizeof(datagram.from);
+            headers[i].msg_hdr.msg_iov = &datagram.iov;
+            headers[i].msg_hdr.msg_iovlen = 1;
+        }
+
+        auto const n_read = recvmmsg(s, std::data(headers), DatagramsPerRead, 0, nullptr);
+        if (n_read <= 0) {
+            return got_utp_packet;
+        }
+
+        for (int i = 0; i < n_read; ++i) {
+            auto& datagram = datagrams[i];
+            auto const& header = headers[i];
+            // An empty datagram leaves the buffer's old bytes in place, and a truncated one
+            // is not the datagram its sender wrote; no protocol here sends either.
+            if (header.msg_len == 0U || (header.msg_hdr.msg_flags & MSG_TRUNC) != 0) {
+                continue;
+            }
+            got_utp_packet |= handle_packet(
+                session,
+                std::data(datagram.buf),
+                header.msg_len,
+                reinterpret_cast<sockaddr*>(&datagram.from),
+                header.msg_hdr.msg_namelen);
+        }
+
+        // a short batch means the socket is drained
+        if (std::cmp_less(n_read, DatagramsPerRead)) {
+            return got_utp_packet;
+        }
+    }
+}
+#else
+// Reads every pending datagram; returns true if any was a µTP packet.
+bool read_datagrams(evutil_socket_t const s, tr_session* const session)
+{
+    thread_local auto buf = std::array<unsigned char, DatagramBufferSize>{};
+    auto got_utp_packet = false;
+
+    for (;;) {
+        auto from = sockaddr_storage{};
+        auto fromlen = socklen_t{ sizeof(from) };
+        auto* const from_sa = reinterpret_cast<sockaddr*>(&from);
+        auto const n_read = recvfrom(s, reinterpret_cast<char*>(std::data(buf)), std::size(buf) - 1, 0, from_sa, &fromlen);
+        if (n_read <= 0) {
+            return got_utp_packet;
+        }
+
+        got_utp_packet |= handle_packet(session, std::data(buf), static_cast<size_t>(n_read), from_sa, fromlen);
+    }
+}
+#endif
+
 void event_callback(evutil_socket_t s, [[maybe_unused]] short type, void* vsession)
 {
     TR_ASSERT(vsession != nullptr);
     TR_ASSERT(type == EV_READ);
 
-    auto buf = std::array<unsigned char, 8192>{};
-    auto from = sockaddr_storage{};
-    auto fromlen = socklen_t{ sizeof(from) };
-    auto* const from_sa = reinterpret_cast<sockaddr*>(&from);
     auto* const session = static_cast<tr_session*>(vsession);
-    auto got_utp_packet = false;
-
-    auto const from_str = [from_sa] {
-        return tr_socket_address::from_sockaddr(from_sa).value_or(tr_socket_address{}).display_name();
-    };
-
-    for (;;) {
-        auto const n_read = recvfrom(s, reinterpret_cast<char*>(std::data(buf)), std::size(buf) - 1, 0, from_sa, &fromlen);
-        if (n_read <= 0) {
-            if (got_utp_packet) {
-                // To reduce protocol overhead, we wait until we've read all UDP packets
-                // we can, then send one ACK for each µTP socket that received packet(s).
-                tr_utp_issue_deferred_acks(session);
-            }
-            return;
-        }
-
-        // Since most packets we receive here are µTP, make quick inline
-        // checks for the other protocols. The logic is as follows:
-        // - all DHT packets start with 'd' (100)
-        // - all UDP tracker packets start with a 32-bit (!) "action", which
-        //   is between 0 and 3
-        // - the above cannot be µTP packets, since these start with a 4-bit
-        //   "type" between 0 and 4, followed by a 4-bit version number (1)
-        if (buf[0] == 'd') {
-            if (session->dht_) {
-                buf[n_read] = '\0'; // libdht requires zero-terminated messages
-                session->dht_->handle_message(std::data(buf), n_read, from_sa, fromlen);
-            }
-        } else if (n_read >= 8 && buf[0] == 0 && buf[1] == 0 && buf[2] == 0 && buf[3] <= 3) {
-            if (!session->announcer_udp_->handle_message(std::data(buf), n_read, from_sa, fromlen)) {
-                tr_logAddTrace(fmt::format("{} Couldn't parse UDP tracker packet.", from_str()));
-            }
-        } else if (session->allowsUTP() && session->utp_context != nullptr) {
-            if (tr_utp_packet(std::data(buf), n_read, from_sa, fromlen, session)) {
-                got_utp_packet = true;
-            } else {
-                tr_logAddTrace(
-                    fmt::format(
-                        "{} Unexpected UDP packet... len {} [{}]",
-                        from_str(),
-                        n_read,
-                        tr_base64_encode({ reinterpret_cast<char const*>(std::data(buf)), static_cast<size_t>(n_read) })));
-            }
-        }
+    if (read_datagrams(s, session)) {
+        // To reduce protocol overhead, we wait until we've read all UDP packets
+        // we can, then send one ACK for each µTP socket that received packet(s).
+        tr_utp_issue_deferred_acks(session);
     }
 }
 } // namespace
