@@ -5,6 +5,8 @@
 #include <array>
 #include <cerrno>
 #include <cstddef>
+#include <cstring> // std::memcpy
+#include <memory>
 #include <string>
 #include <utility> // std::cmp_less
 
@@ -219,13 +221,110 @@ void event_callback(evutil_socket_t s, [[maybe_unused]] short type, void* vsessi
         tr_utp_issue_deferred_acks(session);
     }
 }
+void log_send_error(sockaddr const* const to, int const error_code)
+{
+    auto display_name = std::string{};
+    if (auto const addrport = tr_socket_address::from_sockaddr(to)) {
+        display_name = addrport->display_name();
+    }
+
+    tr_logAddWarn(
+        fmt::format(
+            "Couldn't send to {address}: {errno} ({error})",
+            fmt::arg("address", display_name),
+            fmt::arg("errno", error_code),
+            fmt::arg("error", tr_strerror(error_code))));
+}
 } // namespace
+
+#ifdef HAVE_SENDMMSG
+// Datagrams waiting to go out on one socket in one sendmmsg() call.
+class tr_session::tr_udp_core::SendQueue
+{
+public:
+    // µTP packets stay below 1500 bytes; anything larger is sent on its own.
+    static constexpr auto MaxDatagramSize = size_t{ 2048U };
+    static constexpr auto Capacity = size_t{ 32U };
+
+    [[nodiscard]] static constexpr bool fits(size_t const buflen, socklen_t const tolen) noexcept
+    {
+        return buflen <= MaxDatagramSize && tolen <= sizeof(sockaddr_storage);
+    }
+
+    // Returns true when the queue is full.
+    bool add(void const* const buf, size_t const buflen, sockaddr const* const to, socklen_t const tolen)
+    {
+        TR_ASSERT(fits(buflen, tolen));
+        TR_ASSERT(size_ < Capacity);
+        auto& datagram = datagrams_[size_];
+        std::memcpy(std::data(datagram.buf), buf, buflen);
+        std::memcpy(&datagram.to, to, tolen);
+        datagram.iov = { .iov_base = std::data(datagram.buf), .iov_len = buflen };
+        headers_[size_] = {};
+        headers_[size_].msg_hdr.msg_name = &datagram.to;
+        headers_[size_].msg_hdr.msg_namelen = tolen;
+        headers_[size_].msg_hdr.msg_iov = &datagram.iov;
+        headers_[size_].msg_hdr.msg_iovlen = 1;
+        return ++size_ == Capacity;
+    }
+
+    void flush(tr_socket_t const sock)
+    {
+        for (size_t i = 0; i < size_;) {
+            if (auto const n_sent = sendmmsg(sock, &headers_[i], size_ - i, 0); n_sent > 0) {
+                i += static_cast<size_t>(n_sent);
+            } else {
+                // sendmmsg() reports an error only for the first datagram; skip it
+                log_send_error(reinterpret_cast<sockaddr const*>(&datagrams_[i].to), errno);
+                ++i;
+            }
+        }
+        size_ = 0;
+    }
+
+private:
+    struct Datagram {
+        std::array<unsigned char, MaxDatagramSize> buf;
+        sockaddr_storage to;
+        iovec iov;
+    };
+
+    std::array<Datagram, Capacity> datagrams_ = {};
+    std::array<mmsghdr, Capacity> headers_ = {};
+    size_t size_ = 0;
+};
+#else
+// No batched sends here: sendto_soon() always falls back to sendto().
+class tr_session::tr_udp_core::SendQueue
+{
+public:
+    [[nodiscard]] static constexpr bool fits(size_t /*buflen*/, socklen_t /*tolen*/) noexcept
+    {
+        return false;
+    }
+
+    bool add(void const* /*buf*/, size_t /*buflen*/, sockaddr const* /*to*/, socklen_t /*tolen*/)
+    {
+        return true;
+    }
+
+    void flush(tr_socket_t /*sock*/)
+    {
+    }
+};
+#endif
 
 // BEP-32 explains why we need to bind to one IPv6 address
 
 tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
     : udp_port_{ udp_port }
     , session_{ session }
+    , send_queue4_{ std::make_unique<SendQueue>() }
+    , send_queue6_{ std::make_unique<SendQueue>() }
+    , flush_timer_{ session.timerMaker().create([this] {
+        is_flush_scheduled_ = false;
+        flush();
+    }) }
 {
     if (std::empty(udp_port_)) {
         return;
@@ -327,6 +426,9 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
 
 tr_session::tr_udp_core::~tr_udp_core()
 {
+    flush_timer_.reset();
+    flush();
+
     udp6_event_.reset();
 
     if (is_valid_socket(udp6_socket_)) {
@@ -358,15 +460,39 @@ void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sock
         return;
     }
 
-    auto display_name = std::string{};
-    if (auto const addrport = tr_socket_address::from_sockaddr(to)) {
-        display_name = addrport->display_name();
+    log_send_error(to, errno);
+}
+
+void tr_session::tr_udp_core::sendto_soon(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t const tolen)
+{
+    auto* queue = static_cast<SendQueue*>(nullptr);
+    if (to->sa_family == AF_INET) {
+        queue = send_queue4_.get();
+    } else if (to->sa_family == AF_INET6) {
+        queue = send_queue6_.get();
+    }
+    auto const sock = to->sa_family == AF_INET ? udp4_socket_ : udp6_socket_;
+    if (queue == nullptr || !is_valid_socket(sock) || !SendQueue::fits(buflen, tolen) ||
+        (!session_.has_source_address(tr_af_to_ip_protocol(to->sa_family)) && !is_loopback(to))) {
+        // nothing to batch: sendto() sends it or explains why not
+        sendto(buf, buflen, to, tolen);
+        return;
     }
 
-    tr_logAddWarn(
-        fmt::format(
-            "Couldn't send to {address}: {errno} ({error})",
-            fmt::arg("address", display_name),
-            fmt::arg("errno", errno),
-            fmt::arg("error", tr_strerror(errno))));
+    if (queue->add(buf, buflen, to, tolen)) {
+        queue->flush(sock);
+    } else if (!is_flush_scheduled_) {
+        is_flush_scheduled_ = true;
+        flush_timer_->start_single_shot(std::chrono::milliseconds::zero());
+    }
+}
+
+void tr_session::tr_udp_core::flush()
+{
+    if (send_queue4_) {
+        send_queue4_->flush(udp4_socket_);
+    }
+    if (send_queue6_) {
+        send_queue6_->flush(udp6_socket_);
+    }
 }
