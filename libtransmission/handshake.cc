@@ -605,7 +605,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 
         // A failed holepunch means the NAT stayed closed, not that the peer lacks µTP.
         // Only a timeout or refusal is a connect failure. libutp reports a refusal,
-        // an RST in reply to our SYN, as ECONNRESET, so today only a timeout counts.
+        // an RST in reply to our SYN, as ECONNRESET, so only a timeout counts.
         if (!io->is_utp_only() && (error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) &&
             handshake->mediator_->torrent(info_hash)) {
             handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
