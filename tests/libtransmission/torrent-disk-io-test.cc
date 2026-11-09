@@ -17,6 +17,7 @@
 #include <iterator>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <span>
 #include <string>
 #include <string_view>
@@ -761,24 +762,32 @@ TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
 
     // An eighth of the budget, received and queued behind the paused workers.
     auto constexpr NFreed = BudgetBlocks / 8U;
-    auto n_sent = size_t{};
-    for (auto const& request : first.requests) {
-        if (request.length == TrBlockSize && n_sent < NFreed) {
-            receiveBlock(first, request);
-            ++n_sent;
-        }
+    auto blocks = std::vector<Request>{};
+    std::ranges::copy_if(first.requests, std::back_inserter(blocks), [](Request const& r) { return r.length == TrBlockSize; });
+    ASSERT_GT(std::size(blocks), NFreed);
+    for (auto const& request : blocks | std::views::take(NFreed)) {
+        receiveBlock(first, request);
     }
-    ASSERT_EQ(NFreed, n_sent);
     ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == NFreed * TrBlockSize; }, MaxWaitMsec));
+
+    // One more block waits behind a barrier, which runs once the first
+    // writes finish and pauses the workers again. The refill must arrive
+    // while that block is still queued.
+    blockingRunInSessionThread([this, tor] {
+        session_->local_data.rename(tor->id(), "missing", "renamed", [this](auto&&...) {
+            session_->local_data.set_workers_paused(true);
+        });
+    });
+    receiveBlock(first, blocks[NFreed]);
+    ASSERT_TRUE(
+        waitFor([this]() { return session_->local_data.enqueued_write_bytes() == (NFreed + 1U) * TrBlockSize; }, MaxWaitMsec));
     EXPECT_EQ(BudgetBlocks, requestCount());
 
-    // Finished writes free NFreed blocks, which a refill then requests.
-    // The peer manager's pulse would request them too, so it is stopped.
+    // The peer manager's pulse would request the freed blocks too, so it is stopped.
     blockingRunInSessionThread([this] { tr::detail::tr_peerMgrStopBandwidthTimer(peerManager()); });
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor(
-        [this]() { return session_->local_data.enqueued_write_bytes() == 0U && requestCount() == BudgetBlocks + NFreed; },
-        MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this]() { return requestCount() == BudgetBlocks + NFreed; }, MaxWaitMsec));
+    EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
 }
 
 TEST_F(RequestBudgetTest, peersResumeWhenTheDiskQueueDrains)

@@ -2005,9 +2005,10 @@ void tr_session::resume_deferred_requests()
     // that keeps the budget full would otherwise get a pass over every
     // peer per finished write, and the queued writes keep it busy
     // meanwhile. Once the queue is empty, no later write will free more.
+    // With nothing spare, a pass could send no requests.
     auto const spare = spare_request_blocks();
     auto const enough = effective_write_budget_bytes() / TrBlockSize / 8U;
-    if (!spare || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
+    if (!spare || *spare == 0U || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
         return;
     }
 
