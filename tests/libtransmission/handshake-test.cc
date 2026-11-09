@@ -695,6 +695,10 @@ TEST_F(HandshakeTest, utpErrorAfterConnectAwaitingYbRetriesPlaintext)
 // Only the IOs tr_peerIo::new_outgoing_utp() makes for a BEP 55 holepunch are µTP-only.
 TEST_F(HandshakeTest, onlyHolepunchIosAreUtpOnly)
 {
+    if (!session_->allowsUTP()) {
+        GTEST_SKIP() << "µTP is unavailable";
+    }
+
     auto const listener = createLoopbackListener();
     ASSERT_TRUE(listener);
 
