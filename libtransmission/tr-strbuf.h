@@ -11,6 +11,8 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/macros.h"
+
 /**
  * A memory buffer which uses a builtin array of N bytes, using heap
  * memory only if its string gets too big. Its main use case is building
@@ -70,22 +72,22 @@ public:
         append(args...);
     }
 
-    [[nodiscard]] constexpr auto begin() noexcept
+    [[nodiscard]] constexpr auto begin() noexcept TR_LIFETIMEBOUND
     {
         return buffer_.begin();
     }
 
-    [[nodiscard]] constexpr auto end() noexcept
+    [[nodiscard]] constexpr auto end() noexcept TR_LIFETIMEBOUND
     {
         return buffer_.end();
     }
 
-    [[nodiscard]] constexpr auto begin() const noexcept
+    [[nodiscard]] constexpr auto begin() const noexcept TR_LIFETIMEBOUND
     {
         return buffer_.begin();
     }
 
-    [[nodiscard]] constexpr auto end() const noexcept
+    [[nodiscard]] constexpr auto end() const noexcept TR_LIFETIMEBOUND
     {
         return buffer_.end();
     }
@@ -110,22 +112,22 @@ public:
         return size() == 0;
     }
 
-    [[nodiscard]] constexpr auto* data() noexcept
+    [[nodiscard]] constexpr auto* data() noexcept TR_LIFETIMEBOUND
     {
         return buffer_.data();
     }
 
-    [[nodiscard]] constexpr auto const* data() const noexcept
+    [[nodiscard]] constexpr auto const* data() const noexcept TR_LIFETIMEBOUND
     {
         return buffer_.data();
     }
 
-    [[nodiscard]] constexpr auto const* c_str() const noexcept
+    [[nodiscard]] constexpr auto const* c_str() const noexcept TR_LIFETIMEBOUND
     {
         return data();
     }
 
-    [[nodiscard]] constexpr auto sv() const noexcept
+    [[nodiscard]] constexpr auto sv() const noexcept TR_LIFETIMEBOUND
     {
         return std::basic_string_view<Char>{ data(), size() };
     }
@@ -209,7 +211,7 @@ public:
     ///
 
     // NOLINTNEXTLINE(misc-explicit-constructor)
-    [[nodiscard]] constexpr operator std::basic_string_view<Char>() const noexcept
+    [[nodiscard]] constexpr operator std::basic_string_view<Char>() const noexcept TR_LIFETIMEBOUND
     {
         return sv();
     }

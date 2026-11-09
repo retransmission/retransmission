@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "libtransmission/digest.h"
+#include "libtransmission/macros.h"
 
 /** @brief convenience function to determine if an address is an IP address (IPv4 or IPv6) */
 [[nodiscard]] bool tr_addressIsIP(char const* address);
@@ -42,11 +43,11 @@ struct tr_url_parsed_t {
     [[nodiscard]] std::vector<std::pair<std::string_view, std::string_view>> query_entries() const;
 };
 
-[[nodiscard]] std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url);
+[[nodiscard]] std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url TR_LIFETIMEBOUND);
 
 // like tr_urlParse(), but with the added constraint that 'scheme'
 // must be one we that Transmission supports for announce and scrape
-[[nodiscard]] std::optional<tr_url_parsed_t> tr_urlParseTracker(std::string_view url);
+[[nodiscard]] std::optional<tr_url_parsed_t> tr_urlParseTracker(std::string_view url TR_LIFETIMEBOUND);
 
 // Convenience function to get a log-safe version of a tracker URL.
 // This is to avoid logging sensitive info, e.g. a personal announcer id in the URL.
