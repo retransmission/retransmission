@@ -502,7 +502,7 @@ void tr_peerIo::flush_outbuf_soon()
     tr_logAddTraceIo(this, "scheduled outbuf flush");
 }
 
-void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data)
+void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data, Flush const flush)
 {
     if (n_bytes == 0U) {
         return;
@@ -514,7 +514,9 @@ void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_dat
     filter_.encrypt(static_cast<std::byte const*>(bytes), n_bytes, resbuf);
     outbuf_.commit_space(n_bytes);
 
-    flush_outbuf_soon();
+    if (flush == Flush::Soon) {
+        flush_outbuf_soon();
+    }
 }
 
 // ---
