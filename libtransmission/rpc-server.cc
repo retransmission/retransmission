@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <cstring> /* for strcspn() */
 #include <ctime>
@@ -30,6 +31,8 @@
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>
+
+#include <small/map.hpp>
 
 #define ZLIB_CONST
 #include <zlib.h>
@@ -219,11 +222,19 @@ void send_simple_response(struct evhttp_request* req, int code, char const* text
     return "application/octet-stream";
 }
 
+enum class ContentEncoding : uint8_t {
+    Gzip,
+    Identity,
+};
+
+namespace accept_encoding_helpers
+{
 [[nodiscard]] std::optional<double> parse_qvalue(std::string_view qvalue)
 {
     qvalue = tr_strv_strip(qvalue);
 
-    // No quality score specified
+    // https://www.rfc-editor.org/info/rfc9110/#section-12.4.2-2
+    // If no "q" parameter is present, the default weight is 1.
     if (qvalue.empty()) {
         return 1.;
     }
@@ -234,77 +245,193 @@ void send_simple_response(struct evhttp_request* req, int code, char const* text
     }
     qvalue.remove_prefix(2U);
 
-    return tr_num_parse<double>(qvalue);
+    auto remainder = std::string_view{};
+    auto const ret = tr_num_parse<double>(qvalue, &remainder);
+
+    // https://www.rfc-editor.org/info/rfc9110/#section-12.4.2-2
+    // The weight is normalized to a real number in the range 0 through 1
+    // N.B. Negated range test so that NaN is rejected too.
+    // NOLINTNEXTLINE(readability-simplify-boolean-expr): https://github.com/llvm/llvm-project/issues/243399
+    if (!ret || !remainder.empty() || !(*ret >= 0. && *ret <= 1.)) {
+        return {};
+    }
+    return ret;
 }
 
-[[nodiscard]] bool allows_gzip(std::string_view const allowed_encodings)
+std::span<std::string_view const> get_tokens(ContentEncoding const encoding)
 {
-    // RFC 9110, section 12.5.3
-    // An Accept-Encoding header field with a field value that is empty implies
-    // that the user agent does not want any content coding in response.
-    if (tr_strv_is_empty_or_blank(allowed_encodings)) {
-        return false;
+    static auto constexpr GzipTokens = std::to_array({ "gzip"sv, "x-gzip"sv });
+    static auto constexpr IdentityToken = std::to_array({ "identity"sv });
+
+    switch (encoding) {
+    case ContentEncoding::Gzip:
+        return GzipTokens;
+    case ContentEncoding::Identity:
+        return IdentityToken;
+    }
+    return {};
+}
+
+} // namespace accept_encoding_helpers
+
+struct parse_accept_encoding_result {
+    ContentEncoding encoding;
+    bool identity_acceptable;
+};
+
+[[nodiscard]] std::optional<parse_accept_encoding_result> parse_accept_encoding(struct evhttp_request* const req)
+{
+    using namespace accept_encoding_helpers;
+    static auto constexpr DefaultRet = parse_accept_encoding_result{
+        .encoding = ContentEncoding::Identity,
+        .identity_acceptable = true,
+    };
+
+    auto const input_headers = evhttp_request_get_input_headers(req);
+    auto const encodings = evhttp_find_header(input_headers, "Accept-Encoding");
+
+    // https://www.rfc-editor.org/info/rfc9110/#section-12.5.3-10.1
+    // If no Accept-Encoding header field is in the request, any content coding
+    // is considered acceptable by the user agent.
+    //
+    // N.B. Send identity anyway: clients that omit the header, such as curl
+    // without --compressed, often cannot decode gzip.
+    if (encodings == nullptr) {
+        return DefaultRet;
     }
 
-    static auto constexpr GzipTokens = std::to_array({ "gzip"sv, "x-gzip"sv });
+    // https://www.rfc-editor.org/info/rfc9110/#section-12.5.3-12
+    // An Accept-Encoding header field with a field value that is empty implies
+    // that the user agent does not want any content coding in response.
+    if (tr_strv_is_empty_or_blank(encodings)) {
+        return DefaultRet;
+    }
+
     static auto constexpr WildcardToken = "*"sv;
 
-    auto wildcard_allowed = false;
-    for (auto const encoding : allowed_encodings | std::views::split(',')) {
+    auto qvalue_map = small::map<ContentEncoding, double>{};
+    for (auto const encoding : std::string_view{ encodings } | std::views::split(',')) {
         auto const lowercase = tr_strlower(std::string_view{ encoding });
         auto walk = std::string_view{ lowercase };
         auto const token = tr_strv_strip(tr_strv_sep(&walk, ';'));
-        auto const is_allowed = parse_qvalue(walk).value_or(0.) != 0.;
 
-        if (std::ranges::find(GzipTokens, token) != GzipTokens.end()) {
-            return is_allowed;
+        auto const qvalue = parse_qvalue(walk);
+        if (!qvalue) {
+            return {};
         }
 
-        if (token == WildcardToken) {
-            wildcard_allowed = is_allowed;
+        for (auto const target : { ContentEncoding::Gzip, ContentEncoding::Identity }) {
+            auto const target_tokens = get_tokens(target);
+            auto const qvalue_iter = qvalue_map.find(target);
+            auto const has_qvalue = qvalue_iter != qvalue_map.end();
+
+            if ((!has_qvalue || *qvalue > qvalue_iter->second) &&
+                std::ranges::find(target_tokens, token) != target_tokens.end()) {
+                qvalue_map.insert_or_assign(target, *qvalue);
+                break;
+            }
+
+            // https://www.rfc-editor.org/info/rfc9110/#section-12.5.3-6
+            // The asterisk "*" symbol in an Accept-Encoding field matches any available
+            // content coding not explicitly listed in the field.
+            //
+            // N.B. Negated so that explicitly listed content coding takes precedence.
+            if (!has_qvalue && token == WildcardToken) {
+                qvalue_map.try_emplace(target, -*qvalue);
+            }
         }
     }
 
-    return wildcard_allowed;
+    if (auto const top = std::ranges::max_element(qvalue_map, {}, [](auto const keyval) { return std::fabs(keyval.second); });
+        top != qvalue_map.end()) {
+        auto const identity_iter = qvalue_map.find(ContentEncoding::Identity);
+        auto const identity_acceptable = identity_iter == qvalue_map.end() || std::fabs(identity_iter->second) > 0.;
+
+        if (auto const [encoding, qvalue] = *top; std::fabs(qvalue) > 0.) {
+            return parse_accept_encoding_result{ .encoding = encoding, .identity_acceptable = identity_acceptable };
+        }
+
+        // Every weight is 0: fall back to identity unless it is refused.
+        if (!identity_acceptable) {
+            return {};
+        }
+    }
+
+    // https://www.rfc-editor.org/info/rfc9110/#section-12.5.3-12
+    // If a non-empty Accept-Encoding header field is present in a request and none
+    // of the available representations for the response have a content coding that
+    // is listed as acceptable, the origin server SHOULD send a response without
+    // any content coding unless the identity coding is indicated as unacceptable.
+    return DefaultRet;
 }
 
-[[nodiscard]] evbuffer* make_response(struct evhttp_request* req, std::string_view const content)
+void send_not_acceptable_response(struct evhttp_request* const req)
 {
+    static auto constexpr HttpErrorNotAcceptable = 406;
+
+    if (auto const con = evhttp_request_get_connection(req)) {
+#if LIBEVENT_VERSION_NUMBER >= 0x02020001
+        char const* remote_host = nullptr;
+#else
+        char* remote_host = nullptr;
+#endif
+        auto remote_port = ev_uint16_t{};
+        evhttp_connection_get_peer(con, &remote_host, &remote_port);
+        tr_logAddWarn(fmt::format("rejected request from {host} (unsupported Accept-Encoding)", fmt::arg("host", remote_host)));
+    }
+    send_simple_response(req, HttpErrorNotAcceptable, "gzip;q=1, identity;q=0.9");
+}
+
+[[nodiscard]] evbuffer* make_response(
+    struct evhttp_request* const req,
+    std::string_view const content,
+    ContentEncoding const encoding,
+    bool const identity_acceptable)
+{
+    using namespace accept_encoding_helpers;
+
     auto* const out = evbuffer_new();
-    auto const* const input_headers = evhttp_request_get_input_headers(req);
-    auto* const output_headers = evhttp_request_get_output_headers(req);
 
-    char const* encodings = evhttp_find_header(input_headers, "Accept-Encoding");
+    switch (encoding) {
+    case ContentEncoding::Gzip:
+        {
+            auto strm = z_stream{};
+            // 15 + 16 => window bits 31 = gzip wrapper (15 alone = zlib, -15 = raw deflate)
+            deflateInit2(&strm, DeflateLevel, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY);
+            auto const max_compressed_len = static_cast<size_t>(deflateBound(&strm, std::size(content)));
 
-    if (bool const do_compress = encodings != nullptr && allows_gzip(encodings); !do_compress) {
-        evbuffer_add(out, std::data(content), std::size(content));
-    } else {
-        auto strm = z_stream{};
-        // 15 + 16 => window bits 31 = gzip wrapper (15 alone = zlib, -15 = raw deflate)
-        deflateInit2(&strm, DeflateLevel, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY);
-        auto const max_compressed_len = static_cast<size_t>(deflateBound(&strm, std::size(content)));
+            auto iov = evbuffer_iovec{};
+            evbuffer_reserve_space(out, static_cast<ev_ssize_t>(std::max(std::size(content), max_compressed_len)), &iov, 1);
 
-        auto iov = evbuffer_iovec{};
-        evbuffer_reserve_space(out, static_cast<ev_ssize_t>(std::max(std::size(content), max_compressed_len)), &iov, 1);
+            strm.next_in = reinterpret_cast<Bytef const*>(std::data(content));
+            strm.avail_in = static_cast<uInt>(std::size(content));
+            strm.next_out = static_cast<Bytef*>(iov.iov_base);
+            strm.avail_out = static_cast<uInt>(iov.iov_len);
+            auto const rc = deflate(&strm, Z_FINISH);
+            auto const compressed_len = strm.total_out;
+            deflateEnd(&strm);
 
-        strm.next_in = reinterpret_cast<Bytef const*>(std::data(content));
-        strm.avail_in = static_cast<uInt>(std::size(content));
-        strm.next_out = static_cast<Bytef*>(iov.iov_base);
-        strm.avail_out = static_cast<uInt>(iov.iov_len);
-        auto const rc = deflate(&strm, Z_FINISH);
-        auto const compressed_len = strm.total_out;
-        deflateEnd(&strm);
-
-        if (rc == Z_STREAM_END && 0 < compressed_len && compressed_len < std::size(content)) {
-            iov.iov_len = compressed_len;
-            evhttp_add_header(output_headers, "Content-Encoding", "gzip");
-        } else {
-            std::ranges::copy(content, static_cast<char*>(iov.iov_base));
-            iov.iov_len = std::size(content);
+            if (rc == Z_STREAM_END && 0 < compressed_len && (compressed_len < std::size(content) || !identity_acceptable)) {
+                auto const output_headers = evhttp_request_get_output_headers(req);
+                iov.iov_len = compressed_len;
+                evhttp_add_header(output_headers, "Content-Encoding", "gzip");
+                evbuffer_commit_space(out, &iov, 1);
+                break;
+            }
         }
 
-        evbuffer_commit_space(out, &iov, 1);
+        if (!identity_acceptable) {
+            evbuffer_free(out);
+            send_not_acceptable_response(req);
+            return nullptr;
+        }
+
+        [[fallthrough]];
+    case ContentEncoding::Identity:
+        evbuffer_add(out, std::data(content), std::size(content));
+        break;
     }
+    // no default label: the switch must handle all `ContentEncoding` values
 
     return out;
 }
@@ -324,6 +451,12 @@ void serve_file(struct evhttp_request* req, std::string_view const filename)
         return;
     }
 
+    auto const encoding = parse_accept_encoding(req);
+    if (!encoding) {
+        send_not_acceptable_response(req);
+        return;
+    }
+
     auto content = std::vector<char>{};
 
     if (auto error = tr_error{}; !tr_file_read(filename, content, &error)) {
@@ -336,7 +469,15 @@ void serve_file(struct evhttp_request* req, std::string_view const filename)
     add_time_header(output_headers, "Expires", now + (24 * 60 * 60));
     evhttp_add_header(output_headers, "Content-Type", mimetype_guess(filename));
 
-    auto* const response = make_response(req, std::string_view{ std::data(content), std::size(content) });
+    auto* const response = make_response(
+        req,
+        std::string_view{ std::data(content), std::size(content) },
+        encoding->encoding,
+        encoding->identity_acceptable);
+    if (response == nullptr) {
+        return;
+    }
+
     evhttp_send_reply(req, HTTP_OK, "OK", response);
     evbuffer_free(response);
 }
@@ -402,11 +543,17 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
 
 void handle_rpc_from_json(struct evhttp_request* req, tr_rpc_server const* const server, std::string_view const json)
 {
+    auto const accept_encoding = parse_accept_encoding(req);
+    if (!accept_encoding) {
+        send_not_acceptable_response(req);
+        return;
+    }
+
     tr_rpc_request_exec(
         server->session,
         json,
         // NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
-        [req, httpd = std::weak_ptr{ server->httpd }](tr_variant&& content) {
+        [req, encoding = *accept_encoding, httpd = std::weak_ptr{ server->httpd }](tr_variant&& content) {
             // freeing the httpd freed req too; stop_server() and this
             // callback both run on the session thread, so no race
             if (httpd.expired()) {
@@ -419,7 +566,15 @@ void handle_rpc_from_json(struct evhttp_request* req, tr_rpc_server const* const
             }
 
             auto* const output_headers = evhttp_request_get_output_headers(req);
-            auto* const response = make_response(req, tr_variant_serde::json().compact().to_string(content));
+            auto* const response = make_response(
+                req,
+                tr_variant_serde::json().compact().to_string(content),
+                encoding.encoding,
+                encoding.identity_acceptable);
+            if (response == nullptr) {
+                return;
+            }
+
             evhttp_add_header(output_headers, "Content-Type", "application/json; charset=UTF-8");
             evhttp_send_reply(req, HTTP_OK, "OK", response);
             evbuffer_free(response);
