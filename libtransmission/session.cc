@@ -712,6 +712,7 @@ void tr_session::initImpl(init_data& data)
                 queue_session_thread([this, fn = std::move(fn)] {
                     auto const lock = unique_lock();
                     fn();
+                    resume_deferred_requests();
                 });
             },
             [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
@@ -1995,6 +1996,27 @@ void tr_session::update_active_request_count(size_t const previous, size_t const
     } else if (active_request_count_ > 0U) {
         no_requests.stop();
     }
+}
+
+void tr_session::resume_deferred_requests()
+{
+    if (!requests_deferred_) {
+        return;
+    }
+
+    // While writes are queued, wait for an eighth of the budget. A disk
+    // that keeps the budget full would otherwise get a pass over every
+    // peer per finished write, and the queued writes keep it busy
+    // meanwhile. Once the queue is empty, no later write will free more.
+    // With nothing spare, a pass could send no requests.
+    auto const spare = spare_request_blocks();
+    auto const enough = effective_write_budget_bytes() / TrBlockSize / 8U;
+    if (!spare || *spare == 0U || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
+        return;
+    }
+
+    requests_deferred_ = false;
+    tr_peerMgrRefillRequests(peer_mgr_.get());
 }
 
 std::optional<size_t> tr_session::spare_request_blocks() const noexcept

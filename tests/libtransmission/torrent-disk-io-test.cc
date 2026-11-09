@@ -17,10 +17,12 @@
 #include <iterator>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <span>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include <event2/util.h>
@@ -740,6 +742,81 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
     EXPECT_EQ(0U, spareBlocks());
     peers_.clear();
     EXPECT_TRUE(waitFor([this] { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
+{
+    auto* const tor = makeBudgetTorrent("refill.bin");
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    std::ignore = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+
+    // An eighth of the budget, received and queued behind the paused workers.
+    auto constexpr NFreed = BudgetBlocks / 8U;
+    auto blocks = std::vector<Request>{};
+    std::ranges::copy_if(first.requests, std::back_inserter(blocks), [](Request const& r) { return r.length == TrBlockSize; });
+    ASSERT_GT(std::size(blocks), NFreed);
+    for (auto const& request : blocks | std::views::take(NFreed)) {
+        receiveBlock(first, request);
+    }
+    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == NFreed * TrBlockSize; }, MaxWaitMsec));
+
+    // One more block waits behind a barrier, which runs once the first
+    // writes finish and pauses the workers again. The refill must arrive
+    // while that block is still queued.
+    blockingRunInSessionThread([this, tor] {
+        session_->local_data.rename(tor->id(), "missing", "renamed", [this](auto&&...) {
+            session_->local_data.set_workers_paused(true);
+        });
+    });
+    receiveBlock(first, blocks[NFreed]);
+    ASSERT_TRUE(
+        waitFor([this]() { return session_->local_data.enqueued_write_bytes() == (NFreed + 1U) * TrBlockSize; }, MaxWaitMsec));
+    EXPECT_EQ(BudgetBlocks, requestCount());
+
+    // The peer manager's pulse would request the freed blocks too, so it is stopped.
+    blockingRunInSessionThread([this] { tr::detail::tr_peerMgrStopBandwidthTimer(peerManager()); });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([this]() { return requestCount() == BudgetBlocks + NFreed; }, MaxWaitMsec));
+    EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
+}
+
+TEST_F(RequestBudgetTest, peersResumeWhenTheDiskQueueDrains)
+{
+    auto* const tor = makeBudgetTorrent("drain.bin");
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    std::ignore = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+
+    // One block, less than an eighth of the budget, and nothing else queued.
+    auto const request = std::ranges::find_if(first.requests, [](auto const& r) { return r.length == TrBlockSize; });
+    ASSERT_NE(std::end(first.requests), request);
+    receiveBlock(first, *request);
+    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == TrBlockSize; }, MaxWaitMsec));
+
+    blockingRunInSessionThread([this] { tr::detail::tr_peerMgrStopBandwidthTimer(peerManager()); });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor(
+        [this]() { return session_->local_data.enqueued_write_bytes() == 0U && requestCount() == BudgetBlocks + 1U; },
+        MaxWaitMsec));
 }
 
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)

@@ -466,6 +466,16 @@ public:
 
     void pulse() override;
 
+    void request_more_blocks() override
+    {
+        update_desired_request_count();
+        maybe_send_block_requests();
+
+        // A few requests stay below the size that peer-io sends on its
+        // own, and would wait for the peer manager's pulse to flush them.
+        io_->flush_outgoing_protocol_msgs();
+    }
+
     void on_piece_completed(tr_piece_index_t piece) override
     {
         protocol_send_have(piece);
