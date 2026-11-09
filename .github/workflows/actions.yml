@@ -1626,7 +1626,7 @@ jobs:
               -DWITH_CRYPTO=openssl
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
@@ -1798,7 +1798,7 @@ jobs:
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
@@ -1888,7 +1888,7 @@ jobs:
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in NetBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
