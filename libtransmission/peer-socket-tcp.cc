@@ -403,12 +403,13 @@ private:
         s->write_cb();
     }
 
-    tr_socket_t sock_;
     tr_error connect_error_;
 
     tr::evhelpers::event_unique_ptr event_connect_;
     tr::evhelpers::event_unique_ptr event_read_;
     tr::evhelpers::event_unique_ptr event_write_;
+
+    tr_socket_t sock_;
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
