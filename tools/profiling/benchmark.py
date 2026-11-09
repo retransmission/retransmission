@@ -138,7 +138,7 @@ def stop(process):
 
 def start_daemon(stack, binary, root, output, name, rpc_port, peer_port, disk_io_workers=2,
                  encryption="preferred", verify_mode="fast", disk_write_budget_mib=None, peer_limit=None, cpus=None,
-                 transport="tcp"):
+                 transport="tcp", preallocation=None):
     # Fail before launching or sending RPC to an unrelated running daemon.
     with ExitStack() as ports:
         # µTP runs over UDP on the peer port.
@@ -168,6 +168,8 @@ def start_daemon(stack, binary, root, output, name, rpc_port, peer_port, disk_io
         "encryption": encryption,
         "torrent_added_verify_mode": verify_mode,
     }
+    if preallocation is not None:
+        settings["preallocation"] = preallocation
     if disk_write_budget_mib is not None:
         settings["disk_write_budget_mib"] = disk_write_budget_mib
     if peer_limit is not None:
@@ -251,6 +253,26 @@ def verified_throughput(samples, size_bytes):
                     "mib_per_second": n_bytes / elapsed / (1024 * 1024),
                     "gbit_per_second": n_bytes * 8 / elapsed / 1e9}
     return None
+
+
+def preallocation_mode(requested):
+    """auto: none on tmpfs, where fast preallocation writes every page of the file; else the daemon default."""
+    if requested != "auto":
+        return int(requested)
+    return 0 if os.environ.get("TR_PROFILE_STORAGE") == "tmpfs" else None
+
+
+def data_phase(start, end, size_mib):
+    """CPU from the first payload byte the leech reports to completion: no startup, connecting or unchoke wait."""
+    if not start or any(value is None for value in [*start["cpu"].values(), *end["cpu"].values()]):
+        return None
+    seconds = end["time"] - start["time"]
+    cpu = {name: {key: end["cpu"][name][key] - start["cpu"][name][key] for key in start["cpu"][name]}
+           for name in start["cpu"]}
+    total = sum(sum(values.values()) for values in cpu.values())
+    return {"seconds": seconds, "cpu": cpu, "cpu_seconds": total,
+            "cpu_seconds_per_gib": total / (size_mib / 1024),
+            "mib_per_second": size_mib / seconds if seconds > 0 else None}
 
 
 def process_cpu(pid):
@@ -390,6 +412,7 @@ def run(args, output):
                    if args.download_limit_kilobytes_per_second is not None else None),
                "idle_peers_requested": args.idle_peers,
                "seed_verify_mode": args.seed_verify_mode,
+               "preallocation": preallocation_mode(args.preallocation),
                "work_storage": os.environ.get("TR_PROFILE_STORAGE", "unspecified"),
                "target_gbit_per_second": args.target_gbit,
                "block_profiling": os.environ.get("TR_PROFILE_BUILD_ENABLED", "unknown")}
@@ -416,13 +439,13 @@ def run(args, output):
         seed_process, seed, seed_dir = start_daemon(
             stack, args.daemon, root, output, "seed", args.rpc_port, args.peer_port, args.disk_io_workers,
             args.encryption, args.seed_verify_mode, args.disk_write_budget_mib, cpus=args.seed_cpus,
-            transport=args.transport)
+            transport=args.transport, preallocation=metrics["preallocation"])
         leech_process, leech, leech_dir = start_daemon(
             stack, args.daemon, root, output, "leech", args.rpc_port + 1, args.peer_port + 1,
             args.disk_io_workers, "preferred" if args.idle_peers and args.encryption == "required" else args.encryption,
             disk_write_budget_mib=args.disk_write_budget_mib,
             peer_limit=max(64, args.idle_peers + 16) if args.idle_peers else None, cpus=args.leech_cpus,
-            transport=args.transport)
+            transport=args.transport, preallocation=metrics["preallocation"])
         if args.download_limit_kilobytes_per_second is not None:
             leech.call("session_set", speed_limit_down_enabled=True,
                        speed_limit_down=args.download_limit_kilobytes_per_second)
@@ -480,11 +503,22 @@ def run(args, output):
             leech_id = leech.call("torrent_add", metainfo=metainfo, download_dir=str(leech_dir))["torrent_added"]["id"]
             metrics["transfer_milestones"] = {}
             samples = []
-            with (output / "transfer.jsonl").open("w") as progress:
-                wait_for(lambda: transfer_progress(
+            data_start = {}
+
+            def poll():
+                done = transfer_progress(
                     leech, leech_id, started, progress, metrics["transfer_milestones"], args.size_mib * 1024 * 1024,
-                    samples, disk_load), args.timeout, "download", leech_process, args.poll_interval)
+                    samples, disk_load)
+                if not data_start and "first_payload_seconds" in metrics["transfer_milestones"]:
+                    data_start.update(time=time.monotonic(), cpu={name: process_cpu(process.pid) for name, process in
+                                                                  (("seed", seed_process), ("leech", leech_process))})
+                return done
+
+            with (output / "transfer.jsonl").open("w") as progress:
+                wait_for(poll, args.timeout, "download", leech_process, args.poll_interval)
             metrics["transfer_seconds"] = time.monotonic() - started
+            data_end = {"time": time.monotonic(), "cpu": {name: process_cpu(process.pid) for name, process in
+                                                          (("seed", seed_process), ("leech", leech_process))}}
         metrics["disk_load"] = {"transfer": disk_load.summary()}
         metrics["idle_peers_at_end"] = (
             torrent_state(leech, idle_id, progress=True)["peers_connected"] if idle_id is not None else 0)
@@ -511,6 +545,7 @@ def run(args, output):
                 cpu = {key: after[key] - before[key] for key in before}
                 cpu["percent_of_one_core"] = sum(cpu.values()) / metrics["transfer_seconds"] * 100
                 metrics["transfer_cpu"][name] = cpu
+        metrics["data_phase"] = data_phase(data_start, data_end, args.size_mib)
         with DiskLoad(metrics["work_filesystem"], output, "flush") as disk_load:
             sync_started = time.monotonic()
             with (leech_dir / "payload.bin").open("r+b") as downloaded:
@@ -580,6 +615,8 @@ def main():
     parser.add_argument("--idle-peers", type=int, default=0,
                         help="Inert peers connected to a separate torrent on the downloader")
     parser.add_argument("--seed-verify-mode", choices=["fast", "full"], default="fast")
+    parser.add_argument("--preallocation", choices=["auto", "0", "1", "2"], default="auto",
+                        help="Daemon preallocation; auto: 0 on tmpfs, else the daemon default")
     parser.add_argument("--work-dir", type=Path, default=os.environ.get("TR_PROFILE_WORK_DIR"))
     parser.add_argument("--disk-baseline", action="store_true", default=os.environ.get("TR_PROFILE_DISK_BASELINE") == "1")
     args = parser.parse_args()

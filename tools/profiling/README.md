@@ -154,9 +154,19 @@ payloads occupy RAM, approximately twice `SIZE_MIB`, plus daemon memory. Ensure
 the host has enough available RAM; tmpfs can use swap under memory pressure.
 The benchmark checks mount capacity before generating the payload.
 
+On tmpfs, both daemons run with preallocation off: fast preallocation writes
+every page of a tmpfs file, about 0.5 s per GiB at the first write, which disk
+filesystems do in milliseconds. `PREALLOCATION=0|1|2` overrides it; the default
+`auto` keeps the daemon's own setting on other storage.
+
 `transfer_cpu` records per-daemon Linux user/system CPU deltas during the whole
 transfer, including startup. A percentage is relative to one CPU core and may
 exceed 100% with workers. Counters are omitted when /proc access is unavailable.
+
+`data_phase` covers only the data transfer: from the first poll that sees
+payload bytes at the leech to completion. Its `cpu_seconds_per_gib` leaves out
+startup, connecting and waiting to be unchoked, so it compares CPU cost across
+runs whose start-up times differ.
 
 `thread_cpu` breaks the same interval down per thread, busiest first. With
 profiling ON, each thread gets a role from the scopes it recorded: `session`,
