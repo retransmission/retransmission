@@ -44,6 +44,8 @@ services:
       - "${PIECE_SIZE_KIB:-256}"
       - --seed-verify-mode
       - "${SEED_VERIFY_MODE:-fast}"
+      - --preallocation
+      - "${PREALLOCATION:-auto}"
 
 networks:
   benchmark:

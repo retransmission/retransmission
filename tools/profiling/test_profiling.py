@@ -42,8 +42,9 @@ import unittest
 from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
-from benchmark import (Tracker, Rpc, check_profiles, complete, process_cpu, start_daemon, thread_cpu, thread_cpu_delta, thread_roles,
-                       torrent_state, transfer_progress, verified_throughput, wait_for)
+from benchmark import (Tracker, Rpc, check_profiles, complete, data_phase, preallocation_mode, process_cpu, start_daemon,
+                       thread_cpu, thread_cpu_delta, thread_roles, torrent_state, transfer_progress, verified_throughput,
+                       wait_for)
 from report import summarize
 from filesystem_benchmark import disk_target_eligible, filesystem_info, summarize_fio
 from disk_load import DiskLoad, FIELDS, rates, read_stats
@@ -381,6 +382,31 @@ class HarnessTest(unittest.TestCase):
         process.poll.return_value = 9
         with self.assertRaisesRegex(RuntimeError, "Daemon exited"):
             wait_for(lambda: False, 1, "download", process)
+
+
+class MeasurementWindowTest(unittest.TestCase):
+    def test_preallocation_off_only_on_tmpfs_by_default(self):
+        with patch.dict(os.environ, {"TR_PROFILE_STORAGE": "tmpfs"}):
+            self.assertEqual(preallocation_mode("auto"), 0)
+            self.assertEqual(preallocation_mode("1"), 1)
+        with patch.dict(os.environ, {"TR_PROFILE_STORAGE": "bind"}):
+            self.assertIsNone(preallocation_mode("auto"))
+
+    def test_data_phase_counts_cpu_from_first_payload(self):
+        start = {"time": 10.0, "cpu": {"seed": {"user_seconds": 1.0, "system_seconds": 0.5},
+                                       "leech": {"user_seconds": 2.0, "system_seconds": 1.0}}}
+        end = {"time": 12.0, "cpu": {"seed": {"user_seconds": 2.0, "system_seconds": 1.0},
+                                     "leech": {"user_seconds": 3.5, "system_seconds": 1.5}}}
+        phase = data_phase(start, end, 2048)
+        self.assertAlmostEqual(phase["seconds"], 2.0)
+        self.assertAlmostEqual(phase["cpu_seconds"], 3.5)
+        self.assertAlmostEqual(phase["cpu_seconds_per_gib"], 1.75)
+        self.assertAlmostEqual(phase["mib_per_second"], 1024)
+
+    def test_data_phase_absent_without_payload_or_counters(self):
+        end = {"time": 1.0, "cpu": {"seed": None, "leech": None}}
+        self.assertIsNone(data_phase({}, end, 1024))
+        self.assertIsNone(data_phase({"time": 0.0, "cpu": {"seed": None, "leech": None}}, end, 1024))
 
 
 class RunScriptTest(unittest.TestCase):
