@@ -590,6 +590,26 @@ public:
         return peer_info;
     }
 
+    // Decides interest as soon as the peer says what it has, so a new peer
+    // is not left waiting for the periodic rechoke.
+    void update_peer_interest(tr_peerMsgs* const msgs) const
+    {
+        if (tor->is_done() || !tor->client_can_download()) {
+            return;
+        }
+
+        auto const is_useful = [this, msgs](tr_piece_index_t const piece) {
+            return tor->piece_is_wanted(piece) && !tor->has_piece(piece) && msgs->has_piece(piece);
+        };
+        auto const pieces = std::views::iota(tr_piece_index_t{}, tor->piece_count());
+        msgs->set_interested(msgs->is_seed() || std::ranges::any_of(pieces, is_useful));
+    }
+
+    // Unchokes a peer that just became interested if the swarm has a free upload slot.
+    // A slot counts as rechokeUploads() counts it: an interested, unchoked peer other
+    // than the optimistic one. The next periodic rechoke re-ranks this peer with the rest.
+    void unchoke_if_slot_free(tr_peerMsgs* msgs) const;
+
     static void peer_callback_bt(tr_peerMsgs* const msgs, tr_peer_event const& event, void* const vs)
     {
         TR_ASSERT(msgs != nullptr);
@@ -627,6 +647,7 @@ public:
         case tr_peer_event::Type::ClientGotHaveAll:
             s->got_have_all(s->tor);
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs);
             break;
 
         case tr_peer_event::Type::ClientGotHaveNone:
@@ -636,6 +657,11 @@ public:
         case tr_peer_event::Type::ClientGotBitfield:
             s->got_bitfield(s->tor, msgs->has());
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs);
+            break;
+
+        case tr_peer_event::Type::ClientGotInterested:
+            s->unchoke_if_slot_free(msgs);
             break;
 
         case tr_peer_event::Type::ClientStaleBitfield:
@@ -1032,7 +1058,7 @@ public:
         , handshake_mediator_{ *session, timer_maker, torrents }
         , bandwidth_timer_{ timer_maker.create([this] { bandwidth_pulse(); }) }
         , peer_info_timer_{ timer_maker.create([this] { peer_info_pulse(); }) }
-        , rechoke_timer_{ timer_maker.create([this] { rechoke_pulse_marshall(); }) }
+        , rechoke_timer_{ timer_maker.create([this] { rechoke_pulse(); }) }
         , blocklists_tag_{ blocklist.observe_changes([this] { on_blocklists_changed(); }) }
     {
         bandwidth_timer_->start_repeating(BandwidthTimerPeriod);
@@ -1054,11 +1080,6 @@ public:
     {
         auto const lock = unique_lock();
         incoming_handshakes.clear();
-    }
-
-    void rechokeSoon() noexcept
-    {
-        rechoke_timer_->set_interval(100ms);
     }
 
     void stop_bandwidth_timer()
@@ -1085,12 +1106,6 @@ private:
     void peer_info_pulse();
     void rechoke_pulse() const;
     void reconnect_pulse();
-
-    void rechoke_pulse_marshall()
-    {
-        rechoke_pulse();
-        rechoke_timer_->set_interval(RechokePeriod);
-    }
 
     void on_blocklists_changed() const
     {
@@ -1737,11 +1752,25 @@ std::vector<tr_pex> tr_peerMgrGetPeers(tr_torrent const* tor, uint8_t address_ty
     return pex;
 }
 
+void tr_swarm::unchoke_if_slot_free(tr_peerMsgs* const msgs) const
+{
+    if (!msgs->peer_is_choked() || msgs->peer_info->is_upload_only() || !tor->client_can_upload() ||
+        tor->bandwidth().is_maxed_out(tr_direction::Up, tr_time_msec())) {
+        return;
+    }
+
+    auto const holds_slot = [this](auto const& peer) {
+        return peer.get() != optimistic && peer->peer_is_interested() && !peer->peer_is_choked();
+    };
+    if (std::cmp_less(std::ranges::count_if(peers, holds_slot), manager->session->uploadSlotsPerTorrent())) {
+        msgs->set_choke(false);
+    }
+}
+
 void tr_swarm::on_torrent_started()
 {
     auto const lock = unique_lock();
     is_running = true;
-    manager->rechokeSoon();
     wishlist_controller = std::make_unique<WishlistController>(*this);
 }
 
