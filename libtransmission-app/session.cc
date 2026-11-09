@@ -553,15 +553,26 @@ void Session::request_add(AddData add, AddPrompt const prompt)
 
     if (prompt == AddPrompt::Never || (prompt == AddPrompt::FromPrefs && !prefs_.get<bool>(TR_KEY_show_options_window))) {
         add_torrent(std::move(add));
-    } else if (add.type == AddData::Type::Url) {
-        fetch_url_then_prompt(std::move(add));
-    } else {
-        prompt_unless_duplicate(add);
+        return;
     }
+
+    resolve_add(std::move(add), alive_, [this](std::optional<AddData> const& resolved) {
+        if (resolved) {
+            torrent_add_prompt(*resolved);
+        }
+    });
 }
 
-void Session::fetch_url_then_prompt(AddData add)
+void Session::resolve_add(
+    AddData add,
+    std::weak_ptr<void const> wanted,
+    std::function<void(std::optional<AddData>)> on_resolved)
 {
+    if (add.type != AddData::Type::Url) {
+        on_resolved(drop_if_listed(std::move(add)));
+        return;
+    }
+
     // The user is waiting, with nothing on screen yet. If time runs out, the session gets to try.
     static auto constexpr Timeout = std::chrono::seconds{ 30 };
 
@@ -570,8 +581,12 @@ void Session::fetch_url_then_prompt(AddData add)
     rpc_.fetch(
         std::move(url),
         Timeout,
-        [this, alive = std::weak_ptr{ alive_ }, add = std::move(add)](tr_web::FetchResponse const& response) mutable {
-            if (alive.expired()) {
+        [this,
+         alive = std::weak_ptr{ alive_ },
+         wanted = std::move(wanted),
+         add = std::move(add),
+         on_resolved = std::move(on_resolved)](tr_web::FetchResponse const& response) mutable {
+            if (alive.expired() || wanted.expired()) {
                 return;
             }
 
@@ -580,20 +595,20 @@ void Session::fetch_url_then_prompt(AddData add)
                 add.metainfo = response.body;
             }
 
-            prompt_unless_duplicate(add);
+            on_resolved(drop_if_listed(std::move(add)));
         });
 }
 
-void Session::prompt_unless_duplicate(AddData const& add)
+std::optional<AddData> Session::drop_if_listed(AddData add)
 {
     if (auto const tm = add.parsed()) {
         if (auto const* const tor = torrents_.find(tm->info_hash()); tor != nullptr) {
             drop_duplicate(add, tor->hash_string().sv());
-            return;
+            return {};
         }
     }
 
-    torrent_add_prompt(add);
+    return add;
 }
 
 void Session::add_torrent(AddData add, AddOptions options)

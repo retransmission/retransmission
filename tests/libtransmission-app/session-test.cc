@@ -1125,6 +1125,91 @@ TEST_F(AppSessionRpcTest, aPromptedUrlIsFetchedByAnEmbeddedSession)
     EXPECT_EQ(benc, prompted->metainfo);
 }
 
+TEST_F(AppSessionRpcTest, resolveAddReturnsAFileUnchangedInsideTheCall)
+{
+    auto const add = AddData{ copy_asset(Arch) };
+    auto const wanted = std::make_shared<int const>();
+
+    auto resolved = std::optional<std::optional<AddData>>{};
+    session_.resolve_add(add, wanted, [&resolved](std::optional<AddData> result) { resolved = std::move(result); });
+
+    ASSERT_TRUE(resolved.has_value());
+    ASSERT_TRUE(resolved->has_value());
+    EXPECT_EQ(AddData::Type::File, (*resolved)->type);
+    EXPECT_EQ(add.source, (*resolved)->source);
+    EXPECT_EQ(add.metainfo, (*resolved)->metainfo);
+}
+
+TEST_F(AppSessionRpcTest, resolveAddFetchesAUrl)
+{
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
+    auto const benc = std::string{ std::data(contents), std::size(contents) };
+
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get(benc);
+    auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
+    auto const wanted = std::make_shared<int const>();
+
+    auto resolved = std::optional<std::optional<AddData>>{};
+    session_.resolve_add(AddData{ url }, wanted, [&resolved](std::optional<AddData> result) { resolved = std::move(result); });
+
+    ASSERT_TRUE(loop_.pump_until([&resolved] { return resolved.has_value(); }));
+    ASSERT_TRUE(resolved->has_value());
+    EXPECT_EQ(AddData::Type::Metainfo, (*resolved)->type);
+    EXPECT_EQ(benc, (*resolved)->metainfo);
+    EXPECT_EQ(url, (*resolved)->source);
+}
+
+TEST_F(AppSessionRpcTest, resolveAddDropsAListedTorrent)
+{
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+
+    auto duplicates = 0;
+    auto const tag = session_.torrent_add_duplicate.connect_scoped(
+        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+
+    auto const wanted = std::make_shared<int const>();
+    auto resolved = std::optional<std::optional<AddData>>{};
+    session_.resolve_add(AddData{ copy_asset(Arch, "again.torrent"sv) }, wanted, [&resolved](std::optional<AddData> result) {
+        resolved = std::move(result);
+    });
+
+    ASSERT_TRUE(resolved.has_value());
+    EXPECT_FALSE(resolved->has_value());
+    EXPECT_EQ(1, duplicates);
+}
+
+// e.g. a user who accepts the prompt while its URL is fetched, and whose add lists the torrent first
+TEST_F(AppSessionRpcTest, resolveAddDropsAFetchNobodyWantsAnyMore)
+{
+    session_.add_torrent(AddData{ copy_asset(Arch) });
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get(std::string{ std::data(contents), std::size(contents) });
+
+    auto duplicates = 0;
+    auto const tag = session_.torrent_add_duplicate.connect_scoped(
+        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+
+    auto wanted = std::make_shared<int const>();
+    auto resolved = false;
+    session_.resolve_add(
+        AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) },
+        wanted,
+        [&resolved](std::optional<AddData> const& /*result*/) { resolved = true; });
+    wanted.reset();
+
+    ASSERT_TRUE(loop_.pump_until([&server] { return !std::empty(server.request_bodies()); }));
+    loop_.drain(std::chrono::milliseconds{ 200 });
+    EXPECT_FALSE(resolved);
+    EXPECT_EQ(0, duplicates);
+}
+
 // The user will want the file to try again.
 TEST_F(AppSessionRpcTest, aRejectedAddReportsTheErrorAndKeepsTheSourceFile)
 {

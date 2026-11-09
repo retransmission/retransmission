@@ -225,17 +225,26 @@ public:
     // Takes a request to add a torrent from anywhere in the client, and is the one place that
     // applies `show_options_window` and `trash_original_torrent_files`.
     //
-    // With no prompt, calls `add_torrent()`. With one, fires `torrent_add_prompt`, and the slot
-    // shows the toolkit's dialog and calls `add_torrent()` if the user accepts. Before prompting:
-    // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
-    //   the session to fetch, which may be able to reach what this client can't.
-    // - A torrent already in `torrents()` is dropped, and reported by `torrent_add_duplicate`
-    //   unless it came from the watch dir.
+    // With no prompt, calls `add_torrent()`. With one, calls `resolve_add()` and fires
+    // `torrent_add_prompt` for the torrent it hands back, if any. The slot shows the toolkit's
+    // dialog and calls `add_torrent()` if the user accepts.
     //
     // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
     void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs);
 
     sigslot::signal<AddData const&> torrent_add_prompt;
+
+    // Readies a torrent for a prompt, and again whenever the prompt's user names another source:
+    // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
+    //   the session to fetch, which may be able to reach what this client can't.
+    // - A torrent already in `torrents()` is dropped. Its source file is disposed of as
+    //   `add_torrent()` would, and `torrent_add_duplicate` reports it unless it came from the watch dir.
+    // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
+    // call unless `add` is a URL.
+    // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
+    // it expires, after `stop()` or after this Session is destroyed does nothing at all: no
+    // disposal, no report, no `on_resolved`. So the user can accept or cancel during a fetch.
+    void resolve_add(AddData add, std::weak_ptr<void const> wanted, std::function<void(std::optional<AddData>)> on_resolved);
 
     // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
     // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
@@ -506,8 +515,8 @@ private:
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
 
-    void fetch_url_then_prompt(AddData add);
-    void prompt_unless_duplicate(AddData const& add);
+    // `add`, or nullopt after `drop_duplicate()` if `torrents()` already has it
+    [[nodiscard]] std::optional<AddData> drop_if_listed(AddData add);
     void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
     void drop_duplicate(AddData const& add, std::string_view hash_string);
     void dispose_source_file(AddData const& add) const;
