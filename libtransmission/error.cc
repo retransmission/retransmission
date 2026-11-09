@@ -38,10 +38,15 @@ bool tr_error::is_out_of_space(code_t const code) noexcept
 
 bool tr_error::is_transient() const noexcept
 {
+    return is_transient(code_);
+}
+
+bool tr_error::is_transient(code_t const code) noexcept
+{
 #ifdef _WIN32
-    return code_ == WSAEWOULDBLOCK || code_ == WSAEINTR || code_ == WSAEINPROGRESS;
+    return code == WSAEWOULDBLOCK || code == WSAEINTR || code == WSAEINPROGRESS;
 #else
-    return code_ == EAGAIN || code_ == EWOULDBLOCK || code_ == EINTR || code_ == EINPROGRESS;
+    return code == EAGAIN || code == EWOULDBLOCK || code == EINTR || code == EINPROGRESS;
 #endif
 }
 

@@ -50,6 +50,7 @@ public:
     [[nodiscard]] static bool is_out_of_space(code_t code) noexcept;
     // e.g. `EAGAIN` or `EINTR`: nothing happened, so try again
     [[nodiscard]] bool is_transient() const noexcept;
+    [[nodiscard]] static bool is_transient(code_t code) noexcept;
 
     constexpr void set(code_t code, std::string&& message)
     {
