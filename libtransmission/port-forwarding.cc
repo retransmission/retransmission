@@ -222,16 +222,19 @@ private:
             natpmp_state_ = TR_PORT_UNMAPPED;
         }
 
-        // miniupnpc's multicastif accepts an interface name in place of an address.
-        // A blocked binding has no interface to give it, and miniupnpc would fall
-        // back to the default route rather than fail, so UPnP stays off in that case.
+        // miniupnpc's multicastif accepts an interface name in place of an address,
+        // except on platforms that can't bind to an interface, where it would fall back
+        // to the default route rather than fail. A blocked binding has no interface to
+        // give it either. UPnP stays off in both cases, as every other socket fails.
         auto const upnp_bindaddr = is_interface_bound ? std::string{ bind_interface } :
                                                         mediator_.incoming_peer_address().display_name();
+        auto const upnp_can_bind = !is_interface_bound ||
+            (TrNetCanBindInterface && !tr_net_interface_is_blocked(bind_interface));
         upnp_state_ = tr_upnpPulse(
             upnp_,
             mediator_.advertised_peer_port(),
             mediator_.local_peer_port(),
-            is_enabled && !tr_net_interface_is_blocked(bind_interface),
+            is_enabled && upnp_can_bind,
             do_check,
             upnp_bindaddr);
 
