@@ -14,9 +14,12 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission-app/add-data.h>
+#include <libtransmission-app/session.h>
+
 #include <libtransmission/file.h> /* tr_sys_path_is_same() */
-#include <libtransmission/torrent-builder.h>
-#include <libtransmission/transmission.h>
+#include <libtransmission/quark.h>
+#include <libtransmission/types.h>
 
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/combobox.h>
@@ -28,7 +31,9 @@
 
 #include <memory>
 #include <optional>
+#include <string>
 #include <utility>
+#include <variant>
 
 using namespace std::literals;
 
@@ -54,37 +59,31 @@ public:
         OptionsDialog& dialog,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Session> const& core,
-        tr::app::Prefs const& prefs,
-        std::unique_ptr<tr_torrent_builder> torrent_builder);
+        tr::app::AddData add,
+        tr::app::AddOptions const& preset);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
     Impl& operator=(Impl const&) = delete;
-    ~Impl();
+    ~Impl() = default;
 
 private:
-    void sourceChanged(PathButton* b);
+    void sourceChanged();
     void downloadDirChanged(PathButton* b);
-
-    // the previewed torrent, or nullptr once it or the session is gone
-    [[nodiscard]] tr_torrent* tor() const;
-    void removeOldTorrent();
-    void updateTorrent();
+    void updateFiles();
 
     void addResponseCB(int response);
 
 private:
     OptionsDialog& dialog_;
     Glib::RefPtr<Session> const core_;
-    std::unique_ptr<tr_torrent_builder> torrent_builder_;
-
-    std::string filename_;
+    tr::app::AddData add_;
     std::string downloadDir_;
 
-    // The torrent this dialog previews. By id, since the session can drop it under the
-    // dialog, e.g. when another RPC client removes it or the app quits.
-    std::optional<tr_torrent_id_t> tor_id_;
+    // the current source's `resolve_add()` token
+    std::shared_ptr<std::monostate const> resolving_;
 
+    PathButton* source_chooser_ = nullptr;
     FileList* file_list_ = nullptr;
     Gtk::CheckButton* run_check_ = nullptr;
     Gtk::CheckButton* trash_check_ = nullptr;
@@ -92,103 +91,55 @@ private:
     FreeSpaceLabel* freespace_label_ = nullptr;
 };
 
-OptionsDialog::Impl::~Impl()
-{
-    removeOldTorrent();
-}
-
-tr_torrent* OptionsDialog::Impl::tor() const
-{
-    return tor_id_ ? core_->find_torrent(*tor_id_) : nullptr;
-}
-
-void OptionsDialog::Impl::removeOldTorrent()
-{
-    if (!tor_id_) {
-        return;
-    }
-
-    file_list_->clear();
-    if (auto* const torrent = tor(); torrent != nullptr) {
-        tr_torrentRemove(torrent, false);
-    }
-    tor_id_.reset();
-}
-
 void OptionsDialog::Impl::addResponseCB(int response)
 {
-    if (auto* const torrent = tor(); torrent != nullptr) {
-        if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-            tr_torrentSetPriority(torrent, static_cast<tr_priority_t>(gtr_combo_box_get_active_enum(*priority_combo_)));
+    resolving_.reset();
 
-            if (run_check_->get_active()) {
-                tr_torrentStart(torrent);
-            }
+    if (response == TR_GTK_RESPONSE_TYPE(ACCEPT) && add_.type != tr::app::AddData::Type::None) {
+        auto options = tr::app::AddOptions{};
+        options.download_dir = downloadDir_;
+        options.paused = !run_check_->get_active();
+        options.bandwidth_priority = static_cast<tr_priority_t>(gtr_combo_box_get_active_enum(*priority_combo_));
+        options.set_file_choices(file_list_->preview_files());
 
-            core_->release_torrent(tr_torrentId(torrent));
-
-            if (trash_check_->get_active()) {
-                gtr_file_trash_or_remove(filename_, nullptr);
-            }
-
-            tor_id_.reset();
-        }
+        add_.trash_source = trash_check_->get_active();
+        core_->add_torrent(std::move(add_), std::move(options));
     }
 
     dialog_.close();
 }
 
-void OptionsDialog::Impl::updateTorrent()
+void OptionsDialog::Impl::updateFiles()
 {
-    bool const isLocalFile = !std::empty(torrent_builder_->source_filename());
-    trash_check_->set_sensitive(isLocalFile);
+    trash_check_->set_sensitive(add_.type == tr::app::AddData::Type::File);
 
-    if (auto* const torrent = tor(); torrent == nullptr) {
-        file_list_->clear();
-        file_list_->set_sensitive(false);
-    } else {
-        tr_torrentSetDownloadDir(torrent, downloadDir_);
-        file_list_->set_sensitive(tr_torrentHasMetadata(torrent));
-        file_list_->set_torrent(tr_torrentId(torrent));
-        tr_torrentVerify(torrent);
-    }
+    auto files = add_.files();
+    file_list_->set_sensitive(!std::empty(files));
+    file_list_->set_preview(std::move(files));
 }
 
-/**
- * When the source torrent file is deleted
- * (such as, if it was a temp file that a web browser passed to us),
- * gtk invokes this callback and `filename' will be nullptr.
- * The `filename' tests here are to prevent us from losing the current
- * metadata when that happens.
- */
-void OptionsDialog::Impl::sourceChanged(PathButton* b)
+void OptionsDialog::Impl::sourceChanged()
 {
-    auto const filename = b->get_filename();
+    auto const filename = source_chooser_->get_filename();
 
-    /* maybe instantiate a torrent */
-    if (!filename.empty() || tor() == nullptr) {
-        bool new_file = false;
-
-        if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_))) {
-            filename_ = filename;
-            torrent_builder_->set_metainfo_from_file(filename_);
-            new_file = true;
-        }
-
-        torrent_builder_->set_download_dir(downloadDir_);
-        torrent_builder_->set_paused(true);
-
-        tr_torrent* duplicate_of = nullptr;
-        if (tr_torrent* const torrent = tr_torrentNew(torrent_builder_.get(), &duplicate_of); torrent != nullptr) {
-            removeOldTorrent();
-            tor_id_ = tr_torrentId(torrent);
-            core_->withhold_torrent(*tor_id_); // until the user adds it
-        } else if (new_file) {
-            gtr_add_torrent_error_dialog(*b, duplicate_of, filename_);
-        }
-
-        updateTorrent();
+    // empty when this dialog cleared the chooser after a dropped source
+    if (filename.empty() || (add_.type == tr::app::AddData::Type::File && tr_sys_path_is_same(filename, add_.source))) {
+        return;
     }
+
+    // runs only while `resolving_` is this source's token, so `this` is alive
+    resolving_ = std::make_shared<std::monostate const>();
+    core_->resolve_add(tr::app::AddData{ filename }, resolving_, [this](std::optional<tr::app::AddData> resolved) {
+        if (resolved) {
+            add_ = std::move(*resolved);
+        } else {
+            // dropped: listed already, or not a torrent. The add report tells the user which.
+            add_ = {};
+            source_chooser_->set_filename({});
+        }
+
+        updateFiles();
+    });
 }
 
 void OptionsDialog::Impl::downloadDirChanged(PathButton* b)
@@ -197,8 +148,6 @@ void OptionsDialog::Impl::downloadDirChanged(PathButton* b)
 
     if (!fname.empty() && (downloadDir_.empty() || !tr_sys_path_is_same(fname, downloadDir_))) {
         downloadDir_ = fname;
-        updateTorrent();
-
         freespace_label_->set_dir(downloadDir_);
     }
 }
@@ -231,10 +180,10 @@ OptionsDialog::OptionsDialog(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    tr::app::Prefs const& prefs,
-    std::unique_ptr<tr_torrent_builder> torrent_builder)
+    tr::app::AddData add,
+    tr::app::AddOptions const& preset)
     : Gtk::Dialog(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core, prefs, std::move(torrent_builder)))
+    , impl_(std::make_unique<Impl>(*this, builder, core, std::move(add), preset))
 {
     set_transient_for(parent);
 }
@@ -244,25 +193,25 @@ OptionsDialog::~OptionsDialog() = default;
 std::unique_ptr<OptionsDialog> OptionsDialog::create(
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    tr::app::Prefs const& prefs,
-    std::unique_ptr<tr_torrent_builder> torrent_builder)
+    tr::app::AddData add,
+    tr::app::AddOptions const& preset)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("OptionsDialog.ui"));
     return std::unique_ptr<OptionsDialog>(
-        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, prefs, std::move(torrent_builder)));
+        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, std::move(add), preset));
 }
 
 OptionsDialog::Impl::Impl(
     OptionsDialog& dialog,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Session> const& core,
-    tr::app::Prefs const& prefs,
-    std::unique_ptr<tr_torrent_builder> torrent_builder)
+    tr::app::AddData add,
+    tr::app::AddOptions const& preset)
     : dialog_(dialog)
     , core_(core)
-    , torrent_builder_(std::move(torrent_builder))
-    , filename_{ torrent_builder_->source_filename() }
-    , downloadDir_{ torrent_builder_->download_dir() }
+    , add_{ std::move(add) }
+    , downloadDir_{ preset.download_dir }
+    , source_chooser_(gtr_get_widget_derived<PathButton>(builder, "source_button"))
     , file_list_(gtr_get_widget_derived<FileList>(builder, "files_view_scroll", "files_view", core_, 0))
     , run_check_(gtr_get_widget<Gtk::CheckButton>(builder, "start_check"))
     , trash_check_(gtr_get_widget<Gtk::CheckButton>(builder, "trash_check"))
@@ -273,11 +222,13 @@ OptionsDialog::Impl::Impl(
     dialog.signal_response().connect(sigc::mem_fun(*this, &Impl::addResponseCB));
 
     gtr_priority_combo_init(*priority_combo_);
-    gtr_combo_box_set_active_enum(*priority_combo_, TR_PRI_NORMAL);
+    gtr_combo_box_set_active_enum(*priority_combo_, preset.bandwidth_priority.value_or(TR_PRI_NORMAL));
 
-    auto* source_chooser = gtr_get_widget_derived<PathButton>(builder, "source_button");
-    addTorrentFilters(source_chooser);
-    source_chooser->signal_selection_changed().connect([this, source_chooser] { sourceChanged(source_chooser); });
+    addTorrentFilters(source_chooser_);
+    if (add_.type == tr::app::AddData::Type::File) {
+        source_chooser_->set_filename(add_.source);
+    }
+    source_chooser_->signal_selection_changed().connect(sigc::mem_fun(*this, &Impl::sourceChanged));
 
     auto* destination_chooser = gtr_get_widget_derived<PathButton>(builder, "destination_button");
     destination_chooser->set_filename(downloadDir_);
@@ -286,22 +237,10 @@ OptionsDialog::Impl::Impl(
     destination_chooser->signal_selection_changed().connect(
         [this, destination_chooser] { downloadDirChanged(destination_chooser); });
 
-    auto const paused = torrent_builder_->paused();
-    if (!paused) {
-        g_assert_not_reached();
-    }
+    run_check_->set_active(!preset.paused.value_or(false));
+    trash_check_->set_active(add_.trash_source);
 
-    run_check_->set_active(!paused.value_or(false));
-    // Prefs, not tr_session: the client's copy of the setting, which exists for every kind of session.
-    trash_check_->set_active(prefs.get<bool>(TR_KEY_trash_original_torrent_files));
-
-    /* trigger sourceChanged, either directly or indirectly,
-     * so that it creates the tor/gtor objects */
-    if (!filename_.empty()) {
-        source_chooser->set_filename(filename_);
-    } else {
-        sourceChanged(source_chooser);
-    }
+    updateFiles();
 
     dialog_.get_widget_for_response(TR_GTK_RESPONSE_TYPE(ACCEPT))->grab_focus();
 }
@@ -313,8 +252,8 @@ OptionsDialog::Impl::Impl(
 void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<Session> const& core)
 {
     if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-        bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents);
         bool const do_prompt = get_choice(std::string(ShowOptionsDialogChoice)) == "true";
+        auto const prompt = do_prompt ? tr::app::Session::AddPrompt::Always : tr::app::Session::AddPrompt::Never;
 
         auto const files = IF_GTKMM4(get_files2, get_files)();
         g_assert(!files.empty());
@@ -327,7 +266,9 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
             }
         }
 
-        core->add_files(files, do_start, do_prompt);
+        for (auto const& file : files) {
+            core->request_add(tr::app::AddData{ gtr_add_key(file) }, prompt);
+        }
     }
 }
 
@@ -375,7 +316,7 @@ void TorrentUrlChooserDialog::onOpenURLResponse(int response, Gtk::Entry const& 
             return;
         }
 
-        if (core->add_from_url(url)) {
+        if (core->request_add(tr::app::AddData{ url.raw() })) {
             close();
         } else {
             gtr_unrecognized_url_dialog(*this, url);

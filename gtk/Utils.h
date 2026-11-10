@@ -17,6 +17,8 @@
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
 
+#include <giomm/file.h>
+
 #include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
 #include <glibmm/signalproxy.h>
@@ -40,7 +42,6 @@
 #include <vector>
 
 struct tr_error;
-struct tr_torrent;
 
 /***
 ****
@@ -139,7 +140,8 @@ void gtr_combo_box_set_active_enum(Gtk::ComboBox& combo, int value);
 
 void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url);
 
-void gtr_add_torrent_error_dialog(Gtk::Widget& window_or_child, tr_torrent* duplicate_torrent, std::string const& filename);
+// the key for `tr::app::AddData` that names `file`: its path, or else its URI, e.g. a link given on the command line
+[[nodiscard]] std::string gtr_add_key(Glib::RefPtr<Gio::File> const& file);
 
 /* pop up the context menu if a user right-clicks.
    if the row they right-click on isn't selected, select it. */
@@ -178,7 +180,7 @@ void setup_item_view_button_event_handling(
 #endif
 
 /* move a file or folder to the trash can, or delete it when the trash can refuses */
-bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error = nullptr);
+bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error);
 
 void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry);
 

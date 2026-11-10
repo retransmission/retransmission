@@ -15,7 +15,7 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h> // TR_PRI_*
 #include <libtransmission/values.h>
 #include <libtransmission/version.h> /* SHORT_VERSION_STRING */
 #include <libtransmission/web-utils.h>
@@ -279,28 +279,20 @@ std::string tr_format_time_relative(time_t timestamp, time_t origin)
     return timestamp < origin ? tr_format_future_time(origin - timestamp) : tr_format_past_time(timestamp - origin);
 }
 
-void gtr_add_torrent_error_dialog(Gtk::Widget& child, tr_torrent* duplicate_torrent, std::string const& filename)
+std::string gtr_add_key(Glib::RefPtr<Gio::File> const& file)
 {
-    Glib::ustring secondary;
-
-    if (duplicate_torrent != nullptr) {
-        secondary = fmt::format(
-            fmt::runtime(_("The torrent file '{path}' is already in use by '{torrent_name}'.")),
-            fmt::arg("path", filename),
-            fmt::arg("torrent_name", tr_torrentName(duplicate_torrent)));
-    } else {
-        secondary = fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", filename));
+    if (auto path = file->get_path(); !std::empty(path)) {
+        return path;
     }
 
-    auto w = std::make_shared<Gtk::MessageDialog>(
-        gtr_widget_get_window(child),
-        _("Couldn't open torrent"),
-        false,
-        TR_GTK_MESSAGE_TYPE(ERROR),
-        TR_GTK_BUTTONS_TYPE(CLOSE));
-    w->set_secondary_text(secondary);
-    w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
-    w->show();
+    auto uri = file->get_uri();
+
+    // Gio::File turns `magnet:?...` into `magnet:///?...`
+    if (auto constexpr BrokenMagnetLinkPrefix = "magnet:///?"sv; uri.starts_with(BrokenMagnetLinkPrefix)) {
+        uri.replace(0, std::size(BrokenMagnetLinkPrefix), "magnet:?");
+    }
+
+    return uri;
 }
 
 /* pop up the context menu if a user right-clicks.
