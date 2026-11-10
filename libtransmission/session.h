@@ -1477,6 +1477,7 @@ private:
     // `settings_.peer_port` but can differ if
     // `settings_.peer_port_random_on_start` is enabled.
     tr_port local_peer_port_;
+    bool local_peer_port_is_random_ = false;
 
     // The incoming peer port that's been opened on the public-facing
     // device. This is usually the same as localPeerPort() but can differ,

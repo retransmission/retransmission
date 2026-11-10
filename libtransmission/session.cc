@@ -819,7 +819,16 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 
     set_blocklist_enabled(new_settings.blocklist_enabled);
 
-    auto local_peer_port = force && settings_.peer_port_random_on_start ? randomPort() : new_settings.peer_port;
+    // settings_.peer_port never holds the random port, so a change to other settings keeps it
+    auto const pick_random_port = force && new_settings.peer_port_random_on_start;
+    auto const keep_random_port = !force && local_peer_port_is_random_ && new_settings.peer_port == old_settings.peer_port;
+    auto local_peer_port = new_settings.peer_port;
+    if (pick_random_port) {
+        local_peer_port = randomPort();
+    } else if (keep_random_port) {
+        local_peer_port = local_peer_port_;
+    }
+    local_peer_port_is_random_ = pick_random_port || keep_random_port;
     bool port_changed = false;
     if (force || local_peer_port_ != local_peer_port) {
         local_peer_port_ = local_peer_port;
@@ -1107,6 +1116,8 @@ void tr_sessionSetPeerPort(tr_session* session, uint16_t hport)
         session->run_in_session_thread([session, port] {
             auto settings = session->settings_;
             settings.peer_port = port;
+            // takes effect even when `port` is the setting a random port overrides
+            session->local_peer_port_is_random_ = false;
             session->setSettings(std::move(settings), false);
         });
     }

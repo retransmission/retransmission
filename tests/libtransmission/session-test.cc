@@ -663,6 +663,32 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     tr_sessionClose(session, 1);
 }
 
+// No setting holds the port peer_port_random_on_start picks, so a change
+// to another setting must keep it, while setting the peer port replaces it.
+TEST_F(SessionTest, randomPeerPortSurvivesOtherSettingsChanges)
+{
+    auto const dir = sandboxDir() + "/random-port";
+    ASSERT_TRUE(tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0700));
+
+    // a range without the configured port, so the random one always differs from it
+    auto settings = quietSettings();
+    settings.insert_or_assign(TR_KEY_peer_port, int64_t{ TrDefaultPeerPort });
+    settings.insert_or_assign(TR_KEY_peer_port_random_low, int64_t{ 40000 });
+    settings.insert_or_assign(TR_KEY_peer_port_random_high, int64_t{ 49999 });
+    auto* const session = tr_sessionInit(dir, false, settings);
+    auto const random_port = tr_sessionGetPeerPort(session);
+    EXPECT_NE(TrDefaultPeerPort, random_port);
+
+    tr_sessionSetBindInterface(session, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([session] { return tr_sessionGetBindInterface(session) == TrBindInterfaceBlocked; }, 5s));
+    EXPECT_EQ(random_port, tr_sessionGetPeerPort(session));
+
+    tr_sessionSetPeerPort(session, TrDefaultPeerPort);
+    EXPECT_TRUE(waitFor([session] { return tr_sessionGetPeerPort(session) == TrDefaultPeerPort; }, 5s));
+
+    tr_sessionClose(session, 1);
+}
+
 // A new UDP core binds the port the old one held, which is refused while both are open.
 TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
 {
