@@ -917,21 +917,6 @@ TEST_F(AppSessionRpcTest, removeDropsTheRowsAtOnce)
     EXPECT_FALSE(session_has(id2));
 }
 
-// An add dialog's pending torrent stays out of the list until the user adds it.
-TEST_F(AppSessionRpcTest, aWithheldTorrentIsListedOnceReleased)
-{
-    auto const listed = add_torrent(Debian);
-    auto const pending = add_torrent(Arch);
-    session_.withhold_torrent(pending);
-
-    session_.refresh_all_torrents(TorrentKeySet::MainAll);
-    ASSERT_TRUE(loop_.pump_until([this, listed] { return session_.torrents().find(listed) != nullptr; }));
-    EXPECT_EQ(nullptr, session_.torrents().find(pending));
-
-    session_.release_torrent(pending);
-    EXPECT_TRUE(loop_.pump_until([this, pending] { return session_.torrents().find(pending) != nullptr; }));
-}
-
 // The session moves asynchronously and marks the torrent edited when done; `edited` fetches `MainAll`.
 TEST_F(AppSessionRpcTest, setLocationReachesTheListThroughEdited)
 {

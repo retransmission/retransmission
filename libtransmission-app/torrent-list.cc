@@ -320,9 +320,7 @@ void TorrentList::update(tr_variant::Map const& args, Coverage const coverage, t
     if (parsed.n_skipped != 0U) {
         tr_logAddWarn(fmt::format("Ignored {:d} torrent record(s) that had no usable id", parsed.n_skipped));
     }
-    std::erase_if(parsed.rows, [this, &removed_ids](Row const& row) {
-        return std::ranges::binary_search(removed_ids, row.id) || std::ranges::binary_search(withheld_, row.id);
-    });
+    std::erase_if(parsed.rows, [&removed_ids](Row const& row) { return std::ranges::binary_search(removed_ids, row.id); });
 
     auto newcomers = std::vector<Entry>{};
     auto seen = std::vector<Seen>{};
@@ -370,24 +368,6 @@ void TorrentList::remove(Ids ids)
     updating_ = false;
 }
 
-void TorrentList::withhold(tr_torrent_id_t const id)
-{
-    TR_ASSERT(!updating_);
-
-    if (auto const iter = std::ranges::lower_bound(withheld_, id); iter == std::end(withheld_) || *iter != id) {
-        withheld_.insert(iter, id);
-    }
-
-    remove({ id });
-}
-
-void TorrentList::release(tr_torrent_id_t const id)
-{
-    if (auto const iter = std::ranges::lower_bound(withheld_, id); iter != std::end(withheld_) && *iter == id) {
-        withheld_.erase(iter);
-    }
-}
-
 void TorrentList::normalize(Ids& ids)
 {
     std::ranges::sort(ids);
@@ -398,8 +378,6 @@ void TorrentList::normalize(Ids& ids)
 void TorrentList::clear()
 {
     TR_ASSERT(!updating_);
-
-    withheld_.clear();
 
     if (std::empty(entries_)) {
         return;

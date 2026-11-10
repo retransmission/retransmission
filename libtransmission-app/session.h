@@ -184,12 +184,6 @@ public:
     void queue_move_down(Ids ids);
     void queue_move_bottom(Ids ids);
 
-    // Keeps `id`, a torrent this client created that the user hasn't confirmed yet, e.g.
-    // one an add dialog previews, out of `torrents()` until `release_torrent()`, which
-    // fetches it. A torrent the user cancels stays withheld until `stop()`.
-    void withhold_torrent(tr_torrent_id_t id);
-    void release_torrent(tr_torrent_id_t id);
-
     // Removes `ids` from the session, with their data when `delete_local_data`. On
     // success the rows leave `torrents()` at once, as if a poll had named them
     // `removed`; nothing is fetched. After a failure the next poll decides.
