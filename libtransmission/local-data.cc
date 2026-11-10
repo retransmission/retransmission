@@ -397,10 +397,11 @@ private:
  * local-data.h. Data ops on a torrent are admitted freely and run
  * concurrently. An admin op waits in the torrent's queue until every
  * admitted op's completion has been delivered, and then runs
- * exclusively. A close runs on the session thread. A move, rename, or
- * remove does its disk work on an admin lane and its callbacks on the
- * session thread. Ops enqueued behind it wait in the queue until it
- * finishes. This gate is what makes move, rename, remove, and close
+ * exclusively. A close takes its files out of the pool on the session
+ * thread and is done; the files themselves are closed on an admin lane.
+ * A move, rename, or remove does its disk work on an admin lane and its
+ * callbacks on the session thread. Ops enqueued behind it wait in the
+ * queue until it finishes. This gate is what makes move, rename, remove, and close
  * safe against in-flight reads and writes. A file close is a barrier on
  * its file alone: it waits only for the ops that touch the file, and
  * holds back only those.
@@ -612,6 +613,27 @@ public:
         };
 
         submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    // The two closes below run inside a barrier. They take the files out
+    // of the pool, so that the next op opens them afresh, and leave the
+    // closing itself to the short lane: close() can wait on the disk.
+    // The lane works in order, so the files are closed before any removal,
+    // rename, move, or cleanup that is enqueued afterwards gets to run.
+
+    void close_torrent(tr_torrent_id_t const id)
+    {
+        close_on_short_lane(open_files_.close_torrent(id));
+        forget(id);
+    }
+
+    void close_file(tr_torrent_id_t const id, tr_file_index_t const file)
+    {
+        auto files = std::vector<tr_open_files::Handle>{};
+        if (auto handle = open_files_.close_file(id, file); handle) {
+            files.emplace_back(std::move(handle));
+        }
+        close_on_short_lane(std::move(files));
     }
 
     [[nodiscard]] bool admin_op_pending(tr_torrent_id_t const id) const
@@ -1328,6 +1350,13 @@ private:
         admin_cv_.notify_all();
     }
 
+    void close_on_short_lane(std::vector<tr_open_files::Handle> files)
+    {
+        if (!std::empty(files)) {
+            post_admin(short_lane_, [files = std::move(files)] mutable { files.clear(); });
+        }
+    }
+
     // Do a barrier's disk work, deliver its result on the session thread,
     // and let the ops behind the barrier go.
     void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
@@ -1655,8 +1684,9 @@ private:
     // a disk seek.
     AdminLane long_lane_;
     // The short lane does everything else: moves that only rename,
-    // renames, removals, and clearing a move's old location. On the long
-    // lane each of those would wait behind other torrents' whole copies.
+    // renames, removals, clearing a move's old location, and closing
+    // files. On the long lane each of those would wait behind other
+    // torrents' whole copies.
     AdminLane short_lane_;
 
     std::deque<PendingTest> pending_tests_;
@@ -1791,9 +1821,10 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
 void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
     admin(tor_id, [this, tor_id, on_close = std::move(on_close)] mutable {
-        backend_->close_torrent(tor_id);
         if (threaded_) {
-            threaded_->forget(tor_id);
+            threaded_->close_torrent(tor_id);
+        } else {
+            backend_->close_torrent(tor_id);
         }
         if (on_close) {
             std::move(on_close)(tor_id);
@@ -1809,7 +1840,11 @@ void LocalData::close_file(
     admin(
         tor_id,
         [this, tor_id, file_num, on_close = std::move(on_close)] mutable {
-            backend_->close_file(tor_id, file_num);
+            if (threaded_) {
+                threaded_->close_file(tor_id, file_num);
+            } else {
+                backend_->close_file(tor_id, file_num);
+            }
             if (on_close) {
                 std::move(on_close)(tor_id);
             }

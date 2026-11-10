@@ -1329,6 +1329,68 @@ TEST_F(LocalDataWorkersTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
     local_data.shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, closingATorrentLeavesTheClosesToALane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    openInPool(0U, "data.bin");
+    auto const file = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+    ASSERT_FALSE(file.expired());
+
+    // The barrier is done at once: the pool has let go of the file...
+    local_data->set_workers_paused(true);
+    auto closed = false;
+    local_data->close_torrent(TorId, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(closed);
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+
+    // ...which stays open until a lane gets to it
+    EXPECT_FALSE(file.expired());
+
+    // a removal enqueued later finds it closed
+    auto was_closed = std::optional<bool>{};
+    auto removed = false;
+    local_data->remove(
+        TorId,
+        [&file, &was_closed](std::string_view const filename, tr_error* const error) {
+            was_closed = file.expired();
+            return tr_sys_path_remove(filename, error);
+        },
+        [&removed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            removed = true;
+        });
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&removed]() { return removed; }));
+    EXPECT_EQ(std::optional{ true }, was_closed);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownClosesTheFilesLeftToALane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+    openInPool(0U, "a.bin");
+    openInPool(1U, "b.bin");
+    auto const a = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+    auto const b = std::weak_ptr{ open_files_.get(TorId, 1U, false) };
+
+    // closing one file leaves the other in the pool
+    local_data->set_workers_paused(true);
+    auto closed = false;
+    local_data->close_file(TorId, 0U, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(closed);
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+    EXPECT_TRUE(open_files_.get(TorId, 1U, false));
+    EXPECT_FALSE(a.expired());
+
+    local_data->shutdown();
+    EXPECT_TRUE(a.expired());
+    EXPECT_FALSE(b.expired());
+}
+
 TEST_F(LocalDataWorkersTest, adminOpPendingCoversWholeTorrentBarriers)
 {
     ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));

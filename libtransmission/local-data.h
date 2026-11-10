@@ -99,6 +99,9 @@ void hold_copy_lane(LocalData& local_data, bool held);
  * work on background threads of their own, so that a long copy doesn't
  * hold up other torrents' data ops. Their callbacks run on the session
  * thread, and the barrier stays up until the last of them has returned.
+ * `close_torrent` and `close_file` complete as soon as their barrier is
+ * reached: the files are out of the pool by then, and are closed on one
+ * of those background threads, ahead of any admin op enqueued later.
  */
 class LocalData
 {
