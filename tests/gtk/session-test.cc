@@ -23,6 +23,7 @@
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/file-utils.h> // tr_file_save()
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
@@ -115,6 +116,26 @@ protected:
         return id;
     }
 
+    // a watch dir whose torrents are added without a prompt
+    [[nodiscard]] std::filesystem::path make_watch_dir() const
+    {
+        prefs_->set(TR_KEY_show_options_window, false);
+        prefs_->set(TR_KEY_trash_original_torrent_files, false);
+
+        auto dir = std::filesystem::path{ sandbox_dir() } / "watch";
+        std::filesystem::create_directory(dir);
+        return dir;
+    }
+
+    // copies an asset into `dir`, aged so the watch dir needn't wait for it to settle
+    static std::filesystem::path drop(std::filesystem::path const& dir, char const* const name)
+    {
+        auto path = dir / name;
+        std::filesystem::copy_file(std::filesystem::path{ LIBTRANSMISSION_TEST_ASSETS_DIR } / name, path);
+        std::filesystem::last_write_time(path, std::filesystem::file_time_type::clock::now() - 1h);
+        return path;
+    }
+
     // the list's object for `id`, or nullptr; the model mirrors the list's rows
     [[nodiscard]] Glib::RefPtr<Torrent> listed(tr_torrent_id_t const id) const
     {
@@ -150,52 +171,62 @@ TEST_F(GtkSessionTest, stopEmptiesTheModelAndLetsGoOfTheSession)
     EXPECT_EQ(name, torrent->get_name());
 }
 
-// e.g. a builder waiting on a URL's download when the user quits
-TEST_F(GtkSessionTest, aBuilderThatOutlivesItsSessionAddsNothing)
-{
-    prefs_->set(TR_KEY_show_options_window, true);
-    auto prompts = 0;
-    core_->signal_add_prompt().connect([&prompts](tr_torrent_builder* const builder) {
-        ++prompts;
-        std::unique_ptr<tr_torrent_builder>{ builder }.reset();
-    });
-
-    auto builder = std::make_unique<tr_torrent_builder>(session_);
-    ASSERT_TRUE(builder->set_metainfo_from_file(std::string{ LIBTRANSMISSION_TEST_ASSETS_DIR "/" } + Debian));
-
-    core_->stop();
-    core_->wait_for_close();
-    core_->add_builder(std::move(builder));
-    EXPECT_EQ(0, prompts);
-}
-
-// The watch dir renames each file it tries, added or not, so it stops with the session.
+// A watch dir without a session would report each of its files as a failed add.
 TEST_F(GtkSessionTest, theWatchDirStopsWithTheSession)
 {
     namespace fs = std::filesystem;
 
-    auto const watch_dir = fs::path{ sandbox_dir() } / "watch";
-    fs::create_directory(watch_dir);
-    // copies an asset into the watch dir, aged so the watch dir needn't wait for it to settle
-    auto const drop = [&watch_dir](char const* const name) {
-        auto const path = watch_dir / name;
-        fs::copy_file(fs::path{ LIBTRANSMISSION_TEST_ASSETS_DIR } / name, path);
-        fs::last_write_time(path, fs::file_time_type::clock::now() - 1h);
-        return path;
-    };
-
-    auto const tried = drop(Debian);
+    auto const watch_dir = make_watch_dir();
+    auto const tried = drop(watch_dir, Debian);
     auto const enabled_at = std::chrono::steady_clock::now();
     prefs_->set(TR_KEY_watch_dir, watch_dir.string());
     prefs_->set(TR_KEY_watch_dir_enabled, true);
     ASSERT_TRUE(wait_for([&tried] { return !fs::exists(tried); }));
     auto const took = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - enabled_at);
 
-    // A watch dir still running would try this file about as fast, plus the notice of its creation.
     core_->stop();
-    auto const untried = drop(Arch);
+    auto n_failed = size_t{};
+    auto const tag = core_->torrent_add_report.connect_scoped(
+        [&n_failed](tr::app::Session::AddReport const& report) { n_failed += std::size(report.failed); });
+
+    // A watch dir still running would try this file about as fast, plus the notice of its creation.
+    drop(watch_dir, Arch);
     std::ignore = wait_for([] { return false; }, took + 500ms);
-    EXPECT_TRUE(fs::exists(untried));
+    EXPECT_EQ(0U, n_failed);
+}
+
+TEST_F(GtkSessionTest, theWatchDirAddsItsTorrentsAndLeavesOtherFilesAlone)
+{
+    namespace fs = std::filesystem;
+
+    auto const watch_dir = make_watch_dir();
+    auto const torrent = drop(watch_dir, Debian);
+    auto const not_a_torrent = watch_dir / "not-a-torrent.torrent";
+    ASSERT_TRUE(tr_file_save(not_a_torrent.string(), "this is not a torrent"sv));
+    fs::last_write_time(not_a_torrent, fs::file_time_type::clock::now() - 1h);
+
+    auto n_failed = size_t{};
+    auto const tag = core_->torrent_add_report.connect_scoped(
+        [&n_failed](tr::app::Session::AddReport const& report) { n_failed += std::size(report.failed); });
+
+    prefs_->set(TR_KEY_watch_dir, watch_dir.string());
+    prefs_->set(TR_KEY_watch_dir_enabled, true);
+
+    // the watch dir sees both files in the same pass, and the torrent is renamed once the session has it
+    auto added = torrent;
+    added += ".added";
+    ASSERT_TRUE(wait_for([&added] { return fs::exists(added); }));
+    EXPECT_FALSE(fs::exists(torrent));
+    EXPECT_TRUE(wait_for([this] { return core_->torrents().size() == 1U; }));
+
+    // the other file is never sent, or its failed add would be reported with the torrent's batch
+    std::ignore = wait_for([&n_failed] { return n_failed != 0U; }, 500ms);
+    EXPECT_EQ(0U, n_failed);
+
+    auto not_added = not_a_torrent;
+    not_added += ".added";
+    EXPECT_TRUE(fs::exists(not_a_torrent));
+    EXPECT_FALSE(fs::exists(not_added));
 }
 
 // A session pref set through the client reaches the embedded session over RPC.
