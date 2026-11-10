@@ -152,6 +152,9 @@ public:
 
     void on_utp_state_change(int const state) const
     {
+        // The socket can destruct inside the callbacks, so keep it alive for the duration of this code block.
+        auto const keep_alive = shared_from_this();
+
         switch (state) {
         case UTP_STATE_CONNECT:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to connected");
@@ -182,6 +185,8 @@ public:
             return;
         }
 
+        // The socket can destruct inside error_cb_(), so keep it alive for the duration of this code block.
+        auto const keepalive = shared_from_this();
         auto error = tr_error{};
         switch (errcode) {
         case UTP_ECONNREFUSED:

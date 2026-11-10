@@ -147,7 +147,9 @@ void set_congestion_control([[maybe_unused]] tr_socket_t const s, [[maybe_unused
 #endif
 }
 
-class tr_peer_socket_tcp_impl final : public tr_peer_socket_tcp
+class tr_peer_socket_tcp_impl final
+    : public tr_peer_socket_tcp
+    , public std::enable_shared_from_this<tr_peer_socket_tcp_impl>
 {
 public:
     tr_peer_socket_tcp_impl(tr_session& session, tr_socket_address const& socket_address, tr_socket_t sock)
@@ -289,7 +291,10 @@ protected:
 private:
     static void event_read_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
     {
-        auto* const s = static_cast<tr_peer_socket_tcp_impl*>(vs);
+        // The socket can destruct inside read_cb(), so keep it alive
+        // for the duration of this code block. This can happen when
+        // a BT handshake did not complete successfully for example.
+        auto const s = static_cast<tr_peer_socket_tcp_impl*>(vs)->shared_from_this();
         tr_logAddTraceSock(s, "libevent says this peer socket is ready for reading");
 
         TR_ASSERT(std::cmp_equal(s->sock_, fd));
@@ -300,7 +305,10 @@ private:
 
     static void event_write_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
     {
-        auto* const s = static_cast<tr_peer_socket_tcp_impl*>(vs);
+        // The socket can destruct inside write_cb(), so keep it alive
+        // for the duration of this code block. This can happen because
+        // of a socket error for example.
+        auto const s = static_cast<tr_peer_socket_tcp_impl*>(vs)->shared_from_this();
         tr_logAddTraceSock(s, "libevent says this peer socket is ready for writing");
 
         TR_ASSERT(std::cmp_equal(s->sock_, fd));
@@ -324,7 +332,7 @@ tr_peer_socket_tcp::tr_peer_socket_tcp(tr_socket_address const& socket_address)
 {
 }
 
-std::unique_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
+std::shared_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_session& session,
     tr_socket_address const& socket_address,
     bool const client_is_seed)
@@ -335,10 +343,10 @@ std::unique_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     return {};
 }
 
-std::unique_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
+std::shared_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_session& session,
     tr_socket_address const& socket_address,
     tr_socket_t sock)
 {
-    return std::make_unique<tr_peer_socket_tcp_impl>(session, socket_address, sock);
+    return std::make_shared<tr_peer_socket_tcp_impl>(session, socket_address, sock);
 }
