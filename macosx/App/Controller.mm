@@ -53,7 +53,6 @@
 #import "MessageWindowController.h"
 #import "GlobalOptionsPopoverViewController.h"
 #import "ButtonToolbarItem.h"
-#import "GroupToolbarItem.h"
 #import "ShareToolbarItem.h"
 #import "ShareTorrentFileHelper.h"
 #import "Toolbar.h"
@@ -84,11 +83,7 @@ static ToolbarItemIdentifier const ToolbarItemIdentifierOpenFile = @"Toolbar Ope
 static ToolbarItemIdentifier const ToolbarItemIdentifierOpenWeb = @"Toolbar Open Web";
 static ToolbarItemIdentifier const ToolbarItemIdentifierRemove = @"Toolbar Remove";
 static ToolbarItemIdentifier const ToolbarItemIdentifierInfo = @"Toolbar Info";
-static ToolbarItemIdentifier const ToolbarItemIdentifierPauseAll = @"Toolbar Pause All";
-static ToolbarItemIdentifier const ToolbarItemIdentifierResumeAll = @"Toolbar Resume All";
 static ToolbarItemIdentifier const ToolbarItemIdentifierPauseResumeAll = @"Toolbar Pause / Resume All";
-static ToolbarItemIdentifier const ToolbarItemIdentifierPauseSelected = @"Toolbar Pause Selected";
-static ToolbarItemIdentifier const ToolbarItemIdentifierResumeSelected = @"Toolbar Resume Selected";
 static ToolbarItemIdentifier const ToolbarItemIdentifierPauseResumeSelected = @"Toolbar Pause / Resume Selected";
 static ToolbarItemIdentifier const ToolbarItemIdentifierFilter = @"Toolbar Toggle Filter";
 static ToolbarItemIdentifier const ToolbarItemIdentifierQuickLook = @"Toolbar QuickLook";
@@ -4083,87 +4078,59 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeAll]) {
-        GroupToolbarItem* groupItem = [[GroupToolbarItem alloc] initWithItemIdentifier:ident];
+        NSArray* images = @[
+            [NSImage imageWithSystemSymbolName:@"pause.circle.fill" accessibilityDescription:nil],
+            [NSImage imageWithSystemSymbolName:@"arrow.clockwise.circle.fill" accessibilityDescription:nil]
+        ];
 
-        NSToolbarItem* itemPause = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierPauseAll];
-        NSToolbarItem* itemResume = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierResumeAll];
+        NSArray* labels = @[
+            NSLocalizedString(@"Pause all torrents", "All toolbar item -> segment label"),
+            NSLocalizedString(@"Start all torrents", "All toolbar item -> segment label")
+        ];
 
-        NSSegmentedControl* segmentedControl = [[NSSegmentedControl alloc] initWithFrame:NSZeroRect];
-        segmentedControl.segmentStyle = NSSegmentStyleTexturedRounded;
-        segmentedControl.trackingMode = NSSegmentSwitchTrackingMomentary;
-        segmentedControl.segmentCount = 2;
+        NSToolbarItemGroup* groupItem = [NSToolbarItemGroup groupWithItemIdentifier:ident images:images
+                                                                      selectionMode:NSToolbarItemGroupSelectionModeMomentary
+                                                                             labels:labels
+                                                                             target:self
+                                                                             action:@selector(allToolbarClicked:)];
 
-        [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
-        [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause.circle.fill" accessibilityDescription:nil]
-                        forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause all torrents", "All toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagPause];
-
-        [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
-        [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise.circle.fill" accessibilityDescription:nil]
-                        forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Start all torrents", "All toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagResume];
-        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
-            // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
-            [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
-            [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
-        }
+        groupItem.controlRepresentation = NSToolbarItemGroupControlRepresentationExpanded;
 
         groupItem.label = NSLocalizedString(@"Apply All", "All toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start All", "All toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume All", "All toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
-        groupItem.subitems = @[ itemPause, itemResume ];
-        groupItem.view = segmentedControl;
-        groupItem.target = self;
-        groupItem.action = @selector(allToolbarClicked:);
-
-        [groupItem createMenu:@[
-            NSLocalizedString(@"Pause All", "All toolbar item -> label"),
-            NSLocalizedString(@"Start All", "All toolbar item -> label")
-        ]];
+        groupItem.subitems[ToolbarGroupTagPause].autovalidates = NO;
+        groupItem.subitems[ToolbarGroupTagResume].autovalidates = NO;
+        groupItem.subitems[ToolbarGroupTagPause].toolTip = labels[ToolbarGroupTagPause];
+        groupItem.subitems[ToolbarGroupTagResume].toolTip = labels[ToolbarGroupTagResume];
 
         return groupItem;
     } else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeSelected]) {
-        GroupToolbarItem* groupItem = [[GroupToolbarItem alloc] initWithItemIdentifier:ident];
+        NSArray* images = @[
+            [NSImage imageWithSystemSymbolName:@"pause" accessibilityDescription:nil],
+            [NSImage imageWithSystemSymbolName:@"arrow.clockwise" accessibilityDescription:nil]
+        ];
 
-        NSToolbarItem* itemPause = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierPauseSelected];
-        NSToolbarItem* itemResume = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierResumeSelected];
+        NSArray* labels = @[
+            NSLocalizedString(@"Pause torrent", "Selected toolbar item -> segment label"),
+            NSLocalizedString(@"Start torrent", "Selected toolbar item -> segment label")
+        ];
 
-        NSSegmentedControl* segmentedControl = [[NSSegmentedControl alloc] initWithFrame:NSZeroRect];
-        segmentedControl.segmentStyle = NSSegmentStyleTexturedRounded;
-        segmentedControl.trackingMode = NSSegmentSwitchTrackingMomentary;
-        segmentedControl.segmentCount = 2;
+        NSToolbarItemGroup* groupItem = [NSToolbarItemGroup groupWithItemIdentifier:ident images:images
+                                                                      selectionMode:NSToolbarItemGroupSelectionModeMomentary
+                                                                             labels:labels
+                                                                             target:self
+                                                                             action:@selector(selectedToolbarClicked:)];
 
-        [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
-        [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause" accessibilityDescription:nil]
-                        forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause torrent", "Selected toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagPause];
-
-        [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
-        [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise" accessibilityDescription:nil]
-                        forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Start torrent", "Selected toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagResume];
-        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
-            // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
-            [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
-            [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
-        }
+        groupItem.controlRepresentation = NSToolbarItemGroupControlRepresentationExpanded;
 
         groupItem.label = NSLocalizedString(@"Apply Selected", "Selected toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start Selected", "Selected toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume Selected", "Selected toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
-        groupItem.subitems = @[ itemPause, itemResume ];
-        groupItem.view = segmentedControl;
-        groupItem.target = self;
-        groupItem.action = @selector(selectedToolbarClicked:);
-
-        [groupItem createMenu:@[
-            NSLocalizedString(@"Pause", "Selected toolbar item -> label"),
-            NSLocalizedString(@"Start", "Selected toolbar item -> label")
-        ]];
+        groupItem.subitems[ToolbarGroupTagPause].autovalidates = NO;
+        groupItem.subitems[ToolbarGroupTagResume].autovalidates = NO;
+        groupItem.subitems[ToolbarGroupTagPause].toolTip = labels[ToolbarGroupTagPause];
+        groupItem.subitems[ToolbarGroupTagResume].toolTip = labels[ToolbarGroupTagResume];
 
         return groupItem;
     } else if ([ident isEqualToString:ToolbarItemIdentifierFilter]) {
@@ -4211,11 +4178,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (void)allToolbarClicked:(id)sender
+- (void)allToolbarClicked:(NSToolbarItemGroup*)sender
 {
-    NSInteger tagValue = [sender isKindOfClass:[NSSegmentedControl class]] ? [(NSSegmentedControl*)sender selectedTag] :
-                                                                             ((NSControl*)sender).tag;
-    switch (tagValue) {
+    NSInteger segment = sender.selectedIndex;
+    switch (segment) {
     case ToolbarGroupTagPause:
         [self stopAllTorrents:sender];
         break;
@@ -4225,11 +4191,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (void)selectedToolbarClicked:(id)sender
+- (void)selectedToolbarClicked:(NSToolbarItemGroup*)sender
 {
-    NSInteger tagValue = [sender isKindOfClass:[NSSegmentedControl class]] ? [(NSSegmentedControl*)sender selectedTag] :
-                                                                             ((NSControl*)sender).tag;
-    switch (tagValue) {
+    NSInteger segment = sender.selectedIndex;
+    switch (segment) {
     case ToolbarGroupTagPause:
         [self stopSelectedTorrents:sender];
         break;
@@ -4282,44 +4247,56 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
         return self.fTableView.numberOfSelectedRows > 0;
     }
 
-    //enable pause all item
-    if ([ident isEqualToString:ToolbarItemIdentifierPauseAll]) {
+    // enable all torrents pause/resume segment
+    if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeAll]) {
+        NSToolbarItemGroup* group = (NSToolbarItemGroup*)toolbarItem;
+
+        BOOL canPauseAll = NO;
         for (Torrent* torrent in self.fTorrents) {
             if (torrent.active || torrent.waitingToStart) {
-                return YES;
+                canPauseAll = YES;
+                break;
             }
         }
-        return NO;
-    }
 
-    //enable resume all item
-    if ([ident isEqualToString:ToolbarItemIdentifierResumeAll]) {
+        BOOL canResumeAll = NO;
         for (Torrent* torrent in self.fTorrents) {
             if (!torrent.active && !torrent.waitingToStart && !torrent.finishedSeeding) {
-                return YES;
+                canResumeAll = YES;
+                break;
             }
         }
-        return NO;
+
+        group.subitems[ToolbarGroupTagPause].enabled = canPauseAll;
+        group.subitems[ToolbarGroupTagResume].enabled = canResumeAll;
+
+        return canPauseAll || canResumeAll;
     }
 
-    //enable pause item
-    if ([ident isEqualToString:ToolbarItemIdentifierPauseSelected]) {
+    // enable selected torrents pause/resume segment
+    if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeSelected]) {
+        NSToolbarItemGroup* group = (NSToolbarItemGroup*)toolbarItem;
+
+        BOOL canPauseSelected = NO;
         for (Torrent* torrent in self.fTableView.selectedTorrents) {
             if (torrent.active || torrent.waitingToStart) {
-                return YES;
+                canPauseSelected = YES;
+                break;
             }
         }
-        return NO;
-    }
 
-    //enable resume item
-    if ([ident isEqualToString:ToolbarItemIdentifierResumeSelected]) {
+        BOOL canResumeSelected = NO;
         for (Torrent* torrent in self.fTableView.selectedTorrents) {
             if (!torrent.active && !torrent.waitingToStart) {
-                return YES;
+                canResumeSelected = YES;
+                break;
             }
         }
-        return NO;
+
+        group.subitems[ToolbarGroupTagPause].enabled = canPauseSelected;
+        group.subitems[ToolbarGroupTagResume].enabled = canResumeSelected;
+
+        return canPauseSelected || canResumeSelected;
     }
 
     //set info item
