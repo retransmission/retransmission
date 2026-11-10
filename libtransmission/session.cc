@@ -772,7 +772,8 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 {
     auto const lock = unique_lock();
 
-    bool const interface_changed = settings_in.bind_interface != settings_.bind_interface;
+    bool const interface_changed = tr_net_effective_bind_interface(settings_in.bind_interface) !=
+        tr_net_effective_bind_interface(settings_.bind_interface);
     auto const restarting = interface_changed ? stop_torrents_for_rebind() : std::vector<tr_torrent*>{};
 
     // other threads read the binding under its mutex

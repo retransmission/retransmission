@@ -33,6 +33,7 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/file-utils.h> // tr_file_read(), tr_file_save()
 #include <libtransmission/file.h>
+#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
@@ -687,6 +688,31 @@ TEST_F(SessionTest, randomPeerPortSurvivesOtherSettingsChanges)
     EXPECT_TRUE(waitFor([session] { return tr_sessionGetPeerPort(session) == TrDefaultPeerPort; }, 5s));
 
     tr_sessionClose(session, 1);
+}
+
+// Sockets use the setting stripped, so whitespace alone changes nothing,
+// and restarting every torrent and socket over it would be wasted.
+TEST_F(SessionTest, bindInterfaceWhitespaceIsNoChange)
+{
+    tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_INFO);
+    tr_logSetQueueEnabled(true);
+    tr_logClearQueue();
+
+    // the session logs the "blocked" policy each time the binding changes
+    auto settings = tr_sessionGetSettings(session_);
+    settings.insert_or_assign(TR_KEY_bind_interface, fmt::format(" {} ", TrBindInterfaceBlocked));
+    tr_sessionSet(session_, settings);
+    for (auto const& msg : tr_logGetQueue()) {
+        EXPECT_FALSE(msg.message.contains("binding is 'blocked'"sv)) << msg.message;
+    }
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
 }
 
 // A new UDP core binds the port the old one held, which is refused while both are open.

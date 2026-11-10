@@ -976,7 +976,9 @@ void tr_rpc_server::load(Settings&& settings)
     // while bind_address_ still names the Unix socket that stop_server() unlinks
     if (httpd &&
         (settings.bind_address_str != settings_.bind_address_str || settings.port != settings_.port ||
-         settings.bind_interface != settings_.bind_interface || settings.socket_mode != settings_.socket_mode)) {
+         tr_net_effective_bind_interface(settings.bind_interface) !=
+             tr_net_effective_bind_interface(settings_.bind_interface) ||
+         settings.socket_mode != settings_.socket_mode)) {
         stop_server(this);
     }
 
