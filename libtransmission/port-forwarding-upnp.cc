@@ -140,7 +140,22 @@ namespace
     int err = UPNPDISCOVER_SUCCESS;
 
 #if (MINIUPNPC_API_VERSION >= 14) // adds ttl
-    ret = upnpDiscover(msec, bindaddr, nullptr, 0, 0, 2, &err);
+    // upnpDiscover()'s gateway types, without its every-root-device fallback, which
+    // searching all types would answer with every UPnP device on the LAN. Searching
+    // all types sends every M-SEARCH at once and then waits, where upnpDiscover()
+    // waits after each: so a discovery begun before a binding change has sent all it
+    // will before the change, not up to seconds after.
+    static auto constexpr DeviceTypes = std::array<char const*, 4U>{
+        "urn:schemas-upnp-org:device:InternetGatewayDevice:1",
+        "urn:schemas-upnp-org:service:WANIPConnection:1",
+        "urn:schemas-upnp-org:service:WANPPPConnection:1",
+        nullptr,
+    };
+    // Bound to an interface, given by name rather than address, skip minissdpd, a
+    // local daemon that would report the gateways it has seen on every interface.
+    auto const is_interface = bindaddr != nullptr && !tr_address::from_string(bindaddr);
+    char const* const minissdpdsock = is_interface ? "" : nullptr;
+    ret = upnpDiscoverDevices(std::data(DeviceTypes), msec, bindaddr, minissdpdsock, 0, 0, 2, &err, 1);
 #else
     ret = upnpDiscover(msec, bindaddr, nullptr, 0, 0, &err);
 #endif
