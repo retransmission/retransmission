@@ -279,6 +279,7 @@ private:
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
         [[nodiscard]] tr_web::BindAddresses bind_addresses() const override;
         [[nodiscard]] std::optional<std::string> bind_interface() const override;
+        [[nodiscard]] tr_web::Binding binding() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
         [[nodiscard]] std::optional<std::string> proxyUrl() const override;
@@ -712,18 +713,10 @@ public:
 
     // peer networking
 
-    // session thread only; other threads use bind_interface_thread_safe()
+    // session thread, or under unique_lock()
     [[nodiscard]] constexpr auto const& bind_interface() const noexcept
     {
         return settings().bind_interface;
-    }
-
-    // Any thread may call this: setSettings() replaces settings_ under
-    // bind_interface_mutex_.
-    [[nodiscard]] std::string bind_interface_thread_safe() const
-    {
-        auto const lock = std::scoped_lock{ bind_interface_mutex_ };
-        return settings_.bind_interface;
     }
 
     [[nodiscard]] constexpr auto const& peerCongestionAlgorithm() const noexcept
@@ -1491,12 +1484,6 @@ private:
     /// but are self-contained / don't hold references to others
 
     mutable std::recursive_mutex session_mutex_;
-
-    // Held while setSettings() replaces settings_, so that other threads can
-    // read settings_.bind_interface through bind_interface_thread_safe(). It
-    // is always the innermost lock: the session thread takes it while holding
-    // session_mutex_, and tr_web::fetch() releases it before taking any other.
-    mutable std::mutex bind_interface_mutex_;
 
     // The OS index the bound sockets were given for settings_.bind_interface,
     // or 0 when the setting is empty/blocked or the interface was absent.

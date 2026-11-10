@@ -47,6 +47,11 @@ public:
 
     using BindAddresses = std::array<std::optional<std::string>, NUM_TR_AF_INET_TYPES>;
 
+    struct Binding {
+        BindAddresses bind_addresses;
+        std::optional<std::string> bind_interface;
+    };
+
     class FetchOptions
     {
     public:
@@ -212,6 +217,13 @@ public:
         [[nodiscard]] virtual std::optional<std::string> bind_interface() const
         {
             return std::nullopt;
+        }
+
+        // What fetch() reads. A mediator whose binding can change while fetch() runs
+        // overrides this to read both parts at once.
+        [[nodiscard]] virtual Binding binding() const
+        {
+            return { .bind_addresses = bind_addresses(), .bind_interface = bind_interface() };
         }
 
         // Return the preferred user aagent, or nullopt to not use one

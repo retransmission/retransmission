@@ -318,12 +318,19 @@ tr_web::BindAddresses tr_session::WebMediator::bind_addresses() const
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
 {
-    // fetch() runs on any thread, so read the binding under its mutex
-    if (auto bind_interface = session_->bind_interface_thread_safe(); !tr_net_interface_is_default(bind_interface)) {
+    auto const lock = session_->unique_lock();
+    if (auto const& bind_interface = session_->bind_interface(); !tr_net_interface_is_default(bind_interface)) {
         return bind_interface;
     }
 
     return std::nullopt;
+}
+
+// fetch() runs on any thread: one lock keeps both parts from the same settings
+tr_web::Binding tr_session::WebMediator::binding() const
+{
+    auto const lock = session_->unique_lock();
+    return { .bind_addresses = bind_addresses(), .bind_interface = bind_interface() };
 }
 
 size_t tr_session::WebMediator::clamp(int torrent_id, size_t byte_count) const
@@ -776,11 +783,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         tr_net_effective_bind_interface(settings_.bind_interface);
     auto const restarting = interface_changed ? stop_torrents_for_rebind() : std::vector<tr_torrent*>{};
 
-    // other threads read the binding under its mutex
-    {
-        auto const bind_interface_lock = std::scoped_lock{ bind_interface_mutex_ };
-        std::swap(settings_, settings_in);
-    }
+    std::swap(settings_, settings_in);
     auto const& new_settings = settings_;
     auto const& old_settings = settings_in;
 
@@ -1752,8 +1755,13 @@ std::string tr_sessionGetBindInterface(tr_session const* session)
 {
     TR_ASSERT(session != nullptr);
 
+    if (session == nullptr) {
+        return {};
+    }
+
     // callable from any thread, e.g. a GUI's main thread
-    return session != nullptr ? session->bind_interface_thread_safe() : std::string{};
+    auto const lock = session->unique_lock();
+    return session->bind_interface();
 }
 
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface)

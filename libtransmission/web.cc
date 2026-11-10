@@ -264,8 +264,7 @@ public:
 
     void fetch(FetchOptions&& options)
     {
-        auto bind_addresses = mediator.bind_addresses();
-        auto bind_interface = mediator.bind_interface();
+        auto [bind_addresses, bind_interface] = mediator.binding();
         {
             auto lock = std::unique_lock{ tasks_mutex_ };
 
