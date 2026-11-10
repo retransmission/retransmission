@@ -13,40 +13,33 @@ import {
 } from './utils.js';
 
 export class PrefsDialog extends EventTarget {
-  // An IPv6 address's range, the first of session_get's tags, is shown as a
-  // coloured mark that the tooltips explain. A native <option> can only hold
-  // plain text, so the colour comes from the character itself.
-  static _RangeMarks = {
+  // an IPv6 address's type, the first of session_get's tags
+  static _Ranges = {
     gua: {
       about: 'global, reachable from the internet',
-      mark: '🟢',
       name: 'GUA',
     },
     ula: {
       about: 'unique local, reachable only within your site',
-      mark: '🔵',
       name: 'ULA',
     },
     'link-local': {
       about:
-        "this link only. Grayed out, since peers and trackers aren't on your link. Local peer discovery reaches the link through the interface, without a bind address.",
-      mark: '⚪',
+        'this link only, which no peer or tracker is on. Local peer discovery reaches the link through the interface, without a bind address.',
       name: 'Link-local',
     },
     nat64: {
       about: 'an IPv4 address translated by NAT64',
-      mark: '🟣',
       name: 'NAT64',
     },
-    teredo: { about: 'a Teredo tunnel', mark: '🟠', name: 'Teredo' },
-    '6to4': { about: 'a 6to4 tunnel (deprecated)', mark: '🟠', name: '6to4' },
+    teredo: { about: 'a Teredo tunnel', name: 'Teredo' },
+    '6to4': { about: 'a 6to4 tunnel (deprecated)', name: '6to4' },
     documentation: {
       about: 'for examples only, not routed',
-      mark: '🟤',
       name: 'Documentation',
     },
-    'site-local': { about: 'deprecated', mark: '🟡', name: 'Site-local' },
-    loopback: { about: 'this host only', mark: '⚫', name: 'Loopback' },
+    'site-local': { about: 'deprecated', name: 'Site-local' },
+    loopback: { about: 'this host only', name: 'Loopback' },
   };
 
   // session_get's other tags, an address's origin
@@ -61,6 +54,54 @@ export class PrefsDialog extends EventTarget {
     },
     dhcp: { about: 'leased from a DHCPv6 server', name: 'DHCP' },
   };
+
+  // session_get's managed_by values for an interface
+  static _Managers = {
+    networkmanager: 'NetworkManager',
+    docker: 'Docker',
+    libvirt: 'libvirt',
+    other: 'Other',
+  };
+
+  // Filters over a bind address list. `values(address, iface)` gives what a
+  // filter's chosen values are matched against; an address passes a filter
+  // when any of them was chosen.
+  static _AddressFilters = [
+    {
+      choices: () => Object.entries(PrefsDialog._Managers),
+      key: 'managed_by',
+      label: 'Managed by',
+      values: (_address, iface) => [iface.managed_by],
+    },
+    {
+      choices: (interfaces) => interfaces.map(({ name }) => [name, name]),
+      key: 'interface',
+      label: 'Interface',
+      values: (_address, iface) => [iface.name],
+    },
+    {
+      choices: () =>
+        Object.entries(PrefsDialog._Ranges).map(([tag, { name }]) => [
+          tag,
+          name,
+        ]),
+      family: 'ipv6',
+      key: 'type',
+      label: 'Type',
+      values: ({ tags }) => (tags ?? []).slice(0, 1),
+    },
+    {
+      choices: () =>
+        Object.entries(PrefsDialog._Origins).map(([tag, { name }]) => [
+          tag,
+          name,
+        ]),
+      family: 'ipv6',
+      key: 'origin',
+      label: 'Origin',
+      values: ({ tags }) => (tags ?? []).slice(1),
+    },
+  ];
 
   static _BindAddressAdvice = {
     ipv4: 'Recommended: Any. The chosen interface already keeps traffic on it.',
@@ -133,7 +174,8 @@ export class PrefsDialog extends EventTarget {
   }
 
   static _getValue(e) {
-    if (e.tagName === 'TEXTAREA') {
+    // a textarea, or a value that is a string even when it looks like a number
+    if (e.tagName === 'TEXTAREA' || e.dataset.string !== undefined) {
       return e.value;
     }
 
@@ -191,7 +233,18 @@ export class PrefsDialog extends EventTarget {
   _updateInterfaceSelect() {
     const select = this.elements.network.interface_select;
     const current = this._savedInterface();
-    const names = this.network_interfaces.map(({ name }) => name);
+    // the interface in use stays listed whatever the filters say
+    const filters = this._activeFilters();
+    const passes = (iface) =>
+      iface.name === current ||
+      filters.every(({ key, values }) => {
+        const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
+        return def.values(null, iface).some((v) => values.includes(v));
+      });
+    const all_names = this.network_interfaces.map(({ name }) => name);
+    const names = this.network_interfaces
+      .filter(passes)
+      .map(({ name }) => name);
 
     // rebuilt only on change: replacing the options closes an open dropdown
     const key = JSON.stringify([current, names]);
@@ -202,7 +255,7 @@ export class PrefsDialog extends EventTarget {
       for (const name of names) {
         options.push(new Option(name, name));
       }
-      if (current && current !== 'blocked' && !names.includes(current)) {
+      if (current && current !== 'blocked' && !all_names.includes(current)) {
         options.push(new Option(`${current} (unavailable)`, current));
       }
       options.push(new Option('None (block all traffic)', 'blocked'));
@@ -213,26 +266,25 @@ export class PrefsDialog extends EventTarget {
     select.value = current;
 
     // an empty list means the daemon's platform can't bind to an interface
-    setEnabled(select, names.length > 0 || current !== '');
+    setEnabled(select, all_names.length > 0 || current !== '');
+    this._renderFilterButtons();
   }
 
-  // one line for an address: its range's mark, the address, and its origin,
-  // e.g. "🟢 2001:db8::1 · SLAAC-stable"
+  // one line for an address: the address and its origin,
+  // e.g. "2001:db8::1 · SLAAC-stable"
   static _describeAddress({ address, tags }) {
-    const [range, ...rest] = tags ?? [];
-    const mark = PrefsDialog._RangeMarks[range]?.mark;
-    const origins = rest.map((tag) => PrefsDialog._Origins[tag]?.name ?? tag);
-    return [mark, address, ...origins.map((origin) => `· ${origin}`)]
-      .filter(Boolean)
-      .join(' ');
+    const origins = (tags ?? [])
+      .slice(1)
+      .map((tag) => PrefsDialog._Origins[tag]?.name ?? tag);
+    return [address, ...origins].join(' · ');
   }
 
-  // explains the marks and origins among `addresses`, one per line
+  // explains the types and origins among `addresses`, one per line
   static _describeTags(addresses) {
     const tags = new Set(addresses.flatMap((address) => address.tags ?? []));
-    const ranges = Object.entries(PrefsDialog._RangeMarks)
+    const ranges = Object.entries(PrefsDialog._Ranges)
       .filter(([tag]) => tags.has(tag))
-      .map(([, { about, mark, name }]) => `${mark} ${name}: ${about}`);
+      .map(([, { about, name }]) => `${name}: ${about}`);
     const origins = Object.entries(PrefsDialog._Origins)
       .filter(([tag]) => tags.has(tag))
       .map(([, { about, name }]) => `${name}: ${about}`);
@@ -285,9 +337,11 @@ export class PrefsDialog extends EventTarget {
   _updateBindAddressSelect(family) {
     const { network } = this.elements;
     const { feedback, select } = network.bind_address[family];
-    const saved = (
+    // "0.0.0.0" and "::" are older settings' spelling of any address
+    const value = (
       this.session_manager.session_properties[select.dataset.key] ?? ''
     ).trim();
+    const saved = value === '0.0.0.0' || value === '::' ? '' : value;
 
     const chosen = network.interface_select.value;
     let interfaces = [];
@@ -298,12 +352,26 @@ export class PrefsDialog extends EventTarget {
     }
     const is_family = ({ address }) =>
       address.includes(':') === (family === 'ipv6');
+    // the address in use stays listed whatever the filters say
+    const passes = (address, iface) =>
+      address.address === saved ||
+      this._activeFilters(family).every(({ key, values }) => {
+        // a chosen interface's addresses are listed whatever manages it
+        if (key === 'managed_by' && chosen !== '') {
+          return true;
+        }
+        const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
+        return def.values(address, iface).some((v) => values.includes(v));
+      });
     const groups = interfaces
-      .map(({ addresses, name }) => ({
-        addresses: addresses.filter(is_family),
-        name,
+      .map((iface) => ({
+        addresses: iface.addresses
+          .filter(is_family)
+          .filter((address) => passes(address, iface)),
+        name: iface.name,
       }))
       .filter(({ addresses }) => addresses.length > 0);
+    this._renderFilterButtons();
     const listed = groups.flatMap(({ addresses }) =>
       addresses.map(({ address }) => address),
     );
@@ -327,25 +395,14 @@ export class PrefsDialog extends EventTarget {
           '',
         ),
       ];
-      const toOption = (address) => {
-        const option = new Option(
-          PrefsDialog._describeAddress(address),
-          address.address,
-        );
-        // grayed out, though a saved one stays shown as what's in use
-        option.disabled =
-          PrefsDialog._isLinkLocal(address) && address.address !== saved;
-        return option;
-      };
-      if (groups.length === 1) {
-        options.push(...groups[0].addresses.map(toOption));
-      } else {
-        for (const { addresses, name } of groups) {
-          const group = document.createElement('optgroup');
-          group.label = name;
-          group.append(...addresses.map(toOption));
-          options.push(group);
-        }
+      const toOption = (address) =>
+        new Option(PrefsDialog._describeAddress(address), address.address);
+      // under their interface's name, even when it's the only one
+      for (const { addresses, name } of groups) {
+        const group = document.createElement('optgroup');
+        group.label = name;
+        group.append(...addresses.map(toOption));
+        options.push(group);
       }
       if (saved && !listed.includes(saved)) {
         options.push(new Option(`${saved} (unavailable)`, saved));
@@ -372,6 +429,243 @@ export class PrefsDialog extends EventTarget {
     } else if (feedback.dataset.state !== 'saved') {
       PrefsDialog._setFeedback(feedback, null, '');
     }
+  }
+
+  // A Managed by filter counts only while some interface has one of its
+  // managers, so the default one leaves the lists whole where nothing reports
+  // NetworkManager, e.g. on macOS.
+  _counts({ key, values }) {
+    return (
+      key !== 'managed_by' ||
+      this.network_interfaces.some((i) => values.includes(i.managed_by))
+    );
+  }
+
+  // The filters in use, shared by the interface list and both address lists.
+  // With `family`, also those that apply to its addresses only; without, only
+  // those that apply to interfaces.
+  _activeFilters(family = null) {
+    return this.filters.filter((filter) => {
+      const def = PrefsDialog._AddressFilters.find((d) => d.key === filter.key);
+      return this._counts(filter) && (!def.family || def.family === family);
+    });
+  }
+
+  // `def`'s choices that something listed still has, as the other filters in
+  // use leave it, so each filter narrows the next.
+  _filterChoices(def) {
+    const has_nm = this.network_interfaces.some((i) => i.network_manager);
+    const others = this.filters
+      .filter(({ key }) => key !== def.key)
+      .filter(({ key }) => key !== 'network_manager' || has_nm)
+      .map(({ key, values }) => ({
+        def: PrefsDialog._AddressFilters.find((d) => d.key === key),
+        values,
+      }));
+    const passes = (filters, address, iface) =>
+      filters.every(({ def: d, values }) =>
+        d.values(address, iface).some((v) => values.includes(v)),
+      );
+    const for_interfaces = others.filter(({ def: d }) => !d.family);
+    const for_addresses = others.filter(({ def: d }) => d.family);
+
+    const present = new Set();
+    for (const iface of this.network_interfaces) {
+      if (!passes(for_interfaces, null, iface)) {
+        continue;
+      }
+      if (!def.family) {
+        // with IPv6 filters in use, an interface counts while they leave it an address
+        const has_address = iface.addresses.some(
+          (address) =>
+            address.address.includes(':') &&
+            passes(for_addresses, address, iface),
+        );
+        if (for_addresses.length === 0 || has_address) {
+          for (const v of def.values(null, iface)) {
+            present.add(v);
+          }
+        }
+        continue;
+      }
+      for (const address of iface.addresses) {
+        if (
+          address.address.includes(':') === (def.family === 'ipv6') &&
+          passes(for_addresses, address, iface)
+        ) {
+          for (const v of def.values(address, iface)) {
+            present.add(v);
+          }
+        }
+      }
+    }
+
+    return def.choices(this.network_interfaces).filter(([v]) => present.has(v));
+  }
+
+  _setFilters(filters) {
+    this.filters = filters.filter(({ values }) => values.length > 0);
+    this._updateInterfaceSelect();
+    this._updateInterfaceAddresses();
+  }
+
+  // Each ▽ button is dark gray while filters apply to its list, which its
+  // tooltip names. `family` is null for the interface list's.
+  _renderFilterButtons() {
+    const { network } = this.elements;
+    const buttons = [
+      [network.interface_filter, null],
+      [network.bind_address.ipv4.filter, 'ipv4'],
+      [network.bind_address.ipv6.filter, 'ipv6'],
+    ];
+    for (const [button, family] of buttons) {
+      const text = this._activeFilters(family)
+        .map(({ key, values }) => {
+          const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
+          const choices = def.choices(this.network_interfaces);
+          const names = new Map(choices);
+          // a filter that keeps most values reads better as what it leaves out
+          const left_out = choices.filter(([v]) => !values.includes(v));
+          if (left_out.length < values.length) {
+            return `${def.label}: not ${left_out.map(([, name]) => name).join(', ')}`;
+          }
+          return `${def.label}: ${values.map((v) => names.get(v) ?? v).join(', ')}`;
+        })
+        .join('; ');
+      button.classList.toggle('active', Boolean(text));
+      button.title = text
+        ? `Listing only what passes: ${text}`
+        : 'Filter the entries listed';
+    }
+  }
+
+  // Opens the filter menu under `anchor`: the filters that apply to its list,
+  // `family`'s addresses or, without, the interfaces, each opening its
+  // choices. Each change applies at once, to every list it applies to.
+  _openFilterMenu(anchor, family = null) {
+    this.filter_menu?.close();
+
+    const root = document.createElement('div');
+    root.role = 'menu';
+    root.classList.add('address-filter-menu', 'popup');
+    // a click can replace the menu's contents, detaching its target before
+    // an OutsideClickListener would see it inside the menu
+    root.addEventListener('click', (event_) => event_.stopPropagation());
+
+    const outside = new OutsideClickListener(root);
+    const close = () => {
+      outside.stop();
+      root.remove();
+      if (this.filter_menu?.root === root) {
+        this.filter_menu = null;
+      }
+    };
+    outside.addEventListener('click', close);
+    this.filter_menu = { close, root };
+
+    const item = (text, on_click, ...classes) => {
+      const div = document.createElement('div');
+      div.role = 'menuitem';
+      div.classList.add('address-filter-menuitem', ...classes);
+      setTextContent(div, text);
+      div.addEventListener('click', on_click);
+      return div;
+    };
+
+    // Managed by is offered only where something other than Other manages an interface
+    const has_managers = this.network_interfaces.some(
+      (i) => i.managed_by && i.managed_by !== 'other',
+    );
+    const defs = PrefsDialog._AddressFilters.filter(
+      (def) =>
+        (def.key !== 'managed_by' || has_managers) &&
+        (!def.family || def.family === family),
+    );
+    const valuesOf = (def) =>
+      this.filters.find((f) => f.key === def.key)?.values ?? [];
+    // a changed chip keeps its place; a new one goes last
+    const setValues = (def, values) => {
+      const filters = [...this.filters];
+      const index = filters.findIndex((f) => f.key === def.key);
+      if (index === -1) {
+        filters.push({ key: def.key, values });
+      } else {
+        filters[index] = { key: def.key, values };
+      }
+      this._setFilters(filters);
+    };
+
+    // the menu's two views refer to each other
+    const views = {};
+    views.list = () => {
+      const active = new Set(this._activeFilters(family).map((f) => f.key));
+      // a filter with nothing left to choose isn't offered
+      const offered = defs.filter((def) => this._filterChoices(def).length > 0);
+      const items = offered.map((def) => {
+        const div = item(
+          def.label,
+          () => views.choices(def),
+          'address-filter-group',
+        );
+        div.classList.toggle('active', active.has(def.key));
+        return div;
+      });
+      if (active.size > 0) {
+        items.push(
+          item(
+            'Clear filters',
+            () => {
+              // only this list's: an IPv6 Type filter outlives the IPv4 list's Clear
+              this._setFilters(this.filters.filter((f) => !active.has(f.key)));
+              close();
+            },
+            'address-filter-clear',
+          ),
+        );
+      }
+      root.replaceChildren(...items);
+    };
+
+    views.choices = (def) => {
+      const children = [
+        item(`‹ ${def.label}`, () => views.list(), 'address-filter-back'),
+      ];
+      const choices = this._filterChoices(def);
+      const selected = new Set(valuesOf(def));
+      for (const [value, text] of choices) {
+        const label = document.createElement('label');
+        label.classList.add('address-filter-choice');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = selected.has(value);
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            selected.add(value);
+          } else {
+            selected.delete(value);
+          }
+          // values keep the menu's order
+          setValues(
+            def,
+            choices.map(([v]) => v).filter((v) => selected.has(v)),
+          );
+        });
+        label.append(input, ` ${text}`);
+        children.push(label);
+      }
+      root.replaceChildren(...children);
+    };
+
+    views.list();
+
+    document.body.append(root);
+    const where = anchor.getBoundingClientRect();
+    const left = Math.min(
+      where.left,
+      document.documentElement.clientWidth - root.offsetWidth - 8,
+    );
+    root.style.left = `${Math.max(left, 0) + window.scrollX}px`;
+    root.style.top = `${where.bottom + 4 + window.scrollY}px`;
   }
 
   // a button that copies `address`, labelled with the address and its tags
@@ -1048,12 +1342,24 @@ export class PrefsDialog extends EventTarget {
       'Route peer and tracker traffic through this interface only, such as a VPN tunnel.';
     root.append(label);
 
+    // the ▽ filter button, shared with the address lists, then the interface list
+    const interface_row = document.createElement('div');
+    interface_row.classList.add('address-filter-row');
+    root.append(interface_row);
+
+    const interface_filter = document.createElement('button');
+    interface_filter.type = 'button';
+    interface_filter.classList.add('address-filter-add');
+    setTextContent(interface_filter, '▽');
+
     const select = document.createElement('select');
     select.id = makeUUID();
     select.dataset.key = 'bind_interface';
+    // an interface may be named "100", which is still a name
+    select.dataset.string = '';
     select.title = label.title;
     label.setAttribute('for', select.id);
-    root.append(select);
+    interface_row.append(interface_filter, select);
     const interface_select = select;
 
     const interface_addresses_label = document.createElement('div');
@@ -1072,13 +1378,23 @@ export class PrefsDialog extends EventTarget {
         'Listen for peers and send traffic from this local address only.';
       root.append(address_label);
 
+      // the Filter button, then the list its filters narrow
+      const row = document.createElement('div');
+      row.classList.add('address-filter-row');
+      root.append(row);
+
+      const filter = document.createElement('button');
+      filter.type = 'button';
+      filter.classList.add('address-filter-add');
+      setTextContent(filter, '▽');
+
       const address_select = document.createElement('select');
       // _update() sets it from this key, then _updateBindAddressSelect() rebuilds it
       address_select.dataset.key = key;
       address_select.id = makeUUID();
       address_select.title = address_label.title;
       address_label.setAttribute('for', address_select.id);
-      root.append(address_select);
+      row.append(filter, address_select);
 
       const feedback = document.createElement('div');
       feedback.classList.add('bind-address-feedback', 'hidden');
@@ -1087,7 +1403,7 @@ export class PrefsDialog extends EventTarget {
       address_select.setAttribute('aria-describedby', feedback.id);
       root.append(feedback);
 
-      return { feedback, select: address_select };
+      return { feedback, filter, select: address_select };
     };
     const bind_ipv4 = createBindAddressSelect(
       'IPv4 bind address:',
@@ -1212,6 +1528,7 @@ export class PrefsDialog extends EventTarget {
       default_trackers_textarea,
       interface_addresses_label,
       interface_status_label,
+      interface_filter,
       interface_select,
       port_forwarding_check,
       port_input,
@@ -1278,12 +1595,41 @@ export class PrefsDialog extends EventTarget {
     this.elements.network.interface_select.addEventListener('change', () =>
       this._updateInterfaceAddresses(),
     );
-    for (const [family, { select }] of Object.entries(
+    // Interfaces come and go, and the daemon's first list after it starts has
+    // no NetworkManager states yet, so the list is asked for again while open.
+    this.interfaces_timer = setInterval(
+      () => this._loadNetworkInterfaces(),
+      5000,
+    );
+    this.filter_menu = null;
+    // By default, list only the interfaces NetworkManager set up, where it
+    // reports, and no link-local address, which no peer or tracker can reach.
+    this.filters = [
+      { key: 'managed_by', values: ['networkmanager'] },
+      {
+        key: 'type',
+        values: Object.keys(PrefsDialog._Ranges).filter(
+          (tag) => tag !== 'link-local',
+        ),
+      },
+    ];
+    this.elements.network.interface_filter.addEventListener(
+      'click',
+      (event_) => {
+        event_.stopPropagation();
+        this._openFilterMenu(this.elements.network.interface_filter);
+      },
+    );
+    for (const [family, { filter, select }] of Object.entries(
       this.elements.network.bind_address,
     )) {
       select.addEventListener('change', () =>
         this._onBindAddressChanged(family),
       );
+      filter.addEventListener('click', (event_) => {
+        event_.stopPropagation();
+        this._openFilterMenu(filter, family);
+      });
     }
     this.elements.dismiss.addEventListener('click', () => this.close());
     this.outside = new OutsideClickListener(this.elements.root);
@@ -1332,6 +1678,8 @@ export class PrefsDialog extends EventTarget {
 
   close() {
     if (!this.closed) {
+      clearInterval(this.interfaces_timer);
+      this.filter_menu?.close();
       this.outside.stop();
       this.session_manager.removeEventListener(
         'session-change',

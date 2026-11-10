@@ -786,6 +786,33 @@ a {
     color: var(--color-fg-disabled);
   }
 
+  /* the Filter button beside the address list */
+  .address-filter-row {
+    align-items: center;
+    /* sized by its column, which the other rows' controls set, not by its longest option */
+    contain: inline-size;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+
+    select {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  /* light gray until a filter is set, then dark gray */
+  .address-filter-add {
+    color: var(--color-fg-disabled);
+    font-size: smaller;
+    padding: 0 0.4em;
+
+    &.active {
+      color: var(--color-fg-primary);
+      font-weight: bold;
+    }
+  }
+
   .bind-address-feedback,
   .interface-status {
     font-size: smaller;
@@ -1579,4 +1606,51 @@ a {
 
 .clusterize-extra-row.clusterize-keep-parity {
   display: none;
+}
+
+/* the address filter menu is a popup on <body>, outside the prefs dialog */
+.address-filter-menu {
+  background: var(--color-bg-popup);
+  border-radius: 5px;
+  color: var(--color-fg-on-popup);
+  font-size: 13px;
+  max-height: 60vh;
+  min-width: 12rem;
+  overflow: auto;
+  padding: 5px;
+  user-select: none;
+
+  .address-filter-menuitem,
+  .address-filter-choice {
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    padding: 4px 10px;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--color-bg-hover);
+    }
+  }
+
+  /* filters that already have a chip */
+  .address-filter-menuitem.active::after {
+    content: ' ✓';
+  }
+
+  .address-filter-group::before {
+    content: '▸';
+    float: right;
+    margin-left: 1em;
+  }
+
+  .address-filter-back {
+    font-weight: bold;
+  }
+
+  .address-filter-clear {
+    border-top: 1px solid var(--color-fg-secondary);
+    border-radius: 0;
+    margin-top: 4px;
+  }
 }
