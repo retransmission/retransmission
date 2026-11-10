@@ -1142,6 +1142,12 @@ void tr_torrent::set_location_in_session_thread(
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
+    // The verify thread reads the dirs unlocked, so stop it before they
+    // change and restart it once they have. Cancelling re-hashes pieces,
+    // and those hashes must run before the files close and move.
+    auto const was_verifying = verify_state_ != VerifyState::None;
+    session->verify_remove(this);
+
     auto on_placed = [session = this->session, move_from_old_path](tr_torrent_id_t const tor_id, std::string_view const path) {
         auto* const tor = session->torrents().get(tor_id);
         if (tor == nullptr || std::empty(path)) {
@@ -1162,7 +1168,8 @@ void tr_torrent::set_location_in_session_thread(
     };
 
     auto on_done = [session = this->session,
-                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+                    setme_state,
+                    was_verifying](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
         if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && error) {
             tor->error().set_local_error(
                 fmt::format(
@@ -1171,6 +1178,8 @@ void tr_torrent::set_location_in_session_thread(
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
             tr_torrentStop(tor);
+        } else if (tor != nullptr && was_verifying) {
+            tr_torrentVerify(tor);
         }
 
         if (setme_state != nullptr) {
@@ -1198,9 +1207,6 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
-    // Cancel a pending verify first. Cancelling re-hashes pieces, and
-    // those hashes must run before the files close and move.
-    session->verify_remove(this);
     session->local_data.close_torrent(id());
     session->local_data.move(id(), std::move(path), std::move(on_done), std::move(on_placed));
 }
@@ -2741,7 +2747,33 @@ void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname,
     run_in_session_thread_by_id(
         *this,
         [oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)](
-            tr_torrent* const tor) mutable { tor->session->local_data.rename(tor->id(), oldpath, newname, std::move(cb)); },
+            tr_torrent* const tor) mutable {
+            auto* const session = tor->session;
+
+            // The verify thread reads the file names unlocked, so stop it
+            // before they change and restart it once they have.
+            auto const was_verifying = tor->verify_state_ != VerifyState::None;
+            {
+                auto const lock = session->unique_lock();
+                session->verify_remove(tor);
+            }
+            if (was_verifying) {
+                cb = [session, cb = std::move(cb)](
+                         tr_torrent_id_t const tor_id,
+                         std::string_view const old_path,
+                         std::string_view const new_name,
+                         tr_error const& error) {
+                    if (cb != nullptr) {
+                        cb(tor_id, old_path, new_name, error);
+                    }
+                    if (auto* const torrent = session->torrents().get(tor_id); torrent != nullptr) {
+                        tr_torrentVerify(torrent);
+                    }
+                };
+            }
+
+            session->local_data.rename(tor->id(), oldpath, newname, std::move(cb));
+        },
         std::move(on_gone));
 }
 
