@@ -276,13 +276,13 @@ TEST_F(AppSessionTest, importingInfoReadsTheVersionAndType)
 
 // Session tests against a real embedded session, its replies pumped through a UiLoop.
 auto constexpr Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
+auto constexpr Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
 
 class AppSessionRpcTest
     : public EmbeddedSessionTest
     , public SessionUnderTest<TestSession>
 {
 protected:
-    static constexpr auto Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
     static constexpr auto Gimp = "gimp-2.10.32-1-arm64.dmg.torrent"sv;
 
     void SetUp() override
@@ -435,6 +435,17 @@ TEST_F(AppSessionRpcTest, appliesRpcServerPrefsWithTheCApi)
 
     prefs_.set(TR_KEY_rpc_username, "alice"s);
     EXPECT_TRUE(loop_.pump_until([this]() { return tr_sessionGetRPCUsername(core_) == "alice"; }));
+}
+
+// The fixture owns `core_` and closes it; the Session just lets go of it.
+TEST_F(AppSessionRpcTest, stopForgetsASessionItDidNotStart)
+{
+    session_.set_embedded_session(core_);
+    ASSERT_TRUE(session_.embedded_settings());
+
+    session_.stop();
+    EXPECT_FALSE(session_.embedded_settings());
+    EXPECT_FALSE(session_.is_closing());
 }
 
 TEST_F(AppSessionRpcTest, importingSettingsDoesNotEchoBackToTheSession)
@@ -803,8 +814,11 @@ TEST_F(AppSessionRpcTest, startAllReachesEveryTorrent)
             return session_.torrents().size() == 2U && activity(id1) == TR_STATUS_STOPPED && activity(id2) == TR_STATUS_STOPPED;
         }));
 
+    // A torrent that is still verifying starts when its check ends, which can be after
+    // the verb's own re-fetch, so ask again until both have started.
     session_.start_all_torrents();
-    EXPECT_TRUE(loop_.pump_until(
+    EXPECT_TRUE(refresh_until(
+        [this] { session_.refresh_all_torrents(TorrentKeySet::MainStats); },
         [this, id1, id2] { return activity(id1) != TR_STATUS_STOPPED && activity(id2) != TR_STATUS_STOPPED; }));
 }
 
@@ -1107,6 +1121,20 @@ protected:
         return loop_.pump_until([this] { return !session_.port_test_pending(); });
     }
 
+    // adds the test asset `filename` over RPC; true once the session has replied
+    [[nodiscard]] bool add_over_rpc(std::string_view const filename, bool const paused)
+    {
+        auto params = tr_variant::Map{ 2U };
+        params.try_emplace(TR_KEY_filename, fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, filename));
+        params.try_emplace(TR_KEY_paused, paused);
+        auto added = false;
+        session_.send(TR_KEY_torrent_add, std::move(params), [&added](RpcResponse const& response) {
+            EXPECT_TRUE(response.success);
+            added = true;
+        });
+        return loop_.pump_until([&added] { return added; });
+    }
+
     UiLoop loop_;
     RpcClient rpc_{ loop_.marshaler() };
     Prefs prefs_;
@@ -1144,16 +1172,7 @@ TEST_F(AppSessionLifecycleTest, startsAnEmbeddedSessionWhenPrefsNameNoRemote)
 TEST_F(AppSessionLifecycleTest, anEmbeddedSessionLoadsItsTorrents)
 {
     session_.start();
-
-    auto params = tr_variant::Map{ 2U };
-    params.try_emplace(TR_KEY_filename, fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Debian));
-    params.try_emplace(TR_KEY_paused, true);
-    auto added = false;
-    session_.send(TR_KEY_torrent_add, std::move(params), [&added](RpcResponse const& response) {
-        EXPECT_TRUE(response.success);
-        added = true;
-    });
-    ASSERT_TRUE(loop_.pump_until([&added] { return added; }));
+    ASSERT_TRUE(add_over_rpc(Debian, true));
 
     session_.restart();
     ASSERT_TRUE(pump_until_closed());
@@ -1321,6 +1340,51 @@ TEST_F(AppSessionLifecycleTest, aStopCancelsAStartWaitingOnAClose)
     loop_.drain();
     EXPECT_EQ(1, source_changes_);
     EXPECT_FALSE(session_.is_embedded());
+}
+
+TEST_F(AppSessionLifecycleTest, startEmbeddedIgnoresTheRemotePrefs)
+{
+    set_remote_prefs("example.com"sv, 9091);
+    session_.start_embedded();
+
+    EXPECT_TRUE(session_.is_embedded());
+    EXPECT_TRUE(std::empty(session_.remote_url()));
+    EXPECT_EQ(1, source_changes_);
+}
+
+// Arch has no trackers or webseeds, so running it stays off the network.
+TEST_F(AppSessionLifecycleTest, startEmbeddedCanLoadTheTorrentsPaused)
+{
+    // whether the session's one torrent is paused, once a fetch brings it back
+    auto const fetch_paused = [this]() -> std::optional<bool> {
+        session_.refresh_all_torrents(TorrentKeySet::MainAll);
+        if (!loop_.pump_until([this] { return session_.torrents().size() == 1U; })) {
+            return {};
+        }
+        return session_.torrents()[0].is_paused();
+    };
+
+    session_.start();
+    ASSERT_TRUE(add_over_rpc(Arch, false));
+
+    session_.stop();
+    ASSERT_TRUE(pump_until_closed());
+    session_.start_embedded(true);
+    EXPECT_EQ(std::optional{ true }, fetch_paused());
+
+    session_.start_torrents({ session_.torrents()[0].id() });
+    ASSERT_TRUE(loop_.pump_until([this] { return !session_.torrents()[0].is_paused(); }));
+
+    // these starts wait for the close
+    session_.stop();
+    session_.start_embedded(false);
+    ASSERT_TRUE(loop_.pump_until([this] { return source_changes_ == 3; }));
+    EXPECT_EQ(std::optional{ false }, fetch_paused());
+
+    session_.stop();
+    session_.start_embedded(true);
+    ASSERT_TRUE(loop_.pump_until([this] { return source_changes_ == 4; }));
+    EXPECT_EQ(std::optional{ true }, fetch_paused());
 }
 
 TEST_F(AppSessionLifecycleTest, waitForCloseFinishesTheCloseOnce)

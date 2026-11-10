@@ -124,7 +124,7 @@ private:
         auto params = tr_variant::Map{ 2U };
         params.try_emplace(key, std::forward<T>(value));
         params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids_));
-        core_->exec(TR_KEY_torrent_set, std::move(params));
+        core_->send(TR_KEY_torrent_set, std::move(params));
     }
 
     void refreshInfo(std::vector<tr_torrent*> const& torrents);
@@ -1990,7 +1990,7 @@ void AddTrackerDialog::on_response(int response)
                 auto params = tr_variant::Map{ 2U };
                 params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id_ }));
                 params.try_emplace(TR_KEY_tracker_add, tr::serializer::to_variant(std::span{ &url.raw(), 1U }));
-                core_->exec(TR_KEY_torrent_set, std::move(params));
+                core_->send(TR_KEY_torrent_set, std::move(params));
                 parent_.refresh();
             } else {
                 gtr_unrecognized_url_dialog(*this, url);
@@ -2028,7 +2028,7 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
         auto params = tr_variant::Map{ 2U };
         params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id }));
         params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::array{ tracker_id }));
-        core_->exec(TR_KEY_torrent_set, std::move(params));
+        core_->send(TR_KEY_torrent_set, std::move(params));
         refresh();
     }
 }

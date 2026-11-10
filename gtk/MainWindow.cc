@@ -765,8 +765,7 @@ void MainWindow::Impl::updateStats()
     static_assert(StatsModeCount == 4U, "StatsMode changed: update this code");
     auto const mode = prefs_.get<StatsMode>(TR_KEY_statusbar_stats);
     auto const use_session_stats = mode == StatsMode::SessionRatio || mode == StatsMode::SessionTransfer;
-    auto const* const ses = core_->get_session();
-    auto const stats = use_session_stats ? tr_sessionGetStats(ses) : tr_sessionGetCumulativeStats(ses);
+    auto const& stats = use_session_stats ? core_->stats() : core_->cumulative_stats();
     stats_lb_->set_text(
         mode == StatsMode::SessionTransfer || mode == StatsMode::TotalTransfer ?
             fmt::format(
