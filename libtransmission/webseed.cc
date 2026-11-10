@@ -270,10 +270,13 @@ public:
         for (auto const *span = block_spans, *end = span + n_spans; span != end; ++span) {
             auto* const task = new tr_webseed_task{ tor, this, *span };
             tasks.insert(task);
-            task->request_next_chunk();
 
+            // before the fetch, which may fail and delete the task inline,
+            // e.g. while the interface binding is "blocked"
             set_active_requests(*span);
             publish(tr_peer_event::SentRequest(tor.block_info(), *span));
+
+            task->request_next_chunk();
         }
     }
 
