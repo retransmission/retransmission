@@ -830,6 +830,19 @@ private:
         OnTest on_test;
     };
 
+    // What a worker takes in one go: a piece hash, a run of reads, or a
+    // run of writes.
+    struct Turn {
+        std::optional<PendingTest> test;
+        std::vector<PendingRead> reads;
+        std::vector<PendingWrite> writes;
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return !test && std::empty(reads) && std::empty(writes);
+        }
+    };
+
     // Where a pending op sits in its worker queue: disk order, more or less.
     struct OpKey {
         tr_torrent_id_t tor_id;
@@ -1257,67 +1270,80 @@ private:
 
     // --- worker-side code
 
-    void worker_main()
+    // Takes a worker's next piece of work, or nothing if none is waiting.
+    // `next` is the worker's place in the rotation of hashes, reads, and
+    // writes. Call with work_mutex_ held.
+    [[nodiscard]] Turn take_turn(size_t& next)
     {
-        auto scratch = std::vector<uint8_t>{};
-
-        // The kinds of work, in the order a worker takes its turns at them.
         enum class Kind : uint8_t { Hash, Reads, Writes };
         static auto constexpr Kinds = std::array{ Kind::Hash, Kind::Reads, Kind::Writes };
 
-        // Each pass starts with the kind after the one it took last.
+        auto turn = Turn{};
+        for (auto i = size_t{}; i < std::size(Kinds); ++i) {
+            auto const kind = (next + i) % std::size(Kinds);
+            switch (Kinds[kind]) {
+            case Kind::Hash:
+                if (!std::empty(pending_tests_)) {
+                    turn.test = std::move(pending_tests_.front());
+                    pending_tests_.pop_front();
+                }
+                break;
+
+            case Kind::Reads:
+                turn.reads = take_run(read_sweep_, pending_reads_);
+                break;
+
+            case Kind::Writes:
+                turn.writes = take_run(write_sweep_, pending_writes_);
+                break;
+            }
+
+            if (!turn.empty()) {
+                // the next turn starts with the kind after this one
+                next = (kind + 1U) % std::size(Kinds);
+                break;
+            }
+        }
+
+        return turn;
+    }
+
+    void run_turn(Turn turn, std::vector<uint8_t>& scratch)
+    {
+        if (turn.test) {
+            exec_test(std::move(*turn.test));
+        } else if (!std::empty(turn.reads)) {
+            exec_read_run(std::move(turn.reads), scratch);
+        } else {
+            exec_write_run(std::move(turn.writes), scratch);
+        }
+    }
+
+    void worker_main()
+    {
+        auto scratch = std::vector<uint8_t>{};
         auto next = size_t{};
 
         for (;;) {
-            auto test = std::optional<PendingTest>{};
-            auto reads = std::vector<PendingRead>{};
-            auto writes = std::vector<PendingWrite>{};
+            auto turn = Turn{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
+                work_cv_.wait(lock, [this, &turn, &next] {
                     if (paused_) {
                         return false;
                     }
 
-                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
-                        auto const turn = (next + i) % std::size(Kinds);
-                        switch (Kinds[turn]) {
-                        case Kind::Hash:
-                            if (!std::empty(pending_tests_)) {
-                                test = std::move(pending_tests_.front());
-                                pending_tests_.pop_front();
-                            }
-                            break;
-
-                        case Kind::Reads:
-                            reads = take_run(read_sweep_, pending_reads_);
-                            break;
-
-                        case Kind::Writes:
-                            writes = take_run(write_sweep_, pending_writes_);
-                            break;
-                        }
-
-                        if (test || !std::empty(reads) || !std::empty(writes)) {
-                            next = (turn + 1U) % std::size(Kinds);
-                            return true;
-                        }
-                    }
-
-                    return stopping_;
+                    turn = take_turn(next);
+                    return !turn.empty() || stopping_;
                 });
             }
 
-            if (test) {
-                exec_test(std::move(*test));
-            } else if (!std::empty(reads)) {
-                exec_read_run(std::move(reads), scratch);
-            } else if (!std::empty(writes)) {
-                exec_write_run(std::move(writes), scratch);
-            } else {
+            if (turn.empty()) {
                 return;
             }
+
+            run_turn(std::move(turn), scratch);
         }
     }
 
