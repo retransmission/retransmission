@@ -19,7 +19,6 @@
 #include <QtWidgets/QPushButton>
 
 #include <libtransmission/quark.h>
-#include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/types.h>
 
 #include "FileTreeModel.h"
@@ -122,52 +121,22 @@ OptionsDialog::OptionsDialog(
     reload();
 }
 
-OptionsDialog::~OptionsDialog()
-{
-    clearInfo();
-}
+OptionsDialog::~OptionsDialog() = default;
 
 /***
 ****
 ***/
 
-void OptionsDialog::clearInfo()
-{
-    metainfo_.reset();
-    files_.clear();
-}
-
 void OptionsDialog::reload()
 {
-    clearInfo();
-
     ui_.filesView->clear();
-    priorities_.clear();
-    wanted_.clear();
 
-    metainfo_ = add_.parsed();
+    files_ = add_.files();
 
-    bool const have_files_to_show = metainfo_ && !std::empty(*metainfo_);
+    bool const have_files_to_show = !std::empty(files_);
 
     ui_.filesView->setVisible(have_files_to_show);
     layout()->setSizeConstraint(have_files_to_show ? QLayout::SetDefaultConstraint : QLayout::SetFixedSize);
-
-    if (metainfo_) {
-        auto const n_files = metainfo_->file_count();
-        priorities_.assign(n_files, TR_PRI_NORMAL);
-        wanted_.assign(n_files, true);
-
-        for (tr_file_index_t i = 0; i < n_files; ++i) {
-            auto f = tr::app::TorrentFile{};
-            f.index = i;
-            f.priority = static_cast<tr_priority_t>(priorities_[i]);
-            f.wanted = wanted_[i];
-            f.size = metainfo_->file_size(i);
-            f.have = 0;
-            f.name = metainfo_->file_subpath(i);
-            files_.push_back(std::move(f));
-        }
-    }
 
     ui_.filesView->update(files_);
     ui_.filesView->hideColumn(FileTreeModel::COL_PROGRESS);
@@ -193,14 +162,14 @@ void OptionsDialog::onSessionUpdated()
 void OptionsDialog::onPriorityChanged(file_indices_t const& file_indices, int priority)
 {
     for (int const i : file_indices) {
-        priorities_[i] = priority;
+        files_[i].priority = static_cast<tr_priority_t>(priority);
     }
 }
 
 void OptionsDialog::onWantedChanged(file_indices_t const& file_indices, bool is_wanted)
 {
     for (int const i : file_indices) {
-        wanted_[i] = is_wanted;
+        files_[i].wanted = is_wanted;
     }
 }
 
@@ -214,18 +183,7 @@ void OptionsDialog::onAccepted()
                                .toStdString();
     options.paused = !ui_.startCheck->isChecked();
     options.bandwidth_priority = static_cast<tr_priority_t>(ui_.priorityCombo->currentData().toInt());
-
-    for (int i = 0, n = static_cast<int>(std::size(wanted_)); i < n; ++i) {
-        if (!wanted_[i]) {
-            options.files_unwanted.push_back(i);
-        }
-
-        if (priorities_[i] == TR_PRI_LOW) {
-            options.priority_low.push_back(i);
-        } else if (priorities_[i] == TR_PRI_HIGH) {
-            options.priority_high.push_back(i);
-        }
-    }
+    options.set_file_choices(files_);
 
     add_.trash_source = ui_.trashCheck->isChecked();
     resolving_.reset();
