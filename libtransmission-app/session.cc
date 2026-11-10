@@ -469,17 +469,6 @@ void Session::queue_move_bottom(Ids ids)
     send_torrent_verb(TR_KEY_queue_move_bottom, std::move(ids));
 }
 
-void Session::withhold_torrent(tr_torrent_id_t const id)
-{
-    torrents_.withhold(id);
-}
-
-void Session::release_torrent(tr_torrent_id_t const id)
-{
-    torrents_.release(id);
-    refresh_torrents({ id }, TorrentKeySet::MainAll);
-}
-
 void Session::remove_torrents(Ids ids, bool const delete_local_data)
 {
     auto scope = TorrentScope::of(std::move(ids));
