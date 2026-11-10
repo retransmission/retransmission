@@ -298,6 +298,7 @@ public:
         if (options.done_func) {
             auto response = FetchResponse{};
             response.request_url = options.url;
+            response.errmsg = "fetch refused: interface binding is 'blocked'";
             response.user_data = options.done_func_user_data;
             mediator.run(std::move(options.done_func), std::move(response));
         }

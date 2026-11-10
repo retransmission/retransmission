@@ -717,6 +717,8 @@ TEST_F(WebTest, blockedInterfaceIsRefused)
     EXPECT_FALSE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
     EXPECT_EQ(&user_data, response.user_data);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_TRUE(response.errmsg->contains("blocked"sv)) << *response.errmsg;
     EXPECT_TRUE(std::empty(server4_->lastRequest().method));
 }
 
