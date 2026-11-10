@@ -86,7 +86,7 @@ void MakeProgressDialog::onButtonBoxClicked(QAbstractButton* button)
 {
     switch (ui_.dialogButtons->standardButton(button)) {
     case QDialogButtonBox::Open:
-        session_.addNewlyCreatedTorrent(outfile_, QFileInfo{ QString::fromStdString(builder_.top()) }.dir().path());
+        session_.add_created_torrent(outfile_.toStdString(), builder_.top());
         break;
 
     case QDialogButtonBox::Abort:

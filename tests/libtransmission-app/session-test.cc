@@ -1023,6 +1023,25 @@ TEST_F(AppSessionRpcTest, addTorrentDisposesOfTheSourceFileOnceAdded)
     }
 }
 
+TEST_F(AppSessionRpcTest, aCreatedTorrentKeepsItsFileAndSeedsItsData)
+{
+    prefs_.set(TR_KEY_trash_original_torrent_files, true);
+    prefs_.set(TR_KEY_show_options_window, true);
+
+    auto prompts = 0;
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
+
+    auto const source = copy_asset(Arch);
+    auto const data_dir = fmt::format("{:s}/data", sandbox_dir());
+    session_.add_created_torrent(source, fmt::format("{:s}/what-it-shares", data_dir));
+
+    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+    EXPECT_EQ(data_dir, session_.torrents()[0].download_dir());
+    EXPECT_TRUE(tr_sys_path_exists(source));
+    EXPECT_EQ(0, prompts);
+}
+
 TEST_F(AppSessionRpcTest, addTorrentReportsADuplicateAndDisposesOfItsSourceFile)
 {
     add_and_list(Arch);

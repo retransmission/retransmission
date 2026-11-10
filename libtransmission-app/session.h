@@ -265,6 +265,10 @@ public:
     // copy. A new torrent is fetched into `torrents()` at once.
     void add_torrent(AddData add, AddOptions options = {});
 
+    // Adds a torrent this client just created from `top`, the file or folder it shares, to seed it.
+    // No prompt, and `torrent_file` is kept whatever `trash_original_torrent_files` says.
+    void add_created_torrent(std::string_view torrent_file, std::string_view top);
+
     // The adds of one batch that the user should hear about, ready to list:
     // each list is in name order, ignoring ASCII case, and holds no entry twice.
     struct AddReport {
