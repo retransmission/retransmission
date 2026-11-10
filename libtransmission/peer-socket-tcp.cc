@@ -163,7 +163,7 @@ public:
         bool const is_connected)
         : tr_peer_socket_tcp{ socket_address }
         , sock_{ sock }
-        , connect_error_{ is_connected ? tr_error{} : tr_net_error(TR_IF_WIN32(WSAEWOULDBLOCK, EWOULDBLOCK)) }
+        , connect_error_{ is_connected ? 0 : EWOULDBLOCK }
     {
         TR_ASSERT(is_valid_socket(sock_));
 
@@ -223,7 +223,7 @@ public:
 
         is_read_enabled_ = enabled;
         if (enabled) {
-            if (!connect_error_) {
+            if (connect_error_ == 0) {
                 tr_logAddTraceSock(this, "enabling ready-to-read polling");
                 event_add(event_read_.get(), nullptr);
             }
@@ -241,7 +241,7 @@ public:
 
         is_write_enabled_ = enabled;
         if (enabled) {
-            if (!connect_error_) {
+            if (connect_error_ == 0) {
                 tr_logAddTraceSock(this, "enabling ready-to-write polling");
                 event_add(event_write_.get(), nullptr);
             }
@@ -269,9 +269,9 @@ protected:
 
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) override
     {
-        if (connect_error_) {
+        if (connect_error_ != 0) {
             if (error != nullptr) {
-                *error = connect_error_;
+                *error = tr_net_error(connect_error_);
             }
             return {};
         }
@@ -298,9 +298,9 @@ protected:
 
     size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) override
     {
-        if (connect_error_) {
+        if (connect_error_ != 0) {
             if (error != nullptr) {
-                *error = connect_error_;
+                *error = tr_net_error(connect_error_);
             }
             return {};
         }
@@ -335,35 +335,24 @@ private:
         tr_logAddTraceSock(s, "libevent says we can check TCP handshake status");
         TR_ASSERT(std::cmp_equal(s->sock_, fd));
 
-        int error_code = {};
-        socklen_t error_len = sizeof(error_code);
-        auto error = tr_error{};
-        if (getsockopt(s->sock_, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&error_code), &error_len) == -1) {
-            auto const getsockopt_error = sockerrno;
-            if (tr_error::is_transient(getsockopt_error)) {
+        int err = {};
+        socklen_t error_len = sizeof(err);
+        if (getsockopt(s->sock_, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&err), &error_len) == -1) {
+            err = sockerrno;
+            if (tr_error::is_transient(err)) {
                 return;
             }
-            error = tr_net_error(getsockopt_error);
-            tr_logAddWarnSock(s, fmt::format("failed to get socket error: {} ({})", error.message(), error.code()));
+            tr_logAddWarnSock(s, fmt::format("failed to get socket error: {} ({})", tr_net_strerror(err), err));
+        } else if (err != 0) {
+            tr_logAddDebugSock(s, fmt::format("socket error in TCP handshake: {} ({})", tr_net_strerror(err), err));
         }
 
-        if (!error) {
-            if (tr_error::is_transient(error_code)) {
-                return;
-            }
-            error = tr_net_error(error_code);
-            tr_logAddDebugSock(s, fmt::format("socket error during TCP handshake: {} ({})", error.message(), error.code()));
-        }
-
-        s->connect_error_ = std::move(error);
+        s->connect_error_ = err;
         s->event_connect_.reset();
 
-        if (s->connect_error_) {
-            s->set_read_enabled(false);
-            s->set_write_enabled(false);
-
+        if (err != 0) {
             // The callback can destroy this socket.
-            s->error_cb(s->connect_error_);
+            s->error_cb(tr_net_error(err));
             return;
         }
 
@@ -403,13 +392,12 @@ private:
         s->write_cb();
     }
 
-    tr_error connect_error_;
-
     tr::evhelpers::event_unique_ptr event_connect_;
     tr::evhelpers::event_unique_ptr event_read_;
     tr::evhelpers::event_unique_ptr event_write_;
 
     tr_socket_t sock_;
+    int connect_error_;
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
