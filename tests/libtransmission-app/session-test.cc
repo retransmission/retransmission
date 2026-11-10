@@ -1909,7 +1909,7 @@ TEST_F(AppSessionLifecycleTest, requestAddPromptsOrAddsAsItIsTold)
     for (auto const& test : Tests) {
         prompts = 0;
         prefs_.set(TR_KEY_show_options_window, test.show_options_window);
-        session_.request_add(AddData{ MagnetLink }, test.prompt);
+        EXPECT_TRUE(session_.request_add(AddData{ MagnetLink }, test.prompt));
 
         EXPECT_EQ(test.expect_prompt ? 1 : 0, prompts);
         if (!test.expect_prompt) {
@@ -1972,10 +1972,10 @@ TEST_F(AppSessionLifecycleTest, requestAddOnlyPromptsForNothingWhenAskedTo)
         [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     prefs_.set(TR_KEY_show_options_window, true);
-    session_.request_add(AddData{});
+    EXPECT_FALSE(session_.request_add(AddData{}));
     EXPECT_EQ(0, prompts);
 
-    session_.request_add(AddData{}, Session::AddPrompt::Always);
+    EXPECT_TRUE(session_.request_add(AddData{}, Session::AddPrompt::Always));
     EXPECT_EQ(1, prompts);
 }
 
