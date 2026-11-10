@@ -117,27 +117,39 @@ target_link_libraries(libtransmission-test
 
 tr_setup_gtest_target(libtransmission-test "LT.")
 
-# Re-run the disk-IO tests with tr::LocalData delivering its completions
-# late and out of order, which its ordering contract allows.
+# Re-run the disk-IO tests on tr::LocalData's threaded backend.
 #
 # A suite belongs here only if it drives a tr::LocalData op through a
 # tr_session. A suite that issues no such op re-runs byte-identical, and
-# the LocalData unit tests select the mode themselves, so neither would
+# the LocalData unit tests pick their backend themselves, so neither would
 # gain anything from being listed.
 if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
-    add_test(
-        NAME LT.ShuffledDiskIo
-        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:UploadTest.*)
+    set(DISK_IO_SUITES *IncompleteDirTest.*:MoveTest.*:RenameTest.*:RpcTest.*:UploadTest.*)
 
-    set_tests_properties(LT.ShuffledDiskIo
-        PROPERTIES
-            ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
+    # Without threads: the session thread does the workers' and the admin
+    # lanes' work in an order that TR_LOCAL_DATA_SHUFFLE seeds. Completions
+    # arrive late and out of order, as the ordering contract allows, and a
+    # failure replays under its seed. Each seed is a different schedule.
+    foreach(SEED 1 2 3)
+        if(SEED EQUAL 1)
+            set(TEST_NAME LT.ShuffledDiskIo)
+        else()
+            set(TEST_NAME LT.ShuffledDiskIo.seed${SEED})
+        endif()
 
-    # ...and once more on the threaded backend, where reads, writes, and
-    # piece hashes finish on worker threads and admin ops wait for them.
+        add_test(
+            NAME ${TEST_NAME}
+            COMMAND libtransmission-test --gtest_filter=${DISK_IO_SUITES})
+
+        set_tests_properties(${TEST_NAME}
+            PROPERTIES
+                ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=${SEED})
+    endforeach()
+
+    # ...and once more on real threads.
     add_test(
         NAME LT.ThreadedDiskIo
-        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RpcTest.*:UploadTest.*)
+        COMMAND libtransmission-test --gtest_filter=${DISK_IO_SUITES})
 
     set_tests_properties(LT.ThreadedDiskIo
         PROPERTIES
