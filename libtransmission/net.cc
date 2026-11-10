@@ -640,6 +640,27 @@ void record_bind_outcome(std::string_view const name, int const err)
 } // namespace
 #endif
 
+bool tr_net_interface_has_ipv4([[maybe_unused]] std::string_view const bind_interface)
+{
+#if defined(__APPLE__) || defined(__linux__)
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    struct ifaddrs* ifa = nullptr;
+    if (std::empty(name) || getifaddrs(&ifa) != 0) {
+        return false;
+    }
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        // a labelled Linux alias, e.g. "eth0:1", is an address of "eth0"
+        auto ifa_name = std::string_view{ ifa->ifa_name };
+        ifa_name = ifa_name.substr(0, ifa_name.find(':'));
+        if (ifa->ifa_addr != nullptr && ifa->ifa_addr->sa_family == AF_INET && ifa_name == name) {
+            return true;
+        }
+    }
+#endif
+    return false;
+}
+
 tr_net_bind_status tr_net_interface_status(std::string_view const bind_interface)
 {
     using State = tr_net_bind_status::State;

@@ -1111,7 +1111,18 @@ TEST_F(NetTest, effectiveBindInterface)
     }
 }
 
-TEST_F(NetTest, networkManagerStateNames)
+TEST_F(NetTest, interfaceHasIpv4)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform lists no interfaces to bind to";
+    }
+
+    EXPECT_TRUE(tr_net_interface_has_ipv4(tr::test::LoopbackInterface));
+    EXPECT_FALSE(tr_net_interface_has_ipv4("tr-no-such-interface"sv));
+    EXPECT_FALSE(tr_net_interface_has_ipv4(""sv));
+}
+
+TEST_F(NetTest, interfaceManager)
 {
     using Manager = tr_net_manager;
     using State = tr_net_nm_state;

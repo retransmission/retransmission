@@ -109,7 +109,12 @@ private:
         natpmp_.reset();
         natpmp_state_ = TR_PORT_UNMAPPED;
 
-        tr_upnpClose(upnp_);
+        // still mapped if the bound interface couldn't carry the unmap, see natPulse()
+        if (upnp_state_ == TR_PORT_MAPPED) {
+            tr_upnpDiscard(upnp_);
+        } else {
+            tr_upnpClose(upnp_);
+        }
         upnp_ = nullptr;
         upnp_state_ = TR_PORT_UNMAPPED;
 
@@ -228,15 +233,22 @@ private:
         // give it either. UPnP stays off in both cases, as every other socket fails.
         auto const upnp_bindaddr = is_interface_bound ? std::string{ bind_interface } :
                                                         mediator_.incoming_peer_address().display_name();
+        // An interface without an IPv4 address, or one that's gone, fails discovery at
+        // once, so it would retry on every pulse; UPnP waits for the address instead.
+        // While the bound interface can't carry it, UPnP does nothing at all: a pulse
+        // even to unmap would reach the gateway over whatever other route there is.
         auto const upnp_can_bind = !is_interface_bound ||
-            (TrNetCanBindInterface && !tr_net_interface_is_blocked(bind_interface));
-        upnp_state_ = tr_upnpPulse(
-            upnp_,
-            mediator_.advertised_peer_port(),
-            mediator_.local_peer_port(),
-            is_enabled && upnp_can_bind,
-            do_check,
-            upnp_bindaddr);
+            (TrNetCanBindInterface && !tr_net_interface_is_blocked(bind_interface) &&
+             tr_net_interface_has_ipv4(bind_interface));
+        if (upnp_can_bind) {
+            upnp_state_ = tr_upnpPulse(
+                upnp_,
+                mediator_.advertised_peer_port(),
+                mediator_.local_peer_port(),
+                is_enabled,
+                do_check,
+                upnp_bindaddr);
+        }
 
         if (auto const new_state = state(); new_state != old_state) {
             tr_logAddInfo(
