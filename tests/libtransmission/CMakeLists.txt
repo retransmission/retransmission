@@ -44,6 +44,7 @@ target_sources(libtransmission-test
         open-files-test.cc
         peer-mgr-wishlist-test.cc
         peer-msgs-test.cc
+        peer-socket-tcp-test.cc
         platform-test.cc
         quark-test.cc
         remove-test.cc

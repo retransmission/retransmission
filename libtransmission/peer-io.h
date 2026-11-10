@@ -145,15 +145,17 @@ public:
 
     [[nodiscard]] size_t get_write_buffer_space(uint64_t now) const noexcept;
 
-    void write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data);
+    // A deferred write waits for the next flush:
+    // another write's or the bandwidth pulse's.
+    void write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data, bool defer = false);
 
     // Write all the data from `buf`.
     // This is a destructive add: `buf` is empty after this call.
     template<typename T>
-    void write(tr::BufferReader<T>& buf, bool is_piece_data)
+    void write(tr::BufferReader<T>& buf, bool is_piece_data, bool defer = false)
     {
         auto const n_bytes = std::size(buf);
-        write_bytes(std::data(buf), n_bytes, is_piece_data);
+        write_bytes(std::data(buf), n_bytes, is_piece_data, defer);
         buf.drain(n_bytes);
     }
 

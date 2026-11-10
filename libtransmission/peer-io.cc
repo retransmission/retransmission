@@ -90,13 +90,8 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
-        // https://github.com/transmission/transmission/issues/7307
-        static auto constexpr MinPayloadSize = 128U;
-
         if (auto const ptr = weak.lock()) {
-            if (ptr->outbuf_.size() >= MinPayloadSize) {
-                ptr->write_cb();
-            }
+            ptr->write_cb();
         }
     });
     tr_logAddTraceIo(io, fmt::format("bandwidth is {}; its parent is {}", fmt::ptr(&io->bandwidth()), fmt::ptr(parent)));
@@ -476,7 +471,7 @@ void tr_peerIo::flush_outbuf_soon()
     tr_logAddTraceIo(this, "scheduled outbuf flush");
 }
 
-void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data)
+void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data, bool defer)
 {
     if (n_bytes == 0U) {
         return;
@@ -488,7 +483,9 @@ void tr_peerIo::write_bytes(void const* bytes, size_t n_bytes, bool is_piece_dat
     filter_.encrypt(static_cast<std::byte const*>(bytes), n_bytes, resbuf);
     outbuf_.commit_space(n_bytes);
 
-    flush_outbuf_soon();
+    if (!defer) {
+        flush_outbuf_soon();
+    }
 }
 
 // ---
