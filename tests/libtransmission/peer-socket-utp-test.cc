@@ -6,6 +6,7 @@
 #ifdef WITH_UTP
 
 #include <array>
+#include <cerrno> // ENOBUFS
 #include <cstddef> // size_t, std::byte
 #include <cstdint> // SIZE_MAX
 #include <deque>
@@ -153,6 +154,7 @@ protected:
     Endpoint receiver_;
     UTPSocket* sock_ = nullptr; // the sender's
     std::shared_ptr<tr_peer_socket_utp> accepted_; // the receiver's
+    UTPSocket* accepted_sock_ = nullptr; // accepted_'s libutp socket
     FakeTimerMaker timer_maker_;
     std::array<std::byte, 1024> chunk_ = {};
     uint64_t now_msec_ = 1000;
@@ -180,6 +182,7 @@ private:
     {
         auto const* const self = static_cast<Endpoint*>(utp_context_get_userdata(args->context));
         auto* const test = self->test;
+        test->accepted_sock_ = args->socket;
         test->accepted_ = tr_peer_socket_utp::create(self->peer->address, args->socket, test->timer_maker_);
         return 0;
     }
@@ -205,6 +208,86 @@ TEST_F(PeerSocketUtpTest, readingReopensFullReceiveWindow)
     utp_check_timeouts(sender_.ctx);
     deliverAll();
     EXPECT_GT(readAll(), size_t{});
+}
+
+// A peer IO without bandwidth reads nothing. The socket must then wait for the peer IO
+// to enable reads again, even with more buffered than the window, not retry at once.
+TEST_F(PeerSocketUtpTest, fullBufferWaitsForReadsEnabled)
+{
+    connect();
+    writeTwiceTheWindow();
+    utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 2);
+
+    auto n_reads = 0;
+    accepted_->set_read_cb([&] { ++n_reads; });
+    auto n_errors = 0;
+    accepted_->set_error_cb([&](tr_error const& /*error*/) { ++n_errors; });
+    accepted_->set_read_enabled(true);
+    auto const* const read_timer = timer_maker_.timers().front();
+    auto const n_starts = read_timer->startCount();
+    read_timer->fire();
+
+    EXPECT_EQ(1, n_reads);
+    EXPECT_EQ(0, n_errors);
+    EXPECT_EQ(n_starts, read_timer->startCount()); // not rescheduled
+}
+
+// A peer that ignores the receive window cannot grow the buffer without bound.
+TEST_F(PeerSocketUtpTest, overrunWindowClosesConnection)
+{
+    connect();
+    writeTwiceTheWindow();
+    utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
+
+    auto n_reads = 0;
+    accepted_->set_read_cb([&] { ++n_reads; });
+    auto error_code = 0;
+    accepted_->set_error_cb([&](tr_error const& error) { error_code = error.code(); });
+    accepted_->set_read_enabled(true);
+    timer_maker_.timers().front()->fire();
+
+    EXPECT_EQ(0, n_reads);
+    EXPECT_EQ(ENOBUFS, error_code);
+}
+
+// Enabling reads again after the report does not report the overrun again.
+TEST_F(PeerSocketUtpTest, overrunIsReportedOnce)
+{
+    connect();
+    writeTwiceTheWindow();
+    utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
+
+    auto n_reads = 0;
+    accepted_->set_read_cb([&] { ++n_reads; });
+    auto n_errors = 0;
+    accepted_->set_error_cb([&](tr_error const& /*error*/) { ++n_errors; });
+    accepted_->set_read_enabled(true);
+    auto const* const read_timer = timer_maker_.timers().front();
+    read_timer->fire();
+    ASSERT_EQ(1, n_errors);
+
+    auto const n_starts = read_timer->startCount();
+    accepted_->set_read_enabled(true);
+    EXPECT_EQ(n_starts, read_timer->startCount()); // the timer that reports it is not armed again
+    EXPECT_EQ(0, n_reads);
+}
+
+// The overrun is reported even when the peer IO stops reading before the report goes out.
+TEST_F(PeerSocketUtpTest, overrunIsReportedAfterReadsStop)
+{
+    connect();
+    writeTwiceTheWindow();
+    utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
+
+    auto error_code = 0;
+    accepted_->set_error_cb([&](tr_error const& error) { error_code = error.code(); });
+    accepted_->set_read_enabled(true);
+    accepted_->set_read_enabled(false);
+    auto const* const read_timer = timer_maker_.timers().front();
+    ASSERT_TRUE(read_timer->isRunning());
+    read_timer->fire();
+
+    EXPECT_EQ(ENOBUFS, error_code);
 }
 
 } // namespace
