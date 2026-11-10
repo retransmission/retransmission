@@ -890,6 +890,14 @@ void tr_session::apply_network_bindings(
 {
     auto const& new_settings = settings_;
 
+    // Read only when every interface-bound socket is rebuilt below: read on another
+    // settings change, it would hide a recreated interface from on_now_timer(),
+    // which compares it with the live index. Read before any socket binds: an
+    // interface that appears while they bind then shows up as an index change.
+    if (force || interface_changed) {
+        bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
+    }
+
     // a query still in flight on the old binding must not refill the cache
     if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
         ip_cache_->invalidate(TR_AF_INET);
@@ -932,8 +940,6 @@ void tr_session::apply_network_bindings(
         bound_ipv6_.reset();
         addr_changed = true;
     }
-
-    bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
 
     if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
         tr_sessionSetPortForwardingEnabled(this, val);
