@@ -417,6 +417,22 @@ protected:
         auto const* const tor = session_.torrents().find(id);
         return tor != nullptr && tor->has_name();
     }
+
+    // adds `asset` and waits until the list has it with its name
+    void add_and_list(std::string_view const asset)
+    {
+        auto const n_listed = session_.torrents().size() + 1U;
+        session_.add_torrent(AddData{ copy_asset(asset) });
+        ASSERT_TRUE(loop_.pump_until([this, n_listed] {
+            return session_.torrents().size() == n_listed && session_.torrents()[n_listed - 1U].has_name();
+        }));
+    }
+
+    std::vector<Session::AddReport> reports_;
+
+private:
+    sigslot::scoped_connection report_connection_ = session_.torrent_add_report.connect_scoped(
+        [this](Session::AddReport const& report) { reports_.push_back(report); });
 };
 
 TEST_F(AppSessionRpcTest, syncsCorePrefsToTheSessionOverRpc)
@@ -1009,16 +1025,7 @@ TEST_F(AppSessionRpcTest, addTorrentDisposesOfTheSourceFileOnceAdded)
 
 TEST_F(AppSessionRpcTest, addTorrentReportsADuplicateAndDisposesOfItsSourceFile)
 {
-    auto hashes = std::vector<std::string>{};
-    auto names = std::vector<std::string>{};
-    auto const tag = session_.torrent_add_duplicate.connect_scoped(
-        [&hashes, &names](AddData const& add, std::string_view const hash_string) {
-            names.emplace_back(add.source);
-            hashes.emplace_back(hash_string);
-        });
-
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    add_and_list(Arch);
     auto const hash_string = std::string{ session_.torrents()[0].hash_string().sv() };
 
     auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
@@ -1026,84 +1033,174 @@ TEST_F(AppSessionRpcTest, addTorrentReportsADuplicateAndDisposesOfItsSourceFile)
     auto const source = add.source;
     session_.add_torrent(std::move(add));
 
-    ASSERT_TRUE(loop_.pump_until([&hashes] { return !std::empty(hashes); }));
-    EXPECT_EQ(std::vector{ hash_string }, hashes);
-    EXPECT_EQ(std::vector{ source }, names);
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    ASSERT_EQ(1U, std::size(reports_));
+    auto const& duplicates = reports_.front().duplicates;
+    ASSERT_EQ(1U, std::size(duplicates));
+    EXPECT_EQ(hash_string, duplicates.front().hash_string);
+    EXPECT_EQ(std::string_view{ hash_string }.substr(0U, 7U), duplicates.front().short_hash());
+    EXPECT_EQ("again"sv, duplicates.front().name);
+    EXPECT_TRUE(std::empty(reports_.front().failed));
     EXPECT_FALSE(tr_sys_path_exists(source));
 }
 
 TEST_F(AppSessionRpcTest, aWatchDirDuplicateIsNotReported)
 {
-    auto duplicates = 0;
-    auto const tag = session_.torrent_add_duplicate.connect_scoped(
-        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
-
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U; }));
+    add_and_list(Arch);
 
     auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
     add.from_watch_dir = true;
     auto const renamed = fmt::format("{:s}.added", add.source);
     session_.add_torrent(std::move(add));
 
-    // the rename and the report happen in the same reply
     ASSERT_TRUE(loop_.pump_until([&renamed] { return tr_sys_path_exists(renamed); }));
-    EXPECT_EQ(0, duplicates);
+    loop_.drain();
+    EXPECT_TRUE(std::empty(reports_));
 }
 
 TEST_F(AppSessionRpcTest, aPromptedDuplicateIsReportedInsteadOfPrompting)
 {
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+    add_and_list(Arch);
 
     auto prompts = 0;
-    auto duplicates = 0;
     auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
-    auto const duplicate_tag = session_.torrent_add_duplicate.connect_scoped(
-        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
 
     prefs_.set(TR_KEY_trash_original_torrent_files, true);
     auto const source = copy_asset(Arch, "again.torrent"sv);
     session_.request_add(AddData{ source }, Session::AddPrompt::Always);
 
     EXPECT_EQ(0, prompts);
-    EXPECT_EQ(1, duplicates);
     EXPECT_FALSE(tr_sys_path_exists(source));
+    EXPECT_TRUE(std::empty(reports_)); // not inside the call
+
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    EXPECT_EQ(1U, std::size(reports_.front().duplicates));
+}
+
+// e.g. a user who opens several listed torrents at once
+TEST_F(AppSessionRpcTest, aBurstOfPromptedDuplicatesMakesOneReport)
+{
+    add_and_list(Arch);
+    add_and_list(Debian);
+
+    session_.request_add(AddData{ copy_asset(Arch, "a.torrent"sv) }, Session::AddPrompt::Always);
+    session_.request_add(AddData{ copy_asset(Debian, "b.torrent"sv) }, Session::AddPrompt::Always);
+    loop_.drain();
+
+    ASSERT_EQ(1U, std::size(reports_));
+    EXPECT_EQ(2U, std::size(reports_.front().duplicates));
+}
+
+TEST_F(AppSessionRpcTest, aBatchOfRepliesMakesOneReport)
+{
+    add_and_list(Arch);
+    add_and_list(Debian);
+
+    session_.add_torrent(AddData{ copy_asset(Arch, "a.torrent"sv) });
+    session_.add_torrent(AddData{ copy_asset(Debian, "b.torrent"sv) });
+    session_.add_torrent(AddData{});
+    loop_.drain();
+
+    ASSERT_EQ(1U, std::size(reports_));
+    EXPECT_EQ(2U, std::size(reports_.front().duplicates));
+    EXPECT_EQ(1U, std::size(reports_.front().failed));
+}
+
+// e.g. a folder of files that was dropped twice
+TEST_F(AppSessionRpcTest, aReportListsEachEntryOnceInNameOrder)
+{
+    add_and_list(Arch);
+    add_and_list(Debian);
+
+    // names that only sort this way if case is ignored, and one that differs from another only by case
+    auto const zeta = copy_asset(Arch, "Zeta.torrent"sv);
+    auto const zeta_lower = copy_asset(Arch, "zeta.torrent"sv);
+    auto const alpha = copy_asset(Debian, "alpha.torrent"sv);
+    auto const junk = [this](std::string_view const name) {
+        auto path = fmt::format("{:s}/{:s}", sandbox_dir(), name);
+        EXPECT_TRUE(tr_file_save(path, "this is not a torrent"sv));
+        return path;
+    };
+    auto const upper = junk("B.torrent"sv);
+    auto const lower = junk("a.torrent"sv);
+
+    for (auto const& source : { zeta, upper, alpha, zeta_lower, lower, zeta, upper }) {
+        session_.add_torrent(AddData{ source });
+    }
+    loop_.drain();
+
+    ASSERT_EQ(1U, std::size(reports_));
+    auto const& report = reports_.front();
+    ASSERT_EQ(3U, std::size(report.duplicates));
+    EXPECT_EQ("alpha"sv, report.duplicates[0].name);
+    EXPECT_EQ("Zeta"sv, report.duplicates[1].name);
+    EXPECT_EQ("zeta"sv, report.duplicates[2].name);
+    ASSERT_EQ(2U, std::size(report.failed));
+    EXPECT_EQ(lower, report.failed[0].name);
+    EXPECT_EQ(upper, report.failed[1].name);
+}
+
+TEST_F(AppSessionRpcTest, aBatchOfWatchDirDuplicatesReportsNothing)
+{
+    add_and_list(Arch);
+    add_and_list(Debian);
+
+    for (auto const asset : { Arch, Debian }) {
+        auto add = AddData{ copy_asset(asset, fmt::format("again-{:s}", asset)) };
+        add.from_watch_dir = true;
+        session_.add_torrent(std::move(add));
+    }
+    loop_.drain();
+
+    EXPECT_TRUE(std::empty(reports_));
+}
+
+TEST_F(AppSessionRpcTest, anAddFromBeforeAStopIsNotReported)
+{
+    add_and_list(Arch);
+
+    session_.request_add(AddData{ copy_asset(Arch, "a.torrent"sv) }, Session::AddPrompt::Always); // a duplicate, dropped now
+    session_.add_torrent(AddData{}); // a failure, replied to after the stop
+    session_.stop();
+    loop_.drain();
+
+    EXPECT_TRUE(std::empty(reports_));
+
+    // nor does it hold up or join the next batch: with no session, this add fails at once
+    session_.add_torrent(AddData{});
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    ASSERT_EQ(1U, std::size(reports_));
+    EXPECT_EQ(1U, std::size(reports_.front().failed));
+    EXPECT_TRUE(std::empty(reports_.front().duplicates));
 }
 
 TEST_F(AppSessionRpcTest, aPromptedWatchDirDuplicateIsNeitherReportedNorPrompted)
 {
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+    add_and_list(Arch);
 
     auto prompts = 0;
-    auto duplicates = 0;
     auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
-    auto const duplicate_tag = session_.torrent_add_duplicate.connect_scoped(
-        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
 
     prefs_.set(TR_KEY_trash_original_torrent_files, false);
     auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
     add.from_watch_dir = true;
     auto const source = add.source;
     session_.request_add(std::move(add), Session::AddPrompt::Always);
+    loop_.drain();
 
     EXPECT_EQ(0, prompts);
-    EXPECT_EQ(0, duplicates);
+    EXPECT_TRUE(std::empty(reports_));
     EXPECT_FALSE(tr_sys_path_exists(source));
     EXPECT_TRUE(tr_sys_path_exists(fmt::format("{:s}.added", source)));
 }
 
 TEST_F(AppSessionRpcTest, addTorrentReportsWhatCanNotBeAdded)
 {
-    auto errors = std::vector<std::string>{};
-    auto const tag = session_.torrent_add_failed.connect_scoped(
-        [&errors](AddData const& /*add*/, std::string_view const errmsg) { errors.emplace_back(errmsg); });
-
     session_.add_torrent(AddData{});
 
-    ASSERT_TRUE(loop_.pump_until([&errors] { return !std::empty(errors); }));
-    EXPECT_FALSE(std::empty(errors.front()));
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    ASSERT_EQ(1U, std::size(reports_.front().failed));
+    EXPECT_FALSE(std::empty(reports_.front().failed.front().errmsg));
 }
 
 TEST_F(AppSessionRpcTest, aPromptedUrlIsFetchedByAnEmbeddedSession)
@@ -1163,12 +1260,7 @@ TEST_F(AppSessionRpcTest, resolveAddFetchesAUrl)
 
 TEST_F(AppSessionRpcTest, resolveAddDropsAListedTorrent)
 {
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
-
-    auto duplicates = 0;
-    auto const tag = session_.torrent_add_duplicate.connect_scoped(
-        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+    add_and_list(Arch);
 
     auto const wanted = std::make_shared<int const>();
     auto resolved = std::optional<std::optional<AddData>>{};
@@ -1178,23 +1270,47 @@ TEST_F(AppSessionRpcTest, resolveAddDropsAListedTorrent)
 
     ASSERT_TRUE(resolved.has_value());
     EXPECT_FALSE(resolved->has_value());
-    EXPECT_EQ(1, duplicates);
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    EXPECT_EQ(1U, std::size(reports_.front().duplicates));
 }
 
-// e.g. a user who accepts the prompt while its URL is fetched, and whose add lists the torrent first
-TEST_F(AppSessionRpcTest, resolveAddDropsAFetchNobodyWantsAnyMore)
+// e.g. a prompted URL that turns out to be a torrent the session has, opened along with a listed .torrent
+TEST_F(AppSessionRpcTest, resolveAddReportsAFetchedTorrentThatIsListed)
 {
-    session_.add_torrent(AddData{ copy_asset(Arch) });
-    ASSERT_TRUE(loop_.pump_until([this] { return session_.torrents().size() == 1U && session_.torrents()[0].has_name(); }));
+    add_and_list(Arch);
+    add_and_list(Debian);
 
     auto contents = std::vector<char>{};
     ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
     auto server = MockRpcServer{ /*advertise_tr5=*/true };
     server.serve_on_get(std::string{ std::data(contents), std::size(contents) });
 
-    auto duplicates = 0;
-    auto const tag = session_.torrent_add_duplicate.connect_scoped(
-        [&duplicates](AddData const& /*add*/, std::string_view /*hash_string*/) { ++duplicates; });
+    // dropped inside the call; its report must wait for the fetch that starts next
+    session_.request_add(AddData{ copy_asset(Debian, "b.torrent"sv) }, Session::AddPrompt::Always);
+
+    auto const wanted = std::make_shared<int const>();
+    auto resolved = std::optional<std::optional<AddData>>{};
+    session_.resolve_add(
+        AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) },
+        wanted,
+        [&resolved](std::optional<AddData> result) { resolved = std::move(result); });
+
+    ASSERT_TRUE(loop_.pump_until([&resolved] { return resolved.has_value(); }));
+    EXPECT_FALSE(resolved->has_value());
+    loop_.drain();
+    ASSERT_EQ(1U, std::size(reports_));
+    EXPECT_EQ(2U, std::size(reports_.front().duplicates));
+}
+
+// e.g. a user who accepts the prompt while its URL is fetched, and whose add lists the torrent first
+TEST_F(AppSessionRpcTest, resolveAddDropsAFetchNobodyWantsAnyMore)
+{
+    add_and_list(Arch);
+
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get(std::string{ std::data(contents), std::size(contents) });
 
     auto wanted = std::make_shared<int const>();
     auto resolved = false;
@@ -1207,7 +1323,7 @@ TEST_F(AppSessionRpcTest, resolveAddDropsAFetchNobodyWantsAnyMore)
     ASSERT_TRUE(loop_.pump_until([&server] { return !std::empty(server.request_bodies()); }));
     loop_.drain(std::chrono::milliseconds{ 200 });
     EXPECT_FALSE(resolved);
-    EXPECT_EQ(0, duplicates);
+    EXPECT_TRUE(std::empty(reports_));
 }
 
 // The user will want the file to try again.
@@ -1216,16 +1332,13 @@ TEST_F(AppSessionRpcTest, aRejectedAddReportsTheErrorAndKeepsTheSourceFile)
     auto const source = fmt::format("{:s}/corrupt.torrent", sandbox_dir());
     ASSERT_TRUE(tr_file_save(source, "this is not a torrent"sv));
 
-    auto errors = std::vector<std::string>{};
-    auto const tag = session_.torrent_add_failed.connect_scoped(
-        [&errors](AddData const& /*add*/, std::string_view const errmsg) { errors.emplace_back(errmsg); });
-
     auto add = AddData{ source };
     add.trash_source = true;
     session_.add_torrent(std::move(add));
 
-    ASSERT_TRUE(loop_.pump_until([&errors] { return !std::empty(errors); }));
-    EXPECT_FALSE(std::empty(errors.front()));
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    ASSERT_EQ(1U, std::size(reports_.front().failed));
+    EXPECT_FALSE(std::empty(reports_.front().failed.front().errmsg));
     EXPECT_TRUE(tr_sys_path_exists(source));
 }
 

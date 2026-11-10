@@ -7,6 +7,7 @@
 
 #include <array>
 #include <chrono>
+#include <compare>
 #include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
@@ -238,7 +239,7 @@ public:
     // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
     //   the session to fetch, which may be able to reach what this client can't.
     // - A torrent already in `torrents()` is dropped. Its source file is disposed of as
-    //   `add_torrent()` would, and `torrent_add_duplicate` reports it unless it came from the watch dir.
+    //   `add_torrent()` would, and `torrent_add_report` reports it unless it came from the watch dir.
     // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
     // call unless `add` is a URL.
     // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
@@ -251,10 +252,42 @@ public:
     // copy. A new torrent is fetched into `torrents()` at once.
     void add_torrent(AddData add, AddOptions options = {});
 
-    sigslot::signal<AddData const& /*add*/, std::string_view /*errmsg*/> torrent_add_failed;
+    // The adds of one batch that the user should hear about, ready to list:
+    // each list is in name order, ignoring ASCII case, and holds no entry twice.
+    struct AddReport {
+        struct Failure {
+            std::string name; // the add's `readable_name()`
+            std::string errmsg; // the session's message, or the transport's
 
-    // not fired for a watch dir's file
-    sigslot::signal<AddData const& /*add*/, std::string_view /*hash_string*/> torrent_add_duplicate;
+            [[nodiscard]] auto operator<=>(Failure const&) const = default;
+        };
+
+        struct Duplicate {
+            std::string name; // the add's `readable_short_name()`
+            std::string hash_string; // the listed torrent's
+
+            // the hash as a list shows it
+            [[nodiscard]] constexpr std::string_view short_hash() const noexcept
+            {
+                return std::string_view{ hash_string }.substr(0U, 7U);
+            }
+
+            [[nodiscard]] auto operator<=>(Duplicate const&) const = default;
+        };
+
+        std::vector<Failure> failed;
+        std::vector<Duplicate> duplicates; // never a watch dir's
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return std::empty(failed) && std::empty(duplicates);
+        }
+    };
+
+    // Fires once no add is pending: no `torrent_add` awaits its reply and no `resolve_add()`
+    // fetch is in flight. Never inside the call that ends the batch, so a burst of adds makes
+    // one report. Nothing from before a `stop()` is reported, and an empty batch fires nothing.
+    sigslot::signal<AddReport const&> torrent_add_report;
 
     // --- torrent_set
 
@@ -521,6 +554,14 @@ private:
     void drop_duplicate(AddData const& add, std::string_view hash_string);
     void dispose_source_file(AddData const& add) const;
 
+    [[nodiscard]] constexpr bool adds_pending() const noexcept
+    {
+        return adds_in_flight_ > 0U || add_fetches_in_flight_ > 0U;
+    }
+
+    // queues `torrent_add_report` for the UI loop's next turn, if the batch has ended
+    void schedule_add_report();
+
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);
 
@@ -575,6 +616,13 @@ private:
 
     // the core prefs with a `session_set` in flight, one entry per request
     std::vector<tr_quark> session_sets_in_flight_;
+
+    AddReport add_report_;
+    size_t adds_in_flight_ = 0U; // `torrent_add` requests
+    size_t add_fetches_in_flight_ = 0U; // `resolve_add()` fetches
+
+    // Like `alive_`, and replaced by `stop()`: an add from before a stop is forgotten.
+    std::shared_ptr<std::monostate const> adds_alive_ = std::make_shared<std::monostate const>();
 
     // Reply closures hold a weak_ptr to this token, so a reply the UI thread
     // delivers after this Session is destroyed does nothing.
