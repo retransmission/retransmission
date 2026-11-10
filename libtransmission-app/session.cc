@@ -619,7 +619,7 @@ void Session::resolve_add(
     std::function<void(std::optional<AddData>)> on_resolved)
 {
     if (add.type != AddData::Type::Url) {
-        on_resolved(drop_if_listed(std::move(add)));
+        on_resolved(drop_unless_promptable(std::move(add)));
         schedule_add_report();
         return;
     }
@@ -650,20 +650,30 @@ void Session::resolve_add(
                     add.metainfo = response.body;
                 }
 
-                on_resolved(drop_if_listed(std::move(add)));
+                on_resolved(drop_unless_promptable(std::move(add)));
             }
 
             schedule_add_report();
         });
 }
 
-std::optional<AddData> Session::drop_if_listed(AddData add)
+std::optional<AddData> Session::drop_unless_promptable(AddData add)
 {
-    if (auto const tm = add.parsed()) {
-        if (auto const* const tor = torrents_.find(tm->info_hash()); tor != nullptr) {
-            drop_duplicate(add, tor->hash_string().sv());
+    auto const tm = add.parsed();
+
+    if (!tm) {
+        // Reported here, not by sending it: resolving must not add anything, and the file may be huge.
+        if (add.type == AddData::Type::File) {
+            add_report_.failed.emplace_back(add.readable_name(), "can't be read as a torrent");
             return {};
         }
+
+        return add;
+    }
+
+    if (auto const* const tor = torrents_.find(tm->info_hash()); tor != nullptr) {
+        drop_duplicate(add, tor->hash_string().sv());
+        return {};
     }
 
     return add;

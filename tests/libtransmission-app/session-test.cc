@@ -1364,6 +1364,45 @@ TEST_F(AppSessionRpcTest, aRejectedAddReportsTheErrorAndKeepsTheSourceFile)
     EXPECT_TRUE(tr_sys_path_exists(source));
 }
 
+TEST_F(AppSessionRpcTest, aFileThatIsNotATorrentIsReportedInsteadOfPrompting)
+{
+    auto const source = fmt::format("{:s}/corrupt.torrent", sandbox_dir());
+    ASSERT_TRUE(tr_file_save(source, "this is not a torrent"sv));
+
+    auto prompts = 0;
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
+
+    EXPECT_TRUE(session_.request_add(AddData{ source }, Session::AddPrompt::Always));
+
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    EXPECT_EQ(1U, std::size(reports_.front().failed));
+    EXPECT_EQ(0, prompts);
+    EXPECT_TRUE(tr_sys_path_exists(source));
+}
+
+// e.g. the file a prompt's user names as another source
+TEST_F(AppSessionRpcTest, resolveAddDropsAFileThatIsNotATorrent)
+{
+    auto const source = fmt::format("{:s}/corrupt.torrent", sandbox_dir());
+    ASSERT_TRUE(tr_file_save(source, "this is not a torrent"sv));
+
+    auto const wanted = std::make_shared<int const>();
+    auto resolved = std::optional<std::optional<AddData>>{};
+    session_.resolve_add(AddData{ source }, wanted, [&resolved](std::optional<AddData> result) {
+        resolved = std::move(result);
+    });
+
+    ASSERT_TRUE(resolved.has_value());
+    EXPECT_FALSE(resolved->has_value());
+    EXPECT_TRUE(std::empty(reports_)); // not inside the call
+
+    ASSERT_TRUE(loop_.pump_until([this] { return !std::empty(reports_); }));
+    ASSERT_EQ(1U, std::size(reports_.front().failed));
+    EXPECT_EQ(source, reports_.front().failed.front().name);
+    EXPECT_FALSE(std::empty(reports_.front().failed.front().errmsg));
+}
+
 // `peer_limit` is in `DetailStats` but not `MainAll`, so only the set's re-fetch can bring it.
 TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagAfterTheReFetchLands)
 {
@@ -1995,6 +2034,30 @@ TEST_F(AppSessionLifecycleTest, aPromptedUrlBringsItsMetainfo)
     EXPECT_EQ(AddData::Type::Metainfo, prompted->type);
     EXPECT_EQ(benc, prompted->metainfo);
     EXPECT_EQ(url, prompted->source);
+}
+
+// Resolving adds nothing, and a remote session would be sent the whole file.
+TEST_F(AppSessionLifecycleTest, resolveAddSendsNoFileThatIsNotATorrent)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    auto const source = fmt::format("{:s}/corrupt.torrent", sandbox_dir());
+    ASSERT_TRUE(tr_file_save(source, "this is not a torrent"sv));
+
+    auto n_failed = size_t{};
+    auto const tag = session_.torrent_add_report.connect_scoped(
+        [&n_failed](Session::AddReport const& report) { n_failed += std::size(report.failed); });
+
+    auto const wanted = std::make_shared<int const>();
+    session_.resolve_add(AddData{ source }, wanted, [](std::optional<AddData> const& /*result*/) {});
+
+    ASSERT_TRUE(loop_.pump_until([&n_failed] { return n_failed != 0U; }));
+    loop_.drain();
+    EXPECT_EQ(1U, n_failed);
+    EXPECT_TRUE(std::ranges::none_of(server.request_bodies(), [](auto const& body) {
+        return body.contains("torrent_add") || body.contains("torrent-add");
+    }));
 }
 
 // The session may be able to reach what this client can't.
