@@ -703,22 +703,7 @@ void tr_session::initImpl(init_data& data)
     // Stopping a running worker pool safely isn't worth the
     // complexity of a live switch.
     try {
-        local_data.start_workers(
-            settings_.disk_io_workers,
-            open_files_,
-            // Completions change torrent state, which clients read from
-            // their own threads while holding the session lock.
-            [this](std::function<void()> fn) {
-                queue_session_thread([this, fn = std::move(fn)] {
-                    auto const lock = unique_lock();
-                    fn();
-                    resume_deferred_requests();
-                });
-            },
-            [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
-                auto const* const tor = torrents_.get(id);
-                return tor != nullptr ? tor->storage_descriptor() : nullptr;
-            });
+        local_data.start_workers(settings_.disk_io_workers, open_files_, local_data_marshal(), storage_descriptor_provider());
     } catch (std::exception const& e) {
         tr_logAddError(
             fmt::format("Couldn't start disk IO workers, continuing without them: {error}", fmt::arg("error", e.what())));
@@ -1325,6 +1310,27 @@ double tr_sessionGetRawSpeed_KBps(tr_session const* session, tr_direction dir)
     }
 
     return {};
+}
+
+tr::LocalData::Marshal tr_session::local_data_marshal()
+{
+    // Completions change torrent state, which clients read from
+    // their own threads while holding the session lock.
+    return [this](std::function<void()> fn) {
+        queue_session_thread([this, fn = std::move(fn)] {
+            auto const lock = unique_lock();
+            fn();
+            resume_deferred_requests();
+        });
+    };
+}
+
+tr::LocalData::DescriptorProvider tr_session::storage_descriptor_provider()
+{
+    return [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
+        auto const* const tor = torrents_.get(id);
+        return tor != nullptr ? tor->storage_descriptor() : nullptr;
+    };
 }
 
 void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds const tracker_wait)
