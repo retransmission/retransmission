@@ -90,7 +90,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
-        // https://github.com/transmission/transmission/issues/7307
+        // Coalesce small writes. Safe to remove if need be.
         static auto constexpr MinPayloadSize = 128U;
 
         if (auto const ptr = weak.lock()) {
