@@ -138,6 +138,8 @@ target_link_libraries(transport-benchmark
         libevent::extra
         $<$<BOOL:${ENABLE_UTP}>:libutp::libutp>)
 
+add_dependencies(all-tests transport-benchmark)
+
 # A small transfer per transport, so the benchmark keeps building and working.
 # Some µTP connections idle for libutp's 30 s keepalive interval before sending,
 # so µTP's timeout leaves room for that wait.

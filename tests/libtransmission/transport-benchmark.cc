@@ -71,7 +71,7 @@
 #include "libtransmission/quark.h"
 #include "libtransmission/session.h"
 #include "libtransmission/timer.h"
-#include "libtransmission/utils.h" // tr_time_msec()
+#include "libtransmission/utils.h" // tr_lib_init(), tr_time_msec()
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
@@ -855,12 +855,15 @@ int run(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+    // fmt::print() can throw, so the handlers report through stdio
     try {
+        tr_lib_init(); // Windows sockets
         return run(argc, argv);
     } catch (std::exception const& error) {
-        fmt::print(stderr, "{}\n", error.what());
+        (void)std::fputs(error.what(), stderr);
+        (void)std::fputc('\n', stderr);
     } catch (...) {
-        fmt::print(stderr, "unknown error\n");
+        (void)std::fputs("unknown error\n", stderr);
     }
     return 1;
 }
