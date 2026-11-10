@@ -212,10 +212,10 @@ public:
         std::shared_ptr<tr_peerIo> const& peer_io,
         tr_encryption_mode encryption_mode = TR_CLEAR_PREFERRED)
     {
-        return tr_handshake{ mediator, peer_io, encryption_mode, [&result](auto const& resin) {
-                                result = resin;
-                                return true;
-                            } };
+        return std::make_unique<tr_handshake>(mediator, peer_io, encryption_mode, [&result](auto const& resin) {
+            result = resin;
+            return true;
+        });
     }
 };
 
@@ -241,7 +241,7 @@ TEST_F(HandshakeTest, incomingPlaintext)
     sendToClient(sock, peer_id);
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io);
+    auto handshake = startHandshake(res, &mediator, io);
     waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
 
     // check the results
@@ -254,6 +254,11 @@ TEST_F(HandshakeTest, incomingPlaintext)
     EXPECT_EQ(TorrentWeAreSeeding.info_hash, io->torrent_hash());
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 // The datastream is identical to HandshakeTest.incomingPlaintext,
@@ -270,7 +275,7 @@ TEST_F(HandshakeTest, incomingPlaintextUnknownInfoHash)
     sendToClient(sock, makeRandomPeerId());
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io);
+    auto handshake = startHandshake(res, &mediator, io);
     waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
 
     // check the results
@@ -282,6 +287,11 @@ TEST_F(HandshakeTest, incomingPlaintextUnknownInfoHash)
     EXPECT_EQ(tr_sha1_digest_t{}, io->torrent_hash());
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 TEST_F(HandshakeTest, outgoingPlaintext)
@@ -297,7 +307,7 @@ TEST_F(HandshakeTest, outgoingPlaintext)
     sendToClient(sock, peer_id);
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io);
+    auto handshake = startHandshake(res, &mediator, io);
     waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
 
     // check the results
@@ -311,6 +321,11 @@ TEST_F(HandshakeTest, outgoingPlaintext)
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 TEST_F(HandshakeTest, incomingEncrypted)
@@ -324,7 +339,7 @@ TEST_F(HandshakeTest, incomingEncrypted)
     auto [io, sock] = createIncomingIo(session_);
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io);
+    auto handshake = startHandshake(res, &mediator, io);
 
     // Peer->Client data from a successful encrypted handshake recorded
     // in the wild for replay here. This test will play as the peer.
@@ -366,6 +381,11 @@ TEST_F(HandshakeTest, incomingEncrypted)
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 // The datastream is identical to HandshakeTest.incomingEncrypted,
@@ -378,7 +398,7 @@ TEST_F(HandshakeTest, incomingEncryptedUnknownInfoHash)
     auto [io, sock] = createIncomingIo(session_);
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io);
+    auto handshake = startHandshake(res, &mediator, io);
 
     // Peer->Client data from a successful encrypted handshake recorded
     // in the wild for replay here. This test will play as the peer.
@@ -416,6 +436,11 @@ TEST_F(HandshakeTest, incomingEncryptedUnknownInfoHash)
     EXPECT_EQ(tr_sha1_digest_t{}, io->torrent_hash());
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 TEST_F(HandshakeTest, outgoingEncrypted)
@@ -429,7 +454,7 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     auto [io, sock] = createOutgoingIo(session_, UbuntuTorrent.info_hash);
 
     auto res = std::optional<tr_handshake::Result>{};
-    auto const handshake = startHandshake(res, &mediator, io, TR_ENCRYPTION_PREFERRED);
+    auto handshake = startHandshake(res, &mediator, io, TR_ENCRYPTION_PREFERRED);
 
     // Peer->Client data from a successful encrypted handshake recorded
     // in the wild for replay here. This test will play as the peer.
@@ -504,6 +529,11 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
 }
 
 } // namespace tr::test
