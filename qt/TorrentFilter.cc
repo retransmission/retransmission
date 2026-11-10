@@ -57,6 +57,7 @@ void TorrentFilter::refilterSoon()
 
 void TorrentFilter::refilter()
 {
+    sort_mode_ = prefs_.get<SortMode>(TR_KEY_sort_mode);
     invalidate();
     sort(0, prefs_.get<bool>(TR_KEY_sort_reversed) ? Qt::AscendingOrder : Qt::DescendingOrder);
 }
@@ -71,7 +72,7 @@ bool TorrentFilter::lessThan(QModelIndex const& left, QModelIndex const& right) 
     auto const& a = *model->data(left, TorrentModel::TorrentRole).value<Torrent const*>();
     auto const& b = *model->data(right, TorrentModel::TorrentRole).value<Torrent const*>();
 
-    auto val = tr::app::compare_torrents(a, b, prefs_.get<SortMode>(TR_KEY_sort_mode));
+    auto val = tr::app::compare_torrents(a, b, sort_mode_);
 
     if (val == 0) {
         // the model caches the names as QStrings
