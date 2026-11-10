@@ -364,175 +364,10 @@ TEST(LocalData, ErrorsKeepTheBackendsMessage)
     local_data.shutdown();
 }
 
-TEST(LocalData, DeferredCompletionsWaitForPump)
-{
-    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
-    local_data.set_completions(tr::LocalData::Completions::Deferred);
-
-    auto n_called = 0;
-    for (auto i = 0; i < 4; ++i) {
-        local_data.read(7, { .begin = 0U, .end = 3U }, [&n_called](auto, auto, auto const&, auto) { ++n_called; });
-    }
-
-    EXPECT_EQ(0, n_called);
-    local_data.pump();
-    EXPECT_EQ(4, n_called);
-}
-
-TEST(LocalData, DeferredCompletionsArriveOutOfOrder)
-{
-    // A shuffle can leave one run in order by chance. It cannot do that
-    // for this many runs in a row.
-    static auto constexpr NumOps = 8;
-    static auto constexpr NumRuns = 16;
-
-    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
-    local_data.set_completions(tr::LocalData::Completions::Deferred);
-
-    auto reordered = false;
-    for (auto run = 0; !reordered && run < NumRuns; ++run) {
-        auto order = std::vector<tr_piece_index_t>{};
-        for (tr_piece_index_t piece = 0; piece < NumOps; ++piece) {
-            local_data.test_piece(7, piece, [&order](auto, tr_piece_index_t const tested, auto const&, auto) {
-                order.push_back(tested);
-            });
-        }
-
-        local_data.pump();
-        ASSERT_EQ(NumOps, std::size(order));
-        reordered = !std::ranges::is_sorted(order);
-    }
-
-    EXPECT_TRUE(reordered);
-}
-
-TEST(LocalData, AdminOpsDrainParkedCompletions)
-{
-    auto backend = std::make_unique<StubBackend>();
-    auto* raw_backend = backend.get();
-    auto local_data = tr::LocalData{ std::move(backend) };
-    local_data.set_completions(tr::LocalData::Completions::Deferred);
-
-    auto read_finished = false;
-    local_data.read(7, { .begin = 0U, .end = 3U }, [&read_finished](auto, auto, auto const&, auto) { read_finished = true; });
-
-    // rule 3: a barrier waits for the ops enqueued before it
-    auto move_finished = false;
-    local_data.move(
-        7,
-        [] { return tr::LocalData::MoveTarget{ .parent = "/new" }; },
-        [&read_finished, &move_finished](auto, auto, auto const&) {
-            EXPECT_TRUE(read_finished);
-            move_finished = true;
-        });
-
-    EXPECT_TRUE(move_finished);
-    EXPECT_EQ("/new", raw_backend->moved_to);
-}
-
-TEST(LocalData, ShutdownDeliversParkedCompletions)
-{
-    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
-    local_data.set_completions(tr::LocalData::Completions::Deferred);
-
-    auto n_called = 0;
-    auto data = std::make_unique<tr::LocalData::BlockData>();
-    data->assign({ uint8_t{ 4U } });
-    local_data.write(11, { .begin = 0U, .end = 1U }, std::move(data), [&n_called](auto, auto, auto const&) { ++n_called; });
-
-    local_data.shutdown();
-    EXPECT_EQ(1, n_called);
-}
-
-TEST(LocalData, ShuffledCompletionsMixInlineAndDeferred)
-{
-    static auto constexpr NumOps = 32;
-
-    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
-    local_data.set_completions(tr::LocalData::Completions::Shuffled);
-
-    auto n_called = 0;
-    for (auto i = 0; i < NumOps; ++i) {
-        local_data.read(7, { .begin = 0U, .end = 3U }, [&n_called](auto, auto, auto const&, auto) { ++n_called; });
-    }
-
-    // rule 4: some of these fired before the enqueue call returned,
-    // and the rest are waiting for pump()
-    auto const n_inline = n_called;
-    EXPECT_GT(n_inline, 0);
-    EXPECT_LT(n_inline, NumOps);
-
-    local_data.pump();
-    EXPECT_EQ(NumOps, n_called);
-}
-
-TEST(LocalData, ShuffledCompletionsReplayFromSeed)
-{
-    static auto constexpr NumOps = 16;
-    static auto constexpr Seed = uint32_t{ 12345U };
-
-    auto const run_once = [] {
-        auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
-        local_data.set_completions(tr::LocalData::Completions::Shuffled, Seed);
-
-        auto order = std::vector<tr_piece_index_t>{};
-        for (tr_piece_index_t piece = 0; piece < NumOps; ++piece) {
-            local_data.test_piece(7, piece, [&order](auto, tr_piece_index_t const tested, auto const&, auto) {
-                order.push_back(tested);
-            });
-        }
-        local_data.pump();
-        return order;
-    };
-
-    EXPECT_EQ(run_once(), run_once());
-}
-
 // ---
 
 namespace
 {
-
-// Stalls a worker where it creates a file, until the test lets it go on.
-// Preallocation runs on the worker, outside every lock, so a test can
-// enqueue more ops while the worker is known to be between two runs.
-class PreallocationGate
-{
-public:
-    [[nodiscard]] tr_open_files::Preallocate hook()
-    {
-        return [this](tr_sys_file_t, uint64_t, int, tr_error*) {
-            auto lock = std::unique_lock{ mutex_ };
-            ++n_entered_;
-            cv_.notify_all();
-            cv_.wait(lock, [this] { return n_released_ >= n_entered_; });
-            return true;
-        };
-    }
-
-    // Wait for a worker to stall creating the `n`th file. False on timeout.
-    [[nodiscard]] bool waitForFile(size_t const n)
-    {
-        auto lock = std::unique_lock{ mutex_ };
-        return cv_.wait_for(lock, std::chrono::seconds{ 5 }, [this, n] { return n_entered_ >= n; });
-    }
-
-    // Let the next `n` files through, starting with one that is stalled.
-    void release(size_t const n = 1U)
-    {
-        {
-            auto const lock = std::scoped_lock{ mutex_ };
-            n_released_ += n;
-        }
-        cv_.notify_all();
-    }
-
-private:
-    std::mutex mutex_;
-    std::condition_variable cv_;
-    size_t n_entered_ = 0U;
-    size_t n_released_ = 0U;
-};
 
 // Exercises the threaded backend against real files in a sandbox.
 // The test thread doubles as the session thread: marshaled functions
@@ -554,6 +389,23 @@ protected:
         };
     }
 
+    // Run the marshaled functions, and the ones those marshal, until none is left.
+    void runMarshaled()
+    {
+        for (;;) {
+            auto fn = std::function<void()>{};
+            {
+                auto const lock = std::scoped_lock{ marshal_mutex_ };
+                if (std::empty(marshaled_)) {
+                    return;
+                }
+                fn = std::move(marshaled_.front());
+                marshaled_.pop_front();
+            }
+            fn();
+        }
+    }
+
     // Run marshaled functions until `pred()` holds. False on timeout.
     template<typename Pred>
     [[nodiscard]] bool pumpUntil(Pred const& pred)
@@ -561,18 +413,7 @@ protected:
         auto const deadline = std::chrono::steady_clock::now() + std::chrono::seconds{ 5 };
 
         for (;;) {
-            for (;;) {
-                auto fn = std::function<void()>{};
-                {
-                    auto const lock = std::scoped_lock{ marshal_mutex_ };
-                    if (std::empty(marshaled_)) {
-                        break;
-                    }
-                    fn = std::move(marshaled_.front());
-                    marshaled_.pop_front();
-                }
-                fn();
-            }
+            runMarshaled();
 
             if (pred()) {
                 return true;
@@ -749,15 +590,6 @@ protected:
             ++n_writes;
         }
         return n_writes;
-    }
-
-    // A descriptor whose new files are preallocated, for a PreallocationGate.
-    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> makePreallocatingDescriptor(
-        std::vector<std::pair<std::string_view, uint64_t>> const& files) const
-    {
-        auto desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor(files, BlockSize));
-        desc->preallocation = tr_file_preallocation::Full;
-        return desc;
     }
 
     // Run what the session thread has been asked to run so far.
@@ -1240,93 +1072,6 @@ TEST_F(LocalDataWorkersTest, renameChecksFirstAndLeavesTheDiskWorkToAWorker)
     EXPECT_TRUE(tr_sys_path_exists(pathOf("new.bin")));
 
     local_data->shutdown();
-}
-
-TEST_F(LocalDataWorkersTest, aMoveThatOnlyRenamesStaysOffTheCopyLane)
-{
-    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
-    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
-
-    // nothing that needs the copy lane can start...
-    tr::detail::hold_copy_lane(*local_data, true);
-    auto moved = false;
-    local_data->move(
-        TorId,
-        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
-        [&moved](auto, auto, tr_error const& error) {
-            EXPECT_FALSE(error) << error;
-            moved = true;
-        });
-
-    // ...and a move within one filesystem finishes all the same
-    EXPECT_TRUE(pumpUntil([&moved]() { return moved; }));
-    EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
-    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
-
-    local_data->shutdown();
-}
-
-TEST_F(LocalDataWorkersTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
-{
-    if (!tr_sys_path_exists("/dev/shm"sv)) {
-        GTEST_SKIP() << "no /dev/shm";
-    }
-    auto const other_filesystem = tr::test::Sandbox{ "/dev/shm" };
-    if (tr_sys_path_is_same_filesystem(sandboxDir(), other_filesystem.path())) {
-        GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
-    }
-
-    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
-    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
-    createFileWithContents(pathOf("other/data.bin"), patternString(0U, BlockSize));
-
-    auto const mine = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
-    auto theirs = std::make_shared<tr::StorageDescriptor>(*mine);
-    theirs->download_dir = pathOf("other");
-    theirs->current_dir = pathOf("other");
-
-    auto local_data = tr::LocalData{ torrents_, open_files_ };
-    local_data.start_workers(2U, open_files_, marshal(), [&mine, &theirs](tr_torrent_id_t const id) {
-        return id == TorId ? mine : std::shared_ptr<tr::StorageDescriptor const>{ theirs };
-    });
-
-    // my move has to copy to another filesystem, and the copy lane is busy
-    tr::detail::hold_copy_lane(local_data, true);
-    auto const copy_target = tr_pathbuf{ other_filesystem.path(), "/target"sv };
-    auto events = std::vector<std::string>{};
-    local_data.move(
-        TorId,
-        [&copy_target] { return tr::LocalData::MoveTarget{ .parent = std::string{ copy_target.sv() } }; },
-        [&events](auto, auto, tr_error const& error) {
-            EXPECT_FALSE(error) << error;
-            events.emplace_back("copied");
-        },
-        [&events](auto, auto) { events.emplace_back("copy placed"); });
-
-    // their move, queued later, only renames, and doesn't wait for mine
-    local_data.move(
-        OtherId,
-        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("renamed") }; },
-        [&events](auto, auto, tr_error const& error) {
-            EXPECT_FALSE(error) << error;
-            events.emplace_back("renamed");
-        });
-    EXPECT_TRUE(pumpUntil([&events]() { return !std::empty(events); }));
-    EXPECT_EQ((std::vector<std::string>{ "renamed" }), events);
-    EXPECT_TRUE(tr_sys_path_exists(pathOf("renamed/data.bin")));
-
-    // mine has moved nothing yet, and its barrier is still up
-    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
-    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
-    EXPECT_TRUE(local_data.admin_op_pending(TorId));
-
-    tr::detail::hold_copy_lane(local_data, false);
-    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 3U; }));
-    EXPECT_EQ((std::vector<std::string>{ "renamed", "copy placed", "copied" }), events);
-    EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
-    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
-
-    local_data.shutdown();
 }
 
 TEST_F(LocalDataWorkersTest, closingATorrentLeavesTheClosesToALane)
@@ -1883,108 +1628,6 @@ TEST_F(LocalDataWorkersTest, queuedHashWaitsForAWriteThatOverlapsIt)
     local_data->shutdown();
 }
 
-TEST_F(LocalDataWorkersTest, writesThatArriveDuringASweepWaitForTheNext)
-{
-    // Block 0 is first.bin, blocks 1-6 are data.bin. One worker, so the
-    // callbacks arrive in the order the writes reached the disk.
-    auto const desc = makePreallocatingDescriptor({ { "first.bin", BlockSize }, { "data.bin", 6U * BlockSize } });
-    auto gate = PreallocationGate{};
-    auto files = tr_open_files{ gate.hook() };
-    auto local_data = tr::LocalData{ torrents_, files };
-    local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
-        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
-    });
-
-    auto order = std::vector<size_t>{};
-    auto const write_block = [&local_data, &order](size_t const block) {
-        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
-    };
-
-    // the sweep is blocks 0, 2 and 6, and the worker stalls on its first
-    local_data.set_workers_paused(true);
-    write_block(0U);
-    write_block(2U);
-    write_block(6U);
-    local_data.set_workers_paused(false);
-    ASSERT_TRUE(gate.waitForFile(1U));
-
-    // block 4 arrives ahead of where the sweep has got to...
-    write_block(4U);
-    gate.release(2U);
-
-    // ...and is still written after the rest of the sweep
-    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 4U; }));
-    EXPECT_EQ((std::vector<size_t>{ 0U, 2U, 6U, 4U }), order);
-
-    local_data.shutdown();
-}
-
-TEST_F(LocalDataWorkersTest, readsThatArriveDuringASweepWaitForTheNext)
-{
-    // Blocks 0 and 7 are files to create. Blocks 1, 3 and 5 each start a
-    // file of their own, so none is open yet and the page cache answers none.
-    // One worker, so the callbacks arrive in the order the disk was used.
-    auto const desc = makePreallocatingDescriptor(
-        { { "first.bin", BlockSize },
-          { "a.bin", 2U * BlockSize },
-          { "b.bin", 2U * BlockSize },
-          { "c.bin", 2U * BlockSize },
-          { "last.bin", BlockSize } });
-    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(BlockSize, 2U * BlockSize)));
-    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(3U * BlockSize, 2U * BlockSize)));
-    ASSERT_TRUE(tr_file_save(pathOf("c.bin"), patternString(5U * BlockSize, 2U * BlockSize)));
-    auto gate = PreallocationGate{};
-    auto files = tr_open_files{ gate.hook() };
-    auto local_data = tr::LocalData{ torrents_, files };
-    local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
-        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
-    });
-
-    auto events = std::vector<std::string>{};
-    auto const write_block = [&local_data, &events](size_t const block) {
-        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&events, block] {
-            events.emplace_back(fmt::format("wrote {}", block));
-        });
-    };
-    auto const read_block = [&local_data, &events](size_t const block) {
-        local_data.read(
-            TorId,
-            { .begin = block * BlockSize, .end = (block + 1U) * BlockSize },
-            [&events, block](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
-                EXPECT_FALSE(error) << error;
-                ASSERT_NE(nullptr, data);
-                EXPECT_EQ(
-                    patternString(block * BlockSize, BlockSize),
-                    (std::string{ reinterpret_cast<char const*>(data->data()), data->size() }));
-                events.emplace_back(fmt::format("read {}", block));
-            });
-    };
-
-    // stall the worker creating first.bin, and queue the rest behind it
-    write_block(0U);
-    ASSERT_TRUE(gate.waitForFile(1U));
-    read_block(1U);
-    read_block(5U);
-    pumpOnce();
-    write_block(7U);
-
-    // the read sweep is blocks 1 and 5. The worker reads block 1, then
-    // takes its turn at writing and stalls creating last.bin.
-    gate.release();
-    ASSERT_TRUE(gate.waitForFile(2U));
-
-    // block 3 arrives ahead of where the sweep has got to...
-    read_block(3U);
-    pumpOnce();
-    gate.release();
-
-    // ...and is still read after the rest of the sweep
-    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 5U; }));
-    EXPECT_EQ((std::vector<std::string>{ "wrote 0", "read 1", "wrote 7", "read 5", "read 3" }), events);
-
-    local_data.shutdown();
-}
-
 TEST_F(LocalDataWorkersTest, hashesTakeTurnsWithReadsAndWrites)
 {
     // Pieces 0-2 are on disk in their own files, none of them open yet, so
@@ -2023,6 +1666,612 @@ TEST_F(LocalDataWorkersTest, hashesTakeTurnsWithReadsAndWrites)
     // the second hash waits for its next turn
     EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 4U; }));
     EXPECT_EQ((std::vector<std::string>{ "hashed 0", "read", "wrote", "hashed 1" }), events);
+
+    local_data->shutdown();
+}
+
+// ---
+
+namespace
+{
+
+// Exercises the threaded backend with its threads' work done on the test
+// thread, so that a test can say which thread goes next, or let a seed say.
+class LocalDataThreadlessTest : public LocalDataWorkersTest
+{
+protected:
+    using DiskThread = tr::detail::DiskThread;
+
+    [[nodiscard]] auto makeThreadless(
+        tr::LocalData::DescriptorProvider provider,
+        size_t const n_workers = 2U,
+        uint32_t const seed = 1U)
+    {
+        auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
+        tr::detail::start_threadless(*local_data, n_workers, seed, open_files_, marshal(), std::move(provider));
+        return local_data;
+    }
+
+    [[nodiscard]] auto makeThreadless(
+        std::shared_ptr<tr::StorageDescriptor const> desc,
+        size_t const n_workers = 2U,
+        uint32_t const seed = 1U)
+    {
+        return makeThreadless(
+            [desc = std::move(desc)](tr_torrent_id_t const id) { return id == TorId ? desc : nullptr; },
+            n_workers,
+            seed);
+    }
+
+    // A copy of `desc` for another torrent, with its files under `subdir`.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> inDir(
+        tr::StorageDescriptor const& desc,
+        tr_torrent_id_t const id,
+        std::string_view const subdir) const
+    {
+        auto copy = std::make_shared<tr::StorageDescriptor>(desc);
+        copy->id = id;
+        copy->download_dir = pathOf(subdir);
+        copy->current_dir = pathOf(subdir);
+        return copy;
+    }
+
+    // Like tr_file_save(), but makes the file's dir too.
+    void saveFile(std::string_view const subpath, std::string_view const contents) const
+    {
+        auto const path = pathOf(subpath);
+        ASSERT_TRUE(tr_sys_dir_create(tr_sys_path_dirname(path), TR_SYS_DIR_CREATE_PARENTS, 0700));
+        ASSERT_TRUE(tr_file_save(path, contents));
+    }
+
+    // Take steps until no thread of `which` has one left. Returns how many.
+    static size_t stepAll(tr::LocalData& local_data, DiskThread const which = DiskThread::Any)
+    {
+        auto n_steps = size_t{};
+        while (tr::detail::step(local_data, which)) {
+            ++n_steps;
+        }
+        return n_steps;
+    }
+
+    // Do all the work that is waiting, then deliver its callbacks.
+    static void runAll(tr::LocalData& local_data)
+    {
+        stepAll(local_data);
+        tr::detail::deliver(local_data);
+    }
+};
+
+} // namespace
+
+TEST_F(LocalDataThreadlessTest, workWaitsForTheSessionThread)
+{
+    static auto constexpr FileSize = 2U * BlockSize;
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+
+    // the first write's callback enqueues the second write
+    auto events = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&local_data, &events] {
+        events.emplace_back("first");
+        writeBlocks(*local_data, BlockSize, FileSize, [&events] { events.emplace_back("second"); });
+
+        // which doesn't run inside this callback...
+        EXPECT_EQ(1U, std::size(events));
+        EXPECT_EQ(BlockSize, local_data->enqueued_write_bytes());
+    });
+
+    // ...as the first didn't run inside the call that enqueued it
+    EXPECT_TRUE(std::empty(events));
+    EXPECT_EQ(BlockSize, local_data->enqueued_write_bytes());
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    runMarshaled();
+    EXPECT_EQ((std::vector<std::string>{ "first", "second" }), events);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aSeedReplaysItsSchedule)
+{
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    static auto constexpr NWritten = size_t{ 8U };
+    static auto constexpr NRead = size_t{ 3U };
+
+    // Eight blocks to write in two files, then three files to read. Each
+    // is read once and never written, so no file is open when its read
+    // arrives and the page cache answers none of them.
+    auto const layout = makeDescriptor(
+        { { "w0.bin", 4U * BlockSize },
+          { "w1.bin", 4U * BlockSize },
+          { "r0.bin", BlockSize },
+          { "r1.bin", BlockSize },
+          { "r2.bin", BlockSize } },
+        BlockSize);
+
+    // Writes, hashes, reads, a file close, and a move on one torrent, with
+    // another torrent's move and removal on the lanes. Returns the
+    // callbacks in the order they arrived.
+    auto n_runs = size_t{};
+    auto const run = [this, &layout, &n_runs](uint32_t const seed) {
+        auto const dir = fmt::format("run-{}", n_runs++);
+        auto const mine = inDir(*layout, TorId, dir + "/mine");
+        auto const theirs = inDir(*layout, OtherId, dir + "/theirs");
+        for (auto file = size_t{}; file < NRead; ++file) {
+            auto const begin = (NWritten + file) * BlockSize;
+            saveFile(fmt::format("{}/mine/r{}.bin", dir, file), patternString(begin, BlockSize));
+            saveFile(fmt::format("{}/theirs/r{}.bin", dir, file), patternString(begin, BlockSize));
+        }
+
+        auto files = tr_open_files{};
+        auto local_data = tr::LocalData{ torrents_, files };
+        tr::detail::start_threadless(local_data, 3U, seed, files, marshal(), [mine, theirs](tr_torrent_id_t const id) {
+            return id == TorId ? mine : theirs;
+        });
+
+        auto events = std::vector<std::string>{};
+
+        // each block is hashed once it is written, as a torrent's pieces are
+        for (auto const block : { 5U, 0U, 7U, 2U, 1U, 6U, 3U, 4U }) {
+            local_data.write(
+                TorId,
+                { .begin = block * BlockSize, .end = (block + 1U) * BlockSize },
+                patternBlock(block * BlockSize),
+                [&local_data, &events, block](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+                    EXPECT_FALSE(error) << error;
+                    events.emplace_back(fmt::format("wrote {}", block));
+                    local_data.test_piece(TorId, block, [&events, block](auto, auto, tr_error const& hash_error, auto hash) {
+                        EXPECT_FALSE(hash_error) << hash_error;
+                        EXPECT_EQ(tr_sha1::digest(patternString(block * BlockSize, BlockSize)), hash);
+                        events.emplace_back(fmt::format("hashed {}", block));
+                    });
+                });
+        }
+
+        for (auto file = size_t{}; file < NRead; ++file) {
+            auto const begin = (NWritten + file) * BlockSize;
+            local_data.read(
+                TorId,
+                { .begin = begin, .end = begin + BlockSize },
+                [&events, file](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto) {
+                    EXPECT_FALSE(error) << error;
+                    events.emplace_back(fmt::format("read {}", file));
+                });
+        }
+
+        local_data.close_file(TorId, 1U, [&events](tr_torrent_id_t) { events.emplace_back("closed w1.bin"); });
+
+        local_data.move(
+            OtherId,
+            [this, &dir] { return tr::LocalData::MoveTarget{ .parent = pathOf(dir + "/theirs-moved") }; },
+            [&local_data, &events](tr_torrent_id_t, std::string_view, tr_error const& error) {
+                EXPECT_FALSE(error) << error;
+                events.emplace_back("moved theirs");
+                local_data.remove(OtherId, {}, [&events](tr_torrent_id_t, tr_error const&) {
+                    events.emplace_back("removed theirs");
+                });
+            });
+
+        runMarshaled();
+
+        // the move waits for everything before it on its torrent
+        local_data.move(
+            TorId,
+            [this, &dir] { return tr::LocalData::MoveTarget{ .parent = pathOf(dir + "/mine-moved") }; },
+            [&events](tr_torrent_id_t, std::string_view, tr_error const& error) {
+                EXPECT_FALSE(error) << error;
+                events.emplace_back("moved mine");
+            });
+        runMarshaled();
+
+        EXPECT_EQ((2U * NWritten) + NRead + 4U, std::size(events));
+        EXPECT_EQ(patternString(0U, 4U * BlockSize), readFile(dir + "/mine-moved/w0.bin"));
+        EXPECT_EQ(patternString(4U * BlockSize, 4U * BlockSize), readFile(dir + "/mine-moved/w1.bin"));
+        local_data.shutdown();
+        return events;
+    };
+
+    // one seed, one schedule
+    auto const first = run(7U);
+    EXPECT_EQ(first, run(7U));
+
+    // other seeds, other schedules
+    auto differs = false;
+    for (auto seed = uint32_t{ 8U }; !differs && seed < 16U; ++seed) {
+        differs = run(seed) != first;
+    }
+    EXPECT_TRUE(differs);
+}
+
+TEST_F(LocalDataThreadlessTest, writesFinishOutOfOrder)
+{
+    static auto constexpr NWrites = size_t{ 8U };
+    auto const desc = makeDescriptor({ { "data.bin", 2U * NWrites * BlockSize } }, BlockSize);
+
+    // Workers take the writes in disk order, and whichever finishes first
+    // is delivered first. One seed can leave them in order by chance. It
+    // can't do that for every seed.
+    auto reordered = false;
+    for (auto seed = uint32_t{ 1U }; !reordered && seed <= 16U; ++seed) {
+        auto const local_data = makeThreadless(desc, 4U, seed);
+
+        // every other block, so that no two writes are combined
+        auto order = std::vector<size_t>{};
+        for (auto block = size_t{}; block < 2U * NWrites; block += 2U) {
+            writeBlocks(*local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+        }
+
+        runMarshaled();
+        ASSERT_EQ(NWrites, std::size(order));
+        reordered = !std::ranges::is_sorted(order);
+        local_data->shutdown();
+    }
+
+    EXPECT_TRUE(reordered);
+}
+
+TEST_F(LocalDataThreadlessTest, aLaneRunsItsJobsInOrder)
+{
+    static auto constexpr NRemoved = size_t{ 4U };
+    auto const layout = makeDescriptor({ { "data.bin", 4U * BlockSize } }, BlockSize);
+
+    // Whatever the seed, and whatever the workers are doing meanwhile...
+    for (auto seed = uint32_t{ 1U }; seed <= 16U; ++seed) {
+        auto descs = std::vector<std::shared_ptr<tr::StorageDescriptor const>>{};
+        for (auto i = size_t{}; i <= NRemoved; ++i) {
+            descs.emplace_back(inDir(*layout, static_cast<tr_torrent_id_t>(TorId + i), fmt::format("{}-{}", seed, i)));
+            saveFile(fmt::format("{}-{}/data.bin", seed, i), patternString(0U, BlockSize));
+        }
+        auto const local_data = makeThreadless(
+            [&descs](tr_torrent_id_t const id) { return descs[static_cast<size_t>(id - TorId)]; },
+            3U,
+            seed);
+
+        auto n_written = size_t{};
+        writeBlocks(*local_data, 0U, 4U * BlockSize, [&n_written] { ++n_written; });
+
+        // ...the short lane removes the torrents in the order they were enqueued
+        auto removing = std::vector<tr_torrent_id_t>{};
+        auto removed = std::vector<tr_torrent_id_t>{};
+        auto expected = std::vector<tr_torrent_id_t>{};
+        for (auto i = size_t{ 1U }; i <= NRemoved; ++i) {
+            auto const id = static_cast<tr_torrent_id_t>(TorId + i);
+            expected.emplace_back(id);
+            local_data->remove(
+                id,
+                [&removing, id](std::string_view const filename, tr_error* const error) {
+                    if (filename.ends_with("data.bin")) {
+                        removing.emplace_back(id);
+                    }
+                    return tr_sys_path_remove(filename, error);
+                },
+                [&removed](tr_torrent_id_t const removed_id, tr_error const& error) {
+                    EXPECT_FALSE(error) << error;
+                    removed.emplace_back(removed_id);
+                });
+        }
+
+        runMarshaled();
+        EXPECT_EQ(4U, n_written) << seed;
+        EXPECT_EQ(expected, removing) << seed;
+        EXPECT_EQ(expected, removed) << seed;
+        local_data->shutdown();
+    }
+}
+
+TEST_F(LocalDataThreadlessTest, aPausedSessionThreadTakesNoStepsOfItsOwn)
+{
+    static auto constexpr FileSize = 2U * BlockSize;
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
+    runMarshaled();
+    EXPECT_EQ(0U, n_done);
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    // a test can still take them: a worker takes the write, then does it
+    EXPECT_TRUE(tr::detail::step(*local_data));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_TRUE(tr::detail::step(*local_data));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr::detail::step(*local_data));
+
+    // the write is done, and its callback waits to be delivered
+    EXPECT_EQ(0U, n_done);
+    tr::detail::deliver(*local_data);
+    EXPECT_EQ(1U, n_done);
+
+    // once it is no longer paused, the session thread does the rest
+    writeBlocks(*local_data, BlockSize, FileSize, [&n_done] { ++n_done; });
+    runMarshaled();
+    EXPECT_EQ(1U, n_done);
+    local_data->set_workers_paused(false);
+    runMarshaled();
+    EXPECT_EQ(2U, n_done);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aCachedReadStillCompletesInline)
+{
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    if (!canReadCached("data.bin")) {
+        GTEST_SKIP() << "this platform or filesystem can't read from the page cache alone";
+    }
+    openInPool(0U, "data.bin");
+
+    // rule 4: answered before read() returns, with no step taken
+    auto result = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, result);
+    EXPECT_TRUE(result.done);
+    EXPECT_FALSE(result.error) << result.error;
+    EXPECT_EQ(patternString(0U, BlockSize), result.data);
+    EXPECT_EQ(1U, local_data->stats().cached_reads);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aCloseReachesTheShortLaneAheadOfALaterRemoval)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    local_data->set_workers_paused(true);
+    openInPool(0U, "data.bin");
+    auto const file = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+    ASSERT_FALSE(file.expired());
+
+    // The close is done at once: the pool has let go of the file, which
+    // stays open until the lane gets to it.
+    auto closed = false;
+    local_data->close_torrent(TorId, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(closed);
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+    EXPECT_FALSE(file.expired());
+
+    auto removed = false;
+    local_data->remove(TorId, {}, [&removed](tr_torrent_id_t, tr_error const& error) {
+        EXPECT_FALSE(error) << error;
+        removed = true;
+    });
+
+    // the lane's first job closes the file...
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_TRUE(file.expired());
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+
+    // ...and its second removes it
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr::detail::step(*local_data));
+
+    EXPECT_FALSE(removed);
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(removed);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, shutdownDoesTheWorkThatIsWaiting)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeThreadless(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", 2U * BlockSize } }, BlockSize));
+    local_data->set_workers_paused(true);
+    openInPool(0U, "a.bin");
+    auto const a = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+
+    // a file for a lane to close, writes for the workers, and a move behind them
+    auto events = std::vector<std::string>{};
+    local_data->close_file(TorId, 0U);
+    writeBlocks(*local_data, BlockSize, 3U * BlockSize, [&events] { events.emplace_back("wrote"); });
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&events](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back("moved");
+        });
+    EXPECT_TRUE(std::empty(events));
+    EXPECT_FALSE(a.expired());
+
+    // no thread will do any of it, so shutdown() does
+    local_data->shutdown();
+    EXPECT_EQ((std::vector<std::string>{ "wrote", "wrote", "moved" }), events);
+    EXPECT_TRUE(a.expired());
+    EXPECT_EQ(patternString(BlockSize, 2U * BlockSize), readFile("new/b.bin"));
+}
+
+TEST_F(LocalDataThreadlessTest, closeAllDoesTheWorkThatIsWaiting)
+{
+    static auto constexpr FileSize = 2U * BlockSize;
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done] { ++n_done; });
+    EXPECT_EQ(0U, n_done);
+
+    local_data->close_all();
+    EXPECT_EQ(n_writes, n_done);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, writesThatArriveDuringASweepWaitForTheNext)
+{
+    // Block 0 is first.bin, blocks 1-6 are data.bin. One worker, so the
+    // callbacks arrive in the order the writes reached the disk.
+    auto const local_data = makeThreadless(
+        makeDescriptor({ { "first.bin", BlockSize }, { "data.bin", 6U * BlockSize } }, BlockSize),
+        1U);
+    local_data->set_workers_paused(true);
+
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(*local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+
+    // the sweep is blocks 0, 2 and 6, and the worker takes its first
+    write_block(0U);
+    write_block(2U);
+    write_block(6U);
+    ASSERT_TRUE(tr::detail::step(*local_data));
+
+    // block 4 arrives ahead of where the sweep has got to...
+    write_block(4U);
+
+    // ...and is still written after the rest of the sweep
+    runAll(*local_data);
+    EXPECT_EQ((std::vector<size_t>{ 0U, 2U, 6U, 4U }), order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, readsThatArriveDuringASweepWaitForTheNext)
+{
+    // Blocks 0, 2 and 4 each start a file of their own, so none is open
+    // yet and the page cache answers none. One worker, so the callbacks
+    // arrive in the order the disk was used.
+    auto const local_data = makeThreadless(
+        makeDescriptor({ { "a.bin", 2U * BlockSize }, { "b.bin", 2U * BlockSize }, { "c.bin", 2U * BlockSize } }, BlockSize),
+        1U);
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, 2U * BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(2U * BlockSize, 2U * BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("c.bin"), patternString(4U * BlockSize, 2U * BlockSize)));
+    local_data->set_workers_paused(true);
+
+    auto order = std::vector<size_t>{};
+    auto const read_block = [&local_data, &order](size_t const block) {
+        local_data->read(
+            TorId,
+            { .begin = block * BlockSize, .end = (block + 1U) * BlockSize },
+            [&order, block](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+                EXPECT_FALSE(error) << error;
+                ASSERT_NE(nullptr, data);
+                EXPECT_EQ(
+                    patternString(block * BlockSize, BlockSize),
+                    (std::string{ reinterpret_cast<char const*>(data->data()), data->size() }));
+                order.push_back(block);
+            });
+    };
+
+    // the sweep is blocks 0 and 4, and the worker takes its first
+    read_block(0U);
+    read_block(4U);
+    tr::detail::deliver(*local_data);
+    ASSERT_TRUE(tr::detail::step(*local_data));
+
+    // block 2 arrives ahead of where the sweep has got to...
+    read_block(2U);
+    tr::detail::deliver(*local_data);
+
+    // ...and is still read after the rest of the sweep
+    runAll(*local_data);
+    EXPECT_EQ((std::vector<size_t>{ 0U, 4U, 2U }), order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aMoveThatOnlyRenamesStaysOffTheLongLane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    local_data->set_workers_paused(true);
+
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&moved](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            moved = true;
+        });
+
+    // a move within one filesystem places its files on the short lane...
+    EXPECT_FALSE(tr::detail::step(*local_data, DiskThread::LongLane));
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    // ...and clears its old location there
+    tr::detail::deliver(*local_data);
+    EXPECT_FALSE(moved);
+    EXPECT_FALSE(tr::detail::step(*local_data, DiskThread::LongLane));
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(moved);
+    EXPECT_FALSE(tr::detail::step(*local_data));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
+{
+    if (!tr_sys_path_exists("/dev/shm"sv)) {
+        GTEST_SKIP() << "no /dev/shm";
+    }
+    auto const other_filesystem = tr::test::Sandbox{ "/dev/shm" };
+    if (tr_sys_path_is_same_filesystem(sandboxDir(), other_filesystem.path())) {
+        GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
+    }
+
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    createFileWithContents(pathOf("other/data.bin"), patternString(0U, BlockSize));
+
+    auto const mine = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
+    auto const theirs = inDir(*mine, OtherId, "other");
+    auto const local_data = makeThreadless([&mine, &theirs](tr_torrent_id_t const id) { return id == TorId ? mine : theirs; });
+    local_data->set_workers_paused(true);
+
+    // my move has to copy to another filesystem, so it goes to the long lane
+    auto const copy_target = tr_pathbuf{ other_filesystem.path(), "/target"sv };
+    auto events = std::vector<std::string>{};
+    local_data->move(
+        TorId,
+        [&copy_target] { return tr::LocalData::MoveTarget{ .parent = std::string{ copy_target.sv() } }; },
+        [&events](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back("copied");
+        },
+        [&events](auto, auto) { events.emplace_back("copy placed"); });
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_FALSE(tr::detail::step(*local_data, DiskThread::ShortLane));
+
+    // their move, queued later, only renames, and doesn't wait for mine
+    local_data->move(
+        OtherId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("renamed") }; },
+        [&events](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back("renamed");
+        });
+    while (tr::detail::step(*local_data, DiskThread::ShortLane)) {
+        tr::detail::deliver(*local_data);
+    }
+    EXPECT_EQ((std::vector<std::string>{ "renamed" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("renamed/data.bin")));
+
+    // mine has moved nothing yet, and its barrier is still up
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_TRUE(local_data->admin_op_pending(TorId));
+
+    // the long lane copies, and the short lane clears the old location
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::LongLane));
+    EXPECT_FALSE(tr::detail::step(*local_data));
+    tr::detail::deliver(*local_data);
+    EXPECT_FALSE(tr::detail::step(*local_data, DiskThread::LongLane));
+    EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    tr::detail::deliver(*local_data);
+    EXPECT_EQ((std::vector<std::string>{ "renamed", "copy placed", "copied" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
 
     local_data->shutdown();
 }

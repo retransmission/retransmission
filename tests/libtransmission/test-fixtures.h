@@ -584,35 +584,58 @@ protected:
         blockingRunInSessionThread([this] { session_->on_save_timer(); });
     }
 
-    // A suite that scripts completion delivery itself returns false.
-    // The parked-completion modes only hold on the synchronous backend,
-    // where nothing completes off the session thread.
-    [[nodiscard]] virtual bool useLocalDataWorkersFromEnv() const
+    // A suite that picks its session's disk IO backend itself returns false.
+    [[nodiscard]] virtual bool useLocalDataBackendFromEnv() const
     {
         return true;
+    }
+
+    // True if the session finishes each disk op before the call that
+    // asked for it returns.
+    [[nodiscard]] bool diskIoIsSynchronous() const
+    {
+        return session_->settings().disk_io_workers == 0U && !disk_io_is_threadless_;
+    }
+
+    // Switches the session from the synchronous disk IO backend to the
+    // threaded one with its threads' work done on the session thread, in
+    // an order `seed` picks.
+    void startThreadlessDiskIo(uint32_t const seed, size_t const n_workers = 4U)
+    {
+        disk_io_is_threadless_ = true;
+        blockingRunInSessionThread([this, seed, n_workers] {
+            tr::detail::start_threadless(
+                session_->local_data,
+                n_workers,
+                seed,
+                session_->openFiles(),
+                session_->local_data_marshal(),
+                session_->storage_descriptor_provider());
+        });
     }
 
     void SetUp() override
     {
         SandboxedTest::SetUp();
 
+        auto const from_env = useLocalDataBackendFromEnv();
+
         // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
         // instead of the synchronous one.
-        auto const workers = useLocalDataWorkersFromEnv() ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
+        auto const workers = from_env ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
         if (!std::empty(workers)) {
             settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
         }
 
         session_ = sessionInit(settings());
 
-        // Pump parked completions from the session thread.
-        session_->local_data.set_wake([this] { session_->queue_session_thread([this] { session_->local_data.pump(); }); });
-
         // tr::LocalData may deliver completions late and out of order.
-        // TR_LOCAL_DATA_SHUFFLE makes it do so, so code that assumes
-        // otherwise fails here.
-        if (std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
-            session_->local_data.set_completions(tr::LocalData::Completions::Shuffled);
+        // TR_LOCAL_DATA_SHUFFLE makes it do so without threads, in an
+        // order that its value seeds, so code that assumes otherwise
+        // fails here the same way every time.
+        if (auto const seed = tr_env_get_string("TR_LOCAL_DATA_SHUFFLE");
+            from_env && std::empty(workers) && !std::empty(seed)) {
+            startThreadlessDiskIo(tr_num_parse<uint32_t>(seed).value_or(1U));
         }
 
         // Every torrent in this session reports here when it finishes verifying,
@@ -633,6 +656,7 @@ protected:
     }
 
 private:
+    bool disk_io_is_threadless_ = false;
     sigslot::scoped_connection verify_done_tag_;
     std::mutex verified_mutex_;
     std::condition_variable verified_cv_;

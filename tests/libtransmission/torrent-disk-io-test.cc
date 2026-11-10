@@ -197,16 +197,23 @@ protected:
     }
 };
 
-// Covers the call sites on the synchronous backend. The fixture parks
-// completions instead of shuffling them, so each test decides when
-// they arrive.
+// Covers the synchronous backend, whatever the environment asks for.
+class SynchronousDiskIoTest : public TorrentDiskIoTestBase
+{
+protected:
+    [[nodiscard]] bool useLocalDataBackendFromEnv() const override
+    {
+        return false;
+    }
+};
+
+// Covers the call sites on the threaded backend with no threads. The
+// session thread takes no steps of its own here, so each test decides
+// when the disk does its work and when the completions arrive.
 class TorrentDiskIoTest : public TorrentDiskIoTestBase
 {
 protected:
-    // These tests say exactly when each completion arrives, so they
-    // stay on the synchronous backend even when TR_LOCAL_DATA_WORKERS
-    // asks the fixture for the threaded one.
-    [[nodiscard]] bool useLocalDataWorkersFromEnv() const override
+    [[nodiscard]] bool useLocalDataBackendFromEnv() const override
     {
         return false;
     }
@@ -214,7 +221,20 @@ protected:
     void SetUp() override
     {
         TorrentDiskIoTestBase::SetUp();
-        session_->local_data.set_completions(tr::LocalData::Completions::Deferred);
+
+        // one worker, so that hashes finish in the order they were enqueued
+        startThreadlessDiskIo(1U, 1U);
+        session_->local_data.set_workers_paused(true);
+    }
+
+    // Does the disk work that is waiting, then delivers its completions.
+    // What those enqueue waits for the next call. Session thread only.
+    void pump() const
+    {
+        auto& local_data = session_->local_data;
+        while (tr::detail::step(local_data)) {
+        }
+        tr::detail::deliver(local_data);
     }
 
     // Two 24 KiB pieces of zeroes. The middle block ends piece 0 and
@@ -244,8 +264,42 @@ protected:
                 std::ranges::fill(*data, uint8_t{ 1U });
             }
             tor->save_block(block, std::move(data));
-            session_->local_data.pump();
+            pump();
         }
+    }
+};
+
+// Covers the torrent's admin ops, a step at a time: what the torrent says
+// once the disk has done its part and before the torrent hears of it.
+class TorrentAdminOpsTest : public TorrentDiskIoTest
+{
+protected:
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_incomplete_dir_enabled, true);
+        TorrentDiskIoTest::SetUp();
+    }
+
+    // The short lane does its next job. False if it has none.
+    [[nodiscard]] bool stepShortLane() const
+    {
+        return tr::detail::step(session_->local_data, tr::detail::DiskThread::ShortLane);
+    }
+
+    // True if no disk thread has anything left to do.
+    [[nodiscard]] bool diskIsIdle() const
+    {
+        return !tr::detail::step(session_->local_data);
+    }
+
+    void deliver() const
+    {
+        tr::detail::deliver(session_->local_data);
+    }
+
+    [[nodiscard]] static bool fileExists(std::string_view const dir, std::string_view const subpath)
+    {
+        return tr_sys_path_exists(tr_pathbuf{ dir, '/', subpath });
     }
 };
 
@@ -254,7 +308,7 @@ protected:
 class TorrentDiskIoWorkersTest : public TorrentDiskIoTestBase
 {
 protected:
-    [[nodiscard]] bool useLocalDataWorkersFromEnv() const override
+    [[nodiscard]] bool useLocalDataBackendFromEnv() const override
     {
         return false;
     }
@@ -650,23 +704,20 @@ protected:
 
     // Has the peer send its one request with `send_request`, and runs
     // `during` on the session thread while the read for that request is
-    // in flight, whatever the backend.
+    // in flight.
     void runDuringARead(tr_torrent* const tor, std::function<void()> const& send_request, std::function<void()> const& during)
     {
-        auto const threaded = session_->settings().disk_io_workers != 0U;
+        // A read is never in flight on the synchronous backend, so this
+        // moves a session that has it to the backend with no threads.
+        if (diskIoIsSynchronous()) {
+            startThreadlessDiskIo(1U);
+        }
 
-        blockingRunInSessionThread([this, tor, threaded] {
-            auto& local_data = session_->local_data;
-            if (threaded) {
-                // a closed file keeps the page cache from answering,
-                // and paused workers keep the disk from answering
-                session_->openFiles().close_torrent(tor->id());
-                local_data.set_workers_paused(true);
-            } else {
-                // the read's completion parks, and nothing pumps it
-                local_data.set_wake({});
-                local_data.set_completions(tr::LocalData::Completions::Deferred);
-            }
+        blockingRunInSessionThread([this, tor] {
+            // a closed file keeps the page cache from answering,
+            // and paused workers keep the disk from answering
+            session_->openFiles().close_torrent(tor->id());
+            session_->local_data.set_workers_paused(true);
         });
 
         // the read starts as soon as the request arrives
@@ -679,16 +730,9 @@ protected:
         };
         ASSERT_TRUE(waitFor(is_reading, MaxWaitMsec));
 
-        blockingRunInSessionThread([this, threaded, &during] {
+        blockingRunInSessionThread([this, &during] {
             during();
-
-            auto& local_data = session_->local_data;
-            if (threaded) {
-                local_data.set_workers_paused(false);
-            } else {
-                local_data.set_wake([this] { session_->queue_session_thread([this] { session_->local_data.pump(); }); });
-                local_data.pump();
-            }
+            session_->local_data.set_workers_paused(false);
         });
     }
 
@@ -812,7 +856,7 @@ TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
         // and a second copy of it is refused while that write is in flight
         EXPECT_FALSE(tor->on_block_received(block));
 
-        session_->local_data.pump();
+        pump();
         EXPECT_TRUE(tor->has_block(block));
 
         // now that we have it, another copy is still refused
@@ -851,13 +895,13 @@ TEST_F(TorrentDiskIoTest, writtenPieceIsNotAdvertisedUntilItsHashCompletes)
         }
 
         // every block is written, but the last one waits for the hash
-        session_->local_data.pump();
+        pump();
         EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0U));
         EXPECT_FALSE(tor->has_piece(0U));
         EXPECT_FALSE(tor->has_all());
         EXPECT_EQ(std::byte{}, tor->create_piece_bitfield().front() & std::byte{ 0x80 });
 
-        session_->local_data.pump();
+        pump();
         EXPECT_TRUE(tor->has_piece(0U));
         EXPECT_TRUE(tor->has_all());
         EXPECT_TRUE(tor->is_piece_checked(0U));
@@ -875,13 +919,13 @@ TEST_F(TorrentDiskIoTest, failedHashNeverMakesThePieceAvailable)
             std::ranges::fill(*data, uint8_t{ 1U });
             tor->save_block(block, std::move(data));
         }
-        session_->local_data.pump();
+        pump();
         EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0U));
         EXPECT_FALSE(tor->has_piece(0U));
         EXPECT_EQ(std::byte{}, tor->create_piece_bitfield().front() & std::byte{ 0x80 });
 
         // the piece is downloaded again, block by block
-        session_->local_data.pump();
+        pump();
         for (auto block = span.begin; block < span.end; ++block) {
             EXPECT_FALSE(tor->has_block_or_pending(block));
         }
@@ -904,7 +948,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         }
 
         // deliver the writes, which leaves the piece's hash in flight
-        session_->local_data.pump();
+        pump();
         EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0));
         EXPECT_FALSE(tor->has_piece(0));
 
@@ -912,7 +956,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         // The hash is now about a version of the piece that no longer
         // exists, so delivering it must not mark the piece complete again.
         tor->set_has_piece(0, false);
-        session_->local_data.pump();
+        pump();
         EXPECT_FALSE(tor->has_piece(0));
         EXPECT_EQ(0U, n_completed);
     });
@@ -935,8 +979,8 @@ TEST_F(TorrentDiskIoTest, lazyCheckOfALostPieceIsDropped)
         // failed hash takes back a block they share. The hash may have read
         // that block mid-rewrite, so neither its result nor the data counts.
         tor->set_has_piece(0, false);
-        session_->local_data.pump();
-        session_->local_data.pump();
+        pump();
+        pump();
         ASSERT_TRUE(read_error.has_value());
         EXPECT_TRUE(*read_error);
         EXPECT_FALSE(tor->is_piece_checked(0));
@@ -959,7 +1003,7 @@ TEST_F(TorrentDiskIoTest, blockSharedByTwoPiecesCountsOnceBothPass)
         EXPECT_EQ(0U, n_completed);
 
         // whichever hash lands first
-        session_->local_data.pump();
+        pump();
         EXPECT_EQ(2U, n_completed);
         EXPECT_TRUE(tor->has_all());
     });
@@ -972,11 +1016,11 @@ TEST_F(TorrentDiskIoTest, blockSharedWithAFailedPieceIsDownloadedAgain)
     auto n_completed = size_t{};
     auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
 
-    // Piece 0's hash passes before piece 1's starts. The block they share
-    // still waits for piece 1, which fails and takes the block back.
-    session_->local_data.set_completions(tr::LocalData::Completions::Inline);
+    // Piece 0's hash passes first. The block they share still waits for
+    // piece 1, which fails and takes the block back.
     blockingRunInSessionThread([this, tor, &n_completed] {
         writeStraddlingBlocks(tor, true);
+        pump();
         EXPECT_EQ(0U, n_completed);
         EXPECT_TRUE(tor->has_block(0U));
         EXPECT_FALSE(tor->has_block_or_pending(1U));
@@ -1003,9 +1047,205 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
     EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
 }
 
-TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
+TEST_F(SynchronousDiskIoTest, requestBudgetIsUnbounded)
 {
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
+}
+
+// ---
+
+TEST_F(TorrentAdminOpsTest, doneStepRunsAfterTheMoveOutAndSeesTheDownloadDir)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+    auto const incomplete_dir = std::string{ tor->incomplete_dir().sv() };
+    auto const subpath = std::string{ tor->file_subpath(1U) };
+
+    auto done_dir = std::optional<std::string>{};
+    tr_sessionSetCompletenessCallback(session_, [tor, &done_dir](tr_torrent_id_t, tr_completeness, bool) {
+        done_dir = tor->current_dir().sv();
+    });
+
+    blockingRunInSessionThread([&] {
+        // skipping the file that holds the missing piece completes the torrent
+        auto const file = tr_file_index_t{ 0U };
+        tor->set_files_wanted(std::span{ &file, 1U }, false);
+        EXPECT_TRUE(tor->is_done());
+
+        // the move out is enqueued, and nothing has moved
+        EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id()));
+        EXPECT_TRUE(fileExists(incomplete_dir, subpath));
+        EXPECT_FALSE(done_dir);
+
+        // The disk has the files in the download dir. The torrent hasn't
+        // heard, and the done step hasn't run.
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_TRUE(fileExists(download_dir, subpath));
+        EXPECT_FALSE(fileExists(incomplete_dir, subpath));
+        EXPECT_EQ(incomplete_dir, tor->current_dir().sv());
+        EXPECT_FALSE(done_dir);
+
+        // The torrent hears where its files are. The done step still
+        // waits for the incomplete dir to be cleared.
+        deliver();
+        EXPECT_EQ(download_dir, tor->current_dir().sv());
+        EXPECT_TRUE(tor->completion_move_pending());
+        EXPECT_FALSE(done_dir);
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_FALSE(done_dir);
+
+        deliver();
+        EXPECT_EQ(download_dir, done_dir);
+        EXPECT_FALSE(tor->completion_move_pending());
+        EXPECT_FALSE(session_->local_data.admin_op_pending(tor->id()));
+        EXPECT_TRUE(diskIsIdle());
+    });
+
+    tr_sessionSetCompletenessCallback(session_, nullptr);
+}
+
+TEST_F(TorrentAdminOpsTest, renameAppliesItsNamesAfterTheDiskStep)
+{
+    static auto constexpr OldName = "files-filled-with-zeroes"sv;
+    static auto constexpr NewName = "renamed"sv;
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const dir = std::string{ tor->current_dir().sv() };
+
+    auto result = std::optional<tr_error>{};
+    blockingRunInSessionThread([&] {
+        tr_torrentRenamePath(
+            tor,
+            OldName,
+            NewName,
+            [&result](tr_torrent_id_t, std::string_view, std::string_view, tr_error const& error) { result = error; });
+
+        // the rename is enqueued, and nothing is renamed
+        EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id()));
+        EXPECT_TRUE(fileExists(dir, OldName));
+        EXPECT_FALSE(result);
+
+        // The disk has the new name. The torrent still has the old ones.
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_TRUE(fileExists(dir, "renamed/4096"sv));
+        EXPECT_FALSE(fileExists(dir, OldName));
+        EXPECT_EQ(OldName, tor->name());
+        EXPECT_EQ("files-filled-with-zeroes/4096"sv, tor->file_subpath(1U));
+        EXPECT_FALSE(result);
+
+        deliver();
+        ASSERT_TRUE(result);
+        EXPECT_FALSE(*result) << *result;
+        EXPECT_EQ(NewName, tor->name());
+        EXPECT_EQ("renamed/4096"sv, tor->file_subpath(1U));
+        EXPECT_TRUE(tor->find_file(1U));
+        EXPECT_FALSE(session_->local_data.admin_op_pending(tor->id()));
+        EXPECT_TRUE(diskIsIdle());
+    });
+}
+
+TEST_F(TorrentAdminOpsTest, removedTorrentIsFreedAfterItsFilesAreUnlinked)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const id = tor->id();
+    auto const filename = tr_torrentFindFile(tor, 1U);
+    auto const torrent_file = std::string{ tor->torrent_file() };
+    ASSERT_TRUE(tr_sys_path_exists(filename));
+    ASSERT_TRUE(tr_sys_path_exists(torrent_file));
+
+    blockingRunInSessionThread([&] {
+        tr_torrentRemove(tor, true);
+
+        // the removal is enqueued, and nothing is removed
+        EXPECT_TRUE(tr_sys_path_exists(filename));
+        EXPECT_EQ(tor, session_->torrents().get(id));
+
+        // The files are unlinked. The torrent is still there to say so.
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_FALSE(tr_sys_path_exists(filename));
+        EXPECT_EQ(tor, session_->torrents().get(id));
+        EXPECT_TRUE(tr_sys_path_exists(torrent_file));
+
+        deliver();
+        EXPECT_EQ(nullptr, session_->torrents().get(id));
+        EXPECT_FALSE(tr_sys_path_exists(torrent_file));
+        EXPECT_TRUE(diskIsIdle());
+    });
+}
+
+TEST_F(TorrentAdminOpsTest, pauseQueuedBehindAMoveSavesItsResumeFileAfterTheMove)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const resume_file = std::string{ tor->resume_file() };
+    int volatile state = -1;
+
+    blockingRunInSessionThread([&] {
+        // a save would bring the resume file back
+        tr_sys_path_remove(resume_file);
+        tr_torrentSetLocation(tor, target, true, &state);
+        tr_torrentStop(tor);
+
+        // the pause's save waits behind the move, which hasn't started
+        EXPECT_EQ(TR_LOC_MOVING, state);
+        EXPECT_FALSE(tr_sys_path_exists(resume_file));
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_FALSE(tr_sys_path_exists(resume_file));
+
+        // the move saves the new location before it clears the old one
+        deliver();
+        EXPECT_EQ(target.sv(), tor->current_dir().sv());
+        EXPECT_TRUE(tr_sys_path_exists(resume_file));
+
+        // A setting changes while the old location is cleared. The
+        // pause's save is what records it, and it is still waiting.
+        tr_sys_path_remove(resume_file);
+        tr_torrentSetPeerLimit(tor, uint16_t{ 13U });
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_EQ(TR_LOC_MOVING, state);
+        EXPECT_FALSE(tr_sys_path_exists(resume_file));
+
+        deliver();
+        EXPECT_EQ(TR_LOC_DONE, state);
+        EXPECT_TRUE(tr_sys_path_exists(resume_file));
+        EXPECT_TRUE(diskIsIdle());
+    });
+}
+
+TEST_F(TorrentAdminOpsTest, removalFindsTheTorrentsFilesClosed)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const id = tor->id();
+
+    blockingRunInSessionThread([&] {
+        // a hash from the disk leaves the piece's file open in the pool
+        auto hashed = false;
+        session_->local_data.test_piece(id, 0U, [&hashed](auto, auto, tr_error const& error, auto) {
+            EXPECT_FALSE(error) << error;
+            hashed = true;
+        });
+        pump();
+        ASSERT_TRUE(hashed);
+        auto const file = std::weak_ptr{ session_->openFiles().get(id, 0U, false) };
+        ASSERT_FALSE(file.expired());
+
+        // Removing the torrent stops it, which takes the file out of the
+        // pool and leaves the closing to the short lane.
+        tr_torrentRemove(tor, true);
+        EXPECT_FALSE(session_->openFiles().get(id, 0U, false));
+        EXPECT_FALSE(file.expired());
+
+        // the lane closes the file before it unlinks anything
+        auto const filename = tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(0U) };
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_TRUE(file.expired());
+        EXPECT_TRUE(tr_sys_path_exists(filename));
+        ASSERT_TRUE(stepShortLane());
+        EXPECT_FALSE(tr_sys_path_exists(filename));
+
+        deliver();
+        EXPECT_EQ(nullptr, session_->torrents().get(id));
+        EXPECT_TRUE(diskIsIdle());
+    });
 }
 
 // ---
