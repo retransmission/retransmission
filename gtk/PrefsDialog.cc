@@ -575,7 +575,6 @@ public:
     ~PrivacyPage() override;
 
 private:
-    bool refreshBlocklistInfo();
     void onBlocklistInfo();
     void updateBlocklistText();
     void onBlocklistUpdated(bool success);
@@ -598,20 +597,7 @@ private:
     sigslot::scoped_connection blocklist_update_failed_tag_;
     sigslot::scoped_connection session_updated_tag_;
     sigc::connection blocklist_update_result_tag_;
-    sigc::connection blocklist_info_tag_;
-    sigc::connection blocklist_info_timer_tag_;
 };
-
-// Returns false once the session has closed, which stops the refresh timer.
-bool PrivacyPage::refreshBlocklistInfo()
-{
-    if (core_->get_session() == nullptr) {
-        return false;
-    }
-
-    core_->refresh_blocklist_info();
-    return true;
-}
 
 void PrivacyPage::onBlocklistInfo()
 {
@@ -641,8 +627,6 @@ void PrivacyPage::updateBlocklistText()
 /* prefs dialog is being destroyed, so stop listening to blocklist updates */
 PrivacyPage::~PrivacyPage()
 {
-    blocklist_info_timer_tag_.disconnect();
-    blocklist_info_tag_.disconnect();
     blocklist_update_result_tag_.disconnect();
 }
 
@@ -696,12 +680,6 @@ PrivacyPage::PrivacyPage(
 
     auto* const blocklist_url_entry = init_entry("blocklist_url_entry", TR_KEY_blocklist_url);
 
-    blocklist_info_tag_ = core_->signal_blocklist_info().connect(sigc::mem_fun(*this, &PrivacyPage::onBlocklistInfo));
-    refreshBlocklistInfo();
-    // The session also updates the blocklist on its own schedule.
-    blocklist_info_timer_tag_ = Glib::signal_timeout().connect_seconds(
-        sigc::mem_fun(*this, &PrivacyPage::refreshBlocklistInfo),
-        SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     updateBlocklistButton_->signal_clicked().connect([this] { onBlocklistUpdate(); });
     updateBlocklistButton_->set_sensitive(check_->get_active());
     blocklist_url_entry->signal_changed().connect(
@@ -714,7 +692,9 @@ PrivacyPage::PrivacyPage(
         [this](int64_t const /*rule_count*/) { onBlocklistUpdated(true); });
     blocklist_update_failed_tag_ = core_->blocklist_update_failed.connect_scoped(
         [this](std::string_view const /*errmsg*/) { onBlocklistUpdated(false); });
+    // every session poll brings the blocklist's size and date
     session_updated_tag_ = core_->session_updated.connect_scoped(&PrivacyPage::onBlocklistInfo, this);
+    onBlocklistInfo();
 }
 
 /****

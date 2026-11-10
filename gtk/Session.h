@@ -11,6 +11,7 @@
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/rpc-client.h>
 #include <libtransmission-app/session.h>
+#include <libtransmission-app/torrent-list.h>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -30,7 +31,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
 struct tr_session;
@@ -97,7 +97,7 @@ public:
      * May pop up dialogs for each torrent if that preference is enabled.
      * May trigger one or more "error" signals with ERR_ADD_TORRENT
      */
-    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
+    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt);
 
     /** @brief Add a torrent from a URL */
     bool add_from_url(Glib::ustring const& url);
@@ -105,31 +105,13 @@ public:
     /** @brief Add a torrent. */
     void add_builder(std::unique_ptr<tr_torrent_builder> builder);
 
-    /** Add a torrent. */
-    void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
-
-    /**
-     * Notifies listeners that torrents have been added.
-     * This should be called after one or more tr_core_add* () calls.
-     */
-    void torrents_added();
-
-    void torrent_changed(tr_torrent_id_t id);
+    // Fetches a torrent that changed outside the session's RPC, e.g. one added or
+    // renamed through the C API, so the list shows it before the next poll.
+    void fetch_torrent(tr_torrent_id_t id);
 
     /******
     *******
     ******/
-
-    /* remove a torrent */
-    void remove_torrent(tr_torrent_id_t id, bool delete_files);
-
-    /* update the model with current torrent status */
-    void update();
-
-    /**
-     * Attempts to start a torrent immediately.
-     */
-    void start_now(tr_torrent_id_t id);
 
     // Sets a pref and saves the prefs file. The session learns of a session pref
     // from Prefs, through the tr::app::Session base.
@@ -153,10 +135,6 @@ public:
     // Hides the base's std::function overload on purpose: with both visible, a lambda would be ambiguous.
     void fetch_recent_paths(tr_quark key, sigc::slot<void(std::vector<Glib::ustring> const&)> on_paths);
 
-    // Asks the session for its blocklist's rule count and last update time.
-    // signal_blocklist_info() fires once blocklist_size() and blocklist_date() hold them.
-    void refresh_blocklist_info();
-
     // Sends `method` to the session. `on_done`, if given, runs on the GTK thread with the reply.
     void exec(tr_quark method, tr_variant::Map params = {}, tr::app::RpcClient::ResponseFunc on_done = {});
 
@@ -164,11 +142,10 @@ public:
 
     [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
     [[nodiscard]] sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
-    [[nodiscard]] sigc::signal<void()>& signal_blocklist_info();
     [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
     [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
-    [[nodiscard]] sigc::signal<void(std::unordered_set<tr_torrent_id_t> const&, Torrent::ChangeFlags)>&
-    signal_torrents_changed();
+    // the torrents an update changed, by id, and the union of the fields it changed
+    [[nodiscard]] sigc::signal<void(tr::app::TorrentList::Ids const&, Torrent::Fields const&)>& signal_torrents_changed();
 
 protected:
     Session(tr_session* session, tr::app::Prefs& prefs, tr::app::RpcClient& rpc);

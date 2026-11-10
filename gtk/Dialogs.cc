@@ -105,9 +105,7 @@ void gtr_confirm_remove(
 
     d->signal_response().connect([d, core, torrent_ids, delete_files](int response) mutable {
         if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-            for (auto const id : torrent_ids) {
-                core->remove_torrent(id, delete_files);
-            }
+            core->remove_torrents(torrent_ids, delete_files);
         }
 
         d.reset();

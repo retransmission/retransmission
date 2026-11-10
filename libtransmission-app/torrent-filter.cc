@@ -28,7 +28,7 @@ bool should_show_torrent(Torrent const& tor, ShowMode const mode) noexcept
 {
     switch (mode) {
     case ShowMode::ShowActive:
-        return tor.peers_getting_from_us() > 0 || tor.peers_sending_to_us() > 0 || tor.is_verifying();
+        return tor.active_peer_count() > 0 || tor.is_verifying();
 
     case ShowMode::ShowDownloading:
         return tor.is_downloading() || tor.is_waiting_to_download();

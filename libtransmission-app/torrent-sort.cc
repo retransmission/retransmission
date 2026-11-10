@@ -92,6 +92,7 @@ namespace
 
 } // namespace
 
+// NB: `sort_mode_fields(mode)` lists every field read here; keep them in sync
 std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortMode const mode)
 {
     auto val = std::partial_ordering::equivalent;

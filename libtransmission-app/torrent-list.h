@@ -36,6 +36,9 @@ class Prefs;
  * view learns the same things whether a toolkit or a poll scheduler made
  * the call. A `Torrent` keeps its address until `rows_removing` names its
  * row, so a view may hold a `Torrent const*` between calls.
+ *
+ * A change to a pref in `Torrent::SeedRatioPrefKeys` is reported through
+ * `changed` too, for the torrents that follow the session's seed ratio.
  */
 class TorrentList
 {
@@ -73,7 +76,7 @@ public:
         TorrentFieldSet changed_fields; // the union of `changed[i].fields`
         Ids added; // named torrents the session got within `AddedWindow` of `now`; each is reported once
         Ids completed; // `left_until_done` reached zero after downloading something
-        Ids edited; // `edit_date` changed, so the session's copy of the metainfo did too
+        Ids edited; // the session's copy of the metainfo changed: `edit_date` moved, or the metadata arrived
         Ids need_info; // first seen without a name, e.g. a new magnet or a stats-only row; fetch their info
         Ids removed; // the rows the response's `removed` named, plus those a complete response omitted
 
@@ -83,7 +86,7 @@ public:
     // a torrent the session has had longer than this is not `added`, so a startup or reconnect list is quiet
     static constexpr auto AddedWindow = time_t{ 60 };
 
-    explicit TorrentList(Prefs const& prefs) noexcept;
+    explicit TorrentList(Prefs const& prefs);
     ~TorrentList() = default;
     TorrentList(TorrentList&&) = delete;
     TorrentList(TorrentList const&) = delete;
@@ -103,7 +106,16 @@ public:
     void remove(Ids ids);
 
     // Removes every row as one run. Fires the row signals only: the session keeps its torrents.
+    // Forgets the withheld ids too, since a later session numbers its torrents anew.
     void clear();
+
+    // Leaves `id` out of the list, as if the session didn't have it, until `release()`.
+    // For a torrent the client created that the user hasn't confirmed yet. A listed
+    // `id` leaves the list at once, reported as `removed`.
+    void withhold(tr_torrent_id_t id);
+
+    // Lets the updates after this list `id` again.
+    void release(tr_torrent_id_t id);
 
     // --- rows, in id order
 
@@ -150,7 +162,8 @@ public:
     sigslot::signal<size_t /*row*/, size_t /*count*/> rows_removing;
     sigslot::signal<size_t /*row*/, size_t /*count*/> rows_removed;
 
-    // once per `update()` that did anything, after its row signals
+    // once per `update()` that did anything, after its row signals,
+    // and once per seed-ratio pref change that a listed torrent follows
     sigslot::signal<Changes const&> changed;
 
 private:
@@ -207,9 +220,14 @@ private:
     // fires `changed` with what `seen` and `removed` amount to
     void report(std::span<Seen const> seen, Ids removed, time_t now);
 
+    // fires `changed` for the torrents whose `effective_seed_ratio()` reads the session's limit
+    void report_seed_ratio_prefs_change();
+
     Prefs const& prefs_;
     std::vector<Entry> entries_; // sorted by id
+    Ids withheld_;
     bool updating_ = false; // a slot that re-entered `update()` would corrupt the runs
+    sigslot::scoped_connection prefs_connection_;
 };
 
 } // namespace tr::app

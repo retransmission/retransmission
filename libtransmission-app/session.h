@@ -170,6 +170,12 @@ public:
     void queue_move_down(Ids ids);
     void queue_move_bottom(Ids ids);
 
+    // Keeps `id`, a torrent this client created that the user hasn't confirmed yet, e.g.
+    // one an add dialog previews, out of `torrents()` until `release_torrent()`, which
+    // fetches it. A torrent the user cancels stays withheld until `stop()`.
+    void withhold_torrent(tr_torrent_id_t id);
+    void release_torrent(tr_torrent_id_t id);
+
     // Removes `ids` from the session, with their data when `delete_local_data`. On
     // success the rows leave `torrents()` at once, as if a poll had named them
     // `removed`; nothing is fetched. After a failure the next poll decides.
@@ -352,6 +358,10 @@ public:
     // Imported settings carry these lists too, but only as of the last import:
     // libtransmission adds to them without reporting a settings change.
     void fetch_recent_paths(tr_quark key, std::function<void(std::vector<std::string> const&)> on_paths);
+
+    // Asks the session for `id`'s magnet link and hands it to `on_link` on the UI thread.
+    // Calls nothing when the reply has no link, e.g. once the torrent is gone.
+    void fetch_magnet_link(tr_torrent_id_t id, std::function<void(std::string_view)> on_link);
 
     // The blocklist's rule count, or nullopt until the session reports it.
     [[nodiscard]] constexpr std::optional<int64_t> blocklist_size() const noexcept

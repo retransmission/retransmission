@@ -532,6 +532,22 @@ TEST_F(AppSessionRpcTest, fetchesRecentPathsFromTheSession)
     EXPECT_EQ(download_dir, paths.front());
 }
 
+TEST_F(AppSessionRpcTest, fetchesAMagnetLinkFromTheSession)
+{
+    auto const id = add_torrent(Debian);
+
+    auto link = std::string{};
+    session_.fetch_magnet_link(id, [&link](std::string_view const value) { link = value; });
+    ASSERT_TRUE(loop_.pump_until([&link] { return !std::empty(link); }));
+    EXPECT_TRUE(link.starts_with("magnet:?xt=urn:btih:")) << link;
+
+    // a torrent the session lacks has no link to hand over
+    auto called = false;
+    session_.fetch_magnet_link(id + 1, [&called](std::string_view const /*value*/) { called = true; });
+    pump_replies();
+    EXPECT_FALSE(called);
+}
+
 // A session_get queued before our session_set carries the value being replaced;
 // importing it would revert the pref until the next poll.
 TEST_F(AppSessionRpcTest, importSkipsAKeyWithASessionSetInFlight)
@@ -855,6 +871,21 @@ TEST_F(AppSessionRpcTest, removeDropsTheRowsAtOnce)
     EXPECT_TRUE(loop_.pump_until([this, id2] { return session_.torrents().find(id2) == nullptr; }));
     EXPECT_NE(nullptr, session_.torrents().find(id1));
     EXPECT_FALSE(session_has(id2));
+}
+
+// An add dialog's pending torrent stays out of the list until the user adds it.
+TEST_F(AppSessionRpcTest, aWithheldTorrentIsListedOnceReleased)
+{
+    auto const listed = add_torrent(Debian);
+    auto const pending = add_torrent(Arch);
+    session_.withhold_torrent(pending);
+
+    session_.refresh_all_torrents(TorrentKeySet::MainAll);
+    ASSERT_TRUE(loop_.pump_until([this, listed] { return session_.torrents().find(listed) != nullptr; }));
+    EXPECT_EQ(nullptr, session_.torrents().find(pending));
+
+    session_.release_torrent(pending);
+    EXPECT_TRUE(loop_.pump_until([this, pending] { return session_.torrents().find(pending) != nullptr; }));
 }
 
 // The session moves asynchronously and marks the torrent edited when done; `edited` fetches `MainAll`.

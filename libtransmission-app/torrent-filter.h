@@ -35,7 +35,7 @@ class TorrentList;
 {
     switch (mode) {
     case ShowMode::ShowActive:
-        return Torrent::fields<TR_KEY_peers_getting_from_us, TR_KEY_peers_sending_to_us, TR_KEY_status>();
+        return Torrent::active_peer_count_fields() | Torrent::fields<TR_KEY_status>();
 
     case ShowMode::ShowDownloading:
     case ShowMode::ShowPaused:

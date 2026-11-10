@@ -83,8 +83,8 @@ TEST_F(AppTorrentFilterTest, showActiveNeedsATransferOrAVerify)
     EXPECT_TRUE(should_show_torrent(make(TR_STATUS_SEED, kv(TR_KEY_peers_getting_from_us, 1)), ShowMode::ShowActive));
     EXPECT_TRUE(should_show_torrent(make(TR_STATUS_CHECK), ShowMode::ShowActive));
 
-    // a web seed alone doesn't count
-    EXPECT_FALSE(should_show_torrent(make(TR_STATUS_DOWNLOAD, kv(TR_KEY_webseeds_sending_to_us, 1)), ShowMode::ShowActive));
+    // a web seed counts too
+    EXPECT_TRUE(should_show_torrent(make(TR_STATUS_DOWNLOAD, kv(TR_KEY_webseeds_sending_to_us, 1)), ShowMode::ShowActive));
 }
 
 TEST_F(AppTorrentFilterTest, activityModesFollowTheStatus)
@@ -122,12 +122,13 @@ TEST_F(AppTorrentFilterTest, showErrorNeedsAnError)
 TEST_F(AppTorrentFilterTest, showModeFieldsNameWhatThePredicateReads)
 {
     auto const fields = tr::app::show_mode_fields();
-    EXPECT_EQ(fields.count(), 5U);
+    EXPECT_EQ(fields.count(), 6U);
     EXPECT_TRUE((fields & Torrent::fields<TR_KEY_status>()).any());
     EXPECT_TRUE((fields & Torrent::fields<TR_KEY_error>()).any());
     EXPECT_TRUE((fields & Torrent::fields<TR_KEY_is_finished>()).any());
     EXPECT_TRUE((fields & Torrent::fields<TR_KEY_peers_getting_from_us>()).any());
     EXPECT_TRUE((fields & Torrent::fields<TR_KEY_peers_sending_to_us>()).any());
+    EXPECT_TRUE((fields & Torrent::fields<TR_KEY_webseeds_sending_to_us>()).any());
 }
 
 TEST_F(AppTorrentFilterTest, showModeFieldsOfOneModeNameOnlyWhatItReads)
@@ -142,7 +143,8 @@ TEST_F(AppTorrentFilterTest, showModeFieldsOfOneModeNameOnlyWhatItReads)
     EXPECT_EQ(Torrent::fields<TR_KEY_error>(), show_mode_fields(ShowMode::ShowError));
     EXPECT_EQ(Torrent::fields<TR_KEY_is_finished>(), show_mode_fields(ShowMode::ShowFinished));
     EXPECT_EQ(
-        (Torrent::fields<TR_KEY_peers_getting_from_us, TR_KEY_peers_sending_to_us, TR_KEY_status>()),
+        (Torrent::
+             fields<TR_KEY_peers_getting_from_us, TR_KEY_peers_sending_to_us, TR_KEY_status, TR_KEY_webseeds_sending_to_us>()),
         show_mode_fields(ShowMode::ShowActive));
 }
 
