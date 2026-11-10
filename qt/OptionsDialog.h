@@ -33,7 +33,13 @@ class OptionsDialog : public BaseDialog
     Q_OBJECT
 
 public:
-    OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddData addme, QWidget* parent = nullptr);
+    // `addme` and `preset`, the choices the dialog starts with, are what `torrent_add_prompt` fired with
+    OptionsDialog(
+        Session& session,
+        Prefs const& prefs,
+        tr::app::AddData addme,
+        tr::app::AddOptions const& preset,
+        QWidget* parent = nullptr);
     OptionsDialog& operator=(OptionsDialog&&) = delete;
     OptionsDialog& operator=(OptionsDialog const&) = delete;
     OptionsDialog(OptionsDialog&&) = delete;

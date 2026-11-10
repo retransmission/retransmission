@@ -584,7 +584,7 @@ void sort_and_dedupe(std::vector<Entry>& entries)
 
 } // namespace
 
-void Session::request_add(AddData add, AddPrompt const prompt)
+void Session::request_add(AddData add, AddPrompt const prompt, AddOptions options)
 {
     if (add.type == AddData::Type::None && prompt != AddPrompt::Always) {
         return;
@@ -593,13 +593,21 @@ void Session::request_add(AddData add, AddPrompt const prompt)
     add.trash_source = prefs_.get<bool>(TR_KEY_trash_original_torrent_files);
 
     if (prompt == AddPrompt::Never || (prompt == AddPrompt::FromPrefs && !prefs_.get<bool>(TR_KEY_show_options_window))) {
-        add_torrent(std::move(add));
+        add_torrent(std::move(add), std::move(options));
         return;
     }
 
-    resolve_add(std::move(add), alive_, [this](std::optional<AddData> const& resolved) {
+    // the prompt shows both, so it needs the defaults that `add_torrent()` and the session would apply
+    if (std::empty(options.download_dir)) {
+        options.download_dir = prefs_.get<std::string>(TR_KEY_download_dir);
+    }
+    if (!options.paused) {
+        options.paused = !prefs_.get<bool>(TR_KEY_start_added_torrents);
+    }
+
+    resolve_add(std::move(add), alive_, [this, options = std::move(options)](std::optional<AddData> const& resolved) {
         if (resolved) {
-            torrent_add_prompt(*resolved);
+            torrent_add_prompt(*resolved, options);
         }
     });
 }

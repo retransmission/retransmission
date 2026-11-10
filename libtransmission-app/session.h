@@ -230,10 +230,13 @@ public:
     // `torrent_add_prompt` for the torrent it hands back, if any. The slot shows the toolkit's
     // dialog and calls `add_torrent()` if the user accepts.
     //
+    // `options` go to `add_torrent()`, or to the prompt as the choices it starts with.
+    //
     // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
-    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs);
+    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs, AddOptions options = {});
 
-    sigslot::signal<AddData const&> torrent_add_prompt;
+    // the request's options, with `download_dir` and `paused` filled in from the prefs if it left them unset
+    sigslot::signal<AddData const&, AddOptions const&> torrent_add_prompt;
 
     // Readies a torrent for a prompt, and again whenever the prompt's user names another source:
     // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
