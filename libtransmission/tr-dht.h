@@ -110,11 +110,14 @@ public:
         API api_;
     };
 
+    // `new_id` replaces the node ID saved in the state file, e.g. so that DHT nodes
+    // can't match this node with the one that used another network binding
     [[nodiscard]] static std::unique_ptr<tr_dht> create(
         Mediator& mediator,
         tr_port peer_port,
         tr_socket_t udp4_socket,
-        tr_socket_t udp6_socket);
+        tr_socket_t udp6_socket,
+        bool new_id = false);
     virtual ~tr_dht() = default;
 
     virtual void maybe_add_node(tr_address const& address, tr_port port) = 0;

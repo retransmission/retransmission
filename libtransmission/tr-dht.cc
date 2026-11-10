@@ -119,7 +119,7 @@ private:
     enum class SwarmStatus : uint8_t { Stopped, Broken, Poor, Firewalled, Good };
 
 public:
-    tr_dht_impl(Mediator& mediator, tr_port peer_port, tr_socket_t udp4_socket, tr_socket_t udp6_socket)
+    tr_dht_impl(Mediator& mediator, tr_port peer_port, tr_socket_t udp4_socket, tr_socket_t udp6_socket, bool const new_id)
         : peer_port_{ peer_port }
         , udp4_socket_{ udp4_socket }
         , udp6_socket_{ udp6_socket }
@@ -132,7 +132,7 @@ public:
         tr_logAddDebug(fmt::format("Starting DHT on port {port}", fmt::arg("port", peer_port.host())));
 
         // init state from scratch, or load from state file if it exists
-        init_state(state_filename_);
+        init_state(state_filename_, new_id);
 
         get_nodes_from_bootstrap_file(tr_pathbuf{ mediator_.config_dir(), "/dht.bootstrap"sv }, bootstrap_queue_);
         for (auto const& [host, port] : DefaultBootstraps) {
@@ -440,7 +440,7 @@ private:
         tr_variant_serde::benc().to_file(tr_variant{ std::move(benc) }, state_filename_);
     }
 
-    void init_state(std::string_view const filename)
+    void init_state(std::string_view const filename, bool const new_id)
     {
         // Note that DHT ids need to be distributed uniformly,
         // so it should be something truly random
@@ -466,7 +466,7 @@ private:
             return;
         }
 
-        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp); t_opt && *t_opt + IdTtl > id_timestamp_) {
+        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp); !new_id && t_opt && *t_opt + IdTtl > id_timestamp_) {
             if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_id); sv_opt && sv_opt->size() == id_.size()) {
                 id_timestamp_ = *t_opt;
                 std::ranges::copy(*sv_opt, std::begin(id_));
@@ -588,7 +588,8 @@ private:
     Mediator& mediator,
     tr_port peer_port,
     tr_socket_t udp4_socket,
-    tr_socket_t udp6_socket)
+    tr_socket_t udp6_socket,
+    bool const new_id)
 {
-    return std::make_unique<tr_dht_impl>(mediator, peer_port, udp4_socket, udp6_socket);
+    return std::make_unique<tr_dht_impl>(mediator, peer_port, udp4_socket, udp6_socket, new_id);
 }

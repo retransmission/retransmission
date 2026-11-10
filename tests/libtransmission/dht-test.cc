@@ -459,6 +459,20 @@ TEST_F(DhtTest, loadsStateFromStateFile)
     EXPECT_EQ(state_file.nodesString(), actual_nodes_str);
 }
 
+TEST_F(DhtTest, newIdReplacesTheSavedOne)
+{
+    auto const state_file = MockStateFile{};
+    state_file.save(sandboxDir());
+
+    tr_timeUpdate(time(nullptr));
+
+    auto mediator = MockMediator{ event_base_ };
+    mediator.config_dir_ = sandboxDir();
+    auto dht = tr_dht::create(mediator, ArbitraryPeerPort, ArbitrarySock4, ArbitrarySock6, true);
+
+    EXPECT_NE(state_file.id_, mediator.mock_dht_.id_);
+}
+
 TEST_F(DhtTest, loadsStateFromStateFileExpiredId)
 {
     auto state_file = MockStateFile{};
