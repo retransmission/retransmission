@@ -782,7 +782,10 @@ void Session::fetch_network_binding(sigc::slot<void(NetworkBinding const&)> on_b
                     }
 
                     auto& iface = binding.interfaces.emplace_back(
-                        NetworkInterface{ .name = std::string{ *name }, .addresses = {} });
+                        NetworkInterface{ .name = std::string{ *name },
+                                          .addresses = {},
+                                          .network_manager = std::string{
+                                              map->value_if<std::string_view>(TR_KEY_network_manager).value_or(""sv) } });
                     if (auto const* const addresses = map->find_if<tr_variant::Vector>(TR_KEY_addresses)) {
                         for (auto const& address : *addresses) {
                             auto const* const address_map = address.get_if<tr_variant::Map>();

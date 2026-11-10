@@ -28,6 +28,8 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/menubutton.h>
+#include <gtkmm/popover.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/treemodelcolumn.h>
@@ -45,7 +47,10 @@
 #include <gtkmm/eventcontrollerfocus.h>
 #endif
 
+#include <sigc++/adaptors/track_obj.h>
+
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 #include <sigslot/signal.hpp>
 
 #include <algorithm>
@@ -995,6 +1000,7 @@ private:
         tr_quark key;
         tr_address_type type;
         Gtk::ComboBox* combo;
+        Gtk::MenuButton* filter_button;
         Gtk::Label* feedback;
         Glib::RefPtr<Gtk::ListStore> store;
         // the saved address and the choices the combo was last built from
@@ -1010,6 +1016,26 @@ private:
     void updateInterfaceDetails();
     void rebuildBindAddressCombo(BindAddressRow& row);
     void onBindAddressChosen(BindAddressRow const& row);
+
+    // --- filters shared by the interface list and both address lists
+
+    struct Filter {
+        std::string key; // a FilterDef's key
+        std::vector<std::string> values; // an entry passes if it has any
+    };
+
+    [[nodiscard]] bool counts(Filter const& filter) const;
+    // the filters in use that apply to `type`'s addresses, or to the interfaces without
+    [[nodiscard]] std::vector<Filter> activeFilters(std::optional<tr_address_type> type) const;
+    // every value a filter has, with its name
+    [[nodiscard]] std::vector<std::pair<std::string, Glib::ustring>> allFilterChoices(std::string_view key) const;
+    // the values a filter can still pick, given the other filters
+    [[nodiscard]] std::vector<std::pair<std::string, Glib::ustring>> filterChoices(std::string_view key) const;
+    void setFilters(std::vector<Filter> filters);
+    void initFilterButton(Gtk::MenuButton& button, std::optional<tr_address_type> type);
+    void showFilterList(Gtk::Popover& popover, std::optional<tr_address_type> type);
+    void showFilterChoices(Gtk::Popover& popover, std::optional<tr_address_type> type, std::string_view key);
+    void renderFilterButtons();
 
     // Pango markup
     [[nodiscard]] static Glib::ustring describeAddress(Session::NetworkAddress const& address);
@@ -1031,6 +1057,7 @@ private:
     Gtk::SpinButton* portSpin_ = nullptr;
 
     Gtk::ComboBox* interfaceCombo_ = nullptr;
+    Gtk::MenuButton* interfaceFilterButton_ = nullptr;
     Glib::RefPtr<Gtk::ListStore> interfaceStore_;
     Gtk::Label* interfaceAddressesLabel_ = nullptr;
     Gtk::Label* interfaceStatusLabel_ = nullptr;
@@ -1043,6 +1070,11 @@ private:
     std::string interfaceOptionsKey_;
     // set while a combo is changed from code, so that isn't taken as the user's choice
     bool updatingCombos_ = false;
+
+    // By default, the interfaces NetworkManager set up, where it reports, and
+    // no link-local address, which no peer or tracker can reach.
+    // Not saved: the dialog starts with these each time it opens.
+    std::vector<Filter> filters_;
 
     sigslot::scoped_connection portTag_;
     sigc::connection prefsTag_;
@@ -1066,30 +1098,26 @@ public:
     Gtk::TreeModelColumn<bool> sensitive; // shown by the bind address combos only
 };
 
-// An IPv6 address's range, the first of session_get's tags, is shown as a
-// coloured dot that the tooltips explain, in the web UI's colours. The dot is
-// coloured with markup, so it needs no colour emoji font.
-struct RangeMark {
+// an IPv6 address's type, the first of session_get's tags
+struct RangeName {
     std::string_view tag;
-    std::string_view color;
     char const* name;
     char const* about;
 };
 
-auto constexpr RangeMarks = std::array<RangeMark, 9U>{ {
-    { .tag = "gua", .color = "#2ec27e", .name = N_("GUA"), .about = N_("global, reachable from the internet") },
-    { .tag = "ula", .color = "#3584e4", .name = N_("ULA"), .about = N_("unique local, reachable only within your site") },
+auto constexpr RangeNames = std::array<RangeName, 9U>{ {
+    { .tag = "gua", .name = N_("GUA"), .about = N_("global, reachable from the internet") },
+    { .tag = "ula", .name = N_("ULA"), .about = N_("unique local, reachable only within your site") },
     { .tag = "link-local",
-      .color = "#c0bfbc",
       .name = N_("Link-local"),
       .about = N_(
-          "this link only. Grayed out, since peers and trackers aren't on your link. Local peer discovery reaches the link through the interface, without a bind address.") },
-    { .tag = "nat64", .color = "#9141ac", .name = N_("NAT64"), .about = N_("an IPv4 address translated by NAT64") },
-    { .tag = "teredo", .color = "#ff7800", .name = N_("Teredo"), .about = N_("a Teredo tunnel") },
-    { .tag = "6to4", .color = "#ff7800", .name = N_("6to4"), .about = N_("a 6to4 tunnel (deprecated)") },
-    { .tag = "documentation", .color = "#865e3c", .name = N_("Documentation"), .about = N_("for examples only, not routed") },
-    { .tag = "site-local", .color = "#f6d32d", .name = N_("Site-local"), .about = N_("deprecated") },
-    { .tag = "loopback", .color = "#3d3846", .name = N_("Loopback"), .about = N_("this host only") },
+          "this link only, which no peer or tracker is on. Local peer discovery reaches the link through the interface, without a bind address.") },
+    { .tag = "nat64", .name = N_("NAT64"), .about = N_("an IPv4 address translated by NAT64") },
+    { .tag = "teredo", .name = N_("Teredo"), .about = N_("a Teredo tunnel") },
+    { .tag = "6to4", .name = N_("6to4"), .about = N_("a 6to4 tunnel (deprecated)") },
+    { .tag = "documentation", .name = N_("Documentation"), .about = N_("for examples only, not routed") },
+    { .tag = "site-local", .name = N_("Site-local"), .about = N_("deprecated") },
+    { .tag = "loopback", .name = N_("Loopback"), .about = N_("this host only") },
 } };
 
 // session_get's other tags, an address's origin
@@ -1105,9 +1133,70 @@ auto constexpr OriginNames = std::array<OriginName, 3U>{ {
     { .tag = "dhcp", .name = "DHCP", .about = N_("leased from a DHCPv6 server") },
 } };
 
-[[nodiscard]] std::string range_dot(RangeMark const& range)
+// session_get's managed_by values
+struct ManagerName {
+    std::string_view value;
+    char const* name;
+};
+
+auto constexpr ManagerNames = std::array<ManagerName, 4U>{ {
+    { .value = "networkmanager", .name = "NetworkManager" },
+    { .value = "docker", .name = "Docker" },
+    { .value = "libvirt", .name = "libvirt" },
+    { .value = "other", .name = N_("Other") },
+} };
+
+// The filters over the interface and bind address lists. Type and Origin
+// describe IPv6 addresses only.
+struct FilterDef {
+    std::string_view key;
+    char const* label;
+    bool ipv6_only;
+};
+
+auto constexpr FilterDefs = std::array<FilterDef, 4U>{ {
+    { .key = "managed_by", .label = N_("Managed by"), .ipv6_only = false },
+    { .key = "interface", .label = N_("Interface"), .ipv6_only = false },
+    { .key = "type", .label = N_("Type"), .ipv6_only = true },
+    { .key = "origin", .label = N_("Origin"), .ipv6_only = true },
+} };
+
+[[nodiscard]] FilterDef const& filter_def(std::string_view const key)
 {
-    return fmt::format(R"(<span foreground="{}">●</span>)", range.color);
+    return *std::ranges::find(FilterDefs, key, &FilterDef::key);
+}
+
+// what a filter's chosen values are matched against: an interface's, or with
+// `address`, one of its addresses'
+[[nodiscard]] std::vector<std::string> filter_values(
+    std::string_view const key,
+    Session::NetworkAddress const* const address,
+    Session::NetworkInterface const& iface)
+{
+    if (key == "managed_by") {
+        return std::empty(iface.managed_by) ? std::vector<std::string>{} : std::vector<std::string>{ iface.managed_by };
+    }
+    if (key == "interface") {
+        return { iface.name };
+    }
+    if (address == nullptr || std::empty(address->tags)) {
+        return {};
+    }
+    if (key == "type") {
+        return { address->tags.front() };
+    }
+    return { std::next(std::begin(address->tags)), std::end(address->tags) };
+}
+
+[[nodiscard]] bool passes_filter(
+    std::string_view const key,
+    std::vector<std::string> const& values,
+    Session::NetworkAddress const* const address,
+    Session::NetworkInterface const& iface)
+{
+    return std::ranges::any_of(filter_values(key, address, iface), [&values](auto const& value) {
+        return std::ranges::find(values, value) != std::end(values);
+    });
 }
 
 // a link-local address is only reachable on its own link, which no peer or tracker is on
@@ -1213,10 +1302,21 @@ void NetworkPage::rebuildInterfaceCombo()
     auto const current = savedInterface();
     auto const is_blocked = current == TrBindInterfaceBlocked;
 
-    auto key = current;
+    // the interface in use stays listed whatever the filters say
+    auto const filters = activeFilters({});
+    auto names = std::vector<std::string>{};
     for (auto const& iface : binding_.interfaces) {
+        if (iface.name == current || std::ranges::all_of(filters, [&iface](Filter const& filter) {
+                return passes_filter(filter.key, filter.values, nullptr, iface);
+            })) {
+            names.push_back(iface.name);
+        }
+    }
+
+    auto key = current;
+    for (auto const& name : names) {
         key += '\n';
-        key += iface.name;
+        key += name;
     }
 
     updatingCombos_ = true;
@@ -1233,8 +1333,8 @@ void NetworkPage::rebuildInterfaceCombo()
 
         interfaceStore_->clear();
         add({}, _("Any (default route)"));
-        for (auto const& iface : binding_.interfaces) {
-            add(iface.name, iface.name);
+        for (auto const& name : names) {
+            add(name, name);
         }
         if (!std::empty(current) && !is_blocked && findInterface(current) == nullptr) {
             add(current, fmt::format(fmt::runtime(_("{interface} (unavailable)")), fmt::arg("interface", current)));
@@ -1254,6 +1354,7 @@ void NetworkPage::rebuildInterfaceCombo()
 
     // an empty list means the session's platform can't bind to an interface
     interfaceCombo_->set_sensitive(!std::empty(binding_.interfaces) || !std::empty(current));
+    renderFilterButtons();
 }
 
 void NetworkPage::onInterfaceChosen()
@@ -1281,7 +1382,9 @@ void NetworkPage::updateInterfaceDetails()
             if (!text.empty()) {
                 text += '\n';
             }
-            text += describeAddress(address);
+            // grayed out, as no peer or tracker can reach it
+            auto const line = describeAddress(address).raw();
+            text += is_link_local(address) ? fmt::format(R"(<span alpha="50%">{}</span>)", line) : line;
         }
         interfaceAddressesLabel_->set_markup(text.empty() ? Glib::Markup::escape_text(_("No addresses")) : text);
         auto shown = std::vector<Session::NetworkAddress const*>{};
@@ -1326,8 +1429,8 @@ void NetworkPage::updateInterfaceDetails()
     }
 }
 
-// one line of markup for an address: its range's dot, the address, and its
-// origin, e.g. "● 2001:db8::1 · SLAAC-stable"; a link-local one is grayed out
+// one line of markup for an address: the address and its origin,
+// e.g. "2001:db8::1 · SLAAC-stable"
 Glib::ustring NetworkPage::describeAddress(Session::NetworkAddress const& address)
 {
     auto text = Glib::Markup::escape_text(address.address).raw();
@@ -1339,17 +1442,10 @@ Glib::ustring NetworkPage::describeAddress(Session::NetworkAddress const& addres
         auto const* const origin = std::ranges::find(OriginNames, tag, &OriginName::tag);
         text += fmt::format(" · {}", origin != std::end(OriginNames) ? origin->name : std::string_view{ tag });
     }
-    if (is_link_local(address)) {
-        text = fmt::format(R"(<span alpha="50%">{}</span>)", text);
-    }
-    if (auto const* const range = std::ranges::find(RangeMarks, address.tags.front(), &RangeMark::tag);
-        range != std::end(RangeMarks)) {
-        text = fmt::format("{} {}", range_dot(*range), text);
-    }
     return text;
 }
 
-// markup explaining the dots and origins among `addresses`, one per line
+// markup explaining the types and origins among `addresses`, one per line
 Glib::ustring NetworkPage::describeTags(std::vector<Session::NetworkAddress const*> const& addresses)
 {
     auto const has_tag = [&addresses](std::string_view const tag) {
@@ -1359,12 +1455,11 @@ Glib::ustring NetworkPage::describeTags(std::vector<Session::NetworkAddress cons
     };
 
     auto ranges = std::string{};
-    for (auto const& range : RangeMarks) {
+    for (auto const& range : RangeNames) {
         if (has_tag(range.tag)) {
             ranges += fmt::format(
-                "{}{} {}: {}",
+                "{}{}: {}",
                 std::empty(ranges) ? "" : "\n",
-                range_dot(range),
                 Glib::Markup::escape_text(_(range.name)).raw(),
                 Glib::Markup::escape_text(_(range.about)).raw());
         }
@@ -1389,7 +1484,11 @@ Glib::ustring NetworkPage::describeTags(std::vector<Session::NetworkAddress cons
 // A saved address that no interface has stays selectable, as with interfaces.
 void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
 {
-    auto const saved = std::string{ tr_strv_strip(prefs_.get<std::string>(row.key)) };
+    // "0.0.0.0" and "::" are older settings' spelling of any address
+    auto saved = std::string{ tr_strv_strip(prefs_.get<std::string>(row.key)) };
+    if (saved == "0.0.0.0" || saved == "::") {
+        saved.clear();
+    }
     auto const chosen = chosenInterface();
 
     auto interfaces = std::vector<Session::NetworkInterface const*>{};
@@ -1401,12 +1500,19 @@ void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
         interfaces.push_back(iface);
     }
 
-    auto const is_family = [&row](Session::NetworkAddress const& address) {
-        return address.address.contains(':') == (row.type == TR_AF_INET6);
-    };
-    auto const n_listing = std::ranges::count_if(interfaces, [&is_family](auto const* iface) {
-        return std::ranges::any_of(iface->addresses, is_family);
-    });
+    // the address in use stays listed whatever the filters say
+    auto const filters = activeFilters(row.type);
+    auto const is_listed =
+        [&row, &saved, &chosen, &filters](Session::NetworkAddress const& address, Session::NetworkInterface const& iface) {
+            if (address.address.contains(':') != (row.type == TR_AF_INET6)) {
+                return false;
+            }
+            return address.address == saved || std::ranges::all_of(filters, [&](Filter const& filter) {
+                       // a chosen interface's addresses are listed whatever manages it
+                       return (filter.key == "managed_by" && !std::empty(chosen)) ||
+                           passes_filter(filter.key, filter.values, &address, iface);
+                   });
+        };
 
     struct Choice {
         std::string id;
@@ -1423,26 +1529,20 @@ void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
     for (auto const* const iface : interfaces) {
         auto has_heading = false;
         for (auto const& address : iface->addresses) {
-            if (!is_family(address)) {
+            if (!is_listed(address, *iface)) {
                 continue;
             }
             // A combo has no groups, so each interface gets a heading row that
-            // can't be chosen, as the web UI's <optgroup> does. Its id has a
-            // tab, which no address has, so no saved value matches it.
-            if (n_listing > 1 && !has_heading) {
+            // can't be chosen, as the web UI's <optgroup> does, even when it's the
+            // only one. Its id has a tab, which no address has, so no saved value matches it.
+            if (!has_heading) {
                 has_heading = true;
                 choices.push_back(
                     { .id = fmt::format("\t{}", iface->name),
                       .label = fmt::format("<b>{}</b>", Glib::Markup::escape_text(iface->name).raw()),
                       .sensitive = false });
             }
-            auto label = describeAddress(address);
-            if (n_listing > 1) {
-                label = "    " + label;
-            }
-            // grayed out, though a saved one stays shown as what's in use
-            choices.push_back(
-                { .id = address.address, .label = label, .sensitive = !is_link_local(address) || address.address == saved });
+            choices.push_back({ .id = address.address, .label = "    " + describeAddress(address) });
             listed = listed || address.address == saved;
             shown.push_back(&address);
         }
@@ -1494,6 +1594,8 @@ void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
 
     updatingCombos_ = false;
 
+    renderFilterButtons();
+
     // binding an address the chosen interface doesn't have fails at runtime,
     // but the interface may be changed next, so this only warns;
     // an unavailable interface has no addresses to check against
@@ -1521,8 +1623,314 @@ void NetworkPage::onBindAddressChosen(BindAddressRow const& row)
     }
 }
 
+// --- filters
+
+namespace
+{
+void box_append(Gtk::Box& box, Gtk::Widget& child)
+{
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+    box.append(child);
+#else
+    box.pack_start(child, false, false, 0);
+#endif
+}
+
+// a flat button whose label starts at its left edge, as a menu item's does
+Gtk::Button& make_menu_item(Glib::ustring const& text)
+{
+    auto* const label = Gtk::make_managed<Gtk::Label>(text);
+    label->set_xalign(0);
+    auto* const button = Gtk::make_managed<Gtk::Button>();
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+    button->set_child(*label);
+    button->set_has_frame(false);
+#else
+    button->add(*label);
+    button->set_relief(Gtk::RELIEF_NONE);
+#endif
+    return *button;
+}
+
+void set_popover_content(Gtk::Popover& popover, Gtk::Box& box)
+{
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+    popover.set_child(box);
+#else
+    if (popover.get_child() != nullptr) {
+        popover.remove();
+    }
+    popover.add(box);
+    box.show_all();
+#endif
+}
+} // namespace
+
+// A Managed by filter counts only while some interface has one of its managers,
+// so the default one leaves the lists whole where nothing reports NetworkManager.
+bool NetworkPage::counts(Filter const& filter) const
+{
+    return filter.key != "managed_by" || std::ranges::any_of(binding_.interfaces, [&filter](auto const& iface) {
+               return std::ranges::find(filter.values, iface.managed_by) != std::end(filter.values);
+           });
+}
+
+std::vector<NetworkPage::Filter> NetworkPage::activeFilters(std::optional<tr_address_type> const type) const
+{
+    auto ret = std::vector<Filter>{};
+    for (auto const& filter : filters_) {
+        if (counts(filter) && (!filter_def(filter.key).ipv6_only || type == TR_AF_INET6)) {
+            ret.push_back(filter);
+        }
+    }
+    return ret;
+}
+
+std::vector<std::pair<std::string, Glib::ustring>> NetworkPage::allFilterChoices(std::string_view const key) const
+{
+    auto ret = std::vector<std::pair<std::string, Glib::ustring>>{};
+    if (key == "managed_by") {
+        for (auto const& [value, name] : ManagerNames) {
+            ret.emplace_back(value, _(name));
+        }
+    } else if (key == "interface") {
+        for (auto const& iface : binding_.interfaces) {
+            ret.emplace_back(iface.name, iface.name);
+        }
+    } else if (key == "type") {
+        for (auto const& range : RangeNames) {
+            ret.emplace_back(range.tag, _(range.name));
+        }
+    } else {
+        for (auto const& origin : OriginNames) {
+            ret.emplace_back(origin.tag, std::string{ origin.name });
+        }
+    }
+    return ret;
+}
+
+// A value counts while something the other filters leave still has it, so
+// each filter narrows the next.
+std::vector<std::pair<std::string, Glib::ustring>> NetworkPage::filterChoices(std::string_view const key) const
+{
+    auto others = std::vector<Filter>{};
+    for (auto const& filter : filters_) {
+        if (filter.key != key && counts(filter)) {
+            others.push_back(filter);
+        }
+    }
+    auto const passes = [&others](bool const ipv6_only, Session::NetworkAddress const* address, auto const& iface) {
+        return std::ranges::all_of(others, [&](Filter const& filter) {
+            return filter_def(filter.key).ipv6_only != ipv6_only || passes_filter(filter.key, filter.values, address, iface);
+        });
+    };
+    auto const any_address_filter = std::ranges::any_of(others, [](Filter const& f) { return filter_def(f.key).ipv6_only; });
+
+    auto present = std::vector<std::string>{};
+    auto const add = [&present](std::vector<std::string> const& values) {
+        for (auto const& value : values) {
+            if (std::ranges::find(present, value) == std::end(present)) {
+                present.push_back(value);
+            }
+        }
+    };
+    for (auto const& iface : binding_.interfaces) {
+        if (!passes(false, nullptr, iface)) {
+            continue;
+        }
+        auto const is_ipv6 = [](auto const& address) {
+            return address.address.contains(':');
+        };
+        if (!filter_def(key).ipv6_only) {
+            // with IPv6 filters in use, an interface counts while they leave it an address
+            if (!any_address_filter || std::ranges::any_of(iface.addresses, [&](auto const& address) {
+                    return is_ipv6(address) && passes(true, &address, iface);
+                })) {
+                add(filter_values(key, nullptr, iface));
+            }
+            continue;
+        }
+        for (auto const& address : iface.addresses) {
+            if (is_ipv6(address) && passes(true, &address, iface)) {
+                add(filter_values(key, &address, iface));
+            }
+        }
+    }
+
+    auto ret = allFilterChoices(key);
+    std::erase_if(ret, [&present](auto const& choice) {
+        return std::ranges::find(present, choice.first) == std::end(present);
+    });
+    return ret;
+}
+
+void NetworkPage::setFilters(std::vector<Filter> filters)
+{
+    std::erase_if(filters, [](Filter const& filter) { return std::empty(filter.values); });
+    filters_ = std::move(filters);
+    rebuildInterfaceCombo();
+    updateInterfaceDetails();
+}
+
+// Each ▽ button is dimmed until filters apply to its list, which its tooltip names.
+void NetworkPage::renderFilterButtons()
+{
+    auto const render = [this](Gtk::MenuButton& button, std::optional<tr_address_type> const type) {
+        auto text = std::string{};
+        for (auto const& [key, values] : activeFilters(type)) {
+            auto const choices = allFilterChoices(key);
+            auto const name_of = [&choices](std::string const& value) {
+                auto const iter = std::ranges::find(choices, value, &std::pair<std::string, Glib::ustring>::first);
+                return iter != std::end(choices) ? iter->second.raw() : value;
+            };
+            auto names = std::vector<std::string>{};
+            // a filter that keeps most values reads better as what it leaves out
+            auto left_out = std::vector<std::string>{};
+            for (auto const& [value, name] : choices) {
+                if (std::ranges::find(values, value) == std::end(values)) {
+                    left_out.push_back(name.raw());
+                }
+            }
+            if (std::size(left_out) < std::size(values)) {
+                names.push_back(fmt::format(fmt::runtime(_("not {values}")), fmt::arg("values", fmt::join(left_out, ", "))));
+            } else {
+                for (auto const& value : values) {
+                    names.push_back(name_of(value));
+                }
+            }
+            text += fmt::format("{}{}: {}", std::empty(text) ? "" : "; ", _(filter_def(key).label), fmt::join(names, ", "));
+        }
+
+        gtr_widget_set_css_class(button, "dim-label", std::empty(text));
+        button.set_tooltip_text(
+            std::empty(text) ? _("Filter the entries listed") :
+                               fmt::format(fmt::runtime(_("Listing only what passes: {filters}")), fmt::arg("filters", text)));
+    };
+
+    render(*interfaceFilterButton_, {});
+    for (auto const& row : bindAddresses_) {
+        render(*row.filter_button, row.type);
+    }
+}
+
+void NetworkPage::initFilterButton(Gtk::MenuButton& button, std::optional<tr_address_type> const type)
+{
+    auto* const popover = Gtk::make_managed<Gtk::Popover>();
+    button.set_popover(*popover);
+    popover->signal_show().connect([this, popover, type] { showFilterList(*popover, type); });
+}
+
+// The filters that apply to the button's list, each opening its choices.
+// A filter with nothing left to choose isn't offered.
+void NetworkPage::showFilterList(Gtk::Popover& popover, std::optional<tr_address_type> const type)
+{
+    // Managed by is offered only where something other than Other manages an interface
+    auto const has_managers = std::ranges::any_of(binding_.interfaces, [](auto const& iface) {
+        return !std::empty(iface.managed_by) && iface.managed_by != "other";
+    });
+    auto const active = activeFilters(type);
+    auto* const box = Gtk::make_managed<Gtk::Box>(TR_GTK_ORIENTATION(VERTICAL));
+
+    for (auto const& def : FilterDefs) {
+        if ((def.key == "managed_by" && !has_managers) || (def.ipv6_only && type != TR_AF_INET6) ||
+            std::empty(filterChoices(def.key))) {
+            continue;
+        }
+        auto const is_active = std::ranges::find(active, def.key, &Filter::key) != std::end(active);
+        auto& item = make_menu_item(fmt::format("{}{} ▸", _(def.label), is_active ? " ✓" : ""));
+        // replaced on idle: the click is still being handled by the item the new view replaces
+        item.signal_clicked().connect([this, &popover, type, key = def.key] {
+            // tracked, so the view isn't replaced in a page or popover closed meanwhile
+            Glib::signal_idle().connect_once(IF_GTKMM4(
+                sigc::track_object,
+                sigc::track_obj)([this, &popover, type, key] { showFilterChoices(popover, type, key); }, *this, popover));
+        });
+        box_append(*box, item);
+    }
+
+    if (!std::empty(active)) {
+        auto& clear = make_menu_item(_("Clear filters"));
+        // only this list's: an IPv6 Type filter outlives the IPv4 list's Clear
+        clear.signal_clicked().connect([this, &popover, type] {
+            auto const cleared = activeFilters(type);
+            auto filters = filters_;
+            std::erase_if(filters, [&cleared](Filter const& filter) {
+                return std::ranges::find(cleared, filter.key, &Filter::key) != std::end(cleared);
+            });
+            popover.popdown();
+            setFilters(std::move(filters));
+        });
+        box_append(*box, clear);
+    }
+
+    set_popover_content(popover, *box);
+}
+
+void NetworkPage::showFilterChoices(
+    Gtk::Popover& popover,
+    std::optional<tr_address_type> const type,
+    std::string_view const key)
+{
+    auto* const box = Gtk::make_managed<Gtk::Box>(TR_GTK_ORIENTATION(VERTICAL));
+
+    auto& back = make_menu_item(fmt::format("‹ {}", _(filter_def(key).label)));
+    back.signal_clicked().connect([this, &popover, type] {
+        Glib::signal_idle().connect_once(IF_GTKMM4(
+            sigc::track_object,
+            sigc::track_obj)([this, &popover, type] { showFilterList(popover, type); }, *this, popover));
+    });
+    box_append(*box, back);
+
+    auto const choices = filterChoices(key);
+    auto const iter = std::ranges::find(filters_, key, &Filter::key);
+    auto const chosen = iter != std::end(filters_) ? iter->values : std::vector<std::string>{};
+    for (auto const& [value, name] : choices) {
+        auto* const check = Gtk::make_managed<Gtk::CheckButton>(name);
+        check->set_active(std::ranges::find(chosen, value) != std::end(chosen));
+        check->signal_toggled().connect([this, check, key = std::string{ key }, value, choices] {
+            auto filters = filters_;
+            auto it = std::ranges::find(filters, key, &Filter::key);
+            if (it == std::end(filters)) {
+                // a new filter goes last
+                it = filters.insert(std::end(filters), Filter{ .key = key, .values = {} });
+            }
+            auto& values = it->values;
+            std::erase(values, value);
+            if (check->get_active()) {
+                values.push_back(value);
+            }
+            // values keep the menu's order
+            std::erase_if(values, [&choices](std::string const& v) {
+                return std::ranges::find(choices, v, &std::pair<std::string, Glib::ustring>::first) == std::end(choices);
+            });
+            std::ranges::sort(values, {}, [&choices](std::string const& v) {
+                return std::ranges::find(choices, v, &std::pair<std::string, Glib::ustring>::first) - std::begin(choices);
+            });
+            setFilters(std::move(filters));
+        });
+        box_append(*box, *check);
+    }
+
+    set_popover_content(popover, *box);
+}
+
 void NetworkPage::initInterfaceBinding()
 {
+    auto type_values = std::vector<std::string>{};
+    for (auto const& range : RangeNames) {
+        if (range.tag != "link-local") {
+            type_values.emplace_back(range.tag);
+        }
+    }
+    filters_ = {
+        { .key = "managed_by", .values = { "networkmanager" } },
+        { .key = "type", .values = std::move(type_values) },
+    };
+    initFilterButton(*interfaceFilterButton_, {});
+    for (auto const& row : bindAddresses_) {
+        initFilterButton(*row.filter_button, row.type);
+    }
+
     interfaceStore_ = Gtk::ListStore::create(interface_combo_cols);
     interfaceCombo_->set_model(interfaceStore_);
     auto* const renderer = Gtk::make_managed<Gtk::CellRendererText>();
@@ -1610,6 +2018,7 @@ NetworkPage::NetworkPage(
     , portButton_(get_widget<Gtk::Button>("test_listening_port_button"))
     , portSpin_(init_spin_button<uint16_t>("listening_port_spin", TR_KEY_peer_port, 1, std::numeric_limits<uint16_t>::max(), 1))
     , interfaceCombo_(get_widget<Gtk::ComboBox>("network_interface_combo"))
+    , interfaceFilterButton_(get_widget<Gtk::MenuButton>("network_interface_filter_button"))
     , interfaceAddressesLabel_(get_widget<Gtk::Label>("network_interface_addresses_label"))
     , interfaceStatusLabel_(get_widget<Gtk::Label>("network_interface_status_label"))
     , rpcInterfaceEntry_(get_widget<Gtk::Entry>("rpc_bind_interface_entry"))
@@ -1617,12 +2026,14 @@ NetworkPage::NetworkPage(
           { .key = TR_KEY_bind_address_ipv4,
             .type = TR_AF_INET,
             .combo = get_widget<Gtk::ComboBox>("bind_address_ipv4_combo"),
+            .filter_button = get_widget<Gtk::MenuButton>("bind_address_ipv4_filter_button"),
             .feedback = get_widget<Gtk::Label>("bind_address_ipv4_feedback_label"),
             .store = {},
             .options_key = {} },
           { .key = TR_KEY_bind_address_ipv6,
             .type = TR_AF_INET6,
             .combo = get_widget<Gtk::ComboBox>("bind_address_ipv6_combo"),
+            .filter_button = get_widget<Gtk::MenuButton>("bind_address_ipv6_filter_button"),
             .feedback = get_widget<Gtk::Label>("bind_address_ipv6_feedback_label"),
             .store = {},
             .options_key = {} },

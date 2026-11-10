@@ -138,6 +138,7 @@ public:
     struct NetworkInterface {
         std::string name;
         std::vector<NetworkAddress> addresses; // IPv4 first
+        std::string network_manager; // e.g. "configured"; empty where NetworkManager doesn't report
     };
 
     // What the session reports about its interface binding.
