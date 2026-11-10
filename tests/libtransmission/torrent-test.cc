@@ -5,9 +5,11 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cerrno> // EINVAL
 #include <chrono>
 #include <cstddef>
+#include <cstdint>
 #include <future>
 #include <iterator>
 #include <memory>
@@ -23,13 +25,19 @@
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/log.h>
+#include <libtransmission/makemeta.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/types.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
+
+#include <fmt/format.h>
+
+#include <sigslot/signal.hpp>
 
 #include "test-fixtures.h"
 
@@ -452,3 +460,169 @@ TEST_F(TorrentTest, peersAsyncCallsBackOnTheSessionThread)
     ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
     EXPECT_TRUE(future.get());
 }
+
+namespace tr::test
+{
+
+// A torrent big enough that a verify of it is still running when the test acts.
+// Its files are sparse, so they cost no real disk space.
+class VerifyDuringPathChangeTest : public SessionTest
+{
+protected:
+    static auto constexpr Name = "big"sv;
+    static auto constexpr FileCount = 4U;
+    static auto constexpr FileSize = uint64_t{ 32U } * 1024U * 1024U;
+    static auto constexpr Midway = uint64_t{ FileCount } * FileSize / 8U;
+
+    // `first_byte` starts the torrent's first file, and so decides whether its first piece matches
+    static void createFiles(std::string_view const dir, char const first_byte)
+    {
+        auto const top = tr_pathbuf{ dir, '/', Name };
+        ASSERT_TRUE(tr_sys_dir_create(top, TR_SYS_DIR_CREATE_PARENTS, 0777));
+
+        for (auto i = 0U; i < FileCount; ++i) {
+            auto const filename = fmt::format("{:s}/file{:d}", top.sv(), i);
+            auto const fd = tr_sys_file_open(filename, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE | TR_SYS_FILE_TRUNCATE, 0600);
+            ASSERT_NE(TR_BAD_SYS_FILE, fd);
+            EXPECT_TRUE(tr_sys_file_truncate(fd, FileSize));
+            if (i == 0U) {
+                auto bytes_written = uint64_t{};
+                EXPECT_TRUE(tr_sys_file_write_at(fd, &first_byte, 1U, 0U, &bytes_written));
+            }
+            tr_sys_file_close(fd);
+        }
+    }
+
+    // A paused torrent of the files in `data_dir` that looks for them in `download_dir`
+    [[nodiscard]] tr_torrent* addTorrent(std::string_view const data_dir, std::string_view const download_dir)
+    {
+        auto metainfo_builder = tr_metainfo_builder{ tr_pathbuf{ data_dir, '/', Name } };
+        auto checksums = metainfo_builder.make_checksums().get();
+        EXPECT_FALSE(checksums.error);
+        metainfo_builder.set_piece_hashes(std::move(checksums.piece_hashes));
+
+        auto builder = tr_torrent_builder{ session_ };
+        EXPECT_TRUE(builder.set_metainfo(metainfo_builder.benc()));
+        builder.set_download_dir(download_dir);
+        builder.set_paused(true);
+        return tr_torrentNew(&builder, nullptr);
+    }
+
+    // Reads the verify's own count: tr_torrentStat() also reads the piece bitfield, which the verify is writing.
+    [[nodiscard]] static uint64_t checkedBytes(tr_torrent const* const tor)
+    {
+        return tor->verify_progress().value_or(tr::Values::Percent{}).have();
+    }
+
+    // Starts a verify and runs `action` on the session thread once part of the
+    // torrent is checked. Being on that thread, `action` can't lose the verify's result.
+    template<typename Action>
+    void verifyThenActMidway(tr_torrent* const tor, Action action)
+    {
+        tr_torrentVerify(tor);
+
+        ASSERT_TRUE(waitForInSessionThread(
+            [this, &action, tor] {
+                if (checkedBytes(tor) < Midway) {
+                    return false;
+                }
+                verify_finished_ = false;
+                action();
+                return true;
+            },
+            30'000));
+    }
+
+    [[nodiscard]] bool waitForVerifyDone()
+    {
+        return waitFor([this] { return verify_finished_.load(); }, 30'000);
+    }
+
+    void SetUp() override
+    {
+        SessionTest::SetUp();
+        verified_connection_ = session_->verify_done_.connect_scoped(
+            [this](tr_torrent_id_t /*id*/) { verify_finished_ = true; });
+    }
+
+private:
+    std::atomic<bool> verify_finished_ = false;
+    sigslot::scoped_connection verified_connection_;
+};
+
+// The first piece matches only at `good`, so results kept from `bad` would leave it missing.
+TEST_F(VerifyDuringPathChangeTest, settingTheLocationVerifiesAtTheNewLocation)
+{
+    auto const bad = tr_pathbuf{ sandboxDir(), "/bad"sv };
+    auto const good = tr_pathbuf{ sandboxDir(), "/good"sv };
+    createFiles(bad, '\0');
+    createFiles(good, '\1');
+    auto* const tor = addTorrent(good, bad);
+    ASSERT_NE(nullptr, tor);
+
+    verifyThenActMidway(tor, [&] { tr_torrentSetLocation(tor, good, false, nullptr); });
+
+    ASSERT_TRUE(waitForVerifyDone());
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+}
+
+TEST_F(VerifyDuringPathChangeTest, renamingVerifiesTheNewNames)
+{
+    auto const dir = tr_pathbuf{ sandboxDir(), "/data"sv };
+    createFiles(dir, '\1');
+    auto* const tor = addTorrent(dir, dir);
+    ASSERT_NE(nullptr, tor);
+
+    auto renamed = std::atomic<bool>{ false };
+    verifyThenActMidway(tor, [&] {
+        tr_torrentRenamePath(
+            tor,
+            Name,
+            "renamed"sv,
+            [&](tr_torrent_id_t /*id*/, std::string_view /*oldpath*/, std::string_view /*newname*/, tr_error const& error) {
+                EXPECT_FALSE(error) << error;
+                EXPECT_LT(checkedBytes(tor), Midway);
+                renamed = true;
+            });
+    });
+
+    ASSERT_TRUE(waitFor([&renamed] { return renamed.load(); }, 30'000));
+    ASSERT_TRUE(waitForVerifyDone());
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+}
+
+TEST_F(VerifyDuringPathChangeTest, movingVerifiesAtTheNewLocation)
+{
+    auto const from = tr_pathbuf{ sandboxDir(), "/from"sv };
+    auto const to = tr_pathbuf{ sandboxDir(), "/to"sv };
+    createFiles(from, '\1');
+    auto* const tor = addTorrent(from, from);
+    ASSERT_NE(nullptr, tor);
+
+    auto state = int{ TR_LOC_MOVING };
+    verifyThenActMidway(tor, [&] { tr_torrentSetLocation(tor, to, true, &state); });
+
+    ASSERT_TRUE(waitFor([&state] { return state != TR_LOC_MOVING; }, 30'000));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    ASSERT_TRUE(waitForVerifyDone());
+    EXPECT_TRUE(blockingRunInSessionThread([tor, &to] { return tor->has_all() && tor->current_dir().sv() == to.sv(); }));
+}
+
+TEST_F(VerifyDuringPathChangeTest, movingStartsATorrentWaitingForItsVerify)
+{
+    auto const from = tr_pathbuf{ sandboxDir(), "/from"sv };
+    auto const to = tr_pathbuf{ sandboxDir(), "/to"sv };
+    createFiles(from, '\1');
+    auto* const tor = addTorrent(from, from);
+    ASSERT_NE(nullptr, tor);
+
+    verifyThenActMidway(tor, [&] {
+        tr_torrentStart(tor);
+        tr_torrentSetLocation(tor, to, true, nullptr);
+    });
+
+    ASSERT_TRUE(waitForVerifyDone());
+    EXPECT_TRUE(waitForInSessionThread([tor] { return tor->is_running(); }, 30'000));
+}
+
+} // namespace tr::test

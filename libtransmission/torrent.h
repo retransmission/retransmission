@@ -71,6 +71,7 @@ class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
 class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
+class VerifyDuringPathChangeTest;
 
 } // namespace tr::test
 
@@ -1144,6 +1145,7 @@ struct tr_torrent {
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
     friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
+    friend class tr::test::VerifyDuringPathChangeTest;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
     friend void tr_torrentFreeInSessionThread(tr_torrent* tor);
