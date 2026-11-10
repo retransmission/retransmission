@@ -767,6 +767,16 @@ bool tr_sys_file_read_at(
     return ret;
 }
 
+bool tr_sys_file_read_cached_at(tr_sys_file_t /*handle*/, void* /*buffer*/, uint64_t /*size*/, uint64_t /*offset*/) noexcept
+{
+    return false;
+}
+
+bool tr_sys_file_can_read_cached() noexcept
+{
+    return false;
+}
+
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);

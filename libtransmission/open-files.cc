@@ -141,6 +141,7 @@ tr_open_files::Handle tr_open_files::get(
     // is there already an entry
     auto const key = make_key(tor_id, file_num);
     auto path = Paths::iterator{};
+    auto replaced = Handle{}; // outlives the lock; see mutex_
     {
         auto lock = std::unique_lock{ mutex_ };
         opening_cv_.wait(lock, [this, filename] { return !opening_.contains(filename); });
@@ -151,10 +152,11 @@ tr_open_files::Handle tr_open_files::get(
 
             // Drop it so we can re-open as writable. Anyone still reading
             // through the old descriptor keeps it open until they're done.
-            pool_.erase(key);
+            replaced = pool_.erase(key);
         }
         path = opening_.emplace(filename).first;
     }
+    replaced.reset();
     auto const opening = Opening{ *this, path };
 
     // Opens of the same path wait for initialization, including preallocation.
@@ -247,8 +249,11 @@ tr_open_files::Handle tr_open_files::get(
     }
 
     // cache it
-    auto const lock = std::scoped_lock{ mutex_ };
-    pool_.add(Key{ key }) = file;
+    auto evicted = Handle{}; // outlives the lock; see mutex_
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        evicted = pool_.add(Key{ key }, Handle{ file });
+    }
     return file;
 }
 
@@ -261,22 +266,22 @@ tr_open_files::Opening::~Opening()
     owner_.opening_cv_.notify_all();
 }
 
-void tr_open_files::close_all()
+std::vector<tr_open_files::Handle> tr_open_files::close_all()
 {
     auto const lock = std::scoped_lock{ mutex_ };
-    pool_.clear();
+    return pool_.clear();
 }
 
-void tr_open_files::close_torrent(tr_torrent_id_t tor_id)
+std::vector<tr_open_files::Handle> tr_open_files::close_torrent(tr_torrent_id_t const tor_id)
 {
     auto const lock = std::scoped_lock{ mutex_ };
-    pool_.erase_if([&tor_id](Key const& key, Handle const& /*unused*/) { return key.first == tor_id; });
+    return pool_.erase_if([tor_id](Key const& key, Handle const& /*unused*/) { return key.first == tor_id; });
 }
 
-void tr_open_files::close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num)
+tr_open_files::Handle tr_open_files::close_file(tr_torrent_id_t const tor_id, tr_file_index_t const file_num)
 {
     auto const lock = std::scoped_lock{ mutex_ };
-    pool_.erase(make_key(tor_id, file_num));
+    return pool_.erase(make_key(tor_id, file_num));
 }
 
 tr_open_files::OpenFile::~OpenFile()

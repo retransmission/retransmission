@@ -31,13 +31,17 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/bitfield.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/peer-common.h>
+#include <libtransmission/peer-io.h>
 #include <libtransmission/peer-mgr.h>
+#include <libtransmission/peer-msgs.h>
 #include <libtransmission/peer-socket-tcp.h>
+#include <libtransmission/tr-strbuf.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent-builder.h>
@@ -53,6 +57,94 @@ namespace tr::test
 namespace
 {
 auto constexpr MaxWaitMsec = 5000;
+
+// On Windows, EVUTIL_INVALID_SOCKET is an unsigned SOCKET while
+// evutil_socket_t is signed, so spell the conversion out once.
+auto constexpr InvalidSocket = TR_IF_WIN32(
+    static_cast<evutil_socket_t>(EVUTIL_INVALID_SOCKET),
+    evutil_socket_t{ EVUTIL_INVALID_SOCKET });
+
+[[nodiscard]] uint32_t readUint32(uint8_t const* const bytes) noexcept
+{
+    auto value = uint32_t{};
+    std::memcpy(&value, bytes, sizeof(value));
+    return ntohl(value);
+}
+
+void appendUint32(std::vector<uint8_t>& message, uint32_t const value)
+{
+    for (auto const shift : { 24U, 16U, 8U, 0U }) {
+        message.push_back(static_cast<uint8_t>(value >> shift));
+    }
+}
+
+// Sends `message` from the remote end of a peer connection to the session.
+// The remote socket is nonblocking and its send buffer may be smaller
+// than a block message (8 KiB on macOS), so send in as many passes
+// as it takes. The session thread drains the other end meanwhile.
+void sendFromRemote(evutil_socket_t const remote, std::vector<uint8_t> const& message)
+{
+    auto const deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds{ MaxWaitMsec };
+    auto remaining = std::span<uint8_t const>{ message };
+    while (!std::empty(remaining)) {
+        auto const sent = send(remote, reinterpret_cast<char const*>(std::data(remaining)), std::size(remaining), 0);
+        if (sent > 0) {
+            remaining = remaining.subspan(static_cast<size_t>(sent));
+            continue;
+        }
+
+        auto const err = EVUTIL_SOCKET_ERROR();
+        ASSERT_TRUE(sent < 0 && (err == TR_IF_WIN32(WSAEWOULDBLOCK, EAGAIN) || err == TR_IF_WIN32(WSAEWOULDBLOCK, EWOULDBLOCK)))
+            << err;
+        ASSERT_TRUE(std::chrono::steady_clock::now() < deadline) << "the peer never drained its socket";
+        std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+    }
+}
+
+// Lets `sock` hold a burst of block messages. A macOS socketpair holds
+// 8 KiB, and a test that drains it every 10 ms then moves under 1 MiB/s.
+// Tries smaller sizes because NetBSD refuses any above kern.sbmax.
+void growSocketBuffers(evutil_socket_t const sock)
+{
+    for (auto const option : { SO_SNDBUF, SO_RCVBUF }) {
+        for (auto size = 1024 * 1024; size >= 16 * 1024; size /= 2) {
+            if (setsockopt(sock, SOL_SOCKET, option, reinterpret_cast<char const*>(&size), sizeof(size)) == 0) {
+                break;
+            }
+        }
+    }
+}
+
+// Appends to `input` what the session has sent to the remote end of a
+// peer connection so far.
+void receiveAtRemote(evutil_socket_t const remote, std::vector<uint8_t>& input)
+{
+    auto buffer = std::array<uint8_t, 4096>{};
+    for (;;) {
+        // Analyzer false positive: it carries std::future::wait_for's internal lock past its scope.
+        // NOLINTNEXTLINE(clang-analyzer-unix.BlockInCriticalSection)
+        auto const count = recv(remote, reinterpret_cast<char*>(std::data(buffer)), std::size(buffer), 0);
+        if (count <= 0) {
+            break;
+        }
+        input.insert(std::end(input), std::begin(buffer), std::begin(buffer) + count);
+    }
+}
+
+// Takes each complete peer message off the front of `input`, and passes
+// its length and body to `on_message`.
+template<typename OnMessage>
+void takeMessages(std::vector<uint8_t>& input, OnMessage const& on_message)
+{
+    while (std::size(input) >= 4U) {
+        auto const length = readUint32(std::data(input));
+        if (std::size(input) < 4U + length) {
+            break;
+        }
+        on_message(length, std::data(input) + 4U);
+        input.erase(std::begin(input), std::begin(input) + 4U + length);
+    }
+}
 
 class RequestBudgetPeer final : public tr_peer
 {
@@ -187,12 +279,6 @@ protected:
     };
 
     struct ConnectedPeer {
-        // On Windows, EVUTIL_INVALID_SOCKET is an unsigned SOCKET while
-        // evutil_socket_t is signed, so spell the conversion out once.
-        static auto constexpr InvalidSocket = TR_IF_WIN32(
-            static_cast<evutil_socket_t>(EVUTIL_INVALID_SOCKET),
-            evutil_socket_t{ EVUTIL_INVALID_SOCKET });
-
         ConnectedPeer() = default;
         ConnectedPeer(ConnectedPeer const&) = delete;
         ConnectedPeer(ConnectedPeer&&) = delete;
@@ -230,7 +316,7 @@ protected:
     [[nodiscard]] ConnectedPeer& addPeer(tr_torrent& tor)
     {
         auto peer = std::make_unique<ConnectedPeer>();
-        auto sockets = std::array<evutil_socket_t, 2>{ ConnectedPeer::InvalidSocket, ConnectedPeer::InvalidSocket };
+        auto sockets = std::array<evutil_socket_t, 2>{ InvalidSocket, InvalidSocket };
         EXPECT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, sockets.data()));
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
@@ -280,48 +366,14 @@ protected:
         return createTorrentAndWaitForVerifyDone(&builder);
     }
 
-    // The remote socket is nonblocking and its send buffer may be smaller
-    // than a block message (8 KiB on macOS), so send in as many passes
-    // as it takes. The session thread drains the other end meanwhile.
     static void receive(ConnectedPeer const& peer, std::vector<uint8_t> const& message)
     {
-        auto const deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds{ MaxWaitMsec };
-        auto remaining = std::span<uint8_t const>{ message };
-        while (!std::empty(remaining)) {
-            auto const sent = send(peer.remote, reinterpret_cast<char const*>(std::data(remaining)), std::size(remaining), 0);
-            if (sent > 0) {
-                remaining = remaining.subspan(static_cast<size_t>(sent));
-                continue;
-            }
-
-            auto const err = EVUTIL_SOCKET_ERROR();
-            ASSERT_TRUE(
-                sent < 0 && (err == TR_IF_WIN32(WSAEWOULDBLOCK, EAGAIN) || err == TR_IF_WIN32(WSAEWOULDBLOCK, EWOULDBLOCK)))
-                << err;
-            ASSERT_TRUE(std::chrono::steady_clock::now() < deadline) << "the peer never drained its socket";
-            std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
-        }
-    }
-
-    [[nodiscard]] static uint32_t readUint32(uint8_t const* const bytes) noexcept
-    {
-        auto value = uint32_t{};
-        std::memcpy(&value, bytes, sizeof(value));
-        return ntohl(value);
+        sendFromRemote(peer.remote, message);
     }
 
     static void collectMessages(ConnectedPeer& peer)
     {
-        auto buffer = std::array<uint8_t, 4096>{};
-        for (;;) {
-            // Analyzer false positive: it carries std::future::wait_for's internal lock past its scope.
-            // NOLINTNEXTLINE(clang-analyzer-unix.BlockInCriticalSection)
-            auto const count = recv(peer.remote, reinterpret_cast<char*>(buffer.data()), buffer.size(), 0);
-            if (count <= 0) {
-                break;
-            }
-            peer.input.insert(peer.input.end(), buffer.begin(), buffer.begin() + count);
-        }
+        receiveAtRemote(peer.remote, peer.input);
         if (!peer.handshaken) {
             if (peer.input.size() < 68U) {
                 return;
@@ -330,21 +382,16 @@ protected:
             peer.input.erase(peer.input.begin(), peer.input.begin() + 68U);
             peer.handshaken = true;
         }
-        while (peer.input.size() >= 4U) {
-            auto const length = readUint32(peer.input.data());
-            if (peer.input.size() < 4U + length) {
-                break;
-            }
-            if (length == 13U && peer.input[4] == 6U) {
+        takeMessages(peer.input, [&peer](uint32_t const length, uint8_t const* const body) {
+            if (length == 13U && body[0] == 6U) {
                 peer.requests.push_back(
-                    Request{ .piece = readUint32(peer.input.data() + 5U),
-                             .offset = readUint32(peer.input.data() + 9U),
-                             .length = readUint32(peer.input.data() + 13U) });
-            } else if (length == 1U && peer.input[4] == 2U) {
+                    Request{ .piece = readUint32(body + 1U),
+                             .offset = readUint32(body + 5U),
+                             .length = readUint32(body + 9U) });
+            } else if (length == 1U && body[0] == 2U) {
                 peer.interested = true;
             }
-            peer.input.erase(peer.input.begin(), peer.input.begin() + 4U + length);
-        }
+        });
     }
 
     [[nodiscard]] size_t requestCount()
@@ -362,13 +409,6 @@ protected:
         auto spare = size_t{};
         blockingRunInSessionThread([this, &spare] { spare = session_->spare_request_blocks().value(); });
         return spare;
-    }
-
-    static void appendUint32(std::vector<uint8_t>& message, uint32_t const value)
-    {
-        for (auto const shift : { 24U, 16U, 8U, 0U }) {
-            message.push_back(static_cast<uint8_t>(value >> shift));
-        }
     }
 
     static void receiveBlock(ConnectedPeer const& peer, Request const& request)
@@ -486,6 +526,251 @@ protected:
 };
 
 } // namespace
+
+// A peer downloading from a seed. Unlike the fixtures above, this one
+// follows TR_LOCAL_DATA_WORKERS and TR_LOCAL_DATA_SHUFFLE, so CI serves
+// its requests on every backend. Outside the anonymous namespace so that
+// tr_torrent::ResumeHelper can befriend it.
+class UploadTest : public TorrentDiskIoTestBase
+{
+protected:
+    static auto constexpr PieceSize = uint32_t{ 2U * TrBlockSize };
+    static auto constexpr PieceCount = uint32_t{ 4U };
+    static auto constexpr TotalSize = uint64_t{ PieceSize } * PieceCount;
+    static auto constexpr MsgRequest = uint8_t{ 6U };
+    static auto constexpr MsgPiece = uint8_t{ 7U };
+    static auto constexpr MsgCancel = uint8_t{ 8U };
+    static auto constexpr MsgReject = uint8_t{ 16U };
+
+    struct Reply {
+        uint8_t id = 0U;
+        uint32_t piece = 0U;
+        uint32_t offset = 0U;
+        std::string data;
+    };
+
+    void TearDown() override
+    {
+        blockingRunInSessionThread([this] { msgs_.reset(); });
+        if (remote_ != InvalidSocket) {
+            evutil_closesocket(remote_);
+        }
+        TorrentDiskIoTestBase::TearDown();
+    }
+
+    // Bytes that differ from block to block, so that a misplaced block shows.
+    [[nodiscard]] static std::string content(uint64_t const begin, uint64_t const len)
+    {
+        auto str = std::string{};
+        str.reserve(len);
+        for (auto byte = begin; byte < begin + len; ++byte) {
+            str.push_back(static_cast<char>(((byte * 31U) + 7U) ^ (byte / TrBlockSize)));
+        }
+        return str;
+    }
+
+    [[nodiscard]] std::string seedPath() const
+    {
+        return tr_pathbuf{ tr_sessionGetDownloadDir(session_), "/upload.bin" }.c_str();
+    }
+
+    // A seed of `piece_count` pieces of content() in one file.
+    [[nodiscard]] tr_torrent* makeSeed(uint32_t const piece_count = PieceCount)
+    {
+        auto const total_size = uint64_t{ PieceSize } * piece_count;
+        auto const data = content(0U, total_size);
+        auto hashes = std::string{};
+        for (auto piece = uint32_t{}; piece < piece_count; ++piece) {
+            auto const hash = tr_sha1::digest(std::string_view{ data }.substr(size_t{ piece } * PieceSize, PieceSize));
+            hashes.append(reinterpret_cast<char const*>(std::data(hash)), std::size(hash));
+        }
+
+        createFileWithContents(seedPath(), data);
+
+        auto info = tr_variant::Map{};
+        info.try_emplace(TR_KEY_name, "upload.bin");
+        info.try_emplace(TR_KEY_length, total_size);
+        info.try_emplace(TR_KEY_piece_length, PieceSize);
+        info.try_emplace(TR_KEY_pieces, std::move(hashes));
+        auto metainfo = tr_variant::Map{};
+        metainfo.try_emplace(TR_KEY_info, std::move(info));
+
+        auto builder = tr_torrent_builder{ session_ };
+        EXPECT_TRUE(builder.set_metainfo(tr_variant_serde::benc().to_string(std::move(metainfo))));
+        builder.set_paused(true);
+        auto* const tor = createTorrentAndWaitForVerifyDone(&builder);
+        EXPECT_TRUE(tor != nullptr && tor->is_done());
+        return tor;
+    }
+
+    // Connects a peer that has finished its handshake, and unchokes it.
+    void connectPeer(tr_torrent* const tor)
+    {
+        auto sockets = std::array<evutil_socket_t, 2>{ InvalidSocket, InvalidSocket };
+        ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, sockets.data()));
+        ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
+        ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
+        for (auto const sock : sockets) {
+            growSocketBuffers(sock);
+        }
+        remote_ = sockets[1];
+
+        blockingRunInSessionThread([this, tor, local = sockets[0]] {
+            auto const address = *tr_address::from_string("127.0.0.2");
+            auto io = tr_peerIo::new_incoming(
+                session_,
+                &session_->top_bandwidth_,
+                tr_peer_socket_tcp::create(
+                    *session_,
+                    tr_socket_address{ address, tr_port::from_host(8080) },
+                    static_cast<tr_socket_t>(local)));
+            io->set_torrent_hash(tor->info_hash());
+            io->set_supports_fext(true);
+            auto info = std::make_shared<tr_peer_info>(address, uint8_t{}, TR_PEER_FROM_INCOMING, [] { return tr_port{}; });
+            msgs_ = tr_peerMsgs::create(
+                *tor,
+                std::move(info),
+                std::move(io),
+                tr_peer_id_t{},
+                [](tr_peerMsgs*, tr_peer_event const&, void*) {},
+                nullptr);
+            msgs_->set_choke(false);
+        });
+    }
+
+    // Marks every piece as needing a check before its data is sent, as
+    // when its file has changed since it was last checked.
+    void forgetCheckedPieces(tr_torrent* const tor)
+    {
+        blockingRunInSessionThread([tor] {
+            auto const mtimes = std::vector<time_t>(tor->file_count());
+            tr_torrent::ResumeHelper{ *tor }.load_checked_pieces(tr_bitfield{ tor->piece_count() }, std::data(mtimes));
+        });
+    }
+
+    // Has the peer send its one request with `send_request`, and runs
+    // `during` on the session thread while the read for that request is
+    // in flight, whatever the backend.
+    void runDuringARead(tr_torrent* const tor, std::function<void()> const& send_request, std::function<void()> const& during)
+    {
+        auto const threaded = session_->settings().disk_io_workers != 0U;
+
+        blockingRunInSessionThread([this, tor, threaded] {
+            auto& local_data = session_->local_data;
+            if (threaded) {
+                // a closed file keeps the page cache from answering,
+                // and paused workers keep the disk from answering
+                session_->openFiles().close_torrent(tor->id());
+                local_data.set_workers_paused(true);
+            } else {
+                // the read's completion parks, and nothing pumps it
+                local_data.set_wake({});
+                local_data.set_completions(tr::LocalData::Completions::Deferred);
+            }
+        });
+
+        // the read starts as soon as the request arrives
+        send_request();
+        auto const is_reading = [this] {
+            auto n_requests = size_t{};
+            blockingRunInSessionThread(
+                [this, &n_requests] { n_requests = msgs_->active_req_count(tr_direction::PeerToClient); });
+            return n_requests == 1U;
+        };
+        ASSERT_TRUE(waitFor(is_reading, MaxWaitMsec));
+
+        blockingRunInSessionThread([this, threaded, &during] {
+            during();
+
+            auto& local_data = session_->local_data;
+            if (threaded) {
+                local_data.set_workers_paused(false);
+            } else {
+                local_data.set_wake([this] { session_->queue_session_thread([this] { session_->local_data.pump(); }); });
+                local_data.pump();
+            }
+        });
+    }
+
+    // Takes back the piece's first block, as a neighbor's failed hash
+    // takes back a block that the two pieces share.
+    static void loseFirstBlock(tr_torrent* const tor, tr_piece_index_t const piece)
+    {
+        auto helper = tr_torrent::ResumeHelper{ *tor };
+        auto blocks = helper.blocks();
+        blocks.unset(tor->block_span_for_piece(piece).begin);
+        helper.load_blocks(std::move(blocks));
+    }
+
+    void request(uint32_t const piece, uint32_t const offset) const
+    {
+        sendBlockMessage(MsgRequest, piece, offset);
+    }
+
+    void cancel(uint32_t const piece, uint32_t const offset) const
+    {
+        sendBlockMessage(MsgCancel, piece, offset);
+    }
+
+    void sendBlockMessage(uint8_t const id, uint32_t const piece, uint32_t const offset) const
+    {
+        auto message = std::vector<uint8_t>{};
+        appendUint32(message, 13U);
+        message.push_back(id);
+        appendUint32(message, piece);
+        appendUint32(message, offset);
+        appendUint32(message, TrBlockSize);
+        sendFromRemote(remote_, message);
+    }
+
+    // Reads what the session has sent, keeping its pieces and rejects.
+    // Returns how many of those have arrived so far.
+    size_t collectReplies()
+    {
+        receiveAtRemote(remote_, input_);
+        takeMessages(input_, [this](uint32_t const length, uint8_t const* const body) {
+            if (length >= 13U && (body[0] == MsgPiece || body[0] == MsgReject)) {
+                auto data = std::string{};
+                if (body[0] == MsgPiece) {
+                    data.assign(reinterpret_cast<char const*>(body + 9U), length - 9U);
+                }
+                replies_.emplace_back(
+                    Reply{ .id = body[0],
+                           .piece = readUint32(body + 1U),
+                           .offset = readUint32(body + 5U),
+                           .data = std::move(data) });
+            }
+        });
+
+        return std::size(replies_);
+    }
+
+    // The peer manager pulses its peers to refill their output buffers.
+    // This peer isn't in a swarm, so pulse it here.
+    [[nodiscard]] bool waitForReplies(size_t const n)
+    {
+        return waitFor(
+            [this, n] {
+                blockingRunInSessionThread([this] { msgs_->pulse(); });
+                return collectReplies() >= n;
+            },
+            MaxWaitMsec);
+    }
+
+    static void expectPiece(Reply const& reply)
+    {
+        EXPECT_EQ(MsgPiece, reply.id);
+        EXPECT_EQ(content((uint64_t{ reply.piece } * PieceSize) + reply.offset, TrBlockSize), reply.data)
+            << reply.piece << ':' << reply.offset;
+    }
+
+    std::vector<Reply> replies_;
+
+private:
+    std::shared_ptr<tr_peerMsgs> msgs_;
+    evutil_socket_t remote_ = InvalidSocket;
+    std::vector<uint8_t> input_;
+};
 
 TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
 {
@@ -630,6 +915,32 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         session_->local_data.pump();
         EXPECT_FALSE(tor->has_piece(0));
         EXPECT_EQ(0U, n_completed);
+    });
+}
+
+TEST_F(TorrentDiskIoTest, lazyCheckOfALostPieceIsDropped)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    blockingRunInSessionThread([this, tor] {
+        // a read from a piece whose files changed since its last check...
+        tor->checked_pieces_.set(0, false);
+        auto read_error = std::optional<tr_error>{};
+        auto const length = std::min<uint32_t>(TrBlockSize, tor->piece_size(0));
+        tor->read_piece_data(0, 0, length, [&read_error](auto, auto, tr_error const& error, auto) { read_error = error; });
+        EXPECT_FALSE(read_error.has_value());
+
+        // ...loses the piece while its hash is in flight, as when a neighbor's
+        // failed hash takes back a block they share. The hash may have read
+        // that block mid-rewrite, so neither its result nor the data counts.
+        tor->set_has_piece(0, false);
+        session_->local_data.pump();
+        session_->local_data.pump();
+        ASSERT_TRUE(read_error.has_value());
+        EXPECT_TRUE(*read_error);
+        EXPECT_FALSE(tor->is_piece_checked(0));
+        EXPECT_TRUE(tor->error().empty()) << tor->error().errmsg();
     });
 }
 
@@ -1406,6 +1717,158 @@ TEST_F(IncompleteDirWorkersTest, failedSetLocationStillLeavesTheIncompleteDir)
               }));
     EXPECT_EQ(TR_LOC_ERROR, state);
     expectFilesIn(tor, download_dir);
+}
+
+TEST_F(UploadTest, servesEveryRequestedBlock)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+
+    // one burst of pipelined requests, as a fast leecher sends
+    for (auto piece = uint32_t{}; piece < PieceCount; ++piece) {
+        for (auto offset = uint32_t{}; offset < PieceSize; offset += TrBlockSize) {
+            request(piece, offset);
+        }
+    }
+
+    auto const n_blocks = size_t{ TotalSize / TrBlockSize };
+    ASSERT_TRUE(waitForReplies(n_blocks));
+    EXPECT_EQ(n_blocks, std::size(replies_));
+    for (auto const& reply : replies_) {
+        expectPiece(reply);
+    }
+}
+
+TEST_F(UploadTest, checksAPieceBeforeSendingIt)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+    forgetCheckedPieces(tor);
+
+    request(1U, 0U);
+    request(1U, TrBlockSize);
+
+    ASSERT_TRUE(waitForReplies(2U));
+    for (auto const& reply : replies_) {
+        expectPiece(reply);
+    }
+
+    // only the piece that was asked for
+    blockingRunInSessionThread([tor] {
+        EXPECT_TRUE(tor->is_piece_checked(1U));
+        EXPECT_FALSE(tor->is_piece_checked(0U));
+        EXPECT_TRUE(tor->error().empty()) << tor->error().errmsg();
+    });
+}
+
+TEST_F(UploadTest, rejectsACorruptPiece)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+
+    // piece 2 changes on disk
+    auto const fd = tr_sys_file_open(seedPath(), TR_SYS_FILE_WRITE, 0);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+    auto const garbage = std::string(TrBlockSize, 'x');
+    EXPECT_TRUE(tr_sys_file_write_at(fd, std::data(garbage), std::size(garbage), uint64_t{ 2U } * PieceSize, nullptr));
+    tr_sys_file_close(fd);
+
+    connectPeer(tor);
+    forgetCheckedPieces(tor);
+
+    request(2U, 0U);
+    request(3U, 0U);
+
+    ASSERT_TRUE(waitForReplies(2U));
+    for (auto const& reply : replies_) {
+        if (reply.piece == 2U) {
+            EXPECT_EQ(MsgReject, reply.id);
+        } else {
+            expectPiece(reply);
+        }
+    }
+
+    blockingRunInSessionThread([tor] {
+        EXPECT_FALSE(tor->is_piece_checked(2U));
+        EXPECT_TRUE(tor->error().is_local_error());
+        EXPECT_TRUE(tor->error().errmsg().contains("Piece #2 is corrupt")) << tor->error().errmsg();
+    });
+}
+
+TEST_F(UploadTest, answersARequestCancelledDuringItsCheckOnce)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+    forgetCheckedPieces(tor);
+
+    // Cancelled while its piece is checked, where the check finishes later,
+    // so the read that follows the check has nobody to answer.
+    request(1U, 0U);
+    cancel(1U, 0U);
+    request(1U, TrBlockSize);
+    request(3U, 0U);
+    ASSERT_TRUE(waitForReplies(3U));
+
+    // later requests aren't held back by the cancelled one's read...
+    request(3U, TrBlockSize);
+    ASSERT_TRUE(waitForReplies(4U));
+
+    // ...which got a reject or its piece, but not both
+    auto const is_cancelled = [](Reply const& reply) {
+        return reply.piece == 1U && reply.offset == 0U;
+    };
+    EXPECT_EQ(1, std::ranges::count_if(replies_, is_cancelled));
+    for (auto const& reply : replies_) {
+        if (!is_cancelled(reply)) {
+            expectPiece(reply);
+        }
+    }
+}
+
+TEST_F(UploadTest, rejectsAPieceLostDuringItsRead)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+
+    runDuringARead(
+        tor,
+        [this] { request(1U, TrBlockSize); },
+        [tor] {
+            loseFirstBlock(tor, 1U);
+            EXPECT_FALSE(tor->has_piece(1U));
+        });
+
+    // the block that was read is intact, but its piece no longer vouches for it
+    ASSERT_TRUE(waitForReplies(1U));
+    EXPECT_EQ(MsgReject, replies_.front().id);
+    EXPECT_EQ(1U, replies_.front().piece);
+    EXPECT_EQ(TrBlockSize, replies_.front().offset);
+}
+
+TEST_F(UploadTest, servesMoreThanItKeepsInFlight)
+{
+    static auto constexpr NPieces = static_cast<uint32_t>((tr::LocalData::read_ahead_bytes() / PieceSize) + 8U);
+    auto* const tor = makeSeed(NPieces);
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+
+    // more requests than the read-ahead budget lets into flight at once
+    for (auto piece = uint32_t{}; piece < NPieces; ++piece) {
+        for (auto offset = uint32_t{}; offset < PieceSize; offset += TrBlockSize) {
+            request(piece, offset);
+        }
+    }
+
+    auto const n_blocks = size_t{ NPieces } * (PieceSize / TrBlockSize);
+    ASSERT_TRUE(waitForReplies(n_blocks));
+    EXPECT_EQ(n_blocks, std::size(replies_));
+    for (auto const& reply : replies_) {
+        expectPiece(reply);
+    }
 }
 
 } // namespace tr::test

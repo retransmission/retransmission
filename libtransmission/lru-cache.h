@@ -5,13 +5,18 @@
 
 #pragma once
 
+#include <algorithm> // std::min_element
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
-#include <utility>
+#include <utility> // std::exchange
+#include <vector>
 
 // A fixed-size cache that erases least-recently-used items to make room for new ones.
+//
+// Whatever removes a value returns it instead of destroying it, so that a
+// caller that guards the cache with a lock can destroy the value unlocked.
 template<typename Key, typename Val, std::size_t N>
 class tr_lru_cache
 {
@@ -31,37 +36,45 @@ public:
         return find(key) != nullptr;
     }
 
-    Val& add(Key&& key)
+    // Returns the value evicted to make room, or an empty one.
+    [[nodiscard]] Val add(Key&& key, Val&& val)
     {
-        auto& entry = get_free_slot();
+        auto& entry = *std::min_element(std::begin(entries_), std::end(entries_), [](auto const& a, auto const& b) {
+            return a.sequence_ < b.sequence_;
+        });
+        auto evicted = take(entry);
         entry.key_ = std::move(key);
+        entry.val_ = std::move(val);
         entry.sequence_ = next_sequence_++;
 
         key = {};
-        return entry.val_;
+        return evicted;
     }
 
-    void erase(Key const& key)
+    // Returns the value erased, or an empty one.
+    [[nodiscard]] Val erase(Key const& key)
     {
         if (auto* const found = find(key); found != nullptr) {
-            this->erase(*found);
+            return take(*found);
         }
+
+        return {};
     }
 
-    void erase_if(std::function<bool(Key const&, Val const&)> const& test)
+    [[nodiscard]] std::vector<Val> erase_if(std::function<bool(Key const&, Val const&)> const& test)
     {
+        auto erased = std::vector<Val>{};
         for (auto& entry : entries_) {
             if (entry.sequence_ != InvalidSeq && test(entry.key_, entry.val_)) {
-                erase(entry);
+                erased.emplace_back(take(entry));
             }
         }
+        return erased;
     }
 
-    void clear()
+    [[nodiscard]] std::vector<Val> clear()
     {
-        for (auto& entry : entries_) {
-            erase(entry);
-        }
+        return erase_if([](Key const& /*key*/, Val const& /*val*/) { return true; });
     }
 
 private:
@@ -71,11 +84,9 @@ private:
         uint64_t sequence_ = InvalidSeq;
     };
 
-    void erase(Entry& entry) const
+    [[nodiscard]] static Val take(Entry& entry)
     {
-        entry.key_ = {};
-        entry.val_ = {};
-        entry.sequence_ = InvalidSeq;
+        return std::exchange(entry, Entry{}).val_;
     }
 
     [[nodiscard]] constexpr Entry* find(Key const& key) noexcept
@@ -98,15 +109,6 @@ private:
         }
 
         return nullptr;
-    }
-
-    [[nodiscard]] Entry& get_free_slot()
-    {
-        auto const iter = std::min_element(std::begin(entries_), std::end(entries_), [](auto const& a, auto const& b) {
-            return a.sequence_ < b.sequence_;
-        });
-        erase(*iter);
-        return *iter;
     }
 
     std::array<Entry, N> entries_;

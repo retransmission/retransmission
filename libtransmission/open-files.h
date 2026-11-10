@@ -20,6 +20,7 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "libtransmission/file.h" // tr_sys_file_t
 #include "libtransmission/lru-cache.h"
@@ -109,9 +110,13 @@ public:
         uint64_t file_size,
         tr_error& error);
 
-    void close_all();
-    void close_torrent(tr_torrent_id_t tor_id);
-    void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
+    // These take the files out of the pool and return the pool's reference
+    // to each. A file is closed when its last reference goes, which can
+    // wait on the disk, so the caller chooses where: dropping the result
+    // right away closes every file that nobody else is using.
+    std::vector<Handle> close_all();
+    std::vector<Handle> close_torrent(tr_torrent_id_t tor_id);
+    Handle close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
 
     // How many files get() has created on disk since the last call.
     [[nodiscard]] size_t take_files_created() noexcept
@@ -155,7 +160,11 @@ private:
 
     Preallocate const preallocate_;
 
-    // Guards pool_ and opening_. File initialization runs outside the lock.
+    // Guards pool_ and opening_. File initialization runs outside the lock,
+    // and so does every close: a close can flush the file to a slow disk,
+    // and the session thread takes this lock for each read it tries to
+    // answer from the page cache. So nothing drops what may be the last
+    // reference to a file while holding the lock.
     std::mutex mutex_;
     std::condition_variable opening_cv_;
     Paths opening_;

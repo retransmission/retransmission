@@ -346,6 +346,23 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
     tr_error* error = nullptr);
 
 /**
+ * @brief Reads `size` bytes at `offset`, but only if every one of them is
+ *        already in the page cache. A miss reads nothing from the disk.
+ *
+ * Linux 6.5 and later. `cachestat()` looks first, because a `RWF_NOWAIT`
+ * read that misses still starts readahead from the calling thread, and
+ * then `preadv2()` reads with `RWF_NOWAIT`.
+ *
+ * @return true if every byte was read from memory. False on a miss, past
+ *         the end of the file, where the platform or filesystem can't read
+ *         this way, or on error; `buffer` may then be partly written.
+ */
+[[nodiscard]] bool tr_sys_file_read_cached_at(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_t offset) noexcept;
+
+// False if this build's tr_sys_file_read_cached_at() always returns false.
+[[nodiscard]] bool tr_sys_file_can_read_cached() noexcept;
+
+/**
  * @brief Portability wrapper for `write()`.
  *
  * @param[in]  handle        Valid file descriptor.
