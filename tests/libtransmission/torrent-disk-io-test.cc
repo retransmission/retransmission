@@ -648,6 +648,60 @@ protected:
         });
     }
 
+    // Has the peer send its one request with `send_request`, and runs
+    // `during` on the session thread while the read for that request is
+    // in flight, whatever the backend.
+    void runDuringARead(tr_torrent* const tor, std::function<void()> const& send_request, std::function<void()> const& during)
+    {
+        auto const threaded = session_->settings().disk_io_workers != 0U;
+
+        blockingRunInSessionThread([this, tor, threaded] {
+            auto& local_data = session_->local_data;
+            if (threaded) {
+                // a closed file keeps the page cache from answering,
+                // and paused workers keep the disk from answering
+                session_->openFiles().close_torrent(tor->id());
+                local_data.set_workers_paused(true);
+            } else {
+                // the read's completion parks, and nothing pumps it
+                local_data.set_wake({});
+                local_data.set_completions(tr::LocalData::Completions::Deferred);
+            }
+        });
+
+        // the read starts as soon as the request arrives
+        send_request();
+        auto const is_reading = [this] {
+            auto n_requests = size_t{};
+            blockingRunInSessionThread(
+                [this, &n_requests] { n_requests = msgs_->active_req_count(tr_direction::PeerToClient); });
+            return n_requests == 1U;
+        };
+        ASSERT_TRUE(waitFor(is_reading, MaxWaitMsec));
+
+        blockingRunInSessionThread([this, threaded, &during] {
+            during();
+
+            auto& local_data = session_->local_data;
+            if (threaded) {
+                local_data.set_workers_paused(false);
+            } else {
+                local_data.set_wake([this] { session_->queue_session_thread([this] { session_->local_data.pump(); }); });
+                local_data.pump();
+            }
+        });
+    }
+
+    // Takes back the piece's first block, as a neighbor's failed hash
+    // takes back a block that the two pieces share.
+    static void loseFirstBlock(tr_torrent* const tor, tr_piece_index_t const piece)
+    {
+        auto helper = tr_torrent::ResumeHelper{ *tor };
+        auto blocks = helper.blocks();
+        blocks.unset(tor->block_span_for_piece(piece).begin);
+        helper.load_blocks(std::move(blocks));
+    }
+
     void request(uint32_t const piece, uint32_t const offset) const
     {
         sendBlockMessage(MsgRequest, piece, offset);
@@ -1772,6 +1826,27 @@ TEST_F(UploadTest, answersARequestCancelledDuringItsCheckOnce)
             expectPiece(reply);
         }
     }
+}
+
+TEST_F(UploadTest, rejectsAPieceLostDuringItsRead)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    connectPeer(tor);
+
+    runDuringARead(
+        tor,
+        [this] { request(1U, TrBlockSize); },
+        [tor] {
+            loseFirstBlock(tor, 1U);
+            EXPECT_FALSE(tor->has_piece(1U));
+        });
+
+    // the block that was read is intact, but its piece no longer vouches for it
+    ASSERT_TRUE(waitForReplies(1U));
+    EXPECT_EQ(MsgReject, replies_.front().id);
+    EXPECT_EQ(1U, replies_.front().piece);
+    EXPECT_EQ(TrBlockSize, replies_.front().offset);
 }
 
 TEST_F(UploadTest, servesMoreThanItKeepsInFlight)

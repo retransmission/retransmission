@@ -2224,7 +2224,10 @@ void tr_peerMsgsImpl::on_upload_read(
     if (auto const iter = std::ranges::find(reading_, req); iter != std::ranges::end(reading_)) {
         reading_.erase(iter);
 
-        if (error || data == nullptr || std::size(*data) < req.length) {
+        // We may have lost the piece while the read was in flight. A piece
+        // loses the block it shares with a neighbor that fails its hash,
+        // and that block is then written again, maybe under this read.
+        if (error || data == nullptr || std::size(*data) < req.length || !tor_.has_piece(req.index)) {
             if (io_->supports_fext()) {
                 protocol_send_reject(req);
             }
