@@ -309,6 +309,19 @@ class CompareTest(unittest.TestCase):
         self.assertEqual(["main", "abc", "176.4", "10.88", "1/2"], row[:5])
         self.assertEqual(["ok", "-"], row[-2:])
 
+    def test_stall_threshold_scales_with_the_run_size(self):
+        # 256 MiB in 30 s is 8.5 MiB/s, above 16 MiB per 5 s; 16 MiB in 6 s is below it
+        self.assertFalse(compare.is_stall(compare.Run("utp", 256, 0.0, 30.0, 8.5, 1.0)))
+        self.assertTrue(compare.is_stall(compare.Run("utp", 16, 0.0, 6.0, 2.7, 1.0)))
+
+    def test_loopback_size_applies_to_both_transports(self):
+        utp, tcp = compare.loopback_commands("tb", 256, 6)
+        self.assertEqual("256", utp[utp.index("--size-mib") + 1])
+        self.assertEqual("256", tcp[tcp.index("--size-mib") + 1])
+        # 16 MiB of TCP lasts about 4 ms, so TCP keeps its floor
+        _, tcp = compare.loopback_commands("tb", 16, 6)
+        self.assertEqual("64", tcp[tcp.index("--size-mib") + 1])
+
     def test_missing_utp_runs_count_as_stalls(self):
         utp = [r for r in compare.parse_runs(BENCHMARK_OUTPUT) if r.transport == "utp"]
         result = compare.RefResult("main", "abc", loopback_utp=utp, utp_missing=4, choke_ok=True,

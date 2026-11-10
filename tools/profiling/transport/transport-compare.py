@@ -6,19 +6,21 @@ Each ref is checked out, detached, in a scratch worktree, the benchmark tools ar
 merge changes files outside the tools is skipped: it would bring in the tools ref's base, and
 the build would no longer be the ref's code.
 
-  - loopback: µTP, --repeat runs of 16 MiB; TCP, 2 runs of 64 MiB
+  - loopback: µTP, --repeat runs of --loopback-size-mib MiB (default 16); TCP, 2 runs of the same
+    size, at least 64 MiB
   - emulated link at 25 ms RTT: TCP and µTP, 32 MiB each
   - transport-link.py --choke short, µTP; its per-second log in choke.csv, drawn in choke.md
 A run that fails counts in the "failed" column; a µTP loopback run that fails counts as a stall.
 
 Before measuring each ref, it waits until at most --max-load CPUs (default 4) are busy over 20 s.
 
-    transport-compare.py --worktree DIR [--tools-ref REF] [--libutp-from DIR] [--out DIR] REF...
+    transport-compare.py --worktree DIR [--tools-ref REF] [--libutp-from DIR] [--out DIR]
+                         [--loopback-size-mib N] REF...
 
 The worktree must be a git worktree of this repository that nothing else uses: the
 tool checks out, merges and builds there. Builds share one build directory inside it, so
 later refs build incrementally. Each ref's raw output goes to --out; the summary table
-goes to stdout. A µTP loopback run that takes over 5 s for 16 MiB counts as a stall.
+goes to stdout. A µTP loopback run slower than 16 MiB per 5 s counts as a stall.
 Builds run at nice 19; the benchmark runs at the caller's priority.
 """
 
@@ -34,7 +36,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-STALL_SECONDS = 5.0
+STALL_SECONDS_PER_16_MIB = 5.0
+# TCP's loopback runs never go below this: smaller ones last a few ms at TCP's rate.
+MIN_TCP_LOOPBACK_MIB = 64
 # What --tools-ref may change in a ref when it is merged in.
 TOOL_PATHS = ("tests/libtransmission/CMakeLists.txt", "tests/libtransmission/transport-benchmark.cc",
               "tools/profiling/")
@@ -75,6 +79,19 @@ def parse_runs(stdout: str) -> list[Run]:
             except ValueError:
                 continue
     return runs
+
+
+def loopback_commands(benchmark: str, size_mib: int, repeat: int) -> tuple[list[str], list[str]]:
+    """The µTP and TCP loopback runs: µTP at size_mib, TCP at size_mib but at least MIN_TCP_LOOPBACK_MIB."""
+    utp = [benchmark, "--transport", "utp", "--size-mib", str(size_mib), "--repeat", str(repeat),
+           "--timeout", "60"]
+    tcp_mib = max(size_mib, MIN_TCP_LOOPBACK_MIB)
+    tcp = [benchmark, "--transport", "tcp", "--size-mib", str(tcp_mib), "--repeat", "2"]
+    return utp, tcp
+
+
+def is_stall(r: Run) -> bool:
+    return r.transfer_s > STALL_SECONDS_PER_16_MIB * r.mib / 16
 
 
 def git(worktree: Path, *args: str) -> str:
@@ -181,9 +198,7 @@ def measure(ref: str, args: argparse.Namespace) -> RefResult:
     benchmark = str(args.build_dir / "tests" / "libtransmission" / "transport-benchmark")
     link_script = args.worktree / "tools" / "profiling" / "transport" / "transport-link.py"
     link = [sys.executable, str(link_script), benchmark]
-    utp_cmd = [benchmark, "--transport", "utp", "--size-mib", "16", "--repeat", str(args.repeat),
-               "--timeout", "60"]
-    tcp_cmd = [benchmark, "--transport", "tcp", "--size-mib", "64", "--repeat", "2"]
+    utp_cmd, tcp_cmd = loopback_commands(benchmark, args.loopback_size_mib, args.repeat)
     rtt25_cmd = [*link, "--rtt-ms", "25", "--", "--transport", "both", "--size-mib", "32", "--timeout", "120"]
     runs = {}
     for name, cmd in (("loopback-utp", utp_cmd), ("loopback-tcp", tcp_cmd), ("rtt25", rtt25_cmd)):
@@ -222,8 +237,8 @@ def format_table(results: list[RefResult]) -> str:
         if r.error:
             rows.append((r.ref, r.commit or "-", r.error, "", "", "", "", "", "", ""))
             continue
-        utp = [x for x in r.loopback_utp if x.transfer_s <= STALL_SECONDS]
-        stalls = sum(1 for x in r.loopback_utp if x.transfer_s > STALL_SECONDS) + r.utp_missing
+        utp = [x for x in r.loopback_utp if not is_stall(x)]
+        stalls = sum(1 for x in r.loopback_utp if is_stall(x)) + r.utp_missing
         rtt_utp = [x.mib_per_s for x in r.rtt25 if x.transport == "utp"]
         rtt_tcp = [x.mib_per_s for x in r.rtt25 if x.transport == "tcp"]
         rows.append((
@@ -246,6 +261,9 @@ def main() -> int:
                         help="libutp repository to fetch unpublished commits from that refs pin")
     parser.add_argument("--out", type=Path, default=Path("transport-compare-results"))
     parser.add_argument("--repeat", type=int, default=6, help="µTP loopback runs per ref")
+    parser.add_argument("--loopback-size-mib", type=int, default=16, metavar="N",
+                        help=f"size of each loopback run in MiB, TCP and µTP; "
+                             f"TCP runs are at least {MIN_TCP_LOOPBACK_MIB} MiB")
     parser.add_argument("--max-load", type=float, default=4.0,
                         help="before measuring each ref, wait until at most this many CPUs are busy, "
                              "averaged over 20 s and rechecked every 20 s; 0 disables the wait")
