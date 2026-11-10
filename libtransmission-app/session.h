@@ -244,6 +244,8 @@ public:
     //   the session to fetch, which may be able to reach what this client can't.
     // - A torrent already in `torrents()` is dropped. Its source file is disposed of as
     //   `add_torrent()` would, and `torrent_add_report` reports it unless it came from the watch dir.
+    // - A local file that isn't a torrent is dropped too: there is nothing to ask about it.
+    //   `torrent_add_report` reports it as a failed add.
     // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
     // call unless `add` is a URL.
     // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
@@ -275,7 +277,7 @@ public:
     struct AddReport {
         struct Failure {
             std::string name; // the add's `readable_name()`
-            std::string errmsg; // the session's message, or the transport's
+            std::string errmsg; // the session's message, the transport's, or `resolve_add()`'s
 
             [[nodiscard]] auto operator<=>(Failure const&) const = default;
         };
@@ -566,8 +568,9 @@ private:
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
 
-    // `add`, or nullopt after `drop_duplicate()` if `torrents()` already has it
-    [[nodiscard]] std::optional<AddData> drop_if_listed(AddData add);
+    // `add` if a prompt can ask about it. Else nullopt, after `drop_duplicate()` for a torrent that
+    // `torrents()` already has, or a failure in `add_report_` for a local file that isn't a torrent.
+    [[nodiscard]] std::optional<AddData> drop_unless_promptable(AddData add);
     void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
     void drop_duplicate(AddData const& add, std::string_view hash_string);
     void dispose_source_file(AddData const& add) const;

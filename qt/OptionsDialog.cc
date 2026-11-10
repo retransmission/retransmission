@@ -222,7 +222,7 @@ void OptionsDialog::onSourceChanged()
         if (resolved) {
             add_ = std::move(*resolved);
         } else {
-            // the session already has it; the duplicate report tells the user
+            // dropped: listed already, or not a torrent. The add report tells the user which.
             add_ = {};
             clearSource();
         }
