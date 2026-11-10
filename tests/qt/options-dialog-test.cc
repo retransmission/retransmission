@@ -288,10 +288,11 @@ private slots:
         QCOMPARE(session.torrents().size(), size_t{ 1U });
 
         auto duplicates = QStringList{};
-        auto const tag = session.torrent_add_duplicate.connect_scoped(
-            [&duplicates](tr::app::AddData const& /*add*/, std::string_view const hash_string) {
-                duplicates << QString::fromUtf8(std::data(hash_string), static_cast<int>(std::size(hash_string)));
-            });
+        auto const tag = session.torrent_add_report.connect_scoped([&duplicates](Session::AddReport const& report) {
+            for (auto const& duplicate : report.duplicates) {
+                duplicates << QString::fromStdString(duplicate.hash_string);
+            }
+        });
 
         auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
         QVERIFY(drainFreeSpace(dialog));
@@ -305,8 +306,8 @@ private slots:
         edit->setText(QStringLiteral("magnet:?xt=urn:btih:%1").arg(ListedHash));
         emit edit->editingFinished();
 
-        QCOMPARE(duplicates, QStringList{ ListedHash });
         QVERIFY(edit->text().isEmpty());
+        QTRY_COMPARE(duplicates, QStringList{ ListedHash });
     }
 };
 } // namespace

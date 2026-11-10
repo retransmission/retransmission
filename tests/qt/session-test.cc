@@ -16,6 +16,7 @@
 #include <QElapsedTimer>
 #include <QRegularExpression>
 #include <QMessageBox>
+#include <QStringList>
 #include <QTest>
 #include <QTimer>
 
@@ -189,11 +190,14 @@ private slots:
             session.setShuttingDown();
         }
 
-        // Never started, the session fails each request with no round trip, so replies land in the order sent.
+        // Session's own slot connected first, so it has run by the time this one does.
+        auto reported = false;
+        auto const tag = session.torrent_add_report.connect_scoped(
+            [&reported](Session::AddReport const& /*report*/) { reported = true; });
+
+        // never started, the session fails each request with no round trip
         session.add_torrent(tr::app::AddData{ "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567" });
-        auto done = false;
-        session.send(TR_KEY_session_stats, {}, [&done](auto const& /*response*/) { done = true; });
-        QVERIFY(waitUntil([&done] { return done; }));
+        QVERIFY(waitUntil([&reported] { return reported; }));
 
         auto const boxes = QApplication::topLevelWidgets();
         auto const n_boxes = std::ranges::count_if(boxes, [](QWidget const* const widget) {
@@ -201,6 +205,35 @@ private slots:
         });
         QCOMPARE(n_boxes, shutting_down ? 0 : 1);
         qDeleteAll(boxes);
+    }
+
+    // Like duplicates: one box for the batch, with each entry in its details.
+    void several_failed_adds_share_a_message_box()
+    {
+        auto prefs = Prefs{};
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+
+        auto reported = false;
+        auto const tag = session.torrent_add_report.connect_scoped(
+            [&reported](Session::AddReport const& /*report*/) { reported = true; });
+
+        // never started, the session fails each request with no round trip
+        session.add_torrent(tr::app::AddData{ "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&dn=first" });
+        session.add_torrent(tr::app::AddData{ "magnet:?xt=urn:btih:89abcdef0123456789abcdef0123456789abcdef&dn=second" });
+        QVERIFY(waitUntil([&reported] { return reported; }));
+
+        auto const widgets = QApplication::topLevelWidgets();
+        auto details = QStringList{};
+        for (auto const* const widget : widgets) {
+            if (auto const* const box = qobject_cast<QMessageBox const*>(widget); box != nullptr) {
+                details << box->detailedText();
+            }
+        }
+        QCOMPARE(details.size(), 1);
+        QVERIFY(details.front().contains(QStringLiteral("first")));
+        QVERIFY(details.front().contains(QStringLiteral("second")));
+        qDeleteAll(widgets);
     }
 
     // The reply to a request sent before a restart arrives after stop(), so RpcClient drops it as a network error.

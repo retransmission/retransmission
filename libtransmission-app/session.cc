@@ -219,6 +219,11 @@ void Session::stop()
     rpc_.stop();
     set_embedded_session(nullptr);
 
+    adds_alive_ = std::make_shared<std::monostate const>();
+    add_report_ = {};
+    adds_in_flight_ = 0U;
+    add_fetches_in_flight_ = 0U;
+
     if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
         close_thread_ = std::thread{ [this, session] {
             tr_sessionClose(session);
@@ -543,6 +548,42 @@ void Session::rename_torrent_path(Ids ids, std::string old_path, std::string new
 
 // --- adding torrents
 
+namespace
+{
+
+// Whether `a` comes before `b` in a list a user reads.
+// No toolkit's collation is at hand here, so only ASCII case is ignored.
+[[nodiscard]] bool name_precedes(std::string_view const a, std::string_view const b) noexcept
+{
+    static auto constexpr Fold = [](char const ch) constexpr noexcept {
+        return static_cast<unsigned char>(ch >= 'A' && ch <= 'Z' ? ch - 'A' + 'a' : ch);
+    };
+
+    return std::ranges::lexicographical_compare(a, b, {}, Fold, Fold);
+}
+
+// puts a report's entries in name order and drops the repeats
+template<typename Entry>
+void sort_and_dedupe(std::vector<Entry>& entries)
+{
+    std::ranges::sort(entries, [](Entry const& a, Entry const& b) {
+        if (name_precedes(a.name, b.name)) {
+            return true;
+        }
+
+        if (name_precedes(b.name, a.name)) {
+            return false;
+        }
+
+        return a < b; // so that equal entries meet
+    });
+
+    auto const repeats = std::ranges::unique(entries);
+    entries.erase(std::begin(repeats), std::end(repeats));
+}
+
+} // namespace
+
 void Session::request_add(AddData add, AddPrompt const prompt)
 {
     if (add.type == AddData::Type::None && prompt != AddPrompt::Always) {
@@ -570,6 +611,7 @@ void Session::resolve_add(
 {
     if (add.type != AddData::Type::Url) {
         on_resolved(drop_if_listed(std::move(add)));
+        schedule_add_report();
         return;
     }
 
@@ -578,24 +620,31 @@ void Session::resolve_add(
 
     auto url = add.source;
 
+    ++add_fetches_in_flight_;
     rpc_.fetch(
         std::move(url),
         Timeout,
         [this,
-         alive = std::weak_ptr{ alive_ },
+         alive = std::weak_ptr{ adds_alive_ },
          wanted = std::move(wanted),
          add = std::move(add),
          on_resolved = std::move(on_resolved)](tr_web::FetchResponse const& response) mutable {
-            if (alive.expired() || wanted.expired()) {
+            if (alive.expired()) {
                 return;
             }
 
-            if (response.status == 200 && tr_torrent_metainfo{}.parse_benc(response.body)) {
-                add.type = AddData::Type::Metainfo;
-                add.metainfo = response.body;
+            --add_fetches_in_flight_;
+
+            if (!wanted.expired()) {
+                if (response.status == 200 && tr_torrent_metainfo{}.parse_benc(response.body)) {
+                    add.type = AddData::Type::Metainfo;
+                    add.metainfo = response.body;
+                }
+
+                on_resolved(drop_if_listed(std::move(add)));
             }
 
-            on_resolved(drop_if_listed(std::move(add)));
+            schedule_add_report();
         });
 }
 
@@ -650,15 +699,25 @@ void Session::add_torrent(AddData add, AddOptions options)
     add_file_indices(TR_KEY_priority_low, options.priority_low);
     add_file_indices(TR_KEY_priority_high, options.priority_high);
 
-    send(TR_KEY_torrent_add, std::move(args), [this, add = std::move(add)](RpcResponse const& response) {
-        on_torrent_add_reply(add, response);
-    });
+    ++adds_in_flight_;
+    send(
+        TR_KEY_torrent_add,
+        std::move(args),
+        [this, alive = std::weak_ptr{ adds_alive_ }, add = std::move(add)](RpcResponse const& response) {
+            if (alive.expired()) {
+                return;
+            }
+
+            --adds_in_flight_;
+            on_torrent_add_reply(add, response);
+            schedule_add_report();
+        });
 }
 
 void Session::on_torrent_add_reply(AddData const& add, RpcResponse const& response)
 {
     if (!response.success) {
-        torrent_add_failed(add, response.errmsg);
+        add_report_.failed.emplace_back(add.readable_name(), response.errmsg);
         return;
     }
 
@@ -683,8 +742,26 @@ void Session::drop_duplicate(AddData const& add, std::string_view const hash_str
     dispose_source_file(add);
 
     if (!add.from_watch_dir) {
-        torrent_add_duplicate(add, hash_string);
+        add_report_.duplicates.emplace_back(add.readable_short_name(), std::string{ hash_string });
     }
+}
+
+void Session::schedule_add_report()
+{
+    if (adds_pending() || add_report_.empty()) {
+        return;
+    }
+
+    rpc_.run_on_ui_thread([this, alive = std::weak_ptr{ adds_alive_ }] {
+        // Nothing to report if an add started since then, which ends the batch later,
+        // or if another of these already fired the report.
+        if (!alive.expired() && !adds_pending() && !add_report_.empty()) {
+            auto report = std::exchange(add_report_, {});
+            sort_and_dedupe(report.failed);
+            sort_and_dedupe(report.duplicates);
+            torrent_add_report(report);
+        }
+    });
 }
 
 void Session::dispose_source_file(AddData const& add) const

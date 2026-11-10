@@ -38,15 +38,11 @@ Session::Session(QString const& config_dir, Prefs& prefs, RpcClient& rpc)
     : tr::app::Session{ config_dir.toStdString(), prefs, rpc.impl(), Utils::trashOrRemove }
 {
     rename_failed_connection_ = torrent_rename_failed.connect_scoped(&Session::onRenameFailed, this);
-    add_failed_connection_ = torrent_add_failed.connect_scoped(&Session::onAddFailed, this);
-    add_duplicate_connection_ = torrent_add_duplicate.connect_scoped(&Session::onAddDuplicate, this);
+    add_report_connection_ = torrent_add_report.connect_scoped(&Session::onAddReport, this);
     connect(&rpc, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
     connect(&rpc, &RpcClient::networkResponse, this, &Session::networkResponse);
-
-    duplicates_timer_.setSingleShot(true);
-    connect(&duplicates_timer_, &QTimer::timeout, this, &Session::onDuplicatesTimer);
 }
 
 Session::~Session() = default;
@@ -88,32 +84,35 @@ void Session::showMessage(QMessageBox::Icon const icon, QString const& title, QS
 ****
 ***/
 
-void Session::onAddFailed(tr::app::AddData const& add, std::string_view const errmsg) const
+void Session::onAddReport(AddReport const& report) const
 {
-    auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                          .arg(Utils::qstringFromUtf8(errmsg), Utils::qstringFromUtf8(add.readable_name()));
-    showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text);
-}
+    // One box per list. A lone entry is the box's text; several are a count, with the entries as its details.
 
-void Session::onAddDuplicate(tr::app::AddData const& add, std::string_view const hash_string)
-{
-    duplicates_.try_emplace(Utils::qstringFromUtf8(add.readable_short_name()), Utils::qstringFromUtf8(hash_string));
-    duplicates_timer_.start(1000);
-}
+    if (auto const& failed = report.failed; std::size(failed) == 1U) {
+        auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
+                              .arg(Utils::qstringFromUtf8(failed.front().errmsg), Utils::qstringFromUtf8(failed.front().name));
+        showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text);
+    } else if (!std::empty(failed)) {
+        auto lines = QStringList{};
+        for (auto const& failure : failed) {
+            lines.push_back(Utils::qstringFromUtf8(failure.name));
+            lines.push_back(QStringLiteral("    ") + Utils::qstringFromUtf8(failure.errmsg));
+        }
 
-void Session::onDuplicatesTimer()
-{
-    decltype(duplicates_) duplicates;
-    duplicates.swap(duplicates_);
+        auto const count = static_cast<int>(std::size(failed));
+        auto const text = TR_FORMAT_N("Unable to add {count:L} torrent(s)", count, fmt::arg("count", count));
+        showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text, lines.join(QStringLiteral("\n")));
+    }
 
-    QStringList lines;
-    for (auto const& [dupe, original] : duplicates) {
-        lines.push_back(
-            TR_FORMAT("{torrent_name} (copy of {hash})", fmt::arg("torrent_name", dupe), fmt::arg("hash", original.left(7))));
+    auto lines = QStringList{};
+    for (auto const& duplicate : report.duplicates) {
+        lines.push_back(TR_FORMAT(
+            "{torrent_name} (copy of {hash})",
+            fmt::arg("torrent_name", duplicate.name),
+            fmt::arg("hash", duplicate.short_hash())));
     }
 
     if (!lines.empty()) {
-        lines.sort(Qt::CaseInsensitive);
         // NOLINTNEXTLINE(readability-redundant-casting): Remove this comment when we drop Qt5
         auto const count = static_cast<int>(lines.size());
         auto const title = tr("Duplicate Torrent(s)", "", count);
