@@ -32,7 +32,12 @@
 ****
 ***/
 
-OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddData addme, QWidget* parent)
+OptionsDialog::OptionsDialog(
+    Session& session,
+    Prefs const& prefs,
+    tr::app::AddData addme,
+    tr::app::AddOptions const& preset,
+    QWidget* parent)
     : BaseDialog{ parent }
     , add_{ std::move(addme) }
     , session_{ session }
@@ -68,7 +73,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddD
     int const width = font_metrics.size(0, QStringLiteral("This is a pretty long torrent filename indeed.torrent")).width();
     ui_.sourceStack->setMinimumWidth(width);
 
-    auto const download_dir = Utils::removeTrailingDirSeparator(prefs.get<QString>(TR_KEY_download_dir));
+    auto const download_dir = Utils::removeTrailingDirSeparator(Utils::qstringFromUtf8(preset.download_dir));
     ui_.freeSpaceLabel->setSession(session_);
     ui_.freeSpaceLabel->setPath(download_dir);
 
@@ -95,9 +100,9 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddD
     ui_.priorityCombo->addItem(tr("High"), TR_PRI_HIGH);
     ui_.priorityCombo->addItem(tr("Normal"), TR_PRI_NORMAL);
     ui_.priorityCombo->addItem(tr("Low"), TR_PRI_LOW);
-    ui_.priorityCombo->setCurrentIndex(1); // Normal
+    ui_.priorityCombo->setCurrentIndex(ui_.priorityCombo->findData(preset.bandwidth_priority.value_or(TR_PRI_NORMAL)));
 
-    ui_.startCheck->setChecked(prefs.get<bool>(TR_KEY_start_added_torrents));
+    ui_.startCheck->setChecked(!preset.paused.value_or(false));
     ui_.trashCheck->setChecked(add_.trash_source);
 
     // a resolve that lands after the user is done with the dialog must not report a duplicate

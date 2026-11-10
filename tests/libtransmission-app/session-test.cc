@@ -1063,7 +1063,8 @@ TEST_F(AppSessionRpcTest, aPromptedDuplicateIsReportedInsteadOfPrompting)
     add_and_list(Arch);
 
     auto prompts = 0;
-    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     prefs_.set(TR_KEY_trash_original_torrent_files, true);
     auto const source = copy_asset(Arch, "again.torrent"sv);
@@ -1179,7 +1180,8 @@ TEST_F(AppSessionRpcTest, aPromptedWatchDirDuplicateIsNeitherReportedNorPrompted
     add_and_list(Arch);
 
     auto prompts = 0;
-    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const prompt_tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     prefs_.set(TR_KEY_trash_original_torrent_files, false);
     auto add = AddData{ copy_asset(Arch, "again.torrent"sv) };
@@ -1213,7 +1215,8 @@ TEST_F(AppSessionRpcTest, aPromptedUrlIsFetchedByAnEmbeddedSession)
     server.serve_on_get(benc);
 
     auto prompted = std::optional<AddData>{};
-    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompted](AddData const& add) { prompted = add; });
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompted](AddData const& add, AddOptions const& /*options*/) { prompted = add; });
 
     session_.request_add(AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) }, Session::AddPrompt::Always);
 
@@ -1526,7 +1529,8 @@ protected:
     [[nodiscard]] std::optional<AddData> prompted_add_for(std::string const& url)
     {
         auto prompted = std::optional<AddData>{};
-        auto const tag = session_.torrent_add_prompt.connect_scoped([&prompted](AddData const& add) { prompted = add; });
+        auto const tag = session_.torrent_add_prompt.connect_scoped(
+            [&prompted](AddData const& add, AddOptions const& /*options*/) { prompted = add; });
 
         session_.request_add(AddData{ url }, Session::AddPrompt::Always);
         EXPECT_TRUE(loop_.pump_until([&prompted] { return prompted.has_value(); }));
@@ -1880,7 +1884,8 @@ TEST_F(AppSessionLifecycleTest, requestAddPromptsOrAddsAsItIsTold)
     start_negotiated(server);
 
     auto prompts = 0;
-    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     for (auto const& test : Tests) {
         prompts = 0;
@@ -1898,7 +1903,7 @@ TEST_F(AppSessionLifecycleTest, requestAddAppliesTheTrashPref)
 {
     auto trash_source = std::optional<bool>{};
     auto const tag = session_.torrent_add_prompt.connect_scoped(
-        [&trash_source](AddData const& add) { trash_source = add.trash_source; });
+        [&trash_source](AddData const& add, AddOptions const& /*options*/) { trash_source = add.trash_source; });
 
     for (auto const trash_pref : { false, true }) {
         trash_source.reset();
@@ -1908,10 +1913,44 @@ TEST_F(AppSessionLifecycleTest, requestAddAppliesTheTrashPref)
     }
 }
 
+TEST_F(AppSessionLifecycleTest, requestAddPassesItsOptionsOn)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    auto preset = std::optional<AddOptions>{};
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&preset](AddData const& /*add*/, AddOptions const& options) { preset = options; });
+
+    prefs_.set(TR_KEY_start_added_torrents, true);
+    auto options = AddOptions{};
+    options.paused = true;
+    options.download_dir = "/somewhere/else";
+
+    session_.request_add(AddData{ MagnetLink }, Session::AddPrompt::Always, options);
+    ASSERT_TRUE(preset.has_value());
+    EXPECT_EQ(true, preset->paused);
+    EXPECT_EQ("/somewhere/else", preset->download_dir);
+
+    // a prompt gets what the request left unset from the prefs
+    preset.reset();
+    session_.request_add(AddData{ MagnetLink }, Session::AddPrompt::Always);
+    ASSERT_TRUE(preset.has_value());
+    EXPECT_EQ(false, preset->paused);
+    EXPECT_FALSE(std::empty(preset->download_dir));
+    EXPECT_EQ(prefs_.get<std::string>(TR_KEY_download_dir), preset->download_dir);
+
+    session_.request_add(AddData{ MagnetLink }, Session::AddPrompt::Never, options);
+    auto const body = next_add_body(server);
+    EXPECT_TRUE(body.contains("/somewhere/else"));
+    EXPECT_TRUE(body.contains(R"("paused":true)"));
+}
+
 TEST_F(AppSessionLifecycleTest, requestAddOnlyPromptsForNothingWhenAskedTo)
 {
     auto prompts = 0;
-    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     prefs_.set(TR_KEY_show_options_window, true);
     session_.request_add(AddData{});
@@ -1958,7 +1997,8 @@ TEST_F(AppSessionLifecycleTest, aUrlFetchedAcrossAStopPromptsNothing)
     server.serve_on_get("not a torrent");
 
     auto prompts = 0;
-    auto const tag = session_.torrent_add_prompt.connect_scoped([&prompts](AddData const& /*add*/) { ++prompts; });
+    auto const tag = session_.torrent_add_prompt.connect_scoped(
+        [&prompts](AddData const& /*add*/, AddOptions const& /*options*/) { ++prompts; });
 
     auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
     session_.request_add(AddData{ url }, Session::AddPrompt::Always);
