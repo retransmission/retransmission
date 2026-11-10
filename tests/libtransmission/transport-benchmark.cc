@@ -12,7 +12,12 @@
 // protocol, torrents and disk.
 //
 //     transport-benchmark [--transport tcp|utp|both] [--size-mib N] [--seconds N] [--sample-ms N]
-//                         [--repeat N] [--timeout SECONDS]
+//                         [--repeat N] [--timeout SECONDS] [--listen ADDRESS:PORT | --connect ADDRESS:PORT]
+//
+// --listen and --connect split the two ends across two processes, normally on two hosts, to measure
+// through real network cards. The --listen side receives and the --connect side sends; start the
+// --listen side first, and give both the same --transport, --size-mib and --repeat. Each prints its
+// own CPU cost, from its first byte. TCP and µTP both use PORT. --seconds needs both ends in one process.
 //
 // --seconds streams for that long instead of a fixed size. --sample-ms prints the receive
 // rate every N ms as `sample <transport> <seconds since start> <MiB/s>`, which lets a caller
@@ -82,6 +87,8 @@ struct Options {
     std::chrono::milliseconds sample_interval = {}; // zero: no samples
     int repeat = 1;
     std::chrono::seconds timeout = 60s;
+    std::optional<tr_socket_address> listen; // receive what a --connect on another host sends
+    std::optional<tr_socket_address> connect; // send to a --listen on another host
 };
 
 struct Result {
@@ -102,8 +109,16 @@ struct Transfer {
 
     uint64_t bytes_queued = 0; // sender thread only
     std::atomic<uint64_t> bytes_received = 0;
-    std::optional<Clock::time_point> first_byte_at; // receiver thread only
+    std::optional<Clock::time_point> first_byte_at; // receiver thread only; with --connect, the first write
     Clock::time_point last_byte_at;
+    std::atomic<bool> connected = false;
+
+    // With --connect, the receiver is on another host, and the bytes the peer IO has written stand in
+    // for the bytes received (sender thread only).
+    bool remote_receiver = false;
+    uint64_t bytes_written = 0;
+
+    std::optional<double> cpu_at_first_byte; // with --listen or --connect; that end's thread only
 
     std::promise<std::string> done; // empty on success, else an error message
     std::atomic<bool> finished = false;
@@ -150,7 +165,7 @@ void refill(tr_peerIo* const io, Transfer& transfer)
     }
 
     auto space = io->get_write_buffer_space(tr_time_msec());
-    auto const received = transfer.bytes_received.load();
+    auto const received = transfer.remote_receiver ? transfer.bytes_written : transfer.bytes_received.load();
     while (space > 0U && transfer.bytes_queued < transfer.total_bytes && transfer.bytes_queued - received < MaxUnreceived) {
         auto const n = std::min<uint64_t>({ ChunkSize,
                                             space,
@@ -164,12 +179,27 @@ void refill(tr_peerIo* const io, Transfer& transfer)
 
 void onError(tr_peerIo* /*io*/, tr_error const& error, void* vtransfer)
 {
-    static_cast<Transfer*>(vtransfer)->finish(std::string{ error.message() });
+    auto& transfer = *static_cast<Transfer*>(vtransfer);
+    // A receiver on another host closes the connection once it has every byte.
+    if (transfer.remote_receiver && transfer.bytes_written >= transfer.total_bytes) {
+        transfer.finish({});
+        return;
+    }
+
+    transfer.finish(std::string{ error.message() });
 }
 
-void onSenderWrote(tr_peerIo* const io, size_t /*bytes_written*/, bool /*was_piece_data*/, void* vtransfer)
+[[nodiscard]] double processCpuSeconds();
+
+void onSenderWrote(tr_peerIo* const io, size_t const bytes_written, bool /*was_piece_data*/, void* vtransfer)
 {
-    refill(io, *static_cast<Transfer*>(vtransfer));
+    auto& transfer = *static_cast<Transfer*>(vtransfer);
+    if (transfer.remote_receiver && !transfer.first_byte_at) {
+        transfer.first_byte_at = Clock::now();
+        transfer.cpu_at_first_byte = processCpuSeconds();
+    }
+    transfer.bytes_written += bytes_written;
+    refill(io, transfer);
 }
 
 ReadState onSenderReadable(tr_peerIo* const io, void* /*vtransfer*/, size_t* /*setme_piece_byte_count*/)
@@ -184,6 +214,7 @@ ReadState onReceiverReadable(tr_peerIo* const io, void* vtransfer, size_t* const
     auto const now = Clock::now();
     if (!transfer.first_byte_at) {
         transfer.first_byte_at = now;
+        transfer.cpu_at_first_byte = processCpuSeconds();
     }
 
     auto const n = io->read_buffer_size();
@@ -214,6 +245,7 @@ void startReceiver(tr_session* const session, Transfer& transfer, std::shared_pt
 {
     transfer.receiver = tr_peerIo::new_incoming(session, &session->top_bandwidth_, std::move(socket));
     transfer.receiver->set_callbacks(onReceiverReadable, nullptr, onError, &transfer);
+    transfer.connected = true;
 }
 
 #ifdef WITH_UTP
@@ -258,20 +290,18 @@ void useThreadSafeUtpClock(tr_session* const session)
 }
 #endif
 
-// A loopback TCP listener that the benchmark accepts on itself, bypassing the receiving session's own listener.
+// A TCP listener that the benchmark accepts on itself, bypassing the receiving session's own listener.
 class Listener
 {
 public:
-    Listener()
-        : sock_{ socket(AF_INET, SOCK_STREAM, 0) }
+    explicit Listener(tr_socket_address const& at)
     {
-        auto addr = sockaddr_in{};
-        addr.sin_family = AF_INET;
-        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-        auto len = socklen_t{ sizeof(addr) };
-        if (!is_valid_socket(sock_) || bind(sock_, reinterpret_cast<sockaddr*>(&addr), len) != 0 || listen(sock_, 1) != 0 ||
+        auto [addr, len] = at.to_sockaddr();
+        sock_ = socket(addr.ss_family, SOCK_STREAM, 0);
+        if (!is_valid_socket(sock_) || evutil_make_listen_socket_reuseable(sock_) != 0 ||
+            bind(sock_, reinterpret_cast<sockaddr*>(&addr), len) != 0 || listen(sock_, 1) != 0 ||
             getsockname(sock_, reinterpret_cast<sockaddr*>(&addr), &len) != 0 || evutil_make_socket_nonblocking(sock_) != 0) {
-            throw std::runtime_error{ "couldn't open a loopback TCP listener" };
+            throw std::runtime_error{ "couldn't open a TCP listener on " + at.display_name() };
         }
         address_ = *tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&addr));
     }
@@ -301,21 +331,39 @@ private:
     tr_socket_address address_;
 };
 
+// Where a session binds: loopback when both ends share the process, any address for --connect,
+// and the given address and port for --listen.
+enum class Bind : uint8_t {
+    Loopback,
+    Any,
+    Listen,
+};
+
 class Session
 {
 public:
-    explicit Session(std::filesystem::path const& config_dir)
+    explicit Session(
+        std::filesystem::path const& config_dir,
+        Bind const bind = Bind::Loopback,
+        tr_socket_address const& at = {})
     {
         std::filesystem::create_directories(config_dir / "Downloads");
         auto settings = tr::Settings{};
         settings.insert_or_assign(TR_KEY_download_dir, (config_dir / "Downloads").string());
-        settings.insert_or_assign(TR_KEY_bind_address_ipv4, "127.0.0.1"sv);
-        settings.insert_or_assign(TR_KEY_bind_address_ipv6, "::1"sv);
-        settings.insert_or_assign(TR_KEY_peer_port_random_on_start, true);
+        auto ipv4 = bind == Bind::Loopback ? "127.0.0.1"s : "0.0.0.0"s;
+        auto ipv6 = bind == Bind::Loopback ? "::1"s : "::"s;
+        if (bind == Bind::Listen) {
+            (at.address().is_ipv4() ? ipv4 : ipv6) = at.address().display_name();
+            settings.insert_or_assign(TR_KEY_peer_port, at.port().host());
+        }
+        settings.insert_or_assign(TR_KEY_bind_address_ipv4, ipv4);
+        settings.insert_or_assign(TR_KEY_bind_address_ipv6, ipv6);
+        settings.insert_or_assign(TR_KEY_peer_port_random_on_start, bind != Bind::Listen);
         settings.insert_or_assign(TR_KEY_port_forwarding_enabled, false);
         settings.insert_or_assign(TR_KEY_dht_enabled, false);
         settings.insert_or_assign(TR_KEY_lpd_enabled, false);
-        settings.insert_or_assign(TR_KEY_tcp_enabled, true);
+        // With --listen, the benchmark's own TCP listener takes the session's peer port.
+        settings.insert_or_assign(TR_KEY_tcp_enabled, bind != Bind::Listen);
         settings.insert_or_assign(TR_KEY_utp_enabled, true);
         settings.insert_or_assign(TR_KEY_message_level, TR_LOG_ERROR);
         settings.insert_or_assign(TR_KEY_ip_endpoints_ipv4, tr_variant::Vector{});
@@ -360,6 +408,31 @@ private:
 #else
     return static_cast<double>(std::clock()) / CLOCKS_PER_SEC;
 #endif
+}
+
+// Tear down on each session's thread, where its callbacks run.
+void stopSender(tr_session* const session, Transfer& transfer)
+{
+    runBlocking(session, [&] {
+        transfer.refill_timer.reset();
+        if (transfer.sender) {
+            transfer.sender->clear_callbacks();
+            transfer.sender.reset();
+        }
+    });
+}
+
+void stopReceiver(tr_session* const session, Transfer& transfer)
+{
+    runBlocking(session, [&] {
+        if (transfer.receiver) {
+            transfer.receiver->clear_callbacks();
+            transfer.receiver.reset();
+        }
+#ifdef WITH_UTP
+        utp_transfer = nullptr;
+#endif
+    });
 }
 
 // Waits for the transfer to finish, or for --seconds to pass, printing samples on the way.
@@ -432,7 +505,7 @@ private:
 
     auto listener = std::optional<Listener>{};
     if (transport == "tcp"sv) {
-        listener.emplace();
+        listener.emplace(tr_socket_address{ *tr_address::from_string("127.0.0.1"sv), tr_port{} });
         runBlocking(sender.get(), [&] {
             auto* const session = sender.get();
             if (auto io = tr_peerIo::new_outgoing(
@@ -488,23 +561,8 @@ private:
     }
     auto const cpu_seconds = processCpuSeconds() - cpu_started;
 
-    // Tear down on each session's thread, where its callbacks run.
-    runBlocking(sender.get(), [&] {
-        transfer.refill_timer.reset();
-        if (transfer.sender) {
-            transfer.sender->clear_callbacks();
-            transfer.sender.reset();
-        }
-    });
-    runBlocking(receiver.get(), [&] {
-        if (transfer.receiver) {
-            transfer.receiver->clear_callbacks();
-            transfer.receiver.reset();
-        }
-#ifdef WITH_UTP
-        utp_transfer = nullptr;
-#endif
-    });
+    stopSender(sender.get(), transfer);
+    stopReceiver(receiver.get(), transfer);
 
     if (std::empty(error) && !transfer.first_byte_at) {
         error = "received nothing";
@@ -524,6 +582,122 @@ private:
         .connect_seconds = seconds(started, *transfer.first_byte_at),
         .transfer_seconds = seconds(*transfer.first_byte_at, transfer.ended ? transfer.ended->second : transfer.last_byte_at),
         .cpu_seconds = cpu_seconds,
+    };
+}
+
+// How long --listen waits for each connection. The first one waits for the other host to start.
+auto constexpr AcceptWait = 600s;
+// --connect waits this long before each connection, so the --listen side is ready for it.
+auto constexpr ConnectDelay = 1s;
+
+// --listen: receives one connection's bytes from a --connect on another host.
+[[nodiscard]] std::optional<Result> measureReceive(
+    Session const& receiver,
+    Listener const* const listener,
+    std::string_view const transport,
+    Options const& options)
+{
+    auto transfer = Transfer{};
+    transfer.total_bytes = options.size_mib * 1024U * 1024U;
+    auto done = transfer.done.get_future();
+    auto* const session = receiver.get();
+
+#ifdef WITH_UTP
+    if (transport == "utp"sv) {
+        runBlocking(session, [&] {
+            utp_transfer = &transfer;
+            utp_set_callback(session->utp_context, UTP_ON_ACCEPT, onUtpAccept);
+        });
+    }
+#endif
+
+    auto const accept_deadline = Clock::now() + AcceptWait;
+    while (!transfer.connected && Clock::now() < accept_deadline) {
+        if (transport == "tcp"sv) {
+            runBlocking(session, [&] {
+                if (auto incoming = tr_netAccept(session, listener->sock()); incoming) {
+                    auto& [socket_address, sock] = *incoming;
+                    startReceiver(session, transfer, tr_peer_socket_tcp::create(*session, socket_address, sock));
+                }
+            });
+        }
+        std::this_thread::sleep_for(1ms);
+    }
+
+    auto error = std::string{};
+    if (!transfer.connected) {
+        error = fmt::format("nothing connected within {} s", AcceptWait.count());
+    } else {
+        error = wait(transfer, done, transport, Clock::now(), options);
+    }
+    stopReceiver(session, transfer);
+
+    if (std::empty(error) && !transfer.first_byte_at) {
+        error = "received nothing";
+    }
+    if (!std::empty(error)) {
+        fmt::print(stderr, "{}: {}\n", transport, error);
+        return {};
+    }
+
+    return Result{
+        .transport = transport,
+        .bytes = transfer.bytes_received.load(),
+        .connect_seconds = 0.0, // the --connect side measures it
+        .transfer_seconds = std::chrono::duration<double>{ transfer.last_byte_at - *transfer.first_byte_at }.count(),
+        .cpu_seconds = processCpuSeconds() - *transfer.cpu_at_first_byte,
+    };
+}
+
+// --connect: sends one connection's bytes to a --listen on another host, until it closes the connection.
+[[nodiscard]] std::optional<Result> measureSend(
+    Session const& sender,
+    tr_socket_address const& peer,
+    std::string_view const transport,
+    Options options)
+{
+    options.sample_interval = {}; // the receiving side samples
+    auto transfer = Transfer{};
+    transfer.total_bytes = options.size_mib * 1024U * 1024U;
+    transfer.remote_receiver = true;
+    auto done = transfer.done.get_future();
+    auto* const session = sender.get();
+
+    std::this_thread::sleep_for(ConnectDelay);
+    auto const started = Clock::now();
+    runBlocking(session, [&] {
+        auto io = transport == "tcp"sv ?
+            tr_peerIo::new_outgoing(session, &session->top_bandwidth_, peer, InfoHash, false /*seed*/, false /*utp*/) :
+            tr_peerIo::new_outgoing_utp(session, &session->top_bandwidth_, peer, InfoHash, false /*seed*/);
+        if (io) {
+            startSender(session, transfer, std::move(io));
+        }
+    });
+
+    auto error = std::string{};
+    if (!transfer.sender) {
+        error = "couldn't open the outgoing connection";
+    } else {
+        error = wait(transfer, done, transport, started, options);
+    }
+    auto const ended = Clock::now();
+    auto const cpu_ended = processCpuSeconds();
+    stopSender(session, transfer);
+
+    if (std::empty(error) && !transfer.first_byte_at) {
+        error = "sent nothing";
+    }
+    if (!std::empty(error)) {
+        fmt::print(stderr, "{}: {}\n", transport, error);
+        return {};
+    }
+
+    return Result{
+        .transport = transport,
+        .bytes = transfer.total_bytes,
+        .connect_seconds = std::chrono::duration<double>{ *transfer.first_byte_at - started }.count(),
+        .transfer_seconds = std::chrono::duration<double>{ ended - *transfer.first_byte_at }.count(),
+        .cpu_seconds = cpu_ended - *transfer.cpu_at_first_byte,
     };
 }
 
@@ -554,14 +728,27 @@ private:
             options.repeat = repeat;
         } else if (arg == "--timeout"sv && parse_number(value, seconds)) {
             options.timeout = std::chrono::seconds{ seconds };
+        } else if (auto at = tr_socket_address::from_string(value); arg == "--listen"sv && at) {
+            options.listen = at;
+        } else if (arg == "--connect"sv && at) {
+            options.connect = at;
         } else {
             fmt::print(
                 stderr,
                 "usage: {} [--transport tcp|utp|both] [--size-mib N] [--seconds N] [--sample-ms N] [--repeat N] "
-                "[--timeout SECONDS]\n",
+                "[--timeout SECONDS] [--listen ADDRESS:PORT | --connect ADDRESS:PORT]\n",
                 argv[0]);
             return {};
         }
+    }
+
+    if (options.listen && options.connect) {
+        fmt::print(stderr, "--listen and --connect are the two ends: give each process one\n");
+        return {};
+    }
+    if ((options.listen || options.connect) && options.duration) {
+        fmt::print(stderr, "--seconds needs both ends in one process\n");
+        return {};
     }
 
     return options;
@@ -583,7 +770,43 @@ int run(int argc, char** argv)
 
     auto results = std::vector<Result>{};
     auto failed = false;
-    {
+    if (options->listen) {
+        auto const receiver = Session{ root / "receiver", Bind::Listen, *options->listen };
+        auto listener = std::optional<Listener>{};
+        if (std::ranges::find(options->transports, "tcp"sv) != std::end(options->transports)) {
+            listener.emplace(*options->listen);
+        }
+#ifdef WITH_UTP
+        useThreadSafeUtpClock(receiver.get());
+#endif
+        fmt::print("listening on {}\n", options->listen->display_name());
+        (void)std::fflush(stdout);
+        for (int round = 0; round < options->repeat && !failed; ++round) {
+            for (auto const transport : options->transports) {
+                if (auto result = measureReceive(receiver, listener ? &*listener : nullptr, transport, *options)) {
+                    results.emplace_back(*result);
+                } else {
+                    failed = true;
+                    break;
+                }
+            }
+        }
+    } else if (options->connect) {
+        auto const sender = Session{ root / "sender", Bind::Any };
+#ifdef WITH_UTP
+        useThreadSafeUtpClock(sender.get());
+#endif
+        for (int round = 0; round < options->repeat && !failed; ++round) {
+            for (auto const transport : options->transports) {
+                if (auto result = measureSend(sender, *options->connect, transport, *options)) {
+                    results.emplace_back(*result);
+                } else {
+                    failed = true;
+                    break;
+                }
+            }
+        }
+    } else {
         auto const sender = Session{ root / "sender" };
         auto const receiver = Session{ root / "receiver" };
 #ifdef WITH_UTP
@@ -606,7 +829,11 @@ int run(int argc, char** argv)
     std::filesystem::remove_all(root);
 
     // Throughput counts from the first byte received, so the connect time is excluded.
-    // CPU is the whole process: both sessions' threads.
+    // CPU is the whole process: both sessions' threads, or with --listen or --connect, this end's
+    // from its first byte.
+    if (options->listen || options->connect) {
+        fmt::print("# {} side\n", options->listen ? "receiving" : "sending");
+    }
     fmt::print("transport  size_mib  connect_s  transfer_s    MiB/s  Gbit/s   cpu_s  cpu_s/GiB\n");
     for (auto const& [transport, bytes, connect_seconds, transfer_seconds, cpu_seconds] : results) {
         auto const mib = static_cast<double>(bytes) / (1024.0 * 1024.0);
