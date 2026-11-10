@@ -5,6 +5,8 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <span>
+#include <unordered_map>
 
 #include <fmt/format.h> // fmt::ptr
 
@@ -20,8 +22,52 @@
 #include "libtransmission/session.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-utp.h"
+#include "libtransmission/utils.h" // tr_time()
 
 using namespace std::literals;
+
+bool tr_utp_flow_filter::allow(tr_socket_address const& to, std::span<uint8_t const> const packet, time_t const now)
+{
+    // a µTP header holds the receiver's connection ID in bytes 2-3, big-endian
+    if (std::size(packet) < 4U) {
+        return true;
+    }
+    auto const flow = Flow{ to, static_cast<uint16_t>((packet[2] << 8U) | packet[3]) };
+
+    if (!std::empty(silenced_)) {
+        if (auto const iter = silenced_.find(flow); iter != std::end(silenced_) && now < iter->second) {
+            return false;
+        }
+    }
+
+    if (last_.first != flow || last_.second != now) {
+        last_ = { flow, now };
+        seen_.insert_or_assign(flow, now);
+    }
+
+    if (now >= next_prune_) {
+        prune(now);
+    }
+    return true;
+}
+
+void tr_utp_flow_filter::silence(time_t const now)
+{
+    for (auto const& [flow, last_send] : seen_) {
+        if (now - last_send < Linger) {
+            silenced_.insert_or_assign(flow, now + Linger);
+        }
+    }
+    seen_.clear();
+    last_ = {};
+}
+
+void tr_utp_flow_filter::prune(time_t const now)
+{
+    std::erase_if(seen_, [now](auto const& entry) { return now - entry.second >= Linger; });
+    std::erase_if(silenced_, [now](auto const& entry) { return now >= entry.second; });
+    next_prune_ = now + 60;
+}
 
 #ifndef WITH_UTP
 
@@ -40,6 +86,10 @@ bool tr_utp_packet(
 }
 
 void tr_utp_issue_deferred_acks(tr_session* /*ss*/)
+{
+}
+
+void tr_utp_silence_flows(tr_session* /*session*/)
 {
 }
 
@@ -76,12 +126,17 @@ void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
 }
 
 void utp_send_to(
-    tr_session const* const ss,
+    tr_session* const ss,
     uint8_t const* const buf,
     size_t const buflen,
     struct sockaddr const* const to,
     socklen_t const tolen)
 {
+    if (auto const addr = tr_socket_address::from_sockaddr(to);
+        addr && !ss->utp_flow_filter.allow(*addr, std::span{ buf, buflen }, tr_time())) {
+        return;
+    }
+
     ss->udp_core_->sendto(buf, buflen, to, tolen);
 }
 
@@ -189,6 +244,11 @@ bool tr_utp_packet(unsigned char const* buf, size_t buflen, struct sockaddr cons
 void tr_utp_issue_deferred_acks(tr_session* ss)
 {
     utp_issue_deferred_acks(ss->utp_context);
+}
+
+void tr_utp_silence_flows(tr_session* session)
+{
+    session->utp_flow_filter.silence(tr_time());
 }
 
 void tr_utp_close(tr_session* session)

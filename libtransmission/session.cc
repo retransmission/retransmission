@@ -874,6 +874,8 @@ std::vector<tr_torrent*> tr_session::stop_torrents_for_rebind()
         announcer_->rebind();
     }
     web_->cancel_all();
+    // the stopped peers' µTP connections, which libutp closes in its own time
+    tr_utp_silence_flows(this);
 
     return restarting;
 }

@@ -62,6 +62,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
+#include "libtransmission/tr-utp.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"
 #include "libtransmission/verify.h"
@@ -1544,6 +1545,9 @@ private:
 public:
     // depends-on: udp_core_
     struct struct_utp_context* utp_context = nullptr;
+    // the µTP connections a hard move silences; session thread only
+    tr_utp_flow_filter utp_flow_filter;
+
 
 private:
     // depends-on: open_files_
