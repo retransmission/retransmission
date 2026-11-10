@@ -1772,37 +1772,73 @@ std::string tr_sessionGetBindInterface(tr_session const* session)
     return session->bind_interface();
 }
 
+void tr_session::queue_binding_change(BindingChange change)
+{
+    auto const lock = unique_lock();
+    if (change.bind_interface) {
+        pending_binding_.bind_interface = std::move(change.bind_interface);
+    }
+    if (change.bind_address_ipv4) {
+        pending_binding_.bind_address_ipv4 = std::move(change.bind_address_ipv4);
+    }
+    if (change.bind_address_ipv6) {
+        pending_binding_.bind_address_ipv6 = std::move(change.bind_address_ipv6);
+    }
+    if (std::exchange(pending_binding_queued_, true)) {
+        return;
+    }
+
+    // queued even on the session thread, so the rest of a session_set joins in
+    queue_session_thread([this] { apply_pending_binding(); });
+}
+
+void tr_session::apply_pending_binding()
+{
+    // Off the session thread, e.g. a session_set from an embedded client's,
+    // the queued task applies it, as other session_set keys are applied: the
+    // caller may hold the session lock, which waiting for that thread would deadlock.
+    if (!am_in_session_thread()) {
+        return;
+    }
+
+    auto const lock = unique_lock();
+    if (!std::exchange(pending_binding_queued_, false)) {
+        return;
+    }
+    auto pending = std::exchange(pending_binding_, {});
+
+    auto settings = settings_;
+    if (pending.bind_interface) {
+        settings.bind_interface = std::move(*pending.bind_interface);
+    }
+    if (pending.bind_address_ipv4) {
+        settings.bind_address_ipv4 = std::move(*pending.bind_address_ipv4);
+    }
+    if (pending.bind_address_ipv6) {
+        settings.bind_address_ipv6 = std::move(*pending.bind_address_ipv6);
+    }
+    setSettings(std::move(settings), false);
+}
+
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface)
 {
     TR_ASSERT(session != nullptr);
-
-    session->run_in_session_thread([session, bind_interface = std::string{ tr_strv_strip(bind_interface) }] {
-        auto settings = session->settings_;
-        settings.bind_interface = bind_interface;
-        session->setSettings(std::move(settings), false);
-    });
+    session->queue_binding_change(
+        { .bind_interface = std::string{ tr_strv_strip(bind_interface) }, .bind_address_ipv4 = {}, .bind_address_ipv6 = {} });
 }
 
 void tr_sessionSetBindAddressIPv4(tr_session* session, std::string_view address)
 {
     TR_ASSERT(session != nullptr);
-
-    session->run_in_session_thread([session, address = std::string{ tr_strv_strip(address) }] {
-        auto settings = session->settings_;
-        settings.bind_address_ipv4 = address;
-        session->setSettings(std::move(settings), false);
-    });
+    session->queue_binding_change(
+        { .bind_interface = {}, .bind_address_ipv4 = std::string{ tr_strv_strip(address) }, .bind_address_ipv6 = {} });
 }
 
 void tr_sessionSetBindAddressIPv6(tr_session* session, std::string_view address)
 {
     TR_ASSERT(session != nullptr);
-
-    session->run_in_session_thread([session, address = std::string{ tr_strv_strip(address) }] {
-        auto settings = session->settings_;
-        settings.bind_address_ipv6 = address;
-        session->setSettings(std::move(settings), false);
-    });
+    session->queue_binding_change(
+        { .bind_interface = {}, .bind_address_ipv4 = {}, .bind_address_ipv6 = std::string{ tr_strv_strip(address) } });
 }
 
 // ---

@@ -718,6 +718,23 @@ TEST_F(SessionTest, bindInterfaceWhitespaceIsNoChange)
     tr_logSetLevel(old_level);
 }
 
+// A session_set naming the interface and a bind address applies them in one
+// settings change, so the session never pairs the new one with the old other.
+TEST_F(SessionTest, bindingChangesFromOneTaskApplyTogether)
+{
+    auto const interface_seen = std::make_shared<std::string>();
+    blockingRunInSessionThread([this, interface_seen] {
+        tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+        tr_sessionSetBindAddressIPv4(session_, "127.0.0.1"sv);
+        // neither has taken effect yet: both wait for the task to end
+        *interface_seen = session_->bind_interface();
+    });
+    EXPECT_EQ(""sv, *interface_seen);
+
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+    EXPECT_EQ("127.0.0.1"sv, blockingRunInSessionThread([this] { return session_->settings().bind_address_ipv4; }));
+}
+
 // A new UDP core binds the port the old one held, which is refused while both are open.
 TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
 {

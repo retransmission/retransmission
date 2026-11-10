@@ -779,14 +779,21 @@ TEST_F(RpcTest, sessionBindInterface)
     request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_set));
     request_map.try_emplace(TR_KEY_id, 12345);
 
-    auto params = tr_variant::Map{ 1U };
+    auto params = tr_variant::Map{ 2U };
     params.try_emplace(TR_KEY_bind_interface, "lo0"sv);
+    params.try_emplace(TR_KEY_bind_address_ipv4, "127.0.0.1"sv);
     request_map.try_emplace(TR_KEY_params, std::move(params));
 
+    // Run on the session thread, as for a remote client, the binding is in
+    // effect, both keys at once, by the time the reply comes
     auto response = tr_variant{};
     auto request = tr_variant{ std::move(request_map) };
-    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
-    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == "lo0"sv; }, 5s));
+    auto const [bind_interface_at_reply, bind_address_at_reply] = blockingRunInSessionThread([&] {
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+        return std::pair{ session_->bind_interface(), session_->settings().bind_address_ipv4 };
+    });
+    EXPECT_EQ("lo0"sv, bind_interface_at_reply);
+    EXPECT_EQ("127.0.0.1"sv, bind_address_at_reply);
 
     auto* const response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);

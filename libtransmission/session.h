@@ -719,6 +719,18 @@ public:
 
     // peer networking
 
+    // Changes to the network binding from any thread, applied together in one
+    // setSettings() queued on the session thread: a session_set naming the
+    // interface and the bind addresses then moves the sockets once, not per key.
+    struct BindingChange {
+        std::optional<std::string> bind_interface;
+        std::optional<std::string> bind_address_ipv4;
+        std::optional<std::string> bind_address_ipv6;
+    };
+    void queue_binding_change(BindingChange change);
+    // applies a queued binding change now when on the session thread
+    void apply_pending_binding();
+
     // session thread, or under unique_lock()
     [[nodiscard]] constexpr auto const& bind_interface() const noexcept
     {
@@ -1496,6 +1508,10 @@ private:
     // on_now_timer() rebinds when the live index no longer matches.
     unsigned bound_interface_index_ = 0U;
 
+    // see queue_binding_change(); under the session lock
+    BindingChange pending_binding_;
+    bool pending_binding_queued_ = false;
+
     tr_stats session_stats_{ config_dir_, time(nullptr), mayWriteConfigDir() };
 
     time_t torrents_loaded_time_ = 0;
@@ -1547,7 +1563,6 @@ public:
     struct struct_utp_context* utp_context = nullptr;
     // the µTP connections a hard move silences; session thread only
     tr_utp_flow_filter utp_flow_filter;
-
 
 private:
     // depends-on: open_files_

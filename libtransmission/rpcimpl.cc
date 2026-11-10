@@ -2618,6 +2618,9 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         }
     }
 
+    // the binding keys' setters only recorded their values: apply them now, so the
+    // reply and whoever hears of the change see the new binding
+    session->apply_pending_binding();
     session->rpcNotify(TR_RPC_SESSION_CHANGED);
     return err;
 }
