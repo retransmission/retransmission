@@ -2462,6 +2462,15 @@ bool tr_torrent::on_block_received(tr_block_index_t const block)
         return false;
     }
 
+    // A move, rename, or removal holds back every write enqueued behind it.
+    // This block's write would hold write budget that other torrents need
+    // for as long as the op takes, so drop the block. No new block is
+    // requested meanwhile, but ones requested earlier still arrive.
+    if (session->local_data.admin_op_pending(id())) {
+        bytes_downloaded_.reduce(block_size(block));
+        return false;
+    }
+
     if (has_block_or_pending(block)) {
         tr_logAddDebugTor(this, "we have this block already...");
         bytes_downloaded_.reduce(block_size(block));
