@@ -117,6 +117,10 @@ struct EasyDeleter {
 using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 
 struct MultiPoolNode {
+    // TLS sessions and cookies stay with their binding, so a tracker can't link the
+    // addresses of two bindings; the multis of one binding share it. Declared
+    // first: its easy handles must go before it.
+    std::shared_ptr<CURLSH> share;
     multi_unique_ptr multi;
     tr_web::BindAddresses bind_addresses;
     std::optional<std::string> bind_interface;
@@ -213,8 +217,6 @@ public:
         if (auto bundle = tr_env_get_string("CURL_CA_BUNDLE"); !std::empty(bundle)) {
             curl_ca_bundle = std::move(bundle);
         }
-
-        share_setopt();
 
         if (curl_ssl_verify) {
             auto const* bundle = std::empty(curl_ca_bundle) ? "none" : curl_ca_bundle.c_str();
@@ -711,7 +713,8 @@ public:
         // and bound the address of the socket's family.
         // Separate multi handles isolate the connection caches for different bindings.
 
-        (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
+        // the share of the multi that the task is about to join
+        (void)curl_easy_setopt(e, CURLOPT_SHARE, multi_pool_.back().share.get());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
@@ -929,8 +932,12 @@ public:
 
     [[nodiscard]] bool push_multi(Task const& task)
     {
+        // A new multi for the same binding, after a network change, keeps its share:
+        // the cookies and TLS sessions belong to the binding, not to the connections.
+        auto share = !std::empty(multi_pool_) && current_multi_fits(task) ? multi_pool_.back().share :
+                                                                            std::shared_ptr<CURLSH>{ make_share() };
         auto multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
-        if (!multi) {
+        if (!share || !multi) {
             return false;
         }
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
@@ -938,7 +945,7 @@ public:
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
 
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        multi_pool_.emplace_back(std::move(multi), task.bind_addresses, task.bind_interface);
+        multi_pool_.emplace_back(std::move(share), std::move(multi), task.bind_addresses, task.bind_interface);
         return true;
     }
 
@@ -983,8 +990,8 @@ public:
 
                 // add queued tasks
                 for (auto& task : queued_tasks_) {
-                    if (!initEasy(task) ||
-                        ((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task))) {
+                    if (((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task)) ||
+                        !initEasy(task)) {
                         task.set_error(CURLE_OUT_OF_MEMORY);
                         failed_tasks.push_back(&task);
                         continue;
@@ -1092,8 +1099,6 @@ public:
         }
     }
 
-    curl_helpers::shared_unique_ptr const curlsh_{ curl_share_init() };
-
     small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
     bool network_changed_ = false;
 
@@ -1107,23 +1112,19 @@ public:
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
 
-    [[nodiscard]] CURLSH* shared()
-    {
-        return curlsh_.get();
-    }
-
-    void share_setopt()
+    [[nodiscard]] static curl_helpers::shared_unique_ptr make_share()
     {
         // Do *not* share HSTS cache
         // https://github.com/transmission/transmission/issues/5199
 
-        // Each multi owns its connection cache to isolate different bind-address pairs.
-
-        auto* const sh = shared();
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
+        auto share = curl_helpers::shared_unique_ptr{ curl_share_init() };
+        if (auto* const sh = share.get(); sh != nullptr) {
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
+        }
+        return share;
     }
 
     std::map<CURL*, uint64_t /*tr_time_msec()*/> paused_easy_handles;

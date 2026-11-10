@@ -118,8 +118,14 @@ public:
         return bind_interface_;
     }
 
+    [[nodiscard]] std::optional<std::string> cookieFile() const override
+    {
+        return cookie_file_;
+    }
+
     std::optional<std::string> user_agent_;
     std::optional<std::string> bind_interface_;
+    std::optional<std::string> cookie_file_; // read when a tr_web is created
 
 private:
     mutable std::mutex mutex_;
@@ -751,6 +757,26 @@ TEST_F(WebTest, connectionsNotReusedAcrossBindInterfaces)
     auto const failure = fetch(options());
     EXPECT_EQ(0, failure.status);
     EXPECT_FALSE(failure.did_connect);
+}
+
+TEST_F(WebTest, cookiesNotSharedAcrossBindings)
+{
+    // every reply sets a cookie, which curl sends back on requests that share it
+    server4_->setHandler([](evhttp_request* req) {
+        static auto const SetCookie = std::array{ std::pair{ "Set-Cookie"s, "id=1; Path=/"s } };
+        LoopbackServer::reply(req, HTTP_OK, "OK", ""sv, SetCookie);
+    });
+    mediator_.cookie_file_ = fmt::format("{}/cookies.txt", sandboxDir());
+    auto const web = tr_web::create(mediator_);
+
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_TRUE(server4_->lastRequest().headers.contains("cookie"));
+
+    mediator_.setBindAddress(TR_AF_INET, {});
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_FALSE(server4_->lastRequest().headers.contains("cookie"));
 }
 
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
