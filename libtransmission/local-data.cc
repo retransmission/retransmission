@@ -3,7 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm> // std::ranges::shuffle
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cerrno>
@@ -758,15 +758,6 @@ public:
         retained_.set_capacity(max_bytes);
     }
 
-    void hold_copy_lane(bool const held)
-    {
-        {
-            auto const lock = std::scoped_lock{ work_mutex_ };
-            long_lane_.held = held;
-        }
-        admin_cv_.notify_all();
-    }
-
     // One thread does the next thing it would do. A worker takes a turn,
     // or runs the turn it took earlier. A lane runs its next job. The
     // thread is picked at random from those of `which` that have
@@ -797,11 +788,11 @@ public:
                 }
             }
 
-            if ((which == Any || which == LongLane) && !std::empty(long_lane_.jobs) && !long_lane_.held) {
+            if ((which == Any || which == LongLane) && !std::empty(long_lane_)) {
                 ready.emplace_back(n_workers);
             }
 
-            if ((which == Any || which == ShortLane) && !std::empty(short_lane_.jobs)) {
+            if ((which == Any || which == ShortLane) && !std::empty(short_lane_)) {
                 ready.emplace_back(n_workers + 1U);
             }
         }
@@ -831,6 +822,34 @@ public:
     }
 
 private:
+    // A completion waiting to be delivered.
+    // A read completion owns the buffer it read into and can't be copied,
+    // so std::function can't hold one.
+    class Parked
+    {
+    public:
+        virtual ~Parked() = default;
+        virtual void deliver() = 0;
+    };
+
+    template<typename Fn>
+    class ParkedFn final : public Parked
+    {
+    public:
+        explicit ParkedFn(Fn fn)
+            : fn_{ std::move(fn) }
+        {
+        }
+
+        void deliver() override
+        {
+            fn_();
+        }
+
+    private:
+        Fn fn_;
+    };
+
     struct ReadOp {
         tr_byte_span_t span;
         OnRead on_read;
@@ -864,11 +883,7 @@ private:
     };
 
     // Admin disk work, one job at a time per lane.
-    struct AdminLane {
-        std::deque<std::function<void()>> jobs;
-        // A held lane starts no job. See detail::hold_copy_lane().
-        bool held = false;
-    };
+    using AdminLane = std::deque<std::function<void()>>;
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
 
@@ -1464,13 +1479,13 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
-                if (std::empty(lane.jobs)) {
+                admin_cv_.wait(lock, [this, &lane] { return !paused_ && (!std::empty(lane) || stopping_); });
+                if (std::empty(lane)) {
                     return;
                 }
 
-                job = std::move(lane.jobs.front());
-                lane.jobs.pop_front();
+                job = std::move(lane.front());
+                lane.pop_front();
             }
 
             job();
@@ -1481,7 +1496,7 @@ private:
     {
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            lane.jobs.emplace_back(std::move(job));
+            lane.emplace_back(std::move(job));
         }
         admin_cv_.notify_all();
         schedule_pump();
@@ -1492,8 +1507,8 @@ private:
         auto job = std::function<void()>{};
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            job = std::move(lane.jobs.front());
-            lane.jobs.pop_front();
+            job = std::move(lane.front());
+            lane.pop_front();
         }
 
         job();
@@ -1669,7 +1684,6 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
-            long_lane_.held = false;
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
@@ -1939,7 +1953,6 @@ LocalData::~LocalData() = default;
 void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider)
 {
     TR_ASSERT(!threaded_);
-    TR_ASSERT(completions_ == Completions::Inline); // see set_completions()
 
     if (worker_count == 0U) {
         return;
@@ -1962,15 +1975,13 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     }
 
     auto data = std::make_unique<BlockData>();
-    auto error = backend_->read(id, byte_span, *data);
+    auto const error = backend_->read(id, byte_span, *data);
     if (error) {
         data = nullptr;
     }
 
     if (on_read) {
-        finish([id, byte_span, error = std::move(error), data = std::move(data), on_read = std::move(on_read)] mutable {
-            std::move(on_read)(id, byte_span, error, std::move(data));
-        });
+        std::move(on_read)(id, byte_span, error, std::move(data));
     }
 }
 
@@ -1982,12 +1993,10 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     }
 
     auto hash = tr_sha1_digest_t{};
-    auto error = backend_->test_piece(id, piece, hash);
+    auto const error = backend_->test_piece(id, piece, hash);
 
     if (on_test) {
-        finish([id, piece, error = std::move(error), hash, on_test = std::move(on_test)] mutable {
-            std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
-        });
+        std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
     }
 }
 
@@ -2002,12 +2011,10 @@ void LocalData::write(
         return;
     }
 
-    auto error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
+    auto const error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
 
     if (on_write) {
-        finish([id, byte_span, error = std::move(error), on_write = std::move(on_write)] mutable {
-            std::move(on_write)(id, byte_span, error);
-        });
+        std::move(on_write)(id, byte_span, error);
     }
 }
 
@@ -2022,7 +2029,6 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
         return;
     }
 
-    drain();
     body();
 }
 
@@ -2066,7 +2072,6 @@ void LocalData::close_all()
         threaded_->drain_all();
     }
 
-    drain();
     backend_->close_all();
 }
 
@@ -2080,8 +2085,6 @@ void LocalData::move(
         threaded_->move(id, std::move(parent), std::move(on_move), std::move(on_placed));
         return;
     }
-
-    drain();
 
     auto const target = parent();
     auto const placed = [&on_placed, id, &target] {
@@ -2105,8 +2108,6 @@ void LocalData::remove(
         return;
     }
 
-    drain();
-
     auto const error = backend_->remove(id, std::move(remove_func));
     if (on_remove) {
         on_remove(id, error);
@@ -2125,8 +2126,6 @@ void LocalData::rename(
         return;
     }
 
-    drain();
-
     auto error = check();
     if (!error) {
         error = backend_->rename(id, oldpath, newname);
@@ -2140,8 +2139,6 @@ void LocalData::shutdown()
         threaded_->shutdown();
         threaded_.reset();
     }
-
-    drain();
 }
 
 bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
@@ -2189,13 +2186,6 @@ void LocalData::set_workers_paused(bool const paused)
     }
 }
 
-void detail::hold_copy_lane(LocalData& local_data, bool const held)
-{
-    if (local_data.threaded_) {
-        local_data.threaded_->hold_copy_lane(held);
-    }
-}
-
 void detail::start_threadless(
     LocalData& local_data,
     size_t const worker_count,
@@ -2205,7 +2195,6 @@ void detail::start_threadless(
     std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider)
 {
     TR_ASSERT(!local_data.threaded_);
-    TR_ASSERT(local_data.completions_ == LocalData::Completions::Inline);
     TR_ASSERT(worker_count != 0U);
 
     local_data.threaded_ = std::make_shared<LocalData::Threaded>(
@@ -2227,66 +2216,6 @@ void detail::deliver(LocalData& local_data)
 {
     if (auto const& threaded = local_data.threaded_; threaded) {
         threaded->deliver();
-    }
-}
-
-void LocalData::set_wake(std::function<void()> wake)
-{
-    wake_ = std::move(wake);
-}
-
-void LocalData::set_completions(Completions const completions, uint32_t const seed)
-{
-    // Parking wraps only the synchronous backend, so the test modes and
-    // the threaded backend are mutually exclusive.
-    TR_ASSERT(!threaded_ || completions == Completions::Inline);
-
-    drain();
-    completions_ = completions;
-    rng_.seed(seed);
-}
-
-bool LocalData::defer_next() noexcept
-{
-    switch (completions_) {
-    case Completions::Deferred:
-        return true;
-
-    case Completions::Shuffled:
-        return (rng_() & 1U) != 0U;
-
-    default:
-        return false;
-    }
-}
-
-void LocalData::park(std::unique_ptr<Parked> completion)
-{
-    auto const was_idle = std::empty(parked_);
-    parked_.emplace_back(std::move(completion));
-    if (was_idle && wake_) {
-        wake_();
-    }
-}
-
-void LocalData::pump()
-{
-    // Take the whole queue up front. A completion can park more work,
-    // and that work belongs to the next pump, not this one.
-    auto parked = std::vector<std::unique_ptr<Parked>>{};
-    std::swap(parked, parked_);
-
-    std::ranges::shuffle(parked, rng_);
-
-    for (auto const& completion : parked) {
-        completion->deliver();
-    }
-}
-
-void LocalData::drain()
-{
-    while (!std::empty(parked_)) {
-        pump();
     }
 }
 
