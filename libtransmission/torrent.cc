@@ -689,13 +689,15 @@ bool tr_torrent::stop_for_restart()
 {
     TR_ASSERT(session->am_in_session_thread());
 
-    // a torrent with a stop pending stays stopped
-    if (!is_running() || is_stopping()) {
+    if (!is_running()) {
         return false;
     }
 
+    // A torrent with a stop pending stops now too, so its peers don't outlive the
+    // binding, and stays stopped.
+    auto const restart = !is_stopping();
     stop_now();
-    return true;
+    return restart;
 }
 
 void tr_torrent::start_after_restart()

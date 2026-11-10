@@ -188,6 +188,11 @@ private:
             return session_.config_dir_;
         }
 
+        [[nodiscard]] std::string bind_interface() const override
+        {
+            return std::string{ tr_net_effective_bind_interface(session_.settings_.bind_interface) };
+        }
+
         [[nodiscard]] bool may_write_config_dir() const override
         {
             return session_.mayWriteConfigDir();
@@ -1304,9 +1309,9 @@ private:
         Settings const& old_settings);
 
     // Call around apply_network_bindings() when the interface changes. The
-    // first stops every running torrent and flushes the queued "stopped"
-    // announces (see tr_announcer::flushStops()) while the current binding is
-    // in place; the second starts those torrents again on the new one.
+    // first stops every running torrent and ends all tracker and web traffic of
+    // the current binding without a goodbye (see tr_announcer::rebind()), and
+    // gives each torrent a new identity; the second starts those torrents again.
     [[nodiscard]] std::vector<tr_torrent*> stop_torrents_for_rebind();
     static void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
 

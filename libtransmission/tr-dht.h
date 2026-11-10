@@ -95,6 +95,12 @@ public:
 
         [[nodiscard]] virtual std::string_view config_dir() const = 0;
 
+        // the network interface the DHT's sockets are bound to, empty for the default route
+        [[nodiscard]] virtual std::string bind_interface() const
+        {
+            return {};
+        }
+
         // False when the config dir belongs to another session, whose dht.dat this one
         // must not overwrite. See tr_session::mayWriteConfigDir().
         [[nodiscard]] virtual bool may_write_config_dir() const = 0;

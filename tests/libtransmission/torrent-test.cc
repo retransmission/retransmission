@@ -228,7 +228,7 @@ TEST_F(TorrentTest, restartKeepsSeedRatioLimit)
     EXPECT_EQ(TR_RATIOLIMIT_SINGLE, ratio_mode);
 }
 
-TEST_F(TorrentTest, restartLeavesPendingStop)
+TEST_F(TorrentTest, restartCompletesPendingStop)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     ASSERT_NE(nullptr, tor);
@@ -236,14 +236,14 @@ TEST_F(TorrentTest, restartLeavesPendingStop)
     ASSERT_TRUE(tr::test::waitFor([tor]() { return tor->activity() == TR_STATUS_SEED; }, 5s));
 
     // RPC and the seed limits stop a torrent on the next pulse; a restart
-    // in between must not cancel that stop
-    auto const is_stopping = blockingRunInSessionThread([tor] {
+    // in between stops it at once, and must not cancel that stop
+    auto const [restart, running] = blockingRunInSessionThread([tor] {
         tor->stop_soon();
-        EXPECT_FALSE(tor->stop_for_restart());
-        return tor->is_stopping();
+        auto const restart_it = tor->stop_for_restart();
+        return std::pair{ restart_it, tor->is_running() };
     });
-    EXPECT_TRUE(is_stopping);
-    EXPECT_TRUE(tr::test::waitFor([tor]() { return !tor->is_running(); }, 5s));
+    EXPECT_FALSE(restart);
+    EXPECT_FALSE(running);
 }
 
 TEST_F(TorrentTest, setAnnounceListReportsSaveFailure)

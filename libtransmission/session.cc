@@ -568,9 +568,6 @@ void tr_session::on_now_timer()
             fmt::format("Network interface '{interface}' changed; rebinding its sockets", fmt::arg("interface", name)));
         auto const restarting = stop_torrents_for_rebind();
         apply_network_bindings(false, true, false, false, settings_);
-        // the name is unchanged, so tr_web's per-binding connection caches
-        // can't tell the interface's old instance from its new one
-        web_->network_changed();
         start_torrents_after_rebind(restarting);
     }
 
@@ -868,12 +865,15 @@ std::vector<tr_torrent*> tr_session::stop_torrents_for_rebind()
         if (tor->stop_for_restart()) {
             restarting.push_back(tor);
         }
+        tor->renew_identity();
     }
 
-    // trackers must hear "stopped" from the address that announced "started"
+    // A hard move: nothing more goes out under the old binding, not even the
+    // "stopped" that stop_for_restart() queued, and nothing links the two bindings.
     if (announcer_) {
-        announcer_->flushStops();
+        announcer_->rebind();
     }
+    web_->cancel_all();
 
     return restarting;
 }
@@ -979,7 +979,13 @@ void tr_session::apply_network_bindings(
     if (!new_settings.dht_enabled) {
         dht_.reset();
     } else if (!dht_) {
-        dht_ = tr_dht::create(dht_mediator_, advertisedPeerPort(), udp_core_->socket4(), udp_core_->socket6());
+        // like the torrents' peer IDs, a new binding gets a new node ID
+        dht_ = tr_dht::create(
+            dht_mediator_,
+            advertisedPeerPort(),
+            udp_core_->socket4(),
+            udp_core_->socket6(),
+            interface_changed && !force);
     }
 }
 

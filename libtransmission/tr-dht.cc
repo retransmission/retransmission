@@ -125,6 +125,7 @@ public:
         , udp6_socket_{ udp6_socket }
         , mediator_{ mediator }
         , state_filename_{ tr_pathbuf{ mediator_.config_dir(), "/dht.dat" } }
+        , bind_interface_{ mediator_.bind_interface() }
         , announce_timer_{ mediator_.timer_maker().create([this] { on_announce_timer(); }) }
         , bootstrap_timer_{ mediator_.timer_maker().create([this] { on_bootstrap_timer(); }) }
         , periodic_timer_{ mediator_.timer_maker().create([this] { on_periodic_timer(); }) }
@@ -410,6 +411,7 @@ private:
         auto benc = tr_variant::Map{ 4U };
         benc[TR_KEY_id] = tr_variant::make_raw(std::data(id_), std::size(id_));
         benc[TR_KEY_id_timestamp] = id_timestamp_;
+        benc[TR_KEY_bind_interface] = bind_interface_;
 
         if (num4 > 0) {
             auto compact = std::array<char, MaxNodes * CompactLen>{};
@@ -466,7 +468,10 @@ private:
             return;
         }
 
-        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp); !new_id && t_opt && *t_opt + IdTtl > id_timestamp_) {
+        // an ID saved under another binding would let nodes link the two addresses
+        auto const same_binding = top_map->value_if<std::string_view>(TR_KEY_bind_interface).value_or(""sv) == bind_interface_;
+        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp);
+            !new_id && same_binding && t_opt && *t_opt + IdTtl > id_timestamp_) {
             if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_id); sv_opt && sv_opt->size() == id_.size()) {
                 id_timestamp_ = *t_opt;
                 std::ranges::copy(*sv_opt, std::begin(id_));
@@ -565,6 +570,8 @@ private:
 
     Mediator& mediator_;
     std::string const state_filename_;
+    // the binding id_ is used on; an ID saved under another one isn't reused
+    std::string const bind_interface_;
     std::unique_ptr<tr::Timer> const announce_timer_;
     std::unique_ptr<tr::Timer> const bootstrap_timer_;
     std::unique_ptr<tr::Timer> const periodic_timer_;

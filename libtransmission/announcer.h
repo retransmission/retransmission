@@ -76,10 +76,10 @@ public:
     virtual void removeTorrent(tr_torrent* tor) = 0;
     virtual void startShutdown() = 0;
 
-    // Send now every "stopped" that is the only event left in its tier's queue,
-    // bypassing upkeep()'s per-pass limit. An HTTP stop is bound to the network
-    // binding of the moment; a UDP one, only if its tracker connection is live.
-    virtual void flushStops() = 0;
+    // Forget every tracker exchange made under the old network binding: queued
+    // events, requests in flight and their replies, and UDP connection IDs. Each
+    // tracker then sees the torrents it hears from next as new peers.
+    virtual void rebind() = 0;
 
     virtual void upkeep() = 0;
 };
@@ -162,4 +162,8 @@ public:
         socklen_t fromlen) = 0;
 
     [[nodiscard]] virtual bool is_idle() const noexcept = 0;
+
+    // Drop pending requests without answering them, and the connection IDs,
+    // which a tracker gives to one source address.
+    virtual void rebind() = 0;
 };

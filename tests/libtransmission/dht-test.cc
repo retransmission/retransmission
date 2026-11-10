@@ -348,6 +348,11 @@ protected:
             return may_write_config_dir_;
         }
 
+        [[nodiscard]] std::string bind_interface() const override
+        {
+            return bind_interface_;
+        }
+
         [[nodiscard]] tr::TimerMaker& timer_maker() override
         {
             return mock_timer_maker_;
@@ -363,6 +368,7 @@ protected:
         }
 
         std::string config_dir_;
+        std::string bind_interface_;
         bool may_write_config_dir_ = true;
         std::vector<tr_torrent_id_t> torrents_allowing_dht_;
         std::map<tr_torrent_id_t, tr_sha1_digest_t> info_hashes_;
@@ -469,6 +475,23 @@ TEST_F(DhtTest, newIdReplacesTheSavedOne)
     auto mediator = MockMediator{ event_base_ };
     mediator.config_dir_ = sandboxDir();
     auto dht = tr_dht::create(mediator, ArbitraryPeerPort, ArbitrarySock4, ArbitrarySock6, true);
+
+    EXPECT_NE(state_file.id_, mediator.mock_dht_.id_);
+}
+
+// An ID saved by a node on the default route would let other nodes link
+// that address with the interface's.
+TEST_F(DhtTest, idSavedUnderAnotherBindingIsReplaced)
+{
+    auto const state_file = MockStateFile{};
+    state_file.save(sandboxDir());
+
+    tr_timeUpdate(time(nullptr));
+
+    auto mediator = MockMediator{ event_base_ };
+    mediator.config_dir_ = sandboxDir();
+    mediator.bind_interface_ = "wg0";
+    auto dht = tr_dht::create(mediator, ArbitraryPeerPort, ArbitrarySock4, ArbitrarySock6);
 
     EXPECT_NE(state_file.id_, mediator.mock_dht_.id_);
 }

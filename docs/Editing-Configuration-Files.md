@@ -120,6 +120,8 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Retransmission will try to bind to your default global IPv6 address. If that didn't work, then Retransmission will bind to "::".
  * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (macOS and Linux), such as `utun4` or `wg0`. Empty means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Retransmission fails closed instead of falling back to the default route. Note that DNS lookups for HTTP trackers and webseeds are made by the system resolver and are not bound to the interface.
 
+   _Changing the interface is a hard move._ Nothing more goes out through the old one: trackers get no "stopped" announce from it, and every torrent continues on the new interface under a new peer ID and tracker key, so trackers and peers can't link the two. Trackers keep listing the old address until it expires, and a port forwarding set up on the router through the old interface stays there. To let them drop it right away, stop all torrents (or the daemon, which also removes the port forwarding) before changing the interface, and start them again afterwards.
+
    _Linux before 5.7 needs the `CAP_NET_RAW` capability to bind to an interface._ Without it every bind fails with "Operation not permitted", and no traffic flows. The `transmission-daemon.service` unit drops all capabilities, so grant this one in a drop-in, created with `systemctl edit transmission-daemon`:
 
    ```ini

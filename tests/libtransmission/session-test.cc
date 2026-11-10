@@ -13,10 +13,13 @@
 #include <initializer_list>
 #include <map>
 #include <memory>
+#include <iterator>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <event2/http.h>
@@ -763,29 +766,48 @@ TEST_F(SessionTest, bindInterfaceBindsTheSessionSockets)
     EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
 }
 
-// "blocked" refuses every fetch made after the swap, so a tracker hears
-// "stopped" only if it went out on the binding the torrent started on.
-// More tiers than one announcer upkeep sends prove none of them wait for it.
-TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
+// A binding change is a hard move: no "stopped" goes out under the old binding,
+// and each tracker hears from the torrent next as a new peer that has moved no data.
+// More tiers than one announcer upkeep sends prove none of them is left behind.
+TEST_F(SessionTest, interfaceChangeLeavesTheOldBindingSilently)
 {
-    static auto constexpr NumTiers = 21U;
+    static auto constexpr NumTiers = size_t{ 21U };
+    static auto constexpr Uploaded = uint32_t{ 12345U };
 
     auto tracker = LoopbackServer::create();
     if (!tracker) {
         GTEST_SKIP() << "IPv4 loopback is unavailable";
     }
 
-    auto n_started = std::make_shared<std::atomic<size_t>>();
-    auto n_stopped = std::make_shared<std::atomic<size_t>>();
-    tracker->setHandler([n_started, n_stopped](evhttp_request* req) {
-        auto const uri = std::string_view{ evhttp_request_get_uri(req) };
-        if (uri.contains("event=started"sv)) {
-            ++*n_started;
-        } else if (uri.contains("event=stopped"sv)) {
-            ++*n_stopped;
+    auto const mutex = std::make_shared<std::mutex>();
+    auto const announces = std::make_shared<std::vector<std::string>>();
+    tracker->setHandler([mutex, announces](evhttp_request* req) {
+        {
+            auto const lock = std::scoped_lock{ *mutex };
+            announces->emplace_back(evhttp_request_get_uri(req));
         }
         LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
     });
+    auto const with = [mutex, announces](std::string_view const event) {
+        auto const lock = std::scoped_lock{ *mutex };
+        auto ret = std::vector<std::string>{};
+        std::ranges::copy_if(*announces, std::back_inserter(ret), [event](auto const& uri) { return uri.contains(event); });
+        return ret;
+    };
+    auto const param = [](std::string_view const uri, std::string_view const key) {
+        auto const begin = uri.find(fmt::format("&{}=", key));
+        auto const value = uri.substr(begin + std::size(key) + 2U);
+        return std::string{ value.substr(0, value.find('&')) };
+    };
+    // Each announce goes out once per address family, and newer curl delivers both to an IPv4
+    // literal, so this counts the tiers that started under each peer ID, not the requests.
+    auto const n_started = [&with, &param] {
+        auto tiers = std::set<std::pair<std::string, std::string>>{};
+        for (auto const& uri : with("event=started"sv)) {
+            tiers.emplace(uri.substr(0, uri.find('?')), param(uri, "peer_id"sv));
+        }
+        return std::size(tiers);
+    };
 
     auto trackers = std::string{};
     for (size_t i = 0U; i < NumTiers; ++i) {
@@ -797,68 +819,22 @@ TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
     ASSERT_NE(nullptr, tor);
     ASSERT_TRUE(tr_torrentSetTrackerList(tor, trackers));
     tr_torrentStartNow(tor);
-    ASSERT_TRUE(waitFor([&n_started] { return *n_started == NumTiers; }, 10s));
-
-    tr_sessionSetBindInterface(session_, "blocked"sv);
-    EXPECT_TRUE(waitFor([&n_stopped] { return *n_stopped == NumTiers; }, 10s)) << *n_stopped;
-    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->is_running(); }));
-}
-
-// The flushed "stopped" reports the session's traffic, so the "started" on the
-// new binding begins a new count.
-TEST_F(SessionTest, interfaceChangeRestartsTrafficCounts)
-{
-    if (!TrNetCanBindInterface) {
-        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
-    }
-
-    static auto constexpr Uploaded = uint32_t{ 12345U };
-
-    auto tracker = LoopbackServer::create();
-    if (!tracker) {
-        GTEST_SKIP() << "IPv4 loopback is unavailable";
-    }
-
-    auto const mutex = std::make_shared<std::mutex>();
-    auto const announces = std::make_shared<std::vector<std::string>>();
-    tracker->setHandler([mutex, announces](evhttp_request* req) {
-        if (auto uri = std::string{ evhttp_request_get_uri(req) }; uri.starts_with("/announce"sv)) {
-            auto const lock = std::scoped_lock{ *mutex };
-            announces->emplace_back(std::move(uri));
-        }
-        LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
-    });
-    // the first "stopped", and the first "started" after it
-    auto const restart_announces = [mutex, announces]() -> std::optional<std::pair<std::string, std::string>> {
-        auto const lock = std::scoped_lock{ *mutex };
-        auto const stopped = std::ranges::find_if(*announces, [](auto const& uri) { return uri.contains("event=stopped"sv); });
-        auto const started = std::find_if(stopped, std::end(*announces), [](auto const& uri) {
-            return uri.contains("event=started"sv);
-        });
-        if (started == std::end(*announces)) {
-            return {};
-        }
-        return std::pair{ *stopped, *started };
-    };
-
-    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
-    ASSERT_NE(nullptr, tor);
-    ASSERT_TRUE(tr_torrentSetTrackerList(tor, tracker->url("/announce")));
-    tr_torrentStartNow(tor);
-    ASSERT_TRUE(waitFor(
-        [mutex, announces] {
-            auto const lock = std::scoped_lock{ *mutex };
-            return !std::empty(*announces);
-        },
-        10s));
+    ASSERT_TRUE(waitFor([&n_started] { return n_started() == NumTiers; }, 10s));
     blockingRunInSessionThread([tor] { tr_announcerAddBytes(tor, TR_ANN_UP, Uploaded); });
 
-    tr_sessionSetBindInterface(session_, LoopbackInterface);
-    ASSERT_TRUE(waitFor([&restart_announces] { return restart_announces().has_value(); }, 10s));
+    // "blocked" refuses every fetch made under it, so nothing of the move to it
+    // reaches the tracker; back on the default route, every tier starts afresh
+    tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+    tr_sessionSetBindInterface(session_, ""sv);
+    ASSERT_TRUE(waitFor([&n_started] { return n_started() == 2U * NumTiers; }, 10s));
 
-    auto const [stopped, started] = *restart_announces();
-    EXPECT_TRUE(stopped.contains(fmt::format("uploaded={:d}&", Uploaded))) << stopped;
-    EXPECT_TRUE(started.contains("uploaded=0&"sv)) << started;
+    EXPECT_TRUE(std::empty(with("event=stopped"sv)));
+    auto const started = with("event=started"sv);
+    EXPECT_NE(param(started.front(), "peer_id"sv), param(started.back(), "peer_id"sv));
+    EXPECT_NE(param(started.front(), "key"sv), param(started.back(), "key"sv));
+    EXPECT_EQ("0"sv, param(started.back(), "uploaded"sv)) << started.back();
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->is_running(); }));
 }
 
 TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)

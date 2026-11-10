@@ -472,6 +472,17 @@ struct tau_tracker {
         return std::empty(announces) && std::empty(scrapes);
     }
 
+    // The resolved address stays: name lookups don't follow the binding.
+    void rebind()
+    {
+        announces.clear();
+        scrapes.clear();
+        connecting_at = {};
+        connection_expiration_time = {};
+        connection_id = {};
+        connection_transaction_id = {};
+    }
+
 private:
     using Sockaddr = std::pair<sockaddr_storage, socklen_t>;
     using MaybeSockaddr = std::optional<Sockaddr>;
@@ -722,6 +733,13 @@ public:
     [[nodiscard]] bool is_idle() const noexcept override
     {
         return std::ranges::all_of(trackers_, [](auto const& tracker) { return tracker.is_idle(); });
+    }
+
+    void rebind() override
+    {
+        for (auto& tracker : trackers_) {
+            tracker.rebind();
+        }
     }
 
 private:
