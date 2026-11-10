@@ -151,6 +151,19 @@ benchmark runs with the host's libraries, as the invoking user. It needs
 Docker and the host's `ip`, `tc`, `ping` and `setpriv`, and `perf` for
 `--perf`.
 
+Loopback and netem leave out the network card: on a real link, segmentation and
+receive coalescing happen in the driver or the card, and the kernel splits what
+loopback passes whole. To measure through a real card, run the two ends on two
+hosts. `--listen` receives and `--connect` sends; start the listening end first
+and give both the same `--transport`, `--size-mib` and `--repeat`. TCP and µTP
+both use the given port, so open it for both in the firewall. Each end prints
+its own CPU cost from its first byte; the receiving end's rate is the transfer's.
+
+```sh
+$B --listen 10.0.0.2:51500 --transport both --size-mib 4096 --repeat 3   # on 10.0.0.2
+$B --connect 10.0.0.2:51500 --transport both --size-mib 4096 --repeat 3  # on the other host
+```
+
 ## Comparing branches
 
 Use `transport-compare.py` to decide whether a branch helps or hurts: it puts
