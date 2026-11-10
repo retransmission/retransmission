@@ -58,7 +58,7 @@ namespace
     auto const b_positive = *b_limit > 0;
 
     if (a_positive != b_positive) {
-        return b_positive <=> a_positive;
+        return a_positive ? std::partial_ordering::less : std::partial_ordering::greater;
     }
 
     return a_positive ? a_ratio / *a_limit <=> b_ratio / *b_limit : a_ratio <=> b_ratio;
@@ -71,7 +71,7 @@ namespace
         return a.eta() <=> b.eta();
     }
 
-    return a.has_eta() <=> b.has_eta();
+    return static_cast<int>(a.has_eta()) <=> static_cast<int>(b.has_eta());
 }
 
 // swapped operands: the head of the queue compares greatest
@@ -116,7 +116,7 @@ std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortM
 
     case SortMode::SortByState:
         if (val == 0) {
-            val = b.is_paused() <=> a.is_paused();
+            val = static_cast<int>(b.is_paused()) <=> static_cast<int>(a.is_paused());
         }
 
         if (val == 0) {
@@ -128,7 +128,7 @@ std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortM
         }
 
         if (val == 0) {
-            val = a.has_error() <=> b.has_error();
+            val = static_cast<int>(a.has_error()) <=> static_cast<int>(b.has_error());
         }
 
         [[fallthrough]];
