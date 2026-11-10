@@ -366,8 +366,12 @@ private:
  * pass issued can be merged before any worker takes one.
  *
  * Scheduling: pending reads and pending writes are each indexed by
- * (torrent, offset). A worker takes the next op past the last one taken,
- * sweeping the index like an elevator, then takes the ops that continue
+ * (torrent, offset). The workers drain a snapshot of the index in key
+ * order, one sweep of an elevator, and take the next snapshot when that
+ * one is empty. An op that arrives during a sweep waits for the next
+ * one, so a requester that keeps asking for the bytes just ahead of the
+ * workers can't hold them there, and no op waits more than two sweeps.
+ * A worker takes the sweep's first op along with the ops that continue
  * it and does the whole run with one call. That turns the swarm's
  * scattered block requests into sequential disk IO of up to MaxRunBytes.
  * A worker alternates between reads and writes when both are waiting.
@@ -1061,13 +1065,13 @@ private:
                     }
 
                     if (reads_first) {
-                        reads = take_run(pending_reads_, read_cursor_);
+                        reads = take_run(read_sweep_, pending_reads_);
                     }
                     if (std::empty(reads)) {
-                        writes = take_run(pending_writes_, write_cursor_);
+                        writes = take_run(write_sweep_, pending_writes_);
                     }
                     if (!reads_first && std::empty(writes)) {
-                        reads = take_run(pending_reads_, read_cursor_);
+                        reads = take_run(read_sweep_, pending_reads_);
                     }
 
                     return !std::empty(reads) || !std::empty(writes) || stopping_;
@@ -1088,17 +1092,19 @@ private:
         }
     }
 
-    // Take the next op past `cursor`, plus the ops that continue or
-    // overlap it. Writes never overlap, so a run of writes is contiguous.
-    // Call with work_mutex_ held.
+    // Take the sweep's first op, plus the ops in it that continue or
+    // overlap that one. Writes never overlap, so a run of writes is
+    // contiguous. Once the sweep is empty, the ops in `pending` become
+    // the next one. Call with work_mutex_ held.
     template<typename Pending>
-    [[nodiscard]] static std::vector<typename Pending::mapped_type> take_run(Pending& pending, OpKey& cursor)
+    [[nodiscard]] static std::vector<typename Pending::mapped_type> take_run(Pending& sweep, Pending& pending)
     {
-        auto it = pending.lower_bound(cursor);
-        if (it == std::end(pending)) {
-            it = std::begin(pending);
+        if (std::empty(sweep)) {
+            std::swap(sweep, pending);
         }
-        if (it == std::end(pending)) {
+
+        auto it = std::begin(sweep);
+        if (it == std::end(sweep)) {
             return {};
         }
 
@@ -1108,7 +1114,7 @@ private:
         auto end = it->second.span.end;
 
         auto run = std::vector<typename Pending::mapped_type>{};
-        while (it != std::end(pending)) {
+        while (it != std::end(sweep)) {
             auto& op = it->second;
             if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
                 std::max(end, op.span.end) - begin > MaxRunBytes) {
@@ -1116,7 +1122,6 @@ private:
             }
 
             end = std::max(end, op.span.end);
-            cursor = it->first;
             if constexpr (std::is_same_v<typename Pending::mapped_type, PendingWrite>) {
 #ifdef TR_ENABLE_BLOCK_PROFILING
                 if (tr::profile::Collector::instance().batches_enabled()) {
@@ -1126,7 +1131,7 @@ private:
                 op.admitted.record_since("storage.write_queue_wait");
             }
             run.emplace_back(std::move(it->second));
-            it = pending.erase(it);
+            it = sweep.erase(it);
         }
 
         return run;
@@ -1359,10 +1364,11 @@ private:
     std::mutex work_mutex_;
     std::condition_variable work_cv_;
     std::deque<PendingTest> pending_tests_;
+    // The ops that wait for the next sweep, and the sweep being drained.
     std::multimap<OpKey, PendingRead> pending_reads_;
+    std::multimap<OpKey, PendingRead> read_sweep_;
     std::map<OpKey, PendingWrite> pending_writes_;
-    OpKey read_cursor_ = {};
-    OpKey write_cursor_ = {};
+    std::map<OpKey, PendingWrite> write_sweep_;
     bool stopping_ = false;
     bool paused_ = false;
 

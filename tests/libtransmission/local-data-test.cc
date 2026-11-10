@@ -21,6 +21,8 @@
 #include <utility>
 #include <vector>
 
+#include <fmt/format.h>
+
 #include <gtest/gtest.h>
 
 #include <libtransmission/bitfield.h>
@@ -473,6 +475,47 @@ TEST(LocalData, ShuffledCompletionsReplayFromSeed)
 namespace
 {
 
+// Stalls a worker where it creates a file, until the test lets it go on.
+// Preallocation runs on the worker, outside every lock, so a test can
+// enqueue more ops while the worker is known to be between two runs.
+class PreallocationGate
+{
+public:
+    [[nodiscard]] tr_open_files::Preallocate hook()
+    {
+        return [this](tr_sys_file_t, uint64_t, int, tr_error*) {
+            auto lock = std::unique_lock{ mutex_ };
+            ++n_entered_;
+            cv_.notify_all();
+            cv_.wait(lock, [this] { return n_released_ >= n_entered_; });
+            return true;
+        };
+    }
+
+    // Wait for a worker to stall creating the `n`th file. False on timeout.
+    [[nodiscard]] bool waitForFile(size_t const n)
+    {
+        auto lock = std::unique_lock{ mutex_ };
+        return cv_.wait_for(lock, std::chrono::seconds{ 5 }, [this, n] { return n_entered_ >= n; });
+    }
+
+    // Let the next `n` files through, starting with one that is stalled.
+    void release(size_t const n = 1U)
+    {
+        {
+            auto const lock = std::scoped_lock{ mutex_ };
+            n_released_ += n;
+        }
+        cv_.notify_all();
+    }
+
+private:
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    size_t n_entered_ = 0U;
+    size_t n_released_ = 0U;
+};
+
 // Exercises the threaded backend against real files in a sandbox.
 // The test thread doubles as the session thread: marshaled functions
 // queue up and run from pumpUntil().
@@ -688,6 +731,21 @@ protected:
             ++n_writes;
         }
         return n_writes;
+    }
+
+    // A descriptor whose new files are preallocated, for a PreallocationGate.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> makePreallocatingDescriptor(
+        std::vector<std::pair<std::string_view, uint64_t>> const& files) const
+    {
+        auto desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor(files, BlockSize));
+        desc->preallocation = tr_file_preallocation::Full;
+        return desc;
+    }
+
+    // Run what the session thread has been asked to run so far.
+    void pumpOnce()
+    {
+        EXPECT_TRUE(pumpUntil([]() { return true; }));
     }
 
     tr_torrents torrents_;
@@ -1475,4 +1533,106 @@ TEST_F(LocalDataWorkersTest, queuedHashWaitsForAWriteThatOverlapsIt)
     EXPECT_EQ((std::vector<std::string>{ "wrote block 0", "closed a.bin", "wrote block 2", "hashed" }), events);
 
     local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writesThatArriveDuringASweepWaitForTheNext)
+{
+    // Block 0 is first.bin, blocks 1-6 are data.bin. One worker, so the
+    // callbacks arrive in the order the writes reached the disk.
+    auto const desc = makePreallocatingDescriptor({ { "first.bin", BlockSize }, { "data.bin", 6U * BlockSize } });
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+
+    // the sweep is blocks 0, 2 and 6, and the worker stalls on its first
+    local_data.set_workers_paused(true);
+    write_block(0U);
+    write_block(2U);
+    write_block(6U);
+    local_data.set_workers_paused(false);
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // block 4 arrives ahead of where the sweep has got to...
+    write_block(4U);
+    gate.release(2U);
+
+    // ...and is still written after the rest of the sweep
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 4U; }));
+    EXPECT_EQ((std::vector<size_t>{ 0U, 2U, 6U, 4U }), order);
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, readsThatArriveDuringASweepWaitForTheNext)
+{
+    // Blocks 0 and 7 are files to create. Blocks 1, 3 and 5 each start a
+    // file of their own, so none is open yet and the page cache answers none.
+    // One worker, so the callbacks arrive in the order the disk was used.
+    auto const desc = makePreallocatingDescriptor(
+        { { "first.bin", BlockSize },
+          { "a.bin", 2U * BlockSize },
+          { "b.bin", 2U * BlockSize },
+          { "c.bin", 2U * BlockSize },
+          { "last.bin", BlockSize } });
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(BlockSize, 2U * BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(3U * BlockSize, 2U * BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("c.bin"), patternString(5U * BlockSize, 2U * BlockSize)));
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    auto events = std::vector<std::string>{};
+    auto const write_block = [&local_data, &events](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&events, block] {
+            events.emplace_back(fmt::format("wrote {}", block));
+        });
+    };
+    auto const read_block = [&local_data, &events](size_t const block) {
+        local_data.read(
+            TorId,
+            { .begin = block * BlockSize, .end = (block + 1U) * BlockSize },
+            [&events, block](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+                EXPECT_FALSE(error) << error;
+                ASSERT_NE(nullptr, data);
+                EXPECT_EQ(
+                    patternString(block * BlockSize, BlockSize),
+                    (std::string{ reinterpret_cast<char const*>(data->data()), data->size() }));
+                events.emplace_back(fmt::format("read {}", block));
+            });
+    };
+
+    // stall the worker creating first.bin, and queue the rest behind it
+    write_block(0U);
+    ASSERT_TRUE(gate.waitForFile(1U));
+    read_block(1U);
+    read_block(5U);
+    pumpOnce();
+    write_block(7U);
+
+    // the read sweep is blocks 1 and 5. The worker reads block 1, then
+    // takes its turn at writing and stalls creating last.bin.
+    gate.release();
+    ASSERT_TRUE(gate.waitForFile(2U));
+
+    // block 3 arrives ahead of where the sweep has got to...
+    read_block(3U);
+    pumpOnce();
+    gate.release();
+
+    // ...and is still read after the rest of the sweep
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 5U; }));
+    EXPECT_EQ((std::vector<std::string>{ "wrote 0", "read 1", "wrote 7", "read 5", "read 3" }), events);
+
+    local_data.shutdown();
 }
