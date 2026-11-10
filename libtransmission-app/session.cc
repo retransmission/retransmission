@@ -584,17 +584,17 @@ void sort_and_dedupe(std::vector<Entry>& entries)
 
 } // namespace
 
-void Session::request_add(AddData add, AddPrompt const prompt, AddOptions options)
+bool Session::request_add(AddData add, AddPrompt const prompt, AddOptions options)
 {
     if (add.type == AddData::Type::None && prompt != AddPrompt::Always) {
-        return;
+        return false;
     }
 
     add.trash_source = prefs_.get<bool>(TR_KEY_trash_original_torrent_files);
 
     if (prompt == AddPrompt::Never || (prompt == AddPrompt::FromPrefs && !prefs_.get<bool>(TR_KEY_show_options_window))) {
         add_torrent(std::move(add), std::move(options));
-        return;
+        return true;
     }
 
     // the prompt shows both, so it needs the defaults that `add_torrent()` and the session would apply
@@ -610,6 +610,7 @@ void Session::request_add(AddData add, AddPrompt const prompt, AddOptions option
             torrent_add_prompt(*resolved, options);
         }
     });
+    return true;
 }
 
 void Session::resolve_add(

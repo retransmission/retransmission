@@ -232,8 +232,9 @@ public:
     //
     // `options` go to `add_torrent()`, or to the prompt as the choices it starts with.
     //
-    // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
-    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs, AddOptions options = {});
+    // Returns false if it ignored the request: a `Type::None` one, unless `AddPrompt::Always`
+    // asks the user to fill it in.
+    bool request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs, AddOptions options = {});
 
     // the request's options, with `download_dir` and `paused` filled in from the prefs if it left them unset
     sigslot::signal<AddData const&, AddOptions const&> torrent_add_prompt;
