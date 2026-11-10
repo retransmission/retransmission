@@ -779,6 +779,31 @@ TEST_F(WebTest, cookiesNotSharedAcrossBindings)
     EXPECT_FALSE(server4_->lastRequest().headers.contains("cookie"));
 }
 
+TEST_F(WebTest, cancelAllEndsEveryFetch)
+{
+    // the server never replies, so only cancellation ends these
+    server4_->setHandler([](evhttp_request* /*req*/) {});
+
+    auto plain = fetchAsync(options("/plain"sv));
+    auto opts = options("/announce"sv);
+    opts.finish_at_shutdown = true;
+    auto announce = fetchAsync(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
+
+    web_->cancel_all();
+
+    for (auto* const response : { &plain, &announce }) {
+        ASSERT_EQ(std::future_status::ready, response->wait_for(5s));
+        auto const result = response->get();
+        EXPECT_EQ(0, result.status);
+        EXPECT_TRUE(result.errmsg);
+    }
+
+    // a fetch made afterwards runs as usual
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "late"sv); });
+    EXPECT_EQ(200, fetch(options()).status);
+}
+
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
 {
     // the plain fetch never gets a reply; the announce gets one once the gate opens

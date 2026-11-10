@@ -177,6 +177,10 @@ public:
 
     void network_changed();
 
+    // Ends every fetch made so far as a failed connection, finish_at_shutdown ones
+    // too, e.g. so that none outlives the network binding it was made under.
+    void cancel_all();
+
     [[nodiscard]] bool is_idle() const;
 
     // To give finish_at_shutdown tasks a chance to finish,

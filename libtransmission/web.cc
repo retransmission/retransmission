@@ -396,6 +396,9 @@ public:
             return status;
         }
 
+        // set by cancel_all() under tasks_mutex_, and read under it
+        bool cancelled = false;
+
         void set_error(CURLcode const code)
         {
             response.errmsg = fmt::format("curl error: {} ({})", curl_easy_strerror(code), std::to_underlying(code));
@@ -929,6 +932,21 @@ public:
         network_changed_ = true;
     }
 
+    void cancel_all()
+    {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        for (auto& task : queued_tasks_) {
+            task.cancelled = true;
+        }
+        for (auto& task : running_tasks_) {
+            task.cancelled = true;
+        }
+        network_changed_ = true;
+        cancel_pending_ = true;
+        queued_tasks_cv_.notify_one();
+        wakeup_multis();
+    }
+
     [[nodiscard]] bool push_multi(Task const& task)
     {
         // A new multi for the same binding, after a network change, keeps its share:
@@ -979,7 +997,7 @@ public:
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
                 auto const stop_waiting = [this, &lock] {
-                    return !is_idle(lock) || deadline_exists();
+                    return !is_idle(lock) || deadline_exists() || cancel_pending_;
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
 
@@ -987,8 +1005,24 @@ public:
                     break;
                 }
 
+                // a running task is cancelled here, while its flag is read under the lock
+                if (std::exchange(cancel_pending_, false)) {
+                    for (auto& task : running_tasks_) {
+                        if (task.cancelled) {
+                            task.set_error(CURLE_ABORTED_BY_CALLBACK);
+                            failed_tasks.push_back(&task);
+                        }
+                    }
+                }
+
                 // add queued tasks
                 for (auto& task : queued_tasks_) {
+                    if (task.cancelled) {
+                        task.set_error(CURLE_ABORTED_BY_CALLBACK);
+                        failed_tasks.push_back(&task);
+                        continue;
+                    }
+
                     if (((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task)) ||
                         !initEasy(task)) {
                         task.set_error(CURLE_OUT_OF_MEMORY);
@@ -1031,7 +1065,10 @@ public:
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
-            // start newly added or unpaused tasks
+            // start newly added or unpaused tasks, unless cancel_all() came since
+            if (auto const lock = std::unique_lock{ tasks_mutex_ }; cancel_pending_) {
+                continue;
+            }
             auto n_running = int{};
             for (auto const& node : multi_pool_) {
                 curl_multi_perform(node.multi.get(), &n_running);
@@ -1056,6 +1093,11 @@ public:
                 }
             }
             curl_multi_poll(current_multi(), nullptr, 0, numfds > 0 ? 0 : timeout_ms, &numfds);
+
+            // cancel_all() woke the poll: end its fetches before curl can move them on
+            if (auto const lock = std::unique_lock{ tasks_mutex_ }; cancel_pending_) {
+                continue;
+            }
 
             for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
                 auto* const multi = it->multi.get();
@@ -1100,6 +1142,7 @@ public:
 
     small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
     bool network_changed_ = false;
+    bool cancel_pending_ = false; // under tasks_mutex_
 
     // Only the curl thread modifies multi_pool_, all other threads read it. We only need
     // to lock exclusively for writes in the curl thread and reads from any other thread,
@@ -1165,6 +1208,11 @@ void tr_web::startShutdown(std::chrono::milliseconds deadline)
 void tr_web::network_changed()
 {
     impl_->network_changed();
+}
+
+void tr_web::cancel_all()
+{
+    impl_->cancel_all();
 }
 
 bool tr_web::is_idle() const
