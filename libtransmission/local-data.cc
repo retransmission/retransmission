@@ -19,6 +19,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <random>
 #include <set>
 #include <span>
 #include <string>
@@ -392,6 +393,9 @@ private:
  *   Workers pull pending ops, run them, and post completion closures
  *   to `done_`. The session thread delivers those from pump_done().
  * - `retained_` is shared too and locks itself.
+ * - Tests can start the backend with no threads. The session thread
+ *   then does the workers' and the lanes' work too, a step at a time,
+ *   through the same queues and locks. See `Threadless`.
  *
  * The admission gate implements rule 3 of the ordering contract in
  * local-data.h. Data ops on a torrent are admitted freely and run
@@ -438,12 +442,18 @@ public:
         DescriptorProvider provider,
         Marshal marshal,
         size_t const n_workers,
-        size_t const retained_bytes)
+        size_t const retained_bytes,
+        std::optional<uint32_t> const threadless_seed = {})
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
         , retained_{ retained_bytes }
     {
+        if (threadless_seed) {
+            threadless_.emplace(n_workers, *threadless_seed);
+            return;
+        }
+
         workers_.reserve(n_workers);
 
         // If a spawn fails partway, join the workers that did start.
@@ -675,6 +685,17 @@ public:
                 return;
             }
 
+            if (threadless_) {
+                // No thread will finish anything, so do the work here.
+                if (!step(detail::DiskThread::Any)) {
+                    // nothing left to run or deliver: an op was lost
+                    log_busy_gates();
+                    TR_ASSERT(false);
+                    return;
+                }
+                continue;
+            }
+
             if (auto const now = std::chrono::steady_clock::now(); now >= next_warning) {
                 log_busy_gates();
                 next_warning = now + WarnInterval;
@@ -729,6 +750,7 @@ public:
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
+        schedule_pump();
     }
 
     void set_retained_bytes(size_t const max_bytes)
@@ -743,6 +765,69 @@ public:
             long_lane_.held = held;
         }
         admin_cv_.notify_all();
+    }
+
+    // One thread does the next thing it would do. A worker takes a turn,
+    // or runs the turn it took earlier. A lane runs its next job. The
+    // thread is picked at random from those of `which` that have
+    // something to do. False if none has, or if the threads are real.
+    bool step(detail::DiskThread const which)
+    {
+        using enum detail::DiskThread;
+
+        if (!threadless_) {
+            return false;
+        }
+
+        auto& threads = *threadless_;
+        auto const n_workers = std::size(threads.workers);
+
+        // the workers by index, then the long lane, then the short one
+        auto ready = std::vector<size_t>{};
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+
+            if (which == Any || which == Worker) {
+                auto const waiting = !std::empty(pending_tests_) || !std::empty(pending_reads_) || !std::empty(read_sweep_) ||
+                    !std::empty(pending_writes_) || !std::empty(write_sweep_);
+                for (auto i = size_t{}; i < n_workers; ++i) {
+                    if (waiting || !threads.workers[i].turn.empty()) {
+                        ready.emplace_back(i);
+                    }
+                }
+            }
+
+            if ((which == Any || which == LongLane) && !std::empty(long_lane_.jobs) && !long_lane_.held) {
+                ready.emplace_back(n_workers);
+            }
+
+            if ((which == Any || which == ShortLane) && !std::empty(short_lane_.jobs)) {
+                ready.emplace_back(n_workers + 1U);
+            }
+        }
+
+        if (std::empty(ready)) {
+            return false;
+        }
+
+        auto const pick = ready[threads.rng() % std::size(ready)];
+        if (pick >= n_workers) {
+            run_next_job(pick == n_workers ? long_lane_ : short_lane_);
+        } else if (auto& worker = threads.workers[pick]; worker.turn.empty()) {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            worker.turn = take_turn(worker.next);
+        } else {
+            run_turn(std::exchange(worker.turn, {}), threads.scratch);
+        }
+
+        return true;
+    }
+
+    // Do now what was left for the session thread to do later.
+    void deliver()
+    {
+        pump_done();
+        flush_reads();
     }
 
 private:
@@ -841,6 +926,28 @@ private:
         {
             return !test && std::empty(reads) && std::empty(writes);
         }
+    };
+
+    // For tests: the threads that were never started. The session thread
+    // does their work a step at a time. See detail::start_threadless().
+    struct Threadless {
+        struct Worker {
+            size_t next = 0U; // its place in the rotation. See take_turn().
+            Turn turn; // taken, and not yet run
+        };
+
+        Threadless(size_t const n_workers, uint32_t const seed)
+            : rng{ seed }
+            , workers(n_workers)
+        {
+        }
+
+        // picks the thread that takes the next step
+        std::mt19937 rng;
+        std::vector<Worker> workers;
+        std::vector<uint8_t> scratch;
+        // guarded by work_mutex_
+        bool pump_scheduled = false;
     };
 
     // Where a pending op sits in its worker queue: disk order, more or less.
@@ -1166,6 +1273,7 @@ private:
             pending_reads_.merge(staged_reads_);
         }
         work_cv_.notify_all();
+        schedule_pump();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -1187,6 +1295,7 @@ private:
                 PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
         }
         work_cv_.notify_one();
+        schedule_pump();
     }
 
     void admit_write(tr_torrent_id_t const id, Gate& gate, WriteOp op)
@@ -1221,6 +1330,7 @@ private:
                 });
         }
         work_cv_.notify_one();
+        schedule_pump();
     }
 
     // The completion closures own move-only state, so they can't live
@@ -1374,6 +1484,72 @@ private:
             lane.jobs.emplace_back(std::move(job));
         }
         admin_cv_.notify_all();
+        schedule_pump();
+    }
+
+    void run_next_job(AdminLane& lane)
+    {
+        auto job = std::function<void()>{};
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            job = std::move(lane.jobs.front());
+            lane.jobs.pop_front();
+        }
+
+        job();
+    }
+
+    // Work is waiting for a thread. With no threads, the session thread
+    // does some of it later, between its other work: never inside the
+    // call that enqueued an op, and never inside a callback.
+    void schedule_pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            if (paused_ || std::exchange(threadless_->pump_scheduled, true)) {
+                return;
+            }
+        }
+
+        marshal_([weak = weak_from_this()] {
+            if (auto const self = weak.lock(); self) {
+                self->pump();
+            }
+        });
+    }
+
+    void pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        auto& threads = *threadless_;
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            threads.pump_scheduled = false;
+            if (paused_) {
+                return;
+            }
+        }
+
+        // Callbacks are delivered between pumps. A varying number of
+        // steps lets a varying number of ops be in flight when they are.
+        static auto constexpr MaxSteps = 8U;
+        auto n_left = 1U + (threads.rng() % MaxSteps);
+        while (n_left != 0U && step(detail::DiskThread::Any)) {
+            --n_left;
+        }
+
+        // there may be more to do
+        if (n_left == 0U) {
+            schedule_pump();
+        }
     }
 
     void close_on_short_lane(std::vector<tr_open_files::Handle> files)
@@ -1497,6 +1673,11 @@ private:
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
+
+        // Exiting threads finish the work that is waiting.
+        // With no threads, finish it here.
+        while (step(detail::DiskThread::Any)) {
+        }
 
         for (auto& worker : workers_) {
             if (worker.joinable()) {
@@ -1740,6 +1921,7 @@ private:
     std::atomic<uint64_t> blocks_read_ = 0U;
 
     std::vector<std::thread> workers_;
+    std::optional<Threadless> threadless_;
 };
 
 LocalData::LocalData(tr_torrents const& torrents, tr_open_files& open_files)
@@ -2011,6 +2193,40 @@ void detail::hold_copy_lane(LocalData& local_data, bool const held)
 {
     if (local_data.threaded_) {
         local_data.threaded_->hold_copy_lane(held);
+    }
+}
+
+void detail::start_threadless(
+    LocalData& local_data,
+    size_t const worker_count,
+    uint32_t const seed,
+    tr_open_files& open_files,
+    std::function<void(std::function<void()>)> marshal,
+    std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider)
+{
+    TR_ASSERT(!local_data.threaded_);
+    TR_ASSERT(local_data.completions_ == LocalData::Completions::Inline);
+    TR_ASSERT(worker_count != 0U);
+
+    local_data.threaded_ = std::make_shared<LocalData::Threaded>(
+        open_files,
+        std::move(provider),
+        std::move(marshal),
+        worker_count,
+        local_data.retained_bytes(),
+        seed);
+}
+
+bool detail::step(LocalData& local_data, DiskThread const which)
+{
+    auto const& threaded = local_data.threaded_;
+    return threaded && threaded->step(which);
+}
+
+void detail::deliver(LocalData& local_data)
+{
+    if (auto const& threaded = local_data.threaded_; threaded) {
+        threaded->deliver();
     }
 }
 
