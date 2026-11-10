@@ -2099,9 +2099,12 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
                     addresses.emplace_back(std::move(address));
                 }
 
-                auto iface_map = tr_variant::Map{ 2U };
+                auto iface_map = tr_variant::Map{ 3U };
                 iface_map.try_emplace(TR_KEY_name, std::move(iface.name));
                 iface_map.try_emplace(TR_KEY_addresses, std::move(addresses));
+                if (auto const nm_state = tr_net_nm_state_name(iface.nm_state); !std::empty(nm_state)) {
+                    iface_map.try_emplace(TR_KEY_network_manager, tr_variant::unmanaged_string(nm_state));
+                }
                 vec.emplace_back(std::move(iface_map));
             }
             return tr_variant{ std::move(vec) };

@@ -13,6 +13,8 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <cstdint> // uint16_t, uint32_t, uint8_t
+#include <functional>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -574,9 +576,39 @@ struct tr_net_interface_address {
     tr_net_address_origin origin = tr_net_address_origin::Unknown;
 };
 
+// how NetworkManager treats an interface
+enum class tr_net_nm_state : uint8_t {
+    Unknown, // NetworkManager can't be asked, e.g. it isn't running
+    Configured, // NetworkManager brought it up from one of its connection profiles
+    External, // NetworkManager follows a configuration made by something else, e.g. Docker
+    Inactive, // NetworkManager may configure it, but has no connection active on it
+    Unmanaged, // NetworkManager leaves it alone
+};
+
+// NetworkManager's view of each interface it knows, by name. Empty unless
+// NetworkManager answers over D-Bus, which needs Linux and a WITH_SYSTEMD build.
+[[nodiscard]] std::map<std::string, tr_net_nm_state, std::less<>> tr_net_networkmanager_states();
+
+// what set an interface up, as far as the session can tell
+enum class tr_net_manager : uint8_t {
+    Other, // none of the below, or no way to tell
+    NetworkManager, // NetworkManager, from one of its connection profiles
+    Docker, // Docker, for one of its networks
+    Libvirt, // libvirt, for one of its virtual networks
+};
+
+// Docker and libvirt are told by the names they give their bridges:
+// "docker0", "br-" and a network ID's first 12 hex digits, or "virbr" and a number.
+// A bridge given a name of its own counts as Other.
+[[nodiscard]] tr_net_manager tr_net_interface_manager(std::string_view name, tr_net_nm_state nm_state);
+
+// "networkmanager", "docker", "libvirt" or "other"
+[[nodiscard]] std::string_view tr_net_manager_name(tr_net_manager manager);
+
 struct tr_net_interface {
     std::string name;
     std::vector<tr_net_interface_address> addresses; // IPv4 first, then IPv6
+    tr_net_nm_state nm_state = tr_net_nm_state::Unknown;
 };
 
 // short names for an IPv6 address's kind: its type ("gua", "ula", "link-local",

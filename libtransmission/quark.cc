@@ -335,6 +335,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "main_window_width"sv, // gtk app, qt app
     "main_window_x"sv, // gtk app, qt app
     "main_window_y"sv, // gtk app, qt app
+    "managed_by"sv, // rpc
     "manualAnnounceTime"sv, // rpc
     "manual_announce_time"sv, // rpc
     "max-peers"sv, // .resume

@@ -1111,6 +1111,38 @@ TEST_F(NetTest, effectiveBindInterface)
     }
 }
 
+TEST_F(NetTest, networkManagerStateNames)
+{
+    using Manager = tr_net_manager;
+    using State = tr_net_nm_state;
+
+    // NetworkManager counts only for what it brought up from its own profiles
+    EXPECT_EQ(Manager::NetworkManager, tr_net_interface_manager("enp5s0"sv, State::Configured));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("enp5s0"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("enp5s0"sv, State::Unknown));
+
+    // Docker's and libvirt's bridges, which NetworkManager only follows
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("docker0"sv, State::External));
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("br-1a24b37ec1e0"sv, State::External));
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("br-1a24b37ec1e0"sv, State::Unknown));
+    EXPECT_EQ(Manager::Libvirt, tr_net_interface_manager("virbr0"sv, State::External));
+    EXPECT_EQ(Manager::Libvirt, tr_net_interface_manager("virbr12"sv, State::Unknown));
+
+    // a bridge with a name of its own, or one that only looks alike
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-trupnp"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-1A24B37EC1E0"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-1a24b37ec1e"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("virbr"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("virbr0-nic"sv, State::External));
+
+    // the session_get values
+    EXPECT_EQ("networkmanager"sv, tr_net_manager_name(Manager::NetworkManager));
+    EXPECT_EQ("docker"sv, tr_net_manager_name(Manager::Docker));
+    EXPECT_EQ("libvirt"sv, tr_net_manager_name(Manager::Libvirt));
+    EXPECT_EQ("other"sv, tr_net_manager_name(Manager::Other));
+}
+
 TEST_F(NetTest, addressTags)
 {
     using Origin = tr_net_address_origin;

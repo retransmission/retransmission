@@ -347,6 +347,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_main_window_width,
     TR_KEY_main_window_x,
     TR_KEY_main_window_y,
+    TR_KEY_managed_by,
     TR_KEY_manual_announce_time_camel_APICOMPAT,
     TR_KEY_manual_announce_time,
     TR_KEY_max_peers_kebab_APICOMPAT,

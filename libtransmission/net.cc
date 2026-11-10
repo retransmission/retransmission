@@ -382,6 +382,48 @@ std::vector<std::string_view> tr_net_address_tags(tr_net_interface_address const
     return tags;
 }
 
+tr_net_manager tr_net_interface_manager(std::string_view const name, tr_net_nm_state const nm_state)
+{
+    if (nm_state == tr_net_nm_state::Configured) {
+        return tr_net_manager::NetworkManager;
+    }
+
+    auto const all_of = [](std::string_view const chars, auto const pred) {
+        return !std::empty(chars) && std::ranges::all_of(chars, pred);
+    };
+    auto const is_hex = [](char const ch) {
+        return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f');
+    };
+    auto const is_digit = [](char const ch) {
+        return ch >= '0' && ch <= '9';
+    };
+
+    if (auto constexpr Prefix = "br-"sv; name == "docker0"sv ||
+        (name.starts_with(Prefix) && std::size(name) == std::size(Prefix) + 12U &&
+         all_of(name.substr(std::size(Prefix)), is_hex))) {
+        return tr_net_manager::Docker;
+    }
+    if (auto constexpr Prefix = "virbr"sv; name.starts_with(Prefix) && all_of(name.substr(std::size(Prefix)), is_digit)) {
+        return tr_net_manager::Libvirt;
+    }
+    return tr_net_manager::Other;
+}
+
+std::string_view tr_net_manager_name(tr_net_manager const manager)
+{
+    switch (manager) {
+    case tr_net_manager::NetworkManager:
+        return "networkmanager"sv;
+    case tr_net_manager::Docker:
+        return "docker"sv;
+    case tr_net_manager::Libvirt:
+        return "libvirt"sv;
+    case tr_net_manager::Other:
+        break;
+    }
+    return "other"sv;
+}
+
 std::vector<tr_net_interface> tr_net_interfaces()
 {
     auto interfaces = std::vector<tr_net_interface>{};
@@ -408,6 +450,14 @@ std::vector<tr_net_interface> tr_net_interfaces()
 
 #ifdef __linux__
     auto const origins = ipv6_address_origins();
+
+    auto const nm_states = tr_net_networkmanager_states();
+    for (auto& iface : interfaces) {
+        auto const iter = nm_states.find(iface.name);
+        iface.manager = tr_net_interface_manager(
+            iface.name,
+            iter != std::end(nm_states) ? iter->second : tr_net_nm_state::Unknown);
+    }
 #endif
 
     auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
