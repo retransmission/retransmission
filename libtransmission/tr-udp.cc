@@ -153,6 +153,7 @@ void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 #endif
 }
 
+#ifdef HAVE_RECVMMSG
 // Hands each datagram in `buf` to handle_packet(). With UDP_GRO, `buf` can hold several
 // datagrams of `segment_size` bytes each, the last possibly shorter.
 bool handle_read(
@@ -183,7 +184,6 @@ bool handle_read(
     return got_utp_packet;
 }
 
-#ifdef HAVE_RECVMMSG
 // Reads per recvmmsg() call. µTP at full speed delivers tens of thousands of
 // packets per second, so one syscall per datagram is a large part of its cost.
 auto constexpr DatagramsPerRead = size_t{ 1024U * 1024U } / DatagramBufferSize / 2U;
@@ -229,7 +229,7 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
             if (header.msg_len == 0U || (header.msg_hdr.msg_flags & (MSG_TRUNC | MSG_CTRUNC)) != 0) {
                 continue;
             }
-            auto segment_size = size_t{ header.msg_len };
+            auto segment_size = static_cast<size_t>(header.msg_len);
 #ifdef UDP_GRO
             for (auto* cmsg = CMSG_FIRSTHDR(&header.msg_hdr); cmsg != nullptr; cmsg = CMSG_NXTHDR(&header.msg_hdr, cmsg)) {
                 if (cmsg->cmsg_level == IPPROTO_UDP && cmsg->cmsg_type == UDP_GRO) {
@@ -405,7 +405,7 @@ private:
         auto n_messages = size_t{};
         for (auto start = first; start < size_; ++n_messages) {
             auto n_datagrams = size_t{ 1U };
-            auto const segment_size = iovs_[start].iov_len;
+            [[maybe_unused]] auto const segment_size = iovs_[start].iov_len;
 #ifdef UDP_SEGMENT
             auto const may_segment = use_gso_ && start + 1U < size_ && !is_gso_refused(start);
             for (auto bytes = segment_size; may_segment && start + n_datagrams < size_ && n_datagrams < MaxSegments;) {
