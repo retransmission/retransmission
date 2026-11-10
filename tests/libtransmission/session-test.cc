@@ -808,9 +808,10 @@ TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
 // new binding begins a new count.
 TEST_F(SessionTest, interfaceChangeRestartsTrafficCounts)
 {
-#ifndef __APPLE__
-    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
-#else
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
     static auto constexpr Uploaded = uint32_t{ 12345U };
 
     auto tracker = LoopbackServer::create();
@@ -852,13 +853,12 @@ TEST_F(SessionTest, interfaceChangeRestartsTrafficCounts)
         10s));
     blockingRunInSessionThread([tor] { tr_announcerAddBytes(tor, TR_ANN_UP, Uploaded); });
 
-    tr_sessionSetBindInterface(session_, "lo0"sv);
+    tr_sessionSetBindInterface(session_, LoopbackInterface);
     ASSERT_TRUE(waitFor([&restart_announces] { return restart_announces().has_value(); }, 10s));
 
     auto const [stopped, started] = *restart_announces();
     EXPECT_TRUE(stopped.contains(fmt::format("uploaded={:d}&", Uploaded))) << stopped;
     EXPECT_TRUE(started.contains("uploaded=0&"sv)) << started;
-#endif
 }
 
 TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)
