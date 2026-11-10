@@ -277,8 +277,12 @@ void tr_ip_cache::update_source_addr(tr_address_type type)
         upkeep_timers_[type]->set_interval(RetryUpkeepInterval);
 
         tr_logAddDebug(fmt::format("Couldn't obtain source {} address: {} ({})", protocol, tr_net_strerror(err), err));
+        // a binding that stops all traffic was reported once when it took effect
+        using BindState = tr_net_bind_status::State;
+        auto const bind_state = tr_net_interface_status(mediator_.settings_bind_interface()).state;
         if (std::ranges::all_of(source_addr_checked_, std::identity{}) &&
-            std::ranges::all_of(source_addr_, std::logical_not{})) {
+            std::ranges::all_of(source_addr_, std::logical_not{}) &&
+            (bind_state == BindState::Default || bind_state == BindState::Ok)) {
             tr_logAddError("Couldn't obtain source address in any IP protocol, no network connections possible");
         }
 

@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <libtransmission/ip-cache.h>
+#include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/timer.h>
 #include <libtransmission/web.h>
@@ -188,11 +189,28 @@ TEST_F(IPCacheTest, blockedBindingHasNoSourceAddress)
         GTEST_SKIP() << "no IPv4 source address on this machine";
     }
 
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_ERROR);
+    tr_logSetQueueEnabled(true);
+    tr_logClearQueue();
+
     // a refused interface binding must not fall back to the default route
     mediator.bind_interface_ = "blocked"sv;
     ip_cache_->invalidate(TR_AF_INET);
     ip_cache_->update_source_addr(TR_AF_INET);
     EXPECT_FALSE(ip_cache_->source_addr(TR_AF_INET));
+
+    // with neither protocol probed successfully, the session's own report of
+    // the binding stands in for an error on every retry
+    ip_cache_->update_source_addr(TR_AF_INET6);
+    EXPECT_FALSE(ip_cache_->source_addr(TR_AF_INET6));
+    for (auto const& msg : tr_logGetQueue()) {
+        ADD_FAILURE() << msg.message;
+    }
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
 }
 
 TEST_F(IPCacheTest, onResponseIPQuery)
