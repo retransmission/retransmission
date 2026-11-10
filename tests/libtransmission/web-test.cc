@@ -667,19 +667,24 @@ TEST_F(WebTest, timeoutIsReported)
 
 using tr::test::LoopbackInterface;
 
-TEST_F(WebTest, interfaceBindingOverridesBindAddress)
+TEST_F(WebTest, interfaceBindingKeepsBindAddress)
 {
-#ifdef _WIN32
-    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
-#else
-    // binding to 192.0.2.1 fails, so only the interface can carry the fetch
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
+    // the loopback interface reaches the server, but 192.0.2.1 isn't
+    // its address, so a fetch that dropped the bind address would succeed
     mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
     mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
 
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
-#endif
 }
 
 TEST_F(WebTest, missingInterfaceFailsInsteadOfFallingBack)
@@ -711,11 +716,11 @@ TEST_F(WebTest, blockedInterfaceIsRefused)
 
 TEST_F(WebTest, bindInterfaceCapturedWhenQueued)
 {
-#ifdef _WIN32
-    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
-#else
-    // binding to 192.0.2.1 fails, so only the loopback interface can carry the fetch
-    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
+    // the fetch succeeds only if it keeps the binding it was queued with
     mediator_.bind_interface_ = std::string{ LoopbackInterface };
     auto gate = ThreadGate{};
     auto paused = pauseWebThread(gate.future());
@@ -727,27 +732,25 @@ TEST_F(WebTest, bindInterfaceCapturedWhenQueued)
 
     ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
     EXPECT_EQ(200, response.get().status);
-#endif
 }
 
 TEST_F(WebTest, connectionsNotReusedAcrossBindInterfaces)
 {
-#ifdef _WIN32
-    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
-#else
-    // only the interface differs between the two fetches
-    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
     mediator_.bind_interface_ = std::string{ LoopbackInterface };
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
 
     // curl would reuse the loopback-bound connection for a request that names no
     // interface, which would let this fetch skip binding to 192.0.2.1
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
     mediator_.bind_interface_.reset();
     auto const failure = fetch(options());
     EXPECT_EQ(0, failure.status);
     EXPECT_FALSE(failure.did_connect);
-#endif
 }
 
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)

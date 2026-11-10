@@ -595,8 +595,6 @@ struct tr_net_interface {
     std::string_view bind_interface,
     bool suppress_msgs = false);
 
-[[nodiscard]] std::optional<std::string> tr_netCurlInterfaceString(std::string_view bind_interface);
-
 [[nodiscard]] tr_socket_t tr_netBindTCP(
     tr_address const& addr,
     tr_port port,

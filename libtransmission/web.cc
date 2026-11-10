@@ -430,22 +430,8 @@ public:
             }
         }
 
-        // Set by initEasy() when this task's sockets are bound to an interface
-        void set_interface_bound() noexcept
-        {
-            interface_bound_ = true;
-        }
-
-        // An interface binding takes precedence over the bind addresses:
-        // an address the interface lacks would make the socket unusable, and
-        // outside Linux, curl binds the socket to the interface (or its
-        // address) after open_socket() creates it, which a socket already
-        // bound to an address could not survive.
         [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
         {
-            if (interface_bound_) {
-                return {};
-            }
             return bind_addresses[type].and_then(&tr_address::from_string);
         }
 
@@ -501,8 +487,6 @@ public:
 
     private:
         tr_web::FetchOptions options_;
-
-        bool interface_bound_ = false;
 
         curl_helpers::easy_unique_ptr easy_;
         CURLM* multi_ = nullptr;
@@ -669,17 +653,15 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
-#if defined(__APPLE__) || defined(__linux__)
-            // Pin the socket as peer sockets are pinned, or fail. curl alone isn't
-            // enough: on macOS it binds only the interface's address, leaving the
-            // egress interface to routing, and on Linux it falls back to that
-            // address when the kernel refuses SO_BINDTODEVICE.
+            // Pin and bind the socket as peer sockets are, or fail. curl's own
+            // CURLOPT_INTERFACE isn't enough: on macOS it binds only the interface's
+            // address, leaving the egress interface to routing, and on Linux it falls
+            // back to that address when the kernel refuses SO_BINDTODEVICE.
             if (auto const& bind_interface = task->bind_interface;
                 bind_interface && !tr_netSetSocketInterface(sock, tr_af_to_ip_protocol(address->family), *bind_interface)) {
                 tr_net_close_socket(sock);
                 return CURL_SOCKET_BAD;
             }
-#endif
 
             if (auto const bind_addr = task->bind_address(tr_af_to_ip_protocol(address->family))) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
@@ -723,22 +705,11 @@ public:
             return false;
         }
 
-        // N.B. DO NOT set CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE, nor an address in
-        // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
-        // address family it resolved, so an IPv4 bind address would also be forced onto
-        // IPv6 sockets. open_socket() binds each socket according to its resolved family
-        // instead. An interface name ("if!eth0") suits both families, so it goes to curl,
-        // except on Linux, where open_socket() binds to the interface itself; on macOS,
-        // curl binds only its address, so open_socket() also pins the interface.
+        // N.B. DO NOT set CURLOPT_LOCALPORT, CURLOPT_LOCALPORTRANGE, or CURLOPT_INTERFACE.
+        // curl applies them to every socket it opens regardless of the address family it
+        // resolved, and binds after open_socket(), which has already pinned the interface
+        // and bound the address of the socket's family.
         // Separate multi handles isolate the connection caches for different bindings.
-        if (auto const& bind_interface = task.bind_interface; bind_interface) {
-            if (auto const curl_interface = tr_netCurlInterfaceString(*bind_interface); curl_interface) {
-#ifndef __linux__
-                (void)curl_easy_setopt(e, CURLOPT_INTERFACE, curl_interface->c_str());
-#endif
-                task.set_interface_bound();
-            }
-        }
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
@@ -971,9 +942,8 @@ public:
         return true;
     }
 
-    // curl's connection cache can't tell bindings apart: open_socket() binds by
-    // address behind its back, and a request without CURLOPT_INTERFACE may reuse a
-    // connection that had one. So each binding gets its own multi handle.
+    // curl's connection cache can't tell bindings apart, since open_socket()
+    // binds behind its back. So each binding gets its own multi handle.
     [[nodiscard]] bool current_multi_fits(Task const& task) const noexcept
     {
         auto const& node = multi_pool_.back();

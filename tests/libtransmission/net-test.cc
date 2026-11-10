@@ -1111,19 +1111,6 @@ TEST_F(NetTest, effectiveBindInterface)
     }
 }
 
-TEST_F(NetTest, curlInterfaceString)
-{
-    EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
-    EXPECT_FALSE(tr_netCurlInterfaceString("  "sv));
-
-    auto const bound = tr_netCurlInterfaceString(" utun4 "sv);
-    ASSERT_TRUE(bound);
-    EXPECT_EQ("if!utun4"sv, *bound);
-
-    // blocked is refused before the request reaches curl, so it gets no interface string
-    EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
-}
-
 TEST_F(NetTest, addressTags)
 {
     using Origin = tr_net_address_origin;

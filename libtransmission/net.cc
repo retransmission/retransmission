@@ -687,18 +687,6 @@ bool tr_netSetSocketInterface(
 #endif
 }
 
-std::optional<std::string> tr_netCurlInterfaceString(std::string_view const bind_interface)
-{
-    // blocked gets no interface string: tr_web refuses the fetch before
-    // curl is involved, rather than naming an interface that can't exist
-    auto const name = tr_net_effective_bind_interface(bind_interface);
-    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
-        return {};
-    }
-
-    return fmt::format("if!{}", name);
-}
-
 // - TCP Sockets
 
 void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos, tr_address_type type)
