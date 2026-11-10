@@ -1636,3 +1636,45 @@ TEST_F(LocalDataWorkersTest, readsThatArriveDuringASweepWaitForTheNext)
 
     local_data.shutdown();
 }
+
+TEST_F(LocalDataWorkersTest, hashesTakeTurnsWithReadsAndWrites)
+{
+    // Pieces 0-2 are on disk in their own files, none of them open yet, so
+    // they are hashed from the disk and the page cache can't answer a read.
+    // Piece 3 is written. One worker, so the callbacks arrive in the order
+    // the worker took the ops.
+    auto const local_data = makeLocalData(
+        makeDescriptor(
+            { { "a.bin", BlockSize }, { "b.bin", BlockSize }, { "c.bin", BlockSize }, { "d.bin", BlockSize } },
+            BlockSize),
+        1U);
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("c.bin"), patternString(2U * BlockSize, BlockSize)));
+
+    auto events = std::vector<std::string>{};
+    auto const hash_piece = [&local_data, &events](tr_piece_index_t const piece) {
+        local_data->test_piece(TorId, piece, [&events](auto, tr_piece_index_t const hashed, tr_error const& error, auto) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back(fmt::format("hashed {}", hashed));
+        });
+    };
+
+    // two hashes waiting, then a read and a write
+    local_data->set_workers_paused(true);
+    hash_piece(0U);
+    hash_piece(1U);
+    local_data->read(TorId, { .begin = 2U * BlockSize, .end = 3U * BlockSize }, [&events](auto, auto, auto const& error, auto) {
+        EXPECT_FALSE(error) << error;
+        events.emplace_back("read");
+    });
+    pumpOnce();
+    writeBlocks(*local_data, 3U * BlockSize, 4U * BlockSize, [&events] { events.emplace_back("wrote"); });
+    local_data->set_workers_paused(false);
+
+    // the second hash waits for its next turn
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 4U; }));
+    EXPECT_EQ((std::vector<std::string>{ "hashed 0", "read", "wrote", "hashed 1" }), events);
+
+    local_data->shutdown();
+}

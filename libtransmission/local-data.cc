@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::ranges::shuffle
+#include <array>
 #include <atomic>
 #include <cerrno>
 #include <chrono>
@@ -374,7 +375,10 @@ private:
  * A worker takes the sweep's first op along with the ops that continue
  * it and does the whole run with one call. That turns the swarm's
  * scattered block requests into sequential disk IO of up to MaxRunBytes.
- * A worker alternates between reads and writes when both are waiting.
+ * A worker takes a piece hash, a run of reads, and a run of writes in
+ * turn, skipping the kinds that have nothing waiting, so that a flood
+ * of one kind can't starve the others. A hash can read a whole piece
+ * from the disk, which is why it gets no more than its turn.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.
@@ -1042,9 +1046,12 @@ private:
     {
         auto scratch = std::vector<uint8_t>{};
 
-        // When reads and writes are both waiting, take turns, so that
-        // neither seeding nor downloading starves the other.
-        auto reads_first = true;
+        // The kinds of work, in the order a worker takes its turns at them.
+        enum class Kind : uint8_t { Hash, Reads, Writes };
+        static auto constexpr Kinds = std::array{ Kind::Hash, Kind::Reads, Kind::Writes };
+
+        // Each pass starts with the kind after the one it took last.
+        auto next = size_t{};
 
         for (;;) {
             auto test = std::optional<PendingTest>{};
@@ -1053,28 +1060,37 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &reads, &writes, reads_first] {
+                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
                     if (paused_) {
                         return false;
                     }
 
-                    if (!std::empty(pending_tests_)) {
-                        test = std::move(pending_tests_.front());
-                        pending_tests_.pop_front();
-                        return true;
+                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
+                        auto const turn = (next + i) % std::size(Kinds);
+                        switch (Kinds[turn]) {
+                        case Kind::Hash:
+                            if (!std::empty(pending_tests_)) {
+                                test = std::move(pending_tests_.front());
+                                pending_tests_.pop_front();
+                            }
+                            break;
+
+                        case Kind::Reads:
+                            reads = take_run(read_sweep_, pending_reads_);
+                            break;
+
+                        case Kind::Writes:
+                            writes = take_run(write_sweep_, pending_writes_);
+                            break;
+                        }
+
+                        if (test || !std::empty(reads) || !std::empty(writes)) {
+                            next = (turn + 1U) % std::size(Kinds);
+                            return true;
+                        }
                     }
 
-                    if (reads_first) {
-                        reads = take_run(read_sweep_, pending_reads_);
-                    }
-                    if (std::empty(reads)) {
-                        writes = take_run(write_sweep_, pending_writes_);
-                    }
-                    if (!reads_first && std::empty(writes)) {
-                        reads = take_run(read_sweep_, pending_reads_);
-                    }
-
-                    return !std::empty(reads) || !std::empty(writes) || stopping_;
+                    return stopping_;
                 });
             }
 
@@ -1082,10 +1098,8 @@ private:
                 exec_test(std::move(*test));
             } else if (!std::empty(reads)) {
                 exec_read_run(std::move(reads), scratch);
-                reads_first = false;
             } else if (!std::empty(writes)) {
                 exec_write_run(std::move(writes), scratch);
-                reads_first = true;
             } else {
                 return;
             }
