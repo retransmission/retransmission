@@ -97,6 +97,8 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  *                    Empty means `tr_sys_path_remove()`.
  *                    It may be called on a background thread, though never by two at once,
  *                    and the filename view is only valid for the duration of the call.
+ *                    It must not call back into the session, which can be waiting for it
+ *                    to return while holding the session's lock.
  * @see `tr_sessionGetDefaultSettings()`
  * @see `tr_sessionLoadSettings()`
  * @see `tr_getDefaultConfigDir()`
