@@ -250,6 +250,42 @@ TEST_F(TorrentFilesCrossFilesystemTest, moveRemovesCopiedSources)
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
 }
 
+TEST_F(TorrentFilesCrossFilesystemTest, moveThatMayOnlyRenameLeavesACopyAlone)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ otherFilesystemDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+
+    auto error = tr_error{};
+    auto needs_copy = false;
+    EXPECT_FALSE(files.move(roots, target, "name", &error, &needs_copy));
+    EXPECT_TRUE(needs_copy);
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/name"sv }));
+}
+
+TEST_F(TorrentFilesTest, moveThatMayOnlyRenameRenames)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+
+    auto error = tr_error{};
+    auto needs_copy = false;
+    EXPECT_TRUE(files.move(roots, target, "name", &error, &needs_copy));
+    EXPECT_FALSE(needs_copy);
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/a"sv }));
+}
+
 TEST_F(TorrentFilesCrossFilesystemTest, failedMoveKeepsCopiedSources)
 {
     expectFailedMoveKeepsSources(tr_pathbuf{ otherFilesystemDir(), "/target"sv });

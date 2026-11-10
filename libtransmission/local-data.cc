@@ -74,15 +74,18 @@ namespace
 
 // Puts the torrent's files under `target.parent`. Returns what's left to
 // clean up at the old location, or nothing with `error` set.
+// With `needs_copy`, a move that would have to copy files moves nothing
+// and sets that instead of `error`. See tr_torrent_files::move().
 [[nodiscard]] std::optional<tr_torrent_files::MoveLeftovers> place_files(
     StorageDescriptor const& desc,
     LocalData::MoveTarget const& target,
-    tr_error& error)
+    tr_error& error,
+    bool* const needs_copy = nullptr)
 {
     auto const paths = search_paths(desc.download_dir, desc.incomplete_dir);
-    auto leftovers = desc.files.move(paths, target.parent, desc.name, &error);
+    auto leftovers = desc.files.move(paths, target.parent, desc.name, &error, needs_copy);
     if (!leftovers) {
-        if (!error) {
+        if (!error && (needs_copy == nullptr || !*needs_copy)) {
             error.set_from_errno(EIO);
         }
         return {};
@@ -551,13 +554,15 @@ public:
                 }
 
                 post_admin(
-                    long_lane_,
+                    short_lane_,
                     [this,
                      desc = std::move(desc),
                      job = MoveJob{ .id = id,
                                     .target = std::move(target),
                                     .on_move = std::move(on_move),
-                                    .on_placed = std::move(on_placed) }] mutable { exec_place(*desc, std::move(job)); });
+                                    .on_placed = std::move(on_placed) }] mutable {
+                        exec_place(std::move(desc), std::move(job), false);
+                    });
                 return true;
             };
 
@@ -709,6 +714,15 @@ public:
         retained_.set_capacity(max_bytes);
     }
 
+    void hold_copy_lane(bool const held)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            long_lane_.held = held;
+        }
+        admin_cv_.notify_all();
+    }
+
 private:
     struct ReadOp {
         tr_byte_span_t span;
@@ -743,7 +757,11 @@ private:
     };
 
     // Admin disk work, one job at a time per lane.
-    using AdminLane = std::deque<std::function<void()>>;
+    struct AdminLane {
+        std::deque<std::function<void()>> jobs;
+        // A held lane starts no job. See detail::hold_copy_lane().
+        bool held = false;
+    };
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
 
@@ -1288,13 +1306,13 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                admin_cv_.wait(lock, [this, &lane] { return !paused_ && (!std::empty(lane) || stopping_); });
-                if (std::empty(lane)) {
+                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
+                if (std::empty(lane.jobs)) {
                     return;
                 }
 
-                job = std::move(lane.front());
-                lane.pop_front();
+                job = std::move(lane.jobs.front());
+                lane.jobs.pop_front();
             }
 
             job();
@@ -1305,7 +1323,7 @@ private:
     {
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            lane.emplace_back(std::move(job));
+            lane.jobs.emplace_back(std::move(job));
         }
         admin_cv_.notify_all();
     }
@@ -1324,10 +1342,23 @@ private:
 
     // Put the files in place. The session thread saves the new location
     // before the old one is cleared, so a kill can't lose track of the files.
-    void exec_place(StorageDescriptor const& desc, MoveJob job)
+    //
+    // Every move starts on the short lane, where it may rename but not
+    // copy. One that finds a file to copy from another filesystem moves
+    // nothing and goes to the long lane to start over. So a torrent whose
+    // move only renames never waits, barrier up, for another torrent's copy.
+    // A rename that fails falls back to a copy wherever the move is running.
+    void exec_place(std::shared_ptr<StorageDescriptor const> desc, MoveJob job, bool const may_copy)
     {
         auto error = tr_error{};
-        auto leftovers = place_files(desc, job.target, error);
+        auto needs_copy = false;
+        auto leftovers = place_files(*desc, job.target, error, may_copy ? nullptr : &needs_copy);
+        if (needs_copy) {
+            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+                exec_place(std::move(desc), std::move(job), true);
+            });
+            return;
+        }
 
         // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
         post_completion([this, job = std::move(job), error = std::move(error), leftovers = std::move(leftovers)] mutable {
@@ -1407,6 +1438,7 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
+            long_lane_.held = false;
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
@@ -1615,12 +1647,16 @@ private:
     std::condition_variable work_cv_;
     std::condition_variable admin_cv_;
 
-    // Separate threads, so that a long copy holds up neither the data ops
-    // nor a quick rename or removal.
-    // Places moved files, one move at a time: concurrent copies only make a disk seek.
+    // Admin disk work has two threads of its own, so that it holds up no
+    // data op.
+    //
+    // The long lane places the files of the moves that have to copy from
+    // another filesystem, one move at a time: concurrent copies only make
+    // a disk seek.
     AdminLane long_lane_;
-    // Everything else, including clearing a move's old location, which
-    // on the long lane would wait behind other torrents' whole copies.
+    // The short lane does everything else: moves that only rename,
+    // renames, removals, and clearing a move's old location. On the long
+    // lane each of those would wait behind other torrents' whole copies.
     AdminLane short_lane_;
 
     std::deque<PendingTest> pending_tests_;
@@ -1907,6 +1943,13 @@ void LocalData::set_workers_paused(bool const paused)
 {
     if (threaded_) {
         threaded_->set_paused(paused);
+    }
+}
+
+void detail::hold_copy_lane(LocalData& local_data, bool const held)
+{
+    if (local_data.threaded_) {
+        local_data.threaded_->hold_copy_lane(held);
     }
 }
 

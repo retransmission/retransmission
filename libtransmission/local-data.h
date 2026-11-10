@@ -37,7 +37,17 @@ class tr_torrents;
 namespace tr
 {
 
+class LocalData;
 struct StorageDescriptor;
+
+namespace detail
+{
+
+// For tests. While the copy lane is held, no move that has to copy
+// files from another filesystem starts placing them.
+void hold_copy_lane(LocalData& local_data, bool held);
+
+} // namespace detail
 
 /**
  * All torrent local-data IO goes through here.
@@ -372,6 +382,8 @@ public:
     void pump();
 
 private:
+    friend void detail::hold_copy_lane(LocalData& local_data, bool held);
+
     // A completion waiting to be delivered.
     // A read completion owns the buffer it read into and can't be copied,
     // so std::function can't hold one.

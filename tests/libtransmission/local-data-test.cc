@@ -1242,8 +1242,40 @@ TEST_F(LocalDataWorkersTest, renameChecksFirstAndLeavesTheDiskWorkToAWorker)
     local_data->shutdown();
 }
 
-TEST_F(LocalDataWorkersTest, aStuckRemovalDoesntHoldUpPlacingAnotherTorrentsFiles)
+TEST_F(LocalDataWorkersTest, aMoveThatOnlyRenamesStaysOffTheCopyLane)
 {
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+
+    // nothing that needs the copy lane can start...
+    tr::detail::hold_copy_lane(*local_data, true);
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&moved](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            moved = true;
+        });
+
+    // ...and a move within one filesystem finishes all the same
+    EXPECT_TRUE(pumpUntil([&moved]() { return moved; }));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
+{
+    if (!tr_sys_path_exists("/dev/shm"sv)) {
+        GTEST_SKIP() << "no /dev/shm";
+    }
+    auto const other_filesystem = tr::test::Sandbox{ "/dev/shm" };
+    if (tr_sys_path_is_same_filesystem(sandboxDir(), other_filesystem.path())) {
+        GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
+    }
+
     static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
     ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
     createFileWithContents(pathOf("other/data.bin"), patternString(0U, BlockSize));
@@ -1258,41 +1290,41 @@ TEST_F(LocalDataWorkersTest, aStuckRemovalDoesntHoldUpPlacingAnotherTorrentsFile
         return id == TorId ? mine : std::shared_ptr<tr::StorageDescriptor const>{ theirs };
     });
 
-    auto const session_thread = std::this_thread::get_id();
-    auto release = std::promise<void>{};
-    auto released = release.get_future().share();
-    auto removing = std::atomic<bool>{ false };
-    auto removed = false;
-    local_data.remove(
+    // my move has to copy to another filesystem, and the copy lane is busy
+    tr::detail::hold_copy_lane(local_data, true);
+    auto const copy_target = tr_pathbuf{ other_filesystem.path(), "/target"sv };
+    auto events = std::vector<std::string>{};
+    local_data.move(
         TorId,
-        [&removing, released, session_thread](std::string_view const filename, tr_error* const error) {
-            EXPECT_NE(session_thread, std::this_thread::get_id());
-            removing = true;
-            released.wait();
-            return tr_sys_path_remove(filename, error);
-        },
-        [&removed](tr_torrent_id_t, tr_error const& error) {
+        [&copy_target] { return tr::LocalData::MoveTarget{ .parent = std::string{ copy_target.sv() } }; },
+        [&events](auto, auto, tr_error const& error) {
             EXPECT_FALSE(error) << error;
-            removed = true;
-        });
-    EXPECT_TRUE(pumpUntil([&removing] { return removing.load(); }));
+            events.emplace_back("copied");
+        },
+        [&events](auto, auto) { events.emplace_back("copy placed"); });
 
-    // the files go into place on their own lane
-    auto placed = false;
-    auto moved = false;
+    // their move, queued later, only renames, and doesn't wait for mine
     local_data.move(
         OtherId,
-        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("moved") }; },
-        [&moved](auto, auto, tr_error const& error) {
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("renamed") }; },
+        [&events](auto, auto, tr_error const& error) {
             EXPECT_FALSE(error) << error;
-            moved = true;
-        },
-        [&placed](auto, auto) { placed = true; });
-    EXPECT_TRUE(pumpUntil([&placed]() { return placed; }));
-    EXPECT_FALSE(removed);
+            events.emplace_back("renamed");
+        });
+    EXPECT_TRUE(pumpUntil([&events]() { return !std::empty(events); }));
+    EXPECT_EQ((std::vector<std::string>{ "renamed" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("renamed/data.bin")));
 
-    release.set_value();
-    EXPECT_TRUE(pumpUntil([&removed, &moved]() { return removed && moved; }));
+    // mine has moved nothing yet, and its barrier is still up
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_TRUE(local_data.admin_op_pending(TorId));
+
+    tr::detail::hold_copy_lane(local_data, false);
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 3U; }));
+    EXPECT_EQ((std::vector<std::string>{ "renamed", "copy placed", "copied" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
 
     local_data.shutdown();
 }
