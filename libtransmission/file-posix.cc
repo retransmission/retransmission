@@ -26,7 +26,7 @@
 #include <sys/file.h> /* flock() */
 #endif
 
-#include <sys/uio.h> /* preadv(), preadv2(), RWF_NOWAIT */
+#include <sys/uio.h> /* preadv2(), RWF_NOWAIT */
 
 #ifdef __linux__
 #include <sys/syscall.h> /* __NR_cachestat */
@@ -645,44 +645,6 @@ bool tr_sys_file_can_read_cached() noexcept
 #else
     return false;
 #endif
-}
-
-bool tr_sys_file_readv_at(
-    tr_sys_file_t const handle,
-    std::span<std::span<uint8_t> const> const buffers,
-    uint64_t const offset,
-    uint64_t* const bytes_read,
-    tr_error* const error)
-{
-    TR_ASSERT(handle != TR_BAD_SYS_FILE);
-    TR_ASSERT(!std::empty(buffers) && !std::empty(buffers.front()));
-    /* seek requires signed offset, so it should be in mod range */
-    TR_ASSERT(offset < UINT64_MAX / 2);
-
-#ifdef HAVE_PREADV
-    // One call takes at most this many buffers. The caller reads the
-    // rest with the next.
-    auto iov = std::array<iovec, 64U>{};
-    auto const n_iov = std::min(std::size(buffers), std::size(iov));
-    for (auto i = size_t{}; i < n_iov; ++i) {
-        iov[i] = iovec{ .iov_base = std::data(buffers[i]), .iov_len = std::size(buffers[i]) };
-    }
-    auto const n_read = preadv(handle, std::data(iov), static_cast<int>(n_iov), static_cast<off_t>(offset));
-#else
-    auto const n_read = pread(handle, std::data(buffers.front()), std::size(buffers.front()), static_cast<off_t>(offset));
-#endif
-
-    if (n_read > 0) {
-        if (bytes_read != nullptr) {
-            *bytes_read = static_cast<uint64_t>(n_read);
-        }
-        return true;
-    }
-
-    if (error != nullptr && n_read == -1) {
-        error->set_from_errno(errno);
-    }
-    return false;
 }
 
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)

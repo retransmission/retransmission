@@ -1261,34 +1261,18 @@ private:
             end = std::max(end, op.span.end);
         }
 
-        auto const buffer_of = [](PendingRead const& op) {
-            return std::span{ op.data->data(), op.data->size() };
-        };
-
-        // The run comes off the disk as one read. Adjacent requests are
-        // read straight into their buffers. Duplicate or overlapping ones
-        // share a read into `scratch` and copy out of it. If the one read
-        // fails, each is tried on its own, so that one missing file of
-        // several doesn't fail its neighbors.
+        // The run comes off the disk as one read into `scratch`, and
+        // each request copies its bytes out. Requests may repeat or
+        // overlap one another, and the copy serves those too. If the one
+        // read fails, each is tried on its own, so that one missing file
+        // of several doesn't fail its neighbors.
         auto merged = false;
         if (std::size(run) > 1U) {
-            auto const adjacent = std::ranges::adjacent_find(run, [](PendingRead const& a, PendingRead const& b) {
-                                      return b.span.begin != a.span.end;
-                                  }) == std::end(run);
-            if (adjacent) {
-                auto buffers = std::vector<std::span<uint8_t>>{};
-                buffers.reserve(std::size(run));
+            scratch.resize(static_cast<size_t>(end - begin));
+            merged = !tr_ioRead(desc, open_files_, begin, scratch);
+            if (merged) {
                 for (auto const& op : run) {
-                    buffers.emplace_back(buffer_of(op));
-                }
-                merged = !tr_ioReadv(desc, open_files_, begin, buffers);
-            } else {
-                scratch.resize(static_cast<size_t>(end - begin));
-                merged = !tr_ioRead(desc, open_files_, begin, scratch);
-                if (merged) {
-                    for (auto const& op : run) {
-                        std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
-                    }
+                    std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
                 }
             }
         }
@@ -1296,7 +1280,8 @@ private:
         auto errors = std::vector<tr_error>(std::size(run));
         if (!merged) {
             for (auto i = size_t{}; i < std::size(run); ++i) {
-                errors[i] = tr_ioRead(desc, open_files_, run[i].span.begin, buffer_of(run[i]));
+                auto& data = *run[i].data;
+                errors[i] = tr_ioRead(desc, open_files_, run[i].span.begin, std::span{ data.data(), data.size() });
             }
         }
 

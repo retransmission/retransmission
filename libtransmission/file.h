@@ -9,7 +9,6 @@
 #include <ctime> // time_t
 #include <functional>
 #include <optional>
-#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -362,20 +361,6 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
 
 // False if this build's tr_sys_file_read_cached_at() always returns false.
 [[nodiscard]] bool tr_sys_file_can_read_cached() noexcept;
-
-/**
- * @brief Like tr_sys_file_read_at(), but fills `buffers` in turn.
- *
- * One call fills as many of them as the platform allows, and may stop
- * short as tr_sys_file_read_at() can. `buffers` must not be empty, and
- * neither may its first buffer.
- */
-[[nodiscard]] bool tr_sys_file_readv_at(
-    tr_sys_file_t handle,
-    std::span<std::span<uint8_t> const> buffers,
-    uint64_t offset,
-    uint64_t* bytes_read,
-    tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `write()`.

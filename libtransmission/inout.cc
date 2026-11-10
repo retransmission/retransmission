@@ -11,7 +11,6 @@
 #include <span>
 #include <string_view>
 #include <utility> // std::move
-#include <vector>
 
 #include <fmt/format.h>
 
@@ -59,20 +58,13 @@ bool for_each_file_chunk(tr::StorageDescriptor const& desc, uint64_t const begin
     return true;
 }
 
-// Fills `bufs` in turn, reading `fd` from `file_offset` on.
-bool read_entire_bufs(tr_sys_file_t const fd, uint64_t file_offset, std::span<std::span<uint8_t>> bufs, tr_error& error)
+bool read_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uint8_t> buf, tr_error& error)
 {
     TR_PROFILE_SCOPE("disk.read_syscall_loop");
-    for (;;) {
-        while (!std::empty(bufs) && std::empty(bufs.front())) {
-            bufs = bufs.subspan(1U);
-        }
-        if (std::empty(bufs)) {
-            return true;
-        }
-
+    while (!std::empty(buf)) {
         auto n_read = uint64_t{};
-        if (!tr_sys_file_readv_at(fd, bufs, file_offset, &n_read, &error) || n_read == 0U) {
+
+        if (!tr_sys_file_read_at(fd, std::data(buf), std::size(buf), file_offset, &n_read, &error) || n_read == 0U) {
             // On POSIX, a read at the end of the file fails without an
             // error. The file is shorter than the torrent says it is.
             if (!error) {
@@ -81,17 +73,11 @@ bool read_entire_bufs(tr_sys_file_t const fd, uint64_t file_offset, std::span<st
             return false;
         }
 
+        buf = buf.subspan(n_read);
         file_offset += n_read;
-        while (n_read > 0U) {
-            auto& front = bufs.front();
-            auto const n_used = std::min<uint64_t>(n_read, std::size(front));
-            front = front.subspan(n_used);
-            n_read -= n_used;
-            if (std::empty(front)) {
-                bufs = bufs.subspan(1U);
-            }
-        }
     }
+
+    return true;
 }
 
 bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uint8_t const> buf, tr_error& error)
@@ -167,20 +153,18 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     return {};
 }
 
-// Reads `n_bytes` of one file into `bufs`, which hold that many in all.
 void read_bytes(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_file_index_t const file_index,
     uint64_t const file_offset,
-    std::span<std::span<uint8_t>> const bufs,
-    [[maybe_unused]] uint64_t const n_bytes,
+    std::span<uint8_t> const buf,
     tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
     auto const file_size = desc.files.file_size(file_index);
     TR_ASSERT(file_size == 0U || file_offset < file_size);
-    TR_ASSERT(file_offset + n_bytes <= file_size);
+    TR_ASSERT(file_offset + std::size(buf) <= file_size);
     if (file_size == 0U) {
         return;
     }
@@ -191,7 +175,7 @@ void read_bytes(
     }
 
     auto const io_lock = file->io_lock();
-    read_entire_bufs(file->fd(), file_offset, bufs, error);
+    read_entire_buf(file->fd(), file_offset, buf, error);
 
     if (error) {
         tr_logAddError(
@@ -247,55 +231,22 @@ tr_error tr_ioRead(
     uint64_t const begin,
     std::span<uint8_t> const setme)
 {
-    return tr_ioReadv(desc, open_files, begin, std::array{ setme });
-}
-
-tr_error tr_ioReadv(
-    tr::StorageDescriptor const& desc,
-    tr_open_files& open_files,
-    uint64_t const begin,
-    std::span<std::span<uint8_t> const> const setme)
-{
     TR_PROFILE_SCOPE("disk.read_block");
-    auto len = uint64_t{};
-    for (auto const& buf : setme) {
-        len += std::size(buf);
-    }
-
-    if (len == 0U) {
+    if (std::empty(setme)) {
         return {};
     }
 
-    if (begin + len > desc.block_info.total_size()) {
+    if (begin + std::size(setme) > desc.block_info.total_size()) {
         return tr_error::from_errno(EINVAL);
     }
-
-    // Each file's share of `setme`, trimmed to that file's bytes
-    auto file_bufs = std::vector<std::span<uint8_t>>{};
-    file_bufs.reserve(std::size(setme));
-    auto next = size_t{}; // the first buffer that isn't full yet
-    auto next_used = uint64_t{}; // bytes of it that are
 
     auto error = tr_error{};
     for_each_file_chunk(
         desc,
         begin,
-        len,
-        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t /*done*/, uint64_t const n_bytes) {
-            file_bufs.clear();
-            for (auto remaining = n_bytes; remaining > 0U;) {
-                auto const buf = setme[next].subspan(next_used);
-                auto const n_used = std::min<uint64_t>(remaining, std::size(buf));
-                file_bufs.emplace_back(buf.first(n_used));
-                remaining -= n_used;
-                next_used += n_used;
-                if (next_used == std::size(setme[next])) {
-                    ++next;
-                    next_used = 0U;
-                }
-            }
-
-            read_bytes(desc, open_files, file_index, file_offset, file_bufs, n_bytes, error);
+        std::size(setme),
+        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
+            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), error);
             return !error;
         });
 

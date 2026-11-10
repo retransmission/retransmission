@@ -269,7 +269,6 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
         ntohll
         posix_fadvise
         posix_fallocate
-        preadv
         preadv2
         sendfile64)
 

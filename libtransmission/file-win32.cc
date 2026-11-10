@@ -777,21 +777,6 @@ bool tr_sys_file_can_read_cached() noexcept
     return false;
 }
 
-bool tr_sys_file_readv_at(
-    tr_sys_file_t const handle,
-    std::span<std::span<uint8_t> const> const buffers,
-    uint64_t const offset,
-    uint64_t* const bytes_read,
-    tr_error* const error)
-{
-    TR_ASSERT(!std::empty(buffers) && !std::empty(buffers.front()));
-
-    // ReadFileScatter() needs unbuffered, page-aligned IO. Fill one
-    // buffer per call instead; the caller reads the rest with the next.
-    auto const& buffer = buffers.front();
-    return tr_sys_file_read_at(handle, std::data(buffer), std::size(buffer), offset, bytes_read, error);
-}
-
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
