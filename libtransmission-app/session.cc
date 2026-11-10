@@ -731,6 +731,13 @@ void Session::add_torrent(AddData add, AddOptions options)
         });
 }
 
+void Session::add_created_torrent(std::string_view const torrent_file, std::string_view const top)
+{
+    auto options = AddOptions{};
+    options.download_dir = tr_sys_path_dirname(top);
+    add_torrent(AddData{ torrent_file }, std::move(options));
+}
+
 void Session::on_torrent_add_reply(AddData const& add, RpcResponse const& response)
 {
     if (!response.success) {

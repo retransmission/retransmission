@@ -6,7 +6,6 @@
 #include "Session.h"
 
 #include <string_view>
-#include <utility>
 
 #include <QtGui/QClipboard>
 #include <QtGui/QDesktopServices>
@@ -123,13 +122,6 @@ void Session::onAddReport(AddReport const& report) const
 
         showMessage(QMessageBox::Warning, title, text, use_detail ? detail : QString{});
     }
-}
-
-void Session::addNewlyCreatedTorrent(QString const& filename, QString const& local_path)
-{
-    auto options = tr::app::AddOptions{};
-    options.download_dir = local_path.toStdString();
-    add_torrent(tr::app::AddData{ filename.toStdString() }, std::move(options));
 }
 
 /***

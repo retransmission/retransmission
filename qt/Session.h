@@ -48,8 +48,6 @@ public:
 
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
-
 public slots:
     void launchWebInterface() const;
 
