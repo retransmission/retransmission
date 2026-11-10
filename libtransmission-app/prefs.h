@@ -11,6 +11,7 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -288,6 +289,18 @@ public:
             return tr::serializer::to_variant(key, app_prefs_, session_prefs_).value_or(T{});
         } else {
             return tr::serializer::get<T>(key, app_prefs_, session_prefs_).value_or(T{});
+        }
+    }
+
+    // For a key known at compile time: reads the field directly,
+    // and an unregistered key or a type other than the field's won't compile.
+    template<typename T, tr_quark Key>
+    [[nodiscard]] constexpr T get() const noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        if constexpr (tr::serializer::has_key<AppPrefs>(Key)) {
+            return tr::serializer::get<T, Key>(app_prefs_);
+        } else {
+            return tr::serializer::get<T, Key>(session_prefs_);
         }
     }
 
