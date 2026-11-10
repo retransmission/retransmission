@@ -481,6 +481,7 @@ public:
         return false;
     }
 
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static): same calls as the batching SendQueue
     bool add(void const* /*buf*/, size_t /*buflen*/, sockaddr const* /*to*/, socklen_t /*tolen*/)
     {
         return true;
