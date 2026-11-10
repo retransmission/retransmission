@@ -423,6 +423,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "piece_count"sv, // rpc
     "piece_size"sv, // rpc
     "pieces"sv, // .resume, .torrent, rpc
+    "point_to_point"sv, // rpc
     "port"sv, // rpc
     "port-forwarding-enabled"sv, // daemon, rpc, tr_session::Settings
     "port-is-open"sv, // rpc

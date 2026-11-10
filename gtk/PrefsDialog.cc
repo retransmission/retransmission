@@ -1188,12 +1188,17 @@ auto constexpr FilterDefs = std::array<FilterDef, 4U>{ {
     return { std::next(std::begin(address->tags)), std::end(address->tags) };
 }
 
+// A tunnel passes the Managed by filter whatever manages it: a VPN that
+// wg-quick or OpenVPN brought up is no manager's, yet it is what a user binds to.
 [[nodiscard]] bool passes_filter(
     std::string_view const key,
     std::vector<std::string> const& values,
     Session::NetworkAddress const* const address,
     Session::NetworkInterface const& iface)
 {
+    if (key == "managed_by" && iface.point_to_point) {
+        return true;
+    }
     return std::ranges::any_of(filter_values(key, address, iface), [&values](auto const& value) {
         return std::ranges::find(values, value) != std::end(values);
     });

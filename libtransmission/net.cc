@@ -479,6 +479,7 @@ std::vector<tr_net_interface> tr_net_interfaces()
             continue;
         }
 
+        iter->point_to_point = iter->point_to_point || (ifa->ifa_flags & IFF_POINTOPOINT) != 0U;
         auto& entry = iter->addresses.emplace_back(tr_net_interface_address{ .address = if_addr->address() });
         if (!entry.address.is_ipv6()) {
             continue;

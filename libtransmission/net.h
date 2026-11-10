@@ -611,7 +611,9 @@ enum class tr_net_manager : uint8_t {
 struct tr_net_interface {
     std::string name;
     std::vector<tr_net_interface_address> addresses; // IPv4 first, then IPv6
-    tr_net_nm_state nm_state = tr_net_nm_state::Unknown;
+    tr_net_manager manager = tr_net_manager::Other;
+    // a tunnel, such as a VPN's, rather than a link to a network of hosts
+    bool point_to_point = false;
 };
 
 // short names for an IPv6 address's kind: its type ("gua", "ula", "link-local",

@@ -435,6 +435,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_piece_count,
     TR_KEY_piece_size,
     TR_KEY_pieces,
+    TR_KEY_point_to_point,
     TR_KEY_port,
     TR_KEY_port_forwarding_enabled_kebab_APICOMPAT,
     TR_KEY_port_is_open_kebab_APICOMPAT,

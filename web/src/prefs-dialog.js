@@ -103,6 +103,15 @@ export class PrefsDialog extends EventTarget {
     },
   ];
 
+  // A tunnel passes the Managed by filter whatever manages it: a VPN that
+  // wg-quick or OpenVPN brought up is no manager's, yet it is what a user binds to.
+  static _passesFilter(def, values, address, iface) {
+    if (def.key === 'managed_by' && iface.point_to_point) {
+      return true;
+    }
+    return def.values(address, iface).some((v) => values.includes(v));
+  }
+
   static _BindAddressAdvice = {
     ipv4: 'Recommended: Any. The chosen interface already keeps traffic on it.',
     ipv6: 'Recommended: Any. The chosen interface already keeps traffic on it, and IPv6 addresses change: SLAAC-privacy addresses are replaced regularly, and a new prefix from your provider replaces the rest. To pin one anyway, pick a SLAAC-stable or DHCP address.',
@@ -239,7 +248,7 @@ export class PrefsDialog extends EventTarget {
       iface.name === current ||
       filters.every(({ key, values }) => {
         const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
-        return def.values(null, iface).some((v) => values.includes(v));
+        return PrefsDialog._passesFilter(def, values, null, iface);
       });
     const all_names = this.network_interfaces.map(({ name }) => name);
     const names = this.network_interfaces
@@ -361,7 +370,7 @@ export class PrefsDialog extends EventTarget {
           return true;
         }
         const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
-        return def.values(address, iface).some((v) => values.includes(v));
+        return PrefsDialog._passesFilter(def, values, address, iface);
       });
     const groups = interfaces
       .map((iface) => ({
@@ -464,7 +473,7 @@ export class PrefsDialog extends EventTarget {
       }));
     const passes = (filters, address, iface) =>
       filters.every(({ def: d, values }) =>
-        d.values(address, iface).some((v) => values.includes(v)),
+        PrefsDialog._passesFilter(d, values, address, iface),
       );
     const for_interfaces = others.filter(({ def: d }) => !d.family);
     const for_addresses = others.filter(({ def: d }) => d.family);

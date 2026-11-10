@@ -138,7 +138,8 @@ public:
     struct NetworkInterface {
         std::string name;
         std::vector<NetworkAddress> addresses; // IPv4 first
-        std::string network_manager; // e.g. "configured"; empty where NetworkManager doesn't report
+        std::string managed_by; // e.g. "networkmanager"; empty from a session that doesn't report it
+        bool point_to_point = false; // a tunnel, such as a VPN's
     };
 
     // What the session reports about its interface binding.
