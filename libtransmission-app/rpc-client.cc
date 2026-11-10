@@ -94,6 +94,7 @@ void RpcClient::fetch(
     auto on_fetched = [this, generation = generation_, on_done = std::move(on_done)](tr_web::FetchResponse const& response) {
         // Init-captured so that the member isn't const.
         // A plain capture of a const& would make every move of this closure a copy.
+        // NOLINTNEXTLINE(bugprone-exception-escape): MSVC STL's std::map move constructor allocates
         run_on_ui_thread_([this, generation, on_done, response = tr_web::FetchResponse{ response }] {
             if (generation == generation_) {
                 on_done(response);
