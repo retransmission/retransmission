@@ -246,9 +246,19 @@ public:
     // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
     // call unless `add` is a URL.
     // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
-    // it expires, after `stop()` or after this Session is destroyed does nothing at all: no
+    // it expires, after `stop()` or after this Session is destroyed does nothing with `add`: no
     // disposal, no report, no `on_resolved`. So the user can accept or cancel during a fetch.
     void resolve_add(AddData add, std::weak_ptr<void const> wanted, std::function<void(std::optional<AddData>)> on_resolved);
+
+    // Whether an add is waiting on a URL fetch, e.g. for a busy cursor:
+    // `resolve_add()`'s own, or the session's for a URL that `add_torrent()` sent it.
+    [[nodiscard]] constexpr bool add_fetch_pending() const noexcept
+    {
+        return add_fetches_in_flight_ > 0U;
+    }
+
+    // when `add_fetch_pending()` changes
+    sigslot::signal<> add_fetch_changed;
 
     // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
     // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
@@ -565,6 +575,8 @@ private:
     // queues `torrent_add_report` for the UI loop's next turn, if the batch has ended
     void schedule_add_report();
 
+    void set_add_fetches_in_flight(size_t n);
+
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);
 
@@ -622,7 +634,7 @@ private:
 
     AddReport add_report_;
     size_t adds_in_flight_ = 0U; // `torrent_add` requests
-    size_t add_fetches_in_flight_ = 0U; // `resolve_add()` fetches
+    size_t add_fetches_in_flight_ = 0U; // URL fetches: `resolve_add()`'s, and the session's for a URL sent to it
 
     // Like `alive_`, and replaced by `stop()`: an add from before a stop is forgotten.
     std::shared_ptr<std::monostate const> adds_alive_ = std::make_shared<std::monostate const>();
