@@ -202,6 +202,13 @@ Application::Application(
             dialog->show();
             QApplication::alert(dialog);
         });
+    add_fetch_connection_ = session_->add_fetch_changed.connect_scoped([this] {
+        if (session_->add_fetch_pending()) {
+            QApplication::setOverrideCursor(Qt::BusyCursor);
+        } else {
+            QApplication::restoreOverrideCursor();
+        }
+    });
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
         // the trackers of a new torrent, and of one whose trackers changed
         for (auto const row : changes.inserted) {

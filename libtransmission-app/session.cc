@@ -222,7 +222,7 @@ void Session::stop()
     adds_alive_ = std::make_shared<std::monostate const>();
     add_report_ = {};
     adds_in_flight_ = 0U;
-    add_fetches_in_flight_ = 0U;
+    set_add_fetches_in_flight(0U); // nothing from before the stop will end one
 
     if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
         close_thread_ = std::thread{ [this, session] {
@@ -628,7 +628,7 @@ void Session::resolve_add(
 
     auto url = add.source;
 
-    ++add_fetches_in_flight_;
+    set_add_fetches_in_flight(add_fetches_in_flight_ + 1U);
     rpc_.fetch(
         std::move(url),
         Timeout,
@@ -641,7 +641,7 @@ void Session::resolve_add(
                 return;
             }
 
-            --add_fetches_in_flight_;
+            set_add_fetches_in_flight(add_fetches_in_flight_ - 1U);
 
             if (!wanted.expired()) {
                 if (response.status == 200 && tr_torrent_metainfo{}.parse_benc(response.body)) {
@@ -707,6 +707,11 @@ void Session::add_torrent(AddData add, AddOptions options)
     add_file_indices(TR_KEY_priority_low, options.priority_low);
     add_file_indices(TR_KEY_priority_high, options.priority_high);
 
+    // the session fetches a URL before it replies
+    if (add.type == AddData::Type::Url) {
+        set_add_fetches_in_flight(add_fetches_in_flight_ + 1U);
+    }
+
     ++adds_in_flight_;
     send(
         TR_KEY_torrent_add,
@@ -717,6 +722,10 @@ void Session::add_torrent(AddData add, AddOptions options)
             }
 
             --adds_in_flight_;
+            if (add.type == AddData::Type::Url) {
+                set_add_fetches_in_flight(add_fetches_in_flight_ - 1U);
+            }
+
             on_torrent_add_reply(add, response);
             schedule_add_report();
         });
@@ -751,6 +760,16 @@ void Session::drop_duplicate(AddData const& add, std::string_view const hash_str
 
     if (!add.from_watch_dir) {
         add_report_.duplicates.emplace_back(add.readable_short_name(), std::string{ hash_string });
+    }
+}
+
+void Session::set_add_fetches_in_flight(size_t const n)
+{
+    auto const was_pending = add_fetch_pending();
+    add_fetches_in_flight_ = n;
+
+    if (was_pending != add_fetch_pending()) {
+        add_fetch_changed();
     }
 }
 

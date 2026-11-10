@@ -2012,6 +2012,90 @@ TEST_F(AppSessionLifecycleTest, aUrlFetchedAcrossAStopPromptsNothing)
     EXPECT_EQ(0, prompts);
 }
 
+TEST_F(AppSessionLifecycleTest, aFetchIsPendingUntilItLands)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get("not a torrent");
+
+    auto changes = 0;
+    auto const tag = session_.add_fetch_changed.connect_scoped([&changes] { ++changes; });
+
+    auto const wanted = std::make_shared<int const>();
+    auto resolved = false;
+    session_.resolve_add(
+        AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) },
+        wanted,
+        [&resolved](std::optional<AddData> const& /*result*/) { resolved = true; });
+    EXPECT_TRUE(session_.add_fetch_pending());
+    EXPECT_EQ(1, changes);
+
+    ASSERT_TRUE(loop_.pump_until([&resolved] { return resolved; }));
+    EXPECT_FALSE(session_.add_fetch_pending());
+    EXPECT_EQ(2, changes);
+}
+
+// the session fetches a URL it is sent before it replies
+TEST_F(AppSessionLifecycleTest, aUrlSentToTheSessionIsPendingUntilItReplies)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    start_negotiated(server);
+
+    auto changes = 0;
+    auto const tag = session_.add_fetch_changed.connect_scoped([&changes] { ++changes; });
+
+    session_.add_torrent(AddData{ MagnetLink });
+    EXPECT_FALSE(session_.add_fetch_pending());
+
+    session_.add_torrent(AddData{ "https://example.com/x.torrent"sv });
+    session_.add_torrent(AddData{ "https://example.com/y.torrent"sv }); // a second fetch changes nothing
+    EXPECT_TRUE(session_.add_fetch_pending());
+    EXPECT_EQ(1, changes);
+
+    EXPECT_TRUE(loop_.pump_until([this] { return !session_.add_fetch_pending(); }));
+    EXPECT_EQ(2, changes);
+}
+
+TEST_F(AppSessionLifecycleTest, aFetchNobodyWantsStillEndsItsPending)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get("not a torrent");
+
+    auto wanted = std::make_shared<int const>();
+    session_.resolve_add(
+        AddData{ fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port()) },
+        wanted,
+        [](std::optional<AddData> const& /*result*/) {});
+    wanted.reset();
+    EXPECT_TRUE(session_.add_fetch_pending());
+
+    EXPECT_TRUE(loop_.pump_until([this] { return !session_.add_fetch_pending(); }));
+}
+
+TEST_F(AppSessionLifecycleTest, aStopEndsAPendingFetch)
+{
+    auto server = MockRpcServer{ /*advertise_tr5=*/true };
+    server.serve_on_get("not a torrent");
+
+    auto changes = 0;
+    auto const tag = session_.add_fetch_changed.connect_scoped([&changes] { ++changes; });
+
+    auto const url = fmt::format("http://127.0.0.1:{:d}/x.torrent", server.port());
+    session_.request_add(AddData{ url }, Session::AddPrompt::Always);
+    ASSERT_TRUE(session_.add_fetch_pending());
+
+    session_.stop();
+    EXPECT_FALSE(session_.add_fetch_pending());
+    EXPECT_EQ(2, changes);
+
+    // a fetch sent after the stop lands after the one sent before it
+    auto done = false;
+    rpc_.fetch(url, std::chrono::seconds{ 30 }, [&done](tr_web::FetchResponse const& /*response*/) { done = true; });
+    ASSERT_TRUE(loop_.pump_until([&done] { return done; }));
+    loop_.drain();
+    EXPECT_FALSE(session_.add_fetch_pending());
+    EXPECT_EQ(2, changes);
+}
+
 TEST_F(AppSessionLifecycleTest, startEmbeddedIgnoresTheRemotePrefs)
 {
     set_remote_prefs("example.com"sv, 9091);
