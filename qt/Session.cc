@@ -98,9 +98,11 @@ void Session::onAddReport(AddReport const& report) const
             lines.push_back(QStringLiteral("    ") + Utils::qstringFromUtf8(failure.errmsg));
         }
 
-        auto const count = static_cast<int>(std::size(failed));
-        auto const text = TR_FORMAT_N("Unable to add {count:L} torrent(s)", count, fmt::arg("count", count));
-        showMessage(QMessageBox::Warning, tr("Error Adding Torrent"), text, lines.join(QStringLiteral("\n")));
+        showMessage(
+            QMessageBox::Warning,
+            tr("Error Adding Torrent"),
+            tr("Couldn't add torrents"),
+            lines.join(QStringLiteral("\n")));
     }
 
     auto lines = QStringList{};
