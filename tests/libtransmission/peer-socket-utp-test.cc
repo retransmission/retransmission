@@ -207,6 +207,19 @@ TEST_F(PeerSocketUtpTest, readingReopensFullReceiveWindow)
     EXPECT_GT(readAll(), size_t{});
 }
 
+// While the window has room for a packet, the sender keeps sending, so the window update
+// from a read waits for the ACK of the sender's next batch instead of costing its own packet.
+TEST_F(PeerSocketUtpTest, readingWithRoomLeftSendsNoExtraAck)
+{
+    ASSERT_NO_FATAL_FAILURE(connect());
+    auto const n_written = utp_write(sock_, std::data(chunk_), std::size(chunk_));
+    ASSERT_GT(n_written, 0);
+    deliverAll();
+
+    EXPECT_EQ(static_cast<size_t>(n_written), readAll());
+    EXPECT_TRUE(std::empty(sender_.inbox));
+}
+
 } // namespace
 } // namespace tr::test
 
