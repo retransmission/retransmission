@@ -37,12 +37,23 @@ public:
     template<typename Func, typename... Args>
     void queue(Func&& func, Args&&... args)
     {
-        queue(callback_t{ std::bind_front(std::forward<Func>(func), std::forward<Args>(args)...) });
+        queue(make_callback(std::forward<Func>(func), std::forward<Args>(args)...));
     }
 
     template<typename Func, typename... Args>
     void run(Func&& func, Args&&... args)
     {
-        run(callback_t{ std::bind_front(std::forward<Func>(func), std::forward<Args>(args)...) });
+        run(make_callback(std::forward<Func>(func), std::forward<Args>(args)...));
+    }
+
+private:
+    // A lambda, not std::bind_front: with libstdc++ 14.2 headers,
+    // clang finds std::bind_front's result not invocable.
+    template<typename Func, typename... Args>
+    [[nodiscard]] static callback_t make_callback(Func&& func, Args&&... args)
+    {
+        return [func = std::forward<Func>(func), ... args = std::forward<Args>(args)] mutable {
+            std::invoke(func, args...);
+        };
     }
 };
