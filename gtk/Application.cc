@@ -8,6 +8,7 @@
 #include "Actions.h"
 #include "DetailsDialog.h"
 #include "Dialogs.h"
+#include "DirMonitor.h"
 #include "FilterBar.h"
 #include "GtkCompat.h"
 #include "MainWindow.h"
@@ -31,6 +32,7 @@
 #include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/session.h>
 #include <libtransmission-app/startup-coordinator.h>
+#include <libtransmission-app/watch-dir.h>
 
 #include <libtransmission/api-compat.h>
 #include <libtransmission/converters.h>
@@ -245,7 +247,9 @@ private:
 
     // Declared after core_, which they observe.
     GlibTimerMaker timer_maker_;
+    GioDirMonitorMaker dir_monitor_maker_;
     std::unique_ptr<tr::app::SessionPoller> poller_;
+    std::unique_ptr<tr::app::WatchDir> watch_dir_;
     sigslot::scoped_connection contended_tag_;
     sigslot::scoped_connection closed_tag_;
     sigslot::scoped_connection add_prompt_tag_;
@@ -535,6 +539,7 @@ void Application::Impl::on_startup()
 
     core_ = Session::create(config_dir_, prefs_, rpc_);
     poller_ = std::make_unique<tr::app::SessionPoller>(*core_, timer_maker_);
+    watch_dir_ = std::make_unique<tr::app::WatchDir>(*core_, prefs_, timer_maker_, dir_monitor_maker_);
     contended_tag_ = core_->config_dir_contended.connect_scoped([this] { config_dir_contended_ = true; });
     closed_tag_ = core_->closed.connect_scoped([this] {
         // `core_` is mid-emit, so tear it down from a later turn of the loop
@@ -859,6 +864,7 @@ bool Application::Impl::on_session_closed()
     prefs_dialog_.reset();
     wind_.reset();
 
+    watch_dir_.reset();
     poller_.reset();
     core_.reset();
 
