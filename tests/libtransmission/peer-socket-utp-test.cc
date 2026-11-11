@@ -291,8 +291,8 @@ TEST_F(PeerSocketUtpTest, overrunIsReportedAfterReadsStop)
 }
 
 // A peer IO queues its first message (the handshake) while the connection is still
-// being set up. It must go out when the connection comes up, not on the next
-// bandwidth pulse.
+// being set up, and does not enable writes for a short one. It must go out when the
+// connection comes up, not on the next bandwidth pulse.
 TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
 {
     tr_peer_socket_utp::init(sender_.ctx);
@@ -301,8 +301,7 @@ TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
 
     auto n_writes = 0;
     outgoing->set_write_cb([&] { ++n_writes; });
-    outgoing->set_write_enabled(true);
-    EXPECT_EQ(0, n_writes);
+    ASSERT_FALSE(outgoing->is_write_enabled());
 
     deliverAll();
     EXPECT_NE(nullptr, accepted_);
