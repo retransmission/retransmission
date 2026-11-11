@@ -100,6 +100,8 @@ target_sources(${TR_NAME}
         net.h
         open-files.cc
         open-files.h
+        pcapng.cc
+        pcapng.h
         peer-common.h
         peer-io.cc
         peer-io.h
