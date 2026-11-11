@@ -73,22 +73,18 @@ void BaseWatchdir::processFile(std::string_view basename)
     auto const action = callback_(dirname_, basename);
     tr_logAddDebug(fmt::format("Callback decided to {:s} file '{:s}'", actionToString(action), basename));
     if (action == Action::Retry) {
-        auto const [iter, added] = pending_.try_emplace(std::string{ basename });
-
         auto const now = std::chrono::steady_clock::now();
+        auto const [iter, added] = pending_.try_emplace(std::string{ basename });
         auto& info = iter->second;
-        ++info.strikes;
-        info.last_kick_at = now;
-
-        if (info.first_kick_at == Timestamp{}) {
+        if (added) {
             info.first_kick_at = now;
         }
+        info.last_kick_at = now;
 
-        if (now - info.first_kick_at > timeoutDuration()) {
+        if (now - info.first_kick_at > TimeoutDuration) {
             tr_logAddWarn(fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", basename)));
             pending_.erase(iter);
         } else {
-            setNextKickTime(info);
             restartTimerIfPending();
         }
     } else if (action == Action::Done) {
