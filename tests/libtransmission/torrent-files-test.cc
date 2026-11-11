@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
 #include <cstddef> // size_t
@@ -12,6 +13,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -284,6 +286,74 @@ TEST_F(TorrentFilesTest, moveThatMayOnlyRenameRenames)
     EXPECT_FALSE(error) << error;
     expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/a"sv }));
+}
+
+TEST_F(TorrentFilesTest, moveReportsEachFile)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 3);
+    files.add("name/b", 5);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "aaa"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "bbbbb"sv);
+
+    auto reports = std::vector<std::tuple<std::string, size_t, uint64_t>>{};
+    auto const on_progress = [&reports](tr_torrent_files::MoveProgress const& progress) {
+        EXPECT_EQ(2U, progress.file_count);
+        EXPECT_EQ(8U, progress.bytes_total);
+        reports.emplace_back(progress.subpath, progress.file_index, progress.bytes_done);
+    };
+    EXPECT_TRUE(files.move(roots, target, "name", nullptr, nullptr, on_progress));
+
+    // renames move each file whole
+    using Report = std::tuple<std::string, size_t, uint64_t>;
+    EXPECT_EQ((std::vector<Report>{ { "name/a", 0U, 0U }, { "name/b", 1U, 3U } }), reports);
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, moveReportsTheBytesItCopies)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ otherFilesystemDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 3);
+    files.add("name/b", 5);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "aaa"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "bbbbb"sv);
+
+    auto done = std::vector<uint64_t>{};
+    auto const on_progress = [&done](tr_torrent_files::MoveProgress const& progress) {
+        done.push_back(progress.bytes_done);
+    };
+    EXPECT_TRUE(files.move(roots, target, "name", nullptr, nullptr, on_progress));
+
+    EXPECT_TRUE(std::ranges::is_sorted(done));
+    ASSERT_FALSE(std::empty(done));
+    EXPECT_EQ(8U, done.back());
+}
+
+TEST_F(TorrentFilesTest, removeReportsTheFilesItRemoves)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/sub/b", 1);
+    files.add("name/sub/c", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/sub/b"sv }, "b"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/sub/c"sv }, "c"sv);
+
+    auto reports = std::vector<std::pair<size_t, size_t>>{};
+    files.remove(roots, "name", tr_sys_path_remove, nullptr, [&reports](size_t const n_removed, size_t const n_files) {
+        reports.emplace_back(n_removed, n_files);
+    });
+
+    using Report = std::pair<size_t, size_t>;
+    EXPECT_EQ((std::vector<Report>{ { 0U, 3U }, { 1U, 3U }, { 2U, 3U }, { 3U, 3U } }), reports);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
 }
 
 TEST_F(TorrentFilesCrossFilesystemTest, failedMoveKeepsCopiedSources)
