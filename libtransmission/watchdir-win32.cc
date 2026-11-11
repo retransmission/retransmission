@@ -293,12 +293,16 @@ private:
                 break;
             }
 
+            auto const name = tr_win32_native_to_utf8({ ev->FileName, ev->FileNameLength / sizeof(WCHAR) });
+            if (std::empty(name)) {
+                continue;
+            }
+
             if (ev->Action == FILE_ACTION_ADDED || ev->Action == FILE_ACTION_MODIFIED ||
                 ev->Action == FILE_ACTION_RENAMED_NEW_NAME) {
-                if (auto const name = tr_win32_native_to_utf8({ ev->FileName, ev->FileNameLength / sizeof(WCHAR) });
-                    !std::empty(name)) {
-                    processFile(name);
-                }
+                processFile(name);
+            } else if (ev->Action == FILE_ACTION_REMOVED || ev->Action == FILE_ACTION_RENAMED_OLD_NAME) {
+                forgetFile(name);
             }
         }
     }

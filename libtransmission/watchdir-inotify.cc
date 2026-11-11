@@ -41,7 +41,8 @@ namespace
 class INotifyWatchdir final : public impl::BaseWatchdir
 {
 private:
-    static auto constexpr InotifyWatchMask = uint32_t{ IN_CLOSE_WRITE | IN_MOVED_TO | IN_CREATE };
+    static auto constexpr InotifyGoneMask = uint32_t{ IN_DELETE | IN_MOVED_FROM };
+    static auto constexpr InotifyWatchMask = uint32_t{ IN_CLOSE_WRITE | IN_MOVED_TO | IN_CREATE | InotifyGoneMask };
 
 public:
     INotifyWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker, event_base* evbase)
@@ -158,8 +159,12 @@ private:
             }
 
             // NB: `name` may have extra trailing zeroes from inotify;
-            // pass the c_str() so that processFile gets the right strlen
-            processFile(std::data(name));
+            // pass the c_str() so that the callee gets the right strlen
+            if ((ev.mask & InotifyGoneMask) != 0) {
+                forgetFile(std::data(name));
+            } else {
+                processFile(std::data(name));
+            }
         }
     }
 

@@ -3,7 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <chrono>
+#include <iterator>
+#include <map>
+#include <set>
 #include <string>
 #include <string_view>
 
@@ -92,13 +96,21 @@ void BaseWatchdir::processFile(std::string_view basename)
     }
 }
 
+void BaseWatchdir::forgetFile(std::string_view const basename)
+{
+    if (auto const iter = handled_.find(basename); iter != std::end(handled_)) {
+        handled_.erase(iter);
+    }
+
+    if (auto const iter = pending_.find(basename); iter != std::end(pending_)) {
+        pending_.erase(iter);
+    }
+}
+
 void BaseWatchdir::scan()
 {
     auto error = tr_error{};
-
-    for (auto const& file : tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error)) {
-        processFile(file);
-    }
+    auto files = tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error);
 
     if (error) {
         tr_logAddWarn(
@@ -107,6 +119,18 @@ void BaseWatchdir::scan()
                 fmt::arg("path", dirname()),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
+    } else {
+        // only a complete listing shows which files have left
+        std::ranges::sort(files);
+        auto const is_gone = [&files](std::string_view const name) {
+            return !std::ranges::binary_search(files, name);
+        };
+        std::erase_if(handled_, is_gone);
+        std::erase_if(pending_, [&is_gone](auto const& entry) { return is_gone(entry.first); });
+    }
+
+    for (auto const& file : files) {
+        processFile(file);
     }
 }
 

@@ -73,8 +73,12 @@ public:
     }
 
 protected:
+    // Offers each file to the callback, and forgets the files that have left.
     void scan();
     void processFile(std::string_view basename);
+
+    // For a file that has left the directory, so that a later file of that name is offered again.
+    void forgetFile(std::string_view basename);
 
 private:
     using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
