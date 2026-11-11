@@ -86,6 +86,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "blocklist_updates_enabled"sv, // gtk app, qt app, rpc, tr_session::Settings
     "blocklist_url"sv, // rpc, tr_session::Settings
     "blocks"sv, // .resume
+    "blocks_read"sv, // rpc
+    "blocks_written"sv, // rpc
     "busy"sv, // rpc
     "bytesCompleted"sv, // rpc
     "bytes_completed"sv, // rpc
@@ -93,6 +95,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "bytes_to_peer"sv, // rpc
     "cache-size-mb"sv, // rpc, tr_session::Settings
     "cache_size_mib"sv, // rpc, tr_session::Settings
+    "cached_reads"sv, // rpc
     "checked_bytes"sv, // rpc
     "clientIsChoked"sv, // rpc
     "clientIsInterested"sv, // rpc
@@ -137,6 +140,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "dht-enabled"sv, // daemon, rpc, tr_session::Settings
     "dht_enabled"sv, // daemon, rpc, tr_session::Settings
     "disk_io_workers"sv, // tr_session::Settings
+    "disk_stats"sv, // rpc
     "disk_write_budget_mib"sv, // tr_session::Settings
     "dnd"sv, // .resume
     "done-date"sv, // .resume
@@ -234,6 +238,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "has_scraped"sv, // rpc
     "hashString"sv, // rpc
     "hash_string"sv, // rpc
+    "hashes_from_buffers"sv, // rpc
+    "hashes_from_disk"sv, // rpc
     "haveUnchecked"sv, // rpc
     "haveValid"sv, // rpc
     "have_total"sv, // rpc
@@ -469,6 +475,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "ratio_mode"sv, // .resume
     "read-clipboard"sv, // qt app
     "read_clipboard"sv, // qt app
+    "read_runs"sv, // rpc
     "recent_download_paths"sv, // rpc
     "recent_relocate_paths"sv, // rpc
     "recently-active"sv, // rpc
@@ -746,6 +753,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "webseedsSendingToUs"sv, // rpc
     "webseeds_ex"sv, // rpc
     "webseeds_sending_to_us"sv, // rpc
+    "write_runs"sv, // rpc
     "yourip"sv, // BEP0010; BT protocol
 };
 

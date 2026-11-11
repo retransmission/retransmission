@@ -318,6 +318,25 @@ protected:
         settings().insert_or_assign(TR_KEY_disk_io_workers, int64_t{ 2 });
         TorrentDiskIoTestBase::SetUp();
     }
+
+    // Runs an RPC method and returns its result.
+    [[nodiscard]] tr_variant::Map rpc(tr_quark const method, tr_variant::Map params)
+    {
+        auto request = tr_variant::Map{ 4U };
+        request.try_emplace(TR_KEY_id, 1);
+        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
+        request.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+        if (auto* const map = response.get_if<tr_variant::Map>(); map != nullptr) {
+            if (auto* const result = map->find_if<tr_variant::Map>(TR_KEY_result); result != nullptr) {
+                return std::move(*result);
+            }
+        }
+        return {};
+    }
 };
 
 class RequestBudgetTest : public TorrentDiskIoWorkersTest
@@ -490,25 +509,6 @@ class TorrentRemovalTest
     : public TorrentDiskIoWorkersTest
     , public ::testing::WithParamInterface<bool>
 {
-protected:
-    // Runs an RPC method and returns its result.
-    [[nodiscard]] tr_variant::Map rpc(tr_quark const method, tr_variant::Map params)
-    {
-        auto request = tr_variant::Map{ 4U };
-        request.try_emplace(TR_KEY_id, 1);
-        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
-        request.try_emplace(TR_KEY_params, std::move(params));
-
-        auto response = tr_variant{};
-        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
-        if (auto* const map = response.get_if<tr_variant::Map>(); map != nullptr) {
-            if (auto* const result = map->find_if<tr_variant::Map>(TR_KEY_result); result != nullptr) {
-                return std::move(*result);
-            }
-        }
-        return {};
-    }
 };
 
 // Completes torrents whose files start in the incomplete dir.
@@ -1913,6 +1913,35 @@ TEST_F(TorrentDiskIoWorkersTest, completedPieceIsHashedFromBufferedBlocks)
     auto const stats = session_->local_data.stats();
     EXPECT_EQ(1U, stats.hashes_from_buffers);
     EXPECT_EQ(0U, stats.hashes_from_disk);
+}
+
+TEST_F(TorrentDiskIoWorkersTest, sessionStatsReportsDiskCounters)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const span = tor->block_span_for_piece(0);
+
+    auto n_completed = std::atomic<size_t>{};
+    auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
+
+    blockingRunInSessionThread([tor, span] {
+        for (auto block = span.begin; block < span.end; ++block) {
+            ASSERT_TRUE(tor->on_block_received(block));
+            tor->save_block(block, zeroBlock(tor, block));
+        }
+    });
+    EXPECT_TRUE(waitFor([&n_completed]() { return n_completed > 0U; }, MaxWaitMsec));
+
+    auto const result = rpc(TR_KEY_session_stats, {});
+    auto const* const disk = result.find_if<tr_variant::Map>(TR_KEY_disk_stats);
+    ASSERT_NE(nullptr, disk);
+    auto const expected = session_->local_data.stats();
+    EXPECT_EQ(static_cast<int64_t>(span.end - span.begin), disk->value_if<int64_t>(TR_KEY_blocks_written));
+    EXPECT_EQ(static_cast<int64_t>(expected.write_runs), disk->value_if<int64_t>(TR_KEY_write_runs));
+    EXPECT_EQ(int64_t{ 1 }, disk->value_if<int64_t>(TR_KEY_hashes_from_buffers));
+    EXPECT_EQ(int64_t{ 0 }, disk->value_if<int64_t>(TR_KEY_hashes_from_disk));
+    for (auto const key : { TR_KEY_blocks_read, TR_KEY_cached_reads, TR_KEY_read_runs }) {
+        EXPECT_EQ(int64_t{ 0 }, disk->value_if<int64_t>(key)) << tr_quark_get_string_view(key);
+    }
 }
 
 TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)

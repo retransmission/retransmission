@@ -1884,18 +1884,31 @@ void add_strings_from_var(std::set<std::string_view>& strings, tr_variant const&
         return stats_map;
     };
 
+    auto const make_disk_stats_map = [](tr::LocalData::Stats const& stats) {
+        auto stats_map = tr_variant::Map{ 7U };
+        stats_map.try_emplace(TR_KEY_blocks_read, stats.blocks_read);
+        stats_map.try_emplace(TR_KEY_blocks_written, stats.blocks_written);
+        stats_map.try_emplace(TR_KEY_cached_reads, stats.cached_reads);
+        stats_map.try_emplace(TR_KEY_hashes_from_buffers, stats.hashes_from_buffers);
+        stats_map.try_emplace(TR_KEY_hashes_from_disk, stats.hashes_from_disk);
+        stats_map.try_emplace(TR_KEY_read_runs, stats.read_runs);
+        stats_map.try_emplace(TR_KEY_write_runs, stats.write_runs);
+        return stats_map;
+    };
+
     auto const& torrents = session->torrents();
     auto const total = std::ranges::count_if(torrents, [](auto const* tor) { return !tor->is_deleting(); });
     auto const n_running = std::count_if(std::begin(torrents), std::end(torrents), [](auto const* tor) {
         return tor->is_running() && !tor->is_deleting();
     });
 
-    args_out.reserve(std::size(args_out) + 9U);
+    args_out.reserve(std::size(args_out) + 10U);
     args_out.try_emplace(TR_KEY_active_torrent_count, n_running);
     args_out.try_emplace(TR_KEY_busy, session->is_busy(tr_time()));
     args_out.try_emplace(TR_KEY_unpaused_torrent_count, n_running);
     args_out.try_emplace(TR_KEY_cumulative_stats, make_stats_map(session->stats().cumulative()));
     args_out.try_emplace(TR_KEY_current_stats, make_stats_map(session->stats().current()));
+    args_out.try_emplace(TR_KEY_disk_stats, make_disk_stats_map(session->local_data.stats()));
     args_out.try_emplace(TR_KEY_download_speed, session->piece_speed(tr_direction::Down).base_quantity());
     args_out.try_emplace(TR_KEY_paused_torrent_count, total - n_running);
     args_out.try_emplace(TR_KEY_torrent_count, total);
