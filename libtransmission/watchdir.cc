@@ -113,12 +113,15 @@ void BaseWatchdir::scan()
     auto files = tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error);
 
     if (error) {
-        tr_logAddWarn(
-            fmt::format(
-                "Couldn't read '{path}': {error} ({error_code})",
-                fmt::arg("path", dirname()),
-                fmt::arg("error", error.message()),
-                fmt::arg("error_code", error.code())));
+        // once per failure, since a generic watch dir rescans on a timer
+        if (error.code() != scan_error_code_) {
+            tr_logAddWarn(
+                fmt::format(
+                    "Couldn't read '{path}': {error} ({error_code})",
+                    fmt::arg("path", dirname()),
+                    fmt::arg("error", error.message()),
+                    fmt::arg("error_code", error.code())));
+        }
     } else {
         // only a complete listing shows which files have left
         std::ranges::sort(files);
@@ -128,6 +131,7 @@ void BaseWatchdir::scan()
         std::erase_if(handled_, is_gone);
         std::erase_if(pending_, [&is_gone](auto const& entry) { return is_gone(entry.first); });
     }
+    scan_error_code_ = error.code();
 
     for (auto const& file : files) {
         processFile(file);
