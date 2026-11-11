@@ -1005,6 +1005,8 @@ private:
         Glib::RefPtr<Gtk::ListStore> store;
         // the saved address and the choices the combo was last built from
         std::string options_key;
+        // every address saved while the page is open, so one that has gone stays selectable
+        std::vector<std::string> saved_values;
     };
 
     void onCorePrefsChanged(tr_quark key);
@@ -1070,6 +1072,8 @@ private:
     Session::NetworkBinding binding_;
     // the saved interface and the interface names the combo was last built from
     std::string interfaceOptionsKey_;
+    // every interface saved while the page is open, so one that has gone stays selectable
+    std::vector<std::string> savedInterfaces_;
     // set while a combo is changed from code, so that isn't taken as the user's choice
     bool updatingCombos_ = false;
 
@@ -1308,6 +1312,9 @@ void NetworkPage::rebuildInterfaceCombo()
 {
     auto const current = savedInterface();
     auto const is_blocked = current == TrBindInterfaceBlocked;
+    if (!std::empty(current) && !is_blocked && std::ranges::find(savedInterfaces_, current) == std::end(savedInterfaces_)) {
+        savedInterfaces_.push_back(current);
+    }
 
     // the interface in use stays listed whatever the filters say
     auto names = std::vector<std::string>{};
@@ -1316,10 +1323,20 @@ void NetworkPage::rebuildInterfaceCombo()
             names.push_back(iface.name);
         }
     }
+    auto gone = std::vector<std::string>{};
+    for (auto const& name : savedInterfaces_) {
+        if (findInterface(name) == nullptr) {
+            gone.push_back(name);
+        }
+    }
 
     auto key = current;
     for (auto const& name : names) {
         key += '\n';
+        key += name;
+    }
+    for (auto const& name : gone) {
+        key += "\n\t";
         key += name;
     }
 
@@ -1340,8 +1357,8 @@ void NetworkPage::rebuildInterfaceCombo()
         for (auto const& name : names) {
             add(name, name);
         }
-        if (!std::empty(current) && !is_blocked && findInterface(current) == nullptr) {
-            add(current, fmt::format(fmt::runtime(_("{interface} (unavailable)")), fmt::arg("interface", current)));
+        for (auto const& name : gone) {
+            add(name, fmt::format(fmt::runtime(_("{interface} (unavailable)")), fmt::arg("interface", name)));
         }
         add(std::string{ TrBindInterfaceBlocked }, _("None (block all traffic)"));
     }
@@ -1493,6 +1510,9 @@ void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
     if (saved == "0.0.0.0" || saved == "::") {
         saved.clear();
     }
+    if (!std::empty(saved) && std::ranges::find(row.saved_values, saved) == std::end(row.saved_values)) {
+        row.saved_values.push_back(saved);
+    }
     auto const chosen = chosenInterface();
 
     auto interfaces = std::vector<Session::NetworkInterface const*>{};
@@ -1560,11 +1580,13 @@ void NetworkPage::rebuildBindAddressCombo(BindAddressRow& row)
         tooltip += "\n\n" + tags.raw();
     }
     row.combo->set_tooltip_markup(tooltip);
-    if (!std::empty(saved) && !listed) {
-        choices.push_back(
-            { .id = saved,
-              .label = Glib::Markup::escape_text(
-                  fmt::format(fmt::runtime(_("{address} (unavailable)")), fmt::arg("address", saved))) });
+    for (auto const& address : row.saved_values) {
+        if (std::ranges::none_of(shown, [&address](auto const* const s) { return s->address == address; })) {
+            choices.push_back(
+                { .id = address,
+                  .label = Glib::Markup::escape_text(
+                      fmt::format(fmt::runtime(_("{address} (unavailable)")), fmt::arg("address", address))) });
+        }
     }
 
     auto key = std::string{};
@@ -2043,14 +2065,16 @@ NetworkPage::NetworkPage(
             .filter_button = get_widget<Gtk::MenuButton>("bind_address_ipv4_filter_button"),
             .feedback = get_widget<Gtk::Label>("bind_address_ipv4_feedback_label"),
             .store = {},
-            .options_key = {} },
+            .options_key = {},
+            .saved_values = {} },
           { .key = TR_KEY_bind_address_ipv6,
             .type = TR_AF_INET6,
             .combo = get_widget<Gtk::ComboBox>("bind_address_ipv6_combo"),
             .filter_button = get_widget<Gtk::MenuButton>("bind_address_ipv6_filter_button"),
             .feedback = get_widget<Gtk::Label>("bind_address_ipv6_feedback_label"),
             .store = {},
-            .options_key = {} },
+            .options_key = {},
+            .saved_values = {} },
       } }
 {
     initInterfaceBinding();
