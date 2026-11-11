@@ -905,14 +905,15 @@ void tr_session::apply_network_bindings(
         bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
     }
 
-    // a query still in flight on the old binding must not refill the cache
-    if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
-        ip_cache_->invalidate(TR_AF_INET);
-        ip_cache_->update_addr(TR_AF_INET);
-    }
-    if (auto const& val = new_settings.bind_address_ipv6; force || interface_changed || val != old_settings.bind_address_ipv6) {
-        ip_cache_->invalidate(TR_AF_INET6);
-        ip_cache_->update_addr(TR_AF_INET6);
+    // A query still in flight on the old binding must not refill the cache. A
+    // protocol the machine lacks, found by an earlier probe, isn't probed again.
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        auto const& val = type == TR_AF_INET ? new_settings.bind_address_ipv4 : new_settings.bind_address_ipv6;
+        auto const& old_val = type == TR_AF_INET ? old_settings.bind_address_ipv4 : old_settings.bind_address_ipv6;
+        if ((force || interface_changed || val != old_val) && ip_cache_->has_ip_protocol(type)) {
+            ip_cache_->invalidate(type);
+            ip_cache_->update_addr(type);
+        }
     }
 
     bool addr_changed = false;
