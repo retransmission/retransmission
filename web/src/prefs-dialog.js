@@ -243,13 +243,8 @@ export class PrefsDialog extends EventTarget {
     const select = this.elements.network.interface_select;
     const current = this._savedInterface();
     // the interface in use stays listed whatever the filters say
-    const filters = this._activeFilters();
     const passes = (iface) =>
-      iface.name === current ||
-      filters.every(({ key, values }) => {
-        const def = PrefsDialog._AddressFilters.find((d) => d.key === key);
-        return PrefsDialog._passesFilter(def, values, null, iface);
-      });
+      iface.name === current || this._interfacePasses(this.filters, iface);
     const all_names = this.network_interfaces.map(({ name }) => name);
     const names = this.network_interfaces
       .filter(passes)
@@ -460,47 +455,67 @@ export class PrefsDialog extends EventTarget {
     });
   }
 
-  // `def`'s choices that something listed still has, as the other filters in
-  // use leave it, so each filter narrows the next.
-  _filterChoices(def) {
-    const has_nm = this.network_interfaces.some((i) => i.network_manager);
-    const others = this.filters
-      .filter(({ key }) => key !== def.key)
-      .filter(({ key }) => key !== 'network_manager' || has_nm)
+  // the `filters` that count with their definitions, split into those on
+  // interfaces and those on IPv6 addresses
+  _splitFilters(filters) {
+    const defined = filters
+      .filter((filter) => this._counts(filter))
       .map(({ key, values }) => ({
         def: PrefsDialog._AddressFilters.find((d) => d.key === key),
         values,
       }));
-    const passes = (filters, address, iface) =>
-      filters.every(({ def: d, values }) =>
-        PrefsDialog._passesFilter(d, values, address, iface),
-      );
-    const for_interfaces = others.filter(({ def: d }) => !d.family);
-    const for_addresses = others.filter(({ def: d }) => d.family);
+    return {
+      for_addresses: defined.filter(({ def }) => def.family),
+      for_interfaces: defined.filter(({ def }) => !def.family),
+    };
+  }
+
+  static _passesAll(defined, address, iface) {
+    return defined.every(({ def, values }) =>
+      PrefsDialog._passesFilter(def, values, address, iface),
+    );
+  }
+
+  // An interface is listed when it passes the filters on interfaces and,
+  // while filters on IPv6 addresses are in use, still has an address to bind:
+  // an IPv4 one, which they don't judge, or an IPv6 one they leave.
+  _interfacePasses(filters, iface) {
+    const { for_addresses, for_interfaces } = this._splitFilters(filters);
+    return (
+      PrefsDialog._passesAll(for_interfaces, null, iface) &&
+      (for_addresses.length === 0 ||
+        iface.addresses.some(
+          (address) =>
+            !address.address.includes(':') ||
+            PrefsDialog._passesAll(for_addresses, address, iface),
+        ))
+    );
+  }
+
+  // `def`'s choices that something listed still has, as the other filters in
+  // use leave it, so each filter narrows the next.
+  _filterChoices(def) {
+    const others = this.filters.filter(({ key }) => key !== def.key);
+
+    const { for_addresses, for_interfaces } = this._splitFilters(others);
 
     const present = new Set();
     for (const iface of this.network_interfaces) {
-      if (!passes(for_interfaces, null, iface)) {
-        continue;
-      }
       if (!def.family) {
-        // with IPv6 filters in use, an interface counts while they leave it an address
-        const has_address = iface.addresses.some(
-          (address) =>
-            address.address.includes(':') &&
-            passes(for_addresses, address, iface),
-        );
-        if (for_addresses.length === 0 || has_address) {
+        if (this._interfacePasses(others, iface)) {
           for (const v of def.values(null, iface)) {
             present.add(v);
           }
         }
         continue;
       }
+      if (!PrefsDialog._passesAll(for_interfaces, null, iface)) {
+        continue;
+      }
       for (const address of iface.addresses) {
         if (
           address.address.includes(':') === (def.family === 'ipv6') &&
-          passes(for_addresses, address, iface)
+          PrefsDialog._passesAll(for_addresses, address, iface)
         ) {
           for (const v of def.values(address, iface)) {
             present.add(v);
