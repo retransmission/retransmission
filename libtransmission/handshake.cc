@@ -597,7 +597,8 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     };
     auto const retry_plain = [&] {
         if (!handshake->send_handshake(io)) {
-            fail();
+            tr_logAddTraceHand(handshake, "plaintext retry not sent: torrent isn't running");
+            handshake->done(false);
             return;
         }
         handshake->set_state(State::AwaitingHandshake);
