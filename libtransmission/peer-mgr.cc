@@ -605,6 +605,17 @@ public:
         msgs->set_interested(msgs->is_seed() || std::ranges::any_of(pieces, is_useful));
     }
 
+    // Shows interest as soon as the peer announces a piece we want.
+    // A Have only adds to what the peer offers, so the new piece is the only one to check.
+    // The piece_count() check covers magnets: until the metainfo arrives, the Have handler accepts any index.
+    void update_peer_interest(tr_peerMsgs* const msgs, tr_piece_index_t const piece) const
+    {
+        if (!msgs->client_is_interested() && piece < tor->piece_count() && !tor->is_done() && tor->client_can_download() &&
+            tor->piece_is_wanted(piece) && !tor->has_piece(piece)) {
+            msgs->set_interested(true);
+        }
+    }
+
     // Unchokes a peer that just became interested if the swarm has a free upload slot.
     // A slot counts as rechokeUploads() counts it: an interested, unchoked peer other
     // than the optimistic one. The next periodic rechoke re-ranks this peer with the rest.
@@ -642,6 +653,7 @@ public:
         case tr_peer_event::Type::ClientGotHave:
             s->got_have(s->tor, event.pieceIndex);
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs, event.pieceIndex);
             break;
 
         case tr_peer_event::Type::ClientGotHaveAll:
