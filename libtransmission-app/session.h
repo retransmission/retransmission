@@ -28,6 +28,7 @@
 
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h" // tr_address_type, tr_session_stats
 #include "libtransmission/variant.h"
 
@@ -123,6 +124,8 @@ public:
 
     sigslot::signal<> source_changed;
     sigslot::signal<> stopped;
+    // what an embedded session's close is waiting for, about twice a second until `closed`
+    sigslot::signal<tr_disk_activity const&> closing_progress;
     sigslot::signal<> closed;
     sigslot::signal<> config_dir_contended;
 
