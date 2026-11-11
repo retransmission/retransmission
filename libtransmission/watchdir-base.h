@@ -19,6 +19,7 @@
 #include <string_view>
 #include <utility>
 
+#include "libtransmission/error.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/watchdir.h"
 
@@ -147,6 +148,7 @@ private:
 
     std::map<std::string, Pending, std::less<>> pending_;
     std::set<std::string, std::less<>> handled_;
+    tr_error::code_t scan_error_code_ = {};
     std::chrono::milliseconds retry_duration_ = std::chrono::seconds{ 5 };
     std::chrono::seconds timeout_duration_ = std::chrono::seconds{ 15 };
 };
