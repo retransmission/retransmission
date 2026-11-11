@@ -935,8 +935,9 @@ void Application::Impl::on_add_report(tr::app::Session::AddReport const& report)
     };
 
     if (auto const& failed = report.failed; !std::empty(failed)) {
+        // picked by count, not ngettext(): no number is shown, and some languages' singular form also covers 21, 31, ...
         show(
-            ngettext("Couldn't add torrent", "Couldn't add torrents", std::size(failed)),
+            std::size(failed) == 1U ? _("Couldn't add torrent") : _("Couldn't add torrents"),
             list(failed, [](auto const& failure) { return fmt::format("{:s}\n    {:s}", failure.name, failure.errmsg); }));
     }
 
