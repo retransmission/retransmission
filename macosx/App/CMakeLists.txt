@@ -137,8 +137,8 @@ target_sources(${TR_NAME}-mac
         PriorityPopUpButtonCell.mm
         ProgressBarView.h
         ProgressBarView.mm
-        ProgressGradients.h
-        ProgressGradients.mm
+        ProgressColors.h
+        ProgressColors.mm
         SmallTorrentCell.h
         SmallTorrentCell.mm
         SparkleProxy.mm
@@ -238,6 +238,23 @@ set(APPICONSET_DIR "${IMAGE_ASSETS_DIR}/${APPICON_NAME}.appiconset")
 set(IMAGE_ASSETS
     ${IMAGE_ASSETS_DIR}/Contents.json
     ${APPICONSET_DIR}/Contents.json)
+
+set(COLORSETS
+    ProgressWhite
+    ProgressGray
+    ProgressLightGray
+    ProgressBlue
+    ProgressDarkBlue
+    ProgressGreen
+    ProgressLightGreen
+    ProgressDarkGreen
+    ProgressRed
+    ProgressYellow)
+
+foreach(CLR IN LISTS COLORSETS)
+    list(APPEND IMAGE_ASSETS
+        ${IMAGE_ASSETS_DIR}/${CLR}.colorset/Contents.json)
+endforeach()
 
 foreach(IMG IN LISTS IMAGESETS)
     set(IMG_DIR "${IMAGE_ASSETS_DIR}/${IMG}.imageset")
