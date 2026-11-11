@@ -43,6 +43,8 @@ function(add_trgtk_test source)
     add_dependencies(all-tests ${target})
 endfunction()
 
+add_trgtk_test(dir-monitor-test.cc)
+
 add_trgtk_test(resources-test.cc)
 tr_target_glib_resources(gtk-test-resources
     ${PROJECT_SOURCE_DIR}/gtk/transmission.gresource.xml)
