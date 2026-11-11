@@ -13,6 +13,7 @@
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -70,7 +71,9 @@ namespace tr::test
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+class TorrentDiskIoTest_lazyCheckOfALostPieceIsDropped_Test;
 class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
+class UploadTest;
 
 } // namespace tr::test
 
@@ -83,6 +86,7 @@ struct tr_torrent {
     public:
         void load_checked_pieces(tr_bitfield const& checked, time_t const* mtimes /*file_count()*/);
         void load_blocks(tr_bitfield blocks);
+        void load_completion_move_pending(bool val) noexcept;
         void load_date_added(time_t when) noexcept;
         void load_date_done(time_t when) noexcept;
         void load_download_dir(std::string_view dir) noexcept;
@@ -104,6 +108,7 @@ struct tr_torrent {
     private:
         friend class tr::test::RenameTest_multifileTorrent_Test;
         friend class tr::test::RenameTest_singleFilenameTorrent_Test;
+        friend class tr::test::UploadTest;
         friend struct tr_torrent;
 
         explicit ResumeHelper(tr_torrent& tor)
@@ -190,14 +195,6 @@ struct tr_torrent {
     void set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state);
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
-
-    // The synchronous half of rename_path(), run under the disk-IO
-    // barrier. Call rename_path() instead unless you are the backend
-    // of tr::LocalData.
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
 
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
@@ -415,6 +412,13 @@ struct tr_torrent {
     [[nodiscard]] constexpr bool is_done() const noexcept
     {
         return completeness_ != TR_LEECH;
+    }
+
+    // Whether a completed torrent's files are leaving the incomplete dir.
+    // This stays set until the done step runs.
+    [[nodiscard]] constexpr bool completion_move_pending() const noexcept
+    {
+        return completion_move_pending_;
     }
 
     [[nodiscard]] constexpr bool is_seed() const noexcept
@@ -697,7 +701,16 @@ struct tr_torrent {
 
     /// METAINFO - PIECE CHECKSUMS
 
+    // Checks the piece on disk now, on the session thread, unless it's been
+    // checked since its files last changed.
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    // Reads `length` bytes at `offset` in a piece we have, to send to a
+    // peer. A piece whose files changed since it was last checked is
+    // hashed first, as a tr::LocalData data op. If that check fails, so
+    // does the read, and a failed hash sets the torrent's local error.
+    // `on_read` may run before this returns.
+    void read_piece_data(tr_piece_index_t piece, uint32_t offset, uint32_t length, tr::LocalData::OnRead on_read);
 
     void cancel_pending_verify();
 
@@ -1142,6 +1155,7 @@ struct tr_torrent {
 
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+    friend class tr::test::TorrentDiskIoTest_lazyCheckOfALostPieceIsDropped_Test;
     friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
@@ -1398,6 +1412,13 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
+
+    using OnPieceChecked = std::function<void(bool ok)>;
+
+    // Hashes the piece as a tr::LocalData data op, and reports to
+    // `on_checked`, maybe before this returns.
+    void check_piece_lazily(tr_piece_index_t piece, OnPieceChecked on_checked);
+    void on_piece_checked(tr_piece_index_t piece, bool ok);
     void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
@@ -1408,10 +1429,17 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(std::function<std::string()> path, bool move_from_old_path, int volatile* setme_state);
+
+    // The two session-thread halves of rename_path(), on either side of the disk work.
+    [[nodiscard]] tr_error check_rename(std::string_view oldpath, std::string_view newname) const;
+    void apply_rename(std::string_view oldpath, std::string_view newname);
 
     // Once done, move the files from the incomplete dir to the download dir.
     void leave_incomplete_dir();
+
+    // Moves a done torrent's files to where they end up, then runs the done step.
+    void finish_completion(bool recent_change, bool was_running) const;
 
     void start_in_session_thread();
 
@@ -1442,6 +1470,10 @@ private:
     // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
+
+    // Who's waiting on each piece's lazy check. A piece is hashed once,
+    // however many requests for it arrive meanwhile.
+    std::unordered_map<tr_piece_index_t, std::vector<OnPieceChecked>> piece_check_waiters_;
 
     tr_labels_t labels_;
 
@@ -1525,6 +1557,9 @@ private:
     uint16_t idle_limit_minutes_ = 0;
 
     uint16_t max_connected_peers_ = TrDefaultPeerLimitTorrent;
+
+    // Saved in the resume file, so a restart can finish what a kill interrupts.
+    bool completion_move_pending_ = false;
 
     bool is_deleting_ = false;
     bool removal_queued_ = false;

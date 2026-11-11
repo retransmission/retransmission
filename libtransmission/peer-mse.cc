@@ -7,6 +7,7 @@
 #include <cstddef> // std::byte, size_t
 #include <cstdint>
 #include <limits> // std::numeric_limits
+#include <memory> // std::make_unique
 #include <string_view>
 
 #include "libtransmission/crypto-utils.h" // tr_sha1
@@ -173,22 +174,55 @@ void DH::setPeerPublicKey(key_bigend_t const& peer_public_key) noexcept
 
 // --- Filter
 
+namespace
+{
+void init_cipher(tr_arc4& cipher, std::string_view key, DH const& dh, tr_sha1_digest_t const& info_hash)
+{
+    cipher.init(tr_sha1::digest(key, dh.secret(), info_hash));
+    cipher.discard(1024);
+}
+
+[[nodiscard]] constexpr auto decrypt_key(bool is_incoming) noexcept
+{
+    return is_incoming ? "keyA"sv : "keyB"sv;
+}
+
+[[nodiscard]] constexpr auto encrypt_key(bool is_incoming) noexcept
+{
+    return decrypt_key(!is_incoming);
+}
+} // namespace
+
+void Filter::init(DirectionMember direction, std::string_view key, DH const& dh, tr_sha1_digest_t const& info_hash)
+{
+    if (!ciphers_) {
+        ciphers_ = std::make_unique<Ciphers>();
+    }
+    auto& dir = (*ciphers_).*direction;
+    init_cipher(dir.cipher, key, dh, info_hash);
+    dir.active = true;
+}
+
 void Filter::decrypt_init(bool is_incoming, DH const& dh, tr_sha1_digest_t const& info_hash)
 {
-    auto const key = is_incoming ? "keyA"sv : "keyB"sv;
-    auto const buf = tr_sha1::digest(key, dh.secret(), info_hash);
-    dec_active_ = true;
-    dec_key_.init(buf);
-    dec_key_.discard(1024);
+    init(&Ciphers::dec, decrypt_key(is_incoming), dh, info_hash);
 }
 
 void Filter::encrypt_init(bool is_incoming, DH const& dh, tr_sha1_digest_t const& info_hash)
 {
-    auto const key = is_incoming ? "keyB"sv : "keyA"sv;
-    auto const buf = tr_sha1::digest(key, dh.secret(), info_hash);
-    enc_active_ = true;
-    enc_key_.init(buf);
-    enc_key_.discard(1024);
+    init(&Ciphers::enc, encrypt_key(is_incoming), dh, info_hash);
+}
+
+void Filter::encrypt_once(
+    bool const is_incoming,
+    DH const& dh,
+    tr_sha1_digest_t const& info_hash,
+    std::span<std::byte const> const src,
+    std::span<std::byte> const dst)
+{
+    auto cipher = tr_arc4{};
+    init_cipher(cipher, encrypt_key(is_incoming), dh, info_hash);
+    cipher.process(src, dst);
 }
 
 } // namespace tr_message_stream_encryption

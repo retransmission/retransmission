@@ -8,8 +8,6 @@
 #define __TRANSMISSION__ // for libtransmission/net.h (via rpc-test-fixtures.h)
 
 #include <algorithm>
-#include <cstdint> // int64_t
-#include <optional>
 #include <string>
 #include <string_view>
 
@@ -17,7 +15,7 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QRegularExpression>
-#include <QSignalSpy>
+#include <QMessageBox>
 #include <QTest>
 #include <QTimer>
 
@@ -96,7 +94,6 @@ private slots:
     static void initTestCase()
     {
         TR_QT_SKIP_UNLESS_SIGNALS_WORK();
-        qRegisterMetaType<int64_t>("int64_t");
     }
 
     static void download_dir_change_posts_session_set_data()
@@ -174,202 +171,39 @@ private slots:
         QVERIFY(waitUntil(has_session_set));
     }
 
-    // A blocklist_update reply maps to the right signal: a success reports the new
-    // rule count via blocklistUpdated(); a JSON-RPC error reports its message via
-    // blocklistUpdateFailed(). The two signals never both fire.
-    static void blocklist_update_reports_result_data()
+    // A failed request is worth a message box only while the app is on screen.
+    static void failed_add_shows_a_message_box_unless_shutting_down_data()
     {
-        QTest::addColumn<QString>("reply");
-        QTest::addColumn<qlonglong>("expect_size"); // < 0 means expect the failure signal instead
-        QTest::addColumn<QString>("expect_error");
-
-        QTest::newRow("ok") << QStringLiteral(R"({"result":"success","arguments":{"blocklist_size":42}})") << 42LL << QString{};
-        // An error must resolve via the queue's error handler, or the caller waits
-        // forever for a reply that maps to no signal. Escaped literals, not raw
-        // ones: moc mis-lexes an apostrophe inside a raw string and then silently
-        // emits no metaobject for this class.
-        QTest::newRow("download_error") << QStringLiteral(
-                                               "{\"result\":\"Couldn\'t fetch blocklist: Not Found\",\"arguments\":{}}")
-                                        << -1LL << QStringLiteral("Couldn\'t fetch blocklist: Not Found");
+        QTest::addColumn<bool>("shutting_down");
+        QTest::newRow("running") << false;
+        QTest::newRow("shutting down") << true;
     }
-    void blocklist_update_reports_result()
+    void failed_add_shows_a_message_box_unless_shutting_down()
     {
-        QFETCH(QString const, reply);
-        QFETCH(qlonglong const, expect_size);
-        QFETCH(QString const, expect_error);
-
-        api_compat::set_default_style(Style::Tr5);
-
-        auto server = MockRpcServer{};
-        // quoted, so the marker can't also match a `blocklist_updates_enabled` request
-        server.set_reply_for(R"("blocklist_update")", reply.toStdString());
+        QFETCH(bool const, shutting_down);
 
         auto prefs = Prefs{};
-        setRemotePrefs(prefs, server);
-
         auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
-        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
-        auto refreshed = 0;
-        auto const refreshed_connection = session.session_updated.connect_scoped([&refreshed] { ++refreshed; });
-        session.updateBlocklist();
-
-        if (expect_size >= 0) {
-            QVERIFY(waitUntil([&updated] { return !updated.isEmpty(); }));
-            QCOMPARE(updated.first().at(0).toLongLong(), expect_size);
-            QVERIFY(failed.isEmpty());
-
-            // A success also sends session_get for the new size and date.
-            // Drain it, or its unfinished RpcQueue leaks under LSan at teardown.
-            QVERIFY(waitUntil([&refreshed] { return refreshed > 0; }));
-        } else {
-            QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
-            QCOMPARE(failed.first().at(0).toString(), expect_error);
-            QVERIFY(updated.isEmpty());
+        if (shutting_down) {
+            session.setShuttingDown();
         }
+
+        // Never started, the session fails each request with no round trip, so replies land in the order sent.
+        session.add_torrent(tr::app::AddData{ "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567" });
+        auto done = false;
+        session.send(TR_KEY_session_stats, {}, [&done](auto const& /*response*/) { done = true; });
+        QVERIFY(waitUntil([&done] { return done; }));
+
+        auto const boxes = QApplication::topLevelWidgets();
+        auto const n_boxes = std::ranges::count_if(boxes, [](QWidget const* const widget) {
+            return qobject_cast<QMessageBox const*>(widget) != nullptr;
+        });
+        QCOMPARE(n_boxes, shutting_down ? 0 : 1);
+        qDeleteAll(boxes);
     }
 
-    // stop() forgets the blocklist info, version and torrents and says so,
-    // so the next session never shows the previous one's values.
-    void stop_clears_session_info()
-    {
-        api_compat::set_default_style(Style::Tr5);
-
-        auto server = MockRpcServer{};
-        server.set_reply_for(
-            R"("session_get")",
-            R"({"result":"success","arguments":{"blocklist_date":1700000000,"blocklist_size":42,"version":"9.9.9"}})");
-
-        auto prefs = Prefs{};
-        setRemotePrefs(prefs, server);
-
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        auto updated = 0;
-        auto const updated_connection = session.session_updated.connect_scoped([&updated] { ++updated; });
-        session.refresh_session_info();
-        QVERIFY(waitUntil([&updated] { return updated > 0; }));
-        QCOMPARE(session.blocklist_size().value_or(-1), int64_t{ 42 });
-        QVERIFY(session.blocklist_date().has_value());
-        QCOMPARE(session.session_version(), std::string{ "9.9.9" });
-
-        // a row of this source; the next source numbers its torrents from 1 too
-        auto row = tr_variant::Map{ 2U };
-        row.try_emplace(TR_KEY_id, 1);
-        row.try_emplace(TR_KEY_name, std::string_view{ "kept" });
-        auto torrents = tr_variant::Vector{};
-        torrents.emplace_back(std::move(row));
-        auto args = tr_variant::Map{ 1U };
-        args.try_emplace(TR_KEY_torrents, std::move(torrents));
-        session.torrents().update(args, tr::app::TorrentList::Coverage::Partial, time_t{});
-        QCOMPARE(session.torrents().size(), size_t{ 1 });
-
-        auto stopped = QSignalSpy{ &session, &Session::stopped };
-        session.stop();
-        QCOMPARE(stopped.count(), 1);
-        QVERIFY(!session.blocklist_size().has_value());
-        QVERIFY(!session.blocklist_date().has_value());
-        QVERIFY(session.session_version().empty());
-        QCOMPARE(session.torrents().size(), size_t{});
-    }
-
-    // Restarting an embedded session mid-update closes it.
-    // Closing must answer the pending update, or its progress dialog would never resolve.
-    void restart_fails_a_pending_embedded_blocklist_update()
-    {
-        // Nothing listens on port 1, so the download fails without leaving this machine.
-        // That failure reaches the session thread only after the close that restart() queues.
-        auto settings = tr::Settings{};
-        settings.insert_or_assign(TR_KEY_blocklist_url, std::string_view{ "http://127.0.0.1:1/blocklist" });
-        settings.insert_or_assign(TR_KEY_dht_enabled, false);
-        settings.insert_or_assign(TR_KEY_lpd_enabled, false);
-        settings.insert_or_assign(TR_KEY_pex_enabled, false);
-        settings.insert_or_assign(TR_KEY_port_forwarding_enabled, false);
-        settings.insert_or_assign(TR_KEY_utp_enabled, false);
-        tr::settings::save(tr_sessionGetSettingsFilename(sandboxDir().toStdString()), settings);
-
-        auto prefs = Prefs{};
-        prefs.set(TR_KEY_remote_session_enabled, false);
-
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-        QVERIFY(session.is_embedded());
-
-        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
-        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
-        session.updateBlocklist();
-        session.restart();
-
-        QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
-        QCOMPARE(failed.count(), 1);
-        QVERIFY(updated.isEmpty());
-    }
-
-    // The next three tests restart the session before returning to the event loop.
-    // The reply to the request sent before the restart then arrives after stop(),
-    // so RpcClient drops it as a network error.
-
-    // The port test still ends, or portTestPending() would stay true for good.
-    void restart_ends_a_pending_port_test()
-    {
-        auto server = MockRpcServer{};
-
-        auto prefs = Prefs{};
-        setRemotePrefs(prefs, server);
-
-        auto tested = 0;
-        auto status = std::optional<bool>{ true };
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        // A lambda, not QSignalSpy, which needs portTested()'s argument types registered as metatypes.
-        QObject::connect(
-            &session,
-            &Session::portTested,
-            [&tested, &status](std::optional<bool> const result, tr_address_type /*ip_protocol*/) {
-                ++tested;
-                status = result;
-            });
-
-        session.portTest(TR_AF_INET);
-        QVERIFY(session.portTestPending(TR_AF_INET));
-        session.restart();
-
-        QVERIFY(waitUntil([&tested] { return tested > 0; }));
-        QCOMPARE(tested, 1);
-        QVERIFY(!status.has_value());
-        QVERIFY(!session.portTestPending(TR_AF_INET));
-    }
-
-    // The blocklist update still reports a result, or its progress dialog would never resolve.
-    void restart_fails_a_pending_blocklist_update()
-    {
-        auto server = MockRpcServer{};
-
-        auto prefs = Prefs{};
-        setRemotePrefs(prefs, server);
-
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
-        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
-        session.updateBlocklist();
-        session.restart();
-
-        QVERIFY(waitUntil([&failed] { return !failed.isEmpty(); }));
-        QCOMPARE(failed.count(), 1);
-        QVERIFY(updated.isEmpty());
-    }
-
+    // The reply to a request sent before a restart arrives after stop(), so RpcClient drops it as a network error.
     // FreeSpaceLabel still schedules its next request, or it would stop updating.
     void restart_keeps_free_space_polling()
     {

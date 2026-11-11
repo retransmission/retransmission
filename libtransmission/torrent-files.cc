@@ -9,6 +9,7 @@
 #include <cctype>
 #include <functional>
 #include <iterator>
+#include <map>
 #include <optional>
 #include <ranges>
 #include <set>
@@ -84,6 +85,11 @@ void depth_first_walk(
     }
 #endif
 
+    // a copy that a crash interrupted mid-move
+    if (base.starts_with(TrFileCopyPrefix)) {
+        return true;
+    }
+
     auto constexpr Files = std::to_array<std::string_view>({
         ".DS_Store"sv,
         "Thumbs.db"sv,
@@ -104,6 +110,15 @@ void remove_junk(std::string_view const filename)
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
         }
+    }
+}
+
+// Derive each tree from a moved file, not the torrent name.
+// That sweeps each tree once and leaves unused trees alone.
+void add_tree(std::set<std::string>& trees, std::string_view const base, std::string_view const subpath)
+{
+    if (auto const slash = subpath.find('/'); slash != std::string_view::npos) {
+        trees.emplace(tr_pathbuf{ base, '/', subpath.substr(0, slash) }.sv());
     }
 }
 
@@ -169,17 +184,23 @@ std::string_view tr_torrent_files::primary_mime_type() const
 
 // ---
 
-bool tr_torrent_files::move(
+std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     std::span<std::string_view const> const old_parents,
     std::string_view const parent_in,
     std::string_view const parent_name,
-    tr_error* error) const
+    tr_error* error,
+    bool* const needs_copy) const
 {
     auto const parent = tr_pathbuf{ parent_in };
     tr_logAddTrace(fmt::format("Moving files from [{}] to '{:s}'", fmt::join(old_parents, ", "), parent.sv()), parent_name);
 
+    auto leftovers = MoveLeftovers{};
+    leftovers.parent_name = parent_name;
+    leftovers.roots.emplace_back(parent.sv());
+    leftovers.roots.insert(std::end(leftovers.roots), std::begin(old_parents), std::end(old_parents));
+
     if (std::ranges::all_of(old_parents, [&parent](auto old_parent) { return tr_sys_path_is_same(old_parent, parent); })) {
-        return true;
+        return leftovers;
     }
 
     auto local_error = tr_error{};
@@ -207,12 +228,46 @@ bool tr_torrent_files::move(
     }
 
     if (std::empty(moves)) {
-        return true;
+        return leftovers;
     }
 
     if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
-        return false;
+        return {};
     }
+
+    // Copies can take minutes and renames don't, so copies go first.
+    // A kill during a copy then finds nothing renamed yet.
+    // This only sets the order: a rename that fails still falls back to a copy.
+    auto is_copied_from = std::map<std::string_view, bool>{};
+    for (auto const old_parent : old_parents) {
+        is_copied_from[old_parent] = !tr_sys_path_is_same_filesystem(old_parent, parent);
+    }
+    auto const is_copied = [&is_copied_from](auto const& entry) {
+        return is_copied_from.at(entry.second.base);
+    };
+    if (needs_copy != nullptr && std::ranges::any_of(moves, is_copied)) {
+        *needs_copy = true;
+        return {};
+    }
+    std::ranges::stable_partition(moves, is_copied);
+
+    // Copied sources stay until every file is in place.
+    // A kill mid-copy then leaves each copied file's source where the resume file says it is.
+    auto moved = std::vector<std::pair<FoundFile, tr_file_moved>>{};
+    moved.reserve(std::size(moves));
+
+    // Puts back what already moved, so a failed move leaves the old dirs whole.
+    // It's best effort, since the move has already failed.
+    auto const undo = [&moved, &parent] {
+        for (auto const& [found, how] : moved) {
+            auto const path = found.filename_under<tr_pathbuf>(parent);
+            if (how == tr_file_moved::Renamed) {
+                tr_sys_path_rename(path, found.filename<tr_pathbuf>());
+            } else {
+                tr_sys_path_remove(path);
+            }
+        }
+    };
 
     for (auto const& [i, found] : moves) {
         auto const old_path = found.filename<tr_pathbuf>();
@@ -226,16 +281,64 @@ bool tr_torrent_files::move(
                 parent_name);
         }
         tr_logAddTrace(fmt::format("Moving file #{:d} from '{:s}' to '{:s}'", i, old_path.sv(), path.sv()), parent_name);
-        if (!tr_file_move(old_path, path, true, error)) {
+        auto const how = tr_file_rename_or_copy(old_path, path, error);
+        if (!how) {
             error->prefix_message(fmt::format("'{:s}': ", old_path.sv()));
-            return false;
+            undo();
+            return {};
+        }
+        moved.emplace_back(found, *how);
+
+        if (*how == tr_file_moved::Copied) {
+            leftovers.sources.emplace(old_path.sv());
+        }
+        add_tree(leftovers.trees, found.base, found.subpath);
+    }
+
+    return leftovers;
+}
+
+void tr_torrent_files::add_copies_left_by_killed_move(
+    MoveLeftovers& leftovers,
+    std::span<std::string_view const> const old_parents,
+    std::string_view const parent_in) const
+{
+    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
+        auto const found = find(i, std::span{ &parent_in, 1U });
+        if (!found) {
+            continue;
+        }
+
+        auto const path = found->filename<tr_pathbuf>();
+        for (auto const old_parent : old_parents) {
+            auto const old_path = found->filename_under<tr_pathbuf>(old_parent);
+            auto const info = tr_sys_path_get_info(old_path);
+            if (info && info->size == found->size && !tr_sys_path_is_same(old_path, path)) {
+                leftovers.sources.emplace(old_path.sv());
+                add_tree(leftovers.trees, old_parent, found->subpath);
+            }
+        }
+    }
+}
+
+void tr_torrent_files::MoveLeftovers::remove() const
+{
+    for (auto const& source : sources) {
+        if (auto log_error = tr_error{}; !tr_sys_path_remove(source, &log_error)) {
+            tr_logAddError(
+                fmt::format(
+                    "Couldn't remove '{path}': {error} ({error_code})",
+                    fmt::arg("path", source),
+                    fmt::arg("error", log_error.message()),
+                    fmt::arg("error_code", log_error.code())),
+                parent_name);
         }
     }
 
     // Protect the roots themselves while still cleaning their siblings and ancestors.
     // If identity cannot be checked, leave the directory alone.
-    auto const skip_directory = [&parent, old_parents, parent_name](std::string_view directory) {
-        auto const is_root = [directory, parent_name](auto root) {
+    auto const skip_directory = [this](std::string_view directory) {
+        return std::ranges::any_of(roots, [this, directory](std::string_view const root) {
             auto path_error = tr_error{};
             auto const same = tr_sys_path_is_same(directory, root, &path_error);
 
@@ -258,31 +361,12 @@ bool tr_torrent_files::move(
 
             tr_logAddDebug(fmt::format("Skipping cleanup of '{:s}': configured root '{:s}'", directory, root), parent_name);
             return true;
-        };
-        return is_root(parent.sv()) || std::ranges::any_of(old_parents, is_root);
+        });
     };
 
-    for (auto const old_parent : old_parents) {
-        if (tr_sys_path_is_same(old_parent, parent)) {
-            continue;
-        }
-
-        // Derive each tree from a moved file, not the torrent name.
-        // Scan it once and leave unused trees alone.
-        auto trees = std::set<std::string_view>{};
-        for (auto const& found : moves | std::views::values) {
-            auto const slash = found.subpath.find('/');
-            if (found.base == old_parent && slash != std::string_view::npos) {
-                trees.emplace(found.subpath.substr(0, slash));
-            }
-        }
-        for (auto const top : trees) {
-            auto const tree = tr_pathbuf{ old_parent, '/', top };
-            depth_first_walk(tree, remove_junk, {}, skip_directory);
-        }
+    for (auto const& tree : trees) {
+        depth_first_walk(tree, remove_junk, {}, skip_directory);
     }
-
-    return true;
 }
 
 // ---
@@ -349,7 +433,7 @@ void tr_torrent_files::remove(
             // if moving a file fails, give up and let the error propagate
             auto const from = found->filename<tr_pathbuf>();
             auto const to = found->filename_under<tr_pathbuf>(tmpdir);
-            if (!tr_file_move(from, to, false, error)) {
+            if (!tr_file_move(from, to, error)) {
                 return;
             }
         }

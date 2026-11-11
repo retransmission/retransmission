@@ -8,6 +8,8 @@ add_library(transmission::app ALIAS ${LIBNAME})
 
 target_sources(${LIBNAME}
     PRIVATE
+        add-data.cc
+        add-data.h
         app.cc
         app.h
         converters.cc

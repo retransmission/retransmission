@@ -76,13 +76,12 @@ protected:
 
     static auto constexpr MaxWaitMsec = 3000;
 
-    [[nodiscard]] auto setLocation(tr_torrent* tor, std::string_view path, bool move = true)
+    [[nodiscard]] static int setLocation(tr_torrent* const tor, std::string_view const path, bool const move = true)
     {
-        return blockingRunInSessionThread([tor, path = std::string{ path }, move] {
-            auto state = -1;
-            tr_torrentSetLocation(tor, path, move, &state);
-            return state;
-        });
+        int volatile state = -1;
+        tr_torrentSetLocation(tor, path, move, &state);
+        EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE || state == TR_LOC_ERROR; }, MaxWaitMsec));
+        return state;
     }
 
     void checkRemoveLocalData(bool via_backend)
@@ -108,8 +107,11 @@ protected:
             tr_torrentRemove(tor, !via_backend);
         });
 
-        EXPECT_FALSE(tr_sys_path_exists(download_tree));
-        EXPECT_FALSE(tr_sys_path_exists(incomplete_tree));
+        EXPECT_TRUE(waitFor(
+            [&download_tree, &incomplete_tree] {
+                return !tr_sys_path_exists(download_tree) && !tr_sys_path_exists(incomplete_tree);
+            },
+            MaxWaitMsec));
     }
 
     void checkSetLocationToNewDirectory(bool partial_first_file, bool via_backend = false)
@@ -145,7 +147,7 @@ protected:
             session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, result] {
                 session->local_data.move(
                     tor->id(),
-                    [target] { return target; },
+                    [target] { return tr::LocalData::MoveTarget{ .parent = target }; },
                     [result](auto, auto, tr_error const& error) { result->set_value(error ? error.code() : 0); });
             });
             ASSERT_EQ(std::future_status::ready, ready.wait_for(5s));
@@ -194,9 +196,11 @@ TEST_P(IncompleteDirTest, incompleteDir)
     EXPECT_EQ(tor->piece_size(), tr_torrentStat(tor).left_until_done);
 
     auto completeness = TR_LEECH;
+    auto pending_during_done_step = false;
     tr_sessionSetCompletenessCallback(
         session_,
-        [&completeness](tr_torrent_id_t const /*tor_id*/, tr_completeness const c, bool const /*was_running*/) noexcept {
+        [&completeness, &pending_during_done_step, tor](tr_torrent_id_t, tr_completeness const c, bool) noexcept {
+            pending_during_done_step = tor->completion_move_pending();
             completeness = c;
         });
 
@@ -211,6 +215,8 @@ TEST_P(IncompleteDirTest, incompleteDir)
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));
     EXPECT_EQ(TR_SEED, completeness);
+    EXPECT_TRUE(pending_during_done_step);
+    EXPECT_TRUE(waitFor([tor] { return !tor->completion_move_pending(); }, MaxWaitMsec));
 
     auto const n = tr_torrentFileCount(tor);
     for (tr_file_index_t i = 0; i < n; ++i) {
@@ -327,12 +333,15 @@ TEST_P(IncompleteDirTest, completionMovesFilesOutsideCurrentDir)
 
     blockingTorrentVerify(tor);
     EXPECT_TRUE(tor->is_done());
+
+    // The old location is cleared last, so the move has finished once it's gone.
+    auto const incomplete_tree = tr_pathbuf{ incomplete_dir, '/', tor->name() };
+    EXPECT_TRUE(waitFor([&incomplete_tree] { return !tr_sys_path_exists(incomplete_tree); }, MaxWaitMsec));
     EXPECT_TRUE(tor->incomplete_dir().empty());
     for (tr_file_index_t i = 0; i < tor->file_count(); ++i) {
         auto const expected = tr_pathbuf{ download_dir, '/', tr_torrentFile(tor, i).name };
         EXPECT_EQ(expected, tr_torrentFindFile(tor, i));
     }
-    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ incomplete_dir, '/', tor->name() }));
     tr_torrentRemove(tor, true);
 }
 
@@ -385,6 +394,55 @@ TEST_F(MoveTest, setLocation)
     }
 
     // cleanup
+    tr_torrentRemove(tor, true);
+}
+
+TEST_F(MoveTest, backendSweepsTheOldLocationAfterPlacingFiles)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+    auto const junk = tr_pathbuf{ tor->current_dir().sv(), '/', tor->name(), "/.DS_Store"sv };
+    createFileWithContents(junk, "junk"sv);
+
+    auto placed = std::make_shared<std::promise<bool>>();
+    auto moved = std::make_shared<std::promise<bool>>();
+    auto placed_future = placed->get_future();
+    auto moved_future = moved->get_future();
+    session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, junk, placed, moved] {
+        session->local_data.move(
+            tor->id(),
+            [target] { return tr::LocalData::MoveTarget{ .parent = target }; },
+            [moved, junk](auto, auto, tr_error const&) { moved->set_value(tr_sys_path_exists(junk)); },
+            [placed, junk](auto, auto) { placed->set_value(tr_sys_path_exists(junk)); });
+    });
+    ASSERT_EQ(std::future_status::ready, placed_future.wait_for(5s));
+    ASSERT_EQ(std::future_status::ready, moved_future.wait_for(5s));
+    EXPECT_TRUE(placed_future.get());
+    EXPECT_FALSE(moved_future.get());
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(MoveTest, setLocationSavesTheNewLocation)
+{
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    tr_sys_dir_create(target_dir, TR_SYS_DIR_CREATE_PARENTS, 0777, nullptr);
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+
+    auto state = -1;
+    tr_torrentSetLocation(tor, target_dir, true, &state);
+    EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
+
+    auto const resume = tr_variant_serde::benc().parse_file(tor->resume_file());
+    ASSERT_TRUE(resume);
+    auto const* const map = resume->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    EXPECT_EQ(target_dir.sv(), map->value_if<std::string_view>(TR_KEY_destination));
+
     tr_torrentRemove(tor, true);
 }
 

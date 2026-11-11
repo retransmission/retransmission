@@ -1098,6 +1098,18 @@ void tr_torrent::init(tr_torrent_builder const& builder)
         set_local_error_if_files_disappeared(this, has_any_local_data);
     }
 
+    // A kill interrupted this torrent's completion move, so finish it once loading is done.
+    // That's up to the session that holds the config dir.
+    if (completion_move_pending_ && is_done() && session->mayWriteConfigDir()) {
+        session->queue_session_thread([session = this->session, tor_id = id()] {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                tor->finish_completion(false, false);
+            }
+        });
+    } else {
+        completion_move_pending_ = false;
+    }
+
     // Recover from the bug reported at https://github.com/transmission/transmission/issues/6899
     if (is_done() && date_done_ == time_t{}) {
         date_done_ = now_sec;
@@ -1150,18 +1162,35 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 // --- Location
 
 void tr_torrent::set_location_in_session_thread(
-    tr::LocalData::MoveParent path,
+    std::function<std::string()> path,
     bool const move_from_old_path,
     int volatile* setme_state)
 {
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
-    auto on_done = [session = this->session,
-                    move_from_old_path,
-                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+    auto on_placed = [session = this->session, move_from_old_path](tr_torrent_id_t const tor_id, std::string_view const path) {
         auto* const tor = session->torrents().get(tor_id);
-        if (tor != nullptr && error) {
+        if (tor == nullptr || std::empty(path)) {
+            return;
+        }
+
+        if (move_from_old_path) {
+            // set_download_dir() then makes `path` the current dir
+            tor->incomplete_dir_.clear();
+        }
+
+        // tell the torrent where the files are
+        tor->set_download_dir(path);
+        session->add_recent_relocate_dir(path);
+
+        // Saved before the old location is cleared, so a restart always finds the files.
+        tor->save_resume_file();
+    };
+
+    auto on_done = [session = this->session,
+                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && error) {
             tor->error().set_local_error(
                 fmt::format(
                     fmt::runtime(_("Couldn't move torrent files to '{path}': {error} ({error_code})")),
@@ -1169,15 +1198,6 @@ void tr_torrent::set_location_in_session_thread(
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
             tr_torrentStop(tor);
-        } else if (tor != nullptr && !std::empty(path)) {
-            if (move_from_old_path) {
-                // set_download_dir() then makes `path` the current dir
-                tor->incomplete_dir_.clear();
-            }
-
-            // tell the torrent where the files are
-            tor->set_download_dir(path);
-            session->add_recent_relocate_dir(path);
         }
 
         if (setme_state != nullptr) {
@@ -1192,8 +1212,11 @@ void tr_torrent::set_location_in_session_thread(
         // now-stale fds close with them.
         session->local_data.close_torrent(
             id(),
-            [path = std::move(path), on_done = std::move(on_done)](tr_torrent_id_t const tor_id) {
-                on_done(tor_id, path(), {});
+            [path = std::move(path), on_placed = std::move(on_placed), on_done = std::move(on_done)](
+                tr_torrent_id_t const tor_id) {
+                auto const dir = path();
+                on_placed(tor_id, dir);
+                on_done(tor_id, dir, {});
             });
         return;
     }
@@ -1206,7 +1229,13 @@ void tr_torrent::set_location_in_session_thread(
     // those hashes must run before the files close and move.
     session->verify_remove(this);
     session->local_data.close_torrent(id());
-    session->local_data.move(id(), std::move(path), std::move(on_done));
+
+    auto target = [session = this->session, tor_id = id(), path = std::move(path)] {
+        auto const* const tor = session->torrents().get(tor_id);
+        return tr::LocalData::MoveTarget{ .parent = path(),
+                                          .clear_killed_move = tor != nullptr && tor->completion_move_pending() };
+    };
+    session->local_data.move(id(), std::move(target), std::move(on_done), std::move(on_placed));
 }
 
 small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
@@ -1224,6 +1253,8 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
         *this,
         [loc = std::string(location), move_from_old_path, setme_state](tr_torrent* const tor) {
             tor->set_location_in_session_thread([loc] { return loc; }, move_from_old_path, setme_state);
+            // Analyzer false positive: the std::function moved into the move's barrier still owns the closure.
+            // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
         },
         [setme_state] {
             if (setme_state != nullptr) {
@@ -1946,9 +1977,10 @@ void tr_torrent::recheck_completeness()
                 get_completion_string(new_completeness)));
 
         completeness_ = new_completeness;
-        auto const token = ++completeness_token_;
+        ++completeness_token_;
 
         if (!is_done()) {
+            completion_move_pending_ = false;
             session->onTorrentCompletenessChanged(id(), completeness_, was_running);
             set_dirty();
             mark_changed();
@@ -1963,9 +1995,18 @@ void tr_torrent::recheck_completeness()
         }
         date_done_ = tr_time();
 
-        // The rest waits until the files are where they end up.
-        // The done script, for one, is told where they are.
-        auto finish = [session = this->session, recent_change, was_running, token](tr_torrent_id_t const tor_id) {
+        finish_completion(recent_change, was_running);
+    }
+}
+
+void tr_torrent::finish_completion(bool const recent_change, bool const was_running) const
+{
+    using namespace completeness_helpers;
+
+    // The rest waits until the files are where they end up.
+    // The done script, for one, is told where they are.
+    auto finish =
+        [session = this->session, recent_change, was_running, token = completeness_token_](tr_torrent_id_t const tor_id) {
             auto* const tor = session->torrents().get(tor_id);
             if (tor == nullptr) {
                 return;
@@ -1980,23 +2021,30 @@ void tr_torrent::recheck_completeness()
 
             tor->done_(tor, recent_change);
             session->onTorrentCompletenessChanged(tor_id, tor->completeness_, was_running);
+            tor->completion_move_pending_ = false;
             tor->set_dirty();
             tor->mark_changed();
             tor->save_resume_file();
             callScriptIfEnabled(tor, TR_SCRIPT_ON_TORRENT_DONE);
         };
 
-        // Clients call this on their own threads too, but disk ops
-        // must be enqueued from the session thread. Closing the files
-        // behind the move runs `finish` once the move lands.
-        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
-            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
-                auto const lock = tor->unique_lock();
-                tor->leave_incomplete_dir();
-                session->local_data.close_torrent(tor_id, std::move(finish));
+    // Clients call this on their own threads too, but disk ops
+    // must be enqueued from the session thread. Closing the files
+    // behind the move runs `finish` once the move lands.
+    session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)] mutable {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+            auto const lock = tor->unique_lock();
+
+            if (!std::empty(tor->incomplete_dir())) {
+                tor->completion_move_pending_ = true;
+                tor->set_dirty();
+                tor->save_resume_file();
             }
-        });
-    }
+
+            tor->leave_incomplete_dir();
+            session->local_data.close_torrent(tor_id, std::move(finish));
+        }
+    });
 }
 
 // --- File DND
@@ -2441,6 +2489,15 @@ bool tr_torrent::on_block_received(tr_block_index_t const block)
         return false;
     }
 
+    // A move, rename, or removal holds back every write enqueued behind it.
+    // This block's write would hold write budget that other torrents need
+    // for as long as the op takes, so drop the block. No new block is
+    // requested meanwhile, but ones requested earlier still arrive.
+    if (session->local_data.admin_op_pending(id())) {
+        bytes_downloaded_.reduce(block_size(block));
+        return false;
+    }
+
     if (has_block_or_pending(block)) {
         tr_logAddDebugTor(this, "we have this block already...");
         bytes_downloaded_.reduce(block_size(block));
@@ -2608,39 +2665,6 @@ namespace rename_helpers
     return indices;
 }
 
-[[nodiscard]] auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_view newname)
-{
-    auto error = tr_error{};
-
-    auto const base = (tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir()).sv();
-
-    auto src = tr_pathbuf{ base, '/', oldpath };
-
-    if (!tr_sys_path_exists(src)) /* check for it as a partial */
-    {
-        src += tr_torrent_files::PartialFileSuffix;
-    }
-
-    if (tr_sys_path_exists(src)) {
-        auto const parent = tr_sys_path_dirname(src);
-        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
-            tr_pathbuf{ parent, '/', newname, tr_torrent_files::PartialFileSuffix } :
-            tr_pathbuf{ parent, '/', newname };
-
-        auto tmp = errno;
-        bool const tgt_exists = tr_sys_path_exists(tgt);
-        errno = tmp;
-
-        if (!tgt_exists) {
-            tmp = errno;
-            tr_sys_path_rename(src, tgt, &error);
-            errno = tmp;
-        }
-    }
-
-    return error;
-}
-
 void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::string_view newname, tr_file_index_t file_index)
 {
     auto name = std::string{};
@@ -2675,43 +2699,38 @@ void renameTorrentFileString(tr_torrent* tor, std::string_view oldpath, std::str
 } // namespace rename_helpers
 } // namespace
 
-void tr_torrent::rename_path_in_session_thread(
-    std::string_view const oldpath,
-    std::string_view const newname,
-    tr_torrent_rename_done_func const& callback)
+tr_error tr_torrent::check_rename(std::string_view const oldpath, std::string_view const newname) const
 {
     using namespace rename_helpers;
 
-    auto error = tr_error{};
-
-    if (!renameArgsAreValid(this, oldpath, newname)) {
-        error.set_from_errno(EINVAL);
-    } else if (auto const file_indices = renameFindAffectedFiles(this, oldpath); std::empty(file_indices)) {
-        error.set_from_errno(EINVAL);
-    } else {
-        error = renamePath(this, oldpath, newname);
-
-        if (!error) {
-            /* update tr_info.files */
-            for (auto const& file_index : file_indices) {
-                renameTorrentFileString(this, oldpath, newname, file_index);
-            }
-
-            /* update tr_info.name if user changed the toplevel */
-            if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
-                set_name(newname);
-            }
-
-            mark_edited();
-            set_dirty();
-        }
+    if (!renameArgsAreValid(this, oldpath, newname) || std::empty(renameFindAffectedFiles(this, oldpath))) {
+        return tr_error::from_errno(EINVAL);
     }
 
-    mark_changed();
+    return {};
+}
 
-    if (callback != nullptr) {
-        callback(id(), oldpath, newname, error);
+void tr_torrent::apply_rename(std::string_view const oldpath, std::string_view const newname)
+{
+    using namespace rename_helpers;
+
+    auto const file_indices = renameFindAffectedFiles(this, oldpath);
+
+    /* update tr_info.files */
+    for (auto const& file_index : file_indices) {
+        renameTorrentFileString(this, oldpath, newname, file_index);
     }
+
+    /* update tr_info.name if user changed the toplevel */
+    if (std::size(file_indices) == file_count() && !oldpath.contains('/')) {
+        set_name(newname);
+    }
+
+    mark_edited();
+    set_dirty();
+
+    // A restart must look for the files under their new names.
+    save_resume_file();
 }
 
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
@@ -2725,7 +2744,30 @@ void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname,
     run_in_session_thread_by_id(
         *this,
         [oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)](
-            tr_torrent* const tor) mutable { tor->session->local_data.rename(tor->id(), oldpath, newname, std::move(cb)); },
+            tr_torrent* const tor) mutable {
+            auto* const session = tor->session;
+            auto const tor_id = tor->id();
+
+            auto check = [session, tor_id, oldpath, newname] {
+                auto const* const torrent = session->torrents().get(tor_id);
+                return torrent != nullptr ? torrent->check_rename(oldpath, newname) : tr_error::from_errno(EINVAL);
+            };
+
+            auto on_rename = [session, oldpath, newname, cb = std::move(cb)](tr_torrent_id_t const id, tr_error const& error) {
+                if (auto* const torrent = session->torrents().get(id); torrent != nullptr) {
+                    if (!error) {
+                        torrent->apply_rename(oldpath, newname);
+                    }
+                    torrent->mark_changed();
+                }
+
+                if (cb != nullptr) {
+                    cb(id, oldpath, newname, error);
+                }
+            };
+
+            session->local_data.rename(tor_id, oldpath, newname, std::move(check), std::move(on_rename));
+        },
         std::move(on_gone));
 }
 
@@ -2785,6 +2827,85 @@ void tr_torrent::mark_changed()
 
     checked_pieces_.set(piece, checked);
     return checked;
+}
+
+void tr_torrent::read_piece_data(
+    tr_piece_index_t const piece,
+    uint32_t const offset,
+    uint32_t const length,
+    tr::LocalData::OnRead on_read)
+{
+    TR_ASSERT(piece < this->piece_count());
+
+    auto const loc = piece_loc(piece, offset);
+    auto const span = tr_byte_span_t{ .begin = loc.byte, .end = loc.byte + length };
+
+    // Most pieces are already checked, and skip building a callback.
+    if (is_piece_checked(piece)) {
+        session->local_data.read(id(), span, std::move(on_read));
+        return;
+    }
+
+    check_piece_lazily(
+        piece,
+        [session = this->session, tor_id = id(), span, on_read = std::move(on_read)](bool const ok) mutable {
+            if (ok) {
+                session->local_data.read(tor_id, span, std::move(on_read));
+            } else if (on_read) {
+                std::move(on_read)(tor_id, span, tr_error::from_errno(EIO), nullptr);
+            }
+        });
+}
+
+void tr_torrent::check_piece_lazily(tr_piece_index_t const piece, OnPieceChecked on_checked)
+{
+    auto& waiters = piece_check_waiters_[piece];
+    waiters.emplace_back(std::move(on_checked));
+    if (std::size(waiters) > 1U) {
+        return; // already being checked
+    }
+
+    session->local_data.test_piece(
+        id(),
+        piece,
+        [session = this->session](
+            tr_torrent_id_t const tor_id,
+            tr_piece_index_t const tested,
+            tr_error const&,
+            auto const hash) {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                tor->on_piece_checked(tested, hash && *hash == tor->piece_hash(tested));
+            }
+        });
+}
+
+void tr_torrent::on_piece_checked(tr_piece_index_t const piece, bool const ok)
+{
+    auto waiters = piece_check_waiters_.extract(piece);
+    if (waiters.empty()) {
+        return;
+    }
+
+    tr_logAddTraceTor(this, fmt::format("[LAZY] tested piece {}, pass=={}", piece, ok));
+
+    // Record nothing, and send nothing that was asked for, while:
+    // - a verify owns checked_pieces_, since the torrent's peers are going
+    //   away anyway;
+    // - the piece is gone, as when a neighbor's failed hash takes back a
+    //   block they share. The hash may have read that block mid-rewrite.
+    auto const recorded = verify_state_ == VerifyState::None && has_piece(piece);
+    if (recorded) {
+        mark_changed();
+        set_dirty();
+        checked_pieces_.set(piece, ok);
+        if (!ok) {
+            error().set_local_error(fmt::format("Please Verify Local Data! Piece #{:d} is corrupt.", piece));
+        }
+    }
+
+    for (auto const& waiter : waiters.mapped()) {
+        waiter(recorded && ok);
+    }
 }
 
 // --- RESUME HELPER
@@ -2857,6 +2978,11 @@ void tr_torrent::ResumeHelper::load_date_added(time_t when) noexcept
 time_t tr_torrent::ResumeHelper::date_done() const noexcept
 {
     return tor_.date_done_;
+}
+
+void tr_torrent::ResumeHelper::load_completion_move_pending(bool const val) noexcept
+{
+    tor_.completion_move_pending_ = val;
 }
 
 void tr_torrent::ResumeHelper::load_date_done(time_t when) noexcept

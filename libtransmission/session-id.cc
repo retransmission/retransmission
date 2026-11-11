@@ -153,5 +153,5 @@ std::string_view tr_session_id::sv() const
 
 char const* tr_session_id::c_str() const
 {
-    return std::data(sv()); // current_value_ is zero-terminated
+    return sv().data(); // current_value_ is zero-terminated
 }

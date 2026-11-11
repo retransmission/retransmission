@@ -16,8 +16,6 @@ using tr::app::SortMode;
 
 class TorrentSorter : public SorterBase<Torrent>
 {
-    using CompareFunc = int (*)(Torrent const&, Torrent const&);
-
 public:
     void set_mode(SortMode mode);
     void set_reversed(bool is_reversed);
@@ -25,14 +23,14 @@ public:
     // SorterBase<Torrent>
     int compare(Torrent const& lhs, Torrent const& rhs) const override;
 
-    void update(Torrent::ChangeFlags changes);
+    // re-sorts if the changed `fields` can move a torrent
+    void update(Torrent::Fields const& fields);
 
     [[nodiscard]] static Glib::RefPtr<TorrentSorter> create();
 
 private:
     TorrentSorter();
 
-private:
-    CompareFunc compare_func_ = nullptr;
+    SortMode mode_ = tr::app::DefaultSortMode;
     bool is_reversed_ = false;
 };

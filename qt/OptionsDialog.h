@@ -5,19 +5,22 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
+#include <variant>
 #include <vector>
 
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QDir>
+#include <QtCore/QString>
 #include <QtCore/QTimer>
 
 #include <libtransmission/torrent-metainfo.h>
 
+#include <libtransmission-app/add-data.h>
 #include <libtransmission-app/torrent.h> // TorrentFile
 
-#include "AddData.h" // AddData
 #include "BaseDialog.h"
 #include "Typedefs.h" // file_indices_t
 #include "ui_OptionsDialog.h"
@@ -30,7 +33,7 @@ class OptionsDialog : public BaseDialog
     Q_OBJECT
 
 public:
-    OptionsDialog(Session& session, Prefs const& prefs, AddData addme, QWidget* parent = nullptr);
+    OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddData addme, QWidget* parent = nullptr);
     OptionsDialog& operator=(OptionsDialog&&) = delete;
     OptionsDialog& operator=(OptionsDialog const&) = delete;
     OptionsDialog(OptionsDialog&&) = delete;
@@ -50,8 +53,9 @@ private:
     void reload();
     void updateWidgetsLocality();
     void clearInfo();
+    void clearSource();
 
-    AddData add_;
+    tr::app::AddData add_;
     std::vector<tr::app::TorrentFile> files_;
 
     QDir local_destination_;
@@ -61,6 +65,8 @@ private:
     Session& session_;
     Ui::OptionsDialog ui_ = {};
     std::optional<tr_torrent_metainfo> metainfo_;
+    QString submitted_source_; // the source edit's text when it last named a source
+    std::shared_ptr<std::monostate const> resolving_; // the current source's `resolve_add()` token
     bool is_local_fs_ = {};
 
     sigslot::scoped_connection session_connection_;

@@ -8,8 +8,6 @@ target_sources(${TR_NAME}-qt-lib
         AboutDialog.h
         AccessibleSqueezeLabel.cc
         AccessibleSqueezeLabel.h
-        AddData.cc
-        AddData.h
         Application.cc
         Application.h
         BaseDialog.h

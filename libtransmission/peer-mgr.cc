@@ -1061,6 +1061,11 @@ public:
         rechoke_timer_->set_interval(100ms);
     }
 
+    void stop_bandwidth_timer()
+    {
+        bandwidth_timer_->stop();
+    }
+
     [[nodiscard]] tr_swarm* get_existing_swarm(tr_sha1_digest_t const& hash) const
     {
         auto const* const tor = torrents_.get(hash);
@@ -1178,6 +1183,12 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
     TR_PROFILE_SCOPE("peer.next_requests");
     TR_ASSERT(!torrent->is_done());
 
+    // Blocks that arrive during a move, rename, or removal would wait behind
+    // it, holding write budget that other torrents need.
+    if (torrent->session->local_data.admin_op_pending(torrent->id())) {
+        return {};
+    }
+
     // From a refill the budget turned away to the next one it admits.
     // Session thread only.
     static auto budget_full = tr::profile::Interval{ "stall.write_budget_full" };
@@ -1188,6 +1199,7 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
         numwant = std::min(numwant, *spare);
         if (*spare == 0U) {
             budget_full.start();
+            torrent->session->defer_requests();
         } else {
             budget_full.stop();
         }
@@ -2483,21 +2495,41 @@ namespace
 {
 namespace bandwidth_helpers
 {
-void pumpAllPeers(tr_peerMgr* mgr)
+// Shuffled, so no peer is always first to claim the bandwidth or the
+// disk write budget.
+[[nodiscard]] auto shuffled_peers(tr_peerMgr const* const mgr, bool const downloading_only)
 {
     auto peers = small::vector<tr_peerMsgs*, TrDefaultPeerLimitGlobal>{};
     for (auto* const tor : mgr->torrents_) {
+        if (downloading_only && tor->is_done()) {
+            continue;
+        }
+
         std::ranges::transform(tor->swarm->peers, std::back_inserter(peers), [](auto const& p) { return p.get(); });
     }
 
     thread_local auto urbg = tr_urbg<size_t>{};
     std::ranges::shuffle(peers, urbg);
-    for (auto const& peer : peers) {
-        peer->pulse();
-    }
+    return peers;
 }
 } // namespace bandwidth_helpers
 } // namespace
+
+void tr_peerMgrRefillRequests(tr_peerMgr* const manager)
+{
+    using namespace bandwidth_helpers;
+
+    // A finished torrent's peers can never request, and clients wait on
+    // the session lock during this pass.
+    for (auto* const peer : shuffled_peers(manager, true)) {
+        peer->request_more_blocks();
+    }
+}
+
+void tr::detail::tr_peerMgrStopBandwidthTimer(tr_peerMgr* const manager)
+{
+    manager->stop_bandwidth_timer();
+}
 
 void tr_peerMgr::bandwidth_pulse()
 {
@@ -2506,7 +2538,9 @@ void tr_peerMgr::bandwidth_pulse()
 
     auto const lock = unique_lock();
 
-    pumpAllPeers(this);
+    for (auto* const peer : shuffled_peers(this, false)) {
+        peer->pulse();
+    }
 
     // allocate bandwidth to the peers
     static auto constexpr Msec = std::chrono::duration_cast<std::chrono::milliseconds>(BandwidthTimerPeriod).count();

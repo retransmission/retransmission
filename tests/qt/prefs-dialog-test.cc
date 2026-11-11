@@ -232,6 +232,38 @@ private slots:
         QVERIFY(date_label->isHidden());
     }
 
+    // A port test's result stays with the dialog that ran it, since the port can change state.
+    void opening_the_dialog_forgets_the_last_port_test()
+    {
+        using Status = tr::app::Session::PortStatus;
+
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        prefs.set(TR_KEY_remote_session_enabled, true);
+        prefs.set(TR_KEY_remote_session_host, QStringLiteral("127.0.0.1"));
+        prefs.set(TR_KEY_remote_session_port, static_cast<int>(server.port()));
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        session.test_port();
+        QCOMPARE(session.port_status(TR_AF_INET), Status::Checking);
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QCOMPARE(session.port_status(TR_AF_INET), Status::Unknown);
+
+        QVERIFY(waitUntil([&session] { return !session.port_test_pending(); }));
+        QCOMPARE(session.port_status(TR_AF_INET), Status::Unknown);
+
+        // Sent last, so its reply lands last: the free-space request, which
+        // this server answers without a size, has finished too. See drainFreeSpace().
+        auto done = false;
+        session.send(TR_KEY_session_stats, {}, [&done](auto const& /*response*/) { done = true; });
+        QVERIFY(waitUntil([&done] { return done; }));
+    }
+
     // A widget that a checkbox enables must follow that checkbox's pref, both
     // when the dialog opens and when the user toggles the box.
     void checkbox_dependents_follow_their_pref()

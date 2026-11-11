@@ -5,26 +5,22 @@
 
 #pragma once
 
-#include <array>
 #include <map>
-#include <optional>
+#include <string_view>
 
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
+#include <QtCore/QUrl>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/types.h>
-#include <libtransmission/variant.h>
+#include <QtWidgets/QMessageBox>
 
 #include <libtransmission-app/session.h>
 
 #include "Prefs.h"
 #include "RpcClient.h"
-
-class AddData;
 
 class Session
     : public QObject
@@ -33,47 +29,35 @@ class Session
     Q_OBJECT
 
 public:
-    Session(QString config_dir, Prefs& prefs, RpcClient& rpc);
+    Session(QString const& config_dir, Prefs& prefs, RpcClient& rpc);
     Session(Session&&) = delete;
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
     Session& operator=(Session const&) = delete;
     ~Session() override;
 
-    void stop();
-    void restart();
+    [[nodiscard]] QUrl getRemoteUrl() const;
 
-    [[nodiscard]] constexpr auto const& getRemoteUrl() const noexcept
+    // From here on, a failure shows no message box: the app has left the screen,
+    // and a reply that `stop()` cut short fails only because the session went away.
+    void setShuttingDown() noexcept
     {
-        return rpc_.url();
+        is_shutting_down_ = true;
     }
 
-    void updateBlocklist();
-    void portTest(tr_address_type ip_protocol);
+    [[nodiscard]] constexpr bool isShuttingDown() const noexcept
+    {
+        return is_shutting_down_;
+    }
+
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    [[nodiscard]] bool portTestPending(tr_address_type ip_protocol) const noexcept;
-
-    void addTorrent(AddData const& add_me, tr_variant::Map args_dict);
     void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
 
 public slots:
-    void addTorrent(AddData const& add_me);
     void launchWebInterface() const;
 
 signals:
-    void sourceChanged();
-
-    // stop() disconnected from the session and forgot its info and torrents.
-    void stopped();
-
-    // The session found its config dir held by another and started nothing.
-    // Emitted from every path that reaches start(), so a handler need not know which one ran.
-    void configDirContended();
-
-    void portTested(std::optional<bool> status, tr_address_type ip_protocol);
-    void blocklistUpdated(qint64);
-    void blocklistUpdateFailed(QString const& message);
     void dataReadProgress();
     void dataSendProgress();
     void networkResponse(bool is_network_error, QString const& message);
@@ -83,18 +67,16 @@ private slots:
     void onDuplicatesTimer();
 
 private:
-    void start();
-
     void onRenameFailed(RenameError const& error) const;
+    void onAddFailed(tr::app::AddData const& add, std::string_view errmsg) const;
+    void onAddDuplicate(tr::app::AddData const& add, std::string_view hash_string);
+    void showMessage(QMessageBox::Icon icon, QString const& title, QString const& text, QString const& detail = {}) const;
 
-    QString const config_dir_;
-    Prefs& prefs_;
-
-    std::array<bool, NUM_TR_AF_INET_TYPES> port_test_pending_ = {};
-    tr_session* session_ = {};
-    RpcClient& rpc_;
+    bool is_shutting_down_ = false;
 
     sigslot::scoped_connection rename_failed_connection_;
+    sigslot::scoped_connection add_failed_connection_;
+    sigslot::scoped_connection add_duplicate_connection_;
 
     std::map<QString, QString> duplicates_;
     QTimer duplicates_timer_;

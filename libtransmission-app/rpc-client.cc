@@ -86,6 +86,31 @@ tr_web& RpcClient::web()
     return *web_;
 }
 
+void RpcClient::fetch(
+    std::string url,
+    std::chrono::seconds const timeout,
+    std::function<void(tr_web::FetchResponse const&)> on_done)
+{
+    auto on_fetched = [this, generation = generation_, on_done = std::move(on_done)](tr_web::FetchResponse const& response) {
+        // Init-captured so that the member isn't const.
+        // A plain capture of a const& would make every move of this closure a copy.
+        // NOLINTNEXTLINE(bugprone-exception-escape): MSVC STL's std::map move constructor allocates
+        run_on_ui_thread_([this, generation, on_done, response = tr_web::FetchResponse{ response }] {
+            if (generation == generation_) {
+                on_done(response);
+            }
+        });
+    };
+
+    auto options = tr_web::FetchOptions{ std::move(url), std::move(on_fetched), nullptr, timeout };
+
+    if (session_ != nullptr) {
+        tr_sessionFetch(session_, std::move(options));
+    } else {
+        web().fetch(std::move(options));
+    }
+}
+
 RpcResponse RpcClient::unreachable_response(std::string errmsg)
 {
     auto response = RpcResponse{};

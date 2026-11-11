@@ -10,6 +10,8 @@
 #include <functional> // std::hash
 #include <string_view>
 
+#include "libtransmission/macros.h"
+
 namespace tr
 {
 
@@ -40,8 +42,8 @@ public:
     void clear() noexcept;
 
     [[nodiscard]] bool empty() const noexcept;
-    [[nodiscard]] char const* c_str() const noexcept;
-    [[nodiscard]] std::string_view sv() const noexcept;
+    [[nodiscard]] char const* c_str() const noexcept TR_LIFETIMEBOUND;
+    [[nodiscard]] std::string_view sv() const noexcept TR_LIFETIMEBOUND;
 
     [[nodiscard]] bool operator==(std::string_view that) const noexcept;
     [[nodiscard]] bool operator==(shared_string const& that) const noexcept;

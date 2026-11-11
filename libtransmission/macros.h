@@ -13,6 +13,21 @@
 
 // ---
 
+// Lets the compiler diagnose a reference or view that outlives the argument
+// or `*this` it refers to. Clang checks during compilation; MSVC, in code analysis.
+#if defined(__has_cpp_attribute)
+#if __has_cpp_attribute(clang::lifetimebound)
+#define TR_LIFETIMEBOUND [[clang::lifetimebound]]
+#elif __has_cpp_attribute(msvc::lifetimebound)
+#define TR_LIFETIMEBOUND [[msvc::lifetimebound]]
+#endif
+#endif
+#ifndef TR_LIFETIMEBOUND
+#define TR_LIFETIMEBOUND
+#endif
+
+// ---
+
 #define TR_PROJ_DOMAIN_TLD "org"
 #define TR_PROJ_DOMAIN_SLD "retransmission"
 

@@ -61,7 +61,7 @@ struct Totals {
 struct WriteBatch {
     uint64_t torrent, offset, bytes, blocks;
     int64_t queue_mean_ns, queue_max_ns, write_ns;
-    int error;
+    int64_t error;
 };
 
 class Collector
@@ -110,7 +110,7 @@ public:
                 for (auto const& [thread, row] : batches_) {
                     std::fprintf(
                         batches,
-                        "%lld\t%llu\t%llu\t%llu\t%llu\t%lld\t%lld\t%lld\t%d\n",
+                        "%lld\t%llu\t%llu\t%llu\t%llu\t%lld\t%lld\t%lld\t%lld\n",
                         static_cast<long long>(os_threads_[thread]),
                         static_cast<unsigned long long>(row.torrent),
                         static_cast<unsigned long long>(row.offset),
@@ -119,7 +119,7 @@ public:
                         static_cast<long long>(row.queue_mean_ns),
                         static_cast<long long>(row.queue_max_ns),
                         static_cast<long long>(row.write_ns),
-                        row.error);
+                        static_cast<long long>(row.error));
                 }
                 if (std::fclose(batches) != 0) {
                     std::fprintf(stderr, "Cannot finish batch profile: %s\n", batch_path.c_str());

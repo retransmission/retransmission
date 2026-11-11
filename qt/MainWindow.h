@@ -30,7 +30,6 @@ class QIcon;
 class QMenu;
 
 class AboutDialog;
-class AddData;
 class DetailsDialog;
 class ListViewProxyStyle;
 class Prefs;
@@ -53,6 +52,9 @@ public:
     MainWindow(MainWindow const&) = delete;
     MainWindow& operator=(MainWindow&&) = delete;
     MainWindow& operator=(MainWindow const&) = delete;
+
+    // While the session closes, the tray icon says `message` and offers nothing to do.
+    void setShuttingDown(QString const& message);
 
     [[nodiscard]] constexpr QSystemTrayIcon& trayIcon() noexcept
     {
@@ -104,7 +106,6 @@ private slots:
     void newTorrent();
     void onNetworkResponse(bool is_network_error, QString const& message);
     void onRefreshTimer();
-    void onSessionSourceChanged();
     void onSortModeChanged(QAction const* action);
     void onStatsModeChanged(QAction const* action);
     void openAbout();
@@ -134,7 +135,6 @@ private:
     void initStatusBar();
 
     void addTorrentFromClipboard();
-    void addTorrent(AddData const& add_me, bool show_options);
 
     Session& session_;
     Prefs& prefs_;
@@ -195,7 +195,9 @@ private:
     int refresh_fields_ = {};
     QTimer refresh_timer_;
     sigslot::scoped_connection stats_connection_;
+    sigslot::scoped_connection source_changed_connection_;
 
+    void onSessionSourceChanged();
     void refreshActionSensitivity();
     void refreshIcons();
     void refreshStatusBar(TransferStats const& stats);

@@ -55,3 +55,5 @@ add_trgtk_test(session-test.cc)
 target_compile_definitions(gtk-test-session
     PRIVATE
         -DLIBTRANSMISSION_TEST_ASSETS_DIR="${PROJECT_SOURCE_DIR}/tests/libtransmission/assets")
+
+add_trgtk_test(timer-test.cc)

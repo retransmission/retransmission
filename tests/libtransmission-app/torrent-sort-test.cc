@@ -188,3 +188,32 @@ TEST_F(AppTorrentSortTest, byEtaPutsTorrentsWithoutOneFirst)
     EXPECT_EQ(compare_torrents(later, unknown, SortMode::SortByEta), std::partial_ordering::greater);
     EXPECT_EQ(compare_torrents(unknown, unknown, SortMode::SortByEta), std::partial_ordering::equivalent);
 }
+
+TEST_F(AppTorrentSortTest, sortModeFieldsNameWhatTheComparatorReads)
+{
+    using tr::app::sort_mode_fields;
+    using tr::app::TorrentFieldSet;
+
+    EXPECT_FALSE(sort_mode_fields(SortMode::SortByName).any());
+    EXPECT_FALSE(sort_mode_fields(SortMode::SortById).any());
+    EXPECT_EQ(Torrent::fields<TR_KEY_added_date>(), sort_mode_fields(SortMode::SortByAge));
+    EXPECT_EQ(Torrent::fields<TR_KEY_eta>(), sort_mode_fields(SortMode::SortByEta));
+    EXPECT_EQ(Torrent::fields<TR_KEY_queue_position>(), sort_mode_fields(SortMode::SortByQueue));
+    EXPECT_EQ(Torrent::fields<TR_KEY_upload_ratio>(), sort_mode_fields(SortMode::SortByRatio));
+    EXPECT_EQ(Torrent::fields<TR_KEY_size_when_done>(), sort_mode_fields(SortMode::SortBySize));
+
+    // a mode that falls through to the next one's keys reads that mode's fields too
+    auto const reads = [](SortMode const mode, TorrentFieldSet const& fields) {
+        return (sort_mode_fields(mode) & fields) == fields;
+    };
+    EXPECT_TRUE(reads(
+        SortMode::SortByProgress,
+        sort_mode_fields(SortMode::SortByRatio) |
+            Torrent::fields<TR_KEY_have_valid, TR_KEY_metadata_percent_complete, TR_KEY_seed_ratio_limit>()));
+    EXPECT_TRUE(reads(
+        SortMode::SortByState,
+        sort_mode_fields(SortMode::SortByProgress) | Torrent::fields<TR_KEY_error, TR_KEY_status>()));
+    EXPECT_TRUE(reads(
+        SortMode::SortByActivity,
+        sort_mode_fields(SortMode::SortByState) | Torrent::fields<TR_KEY_rate_download, TR_KEY_webseeds_sending_to_us>()));
+}

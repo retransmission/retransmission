@@ -95,8 +95,10 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  * @param remove_func how `tr_torrentRemove()` deletes a torrent's local data,
  *                    e.g. by moving it to a recycle bin.
  *                    Empty means `tr_sys_path_remove()`.
- *                    It is called on the session thread,
+ *                    It may be called on a background thread, though never by two at once,
  *                    and the filename view is only valid for the duration of the call.
+ *                    It must not call back into the session, which can be waiting for it
+ *                    to return while holding the session's lock.
  * @see `tr_sessionGetDefaultSettings()`
  * @see `tr_sessionLoadSettings()`
  * @see `tr_getDefaultConfigDir()`
@@ -121,9 +123,10 @@ void tr_sessionReloadBlocklists(tr_session* session);
  *
  * This may take some time while &event=stopped announces are sent to trackers.
  *
- * @param timeout_secs specifies how long to wait on these announces.
+ * @param timeout_secs specifies how long to wait on these announces,
+ *        counted from when the session has finished its disk work.
  */
-void tr_sessionClose(tr_session* session, double timeout_secs = 15.0);
+void tr_sessionClose(tr_session* session, double timeout_secs = 5.0);
 
 /**
  * @brief Return the session's configuration directory.

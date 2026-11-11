@@ -4,11 +4,14 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <atomic>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
 #include <ctime> // time_t
+#include <future>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <fmt/format.h>
@@ -232,6 +235,86 @@ protected:
     }
 };
 } // namespace
+
+TEST_F(ResumeTest, finishesACompletionMoveThatAKillInterrupted)
+{
+    // root/f0 finished copying to the download dir before the kill, and root/f1 didn't.
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    createFileWithContents(tr_pathbuf{ session_->downloadDir(), "/root/f0"sv }, "00000"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f1"sv }, "11111"sv);
+
+    auto done_step_ran = std::atomic<bool>{ false };
+    auto was_running = std::atomic<bool>{ true };
+    tr_sessionSetCompletenessCallback(session_, [&](tr_torrent_id_t, tr_completeness, bool const running) {
+        was_running = running;
+        done_step_ran = true;
+    });
+
+    auto resume = checkedProgress(mtimeList({ 0, 0 }));
+    resume.try_emplace(TR_KEY_incomplete_dir, tr_variant::unmanaged_string(incomplete.sv()));
+    resume.try_emplace(TR_KEY_completion_move_pending, true);
+    auto builder = tr_torrent_builder{ session_ };
+    auto* const tor = torrentInit(builder, { 5U, 5U }, std::move(resume));
+    ASSERT_NE(nullptr, tor);
+
+    EXPECT_TRUE(waitFor([&done_step_ran] { return done_step_ran.load(); }, 5000));
+    EXPECT_TRUE(waitFor([tor] { return !tor->completion_move_pending(); }, 5000));
+    EXPECT_FALSE(was_running);
+    expectContents(tr_pathbuf{ session_->downloadDir(), "/root/f0"sv }, "00000"sv);
+    expectContents(tr_pathbuf{ session_->downloadDir(), "/root/f1"sv }, "11111"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ incomplete, "/root"sv }));
+    EXPECT_TRUE(std::empty(tor->incomplete_dir()));
+
+    tr_sessionSetCompletenessCallback(session_, {});
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(ResumeTest, leavesFilesInTheIncompleteDirUnlessAMoveWasInterrupted)
+{
+    // These could be another torrent's files. They just have the same names.
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    createFileWithContents(tr_pathbuf{ session_->downloadDir(), "/root/f0"sv }, "00000"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
+
+    auto resume = checkedProgress(mtimeList({ 0 }));
+    resume.try_emplace(TR_KEY_incomplete_dir, tr_variant::unmanaged_string(incomplete.sv()));
+    auto builder = tr_torrent_builder{ session_ };
+    auto* const tor = torrentInit(builder, { 5U }, std::move(resume));
+    ASSERT_NE(nullptr, tor);
+
+    // Let anything that loading queued run first.
+    auto flushed = std::promise<void>{};
+    session_->queue_session_thread([&flushed] { flushed.set_value(); });
+    flushed.get_future().wait();
+
+    expectContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
+    EXPECT_EQ(incomplete.sv(), tor->incomplete_dir().sv());
+
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(ResumeTest, ignoresAPendingCompletionMoveUntilTheTorrentIsDone)
+{
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
+
+    auto resume = tr_variant::Map{ 2U };
+    resume.try_emplace(TR_KEY_incomplete_dir, tr_variant::unmanaged_string(incomplete.sv()));
+    resume.try_emplace(TR_KEY_completion_move_pending, true);
+    auto builder = tr_torrent_builder{ session_ };
+    auto* const tor = torrentInit(builder, { 5U }, std::move(resume));
+    ASSERT_NE(nullptr, tor);
+
+    EXPECT_FALSE(tor->completion_move_pending());
+
+    auto flushed = std::promise<void>{};
+    session_->queue_session_thread([&flushed] { flushed.set_value(); });
+    flushed.get_future().wait();
+    expectContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
+
+    tr_torrentRemove(tor, false);
+}
 
 // A full-length list is the ordinary case: apply it verbatim. This is also
 // what we save for a torrent that has zero-length files, so the zero-length

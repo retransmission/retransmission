@@ -26,6 +26,7 @@
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/prefs.h"
 #include "libtransmission-app/torrent.h"
 
 namespace tr::app
@@ -37,8 +38,13 @@ bool TorrentList::Changes::any() const noexcept
         !std::empty(edited) || !std::empty(need_info) || !std::empty(removed);
 }
 
-TorrentList::TorrentList(Prefs const& prefs) noexcept
+TorrentList::TorrentList(Prefs const& prefs)
     : prefs_{ prefs }
+    , prefs_connection_{ prefs.observe_changes([this](tr_quark const key) {
+        if (std::ranges::find(Torrent::SeedRatioPrefKeys, key) != std::end(Torrent::SeedRatioPrefKeys)) {
+            report_seed_ratio_prefs_change();
+        }
+    }) }
 {
 }
 
@@ -244,7 +250,10 @@ void TorrentList::report(std::span<Seen const> const seen, Ids removed, time_t c
                 changes.changed_fields |= item.fields;
             }
 
-            if ((item.fields & Torrent::fields<TR_KEY_edit_date>()).any()) {
+            // Metadata brings the metainfo, often within the second of the add,
+            // and `edit_date` only counts seconds.
+            if ((item.fields & Torrent::fields<TR_KEY_edit_date>()).any() ||
+                ((item.fields & Torrent::metadata_percent_complete_fields()).any() && tor.has_metadata())) {
                 changes.edited.push_back(item.id);
             }
 
@@ -262,6 +271,23 @@ void TorrentList::report(std::span<Seen const> const seen, Ids removed, time_t c
     }
 
     if (changes.any()) {
+        changed(changes);
+    }
+}
+
+void TorrentList::report_seed_ratio_prefs_change()
+{
+    static auto constexpr Fields = Torrent::effective_seed_ratio_fields();
+
+    auto changes = Changes{};
+    for (size_t row = 0U, n = std::size(entries_); row < n; ++row) {
+        if (auto const& tor = *entries_[row].torrent; tor.seed_ratio_mode() == TR_RATIOLIMIT_GLOBAL) {
+            changes.changed.push_back({ .id = tor.id(), .row = row, .fields = Fields });
+        }
+    }
+
+    if (!std::empty(changes.changed)) {
+        changes.changed_fields = Fields;
         changed(changes);
     }
 }
@@ -294,7 +320,9 @@ void TorrentList::update(tr_variant::Map const& args, Coverage const coverage, t
     if (parsed.n_skipped != 0U) {
         tr_logAddWarn(fmt::format("Ignored {:d} torrent record(s) that had no usable id", parsed.n_skipped));
     }
-    std::erase_if(parsed.rows, [&removed_ids](Row const& row) { return std::ranges::binary_search(removed_ids, row.id); });
+    std::erase_if(parsed.rows, [this, &removed_ids](Row const& row) {
+        return std::ranges::binary_search(removed_ids, row.id) || std::ranges::binary_search(withheld_, row.id);
+    });
 
     auto newcomers = std::vector<Entry>{};
     auto seen = std::vector<Seen>{};
@@ -342,6 +370,24 @@ void TorrentList::remove(Ids ids)
     updating_ = false;
 }
 
+void TorrentList::withhold(tr_torrent_id_t const id)
+{
+    TR_ASSERT(!updating_);
+
+    if (auto const iter = std::ranges::lower_bound(withheld_, id); iter == std::end(withheld_) || *iter != id) {
+        withheld_.insert(iter, id);
+    }
+
+    remove({ id });
+}
+
+void TorrentList::release(tr_torrent_id_t const id)
+{
+    if (auto const iter = std::ranges::lower_bound(withheld_, id); iter != std::end(withheld_) && *iter == id) {
+        withheld_.erase(iter);
+    }
+}
+
 void TorrentList::normalize(Ids& ids)
 {
     std::ranges::sort(ids);
@@ -352,6 +398,8 @@ void TorrentList::normalize(Ids& ids)
 void TorrentList::clear()
 {
     TR_ASSERT(!updating_);
+
+    withheld_.clear();
 
     if (std::empty(entries_)) {
         return;

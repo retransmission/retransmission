@@ -26,6 +26,18 @@
 #include <sys/file.h> /* flock() */
 #endif
 
+#include <sys/uio.h> /* preadv2(), RWF_NOWAIT */
+
+#ifdef __linux__
+#include <sys/syscall.h> /* __NR_cachestat */
+#endif
+
+/* Reading only what is already cached takes Linux 6.5's cachestat(2). */
+#if defined(HAVE_PREADV2) && defined(RWF_NOWAIT) && defined(__NR_cachestat)
+#include <linux/mman.h> /* struct cachestat */
+#define USE_READ_CACHED
+#endif
+
 /* OS-specific file copy (copy_file_range, sendfile64, or copyfile). */
 #if defined(__linux__)
 #include <linux/version.h>
@@ -207,6 +219,14 @@ std::string_view tr_sys_path_dirname(std::string_view path)
     }
 
     return path.substr(0, end);
+}
+
+bool tr_sys_path_is_same_filesystem(std::string_view const path1, std::string_view const path2)
+{
+    struct stat sb1 = {};
+    struct stat sb2 = {};
+    return stat(tr_pathbuf{ path1 }.c_str(), &sb1) == 0 && stat(tr_pathbuf{ path2 }.c_str(), &sb2) == 0 &&
+        sb1.st_dev == sb2.st_dev;
 }
 
 bool tr_sys_path_rename(std::string_view const src_path, std::string_view const dst_path, tr_error* error)
@@ -565,6 +585,66 @@ bool tr_sys_file_read_at(
     }
 
     return ret;
+}
+
+bool tr_sys_file_read_cached_at(
+    [[maybe_unused]] tr_sys_file_t const handle,
+    [[maybe_unused]] void* const buffer,
+    [[maybe_unused]] uint64_t const size,
+    [[maybe_unused]] uint64_t const offset) noexcept
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+    TR_ASSERT(buffer != nullptr || size == 0);
+
+#ifdef USE_READ_CACHED
+    if (size == 0U) {
+        return true;
+    }
+
+    // Look before reading: a RWF_NOWAIT read that misses still submits
+    // readahead from this thread, which can wait on the disk for the
+    // filesystem's metadata or for a free request slot.
+    static auto const page_size = static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
+    auto range = cachestat_range{ .off = offset, .len = size };
+    auto stat = cachestat{};
+    // Fails before Linux 6.5, and on hugetlbfs.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg): glibc has no cachestat() wrapper
+    if (syscall(__NR_cachestat, handle, &range, &stat, 0U) != 0) {
+        return false;
+    }
+
+    if (auto const n_pages = ((offset + size - 1U) / page_size) - (offset / page_size) + 1U; stat.nr_cache < n_pages) {
+        return false;
+    }
+
+    // Still read without waiting, in case a page is evicted meanwhile.
+    // A read stops short at the first page that isn't cached, so loop
+    // until one fails outright: EAGAIN, the end of the file, a filesystem
+    // that refuses RWF_NOWAIT (tmpfs), or a real error, which the regular
+    // read reports.
+    for (auto done = uint64_t{}; done < size;) {
+        auto iov = iovec{ .iov_base = static_cast<char*>(buffer) + done, .iov_len = static_cast<size_t>(size - done) };
+        auto const n_read = preadv2(handle, &iov, 1, static_cast<off_t>(offset + done), RWF_NOWAIT);
+        if (n_read <= 0) {
+            return false;
+        }
+
+        done += static_cast<uint64_t>(n_read);
+    }
+
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool tr_sys_file_can_read_cached() noexcept
+{
+#ifdef USE_READ_CACHED
+    return true;
+#else
+    return false;
+#endif
 }
 
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)

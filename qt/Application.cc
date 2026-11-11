@@ -10,6 +10,7 @@
 #include <span>
 #include <utility>
 
+#include <QtCore/QEventLoop>
 #include <QtCore/QFileInfo>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QRegularExpression>
@@ -18,6 +19,12 @@
 
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSystemTrayIcon>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+
+#include <QtCore/QTimer>
+#endif
 
 #ifdef QT_DBUS_LIB
 #include <QtDBus/QDBusConnection>
@@ -40,7 +47,6 @@
 #include <libtransmission-app/torrent-list.h>
 
 #include "AccessibleSqueezeLabel.h"
-#include "AddData.h"
 #include "Formatter.h"
 #include "MainWindow.h"
 #include "OptionsDialog.h"
@@ -174,10 +180,27 @@ Application::Application(
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
     watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
-    connect(this, &QCoreApplication::aboutToQuit, this, &Application::saveGeometry);
+#ifdef Q_OS_WIN
+    // Windows ends the process soon after this signal's slots return, so the close has to finish here.
+    connect(
+        this,
+        &QGuiApplication::commitDataRequest,
+        this,
+        [this] {
+            beginShutdown();
+            session_->wait_for_close();
+            QTimer::singleShot(0, this, [] { quit(); });
+        },
+        Qt::DirectConnection);
+#endif
+
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
-    connect(session_.get(), &Session::sourceChanged, this, &Application::onSessionSourceChanged);
-    connect(session_.get(), &Session::configDirContended, this, &Application::onConfigDirContended);
+    contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
+    add_prompt_connection_ = session_->torrent_add_prompt.connect_scoped([this](tr::app::AddData const& add) {
+        auto* const dialog = new OptionsDialog{ *session_, prefs_, add, window_.get() };
+        dialog->show();
+        QApplication::alert(dialog);
+    });
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
         // the trackers of a new torrent, and of one whose trackers changed
         for (auto const row : changes.inserted) {
@@ -208,7 +231,7 @@ Application::Application(
     poller_->start();
 
     if (!first_time) {
-        session_->restart();
+        session_->start();
     } else {
         window_->openSession();
     }
@@ -219,7 +242,7 @@ Application::Application(
 
     // torrent files passed in on the command line
     for (QString const& filename : filenames) {
-        addTorrent(AddData{ filename });
+        addTorrent(tr::app::AddData{ filename.toStdString() });
     }
 
 #ifdef QT_DBUS_LIB
@@ -242,6 +265,51 @@ Application::Application(
 }
 
 Application::~Application() = default;
+
+void Application::beginShutdown()
+{
+    if (config_dir_contended_ || session_->isShuttingDown()) {
+        return;
+    }
+
+    saveGeometry();
+
+    watch_dir_->setPath(QString{}, false);
+
+    // Nobody is left to read a message box, or to take a launch.
+    session_->setShuttingDown();
+    startup_coordinator_->withdraw();
+
+    // A dialog commits its pending edits when it hides, so this comes before the save.
+    // The save still misses a session key's edit that the session hasn't applied yet.
+    setQuitOnLastWindowClosed(false);
+    for (auto* const widget : topLevelWidgets()) {
+        widget->hide();
+    }
+
+    auto const message = tr("Shutting down…");
+    window_->setShuttingDown(message);
+
+#ifdef Q_OS_WIN
+    // Windows ignores the reason unless it has a window, and hide() can change the window's id.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr): a WId is an HWND
+    ::ShutdownBlockReasonCreate(reinterpret_cast<HWND>(window_->effectiveWinId()), message.toStdWString().c_str());
+#endif
+
+    session_->shut_down();
+}
+
+void Application::shutdown()
+{
+    beginShutdown();
+
+    // An event loop rather than wait_for_close(), so that the tray icon stays responsive.
+    if (session_->is_closing()) {
+        auto loop = QEventLoop{};
+        auto const closed_connection = session_->closed.connect_scoped([&loop] { loop.quit(); });
+        loop.exec();
+    }
+}
 
 bool Application::configDirIsContended() const noexcept
 {
@@ -393,51 +461,22 @@ void Application::onConfigDirContended()
     quit();
 }
 
-void Application::onSessionSourceChanged() const
-{
-    poller_->refresh_now();
-}
-
 /***
 ****
 ***/
 
 void Application::addWatchdirTorrent(QString const& filename) const
 {
-    auto add_data = AddData{ filename };
-    auto const disposal = prefs_.get<bool>(TR_KEY_trash_original_torrent_files) ? AddData::FilenameDisposal::Delete :
-                                                                                  AddData::FilenameDisposal::Rename;
-    add_data.setFileDisposal(disposal);
-    addTorrent(std::move(add_data));
+    auto add = tr::app::AddData{ filename.toStdString() };
+    add.from_watch_dir = true;
+    addTorrent(std::move(add));
 }
 
-void Application::addTorrent(AddData addme) const
+void Application::addTorrent(tr::app::AddData add) const
 {
-    if (addme.type == AddData::NONE) {
-        return;
-    }
-
-    // if there's not already a disposal action set,
-    // then honor the `trash original` preference setting
-    if (!addme.fileDisposal() && prefs_.get<bool>(TR_KEY_trash_original_torrent_files)) {
-        addme.setFileDisposal(AddData::FilenameDisposal::Delete);
-    }
-
-    if (!prefs_.get<bool>(TR_KEY_show_options_window)) {
-        session_->addTorrent(addme);
-    } else {
-        auto* o = new OptionsDialog{ *session_, prefs_, addme, window_.get() };
-        o->show();
-    }
+    session_->request_add(std::move(add));
 
     raise();
-}
-
-// ---
-
-std::optional<tr::Settings> Application::embedded_session_settings() const
-{
-    return session_->embedded_settings();
 }
 
 // ---
@@ -502,12 +541,12 @@ tr::interop::Reply Application::LocalInstance::present_window(std::string_view c
 
 tr::interop::Reply Application::LocalInstance::add_metainfo(std::string_view const metainfo)
 {
-    auto add_data = AddData::fromWireMetainfo(metainfo);
-    if (!add_data) {
+    auto add = tr::app::AddData::from_wire_metainfo(metainfo);
+    if (add.type == tr::app::AddData::Type::None) {
         return tr::interop::Reply::No;
     }
 
-    app_.addTorrent(std::move(*add_data));
+    app_.addTorrent(std::move(add));
     return tr::interop::Reply::Yes;
 }
 

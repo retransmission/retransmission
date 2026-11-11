@@ -790,6 +790,14 @@ public:
 
     [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
 
+    // A request refill found the disk write budget spent. Refill again
+    // when finished disk writes free enough of it. Budget freed any other
+    // way, such as by a disconnect, waits for the next peer manager pulse.
+    void defer_requests() noexcept
+    {
+        requests_deferred_ = true;
+    }
+
     void update_active_request_count(size_t previous, size_t current) noexcept;
 
     // announce ip
@@ -1299,7 +1307,7 @@ private:
     [[nodiscard]] std::vector<tr_torrent*> stop_torrents_for_rebind();
     void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
 
-    void closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
+    void closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds tracker_wait);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
 
     void on_now_timer();
@@ -1307,6 +1315,8 @@ private:
     void on_save_timer();
 
     void save_bandwidth_groups_if_dirty();
+
+    void resume_deferred_requests();
 
     // How long after its last activity the session still counts as busy.
     // Session thread only: reads the queue-stalled settings.
@@ -1596,10 +1606,13 @@ private:
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
-    size_t active_request_count_ = 0U;
     std::atomic<size_t> n_verify_jobs_;
     std::atomic<time_t> date_active_{ 0 };
     std::atomic<time_t> busy_window_{ 0 };
+
+    // Request accounting against the disk write budget. Session thread only.
+    size_t active_request_count_ = 0U;
+    bool requests_deferred_ = false;
 
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;

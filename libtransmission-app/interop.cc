@@ -72,10 +72,7 @@ bool is_metainfo_link(std::string_view const arg)
     return tr_urlIsValid(arg) || tr_magnet_metainfo{}.parseMagnet(arg);
 }
 
-namespace
-{
-// A local name: a path, or the file:// URI a desktop's Exec=%U hands us.
-[[nodiscard]] std::string local_filename(std::string_view const arg)
+std::string local_filename(std::string_view const arg)
 {
     auto constexpr Scheme = "file://"sv;
     if (!arg.starts_with(Scheme)) {
@@ -94,7 +91,6 @@ namespace
 
     return filename;
 }
-} // namespace
 
 std::optional<std::string> encode_metainfo_arg(std::string_view const arg)
 {

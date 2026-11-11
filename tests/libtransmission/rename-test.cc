@@ -132,6 +132,22 @@ protected:
 };
 } // namespace
 
+TEST_F(RenameTest, renameSavesTheNewName)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    EXPECT_EQ(0, torrentRenameAndWait(tor, tr_torrentName(tor), "renamed"));
+
+    auto const resume = tr_variant_serde::benc().parse_file(tor->resume_file());
+    ASSERT_TRUE(resume);
+    auto const* const map = resume->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, map);
+    EXPECT_EQ("renamed"sv, map->value_if<std::string_view>(TR_KEY_name));
+
+    tr_torrentRemove(tor, true);
+}
+
 TEST_F(RenameTest, singleFilenameTorrent)
 {
     static auto constexpr TotalSize = size_t{ 14 };

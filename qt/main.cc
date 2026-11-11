@@ -293,8 +293,7 @@ int tr_main(int argc, char** argv)
         return tr::interop::report_config_dir_busy(config_dir_str);
     }
 
-    // save prefs before exiting
-    prefs.save(config_dir.toStdString(), app.embedded_session_settings());
+    app.shutdown();
 
     return ret;
 }

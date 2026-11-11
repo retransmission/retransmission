@@ -10,7 +10,6 @@
 #include "Dialogs.h"
 #include "FilterBar.h"
 #include "GtkCompat.h"
-#include "HigWorkarea.h" // GUI_PAD, GUI_PAD_BIG
 #include "MainWindow.h"
 #include "MakeDialog.h"
 #include "MessageLogWindow.h"
@@ -22,11 +21,13 @@
 #include "Session.h"
 #include "StatsDialog.h"
 #include "SystemTrayIcon.h"
+#include "Timer.h"
 #include "Torrent.h"
 #include "Utils.h"
 
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/rpc-client.h>
+#include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/startup-coordinator.h>
 
 #include <libtransmission/api-compat.h>
@@ -41,12 +42,8 @@
 
 #include <gdkmm/display.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/button.h>
 #include <gtkmm/cssprovider.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/icontheme.h>
-#include <gtkmm/image.h>
-#include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/window.h>
@@ -71,10 +68,10 @@
 #endif
 
 #include <fmt/format.h>
+#include <sigslot/signal.hpp>
 
 #include <algorithm>
 #include <csignal>
-#include <cstdlib> // exit()
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
@@ -82,7 +79,6 @@
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <thread>
 #include <utility>
 #include <vector>
 
@@ -98,6 +94,9 @@ using FileListHandler = Glib::SListHandler<Glib::RefPtr<Gio::File>>;
 
 using StringValue = Glib::Value<Glib::ustring>;
 #endif
+
+// a `tr::app::Session` verb, which re-fetches its torrents so the list shows the result at once
+using TorrentVerb = void (tr::app::Session::*)(tr::app::Session::Ids);
 
 class Application::Impl
 {
@@ -185,15 +184,13 @@ private:
         guint time_);
 #endif
 
-    bool on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id);
-
     void placeWindowFromPrefs();
     void presentMainWindow(Glib::ustring const& activation_token = {});
     void hideMainWindow();
     void toggleMainWindow();
 
     bool winclose();
-    void rowChangedCB(std::unordered_set<tr_torrent_id_t> const& torrent_ids, Torrent::ChangeFlags changes);
+    void rowChangedCB(tr::app::TorrentList::Ids const& torrent_ids, Torrent::Fields const& changes);
 
     void app_setup();
     void main_window_setup();
@@ -219,7 +216,7 @@ private:
     void start_all_torrents();
     void pause_all_torrents();
     void copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const;
-    bool call_rpc_for_selected_torrents(tr_quark method);
+    [[nodiscard]] bool run_verb_for_selected_torrents(TorrentVerb verb);
     void remove_selected(bool delete_files);
 
 private:
@@ -245,6 +242,13 @@ private:
     // Declared before core_, which holds a reference to it.
     tr::app::RpcClient rpc_{ &gtr_run_on_ui_thread };
     Glib::RefPtr<Session> core_;
+
+    // Declared after core_, which they observe.
+    GlibTimerMaker timer_maker_;
+    std::unique_ptr<tr::app::SessionPoller> poller_;
+    sigslot::scoped_connection contended_tag_;
+    sigslot::scoped_connection closed_tag_;
+
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
     std::vector<std::string> error_list_;
@@ -324,13 +328,13 @@ Application::Impl::counts_data Application::Impl::get_selected_torrent_counts() 
     wind_->for_each_selected_torrent([&counts](auto const& torrent) {
         ++counts.total_count;
 
-        auto const activity = torrent->get_activity();
+        auto const& tor = torrent->get_shared();
 
-        if (activity == TR_STATUS_DOWNLOAD_WAIT || activity == TR_STATUS_SEED_WAIT) {
+        if (tor.is_queued()) {
             ++counts.queued_count;
         }
 
-        if (activity == TR_STATUS_STOPPED) {
+        if (tor.is_paused()) {
             ++counts.stopped_count;
         }
     });
@@ -368,9 +372,9 @@ bool Application::Impl::refresh_actions()
         gtr_action_set_sensitive("open-torrent-folder", sel_counts.total_count == 1);
         gtr_action_set_sensitive("copy-magnet-link-to-clipboard", sel_counts.total_count == 1);
 
-        bool const can_update = wind_ != nullptr && wind_->for_each_selected_torrent_until([](auto const& torrent) {
-            return tr_torrentCanManualUpdate(&torrent->get_underlying());
-        });
+        bool const can_update = wind_ != nullptr &&
+            wind_->for_each_selected_torrent_until(
+                [now = time(nullptr)](auto const& torrent) { return torrent->get_shared().can_manual_announce_at(now); });
         gtr_action_set_sensitive("torrent-reannounce", can_update);
     }
 
@@ -466,57 +470,6 @@ void Application::Impl::on_main_window_size_allocated()
 }
 
 /***
-**** listen to changes that come from RPC
-***/
-
-bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id)
-{
-    switch (type) {
-    case TR_RPC_SESSION_CLOSE:
-        gtr_action_activate("quit");
-        break;
-
-    case TR_RPC_TORRENT_ADDED:
-        if (tor_id) {
-            if (auto* tor = core_->find_torrent(*tor_id); tor != nullptr) {
-                core_->add_torrent(Torrent::create(tor), true);
-            }
-        }
-        break;
-
-    case TR_RPC_TORRENT_REMOVING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, false);
-        }
-        break;
-
-    case TR_RPC_TORRENT_TRASHING:
-        if (tor_id) {
-            core_->remove_torrent(*tor_id, true);
-        }
-        break;
-
-    case TR_RPC_SESSION_CHANGED:
-        // Another RPC client's session_set: the callback in on_startup() drops our own.
-        core_->import_embedded_settings();
-        break;
-
-    case TR_RPC_TORRENT_CHANGED:
-    case TR_RPC_TORRENT_MOVED:
-    case TR_RPC_TORRENT_STARTED:
-    case TR_RPC_TORRENT_STOPPED:
-    case TR_RPC_SESSION_QUEUE_POSITIONS_CHANGED:
-        // nothing interesting to do here
-        break;
-
-    default:
-        g_assert_not_reached();
-    }
-
-    return false;
-}
-
-/***
 ****  signal handling
 ***/
 
@@ -565,8 +518,6 @@ void Application::Impl::on_startup()
     std::ignore = FilterBar();
     std::ignore = PathButton();
 
-    tr_session* session = nullptr;
-
 #ifdef G_OS_UNIX
     g_unix_signal_add(SIGINT, &signal_handler, this);
     g_unix_signal_add(SIGTERM, &signal_handler, this);
@@ -581,17 +532,20 @@ void Application::Impl::on_startup()
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
-    /* initialize the libtransmission session */
-    session = tr_sessionInit(config_dir_, true, tr_sessionLoadSettings(config_dir_), gtr_file_trash_or_remove);
+    core_ = Session::create(config_dir_, prefs_, rpc_);
+    poller_ = std::make_unique<tr::app::SessionPoller>(*core_, timer_maker_);
+    contended_tag_ = core_->config_dir_contended.connect_scoped([this] { config_dir_contended_ = true; });
+    closed_tag_ = core_->closed.connect_scoped([this] {
+        // `core_` is mid-emit, so tear it down from a later turn of the loop
+        Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
+    });
 
-    if (tr_sessionConfigDirIsContended(session)) {
-        config_dir_contended_ = true;
-        tr_sessionClose(session, 1);
+    // Embedded whatever the remote_session_* prefs say: this client can't drive a remote session.
+    core_->start_embedded(start_paused_);
+    if (config_dir_contended_) {
         app_.quit();
         return;
     }
-
-    core_ = Session::create(session, prefs_, rpc_);
 
     // Starting the session can change its settings, e.g. a random peer port,
     // so read them back before anything shows them.
@@ -624,23 +578,16 @@ void Application::Impl::on_startup()
     app_.hold();
     app_setup();
 
-    // Fires on the thread that made the change: the session thread for another
-    // RPC client's request, this thread for our own session_set. Only another
-    // client's settings change needs importing. Ours are already in Prefs, and
-    // importing them here could read stale values back: tr_sessionSetPeerPort()
-    // and the DHT, uTP, LPD and port-forwarding setters queue their change for
-    // the session thread, which may apply it after the import runs.
-    auto const ui_thread = std::this_thread::get_id();
-    tr_sessionSetRPCCallback(
-        session,
-        [this, ui_thread](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
-            if (type == TR_RPC_SESSION_CHANGED && std::this_thread::get_id() == ui_thread) {
-                return TR_RPC_NOREMOVE;
-            }
+    // Another RPC client's session_close quits the app. The poll brings
+    // every other change, and the session removes torrents itself.
+    auto* const session = core_->get_session();
+    tr_sessionSetRPCCallback(session, [](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
+        if (type == TR_RPC_SESSION_CLOSE) {
+            gtr_run_on_ui_thread([] { gtr_action_activate("quit"); });
+        }
 
-            Glib::signal_idle().connect([this, type, tor_id] { return on_rpc_changed_idle(type, tor_id); });
-            return TR_RPC_NOREMOVE;
-        });
+        return TR_RPC_OK;
+    });
 
     /* if there's no magnet link handler registered, register us */
     ensure_magnet_handler_exists();
@@ -678,9 +625,8 @@ void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& f
 {
     bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents) && !start_paused_;
     bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
-    bool const do_notify = true;
 
-    core_->add_files(files, do_start, do_prompt, do_notify);
+    core_->add_files(files, do_start, do_prompt);
 }
 
 void Application::on_open(std::vector<Glib::RefPtr<Gio::File>> const& files, Glib::ustring const& hint)
@@ -725,9 +671,7 @@ void Application::Impl::app_setup()
     core_->signal_add_prompt().connect(sigc::mem_fun(*this, &Impl::on_add_torrent));
     core_->signal_prefs_changed().connect(sigc::mem_fun(*this, &Impl::on_prefs_changed));
 
-    /* add torrents from command-line and saved state */
-    core_->load(start_paused_);
-    core_->torrents_added();
+    poller_->start();
 
     /* set up main window */
     main_window_setup();
@@ -797,6 +741,10 @@ void Application::Impl::hideMainWindow()
 
 void Application::Impl::toggleMainWindow()
 {
+    if (is_closing_) {
+        return;
+    }
+
     if (is_iconified_) {
         presentMainWindow();
     } else {
@@ -815,11 +763,11 @@ bool Application::Impl::winclose()
     return true; /* don't propagate event further */
 }
 
-void Application::Impl::rowChangedCB(std::unordered_set<tr_torrent_id_t> const& torrent_ids, Torrent::ChangeFlags changes)
+void Application::Impl::rowChangedCB(tr::app::TorrentList::Ids const& torrent_ids, Torrent::Fields const& changes)
 {
-    if (changes.test(Torrent::ChangeFlag::ACTIVITY) &&
+    if ((changes & tr::app::Torrent::fields<TR_KEY_status>()).any() &&
         wind_->for_each_selected_torrent_until(
-            [&torrent_ids](auto const& torrent) { return torrent_ids.find(torrent->get_id()) != torrent_ids.end(); })) {
+            [&torrent_ids](auto const& torrent) { return std::ranges::binary_search(torrent_ids, torrent->get_id()); })) {
         refresh_actions_soon();
     }
 }
@@ -904,6 +852,7 @@ bool Application::Impl::on_session_closed()
     prefs_dialog_.reset();
     wind_.reset();
 
+    poller_.reset();
     core_.reset();
 
     icon_.reset();
@@ -927,66 +876,22 @@ void Application::Impl::on_app_exit()
     update_model_soon_tag_.disconnect();
     timer_.disconnect();
 
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-    wind_->remove();
-#endif
+    startup_coordinator_->withdraw();
 
-    wind_->set_show_menubar(false);
+    auto const message = std::string{ _("Shutting down…") };
 
-    auto* p = Gtk::make_managed<Gtk::Grid>();
-    p->set_column_spacing(GUI_PAD_BIG);
-    p->set_halign(TR_GTK_ALIGN(CENTER));
-    p->set_valign(TR_GTK_ALIGN(CENTER));
-#if GTKMM_CHECK_VERSION(4, 0, 0)
-    wind_->set_child(*p);
-#else
-    wind_->add(*p);
-#endif
+    // Tell the desktop why a logout should wait, while the window still exists to name.
+    app_.inhibit(*wind_, IF_GTKMM4(Gtk::Application::InhibitFlags::LOGOUT, Gtk::APPLICATION_INHIBIT_LOGOUT), message);
 
-    auto* icon = Gtk::make_managed<Gtk::Image>();
-    icon->property_icon_name() = "network-workgroup";
-    icon->property_icon_size() = IF_GTKMM4(Gtk::IconSize::LARGE, Gtk::ICON_SIZE_DIALOG);
-    p->attach(*icon, 0, 0, 1, 2);
+    hideMainWindow();
+    wind_->get_display()->flush(); // `shut_down()` below clears a long list, which takes time
 
-    auto* top_label = Gtk::make_managed<Gtk::Label>();
-    top_label->set_markup(fmt::format("<b>{:s}</b>", _("Closing Connections…")));
-    top_label->set_halign(TR_GTK_ALIGN(START));
-    top_label->set_valign(TR_GTK_ALIGN(CENTER));
-    p->attach(*top_label, 1, 0, 1, 1);
+    if (icon_ != nullptr) {
+        icon_->set_shutting_down(message);
+    }
 
-    auto* bottom_label = Gtk::make_managed<Gtk::Label>(_("Sending upload/download totals to tracker…"));
-    bottom_label->set_halign(TR_GTK_ALIGN(START));
-    bottom_label->set_valign(TR_GTK_ALIGN(CENTER));
-    p->attach(*bottom_label, 1, 1, 1, 1);
-
-    auto* button = Gtk::make_managed<Gtk::Button>(_("_Quit Now"), true);
-    button->set_margin_top(GUI_PAD);
-    button->set_halign(TR_GTK_ALIGN(START));
-    button->set_valign(TR_GTK_ALIGN(END));
-    button->signal_clicked().connect([] { ::exit(0); });
-    p->attach(*button, 1, 2, 1, 1);
-
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-    p->show_all();
-#endif
-    button->grab_focus();
-
-    /* clear the UI */
-    core_->clear();
-
-    /* ensure the window is in its previous position & size.
-     * this seems to be necessary because changing the main window's
-     * child seems to unset the size */
-    placeWindowFromPrefs();
-
-    /* shut down libT */
-    /* since tr_sessionClose () is a blocking function,
-     * delegate its call to another thread here... when it's done,
-     * punt the GUI teardown back to the GTK+ thread */
-    std::thread([this, session = core_->close()] {
-        tr_sessionClose(session);
-        Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
-    }).detach();
+    // The close runs on another thread and ends in `closed`, which tears down the rest.
+    core_->shut_down();
 }
 
 void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)
@@ -1099,9 +1004,6 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
 
 bool Application::Impl::update_model_once()
 {
-    /* update the torrent data in the model */
-    core_->update();
-
     /* refresh the main window's statusbar and toolbar buttons */
     if (wind_ != nullptr) {
         wind_->refresh();
@@ -1142,16 +1044,14 @@ void Application::Impl::show_about_dialog()
     d->show();
 }
 
-bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
+bool Application::Impl::run_verb_for_selected_torrents(TorrentVerb const verb)
 {
-    auto const ids = get_selected_torrent_ids();
+    auto ids = get_selected_torrent_ids();
     if (std::empty(ids)) {
         return false;
     }
 
-    auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids));
-    core_->exec(method, std::move(params));
+    (core_.get()->*verb)(std::move(ids));
     return true;
 }
 
@@ -1164,25 +1064,27 @@ void Application::Impl::remove_selected(bool delete_files)
 
 void Application::Impl::start_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_start, {});
+    core_->start_all_torrents();
 }
 
 void Application::Impl::pause_all_torrents()
 {
-    core_->exec(TR_KEY_torrent_stop, {});
+    core_->stop_all_torrents();
 }
 
 void Application::Impl::copy_magnet_link_to_clipboard(Glib::RefPtr<Torrent> const& torrent) const
 {
-    auto const magnet = tr_torrentGetMagnetLink(&torrent->get_underlying());
-    auto const display = wind_->get_display();
+    core_->fetch_magnet_link(torrent->get_id(), [display = wind_->get_display()](std::string_view const link) {
+        auto const magnet = Glib::ustring{ std::string{ link } };
 
-    /* this is The Right Thing for copy/paste... */
-    IF_GTKMM4(display->get_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_CLIPBOARD))->set_text(magnet);
+        /* this is The Right Thing for copy/paste... */
+        IF_GTKMM4(display->get_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_CLIPBOARD))
+            ->set_text(magnet);
 
-    /* ...but people using plain ol' X need this instead */
-    IF_GTKMM4(display->get_primary_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_PRIMARY))
-        ->set_text(magnet);
+        /* ...but people using plain ol' X need this instead */
+        IF_GTKMM4(display->get_primary_clipboard(), Gtk::Clipboard::get_for_display(display, GDK_SELECTION_PRIMARY))
+            ->set_text(magnet);
+    });
 }
 
 void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data)
@@ -1193,7 +1095,7 @@ void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data)
 namespace
 {
 
-[[nodiscard]] std::optional<tr_quark> action_name_to_torrent_rpc_method(std::string_view const action_name)
+[[nodiscard]] TorrentVerb action_name_to_torrent_verb(std::string_view const action_name)
 {
     // action-name -> rpc_method
     auto action_to_rpc = [](std::string_view const in) {
@@ -1204,24 +1106,30 @@ namespace
 
     if (auto quark = tr_quark_lookup(action_to_rpc(action_name))) {
         switch (*quark) {
-        // supported methods
         case TR_KEY_queue_move_bottom:
+            return &tr::app::Session::queue_move_bottom;
         case TR_KEY_queue_move_down:
+            return &tr::app::Session::queue_move_down;
         case TR_KEY_queue_move_top:
+            return &tr::app::Session::queue_move_top;
         case TR_KEY_queue_move_up:
+            return &tr::app::Session::queue_move_up;
         case TR_KEY_torrent_reannounce:
+            return &tr::app::Session::reannounce_torrents;
         case TR_KEY_torrent_start:
+            return &tr::app::Session::start_torrents;
         case TR_KEY_torrent_start_now:
+            return &tr::app::Session::start_torrents_now;
         case TR_KEY_torrent_stop:
+            return &tr::app::Session::stop_torrents;
         case TR_KEY_torrent_verify:
-            return quark;
-
+            return &tr::app::Session::verify_torrents;
         default:
             break;
         }
     }
 
-    return {};
+    return nullptr;
 }
 
 } // namespace
@@ -1259,8 +1167,8 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
             gtr_window_on_close(*w, [w] mutable { w.reset(); });
             w->show();
         }
-    } else if (auto const method = action_name_to_torrent_rpc_method(action_name.raw())) {
-        changed = call_rpc_for_selected_torrents(*method);
+    } else if (auto const verb = action_name_to_torrent_verb(action_name.raw())) {
+        changed = run_verb_for_selected_torrents(verb);
     } else if (action_name == "open-torrent-folder") {
         wind_->for_each_selected_torrent([this](auto const& torrent) { core_->open_folder(torrent->get_id()); });
     } else if (action_name == "show-torrent-properties") {
@@ -1318,24 +1226,12 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
 
 tr::interop::Reply Application::Impl::LocalInstance::present_window(std::string_view const activation_token)
 {
-    // The transport answers until the main loop stops, which outlasts the window.
-    // A client on its way out has one only until its session has finished closing.
-    if (impl_.is_closing_) {
-        return tr::interop::Reply::No;
-    }
-
     impl_.presentMainWindow(Glib::ustring{ std::string{ activation_token } });
     return tr::interop::Reply::Yes;
 }
 
 bool Application::Impl::add_wire_metainfo(std::string_view const metainfo)
 {
-    // Refuse rather than take a torrent into a session that is closing. The caller then
-    // keeps it and says so, and we never reach a core_ that the close has already freed.
-    if (is_closing_) {
-        return false;
-    }
-
     // The forms interop-names.h documents for AddMetainfo(s):
     // a URL or magnet link as itself, or a torrent file's contents base64'd.
     if (tr::interop::is_metainfo_link(metainfo)) {

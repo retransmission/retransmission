@@ -16,6 +16,7 @@
 #include <string_view>
 #include <thread>
 #include <tuple>
+#include <utility> // std::pair
 #include <vector>
 
 #include <fmt/format.h>
@@ -252,6 +253,38 @@ TEST_F(OpenFilesTest, closeTorrentClosesTheTorrentFiles)
     session_->openFiles().close_torrent(TorId);
     EXPECT_FALSE(session_->openFiles().get(TorId, 1, false));
     EXPECT_FALSE(session_->openFiles().get(TorId, 3, false));
+}
+
+TEST_F(OpenFilesTest, closingHandsThePoolsReferencesToTheCaller)
+{
+    auto error = tr_error{};
+    static auto constexpr Contents = "Hello, World!\n"sv;
+    static auto constexpr TorId = tr_torrent_id_t{ 0 };
+    auto files = tr_open_files{};
+    for (auto const& [tor_id, file_num] : { std::pair{ TorId, 1 }, std::pair{ TorId, 3 }, std::pair{ TorId + 1, 0 } }) {
+        auto const filename = tr_pathbuf{ sandboxDir(), fmt::format("/{}-{}.txt", tor_id, file_num) };
+        createFileWithContents(filename, Contents);
+        EXPECT_TRUE(files.get(tor_id, file_num, false, filename, PreallocateFull, std::size(Contents), error));
+    }
+
+    // The file leaves the pool still open. It closes when the caller says so.
+    auto const file = files.close_file(TorId, 1);
+    ASSERT_TRUE(file);
+    EXPECT_EQ(1, file.use_count());
+    auto buf = std::array<char, std::size(Contents) + 1>{};
+    auto bytes_read = uint64_t{};
+    EXPECT_TRUE(tr_sys_file_read_at(file->fd(), std::data(buf), std::size(Contents), 0, &bytes_read));
+    EXPECT_EQ(Contents, std::string_view(std::data(buf), static_cast<size_t>(bytes_read)));
+    EXPECT_FALSE(files.close_file(TorId, 1));
+
+    auto const of_torrent = files.close_torrent(TorId);
+    ASSERT_EQ(1U, std::size(of_torrent));
+    EXPECT_EQ(1, of_torrent.front().use_count());
+    EXPECT_FALSE(files.get(TorId, 3, false));
+    EXPECT_TRUE(files.get(TorId + 1, 0, false));
+
+    EXPECT_EQ(1U, std::size(files.close_all()));
+    EXPECT_TRUE(std::empty(files.close_all()));
 }
 
 TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)

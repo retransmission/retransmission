@@ -4,12 +4,23 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
+#include <optional>
+#include <span>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <utility>
 #include <vector>
+
+#ifndef _WIN32
+#include <csignal>
+
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
 
 #include <gtest/gtest.h>
 
@@ -31,12 +42,73 @@ namespace
 class TorrentFilesTest : public ::tr::test::SandboxedTest
 {
 protected:
-    static void expectContents(std::string_view path, std::string_view expected)
+    [[nodiscard]] static bool moveAndClean(
+        tr_torrent_files const& files,
+        std::span<std::string_view const> const roots,
+        std::string_view const target,
+        tr_error* const error = nullptr)
     {
-        auto contents = std::vector<char>{};
-        ASSERT_TRUE(tr_file_read(path, contents));
-        EXPECT_EQ(expected, (std::string_view{ contents.data(), contents.size() }));
+        auto const leftovers = files.move(roots, target, "name", error);
+        if (leftovers) {
+            leftovers->remove();
+        }
+        return leftovers.has_value();
     }
+
+    void expectFailedMoveKeepsSources(std::string_view const target) const
+    {
+        auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+        auto const roots = std::array<std::string_view, 1>{ download.sv() };
+        auto files = tr_torrent_files{};
+        files.add("name/a", 1);
+        files.add("name/b", 1);
+        createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+        createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+        // Nothing can replace a non-empty dir, so moving the second file fails.
+        createFileWithContents(tr_pathbuf{ target, "/name/b/keep"sv }, "keep"sv);
+
+        auto error = tr_error{};
+        EXPECT_FALSE(files.move(roots, target, "name", &error));
+        EXPECT_TRUE(error);
+        expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+        expectContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+        EXPECT_EQ(
+            std::vector<std::string>{ "b" },
+            tr_sys_dir_get_files(tr_pathbuf{ target, "/name"sv }, tr_basename_accept_all));
+    }
+};
+
+// A move only copies its files when they cross a filesystem boundary.
+// Skipped where /dev/shm is missing or shares a filesystem with the sandbox.
+class TorrentFilesCrossFilesystemTest : public TorrentFilesTest
+{
+protected:
+    void SetUp() override
+    {
+        TorrentFilesTest::SetUp();
+
+        if (!tr_sys_path_exists("/dev/shm"sv)) {
+            GTEST_SKIP() << "no /dev/shm";
+        }
+
+        other_filesystem_.emplace("/dev/shm");
+
+        auto const from = tr_pathbuf{ sandboxDir(), "/probe"sv };
+        auto const to = tr_pathbuf{ other_filesystem_->path(), "/probe"sv };
+        createFileWithContents(from, "probe"sv);
+        if (tr_file_rename_or_copy(from, to) != tr_file_moved::Copied) {
+            GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
+        }
+    }
+
+    [[nodiscard]] std::string otherFilesystemDir() const
+    {
+        return other_filesystem_->path();
+    }
+
+private:
+    std::optional<::tr::test::Sandbox> other_filesystem_;
 };
 } // namespace
 
@@ -53,7 +125,7 @@ TEST_F(TorrentFilesTest, consolidatesIntoSourceRoot)
     // A normal source leaves a stale .part destination untouched.
     createFileWithContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
 
-    ASSERT_TRUE(files.move(roots, incomplete, "name"));
+    ASSERT_TRUE(moveAndClean(files, roots, incomplete));
     expectContents(tr_pathbuf{ incomplete, "/name/first"sv }, "first"sv);
     expectContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
     expectContents(tr_pathbuf{ incomplete, "/name/second.part"sv }, "second"sv);
@@ -80,7 +152,7 @@ TEST_F(TorrentFilesTest, cleanupPreservesNestedRootAndDestination)
         // Junk in its parent must still be cleaned.
         createFileWithContents(tr_pathbuf{ download, "/name/desktop.ini"sv }, "junk"sv);
 
-        ASSERT_TRUE(files.move(roots, target, "name"));
+        ASSERT_TRUE(moveAndClean(files, roots, target));
         expectContents(tr_pathbuf{ nested, "/desktop.ini"sv }, "protected"sv);
         expectContents(tr_pathbuf{ target, "/name/data"sv }, "data"sv);
         expectContents(tr_pathbuf{ target, "/name/dir1/file"sv }, "other"sv);
@@ -104,9 +176,12 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     createFileWithContents(tr_pathbuf{ download, "/name/nested/data"sv }, "second"sv);
     // The nested tree becomes empty; notes.txt keeps its parent alive.
     createFileWithContents(tr_pathbuf{ download, "/name/nested/.DS_Store"sv }, "junk"sv);
+    createFileWithContents(
+        tr::detail::file_copy_temp_path(tr_pathbuf{ download, "/name/nested/data"sv }),
+        "interrupted copy"sv);
     createFileWithContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     createFileWithContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
-    ASSERT_TRUE(files.move(roots, target, "name"));
+    ASSERT_TRUE(moveAndClean(files, roots, target));
     expectContents(tr_pathbuf{ target, "/name/data"sv }, "first"sv);
     expectContents(tr_pathbuf{ target, "/name/nested/data"sv }, "second"sv);
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/data"sv }));
@@ -114,6 +189,162 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     expectContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     expectContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
 }
+
+TEST_F(TorrentFilesTest, killedMoveLeavesCopiesThatOnlyARetryRemoves)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    auto const roots = std::array<std::string_view, 2>{ download.sv(), incomplete.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/whole", 5);
+    files.add("name/different", 5);
+    files.add("name/single", 5);
+    createFileWithContents(tr_pathbuf{ download, "/name/whole"sv }, "whole"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/whole"sv }, "whole"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/different"sv }, "other"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/different"sv }, "not the same size"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/single"sv }, "single"sv);
+
+    // Without knowing a move was killed, a same-named file may be another torrent's.
+    auto leftovers = files.move(roots, download, "name");
+    ASSERT_TRUE(leftovers);
+    EXPECT_TRUE(std::empty(leftovers->sources));
+
+    files.add_copies_left_by_killed_move(*leftovers, roots, download);
+    leftovers->remove();
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ incomplete, "/name/whole"sv }));
+    expectContents(tr_pathbuf{ incomplete, "/name/different"sv }, "not the same size"sv);
+    expectContents(tr_pathbuf{ download, "/name/whole"sv }, "whole"sv);
+    expectContents(tr_pathbuf{ download, "/name/different"sv }, "other"sv);
+    expectContents(tr_pathbuf{ download, "/name/single"sv }, "single"sv);
+}
+
+TEST_F(TorrentFilesTest, failedMovePutsBackWhatMoved)
+{
+    expectFailedMoveKeepsSources(tr_pathbuf{ sandboxDir(), "/target"sv });
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, moveRemovesCopiedSources)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ otherFilesystemDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/b", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+    auto error = tr_error{};
+    auto const leftovers = files.move(roots, target, "name", &error);
+    ASSERT_TRUE(leftovers);
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    expectContents(tr_pathbuf{ target, "/name/b"sv }, "b"sv);
+
+    // The sources stay until the caller has saved the new location.
+    expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    expectContents(tr_pathbuf{ download, "/name/b"sv }, "b"sv);
+
+    leftovers->remove();
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, moveThatMayOnlyRenameLeavesACopyAlone)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ otherFilesystemDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+
+    auto error = tr_error{};
+    auto needs_copy = false;
+    EXPECT_FALSE(files.move(roots, target, "name", &error, &needs_copy));
+    EXPECT_TRUE(needs_copy);
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/name"sv }));
+}
+
+TEST_F(TorrentFilesTest, moveThatMayOnlyRenameRenames)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+
+    auto error = tr_error{};
+    auto needs_copy = false;
+    EXPECT_TRUE(files.move(roots, target, "name", &error, &needs_copy));
+    EXPECT_FALSE(needs_copy);
+    EXPECT_FALSE(error) << error;
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/a"sv }));
+}
+
+TEST_F(TorrentFilesCrossFilesystemTest, failedMoveKeepsCopiedSources)
+{
+    expectFailedMoveKeepsSources(tr_pathbuf{ otherFilesystemDir(), "/target"sv });
+}
+
+#ifndef _WIN32
+TEST_F(TorrentFilesCrossFilesystemTest, killDuringCopyLeavesEverySourceInPlace)
+{
+    // A rename carries `a` to the target. Only a copy can carry `b`.
+    auto constexpr BSize = uint64_t{ 256U } * 1024U * 1024U;
+    auto const rename_root = tr_pathbuf{ sandboxDir(), "/rename-root"sv };
+    auto const copy_root = tr_pathbuf{ otherFilesystemDir(), "/copy-root"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const roots = std::array<std::string_view, 2>{ rename_root.sv(), copy_root.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/b", BSize);
+    auto const source_a = tr_pathbuf{ rename_root, "/name/a"sv };
+    auto const source_b = tr_pathbuf{ copy_root, "/name/b"sv };
+    createFileWithContents(source_a, "a"sv);
+    createFileWithContents(source_b, ""sv);
+    auto const fd = tr_sys_file_open(source_b, TR_SYS_FILE_WRITE, 0);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+    ASSERT_TRUE(tr_sys_file_truncate(fd, BSize));
+    tr_sys_file_close(fd);
+
+    auto const target_b = tr_pathbuf{ target, "/name/b"sv };
+    auto const temp_b = tr::detail::file_copy_temp_path(target_b);
+
+    auto const pid = fork();
+    ASSERT_NE(-1, pid);
+    if (pid == 0) {
+        _exit(files.move(roots, target, "name") ? EXIT_SUCCESS : EXIT_FAILURE);
+    }
+
+    while (!tr_sys_path_exists(temp_b)) {
+        std::this_thread::yield();
+    }
+    kill(pid, SIGKILL);
+    auto status = 0;
+    ASSERT_EQ(pid, waitpid(pid, &status, 0));
+    if (!WIFSIGNALED(status)) {
+        GTEST_SKIP() << "the copy finished before the kill landed";
+    }
+
+    expectContents(source_a, "a"sv);
+    EXPECT_EQ(BSize, tr_sys_path_get_info(source_b).value_or(tr_sys_path_info{}).size);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/name/a"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(target_b));
+
+    // A retry finishes the move and replaces what the kill left.
+    ASSERT_TRUE(moveAndClean(files, roots, target));
+    expectContents(tr_pathbuf{ target, "/name/a"sv }, "a"sv);
+    EXPECT_EQ(BSize, tr_sys_path_get_info(target_b).value_or(tr_sys_path_info{}).size);
+    EXPECT_FALSE(tr_sys_path_exists(temp_b));
+    EXPECT_FALSE(tr_sys_path_exists(source_a));
+    EXPECT_FALSE(tr_sys_path_exists(source_b));
+}
+#endif
 
 TEST_F(TorrentFilesTest, removePreservesRootsWithoutMatchingFiles)
 {

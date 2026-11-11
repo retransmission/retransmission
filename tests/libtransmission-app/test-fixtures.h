@@ -113,19 +113,27 @@ private:
     Sandbox sandbox_;
 };
 
+// Settings that keep an embedded session off the network. That includes
+// its public-address lookup, which a closing session would wait on.
+[[nodiscard]] inline tr::Settings offline_settings(std::string_view const download_dir)
+{
+    auto settings = tr_sessionGetDefaultSettings();
+    for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
+        settings.insert_or_assign(key, false);
+    }
+    settings.insert_or_assign(TR_KEY_ip_endpoints_ipv4, tr_variant::Vector{});
+    settings.insert_or_assign(TR_KEY_ip_endpoints_ipv6, tr_variant::Vector{});
+    settings.insert_or_assign(TR_KEY_download_dir, download_dir);
+    return settings;
+}
+
 // A `SandboxedTest` with an embedded `tr_session` in the sandbox, kept off the network.
 class EmbeddedSessionTest : public SandboxedTest
 {
 protected:
     void SetUp() override
     {
-        auto settings = tr_sessionGetDefaultSettings();
-        for (auto const key : { TR_KEY_dht_enabled, TR_KEY_lpd_enabled, TR_KEY_port_forwarding_enabled, TR_KEY_utp_enabled }) {
-            settings.insert_or_assign(key, false);
-        }
-        settings.insert_or_assign(TR_KEY_download_dir, sandbox_dir());
-
-        core_ = tr_sessionInit(sandbox_dir(), false, settings);
+        core_ = tr_sessionInit(sandbox_dir(), false, offline_settings(sandbox_dir()));
     }
 
     void TearDown() override
@@ -252,5 +260,5 @@ struct SessionUnderTest {
     UiLoop loop_;
     tr::app::RpcClient rpc_{ loop_.marshaler() };
     tr::app::Prefs prefs_;
-    SessionT session_{ prefs_, rpc_ };
+    SessionT session_{ std::string{}, prefs_, rpc_ };
 };

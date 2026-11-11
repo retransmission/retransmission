@@ -51,6 +51,11 @@ public:
     // Destroying the coordinator stops the transport answering.
     void publish(Instance& self);
 
+    // For an instance on its way out, which holds its config dir lock until it exits.
+    // Stops answering and holds the startup lock until then, so that a new launch waits
+    // for this process to exit (see `delegate()`'s `patience`) and then starts.
+    void withdraw();
+
 private:
     class Impl;
     std::unique_ptr<Impl> const impl_;

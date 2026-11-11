@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::ranges::shuffle
+#include <array>
 #include <atomic>
 #include <cerrno>
 #include <chrono>
@@ -18,10 +19,12 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <span>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -47,20 +50,95 @@ namespace tr
 {
 namespace
 {
-// Reads at most one block. `desc` is null when the torrent is gone.
+// A read is at most one block, inside the torrent. `desc` is null when
+// the torrent is gone.
+[[nodiscard]] bool is_valid_read(StorageDescriptor const* const desc, tr_byte_span_t const span) noexcept
+{
+    return desc != nullptr && span.is_valid() && span.size() <= TrBlockSize && span.end <= desc->block_info.total_size();
+}
+
 [[nodiscard]] tr_error read_block(
     StorageDescriptor const* const desc,
     tr_open_files& open_files,
     tr_byte_span_t const span,
     LocalData::BlockData& setme)
 {
-    if (desc == nullptr || !span.is_valid() || span.size() > TrBlockSize) {
+    if (!is_valid_read(desc, span)) {
         return tr_error::from_errno(EINVAL);
     }
 
     auto const len = static_cast<size_t>(span.size());
     setme.resize(len);
     return tr_ioRead(*desc, open_files, span.begin, std::span{ std::data(setme), len });
+}
+
+// Puts the torrent's files under `target.parent`. Returns what's left to
+// clean up at the old location, or nothing with `error` set.
+// With `needs_copy`, a move that would have to copy files moves nothing
+// and sets that instead of `error`. See tr_torrent_files::move().
+[[nodiscard]] std::optional<tr_torrent_files::MoveLeftovers> place_files(
+    StorageDescriptor const& desc,
+    LocalData::MoveTarget const& target,
+    tr_error& error,
+    bool* const needs_copy = nullptr)
+{
+    auto const paths = search_paths(desc.download_dir, desc.incomplete_dir);
+    auto leftovers = desc.files.move(paths, target.parent, desc.name, &error, needs_copy);
+    if (!leftovers) {
+        if (!error && (needs_copy == nullptr || !*needs_copy)) {
+            error.set_from_errno(EIO);
+        }
+        return {};
+    }
+
+    if (target.clear_killed_move) {
+        desc.files.add_copies_left_by_killed_move(*leftovers, paths, target.parent);
+    }
+
+    return leftovers;
+}
+
+[[nodiscard]] tr_error remove_files(StorageDescriptor const& desc, tr_torrent_remove_func remove_func)
+{
+    if (!remove_func) {
+        remove_func = tr_sys_path_remove;
+    }
+
+    auto error = tr_error{};
+    desc.files.remove(search_paths(desc.download_dir, desc.incomplete_dir), desc.name, remove_func, &error);
+    return error;
+}
+
+// Renames `oldpath`, or its partial file, wherever `desc` looks for files.
+// A path that isn't there, or a new name already taken, is not an error.
+[[nodiscard]] tr_error rename_on_disk(
+    StorageDescriptor const& desc,
+    std::string_view const oldpath,
+    std::string_view const newname)
+{
+    for (auto const parent : search_paths(desc.download_dir, desc.incomplete_dir)) {
+        auto src = tr_pathbuf{ parent, '/', oldpath };
+        if (!tr_sys_path_exists(src)) {
+            src += tr_torrent_files::PartialFileSuffix;
+        }
+
+        if (!tr_sys_path_exists(src)) {
+            continue;
+        }
+
+        auto const dir = tr_sys_path_dirname(src);
+        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
+            tr_pathbuf{ dir, '/', newname, tr_torrent_files::PartialFileSuffix } :
+            tr_pathbuf{ dir, '/', newname };
+
+        auto error = tr_error{};
+        if (!tr_sys_path_exists(tgt)) {
+            tr_sys_path_rename(src, tgt, &error);
+        }
+        return error;
+    }
+
+    return {};
 }
 
 class DefaultBackend final : public LocalData::Backend
@@ -111,7 +189,10 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
-    [[nodiscard]] tr_error move(tr_torrent_id_t const id, std::string_view const parent) override
+    [[nodiscard]] tr_error move(
+        tr_torrent_id_t const id,
+        LocalData::MoveTarget const& target,
+        std::function<void()> const& on_placed) override
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
@@ -119,47 +200,27 @@ public:
         }
 
         auto error = tr_error{};
-        if (tor->files().move(tor->search_paths(), parent, tor->name(), &error)) {
-            return {};
+        auto const leftovers = place_files(*tor->storage_descriptor(), target, error);
+        if (!leftovers) {
+            return error;
         }
 
-        if (!error) {
-            error.set_from_errno(EIO);
-        }
-        return error;
+        on_placed();
+        leftovers->remove();
+        return {};
     }
 
     [[nodiscard]] tr_error remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
     {
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            return tr_error::from_errno(EINVAL);
-        }
-
-        if (!remove_func) {
-            remove_func = tr_sys_path_remove;
-        }
-
-        auto error = tr_error{};
-        tor->files().remove(tor->search_paths(), tor->name(), remove_func, &error);
-        return error;
+        return tor != nullptr ? remove_files(*tor->storage_descriptor(), std::move(remove_func)) : tr_error::from_errno(EINVAL);
     }
 
-    void rename(
-        tr_torrent_id_t const id,
-        std::string_view const oldpath,
-        std::string_view const newname,
-        tr_torrent_rename_done_func callback) override
+    [[nodiscard]] tr_error rename(tr_torrent_id_t const id, std::string_view const oldpath, std::string_view const newname)
+        override
     {
-        auto* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            if (callback != nullptr) {
-                callback(id, oldpath, newname, tr_error::from_errno(EINVAL));
-            }
-            return;
-        }
-
-        tor->rename_path_in_session_thread(oldpath, newname, callback);
+        auto const* const tor = torrents_.get(id);
+        return tor != nullptr ? rename_on_disk(*tor->storage_descriptor(), oldpath, newname) : tr_error::from_errno(EINVAL);
     }
 
     void close_all() override
@@ -336,21 +397,35 @@ private:
  * local-data.h. Data ops on a torrent are admitted freely and run
  * concurrently. An admin op waits in the torrent's queue until every
  * admitted op's completion has been delivered, and then runs
- * exclusively on the session thread. Ops enqueued behind it wait in
- * the queue until it finishes. This gate is what makes move, rename,
- * remove, and close safe against in-flight writes. A file close is a
- * barrier on its file alone: it waits only for the ops that touch the
- * file, and holds back only those.
+ * exclusively. A close takes its files out of the pool on the session
+ * thread and is done; the files themselves are closed on an admin lane.
+ * A move, rename, or remove does its disk work on an admin lane and its
+ * callbacks on the session thread. Ops enqueued behind it wait in the
+ * queue until it finishes. This gate is what makes move, rename, remove, and close
+ * safe against in-flight reads and writes. A file close is a barrier on
+ * its file alone: it waits only for the ops that touch the file, and
+ * holds back only those.
  *
- * Reads run on the session thread the moment the gate admits them, so
- * a read completes before the enqueue call returns unless a barrier
- * is holding it back.
+ * Reads: once admitted, a read first tries the page cache from the
+ * session thread, through files already open, without waiting for the
+ * disk. A hit completes before the enqueue call returns. A miss is
+ * staged, and the staged reads go to the workers together once the
+ * session thread finishes its current event, so that the requests one
+ * pass issued can be merged before any worker takes one.
  *
- * Write scheduling: pending writes are indexed by (torrent, offset). A
- * worker takes the next one past its last position, sweeping the index
- * like an elevator, then takes that write's contiguous successors and
- * writes the whole run with one call. That turns the swarm's random
- * block order into sequential disk writes of up to MaxRunBytes.
+ * Scheduling: pending reads and pending writes are each indexed by
+ * (torrent, offset). The workers drain a snapshot of the index in key
+ * order, one sweep of an elevator, and take the next snapshot when that
+ * one is empty. An op that arrives during a sweep waits for the next
+ * one, so a requester that keeps asking for the bytes just ahead of the
+ * workers can't hold them there, and no op waits more than two sweeps.
+ * A worker takes the sweep's first op along with the ops that continue
+ * it and does the whole run with one call. That turns the swarm's
+ * scattered block requests into sequential disk IO of up to MaxRunBytes.
+ * A worker takes a piece hash, a run of reads, and a run of writes in
+ * turn, skipping the kinds that have nothing waiting, so that a flood
+ * of one kind can't starve the others. A hash can read a whole piece
+ * from the disk, which is why it gets no more than its turn.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.
@@ -378,6 +453,9 @@ public:
             for (auto i = size_t{}; i < n_workers; ++i) {
                 workers_.emplace_back([this] { worker_main(); });
             }
+
+            workers_.emplace_back([this] { admin_main(long_lane_); });
+            workers_.emplace_back([this] { admin_main(short_lane_); });
         } catch (...) {
             stop_workers();
             throw;
@@ -398,10 +476,10 @@ public:
     {
         auto op = ReadOp{ .span = span, .on_read = std::move(on_read) };
 
-        // A torrent with nothing in flight has no gate, and a read runs
-        // inline anyway. Skip creating and erasing one per read.
+        // A torrent with nothing in flight has no gate and no barrier to
+        // wait for. Skip creating a gate for a read the page cache answers.
         if (!gates_.contains(id)) {
-            exec_read(id, op);
+            admit_read(id, std::move(op));
             return;
         }
 
@@ -449,7 +527,127 @@ public:
             }
         }
 
-        submit(id, BarrierOp{ .body = std::move(body), .span = span });
+        submit(
+            id,
+            BarrierOp{ .body =
+                           [body = std::move(body)] {
+                               body();
+                               return false;
+                           },
+                       .span = span });
+    }
+
+    // The ops below are barriers on the whole torrent whose disk work runs
+    // on an admin lane. They resolve paths through the descriptor, as the
+    // data ops do, and touch torrent state only through their callbacks.
+
+    void move(tr_torrent_id_t const id, MoveParent parent, OnMove on_move, OnPlaced on_placed)
+    {
+        auto body =
+            [this, id, parent = std::move(parent), on_move = std::move(on_move), on_placed = std::move(on_placed)] mutable {
+                auto target = parent();
+                auto desc = provider_(id);
+                if (std::empty(target.parent) || !desc) {
+                    if (on_move) {
+                        on_move(id, target.parent, std::empty(target.parent) ? tr_error{} : tr_error::from_errno(EINVAL));
+                    }
+                    return false;
+                }
+
+                post_admin(
+                    short_lane_,
+                    [this,
+                     desc = std::move(desc),
+                     job = MoveJob{ .id = id,
+                                    .target = std::move(target),
+                                    .on_move = std::move(on_move),
+                                    .on_placed = std::move(on_placed) }] mutable {
+                        exec_place(std::move(desc), std::move(job), false);
+                    });
+                return true;
+            };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    void remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func, OnRemove on_remove)
+    {
+        auto body = [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)] mutable {
+            auto desc = provider_(id);
+            if (!desc) {
+                finish_remove(id, tr_error::from_errno(EINVAL), on_remove);
+                return false;
+            }
+
+            run_on_short_lane(
+                id,
+                [desc = std::move(desc), remove_func = std::move(remove_func)] { return remove_files(*desc, remove_func); },
+                [this, id, on_remove = std::move(on_remove)](tr_error const& error) { finish_remove(id, error, on_remove); });
+            return true;
+        };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    void rename(tr_torrent_id_t const id, std::string oldpath, std::string newname, RenameCheck check, OnRename on_rename)
+    {
+        auto body = [this,
+                     id,
+                     oldpath = std::move(oldpath),
+                     newname = std::move(newname),
+                     check = std::move(check),
+                     on_rename = std::move(on_rename)] mutable {
+            auto desc = provider_(id);
+            if (auto const rejected = desc ? check() : tr_error::from_errno(EINVAL); rejected) {
+                on_rename(id, rejected);
+                return false;
+            }
+
+            run_on_short_lane(
+                id,
+                [desc = std::move(desc), oldpath = std::move(oldpath), newname = std::move(newname)] {
+                    return rename_on_disk(*desc, oldpath, newname);
+                },
+                [id, on_rename = std::move(on_rename)](tr_error const& error) { on_rename(id, error); });
+            return true;
+        };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    // The two closes below run inside a barrier. They take the files out
+    // of the pool, so that the next op opens them afresh, and leave the
+    // closing itself to the short lane: close() can wait on the disk.
+    // The lane works in order, so the files are closed before any removal,
+    // rename, move, or cleanup that is enqueued afterwards gets to run.
+
+    void close_torrent(tr_torrent_id_t const id)
+    {
+        close_on_short_lane(open_files_.close_torrent(id));
+        forget(id);
+    }
+
+    void close_file(tr_torrent_id_t const id, tr_file_index_t const file)
+    {
+        auto files = std::vector<tr_open_files::Handle>{};
+        if (auto handle = open_files_.close_file(id, file); handle) {
+            files.emplace_back(std::move(handle));
+        }
+        close_on_short_lane(std::move(files));
+    }
+
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t const id) const
+    {
+        auto const it = gates_.find(id);
+        if (it == std::end(gates_)) {
+            return false;
+        }
+
+        auto const& gate = it->second;
+        return (gate.running_barrier && !gate.running_barrier->span) || std::ranges::any_of(gate.queue, [](auto const& queued) {
+                   auto const* const barrier = std::get_if<BarrierOp>(&queued);
+                   return barrier != nullptr && !barrier->span;
+               });
     }
 
     // Drop the buffers kept for a torrent whose files are closed.
@@ -467,7 +665,11 @@ public:
         auto next_warning = std::chrono::steady_clock::now() + WarnInterval;
 
         for (;;) {
+            // The marshaled flush can't run while this blocks the session
+            // thread, and the completions just delivered may have staged
+            // reads of their own.
             pump_done();
+            flush_reads();
 
             if (idle()) {
                 return;
@@ -490,7 +692,7 @@ public:
                 fmt::format(
                     "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued",
                     fmt::arg("id", id),
-                    fmt::arg("running", gate.n_running),
+                    fmt::arg("running", gate.n_running + (gate.running_barrier ? 1U : 0U)),
                     fmt::arg("queued", std::size(gate.queue))));
         }
     }
@@ -513,6 +715,9 @@ public:
             .blocks_written = blocks_written_.load(std::memory_order_relaxed),
             .hashes_from_buffers = hashes_from_buffers_.load(std::memory_order_relaxed),
             .hashes_from_disk = hashes_from_disk_.load(std::memory_order_relaxed),
+            .cached_reads = cached_reads_.load(std::memory_order_relaxed),
+            .read_runs = read_runs_.load(std::memory_order_relaxed),
+            .blocks_read = blocks_read_.load(std::memory_order_relaxed),
         };
     }
 
@@ -523,11 +728,21 @@ public:
             paused_ = paused;
         }
         work_cv_.notify_all();
+        admin_cv_.notify_all();
     }
 
     void set_retained_bytes(size_t const max_bytes)
     {
         retained_.set_capacity(max_bytes);
+    }
+
+    void hold_copy_lane(bool const held)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            long_lane_.held = held;
+        }
+        admin_cv_.notify_all();
     }
 
 private:
@@ -548,9 +763,26 @@ private:
     };
 
     struct BarrierOp {
-        std::function<void()> body;
+        // Runs exclusively on the session thread. True means it handed
+        // disk work to an admin lane, and the barrier stays up until
+        // that work calls finish_barrier().
+        std::function<bool()> body;
         // The bytes the op touches. Absent, it touches the whole torrent.
         std::optional<tr_byte_span_t> span;
+    };
+
+    struct MoveJob {
+        tr_torrent_id_t id;
+        MoveTarget target;
+        OnMove on_move;
+        OnPlaced on_placed;
+    };
+
+    // Admin disk work, one job at a time per lane.
+    struct AdminLane {
+        std::deque<std::function<void()>> jobs;
+        // A held lane starts no job. See detail::hold_copy_lane().
+        bool held = false;
     };
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
@@ -561,9 +793,20 @@ private:
         std::deque<Queued> queue;
         // The data ops in flight. Writes never overlap one another, so
         // an ordered map keyed by begin finds an overlap in two lookups.
-        // Hashes are few, and may overlap writes.
+        // Hashes are few, and may overlap writes. Reads may duplicate
+        // one another when two peers ask for the same block.
         std::map<uint64_t, uint64_t> running_writes; // begin -> end
         std::vector<tr_byte_span_t> running_hashes;
+        std::multiset<std::pair<uint64_t, uint64_t>> running_reads; // (begin, end)
+    };
+
+    // A read the page cache couldn't answer, waiting for a worker.
+    struct PendingRead {
+        tr_torrent_id_t tor_id;
+        std::shared_ptr<StorageDescriptor const> desc;
+        tr_byte_span_t span;
+        std::unique_ptr<BlockData> data; // already sized to `span`
+        OnRead on_read;
     };
 
     // A write the gate admitted, waiting for a worker.
@@ -587,16 +830,13 @@ private:
         OnTest on_test;
     };
 
-    struct WriteKey {
+    // Where a pending op sits in its worker queue: disk order, more or less.
+    struct OpKey {
         tr_torrent_id_t tor_id;
         uint64_t begin;
 
-        [[nodiscard]] auto operator<=>(WriteKey const&) const noexcept = default;
+        [[nodiscard]] auto operator<=>(OpKey const&) const noexcept = default;
     };
-
-    // Adjacent pending writes are combined into runs of up to this many
-    // bytes and written with one call.
-    static auto constexpr MaxRunBytes = uint64_t{ 1024U * 1024U };
 
     // --- the admission gate. Session thread only.
 
@@ -627,6 +867,18 @@ private:
         return std::ranges::any_of(gate.running_hashes, [span](auto const& hash) { return overlaps(hash, span); });
     }
 
+    // True if a read in flight covers any byte of `span`. A read is at
+    // most a block long, so only reads starting less than a block before
+    // `span` can reach into it.
+    [[nodiscard]] static bool overlaps_running_read(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        auto const& reads = gate.running_reads;
+        auto const from = span.begin - std::min(span.begin, uint64_t{ TrBlockSize });
+        return std::any_of(reads.lower_bound({ from, 0U }), reads.lower_bound({ span.end, 0U }), [span](auto const& read) {
+            return read.second > span.begin;
+        });
+    }
+
     // True if a running or queued barrier holds back an op on `span`.
     [[nodiscard]] static bool is_blocked(Gate const& gate, tr_byte_span_t const span) noexcept
     {
@@ -640,6 +892,16 @@ private:
         });
     }
 
+    // True if `op` is a read or a hash that must wait for a write in flight.
+    // We read and hash only what we have, and never write that, with one
+    // exception: a piece loses the block it shares with a neighbor that
+    // fails its hash, and a read or hash of it that queued behind a barrier
+    // earlier can come up while that block is downloaded again.
+    [[nodiscard]] static bool waits_for_write(Gate const& gate, Queued const& op, tr_byte_span_t const span) noexcept
+    {
+        return !std::holds_alternative<WriteOp>(op) && overlaps_running_write(gate, span);
+    }
+
     // True if no op in flight touches the barrier's span.
     [[nodiscard]] static bool can_run(Gate const& gate, BarrierOp const& barrier) noexcept
     {
@@ -647,7 +909,8 @@ private:
             return gate.n_running == 0U;
         }
 
-        return !overlaps_running_write(gate, *barrier.span) && !overlaps_running_hash(gate, *barrier.span);
+        return !overlaps_running_write(gate, *barrier.span) && !overlaps_running_hash(gate, *barrier.span) &&
+            !overlaps_running_read(gate, *barrier.span);
     }
 
     // The bytes a data op touches. Nothing for a barrier, or for a hash
@@ -679,14 +942,14 @@ private:
         return std::empty(gates_);
     }
 
-    // Queue the op if a barrier blocks it, else run it, then run
-    // whatever the gate allows next. Barriers always queue; advance()
-    // is what grants them.
+    // Queue the op if a barrier blocks it or it must wait for a write,
+    // else run it, then run whatever the gate allows next. Barriers
+    // always queue; advance() is what grants them.
     void submit(tr_torrent_id_t const id, Queued&& op)
     {
         auto& gate = gates_[id];
         auto const span = span_of(id, op);
-        if (std::holds_alternative<BarrierOp>(op) || (span && is_blocked(gate, *span))) {
+        if (std::holds_alternative<BarrierOp>(op) || (span && (is_blocked(gate, *span) || waits_for_write(gate, op, *span)))) {
             gate.queue.emplace_back(std::move(op));
         } else {
             dispatch(id, gate, std::move(op));
@@ -697,10 +960,10 @@ private:
 
     void dispatch(tr_torrent_id_t const id, Gate& gate, Queued&& op)
     {
-        if (auto const* const read = std::get_if<ReadOp>(&op); read != nullptr) {
-            // We read only pieces we have, and we never write those.
+        if (auto* const read = std::get_if<ReadOp>(&op); read != nullptr) {
+            // See waits_for_write().
             TR_ASSERT(!overlaps_running_write(gate, read->span));
-            exec_read(id, *read);
+            admit_read(id, std::move(*read));
         } else if (auto* const test = std::get_if<TestOp>(&op); test != nullptr) {
             admit_test(id, gate, std::move(*test));
         } else {
@@ -739,14 +1002,35 @@ private:
                 // returns, so nothing erases `gate` under it.
                 gate.running_barrier = std::move(*barrier);
                 gate.queue.pop_front();
-                gate.running_barrier->body();
+                if (gate.running_barrier->body()) {
+                    return; // finish_barrier() calls advance() again
+                }
                 gate.running_barrier.reset();
                 continue;
+            }
+
+            if (auto const span = span_of(id, gate.queue.front()); span && waits_for_write(gate, gate.queue.front(), *span)) {
+                return; // that write's completion calls advance() again
             }
 
             auto op = std::move(gate.queue.front());
             gate.queue.pop_front();
             dispatch(id, gate, std::move(op));
+        }
+    }
+
+    // An admin op's last callback has run. Let the ops behind it go.
+    void finish_barrier(tr_torrent_id_t const id)
+    {
+        gate_of(id).running_barrier.reset();
+        advance(id);
+    }
+
+    void finish_remove(tr_torrent_id_t const id, tr_error const& error, OnRemove const& on_remove)
+    {
+        forget(id);
+        if (on_remove) {
+            on_remove(id, error);
         }
     }
 
@@ -776,9 +1060,9 @@ private:
         TR_ASSERT(n_erased == 1U);
     }
 
-    // A hash must never overlap a write in flight: we hash a piece only
-    // after its writes complete, so a failure here is a caller bug, not
-    // a backend race. A write may overlap a hash in flight. When a piece
+    // A hash never overlaps a write in flight: a download hash starts only
+    // after its piece's writes complete, and waits_for_write() holds back
+    // any other. A write may overlap a hash in flight. When a piece
     // fails its hash, a block it shares with a neighbor is downloaded
     // again while the neighbor's hash may still be running. The torrent
     // drops that hash's result, since the neighbor no longer has the
@@ -798,17 +1082,77 @@ private:
         hashes.erase(it);
     }
 
-    void exec_read(tr_torrent_id_t const id, ReadOp const& op)
+    static void unregister_running_read(Gate& gate, tr_byte_span_t const span)
     {
-        auto data = std::make_unique<BlockData>();
-        auto const error = read_block(provider_(id).get(), open_files_, op.span, *data);
-        if (error) {
-            data = nullptr;
+        auto& reads = gate.running_reads;
+        auto const it = reads.find({ span.begin, span.end });
+        TR_ASSERT(it != std::end(reads));
+        if (it != std::end(reads)) {
+            reads.erase(it);
+        }
+    }
+
+    // Answer the read from the page cache if that needs no disk access.
+    // Otherwise stage it for the workers.
+    void admit_read(tr_torrent_id_t const id, ReadOp op)
+    {
+        auto desc = provider_(id);
+        auto const span = op.span;
+        if (!is_valid_read(desc.get(), span)) {
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error::from_errno(EINVAL), nullptr);
+            }
+            return;
         }
 
-        if (op.on_read) {
-            op.on_read(id, op.span, error, std::move(data));
+        auto data = std::make_unique<BlockData>();
+        data->resize(static_cast<size_t>(span.size()));
+        if (tr_ioReadCached(*desc, open_files_, span.begin, std::span{ data->data(), data->size() })) {
+            cached_reads_.fetch_add(1U, std::memory_order_relaxed);
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error{}, std::move(data));
+            }
+            return;
         }
+
+        auto& gate = gates_[id];
+        ++gate.n_running;
+        gate.running_reads.emplace(span.begin, span.end);
+
+        auto const flush_scheduled = !std::empty(staged_reads_);
+        staged_reads_.emplace(
+            OpKey{ .tor_id = id, .begin = span.begin },
+            PendingRead{
+                .tor_id = id,
+                .desc = std::move(desc),
+                .span = span,
+                .data = std::move(data),
+                .on_read = std::move(op.on_read),
+            });
+
+        if (!flush_scheduled) {
+            marshal_([weak = weak_from_this()] {
+                if (auto const self = weak.lock(); self) {
+                    self->flush_reads();
+                }
+            });
+        }
+    }
+
+    // Hand the staged reads to the workers. They wait until the session
+    // thread is done with its current event so that the requests it
+    // issued in one pass, from one peer or several, can be merged.
+    void flush_reads()
+    {
+        if (std::empty(staged_reads_)) {
+            return;
+        }
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            pending_reads_.merge(staged_reads_);
+        }
+        work_cv_.notify_all();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -854,7 +1198,7 @@ private:
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_writes_.emplace(
-                WriteKey{ .tor_id = id, .begin = span.begin },
+                OpKey{ .tor_id = id, .begin = span.begin },
                 PendingWrite{
                     .tor_id = id,
                     .desc = std::move(desc),
@@ -872,6 +1216,7 @@ private:
     void post_completion(Fn&& fn)
     {
         // Measures how long the session thread takes to get to a finished op.
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
         auto timed = [posted = tr::profile::Stamp{}, fn = std::forward<Fn>(fn)] mutable {
             posted.record_since("storage.completion_wait");
             fn();
@@ -916,74 +1261,201 @@ private:
     {
         auto scratch = std::vector<uint8_t>{};
 
+        // The kinds of work, in the order a worker takes its turns at them.
+        enum class Kind : uint8_t { Hash, Reads, Writes };
+        static auto constexpr Kinds = std::array{ Kind::Hash, Kind::Reads, Kind::Writes };
+
+        // Each pass starts with the kind after the one it took last.
+        auto next = size_t{};
+
         for (;;) {
             auto test = std::optional<PendingTest>{};
-            auto run = std::vector<PendingWrite>{};
+            auto reads = std::vector<PendingRead>{};
+            auto writes = std::vector<PendingWrite>{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &run] {
+                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
                     if (paused_) {
                         return false;
                     }
 
-                    if (!std::empty(pending_tests_)) {
-                        test = std::move(pending_tests_.front());
-                        pending_tests_.pop_front();
-                        return true;
+                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
+                        auto const turn = (next + i) % std::size(Kinds);
+                        switch (Kinds[turn]) {
+                        case Kind::Hash:
+                            if (!std::empty(pending_tests_)) {
+                                test = std::move(pending_tests_.front());
+                                pending_tests_.pop_front();
+                            }
+                            break;
+
+                        case Kind::Reads:
+                            reads = take_run(read_sweep_, pending_reads_);
+                            break;
+
+                        case Kind::Writes:
+                            writes = take_run(write_sweep_, pending_writes_);
+                            break;
+                        }
+
+                        if (test || !std::empty(reads) || !std::empty(writes)) {
+                            next = (turn + 1U) % std::size(Kinds);
+                            return true;
+                        }
                     }
 
-                    run = take_write_run();
-                    return !std::empty(run) || stopping_;
+                    return stopping_;
                 });
             }
 
             if (test) {
                 exec_test(std::move(*test));
-            } else if (!std::empty(run)) {
-                exec_write_run(std::move(run), scratch);
+            } else if (!std::empty(reads)) {
+                exec_read_run(std::move(reads), scratch);
+            } else if (!std::empty(writes)) {
+                exec_write_run(std::move(writes), scratch);
             } else {
                 return;
             }
         }
     }
 
-    // Take the next write past the cursor, plus the writes contiguous
-    // with it. Call with work_mutex_ held.
-    [[nodiscard]] std::vector<PendingWrite> take_write_run()
+    void admin_main(AdminLane& lane)
     {
-        auto it = pending_writes_.lower_bound(cursor_);
-        if (it == std::end(pending_writes_)) {
-            it = std::begin(pending_writes_);
+        for (;;) {
+            auto job = std::function<void()>{};
+
+            {
+                auto lock = std::unique_lock{ work_mutex_ };
+                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
+                if (std::empty(lane.jobs)) {
+                    return;
+                }
+
+                job = std::move(lane.jobs.front());
+                lane.jobs.pop_front();
+            }
+
+            job();
         }
-        if (it == std::end(pending_writes_)) {
+    }
+
+    void post_admin(AdminLane& lane, std::function<void()> job)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            lane.jobs.emplace_back(std::move(job));
+        }
+        admin_cv_.notify_all();
+    }
+
+    void close_on_short_lane(std::vector<tr_open_files::Handle> files)
+    {
+        if (!std::empty(files)) {
+            post_admin(short_lane_, [files = std::move(files)] mutable { files.clear(); });
+        }
+    }
+
+    // Do a barrier's disk work, deliver its result on the session thread,
+    // and let the ops behind the barrier go.
+    void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
+    {
+        post_admin(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
+            post_completion([this, id, error = work(), done = std::move(done)] {
+                done(error);
+                finish_barrier(id);
+            });
+        });
+    }
+
+    // Put the files in place. The session thread saves the new location
+    // before the old one is cleared, so a kill can't lose track of the files.
+    //
+    // Every move starts on the short lane, where it may rename but not
+    // copy. One that finds a file to copy from another filesystem moves
+    // nothing and goes to the long lane to start over. So a torrent whose
+    // move only renames never waits, barrier up, for another torrent's copy.
+    // A rename that fails falls back to a copy wherever the move is running.
+    void exec_place(std::shared_ptr<StorageDescriptor const> desc, MoveJob job, bool const may_copy)
+    {
+        auto error = tr_error{};
+        auto needs_copy = false;
+        auto leftovers = place_files(*desc, job.target, error, may_copy ? nullptr : &needs_copy);
+        if (needs_copy) {
+            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+                exec_place(std::move(desc), std::move(job), true);
+            });
+            return;
+        }
+
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
+        post_completion([this, job = std::move(job), error = std::move(error), leftovers = std::move(leftovers)] mutable {
+            if (!leftovers) {
+                finish_move(job, error);
+                return;
+            }
+
+            if (job.on_placed) {
+                job.on_placed(job.id, job.target.parent);
+            }
+
+            // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
+            post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
+                leftovers.remove();
+                post_completion([this, job = std::move(job)] { finish_move(job, {}); });
+            });
+        });
+    }
+
+    void finish_move(MoveJob const& job, tr_error const& error)
+    {
+        if (job.on_move) {
+            job.on_move(job.id, job.target.parent, error);
+        }
+        finish_barrier(job.id);
+    }
+
+    // Take the sweep's first op, plus the ops in it that continue or
+    // overlap that one. Writes never overlap, so a run of writes is
+    // contiguous. Once the sweep is empty, the ops in `pending` become
+    // the next one. Call with work_mutex_ held.
+    template<typename Pending>
+    [[nodiscard]] static std::vector<typename Pending::mapped_type> take_run(Pending& sweep, Pending& pending)
+    {
+        if (std::empty(sweep)) {
+            std::swap(sweep, pending);
+        }
+
+        auto it = std::begin(sweep);
+        if (it == std::end(sweep)) {
             return {};
         }
 
         auto const tor_id = it->second.tor_id;
-        auto const desc = it->second.desc;
-        auto next_byte = it->second.span.begin;
-        auto n_bytes = uint64_t{};
+        auto const* const desc = it->second.desc.get();
+        auto const begin = it->second.span.begin;
+        auto end = it->second.span.end;
 
-        auto run = std::vector<PendingWrite>{};
-        while (it != std::end(pending_writes_)) {
+        auto run = std::vector<typename Pending::mapped_type>{};
+        while (it != std::end(sweep)) {
             auto& op = it->second;
-            if (op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
-                n_bytes + op.span.size() > MaxRunBytes) {
+            if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
+                std::max(end, op.span.end) - begin > MaxRunBytes) {
                 break;
             }
 
-            n_bytes += op.span.size();
-            next_byte = op.span.end;
-            cursor_ = it->first;
+            end = std::max(end, op.span.end);
+            if constexpr (std::is_same_v<typename Pending::mapped_type, PendingWrite>) {
 #ifdef TR_ENABLE_BLOCK_PROFILING
-            if (tr::profile::Collector::instance().batches_enabled()) {
-                op.queue_ns = op.admitted.elapsed_ns();
-            }
+                if (tr::profile::Collector::instance().batches_enabled()) {
+                    op.queue_ns = op.admitted.elapsed_ns();
+                }
 #endif
-            op.admitted.record_since("storage.write_queue_wait");
+                op.admitted.record_since("storage.write_queue_wait");
+            }
             run.emplace_back(std::move(it->second));
-            it = pending_writes_.erase(it);
+            it = sweep.erase(it);
         }
 
         return run;
@@ -995,8 +1467,10 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
+            long_lane_.held = false;
         }
         work_cv_.notify_all();
+        admin_cv_.notify_all();
 
         for (auto& worker : workers_) {
             if (worker.joinable()) {
@@ -1088,6 +1562,63 @@ private:
         });
     }
 
+    void exec_read_run(std::vector<PendingRead> run, std::vector<uint8_t>& scratch)
+    {
+        TR_ASSERT(!std::empty(run));
+
+        auto const& desc = *run.front().desc;
+        auto const begin = run.front().span.begin;
+        auto end = begin;
+        for (auto const& op : run) {
+            end = std::max(end, op.span.end);
+        }
+
+        // The run comes off the disk as one read into `scratch`, and
+        // each request copies its bytes out. Requests may repeat or
+        // overlap one another, and the copy serves those too. If the one
+        // read fails, each is tried on its own, so that one missing file
+        // of several doesn't fail its neighbors.
+        auto merged = false;
+        if (std::size(run) > 1U) {
+            scratch.resize(static_cast<size_t>(end - begin));
+            merged = !tr_ioRead(desc, open_files_, begin, scratch);
+            if (merged) {
+                for (auto const& op : run) {
+                    std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
+                }
+            }
+        }
+
+        auto errors = std::vector<tr_error>(std::size(run));
+        if (!merged) {
+            for (auto i = size_t{}; i < std::size(run); ++i) {
+                auto& data = *run[i].data;
+                errors[i] = tr_ioRead(desc, open_files_, run[i].span.begin, std::span{ data.data(), data.size() });
+            }
+        }
+
+        auto const n_ok = static_cast<uint64_t>(std::ranges::count_if(errors, [](tr_error const& error) { return !error; }));
+        read_runs_.fetch_add(merged ? 1U : n_ok, std::memory_order_relaxed);
+        blocks_read_.fetch_add(n_ok, std::memory_order_relaxed);
+
+        post_completion([this, run = std::move(run), errors = std::move(errors)] mutable {
+            auto const id = run.front().tor_id;
+
+            // As with writes, the run holds its gate until every callback
+            // has run, so no barrier a callback enqueues overtakes the rest.
+            auto& gate = gate_of(id);
+            for (auto i = size_t{}; i < std::size(run); ++i) {
+                auto& op = run[i];
+                unregister_running_read(gate, op.span);
+                if (op.on_read) {
+                    auto data = errors[i] ? nullptr : std::move(op.data);
+                    std::move(op.on_read)(id, op.span, errors[i], std::move(data));
+                }
+            }
+            release(id, std::size(run));
+        });
+    }
+
     void exec_test(PendingTest op)
     {
         TR_PROFILE_SCOPE("storage.test_piece");
@@ -1134,13 +1665,36 @@ private:
 
     std::map<tr_torrent_id_t, Gate> gates_;
 
+    // Reads the page cache couldn't answer, waiting for flush_reads().
+    // Keyed like pending_reads_, so the flush moves them under the lock
+    // without allocating.
+    std::multimap<OpKey, PendingRead> staged_reads_;
+
     // --- state shared with the workers
 
     std::mutex work_mutex_;
     std::condition_variable work_cv_;
+    std::condition_variable admin_cv_;
+
+    // Admin disk work has two threads of its own, so that it holds up no
+    // data op.
+    //
+    // The long lane places the files of the moves that have to copy from
+    // another filesystem, one move at a time: concurrent copies only make
+    // a disk seek.
+    AdminLane long_lane_;
+    // The short lane does everything else: moves that only rename,
+    // renames, removals, clearing a move's old location, and closing
+    // files. On the long lane each of those would wait behind other
+    // torrents' whole copies.
+    AdminLane short_lane_;
+
     std::deque<PendingTest> pending_tests_;
-    std::map<WriteKey, PendingWrite> pending_writes_;
-    WriteKey cursor_ = {};
+    // The ops that wait for the next sweep, and the sweep being drained.
+    std::multimap<OpKey, PendingRead> pending_reads_;
+    std::multimap<OpKey, PendingRead> read_sweep_;
+    std::map<OpKey, PendingWrite> pending_writes_;
+    std::map<OpKey, PendingWrite> write_sweep_;
     bool stopping_ = false;
     bool paused_ = false;
 
@@ -1155,6 +1709,9 @@ private:
     std::atomic<uint64_t> blocks_written_ = 0U;
     std::atomic<uint64_t> hashes_from_buffers_ = 0U;
     std::atomic<uint64_t> hashes_from_disk_ = 0U;
+    std::atomic<uint64_t> cached_reads_ = 0U;
+    std::atomic<uint64_t> read_runs_ = 0U;
+    std::atomic<uint64_t> blocks_read_ = 0U;
 
     std::vector<std::thread> workers_;
 };
@@ -1264,9 +1821,10 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
 void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
     admin(tor_id, [this, tor_id, on_close = std::move(on_close)] mutable {
-        backend_->close_torrent(tor_id);
         if (threaded_) {
-            threaded_->forget(tor_id);
+            threaded_->close_torrent(tor_id);
+        } else {
+            backend_->close_torrent(tor_id);
         }
         if (on_close) {
             std::move(on_close)(tor_id);
@@ -1282,7 +1840,11 @@ void LocalData::close_file(
     admin(
         tor_id,
         [this, tor_id, file_num, on_close = std::move(on_close)] mutable {
-            backend_->close_file(tor_id, file_num);
+            if (threaded_) {
+                threaded_->close_file(tor_id, file_num);
+            } else {
+                backend_->close_file(tor_id, file_num);
+            }
             if (on_close) {
                 std::move(on_close)(tor_id);
             }
@@ -1303,15 +1865,26 @@ void LocalData::close_all()
 void LocalData::move(
     tr_torrent_id_t const id,
     MoveParent parent, // NOLINT(performance-unnecessary-value-param)
-    OnMove on_move) // NOLINT(performance-unnecessary-value-param)
+    OnMove on_move, // NOLINT(performance-unnecessary-value-param)
+    OnPlaced on_placed) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)] mutable {
-        auto const dir = parent();
-        auto const error = std::empty(dir) ? tr_error{} : backend_->move(id, dir);
-        if (on_move) {
-            std::move(on_move)(id, dir, error);
+    if (threaded_) {
+        threaded_->move(id, std::move(parent), std::move(on_move), std::move(on_placed));
+        return;
+    }
+
+    drain();
+
+    auto const target = parent();
+    auto const placed = [&on_placed, id, &target] {
+        if (on_placed) {
+            on_placed(id, target.parent);
         }
-    });
+    };
+    auto const error = std::empty(target.parent) ? tr_error{} : backend_->move(id, target, placed);
+    if (on_move) {
+        on_move(id, target.parent, error);
+    }
 }
 
 void LocalData::remove(
@@ -1319,28 +1892,38 @@ void LocalData::remove(
     tr_torrent_remove_func remove_func,
     OnRemove on_remove) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)] mutable {
-        auto const error = backend_->remove(id, std::move(remove_func));
-        if (threaded_) {
-            threaded_->forget(id);
-        }
-        if (on_remove) {
-            std::move(on_remove)(id, error);
-        }
-    });
+    if (threaded_) {
+        threaded_->remove(id, std::move(remove_func), std::move(on_remove));
+        return;
+    }
+
+    drain();
+
+    auto const error = backend_->remove(id, std::move(remove_func));
+    if (on_remove) {
+        on_remove(id, error);
+    }
 }
 
 void LocalData::rename(
     tr_torrent_id_t const id,
     std::string_view const oldpath,
     std::string_view const newname,
-    tr_torrent_rename_done_func callback)
+    RenameCheck check, // NOLINT(performance-unnecessary-value-param)
+    OnRename on_rename) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(
-        id,
-        [this, id, oldpath = std::string{ oldpath }, newname = std::string{ newname }, callback = std::move(callback)] mutable {
-            backend_->rename(id, oldpath, newname, std::move(callback));
-        });
+    if (threaded_) {
+        threaded_->rename(id, std::string{ oldpath }, std::string{ newname }, std::move(check), std::move(on_rename));
+        return;
+    }
+
+    drain();
+
+    auto error = check();
+    if (!error) {
+        error = backend_->rename(id, oldpath, newname);
+    }
+    on_rename(id, error);
 }
 
 void LocalData::shutdown()
@@ -1351,6 +1934,11 @@ void LocalData::shutdown()
     }
 
     drain();
+}
+
+bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
+{
+    return threaded_ && threaded_->admin_op_pending(id);
 }
 
 uint64_t LocalData::enqueued_write_bytes() const noexcept
@@ -1390,6 +1978,13 @@ void LocalData::set_workers_paused(bool const paused)
 {
     if (threaded_) {
         threaded_->set_paused(paused);
+    }
+}
+
+void detail::hold_copy_lane(LocalData& local_data, bool const held)
+{
+    if (local_data.threaded_) {
+        local_data.threaded_->hold_copy_lane(held);
     }
 }
 
