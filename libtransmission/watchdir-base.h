@@ -9,8 +9,8 @@
 #error only the wathcdir module should #include this header.
 #endif
 
+#include <algorithm>
 #include <chrono>
-#include <cstddef> // for size_t
 #include <map>
 #include <memory>
 #include <optional>
@@ -32,9 +32,8 @@ public:
     BaseWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker)
         : dirname_{ dirname }
         , callback_{ std::move(callback) }
-        , retry_timer_{ timer_maker.create() }
+        , retry_timer_{ timer_maker.create([this] { onRetryTimer(); }) }
     {
-        retry_timer_->set_callback([this] { onRetryTimer(); });
     }
 
     ~BaseWatchdir() override = default;
@@ -54,28 +53,9 @@ public:
         scan();
     }
 
-    [[nodiscard]] constexpr auto timeoutDuration() const noexcept
-    {
-        return timeout_duration_;
-    }
-
-    constexpr void setTimeoutDuration(std::chrono::seconds timeout_duration) noexcept
-    {
-        timeout_duration_ = timeout_duration;
-    }
-
-    [[nodiscard]] constexpr auto retryDuration() const noexcept
-    {
-        return retry_duration_;
-    }
-
-    void setRetryDuration(std::chrono::milliseconds retry_duration) noexcept
+    constexpr void setRetryDuration(std::chrono::milliseconds retry_duration) noexcept
     {
         retry_duration_ = retry_duration;
-
-        for (auto& [basename, info] : pending_) {
-            setNextKickTime(info);
-        }
     }
 
 protected:
@@ -89,29 +69,24 @@ protected:
 private:
     using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
 
+    // how long a file may keep asking for a retry before it's given up on
+    static constexpr auto TimeoutDuration = std::chrono::seconds{ 15 };
+
     struct Pending {
-        size_t strikes = 0U;
         Timestamp first_kick_at;
         Timestamp last_kick_at;
-        Timestamp next_kick_at;
     };
 
-    void setNextKickTime(Pending& item)
+    [[nodiscard]] std::optional<Timestamp> nextKickTime() const
     {
-        item.next_kick_at = item.last_kick_at + retry_duration_;
-    }
-
-    [[nodiscard]] auto nextKickTime() const
-    {
-        auto next_time = std::optional<Timestamp>{};
-
-        for (auto const& [name, info] : pending_) {
-            if (!next_time || info.next_kick_at < *next_time) {
-                next_time = info.next_kick_at;
-            }
+        if (std::empty(pending_)) {
+            return {};
         }
 
-        return next_time;
+        auto const last_kick_at = [](auto const& entry) {
+            return entry.second.last_kick_at;
+        };
+        return std::ranges::min_element(pending_, {}, last_kick_at)->second.last_kick_at + retry_duration_;
     }
 
     void restartTimerIfPending()
@@ -132,7 +107,7 @@ private:
         auto tmp = decltype(pending_){};
         std::swap(tmp, pending_);
         for (auto const& [basename, info] : tmp) {
-            if (info.next_kick_at <= now) {
+            if (info.last_kick_at + retry_duration_ <= now) {
                 processFile(basename);
             } else {
                 pending_.try_emplace(basename, info);
@@ -150,7 +125,6 @@ private:
     std::set<std::string, std::less<>> handled_;
     tr_error::code_t scan_error_code_ = {};
     std::chrono::milliseconds retry_duration_ = std::chrono::seconds{ 5 };
-    std::chrono::seconds timeout_duration_ = std::chrono::seconds{ 15 };
 };
 
 } // namespace tr::impl
