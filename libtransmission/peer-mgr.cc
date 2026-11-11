@@ -618,7 +618,8 @@ public:
 
     // Unchokes a peer that just became interested if the swarm has a free upload slot.
     // A slot counts as rechokeUploads() counts it: an interested, unchoked peer other
-    // than the optimistic one. The next periodic rechoke re-ranks this peer with the rest.
+    // than the optimistic one. The unchoke locks the peer's choke for MinChokePeriodSec,
+    // and rechokeUploads() lets a locked peer keep its slot until then.
     void unchoke_if_slot_free(tr_peerMsgs* msgs) const;
 
     static void peer_callback_bt(tr_peerMsgs* const msgs, tr_peer_event const& event, void* const vs)
@@ -2029,13 +2030,14 @@ namespace
 namespace rechoke_uploads_helpers
 {
 struct ChokeData {
-    ChokeData(tr_peerMsgs* msgs, Speed rate, uint8_t salt, bool is_interested, bool was_choked, bool is_choked)
+    ChokeData(tr_peerMsgs* msgs, Speed rate, uint8_t salt, bool is_interested, bool was_choked, bool is_locked)
         : msgs_{ msgs }
         , rate_{ rate }
         , salt_{ salt }
         , is_interested_{ is_interested }
         , was_choked_{ was_choked }
-        , is_choked_{ is_choked }
+        , is_locked_{ is_locked }
+        , is_choked_{ is_locked ? was_choked : true }
     {
     }
 
@@ -2044,6 +2046,7 @@ struct ChokeData {
     uint8_t salt_;
     bool is_interested_;
     bool was_choked_;
+    bool is_locked_; // set_choke() would ignore a change, so the peer keeps its choke state
     bool is_choked_;
 
     [[nodiscard]] constexpr auto operator<=>(ChokeData const& that) const noexcept
@@ -2124,7 +2127,7 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
                 salter(),
                 peer->peer_is_interested(),
                 peer->peer_is_choked(),
-                true);
+                peer->is_choke_locked());
         }
     }
 
@@ -2145,17 +2148,23 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
      *
      * If our bandwidth is maxed out, don't unchoke any more peers.
      */
-    auto checked_choke_count = size_t{ 0U };
-    auto unchoked_interested = size_t{ 0U };
+    // A locked peer that stays unchoked holds its slot whatever its rank.
+    auto unchoked_interested = static_cast<size_t>(std::ranges::count_if(choked, [](ChokeData const& item) {
+        return item.is_locked_ && !item.is_choked_ && item.is_interested_;
+    }));
 
-    for (auto& item : choked) {
+    auto checked_choke_count = size_t{ 0U };
+    for (auto const n = std::size(choked); checked_choke_count < n; ++checked_choke_count) {
+        auto& item = choked[checked_choke_count];
+        if (item.is_locked_) {
+            continue;
+        }
+
         if (unchoked_interested >= session->uploadSlotsPerTorrent()) {
             break;
         }
 
         item.is_choked_ = is_maxed_out ? item.was_choked_ : false;
-
-        ++checked_choke_count;
 
         if (item.is_interested_) {
             ++unchoked_interested;
@@ -2167,7 +2176,7 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
         auto rand_pool = std::vector<ChokeData*>{};
 
         for (auto i = checked_choke_count, n = std::size(choked); i < n; ++i) {
-            if (choked[i].is_interested_) {
+            if (choked[i].is_interested_ && !choked[i].is_locked_) {
                 rand_pool.push_back(&choked[i]);
             }
         }
