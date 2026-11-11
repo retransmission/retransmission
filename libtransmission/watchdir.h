@@ -20,7 +20,11 @@ class TimerMaker;
 class Watchdir
 {
 public:
-    enum class Action : uint8_t { Done, Retry };
+    // What a callback did with a file, and so when the watch dir offers it again:
+    // Done: once a later file of that name arrives;
+    // Retry: it couldn't use the file, so in a few seconds for 15 s, then at the next scan or change to it;
+    // Wait: the file isn't ready, e.g. still being written, so in a few seconds, however long that takes.
+    enum class Action : uint8_t { Done, Retry, Wait };
 
     using Callback = std::function<Action(std::string_view dirname, std::string_view basename)>;
 

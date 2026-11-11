@@ -209,6 +209,18 @@ TEST_F(AppWatchDirTest, scansOnEachMonitorNoticeAndEveryMinute)
     EXPECT_TRUE(wait_until_added(path));
 }
 
+// A file that doesn't parse yet but has just changed may still be being written.
+TEST_F(AppWatchDirTest, addsAFileOnceItsWriteFinishes)
+{
+    auto const path = fmt::format("{:s}/slow.torrent", dir_);
+    EXPECT_TRUE(tr_file_save(path, "d8:announce"sv)); // the start of a torrent
+    start_session();
+
+    EXPECT_EQ(path, drop(Arch, "slow.torrent"sv));
+    rescan();
+    EXPECT_TRUE(wait_until_added(path));
+}
+
 TEST_F(AppWatchDirTest, leavesFilesItCanNotAdd)
 {
     // a torrent without the suffix

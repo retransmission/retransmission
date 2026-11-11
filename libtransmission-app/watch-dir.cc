@@ -100,7 +100,7 @@ tr::Watchdir::Action WatchDir::on_file(std::string_view const dirname, std::stri
     auto add = AddData{ path.sv() };
     if (!add.parsed()) {
         // not a torrent, unless it's still being written
-        return is_settling(path.sv()) ? tr::Watchdir::Action::Retry : tr::Watchdir::Action::Done;
+        return is_settling(path.sv()) ? tr::Watchdir::Action::Wait : tr::Watchdir::Action::Done;
     }
 
     add.from_watch_dir = true;
