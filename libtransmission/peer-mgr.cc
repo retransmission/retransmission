@@ -1183,6 +1183,12 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
     TR_PROFILE_SCOPE("peer.next_requests");
     TR_ASSERT(!torrent->is_done());
 
+    // Blocks that arrive during a move, rename, or removal would wait behind
+    // it, holding write budget that other torrents need.
+    if (torrent->session->local_data.admin_op_pending(torrent->id())) {
+        return {};
+    }
+
     // From a refill the budget turned away to the next one it admits.
     // Session thread only.
     static auto budget_full = tr::profile::Interval{ "stall.write_budget_full" };

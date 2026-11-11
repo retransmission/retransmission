@@ -1085,7 +1085,7 @@ TEST_F(RequestBudgetTest, peersResumeWhenWritesFreePartOfTheBudget)
     // writes finish and pauses the workers again. The refill must arrive
     // while that block is still queued.
     blockingRunInSessionThread([this, tor] {
-        session_->local_data.rename(tor->id(), "missing", "renamed", [this](auto&&...) {
+        session_->local_data.close_file(tor->id(), 0U, [this](tr_torrent_id_t) {
             session_->local_data.set_workers_paused(true);
         });
     });
@@ -1128,6 +1128,33 @@ TEST_F(RequestBudgetTest, peersResumeWhenTheDiskQueueDrains)
     EXPECT_TRUE(waitFor(
         [this]() { return session_->local_data.enqueued_write_bytes() == 0U && requestCount() == BudgetBlocks + 1U; },
         MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, peersRequestNothingWhileTheTorrentMoves)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitForInSessionThread([tor] { return tor->is_running(); }, MaxWaitMsec));
+
+    // the move waits for a worker...
+    session_->local_data.set_workers_paused(true);
+    int volatile state = -1;
+    tr_torrentSetLocation(tor, tr_pathbuf{ session_->configDir(), "/target"sv }, true, &state);
+    blockingRunInSessionThread([this, tor] { EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id())); });
+
+    // ...so a peer that's ready to give us blocks isn't asked for any
+    auto& peer = addPeer(*tor);
+    ASSERT_TRUE(waitFor(
+        [&peer]() {
+            collectMessages(peer);
+            return peer.interested;
+        },
+        15000));
+    EXPECT_FALSE(waitFor([this] { return requestCount() != 0U; }, 1000));
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this] { return requestCount() != 0U; }, 15000));
 }
 
 TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
@@ -1476,6 +1503,37 @@ TEST_F(TorrentDiskIoWorkersTest, blockCountsOnlyAfterItsWriteFinishes)
 
     EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
     EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
+}
+
+TEST_F(TorrentDiskIoWorkersTest, blockArrivingDuringAMoveIsDropped)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+    auto const target = tr_pathbuf{ sandboxDir(), "/target" };
+    auto state = -1;
+
+    // The move waits for a worker. A block that was requested before the
+    // move began arrives, and isn't queued behind it.
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([this, tor, block, &target, &state] {
+        tr_torrentSetLocation(tor, target, true, &state);
+        EXPECT_EQ(TR_LOC_MOVING, state);
+        EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id()));
+
+        EXPECT_FALSE(tor->on_block_received(block));
+        EXPECT_FALSE(tor->has_block_or_pending(block));
+        EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
+    });
+
+    // once the move is done, the block can be downloaded again
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitForInSessionThread([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    blockingRunInSessionThread([this, tor, block] {
+        EXPECT_FALSE(session_->local_data.admin_op_pending(tor->id()));
+        ASSERT_TRUE(tor->on_block_received(block));
+        tor->save_block(block, zeroBlock(tor, block));
+    });
+    EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
 }
 
 TEST_F(TorrentDiskIoWorkersTest, queuedMovesUseTheLatestSourceDirectory)

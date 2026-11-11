@@ -72,6 +72,75 @@ namespace
     return tr_ioRead(*desc, open_files, span.begin, std::span{ std::data(setme), len });
 }
 
+// Puts the torrent's files under `target.parent`. Returns what's left to
+// clean up at the old location, or nothing with `error` set.
+// With `needs_copy`, a move that would have to copy files moves nothing
+// and sets that instead of `error`. See tr_torrent_files::move().
+[[nodiscard]] std::optional<tr_torrent_files::MoveLeftovers> place_files(
+    StorageDescriptor const& desc,
+    LocalData::MoveTarget const& target,
+    tr_error& error,
+    bool* const needs_copy = nullptr)
+{
+    auto const paths = search_paths(desc.download_dir, desc.incomplete_dir);
+    auto leftovers = desc.files.move(paths, target.parent, desc.name, &error, needs_copy);
+    if (!leftovers) {
+        if (!error && (needs_copy == nullptr || !*needs_copy)) {
+            error.set_from_errno(EIO);
+        }
+        return {};
+    }
+
+    if (target.clear_killed_move) {
+        desc.files.add_copies_left_by_killed_move(*leftovers, paths, target.parent);
+    }
+
+    return leftovers;
+}
+
+[[nodiscard]] tr_error remove_files(StorageDescriptor const& desc, tr_torrent_remove_func remove_func)
+{
+    if (!remove_func) {
+        remove_func = tr_sys_path_remove;
+    }
+
+    auto error = tr_error{};
+    desc.files.remove(search_paths(desc.download_dir, desc.incomplete_dir), desc.name, remove_func, &error);
+    return error;
+}
+
+// Renames `oldpath`, or its partial file, wherever `desc` looks for files.
+// A path that isn't there, or a new name already taken, is not an error.
+[[nodiscard]] tr_error rename_on_disk(
+    StorageDescriptor const& desc,
+    std::string_view const oldpath,
+    std::string_view const newname)
+{
+    for (auto const parent : search_paths(desc.download_dir, desc.incomplete_dir)) {
+        auto src = tr_pathbuf{ parent, '/', oldpath };
+        if (!tr_sys_path_exists(src)) {
+            src += tr_torrent_files::PartialFileSuffix;
+        }
+
+        if (!tr_sys_path_exists(src)) {
+            continue;
+        }
+
+        auto const dir = tr_sys_path_dirname(src);
+        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
+            tr_pathbuf{ dir, '/', newname, tr_torrent_files::PartialFileSuffix } :
+            tr_pathbuf{ dir, '/', newname };
+
+        auto error = tr_error{};
+        if (!tr_sys_path_exists(tgt)) {
+            tr_sys_path_rename(src, tgt, &error);
+        }
+        return error;
+    }
+
+    return {};
+}
+
 class DefaultBackend final : public LocalData::Backend
 {
 public:
@@ -120,8 +189,10 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
-    [[nodiscard]] tr_error move(tr_torrent_id_t const id, std::string_view const parent, std::function<void()> const& on_placed)
-        override
+    [[nodiscard]] tr_error move(
+        tr_torrent_id_t const id,
+        LocalData::MoveTarget const& target,
+        std::function<void()> const& on_placed) override
     {
         auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
@@ -129,16 +200,9 @@ public:
         }
 
         auto error = tr_error{};
-        auto leftovers = tor->files().move(tor->search_paths(), parent, tor->name(), &error);
+        auto const leftovers = place_files(*tor->storage_descriptor(), target, error);
         if (!leftovers) {
-            if (!error) {
-                error.set_from_errno(EIO);
-            }
             return error;
-        }
-
-        if (tor->completion_move_pending()) {
-            tor->files().add_copies_left_by_killed_move(*leftovers, tor->search_paths(), parent);
         }
 
         on_placed();
@@ -149,34 +213,14 @@ public:
     [[nodiscard]] tr_error remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
     {
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            return tr_error::from_errno(EINVAL);
-        }
-
-        if (!remove_func) {
-            remove_func = tr_sys_path_remove;
-        }
-
-        auto error = tr_error{};
-        tor->files().remove(tor->search_paths(), tor->name(), remove_func, &error);
-        return error;
+        return tor != nullptr ? remove_files(*tor->storage_descriptor(), std::move(remove_func)) : tr_error::from_errno(EINVAL);
     }
 
-    void rename(
-        tr_torrent_id_t const id,
-        std::string_view const oldpath,
-        std::string_view const newname,
-        tr_torrent_rename_done_func callback) override
+    [[nodiscard]] tr_error rename(tr_torrent_id_t const id, std::string_view const oldpath, std::string_view const newname)
+        override
     {
-        auto* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            if (callback != nullptr) {
-                callback(id, oldpath, newname, tr_error::from_errno(EINVAL));
-            }
-            return;
-        }
-
-        tor->rename_path_in_session_thread(oldpath, newname, callback);
+        auto const* const tor = torrents_.get(id);
+        return tor != nullptr ? rename_on_disk(*tor->storage_descriptor(), oldpath, newname) : tr_error::from_errno(EINVAL);
     }
 
     void close_all() override
@@ -353,11 +397,14 @@ private:
  * local-data.h. Data ops on a torrent are admitted freely and run
  * concurrently. An admin op waits in the torrent's queue until every
  * admitted op's completion has been delivered, and then runs
- * exclusively on the session thread. Ops enqueued behind it wait in
- * the queue until it finishes. This gate is what makes move, rename,
- * remove, and close safe against in-flight reads and writes. A file
- * close is a barrier on its file alone: it waits only for the ops that
- * touch the file, and holds back only those.
+ * exclusively. A close takes its files out of the pool on the session
+ * thread and is done; the files themselves are closed on an admin lane.
+ * A move, rename, or remove does its disk work on an admin lane and its
+ * callbacks on the session thread. Ops enqueued behind it wait in the
+ * queue until it finishes. This gate is what makes move, rename, remove, and close
+ * safe against in-flight reads and writes. A file close is a barrier on
+ * its file alone: it waits only for the ops that touch the file, and
+ * holds back only those.
  *
  * Reads: once admitted, a read first tries the page cache from the
  * session thread, through files already open, without waiting for the
@@ -406,6 +453,9 @@ public:
             for (auto i = size_t{}; i < n_workers; ++i) {
                 workers_.emplace_back([this] { worker_main(); });
             }
+
+            workers_.emplace_back([this] { admin_main(long_lane_); });
+            workers_.emplace_back([this] { admin_main(short_lane_); });
         } catch (...) {
             stop_workers();
             throw;
@@ -477,7 +527,127 @@ public:
             }
         }
 
-        submit(id, BarrierOp{ .body = std::move(body), .span = span });
+        submit(
+            id,
+            BarrierOp{ .body =
+                           [body = std::move(body)] {
+                               body();
+                               return false;
+                           },
+                       .span = span });
+    }
+
+    // The ops below are barriers on the whole torrent whose disk work runs
+    // on an admin lane. They resolve paths through the descriptor, as the
+    // data ops do, and touch torrent state only through their callbacks.
+
+    void move(tr_torrent_id_t const id, MoveParent parent, OnMove on_move, OnPlaced on_placed)
+    {
+        auto body =
+            [this, id, parent = std::move(parent), on_move = std::move(on_move), on_placed = std::move(on_placed)] mutable {
+                auto target = parent();
+                auto desc = provider_(id);
+                if (std::empty(target.parent) || !desc) {
+                    if (on_move) {
+                        on_move(id, target.parent, std::empty(target.parent) ? tr_error{} : tr_error::from_errno(EINVAL));
+                    }
+                    return false;
+                }
+
+                post_admin(
+                    short_lane_,
+                    [this,
+                     desc = std::move(desc),
+                     job = MoveJob{ .id = id,
+                                    .target = std::move(target),
+                                    .on_move = std::move(on_move),
+                                    .on_placed = std::move(on_placed) }] mutable {
+                        exec_place(std::move(desc), std::move(job), false);
+                    });
+                return true;
+            };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    void remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func, OnRemove on_remove)
+    {
+        auto body = [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)] mutable {
+            auto desc = provider_(id);
+            if (!desc) {
+                finish_remove(id, tr_error::from_errno(EINVAL), on_remove);
+                return false;
+            }
+
+            run_on_short_lane(
+                id,
+                [desc = std::move(desc), remove_func = std::move(remove_func)] { return remove_files(*desc, remove_func); },
+                [this, id, on_remove = std::move(on_remove)](tr_error const& error) { finish_remove(id, error, on_remove); });
+            return true;
+        };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    void rename(tr_torrent_id_t const id, std::string oldpath, std::string newname, RenameCheck check, OnRename on_rename)
+    {
+        auto body = [this,
+                     id,
+                     oldpath = std::move(oldpath),
+                     newname = std::move(newname),
+                     check = std::move(check),
+                     on_rename = std::move(on_rename)] mutable {
+            auto desc = provider_(id);
+            if (auto const rejected = desc ? check() : tr_error::from_errno(EINVAL); rejected) {
+                on_rename(id, rejected);
+                return false;
+            }
+
+            run_on_short_lane(
+                id,
+                [desc = std::move(desc), oldpath = std::move(oldpath), newname = std::move(newname)] {
+                    return rename_on_disk(*desc, oldpath, newname);
+                },
+                [id, on_rename = std::move(on_rename)](tr_error const& error) { on_rename(id, error); });
+            return true;
+        };
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+    }
+
+    // The two closes below run inside a barrier. They take the files out
+    // of the pool, so that the next op opens them afresh, and leave the
+    // closing itself to the short lane: close() can wait on the disk.
+    // The lane works in order, so the files are closed before any removal,
+    // rename, move, or cleanup that is enqueued afterwards gets to run.
+
+    void close_torrent(tr_torrent_id_t const id)
+    {
+        close_on_short_lane(open_files_.close_torrent(id));
+        forget(id);
+    }
+
+    void close_file(tr_torrent_id_t const id, tr_file_index_t const file)
+    {
+        auto files = std::vector<tr_open_files::Handle>{};
+        if (auto handle = open_files_.close_file(id, file); handle) {
+            files.emplace_back(std::move(handle));
+        }
+        close_on_short_lane(std::move(files));
+    }
+
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t const id) const
+    {
+        auto const it = gates_.find(id);
+        if (it == std::end(gates_)) {
+            return false;
+        }
+
+        auto const& gate = it->second;
+        return (gate.running_barrier && !gate.running_barrier->span) || std::ranges::any_of(gate.queue, [](auto const& queued) {
+                   auto const* const barrier = std::get_if<BarrierOp>(&queued);
+                   return barrier != nullptr && !barrier->span;
+               });
     }
 
     // Drop the buffers kept for a torrent whose files are closed.
@@ -522,7 +692,7 @@ public:
                 fmt::format(
                     "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued",
                     fmt::arg("id", id),
-                    fmt::arg("running", gate.n_running),
+                    fmt::arg("running", gate.n_running + (gate.running_barrier ? 1U : 0U)),
                     fmt::arg("queued", std::size(gate.queue))));
         }
     }
@@ -558,11 +728,21 @@ public:
             paused_ = paused;
         }
         work_cv_.notify_all();
+        admin_cv_.notify_all();
     }
 
     void set_retained_bytes(size_t const max_bytes)
     {
         retained_.set_capacity(max_bytes);
+    }
+
+    void hold_copy_lane(bool const held)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            long_lane_.held = held;
+        }
+        admin_cv_.notify_all();
     }
 
 private:
@@ -583,9 +763,26 @@ private:
     };
 
     struct BarrierOp {
-        std::function<void()> body;
+        // Runs exclusively on the session thread. True means it handed
+        // disk work to an admin lane, and the barrier stays up until
+        // that work calls finish_barrier().
+        std::function<bool()> body;
         // The bytes the op touches. Absent, it touches the whole torrent.
         std::optional<tr_byte_span_t> span;
+    };
+
+    struct MoveJob {
+        tr_torrent_id_t id;
+        MoveTarget target;
+        OnMove on_move;
+        OnPlaced on_placed;
+    };
+
+    // Admin disk work, one job at a time per lane.
+    struct AdminLane {
+        std::deque<std::function<void()>> jobs;
+        // A held lane starts no job. See detail::hold_copy_lane().
+        bool held = false;
     };
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
@@ -805,7 +1002,9 @@ private:
                 // returns, so nothing erases `gate` under it.
                 gate.running_barrier = std::move(*barrier);
                 gate.queue.pop_front();
-                gate.running_barrier->body();
+                if (gate.running_barrier->body()) {
+                    return; // finish_barrier() calls advance() again
+                }
                 gate.running_barrier.reset();
                 continue;
             }
@@ -817,6 +1016,21 @@ private:
             auto op = std::move(gate.queue.front());
             gate.queue.pop_front();
             dispatch(id, gate, std::move(op));
+        }
+    }
+
+    // An admin op's last callback has run. Let the ops behind it go.
+    void finish_barrier(tr_torrent_id_t const id)
+    {
+        gate_of(id).running_barrier.reset();
+        advance(id);
+    }
+
+    void finish_remove(tr_torrent_id_t const id, tr_error const& error, OnRemove const& on_remove)
+    {
+        forget(id);
+        if (on_remove) {
+            on_remove(id, error);
         }
     }
 
@@ -1002,6 +1216,7 @@ private:
     void post_completion(Fn&& fn)
     {
         // Measures how long the session thread takes to get to a finished op.
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
         auto timed = [posted = tr::profile::Stamp{}, fn = std::forward<Fn>(fn)] mutable {
             posted.record_since("storage.completion_wait");
             fn();
@@ -1106,6 +1321,101 @@ private:
         }
     }
 
+    void admin_main(AdminLane& lane)
+    {
+        for (;;) {
+            auto job = std::function<void()>{};
+
+            {
+                auto lock = std::unique_lock{ work_mutex_ };
+                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
+                if (std::empty(lane.jobs)) {
+                    return;
+                }
+
+                job = std::move(lane.jobs.front());
+                lane.jobs.pop_front();
+            }
+
+            job();
+        }
+    }
+
+    void post_admin(AdminLane& lane, std::function<void()> job)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            lane.jobs.emplace_back(std::move(job));
+        }
+        admin_cv_.notify_all();
+    }
+
+    void close_on_short_lane(std::vector<tr_open_files::Handle> files)
+    {
+        if (!std::empty(files)) {
+            post_admin(short_lane_, [files = std::move(files)] mutable { files.clear(); });
+        }
+    }
+
+    // Do a barrier's disk work, deliver its result on the session thread,
+    // and let the ops behind the barrier go.
+    void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
+    {
+        post_admin(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
+            post_completion([this, id, error = work(), done = std::move(done)] {
+                done(error);
+                finish_barrier(id);
+            });
+        });
+    }
+
+    // Put the files in place. The session thread saves the new location
+    // before the old one is cleared, so a kill can't lose track of the files.
+    //
+    // Every move starts on the short lane, where it may rename but not
+    // copy. One that finds a file to copy from another filesystem moves
+    // nothing and goes to the long lane to start over. So a torrent whose
+    // move only renames never waits, barrier up, for another torrent's copy.
+    // A rename that fails falls back to a copy wherever the move is running.
+    void exec_place(std::shared_ptr<StorageDescriptor const> desc, MoveJob job, bool const may_copy)
+    {
+        auto error = tr_error{};
+        auto needs_copy = false;
+        auto leftovers = place_files(*desc, job.target, error, may_copy ? nullptr : &needs_copy);
+        if (needs_copy) {
+            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+                exec_place(std::move(desc), std::move(job), true);
+            });
+            return;
+        }
+
+        // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
+        post_completion([this, job = std::move(job), error = std::move(error), leftovers = std::move(leftovers)] mutable {
+            if (!leftovers) {
+                finish_move(job, error);
+                return;
+            }
+
+            if (job.on_placed) {
+                job.on_placed(job.id, job.target.parent);
+            }
+
+            // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
+            post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
+                leftovers.remove();
+                post_completion([this, job = std::move(job)] { finish_move(job, {}); });
+            });
+        });
+    }
+
+    void finish_move(MoveJob const& job, tr_error const& error)
+    {
+        if (job.on_move) {
+            job.on_move(job.id, job.target.parent, error);
+        }
+        finish_barrier(job.id);
+    }
+
     // Take the sweep's first op, plus the ops in it that continue or
     // overlap that one. Writes never overlap, so a run of writes is
     // contiguous. Once the sweep is empty, the ops in `pending` become
@@ -1157,8 +1467,10 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
+            long_lane_.held = false;
         }
         work_cv_.notify_all();
+        admin_cv_.notify_all();
 
         for (auto& worker : workers_) {
             if (worker.joinable()) {
@@ -1362,6 +1674,21 @@ private:
 
     std::mutex work_mutex_;
     std::condition_variable work_cv_;
+    std::condition_variable admin_cv_;
+
+    // Admin disk work has two threads of its own, so that it holds up no
+    // data op.
+    //
+    // The long lane places the files of the moves that have to copy from
+    // another filesystem, one move at a time: concurrent copies only make
+    // a disk seek.
+    AdminLane long_lane_;
+    // The short lane does everything else: moves that only rename,
+    // renames, removals, clearing a move's old location, and closing
+    // files. On the long lane each of those would wait behind other
+    // torrents' whole copies.
+    AdminLane short_lane_;
+
     std::deque<PendingTest> pending_tests_;
     // The ops that wait for the next sweep, and the sweep being drained.
     std::multimap<OpKey, PendingRead> pending_reads_;
@@ -1494,9 +1821,10 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
 void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
     admin(tor_id, [this, tor_id, on_close = std::move(on_close)] mutable {
-        backend_->close_torrent(tor_id);
         if (threaded_) {
-            threaded_->forget(tor_id);
+            threaded_->close_torrent(tor_id);
+        } else {
+            backend_->close_torrent(tor_id);
         }
         if (on_close) {
             std::move(on_close)(tor_id);
@@ -1512,7 +1840,11 @@ void LocalData::close_file(
     admin(
         tor_id,
         [this, tor_id, file_num, on_close = std::move(on_close)] mutable {
-            backend_->close_file(tor_id, file_num);
+            if (threaded_) {
+                threaded_->close_file(tor_id, file_num);
+            } else {
+                backend_->close_file(tor_id, file_num);
+            }
             if (on_close) {
                 std::move(on_close)(tor_id);
             }
@@ -1536,18 +1868,23 @@ void LocalData::move(
     OnMove on_move, // NOLINT(performance-unnecessary-value-param)
     OnPlaced on_placed) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move), on_placed = std::move(on_placed)] mutable {
-        auto const dir = parent();
-        auto const placed = [&on_placed, id, &dir] {
-            if (on_placed) {
-                on_placed(id, dir);
-            }
-        };
-        auto const error = std::empty(dir) ? tr_error{} : backend_->move(id, dir, placed);
-        if (on_move) {
-            std::move(on_move)(id, dir, error);
+    if (threaded_) {
+        threaded_->move(id, std::move(parent), std::move(on_move), std::move(on_placed));
+        return;
+    }
+
+    drain();
+
+    auto const target = parent();
+    auto const placed = [&on_placed, id, &target] {
+        if (on_placed) {
+            on_placed(id, target.parent);
         }
-    });
+    };
+    auto const error = std::empty(target.parent) ? tr_error{} : backend_->move(id, target, placed);
+    if (on_move) {
+        on_move(id, target.parent, error);
+    }
 }
 
 void LocalData::remove(
@@ -1555,28 +1892,38 @@ void LocalData::remove(
     tr_torrent_remove_func remove_func,
     OnRemove on_remove) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)] mutable {
-        auto const error = backend_->remove(id, std::move(remove_func));
-        if (threaded_) {
-            threaded_->forget(id);
-        }
-        if (on_remove) {
-            std::move(on_remove)(id, error);
-        }
-    });
+    if (threaded_) {
+        threaded_->remove(id, std::move(remove_func), std::move(on_remove));
+        return;
+    }
+
+    drain();
+
+    auto const error = backend_->remove(id, std::move(remove_func));
+    if (on_remove) {
+        on_remove(id, error);
+    }
 }
 
 void LocalData::rename(
     tr_torrent_id_t const id,
     std::string_view const oldpath,
     std::string_view const newname,
-    tr_torrent_rename_done_func callback)
+    RenameCheck check, // NOLINT(performance-unnecessary-value-param)
+    OnRename on_rename) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(
-        id,
-        [this, id, oldpath = std::string{ oldpath }, newname = std::string{ newname }, callback = std::move(callback)] mutable {
-            backend_->rename(id, oldpath, newname, std::move(callback));
-        });
+    if (threaded_) {
+        threaded_->rename(id, std::string{ oldpath }, std::string{ newname }, std::move(check), std::move(on_rename));
+        return;
+    }
+
+    drain();
+
+    auto error = check();
+    if (!error) {
+        error = backend_->rename(id, oldpath, newname);
+    }
+    on_rename(id, error);
 }
 
 void LocalData::shutdown()
@@ -1587,6 +1934,11 @@ void LocalData::shutdown()
     }
 
     drain();
+}
+
+bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
+{
+    return threaded_ && threaded_->admin_op_pending(id);
 }
 
 uint64_t LocalData::enqueued_write_bytes() const noexcept
@@ -1626,6 +1978,13 @@ void LocalData::set_workers_paused(bool const paused)
 {
     if (threaded_) {
         threaded_->set_paused(paused);
+    }
+}
+
+void detail::hold_copy_lane(LocalData& local_data, bool const held)
+{
+    if (local_data.threaded_) {
+        local_data.threaded_->hold_copy_lane(held);
     }
 }
 

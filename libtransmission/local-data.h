@@ -37,7 +37,17 @@ class tr_torrents;
 namespace tr
 {
 
+class LocalData;
 struct StorageDescriptor;
+
+namespace detail
+{
+
+// For tests. While the copy lane is held, no move that has to copy
+// files from another filesystem starts placing them.
+void hold_copy_lane(LocalData& local_data, bool held);
+
+} // namespace detail
 
 /**
  * All torrent local-data IO goes through here.
@@ -85,7 +95,13 @@ struct StorageDescriptor;
  * hashes then run on worker threads and complete later, from the
  * session thread. A read completes inline when the page cache can
  * answer it without waiting for the disk, and otherwise runs on a
- * worker like the rest.
+ * worker like the rest. `move`, `rename`, and `remove` do their disk
+ * work on background threads of their own, so that a long copy doesn't
+ * hold up other torrents' data ops. Their callbacks run on the session
+ * thread, and the barrier stays up until the last of them has returned.
+ * `close_torrent` and `close_file` complete as soon as their barrier is
+ * reached: the files are out of the pool by then, and are closed on one
+ * of those background threads, ahead of any admin op enqueued later.
  */
 class LocalData
 {
@@ -185,9 +201,16 @@ public:
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
-    // Names the dir a move puts the files under, or an empty one to skip
-    // the move. It runs when the move starts, after the ops queued before it.
-    using MoveParent = std::function<std::string()>;
+    struct MoveTarget {
+        // The dir the files go under. Empty skips the move.
+        std::string parent;
+
+        // Also clear the copies that a killed move left at the old location.
+        bool clear_killed_move = false;
+    };
+
+    // Runs when the move starts, after the ops queued before it.
+    using MoveParent = std::function<MoveTarget()>;
 
     // Runs once every file is under `parent`, before the old location is cleared.
     // A location saved here can't name files that a kill has since removed.
@@ -199,6 +222,13 @@ public:
     using OnRemove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
     using OnClose = std::function<void(tr_torrent_id_t)>;
+
+    // Required. Runs when the rename starts, after the ops queued before it.
+    // An error fails the rename without touching the disk.
+    using RenameCheck = std::function<tr_error()>;
+
+    // Required.
+    using OnRename = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
     class Backend
     {
@@ -213,14 +243,10 @@ public:
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
-            std::string_view parent,
+            MoveTarget const& target,
             std::function<void()> const& on_placed) = 0;
         [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
-        virtual void rename(
-            tr_torrent_id_t id,
-            std::string_view oldpath,
-            std::string_view newname,
-            tr_torrent_rename_done_func callback) = 0;
+        [[nodiscard]] virtual tr_error rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname) = 0;
         virtual void close_all() = 0;
         virtual void close_torrent(tr_torrent_id_t tor_id) = 0;
         virtual void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num) = 0;
@@ -304,11 +330,17 @@ public:
     void close_all();
     void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move, OnPlaced on_placed = {});
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
-    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
+    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, RenameCheck check, OnRename on_rename);
 
     // Deliver every outstanding completion and stop the workers.
     // Later ops run on the synchronous backend.
     void shutdown();
+
+    // True while an admin op on the whole torrent is queued or running.
+    // Blocks requested now would wait behind it, holding write budget that
+    // other torrents need, so callers shouldn't request any.
+    // Call from the session thread.
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t id) const;
 
     // Bytes of block data waiting to be written, or being written now.
     // Always zero on the synchronous backend.
@@ -353,6 +385,8 @@ public:
     void pump();
 
 private:
+    friend void detail::hold_copy_lane(LocalData& local_data, bool held);
+
     // A completion waiting to be delivered.
     // A read completion owns the buffer it read into and can't be copied,
     // so std::function can't hold one.

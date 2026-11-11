@@ -188,7 +188,8 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     std::span<std::string_view const> const old_parents,
     std::string_view const parent_in,
     std::string_view const parent_name,
-    tr_error* error) const
+    tr_error* error,
+    bool* const needs_copy) const
 {
     auto const parent = tr_pathbuf{ parent_in };
     tr_logAddTrace(fmt::format("Moving files from [{}] to '{:s}'", fmt::join(old_parents, ", "), parent.sv()), parent_name);
@@ -241,7 +242,14 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     for (auto const old_parent : old_parents) {
         is_copied_from[old_parent] = !tr_sys_path_is_same_filesystem(old_parent, parent);
     }
-    std::ranges::stable_partition(moves, [&is_copied_from](auto const& entry) { return is_copied_from.at(entry.second.base); });
+    auto const is_copied = [&is_copied_from](auto const& entry) {
+        return is_copied_from.at(entry.second.base);
+    };
+    if (needs_copy != nullptr && std::ranges::any_of(moves, is_copied)) {
+        *needs_copy = true;
+        return {};
+    }
+    std::ranges::stable_partition(moves, is_copied);
 
     // Copied sources stay until every file is in place.
     // A kill mid-copy then leaves each copied file's source where the resume file says it is.

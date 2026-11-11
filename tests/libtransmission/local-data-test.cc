@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <atomic>
 #include <cerrno> // EINVAL, ENOSPC
 #include <chrono>
 #include <condition_variable>
@@ -17,6 +18,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <tuple> // std::ignore
 #include <utility>
 #include <vector>
@@ -81,10 +83,10 @@ public:
 
     [[nodiscard]] tr_error move(
         [[maybe_unused]] tr_torrent_id_t const id,
-        std::string_view const parent,
+        tr::LocalData::MoveTarget const& target,
         std::function<void()> const& on_placed) override
     {
-        moved_to = std::string{ parent };
+        moved_to = target.parent;
         if (!move_err) {
             on_placed();
         }
@@ -99,14 +101,14 @@ public:
         return remove_err;
     }
 
-    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback)
-        override
+    [[nodiscard]] tr_error rename(
+        [[maybe_unused]] tr_torrent_id_t const id,
+        std::string_view const oldpath,
+        std::string_view const newname) override
     {
         renamed_from = std::string{ oldpath };
         renamed_to = std::string{ newname };
-        if (callback != nullptr) {
-            callback(id, oldpath, newname, tr_error{});
-        }
+        return {};
     }
 
     void close_all() override
@@ -226,7 +228,7 @@ TEST(LocalData, AdminOperationsDelegate)
     auto move_called = false;
     local_data.move(
         5,
-        [] { return std::string{ "/new" }; },
+        [] { return tr::LocalData::MoveTarget{ .parent = "/new" }; },
         [&move_called](tr_torrent_id_t tor_id, std::string_view const parent, tr_error const& error) {
             move_called = true;
             EXPECT_EQ(5, tor_id);
@@ -240,7 +242,7 @@ TEST(LocalData, AdminOperationsDelegate)
     auto events = std::vector<std::string>{};
     local_data.move(
         5,
-        [] { return std::string{ "/newer" }; },
+        [] { return tr::LocalData::MoveTarget{ .parent = "/newer" }; },
         [&events](tr_torrent_id_t, std::string_view, tr_error const&) { events.emplace_back("moved"); },
         [&events](tr_torrent_id_t tor_id, std::string_view const parent) {
             EXPECT_EQ(5, tor_id);
@@ -253,7 +255,7 @@ TEST(LocalData, AdminOperationsDelegate)
     auto skip_called = false;
     local_data.move(
         5,
-        [] { return std::string{}; },
+        [] { return tr::LocalData::MoveTarget{}; },
         [&skip_called](tr_torrent_id_t, std::string_view const parent, tr_error const& error) {
             skip_called = true;
             EXPECT_EQ("", parent);
@@ -268,14 +270,30 @@ TEST(LocalData, AdminOperationsDelegate)
         8,
         "old",
         "new",
-        [&rename_called](tr_torrent_id_t tor_id, std::string_view oldpath, std::string_view newname, tr_error const& error) {
+        [] { return tr_error{}; },
+        [&rename_called](tr_torrent_id_t tor_id, tr_error const& error) {
             rename_called = true;
             EXPECT_EQ(8, tor_id);
-            EXPECT_EQ("old", oldpath);
-            EXPECT_EQ("new", newname);
             EXPECT_FALSE(error);
         });
     EXPECT_TRUE(rename_called);
+    EXPECT_EQ("old", raw_backend->renamed_from);
+    EXPECT_EQ("new", raw_backend->renamed_to);
+
+    // a failed check keeps the rename off the disk
+    raw_backend->renamed_from.clear();
+    auto rename_rejected = false;
+    local_data.rename(
+        8,
+        "old",
+        "new",
+        [] { return tr_error::from_errno(EINVAL); },
+        [&rename_rejected](tr_torrent_id_t, tr_error const& error) {
+            rename_rejected = true;
+            EXPECT_TRUE(error);
+        });
+    EXPECT_TRUE(rename_rejected);
+    EXPECT_EQ("", raw_backend->renamed_from);
 
     auto remove_called = false;
     local_data.remove(12, {}, [&remove_called](tr_torrent_id_t tor_id, tr_error const& error) {
@@ -333,7 +351,7 @@ TEST(LocalData, ErrorsKeepTheBackendsMessage)
         [&errors](auto, auto, tr_error const& error) { errors.push_back(error); });
     local_data.move(
         1,
-        [] { return std::string{ "/new" }; },
+        [] { return tr::LocalData::MoveTarget{ .parent = "/new" }; },
         [&errors](auto, auto, tr_error const& error) { errors.push_back(error); });
     local_data.remove(1, {}, [&errors](auto, tr_error const& error) { errors.push_back(error); });
 
@@ -402,7 +420,7 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
     auto move_finished = false;
     local_data.move(
         7,
-        [] { return std::string{ "/new" }; },
+        [] { return tr::LocalData::MoveTarget{ .parent = "/new" }; },
         [&read_finished, &move_finished](auto, auto, auto const&) {
             EXPECT_TRUE(read_finished);
             move_finished = true;
@@ -1063,13 +1081,12 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     auto order = std::vector<std::string>{};
     writeBlocks(*local_data, 0U, 2U * BlockSize, [&order] { order.emplace_back("write"); });
 
-    // The move picks its dir when it starts. (The move itself fails
-    // since there's no real torrent. Only the ordering matters here.)
+    // The move picks its dir when it starts.
     local_data->move(
         TorId,
-        [&order] {
+        [this, &order] {
             order.emplace_back("parent");
-            return std::string{ "/new" };
+            return tr::LocalData::MoveTarget{ .parent = pathOf("new") };
         },
         [&order](auto, auto, auto const&) { order.emplace_back("move"); });
 
@@ -1088,6 +1105,337 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     EXPECT_EQ(expected, order);
 
     local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, moveLeavesTheDiskWorkToAWorker)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    auto const session_thread = std::this_thread::get_id();
+
+    local_data->set_workers_paused(true);
+    auto events = std::vector<std::string>{};
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&events, session_thread](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            EXPECT_EQ(session_thread, std::this_thread::get_id());
+            events.emplace_back("moved");
+        },
+        [this, &events, session_thread](auto, auto) {
+            EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
+            EXPECT_EQ(session_thread, std::this_thread::get_id());
+            events.emplace_back("placed");
+        });
+
+    // the call returned without touching the disk
+    EXPECT_TRUE(std::empty(events));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("new/data.bin")));
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 2U; }));
+    EXPECT_EQ((std::vector<std::string>{ "placed", "moved" }), events);
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aFailedMoveReportsItAndReleasesTheOpsBehindIt)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("blocker"), "not a directory"sv));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+
+    auto order = std::vector<std::string>{};
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("blocker/new") }; },
+        [&order](auto, auto, tr_error const& error) {
+            EXPECT_TRUE(error);
+            order.emplace_back("moved");
+        },
+        [](auto, auto) { FAIL() << "a failed move places nothing"; });
+    local_data->close_torrent(TorId, [&order](tr_torrent_id_t) { order.emplace_back("closed"); });
+
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 2U; }));
+    EXPECT_EQ((std::vector<std::string>{ "moved", "closed" }), order);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, opsBehindAMoveFindTheNewLocation)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const before = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
+    auto after = std::make_shared<tr::StorageDescriptor>(*before);
+    after->download_dir = pathOf("new");
+    after->current_dir = pathOf("new");
+
+    auto current = std::shared_ptr<tr::StorageDescriptor const>{ before };
+    auto local_data = tr::LocalData{ torrents_, open_files_ };
+    local_data.start_workers(2U, open_files_, marshal(), [&current](tr_torrent_id_t) { return current; });
+
+    local_data.close_torrent(TorId);
+    local_data.move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        {},
+        [&current, &after](auto, auto) { current = after; });
+
+    auto result = ReadResult{};
+    readInto(local_data, 0U, BlockSize, result);
+
+    EXPECT_TRUE(pumpUntil([&result]() { return result.done; }));
+    EXPECT_FALSE(result.error) << result.error;
+    EXPECT_EQ(patternString(0U, BlockSize), result.data);
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, renameChecksFirstAndLeavesTheDiskWorkToAWorker)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("old.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "old.bin", BlockSize } }, BlockSize));
+
+    local_data->set_workers_paused(true);
+    auto checked = false;
+    auto renamed = false;
+    local_data->rename(
+        TorId,
+        "old.bin",
+        "new.bin",
+        [&checked] {
+            checked = true;
+            return tr_error{};
+        },
+        [&renamed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            renamed = true;
+        });
+
+    EXPECT_TRUE(checked);
+    EXPECT_FALSE(renamed);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("old.bin")));
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&renamed]() { return renamed; }));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("old.bin")));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new.bin")));
+
+    // a failed check never reaches the disk
+    auto rejected = false;
+    local_data->rename(
+        TorId,
+        "new.bin",
+        "newer.bin",
+        [] { return tr_error::from_errno(EINVAL); },
+        [&rejected](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_TRUE(error);
+            rejected = true;
+        });
+    EXPECT_TRUE(rejected);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new.bin")));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aMoveThatOnlyRenamesStaysOffTheCopyLane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+
+    // nothing that needs the copy lane can start...
+    tr::detail::hold_copy_lane(*local_data, true);
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&moved](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            moved = true;
+        });
+
+    // ...and a move within one filesystem finishes all the same
+    EXPECT_TRUE(pumpUntil([&moved]() { return moved; }));
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
+{
+    if (!tr_sys_path_exists("/dev/shm"sv)) {
+        GTEST_SKIP() << "no /dev/shm";
+    }
+    auto const other_filesystem = tr::test::Sandbox{ "/dev/shm" };
+    if (tr_sys_path_is_same_filesystem(sandboxDir(), other_filesystem.path())) {
+        GTEST_SKIP() << "the sandbox is on /dev/shm's filesystem";
+    }
+
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    createFileWithContents(pathOf("other/data.bin"), patternString(0U, BlockSize));
+
+    auto const mine = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
+    auto theirs = std::make_shared<tr::StorageDescriptor>(*mine);
+    theirs->download_dir = pathOf("other");
+    theirs->current_dir = pathOf("other");
+
+    auto local_data = tr::LocalData{ torrents_, open_files_ };
+    local_data.start_workers(2U, open_files_, marshal(), [&mine, &theirs](tr_torrent_id_t const id) {
+        return id == TorId ? mine : std::shared_ptr<tr::StorageDescriptor const>{ theirs };
+    });
+
+    // my move has to copy to another filesystem, and the copy lane is busy
+    tr::detail::hold_copy_lane(local_data, true);
+    auto const copy_target = tr_pathbuf{ other_filesystem.path(), "/target"sv };
+    auto events = std::vector<std::string>{};
+    local_data.move(
+        TorId,
+        [&copy_target] { return tr::LocalData::MoveTarget{ .parent = std::string{ copy_target.sv() } }; },
+        [&events](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back("copied");
+        },
+        [&events](auto, auto) { events.emplace_back("copy placed"); });
+
+    // their move, queued later, only renames, and doesn't wait for mine
+    local_data.move(
+        OtherId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("renamed") }; },
+        [&events](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            events.emplace_back("renamed");
+        });
+    EXPECT_TRUE(pumpUntil([&events]() { return !std::empty(events); }));
+    EXPECT_EQ((std::vector<std::string>{ "renamed" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("renamed/data.bin")));
+
+    // mine has moved nothing yet, and its barrier is still up
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("data.bin")));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_TRUE(local_data.admin_op_pending(TorId));
+
+    tr::detail::hold_copy_lane(local_data, false);
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 3U; }));
+    EXPECT_EQ((std::vector<std::string>{ "renamed", "copy placed", "copied" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ copy_target, "/data.bin"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, closingATorrentLeavesTheClosesToALane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    openInPool(0U, "data.bin");
+    auto const file = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+    ASSERT_FALSE(file.expired());
+
+    // The barrier is done at once: the pool has let go of the file...
+    local_data->set_workers_paused(true);
+    auto closed = false;
+    local_data->close_torrent(TorId, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(closed);
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+
+    // ...which stays open until a lane gets to it
+    EXPECT_FALSE(file.expired());
+
+    // a removal enqueued later finds it closed
+    auto was_closed = std::optional<bool>{};
+    auto removed = false;
+    local_data->remove(
+        TorId,
+        [&file, &was_closed](std::string_view const filename, tr_error* const error) {
+            was_closed = file.expired();
+            return tr_sys_path_remove(filename, error);
+        },
+        [&removed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            removed = true;
+        });
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&removed]() { return removed; }));
+    EXPECT_EQ(std::optional{ true }, was_closed);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownClosesTheFilesLeftToALane)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+    openInPool(0U, "a.bin");
+    openInPool(1U, "b.bin");
+    auto const a = std::weak_ptr{ open_files_.get(TorId, 0U, false) };
+    auto const b = std::weak_ptr{ open_files_.get(TorId, 1U, false) };
+
+    // closing one file leaves the other in the pool
+    local_data->set_workers_paused(true);
+    auto closed = false;
+    local_data->close_file(TorId, 0U, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(closed);
+    EXPECT_FALSE(open_files_.get(TorId, 0U, false));
+    EXPECT_TRUE(open_files_.get(TorId, 1U, false));
+    EXPECT_FALSE(a.expired());
+
+    local_data->shutdown();
+    EXPECT_TRUE(a.expired());
+    EXPECT_FALSE(b.expired());
+}
+
+TEST_F(LocalDataWorkersTest, adminOpPendingCoversWholeTorrentBarriers)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    // a write in flight makes the close of its file wait in the queue...
+    local_data->set_workers_paused(true);
+    writeBlocks(*local_data, 0U, BlockSize, [] {});
+    auto closed = false;
+    local_data->close_file(TorId, 0U, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_FALSE(closed);
+
+    // ...and a queued close of one file doesn't count
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&moved](auto, auto, tr_error const&) { moved = true; });
+    EXPECT_TRUE(local_data->admin_op_pending(TorId));
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&moved]() { return moved; }));
+    EXPECT_FALSE(local_data->admin_op_pending(TorId));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownFinishesAMoveInFlight)
+{
+    ASSERT_TRUE(tr_file_save(pathOf("data.bin"), patternString(0U, BlockSize)));
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+
+    auto events = std::vector<std::string>{};
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("new") }; },
+        [&events](auto, auto, tr_error const&) { events.emplace_back("moved"); },
+        [&events](auto, auto) { events.emplace_back("placed"); });
+
+    local_data->shutdown();
+    EXPECT_EQ((std::vector<std::string>{ "placed", "moved" }), events);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("new/data.bin")));
 }
 
 TEST_F(LocalDataWorkersTest, closingAFileWaitsOnlyForOpsThatTouchIt)

@@ -166,16 +166,13 @@ bool tr_file_move(std::string_view const oldpath, std::string_view const newpath
     return true;
 }
 
-std::optional<tr_file_moved> tr_file_rename_or_copy(
+namespace
+{
+[[nodiscard]] std::optional<tr_file_moved> rename_or_copy(
     std::string_view const oldpath,
     std::string_view const newpath,
-    tr_error* error)
+    tr_error* const error)
 {
-    auto local_error = tr_error{};
-    if (error == nullptr) {
-        error = &local_error;
-    }
-
     if (!prepare_move(oldpath, newpath, error)) {
         return {};
     }
@@ -191,6 +188,29 @@ std::optional<tr_file_moved> tr_file_rename_or_copy(
     }
 
     return tr_file_moved::Copied;
+}
+} // namespace
+
+std::optional<tr_file_moved> tr_file_rename_or_copy(
+    std::string_view const oldpath,
+    std::string_view const newpath,
+    tr_error* error)
+{
+    auto local_error = tr_error{};
+    if (error == nullptr) {
+        error = &local_error;
+    }
+
+    auto how = rename_or_copy(oldpath, newpath, error);
+
+    // Clearing another torrent's old location removes empty folders and copy
+    // temp files, and it can catch ours partway through. Start over once.
+    if (!how && error->is_enoent() && tr_sys_path_exists(oldpath)) {
+        *error = {};
+        how = rename_or_copy(oldpath, newpath, error);
+    }
+
+    return how;
 }
 
 bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)

@@ -122,11 +122,17 @@ public:
     // Puts every file under `parent_in`, or puts back what moved and returns nothing.
     // Call remove() on the result once the new location is saved.
     // A kill before that leaves the saved location usable.
+    //
+    // With `needs_copy`, the move may only rename. If a file would have to
+    // be copied from another filesystem, no file moves: this sets
+    // `*needs_copy` and returns nothing, without an error. Finding that
+    // out takes a few stats, where the copy can take minutes.
     [[nodiscard]] std::optional<MoveLeftovers> move(
         std::span<std::string_view const> old_parents,
         std::string_view parent_in,
         std::string_view parent_name = "",
-        tr_error* error = nullptr) const;
+        tr_error* error = nullptr,
+        bool* needs_copy = nullptr) const;
 
     // Adds same-sized copies of the files under `parent_in` to `leftovers`.
     // Only for a move known to have been interrupted, which leaves whole copies behind.
