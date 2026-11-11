@@ -45,6 +45,7 @@
 #include <libtransmission-app/session-poller.h>
 #include <libtransmission-app/startup-coordinator.h>
 #include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/watch-dir.h>
 
 #include "AccessibleSqueezeLabel.h"
 #include "Formatter.h"
@@ -55,7 +56,6 @@
 #include "Session.h"
 #include "TorrentModel.h"
 #include "Utils.h"
-#include "WatchDir.h"
 
 namespace
 {
@@ -176,9 +176,9 @@ Application::Application(
 
     session_ = std::make_unique<Session>(config_dir, prefs_, rpc);
     poller_ = std::make_unique<tr::app::SessionPoller>(*session_, timer_maker_);
+    watch_dir_ = std::make_unique<tr::app::WatchDir>(*session_, prefs_, timer_maker_, dir_monitor_maker_);
     model_ = std::make_unique<TorrentModel>(session_->torrents());
     window_ = std::make_unique<MainWindow>(*session_, prefs_, *model_, minimized);
-    watch_dir_ = std::make_unique<WatchDir>(session_->torrents());
 
 #ifdef Q_OS_WIN
     // Windows ends the process soon after this signal's slots return, so the close has to finish here.
@@ -194,7 +194,6 @@ Application::Application(
         Qt::DirectConnection);
 #endif
 
-    connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
     add_prompt_connection_ = session_->torrent_add_prompt.connect_scoped(
         [this](tr::app::AddData const& add, tr::app::AddOptions const& options) {
@@ -229,12 +228,6 @@ Application::Application(
             onTorrentsCompleted(changes.completed);
         }
     });
-    connect(watch_dir_.get(), &WatchDir::torrentFileAdded, this, qOverload<QString const&>(&Application::addWatchdirTorrent));
-
-    // init from preferences
-    for (auto const key : { TR_KEY_watch_dir }) {
-        refreshPref(key);
-    }
 
     poller_->start();
 
@@ -282,7 +275,7 @@ void Application::beginShutdown()
 
     saveGeometry();
 
-    watch_dir_->setPath(QString{}, false);
+    watch_dir_.reset();
 
     // Nobody is left to read a message box, or to take a launch.
     session_->setShuttingDown();
@@ -445,19 +438,6 @@ void Application::saveGeometry() const
 
 // ---
 
-void Application::refreshPref(tr_quark key) const
-{
-    switch (key) {
-    case TR_KEY_watch_dir:
-    case TR_KEY_watch_dir_enabled:
-        watch_dir_->setPath(prefs_.get<QString>(TR_KEY_watch_dir), prefs_.get<bool>(TR_KEY_watch_dir_enabled));
-        break;
-
-    default:
-        break;
-    }
-}
-
 void Application::onConfigDirContended()
 {
     // main() checks this flag after exec() and skips its settings.json save;
@@ -472,13 +452,6 @@ void Application::onConfigDirContended()
 /***
 ****
 ***/
-
-void Application::addWatchdirTorrent(QString const& filename) const
-{
-    auto add = tr::app::AddData{ filename.toStdString() };
-    add.from_watch_dir = true;
-    addTorrent(std::move(add));
-}
 
 void Application::addTorrent(tr::app::AddData add) const
 {
