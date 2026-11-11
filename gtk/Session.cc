@@ -51,6 +51,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -453,6 +454,14 @@ Session::~Session() = default;
 Session::Impl::Impl(Session& core)
     : core_{ core }
 {
+    // Tracker icons leave by the session's binding, when the session runs on this
+    // machine; a remote daemon's interface names nothing here.
+    favicon_cache_.set_bind_interface_func([this] -> std::optional<std::string> {
+        if (!core_.is_local_filesystem()) {
+            return std::nullopt;
+        }
+        return core_.prefs_.get<std::string>(TR_KEY_bind_interface);
+    });
     raw_model_ = Gio::ListStore<Torrent>::create();
     auto& torrents = core_.torrents();
     torrent_list_tags_ = { torrents.rows_inserted.connect_scoped(&Impl::on_rows_inserted, this),
