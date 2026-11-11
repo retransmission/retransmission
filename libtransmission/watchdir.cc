@@ -4,12 +4,14 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cerrno>
 #include <chrono>
 #include <iterator>
 #include <map>
 #include <set>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -126,8 +128,15 @@ void BaseWatchdir::logWatchError(int const error_code) const
 
 void BaseWatchdir::scan()
 {
+    // tr_sys_dir_get_files() lists a missing dir as empty, which would hide a mistyped path
+    // and forget every handled name while a share whose mount point goes away is unmounted
     auto error = tr_error{};
-    auto files = tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error);
+    auto files = std::vector<std::string>{};
+    if (auto const info = tr_sys_path_get_info(dirname_, 0, &error); info && info->isFolder()) {
+        files = tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error);
+    } else if (info) {
+        error.set_from_errno(ENOTDIR);
+    }
 
     if (error) {
         // once per failure, since a generic watch dir rescans on a timer
