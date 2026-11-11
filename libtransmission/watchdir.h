@@ -28,6 +28,9 @@ public:
 
     using Callback = std::function<Action(std::string_view dirname, std::string_view basename)>;
 
+    // Says which names to offer to the callback. A watch dir ignores the others: it doesn't stat them or remember them.
+    using NameFilter = std::function<bool(std::string_view basename)>;
+
     Watchdir() = default;
     virtual ~Watchdir() = default;
     Watchdir(Watchdir&&) = delete;
@@ -55,7 +58,8 @@ public:
         std::string_view dirname,
         Callback callback,
         tr::TimerMaker& timer_maker,
-        std::chrono::milliseconds rescan_interval = generic_rescan_interval_);
+        std::chrono::milliseconds rescan_interval = generic_rescan_interval_,
+        NameFilter filter = {});
 
 private:
     // NOLINTNEXTLINE(readability-identifier-naming)

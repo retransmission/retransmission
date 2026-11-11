@@ -30,9 +30,10 @@ namespace tr::impl
 class BaseWatchdir : public Watchdir
 {
 public:
-    BaseWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker)
+    BaseWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker, NameFilter filter = {})
         : dirname_{ dirname }
         , callback_{ std::move(callback) }
+        , filter_{ std::move(filter) }
         , retry_timer_{ timer_maker.create([this] { onRetryTimer(); }) }
     {
     }
@@ -113,6 +114,7 @@ private:
 
     std::string const dirname_;
     Callback const callback_;
+    NameFilter const filter_;
     std::unique_ptr<Timer> const retry_timer_;
 
     std::map<std::string, Pending, std::less<>> pending_;
