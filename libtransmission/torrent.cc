@@ -602,8 +602,9 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
 
     auto const lock = unique_lock();
 
-    if (is_deleting_) {
-        return; // a torrent being removed stays stopped
+    // a torrent being removed, or a closing session's, stays stopped
+    if (is_deleting_ || session->isClosing()) {
+        return;
     }
 
     switch (activity()) {
@@ -659,6 +660,12 @@ void tr_torrent::start_in_session_thread()
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
+    // start() queued this from another thread, and a stop has run since,
+    // such as a closing session's. That stop wins.
+    if (!is_running_) {
+        return;
+    }
+
     // We are after `torrentStart` and before announcing to trackers/peers,
     // so now is the best time to create wanted empty files.
     create_empty_files();
@@ -668,7 +675,6 @@ void tr_torrent::start_in_session_thread()
 
     time_t const now = tr_time();
 
-    is_running_ = true;
     date_started_ = now;
     mark_changed();
     session->set_date_active(now);
@@ -713,6 +719,8 @@ void tr_torrent::stop_now()
     session->announcer_->stopTorrent(this);
 
     // Save once the writes in flight land, so the resume file lists them.
+    // The times above changed without marking the torrent dirty.
+    set_dirty();
     session->local_data.close_torrent(id(), [session = this->session](tr_torrent_id_t const tor_id) {
         if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && !tor->is_deleting_) {
             tor->save_resume_file();
@@ -773,7 +781,6 @@ void tr_torrentStop(tr_torrent* tor)
     auto const lock = tor->unique_lock();
 
     tor->start_when_stable_ = false;
-    tor->set_dirty();
     run_in_session_thread_by_id(*tor, &tr_torrent::stop_now);
 }
 
@@ -801,13 +808,15 @@ void tr_torrentFreeInSessionThread(tr_torrent* tor)
         tr_logAddInfoTor(tor, "Removing torrent");
     }
 
-    tor->set_dirty(!tor->is_deleting_);
-    tor->stop_now();
-
+    // A removal or a closing session stopped the torrent first.
     if (tor->is_deleting_) {
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".torrent"sv);
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".magnet"sv);
         tr_torrent_metainfo::remove_file(tor->session->resumeDir(), tor->name(), tor->info_hash_string(), ".resume"sv);
+    } else {
+        // The close's stop saved it once its writes landed. Save what
+        // changed since, such as a piece hashed after that save.
+        tor->save_resume_file();
     }
 
     freeTorrent(tor);
@@ -1661,7 +1670,7 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
         TR_ASSERT(session->am_in_session_thread());
         auto const lock = session->unique_lock();
 
-        if (tor->is_deleting_) {
+        if (tor->is_deleting_ || session->isClosing()) {
             return;
         }
 
