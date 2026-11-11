@@ -225,7 +225,8 @@ void Session::stop()
                 session,
                 TrSessionCloseTimeoutSecs,
                 [this, alive = std::weak_ptr{ alive_ }](tr_disk_activity const& activity) {
-                    rpc_.run_on_ui_thread([this, alive, activity] {
+                    // A plain `activity` capture would be const, so moving the lambda would copy it, which can throw.
+                    rpc_.run_on_ui_thread([this, alive, activity = activity] {
                         if (alive.lock()) {
                             closing_progress(activity);
                         }
