@@ -477,6 +477,7 @@ public:
     Threaded& operator=(Threaded const&) = delete;
     Threaded& operator=(Threaded&&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): stop_workers() allocates
     ~Threaded()
     {
         stop_workers();
