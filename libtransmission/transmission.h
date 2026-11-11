@@ -10,9 +10,11 @@
 
 // --- Basic Types
 
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
+#include <functional>
 #include <optional>
 #include <span>
 #include <string>
@@ -117,6 +119,58 @@ void tr_sessionSet(tr_session* session, tr::Settings const& settings);
            reload whatever blocklist files are found there */
 void tr_sessionReloadBlocklists(tr_session* session);
 
+// How far `tr_sessionClose()` has got.
+enum class tr_close_phase : uint8_t {
+    None, // not closing
+    Quiescing, // stopping the torrents
+    DrainingDisk, // finishing the disk writes, moves, removals, and renames in flight
+    Finalizing, // saving the torrents' resume files
+    WaitingTrackers, // waiting for trackers to answer "stopped"
+};
+
+/**
+ * What a session's disk IO is doing, and how far a close has got.
+ * A client shows it when quitting takes a while.
+ */
+struct tr_disk_activity {
+    // what one disk thread is doing
+    struct Op {
+        enum class Kind : uint8_t { Write, Move, Remove, Rename, Close };
+
+        Kind kind = Kind::Write;
+        std::string torrent_name;
+        std::string file_name; // the file a move is on, or the file a rename renames
+        std::string destination; // the dir a move puts the files in, or a rename's new name
+
+        // bytes for a write or a move; files for a removal
+        uint64_t done = 0;
+        uint64_t total = 0;
+
+        // a move's files: the one it's on, counting from 0, and how many move
+        size_t file_index = 0;
+        size_t file_count = 0;
+    };
+
+    tr_close_phase phase = tr_close_phase::None;
+    uint64_t queued_write_bytes = 0;
+    size_t queued_admin_count = 0; // moves, removals, and renames waiting their turn
+    size_t trackers_pending = 0; // "stopped" announces not yet answered
+    size_t trackers_total = 0;
+    std::chrono::seconds trackers_time_left = {};
+    std::vector<Op> in_flight;
+};
+
+/**
+ * @brief What the session's disk IO is doing, and how far a close has got.
+ *
+ * Callable from any thread until `tr_sessionClose()` is called, which frees
+ * the session. During the close, its `on_progress` gets the same report.
+ */
+[[nodiscard]] tr_disk_activity tr_sessionGetDiskActivity(tr_session const* session);
+
+// how long `tr_sessionClose()` waits for trackers, unless told otherwise
+inline constexpr auto TrSessionCloseTimeoutSecs = 5.0;
+
 /**
  * @brief End a libtransmission session.
  * @see `tr_sessionInit()`
@@ -127,8 +181,13 @@ void tr_sessionReloadBlocklists(tr_session* session);
  *
  * @param timeout_secs specifies how long to wait on these announces,
  *        counted from when they're sent.
+ * @param on_progress if set, called on the calling thread about twice a
+ *        second until the close finishes.
  */
-void tr_sessionClose(tr_session* session, double timeout_secs = 5.0);
+void tr_sessionClose(
+    tr_session* session,
+    double timeout_secs = TrSessionCloseTimeoutSecs,
+    std::function<void(tr_disk_activity const&)> const& on_progress = {});
 
 /**
  * @brief Return the session's configuration directory.
