@@ -1027,6 +1027,8 @@ private:
     [[nodiscard]] bool counts(Filter const& filter) const;
     // the filters in use that apply to `type`'s addresses, or to the interfaces without
     [[nodiscard]] std::vector<Filter> activeFilters(std::optional<tr_address_type> type) const;
+    // whether `filters` leave `iface` in the interface list
+    [[nodiscard]] bool interfacePasses(std::vector<Filter> const& filters, Session::NetworkInterface const& iface) const;
     // every value a filter has, with its name
     [[nodiscard]] std::vector<std::pair<std::string, Glib::ustring>> allFilterChoices(std::string_view key) const;
     // the values a filter can still pick, given the other filters
@@ -1308,12 +1310,9 @@ void NetworkPage::rebuildInterfaceCombo()
     auto const is_blocked = current == TrBindInterfaceBlocked;
 
     // the interface in use stays listed whatever the filters say
-    auto const filters = activeFilters({});
     auto names = std::vector<std::string>{};
     for (auto const& iface : binding_.interfaces) {
-        if (iface.name == current || std::ranges::all_of(filters, [&iface](Filter const& filter) {
-                return passes_filter(filter.key, filter.values, nullptr, iface);
-            })) {
+        if (iface.name == current || interfacePasses(filters_, iface)) {
             names.push_back(iface.name);
         }
     }
@@ -1691,6 +1690,24 @@ std::vector<NetworkPage::Filter> NetworkPage::activeFilters(std::optional<tr_add
     return ret;
 }
 
+// An interface is listed when it passes the filters on interfaces and, while
+// filters on IPv6 addresses are in use, still has an address to bind: an IPv4
+// one, which they don't judge, or an IPv6 one they leave.
+bool NetworkPage::interfacePasses(std::vector<Filter> const& filters, Session::NetworkInterface const& iface) const
+{
+    auto const passes = [&](bool const ipv6_only, Session::NetworkAddress const* const address) {
+        return std::ranges::all_of(filters, [&](Filter const& filter) {
+            return filter_def(filter.key).ipv6_only != ipv6_only || !counts(filter) ||
+                passes_filter(filter.key, filter.values, address, iface);
+        });
+    };
+    auto const any_address_filter = std::ranges::any_of(filters, [](Filter const& f) { return filter_def(f.key).ipv6_only; });
+
+    return passes(false, nullptr) && (!any_address_filter || std::ranges::any_of(iface.addresses, [&](auto const& address) {
+               return !address.address.contains(':') || passes(true, &address);
+           }));
+}
+
 std::vector<std::pair<std::string, Glib::ustring>> NetworkPage::allFilterChoices(std::string_view const key) const
 {
     auto ret = std::vector<std::pair<std::string, Glib::ustring>>{};
@@ -1729,8 +1746,6 @@ std::vector<std::pair<std::string, Glib::ustring>> NetworkPage::filterChoices(st
             return filter_def(filter.key).ipv6_only != ipv6_only || passes_filter(filter.key, filter.values, address, iface);
         });
     };
-    auto const any_address_filter = std::ranges::any_of(others, [](Filter const& f) { return filter_def(f.key).ipv6_only; });
-
     auto present = std::vector<std::string>{};
     auto const add = [&present](std::vector<std::string> const& values) {
         for (auto const& value : values) {
@@ -1740,23 +1755,17 @@ std::vector<std::pair<std::string, Glib::ustring>> NetworkPage::filterChoices(st
         }
     };
     for (auto const& iface : binding_.interfaces) {
-        if (!passes(false, nullptr, iface)) {
-            continue;
-        }
-        auto const is_ipv6 = [](auto const& address) {
-            return address.address.contains(':');
-        };
         if (!filter_def(key).ipv6_only) {
-            // with IPv6 filters in use, an interface counts while they leave it an address
-            if (!any_address_filter || std::ranges::any_of(iface.addresses, [&](auto const& address) {
-                    return is_ipv6(address) && passes(true, &address, iface);
-                })) {
+            if (interfacePasses(others, iface)) {
                 add(filter_values(key, nullptr, iface));
             }
             continue;
         }
+        if (!passes(false, nullptr, iface)) {
+            continue;
+        }
         for (auto const& address : iface.addresses) {
-            if (is_ipv6(address) && passes(true, &address, iface)) {
+            if (address.address.contains(':') && passes(true, &address, iface)) {
                 add(filter_values(key, &address, iface));
             }
         }
