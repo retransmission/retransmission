@@ -25,8 +25,9 @@ public:
         std::string_view dirname,
         Callback callback,
         tr::TimerMaker& timer_maker,
-        std::chrono::milliseconds rescan_interval)
-        : BaseWatchdir{ dirname, std::move(callback), timer_maker }
+        std::chrono::milliseconds rescan_interval,
+        NameFilter filter)
+        : BaseWatchdir{ dirname, std::move(callback), timer_maker, std::move(filter) }
         , rescan_timer_{ timer_maker.create() }
     {
         rescan_timer_->set_callback([this] { scan(); });
@@ -44,9 +45,10 @@ std::unique_ptr<Watchdir> Watchdir::create_generic(
     std::string_view dirname,
     Callback callback,
     tr::TimerMaker& timer_maker,
-    std::chrono::milliseconds rescan_interval)
+    std::chrono::milliseconds rescan_interval,
+    NameFilter filter)
 {
-    return std::make_unique<GenericWatchdir>(dirname, std::move(callback), timer_maker, rescan_interval);
+    return std::make_unique<GenericWatchdir>(dirname, std::move(callback), timer_maker, rescan_interval, std::move(filter));
 }
 
 #if !defined(WITH_INOTIFY) && !defined(WITH_KQUEUE) && !defined(_WIN32)

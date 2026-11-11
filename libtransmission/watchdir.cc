@@ -133,7 +133,10 @@ void BaseWatchdir::scan()
     auto error = tr_error{};
     auto files = std::vector<std::string>{};
     if (auto const info = tr_sys_path_get_info(dirname_, 0, &error); info && info->isFolder()) {
-        files = tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error);
+        files = tr_sys_dir_get_files(
+            dirname_,
+            [this](std::string_view const name) { return tr_basename_is_not_dotfile(name) && (!filter_ || filter_(name)); },
+            &error);
     } else if (info) {
         error.set_from_errno(ENOTDIR);
     }

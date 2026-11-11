@@ -69,20 +69,25 @@ protected:
         SandboxedTest::TearDown();
     }
 
-    [[nodiscard]] auto createWatchDir(std::string_view path, Watchdir::Callback callback)
+    // `filter` applies only to a generic watch dir
+    [[nodiscard]] auto createWatchDir(std::string_view path, Watchdir::Callback callback, Watchdir::NameFilter filter = {})
     {
         auto const force_generic = GetParam() == WatchMode::GENERIC;
-        return force_generic ? Watchdir::create_generic(path, std::move(callback), *timer_maker_, GenericRescanInterval) :
-                               Watchdir::create(path, std::move(callback), *timer_maker_, ev_base_.get());
+        return force_generic ?
+            Watchdir::create_generic(path, std::move(callback), *timer_maker_, GenericRescanInterval, std::move(filter)) :
+            Watchdir::create(path, std::move(callback), *timer_maker_, ev_base_.get());
     }
 
     // a watch dir that records each name it offers in `names_` and is done with it
-    [[nodiscard]] auto createRecordingWatchDir(std::string_view path)
+    [[nodiscard]] auto createRecordingWatchDir(std::string_view path, Watchdir::NameFilter filter = {})
     {
-        return createWatchDir(path, [this](std::string_view /*dirname*/, std::string_view basename) {
-            names_.emplace_back(basename);
-            return Watchdir::Action::Done;
-        });
+        return createWatchDir(
+            path,
+            [this](std::string_view /*dirname*/, std::string_view basename) {
+                names_.emplace_back(basename);
+                return Watchdir::Action::Done;
+            },
+            std::move(filter));
     }
 
     static void createFile(std::string_view dirname, std::string_view basename, std::string_view contents = ""sv)
@@ -253,6 +258,21 @@ TEST_P(WatchDirTest, keepsItsNamesWhileTheDirIsMissing)
     EXPECT_TRUE(tr_sys_path_rename(elsewhere, dirname));
     watchdir->rescan();
     EXPECT_EQ(1U, std::size(names_));
+}
+
+TEST_P(WatchDirTest, offersOnlyTheNamesItsFilterAccepts)
+{
+    if (GetParam() == WatchMode::NATIVE) {
+        GTEST_SKIP() << "only a generic watch dir takes a filter";
+    }
+
+    auto const dirname = sandboxDir();
+    createFile(dirname, "a.torrent"sv);
+    createFile(dirname, "a.torrent.added"sv);
+    auto watchdir = createRecordingWatchDir(dirname, [](std::string_view const basename) {
+        return basename.ends_with(".torrent"sv);
+    });
+    EXPECT_EQ(std::vector<std::string>{ "a.torrent" }, names_);
 }
 
 INSTANTIATE_TEST_SUITE_P( //

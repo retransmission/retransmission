@@ -5,6 +5,7 @@
 
 #include "libtransmission-app/watch-dir.h"
 
+#include <algorithm>
 #include <chrono>
 #include <ctime>
 #include <string>
@@ -13,7 +14,6 @@
 
 #include "libtransmission/file.h"
 #include "libtransmission/quark.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/watchdir.h"
@@ -28,6 +28,20 @@ namespace tr::app
 {
 namespace
 {
+
+// whether `name` ends in ".torrent", in any case
+[[nodiscard]] constexpr bool is_torrent_name(std::string_view const name) noexcept
+{
+    auto constexpr Suffix = ".torrent"sv;
+    auto const ascii_lower = [](char const ch) {
+        return ch >= 'A' && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch;
+    };
+    return std::size(name) >= std::size(Suffix) &&
+        std::ranges::equal(name.substr(std::size(name) - std::size(Suffix)), Suffix, {}, ascii_lower);
+}
+
+static_assert(is_torrent_name("a.TORRENT"sv));
+static_assert(!is_torrent_name("a.torrent.added"sv));
 
 // whether `path` changed so recently that it may still be being written
 [[nodiscard]] bool is_settling(std::string_view const path)
@@ -85,17 +99,14 @@ void WatchDir::update()
             dir,
             [this](std::string_view const dirname, std::string_view const basename) { return on_file(dirname, basename); },
             timer_maker_,
-            FallbackScanInterval);
+            FallbackScanInterval,
+            is_torrent_name);
         monitor_ = monitor_maker_.create(dir, [this] { watchdir_->rescan(); });
     }
 }
 
 tr::Watchdir::Action WatchDir::on_file(std::string_view const dirname, std::string_view const basename) const
 {
-    if (!tr_strlower(basename).ends_with(".torrent"sv)) {
-        return tr::Watchdir::Action::Done;
-    }
-
     auto const path = tr_pathbuf{ dirname, '/', basename };
     auto add = AddData{ path.sv() };
     if (!add.parsed()) {
