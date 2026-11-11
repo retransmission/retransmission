@@ -443,10 +443,7 @@ public:
 
     void set_choke(bool peer_is_choked) override
     {
-        auto const now = tr_time();
-        auto const fibrillation_time = now - MinChokePeriodSec;
-
-        if (choke_changed_at_ > fibrillation_time) {
+        if (is_choke_locked()) {
             logtrace(this, fmt::format("Not changing choke to {} to avoid fibrillation", peer_is_choked));
         } else if (this->peer_is_choked() != peer_is_choked) {
             set_peer_choked(peer_is_choked);
@@ -459,9 +456,14 @@ public:
                 reject_all_requests();
             }
 
-            choke_changed_at_ = now;
+            choke_changed_at_ = tr_time();
             update_active(tr_direction::ClientToPeer);
         }
+    }
+
+    [[nodiscard]] bool is_choke_locked() const override
+    {
+        return choke_changed_at_ > tr_time() - MinChokePeriodSec;
     }
 
     void pulse() override;

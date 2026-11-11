@@ -117,7 +117,9 @@ public:
 
     [[nodiscard]] virtual tr_socket_address socket_address() const = 0;
 
+    // Ignored while the choke is locked, so a peer is not choked and unchoked in quick succession.
     virtual void set_choke(bool peer_is_choked) = 0;
+    [[nodiscard]] virtual bool is_choke_locked() const = 0;
     virtual void set_interested(bool client_is_interested) = 0;
 
     virtual void pulse() = 0;
