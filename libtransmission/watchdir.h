@@ -36,11 +36,6 @@ public:
     // Scans the directory now, e.g. because the caller's own monitor saw it change.
     virtual void rescan() = 0;
 
-    [[nodiscard]] static auto generic_rescan_interval() noexcept
-    {
-        return generic_rescan_interval_;
-    }
-
     static void set_generic_rescan_interval(std::chrono::milliseconds interval) noexcept
     {
         generic_rescan_interval_ = interval;
