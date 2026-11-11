@@ -49,7 +49,8 @@ public:
     DirMonitorMaker& operator=(DirMonitorMaker&&) = delete;
     DirMonitorMaker& operator=(DirMonitorMaker const&) = delete;
 
-    // Calls `on_change` on the UI thread when `dirname`'s entries change.
+    // Calls `on_change` on the UI thread when `dirname`'s entries change, and may also call it
+    // when a write to one finishes. It never calls it before `create()` returns.
     // Returns nullptr if the toolkit can't monitor `dirname`.
     [[nodiscard]] virtual std::unique_ptr<DirMonitor> create(std::string_view dirname, std::function<void()> on_change) = 0;
 };

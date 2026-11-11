@@ -94,14 +94,17 @@ void WatchDir::update()
     }
 
     if (dirname() != dir) {
+        // the monitor first, so that a file landing during the first scan doesn't wait for the fallback scan;
+        // its notices arrive on a later loop turn, once `watchdir_` is the new one.
+        // One monitor at a time, since a monitor may hold a scarce OS handle.
         monitor_.reset();
+        monitor_ = monitor_maker_.create(dir, [this] { watchdir_->rescan(); });
         watchdir_ = tr::Watchdir::create_generic(
             dir,
             [this](std::string_view const dirname, std::string_view const basename) { return on_file(dirname, basename); },
             timer_maker_,
             FallbackScanInterval,
             is_torrent_name);
-        monitor_ = monitor_maker_.create(dir, [this] { watchdir_->rescan(); });
     }
 }
 
