@@ -239,6 +239,22 @@ TEST_P(WatchDirTest, offersANameAgainAfterItsFileLeaves)
     EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names_);
 }
 
+// e.g. a share whose mount point goes away while it's unmounted
+TEST_P(WatchDirTest, keepsItsNamesWhileTheDirIsMissing)
+{
+    auto const dirname = createDir(sandboxDir(), "watch"sv);
+    auto const elsewhere = tr_pathbuf{ sandboxDir(), "/elsewhere"sv };
+    createFile(dirname, "test.torrent"sv);
+    auto watchdir = createRecordingWatchDir(dirname);
+    EXPECT_EQ(1U, std::size(names_));
+
+    EXPECT_TRUE(tr_sys_path_rename(dirname, elsewhere));
+    watchdir->rescan();
+    EXPECT_TRUE(tr_sys_path_rename(elsewhere, dirname));
+    watchdir->rescan();
+    EXPECT_EQ(1U, std::size(names_));
+}
+
 INSTANTIATE_TEST_SUITE_P( //
     WatchDir,
     WatchDirTest,
