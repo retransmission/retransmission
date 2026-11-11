@@ -233,11 +233,6 @@ private:
         return 0;
     }
 
-    static void onFirstScan(evutil_socket_t /*unused*/, short /*unused*/, void* vself)
-    {
-        static_cast<Win32Watchdir*>(vself)->scan();
-    }
-
     static void onBufferEvent(struct bufferevent* event, void* vself)
     {
         static_cast<Win32Watchdir*>(vself)->processBufferEvent(event);
