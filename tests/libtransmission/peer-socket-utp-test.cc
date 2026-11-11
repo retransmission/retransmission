@@ -192,10 +192,10 @@ private:
 // timeout check, which libutp runs every 500 ms.
 TEST_F(PeerSocketUtpTest, readingReopensFullReceiveWindow)
 {
-    connect();
+    ASSERT_NO_FATAL_FAILURE(connect());
     ASSERT_FALSE(accepted_->is_read_enabled());
 
-    writeTwiceTheWindow();
+    ASSERT_NO_FATAL_FAILURE(writeTwiceTheWindow());
     auto const n_buffered = readAll();
     EXPECT_GT(n_buffered, size_t{ ReceiveWindow } / 2U);
     EXPECT_LE(n_buffered, size_t{ ReceiveWindow });
