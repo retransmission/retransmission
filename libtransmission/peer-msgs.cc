@@ -479,9 +479,6 @@ public:
     void on_piece_completed(tr_piece_index_t piece) override
     {
         protocol_send_have(piece);
-
-        // since we have more pieces now, we might not be interested in this peer
-        update_interest();
     }
 
     void set_interested(bool interested) override
@@ -575,17 +572,6 @@ public:
     }
 
 private:
-    // ---
-
-    void update_interest()
-    {
-        // TODO(ckerr) -- might need to poke the mgr on startup
-
-        // additional note (tearfur)
-        // by "poke the mgr", Charles probably meant calling isPeerInteresting(),
-        // then pass the result to set_interesting()
-    }
-
     // ---
 
     [[nodiscard]] bool is_valid_request(peer_request const& req) const;
