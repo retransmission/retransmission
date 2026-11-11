@@ -600,7 +600,7 @@ DWORD CALLBACK report_copy_progress(
     DWORD /*callback_reason*/,
     HANDLE /*source_file*/,
     HANDLE /*destination_file*/,
-    LPVOID const data)
+    void* const data)
 {
     (*static_cast<std::function<void(uint64_t)> const*>(data))(static_cast<uint64_t>(total_bytes_transferred.QuadPart));
     return PROGRESS_CONTINUE;
