@@ -3,11 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <thread>
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -37,20 +39,25 @@ class PeerMsgsTest : public SessionTest
 protected:
     void TearDown() override
     {
-        if (is_valid_socket(peer_socket_)) {
-            tr_net_close_socket(peer_socket_);
+        for (auto const sock : peer_sockets_) {
+            tr_net_close_socket(sock);
         }
         SessionTest::TearDown();
     }
 
-    void connectPeer(tr_torrent* const tor, bool const remote_is_seed)
+    // Each peer needs its own port, or the peer manager treats it as already connected.
+    void connectPeer(tr_torrent* const tor, bool const remote_is_seed, uint16_t const port = 48000U)
     {
-        tr_torrentStart(tor);
-        ASSERT_TRUE(waitForInSessionThread([tor] { return tor->is_running(); }, 2000));
+        if (!tor->is_running()) {
+            tr_torrentStart(tor);
+            ASSERT_TRUE(waitForInSessionThread([tor] { return tor->is_running(); }, 2000));
+        }
+        auto const peer_count = std::size(tr_peerMgrPeerStats(tor)) + 1U;
 
         auto sockets = std::array<evutil_socket_t, 2>{};
         ASSERT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, std::data(sockets)));
-        peer_socket_ = static_cast<tr_socket_t>(sockets[1]);
+        auto const peer_socket = static_cast<tr_socket_t>(sockets[1]);
+        peer_sockets_.push_back(peer_socket);
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
         ASSERT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
 
@@ -59,13 +66,14 @@ protected:
         auto const& hash = tor->info_hash();
         wire.append(reinterpret_cast<char const*>(std::data(hash)), std::size(hash));
         wire.append("-TEST00-000000000000");
-        ASSERT_EQ(static_cast<int>(std::size(wire)), send(peer_socket_, std::data(wire), std::size(wire), 0));
+        ASSERT_EQ(static_cast<int>(std::size(wire)), send(peer_socket, std::data(wire), std::size(wire), 0));
 
-        blockingRunInSessionThread([this, fd = sockets[0]] {
-            auto const address = tr_socket_address{ *tr_address::from_string("127.0.0.1"), tr_port::from_host(48000) };
+        blockingRunInSessionThread([this, fd = sockets[0], port] {
+            auto const address = tr_socket_address{ *tr_address::from_string("127.0.0.1"), tr_port::from_host(port) };
             tr_peerMgrAddIncoming(peerManager(), tr_peer_socket_tcp::create(*session_, address, static_cast<tr_socket_t>(fd)));
         });
-        ASSERT_TRUE(waitForInSessionThread([tor] { return std::size(tr_peerMgrPeerStats(tor)) == 1U; }, 2000));
+        ASSERT_TRUE(
+            waitForInSessionThread([tor, peer_count] { return std::size(tr_peerMgrPeerStats(tor)) == peer_count; }, 2000));
 
         // Real peers send their bitfield a round trip after the handshake.
         std::this_thread::sleep_for(300ms);
@@ -85,10 +93,20 @@ protected:
         if (!remote_is_seed) {
             wire.append("\0\0\0\1\2", 5); // Interested
         }
-        ASSERT_EQ(static_cast<int>(std::size(wire)), send(peer_socket_, std::data(wire), std::size(wire), 0));
+        ASSERT_EQ(static_cast<int>(std::size(wire)), send(peer_socket, std::data(wire), std::size(wire), 0));
     }
 
-    tr_socket_t peer_socket_ = static_cast<tr_socket_t>(TR_BAD_SOCKET);
+    std::vector<tr_socket_t> peer_sockets_;
+};
+
+class PeerMsgsOneSlotTest : public PeerMsgsTest
+{
+protected:
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_upload_slots_per_torrent, 1);
+        PeerMsgsTest::SetUp();
+    }
 };
 } // namespace
 
@@ -118,5 +136,37 @@ TEST_F(PeerMsgsTest, NewDownloaderIsUnchokedBeforePeriodicRechoke)
             return std::size(peers) == 1U && peers.front().peer_is_interested && !peers.front().peer_is_choked;
         },
         2000));
+}
+
+TEST_F(PeerMsgsOneSlotTest, DownloaderBeyondUploadSlotsStaysChoked)
+{
+    auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    connectPeer(tor, false, 48000U);
+    ASSERT_FALSE(HasFatalFailure());
+    ASSERT_TRUE(waitForInSessionThread(
+        [tor] {
+            auto const peers = tr_peerMgrPeerStats(tor);
+            return std::size(peers) == 1U && !peers.front().peer_is_choked;
+        },
+        2000));
+
+    // The unchoke decision is made when Interested arrives, so once both peers are
+    // interested the second one has already been refused the slot.
+    connectPeer(tor, false, 48001U);
+    ASSERT_FALSE(HasFatalFailure());
+    ASSERT_TRUE(waitForInSessionThread(
+        [tor] {
+            auto const peers = tr_peerMgrPeerStats(tor);
+            return std::ranges::count_if(peers, [](auto const& peer) { return peer.peer_is_interested; }) == 2;
+        },
+        2000));
+
+    auto const unchoked = blockingRunInSessionThread([tor] {
+        auto const peers = tr_peerMgrPeerStats(tor);
+        return std::ranges::count_if(peers, [](auto const& peer) { return !peer.peer_is_choked; });
+    });
+    EXPECT_EQ(1, unchoked);
 }
 } // namespace tr::test
