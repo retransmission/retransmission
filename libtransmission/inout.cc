@@ -159,6 +159,7 @@ void read_bytes(
     tr_file_index_t const file_index,
     uint64_t const file_offset,
     std::span<uint8_t> const buf,
+    bool const log_errors,
     tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
@@ -177,7 +178,7 @@ void read_bytes(
     auto const io_lock = file->io_lock();
     read_entire_buf(file->fd(), file_offset, buf, error);
 
-    if (error) {
+    if (error && log_errors) {
         tr_logAddError(
             fmt::format(
                 "Couldn't read '{path}': {error} ({error_code})",
@@ -229,7 +230,8 @@ tr_error tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
-    std::span<uint8_t> const setme)
+    std::span<uint8_t> const setme,
+    bool const log_errors)
 {
     TR_PROFILE_SCOPE("disk.read_block");
     if (std::empty(setme)) {
@@ -246,7 +248,7 @@ tr_error tr_ioRead(
         begin,
         std::size(setme),
         [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
-            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), error);
+            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), log_errors, error);
             return !error;
         });
 

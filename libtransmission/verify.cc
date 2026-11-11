@@ -4,215 +4,162 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
-#include <atomic>
 #include <chrono>
-#include <cstddef> // std::byte
-#include <cstdint> // uint64_t, uint32_t
-#include <iterator>
 #include <memory>
 #include <mutex>
-#include <thread>
+#include <optional>
+#include <tuple>
 #include <utility> // for std::move()
-#include <vector>
 
+#include "libtransmission/block-info.h"
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/file.h"
-#include "libtransmission/profile.h"
+#include "libtransmission/error.h"
+#include "libtransmission/local-data.h"
+#include "libtransmission/timer.h"
 #include "libtransmission/types.h"
 #include "libtransmission/verify.h"
 
 using namespace std::chrono_literals;
 
-namespace
+tr_verifier::tr_verifier(tr::LocalData& local_data, tr::TimerMaker& timer_maker, std::recursive_mutex& session_mutex)
+    : local_data_{ local_data }
+    , step_timer_{ timer_maker.create([this, &session_mutex] {
+        auto const lock = std::scoped_lock{ session_mutex };
+        step();
+    }) }
 {
-[[nodiscard]] auto current_time_secs()
-{
-    return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::steady_clock::now());
 }
-} // namespace
 
-void tr_verify_worker::verify_torrent(
-    Mediator& verify_mediator,
-    std::atomic<bool> const& abort_flag,
-    std::chrono::milliseconds const sleep_per_seconds_during_verify)
+tr_verifier::~tr_verifier() = default;
+
+void tr_verifier::add(std::unique_ptr<Mediator> mediator, tr_priority_t const priority)
 {
-    TR_PROFILE_SCOPE("verify.torrent");
-    verify_mediator.on_verify_started();
+    todo_.emplace(Node{ .mediator = std::move(mediator), .priority = priority });
+    if (!active_) {
+        schedule_step();
+    }
+}
 
-    tr_sys_file_t fd = TR_BAD_SYS_FILE;
-    uint64_t file_pos = 0U;
-    uint32_t piece_pos = 0U;
-    tr_file_index_t file_index = 0U;
-    tr_file_index_t prev_file_index = ~file_index;
-    tr_piece_index_t piece = 0U;
-    auto buffer = std::vector<std::byte>(1024U * 256U);
-    auto sha = tr_sha1{};
-    auto last_slept_at = current_time_secs();
+void tr_verifier::remove(tr_torrent_id_t const id)
+{
+    if (active_ && active_->mediator->id() == id) {
+        finish(true);
+        return;
+    }
 
-    auto const& metainfo = verify_mediator.metainfo();
-    while (!abort_flag && piece < metainfo.piece_count()) {
-        auto const file_length = metainfo.file_size(file_index);
+    if (auto const iter = std::ranges::find_if(todo_, [id](Node const& node) { return node.mediator->id() == id; });
+        iter != std::end(todo_)) {
+        auto node = todo_.extract(iter);
+        node.value().mediator->on_verify_done(true);
+    }
+}
 
-        /* if we're starting a new file... */
-        if (file_pos == 0U && fd == TR_BAD_SYS_FILE && file_index != prev_file_index) {
-            auto const found = verify_mediator.find_file(file_index);
-            fd = !found ? TR_BAD_SYS_FILE : tr_sys_file_open(*found, TR_SYS_FILE_READ | TR_SYS_FILE_SEQUENTIAL, 0);
-            prev_file_index = file_index;
+// Hashes the next span, or starts the next torrent once this one is done.
+void tr_verifier::step()
+{
+    if (!active_) {
+        if (std::empty(todo_)) {
+            return;
         }
 
-        /* figure out how much we can read this pass */
-        size_t left_in_piece = metainfo.piece_size(piece) - piece_pos;
-        size_t left_in_file = file_length - file_pos;
-        auto this_pass = std::span{ buffer.data(), std::min({ left_in_file, left_in_piece, buffer.size() }) };
-
-        /* read a bit */
-        if (fd != TR_BAD_SYS_FILE) {
-            TR_PROFILE_SCOPE("verify.read_and_hash");
-            auto num_read = uint64_t{};
-            if (tr_sys_file_read_at(fd, this_pass.data(), this_pass.size(), file_pos, &num_read) && num_read > 0U) {
-                this_pass = this_pass.first(num_read);
-                sha.add(this_pass);
-            }
-        }
-
-        /* move our offsets */
-        left_in_piece -= this_pass.size();
-        left_in_file -= this_pass.size();
-        piece_pos += this_pass.size();
-        file_pos += this_pass.size();
-
-        /* if we're finishing a piece... */
-        if (left_in_piece == 0U) {
-            auto const has_piece = sha.finish() == metainfo.piece_hash(piece);
-            verify_mediator.on_piece_checked(piece, has_piece);
-
-            if (sleep_per_seconds_during_verify > std::chrono::milliseconds::zero()) {
-                /* sleeping even just a few msec per second goes a long
-                 * way towards reducing IO load... */
-                if (auto const now = current_time_secs(); last_slept_at != now) {
-                    last_slept_at = now;
-                    TR_PROFILE_SCOPE("verify.throttle_sleep");
-                    std::this_thread::sleep_for(sleep_per_seconds_during_verify);
-                }
-            }
-
-            sha.clear();
-            ++piece;
-            piece_pos = 0U;
-        }
-
-        /* if we're finishing a file... */
-        if (left_in_file == 0U) {
-            if (fd != TR_BAD_SYS_FILE) {
-                tr_sys_file_close(fd);
-                fd = TR_BAD_SYS_FILE;
-            }
-
-            ++file_index;
-            file_pos = 0U;
-        }
+        active_ = Active{ .mediator = std::move(todo_.extract(std::begin(todo_)).value().mediator),
+                          .token = ++next_token_,
+                          .sha = std::make_unique<tr_sha1>() };
+        active_->mediator->on_verify_started();
     }
 
-    /* cleanup */
-    if (fd != TR_BAD_SYS_FILE) {
-        tr_sys_file_close(fd);
+    // a span is in flight
+    if (!active_->sha) {
+        return;
     }
 
-    verify_mediator.on_verify_done(abort_flag);
+    auto const& block_info = active_->mediator->block_info();
+    if (active_->piece >= block_info.piece_count()) {
+        finish(false);
+        return;
+    }
+
+    auto const piece_span = block_info.byte_span_for_piece(active_->piece);
+    auto const begin = piece_span.begin + active_->piece_bytes_hashed;
+    auto const span = tr_byte_span_t{ .begin = begin,
+                                      .end = std::min(piece_span.end, begin + tr::LocalData::max_hash_span_bytes()) };
+
+    in_step_ = true;
+    local_data_.hash_span(
+        active_->mediator->id(),
+        span,
+        std::move(active_->sha),
+        [this, token = active_->token](tr_torrent_id_t, tr_byte_span_t const hashed, tr_error const& error, auto sha) {
+            on_span_hashed(token, hashed.size(), !error, std::move(sha));
+        });
+    in_step_ = false;
 }
 
-void tr_verify_worker::verify_thread_func()
+void tr_verifier::on_span_hashed(uint64_t const token, uint64_t const n_bytes, bool const ok, std::unique_ptr<tr_sha1> sha)
 {
-    for (;;) {
-        {
-            auto const lock = std::scoped_lock{ verify_mutex_ };
+    // a verify that remove() ended
+    if (!active_ || active_->token != token) {
+        return;
+    }
 
-            if (stop_current_) {
-                stop_current_ = false;
-                stop_current_cv_.notify_one();
-            }
+    auto const piece = active_->piece;
+    active_->piece_bytes_hashed += n_bytes;
 
-            if (std::empty(todo_)) {
-                current_node_.reset();
-                verify_thread_id_.reset();
-                return;
-            }
+    // an unreadable piece skips the rest of its spans
+    if (ok && active_->piece_bytes_hashed < active_->mediator->block_info().piece_size(piece)) {
+        active_->sha = std::move(sha);
+    } else {
+        auto const hash = ok ? std::optional{ sha->finish() } : std::nullopt;
+        sha->clear();
+        active_->sha = std::move(sha);
+        ++active_->piece;
+        active_->piece_bytes_hashed = 0U;
 
-            current_node_ = std::move(todo_.extract(std::begin(todo_)).value());
-        }
+        // last, since the torrent may end this verify
+        active_->mediator->on_piece_hashed(piece, hash);
+    }
 
-        verify_torrent(*current_node_->mediator_, stop_current_, sleep_per_seconds_during_verify_);
+    // A threaded backend answers on a turn of its own, so go on at once.
+    // The synchronous one answers inside step(), which mustn't recurse.
+    if (in_step_ || sleep_due()) {
+        schedule_step();
+    } else {
+        step();
     }
 }
 
-void tr_verify_worker::add(std::unique_ptr<Mediator> mediator, tr_priority_t priority)
+void tr_verifier::finish(bool const aborted)
 {
-    auto const lock = std::scoped_lock{ verify_mutex_ };
-
-    mediator->on_verify_queued();
-    todo_.emplace(std::move(mediator), priority);
-
-    if (!verify_thread_id_) {
-        auto thread = std::thread(&tr_verify_worker::verify_thread_func, this);
-        verify_thread_id_ = thread.get_id();
-        thread.detach();
+    if (!active_) {
+        return;
     }
+
+    auto const mediator = std::move(active_->mediator);
+    active_.reset();
+    mediator->on_verify_done(aborted);
+    schedule_step();
 }
 
-void tr_verify_worker::remove(tr_sha1_digest_t const& info_hash)
+// Sleeping a few msec once a second goes a long way toward reducing the IO load.
+bool tr_verifier::sleep_due() const
 {
-    auto lock = std::unique_lock(verify_mutex_);
-
-    if (current_node_ && current_node_->matches(info_hash)) {
-        stop_current_ = true;
-        stop_current_cv_.wait(lock, [this] { return !stop_current_; });
-    } else if (
-        auto const iter = std::ranges::find_if(todo_, [&info_hash](auto const& node) { return node.matches(info_hash); });
-        iter != std::ranges::end(todo_)) {
-        iter->mediator_->on_verify_done(true /*aborted*/);
-        todo_.erase(iter);
-    }
+    return active_ && sleep_per_seconds_during_verify_ > 0ms && std::chrono::steady_clock::now() - last_slept_at_ >= 1s;
 }
 
-tr_verify_worker::~tr_verify_worker()
+void tr_verifier::schedule_step()
 {
-    {
-        auto const lock = std::scoped_lock{ verify_mutex_ };
-        stop_current_ = true;
-        todo_.clear();
+    if (sleep_due()) {
+        last_slept_at_ = std::chrono::steady_clock::now();
+        step_timer_->start_single_shot(sleep_per_seconds_during_verify_);
+        return;
     }
 
-    while (verify_thread_id_.has_value()) {
-        std::this_thread::sleep_for(20ms);
-    }
+    step_timer_->start_single_shot(0ms);
 }
 
-void tr_verify_worker::set_sleep_per_seconds_during_verify(
-    std::chrono::milliseconds const sleep_per_seconds_during_verify) noexcept
+bool tr_verifier::Node::operator<(Node const& that) const noexcept
 {
-    sleep_per_seconds_during_verify_ = sleep_per_seconds_during_verify;
-}
-
-int tr_verify_worker::Node::compare(Node const& that) const noexcept
-{
-    // prefer higher-priority torrents
-    if (priority_ != that.priority_) {
-        return priority_ > that.priority_ ? -1 : 1;
-    }
-
-    // prefer smaller torrents, since they will verify faster
-    auto const& metainfo = mediator_->metainfo();
-    auto const& that_metainfo = that.mediator_->metainfo();
-    if (metainfo.total_size() != that_metainfo.total_size()) {
-        return metainfo.total_size() < that_metainfo.total_size() ? -1 : 1;
-    }
-
-    // uniqueness check
-    auto const& this_hash = metainfo.info_hash();
-    auto const& that_hash = that_metainfo.info_hash();
-    if (this_hash != that_hash) {
-        return this_hash < that_hash ? -1 : 1;
-    }
-
-    return 0;
+    // higher priority first, then smaller torrents, since they verify faster
+    return std::tuple{ -priority, mediator->block_info().total_size(), mediator->id() } <
+        std::tuple{ -that.priority, that.mediator->block_info().total_size(), that.mediator->id() };
 }

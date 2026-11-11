@@ -1548,7 +1548,7 @@ private:
     // is_busy() state, readable lock-free from any thread.
     // The counts are maintained by the torrent start/stop and verify flows;
     // date_active_ is stamped by transfers (session and web threads),
-    // verified pieces (verify thread), and torrent starts (session thread);
+    // verified pieces, and torrent starts (session thread);
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
@@ -1566,7 +1566,8 @@ private:
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> save_timer_;
 
-    std::unique_ptr<tr_verify_worker> verifier_ = std::make_unique<tr_verify_worker>();
+    // depends-on: local_data, timer_maker_, session_mutex_
+    tr_verifier verifier_{ local_data, *timer_maker_, session_mutex_ };
 
 public:
     std::unique_ptr<tr::Timer> utp_timer;
