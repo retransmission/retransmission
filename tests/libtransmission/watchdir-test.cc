@@ -209,6 +209,41 @@ TEST_P(WatchDirTest, watch)
     EXPECT_TRUE(std::empty(names));
 }
 
+TEST_P(WatchDirTest, offersANameAgainAfterItsFileLeaves)
+{
+    auto const dirname = sandboxDir();
+
+    auto names = std::vector<std::string>{};
+    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
+        names.emplace_back(basename);
+        return Watchdir::Action::Done;
+    };
+    auto watchdir = createWatchDir(dirname, callback);
+    processEvents();
+
+    auto const name = "test.torrent"sv;
+    auto const path = tr_pathbuf{ dirname, '/', name };
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names);
+
+    // renamed away, as the daemon and the clients do once they've added it
+    EXPECT_TRUE(tr_sys_path_rename(path, tr_pathbuf{ path, ".added"sv }));
+    processEvents();
+    names.clear();
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names);
+
+    // deleted
+    EXPECT_TRUE(tr_sys_path_remove(path));
+    processEvents();
+    names.clear();
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names);
+}
+
 // TODO(ckerr): flaky test should be fixed instead of disabled
 TEST_P(WatchDirTest, DISABLED_retry)
 {
