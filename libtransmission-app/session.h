@@ -31,6 +31,7 @@
 #include "libtransmission/types.h" // tr_address_type, tr_session_stats
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/add-data.h"
 #include "libtransmission-app/rpc-client.h"
 #include "libtransmission-app/torrent-keys.h"
 #include "libtransmission-app/torrent-list.h"
@@ -211,6 +212,49 @@ public:
     };
 
     sigslot::signal<RenameError const&> torrent_rename_failed;
+
+    // --- adding torrents
+
+    // Whether to ask the user about a torrent before adding it.
+    enum class AddPrompt : uint8_t {
+        FromPrefs, // as `show_options_window` says
+        Always,
+        Never,
+    };
+
+    // Takes a request to add a torrent from anywhere in the client, and is the one place that
+    // applies `show_options_window` and `trash_original_torrent_files`.
+    //
+    // With no prompt, calls `add_torrent()`. With one, calls `resolve_add()` and fires
+    // `torrent_add_prompt` for the torrent it hands back, if any. The slot shows the toolkit's
+    // dialog and calls `add_torrent()` if the user accepts.
+    //
+    // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
+    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs);
+
+    sigslot::signal<AddData const&> torrent_add_prompt;
+
+    // Readies a torrent for a prompt, and again whenever the prompt's user names another source:
+    // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
+    //   the session to fetch, which may be able to reach what this client can't.
+    // - A torrent already in `torrents()` is dropped. Its source file is disposed of as
+    //   `add_torrent()` would, and `torrent_add_duplicate` reports it unless it came from the watch dir.
+    // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
+    // call unless `add` is a URL.
+    // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
+    // it expires, after `stop()` or after this Session is destroyed does nothing at all: no
+    // disposal, no report, no `on_resolved`. So the user can accept or cancel during a fetch.
+    void resolve_add(AddData add, std::weak_ptr<void const> wanted, std::function<void(std::optional<AddData>)> on_resolved);
+
+    // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
+    // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
+    // copy. A new torrent is fetched into `torrents()` at once.
+    void add_torrent(AddData add, AddOptions options = {});
+
+    sigslot::signal<AddData const& /*add*/, std::string_view /*errmsg*/> torrent_add_failed;
+
+    // not fired for a watch dir's file
+    sigslot::signal<AddData const& /*add*/, std::string_view /*hash_string*/> torrent_add_duplicate;
 
     // --- torrent_set
 
@@ -470,6 +514,12 @@ private:
 
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
+
+    // `add`, or nullopt after `drop_duplicate()` if `torrents()` already has it
+    [[nodiscard]] std::optional<AddData> drop_if_listed(AddData add);
+    void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
+    void drop_duplicate(AddData const& add, std::string_view hash_string);
+    void dispose_source_file(AddData const& add) const;
 
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);

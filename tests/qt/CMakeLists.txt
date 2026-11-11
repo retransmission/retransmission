@@ -57,7 +57,6 @@ function(add_trqt_test source)
     endif()
 endfunction()
 
-add_trqt_test(add-data-test.cc)
 add_trqt_test(filter-bar-test.cc)
 add_trqt_test(options-dialog-test.cc)
 add_trqt_test(prefs-test.cc)
