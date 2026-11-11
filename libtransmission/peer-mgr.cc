@@ -2000,51 +2000,11 @@ namespace
 {
 namespace update_interest_helpers
 {
-/* does this peer have any pieces that we want? */
-[[nodiscard]] bool isPeerInteresting(
-    tr_torrent const* const tor,
-    std::vector<bool> const& piece_is_interesting,
-    tr_peerMsgs const* const peer)
-{
-    /* these cases should have already been handled by the calling code... */
-    TR_ASSERT(!tor->is_done());
-    TR_ASSERT(tor->client_can_download());
-
-    if (peer->is_seed()) {
-        return true;
-    }
-
-    for (tr_piece_index_t i = 0; i < tor->piece_count(); ++i) {
-        if (piece_is_interesting[i] && peer->has_piece(i)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 // determine which peers to show interest in
-// NOLINTNEXTLINE(misc-const-correctness)
-void updateInterest(tr_swarm* const swarm)
+void updateInterest(tr_swarm const* const swarm)
 {
-    // sometimes this function isn't necessary
-    auto const* const tor = swarm->tor;
-    if (tor->is_done() || !tor->client_can_download()) {
-        return;
-    }
-
-    if (auto const& peers = swarm->peers; !std::empty(peers)) {
-        auto const n = tor->piece_count();
-
-        // build a bitfield of interesting pieces...
-        auto piece_is_interesting = std::vector<bool>(n);
-        for (tr_piece_index_t i = 0U; i < n; ++i) {
-            piece_is_interesting[i] = tor->piece_is_wanted(i) && !tor->has_piece(i);
-        }
-
-        for (auto const& peer : peers) {
-            peer->set_interested(isPeerInteresting(tor, piece_is_interesting, peer.get()));
-        }
+    for (auto const& peer : swarm->peers) {
+        swarm->update_peer_interest(peer.get());
     }
 }
 } // namespace update_interest_helpers
