@@ -33,6 +33,9 @@ public:
 
     [[nodiscard]] virtual std::string_view dirname() const noexcept = 0;
 
+    // Scans the directory now, e.g. because the caller's own monitor saw it change.
+    virtual void rescan() = 0;
+
     [[nodiscard]] static auto generic_rescan_interval() noexcept
     {
         return generic_rescan_interval_;
