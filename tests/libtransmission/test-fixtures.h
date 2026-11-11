@@ -105,14 +105,16 @@ inline constexpr auto LoopbackInterface = "lo0"sv;
 }
 
 // false where the kernel binds sockets to an interface but can't report it,
-// as under qemu-user, which runs the cross-architecture CI jobs
+// as under qemu-user, which runs the cross-architecture CI jobs.
+// The probe socket must be bound: qemu-user reads back an unbound socket but fails on a bound one.
 [[nodiscard]] inline bool canReadBoundInterface()
 {
     auto const sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (!is_valid_socket(sock)) {
         return false;
     }
-    auto const can_read = readBoundInterfaceIndex(sock, TR_AF_INET).has_value();
+    auto const can_read = tr_netSetSocketInterface(sock, TR_AF_INET, LoopbackInterface) &&
+        readBoundInterfaceIndex(sock, TR_AF_INET).has_value();
     tr_net_close_socket(sock);
     return can_read;
 }
