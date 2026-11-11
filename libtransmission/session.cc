@@ -756,6 +756,22 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         local_data.set_write_budget(effective_write_budget_bytes());
     }
 
+    if (force || new_settings.peer_log_enabled != old_settings.peer_log_enabled ||
+        new_settings.peer_log_dir != old_settings.peer_log_dir || new_settings.peer_capture != old_settings.peer_capture) {
+        auto capture_mode = tr::peer_capture_mode_from_string(new_settings.peer_capture);
+        if (!capture_mode) {
+            tr_logAddWarn(
+                fmt::format(
+                    "Unknown {} value '{}'; expected off, rejected or anomalies",
+                    tr_quark_get_string_view(TR_KEY_peer_capture),
+                    new_settings.peer_capture));
+            capture_mode = tr::PeerCaptureMode::Off;
+        }
+        auto dir = std::empty(new_settings.peer_log_dir) ? std::string{ tr_pathbuf{ configDir(), "/peers"sv } } :
+                                                           new_settings.peer_log_dir;
+        peer_log_.configure(new_settings.peer_log_enabled, std::move(dir), *capture_mode);
+    }
+
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
     }

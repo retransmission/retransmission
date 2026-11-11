@@ -43,6 +43,7 @@ target_sources(libtransmission-test
         net-test.cc
         open-files-test.cc
         pcapng-test.cc
+        peer-log-test.cc
         peer-mgr-wishlist-test.cc
         peer-msgs-test.cc
         peer-socket-utp-test.cc

@@ -12,11 +12,15 @@
 #include <array>
 #include <atomic>
 #include <cstddef> // for size_t
+#include <cstdint>
+#include <ctime> // time_t
 #include <memory>
+#include <string>
 
 #include "libtransmission/bep55-holepunch.h"
 #include "libtransmission/net.h" // tr_socket_address
 #include "libtransmission/peer-common.h" // for tr_peer
+#include "libtransmission/peer-log.h"
 #include "libtransmission/shared-string.h"
 #include "libtransmission/types.h"
 
@@ -110,10 +114,49 @@ public:
         return is_disconnecting_;
     }
 
-    constexpr void disconnect_soon() noexcept
+    // Marks the peer for removal. The first reason given is the one kept.
+    void disconnect_soon(tr::PeerCloseReason reason, std::string detail = {})
     {
+        if (!is_disconnecting_) {
+            close_reason_ = reason;
+            close_detail_ = std::move(detail);
+        }
         is_disconnecting_ = true;
     }
+
+    [[nodiscard]] constexpr auto close_reason() const noexcept
+    {
+        return close_reason_;
+    }
+
+    [[nodiscard]] constexpr auto const& close_detail() const noexcept
+    {
+        return close_detail_;
+    }
+
+    // The newest capture written for this connection, relative to the peer log dir.
+    [[nodiscard]] constexpr auto const& capture_file() const noexcept
+    {
+        return capture_file_;
+    }
+
+    [[nodiscard]] constexpr auto connected_at() const noexcept
+    {
+        return connected_at_;
+    }
+
+    [[nodiscard]] constexpr auto piece_bytes_up() const noexcept
+    {
+        return piece_bytes_up_;
+    }
+
+    [[nodiscard]] constexpr auto piece_bytes_down() const noexcept
+    {
+        return piece_bytes_down_;
+    }
+
+    // What the peer event log records about this connection.
+    [[nodiscard]] virtual tr::PeerConnectionInfo connection_info() const = 0;
 
     [[nodiscard]] virtual tr_socket_address socket_address() const = 0;
 
@@ -179,6 +222,16 @@ protected:
         peer_id_ = val;
     }
 
+    void set_capture_file(std::string val)
+    {
+        capture_file_ = std::move(val);
+    }
+
+    constexpr void add_piece_bytes(tr_direction dir, uint64_t n_bytes) noexcept
+    {
+        (dir == tr_direction::Up ? piece_bytes_up_ : piece_bytes_down_) += n_bytes;
+    }
+
 public:
     std::shared_ptr<tr_peer_info> const peer_info;
 
@@ -211,6 +264,14 @@ private:
 
     // whether or not we should free this peer soon.
     bool is_disconnecting_ = false;
+
+    tr::PeerCloseReason close_reason_ = tr::PeerCloseReason::None;
+    std::string close_detail_;
+    std::string capture_file_;
+
+    time_t const connected_at_;
+    uint64_t piece_bytes_up_ = 0U;
+    uint64_t piece_bytes_down_ = 0U;
 };
 
 /* @} */

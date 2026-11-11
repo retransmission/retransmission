@@ -379,6 +379,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "peer-socket-tos"sv, // tr_session::Settings
     "peerIsChoked"sv, // rpc
     "peerIsInterested"sv, // rpc
+    "peer_capture"sv, // tr_session::Settings
     "peer_congestion_algorithm"sv, // tr_session::Settings
     "peer_id"sv, // rpc
     "peer_is_choked"sv, // rpc
@@ -386,6 +387,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "peer_limit"sv, // rpc
     "peer_limit_global"sv, // daemon, rpc, tr_session::Settings
     "peer_limit_per_torrent"sv, // daemon, gtk app, rpc, tr_session::Settings
+    "peer_log_dir"sv, // tr_session::Settings
+    "peer_log_enabled"sv, // tr_session::Settings
     "peer_port"sv, // daemon, gtk app, rpc, tr_session::Settings
     "peer_port_random_high"sv, // tr_session::Settings
     "peer_port_random_low"sv, // tr_session::Settings

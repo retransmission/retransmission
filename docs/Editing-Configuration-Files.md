@@ -118,9 +118,12 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
 #### Peers
  * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Retransmission will bind to "0.0.0.0".
  * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Retransmission will try to bind to your default global IPv6 address. If that didn't work, then Retransmission will bind to "::".
+ * **peer_capture:** String ("off", "rejected", "anomalies"; default = "off") Save the messages that lead up to a bad peer message as a [pcapng](https://www.wireshark.org/) file in `peer_log_dir/captures/`, one file per message. "rejected" captures messages that make Retransmission close the connection; "anomalies" also captures odd messages it tolerates. At most one capture per peer address per hour. The packets are rebuilt from the BitTorrent stream, decrypted, so Wireshark can decode them; for µTP connections, enable Wireshark's `bt_utp_udp` heuristic. _Note: captures hold peer addresses and peer IDs._
  * **peer_congestion_algorithm:** String. This is documented on https://www.pps.jussieu.fr/~jch/software/bittorrent/tcp-congestion-control.html.
  * **peer_limit_global:** Number (default = 200)
  * **peer_limit_per_torrent:** Number (default = 50)
+ * **peer_log_dir:** String (default = "") Where the peer event log and captures go. Empty means a `peers` folder in the configuration folder.
+ * **peer_log_enabled:** Boolean (default = false) Write a line to `peer_log_dir/events-YYYY-MM-DD.jsonl` (UTC date) each time a peer connection closes: the peer, its client, the reason, the bytes exchanged, and the capture file if one was written. _Note: the log holds peer addresses and peer IDs._
  * **peer_socket_diffserv:** String (default = "le") Set the [DiffServ](https://en.wikipedia.org/wiki/Differentiated_services) parameter for outgoing packets. Allowed values are lowercase DSCP names. See `DiffServKeys` in `libtransmission/converters.cc` for the exact list of possible values.
  * **reqq:** Number (default = 2000) The number of outstanding block requests a peer is allowed to queue in the client. The higher this number, the higher the max possible upload speed towards each peer.
  * **sequential_download** Boolean (default = false) Enable sequential download by default when adding torrents.

@@ -514,6 +514,18 @@ public:
     {
         auto const lock = unique_lock();
 
+        if (auto& peer_log = tor->session->peer_log(); peer_log.log_enabled()) {
+            peer_log.log_close(
+                peer->connection_info(),
+                tr::PeerCloseEvent{ .reason = peer->close_reason(),
+                                    .detail = peer->close_detail(),
+                                    .connected_at = peer->connected_at(),
+                                    .closed_at = tr_time(),
+                                    .piece_bytes_up = peer->piece_bytes_up(),
+                                    .piece_bytes_down = peer->piece_bytes_down(),
+                                    .capture_file = peer->capture_file() });
+        }
+
         peer_disconnect(tor, peer->has(), peer->active_requests());
 
         auto const& peer_info = peer->peer_info;
@@ -968,13 +980,13 @@ EXIT:
                 return peer->peer_info == info_that;
             });
             TR_ASSERT(it != std::ranges::end(peers));
-            (*it)->disconnect_soon();
+            (*it)->disconnect_soon(tr::PeerCloseReason::Duplicate, "another connection to this peer is more useful");
 
             return false;
         }
 
         info_that->merge(*info_this);
-        msgs->disconnect_soon();
+        msgs->disconnect_soon(tr::PeerCloseReason::Duplicate, "already connected to this peer");
         stats.known_peer_from_count[info_this->from_first()] -= connectable_pool.erase(info_this->listen_socket_address());
 
         return true;
@@ -1104,7 +1116,7 @@ private:
             for (auto const& peer : tor->swarm->peers) {
                 peer->peer_info->set_blocklisted_dirty();
                 if (peer->peer_info->is_blocklisted(blocklists_)) {
-                    peer->disconnect_soon();
+                    peer->disconnect_soon(tr::PeerCloseReason::Blocklisted);
                     tr_logAddDebugTor(tor, fmt::format("Peer {} blocked in blocklists update", peer->display_name()));
                 }
             }
