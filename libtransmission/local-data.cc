@@ -1310,16 +1310,20 @@ private:
         return std::empty(gates_);
     }
 
-    // A move, removal, or rename counts as queued admin work until its
-    // barrier is granted.
+    // A move, rename, or removal, which counts as queued admin work until
+    // its barrier is granted. It takes the torrent's files out of the pool
+    // first, and the lane closes them before the disk work: Windows won't
+    // move, rename, or remove an open file, or a folder that holds one, and
+    // a moved file's old fd writes to the old copy.
     void submit_disk_work(tr_torrent_id_t const id, std::function<bool()> body)
     {
         board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
         submit(
             id,
             BarrierOp{ .body =
-                           [this, body = std::move(body)] {
+                           [this, id, body = std::move(body)] {
                                board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+                               close_on_short_lane(open_files_.close_torrent(id));
                                return body();
                            },
                        .span = {} });
@@ -2456,6 +2460,9 @@ void LocalData::move(
         return;
     }
 
+    // See Threaded::submit_disk_work().
+    backend_->close_torrent(id);
+
     auto const target = parent();
     auto const placed = [&on_placed, id, &target] {
         if (on_placed) {
@@ -2478,6 +2485,7 @@ void LocalData::remove(
         return;
     }
 
+    backend_->close_torrent(id);
     auto const error = backend_->remove(id, std::move(remove_func));
     if (on_remove) {
         on_remove(id, error);
@@ -2498,6 +2506,7 @@ void LocalData::rename(
 
     auto error = check();
     if (!error) {
+        backend_->close_torrent(id);
         error = backend_->rename(id, oldpath, newname);
     }
     on_rename(id, error);

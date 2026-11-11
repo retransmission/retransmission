@@ -20,6 +20,7 @@
 #include <string_view>
 #include <system_error>
 #include <thread>
+#include <tuple> // std::ignore
 #include <utility>
 #include <vector>
 
@@ -374,19 +375,12 @@ protected:
 
     [[nodiscard]] virtual tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
-        auto verified_lock = std::unique_lock(verified_mutex_);
-        auto const n_previously_verified = std::size(verified_);
-
+        auto const n_before = verifiedCount();
         auto* const tor = tr_torrentNew(builder, nullptr);
         EXPECT_NE(nullptr, tor);
-        if (tor == nullptr) {
-            return nullptr;
+        if (tor != nullptr) {
+            std::ignore = waitForVerify(tor, n_before);
         }
-
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
-        };
-        verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
         return tor;
     }
 
@@ -488,14 +482,25 @@ protected:
         EXPECT_NE(nullptr, tor->session);
         EXPECT_FALSE(tor->session->am_in_session_thread());
 
-        auto verified_lock = std::unique_lock(verified_mutex_);
-
-        auto const n_previously_verified = std::size(verified_);
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
-        };
+        auto const n_before = verifiedCount();
         tr_torrentVerify(tor);
-        verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
+        std::ignore = waitForVerify(tor, n_before);
+    }
+
+    // How many verifies have finished, for waitForVerify() to wait past.
+    [[nodiscard]] size_t verifiedCount()
+    {
+        auto const lock = std::scoped_lock{ verified_mutex_ };
+        return std::size(verified_);
+    }
+
+    // Waits for `tor`'s verify to finish, after the first `n_before`.
+    [[nodiscard]] bool waitForVerify(tr_torrent const* const tor, size_t const n_before)
+    {
+        auto lock = std::unique_lock{ verified_mutex_ };
+        return verified_cv_.wait_for(lock, 20s, [this, tor_id = tor->id(), n_before] {
+            return std::size(verified_) > n_before && verified_.back() == tor_id;
+        });
     }
 
     // Runs `func` on the session thread and waits for it to finish and returns the result.
