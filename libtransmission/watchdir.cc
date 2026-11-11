@@ -37,6 +37,9 @@ namespace
 
     case Watchdir::Action::Done:
         return "done";
+
+    case Watchdir::Action::Wait:
+        return "wait";
     }
 
     return "???";
@@ -65,31 +68,38 @@ namespace
 namespace impl
 {
 
-void BaseWatchdir::processFile(std::string_view basename)
+void BaseWatchdir::processFile(std::string_view const basename)
 {
-    if (handled_.contains(basename) || !isRegularFile(dirname_, basename)) {
+    if (handled_.contains(basename)) {
+        return;
+    }
+
+    if (!isRegularFile(dirname_, basename)) {
+        forgetFile(basename);
         return;
     }
 
     auto const action = callback_(dirname_, basename);
     tr_logAddDebug(fmt::format("Callback decided to {:s} file '{:s}'", actionToString(action), basename));
-    if (action == Action::Retry) {
-        auto const now = std::chrono::steady_clock::now();
-        auto const [iter, added] = pending_.try_emplace(std::string{ basename });
-        auto& info = iter->second;
-        if (added) {
-            info.first_kick_at = now;
-        }
-        info.last_kick_at = now;
-
-        if (now - info.first_kick_at > TimeoutDuration) {
-            tr_logAddWarn(fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", basename)));
-            pending_.erase(iter);
-        } else {
-            restartTimerIfPending();
-        }
-    } else if (action == Action::Done) {
+    if (action == Action::Done) {
+        forgetFile(basename);
         handled_.emplace(basename);
+        return;
+    }
+
+    auto const now = std::chrono::steady_clock::now();
+    auto const [iter, added] = pending_.try_emplace(std::string{ basename });
+    auto& info = iter->second;
+    if (added) {
+        info.first_kick_at = now;
+    }
+    info.last_kick_at = now;
+
+    if (action == Action::Retry && now - info.first_kick_at > TimeoutDuration) {
+        tr_logAddWarn(fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", basename)));
+        pending_.erase(iter);
+    } else {
+        restartTimerIfPending();
     }
 }
 
