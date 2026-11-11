@@ -1117,9 +1117,11 @@ TEST_F(AppSessionRpcTest, aReportListsEachEntryOnceInNameOrder)
     add_and_list(Arch);
     add_and_list(Debian);
 
-    // names that only sort this way if case is ignored, and one that differs from another only by case
+    // names that only sort this way if case is ignored, and one that differs from another only by case;
+    // that pair needs two dirs, since macOS and Windows filesystems ignore case
     auto const zeta = copy_asset(Arch, "Zeta.torrent"sv);
-    auto const zeta_lower = copy_asset(Arch, "zeta.torrent"sv);
+    EXPECT_TRUE(tr_sys_dir_create(fmt::format("{:s}/other", sandbox_dir()), 0, 0700));
+    auto const zeta_lower = copy_asset(Arch, "other/zeta.torrent"sv);
     auto const alpha = copy_asset(Debian, "alpha.torrent"sv);
     auto const junk = [this](std::string_view const name) {
         auto path = fmt::format("{:s}/{:s}", sandbox_dir(), name);
