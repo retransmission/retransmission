@@ -13,6 +13,7 @@
 #include <cstdint> /* SIZE_MAX */
 #include <cstdio> // remove, rename
 #include <cstdlib> // mkdtemp, mkstemp, realpath
+#include <functional>
 #include <optional>
 #include <string_view>
 #include <string>
@@ -245,7 +246,11 @@ bool tr_sys_path_rename(std::string_view const src_path, std::string_view const 
 /* We try to do a fast (in-kernel) copy using a variety of non-portable system
  * calls. If the current implementation does not support in-kernel copying, we
  * use a user-space fallback instead. */
-bool tr_sys_path_copy(std::string_view const src_path, std::string_view const dst_path, tr_error* error)
+bool tr_sys_path_copy(
+    std::string_view const src_path,
+    std::string_view const dst_path,
+    tr_error* error,
+    std::function<void(uint64_t bytes_copied)> const& on_copied)
 {
     auto local_error = tr_error{};
     if (error == nullptr) {
@@ -253,16 +258,45 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
     }
 
 #if defined(USE_COPYFILE)
+    auto* const state = on_copied ? copyfile_state_alloc() : nullptr;
+    if (state != nullptr) {
+        static auto constexpr Report =
+            [](int const what, int const stage, copyfile_state_t const st, char const*, char const*, void* const ctx) -> int {
+            if (auto copied = off_t{}; what == COPYFILE_COPY_DATA && stage == COPYFILE_PROGRESS &&
+                copyfile_state_get(st, COPYFILE_STATE_COPIED, &copied) == 0) {
+                (*static_cast<std::function<void(uint64_t)> const*>(ctx))(static_cast<uint64_t>(copied));
+            }
+            return COPYFILE_CONTINUE;
+        };
+        auto const callback = copyfile_callback_t{ Report };
+        copyfile_state_set(state, COPYFILE_STATE_STATUS_CB, reinterpret_cast<void const*>(callback));
+        copyfile_state_set(state, COPYFILE_STATE_STATUS_CTX, &on_copied);
+    }
+
     auto const sz_src_path = tr_pathbuf{ src_path };
     auto const sz_dst_path = tr_pathbuf{ dst_path };
-    if (copyfile(sz_src_path.c_str(), sz_dst_path.c_str(), nullptr, COPYFILE_CLONE | COPYFILE_ALL) < 0) {
-        error->set_from_errno(errno);
+    auto const copied = copyfile(sz_src_path.c_str(), sz_dst_path.c_str(), state, COPYFILE_CLONE | COPYFILE_ALL) >= 0;
+    auto const err = errno;
+    if (state != nullptr) {
+        copyfile_state_free(state);
+    }
+
+    if (!copied) {
+        error->set_from_errno(err);
         return false;
     }
 
     return true;
 
 #else /* USE_COPYFILE */
+
+    // Each chunk is copied with one call, so smaller ones report more often.
+    static auto constexpr MaxChunk = uint64_t{ 64U * 1024U * 1024U };
+    auto const report = [&on_copied](uint64_t const n_copied) {
+        if (on_copied) {
+            on_copied(n_copied);
+        }
+    };
 
     auto const info = tr_sys_path_get_info(src_path, 0, error);
     if (!info) {
@@ -298,7 +332,7 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
     /* might throw EXDEV when used between filesystems in most kernels */
 
     while (file_size > 0U) {
-        size_t const chunk_size = std::min({ file_size, uint64_t{ SSIZE_MAX }, uint64_t{ INT32_MAX } });
+        size_t const chunk_size = std::min({ file_size, uint64_t{ SSIZE_MAX }, MaxChunk });
         auto const copied = copy_file_range(in, nullptr, out, nullptr, chunk_size, 0);
 
         TR_ASSERT(copied == -1 || copied >= 0); /* -1 for error; some non-negative value otherwise. */
@@ -318,6 +352,7 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
         TR_ASSERT(copied >= 0 && ((uint64_t)copied) <= file_size);
         TR_ASSERT(copied >= 0 && ((uint64_t)copied) <= chunk_size);
         file_size -= copied;
+        report(info->size - file_size);
     } /* end file_size loop */
     /* at this point errno_cpy is either set or file_size is 0 due to while condition */
 
@@ -343,7 +378,7 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
             }
         } else {
             while (file_size > 0U) {
-                size_t const chunk_size = std::min({ file_size, uint64_t{ SSIZE_MAX }, uint64_t{ INT32_MAX } });
+                size_t const chunk_size = std::min({ file_size, uint64_t{ SSIZE_MAX }, MaxChunk });
                 auto const copied = sendfile64(out, in, nullptr, chunk_size);
                 TR_ASSERT(copied == -1 || copied >= 0); /* -1 for error; some non-negative value otherwise. */
 
@@ -363,6 +398,7 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
                 TR_ASSERT(copied >= 0 && ((uint64_t)copied) <= file_size);
                 TR_ASSERT(copied >= 0 && ((uint64_t)copied) <= chunk_size);
                 file_size -= copied;
+                report(info->size - file_size);
             } /* end file_size loop */
         } /* end lseek error */
     } /* end fallback check */
@@ -402,6 +438,7 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
                 TR_ASSERT(bytes_read == bytes_written);
                 TR_ASSERT(bytes_written <= file_size);
                 file_size -= bytes_written;
+                report(info->size - file_size);
             } /* end file_size loop */
         } /* end lseek error */
     } /* end fallback check */

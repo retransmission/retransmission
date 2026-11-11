@@ -27,6 +27,7 @@
 #include "libtransmission/digest.h"
 #include "libtransmission/error.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 
 class tr_open_files;
@@ -35,6 +36,7 @@ class tr_torrents;
 namespace tr
 {
 
+class DiskActivityBoard;
 class LocalData;
 struct StorageDescriptor;
 
@@ -367,6 +369,10 @@ public:
 
     [[nodiscard]] Stats stats() const noexcept;
 
+    // What the disk threads are doing, for a slow close to explain
+    // itself. Leaves the session's fields alone. Callable from any thread.
+    [[nodiscard]] tr_disk_activity activity() const;
+
     // The most bytes that may wait for the disk, counting blocks
     // requested from peers as well as blocks received. Also sizes the
     // retained-block cache.
@@ -417,6 +423,9 @@ private:
     static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
+
+    // The backends write it, and any thread reads it, so it outlives them.
+    std::unique_ptr<DiskActivityBoard> board_;
 
     std::unique_ptr<Backend> backend_;
 

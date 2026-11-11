@@ -9,6 +9,7 @@
 #include <cerrno>
 #include <charconv>
 #include <chrono>
+#include <condition_variable>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -16,6 +17,7 @@
 #include <future>
 #include <iterator>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <ranges>
 #include <span>
@@ -195,6 +197,29 @@ protected:
         std::ranges::fill(*data, uint8_t{ 0U });
         return data;
     }
+
+    // A paused one-file torrent of `n_pieces` pieces of zeroes, with
+    // nothing on disk.
+    [[nodiscard]] tr_torrent* zeroPiecesTorrentInit(std::string_view const name, size_t const piece_size, size_t const n_pieces)
+    {
+        auto const piece_hash = tr_sha1::digest(std::string(piece_size, '\0'));
+        auto pieces = std::string{};
+        for (auto i = size_t{}; i < n_pieces; ++i) {
+            pieces.append(reinterpret_cast<char const*>(std::data(piece_hash)), std::size(piece_hash));
+        }
+
+        auto info = tr_variant::Map{};
+        info.try_emplace(TR_KEY_name, name);
+        info.try_emplace(TR_KEY_length, uint64_t{ n_pieces * piece_size });
+        info.try_emplace(TR_KEY_piece_length, uint64_t{ piece_size });
+        info.try_emplace(TR_KEY_pieces, std::move(pieces));
+        auto metainfo = tr_variant::Map{};
+        metainfo.try_emplace(TR_KEY_info, std::move(info));
+        auto builder = tr_torrent_builder{ session_ };
+        EXPECT_TRUE(builder.set_metainfo(tr_variant_serde::benc().to_string(std::move(metainfo))));
+        builder.set_paused(true);
+        return createTorrentAndWaitForVerifyDone(&builder);
+    }
 };
 
 // Covers the synchronous backend, whatever the environment asks for.
@@ -241,18 +266,7 @@ protected:
     // starts piece 1, so writing it last completes both.
     [[nodiscard]] tr_torrent* straddlingTorrentInit()
     {
-        static auto constexpr PieceSize = size_t{ 24576U };
-        auto const piece_hash = tr_sha1::digest(std::string(PieceSize, '\0'));
-        auto pieces = std::string{};
-        std::ranges::transform(piece_hash, std::back_inserter(pieces), [](std::byte const b) { return static_cast<char>(b); });
-        pieces += pieces;
-
-        auto const benc = "d4:infod6:lengthi" + std::to_string(2U * PieceSize) + "e4:name8:straddle12:piece lengthi" +
-            std::to_string(PieceSize) + "e6:pieces" + std::to_string(std::size(pieces)) + ':' + pieces + "ee";
-        auto builder = tr_torrent_builder{ session_ };
-        EXPECT_TRUE(builder.set_metainfo(benc));
-        builder.set_paused(true);
-        return createTorrentAndWaitForVerifyDone(&builder);
+        return zeroPiecesTorrentInit("straddle", 24576U, 2U);
     }
 
     // Writes the straddling torrent's blocks, the middle one last.
@@ -1992,6 +2006,133 @@ TEST_F(TorrentDiskIoWorkersTest, closeSavesWritesThatLandWhileItWaits)
     auto const* const reloaded = session_->torrents().get(hash);
     ASSERT_NE(nullptr, reloaded);
     EXPECT_TRUE(reloaded->has_piece(0));
+}
+
+namespace
+{
+// A removal that waits until the close has reported it.
+class SlowRemovalTest : public TorrentDiskIoWorkersTest
+{
+protected:
+    void SetUp() override
+    {
+        session_remove_func_ = [this](std::string_view const path, tr_error* const error) {
+            auto lock = std::unique_lock{ mutex_ };
+            cv_.wait_for(lock, std::chrono::seconds{ 10 }, [this] { return reported_; });
+            return tr_sys_path_remove(path, error);
+        };
+        TorrentDiskIoWorkersTest::SetUp();
+    }
+
+    void setReported()
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        reported_ = true;
+        cv_.notify_all();
+    }
+
+    // A torrent to keep while the zero torrent is removed. Its one piece
+    // has two blocks, so writing the first claims it without a hash.
+    [[nodiscard]] tr_torrent* otherTorrentInit()
+    {
+        return zeroPiecesTorrentInit("other", size_t{ 2U } * TrBlockSize, 1U);
+    }
+
+    [[nodiscard]] static bool isRemovalOf(tr_disk_activity const& activity, std::string_view const name)
+    {
+        return std::ranges::any_of(activity.in_flight, [name](tr_disk_activity::Op const& op) {
+            return op.kind == tr_disk_activity::Op::Kind::Remove && op.torrent_name == name;
+        });
+    }
+
+private:
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    bool reported_ = false;
+};
+} // namespace
+
+TEST_F(SlowRemovalTest, closeReportsTheRemovalItWaitsFor)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const name = std::string{ tor->name() };
+    EXPECT_EQ(tr_close_phase::None, tr_sessionGetDiskActivity(session_).phase);
+    tr_torrentRemove(tor, true);
+
+    auto reported = std::optional<tr_disk_activity>{};
+    tr_sessionClose(std::exchange(session_, nullptr), 0.1, [this, &name, &reported](tr_disk_activity const& activity) {
+        if (!reported && isRemovalOf(activity, name)) {
+            reported = activity;
+            setReported();
+        }
+    });
+
+    ASSERT_TRUE(reported);
+    EXPECT_EQ(tr_close_phase::DrainingDisk, reported->phase);
+}
+
+// One torrent's slow disk work doesn't hold back another's resume file.
+TEST_F(SlowRemovalTest, closeSavesATorrentWhileAnotherIsStillBusy)
+{
+    auto* const removed = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const removed_name = std::string{ removed->name() };
+    auto* const saved = otherTorrentInit();
+    auto const resume_file = std::string{ saved->resume_file() };
+
+    blockingRunInSessionThread([saved, &resume_file] {
+        // only a save brings the resume file back
+        tr_sys_path_remove(resume_file);
+        ASSERT_TRUE(saved->on_block_received(0U));
+        saved->save_block(0U, zeroBlock(saved, 0U));
+    });
+    tr_torrentRemove(removed, true);
+
+    auto saved_during_removal = false;
+    tr_sessionClose(
+        std::exchange(session_, nullptr),
+        0.1,
+        [this, &removed_name, &resume_file, &saved_during_removal](tr_disk_activity const& activity) {
+            if (isRemovalOf(activity, removed_name) && tr_sys_path_exists(resume_file)) {
+                saved_during_removal = true;
+                setReported();
+            }
+        });
+
+    EXPECT_TRUE(saved_during_removal);
+}
+
+// A closing session's torrents stay stopped after their resume files are
+// saved, whatever asks them to start or verify.
+TEST_F(SlowRemovalTest, closingSessionRefusesStartAndVerify)
+{
+    auto* const removed = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const removed_name = std::string{ removed->name() };
+    auto* const kept = otherTorrentInit();
+    tr_torrentRemove(removed, true);
+
+    auto asked = false;
+    auto activity_after = std::optional<tr_torrent_activity>{};
+    tr_sessionClose(
+        std::exchange(session_, nullptr),
+        0.1,
+        [this, &removed_name, kept, &asked, &activity_after](tr_disk_activity const& activity) {
+            if (!isRemovalOf(activity, removed_name)) {
+                return;
+            }
+
+            // The removal holds the close until this has had a turn to look.
+            if (!std::exchange(asked, true)) {
+                tr_torrentStart(kept);
+                tr_torrentVerify(kept);
+                return;
+            }
+
+            activity_after = tr_torrentStat(kept).activity;
+            setReported();
+        });
+
+    ASSERT_TRUE(activity_after);
+    EXPECT_EQ(TR_STATUS_STOPPED, *activity_after);
 }
 
 TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)

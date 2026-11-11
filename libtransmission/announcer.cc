@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <chrono> // operator""ms
 #include <cstddef> // size_t
 #include <cstdint>
@@ -140,6 +141,11 @@ public:
 
     void startShutdown() override;
 
+    [[nodiscard]] std::pair<size_t, size_t> stopsSentAndAnswered() const override
+    {
+        return { stop_counts_->sent, stop_counts_->answered.load() };
+    }
+
     void upkeep() override;
 
     void onAnnounceDone(
@@ -196,11 +202,19 @@ private:
     void flushCloseMessages()
     {
         for (auto& stop : stops_) {
-            announce(stop, [](tr_announce_response const& /*response*/) {});
+            ++stop_counts_->sent;
+            announce(stop, [counts = stop_counts_](tr_announce_response const& /*response*/) { ++counts->answered; });
         }
 
         stops_.clear();
     }
+
+    // Shared with the answers' callbacks, which can outlive this.
+    struct StopCounts {
+        size_t sent = 0U;
+        std::atomic<size_t> answered = 0U;
+    };
+    std::shared_ptr<StopCounts> stop_counts_ = std::make_shared<StopCounts>();
 
     static auto constexpr UpkeepInterval = 500ms;
 
@@ -1122,6 +1136,7 @@ void tr_announcer_impl::queueStops(tr_torrent* const tor)
 void tr_announcer_impl::startShutdown()
 {
     is_shutting_down_ = true;
+    stop_counts_ = std::make_shared<StopCounts>();
 
     // The torrents may outlive this while their disk IO drains.
     // Their trackers needn't wait for that.

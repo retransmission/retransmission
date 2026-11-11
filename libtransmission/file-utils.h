@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include <cstdint> // uint8_t
+#include <cstdint> // uint8_t, uint64_t
+#include <functional>
 #include <iterator> // for std::data(), std::size()
 #include <optional>
 #include <string_view>
@@ -36,17 +37,23 @@ enum class tr_file_moved : uint8_t { Renamed, Copied };
  * A copy leaves `oldpath` in place for the caller to remove.
  *
  * Creates the destination directory if it doesn't exist.
+ * A copy calls `on_copied` now and then with the bytes copied so far.
  */
 [[nodiscard]] std::optional<tr_file_moved> tr_file_rename_or_copy(
     std::string_view oldpath,
     std::string_view newpath,
-    tr_error* error = nullptr);
+    tr_error* error = nullptr,
+    std::function<void(uint64_t bytes_copied)> const& on_copied = {});
 
 /**
  * Copies a file to a temporary name in `newpath`'s dir, then renames it into place.
  * `newpath` keeps its old state until the copy is whole, even if the process is killed mid-copy.
  */
-[[nodiscard]] bool tr_file_copy_atomic(std::string_view oldpath, std::string_view newpath, tr_error* error = nullptr);
+[[nodiscard]] bool tr_file_copy_atomic(
+    std::string_view oldpath,
+    std::string_view newpath,
+    tr_error* error = nullptr,
+    std::function<void(uint64_t bytes_copied)> const& on_copied = {});
 
 // Every tr_file_copy_atomic() temporary name starts with this,
 // so cleanup can recognize one that an interrupted copy left behind.
