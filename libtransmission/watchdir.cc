@@ -18,6 +18,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
+#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/watchdir-base.h"
 
@@ -101,6 +102,16 @@ void BaseWatchdir::forgetFile(std::string_view const basename)
     if (auto const iter = pending_.find(basename); iter != std::end(pending_)) {
         pending_.erase(iter);
     }
+}
+
+void BaseWatchdir::logWatchError(int const error_code) const
+{
+    tr_logAddError(
+        fmt::format(
+            "Couldn't watch '{path}': {error} ({error_code})",
+            fmt::arg("path", dirname()),
+            fmt::arg("error", tr_strerror(error_code)),
+            fmt::arg("error_code", error_code)));
 }
 
 void BaseWatchdir::scan()

@@ -23,7 +23,6 @@
 #define LIBTRANSMISSION_WATCHDIR_MODULE
 
 #include "libtransmission/log.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/watchdir.h"
@@ -78,37 +77,19 @@ private:
     {
         infd_ = inotify_init();
         if (infd_ == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 
         inwd_ = inotify_add_watch(infd_, tr_pathbuf{ dirname() }.c_str(), InotifyWatchMask | IN_ONLYDIR);
         if (inwd_ == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 
         event_ = bufferevent_socket_new(evbase, infd_, 0);
         if (event_ == nullptr) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 
