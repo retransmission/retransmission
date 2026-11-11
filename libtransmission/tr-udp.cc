@@ -197,8 +197,10 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
         iovec iov;
         alignas(cmsghdr) std::array<unsigned char, CMSG_SPACE(sizeof(int))> control;
     };
-    // Per thread, so that a read neither shares nor value-initialises the buffers.
-    thread_local auto datagrams = std::array<Datagram, DatagramsPerRead>{};
+    // Per thread, so that a read neither shares nor value-initialises the buffers. On the heap, because
+    // a thread_local object takes up space in every thread of the process, whether it reads or not.
+    thread_local auto const buffers = std::make_unique<std::array<Datagram, DatagramsPerRead>>();
+    auto& datagrams = *buffers;
     thread_local auto headers = std::array<mmsghdr, DatagramsPerRead>{};
 
     auto got_utp_packet = false;
@@ -258,7 +260,9 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 // Reads every pending datagram; returns true if any was a µTP packet.
 bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 {
-    thread_local auto buf = std::array<unsigned char, DatagramBufferSize>{};
+    // On the heap: see the recvmmsg() version of read_datagrams()
+    thread_local auto const heap_buf = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
+    auto& buf = *heap_buf;
     auto got_utp_packet = false;
 
     for (;;) {
