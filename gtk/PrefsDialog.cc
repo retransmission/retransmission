@@ -44,10 +44,12 @@
 #endif
 
 #include <fmt/format.h>
+#include <sigslot/signal.hpp>
 
 #include <array>
 #include <chrono>
 #include <cstddef> // size_t
+#include <cstdint> // int64_t
 #include <limits>
 #include <map>
 #include <memory>
@@ -573,7 +575,6 @@ public:
     ~PrivacyPage() override;
 
 private:
-    bool refreshBlocklistInfo();
     void onBlocklistInfo();
     void updateBlocklistText();
     void onBlocklistUpdated(bool success);
@@ -592,22 +593,11 @@ private:
     // True while label_ shows a manual update's progress or result instead of the rule count.
     bool showing_update_status_ = false;
 
-    sigc::connection updateBlocklistTag_;
+    sigslot::scoped_connection blocklist_updated_tag_;
+    sigslot::scoped_connection blocklist_update_failed_tag_;
+    sigslot::scoped_connection session_updated_tag_;
     sigc::connection blocklist_update_result_tag_;
-    sigc::connection blocklist_info_tag_;
-    sigc::connection blocklist_info_timer_tag_;
 };
-
-// Returns false once the session has closed, which stops the refresh timer.
-bool PrivacyPage::refreshBlocklistInfo()
-{
-    if (core_->get_session() == nullptr) {
-        return false;
-    }
-
-    core_->refresh_blocklist_info();
-    return true;
-}
 
 void PrivacyPage::onBlocklistInfo()
 {
@@ -637,10 +627,7 @@ void PrivacyPage::updateBlocklistText()
 /* prefs dialog is being destroyed, so stop listening to blocklist updates */
 PrivacyPage::~PrivacyPage()
 {
-    blocklist_info_timer_tag_.disconnect();
-    blocklist_info_tag_.disconnect();
     blocklist_update_result_tag_.disconnect();
-    updateBlocklistTag_.disconnect();
 }
 
 /* core says the blocklist was updated */
@@ -649,7 +636,6 @@ void PrivacyPage::onBlocklistUpdated(bool success)
     updateBlocklistButton_->set_sensitive(true);
     showing_update_status_ = true;
     label_->set_text(success ? _("Blocklist updated!") : _("Couldn't update blocklist"));
-    refreshBlocklistInfo();
 
     blocklist_update_result_tag_ = Glib::signal_timeout().connect_seconds(
         [this] {
@@ -669,7 +655,7 @@ void PrivacyPage::onBlocklistUpdate()
     label_->set_text(_("Getting new blocklist…"));
     blocklist_update_result_tag_.disconnect();
 
-    core_->blocklist_update();
+    core_->update_blocklist();
 }
 
 void PrivacyPage::on_blocklist_url_changed(Gtk::Editable* e)
@@ -694,12 +680,6 @@ PrivacyPage::PrivacyPage(
 
     auto* const blocklist_url_entry = init_entry("blocklist_url_entry", TR_KEY_blocklist_url);
 
-    blocklist_info_tag_ = core_->signal_blocklist_info().connect(sigc::mem_fun(*this, &PrivacyPage::onBlocklistInfo));
-    refreshBlocklistInfo();
-    // The session also updates the blocklist on its own schedule.
-    blocklist_info_timer_tag_ = Glib::signal_timeout().connect_seconds(
-        sigc::mem_fun(*this, &PrivacyPage::refreshBlocklistInfo),
-        SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
     updateBlocklistButton_->signal_clicked().connect([this] { onBlocklistUpdate(); });
     updateBlocklistButton_->set_sensitive(check_->get_active());
     blocklist_url_entry->signal_changed().connect(
@@ -708,7 +688,13 @@ PrivacyPage::PrivacyPage(
 
     init_check_button("blocklist_autoupdate_check", TR_KEY_blocklist_updates_enabled);
 
-    updateBlocklistTag_ = core_->signal_blocklist_updated().connect(sigc::mem_fun(*this, &PrivacyPage::onBlocklistUpdated));
+    blocklist_updated_tag_ = core_->blocklist_updated.connect_scoped(
+        [this](int64_t const /*rule_count*/) { onBlocklistUpdated(true); });
+    blocklist_update_failed_tag_ = core_->blocklist_update_failed.connect_scoped(
+        [this](std::string_view const /*errmsg*/) { onBlocklistUpdated(false); });
+    // every session poll brings the blocklist's size and date
+    session_updated_tag_ = core_->session_updated.connect_scoped(&PrivacyPage::onBlocklistInfo, this);
+    onBlocklistInfo();
 }
 
 /****
@@ -856,7 +842,7 @@ void RemotePage::refreshRPCSensitivity()
 
 void RemotePage::onLaunchClutchCB() const
 {
-    gtr_open_uri(fmt::format("http://localhost:{}/", prefs().get<uint16_t>(TR_KEY_rpc_port)));
+    gtr_open_uri(core_->web_client_url());
 }
 
 RemotePage::RemotePage(
@@ -991,21 +977,10 @@ public:
     ~NetworkPage() override;
 
 private:
-    enum PortTestStatus : uint8_t {
-        PORT_TEST_UNKNOWN = 0U,
-        PORT_TEST_CHECKING,
-        PORT_TEST_OPEN,
-        PORT_TEST_CLOSED,
-        PORT_TEST_ERROR
-    };
-
     void portTestSetSensitive();
     void updatePortStatusText();
-    void onCorePrefsChanged(tr_quark key);
-    void onPortTested(std::optional<bool> result, tr_address_type ip_protocol);
-    void onPortTest();
 
-    [[nodiscard]] static std::string_view getPortStatusText(PortTestStatus status) noexcept;
+    [[nodiscard]] static std::string_view getPortStatusText(tr::app::Session::PortStatus status) noexcept;
 
 private:
     Glib::RefPtr<Session> core_;
@@ -1014,40 +989,23 @@ private:
     Gtk::Button* portButton_ = nullptr;
     Gtk::SpinButton* portSpin_ = nullptr;
 
-    sigc::connection portTag_;
-    sigc::connection prefsTag_;
-
-    std::array<PortTestStatus, NUM_TR_AF_INET_TYPES> portTestStatus_ = {};
+    sigslot::scoped_connection portTag_;
 };
 
-void NetworkPage::onCorePrefsChanged(tr_quark const key)
-{
-    if (key == TR_KEY_peer_port) {
-        portTestStatus_[TR_AF_INET] = PORT_TEST_UNKNOWN;
-        portTestStatus_[TR_AF_INET6] = PORT_TEST_UNKNOWN;
-        updatePortStatusText();
-        portTestSetSensitive();
-    }
-}
+NetworkPage::~NetworkPage() = default;
 
-NetworkPage::~NetworkPage()
-{
-    prefsTag_.disconnect();
-    portTag_.disconnect();
-}
-
-std::string_view NetworkPage::getPortStatusText(PortTestStatus const status) noexcept
+std::string_view NetworkPage::getPortStatusText(tr::app::Session::PortStatus const status) noexcept
 {
     switch (status) {
-    case PORT_TEST_UNKNOWN:
+    case tr::app::Session::PortStatus::Unknown:
         return C_("Port test status", "unknown");
-    case PORT_TEST_CHECKING:
+    case tr::app::Session::PortStatus::Checking:
         return C_("Port test status", "checking…");
-    case PORT_TEST_OPEN:
+    case tr::app::Session::PortStatus::Open:
         return C_("Port test status", "open");
-    case PORT_TEST_CLOSED:
+    case tr::app::Session::PortStatus::Closed:
         return C_("Port test status", "closed");
-    case PORT_TEST_ERROR:
+    case tr::app::Session::PortStatus::Error:
         return C_("Port test status", "error");
     default:
         return {};
@@ -1056,11 +1014,11 @@ std::string_view NetworkPage::getPortStatusText(PortTestStatus const status) noe
 
 void NetworkPage::updatePortStatusText()
 {
-    auto const status_ipv4 = getPortStatusText(portTestStatus_[TR_AF_INET]);
-    auto const status_ipv6 = getPortStatusText(portTestStatus_[TR_AF_INET6]);
+    auto const status_ipv4 = getPortStatusText(core_->port_status(TR_AF_INET));
+    auto const status_ipv6 = getPortStatusText(core_->port_status(TR_AF_INET6));
 
     portLabel_->set_markup(
-        portTestStatus_[TR_AF_INET] == portTestStatus_[TR_AF_INET6] ?
+        core_->port_status(TR_AF_INET) == core_->port_status(TR_AF_INET6) ?
             fmt::format(fmt::runtime(_("Status: <b>{status}</b>")), fmt::arg("status", status_ipv4)) :
             fmt::format(
                 fmt::runtime(_("Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)")),
@@ -1070,50 +1028,9 @@ void NetworkPage::updatePortStatusText()
 
 void NetworkPage::portTestSetSensitive()
 {
-    // Depend on the RPC call status instead of the UI status, so that the widgets
-    // won't be enabled even if the port peer port changed while we have port_test
-    // RPC call(s) in-flight.
-    auto const sensitive = !core_->port_test_pending(TR_AF_INET) && !core_->port_test_pending(TR_AF_INET6);
+    auto const sensitive = !core_->port_test_pending();
     portButton_->set_sensitive(sensitive);
     portSpin_->set_sensitive(sensitive);
-}
-
-void NetworkPage::onPortTested(std::optional<bool> const result, tr_address_type const ip_protocol)
-{
-    auto constexpr ResultToStatus = [](std::optional<bool> const res) {
-        if (!res) {
-            return PORT_TEST_ERROR;
-        }
-        if (!*res) {
-            return PORT_TEST_CLOSED;
-        }
-        return PORT_TEST_OPEN;
-    };
-
-    // Only update the UI if the current status is "checking", so that
-    // we won't show the port test results for the old peer port if it
-    // changed while we have port_test RPC call(s) in-flight.
-    if (auto& status = portTestStatus_[ip_protocol]; status == PORT_TEST_CHECKING) {
-        status = ResultToStatus(result);
-        updatePortStatusText();
-    }
-    portTestSetSensitive();
-}
-
-void NetworkPage::onPortTest()
-{
-    portTestStatus_[TR_AF_INET] = PORT_TEST_CHECKING;
-    portTestStatus_[TR_AF_INET6] = PORT_TEST_CHECKING;
-    updatePortStatusText();
-
-    if (!portTag_.connected()) {
-        portTag_ = core_->signal_port_tested().connect(sigc::mem_fun(*this, &NetworkPage::onPortTested));
-    }
-
-    core_->port_test(TR_AF_INET);
-    core_->port_test(TR_AF_INET6);
-
-    portTestSetSensitive();
 }
 
 NetworkPage::NetworkPage(
@@ -1127,10 +1044,12 @@ NetworkPage::NetworkPage(
     , portButton_(get_widget<Gtk::Button>("test_listening_port_button"))
     , portSpin_(init_spin_button<uint16_t>("listening_port_spin", TR_KEY_peer_port, 1, std::numeric_limits<uint16_t>::max(), 1))
 {
-    portButton_->signal_clicked().connect([this] { onPortTest(); });
-    updatePortStatusText();
-
-    prefsTag_ = core_->signal_prefs_changed().connect([this](auto key) { onCorePrefsChanged(key); });
+    portButton_->signal_clicked().connect([this] { core_->test_port(); });
+    portTag_ = core_->port_test_changed.connect_scoped([this] {
+        updatePortStatusText();
+        portTestSetSensitive();
+    });
+    core_->forget_port_status();
 
     init_check_button("pick_random_listening_port_at_start_check", TR_KEY_peer_port_random_on_start);
     init_check_button("enable_listening_port_forwarding_check", TR_KEY_port_forwarding_enabled);

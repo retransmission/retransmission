@@ -6,11 +6,13 @@
 #pragma once
 
 #include <cstdint> // uint64_t
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include <sigslot/signal.hpp>
 
@@ -35,6 +37,12 @@ struct RpcResponse {
     [[nodiscard]] tr_variant::Map const* args_map() const noexcept
     {
         return args ? args->get_if<tr_variant::Map>() : nullptr;
+    }
+
+    // `args` as a map if the request succeeded. An error reply can carry `args` too, its `data.result`.
+    [[nodiscard]] tr_variant::Map const* result_map() const noexcept
+    {
+        return success ? args_map() : nullptr;
     }
 };
 
@@ -74,6 +82,18 @@ public:
     // Resets our internal url/session bookkeeping. does not stop a tr_session.
     void stop();
 
+    // the remote server's url, or empty when there isn't one
+    [[nodiscard]] constexpr std::string const& url() const noexcept
+    {
+        return url_;
+    }
+
+    // Queues `fn` on the UI thread. Safe to call from any thread.
+    void run_on_ui_thread(std::function<void()> fn) const
+    {
+        run_on_ui_thread_(std::move(fn));
+    }
+
     // Issue a request. `on_done` runs on the UI thread when it completes.
     // A request no session can answer, because the client isn't started or
     // because stop() came before the reply, reaches `on_done` only as a network
@@ -81,6 +101,11 @@ public:
     // request gets exactly one reply, and a caller may count on it.
     void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done);
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
+
+    // Downloads `url` from this process: through an embedded session, which has the user's
+    // proxy, bind address and cookies, or else with this client's own connection.
+    // `on_done` runs on the UI thread, unless `stop()` comes first.
+    void fetch(std::string url, std::chrono::seconds timeout, std::function<void(tr_web::FetchResponse const&)> on_done);
 
     // Signals, fired on the UI thread. Connect with connect_scoped().
     sigslot::signal<bool /*is_network_error*/, std::string_view /*message*/> network_response;

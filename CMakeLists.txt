@@ -838,6 +838,7 @@ else()
         -Wimplicit-fallthrough
         -Winit-self
         -Wint-in-bool-context
+        -Wlifetime-safety-permissive
         -Wlogical-op
         -Wmissing-format-attribute
         -Wnon-virtual-dtor

@@ -43,20 +43,16 @@ namespace find_files_helpers
 {
 
 struct TorrentFile {
-    TorrentFile(std::string_view subpath, size_t size)
-        : subpath_{ subpath }
-        , lowercase_{ tr_strlower(subpath) }
-        , size_{ size }
+    [[nodiscard]] constexpr auto operator<(TorrentFile const& that) const noexcept
     {
-    }
-
-    [[nodiscard]] auto operator<(TorrentFile const& that) const noexcept
-    {
-        return lowercase_ < that.lowercase_;
+        // Compare path elements: `/` ranks below every other byte.
+        auto constexpr Rank = [](char const ch) {
+            return ch == '/' ? 0 : static_cast<unsigned char>(ch) + 1;
+        };
+        return std::ranges::lexicographical_compare(subpath_, that.subpath_, {}, Rank, Rank);
     }
 
     std::string subpath_;
-    std::string lowercase_;
     uint64_t size_ = 0;
 };
 
@@ -97,7 +93,7 @@ void walkTree(std::string_view const top, std::string_view const subpath, std::s
         break;
 
     case TR_SYS_PATH_IS_FILE:
-        files.emplace(subpath, info->size);
+        files.emplace(std::string{ subpath }, info->size);
         break;
 
     default:

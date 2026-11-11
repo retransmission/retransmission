@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "libtransmission/error.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 
 /**
@@ -231,7 +232,7 @@ public:
         return make_raw(std::data(value), std::size(value));
     }
 
-    [[nodiscard]] static tr_variant unmanaged_string(std::string_view val)
+    [[nodiscard]] static tr_variant unmanaged_string(std::string_view val TR_LIFETIMEBOUND)
     {
         auto ret = tr_variant{};
         ret.val_.emplace<std::string_view>(val);

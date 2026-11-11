@@ -118,6 +118,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_compact_view_kebab_APICOMPAT,
     TR_KEY_compact_view,
     TR_KEY_complete,
+    TR_KEY_completion_move_pending,
     TR_KEY_config_dir_kebab_APICOMPAT,
     TR_KEY_config_dir,
     TR_KEY_cookies,

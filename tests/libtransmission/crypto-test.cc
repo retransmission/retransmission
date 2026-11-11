@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::ranges::equal
 #include <array>
 #include <cstddef> // std::byte, size_t
 #include <cstdint> // uint8_t
@@ -261,6 +262,80 @@ TEST(Crypto, encryptDecrypt)
     EXPECT_EQ(Input2, std::data(decrypted2)) << "Input2 " << Input2 << " decrypted2 " << std::data(decrypted2);
 }
 
+TEST(Crypto, filterEncryptsOnlyInitializedDirections)
+{
+    using tr_message_stream_encryption::Filter;
+    auto constexpr Input = "plaintext"sv;
+    auto dh = MseDh{ fromHex<MseDh::PrivateKeySize>(PrivateKeyA) };
+    dh.setPeerPublicKey(fromHex<MseDh::KeySize>(KeyB));
+
+    auto const encrypted = [&](Filter& filter) {
+        auto out = std::array<char, std::size(Input)>{};
+        filter.encrypt(std::data(Input), std::size(Input), std::data(out));
+        return std::string{ std::data(out), std::size(out) };
+    };
+    auto const decrypted = [&](Filter& filter) {
+        auto out = std::array<char, std::size(Input)>{};
+        filter.decrypt(std::data(Input), std::size(Input), std::data(out));
+        return std::string{ std::data(out), std::size(out) };
+    };
+    // first output of a Filter whose direction was just initialized
+    auto const fresh_encrypted = [&] {
+        auto filter = Filter{};
+        filter.encrypt_init(false, dh, SomeHash);
+        return encrypted(filter);
+    };
+    auto const fresh_decrypted = [&] {
+        auto filter = Filter{};
+        filter.decrypt_init(false, dh, SomeHash);
+        return decrypted(filter);
+    };
+
+    auto filter = Filter{};
+    EXPECT_FALSE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+
+    filter.encrypt_init(false, dh, SomeHash);
+    filter.decrypt_init(false, dh, SomeHash);
+    EXPECT_TRUE(filter.is_active());
+
+    // The handshake disables encryption first and decryption later
+    filter.encrypt_disable();
+    EXPECT_TRUE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(fresh_decrypted(), decrypted(filter));
+
+    filter.decrypt_disable();
+    EXPECT_FALSE(filter.is_active());
+    EXPECT_EQ(Input, encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+
+    // Initializing again after both directions were disabled allocates new cipher state
+    filter.encrypt_init(false, dh, SomeHash);
+    EXPECT_TRUE(filter.is_active());
+    EXPECT_EQ(fresh_encrypted(), encrypted(filter));
+    EXPECT_EQ(Input, decrypted(filter));
+}
+
+TEST(Crypto, filterEncryptOnceMatchesEncrypt)
+{
+    auto dh = MseDh{ fromHex<MseDh::PrivateKeySize>(PrivateKeyA) };
+    dh.setPeerPublicKey(fromHex<MseDh::KeySize>(KeyB));
+    auto constexpr Input = std::array<std::byte, 8>{};
+
+    for (auto const is_incoming : { false, true }) {
+        auto filter = tr_message_stream_encryption::Filter{};
+        filter.encrypt_init(is_incoming, dh, SomeHash);
+        auto expected = std::array<std::byte, 8>{};
+        filter.encrypt(std::data(Input), std::size(Input), std::data(expected));
+
+        auto actual = std::array<std::byte, 8>{};
+        tr_message_stream_encryption::Filter::encrypt_once(is_incoming, dh, SomeHash, Input, actual);
+        EXPECT_EQ(expected, actual) << is_incoming;
+    }
+}
+
 TEST(Crypto, arc4Rfc6229)
 {
     // Independent keystream vectors, including MSE's 1024-byte discard:
@@ -284,6 +359,45 @@ TEST(Crypto, arc4Rfc6229)
         cipher.process(std::as_bytes(std::span{ output }), std::as_writable_bytes(std::span{ output }));
         EXPECT_EQ(expected, std::string_view(std::data(output), std::size(output))) << offset;
     }
+
+    // The same vectors from a single process() call, whose 8-bit index wraps many times
+    auto stream = std::array<char, 4096U + 16U>{};
+    auto cipher = tr_arc4{};
+    cipher.init(Key);
+    cipher.process(std::as_bytes(std::span{ stream }), std::as_writable_bytes(std::span{ stream }));
+    auto const stream_view = std::string_view{ std::data(stream), std::size(stream) };
+    for (auto const& [offset, expected] : Vectors) {
+        EXPECT_EQ(expected, stream_view.substr(offset, std::size(expected))) << offset;
+    }
+}
+
+TEST(Crypto, arc4DiscardBetweenProcessCalls)
+{
+    auto input = std::array<std::byte, 600>{};
+    for (size_t i = 0; i < std::size(input); ++i) {
+        input[i] = static_cast<std::byte>(i % 256U);
+    }
+    auto whole = tr_arc4{};
+    auto split = tr_arc4{};
+    for (auto* const cipher : { &whole, &split }) {
+        cipher->init(SomeHash);
+    }
+
+    auto expected = input;
+    whole.process(expected, expected);
+
+    // process, skip some bytes, process the rest
+    auto constexpr Head = size_t{ 251U };
+    auto constexpr Skipped = size_t{ 101U };
+    auto actual = input;
+    auto const actual_span = std::span<std::byte>{ actual };
+    split.process(actual_span.first(Head), actual_span.first(Head));
+    split.discard(Skipped);
+    split.process(actual_span.subspan(Head + Skipped), actual_span.subspan(Head + Skipped));
+
+    auto const expected_span = std::span<std::byte const>{ expected };
+    EXPECT_TRUE(std::ranges::equal(expected_span.first(Head), actual_span.first(Head)));
+    EXPECT_TRUE(std::ranges::equal(expected_span.subspan(Head + Skipped), actual_span.subspan(Head + Skipped)));
 }
 
 TEST(Crypto, arc4ChunkedAndInPlace)

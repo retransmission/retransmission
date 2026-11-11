@@ -6,7 +6,6 @@
 #include "StatsDialog.h"
 
 #include "GtkCompat.h"
-#include "PrefsDialog.h"
 #include "Session.h"
 #include "Utils.h"
 
@@ -16,10 +15,10 @@
 #include <gtkmm/messagedialog.h>
 
 #include <glibmm/i18n.h>
-#include <glibmm/main.h>
 #include <glibmm/ustring.h>
 
 #include <fmt/format.h>
+#include <sigslot/signal.hpp>
 
 #include <memory>
 
@@ -33,10 +32,10 @@ public:
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
     Impl& operator=(Impl const&) = delete;
-    ~Impl();
+    ~Impl() = default;
 
 private:
-    bool updateStats();
+    void updateStats();
     void dialogResponse(int response);
 
 private:
@@ -55,7 +54,7 @@ private:
 
     Gtk::Label* all_sessions_lb_;
 
-    sigc::connection update_stats_tag_;
+    sigslot::scoped_connection stats_connection_;
 };
 
 namespace
@@ -78,27 +77,20 @@ void setLabelFromRatio(Gtk::Label* l, tr::Values::Ratio const& ratio)
 
 } // namespace
 
-bool StatsDialog::Impl::updateStats()
+void StatsDialog::Impl::updateStats()
 {
-    auto stats = tr_sessionGetStats(core_->get_session());
+    auto const& stats = core_->stats();
     setLabel(one_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(one_down_lb_, tr_strlsize(stats.downloadedBytes));
     setLabel(one_time_lb_, tr_format_time(stats.secondsActive));
     setLabelFromRatio(one_ratio_lb_, stats.ratio);
 
-    stats = tr_sessionGetCumulativeStats(core_->get_session());
-    setLabel(all_sessions_lb_, startedTimesText(stats.sessionCount));
-    setLabel(all_up_lb_, tr_strlsize(stats.uploadedBytes));
-    setLabel(all_down_lb_, tr_strlsize(stats.downloadedBytes));
-    setLabel(all_time_lb_, tr_format_time(stats.secondsActive));
-    setLabelFromRatio(all_ratio_lb_, stats.ratio);
-
-    return true;
-}
-
-StatsDialog::Impl::~Impl()
-{
-    update_stats_tag_.disconnect();
+    auto const& total = core_->cumulative_stats();
+    setLabel(all_sessions_lb_, startedTimesText(total.sessionCount));
+    setLabel(all_up_lb_, tr_strlsize(total.uploadedBytes));
+    setLabel(all_down_lb_, tr_strlsize(total.downloadedBytes));
+    setLabel(all_time_lb_, tr_format_time(total.secondsActive));
+    setLabelFromRatio(all_ratio_lb_, total.ratio);
 }
 
 void StatsDialog::Impl::dialogResponse(int response)
@@ -117,9 +109,9 @@ void StatsDialog::Impl::dialogResponse(int response)
             _("These statistics are for your information only. "
               "Resetting them doesn't affect the statistics logged by your BitTorrent trackers."));
         w->signal_response().connect([this, w](int inner_response) mutable {
-            if (inner_response == TR_RESPONSE_RESET) {
-                tr_sessionClearStats(core_->get_session());
-                updateStats();
+            if (auto* const session = core_->get_session(); inner_response == TR_RESPONSE_RESET && session != nullptr) {
+                tr_sessionClearStats(session);
+                core_->refresh_session_stats();
             }
             w.reset();
         });
@@ -166,8 +158,7 @@ StatsDialog::Impl::Impl(StatsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& b
     dialog_.set_default_response(TR_GTK_RESPONSE_TYPE(CLOSE));
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::dialogResponse));
 
+    // the session poll refreshes the stats every tick
+    stats_connection_ = core_->stats_updated.connect_scoped(&Impl::updateStats, this);
     updateStats();
-    update_stats_tag_ = Glib::signal_timeout().connect_seconds(
-        sigc::mem_fun(*this, &Impl::updateStats),
-        SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
 }

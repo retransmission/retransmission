@@ -8,50 +8,34 @@
 #include "FilterBase.h"
 #include "Torrent.h"
 
-#include <libtransmission-app/display-modes.h>
+#include <libtransmission-app/torrent-filter.h>
 
 #include <glibmm/refptr.h>
-#include <glibmm/ustring.h>
 
-#include <cstdint>
+#include <sigslot/signal.hpp>
 
+namespace tr::app
+{
+class Prefs;
+} // namespace tr::app
+
+// The main window's filter: `tr::app::TorrentFilter`, which reads the
+// show mode, the tracker and the search text from the prefs.
 class TorrentFilter : public FilterBase<Torrent>
 {
 public:
-    using ShowMode = tr::app::ShowMode;
-
-    enum class Tracker : int8_t {
-        ALL,
-        HOST,
-    };
-
-public:
-    void set_mode(ShowMode mode);
-    void set_tracker(Tracker type, Glib::ustring const& host);
-    void set_text(Glib::ustring const& text);
-
-    [[nodiscard]] bool match_mode(Torrent const& torrent) const;
-    [[nodiscard]] bool match_text(Torrent const& torrent) const;
-    [[nodiscard]] bool match_tracker(Torrent const& torrent) const;
-
     // FilterBase<Torrent>
     bool match(Torrent const& torrent) const override;
     bool matches_all() const override;
 
-    void update(Torrent::ChangeFlags changes);
+    // refilters if the changed `fields` can change a match
+    void update(Torrent::Fields const& fields);
 
-    [[nodiscard]] static Glib::RefPtr<TorrentFilter> create();
-
-    [[nodiscard]] static bool match_mode(Torrent const& torrent, ShowMode mode);
-    [[nodiscard]] static bool match_tracker(Torrent const& torrent, Tracker type, Glib::ustring const& host);
-    [[nodiscard]] static bool match_text(Torrent const& torrent, Glib::ustring const& text);
+    [[nodiscard]] static Glib::RefPtr<TorrentFilter> create(tr::app::Prefs const& prefs);
 
 private:
-    TorrentFilter();
+    explicit TorrentFilter(tr::app::Prefs const& prefs);
 
-private:
-    ShowMode show_mode_ = tr::app::DefaultShowMode;
-    Tracker tracker_type_ = Tracker::ALL;
-    Glib::ustring tracker_host_;
-    Glib::ustring text_;
+    tr::app::TorrentFilter filter_;
+    sigslot::scoped_connection changed_connection_;
 };

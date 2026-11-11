@@ -35,14 +35,12 @@
 #include "libtransmission-app/torrent.h"
 
 #include "AboutDialog.h"
-#include "AddData.h"
 #include "Application.h"
 #include "DetailsDialog.h"
 #include "FilterBar.h"
 #include "Formatter.h"
 #include "MakeDialog.h"
 #include "NativeIcon.h"
-#include "OptionsDialog.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
 #include "RelocateDialog.h"
@@ -259,7 +257,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     auto refresh_status_soon = [this] {
         refreshSoon(RefreshStatusBar);
     };
-    connect(&session_, &Session::sourceChanged, this, &MainWindow::onSessionSourceChanged);
+    source_changed_connection_ = session_.source_changed.connect_scoped(&MainWindow::onSessionSourceChanged, this);
     stats_connection_ = session_.stats_updated.connect_scoped(refresh_status_soon);
     connect(&session_, &Session::dataReadProgress, this, &MainWindow::dataReadProgress);
     connect(&session_, &Session::dataSendProgress, this, &MainWindow::dataSendProgress);
@@ -637,6 +635,15 @@ void MainWindow::openHelp() const
 /****
 *****
 ****/
+
+void MainWindow::setShuttingDown(QString const& message)
+{
+    disconnect(&refresh_timer_, &QTimer::timeout, this, &MainWindow::onRefreshTimer);
+
+    tray_icon_.setToolTip(message);
+    tray_icon_.contextMenu()->setEnabled(false);
+    disconnect(&tray_icon_, &QSystemTrayIcon::activated, this, &MainWindow::trayActivated);
+}
 
 void MainWindow::refreshSoon(int fields)
 {
@@ -1234,17 +1241,13 @@ void MainWindow::openTorrent()
 
 void MainWindow::openURL()
 {
-    auto add = AddData::create(QApplication::clipboard()->text(QClipboard::Selection));
+    auto add = tr::app::AddData{ QApplication::clipboard()->text(QClipboard::Selection).toStdString() };
 
-    if (!add) {
-        add = AddData::create(QApplication::clipboard()->text(QClipboard::Clipboard));
+    if (add.type == tr::app::AddData::Type::None) {
+        add = tr::app::AddData{ QApplication::clipboard()->text(QClipboard::Clipboard).toStdString() };
     }
 
-    if (!add) {
-        add = AddData{};
-    }
-
-    addTorrent(*add, true);
+    session_.request_add(std::move(add), Session::AddPrompt::Always);
 }
 
 void MainWindow::addTorrentFromClipboard()
@@ -1264,7 +1267,7 @@ void MainWindow::addTorrentFromClipboard()
 
             if (!clipboard_processed_keys_.contains(key)) {
                 clipboard_processed_keys_.append(key);
-                trApp->addTorrent(AddData{ key });
+                trApp->addTorrent(tr::app::AddData{ key.toStdString() });
             }
         }
     }
@@ -1286,19 +1289,12 @@ void MainWindow::addTorrents(QStringList const& filenames)
         }
     }
 
+    auto const prompt = show_options ? Session::AddPrompt::Always : Session::AddPrompt::Never;
     for (QString const& filename : filenames) {
-        addTorrent(AddData{ filename }, show_options);
+        session_.request_add(tr::app::AddData{ filename.toStdString() }, prompt);
     }
-}
 
-void MainWindow::addTorrent(AddData const& add_me, bool show_options)
-{
-    if (show_options) {
-        auto* o = new OptionsDialog{ session_, prefs_, add_me, this };
-        o->show();
-        QApplication::alert(o);
-    } else {
-        session_.addTorrent(add_me);
+    if (!show_options && !filenames.isEmpty()) {
         QApplication::alert(this);
     }
 }
@@ -1504,7 +1500,7 @@ void MainWindow::dropEvent(QDropEvent* event)
                 key = url.toLocalFile();
             }
 
-            trApp->addTorrent(AddData{ key });
+            trApp->addTorrent(tr::app::AddData{ key.toStdString() });
         }
     }
 }

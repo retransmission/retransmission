@@ -105,6 +105,40 @@ protected:
     size_t seen_ = 0;
 };
 
+// A stopped client would only answer each tick with a network error.
+TEST_F(AppSessionPollerTest, aStoppedSessionPausesTheTimerUntilANewSource)
+{
+    auto poller = SessionPoller{ session_, timer_maker_, { .tick = 3s, .full_list = 60s } };
+    connect();
+    poller.start();
+    auto const& timer = *timer_maker_.timers().front();
+    ASSERT_TRUE(timer.isRunning());
+
+    session_.stop();
+    EXPECT_FALSE(timer.isRunning());
+    EXPECT_TRUE(poller.is_running());
+
+    connect();
+    session_.source_changed();
+    EXPECT_TRUE(timer.isRunning());
+    std::ignore = take_bodies(3U);
+}
+
+// Even with the timer off.
+TEST_F(AppSessionPollerTest, aNewSourceFetchesEverything)
+{
+    auto poller = SessionPoller{ session_, timer_maker_, { .tick = 3s, .full_list = 60s } };
+    connect();
+
+    session_.source_changed();
+
+    auto const bodies = take_bodies(3);
+    EXPECT_TRUE(has_every_key(the_request(bodies, "torrent_get"), TorrentKeySet::MainAll));
+    EXPECT_FALSE(std::empty(the_request(bodies, "session_stats")));
+    EXPECT_FALSE(std::empty(the_request(bodies, "session_get")));
+    EXPECT_FALSE(timer_maker_.timers().front()->isRunning());
+}
+
 TEST_F(AppSessionPollerTest, startAndStopDriveOneRepeatingTimer)
 {
     auto poller = SessionPoller{ session_, timer_maker_, { .tick = 3s, .full_list = 60s } };

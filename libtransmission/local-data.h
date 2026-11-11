@@ -37,7 +37,17 @@ class tr_torrents;
 namespace tr
 {
 
+class LocalData;
 struct StorageDescriptor;
+
+namespace detail
+{
+
+// For tests. While the copy lane is held, no move that has to copy
+// files from another filesystem starts placing them.
+void hold_copy_lane(LocalData& local_data, bool held);
+
+} // namespace detail
 
 /**
  * All torrent local-data IO goes through here.
@@ -83,7 +93,15 @@ struct StorageDescriptor;
  *
  * start_workers() switches to the threaded backend. Writes and piece
  * hashes then run on worker threads and complete later, from the
- * session thread. Reads still run on the session thread.
+ * session thread. A read completes inline when the page cache can
+ * answer it without waiting for the disk, and otherwise runs on a
+ * worker like the rest. `move`, `rename`, and `remove` do their disk
+ * work on background threads of their own, so that a long copy doesn't
+ * hold up other torrents' data ops. Their callbacks run on the session
+ * thread, and the barrier stays up until the last of them has returned.
+ * `close_torrent` and `close_file` complete as soon as their barrier is
+ * reached: the files are out of the pool by then, and are closed on one
+ * of those background threads, ahead of any admin op enqueued later.
  */
 class LocalData
 {
@@ -183,9 +201,20 @@ public:
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
-    // Names the dir a move puts the files under, or an empty one to skip
-    // the move. It runs when the move starts, after the ops queued before it.
-    using MoveParent = std::function<std::string()>;
+    struct MoveTarget {
+        // The dir the files go under. Empty skips the move.
+        std::string parent;
+
+        // Also clear the copies that a killed move left at the old location.
+        bool clear_killed_move = false;
+    };
+
+    // Runs when the move starts, after the ops queued before it.
+    using MoveParent = std::function<MoveTarget()>;
+
+    // Runs once every file is under `parent`, before the old location is cleared.
+    // A location saved here can't name files that a kill has since removed.
+    using OnPlaced = std::function<void(tr_torrent_id_t, std::string_view parent)>;
 
     // `parent` is the dir the files went under, or empty if the move was skipped.
     using OnMove = std::function<void(tr_torrent_id_t, std::string_view parent, tr_error const& error)>;
@@ -193,6 +222,13 @@ public:
     using OnRemove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
     using OnClose = std::function<void(tr_torrent_id_t)>;
+
+    // Required. Runs when the rename starts, after the ops queued before it.
+    // An error fails the rename without touching the disk.
+    using RenameCheck = std::function<tr_error()>;
+
+    // Required.
+    using OnRename = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
     class Backend
     {
@@ -205,13 +241,12 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
-        [[nodiscard]] virtual tr_error move(tr_torrent_id_t id, std::string_view parent) = 0;
-        [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
-        virtual void rename(
+        [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
-            std::string_view oldpath,
-            std::string_view newname,
-            tr_torrent_rename_done_func callback) = 0;
+            MoveTarget const& target,
+            std::function<void()> const& on_placed) = 0;
+        [[nodiscard]] virtual tr_error remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
+        [[nodiscard]] virtual tr_error rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname) = 0;
         virtual void close_all() = 0;
         virtual void close_torrent(tr_torrent_id_t tor_id) = 0;
         virtual void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num) = 0;
@@ -255,6 +290,12 @@ public:
         uint64_t hashes_from_buffers = 0U;
         // piece hashes that read the piece back from disk
         uint64_t hashes_from_disk = 0U;
+        // reads answered from the page cache on the session thread
+        uint64_t cached_reads = 0U;
+        // disk reads that succeeded, after adjacent requests were combined
+        uint64_t read_runs = 0U;
+        // read requests those disk reads answered
+        uint64_t blocks_read = 0U;
     };
 
     explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files);
@@ -287,13 +328,19 @@ public:
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
     void close_all();
-    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move);
+    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move, OnPlaced on_placed = {});
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
-    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
+    void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, RenameCheck check, OnRename on_rename);
 
     // Deliver every outstanding completion and stop the workers.
     // Later ops run on the synchronous backend.
     void shutdown();
+
+    // True while an admin op on the whole torrent is queued or running.
+    // Blocks requested now would wait behind it, holding write budget that
+    // other torrents need, so callers shouldn't request any.
+    // Call from the session thread.
+    [[nodiscard]] bool admin_op_pending(tr_torrent_id_t id) const;
 
     // Bytes of block data waiting to be written, or being written now.
     // Always zero on the synchronous backend.
@@ -315,6 +362,15 @@ public:
     // off the wire, so nothing buffers there.
     [[nodiscard]] std::optional<uint64_t> spare_write_bytes(uint64_t requested) const noexcept;
 
+    // How many bytes of reads one requester should keep in flight: two
+    // runs' worth, so that one run is read while the last is consumed.
+    // Keeping more in flight would let one requester crowd out the rest
+    // at the disk.
+    [[nodiscard]] static constexpr size_t read_ahead_bytes() noexcept
+    {
+        return 2U * MaxRunBytes;
+    }
+
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
 
@@ -329,6 +385,8 @@ public:
     void pump();
 
 private:
+    friend void detail::hold_copy_lane(LocalData& local_data, bool held);
+
     // A completion waiting to be delivered.
     // A read completion owns the buffer it read into and can't be copied,
     // so std::function can't hold one.
@@ -384,6 +442,10 @@ private:
 
     // The threaded backend. See start_workers().
     class Threaded;
+
+    // The threaded backend combines pending ops that continue one another
+    // into runs of up to this many bytes, and does each run with one call.
+    static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 

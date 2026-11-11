@@ -831,7 +831,7 @@ public:
     }
 
     // The prefs that `effective_seed_ratio()` and the values built on it read.
-    // A change to one of these is not reported through `update()`.
+    // `TorrentList` reports a change to one as a change to `effective_seed_ratio_fields()`.
     static constexpr auto SeedRatioPrefKeys = std::array{ TR_KEY_seed_ratio_limited, TR_KEY_seed_ratio_limit };
 
     [[nodiscard]] static consteval TorrentFieldSet effective_seed_ratio_fields() noexcept

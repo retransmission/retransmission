@@ -11,6 +11,7 @@
 #include <iterator>
 #include <optional>
 #include <ranges>
+#include <set>
 #include <span>
 #include <string>
 #include <string_view>
@@ -105,11 +106,41 @@ public:
         return ret;
     }
 
-    [[nodiscard]] bool move(
+    // What a move leaves at the old location.
+    // It owns its paths, so it stays valid however the torrent changes.
+    struct MoveLeftovers {
+        // Removes `sources`, then sweeps junk and empty dirs out of `trees`.
+        // Nothing in `roots` is swept.
+        void remove() const;
+
+        std::set<std::string> sources;
+        std::set<std::string> trees;
+        std::vector<std::string> roots;
+        std::string parent_name;
+    };
+
+    // Puts every file under `parent_in`, or puts back what moved and returns nothing.
+    // Call remove() on the result once the new location is saved.
+    // A kill before that leaves the saved location usable.
+    //
+    // With `needs_copy`, the move may only rename. If a file would have to
+    // be copied from another filesystem, no file moves: this sets
+    // `*needs_copy` and returns nothing, without an error. Finding that
+    // out takes a few stats, where the copy can take minutes.
+    [[nodiscard]] std::optional<MoveLeftovers> move(
         std::span<std::string_view const> old_parents,
         std::string_view parent_in,
         std::string_view parent_name = "",
-        tr_error* error = nullptr) const;
+        tr_error* error = nullptr,
+        bool* needs_copy = nullptr) const;
+
+    // Adds same-sized copies of the files under `parent_in` to `leftovers`.
+    // Only for a move known to have been interrupted, which leaves whole copies behind.
+    // Otherwise a same-named file under an old parent may be another torrent's.
+    void add_copies_left_by_killed_move(
+        MoveLeftovers& leftovers,
+        std::span<std::string_view const> old_parents,
+        std::string_view parent_in) const;
 
     void remove(
         std::string_view parent_in,

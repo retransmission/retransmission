@@ -194,7 +194,7 @@ private:
 
 std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
 {
-    auto* begin = std::data(input);
+    auto* begin = input.data();
     auto size = std::size(input);
     if (begin == nullptr) {
         // clang-analyzer does not know a null string_view is empty and

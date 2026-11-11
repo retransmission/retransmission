@@ -573,6 +573,29 @@ TEST_F(AppTorrentListTest, changedExcludesTorrentsRemovedInTheSameUpdate)
     EXPECT_EQ(changes.removed, (Ids{ 2 }));
 }
 
+// a torrent that follows the session's seed ratio reads the prefs, so their change is its change
+TEST_F(AppTorrentListTest, seedRatioPrefsChangeTheTorrentsThatFollowThem)
+{
+    seed({ 1, 2 });
+    list_.update(
+        make_args(make_list(make_row(2, kv(TR_KEY_seed_ratio_mode, static_cast<int64_t>(TR_RATIOLIMIT_SINGLE))))),
+        Coverage::Partial,
+        Now);
+    recorder_.reset();
+
+    prefs_.set(TR_KEY_seed_ratio_limit, 5.5);
+
+    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "changed" }));
+    auto const& changes = recorder_.last_changes();
+    EXPECT_EQ(changes.changed, (std::vector<TorrentChange>{ { 1, 0U, Torrent::effective_seed_ratio_fields() } }));
+    EXPECT_EQ(changes.changed_fields, Torrent::effective_seed_ratio_fields());
+
+    // no torrent reads an unrelated pref
+    recorder_.reset();
+    prefs_.set(TR_KEY_filter_text, std::string{ "x" });
+    EXPECT_TRUE(std::empty(recorder_.lines));
+}
+
 TEST_F(AppTorrentListTest, newTorrentsAreInsertedNotChanged)
 {
     // a named torrent with an old date is news only as a row
@@ -757,6 +780,32 @@ TEST_F(AppTorrentListTest, editedFollowsEditDateChangesOfKnownTorrents)
     EXPECT_TRUE(std::empty(recorder_.lines));
 }
 
+// a magnet's metadata can arrive within the second its edit date already holds
+TEST_F(AppTorrentListTest, editedFollowsTheArrivalOfMetadata)
+{
+    list_.update(
+        make_args(make_list(make_row(
+            1,
+            kv(TR_KEY_name, "magnet"sv),
+            kv(TR_KEY_edit_date, Now),
+            kv(TR_KEY_metadata_have, 0),
+            kv(TR_KEY_metadata_size, 100)))),
+        Coverage::Complete,
+        Now);
+    recorder_.reset();
+
+    // more of it, but not all, is no edit
+    list_.update(make_args(make_list(make_row(1, kv(TR_KEY_metadata_have, 50)))), Coverage::Complete, Now);
+    EXPECT_TRUE(std::empty(recorder_.last_changes().edited));
+    recorder_.reset();
+
+    list_.update(
+        make_args(make_list(make_row(1, kv(TR_KEY_edit_date, Now), kv(TR_KEY_metadata_have, 100)))),
+        Coverage::Complete,
+        Now);
+    EXPECT_EQ(recorder_.last_changes().edited, (Ids{ 1 }));
+}
+
 TEST_F(AppTorrentListTest, completedNeedsLeftUntilDoneToReachZeroAfterDownloading)
 {
     // 1 downloads to completion; 2 finishes a verify with nothing downloaded; 3 is seen done; 4 is seen downloading
@@ -824,4 +873,58 @@ TEST_F(AppTorrentListTest, clearForgetsAddedReports)
     recorder_.reset();
     list_.update(make(), Coverage::Complete, Now);
     EXPECT_EQ(recorder_.last_changes().added, (Ids{ 1 }));
+}
+
+// --- withheld torrents
+
+TEST_F(AppTorrentListTest, aWithheldTorrentStaysOutOfEveryUpdate)
+{
+    seed({ 1 });
+    list_.withhold(2);
+
+    auto const rows = [] {
+        return make_list(make_row(1), make_row(2, kv(TR_KEY_name, "pending"sv), kv(TR_KEY_added_date, Now - 10)));
+    };
+    list_.update(make_args(rows()), Coverage::Partial, Now);
+    list_.update(make_args(rows()), Coverage::Complete, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
+    for (auto const& changes : recorder_.changes) {
+        EXPECT_TRUE(std::empty(changes.inserted));
+        EXPECT_TRUE(std::empty(changes.added));
+        EXPECT_TRUE(std::empty(changes.removed));
+    }
+}
+
+TEST_F(AppTorrentListTest, withholdingAListedTorrentRemovesIt)
+{
+    seed({ 1, 2 });
+
+    list_.withhold(2);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
+    EXPECT_EQ(recorder_.lines, (std::vector<std::string>{ "removing 1 1 size 2 ids 2", "removed 1 1 size 1", "changed" }));
+    EXPECT_EQ(recorder_.last_changes().removed, (Ids{ 2 }));
+}
+
+TEST_F(AppTorrentListTest, aReleasedTorrentIsListedAgain)
+{
+    seed({ 1 });
+    list_.withhold(2);
+
+    list_.release(2);
+    list_.update(make_args(make_list(make_row(2))), Coverage::Partial, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1, 2 }));
+}
+
+TEST_F(AppTorrentListTest, clearForgetsWithheldIds)
+{
+    list_.withhold(1);
+
+    // another session may reuse the id
+    list_.clear();
+    list_.update(make_args(make_list(make_row(1))), Coverage::Complete, Now);
+
+    EXPECT_EQ(ids_of(list_), (Ids{ 1 }));
 }

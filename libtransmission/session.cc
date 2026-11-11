@@ -734,6 +734,7 @@ void tr_session::initImpl(init_data& data)
                 queue_session_thread([this, fn = std::move(fn)] {
                     auto const lock = unique_lock();
                     fn();
+                    resume_deferred_requests();
                 });
             },
             [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
@@ -1437,7 +1438,7 @@ double tr_sessionGetRawSpeed_KBps(tr_session const* session, tr_direction dir)
     return {};
 }
 
-void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline)
+void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds const tracker_wait)
 {
     is_closing_ = true;
 
@@ -1483,6 +1484,10 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
         tr_torrentFreeInSessionThread(tor);
     }
     torrents.clear();
+    // Save the stats now and again at the end, so that nothing
+    // is lost if the process ends during the wait for the trackers.
+    collect_files_created();
+    stats().save();
     // ...now that all the torrents have been closed, any remaining
     // `&event=stopped` announce messages are queued in the announcer.
     // Tell the announcer to start shutdown, which sends out the stop
@@ -1495,12 +1500,12 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     // ...and now that those are done, tell web_ that we're shutting
     // down soon. This leaves the `event=stopped` going but refuses any
     // new tasks.
-    auto const now = std::chrono::steady_clock::now();
-    auto const remaining_ms = now < deadline ? std::chrono::duration_cast<std::chrono::milliseconds>(deadline - now) : 0ms;
-    this->web_->startShutdown(remaining_ms);
+    this->web_->startShutdown(tracker_wait);
 
     // recycle the now-unused save_timer_ here to wait for UDP shutdown
+    // The wait starts here so that slow disk work above can't use it up.
     TR_ASSERT(!save_timer_);
+    auto const deadline = std::chrono::steady_clock::now() + tracker_wait;
     save_timer_ = timerMaker().create([this, closed_promise, deadline] { closeImplPart2(closed_promise, deadline); });
     save_timer_->start_repeating(50ms);
 }
@@ -1547,10 +1552,9 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
 
     auto closed_promise = std::promise<void>{};
     auto closed_future = closed_promise.get_future();
-    auto const deadline = std::chrono::steady_clock::now() +
-        std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
+    auto const tracker_wait = std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
     session->run_in_session_thread(
-        [&closed_promise, deadline, session] { session->closeImplPart1(&closed_promise, deadline); });
+        [&closed_promise, tracker_wait, session] { session->closeImplPart1(&closed_promise, tracker_wait); });
     closed_future.wait();
 
     delete session;
@@ -2122,6 +2126,27 @@ void tr_session::update_active_request_count(size_t const previous, size_t const
     } else if (active_request_count_ > 0U) {
         no_requests.stop();
     }
+}
+
+void tr_session::resume_deferred_requests()
+{
+    if (!requests_deferred_) {
+        return;
+    }
+
+    // While writes are queued, wait for an eighth of the budget. A disk
+    // that keeps the budget full would otherwise get a pass over every
+    // peer per finished write, and the queued writes keep it busy
+    // meanwhile. Once the queue is empty, no later write will free more.
+    // With nothing spare, a pass could send no requests.
+    auto const spare = spare_request_blocks();
+    auto const enough = effective_write_budget_bytes() / TrBlockSize / 8U;
+    if (!spare || *spare == 0U || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
+        return;
+    }
+
+    requests_deferred_ = false;
+    tr_peerMgrRefillRequests(peer_mgr_.get());
 }
 
 std::optional<size_t> tr_session::spare_request_blocks() const noexcept

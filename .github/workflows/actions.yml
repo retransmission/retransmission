@@ -1202,6 +1202,159 @@ jobs:
         if: always()
         run: ccache --show-stats
 
+  s390x:
+    needs: [ make-source-tarball, what-to-make ]
+    if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      PKG_CONFIG_LIBDIR: /usr/lib/s390x-linux-gnu/pkgconfig:/usr/share/pkgconfig
+      PKG_CONFIG_PATH: ''
+      QEMU_LD_PREFIX: /
+    steps:
+      - name: Get Composite Actions
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            .github/actions
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Get Source
+        uses: actions/download-artifact@v8
+        with:
+          name: source-tarball
+      - name: Extract Source
+        run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
+      - name: Install cross-compilation dependencies
+        run: |
+          set -euxo pipefail
+
+          . /etc/os-release
+          : "${VERSION_CODENAME:?Ubuntu release codename is missing}"
+
+          if [ -f '/etc/apt/apt-mirrors.txt' ]; then
+            # Undocumented mirror list in GHA Ubuntu runners
+            mirror_list='/etc/apt/apt-mirrors.txt'
+          else
+            mirror_list="$RUNNER_TEMP/apt-mirrors.txt"
+            printf "http://azure.archive.ubuntu.com/ubuntu/\tpriority:1\n" > "$mirror_list"
+            printf "https://archive.ubuntu.com/ubuntu/\tpriority:2\n" >> "$mirror_list"
+            printf "https://security.ubuntu.com/ubuntu/\tpriority:3\n" >> "$mirror_list"
+          fi
+
+          cat > "$RUNNER_TEMP/s390x.sources" <<EOF
+          Types: deb
+          URIs: mirror+file:${mirror_list}
+          Suites: ${VERSION_CODENAME} ${VERSION_CODENAME}-updates ${VERSION_CODENAME}-security
+          Components: main universe
+          Architectures-Remove: s390x
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+          Types: deb
+          URIs: https://ports.ubuntu.com/ubuntu-ports
+          Suites: ${VERSION_CODENAME} ${VERSION_CODENAME}-updates ${VERSION_CODENAME}-security
+          Components: main universe
+          Architectures: s390x
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          EOF
+          sudo dpkg --add-architecture s390x
+          apt_options=(
+            -o "Dir::Etc::sourcelist=$RUNNER_TEMP/s390x.sources"
+            -o Dir::Etc::sourceparts=-
+          )
+          sudo apt-get "${apt_options[@]}" update
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get "${apt_options[@]}" install -y --no-install-recommends \
+            ccache \
+            crossbuild-essential-s390x \
+            ninja-build \
+            pkg-config \
+            qemu-user \
+            qemu-user-binfmt
+
+          # Test subprocesses execute s390x binaries through binfmt.
+          if [ ! -d /proc/sys/fs/binfmt_misc ]; then
+            sudo modprobe binfmt_misc
+          fi
+          if [ ! -e /proc/sys/fs/binfmt_misc/register ]; then
+            sudo mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+          fi
+          sudo /usr/lib/systemd/systemd-binfmt /usr/lib/binfmt.d/qemu-s390x.conf
+          handler=/proc/sys/fs/binfmt_misc/qemu-s390x
+          cat "$handler"
+          grep -qx enabled "$handler"
+          interpreter=$(sed -n 's/^interpreter //p' "$handler")
+          if [ ! "$interpreter" -ef /usr/bin/qemu-s390x ]; then
+            echo "::error::s390x binfmt interpreter is not the packaged qemu-s390x"
+            exit 1
+          fi
+
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get "${apt_options[@]}" install -y --no-install-recommends \
+            libcurl4-openssl-dev:s390x \
+            libssl-dev:s390x \
+            libstdc++6:s390x \
+            zlib1g-dev:s390x
+      - name: Verify s390x emulation
+        run: |
+          cat <<'EOF' | s390x-linux-gnu-g++ -x c++ - -o "$RUNNER_TEMP/s390x-endian"
+          #include <iostream>
+          int main()
+          {
+              unsigned int value = 0x01020304U;
+              std::cout << "s390x\n";
+              return *reinterpret_cast<unsigned char*>(&value) != 1U;
+          }
+          EOF
+          file "$RUNNER_TEMP/s390x-endian"
+          "$RUNNER_TEMP/s390x-endian"
+          qemu-s390x "$RUNNER_TEMP/s390x-endian"
+      - name: Setup ccache
+        uses: ./.github/actions/setup-ccache
+      - name: Configure
+        run: |
+          cat > "$RUNNER_TEMP/s390x.cmake" <<'EOF'
+          set(CMAKE_SYSTEM_NAME Linux)
+          set(CMAKE_SYSTEM_PROCESSOR s390x)
+          set(CMAKE_C_COMPILER /usr/bin/s390x-linux-gnu-gcc)
+          set(CMAKE_CXX_COMPILER /usr/bin/s390x-linux-gnu-g++)
+          set(CMAKE_CROSSCOMPILING_EMULATOR /usr/bin/qemu-s390x)
+          set(CMAKE_C_FLAGS_INIT "-isystem /usr/include/s390x-linux-gnu")
+          set(CMAKE_CXX_FLAGS_INIT "-isystem /usr/include/s390x-linux-gnu")
+          set(CMAKE_INCLUDE_PATH /usr/include/s390x-linux-gnu)
+          set(CMAKE_LIBRARY_PATH /usr/lib/s390x-linux-gnu)
+          set(CMAKE_PREFIX_PATH /usr/lib/s390x-linux-gnu)
+          set(CMAKE_IGNORE_PREFIX_PATH /usr/local)
+          set(CMAKE_IGNORE_PATH /usr/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu)
+          set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH FALSE)
+          EOF
+          cmake \
+            -S src \
+            -B obj \
+            -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$RUNNER_TEMP/s390x.cmake" \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DENABLE_CLI=OFF \
+            -DENABLE_DAEMON=OFF \
+            -DENABLE_GTK=OFF \
+            -DENABLE_IPO=OFF \
+            -DENABLE_MAC=OFF \
+            -DENABLE_QT=OFF \
+            -DENABLE_TESTS=ON \
+            -DENABLE_UTILS=OFF \
+            -DRUN_CLANG_TIDY=OFF \
+            -DUSE_SYSTEM_DEFAULT=OFF
+      - name: Build
+        run: cmake --build obj -j "$(nproc)"
+      - name: Test
+        run: |
+          # The inotify watcher fails under qemu-user: https://gitlab.com/qemu-project/qemu/-/work_items/356
+          # watch/0 is WatchMode::NATIVE.
+          GTEST_FILTER='-WatchDir/WatchDirTest.watch/0' ctest -j --test-dir obj --output-on-failure --no-tests=error
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
+
   rhel-family:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
@@ -1626,7 +1779,7 @@ jobs:
               -DWITH_CRYPTO=openssl
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
@@ -1798,7 +1951,7 @@ jobs:
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
@@ -1888,7 +2041,7 @@ jobs:
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in NetBSD`
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
-              cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
+              ctest --test-dir obj -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
@@ -1904,7 +2057,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, s390x, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:

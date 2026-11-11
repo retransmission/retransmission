@@ -37,13 +37,34 @@ using namespace std::literals;
 namespace
 {
 
+// Calls `fn(file_index, file_offset, done, n_bytes)` for each file's share
+// of torrent bytes [begin, begin + len), in order. `done` counts the bytes
+// before that share. Stops, and returns false, when `fn` returns false.
+template<typename Fn>
+bool for_each_file_chunk(tr::StorageDescriptor const& desc, uint64_t const begin, uint64_t const len, Fn const& fn)
+{
+    auto [file_index, file_offset] = desc.fpm.file_offset(begin);
+    for (auto done = uint64_t{}; done < len;) {
+        auto const n_bytes = std::min<uint64_t>(len - done, desc.files.file_size(file_index) - file_offset);
+        if (!fn(file_index, file_offset, done, n_bytes)) {
+            return false;
+        }
+
+        done += n_bytes;
+        ++file_index;
+        file_offset = 0U;
+    }
+
+    return true;
+}
+
 bool read_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uint8_t> buf, tr_error& error)
 {
     TR_PROFILE_SCOPE("disk.read_syscall_loop");
     while (!std::empty(buf)) {
         auto n_read = uint64_t{};
 
-        if (!tr_sys_file_read_at(fd, std::data(buf), std::size(buf), file_offset, &n_read, &error)) {
+        if (!tr_sys_file_read_at(fd, std::data(buf), std::size(buf), file_offset, &n_read, &error) || n_read == 0U) {
             // On POSIX, a read at the end of the file fails without an
             // error. The file is shorter than the torrent says it is.
             if (!error) {
@@ -137,7 +158,7 @@ void read_bytes(
     tr_open_files& open_files,
     tr_file_index_t const file_index,
     uint64_t const file_offset,
-    std::span<uint8_t> buf,
+    std::span<uint8_t> const buf,
     tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
@@ -220,17 +241,46 @@ tr_error tr_ioRead(
     }
 
     auto error = tr_error{};
-    auto [file_index, file_offset] = desc.fpm.file_offset(begin);
-    auto buf = setme;
-    while (!std::empty(buf) && !error) {
-        auto const bytes_this_pass = std::min<uint64_t>(std::size(buf), desc.files.file_size(file_index) - file_offset);
-        read_bytes(desc, open_files, file_index, file_offset, buf.first(bytes_this_pass), error);
-        buf = buf.subspan(bytes_this_pass);
-        ++file_index;
-        file_offset = 0U;
-    }
+    for_each_file_chunk(
+        desc,
+        begin,
+        std::size(setme),
+        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
+            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), error);
+            return !error;
+        });
 
     return error;
+}
+
+bool tr_ioReadCached(
+    tr::StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    uint64_t const begin,
+    std::span<uint8_t> const setme)
+{
+    if (!tr_sys_file_can_read_cached() || std::empty(setme) || begin + std::size(setme) > desc.block_info.total_size()) {
+        return false;
+    }
+
+    return for_each_file_chunk(
+        desc,
+        begin,
+        std::size(setme),
+        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
+            if (n_bytes == 0U) {
+                return true;
+            }
+
+            // Only a file that's already open: opening one can wait on the disk.
+            auto const file = open_files.get(desc.id, file_index, false);
+            if (!file) {
+                return false;
+            }
+
+            auto const io_lock = file->io_lock();
+            return tr_sys_file_read_cached_at(file->fd(), std::data(setme) + done, n_bytes, file_offset);
+        });
 }
 
 tr_error tr_ioWrite(
@@ -249,15 +299,14 @@ tr_error tr_ioWrite(
     }
 
     auto error = tr_error{};
-    auto [file_index, file_offset] = desc.fpm.file_offset(begin);
-    auto buf = writeme;
-    while (!std::empty(buf) && !error) {
-        auto const bytes_this_pass = std::min<uint64_t>(std::size(buf), desc.files.file_size(file_index) - file_offset);
-        write_bytes(desc, open_files, file_index, file_offset, buf.first(bytes_this_pass), error);
-        buf = buf.subspan(bytes_this_pass);
-        ++file_index;
-        file_offset = 0U;
-    }
+    for_each_file_chunk(
+        desc,
+        begin,
+        std::size(writeme),
+        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
+            write_bytes(desc, open_files, file_index, file_offset, writeme.subspan(done, n_bytes), error);
+            return !error;
+        });
 
     return error;
 }

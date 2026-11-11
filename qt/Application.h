@@ -6,7 +6,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -24,11 +23,11 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h> // tr_torrent_id_t
 
+#include <libtransmission-app/add-data.h>
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/torrent.h>
 
-#include "AddData.h"
 #include "Prefs.h"
 #include "Timer.h"
 
@@ -42,7 +41,6 @@ namespace tr::interop
 class StartupCoordinator;
 }
 
-class AddData;
 class MainWindow;
 class Prefs;
 class RpcClient;
@@ -71,13 +69,16 @@ public:
     ~Application() override;
 
     void raise() const;
+    void addTorrent(tr::app::AddData add) const;
     void notifyApp(QString const& title, QString const& body, QStringList const& actions = {}, QVariantMap hints = {}) const;
 
     // True when this launch found the config dir held by another session.
     // We give way rather than write over the files that session owns.
     [[nodiscard]] bool configDirIsContended() const noexcept;
 
-    [[nodiscard]] std::optional<tr::Settings> embedded_session_settings() const;
+    // Call once the event loop is done. Saves the prefs and leaves the screen right away,
+    // then returns when the session has finished closing, which can take many seconds.
+    void shutdown();
 
     [[nodiscard]] QPixmap find_favicon(std::string_view const sitename) const
     {
@@ -100,14 +101,10 @@ signals:
     void faviconsChanged();
 
 public slots:
-    void addTorrent(AddData addme) const;
     void addWatchdirTorrent(QString const& filename) const;
 
 private slots:
-    void onConfigDirContended();
-    void onSessionSourceChanged() const;
     void refreshPref(tr_quark key) const;
-    void saveGeometry() const;
 #ifdef QT_DBUS_LIB
     void onNotificationActionInvoked(quint32 notification_id, QString action_key);
 #endif
@@ -132,6 +129,9 @@ private:
         Application& app_;
     };
 
+    void beginShutdown();
+    void onConfigDirContended();
+    void saveGeometry() const;
     void loadTranslations();
     void onTorrentsAdded(std::span<tr_torrent_id_t const> torrent_ids) const;
     void onTorrentsCompleted(std::span<tr_torrent_id_t const> torrent_ids) const;
@@ -155,6 +155,8 @@ private:
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
     sigslot::scoped_connection torrents_connection_;
+    sigslot::scoped_connection contended_connection_;
+    sigslot::scoped_connection add_prompt_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;

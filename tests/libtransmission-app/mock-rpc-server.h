@@ -82,6 +82,18 @@ public:
         return fmt::format("http://127.0.0.1:{:d}{:s}{:s}", port_, TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath);
     }
 
+    [[nodiscard]] constexpr uint16_t port() const noexcept
+    {
+        return port_;
+    }
+
+    // Answers every GET with `body`, as a plain web server would. RPC requests are POSTs.
+    void serve_on_get(std::string body)
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        get_body_ = std::move(body);
+    }
+
     [[nodiscard]] std::vector<std::string> request_bodies() const
     {
         auto const lock = std::scoped_lock{ mutex_ };
@@ -122,7 +134,16 @@ private:
         auto* const out_headers = evhttp_request_get_output_headers(req);
         auto* const out = evbuffer_new();
 
-        if (require_auth_ && evhttp_find_header(in_headers, "Authorization") == nullptr) {
+        auto get_body = std::string{};
+        if (evhttp_request_get_command(req) == EVHTTP_REQ_GET) {
+            auto const lock = std::scoped_lock{ mutex_ };
+            get_body = get_body_;
+        }
+
+        if (!std::empty(get_body)) {
+            evbuffer_add(out, std::data(get_body), std::size(get_body));
+            evhttp_send_reply(req, 200, "OK", out);
+        } else if (require_auth_ && evhttp_find_header(in_headers, "Authorization") == nullptr) {
             // challenge with Basic so libcurl knows how to retry with credentials
             evhttp_add_header(out_headers, "WWW-Authenticate", "Basic realm=\"transmission\"");
             evhttp_send_reply(req, 401, "Unauthorized", out);
@@ -177,6 +198,7 @@ private:
     mutable std::mutex mutex_;
     bool saw_authorization_ = false;
     std::vector<std::string> bodies_;
+    std::string get_body_;
     std::string content_type_;
     std::string user_agent_;
 

@@ -137,11 +137,8 @@ ReadState tr_handshake::read_vc(tr_peerIo* peer_io)
     // We need to find the end of PadB by looking for `ENCRYPT(VC)`,
     // so calculate and cache the value of `ENCRYPT(VC)`.
     if (!encrypted_vc_) {
-        auto filter = tr_message_stream_encryption::Filter{};
-        filter.encrypt_init(true, get_dh(), info_hash);
-
-        encrypted_vc_.emplace();
-        filter.encrypt(std::data(VC), std::size(VC), std::data(*encrypted_vc_));
+        auto const& dh = get_dh();
+        tr_message_stream_encryption::Filter::encrypt_once(true, dh, info_hash, VC, encrypted_vc_.emplace());
     }
 
     for (; pad_b_len_ <= PadbMaxlen; ++pad_b_len_) {

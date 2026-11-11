@@ -17,6 +17,8 @@
 #include <windows.h>
 #endif
 
+#include "libtransmission/macros.h"
+
 struct tr_error;
 
 /**
@@ -172,6 +174,17 @@ struct tr_sys_path_capacity {
 [[nodiscard]] bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_error* error = nullptr);
 
 /**
+ * @brief Test to see if two paths are on the same filesystem.
+ *
+ * @param[in] path1 Path to first file or directory.
+ * @param[in] path2 Path to second file or directory.
+ *
+ * @return `True` if both paths exist and are on the same filesystem,
+ *         `false` otherwise.
+ */
+[[nodiscard]] bool tr_sys_path_is_same_filesystem(std::string_view path1, std::string_view path2);
+
+/**
  * @brief Portability wrapper for `realpath()`.
  *
  * @param[in]  path  Path to file or directory.
@@ -193,7 +206,7 @@ struct tr_sys_path_capacity {
  * @return base name (last path component; parent path removed) on success,
  *         or empty string otherwise (with `error` set accordingly).
  */
-[[nodiscard]] std::string_view tr_sys_path_basename(std::string_view path, tr_error* error = nullptr);
+[[nodiscard]] std::string_view tr_sys_path_basename(std::string_view path TR_LIFETIMEBOUND, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `dirname()`.
@@ -203,10 +216,12 @@ struct tr_sys_path_capacity {
  * @return parent path substring of `path` (last path component removed) on
  *         success, or empty string otherwise with `error` set accordingly).
  */
-[[nodiscard]] std::string_view tr_sys_path_dirname(std::string_view path);
+[[nodiscard]] std::string_view tr_sys_path_dirname(std::string_view path TR_LIFETIMEBOUND);
 
 /**
  * @brief Portability wrapper for `rename()`.
+ *
+ * Like POSIX `rename()`, it replaces a read-only file too.
  *
  * @param[in]  src_path Path to source file or directory.
  * @param[in]  dst_path Path to destination file or directory.
@@ -221,6 +236,8 @@ bool tr_sys_path_rename(std::string_view src_path, std::string_view dst_path, tr
 
 /**
  * @brief Portability wrapper for `remove()`.
+ *
+ * Like POSIX `remove()`, it removes a read-only file too.
  *
  * @param[in]  path  Path to file or directory.
  * @param[out] error Pointer to error object. Optional, pass `nullptr` if you
@@ -327,6 +344,23 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
     uint64_t offset,
     uint64_t* bytes_read,
     tr_error* error = nullptr);
+
+/**
+ * @brief Reads `size` bytes at `offset`, but only if every one of them is
+ *        already in the page cache. A miss reads nothing from the disk.
+ *
+ * Linux 6.5 and later. `cachestat()` looks first, because a `RWF_NOWAIT`
+ * read that misses still starts readahead from the calling thread, and
+ * then `preadv2()` reads with `RWF_NOWAIT`.
+ *
+ * @return true if every byte was read from memory. False on a miss, past
+ *         the end of the file, where the platform or filesystem can't read
+ *         this way, or on error; `buffer` may then be partly written.
+ */
+[[nodiscard]] bool tr_sys_file_read_cached_at(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_t offset) noexcept;
+
+// False if this build's tr_sys_file_read_cached_at() always returns false.
+[[nodiscard]] bool tr_sys_file_can_read_cached() noexcept;
 
 /**
  * @brief Portability wrapper for `write()`.

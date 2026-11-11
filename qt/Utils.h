@@ -30,7 +30,7 @@ public:
 
     // Moves a file or folder to the trash can, or deletes it when the trash can refuses.
     // Any thread may call it.
-    static bool trashOrRemove(std::string_view filename, tr_error* error = nullptr);
+    static bool trashOrRemove(std::string_view filename, tr_error* error);
 
     // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
     [[nodiscard]] static QString withAppName(QString text);

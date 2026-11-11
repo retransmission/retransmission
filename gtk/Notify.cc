@@ -109,7 +109,7 @@ void g_signal_callback(
             std::string_view const relative_path = tr_torrentFile(tor, 0).name;
             gtr_open_file(base_dir, relative_path);
         } else if (action == "start-now") {
-            n.core->start_now(n.torrent_id);
+            n.core->start_torrents_now({ n.torrent_id });
         }
     }
 }
@@ -176,15 +176,21 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr::app::Pr
         return;
     }
 
-    g_return_if_fail(proxy != nullptr);
+    // no notification service, or not yet; dbus_proxy_ready_callback() reports a failure
+    if (proxy == nullptr) {
+        return;
+    }
 
-    auto const* const tor = core->find_torrent(tor_id);
+    auto const* const tor = core->torrents().find(tor_id);
+    if (tor == nullptr) {
+        return;
+    }
 
     auto const n = TrNotification{ .core = core, .torrent_id = tor_id };
 
     std::vector<Glib::ustring> actions;
     if (server_supports_actions) {
-        if (tr_torrentFileCount(tor) == 1) {
+        if (tor->file_count() == 1U) {
             actions.emplace_back("file");
             actions.emplace_back(_("Open File"));
         } else {
@@ -210,7 +216,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr::app::Pr
             0U, // replaces_id
             Glib::ustring(TR_GTK_ICON_NAME), // app_icon
             Glib::ustring(_("Torrent Complete")), // summary
-            Glib::ustring{ tr_torrentName(tor) }, // body
+            Glib::ustring{ tor->name() }, // body
             actions,
             hints,
             -1));
@@ -218,13 +224,19 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr::app::Pr
 
 void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr::app::Prefs const& prefs, tr_torrent_id_t const tor_id)
 {
-    g_return_if_fail(proxy != nullptr);
+    // no notification service, or not yet; dbus_proxy_ready_callback() reports a failure
+    if (proxy == nullptr) {
+        return;
+    }
 
     if (!prefs.get<bool>(TR_KEY_torrent_added_notification_enabled)) {
         return;
     }
 
-    auto const* const tor = core->find_torrent(tor_id);
+    auto const* const tor = core->torrents().find(tor_id);
+    if (tor == nullptr) {
+        return;
+    }
 
     std::vector<Glib::ustring> actions;
     if (server_supports_actions) {
@@ -242,7 +254,7 @@ void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr::app::Prefs 
             0U, // replaces
             Glib::ustring(TR_GTK_ICON_NAME), // icon_name
             Glib::ustring(_("Torrent Added")), //  summary
-            Glib::ustring{ tr_torrentName(tor) }, // body
+            Glib::ustring{ tor->name() }, // body
             actions,
             std::map<Glib::ustring, Glib::VariantBase>(),
             -1));
