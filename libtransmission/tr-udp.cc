@@ -173,10 +173,11 @@ bool handle_read(
         auto* const segment = buf + offset;
         auto const len = std::min(segment_size, buflen - offset);
         if (segment[0] == 'd') {
-            // handle_packet() zero-terminates DHT packets, which would overwrite the next segment
-            thread_local auto copy = std::array<unsigned char, DatagramBufferSize>{};
-            std::memcpy(std::data(copy), segment, len);
-            got_utp_packet |= handle_packet(session, std::data(copy), len, from_sa, fromlen);
+            // handle_packet() zero-terminates DHT packets, which would overwrite the next segment.
+            // On the heap: see read_datagrams().
+            thread_local auto const copy = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
+            std::memcpy(std::data(*copy), segment, len);
+            got_utp_packet |= handle_packet(session, std::data(*copy), len, from_sa, fromlen);
         } else {
             got_utp_packet |= handle_packet(session, segment, len, from_sa, fromlen);
         }
