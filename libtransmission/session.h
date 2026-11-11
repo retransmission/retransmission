@@ -48,6 +48,7 @@
 #include "libtransmission/local-data.h"
 #include "libtransmission/net.h" // for tr_port, tr_tos_t
 #include "libtransmission/open-files.h"
+#include "libtransmission/peer-log.h"
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/rpc-server.h"
@@ -622,6 +623,13 @@ public:
     [[nodiscard]] constexpr auto& blocklist() noexcept
     {
         return blocklists_;
+    }
+
+    // peer event log and bad-message captures
+
+    [[nodiscard]] constexpr auto& peer_log() noexcept
+    {
+        return peer_log_;
     }
 
     void set_blocklist_enabled(bool is_enabled)
@@ -1429,6 +1437,8 @@ private:
     tr_open_files open_files_;
 
     tr::Blocklists blocklists_;
+
+    tr::PeerLog peer_log_;
 
     QueueMediator torrent_queue_mediator_{ *this };
     tr_torrent_queue torrent_queue_{ torrent_queue_mediator_ };
