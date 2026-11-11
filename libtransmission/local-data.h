@@ -345,6 +345,16 @@ public:
     // Later ops run on the synchronous backend.
     void shutdown();
 
+    // For a closing session. Reads that haven't started, and reads enqueued
+    // until try_finish_shutdown() succeeds, fail with ECANCELED instead of
+    // touching the disk. Other ops finish, and paused workers resume.
+    void begin_shutdown();
+
+    // After begin_shutdown(): true once nothing is in flight. The workers
+    // have stopped by then, and later ops run on the synchronous backend.
+    // Doesn't block.
+    [[nodiscard]] bool try_finish_shutdown();
+
     // True while an admin op on the whole torrent is queued or running.
     // Blocks requested now would wait behind it, holding write budget that
     // other torrents need, so callers shouldn't request any.

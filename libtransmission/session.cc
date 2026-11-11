@@ -1359,34 +1359,26 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
         save_bandwidth_groups_if_dirty();
     }
 
-    // Deliver any pending completions while their torrents still exist.
-    // They change torrent state, so they need the session lock here too.
+    // Stop every torrent now, so that no more blocks arrive to be written.
+    // Each saves its resume file once its own writes in flight have landed,
+    // so another torrent's long move can't hold that save back.
     {
         auto const lock = unique_lock();
-        local_data.shutdown();
+        for (auto* const tor : torrents_.get_all()) {
+            tor->stop_now();
+        }
+
+        // Queued reads have nobody left to answer. Everything else finishes.
+        local_data.begin_shutdown();
     }
 
-    // Close the torrents in order of most active to least active
-    // so that the most important announce=stopped events are
-    // fired out first...
-    auto torrents = torrents_.get_all();
-    std::ranges::sort(torrents, [](auto const* a, auto const* b) {
-        auto const a_cur = a->bytes_downloaded_.ever();
-        auto const b_cur = b->bytes_downloaded_.ever();
-        return a_cur > b_cur; // larger xfers go first
-    });
-    for (auto* tor : torrents) {
-        tr_torrentFreeInSessionThread(tor);
-    }
-    torrents.clear();
     // Save the stats now and again at the end, so that nothing
     // is lost if the process ends during the wait for the trackers.
     collect_files_created();
     stats().save();
-    // ...now that all the torrents have been closed, any remaining
-    // `&event=stopped` announce messages are queued in the announcer.
-    // Tell the announcer to start shutdown, which sends out the stop
-    // events and stops scraping.
+
+    // The trackers hear "stopped" while the disk IO drains.
+    // This also stops scraping.
     this->announcer_->startShutdown();
     // ...since global_ip_cache_ relies on web_ to update global addresses,
     // we tell it to stop updating before web_ starts to refuse new requests.
@@ -1397,8 +1389,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     // new tasks.
     this->web_->startShutdown(tracker_wait);
 
-    // recycle the now-unused save_timer_ here to wait for UDP shutdown
-    // The wait starts here so that slow disk work above can't use it up.
+    // recycle the now-unused save_timer_ here to wait for the disk and the trackers
     TR_ASSERT(!save_timer_);
     auto const deadline = std::chrono::steady_clock::now() + tracker_wait;
     save_timer_ = timerMaker().create([this, closed_promise, deadline] { closeImplPart2(closed_promise, deadline); });
@@ -1407,6 +1398,17 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
 void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline)
 {
+    // The disk IO gets as long as it takes. A torrent's files would
+    // otherwise be left with blocks that its resume file doesn't list.
+    if (!local_data.try_finish_shutdown()) {
+        announcer_->upkeep();
+        return;
+    }
+
+    for (auto* const tor : torrents_.get_all()) {
+        tr_torrentFreeInSessionThread(tor);
+    }
+
     // try to keep web_ and the UDP announcer alive long enough to send out
     // all the &event=stopped tracker announces.
     // also wait for all ip cache updates to finish so that web_ can

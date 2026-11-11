@@ -1944,6 +1944,56 @@ TEST_F(TorrentDiskIoWorkersTest, sessionStatsReportsDiskCounters)
     }
 }
 
+// A start from another thread does part of its work on the session thread.
+// A stop that runs there first, as a closing session's does, wins.
+TEST_F(TorrentDiskIoWorkersTest, aStopBeforeAStartReachesTheSessionThreadWins)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+
+    // Hold the session thread so that the start's second half queues behind this.
+    auto start_queued = std::promise<void>{};
+    auto start_queued_future = start_queued.get_future();
+    auto stopped = std::promise<void>{};
+    session_->run_in_session_thread([tor, &start_queued_future, &stopped] {
+        start_queued_future.wait();
+        tr_torrentStop(tor);
+        stopped.set_value();
+    });
+    tr_torrentStartNow(tor);
+    start_queued.set_value();
+    stopped.get_future().wait();
+
+    blockingRunInSessionThread([tor] { EXPECT_FALSE(tor->is_running()); });
+    EXPECT_EQ(TR_STATUS_STOPPED, tr_torrentStat(tor).activity);
+}
+
+// A close waits for the writes in flight and the hashes they start,
+// then saves the resume file.
+TEST_F(TorrentDiskIoWorkersTest, closeSavesWritesThatLandWhileItWaits)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const span = tor->block_span_for_piece(0);
+    auto const hash = tor->info_hash();
+    ASSERT_FALSE(tor->has_piece(0));
+
+    // the writes wait until the close resumes the workers
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([tor, span] {
+        for (auto block = span.begin; block < span.end; ++block) {
+            ASSERT_TRUE(tor->on_block_received(block));
+            tor->save_block(block, zeroBlock(tor, block));
+        }
+    });
+    closeSession();
+
+    session_ = tr_sessionInit(sandboxDir(), false, settings());
+    auto builder = tr_torrent_builder{ session_ };
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+    auto const* const reloaded = session_->torrents().get(hash);
+    ASSERT_NE(nullptr, reloaded);
+    EXPECT_TRUE(reloaded->has_piece(0));
+}
+
 TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);

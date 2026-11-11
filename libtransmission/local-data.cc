@@ -488,8 +488,9 @@ public:
         auto op = ReadOp{ .span = span, .on_read = std::move(on_read) };
 
         // A torrent with nothing in flight has no gate and no barrier to
-        // wait for. Skip creating a gate for a read the page cache answers.
-        if (!gates_.contains(id)) {
+        // wait for. Skip creating a gate for a read the page cache answers,
+        // or for one that cancel_reads() fails.
+        if (!gates_.contains(id) || cancel_reads_) {
             admit_read(id, std::move(op));
             return;
         }
@@ -723,6 +724,47 @@ public:
     {
         drain_all();
         stop_workers();
+    }
+
+    // Cancel the reads that no worker has taken, then let the workers
+    // finish the rest. Nothing holds a closing session's workers back.
+    void begin_shutdown()
+    {
+        cancel_reads();
+        set_paused(false);
+    }
+
+    void cancel_reads()
+    {
+        cancel_reads_ = true;
+
+        auto reads = std::exchange(staged_reads_, {});
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            reads.merge(pending_reads_);
+            reads.merge(read_sweep_);
+        }
+
+        for (auto& [key, read] : reads) {
+            auto const id = read.tor_id;
+            unregister_running_read(gate_of(id), read.span);
+            if (read.on_read) {
+                std::move(read.on_read)(id, read.span, tr_error::from_errno(ECANCELED), nullptr);
+            }
+            release(id);
+        }
+    }
+
+    // True once no op is queued, running, or waiting to be delivered.
+    // A file close holds no gate, so the lanes are checked too.
+    [[nodiscard]] bool is_quiet()
+    {
+        if (!idle()) {
+            return false;
+        }
+
+        auto const lock = std::scoped_lock{ work_mutex_ };
+        return n_admin_jobs_ == 0U;
     }
 
     [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept
@@ -1232,8 +1274,15 @@ private:
     // Otherwise stage it for the workers.
     void admit_read(tr_torrent_id_t const id, ReadOp op)
     {
-        auto desc = provider_(id);
         auto const span = op.span;
+        if (cancel_reads_) {
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error::from_errno(ECANCELED), nullptr);
+            }
+            return;
+        }
+
+        auto desc = provider_(id);
         if (!is_valid_read(desc.get(), span)) {
             if (op.on_read) {
                 std::move(op.on_read)(id, span, tr_error::from_errno(EINVAL), nullptr);
@@ -1490,6 +1539,7 @@ private:
             }
 
             job();
+            finish_admin_job();
         }
     }
 
@@ -1498,6 +1548,7 @@ private:
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
             lane.emplace_back(std::move(job));
+            ++n_admin_jobs_;
         }
         admin_cv_.notify_all();
         schedule_pump();
@@ -1513,6 +1564,13 @@ private:
         }
 
         job();
+        finish_admin_job();
+    }
+
+    void finish_admin_job()
+    {
+        auto const lock = std::scoped_lock{ work_mutex_ };
+        --n_admin_jobs_;
     }
 
     // Work is waiting for a thread. With no threads, the session thread
@@ -1892,6 +1950,9 @@ private:
     // without allocating.
     std::multimap<OpKey, PendingRead> staged_reads_;
 
+    // Set by cancel_reads(). Reads admitted afterwards fail at once.
+    bool cancel_reads_ = false;
+
     // --- state shared with the workers
 
     std::mutex work_mutex_;
@@ -1910,6 +1971,8 @@ private:
     // files. On the long lane each of those would wait behind other
     // torrents' whole copies.
     AdminLane short_lane_;
+    // admin jobs posted and not yet finished, on both lanes
+    size_t n_admin_jobs_ = 0U;
 
     std::deque<PendingTest> pending_tests_;
     // The ops that wait for the next sweep, and the sweep being drained.
@@ -2140,6 +2203,24 @@ void LocalData::shutdown()
         threaded_->shutdown();
         threaded_.reset();
     }
+}
+
+void LocalData::begin_shutdown()
+{
+    if (threaded_) {
+        threaded_->begin_shutdown();
+    }
+}
+
+bool LocalData::try_finish_shutdown()
+{
+    if (threaded_ && !threaded_->is_quiet()) {
+        return false;
+    }
+
+    // The threads have nothing left to do, so stopping them doesn't wait.
+    threaded_.reset();
+    return true;
 }
 
 bool LocalData::admin_op_pending(tr_torrent_id_t const id) const

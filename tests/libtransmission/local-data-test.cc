@@ -2275,3 +2275,50 @@ TEST_F(LocalDataThreadlessTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
 
     local_data->shutdown();
 }
+
+// A closing session cancels the reads that no worker has started,
+// and waits for everything else.
+TEST_F(LocalDataThreadlessTest, shutdownCancelsWaitingReadsAndFinishesTheRest)
+{
+    static auto constexpr FileSize = 4U * BlockSize;
+    saveFile("data.bin", patternString(0U, FileSize));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+    local_data->set_workers_paused(true);
+
+    // one read handed to the workers, another not yet
+    auto handed = ReadResult{};
+    readInto(*local_data, 2U * BlockSize, BlockSize, handed);
+    runMarshaled();
+    auto events = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&events] { events.emplace_back("wrote"); });
+    auto staged = ReadResult{};
+    readInto(*local_data, 3U * BlockSize, BlockSize, staged);
+    local_data->close_file(TorId, 0U, [&events](tr_torrent_id_t) { events.emplace_back("closed"); });
+
+    local_data->begin_shutdown();
+    for (auto const* const read : { &handed, &staged }) {
+        EXPECT_TRUE(read->done);
+        EXPECT_EQ(ECANCELED, read->error.code()) << read->error;
+    }
+    EXPECT_TRUE(std::empty(events));
+    EXPECT_FALSE(local_data->try_finish_shutdown());
+
+    // a read enqueued now fails at once
+    auto late = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, late);
+    EXPECT_TRUE(late.done);
+    EXPECT_EQ(ECANCELED, late.error.code()) << late.error;
+
+    // the workers resumed
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 2U; }));
+    EXPECT_EQ((std::vector<std::string>{ "wrote", "closed" }), events);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+
+    // the file close went to an admin lane, which may not have run yet
+    EXPECT_TRUE(pumpUntil([&local_data]() { return local_data->try_finish_shutdown(); }));
+
+    // later ops are synchronous
+    auto after = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, after);
+    EXPECT_TRUE(after.done);
+}

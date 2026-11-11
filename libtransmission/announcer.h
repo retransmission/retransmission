@@ -74,6 +74,8 @@ public:
     virtual void stopTorrent(tr_torrent* tor) = 0;
     virtual void resetTorrent(tr_torrent* tor) = 0;
     virtual void removeTorrent(tr_torrent* tor) = 0;
+
+    // Sends every torrent's "stopped" and stops announcing and scraping.
     virtual void startShutdown() = 0;
 
     virtual void upkeep() = 0;
