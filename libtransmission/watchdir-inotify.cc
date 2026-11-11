@@ -134,7 +134,7 @@ private:
                 tr_logAddError(
                     fmt::format(
                         "Couldn't read filename: expected {expected_size}, got {actual_size}",
-                        fmt::arg("expected_size", sizeof(ev)),
+                        fmt::arg("expected_size", ev.len),
                         fmt::arg("actual_size", nread)));
                 break;
             }
