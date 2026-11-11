@@ -48,6 +48,11 @@ public:
         return dirname_;
     }
 
+    void rescan() override
+    {
+        scan();
+    }
+
     [[nodiscard]] constexpr auto timeoutDuration() const noexcept
     {
         return timeout_duration_;

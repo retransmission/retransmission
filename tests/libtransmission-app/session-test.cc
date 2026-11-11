@@ -283,25 +283,10 @@ auto constexpr Debian = "debian-11.2.0-amd64-DVD-1.iso.torrent"sv;
 auto constexpr MagnetLink = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv;
 auto constexpr Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
 
-class AppSessionRpcTest
-    : public EmbeddedSessionTest
-    , public SessionUnderTest<TestSession>
+class AppSessionRpcTest : public EmbeddedRpcSessionTest<TestSession>
 {
 protected:
     static constexpr auto Gimp = "gimp-2.10.32-1-arm64.dmg.torrent"sv;
-
-    void SetUp() override
-    {
-        EmbeddedSessionTest::SetUp();
-        rpc_.start(core_);
-    }
-
-    void TearDown() override
-    {
-        loop_.drain();
-        rpc_.stop();
-        EmbeddedSessionTest::TearDown();
-    }
 
     // adds a paused torrent to the session directly, as another client would
     [[nodiscard]] tr_torrent_id_t add_torrent(std::string_view const filename, std::string_view const download_dir = {})

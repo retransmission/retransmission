@@ -209,6 +209,24 @@ TEST_P(WatchDirTest, watch)
     EXPECT_TRUE(std::empty(names));
 }
 
+// before any event or timer has had a chance to run
+TEST_P(WatchDirTest, rescanOffersANewFileAtOnce)
+{
+    auto const dirname = sandboxDir();
+
+    auto names = std::vector<std::string>{};
+    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
+        names.emplace_back(basename);
+        return Watchdir::Action::Done;
+    };
+    auto watchdir = createWatchDir(dirname, callback);
+
+    auto const name = "test.torrent"sv;
+    createFile(dirname, name);
+    watchdir->rescan();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names);
+}
+
 TEST_P(WatchDirTest, offersANameAgainAfterItsFileLeaves)
 {
     auto const dirname = sandboxDir();
