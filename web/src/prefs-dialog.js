@@ -242,6 +242,9 @@ export class PrefsDialog extends EventTarget {
   _updateInterfaceSelect() {
     const select = this.elements.network.interface_select;
     const current = this._savedInterface();
+    if (current && current !== 'blocked') {
+      this.saved_values.interface.add(current);
+    }
     // the interface in use stays listed whatever the filters say
     const passes = (iface) =>
       iface.name === current || this._interfacePasses(this.filters, iface);
@@ -249,9 +252,12 @@ export class PrefsDialog extends EventTarget {
     const names = this.network_interfaces
       .filter(passes)
       .map(({ name }) => name);
+    const gone = [...this.saved_values.interface].filter(
+      (name) => !all_names.includes(name),
+    );
 
     // rebuilt only on change: replacing the options closes an open dropdown
-    const key = JSON.stringify([current, names]);
+    const key = JSON.stringify([current, names, gone]);
     if (select.dataset.options !== key) {
       select.dataset.options = key;
 
@@ -259,8 +265,8 @@ export class PrefsDialog extends EventTarget {
       for (const name of names) {
         options.push(new Option(name, name));
       }
-      if (current && current !== 'blocked' && !all_names.includes(current)) {
-        options.push(new Option(`${current} (unavailable)`, current));
+      for (const name of gone) {
+        options.push(new Option(`${name} (unavailable)`, name));
       }
       options.push(new Option('None (block all traffic)', 'blocked'));
 
@@ -346,6 +352,9 @@ export class PrefsDialog extends EventTarget {
       this.session_manager.session_properties[select.dataset.key] ?? ''
     ).trim();
     const saved = value === '0.0.0.0' || value === '::' ? '' : value;
+    if (saved) {
+      this.saved_values[family].add(saved);
+    }
 
     const chosen = network.interface_select.value;
     let interfaces = [];
@@ -379,9 +388,12 @@ export class PrefsDialog extends EventTarget {
     const listed = groups.flatMap(({ addresses }) =>
       addresses.map(({ address }) => address),
     );
+    const gone = [...this.saved_values[family]].filter(
+      (address) => !listed.includes(address),
+    );
 
     // rebuilt only on change: replacing the options closes an open dropdown
-    const key = JSON.stringify([saved, groups]);
+    const key = JSON.stringify([saved, groups, gone]);
     if (select.dataset.options !== key) {
       select.dataset.options = key;
       select.title = [
@@ -408,8 +420,8 @@ export class PrefsDialog extends EventTarget {
         group.append(...addresses.map(toOption));
         options.push(group);
       }
-      if (saved && !listed.includes(saved)) {
-        options.push(new Option(`${saved} (unavailable)`, saved));
+      for (const address of gone) {
+        options.push(new Option(`${address} (unavailable)`, address));
       }
       select.replaceChildren(...options);
     }
@@ -1608,6 +1620,13 @@ export class PrefsDialog extends EventTarget {
       },
     );
     this.network_interfaces = [];
+    // Every value saved while the dialog is open, so one whose interface or
+    // address has gone stays selectable after another is chosen.
+    this.saved_values = {
+      interface: new Set(),
+      ipv4: new Set(),
+      ipv6: new Set(),
+    };
     this.elements.network.interface_select.addEventListener(
       'session-change',
       () => {
