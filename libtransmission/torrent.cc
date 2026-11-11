@@ -1200,6 +1200,12 @@ void tr_torrent::set_location_in_session_thread(
                 on_placed(tor_id, dir);
                 on_done(tor_id, dir, {});
             });
+
+        // A verify under way checked other files than these. Start it over.
+        // It waits behind the barrier above, so it sees the new dirs.
+        if (verify_state_ != VerifyState::None) {
+            tr_torrentVerify(this);
+        }
         return;
     }
 
@@ -1207,16 +1213,13 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
-    // Cancel a pending verify first. Cancelling re-hashes pieces, and
-    // those hashes must run before the files close and move.
-    session->verify_remove(this);
-    session->local_data.close_torrent(id());
-
     auto target = [session = this->session, tor_id = id(), path = std::move(path)] {
         auto const* const tor = session->torrents().get(tor_id);
         return tr::LocalData::MoveTarget{ .parent = path(),
                                           .clear_killed_move = tor != nullptr && tor->completion_move_pending() };
     };
+
+    // A verify under way carries on at the new location: the move keeps the bytes.
     session->local_data.move(id(), std::move(target), std::move(on_done), std::move(on_placed));
 }
 
