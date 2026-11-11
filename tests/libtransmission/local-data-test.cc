@@ -71,6 +71,14 @@ public:
         return test_err;
     }
 
+    [[nodiscard]] tr_error hash_span(
+        [[maybe_unused]] tr_torrent_id_t const tor_id,
+        [[maybe_unused]] tr_byte_span_t const span,
+        [[maybe_unused]] tr_sha1& sha) override
+    {
+        return {};
+    }
+
     [[nodiscard]] tr_error write(
         [[maybe_unused]] tr_torrent_id_t const tor_id,
         tr_byte_span_t const byte_span,
@@ -2370,6 +2378,137 @@ TEST_F(LocalDataThreadlessTest, activityShowsQueuedWorkAndWhatTheThreadsAreDoing
     auto const after = local_data->activity();
     EXPECT_EQ(0U, after.queued_write_bytes);
     EXPECT_TRUE(std::empty(after.in_flight));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aVerifyWaitsUntilNothingElseDoes)
+{
+    static auto constexpr FileSize = 2U * BlockSize;
+    saveFile("data.bin", patternString(0U, FileSize));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize), 1U);
+
+    auto events = std::vector<std::string>{};
+    local_data->hash_span(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        std::make_unique<tr_sha1>(),
+        [&events](auto, auto, tr_error const& error, auto sha) {
+            EXPECT_FALSE(error) << error;
+            EXPECT_EQ(tr_sha1::digest(patternString(0U, BlockSize)), sha->finish());
+            events.emplace_back("verified");
+        });
+    local_data->test_piece(TorId, 1U, [&events](auto, auto, tr_error const&, auto const&) { events.emplace_back("hashed"); });
+
+    // the hash, enqueued second, goes first
+    runAll(*local_data);
+    EXPECT_EQ((std::vector<std::string>{ "hashed", "verified" }), events);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aVerifyCarriesItsHashAcrossSpans)
+{
+    static auto constexpr FileSize = 3U * BlockSize;
+    saveFile("data.bin", patternString(0U, FileSize));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, FileSize));
+
+    // two spans of the one piece, the second started from the first's result
+    auto digest = std::optional<tr_sha1_digest_t>{};
+    local_data->hash_span(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        std::make_unique<tr_sha1>(),
+        [&local_data, &digest](auto, auto, tr_error const& error, auto sha) {
+            EXPECT_FALSE(error) << error;
+            local_data->hash_span(
+                TorId,
+                { .begin = BlockSize, .end = FileSize },
+                std::move(sha),
+                [&digest](auto, auto, tr_error const& second_error, auto second_sha) {
+                    EXPECT_FALSE(second_error) << second_error;
+                    digest = second_sha->finish();
+                });
+        });
+    EXPECT_TRUE(pumpUntil([&digest] { return digest.has_value(); }));
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, FileSize)), digest);
+
+    local_data->shutdown();
+}
+
+// Or a busy disk would hold the verify, and the barriers behind it, forever.
+TEST_F(LocalDataThreadlessTest, aVerifyGetsATurnUnderSteadyLoad)
+{
+    static auto constexpr NBlocks = 32U;
+    saveFile("verify.bin", patternString(0U, BlockSize));
+    auto const local_data = makeThreadless(
+        makeDescriptor({ { "verify.bin", BlockSize }, { "data.bin", NBlocks * BlockSize } }, BlockSize),
+        1U);
+
+    auto hashed = false;
+    local_data->hash_span(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        std::make_unique<tr_sha1>(),
+        [&hashed](auto, auto, tr_error const&, auto) { hashed = true; });
+
+    // a write is waiting every time the worker comes back for more
+    auto n_turns = size_t{};
+    for (auto block = 1U; block <= NBlocks && !hashed; ++block) {
+        writeBlocks(*local_data, block * BlockSize, (block + 1U) * BlockSize, [] {});
+        EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::Worker)); // takes a turn
+        EXPECT_TRUE(tr::detail::step(*local_data, DiskThread::Worker)); // and does it
+        tr::detail::deliver(*local_data);
+        ++n_turns;
+    }
+
+    EXPECT_TRUE(hashed);
+    EXPECT_EQ(9U, n_turns);
+
+    runAll(*local_data);
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, aVerifyPassesOverWrittenBlocks)
+{
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    writeBlocks(*local_data, 0U, BlockSize, [] {});
+    runAll(*local_data);
+
+    auto verified = std::optional<tr_sha1_digest_t>{};
+    local_data->hash_span(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        std::make_unique<tr_sha1>(),
+        [&verified](auto, auto, tr_error const&, auto sha) { verified = sha->finish(); });
+    runAll(*local_data);
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, BlockSize)), verified);
+    EXPECT_EQ(0U, local_data->stats().hashes_from_buffers);
+
+    // they're still there for a download's hash
+    local_data->test_piece(TorId, 0U, [](auto, auto, tr_error const&, auto const&) {});
+    runAll(*local_data);
+    EXPECT_EQ(1U, local_data->stats().hashes_from_buffers);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataThreadlessTest, anUnreadableSpanFailsAndHandsItsHashBack)
+{
+    auto const local_data = makeThreadless(makeDescriptor({ { "missing.bin", BlockSize } }, BlockSize));
+
+    auto called = false;
+    local_data->hash_span(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        std::make_unique<tr_sha1>(),
+        [&called](auto, auto, tr_error const& error, auto sha) {
+            EXPECT_TRUE(error);
+            EXPECT_NE(nullptr, sha);
+            called = true;
+        });
+    runAll(*local_data);
+    EXPECT_TRUE(called);
 
     local_data->shutdown();
 }

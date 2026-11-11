@@ -262,6 +262,24 @@ protected:
         tr::detail::deliver(local_data);
     }
 
+    // A new torrent verifies, which reads through the disk workers and
+    // leaves its files open in the pool. They're closed here, so that a
+    // test's steps start with nothing queued.
+    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder) override
+    {
+        auto& local_data = session_->local_data;
+        local_data.set_workers_paused(false);
+        auto* const tor = TorrentDiskIoTestBase::createTorrentAndWaitForVerifyDone(builder);
+        if (tor != nullptr) {
+            blockingRunInSessionThread([this, &local_data, tor] {
+                local_data.close_torrent(tor->id());
+                pump();
+            });
+        }
+        local_data.set_workers_paused(true);
+        return tor;
+    }
+
     // Two 24 KiB pieces of zeroes. The middle block ends piece 0 and
     // starts piece 1, so writing it last completes both.
     [[nodiscard]] tr_torrent* straddlingTorrentInit()
@@ -1058,6 +1076,8 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
         EXPECT_FALSE(tor->has_block_or_pending(block));
     });
 
+    // the verify reads through the disk workers
+    session_->local_data.set_workers_paused(false);
     EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
 }
 
