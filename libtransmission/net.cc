@@ -673,6 +673,13 @@ bool tr_net_interface_has_ipv4([[maybe_unused]] std::string_view const bind_inte
     return false;
 }
 
+void tr_net_forget_bind_refusal([[maybe_unused]] std::string_view const bind_interface)
+{
+#if defined(__APPLE__) || defined(__linux__)
+    record_bind_outcome(tr_net_effective_bind_interface(bind_interface), 0);
+#endif
+}
+
 tr_net_bind_status tr_net_interface_status(std::string_view const bind_interface)
 {
     using State = tr_net_bind_status::State;

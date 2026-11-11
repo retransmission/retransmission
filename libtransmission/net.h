@@ -570,6 +570,10 @@ struct tr_net_bind_status {
 
 [[nodiscard]] tr_net_bind_status tr_net_interface_status(std::string_view bind_interface);
 
+// forgets the named interface's last refused bind, which only a successful bind
+// otherwise clears, e.g. after a test that provoked one
+void tr_net_forget_bind_refusal(std::string_view bind_interface);
+
 // how an IPv6 address was assigned, as far as the OS records it
 enum class tr_net_address_origin : uint8_t {
     Unknown, // e.g. configured by hand, or any IPv4 address

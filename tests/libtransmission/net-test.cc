@@ -1311,6 +1311,10 @@ TEST_F(NetTest, interfaceStatusIsPerInterface)
     if (bind(other->name)) {
         EXPECT_EQ(State::Ok, tr_net_interface_status(other->name).state);
     }
+
+    // the refusals are process-wide, so later tests mustn't inherit them
+    tr_net_forget_bind_refusal(other->name);
+    EXPECT_NE(State::BindFailed, tr_net_interface_status(other->name).state);
 }
 
 TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
