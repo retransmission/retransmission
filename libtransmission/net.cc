@@ -159,6 +159,17 @@ bool tr_net_is_bind_address(std::string_view const value, tr_address_type const 
     return addr && addr->type == type;
 }
 
+std::optional<unsigned> tr_net_try_interface_index(std::string_view const bind_interface)
+{
+    errno = 0;
+    auto const index = tr_net_interface_index(bind_interface);
+    // if_nametoindex() reports a missing interface as ENODEV or ENXIO
+    if (auto const err = errno; index == 0U && err != 0 && err != ENODEV && err != ENXIO) {
+        return {};
+    }
+    return index;
+}
+
 unsigned tr_net_interface_index(std::string_view const bind_interface)
 {
     auto const name = tr_net_effective_bind_interface(bind_interface);

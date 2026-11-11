@@ -560,9 +560,10 @@ void tr_session::on_now_timer()
 
     // A named interface can be absent when its sockets are bound (a VPN
     // not yet connected) or be recreated under a new index later. Either
-    // leaves every bound socket useless, so rebind when the index moves.
+    // leaves every bound socket useless, so rebind when the index moves. A
+    // lookup that failed, e.g. for want of a file descriptor, says neither.
     if (auto const& name = settings_.bind_interface; !tr_net_interface_is_default(name) && !tr_net_interface_is_blocked(name) &&
-        tr_net_interface_index(name) != bound_interface_index_) {
+        tr_net_try_interface_index(name).value_or(bound_interface_index_) != bound_interface_index_) {
         auto const lock = unique_lock();
         tr_logAddInfo(
             fmt::format("Network interface '{interface}' changed; rebinding its sockets", fmt::arg("interface", name)));

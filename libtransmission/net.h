@@ -545,6 +545,10 @@ inline constexpr bool TrNetCanBindInterface = false;
 // true when the named interface exists and has an IPv4 address
 [[nodiscard]] bool tr_net_interface_has_ipv4(std::string_view bind_interface);
 
+// tr_net_interface_index(), or nullopt when the lookup itself failed, e.g. for
+// want of a file descriptor, so whether the interface exists is unknown
+[[nodiscard]] std::optional<unsigned> tr_net_try_interface_index(std::string_view bind_interface);
+
 // the OS index of the named interface, or 0 when `bind_interface` is
 // empty, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);

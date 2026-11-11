@@ -897,7 +897,7 @@ void tr_rpc_server::check_bound_interface()
 {
     auto const& name = settings_.bind_interface;
     if (!TrNetCanBindInterface || !is_enabled() || bind_address_->is_unix_addr() || tr_net_interface_is_default(name) ||
-        tr_net_interface_index(name) == bound_interface_index_) {
+        tr_net_try_interface_index(name).value_or(bound_interface_index_) == bound_interface_index_) {
         return;
     }
 
