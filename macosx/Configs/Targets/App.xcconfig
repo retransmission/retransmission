@@ -1,0 +1,21 @@
+// Product identity
+PRODUCT_NAME = Retransmission
+WRAPPER_EXTENSION = app
+ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe
+
+// C++ standard library
+CLANG_CXX_LIBRARY = libc++
+
+// Info.plist and code signing
+INFOPLIST_FILE = macosx/App/Info.plist
+CODE_SIGN_ENTITLEMENTS = macosx/App/Transmission.entitlements
+ENABLE_HARDENED_RUNTIME = YES
+
+// Search paths
+LD_RUNPATH_SEARCH_PATHS = @executable_path/../Frameworks
+FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/macosx/App
+HEADER_SEARCH_PATHS = $(inherited) .
+SYSTEM_HEADER_SEARCH_PATHS = $(inherited) third-party/fmt/include third-party/sigslot/include third-party/small/include third-party/libwoke/include
+
+// Compiler flags
+OTHER_CPLUSPLUSFLAGS = $(inherited) -fno-modules -Xclang -fno-cxx-modules
