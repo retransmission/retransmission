@@ -58,14 +58,18 @@ public:
 // Adds each .torrent file that appears in the `watch_dir` pref's directory through
 // `Session::request_add()`, which renames or trashes the file once the session has it.
 // Watches while `watch_dir_enabled` is set and the session is started.
-// It scans when the client's monitor reports a change, and every `FallbackScanInterval`
-// for the changes a monitor misses, e.g. every change on most network shares.
+// It scans `CoalesceInterval` after the client's monitor reports a change, and every
+// `FallbackScanInterval` for the changes a monitor misses, e.g. every change on most network shares.
 // Construct it before the session starts. It starts watching on the loop turn after
 // `source_changed`, so a client can connect its add prompt after starting the session.
 class WatchDir
 {
 public:
     static constexpr auto FallbackScanInterval = std::chrono::minutes{ 1 };
+
+    // How long a scan waits after the first notice of a burst, so that the burst costs one scan.
+    // A scan lists the whole directory, so one scan per notice is quadratic in the files arriving at once.
+    static constexpr auto CoalesceInterval = std::chrono::milliseconds{ 250 };
 
     // `prefs`, `timer_maker` and `monitor_maker` must outlive the watch dir.
     WatchDir(Session& session, Prefs const& prefs, tr::TimerMaker& timer_maker, DirMonitorMaker& monitor_maker);
@@ -89,7 +93,8 @@ private:
     DirMonitorMaker& monitor_maker_;
     std::unique_ptr<tr::Timer> const start_timer_;
     std::unique_ptr<tr::Watchdir> watchdir_;
-    std::unique_ptr<DirMonitor> monitor_; // after watchdir_, which it calls into
+    std::unique_ptr<tr::Timer> const coalesce_timer_; // after watchdir_, which it scans through
+    std::unique_ptr<DirMonitor> monitor_; // after coalesce_timer_, which it starts
     bool started_ = false;
 
     sigslot::scoped_connection prefs_connection_;
