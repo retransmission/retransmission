@@ -265,7 +265,10 @@ TEST_F(AppWatchDirTest, addsAFileOnceItsWriteFinishes)
     EXPECT_TRUE(tr_file_save(path, "d8:announce"sv)); // the start of a torrent
     start_session();
 
-    EXPECT_EQ(path, drop(Arch, "slow.torrent"sv));
+    // the rest of the write; drop() can't, since a copy onto an existing file fails on macOS
+    auto contents = std::vector<char>{};
+    EXPECT_TRUE(tr_file_read(fmt::format("{:s}/{:s}", LIBTRANSMISSION_TEST_ASSETS_DIR, Arch), contents));
+    EXPECT_TRUE(tr_file_save(path, std::string_view{ std::data(contents), std::size(contents) }));
     rescan();
     EXPECT_TRUE(wait_until_added(path));
 }
