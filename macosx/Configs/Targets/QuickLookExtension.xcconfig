@@ -1,0 +1,25 @@
+// Product identity and packaging
+PRODUCT_NAME = $(TARGET_NAME)
+SKIP_INSTALL = YES
+MACOSX_DEPLOYMENT_TARGET = 12.0
+PRODUCT_BUNDLE_IDENTIFIER = org.retransmission.retransmission.${PRODUCT_NAME:rfc1034identifier}
+
+// Info.plist and code signing
+INFOPLIST_FILE = macosx/QuickLookExtension/Info.plist
+CODE_SIGN_ENTITLEMENTS = macosx/QuickLookExtension/QuickLookExtension.entitlements
+
+// Search paths
+HEADER_SEARCH_PATHS = $(inherited) .
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks
+SYSTEM_HEADER_SEARCH_PATHS = $(inherited) third-party/fmt/include third-party/sigslot/include third-party/small/include
+
+// Compiler flags
+OTHER_CPLUSPLUSFLAGS = $(inherited) -fmodules -fcxx-modules
+
+// Debug symbols
+DEBUG_INFORMATION_FORMAT[config=Debug] = dwarf
+DEBUG_INFORMATION_FORMAT[config=Release] = dwarf-with-dsym
+DEBUG_INFORMATION_FORMAT[config=Release+Asserts] = dwarf-with-dsym
+
+// Stripping
+COPY_PHASE_STRIP = NO
