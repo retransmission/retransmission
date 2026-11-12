@@ -17,6 +17,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/error.h"
 #include "libtransmission/log.h"
 #include "libtransmission/peer-socket-tcp.h"
 #include "libtransmission/net.h"
@@ -24,6 +25,8 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils-ev.h"
 
+#define tr_logAddWarnSock(sock, msg) tr_logAddWarn(msg, (sock)->display_name())
+#define tr_logAddDebugSock(sock, msg) tr_logAddDebug(msg, (sock)->display_name())
 #define tr_logAddTraceSock(sock, msg) tr_logAddTrace(msg, (sock)->display_name())
 
 namespace
@@ -68,7 +71,7 @@ namespace
     return sockfd;
 }
 
-[[nodiscard]] tr_socket_t open_peer_socket(
+[[nodiscard]] std::pair<tr_socket_t, bool> open_peer_socket(
     tr_session const& session,
     tr_socket_address const& socket_address,
     bool const client_is_seed)
@@ -78,12 +81,12 @@ namespace
     TR_ASSERT(addr.is_valid());
 
     if (!session.allowsTCP() || !socket_address.is_valid()) {
-        return TR_BAD_SOCKET;
+        return { TR_BAD_SOCKET, false };
     }
 
     auto const s = create_socket(tr_ip_protocol_to_af(addr.type));
     if (!is_valid_socket(s)) {
-        return TR_BAD_SOCKET;
+        return { TR_BAD_SOCKET, false };
     }
 
     // seeds don't need a big read buffer, so make it smaller
@@ -109,10 +112,11 @@ namespace
                 fmt::arg("error", tr_net_strerror(sockerrno)),
                 fmt::arg("error_code", sockerrno)));
         tr_net_close_socket(s);
-        return TR_BAD_SOCKET;
+        return { TR_BAD_SOCKET, false };
     }
 
-    if (connect(s, reinterpret_cast<sockaddr const*>(&sock), addrlen) == -1 &&
+    auto const is_connected = connect(s, reinterpret_cast<sockaddr const*>(&sock), addrlen) == 0;
+    if (!is_connected &&
 #ifdef _WIN32
         sockerrno != WSAEWOULDBLOCK &&
 #endif
@@ -130,12 +134,12 @@ namespace
         }
 
         tr_net_close_socket(s);
-        return TR_BAD_SOCKET;
+        return { TR_BAD_SOCKET, false };
     }
 
     tr_logAddTrace(fmt::format("New OUTGOING connection {} ({})", s, socket_address.display_name()));
 
-    return s;
+    return { s, is_connected };
 }
 
 void set_congestion_control([[maybe_unused]] tr_socket_t const s, [[maybe_unused]] char const* const algorithm)
@@ -152,9 +156,14 @@ class tr_peer_socket_tcp_impl final
     , public std::enable_shared_from_this<tr_peer_socket_tcp_impl>
 {
 public:
-    tr_peer_socket_tcp_impl(tr_session& session, tr_socket_address const& socket_address, tr_socket_t sock)
+    tr_peer_socket_tcp_impl(
+        tr_session& session,
+        tr_socket_address const& socket_address,
+        tr_socket_t const sock,
+        bool const is_connected)
         : tr_peer_socket_tcp{ socket_address }
         , sock_{ sock }
+        , connect_error_{ is_connected ? 0 : EWOULDBLOCK }
     {
         TR_ASSERT(is_valid_socket(sock_));
 
@@ -179,6 +188,17 @@ public:
                 event_write_cb,
                 this));
 
+        if (!is_connected) {
+            event_connect_.reset(
+                tr::evhelpers::event_new_pri2(
+                    session.event_base(),
+                    static_cast<evutil_socket_t>(sock_),
+                    EV_WRITE | EV_PERSIST,
+                    event_connect_cb,
+                    this));
+            event_add(event_connect_.get(), nullptr);
+        }
+
         tr_logAddTraceSock(this, fmt::format("socket (tcp) is {}", sock_));
     }
 
@@ -189,6 +209,7 @@ public:
 
     ~tr_peer_socket_tcp_impl() override
     {
+        event_connect_.reset();
         event_read_.reset();
         event_write_.reset();
         tr_net_close_socket(sock_);
@@ -202,8 +223,10 @@ public:
 
         is_read_enabled_ = enabled;
         if (enabled) {
-            tr_logAddTraceSock(this, "enabling ready-to-read polling");
-            event_add(event_read_.get(), nullptr);
+            if (connect_error_ == 0) {
+                tr_logAddTraceSock(this, "enabling ready-to-read polling");
+                event_add(event_read_.get(), nullptr);
+            }
         } else {
             tr_logAddTraceSock(this, "disabling ready-to-read polling");
             event_del(event_read_.get());
@@ -218,8 +241,10 @@ public:
 
         is_write_enabled_ = enabled;
         if (enabled) {
-            tr_logAddTraceSock(this, "enabling ready-to-write polling");
-            event_add(event_write_.get(), nullptr);
+            if (connect_error_ == 0) {
+                tr_logAddTraceSock(this, "enabling ready-to-write polling");
+                event_add(event_write_.get(), nullptr);
+            }
         } else {
             tr_logAddTraceSock(this, "disabling ready-to-write polling");
             event_del(event_write_.get());
@@ -244,6 +269,13 @@ protected:
 
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) override
     {
+        if (connect_error_ != 0) {
+            if (error != nullptr) {
+                *error = tr_net_error(connect_error_);
+            }
+            return {};
+        }
+
         auto const [bufptr, buflen] = buf.reserve_space(n_bytes);
         n_bytes = std::min(n_bytes, buflen);
         TR_ASSERT(n_bytes > 0U);
@@ -266,6 +298,13 @@ protected:
 
     size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) override
     {
+        if (connect_error_ != 0) {
+            if (error != nullptr) {
+                *error = tr_net_error(connect_error_);
+            }
+            return {};
+        }
+
         n_bytes = std::min(n_bytes, std::size(buf));
         if (n_bytes == 0U) {
             return {};
@@ -289,6 +328,42 @@ protected:
     }
 
 private:
+    static void event_connect_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
+    {
+        // The socket can destruct inside the callbacks, so keep it alive for the time being.
+        auto const s = static_cast<tr_peer_socket_tcp_impl*>(vs)->shared_from_this();
+        tr_logAddTraceSock(s, "libevent says we can check TCP handshake status");
+        TR_ASSERT(std::cmp_equal(s->sock_, fd));
+
+        int err = {};
+        socklen_t error_len = sizeof(err);
+        if (getsockopt(s->sock_, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&err), &error_len) == -1) {
+            err = sockerrno;
+            if (tr_error::is_transient(err)) {
+                return;
+            }
+            tr_logAddWarnSock(s, fmt::format("failed to get socket error: {} ({})", tr_net_strerror(err), err));
+        } else if (err != 0) {
+            tr_logAddDebugSock(s, fmt::format("socket error in TCP handshake: {} ({})", tr_net_strerror(err), err));
+        }
+
+        s->connect_error_ = err;
+        s->event_connect_.reset();
+
+        if (err != 0) {
+            // The callback can destroy this socket.
+            s->error_cb(tr_net_error(err));
+            return;
+        }
+
+        if (s->is_read_enabled_) {
+            event_add(s->event_read_.get(), nullptr);
+        }
+        if (s->is_write_enabled_) {
+            event_add(s->event_write_.get(), nullptr);
+        }
+    }
+
     static void event_read_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
     {
         // The socket can destruct inside read_cb(), so keep it alive
@@ -317,10 +392,12 @@ private:
         s->write_cb();
     }
 
-    tr_socket_t sock_;
-
+    tr::evhelpers::event_unique_ptr event_connect_;
     tr::evhelpers::event_unique_ptr event_read_;
     tr::evhelpers::event_unique_ptr event_write_;
+
+    tr_socket_t sock_;
+    int connect_error_;
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
@@ -337,8 +414,8 @@ std::shared_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_socket_address const& socket_address,
     bool const client_is_seed)
 {
-    if (auto const sock = open_peer_socket(session, socket_address, client_is_seed); is_valid_socket(sock)) {
-        return create(session, socket_address, sock);
+    if (auto const [sock, is_connected] = open_peer_socket(session, socket_address, client_is_seed); is_valid_socket(sock)) {
+        return std::make_shared<tr_peer_socket_tcp_impl>(session, socket_address, sock, is_connected);
     }
     return {};
 }
@@ -348,5 +425,5 @@ std::shared_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_socket_address const& socket_address,
     tr_socket_t sock)
 {
-    return std::make_shared<tr_peer_socket_tcp_impl>(session, socket_address, sock);
+    return std::make_shared<tr_peer_socket_tcp_impl>(session, socket_address, sock, true);
 }
