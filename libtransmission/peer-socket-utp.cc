@@ -129,6 +129,14 @@ public:
         return std::size(inbuf_);
     }
 
+    // The receive window libutp advertises: the room left in inbuf_.
+    [[nodiscard]] size_t window_left() const
+    {
+        auto const rcvbuf = static_cast<size_t>(std::max(utp_getsockopt(sock_, UTP_RCVBUF), 0));
+        auto const buffered = read_buffer_size();
+        return rcvbuf > buffered ? rcvbuf - buffered : 0U;
+    }
+
     void maybe_read_soon()
     {
         if ((is_read_enabled() && !std::empty(inbuf_))
@@ -201,9 +209,24 @@ protected:
 
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* /*error*/) override
     {
+        auto const window_before = window_left();
+
         n_bytes = std::min(n_bytes, read_buffer_size());
         buf.add(std::data(inbuf_), n_bytes);
         inbuf_.drain(n_bytes);
+
+        // Draining inbuf_ reopens the receive window, and the sender must hear of it.
+        // utp_read_drained() sends that update at once only if the last ACK advertised 0 bytes;
+        // otherwise it schedules an ACK, and scheduled ACKs wait for the next incoming UDP batch.
+        // Waiting is safe if the window before this read fit a packet: the sender still had room,
+        // so its next packet brings that batch. With less room it may have stopped, so flush now.
+        if (n_bytes > 0U) {
+            utp_read_drained(sock_);
+            if (window_before < MaxPacketSize) {
+                utp_issue_deferred_acks(utp_get_context(sock_));
+            }
+        }
+
         return n_bytes;
     }
 
@@ -230,6 +253,10 @@ protected:
     }
 
 private:
+    // A bound on any sender's µTP packet: the payload of a 9000-byte jumbo frame.
+    // Senders on standard Ethernet send at most about 1400 bytes.
+    static constexpr auto MaxPacketSize = size_t{ 9000U };
+
     void read_now()
     {
         // The socket can destruct inside read_cb(), so keep it alive
