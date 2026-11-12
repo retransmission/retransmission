@@ -35,6 +35,7 @@ namespace
 
 using namespace std::literals;
 using tr::app::WatchDir;
+using tr::test::FakeTimer;
 using tr::test::FakeTimerMaker;
 
 auto constexpr Arch = "archlinux-2025.05.01-x86_64.iso.torrent"sv;
@@ -135,6 +136,18 @@ protected:
         timer_maker_.timers().back()->fire();
     }
 
+    // the coalescing timer, the second one the watch dir makes, after its start timer
+    [[nodiscard]] FakeTimer* coalesce_timer() const
+    {
+        return timer_maker_.timers().at(1);
+    }
+
+    // as that timer would, `CoalesceInterval` after the first monitor notice
+    void coalesce() const
+    {
+        coalesce_timer()->fire();
+    }
+
     // Waits until the session has renamed the watch dir's `path` as added.
     [[nodiscard]] bool wait_until_added(std::string const& path)
     {
@@ -199,14 +212,50 @@ TEST_F(AppWatchDirTest, addsTorrentsThereBeforeAndAfterItStarts)
     EXPECT_EQ(2U, torrent_count());
 }
 
-TEST_F(AppWatchDirTest, scansOnEachMonitorNoticeAndEveryMinute)
+TEST_F(AppWatchDirTest, scansAfterAMonitorNoticeAndEveryMinute)
 {
     start_session();
     EXPECT_EQ(WatchDir::FallbackScanInterval, timer_maker_.timers().back()->interval());
 
     auto const path = drop(Arch, "arch.torrent"sv);
     monitor_maker_.notify();
+    coalesce();
     EXPECT_TRUE(wait_until_added(path));
+}
+
+// A monitor reports each name that changes and may report one twice, while a scan
+// lists the whole directory, so a file arriving in a burst waits for the others.
+TEST_F(AppWatchDirTest, scansOnceForABurstOfMonitorNotices)
+{
+    start_session();
+    auto const path = drop(Arch, "arch.torrent"sv);
+
+    monitor_maker_.notify();
+    monitor_maker_.notify();
+    monitor_maker_.notify();
+    EXPECT_EQ(WatchDir::CoalesceInterval, coalesce_timer()->interval());
+    EXPECT_FALSE(coalesce_timer()->is_repeating());
+
+    // the notices themselves don't scan
+    loop_.drain();
+    EXPECT_FALSE(tr_sys_path_exists(path + ".added"));
+
+    coalesce();
+    EXPECT_TRUE(wait_until_added(path));
+}
+
+// `update()` drops the watch dir that a pending scan would have read.
+TEST_F(AppWatchDirTest, forgetsAPendingScanWhenItStopsWatching)
+{
+    start_session();
+    auto const path = drop(Arch, "arch.torrent"sv);
+    monitor_maker_.notify();
+
+    prefs_.set(TR_KEY_watch_dir_enabled, false);
+    coalesce();
+    loop_.drain();
+    EXPECT_TRUE(tr_sys_path_exists(path)); // never added, so never renamed
+    EXPECT_EQ(0U, torrent_count());
 }
 
 // A file that doesn't parse yet but has just changed may still be being written.

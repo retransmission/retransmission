@@ -59,6 +59,7 @@ WatchDir::WatchDir(Session& session, Prefs const& prefs, tr::TimerMaker& timer_m
     , timer_maker_{ timer_maker }
     , monitor_maker_{ monitor_maker }
     , start_timer_{ timer_maker.create([this] { set_started(true); }) }
+    , coalesce_timer_{ timer_maker.create([this] { watchdir_->rescan(); }) }
     , prefs_connection_{ prefs.observe_changes([this](tr_quark const key) {
         if (key == TR_KEY_watch_dir || key == TR_KEY_watch_dir_enabled) {
             update();
@@ -88,6 +89,7 @@ void WatchDir::update()
 {
     auto const dir = prefs_.get<std::string>(TR_KEY_watch_dir);
     if (!started_ || !prefs_.get<bool>(TR_KEY_watch_dir_enabled) || std::empty(dir)) {
+        coalesce_timer_->stop(); // a pending scan would read the `watchdir_` being dropped
         monitor_.reset();
         watchdir_.reset();
         return;
@@ -95,10 +97,11 @@ void WatchDir::update()
 
     if (dirname() != dir) {
         // the monitor first, so that a file landing during the first scan doesn't wait for the fallback scan;
-        // its notices arrive on a later loop turn, once `watchdir_` is the new one.
+        // its notices only reach `watchdir_` when `coalesce_timer_` fires, by which time it is the new one.
         // One monitor at a time, since a monitor may hold a scarce OS handle.
+        coalesce_timer_->stop(); // the new watch dir scans as it is built, so a pending scan is spent
         monitor_.reset();
-        monitor_ = monitor_maker_.create(dir, [this] { watchdir_->rescan(); });
+        monitor_ = monitor_maker_.create(dir, [this] { coalesce_timer_->start_single_shot(CoalesceInterval); });
         watchdir_ = tr::Watchdir::create_generic(
             dir,
             [this](std::string_view const dirname, std::string_view const basename) { return on_file(dirname, basename); },
