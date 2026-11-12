@@ -15,6 +15,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -694,17 +695,26 @@ TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
         GTEST_SKIP() << "IPv4 loopback is unavailable";
     }
 
-    auto n_started = std::make_shared<std::atomic<size_t>>();
-    auto n_stopped = std::make_shared<std::atomic<size_t>>();
-    tracker->setHandler([n_started, n_stopped](evhttp_request* req) {
+    // Tiers that sent each event, by announce path. A tier can be heard twice:
+    // newer curl sends its IPv6 announce to an IPv4 literal over IPv4.
+    auto const mutex = std::make_shared<std::mutex>();
+    auto const started = std::make_shared<std::set<std::string, std::less<>>>();
+    auto const stopped = std::make_shared<std::set<std::string, std::less<>>>();
+    tracker->setHandler([mutex, started, stopped](evhttp_request* req) {
         auto const uri = std::string_view{ evhttp_request_get_uri(req) };
+        auto const path = std::string{ uri.substr(0, uri.find('?')) };
+        auto const lock = std::scoped_lock{ *mutex };
         if (uri.contains("event=started"sv)) {
-            ++*n_started;
+            started->insert(path);
         } else if (uri.contains("event=stopped"sv)) {
-            ++*n_stopped;
+            stopped->insert(path);
         }
         LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
     });
+    auto const n_tiers = [mutex](auto const& tiers) {
+        auto const lock = std::scoped_lock{ *mutex };
+        return std::size(*tiers);
+    };
 
     auto trackers = std::string{};
     for (size_t i = 0U; i < NumTiers; ++i) {
@@ -716,10 +726,23 @@ TEST_F(SessionTest, interfaceChangeSendsStoppedOnTheOldBinding)
     ASSERT_NE(nullptr, tor);
     ASSERT_TRUE(tr_torrentSetTrackerList(tor, trackers));
     tr_torrentStartNow(tor);
-    ASSERT_TRUE(waitFor([&n_started] { return *n_started == NumTiers; }, 10s));
+    ASSERT_TRUE(waitFor([&n_tiers, started] { return n_tiers(started) == NumTiers; }, 10s)) << n_tiers(started);
+
+    // A tier still awaiting its "started" reply holds its "stopped" until the
+    // reply arrives, which would be after the swap.
+    auto const all_announced = [tor] {
+        for (size_t i = 0U, n = tr_announcerTrackerCount(tor); i < n; ++i) {
+            if (auto const view = tr_announcerTracker(tor, i);
+                view.announceState == TR_TRACKER_ACTIVE || !view.lastAnnounceSucceeded) {
+                return false;
+            }
+        }
+        return true;
+    };
+    ASSERT_TRUE(waitFor([this, &all_announced] { return blockingRunInSessionThread(all_announced); }, 10s));
 
     tr_sessionSetBindInterface(session_, "blocked"sv);
-    EXPECT_TRUE(waitFor([&n_stopped] { return *n_stopped == NumTiers; }, 10s)) << *n_stopped;
+    EXPECT_TRUE(waitFor([&n_tiers, stopped] { return n_tiers(stopped) == NumTiers; }, 10s)) << n_tiers(stopped);
     EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->is_running(); }));
 }
 
@@ -747,7 +770,7 @@ TEST_F(SessionTest, interfaceChangeRestartsTrafficCounts)
         LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
     });
     // the first "stopped", and the first "started" after it
-    auto const restart_announces = [mutex, announces]() -> std::optional<std::pair<std::string, std::string>> {
+    auto const restart_announces = [mutex, announces] -> std::optional<std::pair<std::string, std::string>> {
         auto const lock = std::scoped_lock{ *mutex };
         auto const stopped = std::ranges::find_if(*announces, [](auto const& uri) { return uri.contains("event=stopped"sv); });
         auto const started = std::find_if(stopped, std::end(*announces), [](auto const& uri) {

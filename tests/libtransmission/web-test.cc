@@ -665,9 +665,9 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
-#ifdef __linux__
+#if defined(__linux__)
 auto constexpr LoopbackInterface = "lo"sv;
-#else
+#elif !defined(_WIN32)
 auto constexpr LoopbackInterface = "lo0"sv;
 #endif
 

@@ -1305,7 +1305,7 @@ private:
     // announces (see tr_announcer::flushStops()) while the current binding is
     // in place; the second starts those torrents again on the new one.
     [[nodiscard]] std::vector<tr_torrent*> stop_torrents_for_rebind();
-    void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
+    static void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
 
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds tracker_wait);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
