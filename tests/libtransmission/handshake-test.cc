@@ -173,7 +173,10 @@ public:
         };
     }
 
-    [[nodiscard]] auto createOutgoingIo(tr_session* session, tr_sha1_digest_t const& info_hash)
+    [[nodiscard]] static auto createOutgoingIo(
+        tr_session* session,
+        tr_sha1_digest_t const& info_hash,
+        tr_socket_address const& peer_address)
     {
         auto sockpair = std::to_array<evutil_socket_t>({ -1, -1 });
         EXPECT_EQ(0, evutil_socketpair(LOCAL_SOCKETPAIR_AF, SOCK_STREAM, 0, std::data(sockpair))) << tr_strerror(errno);
@@ -181,12 +184,17 @@ public:
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockpair[1]));
         auto peer_io = tr_peerIo::create(
             session,
-            tr_peer_socket_tcp::create(*session, DefaultPeerSockAddr, static_cast<tr_socket_t>(sockpair[0])),
+            tr_peer_socket_tcp::create(*session, peer_address, static_cast<tr_socket_t>(sockpair[0])),
             &session->top_bandwidth_,
             &info_hash,
             false /*incoming*/,
             false /*seed*/);
         return std::pair{ std::move(peer_io), sockpair[1] };
+    }
+
+    [[nodiscard]] auto createOutgoingIo(tr_session* session, tr_sha1_digest_t const& info_hash)
+    {
+        return createOutgoingIo(session, info_hash, DefaultPeerSockAddr);
     }
 
     [[nodiscard]] static constexpr auto makePeerId(std::string_view sv)
@@ -504,6 +512,75 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
+}
+
+TEST_F(HandshakeTest, outgoingPlaintextForStoppedTorrentFails)
+{
+    auto stopped = UbuntuTorrent;
+    stopped.is_running = false;
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(stopped.info_hash, stopped);
+
+    auto [io, sock] = createOutgoingIo(session_, UbuntuTorrent.info_hash);
+
+    // The handshake can't be sent, so the handshake must fail now, not after HandshakeTimeoutSec.
+    auto res = std::optional<tr_handshake::Result>{};
+    auto const handshake = startHandshake(res, &mediator, io);
+    EXPECT_FALSE(res.has_value());
+    ASSERT_TRUE(waitFor([&res] { return res.has_value(); }, MaxWaitMsec));
+    EXPECT_FALSE(res->is_connected);
+
+    tr_net_close_socket(sock);
+}
+
+TEST_F(HandshakeTest, outgoingEncryptedForStoppedTorrentDoesNotRedial)
+{
+    // A peer that would accept the plaintext redial and then stay silent
+    auto const listener = tr_netBindTCP(*tr_address::from_string("127.0.0.1"sv), tr_port{}, true);
+    ASSERT_NE(TR_BAD_SOCKET, listener);
+    auto ss = sockaddr_storage{};
+    auto sslen = socklen_t{ sizeof(ss) };
+    ASSERT_EQ(0, getsockname(listener, reinterpret_cast<sockaddr*>(&ss), &sslen));
+    auto const listener_address = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&ss));
+    ASSERT_TRUE(listener_address);
+
+    auto stopped = UbuntuTorrent;
+    stopped.is_running = false;
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(stopped.info_hash, stopped);
+    mediator.setPrivateKeyFromBase64("0EYKCwBWQ4Dg9kX3c5xxjVtBDKw="sv);
+
+    auto [io, sock] = createOutgoingIo(session_, UbuntuTorrent.info_hash, *listener_address);
+
+    auto res = std::optional<tr_handshake::Result>{};
+    auto const handshake = startHandshake(res, &mediator, io, TR_ENCRYPTION_PREFERRED);
+
+    // Wait for Ya, then drop it, as a peer that doesn't speak MSE would.
+    ASSERT_TRUE(waitFor(
+        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable {
+            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret >= 0) {
+                n_read += ret;
+            }
+            return n_read >= tr_handshake::DH::KeySize;
+        },
+        MaxWaitMsec));
+    tr_net_close_socket(sock);
+
+    ASSERT_TRUE(waitFor([&res] { return res.has_value(); }, MaxWaitMsec));
+    EXPECT_FALSE(res->is_connected);
+
+    // A stopped torrent can't send the plaintext handshake, so it must not dial the peer for one.
+    EXPECT_FALSE(waitFor(
+        [listener]() {
+            if (auto const fd = accept(listener, nullptr, nullptr); fd != TR_BAD_SOCKET) {
+                tr_net_close_socket(fd);
+                return true;
+            }
+            return false;
+        },
+        100));
+
+    tr_net_close_socket(listener);
 }
 
 } // namespace tr::test
