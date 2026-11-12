@@ -94,9 +94,10 @@ public:
         if (thread_ != nullptr) {
             // The thread may be between two reads, where there is nothing to cancel,
             // so cancel until it has left rather than once.
-            do {
+            CancelIoEx(fd_, &overlapped_);
+            while (WaitForSingleObject(thread_, 100) == WAIT_TIMEOUT) {
                 CancelIoEx(fd_, &overlapped_);
-            } while (WaitForSingleObject(thread_, 100) == WAIT_TIMEOUT);
+            }
             CloseHandle(thread_);
         } else if (fd_ != INVALID_HANDLE_VALUE) {
             CancelIoEx(fd_, &overlapped_);
