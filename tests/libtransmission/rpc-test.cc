@@ -19,8 +19,10 @@
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/net.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/rpc-server.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
@@ -40,6 +42,23 @@ using RpcTest = SessionTest;
 
 namespace
 {
+// true when a TCP connection to 127.0.0.1:`port` is accepted
+[[nodiscard]] bool canConnectToLoopback(uint16_t const port)
+{
+    auto const sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (!is_valid_socket(sock)) {
+        return false;
+    }
+
+    auto sin = sockaddr_in{};
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    sin.sin_port = htons(port);
+    auto const connected = connect(sock, reinterpret_cast<sockaddr const*>(&sin), sizeof(sin)) == 0;
+    tr_net_close_socket(sock);
+    return connected;
+}
+
 [[nodiscard]] std::string makeRequest(tr_session* session, std::string_view const jsonreq)
 {
     auto serde = tr_variant_serde::json().inplace();
@@ -637,6 +656,11 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_alt_speed_up,
         TR_KEY_anti_brute_force_enabled,
         TR_KEY_anti_brute_force_threshold,
+        TR_KEY_bind_address_ipv4,
+        TR_KEY_bind_address_ipv6,
+        TR_KEY_bind_interface,
+        TR_KEY_bind_interface_error,
+        TR_KEY_bind_interface_status,
         TR_KEY_blocklist_date,
         TR_KEY_blocklist_enabled,
         TR_KEY_blocklist_size,
@@ -669,6 +693,7 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_recent_relocate_paths,
         TR_KEY_rename_partial_files,
         TR_KEY_reqq,
+        TR_KEY_rpc_bind_interface,
         TR_KEY_rpc_max_request_body_size,
         TR_KEY_rpc_version,
         TR_KEY_rpc_version_minimum,
@@ -716,6 +741,301 @@ TEST_F(RpcTest, sessionGet)
 
     // cleanup
     tr_torrentRemove(tor, false);
+}
+
+// A settings reload moves a running RPC listener to its new address or port.
+TEST_F(RpcTest, reloadMovesTheRpcListener)
+{
+    auto const old_port = freePort();
+    auto const new_port = freePort();
+    ASSERT_NE(0U, old_port) << "no free port on this host";
+    ASSERT_NE(0U, new_port) << "no free port on this host";
+    ASSERT_NE(old_port, new_port);
+
+    auto const reload = [this](std::string_view const address, uint16_t const port) {
+        auto settings = tr_sessionGetSettings(session_);
+        settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+        settings.insert_or_assign(TR_KEY_rpc_bind_address, address);
+        settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+        tr_sessionSet(session_, settings);
+    };
+
+    reload("127.0.0.1"sv, old_port);
+    EXPECT_TRUE(waitFor([old_port] { return canConnectToLoopback(old_port); }, 5s));
+
+    reload("127.0.0.1"sv, new_port);
+    EXPECT_TRUE(waitFor([new_port] { return canConnectToLoopback(new_port); }, 5s));
+    EXPECT_FALSE(canConnectToLoopback(old_port));
+
+    // an invalid address falls back to the default, not to the previous address
+    reload("10.0.0.256"sv, new_port);
+    EXPECT_EQ("0.0.0.0"sv, rpcServer()->get_bind_address());
+}
+
+TEST_F(RpcTest, sessionBindInterface)
+{
+    auto request_map = tr_variant::Map{ 4U };
+    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_set));
+    request_map.try_emplace(TR_KEY_id, 12345);
+
+    auto params = tr_variant::Map{ 2U };
+    params.try_emplace(TR_KEY_bind_interface, "lo0"sv);
+    params.try_emplace(TR_KEY_bind_address_ipv4, "127.0.0.1"sv);
+    request_map.try_emplace(TR_KEY_params, std::move(params));
+
+    // Run on the session thread, as for a remote client, the binding is in
+    // effect, both keys at once, by the time the reply comes
+    auto response = tr_variant{};
+    auto request = tr_variant{ std::move(request_map) };
+    auto const [bind_interface_at_reply, bind_address_at_reply] = blockingRunInSessionThread([&] {
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+        return std::pair{ session_->bind_interface(), session_->settings().bind_address_ipv4 };
+    });
+    EXPECT_EQ("lo0"sv, bind_interface_at_reply);
+    EXPECT_EQ("127.0.0.1"sv, bind_address_at_reply);
+
+    auto* const response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    EXPECT_NE(nullptr, response_map->find_if<tr_variant::Map>(TR_KEY_result));
+
+    request_map = tr_variant::Map{ 4U };
+    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
+    request_map.try_emplace(TR_KEY_id, 12346);
+
+    params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_bind_interface));
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+    request_map.try_emplace(TR_KEY_params, std::move(params));
+
+    response = {};
+    request = tr_variant{ std::move(request_map) };
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* const get_response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(get_response_map, nullptr);
+    auto* const result = get_response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+    auto const bind_interface = result->value_if<std::string_view>(TR_KEY_bind_interface);
+    ASSERT_TRUE(bind_interface);
+    EXPECT_EQ("lo0"sv, *bind_interface);
+}
+
+TEST_F(RpcTest, sessionGetNetworkInterfaces)
+{
+    auto request_map = tr_variant::Map{ 4U };
+    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
+    request_map.try_emplace(TR_KEY_id, 12345);
+
+    auto params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_network_interfaces));
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+    request_map.try_emplace(TR_KEY_params, std::move(params));
+
+    auto response = tr_variant{};
+    auto request = tr_variant{ std::move(request_map) };
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* const response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    auto* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+    auto* const interfaces = result->find_if<tr_variant::Vector>(TR_KEY_network_interfaces);
+    ASSERT_NE(interfaces, nullptr);
+
+    auto const loopback = std::ranges::find_if(*interfaces, [](tr_variant const& iface) {
+        auto const* const map = iface.get_if<tr_variant::Map>();
+        return map != nullptr && map->value_if<std::string_view>(TR_KEY_name) == tr::test::LoopbackInterface;
+    });
+    ASSERT_EQ(TrNetCanBindInterface, loopback != std::end(*interfaces));
+    if (!TrNetCanBindInterface) {
+        return;
+    }
+
+    auto const* const addresses = loopback->get_if<tr_variant::Map>()->find_if<tr_variant::Vector>(TR_KEY_addresses);
+    ASSERT_NE(addresses, nullptr);
+    // each address carries its tags, which IPv4 addresses have none of
+    auto const* const ipv4 = [addresses] -> tr_variant::Map const* {
+        for (auto const& addr : *addresses) {
+            if (auto const* const map = addr.get_if<tr_variant::Map>();
+                map != nullptr && map->value_if<std::string_view>(TR_KEY_address) == "127.0.0.1"sv) {
+                return map;
+            }
+        }
+        return nullptr;
+    }();
+    ASSERT_NE(nullptr, ipv4);
+    auto const* const tags = ipv4->find_if<tr_variant::Vector>(TR_KEY_tags);
+    ASSERT_NE(nullptr, tags);
+    EXPECT_TRUE(std::empty(*tags));
+}
+
+TEST_F(RpcTest, sessionBindAddresses)
+{
+    auto const set = [this](tr_quark const key, std::string_view const value) {
+        auto request_map = tr_variant::Map{ 4U };
+        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_set));
+        request_map.try_emplace(TR_KEY_id, 12345);
+        auto params = tr_variant::Map{ 1U };
+        params.try_emplace(key, value);
+        request_map.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, tr_variant{ std::move(request_map) }, [&response](tr_variant&& resp) {
+            response = std::move(resp);
+        });
+        auto const* const response_map = response.get_if<tr_variant::Map>();
+        return response_map != nullptr && response_map->find_if<tr_variant::Map>(TR_KEY_error) == nullptr;
+    };
+    auto const get = [this](tr_quark const key) {
+        auto request_map = tr_variant::Map{ 4U };
+        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
+        request_map.try_emplace(TR_KEY_id, 12346);
+        auto params = tr_variant::Map{ 1U };
+        auto fields = tr_variant::Vector{};
+        fields.emplace_back(tr_quark_get_string_view(key));
+        params.try_emplace(TR_KEY_fields, std::move(fields));
+        request_map.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, tr_variant{ std::move(request_map) }, [&response](tr_variant&& resp) {
+            response = std::move(resp);
+        });
+        auto const* const response_map = response.get_if<tr_variant::Map>();
+        auto const* const result = response_map != nullptr ? response_map->find_if<tr_variant::Map>(TR_KEY_result) : nullptr;
+        auto const value = result != nullptr ? result->value_if<std::string_view>(key) : std::nullopt;
+        return std::string{ value.value_or("<missing>"sv) };
+    };
+
+    EXPECT_TRUE(set(TR_KEY_bind_address_ipv4, "127.0.0.1"sv));
+    EXPECT_TRUE(waitFor([&] { return get(TR_KEY_bind_address_ipv4) == "127.0.0.1"sv; }, 5s));
+    EXPECT_TRUE(set(TR_KEY_bind_address_ipv6, "::1"sv));
+    EXPECT_TRUE(waitFor([&] { return get(TR_KEY_bind_address_ipv6) == "::1"sv; }, 5s));
+
+    // a malformed address, one of the other family, or one with a port leaves the setting alone
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv4, "::1"sv));
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv4, "not an address"sv));
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv4, "127.0.0.1:51413"sv));
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv6, "127.0.0.1"sv));
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv6, "[::1]:80"sv));
+    EXPECT_FALSE(set(TR_KEY_bind_address_ipv6, "[::1]"sv));
+    EXPECT_EQ("127.0.0.1"sv, get(TR_KEY_bind_address_ipv4));
+    EXPECT_EQ("::1"sv, get(TR_KEY_bind_address_ipv6));
+
+    // empty means any address
+    EXPECT_TRUE(set(TR_KEY_bind_address_ipv4, ""sv));
+    EXPECT_TRUE(waitFor([&] { return std::empty(get(TR_KEY_bind_address_ipv4)); }, 5s));
+}
+
+TEST_F(RpcTest, sessionRpcBindInterfaceIsReadOnly)
+{
+    auto const exec = [this](tr_quark const method, tr_variant::Map params) {
+        auto request_map = tr_variant::Map{ 4U };
+        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
+        request_map.try_emplace(TR_KEY_id, 12345);
+        request_map.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, tr_variant{ std::move(request_map) }, [&response](tr_variant&& resp) {
+            response = std::move(resp);
+        });
+        return response;
+    };
+
+    auto set_params = tr_variant::Map{ 1U };
+    set_params.try_emplace(TR_KEY_rpc_bind_interface, tr::test::LoopbackInterface);
+    exec(TR_KEY_session_set, std::move(set_params));
+
+    auto get_params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_rpc_bind_interface));
+    get_params.try_emplace(TR_KEY_fields, std::move(fields));
+    auto const response = exec(TR_KEY_session_get, std::move(get_params));
+
+    auto const* const response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    auto const* const result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+    auto const rpc_bind_interface = result->value_if<std::string_view>(TR_KEY_rpc_bind_interface);
+    ASSERT_TRUE(rpc_bind_interface);
+    EXPECT_EQ(""sv, *rpc_bind_interface);
+}
+
+// A settings reload moves a running RPC listener onto its new interface.
+TEST_F(RpcTest, reloadRebindsTheRpcListener)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const interfaces = tr_net_interfaces();
+    auto const other = std::ranges::find_if(interfaces, [](auto const& iface) { return iface.name != LoopbackInterface; });
+    if (other == std::end(interfaces)) {
+        GTEST_SKIP() << "needs a network interface besides loopback";
+    }
+
+    auto const port = freePort();
+    ASSERT_NE(0U, port) << "no free port on this host";
+
+    auto const reload = [this, port](std::string_view const bind_interface) {
+        auto settings = tr_sessionGetSettings(session_);
+        settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+        settings.insert_or_assign(TR_KEY_rpc_bind_address, "127.0.0.1"sv);
+        settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+        settings.insert_or_assign(TR_KEY_rpc_bind_interface, bind_interface);
+        tr_sessionSet(session_, settings);
+    };
+    auto const reachable = [port] {
+        return canConnectToLoopback(port);
+    };
+
+    reload(""sv);
+    EXPECT_TRUE(waitFor(reachable, 5s));
+
+    // traffic from this host arrives on loopback, which a listener bound to another interface refuses
+    reload(other->name);
+    EXPECT_TRUE(waitFor([&reachable] { return !reachable(); }, 5s)) << other->name;
+
+    reload(LoopbackInterface);
+    EXPECT_TRUE(waitFor(reachable, 5s));
+}
+
+// A listener whose interface was missing when it started binds once the interface appears.
+TEST_F(RpcTest, rpcListenerRestartsWhenItsInterfaceAppears)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const port = freePort();
+    ASSERT_NE(0U, port) << "no free port on this host";
+
+    auto settings = tr_sessionGetSettings(session_);
+    settings.insert_or_assign(TR_KEY_rpc_enabled, true);
+    settings.insert_or_assign(TR_KEY_rpc_bind_address, "127.0.0.1"sv);
+    settings.insert_or_assign(TR_KEY_rpc_port, int64_t{ port });
+    settings.insert_or_assign(TR_KEY_rpc_bind_interface, LoopbackInterface);
+    tr_sessionSet(session_, settings);
+    ASSERT_TRUE(waitFor([port] { return canConnectToLoopback(port); }, 5s));
+
+    // pretend loopback was missing when the listener started, and has now appeared
+    auto index = std::promise<unsigned>{};
+    session_->run_in_session_thread([server = rpcServer(), &index] {
+        server->bound_interface_index_ = 0U;
+        server->check_bound_interface();
+        index.set_value(server->bound_interface_index_);
+    });
+    auto future = index.get_future();
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_EQ(tr_net_interface_index(LoopbackInterface), future.get());
+    EXPECT_TRUE(waitFor([port] { return canConnectToLoopback(port); }, 5s));
 }
 
 TEST_F(RpcTest, torrentGet)

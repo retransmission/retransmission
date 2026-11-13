@@ -2,6 +2,7 @@
 @define-color tr_transfer_up_color #26a955;
 @define-color tr_transfer_idle_color #636363;
 @define-color tr_error_color #ff453a;
+@define-color tr_warning_color #c88800;
 
 .tr-workarea.frame {
     border-left-width: 0;
@@ -94,4 +95,12 @@ frame > grid {
 
 frame + frame {
     margin-top: 6px;
+}
+
+.tr-feedback-error {
+    color: @tr_error_color;
+}
+
+.tr-feedback-warning {
+    color: @tr_warning_color;
 }

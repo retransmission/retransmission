@@ -7,6 +7,7 @@
 #include <array>
 #include <compare>
 #include <cstddef> // std::byte, size_t
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <utility>
@@ -18,12 +19,16 @@
 #include <sys/socket.h>
 #endif
 
+#include <fmt/format.h>
+
+#include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-mgr.h>
 
 #include "test-fixtures.h"
 
 using NetTest = ::tr::test::TransmissionTest;
+using tr::test::LoopbackInterface;
 using namespace std::literals;
 
 TEST_F(NetTest, conversionsIPv4)
@@ -1061,4 +1066,295 @@ TEST_F(NetTest, isValidForPeers)
             EXPECT_EQ(expected, socket_address->is_valid_for_peers(from)) << presentation << " from " << from;
         }
     }
+}
+
+TEST_F(NetTest, bindInterfaceIsDefault)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { ""sv, true },
+        { "  "sv, true },
+        { "utun4"sv, false },
+        { " utun4 "sv, false },
+        { "blocked"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_default(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, bindInterfaceIsBlocked)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { "blocked"sv, true },
+        { " blocked "sv, true },
+        { ""sv, false },
+        { "utun4"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_blocked(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, effectiveBindInterface)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { ""sv, ""sv },
+        { "  "sv, ""sv },
+        { " utun4 "sv, "utun4"sv },
+        { "blocked"sv, "blocked"sv },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_effective_bind_interface(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, interfaceHasIpv4)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform lists no interfaces to bind to";
+    }
+
+    EXPECT_TRUE(tr_net_interface_has_ipv4(tr::test::LoopbackInterface));
+    EXPECT_FALSE(tr_net_interface_has_ipv4("tr-no-such-interface"sv));
+    EXPECT_FALSE(tr_net_interface_has_ipv4(""sv));
+}
+
+TEST_F(NetTest, interfaceManager)
+{
+    using Manager = tr_net_manager;
+    using State = tr_net_nm_state;
+
+    // NetworkManager counts only for what it brought up from its own profiles
+    EXPECT_EQ(Manager::NetworkManager, tr_net_interface_manager("enp5s0"sv, State::Configured));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("enp5s0"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("enp5s0"sv, State::Unknown));
+
+    // Docker's and libvirt's bridges, which NetworkManager only follows
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("docker0"sv, State::External));
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("br-1a24b37ec1e0"sv, State::External));
+    EXPECT_EQ(Manager::Docker, tr_net_interface_manager("br-1a24b37ec1e0"sv, State::Unknown));
+    EXPECT_EQ(Manager::Libvirt, tr_net_interface_manager("virbr0"sv, State::External));
+    EXPECT_EQ(Manager::Libvirt, tr_net_interface_manager("virbr12"sv, State::Unknown));
+
+    // a bridge with a name of its own, or one that only looks alike
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-trupnp"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-1A24B37EC1E0"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-1a24b37ec1e"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("br-"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("virbr"sv, State::External));
+    EXPECT_EQ(Manager::Other, tr_net_interface_manager("virbr0-nic"sv, State::External));
+
+    // the session_get values
+    EXPECT_EQ("networkmanager"sv, tr_net_manager_name(Manager::NetworkManager));
+    EXPECT_EQ("docker"sv, tr_net_manager_name(Manager::Docker));
+    EXPECT_EQ("libvirt"sv, tr_net_manager_name(Manager::Libvirt));
+    EXPECT_EQ("other"sv, tr_net_manager_name(Manager::Other));
+}
+
+TEST_F(NetTest, addressTags)
+{
+    using Origin = tr_net_address_origin;
+    auto const tags = [](std::string_view const address, Origin const origin = Origin::Unknown) {
+        auto const addr = tr_address::from_string(address);
+        EXPECT_TRUE(addr) << address;
+        return tr_net_address_tags({ .address = addr.value_or(tr_address{}), .origin = origin });
+    };
+    using Tags = std::vector<std::string_view>;
+
+    // the scope comes from the address, the origin from the OS
+    EXPECT_EQ((Tags{ "gua"sv, "slaac-privacy"sv }), tags("2a01:799:3a1::1"sv, Origin::SlaacPrivacy));
+    EXPECT_EQ((Tags{ "gua"sv, "slaac-stable"sv }), tags("2a02:1:2::abcd"sv, Origin::SlaacStable));
+    EXPECT_EQ((Tags{ "ula"sv, "dhcp"sv }), tags("fd12:3456::2"sv, Origin::Dhcp));
+    EXPECT_EQ((Tags{ "link-local"sv }), tags("fe80::1"sv));
+    EXPECT_EQ((Tags{ "nat64"sv }), tags("64:ff9b::c000:201"sv));
+    EXPECT_EQ((Tags{ "nat64"sv }), tags("64:ff9b:1::1"sv));
+
+    // ranges carved out of 2000::/3 aren't global unicast
+    EXPECT_EQ((Tags{ "documentation"sv }), tags("2001:db8:1:2::ffff"sv));
+    EXPECT_EQ((Tags{ "documentation"sv }), tags("3fff:fff::1"sv));
+    EXPECT_EQ((Tags{ "gua"sv }), tags("3fff:1000::1"sv)); // just past 3fff::/20
+    EXPECT_EQ((Tags{ "teredo"sv }), tags("2001:0:4136:e378::1"sv));
+    EXPECT_EQ((Tags{ "6to4"sv }), tags("2002:c000:201::1"sv));
+    EXPECT_EQ((Tags{ "gua"sv }), tags("2001:470::1"sv));
+
+    // a NAT64 /96 must be followed by zeros up to the embedded IPv4 address
+    EXPECT_EQ(Tags{}, tags("64:ff9b:0:1::1"sv));
+
+    EXPECT_EQ((Tags{ "site-local"sv }), tags("fec0::1"sv));
+    EXPECT_EQ((Tags{ "loopback"sv }), tags("::1"sv));
+
+    // IPv4 addresses have no tags at all
+    EXPECT_EQ(Tags{}, tags("192.168.1.5"sv, Origin::Dhcp));
+}
+
+TEST_F(NetTest, isBindAddress)
+{
+    // empty, even padded, means any address
+    EXPECT_TRUE(tr_net_is_bind_address(""sv, TR_AF_INET));
+    EXPECT_TRUE(tr_net_is_bind_address("  "sv, TR_AF_INET6));
+
+    EXPECT_TRUE(tr_net_is_bind_address(" 192.168.1.5 "sv, TR_AF_INET));
+    EXPECT_TRUE(tr_net_is_bind_address("fd00::2"sv, TR_AF_INET6));
+
+    // the other family, a port, brackets, or no address at all
+    EXPECT_FALSE(tr_net_is_bind_address("fd00::2"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.5"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.5:51413"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("[fd00::2]:80"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("[fd00::2]"sv, TR_AF_INET6));
+    EXPECT_FALSE(tr_net_is_bind_address("192.168.1.256"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_is_bind_address("wg0"sv, TR_AF_INET));
+}
+
+TEST_F(NetTest, interfaceIndex)
+{
+    EXPECT_EQ(0U, tr_net_interface_index(""sv));
+    EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
+    EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
+
+#ifndef _WIN32
+    EXPECT_NE(0U, tr_net_interface_index(fmt::format(" {} ", LoopbackInterface)));
+#endif
+}
+
+TEST_F(NetTest, socketIsBoundToTheNamedInterface)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    if (!tr::test::canReadBoundInterface()) {
+        GTEST_SKIP() << "the kernel can't report what a socket is bound to";
+    }
+
+    for (auto const type : { TR_AF_INET, TR_AF_INET6 }) {
+        auto const sock = socket(tr_ip_protocol_to_af(type), SOCK_DGRAM, 0);
+        if (!is_valid_socket(sock)) {
+            continue; // no IPv6 on this host
+        }
+
+        EXPECT_TRUE(tr_netSetSocketInterface(sock, type, LoopbackInterface)) << tr_ip_protocol_to_sv(type);
+        EXPECT_EQ(tr_net_interface_index(LoopbackInterface), tr::test::boundInterfaceIndex(sock, type))
+            << tr_ip_protocol_to_sv(type);
+
+        tr_net_close_socket(sock);
+    }
+}
+
+TEST_F(NetTest, interfaceStatus)
+{
+    using State = tr_net_bind_status::State;
+
+    EXPECT_EQ(State::Default, tr_net_interface_status(""sv).state);
+    EXPECT_EQ(State::Default, tr_net_interface_status("  "sv).state);
+    EXPECT_EQ(State::Blocked, tr_net_interface_status("blocked"sv).state);
+
+    if (!TrNetCanBindInterface) {
+        EXPECT_EQ(State::Unsupported, tr_net_interface_status(LoopbackInterface).state);
+        return;
+    }
+
+    EXPECT_EQ(State::Missing, tr_net_interface_status("tr-no-such-interface"sv).state);
+
+    // the loopback interface exists, and binding to it succeeds
+    auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+    ASSERT_TRUE(is_valid_socket(sock));
+    EXPECT_TRUE(tr_netSetSocketInterface(sock, TR_AF_INET, LoopbackInterface));
+    tr_net_close_socket(sock);
+
+    auto const status = tr_net_interface_status(LoopbackInterface);
+    EXPECT_EQ(State::Ok, status.state);
+    EXPECT_TRUE(std::empty(status.error));
+}
+
+TEST_F(NetTest, interfaceStatusIsPerInterface)
+{
+    using State = tr_net_bind_status::State;
+
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto const interfaces = tr_net_interfaces();
+    auto const other = std::ranges::find_if(interfaces, [](auto const& iface) { return iface.name != LoopbackInterface; });
+    if (other == std::end(interfaces)) {
+        GTEST_SKIP() << "needs a network interface besides loopback";
+    }
+
+    // an invalid socket makes the OS refuse a bind to an interface that exists
+    auto const refuse_bind = [](std::string_view const name) {
+        EXPECT_FALSE(tr_netSetSocketInterface(TR_BAD_SOCKET, TR_AF_INET, name, true)) << name;
+    };
+    auto const bind = [](std::string_view const name) {
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        auto const ok = tr_netSetSocketInterface(sock, TR_AF_INET, name, true);
+        tr_net_close_socket(sock);
+        return ok;
+    };
+
+    // a refusal on one interface doesn't hide an earlier refusal on another
+    refuse_bind(LoopbackInterface);
+    refuse_bind(other->name);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // nor does a successful bind on one interface clear another's refusal
+    EXPECT_TRUE(bind(LoopbackInterface));
+    EXPECT_EQ(State::Ok, tr_net_interface_status(LoopbackInterface).state);
+    EXPECT_EQ(State::BindFailed, tr_net_interface_status(other->name).state);
+
+    // binding to the other interface may need privileges; only its success clears its refusal
+    if (bind(other->name)) {
+        EXPECT_EQ(State::Ok, tr_net_interface_status(other->name).state);
+    }
+
+    // the refusals are process-wide, so later tests mustn't inherit them
+    tr_net_forget_bind_refusal(other->name);
+    EXPECT_NE(State::BindFailed, tr_net_interface_status(other->name).state);
+}
+
+TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    static auto constexpr Missing = "tr-no-such-interface"sv;
+
+    // Binds a fresh socket to `name` and returns how many warnings that logged.
+    auto const bind_and_count_warnings = [](std::string_view const name) {
+        tr_logClearQueue();
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        (void)tr_netSetSocketInterface(sock, TR_AF_INET, name);
+        tr_net_close_socket(sock);
+        auto const messages = tr_logGetQueue();
+        return std::ranges::count_if(messages, [](auto const& msg) { return msg.level == TR_LOG_WARN; });
+    };
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+
+    // a bind that succeeds ends any outage an earlier test left behind
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
+
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+    EXPECT_EQ(0, bind_and_count_warnings(Missing));
+
+    // once a socket binds again, the next outage warns again
+    EXPECT_EQ(0, bind_and_count_warnings(LoopbackInterface));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    // as it does after a socket on the default route
+    EXPECT_EQ(0, bind_and_count_warnings(""sv));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
 }

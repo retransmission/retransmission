@@ -11,6 +11,7 @@
 
 #include <ctime>
 #include <memory>
+#include <optional>
 #include <string_view>
 #include <vector>
 
@@ -39,6 +40,17 @@ public:
         virtual ~Mediator() = default;
 
         [[nodiscard]] virtual tr_address bind_address(tr_address_type type) const = 0;
+
+        [[nodiscard]] virtual std::string_view bind_interface() const
+        {
+            return {};
+        }
+
+        // the address the OS sends from, honoring the interface binding
+        [[nodiscard]] virtual std::optional<tr_address> source_address(tr_address_type /*type*/) const
+        {
+            return {};
+        }
 
         [[nodiscard]] virtual tr_port port() const = 0;
 

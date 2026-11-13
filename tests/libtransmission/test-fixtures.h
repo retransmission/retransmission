@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <array>
 #include <cerrno> // errno, ENOSPC, ENOSYS
 #include <chrono>
 #include <condition_variable>
@@ -23,6 +24,12 @@
 #include <utility>
 #include <vector>
 
+#ifndef _WIN32
+#include <net/if.h> // if_nametoindex()
+#include <netinet/in.h>
+#include <sys/socket.h>
+#endif
+
 #include <event2/event.h>
 
 #include <gtest/gtest.h>
@@ -38,6 +45,7 @@
 #include <libtransmission/file.h> // tr_sys_file_*()
 #include <libtransmission/local-data.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/net.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
@@ -55,6 +63,83 @@ inline std::ostream& operator<<(std::ostream& os, tr_error const& err)
 
 namespace tr::test
 {
+
+// the loopback interface's name, for tests that bind sockets to an interface
+#ifdef __linux__
+inline constexpr auto LoopbackInterface = "lo"sv;
+#else
+inline constexpr auto LoopbackInterface = "lo0"sv;
+#endif
+
+// the index of the interface the kernel has `sock` bound to, 0 when it has none,
+// or nullopt when the kernel can't report it
+[[nodiscard]] inline std::optional<unsigned> readBoundInterfaceIndex(
+    [[maybe_unused]] tr_socket_t const sock,
+    [[maybe_unused]] tr_address_type const type)
+{
+#if defined(__linux__)
+    auto name = std::array<char, IF_NAMESIZE>{};
+    auto len = static_cast<socklen_t>(std::size(name));
+    if (getsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE, std::data(name), &len) != 0) {
+        return {};
+    }
+    return name[0] == '\0' ? 0U : if_nametoindex(std::data(name));
+#elif defined(__APPLE__)
+    auto index = int{};
+    auto len = static_cast<socklen_t>(sizeof(index));
+    auto const level = type == TR_AF_INET ? IPPROTO_IP : IPPROTO_IPV6;
+    auto const option = type == TR_AF_INET ? IP_BOUND_IF : IPV6_BOUND_IF;
+    if (getsockopt(sock, level, option, &index, &len) != 0) {
+        return {};
+    }
+    return static_cast<unsigned>(index);
+#else
+    return {};
+#endif
+}
+
+// the index of the interface the kernel has `sock` bound to, or 0 when it has none
+[[nodiscard]] inline unsigned boundInterfaceIndex(tr_socket_t const sock, tr_address_type const type)
+{
+    return readBoundInterfaceIndex(sock, type).value_or(0U);
+}
+
+// false where the kernel binds sockets to an interface but can't report it,
+// as under qemu-user, which runs the cross-architecture CI jobs.
+// The probe socket must be bound: qemu-user reads back an unbound socket but fails on a bound one.
+[[nodiscard]] inline bool canReadBoundInterface()
+{
+    auto const sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (!is_valid_socket(sock)) {
+        return false;
+    }
+    auto const can_read = tr_netSetSocketInterface(sock, TR_AF_INET, LoopbackInterface) &&
+        readBoundInterfaceIndex(sock, TR_AF_INET).has_value();
+    tr_net_close_socket(sock);
+    return can_read;
+}
+
+// A port free for both TCP and UDP on IPv4, or 0 when none is found.
+// Tests use it where the default port may be held by another program, such as a running Transmission.
+[[nodiscard]] inline uint16_t freePort()
+{
+    for (int attempt = 0; attempt < 10; ++attempt) {
+        auto const tcp = socket(PF_INET, SOCK_STREAM, 0);
+        auto const udp = socket(PF_INET, SOCK_DGRAM, 0);
+        auto sin = sockaddr_in{};
+        sin.sin_family = AF_INET;
+        auto len = static_cast<socklen_t>(sizeof(sin));
+        auto* const addr = reinterpret_cast<sockaddr*>(&sin);
+        auto const ok = is_valid_socket(tcp) && is_valid_socket(udp) && bind(tcp, addr, len) == 0 &&
+            getsockname(tcp, addr, &len) == 0 && bind(udp, addr, len) == 0;
+        tr_net_close_socket(tcp);
+        tr_net_close_socket(udp);
+        if (ok) {
+            return ntohs(sin.sin_port);
+        }
+    }
+    return 0U;
+}
 
 using file_func_t = std::function<void(std::string_view filename)>;
 
@@ -372,6 +457,11 @@ protected:
         return session_->peer_mgr_.get();
     }
 
+    [[nodiscard]] tr_rpc_server* rpcServer() const noexcept
+    {
+        return session_->rpc_server_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
@@ -519,6 +609,34 @@ protected:
     [[nodiscard]] auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds::rep const msec)
     {
         return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
+    }
+
+    // the UDP core's IPv4 socket, read on the session thread
+    [[nodiscard]] tr_socket_t udpSocket4()
+    {
+        return blockingRunInSessionThread(
+            [this] { return session_->udp_core_ ? session_->udp_core_->socket4() : TR_BAD_SOCKET; });
+    }
+
+    // the IPv4 peer listening socket, read on the session thread
+    [[nodiscard]] tr_socket_t listeningSocket4()
+    {
+        return blockingRunInSessionThread(
+            [this] { return session_->bound_ipv4_ ? session_->bound_ipv4_->socket() : TR_BAD_SOCKET; });
+    }
+
+    // Moves the peer port to a free one and waits for the IPv4 listening and UDP sockets.
+    // false means a free port couldn't be bound, which is a bug rather than the environment.
+    [[nodiscard]] bool openIPv4SocketsOnFreePeerPort()
+    {
+        auto const port = freePort();
+        if (port == 0U) {
+            ADD_FAILURE() << "no free port on this host";
+            return false;
+        }
+
+        tr_sessionSetPeerPort(session_, port);
+        return waitFor([this] { return is_valid_socket(listeningSocket4()) && is_valid_socket(udpSocket4()); }, 5s);
     }
 
     // Waits for `test` to hold, checking it on the session thread,

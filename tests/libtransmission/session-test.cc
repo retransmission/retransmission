@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -12,20 +13,30 @@
 #include <initializer_list>
 #include <map>
 #include <memory>
+#include <iterator>
+#include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
+
+#include <event2/http.h>
+
+#include <fmt/format.h>
 
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/announcer.h>
 #include <libtransmission/bandwidth.h>
 #include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/file-utils.h> // tr_file_read(), tr_file_save()
 #include <libtransmission/file.h>
+#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
@@ -35,6 +46,7 @@
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
+#include "loopback-server.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -64,6 +76,18 @@ TEST_F(SessionTest, propertiesApi)
         tr_sessionSetDownloadDir(session, value);
         EXPECT_EQ(value, session->downloadDir());
         EXPECT_EQ(value, tr_sessionGetDownloadDir(session));
+    }
+
+    // bind interface
+
+    {
+        auto constexpr Value = "lo0"sv;
+        EXPECT_EQ(""sv, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, Value);
+        EXPECT_TRUE(waitFor([session, Value] { return tr_sessionGetBindInterface(session) == Value; }, 5s));
+        EXPECT_EQ(Value, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, ""sv);
+        EXPECT_TRUE(waitFor([session] { return tr_sessionGetBindInterface(session).empty(); }, 5s));
     }
 
     // incomplete dir
@@ -641,6 +665,193 @@ TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
     EXPECT_EQ(tr_config_dir_lock::Status::Unavailable, session->configDirLockStatus());
     EXPECT_FALSE(tr_sessionConfigDirIsContended(session));
     tr_sessionClose(session, 1);
+}
+
+// No setting holds the port peer_port_random_on_start picks, so a change
+// to another setting must keep it, while setting the peer port replaces it.
+TEST_F(SessionTest, randomPeerPortSurvivesOtherSettingsChanges)
+{
+    auto const dir = sandboxDir() + "/random-port";
+    ASSERT_TRUE(tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0700));
+
+    // a range without the configured port, so the random one always differs from it
+    auto settings = quietSettings();
+    settings.insert_or_assign(TR_KEY_peer_port, int64_t{ TrDefaultPeerPort });
+    settings.insert_or_assign(TR_KEY_peer_port_random_low, int64_t{ 40000 });
+    settings.insert_or_assign(TR_KEY_peer_port_random_high, int64_t{ 49999 });
+    auto* const session = tr_sessionInit(dir, false, settings);
+    auto const random_port = tr_sessionGetPeerPort(session);
+    EXPECT_NE(TrDefaultPeerPort, random_port);
+
+    tr_sessionSetBindInterface(session, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([session] { return tr_sessionGetBindInterface(session) == TrBindInterfaceBlocked; }, 5s));
+    EXPECT_EQ(random_port, tr_sessionGetPeerPort(session));
+
+    tr_sessionSetPeerPort(session, TrDefaultPeerPort);
+    EXPECT_TRUE(waitFor([session] { return tr_sessionGetPeerPort(session) == TrDefaultPeerPort; }, 5s));
+
+    tr_sessionClose(session, 1);
+}
+
+// Sockets use the setting stripped, so whitespace alone changes nothing,
+// and restarting every torrent and socket over it would be wasted.
+TEST_F(SessionTest, bindInterfaceWhitespaceIsNoChange)
+{
+    tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_INFO);
+    tr_logSetQueueEnabled(true);
+    tr_logClearQueue();
+
+    // the session logs the "blocked" policy each time the binding changes
+    auto settings = tr_sessionGetSettings(session_);
+    settings.insert_or_assign(TR_KEY_bind_interface, fmt::format(" {} ", TrBindInterfaceBlocked));
+    tr_sessionSet(session_, settings);
+    for (auto const& msg : tr_logGetQueue()) {
+        EXPECT_FALSE(msg.message.contains("binding is 'blocked'"sv)) << msg.message;
+    }
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
+}
+
+// A session_set naming the interface and a bind address applies them in one
+// settings change, so the session never pairs the new one with the old other.
+TEST_F(SessionTest, bindingChangesFromOneTaskApplyTogether)
+{
+    auto const interface_seen = std::make_shared<std::string>();
+    blockingRunInSessionThread([this, interface_seen] {
+        tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+        tr_sessionSetBindAddressIPv4(session_, "127.0.0.1"sv);
+        // neither has taken effect yet: both wait for the task to end
+        *interface_seen = session_->bind_interface();
+    });
+    EXPECT_EQ(""sv, *interface_seen);
+
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+    EXPECT_EQ("127.0.0.1"sv, blockingRunInSessionThread([this] { return session_->settings().bind_address_ipv4; }));
+}
+
+// A new UDP core binds the port the old one held, which is refused while both are open.
+TEST_F(SessionTest, udpCoreSurvivesABindInterfaceChange)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto constexpr Loopback = LoopbackInterface;
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
+
+    tr_sessionSetBindInterface(session_, Loopback);
+    EXPECT_TRUE(waitFor([this, Loopback] { return tr_sessionGetBindInterface(session_) == Loopback; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(udpSocket4()));
+}
+
+// The setting must reach the sockets themselves, not just the session's copy of it.
+TEST_F(SessionTest, bindInterfaceBindsTheSessionSockets)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    if (!canReadBoundInterface()) {
+        GTEST_SKIP() << "the kernel can't report what a socket is bound to";
+    }
+
+    ASSERT_TRUE(openIPv4SocketsOnFreePeerPort());
+
+    auto const loopback_index = tr_net_interface_index(LoopbackInterface);
+    EXPECT_EQ(0U, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    tr_sessionSetBindInterface(session_, LoopbackInterface);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) != 0U; }, 5s));
+
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(listeningSocket4(), TR_AF_INET));
+    EXPECT_EQ(loopback_index, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+
+    // back on the default route, the new sockets carry no binding
+    tr_sessionSetBindInterface(session_, ""sv);
+    EXPECT_TRUE(waitFor([this] { return boundInterfaceIndex(listeningSocket4(), TR_AF_INET) == 0U; }, 5s));
+
+    EXPECT_TRUE(is_valid_socket(listeningSocket4()));
+    EXPECT_EQ(0U, boundInterfaceIndex(udpSocket4(), TR_AF_INET));
+}
+
+// A binding change is a hard move: no "stopped" goes out under the old binding,
+// and each tracker hears from the torrent next as a new peer that has moved no data.
+// More tiers than one announcer upkeep sends prove none of them is left behind.
+TEST_F(SessionTest, interfaceChangeLeavesTheOldBindingSilently)
+{
+    static auto constexpr NumTiers = size_t{ 21U };
+    static auto constexpr Uploaded = uint32_t{ 12345U };
+
+    auto tracker = LoopbackServer::create();
+    if (!tracker) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+
+    auto const mutex = std::make_shared<std::mutex>();
+    auto const announces = std::make_shared<std::vector<std::string>>();
+    tracker->setHandler([mutex, announces](evhttp_request* req) {
+        {
+            auto const lock = std::scoped_lock{ *mutex };
+            announces->emplace_back(evhttp_request_get_uri(req));
+        }
+        LoopbackServer::reply(req, HTTP_OK, "OK", "d8:intervali1800e5:peers0:e"sv);
+    });
+    auto const with = [mutex, announces](std::string_view const event) {
+        auto const lock = std::scoped_lock{ *mutex };
+        auto ret = std::vector<std::string>{};
+        std::ranges::copy_if(*announces, std::back_inserter(ret), [event](auto const& uri) { return uri.contains(event); });
+        return ret;
+    };
+    auto const param = [](std::string_view const uri, std::string_view const key) {
+        auto const begin = uri.find(fmt::format("&{}=", key));
+        auto const value = uri.substr(begin + std::size(key) + 2U);
+        return std::string{ value.substr(0, value.find('&')) };
+    };
+    // Each announce goes out once per address family, and newer curl delivers both to an IPv4
+    // literal, so this counts the tiers that started under each peer ID, not the requests.
+    auto const n_started = [&with, &param] {
+        auto tiers = std::set<std::pair<std::string, std::string>>{};
+        for (auto const& uri : with("event=started"sv)) {
+            tiers.emplace(uri.substr(0, uri.find('?')), param(uri, "peer_id"sv));
+        }
+        return std::size(tiers);
+    };
+
+    auto trackers = std::string{};
+    for (size_t i = 0U; i < NumTiers; ++i) {
+        trackers += tracker->url(fmt::format("/{:d}/announce", i));
+        trackers += "\n\n";
+    }
+
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    ASSERT_TRUE(tr_torrentSetTrackerList(tor, trackers));
+    tr_torrentStartNow(tor);
+    ASSERT_TRUE(waitFor([&n_started] { return n_started() == NumTiers; }, 10s));
+    blockingRunInSessionThread([tor] { tr_announcerAddBytes(tor, TR_ANN_UP, Uploaded); });
+
+    // "blocked" refuses every fetch made under it, so nothing of the move to it
+    // reaches the tracker; back on the default route, every tier starts afresh
+    tr_sessionSetBindInterface(session_, TrBindInterfaceBlocked);
+    EXPECT_TRUE(waitFor([this] { return tr_sessionGetBindInterface(session_) == TrBindInterfaceBlocked; }, 5s));
+    tr_sessionSetBindInterface(session_, ""sv);
+    ASSERT_TRUE(waitFor([&n_started] { return n_started() == 2U * NumTiers; }, 10s));
+
+    EXPECT_TRUE(std::empty(with("event=stopped"sv)));
+    auto const started = with("event=started"sv);
+    EXPECT_NE(param(started.front(), "peer_id"sv), param(started.back(), "peer_id"sv));
+    EXPECT_NE(param(started.front(), "key"sv), param(started.back(), "key"sv));
+    EXPECT_EQ("0"sv, param(started.back(), "uploaded"sv)) << started.back();
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->is_running(); }));
 }
 
 TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)

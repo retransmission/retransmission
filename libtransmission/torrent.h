@@ -909,6 +909,13 @@ struct tr_torrent {
 
     void start(bool bypass_queue, std::optional<bool> has_any_local_data);
 
+    // Restart a running torrent in two halves, announcing both events, so the
+    // caller can act between them. Session thread only.
+    // stop_for_restart() returns false if the torrent is stopped, or stopping,
+    // which it then stops now; otherwise call start_after_restart() afterwards.
+    [[nodiscard]] bool stop_for_restart();
+    void start_after_restart();
+
     [[nodiscard]] constexpr auto has_changed_since(time_t when) const noexcept
     {
         return date_changed_ > when;
@@ -1057,6 +1064,14 @@ struct tr_torrent {
     [[nodiscard]] constexpr tr_peer_id_t const& peer_id() const noexcept
     {
         return peer_id_;
+    }
+
+    // A new peer ID and announce key, so that no tracker or peer can match what
+    // this torrent sends next with what it sent before.
+    void renew_identity()
+    {
+        peer_id_ = tr_peerIdInit();
+        announce_key_ = tr_rand_obj<tr_announce_key_t>();
     }
 
     // Call this when a block arrives from a peer.

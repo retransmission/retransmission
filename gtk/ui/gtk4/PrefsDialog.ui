@@ -824,6 +824,201 @@
                     <child>
                       <object class="GtkFrame">
                         <child type="label">
+                          <object class="GtkLabel" id="network_interface_section_label">
+                            <property name="label" translatable="yes">Network Interface</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkGrid" id="network_interface_section_layout">
+                            <property name="row-spacing">6</property>
+                            <property name="column-spacing">12</property>
+                            <child>
+                              <object class="GtkLabel" id="network_interface_label">
+                                <property name="label" translatable="yes">Network _interface:</property>
+                                <property name="xalign">0</property>
+                                <property name="tooltip-text" translatable="yes">Route peer and tracker traffic through this interface only, such as a VPN tunnel.</property>
+                                <property name="use-underline">1</property>
+                                <property name="mnemonic-widget">network_interface_combo</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                </layout>
+                                <child>
+                                  <object class="GtkMenuButton" id="network_interface_filter_button">
+                                    <property name="child">
+                                      <object class="GtkLabel">
+                                        <property name="label">▽</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="network_interface_combo">
+                                    <property name="hexpand">1</property>
+                                    <property name="tooltip-text" translatable="yes">Route peer and tracker traffic through this interface only, such as a VPN tunnel.</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="network_interface_addresses_label">
+                                <property name="xalign">0</property>
+                                <property name="selectable">1</property>
+                                <property name="wrap">1</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="network_interface_status_label">
+                                <property name="xalign">0</property>
+                                <property name="wrap">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">2</property>
+                                  <property name="column-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="bind_address_ipv4_label">
+                                <property name="label" translatable="yes">IPv_4 bind address:</property>
+                                <property name="xalign">0</property>
+                                <property name="tooltip-text" translatable="yes">Listen for peers and send traffic from this local address only.</property>
+                                <property name="use-underline">1</property>
+                                <property name="mnemonic-widget">bind_address_ipv4_combo</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">3</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">3</property>
+                                </layout>
+                                <child>
+                                  <object class="GtkMenuButton" id="bind_address_ipv4_filter_button">
+                                    <property name="child">
+                                      <object class="GtkLabel">
+                                        <property name="label">▽</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="bind_address_ipv4_combo">
+                                    <property name="hexpand">1</property>
+                                    <property name="tooltip-text" translatable="yes">Listen for peers and send traffic from this local address only.</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="bind_address_ipv4_feedback_label">
+                                <property name="xalign">0</property>
+                                <property name="wrap">1</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">4</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="bind_address_ipv6_label">
+                                <property name="label" translatable="yes">IPv_6 bind address:</property>
+                                <property name="xalign">0</property>
+                                <property name="tooltip-text" translatable="yes">Listen for peers and send traffic from this local address only.</property>
+                                <property name="use-underline">1</property>
+                                <property name="mnemonic-widget">bind_address_ipv6_combo</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">5</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">5</property>
+                                </layout>
+                                <child>
+                                  <object class="GtkMenuButton" id="bind_address_ipv6_filter_button">
+                                    <property name="child">
+                                      <object class="GtkLabel">
+                                        <property name="label">▽</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="bind_address_ipv6_combo">
+                                    <property name="hexpand">1</property>
+                                    <property name="tooltip-text" translatable="yes">Listen for peers and send traffic from this local address only.</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="bind_address_ipv6_feedback_label">
+                                <property name="xalign">0</property>
+                                <property name="wrap">1</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">6</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="rpc_bind_interface_label">
+                                <property name="label" translatable="yes">Remote access interface:</property>
+                                <property name="xalign">0</property>
+                                <property name="tooltip-text" translatable="yes">The interface remote access is reachable through. Change it with rpc_bind_interface in settings.json.</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">7</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="rpc_bind_interface_entry">
+                                <property name="hexpand">1</property>
+                                <property name="editable">0</property>
+                                <property name="sensitive">0</property>
+                                <property name="placeholder-text" translatable="yes">Any interface</property>
+                                <property name="tooltip-text" translatable="yes">The interface remote access is reachable through. Change it with rpc_bind_interface in settings.json.</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">7</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkFrame">
+                        <child type="label">
                           <object class="GtkLabel" id="listening_port_section_label">
                             <property name="label" translatable="yes">Listening Port</property>
                             <attributes>
@@ -1547,6 +1742,10 @@ To add a new primary URL, add it after a blank line.]]></property>
   </object>
   <object class="GtkSizeGroup" id="network_page_labels_width_group">
     <widgets>
+      <widget name="network_interface_label"/>
+      <widget name="bind_address_ipv4_label"/>
+      <widget name="bind_address_ipv6_label"/>
+      <widget name="rpc_bind_interface_label"/>
       <widget name="listening_port_label"/>
       <widget name="max_torrent_peers_label"/>
       <widget name="max_total_peers_label"/>

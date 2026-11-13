@@ -52,6 +52,7 @@
 #include "libtransmission/quark.h"
 #include "libtransmission/rpc-server.h"
 #include "libtransmission/session-alt-speeds.h"
+#include "libtransmission/session-settings.h"
 #include "libtransmission/session-id.h"
 #include "libtransmission/session-thread.h"
 #include "libtransmission/stats.h"
@@ -61,6 +62,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
+#include "libtransmission/tr-utp.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"
 #include "libtransmission/verify.h"
@@ -91,12 +93,23 @@ private:
     {
     public:
         using IncomingCallback = void (*)(tr_socket_t, void*);
-        BoundSocket(struct event_base* base, tr_address const& addr, tr_port port, IncomingCallback cb, void* cb_data);
+        BoundSocket(
+            struct event_base* base,
+            tr_address const& addr,
+            tr_port port,
+            std::string_view bind_interface,
+            IncomingCallback cb,
+            void* cb_data);
         BoundSocket(BoundSocket&&) = delete;
         BoundSocket(BoundSocket const&) = delete;
         BoundSocket operator=(BoundSocket&&) = delete;
         BoundSocket operator=(BoundSocket const&) = delete;
         ~BoundSocket();
+
+        [[nodiscard]] constexpr tr_socket_t socket() const noexcept
+        {
+            return socket_;
+        }
 
     private:
         static void onCanRead(evutil_socket_t fd, short /*what*/, void* vself)
@@ -176,6 +189,11 @@ private:
             return session_.config_dir_;
         }
 
+        [[nodiscard]] std::string bind_interface() const override
+        {
+            return std::string{ tr_net_effective_bind_interface(session_.settings_.bind_interface) };
+        }
+
         [[nodiscard]] bool may_write_config_dir() const override
         {
             return session_.mayWriteConfigDir();
@@ -203,6 +221,11 @@ private:
         [[nodiscard]] tr_address incoming_peer_address() const override
         {
             return session_.bind_address(TR_AF_INET);
+        }
+
+        [[nodiscard]] std::string_view bind_interface() const override
+        {
+            return session_.settings_.bind_interface;
         }
 
         [[nodiscard]] tr_port advertised_peer_port() const override
@@ -261,6 +284,8 @@ private:
 
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
         [[nodiscard]] tr_web::BindAddresses bind_addresses() const override;
+        [[nodiscard]] std::optional<std::string> bind_interface() const override;
+        [[nodiscard]] tr_web::Binding binding() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
         [[nodiscard]] std::optional<std::string> proxyUrl() const override;
@@ -283,6 +308,16 @@ private:
         [[nodiscard]] tr_address bind_address(tr_address_type type) const override
         {
             return session_.bind_address(type);
+        }
+
+        [[nodiscard]] std::string_view bind_interface() const override
+        {
+            return session_.settings_.bind_interface;
+        }
+
+        [[nodiscard]] std::optional<tr_address> source_address(tr_address_type type) const override
+        {
+            return session_.source_address(type);
         }
 
         [[nodiscard]] tr_port port() const override
@@ -341,6 +376,11 @@ private:
                 TR_ASSERT_MSG(false, "Invalid type");
                 return {};
             }
+        }
+
+        [[nodiscard]] std::string_view settings_bind_interface() override
+        {
+            return session_.settings_.bind_interface;
         }
 
         [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type type) noexcept override
@@ -678,6 +718,24 @@ public:
     [[nodiscard]] bool useRpcWhitelist() const;
 
     // peer networking
+
+    // Changes to the network binding from any thread, applied together in one
+    // setSettings() queued on the session thread: a session_set naming the
+    // interface and the bind addresses then moves the sockets once, not per key.
+    struct BindingChange {
+        std::optional<std::string> bind_interface;
+        std::optional<std::string> bind_address_ipv4;
+        std::optional<std::string> bind_address_ipv6;
+    };
+    void queue_binding_change(BindingChange change);
+    // applies a queued binding change now when on the session thread
+    void apply_pending_binding();
+
+    // session thread, or under unique_lock()
+    [[nodiscard]] constexpr auto const& bind_interface() const noexcept
+    {
+        return settings().bind_interface;
+    }
 
     [[nodiscard]] constexpr auto const& peerCongestionAlgorithm() const noexcept
     {
@@ -1100,6 +1158,11 @@ public:
         rpc_server_->set_max_request_body_size(max_request_body_size);
     }
 
+    [[nodiscard]] constexpr auto const& rpc_bind_interface() const noexcept
+    {
+        return rpc_server_->settings().bind_interface;
+    }
+
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
@@ -1247,6 +1310,24 @@ private:
     void setSettings(tr::Settings const& settings_map, bool force);
     void setSettings(Settings&& settings, bool force);
 
+    // Rebuild the sockets and services that depend on the peer port and
+    // the bind address/interface settings. The flags say what changed
+    // since `old_settings`; setSettings() computes them from its diff, and
+    // on_now_timer() passes interface_changed to retry a failed binding.
+    void apply_network_bindings(
+        bool force,
+        bool interface_changed,
+        bool port_changed,
+        bool utp_changed,
+        Settings const& old_settings);
+
+    // Call around apply_network_bindings() when the interface changes. The
+    // first stops every running torrent and ends all tracker and web traffic of
+    // the current binding without a goodbye (see tr_announcer::rebind()), and
+    // gives each torrent a new identity; the second starts those torrents again.
+    [[nodiscard]] std::vector<tr_torrent*> stop_torrents_for_rebind();
+    static void start_torrents_after_rebind(std::vector<tr_torrent*> const& restarting);
+
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds tracker_wait);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
 
@@ -1306,6 +1387,9 @@ private:
     friend void tr_sessionSetAltSpeedEnd(tr_session* session, size_t minutes_since_midnight);
     friend void tr_sessionSetAltSpeedFunc(tr_session* session, tr_altSpeedFunc func);
     friend void tr_sessionSetAltSpeed_KBps(tr_session* session, tr_direction dir, size_t limit_kbyps);
+    friend void tr_sessionSetBindAddressIPv4(tr_session* session, std::string_view address);
+    friend void tr_sessionSetBindAddressIPv6(tr_session* session, std::string_view address);
+    friend void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
     friend void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled);
     friend void tr_sessionSetDHTEnabled(tr_session* session, bool enabled);
     friend void tr_sessionSetDeleteSource(tr_session* session, bool delete_source);
@@ -1404,6 +1488,7 @@ private:
     // `settings_.peer_port` but can differ if
     // `settings_.peer_port_random_on_start` is enabled.
     tr_port local_peer_port_;
+    bool local_peer_port_is_random_ = false;
 
     // The incoming peer port that's been opened on the public-facing
     // device. This is usually the same as localPeerPort() but can differ,
@@ -1417,6 +1502,15 @@ private:
     /// but are self-contained / don't hold references to others
 
     mutable std::recursive_mutex session_mutex_;
+
+    // The OS index the bound sockets were given for settings_.bind_interface,
+    // or 0 when the setting is empty/blocked or the interface was absent.
+    // on_now_timer() rebinds when the live index no longer matches.
+    unsigned bound_interface_index_ = 0U;
+
+    // see queue_binding_change(); under the session lock
+    BindingChange pending_binding_;
+    bool pending_binding_queued_ = false;
 
     tr_stats session_stats_{ config_dir_, time(nullptr), mayWriteConfigDir() };
 
@@ -1467,6 +1561,8 @@ private:
 public:
     // depends-on: udp_core_
     struct struct_utp_context* utp_context = nullptr;
+    // the µTP connections a hard move silences; session thread only
+    tr_utp_flow_filter utp_flow_filter;
 
 private:
     // depends-on: open_files_

@@ -123,6 +123,17 @@ export class Remote {
     this.sendRequest(o, callback, context);
   }
 
+  // session_get leaves network_interfaces out unless it's asked for by name
+  loadNetworkInterfaces(callback, context) {
+    const o = {
+      id: 'webui',
+      jsonrpc: RPC._JsonRpcVersion,
+      method: 'session_get',
+      params: { fields: ['network_interfaces'] },
+    };
+    this.sendRequest(o, callback, context);
+  }
+
   checkPort(ip_protocol, callback, context) {
     const o = {
       id: 'webui',
@@ -318,13 +329,19 @@ export class Remote {
       this._controller.refreshTorrents();
     });
   }
-  savePrefs(params) {
+  savePrefs(params, callback, context) {
     const o = {
       jsonrpc: RPC._JsonRpcVersion,
       method: 'session_set',
       params,
     };
-    this.sendRequest(o, () => {
+    // without an id the request is a notification, whose reply has no
+    // body, so a caller waiting on the result could never see an error
+    if (callback) {
+      o.id = 'webui';
+    }
+    this.sendRequest(o, (response) => {
+      callback?.call(context, response);
       this._controller.loadDaemonPrefs();
     });
   }

@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <clocale>
@@ -395,3 +396,37 @@ TEST_F(GtkSessionTest, sortsANameBeforeTheNamesItBegins)
 
     std::setlocale(LC_COLLATE, old_locale.c_str());
 }
+
+#if defined(__linux__) || defined(__APPLE__)
+// The interface binding set through the client reaches the embedded session,
+// and the session's report on it arrives on the main loop.
+TEST_F(GtkSessionTest, bindInterfaceSyncsAndIsReported)
+{
+#ifdef __linux__
+    auto constexpr Loopback = "lo"sv;
+#else
+    auto constexpr Loopback = "lo0"sv;
+#endif
+
+    core_->set_pref(TR_KEY_bind_interface, std::string{ Loopback });
+    ASSERT_TRUE(wait_for([this, Loopback]() { return tr_sessionGetBindInterface(session_) == Loopback; }));
+
+    auto binding = Session::NetworkBinding{};
+    auto replies = 0;
+    core_->fetch_network_binding([&binding, &replies](Session::NetworkBinding const& value) {
+        binding = value;
+        ++replies;
+    });
+    EXPECT_EQ(0, replies); // not before the loop runs
+
+    ASSERT_TRUE(wait_for([&replies]() { return replies > 0; }));
+    EXPECT_EQ("ok", binding.status);
+    EXPECT_EQ("", binding.error);
+
+    auto const iter = std::ranges::find(binding.interfaces, Loopback, &Session::NetworkInterface::name);
+    ASSERT_NE(std::end(binding.interfaces), iter);
+    auto const ipv4 = std::ranges::find(iter->addresses, "127.0.0.1", &Session::NetworkAddress::address);
+    ASSERT_NE(std::end(iter->addresses), ipv4);
+    EXPECT_TRUE(std::empty(ipv4->tags));
+}
+#endif

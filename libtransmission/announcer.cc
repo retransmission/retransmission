@@ -137,6 +137,13 @@ public:
     void stopTorrent(tr_torrent* tor) override;
     void resetTorrent(tr_torrent* tor) override;
     void removeTorrent(tr_torrent* tor) override;
+    void rebind() override;
+
+    // counts rebind() calls; a reply to a request made before the latest is ignored
+    [[nodiscard]] constexpr auto binding_generation() const noexcept
+    {
+        return binding_generation_;
+    }
 
     void startShutdown() override
     {
@@ -212,6 +219,8 @@ private:
     std::unique_ptr<tr::Timer> const upkeep_timer_;
 
     std::set<tr_announce_request, StopsCompare> stops_;
+
+    uint64_t binding_generation_ = 0U;
 
     bool is_shutting_down_ = false;
 };
@@ -1125,6 +1134,45 @@ void tr_announcer_impl::removeTorrent(tr_torrent* tor)
     delete ta;
 }
 
+void tr_announcer_impl::rebind()
+{
+    using namespace announce_helpers;
+
+    ++binding_generation_;
+    announcer_udp_.rebind();
+
+    // the "stopped" of torrents removed under the old binding, which carry their identity
+    stops_.clear();
+
+    for (auto* const tor : session->torrents()) {
+        auto* const ta = tor->torrent_announcer;
+        if (ta == nullptr) {
+            continue;
+        }
+
+        for (auto& tier : ta->tiers) {
+            tier.announce_events.clear();
+            tier_update_announce_priority(&tier);
+
+            // the replies these wait for will be ignored
+            tier.isAnnouncing = false;
+            tier.isScraping = false;
+
+            // failures under the old binding, e.g. "blocked" refusing every announce,
+            // say nothing about the trackers' reach from the new one
+            for (auto& tracker : tier.trackers) {
+                tracker.consecutive_failures = 0;
+            }
+
+            // the next "started" comes from a new peer, which has moved no data yet
+            tier.isRunning = false;
+            tier.byteCounts[TR_ANN_UP] = 0;
+            tier.byteCounts[TR_ANN_DOWN] = 0;
+            tier.byteCounts[TR_ANN_CORRUPT] = 0;
+        }
+    }
+}
+
 // --- SCRAPE
 
 namespace
@@ -1336,11 +1384,14 @@ void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tier
 
     /* send the requests we just built */
     for (size_t i = 0; i < request_count; ++i) {
-        announcer->scrape(requests[i], [session = announcer->session, announcer](tr_scrape_response const& response) {
-            if (session->announcer_) {
-                announcer->onScrapeDone(response);
-            }
-        });
+        announcer->scrape(
+            requests[i],
+            [session = announcer->session, announcer, generation = announcer->binding_generation()](
+                tr_scrape_response const& response) {
+                if (session->announcer_ && generation == announcer->binding_generation()) {
+                    announcer->onScrapeDone(response);
+                }
+            });
     }
 }
 
@@ -1403,8 +1454,13 @@ void tierAnnounce(tr_announcer_impl* announcer, tr_tier* tier)
 
     announcer->announce(
         req,
-        [session = announcer->session, announcer, tier_id, event, is_running_on_success](tr_announce_response const& response) {
-            if (session->announcer_) {
+        [session = announcer->session,
+         announcer,
+         generation = announcer->binding_generation(),
+         tier_id,
+         event,
+         is_running_on_success](tr_announce_response const& response) {
+            if (session->announcer_ && generation == announcer->binding_generation()) {
                 announcer->onAnnounceDone(tier_id, event, is_running_on_success, response);
             }
         });

@@ -82,6 +82,7 @@
   color-scheme: light dark;
 
   @media (prefers-color-scheme: dark) {
+    --color-fg-caution: var(--yellow-300);
     --color-bg-hover: var(--grey-40);
     --color-bg-odd: var(--black);
     --color-bg-popup: var(--black);
@@ -109,6 +110,8 @@
   }
 
   @media (prefers-color-scheme: light) {
+    /* --yellow-300 is unreadable on white */
+    --color-fg-caution: #9a6700;
     --color-bg-hover: var(--nice-grey);
     --color-bg-odd: var(--white);
     --color-bg-popup: var(--white);
@@ -145,6 +148,7 @@
   --color-border-default: var(--contrast-fg);
   --color-border-stark: var(--contrast-fg);
   --color-border-starkest: var(--contrast-fg);
+  --color-fg-caution: var(--contrast-fg);
   --color-fg-disabled: var(--contrast-fg);
   --color-fg-on-popup: var(--contrast-fg);
   --color-fg-primary: var(--contrast-fg);
@@ -744,8 +748,91 @@ a {
     grid-column: 2 / 3;
   }
 
-  .blocklist-size-label {
+  .blocklist-size-label,
+  .interface-addresses {
     font-size: smaller;
+  }
+
+  /* both columns, so that an IPv6 address fits on one line */
+  .interface-addresses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 4px;
+    grid-column: 1 / -1;
+  }
+
+  .interface-address {
+    background: none;
+    border: 1px solid var(--color-border-default);
+    border-radius: 3px;
+    color: inherit;
+    cursor: copy;
+    font: inherit;
+    overflow-wrap: anywhere;
+    padding: 0 4px;
+    text-align: start;
+
+    &:hover {
+      background: var(--color-bg-hover);
+    }
+
+    &[data-copied='true']::after {
+      content: ' ✓ Copied';
+      color: var(--color-fg-port-open);
+    }
+  }
+
+  .interface-address.link-local {
+    color: var(--color-fg-disabled);
+  }
+
+  /* the Filter button beside the address list */
+  .address-filter-row {
+    align-items: center;
+    /* sized by its column, which the other rows' controls set, not by its longest option */
+    contain: inline-size;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+
+    select {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  /* light gray until a filter is set, then dark gray */
+  .address-filter-add {
+    color: var(--color-fg-disabled);
+    font-size: smaller;
+    padding: 0 0.4em;
+
+    &.active {
+      color: var(--color-fg-primary);
+      font-weight: bold;
+    }
+  }
+
+  .bind-address-feedback,
+  .interface-status {
+    font-size: smaller;
+    grid-column: 2 / 3;
+
+    &[data-state='error'] {
+      color: var(--color-fg-error);
+    }
+
+    &[data-state='warning'] {
+      color: var(--color-fg-caution);
+
+      &::before {
+        content: '⚠ ';
+      }
+    }
+  }
+
+  [aria-invalid='true'] {
+    outline: 1px solid var(--color-fg-error);
   }
 
   .blocklist-size-number {
@@ -1519,4 +1606,51 @@ a {
 
 .clusterize-extra-row.clusterize-keep-parity {
   display: none;
+}
+
+/* the address filter menu is a popup on <body>, outside the prefs dialog */
+.address-filter-menu {
+  background: var(--color-bg-popup);
+  border-radius: 5px;
+  color: var(--color-fg-on-popup);
+  font-size: 13px;
+  max-height: 60vh;
+  min-width: 12rem;
+  overflow: auto;
+  padding: 5px;
+  user-select: none;
+
+  .address-filter-menuitem,
+  .address-filter-choice {
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    padding: 4px 10px;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--color-bg-hover);
+    }
+  }
+
+  /* filters that already have a chip */
+  .address-filter-menuitem.active::after {
+    content: ' ✓';
+  }
+
+  .address-filter-group::before {
+    content: '▸';
+    float: right;
+    margin-left: 1em;
+  }
+
+  .address-filter-back {
+    font-weight: bold;
+  }
+
+  .address-filter-clear {
+    border-top: 1px solid var(--color-fg-secondary);
+    border-radius: 0;
+    margin-top: 4px;
+  }
 }

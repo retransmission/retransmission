@@ -47,6 +47,11 @@ public:
 
     using BindAddresses = std::array<std::optional<std::string>, NUM_TR_AF_INET_TYPES>;
 
+    struct Binding {
+        BindAddresses bind_addresses;
+        std::optional<std::string> bind_interface;
+    };
+
     class FetchOptions
     {
     public:
@@ -172,6 +177,10 @@ public:
 
     void network_changed();
 
+    // Ends every fetch made so far as a failed connection, finish_at_shutdown ones
+    // too, e.g. so that none outlives the network binding it was made under.
+    void cancel_all();
+
     [[nodiscard]] bool is_idle() const;
 
     // To give finish_at_shutdown tasks a chance to finish,
@@ -205,6 +214,20 @@ public:
         [[nodiscard]] virtual BindAddresses bind_addresses() const
         {
             return {};
+        }
+
+        // Called synchronously by fetch(); "blocked" refuses the fetch, and nullopt
+        // leaves binding to the bind addresses.
+        [[nodiscard]] virtual std::optional<std::string> bind_interface() const
+        {
+            return std::nullopt;
+        }
+
+        // What fetch() reads. A mediator whose binding can change while fetch() runs
+        // overrides this to read both parts at once.
+        [[nodiscard]] virtual Binding binding() const
+        {
+            return { .bind_addresses = bind_addresses(), .bind_interface = bind_interface() };
         }
 
         // Return the preferred user aagent, or nullopt to not use one

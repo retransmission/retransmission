@@ -137,6 +137,9 @@ struct SessionPrefs {
 
     // Initialize to empty defaults here to make the linter happy.
     // The real defaults are in the ctor, which gets libtransmission's defaults.
+    std::string bind_address_ipv4_;
+    std::string bind_address_ipv6_;
+    std::string bind_interface_;
     std::string blocklist_url_;
     std::string default_trackers_;
     std::string download_dir_;
@@ -198,6 +201,9 @@ struct SessionPrefs {
         Field<&SessionPrefs::alt_speed_limit_time_enabled_>{ TR_KEY_alt_speed_time_enabled },
         Field<&SessionPrefs::alt_speed_limit_time_end_>{ TR_KEY_alt_speed_time_end },
         Field<&SessionPrefs::alt_speed_limit_up_>{ TR_KEY_alt_speed_up },
+        Field<&SessionPrefs::bind_address_ipv4_>{ TR_KEY_bind_address_ipv4 },
+        Field<&SessionPrefs::bind_address_ipv6_>{ TR_KEY_bind_address_ipv6 },
+        Field<&SessionPrefs::bind_interface_>{ TR_KEY_bind_interface },
         Field<&SessionPrefs::blocklist_enabled_>{ TR_KEY_blocklist_enabled },
         Field<&SessionPrefs::blocklist_updates_enabled_>{ TR_KEY_blocklist_updates_enabled },
         Field<&SessionPrefs::blocklist_url_>{ TR_KEY_blocklist_url },

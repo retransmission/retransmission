@@ -6,6 +6,7 @@
 #include <array>
 #include <chrono>
 #include <ctime>
+#include <optional>
 #include <set>
 #include <string>
 #include <string_view>
@@ -14,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/crypto-utils.h> // tr_rand_obj()
+#include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/session.h>
 #include <libtransmission/string-utils.h>
@@ -46,6 +48,16 @@ public:
         auto ret = tr_address{};
         ret.type = type;
         return ret;
+    }
+
+    [[nodiscard]] std::string_view bind_interface() const override
+    {
+        return bind_interface_;
+    }
+
+    [[nodiscard]] std::optional<tr_address> source_address(tr_address_type type) const override
+    {
+        return type == TR_AF_INET ? source_address4_ : std::nullopt;
     }
 
     [[nodiscard]] tr_port port() const override
@@ -85,6 +97,8 @@ public:
     }
 
     tr_session& session_;
+    std::string bind_interface_;
+    std::optional<tr_address> source_address4_;
     tr_port port_ = tr_port::from_host(51413);
     bool allows_lpd_ = true;
     std::vector<TorrentInfo> torrents_;
@@ -110,6 +124,35 @@ TEST_F(LpdTest, HelloWorld)
     auto lpd = tr_lpd::create(mediator, session_->event_base());
     EXPECT_TRUE(lpd);
     EXPECT_EQ(0U, std::size(mediator.found_));
+}
+
+TEST_F(LpdTest, startsOnABoundInterface)
+{
+    if (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind sockets to an interface by name";
+    }
+
+    auto mediator = MyMediator{ *session_ };
+    mediator.bind_interface_ = LoopbackInterface;
+    mediator.source_address4_ = tr_address::from_string("127.0.0.1");
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+    tr_logClearQueue();
+
+    auto lpd = tr_lpd::create(mediator, session_->event_base());
+    EXPECT_TRUE(lpd);
+
+    // IPv4 joins the group on the bound interface, which must not fail
+    auto const messages = tr_logGetQueue();
+    for (auto const& msg : messages) {
+        EXPECT_EQ(std::string::npos, msg.message.find("Couldn't initialize IPv4 LPD")) << msg.message;
+    }
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
 }
 
 // TODO(anyone): flaky test should be fixed instead of disabled
