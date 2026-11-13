@@ -20,9 +20,16 @@ class TimerMaker;
 class Watchdir
 {
 public:
-    enum class Action : uint8_t { Done, Retry };
+    // What a callback did with a file, and so when the watch dir offers it again:
+    // Done: once a later file of that name arrives;
+    // Retry: it couldn't use the file, so in a few seconds for 15 s, then at the next scan or change to it;
+    // Wait: the file isn't ready, e.g. still being written, so in a few seconds, however long that takes.
+    enum class Action : uint8_t { Done, Retry, Wait };
 
     using Callback = std::function<Action(std::string_view dirname, std::string_view basename)>;
+
+    // Says which names to offer to the callback. A watch dir ignores the others: it doesn't stat them or remember them.
+    using NameFilter = std::function<bool(std::string_view basename)>;
 
     Watchdir() = default;
     virtual ~Watchdir() = default;
@@ -33,10 +40,8 @@ public:
 
     [[nodiscard]] virtual std::string_view dirname() const noexcept = 0;
 
-    [[nodiscard]] static auto generic_rescan_interval() noexcept
-    {
-        return generic_rescan_interval_;
-    }
+    // Scans the directory now, e.g. because the caller's own monitor saw it change.
+    virtual void rescan() = 0;
 
     static void set_generic_rescan_interval(std::chrono::milliseconds interval) noexcept
     {
@@ -53,7 +58,8 @@ public:
         std::string_view dirname,
         Callback callback,
         tr::TimerMaker& timer_maker,
-        std::chrono::milliseconds rescan_interval = generic_rescan_interval_);
+        std::chrono::milliseconds rescan_interval = generic_rescan_interval_,
+        NameFilter filter = {});
 
 private:
     // NOLINTNEXTLINE(readability-identifier-naming)

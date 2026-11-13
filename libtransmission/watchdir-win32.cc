@@ -91,13 +91,16 @@ public:
 
     ~Win32Watchdir() override
     {
-        if (fd_ != INVALID_HANDLE_VALUE) {
-            CancelIoEx(fd_, &overlapped_);
-        }
-
         if (thread_ != nullptr) {
-            WaitForSingleObject(thread_, INFINITE);
+            // The thread may be between two reads, where there is nothing to cancel,
+            // so cancel until it has left rather than once.
+            CancelIoEx(fd_, &overlapped_);
+            while (WaitForSingleObject(thread_, 100) == WAIT_TIMEOUT) {
+                CancelIoEx(fd_, &overlapped_);
+            }
             CloseHandle(thread_);
+        } else if (fd_ != INVALID_HANDLE_VALUE) {
+            CancelIoEx(fd_, &overlapped_);
         }
 
         if (event_ != nullptr) {
@@ -233,11 +236,6 @@ private:
         return 0;
     }
 
-    static void onFirstScan(evutil_socket_t /*unused*/, short /*unused*/, void* vself)
-    {
-        static_cast<Win32Watchdir*>(vself)->scan();
-    }
-
     static void onBufferEvent(struct bufferevent* event, void* vself)
     {
         static_cast<Win32Watchdir*>(vself)->processBufferEvent(event);
@@ -293,12 +291,16 @@ private:
                 break;
             }
 
+            auto const name = tr_win32_native_to_utf8({ ev->FileName, ev->FileNameLength / sizeof(WCHAR) });
+            if (std::empty(name)) {
+                continue;
+            }
+
             if (ev->Action == FILE_ACTION_ADDED || ev->Action == FILE_ACTION_MODIFIED ||
                 ev->Action == FILE_ACTION_RENAMED_NEW_NAME) {
-                if (auto const name = tr_win32_native_to_utf8({ ev->FileName, ev->FileNameLength / sizeof(WCHAR) });
-                    !std::empty(name)) {
-                    processFile(name);
-                }
+                processFile(name);
+            } else if (ev->Action == FILE_ACTION_REMOVED || ev->Action == FILE_ACTION_RENAMED_OLD_NAME) {
+                forgetFile(name);
             }
         }
     }

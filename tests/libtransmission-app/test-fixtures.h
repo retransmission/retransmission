@@ -262,3 +262,25 @@ struct SessionUnderTest {
     tr::app::Prefs prefs_;
     SessionT session_{ std::string{}, prefs_, rpc_ };
 };
+
+// A Session whose client talks to an embedded `tr_session`, its replies pumped through `loop_`.
+// Teardown lands every outstanding reply before the client and then the session go away.
+template<typename SessionT = tr::app::Session>
+class EmbeddedRpcSessionTest
+    : public EmbeddedSessionTest
+    , public SessionUnderTest<SessionT>
+{
+protected:
+    void SetUp() override
+    {
+        EmbeddedSessionTest::SetUp();
+        this->rpc_.start(core_);
+    }
+
+    void TearDown() override
+    {
+        this->loop_.drain();
+        this->rpc_.stop();
+        EmbeddedSessionTest::TearDown();
+    }
+};

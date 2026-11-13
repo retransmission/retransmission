@@ -65,13 +65,7 @@ private:
     {
         kq_ = kqueue();
         if (kq_ == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 
@@ -79,13 +73,7 @@ private:
         auto const szdirname = tr_pathbuf{ dirname() };
         dirfd_ = open(szdirname.c_str(), O_RDONLY | O_EVTONLY);
         if (dirfd_ == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 
@@ -94,13 +82,7 @@ private:
         static auto constexpr KqueueWatchMask = (NOTE_WRITE | NOTE_EXTEND);
         EV_SET(&ke, dirfd_, EVFILT_VNODE, EV_ADD | EV_ENABLE | EV_CLEAR, KqueueWatchMask, 0, NULL);
         if (kevent(kq_, &ke, 1, nullptr, 0, nullptr) == -1) {
-            auto const error_code = errno;
-            tr_logAddError(
-                fmt::format(
-                    "Couldn't watch '{path}': {error} ({error_code})",
-                    fmt::arg("path", dirname()),
-                    fmt::arg("error", tr_strerror(error_code)),
-                    fmt::arg("error_code", error_code)));
+            logWatchError(errno);
             return;
         }
 

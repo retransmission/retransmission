@@ -11,27 +11,17 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
-#include <libtransmission-app/add-data.h>
 #include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include <libtransmission/converters.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/transmission.h>
-#include <libtransmission/utils.h> // tr_time()
 #include <libtransmission/variant.h>
 
-#include <giomm/file.h>
-#include <giomm/fileinfo.h>
-#include <giomm/filemonitor.h>
 #include <giomm/liststore.h>
 
-#include <glibmm/error.h>
-#include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/stringutils.h>
 
 #include <sigslot/signal.hpp>
 
@@ -40,8 +30,6 @@
 #else
 #include <gtkmm/treemodelsort.h>
 #endif
-
-#include <fmt/format.h>
 
 #include <algorithm>
 #include <array>
@@ -66,7 +54,7 @@ public:
     Impl& operator=(Impl const&) = delete;
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
-    ~Impl();
+    ~Impl() = default;
 
     [[nodiscard]] Glib::RefPtr<Gio::ListStore<Torrent>> get_raw_model() const;
     [[nodiscard]] Glib::RefPtr<SortListModel<Torrent>> get_model();
@@ -89,15 +77,6 @@ public:
 private:
     [[nodiscard]] Glib::RefPtr<Session> get_core_ptr() const;
 
-    void watchdir_update();
-    void watchdir_scan();
-    void watchdir_monitor_file(Glib::RefPtr<Gio::File> const& file);
-    bool watchdir_idle();
-    void on_file_changed_in_watchdir(
-        Glib::RefPtr<Gio::File> const& file,
-        Glib::RefPtr<Gio::File> const& other_type,
-        IF_GLIBMM2_68(Gio::FileMonitor::Event, Gio::FileMonitorEvent) event_type);
-
     void on_pref_changed(tr_quark key);
 
     // keep raw_model_ a mirror of the list's rows
@@ -113,13 +92,6 @@ private:
 
     sigslot::scoped_connection prefs_changed_tag_;
     std::array<sigslot::scoped_connection, 3U> torrent_list_tags_;
-    std::array<sigslot::scoped_connection, 2U> session_tags_;
-
-    Glib::RefPtr<Gio::FileMonitor> monitor_;
-    sigc::connection monitor_tag_;
-    Glib::RefPtr<Gio::File> monitor_dir_;
-    std::vector<Glib::RefPtr<Gio::File>> monitor_files_;
-    sigc::connection monitor_idle_tag_;
 
     Glib::RefPtr<Gio::ListStore<Torrent>> raw_model_;
     Glib::RefPtr<SortListModel<Torrent>> sorted_model_;
@@ -160,152 +132,6 @@ Glib::RefPtr<SortListModel<Torrent>> Session::Impl::get_model()
 
 /***
 ****
-****  WATCHDIR
-****
-***/
-
-namespace
-{
-
-[[nodiscard]] time_t get_file_mtime(Glib::RefPtr<Gio::File> const& file)
-{
-    try {
-        return static_cast<time_t>(
-            file->query_info(G_FILE_ATTRIBUTE_TIME_MODIFIED)->get_attribute_uint64(G_FILE_ATTRIBUTE_TIME_MODIFIED));
-    } catch (Glib::Error const&) {
-        return 0;
-    }
-}
-
-} // namespace
-
-bool Session::Impl::watchdir_idle()
-{
-    std::vector<Glib::RefPtr<Gio::File>> changing;
-    std::vector<Glib::RefPtr<Gio::File>> unchanging;
-    time_t const now = tr_time();
-
-    /* separate the files into two lists: changing and unchanging */
-    for (auto const& file : monitor_files_) {
-        time_t const mtime = get_file_mtime(file);
-
-        if (mtime + 2 >= now) {
-            changing.push_back(file);
-        } else {
-            unchanging.push_back(file);
-        }
-    }
-
-    /* add the files that have stopped changing */
-    for (auto const& file : unchanging) {
-        auto add = tr::app::AddData{ file->get_path() };
-        if (!add.parsed()) {
-            continue; // not a torrent, so leave it be
-        }
-
-        add.from_watch_dir = true;
-        core_.request_add(std::move(add));
-    }
-
-    /* keep monitoring the ones that are still changing */
-    monitor_files_ = std::move(changing);
-
-    /* if monitor_files is nonempty, keep checking every second */
-    if (!monitor_files_.empty()) {
-        return true;
-    }
-
-    monitor_idle_tag_.disconnect();
-    return false;
-}
-
-/* If this file is a torrent, add it to our list */
-void Session::Impl::watchdir_monitor_file(Glib::RefPtr<Gio::File> const& file)
-{
-    auto const filename = file->get_path();
-    bool const is_torrent = Glib::str_has_suffix(filename, ".torrent");
-
-    if (is_torrent) {
-        /* if we're not already watching this file, start watching it now */
-        bool const found = std::ranges::any_of(monitor_files_, [file](auto const& f) { return file->equal(f); });
-
-        if (!found) {
-            monitor_files_.push_back(file);
-
-            if (!monitor_idle_tag_.connected()) {
-                monitor_idle_tag_ = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &Impl::watchdir_idle), 1);
-            }
-        }
-    }
-}
-
-/* GFileMonitor noticed a file was created */
-void Session::Impl::on_file_changed_in_watchdir(
-    Glib::RefPtr<Gio::File> const& file,
-    Glib::RefPtr<Gio::File> const& /*other_type*/,
-    IF_GLIBMM2_68(Gio::FileMonitor::Event, Gio::FileMonitorEvent) event_type)
-{
-    if (event_type == TR_GIO_FILE_MONITOR_EVENT(CREATED)) {
-        watchdir_monitor_file(file);
-    }
-}
-
-/* walk through the pre-existing files in the watchdir */
-void Session::Impl::watchdir_scan()
-{
-    auto const dirname = core_.prefs_.get<std::string>(TR_KEY_watch_dir);
-
-    try {
-        for (auto const& name : Glib::Dir(dirname)) {
-            watchdir_monitor_file(Gio::File::create_for_path(Glib::build_filename(dirname, name)));
-        }
-    } catch (Glib::FileError const& e) {
-        gtr_warning(
-            fmt::format(
-                "Couldn't open watchdir '{dirname}': {error} ({error_code})",
-                fmt::arg("dirname", dirname),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", static_cast<int>(e.code()))));
-    }
-}
-
-void Session::Impl::watchdir_update()
-{
-    // only while there's a session to add to, or each add would fail
-    bool const is_enabled = core_.get_session() != nullptr && core_.prefs_.get<bool>(TR_KEY_watch_dir_enabled);
-    auto const dir = Gio::File::create_for_path(core_.prefs_.get<std::string>(TR_KEY_watch_dir));
-
-    if (monitor_ != nullptr && (!is_enabled || !dir->equal(monitor_dir_))) {
-        monitor_tag_.disconnect();
-        monitor_->cancel();
-        monitor_files_.clear();
-        monitor_idle_tag_.disconnect();
-
-        monitor_dir_.reset();
-        monitor_.reset();
-    }
-
-    if (!is_enabled || monitor_ != nullptr) {
-        return;
-    }
-
-    auto monitor = Glib::RefPtr<Gio::FileMonitor>();
-
-    try {
-        monitor = dir->monitor_directory();
-    } catch (Glib::Error const&) {
-        return;
-    }
-
-    watchdir_scan();
-
-    monitor_ = std::move(monitor);
-    monitor_dir_ = dir;
-    monitor_tag_ = monitor_->signal_changed().connect(sigc::mem_fun(*this, &Impl::on_file_changed_in_watchdir));
-}
-
-/***
-****
 ***/
 
 void Session::Impl::on_pref_changed(tr_quark const key)
@@ -317,11 +143,6 @@ void Session::Impl::on_pref_changed(tr_quark const key)
 
     case TR_KEY_sort_reversed:
         sorter_->set_reversed(core_.prefs_.get<bool>(TR_KEY_sort_reversed));
-        break;
-
-    case TR_KEY_watch_dir:
-    case TR_KEY_watch_dir_enabled:
-        watchdir_update();
         break;
 
     default:
@@ -365,14 +186,6 @@ Session::Impl::Impl(Session& core)
     on_pref_changed(TR_KEY_sort_reversed);
     signal_prefs_changed_.connect([this](auto key) { on_pref_changed(key); });
     prefs_changed_tag_ = core_.prefs_.observe_changes([this](tr_quark const key) { signal_prefs_changed_.emit(key); });
-
-    session_tags_ = { core_.source_changed.connect_scoped(&Impl::watchdir_update, this),
-                      core_.stopped.connect_scoped(&Impl::watchdir_update, this) };
-}
-
-Session::Impl::~Impl()
-{
-    monitor_idle_tag_.disconnect();
 }
 
 void Session::import_embedded_settings()
