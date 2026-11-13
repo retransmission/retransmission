@@ -182,6 +182,7 @@ public:
         auto peer_io = tr_peerIo::create(
             session,
             tr_peer_socket_tcp::create(*session, DefaultPeerSockAddr, static_cast<tr_socket_t>(sockpair[0])),
+            {},
             &session->top_bandwidth_,
             &info_hash,
             false /*incoming*/,
