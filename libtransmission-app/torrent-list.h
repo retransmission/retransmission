@@ -106,16 +106,7 @@ public:
     void remove(Ids ids);
 
     // Removes every row as one run. Fires the row signals only: the session keeps its torrents.
-    // Forgets the withheld ids too, since a later session numbers its torrents anew.
     void clear();
-
-    // Leaves `id` out of the list, as if the session didn't have it, until `release()`.
-    // For a torrent the client created that the user hasn't confirmed yet. A listed
-    // `id` leaves the list at once, reported as `removed`.
-    void withhold(tr_torrent_id_t id);
-
-    // Lets the updates after this list `id` again.
-    void release(tr_torrent_id_t id);
 
     // --- rows, in id order
 
@@ -225,7 +216,6 @@ private:
 
     Prefs const& prefs_;
     std::vector<Entry> entries_; // sorted by id
-    Ids withheld_;
     bool updating_ = false; // a slot that re-entered `update()` would corrupt the runs
     sigslot::scoped_connection prefs_connection_;
 };

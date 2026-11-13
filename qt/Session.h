@@ -5,14 +5,10 @@
 
 #pragma once
 
-#include <map>
-#include <string_view>
-
 #include <sigslot/signal.hpp>
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
-#include <QtCore/QTimer>
 #include <QtCore/QUrl>
 
 #include <QtWidgets/QMessageBox>
@@ -52,8 +48,6 @@ public:
 
     void copyMagnetLinkToClipboard(int torrent_id);
 
-    void addNewlyCreatedTorrent(QString const& filename, QString const& local_path);
-
 public slots:
     void launchWebInterface() const;
 
@@ -63,21 +57,13 @@ signals:
     void networkResponse(bool is_network_error, QString const& message);
     void httpAuthenticationRequired();
 
-private slots:
-    void onDuplicatesTimer();
-
 private:
     void onRenameFailed(RenameError const& error) const;
-    void onAddFailed(tr::app::AddData const& add, std::string_view errmsg) const;
-    void onAddDuplicate(tr::app::AddData const& add, std::string_view hash_string);
+    void onAddReport(AddReport const& report) const;
     void showMessage(QMessageBox::Icon icon, QString const& title, QString const& text, QString const& detail = {}) const;
 
     bool is_shutting_down_ = false;
 
     sigslot::scoped_connection rename_failed_connection_;
-    sigslot::scoped_connection add_failed_connection_;
-    sigslot::scoped_connection add_duplicate_connection_;
-
-    std::map<QString, QString> duplicates_;
-    QTimer duplicates_timer_;
+    sigslot::scoped_connection add_report_connection_;
 };

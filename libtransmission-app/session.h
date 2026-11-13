@@ -7,6 +7,7 @@
 
 #include <array>
 #include <chrono>
+#include <compare>
 #include <cstddef> // size_t
 #include <cstdint>
 #include <functional>
@@ -183,12 +184,6 @@ public:
     void queue_move_down(Ids ids);
     void queue_move_bottom(Ids ids);
 
-    // Keeps `id`, a torrent this client created that the user hasn't confirmed yet, e.g.
-    // one an add dialog previews, out of `torrents()` until `release_torrent()`, which
-    // fetches it. A torrent the user cancels stays withheld until `stop()`.
-    void withhold_torrent(tr_torrent_id_t id);
-    void release_torrent(tr_torrent_id_t id);
-
     // Removes `ids` from the session, with their data when `delete_local_data`. On
     // success the rows leave `torrents()` at once, as if a poll had named them
     // `removed`; nothing is fetched. After a failure the next poll decides.
@@ -229,32 +224,84 @@ public:
     // `torrent_add_prompt` for the torrent it hands back, if any. The slot shows the toolkit's
     // dialog and calls `add_torrent()` if the user accepts.
     //
-    // A `Type::None` request is ignored, unless `AddPrompt::Always` asks the user to fill it in.
-    void request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs);
+    // `options` go to `add_torrent()`, or to the prompt as the choices it starts with.
+    //
+    // Returns false if it ignored the request: a `Type::None` one, unless `AddPrompt::Always`
+    // asks the user to fill it in.
+    bool request_add(AddData add, AddPrompt prompt = AddPrompt::FromPrefs, AddOptions options = {});
 
-    sigslot::signal<AddData const&> torrent_add_prompt;
+    // the request's options, with `download_dir` and `paused` filled in from the prefs if it left them unset
+    sigslot::signal<AddData const&, AddOptions const&> torrent_add_prompt;
 
     // Readies a torrent for a prompt, and again whenever the prompt's user names another source:
     // - A URL is fetched here so the prompt can show its files. If that fails, it stays a URL for
     //   the session to fetch, which may be able to reach what this client can't.
     // - A torrent already in `torrents()` is dropped. Its source file is disposed of as
-    //   `add_torrent()` would, and `torrent_add_duplicate` reports it unless it came from the watch dir.
+    //   `add_torrent()` would, and `torrent_add_report` reports it unless it came from the watch dir.
+    // - A local file that isn't a torrent is dropped too: there is nothing to ask about it.
+    //   `torrent_add_report` reports it as a failed add.
     // `on_resolved` gets the readied torrent, or nullopt if it was dropped. It runs inside this
     // call unless `add` is a URL.
     // `wanted` belongs to whoever waits for the answer, e.g. the prompt. A fetch that lands after
-    // it expires, after `stop()` or after this Session is destroyed does nothing at all: no
+    // it expires, after `stop()` or after this Session is destroyed does nothing with `add`: no
     // disposal, no report, no `on_resolved`. So the user can accept or cancel during a fetch.
     void resolve_add(AddData add, std::weak_ptr<void const> wanted, std::function<void(std::optional<AddData>)> on_resolved);
+
+    // Whether an add is waiting on a URL fetch, e.g. for a busy cursor:
+    // `resolve_add()`'s own, or the session's for a URL that `add_torrent()` sent it.
+    [[nodiscard]] constexpr bool add_fetch_pending() const noexcept
+    {
+        return add_fetches_in_flight_ > 0U;
+    }
+
+    // when `add_fetch_pending()` changes
+    sigslot::signal<> add_fetch_changed;
 
     // Sends `torrent_add` for `add`. Once the session has the torrent, or says it already has
     // one, disposes of `add`'s source file as `add` says, unless that file is the session's own
     // copy. A new torrent is fetched into `torrents()` at once.
     void add_torrent(AddData add, AddOptions options = {});
 
-    sigslot::signal<AddData const& /*add*/, std::string_view /*errmsg*/> torrent_add_failed;
+    // Adds a torrent this client just created from `top`, the file or folder it shares, to seed it.
+    // No prompt, and `torrent_file` is kept whatever `trash_original_torrent_files` says.
+    void add_created_torrent(std::string_view torrent_file, std::string_view top);
 
-    // not fired for a watch dir's file
-    sigslot::signal<AddData const& /*add*/, std::string_view /*hash_string*/> torrent_add_duplicate;
+    // The adds of one batch that the user should hear about, ready to list:
+    // each list is in name order, ignoring ASCII case, and holds no entry twice.
+    struct AddReport {
+        struct Failure {
+            std::string name; // the add's `readable_name()`
+            std::string errmsg; // the session's message, the transport's, or `resolve_add()`'s
+
+            [[nodiscard]] auto operator<=>(Failure const&) const = default;
+        };
+
+        struct Duplicate {
+            std::string name; // the add's `readable_short_name()`
+            std::string hash_string; // the listed torrent's
+
+            // the hash as a list shows it
+            [[nodiscard]] constexpr std::string_view short_hash() const noexcept
+            {
+                return std::string_view{ hash_string }.substr(0U, 7U);
+            }
+
+            [[nodiscard]] auto operator<=>(Duplicate const&) const = default;
+        };
+
+        std::vector<Failure> failed;
+        std::vector<Duplicate> duplicates; // never a watch dir's
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return std::empty(failed) && std::empty(duplicates);
+        }
+    };
+
+    // Fires once no add is pending: no `torrent_add` awaits its reply and no `resolve_add()`
+    // fetch is in flight. Never inside the call that ends the batch, so a burst of adds makes
+    // one report. Nothing from before a `stop()` is reported, and an empty batch fires nothing.
+    sigslot::signal<AddReport const&> torrent_add_report;
 
     // --- torrent_set
 
@@ -515,11 +562,22 @@ private:
     // sends `method` for `ids`, as above; sends nothing when `ids` is empty
     void send_torrent_verb(tr_quark method, Ids ids);
 
-    // `add`, or nullopt after `drop_duplicate()` if `torrents()` already has it
-    [[nodiscard]] std::optional<AddData> drop_if_listed(AddData add);
+    // `add` if a prompt can ask about it. Else nullopt, after `drop_duplicate()` for a torrent that
+    // `torrents()` already has, or a failure in `add_report_` for a local file that isn't a torrent.
+    [[nodiscard]] std::optional<AddData> drop_unless_promptable(AddData add);
     void on_torrent_add_reply(AddData const& add, RpcResponse const& response);
     void drop_duplicate(AddData const& add, std::string_view hash_string);
     void dispose_source_file(AddData const& add) const;
+
+    [[nodiscard]] constexpr bool adds_pending() const noexcept
+    {
+        return adds_in_flight_ > 0U || add_fetches_in_flight_ > 0U;
+    }
+
+    // queues `torrent_add_report` for the UI loop's next turn, if the batch has ended
+    void schedule_add_report();
+
+    void set_add_fetches_in_flight(size_t n);
 
     // the list's own needs: `MainAll` for the torrents that lack info or were edited
     void on_torrents_changed(TorrentList::Changes const& changes);
@@ -575,6 +633,13 @@ private:
 
     // the core prefs with a `session_set` in flight, one entry per request
     std::vector<tr_quark> session_sets_in_flight_;
+
+    AddReport add_report_;
+    size_t adds_in_flight_ = 0U; // `torrent_add` requests
+    size_t add_fetches_in_flight_ = 0U; // URL fetches: `resolve_add()`'s, and the session's for a URL sent to it
+
+    // Like `alive_`, and replaced by `stop()`: an add from before a stop is forgotten.
+    std::shared_ptr<std::monostate const> adds_alive_ = std::make_shared<std::monostate const>();
 
     // Reply closures hold a weak_ptr to this token, so a reply the UI thread
     // delivers after this Session is destroyed does nothing.

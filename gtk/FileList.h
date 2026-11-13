@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <libtransmission-app/torrent.h> // TorrentFile
+
 #include <libtransmission/types.h>
 
 #include <gtkmm/builder.h>
@@ -14,6 +16,8 @@
 #include <glibmm/ustring.h>
 
 #include <memory>
+#include <span>
+#include <vector>
 
 class Session;
 
@@ -34,6 +38,13 @@ public:
 
     void clear();
     void set_torrent(tr_torrent_id_t torrent_id);
+
+    // Shows the files of a torrent the session doesn't have yet, e.g. one an add dialog
+    // asks about. Keeps the user's wanted and priority choices for `preview_files()`.
+    void set_preview(std::vector<tr::app::TorrentFile> files);
+
+    // the previewed files with the user's choices; empty unless previewing
+    [[nodiscard]] std::span<tr::app::TorrentFile const> preview_files() const;
 
 private:
     class Impl;

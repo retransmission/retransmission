@@ -12,6 +12,8 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission-app/torrent.h>
+
 #include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/string-utils.h>
@@ -45,11 +47,13 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <span>
 #include <stack>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 using namespace std::literals;
 
@@ -98,6 +102,69 @@ public:
 
 FileModelColumns const file_cols;
 
+// the files of a live torrent, or of a preview's
+class FileSource
+{
+public:
+    explicit FileSource(tr_torrent* const tor) noexcept
+        : tor_{ tor }
+    {
+    }
+
+    explicit FileSource(std::vector<tr::app::TorrentFile>& preview) noexcept
+        : preview_{ &preview }
+    {
+    }
+
+    [[nodiscard]] tr_file_index_t size() const
+    {
+        return tor_ != nullptr ? tr_torrentFileCount(tor_) : static_cast<tr_file_index_t>(std::size(*preview_));
+    }
+
+    [[nodiscard]] tr_file_view operator[](tr_file_index_t const index) const
+    {
+        if (tor_ != nullptr) {
+            return tr_torrentFile(tor_, index);
+        }
+
+        auto const& file = (*preview_)[index];
+        auto view = tr_file_view{};
+        view.name = file.name.c_str();
+        view.have = file.have;
+        view.length = file.size;
+        view.progress = file.progress();
+        view.priority = file.priority;
+        view.wanted = file.wanted;
+        return view;
+    }
+
+    void set_priority(std::span<tr_file_index_t const> const indices, tr_priority_t const priority) const
+    {
+        if (tor_ != nullptr) {
+            tr_torrentSetFilePriorities(tor_, indices, priority);
+        } else {
+            for (auto const index : indices) {
+                (*preview_)[index].priority = priority;
+            }
+        }
+    }
+
+    void set_wanted(std::span<tr_file_index_t const> const indices, bool const wanted) const
+    {
+        if (tor_ != nullptr) {
+            tr_torrentSetFileDLs(tor_, indices, wanted);
+        } else {
+            for (auto const index : indices) {
+                (*preview_)[index].wanted = wanted;
+            }
+        }
+    }
+
+private:
+    tr_torrent* tor_ = nullptr;
+    std::vector<tr::app::TorrentFile>* preview_ = nullptr;
+};
+
 } // namespace
 
 class FileList::Impl
@@ -116,11 +183,24 @@ public:
     ~Impl();
 
     void set_torrent(tr_torrent_id_t torrent_id);
+    void set_preview(std::vector<tr::app::TorrentFile> files);
     void reset_torrent();
+
+    [[nodiscard]] std::span<tr::app::TorrentFile const> preview_files() const
+    {
+        return preview_ ? std::span<tr::app::TorrentFile const>{ *preview_ } : std::span<tr::app::TorrentFile const>{};
+    }
 
 private:
     void clearData();
     void refresh();
+
+    // the live torrent's or the preview's files; nullopt if the torrent is gone
+    [[nodiscard]] std::optional<FileSource> file_source();
+
+    // rebuilds the model from `file_source()`
+    void build_store();
+    void show_preview_columns(bool preview);
 
     bool getAndSelectEventPath(double view_x, double view_y, Gtk::TreeViewColumn*& col, Gtk::TreeModel::Path& path);
 
@@ -142,7 +222,11 @@ private:
     // GtkWidget* top_ = nullptr; // == widget_
     Gtk::TreeView* view_ = nullptr;
     Glib::RefPtr<Gtk::TreeStore> store_;
+    Gtk::CellRendererText* name_renderer_ = nullptr;
+    Gtk::TreeViewColumn* progress_column_ = nullptr;
     tr_torrent_id_t torrent_id_ = {};
+    // set while previewing, when `torrent_id_` names no torrent
+    std::optional<std::vector<tr::app::TorrentFile>> preview_;
     sigc::connection timeout_tag_;
     std::queue<sigc::connection> rename_done_tags_;
 };
@@ -150,6 +234,7 @@ private:
 void FileList::Impl::clearData()
 {
     torrent_id_ = -1;
+    preview_.reset();
 
     timeout_tag_.disconnect();
 }
@@ -172,9 +257,9 @@ namespace
 {
 
 struct RefreshData {
-    int sort_column_id;
-    bool resort_needed;
-    tr_torrent* tor;
+    int sort_column_id = 0;
+    bool resort_needed = false;
+    FileSource files;
 };
 
 bool refreshFilesForeach(
@@ -198,7 +283,7 @@ bool refreshFilesForeach(
 
     if (is_file) {
         auto const index = iter->get_value(file_cols.index);
-        auto const file = tr_torrentFile(refresh_data.tor, index);
+        auto const file = refresh_data.files[index];
 
         new_enabled = static_cast<int>(file.wanted);
         new_priority = int{ file.priority };
@@ -309,16 +394,29 @@ void gtr_tree_model_foreach_postorder(Glib::RefPtr<Gtk::TreeModel> const& model,
 
 } // namespace
 
+std::optional<FileSource> FileList::Impl::file_source()
+{
+    if (preview_) {
+        return FileSource{ *preview_ };
+    }
+
+    if (auto* const tor = core_->find_torrent(torrent_id_); tor != nullptr) {
+        return FileSource{ tor };
+    }
+
+    return {};
+}
+
 void FileList::Impl::refresh()
 {
-    if (tr_torrent* tor = core_->find_torrent(torrent_id_); tor == nullptr) {
+    if (auto const files = file_source(); !files) {
         widget_.clear();
     } else {
         Gtk::SortType order = TR_GTK_SORT_TYPE(ASCENDING);
         int sort_column_id = 0;
         store_->get_sort_column_id(sort_column_id, order);
 
-        RefreshData refresh_data{ .sort_column_id = sort_column_id, .resort_needed = false, .tor = tor };
+        RefreshData refresh_data{ .sort_column_id = sort_column_id, .resort_needed = false, .files = *files };
         gtr_tree_model_foreach_postorder(store_, [this, &refresh_data](Gtk::TreeModel::iterator const& iter) {
             return refreshFilesForeach(store_, iter, refresh_data);
         });
@@ -427,8 +525,7 @@ namespace
 {
 
 struct build_data {
-    Gtk::Widget* w = nullptr;
-    tr_torrent* tor = nullptr;
+    FileSource const* files = nullptr;
     Gtk::TreeStore::iterator iter;
     Glib::RefPtr<Gtk::TreeStore> store;
 };
@@ -449,7 +546,7 @@ void buildTree(FileRowNode& node, build_data& build)
 
     auto const mime_type = isLeaf ? tr_get_mime_type_for_filename(child_data.name.raw()) : DirectoryMimeType;
     auto const icon = gtr_get_mime_type_icon(mime_type);
-    auto const file = isLeaf ? tr_torrentFile(build.tor, child_data.index) : tr_file_view{};
+    auto const file = isLeaf ? (*build.files)[child_data.index] : tr_file_view{};
     int const priority = isLeaf ? file.priority : 0;
     bool const enabled = isLeaf ? file.wanted : true;
     auto const name_esc = Glib::Markup::escape_text(child_data.name);
@@ -479,6 +576,16 @@ void FileList::set_torrent(tr_torrent_id_t torrent_id)
     impl_->set_torrent(torrent_id);
 }
 
+void FileList::set_preview(std::vector<tr::app::TorrentFile> files)
+{
+    impl_->set_preview(std::move(files));
+}
+
+std::span<tr::app::TorrentFile const> FileList::preview_files() const
+{
+    return impl_->preview_files();
+}
+
 namespace
 {
 struct PairHash {
@@ -492,66 +599,83 @@ struct PairHash {
 
 void FileList::Impl::set_torrent(tr_torrent_id_t torrent_id)
 {
-    if (torrent_id_ == torrent_id && store_ != nullptr && !store_->children().empty()) {
+    if (!preview_ && torrent_id_ == torrent_id && store_ != nullptr && !store_->children().empty()) {
         return;
     }
 
     /* unset the old fields */
     clearData();
+    show_preview_columns(false);
 
-    /* instantiate the model */
-    store_ = Gtk::TreeStore::create(file_cols);
     torrent_id_ = torrent_id;
+    build_store();
 
-    /* populate the model */
     if (torrent_id_ > 0) {
-        if (auto* const tor = core_->find_torrent(torrent_id_); tor != nullptr) {
-            // build a GNode tree of the files
-            auto root = FileRowNode{};
-            auto& root_data = root.data();
-            root_data.name = tr_torrentName(tor);
-            root_data.index = -1;
-            root_data.length = 0;
-
-            auto nodes = std::unordered_map<std::pair<FileRowNode* /*parent*/, std::string_view>, FileRowNode*, PairHash>{};
-
-            for (tr_file_index_t i = 0, n_files = tr_torrentFileCount(tor); i < n_files; ++i) {
-                auto* parent = &root;
-                auto const file = tr_torrentFile(tor, i);
-
-                auto path = std::string_view{ file.name };
-                auto token = std::string_view{};
-                while (tr_strv_sep(&path, &token, '/')) {
-                    auto*& node = nodes[std::make_pair(parent, token)];
-
-                    if (node == nullptr) {
-                        auto const is_leaf = std::empty(path);
-
-                        node = parent->prepend_data({});
-                        auto& node_data = node->data();
-                        node_data.name = std::string{ token };
-                        node_data.index = is_leaf ? static_cast<int>(i) : -1;
-                        node_data.length = is_leaf ? file.length : 0;
-                    }
-
-                    parent = node;
-                }
-            }
-
-            // now, add them to the model
-            struct build_data build;
-            build.w = &widget_;
-            build.tor = tor;
-            build.store = store_;
-            root.foreach (
-                [&build](auto& child_node) { buildTree(child_node, build); },
-                TR_GLIB_NODE_TREE_TRAVERSE_FLAGS(FileRowNode, ALL));
-        }
-
-        refresh();
         timeout_tag_ = Glib::signal_timeout().connect_seconds(
             [this] { return refresh(), true; },
             SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
+    }
+}
+
+void FileList::Impl::set_preview(std::vector<tr::app::TorrentFile> files)
+{
+    clearData();
+    show_preview_columns(true);
+
+    preview_ = std::move(files);
+    build_store();
+}
+
+void FileList::Impl::show_preview_columns(bool const preview)
+{
+    name_renderer_->property_editable() = !preview;
+    progress_column_->set_visible(!preview);
+}
+
+void FileList::Impl::build_store()
+{
+    /* instantiate the model */
+    store_ = Gtk::TreeStore::create(file_cols);
+
+    /* populate the model */
+    if (auto const files = file_source()) {
+        // build a GNode tree of the files
+        auto root = FileRowNode{};
+
+        auto nodes = std::unordered_map<std::pair<FileRowNode* /*parent*/, std::string_view>, FileRowNode*, PairHash>{};
+
+        for (tr_file_index_t i = 0, n_files = files->size(); i < n_files; ++i) {
+            auto* parent = &root;
+            auto const file = (*files)[i];
+
+            auto path = std::string_view{ file.name };
+            auto token = std::string_view{};
+            while (tr_strv_sep(&path, &token, '/')) {
+                auto*& node = nodes[std::make_pair(parent, token)];
+
+                if (node == nullptr) {
+                    auto const is_leaf = std::empty(path);
+
+                    node = parent->prepend_data({});
+                    auto& node_data = node->data();
+                    node_data.name = std::string{ token };
+                    node_data.index = is_leaf ? static_cast<int>(i) : -1;
+                    node_data.length = is_leaf ? file.length : 0;
+                }
+
+                parent = node;
+            }
+        }
+
+        // now, add them to the model
+        struct build_data build;
+        build.files = &*files;
+        build.store = store_;
+        root.foreach (
+            [&build](auto& child_node) { buildTree(child_node, build); },
+            TR_GLIB_NODE_TREE_TRAVERSE_FLAGS(FileRowNode, ALL));
+
+        refresh();
     }
 
     view_->set_model(store_);
@@ -685,9 +809,9 @@ bool FileList::Impl::onViewPathToggled(Gtk::TreeViewColumn* col, Gtk::TreeModel:
     bool handled = false;
 
     auto const cid = col->get_sort_column_id();
-    auto* tor = core_->find_torrent(torrent_id_);
+    auto const files = file_source();
 
-    if (tor != nullptr && (cid == file_cols.priority.index() || cid == file_cols.enabled.index())) {
+    if (files && (cid == file_cols.priority.index() || cid == file_cols.enabled.index())) {
         auto const indexBuf = getActiveFilesForPath(path);
 
         auto const iter = store_->get_iter(path);
@@ -710,10 +834,10 @@ bool FileList::Impl::onViewPathToggled(Gtk::TreeViewColumn* col, Gtk::TreeModel:
                 break;
             }
 
-            tr_torrentSetFilePriorities(tor, indexBuf, new_priority);
+            files->set_priority(indexBuf, new_priority);
         } else {
             auto const enabled = iter->get_value(file_cols.enabled);
-            tr_torrentSetFileDLs(tor, indexBuf, enabled == static_cast<int>(false));
+            files->set_wanted(indexBuf, enabled == static_cast<int>(false));
         }
 
         refresh();
@@ -894,7 +1018,7 @@ FileList::Impl::Impl(
 #endif
         /* add text renderer */
         auto* text_rend = Gtk::make_managed<Gtk::CellRendererText>();
-        text_rend->property_editable() = true;
+        name_renderer_ = text_rend;
         text_rend->property_ellipsize() = TR_PANGO_ELLIPSIZE_MODE(END);
         text_rend->property_scale() = FileAndSizeScale;
         text_rend->signal_edited().connect(sigc::mem_fun(*this, &Impl::cell_edited_callback));
@@ -928,6 +1052,7 @@ FileList::Impl::Impl(
         col->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
         col->set_sort_column(file_cols.prog_key);
         view_->append_column(*col);
+        progress_column_ = col;
     }
 
     {

@@ -9,11 +9,14 @@
 
 #include <cstdint>
 #include <ctime>
+#include <memory>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <QAction>
 #include <QApplication>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDir>
 #include <QElapsedTimer>
@@ -93,6 +96,18 @@ template<typename Predicate>
     return true;
 }
 
+// The dialog as the app opens it for `Magnet`: `request_add()` hands `torrent_add_prompt` the torrent and the choices to start with.
+[[nodiscard]] std::unique_ptr<OptionsDialog> promptToAdd(Session& session, Prefs const& prefs, tr::app::AddOptions options = {})
+{
+    auto dialog = std::unique_ptr<OptionsDialog>{};
+    auto const tag = session.torrent_add_prompt.connect_scoped(
+        [&dialog, &session, &prefs](tr::app::AddData const& add, tr::app::AddOptions const& preset) {
+            dialog = std::make_unique<OptionsDialog>(session, prefs, add, preset);
+        });
+    session.request_add(tr::app::AddData{ Magnet.toStdString() }, Session::AddPrompt::Always, std::move(options));
+    return dialog;
+}
+
 // Building the dialog kicks off FreeSpaceLabel's async free-space request, which
 // runs on a tr::app::RpcQueue. That queue keeps a reference to itself until it
 // finishes, so it must run to completion before teardown or the never-finished
@@ -143,11 +158,15 @@ private slots:
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
-        QVERIFY(drainFreeSpace(dialog));
+        auto const dialog = promptToAdd(session, prefs);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
 
-        auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
-        auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
+        auto* const stack = dialog->findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
+        auto* const combo = dialog->findChild<QComboBox*>(QStringLiteral("destinationCombo"));
         QVERIFY(stack != nullptr);
         QVERIFY(combo != nullptr);
         if (combo == nullptr) {
@@ -181,14 +200,55 @@ private slots:
         session.restart();
         QVERIFY(!session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
-        QVERIFY(drainFreeSpace(dialog));
+        auto const dialog = promptToAdd(session, prefs);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
 
-        auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
+        auto* const combo = dialog->findChild<QComboBox*>(QStringLiteral("destinationCombo"));
         QVERIFY(combo != nullptr);
         QCOMPARE(combo->count(), 0);
         QVERIFY(combo->isEditable());
         QCOMPARE(combo->currentText(), DownloadDir);
+    }
+
+    // e.g. a torrent the user asked to add paused
+    void preset_options_set_the_widgets()
+    {
+        auto server = MockRpcServer{};
+
+        auto prefs = Prefs{};
+        setRemotePrefs(prefs, server.port());
+        prefs.set(TR_KEY_start_added_torrents, true);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+
+        auto preset = tr::app::AddOptions{};
+        preset.download_dir = "/data/preset";
+        preset.paused = true;
+        preset.bandwidth_priority = TR_PRI_HIGH;
+        auto const dialog = promptToAdd(session, prefs, preset);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
+
+        auto* const combo = dialog->findChild<QComboBox*>(QStringLiteral("destinationCombo"));
+        auto* const start = dialog->findChild<QCheckBox*>(QStringLiteral("startCheck"));
+        auto* const priority = dialog->findChild<QComboBox*>(QStringLiteral("priorityCombo"));
+        QVERIFY(combo != nullptr && start != nullptr && priority != nullptr);
+        if (combo == nullptr || start == nullptr || priority == nullptr) {
+            return;
+        }
+
+        QCOMPARE(combo->currentText(), QStringLiteral("/data/preset"));
+        QVERIFY(!start->isChecked());
+        QCOMPARE(priority->currentData().toInt(), static_cast<int>(TR_PRI_HIGH));
     }
 
     // A local session can browse the filesystem, so it shows the path button,
@@ -210,11 +270,15 @@ private slots:
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
-        QVERIFY(drainFreeSpace(dialog));
+        auto const dialog = promptToAdd(session, prefs);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
 
-        auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
-        auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
+        auto* const stack = dialog->findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
+        auto* const button = dialog->findChild<PathButton*>(QStringLiteral("destinationButton"));
         QVERIFY(stack != nullptr);
         QVERIFY(button != nullptr);
 
@@ -252,10 +316,14 @@ private slots:
         session.restart();
         QVERIFY(session.is_local_filesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
-        QVERIFY(drainFreeSpace(dialog));
+        auto const dialog = promptToAdd(session, prefs);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
 
-        auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
+        auto* const button = dialog->findChild<PathButton*>(QStringLiteral("destinationButton"));
         QVERIFY(button != nullptr);
         if (button == nullptr) {
             return;
@@ -288,15 +356,20 @@ private slots:
         QCOMPARE(session.torrents().size(), size_t{ 1U });
 
         auto duplicates = QStringList{};
-        auto const tag = session.torrent_add_duplicate.connect_scoped(
-            [&duplicates](tr::app::AddData const& /*add*/, std::string_view const hash_string) {
-                duplicates << QString::fromUtf8(std::data(hash_string), static_cast<int>(std::size(hash_string)));
-            });
+        auto const tag = session.torrent_add_report.connect_scoped([&duplicates](Session::AddReport const& report) {
+            for (auto const& duplicate : report.duplicates) {
+                duplicates << QString::fromStdString(duplicate.hash_string);
+            }
+        });
 
-        auto dialog = OptionsDialog{ session, prefs, tr::app::AddData{ Magnet.toStdString() } };
-        QVERIFY(drainFreeSpace(dialog));
+        auto const dialog = promptToAdd(session, prefs);
+        QVERIFY(dialog != nullptr);
+        if (dialog == nullptr) {
+            return;
+        }
+        QVERIFY(drainFreeSpace(*dialog));
 
-        auto* const edit = dialog.findChild<QLineEdit*>(QStringLiteral("sourceEdit"));
+        auto* const edit = dialog->findChild<QLineEdit*>(QStringLiteral("sourceEdit"));
         QVERIFY(edit != nullptr);
         if (edit == nullptr) {
             return;
@@ -305,8 +378,8 @@ private slots:
         edit->setText(QStringLiteral("magnet:?xt=urn:btih:%1").arg(ListedHash));
         emit edit->editingFinished();
 
-        QCOMPARE(duplicates, QStringList{ ListedHash });
         QVERIFY(edit->text().isEmpty());
+        QTRY_COMPARE(duplicates, QStringList{ ListedHash });
     }
 };
 } // namespace

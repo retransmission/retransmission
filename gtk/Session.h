@@ -20,7 +20,6 @@
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/treemodel.h>
 
-#include <giomm/file.h>
 #include <giomm/listmodel.h>
 
 #include <glibmm/object.h>
@@ -28,14 +27,12 @@
 #include <glibmm/ustring.h>
 
 #include <cstddef>
-#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
 struct tr_session;
 struct tr_torrent;
-struct tr_torrent_builder;
 
 class Session
     : public Glib::Object
@@ -46,12 +43,6 @@ public:
     Session(Session const&) = delete;
     Session& operator=(Session&&) = delete;
     Session& operator=(Session const&) = delete;
-
-    enum ErrorCode : uint16_t {
-        ERR_ADD_TORRENT_ERR = 1,
-        ERR_ADD_TORRENT_DUP = 2,
-        ERR_NO_MORE_TORRENTS = 1000, /* finished adding a batch */
-    };
 
     using Model = IF_GTKMM4(Gio::ListModel, Gtk::TreeModel);
 
@@ -85,22 +76,7 @@ public:
     *******
     ******/
 
-    /**
-     * Add a list of torrents.
-     * This function assumes ownership of torrentFiles
-     *
-     * May pop up dialogs for each torrent if that preference is enabled.
-     * May trigger one or more "error" signals with ERR_ADD_TORRENT
-     */
-    void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt);
-
-    /** @brief Add a torrent from a URL */
-    bool add_from_url(Glib::ustring const& url);
-
-    /** @brief Add a torrent. */
-    void add_builder(std::unique_ptr<tr_torrent_builder> builder);
-
-    // Fetches a torrent that changed outside the session's RPC, e.g. one added or
+    // Fetches a torrent that changed outside the session's RPC, e.g. one
     // renamed through the C API, so the list shows it before the next poll.
     void fetch_torrent(tr_torrent_id_t id);
 
@@ -132,9 +108,6 @@ public:
 
     void open_folder(tr_torrent_id_t torrent_id) const;
 
-    [[nodiscard]] sigc::signal<void(ErrorCode, Glib::ustring const&)>& signal_add_error();
-    [[nodiscard]] sigc::signal<void(tr_torrent_builder*)>& signal_add_prompt();
-    [[nodiscard]] sigc::signal<void(bool)>& signal_busy();
     [[nodiscard]] sigc::signal<void(tr_quark)>& signal_prefs_changed();
     // the torrents an update changed, by id, and the union of the fields it changed
     [[nodiscard]] sigc::signal<void(tr::app::TorrentList::Ids const&, Torrent::Fields const&)>& signal_torrents_changed();

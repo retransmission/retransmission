@@ -6,7 +6,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <variant>
 #include <vector>
 
@@ -15,8 +14,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
-
-#include <libtransmission/torrent-metainfo.h>
 
 #include <libtransmission-app/add-data.h>
 #include <libtransmission-app/torrent.h> // TorrentFile
@@ -33,7 +30,13 @@ class OptionsDialog : public BaseDialog
     Q_OBJECT
 
 public:
-    OptionsDialog(Session& session, Prefs const& prefs, tr::app::AddData addme, QWidget* parent = nullptr);
+    // `addme` and `preset`, the choices the dialog starts with, are what `torrent_add_prompt` fired with
+    OptionsDialog(
+        Session& session,
+        Prefs const& prefs,
+        tr::app::AddData addme,
+        tr::app::AddOptions const& preset,
+        QWidget* parent = nullptr);
     OptionsDialog& operator=(OptionsDialog&&) = delete;
     OptionsDialog& operator=(OptionsDialog const&) = delete;
     OptionsDialog(OptionsDialog&&) = delete;
@@ -52,7 +55,6 @@ private:
     void onSessionUpdated();
     void reload();
     void updateWidgetsLocality();
-    void clearInfo();
     void clearSource();
 
     tr::app::AddData add_;
@@ -60,11 +62,8 @@ private:
 
     QDir local_destination_;
     QTimer edit_timer_;
-    std::vector<bool> wanted_;
-    std::vector<int> priorities_;
     Session& session_;
     Ui::OptionsDialog ui_ = {};
-    std::optional<tr_torrent_metainfo> metainfo_;
     QString submitted_source_; // the source edit's text when it last named a source
     std::shared_ptr<std::monostate const> resolving_; // the current source's `resolve_add()` token
     bool is_local_fs_ = {};

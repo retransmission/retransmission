@@ -2253,6 +2253,11 @@ To add a new primary URL, add it after a blank line.</source>
             <numerusform>Unable to add {count:L} duplicate torrents</numerusform>
         </translation>
     </message>
+    <message>
+        <location line="-17"/>
+        <source>Couldn&apos;t add torrents</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SessionDialog</name>

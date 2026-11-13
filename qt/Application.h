@@ -157,6 +157,7 @@ private:
     sigslot::scoped_connection torrents_connection_;
     sigslot::scoped_connection contended_connection_;
     sigslot::scoped_connection add_prompt_connection_;
+    sigslot::scoped_connection add_fetch_connection_;
 
     LocalInstance interop_instance_{ *this };
     std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;
