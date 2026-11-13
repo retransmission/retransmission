@@ -73,10 +73,15 @@ class tr_peer_socket_utp_impl final
     , public std::enable_shared_from_this<tr_peer_socket_utp_impl>
 {
 public:
-    tr_peer_socket_utp_impl(tr_socket_address const& socket_address, UTPSocket* sock, tr::TimerMaker& timer_maker)
+    tr_peer_socket_utp_impl(
+        tr_socket_address const& socket_address,
+        UTPSocket* sock,
+        tr::TimerMaker& timer_maker,
+        bool const connect_pending)
         : tr_peer_socket_utp{ socket_address }
         , sock_{ sock }
         , read_timer_{ timer_maker.create([this] { read_now(); }) }
+        , connect_pending_{ connect_pending }
     {
         TR_ASSERT(sock != nullptr);
         utp_set_userdata(sock_, this);
@@ -119,6 +124,11 @@ public:
         return is_write_enabled_;
     }
 
+    [[nodiscard]] bool is_utp_connect_pending() const noexcept override
+    {
+        return connect_pending_;
+    }
+
     [[nodiscard]] constexpr auto& read_buffer() noexcept
     {
         return inbuf_;
@@ -150,7 +160,7 @@ public:
 
     // --- libutp
 
-    void on_utp_state_change(int const state) const
+    void on_utp_state_change(int const state)
     {
         // The socket can destruct inside the callbacks, so keep it alive for the duration of this code block.
         auto const keep_alive = shared_from_this();
@@ -158,6 +168,7 @@ public:
         switch (state) {
         case UTP_STATE_CONNECT:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to connected");
+            connect_pending_ = false;
             break;
         case UTP_STATE_WRITABLE:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to writable");
@@ -166,8 +177,12 @@ public:
             }
             break;
         case UTP_STATE_EOF:
-            error_cb(tr_net_error(ENOTCONN));
-            break;
+            {
+                // The callback can redial over TCP, which destroys this socket.
+                auto const keep_alive = shared_from_this();
+                error_cb(tr_net_error(ENOTCONN));
+                break;
+            }
         case UTP_STATE_DESTROYING:
             tr_logAddErrorSock(this, "Impossible state UTP_STATE_DESTROYING");
             break;
@@ -203,6 +218,8 @@ public:
             break;
         }
 
+        // The callback can redial over TCP, which destroys this socket.
+        auto const keep_alive = shared_from_this();
         error_cb_(error);
     }
 
@@ -289,6 +306,7 @@ private:
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
+    bool connect_pending_;
 };
 #endif
 } // namespace
@@ -304,7 +322,7 @@ std::shared_ptr<tr_peer_socket_utp> tr_peer_socket_utp::create(
     tr::TimerMaker& timer_maker)
 {
 #ifdef WITH_UTP
-    return std::make_shared<tr_peer_socket_utp_impl>(socket_address, sock, timer_maker);
+    return std::make_shared<tr_peer_socket_utp_impl>(socket_address, sock, timer_maker, false /*connect_pending*/);
 #else
     return {};
 #endif
@@ -319,7 +337,7 @@ std::shared_ptr<tr_peer_socket_utp> tr_peer_socket_utp::create(
     auto* const sock = utp_create_socket(ctx);
     auto const [ss, sslen] = socket_address.to_sockaddr();
     if (utp_connect(sock, reinterpret_cast<sockaddr const*>(&ss), sslen) == 0) {
-        return std::make_shared<tr_peer_socket_utp_impl>(socket_address, sock, timer_maker);
+        return std::make_shared<tr_peer_socket_utp_impl>(socket_address, sock, timer_maker, true /*connect_pending*/);
     }
 #endif
     return {};
@@ -367,7 +385,7 @@ void tr_peer_socket_utp::init([[maybe_unused]] struct_utp_context* ctx)
     });
 
     utp_set_callback(ctx, UTP_ON_STATE_CHANGE, [](utp_callback_arguments* const args) -> uint64 {
-        if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
+        if (auto* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
             s->on_utp_state_change(args->state);
         }
         return {};

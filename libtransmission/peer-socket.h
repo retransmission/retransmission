@@ -93,6 +93,12 @@ public:
         return type() == Type::TCP;
     }
 
+    // true while an outgoing µTP connect waits for the peer to answer
+    [[nodiscard]] virtual bool is_utp_connect_pending() const noexcept
+    {
+        return false;
+    }
+
     [[nodiscard]] static bool limit_reached(tr_session const* session) noexcept;
 
 protected:

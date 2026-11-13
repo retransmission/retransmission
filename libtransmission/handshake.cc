@@ -599,14 +599,15 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 
     handshake->maybe_recycle_dh();
 
-    if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
-        // the peer probably doesn't speak µTP.
-
+    // the µTP connect never completed, so the peer may not speak µTP
+    if (!io->is_incoming() && io->is_utp_connect_pending()) {
         auto const info_hash = io->torrent_hash();
-        auto const info = handshake->mediator_->torrent(info_hash);
 
-        /* Don't mark a peer as non-µTP unless it's really a connect failure. */
-        if ((error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
+        // A failed holepunch means the NAT stayed closed, not that the peer lacks µTP.
+        // Only a timeout or refusal is a connect failure. libutp reports a refusal,
+        // an RST in reply to our SYN, as ECONNRESET, so only a timeout counts.
+        if (!io->is_utp_only() && (error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) &&
+            handshake->mediator_->torrent(info_hash)) {
             handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
         }
 
@@ -626,7 +627,8 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 
     /* if the error happened while we were sending a public key, we might
      * have encountered a peer that doesn't do encryption... reconnect and
-     * try a plaintext handshake */
+     * try a plaintext handshake. reconnect() dials TCP, so a µTP peer that
+     * connected and then dropped our public key is retried over TCP. */
     if (handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
         tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
         retry_plain();

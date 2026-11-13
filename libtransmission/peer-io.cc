@@ -65,13 +65,15 @@ tr_peerIo::tr_peerIo(
     tr_bandwidth* parent_bandwidth,
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
-    bool client_is_seed)
+    bool client_is_seed,
+    bool is_utp_only)
     : bandwidth_{ parent_bandwidth }
     , info_hash_{ info_hash != nullptr ? *info_hash : tr_sha1_digest_t{} }
     , session_{ session }
     , flush_outbuf_trigger_{ session->timerMaker().create() }
     , client_is_seed_{ client_is_seed }
     , is_incoming_{ is_incoming }
+    , is_utp_only_{ is_utp_only }
 {
 }
 
@@ -81,12 +83,15 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     tr_bandwidth* parent,
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
-    bool is_seed)
+    bool is_seed,
+    bool is_utp_only)
 {
     TR_ASSERT(session != nullptr);
     auto const lock = session->unique_lock();
 
-    auto const io = std::shared_ptr<tr_peerIo>{ new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed } };
+    auto const io = std::shared_ptr<tr_peerIo>{
+        new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed, is_utp_only }
+    };
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
@@ -164,7 +169,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
         return {};
     }
 
-    return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed);
+    return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed, true);
 }
 
 // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
@@ -229,7 +234,7 @@ void tr_peerIo::clear()
 bool tr_peerIo::reconnect()
 {
     TR_ASSERT(!is_incoming());
-    if (!session_->allowsTCP()) {
+    if (is_utp_only() || !session_->allowsTCP()) {
         return false;
     }
 
