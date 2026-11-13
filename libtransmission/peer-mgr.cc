@@ -590,6 +590,38 @@ public:
         return peer_info;
     }
 
+    // Decides interest as soon as the peer says what it has, so a new peer
+    // is not left waiting for the periodic rechoke.
+    void update_peer_interest(tr_peerMsgs* const msgs) const
+    {
+        if (tor->is_done() || !tor->client_can_download()) {
+            return;
+        }
+
+        auto const is_useful = [this, msgs](tr_piece_index_t const piece) {
+            return tor->piece_is_wanted(piece) && !tor->has_piece(piece) && msgs->has_piece(piece);
+        };
+        auto const pieces = std::views::iota(tr_piece_index_t{}, tor->piece_count());
+        msgs->set_interested(msgs->is_seed() || std::ranges::any_of(pieces, is_useful));
+    }
+
+    // Shows interest as soon as the peer announces a piece we want.
+    // A Have only adds to what the peer offers, so the new piece is the only one to check.
+    // The piece_count() check covers magnets: until the metainfo arrives, the Have handler accepts any index.
+    void update_peer_interest(tr_peerMsgs* const msgs, tr_piece_index_t const piece) const
+    {
+        if (!msgs->client_is_interested() && piece < tor->piece_count() && !tor->is_done() && tor->client_can_download() &&
+            tor->piece_is_wanted(piece) && !tor->has_piece(piece)) {
+            msgs->set_interested(true);
+        }
+    }
+
+    // Unchokes a peer that just became interested if the swarm has a free upload slot.
+    // A slot counts as rechokeUploads() counts it: an interested, unchoked peer other
+    // than the optimistic one. The unchoke locks the peer's choke for MinChokePeriodSec,
+    // and rechokeUploads() lets a locked peer keep its slot until then.
+    void unchoke_if_slot_free(tr_peerMsgs* msgs) const;
+
     static void peer_callback_bt(tr_peerMsgs* const msgs, tr_peer_event const& event, void* const vs)
     {
         TR_ASSERT(msgs != nullptr);
@@ -622,11 +654,13 @@ public:
         case tr_peer_event::Type::ClientGotHave:
             s->got_have(s->tor, event.pieceIndex);
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs, event.pieceIndex);
             break;
 
         case tr_peer_event::Type::ClientGotHaveAll:
             s->got_have_all(s->tor);
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs);
             break;
 
         case tr_peer_event::Type::ClientGotHaveNone:
@@ -636,6 +670,11 @@ public:
         case tr_peer_event::Type::ClientGotBitfield:
             s->got_bitfield(s->tor, msgs->has());
             s->mark_all_upload_only_flag_dirty();
+            s->update_peer_interest(msgs);
+            break;
+
+        case tr_peer_event::Type::ClientGotInterested:
+            s->unchoke_if_slot_free(msgs);
             break;
 
         case tr_peer_event::Type::ClientStaleBitfield:
@@ -1032,7 +1071,7 @@ public:
         , handshake_mediator_{ *session, timer_maker, torrents }
         , bandwidth_timer_{ timer_maker.create([this] { bandwidth_pulse(); }) }
         , peer_info_timer_{ timer_maker.create([this] { peer_info_pulse(); }) }
-        , rechoke_timer_{ timer_maker.create([this] { rechoke_pulse_marshall(); }) }
+        , rechoke_timer_{ timer_maker.create([this] { rechoke_pulse(); }) }
         , blocklists_tag_{ blocklist.observe_changes([this] { on_blocklists_changed(); }) }
     {
         bandwidth_timer_->start_repeating(BandwidthTimerPeriod);
@@ -1054,11 +1093,6 @@ public:
     {
         auto const lock = unique_lock();
         incoming_handshakes.clear();
-    }
-
-    void rechokeSoon() noexcept
-    {
-        rechoke_timer_->set_interval(100ms);
     }
 
     void stop_bandwidth_timer()
@@ -1085,12 +1119,6 @@ private:
     void peer_info_pulse();
     void rechoke_pulse() const;
     void reconnect_pulse();
-
-    void rechoke_pulse_marshall()
-    {
-        rechoke_pulse();
-        rechoke_timer_->set_interval(RechokePeriod);
-    }
 
     void on_blocklists_changed() const
     {
@@ -1743,11 +1771,25 @@ std::vector<tr_pex> tr_peerMgrGetPeers(tr_torrent const* tor, uint8_t address_ty
     return pex;
 }
 
+void tr_swarm::unchoke_if_slot_free(tr_peerMsgs* const msgs) const
+{
+    if (!msgs->peer_is_choked() || msgs->peer_info->is_upload_only() || !tor->client_can_upload() ||
+        tor->bandwidth().is_maxed_out(tr_direction::Up, tr_time_msec())) {
+        return;
+    }
+
+    auto const holds_slot = [this](auto const& peer) {
+        return peer.get() != optimistic && peer->peer_is_interested() && !peer->peer_is_choked();
+    };
+    if (std::cmp_less(std::ranges::count_if(peers, holds_slot), manager->session->uploadSlotsPerTorrent())) {
+        msgs->set_choke(false);
+    }
+}
+
 void tr_swarm::on_torrent_started()
 {
     auto const lock = unique_lock();
     is_running = true;
-    manager->rechokeSoon();
     wishlist_controller = std::make_unique<WishlistController>(*this);
 }
 
@@ -1977,51 +2019,11 @@ namespace
 {
 namespace update_interest_helpers
 {
-/* does this peer have any pieces that we want? */
-[[nodiscard]] bool isPeerInteresting(
-    tr_torrent const* const tor,
-    std::vector<bool> const& piece_is_interesting,
-    tr_peerMsgs const* const peer)
-{
-    /* these cases should have already been handled by the calling code... */
-    TR_ASSERT(!tor->is_done());
-    TR_ASSERT(tor->client_can_download());
-
-    if (peer->is_seed()) {
-        return true;
-    }
-
-    for (tr_piece_index_t i = 0; i < tor->piece_count(); ++i) {
-        if (piece_is_interesting[i] && peer->has_piece(i)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 // determine which peers to show interest in
-// NOLINTNEXTLINE(misc-const-correctness)
-void updateInterest(tr_swarm* const swarm)
+void updateInterest(tr_swarm const* const swarm)
 {
-    // sometimes this function isn't necessary
-    auto const* const tor = swarm->tor;
-    if (tor->is_done() || !tor->client_can_download()) {
-        return;
-    }
-
-    if (auto const& peers = swarm->peers; !std::empty(peers)) {
-        auto const n = tor->piece_count();
-
-        // build a bitfield of interesting pieces...
-        auto piece_is_interesting = std::vector<bool>(n);
-        for (tr_piece_index_t i = 0U; i < n; ++i) {
-            piece_is_interesting[i] = tor->piece_is_wanted(i) && !tor->has_piece(i);
-        }
-
-        for (auto const& peer : peers) {
-            peer->set_interested(isPeerInteresting(tor, piece_is_interesting, peer.get()));
-        }
+    for (auto const& peer : swarm->peers) {
+        swarm->update_peer_interest(peer.get());
     }
 }
 } // namespace update_interest_helpers
@@ -2034,13 +2036,14 @@ namespace
 namespace rechoke_uploads_helpers
 {
 struct ChokeData {
-    ChokeData(tr_peerMsgs* msgs, Speed rate, uint8_t salt, bool is_interested, bool was_choked, bool is_choked)
+    ChokeData(tr_peerMsgs* msgs, Speed rate, uint8_t salt, bool is_interested, bool was_choked, bool is_locked)
         : msgs_{ msgs }
         , rate_{ rate }
         , salt_{ salt }
         , is_interested_{ is_interested }
         , was_choked_{ was_choked }
-        , is_choked_{ is_choked }
+        , is_locked_{ is_locked }
+        , is_choked_{ is_locked ? was_choked : true }
     {
     }
 
@@ -2049,6 +2052,7 @@ struct ChokeData {
     uint8_t salt_;
     bool is_interested_;
     bool was_choked_;
+    bool is_locked_; // set_choke() would ignore a change, so the peer keeps its choke state
     bool is_choked_;
 
     [[nodiscard]] constexpr auto operator<=>(ChokeData const& that) const noexcept
@@ -2129,7 +2133,7 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
                 salter(),
                 peer->peer_is_interested(),
                 peer->peer_is_choked(),
-                true);
+                peer->is_choke_locked());
         }
     }
 
@@ -2150,17 +2154,23 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
      *
      * If our bandwidth is maxed out, don't unchoke any more peers.
      */
-    auto checked_choke_count = size_t{ 0U };
-    auto unchoked_interested = size_t{ 0U };
+    // A locked peer that stays unchoked holds its slot whatever its rank.
+    auto unchoked_interested = static_cast<size_t>(std::ranges::count_if(choked, [](ChokeData const& item) {
+        return item.is_locked_ && !item.is_choked_ && item.is_interested_;
+    }));
 
-    for (auto& item : choked) {
+    auto checked_choke_count = size_t{ 0U };
+    for (auto const n = std::size(choked); checked_choke_count < n; ++checked_choke_count) {
+        auto& item = choked[checked_choke_count];
+        if (item.is_locked_) {
+            continue;
+        }
+
         if (unchoked_interested >= session->uploadSlotsPerTorrent()) {
             break;
         }
 
         item.is_choked_ = is_maxed_out ? item.was_choked_ : false;
-
-        ++checked_choke_count;
 
         if (item.is_interested_) {
             ++unchoked_interested;
@@ -2172,7 +2182,7 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
         auto rand_pool = std::vector<ChokeData*>{};
 
         for (auto i = checked_choke_count, n = std::size(choked); i < n; ++i) {
-            if (choked[i].is_interested_) {
+            if (choked[i].is_interested_ && !choked[i].is_locked_) {
                 rand_pool.push_back(&choked[i]);
             }
         }
