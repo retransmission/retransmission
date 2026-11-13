@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
+#include <chrono>
 #include <cerrno>
 #include <cstddef>
 #include <cstdint> // uint8_t, uint32_t, int64_t
@@ -17,6 +18,7 @@
 #include <optional>
 #include <queue>
 #include <ratio>
+#include <span>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -379,6 +381,34 @@ public:
         return socket_address().display_name();
     }
 
+    [[nodiscard]] tr::PeerConnectionInfo connection_info() const override
+    {
+        // BEP 10 sets bit 0x10 of reserved byte 5; BEP 6 bit 0x04 and BEP 5 bit 0x01 of byte 7.
+        auto const reserved = [](bool ltep, bool fext, bool dht) {
+            auto ret = std::array<uint8_t, 8>{};
+            ret[5] = ltep ? 0x10U : 0U;
+            ret[7] = static_cast<uint8_t>((fext ? 0x04U : 0U) | (dht ? 0x01U : 0U));
+            return ret;
+        };
+
+        auto info = tr::PeerConnectionInfo{};
+        info.info_hash = tor_.info_hash();
+        info.info_hash_string = std::string{ tor_.info_hash_string().sv() };
+        info.torrent_name = tor_.name();
+        info.peer = socket_address();
+        info.local_port = session->advertisedPeerPort().host();
+        info.is_utp = is_utp_connection();
+        info.is_encrypted = is_encrypted();
+        info.is_incoming = is_incoming_connection();
+        info.client = std::string{ user_agent().sv() };
+        info.client_peer_id = tor_.peer_id();
+        info.peer_id = peer_id();
+        // Our handshake always offers LTEP and the fast extension (see tr_handshake).
+        info.client_reserved = reserved(true, true, session->allowsDHT());
+        info.peer_reserved = reserved(io_->supports_ltep(), io_->supports_fext(), io_->supports_dht());
+        return info;
+    }
+
     [[nodiscard]] tr_bitfield const& has() const noexcept override
     {
         return have_;
@@ -389,7 +419,7 @@ public:
     void ban() override
     {
         peer_info->ban();
-        disconnect_soon();
+        disconnect_soon(tr::PeerCloseReason::Banned);
     }
 
     void on_torrent_got_metainfo() override
@@ -406,13 +436,12 @@ public:
             auto const peer_bitfield_bytes = tr_bytes_needed(have_.size());
             auto const actual_bitfield_bytes = tr_bytes_needed(tor_.piece_count());
             if (peer_bitfield_bytes != actual_bitfield_bytes) {
-                logdbg(
-                    this,
+                reject(
+                    tr::PeerCloseReason::BadBitfield,
                     fmt::format(
-                        "peer sent bitfield with {} bytes, but a valid bitfield should take {} bytes, disconnecting",
+                        "peer sent bitfield with {} bytes, but a valid bitfield should take {} bytes",
                         peer_bitfield_bytes,
                         actual_bitfield_bytes));
-                disconnect_soon();
                 return;
             }
 
@@ -790,6 +819,71 @@ private:
 
     [[nodiscard]] ReadResult can_read_impl(tr_peerIo* io);
 
+    // --- peer log and captures
+
+    [[nodiscard]] bool is_capturing() const noexcept
+    {
+        return session->peer_log().capture_mode() != tr::PeerCaptureMode::Off;
+    }
+
+    void record_message(
+        bool from_peer,
+        std::span<std::byte const> head,
+        std::span<std::byte const> tail,
+        uint64_t original_size) const
+    {
+        if (!is_capturing()) {
+            return;
+        }
+
+        auto const now = std::chrono::system_clock::now().time_since_epoch();
+        auto const now_usec = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::microseconds>(now).count());
+        recent_messages_.add(from_peer, head, tail, original_size, now_usec);
+    }
+
+    // `message_len` is the message's length prefix; zero for a keepalive.
+    void record_received_message(uint32_t message_len, std::optional<uint8_t> id, std::span<std::byte const> payload) const
+    {
+        auto head = std::array<std::byte, 5>{};
+        for (size_t i = 0; i < 4U; ++i) { // big-endian length prefix
+            head[i] = static_cast<std::byte>((message_len >> (8U * (3U - i))) & 0xFFU);
+        }
+        head[4] = std::byte{ id.value_or(0U) };
+        auto const head_len = id ? 5U : 4U;
+        record_message(true, std::span{ head }.first(head_len), payload, uint64_t{ 4U } + message_len);
+    }
+
+    // Closes the connection because the peer broke the protocol.
+    void reject(tr::PeerCloseReason reason, std::string detail)
+    {
+        logdbg(this, fmt::format("{}, disconnecting", detail));
+        if (!is_disconnecting() && session->peer_log().capture_mode() != tr::PeerCaptureMode::Off) {
+            capture(tr::to_string(reason), detail);
+        }
+        disconnect_soon(reason, std::move(detail));
+    }
+
+    // Notes a message we tolerate; captured once per kind per connection.
+    void note_anomaly(tr::PeerAnomaly anomaly, std::string_view detail)
+    {
+        auto& captured = anomalies_captured_[static_cast<size_t>(anomaly)];
+        if (session->peer_log().capture_mode() == tr::PeerCaptureMode::Anomalies && !captured) {
+            captured = true;
+            capture(tr::to_string(anomaly), detail);
+        }
+    }
+
+    void capture(std::string_view reason, std::string_view detail)
+    {
+        auto const& recent = recent_messages_.messages();
+        auto const segments = std::vector<tr::pcapng::Segment>{ std::begin(recent), std::end(recent) };
+        if (auto name = session->peer_log().write_capture(connection_info(), segments, reason, detail, tr_time());
+            !std::empty(name)) {
+            logdbg(this, fmt::format("wrote peer capture {}", name));
+            set_capture_file(std::move(name));
+        }
+    }
+
     static void did_write(tr_peerIo* /*io*/, size_t bytes_written, bool was_piece_data, void* vmsgs);
     static ReadState can_read(tr_peerIo* io, void* vmsgs, size_t* piece);
     static void got_error(tr_peerIo* /*io*/, tr_error const& /*error*/, void* vmsgs);
@@ -840,6 +934,10 @@ private:
     std::vector<std::pair<tr_block_index_t, time_t>> request_timeouts_;
 
     tr_incoming incoming_ = {};
+
+    // Recent messages for bad-message captures; empty unless capturing is on.
+    mutable tr::PeerMessageRing recent_messages_;
+    std::array<bool, tr::PeerAnomalyCount> anomalies_captured_ = {};
 
     // if the peer supports the Extension Protocol in BEP 10 and
     // supplied a reqq argument, it's stored here.
@@ -1016,6 +1114,7 @@ size_t tr_peerMsgsImpl::protocol_send_message(uint8_t type, Args const&... args)
     [[maybe_unused]] auto const msg_len = build_peer_message(out, type, args...);
     TR_ASSERT(is_message_length_correct(tor_, type, msg_len));
     auto const n_bytes_added = std::size(out);
+    record_message(false, std::span{ out.data(), n_bytes_added }, {}, n_bytes_added);
     io_->write(out, type == BtPeerMsgs::Piece);
     return n_bytes_added;
 }
@@ -1043,6 +1142,7 @@ size_t tr_peerMsgsImpl::protocol_send_keepalive() const
     out.add_uint32(0);
 
     auto const n_bytes_added = std::size(out);
+    record_message(false, std::span{ out.data(), n_bytes_added }, {}, n_bytes_added);
     io_->write(out, false);
     return n_bytes_added;
 }
@@ -1143,6 +1243,7 @@ void tr_peerMsgsImpl::parse_ut_holepunch(MessageReader& payload)
     auto const msg = bep55::decode(payload);
     if (!msg) {
         logdbg(this, "got malformed ut_holepunch message");
+        note_anomaly(tr::PeerAnomaly::MalformedHolepunch, "malformed ut_holepunch message");
         return;
     }
 
@@ -1608,8 +1709,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         logtrace(this, fmt::format("got Have: {:d}", ui32));
 
         if (tor_.has_metainfo() && ui32 >= tor_.piece_count()) {
-            logdbg(this, fmt::format("got Have: {} but torrent only has {} pieces, disconnecting", ui32, tor_.piece_count()));
-            disconnect_soon();
+            reject(
+                tr::PeerCloseReason::BadHave,
+                fmt::format("got Have: {} but torrent only has {} pieces", ui32, tor_.piece_count()));
             return { ReadState::Err, {} };
         }
 
@@ -1696,8 +1798,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             auto const piece = payload.to_uint32();
             publish(tr_peer_event::GotSuggest(piece));
         } else {
-            logdbg(this, "got a FextSuggest message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
+            reject(
+                tr::PeerCloseReason::FastExtensionNotNegotiated,
+                "got a FextSuggest message, but peer did not indicate fast extensions support");
             return { ReadState::Err, {} };
         }
 
@@ -1710,8 +1813,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             auto const piece = payload.to_uint32();
             publish(tr_peer_event::GotAllowedFast(piece));
         } else {
-            logdbg(this, "got a FextAllowedFast message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
+            reject(
+                tr::PeerCloseReason::FastExtensionNotNegotiated,
+                "got a FextAllowedFast message, but peer did not indicate fast extensions support");
             return { ReadState::Err, {} };
         }
 
@@ -1733,8 +1837,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             update_desired_request_count();
             maybe_send_block_requests();
         } else {
-            logdbg(this, "got a FextHaveAll message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
+            reject(
+                tr::PeerCloseReason::FastExtensionNotNegotiated,
+                "got a FextHaveAll message, but peer did not indicate fast extensions support");
             return { ReadState::Err, {} };
         }
 
@@ -1751,8 +1856,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             peer_info->set_seed(false);
             publish(tr_peer_event::GotHaveNone());
         } else {
-            logdbg(this, "got a FextHaveNone message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
+            reject(
+                tr::PeerCloseReason::FastExtensionNotNegotiated,
+                "got a FextHaveNone message, but peer did not indicate fast extensions support");
             return { ReadState::Err, {} };
         }
 
@@ -1776,8 +1882,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
                     publish(tr_peer_event::GotRejected(tor_.block_info(), block));
                 }
             } else {
-                logdbg(this, "got a FextReject message, but peer did not indicate fast extensions support, disconnecting");
-                disconnect_soon();
+                reject(
+                    tr::PeerCloseReason::FastExtensionNotNegotiated,
+                    "got a FextReject message, but peer did not indicate fast extensions support");
                 return { ReadState::Err, {} };
             }
 
@@ -1791,6 +1898,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     default:
         logtrace(this, fmt::format("peer sent us an UNKNOWN: {:d}", static_cast<int>(id)));
+        note_anomaly(tr::PeerAnomaly::UnknownMessage, fmt::format("unknown message id {:d}", static_cast<int>(id)));
         break;
     }
 
@@ -1812,6 +1920,9 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
 
     if (loc.block_offset + len > block_size) {
         logwarn(this, fmt::format("got unaligned block {:d} ({:d}:{:d}->{:d})", block, piece, offset, len));
+        note_anomaly(
+            tr::PeerAnomaly::UnalignedBlock,
+            fmt::format("unaligned block {:d} ({:d}:{:d}->{:d})", block, piece, offset, len));
         return { ReadState::Err, len };
     }
 
@@ -1824,6 +1935,9 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         if (auto const block_last_loc = tor_.block_last_loc(block);
             block_loc.piece == block_last_loc.piece || !tor_.piece_is_wanted(block_last_loc.piece)) {
             logwarn(this, fmt::format("got unwanted block {:d} ({:d}:{:d}->{:d})", block, piece, offset, len));
+            note_anomaly(
+                tr::PeerAnomaly::UnwantedBlock,
+                fmt::format("unwanted block {:d} ({:d}:{:d}->{:d})", block, piece, offset, len));
             return { ReadState::Err, len };
         }
     }
@@ -1842,6 +1956,7 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
     auto const now = tr_time();
     peer_info->set_latest_piece_data_time(now);
     bytes_sent_to_client.add(now, len);
+    add_piece_bytes(tr_direction::Down, len);
     publish(tr_peer_event::GotPieceData(len));
 
     if (loc.block_offset == 0U && len == block_size) // simple case: one message has entire block
@@ -1909,6 +2024,7 @@ void tr_peerMsgsImpl::did_write(tr_peerIo* /*io*/, size_t bytes_written, bool wa
         msgs->peer_info->set_latest_piece_data_time(now);
         msgs->publish(tr_peer_event::SentPieceData(bytes_written));
         msgs->bytes_sent_to_peer.add(now, bytes_written);
+        msgs->add_piece_bytes(tr_direction::Up, bytes_written);
     }
 }
 
@@ -1940,6 +2056,7 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
         // There is no message ID and no payload.
         if (message_len == 0U) {
             logtrace(this, "got KeepAlive");
+            record_received_message(0U, {}, {});
             return { ReadState::Now, {} };
         }
 
@@ -1959,14 +2076,14 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
         // The header is complete, so the length can be checked
         // before any payload is buffered.
         if (!is_message_length_correct(tor_, message_type, *current_message_len)) {
-            logdbg(
-                this,
+            record_received_message(*current_message_len, message_type, {});
+            reject(
+                tr::PeerCloseReason::BadMessageLength,
                 fmt::format(
-                    "bad msg: '{:s}' ({:d}) with len {:d}, disconnecting",
+                    "bad msg: '{:s}' ({:d}) with len {:d}",
                     BtPeerMsgs::debug_name(message_type),
                     static_cast<int>(message_type),
                     *current_message_len));
-            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1991,6 +2108,10 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
     // with `process_peer_message()`, reset the peerMsgs' incoming
     // field so it's ready to receive the next message.
 
+    record_received_message(
+        *current_message_len,
+        current_message_type,
+        std::span{ current_payload.data(), std::size(current_payload) });
     auto const ret = process_peer_message(*current_message_type, current_payload);
 
     current_message_len.reset();
@@ -2040,7 +2161,7 @@ void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& error, void* 
     }
 
     logdbg(msgs, fmt::format("peer I/O error, disconnecting: {} ({})", error.message(), error.code()));
-    msgs->disconnect_soon();
+    msgs->disconnect_soon(tr::PeerCloseReason::SocketError, fmt::format("{} ({})", error.message(), error.code()));
 }
 
 // ---
@@ -2339,6 +2460,7 @@ tr_peerMsgs::tr_peerMsgs(
     , connection_is_encrypted_{ connection_is_encrypted }
     , connection_is_incoming_{ connection_is_incoming }
     , connection_is_utp_{ connection_is_utp }
+    , connected_at_{ tr_time() }
 {
     auto client = tr::shared_string{};
     if (peer_id != tr_peer_id_t{}) {

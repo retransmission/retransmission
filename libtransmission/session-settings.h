@@ -84,6 +84,8 @@ public:
     bool incomplete_dir_enabled = false;
     bool is_incomplete_file_naming_enabled = true;
     bool lpd_enabled = true;
+    // Write peer connection events to dated files in `peer_log_dir`.
+    bool peer_log_enabled = false;
     bool peer_port_random_on_start = false;
     bool pex_enabled = true;
     bool port_forwarding_enabled = true;
@@ -136,7 +138,12 @@ public:
     std::string default_trackers_str;
     std::string download_dir = get_default_download_dir();
     std::string incomplete_dir = download_dir; // declare after download_dir
+    // "off", "rejected" (messages that close a connection) or "anomalies"
+    // (also messages we tolerate); captures are pcapng files in `peer_log_dir`.
+    std::string peer_capture = "off";
     std::string peer_congestion_algorithm;
+    // Where the peer event log and captures go; empty means "peers" in the config dir.
+    std::string peer_log_dir;
     std::string script_torrent_added_filename;
     std::string script_torrent_done_filename;
     std::string script_torrent_done_seeding_filename;
@@ -188,9 +195,12 @@ public:
         Field<&SessionSettings::is_incomplete_file_naming_enabled>{ TR_KEY_rename_partial_files },
         Field<&SessionSettings::log_level>{ TR_KEY_message_level },
         Field<&SessionSettings::lpd_enabled>{ TR_KEY_lpd_enabled },
+        Field<&SessionSettings::peer_capture>{ TR_KEY_peer_capture },
         Field<&SessionSettings::peer_congestion_algorithm>{ TR_KEY_peer_congestion_algorithm },
         Field<&SessionSettings::peer_limit_global>{ TR_KEY_peer_limit_global },
         Field<&SessionSettings::peer_limit_per_torrent>{ TR_KEY_peer_limit_per_torrent },
+        Field<&SessionSettings::peer_log_dir>{ TR_KEY_peer_log_dir },
+        Field<&SessionSettings::peer_log_enabled>{ TR_KEY_peer_log_enabled },
         Field<&SessionSettings::peer_port>{ TR_KEY_peer_port },
         Field<&SessionSettings::peer_port_random_high>{ TR_KEY_peer_port_random_high },
         Field<&SessionSettings::peer_port_random_low>{ TR_KEY_peer_port_random_low },
