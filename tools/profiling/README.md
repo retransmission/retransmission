@@ -1,12 +1,15 @@
 # Retransmission profiling
 
 The benchmark runs a local seeder, downloader, and private HTTP tracker inside
-one container. It transfers a deterministic 1024 MiB file over TCP, explicitly
-re-verifies the downloaded torrent, checks SHA-256, then shuts down both daemons
-to write their code-block timings. An internal Docker network isolates the
-benchmark from external networks; no ports are published. Image building needs
-network access. Peers use the container's private IPv4 because Retransmission
-rejects tracker-provided loopback addresses.
+one container. It transfers a deterministic 1024 MiB file over TCP or µTP,
+explicitly re-verifies the downloaded torrent, checks SHA-256, then shuts down
+both daemons to write their code-block timings. An internal Docker network
+isolates the benchmark from external networks; no ports are published. Image
+building needs network access. Peers use the container's private IPv4 because
+Retransmission rejects tracker-provided loopback addresses. Retransmission sends
+UDP only once it has a route to the internet, so the container starts as root to
+give that network a default route without a gateway, then runs the benchmark as
+your UID.
 
 From the repository root:
 
@@ -88,6 +91,14 @@ sudo BLOCK_PROFILING=OFF PEER_ENCRYPTION=preferred bash tools/profiling/run.sh
 sudo BLOCK_PROFILING=OFF PEER_ENCRYPTION=allowed DISK_IO_WORKERS=4 bash tools/profiling/run.sh
 ```
 
+`PEER_TRANSPORT` (`--transport`) is `tcp` or `utp`; both daemons disable the other
+transport. A run fails unless `observed_peer_transports` matches the request.
+Idle peers connect over TCP, so `IDLE_PEERS` needs `tcp`.
+
+```sh
+sudo BLOCK_PROFILING=OFF PEER_TRANSPORT=utp bash tools/profiling/run.sh
+```
+
 `PIECE_SIZE_KIB` defaults to 256; use 4096 to measure the effect of larger
 torrent pieces. `SEED_VERIFY_MODE` defaults to `fast`, which can defer most
 seed-side hashing until upload. Set it to `full` to fully verify the seed
@@ -143,9 +154,19 @@ payloads occupy RAM, approximately twice `SIZE_MIB`, plus daemon memory. Ensure
 the host has enough available RAM; tmpfs can use swap under memory pressure.
 The benchmark checks mount capacity before generating the payload.
 
+On tmpfs, both daemons run with preallocation off: fast preallocation writes
+every page of a tmpfs file, about 0.5 s per GiB at the first write, which disk
+filesystems do in milliseconds. `PREALLOCATION=0|1|2` overrides it; the default
+`auto` keeps the daemon's own setting on other storage.
+
 `transfer_cpu` records per-daemon Linux user/system CPU deltas during the whole
 transfer, including startup. A percentage is relative to one CPU core and may
 exceed 100% with workers. Counters are omitted when /proc access is unavailable.
+
+`data_phase` covers only the data transfer: from the first poll that sees
+payload bytes at the leech to completion. Its `cpu_seconds_per_gib` leaves out
+startup, connecting and waiting to be unchoked, so it compares CPU cost across
+runs whose start-up times differ.
 
 `thread_cpu` breaks the same interval down per thread, busiest first. With
 profiling ON, each thread gets a role from the scopes it recorded: `session`,
@@ -361,6 +382,11 @@ blocks. `summary.md` compares only uninstrumented throughput. Diagnostic traces
 are retained in memory until shutdown and add allocation/locking overhead; use
 them to explain behavior, not to measure production throughput. No batch tracing
 code is compiled into builds with block profiling disabled.
+
+## Transport benchmarks
+
+To measure TCP and µTP on their own, without disk, hashing or handshakes, see
+[transport/README.md](transport/README.md).
 
 ## Checks Without Docker
 

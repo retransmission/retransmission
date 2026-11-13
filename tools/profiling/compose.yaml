@@ -9,8 +9,11 @@ services:
         SOURCE_REVISION: ${SOURCE_REVISION:-0}
     networks: [benchmark]
     init: true
-    user: "${PROFILE_UID:-1000}:${PROFILE_GID:-1000}"
+    # container-entrypoint.sh adds a route as root, then runs the benchmark as PROFILE_UID.
+    cap_add: [NET_ADMIN]
     environment:
+      PROFILE_UID: "${PROFILE_UID:-1000}"
+      PROFILE_GID: "${PROFILE_GID:-1000}"
       TR_PROFILE_STORAGE: container-layer
       TR_PROFILE_DISK_BASELINE: "${DISK_BASELINE:-0}"
       DISK_WRITE_BUDGET_MIB: "${DISK_WRITE_BUDGET_MIB:-}"
@@ -31,6 +34,8 @@ services:
       - "${BLOCK_PROFILING:-ON}"
       - --encryption
       - "${PEER_ENCRYPTION:-preferred}"
+      - --transport
+      - "${PEER_TRANSPORT:-tcp}"
       - --poll-interval
       - "${POLL_INTERVAL:-0.02}"
       - --target-gbit
@@ -39,6 +44,8 @@ services:
       - "${PIECE_SIZE_KIB:-256}"
       - --seed-verify-mode
       - "${SEED_VERIFY_MODE:-fast}"
+      - --preallocation
+      - "${PREALLOCATION:-auto}"
 
 networks:
   benchmark:

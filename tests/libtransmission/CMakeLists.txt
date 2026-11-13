@@ -121,6 +121,42 @@ target_link_libraries(libtransmission-test
 
 tr_setup_gtest_target(libtransmission-test "LT.")
 
+# TCP against µTP throughput through the peer IO alone; see the comment atop the source.
+add_executable(transport-benchmark transport-benchmark.cc)
+
+set_property(
+    TARGET transport-benchmark
+    PROPERTY FOLDER "tests")
+
+target_compile_definitions(transport-benchmark
+    PRIVATE
+        __TRANSMISSION__
+        $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
+
+target_link_libraries(transport-benchmark
+    PRIVATE
+        ${TR_NAME}
+        dht::dht
+        transmission::fmt-header-only
+        libevent::core
+        libevent::extra
+        $<$<BOOL:${ENABLE_UTP}>:libutp::libutp>)
+
+add_dependencies(all-tests transport-benchmark)
+
+# A small transfer per transport, so the benchmark keeps building and working.
+# Some µTP connections idle for libutp's 30 s keepalive interval before sending,
+# so µTP's timeout leaves room for that wait.
+add_test(
+    NAME transport-benchmark-tcp-smoke
+    COMMAND transport-benchmark --transport tcp --size-mib 4 --timeout 30)
+
+if(ENABLE_UTP)
+    add_test(
+        NAME transport-benchmark-utp-smoke
+        COMMAND transport-benchmark --transport utp --size-mib 4 --timeout 90)
+endif()
+
 # Re-run the disk-IO tests with tr::LocalData delivering its completions
 # late and out of order, which its ordering contract allows.
 #
