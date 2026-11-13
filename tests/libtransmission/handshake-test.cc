@@ -971,6 +971,39 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::ValuesIn(ModeCases),
     [](::testing::TestParamInfo<ModeCase> const& case_info) { return std::string{ case_info.param.name }; });
 
+// A refused dial is not a peer that dropped the plaintext handshake, so it gets no MSE redial.
+// Each dial arms the handshake timeout once.
+TEST_F(HandshakeModeTest, refusedDialIsNotRedialled)
+{
+    auto const closed_address = LoopbackListener{}.address();
+    auto local = MediatorMock{ session_ };
+    addTorrent(local, UbuntuTorrent.client_peer_id);
+
+    auto out = Side{};
+    auto handshakes = std::vector<std::unique_ptr<tr_handshake>>{};
+    auto const dialled = blockingRunInSessionThread([&] {
+        auto const io = dial(closed_address);
+        if (io) {
+            addHandshake(handshakes, local, io, Allow, out);
+        }
+        return io != nullptr;
+    });
+    if (!dialled) {
+        GTEST_SKIP() << "connect() was refused before the event loop saw it";
+    }
+
+    EXPECT_TRUE(waitForInSessionThread([&] { return out.connected.has_value(); }, MaxWaitMsec));
+
+    auto const timeouts_armed = blockingRunInSessionThread([&] {
+        auto const n = local.timer_maker().startCount();
+        handshakes.clear();
+        return n;
+    });
+
+    EXPECT_EQ(std::optional{ false }, out.connected);
+    EXPECT_EQ(1U, timeouts_armed);
+}
+
 // Two peers dial each other at once: Transmission in Prefer dials with MSE
 // while the remote, in Allow, dials back in plaintext. Nothing at the
 // handshake level ties the two connections together, so both complete, one
