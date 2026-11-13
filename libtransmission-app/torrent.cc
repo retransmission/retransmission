@@ -148,8 +148,8 @@ std::optional<double> Torrent::effective_seed_ratio() const
         return seed_ratio_limit_;
 
     case TR_RATIOLIMIT_GLOBAL:
-        if (prefs_.get<bool>(TR_KEY_seed_ratio_limited)) {
-            return prefs_.get<double>(TR_KEY_seed_ratio_limit);
+        if (prefs_.get<bool, TR_KEY_seed_ratio_limited>()) {
+            return prefs_.get<double, TR_KEY_seed_ratio_limit>();
         }
         return {};
 

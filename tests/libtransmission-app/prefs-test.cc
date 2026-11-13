@@ -238,6 +238,18 @@ TEST_F(PrefsTest, getAsVariantReturnsUnderlyingValue)
     EXPECT_EQ(var.value_if<int64_t>(), 4242);
 }
 
+TEST_F(PrefsTest, compileTimeKeyGetReadsAppAndSessionPrefs)
+{
+    auto prefs = TestPrefs{};
+    prefs.set(TR_KEY_sort_mode, SortMode::SortBySize);
+    prefs.set(TR_KEY_seed_ratio_limited, true);
+    prefs.set(TR_KEY_seed_ratio_limit, 2.5);
+
+    EXPECT_EQ((prefs.get<SortMode, TR_KEY_sort_mode>()), SortMode::SortBySize);
+    EXPECT_TRUE((prefs.get<bool, TR_KEY_seed_ratio_limited>()));
+    EXPECT_EQ((prefs.get<double, TR_KEY_seed_ratio_limit>()), 2.5);
+}
+
 TEST_F(PrefsTest, setNotifiesOnChangeOnly)
 {
     static auto constexpr Key = TR_KEY_sort_reversed;
