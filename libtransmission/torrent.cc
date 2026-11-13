@@ -1376,7 +1376,7 @@ tr_stat tr_torrent::stats() const
     stats.peers_getting_from_us = swarm_stats.active_peer_count[static_cast<uint8_t>(tr_direction::Up)];
     stats.webseeds_sending_to_us = swarm_stats.active_webseed_count;
 
-    for (int i = 0; i < TR_PEER_FROM_N_TYPES; i++) {
+    for (size_t i = 0; i < TR_PEER_FROM_N_TYPES; i++) {
         stats.peers_from[i] = swarm_stats.peer_from_count[i];
         stats.known_peers_from[i] = swarm_stats.known_peer_from_count[i];
     }

@@ -89,7 +89,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     return tr_num_parse<int>(sv, nullptr, base).value_or(0);
 }
 
-[[nodiscard]] constexpr std::string_view utSuffix(uint8_t ch)
+[[nodiscard]] constexpr std::string_view utSuffix(char ch)
 {
     switch (ch) {
     case 'b':
