@@ -913,6 +913,10 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)refreshActiveVPNBindInterfacePreference
 {
+    if (self.fQuitting) {
+        return; // tr_sessionClose() may have freed the session
+    }
+
     NSDictionary<NSString*, id>* resolution = [self resolveActiveVPNBindInterface];
     self.fActiveVPNBindInterfaceStatus = resolution;
 
