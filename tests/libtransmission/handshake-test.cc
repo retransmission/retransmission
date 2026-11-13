@@ -7,16 +7,21 @@
 #include <array>
 #include <cerrno>
 #include <cstddef> // size_t, std::byte
+#include <chrono>
 #include <cstdint> // uint8_t
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h> // write()
 #endif
@@ -52,11 +57,87 @@ auto constexpr MaxWaitMsec = 5000;
 class HandshakeTest : public SessionTest
 {
 public:
+    // Makes session timers that count how often they are started,
+    // so a test can see each time a handshake arms its timeout.
+    class CountingTimerMaker final : public tr::TimerMaker
+    {
+    public:
+        explicit CountingTimerMaker(tr::TimerMaker& real)
+            : real_{ real }
+        {
+        }
+
+        [[nodiscard]] std::unique_ptr<tr::Timer> create() override
+        {
+            return std::make_unique<CountingTimer>(real_.create(), n_starts_);
+        }
+
+        [[nodiscard]] size_t startCount() const noexcept
+        {
+            return *n_starts_;
+        }
+
+    private:
+        class CountingTimer final : public tr::Timer
+        {
+        public:
+            CountingTimer(std::unique_ptr<tr::Timer> real, std::shared_ptr<size_t> n_starts)
+                : real_{ std::move(real) }
+                , n_starts_{ std::move(n_starts) }
+            {
+            }
+
+            void stop() override
+            {
+                real_->stop();
+            }
+
+            void set_callback(std::function<void()> callback) override
+            {
+                real_->set_callback(std::move(callback));
+            }
+
+            void set_repeating(bool const repeating) override
+            {
+                real_->set_repeating(repeating);
+            }
+
+            void set_interval(std::chrono::milliseconds const msec) override
+            {
+                real_->set_interval(msec);
+            }
+
+            void start() override
+            {
+                ++*n_starts_;
+                real_->start();
+            }
+
+            [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
+            {
+                return real_->interval();
+            }
+
+            [[nodiscard]] bool is_repeating() const noexcept override
+            {
+                return real_->is_repeating();
+            }
+
+        private:
+            std::unique_ptr<tr::Timer> const real_;
+            std::shared_ptr<size_t> const n_starts_;
+        };
+
+        tr::TimerMaker& real_;
+        std::shared_ptr<size_t> n_starts_ = std::make_shared<size_t>();
+    };
+
     class MediatorMock final : public tr_handshake::Mediator
     {
     public:
         explicit MediatorMock(tr_session* session)
             : session_{ session }
+            , timer_maker_{ session->timerMaker() }
         {
         }
 
@@ -80,9 +161,9 @@ public:
             return {};
         }
 
-        [[nodiscard]] tr::TimerMaker& timer_maker() override
+        [[nodiscard]] CountingTimerMaker& timer_maker() override
         {
-            return session_->timerMaker();
+            return timer_maker_;
         }
 
         [[nodiscard]] bool allows_dht() const override
@@ -115,6 +196,7 @@ public:
         }
 
         tr_session* const session_;
+        CountingTimerMaker timer_maker_;
         std::map<tr_sha1_digest_t, TorrentInfo> torrents;
         tr_message_stream_encryption::DH::private_key_bigend_t private_key_ = {};
     };
@@ -534,6 +616,445 @@ TEST_F(HandshakeTest, outgoingEncrypted)
         res.reset();
         io.reset();
     });
+}
+
+// --- Encryption mode matrix
+//
+// These tests run an outgoing tr_handshake against a remote peer behind a
+// loopback TCP listener. A listener, unlike a socketpair, accepts the new
+// connection that on_error() opens when it falls back between plaintext and MSE.
+
+// The remote peer closes its first `drops` connections unanswered, then
+// answers each later one with an incoming tr_handshake in `mode`.
+// Without a `mode` it closes every connection.
+namespace
+{
+struct RemotePeer {
+    size_t drops = 0U;
+    std::optional<tr_encryption_mode> mode;
+};
+
+struct ModeCase {
+    std::string_view name;
+    tr_encryption_mode mode;
+    RemotePeer peer;
+    bool connected;
+    bool encrypted;
+    size_t connections;
+};
+
+class HandshakeModeTest
+    : public HandshakeTest
+    , public ::testing::WithParamInterface<ModeCase>
+{
+protected:
+    class LoopbackListener
+    {
+    public:
+        LoopbackListener()
+            : sock_{ socket(AF_INET, SOCK_STREAM, 0) }
+        {
+            auto addr = sockaddr_in{};
+            addr.sin_family = AF_INET;
+            addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+            auto addrlen = socklen_t{ sizeof(addr) };
+            EXPECT_TRUE(is_valid_socket(sock_));
+            EXPECT_EQ(0, bind(sock_, reinterpret_cast<sockaddr*>(&addr), addrlen));
+            EXPECT_EQ(0, listen(sock_, 8));
+            EXPECT_EQ(0, getsockname(sock_, reinterpret_cast<sockaddr*>(&addr), &addrlen));
+            EXPECT_EQ(0, evutil_make_socket_nonblocking(sock_));
+            port_ = tr_port::from_network(addr.sin_port);
+        }
+
+        LoopbackListener(LoopbackListener const&) = delete;
+        LoopbackListener& operator=(LoopbackListener const&) = delete;
+        LoopbackListener(LoopbackListener&&) = delete;
+        LoopbackListener& operator=(LoopbackListener&&) = delete;
+
+        ~LoopbackListener()
+        {
+            tr_net_close_socket(sock_);
+        }
+
+        [[nodiscard]] tr_socket_address address() const
+        {
+            return { *tr_address::from_string("127.0.0.1"sv), port_ };
+        }
+
+        [[nodiscard]] tr_socket_t accept() const
+        {
+            return ::accept(sock_, nullptr, nullptr);
+        }
+
+    private:
+        tr_socket_t const sock_;
+        tr_port port_;
+    };
+
+    // the result of one handshake
+    struct Side {
+        std::optional<bool> connected;
+        bool encrypted = false;
+        std::optional<tr_peer_id_t> peer_id;
+    };
+
+    struct Outcome {
+        Side local;
+        Side remote; // the remote's last handshake
+        size_t connections = 0U;
+        size_t local_timeouts_armed = 0U;
+    };
+
+    // Configures a mediator in place: moving a MediatorMock can throw.
+    void addTorrent(MediatorMock& mediator, tr_peer_id_t const& peer_id) const
+    {
+        auto torrent = UbuntuTorrent;
+        torrent.client_peer_id = peer_id;
+        mediator.torrents.emplace(torrent.info_hash, torrent);
+        mediator.private_key_ = tr_handshake::DH::randomPrivateKey();
+    }
+
+    [[nodiscard]] std::shared_ptr<tr_peerIo> dial(tr_socket_address const& address)
+    {
+        return tr_peerIo::new_outgoing(
+            session_,
+            &session_->top_bandwidth_,
+            address,
+            UbuntuTorrent.info_hash,
+            false /*seed*/,
+            false /*utp*/);
+    }
+
+    [[nodiscard]] std::shared_ptr<tr_peerIo> adopt(tr_socket_t sock)
+    {
+        EXPECT_EQ(0, evutil_make_socket_nonblocking(sock));
+        return tr_peerIo::new_incoming(
+            session_,
+            &session_->top_bandwidth_,
+            tr_peer_socket_tcp::create(*session_, DefaultPeerSockAddr, sock));
+    }
+
+    static void addHandshake(
+        std::vector<std::unique_ptr<tr_handshake>>& handshakes,
+        MediatorMock& mediator,
+        std::shared_ptr<tr_peerIo> const& io,
+        tr_encryption_mode mode,
+        Side& side)
+    {
+        handshakes.emplace_back(std::make_unique<tr_handshake>(&mediator, io, mode, [&side](auto const& res) {
+            side.connected = res.is_connected;
+            side.encrypted = res.io->is_encrypted();
+            side.peer_id = res.peer_id;
+            if (!res.is_connected) {
+                res.io->clear();
+            }
+            return true;
+        }));
+    }
+
+    Outcome connectTo(tr_encryption_mode mode, RemotePeer const& peer)
+    {
+        auto const listener = LoopbackListener{};
+        auto const remote_peer_id = makeRandomPeerId();
+        auto local = MediatorMock{ session_ };
+        auto remote = MediatorMock{ session_ };
+        addTorrent(local, UbuntuTorrent.client_peer_id);
+        addTorrent(remote, remote_peer_id);
+
+        auto out = Outcome{};
+        auto handshakes = std::vector<std::unique_ptr<tr_handshake>>{};
+
+        blockingRunInSessionThread([&] { addHandshake(handshakes, local, dial(listener.address()), mode, out.local); });
+
+        auto const answer_connections = [&] {
+            for (auto sock = listener.accept(); is_valid_socket(sock); sock = listener.accept()) {
+                if (++out.connections <= peer.drops || !peer.mode) {
+                    tr_net_close_socket(sock);
+                    continue;
+                }
+
+                blockingRunInSessionThread([&] {
+                    out.remote = Side{};
+                    addHandshake(handshakes, remote, adopt(sock), *peer.mode, out.remote);
+                });
+            }
+        };
+
+        // No dial follows the local result, so every connection is counted
+        // by then. A connected local side can finish before the remote.
+        EXPECT_TRUE(waitFor(
+            [&] {
+                answer_connections();
+                return blockingRunInSessionThread([&] {
+                    return out.local.connected.has_value() && (!*out.local.connected || out.remote.connected.has_value());
+                });
+            },
+            MaxWaitMsec));
+
+        blockingRunInSessionThread([&] {
+            out.local_timeouts_armed = local.timer_maker().startCount();
+            handshakes.clear();
+        });
+
+        if (out.local.connected.value_or(false)) {
+            EXPECT_EQ(remote_peer_id, out.local.peer_id);
+        }
+
+        return out;
+    }
+};
+} // namespace
+
+TEST_P(HandshakeModeTest, connectsAsExpected)
+{
+    auto const& param = GetParam();
+
+    auto const out = connectTo(param.mode, param.peer);
+
+    ASSERT_TRUE(out.local.connected.has_value());
+    EXPECT_EQ(param.connected, *out.local.connected);
+    EXPECT_EQ(param.connections, out.connections);
+    // each connection attempt gets the full handshake timeout
+    EXPECT_EQ(param.connections, out.local_timeouts_armed);
+    if (param.connected) {
+        EXPECT_EQ(param.encrypted, out.local.encrypted);
+        EXPECT_EQ(std::optional{ true }, out.remote.connected);
+        EXPECT_EQ(param.encrypted, out.remote.encrypted);
+    }
+}
+
+namespace
+{
+auto constexpr Allow = TR_CLEAR_PREFERRED;
+auto constexpr Prefer = TR_ENCRYPTION_PREFERRED;
+auto constexpr Require = TR_ENCRYPTION_REQUIRED;
+
+auto constexpr ModeCases = std::array{
+    // Every mode against every mode. The connecting side picks plaintext
+    // (Allow) or MSE with RC4 only (Prefer, Require); only Require refuses
+    // an incoming plaintext handshake.
+    //
+    //   dialer \ remote   Allow   Prefer   Require
+    //   Allow             plain   plain    RC4, on the redial
+    //   Prefer            RC4     RC4      RC4
+    //   Require           RC4     RC4      RC4
+    ModeCase{ .name = "AllowToAllow",
+              .mode = Allow,
+              .peer = { .mode = Allow },
+              .connected = true,
+              .encrypted = false,
+              .connections = 1U },
+    ModeCase{ .name = "AllowToPrefer",
+              .mode = Allow,
+              .peer = { .mode = Prefer },
+              .connected = true,
+              .encrypted = false,
+              .connections = 1U },
+    // the remote drops the plaintext handshake, so Allow redials with MSE
+    ModeCase{ .name = "AllowToRequire",
+              .mode = Allow,
+              .peer = { .mode = Require },
+              .connected = true,
+              .encrypted = true,
+              .connections = 2U },
+    ModeCase{ .name = "PreferToAllow",
+              .mode = Prefer,
+              .peer = { .mode = Allow },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+    ModeCase{ .name = "PreferToPrefer",
+              .mode = Prefer,
+              .peer = { .mode = Prefer },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+    ModeCase{ .name = "PreferToRequire",
+              .mode = Prefer,
+              .peer = { .mode = Require },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+    ModeCase{ .name = "RequireToAllow",
+              .mode = Require,
+              .peer = { .mode = Allow },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+    ModeCase{ .name = "RequireToPrefer",
+              .mode = Require,
+              .peer = { .mode = Prefer },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+    ModeCase{ .name = "RequireToRequire",
+              .mode = Require,
+              .peer = { .mode = Require },
+              .connected = true,
+              .encrypted = true,
+              .connections = 1U },
+
+    // Allow's MSE redial offers RC4 and plaintext: a remote that allows
+    // plaintext selects it, so only the handshake is obfuscated.
+    ModeCase{ .name = "AllowRedialToAllow",
+              .mode = Allow,
+              .peer = { .drops = 1U, .mode = Allow },
+              .connected = true,
+              .encrypted = false,
+              .connections = 2U },
+    ModeCase{ .name = "AllowRedialToPrefer",
+              .mode = Allow,
+              .peer = { .drops = 1U, .mode = Prefer },
+              .connected = true,
+              .encrypted = true,
+              .connections = 2U },
+    ModeCase{ .name = "AllowRedialToRequire",
+              .mode = Allow,
+              .peer = { .drops = 1U, .mode = Require },
+              .connected = true,
+              .encrypted = true,
+              .connections = 2U },
+
+    // Prefer redials in plaintext when its MSE handshake is dropped.
+    ModeCase{ .name = "PreferRedialToAllow",
+              .mode = Prefer,
+              .peer = { .drops = 1U, .mode = Allow },
+              .connected = true,
+              .encrypted = false,
+              .connections = 2U },
+    ModeCase{ .name = "PreferRedialToPrefer",
+              .mode = Prefer,
+              .peer = { .drops = 1U, .mode = Prefer },
+              .connected = true,
+              .encrypted = false,
+              .connections = 2U },
+    ModeCase{ .name = "PreferRedialToRequire",
+              .mode = Prefer,
+              .peer = { .drops = 1U, .mode = Require },
+              .connected = false,
+              .encrypted = false,
+              .connections = 2U },
+
+    // Require never redials.
+    ModeCase{ .name = "RequireDropped",
+              .mode = Require,
+              .peer = { .drops = 1U, .mode = Require },
+              .connected = false,
+              .encrypted = false,
+              .connections = 1U },
+
+    // A remote that drops everything gets one redial at most.
+    ModeCase{ .name = "AllowDroppedTwice",
+              .mode = Allow,
+              .peer = {},
+              .connected = false,
+              .encrypted = false,
+              .connections = 2U },
+    ModeCase{ .name = "PreferDroppedTwice",
+              .mode = Prefer,
+              .peer = {},
+              .connected = false,
+              .encrypted = false,
+              .connections = 2U },
+    ModeCase{ .name = "RequireDroppedOnce",
+              .mode = Require,
+              .peer = {},
+              .connected = false,
+              .encrypted = false,
+              .connections = 1U },
+};
+} // namespace
+
+INSTANTIATE_TEST_SUITE_P(
+    Modes,
+    HandshakeModeTest,
+    ::testing::ValuesIn(ModeCases),
+    [](::testing::TestParamInfo<ModeCase> const& case_info) { return std::string{ case_info.param.name }; });
+
+// A refused dial is not a peer that dropped the plaintext handshake, so it gets no MSE redial.
+// Each dial arms the handshake timeout once.
+TEST_F(HandshakeModeTest, refusedDialIsNotRedialled)
+{
+    auto const closed_address = LoopbackListener{}.address();
+    auto local = MediatorMock{ session_ };
+    addTorrent(local, UbuntuTorrent.client_peer_id);
+
+    auto out = Side{};
+    auto handshakes = std::vector<std::unique_ptr<tr_handshake>>{};
+    auto const dialled = blockingRunInSessionThread([&] {
+        auto const io = dial(closed_address);
+        if (io) {
+            addHandshake(handshakes, local, io, Allow, out);
+        }
+        return io != nullptr;
+    });
+    if (!dialled) {
+        GTEST_SKIP() << "connect() was refused before the event loop saw it";
+    }
+
+    EXPECT_TRUE(waitForInSessionThread([&] { return out.connected.has_value(); }, MaxWaitMsec));
+
+    auto const timeouts_armed = blockingRunInSessionThread([&] {
+        auto const n = local.timer_maker().startCount();
+        handshakes.clear();
+        return n;
+    });
+
+    EXPECT_EQ(std::optional{ false }, out.connected);
+    EXPECT_EQ(1U, timeouts_armed);
+}
+
+// Two peers dial each other at once: Transmission in Prefer dials with MSE
+// while the remote, in Allow, dials back in plaintext. Nothing at the
+// handshake level ties the two connections together, so both complete, one
+// encrypted and one not. Keeping one of them is up to the peer manager.
+TEST_F(HandshakeModeTest, simultaneousDialsBothConnect)
+{
+    auto const local_listener = LoopbackListener{};
+    auto const remote_listener = LoopbackListener{};
+    auto const remote_peer_id = makeRandomPeerId();
+    auto local = MediatorMock{ session_ };
+    auto remote = MediatorMock{ session_ };
+    addTorrent(local, UbuntuTorrent.client_peer_id);
+    addTorrent(remote, remote_peer_id);
+
+    auto local_dial = Side{};
+    auto local_answer = Side{};
+    auto remote_dial = Side{};
+    auto remote_answer = Side{};
+    auto handshakes = std::vector<std::unique_ptr<tr_handshake>>{};
+
+    blockingRunInSessionThread([&] {
+        addHandshake(handshakes, local, dial(remote_listener.address()), Prefer, local_dial);
+        addHandshake(handshakes, remote, dial(local_listener.address()), Allow, remote_dial);
+    });
+
+    auto const answer = [&](LoopbackListener const& listener, MediatorMock& mediator, tr_encryption_mode mode, Side& side) {
+        if (auto const sock = listener.accept(); is_valid_socket(sock)) {
+            blockingRunInSessionThread([&] { addHandshake(handshakes, mediator, adopt(sock), mode, side); });
+        }
+    };
+
+    EXPECT_TRUE(waitFor(
+        [&] {
+            answer(remote_listener, remote, Allow, remote_answer);
+            answer(local_listener, local, Prefer, local_answer);
+            return blockingRunInSessionThread(
+                [&] { return local_dial.connected.has_value() && local_answer.connected.has_value(); });
+        },
+        MaxWaitMsec));
+
+    blockingRunInSessionThread([&] { handshakes.clear(); });
+
+    // the connection Transmission dialled is MSE with RC4
+    EXPECT_EQ(std::optional{ true }, local_dial.connected);
+    EXPECT_TRUE(local_dial.encrypted);
+    EXPECT_EQ(remote_peer_id, local_dial.peer_id);
+
+    // the connection the remote dialled is plaintext, from the same peer
+    EXPECT_EQ(std::optional{ true }, local_answer.connected);
+    EXPECT_FALSE(local_answer.encrypted);
+    EXPECT_EQ(remote_peer_id, local_answer.peer_id);
 }
 
 } // namespace tr::test

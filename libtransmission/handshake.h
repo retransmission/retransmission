@@ -340,4 +340,10 @@ private:
     bool have_read_anything_from_peer_ = false;
 
     bool have_sent_bittorrent_handshake_ = false;
+
+    // on_error() switches between plaintext and MSE at most once, so the
+    // handshake ends instead of looping. Falling back from µTP to TCP
+    // keeps the handshake type and is not counted: a handshake that
+    // starts over µTP makes up to three attempts.
+    bool have_retried_ = false;
 };
