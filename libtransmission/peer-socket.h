@@ -50,6 +50,8 @@ public:
     [[nodiscard]] virtual bool is_read_enabled() const = 0;
     [[nodiscard]] virtual bool is_write_enabled() const = 0;
 
+    [[nodiscard]] constexpr virtual bool is_connected() const noexcept = 0;
+
     void set_read_cb(RWCb cb)
     {
         read_cb_ = std::move(cb);

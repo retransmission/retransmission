@@ -66,7 +66,7 @@ tr_peerIo::tr_peerIo(
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
     bool client_is_seed)
-    : untried_transports_{ std::move(untried_transports) }
+    : socket_factories_{ std::move(untried_transports) }
     , bandwidth_{ parent_bandwidth }
     , info_hash_{ info_hash != nullptr ? *info_hash : tr_sha1_digest_t{} }
     , session_{ session }
@@ -146,14 +146,14 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
                 });
             break;
         }
+        // No default label: This switch must handle all `tr_transport_protocol` values
     }
 
     while (!factories.empty()) {
-        auto const factory = std::move(factories.back());
-        factories.pop_back();
-        if (auto sock = factory(*session, socket_address, client_is_seed)) {
+        if (auto sock = factories.back()(*session, socket_address, client_is_seed)) {
             return tr_peerIo::create(session, std::move(sock), std::move(factories), parent, &info_hash, false, client_is_seed);
         }
+        factories.pop_back();
     }
 
     return {};
@@ -240,22 +240,21 @@ void tr_peerIo::clear()
     close();
 }
 
-bool tr_peerIo::reconnect()
+bool tr_peerIo::reconnect(bool const keep_transport)
 {
     TR_ASSERT(!is_incoming());
-    if (!session_->allowsTCP()) {
-        return false;
-    }
 
     auto const was_read_enabled = socket_ ? socket_->is_read_enabled() : false;
     auto const was_write_enabled = socket_ ? socket_->is_write_enabled() : false;
 
     close();
 
-    while (!untried_transports_.empty()) {
-        auto const factory = untried_transports_.back();
-        untried_transports_.pop_back();
-        if (auto sock = factory(*session_, socket_address(), client_is_seed())) {
+    if (!keep_transport && !socket_factories_.empty()) {
+        socket_factories_.pop_back();
+    }
+
+    while (!socket_factories_.empty()) {
+        if (auto sock = socket_factories_.back()(*session_, socket_address(), client_is_seed())) {
             set_socket(std::move(sock));
 
             socket_->set_read_enabled(was_read_enabled);
@@ -263,6 +262,12 @@ bool tr_peerIo::reconnect()
 
             return true;
         }
+
+        if (keep_transport) {
+            break;
+        }
+
+        socket_factories_.pop_back();
     }
 
     return false;

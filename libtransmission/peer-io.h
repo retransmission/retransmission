@@ -93,6 +93,11 @@ public:
 
     void set_socket(std::shared_ptr<tr_peer_socket> socket_in);
 
+    [[nodiscard]] constexpr auto is_connected() const noexcept
+    {
+        return socket_ ? socket_->is_connected() : false;
+    }
+
     [[nodiscard]] auto is_utp() const noexcept
     {
         return socket_ ? socket_->is_utp() : false;
@@ -100,7 +105,7 @@ public:
 
     void clear();
 
-    [[nodiscard]] bool reconnect();
+    [[nodiscard]] bool reconnect(bool keep_transport);
 
     void set_enabled(tr_direction dir, bool is_enabled);
 
@@ -369,7 +374,7 @@ private:
     std::deque<std::pair<size_t /*n_bytes*/, bool /*is_piece_data*/>> outbuf_info_;
 
     std::shared_ptr<tr_peer_socket> socket_;
-    SocketFactories untried_transports_;
+    SocketFactories socket_factories_;
 
     tr_socket_address socket_address_;
 

@@ -587,49 +587,58 @@ ReadState tr_handshake::can_read(tr_peerIo* peer_io, void* vhandshake, size_t* p
 void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandshake)
 {
     auto* handshake = static_cast<tr_handshake*>(vhandshake);
+    auto const did_connect = io->is_connected();
+    auto const& info_hash = io->torrent_hash();
 
     auto const retry_plain = [&] {
         handshake->send_handshake(io);
         handshake->set_state(State::AwaitingHandshake);
     };
+    auto const retry_mse = [&] {
+        handshake->send_ya(io);
+        handshake->set_state(State::AwaitingYb);
+    };
     auto const fail = [&] {
         tr_logAddTraceHand(handshake, fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code()));
+        if (!did_connect && io->is_utp()) {
+            handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
+        }
         handshake->done(false);
     };
 
+    auto const was_mse = handshake->dh_.has_value();
     handshake->maybe_recycle_dh();
 
-    if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
-        // the peer probably doesn't speak µTP.
-
-        auto const info_hash = io->torrent_hash();
-        auto const info = handshake->mediator_->torrent(info_hash);
-
-        /* Don't mark a peer as non-µTP unless it's really a connect failure. */
-        if ((error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
-            handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
-        }
-
-        if (io->reconnect()) {
-            tr_logAddTraceHand(handshake, "uTP connection failed, trying TCP...");
-            if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
-                handshake->send_ya(io);
-            } else {
-                retry_plain();
-            }
-            return;
-        }
-
+    if (io->is_incoming() || !handshake->mediator_->torrent(info_hash)) {
         fail();
         return;
     }
 
-    /* if the error happened while we were sending a public key, we might
-     * have encountered a peer that doesn't do encryption... reconnect and
-     * try a plaintext handshake */
-    if (handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
-        tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
-        retry_plain();
+    if (handshake->is_state(State::AwaitingYb)) {
+        if (did_connect && handshake->retried_mse_ != true && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED &&
+            io->reconnect(true)) {
+            retry_plain();
+            handshake->retried_mse_ = false;
+            return;
+        }
+    } else if (handshake->is_state(State::AwaitingHandshake) && !was_mse) {
+        if (did_connect && handshake->retried_mse_ != false && io->reconnect(true)) {
+            retry_mse();
+            handshake->retried_mse_ = true;
+            return;
+        }
+    } else {
+        fail();
+        return;
+    }
+
+    if (io->reconnect(false)) {
+        if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
+            retry_mse();
+        } else {
+            retry_plain();
+        }
+        handshake->retried_mse_.reset();
         return;
     }
 

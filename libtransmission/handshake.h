@@ -323,6 +323,7 @@ private:
     State state_ = State::AwaitingHandshake;
 
     tr_encryption_mode encryption_mode_;
+    std::optional<bool> retried_mse_;
 
     // Used when resynchronizing in read_vc(). This value is cached to avoid
     // the cost of recomputing it. MSE spec: "Since the length of [PadB is]
