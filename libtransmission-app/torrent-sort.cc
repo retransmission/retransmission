@@ -38,13 +38,12 @@ namespace
 {
     auto const a_limit = a.effective_seed_ratio();
     auto const b_limit = b.effective_seed_ratio();
-
-    if (!a_limit && !b_limit) {
-        return compare_ratio(a, b);
-    }
-
     auto const a_ratio = ratio_sort_key(a.upload_ratio());
     auto const b_ratio = ratio_sort_key(b.upload_ratio());
+
+    if (!a_limit && !b_limit) {
+        return a_ratio <=> b_ratio;
+    }
 
     if (!a_limit) {
         return b_ratio < *b_limit ? std::partial_ordering::greater : std::partial_ordering::less;
@@ -54,40 +53,31 @@ namespace
         return a_ratio < *a_limit ? std::partial_ordering::less : std::partial_ordering::greater;
     }
 
-    if (!(*a_limit > 0) && !(*b_limit > 0)) {
-        return compare_ratio(a, b);
+    // a limit that isn't positive sorts after one that is
+    auto const a_positive = *a_limit > 0;
+    auto const b_positive = *b_limit > 0;
+
+    if (a_positive != b_positive) {
+        return a_positive ? std::partial_ordering::less : std::partial_ordering::greater;
     }
 
-    if (!(*a_limit > 0)) {
-        return std::partial_ordering::greater;
-    }
-
-    if (!(*b_limit > 0)) {
-        return std::partial_ordering::less;
-    }
-
-    return a_ratio / *a_limit <=> b_ratio / *b_limit;
+    return a_positive ? a_ratio / *a_limit <=> b_ratio / *b_limit : a_ratio <=> b_ratio;
 }
 
 // a torrent without an ETA sorts before one with one
 [[nodiscard]] std::strong_ordering compare_eta(Torrent const& a, Torrent const& b) noexcept
 {
-    auto const have_a = a.has_eta();
-    auto const have_b = b.has_eta();
-
-    if (have_a && have_b) {
+    if (a.has_eta() && b.has_eta()) {
         return a.eta() <=> b.eta();
     }
 
-    if (have_a) {
-        return std::strong_ordering::greater;
-    }
+    return static_cast<int>(a.has_eta()) <=> static_cast<int>(b.has_eta());
+}
 
-    if (have_b) {
-        return std::strong_ordering::less;
-    }
-
-    return std::strong_ordering::equal;
+// swapped operands: the head of the queue compares greatest
+[[nodiscard]] constexpr std::strong_ordering compare_queue(Torrent const& a, Torrent const& b) noexcept
+{
+    return b.queue_position() <=> a.queue_position();
 }
 
 } // namespace
@@ -99,7 +89,7 @@ std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortM
 
     switch (mode) {
     case SortMode::SortByQueue:
-        val = b.queue_position() <=> a.queue_position();
+        val = compare_queue(a, b);
         break;
 
     case SortMode::SortBySize:
@@ -134,7 +124,7 @@ std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortM
         }
 
         if (val == 0) {
-            val = b.queue_position() <=> a.queue_position();
+            val = compare_queue(a, b);
         }
 
         if (val == 0) {
@@ -157,7 +147,7 @@ std::partial_ordering compare_torrents(Torrent const& a, Torrent const& b, SortM
         }
 
         if (val == 0) {
-            val = b.queue_position() <=> a.queue_position();
+            val = compare_queue(a, b);
         }
 
         [[fallthrough]];
