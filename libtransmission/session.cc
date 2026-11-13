@@ -880,12 +880,16 @@ void tr_session::apply_network_bindings(
 {
     auto const& new_settings = settings_;
 
-    // a query still in flight on the old binding must not refill the cache
-    if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
+    // a query still in flight on the old binding must not refill the cache.
+    // update_addr() asserts its protocol is supported, and the IP cache
+    // marks one unsupported for good after EAFNOSUPPORT.
+    if (auto const& val = new_settings.bind_address_ipv4;
+        has_ip_protocol(TR_AF_INET) && (force || interface_changed || val != old_settings.bind_address_ipv4)) {
         ip_cache_->invalidate(TR_AF_INET);
         ip_cache_->update_addr(TR_AF_INET);
     }
-    if (auto const& val = new_settings.bind_address_ipv6; force || interface_changed || val != old_settings.bind_address_ipv6) {
+    if (auto const& val = new_settings.bind_address_ipv6;
+        has_ip_protocol(TR_AF_INET6) && (force || interface_changed || val != old_settings.bind_address_ipv6)) {
         ip_cache_->invalidate(TR_AF_INET6);
         ip_cache_->update_addr(TR_AF_INET6);
     }
@@ -931,6 +935,8 @@ void tr_session::apply_network_bindings(
 
     if (interface_changed) {
         port_forwarding_->bind_interface_changed();
+        // the stops already went out with these IDs; the starts must not
+        announcer_udp_->reset_connections();
     } else if (port_changed) {
         port_forwarding_->local_port_changed();
     }

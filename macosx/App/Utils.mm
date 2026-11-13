@@ -46,9 +46,63 @@ bool isRatioEqual(CGFloat old_ratio, CGFloat new_ratio)
 
 namespace
 {
-BOOL TRInterfaceNameLooksLikeVPNTunnel(NSString* name)
+// The BSD names of the ppp interfaces whose service runs PPP over L2TP.
+// Other ppp interfaces, such as PPPoE, carry the ISP link, not a tunnel.
+NSSet<NSString*>* TRL2TPInterfaceNames()
 {
-    return [name hasPrefix:@"utun"] || [name hasPrefix:@"tun"] || [name hasPrefix:@"tap"] || [name hasPrefix:@"ppp"];
+    NSMutableSet<NSString*>* names = [NSMutableSet set];
+
+    SCDynamicStoreRef store = SCDynamicStoreCreate(kCFAllocatorDefault, CFSTR("Transmission"), nullptr, nullptr);
+    if (store == nullptr) {
+        return names;
+    }
+
+    NSMutableDictionary<NSString*, NSString*>* serviceIDs = [NSMutableDictionary dictionary];
+    NSArray* keys = CFBridgingRelease(SCDynamicStoreCopyKeyList(store, CFSTR("State:/Network/Service/[^/]+/IPv[46]")));
+    for (NSString* key in keys) {
+        NSDictionary* protocolStatus = CFBridgingRelease(SCDynamicStoreCopyValue(store, (__bridge CFStringRef)key));
+        NSString* interfaceName = protocolStatus[@"InterfaceName"];
+        NSArray<NSString*>* keyParts = [key componentsSeparatedByString:@"/"];
+        if ([interfaceName hasPrefix:@"ppp"] && keyParts.count == 5) {
+            serviceIDs[interfaceName] = keyParts[3];
+        }
+    }
+    CFRelease(store);
+
+    if (serviceIDs.count == 0) {
+        return names;
+    }
+
+    SCPreferencesRef prefs = SCPreferencesCreate(kCFAllocatorDefault, CFSTR("Transmission"), nullptr);
+    if (prefs == nullptr) {
+        return names;
+    }
+
+    for (NSString* interfaceName in serviceIDs) {
+        SCNetworkServiceRef service = SCNetworkServiceCopy(prefs, (__bridge CFStringRef)serviceIDs[interfaceName]);
+        if (service == nullptr) {
+            continue;
+        }
+
+        SCNetworkInterfaceRef ppp = SCNetworkServiceGetInterface(service);
+        SCNetworkInterfaceRef transport = ppp != nullptr ? SCNetworkInterfaceGetInterface(ppp) : nullptr;
+        if (transport != nullptr &&
+            [(__bridge NSString*)SCNetworkInterfaceGetInterfaceType(ppp) isEqualToString:(__bridge NSString*)kSCNetworkInterfaceTypePPP] &&
+            [(__bridge NSString*)SCNetworkInterfaceGetInterfaceType(transport) isEqualToString:(__bridge NSString*)kSCNetworkInterfaceTypeL2TP]) {
+            [names addObject:interfaceName];
+        }
+        CFRelease(service);
+    }
+
+    CFRelease(prefs);
+    return names;
+}
+
+// `l2tpInterfaces` is TRL2TPInterfaceNames(), passed in because callers
+// test many names and each lookup is a round of synchronous configd IPC
+BOOL TRInterfaceIsVPNTunnel(NSString* name, NSSet<NSString*>* l2tpInterfaces)
+{
+    return [name hasPrefix:@"utun"] || [name hasPrefix:@"tun"] || [name hasPrefix:@"tap"] || [l2tpInterfaces containsObject:name];
 }
 
 BOOL TRAddressIsUsableVPNAddress(NSString* address)
@@ -75,12 +129,12 @@ NSString* TRRouteInterfaceDescription(NSString* ipv4Interface, NSString* ipv6Int
     return [parts componentsJoinedByString:@", "];
 }
 
-NSString* TRTunnelInterfaceFromConnectionStatus(NSDictionary* status)
+NSString* TRTunnelInterfaceFromConnectionStatus(NSDictionary* status, NSSet<NSString*>* l2tpInterfaces)
 {
     for (NSString* protocolKey in @[ @"IPv4", @"IPv6" ]) {
         NSDictionary* protocolStatus = status[protocolKey];
         NSString* interfaceName = protocolStatus[@"InterfaceName"];
-        if (TRInterfaceNameLooksLikeVPNTunnel(interfaceName)) {
+        if (TRInterfaceIsVPNTunnel(interfaceName, l2tpInterfaces)) {
             return interfaceName;
         }
     }
@@ -127,9 +181,12 @@ NSString* TRVPNProviderIdentifierForService(SCNetworkServiceRef service)
     return nil;
 }
 
-// `userDefinedNames` is TRUserDefinedNamesByInterfaceName(), passed in because
-// callers already hold it and each lookup is a round of synchronous configd IPC
-NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* TRVPNServiceInfoByInterfaceName(NSDictionary<NSString*, NSString*>* userDefinedNames)
+// `userDefinedNames` is TRUserDefinedNamesByInterfaceName() and `l2tpInterfaces`
+// is TRL2TPInterfaceNames(), passed in because callers already hold them and
+// each lookup is a round of synchronous configd IPC
+NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* TRVPNServiceInfoByInterfaceName(
+    NSDictionary<NSString*, NSString*>* userDefinedNames,
+    NSSet<NSString*>* l2tpInterfaces)
 {
     NSMutableDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* serviceInfo = [NSMutableDictionary dictionary];
 
@@ -173,7 +230,7 @@ NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* TRVPNServiceInfoBy
             continue;
         }
 
-        NSString* tunnelInterface = TRTunnelInterfaceFromConnectionStatus(extendedStatus);
+        NSString* tunnelInterface = TRTunnelInterfaceFromConnectionStatus(extendedStatus, l2tpInterfaces);
         if (tunnelInterface.length == 0) {
             continue;
         }
@@ -220,7 +277,7 @@ BOOL TRVPNServiceInfoMatchesIdentity(NSDictionary<NSString*, NSString*>* service
     return expectedServiceName.length > 0 || expectedProviderIdentifier.length > 0;
 }
 
-NSDictionary<NSString*, NSString*>* TRNetworkServiceNamesByInterfaceName()
+NSDictionary<NSString*, NSString*>* TRNetworkServiceNamesByInterfaceName(NSSet<NSString*>* l2tpInterfaces)
 {
     NSMutableDictionary<NSString*, NSString*>* names = [NSMutableDictionary dictionary];
 
@@ -254,7 +311,7 @@ NSDictionary<NSString*, NSString*>* TRNetworkServiceNamesByInterfaceName()
     NSDictionary<NSString*, NSString*>* userDefinedNames = TRUserDefinedNamesByInterfaceName();
     [names addEntriesFromDictionary:userDefinedNames];
 
-    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName(userDefinedNames);
+    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName(userDefinedNames, l2tpInterfaces);
     for (NSString* interfaceName in vpnServices) {
         NSString* serviceName = vpnServices[interfaceName][TRActiveVPNResolutionServiceNameKey];
         if (serviceName.length > 0) {
@@ -265,9 +322,9 @@ NSDictionary<NSString*, NSString*>* TRNetworkServiceNamesByInterfaceName()
     return names;
 }
 
-NSString* TRNetworkInterfaceKind(NSString* name)
+NSString* TRNetworkInterfaceKind(NSString* name, NSSet<NSString*>* l2tpInterfaces)
 {
-    if (TRInterfaceNameLooksLikeVPNTunnel(name)) {
+    if (TRInterfaceIsVPNTunnel(name, l2tpInterfaces)) {
         return NSLocalizedString(@"VPN Tunnel", "Network interface type");
     }
 
@@ -330,12 +387,13 @@ NSArray<NSDictionary<NSString*, id>*>* TRActiveNetworkInterfaceInfo()
 
     freeifaddrs(ifaddrs);
 
-    NSDictionary<NSString*, NSString*>* serviceNames = TRNetworkServiceNamesByInterfaceName();
+    NSSet<NSString*>* l2tpInterfaces = TRL2TPInterfaceNames();
+    NSDictionary<NSString*, NSString*>* serviceNames = TRNetworkServiceNamesByInterfaceName(l2tpInterfaces);
     NSMutableArray<NSDictionary<NSString*, id>*>* interfaces = [NSMutableArray array];
 
     for (NSString* name in names) {
         NSString* serviceName = serviceNames[name];
-        NSString* kind = TRNetworkInterfaceKind(name);
+        NSString* kind = TRNetworkInterfaceKind(name, l2tpInterfaces);
         NSString* title = nil;
 
         if (serviceName.length > 0 && ![serviceName isEqualToString:name]) {
@@ -404,6 +462,7 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSStrin
         CFRelease(store);
     }
 
+    NSSet<NSString*>* l2tpInterfaces = TRL2TPInterfaceNames();
     NSMutableOrderedSet<NSString*>* candidates = [NSMutableOrderedSet orderedSet];
     NSMutableSet<NSString*>* runningTunnels = [NSMutableSet set];
 
@@ -415,7 +474,7 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSStrin
             }
 
             NSString* name = @(ifa->ifa_name);
-            if (!TRInterfaceNameLooksLikeVPNTunnel(name)) {
+            if (!TRInterfaceIsVPNTunnel(name, l2tpInterfaces)) {
                 continue;
             }
 
@@ -446,7 +505,7 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSStrin
     }
 
     for (NSString* routeInterface in @[ ipv4RouteInterface ?: @"", ipv6RouteInterface ?: @"" ]) {
-        if (TRInterfaceNameLooksLikeVPNTunnel(routeInterface) &&
+        if (TRInterfaceIsVPNTunnel(routeInterface, l2tpInterfaces) &&
             ([runningTunnels containsObject:routeInterface] || runningTunnels.count == 0)) {
             [candidates addObject:routeInterface];
         }
@@ -454,7 +513,8 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSStrin
 
     NSArray<NSString*>* sortedCandidates = [[candidates array] sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
     NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName(
-        TRUserDefinedNamesByInterfaceName());
+        TRUserDefinedNamesByInterfaceName(),
+        l2tpInterfaces);
 
     NSString* preferredInterface = nil;
     NSMutableArray<NSString*>* identityMatches = [NSMutableArray array];

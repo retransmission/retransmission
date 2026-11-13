@@ -162,4 +162,9 @@ public:
         socklen_t fromlen) = 0;
 
     [[nodiscard]] virtual bool is_idle() const noexcept = 0;
+
+    // Forget every tracker's connection ID; the next request reconnects.
+    // Call it when the source address changes, because trackers may tie
+    // the ID to the client's address.
+    virtual void reset_connections() noexcept = 0;
 };
