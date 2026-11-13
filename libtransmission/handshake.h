@@ -331,8 +331,8 @@ private:
 
     uint32_t crypto_select_ = {};
     uint32_t crypto_provide_ = {};
-    uint16_t pad_a_len_ = {};
-    uint16_t pad_b_len_ = {};
+    size_t pad_a_len_ = {};
+    size_t pad_b_len_ = {};
     uint16_t pad_c_len_ = {};
     uint16_t pad_d_len_ = {};
     uint16_t ia_len_ = {};
