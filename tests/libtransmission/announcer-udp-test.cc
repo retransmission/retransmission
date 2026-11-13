@@ -443,6 +443,48 @@ TEST_F(AnnouncerUdpTest, canScrape)
     expectEqual(request, info_hashes);
 }
 
+TEST_F(AnnouncerUdpTest, reconnectsAfterResetConnections)
+{
+    auto mediator = MockMediator{};
+    auto announcer = tr_announcer_udp::create(mediator);
+    auto upkeep_timer = createUpkeepTimer(mediator, announcer);
+
+    auto [request, expected_response] = buildSimpleScrapeRequestAndResponse();
+    auto response = std::optional<tr_scrape_response>{};
+    announcer->scrape(request, [&response](tr_scrape_response const& resp) { response = resp; });
+
+    auto from = sockaddr_storage{};
+    auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
+    auto fromlen = socklen_t{};
+
+    // connect, then answer the scrape
+    auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
+    auto const connection_id = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
+    auto const [scrape_transaction_id, info_hashes] = parseScrapeRequest(
+        waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen),
+        connection_id);
+    expectEqual(request, info_hashes);
+
+    auto buf = MessageBuffer{};
+    buf.add_uint32(ScrapeAction);
+    buf.add_uint32(scrape_transaction_id);
+    buf.add_uint32(expected_response.rows[0].seeders.value_or(-1));
+    buf.add_uint32(expected_response.rows[0].downloads.value_or(-1));
+    buf.add_uint32(expected_response.rows[0].leechers.value_or(-1));
+    auto msg = std::vector<uint8_t>{};
+    msg.resize(std::size(buf));
+    buf.to_buf(msg);
+    EXPECT_TRUE(announcer->handle_message(std::data(msg), std::size(msg), from_ptr, fromlen));
+    ASSERT_TRUE(response.has_value());
+
+    // the connection ID is still fresh, but after a reset the
+    // next scrape must reconnect instead of reusing it
+    announcer->reset_connections();
+    response.reset();
+    announcer->scrape(request, [&response](tr_scrape_response const& resp) { response = resp; });
+    std::ignore = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator));
+}
+
 TEST_F(AnnouncerUdpTest, canDestructCleanlyEvenWhenBusy)
 {
     auto mediator = MockMediator{};

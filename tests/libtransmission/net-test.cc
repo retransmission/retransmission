@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #endif
 
+#include <libtransmission/log.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-mgr.h>
 
@@ -1061,4 +1062,115 @@ TEST_F(NetTest, isValidForPeers)
             EXPECT_EQ(expected, socket_address->is_valid_for_peers(from)) << presentation << " from " << from;
         }
     }
+}
+
+TEST_F(NetTest, bindInterfaceIsDefault)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { ""sv, true },
+        { "  "sv, true },
+        { "utun4"sv, false },
+        { " utun4 "sv, false },
+        { "blocked"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_default(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, bindInterfaceIsBlocked)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { "blocked"sv, true },
+        { " blocked "sv, true },
+        { ""sv, false },
+        { "utun4"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_blocked(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, effectiveBindInterface)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { ""sv, ""sv },
+        { "  "sv, ""sv },
+        { " utun4 "sv, "utun4"sv },
+        { "blocked"sv, "blocked"sv },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_effective_bind_interface(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, curlInterfaceString)
+{
+    EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
+    EXPECT_FALSE(tr_netCurlInterfaceString("  "sv));
+
+    auto const bound = tr_netCurlInterfaceString(" utun4 "sv);
+    ASSERT_TRUE(bound);
+    EXPECT_EQ("if!utun4"sv, *bound);
+
+    // blocked is refused before the request reaches curl, so it gets no interface string
+    EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
+}
+
+TEST_F(NetTest, interfaceIndex)
+{
+    EXPECT_EQ(0U, tr_net_interface_index(""sv));
+    EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
+    EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
+
+#if defined(__APPLE__)
+    EXPECT_NE(0U, tr_net_interface_index(" lo0 "sv));
+#elif defined(__linux__)
+    EXPECT_NE(0U, tr_net_interface_index(" lo "sv));
+#endif
+}
+
+TEST_F(NetTest, missingInterfaceWarnsOncePerOutage)
+{
+#ifndef __APPLE__
+    GTEST_SKIP() << "only macOS binds sockets to an interface by name";
+#else
+    static auto constexpr Missing = "tr-no-such-interface"sv;
+
+    // Binds a fresh socket to `name` and returns how many warnings that logged.
+    auto const bind_and_count_warnings = [](std::string_view const name) {
+        tr_logClearQueue();
+        auto const sock = socket(PF_INET, SOCK_DGRAM, 0);
+        EXPECT_TRUE(is_valid_socket(sock));
+        (void)tr_netSetSocketInterface(sock, TR_AF_INET, name);
+        tr_net_close_socket(sock);
+        auto const messages = tr_logGetQueue();
+        return std::ranges::count_if(messages, [](auto const& msg) { return msg.level == TR_LOG_WARN; });
+    };
+
+    auto const old_level = tr_logGetLevel();
+    tr_logSetLevel(TR_LOG_WARN);
+    tr_logSetQueueEnabled(true);
+
+    // a bind that succeeds ends any outage an earlier test left behind
+    EXPECT_EQ(0, bind_and_count_warnings("lo0"sv));
+
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+    EXPECT_EQ(0, bind_and_count_warnings(Missing));
+
+    // once a socket binds again, the next outage warns again
+    EXPECT_EQ(0, bind_and_count_warnings("lo0"sv));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    // as it does after a socket on the default route
+    EXPECT_EQ(0, bind_and_count_warnings(""sv));
+    EXPECT_EQ(1, bind_and_count_warnings(Missing));
+
+    tr_logSetQueueEnabled(false);
+    tr_logClearQueue();
+    tr_logSetLevel(old_level);
+#endif
 }

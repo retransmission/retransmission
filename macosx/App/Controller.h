@@ -27,6 +27,10 @@ struct tr_session;
 // In PrefsController
 @property(nonatomic, readonly) PrefsController* prefsController;
 
+// In PrefsNetworkTabViewController
+- (void)updateActiveVPNBindInterfacePreference;
+- (NSDictionary<NSString*, id>*)activeVPNBindInterfaceStatus;
+
 // In MessageWindowController
 @property(nonatomic, readonly) MessageWindowController* messageWindowController;
 
