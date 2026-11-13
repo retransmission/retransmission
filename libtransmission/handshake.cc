@@ -5,8 +5,10 @@
 
 #include <array>
 #include <cerrno> // ECONNREFUSED, ETIMEDOUT
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <utility>
@@ -588,30 +590,39 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
 {
     auto* handshake = static_cast<tr_handshake*>(vhandshake);
 
-    auto const retry_plain = [&] {
-        handshake->send_handshake(io);
-        handshake->set_state(State::AwaitingHandshake);
-    };
-    auto const fail = [&] {
-        tr_logAddTraceHand(handshake, fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code()));
+    auto const fail = [&](std::string reason) {
+        tr_logAddTraceHand(handshake, std::move(reason));
         handshake->done(false);
+    };
+    auto const socket_error = [&] {
+        return fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code());
+    };
+    auto const retry_plain = [&] {
+        if (!handshake->send_handshake(io)) {
+            fail("plaintext retry not sent: torrent not found or not running");
+            return;
+        }
+        handshake->set_state(State::AwaitingHandshake);
     };
 
     handshake->maybe_recycle_dh();
 
+    // Every redial ends in a handshake that only a running torrent can send.
+    auto const info = handshake->mediator_->torrent(io->torrent_hash());
+    auto const can_redial = info && info->is_running;
+
     if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
         // the peer probably doesn't speak µTP.
 
-        auto const info_hash = io->torrent_hash();
-        auto const info = handshake->mediator_->torrent(info_hash);
-
         /* Don't mark a peer as non-µTP unless it's really a connect failure. */
         if ((error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
-            handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
+            handshake->mediator_->set_utp_failed(io->torrent_hash(), io->socket_address());
         }
 
-        if (io->reconnect()) {
-            tr_logAddTraceHand(handshake, "uTP connection failed, trying TCP...");
+        if (can_redial && io->reconnect()) {
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format("uTP connection failed: {:s} ({:d}), trying TCP...", error.message(), error.code()));
             if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
                 handshake->send_ya(io);
             } else {
@@ -620,20 +631,23 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
             return;
         }
 
-        fail();
+        fail(socket_error());
         return;
     }
 
     /* if the error happened while we were sending a public key, we might
      * have encountered a peer that doesn't do encryption... reconnect and
      * try a plaintext handshake */
-    if (handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
-        tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
+    if (can_redial && handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED &&
+        io->reconnect()) {
+        tr_logAddTraceHand(
+            handshake,
+            fmt::format("MSE handshake failed: {:s} ({:d}), trying plaintext...", error.message(), error.code()));
         retry_plain();
         return;
     }
 
-    fail();
+    fail(socket_error());
 }
 
 // ---
@@ -803,7 +817,12 @@ tr_handshake::tr_handshake(Mediator* mediator, std::shared_ptr<tr_peerIo> peer_i
         send_ya(peer_io_.get());
     } else {
         tr_logAddTraceHand(this, "sending plain handshake");
-        send_handshake(peer_io_.get());
         set_state(State::AwaitingHandshake);
+        if (!send_handshake(peer_io_.get())) {
+            // done() here would report the result before our owner has stored this handshake,
+            // so let the timer report it from the event loop.
+            tr_logAddTraceHand(this, "plain handshake not sent: torrent not found or not running");
+            timeout_timer_->start_single_shot(std::chrono::milliseconds{ 0 });
+        }
     }
 }
