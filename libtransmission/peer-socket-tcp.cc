@@ -258,6 +258,11 @@ public:
         return is_write_enabled_;
     }
 
+    [[nodiscard]] constexpr bool is_connected() const noexcept override
+    {
+        return connect_error_ == 0;
+    }
+
 protected:
     [[nodiscard]] constexpr Type type() const noexcept override
     {

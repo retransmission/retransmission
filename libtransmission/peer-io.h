@@ -93,6 +93,11 @@ public:
 
     void set_socket(std::shared_ptr<tr_peer_socket> socket_in);
 
+    [[nodiscard]] constexpr auto is_connected() const noexcept
+    {
+        return socket_ ? socket_->is_connected() : false;
+    }
+
     [[nodiscard]] auto is_utp() const noexcept
     {
         return socket_ ? socket_->is_utp() : false;
@@ -100,7 +105,7 @@ public:
 
     void clear();
 
-    [[nodiscard]] bool reconnect();
+    [[nodiscard]] bool reconnect(bool keep_transport);
 
     void set_enabled(tr_direction dir, bool is_enabled);
 
@@ -324,7 +329,7 @@ private:
 
     tr_peerIo(
         tr_session* session,
-        SocketFactories&& untried_transports,
+        SocketFactories&& socket_factories,
         tr_bandwidth* parent_bandwidth,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -354,10 +359,19 @@ private:
     size_t try_read(size_t max);
     size_t try_write(size_t max);
 
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> utp_factory(
+        tr_session& session,
+        tr_socket_address const& socket_address,
+        bool /*client_is_seed*/);
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> tcp_factory(
+        tr_session& session,
+        tr_socket_address const& socket_address,
+        bool client_is_seed);
+
     [[nodiscard]] static std::shared_ptr<tr_peerIo> create(
         tr_session* session,
         std::shared_ptr<tr_peer_socket> socket,
-        SocketFactories&& untried_transports,
+        SocketFactories&& socket_factories,
         tr_bandwidth* parent,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -369,7 +383,7 @@ private:
     std::deque<std::pair<size_t /*n_bytes*/, bool /*is_piece_data*/>> outbuf_info_;
 
     std::shared_ptr<tr_peer_socket> socket_;
-    SocketFactories untried_transports_;
+    SocketFactories socket_factories_;
 
     tr_socket_address socket_address_;
 
