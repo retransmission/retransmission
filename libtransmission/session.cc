@@ -827,7 +827,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 
     if (auto const& val = new_settings.sleep_per_seconds_during_verify;
         force || val != old_settings.sleep_per_seconds_during_verify) {
-        verifier_->set_sleep_per_seconds_during_verify(val);
+        verifier_.set_sleep_per_seconds_during_verify(val);
     }
 
     if (new_settings.preallocation_mode != old_settings.preallocation_mode ||
@@ -1343,7 +1343,6 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     // close the low-hanging fruit that can be closed immediately w/o consequences
     utp_timer.reset();
-    verifier_.reset();
     save_timer_.reset();
     queue_timer_.reset();
     now_timer_.reset();
@@ -2087,16 +2086,12 @@ size_t tr_sessionGetQueueStalledMinutes(tr_session const* session)
 void tr_session::verify_remove(tr_torrent* const tor)
 {
     tor->cancel_pending_verify();
-    if (verifier_) {
-        verifier_->remove(tor->info_hash());
-    }
+    verifier_.remove(tor->id());
 }
 
 void tr_session::verify_add(tr_torrent* const tor)
 {
-    if (verifier_) {
-        verifier_->add(std::make_unique<tr_torrent::VerifyMediator>(tor), tor->get_priority());
-    }
+    verifier_.add(std::make_unique<tr_torrent::VerifyMediator>(tor), tor->get_priority());
 }
 
 // ---

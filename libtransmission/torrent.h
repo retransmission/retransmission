@@ -161,7 +161,8 @@ struct tr_torrent {
         uint64_t cur_ = {};
     };
 
-    class VerifyMediator : public tr_verify_worker::Mediator
+    // tr_verifier removes it before the torrent is freed.
+    class VerifyMediator : public tr_verifier::Mediator
     {
     public:
         explicit VerifyMediator(tr_torrent* const tor)
@@ -171,12 +172,11 @@ struct tr_torrent {
 
         ~VerifyMediator() override = default;
 
-        [[nodiscard]] tr_torrent_metainfo const& metainfo() const override;
-        [[nodiscard]] std::optional<std::string> find_file(tr_file_index_t file_index) const override;
+        [[nodiscard]] tr_torrent_id_t id() const override;
+        [[nodiscard]] tr_block_info const& block_info() const override;
 
-        void on_verify_queued() override;
         void on_verify_started() override;
-        void on_piece_checked(tr_piece_index_t piece, bool has_piece) override;
+        void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) override;
         void on_verify_done(bool aborted) override;
 
     private:
@@ -1461,8 +1461,7 @@ private:
     tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
 
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash. Session thread only:
-    // the verify thread must not touch this map.
+    // An entry lives only as long as its hash.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 

@@ -31,6 +31,7 @@
 #include "libtransmission/types.h"
 
 class tr_open_files;
+class tr_sha1;
 class tr_torrents;
 
 namespace tr
@@ -93,9 +94,9 @@ void deliver(LocalData& local_data);
  * 1. Ops on different torrents are unordered.
  *
  * 2. Data ops on the same torrent are unordered too. `read`,
- *    `test_piece`, and `write` may run at the same time and may finish
- *    in any order. If op B needs to see op A's result, wait for A's
- *    callback before starting B.
+ *    `test_piece`, `hash_span`, and `write` may run at the same time and
+ *    may finish in any order. If op B needs to see op A's result, wait
+ *    for A's callback before starting B.
  *
  * 3. Admin ops are barriers. `move`, `rename`, `remove`,
  *    `close_torrent`, and `close_all` wait for the ops already in
@@ -229,6 +230,10 @@ public:
     using OnTest = std::function<
         void(tr_torrent_id_t, tr_piece_index_t piece, tr_error const& error, std::optional<tr_sha1_digest_t> hash)>;
 
+    // `sha` comes back whether or not the read failed.
+    using OnHashSpan = std::function<
+        void(tr_torrent_id_t, tr_byte_span_t span, tr_error const& error, std::unique_ptr<tr_sha1> sha)>;
+
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
     struct MoveTarget {
@@ -271,6 +276,7 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
+        [[nodiscard]] virtual tr_error hash_span(tr_torrent_id_t tor_id, tr_byte_span_t span, tr_sha1& sha) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
             MoveTarget const& target,
@@ -335,6 +341,20 @@ public:
 
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
+
+    // Adds `span`'s bytes, as they are on the disk, to `sha`, and hands
+    // `sha` back. A verify carries one through each piece, a span at a
+    // time. The threaded backend gives it a turn after other work.
+    // `span` is at most max_hash_span_bytes() long.
+    void hash_span(tr_torrent_id_t id, tr_byte_span_t span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed);
+
+    // Short enough that the synchronous backend, which hashes on the
+    // session thread, never holds it up for long.
+    [[nodiscard]] static constexpr size_t max_hash_span_bytes() noexcept
+    {
+        return MaxRunBytes;
+    }
+
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
