@@ -19,11 +19,11 @@ struct tr_socket_address;
 class tr_peer_socket_tcp : public tr_peer_socket
 {
 public:
-    [[nodiscard]] static std::unique_ptr<tr_peer_socket_tcp> create(
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket_tcp> create(
         tr_session& session,
         tr_socket_address const& socket_address,
         bool client_is_seed);
-    [[nodiscard]] static std::unique_ptr<tr_peer_socket_tcp> create(
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket_tcp> create(
         tr_session& session,
         tr_socket_address const& socket_address,
         tr_socket_t sock);

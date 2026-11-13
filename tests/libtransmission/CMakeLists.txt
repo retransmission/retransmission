@@ -44,6 +44,8 @@ target_sources(libtransmission-test
         open-files-test.cc
         peer-mgr-wishlist-test.cc
         peer-msgs-test.cc
+        peer-socket-tcp-test.cc
+        peer-socket-utp-test.cc
         platform-test.cc
         quark-test.cc
         remove-test.cc
@@ -99,7 +101,8 @@ target_compile_definitions(libtransmission-test
     PRIVATE
         -DLIBTRANSMISSION_TEST_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
         LIBTRANSMISSION_TEST_WEB_CLIENT_INSTALL_SUBDIR="${WEB_CLIENT_INSTALL_SUBDIR}"
-        __TRANSMISSION__)
+        __TRANSMISSION__
+        $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
 
 target_compile_options(libtransmission-test
     PRIVATE $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wno-sign-compare>) # patches welcomed
@@ -113,6 +116,7 @@ target_link_libraries(libtransmission-test
         transmission::fmt-header-only
         libevent::core
         libevent::extra
+        $<$<BOOL:${ENABLE_UTP}>:libutp::libutp>
         wildmat)
 
 tr_setup_gtest_target(libtransmission-test "LT.")
