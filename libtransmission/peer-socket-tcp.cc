@@ -180,23 +180,18 @@ public:
                 EV_READ,
                 event_read_cb,
                 this));
-        event_write_.reset(
-            tr::evhelpers::event_new_pri2(
-                session.event_base(),
-                static_cast<evutil_socket_t>(sock_),
-                EV_WRITE,
-                event_write_cb,
-                this));
 
-        if (!is_connected) {
-            event_connect_.reset(
+        if (is_connected) {
+            install_write_cb(session.event_base());
+        } else {
+            event_write_.reset(
                 tr::evhelpers::event_new_pri2(
                     session.event_base(),
                     static_cast<evutil_socket_t>(sock_),
                     EV_WRITE | EV_PERSIST,
                     event_connect_cb,
                     this));
-            event_add(event_connect_.get(), nullptr);
+            event_add(event_write_.get(), nullptr);
         }
 
         tr_logAddTraceSock(this, fmt::format("socket (tcp) is {}", sock_));
@@ -209,7 +204,6 @@ public:
 
     ~tr_peer_socket_tcp_impl() override
     {
-        event_connect_.reset();
         event_read_.reset();
         event_write_.reset();
         tr_net_close_socket(sock_);
@@ -240,14 +234,17 @@ public:
         }
 
         is_write_enabled_ = enabled;
-        if (enabled) {
-            if (connect_error_ == 0) {
+
+        // Before the TCP handshake is complete, the write event is repurposed to wait for the handshake to complete,
+        // and it is always pending or active.
+        if (connect_error_ == 0) {
+            if (enabled) {
                 tr_logAddTraceSock(this, "enabling ready-to-write polling");
                 event_add(event_write_.get(), nullptr);
+            } else {
+                tr_logAddTraceSock(this, "disabling ready-to-write polling");
+                event_del(event_write_.get());
             }
-        } else {
-            tr_logAddTraceSock(this, "disabling ready-to-write polling");
-            event_del(event_write_.get());
         }
     }
 
@@ -328,7 +325,7 @@ protected:
     }
 
 private:
-    static void event_connect_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
+    static void event_connect_cb([[maybe_unused]] evutil_socket_t const fd, short /*event*/, void* const vs)
     {
         // The socket can destruct inside the callbacks, so keep it alive for the time being.
         auto const s = static_cast<tr_peer_socket_tcp_impl*>(vs)->shared_from_this();
@@ -348,7 +345,7 @@ private:
         }
 
         s->connect_error_ = err;
-        s->event_connect_.reset();
+        s->install_write_cb(event_get_base(s->event_write_.get()));
 
         if (err != 0) {
             // The callback can destroy this socket.
@@ -392,7 +389,12 @@ private:
         s->write_cb();
     }
 
-    tr::evhelpers::event_unique_ptr event_connect_;
+    void install_write_cb(struct event_base* const evbase)
+    {
+        event_write_.reset(
+            tr::evhelpers::event_new_pri2(evbase, static_cast<evutil_socket_t>(sock_), EV_WRITE, event_write_cb, this));
+    }
+
     tr::evhelpers::event_unique_ptr event_read_;
     tr::evhelpers::event_unique_ptr event_write_;
 
