@@ -59,6 +59,7 @@
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/tr-utp.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h" // _()
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 #include "libtransmission/web.h"
@@ -72,6 +73,9 @@ static_assert(tr::serializer::has_unique_keys<tr::SessionSettings, tr::SessionAl
 
 namespace
 {
+// how often a slow close says what it's waiting for
+auto constexpr SlowCloseLogInterval = 10s;
+
 namespace bandwidth_group_helpers
 {
 [[nodiscard]] auto get_bandwidth_filename(std::string_view const config_dir)
@@ -1335,7 +1339,7 @@ tr::LocalData::DescriptorProvider tr_session::storage_descriptor_provider()
 
 void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds const tracker_wait)
 {
-    is_closing_ = true;
+    close_phase_ = tr_close_phase::Quiescing;
 
     // close the low-hanging fruit that can be closed immediately w/o consequences
     utp_timer.reset();
@@ -1359,34 +1363,27 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
         save_bandwidth_groups_if_dirty();
     }
 
-    // Deliver any pending completions while their torrents still exist.
-    // They change torrent state, so they need the session lock here too.
+    // Stop every torrent now, so that no more blocks arrive to be written.
+    // Each saves its resume file once its own writes in flight have landed,
+    // so another torrent's long move can't hold that save back.
     {
         auto const lock = unique_lock();
-        local_data.shutdown();
-    }
+        for (auto* const tor : torrents_.get_all()) {
+            tor->stop_now();
+        }
 
-    // Close the torrents in order of most active to least active
-    // so that the most important announce=stopped events are
-    // fired out first...
-    auto torrents = torrents_.get_all();
-    std::ranges::sort(torrents, [](auto const* a, auto const* b) {
-        auto const a_cur = a->bytes_downloaded_.ever();
-        auto const b_cur = b->bytes_downloaded_.ever();
-        return a_cur > b_cur; // larger xfers go first
-    });
-    for (auto* tor : torrents) {
-        tr_torrentFreeInSessionThread(tor);
+        // Queued reads have nobody left to answer. Everything else finishes.
+        local_data.begin_shutdown();
     }
-    torrents.clear();
+    close_phase_ = tr_close_phase::DrainingDisk;
+
     // Save the stats now and again at the end, so that nothing
     // is lost if the process ends during the wait for the trackers.
     collect_files_created();
     stats().save();
-    // ...now that all the torrents have been closed, any remaining
-    // `&event=stopped` announce messages are queued in the announcer.
-    // Tell the announcer to start shutdown, which sends out the stop
-    // events and stops scraping.
+
+    // The trackers hear "stopped" while the disk IO drains.
+    // This also stops scraping.
     this->announcer_->startShutdown();
     // ...since global_ip_cache_ relies on web_ to update global addresses,
     // we tell it to stop updating before web_ starts to refuse new requests.
@@ -1397,16 +1394,38 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     // new tasks.
     this->web_->startShutdown(tracker_wait);
 
-    // recycle the now-unused save_timer_ here to wait for UDP shutdown
-    // The wait starts here so that slow disk work above can't use it up.
+    // recycle the now-unused save_timer_ here to wait for the disk and the trackers
     TR_ASSERT(!save_timer_);
-    auto const deadline = std::chrono::steady_clock::now() + tracker_wait;
+    auto const now = std::chrono::steady_clock::now();
+    auto const deadline = now + tracker_wait;
+    close_tracker_deadline_ = deadline;
+    next_slow_close_log_ = now + SlowCloseLogInterval;
     save_timer_ = timerMaker().create([this, closed_promise, deadline] { closeImplPart2(closed_promise, deadline); });
     save_timer_->start_repeating(50ms);
 }
 
 void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline)
 {
+    auto const [n_sent, n_answered] = announcer_->stopsSentAndAnswered();
+    close_stops_sent_ = n_sent;
+    close_stops_answered_ = n_answered;
+
+    // The disk IO gets as long as it takes. A torrent's files would
+    // otherwise be left with blocks that its resume file doesn't list.
+    if (close_phase_ == tr_close_phase::DrainingDisk) {
+        if (!local_data.try_finish_shutdown()) {
+            log_slow_close();
+            announcer_->upkeep();
+            return;
+        }
+
+        close_phase_ = tr_close_phase::Finalizing;
+        for (auto* const tor : torrents_.get_all()) {
+            tr_torrentFreeInSessionThread(tor);
+        }
+        close_phase_ = tr_close_phase::WaitingTrackers;
+    }
+
     // try to keep web_ and the UDP announcer alive long enough to send out
     // all the &event=stopped tracker announces.
     // also wait for all ip cache updates to finish so that web_ can
@@ -1433,7 +1452,95 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
     closed_promise->set_value();
 }
 
-void tr_sessionClose(tr_session* session, double const timeout_secs)
+void tr_session::log_slow_close()
+{
+    auto const now = std::chrono::steady_clock::now();
+    if (now < next_slow_close_log_) {
+        return;
+    }
+    next_slow_close_log_ = now + SlowCloseLogInterval;
+
+    using Kind = tr_disk_activity::Op::Kind;
+    auto const activity = local_data.activity();
+    for (auto const& op : activity.in_flight) {
+        switch (op.kind) {
+        case Kind::Write:
+            tr_logAddWarn(
+                fmt::format(fmt::runtime(_("Still writing '{name}' before shutting down")), fmt::arg("name", op.torrent_name)));
+            break;
+        case Kind::Move:
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(
+                        _("Still moving '{name}' to '{path}' before shutting down: "
+                          "file {file} of {files}, {done} of {total} bytes")),
+                    fmt::arg("name", op.torrent_name),
+                    fmt::arg("path", op.destination),
+                    fmt::arg("file", op.file_index + 1U),
+                    fmt::arg("files", op.file_count),
+                    fmt::arg("done", op.done),
+                    fmt::arg("total", op.total)));
+            break;
+        case Kind::Remove:
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_("Still removing '{name}' before shutting down: {done} of {total} files")),
+                    fmt::arg("name", op.torrent_name),
+                    fmt::arg("done", op.done),
+                    fmt::arg("total", op.total)));
+            break;
+        case Kind::Rename:
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_("Still renaming '{path}' to '{new_name}' in '{name}' before shutting down")),
+                    fmt::arg("path", op.file_name),
+                    fmt::arg("new_name", op.destination),
+                    fmt::arg("name", op.torrent_name)));
+            break;
+        case Kind::Close:
+            tr_logAddWarn(_("Still closing files before shutting down"));
+            break;
+        }
+    }
+
+    if (activity.queued_write_bytes != 0U || activity.queued_admin_count != 0U) {
+        tr_logAddWarn(
+            fmt::format(
+                fmt::runtime(
+                    _("Still waiting before shutting down: {bytes} bytes to write, and {count} "
+                      "moves, removals, and renames")),
+                fmt::arg("bytes", activity.queued_write_bytes),
+                fmt::arg("count", activity.queued_admin_count)));
+    }
+}
+
+tr_disk_activity tr_session::disk_activity() const
+{
+    auto activity = local_data.activity();
+    activity.phase = close_phase_;
+    if (activity.phase == tr_close_phase::None) {
+        return activity;
+    }
+
+    auto const n_sent = close_stops_sent_.load();
+    activity.trackers_total = n_sent;
+    activity.trackers_pending = n_sent - std::min(n_sent, close_stops_answered_.load());
+    auto const time_left = close_tracker_deadline_.load() - std::chrono::steady_clock::now();
+    activity.trackers_time_left = std::max(std::chrono::seconds{}, std::chrono::ceil<std::chrono::seconds>(time_left));
+    return activity;
+}
+
+tr_disk_activity tr_sessionGetDiskActivity(tr_session const* const session)
+{
+    TR_ASSERT(session != nullptr);
+
+    return session->disk_activity();
+}
+
+void tr_sessionClose(
+    tr_session* session,
+    double const timeout_secs,
+    std::function<void(tr_disk_activity const&)> const& on_progress)
 {
     TR_PROFILE_SCOPE("session.close");
     TR_ASSERT(session != nullptr);
@@ -1450,6 +1557,11 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
     auto const tracker_wait = std::chrono::milliseconds{ static_cast<int64_t>(timeout_secs * 1000.0) };
     session->run_in_session_thread(
         [&closed_promise, tracker_wait, session] { session->closeImplPart1(&closed_promise, tracker_wait); });
+
+    static auto constexpr ProgressInterval = 500ms;
+    while (on_progress && closed_future.wait_for(ProgressInterval) != std::future_status::ready) {
+        on_progress(session->disk_activity());
+    }
     closed_future.wait();
 
     delete session;

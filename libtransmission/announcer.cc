@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <chrono> // operator""ms
 #include <cstddef> // size_t
 #include <cstdint>
@@ -138,10 +139,11 @@ public:
     void resetTorrent(tr_torrent* tor) override;
     void removeTorrent(tr_torrent* tor) override;
 
-    void startShutdown() override
+    void startShutdown() override;
+
+    [[nodiscard]] std::pair<size_t, size_t> stopsSentAndAnswered() const override
     {
-        is_shutting_down_ = true;
-        flushCloseMessages();
+        return { stop_counts_->sent, stop_counts_->answered.load() };
     }
 
     void upkeep() override;
@@ -194,14 +196,25 @@ public:
     tr_session* const session;
 
 private:
+    // Queues a "stopped" for each tier that told its tracker it started.
+    void queueStops(tr_torrent* tor);
+
     void flushCloseMessages()
     {
         for (auto& stop : stops_) {
-            announce(stop, [](tr_announce_response const& /*response*/) {});
+            ++stop_counts_->sent;
+            announce(stop, [counts = stop_counts_](tr_announce_response const& /*response*/) { ++counts->answered; });
         }
 
         stops_.clear();
     }
+
+    // Shared with the answers' callbacks, which can outlive this.
+    struct StopCounts {
+        size_t sent = 0U;
+        std::atomic<size_t> answered = 0U;
+    };
+    std::shared_ptr<StopCounts> stop_counts_ = std::make_shared<StopCounts>();
 
     static auto constexpr UpkeepInterval = 500ms;
 
@@ -1105,20 +1118,45 @@ void tr_announcerAddBytes(tr_torrent const* tor, int const type, uint32_t const 
 
 // ---
 
-void tr_announcer_impl::removeTorrent(tr_torrent* tor)
+void tr_announcer_impl::queueStops(tr_torrent* const tor)
 {
     using namespace announce_helpers;
 
+    if (tor->torrent_announcer == nullptr) {
+        return;
+    }
+
+    for (auto const& tier : tor->torrent_announcer->tiers) {
+        if (tier.isRunning && tier.lastAnnounceSucceeded) {
+            stops_.emplace(create_announce_request(this, tor, &tier, TR_ANNOUNCE_EVENT_STOPPED));
+        }
+    }
+}
+
+void tr_announcer_impl::startShutdown()
+{
+    is_shutting_down_ = true;
+    stop_counts_ = std::make_shared<StopCounts>();
+
+    // The torrents may outlive this while their disk IO drains.
+    // Their trackers needn't wait for that.
+    for (auto* const tor : session->torrents()) {
+        queueStops(tor);
+    }
+    flushCloseMessages();
+}
+
+void tr_announcer_impl::removeTorrent(tr_torrent* tor)
+{
     // FIXME(ckerr)
     auto const* const ta = tor->torrent_announcer;
     if (ta == nullptr) {
         return;
     }
 
-    for (auto const& tier : ta->tiers) {
-        if (tier.isRunning && tier.lastAnnounceSucceeded) {
-            stops_.emplace(create_announce_request(this, tor, &tier, TR_ANNOUNCE_EVENT_STOPPED));
-        }
+    // startShutdown() sent the stops already
+    if (!is_shutting_down_) {
+        queueStops(tor);
     }
 
     tor->torrent_announcer = nullptr;

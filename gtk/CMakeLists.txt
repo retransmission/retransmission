@@ -56,6 +56,8 @@ target_sources(${TR_NAME}-gtk-lib
         RelocateDialog.h
         Session.cc
         Session.h
+        ShutdownStatus.cc
+        ShutdownStatus.h
         SorterBase.h
         SorterBase.hh
         SortListModel.h

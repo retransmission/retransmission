@@ -19,6 +19,7 @@
 #include "PrefsDialog.h"
 #include "RelocateDialog.h"
 #include "Session.h"
+#include "ShutdownStatus.h"
 #include "StatsDialog.h"
 #include "SystemTrayIcon.h"
 #include "Timer.h"
@@ -197,6 +198,8 @@ private:
 
     bool on_session_closed();
     void on_app_exit();
+    void on_closing_progress(tr_disk_activity const& activity);
+    void inhibit_logout(std::string const& reason);
 
     void show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files);
     void flush_torrent_errors();
@@ -247,7 +250,12 @@ private:
     GlibTimerMaker timer_maker_;
     std::unique_ptr<tr::app::SessionPoller> poller_;
     sigslot::scoped_connection contended_tag_;
+    sigslot::scoped_connection closing_progress_tag_;
     sigslot::scoped_connection closed_tag_;
+
+    // why a logout should wait, while the session closes
+    guint logout_inhibit_cookie_ = 0U;
+    std::string logout_inhibit_reason_;
 
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
@@ -847,6 +855,7 @@ void Application::Impl::main_window_setup()
 
 bool Application::Impl::on_session_closed()
 {
+    closing_progress_tag_.disconnect();
     details_.clear();
 
     prefs_dialog_.reset();
@@ -881,7 +890,7 @@ void Application::Impl::on_app_exit()
     auto const message = std::string{ _("Shutting down…") };
 
     // Tell the desktop why a logout should wait, while the window still exists to name.
-    app_.inhibit(*wind_, IF_GTKMM4(Gtk::Application::InhibitFlags::LOGOUT, Gtk::APPLICATION_INHIBIT_LOGOUT), message);
+    inhibit_logout(message);
 
     hideMainWindow();
     wind_->get_display()->flush(); // `shut_down()` below clears a long list, which takes time
@@ -891,7 +900,46 @@ void Application::Impl::on_app_exit()
     }
 
     // The close runs on another thread and ends in `closed`, which tears down the rest.
+    closing_progress_tag_ = core_->closing_progress.connect_scoped(
+        [this](tr_disk_activity const& activity) { on_closing_progress(activity); });
     core_->shut_down();
+}
+
+void Application::Impl::on_closing_progress(tr_disk_activity const& activity)
+{
+    auto const status = make_shutdown_status(activity);
+
+    if (wind_ != nullptr) {
+        inhibit_logout(status.headline);
+    }
+
+    if (icon_ != nullptr) {
+        icon_->set_shutting_down(std::empty(status.detail) ? status.headline : status.headline + '\n' + status.detail);
+    }
+}
+
+// The desktop shows the reason when the user logs out.
+// The detail changes too often to show there.
+void Application::Impl::inhibit_logout(std::string const& reason)
+{
+    if (reason == logout_inhibit_reason_) {
+        return;
+    }
+
+    // Inhibit again before uninhibiting, so that a logout can't slip in between.
+    // If that fails, the reason already shown keeps the logout waiting.
+    auto const cookie = app_.inhibit(
+        *wind_,
+        IF_GTKMM4(Gtk::Application::InhibitFlags::LOGOUT, Gtk::APPLICATION_INHIBIT_LOGOUT),
+        reason);
+    if (cookie == 0U) {
+        return;
+    }
+
+    logout_inhibit_reason_ = reason;
+    if (auto const old_cookie = std::exchange(logout_inhibit_cookie_, cookie); old_cookie != 0U) {
+        app_.uninhibit(old_cookie);
+    }
 }
 
 void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)

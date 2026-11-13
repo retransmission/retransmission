@@ -909,6 +909,10 @@ struct tr_torrent {
 
     void start(bool bypass_queue, std::optional<bool> has_any_local_data);
 
+    // Stops the torrent's peers, webseeds, and announces, then closes its
+    // files and saves its resume file once its disk IO in flight has landed.
+    void stop_now();
+
     [[nodiscard]] constexpr auto has_changed_since(time_t when) const noexcept
     {
         return date_changed_ > when;
@@ -1435,8 +1439,6 @@ private:
     void finish_completion(bool recent_change, bool was_running) const;
 
     void start_in_session_thread();
-
-    void stop_now();
 
     [[nodiscard]] bool is_new_torrent_a_seed();
 

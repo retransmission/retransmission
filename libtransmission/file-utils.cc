@@ -6,6 +6,8 @@
 #include "libtransmission/file-utils.h"
 
 #include <cerrno> // EINVAL, EISDIR
+#include <cstdint> // uint64_t
+#include <functional>
 #include <optional>
 #include <string_view>
 #include <vector>
@@ -171,7 +173,8 @@ namespace
 [[nodiscard]] std::optional<tr_file_moved> rename_or_copy(
     std::string_view const oldpath,
     std::string_view const newpath,
-    tr_error* const error)
+    tr_error* const error,
+    std::function<void(uint64_t bytes_copied)> const& on_copied)
 {
     if (!prepare_move(oldpath, newpath, error)) {
         return {};
@@ -182,7 +185,7 @@ namespace
         return tr_file_moved::Renamed;
     }
 
-    if (!tr_file_copy_atomic(oldpath, newpath, error)) {
+    if (!tr_file_copy_atomic(oldpath, newpath, error, on_copied)) {
         error->prefix_message("Unable to copy: ");
         return {};
     }
@@ -194,33 +197,38 @@ namespace
 std::optional<tr_file_moved> tr_file_rename_or_copy(
     std::string_view const oldpath,
     std::string_view const newpath,
-    tr_error* error)
+    tr_error* error,
+    std::function<void(uint64_t bytes_copied)> const& on_copied)
 {
     auto local_error = tr_error{};
     if (error == nullptr) {
         error = &local_error;
     }
 
-    auto how = rename_or_copy(oldpath, newpath, error);
+    auto how = rename_or_copy(oldpath, newpath, error, on_copied);
 
     // Clearing another torrent's old location removes empty folders and copy
     // temp files, and it can catch ours partway through. Start over once.
     if (!how && error->is_enoent() && tr_sys_path_exists(oldpath)) {
         *error = {};
-        how = rename_or_copy(oldpath, newpath, error);
+        how = rename_or_copy(oldpath, newpath, error, on_copied);
     }
 
     return how;
 }
 
-bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* const error)
+bool tr_file_copy_atomic(
+    std::string_view const oldpath,
+    std::string_view const newpath,
+    tr_error* const error,
+    std::function<void(uint64_t bytes_copied)> const& on_copied)
 {
     auto const tmp = tr::detail::file_copy_temp_path(newpath);
 
     // A killed copy may have left it behind.
     tr_sys_path_remove(tmp);
 
-    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+    if (tr_sys_path_copy(oldpath, tmp, error, on_copied) && tr_sys_path_rename(tmp, newpath, error)) {
         return true;
     }
 

@@ -221,7 +221,17 @@ void Session::stop()
 
     if (auto* const session = std::exchange(started_session_, nullptr); session != nullptr) {
         close_thread_ = std::thread{ [this, session] {
-            tr_sessionClose(session);
+            tr_sessionClose(
+                session,
+                TrSessionCloseTimeoutSecs,
+                [this, alive = std::weak_ptr{ alive_ }](tr_disk_activity const& activity) {
+                    // A plain `activity` capture would be const, so moving the lambda would copy it, which can throw.
+                    rpc_.run_on_ui_thread([this, alive, activity = activity] {
+                        if (alive.lock()) {
+                            closing_progress(activity);
+                        }
+                    });
+                });
 
             rpc_.run_on_ui_thread([this, alive = std::weak_ptr{ alive_ }] {
                 if (alive.lock()) {

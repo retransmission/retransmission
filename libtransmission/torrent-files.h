@@ -8,6 +8,7 @@
 #include <algorithm> // std::sort()
 #include <cstddef>
 #include <cstdint> // uint64_t
+#include <functional>
 #include <iterator>
 #include <optional>
 #include <ranges>
@@ -119,6 +120,20 @@ public:
         std::string parent_name;
     };
 
+    // Where a move is: the file it's on, and the bytes placed so far.
+    struct MoveProgress {
+        std::string_view subpath;
+        size_t file_index = 0U; // counting only the files that move
+        size_t file_count = 0U;
+        uint64_t bytes_done = 0U;
+        uint64_t bytes_total = 0U;
+    };
+
+    using OnMoveProgress = std::function<void(MoveProgress const&)>;
+
+    // Called with how many of a removal's files are gone so far.
+    using OnRemoveProgress = std::function<void(size_t n_removed, size_t n_files)>;
+
     // Puts every file under `parent_in`, or puts back what moved and returns nothing.
     // Call remove() on the result once the new location is saved.
     // A kill before that leaves the saved location usable.
@@ -132,7 +147,8 @@ public:
         std::string_view parent_in,
         std::string_view parent_name = "",
         tr_error* error = nullptr,
-        bool* needs_copy = nullptr) const;
+        bool* needs_copy = nullptr,
+        OnMoveProgress const& on_progress = {}) const;
 
     // Adds same-sized copies of the files under `parent_in` to `leftovers`.
     // Only for a move known to have been interrupted, which leaves whole copies behind.
@@ -146,7 +162,8 @@ public:
         std::string_view parent_in,
         std::string_view tmpdir_prefix,
         tr_torrent_remove_func const& func,
-        tr_error* error = nullptr) const;
+        tr_error* error = nullptr,
+        OnRemoveProgress const& on_progress = {}) const;
 
     // Remove a matching copy from each root using the single-root deletion path and its callback.
     // Roots without matching files are left alone.
@@ -154,7 +171,8 @@ public:
         std::span<std::string_view const> parents,
         std::string_view tmpdir_prefix,
         tr_torrent_remove_func const& func,
-        tr_error* error = nullptr) const;
+        tr_error* error = nullptr,
+        OnRemoveProgress const& on_progress = {}) const;
 
     static constexpr std::string_view PartialFileSuffix = ".part";
 
