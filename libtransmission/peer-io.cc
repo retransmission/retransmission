@@ -16,7 +16,6 @@
 #include <fmt/format.h>
 
 #include "libtransmission/bandwidth.h"
-#include "libtransmission/block-info.h" // tr_block_info
 #include "libtransmission/constants.h"
 #include "libtransmission/digest.h"
 #include "libtransmission/error.h"
@@ -62,11 +61,13 @@ namespace
 
 tr_peerIo::tr_peerIo(
     tr_session* session,
+    SocketFactories&& untried_transports,
     tr_bandwidth* parent_bandwidth,
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
     bool client_is_seed)
-    : bandwidth_{ parent_bandwidth }
+    : untried_transports_{ std::move(untried_transports) }
+    , bandwidth_{ parent_bandwidth }
     , info_hash_{ info_hash != nullptr ? *info_hash : tr_sha1_digest_t{} }
     , session_{ session }
     , flush_outbuf_trigger_{ session->timerMaker().create() }
@@ -78,6 +79,7 @@ tr_peerIo::tr_peerIo(
 std::shared_ptr<tr_peerIo> tr_peerIo::create(
     tr_session* session,
     std::shared_ptr<tr_peer_socket> socket,
+    SocketFactories&& untried_transports,
     tr_bandwidth* parent,
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
@@ -86,7 +88,9 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     TR_ASSERT(session != nullptr);
     auto const lock = session->unique_lock();
 
-    auto const io = std::shared_ptr<tr_peerIo>{ new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed } };
+    auto const io = std::shared_ptr<tr_peerIo>{
+        new tr_peerIo{ session, std::move(untried_transports), parent, info_hash, is_incoming, is_seed }
+    };
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
@@ -109,36 +113,46 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_incoming(
     std::shared_ptr<tr_peer_socket> socket)
 {
     TR_ASSERT(session != nullptr);
-    return tr_peerIo::create(session, std::move(socket), parent, nullptr, true, false);
+    return tr_peerIo::create(session, std::move(socket), {}, parent, nullptr, true, false);
 }
 
 std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
-    tr_session* session,
-    tr_bandwidth* parent,
+    tr_session* const session,
+    tr_bandwidth* const parent,
     tr_socket_address const& socket_address,
     tr_sha1_digest_t const& info_hash,
-    bool client_is_seed,
-    [[maybe_unused]] bool utp)
+    bool const client_is_seed,
+    bool const utp)
 {
     TR_ASSERT(session != nullptr);
     TR_ASSERT(socket_address.is_valid());
     TR_ASSERT(!std::empty(session->preferred_transports()));
 
-    // N.B. This array needs to be kept in the same order as
-    // the tr_transport_protocol enum.
-    auto const get_socket = std::array<std::function<std::shared_ptr<tr_peer_socket>()>, TransportProtocolCount>{
-        [&] -> std::shared_ptr<tr_peer_socket> {
+    auto factories = SocketFactories{};
+    for (auto const transport : std::views::reverse(session->preferred_transports())) {
+        switch (transport) {
+        case tr_transport_protocol::UTP:
             if (utp) {
-                return tr_peer_socket_utp::create(socket_address, session->utp_context, session->timerMaker());
+                factories.emplace_back(
+                    [](tr_session& s, tr_socket_address const& sa, bool /*client_is_seed*/) -> std::shared_ptr<tr_peer_socket> {
+                        return tr_peer_socket_utp::create(sa, s.utp_context, s.timerMaker());
+                    });
             }
-            return {};
-        },
-        [&] { return tr_peer_socket_tcp::create(*session, socket_address, client_is_seed); },
-    };
+            break;
+        case tr_transport_protocol::TCP:
+            factories.emplace_back(
+                [](tr_session& s, tr_socket_address const& sa, bool client_is_seed) -> std::shared_ptr<tr_peer_socket> {
+                    return tr_peer_socket_tcp::create(s, sa, client_is_seed);
+                });
+            break;
+        }
+    }
 
-    for (auto const& transport : session->preferred_transports()) {
-        if (auto sock = get_socket[std::to_underlying(transport)]()) {
-            return tr_peerIo::create(session, std::move(sock), parent, &info_hash, false, client_is_seed);
+    while (!factories.empty()) {
+        auto const factory = std::move(factories.back());
+        factories.pop_back();
+        if (auto sock = factory(*session, socket_address, client_is_seed)) {
+            return tr_peerIo::create(session, std::move(sock), std::move(factories), parent, &info_hash, false, client_is_seed);
         }
     }
 
@@ -164,7 +178,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
         return {};
     }
 
-    return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed);
+    return tr_peerIo::create(session, std::move(socket), {}, parent, &info_hash, false, client_is_seed);
 }
 
 // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
@@ -238,17 +252,20 @@ bool tr_peerIo::reconnect()
 
     close();
 
-    auto s = tr_peer_socket_tcp::create(*session_, socket_address(), client_is_seed());
-    if (!s) {
-        return false;
+    while (!untried_transports_.empty()) {
+        auto const factory = untried_transports_.back();
+        untried_transports_.pop_back();
+        if (auto sock = factory(*session_, socket_address(), client_is_seed())) {
+            set_socket(std::move(sock));
+
+            socket_->set_read_enabled(was_read_enabled);
+            socket_->set_write_enabled(was_write_enabled);
+
+            return true;
+        }
     }
 
-    set_socket(std::move(s));
-
-    socket_->set_read_enabled(was_read_enabled);
-    socket_->set_write_enabled(was_write_enabled);
-
-    return true;
+    return false;
 }
 
 // ---

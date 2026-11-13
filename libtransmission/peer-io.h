@@ -16,6 +16,8 @@
 #include <optional>
 #include <utility> // std::pair
 
+#include <small/vector.hpp>
+
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/digest.h"
 #include "libtransmission/peer-mse.h"
@@ -308,6 +310,10 @@ public:
     }
 
 private:
+    using SocketFactories = small::max_size_vector<
+        std::shared_ptr<tr_peer_socket> (*)(tr_session& session, tr_socket_address const& socket_address, bool client_is_seed),
+        TransportProtocolCount>;
+
     // Our target socket receive buffer size.
     // Gets read from the socket buffer into the incoming PeerBuffer.
     static constexpr auto RcvBuf = size_t{ 256 * 1024 };
@@ -318,6 +324,7 @@ private:
 
     tr_peerIo(
         tr_session* session,
+        SocketFactories&& untried_transports,
         tr_bandwidth* parent_bandwidth,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -350,6 +357,7 @@ private:
     [[nodiscard]] static std::shared_ptr<tr_peerIo> create(
         tr_session* session,
         std::shared_ptr<tr_peer_socket> socket,
+        SocketFactories&& untried_transports,
         tr_bandwidth* parent,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -361,6 +369,7 @@ private:
     std::deque<std::pair<size_t /*n_bytes*/, bool /*is_piece_data*/>> outbuf_info_;
 
     std::shared_ptr<tr_peer_socket> socket_;
+    SocketFactories untried_transports_;
 
     tr_socket_address socket_address_;
 
