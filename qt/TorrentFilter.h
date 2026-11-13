@@ -41,6 +41,7 @@ private:
 
     QTimer refilter_timer_;
     Prefs const& prefs_;
+    SortMode sort_mode_ = {}; // set by refilter(), so it changes only when the whole list re-sorts
     tr::app::TorrentFilter filter_;
     sigslot::scoped_connection filter_changed_ = filter_.changed.connect_scoped(
         [this](tr::app::TorrentFilter::Change /*change*/) { refilterSoon(); });
