@@ -48,7 +48,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     return buf_append(buf, buflen, args...);
 }
 
-[[nodiscard]] constexpr std::string_view base62str(uint8_t chr)
+[[nodiscard]] constexpr std::string_view base62str(char chr)
 {
     // clang-format off: 90 characters per column
     auto constexpr Strings = std::to_array<std::string_view>({
@@ -81,7 +81,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     });
     // clang-format on
 
-    return Strings[chr];
+    return Strings[static_cast<unsigned char>(chr)];
 }
 
 [[nodiscard]] int strint(char const* pch, int span, int base = 10)

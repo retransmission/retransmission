@@ -154,9 +154,9 @@ private:
         set_true_count(count_flags());
     }
 
-    [[nodiscard]] static constexpr int popcount(std::byte const value) noexcept
+    [[nodiscard]] static constexpr size_t popcount(std::byte const value) noexcept
     {
-        return std::popcount(std::to_integer<uint8_t>(value));
+        return static_cast<size_t>(std::popcount(std::to_integer<uint8_t>(value)));
     }
 
     std::vector<std::byte> flags_;
