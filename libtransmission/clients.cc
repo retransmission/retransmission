@@ -35,9 +35,10 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T const&
     }
 
     auto const [out, len] = fmt::format_to_n(buf, buflen, "{}", value);
-    auto* const end = buf + std::min(buflen - 1, static_cast<size_t>(out - buf));
+    auto const n_written = std::min(buflen - 1, static_cast<size_t>(out - buf));
+    auto* const end = buf + n_written;
     *end = '\0';
-    return { end, buflen - (end - buf) };
+    return { end, buflen - n_written };
 }
 
 template<typename T, typename... ArgTypes>
@@ -649,6 +650,6 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
             }
         }
 
-        buf_append(buf, buflen, std::string_view(begin, walk - begin));
+        buf_append(buf, buflen, std::string_view{ begin, walk });
     }
 }

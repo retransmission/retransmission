@@ -239,12 +239,9 @@ private:
     {
         auto const public_key = get_dh().publicKey();
         auto outbuf = std::array<std::byte, std::size(public_key) + PadMax>{};
-        auto const data = std::data(outbuf);
-        auto walk = data;
-        walk = std::copy(std::begin(public_key), std::end(public_key), walk);
-        auto const pad_len = mediator_->pad(walk, PadMax);
-        walk += pad_len;
-        io->write_bytes(data, walk - data, false);
+        auto* const pad_begin = std::copy(std::begin(public_key), std::end(public_key), std::data(outbuf));
+        auto const pad_len = mediator_->pad(pad_begin, PadMax);
+        io->write_bytes(std::data(outbuf), std::size(public_key) + pad_len, false);
         return pad_len;
     }
 

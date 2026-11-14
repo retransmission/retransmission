@@ -48,10 +48,10 @@ struct Handler {
             return std::string_view{ token_begin_, static_cast<size_t>(token_end_ - token_begin_) };
         }
 
-        constexpr void setTokenSpan(char const* a, size_t len) noexcept
+        constexpr void setTokenSpan(char const* begin, char const* end) noexcept
         {
-            token_begin_ = a;
-            token_end_ = token_begin_ + len;
+            token_begin_ = begin;
+            token_end_ = end;
         }
 
         tr_error& error;
@@ -281,7 +281,7 @@ bool parse(
                 err = EILSEQ;
                 error->set(err, "Malformed benc? Unable to parse integer");
             } else {
-                context.setTokenSpan(front, std::data(benc) - front);
+                context.setTokenSpan(front, std::data(benc));
 
                 if (!handler.Int64(*value, context)) {
                     err = ECANCELED;
@@ -301,7 +301,7 @@ bool parse(
                     break;
                 }
 
-                context.setTokenSpan(front, 1);
+                context.setTokenSpan(front, front + 1);
                 ok = benc.front() == 'l' ? handler.StartArray(context) : handler.StartDict(context);
                 if (!ok) {
                     err = ECANCELED;
@@ -318,7 +318,7 @@ bool parse(
                 err = EILSEQ;
             } else {
                 stack.tokenWalked();
-                context.setTokenSpan(front, 1);
+                context.setTokenSpan(front, front + 1);
 
                 if (auto const ok = *parent_type == ParserStack<MaxDepth>::ParentType::Array ? handler.EndArray(context) :
                                                                                                handler.EndDict(context);
@@ -342,7 +342,7 @@ bool parse(
                 err = EILSEQ;
                 error->set(err, "Malformed benc? Unable to parse string");
             } else {
-                context.setTokenSpan(front, std::data(benc) - front);
+                context.setTokenSpan(front, std::data(benc));
                 if (bool const ok = stack.expectingDictKey() ? handler.Key(*sv, context) : handler.String(*sv, context); !ok) {
                     err = ECANCELED;
                 } else {
