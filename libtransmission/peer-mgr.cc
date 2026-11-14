@@ -116,7 +116,7 @@ public:
         return timer_maker_;
     }
 
-    [[nodiscard]] size_t pad(void* setme, size_t maxlen) const override
+    [[nodiscard]] uint16_t pad(void* setme, uint16_t maxlen) const override
     {
         auto const len = tr_rand_int(maxlen);
         tr_rand_buffer(setme, len);

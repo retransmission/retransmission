@@ -721,6 +721,17 @@ bool tr_handshake::send_handshake(tr_peerIo* io)
     return true;
 }
 
+template<uint16_t PadMax>
+uint16_t tr_handshake::send_public_key_and_pad(tr_peerIo* io)
+{
+    auto const public_key = get_dh().publicKey();
+    auto outbuf = std::array<std::byte, std::size(public_key) + PadMax>{};
+    auto* const pad_begin = std::ranges::copy(public_key, std::data(outbuf)).out;
+    auto const pad_len = mediator_->pad(pad_begin, PadMax);
+    io->write_bytes(std::data(outbuf), std::size(public_key) + pad_len, false);
+    return pad_len;
+}
+
 uint32_t tr_handshake::crypto_provide() const noexcept
 {
     auto provide = uint32_t{};

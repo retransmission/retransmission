@@ -196,6 +196,7 @@ T tr_rand_int(T const upper_bound)
     return dist(rng, typename dist_type::param_type(0, upper_bound - 1));
 }
 
+template unsigned short tr_rand_int(unsigned short);
 template unsigned int tr_rand_int(unsigned int);
 template unsigned long tr_rand_int(unsigned long);
 template unsigned long long tr_rand_int(unsigned long long);
