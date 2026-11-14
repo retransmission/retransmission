@@ -480,8 +480,9 @@ TEST_F(HandshakeTest, incomingEncryptedRejectsPadALongerThan64KiB)
 
     // Queue the rest while the session thread is busy, so that the client's
     // next read gets all of it at once. Some platforms' default send buffer
-    // is too small to hold it.
-    static auto constexpr SendBufSize = 256 * 1024;
+    // is too small to hold it. 128 KiB holds it and stays under NetBSD's
+    // default socket buffer limit.
+    static auto constexpr SendBufSize = 128 * 1024;
     ASSERT_EQ(0, setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char const*>(&SendBufSize), sizeof(SendBufSize)));
     blockingRunInSessionThread([&] { sendToClient(sock, std::string_view{ payload }.substr(FirstLen)); });
 
