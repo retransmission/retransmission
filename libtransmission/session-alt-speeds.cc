@@ -23,7 +23,7 @@ void tr_session_alt_speeds::update_minutes()
 {
     minutes_.reset();
 
-    for (int day = 0; day < 7; ++day) {
+    for (size_t day = 0U; day < 7U; ++day) {
         if ((settings_.use_on_these_weekdays & (1 << day)) != 0) {
             auto const begin = settings_.minute_begin;
             auto const end = settings_.minute_end > settings_.minute_begin ? settings_.minute_end :

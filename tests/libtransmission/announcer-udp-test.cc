@@ -312,7 +312,7 @@ protected:
         // EXPECT_EQ(foo, actual.event); ; // 0: none; 1: completed; 2: started; 3: stopped // FIXME
         // EXPECT_EQ(foo, actual.ip_address); // FIXME
         EXPECT_EQ(expected.key, static_cast<int>(actual.key));
-        EXPECT_EQ(expected.numwant, static_cast<int64_t>(actual.num_want));
+        EXPECT_EQ(expected.numwant, actual.num_want);
         EXPECT_EQ(expected.port.host(), actual.port);
     }
 

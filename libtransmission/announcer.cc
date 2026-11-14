@@ -53,7 +53,7 @@ namespace
 auto constexpr DefaultScrapeIntervalSec = time_t{ 60 * 30 };
 
 /* the value of the 'numwant' argument passed in tracker requests. */
-auto constexpr Numwant = 80;
+auto constexpr Numwant = uint32_t{ 80 };
 
 /* how often to announce & scrape */
 auto constexpr MaxAnnouncesPerUpkeep = 20;
@@ -1093,7 +1093,7 @@ void tr_announcerChangeMyPort(tr_torrent* tor)
 
 // ---
 
-void tr_announcerAddBytes(tr_torrent const* tor, int const type, uint32_t const n_bytes)
+void tr_announcerAddBytes(tr_torrent const* tor, uint8_t const type, uint32_t const n_bytes)
 {
     TR_ASSERT(tr_isTorrent(tor));
     TR_ASSERT(type == TR_ANN_UP || type == TR_ANN_DOWN || type == TR_ANN_CORRUPT);

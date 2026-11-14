@@ -65,7 +65,7 @@ struct tr_announce_request {
     tr_announce_key_t key;
 
     /* the number of peers we'd like to get back in the response */
-    int64_t numwant = 0;
+    uint32_t numwant = 0;
 
     /* the number of bytes we uploaded since the last 'started' event */
     uint64_t up = 0;
