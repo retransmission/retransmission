@@ -607,6 +607,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     };
 
     auto const was_mse = handshake->dh_.has_value();
+    auto const transport_protocol_before = io->transport_protocol();
     handshake->maybe_recycle_dh();
 
     if (io->is_incoming() || !handshake->mediator_->torrent(info_hash)) {
@@ -619,12 +620,24 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
             io->reconnect(true)) {
             retry_plain();
             handshake->retried_mse_ = false;
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "MSE {} handshake failed, trying plaintext {}...",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
             return;
         }
     } else if (handshake->is_state(State::AwaitingHandshake) && !was_mse) {
         if (did_connect && handshake->retried_mse_ != false && io->reconnect(true)) {
             retry_mse();
             handshake->retried_mse_ = true;
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "plaintext {} handshake failed, trying MSE {}...",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
             return;
         }
     } else {
@@ -635,8 +648,22 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     if (io->reconnect(false)) {
         if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
             retry_mse();
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "{} {} handshake failed, trying MSE {}...",
+                    was_mse ? "MSE" : "plaintext",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
         } else {
             retry_plain();
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "{} {} handshake failed, trying plaintext {}...",
+                    was_mse ? "MSE" : "plaintext",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
         }
         handshake->retried_mse_.reset();
         return;

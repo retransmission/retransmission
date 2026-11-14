@@ -64,6 +64,18 @@ enum class tr_transport_protocol : uint8_t {
 
 inline auto constexpr TransportProtocolCount = 2U;
 
+[[nodiscard]] constexpr std::string_view tr_transport_protocol_to_sv(tr_transport_protocol const transport) noexcept
+{
+    switch (transport) {
+    case tr_transport_protocol::UTP:
+        return "uTP";
+    case tr_transport_protocol::TCP:
+        return "TCP";
+    }
+    // no default label: this switch should cover all tr_transport_protocol values
+    return {};
+}
+
 enum class tr_file_preallocation : uint8_t {
     None,
     Fast,

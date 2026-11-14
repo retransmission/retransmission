@@ -98,6 +98,11 @@ public:
         return socket_ ? socket_->is_connected() : false;
     }
 
+    [[nodiscard]] constexpr auto transport_protocol() const noexcept
+    {
+        return socket_ ? socket_->type() : tr_transport_protocol{};
+    }
+
     [[nodiscard]] auto is_utp() const noexcept
     {
         return socket_ ? socket_->is_utp() : false;

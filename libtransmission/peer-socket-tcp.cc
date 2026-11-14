@@ -263,12 +263,12 @@ public:
         return connect_error_ == 0;
     }
 
-protected:
     [[nodiscard]] constexpr tr_transport_protocol type() const noexcept override
     {
         return tr_transport_protocol::TCP;
     }
 
+protected:
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) override
     {
         if (connect_error_ != 0) {

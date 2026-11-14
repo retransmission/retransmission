@@ -86,6 +86,8 @@ public:
         return socket_address().display_name();
     }
 
+    [[nodiscard]] constexpr virtual tr_transport_protocol type() const noexcept = 0;
+
     [[nodiscard]] constexpr auto is_utp() const noexcept
     {
         return type() == tr_transport_protocol::UTP;
@@ -100,8 +102,6 @@ public:
 
 protected:
     explicit tr_peer_socket(tr_socket_address const& socket_address);
-
-    [[nodiscard]] constexpr virtual tr_transport_protocol type() const noexcept = 0;
 
     [[nodiscard]] virtual size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) = 0;
     [[nodiscard]] virtual size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) = 0;
