@@ -12,10 +12,7 @@
 
 struct tr_session;
 
-/// Public because ShareTorrentFileHelper sets Controller as each NSSharingService's delegate.
-/// TODO: Move NSSharingServiceDelegate to implementation once macOS 12 support is dropped.
-/// Look at modern way to show NSSharingServicePicker.
-@interface Controller : NSObject<NSSharingServiceDelegate>
+@interface Controller : NSObject
 
 /// Quits if another copy is running, registers the default settings, and on the first launch offers the import from Transmission.
 /// Runs while the app finishes launching.
@@ -29,9 +26,6 @@ struct tr_session;
 
 // In MessageWindowController
 @property(nonatomic, readonly) MessageWindowController* messageWindowController;
-
-// In ShareTorrentFileHelper
-@property(nonatomic, readonly) NSArray<Torrent*>* selectedTorrents;
 
 // In AddWindowController/AddMagnetWindowController
 - (void)askOpenConfirmed:(AddWindowController*)addController add:(BOOL)add;

@@ -141,10 +141,6 @@ target_sources(${TR_NAME}-mac
         ProgressBarView.mm
         ProgressGradients.h
         ProgressGradients.mm
-        ShareToolbarItem.h
-        ShareToolbarItem.mm
-        ShareTorrentFileHelper.h
-        ShareTorrentFileHelper.mm
         SmallTorrentCell.h
         SmallTorrentCell.mm
         SparkleProxy.mm

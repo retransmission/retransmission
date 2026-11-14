@@ -53,8 +53,6 @@
 #import "MessageWindowController.h"
 #import "GlobalOptionsPopoverViewController.h"
 #import "ButtonToolbarItem.h"
-#import "ShareToolbarItem.h"
-#import "ShareTorrentFileHelper.h"
 #import "Toolbar.h"
 #import "StatusBarController.h"
 #import "FilterBarController.h"
@@ -279,7 +277,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return settings;
 }
 
-@interface Controller ()<NSApplicationDelegate, NSOutlineViewDataSource, NSMenuItemValidation, NSPopoverDelegate, NSSharingServicePickerDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
+@interface Controller ()<NSApplicationDelegate, NSOutlineViewDataSource, NSMenuItemValidation, NSPopoverDelegate, NSSharingServiceDelegate, NSSharingServicePickerToolbarItemDelegate, NSToolbarDelegate, NSToolbarItemValidation, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSWindowDelegate, PowerManagerDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, SPUUpdaterDelegate, UNUserNotificationCenterDelegate, VDKQueueDelegate>
 
 @property(nonatomic) NSLayoutConstraint* fMinHeightConstraint;
 @property(nonatomic) TorrentMainWindow* fWindow;
@@ -297,6 +295,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 @property(nonatomic, readonly) NSMutableArray<Torrent*>* fTorrents;
 @property(nonatomic, readonly) NSMutableArray* fDisplayedTorrents;
 @property(nonatomic, readonly) NSMutableDictionary<NSString*, Torrent*>* fTorrentHashes;
+@property(nonatomic, readonly) NSArray<Torrent*>* selectedTorrents;
 
 @property(nonatomic, readonly) InfoWindowController* fInfoController;
 @property(nonatomic) MessageWindowController* fMessageController;
@@ -3355,11 +3354,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
             [menu addItem:item];
         }
     } else if (menu.isShareSubmenu) {
-        [menu removeAllItems];
-
-        for (NSMenuItem* item in ShareTorrentFileHelper.sharedHelper.menuItems) {
-            [menu addItem:item];
-        }
+        [self updateShareMenu:menu];
     }
 }
 
@@ -3973,16 +3968,48 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (void)showToolbarShare:(id)sender
+#pragma mark - Sharing
+
+- (NSArray<NSURL*>*)selectedTorrentFileURLs
 {
-    NSParameterAssert([sender isKindOfClass:[NSButton class]]);
-    NSButton* senderButton = sender;
-
-    NSSharingServicePicker* picker = [[NSSharingServicePicker alloc] initWithItems:ShareTorrentFileHelper.sharedHelper.shareTorrentURLs];
-    picker.delegate = self;
-
-    [picker showRelativeToRect:senderButton.bounds ofView:senderButton preferredEdge:NSMinYEdge];
+    NSArray<Torrent*>* torrents = self.selectedTorrents;
+    NSMutableArray<NSURL*>* fileURLs = [NSMutableArray arrayWithCapacity:torrents.count];
+    for (Torrent* torrent in torrents) {
+        NSString* location = torrent.torrentLocation;
+        if (location.length > 0) {
+            [fileURLs addObject:[NSURL fileURLWithPath:location]];
+        }
+    }
+    return fileURLs;
 }
+
+- (void)performShareMenuAction:(NSMenuItem*)sender
+{
+    NSSharingService* service = sender.representedObject;
+    service.delegate = self;
+    [service performWithItems:self.selectedTorrentFileURLs];
+}
+
+- (void)updateShareMenu:(NSMenu*)menu
+{
+    [menu removeAllItems];
+    NSArray<NSURL*>* urls = [self selectedTorrentFileURLs];
+    if (urls.count == 0) {
+        return;
+    }
+
+    NSArray<NSSharingService*>* services = [NSSharingService sharingServicesForItems:urls];
+    for (NSSharingService* service in services) {
+        NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:service.title action:@selector(performShareMenuAction:)
+                                               keyEquivalent:@""];
+        item.image = service.image;
+        item.representedObject = service;
+        item.target = self;
+        [menu addItem:item];
+    }
+}
+
+#pragma mark - NSSharingServicePickerDelegate
 
 - (id<NSSharingServiceDelegate>)sharingServicePicker:(NSSharingServicePicker*)sharingServicePicker
                            delegateForSharingService:(NSSharingService*)sharingService
@@ -3996,6 +4023,15 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 {
     return self.fWindow;
 }
+
+#pragma mark - NSSharingServicePickerToolbarItemDelegate
+
+- (NSArray*)itemsForSharingServicePickerToolbarItem:(NSSharingServicePickerToolbarItem*)pickerToolbarItem
+{
+    return self.selectedTorrentFileURLs;
+}
+
+#pragma mark - Toolbar
 
 - (ButtonToolbarItem*)standardToolbarButtonWithIdentifier:(NSString*)ident
 {
@@ -4159,18 +4195,14 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierShare]) {
-        ShareToolbarItem* item = [self toolbarButtonWithIdentifier:ident forToolbarButtonClass:[ShareToolbarItem class]];
+        NSSharingServicePickerToolbarItem* item = [[NSSharingServicePickerToolbarItem alloc] initWithItemIdentifier:ident];
+
+        item.delegate = self;
 
         item.label = NSLocalizedString(@"Share", "Share toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Share", "Share toolbar item -> palette label");
         item.toolTip = NSLocalizedString(@"Share torrent file", "Share toolbar item -> tooltip");
-        item.image = [NSImage imageNamed:NSImageNameShareTemplate];
         item.visibilityPriority = NSToolbarItemVisibilityPriorityLow;
-
-        NSButton* itemButton = (NSButton*)item.view;
-        itemButton.target = self;
-        itemButton.action = @selector(showToolbarShare:);
-        [itemButton sendActionOn:NSEventMaskLeftMouseDown];
 
         return item;
     } else {
@@ -4315,11 +4347,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     //set quick look item
     if ([ident isEqualToString:ToolbarItemIdentifierQuickLook]) {
         ((NSButton*)toolbarItem.view).state = self.fPreviewPanel != nil;
-        return self.fTableView.numberOfSelectedRows > 0;
-    }
-
-    //enable share item
-    if ([ident isEqualToString:ToolbarItemIdentifierShare]) {
         return self.fTableView.numberOfSelectedRows > 0;
     }
 
