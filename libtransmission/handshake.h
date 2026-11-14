@@ -71,9 +71,12 @@ public:
         [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
         [[nodiscard]] virtual bool allows_dht() const = 0;
         [[nodiscard]] virtual size_t pad(void* setme, size_t max_bytes) const = 0;
-        [[nodiscard]] virtual DH::private_key_bigend_t private_key() const
+        [[nodiscard]] virtual DH get_dh() const
         {
-            return DH::randomPrivateKey();
+            if (auto recycled = pop_dh_pool()) {
+                return std::move(*recycled);
+            }
+            return DH{ DH::randomPrivateKey() };
         }
 
         virtual void set_utp_failed(tr_sha1_digest_t const& info_hash, tr_socket_address const& socket_address) = 0;
@@ -118,7 +121,7 @@ public:
         std::tuple_size_v<tr_peer_id_t>;
     static_assert(HandshakeSize == 68U);
 
-    // Length of handhshake up through the info_hash. From theory.org:
+    // Length of handshake up through the info_hash. From theory.org:
     // > The recipient may wait for the initiator's handshake... however,
     // > the recipient must respond as soon as it sees the info_hash part
     // > of the handshake (the peer id will presumably be sent after the
@@ -284,7 +287,7 @@ private:
     [[nodiscard]] DH& get_dh()
     {
         if (!dh_) {
-            dh_.emplace(pop_dh_pool().value_or(DH{ mediator_->private_key() }));
+            dh_.emplace(mediator_->get_dh());
         }
 
         return *dh_;
