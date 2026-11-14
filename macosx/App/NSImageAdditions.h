@@ -10,3 +10,9 @@
 - (NSImage*)imageWithColor:(NSColor*)color;
 
 @end
+
+@interface NSImage (Resources)
++ (NSImage*)highPriority;
++ (NSImage*)normalPriority;
++ (NSImage*)lowPriority;
+@end

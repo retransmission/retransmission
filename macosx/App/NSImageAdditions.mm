@@ -51,3 +51,20 @@ static CGFloat const kBorderWidth = 1.25;
 }
 
 @end
+
+@implementation NSImage (Resources)
++ (NSImage*)highPriority
+{
+    return [NSImage imageWithSystemSymbolName:@"arrow.up.circle" accessibilityDescription:nil];
+}
+
++ (NSImage*)normalPriority
+{
+    return [NSImage imageWithSystemSymbolName:@"record.circle" accessibilityDescription:nil];
+}
+
++ (NSImage*)lowPriority
+{
+    return [NSImage imageWithSystemSymbolName:@"arrow.down.circle" accessibilityDescription:nil];
+}
+@end
