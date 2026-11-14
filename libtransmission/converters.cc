@@ -353,23 +353,23 @@ auto constexpr PreallocationKeys = to_lookup<tr_file_preallocation>({
 
 // ---
 
-auto constexpr PreferredTransportKeys = to_lookup<tr_preferred_transport>({
-    { "utp", tr_preferred_transport::UTP },
-    { "tcp", tr_preferred_transport::TCP },
+auto constexpr PreferredTransportKeys = to_lookup<tr_transport_protocol>({
+    { "utp", tr_transport_protocol::UTP },
+    { "tcp", tr_transport_protocol::TCP },
 });
-static_assert(PreferredTransportKeys.size() == PreferredTransportCount);
+static_assert(PreferredTransportKeys.size() == TransportProtocolCount);
 
 [[nodiscard]] bool to_preferred_transport(
     tr_variant const& src,
-    small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
+    small::max_size_vector<tr_transport_protocol, TransportProtocolCount>* tgt)
 {
-    static auto constexpr LoadSingle = [](tr_variant const& var) -> std::optional<tr_preferred_transport> {
-        auto tmp = tr_preferred_transport{};
+    static auto constexpr LoadSingle = [](tr_variant const& var) -> std::optional<tr_transport_protocol> {
+        auto tmp = tr_transport_protocol{};
         return to_enum_or_integral_with_lookup(PreferredTransportKeys, var, &tmp) ? std::make_optional(tmp) : std::nullopt;
     };
 
     if (auto* const l = src.get_if<tr_variant::Vector>(); l != nullptr) {
-        auto tmp = small::max_size_unordered_set<tr_preferred_transport, PreferredTransportCount>{};
+        auto tmp = small::max_size_unordered_set<tr_transport_protocol, TransportProtocolCount>{};
         tmp.reserve(tmp.max_size());
 
         for (size_t i = 0, n = std::min(std::size(*l), tmp.max_size()); i < n; ++i) {
@@ -395,9 +395,9 @@ static_assert(PreferredTransportKeys.size() == PreferredTransportCount);
 }
 
 [[nodiscard]] tr_variant from_preferred_transport(
-    small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& val)
+    small::max_size_vector<tr_transport_protocol, TransportProtocolCount> const& val)
 {
-    static auto constexpr SaveSingle = [](tr_preferred_transport const ele) -> tr_variant {
+    static auto constexpr SaveSingle = [](tr_transport_protocol const ele) -> tr_variant {
         return from_enum_or_integral_with_lookup(PreferredTransportKeys, ele);
     };
 
@@ -666,7 +666,7 @@ TR_DEFINE_CONVERTER(tr_torrent_activity, (to_enum<tr_torrent_activity, TR_STATUS
 TR_DEFINE_CONVERTER(tr_tracker_state, (to_enum<tr_tracker_state, TR_TRACKER_INACTIVE, TR_TRACKER_ACTIVE>), from_enum)
 TR_DEFINE_CONVERTER(tr_verify_added_mode, to_verify_added_mode, from_verify_added_mode)
 
-// `small::max_size_vector<tr_preferred_transport, ...>` Converter is declared
+// `small::max_size_vector<tr_transport_protocol, ...>` Converter is declared
 // in `session-settings.h`, where the type itself is used.
 TR_DEFINE_CONVERTER(PreferredTransports, to_preferred_transport, from_preferred_transport)
 

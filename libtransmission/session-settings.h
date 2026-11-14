@@ -27,7 +27,7 @@
 // serializer header does not have to pull in `<small/vector.hpp>`.
 namespace tr::serializer
 {
-using PreferredTransports = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>;
+using PreferredTransports = small::max_size_vector<tr_transport_protocol, TransportProtocolCount>;
 TR_DECLARE_CONVERTER(PreferredTransports)
 } // namespace tr::serializer
 
@@ -123,9 +123,9 @@ public:
     size_t speed_limit_down = 100U;
     size_t speed_limit_up = 100U;
     size_t upload_slots_per_torrent = 8U;
-    small::max_size_vector<tr_preferred_transport, PreferredTransportCount> preferred_transports = {
-        tr_preferred_transport::UTP,
-        tr_preferred_transport::TCP,
+    small::max_size_vector<tr_transport_protocol, TransportProtocolCount> preferred_transports = {
+        tr_transport_protocol::UTP,
+        tr_transport_protocol::TCP,
     };
     std::chrono::milliseconds sleep_per_seconds_during_verify = std::chrono::milliseconds{ 100 };
     std::optional<std::string> proxy_url;

@@ -877,10 +877,10 @@ void tr::SessionSettings::fixup_from_preferred_transports() noexcept
     tcp_enabled = false;
     for (auto const& transport : preferred_transports) {
         switch (transport) {
-        case tr_preferred_transport::UTP:
+        case tr_transport_protocol::UTP:
             utp_enabled = true;
             break;
-        case tr_preferred_transport::TCP:
+        case tr_transport_protocol::TCP:
             tcp_enabled = true;
             break;
         default:
@@ -892,19 +892,19 @@ void tr::SessionSettings::fixup_from_preferred_transports() noexcept
 void tr::SessionSettings::fixup_to_preferred_transports()
 {
     if (!utp_enabled) {
-        auto const [first, last] = std::ranges::remove(preferred_transports, tr_preferred_transport::UTP);
+        auto const [first, last] = std::ranges::remove(preferred_transports, tr_transport_protocol::UTP);
         preferred_transports.erase(first, last);
-    } else if (std::ranges::find(preferred_transports, tr_preferred_transport::UTP) == std::ranges::end(preferred_transports)) {
+    } else if (std::ranges::find(preferred_transports, tr_transport_protocol::UTP) == std::ranges::end(preferred_transports)) {
         TR_ASSERT(std::size(preferred_transports) < preferred_transports.max_size());
-        preferred_transports.emplace(std::begin(preferred_transports), tr_preferred_transport::UTP);
+        preferred_transports.emplace(std::begin(preferred_transports), tr_transport_protocol::UTP);
     }
 
     if (!tcp_enabled) {
-        auto const [first, last] = std::ranges::remove(preferred_transports, tr_preferred_transport::TCP);
+        auto const [first, last] = std::ranges::remove(preferred_transports, tr_transport_protocol::TCP);
         preferred_transports.erase(first, last);
-    } else if (std::ranges::find(preferred_transports, tr_preferred_transport::TCP) == std::ranges::end(preferred_transports)) {
+    } else if (std::ranges::find(preferred_transports, tr_transport_protocol::TCP) == std::ranges::end(preferred_transports)) {
         TR_ASSERT(std::size(preferred_transports) < preferred_transports.max_size());
-        preferred_transports.emplace_back(tr_preferred_transport::TCP);
+        preferred_transports.emplace_back(tr_transport_protocol::TCP);
     }
 }
 

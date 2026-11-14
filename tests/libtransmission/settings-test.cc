@@ -518,9 +518,9 @@ TEST_F(SettingsTest, canSaveVerify)
 TEST_F(SettingsTest, canLoadPreferredTransport)
 {
     static auto constexpr Key = TR_KEY_preferred_transports;
-    auto const expected_value = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>{
-        tr_preferred_transport::TCP,
-        tr_preferred_transport::UTP,
+    auto const expected_value = small::max_size_vector<tr_transport_protocol, TransportProtocolCount>{
+        tr_transport_protocol::TCP,
+        tr_transport_protocol::UTP,
     };
     auto expected_value_vec = tr_variant::Vector{};
     expected_value_vec.reserve(std::size(expected_value));
@@ -537,8 +537,8 @@ TEST_F(SettingsTest, canLoadPreferredTransport)
     settings->load(map);
     EXPECT_EQ(expected_value, settings->preferred_transports);
 
-    auto const expected_value_single = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>{
-        tr_preferred_transport::TCP
+    auto const expected_value_single = small::max_size_vector<tr_transport_protocol, TransportProtocolCount>{
+        tr_transport_protocol::TCP
     };
 
     expected_value_vec = tr_variant::Vector{};
@@ -562,10 +562,10 @@ TEST_F(SettingsTest, canLoadPreferredTransport)
 TEST_F(SettingsTest, canSavePreferredTransport)
 {
     static auto constexpr Key = TR_KEY_preferred_transports;
-    static auto constexpr ExpectedValue = std::array<std::string_view, PreferredTransportCount>{ "tcp"sv, "utp"sv };
-    auto const setting_value = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>{
-        tr_preferred_transport::TCP,
-        tr_preferred_transport::UTP,
+    static auto constexpr ExpectedValue = std::array<std::string_view, TransportProtocolCount>{ "tcp"sv, "utp"sv };
+    auto const setting_value = small::max_size_vector<tr_transport_protocol, TransportProtocolCount>{
+        tr_transport_protocol::TCP,
+        tr_transport_protocol::UTP,
     };
 
     auto settings = tr_session::Settings{};
@@ -590,8 +590,8 @@ TEST_F(SettingsTest, fixupToPreferredTransports)
 
     // control case
     auto expected_value = decltype(settings.preferred_transports){
-        tr_preferred_transport::UTP,
-        tr_preferred_transport::TCP,
+        tr_transport_protocol::UTP,
+        tr_transport_protocol::TCP,
     };
     settings.utp_enabled = true;
     settings.tcp_enabled = true;
@@ -599,36 +599,36 @@ TEST_F(SettingsTest, fixupToPreferredTransports)
     EXPECT_EQ(expected_value, settings.preferred_transports);
 
     // preserves order if no insert is needed
-    settings.preferred_transports = { tr_preferred_transport::TCP, tr_preferred_transport::UTP };
-    expected_value = { tr_preferred_transport::TCP, tr_preferred_transport::UTP };
+    settings.preferred_transports = { tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+    expected_value = { tr_transport_protocol::TCP, tr_transport_protocol::UTP };
     settings.utp_enabled = true;
     settings.tcp_enabled = true;
     settings.fixup_to_preferred_transports();
     EXPECT_EQ(expected_value, settings.preferred_transports);
 
     // removes utp if needed
-    expected_value = { tr_preferred_transport::TCP };
+    expected_value = { tr_transport_protocol::TCP };
     settings.utp_enabled = false;
     settings.tcp_enabled = true;
     settings.fixup_to_preferred_transports();
     EXPECT_EQ(expected_value, settings.preferred_transports);
 
     // inserts UTP in front of TCP
-    expected_value = { tr_preferred_transport::UTP, tr_preferred_transport::TCP };
+    expected_value = { tr_transport_protocol::UTP, tr_transport_protocol::TCP };
     settings.utp_enabled = true;
     settings.tcp_enabled = true;
     settings.fixup_to_preferred_transports();
     EXPECT_EQ(expected_value, settings.preferred_transports);
 
     // removes tcp if needed
-    expected_value = { tr_preferred_transport::UTP };
+    expected_value = { tr_transport_protocol::UTP };
     settings.utp_enabled = true;
     settings.tcp_enabled = false;
     settings.fixup_to_preferred_transports();
     EXPECT_EQ(expected_value, settings.preferred_transports);
 
     // inserts TCP behind UTP
-    expected_value = { tr_preferred_transport::UTP, tr_preferred_transport::TCP };
+    expected_value = { tr_transport_protocol::UTP, tr_transport_protocol::TCP };
     settings.utp_enabled = true;
     settings.tcp_enabled = true;
     settings.fixup_to_preferred_transports();
@@ -643,12 +643,12 @@ TEST_F(SettingsTest, fixupFromPreferredTransports)
     EXPECT_TRUE(settings.utp_enabled);
     EXPECT_TRUE(settings.tcp_enabled);
 
-    settings.preferred_transports = { tr_preferred_transport::UTP };
+    settings.preferred_transports = { tr_transport_protocol::UTP };
     settings.fixup_from_preferred_transports();
     EXPECT_TRUE(settings.utp_enabled);
     EXPECT_FALSE(settings.tcp_enabled);
 
-    settings.preferred_transports = { tr_preferred_transport::TCP };
+    settings.preferred_transports = { tr_transport_protocol::TCP };
     settings.fixup_from_preferred_transports();
     EXPECT_FALSE(settings.utp_enabled);
     EXPECT_TRUE(settings.tcp_enabled);

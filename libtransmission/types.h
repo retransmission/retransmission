@@ -57,12 +57,12 @@ using tr_torrent_id_t = int;
 
 using tr_labels_t = std::vector<tr::shared_string>;
 
-enum class tr_preferred_transport : uint8_t {
+enum class tr_transport_protocol : uint8_t {
     UTP,
     TCP,
 };
 
-inline auto constexpr PreferredTransportCount = 2U;
+inline auto constexpr TransportProtocolCount = 2U;
 
 enum class tr_file_preallocation : uint8_t {
     None,
