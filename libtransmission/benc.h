@@ -40,25 +40,24 @@ struct Handler {
 
         [[nodiscard]] constexpr std::pair<long, long> tokenSpan() const noexcept
         {
-            return { token_begin_ - stream_begin_, token_end_ - stream_begin_ };
+            auto const* const begin = std::data(token_);
+            return { begin - stream_begin_, begin + std::size(token_) - stream_begin_ };
         }
 
         [[nodiscard]] constexpr auto raw() const noexcept
         {
-            return std::string_view{ token_begin_, static_cast<size_t>(token_end_ - token_begin_) };
+            return token_;
         }
 
-        constexpr void setTokenSpan(char const* begin, char const* end) noexcept
+        constexpr void setTokenSpan(std::string_view token) noexcept
         {
-            token_begin_ = begin;
-            token_end_ = end;
+            token_ = token;
         }
 
         tr_error& error;
 
     private:
-        char const* token_begin_ = nullptr;
-        char const* token_end_ = nullptr;
+        std::string_view token_;
         char const* const stream_begin_;
     };
 
@@ -274,14 +273,14 @@ bool parse(
             break;
         }
 
-        auto const* const front = std::data(benc);
+        auto const unparsed = benc;
         switch (benc.front()) {
         case 'i': // int
             if (auto const value = impl::ParseInt(&benc); !value) {
                 err = EILSEQ;
                 error->set(err, "Malformed benc? Unable to parse integer");
             } else {
-                context.setTokenSpan(front, std::data(benc));
+                context.setTokenSpan(unparsed.substr(0, std::size(unparsed) - std::size(benc)));
 
                 if (!handler.Int64(*value, context)) {
                     err = ECANCELED;
@@ -301,7 +300,7 @@ bool parse(
                     break;
                 }
 
-                context.setTokenSpan(front, front + 1);
+                context.setTokenSpan(unparsed.substr(0, 1));
                 ok = benc.front() == 'l' ? handler.StartArray(context) : handler.StartDict(context);
                 if (!ok) {
                     err = ECANCELED;
@@ -318,7 +317,7 @@ bool parse(
                 err = EILSEQ;
             } else {
                 stack.tokenWalked();
-                context.setTokenSpan(front, front + 1);
+                context.setTokenSpan(unparsed.substr(0, 1));
 
                 if (auto const ok = *parent_type == ParserStack<MaxDepth>::ParentType::Array ? handler.EndArray(context) :
                                                                                                handler.EndDict(context);
@@ -342,7 +341,7 @@ bool parse(
                 err = EILSEQ;
                 error->set(err, "Malformed benc? Unable to parse string");
             } else {
-                context.setTokenSpan(front, std::data(benc));
+                context.setTokenSpan(unparsed.substr(0, std::size(unparsed) - std::size(benc)));
                 if (bool const ok = stack.expectingDictKey() ? handler.Key(*sv, context) : handler.String(*sv, context); !ok) {
                     err = ECANCELED;
                 } else {
