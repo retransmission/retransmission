@@ -750,6 +750,7 @@ private:
         wishlist_controller.reset();
         for (auto& [sockaddr, peer_info] : connectable_pool) {
             peer_info->destroy_handshake();
+            peer_info->reset_holepunch_attempts();
         }
     }
 
@@ -1483,7 +1484,7 @@ void create_bit_torrent_peer(
 
         // BEP 55: retry failed punches quickly, before the NAT mapping/timing window is lost.
         // Only exit holepunch mode if the number of retries reached the maximum.
-        if (was_holepunch_attempt && info && !info->can_fast_retry_holepunch()) {
+        if (was_holepunch_attempt && info && !result.io->is_incoming() && !info->can_fast_retry_holepunch()) {
             info->reset_holepunch_attempts();
         }
 
@@ -2796,14 +2797,6 @@ bool connect_holepunch(tr_torrent* tor, tr_socket_address const& endpoint)
         return false;
     }
 
-    if (peer_info && !peer_info->can_fast_retry_holepunch()) {
-        peer_info->reset_holepunch_attempts();
-        tr_logAddDebugTor(
-            tor,
-            fmt::format("BEP 55: peer {} has exceeded holepunch retry limit, exiting holepunch mode", endpoint.display_name()));
-        return false;
-    }
-
     if (!endpoint.is_valid_for_peers(TR_PEER_FROM_HOLEPUNCH)) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: invalid peer {}, skipping holepunch connect", endpoint.display_name()));
         return false;
@@ -2906,8 +2899,9 @@ void tr_peerMgr::make_new_peer_connections()
             // A queued candidate can become connected or start a handshake before it is consumed.
             if (auto const& peer_info = tor->swarm->get_existing_peer_info(sock_addr); peer_info && !peer_info->is_in_use()) {
                 // BEP 55: a candidate still flagged as a holepunch attempt is in sticky
-                // fast-retry mode. Re-issue the uTP-forced punch instead of a normal
-                // connect, which could fall back to TCP and never open a NAT mapping.
+                // fast-retry mode. Re-issue the punch instead of a normal connect: a punch
+                // dials µTP first, while a normal connect follows the session's transport
+                // preference and skips µTP for a peer marked as not supporting it.
                 // A punch that isn't dialled leaves the mode: a flagged peer has no
                 // reconnect delay, so it would otherwise be a candidate on every pulse.
                 if (peer_info->is_holepunch_attempt()) {
