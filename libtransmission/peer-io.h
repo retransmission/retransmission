@@ -93,9 +93,14 @@ public:
 
     void set_socket(std::shared_ptr<tr_peer_socket> socket_in);
 
-    [[nodiscard]] constexpr auto is_connected() const noexcept
+    [[nodiscard]] auto is_connected() const noexcept
     {
         return socket_ ? socket_->is_connected() : false;
+    }
+
+    [[nodiscard]] auto transport_protocol() const noexcept
+    {
+        return socket_ ? socket_->type() : tr_transport_protocol{};
     }
 
     [[nodiscard]] auto is_utp() const noexcept

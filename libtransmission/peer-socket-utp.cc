@@ -130,6 +130,11 @@ public:
         return is_connected_;
     }
 
+    [[nodiscard]] constexpr tr_transport_protocol type() const noexcept override
+    {
+        return tr_transport_protocol::UTP;
+    }
+
     [[nodiscard]] constexpr auto& read_buffer() noexcept
     {
         return inbuf_;
@@ -219,11 +224,6 @@ public:
     }
 
 protected:
-    [[nodiscard]] constexpr tr_transport_protocol type() const noexcept override
-    {
-        return tr_transport_protocol::UTP;
-    }
-
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* /*error*/) override
     {
         auto const window_before = window_left();
