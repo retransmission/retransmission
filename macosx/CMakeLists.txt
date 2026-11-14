@@ -37,7 +37,7 @@ file(GLOB MAC_TOP_LEVEL_ENTRIES
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/*)
 list(FILTER MAC_TOP_LEVEL_ENTRIES EXCLUDE REGEX "^\\.")
-list(REMOVE_ITEM MAC_TOP_LEVEL_ENTRIES App CMakeLists.txt QuickLookExtension)
+list(REMOVE_ITEM MAC_TOP_LEVEL_ENTRIES App CMakeLists.txt Configs QuickLookExtension)
 if(MAC_TOP_LEVEL_ENTRIES)
     message(FATAL_ERROR "Move these into macosx/App/ or macosx/QuickLookExtension/: ${MAC_TOP_LEVEL_ENTRIES}")
 endif()
