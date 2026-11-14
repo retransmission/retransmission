@@ -34,8 +34,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T const&
         return { buf, buflen };
     }
 
-    auto const [out, len] = fmt::format_to_n(buf, buflen, "{}", value);
-    auto const n_written = std::min(buflen - 1, static_cast<size_t>(out - buf));
+    auto const n_written = std::min(buflen - 1, fmt::format_to_n(buf, buflen, "{}", value).size);
     auto* const end = buf + n_written;
     *end = '\0';
     return { end, buflen - n_written };
