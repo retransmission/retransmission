@@ -193,6 +193,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
 // NOLINTNEXTLINE(bugprone-exception-escape): logging throws
 tr_peerIo::~tr_peerIo()
 {
+    tr_logAddTraceIo(this, "closing tr_peerIo");
     auto const lock = session_->unique_lock();
 
     clear_callbacks();
@@ -231,7 +232,6 @@ void tr_peerIo::set_socket(std::shared_ptr<tr_peer_socket> socket_in)
 void tr_peerIo::close()
 {
     if (socket_) {
-        tr_logAddTraceIo(this, "closing tr_peerIo");
         socket_.reset();
     }
     inbuf_.clear();
