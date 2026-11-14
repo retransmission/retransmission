@@ -65,8 +65,6 @@ target_sources(${TR_NAME}-mac
         GroupRulesWindowController.mm
         GroupsController.h
         GroupsController.mm
-        GroupToolbarItem.h
-        GroupToolbarItem.mm
         InfoActivityViewController.h
         InfoActivityViewController.mm
         InfoFileViewController.h
