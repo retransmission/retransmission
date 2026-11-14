@@ -4,7 +4,6 @@
 
 #import "FilePriorityCellView.h"
 #import "FileListNode.h"
-#import "NSImageAdditions.h"
 #import "Torrent.h"
 
 static CGFloat const kImageOverlap = 1.0;
@@ -21,6 +20,24 @@ static CGFloat const kImageOverlap = 1.0;
 
 @implementation FilePriorityCellView
 
++ (NSImage*)cellLowPriorityImage
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:9.0 weight:NSFontWeightBold];
+    return [[NSImage imageWithSystemSymbolName:@"chevron.down" accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+}
+
++ (NSImage*)cellNormalPriorityImage
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:5.0 weight:NSFontWeightRegular];
+    return [[NSImage imageWithSystemSymbolName:@"circle.fill" accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+}
+
++ (NSImage*)cellHighPriorityImage
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:9.0 weight:NSFontWeightBold];
+    return [[NSImage imageWithSystemSymbolName:@"chevron.up" accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+}
+
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
     if ((self = [super initWithFrame:frameRect])) {
@@ -34,11 +51,12 @@ static CGFloat const kImageOverlap = 1.0;
         for (NSInteger i = 0; i < segmentedControl.segmentCount; i++) {
             [segmentedControl setLabel:@"" forSegment:i];
             [segmentedControl setWidth:9.0F forSegment:i];
+            [segmentedControl setImageScaling:NSImageScaleProportionallyDown forSegment:i];
         }
 
-        [segmentedControl setImage:[NSImage imageNamed:@"PriorityControlLow"] forSegment:0];
-        [segmentedControl setImage:[NSImage imageNamed:@"PriorityControlNormal"] forSegment:1];
-        [segmentedControl setImage:[NSImage imageNamed:@"PriorityControlHigh"] forSegment:2];
+        [segmentedControl setImage:[FilePriorityCellView cellLowPriorityImage] forSegment:0];
+        [segmentedControl setImage:[FilePriorityCellView cellNormalPriorityImage] forSegment:1];
+        [segmentedControl setImage:[FilePriorityCellView cellHighPriorityImage] forSegment:2];
 
         segmentedControl.target = self;
         segmentedControl.action = @selector(segmentedControlClicked:);
@@ -73,9 +91,9 @@ static CGFloat const kImageOverlap = 1.0;
 
 - (void)updateIconsContainerView
 {
-    NSImage* lowPriority = [NSImage imageNamed:@"PriorityLowTemplate"];
-    NSImage* mediumPriority = [NSImage imageNamed:@"PriorityNormalTemplate"];
-    NSImage* highPriority = [NSImage imageNamed:@"PriorityHighTemplate"];
+    NSImage* lowPriority = [FilePriorityCellView cellLowPriorityImage];
+    NSImage* mediumPriority = [FilePriorityCellView cellNormalPriorityImage];
+    NSImage* highPriority = [FilePriorityCellView cellHighPriorityImage];
 
     NSImageView* lowPriorityView = [[NSImageView alloc] init];
     lowPriorityView.image = lowPriority;
@@ -282,5 +300,4 @@ static CGFloat const kImageOverlap = 1.0;
     }
     self.toolTip = tooltip;
 }
-
 @end

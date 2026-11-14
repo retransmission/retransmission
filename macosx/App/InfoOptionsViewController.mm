@@ -4,6 +4,7 @@
 
 #import "InfoOptionsViewController.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 #import "Torrent.h"
 #import "Utils.h"
 #import "ColorTextField.h"
@@ -185,11 +186,11 @@ static inline NSStackView* mergeViews(NSArray<NSView*>* views)
     // --- Priority section ---
     self.fPriorityPopUp = [self makePopUpButton];
     [self.fPriorityPopUp addItemWithTitle:LStr(@"High")];
-    [self.fPriorityPopUp.itemArray[0] setImage:[NSImage imageNamed:@"PriorityHighTemplate"]];
+    [self.fPriorityPopUp.itemArray[0] setImage:[NSImage highPriority]];
     [self.fPriorityPopUp addItemWithTitle:LStr(@"Normal")];
-    [self.fPriorityPopUp.itemArray[1] setImage:[NSImage imageNamed:@"PriorityNormalTemplate"]];
+    [self.fPriorityPopUp.itemArray[1] setImage:[NSImage normalPriority]];
     [self.fPriorityPopUp addItemWithTitle:LStr(@"Low")];
-    [self.fPriorityPopUp.itemArray[2] setImage:[NSImage imageNamed:@"PriorityLowTemplate"]];
+    [self.fPriorityPopUp.itemArray[2] setImage:[NSImage lowPriority]];
 
     // --- Speed section ---
     self.fDownloadLimitCheck = [self makeCheckbox:LStr(@"Limit download speed:")];

@@ -59,8 +59,6 @@ target_sources(${TR_NAME}-mac
         GlobalOptionsPopoverViewController.mm
         GroupCell.h
         GroupCell.mm
-        GroupPopUpButtonCell.h
-        GroupPopUpButtonCell.mm
         GroupRulesWindowController.h
         GroupRulesWindowController.mm
         GroupsController.h
@@ -137,8 +135,6 @@ target_sources(${TR_NAME}-mac
         PrefsTransfersTabViewController.mm
         PrefsUI.h
         PrefsUI.mm
-        PriorityPopUpButtonCell.h
-        PriorityPopUpButtonCell.mm
         ProgressBarView.h
         ProgressBarView.mm
         ProgressGradients.h
@@ -218,12 +214,6 @@ set(IMAGESETS
     PauseOff
     PauseOn
     PinTemplate
-    PriorityControlHigh
-    PriorityControlLow
-    PriorityControlNormal
-    PriorityHighTemplate
-    PriorityLowTemplate
-    PriorityNormalTemplate
     ResumeHover
     ResumeNoWaitHover
     ResumeNoWaitOff
