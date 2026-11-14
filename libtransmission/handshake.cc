@@ -605,8 +605,9 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
         auto const info_hash = io->torrent_hash();
         auto const info = handshake->mediator_->torrent(info_hash);
 
-        /* Don't mark a peer as non-µTP unless it's really a connect failure. */
-        if ((error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
+        // Don't mark a peer as non-µTP unless it's really a connect failure.
+        // A punch that times out says nothing about µTP support: the NAT mapping may just not be open yet.
+        if (!handshake->is_holepunch_ && (error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
             handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
         }
 
@@ -786,12 +787,18 @@ std::string_view tr_handshake::state_string(State state) noexcept
     return "unknown state";
 }
 
-tr_handshake::tr_handshake(Mediator* mediator, std::shared_ptr<tr_peerIo> peer_io, tr_encryption_mode mode, DoneFunc on_done)
+tr_handshake::tr_handshake(
+    Mediator* mediator,
+    std::shared_ptr<tr_peerIo> peer_io,
+    tr_encryption_mode mode,
+    DoneFunc on_done,
+    bool const is_holepunch)
     : on_done_{ std::move(on_done) }
     , peer_io_{ std::move(peer_io) }
     , timeout_timer_{ mediator->timer_maker().create([this] { fire_timer(); }) }
     , mediator_{ mediator }
     , encryption_mode_{ mode }
+    , is_holepunch_{ is_holepunch }
 {
     timeout_timer_->start_single_shot(HandshakeTimeoutSec);
 

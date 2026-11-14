@@ -1439,7 +1439,10 @@ void create_bit_torrent_peer(
 }
 
 /* FIXME: this is kind of a mess. */
-[[nodiscard]] bool on_handshake_done(tr_peerMgr* const manager, tr_handshake::Result const& result)
+[[nodiscard]] bool on_handshake_done(
+    tr_peerMgr* const manager,
+    tr_handshake::Result const& result,
+    bool const is_holepunch_dial)
 {
     auto const lock = manager->unique_lock();
 
@@ -1462,8 +1465,8 @@ void create_bit_torrent_peer(
         // A connection born from a holepunch (uTP rendezvous) must not itself
         // re-trigger a new rendezvous when it fails, or we get
         // connect->fail->rendezvous->connect loops. Mirrors libtorrent's
-        // !m_holepunch_mode guard. Capture before the flag is reset below.
-        auto const was_holepunch_attempt = info && info->is_holepunch_attempt();
+        // !m_holepunch_mode guard.
+        auto const was_holepunch_attempt = is_holepunch_dial;
 
         if (info && !info->is_connected()) {
             // Count holepunch failures for retry scheduling (same as libtorrent),
@@ -1484,7 +1487,7 @@ void create_bit_torrent_peer(
 
         // BEP 55: retry failed punches quickly, before the NAT mapping/timing window is lost.
         // Only exit holepunch mode if the number of retries reached the maximum.
-        if (was_holepunch_attempt && info && !result.io->is_incoming() && !info->can_fast_retry_holepunch()) {
+        if (was_holepunch_attempt && info && !info->can_fast_retry_holepunch()) {
             info->reset_holepunch_attempts();
         }
 
@@ -1543,7 +1546,7 @@ void create_bit_torrent_peer(
         info->set_connectable();
     }
 
-    if (info->is_holepunch_attempt()) {
+    if (is_holepunch_dial) {
         info->set_utp_supported();
         tr_logAddDebugSwarm(swarm, fmt::format("BEP 55: holepunch connection to {} succeeded", info->display_name()));
     }
@@ -1594,7 +1597,7 @@ void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> 
             &manager->handshake_mediator_,
             tr_peerIo::new_incoming(session, &session->top_bandwidth_, std::move(socket)),
             session->encryptionMode(),
-            [manager](tr_handshake::Result const& result) { return on_handshake_done(manager, result); });
+            [manager](tr_handshake::Result const& result) { return on_handshake_done(manager, result, false); });
     }
 }
 
@@ -2766,7 +2769,7 @@ void initiate_connection(tr_peerMgr* mgr, tr_swarm* s, tr_peer_info& peer_info)
             &mgr->handshake_mediator_,
             peer_io,
             session->encryptionMode(),
-            [mgr](tr_handshake::Result const& result) { return on_handshake_done(mgr, result); });
+            [mgr](tr_handshake::Result const& result) { return on_handshake_done(mgr, result, false); });
     }
 
     peer_info.set_connection_attempt_time(now);
@@ -2868,7 +2871,8 @@ bool connect_holepunch(tr_torrent* tor, tr_socket_address const& endpoint)
         &s->manager->handshake_mediator_,
         peer_io,
         session->encryptionMode(),
-        [mgr = s->manager](tr_handshake::Result const& result) { return on_handshake_done(mgr, result); });
+        [mgr = s->manager](tr_handshake::Result const& result) { return on_handshake_done(mgr, result, true); },
+        true);
 
     peer_info->set_connection_attempt_time(tr_time());
     return true;
@@ -2923,10 +2927,7 @@ void HandshakeMediator::set_utp_failed(tr_sha1_digest_t const& info_hash, tr_soc
 {
     if (auto* const tor = torrents_.get(info_hash); tor != nullptr) {
         if (auto const& peer_info = tor->swarm->get_existing_peer_info(socket_address)) {
-            // Holepunch attempts should not mark uTP as unsupported.
-            if (!peer_info->is_holepunch_attempt()) {
-                peer_info->set_utp_supported(false);
-            }
+            peer_info->set_utp_supported(false);
         }
     }
 }
