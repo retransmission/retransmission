@@ -697,7 +697,7 @@ uint32_t tr_handshake::crypto_provide() const noexcept
 [[nodiscard]] uint32_t tr_handshake::get_crypto_select(tr_encryption_mode encryption_mode, uint32_t crypto_provide) noexcept
 {
     auto choices = std::array<uint32_t, 2>{};
-    size_t n_choices = 0;
+    uint8_t n_choices = 0U;
 
     switch (encryption_mode) {
     case TR_ENCRYPTION_REQUIRED:
