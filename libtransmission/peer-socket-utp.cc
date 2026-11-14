@@ -219,9 +219,9 @@ public:
     }
 
 protected:
-    [[nodiscard]] constexpr Type type() const noexcept override
+    [[nodiscard]] constexpr tr_transport_protocol type() const noexcept override
     {
-        return Type::UTP;
+        return tr_transport_protocol::UTP;
     }
 
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* /*error*/) override
