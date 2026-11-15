@@ -1514,7 +1514,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self openFiles:@[ dict[@"File"] ] addType:AddTypeCreated forcePath:dict[@"Path"]];
 }
 
-- (IBAction)openShowSheet:(id)sender
+- (void)openShowSheet:(id)sender
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
@@ -1673,7 +1673,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)openURLShowSheet:(id)sender
+- (void)openURLShowSheet:(id)sender
 {
     if (!self.fUrlSheetController) {
         self.fUrlSheetController = [[URLSheetWindowController alloc] init];
@@ -1734,17 +1734,17 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)createFile:(id)sender
+- (void)createFile:(id)sender
 {
     [CreatorWindowController createTorrentFile:self.fLib];
 }
 
-- (IBAction)resumeSelectedTorrents:(id)sender
+- (void)resumeSelectedTorrents:(id)sender
 {
     [self resumeTorrents:self.fTableView.selectedTorrents];
 }
 
-- (IBAction)resumeAllTorrents:(id)sender
+- (void)resumeAllTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1766,12 +1766,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self fullUpdateUI];
 }
 
-- (IBAction)resumeSelectedTorrentsNoWait:(id)sender
+- (void)resumeSelectedTorrentsNoWait:(id)sender
 {
     [self resumeTorrentsNoWait:self.fTableView.selectedTorrents];
 }
 
-- (IBAction)resumeWaitingTorrents:(id)sender
+- (void)resumeWaitingTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1794,12 +1794,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self fullUpdateUI];
 }
 
-- (IBAction)stopSelectedTorrents:(id)sender
+- (void)stopSelectedTorrents:(id)sender
 {
     [self stopTorrents:self.fTableView.selectedTorrents];
 }
 
-- (IBAction)stopAllTorrents:(id)sender
+- (void)stopAllTorrents:(id)sender
 {
     [self stopTorrents:self.fTorrents];
 }
@@ -2000,17 +2000,17 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)removeNoDelete:(id)sender
+- (void)removeNoDelete:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:NO];
 }
 
-- (IBAction)removeDeleteData:(id)sender
+- (void)removeDeleteData:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:YES];
 }
 
-- (IBAction)clearCompleted:(id)sender
+- (void)clearCompleted:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray array];
 
@@ -2058,7 +2058,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self confirmRemoveTorrents:torrents deleteData:NO];
 }
 
-- (IBAction)moveDataFilesSelected:(id)sender
+- (void)moveDataFilesSelected:(id)sender
 {
     [self moveDataFiles:self.fTableView.selectedTorrents];
 }
@@ -2092,7 +2092,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }];
 }
 
-- (IBAction)copyTorrentFiles:(id)sender
+- (void)copyTorrentFiles:(id)sender
 {
     [self copyTorrentFileForTorrents:[[NSMutableArray alloc] initWithArray:self.fTableView.selectedTorrents]];
 }
@@ -2143,12 +2143,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)copyMagnetLinks:(id)sender
+- (void)copyMagnetLinks:(id)sender
 {
     [self.fTableView copy:sender];
 }
 
-- (IBAction)revealFile:(id)sender
+- (void)revealFile:(id)sender
 {
     NSArray* selected = self.fTableView.selectedTorrents;
     NSMutableArray* paths = [NSMutableArray arrayWithCapacity:selected.count];
@@ -2164,7 +2164,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)renameSelected:(id)sender
+- (void)renameSelected:(id)sender
 {
     NSArray* selected = self.fTableView.selectedTorrents;
     NSAssert(selected.count == 1, @"1 transfer needs to be selected to rename, but %ld are selected", selected.count);
@@ -2182,7 +2182,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }];
 }
 
-- (IBAction)announceSelectedTorrents:(id)sender
+- (void)announceSelectedTorrents:(id)sender
 {
     for (Torrent* torrent in self.fTableView.selectedTorrents) {
         if (torrent.canManualAnnounce) {
@@ -2191,7 +2191,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)verifySelectedTorrents:(id)sender
+- (void)verifySelectedTorrents:(id)sender
 {
     [self verifyTorrents:self.fTableView.selectedTorrents];
 }
@@ -2212,7 +2212,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     return self.fTableView.selectedTorrents;
 }
 
-- (IBAction)showPreferenceWindow:(id)sender
+- (void)showPreferenceWindow:(id)sender
 {
     NSWindow* window = _prefsController.window;
     if (!window.visible) {
@@ -2222,7 +2222,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [window makeKeyAndOrderFront:nil];
 }
 
-- (IBAction)showAboutWindow:(id)sender
+- (void)showAboutWindow:(id)sender
 {
     [AboutWindowController.aboutController showWindow:nil];
 }
@@ -2232,7 +2232,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self showInfo:nil];
 }
 
-- (IBAction)showInfo:(id)sender
+- (void)showInfo:(id)sender
 {
     if (self.fInfoController.window.visible) {
         [self.fInfoController close];
@@ -2258,7 +2258,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)setInfoTab:(NSMenuItem*)sender
+- (void)setInfoTab:(NSMenuItem*)sender
 {
     if (sender.isNextInfoTabItem) {
         [self.fInfoController setNextTab];
@@ -2276,12 +2276,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     return self.fMessageController;
 }
 
-- (IBAction)showMessageWindow:(id)sender
+- (void)showMessageWindow:(id)sender
 {
     [self.messageWindowController showWindow:nil];
 }
 
-- (IBAction)showStatsWindow:(id)sender
+- (void)showStatsWindow:(id)sender
 {
     [StatsWindowController.statsWindow showWindow:nil];
 }
@@ -2643,7 +2643,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [history writeToFile:historyFile atomically:YES];
 }
 
-- (IBAction)setSort:(id)sender
+- (void)setSort:(id)sender
 {
     SortType sortType;
     NSMenuItem* senderMenuItem = sender;
@@ -2686,7 +2686,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self sortTorrentsAndIncludeQueueOrder:YES];
 }
 
-- (IBAction)setSortByGroup:(id)sender
+- (void)setSortByGroup:(id)sender
 {
     BOOL sortByGroup = ![self.fDefaults boolForKey:@"SortByGroup"];
     [self.fDefaults setBool:sortByGroup forKey:@"SortByGroup"];
@@ -2694,7 +2694,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self applyFilter];
 }
 
-- (IBAction)setSortReverse:(id)sender
+- (void)setSortReverse:(id)sender
 {
     BOOL const setReverse = ((NSMenuItem*)sender).tag == SortOrderTagDescending;
     if (setReverse != [self.fDefaults boolForKey:@"SortReverse"]) {
@@ -3239,12 +3239,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)switchFilter:(NSMenuItem*)sender
+- (void)switchFilter:(NSMenuItem*)sender
 {
     [self.fFilterBar switchFilter:sender.isNextFilterItem];
 }
 
-- (IBAction)showGlobalPopover:(id)sender
+- (void)showGlobalPopover:(id)sender
 {
     if (self.fGlobalPopoverShown) {
         return;
@@ -3314,13 +3314,13 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self updateTorrentHistory];
 }
 
-- (IBAction)toggleSpeedLimit:(id)sender
+- (void)toggleSpeedLimit:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"SpeedLimit"] forKey:@"SpeedLimit"];
     [self speedLimitChanged:sender];
 }
 
-- (IBAction)speedLimitChanged:(id)sender
+- (void)speedLimitChanged:(id)sender
 {
     tr_sessionUseAltSpeed(self.fLib, [self.fDefaults boolForKey:@"SpeedLimit"]);
     [self.fStatusBar updateSpeedFieldsToolTips];
@@ -3758,7 +3758,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     return NO;
 }
 
-- (IBAction)toggleSmallView:(id)sender
+- (void)toggleSmallView:(id)sender
 {
     BOOL makeSmall = ![self.fDefaults boolForKey:@"SmallView"];
     [self.fDefaults setBool:makeSmall forKey:@"SmallView"];
@@ -3778,26 +3778,26 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self.fTableView reloadData];
 }
 
-- (IBAction)togglePiecesBar:(id)sender
+- (void)togglePiecesBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"PiecesBar"] forKey:@"PiecesBar"];
     [self.fTableView togglePiecesBar];
 }
 
-- (IBAction)toggleAvailabilityBar:(id)sender
+- (void)toggleAvailabilityBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"DisplayProgressBarAvailable"] forKey:@"DisplayProgressBarAvailable"];
     [self.fTableView reloadVisibleRows];
 }
 
-- (IBAction)toggleStatusBar:(id)sender
+- (void)toggleStatusBar:(id)sender
 {
     BOOL const show = self.fStatusBar == nil || self.fStatusBar.isHidden;
     [self.fDefaults setBool:show forKey:@"StatusBar"];
     [self updateMainWindow];
 }
 
-- (IBAction)toggleFilterBar:(id)sender
+- (void)toggleFilterBar:(id)sender
 {
     BOOL const show = self.fFilterBar == nil || self.fFilterBar.isHidden;
 
@@ -3810,7 +3810,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self updateMainWindow];
 }
 
-- (IBAction)toggleToolbarShown:(id)sender
+- (void)toggleToolbarShown:(id)sender
 {
     [self.fWindow toggleToolbarShown:sender];
 }
@@ -4748,7 +4748,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self setBottomCountText:YES];
 }
 
-- (IBAction)showMainWindow:(id)sender
+- (void)showMainWindow:(id)sender
 {
     [self.fWindow makeKeyAndOrderFront:nil];
 }
@@ -4769,7 +4769,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [self toggleQuickLook:nil];
 }
 
-- (IBAction)toggleQuickLook:(id)sender
+- (void)toggleQuickLook:(id)sender
 {
     if ([QLPreviewPanel sharedPreviewPanel].visible) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
@@ -4778,22 +4778,22 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 }
 
-- (IBAction)linkHomepage:(id)sender
+- (void)linkHomepage:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kWebsiteURL]];
 }
 
-- (IBAction)linkForums:(id)sender
+- (void)linkForums:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kForumURL]];
 }
 
-- (IBAction)linkGitHub:(id)sender
+- (void)linkGitHub:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kGithubURL]];
 }
 
-- (IBAction)linkDonate:(id)sender
+- (void)linkDonate:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kDonateURL]];
 }
