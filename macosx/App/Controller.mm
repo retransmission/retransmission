@@ -52,8 +52,6 @@
 #import "AddMagnetWindowController.h"
 #import "MessageWindowController.h"
 #import "GlobalOptionsPopoverViewController.h"
-#import "ButtonToolbarItem.h"
-#import "Toolbar.h"
 #import "StatusBarController.h"
 #import "FilterBarController.h"
 #import "FileRenameSheetController.h"
@@ -810,7 +808,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 - (void)configureMainWindowLayout
 {
-    Toolbar* toolbar = [[Toolbar alloc] initWithIdentifier:@"TRMainToolbar"];
+    NSToolbar* toolbar = [[NSToolbar alloc] initWithIdentifier:@"TRMainToolbar"];
     toolbar.delegate = self;
     toolbar.allowsUserCustomization = YES;
     toolbar.autosavesConfiguration = YES;
@@ -946,8 +944,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     [nc addObserver:self selector:@selector(openCreatedFile:) name:@"OpenCreatedTorrentFile" object:nil];
 
     [nc addObserver:self selector:@selector(applyFilter) name:@"UpdateGroups" object:nil];
-
-    [nc addObserver:self selector:@selector(updateWindowAfterToolbarChange) name:@"ToolbarDidChange" object:nil];
 
     [self updateMainWindow];
 
@@ -4033,28 +4029,26 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
 #pragma mark - Toolbar
 
-- (ButtonToolbarItem*)standardToolbarButtonWithIdentifier:(NSString*)ident
+- (NSToolbarItem*)toolbarItemWithIdentifier:(NSString*)identifier
 {
-    return [self toolbarButtonWithIdentifier:ident forToolbarButtonClass:[ButtonToolbarItem class]];
+    NSToolbarItem* item = [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
+    return item;
 }
 
-- (__kindof ButtonToolbarItem*)toolbarButtonWithIdentifier:(NSString*)ident forToolbarButtonClass:(Class)klass
+- (NSImage*)toolbarSymbol:(NSString*)symbolName active:(BOOL)active
 {
-    ButtonToolbarItem* item = [[klass alloc] initWithItemIdentifier:ident];
-
-    NSButton* button = [[NSButton alloc] init];
-    button.bezelStyle = NSBezelStyleTexturedRounded;
-    button.stringValue = @"";
-
-    item.view = button;
-
-    return item;
+    NSImage* img = [NSImage imageWithSystemSymbolName:symbolName accessibilityDescription:nil];
+    if (active) {
+        NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithHierarchicalColor:[NSColor controlAccentColor]];
+        return [img imageWithSymbolConfiguration:config];
+    }
+    return img;
 }
 
 - (NSToolbarItem*)toolbar:(NSToolbar*)toolbar itemForItemIdentifier:(NSString*)ident willBeInsertedIntoToolbar:(BOOL)flag
 {
     if ([ident isEqualToString:ToolbarItemIdentifierCreate]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Create", "Create toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Create Torrent File", "Create toolbar item -> palette label");
@@ -4066,7 +4060,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenFile]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Open", "Open toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Open Torrent Files", "Open toolbar item -> palette label");
@@ -4078,7 +4072,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Open URL", "Open address toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Open URL", "Open address toolbar item -> palette label");
@@ -4090,7 +4084,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierRemove]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Remove", "Remove toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Remove Selected", "Remove toolbar item -> palette label");
@@ -4102,8 +4096,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierInfo]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
-        ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Inspector", "Inspector toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Inspector", "Inspector toolbar item -> palette label");
@@ -4170,8 +4163,7 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return groupItem;
     } else if ([ident isEqualToString:ToolbarItemIdentifierFilter]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
-        ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Filter", "Filter toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Toggle Filter", "Filter toolbar item -> palette label");
@@ -4182,13 +4174,12 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
         return item;
     } else if ([ident isEqualToString:ToolbarItemIdentifierQuickLook]) {
-        ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
-        ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
+        NSToolbarItem* item = [self toolbarItemWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> palette label");
         item.toolTip = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> tooltip");
-        item.image = [NSImage imageNamed:NSImageNameQuickLookTemplate];
+        item.image = [NSImage imageWithSystemSymbolName:@"eye" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(toggleQuickLook:);
         item.visibilityPriority = NSToolbarItemVisibilityPriorityLow;
@@ -4333,20 +4324,20 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
 
     //set info item
     if ([ident isEqualToString:ToolbarItemIdentifierInfo]) {
-        ((NSButton*)toolbarItem.view).state = self.fInfoController.window.visible;
+        toolbarItem.image = [self toolbarSymbol:@"info.circle" active:self.fInfoController.window.visible];
         return YES;
     }
 
     //set filter item
     if ([ident isEqualToString:ToolbarItemIdentifierFilter]) {
         BOOL shown = !(self.fFilterBar == nil || self.fFilterBar.isHidden);
-        ((NSButton*)toolbarItem.view).state = shown ? NSControlStateValueOn : NSControlStateValueOff;
+        toolbarItem.image = [self toolbarSymbol:@"magnifyingglass" active:shown];
         return YES;
     }
 
     //set quick look item
     if ([ident isEqualToString:ToolbarItemIdentifierQuickLook]) {
-        ((NSButton*)toolbarItem.view).state = self.fPreviewPanel != nil;
+        toolbarItem.image = [self toolbarSymbol:@"eye" active:(self.fPreviewPanel != nil)];
         return self.fTableView.numberOfSelectedRows > 0;
     }
 
@@ -4803,25 +4794,6 @@ static bool trashDataFile(std::string_view const filename, tr_error* const error
     }
 
     [self fullUpdateUI];
-}
-
-- (void)updateWindowAfterToolbarChange
-{
-    //this fixes a macOS bug where on toggling the toolbar item bezels will show
-    if (!(self.fWindow.styleMask & NSWindowStyleMaskFullScreen)) {
-        [self hideToolBarBezels:YES];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self hideToolBarBezels:NO];
-        });
-    }
-}
-
-- (void)hideToolBarBezels:(BOOL)hide
-{
-    for (NSToolbarItem* item in self.fWindow.toolbar.items) {
-        item.view.hidden = hide;
-    }
 }
 
 - (void)updateBottomCountText

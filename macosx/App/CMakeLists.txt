@@ -22,8 +22,6 @@ target_sources(${TR_NAME}-mac
         BlocklistDownloaderViewController.mm
         BonjourController.h
         BonjourController.mm
-        ButtonToolbarItem.h
-        ButtonToolbarItem.mm
         CocoaCompatibility.h
         ColorTextField.h
         ColorTextField.mm
@@ -148,8 +146,6 @@ target_sources(${TR_NAME}-mac
         StatsWindowController.mm
         StatusBarController.h
         StatusBarController.mm
-        Toolbar.h
-        Toolbar.mm
         Torrent.h
         Torrent.mm
         TorrentCell.h
