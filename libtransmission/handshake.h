@@ -79,12 +79,7 @@ public:
         virtual void set_utp_failed(tr_sha1_digest_t const& info_hash, tr_socket_address const& socket_address) = 0;
     };
 
-    tr_handshake(
-        Mediator* mediator,
-        std::shared_ptr<tr_peerIo> peer_io,
-        tr_encryption_mode mode_in,
-        DoneFunc on_done,
-        bool is_holepunch = false);
+    tr_handshake(Mediator* mediator, std::shared_ptr<tr_peerIo> peer_io, tr_encryption_mode mode_in, DoneFunc on_done);
 
     ~tr_handshake()
     {
@@ -328,7 +323,6 @@ private:
     State state_ = State::AwaitingHandshake;
 
     tr_encryption_mode encryption_mode_;
-    bool is_holepunch_ = false;
 
     // Used when resynchronizing in read_vc(). This value is cached to avoid
     // the cost of recomputing it. MSE spec: "Since the length of [PadB is]
