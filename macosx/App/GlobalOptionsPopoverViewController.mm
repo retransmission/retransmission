@@ -214,19 +214,19 @@
     [self.view setFrameSize:self.view.fittingSize];
 }
 
-- (IBAction)updatedDisplayString:(id)sender
+- (void)updatedDisplayString:(id)sender
 {
     [NSNotificationCenter.defaultCenter postNotificationName:@"RefreshTorrentTable" object:nil];
 }
 
-- (IBAction)setDownSpeedSetting:(id)sender
+- (void)setDownSpeedSetting:(id)sender
 {
     tr_sessionLimitSpeed(self.fHandle, tr_direction::Down, [self.fDefaults boolForKey:@"CheckDownload"]);
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
-- (IBAction)setDownSpeedLimit:(id)sender
+- (void)setDownSpeedLimit:(id)sender
 {
     NSInteger const limit = [sender integerValue];
     [self.fDefaults setInteger:limit forKey:@"DownloadLimit"];
@@ -235,14 +235,14 @@
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
-- (IBAction)setUpSpeedSetting:(id)sender
+- (void)setUpSpeedSetting:(id)sender
 {
     tr_sessionLimitSpeed(self.fHandle, tr_direction::Up, [self.fDefaults boolForKey:@"CheckUpload"]);
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
-- (IBAction)setUpSpeedLimit:(id)sender
+- (void)setUpSpeedLimit:(id)sender
 {
     NSInteger const limit = [sender integerValue];
     [self.fDefaults setInteger:limit forKey:@"UploadLimit"];
@@ -251,7 +251,7 @@
     [NSNotificationCenter.defaultCenter postNotificationName:@"SpeedLimitUpdate" object:nil];
 }
 
-- (IBAction)setRatioStopSetting:(id)sender
+- (void)setRatioStopSetting:(id)sender
 {
     tr_sessionSetRatioLimited(self.fHandle, [self.fDefaults boolForKey:@"RatioCheck"]);
 
@@ -262,7 +262,7 @@
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
 }
 
-- (IBAction)setRatioStopLimit:(id)sender
+- (void)setRatioStopLimit:(id)sender
 {
     CGFloat const value = [sender floatValue];
     [self.fDefaults setFloat:value forKey:@"RatioLimit"];
@@ -275,7 +275,7 @@
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
 }
 
-- (IBAction)setIdleStopSetting:(id)sender
+- (void)setIdleStopSetting:(id)sender
 {
     tr_sessionSetIdleLimited(self.fHandle, [self.fDefaults boolForKey:@"IdleLimitCheck"]);
 
@@ -286,7 +286,7 @@
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
 }
 
-- (IBAction)setIdleStopLimit:(id)sender
+- (void)setIdleStopLimit:(id)sender
 {
     NSInteger const value = [sender integerValue];
     [self.fDefaults setInteger:value forKey:@"IdleLimitMinutes"];

@@ -6,13 +6,6 @@
 
 @implementation ColorTextField
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-
-    self.enabled = self.enabled;
-}
-
 - (void)setEnabled:(BOOL)flag
 {
     super.enabled = flag;
