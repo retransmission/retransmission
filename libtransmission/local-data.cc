@@ -24,7 +24,6 @@
 #include <string>
 #include <string_view>
 #include <thread>
-#include <type_traits>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -426,6 +425,10 @@ private:
  * turn, skipping the kinds that have nothing waiting, so that a flood
  * of one kind can't starve the others. A hash can read a whole piece
  * from the disk, which is why it gets no more than its turn.
+ *
+ * One worker at a time writes a given file. Buffered writes to one file
+ * serialize on its inode lock in the kernel, so a second writer adds no
+ * throughput and burns CPU spinning on that lock. It takes other work.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.
@@ -837,6 +840,20 @@ private:
 
         [[nodiscard]] auto operator<=>(OpKey const&) const noexcept = default;
     };
+
+    struct FileKey {
+        tr_torrent_id_t tor_id;
+        tr_file_index_t file;
+
+        [[nodiscard]] auto operator<=>(FileKey const&) const noexcept = default;
+    };
+
+    using FileSpan = tr_file_piece_map::file_span_t;
+
+    [[nodiscard]] static FileSpan files_touched(StorageDescriptor const& desc, tr_byte_span_t const span)
+    {
+        return { .begin = desc.fpm.file_offset(span.begin).index, .end = desc.fpm.file_offset(span.end - 1U).index + 1U };
+    }
 
     // --- the admission gate. Session thread only.
 
@@ -1295,7 +1312,11 @@ private:
                             break;
 
                         case Kind::Writes:
-                            writes = take_run(write_sweep_, pending_writes_);
+                            writes = take_write_run();
+                            // Writes to other files can go in parallel.
+                            if (!std::empty(writes) && has_unclaimed_write()) {
+                                work_cv_.notify_one();
+                            }
                             break;
                         }
 
@@ -1314,7 +1335,12 @@ private:
             } else if (!std::empty(reads)) {
                 exec_read_run(std::move(reads), scratch);
             } else if (!std::empty(writes)) {
+                auto const tor_id = writes.front().tor_id;
+                auto const files = files_touched(
+                    *writes.front().desc,
+                    { .begin = writes.front().span.begin, .end = writes.back().span.end });
                 exec_write_run(std::move(writes), scratch);
+                release_files(tor_id, files);
             } else {
                 return;
             }
@@ -1416,10 +1442,110 @@ private:
         finish_barrier(job.id);
     }
 
-    // Take the sweep's first op, plus the ops in it that continue or
-    // overlap that one. Writes never overlap, so a run of writes is
-    // contiguous. Once the sweep is empty, the ops in `pending` become
-    // the next one. Call with work_mutex_ held.
+    // Call with work_mutex_ held.
+    [[nodiscard]] std::optional<tr_file_index_t> file_being_written(tr_torrent_id_t const tor_id, FileSpan const files) const
+    {
+        for (auto file = files.begin; file < files.end; ++file) {
+            if (files_being_written_.contains({ .tor_id = tor_id, .file = file })) {
+                return file;
+            }
+        }
+
+        return {};
+    }
+
+    // The first write at or past `it` in the write sweep whose files no
+    // worker is writing. Call with work_mutex_ held.
+    [[nodiscard]] auto skip_files_being_written(std::map<OpKey, PendingWrite>::iterator it)
+    {
+        while (it != std::end(write_sweep_)) {
+            auto const& op = it->second;
+            auto const busy = file_being_written(op.tor_id, files_touched(*op.desc, op.span));
+            if (!busy) {
+                break;
+            }
+
+            it = write_sweep_.lower_bound({ .tor_id = op.tor_id, .begin = op.desc->fpm.byte_span_for_file(*busy).end });
+        }
+
+        return it;
+    }
+
+    // Call with work_mutex_ held.
+    [[nodiscard]] bool has_unclaimed_write()
+    {
+        return skip_files_being_written(std::begin(write_sweep_)) != std::end(write_sweep_);
+    }
+
+    // Take the write sweep's first write whose files no worker is
+    // writing, plus the writes that continue it, and claim their files.
+    // Once the sweep is empty, the pending writes become the next one.
+    // Call with work_mutex_ held.
+    [[nodiscard]] std::vector<PendingWrite> take_write_run()
+    {
+        if (std::empty(write_sweep_)) {
+            std::swap(write_sweep_, pending_writes_);
+        }
+
+        auto it = skip_files_being_written(std::begin(write_sweep_));
+        if (it == std::end(write_sweep_)) {
+            return {};
+        }
+
+        auto const tor_id = it->second.tor_id;
+        auto const* const desc = it->second.desc.get();
+        auto const begin = it->second.span.begin;
+        auto end = it->second.span.end;
+        auto claimed_end = tr_file_index_t{};
+
+        auto run = std::vector<PendingWrite>{};
+        while (it != std::end(write_sweep_)) {
+            auto& op = it->second;
+            if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
+                std::max(end, op.span.end) - begin > MaxRunBytes) {
+                break;
+            }
+
+            // A run only reaches later files, and those may be another worker's.
+            auto const files = files_touched(*desc, op.span);
+            auto const unclaimed = FileSpan{ .begin = std::max(files.begin, claimed_end), .end = files.end };
+            if (file_being_written(tor_id, unclaimed)) {
+                break;
+            }
+
+            for (auto file = unclaimed.begin; file < unclaimed.end; ++file) {
+                files_being_written_.insert({ .tor_id = tor_id, .file = file });
+            }
+            claimed_end = std::max(claimed_end, files.end);
+
+            end = std::max(end, op.span.end);
+#ifdef TR_ENABLE_BLOCK_PROFILING
+            if (tr::profile::Collector::instance().batches_enabled()) {
+                op.queue_ns = op.admitted.elapsed_ns();
+            }
+#endif
+            op.admitted.record_since("storage.write_queue_wait");
+            run.emplace_back(std::move(op));
+            it = write_sweep_.erase(it);
+        }
+
+        return run;
+    }
+
+    void release_files(tr_torrent_id_t const tor_id, FileSpan const files)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            for (auto file = files.begin; file < files.end; ++file) {
+                files_being_written_.erase({ .tor_id = tor_id, .file = file });
+            }
+        }
+        work_cv_.notify_one();
+    }
+
+    // Take the read sweep's first op, plus the ops in it that continue
+    // or overlap that one. Once the sweep is empty, the ops in `pending`
+    // become the next one. Call with work_mutex_ held.
     template<typename Pending>
     [[nodiscard]] static std::vector<typename Pending::mapped_type> take_run(Pending& sweep, Pending& pending)
     {
@@ -1446,14 +1572,6 @@ private:
             }
 
             end = std::max(end, op.span.end);
-            if constexpr (std::is_same_v<typename Pending::mapped_type, PendingWrite>) {
-#ifdef TR_ENABLE_BLOCK_PROFILING
-                if (tr::profile::Collector::instance().batches_enabled()) {
-                    op.queue_ns = op.admitted.elapsed_ns();
-                }
-#endif
-                op.admitted.record_since("storage.write_queue_wait");
-            }
             run.emplace_back(std::move(it->second));
             it = sweep.erase(it);
         }
@@ -1695,6 +1813,7 @@ private:
     std::multimap<OpKey, PendingRead> read_sweep_;
     std::map<OpKey, PendingWrite> pending_writes_;
     std::map<OpKey, PendingWrite> write_sweep_;
+    std::set<FileKey> files_being_written_;
     bool stopping_ = false;
     bool paused_ = false;
 

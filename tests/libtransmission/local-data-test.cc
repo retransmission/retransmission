@@ -907,6 +907,64 @@ TEST_F(LocalDataWorkersTest, adjacentWritesAreCombined)
     local_data->shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, separatedWritesToOneFileAllLand)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U), 4U);
+
+    // A gap between the blocks keeps them as two runs, so both workers
+    // want the same file. Whichever waits still gets its write done.
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_second = writeBlocks(*local_data, BlockSize * 2U, BlockSize * 3U, [&n_done] { ++n_done; });
+    auto const n_first = writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_first, n_second]() { return n_done == n_first + n_second; }));
+    EXPECT_EQ(2U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize), readFile("data.bin").substr(0U, BlockSize));
+    EXPECT_EQ(patternString(BlockSize * 2U, BlockSize), readFile("data.bin").substr(BlockSize * 2U, BlockSize));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, runStopsAtAFileAnotherWorkerIsWriting)
+{
+    static auto constexpr FileASize = size_t{ BlockSize * 2U };
+    static auto constexpr FileBSize = size_t{ BlockSize * 2U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U));
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileASize + FileBSize, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
+    EXPECT_EQ(patternString(FileASize, FileBSize), readFile("b.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, queuedWritesToABusyFileFinishBeforeShutdown)
+{
+    static auto constexpr FileSize = size_t{ BlockSize * 8U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // Every other block, so each is a run of its own for the same file.
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto n_writes = size_t{};
+    for (size_t offset = 0U; offset < FileSize; offset += BlockSize * 2U) {
+        n_writes += writeBlocks(*local_data, offset, offset + BlockSize, [&n_done] { ++n_done; });
+    }
+    local_data->set_workers_paused(false);
+    local_data->shutdown();
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+}
+
 TEST_F(LocalDataWorkersTest, writesCrossFileBoundaries)
 {
     static auto constexpr FileASize = size_t{ 10000U };
