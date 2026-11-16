@@ -750,6 +750,7 @@ private:
         wishlist_controller.reset();
         for (auto& [sockaddr, peer_info] : connectable_pool) {
             peer_info->destroy_handshake();
+            peer_info->reset_holepunch_attempts();
         }
     }
 
@@ -1462,7 +1463,9 @@ void create_bit_torrent_peer(
         // re-trigger a new rendezvous when it fails, or we get
         // connect->fail->rendezvous->connect loops. Mirrors libtorrent's
         // !m_holepunch_mode guard. Capture before the flag is reset below.
-        auto const was_holepunch_attempt = info && info->is_holepunch_attempt();
+        // An incoming handshake from the peer we are punching shares its pool entry,
+        // so only our own dials count as punches.
+        auto const was_holepunch_attempt = !result.io->is_incoming() && info && info->is_holepunch_attempt();
 
         if (info && !info->is_connected()) {
             // Count holepunch failures for retry scheduling (same as libtorrent),
@@ -2737,11 +2740,6 @@ void initiate_connection(tr_peerMgr* mgr, tr_swarm* s, tr_peer_info& peer_info)
 {
     using namespace handshake_helpers;
 
-    // A queued candidate can become connected or start a handshake before it is consumed.
-    if (peer_info.is_in_use()) {
-        return;
-    }
-
     auto const now = tr_time();
     auto* const session = mgr->session;
     auto const peer_supports_utp = peer_info.supports_utp().value_or(true);
@@ -2776,92 +2774,79 @@ void initiate_connection(tr_peerMgr* mgr, tr_swarm* s, tr_peer_info& peer_info)
     peer_info.set_connection_attempt_time(now);
 }
 } // namespace connect_helpers
-} // namespace
 
-void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoint)
+// Returns whether a punch was dialled.
+bool connect_holepunch(tr_torrent* tor, tr_socket_address const& endpoint)
 {
     using namespace handshake_helpers;
 
     auto* s = tor->swarm;
     if (s == nullptr || !s->is_running) {
-        return;
+        return false;
     }
 
     auto const lock = s->unique_lock();
 
     auto peer_info = s->get_existing_peer_info(endpoint);
 
-    if (peer_info) {
-        if (!peer_info->can_fast_retry_holepunch()) {
-            peer_info->reset_holepunch_attempts();
-            tr_logAddDebugTor(
-                tor,
-                fmt::format(
-                    "BEP 55: peer {} has exceeded holepunch retry limit, exiting holepunch mode",
-                    endpoint.display_name()));
-            return;
-        }
-
-        peer_info->on_holepunch_attempt();
+    // The holepunch flag decides how a failed handshake is treated, so it must not change
+    // while a dial is in flight.
+    if (peer_info && peer_info->has_handshake()) {
+        tr_logAddDebugTor(tor, fmt::format("BEP 55: handshake already in progress for {}, skipping", endpoint.display_name()));
+        return false;
     }
 
     if (!endpoint.is_valid_for_peers(TR_PEER_FROM_HOLEPUNCH)) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: invalid peer {}, skipping holepunch connect", endpoint.display_name()));
-        return;
+        return false;
     }
 
     auto* const session = tor->session;
 
     if (!tor->allows_holepunch()) {
-        return;
+        return false;
     }
 
     if (s->peerCount() >= tor->peer_limit()) {
         tr_logAddTraceTor(
             tor,
             fmt::format("BEP 55: peer limit reached, skipping holepunch connect to {}", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (tr_peer_socket::limit_reached(session) && tor->is_done()) {
         tr_logAddTraceTor(
             tor,
             fmt::format("BEP 55: session peer limit reached, skipping holepunch connect to {}", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (s->manager->blocklists_.contains(endpoint.address())) {
         tr_logAddDebugTor(
             tor,
             fmt::format("BEP 55: peer {} is blocklisted, skipping holepunch connect", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (is_local_peer_endpoint(*session, endpoint)) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: peer {} is local, skipping holepunch connect", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (auto const* existing = find_connected_peer(s, endpoint); existing != nullptr) {
         tr_logAddTraceTor(
             tor,
             fmt::format("BEP 55: already connected to {}, skipping holepunch connect", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (peer_info && peer_info->is_banned()) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: peer {} is banned, skipping holepunch connect", endpoint.display_name()));
-        return;
+        return false;
     }
 
     if (!peer_info) {
         peer_info = s->ensure_info_exists(endpoint, ADDED_F_HOLEPUNCH | ADDED_F_UTP_FLAGS, TR_PEER_FROM_HOLEPUNCH);
-        peer_info->on_holepunch_attempt();
-    }
-
-    if (peer_info->has_handshake()) {
-        tr_logAddDebugTor(tor, fmt::format("BEP 55: handshake already in progress for {}, skipping", endpoint.display_name()));
-        return;
     }
 
     // Note: We bypass normal outbound candidate pacing here because BEP 55 connect
@@ -2873,9 +2858,11 @@ void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoi
 
     if (!peer_io) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: peerIo not created for {}, skipping", endpoint.display_name()));
-        return;
+        return false;
     }
 
+    // Count the attempt only once its dial starts.
+    peer_info->on_holepunch_attempt();
     peer_info->start_handshake(
         &s->manager->handshake_mediator_,
         peer_io,
@@ -2883,6 +2870,13 @@ void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoi
         [mgr = s->manager](tr_handshake::Result const& result) { return on_handshake_done(mgr, result); });
 
     peer_info->set_connection_attempt_time(tr_time());
+    return true;
+}
+} // namespace
+
+void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoint)
+{
+    connect_holepunch(tor, endpoint);
 }
 
 void tr_peerMgr::make_new_peer_connections()
@@ -2901,14 +2895,18 @@ void tr_peerMgr::make_new_peer_connections()
     auto const n_this_pass = std::min(std::size(candidates), MaxConnectionsPerPulse);
     for (auto const& [tor_id, sock_addr] : candidates | std::views::reverse | std::views::take(n_this_pass)) {
         if (auto* const tor = torrents_.get(tor_id); tor != nullptr) {
-            if (auto const& peer_info = tor->swarm->get_existing_peer_info(sock_addr)) {
+            // A queued candidate can become connected or start a handshake before it is consumed.
+            if (auto const& peer_info = tor->swarm->get_existing_peer_info(sock_addr); peer_info && !peer_info->is_in_use()) {
                 // BEP 55: a candidate still flagged as a holepunch attempt is in sticky
-                // fast-retry mode. Re-issue the uTP-forced punch instead of a normal
-                // connect, which could fall back to TCP and never open a NAT mapping.
-                if (peer_info->is_holepunch_attempt()) {
-                    tr_peerMgrConnectHolepunch(tor, sock_addr);
-                } else {
+                // fast-retry mode. Re-issue the punch instead of a normal connect: a punch
+                // dials µTP first, while a normal connect follows the session's transport
+                // preference and skips µTP for a peer marked as not supporting it.
+                // A punch that isn't dialled leaves the mode: a flagged peer has no
+                // reconnect delay, so it would otherwise be a candidate on every pulse.
+                if (!peer_info->is_holepunch_attempt()) {
                     initiate_connection(this, tor->swarm, *peer_info);
+                } else if (!connect_holepunch(tor, sock_addr)) {
+                    peer_info->reset_holepunch_attempts();
                 }
             }
         }
