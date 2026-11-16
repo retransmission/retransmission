@@ -212,9 +212,13 @@ void tr_peerIo::set_socket(std::shared_ptr<tr_peer_socket> socket_in)
     socket_ = std::move(socket_in);
     socket_address_ = socket_->socket_address();
 
-    socket_->set_read_cb([weak = weak_from_this()] {
+    // The socket owns this callback, so `sock` outlives every call to it.
+    socket_->set_read_cb([weak = weak_from_this(), sock = socket_.get()] {
         if (auto const io = weak.lock()) {
             io->read_cb();
+        } else {
+            // Nothing will drain the socket, so stop polling it.
+            sock->set_read_enabled(false);
         }
     });
     socket_->set_write_cb([weak = weak_from_this()] {
