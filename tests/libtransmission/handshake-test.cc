@@ -1112,4 +1112,31 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     });
 }
 
+TEST_F(HandshakeTest, outgoingPlaintextForStoppedTorrentFails)
+{
+    auto stopped = UbuntuTorrent;
+    stopped.is_running = false;
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(stopped.info_hash, stopped);
+
+    auto [io, sock] = createOutgoingIo(session_, UbuntuTorrent.info_hash);
+
+    // The handshake can't be sent, so the handshake must fail now, not after HandshakeTimeoutSec.
+    auto res = std::optional<tr_handshake::Result>{};
+    auto handshake = std::unique_ptr<tr_handshake>{};
+    blockingRunInSessionThread([&] {
+        handshake = startHandshake(res, &mediator, io);
+        EXPECT_FALSE(res.has_value());
+    });
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
+    EXPECT_FALSE(res->is_connected);
+
+    tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
+}
+
 } // namespace tr::test

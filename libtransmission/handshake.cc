@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cerrno> // ECONNREFUSED, ETIMEDOUT
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
@@ -849,7 +850,12 @@ tr_handshake::tr_handshake(Mediator* mediator, std::shared_ptr<tr_peerIo> peer_i
         send_ya(peer_io_.get());
     } else {
         tr_logAddTraceHand(this, "sending plain handshake");
-        send_handshake(peer_io_.get());
         set_state(State::AwaitingHandshake);
+        if (!send_handshake(peer_io_.get())) {
+            // done() here would report the result before our owner has stored this handshake,
+            // so let the timer report it from the event loop.
+            tr_logAddTraceHand(this, "plain handshake not sent: torrent not found or not running");
+            timeout_timer_->start_single_shot(std::chrono::milliseconds{ 0 });
+        }
     }
 }
