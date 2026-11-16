@@ -1365,6 +1365,7 @@ private:
     void worker_main()
     {
         auto scratch = std::vector<uint8_t>{};
+        auto writeme = std::vector<std::span<uint8_t const>>{};
 
         // The kinds of work, in the order a worker takes its turns at them.
         enum class Kind : uint8_t { Hash, Reads, Writes };
@@ -1442,7 +1443,7 @@ private:
             } else if (!std::empty(reads)) {
                 exec_read_run(std::move(reads), scratch);
             } else if (!std::empty(writes.ops)) {
-                exec_write_run(std::move(writes.ops), scratch);
+                exec_write_run(std::move(writes.ops), writeme);
                 release_files(writes.tor_id, writes.files);
             } else {
                 return;
@@ -1812,7 +1813,9 @@ private:
         workers_.clear();
     }
 
-    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch)
+    // `writeme` is the worker's own, kept between runs so that its
+    // capacity is reused.
+    void exec_write_run(std::vector<PendingWrite> run, std::vector<std::span<uint8_t const>>& writeme)
     {
         TR_PROFILE_SCOPE("storage.write_run");
         TR_ASSERT(!std::empty(run));
@@ -1821,21 +1824,17 @@ private:
         auto const begin = run.front().span.begin;
         auto const n_bytes = static_cast<size_t>(run.back().span.end - begin);
 
-        auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
-        if (std::size(run) > 1U) {
-            // Adjacent blocks go to the disk as one write.
-            scratch.resize(n_bytes);
-            for (auto const& op : run) {
-                std::copy_n(std::data(*op.data), op.span.size(), std::data(scratch) + (op.span.begin - begin));
-            }
-
-            writeme = scratch;
-        }
-
 #ifdef TR_ENABLE_BLOCK_PROFILING
         auto const trace_batch = tr::profile::Collector::instance().batches_enabled();
         auto const write_start = trace_batch ? tr::profile::Clock::now() : tr::profile::Clock::time_point{};
 #endif
+
+        // Adjacent blocks go to the disk as one write, straight from their buffers.
+        writeme.clear();
+        for (auto const& op : run) {
+            writeme.emplace_back(std::span<uint8_t const>{ *op.data }.first(op.span.size()));
+        }
+
         auto error = tr_ioWrite(desc, open_files_, begin, writeme);
 #ifdef TR_ENABLE_BLOCK_PROFILING
         if (trace_batch) {
