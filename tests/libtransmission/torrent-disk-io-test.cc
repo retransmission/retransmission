@@ -614,6 +614,7 @@ protected:
             growSocketBuffers(sock);
         }
         remote_ = sockets[1];
+        local_ = sockets[0];
 
         blockingRunInSessionThread([this, tor, local = sockets[0]] {
             auto const address = *tr_address::from_string("127.0.0.2");
@@ -702,6 +703,22 @@ protected:
         helper.load_blocks(std::move(blocks));
     }
 
+    void sendRaw(std::vector<uint8_t> const& bytes) const
+    {
+        sendFromRemote(remote_, bytes);
+    }
+
+#ifdef __linux__
+    // The session's end of the peer connection wakes for reading once this many bytes are waiting.
+    [[nodiscard]] int readLowWatermark() const
+    {
+        auto lowat = 0;
+        auto len = socklen_t{ sizeof(lowat) };
+        EXPECT_EQ(0, getsockopt(local_, SOL_SOCKET, SO_RCVLOWAT, &lowat, &len));
+        return lowat;
+    }
+#endif
+
     void request(uint32_t const piece, uint32_t const offset) const
     {
         sendBlockMessage(MsgRequest, piece, offset);
@@ -769,6 +786,7 @@ protected:
 private:
     std::shared_ptr<tr_peerMsgs> msgs_;
     evutil_socket_t remote_ = InvalidSocket;
+    evutil_socket_t local_ = InvalidSocket; // owned by msgs_
     std::vector<uint8_t> input_;
 };
 
@@ -1906,6 +1924,44 @@ TEST_F(UploadTest, rejectsAPieceLostDuringItsRead)
     EXPECT_EQ(1U, replies_.front().piece);
     EXPECT_EQ(TrBlockSize, replies_.front().offset);
 }
+
+#ifdef __linux__
+// SO_RCVLOWAT is verified on Linux only. A Unix socket keeps the mark
+// without honoring it, so this checks the mark the reader asks for.
+TEST_F(UploadTest, readerWaitsForTheRestOfABlock)
+{
+    auto* const tor = makeSeed();
+    ASSERT_NE(nullptr, tor);
+    blockingRunInSessionThread([tor] { loseFirstBlock(tor, 0U); });
+    connectPeer(tor);
+
+    // a Piece message for the lost block, cut off after its first bytes
+    static auto constexpr NFirst = size_t{ 1000U };
+    auto const block = content(0U, TrBlockSize);
+    auto message = std::vector<uint8_t>{};
+    appendUint32(message, 9U + TrBlockSize);
+    message.push_back(MsgPiece);
+    appendUint32(message, 0U);
+    appendUint32(message, 0U);
+    message.insert(std::end(message), std::begin(block), std::begin(block) + NFirst);
+    sendRaw(message);
+
+    auto const is_mark = [this](int const want) {
+        return waitFor([this, want] { return readLowWatermark() == want; }, MaxWaitMsec);
+    };
+    EXPECT_TRUE(is_mark(static_cast<int>(TrBlockSize - NFirst))) << readLowWatermark();
+
+    sendRaw({ std::begin(block) + NFirst, std::end(block) });
+    EXPECT_TRUE(is_mark(1)) << readLowWatermark();
+
+    auto const block_arrived = [this, tor] {
+        auto has = false;
+        blockingRunInSessionThread([tor, &has] { has = tor->has_block_or_pending(0U); });
+        return has;
+    };
+    EXPECT_TRUE(waitFor(block_arrived, MaxWaitMsec));
+}
+#endif
 
 TEST_F(UploadTest, servesMoreThanItKeepsInFlight)
 {
