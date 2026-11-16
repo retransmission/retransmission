@@ -1458,6 +1458,8 @@ void create_bit_torrent_peer(
         return false;
     }
 
+    auto* const tor = swarm->tor;
+
     if (!result.is_connected) {
         // A connection born from a holepunch (uTP rendezvous) must not itself
         // re-trigger a new rendezvous when it fails, or we get
@@ -1495,34 +1497,29 @@ void create_bit_torrent_peer(
         // rendezvous message through them, prompting the target to connect to us.
         // Skipped for holepunch-originated attempts (see was_holepunch_attempt) so a
         // failed rendezvous result doesn't spawn another rendezvous.
-        if (info && !info->is_in_use() && !result.io->is_incoming() && !was_holepunch_attempt) {
-            auto const* const tor = swarm->tor;
-            if (tor->allows_pex() && tor->allows_holepunch()) {
-                // Don't ask an introducer to relay a connection to ourselves.
-                // The tracker/PEX may advertise our own address; the direct
-                // connect correctly fails, but sending a rendezvous for our
-                // own address wastes a round-trip (introducer returns ErrNoSelf)
-                // or worse triggers a spurious holepunch connect back to us.
-                if (result.peer_id ? *result.peer_id == tor->peer_id() :
-                                     is_local_peer_endpoint(*tor->session, socket_address)) {
-                    tr_logAddTraceSwarm(
-                        swarm,
-                        fmt::format("BEP 55: skipping rendezvous for {} — it is our own address", info->display_name()));
-                } else if (auto* const introducer = find_holepunch_introducer(tor, socket_address)) {
-                    introducer->send_ut_holepunch(bep55::MsgRendezvous, socket_address);
-                    tr_logAddDebugSwarm(
-                        swarm,
-                        fmt::format(
-                            "BEP 55: direct connect to {} failed, sent rendezvous via introducer {}",
-                            info->display_name(),
-                            introducer->display_name()));
-                } else {
-                    tr_logAddTraceSwarm(
-                        swarm,
-                        fmt::format(
-                            "BEP 55: direct connect to {} failed, no holepunch introducer found",
-                            info->display_name()));
-                }
+        if (!was_holepunch_attempt && info && !info->is_in_use() && !result.io->is_incoming() && tor->allows_pex() &&
+            tor->allows_holepunch()) {
+            // Don't ask an introducer to relay a connection to ourselves.
+            // The tracker/PEX may advertise our own address; the direct
+            // connect correctly fails, but sending a rendezvous for our
+            // own address wastes a round-trip (introducer returns ErrNoSelf)
+            // or worse triggers a spurious holepunch connect back to us.
+            if (result.peer_id ? *result.peer_id == tor->peer_id() : is_local_peer_endpoint(*tor->session, socket_address)) {
+                tr_logAddTraceSwarm(
+                    swarm,
+                    fmt::format("BEP 55: skipping rendezvous for {} — it is our own address", info->display_name()));
+            } else if (auto* const introducer = find_holepunch_introducer(tor, socket_address)) {
+                introducer->send_ut_holepunch(bep55::MsgRendezvous, socket_address);
+                tr_logAddDebugSwarm(
+                    swarm,
+                    fmt::format(
+                        "BEP 55: direct connect to {} failed, sent rendezvous via introducer {}",
+                        info->display_name(),
+                        introducer->display_name()));
+            } else {
+                tr_logAddTraceSwarm(
+                    swarm,
+                    fmt::format("BEP 55: direct connect to {} failed, no holepunch introducer found", info->display_name()));
             }
         }
 
@@ -1561,7 +1558,7 @@ void create_bit_torrent_peer(
         return false;
     }
 
-    if (swarm->peerCount() >= swarm->tor->peer_limit()) // too many peers already
+    if (swarm->peerCount() >= tor->peer_limit()) // too many peers already
     {
         return false;
     }
@@ -1571,8 +1568,8 @@ void create_bit_torrent_peer(
         return false;
     }
 
-    result.io->set_bandwidth(&swarm->tor->bandwidth());
-    create_bit_torrent_peer(*swarm->tor, result.io, std::move(info), result.peer_id.value_or(tr_peer_id_t{}));
+    result.io->set_bandwidth(&tor->bandwidth());
+    create_bit_torrent_peer(*tor, result.io, std::move(info), result.peer_id.value_or(tr_peer_id_t{}));
 
     return true;
 }
