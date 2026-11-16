@@ -9,6 +9,7 @@
 #include <ctime> // time_t
 #include <functional>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -402,6 +403,42 @@ bool tr_sys_file_write(
     tr_sys_file_t handle,
     void const* buffer,
     uint64_t size,
+    uint64_t offset,
+    uint64_t* bytes_written,
+    tr_error* error = nullptr);
+
+/**
+ * @brief Like `pwritev()`: writes `bufs` back to back from `offset`, in
+ *        one call where the OS can gather them. Like a single write, it
+ *        may write fewer bytes than asked. Where the OS can't gather
+ *        them (Windows, or no `pwritev()`), this is
+ *        `tr_sys_file_write_at_v_by_copy()`.
+ *
+ * @param[in]  handle        Valid file descriptor.
+ * @param[in]  bufs          Buffers to get data being written from.
+ * @param[in]  offset        File offset in bytes to start writing from.
+ * @param[out] bytes_written Number of bytes actually written. Optional, pass
+ *                           `nullptr` if you are not interested.
+ * @param[out] error         Pointer to error object. Optional, pass `nullptr`
+ *                          if you are not interested in error details.
+ *
+ * @return `True` on success, `false` otherwise (with `error` set accordingly).
+ */
+[[nodiscard]] bool tr_sys_file_write_at_v(
+    tr_sys_file_t handle,
+    std::span<std::span<uint8_t const> const> bufs,
+    uint64_t offset,
+    uint64_t* bytes_written,
+    tr_error* error = nullptr);
+
+/**
+ * @brief `tr_sys_file_write_at_v()` without gathering: copies leading
+ *        buffers into one of up to 1 MiB and writes that with one call.
+ *        A first buffer over 1 MiB is written alone, without a copy.
+ */
+[[nodiscard]] bool tr_sys_file_write_at_v_by_copy(
+    tr_sys_file_t handle,
+    std::span<std::span<uint8_t const> const> bufs,
     uint64_t offset,
     uint64_t* bytes_written,
     tr_error* error = nullptr);

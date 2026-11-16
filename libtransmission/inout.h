@@ -18,6 +18,7 @@
 #include "libtransmission/crypto-utils.h" // tr_sha1
 #include "libtransmission/digest.h"
 #include "libtransmission/error.h"
+#include "libtransmission/file.h" // tr_sys_file_t
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
@@ -67,6 +68,34 @@ struct StorageDescriptor;
     tr_open_files& open_files,
     uint64_t begin,
     std::span<uint8_t const> writeme);
+
+/**
+ * Writes `writeme`'s buffers back to back, starting at byte `begin`.
+ *
+ * Behaves like the single-buffer `tr_ioWrite()`, but hands the buffers to
+ * the OS together, so they reach a file in few calls without being
+ * copied. See `tr_sys_file_write_at_v()`.
+ */
+[[nodiscard]] tr_error tr_ioWrite(
+    tr::StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    uint64_t begin,
+    std::span<std::span<uint8_t const> const> writeme);
+
+namespace tr::detail
+{
+using WriteAtV = bool (*)(tr_sys_file_t, std::span<std::span<uint8_t const> const>, uint64_t, uint64_t*, tr_error*);
+
+// Writes one file's `bufs` back to back from `file_offset`, calling
+// `write_at_v` until they are all written. tr_ioWrite() passes
+// tr_sys_file_write_at_v(); tests pass one that stops short.
+bool write_entire_bufs(
+    tr_sys_file_t fd,
+    uint64_t file_offset,
+    std::span<std::span<uint8_t const> const> bufs,
+    tr_error& error,
+    WriteAtV write_at_v);
+} // namespace tr::detail
 
 /**
  * Hashes one piece from whatever `get_block` returns for each of its blocks.

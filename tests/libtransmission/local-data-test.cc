@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cerrno> // EINVAL, ENOSPC
 #include <chrono>
@@ -16,6 +17,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -34,6 +36,7 @@
 #include <libtransmission/file-piece-map.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/inout.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/open-files.h>
 #include <libtransmission/storage-descriptor.h>
@@ -1491,25 +1494,35 @@ TEST_F(LocalDataWorkersTest, writesToABusyFileWaitForItsSweepWithTwoWorkers)
     local_data.shutdown();
 }
 
-TEST_F(LocalDataWorkersTest, aRunOfMoreBlocksThanOneGatheredWriteTakesLands)
+TEST_F(LocalDataWorkersTest, gatheredWriteOfMoreBuffersThanOneCallTakesLands)
 {
-    // More buffers than one gathered write call takes, so the run needs several calls.
+    // More buffers than one gathered write call takes, so the write needs several calls.
     static auto constexpr NBlocks = size_t{ 1100U };
-    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U));
-    local_data->set_write_hold_time(std::chrono::hours{ 1 });
-    local_data->set_write_hold_bytes(BlockSize * NBlocks);
-    local_data->set_write_budget(BlockSize * NBlocks * 2U);
+    auto const desc = makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U);
+    auto const data = patternString(0U, BlockSize * NBlocks);
+    auto const bytes = std::span{ reinterpret_cast<uint8_t const*>(std::data(data)), std::size(data) };
+    auto bufs = std::vector<std::span<uint8_t const>>{};
+    for (auto offset = size_t{}; offset < std::size(bytes); offset += BlockSize) {
+        bufs.push_back(bytes.subspan(offset, BlockSize));
+    }
 
-    local_data->set_workers_paused(true);
-    auto n_done = size_t{};
-    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
-    local_data->set_workers_paused(false);
+    EXPECT_FALSE(tr_ioWrite(*desc, open_files_, 0U, bufs));
+    EXPECT_EQ(data, readFile("data.bin"));
+}
 
-    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
-    EXPECT_EQ(1U, local_data->stats().write_runs);
-    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+TEST_F(LocalDataWorkersTest, gatheredWriteLandsBufferByBufferAcrossFiles)
+{
+    // Three buffers back to back. The middle one straddles the two files.
+    static auto constexpr FileASize = size_t{ 5000U };
+    static auto constexpr FileBSize = size_t{ 7000U };
+    auto const desc = makeDescriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U);
+    auto const data = patternString(0U, FileASize + FileBSize);
+    auto const bytes = std::span{ reinterpret_cast<uint8_t const*>(std::data(data)), std::size(data) };
+    auto const bufs = std::array{ bytes.first(3000U), bytes.subspan(3000U, 4000U), bytes.subspan(7000U) };
 
-    local_data->shutdown();
+    EXPECT_FALSE(tr_ioWrite(*desc, open_files_, 0U, bufs));
+    EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
+    EXPECT_EQ(patternString(FileASize, FileBSize), readFile("b.bin"));
 }
 
 TEST_F(LocalDataWorkersTest, writesCrossFileBoundaries)

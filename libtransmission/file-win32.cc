@@ -5,13 +5,16 @@
 
 #include <algorithm>
 #include <cctype> // for isalpha()
+#include <cstdint>
 #include <cstring>
 #include <ctime>
 #include <iterator> // for std::back_inserter
 #include <optional>
 #include <ranges>
+#include <span>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <shlobj.h> /* SHCreateDirectoryEx() */
 #include <winioctl.h> /* FSCTL_SET_SPARSE */
@@ -838,6 +841,17 @@ bool tr_sys_file_write_at(
     }
 
     return ret;
+}
+
+bool tr_sys_file_write_at_v(
+    tr_sys_file_t const handle,
+    std::span<std::span<uint8_t const> const> const bufs,
+    uint64_t const offset,
+    uint64_t* const bytes_written,
+    tr_error* const error)
+{
+    // WriteFileGather() takes only whole, aligned pages to an unbuffered file.
+    return tr_sys_file_write_at_v_by_copy(handle, bufs, offset, bytes_written, error);
 }
 
 bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
