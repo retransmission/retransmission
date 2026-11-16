@@ -611,7 +611,8 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     auto const transport_protocol_before = io->transport_protocol();
     handshake->maybe_recycle_dh();
 
-    if (io->is_incoming() || !handshake->mediator_->torrent(info_hash)) {
+    // Every retry ends in a BitTorrent handshake, which only a running torrent can send.
+    if (auto const info = handshake->mediator_->torrent(info_hash); io->is_incoming() || !info || !info->is_running) {
         fail();
         return;
     }

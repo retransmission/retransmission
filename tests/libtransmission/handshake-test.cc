@@ -574,6 +574,32 @@ TEST_F(HandshakeTest, incomingAndUnknownTorrentErrorsFailWithoutRetry)
     });
 }
 
+TEST_F(HandshakeTest, stoppedTorrentErrorsFailWithoutRetry)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const mode : { TR_ENCRYPTION_PREFERRED, TR_ENCRYPTION_REQUIRED }) {
+            SCOPED_TRACE(static_cast<int>(mode));
+
+            auto stopped = UbuntuTorrent;
+            stopped.is_running = false;
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(stopped.info_hash, stopped);
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, mode);
+
+            // A stopped torrent can't send the BitTorrent handshake that every retry ends in,
+            // so it must not dial the peer again.
+            script.sockets.front()->fail();
+            ASSERT_TRUE(result);
+            EXPECT_FALSE(result->is_connected);
+            EXPECT_TRUE(script.attempts.empty());
+        }
+    });
+}
+
 TEST_F(HandshakeTest, partialPlaintextReplyDoesNotRepeatMse)
 {
     blockingRunInSessionThread([this] {
