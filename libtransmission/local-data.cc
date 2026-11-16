@@ -14,6 +14,7 @@
 #include <deque>
 #include <functional>
 #include <iterator> // std::prev
+#include <limits>
 #include <list>
 #include <map>
 #include <memory>
@@ -418,13 +419,22 @@ private:
  * one is empty. An op that arrives during a sweep waits for the next
  * one, so a requester that keeps asking for the bytes just ahead of the
  * workers can't hold them there, and no op waits more than two sweeps.
+ * One exception: once no write left in a sweep can be taken, because
+ * other workers are writing its files, writes to the other files join it.
  * A worker takes the sweep's first op along with the ops that continue
  * it and does the whole run with one call. That turns the swarm's
- * scattered block requests into sequential disk IO of up to MaxRunBytes.
+ * scattered block requests into sequential disk IO: reads of up to
+ * MaxReadRunBytes, and writes of up to MaxWriteRunBytes.
  * A worker takes a piece hash, a run of reads, and a run of writes in
  * turn, skipping the kinds that have nothing waiting, so that a flood
  * of one kind can't starve the others. A hash can read a whole piece
  * from the disk, which is why it gets no more than its turn.
+ *
+ * Blocks that trickle in one at a time would each cost a write call and
+ * a worker wakeup, so workers hold pending writes until enough have
+ * gathered or the oldest has waited for `hold_time_`, and only then
+ * take them as the next write sweep. Fast traffic fills the hold
+ * quickly, and slow traffic has few blocks to delay.
  *
  * One worker at a time writes a given file. Buffered writes to one file
  * serialize on its inode lock in the kernel, so a second writer adds no
@@ -436,15 +446,27 @@ private:
 class LocalData::Threaded final : public std::enable_shared_from_this<LocalData::Threaded>
 {
 public:
+    // Settings the owner made before the workers started. Unset ones
+    // keep their defaults.
+    struct WriteSettings {
+        std::optional<uint64_t> budget;
+        std::optional<uint64_t> hold_bytes;
+        std::optional<std::chrono::milliseconds> hold_time;
+    };
+
     Threaded(
         tr_open_files& open_files,
         DescriptorProvider provider,
         Marshal marshal,
         size_t const n_workers,
-        size_t const retained_bytes)
+        size_t const retained_bytes,
+        WriteSettings const& write_settings)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
+        , hold_time_{ write_settings.hold_time.value_or(DefaultHoldTime) }
+        , hold_bytes_{ write_settings.hold_bytes.value_or(DefaultHoldBytes) }
+        , write_budget_{ write_settings.budget }
         , retained_{ retained_bytes }
     {
         workers_.reserve(n_workers);
@@ -667,6 +689,9 @@ public:
         static auto constexpr WarnInterval = std::chrono::seconds{ 10 };
         auto next_warning = std::chrono::steady_clock::now() + WarnInterval;
 
+        // The caller is blocked on these writes, so nothing is gained by holding them.
+        set_draining(true);
+
         for (;;) {
             // The marshaled flush can't run while this blocks the session
             // thread, and the completions just delivered may have staged
@@ -675,6 +700,7 @@ public:
             flush_reads();
 
             if (idle()) {
+                set_draining(false);
                 return;
             }
 
@@ -732,6 +758,26 @@ public:
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
+    }
+
+    void set_draining(bool const draining)
+    {
+        set_and_wake(draining_, draining);
+    }
+
+    void set_write_budget(uint64_t const budget)
+    {
+        set_and_wake(write_budget_, std::optional{ budget });
+    }
+
+    void set_write_hold_bytes(uint64_t const hold_bytes)
+    {
+        set_and_wake(hold_bytes_, hold_bytes);
+    }
+
+    void set_write_hold_time(std::chrono::milliseconds const hold_time)
+    {
+        set_and_wake(hold_time_, hold_time);
     }
 
     void set_retained_bytes(size_t const max_bytes)
@@ -849,6 +895,21 @@ private:
     };
 
     using FileSpan = tr_file_piece_map::file_span_t;
+
+    // Adjacent writes that one worker takes together, and the files it
+    // claimed for them.
+    struct WriteRun {
+        std::vector<PendingWrite> ops;
+        tr_torrent_id_t tor_id = {};
+        FileSpan files = {};
+        // The sweep still holds writes that another worker could take.
+        bool more = false;
+    };
+
+    // How many bytes of pending writes, and for how long, workers wait
+    // to gather before writing. LocalData's owner may change both.
+    static auto constexpr DefaultHoldBytes = uint64_t{ 16U * 1024U * 1024U };
+    static auto constexpr DefaultHoldTime = std::chrono::milliseconds{ 1000 };
 
     [[nodiscard]] static FileSpan files_touched(StorageDescriptor const& desc, tr_byte_span_t const span)
     {
@@ -1012,6 +1073,11 @@ private:
 
             if (auto* const barrier = std::get_if<BarrierOp>(&gate.queue.front()); barrier != nullptr) {
                 if (!can_run(gate, *barrier)) {
+                    // Held writes in its way would make it wait out the hold. A file
+                    // barrier waits only for the writes to its file.
+                    if (!barrier->span || overlaps_running_write(gate, *barrier->span)) {
+                        cut_hold(id);
+                    }
                     return; // still draining
                 }
 
@@ -1027,6 +1093,8 @@ private:
             }
 
             if (auto const span = span_of(id, gate.queue.front()); span && waits_for_write(gate, gate.queue.front(), *span)) {
+                // Held, that write would make the op, and any barrier behind it, wait out the hold.
+                cut_hold(id);
                 return; // that write's completion calls advance() again
             }
 
@@ -1212,8 +1280,16 @@ private:
         ++gate.n_running;
         register_running_write(gate, span);
 
+        auto const files = files_touched(*desc, span);
+        auto wake = true;
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
+            auto const was_empty = std::empty(pending_writes_);
+            auto const was_held = !was_empty && hold_deadline();
+            if (was_empty) {
+                pending_since_ = std::chrono::steady_clock::now();
+            }
+
             pending_writes_.emplace(
                 OpKey{ .tor_id = id, .begin = span.begin },
                 PendingWrite{
@@ -1223,8 +1299,20 @@ private:
                     .data = std::move(op.data),
                     .on_write = std::move(op.on_write),
                 });
+
+            // During a hold, a worker needs waking only to start the
+            // timer. Later writes just join, unless one fills the hold:
+            // then the held writes can go, whichever file this one is
+            // for. After the hold, a worker needs waking only if it
+            // could take the write: when the sweep still holds writes a
+            // worker can take, an idle worker already has them, and a
+            // write to a file being written waits for that file's worker.
+            auto const held = hold_deadline().has_value();
+            wake = held ? was_empty : was_held || (!has_unclaimed_write() && !file_being_written(id, files));
         }
-        work_cv_.notify_one();
+        if (wake) {
+            work_cv_.notify_one();
+        }
     }
 
     // The completion closures own move-only state, so they can't live
@@ -1288,59 +1376,74 @@ private:
         for (;;) {
             auto test = std::optional<PendingTest>{};
             auto reads = std::vector<PendingRead>{};
-            auto writes = std::vector<PendingWrite>{};
+            auto writes = WriteRun{};
+
+            // Take the next kind of work that has something waiting.
+            // Call with work_mutex_ held.
+            auto const take_turn = [this, &test, &reads, &writes, &next] {
+                for (auto i = size_t{}; i < std::size(Kinds); ++i) {
+                    auto const turn = (next + i) % std::size(Kinds);
+                    switch (Kinds[turn]) {
+                    case Kind::Hash:
+                        if (!std::empty(pending_tests_)) {
+                            test = std::move(pending_tests_.front());
+                            pending_tests_.pop_front();
+                        }
+                        break;
+
+                    case Kind::Reads:
+                        reads = take_run(read_sweep_, pending_reads_);
+                        break;
+
+                    case Kind::Writes:
+                        writes = take_write_run();
+                        // Writes to other files can go in parallel.
+                        if (writes.more) {
+                            work_cv_.notify_one();
+                        }
+                        break;
+                    }
+
+                    if (test || !std::empty(reads) || !std::empty(writes.ops)) {
+                        next = (turn + 1U) % std::size(Kinds);
+                        return true;
+                    }
+                }
+
+                return false;
+            };
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
-                    if (paused_) {
-                        return false;
+                for (;;) {
+                    if (!paused_ && (take_turn() || stopping_)) {
+                        // Only an idle worker times a hold. If none is
+                        // timing it, wake one to take over.
+                        if (n_timing_hold_ == 0U && hold_deadline()) {
+                            work_cv_.notify_one();
+                        }
+                        break;
                     }
 
-                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
-                        auto const turn = (next + i) % std::size(Kinds);
-                        switch (Kinds[turn]) {
-                        case Kind::Hash:
-                            if (!std::empty(pending_tests_)) {
-                                test = std::move(pending_tests_.front());
-                                pending_tests_.pop_front();
-                            }
-                            break;
-
-                        case Kind::Reads:
-                            reads = take_run(read_sweep_, pending_reads_);
-                            break;
-
-                        case Kind::Writes:
-                            writes = take_write_run();
-                            // Writes to other files can go in parallel.
-                            if (!std::empty(writes) && has_unclaimed_write()) {
-                                work_cv_.notify_one();
-                            }
-                            break;
-                        }
-
-                        if (test || !std::empty(reads) || !std::empty(writes)) {
-                            next = (turn + 1U) % std::size(Kinds);
-                            return true;
-                        }
+                    // Held writes wait for this worker to end their hold,
+                    // unless another worker is timing it already.
+                    if (auto const deadline = paused_ || n_timing_hold_ != 0U ? std::nullopt : hold_deadline(); deadline) {
+                        ++n_timing_hold_;
+                        work_cv_.wait_until(lock, *deadline);
+                        --n_timing_hold_;
+                    } else {
+                        work_cv_.wait(lock);
                     }
-
-                    return stopping_;
-                });
+                }
             }
 
             if (test) {
                 exec_test(std::move(*test));
             } else if (!std::empty(reads)) {
                 exec_read_run(std::move(reads), scratch);
-            } else if (!std::empty(writes)) {
-                auto const tor_id = writes.front().tor_id;
-                auto const files = files_touched(
-                    *writes.front().desc,
-                    { .begin = writes.front().span.begin, .end = writes.back().span.end });
-                exec_write_run(std::move(writes), scratch);
-                release_files(tor_id, files);
+            } else if (!std::empty(writes.ops)) {
+                exec_write_run(std::move(writes.ops), scratch);
+                release_files(writes.tor_id, writes.files);
             } else {
                 return;
             }
@@ -1442,6 +1545,75 @@ private:
         finish_barrier(job.id);
     }
 
+    // A hold that outgrew the budget would never fill, and would slow
+    // every download to one budget per hold time, so half the budget
+    // also fills it. Writes that wait for a busy file take budget too,
+    // so they count. Call with work_mutex_ held.
+    [[nodiscard]] bool hold_is_full() const noexcept
+    {
+        auto const limit = write_budget_ ? std::min(hold_bytes_, *write_budget_ / 2U) : hold_bytes_;
+        auto const n_writes = std::size(pending_writes_) + std::size(waiting_writes_) + std::size(write_sweep_);
+        return n_writes * TrBlockSize >= limit;
+    }
+
+    // A write run takes up to half the write budget, the most a hold can
+    // gather (see hold_is_full()), so one run can take a whole hold, but no
+    // more than MaxWriteRunBytes, which bounds how long a run keeps its
+    // budget and its file. At least one block, the most a write carries,
+    // so every run takes something. Call with work_mutex_ held.
+    [[nodiscard]] uint64_t max_write_run_bytes() const noexcept
+    {
+        auto const limit = write_budget_ ? std::min(*write_budget_ / 2U, MaxWriteRunBytes) : MaxWriteRunBytes;
+        return std::max(limit, uint64_t{ TrBlockSize });
+    }
+
+    // When workers should stop waiting for more writes to join the
+    // pending ones, or nothing if they shouldn't wait. Call with
+    // work_mutex_ held.
+    [[nodiscard]] std::optional<std::chrono::steady_clock::time_point> hold_deadline() const
+    {
+        if (draining_ || stopping_ || std::empty(pending_writes_) || hold_is_full()) {
+            return {};
+        }
+
+        auto const deadline = pending_since_ + hold_time_;
+        return std::chrono::steady_clock::now() < deadline ? std::optional{ deadline } : std::nullopt;
+    }
+
+    // A barrier waits for its torrent's writes before it, so it ends
+    // their hold by moving them into the write sweep, where workers take
+    // them at once. Other torrents' writes stay held.
+    void cut_hold(tr_torrent_id_t const tor_id)
+    {
+        auto moved = false;
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            for (auto* const from : { &pending_writes_, &waiting_writes_ }) {
+                auto it = from->lower_bound({ .tor_id = tor_id, .begin = 0U });
+                while (it != std::end(*from) && it->first.tor_id == tor_id) {
+                    // The gate never runs two writes to one span, so no key is in two maps.
+                    [[maybe_unused]] auto const inserted = write_sweep_.insert(from->extract(it++)).inserted;
+                    TR_ASSERT(inserted);
+                    moved = true;
+                }
+            }
+        }
+        if (moved) {
+            work_cv_.notify_one();
+        }
+    }
+
+    // Changes a setting that workers read, and wakes them to apply it.
+    template<typename T>
+    void set_and_wake(T& member, T const value)
+    {
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            member = value;
+        }
+        work_cv_.notify_all();
+    }
+
     // Call with work_mutex_ held.
     [[nodiscard]] std::optional<tr_file_index_t> file_being_written(tr_torrent_id_t const tor_id, FileSpan const files) const
     {
@@ -1477,38 +1649,76 @@ private:
         return skip_files_being_written(std::begin(write_sweep_)) != std::end(write_sweep_);
     }
 
+    // Move the writes in `from` whose files no worker is writing into
+    // the write sweep, and the others into `busy_to` if it is given.
+    // Call with work_mutex_ held.
+    void sweep_writes(std::map<OpKey, PendingWrite>& from, std::map<OpKey, PendingWrite>* const busy_to)
+    {
+        auto it = std::begin(from);
+        while (it != std::end(from)) {
+            auto const& op = it->second;
+            if (auto const busy = file_being_written(op.tor_id, files_touched(*op.desc, op.span)); busy) {
+                auto const next = from.lower_bound(
+                    { .tor_id = op.tor_id, .begin = op.desc->fpm.byte_span_for_file(*busy).end });
+                while (busy_to != nullptr && it != next) {
+                    busy_to->insert(from.extract(it++));
+                }
+                it = next;
+                continue;
+            }
+
+            // The gate never runs two writes to one span, so no key is in two maps.
+            [[maybe_unused]] auto const inserted = write_sweep_.insert(from.extract(it++)).inserted;
+            TR_ASSERT(inserted);
+        }
+    }
+
     // Take the write sweep's first write whose files no worker is
     // writing, plus the writes that continue it, and claim their files.
-    // Once the sweep is empty, the pending writes become the next one.
-    // Call with work_mutex_ held.
-    [[nodiscard]] std::vector<PendingWrite> take_write_run()
+    // Once no write in the sweep can be taken, the pending writes for
+    // other files join it, so a worker isn't left idle while the rest
+    // of the sweep waits for files that other workers are writing. A
+    // busy file's pending writes wait in `waiting_writes_` instead, so
+    // that they can't overtake that file's writes in the sweep, and
+    // join the sweep once their file is free. Call with work_mutex_ held.
+    [[nodiscard]] WriteRun take_write_run()
     {
-        if (std::empty(write_sweep_)) {
-            std::swap(write_sweep_, pending_writes_);
-        }
-
         auto it = skip_files_being_written(std::begin(write_sweep_));
         if (it == std::end(write_sweep_)) {
-            return {};
+            // Their hold is over.
+            sweep_writes(waiting_writes_, nullptr);
+            it = skip_files_being_written(std::begin(write_sweep_));
+        }
+        if (it == std::end(write_sweep_)) {
+            if (hold_deadline()) {
+                return {};
+            }
+
+            sweep_writes(pending_writes_, &waiting_writes_);
+            it = skip_files_being_written(std::begin(write_sweep_));
+            if (it == std::end(write_sweep_)) {
+                return {};
+            }
         }
 
         auto const tor_id = it->second.tor_id;
         auto const* const desc = it->second.desc.get();
         auto const begin = it->second.span.begin;
         auto end = it->second.span.end;
-        auto claimed_end = tr_file_index_t{};
+        auto const first_file = files_touched(*desc, it->second.span).begin;
+        auto run = WriteRun{ .ops = {}, .tor_id = tor_id, .files = { .begin = first_file, .end = first_file } };
 
-        auto run = std::vector<PendingWrite>{};
+        auto const max_bytes = max_write_run_bytes();
         while (it != std::end(write_sweep_)) {
             auto& op = it->second;
             if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
-                std::max(end, op.span.end) - begin > MaxRunBytes) {
+                std::max(end, op.span.end) - begin > max_bytes) {
                 break;
             }
 
             // A run only reaches later files, and those may be another worker's.
             auto const files = files_touched(*desc, op.span);
-            auto const unclaimed = FileSpan{ .begin = std::max(files.begin, claimed_end), .end = files.end };
+            auto const unclaimed = FileSpan{ .begin = std::max(files.begin, run.files.end), .end = files.end };
             if (file_being_written(tor_id, unclaimed)) {
                 break;
             }
@@ -1516,7 +1726,7 @@ private:
             for (auto file = unclaimed.begin; file < unclaimed.end; ++file) {
                 files_being_written_.insert({ .tor_id = tor_id, .file = file });
             }
-            claimed_end = std::max(claimed_end, files.end);
+            run.files.end = std::max(run.files.end, files.end);
 
             end = std::max(end, op.span.end);
 #ifdef TR_ENABLE_BLOCK_PROFILING
@@ -1525,10 +1735,13 @@ private:
             }
 #endif
             op.admitted.record_since("storage.write_queue_wait");
-            run.emplace_back(std::move(op));
+            run.ops.emplace_back(std::move(op));
             it = write_sweep_.erase(it);
         }
 
+        // Writes before the run wait for files that were busy before it,
+        // so only those after it can be free.
+        run.more = skip_files_being_written(it) != std::end(write_sweep_);
         return run;
     }
 
@@ -1567,7 +1780,7 @@ private:
         while (it != std::end(sweep)) {
             auto& op = it->second;
             if (op.tor_id != tor_id || op.desc.get() != desc || op.span.begin > end ||
-                std::max(end, op.span.end) - begin > MaxRunBytes) {
+                std::max(end, op.span.end) - begin > MaxReadRunBytes) {
                 break;
             }
 
@@ -1812,10 +2025,20 @@ private:
     std::multimap<OpKey, PendingRead> pending_reads_;
     std::multimap<OpKey, PendingRead> read_sweep_;
     std::map<OpKey, PendingWrite> pending_writes_;
+    // Writes whose hold is over, waiting for another worker to finish their file.
+    std::map<OpKey, PendingWrite> waiting_writes_;
     std::map<OpKey, PendingWrite> write_sweep_;
     std::set<FileKey> files_being_written_;
+    std::chrono::steady_clock::time_point pending_since_;
+    std::chrono::milliseconds hold_time_ = DefaultHoldTime;
+    uint64_t hold_bytes_ = DefaultHoldBytes;
+    std::optional<uint64_t> write_budget_;
+    bool draining_ = false;
     bool stopping_ = false;
     bool paused_ = false;
+    // Workers waiting for a hold to end: one at most, so that the hold's end
+    // wakes one worker. Guarded by work_mutex_.
+    size_t n_timing_hold_ = 0U;
 
     std::mutex done_mutex_;
     std::condition_variable done_cv_;
@@ -1862,7 +2085,13 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
     static auto constexpr MaxWorkerCount = size_t{ 64U };
     worker_count = std::min(worker_count, MaxWorkerCount);
 
-    threaded_ = std::make_shared<Threaded>(open_files, std::move(provider), std::move(marshal), worker_count, retained_bytes());
+    threaded_ = std::make_shared<Threaded>(
+        open_files,
+        std::move(provider),
+        std::move(marshal),
+        worker_count,
+        retained_bytes(),
+        Threaded::WriteSettings{ .budget = write_budget_, .hold_bytes = write_hold_bytes_, .hold_time = write_hold_time_ });
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -2075,6 +2304,7 @@ void LocalData::set_write_budget(uint64_t const bytes)
     write_budget_ = bytes;
     if (threaded_) {
         threaded_->set_retained_bytes(retained_bytes());
+        threaded_->set_write_budget(bytes);
     }
 }
 
@@ -2097,6 +2327,22 @@ void LocalData::set_workers_paused(bool const paused)
 {
     if (threaded_) {
         threaded_->set_paused(paused);
+    }
+}
+
+void LocalData::set_write_hold_bytes(uint64_t const bytes)
+{
+    write_hold_bytes_ = bytes;
+    if (threaded_) {
+        threaded_->set_write_hold_bytes(bytes);
+    }
+}
+
+void LocalData::set_write_hold_time(std::chrono::milliseconds const hold_time)
+{
+    write_hold_time_ = hold_time;
+    if (threaded_) {
+        threaded_->set_write_hold_time(hold_time);
     }
 }
 
