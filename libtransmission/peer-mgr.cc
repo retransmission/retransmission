@@ -1495,7 +1495,7 @@ void create_bit_torrent_peer(
         // rendezvous message through them, prompting the target to connect to us.
         // Skipped for holepunch-originated attempts (see was_holepunch_attempt) so a
         // failed rendezvous result doesn't spawn another rendezvous.
-        if (info && !result.io->is_incoming() && !was_holepunch_attempt) {
+        if (info && !info->is_in_use() && !result.io->is_incoming() && !was_holepunch_attempt) {
             auto const* const tor = swarm->tor;
             if (tor->allows_pex() && tor->allows_holepunch()) {
                 // Don't ask an introducer to relay a connection to ourselves.
