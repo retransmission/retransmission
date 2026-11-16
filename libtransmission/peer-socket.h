@@ -53,6 +53,12 @@ public:
 
     [[nodiscard]] constexpr virtual bool is_connected() const noexcept = 0;
 
+    // Asks to be woken for reading only once this many bytes have arrived.
+    // A hint: sockets that can't wait for a byte count ignore it.
+    virtual void set_read_low_watermark(size_t /*n_bytes*/)
+    {
+    }
+
     void set_read_cb(RWCb cb)
     {
         read_cb_ = std::move(cb);

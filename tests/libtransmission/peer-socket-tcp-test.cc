@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <memory>
 #include <string_view>
+#include <tuple>
 #include <utility>
 
 #ifdef _WIN32
@@ -210,6 +211,49 @@ TEST_F(PeerSocketTcpTest, completesWithoutPayloadPollingAndAcceptedSocketIsReady
         },
         5000));
     EXPECT_EQ(Incoming, inbuf.to_string_view());
+}
+
+TEST_F(PeerSocketTcpTest, readWaitsForLowWatermark)
+{
+#if !defined(__linux__) && !defined(__FreeBSD__) && !defined(__APPLE__)
+    GTEST_SKIP() << "SO_RCVLOWAT is only known to hold back read events on Linux, FreeBSD and macOS";
+#endif
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+
+    auto inbuf = tr_peer_socket::PeerBuffer{};
+    auto n_callbacks = size_t{};
+    blockingRunInSessionThread([this, &inbuf, &n_callbacks] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_socket_->set_read_cb([this, &inbuf, &n_callbacks] {
+            ++n_callbacks;
+            auto error = tr_error{};
+            std::ignore = peer_socket_->try_read(inbuf, 100, &error);
+        });
+        peer_socket_->set_read_low_watermark(8U);
+        peer_socket_->set_read_enabled(true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    auto const send_to_socket = [this](std::string_view const msg) {
+        ASSERT_EQ(msg.size(), send(remote_sock_, msg.data(), TR_IF_WIN32(static_cast<int>(msg.size()), msg.size()), 0));
+    };
+
+    // Half of what the socket waits for doesn't wake it.
+    send_to_socket("1234"sv);
+    EXPECT_FALSE(waitForInSessionThread([&n_callbacks] { return n_callbacks != 0U; }, 200));
+
+    // The rest does, and the read gets all of it.
+    send_to_socket("5678"sv);
+    ASSERT_TRUE(waitForInSessionThread([&inbuf] { return inbuf.to_string_view() == "12345678"sv; }, 5000));
+
+    // Back at 1, any byte wakes it.
+    blockingRunInSessionThread([this] {
+        peer_socket_->set_read_low_watermark(1U);
+        peer_socket_->set_read_enabled(true);
+    });
+    send_to_socket("9"sv);
+    ASSERT_TRUE(waitForInSessionThread([&inbuf] { return inbuf.to_string_view() == "123456789"sv; }, 5000));
 }
 
 TEST_F(PeerSocketTcpTest, completesWithExhaustedUploadQuota)
