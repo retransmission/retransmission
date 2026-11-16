@@ -1497,7 +1497,7 @@ void create_bit_torrent_peer(
         // rendezvous message through them, prompting the target to connect to us.
         // Skipped for holepunch-originated attempts (see was_holepunch_attempt) so a
         // failed rendezvous result doesn't spawn another rendezvous.
-        if (!was_holepunch_attempt && info && !info->is_in_use() && !result.io->is_incoming() && tor->allows_pex() &&
+        if (!was_holepunch_attempt && info && !info->is_connected() && !result.io->is_incoming() && tor->allows_pex() &&
             tor->allows_holepunch()) {
             // Don't ask an introducer to relay a connection to ourselves.
             // The tracker/PEX may advertise our own address; the direct
