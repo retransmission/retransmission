@@ -411,6 +411,39 @@ protected:
         return spare;
     }
 
+    [[nodiscard]] tr_torrent* startBudgetTorrent(std::string_view const name, std::string_view const webseed = {})
+    {
+        auto* const tor = makeBudgetTorrent(name, webseed);
+        tr_torrentStart(tor);
+        EXPECT_TRUE(waitFor(
+            [tor]() {
+                auto const lock = tor->unique_lock();
+                return tor->is_running();
+            },
+            MaxWaitMsec));
+        return tor;
+    }
+
+    [[nodiscard]] size_t senderCount()
+    {
+        auto count = size_t{};
+        blockingRunInSessionThread([this, &count] { count = tr::detail::tr_peerMgrCountSenders(peerManager()).count; });
+        return count;
+    }
+
+    // Adds a peer to `tor` and waits until it unchokes us and we want its pieces.
+    [[nodiscard]] ConnectedPeer& addSendingPeer(tr_torrent& tor)
+    {
+        auto& peer = addPeer(tor);
+        EXPECT_TRUE(waitFor(
+            [&peer]() {
+                collectMessages(peer);
+                return peer.interested;
+            },
+            15000));
+        return peer;
+    }
+
     static void receiveBlock(ConnectedPeer const& peer, Request const& request)
     {
         auto message = std::vector<uint8_t>{};
@@ -1208,6 +1241,52 @@ TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
     auto const lock = tor->unique_lock();
     EXPECT_FALSE(tor->has_block_or_pending(*unrequested));
     EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
+}
+
+TEST_F(RequestBudgetTest, aPeerSendsToUsUntilItChokesUsOrLeaves)
+{
+    auto* const tor = startBudgetTorrent("senders.bin");
+    auto const& choking = addSendingPeer(*tor);
+    std::ignore = addSendingPeer(*tor);
+    EXPECT_EQ(2U, senderCount());
+
+    receive(choking, { 0U, 0U, 0U, 1U, 0U });
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 1U; }, MaxWaitMsec));
+
+    peers_.pop_back();
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 0U; }, MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, peersOfATorrentThatCannotDownloadDoNotSendToUs)
+{
+    auto* const tor = startBudgetTorrent("senders-limited.bin");
+    std::ignore = addSendingPeer(*tor);
+    EXPECT_EQ(1U, senderCount());
+
+    blockingRunInSessionThread([tor] {
+        tr_torrentSetSpeedLimit_KBps(tor, tr_direction::PeerToClient, 0U);
+        tr_torrentUseSpeedLimit(tor, tr_direction::PeerToClient, true);
+    });
+    EXPECT_EQ(0U, senderCount());
+}
+
+TEST_F(RequestBudgetTest, aWebseedWithBlocksRequestedSendsToUs)
+{
+    auto release_response = std::promise<void>{};
+    auto const response_allowed = release_response.get_future().share();
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([response_allowed](evhttp_request* const request) {
+        EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
+        LoopbackServer::reply(request, 503, "Service Unavailable", {});
+    });
+
+    auto* const tor = startBudgetTorrent("senders-webseed.bin", server->url());
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 1U; }, MaxWaitMsec));
+    blockingRunInSessionThread([tor] { tr_torrentStop(tor); });
+    release_response.set_value();
 }
 
 TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)

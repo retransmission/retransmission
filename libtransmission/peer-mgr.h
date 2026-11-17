@@ -680,11 +680,21 @@ void tr_peerMgrFree(tr_peerMgr const* manager);
 // Give every downloading peer a chance to request more blocks.
 void tr_peerMgrRefillRequests(tr_peerMgr* manager);
 
+// The peers and webseeds sending to us over all torrents, and how fast they deliver.
+struct tr_peerMgrSenders {
+    size_t count = 0U;
+    uint64_t rate_byps = 0U;
+};
+
 namespace tr::detail
 {
 // For tests. Without the periodic peer pulse, only a request refill
 // sends new requests.
 void tr_peerMgrStopBandwidthTimer(tr_peerMgr* manager);
+
+// For tests. Counts the senders now, instead of within the last quarter second, and keeps the
+// count for the requests that follow.
+[[nodiscard]] tr_peerMgrSenders tr_peerMgrCountSenders(tr_peerMgr* manager);
 } // namespace tr::detail
 
 void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> socket);

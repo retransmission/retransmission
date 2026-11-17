@@ -1067,6 +1067,19 @@ public:
         bandwidth_timer_->stop();
     }
 
+    // The peers and webseeds sending to us over all torrents, and how fast they deliver. Peer
+    // rates are averaged over seconds, so the count is kept for a quarter second instead of
+    // being taken on every request.
+    [[nodiscard]] tr_peerMgrSenders const& senders(uint64_t const now_msec, bool const refresh = false)
+    {
+        static auto constexpr MaxAgeMsec = uint64_t{ 250U };
+        if (refresh || senders_at_msec_ == 0U || now_msec - senders_at_msec_ >= MaxAgeMsec) {
+            senders_ = count_senders(now_msec);
+            senders_at_msec_ = now_msec;
+        }
+        return senders_;
+    }
+
     [[nodiscard]] tr_swarm* get_existing_swarm(tr_sha1_digest_t const& hash) const
     {
         auto const* const tor = torrents_.get(hash);
@@ -1112,7 +1125,43 @@ private:
         }
     }
 
+    // A peer sends to us when it unchokes us and we want its pieces; a webseed, when it is
+    // delivering or has blocks requested. Only torrents that can request blocks count.
+    [[nodiscard]] tr_peerMgrSenders count_senders(uint64_t const now_msec) const
+    {
+        auto senders = tr_peerMgrSenders{};
+        auto const add = [&senders, now_msec](tr_peer const& peer) {
+            ++senders.count;
+            senders.rate_byps += peer.get_piece_speed(now_msec, tr_direction::PeerToClient).base_quantity();
+        };
+
+        for (auto const* const tor : torrents_) {
+            if (tor->is_done() || !tor->has_metainfo() || !tor->client_can_download() ||
+                session->local_data.admin_op_pending(tor->id())) {
+                continue;
+            }
+
+            for (auto const& peer : tor->swarm->peers) {
+                if (peer->is_active(tr_direction::PeerToClient) && !peer->is_disconnecting()) {
+                    add(*peer);
+                }
+            }
+
+            for (auto const& webseed : tor->swarm->webseeds) {
+                if (webseed->active_req_count(tr_direction::ClientToPeer) != 0U ||
+                    webseed->get_piece_speed(now_msec, tr_direction::PeerToClient).base_quantity() != 0U) {
+                    add(*webseed);
+                }
+            }
+        }
+
+        return senders;
+    }
+
     OutboundCandidates outbound_candidates_;
+
+    tr_peerMgrSenders senders_;
+    uint64_t senders_at_msec_ = 0U;
 
     std::unique_ptr<tr::Timer> const bandwidth_timer_;
     std::unique_ptr<tr::Timer> const peer_info_timer_;
@@ -2521,6 +2570,11 @@ void tr_peerMgrRefillRequests(tr_peerMgr* const manager)
 void tr::detail::tr_peerMgrStopBandwidthTimer(tr_peerMgr* const manager)
 {
     manager->stop_bandwidth_timer();
+}
+
+tr_peerMgrSenders tr::detail::tr_peerMgrCountSenders(tr_peerMgr* const manager)
+{
+    return manager->senders(tr_time_msec(), true);
 }
 
 void tr_peerMgr::bandwidth_pulse()
