@@ -587,7 +587,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     [self.fPiecesControl setSelected:!availability forSegment:PiecesControlSegmentProgress];
 }
 
-- (IBAction)setPiecesView:(id)sender
+- (void)setPiecesView:(id)sender
 {
     BOOL const availability = [sender selectedSegment] == PiecesControlSegmentAvailable;
     [self setPiecesViewAvailability:availability];

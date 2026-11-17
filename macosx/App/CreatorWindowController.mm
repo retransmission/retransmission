@@ -479,7 +479,7 @@ static NSMutableSet* creatorWindowControllerSet;
     self.fCommentView.string = [coder decodeObjectForKey:@"TRCreatorPrivateComment"];
 }
 
-- (IBAction)setLocation:(id)sender
+- (void)setLocation:(id)sender
 {
     NSSavePanel* panel = [NSSavePanel savePanel];
 
@@ -500,7 +500,7 @@ static NSMutableSet* creatorWindowControllerSet;
     }];
 }
 
-- (IBAction)create:(id)sender
+- (void)create:(id)sender
 {
     //make sure the trackers are no longer being verified
     if (self.fTrackerTable.editedRow != -1) {
@@ -548,7 +548,7 @@ static NSMutableSet* creatorWindowControllerSet;
     }
 }
 
-- (IBAction)cancelCreateWindow:(id)sender
+- (void)cancelCreateWindow:(id)sender
 {
     [self.window close];
 }
@@ -564,7 +564,7 @@ static NSMutableSet* creatorWindowControllerSet;
     [self.fTimer fire];
 }
 
-- (IBAction)incrementOrDecrementPieceSize:(id)sender
+- (void)incrementOrDecrementPieceSize:(id)sender
 {
     uint32_t const piece_size = 1U << [(NSStepper*)sender intValue];
 
@@ -583,7 +583,7 @@ static NSMutableSet* creatorWindowControllerSet;
     return self.fTrackers[row];
 }
 
-- (IBAction)addRemoveTracker:(id)sender
+- (void)addRemoveTracker:(id)sender
 {
     //don't allow add/remove when currently adding - it leads to weird results
     if (self.fTrackerTable.editedRow != -1) {

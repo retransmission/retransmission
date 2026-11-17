@@ -611,7 +611,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     [self reloadVisibleRows];
 }
 
-- (IBAction)toggleControlForTorrent:(id)sender
+- (void)toggleControlForTorrent:(id)sender
 {
     Torrent* torrent = [self itemAtRow:[self rowForView:[sender superview]]];
     if (torrent.active) {
@@ -627,7 +627,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     }
 }
 
-- (IBAction)revealTorrentFile:(id)sender
+- (void)revealTorrentFile:(id)sender
 {
     Torrent* torrent = [self itemAtRow:[self rowForView:[sender superview]]];
     NSString* location = torrent.dataLocation;
@@ -637,7 +637,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     }
 }
 
-- (IBAction)displayTorrentActionPopover:(id)sender
+- (void)displayTorrentActionPopover:(id)sender
 {
     if (self.fActionPopoverShown) {
         return;
