@@ -482,13 +482,7 @@ TEST_F(HandshakeTest, incomingEncryptedRejectsPadALongerThan64KiB)
     // for the client to read it. The client is then waiting on the socket.
     static auto constexpr FirstLen = size_t{ 10U };
     sendToClient(sock, std::string_view{ payload }.substr(0, FirstLen));
-    ASSERT_TRUE(waitFor(
-        [&] {
-            auto n_read = size_t{};
-            blockingRunInSessionThread([&] { n_read = io->read_buffer_size(); });
-            return n_read == FirstLen;
-        },
-        MaxWaitMsec));
+    ASSERT_TRUE(waitForInSessionThread([&] { return io->read_buffer_size() == FirstLen; }, MaxWaitMsec));
 
     // Queue the rest in one send while the session thread is busy, so that the
     // client's next read gets all of it at once.
@@ -502,7 +496,7 @@ TEST_F(HandshakeTest, incomingEncryptedRejectsPadALongerThan64KiB)
     ASSERT_EQ(static_cast<int64_t>(std::size(rest)), n_sent) << tr_net_strerror(send_err);
 
     // The handshake must fail before the client replies with Yb.
-    ASSERT_TRUE(waitFor([&res] { return res.has_value(); }, MaxWaitMsec));
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
     EXPECT_FALSE(res->is_connected);
     auto buf = std::array<char, 16>{};
     EXPECT_LE(recv(sock, std::data(buf), std::size(buf), 0), 0);
