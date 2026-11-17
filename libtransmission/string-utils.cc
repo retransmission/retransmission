@@ -51,10 +51,10 @@ std::string_view tr_strv_strip(std::string_view str)
     };
 
     auto const it = std::ranges::find_if_not(str, Test);
-    str.remove_prefix(std::ranges::distance(std::ranges::begin(str), it));
+    str = std::string_view{ it, std::ranges::end(str) };
 
     auto const rit = std::ranges::find_if_not(std::ranges::rbegin(str), std::ranges::rend(str), Test);
-    str.remove_suffix(std::ranges::distance(std::ranges::rbegin(str), rit));
+    str = std::string_view{ std::ranges::begin(str), rit.base() };
 
     return str;
 }

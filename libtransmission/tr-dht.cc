@@ -421,7 +421,7 @@ private:
                 out += PortLen;
             }
 
-            benc[TR_KEY_nodes] = tr_variant::make_raw(std::data(compact), out - std::data(compact));
+            benc[TR_KEY_nodes] = tr_variant::make_raw(std::string_view{ std::data(compact), out });
         }
 
         if (num6 > 0) {
@@ -434,7 +434,7 @@ private:
                 out6 += PortLen;
             }
 
-            benc[TR_KEY_nodes6] = tr_variant::make_raw(std::data(compact6), out6 - std::data(compact6));
+            benc[TR_KEY_nodes6] = tr_variant::make_raw(std::string_view{ std::data(compact6), out6 });
         }
 
         tr_variant_serde::benc().to_file(tr_variant{ std::move(benc) }, state_filename_);

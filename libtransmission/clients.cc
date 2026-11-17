@@ -34,10 +34,10 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T const&
         return { buf, buflen };
     }
 
-    auto const [out, len] = fmt::format_to_n(buf, buflen, "{}", value);
-    auto* const end = buf + std::min(buflen - 1, static_cast<size_t>(out - buf));
+    auto const n_written = std::min(buflen - 1, fmt::format_to_n(buf, buflen - 1U, "{}", value).size);
+    auto* const end = buf + n_written;
     *end = '\0';
-    return { end, buflen - (end - buf) };
+    return { end, buflen - n_written };
 }
 
 template<typename T, typename... ArgTypes>
@@ -47,7 +47,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     return buf_append(buf, buflen, args...);
 }
 
-[[nodiscard]] constexpr std::string_view base62str(uint8_t chr)
+[[nodiscard]] constexpr std::string_view base62str(char chr)
 {
     // clang-format off: 90 characters per column
     auto constexpr Strings = std::to_array<std::string_view>({
@@ -80,7 +80,7 @@ constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T t, Arg
     });
     // clang-format on
 
-    return Strings[chr];
+    return Strings[static_cast<unsigned char>(chr)];
 }
 
 [[nodiscard]] int strint(char const* pch, int span, int base = 10)
@@ -649,6 +649,6 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
             }
         }
 
-        buf_append(buf, buflen, std::string_view(begin, walk - begin));
+        buf_append(buf, buflen, std::string_view{ begin, walk });
     }
 }

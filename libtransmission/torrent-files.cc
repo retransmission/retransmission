@@ -596,12 +596,12 @@ void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& appe
     {
         // strip surrounding spaces and trailing periods
         auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
-        path.remove_prefix(std::ranges::distance(std::ranges::begin(path), it));
+        path = std::string_view{ it, std::ranges::end(path) };
 
         auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
             return ch == '.' || std::isspace(ch);
         });
-        path.remove_suffix(std::ranges::distance(std::ranges::rbegin(path), rit));
+        path = std::string_view{ std::ranges::begin(path), rit.base() };
     }
 
     // replace reserved filenames with an underscore

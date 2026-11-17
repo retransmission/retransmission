@@ -278,8 +278,7 @@ template<std::integral T>
         return std::nullopt;
     }
     if (remainder != nullptr) {
-        *remainder = str;
-        remainder->remove_prefix(result.ptr - std::data(str));
+        *remainder = std::string_view{ result.ptr, end_ch };
     }
     return val;
 }
@@ -307,8 +306,7 @@ template<std::floating_point T>
         return std::nullopt;
     }
     if (remainder != nullptr) {
-        *remainder = str;
-        remainder->remove_prefix(result.ptr - std::data(str));
+        *remainder = std::string_view{ result.ptr, end_ch };
     }
     return val;
 }
