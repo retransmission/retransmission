@@ -7,7 +7,7 @@
 #include <array>
 #include <cerrno>
 #include <cstddef> // size_t, std::byte
-#include <cstdint> // uint8_t
+#include <cstdint> // int64_t, uint8_t
 #include <map>
 #include <memory>
 #include <optional>
@@ -158,12 +158,22 @@ public:
         .is_running = true,
     };
 
-    [[nodiscard]] auto createIncomingIo(tr_session* session)
+    // A nonzero buf_size sets the buffers that hold bytes the peer has sent
+    // but the client has not read. Platforms differ in which one limits that,
+    // so it sets both the client's SO_RCVBUF and the peer's SO_SNDBUF.
+    [[nodiscard]] auto createIncomingIo(tr_session* session, int const buf_size = 0)
     {
         auto sockpair = std::to_array<evutil_socket_t>({ -1, -1 });
         EXPECT_EQ(0, evutil_socketpair(LOCAL_SOCKETPAIR_AF, SOCK_STREAM, 0, std::data(sockpair))) << tr_strerror(errno);
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockpair[0]));
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockpair[1]));
+        if (buf_size != 0) {
+            auto const* const optval = reinterpret_cast<char const*>(&buf_size);
+            EXPECT_EQ(0, setsockopt(sockpair[0], SOL_SOCKET, SO_RCVBUF, optval, sizeof(buf_size)))
+                << tr_net_strerror(sockerrno);
+            EXPECT_EQ(0, setsockopt(sockpair[1], SOL_SOCKET, SO_SNDBUF, optval, sizeof(buf_size)))
+                << tr_net_strerror(sockerrno);
+        }
         return std::pair{
             tr_peerIo::new_incoming(
                 session,
@@ -434,6 +444,62 @@ TEST_F(HandshakeTest, incomingEncryptedUnknownInfoHash)
     EXPECT_FALSE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(tr_sha1_digest_t{}, io->torrent_hash());
+
+    tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
+}
+
+// PadA is longer than 64 KiB, but its length modulo 64 KiB is within
+// PadaMaxlen, so a 16-bit length would pass the limit check.
+TEST_F(HandshakeTest, incomingEncryptedRejectsPadALongerThan64KiB)
+{
+    static auto constexpr PadALen = size_t{ 65536U } + 10U;
+    static_assert(PadALen % 65536U <= tr_handshake::PadaMaxlen);
+
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+    mediator.setPrivateKeyFromBase64("0EYKCwBWQ4Dg9kX3c5xxjVtBDKw="sv);
+
+    // 128 KiB holds Ya and PadA, and stays under NetBSD's default socket buffer limit.
+    static auto constexpr SockBufSize = 128 * 1024;
+    auto [io, sock] = createIncomingIo(session_, SockBufSize);
+
+    auto res = std::optional<tr_handshake::Result>{};
+    auto handshake = startHandshake(res, &mediator, io);
+
+    // Ya is the one recorded for HandshakeTest.incomingEncrypted.
+    auto payload = tr_base64_decode(
+        "svkySIFcCsrDTeHjPt516UFbsoR+5vfbe5/m6stE7u5JLZ10kJ19NmP64E10qI"
+        "nn78sCrJgjw1yEHHwrzOcKiRlYvcMotzJMe+SjrFUnaw3KBfn2bcKBhxb/sfM9"
+        "J7nJ"sv);
+    payload.append(PadALen, ' ');
+
+    // Send too little of Ya to tell it from a plaintext handshake, and wait
+    // for the client to read it. The client is then waiting on the socket.
+    static auto constexpr FirstLen = size_t{ 10U };
+    sendToClient(sock, std::string_view{ payload }.substr(0, FirstLen));
+    ASSERT_TRUE(waitForInSessionThread([&] { return io->read_buffer_size() == FirstLen; }, MaxWaitMsec));
+
+    // Queue the rest in one send while the session thread is busy, so that the
+    // client's next read gets all of it at once.
+    auto const rest = std::string_view{ payload }.substr(FirstLen);
+    auto n_sent = int64_t{};
+    auto send_err = 0;
+    blockingRunInSessionThread([&] {
+        n_sent = send(sock, std::data(rest), std::size(rest), 0);
+        send_err = sockerrno;
+    });
+    ASSERT_EQ(static_cast<int64_t>(std::size(rest)), n_sent) << tr_net_strerror(send_err);
+
+    // The handshake must fail before the client replies with Yb.
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
+    EXPECT_FALSE(res->is_connected);
+    auto buf = std::array<char, 16>{};
+    EXPECT_LE(recv(sock, std::data(buf), std::size(buf), 0), 0);
 
     tr_net_close_socket(sock);
     blockingRunInSessionThread([&] {
