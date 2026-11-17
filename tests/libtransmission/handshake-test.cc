@@ -11,8 +11,12 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <ranges>
+#include <span>
+#include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -26,11 +30,13 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/crypto-utils.h> // tr_sha1, tr_sha1_from_string, tr_base...
+#include <libtransmission/error.h>
 #include <libtransmission/handshake.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-io.h>
 #include <libtransmission/peer-mse.h>
 #include <libtransmission/peer-socket-tcp.h>
+#include <libtransmission/peer-socket.h>
 #include <libtransmission/session.h> // tr_peerIdInit()
 #include <libtransmission/string-utils.h>
 #include <libtransmission/timer.h>
@@ -38,6 +44,7 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/types.h>
 
+#include "fake-timer.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -49,14 +56,105 @@ namespace tr::test
 
 auto constexpr MaxWaitMsec = 5000;
 
+namespace
+{
+
+class RetrySocket final : public tr_peer_socket
+{
+public:
+    RetrySocket(tr_socket_address const& address, tr_transport_protocol protocol, bool is_connected)
+        : tr_peer_socket{ address }
+        , protocol_{ protocol }
+        , is_connected_{ is_connected }
+    {
+    }
+
+    void set_read_enabled(bool enabled) override
+    {
+        read_enabled_ = enabled;
+    }
+
+    void set_write_enabled(bool enabled) override
+    {
+        write_enabled_ = enabled;
+    }
+
+    [[nodiscard]] bool is_read_enabled() const override
+    {
+        return read_enabled_;
+    }
+
+    [[nodiscard]] bool is_write_enabled() const override
+    {
+        return write_enabled_;
+    }
+
+    [[nodiscard]] constexpr bool is_connected() const noexcept override
+    {
+        return is_connected_;
+    }
+
+    [[nodiscard]] constexpr tr_transport_protocol type() const noexcept override
+    {
+        return protocol_;
+    }
+
+    void receive(std::span<std::byte const> bytes)
+    {
+        input_.assign(bytes.begin(), bytes.end());
+        read_cb();
+    }
+
+    void fail(int code = ECONNRESET)
+    {
+        error_cb(tr_net_error(code));
+    }
+
+    std::string output;
+
+protected:
+    size_t try_read_impl(InBuf& buf, size_t max, tr_error* error) override
+    {
+        auto const n = std::min(max, input_.size());
+        if (n == 0U) {
+            if (error != nullptr) {
+                *error = tr_net_error(EWOULDBLOCK);
+            }
+            return 0;
+        }
+
+        buf.add(input_.data(), n);
+        input_.erase(input_.begin(), input_.begin() + n);
+        return n;
+    }
+
+    size_t try_write_impl(OutBuf& buf, size_t max, tr_error* /*error*/) override
+    {
+        auto const n = std::min(max, buf.size());
+        output.append(reinterpret_cast<char const*>(buf.data()), n);
+        buf.drain(n);
+        return n;
+    }
+
+private:
+    tr_transport_protocol protocol_;
+    bool is_connected_;
+    bool read_enabled_ = false;
+    bool write_enabled_ = false;
+    std::vector<std::byte> input_;
+};
+
+} // namespace
+
 class HandshakeTest : public SessionTest
 {
 public:
     class MediatorMock final : public tr_handshake::Mediator
     {
     public:
-        explicit MediatorMock(tr_session* session)
+        explicit MediatorMock(tr_session* session, tr::TimerMaker* timer_maker = nullptr)
             : session_{ session }
+            , timer_maker_{ timer_maker }
         {
         }
 
@@ -82,7 +180,7 @@ public:
 
         [[nodiscard]] tr::TimerMaker& timer_maker() override
         {
-            return session_->timerMaker();
+            return timer_maker_ != nullptr ? *timer_maker_ : session_->timerMaker();
         }
 
         [[nodiscard]] bool allows_dht() const override
@@ -92,19 +190,19 @@ public:
 
         [[nodiscard]] size_t pad(void* setme, [[maybe_unused]] size_t maxlen) const override
         {
-            TR_ASSERT(maxlen > 10);
-            auto const len = size_t{ 10 };
-            std::fill_n(static_cast<char*>(setme), 10, ' ');
-            return len;
+            TR_ASSERT(maxlen > PadASize);
+            std::fill_n(static_cast<char*>(setme), PadASize, ' ');
+            return PadASize;
         }
 
-        [[nodiscard]] tr_message_stream_encryption::DH::private_key_bigend_t private_key() const override
+        [[nodiscard]] tr_handshake::DH get_dh() const override
         {
-            return private_key_;
+            return tr_handshake::DH{ private_key_ };
         }
 
-        void set_utp_failed(tr_sha1_digest_t const& /*info_hash*/, tr_socket_address const& /*socket_address*/) override
+        void set_utp_failed(tr_sha1_digest_t const& info_hash, tr_socket_address const& socket_address) override
         {
+            utp_failures.emplace_back(info_hash, socket_address);
         }
 
         void setPrivateKeyFromBase64(std::string_view b64)
@@ -115,9 +213,97 @@ public:
         }
 
         tr_session* const session_;
+        tr::TimerMaker* const timer_maker_;
         std::map<tr_sha1_digest_t, TorrentInfo> torrents;
         tr_message_stream_encryption::DH::private_key_bigend_t private_key_ = {};
+        std::vector<std::pair<tr_sha1_digest_t, tr_socket_address>> utp_failures;
     };
+
+    struct RetryScript {
+        RetryScript()
+        {
+            TR_ASSERT(active_retry_script == nullptr);
+            active_retry_script = this;
+        }
+
+        ~RetryScript()
+        {
+            active_retry_script = nullptr;
+        }
+
+        RetryScript(RetryScript const&) = delete;
+        RetryScript(RetryScript&&) = delete;
+        RetryScript& operator=(RetryScript const&) = delete;
+        RetryScript& operator=(RetryScript&&) = delete;
+
+        std::optional<tr_transport_protocol> unavailable;
+        std::vector<tr_transport_protocol> attempts;
+        std::vector<std::shared_ptr<RetrySocket>> sockets;
+    };
+
+    // Socket factories have no context argument; one script runs on the session thread.
+    inline static RetryScript* active_retry_script = nullptr;
+
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> makeRetrySocket(
+        tr_socket_address const& address,
+        tr_transport_protocol protocol)
+    {
+        auto& script = *active_retry_script;
+        script.attempts.push_back(protocol);
+        if (script.unavailable == protocol) {
+            return {};
+        }
+
+        return script.sockets.emplace_back(std::make_shared<RetrySocket>(address, protocol, true));
+    }
+
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> retryUtp(
+        tr_session& /*session*/,
+        tr_socket_address const& address,
+        bool /*client_is_seed*/)
+    {
+        return makeRetrySocket(address, tr_transport_protocol::UTP);
+    }
+
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> retryTcp(
+        tr_session& /*session*/,
+        tr_socket_address const& address,
+        bool /*client_is_seed*/)
+    {
+        return makeRetrySocket(address, tr_transport_protocol::TCP);
+    }
+
+    [[nodiscard]] auto createRetryIo(
+        RetryScript& script,
+        std::span<tr_transport_protocol const> transports,
+        bool connected = true,
+        bool incoming = false)
+    {
+        TR_ASSERT(!transports.empty());
+        auto factories = tr_peerIo::SocketFactories{};
+        for (auto const protocol : std::views::reverse(transports)) {
+            factories.emplace_back(protocol == tr_transport_protocol::UTP ? &retryUtp : &retryTcp);
+        }
+
+        auto socket = std::make_shared<RetrySocket>(DefaultPeerSockAddr, transports.front(), connected);
+        script.sockets.push_back(socket);
+        return tr_peerIo::create(
+            session_,
+            std::move(socket),
+            std::move(factories),
+            &session_->top_bandwidth_,
+            &UbuntuTorrent.info_hash,
+            incoming,
+            false);
+    }
+
+    static void expectAttempt(tr_peerIo& io, RetrySocket const& socket, bool mse)
+    {
+        auto const expected_size = mse ? tr_handshake::DH::KeySize + PadASize : tr_handshake::HandshakeSize;
+        EXPECT_EQ(expected_size, io.flush(tr_direction::Up, SIZE_MAX));
+        EXPECT_EQ(expected_size, socket.output.size());
+        EXPECT_EQ(!mse, std::string_view{ socket.output }.starts_with(PlaintextProtocolName));
+    }
 
     template<typename Span>
     void sendToClient(evutil_socket_t sock, Span const& data)
@@ -141,6 +327,7 @@ public:
 
     static auto constexpr ReservedBytesNoExtensions = std::to_array<uint8_t>({ 0, 0, 0, 0, 0, 0, 0, 0 });
     static auto constexpr PlaintextProtocolName = "\023BitTorrent protocol"sv;
+    static auto constexpr PadASize = 10U;
 
     tr_socket_address const DefaultPeerSockAddr{ *tr_address::from_string("127.0.0.1"sv), tr_port::from_host(8080) };
     tr_handshake::Mediator::TorrentInfo const TorrentWeAreSeeding{
@@ -192,6 +379,7 @@ public:
         auto peer_io = tr_peerIo::create(
             session,
             tr_peer_socket_tcp::create(*session, DefaultPeerSockAddr, static_cast<tr_socket_t>(sockpair[0])),
+            {},
             &session->top_bandwidth_,
             &info_hash,
             false /*incoming*/,
@@ -229,6 +417,308 @@ public:
     }
 };
 
+TEST_F(HandshakeTest, retriesBothModesOncePerTransport)
+{
+    blockingRunInSessionThread([this] {
+        for (
+            auto const& transports : {
+                std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP },
+                std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP },
+            }) {
+            for (auto const mode : { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED }) {
+                SCOPED_TRACE(std::string{ tr_transport_protocol_to_sv(transports.front()) });
+                SCOPED_TRACE(static_cast<int>(mode));
+
+                auto script = RetryScript{};
+                auto mediator = MediatorMock{ session_ };
+                mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+                auto io = createRetryIo(script, transports);
+                auto result = std::optional<tr_handshake::Result>{};
+                auto handshake = startHandshake(result, &mediator, io, mode);
+                auto const expected_protocols = std::array{ transports[0], transports[0], transports[1], transports[1] };
+                auto const prefer_mse = mode == TR_ENCRYPTION_PREFERRED;
+                auto const expected_modes = std::array{ prefer_mse, !prefer_mse, prefer_mse, !prefer_mse };
+
+                for (auto i = size_t{}; i < expected_modes.size(); ++i) {
+                    ASSERT_FALSE(result);
+                    ASSERT_EQ(i + 1U, script.sockets.size());
+                    auto const socket = script.sockets.back();
+                    EXPECT_EQ(expected_protocols[i], socket->type());
+                    expectAttempt(*io, *socket, expected_modes[i]);
+                    socket->fail();
+                }
+
+                ASSERT_TRUE(result);
+                EXPECT_FALSE(result->is_connected);
+                EXPECT_EQ((std::vector{ transports[0], transports[1], transports[1] }), script.attempts);
+            }
+        }
+    });
+}
+
+TEST_F(HandshakeTest, skipsAlternateModeWhenTransportDidNotConnect)
+{
+    blockingRunInSessionThread([this] {
+        for (
+            auto const& transports : {
+                std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP },
+                std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP },
+            }) {
+            for (auto const mode : { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED }) {
+                SCOPED_TRACE(std::string{ tr_transport_protocol_to_sv(transports.front()) });
+                SCOPED_TRACE(static_cast<int>(mode));
+
+                auto script = RetryScript{};
+                auto mediator = MediatorMock{ session_ };
+                mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+                auto io = createRetryIo(script, transports, false);
+                auto result = std::optional<tr_handshake::Result>{};
+                auto handshake = startHandshake(result, &mediator, io, mode);
+
+                script.sockets.front()->fail(ETIMEDOUT);
+                ASSERT_FALSE(result);
+                ASSERT_EQ(2U, script.sockets.size());
+                EXPECT_EQ((std::vector{ transports[1] }), script.attempts);
+                EXPECT_EQ(transports[1], script.sockets.back()->type());
+                expectAttempt(*io, *script.sockets.back(), mode == TR_ENCRYPTION_PREFERRED);
+            }
+        }
+    });
+}
+
+TEST_F(HandshakeTest, requiredEncryptionNeverRetriesPlaintext)
+{
+    blockingRunInSessionThread([this] {
+        auto script = RetryScript{};
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+        constexpr auto Transports = std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP };
+        auto io = createRetryIo(script, Transports);
+        auto result = std::optional<tr_handshake::Result>{};
+        auto handshake = startHandshake(result, &mediator, io, TR_ENCRYPTION_REQUIRED);
+
+        expectAttempt(*io, *script.sockets.back(), true);
+        script.sockets.back()->fail();
+        ASSERT_FALSE(result);
+        ASSERT_EQ(2U, script.sockets.size());
+        EXPECT_EQ((std::vector{ tr_transport_protocol::TCP }), script.attempts);
+        expectAttempt(*io, *script.sockets.back(), true);
+        script.sockets.back()->fail();
+        ASSERT_TRUE(result);
+        EXPECT_FALSE(result->is_connected);
+    });
+}
+
+TEST_F(HandshakeTest, handlesFailedReconnectSocketCreation)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const mode : { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED }) {
+            SCOPED_TRACE(static_cast<int>(mode));
+
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, mode);
+            script.unavailable = Transports.front();
+
+            script.sockets.front()->fail();
+            ASSERT_FALSE(result);
+            ASSERT_EQ(2U, script.sockets.size());
+            EXPECT_EQ((std::vector{ Transports[0], Transports[1] }), script.attempts);
+            EXPECT_EQ(Transports[1], script.sockets.back()->type());
+            expectAttempt(*io, *script.sockets.back(), mode != TR_CLEAR_PREFERRED);
+        }
+
+        for (auto const mode : { TR_ENCRYPTION_REQUIRED, TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED }) {
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports, false);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, mode);
+            script.unavailable = Transports.back();
+
+            script.sockets.front()->fail();
+            ASSERT_TRUE(result);
+            EXPECT_FALSE(result->is_connected);
+            EXPECT_EQ((std::vector{ Transports.back() }), script.attempts);
+        }
+    });
+}
+
+TEST_F(HandshakeTest, incomingAndUnknownTorrentErrorsFailWithoutRetry)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const incoming : { false, true }) {
+            SCOPED_TRACE(incoming);
+
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            if (incoming) {
+                mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            }
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports, true, incoming);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, TR_ENCRYPTION_PREFERRED);
+
+            script.sockets.front()->fail();
+            ASSERT_TRUE(result);
+            EXPECT_FALSE(result->is_connected);
+            EXPECT_TRUE(script.attempts.empty());
+        }
+    });
+}
+
+TEST_F(HandshakeTest, partialPlaintextReplyDoesNotRepeatMse)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const mode : { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED }) {
+            for (auto const reply_size : { tr_handshake::HandshakeName.size(), tr_handshake::IncomingHandshakeLen - 1U }) {
+                SCOPED_TRACE(static_cast<int>(mode));
+                SCOPED_TRACE(reply_size);
+
+                auto script = RetryScript{};
+                auto mediator = MediatorMock{ session_ };
+                mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+                constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+                auto io = createRetryIo(script, Transports);
+                auto result = std::optional<tr_handshake::Result>{};
+                auto handshake = startHandshake(result, &mediator, io, mode);
+
+                if (mode == TR_CLEAR_PREFERRED) {
+                    expectAttempt(*io, *script.sockets.back(), false);
+                    script.sockets.back()->fail();
+                    ASSERT_EQ(2U, script.sockets.size());
+                }
+                expectAttempt(*io, *script.sockets.back(), true);
+
+                auto reply = std::array<std::byte, tr_handshake::IncomingHandshakeLen - 1U>{};
+                std::ranges::copy(tr_handshake::HandshakeName, reply.begin());
+                script.sockets.back()->receive(std::span{ reply }.first(reply_size));
+                ASSERT_EQ(reply_size, io->read_buffer_size());
+                auto const attempts = script.attempts;
+                script.sockets.back()->fail();
+                ASSERT_TRUE(result);
+                EXPECT_FALSE(result->is_connected);
+                EXPECT_EQ(attempts, script.attempts);
+            }
+        }
+    });
+}
+
+TEST_F(HandshakeTest, errorsAfterInitialHandshakeStagesFailWithoutRetry)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const mse : { false, true }) {
+            SCOPED_TRACE(mse);
+
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, mse ? TR_ENCRYPTION_PREFERRED : TR_CLEAR_PREFERRED);
+            expectAttempt(*io, *script.sockets.back(), mse);
+
+            if (mse) {
+                auto yb = tr_handshake::DH::key_bigend_t{};
+                yb.back() = std::byte{ 2 };
+                script.sockets.back()->receive(yb);
+            } else {
+                auto reply = std::array<std::byte, tr_handshake::IncomingHandshakeLen>{};
+                std::ranges::copy(tr_handshake::HandshakeName, reply.begin());
+                std::ranges::copy(
+                    UbuntuTorrent.info_hash,
+                    reply.begin() + tr_handshake::HandshakeName.size() + tr_handshake::HandshakeFlagsBytes);
+                script.sockets.back()->receive(reply);
+            }
+
+            ASSERT_FALSE(result);
+            EXPECT_EQ(0U, io->read_buffer_size());
+            script.sockets.back()->fail();
+            ASSERT_TRUE(result);
+            EXPECT_FALSE(result->is_connected);
+            EXPECT_TRUE(script.attempts.empty());
+        }
+    });
+}
+
+TEST_F(HandshakeTest, recordsUnconnectedUtpFailureBeforeRetry)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const fallback : { false, true }) {
+            SCOPED_TRACE(fallback);
+
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            constexpr auto Transports = std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP };
+            auto io = createRetryIo(script, std::span{ Transports }.first(fallback ? 2U : 1U), false);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, TR_ENCRYPTION_PREFERRED);
+
+            script.sockets.front()->fail(ETIMEDOUT);
+            ASSERT_EQ(1U, mediator.utp_failures.size());
+            EXPECT_EQ(UbuntuTorrent.info_hash, mediator.utp_failures.front().first);
+            EXPECT_EQ(DefaultPeerSockAddr, mediator.utp_failures.front().second);
+            EXPECT_EQ(!fallback, result.has_value());
+            if (fallback) {
+                EXPECT_EQ((std::vector{ tr_transport_protocol::TCP }), script.attempts);
+            }
+        }
+
+        for (auto const protocol : { tr_transport_protocol::UTP, tr_transport_protocol::TCP }) {
+            SCOPED_TRACE(std::string{ tr_transport_protocol_to_sv(protocol) });
+
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+            auto const transports = std::array{ protocol };
+            auto io = createRetryIo(script, transports, protocol == tr_transport_protocol::UTP);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, TR_ENCRYPTION_PREFERRED);
+
+            script.sockets.front()->fail(ETIMEDOUT);
+            EXPECT_TRUE(mediator.utp_failures.empty());
+        }
+    });
+}
+
+TEST_F(HandshakeTest, retriesDoNotRestartHandshakeTimeout)
+{
+    blockingRunInSessionThread([this] {
+        auto script = RetryScript{};
+        auto timer_maker = FakeTimerMaker{};
+        auto mediator = MediatorMock{ session_, &timer_maker };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+        constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+        auto io = createRetryIo(script, Transports);
+        auto result = std::optional<tr_handshake::Result>{};
+        auto handshake = startHandshake(result, &mediator, io, TR_ENCRYPTION_PREFERRED);
+
+        ASSERT_EQ(1U, timer_maker.timers().size());
+        auto* const timer = timer_maker.timers().front();
+        EXPECT_EQ(1, timer->startCount());
+        script.sockets.back()->fail();
+        script.sockets.back()->fail();
+        ASSERT_FALSE(result);
+        EXPECT_EQ(1, timer->startCount());
+
+        timer->fire();
+        ASSERT_TRUE(result);
+        EXPECT_FALSE(result->is_connected);
+        auto const attempts = script.attempts;
+        script.sockets.back()->fail();
+        EXPECT_EQ(attempts, script.attempts);
+    });
+}
+
 TEST_F(HandshakeTest, incomingPlaintext)
 {
     auto const peer_id = makeRandomPeerId();
@@ -252,10 +742,9 @@ TEST_F(HandshakeTest, incomingPlaintext)
 
     auto res = std::optional<tr_handshake::Result>{};
     auto handshake = startHandshake(res, &mediator, io);
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_TRUE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(io, res->io);
@@ -286,10 +775,9 @@ TEST_F(HandshakeTest, incomingPlaintextUnknownInfoHash)
 
     auto res = std::optional<tr_handshake::Result>{};
     auto handshake = startHandshake(res, &mediator, io);
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_FALSE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(io, res->io);
@@ -318,10 +806,9 @@ TEST_F(HandshakeTest, outgoingPlaintext)
 
     auto res = std::optional<tr_handshake::Result>{};
     auto handshake = startHandshake(res, &mediator, io);
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_TRUE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(io, res->io);
@@ -378,10 +865,9 @@ TEST_F(HandshakeTest, incomingEncrypted)
         "04/1W1A2PHgg+I9puac/i9BsFPcjdQeoVtU73lNCbTDQgTieyjDWmwo="sv);
 
     // 4. Wait for handshake to complete.
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_TRUE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(io, res->io);
@@ -437,10 +923,9 @@ TEST_F(HandshakeTest, incomingEncryptedUnknownInfoHash)
         "04/1W1A2PHgg+I9puac/i9BsFPcjdQeoVtU73lNCbTDQgTieyjDWmwo="sv);
 
     // 4. Wait for handshake to complete.
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_FALSE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(tr_sha1_digest_t{}, io->torrent_hash());
@@ -582,10 +1067,9 @@ TEST_F(HandshakeTest, outgoingEncrypted)
         "2G4l/eU/hFHEWzOqUgr6908KtU"sv);
 
     // 5. Wait for handshake to complete.
-    waitFor([&res] { return res.has_value(); }, MaxWaitMsec);
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
 
     // check the results
-    ASSERT_TRUE(res.has_value());
     EXPECT_TRUE(res->is_connected);
     EXPECT_TRUE(res->read_anything_from_peer);
     EXPECT_EQ(io, res->io);

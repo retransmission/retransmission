@@ -103,7 +103,9 @@ TEST_F(PeerSocketTcpTest, pendingConnectionPreservesBuffersAndReportsFailure)
             return false;
         }
 
+        EXPECT_FALSE(peer_socket_->is_connected());
         peer_socket_->set_error_cb([this](tr_error const& error) {
+            EXPECT_FALSE(peer_socket_->is_connected());
             peer_socket_.reset();
             connect_error_ = error;
             ++error_count_;
@@ -160,6 +162,7 @@ TEST_F(PeerSocketTcpTest, completesWithoutPayloadPollingAndAcceptedSocketIsReady
         peer_socket_->set_write_enabled(false);
     });
     ASSERT_TRUE(acceptPeer());
+    ASSERT_TRUE(waitForInSessionThread([this] { return peer_socket_->is_connected(); }, 5000));
 
     static auto constexpr Outgoing = "outgoing"sv;
     static auto constexpr Incoming = "incoming"sv;
@@ -184,6 +187,7 @@ TEST_F(PeerSocketTcpTest, completesWithoutPayloadPollingAndAcceptedSocketIsReady
 
     blockingRunInSessionThread([this] {
         auto const accepted = tr_peer_socket_tcp::create(*session_, endpoint_, std::exchange(remote_sock_, TR_BAD_SOCKET));
+        EXPECT_TRUE(accepted->is_connected());
         auto inbuf = tr_peer_socket::PeerBuffer{};
         auto error = tr_error{};
         EXPECT_EQ(Outgoing.size(), accepted->try_read(inbuf, Outgoing.size(), &error));

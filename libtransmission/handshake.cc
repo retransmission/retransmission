@@ -587,49 +587,94 @@ ReadState tr_handshake::can_read(tr_peerIo* peer_io, void* vhandshake, size_t* p
 void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandshake)
 {
     auto* handshake = static_cast<tr_handshake*>(vhandshake);
+    auto const did_connect = io->is_connected();
+    auto const& info_hash = io->torrent_hash();
 
     auto const retry_plain = [&] {
-        handshake->send_handshake(io);
+        if (!handshake->send_handshake(io)) {
+            handshake->done(false);
+            return false;
+        }
         handshake->set_state(State::AwaitingHandshake);
+        return true;
+    };
+    auto const retry_mse = [&] {
+        handshake->send_ya(io);
+        handshake->set_state(State::AwaitingYb);
     };
     auto const fail = [&] {
         tr_logAddTraceHand(handshake, fmt::format("handshake socket err: {:s} ({:d})", error.message(), error.code()));
         handshake->done(false);
     };
 
+    auto const was_mse = handshake->dh_.has_value();
+    auto const transport_protocol_before = io->transport_protocol();
     handshake->maybe_recycle_dh();
 
-    if (io->is_utp() && !io->is_incoming() && handshake->is_state(State::AwaitingYb)) {
-        // the peer probably doesn't speak µTP.
-
-        auto const info_hash = io->torrent_hash();
-        auto const info = handshake->mediator_->torrent(info_hash);
-
-        /* Don't mark a peer as non-µTP unless it's really a connect failure. */
-        if ((error.code() == ETIMEDOUT || error.code() == ECONNREFUSED) && info) {
-            handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
-        }
-
-        if (io->reconnect()) {
-            tr_logAddTraceHand(handshake, "uTP connection failed, trying TCP...");
-            if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
-                handshake->send_ya(io);
-            } else {
-                retry_plain();
-            }
-            return;
-        }
-
+    if (io->is_incoming() || !handshake->mediator_->torrent(info_hash)) {
         fail();
         return;
     }
 
-    /* if the error happened while we were sending a public key, we might
-     * have encountered a peer that doesn't do encryption... reconnect and
-     * try a plaintext handshake */
-    if (handshake->is_state(State::AwaitingYb) && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED && io->reconnect()) {
-        tr_logAddTraceHand(handshake, "MSE handshake failed, trying plaintext...");
-        retry_plain();
+    // Don't mark a peer as non-µTP unless it's really a connect failure.
+    if (!did_connect && io->is_utp() && (error.code() == ETIMEDOUT || error.code() == ECONNREFUSED)) {
+        handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
+    }
+
+    if (handshake->is_state(State::AwaitingYb)) {
+        if (did_connect && handshake->retried_mse_ != true && handshake->encryption_mode_ != TR_ENCRYPTION_REQUIRED &&
+            io->reconnect(true)) {
+            if (!retry_plain()) {
+                return;
+            }
+            handshake->retried_mse_ = false;
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "MSE {} handshake failed, trying plaintext {}...",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
+            return;
+        }
+    } else if (handshake->is_state(State::AwaitingHandshake) && !was_mse) {
+        if (did_connect && handshake->retried_mse_ != false && io->reconnect(true)) {
+            retry_mse();
+            handshake->retried_mse_ = true;
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "plaintext {} handshake failed, trying MSE {}...",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
+            return;
+        }
+    } else {
+        fail();
+        return;
+    }
+
+    if (io->reconnect(false)) {
+        if (handshake->encryption_mode_ != TR_CLEAR_PREFERRED) {
+            retry_mse();
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "{} {} handshake failed, trying MSE {}...",
+                    was_mse ? "MSE" : "plaintext",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
+        } else if (retry_plain()) {
+            tr_logAddTraceHand(
+                handshake,
+                fmt::format(
+                    "{} {} handshake failed, trying plaintext {}...",
+                    was_mse ? "MSE" : "plaintext",
+                    tr_transport_protocol_to_sv(transport_protocol_before),
+                    tr_transport_protocol_to_sv(io->transport_protocol())));
+        } else {
+            return;
+        }
+        handshake->retried_mse_.reset();
         return;
     }
 

@@ -185,6 +185,19 @@ private:
     }
 };
 
+TEST_F(PeerSocketUtpTest, reportsConnectionProgress)
+{
+    tr_peer_socket_utp::init(sender_.ctx);
+    auto outgoing = tr_peer_socket_utp::create(receiver_.address, sender_.ctx, timer_maker_);
+    ASSERT_TRUE(outgoing);
+    EXPECT_FALSE(outgoing->is_connected());
+
+    deliverAll();
+    ASSERT_TRUE(accepted_);
+    EXPECT_TRUE(outgoing->is_connected());
+    EXPECT_TRUE(accepted_->is_connected());
+}
+
 // A peer IO that stops reading (before its first bandwidth allocation, under a download
 // limit, or with a full buffer) lets the receive window fill. Reading again must tell the
 // sender the window reopened, because a blocked sender sends nothing to prompt an ACK

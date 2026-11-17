@@ -18,6 +18,7 @@
 #include "libtransmission/constants.h"
 #include "libtransmission/net.h"
 #include "libtransmission/tr-buffer.h"
+#include "libtransmission/types.h"
 
 struct UTPSocket;
 struct tr_session;
@@ -49,6 +50,8 @@ public:
     virtual void set_write_enabled(bool enabled) = 0;
     [[nodiscard]] virtual bool is_read_enabled() const = 0;
     [[nodiscard]] virtual bool is_write_enabled() const = 0;
+
+    [[nodiscard]] constexpr virtual bool is_connected() const noexcept = 0;
 
     void set_read_cb(RWCb cb)
     {
@@ -83,24 +86,22 @@ public:
         return socket_address().display_name();
     }
 
+    [[nodiscard]] constexpr virtual tr_transport_protocol type() const noexcept = 0;
+
     [[nodiscard]] constexpr auto is_utp() const noexcept
     {
-        return type() == Type::UTP;
+        return type() == tr_transport_protocol::UTP;
     }
 
     [[nodiscard]] constexpr auto is_tcp() const noexcept
     {
-        return type() == Type::TCP;
+        return type() == tr_transport_protocol::TCP;
     }
 
     [[nodiscard]] static bool limit_reached(tr_session const* session) noexcept;
 
 protected:
-    enum class Type : uint8_t { UTP, TCP };
-
     explicit tr_peer_socket(tr_socket_address const& socket_address);
-
-    [[nodiscard]] constexpr virtual Type type() const noexcept = 0;
 
     [[nodiscard]] virtual size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) = 0;
     [[nodiscard]] virtual size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) = 0;

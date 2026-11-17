@@ -42,6 +42,7 @@ target_sources(libtransmission-test
         move-test.cc
         net-test.cc
         open-files-test.cc
+        peer-io-test.cc
         peer-mgr-wishlist-test.cc
         peer-msgs-test.cc
         peer-socket-tcp-test.cc

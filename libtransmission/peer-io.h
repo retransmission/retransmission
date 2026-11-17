@@ -16,6 +16,8 @@
 #include <optional>
 #include <utility> // std::pair
 
+#include <small/vector.hpp>
+
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/digest.h"
 #include "libtransmission/peer-mse.h"
@@ -91,6 +93,16 @@ public:
 
     void set_socket(std::shared_ptr<tr_peer_socket> socket_in);
 
+    [[nodiscard]] auto is_connected() const noexcept
+    {
+        return socket_ ? socket_->is_connected() : false;
+    }
+
+    [[nodiscard]] auto transport_protocol() const noexcept
+    {
+        return socket_ ? socket_->type() : tr_transport_protocol{};
+    }
+
     [[nodiscard]] auto is_utp() const noexcept
     {
         return socket_ ? socket_->is_utp() : false;
@@ -98,7 +110,7 @@ public:
 
     void clear();
 
-    [[nodiscard]] bool reconnect();
+    [[nodiscard]] bool reconnect(bool keep_transport);
 
     void set_enabled(tr_direction dir, bool is_enabled);
 
@@ -308,6 +320,10 @@ public:
     }
 
 private:
+    using SocketFactories = small::max_size_vector<
+        std::shared_ptr<tr_peer_socket> (*)(tr_session& session, tr_socket_address const& socket_address, bool client_is_seed),
+        TransportProtocolCount>;
+
     // Our target socket receive buffer size.
     // Gets read from the socket buffer into the incoming PeerBuffer.
     static constexpr auto RcvBuf = size_t{ 256 * 1024 };
@@ -318,6 +334,7 @@ private:
 
     tr_peerIo(
         tr_session* session,
+        SocketFactories&& socket_factories,
         tr_bandwidth* parent_bandwidth,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -347,9 +364,19 @@ private:
     size_t try_read(size_t max);
     size_t try_write(size_t max);
 
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> utp_factory(
+        tr_session& session,
+        tr_socket_address const& socket_address,
+        bool /*client_is_seed*/);
+    [[nodiscard]] static std::shared_ptr<tr_peer_socket> tcp_factory(
+        tr_session& session,
+        tr_socket_address const& socket_address,
+        bool client_is_seed);
+
     [[nodiscard]] static std::shared_ptr<tr_peerIo> create(
         tr_session* session,
         std::shared_ptr<tr_peer_socket> socket,
+        SocketFactories&& socket_factories,
         tr_bandwidth* parent,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
@@ -361,6 +388,7 @@ private:
     std::deque<std::pair<size_t /*n_bytes*/, bool /*is_piece_data*/>> outbuf_info_;
 
     std::shared_ptr<tr_peer_socket> socket_;
+    SocketFactories socket_factories_;
 
     tr_socket_address socket_address_;
 
