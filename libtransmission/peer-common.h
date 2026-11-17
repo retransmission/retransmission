@@ -275,6 +275,11 @@ struct tr_peer {
     tr_recentHistory<size_t> bytes_sent_to_client;
     tr_recentHistory<size_t> bytes_sent_to_peer;
 
+    // The count of senders that last counted this peer, and its rate then. Its request share
+    // weighs that rate against the total of the same count, not a newer rate against an older total.
+    uint64_t sender_count_id = 0U;
+    uint64_t sender_rate_byps = 0U;
+
 private:
     tr_bitfield active_requests_;
 };

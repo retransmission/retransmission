@@ -2127,14 +2127,13 @@ void tr_session::resume_deferred_requests()
         return;
     }
 
-    // While writes are queued, wait for an eighth of the budget. A disk
-    // that keeps the budget full would otherwise get a pass over every
-    // peer per finished write, and the queued writes keep it busy
-    // meanwhile. Once the queue is empty, no later write will free more.
-    // With nothing spare, a pass could send no requests.
+    // While writes are queued, wait for the refill threshold. A disk that
+    // keeps the budget full would otherwise get a pass over every peer per
+    // finished write, and the queued writes keep it busy meanwhile. Once
+    // the queue is empty, no later write will free more. With nothing
+    // spare, a pass could send no requests.
     auto const spare = spare_request_blocks();
-    auto const enough = effective_write_budget_bytes() / TrBlockSize / 8U;
-    if (!spare || *spare == 0U || (*spare < enough && local_data.enqueued_write_bytes() != 0U)) {
+    if (!spare || *spare == 0U || (*spare < request_refill_threshold_blocks() && local_data.enqueued_write_bytes() != 0U)) {
         return;
     }
 
@@ -2150,6 +2149,11 @@ std::optional<size_t> tr_session::spare_request_blocks() const noexcept
     }
 
     return {};
+}
+
+size_t tr_session::request_refill_threshold_blocks() const noexcept
+{
+    return static_cast<size_t>(effective_write_budget_bytes() / TrBlockSize / 8U);
 }
 
 uint64_t tr_session::effective_write_budget_bytes() const noexcept

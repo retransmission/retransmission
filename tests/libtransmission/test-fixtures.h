@@ -385,6 +385,17 @@ protected:
         return session_->peer_mgr_.get();
     }
 
+    // Whether a request refill is waiting for finished disk writes. Session thread only.
+    [[nodiscard]] bool requestsDeferred() const noexcept
+    {
+        return session_->requests_deferred_;
+    }
+
+    void clearDeferredRequests() noexcept
+    {
+        session_->requests_deferred_ = false;
+    }
+
     [[nodiscard]] virtual tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto const n_before = verifiedCount();
