@@ -90,6 +90,12 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
             return false;
         }
 
+        // Retrying a write that wrote nothing would loop forever.
+        if (n_written == 0U) {
+            error.set_from_errno(EIO);
+            return false;
+        }
+
         buf = buf.subspan(n_written);
         file_offset += n_written;
     }
