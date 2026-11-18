@@ -188,7 +188,7 @@ public:
             return false;
         }
 
-        [[nodiscard]] size_t pad(void* setme, [[maybe_unused]] size_t maxlen) const override
+        [[nodiscard]] uint16_t pad(void* setme, [[maybe_unused]] uint16_t maxlen) const override
         {
             TR_ASSERT(maxlen > PadASize);
             std::fill_n(static_cast<char*>(setme), PadASize, ' ');
@@ -327,7 +327,7 @@ public:
 
     static auto constexpr ReservedBytesNoExtensions = std::to_array<uint8_t>({ 0, 0, 0, 0, 0, 0, 0, 0 });
     static auto constexpr PlaintextProtocolName = "\023BitTorrent protocol"sv;
-    static auto constexpr PadASize = 10U;
+    static auto constexpr PadASize = uint16_t{ 10U };
 
     tr_socket_address const DefaultPeerSockAddr{ *tr_address::from_string("127.0.0.1"sv), tr_port::from_host(8080) };
     tr_handshake::Mediator::TorrentInfo const TorrentWeAreSeeding{

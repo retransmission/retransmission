@@ -70,7 +70,7 @@ public:
         [[nodiscard]] virtual std::optional<TorrentInfo> torrent_from_obfuscated(tr_sha1_digest_t const& info_hash) const = 0;
         [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
         [[nodiscard]] virtual bool allows_dht() const = 0;
-        [[nodiscard]] virtual size_t pad(void* setme, size_t max_bytes) const = 0;
+        [[nodiscard]] virtual uint16_t pad(void* setme, uint16_t max_bytes) const = 0;
         [[nodiscard]] virtual DH get_dh() const
         {
             if (auto recycled = pop_dh_pool()) {
@@ -237,16 +237,8 @@ private:
 
     bool send_handshake(tr_peerIo* io);
 
-    template<size_t PadMax>
-    [[nodiscard]] auto send_public_key_and_pad(tr_peerIo* io)
-    {
-        auto const public_key = get_dh().publicKey();
-        auto outbuf = std::array<std::byte, std::size(public_key) + PadMax>{};
-        auto* const pad_begin = std::ranges::copy(public_key, std::data(outbuf)).out;
-        auto const pad_len = mediator_->pad(pad_begin, PadMax);
-        io->write_bytes(std::data(outbuf), std::size(public_key) + pad_len, false);
-        return pad_len;
-    }
+    template<uint16_t PadMax>
+    [[nodiscard]] uint16_t send_public_key_and_pad(tr_peerIo* io);
 
     [[nodiscard]] uint32_t crypto_provide() const noexcept;
 
