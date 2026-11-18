@@ -468,6 +468,7 @@ void serve_file(struct evhttp_request* req, std::string_view const filename)
     add_time_header(output_headers, "Date", now);
     add_time_header(output_headers, "Expires", now + (24 * 60 * 60));
     evhttp_add_header(output_headers, "Content-Type", mimetype_guess(filename));
+    evhttp_add_header(output_headers, "Vary", "Accept-Encoding");
 
     auto* const response = make_response(
         req,
