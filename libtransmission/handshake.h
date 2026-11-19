@@ -235,7 +235,7 @@ private:
 
     [[nodiscard]] bool build_handshake_message(tr_peerIo* io, tr::BufferWriter<std::byte>& buf) const;
 
-    bool send_handshake(tr_peerIo* io);
+    [[nodiscard]] bool send_handshake(tr_peerIo* io);
 
     template<uint16_t PadMax>
     [[nodiscard]] uint16_t send_public_key_and_pad(tr_peerIo* io);

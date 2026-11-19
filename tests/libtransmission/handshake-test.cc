@@ -574,6 +574,32 @@ TEST_F(HandshakeTest, incomingAndUnknownTorrentErrorsFailWithoutRetry)
     });
 }
 
+TEST_F(HandshakeTest, stoppedTorrentErrorsFailWithoutRetry)
+{
+    blockingRunInSessionThread([this] {
+        for (auto const mode : { TR_ENCRYPTION_PREFERRED, TR_ENCRYPTION_REQUIRED }) {
+            SCOPED_TRACE(static_cast<int>(mode));
+
+            auto stopped = UbuntuTorrent;
+            stopped.is_running = false;
+            auto script = RetryScript{};
+            auto mediator = MediatorMock{ session_ };
+            mediator.torrents.emplace(stopped.info_hash, stopped);
+            constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+            auto io = createRetryIo(script, Transports);
+            auto result = std::optional<tr_handshake::Result>{};
+            auto handshake = startHandshake(result, &mediator, io, mode);
+
+            // A stopped torrent can't send the BitTorrent handshake that every retry ends in,
+            // so it must not dial the peer again.
+            script.sockets.front()->fail();
+            ASSERT_TRUE(result);
+            EXPECT_FALSE(result->is_connected);
+            EXPECT_TRUE(script.attempts.empty());
+        }
+    });
+}
+
 TEST_F(HandshakeTest, partialPlaintextReplyDoesNotRepeatMse)
 {
     blockingRunInSessionThread([this] {
@@ -1077,6 +1103,33 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     EXPECT_EQ(ExpectedPeerId, res->peer_id);
     EXPECT_EQ(UbuntuTorrent.info_hash, io->torrent_hash());
     EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
+
+    tr_net_close_socket(sock);
+    blockingRunInSessionThread([&] {
+        handshake.reset();
+        res.reset();
+        io.reset();
+    });
+}
+
+TEST_F(HandshakeTest, outgoingPlaintextForStoppedTorrentFails)
+{
+    auto stopped = UbuntuTorrent;
+    stopped.is_running = false;
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(stopped.info_hash, stopped);
+
+    auto [io, sock] = createOutgoingIo(session_, UbuntuTorrent.info_hash);
+
+    // The handshake can't be sent, so the handshake must fail now, not after HandshakeTimeoutSec.
+    auto res = std::optional<tr_handshake::Result>{};
+    auto handshake = std::unique_ptr<tr_handshake>{};
+    blockingRunInSessionThread([&] {
+        handshake = startHandshake(res, &mediator, io);
+        EXPECT_FALSE(res.has_value());
+    });
+    ASSERT_TRUE(waitForInSessionThread([&res] { return res.has_value(); }, MaxWaitMsec));
+    EXPECT_FALSE(res->is_connected);
 
     tr_net_close_socket(sock);
     blockingRunInSessionThread([&] {
