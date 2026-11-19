@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #import "PeersViews.h"
+#import "NSImageAdditions.h"
 
 @interface PeerProgressIndicatorView ()
 @property(nonatomic, strong) NSTextField* textProgressView;
@@ -33,7 +34,7 @@
         _checkImageView = [[NSImageView alloc] initWithFrame:frameRect];
         _checkImageView.imageScaling = NSImageScaleProportionallyDown;
         _checkImageView.imageAlignment = NSImageAlignCenter;
-        _checkImageView.image = [NSImage imageNamed:@"CompleteCheck"];
+        _checkImageView.image = [NSImage re_symbolNamed:@"checkmark.circle.fill"];
 
         [self addSubview:_textProgressView];
         [self addSubview:_levelIndicator];

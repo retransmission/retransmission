@@ -21,6 +21,7 @@
 #import "GroupsController.h"
 #import "FileListNode.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 #import "TrackerNode.h"
 #import "Utils.h"
 #import "UTTypeAdditions.h"
@@ -575,7 +576,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (NSImage*)icon
 {
     if (self.magnet) {
-        return [NSImage imageNamed:@"Magnet"];
+        return [NSImage re_symbolNamed:@"link" pointSize:32.0 weight:NSFontWeightRegular];
     }
 
     if (!self.fIcon) {

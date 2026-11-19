@@ -228,7 +228,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
             }
 
             // set torrent icon or error badge
-            torrentCell.fIconView.image = error ? [NSImage imageNamed:NSImageNameCaution] : torrent.icon;
+            torrentCell.fIconView.image = error ? [NSImage re_multicolorSymbolNamed:@"exclamationmark.triangle.fill"] : torrent.icon;
 
             // set torrent status
             torrentCell.fTorrentStatusField.stringValue = [self.fDefaults boolForKey:@"DisplaySmallStatusRegular"] ?

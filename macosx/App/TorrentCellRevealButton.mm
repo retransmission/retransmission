@@ -3,12 +3,12 @@
 // License text can be found in the licenses/ folder.
 
 #import "TorrentCellRevealButton.h"
+#import "NSImageAdditions.h"
 #import "TorrentTableView.h"
 #import "TorrentCell.h"
 
 @interface TorrentCellRevealButton ()
 @property(nonatomic) NSTrackingArea* fTrackingArea;
-@property(nonatomic, copy) NSString* revealImageString;
 @property(nonatomic, readonly) TorrentTableView* torrentTableView;
 @end
 
@@ -22,8 +22,10 @@
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
     if (self = [super initWithFrame:frameRect]) {
-        self.revealImageString = @"RevealOff";
-        [self updateImage];
+        NSImage* revealImage = [NSImage re_symbolNamed:@"magnifyingglass" pointSize:15.0 weight:NSFontWeightRegular];
+        self.image = revealImage;
+
+        self.contentTintColor = [NSColor secondaryLabelColor];
     }
     return self;
 }
@@ -31,8 +33,7 @@
 - (void)mouseEntered:(NSEvent*)event
 {
     [super mouseEntered:event];
-    self.revealImageString = @"RevealHover";
-    [self updateImage];
+    self.contentTintColor = [NSColor labelColor];
 
     [self.torrentTableView hoverEventBeganForView:self];
 }
@@ -40,8 +41,7 @@
 - (void)mouseExited:(NSEvent*)event
 {
     [super mouseExited:event];
-    self.revealImageString = @"RevealOff";
-    [self updateImage];
+    self.contentTintColor = [NSColor secondaryLabelColor];
 
     [self.torrentTableView hoverEventEndedForView:self];
 }
@@ -52,15 +52,7 @@
     [self.window makeFirstResponder:self.torrentTableView];
 
     [super mouseDown:event];
-    self.revealImageString = @"RevealOn";
-    [self updateImage];
-}
-
-- (void)updateImage
-{
-    NSImage* revealImage = [NSImage imageNamed:self.revealImageString];
-    self.image = revealImage;
-    self.needsDisplay = YES;
+    self.contentTintColor = [NSColor controlAccentColor];
 }
 
 - (void)updateTrackingAreas

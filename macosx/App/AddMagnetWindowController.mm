@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #import "AddMagnetWindowController.h"
+#import "NSImageAdditions.h"
 #import "AddTorrentViewModel.h"
 #import "Controller.h"
 #import "Torrent.h"
@@ -75,7 +76,7 @@
 
     self.window = window;
 
-    NSImageView* magnetIcon = [NSImageView imageViewWithImage:[NSImage imageNamed:@"Magnet"]];
+    NSImageView* magnetIcon = [NSImageView imageViewWithImage:[NSImage re_symbolNamed:@"link"]];
     [magnetIcon.widthAnchor constraintEqualToConstant:16].active = YES;
     [magnetIcon.heightAnchor constraintEqualToConstant:16].active = YES;
 

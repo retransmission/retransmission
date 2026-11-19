@@ -3,13 +3,20 @@
 // License text can be found in the licenses/ folder.
 
 #import "TorrentCellControlButton.h"
+#import "NSImageAdditions.h"
 #import "TorrentTableView.h"
 #import "Torrent.h"
 #import "TorrentCell.h"
 
+typedef NS_ENUM(NSInteger, ControlButtonHoverState) {
+    ControlButtonHoverStateOff,
+    ControlButtonHoverStateHover,
+    ControlButtonHoverStateOn
+};
+
 @interface TorrentCellControlButton ()
 @property(nonatomic) NSTrackingArea* fTrackingArea;
-@property(nonatomic, copy) NSString* controlImageSuffix;
+@property(nonatomic) ControlButtonHoverState buttonState;
 @property(nonatomic, readonly) TorrentTableView* torrentTableView;
 @end
 
@@ -23,7 +30,7 @@
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
     if (self = [super initWithFrame:frameRect]) {
-        self.controlImageSuffix = @"Off";
+        self.buttonState = ControlButtonHoverStateOff;
         [self updateImage];
     }
     return self;
@@ -31,14 +38,14 @@
 
 - (void)resetImage
 {
-    self.controlImageSuffix = @"Off";
+    self.buttonState = ControlButtonHoverStateOff;
     [self updateImage];
 }
 
 - (void)mouseEntered:(NSEvent*)event
 {
     [super mouseEntered:event];
-    self.controlImageSuffix = @"Hover";
+    self.buttonState = ControlButtonHoverStateHover;
     [self updateImage];
 
     [self.torrentTableView hoverEventBeganForView:self];
@@ -47,7 +54,7 @@
 - (void)mouseExited:(NSEvent*)event
 {
     [super mouseExited:event];
-    self.controlImageSuffix = @"Off";
+    self.buttonState = ControlButtonHoverStateOff;
     [self updateImage];
 
     [self.torrentTableView hoverEventEndedForView:self];
@@ -59,7 +66,7 @@
     [self.window makeFirstResponder:self.torrentTableView];
 
     [super mouseDown:event];
-    self.controlImageSuffix = @"On";
+    self.buttonState = ControlButtonHoverStateOn;
     [self updateImage];
 
     [self.torrentTableView hoverEventEndedForView:self];
@@ -67,20 +74,38 @@
 
 - (void)updateImage
 {
-    NSImage* controlImage;
     Torrent* torrent = [self.torrentTableView itemAtRow:[self.torrentTableView rowForView:self]];
+
+    NSString* symbolName;
     if (torrent.active) {
-        controlImage = [NSImage imageNamed:[@"Pause" stringByAppendingString:self.controlImageSuffix]];
+        symbolName = @"pause.fill";
+    } else if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
+        symbolName = @"forward.end.fill";
+    } else if (torrent.waitingToStart) {
+        symbolName = @"pause.fill";
     } else {
-        if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
-            controlImage = [NSImage imageNamed:[@"ResumeNoWait" stringByAppendingString:self.controlImageSuffix]];
-        } else if (torrent.waitingToStart) {
-            controlImage = [NSImage imageNamed:[@"Pause" stringByAppendingString:self.controlImageSuffix]];
-        } else {
-            controlImage = [NSImage imageNamed:[@"Resume" stringByAppendingString:self.controlImageSuffix]];
-        }
+        symbolName = @"play.fill";
     }
+
+    NSImage* controlImage = [NSImage re_symbolNamed:symbolName pointSize:15.0 weight:NSFontWeightRegular];
+
     self.image = controlImage;
+
+    switch (self.buttonState) {
+    case ControlButtonHoverStateOff:
+        self.contentTintColor = [NSColor secondaryLabelColor];
+        break;
+    case ControlButtonHoverStateHover:
+        self.contentTintColor = [NSColor labelColor];
+        break;
+    case ControlButtonHoverStateOn:
+        self.contentTintColor = [NSColor controlAccentColor];
+        break;
+    }
+
+    if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption && torrent.active == NO) {
+        self.contentTintColor = [NSColor systemOrangeColor];
+    }
 }
 
 - (void)updateTrackingAreas
