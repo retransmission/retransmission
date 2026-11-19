@@ -62,7 +62,7 @@ static CGFloat const kErrorImageSize = 20.0;
 
     auto iconView = [[NSImageView alloc] init];
     auto errorImageView = [[NSImageView alloc] init];
-    errorImageView.image = [NSImage imageNamed:NSImageNameCaution];
+    errorImageView.image = [NSImage re_multicolorSymbolNamed:@"exclamationmark.triangle.fill"];
 
     auto actionButton = [[TorrentCellActionButton alloc] init];
 

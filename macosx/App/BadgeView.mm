@@ -8,8 +8,10 @@
 #import "Utils.h"
 
 static CGFloat const kBetweenPadding = 2.0;
-static NSImage* kWhiteUpArrow = [[NSImage imageNamed:@"UpArrowTemplate"] imageWithColor:NSColor.whiteColor];
-static NSImage* kWhiteDownArrow = [[NSImage imageNamed:@"DownArrowTemplate"] imageWithColor:NSColor.whiteColor];
+static CGSize const kBadgeSize = { 128.0, 30.0 };
+
+static NSImage* kWhiteUpArrow = nil;
+static NSImage* kWhiteDownArrow = nil;
 static CGSize kArrowInset;
 static CGSize kArrowSize;
 
@@ -29,6 +31,14 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
 
 @implementation BadgeView
 
++ (void)initialize
+{
+    if (self == [BadgeView class]) {
+        kWhiteUpArrow = [[NSImage re_symbolNamed:@"arrowshape.up.fill"] imageWithColor:NSColor.whiteColor];
+        kWhiteDownArrow = [[NSImage re_symbolNamed:@"arrowshape.down.fill"] imageWithColor:NSColor.whiteColor];
+    }
+}
+
 - (instancetype)init
 {
     if ((self = [super init])) {
@@ -44,15 +54,10 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
         _fAttributes[NSShadowAttributeName] = stringShadow;
         _fAttributes[NSFontAttributeName] = [NSFont boldSystemFontOfSize:26.0];
 
-        // DownloadBadge and UploadBadge should have the same size
-        NSSize badgeSize = [NSImage imageNamed:@"DownloadBadge"].size;
-        // DownArrowTemplate and UpArrowTemplate should have the same size
         CGFloat arrowWidthHeightRatio = kWhiteDownArrow.size.width / kWhiteDownArrow.size.height;
-
-        // arrow height equal to font capital letter height + shadow
         CGFloat arrowHeight = [_fAttributes[NSFontAttributeName] capHeight] + 4;
 
-        kArrowInset = { badgeSize.height * 0.2, badgeSize.height * 0.1 };
+        kArrowInset = { kBadgeSize.height * 0.2, kBadgeSize.height * 0.1 };
         kArrowSize = { arrowHeight * arrowWidthHeightRatio, arrowHeight };
     }
     return self;
@@ -77,29 +82,36 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
     BOOL const upload = self.fUploadRate >= 0.1;
     BOOL const download = self.fDownloadRate >= 0.1;
     CGFloat bottom = 0.0;
+
     if (download) {
-        NSImage* downloadBadge = [NSImage imageNamed:@"DownloadBadge"];
-        [self badge:downloadBadge arrow:ArrowDirectionDown string:[NSString stringForSpeedAbbrevCompact:self.fDownloadRate]
-            atHeight:bottom];
+        [self drawBadgeWithColor:[NSColor colorWithSRGBRed:0.0 green:0.55 blue:0.15 alpha:1.0] arrow:ArrowDirectionDown
+                          string:[NSString stringForSpeedAbbrevCompact:self.fDownloadRate]
+                        atHeight:bottom];
 
         if (upload) {
-            bottom += downloadBadge.size.height + kBetweenPadding; //upload rate above download rate
+            bottom += kBadgeSize.height + kBetweenPadding; //upload rate above download rate
         }
     }
     if (upload) {
-        [self badge:[NSImage imageNamed:@"UploadBadge"] arrow:ArrowDirectionUp
-              string:[NSString stringForSpeedAbbrevCompact:self.fUploadRate]
-            atHeight:bottom];
+        [self drawBadgeWithColor:[NSColor systemBlueColor] arrow:ArrowDirectionUp
+                          string:[NSString stringForSpeedAbbrevCompact:self.fUploadRate]
+                        atHeight:bottom];
     }
 }
 
-- (void)badge:(NSImage*)badge arrow:(ArrowDirection)arrowDirection string:(NSString*)string atHeight:(CGFloat)height
+- (void)drawBadgeWithColor:(NSColor*)badgeColor
+                     arrow:(ArrowDirection)arrowDirection
+                    string:(NSString*)string
+                  atHeight:(CGFloat)height
 {
-    // background
-    NSRect badgeRect = { { 0.0, height }, badge.size };
-    [badge drawInRect:badgeRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
+    // background capsule
+    NSRect badgeRect = { { 0.0, height }, kBadgeSize };
+    CGFloat radius = NSHeight(badgeRect) * 0.5;
+    NSBezierPath* capsulePath = [NSBezierPath bezierPathWithRoundedRect:badgeRect xRadius:radius yRadius:radius];
+    [badgeColor setFill];
+    [capsulePath fill];
 
-    //string is in center of image
+    // string is in center of image
     NSSize stringSize = [string sizeWithAttributes:self.fAttributes];
     NSRect stringRect;
     stringRect.origin.x = NSMidX(badgeRect) - stringSize.width * 0.5 + kArrowInset.width; // adjust for arrow

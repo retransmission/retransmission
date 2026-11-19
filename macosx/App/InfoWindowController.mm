@@ -560,7 +560,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     NSUInteger const numberSelected = self.fTorrents.count;
     if (numberSelected != 1) {
         if (numberSelected > 0) {
-            self.fImageView.image = [NSImage imageNamed:NSImageNameMultipleDocuments];
+            self.fImageView.image = [NSImage re_symbolNamed:@"doc.on.doc.fill" pointSize:20.0 weight:NSFontWeightBold];
 
             self.fNameField.stringValue = [NSString
                 localizedStringWithFormat:NSLocalizedString(@"%lu Torrents Selected", "Inspector -> selected torrents"), numberSelected];

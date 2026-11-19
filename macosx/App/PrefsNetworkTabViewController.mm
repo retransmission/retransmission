@@ -4,6 +4,7 @@
 
 #import <libtransmission/transmission.h>
 
+#import "NSImageAdditions.h"
 #import "PrefsNetworkTabViewController.h"
 #import "PrefsUI.h"
 #import "PortChecker.h"
@@ -292,15 +293,15 @@
     switch (self.fPortChecker.status) {
     case PortStatusOpen:
         self.fPortStatusField.stringValue = NSLocalizedString(@"Port is open", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusAvailable];
+        self.fPortStatusImage.image = [NSImage re_symbolNamed:@"circle.fill" color:[NSColor systemGreenColor]];
         break;
     case PortStatusClosed:
         self.fPortStatusField.stringValue = NSLocalizedString(@"Port is closed", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
+        self.fPortStatusImage.image = [NSImage re_symbolNamed:@"circle.fill" color:[NSColor systemRedColor]];
         break;
     case PortStatusError:
         self.fPortStatusField.stringValue = NSLocalizedString(@"Port check site is down", "Preferences -> Network -> port status");
-        self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
+        self.fPortStatusImage.image = [NSImage re_symbolNamed:@"circle.fill" color:[NSColor systemYellowColor]];
         break;
     case PortStatusChecking:
         break;
