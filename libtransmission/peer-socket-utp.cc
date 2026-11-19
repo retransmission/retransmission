@@ -3,13 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cerrno> // ENOBUFS
+
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
 #include <sys/socket.h>
 #endif
-
-#include <cerrno> // ENOBUFS
 
 #include <fmt/format.h>
 
@@ -28,6 +28,9 @@
 #define tr_logAddErrorSock(sock, msg) tr_logAddError(msg, (sock)->display_name())
 #define tr_logAddTraceSock(sock, msg) tr_logAddTrace(msg, (sock)->display_name())
 
+namespace
+{
+#ifdef WITH_UTP
 // libutp cannot drop data that does not fit in the receive window[1], so a peer that
 // ignores the window could grow the read buffer without bound. An honest sender stays
 // within it, apart from libutp's one-packet zero-window probes. A connection whose
@@ -37,9 +40,6 @@
 //      https://www.bittorrent.org/beps/bep_0029.html
 auto constexpr MaxBufferedWindows = 2U;
 
-namespace
-{
-#ifdef WITH_UTP
 void get_bufsize(tr_socket_t const fd, int const optname, int& ret)
 {
     auto tmp = int{};
