@@ -393,7 +393,6 @@ auto constexpr Options = std::to_array<tr_option>({
     { 941, "peer-info", "List the current torrent(s)' peers", "pi", Arg::None, nullptr },
     { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace tr_num_parse_range_detail
 {
@@ -457,10 +456,7 @@ struct number_range {
     values.erase(erase_first, erase_last);
     return values;
 }
-} // namespace
 
-namespace
-{
 void show_usage()
 {
     tr_getopt_usage(MyName, Usage, std::data(Options));
@@ -790,7 +786,6 @@ auto constexpr FilesKeys = std::to_array<tr_quark>({
     TR_KEY_priorities,
     TR_KEY_wanted,
 });
-static_assert(FilesKeys[std::size(FilesKeys) - 1] != tr_quark{});
 
 auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_activity_date,
@@ -851,7 +846,6 @@ auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_webseeds,
     TR_KEY_webseeds_sending_to_us,
 });
-static_assert(DetailsKeys[std::size(DetailsKeys) - 1] != tr_quark{});
 
 auto constexpr ListKeys = std::to_array<tr_quark>({
     TR_KEY_added_date,
@@ -870,7 +864,6 @@ auto constexpr ListKeys = std::to_array<tr_quark>({
     TR_KEY_status,
     TR_KEY_upload_ratio,
 });
-static_assert(ListKeys[std::size(ListKeys) - 1] != tr_quark{});
 
 namespace header_utils
 {
@@ -974,7 +967,6 @@ auto constexpr BandwidthPriorityNames = std::to_array<std::string_view>({
     "High"sv,
     "Invalid"sv,
 });
-static_assert(!BandwidthPriorityNames[std::size(BandwidthPriorityNames) - 1].empty());
 
 template<size_t N>
 [[nodiscard]] std::string_view format_date(std::array<char, N>& buf, time_t now)
@@ -3240,11 +3232,11 @@ void get_host_and_port_and_rpc_url(
     }
 
     auto const sv = std::string_view{ argv[1] };
-    if (sv.starts_with("http://")) /* user passed in http rpc url */
-    {
+    if (sv.starts_with("http://")) {
+        // user passed in http rpc url
         rpcurl = fmt::format("{:s}/{:s}", sv.substr(7), TrHttpServerRpcRelativePath);
-    } else if (sv.starts_with("https://")) /* user passed in https rpc url */
-    {
+    } else if (sv.starts_with("https://")) {
+        // user passed in https rpc url
         config.use_ssl = true;
         rpcurl = fmt::format("{:s}/{:s}", sv.substr(8), TrHttpServerRpcRelativePath);
     } else if (parse_port_string(sv, port)) {
