@@ -240,8 +240,8 @@ TEST_F(PeerSocketUtpTest, readingWithRoomLeftSendsNoExtraAck)
 // to enable reads again, even with more buffered than the window, not retry at once.
 TEST_F(PeerSocketUtpTest, fullBufferWaitsForReadsEnabled)
 {
-    connect();
-    writeTwiceTheWindow();
+    ASSERT_NO_FATAL_FAILURE(connect());
+    ASSERT_NO_FATAL_FAILURE(writeTwiceTheWindow());
     utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 2);
 
     auto n_reads = 0;
@@ -261,8 +261,8 @@ TEST_F(PeerSocketUtpTest, fullBufferWaitsForReadsEnabled)
 // A peer that ignores the receive window cannot grow the buffer without bound.
 TEST_F(PeerSocketUtpTest, overrunWindowClosesConnection)
 {
-    connect();
-    writeTwiceTheWindow();
+    ASSERT_NO_FATAL_FAILURE(connect());
+    ASSERT_NO_FATAL_FAILURE(writeTwiceTheWindow());
     utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
 
     auto n_reads = 0;
@@ -279,8 +279,8 @@ TEST_F(PeerSocketUtpTest, overrunWindowClosesConnection)
 // Enabling reads again after the report does not report the overrun again.
 TEST_F(PeerSocketUtpTest, overrunIsReportedOnce)
 {
-    connect();
-    writeTwiceTheWindow();
+    ASSERT_NO_FATAL_FAILURE(connect());
+    ASSERT_NO_FATAL_FAILURE(writeTwiceTheWindow());
     utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
 
     auto n_reads = 0;
@@ -301,8 +301,8 @@ TEST_F(PeerSocketUtpTest, overrunIsReportedOnce)
 // The overrun is reported even when the peer IO stops reading before the report goes out.
 TEST_F(PeerSocketUtpTest, overrunIsReportedAfterReadsStop)
 {
-    connect();
-    writeTwiceTheWindow();
+    ASSERT_NO_FATAL_FAILURE(connect());
+    ASSERT_NO_FATAL_FAILURE(writeTwiceTheWindow());
     utp_setsockopt(accepted_sock_, UTP_RCVBUF, ReceiveWindow / 4);
 
     auto error_code = 0;
