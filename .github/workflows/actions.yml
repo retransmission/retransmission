@@ -53,6 +53,7 @@ jobs:
       tidy-daemon: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-daemon-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-qt-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-utils: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-utils-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
     steps:
       - name: Check Push to Main Branch
         id: check-main-push
@@ -95,6 +96,7 @@ jobs:
           get_changes tidy-daemon-src daemon
           get_changes tidy-gtk-src  gtk
           get_changes tidy-qt-src   qt tests/qt
+          get_changes tidy-utils-src  utils tests/utils
           get_changes dist       dist release
           get_changes docs       docs
           get_changes gtk        CMakeLists.txt cmake third-party libtransmission libtransmission-app gtk
@@ -409,7 +411,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolkit: [core, daemon, gtk3, gtk4, qt5, qt6]
+        toolkit: [core, daemon, gtk3, gtk4, qt5, qt6, utils]
         include:
           - toolkit: core
             enable-daemon: false
@@ -458,6 +460,14 @@ jobs:
             enable-tests: true
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
+            runner: ubuntu-26.04
+          - toolkit: utils
+            enable-daemon: false
+            enable-gtk: false
+            enable-qt: false
+            enable-tests: true
+            enabled: ${{ needs.what-to-make.outputs.tidy-utils }}
+            regex: '(?:tests/)?utils/.*'
             runner: ubuntu-26.04
     steps:
       - name: Show Configuration
