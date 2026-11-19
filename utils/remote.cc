@@ -57,23 +57,23 @@ using namespace tr::Values;
 
 namespace
 {
-char constexpr MyName[] = MY_NAME;
+auto constexpr MyName = MY_NAME;
 
-char constexpr Usage[] = MY_NAME " " LONG_VERSION_STRING
-                                 "\n"
-                                 "A fast and easy BitTorrent client\n" TR_PROJ_URL_HOMEPAGE
-                                 "\n"
-                                 "\n"
-                                 "Usage: " MY_NAME
-                                 " [host] [options]\n"
-                                 "       " MY_NAME
-                                 " [port] [options]\n"
-                                 "       " MY_NAME
-                                 " [host:port] [options]\n"
-                                 "       " MY_NAME " [http(s?)://host:port" TR_PROJ_WEB_SERVER_BASE_PATH
-                                 "] [options]\n"
-                                 "\n"
-                                 "See the man page for detailed explanations and many examples.";
+auto constexpr Usage = MY_NAME " " LONG_VERSION_STRING
+                               "\n"
+                               "A fast and easy BitTorrent client\n" TR_PROJ_URL_HOMEPAGE
+                               "\n"
+                               "\n"
+                               "Usage: " MY_NAME
+                               " [host] [options]\n"
+                               "       " MY_NAME
+                               " [port] [options]\n"
+                               "       " MY_NAME
+                               " [host:port] [options]\n"
+                               "       " MY_NAME " [http(s?)://host:port" TR_PROJ_WEB_SERVER_BASE_PATH
+                               "] [options]\n"
+                               "\n"
+                               "See the man page for detailed explanations and many examples.";
 
 class RemoteWebMediator final : public tr_web::Mediator
 {
