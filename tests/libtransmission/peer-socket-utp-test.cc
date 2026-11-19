@@ -233,6 +233,24 @@ TEST_F(PeerSocketUtpTest, readingWithRoomLeftSendsNoExtraAck)
     EXPECT_TRUE(std::empty(sender_.inbox));
 }
 
+// A peer IO queues its first message (the handshake) while the connection is still
+// being set up, and does not enable writes for a short one. It must go out when the
+// connection comes up, not on the next bandwidth pulse.
+TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
+{
+    tr_peer_socket_utp::init(sender_.ctx);
+    auto const outgoing = tr_peer_socket_utp::create(receiver_.address, sender_.ctx, timer_maker_);
+    ASSERT_NE(nullptr, outgoing);
+
+    auto n_writes = 0;
+    outgoing->set_write_cb([&] { ++n_writes; });
+    ASSERT_FALSE(outgoing->is_write_enabled());
+
+    deliverAll();
+    EXPECT_NE(nullptr, accepted_);
+    EXPECT_EQ(1, n_writes);
+}
+
 } // namespace
 } // namespace tr::test
 
