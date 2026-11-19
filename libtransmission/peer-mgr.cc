@@ -233,15 +233,15 @@ void tr_peer_info::merge(tr_peer_info& that) noexcept
     }
 
     if (that.outgoing_handshake_) {
-        if (outgoing_handshake_) {
+        if (is_in_use()) {
             that.destroy_handshake();
         } else {
             outgoing_handshake_ = std::move(that.outgoing_handshake_);
             if (that.is_holepunch_attempt()) {
                 holepunch_attempts_ = that.holepunch_attempts_;
-                that.reset_holepunch_attempts();
             }
         }
+        that.reset_holepunch_attempts();
     }
 }
 
