@@ -24,8 +24,8 @@
 
 namespace
 {
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] torrent-file(s)";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] torrent-file(s)";
 
 struct app_options {
     std::vector<std::string_view> files;
