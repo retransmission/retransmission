@@ -180,14 +180,14 @@ struct app_options {
 }
 } // namespace
 
-int tr_main(int argc, char* argv[])
+int tr_main(int argc, char** argv)
 {
     tr_locale_set_global("");
 
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parse_command_line(options, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(options, argc, argv) != 0) {
         return EXIT_FAILURE;
     }
 
