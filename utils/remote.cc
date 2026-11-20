@@ -179,13 +179,9 @@ struct RemoteConfig {
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
-[[nodiscard]] auto strlsize(int64_t bytes)
+[[nodiscard]] auto strlsize(uint64_t const bytes)
 {
-    if (bytes < 0) {
-        return "Unknown"s;
-    }
-
-    if (bytes == 0) {
+    if (bytes == 0U) {
         return "None"s;
     }
 
@@ -1517,7 +1513,7 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Upload Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_have_unchecked), j = t->value_if<int64_t>(TR_KEY_have_valid); i && j) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_have_unchecked), j = t->value_if<uint64_t>(TR_KEY_have_valid); i && j) {
             fmt::print("  Have: {:s} ({:s} verified)\n", strlsize(*i + *j), strlsize(*j));
         }
 
@@ -1531,13 +1527,13 @@ void print_details(tr_variant::Map const& result)
                 fmt::print("  Availability: {:s}%\n", Percent{ *j + i - *k, i }.to_string());
             }
 
-            if (auto j = t->value_if<int64_t>(TR_KEY_total_size)) {
+            if (auto j = t->value_if<uint64_t>(TR_KEY_total_size)) {
                 fmt::print("  Total size: {:s} ({:s} wanted)\n", strlsize(*j), strlsize(i));
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_downloaded_ever)) {
-            if (auto corrupt = t->value_if<int64_t>(TR_KEY_corrupt_ever).value_or(0); corrupt != 0) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_downloaded_ever)) {
+            if (auto corrupt = t->value_if<uint64_t>(TR_KEY_corrupt_ever).value_or(0U); corrupt != 0U) {
                 fmt::print("  Downloaded: {:s} (+{:s} discarded after failed checksum)\n", strlsize(*i), strlsize(corrupt));
             } else {
                 fmt::print("  Downloaded: {:s}\n", strlsize(*i));
