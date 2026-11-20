@@ -872,7 +872,7 @@ struct number_range {
  * This should be a single number (ex. "6") or a range (ex. "6-9").
  * Anything else is an error and will return failure.
  */
-[[nodiscard]] bool parseNumberSection(std::string_view str, number_range& range)
+[[nodiscard]] bool parse_number_section(std::string_view str, number_range& range)
 {
     auto constexpr Delimiter = "-"sv;
 
@@ -911,7 +911,7 @@ struct number_range {
     auto values = std::vector<int>{};
     auto token = std::string_view{};
     auto range = number_range{};
-    while (tr_strv_sep(&str, &token, ',') && parseNumberSection(token, range)) {
+    while (tr_strv_sep(&str, &token, ',') && parse_number_section(token, range)) {
         for (auto i = range.low; i <= range.high; ++i) {
             values.emplace_back(i);
         }
@@ -1879,7 +1879,7 @@ void print_pieces_impl(std::string_view const raw, size_t const piece_count)
     fmt::print("  ");
 
     size_t piece = 0;
-    static size_t constexpr col_width = 0b111111; // 64 - 1
+    static size_t constexpr ColWidth = 0b111111; // 64 - 1
     for (auto const ch : str) {
         for (int bit = 0; piece < piece_count && bit < 8; ++bit, ++piece) {
             fmt::print("{:c}", (ch & (1 << (7 - bit))) != 0 ? '1' : '0');
@@ -1887,7 +1887,7 @@ void print_pieces_impl(std::string_view const raw, size_t const piece_count)
 
         fmt::print(" ");
 
-        if ((piece & col_width) == 0) // piece % 64 == 0
+        if ((piece & ColWidth) == 0) // piece % 64 == 0
         {
             fmt::print("\n  ");
         }
