@@ -3405,7 +3405,7 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
                 break;
             }
         } else if (step_mode == (MODE_SESSION_SET | MODE_TORRENT_SET | MODE_TORRENT_ADD)) {
-            tr_variant::Map& args = [&]() -> tr_variant::Map& {
+            tr_variant::Map& args = [&] -> tr_variant::Map& {
                 if (tadd.has_value()) {
                     return ensure_tadd(tadd);
                 }
