@@ -41,8 +41,8 @@ using namespace tr::Values;
 namespace
 {
 
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] <file|directory>";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] <file|directory>";
 
 uint32_t constexpr KiB = 1024;
 
