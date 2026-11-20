@@ -9,21 +9,36 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <atomic>
-#include <condition_variable>
+#include <chrono>
+#include <cstdint> // uint64_t
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <set>
-#include <string>
-#include <thread>
-#include <utility> // std::move
 
 #include "libtransmission/digest.h"
-#include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/types.h"
 
-class tr_verify_worker
+class tr_sha1;
+struct tr_block_info;
+
+namespace tr
+{
+class LocalData;
+class Timer;
+class TimerMaker;
+} // namespace tr
+
+/**
+ * Verifies torrents one at a time, a span at a time, through
+ * tr::LocalData. So a verify waits for barriers like any other data op,
+ * and a move or rename never pulls a file out from under it.
+ *
+ * Session thread only. The synchronous backend hashes each span on the
+ * session thread, so the verify waits for a timer between spans there,
+ * and other work gets in.
+ */
+class tr_verifier
 {
 public:
     class Mediator
@@ -31,74 +46,68 @@ public:
     public:
         virtual ~Mediator() = default;
 
-        [[nodiscard]] virtual tr_torrent_metainfo const& metainfo() const = 0;
-        [[nodiscard]] virtual std::optional<std::string> find_file(tr_file_index_t file_index) const = 0;
+        [[nodiscard]] virtual tr_torrent_id_t id() const = 0;
+        [[nodiscard]] virtual tr_block_info const& block_info() const = 0;
 
-        virtual void on_verify_queued() = 0;
         virtual void on_verify_started() = 0;
-        virtual void on_piece_checked(tr_piece_index_t piece, bool has_piece) = 0;
+        // `hash` is empty if the piece couldn't be read
+        virtual void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) = 0;
         virtual void on_verify_done(bool aborted) = 0;
     };
 
-    tr_verify_worker() = default;
-    ~tr_verify_worker();
+    // Callbacks run under `session_mutex`.
+    tr_verifier(tr::LocalData& local_data, tr::TimerMaker& timer_maker, std::recursive_mutex& session_mutex);
+    ~tr_verifier();
 
-    tr_verify_worker(tr_verify_worker const&) = delete;
-    tr_verify_worker(tr_verify_worker&&) = delete;
-    tr_verify_worker& operator=(tr_verify_worker const&) = delete;
-    tr_verify_worker& operator=(tr_verify_worker&&) = delete;
+    tr_verifier(tr_verifier const&) = delete;
+    tr_verifier(tr_verifier&&) = delete;
+    tr_verifier& operator=(tr_verifier const&) = delete;
+    tr_verifier& operator=(tr_verifier&&) = delete;
 
     void add(std::unique_ptr<Mediator> mediator, tr_priority_t priority);
 
-    void remove(tr_sha1_digest_t const& info_hash);
+    // Ends the torrent's verify, queued or under way, as aborted. Doesn't wait
+    // for the span in flight; its result is dropped.
+    void remove(tr_torrent_id_t id);
 
-    void set_sleep_per_seconds_during_verify(std::chrono::milliseconds sleep_per_seconds_during_verify) noexcept;
-
-    [[nodiscard]] constexpr auto sleep_per_seconds_during_verify() const noexcept
+    void set_sleep_per_seconds_during_verify(std::chrono::milliseconds sleep_per_seconds_during_verify) noexcept
     {
-        return sleep_per_seconds_during_verify_;
+        sleep_per_seconds_during_verify_ = sleep_per_seconds_during_verify;
     }
 
 private:
     struct Node {
-        Node(std::unique_ptr<Mediator> mediator, tr_priority_t priority) noexcept
-            : mediator_{ std::move(mediator) }
-            , priority_{ priority }
-        {
-        }
+        [[nodiscard]] bool operator<(Node const& that) const noexcept;
 
-        [[nodiscard]] int compare(Node const& that) const noexcept; // <=>
-
-        [[nodiscard]] auto operator<(Node const& that) const noexcept
-        {
-            return compare(that) < 0;
-        }
-
-        [[nodiscard]] bool matches(tr_sha1_digest_t const& info_hash) const noexcept
-        {
-            return mediator_->metainfo().info_hash() == info_hash;
-        }
-
-        std::unique_ptr<Mediator> mediator_;
-        tr_priority_t priority_;
+        std::unique_ptr<Mediator> mediator;
+        tr_priority_t priority;
     };
 
-    static void verify_torrent(
-        Mediator& verify_mediator,
-        std::atomic<bool> const& abort_flag,
-        std::chrono::milliseconds sleep_per_seconds_during_verify);
+    struct Active {
+        std::unique_ptr<Mediator> mediator;
+        uint64_t token;
+        tr_piece_index_t piece = 0U;
+        uint64_t piece_bytes_hashed = 0U;
+        // the piece's hash so far. Empty while a span is in flight.
+        std::unique_ptr<tr_sha1> sha;
+    };
 
-    void verify_thread_func();
+    void step();
+    void schedule_step();
+    [[nodiscard]] bool sleep_due() const;
+    void on_span_hashed(uint64_t token, uint64_t n_bytes, bool ok, std::unique_ptr<tr_sha1> sha);
+    void finish(bool aborted);
 
-    std::mutex verify_mutex_;
+    tr::LocalData& local_data_;
+    std::unique_ptr<tr::Timer> const step_timer_;
 
     std::set<Node> todo_;
-    std::optional<Node> current_node_;
+    std::optional<Active> active_;
+    uint64_t next_token_ = 0U;
 
-    std::optional<std::thread::id> verify_thread_id_;
-
-    std::atomic<bool> stop_current_ = false;
-    std::condition_variable stop_current_cv_;
+    // True while step() waits for the backend, which may answer before it returns.
+    bool in_step_ = false;
 
     std::chrono::milliseconds sleep_per_seconds_during_verify_ = {};
+    std::chrono::steady_clock::time_point last_slept_at_;
 };

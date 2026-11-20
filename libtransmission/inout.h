@@ -31,6 +31,8 @@ struct StorageDescriptor;
 
 /**
  * Reads `std::size(setme)` bytes of torrent data, starting at byte `begin`.
+ * A failed read is logged unless `log_errors` is false: a verify expects
+ * to find data missing, and reports it as missing pieces.
  *
  * Safe to call from any thread.
  */
@@ -38,7 +40,8 @@ struct StorageDescriptor;
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
-    std::span<uint8_t> setme);
+    std::span<uint8_t> setme,
+    bool log_errors = true);
 
 /**
  * Like tr_ioRead(), but succeeds only if it never waits for the disk:
