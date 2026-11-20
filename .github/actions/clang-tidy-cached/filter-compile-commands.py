@@ -4,6 +4,7 @@ import json
 import os
 import re
 import sys
+import traceback
 
 
 def main() -> int:
@@ -19,7 +20,16 @@ def main() -> int:
     seen = set()
     for command in commands:
         filename = command["file"]
-        relative = os.path.relpath(filename, root).replace("\\", "/")
+        try:
+            relative = os.path.relpath(filename, root)
+        except Exception as e:
+            if os.name == "nt" and isinstance(e, ValueError):
+                e.add_note(f"Skipping '{filename}' as it is not in '{root}'")
+                traceback.print_exc()
+                continue
+            e.add_note(f"Failed to compute relative path for '{filename}' from '{root}'")
+            raise
+        relative = relative.replace(os.sep, "/")
         if matcher.match(relative) and filename not in seen:
             seen.add(filename)
             print(filename)
