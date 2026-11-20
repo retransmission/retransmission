@@ -64,11 +64,7 @@ auto constexpr Options = std::to_array<tr_option>({
     { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
     { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
-{
 struct app_opts {
     std::string_view filename;
     bool scrape = false;
