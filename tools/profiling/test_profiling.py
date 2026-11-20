@@ -42,8 +42,9 @@ import unittest
 from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
-from benchmark import (Tracker, Rpc, check_profiles, complete, process_cpu, start_daemon, thread_cpu, thread_cpu_delta, thread_roles,
-                       torrent_state, transfer_progress, verified_throughput, wait_for)
+from benchmark import (Tracker, Rpc, check_profiles, complete, data_phase, preallocation_mode, process_cpu, start_daemon,
+                       thread_cpu, thread_cpu_delta, thread_roles, torrent_state, transfer_progress, verified_throughput,
+                       wait_for)
 from report import summarize
 from filesystem_benchmark import disk_target_eligible, filesystem_info, summarize_fio
 from disk_load import DiskLoad, FIELDS, rates, read_stats
@@ -250,6 +251,10 @@ class HarnessTest(unittest.TestCase):
                 self.assertEqual(settings["disk_io_workers"], 4)
                 self.assertEqual(settings["torrent_added_verify_mode"], "full")
                 self.assertNotIn("disk_write_budget_mib", settings)
+                self.assertEqual((settings["tcp_enabled"], settings["utp_enabled"]), (True, False))
+                start_daemon(stack, Path("daemon"), root, root, "utp", 19093, 51415, transport="utp")
+                settings = json.loads((root / "utp/config/settings.json").read_text())
+                self.assertEqual((settings["tcp_enabled"], settings["utp_enabled"]), (False, True))
                 start_daemon(stack, Path("daemon"), root, root, "leech", 19092, 51414, disk_write_budget_mib=256)
                 settings = json.loads((root / "leech/config/settings.json").read_text())
                 self.assertEqual(settings["disk_write_budget_mib"], 256)
@@ -379,6 +384,31 @@ class HarnessTest(unittest.TestCase):
             wait_for(lambda: False, 1, "download", process)
 
 
+class MeasurementWindowTest(unittest.TestCase):
+    def test_preallocation_off_only_on_tmpfs_by_default(self):
+        with patch.dict(os.environ, {"TR_PROFILE_STORAGE": "tmpfs"}):
+            self.assertEqual(preallocation_mode("auto"), 0)
+            self.assertEqual(preallocation_mode("1"), 1)
+        with patch.dict(os.environ, {"TR_PROFILE_STORAGE": "bind"}):
+            self.assertIsNone(preallocation_mode("auto"))
+
+    def test_data_phase_counts_cpu_from_first_payload(self):
+        start = {"time": 10.0, "cpu": {"seed": {"user_seconds": 1.0, "system_seconds": 0.5},
+                                       "leech": {"user_seconds": 2.0, "system_seconds": 1.0}}}
+        end = {"time": 12.0, "cpu": {"seed": {"user_seconds": 2.0, "system_seconds": 1.0},
+                                     "leech": {"user_seconds": 3.5, "system_seconds": 1.5}}}
+        phase = data_phase(start, end, 2048)
+        self.assertAlmostEqual(phase["seconds"], 2.0)
+        self.assertAlmostEqual(phase["cpu_seconds"], 3.5)
+        self.assertAlmostEqual(phase["cpu_seconds_per_gib"], 1.75)
+        self.assertAlmostEqual(phase["mib_per_second"], 1024)
+
+    def test_data_phase_absent_without_payload_or_counters(self):
+        end = {"time": 1.0, "cpu": {"seed": None, "leech": None}}
+        self.assertIsNone(data_phase({}, end, 1024))
+        self.assertIsNone(data_phase({"time": 0.0, "cpu": {"seed": None, "leech": None}}, end, 1024))
+
+
 class RunScriptTest(unittest.TestCase):
     def test_arguments_reach_both_docker_build_and_run(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -389,7 +419,7 @@ class RunScriptTest(unittest.TestCase):
             docker.write_text(
                 "#!/usr/bin/env python3\nimport json, os, sys\n"
                 "print(json.dumps({'command': sys.argv[1:], 'profiling': os.environ['BLOCK_PROFILING'], "
-                "'workers': os.environ['DISK_IO_WORKERS'], 'encryption': os.environ['PEER_ENCRYPTION']}))\n")
+                "'workers': os.environ['DISK_IO_WORKERS'], 'encryption': os.environ['PEER_ENCRYPTION'], 'transport': os.environ['PEER_TRANSPORT']}))\n")
             git.chmod(0o755)
             docker.chmod(0o755)
             script = Path(__file__).with_name("run.sh").resolve()
@@ -399,7 +429,7 @@ class RunScriptTest(unittest.TestCase):
                 with self.subTest(storage=storage):
                     result = subprocess.run(
                         ["bash", str(script), "--block-profiling", "OFF", "--disk-io-workers", "4",
-                         "--encryption", "allowed", "--storage", storage],
+                         "--encryption", "allowed", "--transport", "utp", "--storage", storage],
                         env=dict(env, WORK_DIRECTORY=str(root / "payload")), check=True, capture_output=True, text=True)
                     calls = [json.loads(line) for line in result.stdout.splitlines() if line.startswith("{")]
                     self.assertEqual(len(calls), 2)  # docker info output is redirected.
@@ -410,6 +440,7 @@ class RunScriptTest(unittest.TestCase):
                         self.assertEqual(call["profiling"], "OFF")
                         self.assertEqual(call["workers"], "4")
                         self.assertEqual(call["encryption"], "allowed")
+                        self.assertEqual(call["transport"], "utp")
 
             # With no override, both compose invocations use the application default.
             default_env = dict(env)
