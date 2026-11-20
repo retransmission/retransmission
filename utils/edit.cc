@@ -332,7 +332,7 @@ auto constexpr Options = std::to_array<tr_option>({
 } // namespace
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
-int tr_main(int argc, char* argv[])
+int tr_main(int argc, char** argv)
 {
     tr_locale_set_global("");
 
@@ -341,7 +341,7 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parse_command_line(options, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(options, argc, argv) != 0) {
         tr_getopt_usage(MyName, Usage, std::data(Options));
         return EXIT_FAILURE;
     }
