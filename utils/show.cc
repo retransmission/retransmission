@@ -387,7 +387,7 @@ void do_scrape(tr_torrent_metainfo const& metainfo)
 
 } // namespace
 
-int tr_main(int argc, char* argv[])
+int tr_main(int argc, char** argv)
 {
     tr_lib_init();
 
@@ -397,7 +397,7 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto opts = app_opts{};
-    if (parse_command_line(opts, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(opts, argc, argv) != 0) {
         return EXIT_FAILURE;
     }
 
