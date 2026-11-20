@@ -331,7 +331,7 @@ void do_scrape(tr_torrent_metainfo const& metainfo)
         scrape_url += "info_hash="sv;
         tr_urlPercentEncode(scrape_url, hash);
         fmt::print("{:s} ... ", scrape_url);
-        fflush(stdout);
+        (void)std::fflush(stdout);
 
         // execute the http scrape.
         // the callback runs on tr_web's own thread;
@@ -432,7 +432,7 @@ int tr_main(int argc, char* argv[])
             fmt::print("Name: {:s}\n", metainfo.name());
             fmt::print("File: {:s}\n", opts.filename);
             fmt::print("\n");
-            fflush(stdout);
+            (void)std::fflush(stdout);
         }
 
         if (opts.scrape) {
@@ -443,6 +443,6 @@ int tr_main(int argc, char* argv[])
     }
 
     /* cleanup */
-    putc('\n', stdout);
+    fmt::print("\n");
     return EXIT_SUCCESS;
 }
