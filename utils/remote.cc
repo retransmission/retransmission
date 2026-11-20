@@ -2536,7 +2536,7 @@ void print_blocklist_size(tr_variant::Map const& result)
     api_compat::convert_incoming_data(*parsed);
 
     auto const* const top = parsed->get_if<tr_variant::Map>();
-    if (!top) {
+    if (top == nullptr) {
         fmt::print(stderr, "Response was not a JSON object\n");
         return EXIT_FAILURE;
     }
@@ -2563,7 +2563,7 @@ void print_blocklist_size(tr_variant::Map const& result)
 
     auto empty_result = tr_variant::Map{};
     auto* result = top->find_if<tr_variant::Map>(TR_KEY_result);
-    result = result ? result : &empty_result;
+    result = result != nullptr ? result : &empty_result;
 
     switch (top->value_if<int64_t>(TR_KEY_id).value_or(ID_NOOP)) {
     case ID_SESSION:
