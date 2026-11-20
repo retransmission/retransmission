@@ -1960,7 +1960,7 @@ void print_torrent_list(tr_variant::Map const& result)
     }
 
     std::ranges::sort(tptrs, {}, [](auto const ptr) {
-        return ptr->template value_if<int64_t>(TR_KEY_added_date).value_or(std::numeric_limits<int64_t>::min());
+        return ptr->template value_if<time_t>(TR_KEY_added_date).value_or(std::numeric_limits<time_t>::min());
     });
 
     int64_t total_size = 0;
