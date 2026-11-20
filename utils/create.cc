@@ -120,8 +120,8 @@ struct app_options {
 
 [[nodiscard]] int parse_command_line(app_options& options, int argc, char const* const* argv)
 {
-    int c;
-    char const* optarg;
+    int c = {};
+    char const* optarg = nullptr;
 
     while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
         switch (c) {
