@@ -17,11 +17,9 @@
 #include <initializer_list>
 #include <memory>
 #include <optional>
-#include <random>
 #include <span>
 #include <string>
 #include <string_view>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -43,9 +41,39 @@ struct StorageDescriptor;
 namespace detail
 {
 
-// For tests. While the copy lane is held, no move that has to copy
-// files from another filesystem starts placing them.
-void hold_copy_lane(LocalData& local_data, bool held);
+// For tests. Clients call LocalData::start_workers().
+//
+// Selects the threaded backend without starting its threads. The work
+// that `worker_count` workers and the two admin threads would do waits
+// for the session thread, which does it a step at a time between its
+// other work: never inside the call that enqueued an op, and never
+// inside a callback. A step is one thread's next move, and a random
+// number generator picks the thread, so a seed replays its schedule.
+// The gate, the queues, and the delivery of callbacks are the ones the
+// threads use.
+//
+// `marshal` and `provider` are a LocalData::Marshal and a
+// LocalData::DescriptorProvider.
+void start_threadless(
+    LocalData& local_data,
+    size_t worker_count,
+    uint32_t seed,
+    tr_open_files& open_files,
+    std::function<void(std::function<void()>)> marshal,
+    std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider);
+
+enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
+
+// Takes one step now, on the calling thread, paused or not. A worker
+// takes its next hash, run of reads, or run of writes, or does the one
+// it took earlier. A lane does its next job. False if no thread of
+// `which` has anything to do.
+bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
+
+// Does now what the backend left for the session thread to do later:
+// delivers the callbacks of the ops that have finished, and hands the
+// reads that waited for that to the workers.
+void deliver(LocalData& local_data);
 
 } // namespace detail
 
@@ -252,25 +280,6 @@ public:
         virtual void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num) = 0;
     };
 
-    /**
-     * How the synchronous backend delivers completions. See rule 4.
-     *
-     * `Inline` runs every callback before the enqueue call returns.
-     *
-     * `Deferred` and `Shuffled` are for testing. `Deferred` parks every
-     * callback until `pump()` runs. `Shuffled` picks per op, so one run
-     * parks some callbacks and fires the rest inline. `pump()` delivers
-     * what it parked in an order unrelated to the order the ops arrived
-     * in.
-     *
-     * The rules above allow all of this, so a caller that breaks under
-     * these modes would also break under the threaded backend.
-     */
-    enum class Completions : uint8_t { Inline, Deferred, Shuffled };
-
-    // The same seed replays the same shuffled run.
-    static auto constexpr DefaultShuffleSeed = uint32_t{ 20260812U };
-
     // Runs a function on the session thread. Must be callable from any
     // thread. Disk workers call it to deliver completions.
     using Marshal = std::function<void(std::function<void()>)>;
@@ -371,74 +380,24 @@ public:
         return 2U * MaxRunBytes;
     }
 
-    // For tests. Paused workers take no new ops.
+    // For tests. Paused workers take no new ops. With no threads, the
+    // session thread takes no steps of its own.
     void set_workers_paused(bool paused);
 
-    // LocalData calls `wake` when it parks the first completion. The owner
-    // answers by calling pump() from the session thread. That thread is the
-    // same in every mode, so the owner binds this once.
-    void set_wake(std::function<void()> wake);
-
-    void set_completions(Completions completions, uint32_t seed = DefaultShuffleSeed);
-
-    // Deliver the parked completions in a random order.
-    void pump();
-
 private:
-    friend void detail::hold_copy_lane(LocalData& local_data, bool held);
-
-    // A completion waiting to be delivered.
-    // A read completion owns the buffer it read into and can't be copied,
-    // so std::function can't hold one.
-    class Parked
-    {
-    public:
-        virtual ~Parked() = default;
-        virtual void deliver() = 0;
-    };
-
-    template<typename Fn>
-    class ParkedFn final : public Parked
-    {
-    public:
-        explicit ParkedFn(Fn fn)
-            : fn_{ std::move(fn) }
-        {
-        }
-
-        void deliver() override
-        {
-            fn_();
-        }
-
-    private:
-        Fn fn_;
-    };
-
-    // Deliver the completion now, or park it for pump().
-    // See set_completions().
-    template<typename Fn>
-    void finish(Fn&& fn)
-    {
-        if (defer_next()) {
-            park(std::make_unique<ParkedFn<std::decay_t<Fn>>>(std::forward<Fn>(fn)));
-            return;
-        }
-
-        fn();
-    }
-
-    // True if this completion should wait for pump() instead of firing now.
-    [[nodiscard]] bool defer_next() noexcept;
+    friend void detail::start_threadless(
+        LocalData& local_data,
+        size_t worker_count,
+        uint32_t seed,
+        tr_open_files& open_files,
+        std::function<void(std::function<void()>)> marshal,
+        std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider);
+    friend bool detail::step(LocalData& local_data, detail::DiskThread which);
+    friend void detail::deliver(LocalData& local_data);
 
     // Run an admin op as a barrier on the torrent, or with `file`, on
     // that file alone. See the definition.
     void admin(tr_torrent_id_t id, std::function<void()> body, std::optional<tr_file_index_t> file = {});
-
-    void park(std::unique_ptr<Parked> completion);
-
-    // Deliver every parked completion, including ones parked along the way.
-    void drain();
 
     // The threaded backend. See start_workers().
     class Threaded;
@@ -453,15 +412,6 @@ private:
 
     std::shared_ptr<Threaded> threaded_;
     std::optional<uint64_t> write_budget_;
-
-    std::vector<std::unique_ptr<Parked>> parked_;
-    std::function<void()> wake_;
-
-    // A fixed seed so that tests can replay a shuffled run.
-    // NOLINTNEXTLINE(cert-msc32-c,cert-msc51-cpp,bugprone-random-generator-seed)
-    std::mt19937 rng_{ DefaultShuffleSeed };
-
-    Completions completions_ = Completions::Inline;
 };
 
 } // namespace tr
