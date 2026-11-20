@@ -179,11 +179,6 @@ struct RemoteConfig {
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
-[[nodiscard]] Ratio to_ratio(int64_t const numerator, int64_t const denominator) noexcept
-{
-    return { static_cast<uint64_t>(numerator), static_cast<uint64_t>(denominator) };
-}
-
 [[nodiscard]] auto strlsize(int64_t bytes)
 {
     if (bytes < 0) {
@@ -1549,11 +1544,11 @@ void print_details(tr_variant::Map const& result)
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_uploaded_ever)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_uploaded_ever)) {
             fmt::print("  Uploaded: {:s}\n", strlsize(*i));
 
-            if (auto const j = t->value_if<int64_t>(TR_KEY_size_when_done)) {
-                fmt::print("  Ratio: {:s}\n", to_ratio(*i, *j).to_string());
+            if (auto const j = t->value_if<uint64_t>(TR_KEY_size_when_done)) {
+                fmt::print("  Ratio: {:s}\n", Ratio{ *i, *j }.to_string());
             }
         }
 
@@ -2342,31 +2337,31 @@ void print_session(tr_variant::Map const& result)
 void print_session_stats(tr_variant::Map const& result)
 {
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_current_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
 
         if (up && down && secs) {
             fmt::print("\nCURRENT SESSION\n");
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
 
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_cumulative_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
-        auto const sessions = stats->value_if<int64_t>(TR_KEY_session_count);
+        auto const sessions = stats->value_if<uint64_t>(TR_KEY_session_count);
 
         if (up && down && secs && sessions) {
             fmt::print("\nTOTAL\n");
             fmt::print("  Started {:d} times\n", *sessions);
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
