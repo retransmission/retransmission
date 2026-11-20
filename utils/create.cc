@@ -118,7 +118,7 @@ struct app_options {
     bool show_version = false;
 };
 
-[[nodiscard]] int parseCommandLine(app_options& options, int argc, char const* const* argv)
+[[nodiscard]] int parse_command_line(app_options& options, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;
@@ -187,7 +187,7 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(options, argc, (char const* const*)argv) != 0) {
         return EXIT_FAILURE;
     }
 
