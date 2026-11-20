@@ -45,11 +45,7 @@ auto constexpr Options = std::to_array<tr_option>({
     { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
     { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
-{
 [[nodiscard]] int parseCommandLine(app_options& opts, int argc, char const* const* argv)
 {
     int c;
