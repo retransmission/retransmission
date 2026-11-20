@@ -352,20 +352,11 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Do not check disk space again";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Don't bug me about this ever again.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Don't Download";
 
 /* Transmission import alert -> button */
 "Don't Import" = "Don't Import";
-
-/* Donation beg -> button */
-"Donate" = "Donate";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Donate or not, there will be no difference to your torrenting experience.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -616,9 +607,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "None";
-
-/* Donation beg -> button */
-"Nope" = "Nope";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Normal";
@@ -978,9 +966,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Stop waiting to start";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Support open-source indie software";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/s";
 
@@ -1130,9 +1115,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Transfers Not Active";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ is already running.";

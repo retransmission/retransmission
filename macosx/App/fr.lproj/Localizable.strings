@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Ne plus vérifier l’espace disque";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Ne plus jamais me demander.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Ne pas télécharger";
-
-/* Donation beg -> button */
-"Donate" = "Faire un don";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Que vous fassiez un don ou pas, votre expérience d’utilisation du réseau BitTorrent ne sera pas affectée.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Aucun";
-
-/* Donation beg -> button */
-"Nope" = "Non";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Normale";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Arrêté, en attente de démarrage";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Soutenez les logiciels indépendants à code source ouvert";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "Tb/s";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Transferts inactifs";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ est une application Bittorrent complète. Beaucoup d’efforts et de temps ont étés nécessaires à son développement, sa programmation et son peaufinement. Si vous appréciez son utilisation, pensez à montrer votre amour par un don.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ est déjà en cours d’exécution.";

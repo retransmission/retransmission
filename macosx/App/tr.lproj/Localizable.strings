@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Disk alanını bir daha denetleme";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Bunu bir daha karşıma getirme.";
-
 /* files tab -> tooltip */
 "Don't Download" = "İndirme";
-
-/* Donation beg -> button */
-"Donate" = "Bağış Yap";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Bağış yapın veya yapmayın, torrent deneyiminizde herhangi bir değişiklik olmayacak.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Hiçbiri";
-
-/* Donation beg -> button */
-"Nope" = "I-ıh";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Olağan";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Başlatılmayı bekleme";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Açık kaynaklı özgür yazılımları destekleyin";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/sn";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Etkin Olmayan Aktarımlar";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ tam donanımlı bir torrent uygulamasıdır. Geliştirme, kodlama ve ince ayarlarına çok fazla emek ve zaman harcadık. Eğer kullanmaktan memnunsanız, memnuniyetinizi ufak bir bağış ile gösterebilirsiniz.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ zaten çalışıyor.";

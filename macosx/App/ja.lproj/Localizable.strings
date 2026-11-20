@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "ディスク容量を再度確認しない";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "二度と邪魔しないで。";
-
 /* files tab -> tooltip */
 "Don't Download" = "ダウンロードしない";
-
-/* Donation beg -> button */
-"Donate" = "寄付";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "寄付をしなくてもトレント利用上の違いはありません。";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "なし";
-
-/* Donation beg -> button */
-"Nope" = "いいえ";
 
 /* File Outline -> Priority Menu */
 "Normal" = "通常";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "開始の待機を停止";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "オープンソースの自主製作ソフトを支援";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/秒";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "転送未稼働";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ は完全機能を備えたトレント用アプリです。開発、コードの作成また改良に多くの労力が費やされています。気に入っていただけているなら寄付によっていいね！することもできます。";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ は既に実行中です。";

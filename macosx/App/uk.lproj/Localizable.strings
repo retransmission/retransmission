@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Не перевіряти дисковий простір знову";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Не запитувати мене про це наступного разу.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Не Завантажувати";
-
-/* Donation beg -> button */
-"Donate" = "Підтримати";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Retransmission продовжить працювати незалежно від того, чи зробите ви пожертву чи ні.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Нічого";
-
-/* Donation beg -> button */
-"Nope" = "Ні";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Звичайний";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Не очікувати на початок";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Підтримайте незалежну програму з відкритим кодом";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "ТБ/с";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Роздачі неактивні";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ - це повнофункціональний торрент-додаток. Багато часу і сил пішло на розробку, кодування та вдосконалення. Якщо вам подобається користуватися ним, будь ласка, подумайте про те, щоб приявити свою любов через пожертву.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ вже запущений.";

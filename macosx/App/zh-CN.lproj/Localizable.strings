@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "不再检查磁盘空间";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "不要再为此打扰我";
-
 /* files tab -> tooltip */
 "Don't Download" = "不下载";
-
-/* Donation beg -> button */
-"Donate" = "捐赠";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "捐赠与否不影响您的BT下载体验。";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "无";
-
-/* Donation beg -> button */
-"Nope" = "算了";
 
 /* File Outline -> Priority Menu */
 "Normal" = "正常";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "停止等待开始";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "支持开源的独立软件";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/秒";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "传输未启动";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ 是一个全功能的 Torrent 应用程序。在开发、编码和完善方面花费了大量的时间和精力。如果你喜欢使用它，请考虑用捐赠来表达你的爱。";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ 已经在运行。";
