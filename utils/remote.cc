@@ -2809,7 +2809,7 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
 [[nodiscard]] int process_args(char const* rpcurl, int argc, char const* const* argv, RemoteConfig& config)
 {
     int status = EXIT_SUCCESS;
-    char const* optarg;
+    char const* optarg = nullptr;
     auto sset = tr_variant{};
     auto tset = tr_variant{};
     auto tadd = tr_variant{};
