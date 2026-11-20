@@ -7,7 +7,9 @@
 
 #include <algorithm>
 #include <iterator>
+#include <optional>
 #include <span>
+#include <string>
 #include <utility>
 
 #include <QtCore/QEventLoop>
@@ -152,6 +154,15 @@ Application::Application(
 {
     setApplicationName(ConfigName);
     loadTranslations();
+
+    // Tracker icons leave by the session's binding, when the session runs on this
+    // machine; a remote daemon's interface names nothing here.
+    favicon_cache_.set_bind_interface_func([this] -> std::optional<std::string> {
+        if (!session_ || !session_->is_local_filesystem()) {
+            return std::nullopt;
+        }
+        return prefs_.get<std::string>(TR_KEY_bind_interface);
+    });
     initUnits();
 
     setWindowIcon(makeWindowIcon());

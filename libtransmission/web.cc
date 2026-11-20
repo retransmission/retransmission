@@ -117,8 +117,13 @@ struct EasyDeleter {
 using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 
 struct MultiPoolNode {
+    // TLS sessions and cookies stay with their binding, so a tracker can't link the
+    // addresses of two bindings; the multis of one binding share it. Declared
+    // first: its easy handles must go before it.
+    std::shared_ptr<CURLSH> share;
     multi_unique_ptr multi;
     tr_web::BindAddresses bind_addresses;
+    std::optional<std::string> bind_interface;
 };
 
 } // namespace curl_helpers
@@ -213,8 +218,6 @@ public:
             curl_ca_bundle = std::move(bundle);
         }
 
-        share_setopt();
-
         if (curl_ssl_verify) {
             auto const* bundle = std::empty(curl_ca_bundle) ? "none" : curl_ca_bundle.c_str();
             tr_logAddInfo(
@@ -256,17 +259,12 @@ public:
             deadline_ns_ = to_ns(mediator.now() + deadline);
         }
         queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& node : multi_pool_) {
-                curl_multi_wakeup(node.multi.get());
-            }
-        }
+        wakeup_multis();
     }
 
     void fetch(FetchOptions&& options)
     {
-        auto bind_addresses = mediator.bind_addresses();
+        auto [bind_addresses, bind_interface] = mediator.binding();
         {
             auto lock = std::unique_lock{ tasks_mutex_ };
 
@@ -284,15 +282,42 @@ public:
                 return;
             }
 
-            queued_tasks_.emplace_back(*this, std::move(options), std::move(bind_addresses));
-        }
-        queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& node : multi_pool_) {
-                curl_multi_wakeup(node.multi.get());
+            if (!is_blocked(bind_interface)) {
+                queued_tasks_.emplace_back(*this, std::move(options), std::move(bind_addresses), std::move(bind_interface));
+                queued_tasks_cv_.notify_one();
+                wakeup_multis();
+                return;
             }
         }
+
+        // A deliberate "bind to nothing" setting is refused before curl sees
+        // the request. The callback runs outside tasks_mutex_ because the
+        // mediator may invoke it inline, and a callback that fetches again
+        // would deadlock on the mutex.
+        tr_logAddTrace(fmt::format("Refusing fetch of '{}': interface binding is 'blocked'", options.url));
+        if (options.done_func) {
+            auto response = FetchResponse{};
+            response.request_url = options.url;
+            response.errmsg = "fetch refused: interface binding is 'blocked'";
+            response.user_data = options.done_func_user_data;
+            mediator.run(std::move(options.done_func), std::move(response));
+        }
+    }
+
+    // Callable with tasks_mutex_ held: the curl thread also takes
+    // multi_pool_mutex_ after tasks_mutex_, never the other way round.
+    void wakeup_multis() const
+    {
+        auto const lock = std::unique_lock{ multi_pool_mutex_ };
+        for (auto const& node : multi_pool_) {
+            curl_multi_wakeup(node.multi.get());
+        }
+    }
+
+    // `bind_interface` is a value read from the mediator's bind_interface()
+    [[nodiscard]] static bool is_blocked(std::optional<std::string> const& bind_interface)
+    {
+        return bind_interface && tr_net_interface_is_blocked(*bind_interface);
     }
 
     // Callers pass their lock to prove they hold tasks_mutex_.
@@ -311,9 +336,14 @@ public:
     class Task
     {
     public:
-        Task(tr_web::Impl& impl_in, tr_web::FetchOptions&& options_in, BindAddresses bind_addresses_in)
+        Task(
+            tr_web::Impl& impl_in,
+            tr_web::FetchOptions&& options_in,
+            BindAddresses bind_addresses_in,
+            std::optional<std::string> bind_interface_in)
             : impl{ impl_in }
             , bind_addresses{ std::move(bind_addresses_in) }
+            , bind_interface{ std::move(bind_interface_in) }
             , options_{ std::move(options_in) }
         {
             response.request_url = options_.url;
@@ -367,6 +397,9 @@ public:
             return status;
         }
 
+        // set by cancel_all() under tasks_mutex_, and read under it
+        bool cancelled = false;
+
         void set_error(CURLcode const code)
         {
             response.errmsg = fmt::format("curl error: {} ({})", curl_easy_strerror(code), std::to_underlying(code));
@@ -402,7 +435,7 @@ public:
             }
         }
 
-        [[nodiscard]] auto bind_address(tr_address_type const type) const
+        [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
         {
             return bind_addresses[type].and_then(&tr_address::from_string);
         }
@@ -455,6 +488,7 @@ public:
         tr_web::Impl& impl;
         tr_web::FetchResponse response;
         BindAddresses const bind_addresses;
+        std::optional<std::string> const bind_interface; // never "blocked": fetch() refuses those
 
     private:
         tr_web::FetchOptions options_;
@@ -624,6 +658,16 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
+            // Pin and bind the socket as peer sockets are, or fail. curl's own
+            // CURLOPT_INTERFACE isn't enough: on macOS it binds only the interface's
+            // address, leaving the egress interface to routing, and on Linux it falls
+            // back to that address when the kernel refuses SO_BINDTODEVICE.
+            if (auto const& bind_interface = task->bind_interface;
+                bind_interface && !tr_netSetSocketInterface(sock, tr_af_to_ip_protocol(address->family), *bind_interface)) {
+                tr_net_close_socket(sock);
+                return CURL_SOCKET_BAD;
+            }
+
             if (auto const bind_addr = task->bind_address(tr_af_to_ip_protocol(address->family))) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
                 static constexpr int One = 1;
@@ -660,18 +704,20 @@ public:
     [[nodiscard]] bool initEasy(Task& task)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+        TR_ASSERT(!is_blocked(task.bind_interface));
         auto* const e = task.init_easy();
         if (e == nullptr) {
             return false;
         }
 
-        // N.B. DO NOT set CURLOPT_INTERFACE, CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE.
+        // N.B. DO NOT set CURLOPT_LOCALPORT, CURLOPT_LOCALPORTRANGE, or CURLOPT_INTERFACE.
         // curl applies them to every socket it opens regardless of the address family it
-        // resolved, so an IPv4 bind address would also be forced onto IPv6 sockets.
-        // open_socket() binds each socket according to its resolved family instead.
-        // Separate multi handles isolate the connection caches for different bind pairs.
+        // resolved, and binds after open_socket(), which has already pinned the interface
+        // and bound the address of the socket's family.
+        // Separate multi handles isolate the connection caches for different bindings.
 
-        (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
+        // the share of the multi that the task is about to join
+        (void)curl_easy_setopt(e, CURLOPT_SHARE, multi_pool_.back().share.get());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
@@ -887,10 +933,29 @@ public:
         network_changed_ = true;
     }
 
-    [[nodiscard]] bool push_multi(BindAddresses const& bind_addresses)
+    void cancel_all()
     {
+        auto const lock = std::unique_lock{ tasks_mutex_ };
+        for (auto& task : queued_tasks_) {
+            task.cancelled = true;
+        }
+        for (auto& task : running_tasks_) {
+            task.cancelled = true;
+        }
+        network_changed_ = true;
+        cancel_pending_ = true;
+        queued_tasks_cv_.notify_one();
+        wakeup_multis();
+    }
+
+    [[nodiscard]] bool push_multi(Task const& task)
+    {
+        // A new multi for the same binding, after a network change, keeps its share:
+        // the cookies and TLS sessions belong to the binding, not to the connections.
+        auto share = !std::empty(multi_pool_) && current_multi_fits(task) ? multi_pool_.back().share :
+                                                                            std::shared_ptr<CURLSH>{ make_share() };
         auto multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
-        if (!multi) {
+        if (!share || !multi) {
             return false;
         }
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
@@ -898,8 +963,16 @@ public:
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
 
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        multi_pool_.emplace_back(std::move(multi), bind_addresses);
+        multi_pool_.emplace_back(std::move(share), std::move(multi), task.bind_addresses, task.bind_interface);
         return true;
+    }
+
+    // curl's connection cache can't tell bindings apart, since open_socket()
+    // binds behind its back. So each binding gets its own multi handle.
+    [[nodiscard]] bool current_multi_fits(Task const& task) const noexcept
+    {
+        auto const& node = multi_pool_.back();
+        return node.bind_addresses == task.bind_addresses && node.bind_interface == task.bind_interface;
     }
 
     [[nodiscard]] CURLM* current_multi() const noexcept
@@ -925,7 +998,7 @@ public:
                 // NB: a pending shutdown must stop the wait; if it prolonged
                 // it instead, the loop could sleep through its exit condition
                 auto const stop_waiting = [this, &lock] {
-                    return !is_idle(lock) || deadline_exists();
+                    return !is_idle(lock) || deadline_exists() || cancel_pending_;
                 };
                 queued_tasks_cv_.wait(lock, stop_waiting);
 
@@ -933,12 +1006,26 @@ public:
                     break;
                 }
 
+                // a running task is cancelled here, while its flag is read under the lock
+                if (std::exchange(cancel_pending_, false)) {
+                    for (auto& task : running_tasks_) {
+                        if (task.cancelled) {
+                            task.set_error(CURLE_ABORTED_BY_CALLBACK);
+                            failed_tasks.push_back(&task);
+                        }
+                    }
+                }
+
                 // add queued tasks
                 for (auto& task : queued_tasks_) {
-                    if (!initEasy(task) ||
-                        ((multi_pool_.empty() || network_changed_ ||
-                          multi_pool_.back().bind_addresses != task.bind_addresses) &&
-                         !push_multi(task.bind_addresses))) {
+                    if (task.cancelled) {
+                        task.set_error(CURLE_ABORTED_BY_CALLBACK);
+                        failed_tasks.push_back(&task);
+                        continue;
+                    }
+
+                    if (((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task)) ||
+                        !initEasy(task)) {
                         task.set_error(CURLE_OUT_OF_MEMORY);
                         failed_tasks.push_back(&task);
                         continue;
@@ -979,7 +1066,10 @@ public:
 
             auto const next_unpause_ms = paused_tasks_upkeep();
 
-            // start newly added or unpaused tasks
+            // start newly added or unpaused tasks, unless cancel_all() came since
+            if (auto const lock = std::unique_lock{ tasks_mutex_ }; cancel_pending_) {
+                continue;
+            }
             auto n_running = int{};
             for (auto const& node : multi_pool_) {
                 curl_multi_perform(node.multi.get(), &n_running);
@@ -1004,6 +1094,11 @@ public:
                 }
             }
             curl_multi_poll(current_multi(), nullptr, 0, numfds > 0 ? 0 : timeout_ms, &numfds);
+
+            // cancel_all() woke the poll: end its fetches before curl can move them on
+            if (auto const lock = std::unique_lock{ tasks_mutex_ }; cancel_pending_) {
+                continue;
+            }
 
             for (auto it = multi_pool_.begin(); it != multi_pool_.end();) {
                 auto* const multi = it->multi.get();
@@ -1046,10 +1141,9 @@ public:
         }
     }
 
-    curl_helpers::shared_unique_ptr const curlsh_{ curl_share_init() };
-
     small::vector<curl_helpers::MultiPoolNode, 2U> multi_pool_;
     bool network_changed_ = false;
+    bool cancel_pending_ = false; // under tasks_mutex_
 
     // Only the curl thread modifies multi_pool_, all other threads read it. We only need
     // to lock exclusively for writes in the curl thread and reads from any other thread,
@@ -1061,23 +1155,19 @@ public:
     std::list<Task> queued_tasks_;
     std::list<Task> running_tasks_;
 
-    [[nodiscard]] CURLSH* shared()
-    {
-        return curlsh_.get();
-    }
-
-    void share_setopt()
+    [[nodiscard]] static curl_helpers::shared_unique_ptr make_share()
     {
         // Do *not* share HSTS cache
         // https://github.com/transmission/transmission/issues/5199
 
-        // Each multi owns its connection cache to isolate different bind-address pairs.
-
-        auto* const sh = shared();
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-        curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
+        auto share = curl_helpers::shared_unique_ptr{ curl_share_init() };
+        if (auto* const sh = share.get(); sh != nullptr) {
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+            curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
+        }
+        return share;
     }
 
     std::map<CURL*, uint64_t /*tr_time_msec()*/> paused_easy_handles;
@@ -1119,6 +1209,11 @@ void tr_web::startShutdown(std::chrono::milliseconds deadline)
 void tr_web::network_changed()
 {
     impl_->network_changed();
+}
+
+void tr_web::cancel_all()
+{
+    impl_->cancel_all();
 }
 
 bool tr_web::is_idle() const

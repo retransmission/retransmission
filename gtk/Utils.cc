@@ -698,6 +698,23 @@ void gtr_priority_combo_init(Gtk::ComboBox& combo)
 
 // ---
 
+void gtr_widget_set_css_class(Gtk::Widget& widget, Glib::ustring const& css_class, bool const enabled)
+{
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+    if (enabled) {
+        widget.add_css_class(css_class);
+    } else {
+        widget.remove_css_class(css_class);
+    }
+#else
+    if (auto const style = widget.get_style_context(); enabled) {
+        style->add_class(css_class);
+    } else {
+        style->remove_class(css_class);
+    }
+#endif
+}
+
 void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible)
 {
     static auto const ChildHiddenKey = Glib::Quark("gtr-child-hidden");

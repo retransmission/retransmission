@@ -14,6 +14,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -39,6 +40,15 @@ public:
         , icons_dir_{ fmt::format("{:s}/{:s}", cache_dir_, "favicons") }
         , scraped_sitenames_filename_{ fmt::format("{:s}/favicons-scraped.txt", cache_dir_) }
     {
+    }
+
+    // the network interface the session binds its traffic to, if any, which
+    // icon fetches then use too; nullopt or empty for normal routing
+    using BindInterfaceFunc = std::function<std::optional<std::string>()>;
+
+    void set_bind_interface_func(BindInterfaceFunc func)
+    {
+        bind_interface_func_ = std::move(func);
     }
 
     [[nodiscard]] Icon const* find(std::string_view sitename) const noexcept
@@ -77,7 +87,7 @@ public:
             ports[n_ports++] = url->port;
         }
 
-        auto in_flight = std::make_shared<InFlightData>(callback, url->sitename);
+        auto in_flight = std::make_shared<InFlightData>(callback, url->sitename, bind_interface_func_);
         for (auto i = 0; i < n_ports; ++i) {
             for (auto const scheme : { "http", "https" }) {
                 for (auto const suffix : { "ico", "png", "gif", "jpg" }) {
@@ -101,9 +111,10 @@ private:
     class InFlightData
     {
     public:
-        InFlightData(IconFunc callback, std::string_view sitename)
+        InFlightData(IconFunc callback, std::string_view sitename, BindInterfaceFunc bind_interface)
             : callback_{ std::move(callback) }
             , sitename_{ sitename }
+            , mediator_{ bind_interface ? bind_interface() : std::nullopt }
         {
         }
 
@@ -158,9 +169,29 @@ private:
         std::mutex responses_mutex_;
         std::vector<std::pair<std::string, long>> responses_;
 
-        tr_web::Mediator mediator_;
+        // the session's binding, so a kill switch covers the icon fetches too
+        class Mediator final : public tr_web::Mediator
+        {
+        public:
+            explicit Mediator(std::optional<std::string> bind_interface)
+                : bind_interface_{ std::move(bind_interface) }
+            {
+            }
+
+            [[nodiscard]] std::optional<std::string> bind_interface() const override
+            {
+                return bind_interface_;
+            }
+
+        private:
+            std::optional<std::string> const bind_interface_;
+        };
+
+        Mediator mediator_;
         std::unique_ptr<tr_web> web_ = tr_web::create(mediator_);
     };
+
+    BindInterfaceFunc bind_interface_func_;
 
     [[nodiscard]] Icon create_from_file(std::string_view filename) const;
     [[nodiscard]] Icon create_from_data(void const* data, size_t datalen) const;

@@ -131,6 +131,10 @@ public:
 
     void set_url(std::string_view url);
 
+    // Restarts a listener bound to a named interface once that interface
+    // appears, or reappears under a new index. Called once a second.
+    void check_bound_interface();
+
     [[nodiscard]] std::string get_bind_address() const;
 
     [[nodiscard]] constexpr auto socket_mode() const noexcept
@@ -154,4 +158,8 @@ public:
 
     size_t login_attempts_ = 0U;
     int start_retry_counter = 0;
+
+    // the index of the named interface when start_server() last bound to it;
+    // 0 if it was missing
+    unsigned bound_interface_index_ = 0U;
 };

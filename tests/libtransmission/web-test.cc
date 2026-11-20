@@ -86,6 +86,9 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
     EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 }
 
+// tr_web needs a Mediator; this one overrides only what tests set:
+// the user-agent so a test can confirm the header reaches the server,
+// and the session-level bind addresses and bind interface.
 class TestMediator final : public tr_web::Mediator
 {
 public:
@@ -109,7 +112,20 @@ public:
         return std::nullopt;
     }
 
+    // fetch() reads this on the caller's thread, so tests set it without a lock
+    [[nodiscard]] std::optional<std::string> bind_interface() const override
+    {
+        return bind_interface_;
+    }
+
+    [[nodiscard]] std::optional<std::string> cookieFile() const override
+    {
+        return cookie_file_;
+    }
+
     std::optional<std::string> user_agent_;
+    std::optional<std::string> bind_interface_;
+    std::optional<std::string> cookie_file_; // read when a tr_web is created
 
 private:
     mutable std::mutex mutex_;
@@ -655,6 +671,141 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
+using tr::test::LoopbackInterface;
+
+TEST_F(WebTest, interfaceBindingKeepsBindAddress)
+{
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
+    // the loopback interface reaches the server, but 192.0.2.1 isn't
+    // its address, so a fetch that dropped the bind address would succeed
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
+
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
+    EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
+}
+
+TEST_F(WebTest, missingInterfaceFailsInsteadOfFallingBack)
+{
+    // the default route reaches the server, so a fetch that
+    // drops the failed binding would succeed
+    mediator_.bind_interface_ = "tr-no-such-interface";
+
+    auto const response = fetch(options());
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
+}
+
+TEST_F(WebTest, blockedInterfaceIsRefused)
+{
+    // a "blocked" binding completes the fetch as a failed connection
+    // without a request ever reaching the server
+    mediator_.bind_interface_ = "blocked";
+    auto user_data = int{};
+
+    auto const response = fetch(options("/"sv, &user_data));
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+    EXPECT_EQ(&user_data, response.user_data);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_TRUE(response.errmsg->contains("blocked"sv)) << *response.errmsg;
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
+}
+
+TEST_F(WebTest, bindInterfaceCapturedWhenQueued)
+{
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
+    // the fetch succeeds only if it keeps the binding it was queued with
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto gate = ThreadGate{};
+    auto paused = pauseWebThread(gate.future());
+    ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
+
+    auto response = fetchAsync(options());
+    mediator_.bind_interface_ = "blocked";
+    gate.open();
+
+    ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
+    EXPECT_EQ(200, response.get().status);
+}
+
+TEST_F(WebTest, connectionsNotReusedAcrossBindInterfaces)
+{
+    if constexpr (!TrNetCanBindInterface) {
+        GTEST_SKIP() << "this platform can't bind a socket to an interface";
+    }
+
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status);
+
+    // curl would reuse the loopback-bound connection for a request that names no
+    // interface, which would let this fetch skip binding to 192.0.2.1
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_.reset();
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
+}
+
+TEST_F(WebTest, cookiesNotSharedAcrossBindings)
+{
+    // every reply sets a cookie, which curl sends back on requests that share it
+    server4_->setHandler([](evhttp_request* req) {
+        static auto const SetCookie = std::array{ std::pair{ "Set-Cookie"s, "id=1; Path=/"s } };
+        LoopbackServer::reply(req, HTTP_OK, "OK", ""sv, SetCookie);
+    });
+    mediator_.cookie_file_ = fmt::format("{}/cookies.txt", sandboxDir());
+    auto const web = tr_web::create(mediator_);
+
+    mediator_.setBindAddress(TR_AF_INET, "127.0.0.1");
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_TRUE(server4_->lastRequest().headers.contains("cookie"));
+
+    mediator_.setBindAddress(TR_AF_INET, {});
+    EXPECT_EQ(200, fetch(*web, options()).status);
+    EXPECT_FALSE(server4_->lastRequest().headers.contains("cookie"));
+}
+
+TEST_F(WebTest, cancelAllEndsEveryFetch)
+{
+    // the server never replies, so only cancellation ends these
+    server4_->setHandler([](evhttp_request* /*req*/) {});
+
+    auto plain = fetchAsync(options("/plain"sv));
+    auto opts = options("/announce"sv);
+    opts.finish_at_shutdown = true;
+    auto announce = fetchAsync(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server4_->lastRequest().method); }, 5s));
+
+    web_->cancel_all();
+
+    for (auto* const response : { &plain, &announce }) {
+        ASSERT_EQ(std::future_status::ready, response->wait_for(5s));
+        auto const result = response->get();
+        EXPECT_EQ(0, result.status);
+        EXPECT_TRUE(result.errmsg);
+    }
+
+    // a fetch made afterwards runs as usual
+    server4_->setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "late"sv); });
+    EXPECT_EQ(200, fetch(options()).status);
+}
+
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
 {
     // the plain fetch never gets a reply; the announce gets one once the gate opens
@@ -697,6 +848,7 @@ TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
     ASSERT_EQ(std::future_status::ready, announce.wait_for(15s));
     EXPECT_EQ(200, announce.get().status);
 }
+
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a

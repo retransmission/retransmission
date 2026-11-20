@@ -343,12 +343,24 @@ auto constexpr Options = std::to_array<tr_option>({
       .shortName = "I",
       .arg = Arg::Required,
       .argName = "<ipv6 addr>" },
+    { .val = 996,
+      .longName = "bind-interface",
+      .description = "Network interface for BitTorrent and tracker traffic on supported platforms",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<ifname>" },
     { .val = 'r',
       .longName = "rpc-bind-address",
       .description = "Where to listen for RPC connections",
       .shortName = "r",
       .arg = Arg::Required,
       .argName = "<ip addr>" },
+    { .val = 997,
+      .longName = "rpc-bind-interface",
+      .description = "Network interface for RPC connections on supported platforms",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<ifname>" },
     { .val = 953,
       .longName = "global-seedratio",
       .description = "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
@@ -844,8 +856,16 @@ bool tr_daemon::parse_args(int argc, char const* const* argv, bool* dump_setting
             map.insert_or_assign(TR_KEY_bind_address_ipv6, optstr);
             break;
 
+        case 996:
+            map.insert_or_assign(TR_KEY_bind_interface, optstr);
+            break;
+
         case 'r':
             map.insert_or_assign(TR_KEY_rpc_bind_address, optstr);
+            break;
+
+        case 997:
+            map.insert_or_assign(TR_KEY_rpc_bind_interface, optstr);
             break;
 
         case 953:

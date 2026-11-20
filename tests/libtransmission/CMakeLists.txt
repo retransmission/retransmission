@@ -76,6 +76,7 @@ target_sources(libtransmission-test
         tr-peer-info-test.cc
         types-test.cc
         utils-test.cc
+        utp-flow-filter-test.cc
         values-test.cc
         variant-test.cc
         watchdir-test.cc

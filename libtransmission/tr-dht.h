@@ -95,6 +95,12 @@ public:
 
         [[nodiscard]] virtual std::string_view config_dir() const = 0;
 
+        // the network interface the DHT's sockets are bound to, empty for the default route
+        [[nodiscard]] virtual std::string bind_interface() const
+        {
+            return {};
+        }
+
         // False when the config dir belongs to another session, whose dht.dat this one
         // must not overwrite. See tr_session::mayWriteConfigDir().
         [[nodiscard]] virtual bool may_write_config_dir() const = 0;
@@ -110,11 +116,14 @@ public:
         API api_;
     };
 
+    // `new_id` replaces the node ID saved in the state file, e.g. so that DHT nodes
+    // can't match this node with the one that used another network binding
     [[nodiscard]] static std::unique_ptr<tr_dht> create(
         Mediator& mediator,
         tr_port peer_port,
         tr_socket_t udp4_socket,
-        tr_socket_t udp6_socket);
+        tr_socket_t udp6_socket,
+        bool new_id = false);
     virtual ~tr_dht() = default;
 
     virtual void maybe_add_node(tr_address const& address, tr_port port) = 0;

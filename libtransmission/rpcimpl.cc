@@ -2015,6 +2015,101 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             }
         });
 
+    // empty means any address; anything else must be an address of the key's family
+    auto const bind_address_setter = [](tr_address_type const type, void (*set)(tr_session*, std::string_view)) {
+        return [type, set](tr_session& tgt, tr_variant const& src, ErrorInfo& err) {
+            auto const val = src.value_if<std::string_view>();
+            if (!val) {
+                return;
+            }
+
+            if (!tr_net_is_bind_address(*val, type)) {
+                err = { JsonRpc::Error::INVALID_PARAMS, type == TR_AF_INET ? "not an IPv4 address"s : "not an IPv6 address"s };
+                return;
+            }
+
+            set(&tgt, *val);
+        };
+    };
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv4,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv4; },
+        bind_address_setter(TR_AF_INET, tr_sessionSetBindAddressIPv4));
+
+    map.try_emplace(
+        TR_KEY_bind_address_ipv6,
+        [](tr_session const& src) -> tr_variant { return src.settings().bind_address_ipv6; },
+        bind_address_setter(TR_AF_INET6, tr_sessionSetBindAddressIPv6));
+
+    map.try_emplace(
+        TR_KEY_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.bind_interface(); },
+        [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
+            if (auto const val = src.value_if<std::string_view>()) {
+                tr_sessionSetBindInterface(&tgt, *val);
+            }
+        });
+
+    map.try_emplace(
+        TR_KEY_bind_interface_status,
+        [](tr_session const& src) -> tr_variant {
+            using State = tr_net_bind_status::State;
+            switch (tr_net_interface_status(src.bind_interface()).state) {
+            case State::Ok:
+                return tr_variant::unmanaged_string("ok"sv);
+            case State::Blocked:
+                return tr_variant::unmanaged_string("blocked"sv);
+            case State::Missing:
+                return tr_variant::unmanaged_string("missing"sv);
+            case State::BindFailed:
+                return tr_variant::unmanaged_string("bind_failed"sv);
+            case State::Unsupported:
+                return tr_variant::unmanaged_string("unsupported"sv);
+            case State::Default:
+                break;
+            }
+            return tr_variant::unmanaged_string("default"sv);
+        },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_bind_interface_error,
+        [](tr_session const& src) -> tr_variant { return tr_net_interface_status(src.bind_interface()).error; },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_network_interfaces,
+        [](tr_session const& /*src*/) -> tr_variant {
+            auto vec = tr_variant::Vector{};
+            for (auto& iface : tr_net_interfaces()) {
+                auto addresses = tr_variant::Vector{};
+                addresses.reserve(std::size(iface.addresses));
+                for (auto const& entry : iface.addresses) {
+                    auto const tags = tr_net_address_tags(entry);
+                    auto tag_vec = tr_variant::Vector{};
+                    tag_vec.reserve(std::size(tags));
+                    for (auto const tag : tags) {
+                        tag_vec.emplace_back(tr_variant::unmanaged_string(tag));
+                    }
+
+                    auto address = tr_variant::Map{ 2U };
+                    address.try_emplace(TR_KEY_address, entry.address.display_name());
+                    address.try_emplace(TR_KEY_tags, std::move(tag_vec));
+                    addresses.emplace_back(std::move(address));
+                }
+
+                auto iface_map = tr_variant::Map{ 4U };
+                iface_map.try_emplace(TR_KEY_name, std::move(iface.name));
+                iface_map.try_emplace(TR_KEY_addresses, std::move(addresses));
+                iface_map.try_emplace(TR_KEY_managed_by, tr_variant::unmanaged_string(tr_net_manager_name(iface.manager)));
+                iface_map.try_emplace(TR_KEY_point_to_point, iface.point_to_point);
+                vec.emplace_back(std::move(iface_map));
+            }
+            return tr_variant{ std::move(vec) };
+        },
+        nullptr);
+
     map.try_emplace(
         TR_KEY_blocklist_date,
         [](tr_session const& src) -> tr_variant { return static_cast<int64_t>(tr_blocklistGetMTime(&src)); },
@@ -2289,6 +2384,13 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             }
         });
 
+    // read-only: changing it over RPC could move the listener off the
+    // interface the caller is connected through
+    map.try_emplace(
+        TR_KEY_rpc_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.rpc_bind_interface(); },
+        nullptr);
+
     map.try_emplace(
         TR_KEY_rpc_max_request_body_size,
         [](tr_session const& src) -> tr_variant { return src.get_max_request_body_size(); },
@@ -2484,7 +2586,11 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
     if (std::empty(fields)) // no fields specified; get them all
     {
         for (auto const& [key, accessor] : session_accessors()) {
-            fields.insert(key);
+            // listing the interfaces asks the kernel for every interface's
+            // addresses, too costly for clients that poll and never read them
+            if (key != TR_KEY_network_interfaces) {
+                fields.insert(key);
+            }
         }
     }
 
@@ -2512,6 +2618,9 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         }
     }
 
+    // the binding keys' setters only recorded their values: apply them now, so the
+    // reply and whoever hears of the change see the new binding
+    session->apply_pending_binding();
     session->rpcNotify(TR_RPC_SESSION_CHANGED);
     return err;
 }

@@ -10,4 +10,7 @@ struct tr_session;
 
 - (instancetype)initWithHandle:(tr_session*)handle;
 
+/// Saves the session's bind interface, as an RPC client may have changed it, and refreshes the tab.
+- (void)updateBindInterfaceFromSession;
+
 @end

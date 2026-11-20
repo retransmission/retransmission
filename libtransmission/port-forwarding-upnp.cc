@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <atomic>
 #include <cerrno>
 #include <chrono>
 #include <cstdint>
@@ -91,9 +92,6 @@ struct tr_upnp {
 
     ~tr_upnp()
     {
-        TR_ASSERT(!isMapped);
-        TR_ASSERT(state == UpnpState::Idle || state == UpnpState::WillDiscover || state == UpnpState::Discovering);
-
         FreeUPNPUrls(&urls);
     }
 
@@ -109,6 +107,8 @@ struct tr_upnp {
     // to be processed without blocking in tr_upnpPulse().
     // This will be pending while the state is UpnpState::Discovering.
     std::optional<std::future<std::unique_ptr<UpnpDiscoveryResult>>> discover_future;
+    // shared with the discovery thread, which outlives a discarded handle
+    std::shared_ptr<std::atomic<bool>> discover_cancelled = std::make_shared<std::atomic<bool>>(false);
 };
 
 namespace
@@ -143,7 +143,22 @@ namespace
     int err = UPNPDISCOVER_SUCCESS;
 
 #if (MINIUPNPC_API_VERSION >= 14) // adds ttl
-    ret = upnpDiscover(msec, bindaddr, nullptr, 0, 0, 2, &err);
+    // upnpDiscover()'s gateway types, without its every-root-device fallback, which
+    // searching all types would answer with every UPnP device on the LAN. Searching
+    // all types sends every M-SEARCH at once and then waits, where upnpDiscover()
+    // waits after each: so a discovery begun before a binding change has sent all it
+    // will before the change, not up to seconds after.
+    static auto constexpr DeviceTypes = std::array<char const*, 4U>{
+        "urn:schemas-upnp-org:device:InternetGatewayDevice:1",
+        "urn:schemas-upnp-org:service:WANIPConnection:1",
+        "urn:schemas-upnp-org:service:WANPPPConnection:1",
+        nullptr,
+    };
+    // Bound to an interface, given by name rather than address, skip minissdpd, a
+    // local daemon that would report the gateways it has seen on every interface.
+    auto const is_interface = bindaddr != nullptr && !tr_address::from_string(bindaddr);
+    char const* const minissdpdsock = is_interface ? "" : nullptr;
+    ret = upnpDiscoverDevices(std::data(DeviceTypes), msec, bindaddr, minissdpdsock, 0, 0, 2, &err, 1);
 #else
     ret = upnpDiscover(msec, bindaddr, nullptr, 0, 0, &err);
 #endif
@@ -257,7 +272,11 @@ void tr_upnpDeletePortMapping(tr_upnp const* handle, char const* proto, tr_port 
     }
 }
 
-auto discover_and_validate_thread_func(std::string bindaddr) // NOLINT performance-unnecessary-value-param
+// `cancelled` is set when the handle is discarded, e.g. by a hard move to another
+// network binding, after which nothing more may reach the old network's devices
+auto discover_and_validate_thread_func(
+    std::string bindaddr, // NOLINT performance-unnecessary-value-param
+    std::shared_ptr<std::atomic<bool>> cancelled) // NOLINT performance-unnecessary-value-param
 {
     // If multicastif is not NULL, it will be used instead of the default
     // multicast interface for sending SSDP discover packets.
@@ -265,7 +284,10 @@ auto discover_and_validate_thread_func(std::string bindaddr) // NOLINT performan
     auto* const devlist = upnp_discover(2000, multicastif);
     auto result = std::make_unique<UpnpDiscoveryResult>();
     result->did_discover_device = devlist != nullptr;
-    if (result->did_discover_device) {
+    if (result->did_discover_device && *cancelled) {
+        freeUPNPDevlist(devlist);
+        result->did_discover_device = false;
+    } else if (result->did_discover_device) {
         errno = 0;
 #if (MINIUPNPC_API_VERSION >= 18)
         result->igd_status = UPNP_GetValidIGD(
@@ -308,6 +330,24 @@ tr_upnp* tr_upnpInit()
 
 void tr_upnpClose(tr_upnp const* const handle)
 {
+    if (handle != nullptr) {
+        TR_ASSERT(!handle->isMapped);
+        TR_ASSERT(
+            handle->state == UpnpState::Idle || handle->state == UpnpState::WillDiscover ||
+            handle->state == UpnpState::Discovering);
+    }
+
+    delete handle;
+}
+
+void tr_upnpDiscard(tr_upnp* handle)
+{
+    // A discovery thread may still be running. It owns the shared state
+    // behind discover_future, so deleting the handle doesn't wait for it,
+    // and it contacts none of the devices it found once told to stop.
+    if (handle != nullptr) {
+        *handle->discover_cancelled = true;
+    }
     delete handle;
 }
 
@@ -322,11 +362,13 @@ tr_port_forwarding_state tr_upnpPulse(
     if (is_enabled && handle->state == UpnpState::WillDiscover) {
         TR_ASSERT(!handle->discover_future);
 
-        auto task = std::packaged_task<std::unique_ptr<UpnpDiscoveryResult>(std::string)>{ discover_and_validate_thread_func };
+        auto task = std::packaged_task<std::unique_ptr<UpnpDiscoveryResult>(std::string, std::shared_ptr<std::atomic<bool>>)>{
+            discover_and_validate_thread_func
+        };
         handle->discover_future = task.get_future();
         handle->state = UpnpState::Discovering;
 
-        std::thread(std::move(task), std::move(bindaddr)).detach();
+        std::thread(std::move(task), std::move(bindaddr), handle->discover_cancelled).detach();
     }
 
     if (is_enabled && handle->state == UpnpState::Discovering && handle->discover_future &&

@@ -28,7 +28,8 @@ ProtectKernelTunables=true
 ProtectProc=invisible
 RestrictNamespaces=true
 RestrictSUIDSGID=true
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+# AF_NETLINK lists the network interfaces that bind_interface can name
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
 RestrictRealtime=true
 SystemCallFilter=@system-service
 SystemCallArchitectures=native

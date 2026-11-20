@@ -13,11 +13,14 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <cstdint> // uint16_t, uint32_t, uint8_t
+#include <functional>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <tuple> // std::tie
 #include <utility> // std::pair
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -519,7 +522,129 @@ private:
 
 struct tr_session;
 
-[[nodiscard]] tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs);
+// whether tr_netSetSocketInterface() can bind a socket to a named interface
+#if defined(__APPLE__) || defined(__linux__)
+inline constexpr bool TrNetCanBindInterface = true;
+#else
+inline constexpr bool TrNetCanBindInterface = false;
+#endif
+
+// true for the values that mean "normal OS routing": empty or whitespace
+[[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
+
+// true for TrBindInterfaceBlocked, the value that refuses every socket
+[[nodiscard]] bool tr_net_interface_is_blocked(std::string_view bind_interface);
+
+// the interface name to bind to, or empty when `bind_interface` means normal OS routing
+[[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
+
+// true when `value`, stripped, is a bind_address_ipv4 or bind_address_ipv6
+// setting of the `type` family: empty for any address, or an address alone
+[[nodiscard]] bool tr_net_is_bind_address(std::string_view value, tr_address_type type);
+
+// true when the named interface exists and has an IPv4 address
+[[nodiscard]] bool tr_net_interface_has_ipv4(std::string_view bind_interface);
+
+// tr_net_interface_index(), or nullopt when the lookup itself failed, e.g. for
+// want of a file descriptor, so whether the interface exists is unknown
+[[nodiscard]] std::optional<unsigned> tr_net_try_interface_index(std::string_view bind_interface);
+
+// the OS index of the named interface, or 0 when `bind_interface` is
+// empty, blocked, or names an interface that doesn't exist
+[[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
+
+// what a bind_interface setting does to traffic right now
+struct tr_net_bind_status {
+    enum class State : uint8_t {
+        Default, // normal OS routing
+        Ok, // the interface exists and its last bind succeeded
+        Blocked, // TrBindInterfaceBlocked refuses every socket
+        Missing, // the interface doesn't exist, so traffic stops until it does
+        BindFailed, // the interface exists but the OS refuses to bind to it
+        Unsupported, // the platform can't bind to an interface
+    };
+
+    State state = State::Default;
+    std::string error; // why binding failed, for BindFailed
+};
+
+[[nodiscard]] tr_net_bind_status tr_net_interface_status(std::string_view bind_interface);
+
+// forgets the named interface's last refused bind, which only a successful bind
+// otherwise clears, e.g. after a test that provoked one
+void tr_net_forget_bind_refusal(std::string_view bind_interface);
+
+// how an IPv6 address was assigned, as far as the OS records it
+enum class tr_net_address_origin : uint8_t {
+    Unknown, // e.g. configured by hand, or any IPv4 address
+    Dhcp, // leased by DHCPv6
+    SlaacStable, // autoconfigured, keeping its interface ID (RFC 7217 or EUI-64)
+    SlaacPrivacy, // autoconfigured temporary address (RFC 8981)
+};
+
+struct tr_net_interface_address {
+    tr_address address;
+    tr_net_address_origin origin = tr_net_address_origin::Unknown;
+};
+
+// how NetworkManager treats an interface
+enum class tr_net_nm_state : uint8_t {
+    Unknown, // NetworkManager can't be asked, e.g. it isn't running
+    Configured, // NetworkManager brought it up from one of its connection profiles
+    External, // NetworkManager follows a configuration made by something else, e.g. Docker
+    Inactive, // NetworkManager may configure it, but has no connection active on it
+    Unmanaged, // NetworkManager leaves it alone
+};
+
+// NetworkManager's view of each interface it knows, by name. Empty unless
+// NetworkManager answers over D-Bus, which needs Linux and a WITH_SYSTEMD build.
+[[nodiscard]] std::map<std::string, tr_net_nm_state, std::less<>> tr_net_networkmanager_states();
+
+// what set an interface up, as far as the session can tell
+enum class tr_net_manager : uint8_t {
+    Other, // none of the below, or no way to tell
+    NetworkManager, // NetworkManager, from one of its connection profiles
+    Docker, // Docker, for one of its networks
+    Libvirt, // libvirt, for one of its virtual networks
+};
+
+// Docker and libvirt are told by the names they give their bridges:
+// "docker0", "br-" and a network ID's first 12 hex digits, or "virbr" and a number.
+// A bridge given a name of its own counts as Other.
+[[nodiscard]] tr_net_manager tr_net_interface_manager(std::string_view name, tr_net_nm_state nm_state);
+
+// "networkmanager", "docker", "libvirt" or "other"
+[[nodiscard]] std::string_view tr_net_manager_name(tr_net_manager manager);
+
+struct tr_net_interface {
+    std::string name;
+    std::vector<tr_net_interface_address> addresses; // IPv4 first, then IPv6
+    tr_net_manager manager = tr_net_manager::Other;
+    // a tunnel, such as a VPN's, rather than a link to a network of hosts
+    bool point_to_point = false;
+};
+
+// short names for an IPv6 address's kind: its type ("gua", "ula", "link-local",
+// "nat64", "teredo", "6to4", "documentation", "site-local" or "loopback"), when
+// it has one, then its origin ("dhcp", "slaac-stable" or "slaac-privacy"), when
+// known. Empty for an IPv4 address.
+[[nodiscard]] std::vector<std::string_view> tr_net_address_tags(tr_net_interface_address const& address);
+
+// the OS's network interfaces sorted by name, or empty when
+// TrNetCanBindInterface is false since none of them could be bound
+[[nodiscard]] std::vector<tr_net_interface> tr_net_interfaces();
+
+[[nodiscard]] bool tr_netSetSocketInterface(
+    tr_socket_t sock,
+    tr_address_type type,
+    std::string_view bind_interface,
+    bool suppress_msgs = false);
+
+[[nodiscard]] tr_socket_t tr_netBindTCP(
+    tr_address const& addr,
+    tr_port port,
+    bool suppress_msgs,
+    std::string_view bind_interface = {});
 
 [[nodiscard]] std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(
     tr_session const* session,

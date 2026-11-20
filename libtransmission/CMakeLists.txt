@@ -96,6 +96,7 @@ target_sources(${TR_NAME}
         makemeta.cc
         makemeta.h
         mime-types.h
+        net-networkmanager.cc
         net.cc
         net.h
         open-files.cc
@@ -252,6 +253,9 @@ target_compile_definitions(${TR_NAME}
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>
         $<$<BOOL:${HAVE_SO_REUSEPORT}>:HAVE_SO_REUSEPORT=1>
+        $<$<BOOL:${WITH_SYSTEMD}>:WITH_SYSTEMD>
+        # sd_bus_set_method_call_timeout() came with libsystemd 240
+        $<$<AND:$<BOOL:${WITH_SYSTEMD}>,$<VERSION_GREATER_EQUAL:${PC_SYSTEMD_VERSION},240>>:HAVE_SD_BUS_SET_METHOD_CALL_TIMEOUT>
     PUBLIC
         $<$<STREQUAL:${CRYPTO_PKG},ccrypto>:WITH_CCRYPTO>
         $<$<STREQUAL:${CRYPTO_PKG},mbedtls>:WITH_MBEDTLS>
@@ -278,6 +282,10 @@ target_include_directories(${TR_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/..
         ${Intl_INCLUDE_DIRS})
 
+target_include_directories(${TR_NAME} SYSTEM
+    PRIVATE
+        $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_INCLUDE_DIRS}>)
+
 if(ANDROID)
     find_library(log-lib log)
 endif()
@@ -294,6 +302,7 @@ target_link_libraries(${TR_NAME}
         miniupnpc::miniupnpc
         dht::dht
         $<$<BOOL:${ENABLE_UTP}>:libutp::libutp>
+        $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>
         ${Intl_LIBRARIES}
         ${LIBM_LIBRARY}
         ${LIBQUOTA_LIBRARY}

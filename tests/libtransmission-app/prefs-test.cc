@@ -84,6 +84,9 @@ TEST_F(PrefsTest, prefsIsCoreClassifiesKeys)
     EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_rpc_enabled));
     EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_speed_limit_up));
     EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_encryption));
+    EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_bind_interface));
+    EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_bind_address_ipv4));
+    EXPECT_TRUE(tr::app::prefs_is_core(TR_KEY_bind_address_ipv6));
 
     // UI-only / app-owned keys
     EXPECT_FALSE(tr::app::prefs_is_core(TR_KEY_filter_text));

@@ -89,6 +89,11 @@ namespace
         return { TR_BAD_SOCKET, false };
     }
 
+    if (!tr_netSetSocketInterface(s, addr.type, session.bind_interface())) {
+        tr_net_close_socket(s);
+        return TR_BAD_SOCKET;
+    }
+
     // seeds don't need a big read buffer, so make it smaller
     if (client_is_seed) {
         constexpr int N = 8192;
