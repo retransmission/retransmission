@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cerrno> // ENOBUFS
+
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
@@ -26,21 +28,18 @@
 #define tr_logAddErrorSock(sock, msg) tr_logAddError(msg, (sock)->display_name())
 #define tr_logAddTraceSock(sock, msg) tr_logAddTrace(msg, (sock)->display_name())
 
-// The read buffer will grow indefinitely if libutp keeps buffering data faster
-// than the bandwidth limit allows. This is a possibility because libutp lacks
-// the ability to drop data that does not fit in the receive window[1], which
-// allows malicious peers to flood our read buffer.
-//
-// [1]: "Receive window" here refers to BEP-29 wnd_size.
-//      https://www.bittorrent.org/beps/bep_0029.html
-//
-// Define this macro to enable logic that protects the read buffer from growing
-// too large.
-#define RCVBUF_OVERFLOW_PROTECTION
-
 namespace
 {
 #ifdef WITH_UTP
+// libutp cannot drop data that does not fit in the receive window[1], so a peer that
+// ignores the window could grow the read buffer without bound. An honest sender stays
+// within it, apart from libutp's one-packet zero-window probes. A connection whose
+// buffer passes this many windows is closed.
+//
+// [1]: "Receive window" here refers to BEP-29 wnd_size.
+//      https://www.bittorrent.org/beps/bep_0029.html
+auto constexpr MaxBufferedWindows = 2U;
+
 void get_bufsize(tr_socket_t const fd, int const optname, int& ret)
 {
     auto tmp = int{};
@@ -105,7 +104,7 @@ public:
         is_read_enabled_ = enabled;
         if (enabled) {
             maybe_read_soon();
-        } else {
+        } else if (!is_overflowed_) { // the timer carries the overrun report
             read_timer_->stop();
         }
     }
@@ -155,11 +154,16 @@ public:
 
     void maybe_read_soon()
     {
-        if ((is_read_enabled() && !std::empty(inbuf_))
-#ifdef RCVBUF_OVERFLOW_PROTECTION
-            || std::cmp_greater(read_buffer_size(), utp_getsockopt(sock_, UTP_RCVBUF))
-#endif
-        ) {
+        if (is_overflowed_) {
+            return; // the overrun is reported once; nothing is read after it
+        }
+
+        if (std::cmp_greater(read_buffer_size(), MaxBufferedWindows * utp_getsockopt(sock_, UTP_RCVBUF))) {
+            // Report it from the timer: this runs inside libutp and peer IO calls,
+            // and the error callback can destroy the socket.
+            is_overflowed_ = true;
+            read_timer_->start_single_shot(std::chrono::milliseconds::zero());
+        } else if (is_read_enabled() && !std::empty(inbuf_)) {
             read_timer_->start_single_shot(std::chrono::milliseconds::zero());
         }
     }
@@ -280,6 +284,13 @@ private:
         // for the duration of this code block. This can happen when
         // a BT handshake did not complete successfully for example.
         auto const keep_alive = shared_from_this();
+
+        if (is_overflowed_) {
+            tr_logAddTraceSock(this, "µTP peer overran the receive window");
+            error_cb(tr_net_error(ENOBUFS));
+            return;
+        }
+
         tr_logAddTraceSock(this, "this µTP socket is ready for reading");
 
         is_read_enabled_ = false;
@@ -301,6 +312,7 @@ private:
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
+    bool is_overflowed_ = false;
 
     bool is_connected_;
 };
