@@ -6,12 +6,16 @@
 #include <array>
 #include <cstddef>
 #include <memory>
+#include <optional>
 #include <string_view>
+#include <tuple>
 #include <utility>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
+#include <ifaddrs.h>
+#include <net/if.h> // IFF_LOOPBACK, IFF_POINTOPOINT, IFF_UP
 #include <sys/socket.h>
 #endif
 
@@ -211,6 +215,96 @@ TEST_F(PeerSocketTcpTest, completesWithoutPayloadPollingAndAcceptedSocketIsReady
         5000));
     EXPECT_EQ(Incoming, inbuf.to_string_view());
 }
+
+TEST_F(PeerSocketTcpTest, readWaitsForLowWatermark)
+{
+#if !defined(__linux__) && !defined(__FreeBSD__) && !defined(__APPLE__)
+    GTEST_SKIP() << "SO_RCVLOWAT is only known to hold back read events on Linux, FreeBSD and macOS";
+#endif
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+
+    auto inbuf = tr_peer_socket::PeerBuffer{};
+    auto n_callbacks = size_t{};
+    blockingRunInSessionThread([this, &inbuf, &n_callbacks] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_socket_->set_read_cb([this, &inbuf, &n_callbacks] {
+            ++n_callbacks;
+            auto error = tr_error{};
+            std::ignore = peer_socket_->try_read(inbuf, 100, &error);
+        });
+        peer_socket_->set_read_low_watermark(8U);
+        peer_socket_->set_read_enabled(true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    auto const send_to_socket = [this](std::string_view const msg) {
+        ASSERT_EQ(msg.size(), send(remote_sock_, msg.data(), TR_IF_WIN32(static_cast<int>(msg.size()), msg.size()), 0));
+    };
+
+    // Half of what the socket waits for doesn't wake it.
+    send_to_socket("1234"sv);
+    EXPECT_FALSE(waitForInSessionThread([&n_callbacks] { return n_callbacks != 0U; }, 200));
+
+    // The rest does, and the read gets all of it.
+    send_to_socket("5678"sv);
+    ASSERT_TRUE(waitForInSessionThread([&inbuf] { return inbuf.to_string_view() == "12345678"sv; }, 5000));
+
+    // Back at 1, any byte wakes it.
+    blockingRunInSessionThread([this] {
+        peer_socket_->set_read_low_watermark(1U);
+        peer_socket_->set_read_enabled(true);
+    });
+    send_to_socket("9"sv);
+    ASSERT_TRUE(waitForInSessionThread([&inbuf] { return inbuf.to_string_view() == "123456789"sv; }, 5000));
+}
+
+#ifndef _WIN32
+TEST_F(PeerSocketTcpTest, readIgnoresLowWatermarkOnNetworkCard)
+{
+    // An IPv4 address of this host on an interface that is neither loopback nor point-to-point.
+    auto card_address = std::optional<tr_address>{};
+    struct ifaddrs* ifa = nullptr;
+    ASSERT_EQ(0, getifaddrs(&ifa));
+    for (auto const* cur = ifa; cur != nullptr && !card_address; cur = cur->ifa_next) {
+        if (cur->ifa_addr != nullptr && cur->ifa_addr->sa_family == AF_INET && (cur->ifa_flags & IFF_UP) != 0U &&
+            (cur->ifa_flags & (IFF_LOOPBACK | IFF_POINTOPOINT)) == 0U) {
+            card_address = tr_socket_address::from_sockaddr(cur->ifa_addr)->address();
+        }
+    }
+    freeifaddrs(ifa);
+    if (!card_address) {
+        GTEST_SKIP() << "no IPv4 address on a network card";
+    }
+
+    tr_net_close_socket(std::exchange(endpoint_sock_, socket(AF_INET, SOCK_STREAM, 0)));
+    ASSERT_TRUE(is_valid_socket(endpoint_sock_));
+    auto [addr, addrlen] = tr_socket_address::to_sockaddr(*card_address, {});
+    ASSERT_EQ(0, bind(endpoint_sock_, reinterpret_cast<sockaddr const*>(&addr), addrlen));
+    ASSERT_EQ(0, getsockname(endpoint_sock_, reinterpret_cast<sockaddr*>(&addr), &addrlen));
+    endpoint_ = *tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&addr));
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+    ASSERT_EQ(0, evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(endpoint_sock_)));
+
+    auto inbuf = tr_peer_socket::PeerBuffer{};
+    blockingRunInSessionThread([this, &inbuf] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_socket_->set_read_cb([this, &inbuf] {
+            auto error = tr_error{};
+            std::ignore = peer_socket_->try_read(inbuf, 100, &error);
+        });
+        peer_socket_->set_read_low_watermark(8U);
+        peer_socket_->set_read_enabled(true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    // Half of the asked-for mark still wakes the reader.
+    static auto constexpr Half = "1234"sv;
+    ASSERT_EQ(Half.size(), send(remote_sock_, Half.data(), Half.size(), 0));
+    EXPECT_TRUE(waitForInSessionThread([&inbuf] { return inbuf.to_string_view() == Half; }, 5000));
+}
+#endif
 
 TEST_F(PeerSocketTcpTest, completesWithExhaustedUploadQuota)
 {

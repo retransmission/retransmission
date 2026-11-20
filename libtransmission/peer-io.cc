@@ -469,6 +469,13 @@ void tr_peerIo::update_read_enabled()
     set_enabled(tr_direction::Down, read_buffer_size() < RcvBuf && has_bandwidth_left(tr_direction::Down));
 }
 
+void tr_peerIo::set_read_low_watermark(size_t const n_bytes)
+{
+    if (socket_) {
+        socket_->set_read_low_watermark(n_bytes);
+    }
+}
+
 void tr_peerIo::set_enabled(tr_direction dir, bool is_enabled)
 {
     if (!socket_) {

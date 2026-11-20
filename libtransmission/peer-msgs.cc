@@ -726,6 +726,9 @@ private:
     [[nodiscard]] bool client_got_block(std::unique_ptr<tr::LocalData::BlockData> block_data, tr_block_index_t block);
     [[nodiscard]] ReadResult read_piece_data(MessageReader& payload);
 
+    // Bytes still to arrive before the incoming block message is whole, or 1 if no block is incoming.
+    [[nodiscard]] size_t bytes_left_in_block(tr_peerIo const& io) const noexcept;
+
     // Precondition: `payload` is a complete message body whose length
     // can_read_impl() has already accepted for `id`.
     [[nodiscard]] ReadResult process_peer_message(uint8_t id, MessageReader& payload);
@@ -2000,11 +2003,23 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
     return ret;
 }
 
+size_t tr_peerMsgsImpl::bytes_left_in_block(tr_peerIo const& io) const noexcept
+{
+    if (incoming_.id != BtPeerMsgs::Piece || !incoming_.length) {
+        return 1U;
+    }
+
+    auto const n_wanted = *incoming_.length - sizeof(*incoming_.id) - std::size(incoming_.payload);
+    auto const n_have = io.read_buffer_size();
+    return n_wanted > n_have ? n_wanted - n_have : 1U;
+}
+
 ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
 {
     auto const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs);
     if (msgs->is_disconnecting()) {
         io->read_buffer_discard();
+        io->set_read_low_watermark(1U);
         return ReadState::Err;
     }
 
@@ -2019,6 +2034,12 @@ ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
         ret = read_state;
         *piece += n_piece_bytes_read;
     }
+
+    // On a tunnel a block arrives a packet or two per wakeup; the socket
+    // skips the mark on a network card, where it is usually whole. Waiting
+    // for the rest costs no latency, since the block is useless until it's
+    // whole. After an error no block is coming, so wake for anything.
+    io->set_read_low_watermark(ret == ReadState::Err ? 1U : msgs->bytes_left_in_block(*io));
 
     // If we received piece data, then we might have quota to request new blocks
     if (*piece > 0U) {

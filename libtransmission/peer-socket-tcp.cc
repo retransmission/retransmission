@@ -6,11 +6,16 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #else
+#include <ifaddrs.h>
+#include <net/if.h> // IFF_LOOPBACK, IFF_POINTOPOINT
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h> // TCP_CONGESTION
 #endif
 
+#include <algorithm> // std::clamp, std::max
+#include <memory> // std::unique_ptr
+#include <optional>
 #include <utility> // std::cmp_equal
 
 #include <event2/event.h>
@@ -70,6 +75,46 @@ namespace
 
     return sockfd;
 }
+
+#ifndef _WIN32
+// Whether the socket's local address is on a network card. A card coalesces arrivals, so by the
+// first wakeup a block is usually whole: SO_RCVLOWAT saves no wakeups there and costs a setsockopt()
+// per block. A tunnel such as OpenVPN or WireGuard is a point-to-point interface that hands over a
+// packet or two per wakeup, and so does loopback when tc limits it. Any other interface is taken
+// for a card, or a bridge onto one.
+[[nodiscard]] bool is_on_network_card(tr_socket_t const sock)
+{
+    auto local = sockaddr_storage{};
+    auto len = socklen_t{ sizeof(local) };
+    if (getsockname(sock, reinterpret_cast<sockaddr*>(&local), &len) != 0) {
+        return false;
+    }
+
+    auto const local_address = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&local));
+    if (!local_address) {
+        return false;
+    }
+
+    struct ifaddrs* ifa = nullptr;
+    if (getifaddrs(&ifa) != 0) {
+        return false;
+    }
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == nullptr) {
+            continue;
+        }
+
+        if (auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr);
+            if_addr && if_addr->address() == local_address->address()) {
+            return (ifa->ifa_flags & (IFF_POINTOPOINT | IFF_LOOPBACK)) == 0U;
+        }
+    }
+
+    return false;
+}
+#endif
 
 [[nodiscard]] std::pair<tr_socket_t, bool> open_peer_socket(
     tr_session const& session,
@@ -253,6 +298,46 @@ public:
         return is_read_enabled_;
     }
 
+    void set_read_low_watermark([[maybe_unused]] size_t const n_bytes) override
+    {
+        // Winsock doesn't let SO_RCVLOWAT be set.
+#ifndef _WIN32
+        if (n_bytes > 1U && !max_read_low_watermark_) {
+            if (is_on_network_card(sock_)) {
+                tr_logAddTraceSock(this, "Not setting SO_RCVLOWAT: the connection is on a network card");
+                max_read_low_watermark_ = 1;
+            } else {
+                max_read_low_watermark_ = find_max_read_low_watermark();
+            }
+        }
+        auto const max = static_cast<size_t>(max_read_low_watermark_.value_or(1));
+        auto const lowat = static_cast<int>(std::clamp(n_bytes, size_t{ 1U }, max));
+        if (lowat == read_low_watermark_) {
+            return;
+        }
+
+        if (setsockopt(sock_, SOL_SOCKET, SO_RCVLOWAT, &lowat, sizeof(lowat)) == 0) {
+            read_low_watermark_ = lowat;
+            return;
+        }
+
+        tr_logAddDebugSock(
+            this,
+            fmt::format(
+                "Unable to set SO_RCVLOWAT to {lowat}: {error} ({error_code})",
+                fmt::arg("lowat", lowat),
+                fmt::arg("error", tr_net_strerror(sockerrno)),
+                fmt::arg("error_code", sockerrno)));
+
+        // The kernel keeps its old mark, and so does the cache. A socket that never took a mark
+        // won't take the next one either, so stop asking. One that holds a mark above 1 must get
+        // back to 1, so the next call tries again.
+        if (read_low_watermark_ == 1) {
+            max_read_low_watermark_ = 1;
+        }
+#endif
+    }
+
     [[nodiscard]] bool is_write_enabled() const override
     {
         return is_write_enabled_;
@@ -405,6 +490,27 @@ private:
 
     tr_socket_t sock_;
     int connect_error_;
+
+#ifndef _WIN32
+    // A mark near the size of the receive buffer can stall the connection: the buffer fills
+    // before the mark is reached, the sender has no window left to send the rest, and nothing
+    // wakes the reader. A quarter of SO_RCVBUF stays clear of that, also on Linux, which reports
+    // twice the payload the buffer takes. Read once: the kernel may grow the buffer, never shrink it.
+    [[nodiscard]] int find_max_read_low_watermark() const
+    {
+        auto rcvbuf = 0;
+        auto len = socklen_t{ sizeof(rcvbuf) };
+        if (getsockopt(sock_, SOL_SOCKET, SO_RCVBUF, &rcvbuf, &len) != 0) {
+            return 1;
+        }
+        return std::max(rcvbuf / 4, 1);
+    }
+
+    // The largest mark to set, or unset until a mark above 1 is first asked for. Fixed for the
+    // life of the connection, which keeps its local address.
+    std::optional<int> max_read_low_watermark_;
+    int read_low_watermark_ = 1;
+#endif
 
     bool is_read_enabled_ = false;
     bool is_write_enabled_ = false;
