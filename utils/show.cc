@@ -143,7 +143,7 @@ struct app_opts {
     bool show_bytesize = false;
 };
 
-[[nodiscard]] int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
+[[nodiscard]] int parse_command_line(app_opts& opts, int argc, char const* const* argv)
 {
     int c;
     char const* optarg;
@@ -209,12 +209,12 @@ struct app_opts {
     return 0;
 }
 
-[[nodiscard]] auto toString(time_t now)
+[[nodiscard]] auto to_string(time_t now)
 {
     return now == 0 ? "Unknown" : fmt::format("{:%a %b %d %T %Y}", *std::localtime(&now));
 }
 
-void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
+void show_info(app_opts const& opts, tr_torrent_metainfo const& metainfo)
 {
     /**
     ***  General Info
@@ -229,7 +229,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
             fmt::print("  Hash v2: {:s}\n", metainfo.info_hash2_string());
         }
         fmt::print("  Created by: {:s}\n", std::empty(metainfo.creator()) ? "Unknown"sv : metainfo.creator().sv());
-        fmt::print("  Created on: {:s}\n\n", toString(metainfo.date_created()));
+        fmt::print("  Created on: {:s}\n\n", to_string(metainfo.date_created()));
 
         if (!std::empty(metainfo.comment())) {
             fmt::print("  Comment: {:s}\n", metainfo.comment().sv());
@@ -312,7 +312,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
     }
 }
 
-void doScrape(tr_torrent_metainfo const& metainfo)
+void do_scrape(tr_torrent_metainfo const& metainfo)
 {
     auto mediator = tr_web::Mediator{};
     auto web = tr_web::create(mediator);
@@ -397,7 +397,7 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto opts = app_opts{};
-    if (parseCommandLine(opts, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(opts, argc, (char const* const*)argv) != 0) {
         return EXIT_FAILURE;
     }
 
@@ -436,9 +436,9 @@ int tr_main(int argc, char* argv[])
         }
 
         if (opts.scrape) {
-            doScrape(metainfo);
+            do_scrape(metainfo);
         } else {
-            showInfo(opts, metainfo);
+            show_info(opts, metainfo);
         }
     }
 
