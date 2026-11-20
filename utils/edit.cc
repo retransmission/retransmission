@@ -109,7 +109,7 @@ auto constexpr Options = std::to_array<tr_option>({
             break;
 
         case TR_OPT_UNK:
-            opts.files.push_back(optarg);
+            opts.files.emplace_back(optarg);
             break;
 
         default:
