@@ -19,7 +19,12 @@ def main() -> int:
     seen = set()
     for command in commands:
         filename = command["file"]
-        relative = os.path.relpath(filename, root).replace("\\", "/")
+        try:
+            relative = os.path.relpath(filename, root)
+        except Exception as e:
+            e.add_note(f"Failed to compute relative path for '{filename}' from '{root}'")
+            raise
+        relative = relative.replace(os.sep, "/")
         if matcher.match(relative) and filename not in seen:
             seen.add(filename)
             print(filename)
