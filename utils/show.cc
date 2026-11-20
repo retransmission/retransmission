@@ -44,8 +44,8 @@ namespace
 {
 auto constexpr TimeoutSecs = std::chrono::seconds{ 30 };
 
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] <torrent-file>";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] <torrent-file>";
 
 using Arg = tr_option::Arg;
 auto constexpr Options = std::to_array<tr_option>({
