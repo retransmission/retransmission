@@ -59,11 +59,7 @@ auto constexpr Options = std::to_array<tr_option>({
     { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
     { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
-{
 struct app_options {
     tr_announce_list trackers;
     std::vector<std::string> webseeds;
@@ -193,9 +189,8 @@ int tr_main(int argc, char* argv[])
         if (options.is_private) {
             fprintf(stderr, "ERROR: no trackers specified for a private torrent\n");
             return EXIT_FAILURE;
-        } else {
-            printf("WARNING: no trackers specified\n");
         }
+        printf("WARNING: no trackers specified\n");
     }
 
     fmt::print("Creating torrent \"{:s}\"\n", options.outfile);
