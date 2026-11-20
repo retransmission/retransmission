@@ -1959,11 +1959,8 @@ void print_torrent_list(tr_variant::Map const& result)
         }
     }
 
-    std::sort(tptrs.begin(), tptrs.end(), [](tr_variant::Map const* f, tr_variant::Map const* s) {
-        static auto constexpr Min = std::numeric_limits<int64_t>::min();
-        auto const f_time = f->value_if<int64_t>(TR_KEY_added_date).value_or(Min);
-        auto const s_time = s->value_if<int64_t>(TR_KEY_added_date).value_or(Min);
-        return f_time < s_time;
+    std::ranges::sort(tptrs, {}, [](auto const ptr) {
+        return ptr->template value_if<int64_t>(TR_KEY_added_date).value_or(std::numeric_limits<int64_t>::min());
     });
 
     int64_t total_size = 0;
