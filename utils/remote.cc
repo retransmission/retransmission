@@ -203,7 +203,7 @@ struct RemoteConfig {
     return Storage{ bytes, Storage::Units::Bytes }.to_string();
 }
 
-enum {
+enum : uint8_t {
     ID_NOOP,
     ID_SESSION,
     ID_STATS,
@@ -941,7 +941,7 @@ void show_usage()
     return *num;
 }
 
-enum {
+enum : uint8_t {
     MODE_META_COMMAND = 0,
     MODE_TORRENT_ACTION = 1 << 0,
     MODE_TORRENT_ADD = 1 << 1,
@@ -952,7 +952,7 @@ enum {
     MODE_SESSION_SET = 1 << 6
 };
 
-[[nodiscard]] int get_opt_mode(int val)
+[[nodiscard]] std::optional<uint8_t> get_opt_mode(int val)
 {
     switch (val) {
     case TR_OPT_ERR:
@@ -1080,12 +1080,12 @@ enum {
     case 963: /* blocklist-update */
     case 964: /* rename */
     case 965: /* path */
-        return -1;
+        return {};
 
     default:
         fmt::print(stderr, "unrecognized argument {:d}\n", val);
         TR_ASSERT_MSG(false, "unrecognized argument");
-        return -2;
+        return {};
     }
 }
 
