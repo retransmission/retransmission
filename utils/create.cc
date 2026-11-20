@@ -192,14 +192,14 @@ int tr_main(int argc, char** argv)
     }
 
     if (options.show_version) {
-        fprintf(stderr, "%s %s\n", MyName, LONG_VERSION_STRING);
+        fmt::print(stderr, "{:s} {:s}\n", MyName, LONG_VERSION_STRING);
         return EXIT_SUCCESS;
     }
 
     if (std::empty(options.infile)) {
-        fprintf(stderr, "ERROR: No input file or directory specified.\n");
+        fmt::print(stderr, "ERROR: No input file or directory specified.\n");
         tr_getopt_usage(MyName, Usage, std::data(Options));
-        fprintf(stderr, "\n");
+        fmt::print(stderr, "\n");
         return EXIT_FAILURE;
     }
 
@@ -207,23 +207,23 @@ int tr_main(int argc, char** argv)
         auto error = tr_error{};
         auto const base = tr_sys_path_basename(options.infile, &error);
         if (error) {
-            auto const errmsg = fmt::format(
-                "Couldn't use '{path}': {error} ({error_code})",
+            fmt::print(
+                stderr,
+                "Couldn't use '{path}': {error} ({error_code})\n",
                 fmt::arg("path", options.infile),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code()));
-            fmt::print(stderr, "{:s}\n", errmsg);
             return EXIT_FAILURE;
         }
 
         auto const cur = tr_sys_dir_get_current(&error);
         if (error) {
-            auto const errmsg = fmt::format(
-                "Couldn't create '{path}': {error} ({error_code})",
+            fmt::print(
+                stderr,
+                "Couldn't create '{path}': {error} ({error_code})\n",
                 fmt::arg("path", base),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code()));
-            fmt::print(stderr, "{:s}\n", errmsg);
             return EXIT_FAILURE;
         }
 
@@ -232,10 +232,10 @@ int tr_main(int argc, char** argv)
 
     if (std::empty(options.trackers)) {
         if (options.is_private) {
-            fprintf(stderr, "ERROR: no trackers specified for a private torrent\n");
+            fmt::print(stderr, "ERROR: no trackers specified for a private torrent\n");
             return EXIT_FAILURE;
         }
-        printf("WARNING: no trackers specified\n");
+        fmt::print("WARNING: no trackers specified\n");
     }
 
     fmt::print("Creating torrent \"{:s}\"\n", options.outfile);
@@ -243,7 +243,7 @@ int tr_main(int argc, char** argv)
     auto builder = tr_metainfo_builder(options.infile);
     auto const n_files = builder.file_count();
     if (n_files == 0U) {
-        fprintf(stderr, "ERROR: Cannot find specified input file or directory.\n");
+        fmt::print(stderr, "ERROR: Cannot find specified input file or directory.\n");
         return EXIT_FAILURE;
     }
 
@@ -303,7 +303,7 @@ int tr_main(int argc, char** argv)
 
         if (!last || current != *last) {
             fmt::print("\rPiece {:Ld}/{:Ld} ...", current, total);
-            fflush(stdout);
+            (void)std::fflush(stdout);
             last = current;
         }
     }
