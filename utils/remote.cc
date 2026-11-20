@@ -146,7 +146,7 @@ struct RemoteConfig {
 [[nodiscard]] auto tr_strltime(int64_t seconds)
 {
     if (seconds < 0) {
-        seconds = 0;
+        return "Unknown"s;
     }
 
     auto const total_seconds = std::chrono::seconds{ seconds };
