@@ -16,6 +16,7 @@
 #include <memory>
 #include <optional>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #ifdef _WIN32
@@ -74,7 +75,12 @@ public:
     virtual void stopTorrent(tr_torrent* tor) = 0;
     virtual void resetTorrent(tr_torrent* tor) = 0;
     virtual void removeTorrent(tr_torrent* tor) = 0;
+
+    // Sends every torrent's "stopped" and stops announcing and scraping.
     virtual void startShutdown() = 0;
+
+    // "stopped" announces sent since startShutdown(), and how many trackers answered
+    [[nodiscard]] virtual std::pair<size_t, size_t> stopsSentAndAnswered() const = 0;
 
     virtual void upkeep() = 0;
 };
