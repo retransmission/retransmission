@@ -331,6 +331,7 @@ auto constexpr Options = std::to_array<tr_option>({
 }
 } // namespace
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int tr_main(int argc, char* argv[])
 {
     tr_locale_set_global("");
