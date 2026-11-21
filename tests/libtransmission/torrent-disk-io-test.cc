@@ -223,8 +223,7 @@ protected:
         TorrentDiskIoTestBase::SetUp();
 
         // one worker, so that hashes finish in the order they were enqueued
-        startThreadlessDiskIo(1U, 1U);
-        session_->local_data.set_workers_paused(true);
+        startThreadlessDiskIo(1U, 1U, true);
     }
 
     // Does the disk work that is waiting, then delivers its completions.

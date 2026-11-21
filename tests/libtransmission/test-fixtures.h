@@ -599,17 +599,22 @@ protected:
 
     // Switches the session from the synchronous disk IO backend to the
     // threaded one with its threads' work done on the session thread, in
-    // an order `seed` picks.
-    void startThreadlessDiskIo(uint32_t const seed, size_t const n_workers = 4U)
+    // an order `seed` picks. Started `paused`, the session thread takes
+    // no steps of its own until a test unpauses it.
+    void startThreadlessDiskIo(uint32_t const seed, size_t const n_workers = 4U, bool const paused = false)
     {
-        blockingRunInSessionThread([this, seed, n_workers] {
+        blockingRunInSessionThread([this, seed, n_workers, paused] {
+            auto& local_data = session_->local_data;
             tr::detail::start_threadless(
-                session_->local_data,
+                local_data,
                 n_workers,
                 seed,
                 session_->openFiles(),
                 session_->local_data_marshal(),
                 session_->storage_descriptor_provider());
+            if (paused) {
+                local_data.set_workers_paused(true);
+            }
         });
     }
 
