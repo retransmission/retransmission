@@ -1258,6 +1258,11 @@ private:
 
     void resume_deferred_requests();
 
+    // What local_data's threaded backend is started with:
+    // how it reaches the session thread, and how it finds a torrent's storage.
+    [[nodiscard]] tr::LocalData::Marshal local_data_marshal();
+    [[nodiscard]] tr::LocalData::DescriptorProvider storage_descriptor_provider();
+
     // How long after its last activity the session still counts as busy.
     // Session thread only: reads the queue-stalled settings.
     [[nodiscard]] time_t compute_busy_window() const noexcept

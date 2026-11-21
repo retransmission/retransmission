@@ -123,6 +123,16 @@ inline bool waitFor(
     return false;
 }
 
+// On a tr::LocalData started threadless, does the disk work that is
+// waiting, then delivers its callbacks. What those enqueue waits for the
+// next call.
+inline void runThreadlessDiskIo(tr::LocalData& local_data)
+{
+    while (tr::detail::step(local_data)) {
+    }
+    tr::detail::deliver(local_data);
+}
+
 class TransmissionTest : public ::testing::Test
 {
 protected:
@@ -530,6 +540,14 @@ protected:
 
     tr_session* session_ = nullptr;
 
+    // A new place for tr_torrentSetLocation()'s `setme_state`, set to -1.
+    // A move writes through that pointer when it finishes, which is in
+    // session teardown if the test stopped waiting, so a local can't hold it.
+    [[nodiscard]] int volatile& newLocationState()
+    {
+        return *location_states_.emplace_back(std::make_unique<int volatile>(-1));
+    }
+
     [[nodiscard]] tr::Settings& settings()
     {
         if (!settings_) {
@@ -584,35 +602,75 @@ protected:
         blockingRunInSessionThread([this] { session_->on_save_timer(); });
     }
 
-    // A suite that scripts completion delivery itself returns false.
-    // The parked-completion modes only hold on the synchronous backend,
-    // where nothing completes off the session thread.
-    [[nodiscard]] virtual bool useLocalDataWorkersFromEnv() const
+    // A suite that picks its session's disk IO backend itself returns false.
+    [[nodiscard]] virtual bool useLocalDataBackendFromEnv() const
     {
         return true;
+    }
+
+    // True if the session finishes each disk op before the call that
+    // asked for it returns.
+    [[nodiscard]] bool diskIoIsSynchronous() const
+    {
+        return session_->local_data.is_synchronous();
+    }
+
+    // Switches the session from the synchronous disk IO backend to the
+    // threaded one with its threads' work done on the session thread, in
+    // an order `seed` picks. Started `paused`, the session thread takes
+    // no steps of its own until a test unpauses it.
+    void startThreadlessDiskIo(uint32_t const seed, size_t const n_workers = 4U, bool const paused = false)
+    {
+        blockingRunInSessionThread([this, seed, n_workers, paused] {
+            auto& local_data = session_->local_data;
+            tr::detail::start_threadless(
+                local_data,
+                n_workers,
+                seed,
+                session_->openFiles(),
+                session_->local_data_marshal(),
+                session_->storage_descriptor_provider());
+            if (paused) {
+                local_data.set_workers_paused(true);
+            }
+        });
     }
 
     void SetUp() override
     {
         SandboxedTest::SetUp();
 
+        auto const from_env = useLocalDataBackendFromEnv();
+
         // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
         // instead of the synchronous one.
-        auto const workers = useLocalDataWorkersFromEnv() ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
+        auto const workers = from_env ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
         if (!std::empty(workers)) {
             settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
         }
 
+        // tr::LocalData may deliver completions late and out of order.
+        // TR_LOCAL_DATA_SHUFFLE=<seed> makes it do so without threads, in
+        // an order the seed picks, to catch code that assumes otherwise.
+        // A seed replays a failure only if the test's own events arrive
+        // the same way every run: sockets and timers can change which
+        // work is waiting at each pick.
+        auto seed = std::optional<uint32_t>{};
+        auto bad_seed = std::optional<std::string>{};
+        if (from_env && std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
+            auto value = tr_env_get_string("TR_LOCAL_DATA_SHUFFLE");
+            auto rest = std::string_view{};
+            seed = tr_num_parse<uint32_t>(value, &rest);
+            if (!seed || !std::empty(rest)) {
+                seed.reset();
+                bad_seed = std::move(value);
+            }
+        }
+
         session_ = sessionInit(settings());
 
-        // Pump parked completions from the session thread.
-        session_->local_data.set_wake([this] { session_->queue_session_thread([this] { session_->local_data.pump(); }); });
-
-        // tr::LocalData may deliver completions late and out of order.
-        // TR_LOCAL_DATA_SHUFFLE makes it do so, so code that assumes
-        // otherwise fails here.
-        if (std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
-            session_->local_data.set_completions(tr::LocalData::Completions::Shuffled);
+        if (seed) {
+            startThreadlessDiskIo(*seed);
         }
 
         // Every torrent in this session reports here when it finishes verifying,
@@ -622,6 +680,10 @@ protected:
             verified_.emplace_back(tor_id);
             verified_cv_.notify_one();
         });
+
+        // Last, because a derived fixture's SetUp() keeps going after this
+        // returns and needs the whole session. The test body doesn't run.
+        ASSERT_FALSE(bad_seed) << "TR_LOCAL_DATA_SHUFFLE is \"" << *bad_seed << "\", which isn't a seed from 0 to 4294967295";
     }
 
     void TearDown() override
@@ -633,6 +695,7 @@ protected:
     }
 
 private:
+    std::vector<std::unique_ptr<int volatile>> location_states_;
     sigslot::scoped_connection verify_done_tag_;
     std::mutex verified_mutex_;
     std::condition_variable verified_cv_;
