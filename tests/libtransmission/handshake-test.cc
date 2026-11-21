@@ -1139,4 +1139,45 @@ TEST_F(HandshakeTest, outgoingPlaintextForStoppedTorrentFails)
     });
 }
 
+TEST_F(HandshakeTest, marksUtpFailureForStoppedTorrent)
+{
+    auto stopped = UbuntuTorrent;
+    stopped.is_running = false;
+    auto mediator = MediatorMock{ session_ };
+    mediator.torrents.emplace(stopped.info_hash, stopped);
+
+    static auto constexpr Transport = std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP };
+    auto script = RetryScript{};
+    blockingRunInSessionThread([&] {
+        auto const io = createRetryIo(script, Transport, false);
+
+        auto result = std::optional<tr_handshake::Result>{};
+        auto handshake = startHandshake(result, &mediator, io);
+        script.sockets.front()->fail(ETIMEDOUT);
+
+        ASSERT_TRUE(result);
+        EXPECT_FALSE(result->is_connected);
+        EXPECT_EQ(1U, mediator.utp_failures.size());
+    });
+}
+
+TEST_F(HandshakeTest, marksUtpFailureForNonExistentTorrent)
+{
+    auto mediator = MediatorMock{ session_ };
+
+    static auto constexpr Transport = std::array{ tr_transport_protocol::UTP, tr_transport_protocol::TCP };
+    auto script = RetryScript{};
+    blockingRunInSessionThread([&] {
+        auto const io = createRetryIo(script, Transport, false);
+
+        auto result = std::optional<tr_handshake::Result>{};
+        auto handshake = startHandshake(result, &mediator, io);
+        script.sockets.front()->fail(ETIMEDOUT);
+
+        ASSERT_TRUE(result);
+        EXPECT_FALSE(result->is_connected);
+        EXPECT_EQ(1U, mediator.utp_failures.size());
+    });
+}
+
 } // namespace tr::test

@@ -612,8 +612,7 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     auto const transport_protocol_before = io->transport_protocol();
     handshake->maybe_recycle_dh();
 
-    // Every retry ends in a BitTorrent handshake, which only a running torrent can send.
-    if (auto const info = handshake->mediator_->torrent(info_hash); io->is_incoming() || !info || !info->is_running) {
+    if (io->is_incoming()) {
         fail();
         return;
     }
@@ -621,6 +620,11 @@ void tr_handshake::on_error(tr_peerIo* io, tr_error const& error, void* vhandsha
     // Don't mark a peer as non-µTP unless it's really a connect failure.
     if (!did_connect && io->is_utp() && (error.code() == ETIMEDOUT || error.code() == ECONNREFUSED)) {
         handshake->mediator_->set_utp_failed(info_hash, io->socket_address());
+    }
+
+    if (auto const info = handshake->mediator_->torrent(info_hash); !info || !info->is_running) {
+        fail();
+        return;
     }
 
     if (handshake->is_state(State::AwaitingYb)) {
