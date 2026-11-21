@@ -9,6 +9,7 @@ Checks:
   - -bugprone-easily-swappable-parameters
   - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-throwing-static-initialization
+  - -bugprone-unchecked-optional-access
   - cert-*
   - -cert-dcl03-c # alias of `misc-static-assert`
   - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
