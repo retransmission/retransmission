@@ -207,6 +207,13 @@ public:
             return {};
         }
 
+        // Called synchronously by fetch(); "blocked" refuses the fetch, and nullopt
+        // leaves binding to the bind addresses.
+        [[nodiscard]] virtual std::optional<std::string> bind_interface() const
+        {
+            return std::nullopt;
+        }
+
         // Return the preferred user aagent, or nullopt to not use one
         [[nodiscard]] virtual std::optional<std::string_view> userAgent() const
         {

@@ -289,6 +289,8 @@ static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
     BOOL const randomPort = tr_sessionGetPeerPortRandomOnStart(self.fHandle);
     [self.fDefaults setBool:randomPort forKey:@"RandomPort"];
 
+    [self.networkViewController updateBindInterfaceFromSession];
+
     // speed limit - down
     BOOL const downLimitEnabled = tr_sessionIsSpeedLimited(self.fHandle, tr_direction::Down);
     [self.fDefaults setBool:downLimitEnabled forKey:@"CheckDownload"];

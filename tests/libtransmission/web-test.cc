@@ -86,6 +86,9 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
     EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 }
 
+// tr_web needs a Mediator; this one overrides only what tests set:
+// the user-agent so a test can confirm the header reaches the server,
+// and the session-level bind addresses and bind interface.
 class TestMediator final : public tr_web::Mediator
 {
 public:
@@ -109,7 +112,14 @@ public:
         return std::nullopt;
     }
 
+    // fetch() reads this on the caller's thread, so tests set it without a lock
+    [[nodiscard]] std::optional<std::string> bind_interface() const override
+    {
+        return bind_interface_;
+    }
+
     std::optional<std::string> user_agent_;
+    std::optional<std::string> bind_interface_;
 
 private:
     mutable std::mutex mutex_;
@@ -655,6 +665,83 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: ")) << *response.errmsg;
 }
 
+#if defined(__linux__)
+auto constexpr LoopbackInterface = "lo"sv;
+#elif !defined(_WIN32)
+auto constexpr LoopbackInterface = "lo0"sv;
+#endif
+
+TEST_F(WebTest, interfaceBindingOverridesBindAddress)
+{
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
+    // binding to 192.0.2.1 fails, so only the interface can carry the fetch
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status) << response.errmsg.value_or("");
+    EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
+#endif
+}
+
+TEST_F(WebTest, blockedInterfaceIsRefused)
+{
+    // a "blocked" binding completes the fetch as a failed connection
+    // without a request ever reaching the server
+    mediator_.bind_interface_ = "blocked";
+    auto user_data = int{};
+
+    auto const response = fetch(options("/"sv, &user_data));
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+    EXPECT_EQ(&user_data, response.user_data);
+    EXPECT_TRUE(std::empty(server4_->lastRequest().method));
+}
+
+TEST_F(WebTest, bindInterfaceCapturedWhenQueued)
+{
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
+    // binding to 192.0.2.1 fails, so only the loopback interface can carry the fetch
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto gate = ThreadGate{};
+    auto paused = pauseWebThread(gate.future());
+    ASSERT_EQ(std::future_status::ready, paused.wait_for(15s));
+
+    auto response = fetchAsync(options());
+    mediator_.bind_interface_ = "blocked";
+    gate.open();
+
+    ASSERT_EQ(std::future_status::ready, response.wait_for(15s));
+    EXPECT_EQ(200, response.get().status);
+#endif
+}
+
+TEST_F(WebTest, connectionsNotReusedAcrossBindInterfaces)
+{
+#ifdef _WIN32
+    GTEST_SKIP() << "curl can't bind to an interface by name on Windows";
+#else
+    // only the interface differs between the two fetches
+    mediator_.setBindAddress(TR_AF_INET, "192.0.2.1");
+    mediator_.bind_interface_ = std::string{ LoopbackInterface };
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status);
+
+    // curl would reuse the loopback-bound connection for a request that names no
+    // interface, which would let this fetch skip binding to 192.0.2.1
+    mediator_.bind_interface_.reset();
+    auto const failure = fetch(options());
+    EXPECT_EQ(0, failure.status);
+    EXPECT_FALSE(failure.did_connect);
+#endif
+}
+
 TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
 {
     // the plain fetch never gets a reply; the announce gets one once the gate opens
@@ -697,6 +784,7 @@ TEST_F(WebTest, shutdownCancelsAllButFetchesToFinish)
     ASSERT_EQ(std::future_status::ready, announce.wait_for(15s));
     EXPECT_EQ(200, announce.get().status);
 }
+
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a
