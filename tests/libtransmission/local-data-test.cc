@@ -2366,3 +2366,62 @@ TEST_F(LocalDataThreadlessTest, activityShowsQueuedWorkAndWhatTheThreadsAreDoing
 
     local_data->shutdown();
 }
+
+// A move, removal, or rename is queued until a lane starts its disk work.
+TEST_F(LocalDataThreadlessTest, activityCountsAdminWorkWaitingOnALane)
+{
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    saveFile("data.bin", patternString(0U, BlockSize));
+    saveFile("other/data.bin", patternString(0U, BlockSize));
+    auto const mine = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
+    auto const theirs = inDir(*mine, OtherId, "other");
+    auto const local_data = makeThreadless([&mine, &theirs](tr_torrent_id_t const id) { return id == TorId ? mine : theirs; });
+
+    // nothing is in flight, so both barriers are granted, and both jobs wait on the short lane
+    auto during_removal = std::optional<tr_disk_activity>{};
+    auto removed = false;
+    local_data->remove(
+        OtherId,
+        [&local_data, &during_removal](std::string_view const path, tr_error* const error) {
+            if (!during_removal) {
+                during_removal = local_data->activity();
+            }
+            return tr_sys_path_remove(path, error);
+        },
+        [&removed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            removed = true;
+        });
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("moved") }; },
+        [&moved](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            moved = true;
+        });
+    EXPECT_EQ(2U, local_data->activity().queued_admin_count);
+    EXPECT_TRUE(std::empty(local_data->activity().in_flight));
+
+    // the removal runs, and the move still waits
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    ASSERT_TRUE(during_removal);
+    EXPECT_EQ(1U, during_removal->queued_admin_count);
+    ASSERT_EQ(1U, std::size(during_removal->in_flight));
+    EXPECT_EQ(tr_disk_activity::Op::Kind::Remove, during_removal->in_flight.front().kind);
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(removed);
+
+    // the move places the files, then waits again to clear the old location
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_EQ(0U, local_data->activity().queued_admin_count);
+    tr::detail::deliver(*local_data);
+    EXPECT_EQ(1U, local_data->activity().queued_admin_count);
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_EQ(0U, local_data->activity().queued_admin_count);
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(moved);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("moved/data.bin")));
+
+    local_data->shutdown();
+}
