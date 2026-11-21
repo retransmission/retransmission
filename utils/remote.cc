@@ -109,7 +109,7 @@ struct RemoteConfig {
 
 // --- Display Utilities
 
-[[nodiscard]] std::string eta_to_string(time_t const eta)
+[[nodiscard]] std::string eta_to_string(int64_t const eta)
 {
     if (eta < 0) {
         return "Unknown"s;
@@ -143,7 +143,7 @@ struct RemoteConfig {
     return "∞"s;
 }
 
-[[nodiscard]] auto tr_strltime(time_t seconds)
+[[nodiscard]] auto tr_strltime(int64_t seconds)
 {
     if (seconds < 0) {
         seconds = 0;
@@ -1058,7 +1058,7 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Percent Done: {:s}%\n", percent.to_string());
         }
 
-        if (auto const i = t->value_if<time_t>(TR_KEY_eta)) {
+        if (auto const i = t->value_if<int64_t>(TR_KEY_eta)) {
             fmt::print("  ETA: {:s}\n", tr_strltime(*i));
         }
 
@@ -1513,7 +1513,7 @@ void print_torrent_list(tr_variant::Map const& result)
     int64_t total_down = 0;
     for (auto const& t : tptrs) {
         auto o_tor_id = t->value_if<int64_t>(TR_KEY_id);
-        auto o_eta = t->value_if<time_t>(TR_KEY_eta);
+        auto o_eta = t->value_if<int64_t>(TR_KEY_eta);
         auto o_status = t->value_if<int64_t>(TR_KEY_status);
         auto o_up = t->value_if<int64_t>(TR_KEY_rate_upload);
         auto o_down = t->value_if<int64_t>(TR_KEY_rate_download);
