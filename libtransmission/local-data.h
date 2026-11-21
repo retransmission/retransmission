@@ -48,7 +48,10 @@ namespace detail
 // for the session thread, which does it a step at a time between its
 // other work: never inside the call that enqueued an op, and never
 // inside a callback. A step is one thread's next move, and a random
-// number generator picks the thread, so a seed replays its schedule.
+// number generator seeded with `seed` picks the thread from those with
+// work waiting. A seed replays its schedule only if the caller's own
+// events are deterministic: sockets and timers can change which work is
+// waiting at each pick.
 // The gate, the queues, and the delivery of callbacks are the ones the
 // threads use.
 //

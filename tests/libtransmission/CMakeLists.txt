@@ -133,8 +133,10 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
 
     # Without threads: the session thread does the workers' and the admin
     # lanes' work in an order that TR_LOCAL_DATA_SHUFFLE seeds. Completions
-    # arrive late and out of order, as the ordering contract allows, and a
-    # failure replays under its seed. Each seed is a different schedule.
+    # arrive late and out of order, as the ordering contract allows. Each
+    # seed is a different schedule. A failure replays under its seed only
+    # if the test's own events are deterministic: sockets and timers can
+    # change which work is waiting at each pick.
     foreach(SEED 1 2 3)
         if(SEED EQUAL 1)
             set(TEST_NAME LT.ShuffledDiskIo)
