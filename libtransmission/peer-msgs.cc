@@ -470,10 +470,6 @@ public:
     {
         update_desired_request_count();
         maybe_send_block_requests();
-
-        // A few requests stay below the size that peer-io sends on its
-        // own, and would wait for the peer manager's pulse to flush them.
-        io_->flush_outgoing_protocol_msgs();
     }
 
     void on_piece_completed(tr_piece_index_t piece) override
@@ -1016,7 +1012,9 @@ size_t tr_peerMsgsImpl::protocol_send_message(uint8_t type, Args const&... args)
     [[maybe_unused]] auto const msg_len = build_peer_message(out, type, args...);
     TR_ASSERT(is_message_length_correct(tor_, type, msg_len));
     auto const n_bytes_added = std::size(out);
-    io_->write(out, type == BtPeerMsgs::Piece);
+    // Every completed piece queues a HAVE for every peer, and nothing waits on one,
+    // so HAVEs ride along with the next flush instead of each scheduling their own.
+    io_->write(out, type == BtPeerMsgs::Piece, type == BtPeerMsgs::Have ? tr_peerIo::Flush::WithNext : tr_peerIo::Flush::Soon);
     return n_bytes_added;
 }
 

@@ -157,15 +157,21 @@ public:
 
     [[nodiscard]] size_t get_write_buffer_space(uint64_t now) const noexcept;
 
-    void write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data);
+    // When a write is sent.
+    enum class Flush : uint8_t {
+        Soon, // on the next event-loop pass
+        WithNext, // with the next Soon write, or on the bandwidth pulse
+    };
+
+    void write_bytes(void const* bytes, size_t n_bytes, bool is_piece_data, Flush flush = Flush::Soon);
 
     // Write all the data from `buf`.
     // This is a destructive add: `buf` is empty after this call.
     template<typename T>
-    void write(tr::BufferReader<T>& buf, bool is_piece_data)
+    void write(tr::BufferReader<T>& buf, bool is_piece_data, Flush flush = Flush::Soon)
     {
         auto const n_bytes = std::size(buf);
-        write_bytes(std::data(buf), n_bytes, is_piece_data);
+        write_bytes(std::data(buf), n_bytes, is_piece_data, flush);
         buf.drain(n_bytes);
     }
 
