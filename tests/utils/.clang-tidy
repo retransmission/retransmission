@@ -5,6 +5,7 @@ HeaderFilterRegex: .*/utils/[^/]*$
 Checks:
   - bugprone-*
   - -bugprone-branch-clone
+  - -bugprone-command-processor
   - -bugprone-easily-swappable-parameters
   - -bugprone-signed-bitwise # warns for small unsigned types because of integral promotion
   - -bugprone-throwing-static-initialization
@@ -12,6 +13,7 @@ Checks:
   - -cert-dcl03-c # alias of `misc-static-assert`
   - -cert-dcl37-c # alias of `bugprone-reserved-identifier`
   - -cert-dcl51-cpp # alias of `bugprone-reserved-identifier`
+  - -cert-env33-c # alias of `bugprone-command-processor`
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-*
