@@ -695,7 +695,7 @@ public:
                     return false;
                 }
 
-                post_admin(
+                post_disk_work(
                     short_lane_,
                     [this,
                      desc = std::move(desc),
@@ -1253,8 +1253,10 @@ private:
         return std::empty(gates_);
     }
 
-    // A move, removal, or rename counts as queued admin work until its
-    // barrier is granted.
+    // A move, removal, or rename counts as queued admin work while it
+    // waits for its barrier. `body` hands the disk work to a lane with
+    // post_disk_work(), which counts it again before this count is
+    // dropped, so a reader never misses it.
     void submit_disk_work(tr_torrent_id_t const id, std::function<bool()> body)
     {
         board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
@@ -1262,8 +1264,9 @@ private:
             id,
             BarrierOp{ .body =
                            [this, body = std::move(body)] {
+                               auto const handed_off = body();
                                board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
-                               return body();
+                               return handed_off;
                            },
                        .span = {} });
     }
@@ -1715,6 +1718,18 @@ private:
         wake_lanes();
     }
 
+    // Enqueue one step of a move, removal, or rename. It counts as queued
+    // admin work until the lane starts it. A torrent's steps run one at a
+    // time, so its work is counted once.
+    void post_disk_work(AdminLane& lane, AdminLane::value_type job)
+    {
+        board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
+        post_admin(lane, [this, job = std::move(job)] {
+            board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+            job();
+        });
+    }
+
     // Wake the threads for the work just queued. With no threads, have
     // the session thread do it later instead. Every enqueue goes through
     // one of these, so that neither kind of backend misses the work.
@@ -1809,7 +1824,7 @@ private:
     // and let the ops behind the barrier go.
     void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
     {
-        post_admin(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
+        post_disk_work(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
             post_completion([this, id, error = work(), done = std::move(done)] {
                 done(error);
                 finish_barrier(id);
@@ -1831,7 +1846,7 @@ private:
         auto needs_copy = false;
         auto leftovers = place_files(board_, desc, job.target, error, may_copy ? nullptr : &needs_copy);
         if (needs_copy) {
-            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+            post_disk_work(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
                 exec_place(std::move(desc), std::move(job), true);
             });
             return;
@@ -1849,7 +1864,7 @@ private:
             }
 
             // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
-            post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
+            post_disk_work(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
                 remove_leftovers(board_, leftovers, job.target);
                 post_completion([this, job = std::move(job)] { finish_move(job, {}); });
             });
