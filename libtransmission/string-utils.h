@@ -31,10 +31,10 @@ template <typename T> [[nodiscard]] std::string tr_strlower(T in)
     return out;
 }
 
-template <typename T> [[nodiscard]] std::string tr_strupper(T in)
+template <typename T> [[nodiscard]] constexpr std::string tr_strupper(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch))); });
+    std::ranges::for_each(out, [](char& ch) { ch = ch >= 'a' && ch <= 'z' ? static_cast<char>(ch - 'a' + 'A') : ch; });
     return out;
 }
 
