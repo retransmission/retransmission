@@ -87,6 +87,8 @@ public:
 
     MockRpcServer(MockRpcServer const&) = delete;
     MockRpcServer& operator=(MockRpcServer const&) = delete;
+    MockRpcServer(MockRpcServer&&) = delete;
+    MockRpcServer& operator=(MockRpcServer&&) = delete;
 
     [[nodiscard]] uint16_t port() const noexcept
     {
