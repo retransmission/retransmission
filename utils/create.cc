@@ -253,7 +253,7 @@ int tr_main(int argc, char** argv)
         auto const sanitized = fmt::format(
             "{:s}",
             fmt::join(
-                path | std::views::split('/') | std::views::transform([](auto const subpath) {
+                path | std::views::split('/') | std::views::transform([](auto const& subpath) {
                     return tr_torrent_files::sanitize_subpath(std::string_view{ subpath }, false);
                 }),
                 "/"sv));
