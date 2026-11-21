@@ -1162,7 +1162,7 @@ void add_time(tr_variant::Map& args, tr_quark const key, std::string_view arg)
         auto const min = tr_num_parse<int>(arg.substr(2, 2)).value_or(-1);
 
         if (0 <= hour && hour < 24 && 0 <= min && min < 60) {
-            args.insert_or_assign(key, min + hour * 60);
+            args.insert_or_assign(key, min + (hour * 60));
             return;
         }
     }
