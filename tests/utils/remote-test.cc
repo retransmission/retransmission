@@ -107,7 +107,7 @@ public:
 
     [[nodiscard]] std::string last_request() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return last_request_;
     }
 
@@ -158,7 +158,7 @@ private:
             authenticated_request_seen_.store(std::string_view{ session_id } == SessionId);
             auto const request = request_body(req);
             {
-                auto const lock = std::lock_guard{ mutex_ };
+                auto const lock = std::scoped_lock{ mutex_ };
                 last_request_ = request;
             }
             evhttp_add_header(out_headers, "Content-Type", "application/json");
