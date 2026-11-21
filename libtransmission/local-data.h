@@ -387,6 +387,12 @@ public:
     // session thread takes no steps of its own.
     void set_workers_paused(bool paused);
 
+    // For tests. True while the synchronous backend is in place.
+    [[nodiscard]] bool is_synchronous() const noexcept
+    {
+        return !threaded_;
+    }
+
 private:
     friend void detail::start_threadless(
         LocalData& local_data,

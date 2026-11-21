@@ -594,7 +594,7 @@ protected:
     // asked for it returns.
     [[nodiscard]] bool diskIoIsSynchronous() const
     {
-        return session_->settings().disk_io_workers == 0U && !disk_io_is_threadless_;
+        return session_->local_data.is_synchronous();
     }
 
     // Switches the session from the synchronous disk IO backend to the
@@ -602,7 +602,6 @@ protected:
     // an order `seed` picks.
     void startThreadlessDiskIo(uint32_t const seed, size_t const n_workers = 4U)
     {
-        disk_io_is_threadless_ = true;
         blockingRunInSessionThread([this, seed, n_workers] {
             tr::detail::start_threadless(
                 session_->local_data,
@@ -673,7 +672,6 @@ protected:
     }
 
 private:
-    bool disk_io_is_threadless_ = false;
     sigslot::scoped_connection verify_done_tag_;
     std::mutex verified_mutex_;
     std::condition_variable verified_cv_;
