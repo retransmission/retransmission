@@ -105,6 +105,19 @@ TEST(ShutdownStatusTest, trackersCountDown)
     EXPECT_EQ("Sending upload/download totals to trackers… 3 of 12 replied, 6 seconds left", status.detail);
 }
 
+// The trackers may not all have replied, but the close no longer waits for them.
+TEST(ShutdownStatusTest, teardownDoesntCountDownTheTrackers)
+{
+    auto activity = tr_disk_activity{};
+    activity.phase = tr_close_phase::TearingDown;
+    activity.trackers_total = 12U;
+    activity.trackers_pending = 9U;
+
+    auto const status = make_shutdown_status(activity);
+    EXPECT_EQ("Shutting down…", status.headline);
+    EXPECT_EQ("", status.detail);
+}
+
 TEST(ShutdownStatusTest, otherwiseItsJustShuttingDown)
 {
     auto activity = tr_disk_activity{};

@@ -1423,7 +1423,6 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
         for (auto* const tor : torrents_.get_all()) {
             tr_torrentFreeInSessionThread(tor);
         }
-        close_phase_ = tr_close_phase::WaitingTrackers;
     }
 
     // try to keep web_ and the UDP announcer alive long enough to send out
@@ -1432,10 +1431,12 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
     // safely destruct.
     if ((!web_->is_idle() || !announcer_udp_->is_idle() || !ip_cache_->try_shutdown()) &&
         std::chrono::steady_clock::now() < deadline) {
+        close_phase_ = tr_close_phase::WaitingTrackers;
         announcer_->upkeep();
         return;
     }
 
+    close_phase_ = tr_close_phase::TearingDown;
     save_timer_.reset();
 
     this->announcer_.reset();
