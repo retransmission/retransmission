@@ -807,7 +807,12 @@ public:
 
         auto const pick = ready[threads.rng() % std::size(ready)];
         if (pick >= n_workers) {
-            run_next_job(pick == n_workers ? long_lane_ : short_lane_);
+            auto job = std::function<void()>{};
+            {
+                auto const lock = std::scoped_lock{ work_mutex_ };
+                job = take_job(pick == n_workers ? long_lane_ : short_lane_);
+            }
+            job();
         } else if (auto& worker = threads.workers[pick]; worker.turn.empty()) {
             auto const lock = std::scoped_lock{ work_mutex_ };
             worker.turn = take_turn(worker.next);
@@ -1473,6 +1478,18 @@ private:
         }
     }
 
+    // Takes a lane's next job, or nothing if none is waiting.
+    // Call with work_mutex_ held.
+    [[nodiscard]] static std::function<void()> take_job(AdminLane& lane)
+    {
+        auto job = std::function<void()>{};
+        if (!std::empty(lane)) {
+            job = std::move(lane.front());
+            lane.pop_front();
+        }
+        return job;
+    }
+
     void admin_main(AdminLane& lane)
     {
         for (;;) {
@@ -1480,13 +1497,18 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                admin_cv_.wait(lock, [this, &lane] { return !paused_ && (!std::empty(lane) || stopping_); });
-                if (std::empty(lane)) {
-                    return;
-                }
+                admin_cv_.wait(lock, [this, &lane, &job] {
+                    if (paused_) {
+                        return false;
+                    }
 
-                job = std::move(lane.front());
-                lane.pop_front();
+                    job = take_job(lane);
+                    return job || stopping_;
+                });
+            }
+
+            if (!job) {
+                return;
             }
 
             job();
@@ -1500,18 +1522,6 @@ private:
             lane.emplace_back(std::move(job));
         }
         wake_lanes();
-    }
-
-    void run_next_job(AdminLane& lane)
-    {
-        auto job = std::function<void()>{};
-        {
-            auto const lock = std::scoped_lock{ work_mutex_ };
-            job = std::move(lane.front());
-            lane.pop_front();
-        }
-
-        job();
     }
 
     // Wake the threads for the work just queued. With no threads, have
