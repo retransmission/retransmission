@@ -809,6 +809,8 @@ void tr_torrentFreeInSessionThread(tr_torrent* tor)
     }
 
     // A removal or a closing session stopped the torrent first.
+    TR_ASSERT(!tor->is_running());
+
     if (tor->is_deleting_) {
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".torrent"sv);
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".magnet"sv);
