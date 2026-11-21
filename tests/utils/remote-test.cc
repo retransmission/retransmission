@@ -203,7 +203,7 @@ struct CommandResult {
     auto const rc = std::system(command.c_str());
     auto const exit_code = WIFEXITED(rc) ? WEXITSTATUS(rc) : -1;
 #endif
-    return { exit_code, testing::internal::GetCapturedStdout() };
+    return { .exit_code = exit_code, .output = testing::internal::GetCapturedStdout() };
 }
 
 TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
