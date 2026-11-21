@@ -748,15 +748,22 @@ public:
 
     [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
 
-    // A request refill found the disk write budget spent. Refill again
-    // when finished disk writes free enough of it. Budget freed any other
-    // way, such as by a disconnect, waits for the next peer manager pulse.
+    // A request refill found the disk write budget spent, or a peer's
+    // share of it. Refill again when finished disk writes free enough of
+    // it. Budget freed any other way, such as by a disconnect, waits for
+    // the next peer manager pulse.
     void defer_requests() noexcept
     {
         requests_deferred_ = true;
     }
 
     void update_active_request_count(size_t previous, size_t current) noexcept;
+
+    // Blocks requested from peers and webseeds and not yet received, across all torrents.
+    [[nodiscard]] constexpr auto active_request_count() const noexcept
+    {
+        return active_request_count_;
+    }
 
     // announce ip
 

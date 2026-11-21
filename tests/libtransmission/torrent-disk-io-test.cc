@@ -184,6 +184,67 @@ public:
     }
 };
 
+using tr::Values::Speed;
+
+// A peer with every piece, so tr_peerMgrGetNextRequests() can offer it any block,
+// that delivers at `rate` and has `in_flight` blocks requested.
+class SeedRequestPeer final : public tr_peer
+{
+public:
+    explicit SeedRequestPeer(tr_torrent const& tor, Speed const rate = {}, size_t const in_flight = 0U)
+        : tr_peer{ tor }
+        , has_{ tor.piece_count() }
+        , rate_{ rate }
+        , in_flight_{ in_flight }
+    {
+        has_.set_has_all();
+    }
+
+    [[nodiscard]] Speed get_piece_speed(uint64_t /*now*/, tr_direction const direction) const override
+    {
+        return direction == tr_direction::PeerToClient ? rate_ : Speed{};
+    }
+
+    [[nodiscard]] std::string display_name() const override
+    {
+        return {};
+    }
+
+    [[nodiscard]] tr_bitfield const& has() const noexcept override
+    {
+        return has_;
+    }
+
+    [[nodiscard]] size_t active_req_count(tr_direction const direction) const noexcept override
+    {
+        return direction == tr_direction::ClientToPeer ? in_flight_ : 0U;
+    }
+
+    void request_blocks(tr_block_span_t const* /*spans*/, size_t /*n_spans*/) override
+    {
+    }
+
+    void ban() override
+    {
+    }
+
+private:
+    tr_bitfield has_;
+    Speed rate_;
+    size_t in_flight_;
+};
+
+// The peer that asks for blocks in RequestBudgetTest::blocksOfferedOnceTheBudgetFrees().
+struct Requester {
+    // How fast it delivers now.
+    Speed rate = Speed{ 0U, Speed::Units::Byps };
+    // Blocks it has requested and not yet received.
+    size_t in_flight = 0U;
+    // Whether the count of senders counted it, as one of the peers it was given, and its rate then.
+    bool counted = false;
+    Speed counted_rate = Speed{ 0U, Speed::Units::Byps };
+};
+
 // Helpers for the torrent call sites that read and write through tr::LocalData.
 class TorrentDiskIoTestBase : public SessionTest
 {
@@ -411,6 +472,87 @@ protected:
         return spare;
     }
 
+    [[nodiscard]] tr_torrent* startBudgetTorrent(std::string_view const name, std::string_view const webseed = {})
+    {
+        auto* const tor = makeBudgetTorrent(name, webseed);
+        tr_torrentStart(tor);
+        EXPECT_TRUE(waitFor(
+            [tor]() {
+                auto const lock = tor->unique_lock();
+                return tor->is_running();
+            },
+            MaxWaitMsec));
+        return tor;
+    }
+
+    [[nodiscard]] size_t senderCount()
+    {
+        auto count = size_t{};
+        blockingRunInSessionThread([this, &count] { count = tr::detail::tr_peerMgrCountSenders(peerManager()).count; });
+        return count;
+    }
+
+    // Adds a peer to `tor` and waits until it unchokes us and we want its pieces.
+    [[nodiscard]] ConnectedPeer& addSendingPeer(tr_torrent& tor)
+    {
+        auto& peer = addPeer(tor);
+        EXPECT_TRUE(waitFor(
+            [&peer]() {
+                collectMessages(peer);
+                return peer.interested;
+            },
+            15000));
+        return peer;
+    }
+
+    // Connects a sending peer to each of `peer_torrents` while the whole budget is spoken for, so
+    // they request nothing. Then frees the budget, queues `queued_blocks` writes behind paused
+    // workers, and returns how many blocks a `requester` of `tor` is offered. Whether its request
+    // then waits for finished writes ends up in `requests_deferred_`.
+    [[nodiscard]] size_t blocksOfferedOnceTheBudgetFrees(
+        tr_torrent* const tor,
+        std::vector<tr_torrent*> const& peer_torrents,
+        Requester const& requester = {},
+        size_t const queued_blocks = 0U)
+    {
+        auto holder = std::unique_ptr<RequestBudgetPeer>{};
+        blockingRunInSessionThread([tor, &holder] {
+            holder = std::make_unique<RequestBudgetPeer>(*tor);
+            holder->set_active_requests({ .begin = 0U, .end = BudgetBlocks });
+        });
+        EXPECT_EQ(0U, spareBlocks());
+        for (auto* const peer_tor : peer_torrents) {
+            std::ignore = addSendingPeer(*peer_tor);
+        }
+        EXPECT_EQ(0U, requestCount());
+
+        // The peer manager's pulse would hand the spare blocks to the peers above, so it is stopped.
+        session_->local_data.set_workers_paused(true);
+        auto n_blocks = size_t{};
+        blockingRunInSessionThread([this, tor, &peer_torrents, &requester, queued_blocks, &holder, &n_blocks] {
+            tr::detail::tr_peerMgrStopBandwidthTimer(peerManager());
+            holder.reset();
+            for (auto block = tr_block_index_t{}; block < queued_blocks; ++block) {
+                tor->save_block(block, zeroBlock(tor, block));
+            }
+            EXPECT_EQ(BudgetBlocks - queued_blocks, session_->spare_request_blocks());
+            auto const senders = tr::detail::tr_peerMgrCountSenders(peerManager());
+            EXPECT_EQ(peer_torrents.size(), senders.count);
+            // The peers above found the budget full, which left a refill waiting for writes.
+            clearDeferredRequests();
+            auto peer = SeedRequestPeer{ *tor, requester.rate, requester.in_flight };
+            if (requester.counted) {
+                peer.sender_count_id = senders.id;
+                peer.sender_rate_byps = requester.counted_rate.base_quantity();
+            }
+            for (auto const& span : tr_peerMgrGetNextRequests(tor, &peer, BudgetBlocks)) {
+                n_blocks += span.end - span.begin;
+            }
+            requests_deferred_ = requestsDeferred();
+        });
+        return n_blocks;
+    }
+
     static void receiveBlock(ConnectedPeer const& peer, Request const& request)
     {
         auto message = std::vector<uint8_t>{};
@@ -424,6 +566,7 @@ protected:
 
     std::vector<std::unique_ptr<ConnectedPeer>> peers_;
     std::unique_ptr<tr_webseed> webseed_;
+    bool requests_deferred_ = false;
 };
 
 class WebseedRequestBudgetTest
@@ -1208,6 +1351,150 @@ TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
     auto const lock = tor->unique_lock();
     EXPECT_FALSE(tor->has_block_or_pending(*unrequested));
     EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
+}
+
+TEST_F(RequestBudgetTest, aPeerSendsToUsUntilItChokesUsOrLeaves)
+{
+    auto* const tor = startBudgetTorrent("senders.bin");
+    auto const& choking = addSendingPeer(*tor);
+    std::ignore = addSendingPeer(*tor);
+    EXPECT_EQ(2U, senderCount());
+
+    receive(choking, { 0U, 0U, 0U, 1U, 0U });
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 1U; }, MaxWaitMsec));
+
+    peers_.pop_back();
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 0U; }, MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, peersOfATorrentThatCannotDownloadDoNotSendToUs)
+{
+    auto* const tor = startBudgetTorrent("senders-limited.bin");
+    std::ignore = addSendingPeer(*tor);
+    EXPECT_EQ(1U, senderCount());
+
+    blockingRunInSessionThread([tor] {
+        tr_torrentSetSpeedLimit_KBps(tor, tr_direction::PeerToClient, 0U);
+        tr_torrentUseSpeedLimit(tor, tr_direction::PeerToClient, true);
+    });
+    EXPECT_EQ(0U, senderCount());
+}
+
+TEST_F(RequestBudgetTest, aWebseedWithBlocksRequestedSendsToUs)
+{
+    auto release_response = std::promise<void>{};
+    auto const response_allowed = release_response.get_future().share();
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([response_allowed](evhttp_request* const request) {
+        EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
+        LoopbackServer::reply(request, 503, "Service Unavailable", {});
+    });
+
+    auto* const tor = startBudgetTorrent("senders-webseed.bin", server->url());
+    EXPECT_TRUE(waitFor([this]() { return senderCount() == 1U; }, MaxWaitMsec));
+    blockingRunInSessionThread([tor] { tr_torrentStop(tor); });
+    release_response.set_value();
+}
+
+TEST_F(RequestBudgetTest, aPeerGetsNoMoreThanItsShareOfTheBudget)
+{
+    auto* const tor = startBudgetTorrent("share.bin");
+
+    // Three peers send and none has a rate yet. The requester is about to send too, so a share
+    // is a quarter of the budget, though all of it is spare.
+    EXPECT_EQ(BudgetBlocks / 4U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }));
+}
+
+TEST_F(RequestBudgetTest, aPeerCutShortByItsShareRequestsMoreAsWritesFinish)
+{
+    auto* const tor = startBudgetTorrent("share-deferred.bin");
+
+    // Most of the budget is spare, but writes that finish grow the share, so they refill.
+    EXPECT_EQ(BudgetBlocks / 4U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }));
+    EXPECT_TRUE(requests_deferred_);
+}
+
+TEST_F(RequestBudgetTest, aCountedPeerSharesWithTheOthersCounted)
+{
+    auto* const tor = startBudgetTorrent("share-counted.bin");
+
+    // The requester is one of the three peers counted, so a share is a third of the budget.
+    EXPECT_EQ(BudgetBlocks / 3U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }, { .counted = true }));
+}
+
+TEST_F(RequestBudgetTest, aPeerThatSpeedsUpKeepsTheShareOfTheRateItWasCountedAt)
+{
+    auto* const tor = startBudgetTorrent("share-ramp.bin");
+
+    // The requester had no rate when the three peers were counted. Weighed against that count's
+    // total, its newer rate would earn it the whole budget.
+    auto const requester = Requester{ .rate = Speed{ 10U, Speed::Units::MByps }, .counted = true };
+    EXPECT_EQ(BudgetBlocks / 3U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }, requester));
+}
+
+TEST_F(RequestBudgetTest, blocksInFlightCountAgainstTheShare)
+{
+    auto* const tor = startBudgetTorrent("share-in-flight.bin");
+
+    auto constexpr InFlight = BudgetBlocks / 16U;
+    EXPECT_EQ(
+        (BudgetBlocks / 4U) - InFlight,
+        blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }, { .in_flight = InFlight }));
+}
+
+TEST_F(RequestBudgetTest, aPeerThatDeliversGetsTheShareItsRateEarns)
+{
+    auto* const tor = startBudgetTorrent("share-rate.bin");
+
+    // The three peers send nothing yet, so the requester delivers all the data: its share is the
+    // whole budget, not a quarter of it.
+    auto const requester = Requester{ .rate = Speed{ 10U, Speed::Units::MByps } };
+    EXPECT_EQ(BudgetBlocks, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }, requester));
+
+    // It got all it asked for, so there is nothing to refill as writes finish.
+    EXPECT_FALSE(requests_deferred_);
+}
+
+TEST_F(RequestBudgetTest, theBudgetIsSharedAcrossTorrents)
+{
+    auto* const tor = startBudgetTorrent("share-a.bin");
+    auto* const other = startBudgetTorrent("share-b.bin");
+
+    // The budget is the session's, so the peer sending for the other torrent counts too.
+    EXPECT_EQ(BudgetBlocks / 4U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, other }));
+}
+
+TEST_F(RequestBudgetTest, queuedWritesAreLeftOutOfTheShares)
+{
+    auto* const tor = startBudgetTorrent("share-queued.bin");
+
+    // A quarter of the budget waits to be written, so the requester and the three peers share
+    // the rest.
+    auto constexpr Queued = BudgetBlocks / 4U;
+    EXPECT_EQ((BudgetBlocks - Queued) / 4U, blocksOfferedOnceTheBudgetFrees(tor, { tor, tor, tor }, {}, Queued));
+}
+
+TEST(RequestShareTest, aSenderGetsItsPartOfTheTotalRate)
+{
+    EXPECT_EQ(60U, tr_peerMgrRequestShareBlocks(120U, { .count = 3U, .rate_byps = 600U }, 300U));
+}
+
+TEST(RequestShareTest, aSlowSenderGetsHalfAnEqualPart)
+{
+    EXPECT_EQ(20U, tr_peerMgrRequestShareBlocks(120U, { .count = 3U, .rate_byps = 600U }, 10U));
+}
+
+TEST(RequestShareTest, sendersWithoutARateShareEqually)
+{
+    EXPECT_EQ(40U, tr_peerMgrRequestShareBlocks(120U, { .count = 3U }, 0U));
+}
+
+TEST(RequestShareTest, aSenderGetsAtLeastOneBlock)
+{
+    EXPECT_EQ(1U, tr_peerMgrRequestShareBlocks(2U, { .count = 3U }, 0U));
 }
 
 TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
