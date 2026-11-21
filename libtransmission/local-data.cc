@@ -11,6 +11,8 @@
 #include <condition_variable>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
+#include <cstdio> // stderr
+#include <cstdlib> // std::abort
 #include <deque>
 #include <functional>
 #include <iterator> // std::prev
@@ -689,10 +691,12 @@ public:
             if (threadless_) {
                 // No thread will finish anything, so do the work here.
                 if (!step(detail::DiskThread::Any)) {
-                    // nothing left to run or deliver: an op was lost
+                    // Nothing is left to run or deliver, so an op was lost.
+                    // Only tests get here. Fail them in every build type:
+                    // on real threads, the same bug hangs.
                     log_busy_gates();
-                    TR_ASSERT(false);
-                    return;
+                    fmt::print(stderr, "Lost a disk IO op: the gates are busy, and no work is left to run or deliver\n");
+                    std::abort();
                 }
                 continue;
             }
