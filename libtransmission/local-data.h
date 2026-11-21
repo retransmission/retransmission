@@ -35,49 +35,12 @@ class tr_torrents;
 namespace tr
 {
 
-class LocalData;
 struct StorageDescriptor;
 
 namespace detail
 {
-
-// For tests. Clients call LocalData::start_workers().
-//
-// Selects the threaded backend without starting its threads. The work
-// that `worker_count` workers and the two admin threads would do waits
-// for the session thread, which does it a step at a time between its
-// other work: never inside the call that enqueued an op, and never
-// inside a callback. A step is one thread's next move, and a random
-// number generator seeded with `seed` picks the thread from those with
-// work waiting. A seed replays its schedule only if the caller's own
-// events are deterministic: sockets and timers can change which work is
-// waiting at each pick.
-// The gate, the queues, and the delivery of callbacks are the ones the
-// threads use.
-//
-// `marshal` and `provider` are a LocalData::Marshal and a
-// LocalData::DescriptorProvider.
-void start_threadless(
-    LocalData& local_data,
-    size_t worker_count,
-    uint32_t seed,
-    tr_open_files& open_files,
-    std::function<void(std::function<void()>)> marshal,
-    std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider);
-
-enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
-
-// Takes one step now, on the calling thread, paused or not. A worker
-// takes its next hash, run of reads, or run of writes, or does the one
-// it took earlier. A lane does its next job. False if no thread of
-// `which` has anything to do.
-bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
-
-// Does now what the backend left for the session thread to do later:
-// delivers the callbacks of the ops that have finished, and hands the
-// reads that waited for that to the workers.
-void deliver(LocalData& local_data);
-
+// Lets the test hooks declared after LocalData reach its backend.
+struct LocalDataTestAccess;
 } // namespace detail
 
 /**
@@ -394,15 +357,7 @@ public:
     }
 
 private:
-    friend void detail::start_threadless(
-        LocalData& local_data,
-        size_t worker_count,
-        uint32_t seed,
-        tr_open_files& open_files,
-        std::function<void(std::function<void()>)> marshal,
-        std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider);
-    friend bool detail::step(LocalData& local_data, detail::DiskThread which);
-    friend void detail::deliver(LocalData& local_data);
+    friend struct detail::LocalDataTestAccess;
 
     // Run an admin op as a barrier on the torrent, or with `file`, on
     // that file alone. See the definition.
@@ -422,5 +377,44 @@ private:
     std::shared_ptr<Threaded> threaded_;
     std::optional<uint64_t> write_budget_;
 };
+
+namespace detail
+{
+
+// For tests. Clients call LocalData::start_workers().
+//
+// Selects the threaded backend without starting its threads. The work
+// that `worker_count` workers and the two admin threads would do waits
+// for the session thread, which does it a step at a time between its
+// other work: never inside the call that enqueued an op, and never
+// inside a callback. A step is one thread's next move, and a random
+// number generator seeded with `seed` picks the thread from those with
+// work waiting. A seed replays its schedule only if the caller's own
+// events are deterministic: sockets and timers can change which work is
+// waiting at each pick.
+// The gate, the queues, and the delivery of callbacks are the ones the
+// threads use.
+void start_threadless(
+    LocalData& local_data,
+    size_t worker_count,
+    uint32_t seed,
+    tr_open_files& open_files,
+    LocalData::Marshal marshal,
+    LocalData::DescriptorProvider provider);
+
+enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
+
+// Takes one step now, on the calling thread, paused or not. A worker
+// takes its next hash, run of reads, or run of writes, or does the one
+// it took earlier. A lane does its next job. False if no thread of
+// `which` has anything to do.
+bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
+
+// Does now what the backend left for the session thread to do later:
+// delivers the callbacks of the ops that have finished, and hands the
+// reads that waited for that to the workers.
+void deliver(LocalData& local_data);
+
+} // namespace detail
 
 } // namespace tr

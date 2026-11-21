@@ -2217,35 +2217,53 @@ void LocalData::set_workers_paused(bool const paused)
     }
 }
 
+struct detail::LocalDataTestAccess {
+    static void start_threadless(
+        LocalData& local_data,
+        size_t const worker_count,
+        uint32_t const seed,
+        tr_open_files& open_files,
+        LocalData::Marshal marshal,
+        LocalData::DescriptorProvider provider)
+    {
+        TR_ASSERT(!local_data.threaded_);
+        TR_ASSERT(worker_count != 0U);
+
+        local_data.threaded_ = std::make_shared<LocalData::Threaded>(
+            open_files,
+            std::move(provider),
+            std::move(marshal),
+            worker_count,
+            local_data.retained_bytes(),
+            seed);
+    }
+
+    [[nodiscard]] static LocalData::Threaded* threaded(LocalData& local_data) noexcept
+    {
+        return local_data.threaded_.get();
+    }
+};
+
 void detail::start_threadless(
     LocalData& local_data,
     size_t const worker_count,
     uint32_t const seed,
     tr_open_files& open_files,
-    std::function<void(std::function<void()>)> marshal,
-    std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)> provider)
+    LocalData::Marshal marshal,
+    LocalData::DescriptorProvider provider)
 {
-    TR_ASSERT(!local_data.threaded_);
-    TR_ASSERT(worker_count != 0U);
-
-    local_data.threaded_ = std::make_shared<LocalData::Threaded>(
-        open_files,
-        std::move(provider),
-        std::move(marshal),
-        worker_count,
-        local_data.retained_bytes(),
-        seed);
+    LocalDataTestAccess::start_threadless(local_data, worker_count, seed, open_files, std::move(marshal), std::move(provider));
 }
 
 bool detail::step(LocalData& local_data, DiskThread const which)
 {
-    auto const& threaded = local_data.threaded_;
-    return threaded && threaded->step(which);
+    auto* const threaded = LocalDataTestAccess::threaded(local_data);
+    return threaded != nullptr && threaded->step(which);
 }
 
 void detail::deliver(LocalData& local_data)
 {
-    if (auto const& threaded = local_data.threaded_; threaded) {
+    if (auto* const threaded = LocalDataTestAccess::threaded(local_data); threaded != nullptr) {
         threaded->deliver();
     }
 }
