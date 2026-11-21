@@ -38,7 +38,8 @@ using namespace std::literals;
 namespace
 {
 
-using path_func_t = std::function<void(std::string_view path)>;
+// `folder` is whether `path` was a folder when the walk reached it.
+using path_func_t = std::function<void(std::string_view path, bool folder)>;
 using directory_filter_t = std::function<bool(std::string_view directory)>;
 
 [[nodiscard]] bool is_folder(std::string_view const path)
@@ -47,31 +48,26 @@ using directory_filter_t = std::function<bool(std::string_view directory)>;
     return info && info->isFolder();
 }
 
-[[nodiscard]] bool is_empty_folder(std::string_view const path)
-{
-    return is_folder(path) && std::empty(tr_sys_dir_get_files(path, tr_basename_accept_all));
-}
-
 void depth_first_walk(
     std::string_view const path,
     path_func_t const& func,
     std::optional<int> max_depth = {},
     directory_filter_t const& skip_directory = {})
 {
-    auto const can_descend = !max_depth || *max_depth > 0;
-    if ((can_descend || skip_directory) && is_folder(path)) {
+    auto const folder = is_folder(path);
+    if (folder) {
         // A skipped directory is neither traversed nor passed to func.
         if (skip_directory && skip_directory(path)) {
             return;
         }
-        if (can_descend) {
+        if (!max_depth || *max_depth > 0) {
             for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
                 depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth, skip_directory);
             }
         }
     }
 
-    func(path);
+    func(path, folder);
 }
 
 [[nodiscard]] bool is_junk_file(std::string_view filename)
@@ -99,9 +95,9 @@ void depth_first_walk(
     return std::ranges::find(Files, base) != std::ranges::end(Files);
 }
 
-void remove_junk(std::string_view const filename)
+void remove_junk(std::string_view const filename, bool const folder)
 {
-    if (is_empty_folder(filename) || is_junk_file(filename)) {
+    if ((folder && std::empty(tr_sys_dir_get_files(filename, tr_basename_accept_all))) || is_junk_file(filename)) {
         if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
             tr_logAddWarn(
                 fmt::format(
@@ -471,7 +467,7 @@ void tr_torrent_files::remove(
     auto top_files = std::set<std::string>{ std::string{ path } };
     depth_first_walk(
         tmpdir,
-        [&parent, &tmpdir, &top_files](std::string_view const filename) {
+        [&parent, &tmpdir, &top_files](std::string_view const filename, bool /*folder*/) {
             if (tmpdir != filename) {
                 top_files.emplace(tr_pathbuf{ parent, '/', tr_sys_path_basename(filename) });
             }
@@ -479,19 +475,20 @@ void tr_torrent_files::remove(
         1);
 
     // The tree may hold other files too, so the count stops at the torrent's.
+    // A folder that `func` removes whole isn't counted until the walks end.
     auto n_removed = size_t{};
     if (on_progress) {
         on_progress(n_removed, n_found);
     }
-    auto const func_wrapper = [&error, &func, &tmpdir, &on_progress, &n_removed, n_found](std::string_view const filename) {
-        if (tmpdir != filename) {
-            auto const counts = on_progress && n_removed < n_found && !is_folder(filename);
-            func(filename, error);
-            if (counts) {
-                on_progress(++n_removed, n_found);
+    auto const func_wrapper =
+        [&error, &func, &tmpdir, &on_progress, &n_removed, n_found](std::string_view const filename, bool const folder) {
+            if (tmpdir != filename) {
+                func(filename, error);
+                if (on_progress && !folder && n_removed < n_found) {
+                    on_progress(++n_removed, n_found);
+                }
             }
-        }
-    };
+        };
 
     // Remove the tmpdir.
     // Since `func` might send files to a recycle bin, try to preserve
@@ -500,7 +497,11 @@ void tr_torrent_files::remove(
     // directories -- so plan B is to remove everything bottom-up.
     depth_first_walk(tmpdir, func_wrapper, 1);
     depth_first_walk(tmpdir, func_wrapper);
-    tr_sys_path_remove(tmpdir);
+
+    // The tmpdir comes out only once every file in it is gone.
+    if (tr_sys_path_remove(tmpdir) && on_progress && n_removed < n_found) {
+        on_progress(n_found, n_found);
+    }
 
     // OK we've removed the local data.
     // What's left are empty folders, junk, and user-generated files.
