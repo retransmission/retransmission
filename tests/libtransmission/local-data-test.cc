@@ -1733,13 +1733,6 @@ protected:
         }
         return n_steps;
     }
-
-    // Do all the work that is waiting, then deliver its callbacks.
-    static void runAll(tr::LocalData& local_data)
-    {
-        stepAll(local_data);
-        tr::detail::deliver(local_data);
-    }
 };
 
 } // namespace
@@ -2126,7 +2119,7 @@ TEST_F(LocalDataThreadlessTest, writesThatArriveDuringASweepWaitForTheNext)
     write_block(4U);
 
     // ...and is still written after the rest of the sweep
-    runAll(*local_data);
+    tr::test::runThreadlessDiskIo(*local_data);
     EXPECT_EQ((std::vector<size_t>{ 0U, 2U, 6U, 4U }), order);
 
     local_data->shutdown();
@@ -2171,7 +2164,7 @@ TEST_F(LocalDataThreadlessTest, readsThatArriveDuringASweepWaitForTheNext)
     tr::detail::deliver(*local_data);
 
     // ...and is still read after the rest of the sweep
-    runAll(*local_data);
+    tr::test::runThreadlessDiskIo(*local_data);
     EXPECT_EQ((std::vector<size_t>{ 0U, 4U, 2U }), order);
 
     local_data->shutdown();

@@ -226,14 +226,10 @@ protected:
         startThreadlessDiskIo(1U, 1U, true);
     }
 
-    // Does the disk work that is waiting, then delivers its completions.
-    // What those enqueue waits for the next call. Session thread only.
+    // runThreadlessDiskIo() on the session's disk IO. Session thread only.
     void pump() const
     {
-        auto& local_data = session_->local_data;
-        while (tr::detail::step(local_data)) {
-        }
-        tr::detail::deliver(local_data);
+        runThreadlessDiskIo(session_->local_data);
     }
 
     // Two 24 KiB pieces of zeroes. The middle block ends piece 0 and

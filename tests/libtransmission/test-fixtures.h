@@ -123,6 +123,16 @@ inline bool waitFor(
     return false;
 }
 
+// On a tr::LocalData started threadless, does the disk work that is
+// waiting, then delivers its callbacks. What those enqueue waits for the
+// next call.
+inline void runThreadlessDiskIo(tr::LocalData& local_data)
+{
+    while (tr::detail::step(local_data)) {
+    }
+    tr::detail::deliver(local_data);
+}
+
 class TransmissionTest : public ::testing::Test
 {
 protected:
