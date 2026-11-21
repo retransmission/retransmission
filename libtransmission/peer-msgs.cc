@@ -443,10 +443,7 @@ public:
 
     void set_choke(bool peer_is_choked) override
     {
-        auto const now = tr_time();
-        auto const fibrillation_time = now - MinChokePeriodSec;
-
-        if (choke_changed_at_ > fibrillation_time) {
+        if (is_choke_locked()) {
             logtrace(this, fmt::format("Not changing choke to {} to avoid fibrillation", peer_is_choked));
         } else if (this->peer_is_choked() != peer_is_choked) {
             set_peer_choked(peer_is_choked);
@@ -459,9 +456,14 @@ public:
                 reject_all_requests();
             }
 
-            choke_changed_at_ = now;
+            choke_changed_at_ = tr_time();
             update_active(tr_direction::ClientToPeer);
         }
+    }
+
+    [[nodiscard]] bool is_choke_locked() const override
+    {
+        return choke_changed_at_ > tr_time() - MinChokePeriodSec;
     }
 
     void pulse() override;
@@ -479,9 +481,6 @@ public:
     void on_piece_completed(tr_piece_index_t piece) override
     {
         protocol_send_have(piece);
-
-        // since we have more pieces now, we might not be interested in this peer
-        update_interest();
     }
 
     void set_interested(bool interested) override
@@ -575,17 +574,6 @@ public:
     }
 
 private:
-    // ---
-
-    void update_interest()
-    {
-        // TODO(ckerr) -- might need to poke the mgr on startup
-
-        // additional note (tearfur)
-        // by "poke the mgr", Charles probably meant calling isPeerInteresting(),
-        // then pass the result to set_interesting()
-    }
-
     // ---
 
     [[nodiscard]] bool is_valid_request(peer_request const& req) const;
@@ -1593,8 +1581,11 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     case BtPeerMsgs::Interested:
         logtrace(this, "got Interested");
-        set_peer_interested(true);
-        update_active(tr_direction::ClientToPeer);
+        if (!peer_is_interested()) {
+            set_peer_interested(true);
+            update_active(tr_direction::ClientToPeer);
+            publish(tr_peer_event::GotInterested());
+        }
         break;
 
     case BtPeerMsgs::NotInterested:
