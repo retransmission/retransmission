@@ -109,35 +109,35 @@ struct RemoteConfig {
 
 // --- Display Utilities
 
-[[nodiscard]] std::string eta_to_string(int64_t eta)
+[[nodiscard]] std::string eta_to_string(time_t const eta)
 {
     if (eta < 0) {
         return "Unknown"s;
     }
 
-    if (eta < 60) {
-        return fmt::format("{:d} sec", eta);
+    auto const secs = std::chrono::seconds{ eta };
+    if (secs < std::chrono::minutes{ 1 }) {
+        return fmt::format("{:%Q} sec", secs);
     }
 
-    if (eta < (60 * 60)) {
-        return fmt::format("{:d} min", eta / 60);
+    if (secs < std::chrono::hours{ 1 }) {
+        return fmt::format("{:%Q} min", std::chrono::duration_cast<std::chrono::minutes>(secs));
     }
 
-    if (eta < (60 * 60 * 24)) {
-        return fmt::format("{:d} hrs", eta / (60 * 60));
+    if (secs < std::chrono::days{ 1 }) {
+        return fmt::format("{:%Q} hrs", std::chrono::duration_cast<std::chrono::hours>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 30)) {
-        return fmt::format("{:d} days", eta / (60 * 60 * 24));
+    if (secs < std::chrono::months{ 1 }) {
+        return fmt::format("{:%Q} days", std::chrono::duration_cast<std::chrono::days>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 30 * 12)) {
-        return fmt::format("{:d} months", eta / (60 * 60 * 24 * 30));
+    if (secs < std::chrono::years{ 1 }) {
+        return fmt::format("{:%Q} months", std::chrono::duration_cast<std::chrono::months>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 365 * 1000LL)) // up to 999 years
-    {
-        return fmt::format("{:d} years", eta / (60 * 60 * 24 * 365));
+    if (secs < std::chrono::years{ 1000 }) {
+        return fmt::format("{:%Q} years", std::chrono::duration_cast<std::chrono::years>(secs));
     }
 
     return "∞"s;
@@ -149,11 +149,11 @@ struct RemoteConfig {
         seconds = 0;
     }
 
-    auto const total_seconds = seconds;
-    auto const days = seconds / 86400;
-    auto const hours = (seconds % 86400) / 3600;
-    auto const minutes = (seconds % 3600) / 60;
-    seconds = (seconds % 3600) % 60;
+    auto const total_seconds = std::chrono::seconds{ seconds };
+    auto const days = total_seconds / std::chrono::days{ 1 };
+    auto const hours = (total_seconds % std::chrono::days{ 1 }) / std::chrono::hours{ 1 };
+    auto const minutes = (total_seconds % std::chrono::hours{ 1 }) / std::chrono::minutes{ 1 };
+    seconds = (total_seconds % std::chrono::minutes{ 1 }).count();
 
     auto tmpstr = std::string{};
 
@@ -172,7 +172,10 @@ struct RemoteConfig {
         tmpstr = sstr;
     }
 
-    auto const totstr = fmt::format("{:d} {:s}", total_seconds, tr_ngettext("second", "seconds", total_seconds));
+    auto const totstr = fmt::format(
+        "{:d} {:s}",
+        total_seconds.count(),
+        tr_ngettext("second", "seconds", total_seconds.count()));
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
@@ -1510,7 +1513,7 @@ void print_torrent_list(tr_variant::Map const& result)
     int64_t total_down = 0;
     for (auto const& t : tptrs) {
         auto o_tor_id = t->value_if<int64_t>(TR_KEY_id);
-        auto o_eta = t->value_if<int64_t>(TR_KEY_eta);
+        auto o_eta = t->value_if<time_t>(TR_KEY_eta);
         auto o_status = t->value_if<int64_t>(TR_KEY_status);
         auto o_up = t->value_if<int64_t>(TR_KEY_rate_upload);
         auto o_down = t->value_if<int64_t>(TR_KEY_rate_download);
