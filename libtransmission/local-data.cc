@@ -753,9 +753,8 @@ public:
             auto const lock = std::scoped_lock{ work_mutex_ };
             paused_ = paused;
         }
-        work_cv_.notify_all();
-        admin_cv_.notify_all();
-        schedule_pump();
+        wake_all_workers();
+        wake_lanes();
     }
 
     void set_retained_bytes(size_t const max_bytes)
@@ -1292,8 +1291,7 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_reads_.merge(staged_reads_);
         }
-        work_cv_.notify_all();
-        schedule_pump();
+        wake_all_workers();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -1314,8 +1312,7 @@ private:
             pending_tests_.push_back(
                 PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
         }
-        work_cv_.notify_one();
-        schedule_pump();
+        wake_one_worker();
     }
 
     void admit_write(tr_torrent_id_t const id, Gate& gate, WriteOp op)
@@ -1349,8 +1346,7 @@ private:
                     .on_write = std::move(op.on_write),
                 });
         }
-        work_cv_.notify_one();
-        schedule_pump();
+        wake_one_worker();
     }
 
     // The completion closures own move-only state, so they can't live
@@ -1503,8 +1499,7 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             lane.emplace_back(std::move(job));
         }
-        admin_cv_.notify_all();
-        schedule_pump();
+        wake_lanes();
     }
 
     void run_next_job(AdminLane& lane)
@@ -1517,6 +1512,27 @@ private:
         }
 
         job();
+    }
+
+    // Wake the threads for the work just queued. With no threads, have
+    // the session thread do it later instead. Every enqueue goes through
+    // one of these, so that neither kind of backend misses the work.
+    void wake_one_worker()
+    {
+        work_cv_.notify_one();
+        schedule_pump();
+    }
+
+    void wake_all_workers()
+    {
+        work_cv_.notify_all();
+        schedule_pump();
+    }
+
+    void wake_lanes()
+    {
+        admin_cv_.notify_all();
+        schedule_pump();
     }
 
     // Work is waiting for a thread. With no threads, the session thread
