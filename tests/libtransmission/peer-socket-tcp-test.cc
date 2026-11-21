@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <memory>
 #include <string_view>
+#include <tuple>
 #include <utility>
 
 #ifdef _WIN32
@@ -82,6 +83,15 @@ protected:
             },
             5000);
     }
+
+    void sendFromRemote(std::string_view const msg) const
+    {
+        ASSERT_EQ(msg.size(), send(remote_sock_, msg.data(), TR_IF_WIN32(static_cast<int>(msg.size()), msg.size()), 0));
+    }
+
+    // Written by read callbacks. Members, not test locals, so they outlive peer_socket_.
+    tr_peer_socket::PeerBuffer inbuf_;
+    size_t n_read_callbacks_ = 0;
 
     tr_socket_t endpoint_sock_ = TR_BAD_SOCKET;
     tr_socket_t remote_sock_ = TR_BAD_SOCKET;
@@ -212,6 +222,103 @@ TEST_F(PeerSocketTcpTest, completesWithoutPayloadPollingAndAcceptedSocketIsReady
     EXPECT_EQ(Incoming, inbuf.to_string_view());
 }
 
+TEST_F(PeerSocketTcpTest, readPollingStaysOnUntilDisabled)
+{
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+
+    // The read callback only reads; reads stay enabled until set_read_enabled(false).
+    blockingRunInSessionThread([this] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_socket_->set_read_cb([this] {
+            ++n_read_callbacks_;
+            auto error = tr_error{};
+            std::ignore = peer_socket_->try_read(inbuf_, 100, &error);
+        });
+        peer_socket_->set_read_enabled(true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote("first"sv));
+    ASSERT_TRUE(waitForInSessionThread([this] { return inbuf_.to_string_view() == "first"sv; }, 5000));
+
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote("second"sv));
+    ASSERT_TRUE(waitForInSessionThread([this] { return inbuf_.to_string_view() == "firstsecond"sv; }, 5000));
+
+    auto n_callbacks_when_disabled = size_t{};
+    blockingRunInSessionThread([this, &n_callbacks_when_disabled] {
+        EXPECT_TRUE(peer_socket_->is_read_enabled());
+        peer_socket_->set_read_enabled(false);
+        n_callbacks_when_disabled = n_read_callbacks_;
+    });
+
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote("third"sv));
+    EXPECT_FALSE(waitForInSessionThread(
+        [this, n_callbacks_when_disabled] { return n_read_callbacks_ != n_callbacks_when_disabled; },
+        200));
+    blockingRunInSessionThread([this] { EXPECT_EQ("firstsecond"sv, inbuf_.to_string_view()); });
+
+    // "third" was waiting in the socket all along: re-enabling delivers it.
+    blockingRunInSessionThread([this] { peer_socket_->set_read_enabled(true); });
+    EXPECT_TRUE(waitForInSessionThread([this] { return inbuf_.to_string_view() == "firstsecondthird"sv; }, 5000));
+}
+
+TEST_F(PeerSocketTcpTest, readPollingStopsWithoutReadCallback)
+{
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+    blockingRunInSessionThread([this] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_socket_->set_read_enabled(true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote("unread"sv));
+    EXPECT_TRUE(waitForInSessionThread([this] { return !peer_socket_->is_read_enabled(); }, 5000));
+}
+
+TEST_F(PeerSocketTcpTest, peerIoStopsReadingWithoutDownloadQuota)
+{
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+    blockingRunInSessionThread([this] {
+        quota_.set_limited(tr_direction::Down, true);
+        quota_.set_desired_speed(tr_direction::Down, {});
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_io_ = tr_peerIo::new_incoming(session_, &quota_, peer_socket_);
+        ASSERT_TRUE(peer_io_);
+        EXPECT_FALSE(peer_io_->has_bandwidth_left(tr_direction::Down));
+        peer_io_->set_enabled(tr_direction::Down, true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote("unread"sv));
+    EXPECT_TRUE(waitForInSessionThread([this] { return !peer_socket_->is_read_enabled(); }, 5000));
+    blockingRunInSessionThread([this] { EXPECT_EQ(0U, peer_io_->read_buffer_size()); });
+}
+
+TEST_F(PeerSocketTcpTest, peerIoStopsReadingAtEof)
+{
+    ASSERT_EQ(0, listen(endpoint_sock_, 1));
+    blockingRunInSessionThread([this] {
+        peer_socket_ = tr_peer_socket_tcp::create(*session_, endpoint_, false);
+        ASSERT_TRUE(peer_socket_);
+        peer_io_ = tr_peerIo::new_incoming(session_, &quota_, peer_socket_);
+        ASSERT_TRUE(peer_io_);
+        peer_io_->set_callbacks(
+            nullptr,
+            nullptr,
+            [](tr_peerIo*, tr_error const& error, void* context) { *static_cast<tr_error*>(context) = error; },
+            &connect_error_);
+        peer_io_->set_enabled(tr_direction::Down, true);
+    });
+    ASSERT_TRUE(acceptPeer());
+
+    tr_net_close_socket(std::exchange(remote_sock_, TR_BAD_SOCKET));
+    EXPECT_TRUE(waitForInSessionThread([this] { return !peer_socket_->is_read_enabled(); }, 5000));
+    blockingRunInSessionThread([this] { EXPECT_TRUE(connect_error_); });
+}
+
 TEST_F(PeerSocketTcpTest, completesWithExhaustedUploadQuota)
 {
     ASSERT_EQ(0, listen(endpoint_sock_, 1));
@@ -233,9 +340,7 @@ TEST_F(PeerSocketTcpTest, completesWithExhaustedUploadQuota)
         peer_io_->set_enabled(tr_direction::Down, true);
     });
     ASSERT_TRUE(acceptPeer());
-    ASSERT_EQ(
-        Incoming.size(),
-        send(remote_sock_, Incoming.data(), TR_IF_WIN32(static_cast<int>(Incoming.size()), Incoming.size()), 0));
+    ASSERT_NO_FATAL_FAILURE(sendFromRemote(Incoming));
     ASSERT_TRUE(
         waitForInSessionThread([this] { return connect_error_ || peer_io_->read_buffer_size() == Incoming.size(); }, 5000));
     blockingRunInSessionThread([this] {
