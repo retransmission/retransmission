@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #import "TorrentMainView.h"
+#import "NSImageAdditions.h"
 
 @implementation TorrentMainView
 
@@ -67,13 +68,13 @@
     _totalTorrentsField.translatesAutoresizingMaskIntoConstraints = NO;
     [_bottomBar addSubview:_totalTorrentsField];
 
-    _globalActionsButton = [self createButtonWithImage:@"EllipsisTemplate" label:@"Global Actions"];
+    _globalActionsButton = [self createButtonWithImage:@"ellipsis.circle.fill" label:@"Global Actions"];
     [_bottomBar addSubview:_globalActionsButton];
 
-    _speedLimitButton = [self createButtonWithImage:@"TortoiseTemplate" label:@"Speed Limit"];
+    _speedLimitButton = [self createButtonWithImage:@"tortoise.fill" label:@"Speed Limit"];
     [_speedLimitButton setButtonType:NSButtonTypeToggle];
     [_bottomBar addSubview:_speedLimitButton];
-    _clearCompletedButton = [self createButtonWithImage:@"CleanupTemplate" label:@"Clear Completed"];
+    _clearCompletedButton = [self createButtonWithImage:@"xmark.bin.fill" label:@"Clear Completed"];
     [_bottomBar addSubview:_clearCompletedButton];
 }
 
@@ -83,7 +84,7 @@
     [button setButtonType:NSButtonTypeMomentaryChange];
     button.bezelStyle = NSBezelStyleTexturedSquare;
     button.bordered = NO;
-    button.image = [NSImage imageNamed:imageName];
+    button.image = [NSImage re_symbolNamed:imageName];
     button.imagePosition = NSImageOnly;
     button.imageScaling = NSImageScaleProportionallyDown;
     button.accessibilityLabel = label;

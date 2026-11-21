@@ -4,6 +4,7 @@
 
 #import "GroupCell.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 
 // Layout
 // Leading Stack
@@ -72,18 +73,18 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
     }
 
     auto downloadIconView = [[NSImageView alloc] init];
-    downloadIconView.image = [NSImage imageNamed:@"DownArrowGroupTemplate"];
+    downloadIconView.image = [NSImage re_symbolNamed:@"arrowshape.down.fill"];
     downloadIconView.toolTip = NSLocalizedString(@"Download speed", "Torrent table -> group row -> tooltip");
     downloadField.toolTip = downloadIconView.toolTip;
 
     auto uploadIconView = [[NSImageView alloc] init];
-    uploadIconView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
+    uploadIconView.image = [NSImage re_symbolNamed:@"arrowshape.up.fill"];
     uploadIconView.toolTip = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
     uploadField.toolTip = uploadIconView.toolTip;
     uploadIconView.image.accessibilityDescription = NSLocalizedString(@"Up", "Torrent -> status image");
 
     auto ratioIconView = [[NSImageView alloc] init];
-    ratioIconView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];
+    ratioIconView.image = [NSImage re_symbolNamed:@"circle.lefthalf.filled"];
     ratioIconView.toolTip = NSLocalizedString(@"Ratio", "Torrent table -> group row -> tooltip");
     ratioField.toolTip = ratioIconView.toolTip;
     ratioIconView.image.accessibilityDescription = NSLocalizedString(@"Ratio", "Torrent -> status image");

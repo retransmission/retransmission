@@ -52,26 +52,52 @@ static CGFloat const kBorderWidth = 1.25;
 
 @end
 
-@implementation NSImage (Resources)
-+ (NSImage*)paddedSymbol:(NSString*)name pointSize:(CGFloat)pointSize
+@implementation NSImage (Symbols)
+
++ (nullable instancetype)re_symbolNamed:(NSString*)name
 {
-    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:pointSize weight:NSFontWeightRegular];
-    NSImage* image = [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+    NSImage* image = [NSImage imageWithSystemSymbolName:name accessibilityDescription:nil];
+    [image setTemplate:YES];
     return image;
 }
 
++ (nullable instancetype)re_symbolNamed:(NSString*)name pointSize:(CGFloat)pointSize weight:(NSFontWeight)weight
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:pointSize weight:weight];
+    NSImage* image = [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+    [image setTemplate:YES];
+    return image;
+}
+
++ (nullable instancetype)re_symbolNamed:(NSString*)name color:(NSColor*)color
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithHierarchicalColor:color];
+    return [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+}
+
++ (nullable instancetype)re_multicolorSymbolNamed:(NSString*)name
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationPreferringMulticolor];
+    return [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+}
+
+@end
+
+@implementation NSImage (Resources)
+
 + (NSImage*)highPriority
 {
-    return [self paddedSymbol:@"arrowtriangle.up.fill" pointSize:16];
+    return [self re_symbolNamed:@"arrowtriangle.up.fill" pointSize:16 weight:NSFontWeightRegular];
 }
 
 + (NSImage*)normalPriority
 {
-    return [self paddedSymbol:@"circle.fill" pointSize:13];
+    return [self re_symbolNamed:@"circle.fill" pointSize:13 weight:NSFontWeightRegular];
 }
 
 + (NSImage*)lowPriority
 {
-    return [self paddedSymbol:@"arrowtriangle.down.fill" pointSize:16];
+    return [self re_symbolNamed:@"arrowtriangle.down.fill" pointSize:16 weight:NSFontWeightRegular];
 }
+
 @end

@@ -11,8 +11,19 @@
 
 @end
 
+@interface NSImage (Symbols)
+
++ (instancetype)re_symbolNamed:(NSString*)name;
++ (instancetype)re_symbolNamed:(NSString*)name pointSize:(CGFloat)pointSize weight:(NSFontWeight)weight;
++ (instancetype)re_symbolNamed:(NSString*)name color:(NSColor*)color;
++ (instancetype)re_multicolorSymbolNamed:(NSString*)name;
+
+@end
+
 @interface NSImage (Resources)
+
 + (NSImage*)highPriority;
 + (NSImage*)normalPriority;
 + (NSImage*)lowPriority;
+
 @end

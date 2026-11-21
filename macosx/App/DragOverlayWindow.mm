@@ -5,6 +5,7 @@
 #import "DragOverlayWindow.h"
 #import "DragOverlayView.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 
 #include <libtransmission/torrent-metainfo.h>
 #import "UTTypeAdditions.h"
@@ -114,7 +115,7 @@
 
 - (void)setFile:(NSString*)file
 {
-    [self.contentView setOverlay:[NSImage imageNamed:@"CreateLarge"]
+    [self.contentView setOverlay:[NSImage re_symbolNamed:@"doc.badge.plus"]
                         mainLine:NSLocalizedString(@"Create Torrent File", "Drag overlay -> file")
                          subLine:file];
     [self fadeIn];
@@ -122,7 +123,7 @@
 
 - (void)setURL:(NSString*)url
 {
-    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:NSLocalizedString(@"Open URL", "Drag overlay -> url")
+    [self.contentView setOverlay:[NSImage re_symbolNamed:@"globe"] mainLine:NSLocalizedString(@"Open URL", "Drag overlay -> url")
                          subLine:url];
     [self fadeIn];
 }

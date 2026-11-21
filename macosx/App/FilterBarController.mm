@@ -5,6 +5,7 @@
 #import "FilterBarController.h"
 #import "GroupsController.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 
 FilterType const FilterTypeNone = @"None";
 FilterType const FilterTypeActive = @"Active";
@@ -482,7 +483,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     NSImage* icon;
     NSString* toolTip;
     if (groupIndex == kGroupFilterAllTag) {
-        icon = [NSImage imageNamed:@"PinTemplate"];
+        icon = [NSImage re_symbolNamed:@"pin.fill"];
         toolTip = NSLocalizedString(@"All Groups", "Groups -> Button");
     } else {
         icon = [GroupsController.groups imageForIndex:groupIndex];
