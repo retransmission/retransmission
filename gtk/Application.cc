@@ -25,18 +25,18 @@
 #include "Torrent.h"
 #include "Utils.h"
 
+#include <libtransmission-app/add-data.h>
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/rpc-client.h>
 #include <libtransmission-app/session-poller.h>
+#include <libtransmission-app/session.h>
 #include <libtransmission-app/startup-coordinator.h>
 
 #include <libtransmission/api-compat.h>
 #include <libtransmission/converters.h>
-#include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
-#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
 
@@ -72,6 +72,7 @@
 
 #include <algorithm>
 #include <csignal>
+#include <functional> // std::invoke
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
@@ -198,16 +199,15 @@ private:
     bool on_session_closed();
     void on_app_exit();
 
-    void show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files);
-    void flush_torrent_errors();
-
     bool update_model_once();
     void update_model_soon();
     bool update_model_loop();
 
-    void on_core_busy(bool busy);
-    void on_core_error(Session::ErrorCode code, Glib::ustring const& msg);
-    void on_add_torrent(tr_torrent_builder* builder);
+    // what this launch's flags choose for the adds this instance is handed
+    [[nodiscard]] tr::app::AddOptions handed_add_options() const;
+
+    void on_add_prompt(tr::app::AddData const& add, tr::app::AddOptions const& options);
+    void on_add_report(tr::app::Session::AddReport const& report);
     void on_prefs_changed(tr_quark key);
 
     [[nodiscard]] std::vector<tr_torrent_id_t> get_selected_torrent_ids() const;
@@ -248,11 +248,12 @@ private:
     std::unique_ptr<tr::app::SessionPoller> poller_;
     sigslot::scoped_connection contended_tag_;
     sigslot::scoped_connection closed_tag_;
+    sigslot::scoped_connection add_prompt_tag_;
+    sigslot::scoped_connection add_report_tag_;
+    sigslot::scoped_connection add_fetch_tag_;
 
     std::unique_ptr<MessageLogWindow> msgwin_;
     std::unique_ptr<PrefsDialog> prefs_dialog_;
-    std::vector<std::string> error_list_;
-    std::vector<std::string> duplicates_list_;
     std::map<std::string, std::unique_ptr<DetailsDialog>> details_;
 
     LocalInstance interop_instance_{ *this };
@@ -621,12 +622,25 @@ void Application::Impl::on_activate()
     gtr_action_activate("present-main-window");
 }
 
+tr::app::AddOptions Application::Impl::handed_add_options() const
+{
+    auto options = tr::app::AddOptions{};
+    if (start_paused_) {
+        options.paused = true;
+    }
+
+    return options;
+}
+
 void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& files)
 {
-    bool const do_start = prefs_.get<bool>(TR_KEY_start_added_torrents) && !start_paused_;
-    bool const do_prompt = prefs_.get<bool>(TR_KEY_show_options_window);
+    auto const options = handed_add_options();
 
-    core_->add_files(files, do_start, do_prompt);
+    for (auto const& file : files) {
+        if (!core_->request_add(tr::app::AddData{ gtr_add_key(file) }, tr::app::Session::AddPrompt::FromPrefs, options)) {
+            gtr_warning(fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", file->get_parse_name())));
+        }
+    }
 }
 
 void Application::on_open(std::vector<Glib::RefPtr<Gio::File>> const& files, Glib::ustring const& hint)
@@ -656,19 +670,18 @@ bool Application::configDirIsContended() const noexcept
     return impl_->configDirIsContended();
 }
 
-void Application::Impl::on_core_busy(bool busy)
-{
-    wind_->set_busy(busy);
-}
-
 void Application::Impl::app_setup()
 {
     gtr_actions_set_core(core_);
 
     /* set up core handlers */
-    core_->signal_busy().connect(sigc::mem_fun(*this, &Impl::on_core_busy));
-    core_->signal_add_error().connect(sigc::mem_fun(*this, &Impl::on_core_error));
-    core_->signal_add_prompt().connect(sigc::mem_fun(*this, &Impl::on_add_torrent));
+    add_prompt_tag_ = core_->torrent_add_prompt.connect_scoped(&Impl::on_add_prompt, this);
+    add_report_tag_ = core_->torrent_add_report.connect_scoped(&Impl::on_add_report, this);
+    add_fetch_tag_ = core_->add_fetch_changed.connect_scoped([this] {
+        if (wind_ != nullptr) {
+            wind_->set_busy(core_->add_fetch_pending());
+        }
+    });
     core_->signal_prefs_changed().connect(sigc::mem_fun(*this, &Impl::on_prefs_changed));
 
     poller_->start();
@@ -786,9 +799,7 @@ bool Application::Impl::on_drag_data_received(Glib::ValueBase const& value, doub
     if (G_VALUE_HOLDS(value.gobj(), StringValue::value_type())) {
         StringValue string_value;
         string_value.init(value.gobj());
-        if (auto const text = gtr_str_strip(string_value.get()); !text.empty()) {
-            return core_->add_from_url(text);
-        }
+        return core_->request_add(tr::app::AddData{ gtr_str_strip(string_value.get()).raw() });
     }
 
     return false;
@@ -811,11 +822,7 @@ void Application::Impl::on_drag_data_received(
 
         open_files(files);
     } else {
-        auto const text = gtr_str_strip(selection_data.get_text());
-
-        if (!text.empty()) {
-            core_->add_from_url(text);
-        }
+        core_->request_add(tr::app::AddData{ gtr_str_strip(selection_data.get_text()).raw() });
     }
 
     drag_context->drag_finish(true, false, time_);
@@ -857,9 +864,6 @@ bool Application::Impl::on_session_closed()
 
     icon_.reset();
 
-    error_list_.clear();
-    duplicates_list_.clear();
-
     app_.release();
     return false;
 }
@@ -894,62 +898,53 @@ void Application::Impl::on_app_exit()
     core_->shut_down();
 }
 
-void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)
+void Application::Impl::on_add_report(tr::app::Session::AddReport const& report)
 {
-    std::ostringstream s;
-    auto const leader = files.size() > 1 ? gtr_get_unicode_string(GtrUnicode::Bullet) : "";
-
-    for (auto const& f : files) {
-        s << leader << ' ' << f << '\n';
+    if (wind_ == nullptr) {
+        return;
     }
 
-    auto w = std::make_shared<Gtk::MessageDialog>(
-        *wind_,
-        primary,
-        false,
-        TR_GTK_MESSAGE_TYPE(ERROR),
-        TR_GTK_BUTTONS_TYPE(CLOSE),
-        true);
-    w->set_secondary_text(s.str());
-    w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
-    w->show();
+    auto const show = [this](Glib::ustring const& primary, Glib::ustring const& secondary) {
+        auto w = std::make_shared<Gtk::MessageDialog>(
+            *wind_,
+            primary,
+            false,
+            TR_GTK_MESSAGE_TYPE(ERROR),
+            TR_GTK_BUTTONS_TYPE(CLOSE),
+            true);
+        w->set_secondary_text(secondary);
+        w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
+        w->show();
+    };
 
-    files.clear();
-}
+    // one dialog per list, with a bullet per entry once there are several
+    auto const list = [](auto const& entries, auto const& entry_text) {
+        auto const leader = std::size(entries) > 1U ? gtr_get_unicode_string(GtrUnicode::Bullet).raw() + ' ' : std::string{};
 
-void Application::Impl::flush_torrent_errors()
-{
-    if (!error_list_.empty()) {
-        show_torrent_errors(
-            ngettext("Couldn't add corrupt torrent", "Couldn't add corrupt torrents", error_list_.size()),
-            error_list_);
+        auto text = std::string{};
+        for (auto const& entry : entries) {
+            if (!std::empty(text)) {
+                text += '\n';
+            }
+
+            text += leader;
+            text += std::invoke(entry_text, entry);
+        }
+
+        return text;
+    };
+
+    if (auto const& failed = report.failed; !std::empty(failed)) {
+        // picked by count, not ngettext(): no number is shown, and some languages' singular form also covers 21, 31, ...
+        show(
+            std::size(failed) == 1U ? _("Couldn't add torrent") : _("Couldn't add torrents"),
+            list(failed, [](auto const& failure) { return fmt::format("{:s}\n    {:s}", failure.name, failure.errmsg); }));
     }
 
-    if (!duplicates_list_.empty()) {
-        show_torrent_errors(
-            ngettext("Couldn't add duplicate torrent", "Couldn't add duplicate torrents", duplicates_list_.size()),
-            duplicates_list_);
-    }
-}
-
-void Application::Impl::on_core_error(Session::ErrorCode code, Glib::ustring const& msg)
-{
-    switch (code) {
-    case Session::ERR_ADD_TORRENT_ERR:
-        error_list_.push_back(Glib::path_get_basename(msg.raw()));
-        break;
-
-    case Session::ERR_ADD_TORRENT_DUP:
-        duplicates_list_.push_back(msg);
-        break;
-
-    case Session::ERR_NO_MORE_TORRENTS:
-        flush_torrent_errors();
-        break;
-
-    default:
-        g_assert_not_reached();
-        break;
+    if (auto const& duplicates = report.duplicates; !std::empty(duplicates)) {
+        show(
+            ngettext("Couldn't add duplicate torrent", "Couldn't add duplicate torrents", std::size(duplicates)),
+            list(duplicates, &tr::app::Session::AddReport::Duplicate::name));
     }
 }
 
@@ -960,10 +955,13 @@ void Application::Impl::on_main_window_focus_in()
     }
 }
 
-void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
+void Application::Impl::on_add_prompt(tr::app::AddData const& add, tr::app::AddOptions const& options)
 {
-    auto w = std::shared_ptr<OptionsDialog>(
-        OptionsDialog::create(*wind_, core_, prefs_, std::unique_ptr<tr_torrent_builder>(builder)));
+    if (wind_ == nullptr) {
+        return;
+    }
+
+    auto w = std::shared_ptr<OptionsDialog>(OptionsDialog::create(*wind_, core_, add, options));
 
     gtr_window_on_close(*w, [w] mutable { w.reset(); });
 
@@ -975,9 +973,7 @@ void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
     w->signal_focus_in_event().connect_notify(sigc::hide<0>(sigc::mem_fun(*this, &Impl::on_main_window_focus_in)));
 #endif
 
-    if (wind_ != nullptr) {
-        gtr_window_set_urgency_hint(*wind_, true);
-    }
+    gtr_window_set_urgency_hint(*wind_, true);
 
     w->show();
 }
@@ -1232,24 +1228,10 @@ tr::interop::Reply Application::Impl::LocalInstance::present_window(std::string_
 
 bool Application::Impl::add_wire_metainfo(std::string_view const metainfo)
 {
-    // The forms interop-names.h documents for AddMetainfo(s):
-    // a URL or magnet link as itself, or a torrent file's contents base64'd.
-    if (tr::interop::is_metainfo_link(metainfo)) {
-        return core_->add_from_url(std::string{ metainfo });
-    }
-
-    auto const contents = tr::interop::decode_metainfo_torrent(metainfo);
-    if (!contents) {
-        return false;
-    }
-
-    auto builder = std::make_unique<tr_torrent_builder>(core_->get_session());
-    if (!builder->set_metainfo(*contents)) {
-        return false;
-    }
-
-    core_->add_builder(std::move(builder));
-    return true;
+    return core_->request_add(
+        tr::app::AddData::from_wire_metainfo(metainfo),
+        tr::app::Session::AddPrompt::FromPrefs,
+        handed_add_options());
 }
 
 tr::interop::Reply Application::Impl::LocalInstance::add_metainfo(std::string_view const metainfo)

@@ -196,10 +196,18 @@ Application::Application(
 
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Application::refreshPref);
     contended_connection_ = session_->config_dir_contended.connect_scoped(&Application::onConfigDirContended, this);
-    add_prompt_connection_ = session_->torrent_add_prompt.connect_scoped([this](tr::app::AddData const& add) {
-        auto* const dialog = new OptionsDialog{ *session_, prefs_, add, window_.get() };
-        dialog->show();
-        QApplication::alert(dialog);
+    add_prompt_connection_ = session_->torrent_add_prompt.connect_scoped(
+        [this](tr::app::AddData const& add, tr::app::AddOptions const& options) {
+            auto* const dialog = new OptionsDialog{ *session_, prefs_, add, options, window_.get() };
+            dialog->show();
+            QApplication::alert(dialog);
+        });
+    add_fetch_connection_ = session_->add_fetch_changed.connect_scoped([this] {
+        if (session_->add_fetch_pending()) {
+            QApplication::setOverrideCursor(Qt::BusyCursor);
+        } else {
+            QApplication::restoreOverrideCursor();
+        }
     });
     torrents_connection_ = session_->torrents().changed.connect_scoped([this](tr::app::TorrentList::Changes const& changes) {
         // the trackers of a new torrent, and of one whose trackers changed
