@@ -4,10 +4,8 @@
 // License text can be found in the licenses/ folder.
 
 #include <chrono>
-#include <thread>
 
 #include <glibmm/init.h>
-#include <glibmm/main.h>
 
 #include <gtest/gtest.h>
 
@@ -27,32 +25,6 @@ protected:
     {
         GtkTest::SetUp();
         Glib::init();
-    }
-
-    // Spins the main loop until `pred` holds or `timeout` passes.
-    template<typename Pred>
-    [[nodiscard]] static bool spin_until(Pred pred, std::chrono::milliseconds const timeout = 5s)
-    {
-        auto const deadline = std::chrono::steady_clock::now() + timeout;
-        while (!pred()) {
-            if (std::chrono::steady_clock::now() >= deadline) {
-                return false;
-            }
-            spin_for(1ms);
-        }
-        return true;
-    }
-
-    // Spins the main loop for `duration`.
-    static void spin_for(std::chrono::milliseconds const duration)
-    {
-        auto const context = Glib::MainContext::get_default();
-        auto const deadline = std::chrono::steady_clock::now() + duration;
-        while (std::chrono::steady_clock::now() < deadline) {
-            if (!context->iteration(false)) {
-                std::this_thread::sleep_for(1ms);
-            }
-        }
     }
 
     GlibTimerMaker maker_;

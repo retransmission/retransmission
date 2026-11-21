@@ -43,7 +43,9 @@ target_sources(${LIBNAME}
         torrent.cc
         torrent.h
         trash.cc
-        trash.h)
+        trash.h
+        watch-dir.cc
+        watch-dir.h)
 
 target_include_directories(${LIBNAME}
     PUBLIC
