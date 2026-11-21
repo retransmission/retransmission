@@ -627,15 +627,28 @@ protected:
             settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
         }
 
+        // tr::LocalData may deliver completions late and out of order.
+        // TR_LOCAL_DATA_SHUFFLE=<seed> makes it do so without threads, in
+        // an order the seed picks, to catch code that assumes otherwise.
+        // A seed replays a failure only if the test's own events arrive
+        // the same way every run: sockets and timers can change which
+        // work is waiting at each pick.
+        auto seed = std::optional<uint32_t>{};
+        auto bad_seed = std::optional<std::string>{};
+        if (from_env && std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
+            auto value = tr_env_get_string("TR_LOCAL_DATA_SHUFFLE");
+            auto rest = std::string_view{};
+            seed = tr_num_parse<uint32_t>(value, &rest);
+            if (!seed || !std::empty(rest)) {
+                seed.reset();
+                bad_seed = std::move(value);
+            }
+        }
+
         session_ = sessionInit(settings());
 
-        // tr::LocalData may deliver completions late and out of order.
-        // TR_LOCAL_DATA_SHUFFLE makes it do so without threads, in an
-        // order that its value seeds, so code that assumes otherwise
-        // fails here the same way every time.
-        if (auto const seed = tr_env_get_string("TR_LOCAL_DATA_SHUFFLE");
-            from_env && std::empty(workers) && !std::empty(seed)) {
-            startThreadlessDiskIo(tr_num_parse<uint32_t>(seed).value_or(1U));
+        if (seed) {
+            startThreadlessDiskIo(*seed);
         }
 
         // Every torrent in this session reports here when it finishes verifying,
@@ -645,6 +658,10 @@ protected:
             verified_.emplace_back(tor_id);
             verified_cv_.notify_one();
         });
+
+        // Last, because a derived fixture's SetUp() keeps going after this
+        // returns and needs the whole session. The test body doesn't run.
+        ASSERT_FALSE(bad_seed) << "TR_LOCAL_DATA_SHUFFLE is \"" << *bad_seed << "\", which isn't a seed from 0 to 4294967295";
     }
 
     void TearDown() override
