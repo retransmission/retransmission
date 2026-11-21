@@ -150,9 +150,9 @@ struct RemoteConfig {
     }
 
     auto const total_seconds = std::chrono::seconds{ seconds };
-    auto const days = std::chrono::duration_cast<std::chrono::days>(total_seconds).count();
-    auto const hours = (std::chrono::duration_cast<std::chrono::hours>(total_seconds) % std::chrono::days{ 1 }).count();
-    auto const minutes = (std::chrono::duration_cast<std::chrono::minutes>(total_seconds) % std::chrono::hours{ 1 }).count();
+    auto const days = total_seconds / std::chrono::days{ 1 };
+    auto const hours = (total_seconds % std::chrono::days{ 1 }) / std::chrono::hours{ 1 };
+    auto const minutes = (total_seconds % std::chrono::hours{ 1 }) / std::chrono::minutes{ 1 };
     seconds = (total_seconds % std::chrono::minutes{ 1 }).count();
 
     auto tmpstr = std::string{};
