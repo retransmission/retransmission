@@ -270,6 +270,7 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
         posix_fadvise
         posix_fallocate
         preadv2
+        pwritev
         sendfile64)
 
 target_include_directories(${TR_NAME}

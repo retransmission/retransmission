@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <cstdint> // uint64_t
@@ -11,6 +12,7 @@
 #include <ctime> // time()
 #include <ostream>
 #include <set>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -29,6 +31,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/error.h>
+#include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/macros.h>
@@ -1158,6 +1161,80 @@ TEST_F(FileTest, fileOpen)
     /* TODO: symlink and hardlink tests */
 
     tr_sys_path_remove(path1);
+}
+
+TEST_F(FileTest, fileWriteAtV)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+
+    // Buffers of different sizes, written after a gap, and a call may
+    // stop short, so loop as a caller does.
+    auto const data = std::array<std::string_view, 3U>{ "hello"sv, ", "sv, "world"sv };
+    auto bufs = std::vector<std::span<uint8_t const>>{};
+    for (auto const sv : data) {
+        bufs.emplace_back(reinterpret_cast<uint8_t const*>(std::data(sv)), std::size(sv));
+    }
+
+    auto remaining = std::span<std::span<uint8_t const> const>{ bufs };
+    auto offset = uint64_t{ 3U };
+    auto error = tr_error{};
+    while (!std::empty(remaining)) {
+        auto n_written = uint64_t{};
+        ASSERT_TRUE(tr_sys_file_write_at_v(fd, remaining, offset, &n_written, &error)) << error;
+        ASSERT_GT(n_written, 0U);
+        offset += n_written;
+        // This test's buffers are small enough that no call splits one.
+        while (n_written > 0U) {
+            ASSERT_GE(n_written, std::size(remaining.front()));
+            n_written -= std::size(remaining.front());
+            remaining = remaining.subspan(1U);
+        }
+    }
+
+    tr_sys_file_close(fd);
+
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(path, contents));
+    EXPECT_EQ("\0\0\0hello, world"sv, std::string_view(std::data(contents), std::size(contents)));
+
+    tr_sys_path_remove(path);
+}
+
+TEST_F(FileTest, fileWriteAtVByCopyCopiesUpTo1MiB)
+{
+    auto const test_dir = createTestDir(currentTestName());
+    auto const path = tr_pathbuf{ test_dir, "/a"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+
+    // 80 blocks of 16 KiB, each filled with its own index.
+    static auto constexpr BlockSize = size_t{ 16384U };
+    static auto constexpr NBlocks = size_t{ 80U };
+    auto data = std::vector<uint8_t>(BlockSize * NBlocks);
+    auto bufs = std::vector<std::span<uint8_t const>>{};
+    for (auto block = size_t{}; block < NBlocks; ++block) {
+        auto const buf = std::span{ data }.subspan(block * BlockSize, BlockSize);
+        std::ranges::fill(buf, static_cast<uint8_t>(block));
+        bufs.emplace_back(buf);
+    }
+
+    // The first call copies the first 64 blocks, 1 MiB, and writes them at once.
+    auto error = tr_error{};
+    auto n_written = uint64_t{};
+    ASSERT_TRUE(tr_sys_file_write_at_v_by_copy(fd, bufs, 0U, &n_written, &error)) << error;
+    EXPECT_EQ(1024U * 1024U, n_written);
+
+    auto const rest = std::span{ bufs }.subspan(n_written / BlockSize);
+    ASSERT_TRUE(tr_sys_file_write_at_v_by_copy(fd, rest, n_written, &n_written, &error)) << error;
+    EXPECT_EQ(BlockSize * std::size(rest), n_written);
+    tr_sys_file_close(fd);
+
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(path, contents));
+    EXPECT_TRUE(std::ranges::equal(data, contents, {}, {}, [](char const ch) { return static_cast<uint8_t>(ch); }));
+
+    tr_sys_path_remove(path);
 }
 
 TEST_F(FileTest, fileTruncate)

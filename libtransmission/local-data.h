@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
 #include <functional>
@@ -368,11 +369,19 @@ public:
     // at the disk.
     [[nodiscard]] static constexpr size_t read_ahead_bytes() noexcept
     {
-        return 2U * MaxRunBytes;
+        return 2U * MaxReadRunBytes;
     }
 
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
+
+    // Workers hold pending writes until this many bytes have gathered,
+    // or half the write budget if that is smaller. Zero disables holding.
+    void set_write_hold_bytes(uint64_t bytes);
+
+    // The longest a pending write waits for others to join it.
+    // Zero disables holding.
+    void set_write_hold_time(std::chrono::milliseconds hold_time);
 
     // LocalData calls `wake` when it parks the first completion. The owner
     // answers by calling pump() from the session thread. That thread is the
@@ -444,8 +453,13 @@ private:
     class Threaded;
 
     // The threaded backend combines pending ops that continue one another
-    // into runs of up to this many bytes, and does each run with one call.
-    static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
+    // into runs, and does each run with one call to tr_ioRead() or tr_ioWrite().
+    // A read run takes up to this many bytes.
+    static auto constexpr MaxReadRunBytes = size_t{ 1024U * 1024U };
+
+    // A write run takes up to this many bytes, or half the write budget if
+    // that is smaller. It is 1024 blocks, the most one pwritev() takes.
+    static auto constexpr MaxWriteRunBytes = uint64_t{ 16U * 1024U * 1024U };
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 
@@ -453,6 +467,8 @@ private:
 
     std::shared_ptr<Threaded> threaded_;
     std::optional<uint64_t> write_budget_;
+    std::optional<uint64_t> write_hold_bytes_;
+    std::optional<std::chrono::milliseconds> write_hold_time_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
     std::function<void()> wake_;

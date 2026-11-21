@@ -114,6 +114,12 @@ public:
     // behind. It also caps throughput at the budget divided by the
     // request round-trip time.
     size_t disk_write_budget_mib = 64U;
+    // Disk workers gather received blocks into batches of up to this
+    // many MiB, waiting at most this many ms, so blocks arriving one at
+    // a time share a write call. Batches count against the write budget
+    // and are capped at half of it. Zero in either writes at once.
+    size_t disk_write_batch_mib = 16U;
+    size_t disk_write_batch_ms = 1000U;
     size_t download_queue_size = 5U;
     size_t peer_limit_global = TrDefaultPeerLimitGlobal;
     size_t peer_limit_per_torrent = TrDefaultPeerLimitTorrent;
@@ -174,6 +180,8 @@ public:
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },
         Field<&SessionSettings::disk_io_workers>{ TR_KEY_disk_io_workers },
+        Field<&SessionSettings::disk_write_batch_mib>{ TR_KEY_disk_write_batch_mib },
+        Field<&SessionSettings::disk_write_batch_ms>{ TR_KEY_disk_write_batch_ms },
         Field<&SessionSettings::disk_write_budget_mib>{ TR_KEY_disk_write_budget_mib },
         Field<&SessionSettings::download_dir>{ TR_KEY_download_dir },
         Field<&SessionSettings::download_queue_enabled>{ TR_KEY_download_queue_enabled },

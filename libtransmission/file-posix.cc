@@ -14,6 +14,7 @@
 #include <cstdio> // remove, rename
 #include <cstdlib> // mkdtemp, mkstemp, realpath
 #include <optional>
+#include <span>
 #include <string_view>
 #include <string>
 #include <vector>
@@ -26,7 +27,7 @@
 #include <sys/file.h> /* flock() */
 #endif
 
-#include <sys/uio.h> /* preadv2(), RWF_NOWAIT */
+#include <sys/uio.h> /* preadv2(), pwritev(), RWF_NOWAIT */
 
 #ifdef __linux__
 #include <sys/syscall.h> /* __NR_cachestat */
@@ -700,6 +701,50 @@ bool tr_sys_file_write_at(
     }
 
     return ret;
+}
+
+bool tr_sys_file_write_at_v(
+    tr_sys_file_t const handle,
+    std::span<std::span<uint8_t const> const> const bufs,
+    uint64_t const offset,
+    uint64_t* const bytes_written,
+    tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+    TR_ASSERT(offset < UINT64_MAX / 2);
+
+#ifdef HAVE_PWRITEV
+    if (std::size(bufs) > 1U) {
+        // POSIX lets a system leave IOV_MAX undefined; _XOPEN_IOV_MAX is the least it must allow.
+#if defined(IOV_MAX)
+        static auto constexpr MaxIov = std::min(IOV_MAX, 1024);
+#else
+        static auto constexpr MaxIov = 16; // _XOPEN_IOV_MAX
+#endif
+        // Not zeroed: the call fills the entries it uses.
+        std::array<iovec, MaxIov> iov; // NOLINT(cppcoreguidelines-pro-type-member-init)
+        auto const n_iov = std::min(std::size(bufs), std::size(iov));
+        for (size_t i = 0U; i < n_iov; ++i) {
+            // iovec is shared with readv(), so its pointer isn't const.
+            iov[i] = { .iov_base = const_cast<uint8_t*>(std::data(bufs[i])), .iov_len = std::size(bufs[i]) };
+        }
+
+        auto const n_written = pwritev(handle, std::data(iov), static_cast<int>(n_iov), static_cast<off_t>(offset));
+        if (n_written == -1) {
+            if (error != nullptr) {
+                error->set_from_errno(errno);
+            }
+            return false;
+        }
+
+        if (bytes_written != nullptr) {
+            *bytes_written = static_cast<uint64_t>(n_written);
+        }
+        return true;
+    }
+#endif
+
+    return tr_sys_file_write_at_v_by_copy(handle, bufs, offset, bytes_written, error);
 }
 
 bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
