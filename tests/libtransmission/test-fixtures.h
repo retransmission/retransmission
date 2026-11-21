@@ -530,6 +530,14 @@ protected:
 
     tr_session* session_ = nullptr;
 
+    // A new place for tr_torrentSetLocation()'s `setme_state`, set to -1.
+    // A move writes through that pointer when it finishes, which is in
+    // session teardown if the test stopped waiting, so a local can't hold it.
+    [[nodiscard]] int volatile& newLocationState()
+    {
+        return *location_states_.emplace_back(std::make_unique<int volatile>(-1));
+    }
+
     [[nodiscard]] tr::Settings& settings()
     {
         if (!settings_) {
@@ -677,6 +685,7 @@ protected:
     }
 
 private:
+    std::vector<std::unique_ptr<int volatile>> location_states_;
     sigslot::scoped_connection verify_done_tag_;
     std::mutex verified_mutex_;
     std::condition_variable verified_cv_;

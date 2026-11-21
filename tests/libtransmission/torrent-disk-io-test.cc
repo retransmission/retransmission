@@ -1176,7 +1176,7 @@ TEST_F(TorrentAdminOpsTest, pauseQueuedBehindAMoveSavesItsResumeFileAfterTheMove
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
     auto const resume_file = std::string{ tor->resume_file() };
-    int volatile state = -1;
+    auto& state = newLocationState();
 
     blockingRunInSessionThread([&] {
         // a save would bring the resume file back
@@ -1377,7 +1377,7 @@ TEST_F(RequestBudgetTest, peersRequestNothingWhileTheTorrentMoves)
 
     // the move waits for a worker...
     session_->local_data.set_workers_paused(true);
-    int volatile state = -1;
+    auto& state = newLocationState();
     tr_torrentSetLocation(tor, tr_pathbuf{ session_->configDir(), "/target"sv }, true, &state);
     blockingRunInSessionThread([this, tor] { EXPECT_TRUE(session_->local_data.admin_op_pending(tor->id())); });
 
@@ -1749,7 +1749,7 @@ TEST_F(TorrentDiskIoWorkersTest, blockArrivingDuringAMoveIsDropped)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
     auto const target = tr_pathbuf{ sandboxDir(), "/target" };
-    auto state = -1;
+    auto& state = newLocationState();
 
     // The move waits for a worker. A block that was requested before the
     // move began arrives, and isn't queued behind it.
@@ -1781,8 +1781,8 @@ TEST_F(TorrentDiskIoWorkersTest, queuedMovesUseTheLatestSourceDirectory)
     auto const block = tor->block_span_for_piece(0).begin;
     auto const first_dir = tr_pathbuf{ sandboxDir(), "/first" };
     auto const last_dir = tr_pathbuf{ sandboxDir(), "/last" };
-    auto first_state = -1;
-    auto last_state = -1;
+    auto& first_state = newLocationState();
+    auto& last_state = newLocationState();
     auto closed = std::atomic<bool>{ false };
 
     session_->local_data.set_workers_paused(true);
@@ -1989,7 +1989,7 @@ TEST_F(IncompleteDirWorkersTest, setLocationQueuedBeforeCompletionPicksTheDir)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const target = tr_pathbuf{ sandboxDir(), "/target" };
-    auto state = -1;
+    auto& state = newLocationState();
 
     EXPECT_EQ(target.sv(), completeBehindAWrite(tor, [tor, &target, &state] {
                   tr_torrentSetLocation(tor, target, true, &state);
@@ -2007,7 +2007,7 @@ TEST_F(IncompleteDirWorkersTest, failedSetLocationStillLeavesTheIncompleteDir)
     auto const blocker = tr_pathbuf{ sandboxDir(), "/blocker" };
     createFileWithContents(blocker, std::string_view{ "x" });
     auto const target = tr_pathbuf{ blocker, "/target" };
-    auto state = -1;
+    auto& state = newLocationState();
 
     EXPECT_EQ(download_dir, completeBehindAWrite(tor, [tor, &target, &state] {
                   tr_torrentSetLocation(tor, target, true, &state);
