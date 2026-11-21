@@ -1152,7 +1152,7 @@ void add_id_arg(tr_variant::Map& params, std::string_view id_str, std::string_vi
 
 void add_id_arg(tr_variant::Map& args, RemoteConfig const& config, std::string_view fallback = "")
 {
-    return add_id_arg(args, config.torrent_ids, fallback);
+    add_id_arg(args, config.torrent_ids, fallback);
 }
 
 void add_time(tr_variant::Map& args, tr_quark const key, std::string_view arg)
