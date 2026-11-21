@@ -8,10 +8,12 @@
 #include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
+#include <filesystem>
 #include <optional>
 #include <span>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <thread>
 #include <tuple>
 #include <utility>
@@ -353,6 +355,39 @@ TEST_F(TorrentFilesTest, removeReportsTheFilesItRemoves)
 
     using Report = std::pair<size_t, size_t>;
     EXPECT_EQ((std::vector<Report>{ { 0U, 3U }, { 1U, 3U }, { 2U, 3U }, { 3U, 3U } }), reports);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
+}
+
+// A remove function that takes a whole folder, as a trash function
+// does, still brings the count to every file.
+TEST_F(TorrentFilesTest, removeCountsTheFilesInAFolderRemovedWhole)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const roots = std::array<std::string_view, 1>{ download.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/a", 1);
+    files.add("name/sub/b", 1);
+    files.add("name/sub/c", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/a"sv }, "a"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/sub/b"sv }, "b"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/sub/c"sv }, "c"sv);
+
+    auto removed = std::vector<std::string>{};
+    auto const remove_whole = [&removed](std::string_view const path, tr_error* /*error*/) {
+        removed.emplace_back(tr_sys_path_basename(path));
+        auto ec = std::error_code{};
+        std::filesystem::remove_all(std::filesystem::path{ std::u8string{ std::begin(path), std::end(path) } }, ec);
+        return !ec;
+    };
+
+    auto reports = std::vector<std::pair<size_t, size_t>>{};
+    files.remove(roots, "name", remove_whole, nullptr, [&reports](size_t const n_removed, size_t const n_files) {
+        reports.emplace_back(n_removed, n_files);
+    });
+
+    using Report = std::pair<size_t, size_t>;
+    EXPECT_EQ((std::vector<std::string>{ "name" }), removed);
+    EXPECT_EQ((std::vector<Report>{ { 0U, 3U }, { 3U, 3U } }), reports);
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
 }
 
