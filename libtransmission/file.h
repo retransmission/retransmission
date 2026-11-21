@@ -105,10 +105,15 @@ struct tr_sys_path_capacity {
  * @param[in]  dst_path  Path to destination file.
  * @param[out] error     Pointer to error object. Optional, pass `nullptr` if
  *                       you are not interested in error details.
+ * @param[in]  on_copied Optional. Called now and then with the bytes copied so far.
  *
  * @return `True` on success, `false` otherwise (with `error` set accordingly).
  */
-[[nodiscard]] bool tr_sys_path_copy(std::string_view src_path, std::string_view dst_path, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_path_copy(
+    std::string_view src_path,
+    std::string_view dst_path,
+    tr_error* error = nullptr,
+    std::function<void(uint64_t bytes_copied)> const& on_copied = {});
 
 /**
  * @brief Portability wrapper for `stat()`.

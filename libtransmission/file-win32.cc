@@ -7,6 +7,7 @@
 #include <cctype> // for isalpha()
 #include <cstring>
 #include <ctime>
+#include <functional>
 #include <iterator> // for std::back_inserter
 #include <optional>
 #include <ranges>
@@ -588,7 +589,29 @@ bool tr_sys_path_rename(std::string_view const src_path, std::string_view const 
     return ret;
 }
 
-bool tr_sys_path_copy(std::string_view const src_path, std::string_view const dst_path, tr_error* error)
+namespace
+{
+DWORD CALLBACK report_copy_progress(
+    LARGE_INTEGER /*total_file_size*/,
+    LARGE_INTEGER const total_bytes_transferred,
+    LARGE_INTEGER /*stream_size*/,
+    LARGE_INTEGER /*stream_bytes_transferred*/,
+    DWORD /*stream_number*/,
+    DWORD /*callback_reason*/,
+    HANDLE /*source_file*/,
+    HANDLE /*destination_file*/,
+    void* const data)
+{
+    (*static_cast<std::function<void(uint64_t)> const*>(data))(static_cast<uint64_t>(total_bytes_transferred.QuadPart));
+    return PROGRESS_CONTINUE;
+}
+} // namespace
+
+bool tr_sys_path_copy(
+    std::string_view const src_path,
+    std::string_view const dst_path,
+    tr_error* error,
+    std::function<void(uint64_t bytes_copied)> const& on_copied)
 {
     auto const wide_src_path = path_to_native_path(src_path);
     auto const wide_dst_path = path_to_native_path(dst_path);
@@ -599,7 +622,9 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
 
     auto cancel = BOOL{ FALSE };
     DWORD const flags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION | COPY_FILE_FAIL_IF_EXISTS;
-    if (!to_bool(CopyFileExW(wide_src_path.c_str(), wide_dst_path.c_str(), nullptr, nullptr, &cancel, flags))) {
+    auto* const routine = on_copied ? &report_copy_progress : nullptr;
+    auto* const data = on_copied ? const_cast<std::function<void(uint64_t)>*>(&on_copied) : nullptr;
+    if (!to_bool(CopyFileExW(wide_src_path.c_str(), wide_dst_path.c_str(), routine, data, &cancel, flags))) {
         set_system_error(error, GetLastError());
         return false;
     }
