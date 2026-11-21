@@ -1,0 +1,8 @@
+#include "Project.Common.xcconfig"
+
+// Preprocessor and compiler flags
+GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS BUILD_MAC_CLIENT XCODE_BUILD
+OTHER_CFLAGS = $(inherited) -DFMT_HEADER_ONLY -DWITH_CCRYPTO -DNDEBUG
+
+// Post-processing
+DEPLOYMENT_POSTPROCESSING = YES
