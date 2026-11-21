@@ -10,6 +10,7 @@
 #endif
 
 #include <array>
+#include <atomic>
 #include <chrono> // std::chrono::milliseconds
 #include <memory> // std::unique_ptr
 #include <optional>
@@ -90,6 +91,12 @@ public:
         return source_addr_[type];
     }
 
+    // source_addr(type).has_value(), without the lock: cheap enough for every packet
+    [[nodiscard]] bool has_source_addr(tr_address_type type) const noexcept
+    {
+        return has_source_addr_[type].load(std::memory_order_relaxed);
+    }
+
     [[nodiscard]] tr_address bind_addr(tr_address_type type) const noexcept;
 
     bool set_global_addr(tr_address const& addr_new);
@@ -141,6 +148,7 @@ private:
     array_ip_t<std::optional<tr_address>> global_addr_;
     mutable array_ip_t<std::shared_mutex> source_addr_mutex_;
     array_ip_t<std::optional<tr_address>> source_addr_;
+    array_ip_t<std::atomic<bool>> has_source_addr_ = {}; // written under source_addr_mutex_
     array_ip_t<bool> source_addr_checked_ = {};
 
     // Keep the timer at the bottom of the class definition so that it will be destructed first

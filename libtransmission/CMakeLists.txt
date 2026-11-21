@@ -7,6 +7,10 @@ if(ENABLE_NLS)
 endif()
 
 check_symbol_exists(SO_REUSEPORT "sys/types.h;sys/socket.h" HAVE_SO_REUSEPORT)
+set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
+check_symbol_exists(recvmmsg "sys/types.h;sys/socket.h" HAVE_RECVMMSG)
+check_symbol_exists(sendmmsg "sys/types.h;sys/socket.h" HAVE_SENDMMSG)
+unset(CMAKE_REQUIRED_DEFINITIONS)
 
 add_compile_options(
     # equivalent of XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES for this directory
@@ -252,6 +256,8 @@ target_compile_definitions(${TR_NAME}
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>
         $<$<BOOL:${HAVE_SO_REUSEPORT}>:HAVE_SO_REUSEPORT=1>
+        $<$<BOOL:${HAVE_RECVMMSG}>:HAVE_RECVMMSG=1>
+        $<$<BOOL:${HAVE_SENDMMSG}>:HAVE_SENDMMSG=1>
     PUBLIC
         $<$<STREQUAL:${CRYPTO_PKG},ccrypto>:WITH_CCRYPTO>
         $<$<STREQUAL:${CRYPTO_PKG},mbedtls>:WITH_MBEDTLS>

@@ -82,7 +82,7 @@ void utp_send_to(
     struct sockaddr const* const to,
     socklen_t const tolen)
 {
-    ss->udp_core_->sendto(buf, buflen, to, tolen);
+    ss->udp_core_->sendto_soon(buf, buflen, to, tolen);
 }
 
 uint64 utp_callback(utp_callback_arguments* args)
