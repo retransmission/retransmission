@@ -1470,6 +1470,15 @@ void tr_session::log_slow_close()
                 fmt::format(fmt::runtime(_("Still writing '{name}' before shutting down")), fmt::arg("name", op.torrent_name)));
             break;
         case Kind::Move:
+            // no counts before the first file, or while the old location is cleared
+            if (op.total == 0U) {
+                tr_logAddWarn(
+                    fmt::format(
+                        fmt::runtime(_("Still moving '{name}' to '{path}' before shutting down")),
+                        fmt::arg("name", op.torrent_name),
+                        fmt::arg("path", op.destination)));
+                break;
+            }
             tr_logAddWarn(
                 fmt::format(
                     fmt::runtime(
