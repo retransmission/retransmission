@@ -1597,9 +1597,7 @@ private:
     {
         auto desc = provider_(id);
         if (!is_valid_hash_span(desc.get(), op.span)) {
-            if (op.on_hashed) {
-                std::move(op.on_hashed)(id, op.span, tr_error::from_errno(EINVAL), std::move(op.sha));
-            }
+            std::move(op.on_hashed)(id, op.span, tr_error::from_errno(EINVAL), std::move(op.sha));
             return;
         }
 
@@ -2225,9 +2223,7 @@ private:
 
         post_completion([this, id = pending.tor_id, op = std::move(op), error = std::move(error)] mutable {
             unregister_running_hash(gate_of(id), op.span);
-            if (op.on_hashed) {
-                std::move(op.on_hashed)(id, op.span, error, std::move(op.sha));
-            }
+            std::move(op.on_hashed)(id, op.span, error, std::move(op.sha));
             release(id);
         });
     }
@@ -2423,9 +2419,7 @@ void LocalData::hash_span(
     }
 
     auto const error = backend_->hash_span(id, span, *sha);
-    if (on_hashed) {
-        std::move(on_hashed)(id, span, error, std::move(sha));
-    }
+    std::move(on_hashed)(id, span, error, std::move(sha));
 }
 
 void LocalData::write(

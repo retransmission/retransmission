@@ -196,7 +196,7 @@ public:
     using OnTest = std::function<
         void(tr_torrent_id_t, tr_piece_index_t piece, tr_error const& error, std::optional<tr_sha1_digest_t> hash)>;
 
-    // `sha` comes back whether or not the read failed.
+    // Required. `sha` comes back whether or not the read failed.
     using OnHashSpan = std::function<
         void(tr_torrent_id_t, tr_byte_span_t span, tr_error const& error, std::unique_ptr<tr_sha1> sha)>;
 
