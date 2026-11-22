@@ -53,10 +53,6 @@ public:
         [[nodiscard]] virtual tr_torrent_id_t id() const = 0;
         [[nodiscard]] virtual tr_block_info const& block_info() const = 0;
 
-        // False if none of the torrent's files exist, so that every piece
-        // is missing and there is nothing to read
-        [[nodiscard]] virtual bool has_local_data() const = 0;
-
         virtual void on_verify_started() = 0;
         // `hash` is empty if the piece couldn't be read
         virtual void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) = 0;
@@ -72,7 +68,9 @@ public:
     tr_verifier& operator=(tr_verifier const&) = delete;
     tr_verifier& operator=(tr_verifier&&) = delete;
 
-    void add(std::unique_ptr<Mediator> mediator, tr_priority_t priority);
+    // `has_local_data` is false if none of the torrent's files exist, so
+    // that every piece is missing and there is nothing to read.
+    void add(std::unique_ptr<Mediator> mediator, tr_priority_t priority, bool has_local_data);
 
     // Ends the torrent's verify, queued or under way, as aborted. Doesn't wait
     // for the span in flight; its result is dropped.
@@ -84,30 +82,22 @@ public:
     }
 
 private:
+    // A verify, queued or under way, and where it is.
     struct Node {
         [[nodiscard]] bool operator<(Node const& that) const noexcept;
 
         std::unique_ptr<Mediator> mediator;
         tr_priority_t priority;
-        // Where a verify that gave way to a move or rename left off.
-        // `sha` is the piece's hash so far, and null if it never started.
+        bool has_local_data;
         tr_piece_index_t piece = 0U;
         uint64_t piece_bytes_hashed = 0U;
-        std::unique_ptr<tr_sha1> sha = {};
-    };
-
-    struct Active {
-        std::unique_ptr<Mediator> mediator;
-        tr_priority_t priority;
-        uint64_t token;
-        tr_piece_index_t piece = 0U;
-        uint64_t piece_bytes_hashed = 0U;
-        // the piece's hash so far. Empty while a span is in flight.
+        // The piece's hash so far. Null until the verify starts, and while
+        // a span is in flight.
         std::unique_ptr<tr_sha1> sha;
     };
 
     void step();
-    [[nodiscard]] bool start_next();
+    void start_next();
     void park();
     void report_all_missing();
     void schedule_step();
@@ -119,8 +109,10 @@ private:
     std::unique_ptr<tr::Timer> const step_timer_;
 
     std::set<Node> todo_;
-    std::optional<Active> active_;
-    uint64_t next_token_ = 0U;
+    std::optional<Node> active_;
+    // Bumped each time a verify becomes the active one. A span's result
+    // counts only if this hasn't changed since the span went out.
+    uint64_t active_token_ = 0U;
 
     // True while step() waits for the backend, which may answer before it returns.
     bool in_step_ = false;

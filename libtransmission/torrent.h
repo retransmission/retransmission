@@ -165,9 +165,8 @@ struct tr_torrent {
     class VerifyMediator : public tr_verifier::Mediator
     {
     public:
-        VerifyMediator(tr_torrent* const tor, bool const has_local_data)
+        explicit VerifyMediator(tr_torrent* const tor)
             : tor_{ tor }
-            , has_local_data_{ has_local_data }
         {
         }
 
@@ -176,11 +175,6 @@ struct tr_torrent {
         [[nodiscard]] tr_torrent_id_t id() const override;
         [[nodiscard]] tr_block_info const& block_info() const override;
 
-        [[nodiscard]] bool has_local_data() const override
-        {
-            return has_local_data_;
-        }
-
         void on_verify_started() override;
         void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) override;
         void on_verify_done(bool aborted) override;
@@ -188,7 +182,6 @@ struct tr_torrent {
     private:
         tr_torrent* const tor_;
         std::optional<time_t> time_started_;
-        bool const has_local_data_;
     };
 
     // ---
