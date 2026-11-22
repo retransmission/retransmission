@@ -2587,9 +2587,14 @@ TEST_F(VerifyDuringPathChangeTest, stoppingEndsAVerify)
     tr_torrentStop(tor);
     EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_STOPPED; }, MaxWaitMsec));
 
-    // the span in flight finishes, and nothing comes of it
+    // The span in flight finishes, and nothing comes of it. A barrier
+    // queued now runs once that span's result has been delivered.
+    auto closed = std::atomic<bool>{};
+    blockingRunInSessionThread(
+        [this, tor, &closed] { session_->local_data.close_torrent(tor->id(), [&closed](tr_torrent_id_t) { closed = true; }); });
     session_->local_data.set_workers_paused(false);
-    EXPECT_FALSE(waitFor([this] { return nVerified() > 0U; }, 500));
+    EXPECT_TRUE(waitFor([&closed] { return closed.load(); }, MaxWaitMsec));
+    EXPECT_EQ(0U, nVerified());
     EXPECT_EQ(TR_STATUS_STOPPED, tr_torrentStat(tor).activity);
 }
 
