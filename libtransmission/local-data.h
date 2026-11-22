@@ -314,11 +314,18 @@ public:
     // `span` is at most max_hash_span_bytes() long.
     void hash_span(tr_torrent_id_t id, tr_byte_span_t span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed);
 
-    // Short enough that the synchronous backend, which hashes on the
-    // session thread, never holds it up for long.
+    // The most a worker reads in one go.
     [[nodiscard]] static constexpr size_t max_hash_span_bytes() noexcept
     {
         return MaxRunBytes;
+    }
+
+    // How long a verify's spans should be. The synchronous backend reads
+    // and hashes each one on the session thread, which waits for it, so
+    // it gets shorter ones.
+    [[nodiscard]] size_t hash_span_bytes() const noexcept
+    {
+        return threaded_ ? max_hash_span_bytes() : SessionThreadHashSpanBytes;
     }
 
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
@@ -405,6 +412,9 @@ private:
     // The threaded backend combines pending ops that continue one another
     // into runs of up to this many bytes, and does each run with one call.
     static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
+
+    // About 10 ms of reading from a USB 2 drive
+    static auto constexpr SessionThreadHashSpanBytes = size_t{ 256U * 1024U };
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 

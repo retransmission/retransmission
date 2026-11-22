@@ -96,8 +96,7 @@ void tr_verifier::step()
 
     auto const piece_span = block_info.byte_span_for_piece(active_->piece);
     auto const begin = piece_span.begin + active_->piece_bytes_hashed;
-    auto const span = tr_byte_span_t{ .begin = begin,
-                                      .end = std::min(piece_span.end, begin + tr::LocalData::max_hash_span_bytes()) };
+    auto const span = tr_byte_span_t{ .begin = begin, .end = std::min(piece_span.end, begin + local_data_.hash_span_bytes()) };
 
     in_step_ = true;
     local_data_.hash_span(
