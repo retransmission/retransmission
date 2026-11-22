@@ -53,6 +53,10 @@ public:
         [[nodiscard]] virtual tr_torrent_id_t id() const = 0;
         [[nodiscard]] virtual tr_block_info const& block_info() const = 0;
 
+        // False if none of the torrent's files exist, so that every piece
+        // is missing and there is nothing to read
+        [[nodiscard]] virtual bool has_local_data() const = 0;
+
         virtual void on_verify_started() = 0;
         // `hash` is empty if the piece couldn't be read
         virtual void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) = 0;
@@ -105,6 +109,7 @@ private:
     void step();
     [[nodiscard]] bool start_next();
     void park();
+    void report_all_missing();
     void schedule_step();
     [[nodiscard]] bool sleep_due() const;
     void on_span_hashed(uint64_t token, uint64_t n_bytes, bool ok, std::unique_ptr<tr_sha1> sha);

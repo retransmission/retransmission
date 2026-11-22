@@ -25,6 +25,9 @@ namespace
 {
 // how often to look again when every queued verify waits for a move or rename
 auto constexpr BarrierPollInterval = 1s;
+
+// pieces of a torrent with no local data to report missing per step
+auto constexpr MissingPiecesPerStep = tr_piece_index_t{ 1024U };
 } // namespace
 
 tr_verifier::tr_verifier(tr::LocalData& local_data, tr::TimerMaker& timer_maker, std::recursive_mutex& session_mutex)
@@ -75,6 +78,11 @@ void tr_verifier::step()
     auto const& block_info = active_->mediator->block_info();
     if (active_->piece >= block_info.piece_count()) {
         finish(false);
+        return;
+    }
+
+    if (!active_->mediator->has_local_data()) {
+        report_all_missing();
         return;
     }
 
@@ -142,6 +150,21 @@ void tr_verifier::park()
               .piece_bytes_hashed = active_->piece_bytes_hashed,
               .sha = std::move(active_->sha) });
     active_.reset();
+    schedule_step();
+}
+
+// With no local data there is nothing to read, and every piece is missing.
+// Reports a batch of them, so that each turn of the session thread is short.
+void tr_verifier::report_all_missing()
+{
+    auto const token = active_->token;
+    auto const end = std::min(active_->mediator->block_info().piece_count(), active_->piece + MissingPiecesPerStep);
+    while (active_ && active_->token == token && active_->piece < end) {
+        auto const piece = active_->piece++;
+        // the torrent may end this verify
+        active_->mediator->on_piece_hashed(piece, std::nullopt);
+    }
+
     schedule_step();
 }
 

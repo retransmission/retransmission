@@ -2693,4 +2693,16 @@ TEST_F(ThreadlessVerifyTest, aVerifysLastStepWaitsForAMove)
     EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/one"sv, tr_torrent_files::PartialFileSuffix }));
 }
 
+// With nothing on disk, every piece is missing and there's nothing to read.
+// The workers take no steps here, so a verify that read would never finish.
+TEST_F(ThreadlessVerifyTest, aVerifyWithNoLocalDataReadsNothing)
+{
+    auto* const tor = zeroPiecesTorrentInit("empty", 16384U, 4U);
+    auto const n_before = verifiedCount();
+
+    tr_torrentVerify(tor);
+    EXPECT_TRUE(waitForVerify(tor, n_before));
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_none(); }));
+}
+
 } // namespace tr::test

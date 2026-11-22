@@ -2089,9 +2089,9 @@ void tr_session::verify_remove(tr_torrent* const tor)
     verifier_.remove(tor->id());
 }
 
-void tr_session::verify_add(tr_torrent* const tor)
+void tr_session::verify_add(tr_torrent* const tor, bool const has_local_data)
 {
-    verifier_.add(std::make_unique<tr_torrent::VerifyMediator>(tor), tor->get_priority());
+    verifier_.add(std::make_unique<tr_torrent::VerifyMediator>(tor, has_local_data), tor->get_priority());
 }
 
 // ---

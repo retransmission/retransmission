@@ -1696,7 +1696,8 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
                 return;
             }
 
-            if (did_files_disappear(torrent)) {
+            auto const has_local_data = torrent->has_any_local_data();
+            if (did_files_disappear(torrent, has_local_data)) {
                 torrent->error().set_local_error(
                     _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
                       "then use \"Verify Local Data\" again. To re-download, start the torrent."));
@@ -1706,7 +1707,7 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
             // the verify decides every piece from what's on disk
             torrent->hash_tokens_.clear();
             torrent->blocks_awaiting_hash_.set_has_none();
-            session->verify_add(torrent);
+            session->verify_add(torrent, has_local_data);
         });
     });
 }

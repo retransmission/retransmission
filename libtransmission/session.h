@@ -1176,7 +1176,9 @@ public:
         return settings().ratio_limit;
     }
 
-    void verify_add(tr_torrent* tor);
+    // `has_local_data` is tr_torrent::has_any_local_data(), which the
+    // caller has already looked up
+    void verify_add(tr_torrent* tor, bool has_local_data);
     void verify_remove(tr_torrent* tor);
 
     void fetch(tr_web::FetchOptions&& options) const
