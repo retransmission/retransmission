@@ -1755,6 +1755,13 @@ void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_
 
     auto const has = has_file ? *has_file : this->has_file(file);
     auto const needs_suffix = session->isIncompleteFileNamingEnabled() && !has;
+
+    // The paths below differ only in the suffix. Most often, such as after
+    // a verify, it's already right, and the disk needn't be asked.
+    if (found->is_partial == needs_suffix) {
+        return;
+    }
+
     auto const oldpath = found->filename<tr_pathbuf>();
     auto const newpath = tr_pathbuf{ found->base,
                                      '/',
