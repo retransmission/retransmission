@@ -34,9 +34,10 @@ class TimerMaker;
  * tr::LocalData. So a verify waits for barriers like any other data op,
  * and a move or rename never pulls a file out from under it.
  *
- * A verify whose torrent has a move or rename pending gives way to the
- * next one in the queue, and picks up where it left off once the move or
- * rename is done. A long copy holds up only its own torrent's verify.
+ * Between spans, the first verify in line whose torrent has no move or
+ * rename pending hashes the next one. Verifies under way come first, so a
+ * verify that waited out a move or rename picks up where it left off, and
+ * a long copy holds up only its own torrent's verify.
  *
  * Session thread only. The synchronous backend hashes each span on the
  * session thread, so the verify waits for a timer between spans there,
@@ -98,7 +99,6 @@ private:
 
     void step();
     void start_next();
-    void park();
     void report_all_missing();
     void schedule_step();
     [[nodiscard]] bool sleep_due() const;

@@ -2744,4 +2744,37 @@ TEST_F(ThreadlessVerifyTest, aStoppedVerifysSpanLeavesTheNextOneAlone)
     EXPECT_FALSE(wasVerified(stopped, n_before));
 }
 
+// A verify that waited for a rename doesn't wait for the verify that went in
+// its place to finish. Between that one's spans, the first in line goes on:
+// of two verifies under way, the smaller torrent's.
+TEST_F(ThreadlessVerifyTest, aVerifyThatWaitedForARenameGoesBackFirst)
+{
+    auto* const renamed = zeroFileInit("renamed", 2U);
+    auto* const other = zeroFileInit("other", 8U);
+    auto const n_before = verifiedCount();
+
+    startVerify(renamed);
+    auto done = std::atomic<bool>{};
+    tr_torrentRenamePath(renamed, "renamed"sv, "renamed2"sv, [&done](tr_torrent_id_t, auto, auto, tr_error const& error) {
+        EXPECT_FALSE(error) << error;
+        done = true;
+    });
+    waitForAdminOp(renamed);
+    tr_torrentVerify(other);
+
+    // the renamed torrent's span lands, and the other torrent takes its place
+    EXPECT_TRUE(
+        pumpUntil([other] { return tr_torrentStat(other).activity == TR_STATUS_CHECK; }, tr::detail::DiskThread::Worker));
+
+    // the rename finishes, and the renamed torrent's verify goes on first
+    EXPECT_TRUE(pumpUntil([&done] { return done.load(); }, tr::detail::DiskThread::ShortLane));
+    EXPECT_TRUE(
+        pumpUntil([this, renamed, n_before] { return wasVerified(renamed, n_before); }, tr::detail::DiskThread::Worker));
+    EXPECT_FALSE(wasVerified(other, n_before));
+    EXPECT_TRUE(blockingRunInSessionThread([renamed] { return renamed->has_all(); }));
+
+    EXPECT_TRUE(pumpUntil([this, other, n_before] { return wasVerified(other, n_before); }));
+    EXPECT_TRUE(blockingRunInSessionThread([other] { return other->has_all(); }));
+}
+
 } // namespace tr::test

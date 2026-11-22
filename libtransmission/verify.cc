@@ -65,7 +65,8 @@ void tr_verifier::remove(tr_torrent_id_t const id)
     }
 }
 
-// Hashes the next span, or starts the next torrent once this one is done.
+// Hashes the next span of the first verify in line that can go, or
+// finishes the active verify once its pieces are done.
 void tr_verifier::step()
 {
     if (!active_) {
@@ -85,13 +86,6 @@ void tr_verifier::step()
 
     if (!active_->has_local_data) {
         report_all_missing();
-        return;
-    }
-
-    // The next span would wait for the move or rename, and every other
-    // verify would wait with it.
-    if (local_data_.admin_op_pending(active_->mediator->id())) {
-        park();
         return;
     }
 
@@ -133,17 +127,6 @@ void tr_verifier::start_next()
     }
 }
 
-// Puts the active verify back in the queue with its place kept, so that
-// the next one can go while a move or rename holds this one back.
-void tr_verifier::park()
-{
-    TR_ASSERT(active_);
-
-    todo_.insert(std::move(*active_));
-    active_.reset();
-    schedule_step();
-}
-
 // With no local data there is nothing to read, and every piece is missing.
 // Reports a batch of them, so that each turn of the session thread is short.
 void tr_verifier::report_all_missing()
@@ -183,6 +166,14 @@ void tr_verifier::on_span_hashed(uint64_t const token, uint64_t const n_bytes, b
         active_->mediator->on_piece_hashed(piece, hash);
     }
 
+    // The next span goes to the first verify in line, which may be one
+    // that waited for a move or rename. A verify with no pieces left stays
+    // active, and finishes at the next step.
+    if (active_ && token == active_token_ && active_->piece < active_->mediator->block_info().piece_count()) {
+        todo_.insert(std::move(*active_));
+        active_.reset();
+    }
+
     // A threaded backend answers on a turn of its own, so go on at once.
     // The synchronous one answers inside step(), which mustn't recurse.
     if (in_step_ || sleep_due()) {
@@ -202,10 +193,12 @@ void tr_verifier::finish(bool const aborted)
     schedule_step();
 }
 
-// Sleeping a few msec once a second goes a long way toward reducing the IO load.
+// Sleeping a few msec once a second goes a long way toward reducing the IO
+// load. Only a verify under way sleeps. Between its spans, it's first in line.
 bool tr_verifier::sleep_due() const
 {
-    return active_ && sleep_per_seconds_during_verify_ > 0ms && std::chrono::steady_clock::now() - last_slept_at_ >= 1s;
+    auto const under_way = active_ || (!std::empty(todo_) && std::begin(todo_)->sha != nullptr);
+    return under_way && sleep_per_seconds_during_verify_ > 0ms && std::chrono::steady_clock::now() - last_slept_at_ >= 1s;
 }
 
 void tr_verifier::schedule_step()
@@ -221,7 +214,8 @@ void tr_verifier::schedule_step()
 
 bool tr_verifier::Node::operator<(Node const& that) const noexcept
 {
-    // higher priority first, then smaller torrents, since they verify faster
-    return std::tuple{ -priority, mediator->block_info().total_size(), mediator->id() } <
-        std::tuple{ -that.priority, that.mediator->block_info().total_size(), that.mediator->id() };
+    // Verifies under way first, so that one that waited for a move or rename
+    // goes on. Then higher priority, then smaller torrents, which verify faster.
+    return std::tuple{ !sha, -priority, mediator->block_info().total_size(), mediator->id() } <
+        std::tuple{ !that.sha, -that.priority, that.mediator->block_info().total_size(), that.mediator->id() };
 }
