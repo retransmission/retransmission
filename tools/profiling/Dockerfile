@@ -5,7 +5,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean
 RUN --mount=type=cache,id=retransmission-profile-apt-cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,id=retransmission-profile-apt-lists,target=/var/lib/apt/lists,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
-    build-essential ca-certificates ccache cmake fio ninja-build pkg-config python3 util-linux \
+    build-essential ca-certificates ccache cmake fio iproute2 ninja-build pkg-config python3 util-linux \
     libarchive-dev libcurl4-openssl-dev libevent-dev libminiupnpc-dev \
     libnatpmp-dev libpsl-dev libssl-dev zlib1g-dev
 
@@ -39,4 +39,4 @@ RUN --mount=type=cache,id=retransmission-profile-ccache-${TARGETARCH},target=/ro
     && rm -rf /build-tree \
     && ccache --show-stats
 
-ENTRYPOINT ["python3", "/src/tools/profiling/benchmark.py"]
+ENTRYPOINT ["sh", "/src/tools/profiling/container-entrypoint.sh"]

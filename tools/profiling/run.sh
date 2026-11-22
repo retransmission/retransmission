@@ -4,6 +4,7 @@ set -euo pipefail
 BLOCK_PROFILING="${BLOCK_PROFILING:-ON}"
 DISK_IO_WORKERS="${DISK_IO_WORKERS:-2}"
 PEER_ENCRYPTION="${PEER_ENCRYPTION:-preferred}"
+PEER_TRANSPORT="${PEER_TRANSPORT:-tcp}"
 WORK_STORAGE="${WORK_STORAGE:-container-layer}"
 while (( $# )); do
     case "$1" in
@@ -19,12 +20,16 @@ while (( $# )); do
             PEER_ENCRYPTION="${2:?--encryption requires preferred, allowed, or required}"
             shift 2
             ;;
+        --transport)
+            PEER_TRANSPORT="${2:?--transport requires tcp or utp}"
+            shift 2
+            ;;
         --storage)
             WORK_STORAGE="${2:?--storage requires container-layer, bind, or tmpfs}"
             shift 2
             ;;
         --help|-h)
-            echo "Usage: bash tools/profiling/run.sh [--block-profiling ON|OFF] [--disk-io-workers 0..64] [--encryption preferred|allowed|required] [--storage container-layer|bind|tmpfs]"
+            echo "Usage: bash tools/profiling/run.sh [--block-profiling ON|OFF] [--disk-io-workers 0..64] [--encryption preferred|allowed|required] [--transport tcp|utp] [--storage container-layer|bind|tmpfs]"
             exit 0
             ;;
         *)
@@ -45,8 +50,12 @@ case "$PEER_ENCRYPTION" in
     preferred|allowed|required) ;;
     *) echo 'Encryption must be preferred, allowed, or required' >&2; exit 1 ;;
 esac
-export BLOCK_PROFILING DISK_IO_WORKERS PEER_ENCRYPTION
-echo "Benchmark settings: BLOCK_PROFILING=$BLOCK_PROFILING DISK_IO_WORKERS=$DISK_IO_WORKERS PEER_ENCRYPTION=$PEER_ENCRYPTION"
+case "$PEER_TRANSPORT" in
+    tcp|utp) ;;
+    *) echo 'Transport must be tcp or utp' >&2; exit 1 ;;
+esac
+export BLOCK_PROFILING DISK_IO_WORKERS PEER_ENCRYPTION PEER_TRANSPORT
+echo "Benchmark settings: BLOCK_PROFILING=$BLOCK_PROFILING DISK_IO_WORKERS=$DISK_IO_WORKERS PEER_ENCRYPTION=$PEER_ENCRYPTION PEER_TRANSPORT=$PEER_TRANSPORT"
 
 cd "$(dirname "$0")/../.."
 compose_args=(-f tools/profiling/compose.yaml)
