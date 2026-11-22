@@ -34,6 +34,10 @@ class TimerMaker;
  * tr::LocalData. So a verify waits for barriers like any other data op,
  * and a move or rename never pulls a file out from under it.
  *
+ * A verify whose torrent has a move or rename pending gives way to the
+ * next one in the queue, and picks up where it left off once the move or
+ * rename is done. A long copy holds up only its own torrent's verify.
+ *
  * Session thread only. The synchronous backend hashes each span on the
  * session thread, so the verify waits for a timer between spans there,
  * and other work gets in.
@@ -81,10 +85,16 @@ private:
 
         std::unique_ptr<Mediator> mediator;
         tr_priority_t priority;
+        // Where a verify that gave way to a move or rename left off.
+        // `sha` is the piece's hash so far, and null if it never started.
+        tr_piece_index_t piece = 0U;
+        uint64_t piece_bytes_hashed = 0U;
+        std::unique_ptr<tr_sha1> sha = {};
     };
 
     struct Active {
         std::unique_ptr<Mediator> mediator;
+        tr_priority_t priority;
         uint64_t token;
         tr_piece_index_t piece = 0U;
         uint64_t piece_bytes_hashed = 0U;
@@ -93,6 +103,8 @@ private:
     };
 
     void step();
+    [[nodiscard]] bool start_next();
+    void park();
     void schedule_step();
     [[nodiscard]] bool sleep_due() const;
     void on_span_hashed(uint64_t token, uint64_t n_bytes, bool ok, std::unique_ptr<tr_sha1> sha);

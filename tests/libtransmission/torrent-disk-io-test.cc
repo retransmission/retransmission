@@ -2636,8 +2636,40 @@ protected:
             },
             MaxWaitMsec);
     }
+
+    // True if `tor` finished a verify after the first `n_before`.
+    [[nodiscard]] bool wasVerified(tr_torrent const* const tor, size_t const n_before)
+    {
+        auto const verified = verifiedTorrents();
+        return std::ranges::contains(std::views::drop(verified, n_before), tor->id());
+    }
 };
 } // namespace
+
+// Its next span would wait for the move. The verifies queued behind it go
+// first, and it picks up where it was once the move is done.
+TEST_F(ThreadlessVerifyTest, aVerifyWaitingForAMoveLetsTheNextOneGo)
+{
+    auto* const moving = zeroFileInit("moving", 4U);
+    auto* const next = zeroFileInit("next", 2U);
+    auto const target = tr_pathbuf{ sandboxDir(), "/moved"sv };
+    auto const n_before = verifiedCount();
+
+    startVerify(moving);
+    auto state = int{ TR_LOC_MOVING };
+    queueMove(moving, target, &state);
+    tr_torrentVerify(next);
+
+    EXPECT_TRUE(stepWorkersUntil([this, next, n_before] { return wasVerified(next, n_before); }));
+    EXPECT_FALSE(wasVerified(moving, n_before));
+    EXPECT_EQ(TR_LOC_MOVING, state);
+    EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
+
+    EXPECT_TRUE(pumpUntil([this, moving, n_before] { return wasVerified(moving, n_before); }));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    EXPECT_TRUE(blockingRunInSessionThread([moving] { return moving->has_all(); }));
+    EXPECT_EQ(target.sv(), blockingRunInSessionThread([moving] { return std::string{ moving->current_dir().sv() }; }));
+}
 
 // The verify's last step renames files for what it found. It waits for a
 // move queued during the verify, so it renames them where the move put them.

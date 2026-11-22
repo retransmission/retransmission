@@ -504,6 +504,13 @@ protected:
         return std::size(verified_);
     }
 
+    // The torrents whose verifies have finished, in the order they did.
+    [[nodiscard]] std::vector<tr_torrent_id_t> verifiedTorrents()
+    {
+        auto const lock = std::scoped_lock{ verified_mutex_ };
+        return verified_;
+    }
+
     // Waits for `tor`'s verify to finish, after the first `n_before`.
     [[nodiscard]] bool waitForVerify(tr_torrent const* const tor, size_t const n_before)
     {

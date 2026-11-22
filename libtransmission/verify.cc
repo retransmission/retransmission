@@ -21,6 +21,12 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+// how often to look again when every queued verify waits for a move or rename
+auto constexpr BarrierPollInterval = 1s;
+} // namespace
+
 tr_verifier::tr_verifier(tr::LocalData& local_data, tr::TimerMaker& timer_maker, std::recursive_mutex& session_mutex)
     : local_data_{ local_data }
     , step_timer_{ timer_maker.create([this, &session_mutex] {
@@ -57,15 +63,8 @@ void tr_verifier::remove(tr_torrent_id_t const id)
 // Hashes the next span, or starts the next torrent once this one is done.
 void tr_verifier::step()
 {
-    if (!active_) {
-        if (std::empty(todo_)) {
-            return;
-        }
-
-        active_ = Active{ .mediator = std::move(todo_.extract(std::begin(todo_)).value().mediator),
-                          .token = ++next_token_,
-                          .sha = std::make_unique<tr_sha1>() };
-        active_->mediator->on_verify_started();
+    if (!active_ && !start_next()) {
+        return;
     }
 
     // a span is in flight
@@ -79,6 +78,14 @@ void tr_verifier::step()
         return;
     }
 
+    // The next span would wait for the move or rename, and every other
+    // verify would wait with it.
+    auto const id = active_->mediator->id();
+    if (local_data_.admin_op_pending(id)) {
+        park();
+        return;
+    }
+
     auto const piece_span = block_info.byte_span_for_piece(active_->piece);
     auto const begin = piece_span.begin + active_->piece_bytes_hashed;
     auto const span = tr_byte_span_t{ .begin = begin,
@@ -86,13 +93,56 @@ void tr_verifier::step()
 
     in_step_ = true;
     local_data_.hash_span(
-        active_->mediator->id(),
+        id,
         span,
         std::move(active_->sha),
         [this, token = active_->token](tr_torrent_id_t, tr_byte_span_t const hashed, tr_error const& error, auto sha) {
             on_span_hashed(token, hashed.size(), !error, std::move(sha));
         });
     in_step_ = false;
+}
+
+// Makes the first queued verify whose torrent has no move or rename
+// pending the active one. False if there is none.
+bool tr_verifier::start_next()
+{
+    auto const iter = std::ranges::find_if(todo_, [this](Node const& node) {
+        return !local_data_.admin_op_pending(node.mediator->id());
+    });
+    if (iter == std::end(todo_)) {
+        // Nothing says when a move or rename is done, so look again later.
+        if (!std::empty(todo_)) {
+            step_timer_->start_single_shot(BarrierPollInterval);
+        }
+        return false;
+    }
+
+    auto node = std::move(todo_.extract(iter).value());
+    auto const resumed = node.sha != nullptr;
+    active_ = Active{ .mediator = std::move(node.mediator),
+                      .priority = node.priority,
+                      .token = ++next_token_,
+                      .piece = node.piece,
+                      .piece_bytes_hashed = node.piece_bytes_hashed,
+                      .sha = resumed ? std::move(node.sha) : std::make_unique<tr_sha1>() };
+    if (!resumed) {
+        active_->mediator->on_verify_started();
+    }
+    return true;
+}
+
+// Puts the active verify back in the queue with its place kept, so that
+// the next one can go while a move or rename holds this one back.
+void tr_verifier::park()
+{
+    todo_.emplace(
+        Node{ .mediator = std::move(active_->mediator),
+              .priority = active_->priority,
+              .piece = active_->piece,
+              .piece_bytes_hashed = active_->piece_bytes_hashed,
+              .sha = std::move(active_->sha) });
+    active_.reset();
+    schedule_step();
 }
 
 void tr_verifier::on_span_hashed(uint64_t const token, uint64_t const n_bytes, bool const ok, std::unique_ptr<tr_sha1> sha)
