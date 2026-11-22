@@ -157,6 +157,17 @@ using DiskOpKind = tr_disk_activity::Op::Kind;
     return is_span_in_torrent(desc, span, LocalData::max_hash_span_bytes());
 }
 
+// The first `n` bytes of `scratch`, which grows to hold them and never
+// shrinks. A read or a copy overwrites them, so zeroing them first would
+// waste a pass over up to MaxRunBytes.
+[[nodiscard]] std::span<uint8_t> scratch_bytes(std::vector<uint8_t>& scratch, size_t const n)
+{
+    if (std::size(scratch) < n) {
+        scratch.resize(n);
+    }
+    return std::span{ scratch }.first(n);
+}
+
 // Adds `span`'s bytes, as they are on the disk, to `sha`.
 [[nodiscard]] tr_error hash_span_from_disk(
     StorageDescriptor const& desc,
@@ -165,10 +176,10 @@ using DiskOpKind = tr_disk_activity::Op::Kind;
     std::vector<uint8_t>& scratch,
     tr_sha1& sha)
 {
-    scratch.resize(static_cast<size_t>(span.size()));
-    auto error = tr_ioRead(desc, open_files, span.begin, scratch, false);
+    auto const buf = scratch_bytes(scratch, static_cast<size_t>(span.size()));
+    auto error = tr_ioRead(desc, open_files, span.begin, buf, false);
     if (!error) {
-        sha.add(scratch);
+        sha.add(buf);
     }
     return error;
 }
@@ -2070,12 +2081,12 @@ private:
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
-            scratch.resize(n_bytes);
+            auto const buf = scratch_bytes(scratch, n_bytes);
             for (auto const& op : run) {
-                std::copy_n(std::data(*op.data), op.span.size(), std::data(scratch) + (op.span.begin - begin));
+                std::copy_n(std::data(*op.data), op.span.size(), std::data(buf) + (op.span.begin - begin));
             }
 
-            writeme = scratch;
+            writeme = buf;
         }
 
 #ifdef TR_ENABLE_BLOCK_PROFILING
@@ -2157,11 +2168,11 @@ private:
         // of several doesn't fail its neighbors.
         auto merged = false;
         if (std::size(run) > 1U) {
-            scratch.resize(static_cast<size_t>(end - begin));
-            merged = !tr_ioRead(desc, open_files_, begin, scratch);
+            auto const buf = scratch_bytes(scratch, static_cast<size_t>(end - begin));
+            merged = !tr_ioRead(desc, open_files_, begin, buf);
             if (merged) {
                 for (auto const& op : run) {
-                    std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
+                    std::copy_n(std::data(buf) + (op.span.begin - begin), op.data->size(), op.data->data());
                 }
             }
         }
