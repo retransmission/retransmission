@@ -1081,6 +1081,21 @@ TEST_F(SynchronousDiskIoTest, requestBudgetIsUnbounded)
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
 }
 
+// A same-named file that is larger than the torrent's may not be the
+// torrent's. A verify reads the torrent's bytes of it and leaves the rest.
+TEST_F(SynchronousDiskIoTest, aVerifyLeavesATooLargeFileAlone)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const path = tr_torrentFindFile(tor, 0U);
+    ASSERT_FALSE(std::empty(path));
+    auto const file_size = tor->file_size(0U);
+    createFileWithContents(path, std::string(file_size + 1U, '\0'));
+
+    blockingTorrentVerify(tor);
+    EXPECT_EQ(file_size + 1U, tr_sys_path_get_info(path)->size);
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+}
+
 // ---
 
 TEST_F(TorrentAdminOpsTest, doneStepRunsAfterTheMoveOutAndSeesTheDownloadDir)

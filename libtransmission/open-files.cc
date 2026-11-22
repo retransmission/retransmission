@@ -132,7 +132,7 @@ tr_open_files::Handle tr_open_files::get(tr_torrent_id_t const tor_id, tr_file_i
 tr_open_files::Handle tr_open_files::get(
     tr_torrent_id_t const tor_id,
     tr_file_index_t const file_num,
-    bool writable,
+    bool const writable,
     std::string_view const filename,
     tr_file_preallocation const allocation,
     uint64_t const file_size,
@@ -185,9 +185,9 @@ tr_open_files::Handle tr_open_files::get(
     auto const info = tr_sys_path_get_info(filename);
     bool const already_existed = info && info->isFile();
 
-    // we need write permissions to resize the file
-    bool const resize_needed = already_existed && (file_size < info->size);
-    writable |= resize_needed;
+    // Only an open that may write cuts a too-large file to size. A read,
+    // such as a verify of files the torrent may not own, changes nothing.
+    bool const resize_needed = writable && already_existed && (file_size < info->size);
 
     // open the file
     int flags = writable ? (TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE) : 0;
@@ -205,12 +205,15 @@ tr_open_files::Handle tr_open_files::get(
     }
 
     if (!is_open(fd)) {
-        tr_logAddError(
-            fmt::format(
-                "Couldn't open '{path}': {error} ({error_code})",
-                fmt::arg("path", filename),
-                fmt::arg("error", error.message()),
-                fmt::arg("error_code", error.code())));
+        // A reader logs its own failures, or doesn't: a verify expects some.
+        if (writable) {
+            tr_logAddError(
+                fmt::format(
+                    "Couldn't open '{path}': {error} ({error_code})",
+                    fmt::arg("path", filename),
+                    fmt::arg("error", error.message()),
+                    fmt::arg("error_code", error.code())));
+        }
         return {};
     }
 

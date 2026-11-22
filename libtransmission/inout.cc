@@ -172,6 +172,13 @@ void read_bytes(
 
     auto const file = get_file(desc, open_files, false, file_index, error);
     if (!file || error) {
+        // get_file() names the file in `error`. A missing file is left to
+        // the caller, which sees ENOENT: a verify counts the piece missing.
+        if (log_errors && !error.is_enoent()) {
+            tr_logAddError(
+                fmt::format("{error} ({error_code})", fmt::arg("error", error.message()), fmt::arg("error_code", error.code())),
+                desc.name);
+        }
         return;
     }
 
