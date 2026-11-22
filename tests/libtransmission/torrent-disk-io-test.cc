@@ -2754,4 +2754,26 @@ TEST_F(ThreadlessVerifyTest, aVerifyWithNoLocalDataReadsNothing)
     EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_none(); }));
 }
 
+// A stopped verify leaves its span in flight, and that span's result lands
+// during the next torrent's verify. The stopped torrent's bytes are ones,
+// so the next torrent would fail its pieces if it took that result.
+TEST_F(ThreadlessVerifyTest, aStoppedVerifysSpanLeavesTheNextOneAlone)
+{
+    auto* const stopped = zeroFileInit("stopped", 2U);
+    auto* const next = zeroFileInit("next", 2U);
+    createFileWithContents(
+        tr_pathbuf{ stopped->current_dir().sv(), '/', stopped->file_subpath(0U) },
+        std::string(32768U, '\1'));
+    auto const n_before = verifiedCount();
+
+    startVerify(stopped);
+    tr_torrentVerify(next);
+    tr_torrentStop(stopped);
+    EXPECT_TRUE(waitFor([next] { return tr_torrentStat(next).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
+
+    EXPECT_TRUE(stepWorkersUntil([this, next, n_before] { return wasVerified(next, n_before); }));
+    EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
+    EXPECT_FALSE(wasVerified(stopped, n_before));
+}
+
 } // namespace tr::test
