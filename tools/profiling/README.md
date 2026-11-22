@@ -148,10 +148,10 @@ transfer, including startup. A percentage is relative to one CPU core and may
 exceed 100% with workers. Counters are omitted when /proc access is unavailable.
 
 `thread_cpu` breaks the same interval down per thread, busiest first. With
-profiling ON, each thread gets a role from the scopes it recorded: `session`,
-`disk worker` or `verify`. A session thread near 100% means the single-threaded
-peer path is the limit; well below it means the transfer is waiting on
-something else.
+profiling ON, each thread gets a role from the scopes it recorded: `session`
+or `disk worker`. A verify runs on the disk workers, or on the session thread
+without them. A session thread near 100% means the single-threaded peer path is
+the limit; well below it means the transfer is waiting on something else.
 
 `--disk-write-budget-mib` sets the daemon's `disk_write_budget_mib`: how much
 downloaded data may be in flight toward the disk. It only applies with disk

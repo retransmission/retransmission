@@ -348,6 +348,7 @@ public:
 
     [[nodiscard]] tr_error hash_span(tr_torrent_id_t const id, tr_byte_span_t const span, tr_sha1& sha) override
     {
+        TR_PROFILE_SCOPE("storage.hash_span");
         auto const* const tor = torrents_.get(id);
         auto const desc = tor != nullptr ? tor->storage_descriptor() : nullptr;
         if (!is_valid_hash_span(desc.get(), span)) {
