@@ -1585,15 +1585,12 @@ private:
             return;
         }
 
-        ++gate.n_running;
-        register_running_hash(gate, desc->block_info.byte_span_for_piece(op.piece));
-
-        {
-            auto const lock = std::scoped_lock{ work_mutex_ };
-            pending_tests_.push_back(
-                PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
-        }
-        wake_one_worker();
+        auto const span = desc->block_info.byte_span_for_piece(op.piece);
+        admit_hash(
+            gate,
+            span,
+            pending_tests_,
+            PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
     }
 
     void admit_hash_span(tr_torrent_id_t const id, Gate& gate, HashSpanOp op)
@@ -1606,12 +1603,25 @@ private:
             return;
         }
 
+        auto const span = op.span;
+        admit_hash(
+            gate,
+            span,
+            pending_hash_spans_,
+            PendingHashSpan{ .tor_id = id, .desc = std::move(desc), .op = std::move(op) });
+    }
+
+    // Counts a hash of `span` as running on `gate`, and hands it to the
+    // workers. Its completion unregisters it and calls release().
+    template<typename Pending>
+    void admit_hash(Gate& gate, tr_byte_span_t const span, std::deque<Pending>& queue, Pending pending)
+    {
         ++gate.n_running;
-        register_running_hash(gate, op.span);
+        register_running_hash(gate, span);
 
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            pending_hash_spans_.push_back(PendingHashSpan{ .tor_id = id, .desc = std::move(desc), .op = std::move(op) });
+            queue.push_back(std::move(pending));
         }
         wake_one_worker();
     }
