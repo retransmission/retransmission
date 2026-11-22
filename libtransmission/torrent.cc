@@ -1821,17 +1821,28 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
         return;
     }
 
-    for (tr_file_index_t file = 0, n_files = tor_->file_count(); file < n_files; ++file) {
-        tor_->update_file_path(file, {});
-    }
+    // Close the files the verify opened, so that a stopped torrent holds
+    // none and its drive can be ejected. The close is a barrier, so the
+    // renames below see the files after any move or rename queued during
+    // the verify.
+    tor_->session->local_data.close_torrent(tor_->id(), [session = tor_->session](tr_torrent_id_t const id) {
+        auto* const tor = session->torrents().get(id);
+        if (tor == nullptr || tor->is_deleting_) {
+            return;
+        }
 
-    tor_->recheck_completeness();
+        for (tr_file_index_t file = 0, n_files = tor->file_count(); file < n_files; ++file) {
+            tor->update_file_path(file, {});
+        }
 
-    tor_->session->verify_done_(tor_->id());
+        tor->recheck_completeness();
 
-    if (tor_->start_when_stable_) {
-        tor_->start(false, !tor_->checked_pieces_.has_none());
-    }
+        session->verify_done_(id);
+
+        if (tor->start_when_stable_) {
+            tor->start(false, !tor->checked_pieces_.has_none());
+        }
+    });
 }
 
 // ---

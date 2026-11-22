@@ -36,7 +36,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
         error = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf);
     };
 
-    // Neither the fixture nor verify go through the fd pool, so warm it
+    // The fixture's verify closes the files it read, so warm the fd pool
     // with a write that succeeds: this is the steady state of a torrent
     // that's been receiving blocks from peers.
     blockingRunInSessionThread(write_block);
