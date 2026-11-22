@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cerrno> // errno, ENOSPC, ENOSYS
 #include <chrono>
 #include <condition_variable>
@@ -16,6 +17,7 @@
 #include <memory>
 #include <mutex> // std::once_flag()
 #include <optional>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <system_error>
@@ -124,12 +126,12 @@ inline bool waitFor(
     return false;
 }
 
-// On a tr::LocalData started threadless, does the disk work that is
-// waiting, then delivers its callbacks. What those enqueue waits for the
-// next call.
-inline void runThreadlessDiskIo(tr::LocalData& local_data)
+// On a tr::LocalData started threadless, does the disk work waiting on
+// the threads of `which`, then delivers its callbacks. What those enqueue
+// waits for the next call.
+inline void runThreadlessDiskIo(tr::LocalData& local_data, tr::detail::DiskThread const which = tr::detail::DiskThread::Any)
 {
-    while (tr::detail::step(local_data)) {
+    while (tr::detail::step(local_data, which)) {
     }
     tr::detail::deliver(local_data);
 }
@@ -487,14 +489,15 @@ protected:
         return createTorrentAndWaitForVerifyDone(&builder);
     }
 
-    void blockingTorrentVerify(tr_torrent* tor)
+    // True once `tor`'s verify has finished.
+    bool blockingTorrentVerify(tr_torrent* tor)
     {
         EXPECT_NE(nullptr, tor->session);
         EXPECT_FALSE(tor->session->am_in_session_thread());
 
         auto const n_before = verifiedCount();
         tr_torrentVerify(tor);
-        std::ignore = waitForVerify(tor, n_before);
+        return waitForVerify(tor, n_before);
     }
 
     // How many verifies have finished, for waitForVerify() to wait past.
@@ -504,13 +507,6 @@ protected:
         return std::size(verified_);
     }
 
-    // The torrents whose verifies have finished, in the order they did.
-    [[nodiscard]] std::vector<tr_torrent_id_t> verifiedTorrents()
-    {
-        auto const lock = std::scoped_lock{ verified_mutex_ };
-        return verified_;
-    }
-
     // Waits for `tor`'s verify to finish, after the first `n_before`.
     [[nodiscard]] bool waitForVerify(tr_torrent const* const tor, size_t const n_before)
     {
@@ -518,6 +514,13 @@ protected:
         return verified_cv_.wait_for(lock, 20s, [this, tor_id = tor->id(), n_before] {
             return std::size(verified_) > n_before && verified_.back() == tor_id;
         });
+    }
+
+    // True if `tor` finished a verify after the first `n_before`.
+    [[nodiscard]] bool wasVerified(tr_torrent const* const tor, size_t const n_before)
+    {
+        auto const lock = std::scoped_lock{ verified_mutex_ };
+        return std::ranges::contains(std::views::drop(verified_, n_before), tor->id());
     }
 
     // Runs `func` on the session thread and waits for it to finish and returns the result.

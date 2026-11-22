@@ -235,6 +235,13 @@ protected:
         });
     }
 
+    // Starts `tor`'s verify, and waits until it's under way.
+    static void startVerify(tr_torrent* const tor)
+    {
+        tr_torrentVerify(tor);
+        EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
+    }
+
     // Reads the start of `tor`'s first file, which puts it in the fd pool.
     void readFirstFile(tr_torrent const* const tor)
     {
@@ -276,9 +283,14 @@ protected:
     }
 
     // runThreadlessDiskIo() on the session's disk IO. Session thread only.
-    void pump() const
+    void pump(tr::detail::DiskThread const which = tr::detail::DiskThread::Any) const
     {
-        runThreadlessDiskIo(session_->local_data);
+        runThreadlessDiskIo(session_->local_data, which);
+    }
+
+    void deliver() const
+    {
+        tr::detail::deliver(session_->local_data);
     }
 
     // A new torrent verifies, which reads on the disk workers and leaves
@@ -336,11 +348,6 @@ protected:
     [[nodiscard]] bool diskIsIdle() const
     {
         return !tr::detail::step(session_->local_data);
-    }
-
-    void deliver() const
-    {
-        tr::detail::deliver(session_->local_data);
     }
 
     [[nodiscard]] static bool fileExists(std::string_view const dir, std::string_view const subpath)
@@ -1149,7 +1156,7 @@ TEST_F(SynchronousDiskIoTest, aMoveClosesTheTorrentsFiles)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     readFirstFile(tor);
 
-    auto state = int{ TR_LOC_MOVING };
+    auto& state = newLocationState();
     tr_torrentSetLocation(tor, tr_pathbuf{ sandboxDir(), "/moved"sv }, true, &state);
     EXPECT_TRUE(waitFor([&state] { return state != TR_LOC_MOVING; }, MaxWaitMsec));
     EXPECT_EQ(TR_LOC_DONE, state);
@@ -2492,8 +2499,7 @@ protected:
     {
         n_verified_before_ = verifiedCount();
         session_->local_data.set_workers_paused(true);
-        tr_torrentVerify(tor);
-        EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
+        startVerify(tor);
     }
 
     // Lets the verify go on, and waits for it to finish.
@@ -2552,7 +2558,7 @@ TEST_F(VerifyDuringPathChangeTest, aMoveDoesNotInterruptAVerify)
     auto const target = tr_pathbuf{ sandboxDir(), "/moved"sv };
     startHeldVerify(tor);
 
-    auto state = int{ TR_LOC_MOVING };
+    auto& state = newLocationState();
     tr_torrentSetLocation(tor, target, true, &state);
 
     ASSERT_TRUE(finishVerify(tor));
@@ -2618,11 +2624,6 @@ protected:
         TorrentDiskIoTest::SetUp();
     }
 
-    void deliver() const
-    {
-        tr::detail::deliver(session_->local_data);
-    }
-
     // A paused one-file torrent of `n_pieces` pieces of zeroes, on disk
     // under `subpath_suffix`.
     [[nodiscard]] tr_torrent* zeroFileInit(
@@ -2638,59 +2639,31 @@ protected:
         return tor;
     }
 
-    // Starts `tor`'s verify, which waits at its first span.
-    void startVerify(tr_torrent* const tor)
-    {
-        tr_torrentVerify(tor);
-        EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
-    }
-
     // Queues a move of `tor`'s files to `dir`. The short lane holds it
     // until the test steps the lane.
-    void queueMove(tr_torrent* const tor, std::string_view const dir, int* const state)
+    void queueMove(tr_torrent* const tor, std::string_view const dir, int volatile* const state)
     {
         tr_torrentSetLocation(tor, dir, true, state);
-        EXPECT_TRUE(waitFor(
-            [this, tor] {
-                return blockingRunInSessionThread([this, tor] { return session_->local_data.admin_op_pending(tor->id()); });
-            },
-            MaxWaitMsec));
+        waitForAdminOp(tor);
     }
 
-    // Lets the workers, but not the lanes, work until `done`. The verifier
-    // takes its steps between these, on the session thread's timer.
+    void waitForAdminOp(tr_torrent const* const tor)
+    {
+        EXPECT_TRUE(
+            waitForInSessionThread([this, tor] { return session_->local_data.admin_op_pending(tor->id()); }, MaxWaitMsec));
+    }
+
+    // Lets the disk threads of `which` work until `done`. The verifier takes
+    // its steps between these, on the session thread's timer.
     template<typename Done>
-    [[nodiscard]] bool stepWorkersUntil(Done const& done)
+    [[nodiscard]] bool pumpUntil(Done const& done, tr::detail::DiskThread const which = tr::detail::DiskThread::Any)
     {
         return waitFor(
-            [this, &done] {
-                blockingRunInSessionThread([this] {
-                    while (tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker)) {
-                    }
-                    deliver();
-                });
+            [this, &done, which] {
+                blockingRunInSessionThread([this, which] { pump(which); });
                 return done();
             },
             MaxWaitMsec);
-    }
-
-    // Lets every disk thread work until `done`.
-    template<typename Done>
-    [[nodiscard]] bool pumpUntil(Done const& done)
-    {
-        return waitFor(
-            [this, &done] {
-                blockingRunInSessionThread([this] { pump(); });
-                return done();
-            },
-            MaxWaitMsec);
-    }
-
-    // True if `tor` finished a verify after the first `n_before`.
-    [[nodiscard]] bool wasVerified(tr_torrent const* const tor, size_t const n_before)
-    {
-        auto const verified = verifiedTorrents();
-        return std::ranges::contains(std::views::drop(verified, n_before), tor->id());
     }
 };
 } // namespace
@@ -2705,11 +2678,11 @@ TEST_F(ThreadlessVerifyTest, aVerifyWaitingForAMoveLetsTheNextOneGo)
     auto const n_before = verifiedCount();
 
     startVerify(moving);
-    auto state = int{ TR_LOC_MOVING };
+    auto& state = newLocationState();
     queueMove(moving, target, &state);
     tr_torrentVerify(next);
 
-    EXPECT_TRUE(stepWorkersUntil([this, next, n_before] { return wasVerified(next, n_before); }));
+    EXPECT_TRUE(pumpUntil([this, next, n_before] { return wasVerified(next, n_before); }, tr::detail::DiskThread::Worker));
     EXPECT_FALSE(wasVerified(moving, n_before));
     EXPECT_EQ(TR_LOC_MOVING, state);
     EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
@@ -2729,11 +2702,11 @@ TEST_F(ThreadlessVerifyTest, aVerifysLastStepWaitsForAMove)
     auto const n_before = verifiedCount();
 
     startVerify(tor);
-    auto state = int{ TR_LOC_MOVING };
+    auto& state = newLocationState();
     queueMove(tor, target, &state);
 
     // the verify has read its only piece, and the move hasn't started
-    EXPECT_TRUE(stepWorkersUntil([tor] { return tr_torrentStat(tor).activity != TR_STATUS_CHECK; }));
+    EXPECT_TRUE(pumpUntil([tor] { return tr_torrentStat(tor).activity != TR_STATUS_CHECK; }, tr::detail::DiskThread::Worker));
     EXPECT_EQ(n_before, verifiedCount());
 
     EXPECT_TRUE(pumpUntil([this, n_before] { return verifiedCount() > n_before; }));
@@ -2747,10 +2720,7 @@ TEST_F(ThreadlessVerifyTest, aVerifysLastStepWaitsForAMove)
 TEST_F(ThreadlessVerifyTest, aVerifyWithNoLocalDataReadsNothing)
 {
     auto* const tor = zeroPiecesTorrentInit("empty", 16384U, 4U);
-    auto const n_before = verifiedCount();
-
-    tr_torrentVerify(tor);
-    EXPECT_TRUE(waitForVerify(tor, n_before));
+    EXPECT_TRUE(blockingTorrentVerify(tor));
     EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_none(); }));
 }
 
@@ -2761,9 +2731,7 @@ TEST_F(ThreadlessVerifyTest, aStoppedVerifysSpanLeavesTheNextOneAlone)
 {
     auto* const stopped = zeroFileInit("stopped", 2U);
     auto* const next = zeroFileInit("next", 2U);
-    createFileWithContents(
-        tr_pathbuf{ stopped->current_dir().sv(), '/', stopped->file_subpath(0U) },
-        std::string(32768U, '\1'));
+    createFileWithContents(tr_torrentFindFile(stopped, 0U), std::string(stopped->total_size(), '\1'));
     auto const n_before = verifiedCount();
 
     startVerify(stopped);
@@ -2771,7 +2739,7 @@ TEST_F(ThreadlessVerifyTest, aStoppedVerifysSpanLeavesTheNextOneAlone)
     tr_torrentStop(stopped);
     EXPECT_TRUE(waitFor([next] { return tr_torrentStat(next).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
 
-    EXPECT_TRUE(stepWorkersUntil([this, next, n_before] { return wasVerified(next, n_before); }));
+    EXPECT_TRUE(pumpUntil([this, next, n_before] { return wasVerified(next, n_before); }, tr::detail::DiskThread::Worker));
     EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
     EXPECT_FALSE(wasVerified(stopped, n_before));
 }
