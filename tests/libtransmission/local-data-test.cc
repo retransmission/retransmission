@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cerrno> // EINVAL, ENOSPC
 #include <chrono>
@@ -16,6 +17,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -34,6 +36,7 @@
 #include <libtransmission/file-piece-map.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/inout.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/open-files.h>
 #include <libtransmission/storage-descriptor.h>
@@ -556,9 +559,9 @@ protected:
 
     // Run marshaled functions until `pred()` holds. False on timeout.
     template<typename Pred>
-    [[nodiscard]] bool pumpUntil(Pred const& pred)
+    [[nodiscard]] bool pumpUntil(Pred const& pred, std::chrono::milliseconds const timeout = std::chrono::seconds{ 5 })
     {
-        auto const deadline = std::chrono::steady_clock::now() + std::chrono::seconds{ 5 };
+        auto const deadline = std::chrono::steady_clock::now() + timeout;
 
         for (;;) {
             for (;;) {
@@ -689,14 +692,24 @@ protected:
     }
 
     // The write budget also sizes the retained-block cache, at half the budget.
+    // Writes are not held unless a test asks for it, so that a write lands at once;
+    // `hold_time` nullopt keeps LocalData's default hold.
     [[nodiscard]] auto makeLocalData(
         std::shared_ptr<tr::StorageDescriptor const> desc,
         size_t const n_workers = 2U,
-        std::optional<uint64_t> const write_budget = {})
+        std::optional<uint64_t> const write_budget = {},
+        std::function<void(tr::LocalData&)> const& before_start = {},
+        std::optional<std::chrono::milliseconds> const hold_time = std::chrono::milliseconds{ 0 })
     {
         auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
         if (write_budget) {
             local_data->set_write_budget(*write_budget);
+        }
+        if (hold_time) {
+            local_data->set_write_hold_time(*hold_time);
+        }
+        if (before_start) {
+            before_start(*local_data);
         }
         // Analyzer false positive: the descriptor moved into the lambda is still owned.
         // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
@@ -785,6 +798,7 @@ TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
         return tr::test::failPreallocation(error, true);
     } };
     auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
     local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
         return std::shared_ptr<tr::StorageDescriptor const>{ desc };
     });
@@ -905,6 +919,610 @@ TEST_F(LocalDataWorkersTest, adjacentWritesAreCombined)
     EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
 
     local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, separatedWritesToOneFileAllLand)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U), 4U);
+
+    // A gap between the blocks keeps them as two runs, so both workers
+    // want the same file. Whichever waits still gets its write done.
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_second = writeBlocks(*local_data, BlockSize * 2U, BlockSize * 3U, [&n_done] { ++n_done; });
+    auto const n_first = writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_first, n_second]() { return n_done == n_first + n_second; }));
+    EXPECT_EQ(2U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize), readFile("data.bin").substr(0U, BlockSize));
+    EXPECT_EQ(patternString(BlockSize * 2U, BlockSize), readFile("data.bin").substr(BlockSize * 2U, BlockSize));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aRunAcrossTwoFilesLands)
+{
+    static auto constexpr FileASize = size_t{ BlockSize * 2U };
+    static auto constexpr FileBSize = size_t{ BlockSize * 2U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U));
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileASize + FileBSize, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
+    EXPECT_EQ(patternString(FileASize, FileBSize), readFile("b.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, queuedWritesToABusyFileFinishBeforeShutdown)
+{
+    static auto constexpr FileSize = size_t{ BlockSize * 8U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // Every other block, so each is a run of its own for the same file.
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto n_writes = size_t{};
+    for (size_t offset = 0U; offset < FileSize; offset += BlockSize * 2U) {
+        n_writes += writeBlocks(*local_data, offset, offset + BlockSize, [&n_done] { ++n_done; });
+    }
+    local_data->set_workers_paused(false);
+    local_data->shutdown();
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+}
+
+TEST_F(LocalDataWorkersTest, heldWritesJoinIntoOneRun)
+{
+    static auto constexpr NBlocks = size_t{ 4U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::milliseconds{ 250 });
+
+    auto n_done = size_t{};
+    auto n_writes = size_t{};
+    for (auto block = size_t{}; block < NBlocks; ++block) {
+        n_writes += writeBlocks(*local_data, block * BlockSize, (block + 1U) * BlockSize, [&n_done] { ++n_done; });
+    }
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(1U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, fullRunEndsTheHold)
+{
+    // 16 MiB, the default hold size, so the hold must end on size: the timer is an hour.
+    static auto constexpr NBlocks = size_t{ 1024U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    auto n_done = size_t{};
+    auto n_writes = size_t{};
+    for (auto block = size_t{}; block < NBlocks; ++block) {
+        n_writes += writeBlocks(*local_data, block * BlockSize, (block + 1U) * BlockSize, [&n_done] { ++n_done; });
+    }
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writeRunTakesUpToHalfTheBudget)
+{
+    // 16 MiB, the default hold size; hold and budget are set so the run size follows the settings.
+    static auto constexpr NBlocks = size_t{ 1024U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_hold_bytes(BlockSize * NBlocks);
+    local_data->set_write_budget(BlockSize * NBlocks * 2U);
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(1U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writeRunStopsAt16MiB)
+{
+    // One block more than a run takes, with a budget and hold that would allow all of them.
+    static auto constexpr NBlocks = size_t{ 1025U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_hold_bytes(BlockSize * NBlocks);
+    local_data->set_write_budget(BlockSize * NBlocks * 4U);
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(2U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, smallBudgetSplitsAWriteRun)
+{
+    static auto constexpr NBlocks = size_t{ 4U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_budget(BlockSize * NBlocks);
+
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(2U, local_data->stats().write_runs);
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, smallBudgetEndsTheHold)
+{
+    static auto constexpr NBlocks = size_t{ 2U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_budget(BlockSize * NBlocks * 2U);
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, holdSizeEndsTheHold)
+{
+    static auto constexpr NBlocks = size_t{ 2U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_hold_bytes(BlockSize * NBlocks);
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * NBlocks, [&n_done] { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, BlockSize * NBlocks), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, zeroHoldSizeDisablesTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+    local_data->set_write_hold_bytes(0U);
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, BlockSize), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, holdSettingsSetBeforeWorkersStartApply)
+{
+    // Each setting alone ends the 1000 ms default hold at the first block,
+    // so the write lands well before the default hold would end.
+    auto const cases = std::array<std::pair<std::optional<uint64_t>, std::function<void(tr::LocalData&)>>, 3U>{ {
+        { {}, [](tr::LocalData& unstarted) { unstarted.set_write_hold_time(std::chrono::milliseconds{ 0 }); } },
+        { {}, [](tr::LocalData& unstarted) { unstarted.set_write_hold_bytes(0U); } },
+        { uint64_t{ BlockSize * 2U }, {} }, // half the budget is one block
+    } };
+
+    for (auto const& [write_budget, before_start] : cases) {
+        auto const local_data = makeLocalData(
+            makeDescriptor({ { "data.bin", BlockSize } }, 32768U),
+            2U,
+            write_budget,
+            before_start,
+            std::nullopt);
+
+        auto n_done = size_t{};
+        auto const n_writes = writeBlocks(*local_data, 0U, BlockSize, [&n_done] { ++n_done; });
+        EXPECT_TRUE(pumpUntil([&] { return n_done == n_writes; }, std::chrono::milliseconds{ 300 }));
+
+        local_data->shutdown();
+        EXPECT_EQ(n_writes, n_done);
+    }
+}
+
+TEST_F(LocalDataWorkersTest, shutdownEndsTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * 2U, [&n_done] { ++n_done; });
+    local_data->shutdown();
+
+    EXPECT_EQ(n_writes, n_done);
+    EXPECT_EQ(patternString(0U, BlockSize * 2U), readFile("data.bin"));
+}
+
+TEST_F(LocalDataWorkersTest, closeAllEndsTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, BlockSize * 2U, [&n_done] { ++n_done; });
+    local_data->close_all();
+
+    // close_all() returned with the held writes on disk and the workers still running
+    EXPECT_EQ(n_writes, n_done);
+    EXPECT_EQ(patternString(0U, BlockSize * 2U), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barrierWaitsForAHeldWrite)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::milliseconds{ 50 });
+
+    auto order = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&order] { order.emplace_back("write"); });
+    local_data->close_file(TorId, 0U, [&order](tr_torrent_id_t) { order.emplace_back("close"); });
+
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 2U; }));
+    auto const expected = std::vector<std::string>{ "write", "close" };
+    EXPECT_EQ(expected, order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barrierEndsTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    auto order = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&order] { order.emplace_back("write"); });
+    local_data->close_file(TorId, 0U, [&order](tr_torrent_id_t) { order.emplace_back("close"); });
+
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 2U; }));
+    auto const expected = std::vector<std::string>{ "write", "close" };
+    EXPECT_EQ(expected, order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aReadOfAHeldWriteEndsTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    auto written = false;
+    writeBlocks(*local_data, 0U, BlockSize, [&written] { written = true; });
+    auto read = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, read);
+
+    EXPECT_TRUE(pumpUntil([&read]() { return read.done; }));
+    EXPECT_TRUE(written);
+    EXPECT_EQ(patternString(0U, BlockSize), read.data);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barrierBehindAReadOfAHeldWriteEndsTheHold)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize * 2U } }, 32768U));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    // The read waits for the held write, and the close waits behind the read.
+    auto order = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&order] { order.emplace_back("write"); });
+    auto read = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, read);
+    local_data->close_file(TorId, 0U, [&order](tr_torrent_id_t) { order.emplace_back("close"); });
+
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 2U; }));
+    auto const expected = std::vector<std::string>{ "write", "close" };
+    EXPECT_EQ(expected, order);
+    EXPECT_TRUE(read.done);
+    EXPECT_EQ(patternString(0U, BlockSize), read.data);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, fileCloseWaitingForAReadLeavesOtherFilesHeld)
+{
+    // Neither file is open yet, so the page cache answers no read.
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+    ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
+    local_data->set_write_hold_time(std::chrono::hours{ 1 });
+
+    // a.bin's close waits for a read of a.bin that the paused workers haven't done
+    local_data->set_workers_paused(true);
+    auto read = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, read);
+    auto closed = false;
+    local_data->close_file(TorId, 0U, [&closed](tr_torrent_id_t) { closed = true; });
+
+    // A write to b.bin meanwhile stays held: the close doesn't wait for it.
+    auto n_done = size_t{};
+    writeBlocks(*local_data, BlockSize, 2U * BlockSize, [&n_done] { ++n_done; });
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&read, &closed] { return read.done && closed; }));
+    EXPECT_FALSE(pumpUntil([&n_done] { return n_done == 1U; }, std::chrono::milliseconds{ 200 }));
+
+    local_data->shutdown();
+    EXPECT_EQ(1U, n_done);
+}
+
+TEST_F(LocalDataWorkersTest, barrierEndsOnlyItsTorrentsHold)
+{
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    auto const desc = makeDescriptor({ { "a.bin", BlockSize } }, 32768U);
+    auto other = std::make_shared<tr::StorageDescriptor>(*makeDescriptor({ { "b.bin", BlockSize } }, 32768U));
+    other->id = OtherId;
+    auto local_data = tr::LocalData{ torrents_, open_files_ };
+    local_data.set_write_hold_time(std::chrono::hours{ 1 });
+    local_data.start_workers(2U, open_files_, marshal(), [desc, other](tr_torrent_id_t const id) {
+        return id == TorId ? desc : std::shared_ptr<tr::StorageDescriptor const>{ other };
+    });
+
+    auto order = std::vector<std::string>{};
+    writeBlocks(local_data, 0U, BlockSize, [&order] { order.emplace_back("write"); });
+    local_data.write(
+        OtherId,
+        { .begin = 0U, .end = BlockSize },
+        patternBlock(0U, BlockSize),
+        [&order](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            order.emplace_back("other write");
+        });
+    local_data.close_file(OtherId, 0U, [&order](tr_torrent_id_t) { order.emplace_back("other close"); });
+
+    // The other torrent's close ends its own hold, but TorId's write stays held.
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 2U; }));
+    std::ignore = pumpUntil([&order] { return std::size(order) > 2U; }, std::chrono::milliseconds{ 200 });
+    auto expected = std::vector<std::string>{ "other write", "other close" };
+    EXPECT_EQ(expected, order);
+
+    local_data.shutdown();
+    expected.emplace_back("write");
+    EXPECT_EQ(expected, order);
+}
+
+TEST_F(LocalDataWorkersTest, aHashDuringAHoldDoesNotStallTheHeldWrites)
+{
+    // a.bin is new, so writing it stalls a worker in the gate. b.bin exists, so writing it doesn't.
+    // One block per piece, so piece 1 is a.bin's second block.
+    auto const desc = makePreallocatingDescriptor({ { "a.bin", BlockSize * 2U }, { "b.bin", BlockSize } });
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), std::string(BlockSize, '\0')));
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
+    local_data.start_workers(3U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    // the first worker stalls creating a.bin
+    auto n_a_done = size_t{};
+    writeBlocks(local_data, 0U, BlockSize, [&n_a_done] { ++n_a_done; });
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // A write to b.bin starts a hold, and a worker wakes to time it. The hash
+    // that follows stalls whichever worker takes it, since a.bin is still being
+    // opened. If that is the one timing the hold, it wakes the third to take over.
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 100 });
+    auto n_b_done = size_t{};
+    writeBlocks(local_data, BlockSize * 2U, BlockSize * 3U, [&n_b_done] { ++n_b_done; });
+    auto hashed = false;
+    local_data.test_piece(TorId, 1U, [&hashed](auto, auto, auto const&, auto) { hashed = true; });
+
+    // the held write lands while both other workers are still stalled
+    EXPECT_TRUE(pumpUntil([&n_b_done]() { return n_b_done == 1U; }));
+    EXPECT_EQ(0U, n_a_done);
+    EXPECT_FALSE(hashed);
+    EXPECT_EQ(patternString(BlockSize * 2U, BlockSize), readFile("b.bin"));
+
+    gate.release();
+    EXPECT_TRUE(pumpUntil([&n_a_done, &hashed]() { return n_a_done == 1U && hashed; }));
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, anIdleWorkerWritesOtherFilesWhileOneIsBusy)
+{
+    // a.bin is new, so writing it stalls a worker in the gate. b.bin exists, so writing it doesn't.
+    auto const desc = makePreallocatingDescriptor({ { "a.bin", BlockSize * 3U }, { "b.bin", BlockSize } });
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), std::string(BlockSize, '\0')));
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
+    local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    // the first worker stalls creating a.bin
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+    write_block(0U);
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // Block 2 is a run of its own in a.bin, so it waits for a.bin's worker.
+    // Block 3, in b.bin, goes to the idle worker.
+    write_block(2U);
+    write_block(3U);
+    EXPECT_TRUE(pumpUntil([&order]() { return !std::empty(order); }));
+    EXPECT_EQ(std::vector<size_t>{ 3U }, order);
+
+    gate.release();
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 3U; }));
+    EXPECT_EQ((std::vector<size_t>{ 3U, 0U, 2U }), order);
+    EXPECT_EQ(patternString(BlockSize * 3U, BlockSize), readFile("b.bin"));
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, aWriteToABusyFileThatFillsTheHoldWakesAWorker)
+{
+    // a.bin is new, so writing it stalls a worker in the gate. b.bin exists, so writing it doesn't.
+    auto const desc = makePreallocatingDescriptor({ { "a.bin", BlockSize * 3U }, { "b.bin", BlockSize } });
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), std::string(BlockSize, '\0')));
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
+    local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    // the first worker stalls creating a.bin
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+    write_block(0U);
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // Block 3, in b.bin, starts an hour-long hold. Block 2, in the busy
+    // a.bin, fills it, so block 3 can go to the idle worker at once.
+    local_data.set_write_hold_time(std::chrono::hours{ 1 });
+    local_data.set_write_hold_bytes(BlockSize * 2U);
+    write_block(3U);
+    write_block(2U);
+    EXPECT_TRUE(pumpUntil([&order]() { return !std::empty(order); }));
+    EXPECT_EQ(std::vector<size_t>{ 3U }, order);
+
+    gate.release();
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 3U; }));
+    EXPECT_EQ((std::vector<size_t>{ 3U, 0U, 2U }), order);
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writesToABusyFileLandWithoutAHold)
+{
+    // a.bin is new, so writing it stalls a worker in the gate.
+    auto const desc = makePreallocatingDescriptor({ { "a.bin", BlockSize * 3U } });
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
+    local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+    write_block(0U);
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // No worker is woken for these: the idle one can't take them, and the
+    // busy one takes them when it's done with block 0.
+    write_block(1U);
+    write_block(2U);
+    gate.release();
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 3U; }));
+    EXPECT_EQ((std::vector<size_t>{ 0U, 1U, 2U }), order);
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writesToABusyFileWaitForItsSweepWithTwoWorkers)
+{
+    // Blocks 0-5 are a.bin, which is new, so writing it stalls a worker in
+    // the gate. Block 6 is b.bin, which exists, so writing it doesn't.
+    auto const desc = makePreallocatingDescriptor({ { "a.bin", BlockSize * 6U }, { "b.bin", BlockSize } });
+    ASSERT_TRUE(tr_file_save(pathOf("b.bin"), std::string(BlockSize, '\0')));
+    auto gate = PreallocationGate{};
+    auto files = tr_open_files{ gate.hook() };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
+    local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
+
+    auto order = std::vector<size_t>{};
+    auto const write_block = [&local_data, &order](size_t const block) {
+        writeBlocks(local_data, block * BlockSize, (block + 1U) * BlockSize, [&order, block] { order.push_back(block); });
+    };
+
+    // the sweep is blocks 0 and 5, and the worker writing block 0 stalls
+    local_data.set_workers_paused(true);
+    write_block(0U);
+    write_block(5U);
+    local_data.set_workers_paused(false);
+    ASSERT_TRUE(gate.waitForFile(1U));
+
+    // Block 2 arrives ahead of block 5. Block 6 wakes the idle worker,
+    // which takes it, but leaves block 2 to wait for a.bin's sweep.
+    write_block(2U);
+    write_block(6U);
+    EXPECT_TRUE(pumpUntil([&order]() { return !std::empty(order); }));
+    EXPECT_EQ(std::vector<size_t>{ 6U }, order);
+
+    gate.release();
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 4U; }));
+    EXPECT_EQ((std::vector<size_t>{ 6U, 0U, 5U, 2U }), order);
+
+    local_data.shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, gatheredWriteOfMoreBuffersThanOneCallTakesLands)
+{
+    // More buffers than one gathered write call takes, so the write needs several calls.
+    static auto constexpr NBlocks = size_t{ 1100U };
+    auto const desc = makeDescriptor({ { "data.bin", BlockSize * NBlocks } }, 4194304U);
+    auto const data = patternString(0U, BlockSize * NBlocks);
+    auto const bytes = std::span{ reinterpret_cast<uint8_t const*>(std::data(data)), std::size(data) };
+    auto bufs = std::vector<std::span<uint8_t const>>{};
+    for (auto offset = size_t{}; offset < std::size(bytes); offset += BlockSize) {
+        bufs.push_back(bytes.subspan(offset, BlockSize));
+    }
+
+    EXPECT_FALSE(tr_ioWrite(*desc, open_files_, 0U, bufs));
+    EXPECT_EQ(data, readFile("data.bin"));
+}
+
+TEST_F(LocalDataWorkersTest, gatheredWriteLandsBufferByBufferAcrossFiles)
+{
+    // Three buffers back to back. The middle one straddles the two files.
+    static auto constexpr FileASize = size_t{ 5000U };
+    static auto constexpr FileBSize = size_t{ 7000U };
+    auto const desc = makeDescriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U);
+    auto const data = patternString(0U, FileASize + FileBSize);
+    auto const bytes = std::span{ reinterpret_cast<uint8_t const*>(std::data(data)), std::size(data) };
+    auto const bufs = std::array{ bytes.first(3000U), bytes.subspan(3000U, 4000U), bytes.subspan(7000U) };
+
+    EXPECT_FALSE(tr_ioWrite(*desc, open_files_, 0U, bufs));
+    EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
+    EXPECT_EQ(patternString(FileASize, FileBSize), readFile("b.bin"));
 }
 
 TEST_F(LocalDataWorkersTest, writesCrossFileBoundaries)
@@ -1891,6 +2509,7 @@ TEST_F(LocalDataWorkersTest, writesThatArriveDuringASweepWaitForTheNext)
     auto gate = PreallocationGate{};
     auto files = tr_open_files{ gate.hook() };
     auto local_data = tr::LocalData{ torrents_, files };
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
     local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
         return std::shared_ptr<tr::StorageDescriptor const>{ desc };
     });
@@ -1936,6 +2555,8 @@ TEST_F(LocalDataWorkersTest, readsThatArriveDuringASweepWaitForTheNext)
     auto gate = PreallocationGate{};
     auto files = tr_open_files{ gate.hook() };
     auto local_data = tr::LocalData{ torrents_, files };
+    // Writes go out at once, so the events follow the sweeps.
+    local_data.set_write_hold_time(std::chrono::milliseconds{ 0 });
     local_data.start_workers(1U, files, marshal(), [desc](tr_torrent_id_t) {
         return std::shared_ptr<tr::StorageDescriptor const>{ desc };
     });
@@ -1996,6 +2617,8 @@ TEST_F(LocalDataWorkersTest, hashesTakeTurnsWithReadsAndWrites)
             { { "a.bin", BlockSize }, { "b.bin", BlockSize }, { "c.bin", BlockSize }, { "d.bin", BlockSize } },
             BlockSize),
         1U);
+    // Writes go out at once, so the events follow the turns.
+    local_data->set_write_hold_time(std::chrono::milliseconds{ 0 });
     ASSERT_TRUE(tr_file_save(pathOf("a.bin"), patternString(0U, BlockSize)));
     ASSERT_TRUE(tr_file_save(pathOf("b.bin"), patternString(BlockSize, BlockSize)));
     ASSERT_TRUE(tr_file_save(pathOf("c.bin"), patternString(2U * BlockSize, BlockSize)));

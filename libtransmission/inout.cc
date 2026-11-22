@@ -14,6 +14,8 @@
 
 #include <fmt/format.h>
 
+#include <small/vector.hpp>
+
 #include "libtransmission/block-info.h" // tr_block_info
 #include "libtransmission/constants.h" // TrBlockSize
 #include "libtransmission/error.h"
@@ -90,12 +92,62 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
             return false;
         }
 
+        // Retrying a write that wrote nothing would loop forever.
+        if (n_written == 0U) {
+            error.set_from_errno(EIO);
+            return false;
+        }
+
         buf = buf.subspan(n_written);
         file_offset += n_written;
     }
 
     return true;
 }
+
+} // namespace
+
+bool tr::detail::write_entire_bufs(
+    tr_sys_file_t const fd,
+    uint64_t file_offset,
+    std::span<std::span<uint8_t const> const> bufs,
+    tr_error& error,
+    WriteAtV const write_at_v)
+{
+    TR_PROFILE_SCOPE("disk.write_syscall_loop");
+    while (!std::empty(bufs)) {
+        auto n_written = uint64_t{};
+        if (!write_at_v(fd, bufs, file_offset, &n_written, &error)) {
+            return false;
+        }
+
+        if (n_written == 0U) {
+            error.set_from_errno(EIO);
+            return false;
+        }
+
+        file_offset += n_written;
+        while (!std::empty(bufs) && n_written >= std::size(bufs.front())) {
+            n_written -= std::size(bufs.front());
+            bufs = bufs.subspan(1U);
+        }
+
+        // A short write can stop inside a buffer. Finish that one alone.
+        if (n_written > 0U) {
+            auto const rest = bufs.front().subspan(n_written);
+            if (!write_entire_buf(fd, file_offset, rest, error)) {
+                return false;
+            }
+            file_offset += std::size(rest);
+            bufs = bufs.subspan(1U);
+        }
+    }
+
+    return true;
+}
+
+namespace
+{
 
 // Returns a RAII reference to the open file.
 [[nodiscard]] tr_open_files::Handle get_file(
@@ -193,13 +245,19 @@ void write_bytes(
     tr_open_files& open_files,
     tr_file_index_t const file_index,
     uint64_t const file_offset,
-    std::span<uint8_t const> buf,
+    std::span<std::span<uint8_t const> const> bufs,
     tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
     auto const file_size = desc.files.file_size(file_index);
     TR_ASSERT(file_size == 0U || file_offset < file_size);
-    TR_ASSERT(file_offset + std::size(buf) <= file_size);
+#ifdef TR_ENABLE_ASSERTS
+    auto n_bytes = uint64_t{};
+    for (auto const& buf : bufs) {
+        n_bytes += std::size(buf);
+    }
+    TR_ASSERT(file_offset + n_bytes <= file_size);
+#endif
     if (file_size == 0U) {
         return;
     }
@@ -210,7 +268,7 @@ void write_bytes(
     }
 
     auto const io_lock = file->io_lock();
-    write_entire_buf(file->fd(), file_offset, buf, error);
+    tr::detail::write_entire_bufs(file->fd(), file_offset, bufs, error, tr_sys_file_write_at_v);
 
     if (error) {
         tr_logAddError(
@@ -289,22 +347,71 @@ tr_error tr_ioWrite(
     uint64_t const begin,
     std::span<uint8_t const> const writeme)
 {
+    return tr_ioWrite(desc, open_files, begin, std::span{ &writeme, 1U });
+}
+
+tr_error tr_ioWrite(
+    tr::StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    uint64_t const begin,
+    std::span<std::span<uint8_t const> const> const writeme)
+{
     TR_PROFILE_SCOPE("disk.write_block");
-    if (std::empty(writeme)) {
+    auto len = uint64_t{};
+    for (auto const& buf : writeme) {
+        len += std::size(buf);
+    }
+
+    if (len == 0U) {
         return {};
     }
 
-    if (begin + std::size(writeme) > desc.block_info.total_size()) {
+    if (begin + len > desc.block_info.total_size()) {
         return tr_error::from_errno(EINVAL);
     }
 
+    // Each chunk gets the buffers, or the parts of them, that land in its file.
     auto error = tr_error{};
+    auto next = std::begin(writeme);
+    auto pending = std::span<uint8_t const>{};
+    // Holds every buffer of a chunk that splits one. Only a file edge that is not block-aligned splits a
+    // buffer, so the heap is rarely needed.
+    auto file_bufs = small::vector<std::span<uint8_t const>, 4U>{};
     for_each_file_chunk(
         desc,
         begin,
-        std::size(writeme),
-        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
-            write_bytes(desc, open_files, file_index, file_offset, writeme.subspan(done, n_bytes), error);
+        len,
+        [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t /*done*/, uint64_t const n_bytes) {
+            // A chunk that starts and ends on buffer edges, such as a run
+            // within one file, takes its buffers as they are.
+            if (std::empty(pending)) {
+                auto end = next;
+                auto sum = uint64_t{};
+                while (end != std::end(writeme) && sum < n_bytes) {
+                    sum += std::size(*end);
+                    ++end;
+                }
+
+                if (sum == n_bytes) {
+                    write_bytes(desc, open_files, file_index, file_offset, std::span{ next, end }, error);
+                    next = end;
+                    return !error;
+                }
+            }
+
+            file_bufs.clear();
+            for (auto left = n_bytes; left > 0U;) {
+                while (std::empty(pending)) {
+                    pending = *next++;
+                }
+
+                auto const n = std::min<uint64_t>(left, std::size(pending));
+                file_bufs.push_back(pending.first(n));
+                pending = pending.subspan(n);
+                left -= n;
+            }
+
+            write_bytes(desc, open_files, file_index, file_offset, file_bufs, error);
             return !error;
         });
 

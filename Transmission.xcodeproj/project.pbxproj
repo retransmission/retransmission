@@ -2861,6 +2861,7 @@
 					"-D__TRANSMISSION__",
 					"-DRAPIDJSON_HAS_STDSTRING=1",
 					"-DHAVE_FLOCK",
+					"-DHAVE_PWRITEV",
 					"-DWITH_CCRYPTO",
 				);
 				PRODUCT_NAME = transmission;
@@ -3051,6 +3052,7 @@
 					"-D__TRANSMISSION__",
 					"-DRAPIDJSON_HAS_STDSTRING=1",
 					"-DHAVE_FLOCK",
+					"-DHAVE_PWRITEV",
 					"-DWITH_CCRYPTO",
 				);
 				PRODUCT_NAME = transmission;
@@ -3402,6 +3404,7 @@
 					"-D__TRANSMISSION__",
 					"-DRAPIDJSON_HAS_STDSTRING=1",
 					"-DHAVE_FLOCK",
+					"-DHAVE_PWRITEV",
 					"-DWITH_CCRYPTO",
 				);
 				PRODUCT_NAME = transmission;

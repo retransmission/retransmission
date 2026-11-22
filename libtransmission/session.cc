@@ -756,6 +756,17 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         local_data.set_write_budget(effective_write_budget_bytes());
     }
 
+    // A hold already ends at half the write budget, and a longer one only delays piece checks.
+    static auto constexpr MaxWriteBatchMib = size_t{ 1024U };
+    static auto constexpr MaxWriteBatchMsec = size_t{ 5000U };
+    if (auto const val = new_settings.disk_write_batch_mib; force || val != old_settings.disk_write_batch_mib) {
+        local_data.set_write_hold_bytes(uint64_t{ std::min(size_t{ val }, MaxWriteBatchMib) } * 1024U * 1024U);
+    }
+
+    if (auto const val = new_settings.disk_write_batch_ms; force || val != old_settings.disk_write_batch_ms) {
+        local_data.set_write_hold_time(std::chrono::milliseconds{ std::min(size_t{ val }, MaxWriteBatchMsec) });
+    }
+
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
     }

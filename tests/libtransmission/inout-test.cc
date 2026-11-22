@@ -3,7 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
+#include <array>
+#include <cstdint>
 #include <functional>
+#include <span>
+#include <string_view>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -12,15 +17,70 @@
 
 #include <libtransmission/constants.h>
 #include <libtransmission/error.h>
+#include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/inout.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/tr-strbuf.h>
 
 #include "test-fixtures.h"
 
 namespace
 {
 using InOutTest = tr::test::SessionTest;
+using namespace std::literals;
+
+// A vectored write that writes at most 10000 bytes per call, as a kernel
+// may, so a call can stop inside a buffer.
+auto n_short_writes = size_t{};
+bool writeAtMost10000(
+    tr_sys_file_t const fd,
+    std::span<std::span<uint8_t const> const> const bufs,
+    uint64_t const offset,
+    uint64_t* const bytes_written,
+    tr_error* const error)
+{
+    ++n_short_writes;
+    auto clipped = std::vector<std::span<uint8_t const>>{};
+    auto left = size_t{ 10000U };
+    for (auto const buf : bufs) {
+        if (left == 0U) {
+            break;
+        }
+        clipped.push_back(buf.first(std::min(left, std::size(buf))));
+        left -= std::size(clipped.back());
+    }
+    return tr_sys_file_write_at_v(fd, clipped, offset, bytes_written, error);
+}
+
+TEST_F(InOutTest, gatheredWriteFinishesAShortWriteThatStopsInsideABuffer)
+{
+    auto const path = tr_pathbuf{ sandboxDir(), "/short.bin"sv };
+    auto const fd = tr_sys_file_open(path, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
+    ASSERT_NE(TR_BAD_SYS_FILE, fd);
+
+    // The first call writes 10000 bytes, stopping 2000 bytes into the second buffer.
+    auto data = std::vector<uint8_t>(24000U);
+    for (size_t i = 0U; i < std::size(data); ++i) {
+        data[i] = static_cast<uint8_t>(i % 251U);
+    }
+    auto const bytes = std::span<uint8_t const>{ data };
+    auto const bufs = std::array{ bytes.first(8000U), bytes.subspan(8000U, 8000U), bytes.subspan(16000U) };
+
+    n_short_writes = 0U;
+    auto error = tr_error{};
+    EXPECT_TRUE(tr::detail::write_entire_bufs(fd, 0U, bufs, error, writeAtMost10000)) << error;
+    tr_sys_file_close(fd);
+
+    // The rest of the second buffer goes alone, then the third in one more call.
+    EXPECT_EQ(2U, n_short_writes);
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(path, contents));
+    ASSERT_EQ(std::size(data), std::size(contents));
+    EXPECT_TRUE(std::equal(std::begin(data), std::end(data), std::begin(contents), [](uint8_t a, char b) {
+        return a == static_cast<uint8_t>(b);
+    }));
+}
 
 TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
 {

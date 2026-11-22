@@ -3,8 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
+#include <cstdint>
 #include <filesystem>
 #include <ranges>
+#include <span>
 #include <string>
 #include <string_view>
 #include <system_error>
@@ -16,6 +19,7 @@
 
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
+#include "libtransmission/tr-assert.h"
 
 namespace
 {
@@ -250,4 +254,44 @@ std::string tr_sys_dir_get_current(tr_error* error)
 
     maybe_set_error(error, ec);
     return {};
+}
+
+bool tr_sys_file_write_at_v_by_copy(
+    tr_sys_file_t const handle,
+    std::span<std::span<uint8_t const> const> const bufs,
+    uint64_t const offset,
+    uint64_t* const bytes_written,
+    tr_error* const error)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+
+    if (std::empty(bufs)) {
+        if (bytes_written != nullptr) {
+            *bytes_written = 0U;
+        }
+        return true;
+    }
+
+    // Copying keeps the writes few while the buffer stays small.
+    static auto constexpr MaxCopyBytes = size_t{ 1024U * 1024U };
+    auto n_bufs = size_t{ 1U };
+    auto n_bytes = std::size(bufs.front());
+    while (n_bufs < std::size(bufs) && n_bytes + std::size(bufs[n_bufs]) <= MaxCopyBytes) {
+        n_bytes += std::size(bufs[n_bufs]);
+        ++n_bufs;
+    }
+
+    if (n_bufs == 1U) {
+        return tr_sys_file_write_at(handle, std::data(bufs.front()), std::size(bufs.front()), offset, bytes_written, error);
+    }
+
+    // Disk workers make most of these calls, so each keeps its buffer.
+    thread_local auto scratch = std::vector<uint8_t>{};
+    scratch.resize(n_bytes);
+    auto* out = std::data(scratch);
+    for (auto const buf : bufs.first(n_bufs)) {
+        out = std::ranges::copy(buf, out).out;
+    }
+
+    return tr_sys_file_write_at(handle, std::data(scratch), n_bytes, offset, bytes_written, error);
 }
