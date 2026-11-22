@@ -1324,7 +1324,9 @@ private:
     // its barrier is granted. It takes the torrent's files out of the pool
     // first, and the lane closes them before the disk work: Windows won't
     // move, rename, or remove an open file, or a folder that holds one, and
-    // a moved file's old fd writes to the old copy.
+    // a moved file's old fd writes to the old copy. Unlike close_torrent(),
+    // it keeps the blocks retained for piece hashes, which a move or rename
+    // leaves valid. finish_remove() drops a removed torrent's.
     void submit_disk_work(tr_torrent_id_t const id, std::function<bool()> body)
     {
         board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
