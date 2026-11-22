@@ -37,6 +37,7 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
+#include <libtransmission/inout.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/peer-common.h>
 #include <libtransmission/peer-io.h>
@@ -232,6 +233,16 @@ protected:
             }
             return true;
         });
+    }
+
+    // Reads the start of `tor`'s first file, which puts it in the fd pool.
+    void readFirstFile(tr_torrent const* const tor)
+    {
+        blockingRunInSessionThread([this, tor] {
+            auto buf = std::vector<uint8_t>(16U);
+            EXPECT_FALSE(tr_ioRead(*tor->storage_descriptor(), session_->openFiles(), 0U, buf));
+        });
+        EXPECT_FALSE(poolHoldsNoFilesOf(tor));
     }
 };
 
@@ -1109,6 +1120,39 @@ TEST_F(SynchronousDiskIoTest, aVerifyClosesTheFilesItReads)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     blockingTorrentVerify(tor);
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
+}
+
+// Windows won't rename a folder that holds an open file.
+TEST_F(SynchronousDiskIoTest, aRenameClosesTheTorrentsFiles)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    readFirstFile(tor);
+
+    auto renamed = std::atomic<bool>{};
+    tr_torrentRenamePath(
+        tor,
+        "files-filled-with-zeroes"sv,
+        "renamed"sv,
+        [&renamed](tr_torrent_id_t, auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            renamed = true;
+        });
+    EXPECT_TRUE(waitFor([&renamed] { return renamed.load(); }, MaxWaitMsec));
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
+}
+
+// ...nor move one. A file moved across filesystems leaves its old fd
+// pointing at the old copy, too.
+TEST_F(SynchronousDiskIoTest, aMoveClosesTheTorrentsFiles)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    readFirstFile(tor);
+
+    auto state = int{ TR_LOC_MOVING };
+    tr_torrentSetLocation(tor, tr_pathbuf{ sandboxDir(), "/moved"sv }, true, &state);
+    EXPECT_TRUE(waitFor([&state] { return state != TR_LOC_MOVING; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
     EXPECT_TRUE(poolHoldsNoFilesOf(tor));
 }
 
