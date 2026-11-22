@@ -600,7 +600,8 @@ private:
  * A worker takes a piece hash, a run of reads, and a run of writes in
  * turn, skipping the kinds that have nothing waiting, so that a flood
  * of one kind can't starve the others. A hash can read a whole piece
- * from the disk, which is why it gets no more than its turn.
+ * from the disk, which is why it gets no more than its turn. A span of
+ * a verify goes when none of those waits, or after a few turns of them.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.

@@ -454,9 +454,9 @@ void start_threadless(
 enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
 
 // Takes one step now, on the calling thread, paused or not. A worker
-// takes its next hash, run of reads, or run of writes, or does the one
-// it took earlier. A lane does its next job. False if no thread of
-// `which` has anything to do.
+// takes its next hash, run of reads, run of writes, or verify span, or
+// does the one it took earlier. A lane does its next job. False if no
+// thread of `which` has anything to do.
 bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
 
 // Does now what the backend left for the session thread to do later:

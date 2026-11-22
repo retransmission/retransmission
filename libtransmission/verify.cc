@@ -16,6 +16,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/local-data.h"
 #include "libtransmission/timer.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/verify.h"
 
@@ -202,9 +203,7 @@ void tr_verifier::on_span_hashed(uint64_t const token, uint64_t const n_bytes, b
 
 void tr_verifier::finish(bool const aborted)
 {
-    if (!active_) {
-        return;
-    }
+    TR_ASSERT(active_);
 
     auto const mediator = std::move(active_->mediator);
     active_.reset();
