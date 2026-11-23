@@ -3,7 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm> // std::ranges::shuffle
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cerrno>
@@ -11,6 +11,8 @@
 #include <condition_variable>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
+#include <cstdio> // stderr
+#include <cstdlib> // std::abort
 #include <deque>
 #include <functional>
 #include <iterator> // std::prev
@@ -19,6 +21,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <random>
 #include <set>
 #include <span>
 #include <string>
@@ -392,6 +395,9 @@ private:
  *   Workers pull pending ops, run them, and post completion closures
  *   to `done_`. The session thread delivers those from pump_done().
  * - `retained_` is shared too and locks itself.
+ * - Tests can start the backend with no threads. The session thread
+ *   then does the workers' and the lanes' work too, a step at a time,
+ *   through the same queues and locks. See `Threadless`.
  *
  * The admission gate implements rule 3 of the ordering contract in
  * local-data.h. Data ops on a torrent are admitted freely and run
@@ -438,12 +444,18 @@ public:
         DescriptorProvider provider,
         Marshal marshal,
         size_t const n_workers,
-        size_t const retained_bytes)
+        size_t const retained_bytes,
+        std::optional<uint32_t> const threadless_seed = {})
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
         , retained_{ retained_bytes }
     {
+        if (threadless_seed) {
+            threadless_.emplace(n_workers, *threadless_seed);
+            return;
+        }
+
         workers_.reserve(n_workers);
 
         // If a spawn fails partway, join the workers that did start.
@@ -467,6 +479,7 @@ public:
     Threaded& operator=(Threaded const&) = delete;
     Threaded& operator=(Threaded&&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): stop_workers() allocates
     ~Threaded()
     {
         stop_workers();
@@ -675,6 +688,19 @@ public:
                 return;
             }
 
+            if (threadless_) {
+                // No thread will finish anything, so do the work here.
+                if (!step(detail::DiskThread::Any)) {
+                    // Nothing is left to run or deliver, so an op was lost.
+                    // Only tests get here. Fail them in every build type:
+                    // on real threads, the same bug hangs.
+                    log_busy_gates();
+                    fmt::print(stderr, "Lost a disk IO op: the gates are busy, and no work is left to run or deliver\n");
+                    std::abort();
+                }
+                continue;
+            }
+
             if (auto const now = std::chrono::steady_clock::now(); now >= next_warning) {
                 log_busy_gates();
                 next_warning = now + WarnInterval;
@@ -727,8 +753,8 @@ public:
             auto const lock = std::scoped_lock{ work_mutex_ };
             paused_ = paused;
         }
-        work_cv_.notify_all();
-        admin_cv_.notify_all();
+        wake_all_workers();
+        wake_lanes();
     }
 
     void set_retained_bytes(size_t const max_bytes)
@@ -736,16 +762,103 @@ public:
         retained_.set_capacity(max_bytes);
     }
 
-    void hold_copy_lane(bool const held)
+    // One thread does the next thing it would do. A worker takes a turn,
+    // or runs the turn it took earlier. A lane runs its next job. The
+    // thread is picked at random from those of `which` that have
+    // something to do. False if none has, or if the threads are real.
+    bool step(detail::DiskThread const which)
     {
+        using enum detail::DiskThread;
+
+        if (!threadless_) {
+            return false;
+        }
+
+        auto& threads = *threadless_;
+        auto const n_workers = std::size(threads.workers);
+
+        // the workers by index, then the long lane, then the short one
+        auto ready = std::vector<size_t>{};
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            long_lane_.held = held;
+
+            if (which == Any || which == Worker) {
+                auto const waiting = !std::empty(pending_tests_) || !std::empty(pending_reads_) || !std::empty(read_sweep_) ||
+                    !std::empty(pending_writes_) || !std::empty(write_sweep_);
+                for (auto i = size_t{}; i < n_workers; ++i) {
+                    if (waiting || !threads.workers[i].turn.empty()) {
+                        ready.emplace_back(i);
+                    }
+                }
+            }
+
+            if ((which == Any || which == LongLane) && !std::empty(long_lane_)) {
+                ready.emplace_back(n_workers);
+            }
+
+            if ((which == Any || which == ShortLane) && !std::empty(short_lane_)) {
+                ready.emplace_back(n_workers + 1U);
+            }
         }
-        admin_cv_.notify_all();
+
+        if (std::empty(ready)) {
+            return false;
+        }
+
+        auto const pick = ready[threads.rng() % std::size(ready)];
+        if (pick >= n_workers) {
+            auto job = std::function<void()>{};
+            {
+                auto const lock = std::scoped_lock{ work_mutex_ };
+                job = take_job(pick == n_workers ? long_lane_ : short_lane_);
+            }
+            job();
+        } else if (auto& worker = threads.workers[pick]; worker.turn.empty()) {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            worker.turn = take_turn(worker.next);
+        } else {
+            run_turn(std::exchange(worker.turn, {}), threads.scratch);
+        }
+
+        return true;
+    }
+
+    // Do now what was left for the session thread to do later.
+    void deliver()
+    {
+        pump_done();
+        flush_reads();
     }
 
 private:
+    // A completion waiting to be delivered.
+    // A read completion owns the buffer it read into and can't be copied,
+    // so std::function can't hold one.
+    class Parked
+    {
+    public:
+        virtual ~Parked() = default;
+        virtual void deliver() = 0;
+    };
+
+    template<typename Fn>
+    class ParkedFn final : public Parked
+    {
+    public:
+        explicit ParkedFn(Fn fn)
+            : fn_{ std::move(fn) }
+        {
+        }
+
+        void deliver() override
+        {
+            fn_();
+        }
+
+    private:
+        Fn fn_;
+    };
+
     struct ReadOp {
         tr_byte_span_t span;
         OnRead on_read;
@@ -779,11 +892,7 @@ private:
     };
 
     // Admin disk work, one job at a time per lane.
-    struct AdminLane {
-        std::deque<std::function<void()>> jobs;
-        // A held lane starts no job. See detail::hold_copy_lane().
-        bool held = false;
-    };
+    using AdminLane = std::deque<std::function<void()>>;
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
 
@@ -828,6 +937,41 @@ private:
         std::shared_ptr<StorageDescriptor const> desc;
         tr_piece_index_t piece;
         OnTest on_test;
+    };
+
+    // What a worker takes in one go: a piece hash, a run of reads, or a
+    // run of writes.
+    struct Turn {
+        std::optional<PendingTest> test;
+        std::vector<PendingRead> reads;
+        std::vector<PendingWrite> writes;
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return !test && std::empty(reads) && std::empty(writes);
+        }
+    };
+
+    // For tests: the threads that were never started. The session thread
+    // does their work a step at a time. See detail::start_threadless().
+    struct Threadless {
+        struct Worker {
+            size_t next = 0U; // its place in the rotation. See take_turn().
+            Turn turn; // taken, and not yet run
+        };
+
+        Threadless(size_t const n_workers, uint32_t const seed)
+            : rng{ seed }
+            , workers(n_workers)
+        {
+        }
+
+        // picks the thread that takes the next step
+        std::mt19937 rng;
+        std::vector<Worker> workers;
+        std::vector<uint8_t> scratch;
+        // guarded by work_mutex_
+        bool pump_scheduled = false;
     };
 
     // Where a pending op sits in its worker queue: disk order, more or less.
@@ -1152,7 +1296,7 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_reads_.merge(staged_reads_);
         }
-        work_cv_.notify_all();
+        wake_all_workers();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -1173,7 +1317,7 @@ private:
             pending_tests_.push_back(
                 PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
         }
-        work_cv_.notify_one();
+        wake_one_worker();
     }
 
     void admit_write(tr_torrent_id_t const id, Gate& gate, WriteOp op)
@@ -1207,7 +1351,7 @@ private:
                     .on_write = std::move(op.on_write),
                 });
         }
-        work_cv_.notify_one();
+        wake_one_worker();
     }
 
     // The completion closures own move-only state, so they can't live
@@ -1257,68 +1401,93 @@ private:
 
     // --- worker-side code
 
-    void worker_main()
+    // Takes a worker's next piece of work, or nothing if none is waiting.
+    // `next` is the worker's place in the rotation of hashes, reads, and
+    // writes. Call with work_mutex_ held.
+    [[nodiscard]] Turn take_turn(size_t& next)
     {
-        auto scratch = std::vector<uint8_t>{};
-
-        // The kinds of work, in the order a worker takes its turns at them.
         enum class Kind : uint8_t { Hash, Reads, Writes };
         static auto constexpr Kinds = std::array{ Kind::Hash, Kind::Reads, Kind::Writes };
 
-        // Each pass starts with the kind after the one it took last.
+        auto turn = Turn{};
+        for (auto i = size_t{}; i < std::size(Kinds); ++i) {
+            auto const kind = (next + i) % std::size(Kinds);
+            switch (Kinds[kind]) {
+            case Kind::Hash:
+                if (!std::empty(pending_tests_)) {
+                    turn.test = std::move(pending_tests_.front());
+                    pending_tests_.pop_front();
+                }
+                break;
+
+            case Kind::Reads:
+                turn.reads = take_run(read_sweep_, pending_reads_);
+                break;
+
+            case Kind::Writes:
+                turn.writes = take_run(write_sweep_, pending_writes_);
+                break;
+            }
+
+            if (!turn.empty()) {
+                // the next turn starts with the kind after this one
+                next = (kind + 1U) % std::size(Kinds);
+                break;
+            }
+        }
+
+        return turn;
+    }
+
+    void run_turn(Turn turn, std::vector<uint8_t>& scratch)
+    {
+        if (turn.test) {
+            exec_test(std::move(*turn.test));
+        } else if (!std::empty(turn.reads)) {
+            exec_read_run(std::move(turn.reads), scratch);
+        } else {
+            exec_write_run(std::move(turn.writes), scratch);
+        }
+    }
+
+    void worker_main()
+    {
+        auto scratch = std::vector<uint8_t>{};
         auto next = size_t{};
 
         for (;;) {
-            auto test = std::optional<PendingTest>{};
-            auto reads = std::vector<PendingRead>{};
-            auto writes = std::vector<PendingWrite>{};
+            auto turn = Turn{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
+                work_cv_.wait(lock, [this, &turn, &next] {
                     if (paused_) {
                         return false;
                     }
 
-                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
-                        auto const turn = (next + i) % std::size(Kinds);
-                        switch (Kinds[turn]) {
-                        case Kind::Hash:
-                            if (!std::empty(pending_tests_)) {
-                                test = std::move(pending_tests_.front());
-                                pending_tests_.pop_front();
-                            }
-                            break;
-
-                        case Kind::Reads:
-                            reads = take_run(read_sweep_, pending_reads_);
-                            break;
-
-                        case Kind::Writes:
-                            writes = take_run(write_sweep_, pending_writes_);
-                            break;
-                        }
-
-                        if (test || !std::empty(reads) || !std::empty(writes)) {
-                            next = (turn + 1U) % std::size(Kinds);
-                            return true;
-                        }
-                    }
-
-                    return stopping_;
+                    turn = take_turn(next);
+                    return !turn.empty() || stopping_;
                 });
             }
 
-            if (test) {
-                exec_test(std::move(*test));
-            } else if (!std::empty(reads)) {
-                exec_read_run(std::move(reads), scratch);
-            } else if (!std::empty(writes)) {
-                exec_write_run(std::move(writes), scratch);
-            } else {
+            if (turn.empty()) {
                 return;
             }
+
+            run_turn(std::move(turn), scratch);
         }
+    }
+
+    // Takes a lane's next job, or nothing if none is waiting.
+    // Call with work_mutex_ held.
+    [[nodiscard]] static std::function<void()> take_job(AdminLane& lane)
+    {
+        auto job = std::function<void()>{};
+        if (!std::empty(lane)) {
+            job = std::move(lane.front());
+            lane.pop_front();
+        }
+        return job;
     }
 
     void admin_main(AdminLane& lane)
@@ -1328,13 +1497,18 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
-                if (std::empty(lane.jobs)) {
-                    return;
-                }
+                admin_cv_.wait(lock, [this, &lane, &job] {
+                    if (paused_) {
+                        return false;
+                    }
 
-                job = std::move(lane.jobs.front());
-                lane.jobs.pop_front();
+                    job = take_job(lane);
+                    return job || stopping_;
+                });
+            }
+
+            if (!job) {
+                return;
             }
 
             job();
@@ -1345,9 +1519,83 @@ private:
     {
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            lane.jobs.emplace_back(std::move(job));
+            lane.emplace_back(std::move(job));
         }
+        wake_lanes();
+    }
+
+    // Wake the threads for the work just queued. With no threads, have
+    // the session thread do it later instead. Every enqueue goes through
+    // one of these, so that neither kind of backend misses the work.
+    void wake_one_worker()
+    {
+        work_cv_.notify_one();
+        schedule_pump();
+    }
+
+    void wake_all_workers()
+    {
+        work_cv_.notify_all();
+        schedule_pump();
+    }
+
+    void wake_lanes()
+    {
         admin_cv_.notify_all();
+        schedule_pump();
+    }
+
+    // Work is waiting for a thread. With no threads, the session thread
+    // does some of it later, between its other work: never inside the
+    // call that enqueued an op, and never inside a callback.
+    void schedule_pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            if (paused_ || std::exchange(threadless_->pump_scheduled, true)) {
+                return;
+            }
+        }
+
+        marshal_([weak = weak_from_this()] {
+            if (auto const self = weak.lock(); self) {
+                self->pump();
+            }
+        });
+    }
+
+    void pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        auto& threads = *threadless_;
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            threads.pump_scheduled = false;
+            if (paused_) {
+                return;
+            }
+        }
+
+        // Callbacks are delivered between pumps. A varying number of
+        // steps lets a varying number of ops be in flight when they are.
+        static auto constexpr MaxSteps = 8U;
+        auto n_left = 1U + (threads.rng() % MaxSteps);
+        while (n_left != 0U && step(detail::DiskThread::Any)) {
+            --n_left;
+        }
+
+        // there may be more to do
+        if (n_left == 0U) {
+            schedule_pump();
+        }
     }
 
     void close_on_short_lane(std::vector<tr_open_files::Handle> files)
@@ -1467,10 +1715,14 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
-            long_lane_.held = false;
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
+
+        // Exiting threads finish the work that is waiting.
+        // With no threads, finish it here.
+        while (step(detail::DiskThread::Any)) {
+        }
 
         for (auto& worker : workers_) {
             if (worker.joinable()) {
@@ -1714,6 +1966,7 @@ private:
     std::atomic<uint64_t> blocks_read_ = 0U;
 
     std::vector<std::thread> workers_;
+    std::optional<Threadless> threadless_;
 };
 
 LocalData::LocalData(tr_torrents const& torrents, tr_open_files& open_files)
@@ -1731,7 +1984,6 @@ LocalData::~LocalData() = default;
 void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider)
 {
     TR_ASSERT(!threaded_);
-    TR_ASSERT(completions_ == Completions::Inline); // see set_completions()
 
     if (worker_count == 0U) {
         return;
@@ -1754,15 +2006,13 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     }
 
     auto data = std::make_unique<BlockData>();
-    auto error = backend_->read(id, byte_span, *data);
+    auto const error = backend_->read(id, byte_span, *data);
     if (error) {
         data = nullptr;
     }
 
     if (on_read) {
-        finish([id, byte_span, error = std::move(error), data = std::move(data), on_read = std::move(on_read)] mutable {
-            std::move(on_read)(id, byte_span, error, std::move(data));
-        });
+        std::move(on_read)(id, byte_span, error, std::move(data));
     }
 }
 
@@ -1774,12 +2024,10 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     }
 
     auto hash = tr_sha1_digest_t{};
-    auto error = backend_->test_piece(id, piece, hash);
+    auto const error = backend_->test_piece(id, piece, hash);
 
     if (on_test) {
-        finish([id, piece, error = std::move(error), hash, on_test = std::move(on_test)] mutable {
-            std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
-        });
+        std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
     }
 }
 
@@ -1794,12 +2042,10 @@ void LocalData::write(
         return;
     }
 
-    auto error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
+    auto const error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
 
     if (on_write) {
-        finish([id, byte_span, error = std::move(error), on_write = std::move(on_write)] mutable {
-            std::move(on_write)(id, byte_span, error);
-        });
+        std::move(on_write)(id, byte_span, error);
     }
 }
 
@@ -1814,7 +2060,6 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
         return;
     }
 
-    drain();
     body();
 }
 
@@ -1858,7 +2103,6 @@ void LocalData::close_all()
         threaded_->drain_all();
     }
 
-    drain();
     backend_->close_all();
 }
 
@@ -1872,8 +2116,6 @@ void LocalData::move(
         threaded_->move(id, std::move(parent), std::move(on_move), std::move(on_placed));
         return;
     }
-
-    drain();
 
     auto const target = parent();
     auto const placed = [&on_placed, id, &target] {
@@ -1897,8 +2139,6 @@ void LocalData::remove(
         return;
     }
 
-    drain();
-
     auto const error = backend_->remove(id, std::move(remove_func));
     if (on_remove) {
         on_remove(id, error);
@@ -1917,8 +2157,6 @@ void LocalData::rename(
         return;
     }
 
-    drain();
-
     auto error = check();
     if (!error) {
         error = backend_->rename(id, oldpath, newname);
@@ -1932,8 +2170,6 @@ void LocalData::shutdown()
         threaded_->shutdown();
         threaded_.reset();
     }
-
-    drain();
 }
 
 bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
@@ -1981,70 +2217,54 @@ void LocalData::set_workers_paused(bool const paused)
     }
 }
 
-void detail::hold_copy_lane(LocalData& local_data, bool const held)
-{
-    if (local_data.threaded_) {
-        local_data.threaded_->hold_copy_lane(held);
+struct detail::LocalDataTestAccess {
+    static void start_threadless(
+        LocalData& local_data,
+        size_t const worker_count,
+        uint32_t const seed,
+        tr_open_files& open_files,
+        LocalData::Marshal marshal,
+        LocalData::DescriptorProvider provider)
+    {
+        TR_ASSERT(!local_data.threaded_);
+        TR_ASSERT(worker_count != 0U);
+
+        local_data.threaded_ = std::make_shared<LocalData::Threaded>(
+            open_files,
+            std::move(provider),
+            std::move(marshal),
+            worker_count,
+            local_data.retained_bytes(),
+            seed);
     }
-}
 
-void LocalData::set_wake(std::function<void()> wake)
-{
-    wake_ = std::move(wake);
-}
-
-void LocalData::set_completions(Completions const completions, uint32_t const seed)
-{
-    // Parking wraps only the synchronous backend, so the test modes and
-    // the threaded backend are mutually exclusive.
-    TR_ASSERT(!threaded_ || completions == Completions::Inline);
-
-    drain();
-    completions_ = completions;
-    rng_.seed(seed);
-}
-
-bool LocalData::defer_next() noexcept
-{
-    switch (completions_) {
-    case Completions::Deferred:
-        return true;
-
-    case Completions::Shuffled:
-        return (rng_() & 1U) != 0U;
-
-    default:
-        return false;
+    [[nodiscard]] static LocalData::Threaded* threaded(LocalData& local_data) noexcept
+    {
+        return local_data.threaded_.get();
     }
+};
+
+void detail::start_threadless(
+    LocalData& local_data,
+    size_t const worker_count,
+    uint32_t const seed,
+    tr_open_files& open_files,
+    LocalData::Marshal marshal,
+    LocalData::DescriptorProvider provider)
+{
+    LocalDataTestAccess::start_threadless(local_data, worker_count, seed, open_files, std::move(marshal), std::move(provider));
 }
 
-void LocalData::park(std::unique_ptr<Parked> completion)
+bool detail::step(LocalData& local_data, DiskThread const which)
 {
-    auto const was_idle = std::empty(parked_);
-    parked_.emplace_back(std::move(completion));
-    if (was_idle && wake_) {
-        wake_();
-    }
+    auto* const threaded = LocalDataTestAccess::threaded(local_data);
+    return threaded != nullptr && threaded->step(which);
 }
 
-void LocalData::pump()
+void detail::deliver(LocalData& local_data)
 {
-    // Take the whole queue up front. A completion can park more work,
-    // and that work belongs to the next pump, not this one.
-    auto parked = std::vector<std::unique_ptr<Parked>>{};
-    std::swap(parked, parked_);
-
-    std::ranges::shuffle(parked, rng_);
-
-    for (auto const& completion : parked) {
-        completion->deliver();
-    }
-}
-
-void LocalData::drain()
-{
-    while (!std::empty(parked_)) {
-        pump();
+    if (auto* const threaded = LocalDataTestAccess::threaded(local_data); threaded != nullptr) {
+        threaded->deliver();
     }
 }
 

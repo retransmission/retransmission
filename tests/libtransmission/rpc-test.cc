@@ -921,8 +921,8 @@ TEST_F(RpcTest, torrentGetCurrentDir)
 
     // a file found in the download dir makes it current, though the torrent is unfinished
     createFileWithContents(tr_pathbuf{ download_dir, '/', tr_torrentFile(tor, 0).name }, "partial"sv);
-    auto const set_location = [tor, &download_dir] {
-        auto state = -1;
+    auto const set_location = [this, tor, &download_dir] {
+        auto& state = newLocationState();
         tr_torrentSetLocation(tor, download_dir, false, &state);
         return state;
     };

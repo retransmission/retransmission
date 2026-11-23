@@ -76,9 +76,9 @@ protected:
 
     static auto constexpr MaxWaitMsec = 3000;
 
-    [[nodiscard]] static int setLocation(tr_torrent* const tor, std::string_view const path, bool const move = true)
+    [[nodiscard]] int setLocation(tr_torrent* const tor, std::string_view const path, bool const move = true)
     {
-        int volatile state = -1;
+        auto& state = newLocationState();
         tr_torrentSetLocation(tor, path, move, &state);
         EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE || state == TR_LOC_ERROR; }, MaxWaitMsec));
         return state;
@@ -373,7 +373,7 @@ TEST_F(MoveTest, setLocation)
     EXPECT_EQ(0, tr_torrentStat(tor).left_until_done);
 
     // now move it
-    auto state = -1;
+    auto& state = newLocationState();
     tr_torrentSetLocation(tor, target_dir, true, &state);
     auto test = [&state] {
         return state == TR_LOC_DONE;
@@ -433,7 +433,7 @@ TEST_F(MoveTest, setLocationSavesTheNewLocation)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     blockingTorrentVerify(tor);
 
-    auto state = -1;
+    auto& state = newLocationState();
     tr_torrentSetLocation(tor, target_dir, true, &state);
     EXPECT_TRUE(waitFor([&state] { return state == TR_LOC_DONE; }, MaxWaitMsec));
 
