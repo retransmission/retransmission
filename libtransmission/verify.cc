@@ -29,7 +29,7 @@ namespace
 // how often to look again when every queued verify waits for a move or rename
 auto constexpr BarrierPollInterval = 1s;
 
-// pieces of a torrent with no local data to report missing per step
+// pieces known to be missing to report per step
 auto constexpr MissingPiecesPerStep = tr_piece_index_t{ 1024U };
 } // namespace
 
@@ -46,8 +46,8 @@ tr_verifier::~tr_verifier() = default;
 
 void tr_verifier::add(std::unique_ptr<Mediator> mediator, tr_priority_t const priority, bool const has_local_data)
 {
-    todo_.emplace(
-        Node{ .mediator = std::move(mediator), .priority = priority, .has_local_data = has_local_data, .sha = nullptr });
+    auto const missing_end = has_local_data ? tr_piece_index_t{} : mediator->block_info().piece_count();
+    todo_.emplace(Node{ .mediator = std::move(mediator), .priority = priority, .missing_end = missing_end, .sha = nullptr });
     if (!active_) {
         schedule_step();
     }
@@ -86,8 +86,8 @@ void tr_verifier::step()
         return;
     }
 
-    if (!active_->has_local_data) {
-        report_all_missing();
+    if (active_->piece < active_->missing_end) {
+        report_missing();
         return;
     }
 
@@ -149,18 +149,14 @@ void tr_verifier::start_next()
     }
 }
 
-// With no local data there is nothing to read, and every piece is missing.
-// Reports a batch of them, so that each turn of the session thread is short.
-void tr_verifier::report_all_missing()
+// Reports a batch of the pieces known to be missing, unread, so that each
+// turn of the session thread is short.
+void tr_verifier::report_missing()
 {
     TR_ASSERT(active_);
 
-    auto const token = active_token_;
-    auto const end = std::min(active_->mediator->block_info().piece_count(), active_->piece + MissingPiecesPerStep);
-    while (active_ && token == active_token_ && active_->piece < end) {
-        auto const piece = active_->piece++;
-        // the torrent may end this verify
-        active_->mediator->on_piece_hashed(piece, std::nullopt);
+    auto const n_pieces = std::min(active_->missing_end - active_->piece, MissingPiecesPerStep);
+    for (auto i = tr_piece_index_t{}; i < n_pieces && report_piece(std::nullopt); ++i) {
     }
 
     schedule_step();
@@ -176,6 +172,26 @@ bool tr_verifier::report_piece(std::optional<tr_sha1_digest_t> const& hash)
     auto const piece = active_->piece++;
     active_->mediator->on_piece_hashed(piece, hash);
     return active_ && token == active_token_;
+}
+
+// The end of the pieces, from the active verify's next one, that are
+// missing now that `span` failed with `error`: the rest of the span's file
+// if the file is missing, or else the span's one piece. Nothing if the span
+// held several pieces, each of which may read on its own.
+std::optional<tr_piece_index_t> tr_verifier::missing_end_after(tr_byte_span_t const span, tr_error const& error) const
+{
+    TR_ASSERT(active_);
+
+    auto const& block_info = active_->mediator->block_info();
+    if (auto const file = active_->mediator->file_span(span.begin); error.is_enoent() && span.end <= file.end) {
+        return block_info.byte_loc(file.end - 1U).piece + 1U;
+    }
+
+    if (block_info.byte_loc(span.end - 1U).piece == active_->piece) {
+        return active_->piece + 1U;
+    }
+
+    return {};
 }
 
 void tr_verifier::on_span_hashed(
@@ -206,14 +222,14 @@ void tr_verifier::on_span_hashed(
                 break;
             }
         }
-    } else if (auto const last_piece = block_info.byte_loc(span.end - 1U).piece; last_piece > active_->piece) {
-        // read them again a piece at a time, so that the readable ones count
-        active_->single_piece_spans_end = last_piece + 1U;
-    } else {
-        // an unreadable piece skips the rest of its spans
+    } else if (auto const missing_end = missing_end_after(span, error); missing_end) {
+        // the next steps report them unread
+        active_->missing_end = *missing_end;
         active_->sha->clear();
         active_->piece_bytes_hashed = 0U;
-        std::ignore = report_piece(std::nullopt);
+    } else {
+        // read them again a piece at a time, so that the readable ones count
+        active_->single_piece_spans_end = block_info.byte_loc(span.end - 1U).piece + 1U;
     }
 
     // The next span goes to the first verify in line, which may be one

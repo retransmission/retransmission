@@ -174,6 +174,7 @@ struct tr_torrent {
 
         [[nodiscard]] tr_torrent_id_t id() const override;
         [[nodiscard]] tr_block_info const& block_info() const override;
+        [[nodiscard]] tr_byte_span_t file_span(uint64_t byte) const override;
 
         void on_verify_started() override;
         void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) override;

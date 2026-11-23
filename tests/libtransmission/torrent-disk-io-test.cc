@@ -2668,6 +2668,30 @@ protected:
         return pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); });
     }
 
+    // Verifies `tor`, and returns how many spans the worker read.
+    [[nodiscard]] size_t countVerifySpans(tr_torrent* const tor)
+    {
+        auto const n_before = verifiedCount();
+        tr_torrentVerify(tor);
+
+        // the worker takes each span in one step, and reads it in the next
+        auto n_steps = size_t{};
+        EXPECT_TRUE(waitFor(
+            [this, tor, n_before, &n_steps] {
+                n_steps += blockingRunInSessionThread([this] {
+                    auto n = size_t{};
+                    while (tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker)) {
+                        ++n;
+                    }
+                    deliver();
+                    return n;
+                });
+                return wasVerified(tor, n_before);
+            },
+            MaxWaitMsec));
+        return n_steps / 2U;
+    }
+
     // Whether `tor` has each of its pieces.
     [[nodiscard]] std::vector<bool> havePieces(tr_torrent const* const tor)
     {
@@ -2859,6 +2883,29 @@ TEST_F(ThreadlessVerifyTest, aSpanThatCantBeReadIsReadAgainAPieceAtATime)
 
     EXPECT_TRUE(pumpVerify(tor));
     EXPECT_EQ((std::vector{ true, true, false, false }), havePieces(tor));
+}
+
+// A missing file costs one span, however many it would take to read. Each
+// of its pieces is missing, the one it shares with the next file too.
+TEST_F(ThreadlessVerifyTest, aMissingFileCostsOneSpan)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr SpanSize = tr::LocalData::max_hash_span_bytes();
+    // two spans' worth, and half the piece it shares with the next file
+    static auto constexpr MissingSize = (2U * SpanSize) + (PieceSize / 2U);
+    static auto constexpr PresentSize = SpanSize - (PieceSize / 2U);
+    static auto constexpr NPieces = (MissingSize + PresentSize) / PieceSize;
+    static auto constexpr NMissing = (MissingSize / PieceSize) + 1U;
+
+    auto* const tor = zeroPiecesTorrentInit("one-missing", PieceSize, NPieces, { MissingSize, PresentSize });
+    createFileWithContents(tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(1U) }, std::string(PresentSize, '\0'));
+
+    // one span finds the file missing, and one reads the rest
+    EXPECT_EQ(2U, countVerifySpans(tor));
+
+    auto expected = std::vector<bool>(NPieces, true);
+    std::fill_n(std::begin(expected), NMissing, false);
+    EXPECT_EQ(expected, havePieces(tor));
 }
 
 } // namespace tr::test

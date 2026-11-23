@@ -40,6 +40,8 @@ class TimerMaker;
  * allows, or the next part of a piece too big for one span. A span of
  * several pieces that can't be read is read again a piece at a time, so
  * that one missing file or bad sector fails only the pieces it is in.
+ * A span inside one file that finds the file missing ends the reading of
+ * that file: each of its pieces is missing, and is reported unread.
  *
  * Between spans, the first verify in line whose torrent has no move or
  * rename pending hashes the next one. Verifies under way come first, so a
@@ -60,6 +62,8 @@ public:
 
         [[nodiscard]] virtual tr_torrent_id_t id() const = 0;
         [[nodiscard]] virtual tr_block_info const& block_info() const = 0;
+        // The bytes of the file that holds byte `byte` of the torrent
+        [[nodiscard]] virtual tr_byte_span_t file_span(uint64_t byte) const = 0;
 
         virtual void on_verify_started() = 0;
         // `hash` is empty if the piece couldn't be read
@@ -96,9 +100,12 @@ private:
 
         std::unique_ptr<Mediator> mediator;
         tr_priority_t priority;
-        bool has_local_data;
         tr_piece_index_t piece = 0U;
         uint64_t piece_bytes_hashed = 0U;
+        // Pieces before this one are known to be missing, and are reported
+        // unread: one that couldn't be read, those of a missing file, or
+        // every piece of a torrent with no local data.
+        tr_piece_index_t missing_end = 0U;
         // Spans before this piece hold one piece each: they retry a span
         // of several that couldn't be read.
         tr_piece_index_t single_piece_spans_end = 0U;
@@ -110,8 +117,9 @@ private:
     void step();
     [[nodiscard]] tr_byte_span_t next_span() const;
     void start_next();
-    void report_all_missing();
+    void report_missing();
     [[nodiscard]] bool report_piece(std::optional<tr_sha1_digest_t> const& hash);
+    [[nodiscard]] std::optional<tr_piece_index_t> missing_end_after(tr_byte_span_t span, tr_error const& error) const;
     void schedule_step();
     [[nodiscard]] bool sleep_due() const;
     void on_span_hashed(

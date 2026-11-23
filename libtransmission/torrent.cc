@@ -1748,6 +1748,11 @@ tr_block_info const& tr_torrent::VerifyMediator::block_info() const
     return tor_->block_info();
 }
 
+tr_byte_span_t tr_torrent::VerifyMediator::file_span(uint64_t const byte) const
+{
+    return tor_->byte_span_for_file(tor_->fpm_.file_offset(byte).index);
+}
+
 void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_file) const
 {
     auto const found = find_file(file);
