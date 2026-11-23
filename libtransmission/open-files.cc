@@ -136,7 +136,8 @@ tr_open_files::Handle tr_open_files::get(
     std::string_view const filename,
     tr_file_preallocation const allocation,
     uint64_t const file_size,
-    tr_error& error)
+    tr_error& error,
+    bool const sequential)
 {
     // is there already an entry
     auto const key = make_key(tor_id, file_num);
@@ -192,6 +193,9 @@ tr_open_files::Handle tr_open_files::get(
     // open the file
     int flags = writable ? (TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE) : 0;
     flags |= TR_SYS_FILE_READ;
+    if (sequential) {
+        flags |= TR_SYS_FILE_SEQUENTIAL;
+    }
     auto fd = tr_sys_file_open(filename, flags, 0666, &error);
 
     // Clearing another torrent's old location removes empty folders, and it
@@ -218,7 +222,7 @@ tr_open_files::Handle tr_open_files::get(
     }
 
     // The descriptor is owned from here on, so returning early closes it.
-    auto file = std::make_shared<OpenFile const>(fd, writable);
+    auto file = std::make_shared<OpenFile const>(fd, writable, sequential);
 
     if (writable && !already_existed && allocation != tr_file_preallocation::None) {
         bool success = false;

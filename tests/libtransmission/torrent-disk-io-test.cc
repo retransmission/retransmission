@@ -2908,4 +2908,29 @@ TEST_F(ThreadlessVerifyTest, aMissingFileCostsOneSpan)
     EXPECT_EQ(expected, havePieces(tor));
 }
 
+// A verify reads each file once, front to back, and opens it for that.
+// It closes the file when it's done, so later reads open it as usual.
+TEST_F(ThreadlessVerifyTest, aVerifyOpensItsFilesForOnePass)
+{
+    auto* const tor = zeroFileInit("one-pass", 2U);
+    auto const n_before = verifiedCount();
+    startVerify(tor);
+
+    // the worker takes the verify's first span, and reads it
+    auto const verify_opened_for_one_pass = blockingRunInSessionThread([this, tor] {
+        readNextSpan();
+        auto const file = session_->openFiles().get(tor->id(), 0U, false);
+        return file && file->is_sequential();
+    });
+    EXPECT_TRUE(verify_opened_for_one_pass);
+
+    EXPECT_TRUE(pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); }));
+    readFirstFile(tor);
+    auto const read_opened_for_one_pass = blockingRunInSessionThread([this, tor] {
+        auto const file = session_->openFiles().get(tor->id(), 0U, false);
+        return file && file->is_sequential();
+    });
+    EXPECT_FALSE(read_opened_for_one_pass);
+}
+
 } // namespace tr::test

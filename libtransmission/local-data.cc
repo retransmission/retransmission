@@ -237,7 +237,7 @@ using DiskOpKind = tr_disk_activity::Op::Kind;
     std::vector<tr_sha1_digest_t>& setme_hashes)
 {
     auto const buf = scratch_bytes(scratch, static_cast<size_t>(span.size()));
-    if (auto error = tr_ioRead(desc, open_files, span.begin, buf, false); error) {
+    if (auto error = tr_ioRead(desc, open_files, span.begin, buf, true /*verify*/); error) {
         return error;
     }
 
