@@ -18,6 +18,7 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <optional>
 #include <ranges>
 #include <span>
@@ -199,9 +200,14 @@ protected:
         return data;
     }
 
-    // A paused one-file torrent of `n_pieces` pieces of zeroes, with
-    // nothing on disk.
-    [[nodiscard]] tr_torrent* zeroPiecesTorrentInit(std::string_view const name, size_t const piece_size, size_t const n_pieces)
+    // A paused torrent of `n_pieces` pieces of zeroes, with nothing on
+    // disk. It has one file, or files of `file_sizes`, named by their
+    // index. Those add up to the pieces.
+    [[nodiscard]] tr_torrent* zeroPiecesTorrentInit(
+        std::string_view const name,
+        size_t const piece_size,
+        size_t const n_pieces,
+        std::vector<uint64_t> const& file_sizes = {})
     {
         auto const piece_hash = tr_sha1::digest(std::string(piece_size, '\0'));
         auto pieces = std::string{};
@@ -211,9 +217,23 @@ protected:
 
         auto info = tr_variant::Map{};
         info.try_emplace(TR_KEY_name, name);
-        info.try_emplace(TR_KEY_length, uint64_t{ n_pieces * piece_size });
         info.try_emplace(TR_KEY_piece_length, uint64_t{ piece_size });
         info.try_emplace(TR_KEY_pieces, std::move(pieces));
+        if (std::empty(file_sizes)) {
+            info.try_emplace(TR_KEY_length, uint64_t{ n_pieces * piece_size });
+        } else {
+            EXPECT_EQ(n_pieces * piece_size, std::accumulate(std::begin(file_sizes), std::end(file_sizes), uint64_t{}));
+            auto files = tr_variant::Vector{};
+            for (auto i = size_t{}; i < std::size(file_sizes); ++i) {
+                auto path = tr_variant::Vector{};
+                path.emplace_back(std::to_string(i));
+                auto file = tr_variant::Map{ 2U };
+                file.try_emplace(TR_KEY_length, file_sizes[i]);
+                file.try_emplace(TR_KEY_path, std::move(path));
+                files.emplace_back(std::move(file));
+            }
+            info.try_emplace(TR_KEY_files, std::move(files));
+        }
         auto metainfo = tr_variant::Map{};
         metainfo.try_emplace(TR_KEY_info, std::move(info));
         auto builder = tr_torrent_builder{ session_ };
@@ -2625,18 +2645,47 @@ protected:
     }
 
     // A paused one-file torrent of `n_pieces` pieces of zeroes, on disk
-    // under `subpath_suffix`.
+    // under `subpath_suffix`. A piece is as long as a span can be unless
+    // `piece_size` says otherwise, so that each one takes a span.
     [[nodiscard]] tr_torrent* zeroFileInit(
         std::string_view const name,
         size_t const n_pieces,
-        std::string_view const subpath_suffix = {})
+        std::string_view const subpath_suffix = {},
+        size_t const piece_size = tr::LocalData::max_hash_span_bytes())
     {
-        static auto constexpr PieceSize = size_t{ 16384U };
-        auto* const tor = zeroPiecesTorrentInit(name, PieceSize, n_pieces);
+        auto* const tor = zeroPiecesTorrentInit(name, piece_size, n_pieces);
         createFileWithContents(
             tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(0U), subpath_suffix },
-            std::string(n_pieces * PieceSize, '\0'));
+            std::string(n_pieces * piece_size, '\0'));
         return tor;
+    }
+
+    // Starts `tor`'s verify, and lets the disk work until it's done.
+    [[nodiscard]] bool pumpVerify(tr_torrent* const tor)
+    {
+        auto const n_before = verifiedCount();
+        tr_torrentVerify(tor);
+        return pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); });
+    }
+
+    // Whether `tor` has each of its pieces.
+    [[nodiscard]] std::vector<bool> havePieces(tr_torrent const* const tor)
+    {
+        return blockingRunInSessionThread([tor] {
+            auto has = std::vector<bool>{};
+            for (tr_piece_index_t piece = 0; piece < tor->piece_count(); ++piece) {
+                has.push_back(tor->has_piece(piece));
+            }
+            return has;
+        });
+    }
+
+    // The worker takes the verify's next span, and reads it.
+    // Session thread only.
+    void readNextSpan() const
+    {
+        EXPECT_TRUE(tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker));
+        EXPECT_TRUE(tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker));
     }
 
     // Queues a move of `tor`'s files to `dir`. The short lane holds it
@@ -2775,6 +2824,41 @@ TEST_F(ThreadlessVerifyTest, aVerifyThatWaitedForARenameGoesBackFirst)
 
     EXPECT_TRUE(pumpUntil([this, other, n_before] { return wasVerified(other, n_before); }));
     EXPECT_TRUE(blockingRunInSessionThread([other] { return other->has_all(); }));
+}
+
+// Small pieces share a span, so each doesn't pay for one: for a turn on a
+// busy disk, and for a trip back to the session thread.
+TEST_F(ThreadlessVerifyTest, aSpanHoldsAsManyPiecesAsFit)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr NPieces = tr::LocalData::max_hash_span_bytes() / PieceSize;
+    auto* const tor = zeroFileInit("small-pieces", NPieces, {}, PieceSize);
+    auto const n_before = verifiedCount();
+    startVerify(tor);
+
+    // the first span holds every piece
+    auto const has_all = blockingRunInSessionThread([this, tor] {
+        readNextSpan();
+        deliver();
+        return tor->has_all();
+    });
+    EXPECT_TRUE(has_all);
+
+    EXPECT_TRUE(pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); }));
+}
+
+// A span of several pieces that can't be read is read again a piece at a
+// time, so the pieces of a file that's there count, though the file after
+// it is missing.
+TEST_F(ThreadlessVerifyTest, aSpanThatCantBeReadIsReadAgainAPieceAtATime)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr FileSize = 2U * PieceSize;
+    auto* const tor = zeroPiecesTorrentInit("one-missing", PieceSize, 4U, { FileSize, FileSize });
+    createFileWithContents(tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(0U) }, std::string(FileSize, '\0'));
+
+    EXPECT_TRUE(pumpVerify(tor));
+    EXPECT_EQ((std::vector{ true, true, false, false }), havePieces(tor));
 }
 
 } // namespace tr::test

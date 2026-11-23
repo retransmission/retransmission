@@ -15,12 +15,14 @@
 #include <mutex>
 #include <optional>
 #include <set>
+#include <vector>
 
 #include "libtransmission/digest.h"
 #include "libtransmission/types.h"
 
 class tr_sha1;
 struct tr_block_info;
+struct tr_error;
 
 namespace tr
 {
@@ -33,6 +35,11 @@ class TimerMaker;
  * Verifies torrents one at a time, a span at a time, through
  * tr::LocalData. So a verify waits for barriers like any other data op,
  * and a move or rename never pulls a file out from under it.
+ *
+ * A span holds as many whole pieces as LocalData::hash_span_bytes()
+ * allows, or the next part of a piece too big for one span. A span of
+ * several pieces that can't be read is read again a piece at a time, so
+ * that one missing file or bad sector fails only the pieces it is in.
  *
  * Between spans, the first verify in line whose torrent has no move or
  * rename pending hashes the next one. Verifies under way come first, so a
@@ -92,17 +99,27 @@ private:
         bool has_local_data;
         tr_piece_index_t piece = 0U;
         uint64_t piece_bytes_hashed = 0U;
+        // Spans before this piece hold one piece each: they retry a span
+        // of several that couldn't be read.
+        tr_piece_index_t single_piece_spans_end = 0U;
         // The piece's hash so far. Null until the verify starts, and while
         // a span is in flight.
         std::unique_ptr<tr_sha1> sha;
     };
 
     void step();
+    [[nodiscard]] tr_byte_span_t next_span() const;
     void start_next();
     void report_all_missing();
+    [[nodiscard]] bool report_piece(std::optional<tr_sha1_digest_t> const& hash);
     void schedule_step();
     [[nodiscard]] bool sleep_due() const;
-    void on_span_hashed(uint64_t token, uint64_t n_bytes, bool ok, std::unique_ptr<tr_sha1> sha);
+    void on_span_hashed(
+        uint64_t token,
+        tr_byte_span_t span,
+        tr_error const& error,
+        std::vector<tr_sha1_digest_t> const& hashes,
+        std::unique_ptr<tr_sha1> sha);
     void finish(bool aborted);
 
     tr::LocalData& local_data_;

@@ -196,9 +196,15 @@ public:
     using OnTest = std::function<
         void(tr_torrent_id_t, tr_piece_index_t piece, tr_error const& error, std::optional<tr_sha1_digest_t> hash)>;
 
-    // Required. `sha` comes back whether or not the read failed.
-    using OnHashSpan = std::function<
-        void(tr_torrent_id_t, tr_byte_span_t span, tr_error const& error, std::unique_ptr<tr_sha1> sha)>;
+    // Required. `hashes` holds the digest of each piece that ends in
+    // `span`, in order. A failed read leaves it empty. `sha` comes back
+    // either way.
+    using OnHashSpan = std::function<void(
+        tr_torrent_id_t,
+        tr_byte_span_t span,
+        tr_error const& error,
+        std::vector<tr_sha1_digest_t> hashes,
+        std::unique_ptr<tr_sha1> sha)>;
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
@@ -242,7 +248,11 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
-        [[nodiscard]] virtual tr_error hash_span(tr_torrent_id_t tor_id, tr_byte_span_t span, tr_sha1& sha) = 0;
+        [[nodiscard]] virtual tr_error hash_span(
+            tr_torrent_id_t tor_id,
+            tr_byte_span_t span,
+            tr_sha1& sha,
+            std::vector<tr_sha1_digest_t>& setme_hashes) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
             MoveTarget const& target,
@@ -308,9 +318,13 @@ public:
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
 
-    // Adds `span`'s bytes, as they are on the disk, to `sha`, and hands
-    // `sha` back. A verify carries one through each piece, a span at a
-    // time. The threaded backend gives it a turn after other work.
+    // Hashes `span`'s bytes, as they are on the disk, piece by piece.
+    // `sha` holds the hash of the first piece's bytes before `span`. It
+    // comes back holding the hash of the last piece's bytes if `span` ends
+    // partway through that piece, and cleared if not. A verify carries it
+    // across the spans of a piece too big for one. A failed read leaves it
+    // as it was.
+    // The threaded backend gives the span a turn after other work.
     // `span` is at most max_hash_span_bytes() long.
     void hash_span(tr_torrent_id_t id, tr_byte_span_t span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed);
 

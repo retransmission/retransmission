@@ -226,20 +226,33 @@ using DiskOpKind = tr_disk_activity::Op::Kind;
     return std::span{ scratch }.first(n);
 }
 
-// Adds `span`'s bytes, as they are on the disk, to `sha`.
+// Adds `span`'s bytes, as they are on the disk, to `sha`, and finishes each
+// piece that ends in `span` into `setme_hashes`. See LocalData::hash_span().
 [[nodiscard]] tr_error hash_span_from_disk(
     StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_byte_span_t const span,
     std::vector<uint8_t>& scratch,
-    tr_sha1& sha)
+    tr_sha1& sha,
+    std::vector<tr_sha1_digest_t>& setme_hashes)
 {
     auto const buf = scratch_bytes(scratch, static_cast<size_t>(span.size()));
-    auto error = tr_ioRead(desc, open_files, span.begin, buf, false);
-    if (!error) {
-        sha.add(buf);
+    if (auto error = tr_ioRead(desc, open_files, span.begin, buf, false); error) {
+        return error;
     }
-    return error;
+
+    auto const& block_info = desc.block_info;
+    for (auto begin = span.begin; begin < span.end;) {
+        auto const piece_end = block_info.byte_span_for_piece(block_info.byte_loc(begin).piece).end;
+        auto const end = std::min(piece_end, span.end);
+        sha.add(buf.subspan(static_cast<size_t>(begin - span.begin), static_cast<size_t>(end - begin)));
+        if (end == piece_end) {
+            setme_hashes.emplace_back(sha.finish()); // which clears `sha` for the next piece
+        }
+        begin = end;
+    }
+
+    return {};
 }
 
 [[nodiscard]] tr_error read_block(
@@ -415,7 +428,11 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
-    [[nodiscard]] tr_error hash_span(tr_torrent_id_t const id, tr_byte_span_t const span, tr_sha1& sha) override
+    [[nodiscard]] tr_error hash_span(
+        tr_torrent_id_t const id,
+        tr_byte_span_t const span,
+        tr_sha1& sha,
+        std::vector<tr_sha1_digest_t>& setme_hashes) override
     {
         TR_PROFILE_SCOPE("storage.hash_span");
         auto const* const tor = torrents_.get(id);
@@ -424,7 +441,7 @@ public:
             return tr_error::from_errno(EINVAL);
         }
 
-        return hash_span_from_disk(*desc, open_files_, span, scratch_, sha);
+        return hash_span_from_disk(*desc, open_files_, span, scratch_, sha, setme_hashes);
     }
 
     [[nodiscard]] tr_error move(
@@ -1663,7 +1680,7 @@ private:
     {
         auto desc = provider_(id);
         if (!is_valid_hash_span(desc.get(), op.span)) {
-            std::move(op.on_hashed)(id, op.span, tr_error::from_errno(EINVAL), std::move(op.sha));
+            std::move(op.on_hashed)(id, op.span, tr_error::from_errno(EINVAL), {}, std::move(op.sha));
             return;
         }
 
@@ -2298,13 +2315,15 @@ private:
     {
         TR_PROFILE_SCOPE("storage.hash_span");
         auto& op = pending.op;
-        auto error = hash_span_from_disk(*pending.desc, open_files_, op.span, scratch, *op.sha);
+        auto hashes = std::vector<tr_sha1_digest_t>{};
+        auto error = hash_span_from_disk(*pending.desc, open_files_, op.span, scratch, *op.sha, hashes);
 
-        post_completion([this, id = pending.tor_id, op = std::move(op), error = std::move(error)] mutable {
-            unregister_running_hash(gate_of(id), op.span);
-            std::move(op.on_hashed)(id, op.span, error, std::move(op.sha));
-            release(id);
-        });
+        post_completion(
+            [this, id = pending.tor_id, op = std::move(op), error = std::move(error), hashes = std::move(hashes)] mutable {
+                unregister_running_hash(gate_of(id), op.span);
+                std::move(op.on_hashed)(id, op.span, error, std::move(hashes), std::move(op.sha));
+                release(id);
+            });
     }
 
     void exec_test(PendingTest op)
@@ -2497,8 +2516,9 @@ void LocalData::hash_span(
         return;
     }
 
-    auto const error = backend_->hash_span(id, span, *sha);
-    std::move(on_hashed)(id, span, error, std::move(sha));
+    auto hashes = std::vector<tr_sha1_digest_t>{};
+    auto const error = backend_->hash_span(id, span, *sha, hashes);
+    std::move(on_hashed)(id, span, error, std::move(hashes), std::move(sha));
 }
 
 void LocalData::write(

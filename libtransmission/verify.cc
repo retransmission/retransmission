@@ -5,11 +5,13 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint> // uint64_t
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <tuple>
 #include <utility> // for std::move()
+#include <vector>
 
 #include "libtransmission/block-info.h"
 #include "libtransmission/crypto-utils.h"
@@ -89,19 +91,39 @@ void tr_verifier::step()
         return;
     }
 
-    auto const piece_span = block_info.byte_span_for_piece(active_->piece);
-    auto const begin = piece_span.begin + active_->piece_bytes_hashed;
-    auto const span = tr_byte_span_t{ .begin = begin, .end = std::min(piece_span.end, begin + local_data_.hash_span_bytes()) };
-
     in_step_ = true;
     local_data_.hash_span(
         active_->mediator->id(),
-        span,
+        next_span(),
         std::move(active_->sha),
-        [this, token = active_token_](tr_torrent_id_t, tr_byte_span_t const hashed, tr_error const& error, auto sha) {
-            on_span_hashed(token, hashed.size(), !error, std::move(sha));
-        });
+        [this, token = active_token_](
+            tr_torrent_id_t,
+            tr_byte_span_t const span,
+            tr_error const& error,
+            auto const& hashes,
+            auto sha) { on_span_hashed(token, span, error, hashes, std::move(sha)); });
     in_step_ = false;
+}
+
+// The active verify's next span: as many whole pieces as fit in one, or
+// the next part of a piece too big to fit. A piece at a time while it
+// reads a span that failed again.
+tr_byte_span_t tr_verifier::next_span() const
+{
+    TR_ASSERT(active_);
+
+    auto const& block_info = active_->mediator->block_info();
+    auto const max_bytes = uint64_t{ local_data_.hash_span_bytes() };
+    auto const piece = active_->piece;
+    auto n_pieces = std::max(uint64_t{ 1U }, max_bytes / block_info.piece_size());
+    if (piece < active_->single_piece_spans_end) {
+        n_pieces = 1U;
+    }
+    auto const end_piece = std::min(uint64_t{ block_info.piece_count() }, piece + n_pieces);
+    auto const last_piece = static_cast<tr_piece_index_t>(end_piece - 1U);
+
+    auto const begin = block_info.byte_span_for_piece(piece).begin + active_->piece_bytes_hashed;
+    return { .begin = begin, .end = std::min(block_info.byte_span_for_piece(last_piece).end, begin + max_bytes) };
 }
 
 // Makes the first verify in line whose torrent has no move or rename
@@ -144,26 +166,54 @@ void tr_verifier::report_all_missing()
     schedule_step();
 }
 
-void tr_verifier::on_span_hashed(uint64_t const token, uint64_t const n_bytes, bool const ok, std::unique_ptr<tr_sha1> sha)
+// Reports the active verify's next piece, and moves past it.
+// False if the torrent ended the verify.
+bool tr_verifier::report_piece(std::optional<tr_sha1_digest_t> const& hash)
+{
+    TR_ASSERT(active_);
+
+    auto const token = active_token_;
+    auto const piece = active_->piece++;
+    active_->mediator->on_piece_hashed(piece, hash);
+    return active_ && token == active_token_;
+}
+
+void tr_verifier::on_span_hashed(
+    uint64_t const token,
+    tr_byte_span_t const span,
+    tr_error const& error,
+    std::vector<tr_sha1_digest_t> const& hashes,
+    std::unique_ptr<tr_sha1> sha)
 {
     // a verify that remove() ended
     if (!active_ || token != active_token_) {
         return;
     }
 
-    auto const piece = active_->piece;
-    active_->piece_bytes_hashed += n_bytes;
     active_->sha = std::move(sha);
 
-    // an unreadable piece skips the rest of its spans
-    if (!ok || active_->piece_bytes_hashed >= active_->mediator->block_info().piece_size(piece)) {
-        auto const hash = ok ? std::optional{ active_->sha->finish() } : std::nullopt;
-        active_->sha->clear();
-        ++active_->piece;
-        active_->piece_bytes_hashed = 0U;
+    auto const& block_info = active_->mediator->block_info();
+    if (!error) {
+        // The span may end partway through the piece after those it finished.
+        auto const next_piece = active_->piece + static_cast<tr_piece_index_t>(std::size(hashes));
+        auto const next_begin = next_piece < block_info.piece_count() ? block_info.byte_span_for_piece(next_piece).begin :
+                                                                        span.end;
+        TR_ASSERT(next_begin <= span.end);
+        active_->piece_bytes_hashed = span.end - next_begin;
 
-        // last, since the torrent may end this verify
-        active_->mediator->on_piece_hashed(piece, hash);
+        for (auto const& hash : hashes) {
+            if (!report_piece(hash)) {
+                break;
+            }
+        }
+    } else if (auto const last_piece = block_info.byte_loc(span.end - 1U).piece; last_piece > active_->piece) {
+        // read them again a piece at a time, so that the readable ones count
+        active_->single_piece_spans_end = last_piece + 1U;
+    } else {
+        // an unreadable piece skips the rest of its spans
+        active_->sha->clear();
+        active_->piece_bytes_hashed = 0U;
+        std::ignore = report_piece(std::nullopt);
     }
 
     // The next span goes to the first verify in line, which may be one
