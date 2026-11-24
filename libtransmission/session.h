@@ -954,10 +954,14 @@ public:
         return settings().upload_slots_per_torrent;
     }
 
-    [[nodiscard]] constexpr auto isClosing() const noexcept
+    // Callable from any thread.
+    [[nodiscard]] bool isClosing() const noexcept
     {
-        return is_closing_;
+        return close_phase_ != tr_close_phase::None;
     }
+
+    // See tr_sessionGetDiskActivity(). Callable from any thread.
+    [[nodiscard]] tr_disk_activity disk_activity() const;
 
     [[nodiscard]] constexpr auto encryptionMode() const noexcept
     {
@@ -1249,6 +1253,7 @@ private:
 
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds tracker_wait);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
+    void log_slow_close();
 
     void on_now_timer();
     void on_queue_timer();
@@ -1301,7 +1306,10 @@ private:
     friend uint16_t tr_sessionGetPeerPort(tr_session const* session);
     friend uint16_t tr_sessionGetRPCPort(tr_session const* session);
     friend uint16_t tr_sessionSetPeerPortRandom(tr_session* session);
-    friend void tr_sessionClose(tr_session* session, double timeout_secs);
+    friend void tr_sessionClose(
+        tr_session* session,
+        double timeout_secs,
+        std::function<void(tr_disk_activity const&)> const& on_progress);
     friend tr::Settings tr_sessionGetSettings(tr_session const* s);
     friend void tr_sessionLimitSpeed(tr_session* session, tr_direction dir, bool limited);
     friend void tr_sessionReloadBlocklists(tr_session* session);
@@ -1416,7 +1424,12 @@ private:
     // port than the one requested by Transmission.
     tr_port advertised_peer_port_;
 
-    bool is_closing_ = false;
+    // how far a close has got, for isClosing() and disk_activity()
+    std::atomic<tr_close_phase> close_phase_ = tr_close_phase::None;
+    std::atomic<size_t> close_stops_sent_ = 0U;
+    std::atomic<size_t> close_stops_answered_ = 0U;
+    std::atomic<std::chrono::steady_clock::time_point> close_tracker_deadline_;
+    std::chrono::steady_clock::time_point next_slow_close_log_;
 
     /// fields that aren't trivial,
     /// but are self-contained / don't hold references to others

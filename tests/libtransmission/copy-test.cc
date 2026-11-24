@@ -163,6 +163,29 @@ TEST_F(CopyTest, renameOrCopyRenamesWithinAFilesystem)
     expectContents(target, "contents"sv);
 }
 
+TEST_F(CopyTest, copyReportsItsProgress)
+{
+    static auto constexpr Size = size_t{ (3U * 1024U * 1024U) + 7U };
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, std::string(Size, 'x'));
+
+    auto reports = std::vector<uint64_t>{};
+    auto error = tr_error{};
+    EXPECT_TRUE(
+        tr_file_copy_atomic(source, target, &error, [&reports](uint64_t const n_copied) { reports.push_back(n_copied); }));
+    EXPECT_FALSE(error) << error;
+    expectContents(target, std::string(Size, 'x'));
+
+    EXPECT_TRUE(std::ranges::is_sorted(reports));
+#ifndef __APPLE__ // macOS may clone the file, which copies no data
+    ASSERT_FALSE(std::empty(reports));
+#endif
+    if (!std::empty(reports)) {
+        EXPECT_EQ(Size, reports.back());
+    }
+}
+
 TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
 {
     auto const source = tr_pathbuf{ sandboxDir(), "/missing.bin"sv };

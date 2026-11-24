@@ -2268,3 +2268,160 @@ TEST_F(LocalDataThreadlessTest, aMoveThatCopiesDoesntHoldUpOneThatOnlyRenames)
 
     local_data->shutdown();
 }
+
+// A closing session cancels the reads that no worker has started,
+// and waits for everything else.
+TEST_F(LocalDataThreadlessTest, shutdownCancelsWaitingReadsAndFinishesTheRest)
+{
+    static auto constexpr FileSize = 4U * BlockSize;
+    saveFile("data.bin", patternString(0U, FileSize));
+    auto const local_data = makeThreadless(makeDescriptor({ { "data.bin", FileSize } }, BlockSize));
+    local_data->set_workers_paused(true);
+
+    // one read handed to the workers, another not yet
+    auto handed = ReadResult{};
+    readInto(*local_data, 2U * BlockSize, BlockSize, handed);
+    runMarshaled();
+    auto events = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, BlockSize, [&events] { events.emplace_back("wrote"); });
+    auto staged = ReadResult{};
+    readInto(*local_data, 3U * BlockSize, BlockSize, staged);
+    local_data->close_file(TorId, 0U, [&events](tr_torrent_id_t) { events.emplace_back("closed"); });
+
+    local_data->begin_shutdown();
+    for (auto const* const read : { &handed, &staged }) {
+        EXPECT_TRUE(read->done);
+        EXPECT_EQ(ECANCELED, read->error.code()) << read->error;
+    }
+    EXPECT_TRUE(std::empty(events));
+    EXPECT_FALSE(local_data->try_finish_shutdown());
+
+    // a read enqueued now fails at once
+    auto late = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, late);
+    EXPECT_TRUE(late.done);
+    EXPECT_EQ(ECANCELED, late.error.code()) << late.error;
+
+    // the workers resumed
+    EXPECT_TRUE(pumpUntil([&events]() { return std::size(events) == 2U; }));
+    EXPECT_EQ((std::vector<std::string>{ "wrote", "closed" }), events);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+
+    // the file close went to an admin lane, which may not have run yet
+    EXPECT_TRUE(pumpUntil([&local_data]() { return local_data->try_finish_shutdown(); }));
+
+    // later ops are synchronous
+    auto after = ReadResult{};
+    readInto(*local_data, 0U, BlockSize, after);
+    EXPECT_TRUE(after.done);
+}
+
+TEST_F(LocalDataThreadlessTest, activityShowsQueuedWorkAndWhatTheThreadsAreDoing)
+{
+    static auto constexpr FileSize = 2U * BlockSize;
+    saveFile("a.bin", patternString(0U, FileSize));
+    saveFile("b.bin", patternString(FileSize, FileSize));
+    auto const local_data = makeThreadless(makeDescriptor({ { "a.bin", FileSize }, { "b.bin", FileSize } }, BlockSize));
+
+    // a removal waits behind a write
+    auto n_written = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_written] { ++n_written; });
+    auto during = std::vector<tr_disk_activity>{};
+    auto removed = false;
+    local_data->remove(
+        TorId,
+        [&local_data, &during](std::string_view const path, tr_error* const error) {
+            during.emplace_back(local_data->activity());
+            return tr_sys_path_remove(path, error);
+        },
+        [&removed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            removed = true;
+        });
+
+    auto const before = local_data->activity();
+    EXPECT_EQ(BlockSize, before.queued_write_bytes);
+    EXPECT_EQ(1U, before.queued_admin_count);
+    EXPECT_TRUE(std::empty(before.in_flight));
+
+    EXPECT_TRUE(pumpUntil([&removed]() { return removed; }));
+    EXPECT_EQ(1U, n_written);
+
+    // the removal showed each file it removed
+    ASSERT_EQ(2U, std::size(during));
+    for (auto i = size_t{}; i < std::size(during); ++i) {
+        auto const& activity = during[i];
+        EXPECT_EQ(0U, activity.queued_admin_count);
+        ASSERT_EQ(1U, std::size(activity.in_flight));
+        auto const& op = activity.in_flight.front();
+        EXPECT_EQ(tr_disk_activity::Op::Kind::Remove, op.kind);
+        EXPECT_EQ("test", op.torrent_name);
+        EXPECT_EQ(i, op.done);
+        EXPECT_EQ(2U, op.total);
+    }
+
+    auto const after = local_data->activity();
+    EXPECT_EQ(0U, after.queued_write_bytes);
+    EXPECT_TRUE(std::empty(after.in_flight));
+
+    local_data->shutdown();
+}
+
+// A move, removal, or rename is queued until a lane starts its disk work.
+TEST_F(LocalDataThreadlessTest, activityCountsAdminWorkWaitingOnALane)
+{
+    static auto constexpr OtherId = tr_torrent_id_t{ TorId + 1 };
+    saveFile("data.bin", patternString(0U, BlockSize));
+    saveFile("other/data.bin", patternString(0U, BlockSize));
+    auto const mine = makeDescriptor({ { "data.bin", BlockSize } }, BlockSize);
+    auto const theirs = inDir(*mine, OtherId, "other");
+    auto const local_data = makeThreadless([&mine, &theirs](tr_torrent_id_t const id) { return id == TorId ? mine : theirs; });
+
+    // nothing is in flight, so both barriers are granted, and both jobs wait on the short lane
+    auto during_removal = std::optional<tr_disk_activity>{};
+    auto removed = false;
+    local_data->remove(
+        OtherId,
+        [&local_data, &during_removal](std::string_view const path, tr_error* const error) {
+            if (!during_removal) {
+                during_removal = local_data->activity();
+            }
+            return tr_sys_path_remove(path, error);
+        },
+        [&removed](tr_torrent_id_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            removed = true;
+        });
+    auto moved = false;
+    local_data->move(
+        TorId,
+        [this] { return tr::LocalData::MoveTarget{ .parent = pathOf("moved") }; },
+        [&moved](auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            moved = true;
+        });
+    EXPECT_EQ(2U, local_data->activity().queued_admin_count);
+    EXPECT_TRUE(std::empty(local_data->activity().in_flight));
+
+    // the removal runs, and the move still waits
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    ASSERT_TRUE(during_removal);
+    EXPECT_EQ(1U, during_removal->queued_admin_count);
+    ASSERT_EQ(1U, std::size(during_removal->in_flight));
+    EXPECT_EQ(tr_disk_activity::Op::Kind::Remove, during_removal->in_flight.front().kind);
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(removed);
+
+    // the move places the files, then waits again to clear the old location
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_EQ(0U, local_data->activity().queued_admin_count);
+    tr::detail::deliver(*local_data);
+    EXPECT_EQ(1U, local_data->activity().queued_admin_count);
+    ASSERT_TRUE(tr::detail::step(*local_data, DiskThread::ShortLane));
+    EXPECT_EQ(0U, local_data->activity().queued_admin_count);
+    tr::detail::deliver(*local_data);
+    EXPECT_TRUE(moved);
+    EXPECT_TRUE(tr_sys_path_exists(pathOf("moved/data.bin")));
+
+    local_data->shutdown();
+}

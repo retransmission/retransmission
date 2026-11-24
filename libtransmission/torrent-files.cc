@@ -38,7 +38,8 @@ using namespace std::literals;
 namespace
 {
 
-using path_func_t = std::function<void(std::string_view path)>;
+// `folder` is whether `path` was a folder when the walk reached it.
+using path_func_t = std::function<void(std::string_view path, bool folder)>;
 using directory_filter_t = std::function<bool(std::string_view directory)>;
 
 [[nodiscard]] bool is_folder(std::string_view const path)
@@ -47,31 +48,26 @@ using directory_filter_t = std::function<bool(std::string_view directory)>;
     return info && info->isFolder();
 }
 
-[[nodiscard]] bool is_empty_folder(std::string_view const path)
-{
-    return is_folder(path) && std::empty(tr_sys_dir_get_files(path, tr_basename_accept_all));
-}
-
 void depth_first_walk(
     std::string_view const path,
     path_func_t const& func,
     std::optional<int> max_depth = {},
     directory_filter_t const& skip_directory = {})
 {
-    auto const can_descend = !max_depth || *max_depth > 0;
-    if ((can_descend || skip_directory) && is_folder(path)) {
+    auto const folder = is_folder(path);
+    if (folder) {
         // A skipped directory is neither traversed nor passed to func.
         if (skip_directory && skip_directory(path)) {
             return;
         }
-        if (can_descend) {
+        if (!max_depth || *max_depth > 0) {
             for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
                 depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth, skip_directory);
             }
         }
     }
 
-    func(path);
+    func(path, folder);
 }
 
 [[nodiscard]] bool is_junk_file(std::string_view filename)
@@ -99,9 +95,9 @@ void depth_first_walk(
     return std::ranges::find(Files, base) != std::ranges::end(Files);
 }
 
-void remove_junk(std::string_view const filename)
+void remove_junk(std::string_view const filename, bool const folder)
 {
-    if (is_empty_folder(filename) || is_junk_file(filename)) {
+    if ((folder && std::empty(tr_sys_dir_get_files(filename, tr_basename_accept_all))) || is_junk_file(filename)) {
         if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
             tr_logAddWarn(
                 fmt::format(
@@ -189,7 +185,8 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
     std::string_view const parent_in,
     std::string_view const parent_name,
     tr_error* error,
-    bool* const needs_copy) const
+    bool* const needs_copy,
+    OnMoveProgress const& on_progress) const
 {
     auto const parent = tr_pathbuf{ parent_in };
     tr_logAddTrace(fmt::format("Moving files from [{}] to '{:s}'", fmt::join(old_parents, ", "), parent.sv()), parent_name);
@@ -269,9 +266,28 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
         }
     };
 
+    auto progress = MoveProgress{};
+    progress.file_count = std::size(moves);
+    for (auto const& [i, found] : moves) {
+        progress.bytes_total += found.size;
+    }
+    // Empty without `on_progress`, so a copy can skip its progress hooks.
+    auto on_copied = std::function<void(uint64_t)>{};
+    if (on_progress) {
+        on_copied = [&on_progress, &progress](uint64_t const n_copied) {
+            auto now = progress;
+            now.bytes_done += n_copied;
+            on_progress(now);
+        };
+    }
+
     for (auto const& [i, found] : moves) {
         auto const old_path = found.filename<tr_pathbuf>();
         auto const path = found.filename_under<tr_pathbuf>(parent);
+        progress.subpath = found.subpath;
+        if (on_progress) {
+            on_progress(progress);
+        }
         if (tr_sys_path_exists(path)) {
             tr_logAddWarn(
                 fmt::format(
@@ -281,13 +297,15 @@ std::optional<tr_torrent_files::MoveLeftovers> tr_torrent_files::move(
                 parent_name);
         }
         tr_logAddTrace(fmt::format("Moving file #{:d} from '{:s}' to '{:s}'", i, old_path.sv(), path.sv()), parent_name);
-        auto const how = tr_file_rename_or_copy(old_path, path, error);
+        auto const how = tr_file_rename_or_copy(old_path, path, error, on_copied);
         if (!how) {
             error->prefix_message(fmt::format("'{:s}': ", old_path.sv()));
             undo();
             return {};
         }
         moved.emplace_back(found, *how);
+        progress.bytes_done += found.size;
+        ++progress.file_index;
 
         if (*how == tr_file_moved::Copied) {
             leftovers.sources.emplace(old_path.sv());
@@ -375,7 +393,8 @@ void tr_torrent_files::remove(
     std::span<std::string_view const> const parents,
     std::string_view const tmpdir_prefix,
     tr_torrent_remove_func const& func,
-    tr_error* error) const
+    tr_error* error,
+    OnRemoveProgress const& on_progress) const
 {
     auto local_error = tr_error{};
     error = error != nullptr ? error : &local_error;
@@ -389,7 +408,7 @@ void tr_torrent_files::remove(
             continue;
         }
         auto root_error = tr_error{};
-        remove(parent, tmpdir_prefix, func, &root_error);
+        remove(parent, tmpdir_prefix, func, &root_error, on_progress);
         // Process independent roots even when an earlier root reported an error,
         // and preserve the first error for the caller.
         if (root_error && !*error) {
@@ -411,7 +430,8 @@ void tr_torrent_files::remove(
     std::string_view parent_in,
     std::string_view tmpdir_prefix,
     tr_torrent_remove_func const& func,
-    tr_error* error) const
+    tr_error* error,
+    OnRemoveProgress const& on_progress) const
 {
     auto const parent = tr_pathbuf{ parent_in };
 
@@ -428,6 +448,7 @@ void tr_torrent_files::remove(
 
     // move the local data to the tmpdir
     auto const paths = std::to_array<std::string_view>({ parent.sv() });
+    auto n_found = size_t{};
     for (tr_file_index_t idx = 0, n_files = file_count(); idx < n_files; ++idx) {
         if (auto const found = find(idx, paths); found) {
             // if moving a file fails, give up and let the error propagate
@@ -436,6 +457,7 @@ void tr_torrent_files::remove(
             if (!tr_file_move(from, to, error)) {
                 return;
             }
+            ++n_found;
         }
     }
 
@@ -445,18 +467,28 @@ void tr_torrent_files::remove(
     auto top_files = std::set<std::string>{ std::string{ path } };
     depth_first_walk(
         tmpdir,
-        [&parent, &tmpdir, &top_files](std::string_view const filename) {
+        [&parent, &tmpdir, &top_files](std::string_view const filename, bool /*folder*/) {
             if (tmpdir != filename) {
                 top_files.emplace(tr_pathbuf{ parent, '/', tr_sys_path_basename(filename) });
             }
         },
         1);
 
-    auto const func_wrapper = [&error, &func, &tmpdir](std::string_view const filename) {
-        if (tmpdir != filename) {
-            func(filename, error);
-        }
-    };
+    // The tree may hold other files too, so the count stops at the torrent's.
+    // A folder that `func` removes whole isn't counted until the walks end.
+    auto n_removed = size_t{};
+    if (on_progress) {
+        on_progress(n_removed, n_found);
+    }
+    auto const func_wrapper =
+        [&error, &func, &tmpdir, &on_progress, &n_removed, n_found](std::string_view const filename, bool const folder) {
+            if (tmpdir != filename) {
+                func(filename, error);
+                if (on_progress && !folder && n_removed < n_found) {
+                    on_progress(++n_removed, n_found);
+                }
+            }
+        };
 
     // Remove the tmpdir.
     // Since `func` might send files to a recycle bin, try to preserve
@@ -465,7 +497,11 @@ void tr_torrent_files::remove(
     // directories -- so plan B is to remove everything bottom-up.
     depth_first_walk(tmpdir, func_wrapper, 1);
     depth_first_walk(tmpdir, func_wrapper);
-    tr_sys_path_remove(tmpdir);
+
+    // The tmpdir comes out only once every file in it is gone.
+    if (tr_sys_path_remove(tmpdir) && on_progress && n_removed < n_found) {
+        on_progress(n_found, n_found);
+    }
 
     // OK we've removed the local data.
     // What's left are empty folders, junk, and user-generated files.
