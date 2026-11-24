@@ -520,7 +520,8 @@ protected:
     [[nodiscard]] bool wasVerified(tr_torrent const* const tor, size_t const n_before)
     {
         auto const lock = std::scoped_lock{ verified_mutex_ };
-        return std::ranges::contains(std::views::drop(verified_, n_before), tor->id());
+        auto const after = std::views::drop(verified_, n_before);
+        return std::ranges::find(after, tor->id()) != std::ranges::end(after);
     }
 
     // Runs `func` on the session thread and waits for it to finish and returns the result.
