@@ -46,16 +46,11 @@ std::string_view tr_strv_strip(std::string_view str)
 {
     // ASCII only: isspace() depends on the locale, and macOS's UTF-8 locales
     // treat 0xA0, the last byte of multibyte characters such as "à", as a space.
-    auto constexpr Test = [](char const ch) {
-        return ch == ' ' || (ch >= '\t' && ch <= '\r');
-    };
-
-    auto const it = std::ranges::find_if_not(str, Test);
+    auto const it = std::ranges::find_if_not(str, tr_ascii_isspace);
     str = std::string_view{ it, std::ranges::end(str) };
 
-    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(str), std::ranges::rend(str), Test);
+    auto const rit = std::ranges::find_if_not(std::ranges::rbegin(str), std::ranges::rend(str), tr_ascii_isspace);
     str = std::string_view{ std::ranges::begin(str), rit.base() };
-
     return str;
 }
 
