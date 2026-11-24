@@ -6,7 +6,7 @@
 
 @class Torrent;
 
-@interface PiecesView : NSImageView
+@interface PiecesView : NSView
 
 @property(nonatomic) Torrent* torrent;
 
