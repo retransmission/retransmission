@@ -73,6 +73,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <tuple> // std::ignore
 #include <unordered_map>
 
 #ifdef _WIN32
@@ -1909,7 +1910,6 @@ protected:
     void on_response(int response) override;
 
 private:
-    DetailsDialog& parent_;
     Glib::RefPtr<Session> const core_;
     tr_torrent_id_t const torrent_id_;
     Gtk::Entry* const url_entry_;
@@ -1922,7 +1922,6 @@ AddTrackerDialog::AddTrackerDialog(
     Glib::RefPtr<Session> const& core,
     tr_torrent const* torrent)
     : Gtk::Dialog(cast_item)
-    , parent_(parent)
     , core_(core)
     , torrent_id_(tr_torrentId(torrent))
     , url_entry_(gtr_get_widget<Gtk::Entry>(builder, "url_entry"))
@@ -1960,11 +1959,7 @@ void AddTrackerDialog::on_response(int response)
         if (!url.empty()) {
             if (tr_urlIsValidTracker(url.c_str())) {
                 // TODO(ckerr) migrate to `TR_KEY_tracker_list`
-                auto params = tr_variant::Map{ 2U };
-                params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id_ }));
-                params.try_emplace(TR_KEY_tracker_add, tr::serializer::to_variant(std::span{ &url.raw(), 1U }));
-                core_->send(TR_KEY_torrent_set, std::move(params));
-                parent_.refresh();
+                std::ignore = core_->set_torrents({ torrent_id_ }, TR_KEY_tracker_add, std::span{ &url.raw(), 1U });
             } else {
                 gtr_unrecognized_url_dialog(*this, url);
                 destroy = false;
@@ -1998,11 +1993,7 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
         auto const tracker_id = iter->get_value(tracker_cols.tracker_id);
 
         // TODO(ckerr): migrate to `TR_KEY_tracker_list`
-        auto params = tr_variant::Map{ 2U };
-        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id }));
-        params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::array{ tracker_id }));
-        core_->send(TR_KEY_torrent_set, std::move(params));
-        refresh();
+        std::ignore = core_->set_torrents({ torrent_id }, TR_KEY_tracker_remove, std::array{ tracker_id });
     }
 }
 
