@@ -619,6 +619,8 @@ protected:
     }
 
     // A suite that picks its session's disk IO backend itself returns false.
+    // It gets the synchronous one unless it sets disk_io_workers before
+    // SessionTest::SetUp() runs.
     [[nodiscard]] virtual bool useLocalDataBackendFromEnv() const
     {
         return true;
@@ -681,6 +683,14 @@ protected:
                 seed.reset();
                 bad_seed = std::move(value);
             }
+        }
+
+        if (!from_env) {
+            // synchronous, whatever the session's default
+            settings().try_emplace(TR_KEY_disk_io_workers, int64_t{ 0 });
+        } else if (seed) {
+            // startThreadlessDiskIo() replaces only the synchronous backend
+            settings().insert_or_assign(TR_KEY_disk_io_workers, int64_t{ 0 });
         }
 
         session_ = sessionInit(settings());
