@@ -5,7 +5,6 @@
 
 #include "libtransmission-app/add-data.h"
 
-#include <cstddef>
 #include <optional>
 #include <span>
 #include <string>

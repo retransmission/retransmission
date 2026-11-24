@@ -9,7 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm> // for std::ranges::copy()
 #include <array>
 #include <chrono>
 #include <cstdint> // for uintX_t

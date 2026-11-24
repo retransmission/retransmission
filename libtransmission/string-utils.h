@@ -6,7 +6,6 @@
 #pragma once
 
 #include <algorithm>
-#include <cctype>
 #include <iterator>
 #include <string>
 #include <string_view>

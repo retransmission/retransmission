@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <array>
-#include <cerrno> // error codes ERANGE, ...
 #include <chrono>
 #include <cmath>
 #include <cstddef> // std::byte
