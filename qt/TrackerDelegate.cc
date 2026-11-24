@@ -16,6 +16,7 @@
 
 #include <libtransmission-app/favicon-cache.h>
 #include <libtransmission-app/torrent.h>
+#include <libtransmission-app/tracker-status.h>
 
 #include "Application.h"
 #include "Formatter.h"
@@ -163,35 +164,9 @@ void TrackerDelegate::setShowMore(bool b)
     show_more_ = b;
 }
 
-namespace
-{
-[[nodiscard]] QString timeToRoundedString(int seconds)
-{
-    if (seconds > 60) {
-        seconds -= seconds % 60;
-    }
-
-    return Formatter::timeToString(seconds);
-}
-} // namespace
-
 QString TrackerDelegate::getText(TrackerInfo const& inf) const
 {
     QString str;
-    auto const err_markup_begin = QStringLiteral("<span style=\"color:red\">");
-    auto const err_markup_end = QStringLiteral("</span>");
-    auto const timeout_markup_begin = QStringLiteral("<span style=\"color:#224466\">");
-    auto const timeout_markup_end = QStringLiteral("</span>");
-    auto const success_markup_begin = QStringLiteral("<span style=\"color:#008B00\">");
-    auto const success_markup_end = QStringLiteral("</span>");
-
-    auto const now = time(nullptr);
-    auto const time_until = [&now](auto t) {
-        return timeToRoundedString(static_cast<int>(t - now));
-    };
-    auto const time_since = [&now](auto t) {
-        return timeToRoundedString(static_cast<int>(now - t));
-    };
 
     // hostname
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
@@ -201,142 +176,131 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
     str += inf.st.is_backup ? QStringLiteral("</i>") : QStringLiteral("</b>");
 
     // announce & scrape info
-    if (!inf.st.is_backup) {
-        if (inf.st.has_announced && inf.st.announce_state != TR_TRACKER_INACTIVE) {
-            auto const tstr = time_since(inf.st.last_announce_time);
-            str += QStringLiteral("<br/>\n");
-
-            if (inf.st.last_announce_succeeded) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT_N(
-                    "Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago",
-                    static_cast<int>(inf.st.last_announce_peer_count),
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("peer_count", inf.st.last_announce_peer_count),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else if (inf.st.last_announce_timed_out) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT(
-                    "Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry",
-                    fmt::arg("markup_begin", timeout_markup_begin),
-                    fmt::arg("markup_end", timeout_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
-                //: {time_span} is duration
-                str += TR_FORMAT(
-                    "Got an error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
-                    fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_announce_result.sv()),
-                    fmt::arg("markup_end", err_markup_end),
-                    fmt::arg("time_span", tstr));
-            }
-        }
-
-        switch (inf.st.announce_state) {
-        case TR_TRACKER_INACTIVE:
-            str += QStringLiteral("<br/>\n");
-            str += tr("No updates scheduled");
-            break;
-
-        case TR_TRACKER_WAITING:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for more peers in {time_span}",
-                fmt::arg("time_span", time_until(inf.st.next_announce_time)));
-            break;
-
-        case TR_TRACKER_QUEUED:
-            str += QStringLiteral("<br/>\n");
-            str += tr("Queued to ask for more peers");
-            break;
-
-        case TR_TRACKER_ACTIVE:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for more peers now… <small>{time_span}</small>",
-                fmt::arg("time_span", time_since(inf.st.last_announce_start_time)));
-            break;
-
-        default:
-            break;
-        }
-
-        if (!show_more_) {
-            return str;
-        }
-
-        if (inf.st.has_scraped) {
-            str += QStringLiteral("<br/>\n");
-            auto const tstr = time_since(inf.st.last_scrape_time);
-
-            if (!inf.st.last_scrape_succeeded) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
-                //: {time_span} is duration
-                str += TR_FORMAT(
-                    "Got a scrape error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
-                    fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_scrape_result.sv()),
-                    fmt::arg("markup_end", err_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else if (inf.st.seeder_count >= 0 && inf.st.leecher_count >= 0) {
-                //: First part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
-                //: {markup_begin} and {markup_end} are replaced with HTML markup
-                str += TR_FORMAT_N(
-                    "Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}",
-                    static_cast<int>(inf.st.seeder_count),
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("seeder_count", inf.st.seeder_count),
-                    fmt::arg("markup_end", success_markup_end));
-                //: Second part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration;
-                //: notice that leading space (before "and") is included here
-                str += TR_FORMAT_N(
-                    " and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago",
-                    static_cast<int>(inf.st.leecher_count),
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("leecher_count", inf.st.leecher_count),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT(
-                    "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago",
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            }
-        }
-
-        switch (inf.st.scrape_state) {
-        case TR_TRACKER_WAITING:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for peer counts in {time_span}",
-                fmt::arg("time_span", time_until(inf.st.next_scrape_time)));
-            break;
-
-        case TR_TRACKER_QUEUED:
-            str += QStringLiteral("<br/>\n");
-            str += tr("Queued to ask for peer counts");
-            break;
-
-        case TR_TRACKER_ACTIVE:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for peer counts now… <small>{time_span}</small>",
-                fmt::arg("time_span", time_since(inf.st.last_scrape_start_time)));
-            break;
-
-        default: // TR_TRACKER_INACTIVE
-            break;
-        }
+    auto const now = time(nullptr);
+    for (auto const& line : tracker_status_lines(inf.st, show_more_)) {
+        str += QStringLiteral("<br/>\n");
+        str += getLineText(line, now);
     }
 
     return str;
+}
+
+QString TrackerDelegate::getLineText(TrackerStatusLine const& line, time_t const now)
+{
+    using Phrase = TrackerStatusLine::Phrase;
+
+    auto const err_markup_begin = QStringLiteral("<span style=\"color:red\">");
+    auto const err_markup_end = QStringLiteral("</span>");
+    auto const timeout_markup_begin = QStringLiteral("<span style=\"color:#224466\">");
+    auto const timeout_markup_end = QStringLiteral("</span>");
+    auto const success_markup_begin = QStringLiteral("<span style=\"color:#008B00\">");
+    auto const success_markup_end = QStringLiteral("</span>");
+
+    auto const time_until = [&line, now] {
+        return Formatter::timeToString(static_cast<int>(line.time - now));
+    };
+    auto const time_since = [&line, now] {
+        return Formatter::timeToString(static_cast<int>(now - line.time));
+    };
+    auto const message = [&line] {
+        return Utils::qstringFromUtf8(line.message);
+    };
+
+    switch (line.phrase) {
+    case Phrase::LastAnnounceGotPeers:
+        //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
+        return TR_FORMAT_N(
+            "Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago",
+            static_cast<int>(line.peer_count),
+            fmt::arg("markup_begin", success_markup_begin),
+            fmt::arg("peer_count", line.peer_count),
+            fmt::arg("markup_end", success_markup_end),
+            fmt::arg("time_span", time_since()));
+
+    case Phrase::LastAnnounceTimedOut:
+        //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
+        return TR_FORMAT(
+            "Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry",
+            fmt::arg("markup_begin", timeout_markup_begin),
+            fmt::arg("markup_end", timeout_markup_end),
+            fmt::arg("time_span", time_since()));
+
+    case Phrase::LastAnnounceError:
+        //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
+        //: {time_span} is duration
+        return TR_FORMAT(
+            "Got an error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
+            fmt::arg("markup_begin", err_markup_begin),
+            fmt::arg("error", message()),
+            fmt::arg("markup_end", err_markup_end),
+            fmt::arg("time_span", time_since()));
+
+    case Phrase::AnnounceInactive:
+        return tr("No updates scheduled");
+
+    case Phrase::AnnounceWaiting:
+        //: {time_span} is duration
+        return TR_FORMAT("Asking for more peers in {time_span}", fmt::arg("time_span", time_until()));
+
+    case Phrase::AnnounceQueued:
+        return tr("Queued to ask for more peers");
+
+    case Phrase::AnnounceActive:
+        //: {time_span} is duration
+        return TR_FORMAT("Asking for more peers now… <small>{time_span}</small>", fmt::arg("time_span", time_since()));
+
+    case Phrase::LastScrapeError:
+        //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
+        //: {time_span} is duration
+        return TR_FORMAT(
+            "Got a scrape error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
+            fmt::arg("markup_begin", err_markup_begin),
+            fmt::arg("error", message()),
+            fmt::arg("markup_end", err_markup_end),
+            fmt::arg("time_span", time_since()));
+
+    case Phrase::LastScrapeGotCounts:
+        {
+            //: First part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
+            //: {markup_begin} and {markup_end} are replaced with HTML markup
+            auto str = TR_FORMAT_N(
+                "Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}",
+                static_cast<int>(line.seeder_count),
+                fmt::arg("markup_begin", success_markup_begin),
+                fmt::arg("seeder_count", line.seeder_count),
+                fmt::arg("markup_end", success_markup_end));
+            //: Second part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
+            //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration;
+            //: notice that leading space (before "and") is included here
+            str += TR_FORMAT_N(
+                " and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago",
+                static_cast<int>(line.leecher_count),
+                fmt::arg("markup_begin", success_markup_begin),
+                fmt::arg("leecher_count", line.leecher_count),
+                fmt::arg("markup_end", success_markup_end),
+                fmt::arg("time_span", time_since()));
+            return str;
+        }
+
+    case Phrase::LastScrapeNoCounts:
+        //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
+        return TR_FORMAT(
+            "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago",
+            fmt::arg("markup_begin", success_markup_begin),
+            fmt::arg("markup_end", success_markup_end),
+            fmt::arg("time_span", time_since()));
+
+    case Phrase::ScrapeWaiting:
+        //: {time_span} is duration
+        return TR_FORMAT("Asking for peer counts in {time_span}", fmt::arg("time_span", time_until()));
+
+    case Phrase::ScrapeQueued:
+        return tr("Queued to ask for peer counts");
+
+    case Phrase::ScrapeActive:
+        //: {time_span} is duration
+        return TR_FORMAT("Asking for peer counts now… <small>{time_span}</small>", fmt::arg("time_span", time_since()));
+    }
+
+    return {};
 }
