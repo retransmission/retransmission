@@ -113,7 +113,9 @@ public:
     // Counting requests bounds the burst that lands when the disk falls
     // behind. It also caps throughput at the budget divided by the
     // request round-trip time.
-    size_t disk_write_budget_mib = 64U;
+    // Zero sizes it from the machine's memory. Saving a size instead
+    // would carry one machine's budget to the next in settings.json.
+    size_t disk_write_budget_mib = 0U;
     size_t download_queue_size = 5U;
     size_t peer_limit_global = TrDefaultPeerLimitGlobal;
     size_t peer_limit_per_torrent = TrDefaultPeerLimitTorrent;

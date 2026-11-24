@@ -5,8 +5,11 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdint>
+#include <fstream>
 #include <iterator>
 #include <list>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -50,11 +53,55 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/utils.h"
 
 using namespace std::literals;
 
 namespace
 {
+[[nodiscard]] std::optional<uint64_t> physical_memory() noexcept
+{
+#ifdef _WIN32
+    auto status = MEMORYSTATUSEX{};
+    status.dwLength = sizeof(status);
+    if (GlobalMemoryStatusEx(&status) != 0) {
+        return uint64_t{ status.ullTotalPhys };
+    }
+#elif defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
+    auto const n_pages = sysconf(_SC_PHYS_PAGES);
+    auto const page_size = sysconf(_SC_PAGESIZE);
+    if (n_pages > 0 && page_size > 0) {
+        return static_cast<uint64_t>(n_pages) * static_cast<uint64_t>(page_size);
+    }
+#endif
+
+    return {};
+}
+
+#ifdef __linux__
+// The smaller of the values that are there.
+[[nodiscard]] constexpr std::optional<uint64_t> smaller(
+    std::optional<uint64_t> const a,
+    std::optional<uint64_t> const b) noexcept
+{
+    if (!a || !b) {
+        return a ? a : b;
+    }
+
+    return std::min(*a, *b);
+}
+
+// The number a cgroup limit file holds. No value if the file is missing
+// or holds none.
+[[nodiscard]] std::optional<uint64_t> read_cgroup_limit(std::string const& filename)
+{
+    auto in = std::ifstream{ filename };
+    auto text = std::string{};
+    std::getline(in, text);
+    return tr_num_parse<uint64_t>(text);
+}
+#endif
+
 #ifdef _WIN32
 std::string win32_get_known_folder_ex(REFKNOWNFOLDERID folder_id, DWORD flags)
 {
@@ -124,6 +171,63 @@ auto win32_get_known_folder(REFKNOWNFOLDERID folder_id)
 
 namespace tr::platform
 {
+#ifdef __linux__
+std::optional<uint64_t> detail::cgroup_memory_limit(std::string_view proc_self_cgroup, std::string_view const cgroup_root)
+{
+    auto limit = std::optional<uint64_t>{};
+
+    // Each line is "hierarchy-id:controllers:path".
+    auto line = std::string_view{};
+    while (tr_strv_sep(&proc_self_cgroup, &line, '\n')) {
+        auto const id = tr_strv_sep(&line, ':');
+        auto const controllers = tr_strv_sep(&line, ':');
+        auto path = line;
+
+        // v2 has one hierarchy, with id 0 and no controllers named.
+        // v1 mounts the memory controller's hierarchy in a dir of its own.
+        auto const is_v2 = id == "0"sv && std::empty(controllers);
+        if (!is_v2 && !fmt::format(",{:s},", controllers).contains(",memory,"sv)) {
+            continue;
+        }
+        auto const dir = is_v2 ? ""sv : "/memory"sv;
+        auto const filename = is_v2 ? "memory.max"sv : "memory.limit_in_bytes"sv;
+
+        // A path that climbs out of the mount names cgroups we can't see.
+        if (!path.starts_with('/') || path.contains("/../"sv) || path.ends_with("/.."sv)) {
+            continue;
+        }
+
+        while (path.ends_with('/')) {
+            path.remove_suffix(1U);
+        }
+
+        // An ancestor's limit binds too. A container can see its own
+        // cgroup mounted at the root while `path` still names it from the
+        // host's root, so dirs that don't exist are skipped.
+        for (;;) {
+            limit = smaller(limit, read_cgroup_limit(fmt::format("{:s}{:s}{:s}/{:s}", cgroup_root, dir, path, filename)));
+            if (std::empty(path)) {
+                break;
+            }
+            path = path.substr(0, path.rfind('/'));
+        }
+    }
+
+    return limit;
+}
+#endif
+
+std::optional<uint64_t> get_memory_size()
+{
+#ifdef __linux__
+    auto in = std::ifstream{ "/proc/self/cgroup" };
+    auto const text = std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+    return smaller(physical_memory(), detail::cgroup_memory_limit(text, "/sys/fs/cgroup"sv));
+#else
+    return physical_memory();
+#endif
+}
+
 std::string get_default_config_dir(std::string_view appname)
 {
     if (std::empty(appname)) {

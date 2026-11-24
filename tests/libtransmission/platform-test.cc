@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
 #include <cstdlib>
 #include <string_view>
 
@@ -21,6 +22,106 @@
 
 using namespace std::literals;
 using PlatformTest = ::tr::test::SessionTest;
+
+#ifdef __linux__
+namespace
+{
+// Lays out cgroup limit files under the sandbox, as if it were /sys/fs/cgroup.
+class CgroupMemoryLimitTest : public ::tr::test::SandboxedTest
+{
+protected:
+    void setLimit(std::string_view const dir, std::string_view const filename, std::string_view const text) const
+    {
+        auto const path = tr_pathbuf{ sandboxDir(), dir };
+        ASSERT_TRUE(tr_sys_dir_create(path, TR_SYS_DIR_CREATE_PARENTS, 0700));
+        ASSERT_TRUE(tr_file_save(tr_pathbuf{ path, '/', filename }, text));
+    }
+
+    [[nodiscard]] auto limit(std::string_view const proc_self_cgroup) const
+    {
+        return tr::platform::detail::cgroup_memory_limit(proc_self_cgroup, sandboxDir());
+    }
+};
+} // namespace
+
+TEST_F(CgroupMemoryLimitTest, v2ReadsMemoryMax)
+{
+    setLimit("", "memory.max", "536870912\n");
+
+    EXPECT_EQ(536870912U, limit("0::/\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, v2MaxIsNoLimit)
+{
+    setLimit("", "memory.max", "max\n");
+
+    EXPECT_FALSE(limit("0::/\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, lowestLimitAmongAncestorsWins)
+{
+    setLimit("/system.slice", "memory.max", "268435456\n");
+    setLimit("/system.slice/app.service", "memory.max", "1073741824\n");
+
+    EXPECT_EQ(268435456U, limit("0::/system.slice/app.service\n"));
+
+    setLimit("/system.slice", "memory.max", "max\n");
+
+    EXPECT_EQ(1073741824U, limit("0::/system.slice/app.service\n"));
+    EXPECT_EQ(1073741824U, limit("0::/system.slice/app.service/\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, v1ReadsTheMemoryControllersHierarchy)
+{
+    // The container's own cgroup is mounted at the root,
+    // and the path that names it from the host's root is not there.
+    setLimit("/memory", "memory.limit_in_bytes", "134217728\n");
+
+    EXPECT_EQ(134217728U, limit("12:memory:/docker/abc\n4:cpu,cpuacct:/docker/abc\n1:name=systemd:/docker/abc\n"));
+    EXPECT_EQ(134217728U, limit("7:cpu,memory:/docker/abc\n"));
+
+    // A hybrid host has a v2 hierarchy too, mounted elsewhere.
+    EXPECT_EQ(134217728U, limit("12:memory:/docker/abc\n0::/docker/abc\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, otherControllersSetNoLimit)
+{
+    setLimit("", "memory.max", "1048576\n");
+    setLimit("/memory", "memory.limit_in_bytes", "1048576\n");
+
+    EXPECT_FALSE(limit(""));
+    EXPECT_FALSE(limit("4:cpu,cpuacct:/\n1:name=systemd:/\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, pathOutsideTheMountIsSkipped)
+{
+    setLimit("", "memory.max", "1048576\n");
+
+    EXPECT_FALSE(limit("0::/../other\n"));
+    EXPECT_FALSE(limit("0::/..\n"));
+}
+
+TEST_F(CgroupMemoryLimitTest, malformedLinesAreSkipped)
+{
+    setLimit("", "memory.max", "1048576\n");
+    setLimit("/memory", "memory.limit_in_bytes", "1048576\n");
+
+    static auto constexpr Lines = std::array{
+        "0"sv, "0:"sv, "0::"sv, "0::relative"sv, "5:memory"sv, "5:memory:"sv, "5:memory:relative"sv, "::/"sv, "\n\n"sv,
+    };
+    for (auto const line : Lines) {
+        EXPECT_FALSE(limit(line)) << line;
+    }
+}
+#endif
+
+TEST(MemorySizeTest, isKnown)
+{
+    auto const memory = tr::platform::get_memory_size();
+
+    ASSERT_TRUE(memory);
+    EXPECT_GT(*memory, 0U);
+}
 
 #ifdef _WIN32
 #include <windows.h>

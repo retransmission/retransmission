@@ -46,6 +46,8 @@
 #include <libtransmission/peer-mgr.h>
 #include <libtransmission/peer-msgs.h>
 #include <libtransmission/peer-socket-tcp.h>
+#include <libtransmission/platform.h>
+#include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
@@ -62,6 +64,7 @@ namespace tr::test
 namespace
 {
 auto constexpr MaxWaitMsec = 5000;
+auto constexpr MiB = uint64_t{ 1024U } * 1024U;
 
 // On Windows, EVUTIL_INVALID_SOCKET is an unsigned SOCKET while
 // evutil_socket_t is signed, so spell the conversion out once.
@@ -1074,10 +1077,10 @@ private:
 
 TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
 {
-    static auto constexpr MiB = uint64_t{ 1024U } * 1024U;
-    auto const check = [this](int64_t const budget_mib) {
-        // A budget of zero would admit no requests, so it counts as 1 MiB.
-        auto const bytes = static_cast<uint64_t>(std::max(int64_t{ 1 }, budget_mib)) * MiB;
+    auto const automatic = tr::detail::write_budget_for_memory(tr::platform::get_memory_size());
+    auto const check = [this, automatic](int64_t const budget_mib) {
+        // Zero leaves the size to the session.
+        auto const bytes = budget_mib != 0 ? static_cast<uint64_t>(budget_mib) * MiB : automatic;
         EXPECT_EQ(bytes, session_->effective_write_budget_bytes());
         EXPECT_EQ(bytes / TrBlockSize, session_->spare_request_blocks().value());
         EXPECT_EQ(std::min(bytes / 2U, 32U * MiB), session_->local_data.retained_bytes());
@@ -1095,6 +1098,24 @@ TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
 }
 
 INSTANTIATE_TEST_SUITE_P(WriteBudget, WriteBudgetTest, ::testing::Values(int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }));
+
+TEST(WriteBudgetForMemoryTest, isASixteenthOfMemoryFromOneTo64MiB)
+{
+    static auto constexpr GiB = 1024U * MiB;
+
+    EXPECT_EQ(8U * MiB, tr::detail::write_budget_for_memory(128U * MiB));
+    EXPECT_EQ(32U * MiB, tr::detail::write_budget_for_memory(512U * MiB));
+    EXPECT_EQ(64U * MiB, tr::detail::write_budget_for_memory(GiB));
+    EXPECT_EQ(64U * MiB, tr::detail::write_budget_for_memory(64U * GiB));
+
+    EXPECT_EQ(MiB, tr::detail::write_budget_for_memory(8U * MiB));
+    EXPECT_EQ(MiB, tr::detail::write_budget_for_memory(uint64_t{ 0U }));
+}
+
+TEST(WriteBudgetForMemoryTest, unknownMemoryCountsAs512MiB)
+{
+    EXPECT_EQ(tr::detail::write_budget_for_memory(512U * MiB), tr::detail::write_budget_for_memory(std::nullopt));
+}
 
 TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
 {
