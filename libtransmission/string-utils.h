@@ -24,10 +24,10 @@
     @param errnum the error number to describe */
 [[nodiscard]] char const* tr_strerror(int errnum);
 
-template <typename T> [[nodiscard]] std::string tr_strlower(T in)
+template <typename T> [[nodiscard]] constexpr std::string tr_strlower(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch))); });
+    std::ranges::for_each(out, [](char& ch) { ch = 'A' <= ch && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch; });
     return out;
 }
 
