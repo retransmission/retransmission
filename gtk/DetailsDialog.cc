@@ -1704,8 +1704,10 @@ void DetailsDialog::Impl::refreshTracker()
     }
 
     /* step 4: update the rows */
-    auto const summary_name = std::size(torrents) == 1 ? std::string_view{ torrents.front()->name() } : ""sv;
+    // with several torrents, each row names its own
+    auto const name_rows = std::size(torrents) > 1;
     for (auto const* const tor : torrents) {
+        auto const summary_name = name_rows ? std::string_view{ tor->name() } : ""sv;
         for (auto const& tracker : tor->tracker_stats()) {
             auto const iter = store->get_iter(hash.at(row_key(*tor, tracker)).get_path());
 
