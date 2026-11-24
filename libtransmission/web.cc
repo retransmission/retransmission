@@ -119,6 +119,7 @@ using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 struct MultiPoolNode {
     multi_unique_ptr multi;
     tr_web::BindAddresses bind_addresses;
+    std::optional<std::string> bind_interface;
 };
 
 } // namespace curl_helpers
@@ -256,17 +257,13 @@ public:
             deadline_ns_ = to_ns(mediator.now() + deadline);
         }
         queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& node : multi_pool_) {
-                curl_multi_wakeup(node.multi.get());
-            }
-        }
+        wakeup_multis();
     }
 
     void fetch(FetchOptions&& options)
     {
         auto bind_addresses = mediator.bind_addresses();
+        auto bind_interface = mediator.bind_interface();
         {
             auto lock = std::unique_lock{ tasks_mutex_ };
 
@@ -284,15 +281,41 @@ public:
                 return;
             }
 
-            queued_tasks_.emplace_back(*this, std::move(options), std::move(bind_addresses));
-        }
-        queued_tasks_cv_.notify_one();
-        {
-            auto const lock = std::unique_lock{ multi_pool_mutex_ };
-            for (auto const& node : multi_pool_) {
-                curl_multi_wakeup(node.multi.get());
+            if (!is_blocked(bind_interface)) {
+                queued_tasks_.emplace_back(*this, std::move(options), std::move(bind_addresses), std::move(bind_interface));
+                queued_tasks_cv_.notify_one();
+                wakeup_multis();
+                return;
             }
         }
+
+        // A deliberate "bind to nothing" setting is refused before curl sees
+        // the request. The callback runs outside tasks_mutex_ because the
+        // mediator may invoke it inline, and a callback that fetches again
+        // would deadlock on the mutex.
+        tr_logAddTrace(fmt::format("Refusing fetch of '{}': interface binding is 'blocked'", options.url));
+        if (options.done_func) {
+            auto response = FetchResponse{};
+            response.request_url = options.url;
+            response.user_data = options.done_func_user_data;
+            mediator.run(std::move(options.done_func), std::move(response));
+        }
+    }
+
+    // Callable with tasks_mutex_ held: the curl thread also takes
+    // multi_pool_mutex_ after tasks_mutex_, never the other way round.
+    void wakeup_multis() const
+    {
+        auto const lock = std::unique_lock{ multi_pool_mutex_ };
+        for (auto const& node : multi_pool_) {
+            curl_multi_wakeup(node.multi.get());
+        }
+    }
+
+    // `bind_interface` is a value read from the mediator's bind_interface()
+    [[nodiscard]] static bool is_blocked(std::optional<std::string> const& bind_interface)
+    {
+        return bind_interface && tr_net_interface_is_blocked(*bind_interface);
     }
 
     // Callers pass their lock to prove they hold tasks_mutex_.
@@ -311,9 +334,14 @@ public:
     class Task
     {
     public:
-        Task(tr_web::Impl& impl_in, tr_web::FetchOptions&& options_in, BindAddresses bind_addresses_in)
+        Task(
+            tr_web::Impl& impl_in,
+            tr_web::FetchOptions&& options_in,
+            BindAddresses bind_addresses_in,
+            std::optional<std::string> bind_interface_in)
             : impl{ impl_in }
             , bind_addresses{ std::move(bind_addresses_in) }
+            , bind_interface{ std::move(bind_interface_in) }
             , options_{ std::move(options_in) }
         {
             response.request_url = options_.url;
@@ -402,8 +430,21 @@ public:
             }
         }
 
-        [[nodiscard]] auto bind_address(tr_address_type const type) const
+        // Set by initEasy() when it hands curl an interface to bind to
+        void set_interface_bound() noexcept
         {
+            interface_bound_ = true;
+        }
+
+        // An interface binding takes precedence over the bind addresses:
+        // curl binds the socket to the interface (or, on macOS, to the
+        // interface's address) after open_socket() creates it, and a socket
+        // open_socket() had bound to an address could not be bound again.
+        [[nodiscard]] std::optional<tr_address> bind_address(tr_address_type const type) const
+        {
+            if (interface_bound_) {
+                return {};
+            }
             return bind_addresses[type].and_then(&tr_address::from_string);
         }
 
@@ -455,9 +496,12 @@ public:
         tr_web::Impl& impl;
         tr_web::FetchResponse response;
         BindAddresses const bind_addresses;
+        std::optional<std::string> const bind_interface; // never "blocked": fetch() refuses those
 
     private:
         tr_web::FetchOptions options_;
+
+        bool interface_bound_ = false;
 
         curl_helpers::easy_unique_ptr easy_;
         CURLM* multi_ = nullptr;
@@ -624,6 +668,16 @@ public:
         }
 
         if (address->family == AF_INET || address->family == AF_INET6) {
+#ifdef __APPLE__
+            // curl can only bind the interface's address here, which leaves the
+            // egress interface to routing; pin the socket as peer sockets are pinned
+            if (auto const& bind_interface = task->bind_interface;
+                bind_interface && !tr_netSetSocketInterface(sock, tr_af_to_ip_protocol(address->family), *bind_interface)) {
+                tr_net_close_socket(sock);
+                return CURL_SOCKET_BAD;
+            }
+#endif
+
             if (auto const bind_addr = task->bind_address(tr_af_to_ip_protocol(address->family))) {
 #ifdef IP_BIND_ADDRESS_NO_PORT
                 static constexpr int One = 1;
@@ -660,16 +714,25 @@ public:
     [[nodiscard]] bool initEasy(Task& task)
     {
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
+        TR_ASSERT(!is_blocked(task.bind_interface));
         auto* const e = task.init_easy();
         if (e == nullptr) {
             return false;
         }
 
-        // N.B. DO NOT set CURLOPT_INTERFACE, CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE.
-        // curl applies them to every socket it opens regardless of the address family it
-        // resolved, so an IPv4 bind address would also be forced onto IPv6 sockets.
-        // open_socket() binds each socket according to its resolved family instead.
-        // Separate multi handles isolate the connection caches for different bind pairs.
+        // N.B. DO NOT set CURLOPT_LOCALPORT or CURLOPT_LOCALPORTRANGE, nor an address in
+        // CURLOPT_INTERFACE. curl applies them to every socket it opens regardless of the
+        // address family it resolved, so an IPv4 bind address would also be forced onto
+        // IPv6 sockets. open_socket() binds each socket according to its resolved family
+        // instead. An interface name ("if!eth0") suits both families, so it goes to curl;
+        // on macOS, curl binds only its address, so open_socket() also pins the interface.
+        // Separate multi handles isolate the connection caches for different bindings.
+        if (auto const& bind_interface = task.bind_interface; bind_interface) {
+            if (auto const curl_interface = tr_netCurlInterfaceString(*bind_interface); curl_interface) {
+                (void)curl_easy_setopt(e, CURLOPT_INTERFACE, curl_interface->c_str());
+                task.set_interface_bound();
+            }
+        }
 
         (void)curl_easy_setopt(e, CURLOPT_SHARE, shared());
         (void)curl_easy_setopt(e, CURLOPT_DNS_CACHE_TIMEOUT, DnsCacheTimeoutSecs);
@@ -887,7 +950,7 @@ public:
         network_changed_ = true;
     }
 
-    [[nodiscard]] bool push_multi(BindAddresses const& bind_addresses)
+    [[nodiscard]] bool push_multi(Task const& task)
     {
         auto multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
         if (!multi) {
@@ -898,8 +961,17 @@ public:
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
 
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
-        multi_pool_.emplace_back(std::move(multi), bind_addresses);
+        multi_pool_.emplace_back(std::move(multi), task.bind_addresses, task.bind_interface);
         return true;
+    }
+
+    // curl's connection cache can't tell bindings apart: open_socket() binds by
+    // address behind its back, and a request without CURLOPT_INTERFACE may reuse a
+    // connection that had one. So each binding gets its own multi handle.
+    [[nodiscard]] bool current_multi_fits(Task const& task) const noexcept
+    {
+        auto const& node = multi_pool_.back();
+        return node.bind_addresses == task.bind_addresses && node.bind_interface == task.bind_interface;
     }
 
     [[nodiscard]] CURLM* current_multi() const noexcept
@@ -936,9 +1008,7 @@ public:
                 // add queued tasks
                 for (auto& task : queued_tasks_) {
                     if (!initEasy(task) ||
-                        ((multi_pool_.empty() || network_changed_ ||
-                          multi_pool_.back().bind_addresses != task.bind_addresses) &&
-                         !push_multi(task.bind_addresses))) {
+                        ((multi_pool_.empty() || network_changed_ || !current_multi_fits(task)) && !push_multi(task))) {
                         task.set_error(CURLE_OUT_OF_MEMORY);
                         failed_tasks.push_back(&task);
                         continue;

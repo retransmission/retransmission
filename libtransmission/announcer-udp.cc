@@ -472,6 +472,15 @@ struct tau_tracker {
         return std::empty(announces) && std::empty(scrapes);
     }
 
+    // a pending connect is dropped too: its reply would reach the old socket
+    void reset_connection() noexcept
+    {
+        connecting_at = {};
+        connection_expiration_time = {};
+        connection_id = {};
+        connection_transaction_id = {};
+    }
+
 private:
     using Sockaddr = std::pair<sockaddr_storage, socklen_t>;
     using MaybeSockaddr = std::optional<Sockaddr>;
@@ -722,6 +731,13 @@ public:
     [[nodiscard]] bool is_idle() const noexcept override
     {
         return std::ranges::all_of(trackers_, [](auto const& tracker) { return tracker.is_idle(); });
+    }
+
+    void reset_connections() noexcept override
+    {
+        for (auto& tracker : trackers_) {
+            tracker.reset_connection();
+        }
     }
 
 private:
