@@ -171,7 +171,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
     // hostname
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
     if (auto const parsed = tr_urlParse(inf.st.announce.sv()); parsed) {
-        str += QStringLiteral("%1:%2").arg(Utils::qstringFromUtf8(parsed->host), QString::number(parsed->port));
+        str += QStringLiteral("%1:%2").arg(Utils::qstringFromUtf8(parsed->host).toHtmlEscaped(), QString::number(parsed->port));
     }
     str += inf.st.is_backup ? QStringLiteral("</i>") : QStringLiteral("</b>");
 
@@ -203,7 +203,7 @@ QString TrackerDelegate::getLineText(TrackerStatusLine const& line, time_t const
         return Formatter::timeToString(static_cast<int>(now - line.time));
     };
     auto const message = [&line] {
-        return Utils::qstringFromUtf8(line.message);
+        return Utils::qstringFromUtf8(line.message).toHtmlEscaped();
     };
 
     switch (line.phrase) {
