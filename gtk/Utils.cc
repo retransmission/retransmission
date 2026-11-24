@@ -5,8 +5,6 @@
 
 #include "Utils.h"
 
-#include "Session.h"
-
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/trash.h>
 

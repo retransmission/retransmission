@@ -18,7 +18,6 @@
 #include "libtransmission/file.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/log.h"
-#include "libtransmission/quark.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"

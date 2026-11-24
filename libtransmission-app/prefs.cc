@@ -10,7 +10,6 @@
 
 #include "libtransmission/log.h"
 #include "libtransmission/quark.h"
-#include "libtransmission/session-settings.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
 

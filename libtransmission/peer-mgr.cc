@@ -45,7 +45,6 @@
 #include "libtransmission/profile.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/torrent-magnet.h"
 #include "libtransmission/torrent.h"

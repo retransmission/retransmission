@@ -24,7 +24,6 @@
 #include "libtransmission/net.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/types.h"
 #include "libtransmission/watchdir-base.h"
 
 namespace tr

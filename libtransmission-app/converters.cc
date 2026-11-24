@@ -9,7 +9,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "libtransmission/converters.h"
 #include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
