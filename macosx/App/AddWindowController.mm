@@ -8,8 +8,7 @@
 #import "FileOutlineController.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
-#import "GroupPopUpButtonCell.h"
-#import "PriorityPopUpButtonCell.h"
+#import "NSImageAdditions.h"
 #import "FileOutlineView.h"
 
 #define LStr(key) NSLocalizedStringFromTable(key, @"AddWindow", @"")
@@ -228,19 +227,17 @@ static NSTimeInterval const kUpdateSeconds = 1.0;
     changeButton.controlSize = NSControlSizeSmall;
     changeButton.font = [NSFont systemFontOfSize:11];
 
-    self.fGroupPopUp = [[GroupPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
-    self.fPriorityPopUp = [[PriorityPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    self.fGroupPopUp = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    self.fPriorityPopUp = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
     [self.fPriorityPopUp setAction:@selector(changePriority:)];
     [self.fPriorityPopUp setTarget:self];
 
     [self.fPriorityPopUp addItemWithTitle:LStr(@"High")];
-    [self.fPriorityPopUp lastItem].image = [NSImage imageNamed:@"PriorityHighTemplate"];
-
+    [self.fPriorityPopUp lastItem].image = [NSImage highPriority];
     [self.fPriorityPopUp addItemWithTitle:LStr(@"Normal")];
-    [self.fPriorityPopUp lastItem].image = [NSImage imageNamed:@"PriorityNormalTemplate"];
-
+    [self.fPriorityPopUp lastItem].image = [NSImage normalPriority];
     [self.fPriorityPopUp addItemWithTitle:LStr(@"Low")];
-    [self.fPriorityPopUp lastItem].image = [NSImage imageNamed:@"PriorityLowTemplate"];
+    [self.fPriorityPopUp lastItem].image = [NSImage lowPriority];
 
     NSGridView* gridView = [NSGridView gridViewWithViews:@[
         @[ destLabel, pathBorderBox, changeButton ],

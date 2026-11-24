@@ -101,15 +101,72 @@ public:
         Op op_;
     };
 
+    // The write one disk worker is doing. Writes run all session long,
+    // so each worker shows its own here: a write locks no mutex that
+    // another worker takes.
+    class WriteSlot
+    {
+    public:
+        // Shows the write while it's in scope. `desc` must outlive it.
+        class Showing
+        {
+        public:
+            Showing(WriteSlot& slot, StorageDescriptor const& desc, uint64_t const n_bytes)
+                : slot_{ slot }
+            {
+                auto const lock = std::scoped_lock{ slot_.mutex_ };
+                slot_.desc_ = &desc;
+                slot_.n_bytes_ = n_bytes;
+            }
+
+            Showing(Showing const&) = delete;
+            Showing(Showing&&) = delete;
+            Showing& operator=(Showing const&) = delete;
+            Showing& operator=(Showing&&) = delete;
+
+            ~Showing()
+            {
+                auto const lock = std::scoped_lock{ slot_.mutex_ };
+                slot_.desc_ = nullptr;
+            }
+
+        private:
+            WriteSlot& slot_;
+        };
+
+    private:
+        friend class DiskActivityBoard;
+
+        mutable std::mutex mutex_;
+        StorageDescriptor const* desc_ = nullptr;
+        uint64_t n_bytes_ = 0U;
+    };
+
+    // A slot for one disk worker. It lasts as long as the board.
+    [[nodiscard]] WriteSlot& add_write_slot()
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        return *write_slots_.emplace_back(std::make_unique<WriteSlot>());
+    }
+
     [[nodiscard]] std::vector<Op> snapshot() const
     {
         auto const lock = std::scoped_lock{ mutex_ };
         auto ops = std::vector<Op>{};
-        ops.reserve(std::size(postings_));
+        ops.reserve(std::size(postings_) + std::size(write_slots_));
         for (auto const* const posting : postings_) {
             auto& op = ops.emplace_back(posting->op_);
             if (posting->desc_) {
                 op.torrent_name = posting->desc_->name;
+            }
+        }
+        for (auto const& slot : write_slots_) {
+            auto const slot_lock = std::scoped_lock{ slot->mutex_ };
+            if (slot->desc_ != nullptr) {
+                auto& op = ops.emplace_back();
+                op.kind = Op::Kind::Write;
+                op.torrent_name = slot->desc_->name;
+                op.total = slot->n_bytes_;
             }
         }
         return ops;
@@ -121,6 +178,7 @@ public:
 private:
     mutable std::mutex mutex_;
     std::vector<Posting const*> postings_;
+    std::vector<std::unique_ptr<WriteSlot>> write_slots_;
 };
 
 namespace
@@ -636,7 +694,8 @@ public:
         , retained_{ retained_bytes }
     {
         if (threadless_seed) {
-            threadless_.emplace(n_workers, *threadless_seed);
+            // The session thread runs one write at a time.
+            threadless_.emplace(n_workers, *threadless_seed, board_.add_write_slot());
             return;
         }
 
@@ -757,7 +816,7 @@ public:
                     return false;
                 }
 
-                post_admin(
+                post_disk_work(
                     short_lane_,
                     [this,
                      desc = std::move(desc),
@@ -1045,7 +1104,7 @@ public:
             auto const lock = std::scoped_lock{ work_mutex_ };
             worker.turn = take_turn(worker.next);
         } else {
-            run_turn(std::exchange(worker.turn, {}), threads.scratch);
+            run_turn(std::exchange(worker.turn, {}), threads.scratch, threads.write_slot);
         }
 
         return true;
@@ -1202,9 +1261,10 @@ private:
             Turn turn; // taken, and not yet run
         };
 
-        Threadless(size_t const n_workers, uint32_t const seed)
+        Threadless(size_t const n_workers, uint32_t const seed, DiskActivityBoard::WriteSlot& slot)
             : rng{ seed }
             , workers(n_workers)
+            , write_slot{ slot }
         {
         }
 
@@ -1212,6 +1272,7 @@ private:
         std::mt19937 rng;
         std::vector<Worker> workers;
         std::vector<uint8_t> scratch;
+        DiskActivityBoard::WriteSlot& write_slot;
         // guarded by work_mutex_
         bool pump_scheduled = false;
     };
@@ -1332,13 +1393,17 @@ private:
         return std::empty(gates_);
     }
 
-    // A move, rename, or removal, which counts as queued admin work until
-    // its barrier is granted. It takes the torrent's files out of the pool
-    // first, and the lane closes them before the disk work: Windows won't
-    // move, rename, or remove an open file, or a folder that holds one, and
-    // a moved file's old fd writes to the old copy. Unlike close_torrent(),
-    // it keeps the blocks retained for piece hashes, which a move or rename
-    // leaves valid. finish_remove() drops a removed torrent's.
+    // A move, removal, or rename counts as queued admin work while it
+    // waits for its barrier. `body` hands the disk work to a lane with
+    // post_disk_work(), which counts it again before this count is
+    // dropped, so a reader never misses it.
+    //
+    // It takes the torrent's files out of the pool first, and the lane
+    // closes them before the disk work: Windows won't move, rename, or
+    // remove an open file, or a folder that holds one, and a moved file's
+    // old fd writes to the old copy. Unlike close_torrent(), it keeps the
+    // blocks retained for piece hashes, which a move or rename leaves
+    // valid. finish_remove() drops a removed torrent's.
     void submit_disk_work(tr_torrent_id_t const id, std::function<bool()> body)
     {
         board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
@@ -1346,9 +1411,10 @@ private:
             id,
             BarrierOp{ .body =
                            [this, id, body = std::move(body)] {
-                               board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
                                close_on_short_lane(open_files_.close_torrent(id));
-                               return body();
+                               auto const handed_off = body();
+                               board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+                               return handed_off;
                            },
                        .span = {} });
     }
@@ -1766,14 +1832,14 @@ private:
             !std::empty(pending_writes_) || !std::empty(write_sweep_) || !std::empty(pending_hash_spans_);
     }
 
-    void run_turn(Turn turn, std::vector<uint8_t>& scratch)
+    void run_turn(Turn turn, std::vector<uint8_t>& scratch, DiskActivityBoard::WriteSlot& write_slot)
     {
         if (turn.test) {
             exec_test(std::move(*turn.test));
         } else if (!std::empty(turn.reads)) {
             exec_read_run(std::move(turn.reads), scratch);
         } else if (!std::empty(turn.writes)) {
-            exec_write_run(std::move(turn.writes), scratch);
+            exec_write_run(std::move(turn.writes), scratch, write_slot);
         } else if (turn.hash_span) {
             exec_hash_span(std::move(*turn.hash_span), scratch);
         }
@@ -1782,6 +1848,7 @@ private:
     void worker_main()
     {
         auto scratch = std::vector<uint8_t>{};
+        auto& write_slot = board_.add_write_slot();
         auto next = size_t{};
 
         for (;;) {
@@ -1803,7 +1870,7 @@ private:
                 return;
             }
 
-            run_turn(std::move(turn), scratch);
+            run_turn(std::move(turn), scratch, write_slot);
         }
     }
 
@@ -1853,6 +1920,18 @@ private:
             ++n_admin_jobs_;
         }
         wake_lanes();
+    }
+
+    // Enqueue one step of a move, removal, or rename. It counts as queued
+    // admin work until the lane starts it. A torrent's steps run one at a
+    // time, so its work is counted once.
+    void post_disk_work(AdminLane& lane, AdminLane::value_type job)
+    {
+        board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
+        post_admin(lane, [this, job = std::move(job)] {
+            board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+            job();
+        });
     }
 
     // Wake the threads for the work just queued. With no threads, have
@@ -1949,7 +2028,7 @@ private:
     // and let the ops behind the barrier go.
     void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
     {
-        post_admin(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
+        post_disk_work(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
             post_completion([this, id, error = work(), done = std::move(done)] {
                 done(error);
                 finish_barrier(id);
@@ -1971,7 +2050,7 @@ private:
         auto needs_copy = false;
         auto leftovers = place_files(board_, desc, job.target, error, may_copy ? nullptr : &needs_copy);
         if (needs_copy) {
-            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+            post_disk_work(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
                 exec_place(std::move(desc), std::move(job), true);
             });
             return;
@@ -1989,7 +2068,7 @@ private:
             }
 
             // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
-            post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
+            post_disk_work(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
                 remove_leftovers(board_, leftovers, job.target);
                 post_completion([this, job = std::move(job)] { finish_move(job, {}); });
             });
@@ -2073,7 +2152,7 @@ private:
         workers_.clear();
     }
 
-    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch)
+    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch, DiskActivityBoard::WriteSlot& write_slot)
     {
         TR_PROFILE_SCOPE("storage.write_run");
         TR_ASSERT(!std::empty(run));
@@ -2081,10 +2160,6 @@ private:
         auto const& desc = *run.front().desc;
         auto const begin = run.front().span.begin;
         auto const n_bytes = static_cast<size_t>(run.back().span.end - begin);
-
-        auto write_op = make_op(DiskOpKind::Write);
-        write_op.total = n_bytes;
-        auto const posting = DiskActivityBoard::Posting{ board_, run.front().desc, std::move(write_op) };
 
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
@@ -2101,7 +2176,11 @@ private:
         auto const trace_batch = tr::profile::Collector::instance().batches_enabled();
         auto const write_start = trace_batch ? tr::profile::Clock::now() : tr::profile::Clock::time_point{};
 #endif
-        auto error = tr_ioWrite(desc, open_files_, begin, writeme);
+        auto error = tr_error{};
+        {
+            auto const showing = DiskActivityBoard::WriteSlot::Showing{ write_slot, desc, n_bytes };
+            error = tr_ioWrite(desc, open_files_, begin, writeme);
+        }
 #ifdef TR_ENABLE_BLOCK_PROFILING
         if (trace_batch) {
             auto const write_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(tr::profile::Clock::now() - write_start)

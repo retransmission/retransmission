@@ -51,3 +51,27 @@ static CGFloat const kBorderWidth = 1.25;
 }
 
 @end
+
+@implementation NSImage (Resources)
++ (NSImage*)paddedSymbol:(NSString*)name pointSize:(CGFloat)pointSize
+{
+    NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:pointSize weight:NSFontWeightRegular];
+    NSImage* image = [[NSImage imageWithSystemSymbolName:name accessibilityDescription:nil] imageWithSymbolConfiguration:config];
+    return image;
+}
+
++ (NSImage*)highPriority
+{
+    return [self paddedSymbol:@"arrowtriangle.up.fill" pointSize:16];
+}
+
++ (NSImage*)normalPriority
+{
+    return [self paddedSymbol:@"circle.fill" pointSize:13];
+}
+
++ (NSImage*)lowPriority
+{
+    return [self paddedSymbol:@"arrowtriangle.down.fill" pointSize:16];
+}
+@end

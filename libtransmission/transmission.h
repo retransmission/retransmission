@@ -126,6 +126,7 @@ enum class tr_close_phase : uint8_t {
     DrainingDisk, // finishing the disk writes, moves, removals, and renames in flight
     Finalizing, // saving the torrents' resume files
     WaitingTrackers, // waiting for trackers to answer "stopped"
+    TearingDown, // closing the peer connections, files, and sockets
 };
 
 /**
