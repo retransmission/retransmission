@@ -61,18 +61,18 @@ protected:
 TEST_F(PeerIoTest, reconnectsInPreferredTransportOrder)
 {
     endpoint_sock_ = socket(AF_INET, SOCK_STREAM, 0);
-    ASSERT_TRUE(is_valid_socket(endpoint_sock_));
-    ASSERT_EQ(0, evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(endpoint_sock_)));
+    ASSERT_TRUE(is_valid_socket(endpoint_sock_)) << tr_net_error(sockerrno);
+    ASSERT_EQ(0, evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(endpoint_sock_))) << tr_net_error(sockerrno);
     auto [addr, addrlen] = tr_socket_address::to_sockaddr(*tr_address::from_string("127.0.0.1"sv), {});
-    ASSERT_EQ(0, bind(endpoint_sock_, reinterpret_cast<sockaddr const*>(&addr), addrlen));
-    ASSERT_EQ(0, getsockname(endpoint_sock_, reinterpret_cast<sockaddr*>(&addr), &addrlen));
+    ASSERT_EQ(0, bind(endpoint_sock_, reinterpret_cast<sockaddr const*>(&addr), addrlen)) << tr_net_error(sockerrno);
+    ASSERT_EQ(0, getsockname(endpoint_sock_, reinterpret_cast<sockaddr*>(&addr), &addrlen)) << tr_net_error(sockerrno);
     auto const endpoint = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&addr));
     ASSERT_TRUE(endpoint);
 
-    ASSERT_EQ(0, listen(endpoint_sock_, 8));
+    ASSERT_EQ(0, listen(endpoint_sock_, 8)) << tr_net_error(sockerrno);
     udp_endpoint_sock_ = socket(AF_INET, SOCK_DGRAM, 0);
-    ASSERT_TRUE(is_valid_socket(udp_endpoint_sock_));
-    ASSERT_EQ(0, bind(udp_endpoint_sock_, reinterpret_cast<sockaddr const*>(&addr), addrlen));
+    ASSERT_TRUE(is_valid_socket(udp_endpoint_sock_)) << tr_net_error(sockerrno);
+    ASSERT_EQ(0, bind(udp_endpoint_sock_, reinterpret_cast<sockaddr const*>(&addr), addrlen)) << tr_net_error(sockerrno);
 
     blockingRunInSessionThread([this, endpoint = *endpoint] {
         for (

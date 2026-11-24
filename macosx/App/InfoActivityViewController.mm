@@ -237,8 +237,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     NSView* column = [[NSView alloc] initWithFrame:NSZeroRect];
     column.translatesAutoresizingMaskIntoConstraints = NO;
 
-    // sized up front: the first updateInfo renders the map before the first layout pass
-    self.fPiecesView = [[PiecesView alloc] initWithFrame:NSMakeRect(0, 0, 93, 93)];
+    self.fPiecesView = [[PiecesView alloc] initWithFrame:NSZeroRect];
     self.fPiecesView.translatesAutoresizingMaskIntoConstraints = NO;
     self.fPiecesView.clipsToBounds = YES;
 
