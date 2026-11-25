@@ -103,7 +103,6 @@ inline constexpr auto DetailInfoKeys = std::to_array<tr_quark>({
     TR_KEY_piece_size,
     TR_KEY_tracker_list,
     TR_KEY_trackers,
-    TR_KEY_webseeds_ex,
 });
 
 // `edit_date` rides along so a `torrent_set` that edits the metainfo, e.g. labels
@@ -138,6 +137,7 @@ inline constexpr auto DetailStatsKeys = std::to_array<tr_quark>({
     TR_KEY_tracker_stats,
     TR_KEY_upload_limit,
     TR_KEY_upload_limited,
+    TR_KEY_webseeds_ex,
 });
 
 inline constexpr auto RenameKeys = std::to_array<tr_quark>({
