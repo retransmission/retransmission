@@ -900,7 +900,8 @@ void DetailsDialog::refreshUI()
         auto const id_str = QString::number(tor->id());
 
         for (Peer const& peer : tor->peers()) {
-            auto const key = id_str + QLatin1Char(':') + Utils::qstringFromUtf8(peer.address);
+            auto const key = id_str + QLatin1Char(':') + Utils::qstringFromUtf8(peer.address) + QLatin1Char(':') +
+                QString::number(peer.port);
 
             PeerItem* item = nullptr;
             if (auto const iter = peers_.find(key); iter != std::end(peers_)) {
