@@ -24,8 +24,8 @@
 
 namespace
 {
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] torrent-file(s)";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] torrent-file(s)";
 
 struct app_options {
     std::vector<std::string_view> files;
@@ -38,22 +38,43 @@ struct app_options {
 
 using Arg = tr_option::Arg;
 auto constexpr Options = std::to_array<tr_option>({
-    { 'a', "add", "Add a tracker's announce URL", "a", Arg::Required, "<url>" },
-    { 'd', "delete", "Delete a tracker's announce URL", "d", Arg::Required, "<url>" },
-    { 'r', "replace", "Search and replace a substring in the announce URLs", "r", Arg::Required, "<old> <new>" },
-    { 's', "source", "Set the source", "s", Arg::Required, "<source>" },
-    { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
-    { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
+    { .val = 'a',
+      .longName = "add",
+      .description = "Add a tracker's announce URL",
+      .shortName = "a",
+      .arg = Arg::Required,
+      .argName = "<url>" },
+    { .val = 'd',
+      .longName = "delete",
+      .description = "Delete a tracker's announce URL",
+      .shortName = "d",
+      .arg = Arg::Required,
+      .argName = "<url>" },
+    { .val = 'r',
+      .longName = "replace",
+      .description = "Search and replace a substring in the announce URLs",
+      .shortName = "r",
+      .arg = Arg::Required,
+      .argName = "<old> <new>" },
+    { .val = 's',
+      .longName = "source",
+      .description = "Set the source",
+      .shortName = "s",
+      .arg = Arg::Required,
+      .argName = "<source>" },
+    { .val = 'V',
+      .longName = "version",
+      .description = "Show version number and exit",
+      .shortName = "V",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
+[[nodiscard]] int parse_command_line(app_options& opts, int argc, char const* const* argv)
 {
-[[nodiscard]] int parseCommandLine(app_options& opts, int argc, char const* const* argv)
-{
-    int c;
-    char const* optarg;
+    int c = {};
+    char const* optarg = nullptr;
 
     while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
         switch (c) {
@@ -88,7 +109,7 @@ namespace
             break;
 
         case TR_OPT_UNK:
-            opts.files.push_back(optarg);
+            opts.files.emplace_back(optarg);
             break;
 
         default:
@@ -99,7 +120,7 @@ namespace
     return 0;
 }
 
-[[nodiscard]] bool removeURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool remove_url(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -115,19 +136,19 @@ namespace
     }
 
     if (auto* al_vec = map->find_if<tr_variant::Vector>(TR_KEY_announce_list); al_vec != nullptr) {
-        int tierIndex = 0;
+        int tier_index = 0;
 
         for (auto tier_it = al_vec->begin(); tier_it != al_vec->end();) {
             auto* const tier_vec = tier_it->get_if<tr_variant::Vector>();
             if (tier_vec == nullptr) {
                 ++tier_it;
-                ++tierIndex;
+                ++tier_index;
                 continue;
             }
 
             for (auto node_it = tier_vec->begin(); node_it != tier_vec->end();) {
                 if (auto sv_opt = node_it->value_if<std::string_view>(); sv_opt && url == *sv_opt) {
-                    fmt::print("\tRemoved '{:s}' from 'announce-list' tier #{:d}\n", *sv_opt, tierIndex + 1);
+                    fmt::print("\tRemoved '{:s}' from 'announce-list' tier #{:d}\n", *sv_opt, tier_index + 1);
                     node_it = tier_vec->erase(node_it);
                     changed = true;
                 } else {
@@ -136,11 +157,11 @@ namespace
             }
 
             if (tier_vec->empty()) {
-                fmt::print("\tNo URLs left in tier #{:d}... removing tier\n", tierIndex + 1);
+                fmt::print("\tNo URLs left in tier #{:d}... removing tier\n", tier_index + 1);
                 tier_it = al_vec->erase(tier_it);
             } else {
                 ++tier_it;
-                ++tierIndex;
+                ++tier_index;
             }
         }
 
@@ -167,7 +188,7 @@ namespace
     return changed;
 }
 
-[[nodiscard]] auto replaceSubstr(std::string_view str, std::string_view oldval, std::string_view newval)
+[[nodiscard]] auto replace_substr(std::string_view str, std::string_view oldval, std::string_view newval)
 {
     auto ret = std::string{};
 
@@ -184,7 +205,7 @@ namespace
     return ret;
 }
 
-[[nodiscard]] bool replaceURL(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
+[[nodiscard]] bool replace_url(tr_variant& metainfo, std::string_view oldval, std::string_view newval)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -194,23 +215,23 @@ namespace
     bool changed = false;
 
     if (auto sv_opt = map->value_if<std::string_view>(TR_KEY_announce); sv_opt && sv_opt->contains(oldval)) {
-        auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
+        auto const newstr = replace_substr(*sv_opt, oldval, newval);
         fmt::print("\tReplaced in 'announce': '{:s}' --> '{:s}'\n", *sv_opt, newstr);
         (*map)[TR_KEY_announce] = std::string_view{ newstr };
         changed = true;
     }
 
     if (auto* const al_vec = map->find_if<tr_variant::Vector>(TR_KEY_announce_list); al_vec != nullptr) {
-        int tierCount = 0;
+        int tier_count = 0;
 
         for (auto& tier_variant : *al_vec) {
             if (auto* const tier_vec = tier_variant.get_if<tr_variant::Vector>()) {
                 for (auto& node : *tier_vec) {
                     if (auto sv_opt = node.value_if<std::string_view>(); sv_opt && sv_opt->contains(oldval)) {
-                        auto const newstr = replaceSubstr(*sv_opt, oldval, newval);
+                        auto const newstr = replace_substr(*sv_opt, oldval, newval);
                         fmt::print(
                             "\tReplaced in 'announce-list' tier #{:d}: '{:s}' --> '{:s}'\n",
-                            tierCount + 1,
+                            tier_count + 1,
                             *sv_opt,
                             newstr);
                         node = std::string_view{ newstr };
@@ -219,7 +240,7 @@ namespace
                 }
             }
 
-            ++tierCount;
+            ++tier_count;
         }
     }
 
@@ -240,7 +261,7 @@ namespace
     return false;
 }
 
-[[nodiscard]] bool addURL(tr_variant& metainfo, std::string_view url)
+[[nodiscard]] bool add_url(tr_variant& metainfo, std::string_view url)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -285,7 +306,7 @@ namespace
     return changed;
 }
 
-[[nodiscard]] bool setSource(tr_variant& metainfo, std::string_view source_value)
+[[nodiscard]] bool set_source(tr_variant& metainfo, std::string_view source_value)
 {
     auto* const map = metainfo.get_if<tr_variant::Map>();
     if (map == nullptr) {
@@ -310,16 +331,17 @@ namespace
 }
 } // namespace
 
-int tr_main(int argc, char* argv[])
+// NOLINTNEXTLINE(bugprone-exception-escape)
+int tr_main(int argc, char** argv)
 {
     tr_locale_set_global("");
 
-    int changedCount = 0;
+    int changed_count = 0;
 
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(options, argc, argv) != 0) {
         tr_getopt_usage(MyName, Usage, std::data(Options));
         return EXIT_FAILURE;
     }
@@ -357,28 +379,28 @@ int tr_main(int argc, char* argv[])
         auto& top = *otop;
 
         if (options.deleteme != nullptr) {
-            changed |= removeURL(top, options.deleteme);
+            changed |= remove_url(top, options.deleteme);
         }
 
         if (options.add != nullptr) {
-            changed = addURL(top, options.add);
+            changed = add_url(top, options.add);
         }
 
         if (options.replace[0] != nullptr && options.replace[1] != nullptr) {
-            changed |= replaceURL(top, options.replace[0], options.replace[1]);
+            changed |= replace_url(top, options.replace[0], options.replace[1]);
         }
 
         if (options.source != nullptr) {
-            changed = setSource(top, options.source);
+            changed = set_source(top, options.source);
         }
 
         if (changed) {
-            ++changedCount;
+            ++changed_count;
             serde.to_file(top, filename);
         }
     }
 
-    fmt::print("Changed {:d} files\n", changedCount);
+    fmt::print("Changed {:d} files\n", changed_count);
 
     return EXIT_SUCCESS;
 }

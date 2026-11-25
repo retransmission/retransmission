@@ -41,29 +41,70 @@ using namespace tr::Values;
 namespace
 {
 
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] <file|directory>";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] <file|directory>";
 
 uint32_t constexpr KiB = 1024;
 
 using Arg = tr_option::Arg;
 auto constexpr Options = std::to_array<tr_option>({
-    { 'p', "private", "Allow this torrent to only be used with the specified tracker(s)", "p", Arg::None, nullptr },
-    { 'r', "source", "Set the source for private trackers", "r", Arg::Required, "<source>" },
-    { 'o', "outfile", "Save the generated .torrent to this filename", "o", Arg::Required, "<file>" },
-    { 's', "piecesize", "Set the piece size in KiB, overriding the preferred default", "s", Arg::Required, "<KiB>" },
-    { 'c', "comment", "Add a comment", "c", Arg::Required, "<comment>" },
-    { 't', "tracker", "Add a tracker's announce URL", "t", Arg::Required, "<url>" },
-    { 'w', "webseed", "Add a webseed URL", "w", Arg::Required, "<url>" },
-    { 'x', "anonymize", R"(Omit "Creation date" and "Created by" info)", nullptr, Arg::None, nullptr },
-    { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
-    { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
+    { .val = 'p',
+      .longName = "private",
+      .description = "Allow this torrent to only be used with the specified tracker(s)",
+      .shortName = "p",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'r',
+      .longName = "source",
+      .description = "Set the source for private trackers",
+      .shortName = "r",
+      .arg = Arg::Required,
+      .argName = "<source>" },
+    { .val = 'o',
+      .longName = "outfile",
+      .description = "Save the generated .torrent to this filename",
+      .shortName = "o",
+      .arg = Arg::Required,
+      .argName = "<file>" },
+    { .val = 's',
+      .longName = "piecesize",
+      .description = "Set the piece size in KiB, overriding the preferred default",
+      .shortName = "s",
+      .arg = Arg::Required,
+      .argName = "<KiB>" },
+    { .val = 'c',
+      .longName = "comment",
+      .description = "Add a comment",
+      .shortName = "c",
+      .arg = Arg::Required,
+      .argName = "<comment>" },
+    { .val = 't',
+      .longName = "tracker",
+      .description = "Add a tracker's announce URL",
+      .shortName = "t",
+      .arg = Arg::Required,
+      .argName = "<url>" },
+    { .val = 'w',
+      .longName = "webseed",
+      .description = "Add a webseed URL",
+      .shortName = "w",
+      .arg = Arg::Required,
+      .argName = "<url>" },
+    { .val = 'x',
+      .longName = "anonymize",
+      .description = R"(Omit "Creation date" and "Created by" info)",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'V',
+      .longName = "version",
+      .description = "Show version number and exit",
+      .shortName = "V",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
-{
 struct app_options {
     tr_announce_list trackers;
     std::vector<std::string> webseeds;
@@ -77,10 +118,10 @@ struct app_options {
     bool show_version = false;
 };
 
-[[nodiscard]] int parseCommandLine(app_options& options, int argc, char const* const* argv)
+[[nodiscard]] int parse_command_line(app_options& options, int argc, char const* const* argv)
 {
-    int c;
-    char const* optarg;
+    int c = {};
+    char const* optarg = nullptr;
 
     while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
         switch (c) {
@@ -139,26 +180,26 @@ struct app_options {
 }
 } // namespace
 
-int tr_main(int argc, char* argv[])
+int tr_main(int argc, char** argv)
 {
     tr_locale_set_global("");
 
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(options, argc, argv) != 0) {
         return EXIT_FAILURE;
     }
 
     if (options.show_version) {
-        fprintf(stderr, "%s %s\n", MyName, LONG_VERSION_STRING);
+        fmt::print(stderr, "{:s} {:s}\n", MyName, LONG_VERSION_STRING);
         return EXIT_SUCCESS;
     }
 
     if (std::empty(options.infile)) {
-        fprintf(stderr, "ERROR: No input file or directory specified.\n");
+        fmt::print(stderr, "ERROR: No input file or directory specified.\n");
         tr_getopt_usage(MyName, Usage, std::data(Options));
-        fprintf(stderr, "\n");
+        fmt::print(stderr, "\n");
         return EXIT_FAILURE;
     }
 
@@ -166,23 +207,23 @@ int tr_main(int argc, char* argv[])
         auto error = tr_error{};
         auto const base = tr_sys_path_basename(options.infile, &error);
         if (error) {
-            auto const errmsg = fmt::format(
-                "Couldn't use '{path}': {error} ({error_code})",
+            fmt::print(
+                stderr,
+                "Couldn't use '{path}': {error} ({error_code})\n",
                 fmt::arg("path", options.infile),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code()));
-            fmt::print(stderr, "{:s}\n", errmsg);
             return EXIT_FAILURE;
         }
 
         auto const cur = tr_sys_dir_get_current(&error);
         if (error) {
-            auto const errmsg = fmt::format(
-                "Couldn't create '{path}': {error} ({error_code})",
+            fmt::print(
+                stderr,
+                "Couldn't create '{path}': {error} ({error_code})\n",
                 fmt::arg("path", base),
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code()));
-            fmt::print(stderr, "{:s}\n", errmsg);
             return EXIT_FAILURE;
         }
 
@@ -191,11 +232,10 @@ int tr_main(int argc, char* argv[])
 
     if (std::empty(options.trackers)) {
         if (options.is_private) {
-            fprintf(stderr, "ERROR: no trackers specified for a private torrent\n");
+            fmt::print(stderr, "ERROR: no trackers specified for a private torrent\n");
             return EXIT_FAILURE;
-        } else {
-            printf("WARNING: no trackers specified\n");
         }
+        fmt::print("WARNING: no trackers specified\n");
     }
 
     fmt::print("Creating torrent \"{:s}\"\n", options.outfile);
@@ -203,7 +243,7 @@ int tr_main(int argc, char* argv[])
     auto builder = tr_metainfo_builder(options.infile);
     auto const n_files = builder.file_count();
     if (n_files == 0U) {
-        fprintf(stderr, "ERROR: Cannot find specified input file or directory.\n");
+        fmt::print(stderr, "ERROR: Cannot find specified input file or directory.\n");
         return EXIT_FAILURE;
     }
 
@@ -213,7 +253,7 @@ int tr_main(int argc, char* argv[])
         auto const sanitized = fmt::format(
             "{:s}",
             fmt::join(
-                path | std::views::split('/') | std::views::transform([](auto const subpath) {
+                path | std::views::split('/') | std::views::transform([](auto const& subpath) {
                     return tr_torrent_files::sanitize_subpath(std::string_view{ subpath }, false);
                 }),
                 "/"sv));
@@ -263,7 +303,7 @@ int tr_main(int argc, char* argv[])
 
         if (!last || current != *last) {
             fmt::print("\rPiece {:Ld}/{:Ld} ...", current, total);
-            fflush(stdout);
+            (void)std::fflush(stdout);
             last = current;
         }
     }
