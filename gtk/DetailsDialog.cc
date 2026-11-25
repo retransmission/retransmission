@@ -59,6 +59,7 @@
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <sigslot/signal.hpp>
 
 #include <algorithm>
 #include <array>
@@ -144,7 +145,7 @@ private:
     void refreshWebseedList(std::vector<tr_torrent*> const& torrents);
 
     [[nodiscard]] tr_torrent_id_t tracker_list_get_current_torrent_id() const;
-    [[nodiscard]] tr_torrent* tracker_list_get_current_torrent() const;
+    [[nodiscard]] tr::app::Torrent const* tracker_list_get_current_torrent() const;
 
     [[nodiscard]] std::vector<tr_torrent*> getTorrents() const;
 
@@ -1635,9 +1636,9 @@ tr_torrent_id_t DetailsDialog::Impl::tracker_list_get_current_torrent_id() const
     return -1;
 }
 
-tr_torrent* DetailsDialog::Impl::tracker_list_get_current_torrent() const
+tr::app::Torrent const* DetailsDialog::Impl::tracker_list_get_current_torrent() const
 {
-    return core_->find_torrent(tracker_list_get_current_torrent_id());
+    return core_->torrents().find(tracker_list_get_current_torrent_id());
 }
 
 namespace
@@ -1778,7 +1779,7 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
-        tr_torrent const* torrent);
+        tr::app::Torrent const& torrent);
     EditTrackersDialog(EditTrackersDialog&&) = delete;
     EditTrackersDialog(EditTrackersDialog const&) = delete;
     EditTrackersDialog& operator=(EditTrackersDialog&&) = delete;
@@ -1788,78 +1789,85 @@ public:
     [[nodiscard]] static std::unique_ptr<EditTrackersDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
-        tr_torrent const* tor);
+        tr::app::Torrent const& torrent);
 
 protected:
     void on_response(int response) override;
 
 private:
-    DetailsDialog& parent_;
+    void on_set_done(Session::Tag tag, Session::SetResult const& result);
+
     Glib::RefPtr<Session> const core_;
     tr_torrent_id_t const torrent_id_;
     Gtk::TextView* const urls_view_;
+    Session::Tag pending_set_ = {};
+    sigslot::scoped_connection set_done_tag_;
 };
 
 EditTrackersDialog::EditTrackersDialog(
-    BaseObjectType* cast_item,
+    BaseObjectType* const cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     DetailsDialog& parent,
     Glib::RefPtr<Session> const& core,
-    tr_torrent const* torrent)
+    tr::app::Torrent const& torrent)
     : Gtk::Dialog(cast_item)
-    , parent_(parent)
     , core_(core)
-    , torrent_id_(tr_torrentId(torrent))
+    , torrent_id_(torrent.id())
     , urls_view_(gtr_get_widget<Gtk::TextView>(builder, "urls_view"))
+    , set_done_tag_(core->torrent_set_done.connect_scoped(&EditTrackersDialog::on_set_done, this))
 {
-    set_title(
-        fmt::format(fmt::runtime(_("{torrent_name} - Edit Trackers")), fmt::arg("torrent_name", tr_torrentName(torrent))));
+    set_title(fmt::format(fmt::runtime(_("{torrent_name} - Edit Trackers")), fmt::arg("torrent_name", torrent.name())));
     set_transient_for(parent);
 
-    urls_view_->get_buffer()->set_text(tr_torrentGetTrackerList(torrent));
+    urls_view_->get_buffer()->set_text(std::string{ torrent.tracker_list().sv() });
 }
 
 std::unique_ptr<EditTrackersDialog> EditTrackersDialog::create(
     DetailsDialog& parent,
     Glib::RefPtr<Session> const& core,
-    tr_torrent const* torrent)
+    tr::app::Torrent const& torrent)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("EditTrackersDialog.ui"));
     return std::unique_ptr<EditTrackersDialog>(
         gtr_get_widget_derived<EditTrackersDialog>(builder, "EditTrackersDialog", parent, core, torrent));
 }
 
-void EditTrackersDialog::on_response(int response)
+void EditTrackersDialog::on_response(int const response)
 {
-    bool do_destroy = true;
-
-    if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
-        auto const text_buffer = urls_view_->get_buffer();
-
-        if (auto* const tor = core_->find_torrent(torrent_id_); tor != nullptr) {
-            if (tr_torrentSetTrackerList(tor, text_buffer->get_text(false).raw())) {
-                core_->refresh_torrents({ torrent_id_ }, tr::app::TorrentKeySet::DetailStats);
-                parent_.refresh();
-            } else {
-                auto w = std::make_shared<Gtk::MessageDialog>(
-                    *this,
-                    _("List contains invalid URLs"),
-                    false,
-                    TR_GTK_MESSAGE_TYPE(ERROR),
-                    TR_GTK_BUTTONS_TYPE(CLOSE),
-                    true);
-                w->set_secondary_text(_("Please correct the errors and try again."));
-                w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
-                w->show();
-
-                do_destroy = false;
-            }
-        }
-    }
-
-    if (do_destroy) {
+    if (response != TR_GTK_RESPONSE_TYPE(ACCEPT)) {
         close();
+        return;
     }
+
+    // stays open until the session answers, so a rejected list can be fixed
+    pending_set_ = core_->set_torrents({ torrent_id_ }, TR_KEY_tracker_list, urls_view_->get_buffer()->get_text(false).raw());
+    set_sensitive(false);
+}
+
+void EditTrackersDialog::on_set_done(Session::Tag const tag, Session::SetResult const& result)
+{
+    if (tag != pending_set_) {
+        return;
+    }
+
+    pending_set_ = {};
+    set_sensitive(true);
+
+    if (result.success) {
+        close();
+        return;
+    }
+
+    auto w = std::make_shared<Gtk::MessageDialog>(
+        *this,
+        _("List contains invalid URLs"),
+        false,
+        TR_GTK_MESSAGE_TYPE(ERROR),
+        TR_GTK_BUTTONS_TYPE(CLOSE),
+        true);
+    w->set_secondary_text(_("Please correct the errors and try again."));
+    w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
+    w->show();
 }
 
 } // namespace
@@ -1867,7 +1875,7 @@ void EditTrackersDialog::on_response(int response)
 void DetailsDialog::Impl::on_edit_trackers()
 {
     if (auto const* const tor = tracker_list_get_current_torrent(); tor != nullptr) {
-        auto d = std::shared_ptr<EditTrackersDialog>(EditTrackersDialog::create(dialog_, core_, tor));
+        auto d = std::shared_ptr<EditTrackersDialog>(EditTrackersDialog::create(dialog_, core_, *tor));
         gtr_window_on_close(*d, [d] mutable { d.reset(); });
         d->show();
     }
@@ -1894,7 +1902,7 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
-        tr_torrent const* torrent);
+        tr::app::Torrent const& torrent);
     AddTrackerDialog(AddTrackerDialog&&) = delete;
     AddTrackerDialog(AddTrackerDialog const&) = delete;
     AddTrackerDialog& operator=(AddTrackerDialog&&) = delete;
@@ -1904,7 +1912,7 @@ public:
     [[nodiscard]] static std::unique_ptr<AddTrackerDialog> create(
         DetailsDialog& parent,
         Glib::RefPtr<Session> const& core,
-        tr_torrent const* tor);
+        tr::app::Torrent const& torrent);
 
 protected:
     void on_response(int response) override;
@@ -1916,17 +1924,17 @@ private:
 };
 
 AddTrackerDialog::AddTrackerDialog(
-    BaseObjectType* cast_item,
+    BaseObjectType* const cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     DetailsDialog& parent,
     Glib::RefPtr<Session> const& core,
-    tr_torrent const* torrent)
+    tr::app::Torrent const& torrent)
     : Gtk::Dialog(cast_item)
     , core_(core)
-    , torrent_id_(tr_torrentId(torrent))
+    , torrent_id_(torrent.id())
     , url_entry_(gtr_get_widget<Gtk::Entry>(builder, "url_entry"))
 {
-    set_title(fmt::format(fmt::runtime(_("{torrent_name} - Add Tracker")), fmt::arg("torrent_name", tr_torrentName(torrent))));
+    set_title(fmt::format(fmt::runtime(_("{torrent_name} - Add Tracker")), fmt::arg("torrent_name", torrent.name())));
     set_transient_for(parent);
 
     auto* const accept = get_widget_for_response(TR_GTK_RESPONSE_TYPE(ACCEPT));
@@ -1942,7 +1950,7 @@ AddTrackerDialog::AddTrackerDialog(
 std::unique_ptr<AddTrackerDialog> AddTrackerDialog::create(
     DetailsDialog& parent,
     Glib::RefPtr<Session> const& core,
-    tr_torrent const* torrent)
+    tr::app::Torrent const& torrent)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("AddTrackerDialog.ui"));
     return std::unique_ptr<AddTrackerDialog>(
@@ -1977,7 +1985,7 @@ void AddTrackerDialog::on_response(int response)
 void DetailsDialog::Impl::on_tracker_list_add_button_clicked()
 {
     if (auto const* const tor = tracker_list_get_current_torrent(); tor != nullptr) {
-        auto d = std::shared_ptr<AddTrackerDialog>(AddTrackerDialog::create(dialog_, core_, tor));
+        auto d = std::shared_ptr<AddTrackerDialog>(AddTrackerDialog::create(dialog_, core_, *tor));
         gtr_window_on_close(*d, [d] mutable { d.reset(); });
         d->show();
     }
