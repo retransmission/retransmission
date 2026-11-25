@@ -171,27 +171,10 @@ jobs:
           ids=$(cat "$GITHUB_WORKSPACE/ai-review-resolve-ids" "$HOME/ai-review-resolve-ids" "$RUNNER_TEMP/ai-review/resolve-ids" 2>/dev/null | sort -u | tr '\n' ' ')
           echo "ids=$ids" >> "$GITHUB_OUTPUT"
 
-      - name: Remove the label
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            try {
-              await github.rest.issues.removeLabel({
-                owner,
-                repo,
-                issue_number: context.payload.pull_request.number,
-                name: context.payload.label.name,
-              });
-            } catch (error) {
-              // 404 just means the label was already gone; anything else is real.
-              if (error.status !== 404) throw error;
-            }
-
   # Marking a review thread resolved needs `contents: write`, GitHub's rule
   # rather than ours. This job is the only one that holds it: no checkout, no
-  # PR content, no Claude. It resolves the threads the review queued and
-  # hides the summaries of earlier rounds as outdated.
+  # PR content, no Claude. It resolves the threads the review queued, hides
+  # the summaries of earlier rounds as outdated, and removes the label.
   finish-round:
     needs: review
     runs-on: ubuntu-slim
@@ -228,3 +211,24 @@ jobs:
               }' --jq '.data.minimizeComment.minimizedComment.isMinimized' | sed "s/^/$id hidden=/" ||
               echo "::warning::Could not hide earlier summary $id"
           done
+
+      # Last, so a failure here costs only the label, not the round's
+      # other work.
+      - name: Remove the label
+        uses: actions/github-script@v9
+        with:
+          # Rides out brief GitHub server errors: waits 1, 4, 9, 16, 25 s.
+          retries: 5
+          script: |
+            const { owner, repo } = context.repo;
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: context.payload.pull_request.number,
+                name: context.payload.label.name,
+              });
+            } catch (error) {
+              // 404 just means the label was already gone; anything else is real.
+              if (error.status !== 404) throw error;
+            }
