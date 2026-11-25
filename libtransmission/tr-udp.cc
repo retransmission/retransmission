@@ -400,7 +400,7 @@ void log_send_error(sockaddr const* const to, int const error_code)
             "Couldn't send to {address}: {errno} ({error})",
             fmt::arg("address", display_name),
             fmt::arg("errno", error_code),
-            fmt::arg("error", tr_strerror(error_code))));
+            fmt::arg("error", tr_net_strerror(error_code))));
 }
 } // namespace
 
@@ -728,20 +728,16 @@ tr_session::tr_udp_core::~tr_udp_core()
 void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t const tolen) const
 {
     if (to->sa_family != AF_INET && to->sa_family != AF_INET6) {
-        errno = EAFNOSUPPORT;
+        log_send_error(to, EAFNOSUPPORT);
     } else if (auto const sock = to->sa_family == AF_INET ? udp4_socket_ : udp6_socket_; !is_valid_socket(sock)) {
         // don't warn on bad sockets; the system may not support IPv6
-        return;
     } else if (!session_.has_source_address(tr_af_to_ip_protocol(to->sa_family)) && !is_loopback(to)) {
         // don't try to send if we don't have a route in this IP protocol
-        return;
     }
     // NOLINTNEXTLINE(readability-redundant-casting)
-    else if (::sendto(sock, static_cast<char const*>(buf), static_cast<TR_IF_WIN32(int, size_t)>(buflen), 0, to, tolen) != -1) {
-        return;
+    else if (::sendto(sock, static_cast<char const*>(buf), static_cast<TR_IF_WIN32(int, size_t)>(buflen), 0, to, tolen) == -1) {
+        log_send_error(to, sockerrno);
     }
-
-    log_send_error(to, errno);
 }
 
 void tr_session::tr_udp_core::sendto_soon(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t const tolen)
