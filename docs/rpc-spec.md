@@ -722,7 +722,7 @@ A stats object contains:
 | `session_count`    | number     | tr_session_stats
 
 A disk stats object counts the disk work done since the session started.
-Every count is 0 when `disk_io_workers` is 0.
+Every count is 0 when `disk_io_threads` is 0.
 
 | Key | Value Type | Description
 |:--|:--|:--

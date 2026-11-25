@@ -636,7 +636,7 @@ protected:
     }
 
     // A suite that picks its session's disk IO backend itself returns false.
-    // It gets the synchronous one unless it sets disk_io_workers before
+    // It gets the synchronous one unless it sets disk_io_threads before
     // SessionTest::SetUp() runs.
     [[nodiscard]] virtual bool useLocalDataBackendFromEnv() const
     {
@@ -677,11 +677,11 @@ protected:
 
         auto const from_env = useLocalDataBackendFromEnv();
 
-        // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
-        // instead of the synchronous one.
+        // TR_LOCAL_DATA_WORKERS sets the session's disk_io_threads:
+        // 0 for the synchronous backend, N for N workers.
         auto const workers = from_env ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
         if (!std::empty(workers)) {
-            settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
+            settings().insert_or_assign(TR_KEY_disk_io_threads, tr_num_parse<int64_t>(workers).value_or(2));
         }
 
         // tr::LocalData may deliver completions late and out of order.
@@ -704,10 +704,10 @@ protected:
 
         if (!from_env) {
             // synchronous, whatever the session's default
-            settings().try_emplace(TR_KEY_disk_io_workers, int64_t{ 0 });
+            settings().try_emplace(TR_KEY_disk_io_threads, int64_t{ 0 });
         } else if (seed) {
             // startThreadlessDiskIo() replaces only the synchronous backend
-            settings().insert_or_assign(TR_KEY_disk_io_workers, int64_t{ 0 });
+            settings().insert_or_assign(TR_KEY_disk_io_threads, int64_t{ 0 });
         }
 
         session_ = sessionInit(settings());

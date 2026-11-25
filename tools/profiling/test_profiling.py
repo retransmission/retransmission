@@ -247,13 +247,14 @@ class HarnessTest(unittest.TestCase):
                              disk_io_workers=4, encryption="allowed", verify_mode="full")
                 settings = json.loads((root / "seed/config/settings.json").read_text())
                 self.assertEqual(settings["encryption"], "allowed")
+                self.assertEqual(settings["disk_io_threads"], 4)
                 self.assertEqual(settings["disk_io_workers"], 4)
                 self.assertEqual(settings["torrent_added_verify_mode"], "full")
                 self.assertNotIn("disk_write_budget_mib", settings)
                 start_daemon(stack, Path("daemon"), root, root, "leech", 19092, 51414, disk_write_budget_mib=256)
                 settings = json.loads((root / "leech/config/settings.json").read_text())
                 self.assertEqual(settings["disk_write_budget_mib"], 256)
-                self.assertEqual(settings["disk_io_workers"], 2)
+                self.assertEqual(settings["disk_io_threads"], 2)
                 stack.close()
 
     def test_thread_roles_come_from_recorded_scopes(self):
@@ -411,7 +412,7 @@ class RunScriptTest(unittest.TestCase):
                         self.assertEqual(call["workers"], "4")
                         self.assertEqual(call["encryption"], "allowed")
 
-            # With no override, both compose invocations use the application default.
+            # With no override, both compose invocations use run.sh's default.
             default_env = dict(env)
             default_env.pop("DISK_IO_WORKERS")
             result = subprocess.run(["bash", str(script)], env=default_env,

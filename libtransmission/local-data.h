@@ -85,7 +85,7 @@ struct LocalDataTestAccess;
  * # Backends
  *
  * The synchronous backend runs every op on the session thread before
- * the enqueue call returns. It is the default.
+ * the enqueue call returns. A LocalData starts on it.
  *
  * start_workers() switches to the threaded backend. Writes and piece
  * hashes then run on worker threads and complete later, from the

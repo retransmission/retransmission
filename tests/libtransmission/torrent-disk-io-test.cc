@@ -461,7 +461,7 @@ protected:
 
     void SetUp() override
     {
-        settings().insert_or_assign(TR_KEY_disk_io_workers, int64_t{ 2 });
+        settings().insert_or_assign(TR_KEY_disk_io_threads, int64_t{ 2 });
         TorrentDiskIoTestBase::SetUp();
     }
 

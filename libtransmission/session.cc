@@ -704,11 +704,11 @@ void tr_session::initImpl(init_data& data)
 
     setSettings(settings, true);
 
-    // Runtime changes to disk_io_workers take effect on restart.
+    // Runtime changes to disk_io_threads take effect on restart.
     // Stopping a running worker pool safely isn't worth the
     // complexity of a live switch.
     try {
-        local_data.start_workers(settings_.disk_io_workers, open_files_, local_data_marshal(), storage_descriptor_provider());
+        local_data.start_workers(settings_.disk_io_threads, open_files_, local_data_marshal(), storage_descriptor_provider());
     } catch (std::exception const& e) {
         tr_logAddError(
             fmt::format("Couldn't start disk IO workers, continuing without them: {error}", fmt::arg("error", e.what())));
