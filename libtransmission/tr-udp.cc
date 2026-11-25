@@ -187,7 +187,8 @@ LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
 // Lets the kernel coalesce incoming datagrams of one flow into one read, where it can.
 void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 {
-#if defined(UDP_GRO)
+    // Only the recvmmsg() version of read_datagrams() splits a UDP_GRO read.
+#if defined(UDP_GRO) && defined(HAVE_RECVMMSG)
     int const on = 1;
     (void)setsockopt(sock, IPPROTO_UDP, UDP_GRO, &on, sizeof(on));
 #elif defined(UDP_COALESCED_INFO)
