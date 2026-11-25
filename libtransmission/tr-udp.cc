@@ -137,12 +137,8 @@ bool handle_packet(
     return false;
 }
 
-#ifdef UDP_GRO
-// With UDP_GRO, the kernel can hand over many datagrams of one flow as one read, up to 64 KiB.
+// The largest UDP datagram, and the most a coalesced read of several datagrams holds.
 auto constexpr DatagramBufferSize = size_t{ 65536U };
-#else
-auto constexpr DatagramBufferSize = size_t{ 8192U };
-#endif
 
 // Lets the kernel coalesce incoming datagrams of one flow into one read, where it can.
 void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
