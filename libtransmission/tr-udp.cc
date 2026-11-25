@@ -435,6 +435,17 @@ public:
         return ++size_ == Capacity;
     }
 
+    // Segments sends on `sock` if the kernel can. Before Linux 4.18 it ignores UDP_SEGMENT
+    // without an error and sends each message as one datagram.
+    void enable_segmentation([[maybe_unused]] tr_socket_t const sock)
+    {
+#ifdef UDP_SEGMENT
+        auto gso_size = int{};
+        auto len = socklen_t{ sizeof(gso_size) };
+        use_gso_ = getsockopt(sock, IPPROTO_UDP, UDP_SEGMENT, &gso_size, &len) == 0;
+#endif
+    }
+
     void flush(tr_socket_t const sock)
     {
         for (size_t next = 0; next < size_;) {
@@ -447,14 +458,9 @@ public:
             // sendmmsg() reports an error only for the first message
             auto const error_code = errno;
             if (message_ends_[0] - next > 1U && is_gso_error(error_code)) {
-                // Without UDP_SEGMENT support no send can segment. Otherwise the refusal is about
-                // the route, such as an MTU below the segment size, so it holds for this address;
-                // sent unsegmented, an oversized datagram is fragmented instead.
-                if (error_code == ENOPROTOOPT || error_code == EOPNOTSUPP) {
-                    use_gso_ = false;
-                } else {
-                    refuse_gso(next);
-                }
+                // The refusal is about the route, such as an MTU below the segment size, so it
+                // holds for this address; sent unsegmented, an oversized datagram is fragmented instead.
+                refuse_gso(next);
                 tr_logAddDebug(fmt::format("UDP segmentation offload refused: {}", tr_strerror(error_code)));
                 continue;
             }
@@ -473,8 +479,7 @@ private:
 
     [[nodiscard]] static bool is_gso_error(int const error_code) noexcept
     {
-        return error_code == EMSGSIZE || error_code == EIO || error_code == EINVAL || error_code == ENOPROTOOPT ||
-            error_code == EOPNOTSUPP;
+        return error_code == EMSGSIZE || error_code == EIO || error_code == EINVAL;
     }
 
     void refuse_gso(size_t const datagram)
@@ -569,7 +574,9 @@ private:
     size_t n_gso_refused_ = 0;
 
     size_t size_ = 0;
-    bool use_gso_ = true;
+#ifdef UDP_SEGMENT
+    bool use_gso_ = false;
+#endif
 };
 #else
 // No batched sends here: sendto_soon() always falls back to sendto().
@@ -579,6 +586,11 @@ public:
     [[nodiscard]] static constexpr bool fits(size_t /*buflen*/, socklen_t /*tolen*/) noexcept
     {
         return false;
+    }
+
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static): same calls as the batching SendQueue
+    void enable_segmentation(tr_socket_t /*sock*/)
+    {
     }
 
     // NOLINTNEXTLINE(readability-convert-member-functions-to-static): same calls as the batching SendQueue
@@ -642,6 +654,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             session_.setSocketDiffServ(sock, TR_AF_INET);
             set_socket_buffers(sock, session_.allowsUTP());
             enable_receive_coalescing(sock);
+            send_queue4_->enable_segmentation(sock);
             udp4_socket_ = sock;
             udp4_event_.reset(
                 tr::evhelpers::event_new_pri2(
@@ -688,6 +701,7 @@ tr_session::tr_udp_core::tr_udp_core(tr_session& session, tr_port udp_port)
             session_.setSocketDiffServ(sock, TR_AF_INET6);
             set_socket_buffers(sock, session_.allowsUTP());
             enable_receive_coalescing(sock);
+            send_queue6_->enable_segmentation(sock);
             udp6_socket_ = sock;
             udp6_event_.reset(
                 tr::evhelpers::event_new_pri2(
