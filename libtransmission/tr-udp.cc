@@ -14,6 +14,7 @@
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
+#include <mswsock.h> // LPFN_WSARECVMSG, WSAID_WSARECVMSG
 #else
 #include <netinet/in.h> // IPPROTO_UDP
 #include <sys/socket.h> // setsockopt, SOL_SOCKET, bind
@@ -140,18 +141,72 @@ bool handle_packet(
 // The largest UDP datagram, and the most a coalesced read of several datagrams holds.
 auto constexpr DatagramBufferSize = size_t{ 65536U };
 
+#ifdef UDP_COALESCED_INFO
+// Stands in for WSARecvMsg() where Winsock does not provide it; it reads no control data.
+int WSAAPI recvmsg_without_control(
+    SOCKET const s,
+    LPWSAMSG const msg,
+    LPDWORD const n_read,
+    LPWSAOVERLAPPED /*overlapped*/,
+    LPWSAOVERLAPPED_COMPLETION_ROUTINE /*completion_routine*/)
+{
+    auto const n = recvfrom(s, msg->lpBuffers->buf, static_cast<int>(msg->lpBuffers->len), 0, msg->name, &msg->namelen);
+    if (n == SOCKET_ERROR) {
+        return SOCKET_ERROR;
+    }
+    *n_read = static_cast<DWORD>(n);
+    msg->Control.len = 0;
+    msg->dwFlags = 0;
+    return 0;
+}
+
+// WSARecvMsg() is reachable only through a pointer that Winsock hands out per socket.
+// Every socket of the TCP/IP stack hands out the same one.
+LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
+{
+    static auto const fn = [sock] {
+        auto guid = GUID(WSAID_WSARECVMSG);
+        auto ptr = LPFN_WSARECVMSG{};
+        auto bytes = DWORD{};
+        auto const err = WSAIoctl(
+            sock,
+            SIO_GET_EXTENSION_FUNCTION_POINTER,
+            &guid,
+            sizeof(guid),
+            &ptr,
+            sizeof(ptr),
+            &bytes,
+            nullptr,
+            nullptr);
+        return err == 0 && ptr != nullptr ? ptr : recvmsg_without_control;
+    }();
+    return fn;
+}
+#endif
+
 // Lets the kernel coalesce incoming datagrams of one flow into one read, where it can.
 void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 {
-#ifdef UDP_GRO
+#if defined(UDP_GRO)
     int const on = 1;
     (void)setsockopt(sock, IPPROTO_UDP, UDP_GRO, &on, sizeof(on));
+#elif defined(UDP_COALESCED_INFO)
+    // Windows before 10 version 2004 refuses the option and keeps datagrams apart.
+    if (wsa_recvmsg(sock) != recvmsg_without_control) {
+        DWORD const max_size = DatagramBufferSize - 1U;
+        (void)setsockopt(
+            sock,
+            IPPROTO_UDP,
+            UDP_RECV_MAX_COALESCED_SIZE,
+            reinterpret_cast<char const*>(&max_size),
+            sizeof(max_size));
+    }
 #endif
 }
 
-#ifdef HAVE_RECVMMSG
-// Hands each datagram in `buf` to handle_packet(). With UDP_GRO, `buf` can hold several
-// datagrams of `segment_size` bytes each, the last possibly shorter.
+#if defined(HAVE_RECVMMSG) || defined(UDP_COALESCED_INFO)
+// Hands each datagram in `buf` to handle_packet(). A coalesced read (UDP_GRO, UDP_COALESCED_INFO)
+// holds several datagrams of `segment_size` bytes each, the last possibly shorter.
 bool handle_read(
     tr_session* const session,
     unsigned char* const buf,
@@ -180,7 +235,9 @@ bool handle_read(
     }
     return got_utp_packet;
 }
+#endif
 
+#ifdef HAVE_RECVMMSG
 // Reads per recvmmsg() call. µTP at full speed delivers tens of thousands of
 // packets per second, so one syscall per datagram is a large part of its cost.
 auto constexpr DatagramsPerRead = size_t{ 1024U * 1024U } / DatagramBufferSize / 2U;
@@ -251,6 +308,48 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
         if (std::cmp_less(n_read, DatagramsPerRead)) {
             return got_utp_packet;
         }
+    }
+}
+#elif defined(UDP_COALESCED_INFO)
+// Reads every pending datagram; returns true if any was a µTP packet.
+bool read_datagrams(evutil_socket_t const s, tr_session* const session)
+{
+    // On the heap: see the recvmmsg() version of read_datagrams()
+    thread_local auto const heap_buf = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
+    auto& buf = *heap_buf;
+    auto* const recvmsg = wsa_recvmsg(s);
+    auto got_utp_packet = false;
+
+    for (;;) {
+        auto from = sockaddr_storage{};
+        alignas(WSACMSGHDR) auto control = std::array<char, WSA_CMSG_SPACE(sizeof(DWORD))>{};
+        auto data = WSABUF{ .len = static_cast<ULONG>(std::size(buf) - 1U), .buf = reinterpret_cast<char*>(std::data(buf)) };
+        auto msg = WSAMSG{};
+        msg.name = reinterpret_cast<sockaddr*>(&from);
+        msg.namelen = sizeof(from);
+        msg.lpBuffers = &data;
+        msg.dwBufferCount = 1;
+        msg.Control = { .len = static_cast<ULONG>(std::size(control)), .buf = std::data(control) };
+
+        auto n_read = DWORD{};
+        if (recvmsg(s, &msg, &n_read, nullptr, nullptr) != 0) {
+            return got_utp_packet;
+        }
+        // See the recvmmsg() version of read_datagrams()
+        if (n_read == 0U || (msg.dwFlags & (MSG_TRUNC | MSG_CTRUNC)) != 0) {
+            continue;
+        }
+
+        auto segment_size = static_cast<size_t>(n_read);
+        for (auto* cmsg = WSA_CMSG_FIRSTHDR(&msg); cmsg != nullptr; cmsg = WSA_CMSG_NXTHDR(&msg, cmsg)) {
+            if (cmsg->cmsg_level == IPPROTO_UDP && cmsg->cmsg_type == UDP_COALESCED_INFO) {
+                auto coalesced_size = DWORD{};
+                std::memcpy(&coalesced_size, WSA_CMSG_DATA(cmsg), sizeof(coalesced_size));
+                segment_size = coalesced_size > 0U ? static_cast<size_t>(coalesced_size) : segment_size;
+            }
+        }
+
+        got_utp_packet |= handle_read(session, std::data(buf), n_read, segment_size, msg.name, msg.namelen);
     }
 }
 #else
