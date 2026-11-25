@@ -131,6 +131,8 @@ jobs:
           # Naming non-write users also makes the action scrub secrets from
           # Claude's subprocesses and sandbox them, which costs nothing here.
           allowed_non_write_users: ${{ join(fromJSON(vars.AI_REVIEW_USERS || '[]'), ',') }}
+          # Allow review of PRs submitted from forks
+          allow_fork_prs: 'true'
           # Lists Claude's tool calls on the run's summary page, which is the
           # only record of whether the earlier-rounds steps happened.
           display_report: 'true'
