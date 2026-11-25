@@ -119,9 +119,10 @@ TEST(PeerListItemTest, keyIsTorrentAddressAndPort)
 
 TEST(PeerListItemTest, comparesEachColumn)
 {
-    auto lo = make_peer("9.0.0.1"sv);
-    auto hi = make_peer("10.0.0.1"sv);
-    expect_before(make_item(lo), make_item(hi), PeerColumn::Address);
+    // `lo` has the later address, so only the column can put it first
+    auto lo = make_peer("10.0.0.1"sv);
+    auto hi = make_peer("9.0.0.1"sv);
+    expect_before(make_item(hi), make_item(lo), PeerColumn::Address);
 
     lo.rate_to_peer = Speed{ 1U, Speed::Units::Byps };
     hi.rate_to_peer = Speed{ 2U, Speed::Units::Byps };
@@ -153,4 +154,28 @@ TEST(PeerListItemTest, comparesEachColumn)
     lo.is_encrypted = true;
     hi.is_encrypted = false;
     expect_before(make_item(lo), make_item(hi), PeerColumn::Encrypted);
+}
+
+TEST(PeerListItemTest, clientNamesIgnoreCase)
+{
+    auto lo = make_peer("10.0.0.2"sv);
+    auto hi = make_peer("10.0.0.1"sv);
+    lo.client_name = "libtorrent";
+    hi.client_name = "Transmission";
+    expect_before(make_item(lo), make_item(hi), PeerColumn::Client);
+}
+
+TEST(PeerListItemTest, tiesGoByAddressPortAndTorrent)
+{
+    // equal by every column but the address
+    expect_before(make_item(make_peer("9.0.0.1"sv)), make_item(make_peer("10.0.0.1"sv)), PeerColumn::DownloadSpeed);
+
+    auto lo = make_peer("10.0.0.1"sv);
+    auto hi = lo;
+    lo.port = 1U;
+    hi.port = 2U;
+    expect_before(make_item(lo), make_item(hi), PeerColumn::DownloadSpeed);
+
+    expect_before(PeerListItem{ 1, lo, Percent{} }, PeerListItem{ 2, lo, Percent{} }, PeerColumn::DownloadSpeed);
+    EXPECT_EQ(make_item(lo).compare(make_item(lo), PeerColumn::DownloadSpeed), std::weak_ordering::equivalent);
 }

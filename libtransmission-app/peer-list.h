@@ -196,10 +196,13 @@ public:
 
     [[nodiscard]] PeerKey key() const;
 
-    // ascending order by `column`
+    // Ascending order by `column`, then by address, port, and torrent.
+    // Client names compare ignoring ASCII case.
     [[nodiscard]] std::weak_ordering compare(PeerListItem const& that, PeerColumn column) const;
 
 private:
+    [[nodiscard]] std::weak_ordering compare_column(PeerListItem const& that, PeerColumn column) const;
+
     Peer peer_;
     PeerAddressKey address_key_;
     tr::Values::Percent progress_;

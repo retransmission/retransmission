@@ -5,9 +5,9 @@
 
 #include "libtransmission-app/peer-list.h"
 
-#include <algorithm> // std::ranges::transform()
+#include <algorithm> // std::lexicographical_compare_three_way(), std::ranges::transform()
 #include <compare>
-#include <iterator> // std::back_inserter()
+#include <iterator> // std::back_inserter(), std::begin(), std::end()
 #include <string_view>
 #include <utility> // std::move()
 
@@ -26,6 +26,18 @@ namespace
 [[nodiscard]] constexpr char to_ascii_lower(char const ch) noexcept
 {
     return ch >= 'A' && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch;
+}
+
+[[nodiscard]] std::weak_ordering compare_ignoring_ascii_case(std::string_view const a, std::string_view const b) noexcept
+{
+    return std::lexicographical_compare_three_way(
+        std::begin(a),
+        std::end(a),
+        std::begin(b),
+        std::end(b),
+        [](char const x, char const y) {
+            return static_cast<unsigned char>(to_ascii_lower(x)) <=> static_cast<unsigned char>(to_ascii_lower(y));
+        });
 }
 
 } // namespace
@@ -64,6 +76,22 @@ PeerKey PeerListItem::key() const
 
 std::weak_ordering PeerListItem::compare(PeerListItem const& that, PeerColumn const column) const
 {
+    if (auto const val = compare_column(that, column); val != 0) {
+        return val;
+    }
+
+    // a stable order for ties, e.g. the many peers sending nothing
+    if (auto const val = address_key_ <=> that.address_key_; val != 0) {
+        return val;
+    }
+    if (auto const val = peer_.port <=> that.peer_.port; val != 0) {
+        return val;
+    }
+    return torrent_id_ <=> that.torrent_id_;
+}
+
+std::weak_ordering PeerListItem::compare_column(PeerListItem const& that, PeerColumn const column) const
+{
     auto const& a = peer_;
     auto const& b = that.peer_;
 
@@ -85,7 +113,7 @@ std::weak_ordering PeerListItem::compare(PeerListItem const& that, PeerColumn co
     case PeerColumn::Address:
         return address_key_ <=> that.address_key_;
     case PeerColumn::Client:
-        return a.client_name <=> b.client_name;
+        return compare_ignoring_ascii_case(a.client_name.sv(), b.client_name.sv());
     }
 
     return std::weak_ordering::equivalent;
