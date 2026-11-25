@@ -111,9 +111,9 @@ template<std::floating_point T>
 
 namespace tr::detail::tr_time
 {
-// atomic so that readers on other threads, e.g. the verify and web
-// threads, get a coherent value without synchronizing with the session
-// thread's once-per-second update
+// atomic so that readers on other threads, e.g. a client's thread in
+// tr_torrentStat(), get a coherent value without synchronizing with the
+// session thread's once-per-second update
 extern std::atomic<time_t> current_time;
 } // namespace tr::detail::tr_time
 

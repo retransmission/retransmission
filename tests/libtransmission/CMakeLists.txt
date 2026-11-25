@@ -106,7 +106,10 @@ target_compile_definitions(libtransmission-test
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
 
 target_compile_options(libtransmission-test
-    PRIVATE $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wno-sign-compare>) # patches welcomed
+    PRIVATE
+        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wno-sign-compare> # patches welcomed
+        # the disk-IO test files have more sections than an MSVC object holds by default
+        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>)
 
 target_link_libraries(libtransmission-test
     PRIVATE

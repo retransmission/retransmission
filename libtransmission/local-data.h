@@ -31,6 +31,7 @@
 #include "libtransmission/types.h"
 
 class tr_open_files;
+class tr_sha1;
 class tr_torrents;
 
 namespace tr
@@ -59,9 +60,9 @@ struct LocalDataTestAccess;
  * 1. Ops on different torrents are unordered.
  *
  * 2. Data ops on the same torrent are unordered too. `read`,
- *    `test_piece`, and `write` may run at the same time and may finish
- *    in any order. If op B needs to see op A's result, wait for A's
- *    callback before starting B.
+ *    `test_piece`, `hash_span`, and `write` may run at the same time and
+ *    may finish in any order. If op B needs to see op A's result, wait
+ *    for A's callback before starting B.
  *
  * 3. Admin ops are barriers. `move`, `rename`, `remove`,
  *    `close_torrent`, and `close_all` wait for the ops already in
@@ -195,6 +196,16 @@ public:
     using OnTest = std::function<
         void(tr_torrent_id_t, tr_piece_index_t piece, tr_error const& error, std::optional<tr_sha1_digest_t> hash)>;
 
+    // Required. `hashes` holds the digest of each piece that ends in
+    // `span`, in order. A failed read leaves it empty. `sha` comes back
+    // either way.
+    using OnHashSpan = std::function<void(
+        tr_torrent_id_t,
+        tr_byte_span_t span,
+        tr_error const& error,
+        std::vector<tr_sha1_digest_t> hashes,
+        std::unique_ptr<tr_sha1> sha)>;
+
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
     struct MoveTarget {
@@ -237,6 +248,11 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
+        [[nodiscard]] virtual tr_error hash_span(
+            tr_torrent_id_t tor_id,
+            tr_byte_span_t span,
+            tr_sha1& sha,
+            std::vector<tr_sha1_digest_t>& setme_hashes) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
             MoveTarget const& target,
@@ -301,6 +317,31 @@ public:
 
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
+
+    // Hashes `span`'s bytes, as they are on the disk, piece by piece.
+    // `sha` holds the hash of the first piece's bytes before `span`. It
+    // comes back holding the hash of the last piece's bytes if `span` ends
+    // partway through that piece, and cleared if not. A verify carries it
+    // across the spans of a piece too big for one. A failed read leaves it
+    // as it was.
+    // The threaded backend gives the span a turn after other work.
+    // `span` is at most max_hash_span_bytes() long.
+    void hash_span(tr_torrent_id_t id, tr_byte_span_t span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed);
+
+    // The most a worker reads in one go.
+    [[nodiscard]] static constexpr size_t max_hash_span_bytes() noexcept
+    {
+        return MaxRunBytes;
+    }
+
+    // How long a verify's spans should be. The synchronous backend reads
+    // and hashes each one on the session thread, which waits for it, so
+    // it gets shorter ones.
+    [[nodiscard]] size_t hash_span_bytes() const noexcept
+    {
+        return threaded_ ? max_hash_span_bytes() : SessionThreadHashSpanBytes;
+    }
+
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
@@ -386,6 +427,9 @@ private:
     // into runs of up to this many bytes, and does each run with one call.
     static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
 
+    // About 10 ms of reading from a USB 2 drive
+    static auto constexpr SessionThreadHashSpanBytes = size_t{ 256U * 1024U };
+
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 
     // The backends write it, and any thread reads it, so it outlives them.
@@ -424,9 +468,9 @@ void start_threadless(
 enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
 
 // Takes one step now, on the calling thread, paused or not. A worker
-// takes its next hash, run of reads, or run of writes, or does the one
-// it took earlier. A lane does its next job. False if no thread of
-// `which` has anything to do.
+// takes its next hash, run of reads, run of writes, or verify span, or
+// does the one it took earlier. A lane does its next job. False if no
+// thread of `which` has anything to do.
 bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
 
 // Does now what the backend left for the session thread to do later:

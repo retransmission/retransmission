@@ -18,6 +18,7 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <optional>
 #include <ranges>
 #include <span>
@@ -37,6 +38,7 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
+#include <libtransmission/inout.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/peer-common.h>
 #include <libtransmission/peer-io.h>
@@ -198,9 +200,14 @@ protected:
         return data;
     }
 
-    // A paused one-file torrent of `n_pieces` pieces of zeroes, with
-    // nothing on disk.
-    [[nodiscard]] tr_torrent* zeroPiecesTorrentInit(std::string_view const name, size_t const piece_size, size_t const n_pieces)
+    // A paused torrent of `n_pieces` pieces of zeroes, with nothing on
+    // disk. It has one file, or files of `file_sizes`, named by their
+    // index. Those add up to the pieces.
+    [[nodiscard]] tr_torrent* zeroPiecesTorrentInit(
+        std::string_view const name,
+        size_t const piece_size,
+        size_t const n_pieces,
+        std::vector<uint64_t> const& file_sizes = {})
     {
         auto const piece_hash = tr_sha1::digest(std::string(piece_size, '\0'));
         auto pieces = std::string{};
@@ -210,15 +217,59 @@ protected:
 
         auto info = tr_variant::Map{};
         info.try_emplace(TR_KEY_name, name);
-        info.try_emplace(TR_KEY_length, uint64_t{ n_pieces * piece_size });
         info.try_emplace(TR_KEY_piece_length, uint64_t{ piece_size });
         info.try_emplace(TR_KEY_pieces, std::move(pieces));
+        if (std::empty(file_sizes)) {
+            info.try_emplace(TR_KEY_length, uint64_t{ n_pieces * piece_size });
+        } else {
+            EXPECT_EQ(n_pieces * piece_size, std::accumulate(std::begin(file_sizes), std::end(file_sizes), uint64_t{}));
+            auto files = tr_variant::Vector{};
+            for (auto i = size_t{}; i < std::size(file_sizes); ++i) {
+                auto path = tr_variant::Vector{};
+                path.emplace_back(std::to_string(i));
+                auto file = tr_variant::Map{ 2U };
+                file.try_emplace(TR_KEY_length, file_sizes[i]);
+                file.try_emplace(TR_KEY_path, std::move(path));
+                files.emplace_back(std::move(file));
+            }
+            info.try_emplace(TR_KEY_files, std::move(files));
+        }
         auto metainfo = tr_variant::Map{};
         metainfo.try_emplace(TR_KEY_info, std::move(info));
         auto builder = tr_torrent_builder{ session_ };
         EXPECT_TRUE(builder.set_metainfo(tr_variant_serde::benc().to_string(std::move(metainfo))));
         builder.set_paused(true);
         return createTorrentAndWaitForVerifyDone(&builder);
+    }
+
+    // True if the fd pool holds none of `tor`'s files.
+    [[nodiscard]] bool poolHoldsNoFilesOf(tr_torrent const* const tor)
+    {
+        return blockingRunInSessionThread([this, tor] {
+            for (tr_file_index_t file = 0; file < tor->file_count(); ++file) {
+                if (session_->openFiles().get(tor->id(), file, false)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    // Starts `tor`'s verify, and waits until it's under way.
+    static void startVerify(tr_torrent* const tor)
+    {
+        tr_torrentVerify(tor);
+        EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
+    }
+
+    // Reads the start of `tor`'s first file, which puts it in the fd pool.
+    void readFirstFile(tr_torrent const* const tor)
+    {
+        blockingRunInSessionThread([this, tor] {
+            auto buf = std::vector<uint8_t>(16U);
+            EXPECT_FALSE(tr_ioRead(*tor->storage_descriptor(), session_->openFiles(), 0U, buf));
+        });
+        EXPECT_FALSE(poolHoldsNoFilesOf(tor));
     }
 };
 
@@ -252,9 +303,27 @@ protected:
     }
 
     // runThreadlessDiskIo() on the session's disk IO. Session thread only.
-    void pump() const
+    void pump(tr::detail::DiskThread const which = tr::detail::DiskThread::Any) const
     {
-        runThreadlessDiskIo(session_->local_data);
+        runThreadlessDiskIo(session_->local_data, which);
+    }
+
+    void deliver() const
+    {
+        tr::detail::deliver(session_->local_data);
+    }
+
+    // A new torrent verifies, which reads on the disk workers and leaves
+    // the closing of its files to the short lane. That runs here, so that
+    // a test's steps start with nothing queued.
+    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder) override
+    {
+        auto& local_data = session_->local_data;
+        local_data.set_workers_paused(false);
+        auto* const tor = TorrentDiskIoTestBase::createTorrentAndWaitForVerifyDone(builder);
+        blockingRunInSessionThread([this] { pump(); });
+        local_data.set_workers_paused(true);
+        return tor;
     }
 
     // Two 24 KiB pieces of zeroes. The middle block ends piece 0 and
@@ -299,11 +368,6 @@ protected:
     [[nodiscard]] bool diskIsIdle() const
     {
         return !tr::detail::step(session_->local_data);
-    }
-
-    void deliver() const
-    {
-        tr::detail::deliver(session_->local_data);
     }
 
     [[nodiscard]] static bool fileExists(std::string_view const dir, std::string_view const subpath)
@@ -1053,12 +1117,70 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
         EXPECT_FALSE(tor->has_block_or_pending(block));
     });
 
+    // the verify reads through the disk workers
+    session_->local_data.set_workers_paused(false);
     EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
 }
 
 TEST_F(SynchronousDiskIoTest, requestBudgetIsUnbounded)
 {
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
+}
+
+// A same-named file that is larger than the torrent's may not be the
+// torrent's. A verify reads the torrent's bytes of it and leaves the rest.
+TEST_F(SynchronousDiskIoTest, aVerifyLeavesATooLargeFileAlone)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const path = tr_torrentFindFile(tor, 0U);
+    ASSERT_FALSE(std::empty(path));
+    auto const file_size = tor->file_size(0U);
+    createFileWithContents(path, std::string(file_size + 1U, '\0'));
+
+    blockingTorrentVerify(tor);
+    EXPECT_EQ(file_size + 1U, tr_sys_path_get_info(path)->size);
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+}
+
+// A stopped torrent holds no files open, so that its drive can be ejected.
+TEST_F(SynchronousDiskIoTest, aVerifyClosesTheFilesItReads)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
+}
+
+// Windows won't rename a folder that holds an open file.
+TEST_F(SynchronousDiskIoTest, aRenameClosesTheTorrentsFiles)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    readFirstFile(tor);
+
+    auto renamed = std::atomic<bool>{};
+    tr_torrentRenamePath(
+        tor,
+        "files-filled-with-zeroes"sv,
+        "renamed"sv,
+        [&renamed](tr_torrent_id_t, auto, auto, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            renamed = true;
+        });
+    EXPECT_TRUE(waitFor([&renamed] { return renamed.load(); }, MaxWaitMsec));
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
+}
+
+// ...nor move one. A file moved across filesystems leaves its old fd
+// pointing at the old copy, too.
+TEST_F(SynchronousDiskIoTest, aMoveClosesTheTorrentsFiles)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    readFirstFile(tor);
+
+    auto& state = newLocationState();
+    tr_torrentSetLocation(tor, tr_pathbuf{ sandboxDir(), "/moved"sv }, true, &state);
+    EXPECT_TRUE(waitFor([&state] { return state != TR_LOC_MOVING; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
 }
 
 // ---
@@ -2382,6 +2504,433 @@ TEST_F(UploadTest, servesMoreThanItKeepsInFlight)
     for (auto const& reply : replies_) {
         expectPiece(reply);
     }
+}
+
+namespace
+{
+// A verify held at its first piece while the torrent's paths change.
+class VerifyDuringPathChangeTest : public TorrentDiskIoWorkersTest
+{
+protected:
+    static auto constexpr TopDir = "files-filled-with-zeroes"sv;
+
+    // Starts a verify, which waits at its first span until finishVerify().
+    void startHeldVerify(tr_torrent* const tor)
+    {
+        n_verified_before_ = verifiedCount();
+        session_->local_data.set_workers_paused(true);
+        startVerify(tor);
+    }
+
+    // Lets the verify go on, and waits for it to finish.
+    [[nodiscard]] bool finishVerify(tr_torrent const* const tor)
+    {
+        session_->local_data.set_workers_paused(false);
+        return waitForVerify(tor, n_verified_before_);
+    }
+
+    // verifies finished since startHeldVerify()
+    [[nodiscard]] size_t nVerified()
+    {
+        return verifiedCount() - n_verified_before_;
+    }
+
+    // A copy of the torrent's files under `parent`, all zeroes but the first byte.
+    static void writeCopyWithABadFirstPiece(tr_torrent const* const tor, std::string_view const parent)
+    {
+        for (tr_file_index_t file = 0; file < tor->file_count(); ++file) {
+            auto contents = std::string(tor->file_size(file), '\0');
+            if (file == 0U) {
+                contents.front() = '\1';
+            }
+            createFileWithContents(tr_pathbuf{ parent, '/', tor->file_subpath(file) }, contents);
+        }
+    }
+
+private:
+    size_t n_verified_before_ = 0U;
+};
+} // namespace
+
+// The bytes don't change, so the verify goes on under the new names.
+TEST_F(VerifyDuringPathChangeTest, aRenameDoesNotInterruptAVerify)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    startHeldVerify(tor);
+
+    auto renamed = std::atomic<bool>{};
+    tr_torrentRenamePath(tor, TopDir, "renamed", [&renamed](tr_torrent_id_t, auto, auto, tr_error const& error) {
+        EXPECT_FALSE(error) << error;
+        renamed = true;
+    });
+
+    ASSERT_TRUE(finishVerify(tor));
+    EXPECT_TRUE(waitFor([&renamed] { return renamed.load(); }, MaxWaitMsec));
+    EXPECT_EQ(1U, nVerified());
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+    EXPECT_TRUE(tr_torrentFindFile(tor, 0).contains("renamed"));
+}
+
+// The bytes arrive intact, so the verify goes on at the new location.
+TEST_F(VerifyDuringPathChangeTest, aMoveDoesNotInterruptAVerify)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const target = tr_pathbuf{ sandboxDir(), "/moved"sv };
+    startHeldVerify(tor);
+
+    auto& state = newLocationState();
+    tr_torrentSetLocation(tor, target, true, &state);
+
+    ASSERT_TRUE(finishVerify(tor));
+    EXPECT_TRUE(waitFor([&state] { return state != TR_LOC_MOVING; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    EXPECT_EQ(1U, nVerified());
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_all(); }));
+    EXPECT_TRUE(tr_torrentFindFile(tor, 0).starts_with(target.sv()));
+}
+
+// Pieces checked at the old location say nothing about the new one.
+TEST_F(VerifyDuringPathChangeTest, setLocationWithoutAMoveStartsTheVerifyOver)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    auto const elsewhere = tr_pathbuf{ sandboxDir(), "/elsewhere"sv };
+    writeCopyWithABadFirstPiece(tor, elsewhere);
+    startHeldVerify(tor);
+
+    // the first piece, still waiting, checks the old location
+    tr_torrentSetLocation(tor, elsewhere, false, nullptr);
+
+    ASSERT_TRUE(finishVerify(tor));
+    EXPECT_FALSE(blockingRunInSessionThread([tor] { return tor->has_piece(0); }));
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_piece(1); }));
+}
+
+TEST_F(VerifyDuringPathChangeTest, stoppingEndsAVerify)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    startHeldVerify(tor);
+
+    tr_torrentStop(tor);
+    EXPECT_TRUE(waitFor([tor] { return tr_torrentStat(tor).activity == TR_STATUS_STOPPED; }, MaxWaitMsec));
+
+    // The span in flight finishes, and nothing comes of it. A barrier
+    // queued now runs once that span's result has been delivered.
+    auto closed = std::atomic<bool>{};
+    blockingRunInSessionThread(
+        [this, tor, &closed] { session_->local_data.close_torrent(tor->id(), [&closed](tr_torrent_id_t) { closed = true; }); });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([&closed] { return closed.load(); }, MaxWaitMsec));
+    EXPECT_EQ(0U, nVerified());
+    EXPECT_EQ(TR_STATUS_STOPPED, tr_torrentStat(tor).activity);
+}
+
+TEST_F(TorrentDiskIoWorkersTest, aVerifyClosesTheFilesItReads)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    blockingTorrentVerify(tor);
+    EXPECT_TRUE(poolHoldsNoFilesOf(tor));
+}
+
+namespace
+{
+// Covers the verifier on the threaded backend with no threads, a step at a time.
+class ThreadlessVerifyTest : public TorrentDiskIoTest
+{
+protected:
+    void SetUp() override
+    {
+        // so that a verify goes on in the same turn its span lands in
+        settings().insert_or_assign(TR_KEY_sleep_per_seconds_during_verify, int64_t{ 0 });
+        TorrentDiskIoTest::SetUp();
+    }
+
+    // A paused one-file torrent of `n_pieces` pieces of zeroes, on disk
+    // under `subpath_suffix`. A piece is as long as a span can be unless
+    // `piece_size` says otherwise, so that each one takes a span.
+    [[nodiscard]] tr_torrent* zeroFileInit(
+        std::string_view const name,
+        size_t const n_pieces,
+        std::string_view const subpath_suffix = {},
+        size_t const piece_size = tr::LocalData::max_hash_span_bytes())
+    {
+        auto* const tor = zeroPiecesTorrentInit(name, piece_size, n_pieces);
+        createFileWithContents(
+            tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(0U), subpath_suffix },
+            std::string(n_pieces * piece_size, '\0'));
+        return tor;
+    }
+
+    // Starts `tor`'s verify, and lets the disk work until it's done.
+    [[nodiscard]] bool pumpVerify(tr_torrent* const tor)
+    {
+        auto const n_before = verifiedCount();
+        tr_torrentVerify(tor);
+        return pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); });
+    }
+
+    // Verifies `tor`, and returns how many spans the worker read.
+    [[nodiscard]] size_t countVerifySpans(tr_torrent* const tor)
+    {
+        auto const n_before = verifiedCount();
+        tr_torrentVerify(tor);
+
+        // the worker takes each span in one step, and reads it in the next
+        auto n_steps = size_t{};
+        EXPECT_TRUE(waitFor(
+            [this, tor, n_before, &n_steps] {
+                n_steps += blockingRunInSessionThread([this] {
+                    auto n = size_t{};
+                    while (tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker)) {
+                        ++n;
+                    }
+                    deliver();
+                    return n;
+                });
+                return wasVerified(tor, n_before);
+            },
+            MaxWaitMsec));
+        return n_steps / 2U;
+    }
+
+    // Whether `tor` has each of its pieces.
+    [[nodiscard]] std::vector<bool> havePieces(tr_torrent const* const tor)
+    {
+        return blockingRunInSessionThread([tor] {
+            auto has = std::vector<bool>{};
+            for (tr_piece_index_t piece = 0; piece < tor->piece_count(); ++piece) {
+                has.push_back(tor->has_piece(piece));
+            }
+            return has;
+        });
+    }
+
+    // The worker takes the verify's next span, and reads it.
+    // Session thread only.
+    void readNextSpan() const
+    {
+        EXPECT_TRUE(tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker));
+        EXPECT_TRUE(tr::detail::step(session_->local_data, tr::detail::DiskThread::Worker));
+    }
+
+    // Queues a move of `tor`'s files to `dir`. The short lane holds it
+    // until the test steps the lane.
+    void queueMove(tr_torrent* const tor, std::string_view const dir, int volatile* const state)
+    {
+        tr_torrentSetLocation(tor, dir, true, state);
+        waitForAdminOp(tor);
+    }
+
+    void waitForAdminOp(tr_torrent const* const tor)
+    {
+        EXPECT_TRUE(
+            waitForInSessionThread([this, tor] { return session_->local_data.admin_op_pending(tor->id()); }, MaxWaitMsec));
+    }
+
+    // Lets the disk threads of `which` work until `done`. The verifier takes
+    // its steps between these, on the session thread's timer.
+    template<typename Done>
+    [[nodiscard]] bool pumpUntil(Done const& done, tr::detail::DiskThread const which = tr::detail::DiskThread::Any)
+    {
+        return waitFor(
+            [this, &done, which] {
+                blockingRunInSessionThread([this, which] { pump(which); });
+                return done();
+            },
+            MaxWaitMsec);
+    }
+};
+} // namespace
+
+// Its next span would wait for the move. The verifies queued behind it go
+// first, and it picks up where it was once the move is done.
+TEST_F(ThreadlessVerifyTest, aVerifyWaitingForAMoveLetsTheNextOneGo)
+{
+    auto* const moving = zeroFileInit("moving", 4U);
+    auto* const next = zeroFileInit("next", 2U);
+    auto const target = tr_pathbuf{ sandboxDir(), "/moved"sv };
+    auto const n_before = verifiedCount();
+
+    startVerify(moving);
+    auto& state = newLocationState();
+    queueMove(moving, target, &state);
+    tr_torrentVerify(next);
+
+    EXPECT_TRUE(pumpUntil([this, next, n_before] { return wasVerified(next, n_before); }, tr::detail::DiskThread::Worker));
+    EXPECT_FALSE(wasVerified(moving, n_before));
+    EXPECT_EQ(TR_LOC_MOVING, state);
+    EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
+
+    EXPECT_TRUE(pumpUntil([this, moving, n_before] { return wasVerified(moving, n_before); }));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    EXPECT_TRUE(blockingRunInSessionThread([moving] { return moving->has_all(); }));
+    EXPECT_EQ(target.sv(), blockingRunInSessionThread([moving] { return std::string{ moving->current_dir().sv() }; }));
+}
+
+// The verify's last step renames files for what it found. It waits for a
+// move queued during the verify, so it renames them where the move put them.
+TEST_F(ThreadlessVerifyTest, aVerifysLastStepWaitsForAMove)
+{
+    auto* const tor = zeroFileInit("one", 1U, tr_torrent_files::PartialFileSuffix);
+    auto const target = tr_pathbuf{ sandboxDir(), "/moved"sv };
+    auto const n_before = verifiedCount();
+
+    startVerify(tor);
+    auto& state = newLocationState();
+    queueMove(tor, target, &state);
+
+    // the verify has read its only piece, and the move hasn't started
+    EXPECT_TRUE(pumpUntil([tor] { return tr_torrentStat(tor).activity != TR_STATUS_CHECK; }, tr::detail::DiskThread::Worker));
+    EXPECT_EQ(n_before, verifiedCount());
+
+    EXPECT_TRUE(pumpUntil([this, n_before] { return verifiedCount() > n_before; }));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    EXPECT_TRUE(tr_sys_path_exists(tr_pathbuf{ target, "/one"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ target, "/one"sv, tr_torrent_files::PartialFileSuffix }));
+}
+
+// With nothing on disk, every piece is missing and there's nothing to read.
+// The workers take no steps here, so a verify that read would never finish.
+TEST_F(ThreadlessVerifyTest, aVerifyWithNoLocalDataReadsNothing)
+{
+    auto* const tor = zeroPiecesTorrentInit("empty", 16384U, 4U);
+    EXPECT_TRUE(blockingTorrentVerify(tor));
+    EXPECT_TRUE(blockingRunInSessionThread([tor] { return tor->has_none(); }));
+}
+
+// A stopped verify leaves its span in flight, and that span's result lands
+// during the next torrent's verify. The stopped torrent's bytes are ones,
+// so the next torrent would fail its pieces if it took that result.
+TEST_F(ThreadlessVerifyTest, aStoppedVerifysSpanLeavesTheNextOneAlone)
+{
+    auto* const stopped = zeroFileInit("stopped", 2U);
+    auto* const next = zeroFileInit("next", 2U);
+    createFileWithContents(tr_torrentFindFile(stopped, 0U), std::string(stopped->total_size(), '\1'));
+    auto const n_before = verifiedCount();
+
+    startVerify(stopped);
+    tr_torrentVerify(next);
+    tr_torrentStop(stopped);
+    EXPECT_TRUE(waitFor([next] { return tr_torrentStat(next).activity == TR_STATUS_CHECK; }, MaxWaitMsec));
+
+    EXPECT_TRUE(pumpUntil([this, next, n_before] { return wasVerified(next, n_before); }, tr::detail::DiskThread::Worker));
+    EXPECT_TRUE(blockingRunInSessionThread([next] { return next->has_all(); }));
+    EXPECT_FALSE(wasVerified(stopped, n_before));
+}
+
+// A verify that waited for a rename doesn't wait for the verify that went in
+// its place to finish. Between that one's spans, the first in line goes on:
+// of two verifies under way, the smaller torrent's.
+TEST_F(ThreadlessVerifyTest, aVerifyThatWaitedForARenameGoesBackFirst)
+{
+    auto* const renamed = zeroFileInit("renamed", 2U);
+    auto* const other = zeroFileInit("other", 8U);
+    auto const n_before = verifiedCount();
+
+    startVerify(renamed);
+    auto done = std::atomic<bool>{};
+    tr_torrentRenamePath(renamed, "renamed"sv, "renamed2"sv, [&done](tr_torrent_id_t, auto, auto, tr_error const& error) {
+        EXPECT_FALSE(error) << error;
+        done = true;
+    });
+    waitForAdminOp(renamed);
+    tr_torrentVerify(other);
+
+    // the renamed torrent's span lands, and the other torrent takes its place
+    EXPECT_TRUE(
+        pumpUntil([other] { return tr_torrentStat(other).activity == TR_STATUS_CHECK; }, tr::detail::DiskThread::Worker));
+
+    // the rename finishes, and the renamed torrent's verify goes on first
+    EXPECT_TRUE(pumpUntil([&done] { return done.load(); }, tr::detail::DiskThread::ShortLane));
+    EXPECT_TRUE(
+        pumpUntil([this, renamed, n_before] { return wasVerified(renamed, n_before); }, tr::detail::DiskThread::Worker));
+    EXPECT_FALSE(wasVerified(other, n_before));
+    EXPECT_TRUE(blockingRunInSessionThread([renamed] { return renamed->has_all(); }));
+
+    EXPECT_TRUE(pumpUntil([this, other, n_before] { return wasVerified(other, n_before); }));
+    EXPECT_TRUE(blockingRunInSessionThread([other] { return other->has_all(); }));
+}
+
+// Small pieces share a span, so each doesn't pay for one: for a turn on a
+// busy disk, and for a trip back to the session thread.
+TEST_F(ThreadlessVerifyTest, aSpanHoldsAsManyPiecesAsFit)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr NPieces = tr::LocalData::max_hash_span_bytes() / PieceSize;
+    auto* const tor = zeroFileInit("small-pieces", NPieces, {}, PieceSize);
+    auto const n_before = verifiedCount();
+    startVerify(tor);
+
+    // the first span holds every piece
+    auto const has_all = blockingRunInSessionThread([this, tor] {
+        readNextSpan();
+        deliver();
+        return tor->has_all();
+    });
+    EXPECT_TRUE(has_all);
+
+    EXPECT_TRUE(pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); }));
+}
+
+// A span of several pieces that can't be read is read again a piece at a
+// time, so the pieces of a file that's there count, though the file after
+// it is missing.
+TEST_F(ThreadlessVerifyTest, aSpanThatCantBeReadIsReadAgainAPieceAtATime)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr FileSize = 2U * PieceSize;
+    auto* const tor = zeroPiecesTorrentInit("one-missing", PieceSize, 4U, { FileSize, FileSize });
+    createFileWithContents(tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(0U) }, std::string(FileSize, '\0'));
+
+    EXPECT_TRUE(pumpVerify(tor));
+    EXPECT_EQ((std::vector{ true, true, false, false }), havePieces(tor));
+}
+
+// A missing file costs one span, however many it would take to read. Each
+// of its pieces is missing, the one it shares with the next file too.
+TEST_F(ThreadlessVerifyTest, aMissingFileCostsOneSpan)
+{
+    static auto constexpr PieceSize = size_t{ 16384U };
+    static auto constexpr SpanSize = tr::LocalData::max_hash_span_bytes();
+    // two spans' worth, and half the piece it shares with the next file
+    static auto constexpr MissingSize = (2U * SpanSize) + (PieceSize / 2U);
+    static auto constexpr PresentSize = SpanSize - (PieceSize / 2U);
+    static auto constexpr NPieces = (MissingSize + PresentSize) / PieceSize;
+    static auto constexpr NMissing = (MissingSize / PieceSize) + 1U;
+
+    auto* const tor = zeroPiecesTorrentInit("one-missing", PieceSize, NPieces, { MissingSize, PresentSize });
+    createFileWithContents(tr_pathbuf{ tor->current_dir().sv(), '/', tor->file_subpath(1U) }, std::string(PresentSize, '\0'));
+
+    // one span finds the file missing, and one reads the rest
+    EXPECT_EQ(2U, countVerifySpans(tor));
+
+    auto expected = std::vector<bool>(NPieces, true);
+    std::fill_n(std::begin(expected), NMissing, false);
+    EXPECT_EQ(expected, havePieces(tor));
+}
+
+// A verify reads each file once, front to back, and opens it for that.
+// It closes the file when it's done, so later reads open it as usual.
+TEST_F(ThreadlessVerifyTest, aVerifyOpensItsFilesForOnePass)
+{
+    auto* const tor = zeroFileInit("one-pass", 2U);
+    auto const n_before = verifiedCount();
+    startVerify(tor);
+
+    // the worker takes the verify's first span, and reads it
+    auto const verify_opened_for_one_pass = blockingRunInSessionThread([this, tor] {
+        readNextSpan();
+        auto const file = session_->openFiles().get(tor->id(), 0U, false);
+        return file && file->is_sequential();
+    });
+    EXPECT_TRUE(verify_opened_for_one_pass);
+
+    EXPECT_TRUE(pumpUntil([this, tor, n_before] { return wasVerified(tor, n_before); }));
+    readFirstFile(tor);
+    auto const read_opened_for_one_pass = blockingRunInSessionThread([this, tor] {
+        auto const file = session_->openFiles().get(tor->id(), 0U, false);
+        return file && file->is_sequential();
+    });
+    EXPECT_FALSE(read_opened_for_one_pass);
 }
 
 } // namespace tr::test

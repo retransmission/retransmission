@@ -41,9 +41,10 @@ public:
     class OpenFile
     {
     public:
-        OpenFile(tr_sys_file_t fd, bool writable) noexcept
+        OpenFile(tr_sys_file_t fd, bool writable, bool sequential) noexcept
             : fd_{ fd }
             , writable_{ writable }
+            , sequential_{ sequential }
         {
         }
 
@@ -61,6 +62,12 @@ public:
         [[nodiscard]] constexpr auto is_writable() const noexcept
         {
             return writable_;
+        }
+
+        // For tests. True if the file was opened for one pass, front to back.
+        [[nodiscard]] constexpr auto is_sequential() const noexcept
+        {
+            return sequential_;
         }
 
         // Hold this around positioned reads and writes.
@@ -83,6 +90,7 @@ public:
     private:
         tr_sys_file_t fd_ = TR_BAD_SYS_FILE;
         bool writable_ = false;
+        bool sequential_ = false;
 
 #ifdef _WIN32
         mutable std::mutex io_mutex_;
@@ -101,6 +109,9 @@ public:
 
     [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
 
+    // Opens the file if it isn't open yet. With `sequential`, the OS is
+    // told that it will be read once, front to back: see
+    // TR_SYS_FILE_SEQUENTIAL. A file that's already open is shared as is.
     [[nodiscard]] Handle get(
         tr_torrent_id_t tor_id,
         tr_file_index_t file_num,
@@ -108,7 +119,8 @@ public:
         std::string_view filename,
         tr_file_preallocation allocation,
         uint64_t file_size,
-        tr_error& error);
+        tr_error& error,
+        bool sequential = false);
 
     // These take the files out of the pool and return the pool's reference
     // to each. A file is closed when its last reference goes, which can

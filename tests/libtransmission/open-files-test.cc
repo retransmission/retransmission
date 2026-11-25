@@ -151,6 +151,26 @@ TEST_F(OpenFilesTest, opensInReadOnlyUnlessWritableIsRequested)
     EXPECT_TRUE(error);
 }
 
+// A file larger than the torrent's may not be the torrent's at all, such
+// as another file of the same name in a folder that a verify looks in.
+TEST_F(OpenFilesTest, onlyAWritableOpenCutsATooLargeFileToSize)
+{
+    auto error = tr_error{};
+    static auto constexpr Contents = "Hello, World!\n"sv;
+    static auto constexpr TorrentFileSize = uint64_t{ 5U };
+    auto const filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
+    createFileWithContents(filename, Contents);
+
+    auto files = tr_open_files{};
+    auto const file = files.get(0, 0, false, filename, tr_file_preallocation::None, TorrentFileSize, error);
+    ASSERT_TRUE(file) << error;
+    EXPECT_FALSE(file->is_writable());
+    EXPECT_EQ(std::size(Contents), tr_sys_path_get_info(filename)->size);
+
+    EXPECT_TRUE(files.get(0, 0, true, filename, tr_file_preallocation::None, TorrentFileSize, error)) << error;
+    EXPECT_EQ(TorrentFileSize, tr_sys_path_get_info(filename)->size);
+}
+
 TEST_F(OpenFilesTest, createsMissingFileIfWriteRequested)
 {
     auto error = tr_error{};

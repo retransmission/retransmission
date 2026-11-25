@@ -292,7 +292,7 @@ def thread_cpu_delta(before, after, seconds):
 
 # A thread that ran one of these scopes has that role; earlier entries win.
 THREAD_ROLES = [("peer.bandwidth_pulse", "session"), ("storage.write_run", "disk worker"),
-                ("storage.test_piece", "disk worker"), ("verify.torrent", "verify")]
+                ("storage.test_piece", "disk worker"), ("storage.hash_span", "disk worker")]
 
 
 def thread_roles(profile):

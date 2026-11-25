@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cerrno> // errno, ENOSPC, ENOSYS
 #include <chrono>
 #include <condition_variable>
@@ -16,10 +17,12 @@
 #include <memory>
 #include <mutex> // std::once_flag()
 #include <optional>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <system_error>
 #include <thread>
+#include <tuple> // std::ignore
 #include <utility>
 #include <vector>
 
@@ -123,12 +126,12 @@ inline bool waitFor(
     return false;
 }
 
-// On a tr::LocalData started threadless, does the disk work that is
-// waiting, then delivers its callbacks. What those enqueue waits for the
-// next call.
-inline void runThreadlessDiskIo(tr::LocalData& local_data)
+// On a tr::LocalData started threadless, does the disk work waiting on
+// the threads of `which`, then delivers its callbacks. What those enqueue
+// waits for the next call.
+inline void runThreadlessDiskIo(tr::LocalData& local_data, tr::detail::DiskThread const which = tr::detail::DiskThread::Any)
 {
-    while (tr::detail::step(local_data)) {
+    while (tr::detail::step(local_data, which)) {
     }
     tr::detail::deliver(local_data);
 }
@@ -382,21 +385,14 @@ protected:
         return session_->peer_mgr_.get();
     }
 
-    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
+    [[nodiscard]] virtual tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
-        auto verified_lock = std::unique_lock(verified_mutex_);
-        auto const n_previously_verified = std::size(verified_);
-
+        auto const n_before = verifiedCount();
         auto* const tor = tr_torrentNew(builder, nullptr);
         EXPECT_NE(nullptr, tor);
-        if (tor == nullptr) {
-            return nullptr;
+        if (tor != nullptr) {
+            std::ignore = waitForVerify(tor, n_before);
         }
-
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
-        };
-        verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
         return tor;
     }
 
@@ -493,19 +489,39 @@ protected:
         return createTorrentAndWaitForVerifyDone(&builder);
     }
 
-    void blockingTorrentVerify(tr_torrent* tor)
+    // True once `tor`'s verify has finished.
+    bool blockingTorrentVerify(tr_torrent* tor)
     {
         EXPECT_NE(nullptr, tor->session);
         EXPECT_FALSE(tor->session->am_in_session_thread());
 
-        auto verified_lock = std::unique_lock(verified_mutex_);
-
-        auto const n_previously_verified = std::size(verified_);
-        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified] {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
-        };
+        auto const n_before = verifiedCount();
         tr_torrentVerify(tor);
-        verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
+        return waitForVerify(tor, n_before);
+    }
+
+    // How many verifies have finished, for waitForVerify() to wait past.
+    [[nodiscard]] size_t verifiedCount()
+    {
+        auto const lock = std::scoped_lock{ verified_mutex_ };
+        return std::size(verified_);
+    }
+
+    // Waits for `tor`'s verify to finish, after the first `n_before`.
+    [[nodiscard]] bool waitForVerify(tr_torrent const* const tor, size_t const n_before)
+    {
+        auto lock = std::unique_lock{ verified_mutex_ };
+        return verified_cv_.wait_for(lock, 20s, [this, tor_id = tor->id(), n_before] {
+            return std::size(verified_) > n_before && verified_.back() == tor_id;
+        });
+    }
+
+    // True if `tor` finished a verify after the first `n_before`.
+    [[nodiscard]] bool wasVerified(tr_torrent const* const tor, size_t const n_before)
+    {
+        auto const lock = std::scoped_lock{ verified_mutex_ };
+        auto const after = std::views::drop(verified_, n_before);
+        return std::ranges::find(after, tor->id()) != std::ranges::end(after);
     }
 
     // Runs `func` on the session thread and waits for it to finish and returns the result.

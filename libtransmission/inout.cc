@@ -97,11 +97,14 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     return true;
 }
 
-// Returns a RAII reference to the open file.
+// Returns a RAII reference to the open file. A file that isn't open yet is
+// opened to write if `writable`, and for one pass, front to back, if
+// `sequential`.
 [[nodiscard]] tr_open_files::Handle get_file(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     bool const writable,
+    bool const sequential,
     tr_file_index_t const file_index,
     tr_error& error)
 {
@@ -117,7 +120,7 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     auto const prealloc = writable && desc.files_wanted.test(file_index) ? desc.preallocation : tr_file_preallocation::None;
     if (auto const found = desc.find(file_index)) {
         auto const filename = found->filename<tr_pathbuf>();
-        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error); file) {
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, sequential); file) {
             return file;
         }
 
@@ -130,7 +133,7 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     else if (writable) {
         auto const suffix = desc.partial_file_naming ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ desc.current_dir, '/', desc.files.path(file_index), suffix };
-        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error); file) {
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, sequential); file) {
             return file;
         }
     }
@@ -159,6 +162,7 @@ void read_bytes(
     tr_file_index_t const file_index,
     uint64_t const file_offset,
     std::span<uint8_t> const buf,
+    bool const verify,
     tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
@@ -169,15 +173,22 @@ void read_bytes(
         return;
     }
 
-    auto const file = get_file(desc, open_files, false, file_index, error);
+    auto const file = get_file(desc, open_files, false /*writable*/, verify /*sequential*/, file_index, error);
     if (!file || error) {
+        // get_file() names the file in `error`. A missing file is left to
+        // the caller, which sees ENOENT: a verify counts the piece missing.
+        if (!verify && !error.is_enoent()) {
+            tr_logAddError(
+                fmt::format("{error} ({error_code})", fmt::arg("error", error.message()), fmt::arg("error_code", error.code())),
+                desc.name);
+        }
         return;
     }
 
     auto const io_lock = file->io_lock();
     read_entire_buf(file->fd(), file_offset, buf, error);
 
-    if (error) {
+    if (error && !verify) {
         tr_logAddError(
             fmt::format(
                 "Couldn't read '{path}': {error} ({error_code})",
@@ -204,7 +215,7 @@ void write_bytes(
         return;
     }
 
-    auto const file = get_file(desc, open_files, true, file_index, error);
+    auto const file = get_file(desc, open_files, true /*writable*/, false /*sequential*/, file_index, error);
     if (!file || error) {
         return;
     }
@@ -229,7 +240,8 @@ tr_error tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
-    std::span<uint8_t> const setme)
+    std::span<uint8_t> const setme,
+    bool const verify)
 {
     TR_PROFILE_SCOPE("disk.read_block");
     if (std::empty(setme)) {
@@ -246,7 +258,7 @@ tr_error tr_ioRead(
         begin,
         std::size(setme),
         [&](tr_file_index_t const file_index, uint64_t const file_offset, uint64_t const done, uint64_t const n_bytes) {
-            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), error);
+            read_bytes(desc, open_files, file_index, file_offset, setme.subspan(done, n_bytes), verify, error);
             return !error;
         });
 
