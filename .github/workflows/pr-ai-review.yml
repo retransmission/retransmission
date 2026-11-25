@@ -192,7 +192,7 @@ jobs:
   # hides the summaries of earlier rounds as outdated.
   finish-round:
     needs: review
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: write
       pull-requests: write
