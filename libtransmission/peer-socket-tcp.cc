@@ -79,9 +79,10 @@ namespace
 #ifndef _WIN32
 // Whether the socket's local address is on a network card. A card coalesces arrivals, so by the
 // first wakeup a block is usually whole: SO_RCVLOWAT saves no wakeups there and costs a setsockopt()
-// per block. A tunnel such as OpenVPN or WireGuard is a point-to-point interface that hands over a
-// packet or two per wakeup, and so does loopback when tc limits it. Any other interface is taken
-// for a card, or a bridge onto one.
+// per block. A tunnel such as OpenVPN or WireGuard is a point-to-point interface that can hand over
+// a packet per wakeup, and so can loopback when tc limits it. Any other interface is taken for a
+// card, or a bridge onto one. When the address can't be looked up, the answer is no, so the
+// socket keeps the mark.
 [[nodiscard]] bool is_on_network_card(tr_socket_t const sock)
 {
     auto local = sockaddr_storage{};

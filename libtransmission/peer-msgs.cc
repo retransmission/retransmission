@@ -2035,10 +2035,10 @@ ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
         *piece += n_piece_bytes_read;
     }
 
-    // On a tunnel a block arrives a packet or two per wakeup; the socket
+    // Through a tunnel a block can arrive a packet per wakeup; the socket
     // skips the mark on a network card, where it is usually whole. Waiting
     // for the rest costs no latency, since the block is useless until it's
-    // whole. After an error no block is coming, so wake for anything.
+    // whole. After an error no message is in progress, so wake for anything.
     io->set_read_low_watermark(ret == ReadState::Err ? 1U : msgs->bytes_left_in_block(*io));
 
     // If we received piece data, then we might have quota to request new blocks
