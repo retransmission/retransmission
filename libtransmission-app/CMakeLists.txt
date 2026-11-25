@@ -21,6 +21,9 @@ target_sources(${LIBNAME}
         interop-names.h
         interop.cc
         interop.h
+        keyed-rows.h
+        peer-list.cc
+        peer-list.h
         prefs.cc
         prefs.h
         rpc-client.cc

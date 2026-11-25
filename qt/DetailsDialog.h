@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <map>
 #include <span>
 #include <unordered_set>
 #include <utility>
@@ -15,6 +14,8 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
+#include <libtransmission-app/keyed-rows.h>
+#include <libtransmission-app/peer-list.h>
 #include <libtransmission-app/session.h>
 #include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
@@ -142,7 +143,7 @@ private:
     TrackerModelFilter* tracker_filter_ = {};
     TrackerDelegate* tracker_delegate_ = {};
 
-    std::map<QString, PeerItem*> peers_;
+    tr::app::KeyedRows<tr::app::PeerKey, PeerItem*> peers_;
 
     QIcon const icon_encrypted_ = QIcon{ QStringLiteral(":/icons/encrypted.svg") };
 

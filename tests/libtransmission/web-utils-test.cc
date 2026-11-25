@@ -234,6 +234,24 @@ TEST_F(WebUtilsTest, urlQueryEntries)
     EXPECT_EQ(end, it);
 }
 
+TEST_F(WebUtilsTest, addressSortKey)
+{
+    EXPECT_FALSE(tr_addressSortKey(""sv));
+    EXPECT_FALSE(tr_addressSortKey("example.com"sv));
+    EXPECT_EQ(tr_addressSortKey("10.0.0.1"sv), tr_addressSortKey("10.0.0.1"sv));
+
+    // IPv4 before IPv6, each in numeric order, not text order
+    static auto constexpr Sorted = std::array{
+        "9.0.0.1"sv, "10.0.0.1"sv, "10.0.0.20"sv, "255.255.255.255"sv, "::"sv, "::1"sv, "2001:db8::1"sv, "2001:db8::a"sv,
+    };
+    for (size_t i = 1; i < std::size(Sorted); ++i) {
+        auto const lo = tr_addressSortKey(Sorted[i - 1]);
+        auto const hi = tr_addressSortKey(Sorted[i]);
+        ASSERT_TRUE(lo && hi);
+        EXPECT_LT(*lo, *hi) << Sorted[i - 1] << " vs " << Sorted[i];
+    }
+}
+
 TEST_F(WebUtilsTest, urlIsValid)
 {
     EXPECT_FALSE(tr_urlIsValid("hello world"sv));
