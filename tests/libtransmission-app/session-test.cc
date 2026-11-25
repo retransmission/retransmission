@@ -777,7 +777,8 @@ TEST_F(AppSessionRpcTest, verbsWithNoIdsSendNothing)
     session_.rename_torrent_path({}, "old", "new");
 
     auto done = size_t{};
-    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag /*tag*/) { ++done; });
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [&done](Session::Tag /*tag*/, Session::SetResult const& /*result*/) { ++done; });
     EXPECT_EQ(Session::Tag{}, session_.set_torrents({}, TR_KEY_peer_limit, 7));
 
     EXPECT_TRUE(loop_.quiet_for(50ms));
@@ -1381,18 +1382,23 @@ TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagAfterTheReFetchLands)
     auto const id = add_torrent(Debian);
 
     auto done = std::vector<Session::Tag>{};
+    auto result = Session::SetResult{};
     auto peer_limit_at_done = std::optional<uint16_t>{};
-    auto const tag = session_.torrent_set_done.connect_scoped([this, id, &done, &peer_limit_at_done](Session::Tag const set) {
-        done.push_back(set);
-        if (auto const* const tor = session_.torrents().find(id); tor != nullptr) {
-            peer_limit_at_done = tor->peer_limit();
-        }
-    });
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [this, id, &done, &result, &peer_limit_at_done](Session::Tag const set, Session::SetResult const& set_result) {
+            done.push_back(set);
+            result = set_result;
+            if (auto const* const tor = session_.torrents().find(id); tor != nullptr) {
+                peer_limit_at_done = tor->peer_limit();
+            }
+        });
 
     auto const set = session_.set_torrents({ id, id }, TR_KEY_peer_limit, 7);
     EXPECT_NE(Session::Tag{}, set);
     ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
     EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_TRUE(result.success);
+    EXPECT_EQ(""sv, result.errmsg);
     EXPECT_EQ(7U, peer_limit_at_done);
 }
 
@@ -1401,7 +1407,8 @@ TEST_F(AppSessionRpcTest, setTorrentsIssuesADistinctTagPerCall)
     auto const id = add_torrent(Debian);
 
     auto done = std::vector<Session::Tag>{};
-    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [&done](Session::Tag const set, Session::SetResult const& /*result*/) { done.push_back(set); });
 
     auto const first = session_.set_torrents({ id }, TR_KEY_peer_limit, 7);
     auto const second = session_.set_torrents({ id }, TR_KEY_peer_limit, 8);
@@ -1421,7 +1428,12 @@ TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagOnFailure)
     auto const id = add_torrent(Debian);
 
     auto done = std::vector<Session::Tag>{};
-    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+    auto result = Session::SetResult{ .errmsg = {}, .success = true, .network_error = false };
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [&done, &result](Session::Tag const set, Session::SetResult const& set_result) {
+            done.push_back(set);
+            result = set_result;
+        });
 
     // file indices must be integers
     auto params = tr_variant::Map{ 1U };
@@ -1430,8 +1442,26 @@ TEST_F(AppSessionRpcTest, setTorrentsFiresItsTagOnFailure)
 
     ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
     EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_FALSE(result.success);
+    EXPECT_FALSE(std::empty(result.errmsg));
+    EXPECT_FALSE(result.network_error);
     EXPECT_TRUE(loop_.quiet_for(50ms));
     EXPECT_EQ(0U, session_.torrents().size());
+}
+
+TEST_F(AppSessionRpcTest, setTorrentsReportsAnInvalidTrackerList)
+{
+    auto const id = add_torrent(Debian);
+
+    auto results = std::vector<Session::SetResult>{};
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [&results](Session::Tag /*set*/, Session::SetResult const& result) { results.push_back(result); });
+
+    std::ignore = session_.set_torrents({ id }, TR_KEY_tracker_list, "not a url"s);
+
+    ASSERT_TRUE(loop_.pump_until([&results] { return !std::empty(results); }));
+    EXPECT_FALSE(results.front().success);
+    EXPECT_FALSE(results.front().network_error);
 }
 
 TEST_F(AppSessionRpcTest, setTorrentsAfterStopFiresItsTag)
@@ -1439,13 +1469,20 @@ TEST_F(AppSessionRpcTest, setTorrentsAfterStopFiresItsTag)
     auto const id = add_torrent(Debian);
 
     auto done = std::vector<Session::Tag>{};
-    auto const tag = session_.torrent_set_done.connect_scoped([&done](Session::Tag const set) { done.push_back(set); });
+    auto result = Session::SetResult{ .errmsg = {}, .success = true, .network_error = false };
+    auto const tag = session_.torrent_set_done.connect_scoped(
+        [&done, &result](Session::Tag const set, Session::SetResult const& set_result) {
+            done.push_back(set);
+            result = set_result;
+        });
 
     auto const set = session_.set_torrents({ id }, TR_KEY_peer_limit, 7);
     rpc_.stop();
 
     ASSERT_TRUE(loop_.pump_until([&done] { return !std::empty(done); }));
     EXPECT_EQ(std::vector{ set }, done);
+    EXPECT_FALSE(result.success);
+    EXPECT_TRUE(result.network_error);
     EXPECT_TRUE(loop_.quiet_for(50ms));
     EXPECT_EQ(0U, session_.torrents().size());
 }

@@ -65,7 +65,7 @@ private:
     void initFilesTab() const;
     void initOptionsTab();
 
-    void onTorrentSetDone(tr::app::Session::Tag tag);
+    void onTorrentSetDone(tr::app::Session::Tag tag, tr::app::Session::SetResult const& result);
 
     // refreshUI() once the debounce interval passes, unless one is already due
     void scheduleRefreshUI();
