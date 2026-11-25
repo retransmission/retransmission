@@ -581,6 +581,8 @@ private:
 };
 #else
 // No batched sends here: sendto_soon() always falls back to sendto().
+// TODO: Windows 10 version 2004 and later can segment sends as UDP_SEGMENT does on Linux,
+// with UDP_SEND_MSG_SIZE (WSASetUdpSendMessageSize()) and WSASendMsg().
 class tr_session::tr_udp_core::SendQueue
 {
 public:
