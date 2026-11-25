@@ -13,10 +13,15 @@
 #include <netinet/tcp.h> // TCP_CONGESTION
 #endif
 
+#ifdef __linux__
+#include <sys/utsname.h>
+#endif
+
 #include <algorithm> // std::clamp, std::max
 #include <memory> // std::unique_ptr
 #include <optional>
-#include <utility> // std::cmp_equal
+#include <string_view>
+#include <utility> // std::cmp_equal, std::pair
 
 #include <event2/event.h>
 
@@ -28,6 +33,7 @@
 #include "libtransmission/net.h"
 #include "libtransmission/session.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/utils.h" // tr_num_parse()
 #include "libtransmission/utils-ev.h"
 
 #define tr_logAddWarnSock(sock, msg) tr_logAddWarn(msg, (sock)->display_name())
@@ -114,6 +120,33 @@ namespace
     }
 
     return false;
+}
+
+// Whether the kernel's TCP wakes a reader waiting for SO_RCVLOWAT without stalling the sender.
+// Before Linux 4.18 it delayed ACKs while the mark was unmet, so the sender stalled until the
+// delayed-ACK timer fired (796f82eafcd9 "tcp: fix delayed acks behavior for SO_RCVLOWAT").
+[[nodiscard]] bool kernel_handles_read_low_watermark()
+{
+#ifdef __linux__
+    static bool const handles = [] {
+        auto name = utsname{};
+        if (uname(&name) != 0) {
+            return false;
+        }
+
+        auto remainder = std::string_view{ name.release };
+        auto const major = tr_num_parse<int>(remainder, &remainder);
+        if (!major || !remainder.starts_with('.')) {
+            return false;
+        }
+        remainder.remove_prefix(1);
+        auto const minor = tr_num_parse<int>(remainder, &remainder);
+        return minor && std::pair{ *major, *minor } >= std::pair{ 4, 18 };
+    }();
+    return handles;
+#else
+    return true;
+#endif
 }
 #endif
 
@@ -304,7 +337,10 @@ public:
         // Winsock doesn't let SO_RCVLOWAT be set.
 #ifndef _WIN32
         if (n_bytes > 1U && !max_read_low_watermark_) {
-            if (is_on_network_card(sock_)) {
+            if (!kernel_handles_read_low_watermark()) {
+                tr_logAddTraceSock(this, "Not setting SO_RCVLOWAT: the kernel holds back ACKs while it is unmet");
+                max_read_low_watermark_ = 1;
+            } else if (is_on_network_card(sock_)) {
                 tr_logAddTraceSock(this, "Not setting SO_RCVLOWAT: the connection is on a network card");
                 max_read_low_watermark_ = 1;
             } else {
