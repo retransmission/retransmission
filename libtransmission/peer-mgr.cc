@@ -522,6 +522,11 @@ public:
         --stats.peer_count;
         --stats.peer_from_count[peer_info->from_first()];
 
+        // rechokeUploads() picks a new optimistic peer only when there is none.
+        if (optimistic == peer.get()) {
+            optimistic = nullptr;
+        }
+
         if (auto const iter = std::ranges::find(peers, peer); iter != std::ranges::end(peers)) {
             peers.erase(iter);
             TR_ASSERT(stats.peer_count == peerCount());
