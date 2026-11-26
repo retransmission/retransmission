@@ -142,24 +142,6 @@ bool handle_packet(
 auto constexpr DatagramBufferSize = size_t{ 65536U };
 
 #ifdef UDP_COALESCED_INFO
-// Stands in for WSARecvMsg() where Winsock does not provide it; it reads no control data.
-int WSAAPI recvmsg_without_control(
-    SOCKET const s,
-    WSAMSG* const msg,
-    DWORD* const n_read,
-    LPWSAOVERLAPPED /*overlapped*/,
-    LPWSAOVERLAPPED_COMPLETION_ROUTINE /*completion_routine*/)
-{
-    auto const n = recvfrom(s, msg->lpBuffers->buf, static_cast<int>(msg->lpBuffers->len), 0, msg->name, &msg->namelen);
-    if (n == SOCKET_ERROR) {
-        return SOCKET_ERROR;
-    }
-    *n_read = static_cast<DWORD>(n);
-    msg->Control.len = 0;
-    msg->dwFlags = 0;
-    return 0;
-}
-
 // WSARecvMsg() is reachable only through a pointer that Winsock hands out per socket.
 // Every socket of the TCP/IP stack hands out the same one.
 LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
@@ -178,7 +160,7 @@ LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
             &bytes,
             nullptr,
             nullptr);
-        return err == 0 && ptr != nullptr ? ptr : recvmsg_without_control;
+        return err == 0 ? ptr : nullptr;
     }();
     return fn;
 }
@@ -193,7 +175,7 @@ void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
     (void)setsockopt(sock, IPPROTO_UDP, UDP_GRO, &on, sizeof(on));
 #elif defined(UDP_COALESCED_INFO)
     // Windows before 10 version 2004 refuses the option and keeps datagrams apart.
-    if (wsa_recvmsg(sock) != recvmsg_without_control) {
+    if (wsa_recvmsg(sock) != nullptr) {
         DWORD const max_size = DatagramBufferSize - 1U;
         (void)setsockopt(
             sock,
@@ -235,6 +217,29 @@ bool handle_read(
         }
     }
     return got_utp_packet;
+}
+#endif
+
+#ifndef HAVE_RECVMMSG
+// Reads every pending datagram, one per recvfrom() call; returns true if any was a µTP packet.
+bool read_datagrams_one_at_a_time(evutil_socket_t const s, tr_session* const session)
+{
+    // On the heap: see the recvmmsg() version of read_datagrams()
+    thread_local auto const heap_buf = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
+    auto& buf = *heap_buf;
+    auto got_utp_packet = false;
+
+    for (;;) {
+        auto from = sockaddr_storage{};
+        auto fromlen = socklen_t{ sizeof(from) };
+        auto* const from_sa = reinterpret_cast<sockaddr*>(&from);
+        auto const n_read = recvfrom(s, reinterpret_cast<char*>(std::data(buf)), std::size(buf) - 1, 0, from_sa, &fromlen);
+        if (n_read <= 0) {
+            return got_utp_packet;
+        }
+
+        got_utp_packet |= handle_packet(session, std::data(buf), static_cast<size_t>(n_read), from_sa, fromlen);
+    }
 }
 #endif
 
@@ -315,10 +320,14 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 // Reads every pending datagram; returns true if any was a µTP packet.
 bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 {
+    auto* const recvmsg = wsa_recvmsg(s);
+    if (recvmsg == nullptr) {
+        return read_datagrams_one_at_a_time(s, session);
+    }
+
     // On the heap: see the recvmmsg() version of read_datagrams()
     thread_local auto const heap_buf = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
     auto& buf = *heap_buf;
-    auto* const recvmsg = wsa_recvmsg(s);
     auto got_utp_packet = false;
 
     for (;;) {
@@ -357,22 +366,7 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 // Reads every pending datagram; returns true if any was a µTP packet.
 bool read_datagrams(evutil_socket_t const s, tr_session* const session)
 {
-    // On the heap: see the recvmmsg() version of read_datagrams()
-    thread_local auto const heap_buf = std::make_unique<std::array<unsigned char, DatagramBufferSize>>();
-    auto& buf = *heap_buf;
-    auto got_utp_packet = false;
-
-    for (;;) {
-        auto from = sockaddr_storage{};
-        auto fromlen = socklen_t{ sizeof(from) };
-        auto* const from_sa = reinterpret_cast<sockaddr*>(&from);
-        auto const n_read = recvfrom(s, reinterpret_cast<char*>(std::data(buf)), std::size(buf) - 1, 0, from_sa, &fromlen);
-        if (n_read <= 0) {
-            return got_utp_packet;
-        }
-
-        got_utp_packet |= handle_packet(session, std::data(buf), static_cast<size_t>(n_read), from_sa, fromlen);
-    }
+    return read_datagrams_one_at_a_time(s, session);
 }
 #endif
 
