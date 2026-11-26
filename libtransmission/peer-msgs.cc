@@ -783,8 +783,6 @@ private:
     uint8_t ut_metadata_id_ = 0;
     uint8_t ut_holepunch_id_ = 0;
 
-    tr_port dht_port_;
-
     tr_torrent& tor_;
 
     std::shared_ptr<tr_peerIo> const io_;
@@ -1667,8 +1665,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
             auto const hport = payload.to_uint16();
             if (auto const dht_port = tr_port::from_host(hport); !std::empty(dht_port)) {
-                dht_port_ = dht_port;
-                session->maybe_add_dht_node(io_->address(), dht_port_);
+                session->maybe_add_dht_node(io_->address(), dht_port);
             }
         }
         break;
