@@ -25,6 +25,7 @@ target_sources(libtransmission-app-test
 		torrent-test.cc
 		tracker-status-test.cc
 		trash-test.cc
+		uniform-value-test.cc
 		watch-dir-test.cc)
 
 set_property(

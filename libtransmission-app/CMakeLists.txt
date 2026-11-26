@@ -49,6 +49,7 @@ target_sources(${LIBNAME}
         tracker-status.h
         trash.cc
         trash.h
+        uniform-value.h
         watch-dir.cc
         watch-dir.h)
 
