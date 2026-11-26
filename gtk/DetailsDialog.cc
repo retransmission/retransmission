@@ -65,6 +65,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath> // std::llround(), std::pow()
 #include <compare>
 #include <cstddef>
 #include <cstdint>
@@ -265,22 +266,12 @@ void set_togglebutton_if_different(Gtk::CheckButton* toggle, sigc::connection& t
     }
 }
 
-void set_int_spin_if_different(Gtk::SpinButton* spin, sigc::connection& tag, int value)
+// compares at the precision that the spin shows
+void set_spin_if_different(Gtk::SpinButton* const spin, sigc::connection& tag, double const value)
 {
-    int const currentValue = spin->get_value_as_int();
+    auto const scale = std::pow(10.0, spin->get_digits());
 
-    if (currentValue != value) {
-        tag.block();
-        spin->set_value(value);
-        tag.unblock();
-    }
-}
-
-void set_double_spin_if_different(Gtk::SpinButton* spin, sigc::connection& tag, double value)
-{
-    double const currentValue = spin->get_value();
-
-    if (static_cast<int>(currentValue * 100) != static_cast<int>(value * 100)) {
+    if (std::llround(spin->get_value() * scale) != std::llround(value * scale)) {
         tag.block();
         spin->set_value(value);
         tag.unblock();
@@ -342,33 +333,27 @@ void DetailsDialog::Impl::refreshOptions()
         down_limited_check_,
         down_limited_check_tag_,
         uniform_value(torrents, &Torrent::download_limited).value_or(false));
-    set_int_spin_if_different(
-        down_limit_spin_,
-        down_limit_spin_tag_,
-        static_cast<int>(first.download_limit().count(Speed::Units::KByps)));
+    set_spin_if_different(down_limit_spin_, down_limit_spin_tag_, first.download_limit().count(Speed::Units::KByps));
 
     set_togglebutton_if_different(
         up_limited_check_,
         up_limited_check_tag_,
         uniform_value(torrents, &Torrent::upload_limited).value_or(false));
-    set_int_spin_if_different(
-        up_limit_sping_,
-        up_limit_spin_tag_,
-        static_cast<int>(first.upload_limit().count(Speed::Units::KByps)));
+    set_spin_if_different(up_limit_sping_, up_limit_spin_tag_, first.upload_limit().count(Speed::Units::KByps));
 
     set_combo_enum(bandwidth_combo_, bandwidth_combo_tag_, uniform_value(torrents, &Torrent::bandwidth_priority));
 
     auto const ratio_mode = uniform_value(torrents, &Torrent::seed_ratio_mode);
     set_combo_enum(ratio_combo_, ratio_combo_tag_, ratio_mode);
     gtr_widget_set_visible(*ratio_spin_, ratio_mode == TR_RATIOLIMIT_SINGLE);
-    set_double_spin_if_different(ratio_spin_, ratio_spin_tag_, first.seed_ratio_limit());
+    set_spin_if_different(ratio_spin_, ratio_spin_tag_, first.seed_ratio_limit());
 
     auto const idle_mode = uniform_value(torrents, &Torrent::seed_idle_mode);
     set_combo_enum(idle_combo_, idle_combo_tag_, idle_mode);
     gtr_widget_set_visible(*idle_spin_, idle_mode == TR_IDLELIMIT_SINGLE);
-    set_int_spin_if_different(idle_spin_, idle_spin_tag_, first.seed_idle_limit());
+    set_spin_if_different(idle_spin_, idle_spin_tag_, first.seed_idle_limit());
 
-    set_int_spin_if_different(max_peers_spin_, max_peers_spin_tag_, first.peer_limit());
+    set_spin_if_different(max_peers_spin_, max_peers_spin_tag_, first.peer_limit());
 }
 
 void DetailsDialog::Impl::on_set_done(Session::Tag const tag, Session::SetResult const& /*result*/)
@@ -422,6 +407,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         gtr_widget_set_visible(*ratio_spin_, mode == TR_RATIOLIMIT_SINGLE);
     });
     ratio_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, 1000, .05));
+    ratio_spin_->set_digits(2);
     ratio_spin_->set_width_chars(7);
     ratio_spin_tag_ = ratio_spin_->signal_value_changed().connect(
         [this] { set_option(TR_KEY_seed_ratio_limit, ratio_spin_->get_value()); });
