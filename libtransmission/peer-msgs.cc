@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
-#include <cerrno>
 #include <cstddef>
 #include <cstdint> // uint8_t, uint32_t, int64_t
 #include <ctime>
@@ -56,10 +55,6 @@
 #include "libtransmission/version.h"
 
 struct tr_error;
-
-#ifndef EBADMSG
-#define EBADMSG EINVAL
-#endif
 
 using namespace std::literals;
 
