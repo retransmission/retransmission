@@ -176,11 +176,6 @@ protected:
         user_agent_ = std::move(val);
     }
 
-    constexpr void set_peer_id(tr_peer_id_t val) noexcept
-    {
-        peer_id_ = val;
-    }
-
 public:
     std::shared_ptr<tr_peer_info> const peer_info;
 
@@ -191,7 +186,7 @@ private:
     // Derived from the `v` string in LTEP's handshake dictionary, when available.
     tr::shared_string user_agent_;
 
-    tr_peer_id_t peer_id_;
+    tr_peer_id_t const peer_id_;
 
     bool const connection_is_encrypted_;
     bool const connection_is_incoming_;
