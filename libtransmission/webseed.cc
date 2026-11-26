@@ -277,6 +277,11 @@ public:
         }
     }
 
+    void request_more_blocks() override
+    {
+        on_idle();
+    }
+
     void on_idle()
     {
         if (is_banned_) {

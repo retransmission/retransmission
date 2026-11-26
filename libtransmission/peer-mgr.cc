@@ -2585,20 +2585,43 @@ namespace bandwidth_helpers
 {
 // Shuffled, so no peer is always first to claim the bandwidth or the
 // disk write budget.
-[[nodiscard]] auto shuffled_peers(tr_peerMgr const* const mgr, bool const downloading_only)
+template<typename Peer>
+void shuffle(small::vector<Peer*, TrDefaultPeerLimitGlobal>& peers)
+{
+    thread_local auto urbg = tr_urbg<size_t>{};
+    std::ranges::shuffle(peers, urbg);
+}
+
+[[nodiscard]] auto shuffled_peers(tr_peerMgr const* const mgr)
 {
     auto peers = small::vector<tr_peerMsgs*, TrDefaultPeerLimitGlobal>{};
     for (auto* const tor : mgr->torrents_) {
-        if (downloading_only && tor->is_done()) {
-            continue;
-        }
-
         std::ranges::transform(tor->swarm->peers, std::back_inserter(peers), [](auto const& p) { return p.get(); });
     }
 
-    thread_local auto urbg = tr_urbg<size_t>{};
-    std::ranges::shuffle(peers, urbg);
+    shuffle(peers);
     return peers;
+}
+
+// The peers and webseeds that may request blocks.
+[[nodiscard]] auto shuffled_requesters(tr_peerMgr const* const mgr)
+{
+    auto requesters = small::vector<tr_peer*, TrDefaultPeerLimitGlobal>{};
+    auto const get = [](auto const& p) -> tr_peer* {
+        return p.get();
+    };
+    for (auto* const tor : mgr->torrents_) {
+        // A finished torrent's peers can never request.
+        if (tor->is_done()) {
+            continue;
+        }
+
+        std::ranges::transform(tor->swarm->peers, std::back_inserter(requesters), get);
+        std::ranges::transform(tor->swarm->webseeds, std::back_inserter(requesters), get);
+    }
+
+    shuffle(requesters);
+    return requesters;
 }
 } // namespace bandwidth_helpers
 } // namespace
@@ -2607,10 +2630,9 @@ void tr_peerMgrRefillRequests(tr_peerMgr* const manager)
 {
     using namespace bandwidth_helpers;
 
-    // A finished torrent's peers can never request, and clients wait on
-    // the session lock during this pass.
-    for (auto* const peer : shuffled_peers(manager, true)) {
-        peer->request_more_blocks();
+    // Clients wait on the session lock during this pass.
+    for (auto* const requester : shuffled_requesters(manager)) {
+        requester->request_more_blocks();
     }
 }
 
@@ -2641,7 +2663,7 @@ void tr_peerMgr::bandwidth_pulse()
 
     auto const lock = unique_lock();
 
-    for (auto* const peer : shuffled_peers(this, false)) {
+    for (auto* const peer : shuffled_peers(this)) {
         peer->pulse();
     }
 

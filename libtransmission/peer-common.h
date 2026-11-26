@@ -240,6 +240,9 @@ struct tr_peer {
 
     virtual void request_blocks(tr_block_span_t const* block_spans, size_t n_spans) = 0;
 
+    // Request blocks up to the desired count, if we may download from this peer.
+    virtual void request_more_blocks() = 0;
+
     virtual void maybe_cancel_block_request(tr_block_index_t /*block*/)
     {
     }

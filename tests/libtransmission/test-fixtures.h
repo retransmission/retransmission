@@ -396,6 +396,12 @@ protected:
         session_->requests_deferred_ = false;
     }
 
+    // What a finished disk write does. Session thread only.
+    void resumeDeferredRequests()
+    {
+        session_->resume_deferred_requests();
+    }
+
     [[nodiscard]] virtual tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto const n_before = verifiedCount();

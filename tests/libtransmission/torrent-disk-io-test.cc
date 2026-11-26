@@ -182,6 +182,10 @@ public:
         }
     }
 
+    void request_more_blocks() override
+    {
+    }
+
     void ban() override
     {
         clear_active_requests();
@@ -225,6 +229,10 @@ public:
     }
 
     void request_blocks(tr_block_span_t const* /*spans*/, size_t /*n_spans*/) override
+    {
+    }
+
+    void request_more_blocks() override
     {
     }
 
@@ -1767,6 +1775,46 @@ TEST_F(RequestBudgetTest, aWebseedWithBlocksRequestedSendsToUs)
     auto* const tor = startBudgetTorrent("senders-webseed.bin", server->url());
     EXPECT_TRUE(waitFor([this]() { return senderCount() == 1U; }, MaxWaitMsec));
     blockingRunInSessionThread([tor] { tr_torrentStop(tor); });
+    release_response.set_value();
+}
+
+TEST_F(RequestBudgetTest, aRefillReachesWebseeds)
+{
+    auto release_response = std::promise<void>{};
+    auto const response_allowed = release_response.get_future().share();
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([response_allowed](evhttp_request* const request) {
+        EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
+        LoopbackServer::reply(request, 503, "Service Unavailable", {});
+    });
+
+    // The whole budget is spoken for before the torrent starts, so its webseed requests nothing.
+    auto* const tor = makeBudgetTorrent("refill-webseed.bin", server->url());
+    auto holder = std::unique_ptr<RequestBudgetPeer>{};
+    blockingRunInSessionThread([tor, &holder] {
+        holder = std::make_unique<RequestBudgetPeer>(*tor);
+        holder->set_active_requests({ .begin = 0U, .end = BudgetBlocks });
+    });
+    tr_torrentStart(tor);
+    EXPECT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+
+    // In one session-thread call, so the webseed's own idle timer cannot request first.
+    blockingRunInSessionThread([this, tor, &holder] {
+        EXPECT_FALSE(tr_torrentWebseed(tor, 0U).is_downloading);
+        holder.reset();
+        session_->defer_requests();
+        resumeDeferredRequests();
+        EXPECT_TRUE(tr_torrentWebseed(tor, 0U).is_downloading);
+        tr_torrentStop(tor);
+    });
     release_response.set_value();
 }
 
