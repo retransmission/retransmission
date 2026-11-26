@@ -17,6 +17,8 @@ target_sources(${TR_NAME}-qt-lib
         DBusTransport.cc
         DetailsDialog.cc
         DetailsDialog.h
+        DirMonitor.cc
+        DirMonitor.h
         FaviconCache.cc
         FileTreeDelegate.cc
         FileTreeDelegate.h
@@ -100,9 +102,7 @@ target_sources(${TR_NAME}-qt-lib
         Utils.cc
         Utils.h
         VariantHelpers.cc
-        VariantHelpers.h
-        WatchDir.cc
-        WatchDir.h)
+        VariantHelpers.h)
 
 tr_allow_compile_if(
     [=[[ENABLE_QT_COM_INTEROP]]=]

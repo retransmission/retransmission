@@ -179,24 +179,9 @@ struct RemoteConfig {
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
-// RPC byte counts are never negative
-[[nodiscard]] Percent to_percent(int64_t const have, int64_t const total) noexcept
+[[nodiscard]] auto strlsize(uint64_t const bytes)
 {
-    return { static_cast<uint64_t>(have), static_cast<uint64_t>(total) };
-}
-
-[[nodiscard]] Ratio to_ratio(int64_t const numerator, int64_t const denominator) noexcept
-{
-    return { static_cast<uint64_t>(numerator), static_cast<uint64_t>(denominator) };
-}
-
-[[nodiscard]] auto strlsize(int64_t bytes)
-{
-    if (bytes < 0) {
-        return "Unknown"s;
-    }
-
-    if (bytes == 0) {
+    if (bytes == 0U) {
         return "None"s;
     }
 
@@ -1364,9 +1349,9 @@ void update_config_from_response(tr_web::FetchResponse const& response, RemoteCo
 // `checked_bytes` is newer than `recheck_progress`
 [[nodiscard]] std::optional<Percent> get_recheck_progress(tr_variant::Map const& t)
 {
-    if (auto const checked = t.value_if<int64_t>(TR_KEY_checked_bytes), total = t.value_if<int64_t>(TR_KEY_total_size);
+    if (auto const checked = t.value_if<uint64_t>(TR_KEY_checked_bytes), total = t.value_if<uint64_t>(TR_KEY_total_size);
         checked && total) {
-        return to_percent(*checked, *total);
+        return Percent{ *checked, *total };
     }
 
     if (auto const fraction = t.value_if<double>(TR_KEY_recheck_progress)) {
@@ -1507,12 +1492,12 @@ void print_details(tr_variant::Map const& result)
             }
         }
 
-        if (auto const size_when_done = t->value_if<int64_t>(TR_KEY_size_when_done),
-            left_until_done = t->value_if<int64_t>(TR_KEY_left_until_done),
-            total_size = t->value_if<int64_t>(TR_KEY_total_size);
+        if (auto const size_when_done = t->value_if<uint64_t>(TR_KEY_size_when_done),
+            left_until_done = t->value_if<uint64_t>(TR_KEY_left_until_done),
+            total_size = t->value_if<uint64_t>(TR_KEY_total_size);
             size_when_done && left_until_done && total_size) {
             // every size is 0 until the metadata arrives
-            auto const percent = *total_size > 0 ? to_percent(*size_when_done - *left_until_done, *size_when_done) : Percent{};
+            auto const percent = *total_size > 0U ? Percent{ *size_when_done - *left_until_done, *size_when_done } : Percent{};
             fmt::print("  Percent Done: {:s}%\n", percent.to_string());
         }
 
@@ -1528,38 +1513,38 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Upload Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_have_unchecked), j = t->value_if<int64_t>(TR_KEY_have_valid); i && j) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_have_unchecked), j = t->value_if<uint64_t>(TR_KEY_have_valid); i && j) {
             fmt::print("  Have: {:s} ({:s} verified)\n", strlsize(*i + *j), strlsize(*j));
         }
 
-        if (auto const oi = t->value_if<int64_t>(TR_KEY_size_when_done)) {
+        if (auto const oi = t->value_if<uint64_t>(TR_KEY_size_when_done)) {
             auto const i = *oi;
-            if (i < 1) {
+            if (i < 1U) {
                 fmt::print("  Availability: None\n");
             } else if (
-                auto j = t->value_if<int64_t>(TR_KEY_desired_available), k = t->value_if<int64_t>(TR_KEY_left_until_done);
+                auto j = t->value_if<uint64_t>(TR_KEY_desired_available), k = t->value_if<uint64_t>(TR_KEY_left_until_done);
                 j && k) {
-                fmt::print("  Availability: {:s}%\n", to_percent(*j + i - *k, i).to_string());
+                fmt::print("  Availability: {:s}%\n", Percent{ *j + i - *k, i }.to_string());
             }
 
-            if (auto j = t->value_if<int64_t>(TR_KEY_total_size)) {
+            if (auto j = t->value_if<uint64_t>(TR_KEY_total_size)) {
                 fmt::print("  Total size: {:s} ({:s} wanted)\n", strlsize(*j), strlsize(i));
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_downloaded_ever)) {
-            if (auto corrupt = t->value_if<int64_t>(TR_KEY_corrupt_ever).value_or(0); corrupt != 0) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_downloaded_ever)) {
+            if (auto corrupt = t->value_if<uint64_t>(TR_KEY_corrupt_ever).value_or(0U); corrupt != 0U) {
                 fmt::print("  Downloaded: {:s} (+{:s} discarded after failed checksum)\n", strlsize(*i), strlsize(corrupt));
             } else {
                 fmt::print("  Downloaded: {:s}\n", strlsize(*i));
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_uploaded_ever)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_uploaded_ever)) {
             fmt::print("  Uploaded: {:s}\n", strlsize(*i));
 
-            if (auto const j = t->value_if<int64_t>(TR_KEY_size_when_done)) {
-                fmt::print("  Ratio: {:s}\n", to_ratio(*i, *j).to_string());
+            if (auto const j = t->value_if<uint64_t>(TR_KEY_size_when_done)) {
+                fmt::print("  Ratio: {:s}\n", Ratio{ *i, *j }.to_string());
             }
         }
 
@@ -1777,8 +1762,8 @@ void print_file_list(tr_variant::Map const& result)
                 continue;
             }
 
-            auto const have = file->value_if<int64_t>(TR_KEY_bytes_completed);
-            auto const length = file->value_if<int64_t>(TR_KEY_length);
+            auto const have = file->value_if<uint64_t>(TR_KEY_bytes_completed);
+            auto const length = file->value_if<uint64_t>(TR_KEY_length);
             auto const priority = priorities->at(i).value_if<int64_t>();
             auto const wanted = wanteds->at(i).value_if<bool>();
             auto const filename = file->value_if<std::string_view>(TR_KEY_name);
@@ -1801,7 +1786,7 @@ void print_file_list(tr_variant::Map const& result)
             fmt::print(
                 "{:3d}: {:>4s}% {:<8s} {:<3s} {:9s}  {:s}\n",
                 i,
-                to_percent(*have, *length).to_string(),
+                Percent{ *have, *length }.to_string(),
                 Pristr(*priority),
                 *wanted ? "Yes" : "No",
                 strlsize(*length),
@@ -1810,7 +1795,7 @@ void print_file_list(tr_variant::Map const& result)
     }
 }
 
-void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> const total_size)
+void print_peers_impl(tr_variant::Vector const& peers, std::optional<uint64_t> const& total_size)
 {
     fmt::print("{:<40s}  {:<12s}  {:<5s} {:>8s}  {:>8s}  {:s}\n", "Address", "Flags", "Done", "Down", "Up", "Client");
 
@@ -1823,7 +1808,7 @@ void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> co
         auto const address = peer->value_if<std::string_view>(TR_KEY_address);
         auto const client = peer->value_if<std::string_view>(TR_KEY_client_name);
         auto const flagstr = peer->value_if<std::string_view>(TR_KEY_flag_str);
-        auto const have_total = peer->value_if<int64_t>(TR_KEY_have_total);
+        auto const have_total = peer->value_if<uint64_t>(TR_KEY_have_total);
         auto const fraction = peer->value_if<double>(TR_KEY_progress);
         auto const rate_to_client = peer->value_if<int64_t>(TR_KEY_rate_to_client);
         auto const rate_to_peer = peer->value_if<int64_t>(TR_KEY_rate_to_peer);
@@ -1831,8 +1816,8 @@ void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> co
         // `have_total` is newer than `progress`.
         // Without metadata, every size is 0 and `progress` alone tells seeds apart.
         auto progress = std::optional<Percent>{};
-        if (have_total && total_size && *total_size > 0) {
-            progress = to_percent(*have_total, *total_size);
+        if (have_total && total_size && *total_size > 0U) {
+            progress = Percent{ *have_total, *total_size };
         } else if (fraction) {
             progress = Percent::from_double(*fraction);
         }
@@ -1864,7 +1849,7 @@ void print_peers(tr_variant::Map const& result)
         }
 
         if (auto* peers = t->find_if<tr_variant::Vector>(TR_KEY_peers); peers != nullptr) {
-            print_peers_impl(*peers, t->value_if<int64_t>(TR_KEY_total_size));
+            print_peers_impl(*peers, t->value_if<uint64_t>(TR_KEY_total_size));
 
             if (it < std::prev(end)) {
                 fmt::print("\n");
@@ -1963,7 +1948,7 @@ void print_torrent_list(tr_variant::Map const& result)
         return ptr->template value_if<int64_t>(TR_KEY_added_date).value_or(std::numeric_limits<int64_t>::min());
     });
 
-    int64_t total_size = 0;
+    uint64_t total_size = 0U;
     int64_t total_up = 0;
     int64_t total_down = 0;
     for (auto const& t : tptrs) {
@@ -1972,8 +1957,8 @@ void print_torrent_list(tr_variant::Map const& result)
         auto o_status = t->value_if<int64_t>(TR_KEY_status);
         auto o_up = t->value_if<int64_t>(TR_KEY_rate_upload);
         auto o_down = t->value_if<int64_t>(TR_KEY_rate_download);
-        auto o_size_when_done = t->value_if<int64_t>(TR_KEY_size_when_done);
-        auto o_left_until_done = t->value_if<int64_t>(TR_KEY_left_until_done);
+        auto o_size_when_done = t->value_if<uint64_t>(TR_KEY_size_when_done);
+        auto o_left_until_done = t->value_if<uint64_t>(TR_KEY_left_until_done);
         auto o_ratio = t->value_if<double>(TR_KEY_upload_ratio);
         auto o_name = t->value_if<std::string_view>(TR_KEY_name);
 
@@ -1988,10 +1973,10 @@ void print_torrent_list(tr_variant::Map const& result)
         auto const size_when_done = *o_size_when_done;
         auto const left_until_done = *o_left_until_done;
 
-        auto const eta_str = left_until_done != 0 || eta != -1 ? eta_to_string(eta) : "Done";
+        auto const eta_str = left_until_done != 0U || eta != -1 ? eta_to_string(eta) : "Done";
         auto const error_mark = t->value_if<int64_t>(TR_KEY_error).value_or(0) != 0 ? '*' : ' ';
-        auto const done_str = size_when_done != 0 ?
-            to_percent(size_when_done - left_until_done, size_when_done).to_string() + '%' :
+        auto const done_str = size_when_done != 0U ?
+            Percent{ size_when_done - left_until_done, size_when_done }.to_string() + '%' :
             std::string{ "n/a" };
 
         fmt::print(
@@ -2014,7 +1999,7 @@ void print_torrent_list(tr_variant::Map const& result)
 
     fmt::print(
         "Sum:            {:>9s}             {:8.1f}  {:8.1f}\n",
-        strlsize(total_size).c_str(),
+        strlsize(total_size),
         Speed{ total_up, Speed::Units::Byps }.count(Speed::Units::KByps),
         Speed{ total_down, Speed::Units::Byps }.count(Speed::Units::KByps));
 }
@@ -2348,31 +2333,31 @@ void print_session(tr_variant::Map const& result)
 void print_session_stats(tr_variant::Map const& result)
 {
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_current_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
 
         if (up && down && secs) {
             fmt::print("\nCURRENT SESSION\n");
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
 
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_cumulative_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
-        auto const sessions = stats->value_if<int64_t>(TR_KEY_session_count);
+        auto const sessions = stats->value_if<uint64_t>(TR_KEY_session_count);
 
         if (up && down && secs && sessions) {
             fmt::print("\nTOTAL\n");
             fmt::print("  Started {:d} times\n", *sessions);
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }

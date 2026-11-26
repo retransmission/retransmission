@@ -416,14 +416,11 @@ auto on_file_added(tr_session* session, std::string_view dirname, std::string_vi
     auto const filename = tr_pathbuf{ dirname, '/', basename };
     auto builder = tr_torrent_builder{ session };
 
-    bool retry = false;
-
     if (is_torrent) {
         if (!builder.set_metainfo_from_file(filename)) {
-            retry = true;
+            return Watchdir::Action::Retry;
         }
-    } else // is_magnet
-    {
+    } else {
         auto content = std::vector<char>{};
         auto error = tr_error{};
         if (!tr_file_read(filename, content, &error)) {
@@ -433,36 +430,32 @@ auto on_file_added(tr_session* session, std::string_view dirname, std::string_vi
                     fmt::arg("path", basename),
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
-            retry = true;
-        } else {
-            auto const content_sv = std::string_view{ content.data(), content.size() };
-            if (!builder.set_metainfo_from_magnet_link(content_sv)) {
-                retry = true;
-            }
+            return Watchdir::Action::Retry;
         }
-    }
 
-    if (retry) {
-        return Watchdir::Action::Retry;
+        if (!builder.set_metainfo_from_magnet_link(std::string_view{ std::data(content), std::size(content) })) {
+            return Watchdir::Action::Retry;
+        }
     }
 
     if (tr_torrentNew(&builder, nullptr) == nullptr) {
         tr_logAddError(fmt::format("Couldn't add torrent file '{path}'", fmt::arg("path", basename)));
-    } else {
-        if (tr_sessionGetDeleteSource(session)) {
-            tr_logAddInfo(fmt::format("Removing torrent file '{path}'", fmt::arg("path", basename)));
+        return Watchdir::Action::Done;
+    }
 
-            if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
-                tr_logAddError(
-                    fmt::format(
-                        "Couldn't remove '{path}': {error} ({error_code})",
-                        fmt::arg("path", basename),
-                        fmt::arg("error", error.message()),
-                        fmt::arg("error_code", error.code())));
-            }
-        } else {
-            tr_sys_path_rename(filename, tr_pathbuf{ filename, ".added"sv });
+    if (tr_sessionGetDeleteSource(session)) {
+        tr_logAddInfo(fmt::format("Removing torrent file '{path}'", fmt::arg("path", basename)));
+
+        if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
+            tr_logAddError(
+                fmt::format(
+                    "Couldn't remove '{path}': {error} ({error_code})",
+                    fmt::arg("path", basename),
+                    fmt::arg("error", error.message()),
+                    fmt::arg("error_code", error.code())));
         }
+    } else {
+        tr_sys_path_rename(filename, tr_pathbuf{ filename, ".added"sv });
     }
 
     return Watchdir::Action::Done;

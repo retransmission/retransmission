@@ -630,12 +630,15 @@ void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& appe
     if (!os_specific)
 #endif
     {
-        // strip surrounding spaces and trailing periods
-        auto const it = std::ranges::find_if_not(path, [](unsigned char ch) { return std::isspace(ch); });
+        // https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/file-folder-name-whitespace-characters
+        // File and Folder names that begin or end with the ASCII Space (0x20) will be saved without these characters.
+        // File and Folder names that end with the ASCII Period (0x2E) character will also be saved without this character.
+        // All other trailing or leading whitespace characters are retained.
+        auto const it = std::ranges::find_if_not(path, [](char ch) { return ch == ' '; });
         path = std::string_view{ it, std::ranges::end(path) };
 
-        auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](unsigned char ch) {
-            return ch == '.' || std::isspace(ch);
+        auto const rit = std::ranges::find_if_not(std::ranges::rbegin(path), std::ranges::rend(path), [](char ch) {
+            return ch == '.' || ch == ' ';
         });
         path = std::string_view{ std::ranges::begin(path), rit.base() };
     }

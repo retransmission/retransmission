@@ -22,21 +22,17 @@
 
 #include <gtest/gtest.h>
 
-#define LIBTRANSMISSION_WATCHDIR_MODULE
-
 #include <libtransmission/file.h>
 #include <libtransmission/timer.h>
 #include <libtransmission/timer-ev.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/watchdir.h>
-#include <libtransmission/watchdir-base.h>
 
 #include "test-fixtures.h"
 
 using namespace std::literals;
 
 static auto constexpr GenericRescanInterval = 100ms;
-static auto constexpr RetryDuration = 100ms;
 
 // should be at least 2x the watchdir-generic size to ensure that
 // we have time to pump all events at least once in processEvents()
@@ -73,18 +69,25 @@ protected:
         SandboxedTest::TearDown();
     }
 
-    [[nodiscard]] auto createWatchDir(std::string_view path, Watchdir::Callback callback)
+    // `filter` applies only to a generic watch dir
+    [[nodiscard]] auto createWatchDir(std::string_view path, Watchdir::Callback callback, Watchdir::NameFilter filter = {})
     {
         auto const force_generic = GetParam() == WatchMode::GENERIC;
-        auto watchdir = force_generic ?
-            Watchdir::create_generic(path, std::move(callback), *timer_maker_, GenericRescanInterval) :
+        return force_generic ?
+            Watchdir::create_generic(path, std::move(callback), *timer_maker_, GenericRescanInterval, std::move(filter)) :
             Watchdir::create(path, std::move(callback), *timer_maker_, ev_base_.get());
+    }
 
-        if (auto* const base_watchdir = dynamic_cast<impl::BaseWatchdir*>(watchdir.get()); base_watchdir != nullptr) {
-            base_watchdir->setRetryDuration(RetryDuration);
-        }
-
-        return watchdir;
+    // a watch dir that records each name it offers in `names_` and is done with it
+    [[nodiscard]] auto createRecordingWatchDir(std::string_view path, Watchdir::NameFilter filter = {})
+    {
+        return createWatchDir(
+            path,
+            [this](std::string_view /*dirname*/, std::string_view basename) {
+                names_.emplace_back(basename);
+                return Watchdir::Action::Done;
+            },
+            std::move(filter));
     }
 
     static void createFile(std::string_view dirname, std::string_view basename, std::string_view contents = ""sv)
@@ -112,6 +115,8 @@ protected:
         event_base_loopexit(ev_base_.get(), &tv);
         event_base_dispatch(ev_base_.get());
     }
+
+    std::vector<std::string> names_;
 };
 } // namespace
 
@@ -172,74 +177,102 @@ TEST_P(WatchDirTest, watch)
     auto const dirname = sandboxDir();
 
     // create a new watchdir and confirm it's empty
-    auto names = std::vector<std::string>{};
-    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
-        names.emplace_back(basename);
-        return Watchdir::Action::Done;
-    };
-    auto watchdir = createWatchDir(dirname, callback);
+    auto watchdir = createRecordingWatchDir(dirname);
     processEvents();
     EXPECT_TRUE(watchdir);
-    EXPECT_TRUE(std::empty(names));
+    EXPECT_TRUE(std::empty(names_));
 
     // test that a new file in an empty directory shows up
     auto const file1 = "test1"sv;
     createFile(dirname, file1);
     processEvents();
-    EXPECT_EQ(1U, std::size(names));
-    if (!std::empty(names)) {
-        EXPECT_EQ(file1, names.front());
-    }
+    EXPECT_EQ(std::vector<std::string>{ std::string{ file1 } }, names_);
 
     // test that a new file in a nonempty directory shows up
-    names.clear();
+    names_.clear();
     auto const file2 = "test2"sv;
     createFile(dirname, file2);
     processEvents();
     processEvents();
-    EXPECT_EQ(1U, std::size(names));
-    if (!std::empty(names)) {
-        EXPECT_EQ(file2, names.front());
-    }
+    EXPECT_EQ(std::vector<std::string>{ std::string{ file2 } }, names_);
 
     // test that folders don't trigger the callback
-    names.clear();
+    names_.clear();
     createDir(dirname, "test3"sv);
     processEvents();
-    EXPECT_TRUE(std::empty(names));
+    EXPECT_TRUE(std::empty(names_));
 }
 
-// TODO(ckerr): flaky test should be fixed instead of disabled
-TEST_P(WatchDirTest, DISABLED_retry)
+// before any event or timer has had a chance to run
+TEST_P(WatchDirTest, rescanOffersANewFileAtOnce)
 {
-    auto const path = sandboxDir();
+    auto const dirname = sandboxDir();
+    auto watchdir = createRecordingWatchDir(dirname);
 
-    // test setup:
-    // Start watching the test directory.
-    // Create a file and return 'retry' back to the watchdir code from our callback.
-    // This should cause the wd to wait a bit and try again.
-    auto names = std::vector<std::string>{};
-    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
-        names.emplace_back(basename);
-        return Watchdir::Action::Retry;
-    };
-    auto watchdir = createWatchDir(path, callback);
-    auto constexpr FastRetryWaitTime = 20ms;
-    auto constexpr SlowRetryWaitTime = 200ms;
-    auto* const base_watchdir = dynamic_cast<impl::BaseWatchdir*>(watchdir.get());
-    ASSERT_TRUE(base_watchdir != nullptr);
-    base_watchdir->setRetryDuration(FastRetryWaitTime);
+    auto const name = "test.torrent"sv;
+    createFile(dirname, name);
+    watchdir->rescan();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names_);
+}
 
-    processEvents(SlowRetryWaitTime);
-    EXPECT_EQ(0U, std::size(names));
+TEST_P(WatchDirTest, offersANameAgainAfterItsFileLeaves)
+{
+    auto const dirname = sandboxDir();
+    auto watchdir = createRecordingWatchDir(dirname);
+    processEvents();
 
-    auto const test_file = "test.txt"sv;
-    createFile(path, test_file);
-    processEvents(SlowRetryWaitTime);
-    EXPECT_LE(2U, std::size(names));
-    for (auto const& name : names) {
-        EXPECT_EQ(test_file, name);
+    auto const name = "test.torrent"sv;
+    auto const path = tr_pathbuf{ dirname, '/', name };
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names_);
+
+    // renamed away, as the daemon and the clients do once they've added it
+    EXPECT_TRUE(tr_sys_path_rename(path, tr_pathbuf{ path, ".added"sv }));
+    processEvents();
+    names_.clear();
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names_);
+
+    // deleted
+    EXPECT_TRUE(tr_sys_path_remove(path));
+    processEvents();
+    names_.clear();
+    createFile(dirname, name);
+    processEvents();
+    EXPECT_EQ(std::vector<std::string>{ std::string{ name } }, names_);
+}
+
+// e.g. a share whose mount point goes away while it's unmounted
+TEST_P(WatchDirTest, keepsItsNamesWhileTheDirIsMissing)
+{
+    auto const dirname = createDir(sandboxDir(), "watch"sv);
+    auto const elsewhere = tr_pathbuf{ sandboxDir(), "/elsewhere"sv };
+    createFile(dirname, "test.torrent"sv);
+    auto watchdir = createRecordingWatchDir(dirname);
+    EXPECT_EQ(1U, std::size(names_));
+
+    EXPECT_TRUE(tr_sys_path_rename(dirname, elsewhere));
+    watchdir->rescan();
+    EXPECT_TRUE(tr_sys_path_rename(elsewhere, dirname));
+    watchdir->rescan();
+    EXPECT_EQ(1U, std::size(names_));
+}
+
+TEST_P(WatchDirTest, offersOnlyTheNamesItsFilterAccepts)
+{
+    if (GetParam() == WatchMode::NATIVE) {
+        GTEST_SKIP() << "only a generic watch dir takes a filter";
     }
+
+    auto const dirname = sandboxDir();
+    createFile(dirname, "a.torrent"sv);
+    createFile(dirname, "a.torrent.added"sv);
+    auto watchdir = createRecordingWatchDir(dirname, [](std::string_view const basename) {
+        return basename.ends_with(".torrent"sv);
+    });
+    EXPECT_EQ(std::vector<std::string>{ "a.torrent" }, names_);
 }
 
 INSTANTIATE_TEST_SUITE_P( //
