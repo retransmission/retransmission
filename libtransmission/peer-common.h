@@ -26,7 +26,6 @@
  */
 
 class tr_swarm;
-struct tr_bandwidth;
 struct tr_peer;
 struct tr_torrent;
 
