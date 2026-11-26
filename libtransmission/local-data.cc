@@ -3,7 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm> // std::ranges::shuffle
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cerrno>
@@ -11,6 +11,8 @@
 #include <condition_variable>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
+#include <cstdio> // stderr
+#include <cstdlib> // std::abort
 #include <deque>
 #include <functional>
 #include <iterator> // std::prev
@@ -19,6 +21,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <random>
 #include <set>
 #include <span>
 #include <string>
@@ -35,6 +38,7 @@
 
 #include "libtransmission/block-info.h"
 #include "libtransmission/constants.h"
+#include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/inout.h"
 #include "libtransmission/log.h"
@@ -48,13 +52,207 @@
 
 namespace tr
 {
+
+// The disk ops in progress, for tr_disk_activity. Any thread may post
+// an op or read them all.
+class DiskActivityBoard
+{
+public:
+    using Op = tr_disk_activity::Op;
+
+    // Shows an op on the board while it's in scope. The op is named after
+    // `desc`'s torrent when the board is read, so that a write, which runs
+    // all session long, posts without allocating.
+    class Posting
+    {
+    public:
+        Posting(DiskActivityBoard& board, std::shared_ptr<StorageDescriptor const> desc, Op op)
+            : board_{ board }
+            , desc_{ std::move(desc) }
+            , op_{ std::move(op) }
+        {
+            auto const lock = std::scoped_lock{ board_.mutex_ };
+            board_.postings_.emplace_back(this);
+        }
+
+        Posting(Posting const&) = delete;
+        Posting(Posting&&) = delete;
+        Posting& operator=(Posting const&) = delete;
+        Posting& operator=(Posting&&) = delete;
+
+        ~Posting()
+        {
+            auto const lock = std::scoped_lock{ board_.mutex_ };
+            std::erase(board_.postings_, this);
+        }
+
+        template<typename Fn>
+        void update(Fn const& fn)
+        {
+            auto const lock = std::scoped_lock{ board_.mutex_ };
+            fn(op_);
+        }
+
+    private:
+        friend class DiskActivityBoard;
+
+        DiskActivityBoard& board_;
+        std::shared_ptr<StorageDescriptor const> const desc_;
+        Op op_;
+    };
+
+    // The write one disk worker is doing. Writes run all session long,
+    // so each worker shows its own here: a write locks no mutex that
+    // another worker takes.
+    class WriteSlot
+    {
+    public:
+        // Shows the write while it's in scope. `desc` must outlive it.
+        class Showing
+        {
+        public:
+            Showing(WriteSlot& slot, StorageDescriptor const& desc, uint64_t const n_bytes)
+                : slot_{ slot }
+            {
+                auto const lock = std::scoped_lock{ slot_.mutex_ };
+                slot_.desc_ = &desc;
+                slot_.n_bytes_ = n_bytes;
+            }
+
+            Showing(Showing const&) = delete;
+            Showing(Showing&&) = delete;
+            Showing& operator=(Showing const&) = delete;
+            Showing& operator=(Showing&&) = delete;
+
+            ~Showing()
+            {
+                auto const lock = std::scoped_lock{ slot_.mutex_ };
+                slot_.desc_ = nullptr;
+            }
+
+        private:
+            WriteSlot& slot_;
+        };
+
+    private:
+        friend class DiskActivityBoard;
+
+        mutable std::mutex mutex_;
+        StorageDescriptor const* desc_ = nullptr;
+        uint64_t n_bytes_ = 0U;
+    };
+
+    // A slot for one disk worker. It lasts as long as the board.
+    [[nodiscard]] WriteSlot& add_write_slot()
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        return *write_slots_.emplace_back(std::make_unique<WriteSlot>());
+    }
+
+    [[nodiscard]] std::vector<Op> snapshot() const
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        auto ops = std::vector<Op>{};
+        ops.reserve(std::size(postings_) + std::size(write_slots_));
+        for (auto const* const posting : postings_) {
+            auto& op = ops.emplace_back(posting->op_);
+            if (posting->desc_) {
+                op.torrent_name = posting->desc_->name;
+            }
+        }
+        for (auto const& slot : write_slots_) {
+            auto const slot_lock = std::scoped_lock{ slot->mutex_ };
+            if (slot->desc_ != nullptr) {
+                auto& op = ops.emplace_back();
+                op.kind = Op::Kind::Write;
+                op.torrent_name = slot->desc_->name;
+                op.total = slot->n_bytes_;
+            }
+        }
+        return ops;
+    }
+
+    std::atomic<uint64_t> queued_write_bytes = 0U;
+    std::atomic<size_t> queued_admin_count = 0U;
+
+private:
+    mutable std::mutex mutex_;
+    std::vector<Posting const*> postings_;
+    std::vector<std::unique_ptr<WriteSlot>> write_slots_;
+};
+
 namespace
 {
-// A read is at most one block, inside the torrent. `desc` is null when
-// the torrent is gone.
+using DiskOpKind = tr_disk_activity::Op::Kind;
+
+[[nodiscard]] tr_disk_activity::Op make_op(DiskOpKind const kind, std::string_view const destination = {})
+{
+    auto op = tr_disk_activity::Op{};
+    op.kind = kind;
+    op.destination = destination;
+    return op;
+}
+
+// True if `span` is inside the torrent and at most `max_bytes` long.
+// `desc` is null when the torrent is gone.
+[[nodiscard]] bool is_span_in_torrent(
+    StorageDescriptor const* const desc,
+    tr_byte_span_t const span,
+    uint64_t const max_bytes) noexcept
+{
+    return desc != nullptr && span.is_valid() && span.size() <= max_bytes && span.end <= desc->block_info.total_size();
+}
+
+// A read is at most one block.
 [[nodiscard]] bool is_valid_read(StorageDescriptor const* const desc, tr_byte_span_t const span) noexcept
 {
-    return desc != nullptr && span.is_valid() && span.size() <= TrBlockSize && span.end <= desc->block_info.total_size();
+    return is_span_in_torrent(desc, span, TrBlockSize);
+}
+
+// A verify's span is short enough for the session thread to hash.
+[[nodiscard]] bool is_valid_hash_span(StorageDescriptor const* const desc, tr_byte_span_t const span) noexcept
+{
+    return is_span_in_torrent(desc, span, LocalData::max_hash_span_bytes());
+}
+
+// The first `n` bytes of `scratch`, which grows to hold them and never
+// shrinks. A read or a copy overwrites them, so zeroing them first would
+// waste a pass over up to MaxRunBytes.
+[[nodiscard]] std::span<uint8_t> scratch_bytes(std::vector<uint8_t>& scratch, size_t const n)
+{
+    if (std::size(scratch) < n) {
+        scratch.resize(n);
+    }
+    return std::span{ scratch }.first(n);
+}
+
+// Adds `span`'s bytes, as they are on the disk, to `sha`, and finishes each
+// piece that ends in `span` into `setme_hashes`. See LocalData::hash_span().
+[[nodiscard]] tr_error hash_span_from_disk(
+    StorageDescriptor const& desc,
+    tr_open_files& open_files,
+    tr_byte_span_t const span,
+    std::vector<uint8_t>& scratch,
+    tr_sha1& sha,
+    std::vector<tr_sha1_digest_t>& setme_hashes)
+{
+    auto const buf = scratch_bytes(scratch, static_cast<size_t>(span.size()));
+    if (auto error = tr_ioRead(desc, open_files, span.begin, buf, true /*verify*/); error) {
+        return error;
+    }
+
+    auto const& block_info = desc.block_info;
+    for (auto begin = span.begin; begin < span.end;) {
+        auto const piece_end = block_info.byte_span_for_piece(block_info.byte_loc(begin).piece).end;
+        auto const end = std::min(piece_end, span.end);
+        sha.add(buf.subspan(static_cast<size_t>(begin - span.begin), static_cast<size_t>(end - begin)));
+        if (end == piece_end) {
+            setme_hashes.emplace_back(sha.finish()); // which clears `sha` for the next piece
+        }
+        begin = end;
+    }
+
+    return {};
 }
 
 [[nodiscard]] tr_error read_block(
@@ -77,13 +275,25 @@ namespace
 // With `needs_copy`, a move that would have to copy files moves nothing
 // and sets that instead of `error`. See tr_torrent_files::move().
 [[nodiscard]] std::optional<tr_torrent_files::MoveLeftovers> place_files(
-    StorageDescriptor const& desc,
+    DiskActivityBoard& board,
+    std::shared_ptr<StorageDescriptor const> const& desc,
     LocalData::MoveTarget const& target,
     tr_error& error,
     bool* const needs_copy = nullptr)
 {
-    auto const paths = search_paths(desc.download_dir, desc.incomplete_dir);
-    auto leftovers = desc.files.move(paths, target.parent, desc.name, &error, needs_copy);
+    auto posting = DiskActivityBoard::Posting{ board, desc, make_op(DiskOpKind::Move, target.parent) };
+    auto const on_progress = [&posting](tr_torrent_files::MoveProgress const& progress) {
+        posting.update([&progress](tr_disk_activity::Op& op) {
+            op.file_name = progress.subpath;
+            op.file_index = progress.file_index;
+            op.file_count = progress.file_count;
+            op.done = progress.bytes_done;
+            op.total = progress.bytes_total;
+        });
+    };
+
+    auto const paths = search_paths(desc->download_dir, desc->incomplete_dir);
+    auto leftovers = desc->files.move(paths, target.parent, desc->name, &error, needs_copy, on_progress);
     if (!leftovers) {
         if (!error && (needs_copy == nullptr || !*needs_copy)) {
             error.set_from_errno(EIO);
@@ -92,31 +302,59 @@ namespace
     }
 
     if (target.clear_killed_move) {
-        desc.files.add_copies_left_by_killed_move(*leftovers, paths, target.parent);
+        desc->files.add_copies_left_by_killed_move(*leftovers, paths, target.parent);
     }
 
     return leftovers;
 }
 
-[[nodiscard]] tr_error remove_files(StorageDescriptor const& desc, tr_torrent_remove_func remove_func)
+// Clears what a move left at the old location, once the new one is saved.
+void remove_leftovers(
+    DiskActivityBoard& board,
+    tr_torrent_files::MoveLeftovers const& leftovers,
+    LocalData::MoveTarget const& target)
+{
+    auto op = make_op(DiskOpKind::Move, target.parent);
+    op.torrent_name = leftovers.parent_name;
+    auto const posting = DiskActivityBoard::Posting{ board, {}, std::move(op) };
+    leftovers.remove();
+}
+
+[[nodiscard]] tr_error remove_files(
+    DiskActivityBoard& board,
+    std::shared_ptr<StorageDescriptor const> const& desc,
+    tr_torrent_remove_func remove_func)
 {
     if (!remove_func) {
         remove_func = tr_sys_path_remove;
     }
 
+    auto posting = DiskActivityBoard::Posting{ board, desc, make_op(DiskOpKind::Remove) };
+    auto const on_progress = [&posting](size_t const n_removed, size_t const n_files) {
+        posting.update([n_removed, n_files](tr_disk_activity::Op& op) {
+            op.done = n_removed;
+            op.total = n_files;
+        });
+    };
+
     auto error = tr_error{};
-    desc.files.remove(search_paths(desc.download_dir, desc.incomplete_dir), desc.name, remove_func, &error);
+    desc->files.remove(search_paths(desc->download_dir, desc->incomplete_dir), desc->name, remove_func, &error, on_progress);
     return error;
 }
 
 // Renames `oldpath`, or its partial file, wherever `desc` looks for files.
 // A path that isn't there, or a new name already taken, is not an error.
 [[nodiscard]] tr_error rename_on_disk(
-    StorageDescriptor const& desc,
+    DiskActivityBoard& board,
+    std::shared_ptr<StorageDescriptor const> const& desc,
     std::string_view const oldpath,
     std::string_view const newname)
 {
-    for (auto const parent : search_paths(desc.download_dir, desc.incomplete_dir)) {
+    auto op = make_op(DiskOpKind::Rename, newname);
+    op.file_name = oldpath;
+    auto const posting = DiskActivityBoard::Posting{ board, desc, std::move(op) };
+
+    for (auto const parent : search_paths(desc->download_dir, desc->incomplete_dir)) {
         auto src = tr_pathbuf{ parent, '/', oldpath };
         if (!tr_sys_path_exists(src)) {
             src += tr_torrent_files::PartialFileSuffix;
@@ -144,9 +382,10 @@ namespace
 class DefaultBackend final : public LocalData::Backend
 {
 public:
-    DefaultBackend(tr_torrents const& torrents, tr_open_files& open_files)
+    DefaultBackend(tr_torrents const& torrents, tr_open_files& open_files, DiskActivityBoard& board)
         : open_files_{ open_files }
         , torrents_{ torrents }
+        , board_{ board }
     {
     }
 
@@ -189,6 +428,22 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
+    [[nodiscard]] tr_error hash_span(
+        tr_torrent_id_t const id,
+        tr_byte_span_t const span,
+        tr_sha1& sha,
+        std::vector<tr_sha1_digest_t>& setme_hashes) override
+    {
+        TR_PROFILE_SCOPE("storage.hash_span");
+        auto const* const tor = torrents_.get(id);
+        auto const desc = tor != nullptr ? tor->storage_descriptor() : nullptr;
+        if (!is_valid_hash_span(desc.get(), span)) {
+            return tr_error::from_errno(EINVAL);
+        }
+
+        return hash_span_from_disk(*desc, open_files_, span, scratch_, sha, setme_hashes);
+    }
+
     [[nodiscard]] tr_error move(
         tr_torrent_id_t const id,
         LocalData::MoveTarget const& target,
@@ -200,27 +455,29 @@ public:
         }
 
         auto error = tr_error{};
-        auto const leftovers = place_files(*tor->storage_descriptor(), target, error);
+        auto const leftovers = place_files(board_, tor->storage_descriptor(), target, error);
         if (!leftovers) {
             return error;
         }
 
         on_placed();
-        leftovers->remove();
+        remove_leftovers(board_, *leftovers, target);
         return {};
     }
 
     [[nodiscard]] tr_error remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
     {
         auto const* const tor = torrents_.get(id);
-        return tor != nullptr ? remove_files(*tor->storage_descriptor(), std::move(remove_func)) : tr_error::from_errno(EINVAL);
+        return tor != nullptr ? remove_files(board_, tor->storage_descriptor(), std::move(remove_func)) :
+                                tr_error::from_errno(EINVAL);
     }
 
     [[nodiscard]] tr_error rename(tr_torrent_id_t const id, std::string_view const oldpath, std::string_view const newname)
         override
     {
         auto const* const tor = torrents_.get(id);
-        return tor != nullptr ? rename_on_disk(*tor->storage_descriptor(), oldpath, newname) : tr_error::from_errno(EINVAL);
+        return tor != nullptr ? rename_on_disk(board_, tor->storage_descriptor(), oldpath, newname) :
+                                tr_error::from_errno(EINVAL);
     }
 
     void close_all() override
@@ -241,6 +498,8 @@ public:
 private:
     tr_open_files& open_files_;
     tr_torrents const& torrents_;
+    std::vector<uint8_t> scratch_;
+    DiskActivityBoard& board_;
 };
 
 /**
@@ -392,6 +651,9 @@ private:
  *   Workers pull pending ops, run them, and post completion closures
  *   to `done_`. The session thread delivers those from pump_done().
  * - `retained_` is shared too and locks itself.
+ * - Tests can start the backend with no threads. The session thread
+ *   then does the workers' and the lanes' work too, a step at a time,
+ *   through the same queues and locks. See `Threadless`.
  *
  * The admission gate implements rule 3 of the ordering contract in
  * local-data.h. Data ops on a torrent are admitted freely and run
@@ -425,7 +687,8 @@ private:
  * A worker takes a piece hash, a run of reads, and a run of writes in
  * turn, skipping the kinds that have nothing waiting, so that a flood
  * of one kind can't starve the others. A hash can read a whole piece
- * from the disk, which is why it gets no more than its turn.
+ * from the disk, which is why it gets no more than its turn. A span of
+ * a verify goes when none of those waits, or after a few turns of them.
  *
  * A written block's buffer is kept in `retained_` so that the piece
  * hash can consume it instead of reading the piece back from disk.
@@ -435,15 +698,24 @@ class LocalData::Threaded final : public std::enable_shared_from_this<LocalData:
 public:
     Threaded(
         tr_open_files& open_files,
+        DiskActivityBoard& board,
         DescriptorProvider provider,
         Marshal marshal,
         size_t const n_workers,
-        size_t const retained_bytes)
+        size_t const retained_bytes,
+        std::optional<uint32_t> const threadless_seed = {})
         : open_files_{ open_files }
+        , board_{ board }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
         , retained_{ retained_bytes }
     {
+        if (threadless_seed) {
+            // The session thread runs one write at a time.
+            threadless_.emplace(n_workers, *threadless_seed, board_.add_write_slot());
+            return;
+        }
+
         workers_.reserve(n_workers);
 
         // If a spawn fails partway, join the workers that did start.
@@ -467,6 +739,7 @@ public:
     Threaded& operator=(Threaded const&) = delete;
     Threaded& operator=(Threaded&&) = delete;
 
+    // NOLINTNEXTLINE(bugprone-exception-escape): stop_workers() allocates
     ~Threaded()
     {
         stop_workers();
@@ -477,8 +750,9 @@ public:
         auto op = ReadOp{ .span = span, .on_read = std::move(on_read) };
 
         // A torrent with nothing in flight has no gate and no barrier to
-        // wait for. Skip creating a gate for a read the page cache answers.
-        if (!gates_.contains(id)) {
+        // wait for. Skip creating a gate for a read the page cache answers,
+        // or for one that cancel_reads() fails.
+        if (!gates_.contains(id) || cancel_reads_) {
             admit_read(id, std::move(op));
             return;
         }
@@ -489,6 +763,11 @@ public:
     void test_piece(tr_torrent_id_t const id, tr_piece_index_t const piece, OnTest on_test)
     {
         submit(id, TestOp{ .piece = piece, .on_test = std::move(on_test) });
+    }
+
+    void hash_span(tr_torrent_id_t const id, tr_byte_span_t const span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed)
+    {
+        submit(id, HashSpanOp{ .span = span, .sha = std::move(sha), .on_hashed = std::move(on_hashed) });
     }
 
     void write(tr_torrent_id_t const id, tr_byte_span_t const span, std::unique_ptr<BlockData> data, OnWrite on_write)
@@ -510,7 +789,7 @@ public:
             return;
         }
 
-        enqueued_write_bytes_.fetch_add(span.size(), std::memory_order_relaxed);
+        board_.queued_write_bytes.fetch_add(span.size(), std::memory_order_relaxed);
         submit(id, WriteOp{ .span = span, .data = std::move(data), .on_write = std::move(on_write) });
     }
 
@@ -554,7 +833,7 @@ public:
                     return false;
                 }
 
-                post_admin(
+                post_disk_work(
                     short_lane_,
                     [this,
                      desc = std::move(desc),
@@ -567,7 +846,7 @@ public:
                 return true;
             };
 
-        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+        submit_disk_work(id, std::move(body));
     }
 
     void remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func, OnRemove on_remove)
@@ -581,12 +860,14 @@ public:
 
             run_on_short_lane(
                 id,
-                [desc = std::move(desc), remove_func = std::move(remove_func)] { return remove_files(*desc, remove_func); },
+                [this, desc = std::move(desc), remove_func = std::move(remove_func)] {
+                    return remove_files(board_, desc, remove_func);
+                },
                 [this, id, on_remove = std::move(on_remove)](tr_error const& error) { finish_remove(id, error, on_remove); });
             return true;
         };
 
-        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+        submit_disk_work(id, std::move(body));
     }
 
     void rename(tr_torrent_id_t const id, std::string oldpath, std::string newname, RenameCheck check, OnRename on_rename)
@@ -605,14 +886,14 @@ public:
 
             run_on_short_lane(
                 id,
-                [desc = std::move(desc), oldpath = std::move(oldpath), newname = std::move(newname)] {
-                    return rename_on_disk(*desc, oldpath, newname);
+                [this, desc = std::move(desc), oldpath = std::move(oldpath), newname = std::move(newname)] {
+                    return rename_on_disk(board_, desc, oldpath, newname);
                 },
                 [id, on_rename = std::move(on_rename)](tr_error const& error) { on_rename(id, error); });
             return true;
         };
 
-        submit(id, BarrierOp{ .body = std::move(body), .span = {} });
+        submit_disk_work(id, std::move(body));
     }
 
     // The two closes below run inside a barrier. They take the files out
@@ -675,6 +956,19 @@ public:
                 return;
             }
 
+            if (threadless_) {
+                // No thread will finish anything, so do the work here.
+                if (!step(detail::DiskThread::Any)) {
+                    // Nothing is left to run or deliver, so an op was lost.
+                    // Only tests get here. Fail them in every build type:
+                    // on real threads, the same bug hangs.
+                    log_busy_gates();
+                    fmt::print(stderr, "Lost a disk IO op: the gates are busy, and no work is left to run or deliver\n");
+                    std::abort();
+                }
+                continue;
+            }
+
             if (auto const now = std::chrono::steady_clock::now(); now >= next_warning) {
                 log_busy_gates();
                 next_warning = now + WarnInterval;
@@ -703,9 +997,45 @@ public:
         stop_workers();
     }
 
-    [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept
+    // Cancel the reads that no worker has taken, then let the workers
+    // finish the rest. Nothing holds a closing session's workers back.
+    void begin_shutdown()
     {
-        return enqueued_write_bytes_.load(std::memory_order_relaxed);
+        cancel_reads();
+        set_paused(false);
+    }
+
+    void cancel_reads()
+    {
+        cancel_reads_ = true;
+
+        auto reads = std::exchange(staged_reads_, {});
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            reads.merge(pending_reads_);
+            reads.merge(read_sweep_);
+        }
+
+        for (auto& [key, read] : reads) {
+            auto const id = read.tor_id;
+            unregister_running_read(gate_of(id), read.span);
+            if (read.on_read) {
+                std::move(read.on_read)(id, read.span, tr_error::from_errno(ECANCELED), nullptr);
+            }
+            release(id);
+        }
+    }
+
+    // True once no op is queued, running, or waiting to be delivered.
+    // A file close holds no gate, so the lanes are checked too.
+    [[nodiscard]] bool is_quiet()
+    {
+        if (!idle()) {
+            return false;
+        }
+
+        auto const lock = std::scoped_lock{ work_mutex_ };
+        return n_admin_jobs_ == 0U;
     }
 
     [[nodiscard]] Stats stats() const noexcept
@@ -727,8 +1057,8 @@ public:
             auto const lock = std::scoped_lock{ work_mutex_ };
             paused_ = paused;
         }
-        work_cv_.notify_all();
-        admin_cv_.notify_all();
+        wake_all_workers();
+        wake_lanes();
     }
 
     void set_retained_bytes(size_t const max_bytes)
@@ -736,16 +1066,103 @@ public:
         retained_.set_capacity(max_bytes);
     }
 
-    void hold_copy_lane(bool const held)
+    // One thread does the next thing it would do. A worker takes a turn,
+    // or runs the turn it took earlier. A lane runs its next job. The
+    // thread is picked at random from those of `which` that have
+    // something to do. False if none has, or if the threads are real.
+    bool step(detail::DiskThread const which)
     {
+        using enum detail::DiskThread;
+
+        if (!threadless_) {
+            return false;
+        }
+
+        auto& threads = *threadless_;
+        auto const n_workers = std::size(threads.workers);
+
+        // the workers by index, then the long lane, then the short one
+        auto ready = std::vector<size_t>{};
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            long_lane_.held = held;
+
+            if (which == Any || which == Worker) {
+                auto const waiting = has_waiting_work();
+                for (auto i = size_t{}; i < n_workers; ++i) {
+                    if (waiting || !threads.workers[i].turn.empty()) {
+                        ready.emplace_back(i);
+                    }
+                }
+            }
+
+            if ((which == Any || which == LongLane) && !std::empty(long_lane_)) {
+                ready.emplace_back(n_workers);
+            }
+
+            if ((which == Any || which == ShortLane) && !std::empty(short_lane_)) {
+                ready.emplace_back(n_workers + 1U);
+            }
         }
-        admin_cv_.notify_all();
+
+        if (std::empty(ready)) {
+            return false;
+        }
+
+        auto const pick = ready[threads.rng() % std::size(ready)];
+        if (pick >= n_workers) {
+            auto job = AdminLane::value_type{};
+            {
+                auto const lock = std::scoped_lock{ work_mutex_ };
+                job = take_job(pick == n_workers ? long_lane_ : short_lane_);
+            }
+            job();
+            finish_admin_job();
+        } else if (auto& worker = threads.workers[pick]; worker.turn.empty()) {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            worker.turn = take_turn(worker.next);
+        } else {
+            run_turn(std::exchange(worker.turn, {}), threads.scratch, threads.write_slot);
+        }
+
+        return true;
+    }
+
+    // Do now what was left for the session thread to do later.
+    void deliver()
+    {
+        pump_done();
+        flush_reads();
     }
 
 private:
+    // A completion waiting to be delivered.
+    // A read completion owns the buffer it read into and can't be copied,
+    // so std::function can't hold one.
+    class Parked
+    {
+    public:
+        virtual ~Parked() = default;
+        virtual void deliver() = 0;
+    };
+
+    template<typename Fn>
+    class ParkedFn final : public Parked
+    {
+    public:
+        explicit ParkedFn(Fn fn)
+            : fn_{ std::move(fn) }
+        {
+        }
+
+        void deliver() override
+        {
+            fn_();
+        }
+
+    private:
+        Fn fn_;
+    };
+
     struct ReadOp {
         tr_byte_span_t span;
         OnRead on_read;
@@ -760,6 +1177,12 @@ private:
         tr_byte_span_t span;
         std::unique_ptr<BlockData> data;
         OnWrite on_write;
+    };
+
+    struct HashSpanOp {
+        tr_byte_span_t span;
+        std::unique_ptr<tr_sha1> sha;
+        OnHashSpan on_hashed;
     };
 
     struct BarrierOp {
@@ -779,13 +1202,9 @@ private:
     };
 
     // Admin disk work, one job at a time per lane.
-    struct AdminLane {
-        std::deque<std::function<void()>> jobs;
-        // A held lane starts no job. See detail::hold_copy_lane().
-        bool held = false;
-    };
+    using AdminLane = std::deque<std::function<void()>>;
 
-    using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
+    using Queued = std::variant<ReadOp, TestOp, WriteOp, HashSpanOp, BarrierOp>;
 
     struct Gate {
         size_t n_running = 0U;
@@ -828,6 +1247,51 @@ private:
         std::shared_ptr<StorageDescriptor const> desc;
         tr_piece_index_t piece;
         OnTest on_test;
+    };
+
+    // A span of a verify the gate admitted, waiting for a worker.
+    struct PendingHashSpan {
+        tr_torrent_id_t tor_id;
+        std::shared_ptr<StorageDescriptor const> desc;
+        HashSpanOp op;
+    };
+
+    // What a worker takes in one go: a piece hash, a run of reads, a run
+    // of writes, or a span of a verify.
+    struct Turn {
+        std::optional<PendingTest> test;
+        std::vector<PendingRead> reads;
+        std::vector<PendingWrite> writes;
+        std::optional<PendingHashSpan> hash_span;
+
+        [[nodiscard]] bool empty() const noexcept
+        {
+            return !test && std::empty(reads) && std::empty(writes) && !hash_span;
+        }
+    };
+
+    // For tests: the threads that were never started. The session thread
+    // does their work a step at a time. See detail::start_threadless().
+    struct Threadless {
+        struct Worker {
+            size_t next = 0U; // its place in the rotation. See take_turn().
+            Turn turn; // taken, and not yet run
+        };
+
+        Threadless(size_t const n_workers, uint32_t const seed, DiskActivityBoard::WriteSlot& slot)
+            : rng{ seed }
+            , workers(n_workers)
+            , write_slot{ slot }
+        {
+        }
+
+        // picks the thread that takes the next step
+        std::mt19937 rng;
+        std::vector<Worker> workers;
+        std::vector<uint8_t> scratch;
+        DiskActivityBoard::WriteSlot& write_slot;
+        // guarded by work_mutex_
+        bool pump_scheduled = false;
     };
 
     // Where a pending op sits in its worker queue: disk order, more or less.
@@ -925,6 +1389,10 @@ private:
             return write->span;
         }
 
+        if (auto const* const hash = std::get_if<HashSpanOp>(&op); hash != nullptr) {
+            return hash->span;
+        }
+
         if (auto const* const test = std::get_if<TestOp>(&op); test != nullptr) {
             if (auto const desc = provider_(id); desc && test->piece < desc->block_info.piece_count()) {
                 return desc->block_info.byte_span_for_piece(test->piece);
@@ -940,6 +1408,32 @@ private:
     [[nodiscard]] bool idle() const noexcept
     {
         return std::empty(gates_);
+    }
+
+    // A move, removal, or rename counts as queued admin work while it
+    // waits for its barrier. `body` hands the disk work to a lane with
+    // post_disk_work(), which counts it again before this count is
+    // dropped, so a reader never misses it.
+    //
+    // It takes the torrent's files out of the pool first, and the lane
+    // closes them before the disk work: Windows won't move, rename, or
+    // remove an open file, or a folder that holds one, and a moved file's
+    // old fd writes to the old copy. Unlike close_torrent(), it keeps the
+    // blocks retained for piece hashes, which a move or rename leaves
+    // valid. finish_remove() drops a removed torrent's.
+    void submit_disk_work(tr_torrent_id_t const id, std::function<bool()> body)
+    {
+        board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
+        submit(
+            id,
+            BarrierOp{ .body =
+                           [this, id, body = std::move(body)] {
+                               close_on_short_lane(open_files_.close_torrent(id));
+                               auto const handed_off = body();
+                               board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+                               return handed_off;
+                           },
+                       .span = {} });
     }
 
     // Queue the op if a barrier blocks it or it must wait for a write,
@@ -966,6 +1460,8 @@ private:
             admit_read(id, std::move(*read));
         } else if (auto* const test = std::get_if<TestOp>(&op); test != nullptr) {
             admit_test(id, gate, std::move(*test));
+        } else if (auto* const hash = std::get_if<HashSpanOp>(&op); hash != nullptr) {
+            admit_hash_span(id, gate, std::move(*hash));
         } else {
             admit_write(id, gate, std::get<WriteOp>(std::move(op)));
         }
@@ -1096,8 +1592,15 @@ private:
     // Otherwise stage it for the workers.
     void admit_read(tr_torrent_id_t const id, ReadOp op)
     {
-        auto desc = provider_(id);
         auto const span = op.span;
+        if (cancel_reads_) {
+            if (op.on_read) {
+                std::move(op.on_read)(id, span, tr_error::from_errno(ECANCELED), nullptr);
+            }
+            return;
+        }
+
+        auto desc = provider_(id);
         if (!is_valid_read(desc.get(), span)) {
             if (op.on_read) {
                 std::move(op.on_read)(id, span, tr_error::from_errno(EINVAL), nullptr);
@@ -1152,7 +1655,7 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             pending_reads_.merge(staged_reads_);
         }
-        work_cv_.notify_all();
+        wake_all_workers();
     }
 
     void admit_test(tr_torrent_id_t const id, Gate& gate, TestOp op)
@@ -1165,15 +1668,43 @@ private:
             return;
         }
 
+        auto const span = desc->block_info.byte_span_for_piece(op.piece);
+        admit_hash(
+            gate,
+            span,
+            pending_tests_,
+            PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
+    }
+
+    void admit_hash_span(tr_torrent_id_t const id, Gate& gate, HashSpanOp op)
+    {
+        auto desc = provider_(id);
+        if (!is_valid_hash_span(desc.get(), op.span)) {
+            std::move(op.on_hashed)(id, op.span, tr_error::from_errno(EINVAL), {}, std::move(op.sha));
+            return;
+        }
+
+        auto const span = op.span;
+        admit_hash(
+            gate,
+            span,
+            pending_hash_spans_,
+            PendingHashSpan{ .tor_id = id, .desc = std::move(desc), .op = std::move(op) });
+    }
+
+    // Counts a hash of `span` as running on `gate`, and hands it to the
+    // workers. Its completion unregisters it and calls release().
+    template<typename Pending>
+    void admit_hash(Gate& gate, tr_byte_span_t const span, std::deque<Pending>& queue, Pending pending)
+    {
         ++gate.n_running;
-        register_running_hash(gate, desc->block_info.byte_span_for_piece(op.piece));
+        register_running_hash(gate, span);
 
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            pending_tests_.push_back(
-                PendingTest{ .tor_id = id, .desc = std::move(desc), .piece = op.piece, .on_test = std::move(op.on_test) });
+            queue.push_back(std::move(pending));
         }
-        work_cv_.notify_one();
+        wake_one_worker();
     }
 
     void admit_write(tr_torrent_id_t const id, Gate& gate, WriteOp op)
@@ -1185,7 +1716,7 @@ private:
         // queuing under the same key: a dropped op would hold the gate
         // open forever.
         if (!desc || span.end > desc->block_info.total_size() || overlaps_running_write(gate, span)) {
-            enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
+            board_.queued_write_bytes.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
                 std::move(op.on_write)(id, span, tr_error::from_errno(EINVAL));
             }
@@ -1207,7 +1738,7 @@ private:
                     .on_write = std::move(op.on_write),
                 });
         }
-        work_cv_.notify_one();
+        wake_one_worker();
     }
 
     // The completion closures own move-only state, so they can't live
@@ -1257,103 +1788,256 @@ private:
 
     // --- worker-side code
 
-    void worker_main()
+    // Takes a worker's next piece of work, or nothing if none is waiting.
+    // `next` is the worker's place in the rotation of hashes, reads, and
+    // writes. Call with work_mutex_ held.
+    [[nodiscard]] Turn take_turn(size_t& next)
     {
-        auto scratch = std::vector<uint8_t>{};
-
-        // The kinds of work, in the order a worker takes its turns at them.
         enum class Kind : uint8_t { Hash, Reads, Writes };
         static auto constexpr Kinds = std::array{ Kind::Hash, Kind::Reads, Kind::Writes };
 
-        // Each pass starts with the kind after the one it took last.
+        // A verify span goes when nothing else is waiting, or after this many
+        // turns of other work. Busy disks can't hold it, or the barriers
+        // queued behind it, forever.
+        static auto constexpr MaxTurnsAheadOfAVerify = size_t{ 8U };
+
+        auto turn = Turn{};
+        for (auto i = size_t{}; i < std::size(Kinds) && turns_ahead_of_verify_ < MaxTurnsAheadOfAVerify; ++i) {
+            auto const kind = (next + i) % std::size(Kinds);
+            switch (Kinds[kind]) {
+            case Kind::Hash:
+                if (!std::empty(pending_tests_)) {
+                    turn.test = std::move(pending_tests_.front());
+                    pending_tests_.pop_front();
+                }
+                break;
+
+            case Kind::Reads:
+                turn.reads = take_run(read_sweep_, pending_reads_);
+                break;
+
+            case Kind::Writes:
+                turn.writes = take_run(write_sweep_, pending_writes_);
+                break;
+            }
+
+            if (!turn.empty()) {
+                // the next turn starts with the kind after this one
+                next = (kind + 1U) % std::size(Kinds);
+                break;
+            }
+        }
+
+        // only counted while a verify span waits, so zero when none does
+        if (!std::empty(pending_hash_spans_)) {
+            if (!turn.empty()) {
+                ++turns_ahead_of_verify_;
+            } else {
+                turns_ahead_of_verify_ = 0U;
+                turn.hash_span = std::move(pending_hash_spans_.front());
+                pending_hash_spans_.pop_front();
+            }
+        }
+
+        return turn;
+    }
+
+    // True if take_turn() has something to give. Call with work_mutex_ held.
+    [[nodiscard]] bool has_waiting_work() const noexcept
+    {
+        return !std::empty(pending_tests_) || !std::empty(pending_reads_) || !std::empty(read_sweep_) ||
+            !std::empty(pending_writes_) || !std::empty(write_sweep_) || !std::empty(pending_hash_spans_);
+    }
+
+    void run_turn(Turn turn, std::vector<uint8_t>& scratch, DiskActivityBoard::WriteSlot& write_slot)
+    {
+        if (turn.test) {
+            exec_test(std::move(*turn.test));
+        } else if (!std::empty(turn.reads)) {
+            exec_read_run(std::move(turn.reads), scratch);
+        } else if (!std::empty(turn.writes)) {
+            exec_write_run(std::move(turn.writes), scratch, write_slot);
+        } else if (turn.hash_span) {
+            exec_hash_span(std::move(*turn.hash_span), scratch);
+        }
+    }
+
+    void worker_main()
+    {
+        auto scratch = std::vector<uint8_t>{};
+        auto& write_slot = board_.add_write_slot();
         auto next = size_t{};
 
         for (;;) {
-            auto test = std::optional<PendingTest>{};
-            auto reads = std::vector<PendingRead>{};
-            auto writes = std::vector<PendingWrite>{};
+            auto turn = Turn{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this, &test, &reads, &writes, &next] {
+                work_cv_.wait(lock, [this, &turn, &next] {
                     if (paused_) {
                         return false;
                     }
 
-                    for (auto i = size_t{}; i < std::size(Kinds); ++i) {
-                        auto const turn = (next + i) % std::size(Kinds);
-                        switch (Kinds[turn]) {
-                        case Kind::Hash:
-                            if (!std::empty(pending_tests_)) {
-                                test = std::move(pending_tests_.front());
-                                pending_tests_.pop_front();
-                            }
-                            break;
-
-                        case Kind::Reads:
-                            reads = take_run(read_sweep_, pending_reads_);
-                            break;
-
-                        case Kind::Writes:
-                            writes = take_run(write_sweep_, pending_writes_);
-                            break;
-                        }
-
-                        if (test || !std::empty(reads) || !std::empty(writes)) {
-                            next = (turn + 1U) % std::size(Kinds);
-                            return true;
-                        }
-                    }
-
-                    return stopping_;
+                    turn = take_turn(next);
+                    return !turn.empty() || stopping_;
                 });
             }
 
-            if (test) {
-                exec_test(std::move(*test));
-            } else if (!std::empty(reads)) {
-                exec_read_run(std::move(reads), scratch);
-            } else if (!std::empty(writes)) {
-                exec_write_run(std::move(writes), scratch);
-            } else {
+            if (turn.empty()) {
                 return;
             }
+
+            run_turn(std::move(turn), scratch, write_slot);
         }
+    }
+
+    // Takes a lane's next job, or nothing if none is waiting.
+    // Call with work_mutex_ held.
+    [[nodiscard]] static AdminLane::value_type take_job(AdminLane& lane)
+    {
+        auto job = AdminLane::value_type{};
+        if (!std::empty(lane)) {
+            job = std::move(lane.front());
+            lane.pop_front();
+        }
+        return job;
     }
 
     void admin_main(AdminLane& lane)
     {
         for (;;) {
-            auto job = std::function<void()>{};
+            auto job = AdminLane::value_type{};
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                admin_cv_.wait(lock, [this, &lane] { return !paused_ && !lane.held && (!std::empty(lane.jobs) || stopping_); });
-                if (std::empty(lane.jobs)) {
-                    return;
-                }
+                admin_cv_.wait(lock, [this, &lane, &job] {
+                    if (paused_) {
+                        return false;
+                    }
 
-                job = std::move(lane.jobs.front());
-                lane.jobs.pop_front();
+                    job = take_job(lane);
+                    return job || stopping_;
+                });
+            }
+
+            if (!job) {
+                return;
             }
 
             job();
+            finish_admin_job();
         }
     }
 
-    void post_admin(AdminLane& lane, std::function<void()> job)
+    void post_admin(AdminLane& lane, AdminLane::value_type job)
     {
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
-            lane.jobs.emplace_back(std::move(job));
+            lane.emplace_back(std::move(job));
+            ++n_admin_jobs_;
         }
+        wake_lanes();
+    }
+
+    // Enqueue one step of a move, removal, or rename. It counts as queued
+    // admin work until the lane starts it. A torrent's steps run one at a
+    // time, so its work is counted once.
+    void post_disk_work(AdminLane& lane, AdminLane::value_type job)
+    {
+        board_.queued_admin_count.fetch_add(1U, std::memory_order_relaxed);
+        post_admin(lane, [this, job = std::move(job)] {
+            board_.queued_admin_count.fetch_sub(1U, std::memory_order_relaxed);
+            job();
+        });
+    }
+
+    // Wake the threads for the work just queued. With no threads, have
+    // the session thread do it later instead. Every enqueue goes through
+    // one of these, so that neither kind of backend misses the work.
+    void wake_one_worker()
+    {
+        work_cv_.notify_one();
+        schedule_pump();
+    }
+
+    void wake_all_workers()
+    {
+        work_cv_.notify_all();
+        schedule_pump();
+    }
+
+    void wake_lanes()
+    {
         admin_cv_.notify_all();
+        schedule_pump();
+    }
+
+    void finish_admin_job()
+    {
+        auto const lock = std::scoped_lock{ work_mutex_ };
+        --n_admin_jobs_;
+    }
+
+    // Work is waiting for a thread. With no threads, the session thread
+    // does some of it later, between its other work: never inside the
+    // call that enqueued an op, and never inside a callback.
+    void schedule_pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            if (paused_ || std::exchange(threadless_->pump_scheduled, true)) {
+                return;
+            }
+        }
+
+        marshal_([weak = weak_from_this()] {
+            if (auto const self = weak.lock(); self) {
+                self->pump();
+            }
+        });
+    }
+
+    void pump()
+    {
+        if (!threadless_) {
+            return;
+        }
+
+        auto& threads = *threadless_;
+
+        {
+            auto const lock = std::scoped_lock{ work_mutex_ };
+            threads.pump_scheduled = false;
+            if (paused_) {
+                return;
+            }
+        }
+
+        // Callbacks are delivered between pumps. A varying number of
+        // steps lets a varying number of ops be in flight when they are.
+        static auto constexpr MaxSteps = 8U;
+        auto n_left = 1U + (threads.rng() % MaxSteps);
+        while (n_left != 0U && step(detail::DiskThread::Any)) {
+            --n_left;
+        }
+
+        // there may be more to do
+        if (n_left == 0U) {
+            schedule_pump();
+        }
     }
 
     void close_on_short_lane(std::vector<tr_open_files::Handle> files)
     {
         if (!std::empty(files)) {
-            post_admin(short_lane_, [files = std::move(files)] mutable { files.clear(); });
+            post_admin(short_lane_, [this, files = std::move(files)] mutable {
+                auto const posting = DiskActivityBoard::Posting{ board_, {}, make_op(DiskOpKind::Close) };
+                files.clear();
+            });
         }
     }
 
@@ -1361,7 +2045,7 @@ private:
     // and let the ops behind the barrier go.
     void run_on_short_lane(tr_torrent_id_t const id, std::function<tr_error()> work, std::function<void(tr_error const&)> done)
     {
-        post_admin(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
+        post_disk_work(short_lane_, [this, id, work = std::move(work), done = std::move(done)] mutable {
             post_completion([this, id, error = work(), done = std::move(done)] {
                 done(error);
                 finish_barrier(id);
@@ -1381,9 +2065,9 @@ private:
     {
         auto error = tr_error{};
         auto needs_copy = false;
-        auto leftovers = place_files(*desc, job.target, error, may_copy ? nullptr : &needs_copy);
+        auto leftovers = place_files(board_, desc, job.target, error, may_copy ? nullptr : &needs_copy);
         if (needs_copy) {
-            post_admin(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
+            post_disk_work(long_lane_, [this, desc = std::move(desc), job = std::move(job)] mutable {
                 exec_place(std::move(desc), std::move(job), true);
             });
             return;
@@ -1401,8 +2085,8 @@ private:
             }
 
             // NOLINTNEXTLINE(bugprone-exception-escape): falsely reports on MSVC STL's std::set move constructor
-            post_admin(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
-                leftovers.remove();
+            post_disk_work(short_lane_, [this, job = std::move(job), leftovers = std::move(*leftovers)] mutable {
+                remove_leftovers(board_, leftovers, job.target);
                 post_completion([this, job = std::move(job)] { finish_move(job, {}); });
             });
         });
@@ -1467,10 +2151,14 @@ private:
             auto const lock = std::scoped_lock{ work_mutex_ };
             stopping_ = true;
             paused_ = false;
-            long_lane_.held = false;
         }
         work_cv_.notify_all();
         admin_cv_.notify_all();
+
+        // Exiting threads finish the work that is waiting.
+        // With no threads, finish it here.
+        while (step(detail::DiskThread::Any)) {
+        }
 
         for (auto& worker : workers_) {
             if (worker.joinable()) {
@@ -1481,7 +2169,7 @@ private:
         workers_.clear();
     }
 
-    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch)
+    void exec_write_run(std::vector<PendingWrite> run, std::vector<uint8_t>& scratch, DiskActivityBoard::WriteSlot& write_slot)
     {
         TR_PROFILE_SCOPE("storage.write_run");
         TR_ASSERT(!std::empty(run));
@@ -1493,19 +2181,23 @@ private:
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
-            scratch.resize(n_bytes);
+            auto const buf = scratch_bytes(scratch, n_bytes);
             for (auto const& op : run) {
-                std::copy_n(std::data(*op.data), op.span.size(), std::data(scratch) + (op.span.begin - begin));
+                std::copy_n(std::data(*op.data), op.span.size(), std::data(buf) + (op.span.begin - begin));
             }
 
-            writeme = scratch;
+            writeme = buf;
         }
 
 #ifdef TR_ENABLE_BLOCK_PROFILING
         auto const trace_batch = tr::profile::Collector::instance().batches_enabled();
         auto const write_start = trace_batch ? tr::profile::Clock::now() : tr::profile::Clock::time_point{};
 #endif
-        auto error = tr_ioWrite(desc, open_files_, begin, writeme);
+        auto error = tr_error{};
+        {
+            auto const showing = DiskActivityBoard::WriteSlot::Showing{ write_slot, desc, n_bytes };
+            error = tr_ioWrite(desc, open_files_, begin, writeme);
+        }
 #ifdef TR_ENABLE_BLOCK_PROFILING
         if (trace_batch) {
             auto const write_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(tr::profile::Clock::now() - write_start)
@@ -1528,7 +2220,7 @@ private:
         }
 #endif
 
-        enqueued_write_bytes_.fetch_sub(n_bytes, std::memory_order_relaxed);
+        board_.queued_write_bytes.fetch_sub(n_bytes, std::memory_order_relaxed);
         if (!error) {
             write_runs_.fetch_add(1U, std::memory_order_relaxed);
             blocks_written_.fetch_add(std::size(run), std::memory_order_relaxed);
@@ -1580,11 +2272,11 @@ private:
         // of several doesn't fail its neighbors.
         auto merged = false;
         if (std::size(run) > 1U) {
-            scratch.resize(static_cast<size_t>(end - begin));
-            merged = !tr_ioRead(desc, open_files_, begin, scratch);
+            auto const buf = scratch_bytes(scratch, static_cast<size_t>(end - begin));
+            merged = !tr_ioRead(desc, open_files_, begin, buf);
             if (merged) {
                 for (auto const& op : run) {
-                    std::copy_n(std::data(scratch) + (op.span.begin - begin), op.data->size(), op.data->data());
+                    std::copy_n(std::data(buf) + (op.span.begin - begin), op.data->size(), op.data->data());
                 }
             }
         }
@@ -1617,6 +2309,21 @@ private:
             }
             release(id, std::size(run));
         });
+    }
+
+    void exec_hash_span(PendingHashSpan pending, std::vector<uint8_t>& scratch)
+    {
+        TR_PROFILE_SCOPE("storage.hash_span");
+        auto& op = pending.op;
+        auto hashes = std::vector<tr_sha1_digest_t>{};
+        auto error = hash_span_from_disk(*pending.desc, open_files_, op.span, scratch, *op.sha, hashes);
+
+        post_completion(
+            [this, id = pending.tor_id, op = std::move(op), error = std::move(error), hashes = std::move(hashes)] mutable {
+                unregister_running_hash(gate_of(id), op.span);
+                std::move(op.on_hashed)(id, op.span, error, std::move(hashes), std::move(op.sha));
+                release(id);
+            });
     }
 
     void exec_test(PendingTest op)
@@ -1660,6 +2367,7 @@ private:
     // --- session-thread state
 
     tr_open_files& open_files_;
+    DiskActivityBoard& board_;
     DescriptorProvider provider_;
     Marshal marshal_;
 
@@ -1669,6 +2377,9 @@ private:
     // Keyed like pending_reads_, so the flush moves them under the lock
     // without allocating.
     std::multimap<OpKey, PendingRead> staged_reads_;
+
+    // Set by cancel_reads(). Reads admitted afterwards fail at once.
+    bool cancel_reads_ = false;
 
     // --- state shared with the workers
 
@@ -1688,8 +2399,14 @@ private:
     // files. On the long lane each of those would wait behind other
     // torrents' whole copies.
     AdminLane short_lane_;
+    // admin jobs posted and not yet finished, on both lanes
+    size_t n_admin_jobs_ = 0U;
 
     std::deque<PendingTest> pending_tests_;
+    // spans of verifies, which wait their turn after other work. See take_turn().
+    std::deque<PendingHashSpan> pending_hash_spans_;
+    // turns taken while a verify span waited. See take_turn().
+    size_t turns_ahead_of_verify_ = 0U;
     // The ops that wait for the next sweep, and the sweep being drained.
     std::multimap<OpKey, PendingRead> pending_reads_;
     std::multimap<OpKey, PendingRead> read_sweep_;
@@ -1704,7 +2421,6 @@ private:
 
     RetainedBlocks retained_;
 
-    std::atomic<uint64_t> enqueued_write_bytes_ = 0U;
     std::atomic<uint64_t> write_runs_ = 0U;
     std::atomic<uint64_t> blocks_written_ = 0U;
     std::atomic<uint64_t> hashes_from_buffers_ = 0U;
@@ -1714,15 +2430,18 @@ private:
     std::atomic<uint64_t> blocks_read_ = 0U;
 
     std::vector<std::thread> workers_;
+    std::optional<Threadless> threadless_;
 };
 
 LocalData::LocalData(tr_torrents const& torrents, tr_open_files& open_files)
-    : backend_{ std::make_unique<DefaultBackend>(torrents, open_files) }
+    : board_{ std::make_unique<DiskActivityBoard>() }
+    , backend_{ std::make_unique<DefaultBackend>(torrents, open_files, *board_) }
 {
 }
 
 LocalData::LocalData(std::unique_ptr<Backend> backend)
-    : backend_{ std::move(backend) }
+    : board_{ std::make_unique<DiskActivityBoard>() }
+    , backend_{ std::move(backend) }
 {
 }
 
@@ -1731,7 +2450,6 @@ LocalData::~LocalData() = default;
 void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider)
 {
     TR_ASSERT(!threaded_);
-    TR_ASSERT(completions_ == Completions::Inline); // see set_completions()
 
     if (worker_count == 0U) {
         return;
@@ -1743,7 +2461,13 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
     static auto constexpr MaxWorkerCount = size_t{ 64U };
     worker_count = std::min(worker_count, MaxWorkerCount);
 
-    threaded_ = std::make_shared<Threaded>(open_files, std::move(provider), std::move(marshal), worker_count, retained_bytes());
+    threaded_ = std::make_shared<Threaded>(
+        open_files,
+        *board_,
+        std::move(provider),
+        std::move(marshal),
+        worker_count,
+        retained_bytes());
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -1754,15 +2478,13 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     }
 
     auto data = std::make_unique<BlockData>();
-    auto error = backend_->read(id, byte_span, *data);
+    auto const error = backend_->read(id, byte_span, *data);
     if (error) {
         data = nullptr;
     }
 
     if (on_read) {
-        finish([id, byte_span, error = std::move(error), data = std::move(data), on_read = std::move(on_read)] mutable {
-            std::move(on_read)(id, byte_span, error, std::move(data));
-        });
+        std::move(on_read)(id, byte_span, error, std::move(data));
     }
 }
 
@@ -1774,13 +2496,29 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     }
 
     auto hash = tr_sha1_digest_t{};
-    auto error = backend_->test_piece(id, piece, hash);
+    auto const error = backend_->test_piece(id, piece, hash);
 
     if (on_test) {
-        finish([id, piece, error = std::move(error), hash, on_test = std::move(on_test)] mutable {
-            std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
-        });
+        std::move(on_test)(id, piece, error, !error ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
     }
+}
+
+void LocalData::hash_span(
+    tr_torrent_id_t const id,
+    tr_byte_span_t const span,
+    std::unique_ptr<tr_sha1> sha,
+    OnHashSpan on_hashed)
+{
+    TR_ASSERT(sha != nullptr);
+
+    if (threaded_) {
+        threaded_->hash_span(id, span, std::move(sha), std::move(on_hashed));
+        return;
+    }
+
+    auto hashes = std::vector<tr_sha1_digest_t>{};
+    auto const error = backend_->hash_span(id, span, *sha, hashes);
+    std::move(on_hashed)(id, span, error, std::move(hashes), std::move(sha));
 }
 
 void LocalData::write(
@@ -1794,12 +2532,10 @@ void LocalData::write(
         return;
     }
 
-    auto error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
+    auto const error = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error::from_errno(EINVAL);
 
     if (on_write) {
-        finish([id, byte_span, error = std::move(error), on_write = std::move(on_write)] mutable {
-            std::move(on_write)(id, byte_span, error);
-        });
+        std::move(on_write)(id, byte_span, error);
     }
 }
 
@@ -1814,7 +2550,6 @@ void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std:
         return;
     }
 
-    drain();
     body();
 }
 
@@ -1858,7 +2593,6 @@ void LocalData::close_all()
         threaded_->drain_all();
     }
 
-    drain();
     backend_->close_all();
 }
 
@@ -1873,7 +2607,8 @@ void LocalData::move(
         return;
     }
 
-    drain();
+    // See Threaded::submit_disk_work().
+    backend_->close_torrent(id);
 
     auto const target = parent();
     auto const placed = [&on_placed, id, &target] {
@@ -1897,8 +2632,7 @@ void LocalData::remove(
         return;
     }
 
-    drain();
-
+    backend_->close_torrent(id);
     auto const error = backend_->remove(id, std::move(remove_func));
     if (on_remove) {
         on_remove(id, error);
@@ -1917,10 +2651,9 @@ void LocalData::rename(
         return;
     }
 
-    drain();
-
     auto error = check();
     if (!error) {
+        backend_->close_torrent(id);
         error = backend_->rename(id, oldpath, newname);
     }
     on_rename(id, error);
@@ -1932,8 +2665,24 @@ void LocalData::shutdown()
         threaded_->shutdown();
         threaded_.reset();
     }
+}
 
-    drain();
+void LocalData::begin_shutdown()
+{
+    if (threaded_) {
+        threaded_->begin_shutdown();
+    }
+}
+
+bool LocalData::try_finish_shutdown()
+{
+    if (threaded_ && !threaded_->is_quiet()) {
+        return false;
+    }
+
+    // The threads have nothing left to do, so stopping them doesn't wait.
+    threaded_.reset();
+    return true;
 }
 
 bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
@@ -1943,12 +2692,21 @@ bool LocalData::admin_op_pending(tr_torrent_id_t const id) const
 
 uint64_t LocalData::enqueued_write_bytes() const noexcept
 {
-    return threaded_ ? threaded_->enqueued_write_bytes() : 0U;
+    return board_->queued_write_bytes.load(std::memory_order_relaxed);
 }
 
 LocalData::Stats LocalData::stats() const noexcept
 {
     return threaded_ ? threaded_->stats() : Stats{};
+}
+
+tr_disk_activity LocalData::activity() const
+{
+    auto activity = tr_disk_activity{};
+    activity.in_flight = board_->snapshot();
+    activity.queued_write_bytes = board_->queued_write_bytes.load(std::memory_order_relaxed);
+    activity.queued_admin_count = board_->queued_admin_count.load(std::memory_order_relaxed);
+    return activity;
 }
 
 void LocalData::set_write_budget(uint64_t const bytes)
@@ -1970,7 +2728,7 @@ std::optional<uint64_t> LocalData::spare_write_bytes(uint64_t const requested) c
         return {};
     }
 
-    auto const in_flight = threaded_->enqueued_write_bytes() + requested;
+    auto const in_flight = enqueued_write_bytes() + requested;
     return *write_budget_ - std::min(*write_budget_, in_flight);
 }
 
@@ -1981,70 +2739,55 @@ void LocalData::set_workers_paused(bool const paused)
     }
 }
 
-void detail::hold_copy_lane(LocalData& local_data, bool const held)
-{
-    if (local_data.threaded_) {
-        local_data.threaded_->hold_copy_lane(held);
+struct detail::LocalDataTestAccess {
+    static void start_threadless(
+        LocalData& local_data,
+        size_t const worker_count,
+        uint32_t const seed,
+        tr_open_files& open_files,
+        LocalData::Marshal marshal,
+        LocalData::DescriptorProvider provider)
+    {
+        TR_ASSERT(!local_data.threaded_);
+        TR_ASSERT(worker_count != 0U);
+
+        local_data.threaded_ = std::make_shared<LocalData::Threaded>(
+            open_files,
+            *local_data.board_,
+            std::move(provider),
+            std::move(marshal),
+            worker_count,
+            local_data.retained_bytes(),
+            seed);
     }
-}
 
-void LocalData::set_wake(std::function<void()> wake)
-{
-    wake_ = std::move(wake);
-}
-
-void LocalData::set_completions(Completions const completions, uint32_t const seed)
-{
-    // Parking wraps only the synchronous backend, so the test modes and
-    // the threaded backend are mutually exclusive.
-    TR_ASSERT(!threaded_ || completions == Completions::Inline);
-
-    drain();
-    completions_ = completions;
-    rng_.seed(seed);
-}
-
-bool LocalData::defer_next() noexcept
-{
-    switch (completions_) {
-    case Completions::Deferred:
-        return true;
-
-    case Completions::Shuffled:
-        return (rng_() & 1U) != 0U;
-
-    default:
-        return false;
+    [[nodiscard]] static LocalData::Threaded* threaded(LocalData& local_data) noexcept
+    {
+        return local_data.threaded_.get();
     }
+};
+
+void detail::start_threadless(
+    LocalData& local_data,
+    size_t const worker_count,
+    uint32_t const seed,
+    tr_open_files& open_files,
+    LocalData::Marshal marshal,
+    LocalData::DescriptorProvider provider)
+{
+    LocalDataTestAccess::start_threadless(local_data, worker_count, seed, open_files, std::move(marshal), std::move(provider));
 }
 
-void LocalData::park(std::unique_ptr<Parked> completion)
+bool detail::step(LocalData& local_data, DiskThread const which)
 {
-    auto const was_idle = std::empty(parked_);
-    parked_.emplace_back(std::move(completion));
-    if (was_idle && wake_) {
-        wake_();
-    }
+    auto* const threaded = LocalDataTestAccess::threaded(local_data);
+    return threaded != nullptr && threaded->step(which);
 }
 
-void LocalData::pump()
+void detail::deliver(LocalData& local_data)
 {
-    // Take the whole queue up front. A completion can park more work,
-    // and that work belongs to the next pump, not this one.
-    auto parked = std::vector<std::unique_ptr<Parked>>{};
-    std::swap(parked, parked_);
-
-    std::ranges::shuffle(parked, rng_);
-
-    for (auto const& completion : parked) {
-        completion->deliver();
-    }
-}
-
-void LocalData::drain()
-{
-    while (!std::empty(parked_)) {
-        pump();
+    if (auto* const threaded = LocalDataTestAccess::threaded(local_data); threaded != nullptr) {
+        threaded->deliver();
     }
 }
 

@@ -32,13 +32,19 @@ struct StorageDescriptor;
 /**
  * Reads `std::size(setme)` bytes of torrent data, starting at byte `begin`.
  *
+ * `verify` says a verify is reading. A verify reads each file once, front
+ * to back, so the files it opens are opened for one pass. And it expects
+ * to find data missing, so a failed read isn't logged: the verify reports
+ * it as missing pieces.
+ *
  * Safe to call from any thread.
  */
 [[nodiscard]] tr_error tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
-    std::span<uint8_t> setme);
+    std::span<uint8_t> setme,
+    bool verify = false);
 
 /**
  * Like tr_ioRead(), but succeeds only if it never waits for the disk:

@@ -64,6 +64,12 @@ echo "clang-tidy (ctcache): ${#files[@]} translation units match /${TIDY_REGEX}/
 extra=()
 [ -n "$extra_arg" ] && extra=(-extra-arg="$extra_arg")
 
+# TODO: remove once clang-tidy supports -std:c++23 (https://github.com/llvm/llvm-project/issues/244531)
+# CMake currently passes -std:c++23 to clang-tidy on Windows, so we need to add `-std:c++23preview` instead.
+if [ "${RUNNER_OS:-}" = Windows ]; then
+  extra+=(-extra-arg='-std:c++23preview')
+fi
+
 printf '%s\0' "${files[@]}" \
   | xargs -0 -P "$jobs" -I{} \
       "$PY" "$CTCACHE_CLIENT" "$clang_tidy" "{}" -p "$build_path" -quiet -warnings-as-errors='*' "${extra[@]}"

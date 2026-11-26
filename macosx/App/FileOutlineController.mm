@@ -12,6 +12,7 @@
 #import "FileRenameSheetController.h"
 #import "NSMutableArrayAdditions.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 
 static CGFloat const kRowSmallHeight = 18.0;
 
@@ -566,7 +567,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
                                keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagHigh;
-    item.image = [NSImage imageNamed:@"PriorityHighTemplate"];
+    item.image = [NSImage highPriority];
     [priorityMenu addItem:item];
 
     item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Normal", "File Outline -> Priority Menu")
@@ -574,7 +575,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
                                keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagNormal;
-    item.image = [NSImage imageNamed:@"PriorityNormalTemplate"];
+    item.image = [NSImage normalPriority];
     [priorityMenu addItem:item];
 
     item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Low", "File Outline -> Priority Menu")
@@ -582,7 +583,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
                                keyEquivalent:@""];
     item.target = self;
     item.tag = FilePriorityMenuTagLow;
-    item.image = [NSImage imageNamed:@"PriorityLowTemplate"];
+    item.image = [NSImage lowPriority];
     [priorityMenu addItem:item];
 
     [menu addItem:[NSMenuItem separatorItem]];

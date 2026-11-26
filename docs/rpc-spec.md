@@ -709,6 +709,7 @@ Response parameters:
 | `upload_speed`             | number
 | `cumulative_stats`         | stats object (see below)
 | `current_stats`            | stats object (see below)
+| `disk_stats`               | disk stats object (see below)
 
 A stats object contains:
 
@@ -719,6 +720,19 @@ A stats object contains:
 | `files_added`      | number     | tr_session_stats
 | `seconds_active`   | number     | tr_session_stats
 | `session_count`    | number     | tr_session_stats
+
+A disk stats object counts the disk work done since the session started.
+Every count is 0 when `disk_io_workers` is 0.
+
+| Key | Value Type | Description
+|:--|:--|:--
+| `blocks_read`         | number | block requests answered by reading the disk
+| `blocks_written`      | number | blocks written to disk
+| `cached_reads`        | number | block requests answered from the operating system's cache without waiting for the disk
+| `hashes_from_buffers` | number | pieces checked from blocks still in memory
+| `hashes_from_disk`    | number | pieces checked by reading them back from disk
+| `read_runs`           | number | disk reads; adjacent requests share one
+| `write_runs`          | number | disk writes; adjacent blocks share one
 
 ### 4.3 Blocklist
 Method name: `blocklist_update`
@@ -1176,6 +1190,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_set` | new arg `torrent_complete_verify_enabled`
 | `session_stats` | new arg `busy`
 | `session_stats` | new arg `unpaused_torrent_count`
+| `session_stats` | new arg `disk_stats`
 | `session_get` | new arg `blocklist_date`
 | `session_get` | new arg `blocklist_updates_enabled`
 | `session_set` | new arg `blocklist_updates_enabled`

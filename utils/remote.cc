@@ -57,23 +57,23 @@ using namespace tr::Values;
 
 namespace
 {
-char constexpr MyName[] = MY_NAME;
+auto constexpr MyName = MY_NAME;
 
-char constexpr Usage[] = MY_NAME " " LONG_VERSION_STRING
-                                 "\n"
-                                 "A fast and easy BitTorrent client\n" TR_PROJ_URL_HOMEPAGE
-                                 "\n"
-                                 "\n"
-                                 "Usage: " MY_NAME
-                                 " [host] [options]\n"
-                                 "       " MY_NAME
-                                 " [port] [options]\n"
-                                 "       " MY_NAME
-                                 " [host:port] [options]\n"
-                                 "       " MY_NAME " [http(s?)://host:port" TR_PROJ_WEB_SERVER_BASE_PATH
-                                 "] [options]\n"
-                                 "\n"
-                                 "See the man page for detailed explanations and many examples.";
+auto constexpr Usage = MY_NAME " " LONG_VERSION_STRING
+                               "\n"
+                               "A fast and easy BitTorrent client\n" TR_PROJ_URL_HOMEPAGE
+                               "\n"
+                               "\n"
+                               "Usage: " MY_NAME
+                               " [host] [options]\n"
+                               "       " MY_NAME
+                               " [port] [options]\n"
+                               "       " MY_NAME
+                               " [host:port] [options]\n"
+                               "       " MY_NAME " [http(s?)://host:port" TR_PROJ_WEB_SERVER_BASE_PATH
+                               "] [options]\n"
+                               "\n"
+                               "See the man page for detailed explanations and many examples.";
 
 class RemoteWebMediator final : public tr_web::Mediator
 {
@@ -109,51 +109,51 @@ struct RemoteConfig {
 
 // --- Display Utilities
 
-[[nodiscard]] std::string eta_to_string(int64_t eta)
+[[nodiscard]] std::string eta_to_string(int64_t const eta)
 {
     if (eta < 0) {
         return "Unknown"s;
     }
 
-    if (eta < 60) {
-        return fmt::format("{:d} sec", eta);
+    auto const secs = std::chrono::seconds{ eta };
+    if (secs < std::chrono::minutes{ 1 }) {
+        return fmt::format("{:%Q} sec", secs);
     }
 
-    if (eta < (60 * 60)) {
-        return fmt::format("{:d} min", eta / 60);
+    if (secs < std::chrono::hours{ 1 }) {
+        return fmt::format("{:%Q} min", std::chrono::duration_cast<std::chrono::minutes>(secs));
     }
 
-    if (eta < (60 * 60 * 24)) {
-        return fmt::format("{:d} hrs", eta / (60 * 60));
+    if (secs < std::chrono::days{ 1 }) {
+        return fmt::format("{:%Q} hrs", std::chrono::duration_cast<std::chrono::hours>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 30)) {
-        return fmt::format("{:d} days", eta / (60 * 60 * 24));
+    if (secs < std::chrono::months{ 1 }) {
+        return fmt::format("{:%Q} days", std::chrono::duration_cast<std::chrono::days>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 30 * 12)) {
-        return fmt::format("{:d} months", eta / (60 * 60 * 24 * 30));
+    if (secs < std::chrono::years{ 1 }) {
+        return fmt::format("{:%Q} months", std::chrono::duration_cast<std::chrono::months>(secs));
     }
 
-    if (eta < (60 * 60 * 24 * 365 * 1000LL)) // up to 999 years
-    {
-        return fmt::format("{:d} years", eta / (60 * 60 * 24 * 365));
+    if (secs < std::chrono::years{ 1000 }) {
+        return fmt::format("{:%Q} years", std::chrono::duration_cast<std::chrono::years>(secs));
     }
 
     return "∞"s;
 }
 
-[[nodiscard]] auto tr_strltime(time_t seconds)
+[[nodiscard]] auto tr_strltime(int64_t seconds)
 {
     if (seconds < 0) {
-        seconds = 0;
+        return "Unknown"s;
     }
 
-    auto const total_seconds = seconds;
-    auto const days = seconds / 86400;
-    auto const hours = (seconds % 86400) / 3600;
-    auto const minutes = (seconds % 3600) / 60;
-    seconds = (seconds % 3600) % 60;
+    auto const total_seconds = std::chrono::seconds{ seconds };
+    auto const days = total_seconds / std::chrono::days{ 1 };
+    auto const hours = (total_seconds % std::chrono::days{ 1 }) / std::chrono::hours{ 1 };
+    auto const minutes = (total_seconds % std::chrono::hours{ 1 }) / std::chrono::minutes{ 1 };
+    seconds = (total_seconds % std::chrono::minutes{ 1 }).count();
 
     auto tmpstr = std::string{};
 
@@ -172,35 +172,23 @@ struct RemoteConfig {
         tmpstr = sstr;
     }
 
-    auto const totstr = fmt::format("{:d} {:s}", total_seconds, tr_ngettext("second", "seconds", total_seconds));
+    auto const totstr = fmt::format(
+        "{:d} {:s}",
+        total_seconds.count(),
+        tr_ngettext("second", "seconds", total_seconds.count()));
     return fmt::format("{:s} ({:s})", tmpstr, totstr);
 }
 
-// RPC byte counts are never negative
-[[nodiscard]] Percent to_percent(int64_t const have, int64_t const total) noexcept
+[[nodiscard]] auto strlsize(uint64_t const bytes)
 {
-    return { static_cast<uint64_t>(have), static_cast<uint64_t>(total) };
-}
-
-[[nodiscard]] Ratio to_ratio(int64_t const numerator, int64_t const denominator) noexcept
-{
-    return { static_cast<uint64_t>(numerator), static_cast<uint64_t>(denominator) };
-}
-
-[[nodiscard]] auto strlsize(int64_t bytes)
-{
-    if (bytes < 0) {
-        return "Unknown"s;
-    }
-
-    if (bytes == 0) {
+    if (bytes == 0U) {
         return "None"s;
     }
 
     return Storage{ bytes, Storage::Units::Bytes }.to_string();
 }
 
-enum {
+enum : uint8_t {
     ID_NOOP,
     ID_SESSION,
     ID_STATS,
@@ -222,175 +210,640 @@ enum {
 using Arg = tr_option::Arg;
 static_assert(TrDefaultPeerPort == 51413, "update 'port' desc");
 auto constexpr Options = std::to_array<tr_option>({
-    { 'a', "add", "Add torrent files by filename or URL", "a", Arg::None, nullptr },
-    { 970, "alt-speed", "Use the alternate Limits", "as", Arg::None, nullptr },
-    { 971, "no-alt-speed", "Don't use the alternate Limits", "AS", Arg::None, nullptr },
-    { 972, "alt-speed-downlimit", "max alternate download speed (in " SPEED_K_STR ")", "asd", Arg::Required, "<speed>" },
-    { 973, "alt-speed-uplimit", "max alternate upload speed (in " SPEED_K_STR ")", "asu", Arg::Required, "<speed>" },
-    { 974, "alt-speed-scheduler", "Use the scheduled on/off times", "asc", Arg::None, nullptr },
-    { 975, "no-alt-speed-scheduler", "Don't use the scheduled on/off times", "ASC", Arg::None, nullptr },
-    { 976, "alt-speed-time-begin", "Time to start using the alt speed limits (in hhmm)", nullptr, Arg::Required, "<time>" },
-    { 977, "alt-speed-time-end", "Time to stop using the alt speed limits (in hhmm)", nullptr, Arg::Required, "<time>" },
-    { 978, "alt-speed-days", "Numbers for any/all days of the week - eg. \"1-7\"", nullptr, Arg::Required, "<days>" },
-    { 963, "blocklist-update", "Blocklist update", nullptr, Arg::None, nullptr },
-    { 'c', "incomplete-dir", "Where to store new torrents until they're complete", "c", Arg::Required, "<dir>" },
-    { 'C', "no-incomplete-dir", "Don't store incomplete torrents in a different location", "C", Arg::None, nullptr },
-    { 'b', "debug", "Print debugging information", "b", Arg::None, nullptr },
-    { 730, "bandwidth-group", "Set the current torrents' bandwidth group", "bwg", Arg::Required, "<group>" },
-    { 731, "no-bandwidth-group", "Reset the current torrents' bandwidth group", "nwg", Arg::None, nullptr },
-    { 732, "list-groups", "Show bandwidth groups with their parameters", "lg", Arg::None, nullptr },
-    { 'd',
-      "downlimit",
-      "Set the max download speed in " SPEED_K_STR " for the current torrent(s) or globally",
-      "d",
-      Arg::Required,
-      "<speed>" },
-    { 'D', "no-downlimit", "Disable max download speed for the current torrent(s) or globally", "D", Arg::None, nullptr },
-    { 'e', "cache", "Set the maximum size of the session's memory cache (in " MEM_M_STR ")", "e", Arg::Required, "<size>" },
-    { 910, "encryption-required", "Encrypt all peer connections", "er", Arg::None, nullptr },
-    { 911, "encryption-preferred", "Prefer encrypted peer connections", "ep", Arg::None, nullptr },
-    { 912, "encryption-tolerated", "Prefer unencrypted peer connections", "et", Arg::None, nullptr },
-    { 850, "exit", "Tell the " TR_PROJ_APPNAME " session to shut down", nullptr, Arg::None, nullptr },
-    { 940, "files", "List the current torrent(s)' files", "f", Arg::None, nullptr },
-    { 'F', "filter", "Filter the current torrent(s)", "F", Arg::Required, "criterion" },
-    { 'g', "get", "Mark files for download", "g", Arg::Required, "<files>" },
-    { 'G', "no-get", "Mark files for not downloading", "G", Arg::Required, "<files>" },
-    { 'i', "info", "Show the current torrent(s)' details", "i", Arg::None, nullptr },
-    { 944, "print-ids", "Print the current torrent(s)' ids", "ids", Arg::None, nullptr },
-    { 940, "info-files", "List the current torrent(s)' files", "if", Arg::None, nullptr },
-    { 941, "info-peers", "List the current torrent(s)' peers", "ip", Arg::None, nullptr },
-    { 942, "info-pieces", "List the current torrent(s)' pieces", "ic", Arg::None, nullptr },
-    { 943, "info-trackers", "List the current torrent(s)' trackers", "it", Arg::None, nullptr },
-    { 'j', "json", "Return RPC response as a JSON string if the request was not a notification", "j", Arg::None, nullptr },
-    { 920, "session-info", "Show the session's details", "si", Arg::None, nullptr },
-    { 921, "session-stats", "Show the session's statistics", "st", Arg::None, nullptr },
-    { 'l', "list", "List all torrents", "l", Arg::None, nullptr },
-    { 'L', "labels", "Set the current torrents' labels", "L", Arg::Required, "<label[,label...]>" },
-    { 960, "move", "Move current torrent's data to a new folder", nullptr, Arg::Required, "<path>" },
-    { 968, "unix-socket", "Use a Unix domain socket", nullptr, Arg::Required, "<path>" },
-    { 961, "find", "Tell " TR_PROJ_APPNAME_CAPITALIZED " where to find a torrent's data", nullptr, Arg::Required, "<path>" },
-    { 964, "rename", "Rename torrents root folder or a file", nullptr, Arg::Required, "<name>" },
-    { 965, "path", "Provide path for rename functions", nullptr, Arg::Required, "<path>" },
-    { 'm', "portmap", "Enable portmapping via NAT-PMP or UPnP", "m", Arg::None, nullptr },
-    { 'M', "no-portmap", "Disable portmapping", "M", Arg::None, nullptr },
-    { 'n', "auth", "Set username and password", "n", Arg::Required, "<user:pw>" },
-    { 810, "authenv", "Set authentication info from the TR_AUTH environment variable (user:pw)", "ne", Arg::None, nullptr },
-    { 'N', "netrc", "Set authentication info from a .netrc file", "N", Arg::Required, "<file>" },
-    { 820, "ssl", "Use SSL when talking to daemon", nullptr, Arg::None, nullptr },
-    { 'o', "dht", "Enable distributed hash tables (DHT)", "o", Arg::None, nullptr },
-    { 'O', "no-dht", "Disable distributed hash tables (DHT)", "O", Arg::None, nullptr },
-    { 'p', "port", "Port for incoming peers (Default: 51413)", "p", Arg::Required, "<port>" },
-    { 962, "port-test", "Port testing", "pt", Arg::None, nullptr },
-    { 'P', "random-port", "Random port for incoming peers", "P", Arg::None, nullptr },
-    { 900, "priority-high", "Try to download these file(s) first", "ph", Arg::Required, "<files>" },
-    { 901, "priority-normal", "Try to download these file(s) normally", "pn", Arg::Required, "<files>" },
-    { 902, "priority-low", "Try to download these file(s) last", "pl", Arg::Required, "<files>" },
-    { 700, "bandwidth-high", "Give this torrent first chance at available bandwidth", "Bh", Arg::None, nullptr },
-    { 701, "bandwidth-normal", "Give this torrent bandwidth left over by high priority torrents", "Bn", Arg::None, nullptr },
-    { 702,
-      "bandwidth-low",
-      "Give this torrent bandwidth left over by high and normal priority torrents",
-      "Bl",
-      Arg::None,
-      nullptr },
-    { 600, "reannounce", "Reannounce the current torrent(s)", nullptr, Arg::None, nullptr },
-    { 'r', "remove", "Remove the current torrent(s)", "r", Arg::None, nullptr },
-    { 930, "peers", "Set the maximum number of peers for the current torrent(s) or globally", "pr", Arg::Required, "<max>" },
-    { 840, "remove-and-delete", "Remove the current torrent(s) and delete local data", "rad", Arg::None, nullptr },
-    { 800, "torrent-done-script", "A script to run when a torrent finishes downloading", nullptr, Arg::Required, "<file>" },
-    { 801, "no-torrent-done-script", "Don't run the done-downloading script", nullptr, Arg::None, nullptr },
-    { 802, "torrent-done-seeding-script", "A script to run when a torrent finishes seeding", nullptr, Arg::Required, "<file>" },
-    { 803, "no-torrent-done-seeding-script", "Don't run the done-seeding script", nullptr, Arg::None, nullptr },
-    { 950, "seedratio", "Let the current torrent(s) seed until a specific ratio", "sr", Arg::Required, "ratio" },
-    { 951, "seedratio-default", "Let the current torrent(s) use the global seedratio settings", "srd", Arg::None, nullptr },
-    { 952, "no-seedratio", "Let the current torrent(s) seed regardless of ratio", "SR", Arg::None, nullptr },
-    { 953,
-      "global-seedratio",
-      "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
-      "gsr",
-      Arg::Required,
-      "ratio" },
-    { 954,
-      "no-global-seedratio",
-      "All torrents, unless overridden by a per-torrent setting, should seed regardless of ratio",
-      "GSR",
-      Arg::None,
-      nullptr },
-    { 955,
-      "idle-seeding-limit",
-      "Let the current torrent(s) seed until a specific amount idle time",
-      "isl",
-      Arg::Required,
-      "<minutes>" },
-    { 956,
-      "default-idle-seeding-limit",
-      "Let the current torrent(s) use the default idle seeding settings",
-      "isld",
-      Arg::None,
-      nullptr },
-    { 957, "no-idle-seeding-limit", "Let the current torrent(s) seed regardless of idle time", "ISL", Arg::None, nullptr },
-    { 958,
-      "global-idle-seeding-limit",
-      "All torrents, unless overridden by a per-torrent setting, should seed until a specific amount of idle time",
-      "gisl",
-      Arg::Required,
-      "<minutes>" },
-    { 959,
-      "no-global-idle-seeding-limit",
-      "All torrents, unless overridden by a per-torrent setting, should seed regardless of idle time",
-      "GISL",
-      Arg::None,
-      nullptr },
-    { 710, "tracker-add", "Add a tracker to a torrent", "td", Arg::Required, "<tracker>" },
-    { 712, "tracker-remove", "Remove a tracker from a torrent", "tr", Arg::Required, "<trackerId>" },
-    { 's', "start", "Start the current torrent(s)", "s", Arg::None, nullptr },
-    { 'S', "stop", "Stop the current torrent(s)", "S", Arg::None, nullptr },
-    { 't', "torrent", "Set the current torrent(s)", "t", Arg::Required, "<torrent>" },
-    { 990, "start-paused", "Start added torrents paused", nullptr, Arg::None, nullptr },
-    { 991, "no-start-paused", "Start added torrents unpaused", nullptr, Arg::None, nullptr },
-    { 992, "trash-torrent", "Delete torrents after adding", nullptr, Arg::None, nullptr },
-    { 993, "no-trash-torrent", "Do not delete torrents after adding", nullptr, Arg::None, nullptr },
-    { 994,
-      "sequential-download",
-      "Download the torrent sequentially, starting from <piece> or 0",
-      "seq",
-      Arg::Optional,
-      "<piece>" },
-    { 995, "no-sequential-download", "Download the torrent normally", "SEQ", Arg::None, nullptr },
-    { 984, "honor-session", "Make the current torrent(s) honor the session limits", "hl", Arg::None, nullptr },
-    { 985, "no-honor-session", "Make the current torrent(s) not honor the session limits", "HL", Arg::None, nullptr },
-    { 'u',
-      "uplimit",
-      "Set the max upload speed in " SPEED_K_STR " for the current torrent(s) or globally",
-      "u",
-      Arg::Required,
-      "<speed>" },
-    { 'U', "no-uplimit", "Disable max upload speed for the current torrent(s) or globally", "U", Arg::None, nullptr },
-    { 830,
-      "preferred-transports",
-      "Comma-separated list specifying preference of transport protocols",
-      nullptr,
-      Arg::Required,
-      "<protocol(s)>" },
-    { 831, "utp", "*DEPRECATED* Enable µTP for peer connections", nullptr, Arg::None, nullptr },
-    { 832, "no-utp", "*DEPRECATED* Disable µTP for peer connections", nullptr, Arg::None, nullptr },
-    { 'v', "verify", "Verify the current torrent(s)", "v", Arg::None, nullptr },
-    { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
-    { 'w',
-      "download-dir",
-      "When used in conjunction with --add, set the new torrent's download folder. "
-      "Otherwise, set the default download folder",
-      "w",
-      Arg::Required,
-      "<path>" },
-    { 'x', "pex", "Enable peer exchange (PEX)", "x", Arg::None, nullptr },
-    { 'X', "no-pex", "Disable peer exchange (PEX)", "X", Arg::None, nullptr },
-    { 'y', "lpd", "Enable local peer discovery (LPD)", "y", Arg::None, nullptr },
-    { 'Y', "no-lpd", "Disable local peer discovery (LPD)", "Y", Arg::None, nullptr },
-    { 941, "peer-info", "List the current torrent(s)' peers", "pi", Arg::None, nullptr },
-    { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
+    { .val = 'a',
+      .longName = "add",
+      .description = "Add torrent files by filename or URL",
+      .shortName = "a",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 970,
+      .longName = "alt-speed",
+      .description = "Use the alternate Limits",
+      .shortName = "as",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 971,
+      .longName = "no-alt-speed",
+      .description = "Don't use the alternate Limits",
+      .shortName = "AS",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 972,
+      .longName = "alt-speed-downlimit",
+      .description = "max alternate download speed (in " SPEED_K_STR ")",
+      .shortName = "asd",
+      .arg = Arg::Required,
+      .argName = "<speed>" },
+    { .val = 973,
+      .longName = "alt-speed-uplimit",
+      .description = "max alternate upload speed (in " SPEED_K_STR ")",
+      .shortName = "asu",
+      .arg = Arg::Required,
+      .argName = "<speed>" },
+    { .val = 974,
+      .longName = "alt-speed-scheduler",
+      .description = "Use the scheduled on/off times",
+      .shortName = "asc",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 975,
+      .longName = "no-alt-speed-scheduler",
+      .description = "Don't use the scheduled on/off times",
+      .shortName = "ASC",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 976,
+      .longName = "alt-speed-time-begin",
+      .description = "Time to start using the alt speed limits (in hhmm)",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<time>" },
+    { .val = 977,
+      .longName = "alt-speed-time-end",
+      .description = "Time to stop using the alt speed limits (in hhmm)",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<time>" },
+    { .val = 978,
+      .longName = "alt-speed-days",
+      .description = "Numbers for any/all days of the week - eg. \"1-7\"",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<days>" },
+    { .val = 963,
+      .longName = "blocklist-update",
+      .description = "Blocklist update",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'c',
+      .longName = "incomplete-dir",
+      .description = "Where to store new torrents until they're complete",
+      .shortName = "c",
+      .arg = Arg::Required,
+      .argName = "<dir>" },
+    { .val = 'C',
+      .longName = "no-incomplete-dir",
+      .description = "Don't store incomplete torrents in a different location",
+      .shortName = "C",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'b',
+      .longName = "debug",
+      .description = "Print debugging information",
+      .shortName = "b",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 730,
+      .longName = "bandwidth-group",
+      .description = "Set the current torrents' bandwidth group",
+      .shortName = "bwg",
+      .arg = Arg::Required,
+      .argName = "<group>" },
+    { .val = 731,
+      .longName = "no-bandwidth-group",
+      .description = "Reset the current torrents' bandwidth group",
+      .shortName = "nwg",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 732,
+      .longName = "list-groups",
+      .description = "Show bandwidth groups with their parameters",
+      .shortName = "lg",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'd',
+      .longName = "downlimit",
+      .description = "Set the max download speed in " SPEED_K_STR " for the current torrent(s) or globally",
+      .shortName = "d",
+      .arg = Arg::Required,
+      .argName = "<speed>" },
+    { .val = 'D',
+      .longName = "no-downlimit",
+      .description = "Disable max download speed for the current torrent(s) or globally",
+      .shortName = "D",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'e',
+      .longName = "cache",
+      .description = "Set the maximum size of the session's memory cache (in " MEM_M_STR ")",
+      .shortName = "e",
+      .arg = Arg::Required,
+      .argName = "<size>" },
+    { .val = 910,
+      .longName = "encryption-required",
+      .description = "Encrypt all peer connections",
+      .shortName = "er",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 911,
+      .longName = "encryption-preferred",
+      .description = "Prefer encrypted peer connections",
+      .shortName = "ep",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 912,
+      .longName = "encryption-tolerated",
+      .description = "Prefer unencrypted peer connections",
+      .shortName = "et",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 850,
+      .longName = "exit",
+      .description = "Tell the " TR_PROJ_APPNAME " session to shut down",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 940,
+      .longName = "files",
+      .description = "List the current torrent(s)' files",
+      .shortName = "f",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'F',
+      .longName = "filter",
+      .description = "Filter the current torrent(s)",
+      .shortName = "F",
+      .arg = Arg::Required,
+      .argName = "criterion" },
+    { .val = 'g',
+      .longName = "get",
+      .description = "Mark files for download",
+      .shortName = "g",
+      .arg = Arg::Required,
+      .argName = "<files>" },
+    { .val = 'G',
+      .longName = "no-get",
+      .description = "Mark files for not downloading",
+      .shortName = "G",
+      .arg = Arg::Required,
+      .argName = "<files>" },
+    { .val = 'i',
+      .longName = "info",
+      .description = "Show the current torrent(s)' details",
+      .shortName = "i",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 944,
+      .longName = "print-ids",
+      .description = "Print the current torrent(s)' ids",
+      .shortName = "ids",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 940,
+      .longName = "info-files",
+      .description = "List the current torrent(s)' files",
+      .shortName = "if",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 941,
+      .longName = "info-peers",
+      .description = "List the current torrent(s)' peers",
+      .shortName = "ip",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 942,
+      .longName = "info-pieces",
+      .description = "List the current torrent(s)' pieces",
+      .shortName = "ic",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 943,
+      .longName = "info-trackers",
+      .description = "List the current torrent(s)' trackers",
+      .shortName = "it",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'j',
+      .longName = "json",
+      .description = "Return RPC response as a JSON string if the request was not a notification",
+      .shortName = "j",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 920,
+      .longName = "session-info",
+      .description = "Show the session's details",
+      .shortName = "si",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 921,
+      .longName = "session-stats",
+      .description = "Show the session's statistics",
+      .shortName = "st",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'l',
+      .longName = "list",
+      .description = "List all torrents",
+      .shortName = "l",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'L',
+      .longName = "labels",
+      .description = "Set the current torrents' labels",
+      .shortName = "L",
+      .arg = Arg::Required,
+      .argName = "<label[,label...]>" },
+    { .val = 960,
+      .longName = "move",
+      .description = "Move current torrent's data to a new folder",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 968,
+      .longName = "unix-socket",
+      .description = "Use a Unix domain socket",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 961,
+      .longName = "find",
+      .description = "Tell " TR_PROJ_APPNAME_CAPITALIZED " where to find a torrent's data",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 964,
+      .longName = "rename",
+      .description = "Rename torrents root folder or a file",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<name>" },
+    { .val = 965,
+      .longName = "path",
+      .description = "Provide path for rename functions",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 'm',
+      .longName = "portmap",
+      .description = "Enable portmapping via NAT-PMP or UPnP",
+      .shortName = "m",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'M',
+      .longName = "no-portmap",
+      .description = "Disable portmapping",
+      .shortName = "M",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'n',
+      .longName = "auth",
+      .description = "Set username and password",
+      .shortName = "n",
+      .arg = Arg::Required,
+      .argName = "<user:pw>" },
+    { .val = 810,
+      .longName = "authenv",
+      .description = "Set authentication info from the TR_AUTH environment variable (user:pw)",
+      .shortName = "ne",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'N',
+      .longName = "netrc",
+      .description = "Set authentication info from a .netrc file",
+      .shortName = "N",
+      .arg = Arg::Required,
+      .argName = "<file>" },
+    { .val = 820,
+      .longName = "ssl",
+      .description = "Use SSL when talking to daemon",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'o',
+      .longName = "dht",
+      .description = "Enable distributed hash tables (DHT)",
+      .shortName = "o",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'O',
+      .longName = "no-dht",
+      .description = "Disable distributed hash tables (DHT)",
+      .shortName = "O",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'p',
+      .longName = "port",
+      .description = "Port for incoming peers (Default: 51413)",
+      .shortName = "p",
+      .arg = Arg::Required,
+      .argName = "<port>" },
+    { .val = 962,
+      .longName = "port-test",
+      .description = "Port testing",
+      .shortName = "pt",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'P',
+      .longName = "random-port",
+      .description = "Random port for incoming peers",
+      .shortName = "P",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 900,
+      .longName = "priority-high",
+      .description = "Try to download these file(s) first",
+      .shortName = "ph",
+      .arg = Arg::Required,
+      .argName = "<files>" },
+    { .val = 901,
+      .longName = "priority-normal",
+      .description = "Try to download these file(s) normally",
+      .shortName = "pn",
+      .arg = Arg::Required,
+      .argName = "<files>" },
+    { .val = 902,
+      .longName = "priority-low",
+      .description = "Try to download these file(s) last",
+      .shortName = "pl",
+      .arg = Arg::Required,
+      .argName = "<files>" },
+    { .val = 700,
+      .longName = "bandwidth-high",
+      .description = "Give this torrent first chance at available bandwidth",
+      .shortName = "Bh",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 701,
+      .longName = "bandwidth-normal",
+      .description = "Give this torrent bandwidth left over by high priority torrents",
+      .shortName = "Bn",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 702,
+      .longName = "bandwidth-low",
+      .description = "Give this torrent bandwidth left over by high and normal priority torrents",
+      .shortName = "Bl",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 600,
+      .longName = "reannounce",
+      .description = "Reannounce the current torrent(s)",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'r',
+      .longName = "remove",
+      .description = "Remove the current torrent(s)",
+      .shortName = "r",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 930,
+      .longName = "peers",
+      .description = "Set the maximum number of peers for the current torrent(s) or globally",
+      .shortName = "pr",
+      .arg = Arg::Required,
+      .argName = "<max>" },
+    { .val = 840,
+      .longName = "remove-and-delete",
+      .description = "Remove the current torrent(s) and delete local data",
+      .shortName = "rad",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 800,
+      .longName = "torrent-done-script",
+      .description = "A script to run when a torrent finishes downloading",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<file>" },
+    { .val = 801,
+      .longName = "no-torrent-done-script",
+      .description = "Don't run the done-downloading script",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 802,
+      .longName = "torrent-done-seeding-script",
+      .description = "A script to run when a torrent finishes seeding",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<file>" },
+    { .val = 803,
+      .longName = "no-torrent-done-seeding-script",
+      .description = "Don't run the done-seeding script",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 950,
+      .longName = "seedratio",
+      .description = "Let the current torrent(s) seed until a specific ratio",
+      .shortName = "sr",
+      .arg = Arg::Required,
+      .argName = "ratio" },
+    { .val = 951,
+      .longName = "seedratio-default",
+      .description = "Let the current torrent(s) use the global seedratio settings",
+      .shortName = "srd",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 952,
+      .longName = "no-seedratio",
+      .description = "Let the current torrent(s) seed regardless of ratio",
+      .shortName = "SR",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 953,
+      .longName = "global-seedratio",
+      .description = "All torrents, unless overridden by a per-torrent setting, should seed until a specific ratio",
+      .shortName = "gsr",
+      .arg = Arg::Required,
+      .argName = "ratio" },
+    { .val = 954,
+      .longName = "no-global-seedratio",
+      .description = "All torrents, unless overridden by a per-torrent setting, should seed regardless of ratio",
+      .shortName = "GSR",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 955,
+      .longName = "idle-seeding-limit",
+      .description = "Let the current torrent(s) seed until a specific amount idle time",
+      .shortName = "isl",
+      .arg = Arg::Required,
+      .argName = "<minutes>" },
+    { .val = 956,
+      .longName = "default-idle-seeding-limit",
+      .description = "Let the current torrent(s) use the default idle seeding settings",
+      .shortName = "isld",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 957,
+      .longName = "no-idle-seeding-limit",
+      .description = "Let the current torrent(s) seed regardless of idle time",
+      .shortName = "ISL",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 958,
+      .longName = "global-idle-seeding-limit",
+      .description =
+          "All torrents, unless overridden by a per-torrent setting, should seed until a specific amount of idle time",
+      .shortName = "gisl",
+      .arg = Arg::Required,
+      .argName = "<minutes>" },
+    { .val = 959,
+      .longName = "no-global-idle-seeding-limit",
+      .description = "All torrents, unless overridden by a per-torrent setting, should seed regardless of idle time",
+      .shortName = "GISL",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 710,
+      .longName = "tracker-add",
+      .description = "Add a tracker to a torrent",
+      .shortName = "td",
+      .arg = Arg::Required,
+      .argName = "<tracker>" },
+    { .val = 712,
+      .longName = "tracker-remove",
+      .description = "Remove a tracker from a torrent",
+      .shortName = "tr",
+      .arg = Arg::Required,
+      .argName = "<trackerId>" },
+    { .val = 's',
+      .longName = "start",
+      .description = "Start the current torrent(s)",
+      .shortName = "s",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'S',
+      .longName = "stop",
+      .description = "Stop the current torrent(s)",
+      .shortName = "S",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 't',
+      .longName = "torrent",
+      .description = "Set the current torrent(s)",
+      .shortName = "t",
+      .arg = Arg::Required,
+      .argName = "<torrent>" },
+    { .val = 990,
+      .longName = "start-paused",
+      .description = "Start added torrents paused",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 991,
+      .longName = "no-start-paused",
+      .description = "Start added torrents unpaused",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 992,
+      .longName = "trash-torrent",
+      .description = "Delete torrents after adding",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 993,
+      .longName = "no-trash-torrent",
+      .description = "Do not delete torrents after adding",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 994,
+      .longName = "sequential-download",
+      .description = "Download the torrent sequentially, starting from <piece> or 0",
+      .shortName = "seq",
+      .arg = Arg::Optional,
+      .argName = "<piece>" },
+    { .val = 995,
+      .longName = "no-sequential-download",
+      .description = "Download the torrent normally",
+      .shortName = "SEQ",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 984,
+      .longName = "honor-session",
+      .description = "Make the current torrent(s) honor the session limits",
+      .shortName = "hl",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 985,
+      .longName = "no-honor-session",
+      .description = "Make the current torrent(s) not honor the session limits",
+      .shortName = "HL",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'u',
+      .longName = "uplimit",
+      .description = "Set the max upload speed in " SPEED_K_STR " for the current torrent(s) or globally",
+      .shortName = "u",
+      .arg = Arg::Required,
+      .argName = "<speed>" },
+    { .val = 'U',
+      .longName = "no-uplimit",
+      .description = "Disable max upload speed for the current torrent(s) or globally",
+      .shortName = "U",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 830,
+      .longName = "preferred-transports",
+      .description = "Comma-separated list specifying preference of transport protocols",
+      .shortName = nullptr,
+      .arg = Arg::Required,
+      .argName = "<protocol(s)>" },
+    { .val = 831,
+      .longName = "utp",
+      .description = "*DEPRECATED* Enable µTP for peer connections",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 832,
+      .longName = "no-utp",
+      .description = "*DEPRECATED* Disable µTP for peer connections",
+      .shortName = nullptr,
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'v',
+      .longName = "verify",
+      .description = "Verify the current torrent(s)",
+      .shortName = "v",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'V',
+      .longName = "version",
+      .description = "Show version number and exit",
+      .shortName = "V",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'w',
+      .longName = "download-dir",
+      .description = "When used in conjunction with --add, set the new torrent's download folder. "
+                     "Otherwise, set the default download folder",
+      .shortName = "w",
+      .arg = Arg::Required,
+      .argName = "<path>" },
+    { .val = 'x',
+      .longName = "pex",
+      .description = "Enable peer exchange (PEX)",
+      .shortName = "x",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'X',
+      .longName = "no-pex",
+      .description = "Disable peer exchange (PEX)",
+      .shortName = "X",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'y',
+      .longName = "lpd",
+      .description = "Enable local peer discovery (LPD)",
+      .shortName = "y",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'Y',
+      .longName = "no-lpd",
+      .description = "Disable local peer discovery (LPD)",
+      .shortName = "Y",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 941,
+      .longName = "peer-info",
+      .description = "List the current torrent(s)' peers",
+      .shortName = "pi",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace tr_num_parse_range_detail
 {
@@ -404,7 +857,7 @@ struct number_range {
  * This should be a single number (ex. "6") or a range (ex. "6-9").
  * Anything else is an error and will return failure.
  */
-[[nodiscard]] bool parseNumberSection(std::string_view str, number_range& range)
+[[nodiscard]] bool parse_number_section(std::string_view str, number_range& range)
 {
     auto constexpr Delimiter = "-"sv;
 
@@ -443,7 +896,7 @@ struct number_range {
     auto values = std::vector<int>{};
     auto token = std::string_view{};
     auto range = number_range{};
-    while (tr_strv_sep(&str, &token, ',') && parseNumberSection(token, range)) {
+    while (tr_strv_sep(&str, &token, ',') && parse_number_section(token, range)) {
         for (auto i = range.low; i <= range.high; ++i) {
             values.emplace_back(i);
         }
@@ -454,10 +907,7 @@ struct number_range {
     values.erase(erase_first, erase_last);
     return values;
 }
-} // namespace
 
-namespace
-{
 void show_usage()
 {
     tr_getopt_usage(MyName, Usage, std::data(Options));
@@ -476,7 +926,7 @@ void show_usage()
     return *num;
 }
 
-enum {
+enum : uint8_t {
     MODE_META_COMMAND = 0,
     MODE_TORRENT_ACTION = 1 << 0,
     MODE_TORRENT_ADD = 1 << 1,
@@ -487,7 +937,7 @@ enum {
     MODE_SESSION_SET = 1 << 6
 };
 
-[[nodiscard]] int get_opt_mode(int val)
+[[nodiscard]] std::optional<uint8_t> get_opt_mode(int val)
 {
     switch (val) {
     case TR_OPT_ERR:
@@ -615,12 +1065,12 @@ enum {
     case 963: /* blocklist-update */
     case 964: /* rename */
     case 965: /* path */
-        return -1;
+        return {};
 
     default:
         fmt::print(stderr, "unrecognized argument {:d}\n", val);
         TR_ASSERT_MSG(false, "unrecognized argument");
-        return -2;
+        return {};
     }
 }
 
@@ -687,7 +1137,7 @@ void add_id_arg(tr_variant::Map& params, std::string_view id_str, std::string_vi
 
 void add_id_arg(tr_variant::Map& args, RemoteConfig const& config, std::string_view fallback = "")
 {
-    return add_id_arg(args, config.torrent_ids, fallback);
+    add_id_arg(args, config.torrent_ids, fallback);
 }
 
 void add_time(tr_variant::Map& args, tr_quark const key, std::string_view arg)
@@ -697,7 +1147,7 @@ void add_time(tr_variant::Map& args, tr_quark const key, std::string_view arg)
         auto const min = tr_num_parse<int>(arg.substr(2, 2)).value_or(-1);
 
         if (0 <= hour && hour < 24 && 0 <= min && min < 60) {
-            args.insert_or_assign(key, min + hour * 60);
+            args.insert_or_assign(key, min + (hour * 60));
             return;
         }
     }
@@ -787,7 +1237,6 @@ auto constexpr FilesKeys = std::to_array<tr_quark>({
     TR_KEY_priorities,
     TR_KEY_wanted,
 });
-static_assert(FilesKeys[std::size(FilesKeys) - 1] != tr_quark{});
 
 auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_activity_date,
@@ -848,7 +1297,6 @@ auto constexpr DetailsKeys = std::to_array<tr_quark>({
     TR_KEY_webseeds,
     TR_KEY_webseeds_sending_to_us,
 });
-static_assert(DetailsKeys[std::size(DetailsKeys) - 1] != tr_quark{});
 
 auto constexpr ListKeys = std::to_array<tr_quark>({
     TR_KEY_added_date,
@@ -867,7 +1315,6 @@ auto constexpr ListKeys = std::to_array<tr_quark>({
     TR_KEY_status,
     TR_KEY_upload_ratio,
 });
-static_assert(ListKeys[std::size(ListKeys) - 1] != tr_quark{});
 
 namespace header_utils
 {
@@ -902,9 +1349,9 @@ void update_config_from_response(tr_web::FetchResponse const& response, RemoteCo
 // `checked_bytes` is newer than `recheck_progress`
 [[nodiscard]] std::optional<Percent> get_recheck_progress(tr_variant::Map const& t)
 {
-    if (auto const checked = t.value_if<int64_t>(TR_KEY_checked_bytes), total = t.value_if<int64_t>(TR_KEY_total_size);
+    if (auto const checked = t.value_if<uint64_t>(TR_KEY_checked_bytes), total = t.value_if<uint64_t>(TR_KEY_total_size);
         checked && total) {
-        return to_percent(*checked, *total);
+        return Percent{ *checked, *total };
     }
 
     if (auto const fraction = t.value_if<double>(TR_KEY_recheck_progress)) {
@@ -971,7 +1418,6 @@ auto constexpr BandwidthPriorityNames = std::to_array<std::string_view>({
     "High"sv,
     "Invalid"sv,
 });
-static_assert(!BandwidthPriorityNames[std::size(BandwidthPriorityNames) - 1].empty());
 
 template<size_t N>
 [[nodiscard]] std::string_view format_date(std::array<char, N>& buf, time_t now)
@@ -1046,16 +1492,16 @@ void print_details(tr_variant::Map const& result)
             }
         }
 
-        if (auto const size_when_done = t->value_if<int64_t>(TR_KEY_size_when_done),
-            left_until_done = t->value_if<int64_t>(TR_KEY_left_until_done),
-            total_size = t->value_if<int64_t>(TR_KEY_total_size);
+        if (auto const size_when_done = t->value_if<uint64_t>(TR_KEY_size_when_done),
+            left_until_done = t->value_if<uint64_t>(TR_KEY_left_until_done),
+            total_size = t->value_if<uint64_t>(TR_KEY_total_size);
             size_when_done && left_until_done && total_size) {
             // every size is 0 until the metadata arrives
-            auto const percent = *total_size > 0 ? to_percent(*size_when_done - *left_until_done, *size_when_done) : Percent{};
+            auto const percent = *total_size > 0U ? Percent{ *size_when_done - *left_until_done, *size_when_done } : Percent{};
             fmt::print("  Percent Done: {:s}%\n", percent.to_string());
         }
 
-        if (auto const i = t->value_if<time_t>(TR_KEY_eta)) {
+        if (auto const i = t->value_if<int64_t>(TR_KEY_eta)) {
             fmt::print("  ETA: {:s}\n", tr_strltime(*i));
         }
 
@@ -1067,38 +1513,38 @@ void print_details(tr_variant::Map const& result)
             fmt::print("  Upload Speed: {:s}\n", Speed{ *i, Speed::Units::Byps }.to_string());
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_have_unchecked), j = t->value_if<int64_t>(TR_KEY_have_valid); i && j) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_have_unchecked), j = t->value_if<uint64_t>(TR_KEY_have_valid); i && j) {
             fmt::print("  Have: {:s} ({:s} verified)\n", strlsize(*i + *j), strlsize(*j));
         }
 
-        if (auto const oi = t->value_if<int64_t>(TR_KEY_size_when_done)) {
+        if (auto const oi = t->value_if<uint64_t>(TR_KEY_size_when_done)) {
             auto const i = *oi;
-            if (i < 1) {
+            if (i < 1U) {
                 fmt::print("  Availability: None\n");
             } else if (
-                auto j = t->value_if<int64_t>(TR_KEY_desired_available), k = t->value_if<int64_t>(TR_KEY_left_until_done);
+                auto j = t->value_if<uint64_t>(TR_KEY_desired_available), k = t->value_if<uint64_t>(TR_KEY_left_until_done);
                 j && k) {
-                fmt::print("  Availability: {:s}%\n", to_percent(*j + i - *k, i).to_string());
+                fmt::print("  Availability: {:s}%\n", Percent{ *j + i - *k, i }.to_string());
             }
 
-            if (auto j = t->value_if<int64_t>(TR_KEY_total_size)) {
+            if (auto j = t->value_if<uint64_t>(TR_KEY_total_size)) {
                 fmt::print("  Total size: {:s} ({:s} wanted)\n", strlsize(*j), strlsize(i));
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_downloaded_ever)) {
-            if (auto corrupt = t->value_if<int64_t>(TR_KEY_corrupt_ever).value_or(0); corrupt != 0) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_downloaded_ever)) {
+            if (auto corrupt = t->value_if<uint64_t>(TR_KEY_corrupt_ever).value_or(0U); corrupt != 0U) {
                 fmt::print("  Downloaded: {:s} (+{:s} discarded after failed checksum)\n", strlsize(*i), strlsize(corrupt));
             } else {
                 fmt::print("  Downloaded: {:s}\n", strlsize(*i));
             }
         }
 
-        if (auto const i = t->value_if<int64_t>(TR_KEY_uploaded_ever)) {
+        if (auto const i = t->value_if<uint64_t>(TR_KEY_uploaded_ever)) {
             fmt::print("  Uploaded: {:s}\n", strlsize(*i));
 
-            if (auto const j = t->value_if<int64_t>(TR_KEY_size_when_done)) {
-                fmt::print("  Ratio: {:s}\n", to_ratio(*i, *j).to_string());
+            if (auto const j = t->value_if<uint64_t>(TR_KEY_size_when_done)) {
+                fmt::print("  Ratio: {:s}\n", Ratio{ *i, *j }.to_string());
             }
         }
 
@@ -1316,8 +1762,8 @@ void print_file_list(tr_variant::Map const& result)
                 continue;
             }
 
-            auto const have = file->value_if<int64_t>(TR_KEY_bytes_completed);
-            auto const length = file->value_if<int64_t>(TR_KEY_length);
+            auto const have = file->value_if<uint64_t>(TR_KEY_bytes_completed);
+            auto const length = file->value_if<uint64_t>(TR_KEY_length);
             auto const priority = priorities->at(i).value_if<int64_t>();
             auto const wanted = wanteds->at(i).value_if<bool>();
             auto const filename = file->value_if<std::string_view>(TR_KEY_name);
@@ -1340,7 +1786,7 @@ void print_file_list(tr_variant::Map const& result)
             fmt::print(
                 "{:3d}: {:>4s}% {:<8s} {:<3s} {:9s}  {:s}\n",
                 i,
-                to_percent(*have, *length).to_string(),
+                Percent{ *have, *length }.to_string(),
                 Pristr(*priority),
                 *wanted ? "Yes" : "No",
                 strlsize(*length),
@@ -1349,7 +1795,7 @@ void print_file_list(tr_variant::Map const& result)
     }
 }
 
-void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> const total_size)
+void print_peers_impl(tr_variant::Vector const& peers, std::optional<uint64_t> const& total_size)
 {
     fmt::print("{:<40s}  {:<12s}  {:<5s} {:>8s}  {:>8s}  {:s}\n", "Address", "Flags", "Done", "Down", "Up", "Client");
 
@@ -1362,7 +1808,7 @@ void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> co
         auto const address = peer->value_if<std::string_view>(TR_KEY_address);
         auto const client = peer->value_if<std::string_view>(TR_KEY_client_name);
         auto const flagstr = peer->value_if<std::string_view>(TR_KEY_flag_str);
-        auto const have_total = peer->value_if<int64_t>(TR_KEY_have_total);
+        auto const have_total = peer->value_if<uint64_t>(TR_KEY_have_total);
         auto const fraction = peer->value_if<double>(TR_KEY_progress);
         auto const rate_to_client = peer->value_if<int64_t>(TR_KEY_rate_to_client);
         auto const rate_to_peer = peer->value_if<int64_t>(TR_KEY_rate_to_peer);
@@ -1370,8 +1816,8 @@ void print_peers_impl(tr_variant::Vector const& peers, std::optional<int64_t> co
         // `have_total` is newer than `progress`.
         // Without metadata, every size is 0 and `progress` alone tells seeds apart.
         auto progress = std::optional<Percent>{};
-        if (have_total && total_size && *total_size > 0) {
-            progress = to_percent(*have_total, *total_size);
+        if (have_total && total_size && *total_size > 0U) {
+            progress = Percent{ *have_total, *total_size };
         } else if (fraction) {
             progress = Percent::from_double(*fraction);
         }
@@ -1403,7 +1849,7 @@ void print_peers(tr_variant::Map const& result)
         }
 
         if (auto* peers = t->find_if<tr_variant::Vector>(TR_KEY_peers); peers != nullptr) {
-            print_peers_impl(*peers, t->value_if<int64_t>(TR_KEY_total_size));
+            print_peers_impl(*peers, t->value_if<uint64_t>(TR_KEY_total_size));
 
             if (it < std::prev(end)) {
                 fmt::print("\n");
@@ -1418,7 +1864,7 @@ void print_pieces_impl(std::string_view const raw, size_t const piece_count)
     fmt::print("  ");
 
     size_t piece = 0;
-    static size_t constexpr col_width = 0b111111; // 64 - 1
+    static size_t constexpr ColWidth = 0b111111; // 64 - 1
     for (auto const ch : str) {
         for (int bit = 0; piece < piece_count && bit < 8; ++bit, ++piece) {
             fmt::print("{:c}", (ch & (1 << (7 - bit))) != 0 ? '1' : '0');
@@ -1426,7 +1872,7 @@ void print_pieces_impl(std::string_view const raw, size_t const piece_count)
 
         fmt::print(" ");
 
-        if ((piece & col_width) == 0) // piece % 64 == 0
+        if ((piece & ColWidth) == 0) // piece % 64 == 0
         {
             fmt::print("\n  ");
         }
@@ -1498,14 +1944,11 @@ void print_torrent_list(tr_variant::Map const& result)
         }
     }
 
-    std::sort(tptrs.begin(), tptrs.end(), [](tr_variant::Map const* f, tr_variant::Map const* s) {
-        static auto constexpr Min = std::numeric_limits<int64_t>::min();
-        auto const f_time = f->value_if<int64_t>(TR_KEY_added_date).value_or(Min);
-        auto const s_time = s->value_if<int64_t>(TR_KEY_added_date).value_or(Min);
-        return f_time < s_time;
+    std::ranges::sort(tptrs, {}, [](auto const ptr) {
+        return ptr->template value_if<int64_t>(TR_KEY_added_date).value_or(std::numeric_limits<int64_t>::min());
     });
 
-    int64_t total_size = 0;
+    uint64_t total_size = 0U;
     int64_t total_up = 0;
     int64_t total_down = 0;
     for (auto const& t : tptrs) {
@@ -1514,8 +1957,8 @@ void print_torrent_list(tr_variant::Map const& result)
         auto o_status = t->value_if<int64_t>(TR_KEY_status);
         auto o_up = t->value_if<int64_t>(TR_KEY_rate_upload);
         auto o_down = t->value_if<int64_t>(TR_KEY_rate_download);
-        auto o_size_when_done = t->value_if<int64_t>(TR_KEY_size_when_done);
-        auto o_left_until_done = t->value_if<int64_t>(TR_KEY_left_until_done);
+        auto o_size_when_done = t->value_if<uint64_t>(TR_KEY_size_when_done);
+        auto o_left_until_done = t->value_if<uint64_t>(TR_KEY_left_until_done);
         auto o_ratio = t->value_if<double>(TR_KEY_upload_ratio);
         auto o_name = t->value_if<std::string_view>(TR_KEY_name);
 
@@ -1530,10 +1973,10 @@ void print_torrent_list(tr_variant::Map const& result)
         auto const size_when_done = *o_size_when_done;
         auto const left_until_done = *o_left_until_done;
 
-        auto const eta_str = left_until_done != 0 || eta != -1 ? eta_to_string(eta) : "Done";
+        auto const eta_str = left_until_done != 0U || eta != -1 ? eta_to_string(eta) : "Done";
         auto const error_mark = t->value_if<int64_t>(TR_KEY_error).value_or(0) != 0 ? '*' : ' ';
-        auto const done_str = size_when_done != 0 ?
-            to_percent(size_when_done - left_until_done, size_when_done).to_string() + '%' :
+        auto const done_str = size_when_done != 0U ?
+            Percent{ size_when_done - left_until_done, size_when_done }.to_string() + '%' :
             std::string{ "n/a" };
 
         fmt::print(
@@ -1556,7 +1999,7 @@ void print_torrent_list(tr_variant::Map const& result)
 
     fmt::print(
         "Sum:            {:>9s}             {:8.1f}  {:8.1f}\n",
-        strlsize(total_size).c_str(),
+        strlsize(total_size),
         Speed{ total_up, Speed::Units::Byps }.count(Speed::Units::KByps),
         Speed{ total_down, Speed::Units::Byps }.count(Speed::Units::KByps));
 }
@@ -1890,31 +2333,31 @@ void print_session(tr_variant::Map const& result)
 void print_session_stats(tr_variant::Map const& result)
 {
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_current_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
 
         if (up && down && secs) {
             fmt::print("\nCURRENT SESSION\n");
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
 
     if (auto const* const stats = result.find_if<tr_variant::Map>(TR_KEY_cumulative_stats)) {
-        auto const up = stats->value_if<int64_t>(TR_KEY_uploaded_bytes);
-        auto const down = stats->value_if<int64_t>(TR_KEY_downloaded_bytes);
+        auto const up = stats->value_if<uint64_t>(TR_KEY_uploaded_bytes);
+        auto const down = stats->value_if<uint64_t>(TR_KEY_downloaded_bytes);
         auto const secs = stats->value_if<int64_t>(TR_KEY_seconds_active);
-        auto const sessions = stats->value_if<int64_t>(TR_KEY_session_count);
+        auto const sessions = stats->value_if<uint64_t>(TR_KEY_session_count);
 
         if (up && down && secs && sessions) {
             fmt::print("\nTOTAL\n");
             fmt::print("  Started {:d} times\n", *sessions);
             fmt::print("  Uploaded:   {:s}\n", strlsize(*up));
             fmt::print("  Downloaded: {:s}\n", strlsize(*down));
-            fmt::print("  Ratio:      {:s}\n", to_ratio(*up, *down).to_string());
+            fmt::print("  Ratio:      {:s}\n", Ratio{ *up, *down }.to_string());
             fmt::print("  Duration:   {:s}\n", tr_strltime(*secs));
         }
     }
@@ -2078,7 +2521,7 @@ void print_blocklist_size(tr_variant::Map const& result)
     api_compat::convert_incoming_data(*parsed);
 
     auto const* const top = parsed->get_if<tr_variant::Map>();
-    if (!top) {
+    if (top == nullptr) {
         fmt::print(stderr, "Response was not a JSON object\n");
         return EXIT_FAILURE;
     }
@@ -2105,7 +2548,7 @@ void print_blocklist_size(tr_variant::Map const& result)
 
     auto empty_result = tr_variant::Map{};
     auto* result = top->find_if<tr_variant::Map>(TR_KEY_result);
-    result = result ? result : &empty_result;
+    result = result != nullptr ? result : &empty_result;
 
     switch (top->value_if<int64_t>(TR_KEY_id).value_or(ID_NOOP)) {
     case ID_SESSION:
@@ -2350,8 +2793,8 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
 
 [[nodiscard]] int process_args(char const* rpcurl, int argc, char const* const* argv, RemoteConfig& config)
 {
-    auto status = int{ EXIT_SUCCESS };
-    char const* optarg;
+    int status = EXIT_SUCCESS;
+    char const* optarg = nullptr;
     auto sset = tr_variant{};
     auto tset = tr_variant{};
     auto tadd = tr_variant{};
@@ -2947,7 +3390,7 @@ tr_variant::Map& ensure_tadd(tr_variant& tadd)
                 break;
             }
         } else if (step_mode == (MODE_SESSION_SET | MODE_TORRENT_SET | MODE_TORRENT_ADD)) {
-            tr_variant::Map& args = [&]() -> tr_variant::Map& {
+            tr_variant::Map& args = [&] -> tr_variant::Map& {
                 if (tadd.has_value()) {
                     return ensure_tadd(tadd);
                 }
@@ -3237,11 +3680,11 @@ void get_host_and_port_and_rpc_url(
     }
 
     auto const sv = std::string_view{ argv[1] };
-    if (sv.starts_with("http://")) /* user passed in http rpc url */
-    {
+    if (sv.starts_with("http://")) {
+        // user passed in http rpc url
         rpcurl = fmt::format("{:s}/{:s}", sv.substr(7), TrHttpServerRpcRelativePath);
-    } else if (sv.starts_with("https://")) /* user passed in https rpc url */
-    {
+    } else if (sv.starts_with("https://")) {
+        // user passed in https rpc url
         config.use_ssl = true;
         rpcurl = fmt::format("{:s}/{:s}", sv.substr(8), TrHttpServerRpcRelativePath);
     } else if (parse_port_string(sv, port)) {
@@ -3267,7 +3710,8 @@ void get_host_and_port_and_rpc_url(
 }
 } // namespace
 
-int tr_main(int argc, char* argv[])
+// NOLINTNEXTLINE(bugprone-exception-escape)
+int tr_main(int argc, char** argv)
 {
     tr_lib_init();
 
@@ -3292,5 +3736,5 @@ int tr_main(int argc, char* argv[])
         rpcurl = fmt::format("{:s}:{:d}{:s}{:s}", host, port, TrDefaultHttpServerBasePath, TrHttpServerRpcRelativePath);
     }
 
-    return process_args(rpcurl.c_str(), argc, (char const* const*)argv, config);
+    return process_args(rpcurl.c_str(), argc, argv, config);
 }

@@ -24,17 +24,22 @@
     @param errnum the error number to describe */
 [[nodiscard]] char const* tr_strerror(int errnum);
 
-template <typename T> [[nodiscard]] std::string tr_strlower(T in)
+[[nodiscard]] constexpr bool tr_ascii_isspace(char const ch) noexcept
+{
+    return ch == ' ' || (ch >= '\t' && ch <= '\r');
+}
+
+template <typename T> [[nodiscard]] constexpr std::string tr_strlower(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch))); });
+    std::ranges::for_each(out, [](char& ch) { ch = 'A' <= ch && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch; });
     return out;
 }
 
-template <typename T> [[nodiscard]] std::string tr_strupper(T in)
+template <typename T> [[nodiscard]] constexpr std::string tr_strupper(T in)
 {
     auto out = std::string{ std::move(in) };
-    std::ranges::for_each(out, [](char& ch) { ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch))); });
+    std::ranges::for_each(out, [](char& ch) { ch = ch >= 'a' && ch <= 'z' ? static_cast<char>(ch - 'a' + 'A') : ch; });
     return out;
 }
 
@@ -60,6 +65,11 @@ template <typename... Args> constexpr bool tr_strv_sep(std::string_view* sv, std
 
     *token = tr_strv_sep(sv, std::forward<Args>(args)...);
     return true;
+}
+
+[[nodiscard]] constexpr bool tr_strv_is_empty_or_blank(std::string_view sv) noexcept
+{
+    return sv.empty() || std::ranges::all_of(sv, tr_ascii_isspace);
 }
 
 [[nodiscard]] std::string_view tr_strv_strip(std::string_view str TR_LIFETIMEBOUND);

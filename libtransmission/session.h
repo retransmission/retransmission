@@ -954,10 +954,14 @@ public:
         return settings().upload_slots_per_torrent;
     }
 
-    [[nodiscard]] constexpr auto isClosing() const noexcept
+    // Callable from any thread.
+    [[nodiscard]] bool isClosing() const noexcept
     {
-        return is_closing_;
+        return close_phase_ != tr_close_phase::None;
     }
+
+    // See tr_sessionGetDiskActivity(). Callable from any thread.
+    [[nodiscard]] tr_disk_activity disk_activity() const;
 
     [[nodiscard]] constexpr auto encryptionMode() const noexcept
     {
@@ -1172,7 +1176,9 @@ public:
         return settings().ratio_limit;
     }
 
-    void verify_add(tr_torrent* tor);
+    // `has_local_data` is tr_torrent::has_any_local_data(), which the
+    // caller has already looked up
+    void verify_add(tr_torrent* tor, bool has_local_data);
     void verify_remove(tr_torrent* tor);
 
     void fetch(tr_web::FetchOptions&& options) const
@@ -1249,6 +1255,7 @@ private:
 
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::milliseconds tracker_wait);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
+    void log_slow_close();
 
     void on_now_timer();
     void on_queue_timer();
@@ -1257,6 +1264,11 @@ private:
     void save_bandwidth_groups_if_dirty();
 
     void resume_deferred_requests();
+
+    // What local_data's threaded backend is started with:
+    // how it reaches the session thread, and how it finds a torrent's storage.
+    [[nodiscard]] tr::LocalData::Marshal local_data_marshal();
+    [[nodiscard]] tr::LocalData::DescriptorProvider storage_descriptor_provider();
 
     // How long after its last activity the session still counts as busy.
     // Session thread only: reads the queue-stalled settings.
@@ -1296,7 +1308,10 @@ private:
     friend uint16_t tr_sessionGetPeerPort(tr_session const* session);
     friend uint16_t tr_sessionGetRPCPort(tr_session const* session);
     friend uint16_t tr_sessionSetPeerPortRandom(tr_session* session);
-    friend void tr_sessionClose(tr_session* session, double timeout_secs);
+    friend void tr_sessionClose(
+        tr_session* session,
+        double timeout_secs,
+        std::function<void(tr_disk_activity const&)> const& on_progress);
     friend tr::Settings tr_sessionGetSettings(tr_session const* s);
     friend void tr_sessionLimitSpeed(tr_session* session, tr_direction dir, bool limited);
     friend void tr_sessionReloadBlocklists(tr_session* session);
@@ -1411,7 +1426,12 @@ private:
     // port than the one requested by Transmission.
     tr_port advertised_peer_port_;
 
-    bool is_closing_ = false;
+    // how far a close has got, for isClosing() and disk_activity()
+    std::atomic<tr_close_phase> close_phase_ = tr_close_phase::None;
+    std::atomic<size_t> close_stops_sent_ = 0U;
+    std::atomic<size_t> close_stops_answered_ = 0U;
+    std::atomic<std::chrono::steady_clock::time_point> close_tracker_deadline_;
+    std::chrono::steady_clock::time_point next_slow_close_log_;
 
     /// fields that aren't trivial,
     /// but are self-contained / don't hold references to others
@@ -1530,7 +1550,7 @@ private:
     // is_busy() state, readable lock-free from any thread.
     // The counts are maintained by the torrent start/stop and verify flows;
     // date_active_ is stamped by transfers (session and web threads),
-    // verified pieces (verify thread), and torrent starts (session thread);
+    // verified pieces, and torrent starts (session thread);
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
@@ -1548,7 +1568,8 @@ private:
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> save_timer_;
 
-    std::unique_ptr<tr_verify_worker> verifier_ = std::make_unique<tr_verify_worker>();
+    // depends-on: local_data, timer_maker_, session_mutex_
+    tr_verifier verifier_{ local_data, *timer_maker_, session_mutex_ };
 
 public:
     std::unique_ptr<tr::Timer> utp_timer;

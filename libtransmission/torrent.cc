@@ -602,8 +602,9 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
 
     auto const lock = unique_lock();
 
-    if (is_deleting_) {
-        return; // a torrent being removed stays stopped
+    // a torrent being removed, or a closing session's, stays stopped
+    if (is_deleting_ || session->isClosing()) {
+        return;
     }
 
     switch (activity()) {
@@ -659,6 +660,12 @@ void tr_torrent::start_in_session_thread()
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
+    // start() queued this from another thread, and a stop has run since,
+    // such as a closing session's. That stop wins.
+    if (!is_running_) {
+        return;
+    }
+
     // We are after `torrentStart` and before announcing to trackers/peers,
     // so now is the best time to create wanted empty files.
     create_empty_files();
@@ -668,7 +675,6 @@ void tr_torrent::start_in_session_thread()
 
     time_t const now = tr_time();
 
-    is_running_ = true;
     date_started_ = now;
     mark_changed();
     session->set_date_active(now);
@@ -713,6 +719,8 @@ void tr_torrent::stop_now()
     session->announcer_->stopTorrent(this);
 
     // Save once the writes in flight land, so the resume file lists them.
+    // The times above changed without marking the torrent dirty.
+    set_dirty();
     session->local_data.close_torrent(id(), [session = this->session](tr_torrent_id_t const tor_id) {
         if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && !tor->is_deleting_) {
             tor->save_resume_file();
@@ -773,7 +781,6 @@ void tr_torrentStop(tr_torrent* tor)
     auto const lock = tor->unique_lock();
 
     tor->start_when_stable_ = false;
-    tor->set_dirty();
     run_in_session_thread_by_id(*tor, &tr_torrent::stop_now);
 }
 
@@ -801,13 +808,17 @@ void tr_torrentFreeInSessionThread(tr_torrent* tor)
         tr_logAddInfoTor(tor, "Removing torrent");
     }
 
-    tor->set_dirty(!tor->is_deleting_);
-    tor->stop_now();
+    // A removal or a closing session stopped the torrent first.
+    TR_ASSERT(!tor->is_running());
 
     if (tor->is_deleting_) {
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".torrent"sv);
         tr_torrent_metainfo::remove_file(tor->session->torrentDir(), tor->name(), tor->info_hash_string(), ".magnet"sv);
         tr_torrent_metainfo::remove_file(tor->session->resumeDir(), tor->name(), tor->info_hash_string(), ".resume"sv);
+    } else {
+        // The close's stop saved it once its writes landed. Save what
+        // changed since, such as a piece hashed after that save.
+        tor->save_resume_file();
     }
 
     freeTorrent(tor);
@@ -1191,6 +1202,12 @@ void tr_torrent::set_location_in_session_thread(
                 on_placed(tor_id, dir);
                 on_done(tor_id, dir, {});
             });
+
+        // A verify under way checked other files than these. Start it over.
+        // It waits behind the barrier above, so it sees the new dirs.
+        if (verify_state_ != VerifyState::None) {
+            tr_torrentVerify(this);
+        }
         return;
     }
 
@@ -1198,16 +1215,13 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
-    // Cancel a pending verify first. Cancelling re-hashes pieces, and
-    // those hashes must run before the files close and move.
-    session->verify_remove(this);
-    session->local_data.close_torrent(id());
-
     auto target = [session = this->session, tor_id = id(), path = std::move(path)] {
         auto const* const tor = session->torrents().get(tor_id);
         return tr::LocalData::MoveTarget{ .parent = path(),
                                           .clear_killed_move = tor != nullptr && tor->completion_move_pending() };
     };
+
+    // A verify under way carries on at the new location: the move keeps the bytes.
     session->local_data.move(id(), std::move(target), std::move(on_done), std::move(on_placed));
 }
 
@@ -1661,7 +1675,7 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
         TR_ASSERT(session->am_in_session_thread());
         auto const lock = session->unique_lock();
 
-        if (tor->is_deleting_) {
+        if (tor->is_deleting_ || session->isClosing()) {
             return;
         }
 
@@ -1675,6 +1689,7 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
             tor->stop_now();
         }
 
+        tr_logAddTraceTor(tor, "Queued for verification");
         tor->set_verify_state(tr_torrent::VerifyState::Queued);
         auto const token = ++tor->verify_token_;
         session->local_data.close_torrent(tor->id(), [session, token](tr_torrent_id_t const id) {
@@ -1683,7 +1698,8 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
                 return;
             }
 
-            if (did_files_disappear(torrent)) {
+            auto const has_local_data = torrent->has_any_local_data();
+            if (did_files_disappear(torrent, has_local_data)) {
                 torrent->error().set_local_error(
                     _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
                       "then use \"Verify Local Data\" again. To re-download, start the torrent."));
@@ -1693,7 +1709,7 @@ void tr_torrentVerify(tr_torrent* const torrent_in)
             // the verify decides every piece from what's on disk
             torrent->hash_tokens_.clear();
             torrent->blocks_awaiting_hash_.set_has_none();
-            session->verify_add(torrent);
+            session->verify_add(torrent, has_local_data);
         });
     });
 }
@@ -1722,14 +1738,19 @@ void tr_torrent::set_verify_state(VerifyState const state)
     mark_changed();
 }
 
-tr_torrent_metainfo const& tr_torrent::VerifyMediator::metainfo() const
+tr_torrent_id_t tr_torrent::VerifyMediator::id() const
 {
-    return tor_->metainfo_;
+    return tor_->id();
 }
 
-std::optional<std::string> tr_torrent::VerifyMediator::find_file(tr_file_index_t const file_index) const
+tr_block_info const& tr_torrent::VerifyMediator::block_info() const
 {
-    return tor_->find_file(file_index).transform(&tr_torrent_files::FoundFile::filename<std::string>);
+    return tor_->block_info();
+}
+
+tr_byte_span_t tr_torrent::VerifyMediator::file_span(uint64_t const byte) const
+{
+    return tor_->byte_span_for_file(tor_->fpm_.file_offset(byte).index);
 }
 
 void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_file) const
@@ -1741,6 +1762,13 @@ void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_
 
     auto const has = has_file ? *has_file : this->has_file(file);
     auto const needs_suffix = session->isIncompleteFileNamingEnabled() && !has;
+
+    // The paths below differ only in the suffix. Most often, such as after
+    // a verify, it's already right, and the disk needn't be asked.
+    if (found->is_partial == needs_suffix) {
+        return;
+    }
+
     auto const oldpath = found->filename<tr_pathbuf>();
     auto const newpath = tr_pathbuf{ found->base,
                                      '/',
@@ -1763,12 +1791,6 @@ void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_
     }
 }
 
-void tr_torrent::VerifyMediator::on_verify_queued()
-{
-    tr_logAddTraceTor(tor_, "Queued for verification");
-    tor_->set_verify_state(VerifyState::Queued);
-}
-
 void tr_torrent::VerifyMediator::on_verify_started()
 {
     tr_logAddDebugTor(tor_, "Verifying torrent");
@@ -1777,8 +1799,9 @@ void tr_torrent::VerifyMediator::on_verify_started()
     tor_->set_verify_state(VerifyState::Active);
 }
 
-void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, bool const has_piece)
+void tr_torrent::VerifyMediator::on_piece_hashed(tr_piece_index_t const piece, std::optional<tr_sha1_digest_t> const& hash)
 {
+    auto const has_piece = hash == tor_->piece_hash(piece);
     if (auto const had_piece = tor_->has_piece(piece); !has_piece || !had_piece) {
         tor_->set_has_piece(piece, has_piece);
         tor_->set_dirty();
@@ -1790,7 +1813,6 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
     tor_->verify_checked_pieces_ = piece + 1U;
 }
 
-// (usually called from tr_verify_worker's thread)
 void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
 {
     // guarded: aborted jobs may finish without ever having started
@@ -1810,25 +1832,32 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
 
     tor_->set_verify_state(VerifyState::None);
 
-    if (!aborted && !tor_->is_deleting_) {
-        run_in_session_thread_by_id(*tor_, [](tr_torrent* const tor) {
-            if (tor->is_deleting_) {
-                return;
-            }
-
-            for (tr_file_index_t file = 0, n_files = tor->file_count(); file < n_files; ++file) {
-                tor->update_file_path(file, {});
-            }
-
-            tor->recheck_completeness();
-
-            tor->session->verify_done_(tor->id());
-
-            if (tor->start_when_stable_) {
-                tor->start(false, !tor->checked_pieces_.has_none());
-            }
-        });
+    if (aborted || tor_->is_deleting_) {
+        return;
     }
+
+    // Close the files the verify opened, so that a stopped torrent holds
+    // none and its drive can be ejected. The close is a barrier, so the
+    // renames below see the files after any move or rename queued during
+    // the verify.
+    tor_->session->local_data.close_torrent(tor_->id(), [session = tor_->session](tr_torrent_id_t const id) {
+        auto* const tor = session->torrents().get(id);
+        if (tor == nullptr || tor->is_deleting_) {
+            return;
+        }
+
+        for (tr_file_index_t file = 0, n_files = tor->file_count(); file < n_files; ++file) {
+            tor->update_file_path(file, {});
+        }
+
+        tor->recheck_completeness();
+
+        session->verify_done_(id);
+
+        if (tor->start_when_stable_) {
+            tor->start(false, !tor->checked_pieces_.has_none());
+        }
+    });
 }
 
 // ---

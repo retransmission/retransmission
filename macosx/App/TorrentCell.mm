@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #import "TorrentCell.h"
+#import "NSImageAdditions.h"
 #import "ProgressBarView.h"
 #import "ProgressGradients.h"
 #import "Torrent.h"
@@ -39,6 +40,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
 static CGFloat const kErrorImageSize = 20.0;
 
 @interface TorrentCell ()
+@property(nonatomic) tr_priority_t priority; // TODO: Add ViewModel.
 @property(nonatomic) NSImageView* errorImageView;
 @end
 
@@ -76,6 +78,7 @@ static CGFloat const kErrorImageSize = 20.0;
 
     [stackView addArrangedSubview:torrentTitleField];
     [stackView addArrangedSubview:torrentPriorityView];
+    [stackView setVisibilityPriority:NSStackViewVisibilityPriorityNotVisible forView:torrentPriorityView];
 
     auto torrentProgressField = [[NSTextField alloc] init];
     torrentProgressField.textColor = NSColor.secondaryLabelColor;
@@ -299,17 +302,16 @@ static CGFloat const kErrorImageSize = 20.0;
 
 - (void)setTorrentPriority:(tr_priority_t)priority
 {
-    BOOL const hasPriority = priority != TR_PRI_NORMAL;
-
-    NSImage* const image = hasPriority ?
-        [NSImage imageNamed:(priority == TR_PRI_HIGH ? @"PriorityHighTemplate" : @"PriorityLowTemplate")] :
-        nil;
-
-    NSStackViewVisibilityPriority const visibility = hasPriority ? NSStackViewVisibilityPriorityMustHold : NSStackViewVisibilityPriorityNotVisible;
-
-    if (self.fTorrentPriorityView.image == image && [self.fStackView visibilityPriorityForView:self.fTorrentPriorityView] == visibility) {
+    if (self.priority == priority) {
         return;
     }
+
+    self.priority = priority;
+    BOOL const hasPriority = priority != TR_PRI_NORMAL;
+
+    NSImage* const image = hasPriority ? (priority == TR_PRI_HIGH ? [NSImage highPriority] : [NSImage lowPriority]) : nil;
+
+    NSStackViewVisibilityPriority const visibility = hasPriority ? NSStackViewVisibilityPriorityMustHold : NSStackViewVisibilityPriorityNotVisible;
 
     self.fTorrentPriorityView.image = image;
     [self.fStackView setVisibilityPriority:visibility forView:self.fTorrentPriorityView];

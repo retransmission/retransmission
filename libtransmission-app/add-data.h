@@ -7,12 +7,15 @@
 
 #include <cstdint>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/types.h" // tr_priority_t
+
+#include "libtransmission-app/torrent.h" // TorrentFile
 
 namespace tr::app
 {
@@ -47,6 +50,10 @@ struct AddData {
     // or a .torrent's contents. nullopt for a URL or for a file that isn't a torrent.
     [[nodiscard]] std::optional<tr_torrent_metainfo> parsed() const;
 
+    // The torrent's files as a prompt first shows them: all wanted, normal priority, nothing downloaded.
+    // Empty where `parsed()` can't name them: a link, or a file that isn't a torrent.
+    [[nodiscard]] std::vector<TorrentFile> files() const;
+
     Type type = Type::None;
     std::string source;
     std::string metainfo;
@@ -69,6 +76,9 @@ struct AddOptions {
     std::vector<int> files_unwanted;
     std::vector<int> priority_low;
     std::vector<int> priority_high;
+
+    // sets the file indices above from the choices in `files`, e.g. a prompt's
+    void set_file_choices(std::span<TorrentFile const> files);
 };
 
 } // namespace tr::app

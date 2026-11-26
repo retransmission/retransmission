@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <libtransmission-app/add-data.h>
+
 #include <gtkmm/builder.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
@@ -21,8 +23,6 @@ class Prefs;
 } // namespace tr::app
 
 class Session;
-
-struct tr_torrent_builder;
 
 class TorrentUrlChooserDialog : public Gtk::Dialog
 {
@@ -77,19 +77,20 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
-        tr::app::Prefs const& prefs,
-        std::unique_ptr<tr_torrent_builder> torrent_builder);
+        tr::app::AddData add,
+        tr::app::AddOptions const& preset);
     OptionsDialog(OptionsDialog&&) = delete;
     OptionsDialog(OptionsDialog const&) = delete;
     OptionsDialog& operator=(OptionsDialog&&) = delete;
     OptionsDialog& operator=(OptionsDialog const&) = delete;
     ~OptionsDialog() override;
 
+    // asks about adding `add`, starting from the choices in `preset`: what `torrent_add_prompt` fired with
     [[nodiscard]] static std::unique_ptr<OptionsDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
-        tr::app::Prefs const& prefs,
-        std::unique_ptr<tr_torrent_builder> torrent_builder);
+        tr::app::AddData add,
+        tr::app::AddOptions const& preset);
 
 private:
     class Impl;

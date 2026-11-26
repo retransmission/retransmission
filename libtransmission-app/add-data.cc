@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -18,9 +19,11 @@
 #include "libtransmission/file.h"
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/types.h"
 #include "libtransmission/web-utils.h"
 
 #include "libtransmission-app/interop.h"
+#include "libtransmission-app/torrent.h"
 
 using namespace std::string_view_literals;
 
@@ -164,6 +167,48 @@ std::optional<tr_torrent_metainfo> AddData::parsed() const
     }
 
     return {};
+}
+
+std::vector<TorrentFile> AddData::files() const
+{
+    auto const tm = parsed();
+    if (!tm) {
+        return {};
+    }
+
+    auto const n_files = tm->file_count();
+
+    auto files = std::vector<TorrentFile>{};
+    files.reserve(n_files);
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        auto& file = files.emplace_back();
+        file.name = tm->file_subpath(i);
+        file.size = tm->file_size(i);
+        file.index = i;
+    }
+
+    return files;
+}
+
+void AddOptions::set_file_choices(std::span<TorrentFile const> const files)
+{
+    files_unwanted.clear();
+    priority_low.clear();
+    priority_high.clear();
+
+    for (auto const& file : files) {
+        auto const index = static_cast<int>(file.index);
+
+        if (!file.wanted) {
+            files_unwanted.push_back(index);
+        }
+
+        if (file.priority == TR_PRI_LOW) {
+            priority_low.push_back(index);
+        } else if (file.priority == TR_PRI_HIGH) {
+            priority_high.push_back(index);
+        }
+    }
 }
 
 } // namespace tr::app

@@ -161,7 +161,8 @@ struct tr_torrent {
         uint64_t cur_ = {};
     };
 
-    class VerifyMediator : public tr_verify_worker::Mediator
+    // tr_verifier removes it before the torrent is freed.
+    class VerifyMediator : public tr_verifier::Mediator
     {
     public:
         explicit VerifyMediator(tr_torrent* const tor)
@@ -171,12 +172,12 @@ struct tr_torrent {
 
         ~VerifyMediator() override = default;
 
-        [[nodiscard]] tr_torrent_metainfo const& metainfo() const override;
-        [[nodiscard]] std::optional<std::string> find_file(tr_file_index_t file_index) const override;
+        [[nodiscard]] tr_torrent_id_t id() const override;
+        [[nodiscard]] tr_block_info const& block_info() const override;
+        [[nodiscard]] tr_byte_span_t file_span(uint64_t byte) const override;
 
-        void on_verify_queued() override;
         void on_verify_started() override;
-        void on_piece_checked(tr_piece_index_t piece, bool has_piece) override;
+        void on_piece_hashed(tr_piece_index_t piece, std::optional<tr_sha1_digest_t> const& hash) override;
         void on_verify_done(bool aborted) override;
 
     private:
@@ -909,6 +910,10 @@ struct tr_torrent {
 
     void start(bool bypass_queue, std::optional<bool> has_any_local_data);
 
+    // Stops the torrent's peers, webseeds, and announces, then closes its
+    // files and saves its resume file once its disk IO in flight has landed.
+    void stop_now();
+
     [[nodiscard]] constexpr auto has_changed_since(time_t when) const noexcept
     {
         return date_changed_ > when;
@@ -1436,8 +1441,6 @@ private:
 
     void start_in_session_thread();
 
-    void stop_now();
-
     [[nodiscard]] bool is_new_torrent_a_seed();
 
     //tr_stat stats_ = {};
@@ -1459,8 +1462,7 @@ private:
     tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
 
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash. Session thread only:
-    // the verify thread must not touch this map.
+    // An entry lives only as long as its hash.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 

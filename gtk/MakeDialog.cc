@@ -13,7 +13,6 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
-#include <libtransmission/torrent-builder.h>
 #include <libtransmission/types.h>
 #include <libtransmission/values.h>
 
@@ -94,8 +93,6 @@ public:
 private:
     bool onProgressDialogRefresh();
     void onProgressDialogResponse(int response);
-
-    void addTorrent();
 
 private:
     tr_metainfo_builder& builder_;
@@ -242,14 +239,6 @@ MakeProgressDialog::~MakeProgressDialog()
     progress_tag_.disconnect();
 }
 
-void MakeProgressDialog::addTorrent()
-{
-    auto torrent_builder = std::make_unique<tr_torrent_builder>(core_->get_session());
-    torrent_builder->set_metainfo_from_file(target_);
-    torrent_builder->set_download_dir(Glib::path_get_dirname(builder_.top()));
-    core_->add_builder(std::move(torrent_builder));
-}
-
 void MakeProgressDialog::onProgressDialogResponse(int response)
 {
     switch (response) {
@@ -260,7 +249,7 @@ void MakeProgressDialog::onProgressDialogResponse(int response)
         break;
 
     case TR_GTK_RESPONSE_TYPE(ACCEPT):
-        addTorrent();
+        core_->add_created_torrent(target_, builder_.top());
         [[fallthrough]];
 
     case TR_GTK_RESPONSE_TYPE(CLOSE):

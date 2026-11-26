@@ -17,11 +17,9 @@
 #include <initializer_list>
 #include <memory>
 #include <optional>
-#include <random>
 #include <span>
 #include <string>
 #include <string_view>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -29,24 +27,23 @@
 #include "libtransmission/digest.h"
 #include "libtransmission/error.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 
 class tr_open_files;
+class tr_sha1;
 class tr_torrents;
 
 namespace tr
 {
 
-class LocalData;
+class DiskActivityBoard;
 struct StorageDescriptor;
 
 namespace detail
 {
-
-// For tests. While the copy lane is held, no move that has to copy
-// files from another filesystem starts placing them.
-void hold_copy_lane(LocalData& local_data, bool held);
-
+// Lets the test hooks declared after LocalData reach its backend.
+struct LocalDataTestAccess;
 } // namespace detail
 
 /**
@@ -63,9 +60,9 @@ void hold_copy_lane(LocalData& local_data, bool held);
  * 1. Ops on different torrents are unordered.
  *
  * 2. Data ops on the same torrent are unordered too. `read`,
- *    `test_piece`, and `write` may run at the same time and may finish
- *    in any order. If op B needs to see op A's result, wait for A's
- *    callback before starting B.
+ *    `test_piece`, `hash_span`, and `write` may run at the same time and
+ *    may finish in any order. If op B needs to see op A's result, wait
+ *    for A's callback before starting B.
  *
  * 3. Admin ops are barriers. `move`, `rename`, `remove`,
  *    `close_torrent`, and `close_all` wait for the ops already in
@@ -199,6 +196,16 @@ public:
     using OnTest = std::function<
         void(tr_torrent_id_t, tr_piece_index_t piece, tr_error const& error, std::optional<tr_sha1_digest_t> hash)>;
 
+    // Required. `hashes` holds the digest of each piece that ends in
+    // `span`, in order. A failed read leaves it empty. `sha` comes back
+    // either way.
+    using OnHashSpan = std::function<void(
+        tr_torrent_id_t,
+        tr_byte_span_t span,
+        tr_error const& error,
+        std::vector<tr_sha1_digest_t> hashes,
+        std::unique_ptr<tr_sha1> sha)>;
+
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
     struct MoveTarget {
@@ -241,6 +248,11 @@ public:
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
         [[nodiscard]] virtual tr_error write(tr_torrent_id_t tor_id, tr_byte_span_t byte_span, BlockData const& data) = 0;
+        [[nodiscard]] virtual tr_error hash_span(
+            tr_torrent_id_t tor_id,
+            tr_byte_span_t span,
+            tr_sha1& sha,
+            std::vector<tr_sha1_digest_t>& setme_hashes) = 0;
         [[nodiscard]] virtual tr_error move(
             tr_torrent_id_t id,
             MoveTarget const& target,
@@ -251,25 +263,6 @@ public:
         virtual void close_torrent(tr_torrent_id_t tor_id) = 0;
         virtual void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num) = 0;
     };
-
-    /**
-     * How the synchronous backend delivers completions. See rule 4.
-     *
-     * `Inline` runs every callback before the enqueue call returns.
-     *
-     * `Deferred` and `Shuffled` are for testing. `Deferred` parks every
-     * callback until `pump()` runs. `Shuffled` picks per op, so one run
-     * parks some callbacks and fires the rest inline. `pump()` delivers
-     * what it parked in an order unrelated to the order the ops arrived
-     * in.
-     *
-     * The rules above allow all of this, so a caller that breaks under
-     * these modes would also break under the threaded backend.
-     */
-    enum class Completions : uint8_t { Inline, Deferred, Shuffled };
-
-    // The same seed replays the same shuffled run.
-    static auto constexpr DefaultShuffleSeed = uint32_t{ 20260812U };
 
     // Runs a function on the session thread. Must be callable from any
     // thread. Disk workers call it to deliver completions.
@@ -324,6 +317,31 @@ public:
 
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
+
+    // Hashes `span`'s bytes, as they are on the disk, piece by piece.
+    // `sha` holds the hash of the first piece's bytes before `span`. It
+    // comes back holding the hash of the last piece's bytes if `span` ends
+    // partway through that piece, and cleared if not. A verify carries it
+    // across the spans of a piece too big for one. A failed read leaves it
+    // as it was.
+    // The threaded backend gives the span a turn after other work.
+    // `span` is at most max_hash_span_bytes() long.
+    void hash_span(tr_torrent_id_t id, tr_byte_span_t span, std::unique_ptr<tr_sha1> sha, OnHashSpan on_hashed);
+
+    // The most a worker reads in one go.
+    [[nodiscard]] static constexpr size_t max_hash_span_bytes() noexcept
+    {
+        return MaxRunBytes;
+    }
+
+    // How long a verify's spans should be. The synchronous backend reads
+    // and hashes each one on the session thread, which waits for it, so
+    // it gets shorter ones.
+    [[nodiscard]] size_t hash_span_bytes() const noexcept
+    {
+        return threaded_ ? max_hash_span_bytes() : SessionThreadHashSpanBytes;
+    }
+
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
@@ -336,6 +354,16 @@ public:
     // Later ops run on the synchronous backend.
     void shutdown();
 
+    // For a closing session. Reads that haven't started, and reads enqueued
+    // until try_finish_shutdown() succeeds, fail with ECANCELED instead of
+    // touching the disk. Other ops finish, and paused workers resume.
+    void begin_shutdown();
+
+    // After begin_shutdown(): true once nothing is in flight. The workers
+    // have stopped by then, and later ops run on the synchronous backend.
+    // Doesn't block.
+    [[nodiscard]] bool try_finish_shutdown();
+
     // True while an admin op on the whole torrent is queued or running.
     // Blocks requested now would wait behind it, holding write budget that
     // other torrents need, so callers shouldn't request any.
@@ -347,6 +375,10 @@ public:
     [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept;
 
     [[nodiscard]] Stats stats() const noexcept;
+
+    // What the disk threads are doing, for a slow close to explain
+    // itself. Leaves the session's fields alone. Callable from any thread.
+    [[nodiscard]] tr_disk_activity activity() const;
 
     // The most bytes that may wait for the disk, counting blocks
     // requested from peers as well as blocks received. Also sizes the
@@ -371,74 +403,22 @@ public:
         return 2U * MaxRunBytes;
     }
 
-    // For tests. Paused workers take no new ops.
+    // For tests. Paused workers take no new ops. With no threads, the
+    // session thread takes no steps of its own.
     void set_workers_paused(bool paused);
 
-    // LocalData calls `wake` when it parks the first completion. The owner
-    // answers by calling pump() from the session thread. That thread is the
-    // same in every mode, so the owner binds this once.
-    void set_wake(std::function<void()> wake);
-
-    void set_completions(Completions completions, uint32_t seed = DefaultShuffleSeed);
-
-    // Deliver the parked completions in a random order.
-    void pump();
-
-private:
-    friend void detail::hold_copy_lane(LocalData& local_data, bool held);
-
-    // A completion waiting to be delivered.
-    // A read completion owns the buffer it read into and can't be copied,
-    // so std::function can't hold one.
-    class Parked
+    // For tests. True while the synchronous backend is in place.
+    [[nodiscard]] bool is_synchronous() const noexcept
     {
-    public:
-        virtual ~Parked() = default;
-        virtual void deliver() = 0;
-    };
-
-    template<typename Fn>
-    class ParkedFn final : public Parked
-    {
-    public:
-        explicit ParkedFn(Fn fn)
-            : fn_{ std::move(fn) }
-        {
-        }
-
-        void deliver() override
-        {
-            fn_();
-        }
-
-    private:
-        Fn fn_;
-    };
-
-    // Deliver the completion now, or park it for pump().
-    // See set_completions().
-    template<typename Fn>
-    void finish(Fn&& fn)
-    {
-        if (defer_next()) {
-            park(std::make_unique<ParkedFn<std::decay_t<Fn>>>(std::forward<Fn>(fn)));
-            return;
-        }
-
-        fn();
+        return !threaded_;
     }
 
-    // True if this completion should wait for pump() instead of firing now.
-    [[nodiscard]] bool defer_next() noexcept;
+private:
+    friend struct detail::LocalDataTestAccess;
 
     // Run an admin op as a barrier on the torrent, or with `file`, on
     // that file alone. See the definition.
     void admin(tr_torrent_id_t id, std::function<void()> body, std::optional<tr_file_index_t> file = {});
-
-    void park(std::unique_ptr<Parked> completion);
-
-    // Deliver every parked completion, including ones parked along the way.
-    void drain();
 
     // The threaded backend. See start_workers().
     class Threaded;
@@ -447,21 +427,57 @@ private:
     // into runs of up to this many bytes, and does each run with one call.
     static auto constexpr MaxRunBytes = size_t{ 1024U * 1024U };
 
+    // About 10 ms of reading from a USB 2 drive
+    static auto constexpr SessionThreadHashSpanBytes = size_t{ 256U * 1024U };
+
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
+
+    // The backends write it, and any thread reads it, so it outlives them.
+    std::unique_ptr<DiskActivityBoard> board_;
 
     std::unique_ptr<Backend> backend_;
 
     std::shared_ptr<Threaded> threaded_;
     std::optional<uint64_t> write_budget_;
-
-    std::vector<std::unique_ptr<Parked>> parked_;
-    std::function<void()> wake_;
-
-    // A fixed seed so that tests can replay a shuffled run.
-    // NOLINTNEXTLINE(cert-msc32-c,cert-msc51-cpp,bugprone-random-generator-seed)
-    std::mt19937 rng_{ DefaultShuffleSeed };
-
-    Completions completions_ = Completions::Inline;
 };
+
+namespace detail
+{
+
+// For tests. Clients call LocalData::start_workers().
+//
+// Selects the threaded backend without starting its threads. The work
+// that `worker_count` workers and the two admin threads would do waits
+// for the session thread, which does it a step at a time between its
+// other work: never inside the call that enqueued an op, and never
+// inside a callback. A step is one thread's next move, and a random
+// number generator seeded with `seed` picks the thread from those with
+// work waiting. A seed replays its schedule only if the caller's own
+// events are deterministic: sockets and timers can change which work is
+// waiting at each pick.
+// The gate, the queues, and the delivery of callbacks are the ones the
+// threads use.
+void start_threadless(
+    LocalData& local_data,
+    size_t worker_count,
+    uint32_t seed,
+    tr_open_files& open_files,
+    LocalData::Marshal marshal,
+    LocalData::DescriptorProvider provider);
+
+enum class DiskThread : uint8_t { Any, Worker, LongLane, ShortLane };
+
+// Takes one step now, on the calling thread, paused or not. A worker
+// takes its next hash, run of reads, run of writes, or verify span, or
+// does the one it took earlier. A lane does its next job. False if no
+// thread of `which` has anything to do.
+bool step(LocalData& local_data, DiskThread which = DiskThread::Any);
+
+// Does now what the backend left for the session thread to do later:
+// delivers the callbacks of the ops that have finished, and hands the
+// reads that waited for that to the workers.
+void deliver(LocalData& local_data);
+
+} // namespace detail
 
 } // namespace tr

@@ -17,6 +17,8 @@
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
 
+#include <giomm/file.h>
+
 #include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
 #include <glibmm/signalproxy.h>
@@ -40,7 +42,6 @@
 #include <vector>
 
 struct tr_error;
-struct tr_torrent;
 
 /***
 ****
@@ -75,11 +76,12 @@ enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
 
 // Builds a D-Bus argument list. Parameters are always a tuple,
 // even when there is one of them or none.
+// The vector is spelled out because an empty braced list matches two create_tuple() overloads.
 template<typename... Ts>
 [[nodiscard]] Glib::VariantContainerBase gtr_variant_tuple(Ts&&... args)
 {
     return Glib::VariantContainerBase::create_tuple(
-        { Glib::Variant<std::remove_cvref_t<Ts>>::create(std::forward<Ts>(args))... });
+        std::vector<Glib::VariantBase>{ Glib::Variant<std::remove_cvref_t<Ts>>::create(std::forward<Ts>(args))... });
 }
 
 [[nodiscard]] std::string tr_format_time_relative(time_t timestamp, time_t origin);
@@ -139,7 +141,8 @@ void gtr_combo_box_set_active_enum(Gtk::ComboBox& combo, int value);
 
 void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url);
 
-void gtr_add_torrent_error_dialog(Gtk::Widget& window_or_child, tr_torrent* duplicate_torrent, std::string const& filename);
+// the key for `tr::app::AddData` that names `file`: its path, or else its URI, e.g. a link given on the command line
+[[nodiscard]] std::string gtr_add_key(Glib::RefPtr<Gio::File> const& file);
 
 /* pop up the context menu if a user right-clicks.
    if the row they right-click on isn't selected, select it. */
@@ -178,7 +181,7 @@ void setup_item_view_button_event_handling(
 #endif
 
 /* move a file or folder to the trash can, or delete it when the trash can refuses */
-bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error = nullptr);
+bool gtr_file_trash_or_remove(std::string_view filename, tr_error* error);
 
 void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry);
 

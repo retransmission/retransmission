@@ -53,6 +53,7 @@ jobs:
       tidy-daemon: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-daemon-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-qt-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-utils: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-utils-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
     steps:
       - name: Check Push to Main Branch
         id: check-main-push
@@ -87,7 +88,7 @@ jobs:
           get_changes daemon     CMakeLists.txt cmake third-party libtransmission daemon
           get_changes any-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web third-party
           get_changes our-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web
-          get_changes tidy-config daemon/.clang-tidy libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
+          get_changes tidy-config daemon/.clang-tidy libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy tests/utils/.clang-tidy utils/.clang-tidy
           # Each tidy cell only checks the directories its regex covers, so it
           # keys off just those sources -- not the wider build deps (a
           # libtransmission-only change has no gtk/qt files to re-check).
@@ -95,6 +96,7 @@ jobs:
           get_changes tidy-daemon-src daemon
           get_changes tidy-gtk-src  gtk
           get_changes tidy-qt-src   qt tests/qt
+          get_changes tidy-utils-src  utils tests/utils
           get_changes dist       dist release
           get_changes docs       docs
           get_changes gtk        CMakeLists.txt cmake third-party libtransmission libtransmission-app gtk
@@ -401,7 +403,8 @@ jobs:
       needs.what-to-make.outputs.tidy-core == 'true' ||
       needs.what-to-make.outputs.tidy-daemon == 'true' ||
       needs.what-to-make.outputs.tidy-gtk == 'true' ||
-      needs.what-to-make.outputs.tidy-qt == 'true'
+      needs.what-to-make.outputs.tidy-qt == 'true' ||
+      needs.what-to-make.outputs.tidy-utils == 'true'
     # One cell per toolkit version. Each cell generates code (Qt moc/uic) so
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
@@ -409,13 +412,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolkit: [core, daemon, gtk3, gtk4, qt5, qt6]
+        toolkit: [core, daemon, gtk3, gtk4, qt5, qt6, utils]
         include:
           - toolkit: core
             enable-daemon: false
             enable-gtk: false
             enable-qt: false
             enable-tests: true
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
             runner: ubuntu-26.04
@@ -424,6 +428,7 @@ jobs:
             enable-gtk: false
             enable-qt: false
             enable-tests: false
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-daemon }}
             regex: 'daemon/.*'
             runner: ubuntu-26.04
@@ -432,6 +437,7 @@ jobs:
             enable-gtk: gtk3
             enable-qt: false
             enable-tests: false
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
             regex: 'gtk/.*'
             runner: ubuntu-26.04
@@ -440,6 +446,7 @@ jobs:
             enable-gtk: gtk4
             enable-qt: false
             enable-tests: false
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
             regex: 'gtk/.*'
             runner: ubuntu-26.04 # 24.04 doesn't have GTKMM4_MINIMUM
@@ -448,6 +455,7 @@ jobs:
             enable-gtk: false
             enable-qt: qt5
             enable-tests: true
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
             runner: ubuntu-26.04
@@ -456,8 +464,18 @@ jobs:
             enable-gtk: false
             enable-qt: qt6
             enable-tests: true
+            enable-utils: false
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
+            runner: ubuntu-26.04
+          - toolkit: utils
+            enable-daemon: false
+            enable-gtk: false
+            enable-qt: false
+            enable-tests: true
+            enable-utils: true
+            enabled: ${{ needs.what-to-make.outputs.tidy-utils }}
+            regex: '(?:tests/)?utils/.*'
             runner: ubuntu-26.04
     steps:
       - name: Show Configuration
@@ -498,6 +516,7 @@ jobs:
             -DENABLE_GTK=${{ matrix.enable-gtk && 'ON' || 'OFF' }} \
             -DENABLE_QT=${{ matrix.enable-qt && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ matrix.enable-tests && 'ON' || 'OFF' }} \
+            -DENABLE_UTILS=${{ matrix.enable-utils && 'ON' || 'OFF' }} \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
@@ -534,33 +553,44 @@ jobs:
     if: |
       needs.what-to-make.outputs.tidy-core == 'true' ||
       needs.what-to-make.outputs.tidy-daemon == 'true' ||
-      needs.what-to-make.outputs.tidy-qt == 'true'
+      needs.what-to-make.outputs.tidy-qt == 'true' ||
+      needs.what-to-make.outputs.tidy-utils == 'true'
     # MSVC + Qt6 coverage. qt5 on Windows is intentionally omitted for now: it
     # would require building Qt5 from source on the runners (see
     # prepare-deps-win32 / release/windows). Linux covers qt5.
     strategy:
       fail-fast: false
       matrix:
-        toolkit: [core, daemon, qt6]
+        toolkit: [core, daemon, qt6, utils]
         include:
           - toolkit: core
             deps: CoreDeps
             enable-daemon: 'OFF'
             enable-qt: 'OFF'
+            enable-utils: 'OFF'
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
           - toolkit: daemon
             deps: CoreDeps
             enable-daemon: 'ON'
             enable-qt: 'OFF'
+            enable-utils: 'OFF'
             enabled: ${{ needs.what-to-make.outputs.tidy-daemon }}
             regex: 'daemon/.*'
           - toolkit: qt6
             deps: Deps
             enable-daemon: 'OFF'
             enable-qt: 'ON'
+            enable-utils: 'OFF'
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
             regex: '(qt|tests/qt)/.*'
+          - toolkit: utils
+            deps: CoreDeps
+            enable-daemon: 'OFF'
+            enable-qt: 'OFF'
+            enable-utils: 'ON'
+            enabled: ${{ needs.what-to-make.outputs.tidy-utils }}
+            regex: '(?:tests/)?utils/.*'
     steps:
       - name: Show Configuration
         run: |
@@ -618,6 +648,7 @@ jobs:
             '-DENABLE_DAEMON=${{ matrix.enable-daemon }}'
             '-DENABLE_QT=${{ matrix.enable-qt }}'
             '-DENABLE_TESTS=ON'
+            '-DENABLE_UTILS=${{ matrix.enable-utils }}'
             '-DRUN_CLANG_TIDY=OFF'
             '-DUSE_SYSTEM_DEFAULT=OFF'
           )

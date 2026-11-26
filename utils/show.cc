@@ -44,31 +44,92 @@ namespace
 {
 auto constexpr TimeoutSecs = std::chrono::seconds{ 30 };
 
-char constexpr MyName[] = MY_NAME;
-char constexpr Usage[] = "Usage: " MY_NAME " [options] <torrent-file>";
+auto constexpr MyName = MY_NAME;
+auto constexpr Usage = "Usage: " MY_NAME " [options] <torrent-file>";
 
 using Arg = tr_option::Arg;
 auto constexpr Options = std::to_array<tr_option>({
-    { 'd', "header", "Show only header section", "d", Arg::None, nullptr },
-    { 'i', "info", "Show only info section", "i", Arg::None, nullptr },
-    { 't', "trackers", "Show only trackers section", "t", Arg::None, nullptr },
-    { 'f', "files", "Show only file list", "f", Arg::None, nullptr },
-    { 'D', "no-header", "Do not show header section", "D", Arg::None, nullptr },
-    { 'I', "no-info", "Do not show info section", "I", Arg::None, nullptr },
-    { 'T', "no-trackers", "Do not show trackers section", "T", Arg::None, nullptr },
-    { 'F', "no-files", "Do not show files section", "F", Arg::None, nullptr },
-    { 'b', "bytes", "Show file sizes in bytes", "b", Arg::None, nullptr },
-    { 'm', "magnet", "Give a magnet link for the specified torrent", "m", Arg::None, nullptr },
-    { 's', "scrape", "Ask the torrent's trackers how many peers are in the torrent's swarm", "s", Arg::None, nullptr },
-    { 'u', "unsorted", "Do not sort files by name", "u", Arg::None, nullptr },
-    { 'V', "version", "Show version number and exit", "V", Arg::None, nullptr },
-    { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
+    { .val = 'd',
+      .longName = "header",
+      .description = "Show only header section",
+      .shortName = "d",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'i',
+      .longName = "info",
+      .description = "Show only info section",
+      .shortName = "i",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 't',
+      .longName = "trackers",
+      .description = "Show only trackers section",
+      .shortName = "t",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'f',
+      .longName = "files",
+      .description = "Show only file list",
+      .shortName = "f",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'D',
+      .longName = "no-header",
+      .description = "Do not show header section",
+      .shortName = "D",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'I',
+      .longName = "no-info",
+      .description = "Do not show info section",
+      .shortName = "I",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'T',
+      .longName = "no-trackers",
+      .description = "Do not show trackers section",
+      .shortName = "T",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'F',
+      .longName = "no-files",
+      .description = "Do not show files section",
+      .shortName = "F",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'b',
+      .longName = "bytes",
+      .description = "Show file sizes in bytes",
+      .shortName = "b",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'm',
+      .longName = "magnet",
+      .description = "Give a magnet link for the specified torrent",
+      .shortName = "m",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 's',
+      .longName = "scrape",
+      .description = "Ask the torrent's trackers how many peers are in the torrent's swarm",
+      .shortName = "s",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'u',
+      .longName = "unsorted",
+      .description = "Do not sort files by name",
+      .shortName = "u",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 'V',
+      .longName = "version",
+      .description = "Show version number and exit",
+      .shortName = "V",
+      .arg = Arg::None,
+      .argName = nullptr },
+    { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
-static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
-namespace
-{
 struct app_opts {
     std::string_view filename;
     bool scrape = false;
@@ -82,10 +143,10 @@ struct app_opts {
     bool show_bytesize = false;
 };
 
-[[nodiscard]] int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
+[[nodiscard]] int parse_command_line(app_opts& opts, int argc, char const* const* argv)
 {
-    int c;
-    char const* optarg;
+    int c = {};
+    char const* optarg = nullptr;
 
     while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
         switch (c) {
@@ -148,12 +209,12 @@ struct app_opts {
     return 0;
 }
 
-[[nodiscard]] auto toString(time_t now)
+[[nodiscard]] auto to_string(time_t now)
 {
     return now == 0 ? "Unknown" : fmt::format("{:%a %b %d %T %Y}", *std::localtime(&now));
 }
 
-void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
+void show_info(app_opts const& opts, tr_torrent_metainfo const& metainfo)
 {
     /**
     ***  General Info
@@ -168,7 +229,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
             fmt::print("  Hash v2: {:s}\n", metainfo.info_hash2_string());
         }
         fmt::print("  Created by: {:s}\n", std::empty(metainfo.creator()) ? "Unknown"sv : metainfo.creator().sv());
-        fmt::print("  Created on: {:s}\n\n", toString(metainfo.date_created()));
+        fmt::print("  Created on: {:s}\n\n", to_string(metainfo.date_created()));
 
         if (!std::empty(metainfo.comment())) {
             fmt::print("  Comment: {:s}\n", metainfo.comment().sv());
@@ -234,7 +295,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
             auto line = opts.show_bytesize ?
                 fmt::format("{:d} {:s}", metainfo.file_size(i), subpath) :
                 fmt::format("  {:s} ({:s})", subpath, Storage{ metainfo.file_size(i), Storage::Units::Bytes }.to_string());
-            rows.push_back({ subpath, std::move(line) });
+            rows.emplace_back(subpath, std::move(line));
         }
 
         if (!opts.unsorted) {
@@ -251,7 +312,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
     }
 }
 
-void doScrape(tr_torrent_metainfo const& metainfo)
+void do_scrape(tr_torrent_metainfo const& metainfo)
 {
     auto mediator = tr_web::Mediator{};
     auto web = tr_web::create(mediator);
@@ -270,7 +331,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         scrape_url += "info_hash="sv;
         tr_urlPercentEncode(scrape_url, hash);
         fmt::print("{:s} ... ", scrape_url);
-        fflush(stdout);
+        (void)std::fflush(stdout);
 
         // execute the http scrape.
         // the callback runs on tr_web's own thread;
@@ -326,7 +387,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
 
 } // namespace
 
-int tr_main(int argc, char* argv[])
+int tr_main(int argc, char** argv)
 {
     tr_lib_init();
 
@@ -336,7 +397,7 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto opts = app_opts{};
-    if (parseCommandLine(opts, argc, (char const* const*)argv) != 0) {
+    if (parse_command_line(opts, argc, argv) != 0) {
         return EXIT_FAILURE;
     }
 
@@ -371,17 +432,17 @@ int tr_main(int argc, char* argv[])
             fmt::print("Name: {:s}\n", metainfo.name());
             fmt::print("File: {:s}\n", opts.filename);
             fmt::print("\n");
-            fflush(stdout);
+            (void)std::fflush(stdout);
         }
 
         if (opts.scrape) {
-            doScrape(metainfo);
+            do_scrape(metainfo);
         } else {
-            showInfo(opts, metainfo);
+            show_info(opts, metainfo);
         }
     }
 
     /* cleanup */
-    putc('\n', stdout);
+    fmt::print("\n");
     return EXIT_SUCCESS;
 }
