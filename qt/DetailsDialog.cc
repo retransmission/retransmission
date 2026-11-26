@@ -12,6 +12,7 @@
 #include <initializer_list>
 #include <iterator> // std::back_inserter()
 #include <map>
+#include <memory>
 #include <ranges>
 #include <set>
 #include <span>
@@ -1007,8 +1008,18 @@ void DetailsDialog::initOptionsTab()
             }
         });
     };
+    // `editingFinished` also fires when focus only passes through the spin,
+    // so send a value only if the user changed it: with several torrents
+    // shown, the spin holds the first one's value, not every torrent's
     auto const bind_spin = [this](auto* const spin, tr_quark const key) {
-        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key] { torrentSet(key, spin->value()); });
+        using Spin = std::remove_pointer_t<decltype(spin)>;
+        auto const edited = std::make_shared<bool>(false);
+        connect(spin, qOverload<decltype(spin->value())>(&Spin::valueChanged), this, [edited] { *edited = true; });
+        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key, edited] {
+            if (std::exchange(*edited, false)) {
+                torrentSet(key, spin->value());
+            }
+        });
     };
 
     bind_check(ui_.sessionLimitCheck, TR_KEY_honors_session_limits);
