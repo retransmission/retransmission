@@ -85,6 +85,13 @@ public:
 
     ~tr_handshake()
     {
+        // Destroyed in flight: on_done_ is set until a result is reported.
+        // Close the io, which also drops its callbacks to us. The io can
+        // outlive us: tr_bandwidth::allocate() holds every io for a whole pass.
+        if (on_done_) {
+            peer_io_->clear();
+        }
+
         maybe_recycle_dh();
     }
 

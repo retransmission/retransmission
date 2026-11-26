@@ -404,6 +404,11 @@ public:
         return peer_id;
     }
 
+    [[nodiscard]] static constexpr bool hasCallbacks(tr_peerIo const& io) noexcept
+    {
+        return io.can_read_ != nullptr || io.did_write_ != nullptr || io.got_error_ != nullptr || io.user_data_ != nullptr;
+    }
+
     [[nodiscard]] static auto startHandshake(
         std::optional<tr_handshake::Result>& result,
         tr_handshake::Mediator* mediator,
@@ -597,6 +602,70 @@ TEST_F(HandshakeTest, stoppedTorrentErrorsFailWithoutRetry)
             EXPECT_FALSE(result->is_connected);
             EXPECT_TRUE(script.attempts.empty());
         }
+    });
+}
+
+// An io can outlive its handshake: tr_bandwidth::allocate() holds every io for a whole pass.
+TEST_F(HandshakeTest, destroyedInFlightClosesItsIo)
+{
+    blockingRunInSessionThread([this] {
+        auto script = RetryScript{};
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+        constexpr auto Transports = std::array{ tr_transport_protocol::TCP, tr_transport_protocol::UTP };
+        auto io = createRetryIo(script, Transports);
+        auto const socket = script.sockets.front();
+        auto result = std::optional<tr_handshake::Result>{};
+        auto handshake = startHandshake(result, &mediator, io);
+        ASSERT_TRUE(hasCallbacks(*io));
+        ASSERT_TRUE(io->is_connected());
+
+        handshake.reset();
+
+        // ASSERT, because the socket events below run whatever callbacks the io still has.
+        ASSERT_FALSE(hasCallbacks(*io));
+        EXPECT_FALSE(io->is_connected());
+
+        socket->fail();
+        socket->receive(tr_handshake::HandshakeName);
+        EXPECT_FALSE(result);
+        EXPECT_TRUE(script.attempts.empty());
+        EXPECT_EQ(0U, io->read_buffer_size());
+    });
+}
+
+// tr_peerMgr destroys a handshake from inside its done callback, then gives the io to a tr_peerMsgs.
+TEST_F(HandshakeTest, destroyedAfterDoneLeavesItsIoOpen)
+{
+    blockingRunInSessionThread([this] {
+        auto script = RetryScript{};
+        auto mediator = MediatorMock{ session_ };
+        mediator.torrents.emplace(UbuntuTorrent.info_hash, UbuntuTorrent);
+        constexpr auto Transports = std::array{ tr_transport_protocol::TCP };
+        auto io = createRetryIo(script, Transports);
+        auto is_connected = std::optional<bool>{};
+        auto handshake = std::unique_ptr<tr_handshake>{};
+        handshake = std::make_unique<tr_handshake>(&mediator, io, TR_CLEAR_PREFERRED, [&](tr_handshake::Result const& result) {
+            is_connected = result.is_connected;
+            handshake.reset();
+            return true;
+        });
+
+        auto reply = std::vector<std::byte>{};
+        auto const append = [&reply](auto const& src) {
+            auto const bytes = std::as_bytes(std::span{ src });
+            reply.insert(reply.end(), bytes.begin(), bytes.end());
+        };
+        append(tr_handshake::HandshakeName);
+        append(ReservedBytesNoExtensions);
+        append(UbuntuTorrent.info_hash);
+        append(makeRandomPeerId());
+        script.sockets.front()->receive(reply);
+
+        ASSERT_TRUE(is_connected.value_or(false));
+        EXPECT_FALSE(handshake);
+        EXPECT_FALSE(hasCallbacks(*io));
+        EXPECT_TRUE(io->is_connected());
     });
 }
 
