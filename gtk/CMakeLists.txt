@@ -17,6 +17,8 @@ target_sources(${TR_NAME}-gtk-lib
         DetailsDialog.h
         Dialogs.cc
         Dialogs.h
+        DirMonitor.cc
+        DirMonitor.h
         DynamicPropertyStore.h
         FaviconCache.cc
         FileList.cc

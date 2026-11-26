@@ -20,7 +20,6 @@
 
 #include <QtWidgets/QApplication>
 
-#include <libtransmission/quark.h>
 #include <libtransmission/types.h> // tr_torrent_id_t
 
 #include <libtransmission-app/add-data.h>
@@ -28,13 +27,14 @@
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/torrent.h>
 
+#include "DirMonitor.h"
 #include "Prefs.h"
 #include "Timer.h"
 
 namespace tr::app
 {
 class SessionPoller;
-}
+} // namespace tr::app
 
 namespace tr::interop
 {
@@ -46,7 +46,6 @@ class Prefs;
 class RpcClient;
 class Session;
 class TorrentModel;
-class WatchDir;
 
 class Application : public QApplication
 {
@@ -100,11 +99,7 @@ public:
 signals:
     void faviconsChanged();
 
-public slots:
-    void addWatchdirTorrent(QString const& filename) const;
-
 private slots:
-    void refreshPref(tr_quark key) const;
 #ifdef QT_DBUS_LIB
     void onNotificationActionInvoked(quint32 notification_id, QString action_key);
 #endif
@@ -145,11 +140,12 @@ private:
     QString const config_dir_;
 
     QtTimerMaker timer_maker_;
+    QtDirMonitorMaker dir_monitor_maker_;
     std::unique_ptr<Session> session_;
     std::unique_ptr<tr::app::SessionPoller> poller_;
     std::unique_ptr<TorrentModel> model_;
     std::unique_ptr<MainWindow> window_;
-    std::unique_ptr<WatchDir> watch_dir_;
+    std::unique_ptr<tr::app::WatchDir> watch_dir_;
     QTranslator qt_translator_;
     QTranslator app_translator_;
 

@@ -9,16 +9,18 @@
 #error only the wathcdir module should #include this header.
 #endif
 
+#include <algorithm>
 #include <chrono>
-#include <cstddef> // for size_t
 #include <map>
 #include <memory>
-#include <optional>
+#include <ranges>
 #include <set>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
+#include "libtransmission/error.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/watchdir.h"
 
@@ -28,12 +30,12 @@ namespace tr::impl
 class BaseWatchdir : public Watchdir
 {
 public:
-    BaseWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker)
+    BaseWatchdir(std::string_view dirname, Callback callback, TimerMaker& timer_maker, NameFilter filter = {})
         : dirname_{ dirname }
         , callback_{ std::move(callback) }
-        , retry_timer_{ timer_maker.create() }
+        , filter_{ std::move(filter) }
+        , retry_timer_{ timer_maker.create([this] { onRetryTimer(); }) }
     {
-        retry_timer_->set_callback([this] { onRetryTimer(); });
     }
 
     ~BaseWatchdir() override = default;
@@ -48,85 +50,63 @@ public:
         return dirname_;
     }
 
-    [[nodiscard]] constexpr auto timeoutDuration() const noexcept
+    void rescan() override
     {
-        return timeout_duration_;
-    }
-
-    constexpr void setTimeoutDuration(std::chrono::seconds timeout_duration) noexcept
-    {
-        timeout_duration_ = timeout_duration;
-    }
-
-    [[nodiscard]] constexpr auto retryDuration() const noexcept
-    {
-        return retry_duration_;
-    }
-
-    void setRetryDuration(std::chrono::milliseconds retry_duration) noexcept
-    {
-        retry_duration_ = retry_duration;
-
-        for (auto& [basename, info] : pending_) {
-            setNextKickTime(info);
-        }
+        scan();
     }
 
 protected:
+    // Offers each file to the callback, and forgets the files that have left.
     void scan();
     void processFile(std::string_view basename);
+
+    // For a file that has left the directory, so that a later file of that name is offered again.
+    void forgetFile(std::string_view basename);
+
+    // For the `errno` of a failed call that sets up a native watch.
+    void logWatchError(int error_code) const;
 
 private:
     using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
 
+    static constexpr auto RetryDuration = std::chrono::seconds{ 5 };
+
+    // how long a file may keep asking for a retry before it's given up on
+    static constexpr auto TimeoutDuration = std::chrono::seconds{ 15 };
+
     struct Pending {
-        size_t strikes = 0U;
         Timestamp first_kick_at;
         Timestamp last_kick_at;
-        Timestamp next_kick_at;
     };
-
-    void setNextKickTime(Pending& item)
-    {
-        item.next_kick_at = item.last_kick_at + retry_duration_;
-    }
-
-    [[nodiscard]] auto nextKickTime() const
-    {
-        auto next_time = std::optional<Timestamp>{};
-
-        for (auto const& [name, info] : pending_) {
-            if (!next_time || info.next_kick_at < *next_time) {
-                next_time = info.next_kick_at;
-            }
-        }
-
-        return next_time;
-    }
 
     void restartTimerIfPending()
     {
-        if (auto next_kick_time = nextKickTime(); next_kick_time) {
-            using namespace std::chrono;
-            auto const now = steady_clock::now();
-            auto const duration = duration_cast<milliseconds>(*next_kick_time - now);
-            retry_timer_->start_single_shot(duration);
+        if (std::empty(pending_)) {
+            return;
         }
+
+        using namespace std::chrono;
+        auto const next_kick_at = std::ranges::min(pending_ | std::views::values, {}, &Pending::last_kick_at).last_kick_at +
+            RetryDuration;
+        // never negative: a GlibTimer reads a negative interval as weeks
+        auto const delay = std::max(milliseconds{}, duration_cast<milliseconds>(next_kick_at - steady_clock::now()));
+        retry_timer_->start_single_shot(delay);
     }
 
     void onRetryTimer()
     {
-        using namespace std::chrono;
-        auto const now = steady_clock::now();
+        auto const now = std::chrono::steady_clock::now();
 
-        auto tmp = decltype(pending_){};
-        std::swap(tmp, pending_);
-        for (auto const& [basename, info] : tmp) {
-            if (info.next_kick_at <= now) {
-                processFile(basename);
-            } else {
-                pending_.try_emplace(basename, info);
+        // processFile() keeps a retried file's entry, and with it the file's first try
+        auto due = std::vector<std::string>{};
+        for (auto const& [basename, info] : pending_) {
+            if (info.last_kick_at + RetryDuration <= now) {
+                due.push_back(basename);
             }
+        }
+
+        for (auto const& basename : due) {
+            processFile(basename);
         }
 
         restartTimerIfPending();
@@ -134,12 +114,12 @@ private:
 
     std::string const dirname_;
     Callback const callback_;
+    NameFilter const filter_;
     std::unique_ptr<Timer> const retry_timer_;
 
     std::map<std::string, Pending, std::less<>> pending_;
     std::set<std::string, std::less<>> handled_;
-    std::chrono::milliseconds retry_duration_ = std::chrono::seconds{ 5 };
-    std::chrono::seconds timeout_duration_ = std::chrono::seconds{ 15 };
+    tr_error::code_t scan_error_code_ = {};
 };
 
 } // namespace tr::impl
