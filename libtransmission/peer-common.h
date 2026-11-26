@@ -59,6 +59,7 @@ public:
         ClientGotHaveAll,
         ClientGotHaveNone,
         ClientGotInterested,
+        ClientGotNotInterested,
         ClientSentCancel,
         ClientSentPieceData,
         ClientSentRequest,
@@ -131,6 +132,13 @@ public:
     {
         auto event = tr_peer_event{};
         event.type = Type::ClientGotInterested;
+        return event;
+    }
+
+    [[nodiscard]] constexpr static auto GotNotInterested() noexcept
+    {
+        auto event = tr_peer_event{};
+        event.type = Type::ClientGotNotInterested;
         return event;
     }
 

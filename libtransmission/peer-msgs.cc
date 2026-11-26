@@ -1588,8 +1588,11 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     case BtPeerMsgs::NotInterested:
         logtrace(this, "got Not Interested");
-        set_peer_interested(false);
-        update_active(tr_direction::ClientToPeer);
+        if (peer_is_interested()) {
+            set_peer_interested(false);
+            update_active(tr_direction::ClientToPeer);
+            publish(tr_peer_event::GotNotInterested());
+        }
         break;
 
     case BtPeerMsgs::Have:
