@@ -707,6 +707,37 @@ protected:
         return n_blocks;
     }
 
+    // Starts `tor` with the whole budget spoken for, so its webseed requests nothing. Then frees the
+    // budget and resumes deferred requests, as a finished write does. Returns whether the webseed
+    // requested in that refill.
+    [[nodiscard]] bool webseedRequestsInARefill(tr_torrent* const tor)
+    {
+        auto holder = std::unique_ptr<RequestBudgetPeer>{};
+        blockingRunInSessionThread([tor, &holder] {
+            holder = std::make_unique<RequestBudgetPeer>(*tor);
+            holder->set_active_requests({ .begin = 0U, .end = BudgetBlocks });
+        });
+        tr_torrentStart(tor);
+        EXPECT_TRUE(waitFor(
+            [tor]() {
+                auto const lock = tor->unique_lock();
+                return tor->is_running();
+            },
+            MaxWaitMsec));
+
+        // In one session-thread call, so the webseed's own idle timer cannot request first.
+        auto requested = false;
+        blockingRunInSessionThread([this, tor, &holder, &requested] {
+            EXPECT_FALSE(tr_torrentWebseed(tor, 0U).is_downloading);
+            holder.reset();
+            session_->defer_requests();
+            resumeDeferredRequests();
+            requested = tr_torrentWebseed(tor, 0U).is_downloading;
+            tr_torrentStop(tor);
+        });
+        return requested;
+    }
+
     static void receiveBlock(ConnectedPeer const& peer, Request const& request)
     {
         auto message = std::vector<uint8_t>{};
@@ -1780,42 +1811,29 @@ TEST_F(RequestBudgetTest, aWebseedWithBlocksRequestedSendsToUs)
 
 TEST_F(RequestBudgetTest, aRefillReachesWebseeds)
 {
-    auto release_response = std::promise<void>{};
-    auto const response_allowed = release_response.get_future().share();
     auto server = LoopbackServer::create(TR_AF_INET);
     if (!server) {
         GTEST_SKIP() << "IPv4 loopback is unavailable";
     }
-    server->setHandler([response_allowed](evhttp_request* const request) {
-        EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
-        LoopbackServer::reply(request, 503, "Service Unavailable", {});
-    });
+    server->setHandler([](evhttp_request* const request) { LoopbackServer::reply(request, 503, "Service Unavailable", {}); });
 
-    // The whole budget is spoken for before the torrent starts, so its webseed requests nothing.
-    auto* const tor = makeBudgetTorrent("refill-webseed.bin", server->url());
-    auto holder = std::unique_ptr<RequestBudgetPeer>{};
-    blockingRunInSessionThread([tor, &holder] {
-        holder = std::make_unique<RequestBudgetPeer>(*tor);
-        holder->set_active_requests({ .begin = 0U, .end = BudgetBlocks });
-    });
-    tr_torrentStart(tor);
-    EXPECT_TRUE(waitFor(
-        [tor]() {
-            auto const lock = tor->unique_lock();
-            return tor->is_running();
-        },
-        MaxWaitMsec));
+    EXPECT_TRUE(webseedRequestsInARefill(makeBudgetTorrent("refill-webseed.bin", server->url())));
+}
 
-    // In one session-thread call, so the webseed's own idle timer cannot request first.
-    blockingRunInSessionThread([this, tor, &holder] {
-        EXPECT_FALSE(tr_torrentWebseed(tor, 0U).is_downloading);
-        holder.reset();
-        session_->defer_requests();
-        resumeDeferredRequests();
-        EXPECT_TRUE(tr_torrentWebseed(tor, 0U).is_downloading);
-        tr_torrentStop(tor);
+TEST_F(RequestBudgetTest, aWebseedOfATorrentThatCannotDownloadRequestsNothing)
+{
+    auto server = LoopbackServer::create(TR_AF_INET);
+    if (!server) {
+        GTEST_SKIP() << "IPv4 loopback is unavailable";
+    }
+    server->setHandler([](evhttp_request* const request) { LoopbackServer::reply(request, 503, "Service Unavailable", {}); });
+
+    auto* const tor = makeBudgetTorrent("refill-webseed-limited.bin", server->url());
+    blockingRunInSessionThread([tor] {
+        tr_torrentSetSpeedLimit_KBps(tor, tr_direction::PeerToClient, 0U);
+        tr_torrentUseSpeedLimit(tor, tr_direction::PeerToClient, true);
     });
-    release_response.set_value();
+    EXPECT_FALSE(webseedRequestsInARefill(tor));
 }
 
 TEST_F(RequestBudgetTest, aPeerGetsNoMoreThanItsShareOfTheBudget)

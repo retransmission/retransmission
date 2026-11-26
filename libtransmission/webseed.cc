@@ -310,7 +310,7 @@ public:
             return {};
         }
 
-        if (!tor.is_running() || tor.is_done()) {
+        if (!tor.client_can_download() || tor.is_done()) {
             return {};
         }
 
