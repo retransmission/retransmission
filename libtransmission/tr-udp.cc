@@ -118,7 +118,7 @@ bool handle_packet(
             buf[buflen] = '\0'; // libdht requires zero-terminated messages
             session->dht_->handle_message(buf, buflen, from_sa, fromlen);
         }
-    } else if (buflen >= 8 && buf[0] == 0 && buf[1] == 0 && buf[2] == 0 && buf[3] <= 3) {
+    } else if (buflen >= 8U && buf[0] == 0U && buf[1] == 0U && buf[2] == 0U && buf[3] <= 3U) {
         if (!session->announcer_udp_->handle_message(buf, buflen, from_sa, fromlen)) {
             tr_logAddTrace(fmt::format("{} Couldn't parse UDP tracker packet.", from_str()));
         }
