@@ -742,15 +742,15 @@ TEST_F(TorrentFilesTest, sanitizeSubpathWin32TrailingCharacters)
         EXPECT_EQ(win32_expected, tr_torrent_files::sanitize_subpath(path, false)) << path;
     }
 
+    // Only ASCII space (0x20) is stripped
     auto constexpr TabbedPath = "\tname\n"sv;
-    auto constexpr TabbedExpectedWin32 = "name"sv;
-    auto constexpr TabbedExpectedOthers = "_name_"sv;
-    EXPECT_EQ(IsWin32 ? TabbedExpectedWin32 : TabbedExpectedOthers, tr_torrent_files::sanitize_subpath(TabbedPath, true));
-    EXPECT_EQ(TabbedExpectedWin32, tr_torrent_files::sanitize_subpath(TabbedPath, false));
+    auto constexpr TabbedExpected = "_name_"sv;
+    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, true));
+    EXPECT_EQ(TabbedExpected, tr_torrent_files::sanitize_subpath(TabbedPath, false));
 
-    auto constexpr WhitespaceOnly = "\t"sv;
+    auto constexpr WhitespaceOnly = " "sv;
     auto constexpr WhitespaceOnlyExpectedWin32 = ""sv;
-    auto constexpr WhitespaceOnlyExpectedOthers = "_";
+    auto constexpr WhitespaceOnlyExpectedOthers = " ";
     EXPECT_EQ(
         IsWin32 ? WhitespaceOnlyExpectedWin32 : WhitespaceOnlyExpectedOthers,
         tr_torrent_files::sanitize_subpath(WhitespaceOnly, true));
