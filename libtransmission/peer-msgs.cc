@@ -817,7 +817,8 @@ private:
 
     std::queue<int64_t> peer_requested_metadata_pieces_;
 
-    time_t client_sent_at_ = 0;
+    // when we last wrote to the peer, starting with the handshake
+    time_t client_sent_at_ = tr_time();
 
     time_t choke_changed_at_ = 0;
 
@@ -1892,9 +1893,10 @@ bool tr_peerMsgsImpl::client_got_block(std::unique_ptr<tr::LocalData::BlockData>
 void tr_peerMsgsImpl::did_write(tr_peerIo* /*io*/, size_t bytes_written, bool was_piece_data, void* vmsgs)
 {
     auto const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs)->shared_from_this();
+    auto const now = tr_time();
+    msgs->client_sent_at_ = now;
 
     if (was_piece_data) {
-        auto const now = tr_time();
         msgs->peer_info->set_latest_piece_data_time(now);
         msgs->publish(tr_peer_event::SentPieceData(bytes_written));
         msgs->bytes_sent_to_peer.add(now, bytes_written);
@@ -2122,8 +2124,9 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     while (start_next_read(now_msec)) {
     }
 
-    if (client_sent_at_ != 0 && now_sec - client_sent_at_ > KeepaliveIntervalSecs) {
+    if (now_sec - client_sent_at_ >= KeepaliveIntervalSecs) {
         n_bytes_written += protocol_send_keepalive();
+        client_sent_at_ = now_sec; // did_write() stamps it only once flushed
     }
 
     return n_bytes_written;

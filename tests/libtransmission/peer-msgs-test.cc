@@ -31,6 +31,7 @@
 #include <libtransmission/peer-socket-tcp.h>
 #include <libtransmission/session.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/utils.h>
 
 #include "test-fixtures.h"
 
@@ -247,6 +248,76 @@ TEST_F(PeerMsgsTest, haveWaitsForInterestedMessage)
         },
         5000));
     EXPECT_EQ(std::string{ Have } + std::string{ Interested }, received);
+
+    blockingRunInSessionThread([&msgs, &io] {
+        msgs.reset();
+        io.reset();
+    });
+}
+
+TEST_F(PeerMsgsTest, idlePeerGetsOneKeepalivePerInterval)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    ASSERT_NE(nullptr, tor);
+    auto io = makeIo();
+    ASSERT_TRUE(io);
+
+    // Created a minute before its bitfield is written, so the idle
+    // clock must restart at that write.
+    auto msgs = blockingRunInSessionThread([tor, &io] {
+        auto const now = tr_time();
+        tr_timeUpdate(now - 60);
+        auto info = std::make_shared<tr_peer_info>(*tr_address::from_string("127.0.0.1"), uint8_t{}, TR_PEER_FROM_INCOMING, [] {
+            return tr_port{};
+        });
+        auto peer = tr_peerMsgs::create(*tor, std::move(info), io, tr_peer_id_t{}, [](auto*, auto const&, void*) {}, nullptr);
+        tr_timeUpdate(now);
+        return peer;
+    });
+    ASSERT_TRUE(msgs);
+
+    // The bitfield sent on connect.
+    auto received = std::string{};
+    ASSERT_TRUE(waitForInSessionThread(
+        [this, &received] {
+            receive(received);
+            return !received.empty();
+        },
+        5000));
+    std::this_thread::sleep_for(50ms);
+    blockingRunInSessionThread([this, &received] { receive(received); });
+    received.clear();
+
+    // Pulses `n` times as if `idle` had passed since the bitfield was sent.
+    auto const pulse_after = [this, &msgs](std::chrono::seconds const idle, int const n) {
+        blockingRunInSessionThread([&msgs, idle, n] {
+            auto const now = tr_time();
+            tr_timeUpdate(now + idle.count());
+            for (int i = 0; i < n; ++i) {
+                msgs->pulse();
+            }
+            tr_timeUpdate(now);
+        });
+    };
+
+    pulse_after(60s, 1);
+    std::this_thread::sleep_for(50ms);
+    EXPECT_TRUE(blockingRunInSessionThread([this, &received] {
+        receive(received);
+        return received.empty();
+    })) << "a keepalive was sent to a peer written to a minute ago";
+
+    pulse_after(120s, 2);
+    static auto constexpr Keepalive = "\x00\x00\x00\x00"sv;
+    EXPECT_TRUE(waitForInSessionThread(
+        [this, &received] {
+            receive(received);
+            return received.size() >= Keepalive.size();
+        },
+        5000));
+    std::this_thread::sleep_for(50ms);
+    blockingRunInSessionThread([this, &received] { receive(received); });
+    EXPECT_EQ(std::string{ Keepalive }, received);
 
     blockingRunInSessionThread([&msgs, &io] {
         msgs.reset();
