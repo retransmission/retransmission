@@ -145,8 +145,8 @@ auto constexpr DatagramBufferSize = size_t{ 65536U };
 // Stands in for WSARecvMsg() where Winsock does not provide it; it reads no control data.
 int WSAAPI recvmsg_without_control(
     SOCKET const s,
-    LPWSAMSG const msg,
-    LPDWORD const n_read,
+    WSAMSG* const msg,
+    DWORD* const n_read,
     LPWSAOVERLAPPED /*overlapped*/,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE /*completion_routine*/)
 {
@@ -173,7 +173,7 @@ LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
             SIO_GET_EXTENSION_FUNCTION_POINTER,
             &guid,
             sizeof(guid),
-            &ptr,
+            static_cast<void*>(&ptr),
             sizeof(ptr),
             &bytes,
             nullptr,
