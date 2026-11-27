@@ -1099,6 +1099,36 @@ public:
         bandwidth_timer_->stop();
     }
 
+    // The peers and webseeds sending to us over all torrents, and how fast they deliver. Peer
+    // rates are averaged over seconds, so the count is kept for a quarter second instead of
+    // being taken on every request.
+    [[nodiscard]] tr_peerMgrSenders const& senders(uint64_t const now_msec, bool const refresh = false)
+    {
+        static auto constexpr MaxAgeMsec = uint64_t{ 250U };
+        if (refresh || senders_at_msec_ == 0U || now_msec - senders_at_msec_ >= MaxAgeMsec) {
+            ++senders_id_;
+            senders_ = count_senders(now_msec);
+            senders_at_msec_ = now_msec;
+        }
+        return senders_;
+    }
+
+    // How many blocks `peer` may have requested and not yet received, out of `requestable`.
+    [[nodiscard]] size_t request_share_blocks(tr_peer const& peer, uint64_t const requestable, uint64_t const now_msec)
+    {
+        auto all = senders(now_msec);
+        auto rate = peer.sender_rate_byps;
+
+        // A peer the count missed, such as one that unchoked us since, adds itself.
+        if (peer.sender_count_id != all.id) {
+            rate = peer.get_piece_speed(now_msec, tr_direction::PeerToClient).base_quantity();
+            ++all.count;
+            all.rate_byps += rate;
+        }
+
+        return tr_peerMgrRequestShareBlocks(requestable, all, rate);
+    }
+
     [[nodiscard]] tr_swarm* get_existing_swarm(tr_sha1_digest_t const& hash) const
     {
         auto const* const tor = torrents_.get(hash);
@@ -1138,7 +1168,46 @@ private:
         }
     }
 
+    // A peer sends to us when it unchokes us and we want its pieces; a webseed, when it is
+    // delivering or has blocks requested. Only torrents that can request blocks count.
+    [[nodiscard]] tr_peerMgrSenders count_senders(uint64_t const now_msec)
+    {
+        auto senders = tr_peerMgrSenders{ .id = senders_id_ };
+        auto const add = [&senders, now_msec](tr_peer& peer) {
+            peer.sender_count_id = senders.id;
+            peer.sender_rate_byps = peer.get_piece_speed(now_msec, tr_direction::PeerToClient).base_quantity();
+            ++senders.count;
+            senders.rate_byps += peer.sender_rate_byps;
+        };
+
+        for (auto const* const tor : torrents_) {
+            if (tor->is_done() || !tor->has_metainfo() || !tor->client_can_download() ||
+                session->local_data.admin_op_pending(tor->id())) {
+                continue;
+            }
+
+            for (auto const& peer : tor->swarm->peers) {
+                if (peer->is_active(tr_direction::PeerToClient) && !peer->is_disconnecting()) {
+                    add(*peer);
+                }
+            }
+
+            for (auto const& webseed : tor->swarm->webseeds) {
+                if (webseed->active_req_count(tr_direction::ClientToPeer) != 0U ||
+                    webseed->get_piece_speed(now_msec, tr_direction::PeerToClient).base_quantity() != 0U) {
+                    add(*webseed);
+                }
+            }
+        }
+
+        return senders;
+    }
+
     OutboundCandidates outbound_candidates_;
+
+    tr_peerMgrSenders senders_;
+    uint64_t senders_at_msec_ = 0U;
+    uint64_t senders_id_ = 0U;
 
     std::unique_ptr<tr::Timer> const bandwidth_timer_;
     std::unique_ptr<tr::Timer> const peer_info_timer_;
@@ -1223,13 +1292,30 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
     // Keep the session's in-flight data under its disk budget. Every
     // requester comes through here, so this is the one place to clamp.
     if (auto const spare = torrent->session->spare_request_blocks(); spare) {
-        numwant = std::min(numwant, *spare);
+        // Each peer asks for seconds of data, so many peers can want far more than the budget.
+        // Capping each peer at its share keeps the first peer in a refill pass from taking every
+        // spare block while the others run dry. Queued writes hold part of the budget, so only
+        // the rest is shared.
+        auto const requestable = uint64_t{ *spare } + torrent->session->active_request_count();
+        auto const share = torrent->swarm->manager->request_share_blocks(*peer, requestable, tr_time_msec());
+        auto const in_flight = peer->active_req_count(tr_direction::ClientToPeer);
+        auto const share_left = share > in_flight ? share - in_flight : size_t{ 0U };
         if (*spare == 0U) {
             budget_full.start();
-            torrent->session->defer_requests();
         } else {
             budget_full.stop();
         }
+
+        // A peer cut short by its share asks again as its blocks arrive. While little is spare, refill
+        // it as writes finish too: shares grow as writes drain. With more spare, a refill per finished
+        // write would walk every peer for a few blocks each.
+        auto const share_cut = share_left < std::min(numwant, *spare) &&
+            *spare < torrent->session->request_refill_threshold_blocks();
+        if (share_cut || *spare == 0U) {
+            torrent->session->defer_requests();
+        }
+
+        numwant = std::min({ numwant, *spare, share_left });
     }
 
     if (auto const& controller = torrent->swarm->wishlist_controller) {
@@ -2497,20 +2583,43 @@ namespace bandwidth_helpers
 {
 // Shuffled, so no peer is always first to claim the bandwidth or the
 // disk write budget.
-[[nodiscard]] auto shuffled_peers(tr_peerMgr const* const mgr, bool const downloading_only)
+template<typename Peer>
+void shuffle(small::vector<Peer*, TrDefaultPeerLimitGlobal>& peers)
+{
+    thread_local auto urbg = tr_urbg<size_t>{};
+    std::ranges::shuffle(peers, urbg);
+}
+
+[[nodiscard]] auto shuffled_peers(tr_peerMgr const* const mgr)
 {
     auto peers = small::vector<tr_peerMsgs*, TrDefaultPeerLimitGlobal>{};
     for (auto* const tor : mgr->torrents_) {
-        if (downloading_only && tor->is_done()) {
-            continue;
-        }
-
         std::ranges::transform(tor->swarm->peers, std::back_inserter(peers), [](auto const& p) { return p.get(); });
     }
 
-    thread_local auto urbg = tr_urbg<size_t>{};
-    std::ranges::shuffle(peers, urbg);
+    shuffle(peers);
     return peers;
+}
+
+// The peers and webseeds that may request blocks.
+[[nodiscard]] auto shuffled_requesters(tr_peerMgr const* const mgr)
+{
+    auto requesters = small::vector<tr_peer*, TrDefaultPeerLimitGlobal>{};
+    auto const get = [](auto const& p) -> tr_peer* {
+        return p.get();
+    };
+    for (auto* const tor : mgr->torrents_) {
+        // A finished torrent's peers can never request.
+        if (tor->is_done()) {
+            continue;
+        }
+
+        std::ranges::transform(tor->swarm->peers, std::back_inserter(requesters), get);
+        std::ranges::transform(tor->swarm->webseeds, std::back_inserter(requesters), get);
+    }
+
+    shuffle(requesters);
+    return requesters;
 }
 } // namespace bandwidth_helpers
 } // namespace
@@ -2519,16 +2628,30 @@ void tr_peerMgrRefillRequests(tr_peerMgr* const manager)
 {
     using namespace bandwidth_helpers;
 
-    // A finished torrent's peers can never request, and clients wait on
-    // the session lock during this pass.
-    for (auto* const peer : shuffled_peers(manager, true)) {
-        peer->request_more_blocks();
+    // Clients wait on the session lock during this pass.
+    for (auto* const requester : shuffled_requesters(manager)) {
+        requester->request_more_blocks();
     }
 }
 
 void tr::detail::tr_peerMgrStopBandwidthTimer(tr_peerMgr* const manager)
 {
     manager->stop_bandwidth_timer();
+}
+
+size_t tr_peerMgrRequestShareBlocks(uint64_t const requestable, tr_peerMgrSenders const& senders, uint64_t const rate_byps)
+{
+    TR_ASSERT(rate_byps <= senders.rate_byps);
+
+    auto const equal_part = requestable / std::max(uint64_t{ 1U }, uint64_t{ senders.count });
+    auto const by_rate = senders.rate_byps == 0U ? equal_part :
+                                                   std::max(equal_part / 2U, requestable * rate_byps / senders.rate_byps);
+    return static_cast<size_t>(std::max(uint64_t{ 1U }, by_rate));
+}
+
+tr_peerMgrSenders tr::detail::tr_peerMgrCountSenders(tr_peerMgr* const manager)
+{
+    return manager->senders(tr_time_msec(), true);
 }
 
 void tr_peerMgr::bandwidth_pulse()
@@ -2538,7 +2661,7 @@ void tr_peerMgr::bandwidth_pulse()
 
     auto const lock = unique_lock();
 
-    for (auto* const peer : shuffled_peers(this, false)) {
+    for (auto* const peer : shuffled_peers(this)) {
         peer->pulse();
     }
 

@@ -277,6 +277,11 @@ public:
         }
     }
 
+    void request_more_blocks() override
+    {
+        on_idle();
+    }
+
     void on_idle()
     {
         if (is_banned_) {
@@ -305,7 +310,7 @@ public:
             return {};
         }
 
-        if (!tor.is_running() || tor.is_done()) {
+        if (!tor.client_can_download() || tor.is_done()) {
             return {};
         }
 

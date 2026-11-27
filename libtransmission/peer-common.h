@@ -240,6 +240,9 @@ struct tr_peer {
 
     virtual void request_blocks(tr_block_span_t const* block_spans, size_t n_spans) = 0;
 
+    // Request blocks up to the desired count, if we may download from this peer.
+    virtual void request_more_blocks() = 0;
+
     virtual void maybe_cancel_block_request(tr_block_index_t /*block*/)
     {
     }
@@ -274,6 +277,11 @@ struct tr_peer {
 
     tr_recentHistory<size_t> bytes_sent_to_client;
     tr_recentHistory<size_t> bytes_sent_to_peer;
+
+    // The count of senders that last counted this peer, and its rate then. Its request share
+    // weighs that rate against the total of the same count, not a newer rate against an older total.
+    uint64_t sender_count_id = 0U;
+    uint64_t sender_rate_byps = 0U;
 
 private:
     tr_bitfield active_requests_;
