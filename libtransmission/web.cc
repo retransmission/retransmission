@@ -680,6 +680,11 @@ public:
 #endif
         (void)curl_easy_setopt(e, CURLOPT_MAXREDIRS, MaxRedirects);
         (void)curl_easy_setopt(e, CURLOPT_NOSIGNAL, 1L);
+#if LIBCURL_VERSION_NUM >= 0x075700 /* 7.87.0 */
+        // when a task is cancelled or times out while its host is still
+        // resolving, detach the resolver thread instead of waiting on it
+        (void)curl_easy_setopt(e, CURLOPT_QUICK_EXIT, 1L);
+#endif
         (void)curl_easy_setopt(e, CURLOPT_PRIVATE, &task);
         (void)curl_easy_setopt(e, CURLOPT_IPRESOLVE, task.ipProtocol());
         (void)curl_easy_setopt(e, CURLOPT_OPENSOCKETDATA, &task);
