@@ -8,6 +8,7 @@
 #include <array>
 #include <chrono>
 #include <cstddef> // size_t
+#include <deque>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -16,7 +17,6 @@
 #include <mutex>
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include <fmt/format.h>
 
@@ -66,8 +66,8 @@ public:
 
         // We don't already have it, so fetch it.
         // Add a placeholder to icons_ prevent repeat downloads.
-        icons_.try_emplace(std::string{ url->sitename });
-        mark_site_as_scraped(url->sitename);
+        auto const sitename = std::string{ url->sitename };
+        icons_.try_emplace(sitename);
 
         // ports to try
         auto n_ports = 0;
@@ -77,89 +77,39 @@ public:
             ports[n_ports++] = url->port;
         }
 
-        auto in_flight = std::make_shared<InFlightData>(callback, url->sitename);
+        auto& site = in_flight_[sitename];
+        site.callback = std::move(callback);
         for (auto i = 0; i < n_ports; ++i) {
-            for (auto const scheme : { "http", "https" }) {
-                for (auto const suffix : { "ico", "png", "gif", "jpg" }) {
-                    auto on_fetch_response = [this, in_flight](auto const& response) {
-                        in_flight->add_response(response.body, response.status);
-                        add_to_ui_thread([this, in_flight] { check_responses(in_flight); });
-                    };
-
-                    static constexpr auto TimeoutSecs = std::chrono::seconds{ 15 };
-                    auto const favicon_url = fmt::format("{:s}://{:s}:{:d}/favicon.{:s}", scheme, url->host, ports[i], suffix);
-                    in_flight->web().fetch({ favicon_url, std::move(on_fetch_response), nullptr, TimeoutSecs });
+            for (auto const* const scheme : { "http", "https" }) {
+                for (auto const* const suffix : { "ico", "png", "gif", "jpg" }) {
+                    waiting_.emplace_back(
+                        sitename,
+                        fmt::format("{:s}://{:s}:{:d}/favicon.{:s}", scheme, url->host, ports[i], suffix));
+                    ++site.n_unanswered;
                 }
             }
         }
+
+        // tr_web starts a thread, so create it on first use
+        if (!web_) {
+            web_ = tr_web::create(mediator_);
+        }
+
+        fetch_waiting();
     }
 
     static constexpr auto Width = 16;
     static constexpr auto Height = 16;
 
 private:
-    class InFlightData
-    {
-    public:
-        InFlightData(IconFunc callback, std::string_view sitename)
-            : callback_{ std::move(callback) }
-            , sitename_{ sitename }
-        {
-        }
+    struct InFlight {
+        IconFunc callback;
+        size_t n_unanswered = {};
+    };
 
-        InFlightData(InFlightData const&) = delete;
-        InFlightData(InFlightData&&) = delete;
-        InFlightData& operator=(InFlightData const&) = delete;
-        InFlightData& operator=(InFlightData&&) = delete;
-
-        [[nodiscard]] constexpr auto const& sitename() const noexcept
-        {
-            return sitename_;
-        }
-
-        ~InFlightData()
-        {
-            invoke_callback(nullptr); // ensure it's called once, even if no icon
-        }
-
-        void invoke_callback(Icon const* icon)
-        {
-            if (callback_) {
-                callback_(icon);
-                callback_ = {};
-            }
-        }
-
-        [[nodiscard]] auto get_responses()
-        {
-            auto lock = std::scoped_lock{ responses_mutex_ };
-
-            auto tmp = decltype(responses_){};
-            std::swap(tmp, responses_);
-            return tmp;
-        }
-
-        void add_response(std::string contents, long code)
-        {
-            auto lock = std::scoped_lock{ responses_mutex_ };
-
-            responses_.emplace_back(std::move(contents), code);
-        }
-
-        [[nodiscard]] auto& web() noexcept
-        {
-            return *web_;
-        }
-
-    private:
-        IconFunc callback_;
-        std::string const sitename_;
-
-        std::mutex responses_mutex_;
-        std::vector<std::pair<std::string, long>> responses_;
-
-        tr_web::Mediator mediator_;
-        std::unique_ptr<tr_web> web_ = tr_web::create(mediator_);
+    struct WaitingFetch {
+        std::string sitename;
+        std::string url;
     };
 
     [[nodiscard]] Icon create_from_file(std::string_view filename) const;
@@ -201,28 +151,74 @@ private:
         }
     }
 
-    void check_responses(std::shared_ptr<FaviconCache::InFlightData> in_flight)
+    // returns nullptr if the response isn't an icon
+    [[nodiscard]] Icon const* cache_icon(std::string const& sitename, std::string const& contents, long const code)
     {
-        for (auto const& [contents, code] : in_flight->get_responses()) {
-            if (std::empty(contents) || code < 200 || code >= 300) {
+        if (std::empty(contents) || code < 200 || code >= 300) {
+            return nullptr;
+        }
+
+        auto icon = create_from_data(std::data(contents), std::size(contents));
+        if (!icon) {
+            return nullptr;
+        }
+
+        // cache it in memory
+        auto& perm = icons_[sitename];
+        perm = std::move(icon);
+
+        // cache it on disk
+        tr_file_save(fmt::format("{:s}/{:s}", icons_dir_, sitename), contents);
+
+        return &perm;
+    }
+
+    void fetch_waiting()
+    {
+        static auto constexpr TimeoutSecs = std::chrono::seconds{ 15 };
+
+        while (!std::empty(waiting_) && n_fetches_ < tr_web::MaxTotalConnections) {
+            auto fetch = std::move(waiting_.front());
+            waiting_.pop_front();
+            if (!in_flight_.contains(fetch.sitename)) { // already answered
                 continue;
             }
 
-            auto const icon = create_from_data(std::data(contents), std::size(contents));
-            if (!icon) {
-                continue;
+            ++n_fetches_;
+
+            auto on_fetch_response =
+                [this, alive = std::weak_ptr{ alive_ }, sitename = std::move(fetch.sitename)](auto const& response) {
+                    add_to_ui_thread([this, alive, sitename, body = response.body, code = response.status] {
+                        if (!alive.expired()) {
+                            check_response(sitename, body, code);
+                        }
+                    });
+                };
+            web_->fetch({ std::move(fetch.url), std::move(on_fetch_response), nullptr, TimeoutSecs });
+        }
+    }
+
+    void check_response(std::string const& sitename, std::string const& contents, long const code)
+    {
+        --n_fetches_;
+
+        auto notify = IconFunc{};
+        Icon const* icon = nullptr;
+        if (auto const iter = in_flight_.find(sitename); iter != std::end(in_flight_)) { // not yet answered
+            auto& site = iter->second;
+            --site.n_unanswered;
+            icon = cache_icon(sitename, contents, code);
+            if (icon != nullptr || site.n_unanswered == 0U) {
+                mark_site_as_scraped(sitename);
+                notify = std::move(site.callback);
+                in_flight_.erase(iter);
             }
+        }
 
-            // cache it in memory
-            auto& perm = icons_[in_flight->sitename()];
-            perm = std::move(icon);
+        fetch_waiting();
 
-            // cache it on disk
-            tr_file_save(fmt::format("{:s}/{:s}", icons_dir_, in_flight->sitename()), contents);
-
-            // notify the user that we got it
-            in_flight->invoke_callback(&perm);
-            return;
+        if (notify) {
+            notify(icon);
         }
     }
 
@@ -232,6 +228,18 @@ private:
     std::string const scraped_sitenames_filename_;
 
     std::map<std::string /*sitename*/, Icon, std::less<>> icons_;
+
+    std::map<std::string /*sitename*/, InFlight, std::less<>> in_flight_;
+    std::deque<WaitingFetch> waiting_;
+    size_t n_fetches_ = 0; // in tr_web, including those of answered sites
+
+    // expires with the cache, which UI tasks can outlive
+    std::shared_ptr<bool> const alive_ = std::make_shared<bool>();
+
+    tr_web::Mediator mediator_;
+
+    // ~tr_web() joins its curl thread, so fetch callbacks must not own it
+    std::unique_ptr<tr_web> web_;
 };
 
 } // namespace tr::app

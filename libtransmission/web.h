@@ -163,6 +163,10 @@ public:
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
     };
 
+    // Fetches beyond this many wait for a connection.
+    // The wait counts toward their timeout.
+    static auto constexpr MaxTotalConnections = size_t{ 96 };
+
     void fetch(FetchOptions&& options);
 
     // Notify tr_web that it's going to be destroyed soon.
