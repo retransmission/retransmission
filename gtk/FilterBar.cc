@@ -107,7 +107,7 @@ private:
     bool show_mode_filter_model_update();
 
     bool tracker_filter_model_update();
-    void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeModel::Path const& path);
+    static void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeRowReference& row);
 
     void update_filter_models(Torrent::Fields const& changes);
     void update_filter_models_idle(Torrent::Fields const& changes);
@@ -198,12 +198,15 @@ void FilterBar::Impl::tracker_model_update_count(Gtk::TreeModel::iterator const&
     }
 }
 
-void FilterBar::Impl::favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeModel::Path const& path)
+void FilterBar::Impl::favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* const pixbuf, Gtk::TreeRowReference& row)
 {
-    if (pixbuf != nullptr && *pixbuf != nullptr) {
-        if (auto const iter = tracker_model_->get_iter(path); iter) {
-            iter->set_value(tracker_filter_cols.pixbuf, *pixbuf);
-        }
+    // invalid if the site's row was removed before the icon arrived
+    if (pixbuf == nullptr || *pixbuf == nullptr || !row.is_valid()) {
+        return;
+    }
+
+    if (auto const iter = row.get_model()->get_iter(row.get_path()); iter) {
+        iter->set_value(tracker_filter_cols.pixbuf, *pixbuf);
     }
 }
 
@@ -273,10 +276,13 @@ bool FilterBar::Impl::tracker_filter_model_update()
             add->set_value(tracker_filter_cols.displayname, get_name_from_host(sitename.sv()));
             add->set_value(tracker_filter_cols.count, count);
             add->set_value(tracker_filter_cols.type, TrackerType::HOST);
-            auto path = tracker_model_->get_path(add);
-            core_->favicon_cache().load(find_announce_url(sitename.sv()), [this, path = std::move(path)](auto const* pixbuf) {
-                favicon_ready_cb(pixbuf, path);
-            });
+            // The icon can arrive after rows shift or this FilterBar is destroyed.
+            // A row reference follows its row and keeps the model alive, so capture only that.
+            core_->favicon_cache().load(
+                find_announce_url(sitename.sv()),
+                [row = Gtk::TreeRowReference{ tracker_model_, tracker_model_->get_path(add) }](auto const* pixbuf) mutable {
+                    favicon_ready_cb(pixbuf, row);
+                });
             ++site;
         } else // update row
         {
