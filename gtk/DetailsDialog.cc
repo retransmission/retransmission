@@ -14,6 +14,11 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission-app/torrent-keys.h>
+#include <libtransmission-app/torrent-list.h>
+#include <libtransmission-app/torrent.h>
+#include <libtransmission-app/tracker-status.h>
+
 #include <libtransmission/converters.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
@@ -68,6 +73,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <tuple> // std::ignore
 #include <unordered_map>
 
 #ifdef _WIN32
@@ -130,7 +136,7 @@ private:
 
     void refreshInfo(std::vector<tr_torrent*> const& torrents);
     void refreshPeers(std::vector<tr_torrent*> const& torrents);
-    void refreshTracker(std::vector<tr_torrent*> const& torrents);
+    void refreshTracker();
     void refreshFiles(std::vector<tr_torrent*> const& torrents);
     void refreshOptions(std::vector<tr_torrent*> const& torrents);
 
@@ -212,6 +218,7 @@ private:
 
     std::vector<tr_torrent_id_t> ids_;
     sigc::connection periodic_refresh_tag_;
+    sigc::connection torrents_changed_tag_;
 
     Glib::Quark const TORRENT_ID_KEY = Glib::Quark("tr-torrent-id-key");
     Glib::Quark const TEXT_BUFFER_KEY = Glib::Quark("tr-text-buffer-key");
@@ -1446,168 +1453,131 @@ auto constexpr SuccessMarkupEnd = "</span>"sv;
 
 std::array<std::string_view, 3> const text_dir_mark = { ""sv, "\u200E"sv, "\u200F"sv };
 
-void appendAnnounceInfo(tr_tracker_view const& tracker, time_t const now, Gtk::TextDirection direction, std::ostream& gstr)
+[[nodiscard]] std::string get_status_line_markup(tr::app::TrackerStatusLine const& line, time_t const now)
 {
-    auto const dir_mark = text_dir_mark.at(static_cast<int>(direction));
+    using Phrase = tr::app::TrackerStatusLine::Phrase;
 
-    if (tracker.hasAnnounced && tracker.announceState != TR_TRACKER_INACTIVE) {
-        gstr << '\n';
-        gstr << dir_mark;
-        auto const time_span_ago = tr_format_time_relative(now, tracker.lastAnnounceTime);
+    auto const time_span = [&line, now] {
+        return tr_format_time_relative(now, line.time);
+    };
 
-        if (tracker.lastAnnounceSucceeded) {
-            gstr << fmt::format(
-                // {markup_begin} and {markup_end} should surround the peer text
-                fmt::runtime(ngettext(
-                    "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}",
-                    "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}",
-                    tracker.lastAnnouncePeerCount)),
-                fmt::arg("markup_begin", SuccessMarkupBegin),
-                fmt::arg("peer_count", tracker.lastAnnouncePeerCount),
-                fmt::arg("markup_end", SuccessMarkupEnd),
-                fmt::arg("time_span_ago", time_span_ago));
-        } else if (tracker.lastAnnounceTimedOut) {
-            gstr << fmt::format(
-                // {markup_begin} and {markup_end} should surround the time_span
-                fmt::runtime(_("Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry")),
-                fmt::arg("markup_begin", TimeoutMarkupBegin),
-                fmt::arg("time_span_ago", time_span_ago),
-                fmt::arg("markup_end", TimeoutMarkupEnd));
-        } else {
-            gstr << fmt::format(
-                // {markup_begin} and {markup_end} should surround the error
-                fmt::runtime(_("Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
-                fmt::arg("markup_begin", ErrMarkupBegin),
-                fmt::arg("error", Glib::Markup::escape_text(std::data(tracker.lastAnnounceResult))),
-                fmt::arg("markup_end", ErrMarkupEnd),
-                fmt::arg("time_span_ago", time_span_ago));
-        }
-    }
+    switch (line.phrase) {
+    case Phrase::LastAnnounceGotPeers:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround the peer text
+            fmt::runtime(ngettext(
+                "Got a list of {markup_begin}{peer_count:L} peer{markup_end} {time_span_ago}",
+                "Got a list of {markup_begin}{peer_count:L} peers{markup_end} {time_span_ago}",
+                line.peer_count)),
+            fmt::arg("markup_begin", SuccessMarkupBegin),
+            fmt::arg("peer_count", line.peer_count),
+            fmt::arg("markup_end", SuccessMarkupEnd),
+            fmt::arg("time_span_ago", time_span()));
 
-    switch (tracker.announceState) {
-    case TR_TRACKER_INACTIVE:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << _("No updates scheduled");
-        break;
+    case Phrase::LastAnnounceTimedOut:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround the time_span
+            fmt::runtime(_("Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry")),
+            fmt::arg("markup_begin", TimeoutMarkupBegin),
+            fmt::arg("time_span_ago", time_span()),
+            fmt::arg("markup_end", TimeoutMarkupEnd));
 
-    case TR_TRACKER_WAITING:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << fmt::format(
+    case Phrase::LastAnnounceError:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround the error
+            fmt::runtime(_("Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
+            fmt::arg("markup_begin", ErrMarkupBegin),
+            fmt::arg("error", Glib::Markup::escape_text(std::string{ line.message })),
+            fmt::arg("markup_end", ErrMarkupEnd),
+            fmt::arg("time_span_ago", time_span()));
+
+    case Phrase::AnnounceInactive:
+        return _("No updates scheduled");
+
+    case Phrase::AnnounceWaiting:
+        return fmt::format(
             fmt::runtime(_("Asking for more peers {time_span_from_now}")),
-            fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextAnnounceTime)));
-        break;
+            fmt::arg("time_span_from_now", time_span()));
 
-    case TR_TRACKER_QUEUED:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << _("Queued to ask for more peers");
-        break;
+    case Phrase::AnnounceQueued:
+        return _("Queued to ask for more peers");
 
-    case TR_TRACKER_ACTIVE:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << fmt::format(
+    case Phrase::AnnounceActive:
+        return fmt::format(
             // {markup_begin} and {markup_end} should surround time_span_ago
             fmt::runtime(_("Asked for more peers {markup_begin}{time_span_ago}{markup_end}")),
             fmt::arg("markup_begin", "<small>"),
-            fmt::arg("time_span_ago", tr_format_time_relative(now, tracker.lastAnnounceStartTime)),
+            fmt::arg("time_span_ago", time_span()),
             fmt::arg("markup_end", "</small>"));
-        break;
 
-    default:
-        g_assert_not_reached();
-    }
-}
+    case Phrase::LastScrapeGotCounts:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround the seeder/leecher text
+            fmt::runtime(_(
+                "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}")),
+            fmt::arg("seeder_count", line.seeder_count),
+            fmt::arg("seeder_or_seeders", ngettext("seeder", "seeders", line.seeder_count)),
+            fmt::arg("leecher_count", line.leecher_count),
+            fmt::arg("leecher_or_leechers", ngettext("leecher", "leechers", line.leecher_count)),
+            fmt::arg("time_span_ago", time_span()),
+            fmt::arg("markup_begin", SuccessMarkupBegin),
+            fmt::arg("markup_end", SuccessMarkupEnd));
 
-void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::TextDirection direction, std::ostream& gstr)
-{
-    auto const dir_mark = text_dir_mark.at(static_cast<int>(direction));
+    case Phrase::LastScrapeNoCounts:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround "no information"
+            fmt::runtime(_("Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}")),
+            fmt::arg("markup_begin", SuccessMarkupBegin),
+            fmt::arg("markup_end", SuccessMarkupEnd),
+            fmt::arg("time_span_ago", time_span()));
 
-    if (tracker.hasScraped) {
-        gstr << '\n';
-        gstr << dir_mark;
-        auto const time_span_ago = tr_format_time_relative(now, tracker.lastScrapeTime);
+    case Phrase::LastScrapeError:
+        return fmt::format(
+            // {markup_begin} and {markup_end} should surround the error text
+            fmt::runtime(_("Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
+            fmt::arg("error", Glib::Markup::escape_text(std::string{ line.message })),
+            fmt::arg("time_span_ago", time_span()),
+            fmt::arg("markup_begin", ErrMarkupBegin),
+            fmt::arg("markup_end", ErrMarkupEnd));
 
-        if (tracker.lastScrapeSucceeded) {
-            gstr << fmt::format(
-                // {markup_begin} and {markup_end} should surround the seeder/leecher text
-                fmt::runtime(_(
-                    "Tracker had {markup_begin}{seeder_count:L} {seeder_or_seeders} and {leecher_count:L} {leecher_or_leechers}{markup_end} {time_span_ago}")),
-                fmt::arg("seeder_count", tracker.seederCount),
-                fmt::arg("seeder_or_seeders", ngettext("seeder", "seeders", tracker.seederCount)),
-                fmt::arg("leecher_count", tracker.leecherCount),
-                fmt::arg("leecher_or_leechers", ngettext("leecher", "leechers", tracker.leecherCount)),
-                fmt::arg("time_span_ago", time_span_ago),
-                fmt::arg("markup_begin", SuccessMarkupBegin),
-                fmt::arg("markup_end", SuccessMarkupEnd));
-        } else {
-            gstr << fmt::format(
-                // {markup_begin} and {markup_end} should surround the error text
-                fmt::runtime(_("Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
-                fmt::arg("error", Glib::Markup::escape_text(std::data(tracker.lastScrapeResult))),
-                fmt::arg("time_span_ago", time_span_ago),
-                fmt::arg("markup_begin", ErrMarkupBegin),
-                fmt::arg("markup_end", ErrMarkupEnd));
-        }
-    }
-
-    switch (tracker.scrapeState) {
-    case TR_TRACKER_INACTIVE:
-        break;
-
-    case TR_TRACKER_WAITING:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << fmt::format(
+    case Phrase::ScrapeWaiting:
+        return fmt::format(
             fmt::runtime(_("Asking for peer counts {time_span_from_now}")),
-            fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextScrapeTime)));
-        break;
+            fmt::arg("time_span_from_now", time_span()));
 
-    case TR_TRACKER_QUEUED:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << _("Queued to ask for peer counts");
-        break;
+    case Phrase::ScrapeQueued:
+        return _("Queued to ask for peer counts");
 
-    case TR_TRACKER_ACTIVE:
-        gstr << '\n';
-        gstr << dir_mark;
-        gstr << fmt::format(
+    case Phrase::ScrapeActive:
+        return fmt::format(
             fmt::runtime(_("Asked for peer counts {markup_begin}{time_span_ago}{markup_end}")),
             fmt::arg("markup_begin", "<small>"),
-            fmt::arg("time_span_ago", tr_format_time_relative(now, tracker.lastScrapeStartTime)),
+            fmt::arg("time_span_ago", time_span()),
             fmt::arg("markup_end", "</small>"));
-        break;
-
-    default:
-        g_assert_not_reached();
     }
+
+    return {};
 }
 
 void buildTrackerSummary(
     std::ostream& gstr,
-    std::string const& key,
-    tr_tracker_view const& tracker,
-    bool showScrape,
-    Gtk::TextDirection direction)
+    std::string_view const key,
+    tr::app::TrackerStat const& tracker,
+    bool const show_scrape,
+    Gtk::TextDirection const direction)
 {
+    auto const dir_mark = text_dir_mark.at(static_cast<int>(direction));
+    auto const host = tracker.host.sv();
+
     // hostname
-    gstr << text_dir_mark.at(static_cast<int>(direction));
-    gstr << (tracker.isBackup ? "<i>" : "<b>");
-    gstr << Glib::Markup::escape_text(
-        !key.empty() ? fmt::format("{:s} - {:s}", tracker.host_and_port, key) : tracker.host_and_port);
-    gstr << (tracker.isBackup ? "</i>" : "</b>");
+    gstr << dir_mark;
+    gstr << (tracker.is_backup ? "<i>" : "<b>");
+    gstr << Glib::Markup::escape_text(!key.empty() ? fmt::format("{:s} - {:s}", host, key) : std::string{ host });
+    gstr << (tracker.is_backup ? "</i>" : "</b>");
 
-    if (!tracker.isBackup) {
-        time_t const now = time(nullptr);
-
-        appendAnnounceInfo(tracker, now, direction, gstr);
-
-        if (showScrape) {
-            appendScrapeInfo(tracker, now, direction, gstr);
-        }
+    auto const now = time(nullptr);
+    for (auto const& line : tr::app::tracker_status_lines(tracker, show_scrape)) {
+        gstr << '\n' << dir_mark << get_status_line_markup(line, now);
     }
 }
 
@@ -1687,20 +1657,25 @@ void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeRowRefer
 
 } // namespace
 
-void DetailsDialog::Impl::refreshTracker(std::vector<tr_torrent*> const& torrents)
+void DetailsDialog::Impl::refreshTracker()
 {
     std::ostringstream gstr;
     auto& hash = tracker_hash_;
     auto const& store = tracker_store_;
     bool const showScrape = scrape_check_->get_active();
 
-    /* step 1: get all the trackers */
-    auto trackers = std::multimap<tr_torrent const*, tr_tracker_view>{};
-    for (auto const* tor : torrents) {
-        for (size_t i = 0, n = tr_torrentTrackerCount(tor); i < n; ++i) {
-            trackers.emplace(tor, tr_torrentTracker(tor, i));
+    /* step 1: get all the torrents */
+    auto torrents = std::vector<tr::app::Torrent const*>{};
+    for (auto const id : ids_) {
+        if (auto const* const tor = core_->torrents().find(id); tor != nullptr) {
+            torrents.push_back(tor);
         }
     }
+
+    // the key to find a tracker's row
+    auto const row_key = [](tr::app::Torrent const& tor, tr::app::TrackerStat const& tracker) {
+        return fmt::format("{:d}\t{:d}\t{:s}", tor.id(), tracker.tier, tracker.announce.sv());
+    };
 
     /* step 2: mark all the trackers in the list as not-updated */
     for (auto& row : store->children()) {
@@ -1708,46 +1683,43 @@ void DetailsDialog::Impl::refreshTracker(std::vector<tr_torrent*> const& torrent
     }
 
     /* step 3: add / update trackers */
-    for (auto const& [tor, tracker] : trackers) {
-        auto const torrent_id = tr_torrentId(tor);
+    for (auto const* const tor : torrents) {
+        for (auto const& tracker : tor->tracker_stats()) {
+            auto const key = row_key(*tor, tracker);
+            if (!hash.contains(key)) {
+                // if we didn't have that row, add it
+                auto const iter = store->append();
+                (*iter)[tracker_cols.torrent_id] = tor->id();
+                (*iter)[tracker_cols.tracker_id] = static_cast<int>(tracker.id);
+                (*iter)[tracker_cols.key] = key;
 
-        // build the key to find the row
-        gstr.str({});
-        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce.sv();
-        if (!hash.contains(gstr.str())) {
-            // if we didn't have that row, add it
-            auto const iter = store->append();
-            (*iter)[tracker_cols.torrent_id] = torrent_id;
-            (*iter)[tracker_cols.tracker_id] = static_cast<int>(tracker.id);
-            (*iter)[tracker_cols.key] = gstr.str();
-
-            auto const p = store->get_path(iter);
-            hash.try_emplace(gstr.str(), Gtk::TreeRowReference(store, p));
-            core_->favicon_cache().load(
-                tracker.announce.sv(),
-                [ref = Gtk::TreeRowReference(store, p)](auto const* pixbuf_refptr) mutable {
-                    favicon_ready_cb(pixbuf_refptr, ref);
-                });
+                auto const p = store->get_path(iter);
+                hash.try_emplace(key, Gtk::TreeRowReference(store, p));
+                core_->favicon_cache().load(
+                    tracker.announce.sv(),
+                    [ref = Gtk::TreeRowReference(store, p)](auto const* pixbuf_refptr) mutable {
+                        favicon_ready_cb(pixbuf_refptr, ref);
+                    });
+            }
         }
     }
 
     /* step 4: update the rows */
-    auto const summary_name = std::size(torrents) == 1 ? tr_torrentName(torrents.front()) : ""s;
-    for (auto const& [tor, tracker] : trackers) {
-        auto const torrent_id = tr_torrentId(tor);
+    // with several torrents, each row names its own
+    auto const name_rows = std::size(torrents) > 1;
+    for (auto const* const tor : torrents) {
+        auto const summary_name = name_rows ? std::string_view{ tor->name() } : ""sv;
+        for (auto const& tracker : tor->tracker_stats()) {
+            auto const iter = store->get_iter(hash.at(row_key(*tor, tracker)).get_path());
 
-        // build the key to find the row
-        gstr.str({});
-        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce.sv();
-        auto const iter = store->get_iter(hash.at(gstr.str()).get_path());
-
-        // update the row
-        gstr.str({});
-        buildTrackerSummary(gstr, summary_name, tracker, showScrape, dialog_.get_direction());
-        (*iter)[tracker_cols.text] = gstr.str();
-        (*iter)[tracker_cols.is_backup] = tracker.isBackup;
-        (*iter)[tracker_cols.tracker_id] = static_cast<int>(tracker.id);
-        (*iter)[tracker_cols.was_updated] = true;
+            // update the row
+            gstr.str({});
+            buildTrackerSummary(gstr, summary_name, tracker, showScrape, dialog_.get_direction());
+            (*iter)[tracker_cols.text] = gstr.str();
+            (*iter)[tracker_cols.is_backup] = tracker.is_backup;
+            (*iter)[tracker_cols.tracker_id] = static_cast<int>(tracker.id);
+            (*iter)[tracker_cols.was_updated] = true;
+        }
     }
 
     /* step 5: remove trackers that have disappeared */
@@ -1866,6 +1838,7 @@ void EditTrackersDialog::on_response(int response)
 
         if (auto* const tor = core_->find_torrent(torrent_id_); tor != nullptr) {
             if (tr_torrentSetTrackerList(tor, text_buffer->get_text(false).raw())) {
+                core_->refresh_torrents({ torrent_id_ }, tr::app::TorrentKeySet::DetailStats);
                 parent_.refresh();
             } else {
                 auto w = std::make_shared<Gtk::MessageDialog>(
@@ -1937,7 +1910,6 @@ protected:
     void on_response(int response) override;
 
 private:
-    DetailsDialog& parent_;
     Glib::RefPtr<Session> const core_;
     tr_torrent_id_t const torrent_id_;
     Gtk::Entry* const url_entry_;
@@ -1950,7 +1922,6 @@ AddTrackerDialog::AddTrackerDialog(
     Glib::RefPtr<Session> const& core,
     tr_torrent const* torrent)
     : Gtk::Dialog(cast_item)
-    , parent_(parent)
     , core_(core)
     , torrent_id_(tr_torrentId(torrent))
     , url_entry_(gtr_get_widget<Gtk::Entry>(builder, "url_entry"))
@@ -1988,11 +1959,7 @@ void AddTrackerDialog::on_response(int response)
         if (!url.empty()) {
             if (tr_urlIsValidTracker(url.c_str())) {
                 // TODO(ckerr) migrate to `TR_KEY_tracker_list`
-                auto params = tr_variant::Map{ 2U };
-                params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id_ }));
-                params.try_emplace(TR_KEY_tracker_add, tr::serializer::to_variant(std::span{ &url.raw(), 1U }));
-                core_->send(TR_KEY_torrent_set, std::move(params));
-                parent_.refresh();
+                std::ignore = core_->set_torrents({ torrent_id_ }, TR_KEY_tracker_add, std::span{ &url.raw(), 1U });
             } else {
                 gtr_unrecognized_url_dialog(*this, url);
                 destroy = false;
@@ -2026,11 +1993,7 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
         auto const tracker_id = iter->get_value(tracker_cols.tracker_id);
 
         // TODO(ckerr): migrate to `TR_KEY_tracker_list`
-        auto params = tr_variant::Map{ 2U };
-        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id }));
-        params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::array{ tracker_id }));
-        core_->send(TR_KEY_torrent_set, std::move(params));
-        refresh();
+        std::ignore = core_->set_torrents({ torrent_id }, TR_KEY_tracker_remove, std::array{ tracker_id });
     }
 }
 
@@ -2098,7 +2061,7 @@ void DetailsDialog::Impl::refresh()
 
     refreshInfo(torrents);
     refreshPeers(torrents);
-    refreshTracker(torrents);
+    refreshTracker();
     refreshFiles(torrents);
     refreshOptions(torrents);
 
@@ -2122,6 +2085,7 @@ void DetailsDialog::Impl::on_details_window_size_allocated()
 
 DetailsDialog::Impl::~Impl()
 {
+    torrents_changed_tag_.disconnect();
     periodic_refresh_tag_.disconnect();
 }
 
@@ -2213,8 +2177,21 @@ DetailsDialog::Impl::Impl(
     options_page_init(builder);
 
     periodic_refresh_tag_ = Glib::signal_timeout().connect_seconds(
-        [this] { return refresh(), true; },
+        [this] {
+            core_->refresh_torrents(ids_, tr::app::TorrentKeySet::DetailStats);
+            return refresh(), true;
+        },
         SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS);
+
+    torrents_changed_tag_ = core_->signal_torrents_changed().connect(
+        [this](tr::app::TorrentList::Ids const& ids, tr::app::TorrentFieldSet const& fields) {
+            auto const shown = [this](tr_torrent_id_t const id) {
+                return std::ranges::find(ids_, id) != std::end(ids_);
+            };
+            if ((fields & tr::app::Torrent::fields<TR_KEY_tracker_stats>()).any() && std::ranges::any_of(ids, shown)) {
+                refreshTracker();
+            }
+        });
 
     auto* const n = gtr_get_widget<Gtk::Notebook>(builder, "dialog_pages");
     n->set_current_page(static_cast<int>(last_page_));
@@ -2237,6 +2214,7 @@ void DetailsDialog::Impl::set_torrents(std::vector<tr_torrent_id_t> const& ids)
     auto const len = ids.size();
 
     ids_ = ids;
+    core_->refresh_torrents(ids_, tr::app::TorrentKeySet::DetailAll);
 
     if (len == 1) {
         int const id = ids.front();
