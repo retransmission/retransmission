@@ -171,8 +171,8 @@ void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 {
     // Only the recvmmsg() version of read_datagrams() splits a UDP_GRO read.
 #if defined(UDP_GRO) && defined(HAVE_RECVMMSG)
-    int const on = 1;
-    (void)setsockopt(sock, IPPROTO_UDP, UDP_GRO, &on, sizeof(on));
+    static int constexpr On = 1;
+    (void)setsockopt(sock, IPPROTO_UDP, UDP_GRO, &On, sizeof(On));
 #elif defined(UDP_COALESCED_INFO)
     // Windows before 10 version 2004 refuses the option and keeps datagrams apart.
     if (wsa_recvmsg(sock) != nullptr) {
@@ -187,7 +187,7 @@ void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 #endif
 }
 
-#if defined(HAVE_RECVMMSG) || defined(UDP_COALESCED_INFO)
+#if (defined(HAVE_RECVMMSG) && defined(UDP_GRO)) || defined(UDP_COALESCED_INFO)
 // Hands each datagram in `buf` to handle_packet(). A coalesced read (UDP_GRO, UDP_COALESCED_INFO)
 // holds several datagrams of `segment_size` bytes each, the last possibly shorter.
 bool handle_read(
@@ -246,7 +246,9 @@ bool read_datagrams_one_at_a_time(evutil_socket_t const s, tr_session* const ses
 #ifdef HAVE_RECVMMSG
 // Reads per recvmmsg() call. µTP at full speed delivers tens of thousands of
 // packets per second, so one syscall per datagram is a large part of its cost.
-auto constexpr DatagramsPerRead = size_t{ 1024U * 1024U } / DatagramBufferSize / 2U;
+// Each read gets a buffer of DatagramBufferSize, and every thread that reads keeps
+// its own, so the buffers are capped at 512 KiB: 8 reads.
+auto constexpr DatagramsPerRead = size_t{ 512U * 1024U } / DatagramBufferSize;
 
 // Reads every pending datagram; returns true if any was a µTP packet.
 bool read_datagrams(evutil_socket_t const s, tr_session* const session)
@@ -291,16 +293,15 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
             if (header.msg_len == 0U || (header.msg_hdr.msg_flags & (MSG_TRUNC | MSG_CTRUNC)) != 0) {
                 continue;
             }
-            auto segment_size = static_cast<size_t>(header.msg_len);
 #ifdef UDP_GRO
+            auto segment_size = static_cast<size_t>(header.msg_len);
             for (auto* cmsg = CMSG_FIRSTHDR(&header.msg_hdr); cmsg != nullptr; cmsg = CMSG_NXTHDR(&header.msg_hdr, cmsg)) {
-                if (cmsg->cmsg_level == IPPROTO_UDP && cmsg->cmsg_type == UDP_GRO) {
+                if (cmsg->cmsg_level == SOL_UDP && cmsg->cmsg_type == UDP_GRO) {
                     auto gso_size = int{};
                     std::memcpy(&gso_size, CMSG_DATA(cmsg), sizeof(gso_size));
                     segment_size = gso_size > 0 ? static_cast<size_t>(gso_size) : segment_size;
                 }
             }
-#endif
             got_utp_packet |= handle_read(
                 session,
                 std::data(datagram.buf),
@@ -308,6 +309,14 @@ bool read_datagrams(evutil_socket_t const s, tr_session* const session)
                 segment_size,
                 reinterpret_cast<sockaddr*>(&datagram.from),
                 header.msg_hdr.msg_namelen);
+#else
+            got_utp_packet |= handle_packet(
+                session,
+                std::data(datagram.buf),
+                header.msg_len,
+                reinterpret_cast<sockaddr*>(&datagram.from),
+                header.msg_hdr.msg_namelen);
+#endif
         }
 
         // a short batch means the socket is drained
@@ -533,7 +542,7 @@ private:
                 message.msg_hdr.msg_control = std::data(control);
                 message.msg_hdr.msg_controllen = std::size(control);
                 auto* const cmsg = CMSG_FIRSTHDR(&message.msg_hdr);
-                cmsg->cmsg_level = IPPROTO_UDP;
+                cmsg->cmsg_level = SOL_UDP;
                 cmsg->cmsg_type = UDP_SEGMENT;
                 cmsg->cmsg_len = CMSG_LEN(sizeof(uint16_t));
                 auto const gso_size = static_cast<uint16_t>(segment_size);
