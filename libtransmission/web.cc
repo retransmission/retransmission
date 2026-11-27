@@ -507,8 +507,7 @@ public:
     static auto constexpr DnsCacheTimeoutSecs = long{ 60 * 60 };
     static auto constexpr MaxRedirects = long{ 10 };
     static auto constexpr MaxHostConnections = long{ 16 };
-    static auto constexpr MaxTotalConnections = long{ 96 };
-    static auto constexpr MaxCachedConnections = MaxTotalConnections;
+    static auto constexpr MaxCachedConnections = static_cast<long>(MaxTotalConnections);
     static auto constexpr MaxlifetimeConn = long{ 24 * 60 * 60 }; // default since curl 8.17.0, disabled by default before
 
     bool const curl_verbose = tr_env_key_exists("TR_CURL_VERBOSE");
@@ -894,7 +893,7 @@ public:
             return false;
         }
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
+        (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, static_cast<long>(MaxTotalConnections));
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
 
         auto const lock = std::unique_lock{ multi_pool_mutex_ };
