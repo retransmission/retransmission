@@ -995,6 +995,12 @@ void DetailsDialog::initOptionsTab()
     ui_.singleDownSpin->setSuffix(speed_unit_suffix);
     ui_.singleUpSpin->setSuffix(speed_unit_suffix);
 
+    Utils::setRange(ui_.singleDownSpin, tr::app::SpeedLimitRange);
+    Utils::setRange(ui_.singleUpSpin, tr::app::SpeedLimitRange);
+    Utils::setRange(ui_.ratioSpin, tr::app::SeedRatioLimitRange);
+    Utils::setRange(ui_.idleSpin, tr::app::SeedIdleLimitRange);
+    Utils::setRange(ui_.peerLimitSpin, tr::app::PeerLimitRange);
+
     ui_.bandwidthPriorityCombo->addItem(tr("High"), TR_PRI_HIGH);
     ui_.bandwidthPriorityCombo->addItem(tr("Normal"), TR_PRI_NORMAL);
     ui_.bandwidthPriorityCombo->addItem(tr("Low"), TR_PRI_LOW);

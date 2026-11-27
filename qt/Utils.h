@@ -11,6 +11,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 
+#include <libtransmission-app/option-ranges.h>
+
 class QAbstractItemView;
 class QColor;
 class QHeaderView;
@@ -59,4 +61,11 @@ public:
 
     // Sets the spin box's prefix and suffix to the translated `format`'s text around its `field`.
     static void updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, std::string_view field);
+
+    // Limits the spin box to the values that `range` offers.
+    template<typename SpinBox, typename T>
+    static void setRange(SpinBox* const spin_box, tr::app::OptionRange<T> const& range)
+    {
+        spin_box->setRange(range.min, range.max);
+    }
 };

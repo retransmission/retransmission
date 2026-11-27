@@ -217,6 +217,12 @@ void PrefsDialog::initSpeedTab()
     ui_.altUploadSpeedLimitSpin->setSuffix(suffix);
     ui_.altDownloadSpeedLimitSpin->setSuffix(suffix);
 
+    for (
+        auto* const spin :
+        { ui_.uploadSpeedLimitSpin, ui_.downloadSpeedLimitSpin, ui_.altUploadSpeedLimitSpin, ui_.altDownloadSpeedLimitSpin }) {
+        Utils::setRange(spin, tr::app::SpeedLimitRange);
+    }
+
     auto* const alt_description = ui_.altSpeedLimitsSectionDescriptionLabel;
     alt_description->setText(QStringLiteral("<small>%1</small>").arg(alt_description->text()));
 
@@ -321,8 +327,8 @@ void PrefsDialog::portTestSetEnabled()
 
 void PrefsDialog::initNetworkTab()
 {
-    ui_.torrentPeerLimitSpin->setRange(1, INT_MAX);
-    ui_.globalPeerLimitSpin->setRange(1, INT_MAX);
+    Utils::setRange(ui_.torrentPeerLimitSpin, tr::app::PeerLimitRange);
+    Utils::setRange(ui_.globalPeerLimitSpin, tr::app::PeerLimitRange);
 
     initWidget(ui_.peerPortSpin, TR_KEY_peer_port);
     initWidget(ui_.randomPeerPortCheck, TR_KEY_peer_port_random_on_start);
@@ -436,6 +442,9 @@ void PrefsDialog::initSeedingTab()
 {
     ui_.doneSeedingScriptButton->setMode(PathButton::FileMode);
     ui_.doneSeedingScriptButton->setTitle(tr("Select \"Torrent Done Seeding\" Script"));
+
+    Utils::setRange(ui_.ratioLimitSpin, tr::app::SeedRatioLimitRange);
+    Utils::setRange(ui_.idleLimitSpin, tr::app::SeedIdleLimitRange);
 
     initWidget(ui_.ratioLimitCheck, TR_KEY_seed_ratio_limited);
     initWidget(ui_.ratioLimitSpin, TR_KEY_seed_ratio_limit);
