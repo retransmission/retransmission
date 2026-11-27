@@ -26,7 +26,6 @@
  */
 
 class tr_swarm;
-struct tr_bandwidth;
 struct tr_peer;
 struct tr_torrent;
 
@@ -293,12 +292,5 @@ struct tr_swarm_stats {
 };
 
 [[nodiscard]] tr_swarm_stats tr_swarmGetStats(tr_swarm const* swarm);
-
-// ---
-
-#ifdef _WIN32
-#undef EMSGSIZE
-#define EMSGSIZE WSAEMSGSIZE
-#endif
 
 /** @} */
