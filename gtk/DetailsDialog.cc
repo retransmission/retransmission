@@ -255,15 +255,13 @@ std::vector<tr_torrent*> DetailsDialog::Impl::getTorrents() const
 namespace
 {
 
-void set_togglebutton_if_different(Gtk::CheckButton* toggle, sigc::connection& tag, bool value)
+// shows `value`, or the mixed state when it is nullopt
+void set_check(Gtk::CheckButton* const check, sigc::connection& tag, std::optional<bool> const value)
 {
-    bool const currentValue = toggle->get_active();
-
-    if (currentValue != value) {
-        tag.block();
-        toggle->set_active(value);
-        tag.unblock();
-    }
+    tag.block();
+    check->set_inconsistent(!value);
+    check->set_active(value.value_or(false));
+    tag.unblock();
 }
 
 // compares at the precision that the spin shows
@@ -318,27 +316,18 @@ void DetailsDialog::Impl::refreshOptions()
         return;
     }
 
-    // When the torrents differ, a check shows unchecked, a combo shows no choice,
+    // When the torrents differ, a check shows the mixed state, a combo shows no choice,
     // and a spin shows the first torrent's value; an edit applies to them all.
     using tr::app::Torrent;
     using tr::app::uniform_value;
     auto const& first = *torrents.front();
 
-    set_togglebutton_if_different(
-        honor_limits_check_,
-        honor_limits_check_tag_,
-        uniform_value(torrents, &Torrent::honors_session_limits).value_or(false));
+    set_check(honor_limits_check_, honor_limits_check_tag_, uniform_value(torrents, &Torrent::honors_session_limits));
 
-    set_togglebutton_if_different(
-        down_limited_check_,
-        down_limited_check_tag_,
-        uniform_value(torrents, &Torrent::download_limited).value_or(false));
+    set_check(down_limited_check_, down_limited_check_tag_, uniform_value(torrents, &Torrent::download_limited));
     set_spin_if_different(down_limit_spin_, down_limit_spin_tag_, first.download_limit().count(Speed::Units::KByps));
 
-    set_togglebutton_if_different(
-        up_limited_check_,
-        up_limited_check_tag_,
-        uniform_value(torrents, &Torrent::upload_limited).value_or(false));
+    set_check(up_limited_check_, up_limited_check_tag_, uniform_value(torrents, &Torrent::upload_limited));
     set_spin_if_different(up_limit_sping_, up_limit_spin_tag_, first.upload_limit().count(Speed::Units::KByps));
 
     set_combo_enum(bandwidth_combo_, bandwidth_combo_tag_, uniform_value(torrents, &Torrent::bandwidth_priority));
@@ -369,13 +358,19 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
 {
     auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
 
-    honor_limits_check_tag_ = honor_limits_check_->signal_toggled().connect(
-        [this] { set_option(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
+    // a click on a mixed check sets it for every torrent
+    auto const bind_check = [this](Gtk::CheckButton* const check, tr_quark const key) {
+        return check->signal_toggled().connect([this, check, key] {
+            check->set_inconsistent(false);
+            set_option(key, check->get_active());
+        });
+    };
+
+    honor_limits_check_tag_ = bind_check(honor_limits_check_, TR_KEY_honors_session_limits);
 
     down_limited_check_->set_label(
         fmt::format(fmt::runtime(down_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
-    down_limited_check_tag_ = down_limited_check_->signal_toggled().connect(
-        [this] { set_option(TR_KEY_download_limited, down_limited_check_->get_active()); });
+    down_limited_check_tag_ = bind_check(down_limited_check_, TR_KEY_download_limited);
 
     down_limit_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     down_limit_spin_tag_ = down_limit_spin_->signal_value_changed().connect(
@@ -383,8 +378,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
 
     up_limited_check_->set_label(
         fmt::format(fmt::runtime(up_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
-    up_limited_check_tag_ = up_limited_check_->signal_toggled().connect(
-        [this] { set_option(TR_KEY_upload_limited, up_limited_check_->get_active()); });
+    up_limited_check_tag_ = bind_check(up_limited_check_, TR_KEY_upload_limited);
 
     up_limit_sping_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     up_limit_spin_tag_ = up_limit_sping_->signal_value_changed().connect(

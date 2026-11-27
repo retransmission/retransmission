@@ -12,6 +12,7 @@
 #include <initializer_list>
 #include <iterator> // std::back_inserter()
 #include <map>
+#include <memory>
 #include <ranges>
 #include <set>
 #include <span>
@@ -157,6 +158,22 @@ void setIfIdle(SpinBox* const spin, Value const value)
     if (!spin->hasFocus()) {
         auto const blocker = QSignalBlocker{ spin };
         spin->setValue(value);
+    }
+}
+
+// Shows `value`, or partly checked when the torrents differ.
+// A limit check's `spin` is editable only while the check is checked.
+void setCheck(QCheckBox* const check, std::optional<bool> const value, QWidget* const spin = nullptr)
+{
+    auto state = Qt::PartiallyChecked;
+    if (value) {
+        state = *value ? Qt::Checked : Qt::Unchecked;
+    }
+    check->setCheckState(state);
+    check->setTristate(!value); // so a click never cycles back to partly checked
+
+    if (spin != nullptr) {
+        spin->setEnabled(value.value_or(false));
     }
 }
 
@@ -791,9 +808,9 @@ void DetailsDialog::refreshUI()
     if (canEdit() && !torrents.empty()) {
         Torrent const& baseline = *torrents.front();
 
-        ui_.sessionLimitCheck->setChecked(uniform_value(torrents, &Torrent::honors_session_limits).value_or(false));
-        ui_.singleDownCheck->setChecked(uniform_value(torrents, &Torrent::download_limited).value_or(false));
-        ui_.singleUpCheck->setChecked(uniform_value(torrents, &Torrent::upload_limited).value_or(false));
+        setCheck(ui_.sessionLimitCheck, uniform_value(torrents, &Torrent::honors_session_limits));
+        setCheck(ui_.singleDownCheck, uniform_value(torrents, &Torrent::download_limited), ui_.singleDownSpin);
+        setCheck(ui_.singleUpCheck, uniform_value(torrents, &Torrent::upload_limited), ui_.singleUpSpin);
 
         auto const priority = uniform_value(torrents, &Torrent::bandwidth_priority);
         setIfIdle(ui_.bandwidthPriorityCombo, priority ? ui_.bandwidthPriorityCombo->findData(*priority) : -1);
@@ -997,8 +1014,12 @@ void DetailsDialog::initOptionsTab()
     cr->update();
 
     // each control edits one property of every displayed torrent
-    auto const bind_check = [this](QCheckBox* const check, tr_quark const key) {
-        connect(check, &QCheckBox::clicked, this, [this, key](bool const val) { torrentSet(key, val); });
+    // a click on a partly checked box sets it for every torrent
+    auto const bind_check = [this](QCheckBox* const check, tr_quark const key, QWidget* const spin = nullptr) {
+        connect(check, &QCheckBox::clicked, this, [this, check, key, spin](bool const val) {
+            setCheck(check, val, spin);
+            torrentSet(key, val);
+        });
     };
     auto const bind_combo = [this](QComboBox* const combo, tr_quark const key) {
         connect(combo, qOverload<int>(&QComboBox::currentIndexChanged), this, [this, combo, key](int const index) {
@@ -1007,13 +1028,23 @@ void DetailsDialog::initOptionsTab()
             }
         });
     };
+    // `editingFinished` also fires when focus only passes through the spin,
+    // so send a value only if the user changed it: with several torrents
+    // shown, the spin holds the first one's value, not every torrent's
     auto const bind_spin = [this](auto* const spin, tr_quark const key) {
-        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key] { torrentSet(key, spin->value()); });
+        using Spin = std::remove_pointer_t<decltype(spin)>;
+        auto const edited = std::make_shared<bool>(false);
+        connect(spin, qOverload<decltype(spin->value())>(&Spin::valueChanged), this, [edited] { *edited = true; });
+        connect(spin, &QAbstractSpinBox::editingFinished, this, [this, spin, key, edited] {
+            if (std::exchange(*edited, false)) {
+                torrentSet(key, spin->value());
+            }
+        });
     };
 
     bind_check(ui_.sessionLimitCheck, TR_KEY_honors_session_limits);
-    bind_check(ui_.singleDownCheck, TR_KEY_download_limited);
-    bind_check(ui_.singleUpCheck, TR_KEY_upload_limited);
+    bind_check(ui_.singleDownCheck, TR_KEY_download_limited, ui_.singleDownSpin);
+    bind_check(ui_.singleUpCheck, TR_KEY_upload_limited, ui_.singleUpSpin);
     bind_combo(ui_.bandwidthPriorityCombo, TR_KEY_bandwidth_priority);
     bind_combo(ui_.ratioCombo, TR_KEY_seed_ratio_mode);
     bind_combo(ui_.idleCombo, TR_KEY_seed_idle_mode);
