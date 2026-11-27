@@ -523,6 +523,7 @@ public:
         if (auto const iter = std::ranges::find(peers, peer); iter != std::ranges::end(peers)) {
             peers.erase(iter);
             TR_ASSERT(stats.peer_count == peerCount());
+            unchoke_waiting_peer();
         }
     }
 
@@ -614,11 +615,18 @@ public:
         }
     }
 
-    // Unchokes a peer that just became interested if the swarm has a free upload slot.
     // A slot counts as rechokeUploads() counts it: an interested, unchoked peer other
-    // than the optimistic one. The unchoke locks the peer's choke for MinChokePeriodSec,
-    // and rechokeUploads() lets a locked peer keep its slot until then.
+    // than the optimistic one.
+    [[nodiscard]] bool has_free_upload_slot() const;
+
+    // Unchokes a peer that just became interested if the swarm has a free upload slot.
+    // The unchoke locks the peer's choke for MinChokePeriodSec, and rechokeUploads()
+    // lets a locked peer keep its slot until then.
     void unchoke_if_slot_free(tr_peerMsgs* msgs) const;
+
+    // Gives a free upload slot to the choked, interested peer that rechokeUploads()
+    // would rank first, so a slot its holder gave up is not idle until the periodic rechoke.
+    void unchoke_waiting_peer() const;
 
     static void peer_callback_bt(tr_peerMsgs* const msgs, tr_peer_event const& event, void* const vs)
     {
@@ -673,6 +681,10 @@ public:
 
         case tr_peer_event::Type::ClientGotInterested:
             s->unchoke_if_slot_free(msgs);
+            break;
+
+        case tr_peer_event::Type::ClientGotNotInterested:
+            s->unchoke_waiting_peer();
             break;
 
         case tr_peer_event::Type::ClientStaleBitfield:
@@ -1769,17 +1781,21 @@ std::vector<tr_pex> tr_peerMgrGetPeers(tr_torrent const* tor, uint8_t address_ty
     return pex;
 }
 
-void tr_swarm::unchoke_if_slot_free(tr_peerMsgs* const msgs) const
+bool tr_swarm::has_free_upload_slot() const
 {
-    if (!msgs->peer_is_choked() || msgs->peer_info->is_upload_only() || !tor->client_can_upload() ||
-        tor->bandwidth().is_maxed_out(tr_direction::Up, tr_time_msec())) {
-        return;
+    if (!tor->client_can_upload() || tor->bandwidth().is_maxed_out(tr_direction::Up, tr_time_msec())) {
+        return false;
     }
 
     auto const holds_slot = [this](auto const& peer) {
         return peer.get() != optimistic && peer->peer_is_interested() && !peer->peer_is_choked();
     };
-    if (std::cmp_less(std::ranges::count_if(peers, holds_slot), manager->session->uploadSlotsPerTorrent())) {
+    return std::cmp_less(std::ranges::count_if(peers, holds_slot), manager->session->uploadSlotsPerTorrent());
+}
+
+void tr_swarm::unchoke_if_slot_free(tr_peerMsgs* const msgs) const
+{
+    if (msgs->peer_is_choked() && !msgs->peer_info->is_upload_only() && has_free_upload_slot()) {
         msgs->set_choke(false);
     }
 }
@@ -2199,6 +2215,39 @@ void rechokeUploads(tr_swarm* s, uint64_t const now)
 }
 } // namespace rechoke_uploads_helpers
 } // namespace
+
+void tr_swarm::unchoke_waiting_peer() const
+{
+    using namespace rechoke_uploads_helpers;
+
+    if (!has_free_upload_slot()) {
+        return;
+    }
+
+    // A choke-locked peer is not waiting: set_choke() would ignore the unchoke.
+    // A disconnecting peer is not waiting: it would hold the slot until the reconnect pulse removes it.
+    auto const is_waiting = [this](auto const& peer) {
+        return peer.get() != optimistic && peer->peer_is_interested() && peer->peer_is_choked() && !peer->is_choke_locked() &&
+            !peer->is_disconnecting() && !peer->peer_info->is_upload_only();
+    };
+
+    auto const now = tr_time_msec();
+    auto salter = tr_salt_shaker{};
+    auto waiting = std::vector<ChokeData>{};
+    for (auto const& peer : peers | std::views::filter(is_waiting)) {
+        waiting.emplace_back(
+            peer.get(),
+            get_rate(tor, peer.get(), now),
+            salter(),
+            peer->peer_is_interested(),
+            peer->peer_is_choked(),
+            peer->is_choke_locked());
+    }
+
+    if (auto const best = std::ranges::min_element(waiting); best != std::ranges::end(waiting)) {
+        best->msgs_->set_choke(false);
+    }
+}
 
 void tr_peerMgr::rechoke_pulse() const
 {

@@ -142,6 +142,46 @@ protected:
         settings().insert_or_assign(TR_KEY_upload_slots_per_torrent, 1);
         PeerMsgsTest::SetUp();
     }
+
+    // Connects two downloaders. The first takes the only upload slot.
+    // The unchoke decision is made when Interested arrives, so once both peers
+    // are interested the second one has already been refused the slot.
+    void connectSlotHolderAndWaitingPeer(tr_torrent* const tor)
+    {
+        connectPeer(tor, false, SlotHolderPort);
+        ASSERT_FALSE(HasFatalFailure());
+        ASSERT_TRUE(waitForInSessionThread(
+            [tor] {
+                auto const peers = tr_peerMgrPeerStats(tor);
+                return std::size(peers) == 1U && !peers.front().peer_is_choked;
+            },
+            2000));
+
+        connectPeer(tor, false, WaitingPeerPort);
+        ASSERT_FALSE(HasFatalFailure());
+        ASSERT_TRUE(waitForInSessionThread(
+            [tor] {
+                auto const peers = tr_peerMgrPeerStats(tor);
+                return std::ranges::count_if(peers, [](auto const& peer) { return peer.peer_is_interested; }) == 2;
+            },
+            2000));
+    }
+
+    // The timeout is a fraction of the 10 seconds between periodic rechokes.
+    [[nodiscard]] bool waitForWaitingPeerUnchoke(tr_torrent* const tor)
+    {
+        return waitForInSessionThread(
+            [tor] {
+                auto const peers = tr_peerMgrPeerStats(tor);
+                return std::ranges::any_of(peers, [](auto const& peer) {
+                    return peer.port == WaitingPeerPort && !peer.peer_is_choked;
+                });
+            },
+            2000);
+    }
+
+    static constexpr auto SlotHolderPort = uint16_t{ 48000U };
+    static constexpr auto WaitingPeerPort = uint16_t{ 48001U };
 };
 } // namespace
 
@@ -287,30 +327,43 @@ TEST_F(PeerMsgsOneSlotTest, DownloaderBeyondUploadSlotsStaysChoked)
     auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
     ASSERT_NE(nullptr, tor);
 
-    connectPeer(tor, false, 48000U);
+    connectSlotHolderAndWaitingPeer(tor);
     ASSERT_FALSE(HasFatalFailure());
-    ASSERT_TRUE(waitForInSessionThread(
-        [tor] {
-            auto const peers = tr_peerMgrPeerStats(tor);
-            return std::size(peers) == 1U && !peers.front().peer_is_choked;
-        },
-        2000));
-
-    // The unchoke decision is made when Interested arrives, so once both peers are
-    // interested the second one has already been refused the slot.
-    connectPeer(tor, false, 48001U);
-    ASSERT_FALSE(HasFatalFailure());
-    ASSERT_TRUE(waitForInSessionThread(
-        [tor] {
-            auto const peers = tr_peerMgrPeerStats(tor);
-            return std::ranges::count_if(peers, [](auto const& peer) { return peer.peer_is_interested; }) == 2;
-        },
-        2000));
 
     auto const unchoked = blockingRunInSessionThread([tor] {
         auto const peers = tr_peerMgrPeerStats(tor);
         return std::ranges::count_if(peers, [](auto const& peer) { return !peer.peer_is_choked; });
     });
     EXPECT_EQ(1, unchoked);
+}
+
+TEST_F(PeerMsgsOneSlotTest, WaitingDownloaderIsUnchokedWhenSlotHolderLosesInterest)
+{
+    auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    connectSlotHolderAndWaitingPeer(tor);
+    ASSERT_FALSE(HasFatalFailure());
+
+    static constexpr auto NotInterested = "\0\0\0\1\3"sv;
+    ASSERT_EQ(
+        static_cast<int>(std::size(NotInterested)),
+        send(peer_sockets_.front(), std::data(NotInterested), std::size(NotInterested), 0));
+
+    EXPECT_TRUE(waitForWaitingPeerUnchoke(tor));
+}
+
+TEST_F(PeerMsgsOneSlotTest, WaitingDownloaderIsUnchokedWhenSlotHolderDisconnects)
+{
+    auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+
+    connectSlotHolderAndWaitingPeer(tor);
+    ASSERT_FALSE(HasFatalFailure());
+
+    tr_net_close_socket(peer_sockets_.front());
+    peer_sockets_.erase(std::begin(peer_sockets_));
+
+    EXPECT_TRUE(waitForWaitingPeerUnchoke(tor));
 }
 } // namespace tr::test
