@@ -12,8 +12,10 @@
 #include <iterator> // std::inserter
 #include <optional>
 #include <set>
+#include <span>
 #include <string>
 #include <string_view>
+#include <tuple> // std::ignore
 #include <utility> // std::move
 #include <vector>
 
@@ -90,6 +92,54 @@ namespace
 
     auto* const first = torrents->front().get_if<tr_variant::Map>();
     return first != nullptr ? std::move(*first) : tr_variant::Map{};
+}
+
+// the response to a `method` request with `params`
+[[nodiscard]] tr_variant::Map rpcCall(tr_session* const session, tr_quark const method, tr_variant::Map params)
+{
+    auto request = tr_variant::Map{ 4U };
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
+    request.try_emplace(TR_KEY_params, std::move(params));
+
+    auto response = tr_variant{};
+    tr_rpc_request_exec(session, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* const response_map = response.get_if<tr_variant::Map>();
+    return response_map != nullptr ? std::move(*response_map) : tr_variant::Map{};
+}
+
+// `key` in the first object of the `list_key` array in `response`'s result
+[[nodiscard]] std::optional<int64_t> firstResultInt(
+    tr_variant::Map const& response,
+    tr_quark const list_key,
+    tr_quark const key)
+{
+    auto const* const result = response.find_if<tr_variant::Map>(TR_KEY_result);
+    auto const* const list = result != nullptr ? result->find_if<tr_variant::Vector>(list_key) : nullptr;
+    auto const* const first = list != nullptr && !std::empty(*list) ? list->front().get_if<tr_variant::Map>() : nullptr;
+    return first != nullptr ? first->value_if<int64_t>(key) : std::nullopt;
+}
+
+struct OutOfRangeCase {
+    tr_quark key;
+    int64_t in_range;
+    int64_t out_of_range; // narrows to a valid value other than `in_range`
+};
+
+// Sets each case's `in_range` value and then its `out_of_range` value,
+// expecting `get` to return `in_range` after both.
+template<typename Set, typename Get>
+void expectOutOfRangeIgnored(std::span<OutOfRangeCase const> const cases, Set const& set, Get const& get)
+{
+    for (auto const& [key, in_range, out_of_range] : cases) {
+        auto const key_sv = tr_quark_get_string_view(key);
+        set(key, in_range);
+        EXPECT_EQ(get(key), in_range) << key_sv;
+        set(key, out_of_range);
+        EXPECT_EQ(get(key), in_range) << key_sv << " set to " << out_of_range;
+    }
 }
 } // namespace
 
@@ -932,6 +982,153 @@ TEST_F(RpcTest, torrentGetCurrentDir)
 
     // cleanup
     tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentSetIgnoresOutOfRangeIntegers)
+{
+    static auto constexpr Cases = std::to_array<OutOfRangeCase>({
+        { .key = TR_KEY_bandwidth_priority, .in_range = TR_PRI_HIGH, .out_of_range = 255 },
+        { .key = TR_KEY_bandwidth_priority, .in_range = TR_PRI_HIGH, .out_of_range = 256 },
+        { .key = TR_KEY_download_limit, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_peer_limit, .in_range = 500, .out_of_range = 99999 },
+        { .key = TR_KEY_peer_limit, .in_range = 500, .out_of_range = -1 },
+        { .key = TR_KEY_queue_position, .in_range = 0, .out_of_range = -1 },
+        { .key = TR_KEY_seed_idle_limit, .in_range = 30, .out_of_range = 70000 },
+        { .key = TR_KEY_seed_idle_limit, .in_range = 30, .out_of_range = -1 },
+        { .key = TR_KEY_seed_idle_mode, .in_range = TR_IDLELIMIT_SINGLE, .out_of_range = 256 },
+        { .key = TR_KEY_seed_ratio_mode, .in_range = TR_RATIOLIMIT_SINGLE, .out_of_range = 256 },
+        { .key = TR_KEY_upload_limit, .in_range = 100, .out_of_range = -1 },
+    });
+
+    auto* const tor = zeroTorrentMagnetInit();
+    ASSERT_NE(nullptr, tor);
+
+    // a torrent queued behind `tor`, so that a wrapped queue_position would move `tor`
+    auto builder = tr_torrent_builder{ session_ };
+    builder.set_metainfo_from_magnet_link("0123456789abcdef0123456789abcdef01234567"sv);
+    builder.set_paused(true);
+    auto* const other = tr_torrentNew(&builder, nullptr);
+    ASSERT_NE(nullptr, other);
+
+    auto const make_params = [id = tr_torrentId(tor)] {
+        auto ids = tr_variant::Vector{};
+        ids.emplace_back(id);
+        auto params = tr_variant::Map{ 2U };
+        params.try_emplace(TR_KEY_ids, std::move(ids));
+        return params;
+    };
+    auto const set = [this, &make_params](tr_quark const key, int64_t const value) {
+        auto params = make_params();
+        params.try_emplace(key, value);
+        std::ignore = rpcCall(session_, TR_KEY_torrent_set, std::move(params));
+    };
+    auto const get = [this, &make_params](tr_quark const key) {
+        auto fields = tr_variant::Vector{};
+        fields.emplace_back(tr_quark_get_string_view(key));
+        auto params = make_params();
+        params.try_emplace(TR_KEY_fields, std::move(fields));
+        return firstResultInt(rpcCall(session_, TR_KEY_torrent_get, std::move(params)), TR_KEY_torrents, key);
+    };
+    expectOutOfRangeIgnored(Cases, set, get);
+
+    // cleanup
+    tr_torrentRemove(other, false);
+    tr_torrentRemove(tor, false);
+}
+
+TEST_F(RpcTest, torrentAddIgnoresOutOfRangeIntegers)
+{
+    auto params = tr_variant::Map{ 4U };
+    params.try_emplace(TR_KEY_filename, "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv);
+    params.try_emplace(TR_KEY_paused, true);
+    params.try_emplace(TR_KEY_bandwidth_priority, 257); // narrows to TR_PRI_HIGH
+    params.try_emplace(TR_KEY_peer_limit, 99999); // narrows to 34463
+    std::ignore = rpcCall(session_, TR_KEY_torrent_add, std::move(params));
+
+    auto const fields = torrentGetFirst(session_, { TR_KEY_id, TR_KEY_bandwidth_priority, TR_KEY_peer_limit });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_bandwidth_priority), int64_t{ TR_PRI_NORMAL });
+    EXPECT_EQ(fields.value_if<int64_t>(TR_KEY_peer_limit), tr_sessionGetPeerLimitPerTorrent(session_));
+
+    // cleanup
+    auto* const tor = tr_torrentFindFromId(session_, fields.value_if<tr_torrent_id_t>(TR_KEY_id).value_or(0));
+    ASSERT_NE(nullptr, tor);
+    tr_torrentRemove(tor, false);
+}
+
+// torrent_set rejects such a piece index the same way
+TEST_F(RpcTest, torrentAddRejectsOutOfRangeSequentialDownloadFromPiece)
+{
+    auto params = tr_variant::Map{ 3U };
+    params.try_emplace(TR_KEY_filename, "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"sv);
+    params.try_emplace(TR_KEY_paused, true);
+    params.try_emplace(TR_KEY_sequential_download_from_piece, int64_t{ 1 } << 32); // narrows to 0
+    auto const response = rpcCall(session_, TR_KEY_torrent_add, std::move(params));
+
+    auto const* const error = response.find_if<tr_variant::Map>(TR_KEY_error);
+    ASSERT_NE(nullptr, error);
+    EXPECT_EQ(error->value_if<int64_t>(TR_KEY_code), JsonRpc::Error::INVALID_PARAMS);
+    EXPECT_TRUE(std::empty(session_->torrents()));
+}
+
+TEST_F(RpcTest, groupSetIgnoresOutOfRangeIntegers)
+{
+    static auto constexpr Cases = std::to_array<OutOfRangeCase>({
+        { .key = TR_KEY_speed_limit_down, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_speed_limit_up, .in_range = 100, .out_of_range = -1 },
+    });
+    static auto constexpr Name = "test"sv;
+
+    auto const set = [this](tr_quark const key, int64_t const value) {
+        auto params = tr_variant::Map{ 2U };
+        params.try_emplace(TR_KEY_name, Name);
+        params.try_emplace(key, value);
+        std::ignore = rpcCall(session_, TR_KEY_group_set, std::move(params));
+    };
+    auto const get = [this](tr_quark const key) {
+        auto params = tr_variant::Map{ 1U };
+        params.try_emplace(TR_KEY_name, Name);
+        return firstResultInt(rpcCall(session_, TR_KEY_group_get, std::move(params)), TR_KEY_group, key);
+    };
+    expectOutOfRangeIgnored(Cases, set, get);
+}
+
+TEST_F(RpcTest, sessionSetIgnoresOutOfRangeIntegers)
+{
+    static auto constexpr Cases = std::to_array<OutOfRangeCase>({
+        { .key = TR_KEY_alt_speed_down, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_alt_speed_time_begin, .in_range = 60, .out_of_range = -1 },
+        { .key = TR_KEY_alt_speed_time_end, .in_range = 120, .out_of_range = -1 },
+        { .key = TR_KEY_alt_speed_up, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_anti_brute_force_threshold, .in_range = 50, .out_of_range = -1 },
+        { .key = TR_KEY_cache_size_mib, .in_range = 8, .out_of_range = -1 },
+        { .key = TR_KEY_download_queue_size, .in_range = 3, .out_of_range = -1 },
+        { .key = TR_KEY_idle_seeding_limit, .in_range = 30, .out_of_range = 70000 },
+        { .key = TR_KEY_idle_seeding_limit, .in_range = 30, .out_of_range = -1 },
+        { .key = TR_KEY_peer_limit_global, .in_range = 500, .out_of_range = 99999 },
+        { .key = TR_KEY_peer_limit_global, .in_range = 500, .out_of_range = -1 },
+        { .key = TR_KEY_peer_limit_per_torrent, .in_range = 500, .out_of_range = 99999 },
+        { .key = TR_KEY_peer_limit_per_torrent, .in_range = 500, .out_of_range = -1 },
+        { .key = TR_KEY_reqq, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_seed_queue_size, .in_range = 3, .out_of_range = -1 },
+        { .key = TR_KEY_speed_limit_down, .in_range = 100, .out_of_range = -1 },
+        { .key = TR_KEY_speed_limit_up, .in_range = 100, .out_of_range = -1 },
+    });
+
+    auto const set = [this](tr_quark const key, int64_t const value) {
+        auto params = tr_variant::Map{ 1U };
+        params.try_emplace(key, value);
+        std::ignore = rpcCall(session_, TR_KEY_session_set, std::move(params));
+    };
+    auto const get = [this](tr_quark const key) {
+        auto fields = tr_variant::Vector{};
+        fields.emplace_back(tr_quark_get_string_view(key));
+        auto params = tr_variant::Map{ 1U };
+        params.try_emplace(TR_KEY_fields, std::move(fields));
+        auto const response = rpcCall(session_, TR_KEY_session_get, std::move(params));
+        auto const* const result = response.find_if<tr_variant::Map>(TR_KEY_result);
+        return result != nullptr ? result->value_if<int64_t>(key) : std::nullopt;
+    };
+    expectOutOfRangeIgnored(Cases, set, get);
 }
 
 TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
