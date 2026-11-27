@@ -746,6 +746,7 @@ public:
     // buffers there.
     [[nodiscard]] std::optional<size_t> spare_request_blocks() const noexcept;
 
+    // The disk write budget. Never zero, which would admit no requests.
     [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
 
     // While writes are queued, a deferred refill waits for this many spare blocks.
@@ -1572,6 +1573,9 @@ private:
     size_t active_request_count_ = 0U;
     bool requests_deferred_ = false;
 
+    // The budget while disk_write_budget_mib is zero.
+    uint64_t const automatic_write_budget_;
+
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;
 
@@ -1584,3 +1588,11 @@ private:
 public:
     std::unique_ptr<tr::Timer> utp_timer;
 };
+
+namespace tr::detail
+{
+// The budget that a disk_write_budget_mib of zero gives a machine
+// with `memory` bytes. No value means the OS didn't report its size.
+// Public for tests; the session calls it once, at construction.
+[[nodiscard]] uint64_t write_budget_for_memory(std::optional<uint64_t> memory) noexcept;
+} // namespace tr::detail

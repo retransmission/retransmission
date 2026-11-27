@@ -44,6 +44,7 @@
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/peer-socket-tcp.h"
 #include "libtransmission/peer-socket.h"
+#include "libtransmission/platform.h"
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/profile.h"
@@ -2158,10 +2159,22 @@ size_t tr_session::request_refill_threshold_blocks() const noexcept
 
 uint64_t tr_session::effective_write_budget_bytes() const noexcept
 {
-    // The setting is in MiB, so zero is the only value below one MiB.
-    // A budget of zero admits no requests. Treat it as one MiB.
-    static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
-    return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
+    auto const bytes = uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U;
+    return bytes != 0U ? bytes : automatic_write_budget_;
+}
+
+uint64_t tr::detail::write_budget_for_memory(std::optional<uint64_t> const memory) noexcept
+{
+    static auto constexpr MiB = uint64_t{ 1024U } * 1024U;
+
+    // A machine that doesn't report its memory is taken for a small one.
+    static auto constexpr AssumedMemory = 512U * MiB;
+
+    // A sixteenth of memory keeps the budget and the retained-block
+    // cache, which is half the budget, under a tenth of memory together.
+    // 64 MiB keeps up with a gigabit link at a half-second request round
+    // trip. One MiB is the least the setting itself can ask for.
+    return std::clamp(memory.value_or(AssumedMemory) / 16U, MiB, 64U * MiB);
 }
 
 void tr_session::invalidate_storage_descriptors()
@@ -2275,6 +2288,7 @@ tr_session::tr_session(std::string_view const config_dir, tr::Settings const& se
     , peer_mgr_{ tr_peerMgrNew(this), &tr_peerMgrFree }
     , rpc_server_{ std::make_unique<tr_rpc_server>(this, tr_rpc_server::Settings{ settings }) }
     , now_timer_{ timer_maker_->create([this] { on_now_timer(); }) }
+    , automatic_write_budget_{ tr::detail::write_budget_for_memory(tr::platform::get_memory_size()) }
     , queue_timer_{ timer_maker_->create([this] { on_queue_timer(); }) }
     , save_timer_{ timer_maker_->create([this] { on_save_timer(); }) }
 {
