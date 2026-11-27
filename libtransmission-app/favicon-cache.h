@@ -68,7 +68,6 @@ public:
         // Add a placeholder to icons_ prevent repeat downloads.
         auto const sitename = std::string{ url->sitename };
         icons_.try_emplace(sitename);
-        mark_site_as_scraped(sitename);
 
         // ports to try
         auto n_ports = 0;
@@ -210,6 +209,7 @@ private:
             --site.n_unanswered;
             icon = cache_icon(sitename, contents, code);
             if (icon != nullptr || site.n_unanswered == 0U) {
+                mark_site_as_scraped(sitename);
                 notify = std::move(site.callback);
                 in_flight_.erase(iter);
             }

@@ -230,6 +230,31 @@ TEST_F(FaviconCacheTest, destroyWhileFetching)
     EXPECT_EQ(0, n_calls);
 }
 
+TEST_F(FaviconCacheTest, sitesAreMarkedScrapedWhenAnswered)
+{
+    // a new cache answers a site marked scraped at once, with its placeholder
+    auto const is_marked_scraped = [] {
+        auto answered = false;
+        auto cache = tr::app::FaviconCache<TestIcon>{};
+        cache.load(AnnounceUrl, [&answered](TestIcon const* /*icon*/) { answered = true; });
+        return answered;
+    };
+
+    // quit before the site is answered
+    auto cache = std::make_unique<tr::app::FaviconCache<TestIcon>>();
+    cache->load(AnnounceUrl, [](TestIcon const* /*icon*/) {});
+    cache.reset();
+    EXPECT_FALSE(is_marked_scraped());
+
+    auto answered = false;
+    cache = std::make_unique<tr::app::FaviconCache<TestIcon>>();
+    cache->load(AnnounceUrl, [&answered](TestIcon const* /*icon*/) { answered = true; });
+    EXPECT_TRUE(ui_queue_.run_until([&answered] { return answered; }, 30s));
+    EXPECT_TRUE(is_marked_scraped());
+
+    ui_queue_.close();
+}
+
 TEST_F(FaviconCacheTest, sitesQueuedForAConnectionAreAnswered)
 {
 #if !defined(__linux__) && !defined(_WIN32)
