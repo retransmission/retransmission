@@ -385,7 +385,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                isEqualToString:transmissionWatchFolder.stringByExpandingTildeInPath.stringByStandardizingPath];
 }
 
-// Copies Transmission's preferences, except Sparkle's state, this app's own donation request, and AutoSize.
+// Copies Transmission's preferences, except Sparkle's state and AutoSize.
 static void importTransmissionDefaults(NSDictionary<NSString*, id>* const transmissionDefaults)
 {
     // This app has no AutoSize preference.
