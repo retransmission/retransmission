@@ -270,7 +270,7 @@ TEST_F(PeerMsgsTest, idlePeerGetsOneKeepalivePerInterval)
         auto info = std::make_shared<tr_peer_info>(*tr_address::from_string("127.0.0.1"), uint8_t{}, TR_PEER_FROM_INCOMING, [] {
             return tr_port{};
         });
-        auto peer = tr_peerMsgs::create(*tor, std::move(info), io, tr_peer_id_t{}, [](auto*, auto const&, void*) {}, nullptr);
+        auto peer = tr_peerMsgs::create(*tor, std::move(info), io, tr_peer_id_t{}, [](auto...) {}, nullptr);
         tr_timeUpdate(now);
         return peer;
     });
@@ -307,6 +307,7 @@ TEST_F(PeerMsgsTest, idlePeerGetsOneKeepalivePerInterval)
         return received.empty();
     })) << "a keepalive was sent to a peer written to a minute ago";
 
+    // Two pulses in the same interval must send only one keepalive.
     pulse_after(120s, 2);
     static auto constexpr Keepalive = "\x00\x00\x00\x00"sv;
     EXPECT_TRUE(waitForInSessionThread(
