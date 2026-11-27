@@ -85,10 +85,10 @@ protected:
         utp_destroy(receiver_.ctx);
     }
 
-    // Delivers packets until none are in flight, 1 ms per hop so that libutp measures a
-    // delay and grows its congestion window. Like tr-udp, each endpoint issues its
-    // deferred ACKs after a batch of incoming packets and at no other time.
-    void deliverAll()
+    // Delivers packets until none are in flight. Each hop takes time so that libutp
+    // measures a delay and grows its congestion window. Like tr-udp, each endpoint issues
+    // its deferred ACKs after a batch of incoming packets and at no other time.
+    void deliverAll(uint64_t const hop_usec = 1000U)
     {
         while (!std::empty(sender_.inbox) || !std::empty(receiver_.inbox)) {
             for (auto* const endpoint : { &sender_, &receiver_ }) {
@@ -96,7 +96,7 @@ protected:
                     continue;
                 }
 
-                ++now_msec_;
+                now_usec_ += hop_usec;
                 auto const [from, fromlen] = endpoint->peer->address.to_sockaddr();
                 for (auto batch = std::exchange(endpoint->inbox, {}); auto const& packet : batch) {
                     ++endpoint->n_received;
@@ -134,6 +134,28 @@ protected:
         }
     }
 
+    // Sends over a path of that delay for long enough to open the congestion window, which
+    // libutp widens by at most 3000 bytes for each window that the peer acknowledges: 100
+    // rounds can open it to about 300000 bytes. The receiver's window is wide and it reads at
+    // once, so neither holds the sender back.
+    // Returns how much the sender then has in flight when it stops taking data.
+    [[nodiscard]] size_t bytesInFlightAfterWarmup(uint64_t const hop_usec)
+    {
+        // One write fills the window, which stays far below WideWindow.
+        auto payload = std::vector<std::byte>(WideWindow);
+        auto const fill_window = [this, &payload] {
+            return static_cast<size_t>(utp_write(sock_, std::data(payload), std::size(payload)));
+        };
+
+        utp_setsockopt(accepted_sock_, UTP_RCVBUF, WideWindow);
+        for (auto round = 0; round < 100; ++round) {
+            fill_window();
+            deliverAll(hop_usec);
+            readAll();
+        }
+        return fill_window();
+    }
+
     // Reads everything the receiver holds, as a peer IO does when its reads are enabled.
     size_t readAll()
     {
@@ -149,6 +171,11 @@ protected:
     }
 
     static constexpr auto ReceiveWindow = 64 * 1024;
+    static constexpr auto WideWindow = 1024 * 1024;
+
+    // libutp's limit on the bytes in flight when the round trip is under 1 ms: about 50 full
+    // packets, where Linux's default UDP receive buffer holds about 90.
+    static constexpr auto ShortPathWindow = size_t{ 64U * 1024U };
 
     Endpoint sender_;
     Endpoint receiver_;
@@ -157,7 +184,7 @@ protected:
     UTPSocket* accepted_sock_ = nullptr; // accepted_'s libutp socket
     FakeTimerMaker timer_maker_;
     std::array<std::byte, 1024> chunk_ = {};
-    uint64_t now_msec_ = 1000;
+    uint64_t now_usec_ = 1'000'000;
 
 private:
     static uint64 onSendto(utp_callback_arguments* const args)
@@ -170,12 +197,12 @@ private:
 
     static uint64 onGetMilliseconds(utp_callback_arguments* const args)
     {
-        return static_cast<Endpoint*>(utp_context_get_userdata(args->context))->test->now_msec_;
+        return onGetMicroseconds(args) / 1000U;
     }
 
     static uint64 onGetMicroseconds(utp_callback_arguments* const args)
     {
-        return onGetMilliseconds(args) * 1000U;
+        return static_cast<Endpoint*>(utp_context_get_userdata(args->context))->test->now_usec_;
     }
 
     static uint64 onAccept(utp_callback_arguments* const args)
@@ -217,7 +244,7 @@ TEST_F(PeerSocketUtpTest, readingReopensFullReceiveWindow)
     EXPECT_LE(n_buffered, size_t{ ReceiveWindow });
 
     deliverAll();
-    now_msec_ += 500U;
+    now_usec_ += 500'000U;
     utp_check_timeouts(sender_.ctx);
     deliverAll();
     EXPECT_GT(readAll(), size_t{});
@@ -332,6 +359,36 @@ TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
     deliverAll();
     EXPECT_NE(nullptr, accepted_);
     EXPECT_EQ(1, n_writes);
+}
+
+// On a path with a round trip under 1 ms, what the sender has in flight can all wait in the
+// peer's UDP receive buffer until the peer reads it, and what does not fit there is lost. So
+// the sender keeps no more in flight than ShortPathWindow.
+TEST_F(PeerSocketUtpTest, shortPathKeepsFlightWithinUdpBuffer)
+{
+    ASSERT_NO_FATAL_FAILURE(connect());
+
+    auto const n_in_flight = bytesInFlightAfterWarmup(100U);
+
+    EXPECT_GT(n_in_flight, ShortPathWindow / 2U);
+    EXPECT_LE(n_in_flight, ShortPathWindow);
+}
+
+// A long path holds what is in flight in transit, and the connection's rate is that
+// amount per round trip. From a 5 ms round trip, the sender keeps all that UTP_SNDBUF
+// allows: on Linux, the default UDP send buffer, which tr_peer_socket_utp::init() copies.
+TEST_F(PeerSocketUtpTest, longPathKeepsFullSendBuffer)
+{
+    static constexpr auto LinuxSendBuffer = 212992;
+
+    ASSERT_NO_FATAL_FAILURE(connect());
+    utp_setsockopt(sock_, UTP_SNDBUF, LinuxSendBuffer);
+
+    auto const n_in_flight = bytesInFlightAfterWarmup(2500U);
+
+    // libutp fills the window with whole packets, each under 1500 bytes
+    EXPECT_GT(n_in_flight, size_t{ LinuxSendBuffer - 1500U });
+    EXPECT_LE(n_in_flight, size_t{ LinuxSendBuffer });
 }
 
 } // namespace
