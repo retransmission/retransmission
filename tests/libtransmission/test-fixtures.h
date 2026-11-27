@@ -382,6 +382,11 @@ protected:
         return session_->peer_mgr_.get();
     }
 
+    [[nodiscard]] tr_session::tr_udp_core* udpCore() const noexcept
+    {
+        return session_->udp_core_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);

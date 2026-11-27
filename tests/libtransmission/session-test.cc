@@ -17,6 +17,13 @@
 #include <string_view>
 #include <vector>
 
+#ifndef _WIN32
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <unistd.h>
+#endif
+
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
@@ -650,5 +657,54 @@ TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)
     EXPECT_EQ(0U, stats.downloadedBytes);
     EXPECT_TRUE(stats.ratio.is_none());
 }
+
+#ifndef _WIN32
+// Batched sends must reach a receiver without UDP_GRO with every datagram's own size
+// and payload, whatever mix of sizes goes out in one batch.
+TEST_F(SessionTest, udpBatchedSendsKeepDatagramBoundaries)
+{
+    auto const rx = socket(AF_INET, SOCK_DGRAM, 0);
+    ASSERT_GE(rx, 0);
+    auto addr = sockaddr_in{};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    ASSERT_EQ(0, bind(rx, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)));
+    auto addrlen = socklen_t{ sizeof(addr) };
+    ASSERT_EQ(0, getsockname(rx, reinterpret_cast<sockaddr*>(&addr), &addrlen));
+    auto tv = timeval{ .tv_sec = 2, .tv_usec = 0 };
+    setsockopt(rx, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+
+    auto const batches = std::vector<std::vector<size_t>>{
+        { 44, 44, 36 }, // the review's example
+        { 44, 36, 44 }, // shorter datagram in the middle
+        { 44, 36, 36, 44, 44 }, // run of shorter ones
+        { 36, 44, 44 }, // longer after shorter
+        { 1200, 1200, 1200, 20, 1200, 600, 1200 },
+    };
+
+    for (auto const& sizes : batches) {
+        session_->run_in_session_thread([&] {
+            auto tag = uint8_t{ 1 };
+            for (auto const size : sizes) {
+                auto const buf = std::vector<uint8_t>(size, tag++);
+                udpCore()->sendto_soon(std::data(buf), std::size(buf), reinterpret_cast<sockaddr const*>(&addr), sizeof(addr));
+            }
+        });
+
+        auto tag = uint8_t{ 1 };
+        for (auto const size : sizes) {
+            auto buf = std::array<uint8_t, 65536>{};
+            auto const n = recv(rx, std::data(buf), std::size(buf), 0);
+            EXPECT_EQ(static_cast<ssize_t>(size), n);
+            if (n > 0) {
+                EXPECT_TRUE(std::all_of(std::data(buf), std::data(buf) + n, [tag](auto b) { return b == tag; }))
+                    << "datagram " << int{ tag } << " has bytes of another";
+            }
+            ++tag;
+        }
+    }
+    close(rx);
+}
+#endif
 
 } // namespace tr::test
