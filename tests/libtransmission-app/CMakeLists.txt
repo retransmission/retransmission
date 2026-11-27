@@ -8,7 +8,9 @@ target_sources(libtransmission-app-test
 		converter-tests.cc
 		dbus-peer-record-test.cc
 		interop-test.cc
+		keyed-rows-test.cc
 		mock-rpc-server.h
+		peer-list-test.cc
 		prefs-test.cc
 		rpc-client-test.cc
 		rpc-queue-test.cc

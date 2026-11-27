@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <cctype>
+#include <cstddef> // std::byte
 #include <cstdint>
 #include <cstdlib> // for strtoul()
 #include <iterator>
@@ -35,6 +36,19 @@ using namespace std::literals;
 bool tr_addressIsIP(char const* address)
 {
     return address != nullptr && tr_address::from_string(address).has_value();
+}
+
+std::optional<tr_address_sort_key> tr_addressSortKey(std::string_view const address)
+{
+    auto const addr = tr_address::from_string(address);
+    if (!addr) {
+        return {};
+    }
+
+    auto key = tr_address_sort_key{};
+    key.front() = addr->is_ipv4() ? std::byte{ 4U } : std::byte{ 6U };
+    addr->to_compact(std::next(std::begin(key)));
+    return key;
 }
 
 char const* tr_webGetResponseStr(long code)

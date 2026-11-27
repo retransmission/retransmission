@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <array>
+#include <cstddef> // std::byte
 #include <cstdint> // uint16_t
 #include <optional>
 #include <string>
@@ -17,6 +19,13 @@
 
 /** @brief convenience function to determine if an address is an IP address (IPv4 or IPv6) */
 [[nodiscard]] bool tr_addressIsIP(char const* address);
+
+// An IP address's family, then its bytes in network order:
+// comparing two keys sorts IPv4 before IPv6, each numerically.
+using tr_address_sort_key = std::array<std::byte, 17>;
+
+/** @brief `address` as a `tr_address_sort_key`, or nullopt if it is not an IP address */
+[[nodiscard]] std::optional<tr_address_sort_key> tr_addressSortKey(std::string_view address);
 
 /** @brief return true if the url is a http or https or UDP url that Transmission understands */
 [[nodiscard]] bool tr_urlIsValidTracker(std::string_view url);

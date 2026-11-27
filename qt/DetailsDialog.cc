@@ -6,7 +6,6 @@
 #include "DetailsDialog.h"
 
 #include <algorithm>
-#include <bit>
 #include <cassert>
 #include <ctime>
 #include <functional>
@@ -44,14 +43,13 @@
 #include <QtWidgets/QStyle>
 #include <QtWidgets/QTreeWidgetItem>
 
-#include <QtNetwork/QHostAddress>
-
 #include <libtransmission/announce-list.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/shared-string.h>
 #include <libtransmission/types.h>
 #include <libtransmission/values.h>
 
+#include <libtransmission-app/peer-list.h>
 #include <libtransmission-app/torrent.h>
 
 #include "BaseDialog.h"
@@ -71,7 +69,9 @@
 #include "ui_TrackersDialog.h"
 #include "Utils.h"
 
-using tr::app::Peer;
+using tr::app::PeerColumn;
+using tr::app::PeerFlag;
+using tr::app::PeerListItem;
 using tr::app::Torrent;
 
 // ---
@@ -126,20 +126,11 @@ private:
 int constexpr DebounceIntervalMSec = 100;
 int constexpr RefreshIntervalMSec = 4000;
 
-// NOLINTNEXTLINE(performance-enum-size)
-enum // peer columns
+// the peers view's index for `column`
+[[nodiscard]] constexpr int col(PeerColumn const column) noexcept
 {
-    COL_LOCK,
-    COL_UP,
-    COL_UP_REQS,
-    COL_DOWN,
-    COL_DOWN_REQS,
-    COL_PERCENT,
-    COL_STATUS,
-    COL_ADDRESS,
-    COL_CLIENT,
-    N_COLUMNS
-};
+    return static_cast<int>(column);
+}
 
 [[nodiscard]] int measureViewItem(QTreeWidget const* view, int column, QString const& text)
 {
@@ -185,61 +176,61 @@ void setIfIdle(SpinBox* const spin, Value const value)
     }
 }
 
-[[nodiscard]] QString peerFlagDescription(QChar const flag)
+[[nodiscard]] QString peerFlagDescription(PeerFlag const flag)
 {
-    switch (flag.unicode()) {
-    case 'O':
+    switch (flag) {
+    case PeerFlag::OptimisticUnchoke:
         return DetailsDialog::tr("Optimistic unchoke");
 
-    case 'D':
+    case PeerFlag::DownloadingFrom:
         return DetailsDialog::tr("Downloading from this peer");
 
-    case 'd':
+    case PeerFlag::WouldDownloadFrom:
         return DetailsDialog::tr("We would download from this peer if they would let us");
 
-    case 'U':
+    case PeerFlag::UploadingTo:
         return DetailsDialog::tr("Uploading to peer");
 
-    case 'u':
+    case PeerFlag::WouldUploadTo:
         return DetailsDialog::tr("This peer would download from us if we would let them");
 
-    case 'K':
+    case PeerFlag::UnchokedUsUninterested:
         return DetailsDialog::tr("Peer has unchoked us, but we're not interested");
 
-    case '?':
+    case PeerFlag::UnchokedPeerUninterested:
         return DetailsDialog::tr("We unchoked this peer, but they're not interested");
 
-    case 'E':
+    case PeerFlag::Encrypted:
         return DetailsDialog::tr("Encrypted connection");
 
-    case 'H':
+    case PeerFlag::FromDht:
         return DetailsDialog::tr("Peer was found through DHT");
 
-    case 'X':
+    case PeerFlag::FromPex:
         return DetailsDialog::tr("Peer was found through Peer Exchange (PEX)");
 
-    case 'I':
+    case PeerFlag::Incoming:
         return DetailsDialog::tr("Peer is an incoming connection");
 
-    case 'T':
+    case PeerFlag::Utp:
         return DetailsDialog::tr("Peer is connected over µTP");
 
-    case 'h':
+    case PeerFlag::SupportsHolepunch:
         return DetailsDialog::tr("Peer supports holepunch (BEP 55)");
-
-    default:
-        return {};
     }
+
+    return {};
 }
 
 // One line per known flag, e.g. "D: Downloading from this peer"
-[[nodiscard]] QString peerFlagsTooltip(QString const& flags)
+[[nodiscard]] QString peerFlagsTooltip(std::string_view const flag_str)
 {
+    auto const flags = tr::app::PeerFlags::from_string(flag_str);
     auto lines = QStringList{};
 
-    for (QChar const flag : flags) {
-        if (auto const description = peerFlagDescription(flag); !description.isEmpty()) {
-            lines << QStringLiteral("%1: %2").arg(flag).arg(description);
+    for (auto const& [flag, letter] : tr::app::PeerFlagLetters) {
+        if (flags.contains(flag)) {
+            lines << QStringLiteral("%1: %2").arg(QLatin1Char{ letter }).arg(peerFlagDescription(flag));
         }
     }
 
@@ -253,37 +244,38 @@ void setIfIdle(SpinBox* const spin, Value const value)
 // A row in the peers table
 class DetailsDialog::PeerItem : public QTreeWidgetItem
 {
-    Peer peer_;
-    tr::Values::Percent progress_;
-    QString collated_address_;
+    PeerListItem item_;
 
 public:
-    PeerItem(Peer p, tr::Values::Percent const progress, QIcon const& encrypted_icon)
-        : peer_{ std::move(p) }
-        , progress_{ progress }
-        , collated_address_{ collateAddress(Utils::qstringFromUtf8(peer_.address)) }
+    PeerItem(PeerListItem item, QIcon const& encrypted_icon)
+        : item_{ std::move(item) }
     {
-        for (auto const column : { COL_UP, COL_UP_REQS, COL_DOWN, COL_DOWN_REQS, COL_PERCENT }) {
-            setTextAlignment(column, Qt::AlignRight | Qt::AlignVCenter);
+        for (
+            auto const column : { PeerColumn::UploadSpeed,
+                                  PeerColumn::UploadRequests,
+                                  PeerColumn::DownloadSpeed,
+                                  PeerColumn::DownloadRequests,
+                                  PeerColumn::Progress }) {
+            setTextAlignment(col(column), Qt::AlignRight | Qt::AlignVCenter);
         }
 
-        setIcon(COL_LOCK, peer_.is_encrypted ? encrypted_icon : QIcon{});
-        setToolTip(COL_LOCK, peer_.is_encrypted ? DetailsDialog::tr("Encrypted connection") : QString{});
-        setText(COL_ADDRESS, Utils::qstringFromUtf8(peer_.address));
-        setText(COL_CLIENT, Utils::qstringFromUtf8(peer_.client_name.sv()));
-        setToolTip(COL_STATUS, peerFlagsTooltip(Utils::qstringFromUtf8(peer_.flags)));
+        auto const& peer = item_.peer();
+        setIcon(col(PeerColumn::Encrypted), peer.is_encrypted ? encrypted_icon : QIcon{});
+        setToolTip(col(PeerColumn::Encrypted), peer.is_encrypted ? DetailsDialog::tr("Encrypted connection") : QString{});
+        setText(col(PeerColumn::Address), Utils::qstringFromUtf8(peer.address));
+        setText(col(PeerColumn::Client), Utils::qstringFromUtf8(peer.client_name.sv()));
+        setToolTip(col(PeerColumn::Flags), peerFlagsTooltip(peer.flags));
         refreshCells();
     }
 
-    // `p` has this item's address: the address is part of the dialog's lookup key
-    void refresh(Peer const& p, tr::Values::Percent const progress)
+    // `item` has this row's key
+    void refresh(PeerListItem item)
     {
-        if (p.flags != peer_.flags) {
-            setToolTip(COL_STATUS, peerFlagsTooltip(Utils::qstringFromUtf8(p.flags)));
+        if (item.peer().flags != item_.peer().flags) {
+            setToolTip(col(PeerColumn::Flags), peerFlagsTooltip(item.peer().flags));
         }
 
-        peer_ = p;
-        progress_ = progress;
+        item_ = std::move(item);
         refreshCells();
     }
 
@@ -291,77 +283,33 @@ public:
     {
         auto const* i = dynamic_cast<PeerItem const*>(&other);
         auto const* tw = treeWidget();
-        int const column = tw != nullptr ? tw->sortColumn() : 0;
+        auto const column = static_cast<PeerColumn>(tw != nullptr ? tw->sortColumn() : col(tr::app::DefaultPeerSortColumn));
 
         assert(i != nullptr);
 
-        switch (column) {
-        case COL_UP:
-            return peer_.rate_to_peer < i->peer_.rate_to_peer;
-
-        case COL_UP_REQS:
-            return peer_.active_reqs_to_client < i->peer_.active_reqs_to_client;
-
-        case COL_DOWN:
-            return peer_.rate_to_client < i->peer_.rate_to_client;
-
-        case COL_DOWN_REQS:
-            return peer_.active_reqs_to_peer < i->peer_.active_reqs_to_peer;
-
-        case COL_PERCENT:
-            return progress_ < i->progress_;
-
-        case COL_STATUS:
-            return peer_.flags < i->peer_.flags;
-
-        case COL_CLIENT:
-            return peer_.client_name < i->peer_.client_name;
-
-        case COL_LOCK:
-            return peer_.is_encrypted && !i->peer_.is_encrypted;
-
-        default:
-            return collated_address_ < i->collated_address_;
-        }
+        return item_.compare(i->item_, column) < 0;
     }
 
 private:
     void refreshCells()
     {
-        setText(COL_UP, peer_.rate_to_peer.is_zero() ? QString{} : Speed{ peer_.rate_to_peer }.toQstring());
-        setText(COL_UP_REQS, peer_.active_reqs_to_client > 0 ? QString::number(peer_.active_reqs_to_client) : QString{});
-        setText(COL_DOWN, peer_.rate_to_client.is_zero() ? QString{} : Speed{ peer_.rate_to_client }.toQstring());
-        setText(COL_DOWN_REQS, peer_.active_reqs_to_peer > 0 ? QString::number(peer_.active_reqs_to_peer) : QString{});
-        setText(COL_PERCENT, progress_ != tr::Values::Percent{} ? Formatter::percentToString(progress_) : QString{});
-        setText(COL_STATUS, Utils::qstringFromUtf8(peer_.flags));
-    }
+        auto const& peer = item_.peer();
+        auto const progress = item_.progress();
 
-    [[nodiscard]] static QString collateAddress(QString const& address)
-    {
-        auto collated = QString{};
-
-        if (auto ip_address = QHostAddress{}; ip_address.setAddress(address)) {
-            if (ip_address.protocol() == QAbstractSocket::IPv4Protocol) {
-                quint32 const ipv4_address = ip_address.toIPv4Address();
-                collated = QStringLiteral("1-") +
-                    QString::fromUtf8(QByteArray::number(ipv4_address, 16).rightJustified(8, '0'));
-            } else if (ip_address.protocol() == QAbstractSocket::IPv6Protocol) {
-                Q_IPV6ADDR const ipv6_address = ip_address.toIPv6Address();
-                QByteArray tmp(16, '\0');
-
-                for (int i = 0; i < 16; ++i) {
-                    tmp[i] = std::bit_cast<char>(ipv6_address[i]);
-                }
-
-                collated = QStringLiteral("2-") + QString::fromUtf8(tmp.toHex());
-            }
-        }
-
-        if (collated.isEmpty()) {
-            collated = QStringLiteral("3-") + address.toLower();
-        }
-
-        return collated;
+        setText(col(PeerColumn::UploadSpeed), peer.rate_to_peer.is_zero() ? QString{} : Speed{ peer.rate_to_peer }.toQstring());
+        setText(
+            col(PeerColumn::UploadRequests),
+            peer.active_reqs_to_client > 0 ? QString::number(peer.active_reqs_to_client) : QString{});
+        setText(
+            col(PeerColumn::DownloadSpeed),
+            peer.rate_to_client.is_zero() ? QString{} : Speed{ peer.rate_to_client }.toQstring());
+        setText(
+            col(PeerColumn::DownloadRequests),
+            peer.active_reqs_to_peer > 0 ? QString::number(peer.active_reqs_to_peer) : QString{});
+        setText(
+            col(PeerColumn::Progress),
+            progress != tr::Values::Percent{} ? Formatter::percentToString(progress) : QString{});
+        setText(col(PeerColumn::Flags), Utils::qstringFromUtf8(peer.flags));
     }
 };
 
@@ -450,8 +398,11 @@ void DetailsDialog::refreshPref(tr_quark const key)
         tracker_filter_->setShowBackupTrackers(prefs_.get<bool>(key));
     } else if (key == TR_KEY_show_extra_peer_details) {
         bool const show = prefs_.get<bool>(key);
-        ui_.peersView->setColumnHidden(COL_UP_REQS, !show);
-        ui_.peersView->setColumnHidden(COL_DOWN_REQS, !show);
+        for (auto const column : tr::app::PeerColumns) {
+            if (tr::app::is_extra_peer_column(column)) {
+                ui_.peersView->setColumnHidden(col(column), !show);
+            }
+        }
     }
 }
 
@@ -893,37 +844,25 @@ void DetailsDialog::refreshUI()
     ///  Peers tab
     ///
 
-    auto peers2 = decltype(peers_){};
     auto new_items = QList<QTreeWidgetItem*>{};
 
     for (Torrent const* const tor : torrents) {
-        auto const id_str = QString::number(tor->id());
-
-        for (Peer const& peer : tor->peers()) {
-            auto const key = id_str + QLatin1Char(':') + Utils::qstringFromUtf8(peer.address);
-
-            PeerItem* item = nullptr;
-            if (auto const iter = peers_.find(key); iter != std::end(peers_)) {
-                item = iter->second;
-                item->refresh(peer, tor->peer_progress(peer));
-            } else { // new peer has connected
-                item = new PeerItem{ peer, tor->peer_progress(peer), icon_encrypted_ };
-                new_items << item;
-            }
-
-            peers2.try_emplace(key, item);
+        for (auto const& peer : tor->peers()) {
+            auto item = PeerListItem{ *tor, peer };
+            auto const key = item.key();
+            peers_.add_or_update(
+                key,
+                [&] {
+                    auto* const row = new PeerItem{ std::move(item), icon_encrypted_ };
+                    new_items << row;
+                    return row;
+                },
+                [&](PeerItem* const row) { row->refresh(std::move(item)); });
         }
     }
 
     ui_.peersView->addTopLevelItems(new_items);
-
-    for (auto const& [key, item] : peers_) {
-        if (!peers2.contains(key)) { // old peer has disconnected
-            delete item; // ~QTreeWidgetItem removes it from the view
-        }
-    }
-
-    peers_ = std::move(peers2);
+    peers_.remove_unseen([](PeerItem* const row) { delete row; }); // ~QTreeWidgetItem removes it from the view
 
     if (std::size(ids_) == 1) {
         ui_.filesView->update(torrents[0]->files(), canEdit());
@@ -1142,16 +1081,20 @@ void DetailsDialog::initPeersTab()
 
     ui_.peersView->setHeaderLabels(
         { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Flags"), tr("Address"), tr("Client") });
-    ui_.peersView->sortByColumn(COL_ADDRESS, Qt::AscendingOrder);
+    ui_.peersView->sortByColumn(col(tr::app::DefaultPeerSortColumn), Qt::AscendingOrder);
 
-    ui_.peersView->setColumnWidth(COL_LOCK, 20);
-    ui_.peersView->setColumnWidth(COL_UP, measureViewItem(ui_.peersView, COL_UP, speed_width_str));
-    ui_.peersView->setColumnWidth(COL_UP_REQS, measureViewItem(ui_.peersView, COL_UP_REQS, QStringLiteral("888")));
-    ui_.peersView->setColumnWidth(COL_DOWN, measureViewItem(ui_.peersView, COL_DOWN, speed_width_str));
-    ui_.peersView->setColumnWidth(COL_DOWN_REQS, measureViewItem(ui_.peersView, COL_DOWN_REQS, QStringLiteral("888")));
-    ui_.peersView->setColumnWidth(COL_PERCENT, measureViewItem(ui_.peersView, COL_PERCENT, QStringLiteral("100%")));
-    ui_.peersView->setColumnWidth(COL_STATUS, measureViewItem(ui_.peersView, COL_STATUS, QStringLiteral("ODUK?EXI")));
-    ui_.peersView->setColumnWidth(COL_ADDRESS, measureViewItem(ui_.peersView, COL_ADDRESS, QStringLiteral("888.888.888.888")));
+    auto const set_width = [this](PeerColumn const column, QString const& sample) {
+        ui_.peersView->setColumnWidth(col(column), measureViewItem(ui_.peersView, col(column), sample));
+    };
+
+    ui_.peersView->setColumnWidth(col(PeerColumn::Encrypted), 20);
+    set_width(PeerColumn::UploadSpeed, speed_width_str);
+    set_width(PeerColumn::UploadRequests, QStringLiteral("888"));
+    set_width(PeerColumn::DownloadSpeed, speed_width_str);
+    set_width(PeerColumn::DownloadRequests, QStringLiteral("888"));
+    set_width(PeerColumn::Progress, QStringLiteral("100%"));
+    set_width(PeerColumn::Flags, QStringLiteral("ODUK?EXI"));
+    set_width(PeerColumn::Address, QStringLiteral("888.888.888.888"));
 
     bindPrefCheckBox(ui_.showExtraPeerDetailsCheck, TR_KEY_show_extra_peer_details);
 }
