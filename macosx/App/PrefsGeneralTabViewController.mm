@@ -217,7 +217,6 @@
     [self.fDefaults removeObjectForKey:@"WarningRemoveTrackers"];
     [self.fDefaults removeObjectForKey:@"WarningInvalidOpen"];
     [self.fDefaults removeObjectForKey:@"WarningRemoveCompleted"];
-    [self.fDefaults removeObjectForKey:@"WarningDonate"];
 }
 
 - (void)setDefaultForMagnets:(id)sender

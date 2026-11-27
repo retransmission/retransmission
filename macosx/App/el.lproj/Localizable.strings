@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Να μην γίνει ξανά έλεγχος του χώρου στο δίσκο";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Να μην ενοχληθώ για αυτό ξανά.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Να μην γίνει λήψη";
-
-/* Donation beg -> button */
-"Donate" = "Δωρίστε";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Η πραγματοποίηση δωρεάς ή όχι, δεν θα έχει καμία διαφορά στην εμπειρία κατεβάσματος torrent.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Κανένα";
-
-/* Donation beg -> button */
-"Nope" = "Όχι";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Κανονική";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Διακοπή αναμονής εκκίνησης";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Υποστήριξη ανοιχτού κώδικα indie λογισμικού ";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/s";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Μεταφορές μη ενεργές";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Το %@ είναι μια πλήρης εφαρμογή torrent. Έχει δαπανηθεί πολύς χρόνος και προσπάθεια για την ανάπτυξη, την κωδικοποίηση και τη βελτίωση. Εάν απολαμβάνετε την χρήση του, σκεφτείτε να δείξετε την αγάπη σας με μια δωρεά.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "Το %@ είναι ήδη ανοιχτό. ";

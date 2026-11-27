@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Ne ellenőrizze újra a lemezterületet";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Ne zaklasson ezért többé.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Ne töltse le";
-
-/* Donation beg -> button */
-"Donate" = "Támogatás";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Támogat vagy sem, nem lesz változás az ön torrentezés élményében.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Nincs";
-
-/* Donation beg -> button */
-"Nope" = "Nem";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Normál";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Várakozás elkezdésének leállítása";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Nyílt-forráskódú indie szoftver támogatása";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/s";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Átvitelek nem aktívak";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "A %@ egy teljes funkcionalitású torrent alkalmazás. Sok időbe és erőfeszítésbe telt a fejlesztése. Ha örömmel használja, kérjük, megbecsüléseként járuljon hozzá a fejlesztéshez anyagi támogatással.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ már fut.";

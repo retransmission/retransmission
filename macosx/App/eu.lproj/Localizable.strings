@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Ez egiaztatu berriro diskoko espazioa";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Ez jakinarazi berriro horrelakoen inguruan.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Ez deskargatu";
-
-/* Donation beg -> button */
-"Donate" = "Donatu";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Donatu ala ez, ez da ezberdintasunik egongo zure \"torrentatze\" esperientzian";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Ezer ez";
-
-/* Donation beg -> button */
-"Nope" = "Ez";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Arrunta";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Geratu abiarazteko itxarotea";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Eman sostengua iturburu irekiko software independentea";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/s";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Transferentzia Ez Aktiboak";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%1$@ funtzio askoz hornitutako torrent aplikazio bat da. Garapenak, kodea idazteak eta hobekuntzak denbora eta esfortzu handia behar izan du. %1$@ erabiltzea gustuko baduzu, zure maitasuna erakusteko donazio bat egitea hausnartu ezazu.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ dagoeneko martxan dago.";

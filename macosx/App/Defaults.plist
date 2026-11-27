@@ -188,8 +188,6 @@
 	<true/>
 	<key>WarningCreatorPrivateBlankAddress</key>
 	<true/>
-	<key>WarningDonate</key>
-	<true/>
 	<key>WarningDuplicate</key>
 	<true/>
 	<key>WarningFolderDataSameName</key>

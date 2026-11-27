@@ -334,17 +334,8 @@
 /* Torrent disk space alert -> button */
 "Do not check disk space again" = "Ruimte op schijf niet opnieuw controleren";
 
-/* Donation beg -> button */
-"Don't bug me about this ever again." = "Toon dit nooit meer.";
-
 /* files tab -> tooltip */
 "Don't Download" = "Niet downloaden";
-
-/* Donation beg -> button */
-"Donate" = "Doneren";
-
-/* Donation beg -> message */
-"Donate or not, there will be no difference to your torrenting experience." = "Of u nu doneert of niet, er zal geen verschil zijn in uw Bittorrent-ervaring.";
 
 /* file table -> header tool tip
    files tab -> tooltip */
@@ -586,9 +577,6 @@
    Groups -> Menu
    inspector -> check all */
 "None" = "Geen";
-
-/* Donation beg -> button */
-"Nope" = "Nee";
 
 /* File Outline -> Priority Menu */
 "Normal" = "Normaal";
@@ -935,9 +923,6 @@
 /* Torrent cell -> button info */
 "Stop waiting to start" = "Stop wachten om te starten";
 
-/* Donation beg -> title */
-"Support open-source indie software" = "Steun openbronsoftware";
-
 /* Transfer speed (terabytes per second) */
 "TB/s" = "TB/s";
 
@@ -1087,9 +1072,6 @@
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Overdrachten niet actief";
-
-/* Donation beg -> message */
-"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is een volledig torrentprogramma. Er is veel energie gestoken in het ontwikkelen, programmeren en het verfijnen. Als u er plezier aan heeft, toon dan uw liefde met een donatie.";
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ is al actief.";
