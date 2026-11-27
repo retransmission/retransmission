@@ -125,7 +125,8 @@ target_link_libraries(libtransmission-test
 
 tr_setup_gtest_target(libtransmission-test "LT.")
 
-# Re-run the disk-IO tests on tr::LocalData's threaded backend.
+# Re-run the disk-IO tests in ways that a plain run doesn't cover.
+# A plain run takes the session's default, worker threads.
 #
 # A suite belongs here only if it drives a tr::LocalData op through a
 # tr_session. A suite that issues no such op re-runs byte-identical, and
@@ -156,14 +157,15 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
                 ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=${SEED})
     endforeach()
 
-    # ...and once more on real threads.
+    # ...and once more on the synchronous backend, where the session
+    # thread does each disk op inside the call that asks for it.
     add_test(
-        NAME LT.ThreadedDiskIo
+        NAME LT.SynchronousDiskIo
         COMMAND libtransmission-test --gtest_filter=${DISK_IO_SUITES})
 
-    set_tests_properties(LT.ThreadedDiskIo
+    set_tests_properties(LT.SynchronousDiskIo
         PROPERTIES
-            ENVIRONMENT TR_LOCAL_DATA_WORKERS=2)
+            ENVIRONMENT TR_LOCAL_DATA_WORKERS=0)
 endif()
 
 add_custom_command(

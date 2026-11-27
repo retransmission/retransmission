@@ -55,7 +55,8 @@ cache pruning. See Docker's [cache guide](https://docs.docker.com/build/cache/op
 Use the same command for subsequent runs; changing `SIZE_MIB`, `TIMEOUT`, or
 `DISK_IO_WORKERS` changes runtime settings and does not invalidate the image build.
 
-`DISK_IO_WORKERS` defaults to 2, matching the application default. Workers handle
+`DISK_IO_WORKERS` sets each daemon's `disk_io_threads` and defaults to 2; the
+application's default is 4. Workers handle
 writes and finished-piece hashing; upload reads remain on the session thread.
 Explicitly select 0 for synchronous I/O. Positive counts enable the `storage.*`
 timing scopes in instrumented builds. Compare 0, 1, 2, and 4 with the worker study.

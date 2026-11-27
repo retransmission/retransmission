@@ -8,7 +8,6 @@
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
 #include <ctime> // time_t
-#include <future>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -194,6 +193,13 @@ protected:
         return tor;
     }
 
+    // Waits until what loading `tor` queued for the session thread has
+    // run, and until any move that it started has finished.
+    void waitForLoadToSettle(tr_torrent const* const tor)
+    {
+        EXPECT_TRUE(waitForInSessionThread([this, tor] { return !session_->local_data.admin_op_pending(tor->id()); }, 5000));
+    }
+
     static void expectSubpaths(tr_torrent const* tor, std::vector<std::string> const& expected)
     {
         ASSERT_EQ(std::size(expected), tor->file_count());
@@ -283,10 +289,7 @@ TEST_F(ResumeTest, leavesFilesInTheIncompleteDirUnlessAMoveWasInterrupted)
     auto* const tor = torrentInit(builder, { 5U }, std::move(resume));
     ASSERT_NE(nullptr, tor);
 
-    // Let anything that loading queued run first.
-    auto flushed = std::promise<void>{};
-    session_->queue_session_thread([&flushed] { flushed.set_value(); });
-    flushed.get_future().wait();
+    waitForLoadToSettle(tor);
 
     expectContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
     EXPECT_EQ(incomplete.sv(), tor->incomplete_dir().sv());
@@ -308,9 +311,7 @@ TEST_F(ResumeTest, ignoresAPendingCompletionMoveUntilTheTorrentIsDone)
 
     EXPECT_FALSE(tor->completion_move_pending());
 
-    auto flushed = std::promise<void>{};
-    session_->queue_session_thread([&flushed] { flushed.set_value(); });
-    flushed.get_future().wait();
+    waitForLoadToSettle(tor);
     expectContents(tr_pathbuf{ incomplete, "/root/f0"sv }, "00000"sv);
 
     tr_torrentRemove(tor, false);

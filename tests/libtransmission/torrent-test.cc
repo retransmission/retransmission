@@ -230,9 +230,8 @@ class TorrentRemoveTest : public TorrentTest
 {
 protected:
     // Paths the session's remove func was asked to remove.
-    // Removals run on the session thread,
-    // so read this only after waiting for the torrent to be gone,
-    // since that wait runs through the same thread.
+    // Read only after waiting for the torrent to be gone: a removal
+    // may run on a disk thread, and the torrent outlives it.
     std::vector<std::string> removed_;
 
     void SetUp() override

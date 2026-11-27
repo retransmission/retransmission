@@ -159,7 +159,9 @@ def start_daemon(stack, binary, root, output, name, rpc_port, peer_port, disk_io
         "download_dir": str(download), "incomplete_dir_enabled": False,
         "rename_partial_files": False, "sleep_per_seconds_during_verify": 0,
         "ratio_limit_enabled": False, "idle_seeding_limit_enabled": False,
-        "disk_io_workers": disk_io_workers,
+        # `disk_io_workers` is the setting's name in daemons built before it
+        # became `disk_io_threads`. Each build ignores the name it doesn't know.
+        "disk_io_threads": disk_io_workers, "disk_io_workers": disk_io_workers,
         "encryption": encryption,
         "torrent_added_verify_mode": verify_mode,
     }

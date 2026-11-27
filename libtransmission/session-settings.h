@@ -106,10 +106,10 @@ public:
     size_t unused_cache_size_mbytes = 4U; // TODO(TR5): remove
     // Threads for writing torrent data to disk and hashing finished
     // pieces. Zero runs all disk IO on the session thread instead.
-    size_t disk_io_workers = 0U;
+    size_t disk_io_threads = 4U;
     // The most memory that downloaded data may occupy while it waits for
     // the disk: blocks requested but not yet received, plus blocks
-    // received but not yet written. Enforced by disk_io_workers > 0.
+    // received but not yet written. Enforced by disk_io_threads > 0.
     // Counting requests bounds the burst that lands when the disk falls
     // behind. It also caps throughput at the budget divided by the
     // request round-trip time.
@@ -175,7 +175,7 @@ public:
         Field<&SessionSettings::blocklist_url>{ TR_KEY_blocklist_url },
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },
-        Field<&SessionSettings::disk_io_workers>{ TR_KEY_disk_io_workers },
+        Field<&SessionSettings::disk_io_threads>{ TR_KEY_disk_io_threads },
         Field<&SessionSettings::disk_write_budget_mib>{ TR_KEY_disk_write_budget_mib },
         Field<&SessionSettings::download_dir>{ TR_KEY_download_dir },
         Field<&SessionSettings::download_queue_enabled>{ TR_KEY_download_queue_enabled },

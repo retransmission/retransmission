@@ -151,7 +151,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_details_window_width,
     TR_KEY_dht_enabled_kebab_APICOMPAT,
     TR_KEY_dht_enabled,
-    TR_KEY_disk_io_workers,
+    TR_KEY_disk_io_threads,
     TR_KEY_disk_stats,
     TR_KEY_disk_write_budget_mib,
     TR_KEY_dnd,

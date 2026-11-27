@@ -126,6 +126,14 @@ inline bool waitFor(
     return false;
 }
 
+// The number that all of `str` spells, if it spells one.
+[[nodiscard]] inline std::optional<uint32_t> parseUint32(std::string_view const str)
+{
+    auto rest = std::string_view{};
+    auto const value = tr_num_parse<uint32_t>(str, &rest);
+    return std::empty(rest) ? value : std::nullopt;
+}
+
 // On a tr::LocalData started threadless, does the disk work waiting on
 // the threads of `which`, then delivers its callbacks. What those enqueue
 // waits for the next call.
@@ -636,7 +644,7 @@ protected:
     }
 
     // A suite that picks its session's disk IO backend itself returns false.
-    // It gets the synchronous one unless it sets disk_io_workers before
+    // It gets the synchronous one unless it sets disk_io_threads before
     // SessionTest::SetUp() runs.
     [[nodiscard]] virtual bool useLocalDataBackendFromEnv() const
     {
@@ -677,11 +685,12 @@ protected:
 
         auto const from_env = useLocalDataBackendFromEnv();
 
-        // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
-        // instead of the synchronous one.
+        // TR_LOCAL_DATA_WORKERS sets the session's disk_io_threads:
+        // 0 for the synchronous backend, N for N workers.
         auto const workers = from_env ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
-        if (!std::empty(workers)) {
-            settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
+        auto const n_threads = parseUint32(workers);
+        if (n_threads) {
+            settings().insert_or_assign(TR_KEY_disk_io_threads, int64_t{ *n_threads });
         }
 
         // tr::LocalData may deliver completions late and out of order.
@@ -694,20 +703,18 @@ protected:
         auto bad_seed = std::optional<std::string>{};
         if (from_env && std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
             auto value = tr_env_get_string("TR_LOCAL_DATA_SHUFFLE");
-            auto rest = std::string_view{};
-            seed = tr_num_parse<uint32_t>(value, &rest);
-            if (!seed || !std::empty(rest)) {
-                seed.reset();
+            seed = parseUint32(value);
+            if (!seed) {
                 bad_seed = std::move(value);
             }
         }
 
         if (!from_env) {
             // synchronous, whatever the session's default
-            settings().try_emplace(TR_KEY_disk_io_workers, int64_t{ 0 });
+            settings().try_emplace(TR_KEY_disk_io_threads, int64_t{ 0 });
         } else if (seed) {
             // startThreadlessDiskIo() replaces only the synchronous backend
-            settings().insert_or_assign(TR_KEY_disk_io_workers, int64_t{ 0 });
+            settings().insert_or_assign(TR_KEY_disk_io_threads, int64_t{ 0 });
         }
 
         session_ = sessionInit(settings());
@@ -724,8 +731,10 @@ protected:
             verified_cv_.notify_one();
         });
 
-        // Last, because a derived fixture's SetUp() keeps going after this
-        // returns and needs the whole session. The test body doesn't run.
+        // Last, because a derived fixture's SetUp() keeps going after these
+        // return and needs the whole session. The test body doesn't run.
+        ASSERT_TRUE(std::empty(workers) || n_threads)
+            << "TR_LOCAL_DATA_WORKERS is \"" << workers << "\", which isn't a thread count";
         ASSERT_FALSE(bad_seed) << "TR_LOCAL_DATA_SHUFFLE is \"" << *bad_seed << "\", which isn't a seed from 0 to 4294967295";
     }
 
