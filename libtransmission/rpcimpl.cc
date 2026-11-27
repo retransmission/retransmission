@@ -16,6 +16,7 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -1122,6 +1123,14 @@ namespace make_torrent_field_helpers
     return { err, std::move(errmsg) };
 }
 
+[[nodiscard]] std::string sequential_download_from_piece_type_errmsg()
+{
+    return fmt::format(
+        "'{:s}' must be a {:d}-bit unsigned integer",
+        tr_quark_get_string_view(TR_KEY_sequential_download_from_piece),
+        std::numeric_limits<tr_piece_index_t>::digits);
+}
+
 [[nodiscard]] std::pair<JsonRpc::Error::Code, std::string> set_sequential_download_from_piece(
     tr_torrent& tor,
     std::optional<tr_piece_index_t> const& piece)
@@ -1129,13 +1138,7 @@ namespace make_torrent_field_helpers
     using namespace JsonRpc;
 
     if (!piece) {
-        return {
-            Error::INVALID_PARAMS,
-            fmt::format(
-                "'{:s}' must be a {:d}-bit unsigned integer",
-                tr_quark_get_string_view(TR_KEY_sequential_download_from_piece),
-                std::numeric_limits<tr_piece_index_t>::digits),
-        };
+        return { Error::INVALID_PARAMS, sequential_download_from_piece_type_errmsg() };
     }
 
     if (*piece >= tor.piece_count()) {
@@ -1250,7 +1253,7 @@ namespace make_torrent_field_helpers
     auto errmsg = std::string{};
 
     for (auto* tor : getTorrents(session, args_in)) {
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_bandwidth_priority); val) {
+        if (auto const val = args_in.value_if<std::underlying_type_t<tr_priority_t>>(TR_KEY_bandwidth_priority)) {
             if (auto const priority = static_cast<tr_priority_t>(*val); tr_isPriority(priority)) {
                 tr_torrentSetPriority(tor, priority);
             }
@@ -1314,7 +1317,7 @@ namespace make_torrent_field_helpers
             tr_torrentUseSessionLimits(tor, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_upload_limit); val) {
+        if (auto const val = args_in.value_if<size_t>(TR_KEY_upload_limit)) {
             tr_torrentSetSpeedLimit_KBps(tor, tr_direction::Up, *val);
         }
 
@@ -1322,11 +1325,11 @@ namespace make_torrent_field_helpers
             tor->use_speed_limit(tr_direction::Up, *val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_seed_idle_limit); val) {
-            tor->set_idle_limit_minutes(static_cast<uint16_t>(*val));
+        if (auto const val = args_in.value_if<uint16_t>(TR_KEY_seed_idle_limit)) {
+            tor->set_idle_limit_minutes(*val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_seed_idle_mode); val) {
+        if (auto const val = args_in.value_if<std::underlying_type_t<tr_idlelimit>>(TR_KEY_seed_idle_mode)) {
             tor->set_idle_limit_mode(static_cast<tr_idlelimit>(*val));
         }
 
@@ -1334,12 +1337,12 @@ namespace make_torrent_field_helpers
             tor->set_seed_ratio(*val);
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_seed_ratio_mode); val) {
+        if (auto const val = args_in.value_if<std::underlying_type_t<tr_ratiolimit>>(TR_KEY_seed_ratio_mode)) {
             tor->set_seed_ratio_mode(static_cast<tr_ratiolimit>(*val));
         }
 
-        if (auto const val = args_in.value_if<int64_t>(TR_KEY_queue_position); val) {
-            tr_torrentSetQueuePosition(tor, static_cast<size_t>(*val));
+        if (auto const val = args_in.value_if<size_t>(TR_KEY_queue_position)) {
+            tr_torrentSetQueuePosition(tor, *val);
         }
 
         if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_tracker_add); val != nullptr) {
@@ -1672,11 +1675,11 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
         builder.set_paused(*val);
     }
 
-    if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
-        builder.set_peer_limit(static_cast<uint16_t>(*val));
+    if (auto const val = args_in.value_if<uint16_t>(TR_KEY_peer_limit)) {
+        builder.set_peer_limit(*val);
     }
 
-    if (auto const val = args_in.value_if<int64_t>(TR_KEY_bandwidth_priority); val) {
+    if (auto const val = args_in.value_if<std::underlying_type_t<tr_priority_t>>(TR_KEY_bandwidth_priority)) {
         builder.set_bandwidth_priority(static_cast<tr_priority_t>(*val));
     }
 
@@ -1745,8 +1748,14 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
         builder.set_sequential_download(*val);
     }
 
-    if (auto const val = args_in.value_if<int64_t>(TR_KEY_sequential_download_from_piece); val) {
-        builder.set_sequential_download_from_piece(*val);
+    if (auto const iter = args_in.find(TR_KEY_sequential_download_from_piece); iter != std::end(args_in)) {
+        auto const piece = iter->second.value_if<tr_piece_index_t>();
+        if (!piece) {
+            tr_rpc_idle_done(idle_data, Error::INVALID_PARAMS, sequential_download_from_piece_type_errmsg());
+            return;
+        }
+
+        builder.set_sequential_download_from_piece(*piece);
     }
 
     tr_logAddTrace(fmt::format("torrentAdd: filename is '{}'", filename));
@@ -1849,11 +1858,11 @@ void add_strings_from_var(std::set<std::string_view>& strings, tr_variant const&
         limits.up_limited = *val;
     }
 
-    if (auto const val = args_in.value_if<int64_t>(TR_KEY_speed_limit_down); val) {
+    if (auto const val = args_in.value_if<size_t>(TR_KEY_speed_limit_down)) {
         limits.down_limit = Speed{ *val, Speed::Units::KByps };
     }
 
-    if (auto const val = args_in.value_if<int64_t>(TR_KEY_speed_limit_up); val) {
+    if (auto const val = args_in.value_if<size_t>(TR_KEY_speed_limit_up)) {
         limits.up_limit = Speed{ *val, Speed::Units::KByps };
     }
 
@@ -1951,7 +1960,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_alt_speed_down,
         [](tr_session const& src) -> tr_variant { return tr_sessionGetAltSpeed_KBps(&src, tr_direction::Down); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tr_sessionSetAltSpeed_KBps(&tgt, tr_direction::Down, *val);
             }
         });
@@ -1969,8 +1978,8 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_alt_speed_time_begin,
         [](tr_session const& src) -> tr_variant { return tr_sessionGetAltSpeedBegin(&src); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
-                tr_sessionSetAltSpeedBegin(&tgt, static_cast<size_t>(*val));
+            if (auto const val = src.value_if<size_t>()) {
+                tr_sessionSetAltSpeedBegin(&tgt, *val);
             }
         });
 
@@ -1996,8 +2005,8 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_alt_speed_time_end,
         [](tr_session const& src) -> tr_variant { return tr_sessionGetAltSpeedEnd(&src); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
-                tr_sessionSetAltSpeedEnd(&tgt, static_cast<size_t>(*val));
+            if (auto const val = src.value_if<size_t>()) {
+                tr_sessionSetAltSpeedEnd(&tgt, *val);
             }
         });
 
@@ -2005,7 +2014,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_alt_speed_up,
         [](tr_session const& src) -> tr_variant { return tr_sessionGetAltSpeed_KBps(&src, tr_direction::Up); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tr_sessionSetAltSpeed_KBps(&tgt, tr_direction::Up, *val);
             }
         });
@@ -2023,8 +2032,8 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_anti_brute_force_threshold,
         [](tr_session const& src) -> tr_variant { return src.get_anti_brute_force_limit(); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
-                tgt.set_anti_brute_force_limit(static_cast<size_t>(*val));
+            if (auto const val = src.value_if<size_t>()) {
+                tgt.set_anti_brute_force_limit(*val);
             }
         });
 
@@ -2069,7 +2078,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_cache_size_mib,
         [](tr_session const& src) -> tr_variant { return src.unused_cache_size_mbytes(); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tgt.set_unused_cache_size_mbytes(*val);
             }
         });
@@ -2130,7 +2139,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_download_queue_size,
         [](tr_session const& src) -> tr_variant { return src.queueSize(tr_direction::Down); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tr_sessionSetQueueSize(&tgt, tr_direction::Down, *val);
             }
         });
@@ -2197,7 +2206,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_peer_limit_global,
         [](tr_session const& src) -> tr_variant { return src.peerLimit(); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<uint16_t>()) {
                 tr_sessionSetPeerLimit(&tgt, *val);
             }
         });
@@ -2206,7 +2215,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_peer_limit_per_torrent,
         [](tr_session const& src) -> tr_variant { return src.peerLimitPerTorrent(); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<uint16_t>()) {
                 tr_sessionSetPeerLimitPerTorrent(&tgt, *val);
             }
         });
@@ -2297,7 +2306,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_reqq,
         [](tr_session const& src) -> tr_variant { return src.reqq(); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tgt.set_reqq(*val);
             }
         });
@@ -2351,7 +2360,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         TR_KEY_seed_queue_size,
         [](tr_session const& src) -> tr_variant { return src.queueSize(tr_direction::Up); },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tr_sessionSetQueueSize(&tgt, tr_direction::Up, *val);
             }
         });
@@ -2373,7 +2382,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             return static_cast<int64_t>(src.speed_limit(tr_direction::Down).count(Speed::Units::KByps));
         },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tgt.set_speed_limit(tr_direction::Down, Speed{ *val, Speed::Units::KByps });
             }
         });
@@ -2393,7 +2402,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
             return static_cast<int64_t>(src.speed_limit(tr_direction::Up).count(Speed::Units::KByps));
         },
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
-            if (auto const val = src.value_if<int64_t>()) {
+            if (auto const val = src.value_if<size_t>()) {
                 tgt.set_speed_limit(tr_direction::Up, Speed{ *val, Speed::Units::KByps });
             }
         });
