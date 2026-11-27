@@ -52,13 +52,14 @@ TEST(TorrentKeysTest, statsSetsOmitTheInfoOnlyFields)
     }
 }
 
-// The GTK client shows "Stalled" and a webseed tab, and keys its trackers
-// change mask on `tracker_list`, so those keys travel with the main sets.
+// The GTK client shows "Stalled" and a webseed list with download speeds, and
+// keys its trackers change mask on `tracker_list`, so those keys travel with
+// the sets that refresh those views.
 TEST(TorrentKeysTest, carriesTheFieldsBothClientsShow)
 {
     EXPECT_TRUE(has(TorrentKeySet::MainStats, TR_KEY_is_stalled));
     EXPECT_TRUE(has(TorrentKeySet::MainInfo, TR_KEY_tracker_list));
-    EXPECT_TRUE(has(TorrentKeySet::DetailInfo, TR_KEY_webseeds_ex));
+    EXPECT_TRUE(has(TorrentKeySet::DetailStats, TR_KEY_webseeds_ex));
 }
 
 // `edit_date` tells a `torrent_set` re-fetch that the metainfo changed; `labels`
