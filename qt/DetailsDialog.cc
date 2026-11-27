@@ -12,7 +12,6 @@
 #include <initializer_list>
 #include <iterator> // std::back_inserter()
 #include <map>
-#include <optional>
 #include <ranges>
 #include <set>
 #include <span>
@@ -51,6 +50,7 @@
 
 #include <libtransmission-app/peer-list.h>
 #include <libtransmission-app/torrent.h>
+#include <libtransmission-app/uniform-value.h>
 
 #include "BaseDialog.h"
 #include "ColumnResizer.h"
@@ -73,6 +73,7 @@ using tr::app::PeerColumn;
 using tr::app::PeerFlag;
 using tr::app::PeerListItem;
 using tr::app::Torrent;
+using tr::app::uniform_value;
 
 // ---
 
@@ -138,23 +139,6 @@ int constexpr RefreshIntervalMSec = 4000;
     auto const header_width = Utils::measureHeaderItem(view->header(), view->headerItem()->text(column));
 
     return std::max(item_width, header_width);
-}
-
-// The value that `getter` yields for every one of `torrents`,
-// or nullopt when they disagree or there are no torrents.
-template<typename Getter>
-[[nodiscard]] std::optional<std::decay_t<std::invoke_result_t<Getter, Torrent const&>>> uniformValue(
-    QList<Torrent const*> const& torrents,
-    Getter const getter)
-{
-    auto const get = [&getter](Torrent const* const tor) -> decltype(auto) {
-        return std::invoke(getter, *tor);
-    };
-
-    if (!torrents.empty() && std::ranges::adjacent_find(torrents, std::ranges::not_equal_to{}, get) == torrents.end()) {
-        return get(torrents.front());
-    }
-    return {};
 }
 
 // Updates a widget from the model unless the user is editing it, and
@@ -503,7 +487,7 @@ void DetailsDialog::refreshUI()
     auto string = QString{};
     if (torrents.empty()) {
         string = none;
-    } else if (auto const activity = uniformValue(torrents, &Torrent::activity); !activity) {
+    } else if (auto const activity = uniform_value(torrents, &Torrent::activity); !activity) {
         string = mixed;
     } else if (*activity != TR_STATUS_STOPPED) {
         string = TorrentDelegate::activityString(*torrents.front());
@@ -617,7 +601,7 @@ void DetailsDialog::refreshUI()
         string = none;
     } else if (std::ranges::all_of(torrents, &Torrent::is_paused)) {
         string = state_string; // paused || finished
-    } else if (auto const started = uniformValue(torrents, &Torrent::start_date); started && *started != 0) {
+    } else if (auto const started = uniform_value(torrents, &Torrent::start_date); started && *started != 0) {
         string = Formatter::timeToString(static_cast<int>(std::difftime(now, *started)));
     } else {
         string = mixed;
@@ -628,7 +612,7 @@ void DetailsDialog::refreshUI()
     // remainingTimeValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const eta = uniformValue(torrents, &Torrent::eta); !eta) {
+    } else if (auto const eta = uniform_value(torrents, &Torrent::eta); !eta) {
         string = mixed;
     } else if (*eta < 0) {
         string = tr("Unknown");
@@ -659,7 +643,7 @@ void DetailsDialog::refreshUI()
     // errorValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const error = uniformValue(torrents, &TorrentDelegate::errorString); !error) {
+    } else if (auto const error = uniform_value(torrents, &TorrentDelegate::errorString); !error) {
         string = mixed;
     } else {
         string = error->isEmpty() ? none : *error;
@@ -677,7 +661,7 @@ void DetailsDialog::refreshUI()
     } else {
         auto const pieces = sum(&Torrent::piece_count);
         auto const size = sum(&Torrent::total_size).base_quantity();
-        auto const piece_size = uniformValue(torrents, &Torrent::piece_size).value_or(0U);
+        auto const piece_size = uniform_value(torrents, &Torrent::piece_size).value_or(0U);
 
         if (size == 0) {
             string = none;
@@ -702,7 +686,7 @@ void DetailsDialog::refreshUI()
     // hashValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const hash = uniformValue(torrents, &Torrent::hash_string)) {
+    } else if (auto const hash = uniform_value(torrents, &Torrent::hash_string)) {
         string = Utils::qstringFromUtf8(*hash);
     } else {
         string = mixed;
@@ -713,7 +697,7 @@ void DetailsDialog::refreshUI()
     // privacyValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const is_private = uniformValue(torrents, &Torrent::is_private)) {
+    } else if (auto const is_private = uniform_value(torrents, &Torrent::is_private)) {
         string = *is_private ? tr("Private to this tracker -- DHT and PEX disabled") : tr("Public torrent");
     } else {
         string = mixed;
@@ -725,7 +709,7 @@ void DetailsDialog::refreshUI()
     if (labels_need_refresh_) {
         labels_need_refresh_ = false;
 
-        auto const labels = uniformValue(torrents, &Torrent::labels);
+        auto const labels = uniform_value(torrents, &Torrent::labels);
         bool const editable = labels.has_value();
         labels_baseline_ = editable ?
             Utils::qstringFromUtf8(
@@ -738,7 +722,7 @@ void DetailsDialog::refreshUI()
     }
 
     // commentTextEdit
-    auto const comment = uniformValue(torrents, &Torrent::comment);
+    auto const comment = uniform_value(torrents, &Torrent::comment);
     bool const is_comment_mixed = !torrents.empty() && !comment.has_value();
     if (torrents.empty()) {
         string = none;
@@ -755,8 +739,8 @@ void DetailsDialog::refreshUI()
     ui_.commentTextEdit->setEnabled(!is_comment_mixed && !string.isEmpty());
 
     // originValueLabel
-    auto const creator = uniformValue(torrents, &Torrent::creator);
-    auto const created = uniformValue(torrents, &Torrent::date_created);
+    auto const creator = uniform_value(torrents, &Torrent::creator);
+    auto const created = uniform_value(torrents, &Torrent::date_created);
 
     if (torrents.empty()) {
         string = none;
@@ -779,7 +763,7 @@ void DetailsDialog::refreshUI()
     // locationValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const path = uniformValue(torrents, &Torrent::download_dir)) {
+    } else if (auto const path = uniform_value(torrents, &Torrent::download_dir)) {
         string = Utils::qstringFromUtf8(path->sv());
     } else {
         string = mixed;
@@ -790,7 +774,7 @@ void DetailsDialog::refreshUI()
     // addedValueLabel
     if (torrents.empty()) {
         string = none;
-    } else if (auto const added = uniformValue(torrents, &Torrent::added_date); !added) {
+    } else if (auto const added = uniform_value(torrents, &Torrent::added_date); !added) {
         string = mixed;
     } else if (*added <= 0) {
         string = tr("N/A");
@@ -807,11 +791,11 @@ void DetailsDialog::refreshUI()
     if (canEdit() && !torrents.empty()) {
         Torrent const& baseline = *torrents.front();
 
-        ui_.sessionLimitCheck->setChecked(uniformValue(torrents, &Torrent::honors_session_limits).value_or(false));
-        ui_.singleDownCheck->setChecked(uniformValue(torrents, &Torrent::download_limited).value_or(false));
-        ui_.singleUpCheck->setChecked(uniformValue(torrents, &Torrent::upload_limited).value_or(false));
+        ui_.sessionLimitCheck->setChecked(uniform_value(torrents, &Torrent::honors_session_limits).value_or(false));
+        ui_.singleDownCheck->setChecked(uniform_value(torrents, &Torrent::download_limited).value_or(false));
+        ui_.singleUpCheck->setChecked(uniform_value(torrents, &Torrent::upload_limited).value_or(false));
 
-        auto const priority = uniformValue(torrents, &Torrent::bandwidth_priority);
+        auto const priority = uniform_value(torrents, &Torrent::bandwidth_priority);
         setIfIdle(ui_.bandwidthPriorityCombo, priority ? ui_.bandwidthPriorityCombo->findData(*priority) : -1);
         setIfIdle(ui_.singleDownSpin, static_cast<int>(baseline.download_limit().count(tr::Values::Speed::Units::KByps)));
         setIfIdle(ui_.singleUpSpin, static_cast<int>(baseline.upload_limit().count(tr::Values::Speed::Units::KByps)));
@@ -821,12 +805,12 @@ void DetailsDialog::refreshUI()
     if (!torrents.empty()) {
         Torrent const& baseline = *torrents.front();
 
-        auto const ratio_mode = uniformValue(torrents, &Torrent::seed_ratio_mode);
+        auto const ratio_mode = uniform_value(torrents, &Torrent::seed_ratio_mode);
         setIfIdle(ui_.ratioCombo, ratio_mode ? ui_.ratioCombo->findData(*ratio_mode) : -1);
         ui_.ratioSpin->setVisible(ratio_mode == TR_RATIOLIMIT_SINGLE);
         setIfIdle(ui_.ratioSpin, baseline.seed_ratio_limit());
 
-        auto const idle_mode = uniformValue(torrents, &Torrent::seed_idle_mode);
+        auto const idle_mode = uniform_value(torrents, &Torrent::seed_idle_mode);
         setIfIdle(ui_.idleCombo, idle_mode ? ui_.idleCombo->findData(*idle_mode) : -1);
         ui_.idleSpin->setVisible(idle_mode == TR_IDLELIMIT_SINGLE);
         setIfIdle(ui_.idleSpin, baseline.seed_idle_limit());

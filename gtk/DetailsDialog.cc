@@ -20,8 +20,8 @@
 #include <libtransmission-app/torrent-list.h>
 #include <libtransmission-app/torrent.h>
 #include <libtransmission-app/tracker-status.h>
+#include <libtransmission-app/uniform-value.h>
 
-#include <libtransmission/converters.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
@@ -65,6 +65,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath> // std::llround(), std::pow()
 #include <compare>
 #include <cstddef>
 #include <cstdint>
@@ -73,12 +74,14 @@
 #include <limits>
 #include <memory>
 #include <numeric>
+#include <optional>
 #include <span>
 #include <sstream>
 #include <string>
 #include <string_view>
 #include <tuple> // std::ignore
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std::literals;
 
@@ -121,20 +124,23 @@ private:
     void onScrapeToggled();
     void onBackupToggled();
 
+    // Sets an option on every shown torrent. The Options tab holds still until
+    // the session answers, so an older fetch can't seem to undo the edit.
     template<typename T>
-    void torrent_set_field(tr_quark const key, T value)
+    void set_option(tr_quark const key, T const& value)
     {
-        auto params = tr_variant::Map{ 2U };
-        params.try_emplace(key, std::forward<T>(value));
-        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids_));
-        core_->send(TR_KEY_torrent_set, std::move(params));
+        if (auto const tag = core_->set_torrents(ids_, key, value); tag != 0) {
+            pending_option_sets_.insert(tag);
+        }
     }
+
+    void on_set_done(Session::Tag tag, Session::SetResult const& result);
 
     void refreshInfo(std::vector<tr_torrent*> const& torrents);
     void refreshPeers();
     void refreshTracker();
     void refreshFiles(std::vector<tr_torrent*> const& torrents);
-    void refreshOptions(std::vector<tr_torrent*> const& torrents);
+    void refreshOptions();
 
     void refreshPeerList(std::vector<tr::app::Torrent const*> const& torrents);
     void refreshWebseedList(std::vector<tr::app::Torrent const*> const& torrents);
@@ -174,6 +180,9 @@ private:
     sigc::connection idle_combo_tag_;
     sigc::connection idle_spin_tag_;
     sigc::connection max_peers_spin_tag_;
+
+    std::unordered_set<Session::Tag> pending_option_sets_;
+    sigslot::scoped_connection set_done_tag_;
 
     Gtk::Label* added_lb_ = nullptr;
     Gtk::Label* size_lb_ = nullptr;
@@ -257,165 +266,102 @@ void set_togglebutton_if_different(Gtk::CheckButton* toggle, sigc::connection& t
     }
 }
 
-void set_int_spin_if_different(Gtk::SpinButton* spin, sigc::connection& tag, int value)
+// compares at the precision that the spin shows
+void set_spin_if_different(Gtk::SpinButton* const spin, sigc::connection& tag, double const value)
 {
-    int const currentValue = spin->get_value_as_int();
+    auto const scale = std::pow(10.0, spin->get_digits());
 
-    if (currentValue != value) {
+    if (std::llround(spin->get_value() * scale) != std::llround(value * scale)) {
         tag.block();
         spin->set_value(value);
         tag.unblock();
     }
 }
 
-void set_double_spin_if_different(Gtk::SpinButton* spin, sigc::connection& tag, double value)
-{
-    double const currentValue = spin->get_value();
-
-    if (static_cast<int>(currentValue * 100) != static_cast<int>(value * 100)) {
-        tag.block();
-        spin->set_value(value);
-        tag.unblock();
-    }
-}
-
-void unset_combo(Gtk::ComboBox* combobox, sigc::connection& tag)
+// shows `value`, or no choice when it is nullopt
+void set_combo_enum(Gtk::ComboBox* const combobox, sigc::connection& tag, std::optional<int> const value)
 {
     tag.block();
-    combobox->set_active(-1);
+    if (value) {
+        gtr_combo_box_set_active_enum(*combobox, *value);
+    } else {
+        combobox->set_active(-1);
+    }
     tag.unblock();
 }
 
+// the fields that `refreshOptions()` shows
+constexpr auto OptionFields = tr::app::Torrent::fields<
+    TR_KEY_bandwidth_priority,
+    TR_KEY_download_limit,
+    TR_KEY_download_limited,
+    TR_KEY_honors_session_limits,
+    TR_KEY_peer_limit,
+    TR_KEY_seed_idle_limit,
+    TR_KEY_seed_idle_mode,
+    TR_KEY_seed_ratio_limit,
+    TR_KEY_seed_ratio_mode,
+    TR_KEY_upload_limit,
+    TR_KEY_upload_limited>();
+
 } // namespace
 
-void DetailsDialog::Impl::refreshOptions(std::vector<tr_torrent*> const& torrents)
+void DetailsDialog::Impl::refreshOptions()
 {
-    /***
-    ****  Options Page
-    ***/
-
-    /* honor_limits_check */
-    if (!torrents.empty()) {
-        bool const baseline = tr_torrentUsesSessionLimits(torrents.front());
-        bool const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentUsesSessionLimits(torrent);
-        });
-
-        if (is_uniform) {
-            set_togglebutton_if_different(honor_limits_check_, honor_limits_check_tag_, baseline);
-        }
+    // a pending set's re-fetch would show the edit; until then, the model has the old value
+    if (!std::empty(pending_option_sets_)) {
+        return;
     }
 
-    /* down_limited_check */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentUsesSpeedLimit(torrents.front(), tr_direction::Down);
-        auto const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentUsesSpeedLimit(torrent, tr_direction::Down);
-        });
-
-        if (is_uniform) {
-            set_togglebutton_if_different(down_limited_check_, down_limited_check_tag_, baseline);
-        }
+    auto const torrents = app_torrents();
+    if (std::empty(torrents)) {
+        return;
     }
 
-    /* down_limit_spin */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetSpeedLimit_KBps(torrents.front(), tr_direction::Down);
-        auto const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentGetSpeedLimit_KBps(torrent, tr_direction::Down);
-        });
+    // When the torrents differ, a check shows unchecked, a combo shows no choice,
+    // and a spin shows the first torrent's value; an edit applies to them all.
+    using tr::app::Torrent;
+    using tr::app::uniform_value;
+    auto const& first = *torrents.front();
 
-        if (is_uniform) {
-            set_int_spin_if_different(down_limit_spin_, down_limit_spin_tag_, static_cast<int>(baseline));
-        }
-    }
+    set_togglebutton_if_different(
+        honor_limits_check_,
+        honor_limits_check_tag_,
+        uniform_value(torrents, &Torrent::honors_session_limits).value_or(false));
 
-    /* up_limited_check */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentUsesSpeedLimit(torrents.front(), tr_direction::Up);
-        auto const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentUsesSpeedLimit(torrent, tr_direction::Up);
-        });
+    set_togglebutton_if_different(
+        down_limited_check_,
+        down_limited_check_tag_,
+        uniform_value(torrents, &Torrent::download_limited).value_or(false));
+    set_spin_if_different(down_limit_spin_, down_limit_spin_tag_, first.download_limit().count(Speed::Units::KByps));
 
-        if (is_uniform) {
-            set_togglebutton_if_different(up_limited_check_, up_limited_check_tag_, baseline);
-        }
-    }
+    set_togglebutton_if_different(
+        up_limited_check_,
+        up_limited_check_tag_,
+        uniform_value(torrents, &Torrent::upload_limited).value_or(false));
+    set_spin_if_different(up_limit_sping_, up_limit_spin_tag_, first.upload_limit().count(Speed::Units::KByps));
 
-    /* up_limit_sping */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetSpeedLimit_KBps(torrents.front(), tr_direction::Up);
-        auto const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentGetSpeedLimit_KBps(torrent, tr_direction::Up);
-        });
+    set_combo_enum(bandwidth_combo_, bandwidth_combo_tag_, uniform_value(torrents, &Torrent::bandwidth_priority));
 
-        if (is_uniform) {
-            set_int_spin_if_different(up_limit_sping_, up_limit_spin_tag_, static_cast<int>(baseline));
-        }
-    }
+    auto const ratio_mode = uniform_value(torrents, &Torrent::seed_ratio_mode);
+    set_combo_enum(ratio_combo_, ratio_combo_tag_, ratio_mode);
+    gtr_widget_set_visible(*ratio_spin_, ratio_mode == TR_RATIOLIMIT_SINGLE);
+    set_spin_if_different(ratio_spin_, ratio_spin_tag_, first.seed_ratio_limit());
 
-    /* bandwidth_combo */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetPriority(torrents.front());
-        bool const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentGetPriority(torrent);
-        });
+    auto const idle_mode = uniform_value(torrents, &Torrent::seed_idle_mode);
+    set_combo_enum(idle_combo_, idle_combo_tag_, idle_mode);
+    gtr_widget_set_visible(*idle_spin_, idle_mode == TR_IDLELIMIT_SINGLE);
+    set_spin_if_different(idle_spin_, idle_spin_tag_, first.seed_idle_limit());
 
-        if (is_uniform) {
-            bandwidth_combo_tag_.block();
-            gtr_combo_box_set_active_enum(*bandwidth_combo_, baseline);
-            bandwidth_combo_tag_.unblock();
-        } else {
-            unset_combo(bandwidth_combo_, bandwidth_combo_tag_);
-        }
-    }
+    set_spin_if_different(max_peers_spin_, max_peers_spin_tag_, first.peer_limit());
+}
 
-    /* ratio_combo */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetRatioMode(torrents.front());
-        bool const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentGetRatioMode(torrent);
-        });
-
-        if (is_uniform) {
-            ratio_combo_tag_.block();
-            gtr_combo_box_set_active_enum(*ratio_combo_, baseline);
-            gtr_widget_set_visible(*ratio_spin_, baseline == TR_RATIOLIMIT_SINGLE);
-            ratio_combo_tag_.unblock();
-        }
-    }
-
-    /* ratio_spin */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetRatioLimit(torrents.front());
-        set_double_spin_if_different(ratio_spin_, ratio_spin_tag_, baseline);
-    }
-
-    /* idle_combo */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetIdleMode(torrents.front());
-        bool const is_uniform = std::ranges::all_of(torrents, [baseline](auto const* torrent) {
-            return baseline == tr_torrentGetIdleMode(torrent);
-        });
-
-        if (is_uniform) {
-            idle_combo_tag_.block();
-            gtr_combo_box_set_active_enum(*idle_combo_, baseline);
-            gtr_widget_set_visible(*idle_spin_, baseline == TR_IDLELIMIT_SINGLE);
-            idle_combo_tag_.unblock();
-        }
-    }
-
-    /* idle_spin */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetIdleLimit(torrents.front());
-        set_int_spin_if_different(idle_spin_, idle_spin_tag_, baseline);
-    }
-
-    /* max_peers_spin */
-    if (!torrents.empty()) {
-        auto const baseline = tr_torrentGetPeerLimit(torrents.front());
-        set_int_spin_if_different(max_peers_spin_, max_peers_spin_tag_, baseline);
+void DetailsDialog::Impl::on_set_done(Session::Tag const tag, Session::SetResult const& /*result*/)
+{
+    // The session re-fetched the torrents before firing, or, if the set failed,
+    // left them as they were, which puts the session's values back in the widgets.
+    if (pending_option_sets_.erase(tag) > 0) {
+        refreshOptions();
     }
 }
 
@@ -424,29 +370,29 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
     auto const speed_units_kbyps_str = Speed::units().display_name(Speed::Units::KByps);
 
     honor_limits_check_tag_ = honor_limits_check_->signal_toggled().connect(
-        [this] { torrent_set_field(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
+        [this] { set_option(TR_KEY_honors_session_limits, honor_limits_check_->get_active()); });
 
     down_limited_check_->set_label(
         fmt::format(fmt::runtime(down_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     down_limited_check_tag_ = down_limited_check_->signal_toggled().connect(
-        [this] { torrent_set_field(TR_KEY_download_limited, down_limited_check_->get_active()); });
+        [this] { set_option(TR_KEY_download_limited, down_limited_check_->get_active()); });
 
     down_limit_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     down_limit_spin_tag_ = down_limit_spin_->signal_value_changed().connect(
-        [this] { torrent_set_field(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
+        [this] { set_option(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
 
     up_limited_check_->set_label(
         fmt::format(fmt::runtime(up_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     up_limited_check_tag_ = up_limited_check_->signal_toggled().connect(
-        [this] { torrent_set_field(TR_KEY_upload_limited, up_limited_check_->get_active()); });
+        [this] { set_option(TR_KEY_upload_limited, up_limited_check_->get_active()); });
 
     up_limit_sping_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
     up_limit_spin_tag_ = up_limit_sping_->signal_value_changed().connect(
-        [this] { torrent_set_field(TR_KEY_upload_limit, up_limit_sping_->get_value_as_int()); });
+        [this] { set_option(TR_KEY_upload_limit, up_limit_sping_->get_value_as_int()); });
 
     gtr_priority_combo_init(*bandwidth_combo_);
     bandwidth_combo_tag_ = bandwidth_combo_->signal_changed().connect(
-        [this] { torrent_set_field(TR_KEY_bandwidth_priority, gtr_combo_box_get_active_enum(*bandwidth_combo_)); });
+        [this] { set_option(TR_KEY_bandwidth_priority, gtr_combo_box_get_active_enum(*bandwidth_combo_)); });
 
     gtr_combo_box_set_enum(
         *ratio_combo_,
@@ -456,13 +402,15 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
             { _("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE },
         });
     ratio_combo_tag_ = ratio_combo_->signal_changed().connect([this] {
-        torrent_set_field(TR_KEY_seed_ratio_mode, gtr_combo_box_get_active_enum(*ratio_combo_));
-        refresh();
+        auto const mode = gtr_combo_box_get_active_enum(*ratio_combo_);
+        set_option(TR_KEY_seed_ratio_mode, mode);
+        gtr_widget_set_visible(*ratio_spin_, mode == TR_RATIOLIMIT_SINGLE);
     });
     ratio_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, 1000, .05));
+    ratio_spin_->set_digits(2);
     ratio_spin_->set_width_chars(7);
     ratio_spin_tag_ = ratio_spin_->signal_value_changed().connect(
-        [this] { torrent_set_field(TR_KEY_seed_ratio_limit, ratio_spin_->get_value()); });
+        [this] { set_option(TR_KEY_seed_ratio_limit, ratio_spin_->get_value()); });
 
     gtr_combo_box_set_enum(
         *idle_combo_,
@@ -472,16 +420,17 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
             { _("Stop seeding if idle for N minutes:"), TR_IDLELIMIT_SINGLE },
         });
     idle_combo_tag_ = idle_combo_->signal_changed().connect([this] {
-        torrent_set_field(TR_KEY_seed_idle_mode, gtr_combo_box_get_active_enum(*idle_combo_));
-        refresh();
+        auto const mode = gtr_combo_box_get_active_enum(*idle_combo_);
+        set_option(TR_KEY_seed_idle_mode, mode);
+        gtr_widget_set_visible(*idle_spin_, mode == TR_IDLELIMIT_SINGLE);
     });
     idle_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 40320, 5));
     idle_spin_tag_ = idle_spin_->signal_value_changed().connect(
-        [this] { torrent_set_field(TR_KEY_seed_idle_limit, idle_spin_->get_value_as_int()); });
+        [this] { set_option(TR_KEY_seed_idle_limit, idle_spin_->get_value_as_int()); });
 
     max_peers_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 3000, 5));
     max_peers_spin_tag_ = max_peers_spin_->signal_value_changed().connect(
-        [this] { torrent_set_field(TR_KEY_peer_limit, max_peers_spin_->get_value_as_int()); });
+        [this] { set_option(TR_KEY_peer_limit, max_peers_spin_->get_value_as_int()); });
 }
 
 /****
@@ -1951,7 +1900,7 @@ void DetailsDialog::Impl::refresh()
     refreshPeers();
     refreshTracker();
     refreshFiles(torrents);
-    refreshOptions(torrents);
+    refreshOptions();
 
     if (torrents.empty()) {
         dialog_.response(TR_GTK_RESPONSE_TYPE(CLOSE));
@@ -2064,6 +2013,8 @@ DetailsDialog::Impl::Impl(
     tracker_page_init(builder);
     options_page_init(builder);
 
+    set_done_tag_ = core_->torrent_set_done.connect_scoped(&Impl::on_set_done, this);
+
     periodic_refresh_tag_ = Glib::signal_timeout().connect_seconds(
         [this] {
             core_->refresh_torrents(ids_, tr::app::TorrentKeySet::DetailStats);
@@ -2084,6 +2035,9 @@ DetailsDialog::Impl::Impl(
             }
             if ((fields & tr::app::Torrent::fields<TR_KEY_peers, TR_KEY_webseeds_ex>()).any()) {
                 refreshPeers();
+            }
+            if ((fields & OptionFields).any()) {
+                refreshOptions();
             }
         });
 
