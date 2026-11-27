@@ -490,7 +490,7 @@ void DetailsDialog::onTorrentsChanged(std::span<tr_torrent_id_t const> const ids
     }
 }
 
-void DetailsDialog::onTorrentSetDone(tr::app::Session::Tag const tag)
+void DetailsDialog::onTorrentSetDone(tr::app::Session::Tag const tag, tr::app::Session::SetResult const& /*result*/)
 {
     // The Session re-fetched before firing. canEdit() held refreshUI() back, so start it here:
     // a set that changed nothing fires no `torrentsChanged` to do it.

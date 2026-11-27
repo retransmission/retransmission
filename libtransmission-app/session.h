@@ -313,11 +313,19 @@ public:
     // must not store it, or it waits forever.
     using Tag = uint64_t;
 
+    // How the session answered a `set_torrents()` call's `torrent_set`.
+    struct SetResult {
+        std::string errmsg; // on failure, the session's message or the transport's
+        bool success = false;
+        bool network_error = false; // the session never answered
+    };
+
     // Sends `torrent_set` with `params` for `ids` (this adds `ids` to `params`),
     // then re-fetches `DetailStats` for them, then fires `torrent_set_done` with the
-    // returned tag. A dialog that keeps the pending tags can hold its widgets steady
-    // until then: by the time the tag fires, `torrents()` holds the set's result,
-    // and a fetch that was in flight before the set can no longer appear to undo it.
+    // returned tag and the `SetResult`. A dialog that keeps the pending tags can hold
+    // its widgets steady until then: by the time the tag fires, `torrents()` holds
+    // what the set changed, and a fetch that was in flight before the set can no
+    // longer appear to undo it.
     // The tag fires on failure and network error too, without the re-fetch, and
     // never inside this call: `RpcClient::UiThreadFunc` queues every reply.
     // Sends nothing when `ids` is empty.
@@ -333,7 +341,7 @@ public:
         return set_torrents(std::move(ids), std::move(params));
     }
 
-    sigslot::signal<Tag> torrent_set_done;
+    sigslot::signal<Tag, SetResult const&> torrent_set_done;
 
     // --- session stats
 

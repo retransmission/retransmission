@@ -838,16 +838,21 @@ Session::Tag Session::set_torrents(Ids ids, tr_variant::Map params)
 
     scope->add_to(params);
     auto const tag = next_tag_++;
+    auto const result = std::make_shared<SetResult>(SetResult{ .errmsg = {}, .success = true, .network_error = false });
 
     // the re-fetch step takes the chain's `done`, so `finally` runs after its reply is applied
     RpcQueue::create()
-        .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
-            send(TR_KEY_torrent_set, std::move(params), std::move(done));
-        })
+        .add(
+            [this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+                send(TR_KEY_torrent_set, std::move(params), std::move(done));
+            },
+            [result](RpcResponse const& response) {
+                *result = SetResult{ .errmsg = response.errmsg, .success = false, .network_error = response.network_error };
+            })
         .add([this, scope = std::move(*scope)](RpcClient::ResponseFunc done) {
             fetch_torrents(TorrentKeySet::DetailStats, scope, std::move(done));
         })
-        .finally([this, tag] { torrent_set_done(tag); })
+        .finally([this, tag, result] { torrent_set_done(tag, *result); })
         .run();
 
     return tag;
