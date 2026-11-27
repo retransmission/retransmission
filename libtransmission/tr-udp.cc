@@ -143,7 +143,7 @@ auto constexpr DatagramBufferSize = size_t{ 65536U };
 
 #ifdef UDP_COALESCED_INFO
 // WSARecvMsg() is reachable only through a pointer that Winsock hands out per socket.
-// Every socket of the TCP/IP stack hands out the same one.
+// Every socket of Windows' built-in IP provider, UDP included, hands out the same one.
 LPFN_WSARECVMSG wsa_recvmsg(tr_socket_t const sock)
 {
     static auto const fn = [sock] {
@@ -176,13 +176,13 @@ void enable_receive_coalescing([[maybe_unused]] tr_socket_t const sock)
 #elif defined(UDP_COALESCED_INFO)
     // Windows before 10 version 2004 refuses the option and keeps datagrams apart.
     if (wsa_recvmsg(sock) != nullptr) {
-        DWORD const max_size = DatagramBufferSize - 1U;
+        static DWORD constexpr MaxSize = DatagramBufferSize - 1U;
         (void)setsockopt(
             sock,
             IPPROTO_UDP,
             UDP_RECV_MAX_COALESCED_SIZE,
-            reinterpret_cast<char const*>(&max_size),
-            sizeof(max_size));
+            reinterpret_cast<char const*>(&MaxSize),
+            sizeof(MaxSize));
     }
 #endif
 }
