@@ -13,6 +13,8 @@
 #include "SystemTrayIcon.h"
 #include "Utils.h"
 
+#include <libtransmission-app/option-ranges.h>
+
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 #include <libtransmission/web-utils.h>
@@ -128,18 +130,28 @@ public:
     Gtk::ComboBox* init_week_combo(Glib::ustring const& name, tr_quark key);
 
     template<typename T>
-    Gtk::SpinButton* init_spin_button(Glib::ustring const& name, tr_quark const key, T const low, T const high, T const step)
+    Gtk::SpinButton* init_spin_button(
+        Glib::ustring const& name,
+        tr_quark const key,
+        double const low,
+        double const high,
+        double const step)
     {
         auto* button = get_widget<Gtk::SpinButton>(name);
-        button->set_adjustment(
-            Gtk::Adjustment::create(
-                static_cast<double>(prefs_.get<T>(key)),
-                static_cast<double>(low),
-                static_cast<double>(high),
-                static_cast<double>(step)));
+        button->set_adjustment(Gtk::Adjustment::create(static_cast<double>(prefs_.get<T>(key)), low, high, step));
         button->set_digits(std::is_floating_point_v<T> ? 2 : 0);
         button->signal_value_changed().connect([this, button, key] { spun_cb<T>(*button, key); });
         return button;
+    }
+
+    template<typename T, typename R>
+    Gtk::SpinButton* init_spin_button(
+        Glib::ustring const& name,
+        tr_quark const key,
+        tr::app::OptionRange<R> const& range,
+        double const step)
+    {
+        return init_spin_button<T>(name, key, range.min, range.max, step);
     }
 
     [[nodiscard]] tr::app::Prefs const& prefs() const noexcept
@@ -503,9 +515,9 @@ SeedingPage::SeedingPage(
     : PageBase(cast_item, builder, core, prefs)
 {
     init_check_button("stop_seeding_ratio_check", TR_KEY_seed_ratio_limited);
-    init_spin_button<double>("stop_seeding_ratio_spin", TR_KEY_seed_ratio_limit, 0, 1000, 0.05);
+    init_spin_button<double>("stop_seeding_ratio_spin", TR_KEY_seed_ratio_limit, tr::app::SeedRatioLimitRange, 0.05);
     init_check_button("stop_seeding_timeout_check", TR_KEY_idle_seeding_limit_enabled);
-    init_spin_button<uint16_t>("stop_seeding_timeout_spin", TR_KEY_idle_seeding_limit, 1, 40320, 5);
+    init_spin_button<uint16_t>("stop_seeding_timeout_spin", TR_KEY_idle_seeding_limit, tr::app::SeedIdleLimitRange, 5);
     init_check_button("seeding_done_script_check", TR_KEY_script_torrent_done_seeding_enabled);
     init_chooser_button("seeding_done_script_chooser", TR_KEY_script_torrent_done_seeding_filename);
 }
@@ -939,18 +951,18 @@ SpeedPage::SpeedPage(
     localize_label(
         *init_check_button("upload_limit_check", TR_KEY_speed_limit_up_enabled),
         fmt::arg("speed_units", speed_units_kbyps_str));
-    init_spin_button<uint32_t>("upload_limit_spin", TR_KEY_speed_limit_up, 0, std::numeric_limits<uint32_t>::max(), 5);
+    init_spin_button<uint32_t>("upload_limit_spin", TR_KEY_speed_limit_up, tr::app::SpeedLimitRange, 5);
 
     localize_label(
         *init_check_button("download_limit_check", TR_KEY_speed_limit_down_enabled),
         fmt::arg("speed_units", speed_units_kbyps_str));
-    init_spin_button<uint32_t>("download_limit_spin", TR_KEY_speed_limit_down, 0, std::numeric_limits<uint32_t>::max(), 5);
+    init_spin_button<uint32_t>("download_limit_spin", TR_KEY_speed_limit_down, tr::app::SpeedLimitRange, 5);
 
     localize_label(*get_widget<Gtk::Label>("alt_upload_limit_label"), fmt::arg("speed_units", speed_units_kbyps_str));
-    init_spin_button<uint32_t>("alt_upload_limit_spin", TR_KEY_alt_speed_up, 0, std::numeric_limits<uint32_t>::max(), 5);
+    init_spin_button<uint32_t>("alt_upload_limit_spin", TR_KEY_alt_speed_up, tr::app::SpeedLimitRange, 5);
 
     localize_label(*get_widget<Gtk::Label>("alt_download_limit_label"), fmt::arg("speed_units", speed_units_kbyps_str));
-    init_spin_button<uint32_t>("alt_download_limit_spin", TR_KEY_alt_speed_down, 0, std::numeric_limits<uint32_t>::max(), 5);
+    init_spin_button<uint32_t>("alt_download_limit_spin", TR_KEY_alt_speed_down, tr::app::SpeedLimitRange, 5);
 
     init_time_combo("alt_speed_start_time_combo", TR_KEY_alt_speed_time_begin);
     init_time_combo("alt_speed_end_time_combo", TR_KEY_alt_speed_time_end);
@@ -1053,13 +1065,8 @@ NetworkPage::NetworkPage(
 
     init_check_button("pick_random_listening_port_at_start_check", TR_KEY_peer_port_random_on_start);
     init_check_button("enable_listening_port_forwarding_check", TR_KEY_port_forwarding_enabled);
-    init_spin_button<uint16_t>(
-        "max_torrent_peers_spin",
-        TR_KEY_peer_limit_per_torrent,
-        1,
-        std::numeric_limits<uint16_t>::max(),
-        5);
-    init_spin_button<uint16_t>("max_total_peers_spin", TR_KEY_peer_limit_global, 1, std::numeric_limits<uint16_t>::max(), 5);
+    init_spin_button<uint16_t>("max_torrent_peers_spin", TR_KEY_peer_limit_per_torrent, tr::app::PeerLimitRange, 5);
+    init_spin_button<uint16_t>("max_total_peers_spin", TR_KEY_peer_limit_global, tr::app::PeerLimitRange, 5);
 
 #ifdef WITH_UTP
     init_check_button("enable_utp_check", TR_KEY_utp_enabled);

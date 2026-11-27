@@ -15,6 +15,7 @@
 #include "Utils.h"
 
 #include <libtransmission-app/keyed-rows.h>
+#include <libtransmission-app/option-ranges.h>
 #include <libtransmission-app/peer-list.h>
 #include <libtransmission-app/torrent-keys.h>
 #include <libtransmission-app/torrent-list.h>
@@ -71,7 +72,6 @@
 #include <cstdint>
 #include <cstdlib> // abort()
 #include <iterator>
-#include <limits>
 #include <memory>
 #include <numeric>
 #include <optional>
@@ -288,6 +288,12 @@ void set_combo_enum(Gtk::ComboBox* const combobox, sigc::connection& tag, std::o
     tag.unblock();
 }
 
+template<typename T>
+[[nodiscard]] Glib::RefPtr<Gtk::Adjustment> make_adjustment(tr::app::OptionRange<T> const& range, double const step)
+{
+    return Gtk::Adjustment::create(range.min, range.min, range.max, step);
+}
+
 // the fields that `refreshOptions()` shows
 constexpr auto OptionFields = tr::app::Torrent::fields<
     TR_KEY_bandwidth_priority,
@@ -372,7 +378,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         fmt::format(fmt::runtime(down_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     down_limited_check_tag_ = bind_check(down_limited_check_, TR_KEY_download_limited);
 
-    down_limit_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
+    down_limit_spin_->set_adjustment(make_adjustment(tr::app::SpeedLimitRange, 5));
     down_limit_spin_tag_ = down_limit_spin_->signal_value_changed().connect(
         [this] { set_option(TR_KEY_download_limit, down_limit_spin_->get_value_as_int()); });
 
@@ -380,7 +386,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         fmt::format(fmt::runtime(up_limited_check_->get_label().raw()), fmt::arg("speed_units", speed_units_kbyps_str)));
     up_limited_check_tag_ = bind_check(up_limited_check_, TR_KEY_upload_limited);
 
-    up_limit_sping_->set_adjustment(Gtk::Adjustment::create(0, 0, std::numeric_limits<int>::max(), 5));
+    up_limit_sping_->set_adjustment(make_adjustment(tr::app::SpeedLimitRange, 5));
     up_limit_spin_tag_ = up_limit_sping_->signal_value_changed().connect(
         [this] { set_option(TR_KEY_upload_limit, up_limit_sping_->get_value_as_int()); });
 
@@ -400,7 +406,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         set_option(TR_KEY_seed_ratio_mode, mode);
         gtr_widget_set_visible(*ratio_spin_, mode == TR_RATIOLIMIT_SINGLE);
     });
-    ratio_spin_->set_adjustment(Gtk::Adjustment::create(0, 0, 1000, .05));
+    ratio_spin_->set_adjustment(make_adjustment(tr::app::SeedRatioLimitRange, .05));
     ratio_spin_->set_digits(2);
     ratio_spin_->set_width_chars(7);
     ratio_spin_tag_ = ratio_spin_->signal_value_changed().connect(
@@ -418,11 +424,11 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& /*
         set_option(TR_KEY_seed_idle_mode, mode);
         gtr_widget_set_visible(*idle_spin_, mode == TR_IDLELIMIT_SINGLE);
     });
-    idle_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 40320, 5));
+    idle_spin_->set_adjustment(make_adjustment(tr::app::SeedIdleLimitRange, 5));
     idle_spin_tag_ = idle_spin_->signal_value_changed().connect(
         [this] { set_option(TR_KEY_seed_idle_limit, idle_spin_->get_value_as_int()); });
 
-    max_peers_spin_->set_adjustment(Gtk::Adjustment::create(1, 1, 3000, 5));
+    max_peers_spin_->set_adjustment(make_adjustment(tr::app::PeerLimitRange, 5));
     max_peers_spin_tag_ = max_peers_spin_->signal_value_changed().connect(
         [this] { set_option(TR_KEY_peer_limit, max_peers_spin_->get_value_as_int()); });
 }

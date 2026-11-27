@@ -22,6 +22,7 @@ target_sources(${LIBNAME}
         interop.cc
         interop.h
         keyed-rows.h
+        option-ranges.h
         peer-list.cc
         peer-list.h
         prefs.cc

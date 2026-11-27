@@ -736,9 +736,6 @@
             <property name="enabled">
              <bool>false</bool>
             </property>
-            <property name="maximum">
-             <number>999999999</number>
-            </property>
             <property name="singleStep">
              <number>5</number>
             </property>
@@ -755,9 +752,6 @@
            <widget class="QSpinBox" name="singleDownSpin">
             <property name="enabled">
              <bool>false</bool>
-            </property>
-            <property name="maximum">
-             <number>999999999</number>
             </property>
             <property name="singleStep">
              <number>5</number>
@@ -803,9 +797,6 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="ratioSpin">
-              <property name="maximum">
-               <double>999999999.000000000000000</double>
-              </property>
               <property name="singleStep">
                <double>0.500000000000000</double>
               </property>
@@ -832,12 +823,6 @@
              <widget class="QSpinBox" name="idleSpin">
               <property name="suffix">
                <string notr="true"> minute(s)</string>
-              </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>40320</number>
               </property>
               <property name="singleStep">
                <number>5</number>
@@ -867,12 +852,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="peerLimitSpin">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>300</number>
-            </property>
             <property name="singleStep">
              <number>5</number>
             </property>
