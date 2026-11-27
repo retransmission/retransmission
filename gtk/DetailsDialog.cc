@@ -58,6 +58,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib> // abort()
 #include <iterator>
 #include <limits>

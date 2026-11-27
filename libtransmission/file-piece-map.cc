@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <iterator>
-#include <utility> // std::exchange()
 #include <vector>
 
 #include <small/set.hpp>

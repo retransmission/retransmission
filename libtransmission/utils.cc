@@ -17,7 +17,6 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <stdexcept> // std::runtime_error
 #include <string>
 #include <string_view>
 #include <system_error>

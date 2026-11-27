@@ -21,7 +21,6 @@
 #include "libtransmission/converters.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
-#include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" /* pex */
 #include "libtransmission/quark.h"

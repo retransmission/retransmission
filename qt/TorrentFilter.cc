@@ -6,7 +6,6 @@
 #include "TorrentFilter.h"
 
 #include <compare>
-#include <string>
 #include <string_view>
 
 #include <QtCore/QString>

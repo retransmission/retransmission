@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <libtransmission-app/prefs.h>
+#include <libtransmission-app/prefs.h> // IWYU pragma: export
 
 #include <libtransmission/converters.h>
 

@@ -7,7 +7,6 @@
 #include <iterator> // for std::back_inserter
 
 #ifndef _WIN32
-#include <cerrno>
 #include <sys/stat.h>
 #endif
 
