@@ -180,10 +180,14 @@ private:
         return &perm;
     }
 
+    // a member function so tests can specialize it
+    [[nodiscard]] static constexpr std::chrono::seconds fetch_timeout() noexcept
+    {
+        return std::chrono::seconds{ 15 };
+    }
+
     void fetch_waiting()
     {
-        static auto constexpr TimeoutSecs = std::chrono::seconds{ 15 };
-
         while (!std::empty(waiting_) && n_fetches_ < tr_web::MaxTotalConnections) {
             auto fetch = std::move(waiting_.front());
             waiting_.pop_front();
@@ -201,7 +205,7 @@ private:
                         }
                     });
                 };
-            web_->fetch({ std::move(fetch.url), std::move(on_fetch_response), nullptr, TimeoutSecs });
+            web_->fetch({ std::move(fetch.url), std::move(on_fetch_response), nullptr, fetch_timeout() });
         }
     }
 
@@ -237,6 +241,8 @@ private:
     std::map<std::string /*sitename*/, Icon, std::less<>> icons_;
 
     std::map<std::string /*sitename*/, InFlight, std::less<>> in_flight_;
+    // Fetches wait here for a free tr_web connection.
+    // Waiting in curl's queue instead would spend their timeout.
     std::deque<WaitingFetch> waiting_;
     size_t n_fetches_ = 0; // in tr_web, including those of answered sites
 
