@@ -217,6 +217,40 @@ TEST_F(FaviconCacheTest, callbackRunsOnUiThreadWhenNoIconFound)
     EXPECT_FALSE(got_icon);
 }
 
+TEST_F(FaviconCacheTest, loadWhileFetchingWaitsForTheAnswer)
+{
+    // two trackers on one site
+    static auto constexpr Urls = std::array{ AnnounceUrl, "udp://127.0.0.1:80/announce"sv };
+
+    auto const ui_thread_id = std::this_thread::get_id();
+    auto n_calls = std::array<int, std::size(Urls)>{};
+    auto callback_thread_ids = std::array<std::thread::id, std::size(Urls)>{};
+    auto got_icon = std::array<bool, std::size(Urls)>{};
+
+    auto cache = tr::app::FaviconCache<TestIcon>{};
+    for (size_t i = 0; i < std::size(Urls); ++i) {
+        cache.load(Urls[i], [&, i](TestIcon const* const icon) {
+            ++n_calls[i];
+            callback_thread_ids[i] = std::this_thread::get_id();
+            got_icon[i] = icon != nullptr;
+        });
+    }
+
+    // no fetch has been answered yet
+    EXPECT_EQ(decltype(n_calls){}, n_calls);
+
+    EXPECT_TRUE(ui_queue_.run_until([&n_calls] { return std::ranges::count(n_calls, 0) == 0; }, 30s));
+    ui_queue_.close();
+
+    auto expected_calls = decltype(n_calls){};
+    expected_calls.fill(1);
+    EXPECT_EQ(expected_calls, n_calls);
+    auto expected_thread_ids = decltype(callback_thread_ids){};
+    expected_thread_ids.fill(ui_thread_id);
+    EXPECT_EQ(expected_thread_ids, callback_thread_ids);
+    EXPECT_EQ(decltype(got_icon){}, got_icon);
+}
+
 TEST_F(FaviconCacheTest, destroyWhileFetching)
 {
     auto n_calls = 0;
