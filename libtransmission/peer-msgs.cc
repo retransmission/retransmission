@@ -133,6 +133,21 @@ auto constexpr Ltep = uint8_t{ 20 };
     }
 }
 
+// messages that only a peer that advertised BEP 6 support may send
+[[nodiscard]] constexpr bool needs_fext(uint8_t const type) noexcept
+{
+    switch (type) {
+    case FextSuggest:
+    case FextHaveAll:
+    case FextHaveNone:
+    case FextReject:
+    case FextAllowedFast:
+        return true;
+    default:
+        return false;
+    }
+}
+
 } // namespace BtPeerMsgs
 
 namespace LtepMessages
@@ -203,6 +218,16 @@ struct peer_request {
     [[nodiscard]] auto constexpr operator==(peer_request const& that) const noexcept
     {
         return this->index == that.index && this->offset == that.offset && this->length == that.length;
+    }
+
+    // <index><begin><length>, the payload of Request, Cancel and FextReject
+    [[nodiscard]] static auto from_payload(MessageReader& payload)
+    {
+        auto req = peer_request{};
+        req.index = payload.to_uint32();
+        req.offset = payload.to_uint32();
+        req.length = payload.to_uint32();
+        return req;
     }
 
     [[nodiscard]] static auto from_block(tr_torrent const& tor, tr_block_index_t block) noexcept
@@ -762,6 +787,14 @@ private:
     {
         if (callback_ != nullptr) {
             (*callback_)(this, peer_event, callback_data_);
+        }
+    }
+
+    // Call before changing `have_`: the handler reads has().
+    void publish_stale_bitfield()
+    {
+        if (!have_.has_none()) {
+            publish(tr_peer_event::StaleBitfield(&have_));
         }
     }
 
@@ -1531,11 +1564,9 @@ void tr_peerMsgsImpl::parse_ut_metadata(MessageReader& payload_in)
 
 // ---
 
-ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payload)
+ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t const id, MessageReader& payload)
 {
     bool const fext = io_->supports_fext();
-
-    auto ui32 = uint32_t{};
 
     logtrace(
         this,
@@ -1547,9 +1578,18 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     TR_ASSERT(is_message_length_correct(tor_, id, sizeof(id) + std::size(payload)));
 
+    if (BtPeerMsgs::needs_fext(id) && !fext) {
+        logdbg(
+            this,
+            fmt::format(
+                "got a '{:s}' message, but peer did not indicate fast extensions support, disconnecting",
+                BtPeerMsgs::debug_name(id)));
+        disconnect_soon();
+        return { ReadState::Err, {} };
+    }
+
     switch (id) {
     case BtPeerMsgs::Choke:
-        logtrace(this, "got Choke");
         set_client_choked(true);
 
         if (!fext) {
@@ -1563,7 +1603,6 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         break;
 
     case BtPeerMsgs::Unchoke:
-        logtrace(this, "got Unchoke");
         set_client_choked(false);
         update_active(tr_direction::PeerToClient);
         update_desired_request_count();
@@ -1571,7 +1610,6 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         break;
 
     case BtPeerMsgs::Interested:
-        logtrace(this, "got Interested");
         if (!peer_is_interested()) {
             set_peer_interested(true);
             update_active(tr_direction::ClientToPeer);
@@ -1580,39 +1618,39 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         break;
 
     case BtPeerMsgs::NotInterested:
-        logtrace(this, "got Not Interested");
         set_peer_interested(false);
         update_active(tr_direction::ClientToPeer);
         break;
 
     case BtPeerMsgs::Have:
-        ui32 = payload.to_uint32();
-        logtrace(this, fmt::format("got Have: {:d}", ui32));
+        {
+            auto const piece = payload.to_uint32();
+            logtrace(this, fmt::format("got Have: {:d}", piece));
 
-        if (tor_.has_metainfo() && ui32 >= tor_.piece_count()) {
-            logdbg(this, fmt::format("got Have: {} but torrent only has {} pieces, disconnecting", ui32, tor_.piece_count()));
-            disconnect_soon();
-            return { ReadState::Err, {} };
+            if (tor_.has_metainfo() && piece >= tor_.piece_count()) {
+                logdbg(
+                    this,
+                    fmt::format("got Have: {} but torrent only has {} pieces, disconnecting", piece, tor_.piece_count()));
+                disconnect_soon();
+                return { ReadState::Err, {} };
+            }
+
+            /* a peer can send the same HAVE message twice... */
+            if (!have_.test(piece)) {
+                have_.set(piece);
+                peer_info->set_seed(is_seed());
+                publish(tr_peer_event::GotHave(piece));
+
+                // make sure this is after publishing event, so that the wishlist
+                // will have the latest info when choosing blocks to request
+                maybe_send_block_requests();
+            }
+
+            break;
         }
-
-        /* a peer can send the same HAVE message twice... */
-        if (!have_.test(ui32)) {
-            have_.set(ui32);
-            peer_info->set_seed(is_seed());
-            publish(tr_peer_event::GotHave(ui32));
-
-            // make sure this is after publishing event, so that the wishlist
-            // will have the latest info when choosing blocks to request
-            maybe_send_block_requests();
-        }
-
-        break;
 
     case BtPeerMsgs::Bitfield:
-        logtrace(this, "got a bitfield");
-        if (!have_.has_none()) {
-            publish(tr_peer_event::StaleBitfield(&have_));
-        }
+        publish_stale_bitfield();
         have_ = tr_bitfield{ tor_.has_metainfo() ? tor_.piece_count() : std::size(payload) * 8 };
         {
             [[maybe_unused]] auto const set_raw_res = have_.set_raw(payload);
@@ -1629,24 +1667,17 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     case BtPeerMsgs::Request:
         {
-            struct peer_request r;
-            r.index = payload.to_uint32();
-            r.offset = payload.to_uint32();
-            r.length = payload.to_uint32();
-            logtrace(this, fmt::format("got Request: {:d}:{:d}->{:d}", r.index, r.offset, r.length));
-            on_peer_made_request(r);
+            auto const req = peer_request::from_payload(payload);
+            logtrace(this, fmt::format("got Request: {:d}:{:d}->{:d}", req.index, req.offset, req.length));
+            on_peer_made_request(req);
             break;
         }
 
     case BtPeerMsgs::Cancel:
         {
-            struct peer_request r;
-            r.index = payload.to_uint32();
-            r.offset = payload.to_uint32();
-            r.length = payload.to_uint32();
-            logtrace(this, fmt::format("got a Cancel {:d}:{:d}->{:d}", r.index, r.offset, r.length));
-
-            on_peer_cancelled_request(r);
+            auto const req = peer_request::from_payload(payload);
+            logtrace(this, fmt::format("got a Cancel {:d}:{:d}->{:d}", req.index, req.offset, req.length));
+            on_peer_cancelled_request(req);
             break;
         }
 
@@ -1660,113 +1691,55 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         // indicating the remote peer supports the DHT should send a PORT message.
         // It begins with byte 0x09 and has a two byte payload containing the UDP
         // port of the DHT node in network byte order.
-        {
-            logtrace(this, "Got a BtPeerMsgs::DhtPort");
-
-            auto const hport = payload.to_uint16();
-            if (auto const dht_port = tr_port::from_host(hport); !std::empty(dht_port)) {
-                session->maybe_add_dht_node(io_->address(), dht_port);
-            }
+        if (auto const dht_port = tr_port::from_host(payload.to_uint16()); !std::empty(dht_port)) {
+            session->maybe_add_dht_node(io_->address(), dht_port);
         }
         break;
 
     case BtPeerMsgs::FextSuggest:
-        logtrace(this, "Got a BtPeerMsgs::FextSuggest");
-
-        if (fext) {
-            auto const piece = payload.to_uint32();
-            publish(tr_peer_event::GotSuggest(piece));
-        } else {
-            logdbg(this, "got a FextSuggest message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
-            return { ReadState::Err, {} };
-        }
-
+        publish(tr_peer_event::GotSuggest(payload.to_uint32()));
         break;
 
     case BtPeerMsgs::FextAllowedFast:
-        logtrace(this, "Got a BtPeerMsgs::FextAllowedFast");
-
-        if (fext) {
-            auto const piece = payload.to_uint32();
-            publish(tr_peer_event::GotAllowedFast(piece));
-        } else {
-            logdbg(this, "got a FextAllowedFast message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
-            return { ReadState::Err, {} };
-        }
-
+        publish(tr_peer_event::GotAllowedFast(payload.to_uint32()));
         break;
 
     case BtPeerMsgs::FextHaveAll:
-        logtrace(this, "Got a BtPeerMsgs::FextHaveAll");
+        publish_stale_bitfield();
+        have_.set_has_all();
+        peer_info->set_seed();
+        publish(tr_peer_event::GotHaveAll());
 
-        if (fext) {
-            if (!have_.has_none()) {
-                publish(tr_peer_event::StaleBitfield(&have_));
-            }
-            have_.set_has_all();
-            peer_info->set_seed();
-            publish(tr_peer_event::GotHaveAll());
-
-            // make sure these are after publishing event, so that the wishlist
-            // will have the latest info when choosing blocks to request
-            update_desired_request_count();
-            maybe_send_block_requests();
-        } else {
-            logdbg(this, "got a FextHaveAll message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
-            return { ReadState::Err, {} };
-        }
-
+        // make sure these are after publishing event, so that the wishlist
+        // will have the latest info when choosing blocks to request
+        update_desired_request_count();
+        maybe_send_block_requests();
         break;
 
     case BtPeerMsgs::FextHaveNone:
-        logtrace(this, "Got a BtPeerMsgs::FextHaveNone");
-
-        if (fext) {
-            if (!have_.has_none()) {
-                publish(tr_peer_event::StaleBitfield(&have_));
-            }
-            have_.set_has_none();
-            peer_info->set_seed(false);
-            publish(tr_peer_event::GotHaveNone());
-        } else {
-            logdbg(this, "got a FextHaveNone message, but peer did not indicate fast extensions support, disconnecting");
-            disconnect_soon();
-            return { ReadState::Err, {} };
-        }
-
+        publish_stale_bitfield();
+        have_.set_has_none();
+        peer_info->set_seed(false);
+        publish(tr_peer_event::GotHaveNone());
         break;
 
     case BtPeerMsgs::FextReject:
         {
-            struct peer_request r;
-            r.index = payload.to_uint32();
-            r.offset = payload.to_uint32();
-            r.length = payload.to_uint32();
+            auto const req = peer_request::from_payload(payload);
+            if (auto const block = tor_.piece_loc(req.index, req.offset).block; active_requests().test(block)) {
+                unset_active_request(block);
 
-            if (fext) {
-                if (auto const block = tor_.piece_loc(r.index, r.offset).block; active_requests().test(block)) {
-                    unset_active_request(block);
+                // Make sure maybe_send_block_requests() is called before removing the request
+                // from the wishlist, so that it will choose a block other than the rejected block.
+                maybe_send_block_requests();
 
-                    // Make sure maybe_send_block_requests() is called before removing the request
-                    // from the wishlist, so that it will choose a block other than the rejected block.
-                    maybe_send_block_requests();
-
-                    publish(tr_peer_event::GotRejected(tor_.block_info(), block));
-                }
-            } else {
-                logdbg(this, "got a FextReject message, but peer did not indicate fast extensions support, disconnecting");
-                disconnect_soon();
-                return { ReadState::Err, {} };
+                publish(tr_peer_event::GotRejected(tor_.block_info(), block));
             }
 
             break;
         }
 
     case BtPeerMsgs::Ltep:
-        logtrace(this, "Got a BtPeerMsgs::Ltep");
         parse_ltep(payload);
         break;
 
