@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::clamp, std::min
 #include <cstdint>
 #include <ranges>
 #include <utility>
@@ -44,16 +45,24 @@ namespace
 [[nodiscard]] size_t get_desired_output_buffer_size(tr_peerIo const* io, uint64_t now)
 {
     // this is all kind of arbitrary, but what seems to work well is
-    // being large enough to hold the next 20 seconds' worth of input,
-    // or a few blocks, whichever is bigger. OK to tweak this as needed.
+    // being large enough to hold the next 15 seconds' worth of output,
+    // within the bounds below. OK to tweak this as needed.
     static auto constexpr PeriodSecs = uint64_t{ 15U };
 
     // the 3 is an arbitrary number of blocks;
     // the .5 is to leave room for protocol messages
     static auto constexpr Floor = static_cast<uint64_t>(TrBlockSize * 3.5);
 
+    // A fast peer keeps thousands of requests queued, and the disk can
+    // answer them faster than the socket takes the answers. Past this
+    // size they wait as requests, a few bytes each, not as blocks.
+    // A request from the peer refills the buffer. After the peer's last
+    // request only the peer manager's pulse does, so the rest of its
+    // queue leaves at this much per pulse.
+    static auto constexpr Ceil = uint64_t{ 8U * 1024U * 1024U };
+
     auto const current_speed = io->get_piece_speed(now, tr_direction::Up);
-    return std::max(Floor, current_speed.base_quantity() * PeriodSecs);
+    return std::clamp(current_speed.base_quantity() * PeriodSecs, Floor, Ceil);
 }
 } // namespace
 
