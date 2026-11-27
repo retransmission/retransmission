@@ -1672,15 +1672,15 @@ tr_torrent* DetailsDialog::Impl::tracker_list_get_current_torrent() const
 namespace
 {
 
-void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* pixbuf, Gtk::TreeRowReference& reference)
+void favicon_ready_cb(Glib::RefPtr<Gdk::Pixbuf> const* const pixbuf, Gtk::TreeRowReference& reference)
 {
-    if (pixbuf != nullptr && *pixbuf != nullptr) {
-        auto const path = reference.get_path();
-        auto const model = reference.get_model();
+    // invalid if the tracker's row was removed before the icon arrived
+    if (pixbuf == nullptr || *pixbuf == nullptr || !reference.is_valid()) {
+        return;
+    }
 
-        if (auto const iter = model->get_iter(path); iter) {
-            (*iter)[tracker_cols.favicon] = *pixbuf;
-        }
+    if (auto const iter = reference.get_model()->get_iter(reference.get_path()); iter) {
+        (*iter)[tracker_cols.favicon] = *pixbuf;
     }
 }
 
