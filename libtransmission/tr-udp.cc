@@ -462,9 +462,9 @@ public:
             // sendmmsg() reports an error only for the first message
             auto const error_code = errno;
             if (message_ends_[0] - next > 1U && is_gso_error(error_code)) {
-                // The refusal is about the route, such as an MTU below the segment size, so it
-                // holds for this address; sent unsegmented, an oversized datagram is fragmented instead.
-                refuse_gso(next);
+                // Rebuilt without segmentation, these datagrams go out on the next try;
+                // the kernel fragments an oversized one.
+                refuse_gso(next, error_code);
                 tr_logAddDebug(fmt::format("UDP segmentation offload refused: {}", tr_strerror(error_code)));
                 continue;
             }
@@ -486,8 +486,17 @@ private:
         return error_code == EMSGSIZE || error_code == EIO || error_code == EINVAL;
     }
 
-    void refuse_gso(size_t const datagram)
+    // EMSGSIZE and EINVAL: the segment size exceeds the MTU towards this address, so segmentation
+    // stops for it. EIO: the route cannot offload segmentation at any size, as over IPsec; a socket's
+    // peers mostly share one route, so segmentation stops for the socket.
+    void refuse_gso(size_t const datagram, [[maybe_unused]] int const error_code)
     {
+#ifdef UDP_SEGMENT
+        if (error_code == EIO) {
+            use_gso_ = false;
+            return;
+        }
+#endif
         auto& refused = gso_refused_[n_gso_refused_++ % std::size(gso_refused_)];
         refused.tolen = datagrams_[datagram].tolen;
         std::memcpy(&refused.to, &datagrams_[datagram].to, refused.tolen);
