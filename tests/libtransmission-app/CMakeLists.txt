@@ -21,6 +21,7 @@ target_sources(libtransmission-app-test
 		torrent-list-test.cc
 		torrent-sort-test.cc
 		torrent-test.cc
+		tracker-status-test.cc
 		trash-test.cc
 		watch-dir-test.cc)
 

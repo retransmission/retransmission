@@ -5,12 +5,19 @@
 
 #pragma once
 
+#include <ctime> // time_t
+
 #include <QtWidgets/QItemDelegate>
 
 class QStyle;
 
 class Session;
 struct TrackerInfo;
+
+namespace tr::app
+{
+struct TrackerStatusLine;
+} // namespace tr::app
 
 class TrackerDelegate : public QItemDelegate
 {
@@ -40,5 +47,7 @@ protected:
     void drawTracker(QPainter* painter, QStyleOptionViewItem const& option, TrackerInfo const& info) const;
 
 private:
+    [[nodiscard]] static QString getLineText(tr::app::TrackerStatusLine const& line, time_t now);
+
     bool show_more_ = false;
 };

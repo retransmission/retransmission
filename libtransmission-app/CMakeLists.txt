@@ -42,6 +42,8 @@ target_sources(${LIBNAME}
         torrent-sort.h
         torrent.cc
         torrent.h
+        tracker-status.cc
+        tracker-status.h
         trash.cc
         trash.h
         watch-dir.cc
