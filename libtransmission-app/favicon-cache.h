@@ -17,6 +17,7 @@
 #include <mutex>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -58,6 +59,12 @@ public:
             return;
         }
 
+        // If it's being fetched, wait for that answer.
+        if (auto const iter = in_flight_.find(url->sitename); iter != std::end(in_flight_)) {
+            iter->second.callbacks.emplace_back(std::move(callback));
+            return;
+        }
+
         // If we already have it, use it.
         if (auto const* const icon = find(url->sitename); icon != nullptr) {
             callback(icon);
@@ -78,7 +85,7 @@ public:
         }
 
         auto& site = in_flight_[sitename];
-        site.callback = std::move(callback);
+        site.callbacks.emplace_back(std::move(callback));
         for (auto i = 0; i < n_ports; ++i) {
             for (auto const* const scheme : { "http", "https" }) {
                 for (auto const* const suffix : { "ico", "png", "gif", "jpg" }) {
@@ -103,7 +110,7 @@ public:
 
 private:
     struct InFlight {
-        IconFunc callback;
+        std::vector<IconFunc> callbacks;
         size_t n_unanswered = {};
     };
 
@@ -202,7 +209,7 @@ private:
     {
         --n_fetches_;
 
-        auto notify = IconFunc{};
+        auto callbacks = std::vector<IconFunc>{};
         Icon const* icon = nullptr;
         if (auto const iter = in_flight_.find(sitename); iter != std::end(in_flight_)) { // not yet answered
             auto& site = iter->second;
@@ -210,15 +217,15 @@ private:
             icon = cache_icon(sitename, contents, code);
             if (icon != nullptr || site.n_unanswered == 0U) {
                 mark_site_as_scraped(sitename);
-                notify = std::move(site.callback);
+                callbacks = std::move(site.callbacks);
                 in_flight_.erase(iter);
             }
         }
 
         fetch_waiting();
 
-        if (notify) {
-            notify(icon);
+        for (auto const& callback : callbacks) {
+            callback(icon);
         }
     }
 
