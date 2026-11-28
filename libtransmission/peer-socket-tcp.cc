@@ -173,11 +173,13 @@ public:
             set_congestion_control(sock, algo.c_str());
         }
 
+        // Persistent, so a busy socket stays registered with the event loop between reads.
+        // set_read_enabled(false) is what stops polling.
         event_read_.reset(
             tr::evhelpers::event_new_pri2(
                 session.event_base(),
                 static_cast<evutil_socket_t>(sock_),
-                EV_READ,
+                EV_READ | EV_PERSIST,
                 event_read_cb,
                 this));
 
@@ -376,7 +378,12 @@ private:
 
         TR_ASSERT(std::cmp_equal(s->sock_, fd));
 
-        s->is_read_enabled_ = false;
+        // With nobody to drain the socket, the persistent event would fire on every loop.
+        if (!s->read_cb_) {
+            s->set_read_enabled(false);
+            return;
+        }
+
         s->read_cb();
     }
 
