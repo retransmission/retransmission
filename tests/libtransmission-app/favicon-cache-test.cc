@@ -13,6 +13,7 @@
 #include <future>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -22,8 +23,14 @@
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/net.h>
+#include <libtransmission/types.h> // tr_port
+#include <libtransmission/utils.h> // tr_lib_init()
+#include <libtransmission/web.h> // tr_web::MaxTotalConnections
+
 #include "libtransmission-app/favicon-cache.h"
 
+#include "../libtransmission/loopback-server.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -31,11 +38,13 @@ using namespace std::literals;
 namespace
 {
 
-// never decodes, so no fetch finds an icon
+// any data decodes to an icon; a default-constructed one is the no-icon placeholder
 struct TestIcon {
+    bool decoded = false;
+
     explicit constexpr operator bool() const noexcept
     {
-        return false;
+        return decoded;
     }
 };
 
@@ -160,6 +169,48 @@ protected:
 // nothing listens there, so every fetch fails fast
 auto constexpr AnnounceUrl = "http://127.0.0.1:80/announce"sv;
 
+// Never accepts a connection, so its fetches hang until they time out.
+// The kernel still completes each handshake, so each fetch holds a connection.
+class SilentServer
+{
+public:
+    explicit SilentServer(tr_address const& address)
+        : fd_{ tr_netBindTCP(address, {}, true) }
+    {
+    }
+
+    SilentServer(SilentServer const&) = delete;
+    SilentServer(SilentServer&&) = delete;
+    SilentServer& operator=(SilentServer const&) = delete;
+    SilentServer& operator=(SilentServer&&) = delete;
+
+    ~SilentServer()
+    {
+        if (is_valid_socket(fd_)) {
+            tr_net_close_socket(fd_);
+        }
+    }
+
+    [[nodiscard]] std::optional<tr_port> port() const
+    {
+        auto ss = sockaddr_storage{};
+        auto sslen = socklen_t{ sizeof(ss) };
+        if (!is_valid_socket(fd_) || getsockname(fd_, reinterpret_cast<sockaddr*>(&ss), &sslen) != 0) {
+            return {};
+        }
+
+        auto const socket_address = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr const*>(&ss));
+        if (!socket_address) {
+            return {};
+        }
+
+        return socket_address->port();
+    }
+
+private:
+    tr_socket_t const fd_;
+};
+
 } // namespace
 
 namespace tr::app
@@ -168,13 +219,13 @@ namespace tr::app
 template<>
 TestIcon FaviconCache<TestIcon>::create_from_file(std::string_view /*filename*/) const
 {
-    return {};
+    return { .decoded = true };
 }
 
 template<>
 TestIcon FaviconCache<TestIcon>::create_from_data(void const* /*data*/, size_t /*datalen*/) const
 {
-    return {};
+    return { .decoded = true };
 }
 
 template<>
@@ -187,6 +238,13 @@ template<>
 void FaviconCache<TestIcon>::add_to_ui_thread(std::function<void()> idlefunc)
 {
     g_ui_queue->post(std::move(idlefunc));
+}
+
+// keeps tests with hanging fetches short
+template<>
+constexpr std::chrono::seconds FaviconCache<TestIcon>::fetch_timeout() noexcept
+{
+    return std::chrono::seconds{ 1 };
 }
 
 } // namespace tr::app
@@ -311,5 +369,47 @@ TEST_F(FaviconCacheTest, sitesQueuedForAConnectionAreAnswered)
     auto expected = decltype(n_calls){};
     expected.fill(1);
     EXPECT_EQ(expected, n_calls);
+#endif
+}
+
+TEST_F(FaviconCacheTest, fetchesWaitingForAConnectionKeepTheirTimeout)
+{
+#if !defined(__linux__) && !defined(_WIN32)
+    GTEST_SKIP() << "127.0.0.2 and up are not loopback addresses here";
+#else
+    tr_lib_init(); // sockets need it on Windows
+
+    auto answered = false;
+    auto got_icon = false;
+
+    // Each silent site holds 8 connections until they time out:
+    // http and https, 4 suffixes each, on its port. Port 80 refuses at once.
+    // Together they take every connection that tr_web allows.
+    static auto constexpr NumSilentSites = tr_web::MaxTotalConnections / 8U;
+    auto silent_servers = std::deque<SilentServer>{};
+    auto cache = tr::app::FaviconCache<TestIcon>{};
+    for (size_t i = 0; i < NumSilentSites; ++i) {
+        auto const host = fmt::format("127.0.0.{:d}", i + 2U);
+        auto const port = silent_servers.emplace_back(*tr_address::from_string(host)).port();
+        ASSERT_TRUE(port);
+        cache.load(fmt::format("http://{:s}:{:d}/announce", host, port->host()), [](TestIcon const* /*icon*/) {});
+    }
+
+    // This site's fetches wait for the silent ones to time out.
+    // A fetch that waited in curl's queue would time out before this 200 ms reply.
+    auto server = tr::test::LoopbackServer::create();
+    ASSERT_TRUE(server);
+    server->setHandler([](evhttp_request* const req) {
+        std::this_thread::sleep_for(200ms);
+        tr::test::LoopbackServer::reply(req, HTTP_OK, "OK", "icon"sv);
+    });
+    cache.load(server->url("/announce"), [&](TestIcon const* const icon) {
+        answered = true;
+        got_icon = icon != nullptr;
+    });
+
+    EXPECT_TRUE(ui_queue_.run_until([&answered] { return answered; }, 30s));
+    EXPECT_TRUE(got_icon);
+    ui_queue_.close();
 #endif
 }
