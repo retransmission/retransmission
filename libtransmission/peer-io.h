@@ -114,6 +114,9 @@ public:
 
     void set_enabled(tr_direction dir, bool is_enabled);
 
+    // Wake for reading only once this many bytes are waiting. 1 wakes for any data.
+    void set_read_low_watermark(size_t n_bytes);
+
     // Reads are on when we have bandwidth to spend and room to put the
     // bytes. Leaving them on without both spins the event loop, because
     // the socket stays readable either way.
