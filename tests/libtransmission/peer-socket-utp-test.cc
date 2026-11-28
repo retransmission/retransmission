@@ -428,7 +428,7 @@ TEST_F(UtpUdpMtuTest, routeMtuOfLoopback)
     EXPECT_FALSE(route_mtu("::1").has_value());
 
     // the systems tr_utp_route_mtu() has a lookup for
-#if (defined(__linux__) && defined(IP_MTU)) || defined(__APPLE__) || defined(__FreeBSD__)
+#if ((defined(__linux__) || defined(_WIN32)) && defined(IP_MTU)) || defined(__APPLE__) || defined(__FreeBSD__)
     auto const mtu = route_mtu("127.0.0.1");
     ASSERT_TRUE(mtu.has_value());
     // loopback is at least as wide as the IPv6 minimum

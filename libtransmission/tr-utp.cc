@@ -12,7 +12,6 @@
 #ifdef __linux__
 #include <netinet/in.h> // IP_MTU
 #include <sys/socket.h>
-#include <unistd.h> // close()
 #elif defined(__APPLE__) || defined(__FreeBSD__)
 #include <cstring> // std::memcpy
 #include <net/if.h> // if_indextoname(), ifreq
@@ -95,20 +94,23 @@ std::optional<size_t> tr_utp_route_mtu(
         return {};
     }
 
-#if defined(__linux__) && defined(IP_MTU)
+#if (defined(__linux__) || defined(_WIN32)) && defined(IP_MTU)
+    // Windows has IP_MTU since Windows 10 version 1703; before that getsockopt() fails.
     // Connecting a UDP socket sends nothing; it only looks up the route.
-    auto const fd = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
-    if (fd < 0) {
+    auto const sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (!is_valid_socket(sock)) {
         return {};
     }
 
-    auto mtu = int{};
+    // A DWORD on Windows and an int on Linux: 4 bytes either way.
+    auto mtu = uint32_t{};
     auto mtu_len = socklen_t{ sizeof(mtu) };
+    auto* const mtu_buf = reinterpret_cast<char*>(&mtu);
     // Bound like µTP's socket, so that source-based routing (Linux `ip rule from`) picks the same route.
-    auto const ok = bind(fd, from, fromlen) == 0 && connect(fd, to, tolen) == 0 &&
-        getsockopt(fd, IPPROTO_IP, IP_MTU, &mtu, &mtu_len) == 0;
-    close(fd);
-    return ok && mtu > 0 ? std::optional{ static_cast<size_t>(mtu) } : std::nullopt;
+    auto const ok = bind(sock, from, fromlen) == 0 && connect(sock, to, tolen) == 0 &&
+        getsockopt(sock, IPPROTO_IP, IP_MTU, mtu_buf, &mtu_len) == 0;
+    tr_net_close_socket(sock);
+    return ok && mtu > 0U ? std::optional{ static_cast<size_t>(mtu) } : std::nullopt;
 #elif defined(__APPLE__) || defined(__FreeBSD__)
     // No IP_MTU here: ask the routing table, which holds an MTU per route (the interface's,
     // unless the route sets its own).
