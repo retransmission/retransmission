@@ -5,12 +5,14 @@
 
 #ifdef WITH_UTP
 
+#include <algorithm>
 #include <array>
 #include <cerrno> // ENOBUFS
 #include <cstddef> // size_t, std::byte
 #include <cstdint> // SIZE_MAX
 #include <deque>
 #include <memory>
+#include <optional>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -29,6 +31,7 @@
 #include <libtransmission/net.h>
 #include <libtransmission/peer-socket-utp.h>
 #include <libtransmission/peer-socket.h>
+#include <libtransmission/tr-utp.h>
 
 #include "fake-timer.h"
 
@@ -52,6 +55,8 @@ protected:
         PeerSocketUtpTest* test = nullptr;
         std::deque<std::vector<std::byte>> inbox;
         size_t n_received = 0;
+        size_t largest_sent = 0; // bytes of UDP payload
+        size_t n_dropped = 0; // datagrams too large for path_mtu
     };
 
     void SetUp() override
@@ -148,7 +153,17 @@ protected:
         return n_read;
     }
 
+    // Gives the path an IP MTU: larger datagrams are dropped, as on a route that refuses to fragment.
+    // The sender's libutp asks tr_utp_udp_mtu() for its packet size, as the session's does, and
+    // learns the route's MTU as a session would from the kernel.
+    void setPathMtu(size_t const mtu)
+    {
+        path_mtu_ = mtu;
+        utp_set_callback(sender_.ctx, UTP_GET_UDP_MTU, onGetUdpMtu);
+    }
+
     static constexpr auto ReceiveWindow = 64 * 1024;
+    static constexpr auto Ipv4UdpHeaders = size_t{ 28 };
 
     Endpoint sender_;
     Endpoint receiver_;
@@ -158,14 +173,27 @@ protected:
     FakeTimerMaker timer_maker_;
     std::array<std::byte, 1024> chunk_ = {};
     uint64_t now_msec_ = 1000;
+    std::optional<size_t> path_mtu_;
 
 private:
     static uint64 onSendto(utp_callback_arguments* const args)
     {
-        auto const* const self = static_cast<Endpoint*>(utp_context_get_userdata(args->context));
+        auto* const self = static_cast<Endpoint*>(utp_context_get_userdata(args->context));
+        self->largest_sent = std::max(self->largest_sent, args->len);
+        if (auto const& mtu = self->test->path_mtu_; mtu && args->len + Ipv4UdpHeaders > *mtu) {
+            ++self->n_dropped;
+            return 0;
+        }
         auto const* const bytes = reinterpret_cast<std::byte const*>(args->buf);
         self->peer->inbox.emplace_back(bytes, bytes + args->len);
         return 0;
+    }
+
+    static uint64 onGetUdpMtu(utp_callback_arguments* const args)
+    {
+        auto const* const self = static_cast<Endpoint*>(utp_context_get_userdata(args->context));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
+        return tr_utp_udp_mtu(args->address->sa_family, self->test->path_mtu_);
     }
 
     static uint64 onGetMilliseconds(utp_callback_arguments* const args)
@@ -334,7 +362,52 @@ TEST_F(PeerSocketUtpTest, connectingWritesQueuedData)
     EXPECT_EQ(1, n_writes);
 }
 
+// A tunnel such as WireGuard (MTU 1420) is narrower than the datagrams libutp sends by default
+// (1402 bytes of UDP payload, 1430 on the wire). Sized from the route, every datagram fits from the
+// first one, so nothing is fragmented or lost while libutp's MTU search would converge.
+TEST_F(PeerSocketUtpTest, datagramsFitTheRouteMtu)
+{
+    static auto constexpr RouteMtu = size_t{ 1420 };
+    setPathMtu(RouteMtu);
+    ASSERT_NO_FATAL_FAILURE(connect());
+
+    // Writes larger than a packet, so that libutp sends full ones.
+    static auto constexpr Size = size_t{ ReceiveWindow / 2 };
+    auto data = std::vector<std::byte>(Size);
+    for (auto total = size_t{}; total < Size;) {
+        auto const n = utp_write(sock_, std::data(data) + total, std::min(size_t{ 16U } * 1024U, Size - total));
+        ASSERT_GT(n, 0);
+        total += static_cast<size_t>(n);
+        deliverAll();
+    }
+
+    EXPECT_EQ(0U, sender_.n_dropped);
+    EXPECT_EQ(RouteMtu - Ipv4UdpHeaders, sender_.largest_sent);
+    EXPECT_EQ(Size, readAll());
+}
+
+TEST(UtpUdpMtuTest, fitsTheRoute)
+{
+    // libutp's defaults when the route is unknown or wide enough
+    EXPECT_EQ(1402U, tr_utp_udp_mtu(AF_INET, std::nullopt));
+    EXPECT_EQ(1402U, tr_utp_udp_mtu(AF_INET, 1500U));
+    EXPECT_EQ(1402U, tr_utp_udp_mtu(AF_INET, 65536U));
+    EXPECT_EQ(1232U, tr_utp_udp_mtu(AF_INET6, std::nullopt));
+    // every IPv6 route carries at least 1280 bytes, so a known one changes nothing
+    EXPECT_EQ(1232U, tr_utp_udp_mtu(AF_INET6, 1280U));
+    EXPECT_EQ(1232U, tr_utp_udp_mtu(AF_INET6, 1500U));
+    EXPECT_EQ(1232U, tr_utp_udp_mtu(AF_INET6, 65536U));
+
+    // narrower routes: less IPv4 and UDP headers
+    EXPECT_EQ(1392U, tr_utp_udp_mtu(AF_INET, 1420U));
+    EXPECT_EQ(1372U, tr_utp_udp_mtu(AF_INET, 1400U));
+
+    // never below libutp's search floor
+    EXPECT_EQ(576U, tr_utp_udp_mtu(AF_INET, 576U));
+}
+
 } // namespace
+
 } // namespace tr::test
 
 #endif // WITH_UTP

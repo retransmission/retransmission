@@ -2,9 +2,17 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
+
+#ifdef __linux__
+#include <netinet/in.h> // IP_MTU
+#include <sys/socket.h>
+#include <unistd.h> // close()
+#endif
 
 #include <fmt/format.h> // fmt::ptr
 
@@ -22,6 +30,25 @@
 #include "libtransmission/tr-utp.h"
 
 using namespace std::literals;
+
+uint16_t tr_utp_udp_mtu(int const family, std::optional<size_t> const route_mtu) noexcept
+{
+    // libutp's own defaults (utp_default_get_udp_mtu(), not in its public API): for IPv4, a
+    // 1500-byte Ethernet MTU less IPv4, UDP, GRE, PPPoE and MPPE headers and 36 spare bytes;
+    // for IPv6, Teredo's 1280 less IPv6 and UDP headers, which fits every IPv6 route: RFC 8200 requires
+    // every IPv6 link to carry at least 1280 bytes.
+    static auto constexpr DefaultIpv4 = size_t{ 1402 };
+    static auto constexpr DefaultIpv6 = size_t{ 1232 };
+    // libutp's MTU search never goes below 576 and asserts the starting size is not lower.
+    static auto constexpr Floor = size_t{ 576 };
+
+    auto const is_ipv6 = family == AF_INET6;
+    auto mtu = is_ipv6 ? DefaultIpv6 : DefaultIpv4;
+    if (auto const headers = size_t{ is_ipv6 ? 40U : 20U } + 8U; route_mtu && *route_mtu > headers) {
+        mtu = std::min(mtu, *route_mtu - headers);
+    }
+    return static_cast<uint16_t>(std::max(mtu, Floor));
+}
 
 #ifndef WITH_UTP
 
@@ -54,17 +81,45 @@ namespace
 /* Greg says 50ms works for them. */
 auto constexpr UtpInterval = 50ms;
 
+// The MTU of the IPv4 route from `from` (the address µTP's socket is bound to) to `to`: its
+// outgoing interface's, unless the route sets a lower one. On Linux it is also lowered by a path
+// MTU the kernel has learnt. Unknown for IPv6.
+std::optional<size_t> route_mtu(
+    sockaddr const* const to,
+    [[maybe_unused]] socklen_t const tolen,
+    [[maybe_unused]] sockaddr const* const from,
+    [[maybe_unused]] socklen_t const fromlen)
+{
+    // IPv4 only. Every IPv6 link carries at least 1280 bytes (RFC 8200), so an IPv6 route's MTU, learnt
+    // or not, never lowers libutp's IPv6 default.
+    if (to->sa_family != AF_INET) {
+        return {};
+    }
+
+#if defined(__linux__) && defined(IP_MTU)
+    // Connecting a UDP socket sends nothing; it only looks up the route.
+    auto const fd = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
+    if (fd < 0) {
+        return {};
+    }
+
+    auto mtu = int{};
+    auto mtu_len = socklen_t{ sizeof(mtu) };
+    // Bound like µTP's socket, so that source-based routing (Linux `ip rule from`) picks the same route.
+    auto const ok = bind(fd, from, fromlen) == 0 && connect(fd, to, tolen) == 0 &&
+        getsockopt(fd, IPPROTO_IP, IP_MTU, &mtu, &mtu_len) == 0;
+    close(fd);
+    return ok && mtu > 0 ? std::optional{ static_cast<size_t>(mtu) } : std::nullopt;
+#else
+    return {};
+#endif
+}
+
 void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
 {
     auto from_storage = sockaddr_storage{};
     auto* const from = reinterpret_cast<sockaddr*>(&from_storage);
     socklen_t fromlen = sizeof(from_storage);
-
-    if (!session->allowsUTP() || tr_peer_socket::limit_reached(session)) {
-        utp_close(utp_sock);
-        return;
-    }
-
     utp_getpeername(utp_sock, from, &fromlen);
 
     if (auto addrport = tr_socket_address::from_sockaddr(reinterpret_cast<struct sockaddr*>(&from_storage)); addrport) {
@@ -99,6 +154,10 @@ uint64 utp_callback(utp_callback_arguments* args)
         break;
 #endif
 
+    case UTP_ON_FIREWALL:
+        // Refused here, before libutp creates a socket and asks for its MTU.
+        return !session->allowsUTP() || tr_peer_socket::limit_reached(session) ? 1 : 0;
+
     case UTP_ON_ACCEPT:
         utp_on_accept(session, args->socket);
         break;
@@ -106,6 +165,17 @@ uint64 utp_callback(utp_callback_arguments* args)
     case UTP_SENDTO:
         utp_send_to(session, args->buf, args->len, args->address, args->address_len);
         break;
+
+    case UTP_GET_UDP_MTU:
+        {
+            auto const family = args->address->sa_family;
+            auto const [from, fromlen] = tr_socket_address::to_sockaddr(
+                session->bind_address(tr_af_to_ip_protocol(family)),
+                tr_port{});
+            return tr_utp_udp_mtu(
+                family,
+                route_mtu(args->address, args->address_len, reinterpret_cast<sockaddr const*>(&from), fromlen));
+        }
 
     default:
         break;
@@ -161,8 +231,10 @@ void tr_utp_init(tr_session* session)
     }
 
     utp_context_set_userdata(ctx, session);
+    utp_set_callback(ctx, UTP_ON_FIREWALL, &utp_callback);
     utp_set_callback(ctx, UTP_ON_ACCEPT, &utp_callback);
     utp_set_callback(ctx, UTP_SENDTO, &utp_callback);
+    utp_set_callback(ctx, UTP_GET_UDP_MTU, &utp_callback);
     tr_peer_socket_utp::init(ctx);
 
 #ifdef TR_UTP_TRACE
