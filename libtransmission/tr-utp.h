@@ -36,4 +36,13 @@ void tr_utp_issue_deferred_acks(tr_session* ss);
 // unfragmented, but never below 576, where libutp's MTU search stops.
 [[nodiscard]] uint16_t tr_utp_udp_mtu(int family, std::optional<size_t> route_mtu) noexcept;
 
+// The MTU of the IPv4 route from `from` (the address µTP's socket is bound to) to `to`, as the system
+// reports it: the outgoing interface's, unless the route sets a lower one; on Linux also a lower path
+// MTU the kernel has learnt. Unknown for IPv6, on systems without such a lookup, and where it fails.
+[[nodiscard]] std::optional<size_t> tr_utp_route_mtu(
+    struct sockaddr const* to,
+    socklen_t tolen,
+    struct sockaddr const* from,
+    socklen_t fromlen);
+
 void tr_utp_close(tr_session* session);

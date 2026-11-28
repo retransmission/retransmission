@@ -1380,7 +1380,8 @@ jobs:
         run: |
           # The inotify watcher fails under qemu-user: https://gitlab.com/qemu-project/qemu/-/work_items/356
           # These are the WatchMode::NATIVE (/0) tests that wait for its events.
-          GTEST_FILTER='-WatchDir/WatchDirTest.watch/0:WatchDir/WatchDirTest.offersANameAgainAfterItsFileLeaves/0' ctest -j --test-dir obj --output-on-failure --no-tests=error
+          # qemu-user's getsockopt() does not pass IP_MTU through, so the route MTU lookup finds nothing.
+          GTEST_FILTER='-WatchDir/WatchDirTest.watch/0:WatchDir/WatchDirTest.offersANameAgainAfterItsFileLeaves/0:UtpUdpMtuTest.routeMtuOfLoopback' ctest -j --test-dir obj --output-on-failure --no-tests=error
       - name: Finalize ccache
         uses: ./.github/actions/finalize-ccache
         with:

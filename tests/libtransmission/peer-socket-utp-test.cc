@@ -34,6 +34,7 @@
 #include <libtransmission/tr-utp.h>
 
 #include "fake-timer.h"
+#include "test-fixtures.h"
 
 using namespace std::literals;
 
@@ -386,7 +387,10 @@ TEST_F(PeerSocketUtpTest, datagramsFitTheRouteMtu)
     EXPECT_EQ(Size, readAll());
 }
 
-TEST(UtpUdpMtuTest, fitsTheRoute)
+// Sets up the platform's sockets (Winsock) for the route lookups.
+using UtpUdpMtuTest = TransmissionTest;
+
+TEST_F(UtpUdpMtuTest, fitsTheRoute)
 {
     // libutp's defaults when the route is unknown or wide enough
     EXPECT_EQ(1402U, tr_utp_udp_mtu(AF_INET, std::nullopt));
@@ -404,6 +408,34 @@ TEST(UtpUdpMtuTest, fitsTheRoute)
 
     // never below libutp's search floor
     EXPECT_EQ(576U, tr_utp_udp_mtu(AF_INET, 576U));
+}
+
+TEST_F(UtpUdpMtuTest, routeMtuOfLoopback)
+{
+    // from an unbound address, as with the default bind-address settings
+    auto const route_mtu = [](std::string_view const to) {
+        auto const to_addr = *tr_address::from_string(to);
+        auto const [ss, sslen] = tr_socket_address::to_sockaddr(to_addr, tr_port::from_host(9));
+        auto const [from, fromlen] = tr_socket_address::to_sockaddr(tr_address::any(to_addr.type), tr_port{});
+        return tr_utp_route_mtu(
+            reinterpret_cast<sockaddr const*>(&ss),
+            sslen,
+            reinterpret_cast<sockaddr const*>(&from),
+            fromlen);
+    };
+
+    // IPv6 routes are not looked up
+    EXPECT_FALSE(route_mtu("::1").has_value());
+
+    // the systems tr_utp_route_mtu() has a lookup for
+#if (defined(__linux__) && defined(IP_MTU)) || defined(__APPLE__) || defined(__FreeBSD__)
+    auto const mtu = route_mtu("127.0.0.1");
+    ASSERT_TRUE(mtu.has_value());
+    // loopback is at least as wide as the IPv6 minimum
+    EXPECT_GE(*mtu, 1280U);
+#else
+    GTEST_SKIP() << "no route MTU lookup on this system";
+#endif
 }
 
 } // namespace

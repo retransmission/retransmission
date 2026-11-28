@@ -60,38 +60,9 @@ uint16_t tr_utp_udp_mtu(int const family, std::optional<size_t> const route_mtu)
     return static_cast<uint16_t>(std::max(mtu, Floor));
 }
 
-#ifndef WITH_UTP
-
-void tr_utp_init(tr_session* /*session*/)
-{
-}
-
-bool tr_utp_packet(
-    unsigned char const* /*buf*/,
-    size_t /*buflen*/,
-    struct sockaddr const* /*from*/,
-    socklen_t /*fromlen*/,
-    tr_session* /*ss*/)
-{
-    return false;
-}
-
-void tr_utp_issue_deferred_acks(tr_session* /*ss*/)
-{
-}
-
-void tr_utp_close(tr_session* /*session*/)
-{
-}
-
-#else
-
+#if defined(__APPLE__) || defined(__FreeBSD__)
 namespace
 {
-/* Greg says 50ms works for them. */
-auto constexpr UtpInterval = 50ms;
-
-#if defined(__APPLE__) || defined(__FreeBSD__)
 // The MTU of network interface `index`.
 std::optional<size_t> interface_mtu(unsigned const index)
 {
@@ -109,12 +80,10 @@ std::optional<size_t> interface_mtu(unsigned const index)
     close(fd);
     return ok && ifr.ifr_mtu > 0 ? std::optional{ static_cast<size_t>(ifr.ifr_mtu) } : std::nullopt;
 }
+} // namespace
 #endif
 
-// The MTU of the IPv4 route from `from` (the address µTP's socket is bound to) to `to`: its
-// outgoing interface's, unless the route sets a lower one. On Linux it is also lowered by a path
-// MTU the kernel has learnt. Unknown for IPv6.
-std::optional<size_t> route_mtu(
+std::optional<size_t> tr_utp_route_mtu(
     sockaddr const* const to,
     [[maybe_unused]] socklen_t const tolen,
     [[maybe_unused]] sockaddr const* const from,
@@ -205,6 +174,37 @@ std::optional<size_t> route_mtu(
 #endif
 }
 
+#ifndef WITH_UTP
+
+void tr_utp_init(tr_session* /*session*/)
+{
+}
+
+bool tr_utp_packet(
+    unsigned char const* /*buf*/,
+    size_t /*buflen*/,
+    struct sockaddr const* /*from*/,
+    socklen_t /*fromlen*/,
+    tr_session* /*ss*/)
+{
+    return false;
+}
+
+void tr_utp_issue_deferred_acks(tr_session* /*ss*/)
+{
+}
+
+void tr_utp_close(tr_session* /*session*/)
+{
+}
+
+#else
+
+namespace
+{
+/* Greg says 50ms works for them. */
+auto constexpr UtpInterval = 50ms;
+
 void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
 {
     auto from_storage = sockaddr_storage{};
@@ -264,7 +264,7 @@ uint64 utp_callback(utp_callback_arguments* args)
                 tr_port{});
             return tr_utp_udp_mtu(
                 family,
-                route_mtu(args->address, args->address_len, reinterpret_cast<sockaddr const*>(&from), fromlen));
+                tr_utp_route_mtu(args->address, args->address_len, reinterpret_cast<sockaddr const*>(&from), fromlen));
         }
 
     default:
