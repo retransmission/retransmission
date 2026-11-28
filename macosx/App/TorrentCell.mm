@@ -5,7 +5,6 @@
 #import "TorrentCell.h"
 #import "NSImageAdditions.h"
 #import "ProgressBarView.h"
-#import "ProgressGradients.h"
 #import "Torrent.h"
 #import "TorrentCellControlButton.h"
 #import "TorrentCellActionButton.h"
