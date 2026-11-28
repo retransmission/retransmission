@@ -29,6 +29,10 @@
 
 #include <gtest/gtest.h>
 
+#ifdef WITH_UTP
+#include <libutp/utp.h> // UTP_UDP_DONTFRAG
+#endif
+
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/bandwidth.h>
@@ -41,6 +45,7 @@
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/tr-utp.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
@@ -828,5 +833,21 @@ TEST_F(DontFragmentTest, udpSendIsNotFragmented)
         udpCore()->sendto(std::data(payload), std::size(payload), to.addr(), to.addrLen(), dont_fragment);
     });
 }
+
+#ifdef WITH_UTP
+// libutp marks its MTU probes UTP_UDP_DONTFRAG.
+TEST_F(DontFragmentTest, utpProbeIsNotFragmented)
+{
+    expectDroppedOnlyWithDontFragment([this](auto const& payload, auto const& to, bool const dont_fragment) {
+        tr_utp_send_to(
+            session_,
+            reinterpret_cast<uint8_t const*>(std::data(payload)),
+            std::size(payload),
+            to.addr(),
+            to.addrLen(),
+            dont_fragment ? UTP_UDP_DONTFRAG : 0U);
+    });
+}
+#endif
 
 } // namespace tr::test

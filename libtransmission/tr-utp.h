@@ -9,6 +9,7 @@
 #endif
 
 #include <cstddef> // size_t
+#include <cstdint> // uint8_t, uint32_t
 
 #ifndef _WIN32
 #include <sys/socket.h>
@@ -30,3 +31,14 @@ void tr_utp_init(tr_session* session);
 void tr_utp_issue_deferred_acks(tr_session* ss);
 
 void tr_utp_close(tr_session* session);
+
+#ifdef WITH_UTP
+// Sends a datagram for libutp. `flags` are its UTP_SENDTO flags.
+void tr_utp_send_to(
+    tr_session const* ss,
+    uint8_t const* buf,
+    size_t buflen,
+    struct sockaddr const* to,
+    socklen_t tolen,
+    uint32_t flags);
+#endif
