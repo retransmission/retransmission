@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
@@ -12,6 +13,15 @@
 #include <netinet/in.h> // IP_MTU
 #include <sys/socket.h>
 #include <unistd.h> // close()
+#elif defined(__APPLE__) || defined(__FreeBSD__)
+#include <cstring> // std::memcpy
+#include <net/if.h> // if_indextoname(), ifreq
+#include <net/route.h> // rt_msghdr, RTM_GET
+#include <netinet/in.h>
+#include <sys/ioctl.h> // SIOCGIFMTU
+#include <sys/socket.h>
+#include <sys/time.h> // timeval
+#include <unistd.h> // close(), getpid(), read(), write()
 #endif
 
 #include <fmt/format.h> // fmt::ptr
@@ -81,6 +91,26 @@ namespace
 /* Greg says 50ms works for them. */
 auto constexpr UtpInterval = 50ms;
 
+#if defined(__APPLE__) || defined(__FreeBSD__)
+// The MTU of network interface `index`.
+std::optional<size_t> interface_mtu(unsigned const index)
+{
+    auto ifr = ifreq{};
+    if (if_indextoname(index, ifr.ifr_name) == nullptr) {
+        return {};
+    }
+
+    auto const fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0) {
+        return {};
+    }
+
+    auto const ok = ioctl(fd, SIOCGIFMTU, &ifr) == 0;
+    close(fd);
+    return ok && ifr.ifr_mtu > 0 ? std::optional{ static_cast<size_t>(ifr.ifr_mtu) } : std::nullopt;
+}
+#endif
+
 // The MTU of the IPv4 route from `from` (the address µTP's socket is bound to) to `to`: its
 // outgoing interface's, unless the route sets a lower one. On Linux it is also lowered by a path
 // MTU the kernel has learnt. Unknown for IPv6.
@@ -110,6 +140,66 @@ std::optional<size_t> route_mtu(
         getsockopt(fd, IPPROTO_IP, IP_MTU, &mtu, &mtu_len) == 0;
     close(fd);
     return ok && mtu > 0 ? std::optional{ static_cast<size_t>(mtu) } : std::nullopt;
+#elif defined(__APPLE__) || defined(__FreeBSD__)
+    // No IP_MTU here: ask the routing table, which holds an MTU per route (the interface's,
+    // unless the route sets its own).
+    if (tolen != sizeof(sockaddr_in)) {
+        return {};
+    }
+
+    // Receives the system's IPv4 routing messages, the reply among them.
+    auto const fd = socket(PF_ROUTE, SOCK_RAW, AF_INET);
+    if (fd < 0) {
+        return {};
+    }
+
+    // Give up on the reply after 100 ms, also while other routing messages keep arriving.
+    static auto constexpr Timeout = 100ms;
+    auto const deadline = std::chrono::steady_clock::now() + Timeout;
+    auto const timeout = timeval{ .tv_sec = 0,
+                                  .tv_usec = static_cast<suseconds_t>(std::chrono::microseconds{ Timeout }.count()) };
+    (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+
+    // An RTM_GET request is an rt_msghdr followed directly by the destination. sizeof(rt_msghdr)
+    // need not be a multiple of the address's alignment, so the message is built in bytes.
+    alignas(rt_msghdr) std::array<unsigned char, 2048> buf = {};
+    auto request = rt_msghdr{};
+    request.rtm_msglen = static_cast<u_short>(sizeof(request) + tolen);
+    request.rtm_version = RTM_VERSION;
+    request.rtm_type = RTM_GET;
+    request.rtm_addrs = RTA_DST;
+    request.rtm_pid = getpid();
+    request.rtm_seq = 1;
+    std::memcpy(std::data(buf), &request, sizeof(request));
+    std::memcpy(std::data(buf) + sizeof(request), to, tolen);
+    reinterpret_cast<sockaddr*>(std::data(buf) + sizeof(request))->sa_len = static_cast<uint8_t>(tolen);
+
+    auto mtu = std::optional<size_t>{};
+    if (write(fd, std::data(buf), request.rtm_msglen) == request.rtm_msglen) {
+        for (;;) {
+            auto const n_read = read(fd, std::data(buf), std::size(buf));
+            if (n_read < static_cast<ssize_t>(sizeof(rt_msghdr))) {
+                break;
+            }
+
+            auto reply = rt_msghdr{};
+            std::memcpy(&reply, std::data(buf), sizeof(reply));
+            if (reply.rtm_type != RTM_GET || reply.rtm_pid != request.rtm_pid || reply.rtm_seq != request.rtm_seq) {
+                if (std::chrono::steady_clock::now() >= deadline) {
+                    break;
+                }
+                continue; // another process's routing message
+            }
+
+            if (reply.rtm_errno == 0) {
+                mtu = reply.rtm_rmx.rmx_mtu > 0 ? std::optional{ static_cast<size_t>(reply.rtm_rmx.rmx_mtu) } :
+                                                  interface_mtu(reply.rtm_index);
+            }
+            break;
+        }
+    }
+    close(fd);
+    return mtu;
 #else
     return {};
 #endif
