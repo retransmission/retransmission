@@ -385,6 +385,11 @@ protected:
         return session_->peer_mgr_.get();
     }
 
+    [[nodiscard]] tr_session::tr_udp_core* udpCore() const noexcept
+    {
+        return session_->udp_core_.get();
+    }
+
     // Whether a request refill is waiting for finished disk writes. Session thread only.
     [[nodiscard]] bool requestsDeferred() const noexcept
     {

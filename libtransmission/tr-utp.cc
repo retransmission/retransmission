@@ -49,6 +49,18 @@ void tr_utp_close(tr_session* /*session*/)
 
 #else
 
+void tr_utp_send_to(
+    tr_session const* const ss,
+    uint8_t const* const buf,
+    size_t const buflen,
+    struct sockaddr const* const to,
+    socklen_t const tolen,
+    uint32_t const flags)
+{
+    // libutp sets UTP_UDP_DONTFRAG on its MTU probes
+    ss->udp_core_->sendto(buf, buflen, to, tolen, (flags & UTP_UDP_DONTFRAG) != 0);
+}
+
 namespace
 {
 /* Greg says 50ms works for them. */
@@ -75,16 +87,6 @@ void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
     }
 }
 
-void utp_send_to(
-    tr_session const* const ss,
-    uint8_t const* const buf,
-    size_t const buflen,
-    struct sockaddr const* const to,
-    socklen_t const tolen)
-{
-    ss->udp_core_->sendto(buf, buflen, to, tolen);
-}
-
 uint64 utp_callback(utp_callback_arguments* args)
 {
     auto* const session = static_cast<tr_session*>(utp_context_get_userdata(args->context));
@@ -104,7 +106,7 @@ uint64 utp_callback(utp_callback_arguments* args)
         break;
 
     case UTP_SENDTO:
-        utp_send_to(session, args->buf, args->len, args->address, args->address_len);
+        tr_utp_send_to(session, args->buf, args->len, args->address, args->address_len, args->flags);
         break;
 
     default:

@@ -47,6 +47,8 @@ using tr_socket_t = SOCKET;
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #undef EAFNOSUPPORT
 #define EAFNOSUPPORT WSAEAFNOSUPPORT
+#undef EMSGSIZE
+#define EMSGSIZE WSAEMSGSIZE
 #undef ENETUNREACH
 #define ENETUNREACH WSAENETUNREACH
 #undef ETIMEDOUT
@@ -531,6 +533,18 @@ void tr_net_close_socket(tr_socket_t fd);
 
 // set the IPTOS_ value for the specified socket
 void tr_netSetDiffServ(tr_socket_t sock, int tos, tr_address_type type);
+
+// `setsockopt(sock, level, name, &value, sizeof(value))`
+struct tr_socket_option {
+    int level;
+    int name;
+    int value;
+};
+
+// How a UDP socket of `family` sends with don't-fragment set, so a datagram larger than the path allows
+// is dropped instead of fragmented; nullopt where the system has no such option. libutp's MTU search
+// needs that from its probes (RFC 8899, Datagram PLPMTUD).
+[[nodiscard]] std::optional<tr_socket_option> tr_net_dont_fragment_option(int family);
 
 /**
  * @brief get a human-representable string representing the network error.

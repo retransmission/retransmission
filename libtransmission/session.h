@@ -394,7 +394,9 @@ private:
         tr_udp_core& operator=(tr_udp_core const&) = delete;
         tr_udp_core& operator=(tr_udp_core&&) = delete;
 
-        void sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t tolen) const;
+        // `dont_fragment` sends this one datagram with the don't-fragment bit set.
+        void sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t tolen, bool dont_fragment = false)
+            const;
 
         [[nodiscard]] constexpr auto socket4() const noexcept
         {

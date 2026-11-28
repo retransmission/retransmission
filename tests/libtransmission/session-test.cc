@@ -5,19 +5,33 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <functional>
 #include <future>
 #include <initializer_list>
 #include <map>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
+#include <tuple>
+#include <utility>
 #include <vector>
 
+#ifndef _WIN32
+#include <sys/time.h> // timeval
+#endif
+
 #include <gtest/gtest.h>
+
+#ifdef WITH_UTP
+#include <libutp/utp.h> // UTP_UDP_DONTFRAG
+#endif
 
 #include <libtransmission/transmission.h>
 
@@ -26,10 +40,12 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/file-utils.h> // tr_file_read(), tr_file_save()
 #include <libtransmission/file.h>
+#include <libtransmission/net.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/tr-utp.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
@@ -650,5 +666,188 @@ TEST_F(SessionTest, statsRatioHasNoDataUntilBytesMove)
     EXPECT_EQ(0U, stats.downloadedBytes);
     EXPECT_TRUE(stats.ratio.is_none());
 }
+
+namespace
+{
+// A UDP socket on loopback for a test to send to. It closes when the test returns, a failed ASSERT included.
+class LoopbackReceiver
+{
+public:
+    explicit LoopbackReceiver(std::string_view const address)
+    {
+        auto const [ss, sslen] = tr_socket_address::to_sockaddr(*tr_address::from_string(address), tr_port{});
+        sock_ = socket(ss.ss_family, SOCK_DGRAM, 0);
+        ok_ = is_valid_socket(sock_) && bind(sock_, reinterpret_cast<sockaddr const*>(&ss), sslen) == 0 &&
+            getsockname(sock_, reinterpret_cast<sockaddr*>(&addr_), &addr_len_) == 0;
+
+        // room for a 64 KiB datagram; FreeBSD's default is 42 KiB
+        static auto constexpr BufSize = 1 << 20;
+        (void)setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&BufSize), sizeof(BufSize));
+    }
+
+    ~LoopbackReceiver()
+    {
+        if (is_valid_socket(sock_)) {
+            tr_net_close_socket(sock_);
+        }
+    }
+
+    LoopbackReceiver(LoopbackReceiver const&) = delete;
+    LoopbackReceiver(LoopbackReceiver&&) = delete;
+    LoopbackReceiver& operator=(LoopbackReceiver const&) = delete;
+    LoopbackReceiver& operator=(LoopbackReceiver&&) = delete;
+
+    [[nodiscard]] constexpr bool ok() const noexcept
+    {
+        return ok_;
+    }
+
+    [[nodiscard]] sockaddr const* addr() const noexcept
+    {
+        return reinterpret_cast<sockaddr const*>(&addr_);
+    }
+
+    [[nodiscard]] constexpr socklen_t addrLen() const noexcept
+    {
+        return addr_len_;
+    }
+
+    // The size of the datagram that arrives within `timeout`, or nullopt if none does.
+    [[nodiscard]] std::optional<size_t> receive(std::span<char> buf, std::chrono::milliseconds const timeout) const
+    {
+#ifdef _WIN32
+        auto const tv = static_cast<DWORD>(timeout.count());
+#else
+        auto const tv = timeval{ .tv_sec = static_cast<time_t>(timeout.count() / 1000),
+                                 .tv_usec = static_cast<suseconds_t>(timeout.count() % 1000 * 1000) };
+#endif
+        (void)setsockopt(sock_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char const*>(&tv), sizeof(tv));
+        auto const n_read = recv(sock_, std::data(buf), static_cast<TR_IF_WIN32(int, size_t)>(std::size(buf)), 0);
+        return n_read >= 0 ? std::optional{ static_cast<size_t>(n_read) } : std::nullopt;
+    }
+
+private:
+    tr_socket_t sock_ = TR_BAD_SOCKET;
+    sockaddr_storage addr_ = {};
+    socklen_t addr_len_ = sizeof(addr_);
+    bool ok_ = false;
+};
+} // namespace
+
+TEST_F(SessionTest, dontFragmentSendPutsTheSocketOptionBack)
+{
+    auto n_checked = 0;
+    for (
+        auto const& [family, address, sock] :
+        { std::tuple{ AF_INET, "127.0.0.1"sv, udpCore()->socket4() }, std::tuple{ AF_INET6, "::1"sv, udpCore()->socket6() } }) {
+        SCOPED_TRACE(address);
+        auto const option = tr_net_dont_fragment_option(family);
+        auto const receiver = LoopbackReceiver{ address };
+        if (!option || !is_valid_socket(sock) || !receiver.ok()) {
+            continue;
+        }
+
+        auto const get_option = [sock, &option] {
+            auto val = int{};
+            auto len = socklen_t{ sizeof(val) };
+            EXPECT_EQ(0, getsockopt(sock, option->level, option->name, reinterpret_cast<char*>(&val), &len));
+            return val;
+        };
+
+        static auto constexpr Payload = std::array<char, 4>{ 'p', 'i', 'n', 'g' };
+        auto buf = std::array<char, 16>{};
+
+        // Windows can't send from the session's IPv6 address, a global one, to ::1
+        blockingRunInSessionThread(
+            [&] { udpCore()->sendto(std::data(Payload), std::size(Payload), receiver.addr(), receiver.addrLen(), false); });
+        if (receiver.receive(buf, 1s) != std::size(Payload)) {
+            continue;
+        }
+
+        auto const [before, after] = blockingRunInSessionThread([&] {
+            auto const old = get_option();
+            udpCore()->sendto(std::data(Payload), std::size(Payload), receiver.addr(), receiver.addrLen(), true);
+            return std::pair{ old, get_option() };
+        });
+        EXPECT_EQ(before, after);
+
+        // the datagram went out
+        ASSERT_EQ(std::size(Payload), receiver.receive(buf, 5s));
+        EXPECT_EQ(0, std::memcmp(std::data(Payload), std::data(buf), std::size(Payload)));
+        ++n_checked;
+    }
+
+    if (n_checked == 0) {
+        GTEST_SKIP() << "no don't-fragment option, or the session's UDP sockets can't reach loopback";
+    }
+}
+
+namespace
+{
+class DontFragmentTest : public SessionTest
+{
+protected:
+    void SetUp() override
+    {
+        SessionTest::SetUp();
+#ifdef _WIN32
+        GTEST_SKIP() << "Windows loopback delivers a datagram above its MTU whole, with or without don't-fragment";
+#endif
+    }
+
+    // Sends `payload` to `to` from the session's UDP socket.
+    using Send = std::function<void(std::vector<char> const& payload, LoopbackReceiver const& to, bool dont_fragment)>;
+
+    // A datagram larger than loopback's MTU goes out in fragments, unless `send` sets don't-fragment.
+    void expectDroppedOnlyWithDontFragment(Send const& send)
+    {
+        if (!is_valid_socket(udpCore()->socket6())) {
+            GTEST_SKIP() << "no UDP IPv6 socket";
+        }
+
+        auto const receiver = LoopbackReceiver{ "::1" };
+        if (!receiver.ok()) {
+            GTEST_SKIP() << "no IPv6 loopback";
+        }
+
+        // A 65548-byte IPv6 packet: above loopback's MTU on Linux (65536), macOS and FreeBSD (16384).
+        // IPv4 can't go above Linux's: its packets end at 65535 bytes.
+        auto const payload = std::vector<char>(65500U, 'x');
+        auto buf = std::vector<char>(std::size(payload) + 1U);
+        auto const send_and_receive = [&](bool const dont_fragment) {
+            blockingRunInSessionThread([&] { send(payload, receiver, dont_fragment); });
+            return receiver.receive(buf, 500ms);
+        };
+
+        if (send_and_receive(false) != std::size(payload)) {
+            GTEST_SKIP() << "this system doesn't send a fragmented datagram this large";
+        }
+        EXPECT_EQ(std::nullopt, send_and_receive(true));
+    }
+};
+} // namespace
+
+TEST_F(DontFragmentTest, udpSendIsNotFragmented)
+{
+    expectDroppedOnlyWithDontFragment([this](auto const& payload, auto const& to, bool const dont_fragment) {
+        udpCore()->sendto(std::data(payload), std::size(payload), to.addr(), to.addrLen(), dont_fragment);
+    });
+}
+
+#ifdef WITH_UTP
+// libutp marks its MTU probes UTP_UDP_DONTFRAG.
+TEST_F(DontFragmentTest, utpProbeIsNotFragmented)
+{
+    expectDroppedOnlyWithDontFragment([this](auto const& payload, auto const& to, bool const dont_fragment) {
+        tr_utp_send_to(
+            session_,
+            reinterpret_cast<uint8_t const*>(std::data(payload)),
+            std::size(payload),
+            to.addr(),
+            to.addrLen(),
+            dont_fragment ? UTP_UDP_DONTFRAG : 0U);
+    });
+}
+#endif
 
 } // namespace tr::test

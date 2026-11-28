@@ -5,6 +5,7 @@
 #include <array>
 #include <cerrno>
 #include <cstddef>
+#include <optional>
 #include <string>
 
 #ifdef _WIN32
@@ -134,6 +135,42 @@ void event_callback(evutil_socket_t s, [[maybe_unused]] short type, void* vsessi
         }
     }
 }
+
+// Sends one datagram and returns 0 or the socket error.
+//
+// Don't-fragment is a socket option, so it is set for this one send and then put back: the DHT and
+// UDP trackers share the socket and keep the system default. Every send runs on the session thread,
+// so no other send comes between.
+[[nodiscard]] int send_datagram(
+    tr_socket_t const sock,
+    void const* const buf,
+    size_t const buflen,
+    sockaddr const* const to,
+    socklen_t const tolen,
+    bool const dont_fragment)
+{
+    auto const option = dont_fragment ? tr_net_dont_fragment_option(to->sa_family) : std::nullopt;
+    auto const set_to = [sock, &option](int const& value) {
+        return setsockopt(sock, option->level, option->name, reinterpret_cast<char const*>(&value), sizeof(value)) == 0;
+    };
+    auto old = int{};
+    auto old_len = socklen_t{ sizeof(old) };
+    auto const set = option && getsockopt(sock, option->level, option->name, reinterpret_cast<char*>(&old), &old_len) == 0 &&
+        set_to(option->value);
+
+    auto const len = static_cast<TR_IF_WIN32(int, size_t)>(buflen);
+    // NOLINTNEXTLINE(readability-redundant-casting)
+    auto const sent = ::sendto(sock, static_cast<char const*>(buf), len, 0, to, tolen);
+    auto const err = sent == -1 ? sockerrno : 0;
+
+    if (set && !set_to(old)) {
+        // the DHT and UDP trackers now send with don't-fragment too
+        tr_logAddWarn(fmt::format("Couldn't clear don't-fragment on the UDP socket: {}", tr_net_strerror(sockerrno)));
+    }
+
+    return err;
+}
+
 } // namespace
 
 // BEP-32 explains why we need to bind to one IPv6 address
@@ -257,11 +294,17 @@ tr_session::tr_udp_core::~tr_udp_core()
     }
 }
 
-void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sockaddr const* to, socklen_t const tolen) const
+void tr_session::tr_udp_core::sendto(
+    void const* buf,
+    size_t buflen,
+    struct sockaddr const* to,
+    socklen_t const tolen,
+    bool const dont_fragment) const
 {
     auto const addrport = tr_socket_address::from_sockaddr(to);
+    auto err = int{};
     if (to->sa_family != AF_INET && to->sa_family != AF_INET6) {
-        errno = EAFNOSUPPORT;
+        err = EAFNOSUPPORT;
     } else if (auto const sock = to->sa_family == AF_INET ? udp4_socket_ : udp6_socket_; !is_valid_socket(sock)) {
         // don't warn on bad sockets; the system may not support IPv6
         return;
@@ -270,9 +313,10 @@ void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sock
         !session_.source_address(tr_af_to_ip_protocol(to->sa_family))) {
         // don't try to send if we don't have a route in this IP protocol
         return;
-    }
-    // NOLINTNEXTLINE(readability-redundant-casting)
-    else if (::sendto(sock, static_cast<char const*>(buf), static_cast<TR_IF_WIN32(int, size_t)>(buflen), 0, to, tolen) != -1) {
+    } else if (err = send_datagram(sock, buf, buflen, to, tolen, dont_fragment); err == 0) {
+        return;
+    } else if (dont_fragment && err == EMSGSIZE) {
+        // Larger than the interface allows. Dropped here like a probe dropped further along the path.
         return;
     }
 
@@ -285,6 +329,6 @@ void tr_session::tr_udp_core::sendto(void const* buf, size_t buflen, struct sock
         fmt::format(
             "Couldn't send to {address}: {errno} ({error})",
             fmt::arg("address", display_name),
-            fmt::arg("errno", errno),
-            fmt::arg("error", tr_strerror(errno))));
+            fmt::arg("errno", err),
+            fmt::arg("error", tr_net_strerror(err))));
 }
