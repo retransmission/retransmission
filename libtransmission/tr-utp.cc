@@ -12,15 +12,16 @@
 #ifdef __linux__
 #include <netinet/in.h> // IP_MTU
 #include <sys/socket.h>
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #include <cstring> // std::memcpy
 #include <net/if.h> // if_indextoname(), ifreq
+#include <net/if_dl.h> // sockaddr_dl
 #include <net/route.h> // rt_msghdr, RTM_GET
 #include <netinet/in.h>
 #include <sys/ioctl.h> // SIOCGIFMTU
 #include <sys/socket.h>
 #include <sys/time.h> // timeval
-#include <unistd.h> // close(), getpid(), read(), write()
+#include <unistd.h> // close(), getpid(), getrtable(), read(), write()
 #endif
 
 #include <fmt/format.h> // fmt::ptr
@@ -59,7 +60,7 @@ uint16_t tr_utp_udp_mtu(int const family, std::optional<size_t> const route_mtu)
     return static_cast<uint16_t>(std::max(mtu, Floor));
 }
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 namespace
 {
 // The MTU of network interface `index`.
@@ -111,7 +112,7 @@ std::optional<size_t> tr_utp_route_mtu(
         getsockopt(sock, IPPROTO_IP, IP_MTU, mtu_buf, &mtu_len) == 0;
     tr_net_close_socket(sock);
     return ok && mtu > 0U ? std::optional{ static_cast<size_t>(mtu) } : std::nullopt;
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     // No IP_MTU here: ask the routing table, which holds an MTU per route (the interface's,
     // unless the route sets its own).
     if (tolen != sizeof(sockaddr_in)) {
@@ -131,19 +132,40 @@ std::optional<size_t> tr_utp_route_mtu(
                                   .tv_usec = static_cast<suseconds_t>(std::chrono::microseconds{ Timeout }.count()) };
     (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
 
-    // An RTM_GET request is an rt_msghdr followed directly by the destination. sizeof(rt_msghdr)
+    // The kernel pads each address in a routing message to this size.
+#ifdef __APPLE__
+    auto constexpr Align = sizeof(uint32_t);
+#elif defined(__NetBSD__)
+    auto constexpr Align = sizeof(uint64_t);
+#else
+    auto constexpr Align = sizeof(long);
+#endif
+    auto const padded = [](size_t len) {
+        return (len + Align - 1U) / Align * Align;
+    };
+
+    // An RTM_GET request is an rt_msghdr followed by the destination and an empty interface
+    // address. Asking for the interface is what makes NetBSD fill in rtm_index. sizeof(rt_msghdr)
     // need not be a multiple of the address's alignment, so the message is built in bytes.
     alignas(rt_msghdr) std::array<unsigned char, 2048> buf = {};
+    auto ifp = sockaddr_dl{};
+    ifp.sdl_len = sizeof(ifp);
+    ifp.sdl_family = AF_LINK;
     auto request = rt_msghdr{};
-    request.rtm_msglen = static_cast<u_short>(sizeof(request) + tolen);
+    request.rtm_msglen = static_cast<u_short>(sizeof(request) + padded(tolen) + padded(sizeof(ifp)));
     request.rtm_version = RTM_VERSION;
     request.rtm_type = RTM_GET;
-    request.rtm_addrs = RTA_DST;
+    request.rtm_addrs = RTA_DST | RTA_IFP;
     request.rtm_pid = getpid();
     request.rtm_seq = 1;
+#ifdef __OpenBSD__
+    // the process's routing table, which `route -T` or rcctl's rtable may have set
+    request.rtm_tableid = static_cast<u_short>(getrtable());
+#endif
     std::memcpy(std::data(buf), &request, sizeof(request));
     std::memcpy(std::data(buf) + sizeof(request), to, tolen);
     reinterpret_cast<sockaddr*>(std::data(buf) + sizeof(request))->sa_len = static_cast<uint8_t>(tolen);
+    std::memcpy(std::data(buf) + sizeof(request) + padded(tolen), &ifp, sizeof(ifp));
 
     auto mtu = std::optional<size_t>{};
     if (write(fd, std::data(buf), request.rtm_msglen) == request.rtm_msglen) {
