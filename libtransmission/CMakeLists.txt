@@ -252,6 +252,8 @@ target_compile_definitions(${TR_NAME}
         $<$<BOOL:${WITH_KQUEUE}>:WITH_KQUEUE>
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>
         $<$<BOOL:${HAVE_SO_REUSEPORT}>:HAVE_SO_REUSEPORT=1>
+        # macOS declares IPV6_DONTFRAG only in its RFC 3542 socket API
+        $<$<PLATFORM_ID:Darwin>:__APPLE_USE_RFC_3542>
     PUBLIC
         $<$<STREQUAL:${CRYPTO_PKG},ccrypto>:WITH_CCRYPTO>
         $<$<STREQUAL:${CRYPTO_PKG},mbedtls>:WITH_MBEDTLS>

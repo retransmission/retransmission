@@ -138,6 +138,31 @@ void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos,
     }
 }
 
+std::optional<tr_socket_option> tr_net_dont_fragment_option(int const family)
+{
+    if (family == AF_INET) {
+#if defined(IP_MTU_DISCOVER) && defined(IP_PMTUDISC_PROBE)
+        // Linux. PROBE, unlike DO, ignores a learnt path MTU: probing above it is the point.
+        return tr_socket_option{ .level = IPPROTO_IP, .name = IP_MTU_DISCOVER, .value = IP_PMTUDISC_PROBE };
+#elif defined(IP_DONTFRAG)
+        // Here and below, don't-fragment also obeys a learnt path MTU, as Linux's DO does: a probe above a
+        // stale, too-low one fails with EMSGSIZE until the kernel's entry expires. Windows has PROBE as
+        // IP_MTU_DISCOVER, but its values are enumerators, which the #if above can't see.
+        return tr_socket_option{ .level = IPPROTO_IP, .name = IP_DONTFRAG, .value = 1 };
+#elif defined(IP_DONTFRAGMENT)
+        return tr_socket_option{ .level = IPPROTO_IP, .name = IP_DONTFRAGMENT, .value = 1 };
+#endif
+    } else {
+#if defined(IPV6_MTU_DISCOVER) && defined(IPV6_PMTUDISC_PROBE)
+        return tr_socket_option{ .level = IPPROTO_IPV6, .name = IPV6_MTU_DISCOVER, .value = IPV6_PMTUDISC_PROBE };
+#elif defined(IPV6_DONTFRAG)
+        return tr_socket_option{ .level = IPPROTO_IPV6, .name = IPV6_DONTFRAG, .value = 1 };
+#endif
+    }
+
+    return {};
+}
+
 namespace
 {
 [[nodiscard]] tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppress_msgs, int* err_out)
