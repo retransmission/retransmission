@@ -6,6 +6,7 @@
 #import <libtransmission/transmission.h>
 
 #import "PrefsGroupsTabViewController.h"
+#import "NSImageAdditions.h"
 #import "GroupsController.h"
 #import "PrefsUI.h"
 #import "ColorTextField.h"
@@ -108,8 +109,8 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     self.fAddRemoveControl.translatesAutoresizingMaskIntoConstraints = NO;
     self.fAddRemoveControl.segmentCount = 2;
     self.fAddRemoveControl.trackingMode = NSSegmentSwitchTrackingMomentary;
-    [self.fAddRemoveControl setImage:[NSImage imageNamed:NSImageNameAddTemplate] forSegment:SegmentTagAdd];
-    [self.fAddRemoveControl setImage:[NSImage imageNamed:NSImageNameRemoveTemplate] forSegment:SegmentTagRemove];
+    [self.fAddRemoveControl setImage:[NSImage re_symbolNamed:@"plus"] forSegment:SegmentTagAdd];
+    [self.fAddRemoveControl setImage:[NSImage re_symbolNamed:@"minus"] forSegment:SegmentTagRemove];
     self.fAddRemoveControl.target = self;
     self.fAddRemoveControl.action = @selector(addRemoveGroup:);
     [leftPane addSubview:self.fAddRemoveControl];

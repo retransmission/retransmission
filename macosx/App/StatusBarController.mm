@@ -6,6 +6,7 @@
 
 #import "StatusBarController.h"
 #import "NSStringAdditions.h"
+#import "NSImageAdditions.h"
 #import "Utils.h"
 
 typedef NSString* StatusRatioType NS_TYPED_EXTENSIBLE_ENUM;
@@ -111,7 +112,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     NSMenu* menu = [[NSMenu alloc] init];
 
     NSMenuItem* hiddenItem = [[NSMenuItem alloc] initWithTitle:@"status menu" action:nil keyEquivalent:@""];
-    hiddenItem.image = [NSImage imageNamed:@"YingYangTemplate"];
+    hiddenItem.image = [NSImage re_symbolNamed:@"circle.lefthalf.filled"];
     hiddenItem.hidden = YES;
     hiddenItem.tag = -1;
     [menu addItem:hiddenItem];
@@ -138,11 +139,11 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         return result;
     };
 
-    self.fTotalDLImageView = [NSImageView imageViewWithImage:[NSImage imageNamed:@"DownArrowTemplate"]];
+    self.fTotalDLImageView = [NSImageView imageViewWithImage:[NSImage downloadArrow]];
 
     self.fTotalDLField = createTextField();
 
-    self.fTotalULImageView = [NSImageView imageViewWithImage:[NSImage imageNamed:@"UpArrowTemplate"]];
+    self.fTotalULImageView = [NSImageView imageViewWithImage:[NSImage uploadArrow]];
 
     self.fTotalULField = createTextField();
 }

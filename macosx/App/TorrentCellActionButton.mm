@@ -3,6 +3,7 @@
 // License text can be found in the licenses/ folder.
 
 #import "TorrentCellActionButton.h"
+#import "NSImageAdditions.h"
 #import "TorrentTableView.h"
 #import "Torrent.h"
 #import "TorrentCell.h"
@@ -26,7 +27,8 @@
 {
     if (self = [super initWithFrame:frameRect]) {
         self.fDefaults = NSUserDefaults.standardUserDefaults;
-        self.fImage = [NSImage imageNamed:@"ActionHover"];
+        self.fImage = [NSImage re_symbolNamed:@"chevron.down.circle.fill"
+                                       colors:@[ NSColor.whiteColor, NSColor.systemGrayColor ]];
 
         // hide image by default and show only on hover
         self.fAlternativeImage = [[NSImage alloc] init];
